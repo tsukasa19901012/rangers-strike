@@ -111,25 +111,25 @@ node scripts/verify-wiki-effects.mjs
 
 ## Vercel デプロイ
 
-GitHub リポジトリと Vercel を接続済みの場合、**プロジェクト設定** を次のようにしてください。
+GitHub リポジトリと Vercel を接続済みの場合、次のどちらかで動きます。
+
+### パターン A（推奨）: Root Directory = `apps/web`
 
 | 設定 | 値 |
 |------|-----|
 | Root Directory | `apps/web` |
-| Framework Preset | **Next.js**（`Other` や `public` 出力にしない） |
-| Output Directory | **空欄**（上書きしない） |
-| Node.js Version | 20.x（`.nvmrc` 参照） |
-| Include source files outside Root Directory | **有効**（モノレポ用） |
+| Framework Preset | **Next.js** |
+| Output Directory | **空欄** |
+| Include source files outside Root Directory | **有効** |
 
-> `No Output Directory named "public"` が出る場合、Framework が Next.js になっていないか、Output Directory が `public` に固定されています。上記を確認して **Redeploy** してください。
+`apps/web/vercel.json` が使われます。
 
-`apps/web/vercel.json` で install / build コマンドを定義しています。  
+### パターン B: Root Directory = リポジトリルート（`.`）
+
+ルートの `vercel.json` が `@vercel/next` で `apps/web` をビルドします。  
+ダッシュボードの **Output Directory が `public` になっていないこと** を確認してください。
+
 `main` への push で自動デプロイされます。
-
-```bash
-# 手動デプロイ（Vercel CLI 利用時）
-npx vercel --cwd apps/web
-```
 
 ## 免責事項
 
