@@ -1,0 +1,233 @@
+import type { CardDefinition } from "./schema";
+import legend1UnitEffectsJson from "./legend1/unitEffects.json";
+import legend2UnitEffectsJson from "./legend2/unitEffects.json";
+import type { UnitEffectBlock } from "./unitEffects";
+import {
+  getConditionalNamedEffect,
+  getEnterBattleNamedEffect,
+  getOnAttackNamedEffect,
+  getOnRushNamedEffect,
+} from "./unitEffects";
+
+const UNIT_EFFECTS = {
+  ...(legend1UnitEffectsJson as Record<string, UnitEffectBlock>),
+  ...(legend2UnitEffectsJson as Record<string, UnitEffectBlock>),
+};
+
+export type WiredUnitEffect = {
+  cardId: string;
+  effectId: string;
+  effectName: string;
+  triggerType: "on_rush" | "conditional" | "on_attack" | "enter_battle" | "passive";
+};
+
+/** On-rush handlers in resolveNamedOnRushEffects. */
+export const IMPLEMENTED_ON_RUSH_EFFECT_IDS = [
+  "armor_attack",
+  "tyranno_sonic",
+  "moss_blizzard",
+  "ptera_beam",
+  "rescue_activity",
+  "sure_win_combination",
+  "firefighting",
+  "dismantling",
+  "heavenly_disaster",
+  "karakuri_great_tsunami",
+  "air_transport",
+] as const;
+
+/** Optional may effects on battle entry (tryStartConditionalChoice). */
+export const IMPLEMENTED_CONDITIONAL_EFFECT_IDS = [
+  "judgment_sword",
+  "justice_flasher",
+  "super_drill",
+  "ghost_absorption",
+  "precious_guardian",
+  "shift_up",
+  "karakuri_fire_hawk",
+  "tantrum",
+  "cry",
+] as const;
+
+/** On-attack / battle BP modifiers in namedUnitEffects. */
+export const IMPLEMENTED_ON_ATTACK_EFFECT_IDS = [
+  "bouken_javelin",
+  "red_fire",
+  "shark_jaws",
+  "super_cutter",
+  "panther_claw",
+  "yellow_thunder",
+  "val_cannon",
+  "dump_punch",
+  "ptera_dagger",
+  "adventure_drive_sword",
+] as const;
+
+/** Enter-battle auto or choice effects. */
+export const IMPLEMENTED_ENTER_BATTLE_EFFECT_IDS = [
+  "destroy_enemy_bp4000",
+  "sky_magic_slash",
+  "mane_hurricane",
+  "phantom_illusion",
+  "ruin_excavation",
+] as const;
+
+/** Reactive / passive unit effects wired outside battle entry. */
+export const IMPLEMENTED_PASSIVE_EFFECT_IDS = [
+  "super_shield",
+  "focused_breakthrough",
+  "signal_cannon",
+  "tricera_cannon",
+  "guardian_god",
+  "pat_signer",
+  "jaguar_mothership",
+  "bio_buster",
+  "medical_rescue",
+  "traffic_control",
+  "karakuri_lion_chain",
+  "dekabase_mothership",
+  "fire_spin_blade",
+  "seabed_survey",
+  "val_shield",
+  "dance_of_darkness",
+] as const;
+
+const ON_RUSH_SET = new Set<string>(IMPLEMENTED_ON_RUSH_EFFECT_IDS);
+const CONDITIONAL_SET = new Set<string>(IMPLEMENTED_CONDITIONAL_EFFECT_IDS);
+const ON_ATTACK_SET = new Set<string>(IMPLEMENTED_ON_ATTACK_EFFECT_IDS);
+const ENTER_BATTLE_SET = new Set<string>(IMPLEMENTED_ENTER_BATTLE_EFFECT_IDS);
+const PASSIVE_SET = new Set<string>(IMPLEMENTED_PASSIVE_EFFECT_IDS);
+
+export function isUnitEffectImplemented(effectId: string): boolean {
+  return (
+    ON_RUSH_SET.has(effectId) ||
+    CONDITIONAL_SET.has(effectId) ||
+    ON_ATTACK_SET.has(effectId) ||
+    ENTER_BATTLE_SET.has(effectId) ||
+    PASSIVE_SET.has(effectId)
+  );
+}
+
+type TriggerFilter = "on_rush" | "conditional" | "on_attack" | "enter_battle";
+
+function listByTrigger(
+  triggerType: TriggerFilter,
+  lookup: (cardId: string) => CardDefinition | undefined,
+  effectIdSet: Set<string>,
+): WiredUnitEffect[] {
+  const results: WiredUnitEffect[] = [];
+
+  for (const [cardId, block] of Object.entries(UNIT_EFFECTS)) {
+    if (!lookup(cardId)) continue;
+
+    for (const named of block.namedEffects) {
+      if (named.trigger.type !== triggerType) continue;
+      if (!effectIdSet.has(named.effectId)) continue;
+
+      results.push({
+        cardId,
+        effectId: named.effectId,
+        effectName: named.name,
+        triggerType,
+      });
+    }
+  }
+
+  return results.sort((a, b) => a.cardId.localeCompare(b.cardId));
+}
+
+function listPassiveEffects(
+  lookup: (cardId: string) => CardDefinition | undefined,
+): WiredUnitEffect[] {
+  const results: WiredUnitEffect[] = [];
+
+  for (const [cardId, block] of Object.entries(UNIT_EFFECTS)) {
+    if (!lookup(cardId)) continue;
+
+    for (const named of block.namedEffects) {
+      if (!PASSIVE_SET.has(named.effectId)) continue;
+      results.push({
+        cardId,
+        effectId: named.effectId,
+        effectName: named.name,
+        triggerType: "passive",
+      });
+    }
+  }
+
+  return results.sort((a, b) => a.cardId.localeCompare(b.cardId));
+}
+
+export function listWiredOnRushEffects(
+  lookup: (cardId: string) => CardDefinition | undefined,
+): WiredUnitEffect[] {
+  return listByTrigger("on_rush", lookup, ON_RUSH_SET);
+}
+
+export function listWiredConditionalEffects(
+  lookup: (cardId: string) => CardDefinition | undefined,
+): WiredUnitEffect[] {
+  return listByTrigger("conditional", lookup, CONDITIONAL_SET);
+}
+
+export function listWiredOnAttackEffects(
+  lookup: (cardId: string) => CardDefinition | undefined,
+): WiredUnitEffect[] {
+  return listByTrigger("on_attack", lookup, ON_ATTACK_SET);
+}
+
+export function listWiredEnterBattleEffects(
+  lookup: (cardId: string) => CardDefinition | undefined,
+): WiredUnitEffect[] {
+  return listByTrigger("enter_battle", lookup, ENTER_BATTLE_SET);
+}
+
+export function listWiredPassiveEffects(
+  lookup: (cardId: string) => CardDefinition | undefined,
+): WiredUnitEffect[] {
+  return listPassiveEffects(lookup);
+}
+
+export function getWiredOnRushEffect(cardId: string): WiredUnitEffect | undefined {
+  const named = getOnRushNamedEffect(cardId);
+  if (!named || !ON_RUSH_SET.has(named.effectId)) return undefined;
+  return {
+    cardId,
+    effectId: named.effectId,
+    effectName: named.name,
+    triggerType: "on_rush",
+  };
+}
+
+export function getWiredConditionalEffect(cardId: string): WiredUnitEffect | undefined {
+  const named = getConditionalNamedEffect(cardId);
+  if (!named || !CONDITIONAL_SET.has(named.effectId)) return undefined;
+  return {
+    cardId,
+    effectId: named.effectId,
+    effectName: named.name,
+    triggerType: "conditional",
+  };
+}
+
+export function getWiredOnAttackEffect(cardId: string): WiredUnitEffect | undefined {
+  const named = getOnAttackNamedEffect(cardId);
+  if (!named || !ON_ATTACK_SET.has(named.effectId)) return undefined;
+  return {
+    cardId,
+    effectId: named.effectId,
+    effectName: named.name,
+    triggerType: "on_attack",
+  };
+}
+
+export function getWiredEnterBattleEffect(cardId: string): WiredUnitEffect | undefined {
+  const named = getEnterBattleNamedEffect(cardId);
+  if (!named || !ENTER_BATTLE_SET.has(named.effectId)) return undefined;
+  return {
+    cardId,
+    effectId: named.effectId,
+    effectName: named.name,
+    triggerType: "enter_battle",
+  };
+}

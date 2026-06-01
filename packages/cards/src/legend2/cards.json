@@ -1,0 +1,970 @@
+{
+  "expansion": "legend2",
+  "cards": [
+    {
+      "id": "RS-071",
+      "name": "ヒドラー兵の卵",
+      "type": "operation",
+      "category": "DA",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 1,
+      "text": "常駐（場に配置して、離れるまで効果が有効になる）　自分のラッシュフェイズごとに1度だけ発動できる。自軍山札の上から1枚をオモテにする。オモテにしたカードが「ヒドラー兵」ならラッシュエリアに出し、それ以外なら山札の下に戻す。",
+      "imageUrl": "/cards/legend2/RS-071.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-071.jpg"
+    },
+    {
+      "id": "RS-072",
+      "name": "無限連鎖カード",
+      "type": "operation",
+      "category": "DA",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 3,
+      "text": "このターン、相手の常駐オペレーションは無効になり、相手はカウンターを発動できない。",
+      "imageUrl": "/cards/legend2/RS-072.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-072.jpg"
+    },
+    {
+      "id": "RS-073",
+      "name": "サンバルカンロボ",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "6+",
+      "bp": 9000,
+      "sp": 1,
+      "size": "L",
+      "text": "合体―コスモバルカン＋ブルバルカン 【バルシールド】自軍ダメージが6点のとき、このユニットは次の能力を得る⇒「SP2」",
+      "features": [
+        "メカ",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-073.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-073.jpg"
+    },
+    {
+      "id": "RS-074",
+      "name": "コスモバルカン",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "4+",
+      "bp": 4000,
+      "size": "M",
+      "text": "【バルカン砲】自軍ラッシュエリアに「ブルバルカン」があるとき、このユニットは次の能力を得る⇒これがアタックするとき、相手はカウンターを発動できず、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+      "features": [
+        "メカ",
+        "航空機"
+      ],
+      "imageUrl": "/cards/legend2/RS-074.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-074.jpg"
+    },
+    {
+      "id": "RS-075",
+      "name": "ブルバルカン",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "5+",
+      "bp": 5000,
+      "size": "M",
+      "text": "【救助活動】これをラッシュしたとき、自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。",
+      "features": [
+        "メカ",
+        "車両"
+      ],
+      "imageUrl": "/cards/legend2/RS-075.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-075.jpg"
+    },
+    {
+      "id": "RS-076",
+      "name": "ジャガーバルカン",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 4,
+      "bp": 4000,
+      "size": "L",
+      "text": "【母艦】これが自軍ラッシュエリアにあるとき、自分がラッシュするMユニットの追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを1体コマンドゾーンに送るかわりに、「アーステクノロジー」の自軍コマンドを1つホールドする。",
+      "features": [
+        "メカ",
+        "母艦"
+      ],
+      "imageUrl": "/cards/legend2/RS-076.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-076.jpg"
+    },
+    {
+      "id": "RS-077",
+      "name": "機関車仮面",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 3,
+      "bp": 3000,
+      "size": "S",
+      "comboNumber": 3,
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。 【競争】お互いに山札の上から1枚をオモテにし、必要パワーの数字をくらべる。そして数字の大きい方を持ち主の手札に加え、小さい方を持ち主の山札の下に戻す。同じならそれぞれ山札の上に戻す。",
+      "features": [
+        "怪人",
+        "男"
+      ],
+      "imageUrl": "/cards/legend2/RS-077.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-077.jpg"
+    },
+    {
+      "id": "RS-078",
+      "name": "ダークナイト",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "SR",
+      "expansion": "legend2",
+      "powerCost": 5,
+      "bp": 4000,
+      "sp": "special",
+      "size": "S",
+      "text": "【闇の舞】敵軍ラッシュエリアか敵軍バトルエリアに特徴「レッド」を持つユニットがあるとき、このユニットは次の能力を得る⇒「SP1」",
+      "features": [
+        "有尾人一族",
+        "男"
+      ],
+      "imageUrl": "/cards/legend2/RS-078.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-078.jpg"
+    },
+    {
+      "id": "RS-079",
+      "name": "バイオハンター・シルバ",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "R",
+      "expansion": "legend2",
+      "powerCost": 2,
+      "bp": 3000,
+      "sp": "special",
+      "size": "S",
+      "text": "【バイバスター】これは敵軍コマンドゾーンにある「オーバーテクノロジー」のコマンド1つにつきBP＋1000される。これはBP5000以上のとき「SP1」になる。",
+      "features": [
+        "メカ",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-079.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-079.jpg"
+    },
+    {
+      "id": "RS-080",
+      "name": "ヒドラー兵",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 0,
+      "bp": 500,
+      "size": "S",
+      "text": "※このカードはデッキに3枚以上入れてもよい。",
+      "features": [
+        "戦闘員"
+      ],
+      "imageUrl": "/cards/legend2/RS-080.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-080.jpg"
+    },
+    {
+      "id": "RS-081",
+      "name": "ティラノレンジャー",
+      "type": "unit",
+      "category": "WB",
+      "rarity": "R",
+      "expansion": "legend2",
+      "powerCost": 3,
+      "bp": 3000,
+      "sp": "special",
+      "size": "S",
+      "comboNumber": 4,
+      "text": "【龍撃剣】このターン、これはホールド状態の敵軍コマンド1つにつきBP＋1000される。これはBP5000以上のとき「SP1」になる。",
+      "features": [
+        "レッド",
+        "男"
+      ],
+      "imageUrl": "/cards/legend2/RS-081.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-081.jpg"
+    },
+    {
+      "id": "RS-082",
+      "name": "トリケラレンジャー",
+      "type": "unit",
+      "category": "WB",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 2,
+      "bp": 2000,
+      "size": "S",
+      "comboNumber": 3,
+      "text": "【トリケランス】敵軍コマンドを1つ選んでホールドする。",
+      "features": [
+        "ブルー",
+        "男"
+      ],
+      "imageUrl": "/cards/legend2/RS-082.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-082.jpg"
+    },
+    {
+      "id": "RS-083",
+      "name": "プテラレンジャー",
+      "type": "unit",
+      "category": "WB",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 1,
+      "bp": 1000,
+      "size": "S",
+      "comboNumber": 5,
+      "text": "【プテラアロー】敵軍コマンドゾーンからホールド状態のカードを1枚選んで捨札にする。",
+      "features": [
+        "ピンク",
+        "女"
+      ],
+      "imageUrl": "/cards/legend2/RS-083.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-083.jpg"
+    },
+    {
+      "id": "RS-084",
+      "name": "VRVロボ",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "R",
+      "expansion": "legend2",
+      "powerCost": "8+",
+      "bp": 18000,
+      "sp": 1,
+      "size": "L",
+      "text": "合体―Vファイヤー＋Vポリス＋Vダンプ＋Vドーザー＋Vレスキュー 【必勝合体】これをラッシュしたとき、相手に2点ダメージを与える。",
+      "features": [
+        "メカ",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-084.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-084.jpg"
+    },
+    {
+      "id": "RS-085",
+      "name": "ファイヤーファイター",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "7+",
+      "bp": 4000,
+      "sp": 1,
+      "size": "M",
+      "text": "※これは「Vファイヤー」としてつかえる。 【消火作業】これをラッシュしたとき、自軍パワーゾーンからダメージになっているカードをウラ向きのまま1枚選んでオモテにしてもよい。そうしたとき、相手も同じようにしてもよい。",
+      "features": [
+        "メカ",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-085.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-085.jpg"
+    },
+    {
+      "id": "RS-086",
+      "name": "ポリスファイター",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "4+",
+      "bp": 5000,
+      "size": "M",
+      "text": "※これは「Vポリス」としてつかえる。 【交通整理】これが自軍バトルエリアにあるとき、相手は次の制限を受ける。バトルエリアに並べるユニットはすべて同じサイズでなければならない。",
+      "features": [
+        "メカ",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-086.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-086.jpg"
+    },
+    {
+      "id": "RS-087",
+      "name": "ダンプファイター",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "5+",
+      "bp": 6000,
+      "size": "M",
+      "text": "※これは「Vダンプ」としてつかえる。 【ダンプパンチ】これはアタックするときBP＋2000される。",
+      "features": [
+        "メカ",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-087.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-087.jpg"
+    },
+    {
+      "id": "RS-088",
+      "name": "ドーザーファイター",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "4+",
+      "bp": 5000,
+      "size": "M",
+      "text": "※これは「Vドーザー」としてつかえる。 【解体作業】これをラッシュしたとき、自軍パワーゾーンからダメージになっているカードをウラ向きのまま1枚選んで手札に加えてもよい。そうしたとき、手札から1枚選んでパワーゾーンにウラ向きに置く。",
+      "features": [
+        "メカ",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-088.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-088.jpg"
+    },
+    {
+      "id": "RS-089",
+      "name": "レスキューファイター",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "3+",
+      "bp": 4000,
+      "size": "M",
+      "text": "※これは「Vレスキュー」としてつかえる。 【救護活動】これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、撃破されたとき捨札にするかわりに自軍パワーゾーンに送る。",
+      "features": [
+        "メカ",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-089.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-089.jpg"
+    },
+    {
+      "id": "RS-090",
+      "name": "レッドレーサー",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 2,
+      "bp": 4000,
+      "sp": "special",
+      "size": "S",
+      "comboNumber": 4,
+      "text": "※これはラッシュするとき可能ならバトルエリアに置く。 ※これはラッシュしたターンにアタックできない。 ※これはラッシュしたターンにストライクできない。 【フェンダーソード】「SP1」",
+      "features": [
+        "レッド",
+        "男"
+      ],
+      "imageUrl": "/cards/legend2/RS-090.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-090.jpg"
+    },
+    {
+      "id": "RS-091",
+      "name": "ゴーレッド",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "R",
+      "expansion": "legend2",
+      "powerCost": 5,
+      "bp": 3000,
+      "size": "S",
+      "comboNumber": 5,
+      "text": "【人命救助】自軍捨札からSユニットのカードを1枚選んで手札に加えてもよい。",
+      "features": [
+        "レッド",
+        "男"
+      ],
+      "imageUrl": "/cards/legend2/RS-091.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-091.jpg"
+    },
+    {
+      "id": "RS-092",
+      "name": "冥王ジルフィーザ",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "SR",
+      "expansion": "legend2",
+      "powerCost": "9+",
+      "bp": 8000,
+      "sp": 1,
+      "size": "S",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【天の災】これをラッシュしたとき、お互いに次のようにする。自分自身のパワーゾーンからダメージではないカードをすべて捨札にする。その後、手札をすべてパワーゾーンに置く。",
+      "features": [
+        "災魔一族",
+        "男"
+      ],
+      "imageUrl": "/cards/legend2/RS-092.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-092.jpg"
+    },
+    {
+      "id": "RS-093",
+      "name": "童鬼ドロップ",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 0,
+      "bp": 2000,
+      "size": "S",
+      "text": "※これはバトルエリアに出られない。 【かんしゃく】これが撃破されたとき、お互いに1点ダメージを受ける。",
+      "features": [
+        "災魔一族",
+        "男"
+      ],
+      "imageUrl": "/cards/legend2/RS-093.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-093.jpg"
+    },
+    {
+      "id": "RS-094",
+      "name": "龍冥王サラマンデス",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "4+",
+      "bp": 6000,
+      "sp": "special",
+      "size": "S",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【幽魔吸収】自軍バトルフェイズに次の効果を発動できる。敵軍捨札からSユニットのカードを1枚選んで持ち主の手札に戻す。そうしたとき、このターンこのユニットのBPは相手の手札に戻したカードのBPとの合計になり、「SP1」になる。",
+      "features": [
+        "災魔一族",
+        "男"
+      ],
+      "imageUrl": "/cards/legend2/RS-094.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-094.jpg"
+    },
+    {
+      "id": "RS-095",
+      "name": "旋風神",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "7+",
+      "bp": 16000,
+      "sp": 1,
+      "size": "L",
+      "text": "合体―ハリケンホーク＋ハリケンレオン＋ハリケンドルフィン【タテガミハリケーン】これがバトルエリアに出たとき、敵軍ラッシュエリアにあるSユニットをすべて持ち主の手札に戻す。",
+      "features": [
+        "メカ",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-095.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-095.jpg"
+    },
+    {
+      "id": "RS-096",
+      "name": "ハリケンホーク",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "4+",
+      "bp": 5000,
+      "size": "M",
+      "text": "【カラクリ忍法・火炎鷹】自分がターンを終えるとき、このユニットがバトルエリアにあれば持ち主の手札に戻す。",
+      "features": [
+        "メカ",
+        "航空機"
+      ],
+      "imageUrl": "/cards/legend2/RS-096.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-096.jpg"
+    },
+    {
+      "id": "RS-097",
+      "name": "ハリケンレオン",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "5+",
+      "bp": 5000,
+      "size": "M",
+      "text": "【カラクリ忍法・連獅子】これが自軍バトルエリアにあるとき、SP1以上または「！」のある敵軍ユニットはコマンドを1つホールドしなければバトルエリアに出られない。",
+      "features": [
+        "メカ"
+      ],
+      "imageUrl": "/cards/legend2/RS-097.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-097.jpg"
+    },
+    {
+      "id": "RS-098",
+      "name": "ハリケンドルフィン",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "3+",
+      "bp": 4000,
+      "size": "M",
+      "text": "【カラクリ忍法・大津波】これをラッシュしたとき、BP3000以下の敵軍ユニットを1体選んで持ち主の手札に戻す。",
+      "features": [
+        "メカ"
+      ],
+      "imageUrl": "/cards/legend2/RS-098.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-098.jpg"
+    },
+    {
+      "id": "RS-099",
+      "name": "ハリケンレッド",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 2,
+      "bp": 2000,
+      "sp": "special",
+      "size": "S",
+      "comboNumber": 3,
+      "text": "【超忍法・空駆け】「SP1」",
+      "features": [
+        "レッド",
+        "男",
+        "忍者"
+      ],
+      "imageUrl": "/cards/legend2/RS-099.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-099.jpg"
+    },
+    {
+      "id": "RS-100",
+      "name": "ハリケンイエロー",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 4,
+      "bp": 1000,
+      "size": "S",
+      "comboNumber": 1,
+      "text": "【超忍法・舞獅子】これはアタックするかわりに次の効果を発動できる。自軍山札を見て「ハリケンイエロー」のカードを1枚選んで自軍バトルエリアに出してもよい。その後、山札をシャッフルする。",
+      "features": [
+        "イエロー",
+        "男",
+        "忍者"
+      ],
+      "imageUrl": "/cards/legend2/RS-100.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-100.jpg"
+    },
+    {
+      "id": "RS-101",
+      "name": "ハリケンブルー",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 0,
+      "bp": 1000,
+      "size": "S",
+      "comboNumber": 4,
+      "text": "【超忍法・水変化】相手は自分自身のラッシュエリアからSユニットを1体選んで手札に戻す。",
+      "features": [
+        "ブルー",
+        "女",
+        "忍者"
+      ],
+      "imageUrl": "/cards/legend2/RS-101.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-101.jpg"
+    },
+    {
+      "id": "RS-102",
+      "name": "五の槍サーガイン",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 5,
+      "bp": 3000,
+      "size": "S",
+      "comboNumber": 5,
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【暗黒二刀流・巌流剣】敵軍パワーゾーンからダメージになっていないカードを1枚選ぶ。そして敵軍コマンドゾーンからもカードを1枚選ぶ。そうしたとき、選んだ2枚を捨札にする。",
+      "features": [
+        "暗黒七本槍",
+        "男",
+        "忍者"
+      ],
+      "imageUrl": "/cards/legend2/RS-102.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-102.jpg"
+    },
+    {
+      "id": "RS-103",
+      "name": "七の槍サンダール",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "R",
+      "expansion": "legend2",
+      "powerCost": 7,
+      "bp": 4000,
+      "size": "S",
+      "comboNumber": 7,
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【宇宙忍法・縄頭蓋】BP3000以下の敵軍ユニットを全て撃破する。",
+      "features": [
+        "暗黒七本槍",
+        "男",
+        "忍者"
+      ],
+      "imageUrl": "/cards/legend2/RS-103.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-103.jpg"
+    },
+    {
+      "id": "RS-104",
+      "name": "アバレイエロー",
+      "type": "unit",
+      "category": "WB",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 1,
+      "bp": 2000,
+      "size": "S",
+      "comboNumber": 3,
+      "text": "【プテラダガー】これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+      "features": [
+        "イエロー",
+        "女"
+      ],
+      "imageUrl": "/cards/legend2/RS-104.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-104.jpg"
+    },
+    {
+      "id": "RS-105",
+      "name": "デカベースクローラー",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 5,
+      "bp": 5000,
+      "size": "L",
+      "text": "【母艦】これが自軍ラッシュエリアにあるとき、自分がラッシュするMユニットの追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを1体パワーゾーンに送るかわりに、「オーバーテクノロジー」の自軍コマンドを1つホールドする。",
+      "features": [
+        "メカ",
+        "母艦"
+      ],
+      "imageUrl": "/cards/legend2/RS-105.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-105.jpg"
+    },
+    {
+      "id": "RS-106",
+      "name": "デカレッド",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 3,
+      "bp": 3000,
+      "size": "S",
+      "comboNumber": 1,
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。 【ジュウクンドー】これはアタックするかわりに次の効果を発動できる。敵軍ラッシュエリアにあるユニットを、カードに表記された本来のBPの合計が3000以下になるように好きな数選んで撃破する。",
+      "features": [
+        "レッド",
+        "男",
+        "警察"
+      ],
+      "imageUrl": "/cards/legend2/RS-106.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-106.jpg"
+    },
+    {
+      "id": "RS-107",
+      "name": "デカブルー",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 1,
+      "bp": 3000,
+      "size": "S",
+      "comboNumber": 2,
+      "text": "【ディースナイパー】このターン、相手がカウンターを発動するためにホールドしたコマンドは捨札になる。",
+      "features": [
+        "ブルー",
+        "男",
+        "警察"
+      ],
+      "imageUrl": "/cards/legend2/RS-107.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-107.jpg"
+    },
+    {
+      "id": "RS-108",
+      "name": "デカグリーン",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 2,
+      "bp": 3000,
+      "size": "S",
+      "comboNumber": 3,
+      "text": "【グリーンクラッシュ】敵軍ラッシュエリアにあるSユニットを2体まで選んでバトルエリアに出してもよい（出す順番は自分が選ぶ）。",
+      "features": [
+        "グリーン",
+        "男",
+        "警察"
+      ],
+      "imageUrl": "/cards/legend2/RS-108.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-108.jpg"
+    },
+    {
+      "id": "RS-109",
+      "name": "デカイエロー",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 3,
+      "bp": 2000,
+      "sp": "special",
+      "size": "S",
+      "comboNumber": 4,
+      "text": "【応援要請】「SP1」自軍パワーゾーンのダメージになっていないカードの中から、Sユニットのカードを1枚選んで手札に加えてもよい。",
+      "features": [
+        "イエロー",
+        "女",
+        "警察"
+      ],
+      "imageUrl": "/cards/legend2/RS-109.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-109.jpg"
+    },
+    {
+      "id": "RS-110",
+      "name": "デカピンク",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 0,
+      "bp": 1000,
+      "size": "S",
+      "comboNumber": 5,
+      "text": "【ゼニボム】次の相手ターン、新しくラッシュエリアに出たユニットは、ターンが終わるまでバトルエリアに出られない。",
+      "features": [
+        "ピンク",
+        "女",
+        "警察"
+      ],
+      "imageUrl": "/cards/legend2/RS-110.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-110.jpg"
+    },
+    {
+      "id": "RS-111",
+      "name": "マジキング",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "7+",
+      "bp": 16000,
+      "sp": 1,
+      "size": "L",
+      "text": "合体―マジフェニックス＋マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス 【ファントムイリュージョン】これがバトルエリアに出たとき、敵軍コマンドをすべてホールドしてもよい。",
+      "features": [
+        "魔法",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-111.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-111.jpg"
+    },
+    {
+      "id": "RS-112",
+      "name": "ウルカイザー",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "R",
+      "expansion": "legend2",
+      "powerCost": "6+",
+      "bp": 8000,
+      "sp": 1,
+      "size": "L",
+      "text": "合体―魔導騎士ウルザード＋魔導馬バリキオン ※敵軍ダメージが6点になったとき、このユニットは持ち主の手札に戻す。",
+      "features": [
+        "魔法",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-112.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-112.jpg"
+    },
+    {
+      "id": "RS-113",
+      "name": "ファイヤーカイザー",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "SR",
+      "expansion": "legend2",
+      "powerCost": "6+",
+      "bp": 5000,
+      "sp": "special",
+      "size": "L",
+      "text": "合体―マジフェニックス＋魔導馬バリキオン 【ファイヤースピンブレード】 これはリリース状態の自軍コマンド1つにつきBP＋1000される。これはBP10000以上のとき「SP1」になる。",
+      "features": [
+        "魔法",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-113.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-113.jpg"
+    },
+    {
+      "id": "RS-114",
+      "name": "魔導馬バリキオン",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 3,
+      "bp": 4000,
+      "size": "M",
+      "text": "※これは、自軍Sユニットがバトルエリアになければバトルエリアに出られない。",
+      "features": [
+        "魔法"
+      ],
+      "imageUrl": "/cards/legend2/RS-114.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-114.jpg"
+    },
+    {
+      "id": "RS-115",
+      "name": "魔導騎士ウルザード",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 5,
+      "bp": 6000,
+      "sp": 1,
+      "size": "S",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。※これがバトルエリアに出たとき、相手は1枚ドローしてもよい。",
+      "features": [
+        "魔法",
+        "男"
+      ],
+      "imageUrl": "/cards/legend2/RS-115.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-115.jpg"
+    },
+    {
+      "id": "RS-116",
+      "name": "マンドラ坊や",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": 4,
+      "bp": 500,
+      "size": "S",
+      "text": "※これはバトルエリアに出られない。 【鳴き声】これが撃破されたとき、特徴「魔法」を持たないSユニットをすべて持ち主の手札に戻す。",
+      "features": [
+        "魔法",
+        "植物"
+      ],
+      "imageUrl": "/cards/legend2/RS-116.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-116.jpg"
+    },
+    {
+      "id": "RS-117",
+      "name": "ダイボウケン",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "SR",
+      "expansion": "legend2",
+      "powerCost": "7+",
+      "bp": 16000,
+      "sp": 1,
+      "size": "L",
+      "text": "合体―ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン 【轟轟剣アドベンチャードライブ】 これはアタックするときBP＋4000される。",
+      "features": [
+        "メカ",
+        "人型"
+      ],
+      "imageUrl": "/cards/legend2/RS-117.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-117.jpg"
+    },
+    {
+      "id": "RS-118",
+      "name": "ゴーゴーダンプ",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "5+",
+      "bp": 5000,
+      "size": "M",
+      "text": "【プレシャスの護り手】自軍バトルフェイズ中、これを自軍バトルエリアに出すとき、自軍バトルエリアのSユニット1体と置きかえて出してもよい。そうしたとき、これはアタックできず、置きかえたSユニットはこのターン、再びバトルエリアに出られない。",
+      "features": [
+        "メカ",
+        "車両"
+      ],
+      "imageUrl": "/cards/legend2/RS-118.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-118.jpg"
+    },
+    {
+      "id": "RS-119",
+      "name": "ゴーゴーフォーミュラ",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "6+",
+      "bp": 5000,
+      "sp": "special",
+      "size": "M",
+      "text": "【シフトアップ】自軍バトルフェイズ中、これを自軍バトルエリアに出すとき、自軍コマンドを5つホールドしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+      "features": [
+        "メカ",
+        "車両"
+      ],
+      "imageUrl": "/cards/legend2/RS-119.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-119.jpg"
+    },
+    {
+      "id": "RS-120",
+      "name": "ゴーゴージャイロ",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "5+",
+      "bp": 4000,
+      "size": "M",
+      "text": "【空輸搬送】これをラッシュしたとき、自軍コマンドゾーンからリリース状態のMユニットのカードを1枚選び、ラッシュエリアに出してもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
+      "features": [
+        "メカ",
+        "航空機"
+      ],
+      "imageUrl": "/cards/legend2/RS-120.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-120.jpg"
+    },
+    {
+      "id": "RS-121",
+      "name": "ゴーゴードーザー",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "4+",
+      "bp": 7000,
+      "size": "M",
+      "text": "【遺跡発掘】これがバトルエリアに出たとき、相手は自分自身のコマンドゾーンからSユニットかMユニットのカードを1枚選び、ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない。",
+      "features": [
+        "メカ",
+        "車両"
+      ],
+      "imageUrl": "/cards/legend2/RS-121.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-121.jpg"
+    },
+    {
+      "id": "RS-122",
+      "name": "ゴーゴーマリン",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend2",
+      "powerCost": "3+",
+      "bp": 4000,
+      "size": "M",
+      "text": "【海底探査】これが自軍ラッシュエリアにあるとき、次の効果を発動できる。自分が山札からカードをひくとき、上からひくかわりに下からひいてもよい。",
+      "features": [
+        "メカ",
+        "潜水艦"
+      ],
+      "imageUrl": "/cards/legend2/RS-122.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-122.jpg"
+    }
+  ]
+}

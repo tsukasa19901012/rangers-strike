@@ -1,0 +1,174 @@
+import type { CardDefinition } from "@rangers-strike/cards";
+import { legend1Catalog } from "@rangers-strike/cards";
+import type { CardInstance } from "../types/game";
+import type { GameState, PlayerId, PlayerState } from "../types/game";
+import { WIN_DAMAGE } from "../types/game";
+
+const TEST_DEFINITIONS: Record<string, CardDefinition> = {
+  "TST-UNIT-0": {
+    id: "TST-UNIT-0",
+    name: "Test Striker",
+    type: "unit",
+    category: "WB",
+    rarity: "N",
+    expansion: "test",
+    powerCost: 0,
+    bp: 1000,
+    sp: 1,
+    size: "S",
+  },
+  "TST-UNIT-2": {
+    id: "TST-UNIT-2",
+    name: "Test Unit",
+    type: "unit",
+    category: "WB",
+    rarity: "N",
+    expansion: "test",
+    powerCost: 2,
+    bp: 3000,
+    sp: 2,
+    size: "M",
+  },
+  "TST-UNIT-7": {
+    id: "TST-UNIT-7",
+    name: "Test Zord",
+    type: "unit",
+    category: "WB",
+    rarity: "SR",
+    expansion: "test",
+    powerCost: "7+",
+    bp: 13000,
+    sp: 1,
+    size: "L",
+  },
+  "TST-OP": {
+    id: "TST-OP",
+    name: "Test Operation",
+    type: "operation",
+    category: "WB",
+    rarity: "R",
+    expansion: "test",
+    powerCost: 3,
+  },
+  "TST-OP-ET": {
+    id: "TST-OP-ET",
+    name: "Test ET Command",
+    type: "operation",
+    category: "ET",
+    rarity: "R",
+    expansion: "test",
+    powerCost: 1,
+  },
+  "TST-OP-OT": {
+    id: "TST-OP-OT",
+    name: "Test OT Command",
+    type: "operation",
+    category: "OT",
+    rarity: "R",
+    expansion: "test",
+    powerCost: 1,
+  },
+  "TST-OP-MA": {
+    id: "TST-OP-MA",
+    name: "Test MA Command",
+    type: "operation",
+    category: "MA",
+    rarity: "R",
+    expansion: "test",
+    powerCost: 1,
+  },
+  "TST-P": {
+    id: "TST-P",
+    name: "Test Power",
+    type: "operation",
+    category: "WB",
+    rarity: "N",
+    expansion: "test",
+    powerCost: 0,
+  },
+};
+
+function legendDef(id: string): CardDefinition | undefined {
+  return legend1Catalog.cards.find((card) => card.id === id);
+}
+
+const MERGED_DEFINITIONS: Record<string, CardDefinition> = {
+  ...TEST_DEFINITIONS,
+  ...(legendDef("RS-022") ? { "RS-022": legendDef("RS-022")! } : {}),
+  ...(legendDef("RS-027") ? { "RS-027": legendDef("RS-027")! } : {}),
+  ...(legendDef("RS-029") ? { "RS-029": legendDef("RS-029")! } : {}),
+};
+
+function inst(id: string, suffix: string): CardInstance {
+  return { instanceId: `${id}:${suffix}`, cardId: id };
+}
+
+function emptyPlayer(id: PlayerId): PlayerState {
+  return {
+    id,
+    deck: [],
+    hand: [],
+    discard: [],
+    power: [],
+    command: [],
+    rush: [],
+    battle: [],
+    operation: [],
+    damage: 0,
+  };
+}
+
+export type TestStateOptions = {
+  activePlayer?: PlayerId;
+  phase?: GameState["phase"];
+  turn?: number;
+  definitions?: Record<string, CardDefinition>;
+  player1?: Partial<PlayerState>;
+  player2?: Partial<PlayerState>;
+};
+
+export function createTestState(options: TestStateOptions = {}): GameState {
+  const player1 = {
+    ...emptyPlayer("player1"),
+    deck: [inst("TST-OP", "p1-deck")],
+    ...options.player1,
+  };
+  const player2 = {
+    ...emptyPlayer("player2"),
+    deck: [inst("TST-OP", "p2-deck")],
+    ...options.player2,
+  };
+
+  return {
+    turn: options.turn ?? 1,
+    activePlayer: options.activePlayer ?? "player1",
+    firstPlayer: "player1",
+    phase: options.phase ?? "charge",
+    players: { player1, player2 },
+    definitions: options.definitions ?? MERGED_DEFINITIONS,
+    log: [],
+    winner: null,
+  };
+}
+
+export { TEST_DEFINITIONS, MERGED_DEFINITIONS, inst, WIN_DAMAGE };
+
+/** Held WB command for rush tests (TST-UNIT-* are WB category). */
+export function heldWbCommand(suffix = "cmd"): CardInstance {
+  return { ...inst("TST-OP", suffix), commandHeld: true };
+}
+
+/** Held ET command for ET-category operation tests. */
+export function heldEtCommand(suffix = "cmd"): CardInstance {
+  return { ...inst("TST-OP-ET", suffix), commandHeld: true };
+}
+
+/** Held OT command for OT-category operation tests. */
+export function heldOtCommand(suffix = "cmd"): CardInstance {
+  return { ...inst("TST-OP-OT", suffix), commandHeld: true };
+}
+
+/** Held MA command for MA-category rush tests. */
+export function heldMaCommand(suffix = "cmd"): CardInstance {
+  return { ...inst("TST-OP-MA", suffix), commandHeld: true };
+}

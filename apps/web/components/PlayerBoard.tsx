@@ -1,0 +1,735 @@
+"use client";
+
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import type { CardDefinition } from "@rangers-strike/cards";
+import type { CardInstance, PlayerId } from "@rangers-strike/engine";
+import { COMMAND_ZONE_MAX, isUnit } from "@rangers-strike/engine";
+import { DND_MIME, parseDragPayload, type DragCardPayload, type DropTarget } from "@/lib/dnd";
+import { CardImage } from "./CardImage";
+
+type DropZoneProps = {
+  zoneId: DropTarget;
+  title: string;
+  count?: number;
+  accepts?: boolean;
+  highlighted?: boolean;
+  inactive?: boolean;
+  emptyLabel?: string;
+  className?: string;
+  onDrop?: (payload: DragCardPayload) => void;
+  children: ReactNode;
+  cardsRef?: React.RefObject<HTMLDivElement | null>;
+};
+
+export function DropZone({
+  zoneId,
+  title,
+  count,
+  accepts,
+  highlighted,
+  inactive,
+  emptyLabel = "—",
+  className,
+  onDrop,
+  children,
+  cardsRef,
+}: DropZoneProps) {
+  const handleDragOver = (event: React.DragEvent) => {
+    if (!accepts || !onDrop) return;
+    if (event.dataTransfer.types.includes(DND_MIME)) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+    }
+  };
+
+  const handleDrop = (event: React.DragEvent) => {
+    if (!accepts || !onDrop) return;
+    event.preventDefault();
+    const raw = event.dataTransfer.getData(DND_MIME);
+    const payload = parseDragPayload(raw);
+    if (payload) onDrop(payload);
+  };
+
+  return (
+    <section
+      className={[
+        "zone",
+        "drop-zone",
+        className ?? "",
+        inactive ? "drop-zone--inactive" : "",
+        accepts ? "drop-zone--accepts" : "",
+        highlighted ? "drop-zone--highlight" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      data-zone={zoneId}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      <header className="zone__title">
+        {title}
+        {count !== undefined && <span className="zone__count">{count}</span>}
+      </header>
+      <div className="zone__cards" ref={cardsRef}>
+        {children}
+        {count === 0 && emptyLabel && (
+          <span className="zone__empty">{emptyLabel}</span>
+        )}
+      </div>
+    </section>
+  );
+}
+
+type ZoneCardsProps = {
+  title: string;
+  zoneId: DropTarget;
+  cards: CardInstance[];
+  definitions: Record<string, CardDefinition>;
+  playerId: PlayerId;
+  fromZone: DragCardPayload["fromZone"];
+  accepts?: boolean;
+  highlighted?: boolean;
+  inactive?: boolean;
+  onDrop?: (payload: DragCardPayload) => void;
+  onPreview?: (card: CardDefinition) => void;
+  draggable?: boolean;
+  getDraggable?: (card: CardInstance, definition?: CardDefinition) => boolean;
+  getDisabled?: (card: CardInstance, definition?: CardDefinition) => boolean;
+  onCardDragStart?: (payload: DragCardPayload) => void;
+  onCardDragEnd?: () => void;
+  selectedId?: string | null;
+  selectableIds?: Set<string>;
+  strikeableIds?: Set<string>;
+  interceptableIds?: Set<string>;
+  counterIds?: Set<string>;
+  substituteIds?: Set<string>;
+  onSelectTarget?: (instanceId: string) => void;
+  onInterceptSelect?: (instanceId: string) => void;
+  onCounterSelect?: (instanceId: string) => void;
+  onSubstituteSelect?: (instanceId: string) => void;
+  onCardClick?: (card: CardInstance) => void;
+  onCardDrop?: (targetInstanceId: string, payload: DragCardPayload) => void;
+  emptyLabel?: string;
+  className?: string;
+  showCategory?: boolean;
+  getCommandHeld?: (card: CardInstance) => boolean | undefined;
+  onCommandToggle?: (card: CardInstance) => (() => void) | undefined;
+};
+
+function formatCategory(def?: CardDefinition): string | undefined {
+  if (!def) return undefined;
+  return Array.isArray(def.category) ? def.category.join("/") : def.category;
+}
+
+function ZoneCards({
+  title,
+  zoneId,
+  cards,
+  definitions,
+  playerId,
+  fromZone,
+  accepts,
+  highlighted,
+  inactive,
+  onDrop,
+  onPreview,
+  draggable,
+  getDraggable,
+  getDisabled,
+  onCardDragStart,
+  onCardDragEnd,
+  selectedId,
+  selectableIds,
+  strikeableIds,
+  interceptableIds,
+  counterIds,
+  substituteIds,
+  onSelectTarget,
+  onInterceptSelect,
+  onCounterSelect,
+  onSubstituteSelect,
+  onCardClick,
+  onCardDrop,
+  emptyLabel,
+  className,
+  showCategory,
+  getCommandHeld,
+  onCommandToggle,
+}: ZoneCardsProps) {
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const selectableKey = selectableIds ? [...selectableIds].sort().join(",") : "";
+
+  useEffect(() => {
+    if (!selectableKey || !cardsRef.current) return;
+    const target = cardsRef.current.querySelector<HTMLElement>(".card-wrap--target");
+    target?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, [selectableKey]);
+
+  return (
+    <DropZone
+      zoneId={zoneId}
+      title={title}
+      count={cards.length}
+      accepts={accepts}
+      highlighted={highlighted}
+      inactive={inactive}
+      onDrop={onDrop}
+      emptyLabel={emptyLabel}
+      className={className}
+      cardsRef={cardsRef}
+    >
+      {cards.map((card) => {
+        const definition = definitions[card.cardId];
+        const cardDraggable =
+          getDraggable?.(card, definition) ?? draggable ?? false;
+        const cardDisabled = getDisabled?.(card, definition) ?? false;
+        const toggle = onCommandToggle?.(card);
+        const preview =
+          onPreview &&
+          definition &&
+          !selectableIds?.has(card.instanceId) &&
+          !toggle
+            ? () => onPreview(definition)
+            : undefined;
+        const select =
+          selectableIds?.has(card.instanceId) &&
+          onSelectTarget &&
+          !substituteIds?.has(card.instanceId) &&
+          !interceptableIds?.has(card.instanceId) &&
+          !counterIds?.has(card.instanceId)
+            ? () => onSelectTarget(card.instanceId)
+            : !toggle && onCardClick
+              ? () => onCardClick(card)
+              : undefined;
+
+        return (
+        <div
+          key={card.instanceId}
+          className={[
+            "card-wrap",
+            selectableIds?.has(card.instanceId) ? "card-wrap--target" : "",
+            interceptableIds?.has(card.instanceId) ? "card-wrap--target" : "",
+            counterIds?.has(card.instanceId) ? "card-wrap--target" : "",
+            substituteIds?.has(card.instanceId) ? "card-wrap--target" : "",
+            strikeableIds?.has(card.instanceId) ? "card-wrap--strikeable" : "",
+            card.instanceId === selectedId ? "card-wrap--selected" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          onDragOver={(event) => {
+            if (!onCardDrop) return;
+            if (event.dataTransfer.types.includes(DND_MIME)) {
+              event.preventDefault();
+            }
+          }}
+          onDrop={(event) => {
+            if (!onCardDrop) return;
+            event.preventDefault();
+            event.stopPropagation();
+            const payload = parseDragPayload(event.dataTransfer.getData(DND_MIME));
+            if (payload) onCardDrop(card.instanceId, payload);
+          }}
+          onClick={() => {
+            if (substituteIds?.has(card.instanceId) && onSubstituteSelect) {
+              onSubstituteSelect(card.instanceId);
+              return;
+            }
+            if (interceptableIds?.has(card.instanceId) && onInterceptSelect) {
+              onInterceptSelect(card.instanceId);
+              return;
+            }
+            if (counterIds?.has(card.instanceId) && onCounterSelect) {
+              onCounterSelect(card.instanceId);
+              return;
+            }
+            if (selectableIds?.has(card.instanceId) && onSelectTarget) {
+              onSelectTarget(card.instanceId);
+            }
+          }}
+        >
+          <CardImage
+            card={definition}
+            instanceId={card.instanceId}
+            fromZone={fromZone}
+            playerId={playerId}
+            small
+            draggable={cardDraggable}
+            disabled={cardDisabled}
+            onDragStartExtra={
+              onCardDragStart && cardDraggable
+                ? () =>
+                    onCardDragStart({
+                      instanceId: card.instanceId,
+                      cardId: card.cardId,
+                      fromZone,
+                      playerId,
+                    })
+                : undefined
+            }
+            onDragEnd={onCardDragEnd}
+            selected={card.instanceId === selectedId}
+            onPreview={preview}
+            onSelect={select}
+            commandHeld={getCommandHeld?.(card)}
+            onCommandToggle={toggle}
+            categoryLabel={showCategory ? formatCategory(definition) : undefined}
+            faceDown={fromZone === "power" ? card.faceDown : undefined}
+          />
+        </div>
+        );
+      })}
+    </DropZone>
+  );
+}
+
+export type PlayerBoardProps = {
+  label: string;
+  playerId: PlayerId;
+  player: import("@rangers-strike/engine").PlayerState;
+  definitions: Record<string, CardDefinition>;
+  isOpponent?: boolean;
+  isActive?: boolean;
+  isHuman?: boolean;
+  isHumanTurn?: boolean;
+  phase?: import("@rangers-strike/engine").Phase;
+  onPreview?: (card: CardDefinition) => void;
+  onZoneDrop?: (target: DropTarget, payload: DragCardPayload) => void;
+  onBattleCardDrop?: (defenderId: string, payload: DragCardPayload) => void;
+  pendingOperationTargets?: Set<string>;
+  onOperationTarget?: (instanceId: string) => void;
+  pendingZordTargets?: Set<string>;
+  onZordMaterial?: (instanceId: string) => void;
+  canAcceptStrike?: boolean;
+  strikeHighlight?: boolean;
+  onStrikeDrop?: (payload: DragCardPayload) => void;
+  onBattleDragStart?: (payload: DragCardPayload) => void;
+  onBattleDragEnd?: () => void;
+  strikeableIds?: Set<string>;
+  interceptableIds?: Set<string>;
+  counterIds?: Set<string>;
+  onInterceptSelect?: (instanceId: string) => void;
+  onCounterSelect?: (instanceId: string) => void;
+  substituteIds?: Set<string>;
+  onSubstituteSelect?: (instanceId: string) => void;
+  entryAttackerIds?: Set<string>;
+  attackTargetIds?: Set<string>;
+  onAttackTargetSelect?: (defenderInstanceId: string) => void;
+  pendingEffectChoiceTargets?: Set<string>;
+  onEffectChoiceSelect?: (instanceId: string) => void;
+  onViewPile?: (pile: "deck" | "discard") => void;
+  onCommandToggle?: (card: CardInstance) => void;
+  onAttemptMoveToBattle?: (card: CardInstance) => void;
+};
+
+export function PlayerBoard({
+  label,
+  playerId,
+  player,
+  definitions,
+  isOpponent,
+  isActive,
+  isHuman,
+  isHumanTurn,
+  phase,
+  onPreview,
+  onZoneDrop,
+  onBattleCardDrop,
+  pendingOperationTargets,
+  onOperationTarget,
+  pendingZordTargets,
+  onZordMaterial,
+  canAcceptStrike,
+  strikeHighlight,
+  onStrikeDrop,
+  onBattleDragStart,
+  onBattleDragEnd,
+  strikeableIds,
+  interceptableIds,
+  counterIds,
+  onInterceptSelect,
+  onCounterSelect,
+  substituteIds,
+  onSubstituteSelect,
+  entryAttackerIds,
+  attackTargetIds,
+  onAttackTargetSelect,
+  pendingEffectChoiceTargets,
+  onEffectChoiceSelect,
+  onViewPile,
+  onCommandToggle,
+  onAttemptMoveToBattle,
+}: PlayerBoardProps) {
+  const interactive = isHuman && isHumanTurn;
+  const [dragging, setDragging] = useState<DragCardPayload | null>(null);
+
+  useEffect(() => {
+    setDragging(null);
+  }, [phase, interactive]);
+
+  const draggingDefinition = dragging ? definitions[dragging.cardId] : undefined;
+  const draggingOperation = draggingDefinition?.type === "operation";
+  const draggingUnit = isUnit(draggingDefinition);
+
+  const canDropPower =
+    interactive && phase === "charge" && !!onZoneDrop && !player.hasChargedThisTurn;
+  const canDropCommand =
+    interactive &&
+    phase === "charge" &&
+    !!onZoneDrop &&
+    player.command.length < COMMAND_ZONE_MAX &&
+    !player.hasChargedThisTurn;
+  const canToggleCommand =
+    interactive &&
+    !!onCommandToggle &&
+    (phase === "rush" || phase === "battle");
+  const canDropOperation =
+    interactive && !!onZoneDrop && phase === "rush";
+  const canDropRush =
+    interactive && phase === "rush" && !!onZoneDrop;
+  const canDropBattle =
+    interactive && phase === "battle" && !!onZoneDrop;
+
+  const highlightPower =
+    canDropPower &&
+    (!dragging || (dragging.fromZone === "hand" && phase === "charge"));
+  const highlightCommand =
+    canDropCommand &&
+    (!dragging || (dragging.fromZone === "hand" && phase === "charge"));
+  const highlightOperation =
+    canDropOperation && (!dragging || (draggingOperation && dragging.fromZone === "hand"));
+  const highlightRush =
+    canDropRush && (!dragging || (draggingUnit && dragging.fromZone === "hand"));
+  const highlightBattle =
+    canDropBattle && (!dragging || dragging.fromZone === "rush");
+
+  const operationZoneInactive = isHuman && phase !== "rush";
+
+  const canDragFromHand = (card: CardInstance, definition?: CardDefinition): boolean => {
+    if (!interactive || !definition) return false;
+    if (phase === "charge") {
+      return !player.hasChargedThisTurn;
+    }
+    if (phase === "rush") {
+      return definition.type === "operation" || isUnit(definition);
+    }
+    return false;
+  };
+
+  const isHandCardDisabled = (definition?: CardDefinition): boolean => {
+    if (!interactive || !definition) return false;
+    if (phase === "charge") {
+      return player.hasChargedThisTurn ?? false;
+    }
+    if (phase === "rush") {
+      return definition.type !== "operation" && !isUnit(definition);
+    }
+    return true;
+  };
+
+  const selectableIds = (() => {
+    const ids = new Set<string>();
+    pendingOperationTargets?.forEach((id) => ids.add(id));
+    pendingZordTargets?.forEach((id) => ids.add(id));
+    pendingEffectChoiceTargets?.forEach((id) => ids.add(id));
+    attackTargetIds?.forEach((id) => ids.add(id));
+    return ids.size > 0 ? ids : undefined;
+  })();
+
+  const handleSelectTarget = (instanceId: string) => {
+    if (attackTargetIds?.has(instanceId)) {
+      onAttackTargetSelect?.(instanceId);
+      return;
+    }
+    if (pendingEffectChoiceTargets?.has(instanceId)) {
+      onEffectChoiceSelect?.(instanceId);
+      return;
+    }
+    if (pendingZordTargets?.has(instanceId)) {
+      onZordMaterial?.(instanceId);
+      return;
+    }
+    if (pendingOperationTargets?.has(instanceId)) {
+      onOperationTarget?.(instanceId);
+    }
+  };
+
+  const powerZone = (
+    <ZoneCards
+      title="パワーゾーン"
+      zoneId="power"
+      className="playsheet__power"
+      cards={player.power}
+      definitions={definitions}
+      playerId={playerId}
+      fromZone="power"
+      accepts={canDropPower}
+      highlighted={highlightPower}
+      onDrop={(payload) => onZoneDrop?.("power", payload)}
+      onPreview={onPreview}
+      selectableIds={selectableIds}
+      onSelectTarget={handleSelectTarget}
+      emptyLabel="—"
+    />
+  );
+
+  const battleZone = (
+    <ZoneCards
+      title="バトルエリア"
+      zoneId="battle"
+      className="playsheet__battle"
+      cards={player.battle}
+      definitions={definitions}
+      playerId={playerId}
+      fromZone="battle"
+      accepts={canDropBattle && !isOpponent}
+      highlighted={highlightBattle && !isOpponent}
+      onDrop={(payload) => onZoneDrop?.("battle", payload)}
+      onPreview={onPreview}
+      selectableIds={selectableIds}
+      substituteIds={substituteIds}
+      strikeableIds={!isOpponent ? strikeableIds : undefined}
+      onSelectTarget={handleSelectTarget}
+      onSubstituteSelect={onSubstituteSelect}
+      getDraggable={(card) =>
+        !!(
+          interactive &&
+          phase === "battle" &&
+          !isOpponent &&
+          (!entryAttackerIds || entryAttackerIds.has(card.instanceId))
+        )
+      }
+      onCardDragStart={
+        !isOpponent && onBattleDragStart
+          ? (payload) => onBattleDragStart(payload)
+          : undefined
+      }
+      onCardDragEnd={!isOpponent ? onBattleDragEnd : undefined}
+      onCardDrop={isOpponent && interactive ? onBattleCardDrop : undefined}
+      emptyLabel="—"
+    />
+  );
+
+  const rushZone = (
+    <ZoneCards
+      title="ラッシュエリア"
+      zoneId="rush"
+      className="playsheet__rush"
+      cards={player.rush}
+      definitions={definitions}
+      playerId={playerId}
+      fromZone="rush"
+      accepts={canDropRush}
+      highlighted={highlightRush}
+      onDrop={(payload) => onZoneDrop?.("rush", payload)}
+      onPreview={onPreview}
+      selectableIds={selectableIds}
+      substituteIds={substituteIds}
+      interceptableIds={isHuman ? interceptableIds : undefined}
+      onSelectTarget={handleSelectTarget}
+      onInterceptSelect={onInterceptSelect}
+      onSubstituteSelect={onSubstituteSelect}
+      onCardClick={
+        interactive && phase === "battle" && onAttemptMoveToBattle
+          ? onAttemptMoveToBattle
+          : undefined
+      }
+      draggable={interactive && phase === "battle"}
+      emptyLabel="—"
+    />
+  );
+
+  const commandZone = (
+    <ZoneCards
+      title={`コマンドゾーン (${player.command.length}/${COMMAND_ZONE_MAX})`}
+      zoneId="command"
+      className="playsheet__command"
+      cards={player.command}
+      definitions={definitions}
+      playerId={playerId}
+      fromZone="command"
+      accepts={canDropCommand}
+      highlighted={highlightCommand}
+      onDrop={(payload) => onZoneDrop?.("command", payload)}
+      onPreview={onPreview}
+      selectableIds={selectableIds}
+      onSelectTarget={handleSelectTarget}
+      getCommandHeld={(card) => card.commandHeld}
+      onCommandToggle={
+        canToggleCommand && onCommandToggle
+          ? (card) => () => onCommandToggle(card)
+          : undefined
+      }
+      emptyLabel="—"
+    />
+  );
+
+  const sidebar = (
+    <div className="playsheet__sidebar">
+      <div className="playsheet__piles">
+        <button
+          type="button"
+          className="pile pile--deck pile--clickable"
+          onClick={() => onViewPile?.("deck")}
+          disabled={!onViewPile || player.deck.length === 0}
+        >
+          <span className="pile__label">山札</span>
+          <span className="pile__count">{player.deck.length}</span>
+        </button>
+        <button
+          type="button"
+          className="pile pile--discard pile--clickable"
+          onClick={() => onViewPile?.("discard")}
+          disabled={!onViewPile || player.discard.length === 0}
+        >
+          <span className="pile__label">捨札</span>
+          <span className="pile__count">{player.discard.length}</span>
+        </button>
+      </div>
+
+      <ZoneCards
+        title="常駐"
+        zoneId="operation"
+        className="playsheet__operation"
+        cards={player.operation}
+        definitions={definitions}
+        playerId={playerId}
+        fromZone="operation"
+        accepts={canDropOperation}
+        highlighted={highlightOperation}
+        inactive={operationZoneInactive}
+        onDrop={(payload) => onZoneDrop?.("operation", payload)}
+        onPreview={onPreview}
+        emptyLabel={phase === "rush" ? "使用可" : "—"}
+      />
+    </div>
+  );
+
+  const baseZone = (
+    <div className="playsheet__base">
+      {isOpponent ? (
+        <>
+          {sidebar}
+          {commandZone}
+        </>
+      ) : (
+        <>
+          {commandZone}
+          {sidebar}
+        </>
+      )}
+    </div>
+  );
+
+  const mainZones = isOpponent ? (
+    <>
+      {baseZone}
+      {rushZone}
+      {battleZone}
+    </>
+  ) : (
+    <>
+      {battleZone}
+      {rushZone}
+      {baseZone}
+    </>
+  );
+
+  const handleStrikeDragOver = (event: React.DragEvent) => {
+    if (!canAcceptStrike || !onStrikeDrop) return;
+    if (event.dataTransfer.types.includes(DND_MIME)) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+    }
+  };
+
+  const handleStrikeDrop = (event: React.DragEvent) => {
+    if (!canAcceptStrike || !onStrikeDrop) return;
+    event.preventDefault();
+    const payload = parseDragPayload(event.dataTransfer.getData(DND_MIME));
+    if (payload) onStrikeDrop(payload);
+  };
+
+  return (
+    <div
+      className={`board ${isOpponent ? "board--opponent" : "board--self"} ${isActive ? "board--active" : ""}`}
+    >
+      <div
+        className={[
+          "board__header",
+          isOpponent && canAcceptStrike ? "board__header--strike-target" : "",
+          isOpponent && strikeHighlight ? "board__header--strike-highlight" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        onDragOver={isOpponent ? handleStrikeDragOver : undefined}
+        onDrop={isOpponent ? handleStrikeDrop : undefined}
+      >
+        <h2>{label}</h2>
+        <div className="damage">
+          {Array.from({ length: 7 }).map((_, index) => (
+            <span
+              key={index}
+              className={`damage__pip ${index < player.damage ? "damage__pip--filled" : ""}`}
+            />
+          ))}
+          <span className="damage__label">{player.damage}/7</span>
+        </div>
+      </div>
+
+      <div className={`playsheet ${isOpponent ? "playsheet--opponent" : "playsheet--self"}`}>
+        {isOpponent ? (
+          <>
+            {powerZone}
+            <div className="playsheet__main">{mainZones}</div>
+          </>
+        ) : (
+          <>
+            <div className="playsheet__main">{mainZones}</div>
+            {powerZone}
+          </>
+        )}
+      </div>
+
+      {isHuman && (
+        <>
+          <ZoneCards
+            title="手札"
+            zoneId="power"
+            className="playsheet__hand"
+            cards={player.hand}
+            definitions={definitions}
+            playerId={playerId}
+            fromZone="hand"
+            onPreview={onPreview}
+            getDraggable={canDragFromHand}
+            getDisabled={(_, definition) => isHandCardDisabled(definition)}
+            onCardDragStart={setDragging}
+            onCardDragEnd={() => setDragging(null)}
+            selectableIds={selectableIds}
+            counterIds={counterIds}
+            onSelectTarget={handleSelectTarget}
+            onCounterSelect={onCounterSelect}
+            emptyLabel="なし"
+          />
+          {(pendingOperationTargets?.size ||
+            pendingZordTargets?.size ||
+            substituteIds?.size ||
+            pendingEffectChoiceTargets?.size ||
+            attackTargetIds?.size) ? (
+            <p className="target-hint">
+              {substituteIds?.size
+                ? "身代わりにするユニットをタップ"
+                : attackTargetIds?.size
+                  ? "アタック対象をタップ"
+                  : pendingEffectChoiceTargets?.size
+                  ? "効果の対象をタップ"
+                  : pendingZordTargets?.size
+                  ? "ゾードアップ素材をタップ"
+                  : "対象カードをタップしてオペレーションを完了"}
+            </p>
+          ) : null}
+        </>
+      )}
+    </div>
+  );
+}
