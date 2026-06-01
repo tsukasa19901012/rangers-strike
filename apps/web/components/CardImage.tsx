@@ -20,7 +20,7 @@ type CardImageProps = {
   onSelect?: () => void;
   commandHeld?: boolean;
   onCommandToggle?: () => void;
-  categoryLabel?: string;
+  hideMeta?: boolean;
   faceDown?: boolean;
 };
 
@@ -39,7 +39,7 @@ export function CardImage({
   onSelect,
   commandHeld,
   onCommandToggle,
-  categoryLabel,
+  hideMeta,
   faceDown,
 }: CardImageProps) {
   if (!card) return null;
@@ -121,7 +121,7 @@ export function CardImage({
       ) : (
         <div className="card__placeholder">{faceDown ? "裏" : card.id}</div>
       )}
-      {!faceDown && (
+      {!faceDown && !hideMeta && (
       <div className="card__meta">
         <span className="card__name">{card.name}</span>
         {card.bp !== undefined && <span>BP {card.bp}</span>}
@@ -129,9 +129,6 @@ export function CardImage({
           <span className={`card__type ${disabled ? "card__type--muted" : ""}`}>
             OP {card.powerCost}
           </span>
-        )}
-        {categoryLabel && (
-          <span className="card__category">{categoryLabel}</span>
         )}
         {commandHeld !== undefined && (
           <span className={`card__command ${commandHeld ? "card__command--held" : ""}`}>

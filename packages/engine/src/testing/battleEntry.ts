@@ -1,5 +1,6 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import { legend1Catalog, legend2Catalog } from "@rangers-strike/cards";
+import type { NumberComboEffectId } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
 import { TEST_DEFINITIONS } from "./fixtures";
@@ -32,9 +33,6 @@ export function moveToBattle(
   }
   return result.state;
 }
-
-import type { NumberComboEffectId } from "@rangers-strike/cards";
-import type { GameState } from "../types/game";
 
 /** Log detail suffix for each NC effect (see numberComboEffects ncLog). */
 const NC_LOG_DETAIL: Partial<Record<NumberComboEffectId, string>> = {

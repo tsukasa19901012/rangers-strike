@@ -81,3 +81,12 @@ export function expandDeck(
 export function deckCardCount(deck: DeckDefinition): number {
   return deck.entries.reduce((sum, e) => sum + e.count, 0);
 }
+
+export function cardCategories(definition: CardDefinition | undefined): Category[] {
+  if (!definition) return [];
+  return Array.isArray(definition.category) ? definition.category : [definition.category];
+}
+
+export function cardHasCategory(card: CardDefinition, category: Category): boolean {
+  return cardCategories(card).includes(category);
+}

@@ -111,15 +111,10 @@ type ZoneCardsProps = {
   onCardDrop?: (targetInstanceId: string, payload: DragCardPayload) => void;
   emptyLabel?: string;
   className?: string;
-  showCategory?: boolean;
+  imageOnly?: boolean;
   getCommandHeld?: (card: CardInstance) => boolean | undefined;
   onCommandToggle?: (card: CardInstance) => (() => void) | undefined;
 };
-
-function formatCategory(def?: CardDefinition): string | undefined {
-  if (!def) return undefined;
-  return Array.isArray(def.category) ? def.category.join("/") : def.category;
-}
 
 function ZoneCards({
   title,
@@ -152,7 +147,7 @@ function ZoneCards({
   onCardDrop,
   emptyLabel,
   className,
-  showCategory,
+  imageOnly,
   getCommandHeld,
   onCommandToggle,
 }: ZoneCardsProps) {
@@ -272,7 +267,7 @@ function ZoneCards({
             onSelect={select}
             commandHeld={getCommandHeld?.(card)}
             onCommandToggle={toggle}
-            categoryLabel={showCategory ? formatCategory(definition) : undefined}
+            hideMeta={imageOnly}
             faceDown={fromZone === "power" ? card.faceDown : undefined}
           />
         </div>
@@ -477,6 +472,7 @@ export function PlayerBoard({
       title="バトルエリア"
       zoneId="battle"
       className="playsheet__battle"
+      imageOnly
       cards={player.battle}
       definitions={definitions}
       playerId={playerId}
@@ -514,6 +510,7 @@ export function PlayerBoard({
       title="ラッシュエリア"
       zoneId="rush"
       className="playsheet__rush"
+      imageOnly
       cards={player.rush}
       definitions={definitions}
       playerId={playerId}
@@ -543,6 +540,7 @@ export function PlayerBoard({
       title={`コマンドゾーン (${player.command.length}/${COMMAND_ZONE_MAX})`}
       zoneId="command"
       className="playsheet__command"
+      imageOnly
       cards={player.command}
       definitions={definitions}
       playerId={playerId}

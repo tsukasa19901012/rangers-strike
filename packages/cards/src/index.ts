@@ -54,10 +54,6 @@ export const starterDecks = {
 
 export type StarterDeckId = keyof typeof starterDecks;
 
-export const abarenohDeckDefinition = starterDecks.abarenoh;
-export const dekarangerDeckDefinition = starterDecks.dekaranger;
-export const magikingDeckDefinition = starterDecks.magiking;
-
 export function getCardImageUrl(idOrCard: string | CardDefinition): string | undefined {
   const card =
     typeof idOrCard === "string" ? getCardById(idOrCard) : idOrCard;

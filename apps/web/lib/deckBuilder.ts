@@ -5,7 +5,6 @@ import {
   getStarterDeck,
   hidoraDeckUnlimited,
   type CardDefinition,
-  type Category,
   type DeckDefinition,
   type DeckEntry,
   type StarterDeckId,
@@ -26,11 +25,6 @@ export type DeckValidation = {
   total: number;
   errors: string[];
 };
-
-export function cardHasCategory(card: CardDefinition, category: Category): boolean {
-  const categories = Array.isArray(card.category) ? card.category : [card.category];
-  return categories.includes(category);
-}
 
 export function maxCopiesForCard(card: CardDefinition): number {
   if (hidoraDeckUnlimited(card.id)) {

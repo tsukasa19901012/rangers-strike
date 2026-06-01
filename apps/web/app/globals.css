@@ -292,10 +292,6 @@ select {
   justify-content: center;
 }
 
-.playsheet__command .card__meta {
-  display: none;
-}
-
 .playsheet__operation {
   background: linear-gradient(180deg, rgba(120, 53, 15, 0.35), rgba(15, 23, 42, 0.9));
 }
@@ -337,11 +333,6 @@ select {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-}
-
-.playsheet__battle .card__meta,
-.playsheet__rush .card__meta {
-  display: none;
 }
 
 .playsheet__command .zone__empty,
@@ -518,11 +509,6 @@ select {
 
 .card--command-toggle {
   cursor: pointer;
-}
-
-.card__category {
-  font-size: 0.58rem;
-  color: #a78bfa;
 }
 
 .card__command {

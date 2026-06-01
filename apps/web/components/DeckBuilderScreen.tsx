@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   allCardsCatalog,
+  cardHasCategory,
   getCardById,
   getCatalogByExpansion,
   type CardDefinition,
@@ -12,7 +13,6 @@ import {
 } from "@rangers-strike/cards";
 import { CATEGORY_OPTIONS, STARTER_OPTIONS } from "@/lib/labels";
 import {
-  cardHasCategory,
   countEntries,
   createDeckId,
   MIN_DECK_SIZE,

@@ -11,20 +11,13 @@ import { findInZone, removeAt } from "../core/helpers";
 
 export type ZordMaterialZone = "hand" | "rush" | "battle";
 
-export function zordConditionFor(
-  definitions: Record<string, CardDefinition>,
-  cardId: string,
-): ReturnType<typeof getZordCondition> {
-  return getZordCondition(cardId);
-}
-
 export function needsZordMaterial(
   definitions: Record<string, CardDefinition>,
   cardId: string,
 ): boolean {
   const def = getDefinition(definitions, cardId);
   if (!def || !isZordUpCost(def.powerCost)) return false;
-  return zordConditionFor(definitions, cardId) !== undefined;
+  return getZordCondition(cardId) !== undefined;
 }
 
 /** Zords with a 合体― line require every listed partner on field. */
@@ -136,7 +129,7 @@ export function collectZordMaterials(
   rushingCardId: string,
   rushingInstanceId: string,
 ): CardInstance[] {
-  const condition = zordConditionFor(definitions, rushingCardId);
+  const condition = getZordCondition(rushingCardId);
   if (!condition) return [];
 
   const candidates: CardInstance[] = [];
@@ -166,7 +159,7 @@ export function findZordMaterial(
   rushingInstanceId: string,
   materialInstanceId: string,
 ): { zone: ZordMaterialZone; index: number; card: CardInstance } | null {
-  const condition = zordConditionFor(definitions, rushingCardId);
+  const condition = getZordCondition(rushingCardId);
   if (!condition) return null;
 
   for (const zone of ["hand", "rush", "battle"] as const) {
@@ -203,7 +196,7 @@ export function applyZordMaterial(
   );
   if (!material) return null;
 
-  const condition = zordConditionFor(definitions, rushingCardId);
+  const condition = getZordCondition(rushingCardId);
   if (!condition) return null;
 
   const [, zoneCards] = removeAt(player[material.zone], material.index);

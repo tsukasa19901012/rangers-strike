@@ -1,4 +1,5 @@
-import type { CardDefinition, Category } from "@rangers-strike/cards";
+import type { CardDefinition } from "@rangers-strike/cards";
+import { cardCategories, type Category } from "@rangers-strike/cards";
 import { getCardEffect } from "@rangers-strike/cards";
 import type { SpValue } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
@@ -178,12 +179,7 @@ export function effectiveBp(
   );
 }
 
-export function cardCategories(definition: CardDefinition | undefined): Category[] {
-  if (!definition) return [];
-  return Array.isArray(definition.category)
-    ? definition.category
-    : [definition.category];
-}
+export { cardCategories };
 
 export function hasHeldCommandForCategories(
   player: PlayerState,

@@ -15,6 +15,13 @@ const UNIT_EFFECTS = {
   ...(legend2UnitEffectsJson as Record<string, UnitEffectBlock>),
 };
 
+/** Match card text in unnamed ※ / rules lines. */
+export function hasUnitEffectNote(cardId: string, fragment: string): boolean {
+  const block = UNIT_EFFECTS[cardId];
+  if (!block) return false;
+  return block.unnamedText.some((u) => u.text.includes(fragment));
+}
+
 export function getUnitEffectBlock(cardId: string): UnitEffectBlock | undefined {
   return UNIT_EFFECTS[cardId];
 }
@@ -163,9 +170,7 @@ export const BATTLE_ENTRY_HOLD_NOTE =
   "自軍コマンドを1つホールドしなければバトルエリアに出られない";
 
 export function hasBattleEntryHoldNote(cardId: string): boolean {
-  const block = UNIT_EFFECTS[cardId];
-  if (!block) return false;
-  return block.unnamedText.some((u) => u.text.includes(BATTLE_ENTRY_HOLD_NOTE));
+  return hasUnitEffectNote(cardId, BATTLE_ENTRY_HOLD_NOTE);
 }
 
 /** Units with ※ battle-entry hold note (Legend 1 zord fusion partners, etc.). */
@@ -176,19 +181,14 @@ export function listBattleEntryHoldCardIds(): string[] {
 }
 
 export function hasAutoBattleEntryNote(cardId: string): boolean {
-  const block = UNIT_EFFECTS[cardId];
-  if (!block) return false;
-  return block.unnamedText.some(
-    (u) =>
-      u.text.includes("毎ターン、可能ならバトルエリアに出る") ||
-      u.text.includes("ラッシュするとき可能ならバトルエリアに置く"),
+  return (
+    hasUnitEffectNote(cardId, "毎ターン、可能ならバトルエリアに出る") ||
+    hasUnitEffectNote(cardId, "ラッシュするとき可能ならバトルエリアに置く")
   );
 }
 
 export function hasDestroySelfDamageNote(cardId: string): boolean {
-  const block = UNIT_EFFECTS[cardId];
-  if (!block) return false;
-  return block.unnamedText.some((u) => u.text.includes("撃破されたとき、1点ダメージ"));
+  return hasUnitEffectNote(cardId, "撃破されたとき、1点ダメージ");
 }
 
 export function findNamedEffectByEffectId(
