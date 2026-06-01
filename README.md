@@ -116,9 +116,12 @@ GitHub リポジトリと Vercel を接続済みの場合、**プロジェクト
 | 設定 | 値 |
 |------|-----|
 | Root Directory | `apps/web` |
-| Framework | Next.js |
+| Framework Preset | **Next.js**（`Other` や `public` 出力にしない） |
+| Output Directory | **空欄**（上書きしない） |
 | Node.js Version | 20.x（`.nvmrc` 参照） |
 | Include source files outside Root Directory | **有効**（モノレポ用） |
+
+> `No Output Directory named "public"` が出る場合、Framework が Next.js になっていないか、Output Directory が `public` に固定されています。上記を確認して **Redeploy** してください。
 
 `apps/web/vercel.json` で install / build コマンドを定義しています。  
 `main` への push で自動デプロイされます。
