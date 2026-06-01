@@ -13,6 +13,9 @@
     "apps/*"
   ],
   "packageManager": "npm@10.8.2",
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
     "turbo": "^2.5.4",
     "typescript": "^5.8.3"

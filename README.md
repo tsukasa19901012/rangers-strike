@@ -109,6 +109,25 @@ node scripts/verify-wiki-effects.mjs
 - `npm test`
 - `npm run build`
 
+## Vercel デプロイ
+
+GitHub リポジトリと Vercel を接続済みの場合、**プロジェクト設定** を次のようにしてください。
+
+| 設定 | 値 |
+|------|-----|
+| Root Directory | `apps/web` |
+| Framework | Next.js |
+| Node.js Version | 20.x（`.nvmrc` 参照） |
+| Include source files outside Root Directory | **有効**（モノレポ用） |
+
+`apps/web/vercel.json` で install / build コマンドを定義しています。  
+`main` への push で自動デプロイされます。
+
+```bash
+# 手動デプロイ（Vercel CLI 利用時）
+npx vercel --cwd apps/web
+```
+
 ## 免責事項
 
 本プロジェクトは **非公式のファン制作** です。  
