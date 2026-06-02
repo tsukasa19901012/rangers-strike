@@ -339,7 +339,6 @@ export type PlayerBoardProps = {
   onEffectChoiceSelect?: (instanceId: string) => void;
   onViewPile?: (pile: "deck" | "discard") => void;
   onCommandToggle?: (card: CardInstance) => void;
-  onAttemptMoveToBattle?: (card: CardInstance) => void;
   battleEntryInstanceIds?: Set<string>;
   boardRef?: RefObject<HTMLDivElement | null>;
 };
@@ -380,7 +379,6 @@ export function PlayerBoard({
   onEffectChoiceSelect,
   onViewPile,
   onCommandToggle,
-  onAttemptMoveToBattle,
   battleEntryInstanceIds,
   boardRef,
 }: PlayerBoardProps) {
@@ -559,11 +557,6 @@ export function PlayerBoard({
       onSelectTarget={handleSelectTarget}
       onInterceptSelect={onInterceptSelect}
       onSubstituteSelect={onSubstituteSelect}
-      onCardClick={
-        interactive && phase === "battle" && onAttemptMoveToBattle
-          ? onAttemptMoveToBattle
-          : undefined
-      }
       getDraggable={(card) =>
         !!(
           interactive &&

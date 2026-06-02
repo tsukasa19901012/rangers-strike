@@ -379,18 +379,6 @@ export function GameApp() {
     [apply, humanCanAct, legalActions, state],
   );
 
-  const handleAttemptMoveToBattle = useCallback(
-    (card: CardInstance) => {
-      attemptMoveToBattle({
-        instanceId: card.instanceId,
-        cardId: card.cardId,
-        fromZone: "rush",
-        playerId: HUMAN_PLAYER,
-      });
-    },
-    [attemptMoveToBattle],
-  );
-
   const handleZoneDrop = useCallback(
     (target: DropTarget, payload: DragCardPayload) => {
       if (!state || !humanCanAct || payload.playerId !== HUMAN_PLAYER) return;
@@ -1128,7 +1116,6 @@ export function GameApp() {
             onOperationTarget={handleOperationTarget}
             onZordMaterial={handleZordMaterial}
             onCommandToggle={handleCommandToggle}
-            onAttemptMoveToBattle={handleAttemptMoveToBattle}
             battleEntryInstanceIds={battleEntryInstanceIds}
             onBattleDragStart={setBattleDrag}
             onBattleDragEnd={() => setBattleDrag(null)}
