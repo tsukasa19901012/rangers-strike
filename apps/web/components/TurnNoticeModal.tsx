@@ -9,28 +9,23 @@ type TurnNoticeModalProps = {
   onDismiss: () => void;
 };
 
+const AUTO_DISMISS_MS = 1000;
+
 export function TurnNoticeModal({ playerId, onDismiss }: TurnNoticeModalProps) {
   useEffect(() => {
-    const timer = window.setTimeout(onDismiss, 1200);
+    const timer = window.setTimeout(onDismiss, AUTO_DISMISS_MS);
     return () => window.clearTimeout(timer);
   }, [onDismiss]);
 
   const label = PLAYER_LABELS[playerId];
 
   return (
-    <div className="modal-backdrop turn-notice-backdrop" onClick={onDismiss} role="presentation">
-      <div
-        className="turn-notice"
-        onClick={(event) => event.stopPropagation()}
-        role="status"
-        aria-live="polite"
-      >
+    <div className="modal-backdrop turn-notice-backdrop" role="presentation">
+      <div className="turn-notice" role="status" aria-live="polite">
         <p className="turn-notice__title">{label}のターン</p>
-        {playerId === "player1" ? (
-          <p className="turn-notice__hint">タップして続行</p>
-        ) : (
+        {playerId === "player2" ? (
           <p className="turn-notice__hint">CPUが操作します</p>
-        )}
+        ) : null}
       </div>
     </div>
   );

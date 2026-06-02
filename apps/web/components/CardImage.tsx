@@ -77,21 +77,20 @@ export function CardImage({
       }
     : null;
 
+  const scrollPreference =
+    fromZone === "hand" || fromZone === "rush" || fromZone === "battle"
+      ? "horizontal"
+      : "none";
+
   const handlePointerDown =
     dragPayload &&
-    ((event: React.PointerEvent<HTMLElement>) => {
-      const scrollPreference = fromZone === "hand" ? "horizontal" : "none";
-      if (event.pointerType === "touch" && scrollPreference !== "horizontal") {
-        event.preventDefault();
-      }
-      bindDragSource({
-        enabled: true,
-        payload: dragPayload,
-        imageSrc: imageSrc ?? undefined,
-        scrollPreference,
-        onStart: onDragStartExtra,
-        onEnd: onDragEnd,
-      })(event);
+    bindDragSource({
+      enabled: true,
+      payload: dragPayload,
+      imageSrc: imageSrc ?? undefined,
+      scrollPreference,
+      onStart: onDragStartExtra,
+      onEnd: onDragEnd,
     });
 
   const handleClick = () => {

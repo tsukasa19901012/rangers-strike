@@ -473,13 +473,10 @@ select {
   flex-shrink: 0;
 }
 
-.playsheet__hand .card--draggable {
-  touch-action: pan-x;
-}
-
+.playsheet__hand .card--draggable,
 .playsheet__battle .zone__cards .card--draggable,
 .playsheet__rush .zone__cards .card--draggable {
-  touch-action: pan-x;
+  touch-action: pan-x pan-y;
 }
 
 .pile-modal__card--target {
@@ -509,7 +506,7 @@ select {
 
 .card--draggable {
   cursor: grab;
-  touch-action: none;
+  touch-action: pan-x pan-y;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -520,6 +517,7 @@ select {
 
 .is-dragging-card {
   touch-action: none;
+  overflow: hidden;
 }
 
 .is-dragging-card .card--draggable {
@@ -883,6 +881,7 @@ select {
 
 .turn-notice-backdrop {
   z-index: 110;
+  pointer-events: none;
 }
 
 .turn-notice {

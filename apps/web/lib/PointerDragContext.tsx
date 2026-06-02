@@ -99,12 +99,13 @@ function shouldStartDrag(dx: number, dy: number, scrollPreference: ScrollPrefere
   const distance = Math.hypot(dx, dy);
   if (distance < DRAG_THRESHOLD_PX) return false;
   if (shouldCancelForScroll(dx, dy, scrollPreference)) return false;
+  if (shouldCancelForPageScroll(dx, dy, scrollPreference)) return false;
 
   if (scrollPreference === "horizontal") {
-    return absDy >= 12 && absDy > absDx * 1.1;
+    return absDy >= 14 && absDy > absDx * 1.35;
   }
 
-  return absDy >= DRAG_THRESHOLD_PX || distance >= DRAG_THRESHOLD_PX * 1.25;
+  return absDy >= 10 && absDy > absDx * 1.15;
 }
 
 function shouldCancelForScroll(
@@ -122,6 +123,27 @@ function shouldCancelForScroll(
   }
 
   return absDx >= SCROLL_CANCEL_PX && absDx > absDy * 1.35;
+}
+
+/** ページの縦スクロール — ドラッグ意図が弱い縦方向の操作 */
+function shouldCancelForPageScroll(
+  dx: number,
+  dy: number,
+  scrollPreference: ScrollPreference,
+): boolean {
+  const absDx = Math.abs(dx);
+  const absDy = Math.abs(dy);
+  const distance = Math.hypot(dx, dy);
+  if (distance < DRAG_THRESHOLD_PX) return false;
+
+  const dragWorthy =
+    scrollPreference === "horizontal"
+      ? absDy >= 14 && absDy > absDx * 1.35
+      : absDy >= 10 && absDy > absDx * 1.15;
+
+  if (dragWorthy) return false;
+
+  return absDy > absDx * 0.75;
 }
 
 export function PointerDragProvider({ children }: { children: ReactNode }) {
@@ -202,6 +224,12 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
       const dy = event.clientY - pending.startY;
 
       if (shouldCancelForScroll(dx, dy, pending.scrollPreference)) {
+        releaseCapture(pending.sourceEl, event.pointerId);
+        pendingRef.current = null;
+        return;
+      }
+
+      if (shouldCancelForPageScroll(dx, dy, pending.scrollPreference)) {
         releaseCapture(pending.sourceEl, event.pointerId);
         pendingRef.current = null;
         return;
@@ -288,9 +316,6 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
         if (!enabled || event.button !== 0) return;
 
         const sourceEl = event.currentTarget;
-        if (scrollPreference !== "horizontal") {
-          sourceEl.setPointerCapture(event.pointerId);
-        }
 
         pendingRef.current = {
           pointerId: event.pointerId,
