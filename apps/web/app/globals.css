@@ -492,10 +492,59 @@ select {
 
 .card--draggable {
   cursor: grab;
+  touch-action: pan-x pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .card--draggable:active {
   cursor: grabbing;
+}
+
+.is-dragging-card {
+  touch-action: none;
+}
+
+.is-dragging-card .card--draggable {
+  touch-action: none;
+}
+
+.drag-ghost {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.94;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.4));
+}
+
+.drag-ghost__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.drag-ghost__placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  background: #1e293b;
+  border: 1px solid #475569;
+}
+
+.drop-zone--drag-hover,
+.board__header--strike-target.drop-zone--drag-hover {
+  outline: 2px dashed #38bdf8;
+  outline-offset: 2px;
+}
+
+.card-wrap.drop-zone--drag-hover {
+  outline: 2px dashed #38bdf8;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .card--previewable {
@@ -1373,13 +1422,6 @@ select {
     --app-padding-y: 20px;
     --app-gap: 16px;
     --board-padding: 16px;
-  }
-
-  .game__boards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    align-items: start;
   }
 
   .game__header {

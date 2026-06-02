@@ -4,7 +4,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, PlayerId } from "@rangers-strike/engine";
 import { COMMAND_ZONE_MAX, isUnit } from "@rangers-strike/engine";
-import { DND_MIME, parseDragPayload, type DragCardPayload, type DropTarget } from "@/lib/dnd";
+import { type DragCardPayload, type DropTarget } from "@/lib/dnd";
+import { useDropTarget } from "@/lib/PointerDragContext";
 import { CardImage } from "./CardImage";
 
 type DropZoneProps = {
@@ -34,24 +35,16 @@ export function DropZone({
   children,
   cardsRef,
 }: DropZoneProps) {
-  const handleDragOver = (event: React.DragEvent) => {
-    if (!accepts || !onDrop) return;
-    if (event.dataTransfer.types.includes(DND_MIME)) {
-      event.preventDefault();
-      event.dataTransfer.dropEffect = "move";
-    }
-  };
+  const zoneRef = useRef<HTMLElement>(null);
 
-  const handleDrop = (event: React.DragEvent) => {
-    if (!accepts || !onDrop) return;
-    event.preventDefault();
-    const raw = event.dataTransfer.getData(DND_MIME);
-    const payload = parseDragPayload(raw);
-    if (payload) onDrop(payload);
-  };
+  useDropTarget(zoneRef, {
+    accepts: () => !!(accepts && onDrop),
+    drop: (payload) => onDrop?.(payload),
+  });
 
   return (
     <section
+      ref={zoneRef}
       className={[
         "zone",
         "drop-zone",
@@ -63,8 +56,6 @@ export function DropZone({
         .filter(Boolean)
         .join(" ")}
       data-zone={zoneId}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
     >
       <header className="zone__title">
         {title}
@@ -115,6 +106,33 @@ type ZoneCardsProps = {
   getCommandHeld?: (card: CardInstance) => boolean | undefined;
   onCommandToggle?: (card: CardInstance) => (() => void) | undefined;
 };
+
+function CardDropWrap({
+  instanceId,
+  onCardDrop,
+  className,
+  onClick,
+  children,
+}: {
+  instanceId: string;
+  onCardDrop?: (targetInstanceId: string, payload: DragCardPayload) => void;
+  className: string;
+  onClick?: () => void;
+  children: ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useDropTarget(ref, {
+    accepts: () => !!onCardDrop,
+    drop: (payload) => onCardDrop?.(instanceId, payload),
+  });
+
+  return (
+    <div ref={ref} className={className} onClick={onClick}>
+      {children}
+    </div>
+  );
+}
 
 function ZoneCards({
   title,
@@ -198,8 +216,10 @@ function ZoneCards({
               : undefined;
 
         return (
-        <div
+        <CardDropWrap
           key={card.instanceId}
+          instanceId={card.instanceId}
+          onCardDrop={onCardDrop}
           className={[
             "card-wrap",
             selectableIds?.has(card.instanceId) ? "card-wrap--target" : "",
@@ -211,19 +231,6 @@ function ZoneCards({
           ]
             .filter(Boolean)
             .join(" ")}
-          onDragOver={(event) => {
-            if (!onCardDrop) return;
-            if (event.dataTransfer.types.includes(DND_MIME)) {
-              event.preventDefault();
-            }
-          }}
-          onDrop={(event) => {
-            if (!onCardDrop) return;
-            event.preventDefault();
-            event.stopPropagation();
-            const payload = parseDragPayload(event.dataTransfer.getData(DND_MIME));
-            if (payload) onCardDrop(card.instanceId, payload);
-          }}
           onClick={() => {
             if (substituteIds?.has(card.instanceId) && onSubstituteSelect) {
               onSubstituteSelect(card.instanceId);
@@ -270,7 +277,7 @@ function ZoneCards({
             hideMeta={imageOnly}
             faceDown={fromZone === "power" ? card.faceDown : undefined}
           />
-        </div>
+        </CardDropWrap>
         );
       })}
     </DropZone>
@@ -356,6 +363,7 @@ export function PlayerBoard({
 }: PlayerBoardProps) {
   const interactive = isHuman && isHumanTurn;
   const [dragging, setDragging] = useState<DragCardPayload | null>(null);
+  const strikeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setDragging(null);
@@ -632,26 +640,17 @@ export function PlayerBoard({
     </>
   );
 
-  const handleStrikeDragOver = (event: React.DragEvent) => {
-    if (!canAcceptStrike || !onStrikeDrop) return;
-    if (event.dataTransfer.types.includes(DND_MIME)) {
-      event.preventDefault();
-      event.dataTransfer.dropEffect = "move";
-    }
-  };
-
-  const handleStrikeDrop = (event: React.DragEvent) => {
-    if (!canAcceptStrike || !onStrikeDrop) return;
-    event.preventDefault();
-    const payload = parseDragPayload(event.dataTransfer.getData(DND_MIME));
-    if (payload) onStrikeDrop(payload);
-  };
+  useDropTarget(strikeRef, {
+    accepts: () => !!(isOpponent && canAcceptStrike && onStrikeDrop),
+    drop: (payload) => onStrikeDrop?.(payload),
+  });
 
   return (
     <div
       className={`board ${isOpponent ? "board--opponent" : "board--self"} ${isActive ? "board--active" : ""}`}
     >
       <div
+        ref={strikeRef}
         className={[
           "board__header",
           isOpponent && canAcceptStrike ? "board__header--strike-target" : "",
@@ -659,8 +658,6 @@ export function PlayerBoard({
         ]
           .filter(Boolean)
           .join(" ")}
-        onDragOver={isOpponent ? handleStrikeDragOver : undefined}
-        onDrop={isOpponent ? handleStrikeDrop : undefined}
       >
         <h2>{label}</h2>
         <div className="damage">

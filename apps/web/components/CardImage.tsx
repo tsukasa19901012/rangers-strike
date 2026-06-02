@@ -3,7 +3,8 @@
 import Image from "next/image";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { getCardBackImageUrl, getCardEffect } from "@rangers-strike/cards";
-import { DND_MIME, serializeDragPayload, type DragCardPayload } from "@/lib/dnd";
+import { type DragCardPayload } from "@/lib/dnd";
+import { usePointerDrag } from "@/lib/PointerDragContext";
 
 type CardImageProps = {
   card?: CardDefinition;
@@ -42,6 +43,8 @@ export function CardImage({
   hideMeta,
   faceDown,
 }: CardImageProps) {
+  const { bindDragSource, consumeClickSuppression } = usePointerDrag();
+
   if (!card) return null;
 
   const className = [
@@ -62,24 +65,30 @@ export function CardImage({
   const imageSrc = faceDown ? getCardBackImageUrl() : card.imageUrl;
   const imageAlt = faceDown ? "カード裏" : card.name;
 
-  const handleDragStart = (event: React.DragEvent) => {
-    if (!draggable || disabled || !instanceId || !fromZone || !playerId) return;
-    const payload: DragCardPayload = {
-      instanceId,
-      cardId: card.id,
-      fromZone,
-      playerId,
-    };
-    event.dataTransfer.setData(DND_MIME, serializeDragPayload(payload));
-    event.dataTransfer.effectAllowed = "move";
-    onDragStartExtra?.();
-  };
+  const canDrag =
+    draggable && !disabled && !!instanceId && !!fromZone && !!playerId;
 
-  const handleDragEnd = () => {
-    onDragEnd?.();
-  };
+  const dragPayload: DragCardPayload | null = canDrag
+    ? {
+        instanceId,
+        cardId: card.id,
+        fromZone,
+        playerId,
+      }
+    : null;
+
+  const handlePointerDown =
+    dragPayload &&
+    bindDragSource({
+      enabled: true,
+      payload: dragPayload,
+      imageSrc: imageSrc ?? undefined,
+      onStart: onDragStartExtra,
+      onEnd: onDragEnd,
+    });
 
   const handleClick = () => {
+    if (consumeClickSuppression()) return;
     if (onSelect) {
       onSelect();
       return;
@@ -94,9 +103,7 @@ export function CardImage({
   return (
     <div
       className={className}
-      draggable={draggable && !disabled}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
+      onPointerDown={handlePointerDown ?? undefined}
       onClick={handleClick}
       role={onPreview || onCommandToggle ? "button" : undefined}
       tabIndex={onPreview || onCommandToggle ? 0 : undefined}
