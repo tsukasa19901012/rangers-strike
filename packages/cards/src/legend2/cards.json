@@ -33,6 +33,10 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "6+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 9000,
       "sp": 1,
       "size": "L",
@@ -52,6 +56,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "4+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_command_or_discard",
+        "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+        "unitCount": 1
+      },
       "bp": 4000,
       "size": "M",
       "text": "【バルカン砲】自軍ラッシュエリアに「ブルバルカン」があるとき、このユニットは次の能力を得る⇒これがアタックするとき、相手はカウンターを発動できず、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
@@ -70,6 +79,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "5+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_command_or_discard",
+        "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "M",
       "text": "【救助活動】これをラッシュしたとき、自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。",
@@ -238,6 +252,10 @@
       "rarity": "R",
       "expansion": "legend2",
       "powerCost": "8+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 18000,
       "sp": 1,
       "size": "L",
@@ -257,6 +275,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "7+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 4000,
       "sp": 1,
       "size": "M",
@@ -276,6 +299,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "4+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "M",
       "text": "※これは「Vポリス」としてつかえる。 【交通整理】これが自軍バトルエリアにあるとき、相手は次の制限を受ける。バトルエリアに並べるユニットはすべて同じサイズでなければならない。",
@@ -294,6 +322,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "5+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 6000,
       "size": "M",
       "text": "※これは「Vダンプ」としてつかえる。 【ダンプパンチ】これはアタックするときBP＋2000される。",
@@ -312,6 +345,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "4+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "M",
       "text": "※これは「Vドーザー」としてつかえる。 【解体作業】これをラッシュしたとき、自軍パワーゾーンからダメージになっているカードをウラ向きのまま1枚選んで手札に加えてもよい。そうしたとき、手札から1枚選んでパワーゾーンにウラ向きに置く。",
@@ -330,6 +368,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "3+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 4000,
       "size": "M",
       "text": "※これは「Vレスキュー」としてつかえる。 【救護活動】これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、撃破されたとき捨札にするかわりに自軍パワーゾーンに送る。",
@@ -424,6 +467,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "4+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 6000,
       "sp": "special",
       "size": "S",
@@ -443,6 +491,10 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "7+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 16000,
       "sp": 1,
       "size": "L",
@@ -462,6 +514,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "4+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_discard",
+        "text": "自軍Sユニットを1体捨札にする",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "M",
       "text": "【カラクリ忍法・火炎鷹】自分がターンを終えるとき、このユニットがバトルエリアにあれば持ち主の手札に戻す。",
@@ -480,6 +537,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "5+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_discard",
+        "text": "自軍Sユニットを1体捨札にする",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "M",
       "text": "【カラクリ忍法・連獅子】これが自軍バトルエリアにあるとき、SP1以上または「！」のある敵軍ユニットはコマンドを1つホールドしなければバトルエリアに出られない。",
@@ -497,6 +559,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "3+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_discard",
+        "text": "自軍Sユニットを1体捨札にする",
+        "unitCount": 1
+      },
       "bp": 4000,
       "size": "M",
       "text": "【カラクリ忍法・大津波】これをラッシュしたとき、BP3000以下の敵軍ユニットを1体選んで持ち主の手札に戻す。",
@@ -753,6 +820,10 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "7+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 16000,
       "sp": 1,
       "size": "L",
@@ -772,6 +843,10 @@
       "rarity": "R",
       "expansion": "legend2",
       "powerCost": "6+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 8000,
       "sp": 1,
       "size": "L",
@@ -791,6 +866,10 @@
       "rarity": "SR",
       "expansion": "legend2",
       "powerCost": "6+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 5000,
       "sp": "special",
       "size": "L",
@@ -864,6 +943,10 @@
       "rarity": "SR",
       "expansion": "legend2",
       "powerCost": "7+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 16000,
       "sp": 1,
       "size": "L",
@@ -883,6 +966,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "5+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_command_or_discard",
+        "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "M",
       "text": "【プレシャスの護り手】自軍バトルフェイズ中、これを自軍バトルエリアに出すとき、自軍バトルエリアのSユニット1体と置きかえて出してもよい。そうしたとき、これはアタックできず、置きかえたSユニットはこのターン、再びバトルエリアに出られない。",
@@ -901,6 +989,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "6+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_command_or_discard",
+        "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+        "unitCount": 1
+      },
       "bp": 5000,
       "sp": "special",
       "size": "M",
@@ -920,6 +1013,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "5+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_command_or_discard",
+        "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+        "unitCount": 1
+      },
       "bp": 4000,
       "size": "M",
       "text": "【空輸搬送】これをラッシュしたとき、自軍コマンドゾーンからリリース状態のMユニットのカードを1枚選び、ラッシュエリアに出してもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
@@ -938,6 +1036,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "4+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_command_or_discard",
+        "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+        "unitCount": 1
+      },
       "bp": 7000,
       "size": "M",
       "text": "【遺跡発掘】これがバトルエリアに出たとき、相手は自分自身のコマンドゾーンからSユニットかMユニットのカードを1枚選び、ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない。",
@@ -956,6 +1059,11 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": "3+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_command_or_discard",
+        "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+        "unitCount": 1
+      },
       "bp": 4000,
       "size": "M",
       "text": "【海底探査】これが自軍ラッシュエリアにあるとき、次の効果を発動できる。自分が山札からカードをひくとき、上からひくかわりに下からひいてもよい。",

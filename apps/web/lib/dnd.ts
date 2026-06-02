@@ -39,4 +39,7 @@ export type PendingOperation = {
 export type PendingZordRush = {
   instanceId: string;
   cardId: string;
+  /** Set after S-unit material tap when command vs discard is required. */
+  materialInstanceId?: string;
+  materialDestination?: "command" | "discard";
 };

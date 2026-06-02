@@ -15,6 +15,7 @@ import {
   pickChargeAction,
   pickCommandSetup,
   pickEffectChoice,
+  pickHoldBeforeBattle,
   pickHoldBeforeRush,
   pickMandatoryBattleMove,
   pickSimpleReaction,
@@ -285,6 +286,9 @@ export function pickCpuAction(
     }
 
     case "battle": {
+      const hold = pickHoldBeforeBattle(state, playerId, actions);
+      if (hold) return hold;
+
       if (enableSearch) {
         const candidates = collectBattleCandidates(state, playerId, actions);
         const best = pickBestBySearch(state, playerId, candidates);

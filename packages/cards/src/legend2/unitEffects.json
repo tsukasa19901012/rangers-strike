@@ -10,6 +10,10 @@
     "namedEffects": []
   },
   "RS-073": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―コスモバルカン＋ブルバルカン 【バルシールド】自軍ダメージが6点のとき、このユニットは次の能力を得る⇒「SP2」",
     "unnamedText": [
       {
@@ -33,6 +37,11 @@
     ]
   },
   "RS-074": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
     "rawText": "【バルカン砲】自軍ラッシュエリアに「ブルバルカン」があるとき、このユニットは次の能力を得る⇒これがアタックするとき、相手はカウンターを発動できず、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
     "unnamedText": [],
     "namedEffects": [
@@ -47,6 +56,11 @@
     ]
   },
   "RS-075": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
     "rawText": "【救助活動】これをラッシュしたとき、自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。",
     "unnamedText": [],
     "namedEffects": [
@@ -79,7 +93,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは毎ターン、可能ならバトルエリアに出る。"
+        "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+        "rule": "auto_battle_entry_each_turn"
       }
     ],
     "namedEffects": [
@@ -126,7 +141,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※このカードはデッキに3枚以上入れてもよい。"
+        "text": "※このカードはデッキに3枚以上入れてもよい。",
+        "rule": "deck_copy_unlimited"
       }
     ],
     "namedEffects": []
@@ -174,6 +190,10 @@
     ]
   },
   "RS-084": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―Vファイヤー＋Vポリス＋Vダンプ＋Vドーザー＋Vレスキュー 【必勝合体】これをラッシュしたとき、相手に2点ダメージを与える。",
     "unnamedText": [
       {
@@ -200,11 +220,17 @@
     ]
   },
   "RS-085": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを1体パワーゾーンに送る",
+      "unitCount": 1
+    },
     "rawText": "※これは「Vファイヤー」としてつかえる。 【消火作業】これをラッシュしたとき、自軍パワーゾーンからダメージになっているカードをウラ向きのまま1枚選んでオモテにしてもよい。そうしたとき、相手も同じようにしてもよい。",
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは「Vファイヤー」としてつかえる。"
+        "text": "※これは「Vファイヤー」としてつかえる。",
+        "rule": "fusion_material_alias"
       }
     ],
     "namedEffects": [
@@ -219,11 +245,17 @@
     ]
   },
   "RS-086": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを1体パワーゾーンに送る",
+      "unitCount": 1
+    },
     "rawText": "※これは「Vポリス」としてつかえる。 【交通整理】これが自軍バトルエリアにあるとき、相手は次の制限を受ける。バトルエリアに並べるユニットはすべて同じサイズでなければならない。",
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは「Vポリス」としてつかえる。"
+        "text": "※これは「Vポリス」としてつかえる。",
+        "rule": "fusion_material_alias"
       }
     ],
     "namedEffects": [
@@ -238,11 +270,17 @@
     ]
   },
   "RS-087": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを1体パワーゾーンに送る",
+      "unitCount": 1
+    },
     "rawText": "※これは「Vダンプ」としてつかえる。 【ダンプパンチ】これはアタックするときBP＋2000される。",
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは「Vダンプ」としてつかえる。"
+        "text": "※これは「Vダンプ」としてつかえる。",
+        "rule": "fusion_material_alias"
       }
     ],
     "namedEffects": [
@@ -257,11 +295,17 @@
     ]
   },
   "RS-088": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを1体パワーゾーンに送る",
+      "unitCount": 1
+    },
     "rawText": "※これは「Vドーザー」としてつかえる。 【解体作業】これをラッシュしたとき、自軍パワーゾーンからダメージになっているカードをウラ向きのまま1枚選んで手札に加えてもよい。そうしたとき、手札から1枚選んでパワーゾーンにウラ向きに置く。",
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは「Vドーザー」としてつかえる。"
+        "text": "※これは「Vドーザー」としてつかえる。",
+        "rule": "fusion_material_alias"
       }
     ],
     "namedEffects": [
@@ -276,11 +320,17 @@
     ]
   },
   "RS-089": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを1体パワーゾーンに送る",
+      "unitCount": 1
+    },
     "rawText": "※これは「Vレスキュー」としてつかえる。 【救護活動】これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、撃破されたとき捨札にするかわりに自軍パワーゾーンに送る。",
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは「Vレスキュー」としてつかえる。"
+        "text": "※これは「Vレスキュー」としてつかえる。",
+        "rule": "fusion_material_alias"
       }
     ],
     "namedEffects": [
@@ -299,15 +349,18 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これはラッシュするとき可能ならバトルエリアに置く。"
+        "text": "※これはラッシュするとき可能ならバトルエリアに置く。",
+        "rule": "auto_battle_entry_on_rush"
       },
       {
         "kind": "note",
-        "text": "※これはラッシュしたターンにアタックできない。"
+        "text": "※これはラッシュしたターンにアタックできない。",
+        "rule": "no_attack_turn_rushed"
       },
       {
         "kind": "note",
-        "text": "※これはラッシュしたターンにストライクできない。"
+        "text": "※これはラッシュしたターンにストライクできない。",
+        "rule": "no_strike_turn_rushed"
       }
     ],
     "namedEffects": [
@@ -340,7 +393,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。"
+        "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+        "rule": "win_but_destroyed_vs_sp1"
       }
     ],
     "namedEffects": [
@@ -359,7 +413,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これはバトルエリアに出られない。"
+        "text": "※これはバトルエリアに出られない。",
+        "rule": "cannot_enter_battle"
       }
     ],
     "namedEffects": [
@@ -374,11 +429,17 @@
     ]
   },
   "RS-094": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを1体パワーゾーンに送る",
+      "unitCount": 1
+    },
     "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【幽魔吸収】自軍バトルフェイズに次の効果を発動できる。敵軍捨札からSユニットのカードを1枚選んで持ち主の手札に戻す。そうしたとき、このターンこのユニットのBPは相手の手札に戻したカードのBPとの合計になり、「SP1」になる。",
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。"
+        "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+        "rule": "win_but_destroyed_vs_sp1"
       }
     ],
     "namedEffects": [
@@ -393,6 +454,10 @@
     ]
   },
   "RS-095": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―ハリケンホーク＋ハリケンレオン＋ハリケンドルフィン【タテガミハリケーン】これがバトルエリアに出たとき、敵軍ラッシュエリアにあるSユニットをすべて持ち主の手札に戻す。",
     "unnamedText": [
       {
@@ -417,6 +482,11 @@
     ]
   },
   "RS-096": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_discard",
+      "text": "自軍Sユニットを1体捨札にする",
+      "unitCount": 1
+    },
     "rawText": "【カラクリ忍法・火炎鷹】自分がターンを終えるとき、このユニットがバトルエリアにあれば持ち主の手札に戻す。",
     "unnamedText": [],
     "namedEffects": [
@@ -431,6 +501,11 @@
     ]
   },
   "RS-097": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_discard",
+      "text": "自軍Sユニットを1体捨札にする",
+      "unitCount": 1
+    },
     "rawText": "【カラクリ忍法・連獅子】これが自軍バトルエリアにあるとき、SP1以上または「！」のある敵軍ユニットはコマンドを1つホールドしなければバトルエリアに出られない。",
     "unnamedText": [],
     "namedEffects": [
@@ -445,6 +520,11 @@
     ]
   },
   "RS-098": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_discard",
+      "text": "自軍Sユニットを1体捨札にする",
+      "unitCount": 1
+    },
     "rawText": "【カラクリ忍法・大津波】これをラッシュしたとき、BP3000以下の敵軍ユニットを1体選んで持ち主の手札に戻す。",
     "unnamedText": [],
     "namedEffects": [
@@ -505,7 +585,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。"
+        "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+        "rule": "win_but_destroyed_vs_sp1"
       }
     ],
     "namedEffects": [
@@ -524,7 +605,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。"
+        "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+        "rule": "win_but_destroyed_vs_sp1"
       }
     ],
     "namedEffects": [
@@ -571,7 +653,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これはラッシュしたターンにバトルエリアに出られない。"
+        "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+        "rule": "no_battle_entry_turn_rushed"
       }
     ],
     "namedEffects": [
@@ -642,6 +725,10 @@
     ]
   },
   "RS-111": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―マジフェニックス＋マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス 【ファントムイリュージョン】これがバトルエリアに出たとき、敵軍コマンドをすべてホールドしてもよい。",
     "unnamedText": [
       {
@@ -668,6 +755,10 @@
     ]
   },
   "RS-112": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―魔導騎士ウルザード＋魔導馬バリキオン ※敵軍ダメージが6点になったとき、このユニットは持ち主の手札に戻す。",
     "unnamedText": [
       {
@@ -680,12 +771,17 @@
       },
       {
         "kind": "note",
-        "text": "※敵軍ダメージが6点になったとき、このユニットは持ち主の手札に戻す。"
+        "text": "※敵軍ダメージが6点になったとき、このユニットは持ち主の手札に戻す。",
+        "rule": "return_to_hand_at_6_damage"
       }
     ],
     "namedEffects": []
   },
   "RS-113": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―マジフェニックス＋魔導馬バリキオン 【ファイヤースピンブレード】 これはリリース状態の自軍コマンド1つにつきBP＋1000される。これはBP10000以上のとき「SP1」になる。",
     "unnamedText": [
       {
@@ -713,7 +809,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは、自軍Sユニットがバトルエリアになければバトルエリアに出られない。"
+        "text": "※これは、自軍Sユニットがバトルエリアになければバトルエリアに出られない。",
+        "rule": "needs_ally_s_in_battle"
       }
     ],
     "namedEffects": []
@@ -723,11 +820,13 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。"
+        "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+        "rule": "win_but_destroyed_vs_sp1"
       },
       {
         "kind": "note",
-        "text": "※これがバトルエリアに出たとき、相手は1枚ドローしてもよい。"
+        "text": "※これがバトルエリアに出たとき、相手は1枚ドローしてもよい。",
+        "rule": "opponent_may_draw_on_enter"
       }
     ],
     "namedEffects": []
@@ -737,7 +836,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これはバトルエリアに出られない。"
+        "text": "※これはバトルエリアに出られない。",
+        "rule": "cannot_enter_battle"
       }
     ],
     "namedEffects": [
@@ -752,6 +852,10 @@
     ]
   },
   "RS-117": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン 【轟轟剣アドベンチャードライブ】 これはアタックするときBP＋4000される。",
     "unnamedText": [
       {
@@ -778,6 +882,11 @@
     ]
   },
   "RS-118": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
     "rawText": "【プレシャスの護り手】自軍バトルフェイズ中、これを自軍バトルエリアに出すとき、自軍バトルエリアのSユニット1体と置きかえて出してもよい。そうしたとき、これはアタックできず、置きかえたSユニットはこのターン、再びバトルエリアに出られない。",
     "unnamedText": [],
     "namedEffects": [
@@ -792,6 +901,11 @@
     ]
   },
   "RS-119": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
     "rawText": "【シフトアップ】自軍バトルフェイズ中、これを自軍バトルエリアに出すとき、自軍コマンドを5つホールドしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
     "unnamedText": [],
     "namedEffects": [
@@ -806,6 +920,11 @@
     ]
   },
   "RS-120": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
     "rawText": "【空輸搬送】これをラッシュしたとき、自軍コマンドゾーンからリリース状態のMユニットのカードを1枚選び、ラッシュエリアに出してもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
     "unnamedText": [],
     "namedEffects": [
@@ -820,6 +939,11 @@
     ]
   },
   "RS-121": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
     "rawText": "【遺跡発掘】これがバトルエリアに出たとき、相手は自分自身のコマンドゾーンからSユニットかMユニットのカードを1枚選び、ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない。",
     "unnamedText": [],
     "namedEffects": [
@@ -834,6 +958,11 @@
     ]
   },
   "RS-122": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
     "rawText": "【海底探査】これが自軍ラッシュエリアにあるとき、次の効果を発動できる。自分が山札からカードをひくとき、上からひくかわりに下からひいてもよい。",
     "unnamedText": [],
     "namedEffects": [

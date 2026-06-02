@@ -11,6 +11,10 @@ export type SpValue = number | "special" | null;
 
 export type ComboNumber = number | "L" | "R" | "RC" | null;
 
+export type { RushAdditionalCondition, ZordConditionId } from "./effectTaxonomy";
+
+import type { RushAdditionalCondition } from "./effectTaxonomy";
+
 export type CardDefinition = {
   id: string;
   name: string;
@@ -25,10 +29,12 @@ export type CardDefinition = {
   size?: UnitSize;
   comboNumber?: ComboNumber;
   /**
-   * Full card text from source. Structured parse lives in unitEffects.json
-   * (効果名 / 効果名を持たないテキスト); see effectTaxonomy.ts.
+   * Card effect text (【】 / ※ on the card). Rush 追加条件 is in `rushAdditionalCondition`.
+   * Structured parse lives in unitEffects.json; see effectTaxonomy.ts.
    */
   text?: string;
+  /** Rush 追加条件 when powerCost ends with "+" (atwiki / 追加条件別一覧). */
+  rushAdditionalCondition?: RushAdditionalCondition;
   effectId?: string;
   tags?: string[];
   /** Unit traits such as メカ, 男, etc. */

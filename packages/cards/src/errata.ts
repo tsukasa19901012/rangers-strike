@@ -10,8 +10,9 @@
 import { getCardById } from "./catalog";
 import { deckCopyUnlimited } from "./deckRules";
 import {
+  getBattleEntryHoldCount as getHoldCountFromRules,
   hasBattleEntryHoldNote,
-  hasUnitEffectNote,
+  hasUnnamedRule,
   listBattleEntryHoldCardIds,
 } from "./unitEffects";
 
@@ -36,7 +37,7 @@ export const ERRATA_EFFECT_TEXT: Partial<Record<string, string>> = {
 export const RUSH_COUNTER_AFTER_TRIGGERED_EFFECTS = true;
 
 export function getBattleEntryHoldCount(cardId: string): number {
-  return hasBattleEntryHoldNote(cardId) ? 1 : 0;
+  return getHoldCountFromRules(cardId);
 }
 
 /** Count RS-069 permanents on both players' fields (Q2: stacks). */
@@ -68,34 +69,34 @@ export function requiredHeldCommandsForMBattle(
 
 /** RS-093, RS-116: cannot enter battle area. */
 export function cannotEnterBattle(cardId: string): boolean {
-  return cardId === "RS-093" || cardId === "RS-116";
+  return hasUnnamedRule(cardId, "cannot_enter_battle");
 }
 
 /** RS-114: requires ally S unit in battle to enter. */
 export function needsAllySInBattle(cardId: string): boolean {
-  return hasUnitEffectNote(cardId, "自軍Sユニットがバトルエリアになければ");
+  return hasUnnamedRule(cardId, "needs_ally_s_in_battle");
 }
 
 /** RS-092, RS-094, RS-102, RS-103, RS-115: win vs SP1+ on enemy turn but still destroyed. */
 export function winButDestroyedVsSp1(cardId: string): boolean {
-  return hasUnitEffectNote(cardId, "バトルに勝っても撃破される");
+  return hasUnnamedRule(cardId, "win_but_destroyed_vs_sp1");
 }
 
 /** RS-112: return to hand when enemy damage reaches 6. */
 export function returnToHandAt6Damage(cardId: string): boolean {
-  return hasUnitEffectNote(cardId, "敵軍ダメージが6点になったとき");
+  return hasUnnamedRule(cardId, "return_to_hand_at_6_damage");
 }
 
 /** RS-106: cannot enter battle on turn rushed. */
 export function noBattleEntryTurnRushed(cardId: string): boolean {
-  return cardId === "RS-106" || hasUnitEffectNote(cardId, "ラッシュしたターンにバトルエリアに出られない");
+  return hasUnnamedRule(cardId, "no_battle_entry_turn_rushed");
 }
 
 /** RS-090: cannot attack or strike on turn rushed. */
 export function noAttackOrStrikeTurnRushed(cardId: string): boolean {
   return (
-    hasUnitEffectNote(cardId, "ラッシュしたターンにアタックできない") ||
-    hasUnitEffectNote(cardId, "ラッシュしたターンにストライクできない")
+    hasUnnamedRule(cardId, "no_attack_turn_rushed") ||
+    hasUnnamedRule(cardId, "no_strike_turn_rushed")
   );
 }
 

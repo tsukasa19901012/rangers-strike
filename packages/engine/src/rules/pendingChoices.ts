@@ -5,7 +5,7 @@ import { buildLogEntry } from "../log/formatLog";
 import { findCardOwner } from "./fieldLookup";
 import { tryLeaveField } from "./operationCounters";
 import { promoteDeferredBattleEntry } from "./battleEntry";
-import { canMoveUnitToBattle } from "./restrictions";
+import { canMoveUnitToBattle, releaseHeldCommands, requiredBattleEntryHolds } from "./restrictions";
 import {
   grantSp1ToBattleUnit,
 } from "./namedUnitEffects";
@@ -508,11 +508,15 @@ export function applyEffectChoiceSelect(
           return { error: "cannot_enter_battle" };
         }
         const [, rush] = removeAt(owner.rush, found.index);
-        const nextOwner = {
+        let nextOwner = {
           ...owner,
           rush,
           battle: [...owner.battle, found.card],
         };
+        nextOwner = releaseHeldCommands(
+          nextOwner,
+          requiredBattleEntryHolds(state, found.card),
+        );
         return finishChoice(
           { ...state, ...updatePlayer(state, located.playerId, nextOwner) },
           pending,
@@ -530,11 +534,15 @@ export function applyEffectChoiceSelect(
         let battle = player.battle.filter((c) => c.instanceId !== instanceId);
         battle = [...battle, { ...entering.card, battleActed: true }];
         const rush = player.rush.filter((c) => c.instanceId !== pending.sourceInstanceId);
-        const nextPlayer = {
+        let nextPlayer = {
           ...player,
           battle,
           rush: [...rush, swapTarget.card],
         };
+        nextPlayer = releaseHeldCommands(
+          nextPlayer,
+          requiredBattleEntryHolds(state, entering.card),
+        );
         return finishChoice(
           { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
           pending,
@@ -858,11 +866,15 @@ export function applyEffectChoiceSelect(
       }
 
       const [, rush] = removeAt(enemy.rush, found.index);
-      const nextEnemy = {
+      let nextEnemy = {
         ...enemy,
         rush,
         battle: [...enemy.battle, found.card],
       };
+      nextEnemy = releaseHeldCommands(
+        nextEnemy,
+        requiredBattleEntryHolds(state, found.card),
+      );
       let nextState = { ...state, ...updatePlayer(state, enemyId, nextEnemy) };
 
       const selected = [...(pending.selectedInstanceIds ?? []), instanceId];

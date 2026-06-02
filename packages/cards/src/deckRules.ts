@@ -1,6 +1,6 @@
 import { allCardsCatalog } from "./catalog";
 import type { CardCatalog, CardDefinition, DeckEntry } from "./schema";
-import { hasUnitEffectNote } from "./unitEffects";
+import { hasUnnamedRule } from "./unitEffects";
 
 /** Official minimum deck size. */
 export const DECK_MIN_SIZE = 40;
@@ -27,7 +27,7 @@ export function deckCopyUnlimited(card: CardDefinition): boolean {
   if (card.text?.includes(UNLIMITED_DECK_NOTE)) {
     return true;
   }
-  if (hasUnitEffectNote(card.id, UNLIMITED_DECK_NOTE)) {
+  if (hasUnnamedRule(card.id, "deck_copy_unlimited")) {
     return true;
   }
   return false;

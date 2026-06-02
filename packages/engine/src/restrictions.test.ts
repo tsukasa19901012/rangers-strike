@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { buildAbarenohDeck } from "@rangers-strike/cards";
 import {
   explainCannotEnterBattle,
   canMoveUnitToBattle,
   getLightningGravityHoldNotice,
 } from "./rules/restrictions";
+import { getBattleEntryHoldCount } from "@rangers-strike/cards";
 import { getLegalActions } from "./core/legalActions";
 import { applyAction } from "./core/applyAction";
 import { createTestState, inst } from "./testing/fixtures";
@@ -211,6 +213,33 @@ const BATTLE_ENTRY_HOLD_CARDS = [
 ] as const;
 
 describe("battle entry hold requirements", () => {
+  it("detects RS-052/053 hold from catalog card text", () => {
+    expect(getBattleEntryHoldCount("RS-052")).toBe(1);
+    expect(getBattleEntryHoldCount("RS-053")).toBe(1);
+  });
+
+  it("blocks RS-052 without hold using abarenoh deck definitions", () => {
+    const deckDefs = Object.fromEntries(
+      buildAbarenohDeck().map((card) => [card.id, card]),
+    );
+    const unit = inst("RS-052", "tricera");
+    const state = createTestState({
+      definitions: deckDefs,
+      phase: "battle",
+      player1: {
+        rush: [unit],
+        command: [{ ...inst("RS-007", "cmd"), commandHeld: false }],
+      },
+    });
+
+    expect(canMoveUnitToBattle(state, "player1", unit, "rush")).toBe(false);
+    expect(
+      getLegalActions(state).some(
+        (a) => a.type === "move_to_battle" && a.instanceId === unit.instanceId,
+      ),
+    ).toBe(false);
+  });
+
   it.each(BATTLE_ENTRY_HOLD_CARDS)(
     "blocks %s without a held command",
     (cardId) => {
@@ -255,6 +284,69 @@ describe("battle entry hold requirements", () => {
       expect(canMoveUnitToBattle(state, "player1", unit, "rush")).toBe(true);
     },
   );
+
+  it.each(BATTLE_ENTRY_HOLD_CARDS)(
+    "consumes held command when %s enters battle",
+    (cardId) => {
+      const unit = inst(cardId, "u1");
+      const state = createTestState({
+        definitions: legendDefinitions,
+        phase: "battle",
+        player1: {
+          rush: [unit],
+          command: [{ ...inst("RS-007", "c1"), commandHeld: true }],
+        },
+      });
+
+      const result = applyAction(state, {
+        type: "move_to_battle",
+        playerId: "player1",
+        instanceId: unit.instanceId,
+      });
+      expect(result.ok).toBe(true);
+      if (!result.ok) return;
+      expect(result.state.players.player1.command[0]?.commandHeld).toBe(false);
+    },
+  );
+
+  it("requires a new hold for each fusion unit (RS-051 then RS-052)", () => {
+    const tyranno = inst("RS-051", "t1");
+    const tricera = inst("RS-052", "t2");
+    let state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      player1: {
+        rush: [tyranno, tricera],
+        command: [{ ...inst("RS-007", "c1"), commandHeld: true }],
+      },
+    });
+
+    const first = applyAction(state, {
+      type: "move_to_battle",
+      playerId: "player1",
+      instanceId: tyranno.instanceId,
+    });
+    expect(first.ok).toBe(true);
+    if (!first.ok) return;
+    state = first.state;
+
+    const passed = applyAction(state, {
+      type: "pass_battle_entry",
+      playerId: "player1",
+    });
+    expect(passed.ok).toBe(true);
+    if (!passed.ok) return;
+    state = passed.state;
+
+    expect(canMoveUnitToBattle(state, "player1", tricera, "rush")).toBe(false);
+    expect(
+      applyAction(state, {
+        type: "move_to_battle",
+        playerId: "player1",
+        instanceId: tricera.instanceId,
+      }).ok,
+    ).toBe(false);
+  });
 
   it.each(BATTLE_ENTRY_HOLD_CARDS)(
     "blocks %s without hold even when definition size is missing",

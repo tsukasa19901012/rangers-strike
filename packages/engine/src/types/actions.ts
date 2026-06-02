@@ -24,12 +24,18 @@ export type ReleaseCommandAction = {
   instanceId: string;
 };
 
+export type ZordMaterialDestination = "command" | "discard";
+
 export type RushAction = {
   type: "rush";
   playerId: PlayerId;
   instanceId: string;
-  /** Material card for zord-up (fusion discard or S→power). */
+  /** Material card for zord-up (fusion discard or S-unit cost). */
   zordMaterialInstanceId?: string;
+  /** RS-074/075/118-122: send S-unit to command zone instead of discard. */
+  zordMaterialDestination?: ZordMaterialDestination;
+  /** RS-076 / RS-105 母艦: hold commands instead of S-unit additional cost. */
+  zordMothershipHoldInstanceIds?: string[];
 };
 
 export type MoveToBattleAction = {

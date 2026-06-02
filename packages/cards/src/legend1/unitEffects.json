@@ -1,5 +1,10 @@
 {
   "RS-046": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを1体パワーゾーンに送る",
+      "unitCount": 1
+    },
     "rawText": "【アーマーアタック】これをラッシュしたとき発動できる。敵軍バトルエリアからBP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。",
     "unnamedText": [],
     "namedEffects": [
@@ -14,6 +19,11 @@
     ]
   },
   "RS-045": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを1体パワーゾーンに送る",
+      "unitCount": 1
+    },
     "rawText": "【シグナルキャノン】これが自軍ラッシュエリアにあるとき、「オーバーテクノロジー」の自軍Mユニットは、アタックされるときBP＋1000される。",
     "unnamedText": [],
     "namedEffects": [
@@ -82,6 +92,10 @@
     ]
   },
   "RS-034": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―守護獣ティラノザウルス＋守護獣ジュウマンモス＋守護獣トリケラトプス＋守護獣サーベルタイガー＋守護獣プテラノドン【守護獣の神】これがバトルエリアにあるとき、これ以外の「ワイルドビースト」のユニットすべてはBP＋2000される。",
     "unnamedText": [
       {
@@ -112,7 +126,9 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。"
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
       }
     ],
     "namedEffects": [
@@ -131,7 +147,9 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。"
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
       }
     ],
     "namedEffects": [
@@ -150,7 +168,9 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。"
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
       }
     ],
     "namedEffects": [
@@ -169,7 +189,9 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。"
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
       }
     ],
     "namedEffects": []
@@ -179,7 +201,9 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。"
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
       }
     ],
     "namedEffects": [
@@ -212,7 +236,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは毎ターン、可能ならバトルエリアに出る。"
+        "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+        "rule": "auto_battle_entry_each_turn"
       }
     ],
     "namedEffects": [
@@ -227,6 +252,10 @@
     ]
   },
   "RS-042": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―パトストライカー＋パトジャイラー＋パトレーラー＋パトアーマー＋パトシグナー【ジャスティスフラッシャー】自軍パワーゾーンからダメージ以外のカードを5枚選び捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP3」",
     "unnamedText": [
       {
@@ -253,6 +282,11 @@
     ]
   },
   "RS-043": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを1体パワーゾーンに送る",
+      "unitCount": 1
+    },
     "rawText": "【ジャッジメントソード】自軍パワーゾーンからダメージ以外のカードを2枚選んで捨て札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
     "unnamedText": [],
     "namedEffects": [
@@ -267,11 +301,21 @@
     ]
   },
   "RS-044": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを1体パワーゾーンに送る",
+      "unitCount": 1
+    },
     "rawText": "",
     "unnamedText": [],
     "namedEffects": []
   },
   "RS-047": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを1体パワーゾーンに送る",
+      "unitCount": 1
+    },
     "rawText": "【進入禁止サインボード】これがバトルエリアにあるとき、BP5000以上のすべてのMユニットはバトルエリアに出ることはできない。",
     "unnamedText": [],
     "namedEffects": [
@@ -314,12 +358,20 @@
     ]
   },
   "RS-050": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン【爆竜電撃ドリルスピン】これがバトルエリアに出たとき、敵軍バトルエリアからBP4000以下のユニットを1体選んで撃破する。",
     "unnamedText": [
       {
         "kind": "zord",
         "text": "合体―爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン",
-        "partnerCardIds": ["RS-051", "RS-052", "RS-053"]
+        "partnerCardIds": [
+          "RS-051",
+          "RS-052",
+          "RS-053"
+        ]
       }
     ],
     "namedEffects": [
@@ -338,7 +390,9 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。"
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
       }
     ],
     "namedEffects": [
@@ -357,7 +411,9 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。"
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
       }
     ],
     "namedEffects": [
@@ -376,7 +432,9 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。"
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
       }
     ],
     "namedEffects": [
@@ -395,11 +453,14 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これが撃破されたとき、1点ダメージを受ける。"
+        "text": "※これが撃破されたとき、1点ダメージを受ける。",
+        "rule": "destroy_self_damage",
+        "damage": 1
       },
       {
         "kind": "note",
-        "text": "※これは毎ターン、可能ならバトルエリアに出る。"
+        "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+        "rule": "auto_battle_entry_each_turn"
       }
     ],
     "namedEffects": [
@@ -418,7 +479,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは毎ターン、可能ならバトルエリアに出る。"
+        "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+        "rule": "auto_battle_entry_each_turn"
       }
     ],
     "namedEffects": [
@@ -433,6 +495,10 @@
     ]
   },
   "RS-056": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス【マジカルドラゴンシュート】「マジフェニックス」からコンビネーションするとき発動できる。このターン、これはBP＋4000される。",
     "unnamedText": [
       {
@@ -465,7 +531,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは「マジフェニックス」としてつかえる。"
+        "text": "※これは「マジフェニックス」としてつかえる。",
+        "rule": "fusion_material_alias"
       }
     ],
     "namedEffects": [
@@ -484,7 +551,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは「マジガルーダ」としてつかえる。"
+        "text": "※これは「マジガルーダ」としてつかえる。",
+        "rule": "fusion_material_alias"
       }
     ],
     "namedEffects": [
@@ -503,7 +571,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは「マジマーメイド」としてつかえる。"
+        "text": "※これは「マジマーメイド」としてつかえる。",
+        "rule": "fusion_material_alias"
       }
     ],
     "namedEffects": [
@@ -522,7 +591,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは「マジフェアリー」としてつかえる。"
+        "text": "※これは「マジフェアリー」としてつかえる。",
+        "rule": "fusion_material_alias"
       }
     ],
     "namedEffects": [
@@ -541,7 +611,8 @@
     "unnamedText": [
       {
         "kind": "note",
-        "text": "※これは「マジタウロス」としてつかえる。"
+        "text": "※これは「マジタウロス」としてつかえる。",
+        "rule": "fusion_material_alias"
       }
     ],
     "namedEffects": [
@@ -626,6 +697,10 @@
     ]
   },
   "RS-070": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
     "rawText": "合体―マジフェニックス＋マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス【天空魔法斬り】これがバトルエリアに出たとき、敵軍コマンドをすべてホールドしてもよい。",
     "unnamedText": [
       {

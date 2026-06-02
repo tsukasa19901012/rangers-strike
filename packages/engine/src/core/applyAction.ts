@@ -58,8 +58,18 @@ import {
   mustResolveEarthForceUpkeepBeforeStartEnd,
   openEarthForceUpkeepChoiceIfNeeded,
 } from "../rules/startPhase";
+import {
+  applyMothershipHolds,
+  canUseMothershipForZordRush,
+  validateZordAdditionalPayment,
+} from "../rules/mothership";
 import { applyAllZordFusionMaterials, applyZordMaterial, findZordMaterial, requiresAllFusionPartners } from "../rules/zord";
-import { canMoveUnitToBattle, mustEnterBattleBeforePhaseEnd } from "../rules/restrictions";
+import {
+  canMoveUnitToBattle,
+  mustEnterBattleBeforePhaseEnd,
+  releaseHeldCommands,
+  requiredBattleEntryHolds,
+} from "../rules/restrictions";
 import {
   applyFiveTechIntercept,
   applyPlasmaEnergyCounter,
@@ -447,24 +457,54 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           if (!afterZord) return fail("zord_material_required");
           nextPlayer = afterZord;
         } else {
-          if (!action.zordMaterialInstanceId) return fail("zord_material_required");
-          const material = findZordMaterial(
-            nextPlayer,
-            state.definitions,
-            found.card.cardId,
-            found.card.instanceId,
-            action.zordMaterialInstanceId,
-          );
-          if (!material) return fail("invalid_zord_material");
-          const afterZord = applyZordMaterial(
-            nextPlayer,
-            state.definitions,
-            found.card.cardId,
-            found.card.instanceId,
-            action.zordMaterialInstanceId,
-          );
-          if (!afterZord) return fail("invalid_zord_material");
-          nextPlayer = afterZord;
+          const mothershipHolds = action.zordMothershipHoldInstanceIds ?? [];
+          const hasMaterial = !!action.zordMaterialInstanceId;
+          if (!hasMaterial && mothershipHolds.length === 0) {
+            return fail("zord_material_required");
+          }
+          if (
+            !validateZordAdditionalPayment(
+              nextPlayer,
+              state.definitions,
+              found.card.cardId,
+              found.card.instanceId,
+              action.zordMaterialInstanceId,
+              action.zordMaterialDestination,
+              mothershipHolds,
+            )
+          ) {
+            return fail("invalid_zord_material");
+          }
+
+          if (hasMaterial) {
+            const afterZord = applyZordMaterial(
+              nextPlayer,
+              state.definitions,
+              found.card.cardId,
+              found.card.instanceId,
+              action.zordMaterialInstanceId!,
+              action.zordMaterialDestination,
+            );
+            if (!afterZord) return fail("invalid_zord_material");
+            nextPlayer = afterZord;
+          }
+
+          if (mothershipHolds.length > 0) {
+            const kind = canUseMothershipForZordRush(
+              state.definitions,
+              nextPlayer,
+              found.card.cardId,
+            );
+            if (!kind) return fail("invalid_zord_material");
+            const afterHolds = applyMothershipHolds(
+              nextPlayer,
+              state.definitions,
+              mothershipHolds,
+              kind,
+            );
+            if (!afterHolds) return fail("invalid_zord_material");
+            nextPlayer = afterHolds;
+          }
         }
       }
 
@@ -558,6 +598,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         ...nextPlayer,
         battle: [...nextPlayer.battle, battleCard],
       };
+      nextPlayer = releaseHeldCommands(
+        nextPlayer,
+        requiredBattleEntryHolds(state, found.card),
+      );
       let nextState: GameState = {
         ...state,
         ...updatePlayer(state, playerId, nextPlayer),

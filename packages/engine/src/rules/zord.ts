@@ -1,11 +1,14 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import {
   getZordCondition,
+  isSendSUnitZordCondition,
   isValidZordFusionMaterial,
   isZordUpCost,
   listZordFusionPartnerIds,
 } from "@rangers-strike/cards";
+import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, PlayerState } from "../types/game";
+import { COMMAND_ZONE_MAX } from "../types/game";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, removeAt } from "../core/helpers";
 
@@ -143,7 +146,7 @@ export function collectZordMaterials(
         if (isValidFusionMaterial(definitions, rushingCardId, card, rushingInstanceId)) {
           candidates.push(card);
         }
-      } else if (condition === "send_s_unit_to_power") {
+      } else if (isSendSUnitZordCondition(condition)) {
         if (isValidPowerMaterial(definitions, card, rushingInstanceId)) {
           candidates.push(card);
         }
@@ -188,6 +191,7 @@ export function applyZordMaterial(
   rushingCardId: string,
   rushingInstanceId: string,
   materialInstanceId: string,
+  destination?: ZordMaterialDestination,
 ): PlayerState | null {
   const material = findZordMaterial(
     player,
@@ -209,6 +213,27 @@ export function applyZordMaterial(
       ...nextPlayer,
       discard: [...nextPlayer.discard, material.card],
     };
+  } else if (
+    condition === "send_s_unit_to_discard" ||
+    (condition === "send_s_unit_to_command_or_discard" && destination === "discard")
+  ) {
+    nextPlayer = {
+      ...nextPlayer,
+      discard: [...nextPlayer.discard, material.card],
+    };
+  } else if (condition === "send_s_unit_to_command_or_discard") {
+    if (destination === "command") {
+      if (nextPlayer.command.length >= COMMAND_ZONE_MAX) return null;
+      nextPlayer = {
+        ...nextPlayer,
+        command: [
+          ...nextPlayer.command,
+          { ...material.card, commandHeld: false },
+        ],
+      };
+    } else {
+      return null;
+    }
   } else {
     nextPlayer = {
       ...nextPlayer,

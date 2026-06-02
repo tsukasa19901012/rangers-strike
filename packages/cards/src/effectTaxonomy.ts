@@ -30,6 +30,22 @@ export type NamedEffectTrigger =
   /** Other conditional text; not yet implemented. */
   | { type: "conditional" };
 
+/** Zord-up rush additional condition (powerCost suffix "+"). See zord.ts. */
+export type ZordConditionId =
+  | "discard_fusion_unit"
+  | "send_s_unit_to_power"
+  | "send_s_unit_to_discard"
+  | "send_s_unit_to_command_or_discard";
+
+/** Rush additional condition (atwiki 追加条件：…). */
+export type RushAdditionalCondition = {
+  conditionId: ZordConditionId;
+  /** Official wording (e.g. 自軍Sユニットを1体パワーゾーンに送る). */
+  text: string;
+  /** For send-S conditions (default 1). */
+  unitCount?: number;
+};
+
 /** 効果名を持つ効果 — maps to engine effectId when implemented. */
 export type NamedUnitEffect = {
   /** Display name inside 【】 (not including brackets). */
@@ -41,17 +57,47 @@ export type NamedUnitEffect = {
   trigger: NamedEffectTrigger;
 };
 
+/**
+ * Machine-readable id for 効果名を持たないテキスト (※ lines).
+ * Engine and deck rules should use these instead of substring matching on `text`.
+ */
+export type UnnamedUnitRule =
+  | "battle_entry_hold"
+  | "auto_battle_entry_each_turn"
+  | "auto_battle_entry_on_rush"
+  | "destroy_self_damage"
+  | "deck_copy_unlimited"
+  | "needs_ally_s_in_battle"
+  | "win_but_destroyed_vs_sp1"
+  | "return_to_hand_at_6_damage"
+  | "no_battle_entry_turn_rushed"
+  | "no_attack_turn_rushed"
+  | "no_strike_turn_rushed"
+  | "cannot_enter_battle"
+  /** Zord fusion material may be treated as another card name (display / deck building). */
+  | "fusion_material_alias"
+  /** Optional on enter; engine may implement later. */
+  | "opponent_may_draw_on_enter";
+
 /** 効果名を持たないテキスト — static rules, ※ restrictions, zord material lines. */
 export type UnnamedUnitText = {
   kind: "note" | "zord" | "fusion";
   text: string;
+  /** Engine rule id when this note is implemented or catalogued. */
+  rule?: UnnamedUnitRule;
+  /** For `battle_entry_hold`: commands required (default 1). */
+  holdCount?: number;
+  /** For `destroy_self_damage`: damage to controller when destroyed to discard. */
+  damage?: number;
   /** Zord-up fusion partners (合体― line). */
   partnerCardIds?: string[];
 };
 
 export type UnitEffectBlock = {
+  /** Rush zord-up requirement (wiki 追加条件 field, separate from テキスト). */
+  rushAdditionalCondition?: RushAdditionalCondition;
   unnamedText: UnnamedUnitText[];
   namedEffects: NamedUnitEffect[];
-  /** Full source text (grnrngr / wiki). */
+  /** Card effect text (【】 abilities / ※ notes); excludes 追加条件. */
   rawText: string;
 };

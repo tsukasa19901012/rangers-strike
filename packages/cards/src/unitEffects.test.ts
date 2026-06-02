@@ -1,11 +1,20 @@
 import { describe, expect, it } from "vitest";
+import legend1UnitEffects from "./legend1/unitEffects.json";
+import legend2UnitEffects from "./legend2/unitEffects.json";
 import {
   findNcNamedEffect,
+  getBattleEntryHoldCount,
   getUnitEffectBlock,
+  hasBattleEntryHoldNote,
+  hasDestroySelfDamageNote,
+  hasUnnamedRule,
+  listBattleEntryHoldCardIds,
   listNcNamedEffects,
   listZordFusionPartnerIds,
 } from "./unitEffects";
 import { getNumberComboEffect } from "./comboEffects";
+
+const ALL_BLOCKS = { ...legend1UnitEffects, ...legend2UnitEffects };
 
 describe("effect taxonomy (Legend1 units)", () => {
   it("parses RS-066 as named effect 遺跡調査 with NC trigger", () => {
@@ -20,6 +29,9 @@ describe("effect taxonomy (Legend1 units)", () => {
     const block = getUnitEffectBlock("RS-054");
     expect(block?.unnamedText.length).toBeGreaterThanOrEqual(2);
     expect(block?.unnamedText.every((u) => u.kind === "note")).toBe(true);
+    expect(block?.unnamedText.every((u) => u.rule !== undefined)).toBe(true);
+    expect(hasDestroySelfDamageNote("RS-054")).toBe(true);
+    expect(hasUnnamedRule("RS-054", "auto_battle_entry_each_turn")).toBe(true);
     expect(block?.namedEffects[0]?.name).toBe("ティラノロッド");
   });
 
@@ -90,5 +102,41 @@ describe("effect taxonomy (Legend1 units)", () => {
     ]);
     expect(listZordFusionPartnerIds("RS-112")).toEqual(["RS-115", "RS-114"]);
     expect(listZordFusionPartnerIds("RS-113")).toEqual(["RS-057", "RS-114"]);
+  });
+
+  it("detects battle entry hold via structured rule on RS-052", () => {
+    const block = getUnitEffectBlock("RS-052");
+    expect(block?.unnamedText[0]?.rule).toBe("battle_entry_hold");
+    expect(block?.unnamedText[0]?.holdCount).toBe(1);
+    expect(hasBattleEntryHoldNote("RS-052")).toBe(true);
+    expect(getBattleEntryHoldCount("RS-052")).toBe(1);
+  });
+
+  it("lists battle entry hold cards from rules only", () => {
+    expect(listBattleEntryHoldCardIds()).toEqual([
+      "RS-035",
+      "RS-036",
+      "RS-037",
+      "RS-038",
+      "RS-039",
+      "RS-051",
+      "RS-052",
+      "RS-053",
+    ]);
+  });
+});
+
+describe("unnamedText rule coverage", () => {
+  it("assigns a rule id to every note line in unitEffects.json", () => {
+    const missing: string[] = [];
+    for (const [cardId, block] of Object.entries(ALL_BLOCKS)) {
+      for (const entry of block.unnamedText) {
+        if (entry.kind !== "note") continue;
+        if (!entry.rule) {
+          missing.push(`${cardId}: ${entry.text}`);
+        }
+      }
+    }
+    expect(missing).toEqual([]);
   });
 });

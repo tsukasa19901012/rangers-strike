@@ -442,6 +442,10 @@
       "rarity": "SR",
       "expansion": "legend1",
       "powerCost": "8+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 17000,
       "size": "L",
       "sp": 1,
@@ -587,6 +591,10 @@
       "rarity": "SR",
       "expansion": "legend1",
       "powerCost": "8+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 19000,
       "size": "L",
       "sp": 2,
@@ -606,6 +614,11 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "5+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 6000,
       "size": "M",
       "sp": "special",
@@ -625,6 +638,11 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "7+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 4000,
       "size": "M",
       "sp": 1,
@@ -643,6 +661,11 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "4+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "M",
       "imageUrl": "/cards/legend1/RS-045.jpg",
@@ -661,6 +684,11 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "5+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "M",
       "imageUrl": "/cards/legend1/RS-046.jpg",
@@ -679,6 +707,11 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "3+",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 3000,
       "size": "M",
       "imageUrl": "/cards/legend1/RS-047.jpg",
@@ -737,6 +770,10 @@
       "rarity": "SR",
       "expansion": "legend1",
       "powerCost": "7+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 13000,
       "size": "L",
       "sp": 1,
@@ -848,6 +885,10 @@
       "rarity": "SR",
       "expansion": "legend1",
       "powerCost": "6+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 15000,
       "size": "L",
       "sp": 1,
@@ -1107,6 +1148,10 @@
       "rarity": "SR",
       "expansion": "legend1",
       "powerCost": "7+",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 16000,
       "size": "L",
       "sp": 1,

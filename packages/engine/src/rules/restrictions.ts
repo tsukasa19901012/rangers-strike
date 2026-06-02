@@ -326,6 +326,33 @@ export function countHeldCommands(player: PlayerState): number {
   return player.command.filter((c) => c.commandHeld).length;
 }
 
+/** Release up to `count` held commands (left-to-right in command zone). */
+export function releaseHeldCommands(
+  player: PlayerState,
+  count: number,
+): PlayerState {
+  if (count <= 0) return player;
+  const command = player.command.map((c) => ({ ...c }));
+  let remaining = count;
+  for (let i = 0; i < command.length && remaining > 0; i++) {
+    if (command[i]!.commandHeld) {
+      command[i] = { ...command[i]!, commandHeld: false };
+      remaining -= 1;
+    }
+  }
+  return { ...player, command };
+}
+
+/** Consume holds required to enter battle (card text + lightning gravity). */
+export function consumeBattleEntryHolds(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+): PlayerState {
+  const count = requiredBattleEntryHolds(state, unit);
+  return releaseHeldCommands(state.players[playerId], count);
+}
+
 /** RS-010: 2 held commands substitute for 1 required category hold when using a card. */
 export function hasCommandForCardUse(
   player: PlayerState,

@@ -23,6 +23,7 @@ import { canStrikeUnit } from "../rules/combo";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import { canMoveUnitToBattle, countHeldCommands, mustEnterBattleBeforePhaseEnd } from "../rules/restrictions";
 import { canBonusDraw, mustDrawBeforeStartEnd, mustResolveEarthForceUpkeepBeforeStartEnd, canPayEarthForceUpkeep } from "../rules/startPhase";
+import { listZordRushPaymentVariants } from "../rules/mothership";
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
 import {
   canPlayDinoGutsLeaveCounter,
@@ -496,14 +497,24 @@ export function getLegalActions(state: GameState): GameAction[] {
               card.cardId,
               card.instanceId,
             );
-            for (const material of materials) {
+            const variants = listZordRushPaymentVariants(
+              player,
+              state.definitions,
+              card.cardId,
+              card.instanceId,
+              materials,
+              player.command.length < COMMAND_ZONE_MAX,
+            );
+            for (const variant of variants) {
               if (
                 !canRushUnit(
                   player,
                   state.definitions,
                   definition!,
                   card.instanceId,
-                  material.instanceId,
+                  variant.zordMaterialInstanceId,
+                  variant.zordMothershipHoldInstanceIds,
+                  variant.zordMaterialDestination,
                 )
               ) {
                 continue;
@@ -512,7 +523,9 @@ export function getLegalActions(state: GameState): GameAction[] {
                 type: "rush",
                 playerId,
                 instanceId: card.instanceId,
-                zordMaterialInstanceId: material.instanceId,
+                zordMaterialInstanceId: variant.zordMaterialInstanceId,
+                zordMaterialDestination: variant.zordMaterialDestination,
+                zordMothershipHoldInstanceIds: variant.zordMothershipHoldInstanceIds,
               });
             }
           }
@@ -635,9 +648,13 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
   }
 
   if (a.type === "rush" && b.type === "rush") {
+    const holdsA = [...(a.zordMothershipHoldInstanceIds ?? [])].sort().join(",");
+    const holdsB = [...(b.zordMothershipHoldInstanceIds ?? [])].sort().join(",");
     return (
       a.instanceId === b.instanceId &&
-      (a.zordMaterialInstanceId ?? "") === (b.zordMaterialInstanceId ?? "")
+      (a.zordMaterialInstanceId ?? "") === (b.zordMaterialInstanceId ?? "") &&
+      (a.zordMaterialDestination ?? "") === (b.zordMaterialDestination ?? "") &&
+      holdsA === holdsB
     );
   }
 

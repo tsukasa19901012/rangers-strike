@@ -2,9 +2,11 @@ import type { CardDefinition, UnitSize } from "@rangers-strike/cards";
 import { cardCategories, getCardById, type Category } from "@rangers-strike/cards";
 import { getCardEffect } from "@rangers-strike/cards";
 import type { SpValue } from "@rangers-strike/cards";
+import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { hasCommandForCardUse } from "../rules/restrictions";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
+import { validateZordAdditionalPayment } from "../rules/mothership";
 import { collectZordMaterials, hasAllRequiredFusionMaterials, needsZordMaterial, requiresAllFusionPartners } from "../rules/zord";
 import { getTurnModifiers } from "../rules/turnModifiers";
 import { opponentInfiniteChainBlocks } from "../rules/turnModifiers";
@@ -216,6 +218,8 @@ export function canRushUnit(
   unitDefinition: CardDefinition,
   rushingInstanceId: string,
   zordMaterialInstanceId?: string,
+  zordMothershipHoldInstanceIds?: string[],
+  zordMaterialDestination?: ZordMaterialDestination,
 ): boolean {
   const cost = parsePowerCost(unitDefinition.powerCost);
   if (player.power.length < cost) return false;
@@ -233,15 +237,15 @@ export function canRushUnit(
     );
   }
 
-  const materials = collectZordMaterials(
+  return validateZordAdditionalPayment(
     player,
     definitions,
     unitDefinition.id,
     rushingInstanceId,
+    zordMaterialInstanceId,
+    zordMaterialDestination,
+    zordMothershipHoldInstanceIds,
   );
-  if (materials.length === 0) return false;
-  if (!zordMaterialInstanceId) return true;
-  return materials.some((m) => m.instanceId === zordMaterialInstanceId);
 }
 
 export function canPlayOperation(

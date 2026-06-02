@@ -2,12 +2,19 @@ import type {
   NamedEffectTrigger,
   NamedUnitEffect,
   UnitEffectBlock,
+  UnnamedUnitRule,
   UnnamedUnitText,
 } from "./effectTaxonomy";
 import legend1UnitEffectsJson from "./legend1/unitEffects.json";
 import legend2UnitEffectsJson from "./legend2/unitEffects.json";
 
-export type { NamedEffectTrigger, NamedUnitEffect, UnitEffectBlock, UnnamedUnitText };
+export type {
+  NamedEffectTrigger,
+  NamedUnitEffect,
+  UnitEffectBlock,
+  UnnamedUnitRule,
+  UnnamedUnitText,
+};
 export type { NamedEffectTrigger as EffectTrigger } from "./effectTaxonomy";
 
 const UNIT_EFFECTS = {
@@ -15,15 +22,33 @@ const UNIT_EFFECTS = {
   ...(legend2UnitEffectsJson as Record<string, UnitEffectBlock>),
 };
 
-/** Match card text in unnamed ※ / rules lines. */
-export function hasUnitEffectNote(cardId: string, fragment: string): boolean {
-  const block = UNIT_EFFECTS[cardId];
-  if (!block) return false;
-  return block.unnamedText.some((u) => u.text.includes(fragment));
-}
-
 export function getUnitEffectBlock(cardId: string): UnitEffectBlock | undefined {
   return UNIT_EFFECTS[cardId];
+}
+
+export function listUnnamedRules(cardId: string): UnnamedUnitRule[] {
+  const block = UNIT_EFFECTS[cardId];
+  if (!block) return [];
+  return block.unnamedText
+    .map((u) => u.rule)
+    .filter((rule): rule is UnnamedUnitRule => rule !== undefined);
+}
+
+export function hasUnnamedRule(cardId: string, rule: UnnamedUnitRule): boolean {
+  return listUnnamedRules(cardId).includes(rule);
+}
+
+function sumUnnamedRuleParam(
+  cardId: string,
+  rule: UnnamedUnitRule,
+  param: "holdCount" | "damage",
+  defaultValue: number,
+): number {
+  const block = UNIT_EFFECTS[cardId];
+  if (!block) return 0;
+  return block.unnamedText
+    .filter((u) => u.rule === rule)
+    .reduce((sum, u) => sum + (u[param] ?? defaultValue), 0);
 }
 
 /** Fusion units listed on this zord's 合体― line (zord-up material). */
@@ -166,11 +191,12 @@ export function listRidingComboNamedEffects(): Array<{ cardId: string; effectId:
   return listNamedEffectsByTrigger("riding_combo");
 }
 
-export const BATTLE_ENTRY_HOLD_NOTE =
-  "自軍コマンドを1つホールドしなければバトルエリアに出られない";
+export function getBattleEntryHoldCount(cardId: string): number {
+  return sumUnnamedRuleParam(cardId, "battle_entry_hold", "holdCount", 1);
+}
 
 export function hasBattleEntryHoldNote(cardId: string): boolean {
-  return hasUnitEffectNote(cardId, BATTLE_ENTRY_HOLD_NOTE);
+  return getBattleEntryHoldCount(cardId) > 0;
 }
 
 /** Units with ※ battle-entry hold note (Legend 1 zord fusion partners, etc.). */
@@ -182,13 +208,13 @@ export function listBattleEntryHoldCardIds(): string[] {
 
 export function hasAutoBattleEntryNote(cardId: string): boolean {
   return (
-    hasUnitEffectNote(cardId, "毎ターン、可能ならバトルエリアに出る") ||
-    hasUnitEffectNote(cardId, "ラッシュするとき可能ならバトルエリアに置く")
+    hasUnnamedRule(cardId, "auto_battle_entry_each_turn") ||
+    hasUnnamedRule(cardId, "auto_battle_entry_on_rush")
   );
 }
 
 export function hasDestroySelfDamageNote(cardId: string): boolean {
-  return hasUnitEffectNote(cardId, "撃破されたとき、1点ダメージ");
+  return hasUnnamedRule(cardId, "destroy_self_damage");
 }
 
 export function findNamedEffectByEffectId(

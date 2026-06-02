@@ -13,7 +13,8 @@ function actionKey(action: GameAction): string {
     case "battle":
       return `${action.type}:${action.attackerInstanceId}:${action.defenderInstanceId}`;
     case "rush":
-      return `${action.type}:${action.instanceId}:${action.zordMaterialInstanceId ?? ""}`;
+      const holds = [...(action.zordMothershipHoldInstanceIds ?? [])].sort().join(",");
+      return `${action.type}:${action.instanceId}:${action.zordMaterialInstanceId ?? ""}:${action.zordMaterialDestination ?? ""}:${holds}`;
     case "play_operation":
       return `${action.type}:${action.instanceId}:${action.targetInstanceId ?? ""}:${action.extraInstanceId ?? ""}`;
     case "move_to_battle":

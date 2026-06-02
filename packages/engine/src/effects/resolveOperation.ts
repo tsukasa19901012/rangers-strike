@@ -24,7 +24,11 @@ import { findCardInPlayer, findOwnUnit } from "../core/modifiers";
 import { findCardOwner } from "../rules/fieldLookup";
 import { withTurnModifiers } from "../rules/turnModifiers";
 import { resolveInfiniteChain } from "../rules/legend2/operations";
-import { canMoveUnitToBattle } from "../rules/restrictions";
+import {
+  canMoveUnitToBattle,
+  releaseHeldCommands,
+  requiredBattleEntryHolds,
+} from "../rules/restrictions";
 import { tryLeaveField } from "../rules/operationCounters";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { applySuperBrainDraw } from "./drawEffects";
@@ -280,7 +284,7 @@ function returnFusionMaterialsAfterBazooka(
     return state;
   }
 
-  const enemy = state.players[enemyId];
+  let enemy = state.players[enemyId];
   let discard = [...enemy.discard];
   let battle = [...enemy.battle];
   const quota = 1;
@@ -300,6 +304,10 @@ function returnFusionMaterialsAfterBazooka(
     discard = rest;
 
     if (canMoveUnitToBattle(state, enemyId, card, "rush")) {
+      enemy = releaseHeldCommands(
+        enemy,
+        requiredBattleEntryHolds(state, card),
+      );
       battle = [...battle, { ...card, battleActed: false }];
       returned += 1;
     } else {

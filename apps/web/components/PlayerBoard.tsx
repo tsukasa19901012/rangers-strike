@@ -320,6 +320,8 @@ export type PlayerBoardProps = {
   onOperationTarget?: (instanceId: string) => void;
   pendingZordTargets?: Set<string>;
   onZordMaterial?: (instanceId: string) => void;
+  pendingZordMothershipTargets?: Set<string>;
+  onZordMothershipHold?: (instanceId: string) => void;
   canAcceptStrike?: boolean;
   strikeHighlight?: boolean;
   onStrikeDrop?: (payload: DragCardPayload) => void;
@@ -359,6 +361,8 @@ export function PlayerBoard({
   onOperationTarget,
   pendingZordTargets,
   onZordMaterial,
+  pendingZordMothershipTargets,
+  onZordMothershipHold,
   canAcceptStrike,
   strikeHighlight,
   onStrikeDrop,
@@ -452,6 +456,7 @@ export function PlayerBoard({
     const ids = new Set<string>();
     pendingOperationTargets?.forEach((id) => ids.add(id));
     pendingZordTargets?.forEach((id) => ids.add(id));
+    pendingZordMothershipTargets?.forEach((id) => ids.add(id));
     pendingEffectChoiceTargets?.forEach((id) => ids.add(id));
     attackTargetIds?.forEach((id) => ids.add(id));
     return ids.size > 0 ? ids : undefined;
@@ -464,6 +469,10 @@ export function PlayerBoard({
     }
     if (pendingEffectChoiceTargets?.has(instanceId)) {
       onEffectChoiceSelect?.(instanceId);
+      return;
+    }
+    if (pendingZordMothershipTargets?.has(instanceId)) {
+      onZordMothershipHold?.(instanceId);
       return;
     }
     if (pendingZordTargets?.has(instanceId)) {

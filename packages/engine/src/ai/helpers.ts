@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { getBattleEntryHoldCount } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
@@ -9,7 +10,11 @@ import {
   parsePowerCost,
 } from "../core/catalog";
 import { findInZone, opponent } from "../core/helpers";
-import { findMandatoryBattleEntries, hasCommandForCardUse } from "../rules/restrictions";
+import {
+  countHeldCommands,
+  findMandatoryBattleEntries,
+  hasCommandForCardUse,
+} from "../rules/restrictions";
 import { findCardOwner } from "../rules/fieldLookup";
 import { strikeDamageFor } from "../rules/combo";
 import { WIN_DAMAGE } from "../types/game";
@@ -191,6 +196,24 @@ export function pickMandatoryBattleMove(
     }
   }
   return best;
+}
+
+/** Hold a command before battle entry when a rush unit requires a held command. */
+export function pickHoldBeforeBattle(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): GameAction | null {
+  const player = state.players[playerId];
+  if (countHeldCommands(player) > 0) return null;
+
+  const needsHold = actionsOfType(actions, "move_to_battle").some((action) => {
+    const card = player.rush.find((c) => c.instanceId === action.instanceId);
+    return card ? getBattleEntryHoldCount(card.cardId) > 0 : false;
+  });
+  if (!needsHold) return null;
+
+  return actionsOfType(actions, "hold_command")[0] ?? null;
 }
 
 export function pickHoldBeforeRush(

@@ -223,7 +223,55 @@ describe("zord-up rush", () => {
         a.instanceId === zord.instanceId &&
         a.zordMaterialInstanceId === sUnit.instanceId,
     );
-    expect(withMaterial).toHaveLength(1);
+    expect(withMaterial).toHaveLength(2);
+    expect(
+      withMaterial.map((a) => a.type === "rush" && a.zordMaterialDestination),
+    ).toEqual(expect.arrayContaining(["command", "discard"]));
+  });
+
+  it("RS-075 zord material can go to command zone", () => {
+    const zord = inst("RS-075", "z1");
+    const sUnit = inst("RS-080", "s1");
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [zord],
+        power: Array.from({ length: 5 }, (_, i) => inst("TST-OP", `p${i}`)),
+        command: [heldEtCommand("c1")],
+        rush: [sUnit],
+      },
+    });
+
+    state.definitions["RS-075"] = {
+      id: "RS-075",
+      name: "Blue Vulcan",
+      type: "unit",
+      category: "ET",
+      rarity: "N",
+      expansion: "test",
+      powerCost: "5+",
+      bp: 5000,
+      size: "M",
+    };
+    state.definitions["RS-080"] = {
+      ...fusionDef("RS-080", "S Unit"),
+      size: "S",
+      bp: 2000,
+    };
+
+    const result = applyAction(state, {
+      type: "rush",
+      playerId: "player1",
+      instanceId: zord.instanceId,
+      zordMaterialInstanceId: sUnit.instanceId,
+      zordMaterialDestination: "command",
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.state.players.player1.command.some((c) => c.instanceId === sUnit.instanceId)).toBe(
+      true,
+    );
+    expect(result.state.players.player1.rush.some((c) => c.cardId === "RS-075")).toBe(true);
   });
 
   it("does not accept zord materials from hand", () => {

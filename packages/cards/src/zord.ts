@@ -1,10 +1,9 @@
-import { listZordFusionPartnerIds } from "./unitEffects";
+import { getUnitEffectBlock, listZordFusionPartnerIds } from "./unitEffects";
+import type { RushAdditionalCondition, ZordConditionId } from "./effectTaxonomy";
+
+export type { RushAdditionalCondition, ZordConditionId };
 
 /** Zord-up additional condition ids (powerCost suffix "+"). */
-export type ZordConditionId =
-  | "discard_fusion_unit"
-  | "send_s_unit_to_power";
-
 export const ZORD_CONDITIONS: Record<string, ZordConditionId> = {
   "RS-034": "discard_fusion_unit",
   "RS-042": "discard_fusion_unit",
@@ -17,8 +16,8 @@ export const ZORD_CONDITIONS: Record<string, ZordConditionId> = {
   "RS-056": "discard_fusion_unit",
   "RS-070": "discard_fusion_unit",
   "RS-073": "discard_fusion_unit",
-  "RS-074": "send_s_unit_to_power",
-  "RS-075": "send_s_unit_to_power",
+  "RS-074": "send_s_unit_to_command_or_discard",
+  "RS-075": "send_s_unit_to_command_or_discard",
   "RS-084": "discard_fusion_unit",
   "RS-085": "send_s_unit_to_power",
   "RS-086": "send_s_unit_to_power",
@@ -27,19 +26,78 @@ export const ZORD_CONDITIONS: Record<string, ZordConditionId> = {
   "RS-089": "send_s_unit_to_power",
   "RS-094": "send_s_unit_to_power",
   "RS-095": "discard_fusion_unit",
-  "RS-096": "send_s_unit_to_power",
-  "RS-097": "send_s_unit_to_power",
-  "RS-098": "send_s_unit_to_power",
+  "RS-096": "send_s_unit_to_discard",
+  "RS-097": "send_s_unit_to_discard",
+  "RS-098": "send_s_unit_to_discard",
   "RS-111": "discard_fusion_unit",
   "RS-112": "discard_fusion_unit",
   "RS-113": "discard_fusion_unit",
   "RS-117": "discard_fusion_unit",
-  "RS-118": "send_s_unit_to_power",
-  "RS-119": "send_s_unit_to_power",
-  "RS-120": "send_s_unit_to_power",
-  "RS-121": "send_s_unit_to_power",
-  "RS-122": "send_s_unit_to_power",
+  "RS-118": "send_s_unit_to_command_or_discard",
+  "RS-119": "send_s_unit_to_command_or_discard",
+  "RS-120": "send_s_unit_to_command_or_discard",
+  "RS-121": "send_s_unit_to_command_or_discard",
+  "RS-122": "send_s_unit_to_command_or_discard",
 };
+
+/** Official 追加条件 text per condition id (atwiki 追加条件別一覧). */
+export function rushAdditionalConditionText(
+  conditionId: ZordConditionId,
+  unitCount = 1,
+): string {
+  if (conditionId === "discard_fusion_unit") {
+    return "自軍合体ユニットを捨札にする";
+  }
+  if (conditionId === "send_s_unit_to_command_or_discard") {
+    return `自軍Sユニットを${unitCount}体コマンドゾーンに送るか捨札にする`;
+  }
+  if (conditionId === "send_s_unit_to_discard") {
+    return `自軍Sユニットを${unitCount}体捨札にする`;
+  }
+  return `自軍Sユニットを${unitCount}体パワーゾーンに送る`;
+}
+
+export function buildRushAdditionalCondition(
+  conditionId: ZordConditionId,
+  unitCount = 1,
+): RushAdditionalCondition {
+  const text = rushAdditionalConditionText(conditionId, unitCount);
+  if (
+    conditionId === "send_s_unit_to_power" ||
+    conditionId === "send_s_unit_to_discard" ||
+    conditionId === "send_s_unit_to_command_or_discard"
+  ) {
+    return { conditionId, text, unitCount };
+  }
+  return { conditionId, text };
+}
+
+export function isSendSUnitZordCondition(conditionId: ZordConditionId): boolean {
+  return (
+    conditionId === "send_s_unit_to_power" ||
+    conditionId === "send_s_unit_to_discard" ||
+    conditionId === "send_s_unit_to_command_or_discard"
+  );
+}
+
+export function getRushAdditionalCondition(
+  cardId: string,
+): RushAdditionalCondition | undefined {
+  const conditionId = ZORD_CONDITIONS[cardId];
+  if (!conditionId) return undefined;
+  return buildRushAdditionalCondition(conditionId);
+}
+
+/** Prefer unitEffects.json / cards.json, then ZORD_CONDITIONS default. */
+export function resolveRushAdditionalCondition(
+  cardId: string,
+  card?: { rushAdditionalCondition?: RushAdditionalCondition },
+): RushAdditionalCondition | undefined {
+  const fromBlock = getUnitEffectBlock(cardId)?.rushAdditionalCondition;
+  if (fromBlock) return fromBlock;
+  if (card?.rushAdditionalCondition) return card.rushAdditionalCondition;
+  return getRushAdditionalCondition(cardId);
+}
 
 /** Units that satisfy 「自軍合体ユニットを捨札にする」. */
 export const FUSION_UNIT_IDS = new Set([

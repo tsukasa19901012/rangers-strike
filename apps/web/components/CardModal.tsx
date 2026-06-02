@@ -2,7 +2,11 @@
 
 import Image from "next/image";
 import type { CardDefinition } from "@rangers-strike/cards";
-import { getCardEffect, getUnitEffectBlock } from "@rangers-strike/cards";
+import {
+  getCardEffect,
+  getUnitEffectBlock,
+  resolveRushAdditionalCondition,
+} from "@rangers-strike/cards";
 
 type CardModalProps = {
   card: CardDefinition;
@@ -12,6 +16,7 @@ type CardModalProps = {
 export function CardModal({ card, onClose }: CardModalProps) {
   const operationEffect = getCardEffect(card.id);
   const unitEffects = card.type === "unit" ? getUnitEffectBlock(card.id) : undefined;
+  const rushAdditionalCondition = resolveRushAdditionalCondition(card.id, card);
 
   return (
     <div className="modal-backdrop" onClick={onClose} role="presentation">
@@ -83,6 +88,12 @@ export function CardModal({ card, onClose }: CardModalProps) {
                 </div>
               )}
             </dl>
+            {rushAdditionalCondition && (
+              <section className="modal__effect">
+                <h4>追加条件</h4>
+                <p>{rushAdditionalCondition.text}</p>
+              </section>
+            )}
             {unitEffects && (
               <section className="modal__effect">
                 <h4>効果</h4>

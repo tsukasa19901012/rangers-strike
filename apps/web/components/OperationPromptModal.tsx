@@ -13,6 +13,13 @@ type OperationPromptModalProps = {
   targetInstanceIds: string[];
   discardOnlyIds: Set<string> | null;
   onSelectTarget: (instanceId: string) => void;
+  onZordDestination?: (destination: "command" | "discard") => void;
+  onZordMothershipHold?: (commandInstanceId: string) => void;
+  mothershipCommandTargets?: Array<{
+    instanceId: string;
+    card: { name: string };
+    zoneLabel: string;
+  }>;
   onCancel: () => void;
 };
 
@@ -23,6 +30,9 @@ export function OperationPromptModal({
   targetInstanceIds,
   discardOnlyIds,
   onSelectTarget,
+  onZordDestination,
+  onZordMothershipHold,
+  mothershipCommandTargets = [],
   onCancel,
 }: OperationPromptModalProps) {
   if (!pendingOp && !pendingZord) return null;
@@ -43,8 +53,14 @@ export function OperationPromptModal({
     ? targets.filter((t) => discardOnlyIds.has(t.instanceId))
     : [];
 
-  const hint = pendingZord
-    ? "場の合体ユニットまたはSユニットを選んでください"
+  const hint = pendingZord?.materialInstanceId && pendingZord.materialDestination
+    ? "母艦で追加ホールドするコマンドを選んでください"
+    : pendingZord?.materialInstanceId
+    ? "コマンドゾーンに送るか捨札にするか選んでください"
+    : pendingZord
+      ? mothershipCommandTargets.length > 0
+        ? "場のSユニットを選ぶか、母艦でホールドするコマンドを選んでください"
+        : "場の合体ユニットまたはSユニットを選んでください"
     : pendingOp?.targetType === "discard_any" ||
         pendingOp?.targetType === "discard_s_unit" ||
         pendingOp?.targetType === "discard_mecha"
@@ -78,7 +94,47 @@ export function OperationPromptModal({
           )}
           <p className="effect-action-modal__hint">{hint}</p>
 
-          {fieldTargets.length > 0 && (
+          {pendingZord?.materialInstanceId &&
+            !pendingZord.materialDestination &&
+            onZordDestination && (
+            <div className="effect-action-modal__targets">
+              <button
+                type="button"
+                className="btn effect-action-modal__target"
+                onClick={() => onZordDestination("command")}
+              >
+                コマンドゾーンに送る
+              </button>
+              <button
+                type="button"
+                className="btn effect-action-modal__target"
+                onClick={() => onZordDestination("discard")}
+              >
+                捨札にする
+              </button>
+            </div>
+          )}
+
+          {!pendingZord?.materialInstanceId && mothershipCommandTargets.length > 0 && (
+            <div className="effect-action-modal__section">
+              <p className="effect-action-modal__label">母艦（コマンドをホールド）</p>
+              <div className="effect-action-modal__targets">
+                {mothershipCommandTargets.map((target) => (
+                  <button
+                    key={target.instanceId}
+                    type="button"
+                    className="btn effect-action-modal__target"
+                    onClick={() => onZordMothershipHold?.(target.instanceId)}
+                  >
+                    {target.card.name}
+                    <span className="effect-action-modal__target-meta">{target.zoneLabel}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!pendingZord?.materialInstanceId && fieldTargets.length > 0 && (
             <div className="effect-action-modal__section">
               {discardTargets.length > 0 && (
                 <p className="effect-action-modal__label">場のカード</p>
@@ -99,7 +155,7 @@ export function OperationPromptModal({
             </div>
           )}
 
-          {discardTargets.length > 0 && (
+          {!pendingZord?.materialInstanceId && discardTargets.length > 0 && (
             <div className="effect-action-modal__section">
               <p className="effect-action-modal__label">捨札</p>
               <div className="effect-action-modal__targets">

@@ -66,6 +66,7 @@ describe("legend2 integration", () => {
         playerId: "player1",
         instanceId: "RS-075:rescue",
         zordMaterialInstanceId: "RS-080:s-material",
+        zordMaterialDestination: "discard",
       }),
     );
     expect(rushed.pendingEffectChoice?.effectId).toBe("rescue_activity");
