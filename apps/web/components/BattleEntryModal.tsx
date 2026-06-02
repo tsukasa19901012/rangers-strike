@@ -1,6 +1,7 @@
 "use client";
 
 import type { CardDefinition } from "@rangers-strike/cards";
+import { GameModalBackdrop } from "./GameModalBackdrop";
 
 export type BattleEntryTarget = {
   instanceId: string;
@@ -28,10 +29,11 @@ export function BattleEntryModal({
   onPass,
 }: BattleEntryModalProps) {
   return (
-    <div className="modal-backdrop" role="presentation">
+    <GameModalBackdrop>
       <div
         className="modal modal--battle-entry"
         onClick={(event) => event.stopPropagation()}
+        onPointerDown={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="battle-entry-title"
@@ -87,6 +89,6 @@ export function BattleEntryModal({
           </div>
         </div>
       </div>
-    </div>
+    </GameModalBackdrop>
   );
 }

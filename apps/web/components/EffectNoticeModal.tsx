@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { GameModalBackdrop } from "./GameModalBackdrop";
 
 type EffectNoticeModalProps = {
   message: string;
@@ -19,10 +20,11 @@ export function EffectNoticeModal({
   }, [autoDismissMs, onClose, message]);
 
   return (
-    <div className="modal-backdrop modal-backdrop--effect-notice" onClick={onClose} role="presentation">
+    <GameModalBackdrop onBackdropClick={onClose}>
       <div
         className="modal modal--alert modal--effect-notice"
         onClick={(event) => event.stopPropagation()}
+        onPointerDown={(event) => event.stopPropagation()}
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="effect-notice-title"
@@ -40,6 +42,6 @@ export function EffectNoticeModal({
           </button>
         </div>
       </div>
-    </div>
+    </GameModalBackdrop>
   );
 }

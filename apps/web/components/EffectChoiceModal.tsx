@@ -5,6 +5,7 @@ import { getCardById } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
 import { effectChoiceHint, effectChoiceTitle } from "@/lib/effectChoiceHint";
 import { resolveCardTargets, type CardTarget } from "@/lib/cardTargets";
+import { GameModalBackdrop } from "./GameModalBackdrop";
 
 type EffectChoiceModalProps = {
   state: GameState;
@@ -72,10 +73,11 @@ export function EffectChoiceModal({
       : [];
 
   return (
-    <div className="modal-backdrop" role="presentation">
+    <GameModalBackdrop>
       <div
         className="modal modal--effect-action"
         onClick={(event) => event.stopPropagation()}
+        onPointerDown={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="effect-choice-title"
@@ -155,6 +157,6 @@ export function EffectChoiceModal({
           )}
         </div>
       </div>
-    </div>
+    </GameModalBackdrop>
   );
 }

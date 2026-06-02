@@ -3,6 +3,7 @@
 import { EFFECT_LABELS, getCardById } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
 import { resolveCardTargets } from "@/lib/cardTargets";
+import { GameModalBackdrop } from "./GameModalBackdrop";
 
 type ReactionKind = "strike" | "battle" | "rush" | "leave";
 
@@ -62,10 +63,11 @@ export function ReactionModal({
   const substitutes = resolveCardTargets(state, substituteInstanceIds);
 
   return (
-    <div className="modal-backdrop" role="presentation">
+    <GameModalBackdrop>
       <div
         className="modal modal--effect-action"
         onClick={(event) => event.stopPropagation()}
+        onPointerDown={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="reaction-modal-title"
@@ -159,6 +161,6 @@ export function ReactionModal({
           )}
         </div>
       </div>
-    </div>
+    </GameModalBackdrop>
   );
 }

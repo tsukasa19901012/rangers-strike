@@ -629,8 +629,18 @@ select {
   padding: 16px;
 }
 
-.modal-backdrop--effect-notice {
-  z-index: 105;
+.modal-backdrop--game {
+  z-index: 120;
+  pointer-events: auto;
+}
+
+.modal-backdrop--game .modal {
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.modal-backdrop--game .btn {
+  touch-action: manipulation;
 }
 
 .modal {
@@ -885,6 +895,10 @@ select {
 
 .turn-notice-backdrop {
   z-index: 110;
+  pointer-events: none;
+}
+
+.turn-notice-backdrop .turn-notice {
   pointer-events: none;
 }
 

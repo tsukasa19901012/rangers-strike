@@ -4,6 +4,7 @@ import { EFFECT_LABELS, getCardById } from "@rangers-strike/cards";
 import type { GameState } from "@rangers-strike/engine";
 import { resolveCardTargets } from "@/lib/cardTargets";
 import type { PendingOperation, PendingZordRush } from "@/lib/dnd";
+import { GameModalBackdrop } from "./GameModalBackdrop";
 
 type OperationPromptModalProps = {
   state: GameState;
@@ -59,10 +60,11 @@ export function OperationPromptModal({
         : "対象を選んでください";
 
   return (
-    <div className="modal-backdrop" role="presentation">
+    <GameModalBackdrop>
       <div
         className="modal modal--effect-action"
         onClick={(event) => event.stopPropagation()}
+        onPointerDown={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="operation-prompt-title"
@@ -121,6 +123,6 @@ export function OperationPromptModal({
           </button>
         </div>
       </div>
-    </div>
+    </GameModalBackdrop>
   );
 }

@@ -859,6 +859,25 @@ export function GameApp() {
     apply({ type: actionType, playerId: HUMAN_PLAYER });
   }, [apply, humanReactionKind]);
 
+  const needsInteractiveModal =
+    !!state &&
+    ((state.pendingEffectChoice?.playerId === HUMAN_PLAYER &&
+      state.activePlayer === HUMAN_PLAYER) ||
+      (state.pendingStrike && state.activePlayer === HUMAN_PLAYER) ||
+      (state.pendingBattle && state.activePlayer === HUMAN_PLAYER) ||
+      (state.pendingRush && state.activePlayer === HUMAN_PLAYER) ||
+      (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) ||
+      !!pendingOp ||
+      !!pendingZord ||
+      !!pendingHiddenNinja ||
+      state.pendingBattleEntry?.playerId === HUMAN_PLAYER);
+
+  useEffect(() => {
+    if (!needsInteractiveModal) return;
+    setTurnNotice(null);
+    setEffectNotice(null);
+  }, [needsInteractiveModal]);
+
   if (!state) {
     if (appScreen === "deck-builder") {
       return (
