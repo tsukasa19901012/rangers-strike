@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { getCardEffect } from "./effects";
 import {
-  getBattleEntryHoldCount,
   hasBattleEntryHoldNote,
   listBattleEntryHoldCardIds,
   requiredHeldCommandsForMBattle,
 } from "./errata";
+import { getBattleEntryHoldCount } from "./unitEffects";
 
 describe("errata", () => {
   it("applies RS-018 errata text (exclude attacker from substitute)", () => {

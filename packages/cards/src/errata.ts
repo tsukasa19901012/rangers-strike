@@ -36,10 +36,6 @@ export const ERRATA_EFFECT_TEXT: Partial<Record<string, string>> = {
  */
 export const RUSH_COUNTER_AFTER_TRIGGERED_EFFECTS = true;
 
-export function getBattleEntryHoldCount(cardId: string): number {
-  return getHoldCountFromRules(cardId);
-}
-
 /** Count RS-069 permanents on both players' fields (Q2: stacks). */
 export function countLightningGravityPermanents(
   operationZones: Array<Array<{ cardId: string }>>,
@@ -60,7 +56,7 @@ export function requiredHeldCommandsForMBattle(
   lightningGravityCount: number,
   unitCardId: string,
 ): number {
-  const unitHold = getBattleEntryHoldCount(unitCardId);
+  const unitHold = getHoldCountFromRules(unitCardId);
   if (lightningGravityCount === 0 && unitHold === 0) {
     return 0;
   }

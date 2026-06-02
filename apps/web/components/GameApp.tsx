@@ -543,7 +543,7 @@ export function GameApp() {
             a.instanceId === pendingZord.instanceId &&
             a.zordMaterialInstanceId === pendingZord.materialInstanceId &&
             a.zordMaterialDestination === pendingZord.materialDestination &&
-            a.zordMothershipHoldInstanceIds?.includes(commandInstanceId),
+            (a.zordMothershipHoldInstanceIds?.includes(commandInstanceId) ?? false),
         );
         if (action) {
           apply(action);
@@ -555,7 +555,7 @@ export function GameApp() {
         (a): a is Extract<typeof a, { type: "rush" }> =>
           a.type === "rush" &&
           a.instanceId === pendingZord.instanceId &&
-          a.zordMothershipHoldInstanceIds?.includes(commandInstanceId),
+          (a.zordMothershipHoldInstanceIds?.includes(commandInstanceId) ?? false),
       );
       if (action) {
         apply(action);
