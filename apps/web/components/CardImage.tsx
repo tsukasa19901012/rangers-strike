@@ -79,12 +79,17 @@ export function CardImage({
 
   const handlePointerDown =
     dragPayload &&
-    bindDragSource({
-      enabled: true,
-      payload: dragPayload,
-      imageSrc: imageSrc ?? undefined,
-      onStart: onDragStartExtra,
-      onEnd: onDragEnd,
+    ((event: React.PointerEvent<HTMLElement>) => {
+      if (event.pointerType === "touch") {
+        event.preventDefault();
+      }
+      bindDragSource({
+        enabled: true,
+        payload: dragPayload,
+        imageSrc: imageSrc ?? undefined,
+        onStart: onDragStartExtra,
+        onEnd: onDragEnd,
+      })(event);
     });
 
   const handleClick = () => {

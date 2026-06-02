@@ -12,7 +12,10 @@ import {
 } from "react";
 import type { DragCardPayload } from "./dnd";
 
+/** ドラッグ開始までの最小移動量 */
 const DRAG_THRESHOLD_PX = 8;
+/** これ以上横に動いたら手札スクロールとみなしてドラッグをキャンセル */
+const SCROLL_CANCEL_PX = 28;
 
 type DropTargetRegistration = {
   accepts: () => boolean;
@@ -31,6 +34,8 @@ type DragVisual = {
 };
 
 type ActiveSession = DragVisual & {
+  sourceEl: HTMLElement;
+  pointerId: number;
   onEnd?: () => void;
 };
 
@@ -38,7 +43,6 @@ type PendingPointer = {
   pointerId: number;
   startX: number;
   startY: number;
-  axis: "none" | "horizontal" | "vertical";
   payload: DragCardPayload;
   sourceEl: HTMLElement;
   rect: DOMRect;
@@ -62,21 +66,42 @@ type PointerDragContextValue = {
 
 const PointerDragContext = createContext<PointerDragContextValue | null>(null);
 
-function findDropTarget(
+function findDropTargetElement(
   x: number,
   y: number,
   targets: Map<HTMLElement, DropTargetRegistration>,
-): DropTargetRegistration | null {
+): HTMLElement | null {
   const elements = document.elementsFromPoint(x, y);
   for (const element of elements) {
     let node: HTMLElement | null = element as HTMLElement;
     while (node) {
       const target = targets.get(node);
-      if (target?.accepts()) return target;
+      if (target?.accepts()) return node;
       node = node.parentElement;
     }
   }
   return null;
+}
+
+function releaseCapture(sourceEl: HTMLElement, pointerId: number) {
+  if (sourceEl.hasPointerCapture(pointerId)) {
+    sourceEl.releasePointerCapture(pointerId);
+  }
+}
+
+function shouldStartDrag(dx: number, dy: number): boolean {
+  const absDx = Math.abs(dx);
+  const absDy = Math.abs(dy);
+  const distance = Math.hypot(dx, dy);
+  if (distance < DRAG_THRESHOLD_PX) return false;
+  if (absDx >= SCROLL_CANCEL_PX && absDx > absDy * 1.35) return false;
+  return absDy >= DRAG_THRESHOLD_PX || distance >= DRAG_THRESHOLD_PX * 1.25;
+}
+
+function shouldCancelForScroll(dx: number, dy: number): boolean {
+  const absDx = Math.abs(dx);
+  const absDy = Math.abs(dy);
+  return absDx >= SCROLL_CANCEL_PX && absDx > absDy * 1.35;
 }
 
 export function PointerDragProvider({ children }: { children: ReactNode }) {
@@ -107,16 +132,23 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
   );
 
   const finishDrag = useCallback(
-    (clientX: number, clientY: number) => {
+    (clientX: number, clientY: number, pointerId?: number) => {
       const drag = activeRef.current;
       if (drag) {
-        const target = findDropTarget(clientX, clientY, targetsRef.current);
-        if (target) {
-          target.drop(drag.payload);
+        const targetEl = findDropTargetElement(clientX, clientY, targetsRef.current);
+        if (targetEl) {
+          targetsRef.current.get(targetEl)?.drop(drag.payload);
           suppressClickRef.current = true;
         }
         drag.onEnd?.();
+        releaseCapture(drag.sourceEl, pointerId ?? drag.pointerId);
       }
+
+      const pending = pendingRef.current;
+      if (pending && pointerId !== undefined) {
+        releaseCapture(pending.sourceEl, pointerId);
+      }
+
       pendingRef.current = null;
       activeRef.current = null;
       setActiveDrag(null);
@@ -133,25 +165,14 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
 
       if (active) {
         event.preventDefault();
-        const next: DragVisual = {
+        const next: ActiveSession = {
           ...active,
           x: event.clientX,
           y: event.clientY,
         };
         activeRef.current = next;
         setActiveDrag(next);
-
-        const hovered = [...targetsRef.current.entries()].find(([el, registration]) => {
-          if (!registration.accepts()) return false;
-          const rect = el.getBoundingClientRect();
-          return (
-            event.clientX >= rect.left &&
-            event.clientX <= rect.right &&
-            event.clientY >= rect.top &&
-            event.clientY <= rect.bottom
-          );
-        });
-        setHover(hovered?.[0] ?? null);
+        setHover(findDropTargetElement(event.clientX, event.clientY, targetsRef.current));
         return;
       }
 
@@ -159,19 +180,16 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
 
       const dx = event.clientX - pending.startX;
       const dy = event.clientY - pending.startY;
-      const distance = Math.hypot(dx, dy);
-      if (distance < DRAG_THRESHOLD_PX) return;
 
-      if (pending.axis === "none") {
-        pending.axis = Math.abs(dx) > Math.abs(dy) ? "horizontal" : "vertical";
-      }
-      if (pending.axis === "horizontal") {
+      if (shouldCancelForScroll(dx, dy)) {
+        releaseCapture(pending.sourceEl, event.pointerId);
         pendingRef.current = null;
         return;
       }
 
+      if (!shouldStartDrag(dx, dy)) return;
+
       event.preventDefault();
-      pending.sourceEl.setPointerCapture(event.pointerId);
       document.body.classList.add("is-dragging-card");
 
       const drag: ActiveSession = {
@@ -183,6 +201,8 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
         width: pending.rect.width,
         height: pending.rect.height,
         imageSrc: pending.imageSrc,
+        sourceEl: pending.sourceEl,
+        pointerId: event.pointerId,
         onEnd: pending.onEnd,
       };
       activeRef.current = drag;
@@ -194,19 +214,16 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
     const handlePointerUp = (event: PointerEvent) => {
       const pending = pendingRef.current;
       if (pending?.pointerId === event.pointerId) {
+        releaseCapture(pending.sourceEl, event.pointerId);
         pendingRef.current = null;
         return;
       }
-      if (!activeRef.current) return;
-      finishDrag(event.clientX, event.clientY);
+      if (!activeRef.current || activeRef.current.pointerId !== event.pointerId) return;
+      finishDrag(event.clientX, event.clientY, event.pointerId);
     };
 
     const handlePointerCancel = (event: PointerEvent) => {
-      if (pendingRef.current?.pointerId === event.pointerId) {
-        pendingRef.current = null;
-      }
-      if (!activeRef.current) return;
-      finishDrag(event.clientX, event.clientY);
+      finishDrag(event.clientX, event.clientY, event.pointerId);
     };
 
     window.addEventListener("pointermove", handlePointerMove, { passive: false });
@@ -246,12 +263,14 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
     }) =>
       (event: React.PointerEvent<HTMLElement>) => {
         if (!enabled || event.button !== 0) return;
+
         const sourceEl = event.currentTarget;
+        sourceEl.setPointerCapture(event.pointerId);
+
         pendingRef.current = {
           pointerId: event.pointerId,
           startX: event.clientX,
           startY: event.clientY,
-          axis: "none",
           payload,
           sourceEl,
           rect: sourceEl.getBoundingClientRect(),

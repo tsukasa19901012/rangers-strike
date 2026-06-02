@@ -459,6 +459,13 @@ select {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   touch-action: pan-x;
+  gap: 6px;
+  padding: 2px 4px;
+}
+
+.playsheet__hand .zone__empty {
+  touch-action: pan-x;
+  flex-shrink: 0;
 }
 
 .playsheet__hand .card-wrap {
@@ -492,7 +499,7 @@ select {
 
 .card--draggable {
   cursor: grab;
-  touch-action: pan-x pinch-zoom;
+  touch-action: none;
   user-select: none;
   -webkit-user-select: none;
 }
