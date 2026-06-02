@@ -842,6 +842,10 @@ export function applyEffectChoiceSelect(
       const found = findInZone(enemy, "rush", instanceId);
       if (!found) return { error: "invalid_target" };
 
+      if (!canMoveUnitToBattle(state, enemyId, found.card, "rush")) {
+        return { error: "cannot_enter_battle" };
+      }
+
       const [, rush] = removeAt(enemy.rush, found.index);
       const nextEnemy = {
         ...enemy,

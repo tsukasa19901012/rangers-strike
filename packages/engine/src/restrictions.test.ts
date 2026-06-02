@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   explainCannotEnterBattle,
   canMoveUnitToBattle,
+  getLightningGravityHoldNotice,
 } from "./rules/restrictions";
 import { getLegalActions } from "./core/legalActions";
 import { applyAction } from "./core/applyAction";
@@ -49,8 +50,93 @@ describe("explainCannotEnterBattle", () => {
     });
 
     const reason = explainCannotEnterBattle(state, "player1", mUnit, "rush");
-    expect(reason).toContain("電撃重力");
+    expect(reason).toContain("稲妻重力エネルギー");
     expect(reason).toContain("必要1枚");
+  });
+
+  it("returns lightning gravity hold notice for blocked M unit", () => {
+    const mUnit = inst("RS-043", "pat");
+    const gravity = inst("RS-069", "lg");
+    const state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      player1: {
+        rush: [mUnit],
+        operation: [gravity],
+        command: [],
+      },
+    });
+
+    expect(getLightningGravityHoldNotice(state, "player1", mUnit)).toEqual({
+      unitName: "パトストライカー",
+      requiredHolds: 1,
+      heldHolds: 0,
+      lightningGravityCount: 1,
+      unitHoldCount: 0,
+    });
+  });
+
+  it("blocks generic M unit under RS-069 without a held command", () => {
+    const mUnit = inst("RS-043", "pat");
+    const gravity = inst("RS-069", "lg");
+    const state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      player1: {
+        rush: [mUnit],
+        operation: [gravity],
+        command: [{ ...inst("RS-007", "c1"), commandHeld: false }],
+      },
+    });
+
+    expect(canMoveUnitToBattle(state, "player1", mUnit, "rush")).toBe(false);
+    expect(
+      getLegalActions(state).filter((a) => a.type === "move_to_battle"),
+    ).toHaveLength(0);
+    expect(
+      applyAction(state, {
+        type: "move_to_battle",
+        playerId: "player1",
+        instanceId: mUnit.instanceId,
+      }).ok,
+    ).toBe(false);
+  });
+
+  it("blocks generic M under RS-069 when unit definition omits size", () => {
+    const mUnit = inst("RS-043", "pat");
+    const gravity = inst("RS-069", "lg");
+    const defs = { ...legendDefinitions };
+    defs["RS-043"] = { ...defs["RS-043"]!, size: undefined };
+    const state = createTestState({
+      definitions: defs,
+      phase: "battle",
+      player1: {
+        rush: [mUnit],
+        operation: [gravity],
+        command: [],
+      },
+    });
+
+    expect(canMoveUnitToBattle(state, "player1", mUnit, "rush")).toBe(false);
+  });
+
+  it("ignores RS-069 on field when blocked by infinite chain", () => {
+    const mUnit = inst("RS-043", "pat");
+    const gravity = inst("RS-069", "lg");
+    let state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      player1: {
+        rush: [mUnit],
+        operation: [gravity],
+        command: [],
+      },
+      player2: {
+        turnModifiers: { infiniteChainActive: true },
+      },
+    });
+
+    expect(canMoveUnitToBattle(state, "player1", mUnit, "rush")).toBe(true);
   });
 
   it("explains ally S requirement for RS-114", () => {

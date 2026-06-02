@@ -1,4 +1,4 @@
-import type { CardDefinition } from "@rangers-strike/cards";
+import { allCardsCatalog, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { resetRushPhaseFlags } from "../rules/turnModifiers";
 import {
@@ -95,10 +95,10 @@ export function createGame(options: CreateGameOptions): GameState {
     /** 先攻1ターン目はスタートフェイズを省略（公式・チュートリアル準拠） */
     phase: "charge",
     players: { player1, player2 },
-    definitions: buildDefinitionMap([
-      options.player1Deck,
-      options.player2Deck,
-    ]),
+    definitions: {
+      ...buildDefinitionMap([allCardsCatalog.cards]),
+      ...buildDefinitionMap([options.player1Deck, options.player2Deck]),
+    },
     log: ["game_created"],
     winner: null,
   };

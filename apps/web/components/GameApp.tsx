@@ -13,6 +13,8 @@ import {
   createGame,
   explainCannotEnterBattle,
   findMandatoryBattleEntries,
+  getLightningGravityHoldNotice,
+  type LightningGravityHoldNotice,
   formatActionError,
   getLegalActions,
   getStrikeableInstanceIds,
@@ -47,6 +49,7 @@ import type { DragCardPayload, DropTarget, PendingOperation, PendingZordRush } f
 import { CardModal } from "./CardModal";
 import { BattleEntryModal } from "./BattleEntryModal";
 import { AlertModal } from "./AlertModal";
+import { LightningGravityHoldModal } from "./LightningGravityHoldModal";
 import { DeckBuilderScreen } from "./DeckBuilderScreen";
 import { LogModal } from "./LogModal";
 import { PhaseGuide } from "./PhaseGuide";
@@ -145,6 +148,8 @@ export function GameApp() {
   const [battleDrag, setBattleDrag] = useState<DragCardPayload | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [blockedBattleAlert, setBlockedBattleAlert] = useState<string | null>(null);
+  const [lightningGravityHoldNotice, setLightningGravityHoldNotice] =
+    useState<LightningGravityHoldNotice | null>(null);
   const [turnNotice, setTurnNotice] = useState<PlayerId | null>(null);
   const prevActivePlayerRef = useRef<PlayerId | null>(null);
   const cpuBoardRef = useRef<HTMLDivElement>(null);
@@ -268,6 +273,17 @@ export function GameApp() {
     [state],
   );
 
+  const battleEntryInstanceIds = useMemo(() => {
+    if (!state || state.phase !== "battle") return undefined;
+    const ids = legalActions
+      .filter(
+        (action): action is Extract<typeof action, { type: "move_to_battle" }> =>
+          action.type === "move_to_battle",
+      )
+      .map((action) => action.instanceId);
+    return ids.length > 0 ? new Set(ids) : new Set<string>();
+  }, [legalActions, state]);
+
   const humanCanAct =
     state?.activePlayer === HUMAN_PLAYER && !state.winner;
 
@@ -350,6 +366,12 @@ export function GameApp() {
         (c) => c.instanceId === payload.instanceId,
       );
       if (!card) return;
+
+      const lgNotice = getLightningGravityHoldNotice(state, HUMAN_PLAYER, card);
+      if (lgNotice) {
+        setLightningGravityHoldNotice(lgNotice);
+        return;
+      }
 
       const reason = explainCannotEnterBattle(state, HUMAN_PLAYER, card, "rush");
       if (reason) setBlockedBattleAlert(reason);
@@ -909,9 +931,9 @@ export function GameApp() {
 
   const pendingHint = isStrikeReaction
     ? interceptableIds?.size
-      ? "Sユニットで迎撃、稲妻重力エネルギー、またはスキップ"
+      ? "Sユニットで迎撃、プラズマエネルギー、またはスキップ"
       : canUsePlasma
-        ? "稲妻重力エネルギー発動、またはスキップ"
+        ? "プラズマエネルギー発動、またはスキップ"
         : "ストライクへの応答"
     : state.pendingBattle
       ? pendingHiddenNinja
@@ -987,6 +1009,12 @@ export function GameApp() {
           onStrike={handleBattleEntryStrike}
           onAttack={handleAttackTargetSelect}
           onPass={handleBattleEntryPass}
+        />
+      )}
+      {lightningGravityHoldNotice && (
+        <LightningGravityHoldModal
+          notice={lightningGravityHoldNotice}
+          onClose={() => setLightningGravityHoldNotice(null)}
         />
       )}
       {blockedBattleAlert && (
@@ -1101,6 +1129,7 @@ export function GameApp() {
             onZordMaterial={handleZordMaterial}
             onCommandToggle={handleCommandToggle}
             onAttemptMoveToBattle={handleAttemptMoveToBattle}
+            battleEntryInstanceIds={battleEntryInstanceIds}
             onBattleDragStart={setBattleDrag}
             onBattleDragEnd={() => setBattleDrag(null)}
             strikeableIds={strikeableIds}
@@ -1232,7 +1261,7 @@ export function GameApp() {
             className="btn btn--danger"
             onClick={() => apply({ type: "use_plasma_energy", playerId: HUMAN_PLAYER })}
           >
-            稲妻重力エネルギー
+            プラズマエネルギー
           </button>
         )}
         {isStrikeReaction && (

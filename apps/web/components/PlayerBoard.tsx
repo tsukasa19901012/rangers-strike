@@ -340,6 +340,7 @@ export type PlayerBoardProps = {
   onViewPile?: (pile: "deck" | "discard") => void;
   onCommandToggle?: (card: CardInstance) => void;
   onAttemptMoveToBattle?: (card: CardInstance) => void;
+  battleEntryInstanceIds?: Set<string>;
   boardRef?: RefObject<HTMLDivElement | null>;
 };
 
@@ -380,6 +381,7 @@ export function PlayerBoard({
   onViewPile,
   onCommandToggle,
   onAttemptMoveToBattle,
+  battleEntryInstanceIds,
   boardRef,
 }: PlayerBoardProps) {
   const interactive = isHuman && isHumanTurn;
@@ -562,7 +564,13 @@ export function PlayerBoard({
           ? onAttemptMoveToBattle
           : undefined
       }
-      draggable={interactive && phase === "battle"}
+      getDraggable={(card) =>
+        !!(
+          interactive &&
+          phase === "battle" &&
+          battleEntryInstanceIds?.has(card.instanceId)
+        )
+      }
       emptyLabel="—"
     />
   );

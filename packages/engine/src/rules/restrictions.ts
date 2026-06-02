@@ -14,12 +14,18 @@ import {
   getDefinition,
   hasHeldCommandForCategories,
   hasOperationEffect,
+  isMediumUnit,
   isSmallUnit,
   isUnit,
 } from "../core/catalog";
 import { findInZone, opponent } from "../core/helpers";
 import { earthForceActive } from "./strikeReactions";
-import { isBattleBlocked, wasRushedThisTurn, getTurnModifiers } from "./turnModifiers";
+import {
+  isBattleBlocked,
+  opponentInfiniteChainBlocks,
+  wasRushedThisTurn,
+  getTurnModifiers,
+} from "./turnModifiers";
 import {
   karakuriLionChainBlocksEntry,
   trafficControlRequiresSameSize,
@@ -32,8 +38,59 @@ export function countLightningGravityOperations(state: GameState): number {
   );
 }
 
+/** RS-069 stacks on both fields; inactive when blocked by RS-072 infinite chain. */
+export function countActiveLightningGravity(state: GameState): number {
+  let count = 0;
+  for (const playerId of ["player1", "player2"] as const) {
+    const player = state.players[playerId];
+    if (opponentInfiniteChainBlocks(state, playerId)) continue;
+    for (const card of player.operation) {
+      if (getCardEffect(card.cardId)?.effectId === "lightning_gravity") {
+        count += 1;
+      }
+    }
+  }
+  return count;
+}
+
 export function lightningGravityActive(state: GameState): boolean {
-  return countLightningGravityOperations(state) > 0;
+  return countActiveLightningGravity(state) > 0;
+}
+
+/** Notice for UI when RS-069 blocks an M unit from entering battle. */
+export type LightningGravityHoldNotice = {
+  unitName: string;
+  requiredHolds: number;
+  heldHolds: number;
+  lightningGravityCount: number;
+  unitHoldCount: number;
+};
+
+export function getLightningGravityHoldNotice(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+): LightningGravityHoldNotice | null {
+  if (!lightningGravityActive(state)) return null;
+  if (!isMediumUnit(state.definitions, unit.cardId)) return null;
+  if (canMoveUnitToBattle(state, playerId, unit, "rush")) return null;
+
+  const lgCount = countActiveLightningGravity(state);
+  if (lgCount === 0) return null;
+
+  const player = state.players[playerId];
+  const requiredHolds = requiredBattleEntryHolds(state, unit);
+  const heldHolds = countHeldCommands(player);
+  if (requiredHolds === 0 || heldHolds >= requiredHolds) return null;
+
+  const def = getDefinition(state.definitions, unit.cardId);
+  return {
+    unitName: def?.name ?? unit.cardId,
+    requiredHolds,
+    heldHolds,
+    lightningGravityCount: lgCount,
+    unitHoldCount: getBattleEntryHoldCount(unit.cardId),
+  };
 }
 
 /** Card text + RS-069: held commands required to enter battle. */
@@ -41,10 +98,10 @@ export function requiredBattleEntryHolds(
   state: GameState,
   unit: CardInstance,
 ): number {
-  const def = getDefinition(state.definitions, unit.cardId);
   const unitHold = getBattleEntryHoldCount(unit.cardId);
-  const lgHold =
-    def?.size === "M" ? countLightningGravityOperations(state) : 0;
+  const lgHold = isMediumUnit(state.definitions, unit.cardId)
+    ? countActiveLightningGravity(state)
+    : 0;
   return unitHold + lgHold;
 }
 
@@ -220,12 +277,12 @@ export function explainCannotEnterBattle(
   if (requiredHolds > 0 && held < requiredHolds) {
     const parts: string[] = [];
     const unitHolds = getBattleEntryHoldCount(unit.cardId);
-    const lgCount = countLightningGravityOperations(state);
+    const lgCount = countActiveLightningGravity(state);
     if (unitHolds > 0) {
       parts.push(`「${unitName}」の能力によりコマンドを${unitHolds}枚ホールド`);
     }
     if (lgCount > 0) {
-      parts.push(`【電撃重力】の効果によりコマンドを${lgCount}枚ホールド`);
+      parts.push(`【稲妻重力エネルギー】の効果によりコマンドを${lgCount}枚ホールド`);
     }
     const requirement = parts.length > 0 ? parts.join("、") : "コマンドをホールド";
     return `${requirement}する必要があります（現在${held}枚 / 必要${requiredHolds}枚）。`;

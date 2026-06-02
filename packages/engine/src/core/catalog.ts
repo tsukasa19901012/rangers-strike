@@ -1,5 +1,5 @@
-import type { CardDefinition } from "@rangers-strike/cards";
-import { cardCategories, type Category } from "@rangers-strike/cards";
+import type { CardDefinition, UnitSize } from "@rangers-strike/cards";
+import { cardCategories, getCardById, type Category } from "@rangers-strike/cards";
 import { getCardEffect } from "@rangers-strike/cards";
 import type { SpValue } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
@@ -49,6 +49,21 @@ export function getDefinition(
   cardId: string,
 ): CardDefinition | undefined {
   return definitions[cardId];
+}
+
+/** Game state defs may omit fields; fall back to the full card catalog. */
+export function resolveUnitSize(
+  definitions: Record<string, CardDefinition>,
+  cardId: string,
+): UnitSize | undefined {
+  return getDefinition(definitions, cardId)?.size ?? getCardById(cardId)?.size;
+}
+
+export function isMediumUnit(
+  definitions: Record<string, CardDefinition>,
+  cardId: string,
+): boolean {
+  return resolveUnitSize(definitions, cardId) === "M";
 }
 
 export function isUnit(definition: CardDefinition | undefined): boolean {
