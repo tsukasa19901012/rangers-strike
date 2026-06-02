@@ -1,0 +1,64 @@
+import { formatGameLog } from "@rangers-strike/engine";
+import type { CardDefinition } from "@rangers-strike/cards";
+
+const SKIP_ACTIONS = new Set([
+  "draw",
+  "bonus_draw",
+  "end_phase",
+  "end_turn",
+  "deck_out",
+  "charge_power",
+  "charge_command",
+  "hold_command",
+  "release_command",
+  "rush",
+  "move_to_battle",
+  "battle_pending",
+  "pass_battle_entry",
+  "battle",
+  "strike",
+  "strike_pending",
+  "resolve_effect_choice",
+  "skip_effect_choice",
+  "pass_strike_reaction",
+  "pass_battle_reaction",
+  "pass_rush_reaction",
+  "pass_leave_reaction",
+  "battle_pending",
+  "game_created",
+  "simple",
+]);
+
+const EFFECT_ACTIONS = new Set([
+  "number_combo",
+  "enter_battle",
+  "named_effect",
+  "rush_effect",
+  "joint_combo_l",
+  "joint_combo_r",
+  "riding_combo",
+  "play_operation",
+  "play_counter",
+  "use_plasma_energy",
+  "five_tech_intercept",
+  "resolve_ruin_survey",
+  "earth_force_upkeep",
+  "battle_dance_retreat",
+]);
+
+export function shouldShowEffectLogNotice(entry: string): boolean {
+  const parts = entry.split("|");
+  const action = parts[1];
+  if (!action || SKIP_ACTIONS.has(action)) return false;
+  if (EFFECT_ACTIONS.has(action)) return true;
+  const detail = parts[4] ?? "";
+  if (detail.startsWith("choice:")) return false;
+  return action === "enter_battle" || action === "named_effect";
+}
+
+export function formatEffectLogNotice(
+  entry: string,
+  definitions: Record<string, CardDefinition>,
+): string {
+  return formatGameLog(entry, definitions);
+}

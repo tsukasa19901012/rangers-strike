@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  EFFECT_LABELS,
   getCardEffect,
   getCardById,
   type CardDefinition,
@@ -49,7 +48,11 @@ import type { DragCardPayload, DropTarget, PendingOperation, PendingZordRush } f
 import { CardModal } from "./CardModal";
 import { BattleEntryModal } from "./BattleEntryModal";
 import { AlertModal } from "./AlertModal";
+import { EffectChoiceModal } from "./EffectChoiceModal";
+import { EffectNoticeModal } from "./EffectNoticeModal";
 import { LightningGravityHoldModal } from "./LightningGravityHoldModal";
+import { OperationPromptModal } from "./OperationPromptModal";
+import { ReactionModal } from "./ReactionModal";
 import { DeckBuilderScreen } from "./DeckBuilderScreen";
 import { LogModal } from "./LogModal";
 import { PhaseGuide } from "./PhaseGuide";
@@ -57,6 +60,11 @@ import { PileModal } from "./PileModal";
 import { PlayerBoard } from "./PlayerBoard";
 import { StartScreen } from "./StartScreen";
 import { TurnNoticeModal } from "./TurnNoticeModal";
+import { effectChoiceHint } from "@/lib/effectChoiceHint";
+import {
+  formatEffectLogNotice,
+  shouldShowEffectLogNotice,
+} from "@/lib/effectLogNotice";
 
 const CPU_PLAYER = "player2" as const;
 const HUMAN_PLAYER = "player1" as const;
@@ -64,49 +72,6 @@ const HUMAN_STARTER_KEY = encodeDeckSelection({ kind: "starter", id: "abarenoh" 
 const CPU_STARTER_KEY = encodeDeckSelection({ kind: "starter", id: "dekaranger" });
 
 type AppScreen = "start" | "deck-builder";
-
-const EFFECT_CHOICE_LABELS = EFFECT_LABELS;
-
-function effectChoiceHint(
-  pending: NonNullable<GameState["pendingEffectChoice"]>,
-): string {
-  const label = EFFECT_CHOICE_LABELS[pending.effectId] ?? pending.effectId;
-  switch (pending.kind) {
-    case "deck_top_or_bottom":
-      return `${label} — 見えたカードを山札の上か下に戻してください`;
-    case "scry_keep_one":
-      return `${label} — 残す1枚を選んでください`;
-    case "select_commands": {
-      const picked = pending.selectedInstanceIds?.length ?? 0;
-      const total = pending.selectCount ?? 1;
-      return `${label} — コマンドを選んでください（${picked}/${total}）`;
-    }
-    case "select_power": {
-      if (pending.effectId === "earth_force") {
-        const picked = pending.selectedInstanceIds?.length ?? 0;
-        return `アースの力 — 維持コスト：パワーから3枚捨札（${picked}/3）。または「アースの力を捨札にする」`;
-      }
-      const picked = pending.selectedInstanceIds?.length ?? 0;
-      const total = pending.selectCount ?? 1;
-      return `${label} — パワーを選んでください（${picked}/${total}）`;
-    }
-    case "select_hand":
-      return `${label} — 手札から選んでください`;
-    case "select_command":
-      return `${label} — コマンドを選んでください`;
-    case "pit_in_dive_order": {
-      const picked = pending.selectedInstanceIds?.length ?? 0;
-      const total = pending.selectCount ?? 1;
-      return `${label} — 順番にSユニットを選んでください（${picked + 1}/${total}）`;
-    }
-    case "select_unit_step":
-      return pending.step === "enemy"
-        ? `${label} — 相手のユニットを選んでください`
-        : `${label} — 自分のユニットを選んでください`;
-    default:
-      return `${label} — 対象を選んでください`;
-  }
-}
 
 type PileView = {
   title: string;
@@ -151,6 +116,8 @@ export function GameApp() {
   const [lightningGravityHoldNotice, setLightningGravityHoldNotice] =
     useState<LightningGravityHoldNotice | null>(null);
   const [turnNotice, setTurnNotice] = useState<PlayerId | null>(null);
+  const [effectNotice, setEffectNotice] = useState<string | null>(null);
+  const prevLogLenRef = useRef(0);
   const prevActivePlayerRef = useRef<PlayerId | null>(null);
   const cpuBoardRef = useRef<HTMLDivElement>(null);
   const humanBoardRef = useRef<HTMLDivElement>(null);
@@ -214,6 +181,8 @@ export function GameApp() {
       setLogOpen(false);
       prevActivePlayerRef.current = null;
       setTurnNotice(null);
+      setEffectNotice(null);
+      prevLogLenRef.current = 0;
     } catch {
       setStartError("デッキの読み込みに失敗しました。");
     }
@@ -333,6 +302,39 @@ export function GameApp() {
       setActionError(formatActionError(result.error));
     }
   }, [state]);
+
+  useEffect(() => {
+    if (!state) return;
+    const len = state.log.length;
+    if (len <= prevLogLenRef.current) {
+      prevLogLenRef.current = len;
+      return;
+    }
+    const newEntries = state.log.slice(prevLogLenRef.current);
+    prevLogLenRef.current = len;
+
+    const humanMustActInModal =
+      (state.pendingEffectChoice?.playerId === HUMAN_PLAYER &&
+        state.activePlayer === HUMAN_PLAYER) ||
+      state.pendingBattleEntry?.playerId === HUMAN_PLAYER ||
+      (state.pendingStrike && state.activePlayer === HUMAN_PLAYER) ||
+      (state.pendingBattle && state.activePlayer === HUMAN_PLAYER) ||
+      (state.pendingRush && state.activePlayer === HUMAN_PLAYER) ||
+      (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) ||
+      !!pendingOp ||
+      !!pendingZord ||
+      !!pendingHiddenNinja;
+
+    if (humanMustActInModal) return;
+
+    for (let i = newEntries.length - 1; i >= 0; i -= 1) {
+      const entry = newEntries[i]!;
+      if (shouldShowEffectLogNotice(entry)) {
+        setEffectNotice(formatEffectLogNotice(entry, state.definitions));
+        break;
+      }
+    }
+  }, [state, pendingOp, pendingZord, pendingHiddenNinja]);
 
   const tryPlayOperation = useCallback(
     (instanceId: string, targetInstanceId?: string) => {
@@ -874,50 +876,86 @@ export function GameApp() {
   const isHumanEffectChoice =
     humanCanAct && pendingChoice?.playerId === HUMAN_PLAYER;
 
-  const pendingScryCard = (() => {
-    if (
-      !pendingChoice ||
-      pendingChoice.playerId !== HUMAN_PLAYER ||
-      pendingChoice.kind !== "deck_top_or_bottom"
-    ) {
-      return null;
-    }
-    const top = state.players[HUMAN_PLAYER].deck[0];
-    const viewedId = pendingChoice.viewedInstanceIds?.[0];
-    if (!top || !viewedId || top.instanceId !== viewedId) {
-      return null;
-    }
-    return getCardById(top.cardId) ?? null;
-  })();
-
-  const scryKeepCards = (() => {
-    if (
-      !pendingChoice ||
-      pendingChoice.playerId !== HUMAN_PLAYER ||
-      pendingChoice.kind !== "scry_keep_one"
-    ) {
-      return [] as { instanceId: string; card: CardDefinition }[];
-    }
-    const player = state.players[HUMAN_PLAYER];
-    return (pendingChoice.viewedInstanceIds ?? [])
-      .map((id) => {
-        const inst = player.deck.find((c) => c.instanceId === id);
-        if (!inst) return null;
-        const card = getCardById(inst.cardId);
-        return card ? { instanceId: inst.instanceId, card } : null;
-      })
-      .filter((entry): entry is { instanceId: string; card: CardDefinition } => !!entry);
-  })();
-
-  const canResolveRuinSurvey =
-    isHumanEffectChoice && pendingChoice?.kind === "deck_top_or_bottom";
-
   const canSkipEffectChoice =
     isHumanEffectChoice &&
     (!!pendingChoice?.optional || pendingChoice?.effectId === "earth_force") &&
     legalActions.some((a) => a.type === "skip_effect_choice");
 
-  const pendingHint = isStrikeReaction
+  const showEffectChoiceModal = isHumanEffectChoice && !!pendingChoice;
+
+  const humanReactionKind: "strike" | "battle" | "rush" | "leave" | null =
+    isStrikeReaction
+      ? "strike"
+      : state.pendingBattle && state.activePlayer === HUMAN_PLAYER
+        ? "battle"
+        : state.pendingRush && state.activePlayer === HUMAN_PLAYER
+          ? "rush"
+          : state.pendingLeave && state.activePlayer === HUMAN_PLAYER
+            ? "leave"
+            : null;
+
+  const counterInstanceIds = useMemo(() => {
+    if (!state || state.activePlayer !== HUMAN_PLAYER) return [];
+    const ids = legalActions
+      .filter((a): a is Extract<typeof a, { type: "play_counter" }> => a.type === "play_counter")
+      .map((a) => a.instanceId);
+    return [...new Set(ids)];
+  }, [legalActions, state]);
+
+  const showReactionModal =
+    !!humanReactionKind &&
+    (pendingHiddenNinja !== null ||
+      counterInstanceIds.length > 0 ||
+      (interceptableIds?.size ?? 0) > 0 ||
+      canPassBattleReaction ||
+      canPassRushReaction ||
+      canPassLeaveReaction ||
+      isStrikeReaction);
+
+  const operationTargetIds = useMemo(() => {
+    const ids = new Set<string>();
+    pendingTargets?.forEach((id) => ids.add(id));
+    pendingZordTargets?.forEach((id) => ids.add(id));
+    return [...ids];
+  }, [pendingTargets, pendingZordTargets]);
+
+  const showOperationModal =
+    humanCanAct &&
+    (!!pendingOp || !!pendingZord) &&
+    operationTargetIds.length > 0;
+
+  const showEffectNotice =
+    !!effectNotice &&
+    !showEffectChoiceModal &&
+    !showReactionModal &&
+    !showOperationModal &&
+    !battleEntryModal;
+
+  const boardEffectChoiceTargets = showEffectChoiceModal
+    ? undefined
+    : pendingEffectChoiceTargets;
+  const boardOperationTargets = showOperationModal ? undefined : pendingTargets;
+  const boardZordTargets = showOperationModal ? undefined : pendingZordTargets;
+  const boardCounterIds = showReactionModal ? undefined : counterIds;
+  const boardInterceptIds = showReactionModal ? undefined : interceptableIds;
+  const boardSubstituteIds = showReactionModal ? undefined : pendingSubstituteTargets;
+
+  const handleReactionPass = useCallback(() => {
+    if (!humanReactionKind) return;
+    const actionType =
+      humanReactionKind === "strike"
+        ? "pass_strike_reaction"
+        : humanReactionKind === "battle"
+          ? "pass_battle_reaction"
+          : humanReactionKind === "rush"
+            ? "pass_rush_reaction"
+            : "pass_leave_reaction";
+    apply({ type: actionType, playerId: HUMAN_PLAYER });
+  }, [apply, humanReactionKind]);
+
+  const pendingHint = showEffectChoiceModal || showReactionModal || showOperationModal
+    ? undefined
+    : isStrikeReaction
     ? interceptableIds?.size
       ? "Sユニットで迎撃、プラズマエネルギー、またはスキップ"
       : canUsePlasma
@@ -997,6 +1035,84 @@ export function GameApp() {
           onStrike={handleBattleEntryStrike}
           onAttack={handleAttackTargetSelect}
           onPass={handleBattleEntryPass}
+        />
+      )}
+      {showEffectChoiceModal && pendingChoice && (
+        <EffectChoiceModal
+          state={state}
+          playerId={HUMAN_PLAYER}
+          pending={pendingChoice}
+          canSkip={canSkipEffectChoice}
+          skipLabel={
+            pendingChoice.effectId === "earth_force"
+              ? "アースの力を捨札にする"
+              : "効果をスキップ"
+          }
+          onSelect={handleEffectChoiceSelect}
+          onSkip={() => apply({ type: "skip_effect_choice", playerId: HUMAN_PLAYER })}
+          onRuinSurvey={(placement) =>
+            apply({
+              type: "resolve_ruin_survey",
+              playerId: HUMAN_PLAYER,
+              placement,
+            })
+          }
+          onPreview={setPreviewCard}
+        />
+      )}
+      {showReactionModal && humanReactionKind && (
+        <ReactionModal
+          kind={humanReactionKind}
+          state={state}
+          playerId={HUMAN_PLAYER}
+          counterInstanceIds={counterInstanceIds}
+          interceptInstanceIds={interceptableIds ? [...interceptableIds] : []}
+          substituteInstanceIds={
+            pendingSubstituteTargets ? [...pendingSubstituteTargets] : []
+          }
+          hiddenNinjaCounterId={pendingHiddenNinja?.counterInstanceId ?? null}
+          canUsePlasma={canUsePlasma}
+          canPass={
+            humanReactionKind === "strike"
+              ? isStrikeReaction
+              : humanReactionKind === "battle"
+                ? canPassBattleReaction
+                : humanReactionKind === "rush"
+                  ? canPassRushReaction
+                  : canPassLeaveReaction
+          }
+          onCounter={handleCounterSelect}
+          onSubstitute={handleSubstituteSelect}
+          onIntercept={(instanceId) =>
+            apply({
+              type: "five_tech_intercept",
+              playerId: HUMAN_PLAYER,
+              interceptInstanceId: instanceId,
+            })
+          }
+          onPlasma={() => apply({ type: "use_plasma_energy", playerId: HUMAN_PLAYER })}
+          onPass={handleReactionPass}
+          onCancelSubstitute={() => setPendingHiddenNinja(null)}
+        />
+      )}
+      {showOperationModal && (
+        <OperationPromptModal
+          state={state}
+          pendingOp={pendingOp}
+          pendingZord={pendingZord}
+          targetInstanceIds={operationTargetIds}
+          discardOnlyIds={pendingDiscardTargets ?? null}
+          onSelectTarget={pendingZord ? handleZordMaterial : handleOperationTarget}
+          onCancel={() => {
+            setPendingOp(null);
+            setPendingZord(null);
+          }}
+        />
+      )}
+      {showEffectNotice && effectNotice && (
+        <EffectNoticeModal
+          message={effectNotice}
+          onClose={() => setEffectNotice(null)}
         />
       )}
       {lightningGravityHoldNotice && (
@@ -1095,7 +1211,7 @@ export function GameApp() {
             onSubstituteSelect={handleSubstituteSelect}
             attackTargetIds={attackTargetIds}
             onAttackTargetSelect={handleAttackTargetSelect}
-            pendingEffectChoiceTargets={pendingEffectChoiceTargets}
+            pendingEffectChoiceTargets={boardEffectChoiceTargets}
             onEffectChoiceSelect={handleEffectChoiceSelect}
           />
 
@@ -1111,8 +1227,8 @@ export function GameApp() {
             phase={state.phase}
             onPreview={setPreviewCard}
             onZoneDrop={handleZoneDrop}
-            pendingOperationTargets={pendingTargets}
-            pendingZordTargets={pendingZordTargets}
+            pendingOperationTargets={boardOperationTargets}
+            pendingZordTargets={boardZordTargets}
             onOperationTarget={handleOperationTarget}
             onZordMaterial={handleZordMaterial}
             onCommandToggle={handleCommandToggle}
@@ -1120,79 +1236,20 @@ export function GameApp() {
             onBattleDragStart={setBattleDrag}
             onBattleDragEnd={() => setBattleDrag(null)}
             strikeableIds={strikeableIds}
-            interceptableIds={interceptableIds}
-            counterIds={counterIds}
+            interceptableIds={boardInterceptIds}
+            counterIds={boardCounterIds}
             onInterceptSelect={(instanceId) =>
               apply({ type: "five_tech_intercept", playerId: HUMAN_PLAYER, interceptInstanceId: instanceId })
             }
             onCounterSelect={handleCounterSelect}
-            substituteIds={pendingSubstituteTargets}
+            substituteIds={boardSubstituteIds}
             onSubstituteSelect={handleSubstituteSelect}
             onViewPile={(pile) => handleViewPile(HUMAN_PLAYER, pile)}
             entryAttackerIds={entryAttackerIds}
-            pendingEffectChoiceTargets={pendingEffectChoiceTargets}
+            pendingEffectChoiceTargets={boardEffectChoiceTargets}
             onEffectChoiceSelect={handleEffectChoiceSelect}
           />
         </div>
-
-      {canResolveRuinSurvey && pendingScryCard && pendingChoice && (
-        <div className="scry-panel" role="region" aria-label="遺跡調査">
-          <p className="scry-panel__title">{effectChoiceHint(pendingChoice)}</p>
-          <button
-            type="button"
-            className="scry-panel__card"
-            onClick={() => setPreviewCard(pendingScryCard)}
-          >
-            {pendingScryCard.name}
-          </button>
-          <div className="scry-panel__actions">
-            <button
-              type="button"
-              className="btn"
-              onClick={() =>
-                apply({
-                  type: "resolve_ruin_survey",
-                  playerId: HUMAN_PLAYER,
-                  placement: "top",
-                })
-              }
-            >
-              山札の上に戻す
-            </button>
-            <button
-              type="button"
-              className="btn btn--primary"
-              onClick={() =>
-                apply({
-                  type: "resolve_ruin_survey",
-                  playerId: HUMAN_PLAYER,
-                  placement: "bottom",
-                })
-              }
-            >
-              山札の下に戻す
-            </button>
-          </div>
-        </div>
-      )}
-
-      {isHumanEffectChoice && scryKeepCards.length > 0 && pendingChoice && (
-        <div className="scry-panel" role="region" aria-label="効果選択">
-          <p className="scry-panel__title">{effectChoiceHint(pendingChoice)}</p>
-          <div className="scry-panel__actions">
-            {scryKeepCards.map(({ instanceId, card }) => (
-              <button
-                key={instanceId}
-                type="button"
-                className="scry-panel__card"
-                onClick={() => handleEffectChoiceSelect(instanceId)}
-              >
-                {card.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       </div>
 
@@ -1215,90 +1272,11 @@ export function GameApp() {
             追加ドロー
           </button>
         )}
-        {canPassLeaveReaction && (
-          <button
-            type="button"
-            className="btn btn--primary"
-            onClick={() => apply({ type: "pass_leave_reaction", playerId: HUMAN_PLAYER })}
-          >
-            応答スキップ
-          </button>
-        )}
-        {canPassRushReaction && (
-          <button
-            type="button"
-            className="btn btn--primary"
-            onClick={() => apply({ type: "pass_rush_reaction", playerId: HUMAN_PLAYER })}
-          >
-            応答スキップ
-          </button>
-        )}
-        {canPassBattleReaction && (
-          <button
-            type="button"
-            className="btn btn--primary"
-            onClick={() => apply({ type: "pass_battle_reaction", playerId: HUMAN_PLAYER })}
-          >
-            応答スキップ
-          </button>
-        )}
-        {isStrikeReaction && canUsePlasma && (
-          <button
-            type="button"
-            className="btn btn--danger"
-            onClick={() => apply({ type: "use_plasma_energy", playerId: HUMAN_PLAYER })}
-          >
-            プラズマエネルギー
-          </button>
-        )}
-        {isStrikeReaction && (
-          <button
-            type="button"
-            className="btn btn--primary"
-            onClick={() => apply({ type: "pass_strike_reaction", playerId: HUMAN_PLAYER })}
-          >
-            応答スキップ
-          </button>
-        )}
-        {pendingZord && (
-          <button
-            type="button"
-            className="btn"
-            onClick={() => setPendingZord(null)}
-          >
-            ゾード素材選択キャンセル
-          </button>
-        )}
-        {pendingHiddenNinja && (
-          <button
-            type="button"
-            className="btn"
-            onClick={() => setPendingHiddenNinja(null)}
-          >
-            身代わり選択キャンセル
-          </button>
-        )}
-        {pendingOp && (
-          <button
-            type="button"
-            className="btn"
-            onClick={() => setPendingOp(null)}
-          >
-            対象選択キャンセル
-          </button>
-        )}
-        {canSkipEffectChoice && (
-          <button
-            type="button"
-            className="btn"
-            onClick={() => apply({ type: "skip_effect_choice", playerId: HUMAN_PLAYER })}
-          >
-            {pendingChoice?.effectId === "earth_force"
-              ? "アースの力を捨札にする"
-              : "効果をスキップ"}
-          </button>
-        )}
-        {canEndPhase && !isStrikeReaction && !isHumanEffectChoice && !canPassBattleEntry && (
+        {canEndPhase &&
+          !showReactionModal &&
+          !showEffectChoiceModal &&
+          !showOperationModal &&
+          !canPassBattleEntry && (
           <button
             type="button"
             className="btn btn--primary"

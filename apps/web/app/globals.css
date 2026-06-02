@@ -967,6 +967,94 @@ select {
   color: #94a3b8;
 }
 
+.modal--effect-action {
+  max-width: min(92vw, 400px);
+}
+
+.modal__content--effect-action {
+  max-height: min(78vh, 560px);
+  overflow-y: auto;
+}
+
+.effect-action-modal__title {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: #f8fafc;
+}
+
+.effect-action-modal__source {
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.effect-action-modal__hint {
+  margin: 0 0 14px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: #cbd5e1;
+}
+
+.effect-action-modal__label {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.effect-action-modal__section {
+  margin-bottom: 14px;
+}
+
+.effect-action-modal__targets {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.effect-action-modal__target {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+}
+
+.effect-action-modal__target-meta {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #94a3b8;
+}
+
+.effect-action-modal__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.effect-action-modal__skip {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.effect-notice-modal__title {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.effect-notice-modal__message {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #cbd5e1;
+  white-space: pre-wrap;
+}
+
 .modal__content--pile {
   max-height: min(70vh, 520px);
   overflow: hidden;
