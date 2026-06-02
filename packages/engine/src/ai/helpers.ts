@@ -427,7 +427,8 @@ function worthJudgmentSwordPayment(
   pending: PendingEffectChoice,
 ): boolean {
   const player = state.players[playerId];
-  if (player.power.length < pending.selectCount) return false;
+  const need = pending.selectCount ?? 2;
+  if (player.power.length < need) return false;
   return battleSourceStrikeValue(state, playerId, pending.sourceInstanceId) >= 2;
 }
 
@@ -437,7 +438,8 @@ function worthJusticeFlasherPayment(
   pending: PendingEffectChoice,
 ): boolean {
   const player = state.players[playerId];
-  if (player.power.length < pending.selectCount) return false;
+  const need = pending.selectCount ?? 5;
+  if (player.power.length < need) return false;
   return battleSourceStrikeValue(state, playerId, pending.sourceInstanceId) >= 4;
 }
 
@@ -512,6 +514,7 @@ export function pickEffectChoice(
 
   if (pending.kind === "select_power") {
     const selected = new Set(pending.selectedInstanceIds ?? []);
+    const selectCount = pending.selectCount ?? 1;
 
     if (pending.effectId === "judgment_sword") {
       if (pending.optional && selected.size === 0 && !worthJudgmentSwordPayment(state, playerId, pending)) {
@@ -528,7 +531,7 @@ export function pickEffectChoice(
       }
     }
 
-    if (selected.size >= pending.selectCount) {
+    if (selected.size >= selectCount) {
       return skip ?? null;
     }
 
@@ -543,7 +546,8 @@ export function pickEffectChoice(
   if (pending.effectId === "earth_force" && !pending.optional) {
     const picks: GameAction[] = [];
     const exclude = new Set<string>();
-    for (let i = 0; i < pending.selectCount; i++) {
+    const upkeepCount = pending.selectCount ?? 3;
+    for (let i = 0; i < upkeepCount; i++) {
       const pick = pickLowestPowerDiscard(state, playerId, actions, exclude);
       if (!pick || pick.type !== "resolve_effect_choice") break;
       picks.push(pick);
