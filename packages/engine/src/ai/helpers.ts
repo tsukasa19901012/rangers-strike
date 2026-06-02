@@ -1,6 +1,7 @@
 import type { Category } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
+import { applyAction } from "../core/applyAction";
 import {
   cardCategories,
   effectiveBp,
@@ -12,6 +13,7 @@ import { findMandatoryBattleEntries, hasCommandForCardUse } from "../rules/restr
 import { findCardOwner } from "../rules/fieldLookup";
 import { strikeDamageFor } from "../rules/combo";
 import { WIN_DAMAGE } from "../types/game";
+import { evaluateState } from "./scoring";
 
 export function endPhase(actions: GameAction[]): GameAction | null {
   return actions.find((action) => action.type === "end_phase") ?? null;
@@ -395,17 +397,159 @@ export function pickBestOperation(
   return ops[0] ?? null;
 }
 
+function powerDiscardPriority(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): number {
+  const player = state.players[playerId];
+  const card = player.power.find((c) => c.instanceId === instanceId);
+  if (!card) return Number.POSITIVE_INFINITY;
+  const def = getDefinition(state.definitions, card.cardId);
+  const cost = def ? parsePowerCost(def.powerCost ?? 1) : 1;
+  return cost + (card.faceDown ? 0 : 2);
+}
+
+function battleSourceStrikeValue(
+  state: GameState,
+  playerId: PlayerId,
+  sourceInstanceId: string | undefined,
+): number {
+  if (!sourceInstanceId) return 0;
+  const unit = state.players[playerId].battle.find((c) => c.instanceId === sourceInstanceId);
+  if (!unit) return 0;
+  return strikeDamageFor(state.definitions, unit, state, playerId) + (unit.spModifier ?? 0);
+}
+
+function worthJudgmentSwordPayment(
+  state: GameState,
+  playerId: PlayerId,
+  pending: PendingEffectChoice,
+): boolean {
+  const player = state.players[playerId];
+  if (player.power.length < pending.selectCount) return false;
+  return battleSourceStrikeValue(state, playerId, pending.sourceInstanceId) >= 2;
+}
+
+function worthJusticeFlasherPayment(
+  state: GameState,
+  playerId: PlayerId,
+  pending: PendingEffectChoice,
+): boolean {
+  const player = state.players[playerId];
+  if (player.power.length < pending.selectCount) return false;
+  return battleSourceStrikeValue(state, playerId, pending.sourceInstanceId) >= 4;
+}
+
+function pickLowestPowerDiscard(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+  exclude: Set<string>,
+): GameAction | null {
+  let best: GameAction | null = null;
+  let bestPriority = Number.POSITIVE_INFINITY;
+
+  for (const action of actions) {
+    if (action.type !== "resolve_effect_choice") continue;
+    if (exclude.has(action.instanceId)) continue;
+    const priority = powerDiscardPriority(state, playerId, action.instanceId);
+    if (priority < bestPriority) {
+      bestPriority = priority;
+      best = action;
+    }
+  }
+
+  return best;
+}
+
+export function pickScryKeepOne(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): GameAction | null {
+  let best: GameAction | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+
+  const viewedIds = state.pendingEffectChoice?.viewedInstanceIds ?? [];
+  const player = state.players[playerId];
+  const viewedCards = new Map(
+    viewedIds
+      .map((id) => player.deck.find((c) => c.instanceId === id))
+      .filter((c): c is NonNullable<typeof c> => !!c)
+      .map((c) => [c.instanceId, c] as const),
+  );
+
+  for (const action of actions) {
+    if (action.type !== "resolve_effect_choice") continue;
+    const card =
+      viewedCards.get(action.instanceId) ??
+      player.deck.find((c) => c.instanceId === action.instanceId);
+    if (!card) continue;
+    const bp = effectiveBp(state, playerId, card);
+    const sp = strikeDamageFor(state.definitions, card, state, playerId);
+    const score = bp * 10 + sp * 500;
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+
+  return best;
+}
+
 export function pickEffectChoice(
   state: GameState,
   pending: PendingEffectChoice,
   actions: GameAction[],
 ): GameAction | null {
-  if (pending.effectId === "earth_force") {
+  const playerId = pending.playerId;
+  const skip = actions.find((a) => a.type === "skip_effect_choice");
+
+  if (pending.kind === "scry_keep_one") {
+    return pickScryKeepOne(state, playerId, actions) ?? skip ?? null;
+  }
+
+  if (pending.kind === "select_power") {
+    const selected = new Set(pending.selectedInstanceIds ?? []);
+
+    if (pending.effectId === "judgment_sword") {
+      if (pending.optional && selected.size === 0 && !worthJudgmentSwordPayment(state, playerId, pending)) {
+        return skip ?? null;
+      }
+    } else if (pending.effectId === "justice_flasher") {
+      if (pending.optional && selected.size === 0 && !worthJusticeFlasherPayment(state, playerId, pending)) {
+        return skip ?? null;
+      }
+    } else if (pending.effectId === "earth_force" && pending.optional) {
+      const enemy = state.players[opponent(playerId)];
+      if (enemy.damage < 2 && maxSelfStrikeThreat(state, playerId) < 2) {
+        return skip ?? null;
+      }
+    }
+
+    if (selected.size >= pending.selectCount) {
+      return skip ?? null;
+    }
+
     return (
+      pickLowestPowerDiscard(state, playerId, actions, selected) ??
+      skip ??
       actions.find((a) => a.type === "resolve_effect_choice") ??
-      actions.find((a) => a.type === "skip_effect_choice") ??
       null
     );
+  }
+
+  if (pending.effectId === "earth_force" && !pending.optional) {
+    const picks: GameAction[] = [];
+    const exclude = new Set<string>();
+    for (let i = 0; i < pending.selectCount; i++) {
+      const pick = pickLowestPowerDiscard(state, playerId, actions, exclude);
+      if (!pick || pick.type !== "resolve_effect_choice") break;
+      picks.push(pick);
+      exclude.add(pick.instanceId);
+    }
+    return picks[0] ?? null;
   }
 
   if (pending.kind === "select_unit" || pending.kind === "select_unit_step") {
@@ -414,9 +558,17 @@ export function pickEffectChoice(
 
   return (
     actions.find((a) => a.type === "resolve_effect_choice") ??
-    actions.find((a) => a.type === "skip_effect_choice") ??
+    skip ??
     null
   );
+}
+
+function maxSelfStrikeThreat(state: GameState, playerId: PlayerId): number {
+  let max = 0;
+  for (const card of state.players[playerId].battle) {
+    max = Math.max(max, strikeDamageFor(state.definitions, card, state, playerId));
+  }
+  return max;
 }
 
 export function pickStrikeReaction(
@@ -455,6 +607,43 @@ export function pickStrikeReaction(
   return actions.find((a) => a.type === "pass_strike_reaction") ?? null;
 }
 
+export function pickBestCounter(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+  passType: GameAction["type"],
+): GameAction | null {
+  const pass = actions.find((a) => a.type === passType);
+  const counters = actionsOfType(actions, "play_counter");
+
+  let passScore = Number.NEGATIVE_INFINITY;
+  if (pass) {
+    const passResult = applyAction(state, pass);
+    if (passResult.ok) {
+      passScore = evaluateState(passResult.state, playerId);
+    }
+  }
+
+  let bestCounter: GameAction | null = null;
+  let bestCounterScore = Number.NEGATIVE_INFINITY;
+
+  for (const counter of counters) {
+    const result = applyAction(state, counter);
+    if (!result.ok) continue;
+    const score = evaluateState(result.state, playerId);
+    if (score > bestCounterScore) {
+      bestCounterScore = score;
+      bestCounter = counter;
+    }
+  }
+
+  if (bestCounter && bestCounterScore > passScore) {
+    return bestCounter;
+  }
+
+  return pass ?? bestCounter ?? null;
+}
+
 export function pickSimpleReaction(
   state: GameState,
   playerId: PlayerId,
@@ -465,11 +654,84 @@ export function pickSimpleReaction(
     return pickStrikeReaction(state, playerId, actions);
   }
 
-  return (
-    actions.find((a) => a.type === "play_counter") ??
-    actions.find((a) => a.type === passType) ??
-    null
-  );
+  return pickBestCounter(state, playerId, actions, passType);
+}
+
+/** Fast ordering so search keeps the most promising actions. */
+export function quickActionPriority(
+  state: GameState,
+  playerId: PlayerId,
+  action: GameAction,
+): number {
+  if (action.type === "end_phase") return -5_000;
+
+  if (action.type === "rush") {
+    const player = state.players[action.playerId];
+    const card = player.hand.find((c) => c.instanceId === action.instanceId);
+    if (!card) return 0;
+    const bp = effectiveBp(state, action.playerId, card);
+    const sp = strikeDamageFor(state.definitions, card, state, action.playerId);
+    return bp + sp * 2_000;
+  }
+
+  if (action.type === "strike") {
+    const player = state.players[action.playerId];
+    const card = player.battle.find((c) => c.instanceId === action.instanceId);
+    if (!card) return 0;
+    const enemy = state.players[opponent(action.playerId)];
+    const damage = strikeDamageFor(state.definitions, card, state, action.playerId);
+    const lethal = enemy.damage + damage >= WIN_DAMAGE;
+    return (lethal ? 50_000 : 0) + damage * 500;
+  }
+
+  if (action.type === "battle") {
+    const player = state.players[action.playerId];
+    const enemy = state.players[opponent(action.playerId)];
+    const attacker = player.battle.find((c) => c.instanceId === action.attackerInstanceId);
+    const defender = enemy.battle.find((c) => c.instanceId === action.defenderInstanceId)
+      ?? enemy.rush.find((c) => c.instanceId === action.defenderInstanceId);
+    if (!attacker || !defender) return 0;
+    const delta =
+      effectiveBp(state, action.playerId, attacker) -
+      effectiveBp(state, opponent(action.playerId), defender);
+    return delta > 0 ? delta * 100 : delta;
+  }
+
+  if (action.type === "move_to_battle") {
+    const player = state.players[action.playerId];
+    const card =
+      player.rush.find((c) => c.instanceId === action.instanceId) ??
+      player.hand.find((c) => c.instanceId === action.instanceId);
+    if (!card) return 0;
+    return effectiveBp(state, action.playerId, card);
+  }
+
+  if (action.type === "play_operation") {
+    const player = state.players[action.playerId];
+    const card = player.hand.find((c) => c.instanceId === action.instanceId);
+    if (!card) return 1_000;
+    if (["RS-007", "RS-028", "RS-009", "RS-024"].includes(card.cardId)) {
+      return 3_000;
+    }
+    if (card.cardId === "RS-020") return 2_500;
+    const def = getDefinition(state.definitions, card.cardId);
+    if (def?.tags?.includes("常駐")) return 2_200;
+    return 1_500;
+  }
+
+  if (action.type === "hold_command" || action.type === "charge_command") {
+    return 800;
+  }
+
+  if (action.type === "use_plasma_energy") return 4_000;
+  if (action.type === "five_tech_intercept") return 3_500;
+  if (action.type === "play_counter") return 2_000;
+  if (action.type === "pass_strike_reaction") return -500;
+  if (action.type === "pass_battle_reaction" || action.type === "pass_rush_reaction") {
+    return -200;
+  }
+
+  return 0;
 }
 
 export function affordableRushes(state: GameState, playerId: PlayerId, actions: GameAction[]): GameAction[] {

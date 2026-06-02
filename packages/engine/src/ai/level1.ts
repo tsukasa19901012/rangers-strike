@@ -1,11 +1,15 @@
 import type { GameAction } from "../types/actions";
 import type { GameState, PlayerId } from "../types/game";
+import { effectiveBp } from "../core/catalog";
 import { getLegalActions } from "../core/legalActions";
 import { opponent } from "../core/helpers";
+import { strikeDamageFor } from "../rules/combo";
 import {
   actionsOfType,
   affordableRushes,
   endPhase,
+  pickBestCounter,
+  pickBestOperation,
   pickBestRushByScore,
   pickBestStrike,
   pickChargeAction,
@@ -14,9 +18,10 @@ import {
   pickHoldBeforeRush,
   pickMandatoryBattleMove,
   pickSimpleReaction,
+  pickStrikeReaction,
   pickWinningBattle,
 } from "./helpers";
-import { pickBestBySearch } from "./simulation";
+import { dedupeActions, pickBestBySearch } from "./simulation";
 
 export type PickCpuActionOptions = {
   /** When false, skip opponent-response simulation (used internally to avoid recursion). */
@@ -35,10 +40,29 @@ function pickReactionAction(
   }
 
   const pass = actions.find((a) => a.type === passType);
+
+  if (passType === "pass_strike_reaction") {
+    const strikeCandidates = dedupeActions([
+      ...actionsOfType(actions, "five_tech_intercept"),
+      ...actionsOfType(actions, "use_plasma_energy"),
+      ...actionsOfType(actions, "play_counter"),
+      ...(pass ? [pass] : []),
+    ]);
+    const searched = pickBestBySearch(state, playerId, strikeCandidates);
+    return (
+      searched ??
+      pickStrikeReaction(state, playerId, actions) ??
+      pickBestCounter(state, playerId, actions, passType) ??
+      pass ??
+      null
+    );
+  }
+
+  const heuristic = pickBestCounter(state, playerId, actions, passType);
   const candidates = actions.filter((a) => a.type !== passType);
   if (pass) candidates.push(pass);
 
-  return pickBestBySearch(state, playerId, candidates) ?? pass ?? null;
+  return pickBestBySearch(state, playerId, candidates) ?? heuristic ?? pass ?? null;
 }
 
 function collectRushCandidates(
@@ -49,7 +73,31 @@ function collectRushCandidates(
   const candidates: GameAction[] = [];
   const rushes = affordableRushes(state, playerId, actions);
 
-  for (const rush of rushes) {
+  const rankedRushes = [...rushes].sort((a, b) => {
+    const scoreA =
+      a.type === "rush"
+        ? (() => {
+            const card = state.players[a.playerId].hand.find((c) => c.instanceId === a.instanceId);
+            if (!card) return 0;
+            const bp = effectiveBp(state, a.playerId, card);
+            const sp = strikeDamageFor(state.definitions, card, state, a.playerId);
+            return bp + sp * 2_000;
+          })()
+        : 0;
+    const scoreB =
+      b.type === "rush"
+        ? (() => {
+            const card = state.players[b.playerId].hand.find((c) => c.instanceId === b.instanceId);
+            if (!card) return 0;
+            const bp = effectiveBp(state, b.playerId, card);
+            const sp = strikeDamageFor(state.definitions, card, state, b.playerId);
+            return bp + sp * 2_000;
+          })()
+        : 0;
+    return scoreB - scoreA;
+  });
+
+  for (const rush of rankedRushes.slice(0, 10)) {
     const hold = pickHoldBeforeRush(state, playerId, actions, rush);
     if (hold) candidates.push(hold);
     candidates.push(rush);
@@ -58,13 +106,34 @@ function collectRushCandidates(
   const cmdSetup = pickCommandSetup(state, playerId, actions);
   if (cmdSetup) candidates.push(cmdSetup);
 
-  const ops = actionsOfType(actions, "play_operation");
-  candidates.push(...ops);
+  const bestOp = pickBestOperation(state, actions);
+  if (bestOp) {
+    candidates.push(bestOp);
+  } else {
+    candidates.push(...actionsOfType(actions, "play_operation").slice(0, 2));
+  }
 
   const end = endPhase(actions);
   if (end) candidates.push(end);
 
   return candidates;
+}
+
+function battleActionDelta(
+  state: GameState,
+  action: Extract<GameAction, { type: "battle" }>,
+): number {
+  const player = state.players[action.playerId];
+  const enemy = state.players[opponent(action.playerId)];
+  const attacker = player.battle.find((c) => c.instanceId === action.attackerInstanceId);
+  const defender =
+    enemy.battle.find((c) => c.instanceId === action.defenderInstanceId) ??
+    enemy.rush.find((c) => c.instanceId === action.defenderInstanceId);
+  if (!attacker || !defender) return Number.NEGATIVE_INFINITY;
+  return (
+    effectiveBp(state, action.playerId, attacker) -
+    effectiveBp(state, opponent(action.playerId), defender)
+  );
 }
 
 function collectBattleCandidates(
@@ -76,9 +145,24 @@ function collectBattleCandidates(
   if (mandatory) return [mandatory];
 
   const candidates: GameAction[] = [
-    ...actionsOfType(actions, "move_to_battle"),
-    ...actionsOfType(actions, "battle"),
     ...actionsOfType(actions, "strike"),
+    ...actionsOfType(actions, "battle")
+      .sort((a, b) => battleActionDelta(state, b) - battleActionDelta(state, a))
+      .slice(0, 14),
+    ...actionsOfType(actions, "move_to_battle")
+      .sort((a, b) => {
+        const player = state.players[playerId];
+        const cardA =
+          player.rush.find((c) => c.instanceId === a.instanceId) ??
+          player.hand.find((c) => c.instanceId === a.instanceId);
+        const cardB =
+          player.rush.find((c) => c.instanceId === b.instanceId) ??
+          player.hand.find((c) => c.instanceId === b.instanceId);
+        const bpA = cardA ? effectiveBp(state, playerId, cardA) : 0;
+        const bpB = cardB ? effectiveBp(state, playerId, cardB) : 0;
+        return bpB - bpA;
+      })
+      .slice(0, 8),
   ];
 
   const end = endPhase(actions);
@@ -110,7 +194,14 @@ export function pickCpuAction(
     const actions = getLegalActions(state);
     const pending = state.pendingEffectChoice;
 
-    if (enableSearch && pending.effectId === "earth_force") {
+    if (enableSearch && pending.kind === "deck_top_or_bottom") {
+      const placements = actionsOfType(actions, "resolve_ruin_survey");
+      if (placements.length > 0) {
+        return pickBestBySearch(state, playerId, placements) ?? pickEffectChoice(state, pending, actions);
+      }
+    }
+
+    if (enableSearch && pending.effectId === "earth_force" && pending.optional) {
       const pay = actions.find((a) => a.type === "resolve_effect_choice");
       const skip = actions.find((a) => a.type === "skip_effect_choice");
       if (pay && skip) {

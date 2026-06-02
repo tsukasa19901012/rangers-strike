@@ -1,10 +1,11 @@
 import type { GameAction } from "../types/actions";
 import type { GameState, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
+import { quickActionPriority } from "./helpers";
 import { isCpuTurn, pickCpuAction } from "./level1";
 import { evaluateState } from "./scoring";
 
-const MAX_CANDIDATES = 28;
+const MAX_CANDIDATES = 42;
 const MAX_RESPONSE_DEPTH = 10;
 
 function actionKey(action: GameAction): string {
@@ -79,12 +80,25 @@ export function scoreAction(
   return evaluateState(resolved, playerId);
 }
 
+export function rankCandidatesForSearch(
+  state: GameState,
+  playerId: PlayerId,
+  candidates: GameAction[],
+): GameAction[] {
+  return dedupeActions(candidates)
+    .sort(
+      (a, b) =>
+        quickActionPriority(state, playerId, b) - quickActionPriority(state, playerId, a),
+    )
+    .slice(0, MAX_CANDIDATES);
+}
+
 export function pickBestBySearch(
   state: GameState,
   playerId: PlayerId,
   candidates: GameAction[],
 ): GameAction | null {
-  const unique = dedupeActions(candidates).slice(0, MAX_CANDIDATES);
+  const unique = rankCandidatesForSearch(state, playerId, candidates);
   let best: GameAction | null = null;
   let bestScore = Number.NEGATIVE_INFINITY;
 
