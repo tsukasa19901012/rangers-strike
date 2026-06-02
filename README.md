@@ -12,7 +12,7 @@
 | 機能 | 説明 |
 |------|------|
 | CPU 対戦 | ターン進行・ラッシュ・バトル・ストライクなど基本ルールを実装 |
-| デッキ作成 | カード検索・カテゴリー絞り込み・自作デッキ保存（最低40枚、上限なし） |
+| デッキ作成 | カード検索・カテゴリー絞り込み・自作デッキ保存（最低40枚・同名3枚まで、戦闘員等は例外） |
 | スターターデッキ | Type A/B/C（アバレンオー / デカレンジャーロボ / マジキング） |
 | カード詳細 | 画像と効果テキストをモーダルで表示 |
 | エラタ対応 | 公式 wiki のエラタ・Q&A を `packages/cards` で管理 |
@@ -93,6 +93,8 @@ npm run build
 | オペレーション | `packages/cards/src/operationCatalog.ts` |
 | 表示ラベル | `packages/cards/src/effectLabels.ts` |
 | エラタ・Q&A | `packages/cards/src/errata.ts` |
+| デッキ構築ルール | `packages/cards/src/deckRules.ts` |
+| カテゴリー（ET/MA/OT 等） | `packages/cards/src/legend2/cards.json`（公式: grnrngr カードリスト） |
 | wiki 参照テキスト | `packages/cards/src/wikiReference.ts` |
 
 wiki 効果テキストとの照合:

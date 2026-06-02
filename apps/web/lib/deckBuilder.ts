@@ -1,16 +1,21 @@
 import {
   allCardsCatalog,
   deckCardCount,
+  DECK_MIN_SIZE,
   expandDeck,
   getStarterDeck,
-  hidoraDeckUnlimited,
+  maxCopiesForCard,
+  validateDeckEntries as validateDeckEntriesCore,
   type CardDefinition,
   type DeckDefinition,
   type DeckEntry,
+  type DeckValidationResult,
   type StarterDeckId,
 } from "@rangers-strike/cards";
 
-export const MIN_DECK_SIZE = 40;
+export { maxCopiesForCard } from "@rangers-strike/cards";
+
+export const MIN_DECK_SIZE = DECK_MIN_SIZE;
 export const STORAGE_KEY = "rangers-strike/custom-decks/v1";
 
 export type CustomDeck = {
@@ -20,21 +25,7 @@ export type CustomDeck = {
   updatedAt: number;
 };
 
-export type DeckValidation = {
-  ok: boolean;
-  total: number;
-  errors: string[];
-};
-
-export function maxCopiesForCard(card: CardDefinition): number {
-  if (hidoraDeckUnlimited(card.id)) {
-    return 40;
-  }
-  if (card.rarity === "SR" || card.rarity === "SC" || card.rarity === "NR" || card.rarity === "PR") {
-    return 1;
-  }
-  return 3;
-}
+export type DeckValidation = DeckValidationResult;
 
 export function entriesToMap(entries: DeckEntry[]): Map<string, number> {
   const map = new Map<string, number>();
@@ -67,30 +58,7 @@ function emptyDeckShell(): DeckDefinition {
 }
 
 export function validateDeckEntries(entries: DeckEntry[]): DeckValidation {
-  const errors: string[] = [];
-  const total = countEntries(entries);
-  const byId = new Map(allCardsCatalog.cards.map((card) => [card.id, card]));
-
-  if (total < MIN_DECK_SIZE) {
-    errors.push(`デッキは最低${MIN_DECK_SIZE}枚必要です（現在 ${total} 枚）`);
-  }
-
-  for (const entry of entries) {
-    const card = byId.get(entry.cardId);
-    if (!card) {
-      errors.push(`不明なカード: ${entry.cardId}`);
-      continue;
-    }
-    const max = maxCopiesForCard(card);
-    if (entry.count > max) {
-      errors.push(`${card.name} は最大 ${max} 枚までです`);
-    }
-    if (entry.count <= 0) {
-      errors.push(`${card.name} の枚数が不正です`);
-    }
-  }
-
-  return { ok: errors.length === 0 && total >= MIN_DECK_SIZE, total, errors };
+  return validateDeckEntriesCore(entries, allCardsCatalog);
 }
 
 export function buildCardDefinitions(entries: DeckEntry[]): CardDefinition[] {

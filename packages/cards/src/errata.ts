@@ -7,6 +7,8 @@
  * - Per-card wiki pages (Q&A sections)
  */
 
+import { getCardById } from "./catalog";
+import { deckCopyUnlimited } from "./deckRules";
 import {
   hasBattleEntryHoldNote,
   hasUnitEffectNote,
@@ -97,7 +99,8 @@ export function noAttackOrStrikeTurnRushed(cardId: string): boolean {
   );
 }
 
-/** RS-080: deck may contain more than 3 copies. */
+/** @deprecated Use deckCopyUnlimited(card) from deckRules. */
 export function hidoraDeckUnlimited(cardId: string): boolean {
-  return cardId === "RS-080" || hasUnitEffectNote(cardId, "デッキに3枚以上入れてもよい");
+  const card = getCardById(cardId);
+  return card ? deckCopyUnlimited(card) : cardId === "RS-080";
 }

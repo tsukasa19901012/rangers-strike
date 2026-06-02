@@ -2,6 +2,7 @@ import abarenohDeck from "./legend1/decks/abarenoh.json";
 import dekarangerDeck from "./legend1/decks/dekaranger.json";
 import magikingDeck from "./legend1/decks/magiking.json";
 import type { DeckDefinition } from "./schema";
+import { validateDeckEntries } from "./deckRules";
 import {
   deckCardCount,
   expandDeck,
@@ -16,6 +17,7 @@ import {
 } from "./catalog";
 
 export * from "./schema";
+export * from "./deckRules";
 export * from "./catalog";
 export * from "./effects";
 export * from "./errata";
@@ -90,6 +92,13 @@ export function validateStarterDeck(deck: DeckDefinition): void {
     if (!getCardById(entry.cardId)) {
       throw new Error(`${deck.id} deck references unknown card: ${entry.cardId}`);
     }
+  }
+
+  const validation = validateDeckEntries(deck.entries, legend1Catalog, {
+    minSize: 40,
+  });
+  if (!validation.ok) {
+    throw new Error(`${deck.id} deck violates build rules: ${validation.errors.join("; ")}`);
   }
 }
 
