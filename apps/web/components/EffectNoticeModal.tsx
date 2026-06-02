@@ -19,7 +19,7 @@ export function EffectNoticeModal({
   }, [autoDismissMs, onClose, message]);
 
   return (
-    <div className="modal-backdrop" onClick={onClose} role="presentation">
+    <div className="modal-backdrop modal-backdrop--effect-notice" onClick={onClose} role="presentation">
       <div
         className="modal modal--alert modal--effect-notice"
         onClick={(event) => event.stopPropagation()}

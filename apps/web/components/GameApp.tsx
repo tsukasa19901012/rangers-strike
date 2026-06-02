@@ -316,7 +316,6 @@ export function GameApp() {
     const humanMustActInModal =
       (state.pendingEffectChoice?.playerId === HUMAN_PLAYER &&
         state.activePlayer === HUMAN_PLAYER) ||
-      state.pendingBattleEntry?.playerId === HUMAN_PLAYER ||
       (state.pendingStrike && state.activePlayer === HUMAN_PLAYER) ||
       (state.pendingBattle && state.activePlayer === HUMAN_PLAYER) ||
       (state.pendingRush && state.activePlayer === HUMAN_PLAYER) ||
@@ -939,8 +938,9 @@ export function GameApp() {
     !!effectNotice &&
     !showEffectChoiceModal &&
     !showReactionModal &&
-    !showOperationModal &&
-    !battleEntryModal;
+    !showOperationModal;
+
+  const showBattleEntryModal = !!battleEntryModal && !showEffectNotice;
 
   const boardEffectChoiceTargets = showEffectChoiceModal
     ? undefined
@@ -1024,7 +1024,7 @@ export function GameApp() {
           onClose={() => setLogOpen(false)}
         />
       )}
-      {battleEntryModal && (
+      {showBattleEntryModal && battleEntryModal && (
         <BattleEntryModal
           unitCard={battleEntryModal.unitCard}
           strikeDamage={battleEntryModal.strikeDamage}

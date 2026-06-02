@@ -156,12 +156,21 @@ export function applyNumberComboEffect(
       break;
     }
     case "future_sight": {
+      let drawnName: string | undefined;
       nextState = patchPlayer(nextState, playerId, (player) => {
         if (player.deck.length === 0) return player;
         const [drawn, deck] = removeAt(player.deck, 0);
+        drawnName = cardName(state.definitions, drawn.cardId);
         return { ...player, deck, hand: [...player.hand, drawn] };
       });
-      logs.push(ncLog(playerId, card.cardId, state.definitions, "future_sight"));
+      logs.push(
+        ncLog(
+          playerId,
+          card.cardId,
+          state.definitions,
+          drawnName ? `future_sight:${drawnName}` : "future_sight",
+        ),
+      );
       break;
     }
     case "pink_storm": {

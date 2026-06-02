@@ -629,6 +629,10 @@ select {
   padding: 16px;
 }
 
+.modal-backdrop--effect-notice {
+  z-index: 105;
+}
+
 .modal {
   position: relative;
   background: #111827;

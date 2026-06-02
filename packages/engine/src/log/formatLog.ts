@@ -112,6 +112,10 @@ export function formatGameLog(
         if (detail === "sp1") {
           return `${player}の「${cardName}」がNCを発動（SP+1）`;
         }
+        if (detail?.startsWith("future_sight:")) {
+          const drawn = detail.slice("future_sight:".length);
+          return `${player}の「${cardName}」が未来予知を発動 → 「${drawn}」をドロー`;
+        }
         if (detail === "future_sight") {
           return `${player}の「${cardName}」が未来予知を発動（1枚ドロー）`;
         }
