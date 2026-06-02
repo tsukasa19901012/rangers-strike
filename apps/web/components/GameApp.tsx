@@ -313,19 +313,6 @@ export function GameApp() {
     const newEntries = state.log.slice(prevLogLenRef.current);
     prevLogLenRef.current = len;
 
-    const humanMustActInModal =
-      (state.pendingEffectChoice?.playerId === HUMAN_PLAYER &&
-        state.activePlayer === HUMAN_PLAYER) ||
-      (state.pendingStrike && state.activePlayer === HUMAN_PLAYER) ||
-      (state.pendingBattle && state.activePlayer === HUMAN_PLAYER) ||
-      (state.pendingRush && state.activePlayer === HUMAN_PLAYER) ||
-      (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) ||
-      !!pendingOp ||
-      !!pendingZord ||
-      !!pendingHiddenNinja;
-
-    if (humanMustActInModal) return;
-
     for (let i = newEntries.length - 1; i >= 0; i -= 1) {
       const entry = newEntries[i]!;
       if (shouldShowEffectLogNotice(entry)) {
@@ -859,24 +846,22 @@ export function GameApp() {
     apply({ type: actionType, playerId: HUMAN_PLAYER });
   }, [apply, humanReactionKind]);
 
-  const needsInteractiveModal =
+  /** Clears floating notices when a blocking modal takes over (not battle entry / effect choice). */
+  const suppressFloatingNotices =
     !!state &&
-    ((state.pendingEffectChoice?.playerId === HUMAN_PLAYER &&
-      state.activePlayer === HUMAN_PLAYER) ||
-      (state.pendingStrike && state.activePlayer === HUMAN_PLAYER) ||
+    ((state.pendingStrike && state.activePlayer === HUMAN_PLAYER) ||
       (state.pendingBattle && state.activePlayer === HUMAN_PLAYER) ||
       (state.pendingRush && state.activePlayer === HUMAN_PLAYER) ||
       (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) ||
       !!pendingOp ||
       !!pendingZord ||
-      !!pendingHiddenNinja ||
-      state.pendingBattleEntry?.playerId === HUMAN_PLAYER);
+      !!pendingHiddenNinja);
 
   useEffect(() => {
-    if (!needsInteractiveModal) return;
+    if (!suppressFloatingNotices) return;
     setTurnNotice(null);
     setEffectNotice(null);
-  }, [needsInteractiveModal]);
+  }, [suppressFloatingNotices]);
 
   if (!state) {
     if (appScreen === "deck-builder") {
@@ -936,8 +921,6 @@ export function GameApp() {
     (!!pendingChoice?.optional || pendingChoice?.effectId === "earth_force") &&
     legalActions.some((a) => a.type === "skip_effect_choice");
 
-  const showEffectChoiceModal = isHumanEffectChoice && !!pendingChoice;
-
   const showReactionModal =
     !!humanReactionKind &&
     (pendingHiddenNinja !== null ||
@@ -954,10 +937,10 @@ export function GameApp() {
     operationTargetIds.length > 0;
 
   const showEffectNotice =
-    !!effectNotice &&
-    !showEffectChoiceModal &&
-    !showReactionModal &&
-    !showOperationModal;
+    !!effectNotice && !showReactionModal && !showOperationModal;
+
+  const showEffectChoiceModal =
+    isHumanEffectChoice && !!pendingChoice && !showEffectNotice;
 
   const showBattleEntryModal = !!battleEntryModal && !showEffectNotice;
 

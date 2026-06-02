@@ -9,7 +9,10 @@ import type { CardInstance, PlayerState } from "../types/game";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, removeAt } from "../core/helpers";
 
-export type ZordMaterialZone = "hand" | "rush" | "battle";
+/** Zones where zord-up materials may be taken (field only, not hand). */
+export type ZordMaterialZone = "rush" | "battle";
+
+const ZORD_MATERIAL_ZONES: ZordMaterialZone[] = ["rush", "battle"];
 
 export function needsZordMaterial(
   definitions: Record<string, CardDefinition>,
@@ -30,7 +33,7 @@ function findPartnerInstance(
   partnerCardId: string,
   rushingInstanceId: string,
 ): { zone: ZordMaterialZone; index: number; card: CardInstance } | null {
-  for (const zone of ["hand", "rush", "battle"] as const) {
+  for (const zone of ZORD_MATERIAL_ZONES) {
     for (let index = 0; index < player[zone].length; index++) {
       const card = player[zone][index]!;
       if (card.instanceId === rushingInstanceId) continue;
@@ -133,9 +136,8 @@ export function collectZordMaterials(
   if (!condition) return [];
 
   const candidates: CardInstance[] = [];
-  const zones: ZordMaterialZone[] = ["hand", "rush", "battle"];
 
-  for (const zone of zones) {
+  for (const zone of ZORD_MATERIAL_ZONES) {
     for (const card of player[zone]) {
       if (condition === "discard_fusion_unit") {
         if (isValidFusionMaterial(definitions, rushingCardId, card, rushingInstanceId)) {
@@ -162,7 +164,7 @@ export function findZordMaterial(
   const condition = getZordCondition(rushingCardId);
   if (!condition) return null;
 
-  for (const zone of ["hand", "rush", "battle"] as const) {
+  for (const zone of ZORD_MATERIAL_ZONES) {
     const found = findInZone(player, zone, materialInstanceId);
     if (!found) continue;
 

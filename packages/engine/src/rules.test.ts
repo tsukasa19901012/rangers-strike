@@ -226,6 +226,45 @@ describe("zord-up rush", () => {
     expect(withMaterial).toHaveLength(1);
   });
 
+  it("does not accept zord materials from hand", () => {
+    const zord = inst("RS-075", "z1");
+    const sUnit = inst("RS-080", "s1");
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [zord, sUnit],
+        power: Array.from({ length: 5 }, (_, i) => inst("TST-OP", `p${i}`)),
+        command: [heldEtCommand("c1")],
+        rush: [],
+      },
+    });
+
+    state.definitions["RS-075"] = {
+      id: "RS-075",
+      name: "Blue Vulcan",
+      type: "unit",
+      category: "ET",
+      rarity: "N",
+      expansion: "test",
+      powerCost: "5+",
+      bp: 5000,
+      size: "M",
+    };
+    state.definitions["RS-080"] = {
+      ...fusionDef("RS-080", "S Unit"),
+      size: "S",
+      bp: 2000,
+    };
+
+    const withHandMaterial = getLegalActions(state).filter(
+      (a) =>
+        a.type === "rush" &&
+        a.instanceId === zord.instanceId &&
+        a.zordMaterialInstanceId === sUnit.instanceId,
+    );
+    expect(withHandMaterial).toHaveLength(0);
+  });
+
   it.each(["RS-051", "RS-052", "RS-053"] as const)(
     "accepts %s as part of AbarenOh zord material set",
     (materialId) => {

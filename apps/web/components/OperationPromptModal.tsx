@@ -44,7 +44,7 @@ export function OperationPromptModal({
     : [];
 
   const hint = pendingZord
-    ? "合体ユニットまたはSユニットを選んでください"
+    ? "場の合体ユニットまたはSユニットを選んでください"
     : pendingOp?.targetType === "discard_any" ||
         pendingOp?.targetType === "discard_s_unit" ||
         pendingOp?.targetType === "discard_mecha"
