@@ -15,6 +15,7 @@ import {
   pickChargeAction,
   pickCommandSetup,
   pickEffectChoice,
+  pickFavorableBattle,
   pickHoldBeforeBattle,
   pickHoldBeforeRush,
   pickMandatoryBattleMove,
@@ -219,18 +220,28 @@ export function pickCpuAction(
     const lethal = pickBestStrike(state, playerId, actions);
     if (lethal) return lethal;
 
-    if (!enableSearch) {
+    if (enableSearch) {
+      const candidates = [
+        ...actionsOfType(actions, "strike"),
+        ...actionsOfType(actions, "battle"),
+        ...actions.filter((a) => a.type === "pass_battle_entry"),
+      ];
+      const searched = pickBestBySearch(state, playerId, candidates);
+      if (searched) return searched;
+    } else {
       const battle = pickWinningBattle(state, actions);
       if (battle) return battle;
+      const favorable = pickFavorableBattle(state, actions);
+      if (favorable) return favorable;
       return actions.find((a) => a.type === "pass_battle_entry") ?? null;
     }
 
-    const candidates = [
-      ...actionsOfType(actions, "strike"),
-      ...actionsOfType(actions, "battle"),
-      ...actions.filter((a) => a.type === "pass_battle_entry"),
-    ];
-    return pickBestBySearch(state, playerId, candidates);
+    return (
+      pickWinningBattle(state, actions) ??
+      pickFavorableBattle(state, actions) ??
+      actions.find((a) => a.type === "pass_battle_entry") ??
+      null
+    );
   }
 
   if (state.pendingRush) {

@@ -224,7 +224,21 @@ export function GameApp() {
     if (!state || !isCpuTurn(state, CPU_PLAYER)) return;
 
     const timer = window.setTimeout(() => {
-      const action = pickCpuAction(state, CPU_PLAYER, cpuLevel);
+      let action = pickCpuAction(state, CPU_PLAYER, cpuLevel);
+      if (!action) {
+        const legal = getLegalActions(state);
+        action =
+          legal.find(
+            (a) =>
+              a.playerId === CPU_PLAYER &&
+              (a.type === "pass_battle_entry" ||
+                a.type === "skip_effect_choice" ||
+                a.type === "pass_battle_reaction" ||
+                a.type === "pass_strike_reaction" ||
+                a.type === "pass_rush_reaction" ||
+                a.type === "pass_leave_reaction"),
+          ) ?? legal.find((a) => a.playerId === CPU_PLAYER) ?? null;
+      }
       if (!action) return;
       const result = applyAction(state, action);
       if (result.ok) {

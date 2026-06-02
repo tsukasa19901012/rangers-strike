@@ -58,6 +58,33 @@ describe("CPU level 1", () => {
     expect(pickCpuAction(state, "player2")?.type).toBe("strike");
   });
 
+  it("passes battle entry when search finds no winning attack", () => {
+    const weak = { ...inst("TST-UNIT-0", "a1"), spModifier: -1 };
+    const strong = inst("TST-UNIT-2", "d1");
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player2",
+      player2: {
+        battle: [weak],
+        command: [heldWbCommand("c1")],
+      },
+      player1: {
+        battle: [strong],
+      },
+    });
+    state = {
+      ...state,
+      pendingBattleEntry: {
+        playerId: "player2",
+        instanceId: weak.instanceId,
+        phasePlayerId: "player2",
+      },
+    };
+
+    const action = pickCpuAction(state, "player2");
+    expect(action?.type).toBe("pass_battle_entry");
+  });
+
   it("declines battle when effective BP is lower", () => {
     const weak = inst("TST-UNIT-0", "a1");
     const strong = inst("TST-UNIT-2", "d1");

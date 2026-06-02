@@ -285,6 +285,35 @@ export function pickBestRushByScore(
   return best;
 }
 
+/** Winning battle vs enemy battle or rush (yellow thunder etc.). */
+export function pickFavorableBattle(
+  state: GameState,
+  actions: GameAction[],
+): GameAction | null {
+  let best: GameAction | null = null;
+  let bestDelta = Number.NEGATIVE_INFINITY;
+
+  for (const action of actionsOfType(actions, "battle")) {
+    const player = state.players[action.playerId];
+    const enemy = state.players[opponent(action.playerId)];
+    const attacker = player.battle.find((c) => c.instanceId === action.attackerInstanceId);
+    const defender =
+      enemy.battle.find((c) => c.instanceId === action.defenderInstanceId) ??
+      enemy.rush.find((c) => c.instanceId === action.defenderInstanceId);
+    if (!attacker || !defender) continue;
+
+    const delta =
+      effectiveBp(state, action.playerId, attacker) -
+      effectiveBp(state, opponent(action.playerId), defender);
+    if (delta > 0 && delta > bestDelta) {
+      bestDelta = delta;
+      best = action;
+    }
+  }
+
+  return best;
+}
+
 export function pickWinningBattle(
   state: GameState,
   actions: GameAction[],
@@ -583,11 +612,7 @@ export function pickEffectChoice(
     return pickWeakestEffectTarget(state, actions);
   }
 
-  return (
-    actions.find((a) => a.type === "resolve_effect_choice") ??
-    skip ??
-    null
-  );
+  return skip ?? actions.find((a) => a.type === "resolve_effect_choice") ?? null;
 }
 
 function maxSelfStrikeThreat(state: GameState, playerId: PlayerId): number {
