@@ -111,23 +111,31 @@ node scripts/verify-wiki-effects.mjs
 
 ## Vercel デプロイ
 
-GitHub リポジトリと Vercel を接続済みの場合、次のどちらかで動きます。
+ビルドコマンドなどは `apps/web/vercel.json` に定義しています。  
+**Root Directory だけは Vercel ダッシュボードで設定** してください（リポジトリ内に書けない項目です）。
 
-### パターン A（推奨）: Root Directory = `apps/web`
+### ダッシュボード設定（初回のみ）
+
+**Settings → General → Build & Development Settings**
 
 | 設定 | 値 |
 |------|-----|
 | Root Directory | `apps/web` |
-| Framework Preset | **Next.js** |
-| Output Directory | **空欄** |
+| Framework Preset | **Next.js**（Override している場合は解除または Next.js に合わせる） |
+| Output Directory | **空欄**（`public` などを削除） |
 | Include source files outside Root Directory | **有効** |
 
-`apps/web/vercel.json` が使われます。
+設定変更後は **Deployments → Redeploy**（Build Cache オフ）→ **Promote to Production** してください。  
+「Configuration Settings in the current Production deployment differ…」と出ている場合も同様です。
 
-### パターン B: Root Directory = リポジトリルート（`.`）
+### リポジトリ側の設定
 
-ルートの `vercel.json` が `@vercel/next` で `apps/web` をビルドします。  
-ダッシュボードの **Output Directory が `public` になっていないこと** を確認してください。
+| ファイル | 内容 |
+|---------|------|
+| `apps/web/vercel.json` | framework / install / build / dev コマンド |
+| `apps/web/next.config.ts` | モノレポ向け `outputFileTracingRoot` |
+| `apps/web/.nvmrc` | Node 20 |
+| `apps/web/package.json` | `prebuild` で cards / engine を先にビルド |
 
 `main` への push で自動デプロイされます。
 

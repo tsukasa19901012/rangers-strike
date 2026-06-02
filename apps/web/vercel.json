@@ -2,5 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "installCommand": "cd ../.. && npm ci",
-  "buildCommand": "cd ../.. && npx turbo run build --filter=@rangers-strike/web"
+  "buildCommand": "cd ../.. && npx turbo run build --filter=@rangers-strike/web",
+  "devCommand": "npm run dev"
 }
