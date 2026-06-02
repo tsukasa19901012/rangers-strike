@@ -14,8 +14,10 @@ import type { DragCardPayload } from "./dnd";
 
 /** ドラッグ開始までの最小移動量 */
 const DRAG_THRESHOLD_PX = 8;
-/** これ以上横に動いたら手札スクロールとみなしてドラッグをキャンセル */
+/** 通常カード: これ以上横に動いたらスクロールとみなす */
 const SCROLL_CANCEL_PX = 28;
+
+type ScrollPreference = "horizontal" | "none";
 
 type DropTargetRegistration = {
   accepts: () => boolean;
@@ -43,6 +45,7 @@ type PendingPointer = {
   pointerId: number;
   startX: number;
   startY: number;
+  scrollPreference: ScrollPreference;
   payload: DragCardPayload;
   sourceEl: HTMLElement;
   rect: DOMRect;
@@ -58,6 +61,7 @@ type PointerDragContextValue = {
     enabled: boolean;
     payload: DragCardPayload;
     imageSrc?: string;
+    scrollPreference?: ScrollPreference;
     onStart?: () => void;
     onEnd?: () => void;
   }) => (event: React.PointerEvent<HTMLElement>) => void;
@@ -89,18 +93,34 @@ function releaseCapture(sourceEl: HTMLElement, pointerId: number) {
   }
 }
 
-function shouldStartDrag(dx: number, dy: number): boolean {
+function shouldStartDrag(dx: number, dy: number, scrollPreference: ScrollPreference): boolean {
   const absDx = Math.abs(dx);
   const absDy = Math.abs(dy);
   const distance = Math.hypot(dx, dy);
   if (distance < DRAG_THRESHOLD_PX) return false;
-  if (absDx >= SCROLL_CANCEL_PX && absDx > absDy * 1.35) return false;
+  if (shouldCancelForScroll(dx, dy, scrollPreference)) return false;
+
+  if (scrollPreference === "horizontal") {
+    return absDy >= 12 && absDy > absDx * 1.1;
+  }
+
   return absDy >= DRAG_THRESHOLD_PX || distance >= DRAG_THRESHOLD_PX * 1.25;
 }
 
-function shouldCancelForScroll(dx: number, dy: number): boolean {
+function shouldCancelForScroll(
+  dx: number,
+  dy: number,
+  scrollPreference: ScrollPreference,
+): boolean {
   const absDx = Math.abs(dx);
   const absDy = Math.abs(dy);
+  const distance = Math.hypot(dx, dy);
+  if (distance < DRAG_THRESHOLD_PX) return false;
+
+  if (scrollPreference === "horizontal") {
+    return absDx >= absDy * 0.75 || (absDx >= 6 && absDx >= absDy * 0.55);
+  }
+
   return absDx >= SCROLL_CANCEL_PX && absDx > absDy * 1.35;
 }
 
@@ -181,15 +201,16 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
       const dx = event.clientX - pending.startX;
       const dy = event.clientY - pending.startY;
 
-      if (shouldCancelForScroll(dx, dy)) {
+      if (shouldCancelForScroll(dx, dy, pending.scrollPreference)) {
         releaseCapture(pending.sourceEl, event.pointerId);
         pendingRef.current = null;
         return;
       }
 
-      if (!shouldStartDrag(dx, dy)) return;
+      if (!shouldStartDrag(dx, dy, pending.scrollPreference)) return;
 
       event.preventDefault();
+      pending.sourceEl.setPointerCapture(event.pointerId);
       document.body.classList.add("is-dragging-card");
 
       const drag: ActiveSession = {
@@ -252,12 +273,14 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
       enabled,
       payload,
       imageSrc,
+      scrollPreference = "none",
       onStart,
       onEnd,
     }: {
       enabled: boolean;
       payload: DragCardPayload;
       imageSrc?: string;
+      scrollPreference?: ScrollPreference;
       onStart?: () => void;
       onEnd?: () => void;
     }) =>
@@ -265,12 +288,15 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
         if (!enabled || event.button !== 0) return;
 
         const sourceEl = event.currentTarget;
-        sourceEl.setPointerCapture(event.pointerId);
+        if (scrollPreference !== "horizontal") {
+          sourceEl.setPointerCapture(event.pointerId);
+        }
 
         pendingRef.current = {
           pointerId: event.pointerId,
           startX: event.clientX,
           startY: event.clientY,
+          scrollPreference,
           payload,
           sourceEl,
           rect: sourceEl.getBoundingClientRect(),

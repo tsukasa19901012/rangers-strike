@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   EFFECT_LABELS,
   getCardEffect,
@@ -53,6 +53,7 @@ import { PhaseGuide } from "./PhaseGuide";
 import { PileModal } from "./PileModal";
 import { PlayerBoard } from "./PlayerBoard";
 import { StartScreen } from "./StartScreen";
+import { TurnNoticeModal } from "./TurnNoticeModal";
 
 const CPU_PLAYER = "player2" as const;
 const HUMAN_PLAYER = "player1" as const;
@@ -112,6 +113,17 @@ type PileView = {
   pile: "deck" | "discard";
 };
 
+function hasReactionWindow(game: GameState): boolean {
+  return !!(
+    game.pendingStrike ||
+    game.pendingBattle ||
+    game.pendingRush ||
+    game.pendingLeave ||
+    game.pendingEffectChoice ||
+    game.pendingBattleEntry
+  );
+}
+
 export function GameApp() {
   const [appScreen, setAppScreen] = useState<AppScreen>("start");
   const [editingDeckId, setEditingDeckId] = useState<string | null>(null);
@@ -133,6 +145,10 @@ export function GameApp() {
   const [battleDrag, setBattleDrag] = useState<DragCardPayload | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [blockedBattleAlert, setBlockedBattleAlert] = useState<string | null>(null);
+  const [turnNotice, setTurnNotice] = useState<PlayerId | null>(null);
+  const prevActivePlayerRef = useRef<PlayerId | null>(null);
+  const cpuBoardRef = useRef<HTMLDivElement>(null);
+  const humanBoardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setCustomDecks(loadCustomDecks());
@@ -191,6 +207,8 @@ export function GameApp() {
       setActionError(null);
       setBattleDrag(null);
       setLogOpen(false);
+      prevActivePlayerRef.current = null;
+      setTurnNotice(null);
     } catch {
       setStartError("デッキの読み込みに失敗しました。");
     }
@@ -252,6 +270,39 @@ export function GameApp() {
 
   const humanCanAct =
     state?.activePlayer === HUMAN_PLAYER && !state.winner;
+
+  const dismissTurnNotice = useCallback(() => {
+    setTurnNotice((current) => {
+      if (current) {
+        const targetRef = current === HUMAN_PLAYER ? humanBoardRef : cpuBoardRef;
+        window.requestAnimationFrame(() => {
+          targetRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+      return null;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!state || state.winner) return;
+    if (hasReactionWindow(state)) return;
+
+    const prev = prevActivePlayerRef.current;
+    if (prev !== null && prev !== state.activePlayer) {
+      setTurnNotice(state.activePlayer);
+    }
+    prevActivePlayerRef.current = state.activePlayer;
+  }, [
+    state,
+    state?.activePlayer,
+    state?.winner,
+    state?.pendingStrike,
+    state?.pendingBattle,
+    state?.pendingRush,
+    state?.pendingLeave,
+    state?.pendingEffectChoice,
+    state?.pendingBattleEntry,
+  ]);
 
   const apply = useCallback((action: GameAction) => {
     if (!state) return;
@@ -945,6 +996,9 @@ export function GameApp() {
           onClose={() => setBlockedBattleAlert(null)}
         />
       )}
+      {turnNotice && (
+        <TurnNoticeModal playerId={turnNotice} onDismiss={dismissTurnNotice} />
+      )}
 
       <header className="game__header">
         <div>
@@ -1008,6 +1062,7 @@ export function GameApp() {
         <div className="game__boards">
           <PlayerBoard
             label="CPU"
+            boardRef={cpuBoardRef}
             playerId={CPU_PLAYER}
             player={state.players[CPU_PLAYER]}
             definitions={state.definitions}
@@ -1030,6 +1085,7 @@ export function GameApp() {
 
           <PlayerBoard
             label="あなた"
+            boardRef={humanBoardRef}
             playerId={HUMAN_PLAYER}
             player={state.players[HUMAN_PLAYER]}
             definitions={state.definitions}

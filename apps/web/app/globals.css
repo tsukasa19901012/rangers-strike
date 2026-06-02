@@ -165,6 +165,7 @@ select {
   background: #111827;
   border: 1px solid #243044;
   min-width: 0;
+  scroll-margin-top: 12px;
 }
 
 .board--active {
@@ -470,6 +471,15 @@ select {
 
 .playsheet__hand .card-wrap {
   flex-shrink: 0;
+}
+
+.playsheet__hand .card--draggable {
+  touch-action: pan-x;
+}
+
+.playsheet__battle .zone__cards .card--draggable,
+.playsheet__rush .zone__cards .card--draggable {
+  touch-action: pan-x;
 }
 
 .pile-modal__card--target {
@@ -869,6 +879,32 @@ select {
 
 .alert-modal__ok {
   width: 100%;
+}
+
+.turn-notice-backdrop {
+  z-index: 110;
+}
+
+.turn-notice {
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 16px;
+  padding: 28px 36px;
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  min-width: min(280px, calc(100vw - 48px));
+}
+
+.turn-notice__title {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #f8fafc;
+}
+
+.turn-notice__hint {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
 }
 
 .modal__content--battle-entry {

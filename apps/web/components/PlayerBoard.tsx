@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, PlayerId } from "@rangers-strike/engine";
 import { COMMAND_ZONE_MAX, isUnit } from "@rangers-strike/engine";
@@ -321,6 +321,7 @@ export type PlayerBoardProps = {
   onViewPile?: (pile: "deck" | "discard") => void;
   onCommandToggle?: (card: CardInstance) => void;
   onAttemptMoveToBattle?: (card: CardInstance) => void;
+  boardRef?: RefObject<HTMLDivElement | null>;
 };
 
 export function PlayerBoard({
@@ -360,6 +361,7 @@ export function PlayerBoard({
   onViewPile,
   onCommandToggle,
   onAttemptMoveToBattle,
+  boardRef,
 }: PlayerBoardProps) {
   const interactive = isHuman && isHumanTurn;
   const [dragging, setDragging] = useState<DragCardPayload | null>(null);
@@ -647,6 +649,7 @@ export function PlayerBoard({
 
   return (
     <div
+      ref={boardRef}
       className={`board ${isOpponent ? "board--opponent" : "board--self"} ${isActive ? "board--active" : ""}`}
     >
       <div
