@@ -507,6 +507,10 @@ export function resolveBattlePending(
       defenderOwner = located.playerId;
       defenderZone = located.zone;
     }
+  } else if (
+    findInZone(state.players[defenderId], "rush", pending.defenderInstanceId)
+  ) {
+    defenderZone = "rush";
   }
 
   const defenderPlayer = state.players[defenderOwner];
@@ -514,13 +518,27 @@ export function resolveBattlePending(
   const defenderFound = findInZone(defenderPlayer, defenderZone, defenderInstanceId);
 
   if (!attackerFound || !defenderFound) {
+    const markAttackerActedOnFail = (base: GameState): GameState => {
+      if (!attackerFound) return base;
+      const currentAttacker = base.players[attackerId];
+      return {
+        ...base,
+        ...updatePlayer(base, attackerId, {
+          ...currentAttacker,
+          battle: currentAttacker.battle.map((c) =>
+            c.instanceId === pending.attackerInstanceId ? { ...c, battleActed: true } : c,
+          ),
+        }),
+      };
+    };
+    const logCardId = attackerFound?.card.cardId ?? pending.attackerInstanceId;
     return finish(
-      {
+      markAttackerActedOnFail({
         ...state,
         pendingBattle: undefined,
         activePlayer: pending.phasePlayerId,
-      },
-      buildLogEntry(attackerId, "battle", pending.attackerInstanceId, state.definitions, "failed"),
+      }),
+      buildLogEntry(attackerId, "battle", logCardId, state.definitions, "failed"),
     );
   }
 

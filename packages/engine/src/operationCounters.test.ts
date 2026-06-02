@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
+import { battleFillers, moveToBattle } from "./testing/battleEntry";
 import { createTestState, heldEtCommand, heldWbCommand, inst } from "./testing/fixtures";
 
 function def(id: string) {
@@ -297,5 +298,37 @@ describe("RS-018 hidden ninja substitute", () => {
       )
       .map((a) => a.substituteInstanceId);
     expect(subs).not.toContain(attacker.instanceId);
+  });
+
+  it("RS-058 yellow thunder resolves battle against defender in rush", () => {
+    const yellow = inst("RS-058", "yellow");
+    const rushDefender = inst("TST-UNIT-0", "d-rush");
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      definitions: Object.fromEntries(legend1Catalog.cards.map((c) => [c.id, c])),
+      player1: {
+        rush: [yellow],
+        battle: battleFillers(2),
+      },
+      player2: { rush: [rushDefender], battle: [] },
+    });
+
+    state = moveToBattle(state, yellow.instanceId);
+    state = unwrap(
+      applyAction(state, {
+        type: "battle",
+        playerId: "player1",
+        attackerInstanceId: yellow.instanceId,
+        defenderInstanceId: rushDefender.instanceId,
+      }),
+    );
+
+    expect(state.log.some((e) => e.endsWith("|failed"))).toBe(false);
+    expect(state.players.player2.rush).toHaveLength(0);
+    expect(state.players.player1.battle.find((c) => c.instanceId === yellow.instanceId)?.battleActed).toBe(
+      true,
+    );
+    expect(state.pendingBattle).toBeUndefined();
   });
 });

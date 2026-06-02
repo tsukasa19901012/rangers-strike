@@ -167,6 +167,91 @@ describe("special SP strike eligibility", () => {
     expect(battleUnit(state, "player1", patStriker.instanceId)?.spModifier ?? 0).toBe(0);
   });
 
+  it("RS-043 judgment sword rejects selecting the same power card twice", () => {
+    const patStriker = inst("RS-043", "pat");
+    const p1 = inst("TST-P", "p1");
+    let state = createTestState({
+      phase: "battle",
+      definitions: defs,
+      player1: {
+        rush: [patStriker],
+        power: [p1, inst("TST-P", "p2"), inst("TST-P", "p3")],
+      },
+      player2: { battle: [] },
+    });
+
+    const moved = applyAction(state, {
+      type: "move_to_battle",
+      playerId: "player1",
+      instanceId: patStriker.instanceId,
+    });
+    expect(moved.ok).toBe(true);
+    if (!moved.ok) return;
+    state = moved.state;
+
+    const first = applyAction(state, {
+      type: "resolve_effect_choice",
+      playerId: "player1",
+      instanceId: p1.instanceId,
+    });
+    expect(first.ok).toBe(true);
+    if (!first.ok) return;
+    state = first.state;
+
+    const duplicate = applyAction(state, {
+      type: "resolve_effect_choice",
+      playerId: "player1",
+      instanceId: p1.instanceId,
+    });
+    expect(duplicate.ok).toBe(false);
+    expect(battleUnit(state, "player1", patStriker.instanceId)?.spModifier ?? 0).toBe(0);
+    expect(state.players.player1.discard).toHaveLength(0);
+  });
+
+  it("RS-043 judgment sword grants SP1 only after discarding two power cards", () => {
+    const patStriker = inst("RS-043", "pat");
+    const p1 = inst("TST-P", "p1");
+    const p2 = inst("TST-P", "p2");
+    let state = createTestState({
+      phase: "battle",
+      definitions: defs,
+      player1: {
+        rush: [patStriker],
+        power: [p1, p2, inst("TST-P", "p3")],
+      },
+      player2: { battle: [] },
+    });
+
+    const moved = applyAction(state, {
+      type: "move_to_battle",
+      playerId: "player1",
+      instanceId: patStriker.instanceId,
+    });
+    expect(moved.ok).toBe(true);
+    if (!moved.ok) return;
+    state = moved.state;
+
+    for (const id of [p1.instanceId, p2.instanceId]) {
+      const picked = applyAction(state, {
+        type: "resolve_effect_choice",
+        playerId: "player1",
+        instanceId: id,
+      });
+      expect(picked.ok).toBe(true);
+      if (!picked.ok) return;
+      state = picked.state;
+    }
+
+    expect(state.players.player1.power).toHaveLength(1);
+    expect(state.players.player1.discard).toHaveLength(2);
+    expect(battleUnit(state, "player1", patStriker.instanceId)?.spModifier).toBe(1);
+    expect(
+      getLegalActions(state).some(
+        (a) => a.type === "strike" && a.instanceId === patStriker.instanceId,
+      ),
+    ).toBe(true);
+  });
+
   it("RS-058 cannot strike at CN 4 without yellow thunder", () => {
     const yellow = inst("RS-058", "yellow");
     let state = createTestState({

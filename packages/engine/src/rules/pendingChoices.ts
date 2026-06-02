@@ -737,13 +737,20 @@ export function applyEffectChoiceSelect(
     }
 
     case "select_power": {
-      const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+      const prev = pending.selectedInstanceIds ?? [];
+      if (prev.includes(instanceId)) return { error: "already_selected" };
+      const selected = [...prev, instanceId];
       const selectCount = pending.selectCount ?? 1;
       if (selected.length < selectCount) {
+        const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
         return {
           state: {
             ...state,
-            pendingEffectChoice: { ...pending, selectedInstanceIds: selected },
+            pendingEffectChoice: {
+              ...pending,
+              selectedInstanceIds: selected,
+              validInstanceIds: remaining,
+            },
           },
         };
       }
@@ -762,12 +769,16 @@ export function applyEffectChoiceSelect(
       }
 
       if (pending.sourceInstanceId) {
-        const spGain =
-          pending.effectId === "justice_flasher"
+        const needsFullPayment =
+          pending.effectId === "judgment_sword" || pending.effectId === "justice_flasher";
+        const paidEnough = !needsFullPayment || toDiscard.length >= selectCount;
+        const spGain = paidEnough
+          ? pending.effectId === "justice_flasher"
             ? 3
             : pending.effectId === "judgment_sword"
               ? 1
-              : 0;
+              : 0
+          : 0;
         if (spGain > 0) {
           nextPlayer = {
             ...nextPlayer,
