@@ -1141,8 +1141,14 @@ select {
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
   scrollbar-width: thin;
-  touch-action: pan-x;
+  /* Allow vertical page scroll while swiping on zone chrome / empty area (tablet). */
+  touch-action: pan-x pan-y;
+}
+
+.zone__cards--scroll-x .card--draggable {
+  touch-action: pan-x pan-y;
 }
 
 .zone__cards--scroll-y {
@@ -1533,6 +1539,21 @@ select {
 .hint {
   font-size: 0.8rem;
   color: #94a3b8;
+}
+
+/* Touch / tablet: vertical scroll on zones and boards (not only on page margins). */
+@media (hover: none), (pointer: coarse) {
+  .game__playfield,
+  .game__boards,
+  .board,
+  .playsheet,
+  .playsheet .zone.drop-zone {
+    touch-action: pan-y;
+  }
+
+  .zone__title {
+    touch-action: pan-y;
+  }
 }
 
 /* Tablet (640px+) */
