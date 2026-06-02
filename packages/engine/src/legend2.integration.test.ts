@@ -53,7 +53,8 @@ describe("legend2 integration", () => {
       phase: "rush",
       activePlayer: "player1",
       player1: {
-        hand: [mecha, sMaterial],
+        hand: [mecha],
+        rush: [sMaterial],
         discard: [discard],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
         command: [heldEtCommand("held")],
