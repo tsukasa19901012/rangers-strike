@@ -823,6 +823,43 @@ export function GameApp() {
     [apply, legalActions, pendingHiddenNinja],
   );
 
+  const counterInstanceIds = useMemo(() => {
+    if (!state || state.activePlayer !== HUMAN_PLAYER) return [];
+    const ids = legalActions
+      .filter((a): a is Extract<typeof a, { type: "play_counter" }> => a.type === "play_counter")
+      .map((a) => a.instanceId);
+    return [...new Set(ids)];
+  }, [legalActions, state]);
+
+  const operationTargetIds = useMemo(() => {
+    const ids = new Set<string>();
+    pendingTargets?.forEach((id) => ids.add(id));
+    pendingZordTargets?.forEach((id) => ids.add(id));
+    return [...ids];
+  }, [pendingTargets, pendingZordTargets]);
+
+  const humanReactionKind = useMemo((): "strike" | "battle" | "rush" | "leave" | null => {
+    if (!state) return null;
+    if (state.pendingStrike && state.activePlayer === HUMAN_PLAYER) return "strike";
+    if (state.pendingBattle && state.activePlayer === HUMAN_PLAYER) return "battle";
+    if (state.pendingRush && state.activePlayer === HUMAN_PLAYER) return "rush";
+    if (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) return "leave";
+    return null;
+  }, [state]);
+
+  const handleReactionPass = useCallback(() => {
+    if (!humanReactionKind) return;
+    const actionType =
+      humanReactionKind === "strike"
+        ? "pass_strike_reaction"
+        : humanReactionKind === "battle"
+          ? "pass_battle_reaction"
+          : humanReactionKind === "rush"
+            ? "pass_rush_reaction"
+            : "pass_leave_reaction";
+    apply({ type: actionType, playerId: HUMAN_PLAYER });
+  }, [apply, humanReactionKind]);
+
   if (!state) {
     if (appScreen === "deck-builder") {
       return (
@@ -883,25 +920,6 @@ export function GameApp() {
 
   const showEffectChoiceModal = isHumanEffectChoice && !!pendingChoice;
 
-  const humanReactionKind: "strike" | "battle" | "rush" | "leave" | null =
-    isStrikeReaction
-      ? "strike"
-      : state.pendingBattle && state.activePlayer === HUMAN_PLAYER
-        ? "battle"
-        : state.pendingRush && state.activePlayer === HUMAN_PLAYER
-          ? "rush"
-          : state.pendingLeave && state.activePlayer === HUMAN_PLAYER
-            ? "leave"
-            : null;
-
-  const counterInstanceIds = useMemo(() => {
-    if (!state || state.activePlayer !== HUMAN_PLAYER) return [];
-    const ids = legalActions
-      .filter((a): a is Extract<typeof a, { type: "play_counter" }> => a.type === "play_counter")
-      .map((a) => a.instanceId);
-    return [...new Set(ids)];
-  }, [legalActions, state]);
-
   const showReactionModal =
     !!humanReactionKind &&
     (pendingHiddenNinja !== null ||
@@ -911,13 +929,6 @@ export function GameApp() {
       canPassRushReaction ||
       canPassLeaveReaction ||
       isStrikeReaction);
-
-  const operationTargetIds = useMemo(() => {
-    const ids = new Set<string>();
-    pendingTargets?.forEach((id) => ids.add(id));
-    pendingZordTargets?.forEach((id) => ids.add(id));
-    return [...ids];
-  }, [pendingTargets, pendingZordTargets]);
 
   const showOperationModal =
     humanCanAct &&
@@ -939,19 +950,6 @@ export function GameApp() {
   const boardCounterIds = showReactionModal ? undefined : counterIds;
   const boardInterceptIds = showReactionModal ? undefined : interceptableIds;
   const boardSubstituteIds = showReactionModal ? undefined : pendingSubstituteTargets;
-
-  const handleReactionPass = useCallback(() => {
-    if (!humanReactionKind) return;
-    const actionType =
-      humanReactionKind === "strike"
-        ? "pass_strike_reaction"
-        : humanReactionKind === "battle"
-          ? "pass_battle_reaction"
-          : humanReactionKind === "rush"
-            ? "pass_rush_reaction"
-            : "pass_leave_reaction";
-    apply({ type: actionType, playerId: HUMAN_PLAYER });
-  }, [apply, humanReactionKind]);
 
   const pendingHint = showEffectChoiceModal || showReactionModal || showOperationModal
     ? undefined
