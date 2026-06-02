@@ -242,17 +242,6 @@ export function GameApp() {
     [state],
   );
 
-  const battleEntryInstanceIds = useMemo(() => {
-    if (!state || state.phase !== "battle") return undefined;
-    const ids = legalActions
-      .filter(
-        (action): action is Extract<typeof action, { type: "move_to_battle" }> =>
-          action.type === "move_to_battle",
-      )
-      .map((action) => action.instanceId);
-    return ids.length > 0 ? new Set(ids) : new Set<string>();
-  }, [legalActions, state]);
-
   const humanCanAct =
     state?.activePlayer === HUMAN_PLAYER && !state.winner;
 
@@ -362,7 +351,10 @@ export function GameApp() {
       }
 
       const reason = explainCannotEnterBattle(state, HUMAN_PLAYER, card, "rush");
-      if (reason) setBlockedBattleAlert(reason);
+      setBlockedBattleAlert(
+        reason ??
+          `「${getCardById(card.cardId)?.name ?? card.cardId}」はバトルエリアに出せません。`,
+      );
     },
     [apply, humanCanAct, legalActions, state],
   );
@@ -1232,7 +1224,6 @@ export function GameApp() {
             onOperationTarget={handleOperationTarget}
             onZordMaterial={handleZordMaterial}
             onCommandToggle={handleCommandToggle}
-            battleEntryInstanceIds={battleEntryInstanceIds}
             onBattleDragStart={setBattleDrag}
             onBattleDragEnd={() => setBattleDrag(null)}
             strikeableIds={strikeableIds}
