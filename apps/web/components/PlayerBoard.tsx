@@ -20,6 +20,8 @@ type DropZoneProps = {
   onDrop?: (payload: DragCardPayload) => void;
   children: ReactNode;
   cardsRef?: React.RefObject<HTMLDivElement | null>;
+  scrollX?: boolean;
+  scrollY?: boolean;
 };
 
 export function DropZone({
@@ -34,6 +36,8 @@ export function DropZone({
   onDrop,
   children,
   cardsRef,
+  scrollX,
+  scrollY,
 }: DropZoneProps) {
   const zoneRef = useRef<HTMLElement>(null);
 
@@ -61,7 +65,16 @@ export function DropZone({
         {title}
         {count !== undefined && <span className="zone__count">{count}</span>}
       </header>
-      <div className="zone__cards" ref={cardsRef}>
+      <div
+        className={[
+          "zone__cards",
+          scrollX ? "zone__cards--scroll-x" : "",
+          scrollY ? "zone__cards--scroll-y" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        ref={cardsRef}
+      >
         {children}
         {count === 0 && emptyLabel && (
           <span className="zone__empty">{emptyLabel}</span>
@@ -105,6 +118,8 @@ type ZoneCardsProps = {
   imageOnly?: boolean;
   getCommandHeld?: (card: CardInstance) => boolean | undefined;
   onCommandToggle?: (card: CardInstance) => (() => void) | undefined;
+  cardsScrollX?: boolean;
+  cardsScrollY?: boolean;
 };
 
 function CardDropWrap({
@@ -168,6 +183,8 @@ function ZoneCards({
   imageOnly,
   getCommandHeld,
   onCommandToggle,
+  cardsScrollX,
+  cardsScrollY,
 }: ZoneCardsProps) {
   const cardsRef = useRef<HTMLDivElement>(null);
   const selectableKey = selectableIds ? [...selectableIds].sort().join(",") : "";
@@ -190,6 +207,8 @@ function ZoneCards({
       emptyLabel={emptyLabel}
       className={className}
       cardsRef={cardsRef}
+      scrollX={cardsScrollX}
+      scrollY={cardsScrollY}
     >
       {cards.map((card) => {
         const definition = definitions[card.cardId];
@@ -463,6 +482,7 @@ export function PlayerBoard({
       title="パワーゾーン"
       zoneId="power"
       className="playsheet__power"
+      cardsScrollY
       cards={player.power}
       definitions={definitions}
       playerId={playerId}
@@ -482,6 +502,7 @@ export function PlayerBoard({
       title="バトルエリア"
       zoneId="battle"
       className="playsheet__battle"
+      cardsScrollX
       imageOnly
       cards={player.battle}
       definitions={definitions}
@@ -520,6 +541,7 @@ export function PlayerBoard({
       title="ラッシュエリア"
       zoneId="rush"
       className="playsheet__rush"
+      cardsScrollX
       imageOnly
       cards={player.rush}
       definitions={definitions}
@@ -550,6 +572,7 @@ export function PlayerBoard({
       title={`コマンドゾーン (${player.command.length}/${COMMAND_ZONE_MAX})`}
       zoneId="command"
       className="playsheet__command"
+      cardsScrollX
       imageOnly
       cards={player.command}
       definitions={definitions}
@@ -694,6 +717,7 @@ export function PlayerBoard({
             title="手札"
             zoneId="power"
             className="playsheet__hand"
+            cardsScrollX
             cards={player.hand}
             definitions={definitions}
             playerId={playerId}

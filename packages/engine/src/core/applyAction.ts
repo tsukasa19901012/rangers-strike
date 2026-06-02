@@ -127,6 +127,11 @@ function withWinner(state: GameState): GameState {
   return { ...state, winner: checkWinner(state) };
 }
 
+function advanceFromCharge(state: GameState, chargeLog: string): GameState {
+  const logged = { ...state, log: [...state.log, chargeLog] };
+  return withWinner(advancePhase(logged));
+}
+
 function finalizeTurnEnd(state: GameState): GameState {
   const prevPlayer = state.activePlayer;
   let next = applyAdventureEndTurn(state, prevPlayer);
@@ -253,10 +258,14 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         power: [...player.power, powerCard],
         hasChargedThisTurn: true,
       };
-      return ok(
-        { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-        buildLogEntry(playerId, "charge_power", found.card.cardId, state.definitions),
-      );
+      const chargedState = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+      return {
+        ok: true,
+        state: advanceFromCharge(
+          chargedState,
+          buildLogEntry(playerId, "charge_power", found.card.cardId, state.definitions),
+        ),
+      };
     }
 
     case "charge_command": {
@@ -277,10 +286,14 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         command: [...player.command, commandCard],
         hasChargedThisTurn: true,
       };
-      return ok(
-        { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-        buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
-      );
+      const chargedState = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+      return {
+        ok: true,
+        state: advanceFromCharge(
+          chargedState,
+          buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+        ),
+      };
     }
 
     case "hold_command": {

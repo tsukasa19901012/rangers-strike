@@ -79,6 +79,7 @@ describe("charge phase", () => {
 
     expect(next.players.player1.hand).toHaveLength(0);
     expect(next.players.player1.power).toHaveLength(1);
+    expect(next.phase).toBe("rush");
   });
 
   it("lists charge actions for each hand card", () => {
@@ -109,6 +110,7 @@ describe("charge phase", () => {
     );
 
     expect(state.players.player1.hasChargedThisTurn).toBe(true);
+    expect(state.phase).toBe("rush");
 
     const chargeActions = getLegalActions(state).filter(
       (a) => a.type === "charge_power" || a.type === "charge_command",
@@ -286,8 +288,6 @@ describe("phase flow", () => {
         instanceId: op.instanceId,
       }),
     );
-
-    state = unwrap(applyAction(state, { type: "end_phase", playerId: "player1" }));
     expect(state.phase).toBe("rush");
 
     state = unwrap(

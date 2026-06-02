@@ -273,15 +273,10 @@ select {
 }
 
 .playsheet__command .zone__cards {
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
   height: var(--card-height);
   min-height: var(--card-height);
   align-items: flex-start;
   padding-bottom: 2px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
 }
 
 .playsheet__command .card-wrap {
@@ -314,16 +309,10 @@ select {
 
 .playsheet__battle .zone__cards,
 .playsheet__rush .zone__cards {
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
   height: var(--card-height);
   min-height: var(--card-height);
   align-items: flex-end;
   padding-bottom: 2px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  touch-action: pan-x;
 }
 
 .playsheet__battle .card-wrap,
@@ -411,11 +400,9 @@ select {
 
 .playsheet__power .zone__cards {
   flex-direction: column;
-  flex-wrap: nowrap;
   align-items: center;
   min-height: 80px;
   max-height: 220px;
-  overflow-y: auto;
   overflow-x: visible;
   gap: 6px;
   padding: 2px 0;
@@ -453,30 +440,17 @@ select {
 }
 
 .playsheet__hand .zone__cards {
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
   min-height: var(--zone-card-min-height);
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  touch-action: pan-x;
   gap: 6px;
   padding: 2px 4px;
 }
 
 .playsheet__hand .zone__empty {
-  touch-action: pan-x;
   flex-shrink: 0;
 }
 
 .playsheet__hand .card-wrap {
   flex-shrink: 0;
-}
-
-.playsheet__hand .card--draggable,
-.playsheet__battle .zone__cards .card--draggable,
-.playsheet__rush .zone__cards .card--draggable {
-  touch-action: pan-x pan-y;
 }
 
 .pile-modal__card--target {
@@ -506,7 +480,7 @@ select {
 
 .card--draggable {
   cursor: grab;
-  touch-action: pan-x pan-y;
+  touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -515,12 +489,17 @@ select {
   cursor: grabbing;
 }
 
-.is-dragging-card {
-  touch-action: none;
-  overflow: hidden;
+.card--dragging-source {
+  opacity: 0.42;
 }
 
-.is-dragging-card .card--draggable {
+.is-dragging-card {
+  touch-action: none;
+}
+
+.is-dragging-card .zone__cards--scroll-x,
+.is-dragging-card .zone__cards--scroll-y {
+  overflow: hidden;
   touch-action: none;
 }
 
@@ -531,6 +510,7 @@ select {
   z-index: 9999;
   pointer-events: none;
   opacity: 0.94;
+  will-change: transform;
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.4));
 }
 
@@ -1027,6 +1007,26 @@ select {
   flex-wrap: wrap;
   gap: 6px;
   min-height: 48px;
+}
+
+.zone__cards--scroll-x {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  touch-action: pan-x;
+}
+
+.zone__cards--scroll-y {
+  flex-wrap: nowrap;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  touch-action: pan-y;
 }
 
 .zone__empty {

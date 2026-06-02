@@ -21,6 +21,7 @@ describe("command zone", () => {
     if (!result.ok) return;
     expect(result.state.players.player1.command).toHaveLength(1);
     expect(result.state.players.player1.command[0]?.commandHeld).toBe(false);
+    expect(result.state.phase).toBe("rush");
   });
 
   it("holds and releases command", () => {

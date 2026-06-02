@@ -77,10 +77,11 @@ export function CardImage({
       }
     : null;
 
-  const scrollPreference =
-    fromZone === "hand" || fromZone === "rush" || fromZone === "battle"
-      ? "horizontal"
-      : "none";
+  const inHorizontalScrollZone =
+    fromZone === "hand" ||
+    fromZone === "rush" ||
+    fromZone === "battle" ||
+    fromZone === "command";
 
   const handlePointerDown =
     dragPayload &&
@@ -88,7 +89,7 @@ export function CardImage({
       enabled: true,
       payload: dragPayload,
       imageSrc: imageSrc ?? undefined,
-      scrollPreference,
+      inHorizontalScrollZone,
       onStart: onDragStartExtra,
       onEnd: onDragEnd,
     });
