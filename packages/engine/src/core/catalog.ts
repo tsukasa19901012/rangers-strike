@@ -321,7 +321,3 @@ export function canPlayOperation(
 }
 
 export { needsZordMaterial } from "../rules/zord";
-
-export function canHoldCommandPhases(phase: GameState["phase"]): boolean {
-  return phase === "rush" || phase === "battle";
-}

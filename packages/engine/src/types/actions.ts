@@ -12,18 +12,6 @@ export type ChargeCommandAction = {
   instanceId: string;
 };
 
-export type HoldCommandAction = {
-  type: "hold_command";
-  playerId: PlayerId;
-  instanceId: string;
-};
-
-export type ReleaseCommandAction = {
-  type: "release_command";
-  playerId: PlayerId;
-  instanceId: string;
-};
-
 export type ZordMaterialDestination = "command" | "discard";
 
 export type RushAction = {
@@ -213,8 +201,6 @@ export type CancelZordSetupAction = {
 export type GameAction =
   | ChargePowerAction
   | ChargeCommandAction
-  | HoldCommandAction
-  | ReleaseCommandAction
   | RushAction
   | MoveToBattleAction
   | StrikeAction

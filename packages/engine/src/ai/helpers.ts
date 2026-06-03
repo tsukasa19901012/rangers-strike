@@ -13,7 +13,6 @@ import { findInZone, opponent } from "../core/helpers";
 import {
   countHeldCommands,
   findMandatoryBattleEntries,
-  hasCommandForCardUse,
 } from "../rules/restrictions";
 import { findCardOwner } from "../rules/fieldLookup";
 import { strikeDamageFor } from "../rules/combo";

@@ -24,18 +24,6 @@ describe("command zone", () => {
     expect(result.state.phase).toBe("rush");
   });
 
-  it("does not expose standalone hold or release in legal actions", () => {
-    const cmd = inst("TST-OP", "c1");
-    const state = createTestState({
-      phase: "rush",
-      player1: { command: [cmd] },
-    });
-
-    const actions = getLegalActions(state);
-    expect(actions.some((a) => a.type === "hold_command")).toBe(false);
-    expect(actions.some((a) => a.type === "release_command")).toBe(false);
-  });
-
   it("requires category hold payment before each rush", () => {
     const unit = inst("TST-UNIT-2", "u1");
     const cmd = inst("TST-OP", "c1");

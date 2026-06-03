@@ -172,14 +172,3 @@ export function heldOtCommand(suffix = "cmd"): CardInstance {
 export function heldMaCommand(suffix = "cmd"): CardInstance {
   return { ...inst("TST-OP-MA", suffix), commandHeld: true };
 }
-
-/** カテゴリホールド支払い済み（直接 rush を合法化するテスト用）。 */
-export function withRushCategoryPaid(command: CardInstance): {
-  command: CardInstance[];
-  rushCategoryHoldReady: true;
-} {
-  return {
-    command: [{ ...command, commandHeld: true }],
-    rushCategoryHoldReady: true,
-  };
-}

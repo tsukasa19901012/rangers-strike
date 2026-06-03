@@ -8,7 +8,6 @@ import {
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { checkWinner, advancePhase } from "./createGame";
 import {
-  canHoldCommandPhases,
   canPlayOperation,
   cardName,
   effectiveBp,
@@ -71,7 +70,6 @@ import { applyAllZordFusionMaterials, applyZordMaterial, findZordMaterial, requi
 import {
   canMoveUnitToBattle,
   mustEnterBattleBeforePhaseEnd,
-  consumeBattleEntryHolds,
   countBattleEntryEligibleHolds,
   countHeldCommands,
   requiredBattleEntryHolds,
@@ -481,34 +479,6 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       );
     }
 
-    case "hold_command": {
-      if (!canHoldCommandPhases(state.phase)) return fail("wrong_phase");
-      const found = findInZone(player, "command", action.instanceId);
-      if (!found) return fail("card_not_in_command");
-      if (found.card.commandHeld) return fail("already_held");
-
-      const command = [...player.command];
-      command[found.index] = { ...found.card, commandHeld: true, mothershipHold: false };
-      return ok(
-        { ...state, ...updatePlayer(state, playerId, { ...player, command }) },
-        buildLogEntry(playerId, "hold_command", found.card.cardId, state.definitions),
-      );
-    }
-
-    case "release_command": {
-      if (!canHoldCommandPhases(state.phase)) return fail("wrong_phase");
-      const found = findInZone(player, "command", action.instanceId);
-      if (!found) return fail("card_not_in_command");
-      if (!found.card.commandHeld) return fail("not_held");
-
-      const command = [...player.command];
-      command[found.index] = { ...found.card, commandHeld: false, mothershipHold: false };
-      return ok(
-        { ...state, ...updatePlayer(state, playerId, { ...player, command }) },
-        buildLogEntry(playerId, "release_command", found.card.cardId, state.definitions),
-      );
-    }
-
     case "play_operation": {
       if (state.phase !== "rush") return fail("wrong_phase");
       const found = findInZone(player, "hand", action.instanceId);
@@ -781,11 +751,6 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         ...nextPlayer,
         battle: [...nextPlayer.battle, battleCard],
       };
-      nextPlayer = consumeBattleEntryHolds(
-        { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-        playerId,
-        found.card,
-      );
       let nextState: GameState = {
         ...state,
         ...updatePlayer(state, playerId, nextPlayer),

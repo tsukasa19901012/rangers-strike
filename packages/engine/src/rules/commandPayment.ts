@@ -16,7 +16,6 @@ import type {
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import {
   canPlayOperationExceptCommandHold,
-  canRushUnit,
   canRushUnitExceptCommandHold,
   cardCategories,
   getDefinition,
@@ -139,8 +138,6 @@ function unheldCommandsMatchingCategory(
     return categories.some((cat) => cmdCats.includes(cat));
   });
 }
-
-export type CategoryPaymentMode = "category" | "prism";
 
 export function getCategoryPaymentOptions(
   state: GameState,
@@ -548,18 +545,6 @@ export function continueAfterMothershipPayment(
     },
     false,
   );
-}
-
-export function canAffordCategoryPaymentAfterHolds(
-  state: GameState,
-  playerId: PlayerId,
-  categories: Category[],
-  prismSubstitute: boolean,
-): boolean {
-  if (prismSubstitute) {
-    return countHeldCommands(state.players[playerId]) >= 2;
-  }
-  return hasCommandForCardUse(state.players[playerId], state.definitions, categories);
 }
 
 export function buildPaymentFromInitiateAction(

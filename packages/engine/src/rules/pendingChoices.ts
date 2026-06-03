@@ -14,7 +14,6 @@ import { promoteDeferredBattleEntry } from "./battleEntry";
 import {
   autoHoldForBattleEntry,
   canMoveUnitToBattle,
-  consumeBattleEntryHolds,
 } from "./restrictions";
 export type ChoiceOutcome =
   | { state: GameState; log?: string; logs?: string[] }
@@ -537,17 +536,12 @@ export function applyEffectChoiceSelect(
           return { error: "cannot_enter_battle" };
         }
         const [, rush] = removeAt(prepared.rush, found.index);
-        let nextOwner: PlayerState = {
+        const nextOwner: PlayerState = {
           ...prepared,
           rush,
           battle: [...prepared.battle, found.card],
           battleEntryHoldReady: false,
         };
-        nextOwner = consumeBattleEntryHolds(
-          withPrepared,
-          located.playerId,
-          found.card,
-        );
         return finishChoice(
           { ...state, ...updatePlayer(state, located.playerId, nextOwner) },
           pending,
@@ -571,17 +565,12 @@ export function applyEffectChoiceSelect(
         let battle = prepared.battle.filter((c) => c.instanceId !== instanceId);
         battle = [...battle, { ...entering.card, battleActed: true }];
         const rush = prepared.rush.filter((c) => c.instanceId !== pending.sourceInstanceId);
-        let nextPlayer: PlayerState = {
+        const nextPlayer: PlayerState = {
           ...prepared,
           battle,
           rush: [...rush, swapTarget.card],
           battleEntryHoldReady: false,
         };
-        nextPlayer = consumeBattleEntryHolds(
-          withPrepared,
-          pending.playerId,
-          entering.card,
-        );
         return finishChoice(
           { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
           pending,
@@ -905,13 +894,12 @@ export function applyEffectChoiceSelect(
       }
 
       const [, rush] = removeAt(prepared.rush, found.index);
-      let nextEnemy: PlayerState = {
+      const nextEnemy: PlayerState = {
         ...prepared,
         rush,
         battle: [...prepared.battle, found.card],
         battleEntryHoldReady: false,
       };
-      nextEnemy = consumeBattleEntryHolds(withPrepared, enemyId, found.card);
       let nextState = { ...state, ...updatePlayer(state, enemyId, nextEnemy) };
 
       const selected = [...(pending.selectedInstanceIds ?? []), instanceId];

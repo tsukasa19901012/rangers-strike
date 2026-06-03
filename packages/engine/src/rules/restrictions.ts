@@ -474,18 +474,6 @@ export function releaseHeldCommands(
   return { ...player, command };
 }
 
-/**
- * ※進入・稲妻重力のホールドは進入後も維持する（リリースしない）。
- * 呼び出し元との互換のため残している。
- */
-export function consumeBattleEntryHolds(
-  state: GameState,
-  playerId: PlayerId,
-  _unit: CardInstance,
-): PlayerState {
-  return state.players[playerId];
-}
-
 /** RS-010: 2 held commands substitute for 1 required category hold when using a card. */
 export function hasCommandForCardUse(
   player: PlayerState,
