@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { GameState } from "./types/game";
 import { applyAction } from "./core/applyAction";
 import { legendDefinitions } from "./testing/battleEntry";
-import { createTestState, inst } from "./testing/fixtures";
+import { getLegalActions } from "./core/legalActions";
+import { createTestState, inst, TEST_DEFINITIONS } from "./testing/fixtures";
 import {
   buildBattleEntryPayment,
   buildEffectHoldPayment,
@@ -152,6 +153,98 @@ describe("command payment", () => {
       sourceInstanceId: unit2.instanceId,
     });
     expect(secondPay).toBeNull();
+  });
+
+  it("does not blame missing OT when RS-045 can pay category and needs zord material", () => {
+    const zord = inst("RS-045", "zord");
+    const sUnit = inst("RS-080", "s1");
+    const otCmd = inst("TST-OP-OT", "ot");
+    const state = createTestState({
+      phase: "rush",
+      definitions: {
+        ...TEST_DEFINITIONS,
+        "RS-045": {
+          id: "RS-045",
+          name: "パトレーラー",
+          type: "unit",
+          category: "OT",
+          rarity: "N",
+          expansion: "legend1",
+          powerCost: "4+",
+          bp: 5000,
+          size: "M",
+        },
+        "RS-080": {
+          id: "RS-080",
+          name: "S",
+          type: "unit",
+          category: "OT",
+          rarity: "N",
+          expansion: "test",
+          powerCost: 1,
+          bp: 1000,
+          size: "S",
+        },
+      },
+      player1: {
+        hand: [zord],
+        rush: [sUnit],
+        power: Array.from({ length: 4 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [otCmd],
+      },
+    });
+
+    const reason = explainCannotRush(state, "player1", zord.instanceId);
+    expect(reason).not.toContain("リリース中のOTコマンドを1枚ホールド");
+  });
+
+  it("offers category payment initiate for RS-045 with released OT and S material", () => {
+    const zord = inst("RS-045", "zord");
+    const sUnit = inst("RS-080", "s1");
+    const otCmd = inst("TST-OP-OT", "ot");
+    const state = createTestState({
+      phase: "rush",
+      definitions: {
+        ...TEST_DEFINITIONS,
+        "RS-045": {
+          id: "RS-045",
+          name: "パトレーラー",
+          type: "unit",
+          category: "OT",
+          rarity: "N",
+          expansion: "legend1",
+          powerCost: "4+",
+          bp: 5000,
+          size: "M",
+        },
+        "RS-080": {
+          id: "RS-080",
+          name: "S",
+          type: "unit",
+          category: "OT",
+          rarity: "N",
+          expansion: "test",
+          powerCost: 1,
+          bp: 1000,
+          size: "S",
+        },
+      },
+      player1: {
+        hand: [zord],
+        rush: [sUnit],
+        power: Array.from({ length: 4 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [otCmd],
+      },
+    });
+
+    const inits = getLegalActions(state).filter(
+      (a) =>
+        a.type === "initiate_command_payment" &&
+        a.kind === "category_use" &&
+        a.sourceInstanceId === zord.instanceId,
+    );
+    expect(inits.length).toBeGreaterThan(0);
+    expect(inits.some((a) => a.zordMaterialInstanceId === sUnit.instanceId)).toBe(true);
   });
 
   it("explains missing category hold for rush", () => {

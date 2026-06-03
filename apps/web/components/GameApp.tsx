@@ -456,6 +456,12 @@ export function GameApp() {
           (a): a is Extract<typeof a, { type: "rush" }> =>
             a.type === "rush" && a.instanceId === payload.instanceId,
         );
+        const paymentInits = legalActions.filter(
+          (a): a is Extract<typeof a, { type: "initiate_command_payment" }> =>
+            a.type === "initiate_command_payment" &&
+            a.kind === "category_use" &&
+            a.sourceInstanceId === payload.instanceId,
+        );
 
         const simpleRush = rushActions.find(
           (a) =>
@@ -480,14 +486,8 @@ export function GameApp() {
           if (apply(rushActions[0]!)) return;
         }
 
-        if (
-          apply({
-            type: "initiate_command_payment",
-            playerId: HUMAN_PLAYER,
-            kind: "category_use",
-            sourceInstanceId: payload.instanceId,
-          })
-        ) {
+        if (paymentInits.length >= 1) {
+          apply(paymentInits[0]!);
           return;
         }
 

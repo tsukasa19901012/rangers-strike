@@ -299,6 +299,7 @@ function completeZordPayment(
         zordMaterialDestination: materialDestination,
       },
       false,
+      { perRushPayment: true },
     );
     if (payment) return { kind: "payment", payment };
   }
@@ -325,6 +326,7 @@ function completeZordPayment(
       zordMaterialDestination: materialDestination,
     },
     false,
+    { perRushPayment: true },
   );
   if (categoryPayment) return { kind: "payment", payment: categoryPayment };
 

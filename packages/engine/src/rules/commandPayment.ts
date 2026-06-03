@@ -685,8 +685,15 @@ export function explainCannotRush(
 
   const categories = cardCategories(def);
   if (
-    canRushUnitExceptCommandHold(player, state.definitions, def, instanceId) &&
-    (categories.length === 0 || hasHeldCommandForCategories(player, state.definitions, categories))
+    categories.length === 0 &&
+    canRushUnitExceptCommandHold(player, state.definitions, def, instanceId)
+  ) {
+    return null;
+  }
+  if (
+    player.rushCategoryHoldReady &&
+    hasCommandForCardUse(player, state.definitions, categories) &&
+    canRushUnitExceptCommandHold(player, state.definitions, def, instanceId)
   ) {
     return null;
   }
@@ -702,19 +709,6 @@ export function explainCannotRush(
     return `「${unitName}」をラッシュするには${catLabel}のリリース状態のコマンドが必要ですが、ありません。`;
   }
 
-  if (
-    categories.length > 0 &&
-    !hasHeldCommandForCategories(player, state.definitions, categories)
-  ) {
-    const payment = getCategoryPaymentOptions(state, playerId, categories, {
-      perRushPayment: true,
-    });
-    if (payment?.prismAvailable) {
-      return `「${unitName}」をラッシュするには、リリース中の${catLabel}コマンドを1枚ホールドするか、【プリズムパワー】でリリース2枚をホールドしてください。`;
-    }
-    return `「${unitName}」をラッシュするには、リリース中の${catLabel}コマンドを1枚ホールドしてください。`;
-  }
-
   if (needsZordMaterial(state.definitions, def.id)) {
     if (requiresAllFusionPartners(def.id)) {
       if (
@@ -728,6 +722,24 @@ export function explainCannotRush(
     ) {
       return `「${unitName}」のゾード条件（素材または母艦の支払い）を満たしていません。`;
     }
+  }
+
+  if (
+    categories.length > 0 &&
+    !player.rushCategoryHoldReady &&
+    getCategoryPaymentOptions(state, playerId, categories, { perRushPayment: true })
+  ) {
+    return null;
+  }
+
+  if (categories.length > 0 && !hasCommandForCardUse(player, state.definitions, categories)) {
+    const payment = getCategoryPaymentOptions(state, playerId, categories, {
+      perRushPayment: true,
+    });
+    if (payment?.prismAvailable) {
+      return `「${unitName}」をラッシュするには、リリース中の${catLabel}コマンドを1枚ホールドするか、【プリズムパワー】でリリース2枚をホールドしてください。`;
+    }
+    return `「${unitName}」をラッシュするには、リリース中の${catLabel}コマンドを1枚ホールドしてください。`;
   }
 
   return `「${unitName}」は今ラッシュできません。`;
