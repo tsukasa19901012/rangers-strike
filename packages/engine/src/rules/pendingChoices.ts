@@ -1,4 +1,10 @@
-import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../types/game";
+import type {
+  CardInstance,
+  GameState,
+  PendingEffectChoice,
+  PlayerId,
+  PlayerState,
+} from "../types/game";
 import { cardName, effectiveBp, getDefinition, unitBp } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
@@ -531,7 +537,7 @@ export function applyEffectChoiceSelect(
           return { error: "cannot_enter_battle" };
         }
         const [, rush] = removeAt(prepared.rush, found.index);
-        let nextOwner = {
+        let nextOwner: PlayerState = {
           ...prepared,
           rush,
           battle: [...prepared.battle, found.card],
@@ -565,7 +571,7 @@ export function applyEffectChoiceSelect(
         let battle = prepared.battle.filter((c) => c.instanceId !== instanceId);
         battle = [...battle, { ...entering.card, battleActed: true }];
         const rush = prepared.rush.filter((c) => c.instanceId !== pending.sourceInstanceId);
-        let nextPlayer = {
+        let nextPlayer: PlayerState = {
           ...prepared,
           battle,
           rush: [...rush, swapTarget.card],
@@ -899,7 +905,7 @@ export function applyEffectChoiceSelect(
       }
 
       const [, rush] = removeAt(prepared.rush, found.index);
-      let nextEnemy = {
+      let nextEnemy: PlayerState = {
         ...prepared,
         rush,
         battle: [...prepared.battle, found.card],

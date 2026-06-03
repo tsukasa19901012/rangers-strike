@@ -765,7 +765,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       ) {
         return fail("cannot_enter_battle");
       }
-      let nextPlayer = { ...player, battleEntryHoldReady: false };
+      let nextPlayer: PlayerState = { ...player, battleEntryHoldReady: false };
       const [, rush] = removeAt(nextPlayer.rush, found.index);
       nextPlayer = { ...nextPlayer, rush };
 

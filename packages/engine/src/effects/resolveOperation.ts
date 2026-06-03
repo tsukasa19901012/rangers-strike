@@ -1,5 +1,5 @@
 import { getCardEffect, getZordCondition, isFusionUnit } from "@rangers-strike/cards";
-import type { GameState, PlayerId } from "../types/game";
+import type { GameState, PlayerId, PlayerState } from "../types/game";
 import {
   cardName,
   effectiveBp,
@@ -316,7 +316,7 @@ function returnFusionMaterialsAfterBazooka(
 
     if (canMoveUnitToBattle(withPrepared, enemyId, card, "rush")) {
       battle = [...battle, { ...card, battleActed: false }];
-      let nextEnemy = {
+      let nextEnemy: PlayerState = {
         ...enemy,
         discard,
         battle,
