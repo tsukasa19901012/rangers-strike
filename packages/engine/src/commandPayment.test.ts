@@ -1,12 +1,17 @@
 import { describe, expect, it } from "vitest";
+import type { GameState } from "./types/game";
 import { applyAction } from "./core/applyAction";
 import { legendDefinitions } from "./testing/battleEntry";
 import { createTestState, inst } from "./testing/fixtures";
 import {
   buildBattleEntryPayment,
+  buildEffectHoldPayment,
+  buildMothershipHoldPayment,
   buildPaymentFromInitiateAction,
+  explainCannotRush,
   getBattleEntryPaymentNeeds,
 } from "./rules/commandPayment";
+import { advanceZordSetup } from "./rules/zordSetup";
 describe("command payment", () => {
   it("starts battle entry payment when holds are short", () => {
     const unit = inst("RS-053", "ptera");
@@ -105,5 +110,107 @@ describe("command payment", () => {
     expect(resolved.state.players.player1.rush.some((c) => c.instanceId === unit.instanceId)).toBe(
       true,
     );
+  });
+
+  it("explains missing category hold for rush", () => {
+    const unit = inst("TST-UNIT-0", "unit");
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [unit],
+        command: [],
+        power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3")],
+      },
+    });
+
+    const reason = explainCannotRush(state, "player1", unit.instanceId);
+    expect(reason).toContain("ホールド");
+    expect(reason).toContain("ラッシュ");
+  });
+
+  it("completes effect_hold payment for moss breaker style choice", () => {
+    const enemyCmd = { ...inst("RS-007", "ec"), commandHeld: false };
+    const state: GameState = {
+      ...createTestState({
+        phase: "battle",
+        activePlayer: "player2",
+        player1: { battle: [inst("TST-UNIT-0", "att")] },
+        player2: { command: [enemyCmd] },
+      }),
+      pendingEffectChoice: {
+        playerId: "player2",
+        effectId: "moss_breaker",
+        sourceCardId: "RS-040",
+        kind: "select_command",
+        phasePlayerId: "player1",
+        validInstanceIds: [enemyCmd.instanceId],
+        commandAction: "hold",
+      },
+    };
+
+    expect(buildEffectHoldPayment(state)).not.toBeNull();
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player2",
+      kind: "effect_hold",
+      sourceInstanceId: enemyCmd.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+
+    const resolved = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player2",
+      commandInstanceIds: [enemyCmd.instanceId],
+    });
+    expect(resolved.ok).toBe(true);
+    if (!resolved.ok) return;
+    expect(resolved.state.pendingEffectChoice).toBeUndefined();
+    expect(resolved.state.players.player2.command[0]?.commandHeld).toBe(true);
+  });
+
+  it("zord setup advances to mothership_hold payment", () => {
+    const zord = inst("RS-075", "zord");
+    const mothership = inst("RS-076", "ms");
+    const etCmd = { ...inst("TST-OP-ET", "et"), commandHeld: false };
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [zord],
+        rush: [mothership],
+        power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [etCmd],
+      },
+    });
+    state.definitions["RS-075"] = {
+      id: "RS-075",
+      name: "ブルバルカン",
+      type: "unit",
+      category: "ET",
+      rarity: "N",
+      expansion: "legend2",
+      powerCost: "5+",
+      bp: 5000,
+      size: "M",
+    };
+
+    const payment = buildMothershipHoldPayment(state, "player1", {
+      zordInstanceId: zord.instanceId,
+      zordCardId: "RS-075",
+    });
+    expect(payment?.kind).toBe("mothership_hold");
+    expect(payment?.validInstanceIds).toContain(etCmd.instanceId);
+
+    const advanced = advanceZordSetup(state, {
+      playerId: "player1",
+      zordInstanceId: zord.instanceId,
+      zordCardId: "RS-075",
+      step: "mothership",
+      validInstanceIds: [etCmd.instanceId],
+    }, {});
+    expect(advanced.kind).toBe("payment");
+    if (advanced.kind !== "payment") return;
+    expect(advanced.payment.kind).toBe("mothership_hold");
   });
 });

@@ -20,7 +20,6 @@ type CardImageProps = {
   onPreview?: () => void;
   onSelect?: () => void;
   commandHeld?: boolean;
-  onCommandToggle?: () => void;
   hideMeta?: boolean;
   faceDown?: boolean;
 };
@@ -39,7 +38,6 @@ export function CardImage({
   onPreview,
   onSelect,
   commandHeld,
-  onCommandToggle,
   hideMeta,
   faceDown,
 }: CardImageProps) {
@@ -53,9 +51,8 @@ export function CardImage({
     selected ? "card--selected" : "",
     disabled ? "card--disabled" : "",
     draggable && !disabled ? "card--draggable" : "",
-    onPreview ? "card--previewable" : "",
+    onPreview || onSelect ? "card--previewable" : "",
     commandHeld ? "card--command-held" : "",
-    onCommandToggle ? "card--command-toggle" : "",
     faceDown ? "card--face-down" : "",
   ]
     .filter(Boolean)
@@ -100,24 +97,22 @@ export function CardImage({
       onSelect();
       return;
     }
-    if (onCommandToggle) {
-      onCommandToggle();
-      return;
-    }
     if (onPreview) onPreview();
   };
+
+  const interactive = !!(onPreview || onSelect);
 
   return (
     <div
       className={className}
       onPointerDown={handlePointerDown ?? undefined}
       onClick={handleClick}
-      role={onPreview || onCommandToggle ? "button" : undefined}
-      tabIndex={onPreview || onCommandToggle ? 0 : undefined}
+      role={interactive ? "button" : undefined}
+      tabIndex={interactive ? 0 : undefined}
       onKeyDown={(event) => {
-        if ((onPreview || onCommandToggle) && (event.key === "Enter" || event.key === " ")) {
+        if (interactive && (event.key === "Enter" || event.key === " ")) {
           event.preventDefault();
-          if (onCommandToggle) onCommandToggle();
+          if (onSelect) onSelect();
           else if (onPreview) onPreview();
         }
       }}
@@ -144,10 +139,8 @@ export function CardImage({
             OP {card.powerCost}
           </span>
         )}
-        {commandHeld !== undefined && (
-          <span className={`card__command ${commandHeld ? "card__command--held" : ""}`}>
-            {commandHeld ? "ホールド中" : "リリース"}
-          </span>
+        {commandHeld && (
+          <span className="card__command card__command--held">ホールド中</span>
         )}
         {effect?.kind === "permanent" && (
           <span className="card__tag">常駐</span>

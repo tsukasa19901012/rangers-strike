@@ -16,11 +16,13 @@ import type {
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import {
   canPlayOperationExceptCommandHold,
+  canRushUnit,
   canRushUnitExceptCommandHold,
   cardCategories,
   getDefinition,
   hasOperationEffect,
   isUnit,
+  parsePowerCost,
 } from "../core/catalog";
 import { findInZone } from "../core/helpers";
 import {
@@ -37,6 +39,16 @@ import {
   collectMothershipEligibleCommands,
   validateMothershipHolds,
 } from "./mothership";
+import {
+  hasAllRequiredFusionMaterials,
+  needsZordMaterial,
+  requiresAllFusionPartners,
+} from "./zord";
+import { canBeginZordSetup, hasLegalZordRush } from "./zordSetup";
+
+function formatCategories(categories: Category[]): string {
+  return categories.join("・");
+}
 
 export type CommandPaymentView = {
   kind: PendingCommandPayment["kind"];
@@ -619,4 +631,64 @@ export function isResolveCommandPaymentLegal(
     return false;
   }
   return true;
+}
+
+/** Human-readable reason when a hand unit cannot be rushed. */
+export function explainCannotRush(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): string | null {
+  if (state.phase !== "rush") {
+    return "ラッシュフェイズではありません。";
+  }
+
+  const player = state.players[playerId];
+  const found = player.hand.find((c) => c.instanceId === instanceId);
+  if (!found) return null;
+
+  const def = getDefinition(state.definitions, found.cardId);
+  if (!def || !isUnit(def)) {
+    return "このカードはラッシュできません。";
+  }
+
+  if (canRushUnit(player, state.definitions, def, instanceId)) {
+    return null;
+  }
+
+  const unitName = def.name;
+  const cost = parsePowerCost(def.powerCost);
+  if (player.power.length < cost) {
+    return `「${unitName}」をラッシュするにはパワー${cost}枚が必要です（現在${player.power.length}枚）。`;
+  }
+
+  const categories = cardCategories(def);
+  if (!hasCommandForCardUse(player, state.definitions, categories)) {
+    const payment = getCategoryPaymentOptions(state, playerId, categories);
+    const catLabel = formatCategories(categories);
+    if (payment) {
+      if (payment.prismAvailable) {
+        return `「${unitName}」をラッシュするには、${catLabel}のコマンドをホールドするか、【プリズムパワー】でホールド2枚が必要です。`;
+      }
+      return `「${unitName}」をラッシュするには、${catLabel}のコマンドを1枚ホールドする必要があります。`;
+    }
+    return `「${unitName}」をラッシュするには${catLabel}のコマンドが必要ですが、ホールド可能なコマンドがありません。`;
+  }
+
+  if (needsZordMaterial(state.definitions, def.id)) {
+    if (requiresAllFusionPartners(def.id)) {
+      if (
+        !hasAllRequiredFusionMaterials(player, def.id, instanceId)
+      ) {
+        return `「${unitName}」をラッシュするには、必要な合体ユニットが揃っていません。`;
+      }
+    } else if (
+      !canBeginZordSetup(state, playerId, instanceId) &&
+      !hasLegalZordRush(state, playerId, instanceId)
+    ) {
+      return `「${unitName}」のゾード条件（素材または母艦の支払い）を満たしていません。`;
+    }
+  }
+
+  return `「${unitName}」は今ラッシュできません。`;
 }

@@ -820,7 +820,13 @@ export function quickActionPriority(
     return 1_500;
   }
 
-  if (action.type === "hold_command" || action.type === "charge_command") {
+  if (
+    action.type === "initiate_command_payment" ||
+    action.type === "resolve_command_payment"
+  ) {
+    return 600;
+  }
+  if (action.type === "charge_command") {
     return 800;
   }
 

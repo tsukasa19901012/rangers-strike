@@ -117,7 +117,6 @@ type ZoneCardsProps = {
   className?: string;
   imageOnly?: boolean;
   getCommandHeld?: (card: CardInstance) => boolean | undefined;
-  onCommandToggle?: (card: CardInstance) => (() => void) | undefined;
   cardsScrollX?: boolean;
   cardsScrollY?: boolean;
 };
@@ -182,7 +181,6 @@ function ZoneCards({
   className,
   imageOnly,
   getCommandHeld,
-  onCommandToggle,
   cardsScrollX,
   cardsScrollY,
 }: ZoneCardsProps) {
@@ -215,12 +213,10 @@ function ZoneCards({
         const cardDraggable =
           getDraggable?.(card, definition) ?? draggable ?? false;
         const cardDisabled = getDisabled?.(card, definition) ?? false;
-        const toggle = onCommandToggle?.(card);
         const preview =
           onPreview &&
           definition &&
-          !selectableIds?.has(card.instanceId) &&
-          !toggle
+          !selectableIds?.has(card.instanceId)
             ? () => onPreview(definition)
             : undefined;
         const select =
@@ -230,7 +226,7 @@ function ZoneCards({
           !interceptableIds?.has(card.instanceId) &&
           !counterIds?.has(card.instanceId)
             ? () => onSelectTarget(card.instanceId)
-            : !toggle && onCardClick
+            : onCardClick
               ? () => onCardClick(card)
               : undefined;
 
@@ -292,7 +288,6 @@ function ZoneCards({
             onPreview={preview}
             onSelect={select}
             commandHeld={getCommandHeld?.(card)}
-            onCommandToggle={toggle}
             hideMeta={imageOnly}
             faceDown={fromZone === "power" ? card.faceDown : undefined}
           />
@@ -320,8 +315,6 @@ export type PlayerBoardProps = {
   onOperationTarget?: (instanceId: string) => void;
   pendingZordTargets?: Set<string>;
   onZordMaterial?: (instanceId: string) => void;
-  pendingZordMothershipTargets?: Set<string>;
-  onZordMothershipHold?: (instanceId: string) => void;
   canAcceptStrike?: boolean;
   strikeHighlight?: boolean;
   onStrikeDrop?: (payload: DragCardPayload) => void;
@@ -340,7 +333,6 @@ export type PlayerBoardProps = {
   pendingEffectChoiceTargets?: Set<string>;
   onEffectChoiceSelect?: (instanceId: string) => void;
   onViewPile?: (pile: "deck" | "discard") => void;
-  onCommandToggle?: (card: CardInstance) => void;
   boardRef?: RefObject<HTMLDivElement | null>;
 };
 
@@ -361,8 +353,6 @@ export function PlayerBoard({
   onOperationTarget,
   pendingZordTargets,
   onZordMaterial,
-  pendingZordMothershipTargets,
-  onZordMothershipHold,
   canAcceptStrike,
   strikeHighlight,
   onStrikeDrop,
@@ -381,7 +371,6 @@ export function PlayerBoard({
   pendingEffectChoiceTargets,
   onEffectChoiceSelect,
   onViewPile,
-  onCommandToggle,
   boardRef,
 }: PlayerBoardProps) {
   const interactive = isHuman && isHumanTurn;
@@ -404,10 +393,6 @@ export function PlayerBoard({
     !!onZoneDrop &&
     player.command.length < COMMAND_ZONE_MAX &&
     !player.hasChargedThisTurn;
-  const canToggleCommand =
-    interactive &&
-    !!onCommandToggle &&
-    (phase === "rush" || phase === "battle");
   const canDropOperation =
     interactive && !!onZoneDrop && phase === "rush";
   const canDropRush =
@@ -456,7 +441,6 @@ export function PlayerBoard({
     const ids = new Set<string>();
     pendingOperationTargets?.forEach((id) => ids.add(id));
     pendingZordTargets?.forEach((id) => ids.add(id));
-    pendingZordMothershipTargets?.forEach((id) => ids.add(id));
     pendingEffectChoiceTargets?.forEach((id) => ids.add(id));
     attackTargetIds?.forEach((id) => ids.add(id));
     return ids.size > 0 ? ids : undefined;
@@ -469,10 +453,6 @@ export function PlayerBoard({
     }
     if (pendingEffectChoiceTargets?.has(instanceId)) {
       onEffectChoiceSelect?.(instanceId);
-      return;
-    }
-    if (pendingZordMothershipTargets?.has(instanceId)) {
-      onZordMothershipHold?.(instanceId);
       return;
     }
     if (pendingZordTargets?.has(instanceId)) {
@@ -587,11 +567,6 @@ export function PlayerBoard({
       selectableIds={selectableIds}
       onSelectTarget={handleSelectTarget}
       getCommandHeld={(card) => card.commandHeld}
-      onCommandToggle={
-        canToggleCommand && onCommandToggle
-          ? (card) => () => onCommandToggle(card)
-          : undefined
-      }
       emptyLabel="—"
     />
   );

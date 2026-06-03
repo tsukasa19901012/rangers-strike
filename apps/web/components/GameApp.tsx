@@ -11,6 +11,7 @@ import {
   collectFiveTechInterceptors,
   createGame,
   explainCannotEnterBattle,
+  explainCannotRush,
   findMandatoryBattleEntries,
   formatActionError,
   getLegalActions,
@@ -115,6 +116,7 @@ export function GameApp() {
   const [battleDrag, setBattleDrag] = useState<DragCardPayload | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [blockedBattleAlert, setBlockedBattleAlert] = useState<string | null>(null);
+  const [blockedRushAlert, setBlockedRushAlert] = useState<string | null>(null);
   const [turnNotice, setTurnNotice] = useState<PlayerId | null>(null);
   const [effectNotice, setEffectNotice] = useState<string | null>(null);
   const prevLogLenRef = useRef(0);
@@ -478,12 +480,22 @@ export function GameApp() {
           if (apply(rushActions[0]!)) return;
         }
 
-        apply({
-          type: "initiate_command_payment",
-          playerId: HUMAN_PLAYER,
-          kind: "category_use",
-          sourceInstanceId: payload.instanceId,
-        });
+        if (
+          apply({
+            type: "initiate_command_payment",
+            playerId: HUMAN_PLAYER,
+            kind: "category_use",
+            sourceInstanceId: payload.instanceId,
+          })
+        ) {
+          return;
+        }
+
+        const reason = explainCannotRush(state, HUMAN_PLAYER, payload.instanceId);
+        setBlockedRushAlert(
+          reason ??
+            `「${getCardById(payload.cardId)?.name ?? payload.cardId}」はラッシュできません。`,
+        );
         return;
       }
 
@@ -1241,11 +1253,10 @@ export function GameApp() {
           onCancel={handleZordSetupCancel}
         />
       )}
-      {showOperationModal && (
+      {showOperationModal && pendingOp && (
         <OperationPromptModal
           state={state}
           pendingOp={pendingOp}
-          pendingZord={null}
           targetInstanceIds={operationTargetIds}
           discardOnlyIds={pendingDiscardTargets ?? null}
           onSelectTarget={handleOperationTarget}
@@ -1273,6 +1284,13 @@ export function GameApp() {
           title="バトルエリアに出せません"
           message={blockedBattleAlert}
           onClose={() => setBlockedBattleAlert(null)}
+        />
+      )}
+      {blockedRushAlert && (
+        <AlertModal
+          title="ラッシュできません"
+          message={blockedRushAlert}
+          onClose={() => setBlockedRushAlert(null)}
         />
       )}
       {turnNotice && (
@@ -1378,7 +1396,6 @@ export function GameApp() {
             onZoneDrop={handleZoneDrop}
             pendingOperationTargets={boardOperationTargets}
             pendingZordTargets={boardZordTargets}
-            pendingZordMothershipTargets={undefined}
             onOperationTarget={handleOperationTarget}
             onZordMaterial={
               showZordSetupModal && zordSetup?.step === "material"

@@ -551,10 +551,6 @@ select {
   transform-origin: center center;
 }
 
-.card--command-toggle {
-  cursor: pointer;
-}
-
 .card__command {
   font-size: 0.58rem;
   color: #94a3b8;
