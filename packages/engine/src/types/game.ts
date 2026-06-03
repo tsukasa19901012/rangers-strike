@@ -1,4 +1,4 @@
-import type { CardDefinition } from "@rangers-strike/cards";
+import type { CardDefinition, Category } from "@rangers-strike/cards";
 
 export type PlayerId = "player1" | "player2";
 
@@ -195,6 +195,36 @@ export type PendingBattleEntry = {
   resumeEnterBattle?: EnterBattleResume;
 };
 
+export type CommandPaymentContinuation =
+  | { type: "move_to_battle"; rideOff?: boolean }
+  | {
+      type: "rush";
+      zordMaterialInstanceId?: string;
+      zordMaterialDestination?: "command" | "discard";
+      zordMothershipHoldInstanceIds?: string[];
+    }
+  | {
+      type: "play_operation";
+      targetInstanceId?: string;
+      extraInstanceId?: string;
+    };
+
+/** Pay command holds as part of a player action (no standalone hold). */
+export type PendingCommandPayment = {
+  playerId: PlayerId;
+  kind: "battle_entry" | "category_use";
+  sourceInstanceId: string;
+  sourceCardId: string;
+  /** Min newly held cards that count for ※ battle-entry (battle_entry only). */
+  eligibleNeeded: number;
+  /** How many unheld commands to hold before continuing. */
+  totalNeeded: number;
+  validInstanceIds: string[];
+  categories?: Category[];
+  prismSubstitute?: boolean;
+  continuation: CommandPaymentContinuation;
+};
+
 export type GameState = {
   turn: number;
   activePlayer: PlayerId;
@@ -217,6 +247,8 @@ export type GameState = {
   pendingEffectChoice?: PendingEffectChoice;
   /** Entered battle — must attack, strike, or pass before next entry. */
   pendingBattleEntry?: PendingBattleEntry;
+  /** Select commands to hold, then run continuation action. */
+  pendingCommandPayment?: PendingCommandPayment;
   /** Opens when enter effects need a choice first. */
   deferredBattleEntry?: PendingBattleEntry;
   /** @deprecated Alias — use pendingEffectChoice */

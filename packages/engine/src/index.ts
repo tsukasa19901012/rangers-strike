@@ -13,3 +13,4 @@ export * from "./rules/startPhase";
 export * from "./rules/strikeReactions";
 export * from "./rules/restrictions";
 export * from "./rules/battleEntry";
+export * from "./rules/commandPayment";

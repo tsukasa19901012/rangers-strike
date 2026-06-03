@@ -12,8 +12,6 @@ import {
   createGame,
   explainCannotEnterBattle,
   findMandatoryBattleEntries,
-  getLightningGravityHoldNotice,
-  type LightningGravityHoldNotice,
   formatActionError,
   getLegalActions,
   getStrikeableInstanceIds,
@@ -51,7 +49,7 @@ import { BattleEntryModal } from "./BattleEntryModal";
 import { AlertModal } from "./AlertModal";
 import { EffectChoiceModal } from "./EffectChoiceModal";
 import { EffectNoticeModal } from "./EffectNoticeModal";
-import { LightningGravityHoldModal } from "./LightningGravityHoldModal";
+import { CommandPaymentModal } from "./CommandPaymentModal";
 import { OperationPromptModal } from "./OperationPromptModal";
 import { ReactionModal } from "./ReactionModal";
 import { DeckBuilderScreen } from "./DeckBuilderScreen";
@@ -89,7 +87,8 @@ function hasReactionWindow(game: GameState): boolean {
     game.pendingRush ||
     game.pendingLeave ||
     game.pendingEffectChoice ||
-    game.pendingBattleEntry
+    game.pendingBattleEntry ||
+    game.pendingCommandPayment
   );
 }
 
@@ -114,8 +113,6 @@ export function GameApp() {
   const [battleDrag, setBattleDrag] = useState<DragCardPayload | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [blockedBattleAlert, setBlockedBattleAlert] = useState<string | null>(null);
-  const [lightningGravityHoldNotice, setLightningGravityHoldNotice] =
-    useState<LightningGravityHoldNotice | null>(null);
   const [turnNotice, setTurnNotice] = useState<PlayerId | null>(null);
   const [effectNotice, setEffectNotice] = useState<string | null>(null);
   const prevLogLenRef = useRef(0);
@@ -293,18 +290,27 @@ export function GameApp() {
     state?.pendingBattleEntry,
   ]);
 
-  const apply = useCallback((action: GameAction) => {
-    if (!state) return;
+  const apply = useCallback((action: GameAction): boolean => {
+    if (!state) return false;
     const result = applyAction(state, action);
     if (result.ok) {
       setState(result.state);
-      setPendingOp(null);
-      setPendingZord(null);
+      if (action.type === "initiate_command_payment") {
+        setPendingOp(null);
+        setPendingZord(null);
+      } else if (
+        action.type !== "cancel_command_payment" &&
+        action.type !== "resolve_command_payment"
+      ) {
+        setPendingOp(null);
+        setPendingZord(null);
+      }
       setPendingHiddenNinja(null);
       setActionError(null);
-    } else {
-      setActionError(formatActionError(result.error));
+      return true;
     }
+    setActionError(formatActionError(result.error));
+    return false;
   }, [state]);
 
   useEffect(() => {
@@ -336,7 +342,17 @@ export function GameApp() {
             ? a.targetInstanceId === targetInstanceId
             : !a.targetInstanceId),
       );
-      if (action) apply(action);
+      if (action) {
+        apply(action);
+        return;
+      }
+      apply({
+        type: "initiate_command_payment",
+        playerId: HUMAN_PLAYER,
+        kind: "category_use",
+        sourceInstanceId: instanceId,
+        targetInstanceId,
+      });
     },
     [apply, legalActions],
   );
@@ -359,9 +375,14 @@ export function GameApp() {
       );
       if (!card) return;
 
-      const lgNotice = getLightningGravityHoldNotice(state, HUMAN_PLAYER, card);
-      if (lgNotice) {
-        setLightningGravityHoldNotice(lgNotice);
+      if (
+        apply({
+          type: "initiate_command_payment",
+          playerId: HUMAN_PLAYER,
+          kind: "battle_entry",
+          sourceInstanceId: payload.instanceId,
+        })
+      ) {
         return;
       }
 
@@ -422,7 +443,6 @@ export function GameApp() {
           (a): a is Extract<typeof a, { type: "rush" }> =>
             a.type === "rush" && a.instanceId === payload.instanceId,
         );
-        if (rushActions.length === 0) return;
 
         const direct = rushActions.find((a) => !a.zordMaterialInstanceId);
         if (direct) {
@@ -430,10 +450,24 @@ export function GameApp() {
           return;
         }
 
-        setPendingZord({
-          instanceId: payload.instanceId,
-          cardId: payload.cardId,
-        });
+        if (rushActions.length > 0) {
+          setPendingZord({
+            instanceId: payload.instanceId,
+            cardId: payload.cardId,
+          });
+          return;
+        }
+
+        if (
+          apply({
+            type: "initiate_command_payment",
+            playerId: HUMAN_PLAYER,
+            kind: "category_use",
+            sourceInstanceId: payload.instanceId,
+          })
+        ) {
+          return;
+        }
         return;
       }
 
@@ -481,16 +515,64 @@ export function GameApp() {
     [pendingOp, tryPlayOperation],
   );
 
-  const handleCommandToggle = useCallback(
-    (card: CardInstance) => {
-      if (!state || !humanCanAct) return;
-      const actionType = card.commandHeld ? "release_command" : "hold_command";
-      const action = legalActions.find(
-        (a) => a.type === actionType && a.instanceId === card.instanceId,
-      );
-      if (action) apply(action);
+  const handleCommandPaymentConfirm = useCallback(
+    (commandInstanceIds: string[]) => {
+      apply({
+        type: "resolve_command_payment",
+        playerId: HUMAN_PLAYER,
+        commandInstanceIds,
+      });
     },
-    [apply, humanCanAct, legalActions, state],
+    [apply],
+  );
+
+  const handleCommandPaymentCancel = useCallback(() => {
+    apply({ type: "cancel_command_payment", playerId: HUMAN_PLAYER });
+  }, [apply]);
+
+  const handleCommandPaymentPrismChange = useCallback(
+    (usePrism: boolean) => {
+      if (!state?.pendingCommandPayment) return;
+      const pending = state.pendingCommandPayment;
+      const cancelled = applyAction(state, {
+        type: "cancel_command_payment",
+        playerId: HUMAN_PLAYER,
+      });
+      if (!cancelled.ok) return;
+      const cont = pending.continuation;
+      let initiateAction: GameAction | null = null;
+      if (cont.type === "rush") {
+        initiateAction = {
+          type: "initiate_command_payment",
+          playerId: HUMAN_PLAYER,
+          kind: "category_use",
+          sourceInstanceId: pending.sourceInstanceId,
+          prismSubstitute: usePrism,
+          zordMaterialInstanceId: cont.zordMaterialInstanceId,
+          zordMaterialDestination: cont.zordMaterialDestination,
+          zordMothershipHoldInstanceIds: cont.zordMothershipHoldInstanceIds,
+        };
+      } else if (cont.type === "play_operation") {
+        initiateAction = {
+          type: "initiate_command_payment",
+          playerId: HUMAN_PLAYER,
+          kind: "category_use",
+          sourceInstanceId: pending.sourceInstanceId,
+          prismSubstitute: usePrism,
+          targetInstanceId: cont.targetInstanceId,
+          extraInstanceId: cont.extraInstanceId,
+        };
+      }
+      if (!initiateAction) return;
+      const initiated = applyAction(cancelled.state, initiateAction);
+      if (initiated.ok) {
+        setState(initiated.state);
+        setActionError(null);
+      } else {
+        setActionError(formatActionError(initiated.error));
+      }
+    },
+    [state],
   );
 
   const handleZordMaterial = useCallback(
@@ -528,7 +610,6 @@ export function GameApp() {
       );
       if (withoutMothership.length === 1) {
         apply(withoutMothership[0]!);
-        setPendingZord(null);
         return;
       }
       if (matching.some((a) => (a.zordMothershipHoldInstanceIds?.length ?? 0) > 0)) {
@@ -539,17 +620,46 @@ export function GameApp() {
         return;
       }
       const action = matching[0];
-      if (action) {
-        apply(action);
-        setPendingZord(null);
-      }
+      if (action && apply(action)) return;
+
+      apply({
+        type: "initiate_command_payment",
+        playerId: HUMAN_PLAYER,
+        kind: "category_use",
+        sourceInstanceId: pendingZord.instanceId,
+        zordMaterialInstanceId: pendingZord.materialInstanceId,
+        zordMaterialDestination: destination,
+      });
     },
     [apply, legalActions, pendingZord],
+  );
+
+  const initiateCategoryPaymentForZord = useCallback(
+    (
+      zord: PendingZordRush,
+      extra?: {
+        zordMothershipHoldInstanceIds?: string[];
+        zordMaterialDestination?: "command" | "discard";
+      },
+    ) => {
+      apply({
+        type: "initiate_command_payment",
+        playerId: HUMAN_PLAYER,
+        kind: "category_use",
+        sourceInstanceId: zord.instanceId,
+        zordMaterialInstanceId: zord.materialInstanceId,
+        zordMaterialDestination:
+          extra?.zordMaterialDestination ?? zord.materialDestination,
+        zordMothershipHoldInstanceIds: extra?.zordMothershipHoldInstanceIds,
+      });
+    },
+    [apply],
   );
 
   const handleZordMothershipHold = useCallback(
     (commandInstanceId: string) => {
       if (!pendingZord) return;
+      const holdIds = [commandInstanceId];
       if (pendingZord.materialInstanceId && pendingZord.materialDestination) {
         const action = legalActions.find(
           (a): a is Extract<typeof a, { type: "rush" }> =>
@@ -559,10 +669,10 @@ export function GameApp() {
             a.zordMaterialDestination === pendingZord.materialDestination &&
             (a.zordMothershipHoldInstanceIds?.includes(commandInstanceId) ?? false),
         );
-        if (action) {
-          apply(action);
-          setPendingZord(null);
-        }
+        if (action && apply(action)) return;
+        initiateCategoryPaymentForZord(pendingZord, {
+          zordMothershipHoldInstanceIds: holdIds,
+        });
         return;
       }
       const action = legalActions.find(
@@ -571,12 +681,12 @@ export function GameApp() {
           a.instanceId === pendingZord.instanceId &&
           (a.zordMothershipHoldInstanceIds?.includes(commandInstanceId) ?? false),
       );
-      if (action) {
-        apply(action);
-        setPendingZord(null);
-      }
+      if (action && apply(action)) return;
+      initiateCategoryPaymentForZord(pendingZord, {
+        zordMothershipHoldInstanceIds: holdIds,
+      });
     },
-    [apply, legalActions, pendingZord],
+    [apply, initiateCategoryPaymentForZord, legalActions, pendingZord],
   );
 
   const handleViewPile = useCallback(
@@ -1054,6 +1164,10 @@ export function GameApp() {
 
   const showBattleEntryModal = !!battleEntryModal && !showEffectNotice;
 
+  const showCommandPaymentModal =
+    humanCanAct &&
+    state.pendingCommandPayment?.playerId === HUMAN_PLAYER;
+
   const boardEffectChoiceTargets = showEffectChoiceModal
     ? undefined
     : pendingEffectChoiceTargets;
@@ -1066,7 +1180,9 @@ export function GameApp() {
   const boardInterceptIds = showReactionModal ? undefined : interceptableIds;
   const boardSubstituteIds = showReactionModal ? undefined : pendingSubstituteTargets;
 
-  const pendingHint = showEffectChoiceModal || showReactionModal || showOperationModal
+  const pendingHint = showCommandPaymentModal
+    ? "コマンドを選んでホールド（行動と同時に確定）"
+    : showEffectChoiceModal || showReactionModal || showOperationModal
     ? undefined
     : isStrikeReaction
     ? interceptableIds?.size
@@ -1233,10 +1349,14 @@ export function GameApp() {
           onClose={() => setEffectNotice(null)}
         />
       )}
-      {lightningGravityHoldNotice && (
-        <LightningGravityHoldModal
-          notice={lightningGravityHoldNotice}
-          onClose={() => setLightningGravityHoldNotice(null)}
+      {showCommandPaymentModal && (
+        <CommandPaymentModal
+          key={`${state.pendingCommandPayment!.sourceInstanceId}-${state.pendingCommandPayment!.prismSubstitute ?? false}`}
+          state={state}
+          playerId={HUMAN_PLAYER}
+          onConfirm={handleCommandPaymentConfirm}
+          onCancel={handleCommandPaymentCancel}
+          onPrismModeChange={handleCommandPaymentPrismChange}
         />
       )}
       {blockedBattleAlert && (
@@ -1278,9 +1398,11 @@ export function GameApp() {
                 ? "（離場応答）"
                 : state.pendingEffectChoice
                   ? "（効果選択）"
-                  : state.pendingBattleEntry
-                    ? "（バトルアクション）"
-                    : "のターン"}
+                  : state.pendingCommandPayment
+                    ? "（コマンド支払い）"
+                    : state.pendingBattleEntry
+                      ? "（バトルアクション）"
+                      : "のターン"}
         </span>
         {state.winner && (
           <strong className="status-bar__winner">
@@ -1351,7 +1473,6 @@ export function GameApp() {
             onOperationTarget={handleOperationTarget}
             onZordMaterial={handleZordMaterial}
             onZordMothershipHold={handleZordMothershipHold}
-            onCommandToggle={handleCommandToggle}
             onBattleDragStart={setBattleDrag}
             onBattleDragEnd={() => setBattleDrag(null)}
             strikeableIds={strikeableIds}
@@ -1395,6 +1516,7 @@ export function GameApp() {
           !showReactionModal &&
           !showEffectChoiceModal &&
           !showOperationModal &&
+          !showCommandPaymentModal &&
           !canPassBattleEntry && (
           <button
             type="button"

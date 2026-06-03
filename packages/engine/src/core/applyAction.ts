@@ -77,6 +77,11 @@ import {
   requiredBattleEntryHolds,
 } from "../rules/restrictions";
 import {
+  applyPaymentHolds,
+  buildPaymentFromInitiateAction,
+  validatePaymentSelection,
+} from "../rules/commandPayment";
+import {
   applyFiveTechIntercept,
   applyPlasmaEnergyCounter,
   canPlayPlasmaEnergyCounter,
@@ -205,6 +210,13 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
   if (action.type === "move_to_battle" && state.pendingBattleEntry) {
     return fail("pending_battle_entry");
   }
+  if (
+    state.pendingCommandPayment &&
+    action.type !== "resolve_command_payment" &&
+    action.type !== "cancel_command_payment"
+  ) {
+    return fail("pending_command_payment");
+  }
   if (!isLegalAction(state, action)) return fail("illegal_action");
 
   const playerId = action.playerId;
@@ -309,6 +321,63 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
         ),
       };
+    }
+
+    case "initiate_command_payment": {
+      const pending = buildPaymentFromInitiateAction(state, action);
+      if (!pending) return fail("cannot_pay");
+      return ok(
+        { ...state, pendingCommandPayment: pending },
+        buildSimpleLogEntry(playerId, "command_payment_pending"),
+      );
+    }
+
+    case "resolve_command_payment": {
+      const pending = state.pendingCommandPayment;
+      if (!pending || pending.playerId !== playerId) return fail("no_pending_payment");
+      const err = validatePaymentSelection(pending, action.commandInstanceIds);
+      if (err) return fail(err);
+
+      let nextState = applyPaymentHolds(state, playerId, action.commandInstanceIds);
+      const cont = pending.continuation;
+      nextState = { ...nextState, pendingCommandPayment: undefined };
+
+      if (cont.type === "move_to_battle") {
+        return applyAction(nextState, {
+          type: "move_to_battle",
+          playerId,
+          instanceId: pending.sourceInstanceId,
+          rideOff: cont.rideOff,
+        });
+      }
+      if (cont.type === "rush") {
+        return applyAction(nextState, {
+          type: "rush",
+          playerId,
+          instanceId: pending.sourceInstanceId,
+          zordMaterialInstanceId: cont.zordMaterialInstanceId,
+          zordMaterialDestination: cont.zordMaterialDestination,
+          zordMothershipHoldInstanceIds: cont.zordMothershipHoldInstanceIds,
+        });
+      }
+      return applyAction(nextState, {
+        type: "play_operation",
+        playerId,
+        instanceId: pending.sourceInstanceId,
+        targetInstanceId: cont.targetInstanceId,
+        extraInstanceId: cont.extraInstanceId,
+      });
+    }
+
+    case "cancel_command_payment": {
+      if (!state.pendingCommandPayment) return fail("no_pending_payment");
+      if (state.pendingCommandPayment.playerId !== playerId) {
+        return fail("no_pending_payment");
+      }
+      return ok(
+        { ...state, pendingCommandPayment: undefined },
+        buildSimpleLogEntry(playerId, "command_payment_cancel"),
+      );
     }
 
     case "hold_command": {

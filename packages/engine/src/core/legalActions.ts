@@ -22,6 +22,10 @@ import { findInZone, opponent, payPowerCost } from "./helpers";
 import { canStrikeUnit } from "../rules/combo";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import { canMoveUnitToBattle, countHeldCommands, mustEnterBattleBeforePhaseEnd } from "../rules/restrictions";
+import {
+  isInitiateCommandPaymentLegal,
+  isResolveCommandPaymentLegal,
+} from "../rules/commandPayment";
 import { canBonusDraw, mustDrawBeforeStartEnd, mustResolveEarthForceUpkeepBeforeStartEnd, canPayEarthForceUpkeep } from "../rules/startPhase";
 import { listZordRushPaymentVariants } from "../rules/mothership";
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
@@ -390,6 +394,13 @@ export function getLegalActions(state: GameState): GameAction[] {
     return actions;
   }
 
+  if (state.pendingCommandPayment) {
+    if (state.pendingCommandPayment.playerId === playerId) {
+      actions.push({ type: "cancel_command_payment", playerId });
+    }
+    return actions;
+  }
+
   if (state.pendingEffectChoice) {
     appendEffectChoiceActions(state, playerId, actions);
     return actions;
@@ -616,6 +627,24 @@ export function getLegalActions(state: GameState): GameAction[] {
 
 export function isLegalAction(state: GameState, action: GameAction): boolean {
   if (state.winner) return false;
+
+  if (action.type === "initiate_command_payment") {
+    if (!assertActive(state, action.playerId)) return false;
+    return isInitiateCommandPaymentLegal(state, action);
+  }
+
+  if (action.type === "resolve_command_payment") {
+    return isResolveCommandPaymentLegal(state, action);
+  }
+
+  if (action.type === "cancel_command_payment") {
+    return state.pendingCommandPayment?.playerId === action.playerId;
+  }
+
+  if (state.pendingCommandPayment) {
+    return false;
+  }
+
   if (state.pendingLeave) {
     if (action.playerId !== state.pendingLeave.ownerPlayerId) return false;
   } else if (state.pendingEffectChoice) {
@@ -691,6 +720,28 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
 
   if (a.type === "resolve_effect_choice" && b.type === "resolve_effect_choice") {
     return a.instanceId === b.instanceId;
+  }
+
+  if (a.type === "resolve_command_payment" && b.type === "resolve_command_payment") {
+    const idsA = [...a.commandInstanceIds].sort().join(",");
+    const idsB = [...b.commandInstanceIds].sort().join(",");
+    return idsA === idsB;
+  }
+
+  if (a.type === "initiate_command_payment" && b.type === "initiate_command_payment") {
+    const holdsA = [...(a.zordMothershipHoldInstanceIds ?? [])].sort().join(",");
+    const holdsB = [...(b.zordMothershipHoldInstanceIds ?? [])].sort().join(",");
+    return (
+      a.kind === b.kind &&
+      a.sourceInstanceId === b.sourceInstanceId &&
+      (a.prismSubstitute ?? false) === (b.prismSubstitute ?? false) &&
+      (a.rideOff ?? false) === (b.rideOff ?? false) &&
+      (a.zordMaterialInstanceId ?? "") === (b.zordMaterialInstanceId ?? "") &&
+      (a.zordMaterialDestination ?? "") === (b.zordMaterialDestination ?? "") &&
+      holdsA === holdsB &&
+      (a.targetInstanceId ?? "") === (b.targetInstanceId ?? "") &&
+      (a.extraInstanceId ?? "") === (b.extraInstanceId ?? "")
+    );
   }
 
   if (a.type === "skip_effect_choice" && b.type === "skip_effect_choice") {

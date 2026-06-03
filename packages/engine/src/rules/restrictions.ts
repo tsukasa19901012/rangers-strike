@@ -173,6 +173,62 @@ export function canMoveUnitToBattle(
 
   if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
 
+  return passesBattleEntryHoldRequirements(state, player, unit);
+}
+
+/** Field / effect checks only (no ※ or 稲妻重力 hold counts). */
+export function canMoveUnitToBattleExceptHoldRequirements(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+  fromZone: "rush" | "hand" = "rush",
+): boolean {
+  const def = getDefinition(state.definitions, unit.cardId);
+  if (!def || def.type !== "unit") return false;
+  const player = state.players[playerId];
+
+  if (fromZone === "hand") return false;
+  if (patSignerBlocksMove(state, playerId, unit)) return false;
+  if (cannotEnterBattle(unit.cardId)) return false;
+
+  if (needsAllySInBattle(unit.cardId)) {
+    const hasAllyS = state.players[playerId].battle.some((c) =>
+      isSmallUnit(state.definitions, c.cardId),
+    );
+    if (!hasAllyS) return false;
+  }
+
+  if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
+    return false;
+  }
+
+  if (getTurnModifiers(player).zenibombActive && wasRushedThisTurn(player, unit.instanceId)) {
+    return false;
+  }
+
+  if (trafficControlRequiresSameSize(state, playerId, def.size)) return false;
+
+  if (
+    karakuriLionChainBlocksEntry(
+      state,
+      playerId,
+      unit,
+      countHeldCommands(state.players[playerId]),
+    )
+  ) {
+    return false;
+  }
+
+  if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
+
+  return true;
+}
+
+function passesBattleEntryHoldRequirements(
+  state: GameState,
+  player: PlayerState,
+  unit: CardInstance,
+): boolean {
   const unitHold = getBattleEntryHoldCount(unit.cardId);
   const lgHold = isMediumUnit(state.definitions, unit.cardId)
     ? countActiveLightningGravity(state)
@@ -184,7 +240,6 @@ export function canMoveUnitToBattle(
   if (requiredTotal > 0 && countHeldCommands(player) < requiredTotal) {
     return false;
   }
-
   return true;
 }
 

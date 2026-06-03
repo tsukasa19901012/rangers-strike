@@ -167,6 +167,31 @@ export type PassBattleEntryAction = {
   playerId: PlayerId;
 };
 
+export type InitiateCommandPaymentAction = {
+  type: "initiate_command_payment";
+  playerId: PlayerId;
+  kind: "battle_entry" | "category_use";
+  sourceInstanceId: string;
+  prismSubstitute?: boolean;
+  rideOff?: boolean;
+  zordMaterialInstanceId?: string;
+  zordMaterialDestination?: ZordMaterialDestination;
+  zordMothershipHoldInstanceIds?: string[];
+  targetInstanceId?: string;
+  extraInstanceId?: string;
+};
+
+export type ResolveCommandPaymentAction = {
+  type: "resolve_command_payment";
+  playerId: PlayerId;
+  commandInstanceIds: string[];
+};
+
+export type CancelCommandPaymentAction = {
+  type: "cancel_command_payment";
+  playerId: PlayerId;
+};
+
 export type GameAction =
   | ChargePowerAction
   | ChargeCommandAction
@@ -194,4 +219,7 @@ export type GameAction =
   | ResolveRuinSurveyAction
   | ResolveEffectChoiceAction
   | SkipEffectChoiceAction
-  | PassBattleEntryAction;
+  | PassBattleEntryAction
+  | InitiateCommandPaymentAction
+  | ResolveCommandPaymentAction
+  | CancelCommandPaymentAction;

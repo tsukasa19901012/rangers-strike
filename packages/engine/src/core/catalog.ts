@@ -248,6 +248,49 @@ export function canRushUnit(
   );
 }
 
+/** Rush legality ignoring category hold (power, zord payment, etc. still checked). */
+export function canRushUnitExceptCommandHold(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  unitDefinition: CardDefinition,
+  rushingInstanceId: string,
+  zordMaterialInstanceId?: string,
+  zordMothershipHoldInstanceIds?: string[],
+  zordMaterialDestination?: ZordMaterialDestination,
+): boolean {
+  const cost = parsePowerCost(unitDefinition.powerCost);
+  if (player.power.length < cost) return false;
+
+  if (!needsZordMaterial(definitions, unitDefinition.id)) return true;
+
+  if (requiresAllFusionPartners(unitDefinition.id)) {
+    return hasAllRequiredFusionMaterials(
+      player,
+      unitDefinition.id,
+      rushingInstanceId,
+    );
+  }
+
+  return validateZordAdditionalPayment(
+    player,
+    definitions,
+    unitDefinition.id,
+    rushingInstanceId,
+    zordMaterialInstanceId,
+    zordMaterialDestination,
+    zordMothershipHoldInstanceIds,
+  );
+}
+
+export function canPlayOperationExceptCommandHold(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  definition: CardDefinition,
+): boolean {
+  const cost = parsePowerCost(definition.powerCost);
+  return player.power.length >= cost;
+}
+
 export function canPlayOperation(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
