@@ -78,16 +78,25 @@ describe("named unit effects", () => {
     expect(next.state.pendingEffectChoice?.playerId).toBe("player2");
     expect(next.state.activePlayer).toBe("player2");
     const choiceActions = getLegalActions(next.state);
-    expect(choiceActions.some(
-      (a) =>
-        a.type === "resolve_effect_choice" &&
-        a.instanceId === enemyCmd.instanceId,
-    )).toBe(true);
+    expect(
+      choiceActions.some(
+        (a) => a.type === "initiate_command_payment" && a.kind === "effect_hold",
+      ),
+    ).toBe(true);
 
-    const resolved = applyAction(next.state, {
-      type: "resolve_effect_choice",
+    const initiated = applyAction(next.state, {
+      type: "initiate_command_payment",
       playerId: "player2",
-      instanceId: enemyCmd.instanceId,
+      kind: "effect_hold",
+      sourceInstanceId: enemyCmd.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+
+    const resolved = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player2",
+      commandInstanceIds: [enemyCmd.instanceId],
     });
     expect(resolved.ok).toBe(true);
     if (!resolved.ok) return;

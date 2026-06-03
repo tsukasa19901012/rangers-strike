@@ -8,7 +8,6 @@ import {
   needsOperationTarget,
 } from "../effects/resolveOperation";
 import {
-  canHoldCommandPhases,
   canPlayOperation,
   canRushUnit,
   getDefinition,
@@ -25,7 +24,10 @@ import { canMoveUnitToBattle, countHeldCommands, mustEnterBattleBeforePhaseEnd }
 import {
   isInitiateCommandPaymentLegal,
   isResolveCommandPaymentLegal,
+  buildEffectHoldPayment,
+  needsEffectHoldPayment,
 } from "../rules/commandPayment";
+import { canBeginZordSetup } from "../rules/zordSetup";
 import { canBonusDraw, mustDrawBeforeStartEnd, mustResolveEarthForceUpkeepBeforeStartEnd, canPayEarthForceUpkeep } from "../rules/startPhase";
 import { listZordRushPaymentVariants } from "../rules/mothership";
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
@@ -181,28 +183,24 @@ function appendLeaveReactionActions(
   actions.push({ type: "pass_leave_reaction", playerId: pending.ownerPlayerId });
 }
 
-function appendCommandToggleActions(
+function appendZordSetupActions(
   state: GameState,
   playerId: PlayerId,
   actions: GameAction[],
 ): void {
-  if (!canHoldCommandPhases(state.phase)) return;
-
   const player = state.players[playerId];
-  for (const card of player.command) {
-    if (card.commandHeld) {
-      actions.push({
-        type: "release_command",
-        playerId,
-        instanceId: card.instanceId,
-      });
-    } else {
-      actions.push({
-        type: "hold_command",
-        playerId,
-        instanceId: card.instanceId,
-      });
+  for (const card of player.hand) {
+    const definition = getDefinition(state.definitions, card.cardId);
+    if (!isUnit(definition) || !needsZordMaterial(state.definitions, card.cardId)) {
+      continue;
     }
+    if (requiresAllFusionPartners(card.cardId)) continue;
+    if (!canBeginZordSetup(state, playerId, card.instanceId)) continue;
+    actions.push({
+      type: "begin_zord_setup",
+      playerId,
+      zordInstanceId: card.instanceId,
+    });
   }
 }
 
@@ -331,6 +329,16 @@ function appendEffectChoiceActions(
     actions.push({ type: "skip_effect_choice", playerId });
   }
 
+  if (needsEffectHoldPayment(pending) && buildEffectHoldPayment(state)) {
+    actions.push({
+      type: "initiate_command_payment",
+      playerId,
+      kind: "effect_hold",
+      sourceInstanceId: pending.sourceInstanceId ?? pending.validInstanceIds[0]!,
+    });
+    return;
+  }
+
   if (pending.kind === "deck_top_or_bottom") {
     actions.push({ type: "resolve_ruin_survey", playerId, placement: "top" });
     actions.push({ type: "resolve_ruin_survey", playerId, placement: "bottom" });
@@ -397,6 +405,13 @@ export function getLegalActions(state: GameState): GameAction[] {
   if (state.pendingCommandPayment) {
     if (state.pendingCommandPayment.playerId === playerId) {
       actions.push({ type: "cancel_command_payment", playerId });
+    }
+    return actions;
+  }
+
+  if (state.pendingZordSetup) {
+    if (state.pendingZordSetup.playerId === playerId) {
+      actions.push({ type: "cancel_zord_setup", playerId });
     }
     return actions;
   }
@@ -550,7 +565,7 @@ export function getLegalActions(state: GameState): GameAction[] {
           });
         }
       }
-      appendCommandToggleActions(state, playerId, actions);
+      appendZordSetupActions(state, playerId, actions);
       appendOperationActions(state, playerId, actions);
       appendHidoraEggActions(state, playerId, actions);
       appendShironLightActions(state, playerId, actions);
@@ -609,7 +624,6 @@ export function getLegalActions(state: GameState): GameAction[] {
         });
       }
 
-      appendCommandToggleActions(state, playerId, actions);
       appendBattleDanceActions(state, playerId, actions);
       if (!mustEnterBattleBeforePhaseEnd(state, playerId)) {
         actions.push({ type: "end_phase", playerId });
@@ -642,6 +656,28 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
   }
 
   if (state.pendingCommandPayment) {
+    return false;
+  }
+
+  if (action.type === "begin_zord_setup") {
+    if (!assertActive(state, action.playerId)) return false;
+    return canBeginZordSetup(state, action.playerId, action.zordInstanceId);
+  }
+
+  if (action.type === "resolve_zord_setup") {
+    const setup = state.pendingZordSetup;
+    return (
+      !!setup &&
+      setup.playerId === action.playerId &&
+      state.pendingZordSetup !== undefined
+    );
+  }
+
+  if (action.type === "cancel_zord_setup") {
+    return state.pendingZordSetup?.playerId === action.playerId;
+  }
+
+  if (state.pendingZordSetup) {
     return false;
   }
 

@@ -13,8 +13,9 @@ import {
   pickBestRushByScore,
   pickBestStrike,
   pickChargeAction,
-  pickCommandSetup,
+  pickCommandPaymentResolve,
   pickEffectChoice,
+  pickZordSetupStep,
   pickFavorableBattle,
   pickHoldBeforeBattle,
   pickHoldBeforeRush,
@@ -105,9 +106,6 @@ function collectRushCandidates(
     candidates.push(rush);
   }
 
-  const cmdSetup = pickCommandSetup(state, playerId, actions);
-  if (cmdSetup) candidates.push(cmdSetup);
-
   const bestOp = pickBestOperation(state, actions);
   if (bestOp) {
     candidates.push(bestOp);
@@ -184,6 +182,12 @@ export function pickCpuAction(
   const enableSearch = options.enableSearch ?? true;
 
   if (state.winner) return null;
+
+  const payment = pickCommandPaymentResolve(state, playerId);
+  if (payment) return payment;
+
+  const zordStep = pickZordSetupStep(state, playerId);
+  if (zordStep) return zordStep;
 
   if (state.pendingLeave) {
     if (playerId !== state.pendingLeave.ownerPlayerId) return null;
@@ -321,6 +325,12 @@ export function pickCpuAction(
 
 export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): boolean {
   if (state.winner) return false;
+  if (state.pendingCommandPayment) {
+    return state.pendingCommandPayment.playerId === cpuPlayer;
+  }
+  if (state.pendingZordSetup) {
+    return state.pendingZordSetup.playerId === cpuPlayer;
+  }
   if (state.pendingEffectChoice) {
     return state.pendingEffectChoice.playerId === cpuPlayer;
   }

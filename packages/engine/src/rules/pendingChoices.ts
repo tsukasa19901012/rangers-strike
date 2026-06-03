@@ -407,6 +407,23 @@ function finishChoice(
   };
 }
 
+export function completeEffectHoldChoice(
+  state: GameState,
+  playerId: PlayerId,
+  commandInstanceIds: string[],
+): ChoiceOutcome {
+  const pending = state.pendingEffectChoice;
+  if (!pending) return { error: "no_pending_choice" };
+  if (pending.playerId !== playerId) return { error: "wrong_player" };
+  if (pending.commandAction !== "hold") return { error: "invalid_payment" };
+  const selectCount = pending.selectCount ?? 1;
+  if (commandInstanceIds.length !== selectCount) return { error: "wrong_count" };
+  for (const id of commandInstanceIds) {
+    if (!pending.validInstanceIds.includes(id)) return { error: "invalid_target" };
+  }
+  return finishChoice(state, pending, commandInstanceIds.join(","));
+}
+
 export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOutcome {
   const pending = state.pendingEffectChoice;
   if (!pending) return { error: "no_pending_choice" };

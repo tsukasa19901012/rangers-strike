@@ -37,10 +37,17 @@ export function CommandPaymentModal({
 
   const commands = pending.validInstanceIds
     .map((id) => {
-      const inst = state.players[playerId].command.find((c) => c.instanceId === id);
+      const player = state.players[playerId];
+      const inst =
+        player.command.find((c) => c.instanceId === id) ??
+        (view.allowRushZoneCommands
+          ? player.rush.find((c) => c.instanceId === id)
+          : undefined);
       if (!inst) return null;
       const card = getCardById(inst.cardId);
-      return card ? { instanceId: id, name: card.name } : null;
+      const zone =
+        player.rush.some((c) => c.instanceId === id) ? "（ラッシュ）" : "";
+      return card ? { instanceId: id, name: card.name + zone } : null;
     })
     .filter((e): e is { instanceId: string; name: string } => !!e);
 
@@ -50,12 +57,20 @@ export function CommandPaymentModal({
   const title =
     view.kind === "battle_entry"
       ? "バトルエリアに出す"
-      : "カードを使う";
+      : view.kind === "mothership_hold"
+        ? "母艦の支払い"
+        : view.kind === "effect_hold"
+          ? "コマンドをホールド"
+          : "カードを使う";
 
   const purpose =
     view.kind === "battle_entry"
       ? `「${view.sourceCardName}」をバトルエリアに出す`
-      : `「${view.sourceCardName}」を使う`;
+      : view.kind === "mothership_hold"
+        ? `「${view.sourceCardName}」の母艦コスト`
+        : view.kind === "effect_hold"
+          ? `「${view.sourceCardName}」の効果`
+          : `「${view.sourceCardName}」を使う`;
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -85,6 +100,9 @@ export function CommandPaymentModal({
               : ""}
             {view.eligibleSelectMin > 0 && view.eligibleSelectMin < required
               ? " ※進入用のホールドが必要です（母艦のホールドは使えません）。"
+              : ""}
+            {view.kind === "mothership_hold"
+              ? " 母艦用のホールドです（バトル進入の※には使えません）。"
               : ""}
           </p>
 

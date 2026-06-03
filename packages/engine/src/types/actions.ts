@@ -170,7 +170,7 @@ export type PassBattleEntryAction = {
 export type InitiateCommandPaymentAction = {
   type: "initiate_command_payment";
   playerId: PlayerId;
-  kind: "battle_entry" | "category_use";
+  kind: "battle_entry" | "category_use" | "effect_hold";
   sourceInstanceId: string;
   prismSubstitute?: boolean;
   rideOff?: boolean;
@@ -189,6 +189,24 @@ export type ResolveCommandPaymentAction = {
 
 export type CancelCommandPaymentAction = {
   type: "cancel_command_payment";
+  playerId: PlayerId;
+};
+
+export type BeginZordSetupAction = {
+  type: "begin_zord_setup";
+  playerId: PlayerId;
+  zordInstanceId: string;
+};
+
+export type ResolveZordSetupAction = {
+  type: "resolve_zord_setup";
+  playerId: PlayerId;
+  materialInstanceId?: string;
+  destination?: ZordMaterialDestination;
+};
+
+export type CancelZordSetupAction = {
+  type: "cancel_zord_setup";
   playerId: PlayerId;
 };
 
@@ -222,4 +240,7 @@ export type GameAction =
   | PassBattleEntryAction
   | InitiateCommandPaymentAction
   | ResolveCommandPaymentAction
-  | CancelCommandPaymentAction;
+  | CancelCommandPaymentAction
+  | BeginZordSetupAction
+  | ResolveZordSetupAction
+  | CancelZordSetupAction;

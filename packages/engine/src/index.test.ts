@@ -290,19 +290,20 @@ describe("phase flow", () => {
     );
     expect(state.phase).toBe("rush");
 
+    const cmdId = state.players.player1.command[0]!.instanceId;
     state = unwrap(
       applyAction(state, {
-        type: "hold_command",
+        type: "initiate_command_payment",
         playerId: "player1",
-        instanceId: state.players.player1.command[0]!.instanceId,
+        kind: "category_use",
+        sourceInstanceId: unit.instanceId,
       }),
     );
-
     state = unwrap(
       applyAction(state, {
-        type: "rush",
+        type: "resolve_command_payment",
         playerId: "player1",
-        instanceId: unit.instanceId,
+        commandInstanceIds: [cmdId],
       }),
     );
 

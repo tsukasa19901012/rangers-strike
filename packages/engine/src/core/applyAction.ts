@@ -77,10 +77,15 @@ import {
   requiredBattleEntryHolds,
 } from "../rules/restrictions";
 import {
-  applyPaymentHolds,
+  applyCommandPaymentResolve,
   buildPaymentFromInitiateAction,
   validatePaymentSelection,
 } from "../rules/commandPayment";
+import {
+  advanceZordSetup,
+  canBeginZordSetup,
+  createZordSetup,
+} from "../rules/zordSetup";
 import {
   applyFiveTechIntercept,
   applyPlasmaEnergyCounter,
@@ -108,6 +113,7 @@ import { applyResolveRuinSurvey } from "../rules/ruinSurvey";
 import {
   applyEffectChoicePlacement,
   applyEffectChoiceSelect,
+  completeEffectHoldChoice,
   skipEffectChoice,
 } from "../rules/pendingChoices";
 import {
@@ -216,6 +222,13 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
     action.type !== "cancel_command_payment"
   ) {
     return fail("pending_command_payment");
+  }
+  if (
+    state.pendingZordSetup &&
+    action.type !== "resolve_zord_setup" &&
+    action.type !== "cancel_zord_setup"
+  ) {
+    return fail("pending_zord_setup");
   }
   if (!isLegalAction(state, action)) return fail("illegal_action");
 
@@ -332,15 +345,87 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       );
     }
 
+    case "begin_zord_setup": {
+      if (state.phase !== "rush") return fail("wrong_phase");
+      if (!canBeginZordSetup(state, playerId, action.zordInstanceId)) {
+        return fail("cannot_begin_zord_setup");
+      }
+      const setup = createZordSetup(state, playerId, action.zordInstanceId);
+      if (!setup) return fail("cannot_begin_zord_setup");
+      return ok(
+        { ...state, pendingZordSetup: setup },
+        buildSimpleLogEntry(playerId, "zord_setup_pending"),
+      );
+    }
+
+    case "resolve_zord_setup": {
+      const setup = state.pendingZordSetup;
+      if (!setup || setup.playerId !== playerId) return fail("no_pending_zord_setup");
+      const advanced = advanceZordSetup(state, setup, {
+        materialInstanceId: action.materialInstanceId,
+        destination: action.destination,
+      });
+      if (advanced.kind === "error") return fail(advanced.error);
+      if (advanced.kind === "continue") {
+        return ok(
+          { ...state, pendingZordSetup: advanced.setup },
+          buildSimpleLogEntry(playerId, "zord_setup_step"),
+        );
+      }
+      return ok(
+        {
+          ...state,
+          pendingZordSetup: undefined,
+          pendingCommandPayment: advanced.payment,
+        },
+        buildSimpleLogEntry(playerId, "command_payment_pending"),
+      );
+    }
+
+    case "cancel_zord_setup": {
+      if (!state.pendingZordSetup) return fail("no_pending_zord_setup");
+      if (state.pendingZordSetup.playerId !== playerId) {
+        return fail("no_pending_zord_setup");
+      }
+      return ok(
+        { ...state, pendingZordSetup: undefined },
+        buildSimpleLogEntry(playerId, "zord_setup_cancel"),
+      );
+    }
+
     case "resolve_command_payment": {
       const pending = state.pendingCommandPayment;
       if (!pending || pending.playerId !== playerId) return fail("no_pending_payment");
-      const err = validatePaymentSelection(pending, action.commandInstanceIds);
+      const err = validatePaymentSelection(state, pending, action.commandInstanceIds);
       if (err) return fail(err);
 
-      let nextState = applyPaymentHolds(state, playerId, action.commandInstanceIds);
+      const resolved = applyCommandPaymentResolve(
+        state,
+        playerId,
+        pending,
+        action.commandInstanceIds,
+      );
+      if ("error" in resolved) return fail(resolved.error);
+
+      let nextState = resolved.state;
+      if (resolved.nextPending) {
+        return ok(
+          { ...nextState, pendingCommandPayment: resolved.nextPending },
+          buildSimpleLogEntry(playerId, "command_payment_pending"),
+        );
+      }
+
       const cont = pending.continuation;
-      nextState = { ...nextState, pendingCommandPayment: undefined };
+
+      if (cont.type === "effect_choice") {
+        const completed = completeEffectHoldChoice(
+          nextState,
+          playerId,
+          action.commandInstanceIds,
+        );
+        if ("error" in completed) return fail(completed.error);
+        return ok(completed.state, completed.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice"));
+      }
 
       if (cont.type === "move_to_battle") {
         return applyAction(nextState, {
@@ -351,13 +436,17 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         });
       }
       if (cont.type === "rush") {
+        const holdIds =
+          pending.kind === "mothership_hold"
+            ? action.commandInstanceIds
+            : cont.zordMothershipHoldInstanceIds;
         return applyAction(nextState, {
           type: "rush",
           playerId,
           instanceId: pending.sourceInstanceId,
           zordMaterialInstanceId: cont.zordMaterialInstanceId,
           zordMaterialDestination: cont.zordMaterialDestination,
-          zordMothershipHoldInstanceIds: cont.zordMothershipHoldInstanceIds,
+          zordMothershipHoldInstanceIds: holdIds,
         });
       }
       return applyAction(nextState, {

@@ -1,5 +1,4 @@
 import type { Category } from "@rangers-strike/cards";
-import { getBattleEntryHoldCount } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
@@ -19,6 +18,11 @@ import { findCardOwner } from "../rules/fieldLookup";
 import { strikeDamageFor } from "../rules/combo";
 import { WIN_DAMAGE } from "../types/game";
 import { evaluateState } from "./scoring";
+import {
+  getBattleEntryPaymentNeeds,
+  getCategoryPaymentOptions,
+  needsEffectHoldPayment,
+} from "../rules/commandPayment";
 
 export function endPhase(actions: GameAction[]): GameAction | null {
   return actions.find((action) => action.type === "end_phase") ?? null;
@@ -198,66 +202,101 @@ export function pickMandatoryBattleMove(
   return best;
 }
 
-/** Hold a command before battle entry when a rush unit requires a held command. */
+/** Pay battle-entry holds before moving a unit to battle. */
 export function pickHoldBeforeBattle(
   state: GameState,
   playerId: PlayerId,
   actions: GameAction[],
 ): GameAction | null {
-  const player = state.players[playerId];
-  if (countHeldCommands(player) > 0) return null;
-
-  const needsHold = actionsOfType(actions, "move_to_battle").some((action) => {
-    const card = player.rush.find((c) => c.instanceId === action.instanceId);
-    return card ? getBattleEntryHoldCount(card.cardId) > 0 : false;
-  });
-  if (!needsHold) return null;
-
-  return actionsOfType(actions, "hold_command")[0] ?? null;
+  for (const action of actionsOfType(actions, "move_to_battle")) {
+    const card = state.players[playerId].rush.find(
+      (c) => c.instanceId === action.instanceId,
+    );
+    if (!card) continue;
+    if (getBattleEntryPaymentNeeds(state, playerId, card)) {
+      return {
+        type: "initiate_command_payment",
+        playerId,
+        kind: "battle_entry",
+        sourceInstanceId: card.instanceId,
+        rideOff: action.rideOff,
+      };
+    }
+  }
+  return null;
 }
 
 export function pickHoldBeforeRush(
   state: GameState,
   playerId: PlayerId,
-  actions: GameAction[],
+  _actions: GameAction[],
   rushAction: GameAction,
 ): GameAction | null {
   if (rushAction.type !== "rush") return null;
-  const player = state.players[playerId];
-  const card = player.hand.find((c) => c.instanceId === rushAction.instanceId);
+  const card = state.players[playerId].hand.find(
+    (c) => c.instanceId === rushAction.instanceId,
+  );
   if (!card) return null;
   const unitDef = getDefinition(state.definitions, card.cardId);
   if (!unitDef) return null;
-
-  const unitCats = cardCategories(unitDef);
-  const hasHeld = player.command.some((cmd) => {
-    if (!cmd.commandHeld) return false;
-    const cmdCats = cardCategories(getDefinition(state.definitions, cmd.cardId));
-    return unitCats.some((cat) => cmdCats.includes(cat));
-  });
-  if (hasHeld) return null;
-
-  return actionsOfType(actions, "hold_command")[0] ?? null;
+  const options = getCategoryPaymentOptions(
+    state,
+    playerId,
+    cardCategories(unitDef),
+  );
+  if (!options) return null;
+  return {
+    type: "initiate_command_payment",
+    playerId,
+    kind: "category_use",
+    sourceInstanceId: rushAction.instanceId,
+    zordMaterialInstanceId: rushAction.zordMaterialInstanceId,
+    zordMaterialDestination: rushAction.zordMaterialDestination,
+    zordMothershipHoldInstanceIds: rushAction.zordMothershipHoldInstanceIds,
+  };
 }
 
-export function pickCommandSetup(
+export function pickCommandPaymentResolve(
   state: GameState,
   playerId: PlayerId,
-  actions: GameAction[],
 ): GameAction | null {
-  const player = state.players[playerId];
-  const holds = actionsOfType(actions, "hold_command");
-  const unreleased = player.command.filter((c) => !c.commandHeld);
-  if (unreleased.length > 0 && holds.length > 0) {
-    return holds[0] ?? null;
+  const pending = state.pendingCommandPayment;
+  if (!pending || pending.playerId !== playerId) return null;
+  const ids = pending.validInstanceIds.slice(0, pending.totalNeeded);
+  if (ids.length < pending.totalNeeded) {
+    return { type: "cancel_command_payment", playerId };
   }
+  return {
+    type: "resolve_command_payment",
+    playerId,
+    commandInstanceIds: ids,
+  };
+}
 
-  if (player.command.length === 0) {
-    const charges = actionsOfType(actions, "charge_command");
-    if (charges.length > 0) return charges[0] ?? null;
+export function pickZordSetupStep(
+  state: GameState,
+  playerId: PlayerId,
+): GameAction | null {
+  const setup = state.pendingZordSetup;
+  if (!setup || setup.playerId !== playerId) return null;
+  if (setup.step === "material" && setup.validInstanceIds[0]) {
+    return {
+      type: "resolve_zord_setup",
+      playerId,
+      materialInstanceId: setup.validInstanceIds[0],
+    };
   }
-
-  return null;
+  if (setup.step === "destination") {
+    return {
+      type: "resolve_zord_setup",
+      playerId,
+      destination: "command",
+    };
+  }
+  if (setup.step === "mothership") {
+    return { type: "resolve_zord_setup", playerId };
+  }
+  return { type: "cancel_zord_setup", playerId };
 }
 
 export function pickBestRushByScore(
@@ -610,6 +649,16 @@ export function pickEffectChoice(
 
   if (pending.kind === "select_unit" || pending.kind === "select_unit_step") {
     return pickWeakestEffectTarget(state, actions);
+  }
+
+  if (needsEffectHoldPayment(pending)) {
+    const initiate = actions.find(
+      (a) =>
+        a.type === "initiate_command_payment" &&
+        "kind" in a &&
+        a.kind === "effect_hold",
+    );
+    if (initiate) return initiate;
   }
 
   return skip ?? actions.find((a) => a.type === "resolve_effect_choice") ?? null;

@@ -18,6 +18,7 @@ import {
   isCpuTurn,
   mustDrawBeforeStartEnd,
   needsOperationTarget,
+  needsEffectHoldPayment,
   pickCpuAction,
   type CardInstance,
   type GameAction,
@@ -43,13 +44,14 @@ import {
   type DeckSelection,
 } from "@/lib/deckSelection";
 import { resolveCardTargets } from "@/lib/cardTargets";
-import type { DragCardPayload, DropTarget, PendingOperation, PendingZordRush } from "@/lib/dnd";
+import type { DragCardPayload, DropTarget, PendingOperation } from "@/lib/dnd";
 import { CardModal } from "./CardModal";
 import { BattleEntryModal } from "./BattleEntryModal";
 import { AlertModal } from "./AlertModal";
 import { EffectChoiceModal } from "./EffectChoiceModal";
 import { EffectNoticeModal } from "./EffectNoticeModal";
 import { CommandPaymentModal } from "./CommandPaymentModal";
+import { ZordSetupModal } from "./ZordSetupModal";
 import { OperationPromptModal } from "./OperationPromptModal";
 import { ReactionModal } from "./ReactionModal";
 import { DeckBuilderScreen } from "./DeckBuilderScreen";
@@ -88,7 +90,8 @@ function hasReactionWindow(game: GameState): boolean {
     game.pendingLeave ||
     game.pendingEffectChoice ||
     game.pendingBattleEntry ||
-    game.pendingCommandPayment
+    game.pendingCommandPayment ||
+    game.pendingZordSetup
   );
 }
 
@@ -105,7 +108,6 @@ export function GameApp() {
   const [previewCard, setPreviewCard] = useState<CardDefinition | null>(null);
   const [pileView, setPileView] = useState<PileView | null>(null);
   const [pendingOp, setPendingOp] = useState<PendingOperation | null>(null);
-  const [pendingZord, setPendingZord] = useState<PendingZordRush | null>(null);
   const [pendingHiddenNinja, setPendingHiddenNinja] = useState<{
     counterInstanceId: string;
   } | null>(null);
@@ -170,7 +172,6 @@ export function GameApp() {
       setState(game);
       setStartError(null);
       setPendingOp(null);
-      setPendingZord(null);
       setPendingHiddenNinja(null);
       setPreviewCard(null);
       setPileView(null);
@@ -191,7 +192,6 @@ export function GameApp() {
     setAppScreen("start");
     setEditingDeckId(null);
     setPendingOp(null);
-    setPendingZord(null);
     setPendingHiddenNinja(null);
     setPreviewCard(null);
     setPileView(null);
@@ -295,15 +295,12 @@ export function GameApp() {
     const result = applyAction(state, action);
     if (result.ok) {
       setState(result.state);
-      if (action.type === "initiate_command_payment") {
-        setPendingOp(null);
-        setPendingZord(null);
-      } else if (
+      if (
         action.type !== "cancel_command_payment" &&
-        action.type !== "resolve_command_payment"
+        action.type !== "resolve_command_payment" &&
+        action.type !== "cancel_zord_setup"
       ) {
         setPendingOp(null);
-        setPendingZord(null);
       }
       setPendingHiddenNinja(null);
       setActionError(null);
@@ -330,7 +327,21 @@ export function GameApp() {
         break;
       }
     }
-  }, [state, pendingOp, pendingZord, pendingHiddenNinja]);
+  }, [state, pendingOp, pendingHiddenNinja]);
+
+  useEffect(() => {
+    if (!state || !humanCanAct) return;
+    const choice = state.pendingEffectChoice;
+    if (!choice || choice.playerId !== HUMAN_PLAYER) return;
+    if (!needsEffectHoldPayment(choice)) return;
+    if (state.pendingCommandPayment) return;
+    const initiate = legalActions.find(
+      (a) =>
+        a.type === "initiate_command_payment" &&
+        a.kind === "effect_hold",
+    );
+    if (initiate) apply(initiate);
+  }, [apply, humanCanAct, legalActions, state]);
 
   const tryPlayOperation = useCallback(
     (instanceId: string, targetInstanceId?: string) => {
@@ -444,30 +455,35 @@ export function GameApp() {
             a.type === "rush" && a.instanceId === payload.instanceId,
         );
 
-        const direct = rushActions.find((a) => !a.zordMaterialInstanceId);
-        if (direct) {
-          apply(direct);
+        const simpleRush = rushActions.find(
+          (a) =>
+            !a.zordMaterialInstanceId &&
+            (a.zordMothershipHoldInstanceIds?.length ?? 0) === 0,
+        );
+        if (simpleRush) {
+          apply(simpleRush);
           return;
         }
 
-        if (rushActions.length > 0) {
-          setPendingZord({
-            instanceId: payload.instanceId,
-            cardId: payload.cardId,
-          });
+        const beginSetup = legalActions.find(
+          (a): a is Extract<typeof a, { type: "begin_zord_setup" }> =>
+            a.type === "begin_zord_setup" && a.zordInstanceId === payload.instanceId,
+        );
+        if (beginSetup) {
+          apply(beginSetup);
           return;
         }
 
-        if (
-          apply({
-            type: "initiate_command_payment",
-            playerId: HUMAN_PLAYER,
-            kind: "category_use",
-            sourceInstanceId: payload.instanceId,
-          })
-        ) {
-          return;
+        if (rushActions.length === 1) {
+          if (apply(rushActions[0]!)) return;
         }
+
+        apply({
+          type: "initiate_command_payment",
+          playerId: HUMAN_PLAYER,
+          kind: "category_use",
+          sourceInstanceId: payload.instanceId,
+        });
         return;
       }
 
@@ -577,117 +593,33 @@ export function GameApp() {
 
   const handleZordMaterial = useCallback(
     (materialInstanceId: string) => {
-      if (!pendingZord) return;
-      const matching = legalActions.filter(
-        (a): a is Extract<typeof a, { type: "rush" }> =>
-          a.type === "rush" &&
-          a.instanceId === pendingZord.instanceId &&
-          a.zordMaterialInstanceId === materialInstanceId,
-      );
-      if (matching.length === 0) return;
-      if (matching.length === 1) {
-        apply(matching[0]!);
-        setPendingZord(null);
-        return;
-      }
-      setPendingZord({ ...pendingZord, materialInstanceId });
-    },
-    [apply, legalActions, pendingZord],
-  );
-
-  const handleZordDestination = useCallback(
-    (destination: "command" | "discard") => {
-      if (!pendingZord?.materialInstanceId) return;
-      const matching = legalActions.filter(
-        (a): a is Extract<typeof a, { type: "rush" }> =>
-          a.type === "rush" &&
-          a.instanceId === pendingZord.instanceId &&
-          a.zordMaterialInstanceId === pendingZord.materialInstanceId &&
-          a.zordMaterialDestination === destination,
-      );
-      const withoutMothership = matching.filter(
-        (a) => (a.zordMothershipHoldInstanceIds?.length ?? 0) === 0,
-      );
-      if (withoutMothership.length === 1) {
-        apply(withoutMothership[0]!);
-        return;
-      }
-      if (matching.some((a) => (a.zordMothershipHoldInstanceIds?.length ?? 0) > 0)) {
-        setPendingZord({
-          ...pendingZord,
-          materialDestination: destination,
-        });
-        return;
-      }
-      const action = matching[0];
-      if (action && apply(action)) return;
-
       apply({
-        type: "initiate_command_payment",
+        type: "resolve_zord_setup",
         playerId: HUMAN_PLAYER,
-        kind: "category_use",
-        sourceInstanceId: pendingZord.instanceId,
-        zordMaterialInstanceId: pendingZord.materialInstanceId,
-        zordMaterialDestination: destination,
-      });
-    },
-    [apply, legalActions, pendingZord],
-  );
-
-  const initiateCategoryPaymentForZord = useCallback(
-    (
-      zord: PendingZordRush,
-      extra?: {
-        zordMothershipHoldInstanceIds?: string[];
-        zordMaterialDestination?: "command" | "discard";
-      },
-    ) => {
-      apply({
-        type: "initiate_command_payment",
-        playerId: HUMAN_PLAYER,
-        kind: "category_use",
-        sourceInstanceId: zord.instanceId,
-        zordMaterialInstanceId: zord.materialInstanceId,
-        zordMaterialDestination:
-          extra?.zordMaterialDestination ?? zord.materialDestination,
-        zordMothershipHoldInstanceIds: extra?.zordMothershipHoldInstanceIds,
+        materialInstanceId,
       });
     },
     [apply],
   );
 
-  const handleZordMothershipHold = useCallback(
-    (commandInstanceId: string) => {
-      if (!pendingZord) return;
-      const holdIds = [commandInstanceId];
-      if (pendingZord.materialInstanceId && pendingZord.materialDestination) {
-        const action = legalActions.find(
-          (a): a is Extract<typeof a, { type: "rush" }> =>
-            a.type === "rush" &&
-            a.instanceId === pendingZord.instanceId &&
-            a.zordMaterialInstanceId === pendingZord.materialInstanceId &&
-            a.zordMaterialDestination === pendingZord.materialDestination &&
-            (a.zordMothershipHoldInstanceIds?.includes(commandInstanceId) ?? false),
-        );
-        if (action && apply(action)) return;
-        initiateCategoryPaymentForZord(pendingZord, {
-          zordMothershipHoldInstanceIds: holdIds,
-        });
-        return;
-      }
-      const action = legalActions.find(
-        (a): a is Extract<typeof a, { type: "rush" }> =>
-          a.type === "rush" &&
-          a.instanceId === pendingZord.instanceId &&
-          (a.zordMothershipHoldInstanceIds?.includes(commandInstanceId) ?? false),
-      );
-      if (action && apply(action)) return;
-      initiateCategoryPaymentForZord(pendingZord, {
-        zordMothershipHoldInstanceIds: holdIds,
+  const handleZordDestination = useCallback(
+    (destination: "command" | "discard") => {
+      apply({
+        type: "resolve_zord_setup",
+        playerId: HUMAN_PLAYER,
+        destination,
       });
     },
-    [apply, initiateCategoryPaymentForZord, legalActions, pendingZord],
+    [apply],
   );
+
+  const handleZordSetupContinue = useCallback(() => {
+    apply({ type: "resolve_zord_setup", playerId: HUMAN_PLAYER });
+  }, [apply]);
+
+  const handleZordSetupCancel = useCallback(() => {
+    apply({ type: "cancel_zord_setup", playerId: HUMAN_PLAYER });
+  }, [apply]);
 
   const handleViewPile = useCallback(
     (playerId: PlayerId, pile: "deck" | "discard") => {
@@ -720,46 +652,15 @@ export function GameApp() {
     return ids.size > 0 ? ids : undefined;
   }, [legalActions, pendingOp, state]);
 
-  const pendingZordTargets = useMemo(() => {
-    if (!pendingZord || !state) return undefined;
-    const ids = new Set<string>();
-    for (const action of legalActions) {
-      if (
-        action.type === "rush" &&
-        action.instanceId === pendingZord.instanceId &&
-        action.zordMaterialInstanceId
-      ) {
-        ids.add(action.zordMaterialInstanceId);
-      }
+  const pendingZordSetupTargets = useMemo(() => {
+    const setup = state?.pendingZordSetup;
+    if (!setup || setup.playerId !== HUMAN_PLAYER || setup.step !== "material") {
+      return undefined;
     }
-    return ids.size > 0 ? ids : undefined;
-  }, [legalActions, pendingZord, state]);
-
-  const pendingZordMothershipTargets = useMemo(() => {
-    if (!pendingZord || !state) return undefined;
-    const ids = new Set<string>();
-    for (const action of legalActions) {
-      if (action.type !== "rush" || action.instanceId !== pendingZord.instanceId) {
-        continue;
-      }
-      if (
-        pendingZord.materialInstanceId &&
-        action.zordMaterialInstanceId !== pendingZord.materialInstanceId
-      ) {
-        continue;
-      }
-      if (
-        pendingZord.materialDestination &&
-        action.zordMaterialDestination !== pendingZord.materialDestination
-      ) {
-        continue;
-      }
-      for (const id of action.zordMothershipHoldInstanceIds ?? []) {
-        ids.add(id);
-      }
-    }
-    return ids.size > 0 ? ids : undefined;
-  }, [legalActions, pendingZord, state]);
+    return setup.validInstanceIds.length > 0
+      ? new Set(setup.validInstanceIds)
+      : undefined;
+  }, [state?.pendingZordSetup]);
 
   const pendingDiscardTargets = useMemo(() => {
     if (!pendingTargets || !state || !pendingOp) return undefined;
@@ -1035,14 +936,12 @@ export function GameApp() {
   const operationTargetIds = useMemo(() => {
     const ids = new Set<string>();
     pendingTargets?.forEach((id) => ids.add(id));
-    pendingZordTargets?.forEach((id) => ids.add(id));
     return [...ids];
-  }, [pendingTargets, pendingZordTargets]);
+  }, [pendingTargets]);
 
-  const mothershipCommandTargets = useMemo(() => {
-    if (!state || !pendingZordMothershipTargets) return [];
-    return resolveCardTargets(state, [...pendingZordMothershipTargets]);
-  }, [state, pendingZordMothershipTargets]);
+  const zordSetup = state?.pendingZordSetup;
+  const isHumanZordSetup =
+    humanCanAct && zordSetup?.playerId === HUMAN_PLAYER;
 
   const humanReactionKind = useMemo((): "strike" | "battle" | "rush" | "leave" | null => {
     if (!state) return null;
@@ -1074,7 +973,7 @@ export function GameApp() {
       (state.pendingRush && state.activePlayer === HUMAN_PLAYER) ||
       (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) ||
       !!pendingOp ||
-      !!pendingZord ||
+      !!state.pendingZordSetup ||
       !!pendingHiddenNinja);
 
   useEffect(() => {
@@ -1152,15 +1051,21 @@ export function GameApp() {
       isStrikeReaction);
 
   const showOperationModal =
-    humanCanAct &&
-    (!!pendingOp || !!pendingZord) &&
-    operationTargetIds.length > 0;
+    humanCanAct && !!pendingOp && operationTargetIds.length > 0;
+
+  const showZordSetupModal = isHumanZordSetup && !!zordSetup;
 
   const showEffectNotice =
-    !!effectNotice && !showReactionModal && !showOperationModal;
+    !!effectNotice &&
+    !showReactionModal &&
+    !showOperationModal &&
+    !showZordSetupModal;
 
   const showEffectChoiceModal =
-    isHumanEffectChoice && !!pendingChoice && !showEffectNotice;
+    isHumanEffectChoice &&
+    !!pendingChoice &&
+    !needsEffectHoldPayment(pendingChoice) &&
+    !showEffectNotice;
 
   const showBattleEntryModal = !!battleEntryModal && !showEffectNotice;
 
@@ -1172,16 +1077,19 @@ export function GameApp() {
     ? undefined
     : pendingEffectChoiceTargets;
   const boardOperationTargets = showOperationModal ? undefined : pendingTargets;
-  const boardZordTargets = showOperationModal ? undefined : pendingZordTargets;
-  const boardZordMothershipTargets = showOperationModal
-    ? undefined
-    : pendingZordMothershipTargets;
+  const boardZordTargets = showZordSetupModal ? undefined : pendingZordSetupTargets;
   const boardCounterIds = showReactionModal ? undefined : counterIds;
   const boardInterceptIds = showReactionModal ? undefined : interceptableIds;
   const boardSubstituteIds = showReactionModal ? undefined : pendingSubstituteTargets;
 
   const pendingHint = showCommandPaymentModal
     ? "コマンドを選んでホールド（行動と同時に確定）"
+    : showZordSetupModal
+      ? zordSetup?.step === "material"
+        ? "ゾードアップの素材を選んでください"
+        : zordSetup?.step === "destination"
+          ? "素材の行き先を選んでください"
+          : "母艦の支払いに進みます"
     : showEffectChoiceModal || showReactionModal || showOperationModal
     ? undefined
     : isStrikeReaction
@@ -1206,10 +1114,6 @@ export function GameApp() {
                 humanCanAct &&
                 findMandatoryBattleEntries(state, HUMAN_PLAYER).length > 0
               ? "「可能ならバトルエリアに出る」ユニットをバトルエリアに出してください"
-              : pendingZord
-              ? pendingZordMothershipTargets?.size
-                ? "Sユニットをタップするか、母艦でホールドするコマンドをタップ"
-                : "ゾードアップ素材（合体ユニットまたはSユニット）をタップ"
               : pendingOp
                 ? pendingDiscardTargets
                   ? pendingTargets && pendingTargets.size > pendingDiscardTargets.size
@@ -1326,21 +1230,26 @@ export function GameApp() {
           onCancelSubstitute={() => setPendingHiddenNinja(null)}
         />
       )}
+      {showZordSetupModal && zordSetup && (
+        <ZordSetupModal
+          state={state}
+          playerId={HUMAN_PLAYER}
+          setup={zordSetup}
+          onSelectMaterial={handleZordMaterial}
+          onSelectDestination={handleZordDestination}
+          onContinue={handleZordSetupContinue}
+          onCancel={handleZordSetupCancel}
+        />
+      )}
       {showOperationModal && (
         <OperationPromptModal
           state={state}
           pendingOp={pendingOp}
-          pendingZord={pendingZord}
+          pendingZord={null}
           targetInstanceIds={operationTargetIds}
           discardOnlyIds={pendingDiscardTargets ?? null}
-          onSelectTarget={pendingZord ? handleZordMaterial : handleOperationTarget}
-          onZordDestination={pendingZord?.materialInstanceId ? handleZordDestination : undefined}
-          onZordMothershipHold={pendingZord ? handleZordMothershipHold : undefined}
-          mothershipCommandTargets={mothershipCommandTargets}
-          onCancel={() => {
-            setPendingOp(null);
-            setPendingZord(null);
-          }}
+          onSelectTarget={handleOperationTarget}
+          onCancel={() => setPendingOp(null)}
         />
       )}
       {showEffectNotice && effectNotice && (
@@ -1469,10 +1378,13 @@ export function GameApp() {
             onZoneDrop={handleZoneDrop}
             pendingOperationTargets={boardOperationTargets}
             pendingZordTargets={boardZordTargets}
-            pendingZordMothershipTargets={boardZordMothershipTargets}
+            pendingZordMothershipTargets={undefined}
             onOperationTarget={handleOperationTarget}
-            onZordMaterial={handleZordMaterial}
-            onZordMothershipHold={handleZordMothershipHold}
+            onZordMaterial={
+              showZordSetupModal && zordSetup?.step === "material"
+                ? handleZordMaterial
+                : undefined
+            }
             onBattleDragStart={setBattleDrag}
             onBattleDragEnd={() => setBattleDrag(null)}
             strikeableIds={strikeableIds}

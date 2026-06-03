@@ -14,3 +14,4 @@ export * from "./rules/strikeReactions";
 export * from "./rules/restrictions";
 export * from "./rules/battleEntry";
 export * from "./rules/commandPayment";
+export * from "./rules/zordSetup";

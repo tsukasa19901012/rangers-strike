@@ -207,12 +207,25 @@ export type CommandPaymentContinuation =
       type: "play_operation";
       targetInstanceId?: string;
       extraInstanceId?: string;
-    };
+    }
+  | { type: "effect_choice" };
+
+export type PendingZordSetupStep = "material" | "destination" | "mothership";
+
+/** Zord material / mothership wizard before command payment or rush. */
+export type PendingZordSetup = {
+  playerId: PlayerId;
+  zordInstanceId: string;
+  zordCardId: string;
+  step: PendingZordSetupStep;
+  validInstanceIds: string[];
+  materialInstanceId?: string;
+};
 
 /** Pay command holds as part of a player action (no standalone hold). */
 export type PendingCommandPayment = {
   playerId: PlayerId;
-  kind: "battle_entry" | "category_use";
+  kind: "battle_entry" | "category_use" | "mothership_hold" | "effect_hold";
   sourceInstanceId: string;
   sourceCardId: string;
   /** Min newly held cards that count for ※ battle-entry (battle_entry only). */
@@ -249,6 +262,8 @@ export type GameState = {
   pendingBattleEntry?: PendingBattleEntry;
   /** Select commands to hold, then run continuation action. */
   pendingCommandPayment?: PendingCommandPayment;
+  /** Zord rush: choose material, destination, then command payment. */
+  pendingZordSetup?: PendingZordSetup;
   /** Opens when enter effects need a choice first. */
   deferredBattleEntry?: PendingBattleEntry;
   /** @deprecated Alias — use pendingEffectChoice */

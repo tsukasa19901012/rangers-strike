@@ -104,10 +104,19 @@ describe("battle entry action prompt", () => {
     expect(state.deferredBattleEntry?.resumeEnterBattle?.from).toBe("tail");
     expect(getLegalActions(state).some((a) => a.type === "pass_battle_entry")).toBe(false);
 
-    const resolved = applyAction(state, {
-      type: "resolve_effect_choice",
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
       playerId: "player2",
-      instanceId: enemyCommand.instanceId,
+      kind: "effect_hold",
+      sourceInstanceId: enemyCommand.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+
+    const resolved = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player2",
+      commandInstanceIds: [enemyCommand.instanceId],
     });
     expect(resolved.ok).toBe(true);
     if (!resolved.ok) return;

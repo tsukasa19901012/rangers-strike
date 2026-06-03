@@ -1,8 +1,18 @@
 import type { Category } from "@rangers-strike/cards";
-import { getBattleEntryHoldCount } from "@rangers-strike/cards";
+import {
+  getBattleEntryHoldCount,
+  MOTHERSHIP_CONFIG,
+  mothershipHoldsRequiredForRush,
+  zordSlotsFilledByMaterial,
+} from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { InitiateCommandPaymentAction } from "../types/actions";
-import type { CommandPaymentContinuation, PendingCommandPayment } from "../types/game";
+import type { InitiateCommandPaymentAction, ZordMaterialDestination } from "../types/actions";
+import type {
+  CommandPaymentContinuation,
+  PendingCommandPayment,
+  PendingEffectChoice,
+  PendingZordSetup,
+} from "../types/game";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import {
   canPlayOperationExceptCommandHold,
@@ -21,6 +31,12 @@ import {
   hasCommandForCardUse,
   requiredBattleEntryHolds,
 } from "./restrictions";
+import {
+  applyMothershipHolds,
+  canUseMothershipForZordRush,
+  collectMothershipEligibleCommands,
+  validateMothershipHolds,
+} from "./mothership";
 
 export type CommandPaymentView = {
   kind: PendingCommandPayment["kind"];
@@ -33,6 +49,7 @@ export type CommandPaymentView = {
   prismAvailable: boolean;
   validInstanceIds: string[];
   consumeOnConfirm?: boolean;
+  allowRushZoneCommands?: boolean;
 };
 
 function cardDisplayName(
@@ -203,11 +220,14 @@ export function getCommandPaymentView(
       getCategoryPaymentOptions(state, pending.playerId, pending.categories ?? [])
         ?.prismAvailable === true,
     validInstanceIds: pending.validInstanceIds,
-    consumeOnConfirm: pending.kind === "battle_entry",
+    consumeOnConfirm:
+      pending.kind === "battle_entry" || pending.kind === "mothership_hold",
+    allowRushZoneCommands: pending.kind === "mothership_hold",
   };
 }
 
 export function validatePaymentSelection(
+  state: GameState,
   pending: PendingCommandPayment,
   commandInstanceIds: string[],
 ): string | null {
@@ -219,6 +239,42 @@ export function validatePaymentSelection(
     if (!pending.validInstanceIds.includes(id)) return "invalid_command";
   }
 
+  if (pending.kind === "mothership_hold") {
+    const player = state.players[pending.playerId];
+    const kind = canUseMothershipForZordRush(
+      state.definitions,
+      player,
+      pending.sourceCardId,
+    );
+    if (!kind) return "invalid_command";
+    const cont = pending.continuation;
+    const slotsFilled =
+      cont.type === "rush" && cont.zordMaterialInstanceId
+        ? zordSlotsFilledByMaterial(
+            pending.sourceCardId,
+            true,
+            cont.zordMaterialDestination,
+          )
+        : 0;
+    const holdsRequired = mothershipHoldsRequiredForRush(
+      pending.sourceCardId,
+      slotsFilled,
+    );
+    if (
+      !validateMothershipHolds(
+        player,
+        state.definitions,
+        pending.sourceCardId,
+        kind,
+        commandInstanceIds,
+        holdsRequired,
+      )
+    ) {
+      return "invalid_command";
+    }
+    return null;
+  }
+
   if (pending.kind === "battle_entry" && pending.eligibleNeeded > 0) {
     if (commandInstanceIds.length < pending.eligibleNeeded) {
       return "insufficient_eligible";
@@ -226,6 +282,47 @@ export function validatePaymentSelection(
   }
 
   return null;
+}
+
+export function applyCommandPaymentResolve(
+  state: GameState,
+  playerId: PlayerId,
+  pending: PendingCommandPayment,
+  commandInstanceIds: string[],
+): { state: GameState; nextPending?: PendingCommandPayment } | { error: string } {
+  if (pending.kind === "mothership_hold") {
+    const afterMothership = applyMothershipPaymentHolds(
+      state,
+      playerId,
+      pending,
+      commandInstanceIds,
+    );
+    if (!afterMothership) return { error: "invalid_command" };
+    const followUp = continueAfterMothershipPayment(
+      afterMothership,
+      pending,
+      commandInstanceIds,
+    );
+    if (followUp) {
+      return { state: afterMothership, nextPending: followUp };
+    }
+    if (pending.continuation.type !== "rush") return { error: "invalid_payment" };
+    return {
+      state: {
+        ...afterMothership,
+        pendingCommandPayment: undefined,
+        pendingZordSetup: undefined,
+      },
+    };
+  }
+
+  if (pending.kind === "effect_hold") {
+    let nextState = applyPaymentHolds(state, playerId, commandInstanceIds);
+    return { state: { ...nextState, pendingCommandPayment: undefined } };
+  }
+
+  const nextState = applyPaymentHolds(state, playerId, commandInstanceIds);
+  return { state: { ...nextState, pendingCommandPayment: undefined } };
 }
 
 export function applyPaymentHolds(
@@ -238,6 +335,162 @@ export function applyPaymentHolds(
     player = holdCommand(player, instanceId);
   }
   return { ...state, players: { ...state.players, [playerId]: player } };
+}
+
+export function needsEffectHoldPayment(pending: PendingEffectChoice): boolean {
+  return (
+    pending.commandAction === "hold" &&
+    (pending.kind === "select_command" || pending.kind === "select_commands")
+  );
+}
+
+export function buildEffectHoldPayment(state: GameState): PendingCommandPayment | null {
+  const pending = state.pendingEffectChoice;
+  if (!pending || !needsEffectHoldPayment(pending)) return null;
+
+  const selectCount = pending.selectCount ?? 1;
+  const validInstanceIds = pending.validInstanceIds;
+  if (validInstanceIds.length < selectCount) return null;
+
+  return {
+    playerId: pending.playerId,
+    kind: "effect_hold",
+    sourceInstanceId: pending.sourceInstanceId ?? validInstanceIds[0]!,
+    sourceCardId: pending.sourceCardId,
+    eligibleNeeded: 0,
+    totalNeeded: selectCount,
+    validInstanceIds,
+    continuation: { type: "effect_choice" },
+  };
+}
+
+export function buildMothershipHoldPayment(
+  state: GameState,
+  playerId: PlayerId,
+  setup: Pick<PendingZordSetup, "zordInstanceId" | "zordCardId">,
+  materialInstanceId?: string,
+  materialDestination?: ZordMaterialDestination,
+): PendingCommandPayment | null {
+  const player = state.players[playerId];
+  const kind = canUseMothershipForZordRush(state.definitions, player, setup.zordCardId);
+  if (!kind) return null;
+
+  const slotsFilled = materialInstanceId
+    ? zordSlotsFilledByMaterial(setup.zordCardId, true, materialDestination)
+    : 0;
+  const holdsRequired = mothershipHoldsRequiredForRush(setup.zordCardId, slotsFilled);
+  if (holdsRequired <= 0) return null;
+
+  const category = MOTHERSHIP_CONFIG[kind].commandCategory;
+  const validInstanceIds = collectMothershipEligibleCommands(
+    player,
+    state.definitions,
+    category,
+  ).map((e) => e.card.instanceId);
+  if (validInstanceIds.length < holdsRequired) return null;
+
+  const continuation: CommandPaymentContinuation = {
+    type: "rush",
+    zordMaterialInstanceId: materialInstanceId,
+    zordMaterialDestination: materialDestination,
+  };
+
+  return {
+    playerId,
+    kind: "mothership_hold",
+    sourceInstanceId: setup.zordInstanceId,
+    sourceCardId: setup.zordCardId,
+    eligibleNeeded: 0,
+    totalNeeded: holdsRequired,
+    validInstanceIds,
+    continuation,
+  };
+}
+
+function applyMothershipPaymentHolds(
+  state: GameState,
+  playerId: PlayerId,
+  pending: PendingCommandPayment,
+  commandInstanceIds: string[],
+): GameState | null {
+  const player = state.players[playerId];
+  const kind = canUseMothershipForZordRush(
+    state.definitions,
+    player,
+    pending.sourceCardId,
+  );
+  if (!kind) return null;
+  const slotsFilled =
+    pending.continuation.type === "rush" && pending.continuation.zordMaterialInstanceId
+      ? zordSlotsFilledByMaterial(
+          pending.sourceCardId,
+          true,
+          pending.continuation.zordMaterialDestination,
+        )
+      : 0;
+  const holdsRequired = mothershipHoldsRequiredForRush(pending.sourceCardId, slotsFilled);
+  if (
+    !validateMothershipHolds(
+      player,
+      state.definitions,
+      pending.sourceCardId,
+      kind,
+      commandInstanceIds,
+      holdsRequired,
+    )
+  ) {
+    return null;
+  }
+  const afterHolds = applyMothershipHolds(
+    player,
+    state.definitions,
+    commandInstanceIds,
+    kind,
+  );
+  if (!afterHolds) return null;
+  return { ...state, players: { ...state.players, [playerId]: afterHolds } };
+}
+
+export function continueAfterMothershipPayment(
+  state: GameState,
+  pending: PendingCommandPayment,
+  commandInstanceIds: string[],
+): PendingCommandPayment | null {
+  if (pending.continuation.type !== "rush") return null;
+  const playerId = pending.playerId;
+  const def = getDefinition(state.definitions, pending.sourceCardId);
+  if (!def || !isUnit(def)) return null;
+
+  const cont = pending.continuation;
+  if (
+    canRushUnitExceptCommandHold(
+      state.players[playerId],
+      state.definitions,
+      def,
+      pending.sourceInstanceId,
+      cont.zordMaterialInstanceId,
+      commandInstanceIds,
+      cont.zordMaterialDestination,
+    )
+  ) {
+    return null;
+  }
+
+  const categories = cardCategories(def);
+  return buildCategoryPayment(
+    state,
+    playerId,
+    pending.sourceInstanceId,
+    pending.sourceCardId,
+    categories,
+    {
+      type: "rush",
+      zordMaterialInstanceId: cont.zordMaterialInstanceId,
+      zordMaterialDestination: cont.zordMaterialDestination,
+      zordMothershipHoldInstanceIds: commandInstanceIds,
+    },
+    false,
+  );
 }
 
 export function canAffordCategoryPaymentAfterHolds(
@@ -257,6 +510,11 @@ export function buildPaymentFromInitiateAction(
   action: InitiateCommandPaymentAction,
 ): PendingCommandPayment | null {
   const playerId = action.playerId;
+
+  if (action.kind === "effect_hold") {
+    return buildEffectHoldPayment(state);
+  }
+
   const player = state.players[playerId];
 
   if (action.kind === "battle_entry") {
@@ -338,8 +596,11 @@ export function isInitiateCommandPaymentLegal(
   state: GameState,
   action: InitiateCommandPaymentAction,
 ): boolean {
-  if (state.pendingCommandPayment) return false;
+  if (state.pendingCommandPayment || state.pendingZordSetup) return false;
   if (state.winner) return false;
+  if (action.kind === "effect_hold") {
+    return state.pendingEffectChoice !== undefined && buildEffectHoldPayment(state) !== null;
+  }
   if (buildPaymentFromInitiateAction(state, action) === null) return false;
 
   if (action.kind === "category_use" && state.phase !== "rush") return false;
@@ -354,7 +615,7 @@ export function isResolveCommandPaymentLegal(
 ): boolean {
   const pending = state.pendingCommandPayment;
   if (!pending || pending.playerId !== action.playerId) return false;
-  if (validatePaymentSelection(pending, action.commandInstanceIds) !== null) {
+  if (validatePaymentSelection(state, pending, action.commandInstanceIds) !== null) {
     return false;
   }
   return true;

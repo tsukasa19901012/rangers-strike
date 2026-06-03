@@ -24,30 +24,16 @@ describe("command zone", () => {
     expect(result.state.phase).toBe("rush");
   });
 
-  it("holds and releases command", () => {
+  it("does not expose standalone hold or release in legal actions", () => {
     const cmd = inst("TST-OP", "c1");
     const state = createTestState({
       phase: "rush",
       player1: { command: [cmd] },
     });
 
-    const held = applyAction(state, {
-      type: "hold_command",
-      playerId: "player1",
-      instanceId: cmd.instanceId,
-    });
-    expect(held.ok).toBe(true);
-    if (!held.ok) return;
-    expect(held.state.players.player1.command[0]?.commandHeld).toBe(true);
-
-    const released = applyAction(held.state, {
-      type: "release_command",
-      playerId: "player1",
-      instanceId: cmd.instanceId,
-    });
-    expect(released.ok).toBe(true);
-    if (!released.ok) return;
-    expect(released.state.players.player1.command[0]?.commandHeld).toBe(false);
+    const actions = getLegalActions(state);
+    expect(actions.some((a) => a.type === "hold_command")).toBe(false);
+    expect(actions.some((a) => a.type === "release_command")).toBe(false);
   });
 
   it("requires held command matching unit category to rush", () => {
