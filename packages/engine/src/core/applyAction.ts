@@ -463,8 +463,20 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (state.pendingCommandPayment.playerId !== playerId) {
         return fail("no_pending_payment");
       }
+      const payer = state.players[playerId];
       return ok(
-        { ...state, pendingCommandPayment: undefined },
+        {
+          ...state,
+          pendingCommandPayment: undefined,
+          players: {
+            ...state.players,
+            [playerId]: {
+              ...payer,
+              battleEntryHoldReady: false,
+              rushCategoryHoldReady: false,
+            },
+          },
+        },
         buildSimpleLogEntry(playerId, "command_payment_cancel"),
       );
     }
@@ -708,6 +720,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         rush: [...nextPlayer.rush, rushCard],
       };
       nextPlayer = markRushedThisTurn(nextPlayer, handFound.card.instanceId);
+      nextPlayer = { ...nextPlayer, rushCategoryHoldReady: false };
       let nextState: GameState = {
         ...state,
         ...updatePlayer(state, playerId, nextPlayer),
@@ -752,15 +765,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       ) {
         return fail("cannot_enter_battle");
       }
-      const unitHold = getBattleEntryHoldCount(found.card.cardId);
-      if (
-        unitHold > 0 &&
-        countBattleEntryEligibleHolds(player) < unitHold
-      ) {
-        return fail("cannot_enter_battle");
-      }
-
-      let nextPlayer = { ...player };
+      let nextPlayer = { ...player, battleEntryHoldReady: false };
       const [, rush] = removeAt(nextPlayer.rush, found.index);
       nextPlayer = { ...nextPlayer, rush };
 

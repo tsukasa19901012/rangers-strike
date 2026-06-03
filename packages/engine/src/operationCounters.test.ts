@@ -3,6 +3,7 @@ import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
 import { battleFillers, moveToBattle } from "./testing/battleEntry";
 import { createTestState, heldEtCommand, heldWbCommand, inst } from "./testing/fixtures";
+import { rushWithCategoryHold } from "./testing/rushPayment";
 
 function def(id: string) {
   const card = legend1Catalog.cards.find((c) => c.id === id);
@@ -61,6 +62,7 @@ describe("operation counters", () => {
   it("RS-026 returns rushed unit to top of deck", () => {
     const unit = inst("TST-UNIT-0", "u1");
     const counter = inst("RS-026", "c1");
+    const wbPay = inst("TST-OP", "wb-pay");
     const maCmd = { ...inst("RS-057", "cmd"), commandHeld: true };
     let state = createTestState({
       phase: "rush",
@@ -68,7 +70,7 @@ describe("operation counters", () => {
       player1: {
         hand: [unit],
         power: [inst("TST-OP", "p1")],
-        command: [heldWbCommand("cmd")],
+        command: [wbPay],
         deck: [inst("TST-OP", "d1")],
       },
       player2: {
@@ -81,11 +83,7 @@ describe("operation counters", () => {
     state.definitions["RS-057"] = def("RS-057");
 
     state = unwrap(
-      applyAction(state, {
-        type: "rush",
-        playerId: "player1",
-        instanceId: unit.instanceId,
-      }),
+      rushWithCategoryHold(state, "player1", unit.instanceId, wbPay.instanceId),
     );
     expect(state.pendingRush).toBeDefined();
 

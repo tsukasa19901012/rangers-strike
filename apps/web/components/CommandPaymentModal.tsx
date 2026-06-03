@@ -95,8 +95,8 @@ export function CommandPaymentModal({
           <p className="command-payment-modal__lead">{purpose}</p>
           <p className="command-payment-modal__hint">
             コマンドを{required}枚選んでホールドしてください。
-            {view.kind === "battle_entry" && view.consumeOnConfirm
-              ? " 進入と同時にホールドは消費されます。"
+            {view.kind === "battle_entry"
+              ? " 選んだコマンドをホールドしてからバトルエリアに出ます。"
               : ""}
             {view.eligibleSelectMin > 0 && view.eligibleSelectMin < required
               ? " ※進入用のホールドが必要です（母艦のホールドは使えません）。"

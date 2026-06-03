@@ -212,6 +212,21 @@ export function hasHeldCommandForCategories(
   });
 }
 
+/** リリース状態で、指定カテゴリのいずれかに合うコマンドがあるか。 */
+export function hasReleasedCommandForCategories(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  categories: Category[],
+): boolean {
+  if (categories.length === 0) return true;
+
+  return player.command.some((cmd) => {
+    if (cmd.commandHeld) return false;
+    const cmdCats = cardCategories(getDefinition(definitions, cmd.cardId));
+    return categories.some((cat) => cmdCats.includes(cat));
+  });
+}
+
 export function canRushUnit(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
@@ -225,7 +240,9 @@ export function canRushUnit(
   if (player.power.length < cost) return false;
 
   const unitCats = cardCategories(unitDefinition);
-  if (!hasCommandForCardUse(player, definitions, unitCats)) return false;
+  if (unitCats.length > 0 && !hasHeldCommandForCategories(player, definitions, unitCats)) {
+    return false;
+  }
 
   if (!needsZordMaterial(definitions, unitDefinition.id)) return true;
 

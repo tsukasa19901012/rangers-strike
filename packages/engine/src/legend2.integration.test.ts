@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { legend1Catalog, legend2Catalog } from "@rangers-strike/cards";
 import { applyAction } from "./index";
 import { resolveInfiniteChain } from "./rules/legend2/operations";
-import { createTestState, heldEtCommand, heldOtCommand, inst, TEST_DEFINITIONS } from "./testing/fixtures";
+import { createTestState, inst, TEST_DEFINITIONS } from "./testing/fixtures";
+import { rushWithCategoryHold } from "./testing/rushPayment";
 import { battleFillers, moveToBattle } from "./testing/battleEntry";
 
 const defs = {
@@ -57,17 +58,20 @@ describe("legend2 integration", () => {
         rush: [sMaterial],
         discard: [discard],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
-        command: [heldEtCommand("held")],
+        command: [inst("TST-OP-ET", "et-pay")],
       },
     });
     const rushed = unwrap(
-      applyAction(state, {
-        type: "rush",
-        playerId: "player1",
-        instanceId: "RS-075:rescue",
-        zordMaterialInstanceId: "RS-080:s-material",
-        zordMaterialDestination: "discard",
-      }),
+      rushWithCategoryHold(
+        state,
+        "player1",
+        "RS-075:rescue",
+        "TST-OP-ET:et-pay",
+        {
+          zordMaterialInstanceId: "RS-080:s-material",
+          zordMaterialDestination: "discard",
+        },
+      ),
     );
     expect(rushed.pendingEffectChoice?.effectId).toBe("rescue_activity");
   });
@@ -109,15 +113,11 @@ describe("legend2 integration", () => {
         hand: [zord],
         rush: partners,
         power: Array.from({ length: 8 }, (_, i) => inst("TST-P", `p${i}`)),
-        command: [heldOtCommand("held")],
+        command: [inst("TST-OP-OT", "ot-pay")],
       },
     });
     const rushed = unwrap(
-      applyAction(state, {
-        type: "rush",
-        playerId: "player1",
-        instanceId: "RS-084:zord",
-      }),
+      rushWithCategoryHold(state, "player1", "RS-084:zord", "TST-OP-OT:ot-pay"),
     );
     expect(rushed.players.player2.damage).toBe(2);
   });

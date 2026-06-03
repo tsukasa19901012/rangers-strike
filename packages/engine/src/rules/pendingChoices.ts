@@ -5,11 +5,11 @@ import { buildLogEntry } from "../log/formatLog";
 import { findCardOwner } from "./fieldLookup";
 import { tryLeaveField } from "./operationCounters";
 import { promoteDeferredBattleEntry } from "./battleEntry";
-import { canMoveUnitToBattle, consumeBattleEntryHolds } from "./restrictions";
 import {
-  grantSp1ToBattleUnit,
-} from "./namedUnitEffects";
-
+  autoHoldForBattleEntry,
+  canMoveUnitToBattle,
+  consumeBattleEntryHolds,
+} from "./restrictions";
 export type ChoiceOutcome =
   | { state: GameState; log?: string; logs?: string[] }
   | { error: string };
@@ -521,17 +521,24 @@ export function applyEffectChoiceSelect(
         const owner = state.players[located.playerId];
         const found = findInZone(owner, "rush", instanceId);
         if (!found) return { error: "invalid_target" };
-        if (!canMoveUnitToBattle(state, located.playerId, found.card, "rush")) {
+        const prepared = autoHoldForBattleEntry(owner, found.card);
+        if (!prepared) return { error: "cannot_enter_battle" };
+        const withPrepared = {
+          ...state,
+          ...updatePlayer(state, located.playerId, prepared),
+        };
+        if (!canMoveUnitToBattle(withPrepared, located.playerId, found.card, "rush")) {
           return { error: "cannot_enter_battle" };
         }
-        const [, rush] = removeAt(owner.rush, found.index);
+        const [, rush] = removeAt(prepared.rush, found.index);
         let nextOwner = {
-          ...owner,
+          ...prepared,
           rush,
-          battle: [...owner.battle, found.card],
+          battle: [...prepared.battle, found.card],
+          battleEntryHoldReady: false,
         };
         nextOwner = consumeBattleEntryHolds(
-          { ...state, ...updatePlayer(state, located.playerId, nextOwner) },
+          withPrepared,
           located.playerId,
           found.card,
         );
@@ -546,19 +553,26 @@ export function applyEffectChoiceSelect(
         const swapTarget = findInZone(player, "battle", instanceId);
         const entering = findInZone(player, "rush", pending.sourceInstanceId);
         if (!swapTarget || !entering) return { error: "invalid_target" };
-        if (!canMoveUnitToBattle(state, pending.playerId, entering.card, "rush")) {
+        const prepared = autoHoldForBattleEntry(player, entering.card);
+        if (!prepared) return { error: "cannot_enter_battle" };
+        const withPrepared = {
+          ...state,
+          ...updatePlayer(state, pending.playerId, prepared),
+        };
+        if (!canMoveUnitToBattle(withPrepared, pending.playerId, entering.card, "rush")) {
           return { error: "cannot_enter_battle" };
         }
-        let battle = player.battle.filter((c) => c.instanceId !== instanceId);
+        let battle = prepared.battle.filter((c) => c.instanceId !== instanceId);
         battle = [...battle, { ...entering.card, battleActed: true }];
-        const rush = player.rush.filter((c) => c.instanceId !== pending.sourceInstanceId);
+        const rush = prepared.rush.filter((c) => c.instanceId !== pending.sourceInstanceId);
         let nextPlayer = {
-          ...player,
+          ...prepared,
           battle,
           rush: [...rush, swapTarget.card],
+          battleEntryHoldReady: false,
         };
         nextPlayer = consumeBattleEntryHolds(
-          { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+          withPrepared,
           pending.playerId,
           entering.card,
         );
@@ -866,10 +880,7 @@ export function applyEffectChoiceSelect(
         deck: [kept, ...deckTail],
         discard: [...player.discard, ...rest],
       };
-      let nextState = { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) };
-      if (pending.sourceInstanceId) {
-        nextState = grantSp1ToBattleUnit(nextState, pending.playerId, pending.sourceInstanceId);
-      }
+      const nextState = { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) };
       return finishChoice(nextState, pending, cardName(state.definitions, kept.cardId));
     }
 
@@ -880,21 +891,21 @@ export function applyEffectChoiceSelect(
       const found = findInZone(enemy, "rush", instanceId);
       if (!found) return { error: "invalid_target" };
 
-      if (!canMoveUnitToBattle(state, enemyId, found.card, "rush")) {
+      const prepared = autoHoldForBattleEntry(enemy, found.card);
+      if (!prepared) return { error: "cannot_enter_battle" };
+      const withPrepared = { ...state, ...updatePlayer(state, enemyId, prepared) };
+      if (!canMoveUnitToBattle(withPrepared, enemyId, found.card, "rush")) {
         return { error: "cannot_enter_battle" };
       }
 
-      const [, rush] = removeAt(enemy.rush, found.index);
+      const [, rush] = removeAt(prepared.rush, found.index);
       let nextEnemy = {
-        ...enemy,
+        ...prepared,
         rush,
-        battle: [...enemy.battle, found.card],
+        battle: [...prepared.battle, found.card],
+        battleEntryHoldReady: false,
       };
-      nextEnemy = consumeBattleEntryHolds(
-        { ...state, ...updatePlayer(state, enemyId, nextEnemy) },
-        enemyId,
-        found.card,
-      );
+      nextEnemy = consumeBattleEntryHolds(withPrepared, enemyId, found.card);
       let nextState = { ...state, ...updatePlayer(state, enemyId, nextEnemy) };
 
       const selected = [...(pending.selectedInstanceIds ?? []), instanceId];

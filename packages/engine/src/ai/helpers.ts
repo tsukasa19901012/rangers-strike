@@ -6,6 +6,7 @@ import {
   cardCategories,
   effectiveBp,
   getDefinition,
+  hasReleasedCommandForCategories,
   parsePowerCost,
 } from "../core/catalog";
 import { findInZone, opponent } from "../core/helpers";
@@ -61,7 +62,7 @@ function handNeedsCommandSupport(
   if (neededCats.length === 0) return false;
   const player = state.players[playerId];
   return neededCats.some(
-    (cat) => !hasCommandForCardUse(player, state.definitions, [cat]),
+    (cat) => !hasReleasedCommandForCategories(player, state.definitions, [cat]),
   );
 }
 
@@ -73,7 +74,7 @@ function handNeedsPowerForRush(
   for (const card of player.hand) {
     const def = getDefinition(state.definitions, card.cardId);
     if (!def || def.type !== "unit") continue;
-    if (!hasCommandForCardUse(player, state.definitions, cardCategories(def))) {
+    if (!hasReleasedCommandForCategories(player, state.definitions, cardCategories(def))) {
       continue;
     }
     const cost = parsePowerCost(def.powerCost);
@@ -243,6 +244,7 @@ export function pickHoldBeforeRush(
     state,
     playerId,
     cardCategories(unitDef),
+    { perRushPayment: true },
   );
   if (!options) return null;
   return {

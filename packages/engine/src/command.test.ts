@@ -36,19 +36,27 @@ describe("command zone", () => {
     expect(actions.some((a) => a.type === "release_command")).toBe(false);
   });
 
-  it("requires held command matching unit category to rush", () => {
+  it("requires category hold payment before each rush", () => {
     const unit = inst("TST-UNIT-2", "u1");
+    const cmd = inst("TST-OP", "c1");
     const state = createTestState({
       phase: "rush",
       player1: {
         hand: [unit],
         power: [inst("TST-OP", "p1"), inst("TST-OP", "p2"), inst("TST-OP", "p3")],
-        command: [heldWbCommand("c1")],
+        command: [cmd],
       },
     });
 
-    const rushes = getLegalActions(state).filter((a) => a.type === "rush");
-    expect(rushes).toHaveLength(1);
+    expect(getLegalActions(state).filter((a) => a.type === "rush")).toHaveLength(0);
+    expect(
+      getLegalActions(state).some(
+        (a) =>
+          a.type === "initiate_command_payment" &&
+          a.kind === "category_use" &&
+          a.sourceInstanceId === unit.instanceId,
+      ),
+    ).toBe(true);
   });
 
   it("rejects charge when command zone is full", () => {

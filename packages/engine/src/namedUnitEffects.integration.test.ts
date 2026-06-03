@@ -52,16 +52,24 @@ describe("conditional battle entry", () => {
         hand: [handTarget],
         command: [
           { ...inst("RS-007", "cmd1"), commandHeld: true },
-          { ...inst("RS-007", "cmd2"), commandHeld: true },
+          { ...inst("RS-007", "cmd2"), commandHeld: false },
         ],
       },
     });
 
-    const entered = unwrap(
+    const paid = unwrap(
       applyAction(state, {
-        type: "move_to_battle",
+        type: "initiate_command_payment",
         playerId: "player1",
-        instanceId: drill.instanceId,
+        kind: "battle_entry",
+        sourceInstanceId: drill.instanceId,
+      }),
+    );
+    const entered = unwrap(
+      applyAction(paid, {
+        type: "resolve_command_payment",
+        playerId: "player1",
+        commandInstanceIds: [paid.players.player1.command[1]!.instanceId],
       }),
     );
 

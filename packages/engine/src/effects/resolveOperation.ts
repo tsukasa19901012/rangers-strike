@@ -25,6 +25,7 @@ import { findCardOwner } from "../rules/fieldLookup";
 import { withTurnModifiers } from "../rules/turnModifiers";
 import { resolveInfiniteChain } from "../rules/legend2/operations";
 import {
+  autoHoldForBattleEntry,
   canMoveUnitToBattle,
   consumeBattleEntryHolds,
 } from "../rules/restrictions";
@@ -302,14 +303,26 @@ function returnFusionMaterialsAfterBazooka(
     const [card, rest] = removeAt(discard, index);
     discard = rest;
 
-    if (canMoveUnitToBattle(state, enemyId, card, "rush")) {
+    const prepared = autoHoldForBattleEntry(enemy, card);
+    if (!prepared) {
+      discard = [...discard, card];
+      break;
+    }
+    enemy = prepared;
+    const withPrepared = {
+      ...state,
+      ...updatePlayer(state, enemyId, enemy),
+    };
+
+    if (canMoveUnitToBattle(withPrepared, enemyId, card, "rush")) {
       battle = [...battle, { ...card, battleActed: false }];
-      let nextEnemy = { ...enemy, discard, battle };
-      nextEnemy = consumeBattleEntryHolds(
-        { ...state, ...updatePlayer(state, enemyId, nextEnemy) },
-        enemyId,
-        card,
-      );
+      let nextEnemy = {
+        ...enemy,
+        discard,
+        battle,
+        battleEntryHoldReady: false,
+      };
+      nextEnemy = consumeBattleEntryHolds(withPrepared, enemyId, card);
       enemy = nextEnemy;
       returned += 1;
     } else {

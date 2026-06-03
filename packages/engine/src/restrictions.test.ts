@@ -241,7 +241,7 @@ describe("battle entry hold requirements", () => {
   });
 
   it.each(BATTLE_ENTRY_HOLD_CARDS)(
-    "blocks %s without a held command",
+    "blocks %s until a released command is held for entry",
     (cardId) => {
       const unit = inst(cardId, "u1");
       const state = createTestState({
@@ -269,7 +269,7 @@ describe("battle entry hold requirements", () => {
   );
 
   it.each(BATTLE_ENTRY_HOLD_CARDS)(
-    "allows %s with a held command",
+    "blocks %s when only held commands exist (no released)",
     (cardId) => {
       const unit = inst(cardId, "u1");
       const state = createTestState({
@@ -281,7 +281,8 @@ describe("battle entry hold requirements", () => {
         },
       });
 
-      expect(canMoveUnitToBattle(state, "player1", unit, "rush")).toBe(true);
+      expect(canMoveUnitToBattle(state, "player1", unit, "rush")).toBe(false);
+      expect(explainCannotEnterBattle(state, "player1", unit, "rush")).toContain("リリース");
     },
   );
 
@@ -316,45 +317,69 @@ describe("battle entry hold requirements", () => {
   });
 
   it.each(BATTLE_ENTRY_HOLD_CARDS)(
-    "consumes held command when %s enters battle",
+    "holds released command when %s enters battle via payment",
     (cardId) => {
       const unit = inst(cardId, "u1");
-      const state = createTestState({
+      const cmd = inst("RS-007", "c1");
+      let state = createTestState({
         definitions: legendDefinitions,
         phase: "battle",
         player1: {
           rush: [unit],
-          command: [{ ...inst("RS-007", "c1"), commandHeld: true }],
+          command: [cmd],
         },
       });
 
-      const result = applyAction(state, {
-        type: "move_to_battle",
+      const initiated = applyAction(state, {
+        type: "initiate_command_payment",
         playerId: "player1",
-        instanceId: unit.instanceId,
+        kind: "battle_entry",
+        sourceInstanceId: unit.instanceId,
       });
-      expect(result.ok).toBe(true);
-      if (!result.ok) return;
-      expect(result.state.players.player1.command[0]?.commandHeld).toBe(false);
+      expect(initiated.ok).toBe(true);
+      if (!initiated.ok) return;
+      state = initiated.state;
+
+      const resolved = applyAction(state, {
+        type: "resolve_command_payment",
+        playerId: "player1",
+        commandInstanceIds: [cmd.instanceId],
+      });
+      expect(resolved.ok).toBe(true);
+      if (!resolved.ok) return;
+      expect(resolved.state.players.player1.battle.some((c) => c.instanceId === unit.instanceId)).toBe(
+        true,
+      );
+      expect(resolved.state.players.player1.command[0]?.commandHeld).toBe(true);
+      expect(resolved.state.players.player1.battleEntryHoldReady).toBe(false);
     },
   );
 
   it("requires a new hold for each fusion unit (RS-051 then RS-052)", () => {
     const tyranno = inst("RS-051", "t1");
     const tricera = inst("RS-052", "t2");
+    const cmd = inst("RS-007", "c1");
     let state = createTestState({
       definitions: legendDefinitions,
       phase: "battle",
       player1: {
         rush: [tyranno, tricera],
-        command: [{ ...inst("RS-007", "c1"), commandHeld: true }],
+        command: [cmd],
       },
     });
 
-    const first = applyAction(state, {
-      type: "move_to_battle",
+    const pay = applyAction(state, {
+      type: "initiate_command_payment",
       playerId: "player1",
-      instanceId: tyranno.instanceId,
+      kind: "battle_entry",
+      sourceInstanceId: tyranno.instanceId,
+    });
+    expect(pay.ok).toBe(true);
+    if (!pay.ok) return;
+    const first = applyAction(pay.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [cmd.instanceId],
     });
     expect(first.ok).toBe(true);
     if (!first.ok) return;

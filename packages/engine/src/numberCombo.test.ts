@@ -132,6 +132,30 @@ describe("NC battle entry (standard CN position)", () => {
     },
   );
 
+  it("RS-063 radial hammer keeps SP1 after scry choice", () => {
+    const deckTop = [
+      inst("TST-UNIT-0", "d1"),
+      inst("TST-UNIT-0", "d2"),
+      inst("TST-UNIT-0", "d3"),
+    ];
+    const { next, unit } = enterAtCn("RS-063", 5, { deck: deckTop });
+
+    expect(battleUnit(next, "player1", unit.instanceId)?.spModifier).toBe(1);
+    expect(next.pendingEffectChoice?.effectId).toBe("radial_hammer");
+
+    const resolved = applyAction(next, {
+      type: "resolve_effect_choice",
+      playerId: "player1",
+      instanceId: deckTop[0]!.instanceId,
+    });
+    expect(resolved.ok).toBe(true);
+    if (!resolved.ok) return;
+
+    const black = battleUnit(resolved.state, "player1", unit.instanceId);
+    expect(black?.spModifier).toBe(1);
+    expect(strikeDamageFor(resolved.state.definitions, black!, resolved.state, "player1")).toBe(1);
+  });
+
   it("RS-061 green ground keeps SP1 after returning enemy command", () => {
     const enemyCmd = inst("RS-007", "enemy-cmd");
     const { next, unit } = enterAtCn("RS-061", 3, {

@@ -1,5 +1,6 @@
 import type { GameAction } from "../types/actions";
-import type { GameState, PlayerId } from "../types/game";
+import type { CardDefinition } from "@rangers-strike/cards";
+import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { getRidingComboEffect } from "@rangers-strike/cards";
 import {
@@ -9,7 +10,8 @@ import {
 } from "../effects/resolveOperation";
 import {
   canPlayOperation,
-  canRushUnit,
+  canRushUnitExceptCommandHold,
+  cardCategories,
   getDefinition,
   hasOperationEffect,
   isSmallUnit,
@@ -22,11 +24,13 @@ import { canStrikeUnit } from "../rules/combo";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import { canMoveUnitToBattle, countHeldCommands, mustEnterBattleBeforePhaseEnd } from "../rules/restrictions";
 import {
+  getCategoryPaymentOptions,
   isInitiateCommandPaymentLegal,
   isResolveCommandPaymentLegal,
   buildEffectHoldPayment,
   needsEffectHoldPayment,
 } from "../rules/commandPayment";
+import { hasCommandForCardUse } from "../rules/restrictions";
 import { canBeginZordSetup } from "../rules/zordSetup";
 import { canBonusDraw, mustDrawBeforeStartEnd, mustResolveEarthForceUpkeepBeforeStartEnd, canPayEarthForceUpkeep } from "../rules/startPhase";
 import { listZordRushPaymentVariants } from "../rules/mothership";
@@ -317,6 +321,171 @@ function appendBattleDanceActions(
 
 const OPERATION_PHASES = new Set<GameState["phase"]>(["rush"]);
 
+/** カテゴリ支払い済み、またはカテゴリ不要なユニットのみ直接 rush 可能。 */
+function canDeclareRush(
+  player: PlayerState,
+  definitions: GameState["definitions"],
+  definition: CardDefinition,
+  instanceId: string,
+  zord?: {
+    zordMaterialInstanceId?: string;
+    zordMothershipHoldInstanceIds?: string[];
+    zordMaterialDestination?: import("../types/actions").ZordMaterialDestination;
+  },
+): boolean {
+  if (
+    !canRushUnitExceptCommandHold(
+      player,
+      definitions,
+      definition,
+      instanceId,
+      zord?.zordMaterialInstanceId,
+      zord?.zordMothershipHoldInstanceIds,
+      zord?.zordMaterialDestination,
+    )
+  ) {
+    return false;
+  }
+  const categories = cardCategories(definition);
+  if (categories.length === 0) return true;
+  if (!player.rushCategoryHoldReady) return false;
+  return hasCommandForCardUse(player, definitions, categories);
+}
+
+function appendRushCategoryPaymentActions(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): void {
+  const player = state.players[playerId];
+
+  const pushPayment = (
+    instanceId: string,
+    zord?: {
+      zordMaterialInstanceId?: string;
+      zordMothershipHoldInstanceIds?: string[];
+      zordMaterialDestination?: import("../types/actions").ZordMaterialDestination;
+    },
+    prismSubstitute?: boolean,
+  ) => {
+    const action: GameAction = {
+      type: "initiate_command_payment",
+      playerId,
+      kind: "category_use",
+      sourceInstanceId: instanceId,
+      prismSubstitute,
+      zordMaterialInstanceId: zord?.zordMaterialInstanceId,
+      zordMothershipHoldInstanceIds: zord?.zordMothershipHoldInstanceIds,
+      zordMaterialDestination: zord?.zordMaterialDestination,
+    };
+    if (isInitiateCommandPaymentLegal(state, action)) {
+      actions.push(action);
+    }
+  };
+
+  for (const card of player.hand) {
+    const definition = getDefinition(state.definitions, card.cardId);
+    if (!definition || !isUnit(definition)) continue;
+
+    const categories = cardCategories(definition);
+    if (categories.length === 0) continue;
+
+    if (needsZordMaterial(state.definitions, card.cardId)) {
+      if (requiresAllFusionPartners(card.cardId)) {
+        if (canDeclareRush(player, state.definitions, definition, card.instanceId)) {
+          continue;
+        }
+        if (
+          !canRushUnitExceptCommandHold(
+            player,
+            state.definitions,
+            definition,
+            card.instanceId,
+          )
+        ) {
+          continue;
+        }
+        const options = getCategoryPaymentOptions(state, playerId, categories, {
+          perRushPayment: true,
+        });
+        if (!options) continue;
+        pushPayment(card.instanceId, undefined, options.prismSubstitute);
+        if (options.prismAvailable && !options.prismSubstitute) {
+          pushPayment(card.instanceId, undefined, true);
+        }
+      } else {
+        const materials = collectZordMaterials(
+          player,
+          state.definitions,
+          card.cardId,
+          card.instanceId,
+        );
+        const variants = listZordRushPaymentVariants(
+          player,
+          state.definitions,
+          card.cardId,
+          card.instanceId,
+          materials,
+          player.command.length < COMMAND_ZONE_MAX,
+        );
+        for (const variant of variants) {
+          const zord = {
+            zordMaterialInstanceId: variant.zordMaterialInstanceId,
+            zordMothershipHoldInstanceIds: variant.zordMothershipHoldInstanceIds,
+            zordMaterialDestination: variant.zordMaterialDestination,
+          };
+          if (canDeclareRush(player, state.definitions, definition, card.instanceId, zord)) {
+            continue;
+          }
+          if (
+            !canRushUnitExceptCommandHold(
+              player,
+              state.definitions,
+              definition,
+              card.instanceId,
+              zord.zordMaterialInstanceId,
+              zord.zordMothershipHoldInstanceIds,
+              zord.zordMaterialDestination,
+            )
+          ) {
+            continue;
+          }
+          const options = getCategoryPaymentOptions(state, playerId, categories, {
+            perRushPayment: true,
+          });
+          if (!options) continue;
+          pushPayment(card.instanceId, zord, options.prismSubstitute);
+          if (options.prismAvailable && !options.prismSubstitute) {
+            pushPayment(card.instanceId, zord, true);
+          }
+        }
+      }
+    } else {
+      if (canDeclareRush(player, state.definitions, definition, card.instanceId)) {
+        continue;
+      }
+      if (
+        !canRushUnitExceptCommandHold(
+          player,
+          state.definitions,
+          definition,
+          card.instanceId,
+        )
+      ) {
+        continue;
+      }
+      const options = getCategoryPaymentOptions(state, playerId, categories, {
+        perRushPayment: true,
+      });
+      if (!options) continue;
+      pushPayment(card.instanceId, undefined, options.prismSubstitute);
+      if (options.prismAvailable && !options.prismSubstitute) {
+        pushPayment(card.instanceId, undefined, true);
+      }
+    }
+  }
+}
+
 function appendEffectChoiceActions(
   state: GameState,
   playerId: PlayerId,
@@ -502,14 +671,7 @@ export function getLegalActions(state: GameState): GameAction[] {
 
         if (needsZordMaterial(state.definitions, card.cardId)) {
           if (requiresAllFusionPartners(card.cardId)) {
-            if (
-              canRushUnit(
-                player,
-                state.definitions,
-                definition!,
-                card.instanceId,
-              )
-            ) {
+            if (canDeclareRush(player, state.definitions, definition!, card.instanceId)) {
               actions.push({
                 type: "rush",
                 playerId,
@@ -533,15 +695,11 @@ export function getLegalActions(state: GameState): GameAction[] {
             );
             for (const variant of variants) {
               if (
-                !canRushUnit(
-                  player,
-                  state.definitions,
-                  definition!,
-                  card.instanceId,
-                  variant.zordMaterialInstanceId,
-                  variant.zordMothershipHoldInstanceIds,
-                  variant.zordMaterialDestination,
-                )
+                !canDeclareRush(player, state.definitions, definition!, card.instanceId, {
+                  zordMaterialInstanceId: variant.zordMaterialInstanceId,
+                  zordMothershipHoldInstanceIds: variant.zordMothershipHoldInstanceIds,
+                  zordMaterialDestination: variant.zordMaterialDestination,
+                })
               ) {
                 continue;
               }
@@ -555,9 +713,7 @@ export function getLegalActions(state: GameState): GameAction[] {
               });
             }
           }
-        } else if (
-          canRushUnit(player, state.definitions, definition!, card.instanceId)
-        ) {
+        } else if (canDeclareRush(player, state.definitions, definition!, card.instanceId)) {
           actions.push({
             type: "rush",
             playerId,
@@ -565,6 +721,7 @@ export function getLegalActions(state: GameState): GameAction[] {
           });
         }
       }
+      appendRushCategoryPaymentActions(state, playerId, actions);
       appendZordSetupActions(state, playerId, actions);
       appendOperationActions(state, playerId, actions);
       appendHidoraEggActions(state, playerId, actions);

@@ -87,6 +87,10 @@ export type PlayerState = {
   hasDrawnThisStart?: boolean;
   /** Start phase: true after RS-022 upkeep is paid this turn. */
   hasPaidEarthForceUpkeep?: boolean;
+  /** ※バトル進入: 支払いでホールド済み（move_to_battle まで有効）。 */
+  battleEntryHoldReady?: boolean;
+  /** ラッシュ: カテゴリ支払いでホールド済み（rush 完了まで有効）。 */
+  rushCategoryHoldReady?: boolean;
   turnModifiers?: TurnModifiers;
 };
 

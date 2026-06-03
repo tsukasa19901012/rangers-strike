@@ -224,19 +224,57 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   return true;
 }
 
+/** コマンドゾーンでリリース状態（未ホールド）の枚数。 */
+export function countReleasedCommands(player: PlayerState): number {
+  return player.command.filter((c) => !c.commandHeld).length;
+}
+
+/**
+ * 効果など支払いUIなしで※進入するとき、リリース中のコマンドを1枚ホールドする。
+ * プレイヤー操作の進入は initiate_command_payment を使う。
+ */
+export function autoHoldForBattleEntry(
+  player: PlayerState,
+  unit: CardInstance,
+): PlayerState | null {
+  const unitHold = getBattleEntryHoldCount(unit.cardId);
+  if (unitHold <= 0) return player;
+
+  if (player.battleEntryHoldReady && countBattleEntryEligibleHolds(player) >= unitHold) {
+    return player;
+  }
+
+  const idx = player.command.findIndex((c) => !c.commandHeld);
+  if (idx < 0) return null;
+
+  const command = player.command.map((c, i) =>
+    i === idx ? { ...c, commandHeld: true, mothershipHold: false } : c,
+  );
+  return { ...player, command, battleEntryHoldReady: true };
+}
+
 function passesBattleEntryHoldRequirements(
-  state: GameState,
+  _state: GameState,
   player: PlayerState,
   unit: CardInstance,
 ): boolean {
   const unitHold = getBattleEntryHoldCount(unit.cardId);
-  const lgHold = isMediumUnit(state.definitions, unit.cardId)
-    ? countActiveLightningGravity(state)
+  const lgHold = isMediumUnit(_state.definitions, unit.cardId)
+    ? countActiveLightningGravity(_state)
     : 0;
   const requiredTotal = unitHold + lgHold;
-  if (unitHold > 0 && countBattleEntryEligibleHolds(player) < unitHold) {
-    return false;
+
+  if (unitHold > 0) {
+    const released = countReleasedCommands(player);
+    if (player.battleEntryHoldReady) {
+      if (countBattleEntryEligibleHolds(player) < unitHold) return false;
+    } else {
+      if (released < unitHold) return false;
+      if (released >= unitHold) return false;
+      if (countBattleEntryEligibleHolds(player) < unitHold) return false;
+    }
   }
+
   if (requiredTotal > 0 && countHeldCommands(player) < requiredTotal) {
     return false;
   }
@@ -338,8 +376,20 @@ export function explainCannotEnterBattle(
   const lgCount = countActiveLightningGravity(state);
   const requiredTotal = unitHolds + lgCount;
   const held = countHeldCommands(player);
+  const released = countReleasedCommands(player);
   const battleEntryHeld = countBattleEntryEligibleHolds(player);
-  if (unitHolds > 0 && battleEntryHeld < unitHolds) {
+  if (unitHolds > 0 && !player.battleEntryHoldReady) {
+    if (released < unitHolds) {
+      if (held > battleEntryHeld) {
+        return `「${unitName}」をバトルエリアに出すには、リリース状態の自軍コマンドを${unitHolds}枚ホールドする必要があります（母艦のホールドはバトル進入の条件になりません）。`;
+      }
+      return `「${unitName}」をバトルエリアに出すには、リリース状態の自軍コマンドが${unitHolds}枚以上必要です（リリース${released}枚）。`;
+    }
+    if (released >= unitHolds && battleEntryHeld < unitHolds) {
+      return `「${unitName}」をバトルエリアに出すには、リリース状態のコマンドを${unitHolds}枚選んでホールドしてください。`;
+    }
+  }
+  if (unitHolds > 0 && player.battleEntryHoldReady && battleEntryHeld < unitHolds) {
     const parts: string[] = [];
     parts.push(`「${unitName}」の能力によりコマンドを${unitHolds}枚ホールド`);
     if (lgCount > 0) {
@@ -424,42 +474,16 @@ export function releaseHeldCommands(
   return { ...player, command };
 }
 
-function releaseBattleEntryEligibleHolds(
-  player: PlayerState,
-  count: number,
-): PlayerState {
-  if (count <= 0) return player;
-  const command = player.command.map((c) => ({ ...c }));
-  let remaining = count;
-  for (let i = 0; i < command.length && remaining > 0; i++) {
-    const card = command[i]!;
-    if (card.commandHeld && !card.mothershipHold) {
-      command[i] = { ...card, commandHeld: false, mothershipHold: false };
-      remaining -= 1;
-    }
-  }
-  return { ...player, command };
-}
-
-/** Consume holds required to enter battle (card text + lightning gravity). */
+/**
+ * ※進入・稲妻重力のホールドは進入後も維持する（リリースしない）。
+ * 呼び出し元との互換のため残している。
+ */
 export function consumeBattleEntryHolds(
   state: GameState,
   playerId: PlayerId,
-  unit: CardInstance,
+  _unit: CardInstance,
 ): PlayerState {
-  const unitHold = getBattleEntryHoldCount(unit.cardId);
-  const required = requiredBattleEntryHolds(state, unit);
-  if (required <= 0) return state.players[playerId];
-
-  let player = state.players[playerId];
-  if (unitHold > 0) {
-    player = releaseBattleEntryEligibleHolds(player, unitHold);
-  }
-  const lgRelease = required - unitHold;
-  if (lgRelease > 0) {
-    player = releaseHeldCommands(player, lgRelease);
-  }
-  return player;
+  return state.players[playerId];
 }
 
 /** RS-010: 2 held commands substitute for 1 required category hold when using a card. */

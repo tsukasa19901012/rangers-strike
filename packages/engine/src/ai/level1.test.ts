@@ -30,7 +30,7 @@ describe("CPU level 1", () => {
       },
     });
 
-    expect(pickCpuAction(state, "player2")?.type).toBe("charge_power");
+    expect(pickCpuAction(state, "player2")?.type).toBe("charge_command");
   });
 
   it("takes lethal strike immediately on battle entry", () => {

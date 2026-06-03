@@ -197,7 +197,7 @@ describe("dynamite power RS-007", () => {
       player2: {
         battle: [zord],
         discard: [fusion],
-        command: [heldWbCommand("c2")],
+        command: [heldWbCommand("c2"), { ...inst("RS-007", "c3"), commandHeld: false }],
       },
     });
     state.definitions["RS-009"] = def("RS-009");

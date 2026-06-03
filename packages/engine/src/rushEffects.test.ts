@@ -3,6 +3,7 @@ import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
 import { ON_ENEMY_RUSH_PERMANENTS, ON_RUSH_EFFECTS } from "./rules/rushEffects";
 import { createTestState, heldWbCommand, inst } from "./testing/fixtures";
+import { rushWithCategoryHold } from "./testing/rushPayment";
 
 function def(id: string) {
   const card = legend1Catalog.cards.find((c) => c.id === id);
@@ -22,6 +23,7 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
     const counter = inst("RS-026", "c1");
     const radar = inst("RS-124", "radar");
     const power = inst("TST-OP", "pw1");
+    const wbPay = inst("TST-OP", "wb-pay");
     const maCmd = { ...inst("RS-057", "cmd"), commandHeld: true };
 
     let state = createTestState({
@@ -30,7 +32,7 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
       player1: {
         hand: [unit],
         power: [inst("TST-OP", "p1")],
-        command: [heldWbCommand("cmd")],
+        command: [wbPay],
       },
       player2: {
         hand: [counter],
@@ -56,11 +58,7 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
     ON_ENEMY_RUSH_PERMANENTS["RS-124"] = "power_to_hand";
 
     state = unwrap(
-      applyAction(state, {
-        type: "rush",
-        playerId: "player1",
-        instanceId: unit.instanceId,
-      }),
+      rushWithCategoryHold(state, "player1", unit.instanceId, wbPay.instanceId),
     );
 
     expect(state.players.player2.hand.some((c) => c.instanceId === power.instanceId)).toBe(
@@ -80,6 +78,7 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
   it("resolves unit on-rush effect before counter window (Q10)", () => {
     const unit = inst("TST-RUSH-FX", "u1");
     const counter = inst("RS-026", "c1");
+    const wbPay = inst("TST-OP", "wb-pay");
     const maCmd = { ...inst("RS-057", "cmd"), commandHeld: true };
 
     let state = createTestState({
@@ -89,7 +88,7 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
         hand: [unit],
         deck: [inst("TST-OP", "deck1")],
         power: [inst("TST-OP", "p1")],
-        command: [heldWbCommand("cmd")],
+        command: [wbPay],
       },
       player2: {
         hand: [counter],
@@ -116,11 +115,7 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
 
     const deckBefore = state.players.player1.deck.length;
     state = unwrap(
-      applyAction(state, {
-        type: "rush",
-        playerId: "player1",
-        instanceId: unit.instanceId,
-      }),
+      rushWithCategoryHold(state, "player1", unit.instanceId, wbPay.instanceId),
     );
 
     expect(state.players.player1.deck.length).toBe(deckBefore - 1);

@@ -49,6 +49,7 @@ describe("command payment", () => {
     expect(resolved.state.players.player1.battle.some((c) => c.instanceId === unit.instanceId)).toBe(
       true,
     );
+    expect(resolved.state.players.player1.command[0]?.commandHeld).toBe(true);
     expect(resolved.state.pendingCommandPayment).toBeUndefined();
   });
 
@@ -112,6 +113,47 @@ describe("command payment", () => {
     );
   });
 
+  it("requires a new category hold for each rush", () => {
+    const unit1 = inst("TST-UNIT-0", "u1");
+    const unit2 = inst("TST-UNIT-0", "u2");
+    const cmd = inst("TST-OP", "cmd");
+    let state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [unit1, unit2],
+        command: [cmd],
+        power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3")],
+      },
+    });
+
+    const first = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "category_use",
+      sourceInstanceId: unit1.instanceId,
+    });
+    expect(first.ok).toBe(true);
+    if (!first.ok) return;
+
+    const resolved1 = applyAction(first.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [cmd.instanceId],
+    });
+    expect(resolved1.ok).toBe(true);
+    if (!resolved1.ok) return;
+    state = resolved1.state;
+    expect(state.players.player1.command[0]?.commandHeld).toBe(true);
+
+    const secondPay = buildPaymentFromInitiateAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "category_use",
+      sourceInstanceId: unit2.instanceId,
+    });
+    expect(secondPay).toBeNull();
+  });
+
   it("explains missing category hold for rush", () => {
     const unit = inst("TST-UNIT-0", "unit");
     const state = createTestState({
@@ -124,7 +166,7 @@ describe("command payment", () => {
     });
 
     const reason = explainCannotRush(state, "player1", unit.instanceId);
-    expect(reason).toContain("ホールド");
+    expect(reason).toContain("リリース");
     expect(reason).toContain("ラッシュ");
   });
 

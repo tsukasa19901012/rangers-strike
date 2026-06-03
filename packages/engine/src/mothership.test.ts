@@ -34,6 +34,7 @@ describe("jaguar mothership (RS-076)", () => {
         rush: [mothership],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
         command: [heldEtCommand("held"), etCmd],
+        rushCategoryHoldReady: true,
       },
     });
     state.definitions["RS-075"] = rs075Def;
@@ -71,13 +72,14 @@ describe("jaguar mothership (RS-076)", () => {
     });
     state.definitions["RS-075"] = rs075Def;
 
-    const canMothership = getLegalActions(state).some(
+    const canPayWithMothership = getLegalActions(state).some(
       (a) =>
-        a.type === "rush" &&
-        a.instanceId === zord.instanceId &&
+        a.type === "initiate_command_payment" &&
+        a.kind === "category_use" &&
+        a.sourceInstanceId === zord.instanceId &&
         (a.zordMothershipHoldInstanceIds?.length ?? 0) > 0,
     );
-    expect(canMothership).toBe(true);
+    expect(canPayWithMothership).toBe(true);
   });
 
   it("does not apply to send_s_unit_to_discard zords (Q5)", () => {
@@ -151,7 +153,8 @@ describe("jaguar mothership (RS-076)", () => {
     const prism = inst("RS-010", "prism");
     const cmd1 = { ...inst("TST-OP-ET", "c1"), commandHeld: true };
     const cmd2 = { ...inst("TST-OP-ET", "c2"), commandHeld: true };
-    const etCmd = { ...inst("TST-OP-ET", "extra"), commandHeld: false };
+    const etPay = { ...inst("TST-OP-ET", "pay"), commandHeld: false };
+    const etMothership = { ...inst("TST-OP-ET", "mship"), commandHeld: false };
 
     const state = createTestState({
       phase: "rush",
@@ -159,7 +162,7 @@ describe("jaguar mothership (RS-076)", () => {
         hand: [zord],
         rush: [mothership],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
-        command: [cmd1, cmd2, etCmd],
+        command: [cmd1, cmd2, etPay, etMothership],
         operation: [prism],
       },
     });
@@ -175,14 +178,15 @@ describe("jaguar mothership (RS-076)", () => {
       tags: ["常駐"],
     };
 
-    const mothershipOnly = getLegalActions(state).filter(
+    const mothershipPay = getLegalActions(state).filter(
       (a) =>
-        a.type === "rush" &&
-        a.instanceId === zord.instanceId &&
+        a.type === "initiate_command_payment" &&
+        a.kind === "category_use" &&
+        a.sourceInstanceId === zord.instanceId &&
         (a.zordMothershipHoldInstanceIds?.length ?? 0) > 0 &&
         !a.zordMaterialInstanceId,
     );
-    expect(mothershipOnly.length).toBeGreaterThan(0);
+    expect(mothershipPay.length).toBeGreaterThan(0);
 
     const prismOnlyHeld = createTestState({
       phase: "rush",
@@ -197,14 +201,15 @@ describe("jaguar mothership (RS-076)", () => {
     prismOnlyHeld.definitions["RS-075"] = rs075Def;
     prismOnlyHeld.definitions["RS-010"] = state.definitions["RS-010"];
 
-    const noUnheldForMothership = getLegalActions(prismOnlyHeld).filter(
+    const noMothershipPay = getLegalActions(prismOnlyHeld).filter(
       (a) =>
-        a.type === "rush" &&
-        a.instanceId === zord.instanceId &&
+        a.type === "initiate_command_payment" &&
+        a.kind === "category_use" &&
+        a.sourceInstanceId === zord.instanceId &&
         (a.zordMothershipHoldInstanceIds?.length ?? 0) > 0 &&
         !a.zordMaterialInstanceId,
     );
-    expect(noUnheldForMothership).toHaveLength(0);
+    expect(noMothershipPay).toHaveLength(0);
   });
 });
 
@@ -278,6 +283,7 @@ describe("dekabase mothership (RS-105)", () => {
         rush: [mothership, sUnit],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
         command: [heldOtCommand("held"), otCmd],
+        rushCategoryHoldReady: true,
       },
     });
 

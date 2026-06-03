@@ -16,6 +16,7 @@ import {
 } from "./index";
 import type { GameState } from "./index";
 import { createTestState, heldWbCommand, inst } from "./testing/fixtures";
+import { rushWithCategoryHold } from "./testing/rushPayment";
 
 function unwrap(result: ReturnType<typeof applyAction>): GameState {
   expect(result.ok).toBe(true);
@@ -169,6 +170,7 @@ describe("rush phase", () => {
 
   it("pays power cost and places unit in rush", () => {
     const unit = inst("TST-UNIT-2", "h1");
+    const cmd = inst("TST-OP", "c1");
     const state = createTestState({
       phase: "rush",
       player1: {
@@ -178,16 +180,12 @@ describe("rush phase", () => {
           inst("TST-OP", "p2"),
           inst("TST-OP", "p3"),
         ],
-        command: [heldWbCommand("c1")],
+        command: [cmd],
       },
     });
 
     const next = unwrap(
-      applyAction(state, {
-        type: "rush",
-        playerId: "player1",
-        instanceId: unit.instanceId,
-      }),
+      rushWithCategoryHold(state, "player1", unit.instanceId, cmd.instanceId),
     );
 
     expect(next.players.player1.power).toHaveLength(3);

@@ -37,6 +37,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 7 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldWbCommand("c1")],
+        rushCategoryHoldReady: true,
         rush: [tyranno],
       },
     });
@@ -61,6 +62,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 7 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldWbCommand("c1")],
+        rushCategoryHoldReady: true,
         rush: [tyranno, tricera, ptera],
       },
     });
@@ -102,6 +104,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 8 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldOtCommand("c1")],
+        rushCategoryHoldReady: true,
         rush: partners,
       },
     });
@@ -150,6 +153,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 7 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldMaCommand("c1")],
+        rushCategoryHoldReady: true,
         rush: partners,
       },
     });
@@ -196,6 +200,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldEtCommand("c1")],
+        rushCategoryHoldReady: true,
         rush: [sUnit],
       },
     });
@@ -238,6 +243,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldEtCommand("c1")],
+        rushCategoryHoldReady: true,
         rush: [sUnit],
       },
     });
@@ -283,6 +289,7 @@ describe("zord-up rush", () => {
         hand: [zord, sUnit],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldEtCommand("c1")],
+        rushCategoryHoldReady: true,
         rush: [],
       },
     });
@@ -326,6 +333,8 @@ describe("zord-up rush", () => {
           hand: [zord],
           power: Array.from({ length: 7 }, (_, i) => inst("TST-OP", `p${i}`)),
           command: [heldWbCommand("c1")],
+          rushCategoryHoldReady: true,
+        rushCategoryHoldReady: true,
           rush: partners,
         },
       });
@@ -351,6 +360,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 7 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldWbCommand("c1")],
+        rushCategoryHoldReady: true,
         rush: [wrongFusion],
       },
     });
@@ -378,13 +388,13 @@ describe("zord-up rush", () => {
 });
 
 describe("prism power", () => {
-  it("allows rush with two held commands of any category", () => {
+  it("allows rush with prism power holding two released commands", () => {
     const unit = inst("TST-UNIT-2", "u1");
     const op = inst("RS-010", "op1");
-    const cmd1 = { ...inst("TST-OP-ET", "c1"), commandHeld: true };
-    const cmd2 = { ...inst("TST-OP-ET", "c2"), commandHeld: true };
+    const cmd1 = inst("TST-OP-ET", "c1");
+    const cmd2 = inst("TST-OP-ET", "c2");
 
-    const state = createTestState({
+    let state = createTestState({
       phase: "rush",
       player1: {
         hand: [unit],
@@ -404,8 +414,24 @@ describe("prism power", () => {
       tags: ["常駐"],
     };
 
-    const rushes = getLegalActions(state).filter((a) => a.type === "rush");
-    expect(rushes).toHaveLength(1);
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "category_use",
+      sourceInstanceId: unit.instanceId,
+      prismSubstitute: true,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+
+    const resolved = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [cmd1.instanceId, cmd2.instanceId],
+    });
+    expect(resolved.ok).toBe(true);
+    if (!resolved.ok) return;
+    expect(resolved.state.players.player1.rush).toHaveLength(1);
   });
 });
 

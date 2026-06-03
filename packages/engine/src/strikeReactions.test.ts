@@ -19,13 +19,20 @@ describe("earth force", () => {
       player1: {
         hand: [unit],
         power: [inst("TST-P", "p1"), inst("TST-P", "p2")],
-        command: [heldWbCommand("c1")],
+        command: [inst("TST-OP", "c1")],
         operation: [earthForce],
       },
     });
 
-    const rushes = getActions(state).filter((a) => a.type === "rush");
-    expect(rushes).toHaveLength(1);
+    expect(getActions(state).filter((a) => a.type === "rush")).toHaveLength(0);
+    expect(
+      getActions(state).some(
+        (a) =>
+          a.type === "initiate_command_payment" &&
+          a.kind === "category_use" &&
+          a.sourceInstanceId === unit.instanceId,
+      ),
+    ).toBe(true);
   });
 
   it("requires rush units to enter battle before ending the battle phase", () => {
