@@ -77,6 +77,15 @@ const TEST_DEFINITIONS: Record<string, CardDefinition> = {
     expansion: "test",
     powerCost: 1,
   },
+  "TST-OP-DA": {
+    id: "TST-OP-DA",
+    name: "Test DA Command",
+    type: "operation",
+    category: "DA",
+    rarity: "R",
+    expansion: "test",
+    powerCost: 1,
+  },
   "TST-P": {
     id: "TST-P",
     name: "Test Power",
