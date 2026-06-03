@@ -285,6 +285,36 @@ describe("battle entry hold requirements", () => {
     },
   );
 
+  it("blocks RS-053 when only mothership hold is present", () => {
+    const unit = inst("RS-053", "ptera");
+    const state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      player1: {
+        rush: [unit],
+        command: [
+          {
+            ...inst("RS-007", "cmd"),
+            commandHeld: true,
+            mothershipHold: true,
+          },
+        ],
+      },
+    });
+
+    expect(canMoveUnitToBattle(state, "player1", unit, "rush")).toBe(false);
+    expect(
+      applyAction(state, {
+        type: "move_to_battle",
+        playerId: "player1",
+        instanceId: unit.instanceId,
+      }).ok,
+    ).toBe(false);
+    expect(explainCannotEnterBattle(state, "player1", unit, "rush")).toContain(
+      "母艦",
+    );
+  });
+
   it.each(BATTLE_ENTRY_HOLD_CARDS)(
     "consumes held command when %s enters battle",
     (cardId) => {

@@ -1,6 +1,10 @@
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState } from "../types/game";
-import { getCardEffect, listZordFusionPartnerIds } from "@rangers-strike/cards";
+import {
+  getBattleEntryHoldCount,
+  getCardEffect,
+  listZordFusionPartnerIds,
+} from "@rangers-strike/cards";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { checkWinner, advancePhase } from "./createGame";
 import {
@@ -67,7 +71,9 @@ import { applyAllZordFusionMaterials, applyZordMaterial, findZordMaterial, requi
 import {
   canMoveUnitToBattle,
   mustEnterBattleBeforePhaseEnd,
-  releaseHeldCommands,
+  consumeBattleEntryHolds,
+  countBattleEntryEligibleHolds,
+  countHeldCommands,
   requiredBattleEntryHolds,
 } from "../rules/restrictions";
 import {
@@ -80,7 +86,6 @@ import {
 import { applyAdventureEndTurn, getTurnModifiers, markBattleBlocked, markRushedThisTurn, withTurnModifiers } from "../rules/turnModifiers";
 import { applyKarakuriFireHawkEndTurn, checkReturnToHandAt6Damage } from "../rules/legend2/destroyEffects";
 import { noAttackOrStrikeTurnRushed } from "@rangers-strike/cards";
-import { countHeldCommands } from "../rules/restrictions";
 import {
   applyDinoChronicleCounter,
   applyDinoGutsCounter,
@@ -313,7 +318,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (found.card.commandHeld) return fail("already_held");
 
       const command = [...player.command];
-      command[found.index] = { ...found.card, commandHeld: true };
+      command[found.index] = { ...found.card, commandHeld: true, mothershipHold: false };
       return ok(
         { ...state, ...updatePlayer(state, playerId, { ...player, command }) },
         buildLogEntry(playerId, "hold_command", found.card.cardId, state.definitions),
@@ -327,7 +332,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (!found.card.commandHeld) return fail("not_held");
 
       const command = [...player.command];
-      command[found.index] = { ...found.card, commandHeld: false };
+      command[found.index] = { ...found.card, commandHeld: false, mothershipHold: false };
       return ok(
         { ...state, ...updatePlayer(state, playerId, { ...player, command }) },
         buildLogEntry(playerId, "release_command", found.card.cardId, state.definitions),
@@ -582,6 +587,21 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         return fail("cannot_enter_battle");
       }
 
+      const entryHoldsRequired = requiredBattleEntryHolds(state, found.card);
+      if (
+        entryHoldsRequired > 0 &&
+        countHeldCommands(player) < entryHoldsRequired
+      ) {
+        return fail("cannot_enter_battle");
+      }
+      const unitHold = getBattleEntryHoldCount(found.card.cardId);
+      if (
+        unitHold > 0 &&
+        countBattleEntryEligibleHolds(player) < unitHold
+      ) {
+        return fail("cannot_enter_battle");
+      }
+
       let nextPlayer = { ...player };
       const [, rush] = removeAt(nextPlayer.rush, found.index);
       nextPlayer = { ...nextPlayer, rush };
@@ -598,9 +618,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         ...nextPlayer,
         battle: [...nextPlayer.battle, battleCard],
       };
-      nextPlayer = releaseHeldCommands(
-        nextPlayer,
-        requiredBattleEntryHolds(state, found.card),
+      nextPlayer = consumeBattleEntryHolds(
+        { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+        playerId,
+        found.card,
       );
       let nextState: GameState = {
         ...state,

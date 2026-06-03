@@ -26,8 +26,7 @@ import { withTurnModifiers } from "../rules/turnModifiers";
 import { resolveInfiniteChain } from "../rules/legend2/operations";
 import {
   canMoveUnitToBattle,
-  releaseHeldCommands,
-  requiredBattleEntryHolds,
+  consumeBattleEntryHolds,
 } from "../rules/restrictions";
 import { tryLeaveField } from "../rules/operationCounters";
 import { COMMAND_ZONE_MAX } from "../types/game";
@@ -304,11 +303,14 @@ function returnFusionMaterialsAfterBazooka(
     discard = rest;
 
     if (canMoveUnitToBattle(state, enemyId, card, "rush")) {
-      enemy = releaseHeldCommands(
-        enemy,
-        requiredBattleEntryHolds(state, card),
-      );
       battle = [...battle, { ...card, battleActed: false }];
+      let nextEnemy = { ...enemy, discard, battle };
+      nextEnemy = consumeBattleEntryHolds(
+        { ...state, ...updatePlayer(state, enemyId, nextEnemy) },
+        enemyId,
+        card,
+      );
+      enemy = nextEnemy;
       returned += 1;
     } else {
       discard = [...discard, card];

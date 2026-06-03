@@ -173,8 +173,15 @@ export function canMoveUnitToBattle(
 
   if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
 
-  const requiredHolds = requiredBattleEntryHolds(state, unit);
-  if (requiredHolds > 0 && countHeldCommands(state.players[playerId]) < requiredHolds) {
+  const unitHold = getBattleEntryHoldCount(unit.cardId);
+  const lgHold = isMediumUnit(state.definitions, unit.cardId)
+    ? countActiveLightningGravity(state)
+    : 0;
+  const requiredTotal = unitHold + lgHold;
+  if (unitHold > 0 && countBattleEntryEligibleHolds(player) < unitHold) {
+    return false;
+  }
+  if (requiredTotal > 0 && countHeldCommands(player) < requiredTotal) {
     return false;
   }
 
@@ -272,12 +279,26 @@ export function explainCannotEnterBattle(
     return "【バトルダンス】でラッシュエリアに戻したユニットは、このターンはバトルエリアに出せません。";
   }
 
-  const requiredHolds = requiredBattleEntryHolds(state, unit);
+  const unitHolds = getBattleEntryHoldCount(unit.cardId);
+  const lgCount = countActiveLightningGravity(state);
+  const requiredTotal = unitHolds + lgCount;
   const held = countHeldCommands(player);
-  if (requiredHolds > 0 && held < requiredHolds) {
+  const battleEntryHeld = countBattleEntryEligibleHolds(player);
+  if (unitHolds > 0 && battleEntryHeld < unitHolds) {
     const parts: string[] = [];
-    const unitHolds = getBattleEntryHoldCount(unit.cardId);
-    const lgCount = countActiveLightningGravity(state);
+    parts.push(`「${unitName}」の能力によりコマンドを${unitHolds}枚ホールド`);
+    if (lgCount > 0) {
+      parts.push(`【稲妻重力エネルギー】の効果によりコマンドを${lgCount}枚ホールド`);
+    }
+    const requirement = parts.join("、");
+    const onlyMothership =
+      held > battleEntryHeld
+        ? "（母艦のホールドはバトル進入の条件になりません）"
+        : "";
+    return `${requirement}する必要があります（バトル進入用${battleEntryHeld}枚 / 必要${unitHolds}枚、ホールド合計${held}枚）${onlyMothership}`;
+  }
+  if (requiredTotal > 0 && held < requiredTotal) {
+    const parts: string[] = [];
     if (unitHolds > 0) {
       parts.push(`「${unitName}」の能力によりコマンドを${unitHolds}枚ホールド`);
     }
@@ -285,7 +306,7 @@ export function explainCannotEnterBattle(
       parts.push(`【稲妻重力エネルギー】の効果によりコマンドを${lgCount}枚ホールド`);
     }
     const requirement = parts.length > 0 ? parts.join("、") : "コマンドをホールド";
-    return `${requirement}する必要があります（現在${held}枚 / 必要${requiredHolds}枚）。`;
+    return `${requirement}する必要があります（現在${held}枚 / 必要${requiredTotal}枚）。`;
   }
 
   return `「${unitName}」はバトルエリアに出せません。`;
@@ -326,6 +347,11 @@ export function countHeldCommands(player: PlayerState): number {
   return player.command.filter((c) => c.commandHeld).length;
 }
 
+/** Holds that satisfy ※ battle-entry notes (excludes 母艦 zord payment holds). */
+export function countBattleEntryEligibleHolds(player: PlayerState): number {
+  return player.command.filter((c) => c.commandHeld && !c.mothershipHold).length;
+}
+
 /** Release up to `count` held commands (left-to-right in command zone). */
 export function releaseHeldCommands(
   player: PlayerState,
@@ -336,7 +362,24 @@ export function releaseHeldCommands(
   let remaining = count;
   for (let i = 0; i < command.length && remaining > 0; i++) {
     if (command[i]!.commandHeld) {
-      command[i] = { ...command[i]!, commandHeld: false };
+      command[i] = { ...command[i]!, commandHeld: false, mothershipHold: false };
+      remaining -= 1;
+    }
+  }
+  return { ...player, command };
+}
+
+function releaseBattleEntryEligibleHolds(
+  player: PlayerState,
+  count: number,
+): PlayerState {
+  if (count <= 0) return player;
+  const command = player.command.map((c) => ({ ...c }));
+  let remaining = count;
+  for (let i = 0; i < command.length && remaining > 0; i++) {
+    const card = command[i]!;
+    if (card.commandHeld && !card.mothershipHold) {
+      command[i] = { ...card, commandHeld: false, mothershipHold: false };
       remaining -= 1;
     }
   }
@@ -349,8 +392,19 @@ export function consumeBattleEntryHolds(
   playerId: PlayerId,
   unit: CardInstance,
 ): PlayerState {
-  const count = requiredBattleEntryHolds(state, unit);
-  return releaseHeldCommands(state.players[playerId], count);
+  const unitHold = getBattleEntryHoldCount(unit.cardId);
+  const required = requiredBattleEntryHolds(state, unit);
+  if (required <= 0) return state.players[playerId];
+
+  let player = state.players[playerId];
+  if (unitHold > 0) {
+    player = releaseBattleEntryEligibleHolds(player, unitHold);
+  }
+  const lgRelease = required - unitHold;
+  if (lgRelease > 0) {
+    player = releaseHeldCommands(player, lgRelease);
+  }
+  return player;
 }
 
 /** RS-010: 2 held commands substitute for 1 required category hold when using a card. */

@@ -115,7 +115,7 @@ export function applyMothershipHolds(
       const card = nextPlayer.command[commandIndex]!;
       if (!isMothershipEligibleCommand(definitions, card, category)) return null;
       const command = [...nextPlayer.command];
-      command[commandIndex] = { ...card, commandHeld: true };
+      command[commandIndex] = { ...card, commandHeld: true, mothershipHold: true };
       nextPlayer = { ...nextPlayer, command };
       continue;
     }
@@ -125,7 +125,7 @@ export function applyMothershipHolds(
       const card = nextPlayer.rush[rushIndex]!;
       if (!isMothershipEligibleCommand(definitions, card, category)) return null;
       const rush = [...nextPlayer.rush];
-      rush[rushIndex] = { ...card, commandHeld: true };
+      rush[rushIndex] = { ...card, commandHeld: true, mothershipHold: true };
       nextPlayer = { ...nextPlayer, rush };
       continue;
     }

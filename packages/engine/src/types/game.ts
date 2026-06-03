@@ -55,6 +55,8 @@ export type CardInstance = {
   bpModifier?: number;
   /** Command zone: true = held (sideways), false/undefined = released. */
   commandHeld?: boolean;
+  /** Hold from 母艦 zord payment; does not satisfy fusion battle-entry hold notes. */
+  mothershipHold?: boolean;
   /** Power zone: true = face-down (damage marker). */
   faceDown?: boolean;
   /** Temporary SP change (cleared at end of turn). */

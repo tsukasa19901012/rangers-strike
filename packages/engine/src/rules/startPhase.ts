@@ -8,7 +8,7 @@ import { startSelectPowerChoice } from "./pendingChoices";
 export function releaseAllCommands(state: GameState, playerId: PlayerId): GameState {
   const player = state.players[playerId];
   const command = player.command.map((c) =>
-    c.commandHeld ? { ...c, commandHeld: false } : c,
+    c.commandHeld ? { ...c, commandHeld: false, mothershipHold: false } : c,
   );
   return { ...state, ...updatePlayer(state, playerId, { ...player, command }) };
 }

@@ -5,7 +5,7 @@ import { buildLogEntry } from "../log/formatLog";
 import { findCardOwner } from "./fieldLookup";
 import { tryLeaveField } from "./operationCounters";
 import { promoteDeferredBattleEntry } from "./battleEntry";
-import { canMoveUnitToBattle, releaseHeldCommands, requiredBattleEntryHolds } from "./restrictions";
+import { canMoveUnitToBattle, consumeBattleEntryHolds } from "./restrictions";
 import {
   grantSp1ToBattleUnit,
 } from "./namedUnitEffects";
@@ -513,9 +513,10 @@ export function applyEffectChoiceSelect(
           rush,
           battle: [...owner.battle, found.card],
         };
-        nextOwner = releaseHeldCommands(
-          nextOwner,
-          requiredBattleEntryHolds(state, found.card),
+        nextOwner = consumeBattleEntryHolds(
+          { ...state, ...updatePlayer(state, located.playerId, nextOwner) },
+          located.playerId,
+          found.card,
         );
         return finishChoice(
           { ...state, ...updatePlayer(state, located.playerId, nextOwner) },
@@ -539,9 +540,10 @@ export function applyEffectChoiceSelect(
           battle,
           rush: [...rush, swapTarget.card],
         };
-        nextPlayer = releaseHeldCommands(
-          nextPlayer,
-          requiredBattleEntryHolds(state, entering.card),
+        nextPlayer = consumeBattleEntryHolds(
+          { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+          pending.playerId,
+          entering.card,
         );
         return finishChoice(
           { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
@@ -871,9 +873,10 @@ export function applyEffectChoiceSelect(
         rush,
         battle: [...enemy.battle, found.card],
       };
-      nextEnemy = releaseHeldCommands(
-        nextEnemy,
-        requiredBattleEntryHolds(state, found.card),
+      nextEnemy = consumeBattleEntryHolds(
+        { ...state, ...updatePlayer(state, enemyId, nextEnemy) },
+        enemyId,
+        found.card,
       );
       let nextState = { ...state, ...updatePlayer(state, enemyId, nextEnemy) };
 
