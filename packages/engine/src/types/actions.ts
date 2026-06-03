@@ -191,6 +191,7 @@ export type ResolveZordSetupAction = {
   playerId: PlayerId;
   materialInstanceId?: string;
   destination?: ZordMaterialDestination;
+  paymentPath?: "material" | "mothership";
 };
 
 export type CancelZordSetupAction = {

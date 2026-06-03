@@ -195,7 +195,7 @@ describe("command payment", () => {
     });
 
     const reason = explainCannotRush(state, "player1", zord.instanceId);
-    expect(reason).not.toContain("リリース中のOTコマンドを1枚ホールド");
+    expect(reason).toBeNull();
   });
 
   it("offers category payment initiate for RS-045 with released OT and S material", () => {

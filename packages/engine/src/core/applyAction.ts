@@ -362,6 +362,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       const advanced = advanceZordSetup(state, setup, {
         materialInstanceId: action.materialInstanceId,
         destination: action.destination,
+        paymentPath: action.paymentPath,
       });
       if (advanced.kind === "error") return fail(advanced.error);
       if (advanced.kind === "continue") {

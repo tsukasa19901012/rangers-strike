@@ -11,6 +11,7 @@ type ZordSetupModalProps = {
   setup: PendingZordSetup;
   onSelectMaterial: (instanceId: string) => void;
   onSelectDestination: (destination: "command" | "discard") => void;
+  onUseMothership?: () => void;
   onContinue: () => void;
   onCancel: () => void;
 };
@@ -36,6 +37,7 @@ export function ZordSetupModal({
   setup,
   onSelectMaterial,
   onSelectDestination,
+  onUseMothership,
   onContinue,
   onCancel,
 }: ZordSetupModalProps) {
@@ -43,15 +45,17 @@ export function ZordSetupModal({
   const materialTargets =
     setup.step === "material"
       ? resolveCardTargets(state, setup.validInstanceIds)
-      : setup.materialInstanceId
-        ? resolveCardTargets(state, [setup.materialInstanceId])
-        : [];
+      : [];
 
   const hint =
-    setup.step === "material"
-      ? "ゾードアップの素材を選んでください。"
-      : setup.step === "destination"
-        ? "Sユニットをコマンドゾーンに置くか、捨て札にするか選んでください。"
+    setup.step === "destination"
+      ? "Sユニットをコマンドゾーンに置くか、捨て札にするか選んでください。"
+      : setup.step === "material"
+        ? setup.materialDestination === "command"
+          ? "コマンドゾーンに置くSユニットを選んでください。"
+          : setup.materialDestination === "discard"
+            ? "捨て札にするSユニットを選んでください。"
+            : "ゾードアップの素材を選んでください。"
         : "母艦の支払いに使うコマンドを、次の画面で選びます。";
 
   return (
@@ -82,6 +86,14 @@ export function ZordSetupModal({
                   onSelect={() => onSelectMaterial(target.instanceId)}
                 />
               ))}
+            </div>
+          )}
+
+          {setup.step === "material" && setup.mothershipAvailable && onUseMothership && (
+            <div className="effect-action-modal__actions">
+              <button type="button" className="btn" onClick={onUseMothership}>
+                母艦で支払う（コマンドをホールド）
+              </button>
             </div>
           )}
 

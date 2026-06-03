@@ -20,6 +20,7 @@ import {
   mustDrawBeforeStartEnd,
   needsOperationTarget,
   needsEffectHoldPayment,
+  needsZordMaterial,
   pickCpuAction,
   type CardInstance,
   type GameAction,
@@ -452,6 +453,12 @@ export function GameApp() {
       }
 
       if (target === "rush" && state.phase === "rush") {
+        const zordCard = getCardById(payload.cardId);
+        const needsZord =
+          !!zordCard &&
+          zordCard.type === "unit" &&
+          needsZordMaterial(state.definitions, payload.cardId);
+
         const rushActions = legalActions.filter(
           (a): a is Extract<typeof a, { type: "rush" }> =>
             a.type === "rush" && a.instanceId === payload.instanceId,
@@ -462,33 +469,41 @@ export function GameApp() {
             a.kind === "category_use" &&
             a.sourceInstanceId === payload.instanceId,
         );
-
-        const simpleRush = rushActions.find(
-          (a) =>
-            !a.zordMaterialInstanceId &&
-            (a.zordMothershipHoldInstanceIds?.length ?? 0) === 0,
-        );
-        if (simpleRush) {
-          apply(simpleRush);
-          return;
-        }
-
         const beginSetup = legalActions.find(
           (a): a is Extract<typeof a, { type: "begin_zord_setup" }> =>
             a.type === "begin_zord_setup" && a.zordInstanceId === payload.instanceId,
         );
-        if (beginSetup) {
-          apply(beginSetup);
-          return;
-        }
 
-        if (rushActions.length === 1) {
-          if (apply(rushActions[0]!)) return;
-        }
-
-        if (paymentInits.length >= 1) {
-          apply(paymentInits[0]!);
-          return;
+        if (needsZord) {
+          if (beginSetup) {
+            apply(beginSetup);
+            return;
+          }
+          if (paymentInits.length >= 1) {
+            apply(paymentInits[0]!);
+            return;
+          }
+        } else {
+          const simpleRush = rushActions.find(
+            (a) =>
+              !a.zordMaterialInstanceId &&
+              (a.zordMothershipHoldInstanceIds?.length ?? 0) === 0,
+          );
+          if (simpleRush) {
+            apply(simpleRush);
+            return;
+          }
+          if (beginSetup) {
+            apply(beginSetup);
+            return;
+          }
+          if (rushActions.length === 1) {
+            if (apply(rushActions[0]!)) return;
+          }
+          if (paymentInits.length >= 1) {
+            apply(paymentInits[0]!);
+            return;
+          }
         }
 
         const reason = explainCannotRush(state, HUMAN_PLAYER, payload.instanceId);
@@ -624,6 +639,14 @@ export function GameApp() {
     },
     [apply],
   );
+
+  const handleZordUseMothership = useCallback(() => {
+    apply({
+      type: "resolve_zord_setup",
+      playerId: HUMAN_PLAYER,
+      paymentPath: "mothership",
+    });
+  }, [apply]);
 
   const handleZordSetupContinue = useCallback(() => {
     apply({ type: "resolve_zord_setup", playerId: HUMAN_PLAYER });
@@ -1089,7 +1112,10 @@ export function GameApp() {
     ? undefined
     : pendingEffectChoiceTargets;
   const boardOperationTargets = showOperationModal ? undefined : pendingTargets;
-  const boardZordTargets = showZordSetupModal ? undefined : pendingZordSetupTargets;
+  const boardZordTargets =
+    showZordSetupModal && zordSetup?.step !== "material"
+      ? undefined
+      : pendingZordSetupTargets;
   const boardCounterIds = showReactionModal ? undefined : counterIds;
   const boardInterceptIds = showReactionModal ? undefined : interceptableIds;
   const boardSubstituteIds = showReactionModal ? undefined : pendingSubstituteTargets;
@@ -1097,10 +1123,14 @@ export function GameApp() {
   const pendingHint = showCommandPaymentModal
     ? "コマンドを選んでホールド（行動と同時に確定）"
     : showZordSetupModal
-      ? zordSetup?.step === "material"
-        ? "ゾードアップの素材を選んでください"
-        : zordSetup?.step === "destination"
-          ? "素材の行き先を選んでください"
+      ? zordSetup?.step === "destination"
+        ? "コマンドゾーンか捨て札かを選んでください"
+        : zordSetup?.step === "material"
+          ? zordSetup.materialDestination === "command"
+            ? "コマンドゾーンに置くSユニットを選んでください"
+            : zordSetup.materialDestination === "discard"
+              ? "捨て札にするSユニットを選んでください"
+              : "ゾードアップの素材を選んでください"
           : "母艦の支払いに進みます"
     : showEffectChoiceModal || showReactionModal || showOperationModal
     ? undefined
@@ -1249,6 +1279,7 @@ export function GameApp() {
           setup={zordSetup}
           onSelectMaterial={handleZordMaterial}
           onSelectDestination={handleZordDestination}
+          onUseMothership={handleZordUseMothership}
           onContinue={handleZordSetupContinue}
           onCancel={handleZordSetupCancel}
         />

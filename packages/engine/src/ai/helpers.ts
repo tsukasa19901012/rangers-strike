@@ -16,7 +16,7 @@ import {
 } from "../rules/restrictions";
 import { findCardOwner } from "../rules/fieldLookup";
 import { strikeDamageFor } from "../rules/combo";
-import { WIN_DAMAGE } from "../types/game";
+import { COMMAND_ZONE_MAX, WIN_DAMAGE } from "../types/game";
 import { evaluateState } from "./scoring";
 import {
   getBattleEntryPaymentNeeds,
@@ -280,18 +280,20 @@ export function pickZordSetupStep(
 ): GameAction | null {
   const setup = state.pendingZordSetup;
   if (!setup || setup.playerId !== playerId) return null;
+  if (setup.step === "destination") {
+    const commandZoneHasSpace =
+      state.players[playerId].command.length < COMMAND_ZONE_MAX;
+    return {
+      type: "resolve_zord_setup",
+      playerId,
+      destination: commandZoneHasSpace ? "command" : "discard",
+    };
+  }
   if (setup.step === "material" && setup.validInstanceIds[0]) {
     return {
       type: "resolve_zord_setup",
       playerId,
       materialInstanceId: setup.validInstanceIds[0],
-    };
-  }
-  if (setup.step === "destination") {
-    return {
-      type: "resolve_zord_setup",
-      playerId,
-      destination: "command",
     };
   }
   if (setup.step === "mothership") {

@@ -1,4 +1,5 @@
 import type { CardDefinition, Category } from "@rangers-strike/cards";
+import type { ZordMaterialDestination } from "./actions";
 
 export type PlayerId = "player1" | "player2";
 
@@ -224,6 +225,10 @@ export type PendingZordSetup = {
   step: PendingZordSetupStep;
   validInstanceIds: string[];
   materialInstanceId?: string;
+  /** Chosen before material when send_s_unit_to_command_or_discard. */
+  materialDestination?: ZordMaterialDestination;
+  /** Mothership hold may substitute for S-unit material on this zord. */
+  mothershipAvailable?: boolean;
 };
 
 /** Pay command holds as part of a player action (no standalone hold). */
