@@ -32,13 +32,9 @@ function applyScaleVars(game: HTMLElement, scale: number): void {
   game.classList.add("game--viewport-fit");
 }
 
+/** Scroll-invariant: uses document position, not getBoundingClientRect().top alone. */
 function availableHeightForBoard(game: HTMLElement, board: HTMLElement): number {
   const boardTopInGame = board.getBoundingClientRect().top - game.getBoundingClientRect().top;
-
-  if (game.classList.contains("game--session")) {
-    return game.clientHeight - boardTopInGame - ACTION_BAR_RESERVE_PX - BOTTOM_GAP_PX;
-  }
-
   const gameRect = game.getBoundingClientRect();
   const boardDocTop = gameRect.top + window.scrollY + boardTopInGame;
   const viewportH = window.visualViewport?.height ?? window.innerHeight;

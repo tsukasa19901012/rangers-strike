@@ -276,12 +276,6 @@ export function GameApp() {
     setChromeExpanded(!compactViewport);
   }, [compactViewport]);
 
-  useEffect(() => {
-    if (!state) return;
-    document.body.classList.add("body--game-session");
-    return () => document.body.classList.remove("body--game-session");
-  }, [state]);
-
   useViewportBoardFit(gameRef, humanBoardRef, !!state && compactViewport);
 
   const dismissTurnNotice = useCallback(() => {
@@ -1273,11 +1267,7 @@ export function GameApp() {
 
   return (
     <div
-      className={[
-        "game",
-        "game--session",
-        chromeExpanded ? "" : "game--chrome-collapsed",
-      ]
+      className={["game", chromeExpanded ? "" : "game--chrome-collapsed"]
         .filter(Boolean)
         .join(" ")}
       ref={gameRef}
@@ -1525,6 +1515,9 @@ export function GameApp() {
               onClick={() => setLogOpen(true)}
             >
               ログ ({state.log.length})
+            </button>
+            <button type="button" className="btn btn--ghost" onClick={returnToStart}>
+              タイトル
             </button>
             {actionError && (
               <div className="action-error" role="alert">
