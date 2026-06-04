@@ -193,7 +193,11 @@ function finishStrikeResolution(
   nextState: GameState,
   extraLogs: string[] = [],
 ): ActionResult {
-  let resolved = withWinner(nextState);
+  let resolved = withWinner({
+    ...nextState,
+    pendingStrike: undefined,
+    activePlayer: pending.battlePhasePlayer,
+  });
   resolved = finishBattleEntryIf(resolved, pending.strikerInstanceId);
 
   const striker = state.players[pending.strikerPlayerId];
@@ -482,7 +486,11 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         );
       }
       if (result.resume.kind === "strike") {
-        return finishStrikeResolution(state, result.resume.pending, result.state);
+        return finishStrikeResolution(
+          state,
+          { ...result.resume.pending, damageApplied: true },
+          result.state,
+        );
       }
       return ok(
         result.state,

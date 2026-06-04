@@ -262,7 +262,7 @@ export function finalizeStrike(
 ): GameState {
   const defenderId = opponent(pending.strikerPlayerId);
 
-  if (!pending.damageCancelled && pending.damage > 0) {
+  if (!pending.damageCancelled && pending.damage > 0 && !pending.damageApplied) {
     const withDamage = applyDamageToPlayer(state, defenderId, pending.damage, {
       kind: "strike",
       pending,

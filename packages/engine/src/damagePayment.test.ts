@@ -84,6 +84,8 @@ describe("damage power choice", () => {
     expect(state.players.player2.power.find((c) => c.instanceId === p3.instanceId)?.faceDown).toBe(
       true,
     );
+    expect(state.pendingStrike).toBeUndefined();
+    expect(state.activePlayer).toBe("player1");
   });
 
   it("auto-flips when only one face-up power option for damage 1", () => {
@@ -105,6 +107,8 @@ describe("damage power choice", () => {
     );
 
     expect(next.pendingDamagePayment).toBeUndefined();
+    expect(next.pendingStrike).toBeUndefined();
+    expect(next.activePlayer).toBe("player1");
     expect(next.players.player2.damage).toBe(1);
     expect(next.players.player2.power.find((c) => c.instanceId === faceUp.instanceId)?.faceDown).toBe(
       true,

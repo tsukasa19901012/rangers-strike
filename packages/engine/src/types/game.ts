@@ -105,6 +105,8 @@ export type PendingStrike = {
   damage: number;
   battlePhasePlayer: PlayerId;
   damageCancelled?: boolean;
+  /** Set after defender finishes damage payment for this strike. */
+  damageApplied?: boolean;
 };
 
 export type DamagePaymentResume =
