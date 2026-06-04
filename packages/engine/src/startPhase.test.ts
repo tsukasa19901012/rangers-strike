@@ -67,9 +67,6 @@ describe("start phase steps", () => {
       applyAction(state, { type: "release_start_commands", playerId: "player1" }),
     );
     expect(state.players.player1.command[0]?.commandHeld).toBe(false);
-    expect(getLegalActions(state).some((a) => a.type === "end_phase")).toBe(true);
-
-    state = unwrap(applyAction(state, { type: "end_phase", playerId: "player1" }));
     expect(state.phase).toBe("charge");
   });
 
@@ -87,12 +84,12 @@ describe("start phase steps", () => {
 
     state = unwrap(applyAction(state, { type: "draw", playerId: "player1" }));
     expect(state.players.player1.hand).toHaveLength(1);
+    expect(state.phase).toBe("start");
     expect(getLegalActions(state).some((a) => a.type === "bonus_draw")).toBe(true);
-    expect(getLegalActions(state).some((a) => a.type === "end_phase")).toBe(true);
 
-    state = unwrap(applyAction(state, { type: "end_phase", playerId: "player1" }));
+    state = unwrap(applyAction(state, { type: "bonus_draw", playerId: "player1" }));
     expect(state.phase).toBe("charge");
-    expect(state.players.player1.hand).toHaveLength(1);
+    expect(state.players.player1.hand).toHaveLength(2);
   });
 
   it("reports start phase status for UI", () => {
@@ -118,31 +115,32 @@ describe("start phase steps", () => {
     expect(status.battleUnitCount).toBe(1);
   });
 
-  it("rejects end_phase until mandatory steps are complete", () => {
+  it("auto-advances to charge when mandatory steps complete and no bonus draw", () => {
+    let state = createTestState({
+      phase: "start",
+      player1: {
+        deck: [inst("TST-OP", "d1")],
+        hasReleasedCommandsThisStart: true,
+        hasReturnedBattleThisStart: true,
+      },
+    });
+
+    state = unwrap(applyAction(state, { type: "draw", playerId: "player1" }));
+    expect(state.phase).toBe("charge");
+  });
+
+  it("rejects manual end_phase during start (auto-advance only)", () => {
     const cmd = { ...inst("TST-OP", "c1"), commandHeld: true };
-    const unit = inst("TST-UNIT-0", "b1");
     const state = createTestState({
       phase: "start",
       player1: {
         deck: [inst("TST-OP", "d1")],
         command: [cmd],
-        battle: [unit],
+        battle: [inst("TST-UNIT-0", "b1")],
       },
     });
 
     expect(reject(applyAction(state, { type: "end_phase", playerId: "player1" }))).toBe(
-      "illegal_action",
-    );
-
-    const afterDraw = unwrap(applyAction(state, { type: "draw", playerId: "player1" }));
-    expect(reject(applyAction(afterDraw, { type: "end_phase", playerId: "player1" }))).toBe(
-      "illegal_action",
-    );
-
-    const afterRelease = unwrap(
-      applyAction(afterDraw, { type: "release_start_commands", playerId: "player1" }),
-    );
-    expect(reject(applyAction(afterRelease, { type: "end_phase", playerId: "player1" }))).toBe(
       "illegal_action",
     );
   });

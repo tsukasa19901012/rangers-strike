@@ -338,16 +338,11 @@ describe("phase flow", () => {
     const afterDraw = unwrap(
       applyAction(afterReturn, { type: "draw", playerId: "player2" }),
     );
-    expect(afterDraw.phase).toBe("start");
+    expect(afterDraw.phase).toBe("charge");
     expect(afterDraw.players.player2.hand).toHaveLength(1);
-
-    const afterEnd = unwrap(
-      applyAction(afterDraw, { type: "end_phase", playerId: "player2" }),
-    );
-    expect(afterEnd.phase).toBe("charge");
-    expect(afterEnd.players.player2.command[0]?.commandHeld).toBe(false);
-    expect(afterEnd.players.player2.battle).toHaveLength(0);
-    expect(afterEnd.players.player2.rush).toHaveLength(1);
+    expect(afterDraw.players.player2.command[0]?.commandHeld).toBe(false);
+    expect(afterDraw.players.player2.battle).toHaveLength(0);
+    expect(afterDraw.players.player2.rush).toHaveLength(1);
   });
 
   it("does not draw on end phase", () => {

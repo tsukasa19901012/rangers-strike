@@ -32,7 +32,7 @@ import {
 } from "../rules/commandPayment";
 import { hasCommandForCardUse } from "../rules/restrictions";
 import { canBeginZordSetup } from "../rules/zordSetup";
-import { canBonusDraw, canAdvanceFromStartPhase, canReleaseStartCommands, canReturnBattleAtStart } from "../rules/startPhase";
+import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart } from "../rules/startPhase";
 import { listZordRushPaymentVariants } from "../rules/mothership";
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
 import {
@@ -724,9 +724,6 @@ export function getLegalActions(state: GameState): GameAction[] {
       if (canBonusDraw(state, playerId)) {
         actions.push({ type: "bonus_draw", playerId });
       }
-      if (canAdvanceFromStartPhase(state, playerId)) {
-        actions.push({ type: "end_phase", playerId });
-      }
       break;
 
     case "charge":
@@ -920,6 +917,10 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
   }
 
   if (state.pendingZordSetup) {
+    return false;
+  }
+
+  if (action.type === "end_phase" && state.phase === "start") {
     return false;
   }
 

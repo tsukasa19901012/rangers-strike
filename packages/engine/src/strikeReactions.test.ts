@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { applyAction } from "./core/applyAction";
 import { getLegalActions as getActions } from "./core/legalActions";
 import type { GameState } from "./types/game";
+import { transitionStartToChargePhase } from "./rules/startPhase";
 import { createTestState, heldWbCommand, inst } from "./testing/fixtures";
 
 function unwrap(result: ReturnType<typeof applyAction>) {
@@ -152,10 +153,7 @@ describe("earth force", () => {
     expect(state.players.player1.power).toHaveLength(0);
     expect(state.players.player1.discard).toHaveLength(3);
     expect(state.players.player1.operation).toHaveLength(1);
-
-    state = unwrap(applyAction(state, { type: "end_phase", playerId: "player1" }));
     expect(state.phase).toBe("charge");
-    expect(state.players.player1.operation).toHaveLength(1);
   });
 
   it("discards earth force when fewer than 3 face-up power cards at start end", () => {
@@ -174,11 +172,11 @@ describe("earth force", () => {
       },
     });
 
-    const next = unwrap(applyAction(state, { type: "end_phase", playerId: "player1" }));
-
-    expect(next.phase).toBe("charge");
-    expect(next.players.player1.operation).toHaveLength(0);
-    expect(next.players.player1.discard.some((c) => c.cardId === "RS-022")).toBe(true);
+    const next = transitionStartToChargePhase(state, "player1");
+    expect(next).not.toBeNull();
+    expect(next!.phase).toBe("charge");
+    expect(next!.players.player1.operation).toHaveLength(0);
+    expect(next!.players.player1.discard.some((c) => c.cardId === "RS-022")).toBe(true);
   });
 
   it("discards earth force when upkeep is skipped", () => {
@@ -215,13 +213,11 @@ describe("earth force", () => {
       applyAction(state, { type: "skip_effect_choice", playerId: "player1" }),
     );
 
+    expect(state.phase).toBe("charge");
     expect(state.pendingEffectChoice).toBeUndefined();
     expect(state.players.player1.operation).toHaveLength(0);
     expect(state.players.player1.power).toHaveLength(3);
     expect(state.players.player1.discard.some((c) => c.cardId === "RS-022")).toBe(true);
-
-    state = unwrap(applyAction(state, { type: "end_phase", playerId: "player1" }));
-    expect(state.phase).toBe("charge");
   });
 });
 

@@ -297,7 +297,7 @@ export function pickCpuAction(
       if (upkeep) return upkeep;
       const bonus = actions.find((action) => action.type === "bonus_draw");
       if (bonus) return bonus;
-      return endPhase(actions);
+      return null;
     }
 
     case "charge":

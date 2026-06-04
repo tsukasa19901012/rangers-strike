@@ -27,6 +27,7 @@ import {
   type CardInstance,
   type GameAction,
   type GameState,
+  type Phase,
   type PlayerId,
   type CpuLevel,
 } from "@rangers-strike/engine";
@@ -68,6 +69,7 @@ import { PileModal } from "./PileModal";
 import { PlayerBoard } from "./PlayerBoard";
 import { StartScreen } from "./StartScreen";
 import { TurnNoticeModal } from "./TurnNoticeModal";
+import { PhaseNoticeModal } from "./PhaseNoticeModal";
 import { effectChoiceHint } from "@/lib/effectChoiceHint";
 import {
   formatEffectLogNotice,
@@ -127,9 +129,11 @@ export function GameApp() {
   const [blockedBattleAlert, setBlockedBattleAlert] = useState<string | null>(null);
   const [blockedRushAlert, setBlockedRushAlert] = useState<string | null>(null);
   const [turnNotice, setTurnNotice] = useState<PlayerId | null>(null);
+  const [phaseNotice, setPhaseNotice] = useState<Phase | null>(null);
   const [effectNotice, setEffectNotice] = useState<string | null>(null);
   const prevLogLenRef = useRef(0);
   const prevActivePlayerRef = useRef<PlayerId | null>(null);
+  const prevPhaseRef = useRef<Phase | null>(null);
   const cpuBoardRef = useRef<HTMLDivElement>(null);
   const gameRef = useRef<HTMLDivElement>(null);
   const humanBoardRef = useRef<HTMLDivElement>(null);
@@ -192,8 +196,10 @@ export function GameApp() {
       setLogOpen(false);
       prevActivePlayerRef.current = game.activePlayer;
       setTurnNotice(game.activePlayer);
+      setPhaseNotice(null);
       setEffectNotice(null);
       prevLogLenRef.current = 0;
+      prevPhaseRef.current = game.phase;
     } catch {
       setStartError("デッキの読み込みに失敗しました。");
     }
@@ -310,6 +316,16 @@ export function GameApp() {
     state?.pendingEffectChoice,
     state?.pendingBattleEntry,
   ]);
+
+  useEffect(() => {
+    if (!state || state.winner) return;
+
+    const prev = prevPhaseRef.current;
+    if (prev !== null && prev !== state.phase) {
+      setPhaseNotice(state.phase);
+    }
+    prevPhaseRef.current = state.phase;
+  }, [state, state?.phase, state?.winner]);
 
   const apply = useCallback((action: GameAction): boolean => {
     if (!state) return false;
@@ -1077,6 +1093,7 @@ export function GameApp() {
   useEffect(() => {
     if (!suppressFloatingNotices) return;
     setTurnNotice(null);
+    setPhaseNotice(null);
     setEffectNotice(null);
   }, [suppressFloatingNotices]);
 
@@ -1427,7 +1444,6 @@ export function GameApp() {
           }
           onDraw={() => apply({ type: "draw", playerId: HUMAN_PLAYER })}
           onBonusDraw={() => apply({ type: "bonus_draw", playerId: HUMAN_PLAYER })}
-          onAdvance={() => apply({ type: "end_phase", playerId: HUMAN_PLAYER })}
         />
       )}
       {blockedBattleAlert && (
@@ -1446,6 +1462,12 @@ export function GameApp() {
       )}
       {turnNotice && (
         <TurnNoticeModal playerId={turnNotice} onDismiss={dismissTurnNotice} />
+      )}
+      {phaseNotice && !turnNotice && (
+        <PhaseNoticeModal
+          phase={phaseNotice}
+          onDismiss={() => setPhaseNotice(null)}
+        />
       )}
 
       <div className="game__chrome">

@@ -1,7 +1,9 @@
 import { getCardEffect } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
+import { checkWinner } from "../core/createGame";
 import { hasOperationEffect } from "../core/catalog";
 import { removeAt, updatePlayer } from "../core/helpers";
+import { buildLogEntry, buildSimpleLogEntry } from "../log/formatLog";
 import { startSelectPowerChoice } from "./pendingChoices";
 
 /** Start phase: release all held commands. */
@@ -85,6 +87,62 @@ export function canAdvanceFromStartPhase(state: GameState, playerId: PlayerId): 
     return false;
   }
   return true;
+}
+
+/** Auto-advance after mandatory steps; optional bonus draw may still be taken first. */
+export function shouldAutoAdvanceFromStartPhase(
+  state: GameState,
+  playerId: PlayerId,
+): boolean {
+  return canAdvanceFromStartPhase(state, playerId) && !canBonusDraw(state, playerId);
+}
+
+/** Moves from start to charge when {@link canAdvanceFromStartPhase} is satisfied. */
+export function transitionStartToChargePhase(
+  state: GameState,
+  playerId: PlayerId,
+): GameState | null {
+  if (!canAdvanceFromStartPhase(state, playerId)) return null;
+
+  let nextState = state;
+  const logEntries: string[] = [];
+
+  if (
+    mustResolveEarthForceUpkeepBeforeStartEnd(state, playerId) &&
+    !canPayEarthForceUpkeep(state, playerId)
+  ) {
+    const discarded = discardEarthForceForUnpaidUpkeep(nextState, playerId);
+    nextState = discarded.state;
+    logEntries.push(
+      buildLogEntry(
+        playerId,
+        "earth_force_upkeep",
+        "RS-022",
+        state.definitions,
+        "failed",
+      ),
+    );
+  }
+
+  const resetPlayer = {
+    ...nextState.players[playerId],
+    hasChargedThisTurn: false,
+    hasDrawnThisStart: false,
+    hasReleasedCommandsThisStart: false,
+    hasReturnedBattleThisStart: false,
+  };
+  nextState = {
+    ...nextState,
+    ...updatePlayer(nextState, playerId, resetPlayer),
+    phase: "charge",
+  };
+  logEntries.push(buildSimpleLogEntry(playerId, "end_phase", "start"));
+
+  return {
+    ...nextState,
+    log: [...nextState.log, ...logEntries],
+    winner: checkWinner(nextState),
+  };
 }
 
 export type StartPhaseStatus = {

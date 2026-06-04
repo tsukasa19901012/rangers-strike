@@ -10,7 +10,6 @@ type StartPhaseModalProps = {
   onReturnBattle: () => void;
   onDraw: () => void;
   onBonusDraw: () => void;
-  onAdvance: () => void;
 };
 
 function StepRow({
@@ -44,7 +43,6 @@ export function StartPhaseModal({
   onReturnBattle,
   onDraw,
   onBonusDraw,
-  onAdvance,
 }: StartPhaseModalProps) {
   return (
     <GameModalBackdrop>
@@ -129,12 +127,10 @@ export function StartPhaseModal({
             </div>
           )}
 
-          {status.canAdvanceToCharge && (
-            <div className="modal__actions">
-              <button type="button" className="btn btn--primary" onClick={onAdvance}>
-                チャージフェイズへ
-              </button>
-            </div>
+          {status.canAdvanceToCharge && !status.canBonusDraw && (
+            <p className="effect-action-modal__hint">
+              行程が完了しました。チャージフェイズへ移行します…
+            </p>
           )}
         </div>
       </div>

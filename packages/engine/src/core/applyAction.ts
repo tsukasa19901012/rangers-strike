@@ -56,11 +56,12 @@ import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import {
   canPayEarthForceUpkeep,
   discardEarthForceForUnpaidUpkeep,
-  canAdvanceFromStartPhase,
   mustResolveEarthForceUpkeepBeforeStartEnd,
   openEarthForceUpkeepChoiceIfNeeded,
   releaseAllCommands,
   returnBattleToRush,
+  shouldAutoAdvanceFromStartPhase,
+  transitionStartToChargePhase,
 } from "../rules/startPhase";
 import {
   applyMothershipHolds,
@@ -134,6 +135,17 @@ function ok(state: GameState, message: string): ActionResult {
       winner: checkWinner(state),
     },
   };
+}
+
+function withStartPhaseAutoAdvance(
+  result: ActionResult,
+  playerId: PlayerId,
+): ActionResult {
+  if (!result.ok || result.state.phase !== "start") return result;
+  if (!shouldAutoAdvanceFromStartPhase(result.state, playerId)) return result;
+  const advanced = transitionStartToChargePhase(result.state, playerId);
+  if (!advanced) return result;
+  return { ok: true, state: advanced };
 }
 
 function fail(error: string): ActionResult {
@@ -284,7 +296,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         ...updatePlayer(drawn.state, playerId, nextPlayer),
       };
       const withUpkeep = openEarthForceUpkeepChoiceIfNeeded(nextState, playerId);
-      return ok(withUpkeep, buildSimpleLogEntry(playerId, "draw"));
+      return withStartPhaseAutoAdvance(
+        ok(withUpkeep, buildSimpleLogEntry(playerId, "draw")),
+        playerId,
+      );
     }
 
     case "bonus_draw": {
@@ -297,7 +312,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (drawn.detail === "empty_deck") {
         return fail("bonus_draw_unavailable");
       }
-      return ok(drawn.state, buildSimpleLogEntry(playerId, "bonus_draw"));
+      return withStartPhaseAutoAdvance(
+        ok(drawn.state, buildSimpleLogEntry(playerId, "bonus_draw")),
+        playerId,
+      );
     }
 
     case "release_start_commands": {
@@ -311,9 +329,12 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         ...nextState.players[playerId],
         hasReleasedCommandsThisStart: true,
       };
-      return ok(
-        { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) },
-        buildSimpleLogEntry(playerId, "release_start_commands"),
+      return withStartPhaseAutoAdvance(
+        ok(
+          { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) },
+          buildSimpleLogEntry(playerId, "release_start_commands"),
+        ),
+        playerId,
       );
     }
 
@@ -326,9 +347,12 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         ...nextState.players[playerId],
         hasReturnedBattleThisStart: true,
       };
-      return ok(
-        { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) },
-        buildSimpleLogEntry(playerId, "return_battle_to_rush"),
+      return withStartPhaseAutoAdvance(
+        ok(
+          { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) },
+          buildSimpleLogEntry(playerId, "return_battle_to_rush"),
+        ),
+        playerId,
       );
     }
 
@@ -1089,7 +1113,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
     case "resolve_effect_choice": {
       const result = applyEffectChoiceSelect(state, playerId, action.instanceId);
       if ("error" in result) return fail(result.error);
-      return ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice"));
+      return withStartPhaseAutoAdvance(
+        ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice")),
+        playerId,
+      );
     }
 
     case "skip_effect_choice": {
@@ -1105,20 +1132,26 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           pendingEffectChoice: undefined,
           activePlayer: pending.phasePlayerId,
         };
-        return ok(
-          nextState,
-          buildLogEntry(
-            playerId,
-            "earth_force_upkeep",
-            "RS-022",
-            state.definitions,
-            "declined",
+        return withStartPhaseAutoAdvance(
+          ok(
+            nextState,
+            buildLogEntry(
+              playerId,
+              "earth_force_upkeep",
+              "RS-022",
+              state.definitions,
+              "declined",
+            ),
           ),
+          playerId,
         );
       }
       const result = skipEffectChoice(state, playerId);
       if ("error" in result) return fail(result.error);
-      return ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "skip_effect_choice"));
+      return withStartPhaseAutoAdvance(
+        ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "skip_effect_choice")),
+        playerId,
+      );
     }
 
     case "pass_strike_reaction": {
@@ -1315,50 +1348,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
 
     case "end_phase": {
       if (state.phase === "start") {
-        if (!canAdvanceFromStartPhase(state, playerId)) {
-          return fail("start_phase_incomplete");
-        }
-        let nextState = state;
-        if (mustResolveEarthForceUpkeepBeforeStartEnd(state, playerId)) {
-          const discarded = discardEarthForceForUnpaidUpkeep(nextState, playerId);
-          nextState = discarded.state;
-        }
-        const resetPlayer = {
-          ...nextState.players[playerId],
-          hasChargedThisTurn: false,
-          hasDrawnThisStart: false,
-          hasReleasedCommandsThisStart: false,
-          hasReturnedBattleThisStart: false,
-          hasPaidEarthForceUpkeep: false,
-        };
-        nextState = {
-          ...nextState,
-          ...updatePlayer(nextState, playerId, resetPlayer),
-          phase: "charge",
-        };
-        const logEntries = [
-          ...(mustResolveEarthForceUpkeepBeforeStartEnd(state, playerId) &&
-          !canPayEarthForceUpkeep(state, playerId)
-            ? [
-                buildLogEntry(
-                  playerId,
-                  "earth_force_upkeep",
-                  "RS-022",
-                  state.definitions,
-                  "failed",
-                ),
-              ]
-            : []),
-          buildSimpleLogEntry(playerId, "end_phase", state.phase),
-        ];
-        return {
-          ok: true,
-          state: {
-            ...nextState,
-            log: [...nextState.log, ...logEntries],
-            winner: checkWinner(nextState),
-          },
-        };
+        return fail("illegal_action");
       }
 
       if (state.phase === "end") {
