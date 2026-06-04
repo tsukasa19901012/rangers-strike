@@ -1743,16 +1743,10 @@ select {
     font-size: 0.75rem;
   }
 
-  .game__boards {
-    display: grid;
-    grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
-    gap: 6px;
-    align-items: end;
-  }
-
+  /* CPU 上 / プレイヤー下の縦並びは維持（game__boards は column のまま） */
   .board--opponent {
-    --card-width: 50px;
-    --playsheet-sidebar-width: 68px;
+    --card-width: 54px;
+    --playsheet-sidebar-width: 72px;
   }
 
   .action-bar {
