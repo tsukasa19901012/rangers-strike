@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { applyAction } from "../core/applyAction";
-import { pickCpuAction } from "./level1";
+import { isCpuTurn, pickCpuAction } from "./level1";
 import { dedupeActions } from "./simulation";
 import { createTestState, heldWbCommand, inst, WIN_DAMAGE } from "../testing/fixtures";
 import { getDefinition } from "../core/catalog";
@@ -116,6 +116,32 @@ describe("CPU level 1", () => {
 
     const action = pickCpuAction(state, "player2", { enableSearch: false });
     expect(action?.type).not.toBe("battle");
+  });
+
+  it("isCpuTurn is false while striker resolves leave during pending strike", () => {
+    const striker = inst("TST-UNIT-2", "s1");
+    const state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [striker] },
+      pendingStrike: {
+        strikerPlayerId: "player1",
+        strikerInstanceId: striker.instanceId,
+        damage: 2,
+        battlePhasePlayer: "player1",
+      },
+      pendingLeave: {
+        ownerPlayerId: "player1",
+        instanceId: striker.instanceId,
+        fromZone: "battle",
+        toZone: "discard",
+        leavingCardId: striker.cardId,
+        phasePlayerId: "player2",
+        resumePendingStrike: { damageCancelled: true },
+      },
+    });
+
+    expect(isCpuTurn(state, "player2")).toBe(false);
   });
 
   it("responds to pending strike", () => {

@@ -369,13 +369,16 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
     return state.pendingLeave.ownerPlayerId === cpuPlayer;
   }
   if (state.pendingRush) {
-    return opponent(state.pendingRush.rusherPlayerId) === cpuPlayer;
+    const defenderId = opponent(state.pendingRush.rusherPlayerId);
+    return state.activePlayer === defenderId && defenderId === cpuPlayer;
   }
   if (state.pendingBattle) {
-    return state.pendingBattle.defenderPlayerId === cpuPlayer;
+    const defenderId = state.pendingBattle.defenderPlayerId;
+    return state.activePlayer === defenderId && defenderId === cpuPlayer;
   }
   if (state.pendingStrike) {
-    return opponent(state.pendingStrike.strikerPlayerId) === cpuPlayer;
+    const defenderId = opponent(state.pendingStrike.strikerPlayerId);
+    return state.activePlayer === defenderId && defenderId === cpuPlayer;
   }
   return state.activePlayer === cpuPlayer;
 }

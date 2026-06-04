@@ -858,7 +858,11 @@ export function GameApp() {
   }, [state?.pendingBattleEntry]);
 
   const isHumanBattleEntry =
-    !!humanCanAct && state?.pendingBattleEntry?.playerId === HUMAN_PLAYER;
+    !!humanCanAct &&
+    state?.pendingBattleEntry?.playerId === HUMAN_PLAYER &&
+    !state.pendingStrike &&
+    !state.pendingDamagePayment &&
+    !state.pendingLeave;
 
   const battleEntryModal = useMemo(() => {
     if (!isHumanBattleEntry || !state?.pendingBattleEntry) return null;
@@ -1179,7 +1183,12 @@ export function GameApp() {
     !needsEffectHoldPayment(pendingChoice) &&
     !showEffectNotice;
 
-  const showBattleEntryModal = !!battleEntryModal && !showEffectNotice;
+  const showBattleEntryModal =
+    !!battleEntryModal &&
+    !showEffectNotice &&
+    !state.pendingStrike &&
+    !state.pendingDamagePayment &&
+    !state.pendingLeave;
 
   const showCommandPaymentModal =
     humanCanAct &&
@@ -1662,6 +1671,12 @@ export function GameApp() {
         {state.pendingStrike && state.activePlayer === CPU_PLAYER && (
           <span className="hint">CPUがストライクに応答中…</span>
         )}
+        {state.pendingStrike &&
+          state.pendingLeave &&
+          state.activePlayer === HUMAN_PLAYER &&
+          state.pendingStrike.strikerPlayerId === HUMAN_PLAYER && (
+            <span className="hint">ストライクの続き：離場への応答を選んでください</span>
+          )}
         {state.winner && (
           <>
             <button

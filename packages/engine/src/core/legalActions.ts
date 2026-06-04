@@ -646,7 +646,7 @@ export function getLegalActions(state: GameState): GameAction[] {
   const actions: GameAction[] = [];
 
   if (state.pendingLeave) {
-    appendLeaveReactionActions(state, playerId, actions);
+    appendLeaveReactionActions(state, state.pendingLeave.ownerPlayerId, actions);
     return actions;
   }
 
@@ -691,17 +691,25 @@ export function getLegalActions(state: GameState): GameAction[] {
   }
 
   if (state.pendingRush) {
-    appendRushReactionActions(state, playerId, actions);
+    appendRushReactionActions(
+      state,
+      opponent(state.pendingRush.rusherPlayerId),
+      actions,
+    );
     return actions;
   }
 
   if (state.pendingBattle) {
-    appendBattleReactionActions(state, playerId, actions);
+    appendBattleReactionActions(state, state.pendingBattle.defenderPlayerId, actions);
     return actions;
   }
 
   if (state.pendingStrike) {
-    appendStrikeReactionActions(state, playerId, actions);
+    appendStrikeReactionActions(
+      state,
+      opponent(state.pendingStrike.strikerPlayerId),
+      actions,
+    );
     return actions;
   }
 
