@@ -336,4 +336,66 @@ describe("strike reactions", () => {
     expect(state.players.player2.operation).toHaveLength(0);
     expect(state.players.player2.discard.some((c) => c.cardId === "RS-067")).toBe(true);
   });
+
+  it("does not open reaction window when only the striker has plasma", () => {
+    const attacker = inst("TST-UNIT-2", "a1");
+    const plasma = inst("RS-067", "plasma");
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [attacker], operation: [plasma] },
+      player2: { battle: [inst("TST-UNIT-0", "d")] },
+    });
+    state.definitions["RS-067"] = {
+      id: "RS-067",
+      name: "Plasma",
+      type: "operation",
+      category: "ET",
+      rarity: "R",
+      expansion: "legend1",
+      powerCost: 5,
+    };
+
+    state = unwrap(
+      applyAction(state, {
+        type: "strike",
+        playerId: "player1",
+        instanceId: attacker.instanceId,
+      }),
+    );
+
+    expect(state.pendingStrike).toBeUndefined();
+    expect(state.activePlayer).toBe("player1");
+  });
+
+  it("gives the defender the reaction turn when they can respond", () => {
+    const attacker = inst("TST-UNIT-2", "a1");
+    const plasma = inst("RS-067", "plasma");
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [attacker] },
+      player2: { operation: [plasma] },
+    });
+    state.definitions["RS-067"] = {
+      id: "RS-067",
+      name: "Plasma",
+      type: "operation",
+      category: "ET",
+      rarity: "R",
+      expansion: "legend1",
+      powerCost: 5,
+    };
+
+    state = unwrap(
+      applyAction(state, {
+        type: "strike",
+        playerId: "player1",
+        instanceId: attacker.instanceId,
+      }),
+    );
+
+    expect(state.pendingStrike?.strikerPlayerId).toBe("player1");
+    expect(state.activePlayer).toBe("player2");
+  });
 });

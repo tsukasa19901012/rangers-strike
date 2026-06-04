@@ -22,6 +22,7 @@ import {
   needsOperationTarget,
   needsEffectHoldPayment,
   needsZordMaterial,
+  opponent,
   pickCpuAction,
   type CardInstance,
   type GameAction,
@@ -924,11 +925,21 @@ export function GameApp() {
     return ids.length > 0 ? new Set(ids) : undefined;
   }, [humanCanAct, legalActions, state]);
 
+  const isHumanStrikeDefender = useMemo(() => {
+    const pending = state?.pendingStrike;
+    if (!pending || !state) return false;
+    return (
+      opponent(pending.strikerPlayerId) === HUMAN_PLAYER &&
+      state.activePlayer === HUMAN_PLAYER &&
+      !state.pendingDamagePayment
+    );
+  }, [state]);
+
   const interceptableIds = useMemo(() => {
-    if (!state?.pendingStrike || state.activePlayer !== HUMAN_PLAYER) return undefined;
+    if (!isHumanStrikeDefender || !state) return undefined;
     const ids = collectFiveTechInterceptors(state, HUMAN_PLAYER);
     return ids.length > 0 ? new Set(ids) : undefined;
-  }, [state]);
+  }, [isHumanStrikeDefender, state]);
 
   const counterIds = useMemo(() => {
     if (!state || state.activePlayer !== HUMAN_PLAYER) return undefined;
@@ -1020,12 +1031,12 @@ export function GameApp() {
 
   const humanReactionKind = useMemo((): "strike" | "battle" | "rush" | "leave" | null => {
     if (!state) return null;
-    if (state.pendingStrike && state.activePlayer === HUMAN_PLAYER) return "strike";
+    if (isHumanStrikeDefender) return "strike";
     if (state.pendingBattle && state.activePlayer === HUMAN_PLAYER) return "battle";
     if (state.pendingRush && state.activePlayer === HUMAN_PLAYER) return "rush";
     if (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) return "leave";
     return null;
-  }, [state]);
+  }, [state, isHumanStrikeDefender]);
 
   const handleReactionPass = useCallback(() => {
     if (!humanReactionKind) return;
@@ -1043,7 +1054,7 @@ export function GameApp() {
   /** Clears floating notices when a blocking modal takes over (not battle entry / effect choice). */
   const suppressFloatingNotices =
     !!state &&
-    ((state.pendingStrike && state.activePlayer === HUMAN_PLAYER) ||
+    (isHumanStrikeDefender ||
       (state.pendingBattle && state.activePlayer === HUMAN_PLAYER) ||
       (state.pendingRush && state.activePlayer === HUMAN_PLAYER) ||
       (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) ||
@@ -1099,11 +1110,8 @@ export function GameApp() {
     !state.pendingEffectChoice &&
     legalActions.some((a) => a.type === "strike");
 
-  const isStrikeReaction =
-    !!state.pendingStrike && state.activePlayer === HUMAN_PLAYER;
-
   const canUsePlasma =
-    isStrikeReaction &&
+    isHumanStrikeDefender &&
     legalActions.some((a) => a.type === "use_plasma_energy");
 
   const pendingChoice = state.pendingEffectChoice;
@@ -1123,7 +1131,7 @@ export function GameApp() {
       canPassBattleReaction ||
       canPassRushReaction ||
       canPassLeaveReaction ||
-      isStrikeReaction);
+      isHumanStrikeDefender);
 
   const showOperationModal =
     humanCanAct && !!pendingOp && operationTargetIds.length > 0;
@@ -1195,7 +1203,7 @@ export function GameApp() {
       ? damagePaymentHint(pendingDamage)
     : showEffectChoiceModal || showReactionModal || showOperationModal
     ? undefined
-    : isStrikeReaction
+    : isHumanStrikeDefender
     ? interceptableIds?.size
       ? "Sユニットで迎撃、プラズマエネルギー、またはスキップ"
       : canUsePlasma
@@ -1312,7 +1320,7 @@ export function GameApp() {
           canUsePlasma={canUsePlasma}
           canPass={
             humanReactionKind === "strike"
-              ? isStrikeReaction
+              ? isHumanStrikeDefender
               : humanReactionKind === "battle"
                 ? canPassBattleReaction
                 : humanReactionKind === "rush"
@@ -1421,9 +1429,12 @@ export function GameApp() {
         <span>ターン {state.turn}</span>
         <span className="status-bar__phase">
           {PLAYER_LABELS[state.activePlayer]}
-          {state.pendingStrike
+          {state.pendingStrike &&
+          opponent(state.pendingStrike.strikerPlayerId) === HUMAN_PLAYER
             ? "（ストライク応答）"
-            : state.pendingBattle
+            : state.pendingStrike
+              ? "（ストライク処理中）"
+              : state.pendingBattle
               ? "（アタック応答）"
               : state.pendingRush
                 ? "（ラッシュ応答）"
