@@ -1391,16 +1391,15 @@ select {
 .start-screen {
   max-width: var(--app-max-width);
   margin: 0 auto;
-  min-height: 100vh;
-  padding: 32px var(--app-padding-x) max(24px, env(safe-area-inset-bottom));
+  padding: 20px var(--app-padding-x) max(20px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 .start-screen__hero {
   text-align: center;
-  padding-top: 24px;
+  padding-top: 8px;
 }
 
 .start-screen__title {
@@ -1452,12 +1451,17 @@ select {
   font-size: 0.95rem;
 }
 
+.start-screen__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .start-screen__start {
   width: 100%;
   padding: 14px 20px;
   font-size: 1rem;
   font-weight: 600;
-  margin-top: auto;
 }
 
 .start-screen__secondary {
@@ -1723,11 +1727,22 @@ select {
   }
 
   .start-screen {
-    padding-top: 48px;
+    min-height: 100vh;
+    padding-top: 40px;
+    gap: 24px;
+  }
+
+  .start-screen__hero {
+    padding-top: 16px;
   }
 
   .start-screen__title {
     font-size: 1.75rem;
+  }
+
+  .start-screen__actions {
+    gap: 12px;
+    margin-top: auto;
   }
 
   .deck-builder__deck-list,

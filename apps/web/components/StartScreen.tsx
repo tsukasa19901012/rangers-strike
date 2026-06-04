@@ -160,23 +160,25 @@ export function StartScreen({
         </label>
       </section>
 
-      <button
-        type="button"
-        className="btn start-screen__secondary"
-        onClick={() => onOpenDeckBuilder()}
-      >
-        デッキを作る
-      </button>
+      <div className="start-screen__actions">
+        <button
+          type="button"
+          className="btn start-screen__secondary"
+          onClick={() => onOpenDeckBuilder()}
+        >
+          デッキを作る
+        </button>
 
-      {startError && (
-        <div className="action-error" role="alert">
-          {startError}
-        </div>
-      )}
+        {startError && (
+          <div className="action-error" role="alert">
+            {startError}
+          </div>
+        )}
 
-      <button type="button" className="btn btn--primary start-screen__start" onClick={onStart}>
-        ゲーム開始
-      </button>
+        <button type="button" className="btn btn--primary start-screen__start" onClick={onStart}>
+          ゲーム開始
+        </button>
+      </div>
     </div>
   );
 }
