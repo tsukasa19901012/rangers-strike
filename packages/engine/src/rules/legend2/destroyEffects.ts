@@ -1,7 +1,8 @@
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
-import { applyPlayerDamage, opponent, removeAt, updatePlayer } from "../../core/helpers";
+import { opponent, removeAt, updatePlayer } from "../../core/helpers";
+import { applyDamageToPlayer } from "../damagePayment";
 import { buildLogEntry } from "../../log/formatLog";
 
 export type DestroyEffectOutcome = {
@@ -24,8 +25,11 @@ export function resolveLegend2OnDestroy(
   switch (named.effectId) {
     case "tantrum": {
       for (const pid of ["player1", "player2"] as const) {
-        const damaged = applyPlayerDamage(nextState.players[pid], 1);
-        nextState = { ...nextState, ...updatePlayer(nextState, pid, damaged) };
+        nextState = applyDamageToPlayer(nextState, pid, 1, {
+          kind: "none",
+          activePlayer: ownerId,
+        });
+        if (nextState.pendingDamagePayment) break;
       }
       logs.push(
         buildLogEntry(ownerId, "named_effect", cardId, state.definitions, "tantrum"),

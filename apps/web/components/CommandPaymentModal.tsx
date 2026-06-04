@@ -45,9 +45,10 @@ export function CommandPaymentModal({
           : undefined);
       if (!inst) return null;
       const card = getCardById(inst.cardId);
+      if (!card || card.type !== "operation") return null;
       const zone =
         player.rush.some((c) => c.instanceId === id) ? "（ラッシュ）" : "";
-      return card ? { instanceId: id, name: card.name + zone } : null;
+      return { instanceId: id, name: card.name + zone };
     })
     .filter((e): e is { instanceId: string; name: string } => !!e);
 

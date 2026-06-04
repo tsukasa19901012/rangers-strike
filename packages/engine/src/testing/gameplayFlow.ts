@@ -17,6 +17,7 @@ import {
   parsePowerCost,
 } from "../core/catalog";
 import { getLegalActions } from "../core/legalActions";
+import { pickCpuAction } from "../ai/level1";
 import { opponent } from "../core/helpers";
 import type { GameAction } from "../types/actions";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
@@ -216,6 +217,19 @@ export function settleReactiveWindows(state: GameState): GameState {
     if (next.winner) return next;
 
     if (next.pendingCommandPayment) return next;
+
+    if (next.pendingDamagePayment) {
+      const payer = next.pendingDamagePayment.playerId;
+      const pick = pickCpuAction(next, payer, { enableSearch: false });
+      if (pick?.type === "resolve_damage_payment") {
+        const resolved = applyAction(next, pick);
+        if (resolved.ok) {
+          next = resolved.state;
+          continue;
+        }
+      }
+      return next;
+    }
 
     if (next.pendingRush) {
       const actor = next.activePlayer;

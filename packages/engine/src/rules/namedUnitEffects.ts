@@ -20,7 +20,8 @@ import {
   tryStartLegend2ConditionalChoice,
 } from "./legend2/battleEffects";
 import { resolveLegend2OnRushEffects } from "./legend2/rushEffects";
-import { applyPlayerDamage, findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
 import {
   collectAnyFieldUnitIds,
@@ -479,9 +480,12 @@ export function resolveFocusedBreakthroughDamage(
   if (!def || def.type !== "unit") return { state, logs: [] };
 
   const enemyId = opponent(strikerPlayerId);
-  const damaged = applyPlayerDamage(state.players[enemyId], 1);
+  const nextState = applyDamageToPlayer(state, enemyId, 1, {
+    kind: "none",
+    activePlayer: state.activePlayer,
+  });
   return {
-    state: { ...state, ...updatePlayer(state, enemyId, damaged) },
+    state: nextState,
     logs: [
       buildLogEntry(
         strikerPlayerId,
@@ -500,9 +504,12 @@ export function resolveAbaRedDestroyDamage(
   cardId: string,
 ): NamedEffectOutcome {
   if (!hasDestroySelfDamageNote(cardId)) return { state, logs: [] };
-  const damaged = applyPlayerDamage(state.players[ownerId], 1);
+  const nextState = applyDamageToPlayer(state, ownerId, 1, {
+    kind: "none",
+    activePlayer: state.activePlayer,
+  });
   return {
-    state: { ...state, ...updatePlayer(state, ownerId, damaged) },
+    state: nextState,
     logs: [
       buildLogEntry(ownerId, "named_effect", cardId, state.definitions, "self_damage"),
     ],

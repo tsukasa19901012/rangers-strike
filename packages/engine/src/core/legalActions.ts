@@ -46,6 +46,7 @@ import {
   canPlayPlasmaEnergyCounter,
   collectFiveTechInterceptors,
 } from "../rules/strikeReactions";
+import { getValidDamagePowerTargets } from "../rules/damagePayment";
 import { getCardEffect } from "@rangers-strike/cards";
 import { getTurnModifiers } from "../rules/turnModifiers";
 
@@ -622,10 +623,25 @@ function appendBattleEntryActions(
   actions.push({ type: "pass_battle_entry", playerId });
 }
 
+function appendDamagePaymentActions(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): void {
+  const pending = state.pendingDamagePayment;
+  if (!pending || pending.playerId !== playerId) return;
+  for (const instanceId of getValidDamagePowerTargets(state, pending)) {
+    actions.push({ type: "resolve_damage_payment", playerId, instanceId });
+  }
+}
+
 export function getLegalActions(state: GameState): GameAction[] {
   if (state.winner) return [];
 
-  const playerId = state.pendingEffectChoice?.playerId ?? state.activePlayer;
+  const playerId =
+    state.pendingDamagePayment?.playerId ??
+    state.pendingEffectChoice?.playerId ??
+    state.activePlayer;
   const player = state.players[playerId];
   const actions: GameAction[] = [];
 
@@ -650,6 +666,11 @@ export function getLegalActions(state: GameState): GameAction[] {
 
   if (state.pendingEffectChoice) {
     appendEffectChoiceActions(state, playerId, actions);
+    return actions;
+  }
+
+  if (state.pendingDamagePayment) {
+    appendDamagePaymentActions(state, playerId, actions);
     return actions;
   }
 
@@ -902,6 +923,19 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
     return false;
   }
 
+  if (action.type === "resolve_damage_payment") {
+    const pending = state.pendingDamagePayment;
+    return (
+      !!pending &&
+      pending.playerId === action.playerId &&
+      getValidDamagePowerTargets(state, pending).includes(action.instanceId)
+    );
+  }
+
+  if (state.pendingDamagePayment) {
+    return false;
+  }
+
   if (state.pendingLeave) {
     if (action.playerId !== state.pendingLeave.ownerPlayerId) return false;
   } else if (state.pendingEffectChoice) {
@@ -920,6 +954,27 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
   } else if (!assertActive(state, action.playerId)) {
     return false;
   }
+
+  if (action.type === "rush" && state.phase === "rush") {
+    if (!assertActive(state, action.playerId)) return false;
+    const player = state.players[action.playerId];
+    const handCard = player.hand.find((c) => c.instanceId === action.instanceId);
+    if (handCard) {
+      const definition = getDefinition(state.definitions, handCard.cardId);
+      if (
+        definition &&
+        isUnit(definition) &&
+        canDeclareRush(player, state.definitions, definition, action.instanceId, {
+          zordMaterialInstanceId: action.zordMaterialInstanceId,
+          zordMothershipHoldInstanceIds: action.zordMothershipHoldInstanceIds,
+          zordMaterialDestination: action.zordMaterialDestination,
+        })
+      ) {
+        return true;
+      }
+    }
+  }
+
   return getLegalActions(state).some((candidate) => actionsEqual(candidate, action));
 }
 

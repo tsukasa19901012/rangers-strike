@@ -302,6 +302,23 @@ export function pickBeginZordSetup(
   return best;
 }
 
+export function pickDamagePayment(
+  state: GameState,
+  playerId: PlayerId,
+): GameAction | null {
+  const pending = state.pendingDamagePayment;
+  if (!pending || pending.playerId !== playerId) return null;
+  const targets = state.players[playerId].power.filter(
+    (c) => !c.faceDown && !pending.selectedFlipIds.includes(c.instanceId),
+  );
+  if (targets.length === 0) return null;
+  return {
+    type: "resolve_damage_payment",
+    playerId,
+    instanceId: targets[targets.length - 1]!.instanceId,
+  };
+}
+
 export function pickCommandPaymentResolve(
   state: GameState,
   playerId: PlayerId,

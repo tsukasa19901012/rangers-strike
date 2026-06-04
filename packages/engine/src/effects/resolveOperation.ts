@@ -13,13 +13,13 @@ import {
   unitBp,
 } from "../core/catalog";
 import {
-  applyPlayerDamage,
   findInZone,
   opponent,
   payPowerCost,
   removeAt,
   updatePlayer,
 } from "../core/helpers";
+import { applyDamageToPlayer } from "../rules/damagePayment";
 import { findCardInPlayer, findOwnUnit } from "../core/modifiers";
 import { findCardOwner } from "../rules/fieldLookup";
 import { withTurnModifiers } from "../rules/turnModifiers";
@@ -466,18 +466,24 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
       return resolveDraw(ctx);
 
     case "deal_damage_1": {
-      const nextEnemy = applyPlayerDamage(enemy, 1);
+      const nextState = applyDamageToPlayer(ctx.state, enemyId, 1, {
+        kind: "none",
+        activePlayer: ctx.playerId,
+      });
       return {
-        state: { ...ctx.state, ...updatePlayer(ctx.state, enemyId, nextEnemy) },
+        state: nextState,
         detail: "damage:1",
         discardOperation: true,
       };
     }
 
     case "deal_damage_2": {
-      const nextEnemy = applyPlayerDamage(enemy, 2);
+      const nextState = applyDamageToPlayer(ctx.state, enemyId, 2, {
+        kind: "none",
+        activePlayer: ctx.playerId,
+      });
       return {
-        state: { ...ctx.state, ...updatePlayer(ctx.state, enemyId, nextEnemy) },
+        state: nextState,
         detail: "damage:2",
         discardOperation: true,
       };

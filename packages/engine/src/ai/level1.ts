@@ -14,6 +14,7 @@ import {
   pickBestStrike,
   pickChargeAction,
   pickCommandPaymentResolve,
+  pickDamagePayment,
   pickEffectChoice,
   pickBeginZordSetup,
   pickZordSetupStep,
@@ -187,6 +188,9 @@ export function pickCpuAction(
   const payment = pickCommandPaymentResolve(state, playerId);
   if (payment) return payment;
 
+  const damagePay = pickDamagePayment(state, playerId);
+  if (damagePay) return damagePay;
+
   const zordStep = pickZordSetupStep(state, playerId);
   if (zordStep) return zordStep;
 
@@ -338,6 +342,9 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
   }
   if (state.pendingZordSetup) {
     return state.pendingZordSetup.playerId === cpuPlayer;
+  }
+  if (state.pendingDamagePayment) {
+    return state.pendingDamagePayment.playerId === cpuPlayer;
   }
   if (state.pendingEffectChoice) {
     return state.pendingEffectChoice.playerId === cpuPlayer;

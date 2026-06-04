@@ -209,6 +209,12 @@ export type CancelZordSetupAction = {
   playerId: PlayerId;
 };
 
+export type ResolveDamagePaymentAction = {
+  type: "resolve_damage_payment";
+  playerId: PlayerId;
+  instanceId: string;
+};
+
 export type GameAction =
   | ChargePowerAction
   | ChargeCommandAction
@@ -242,4 +248,5 @@ export type GameAction =
   | CancelCommandPaymentAction
   | BeginZordSetupAction
   | ResolveZordSetupAction
-  | CancelZordSetupAction;
+  | CancelZordSetupAction
+  | ResolveDamagePaymentAction;

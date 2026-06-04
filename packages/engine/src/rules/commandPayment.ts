@@ -16,6 +16,7 @@ import type {
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import {
   canPlayOperationExceptCommandHold,
+  canRushUnit,
   canRushUnitExceptCommandHold,
   cardCategories,
   getDefinition,
@@ -516,9 +517,10 @@ export function continueAfterMothershipPayment(
   if (!def || !isUnit(def)) return null;
 
   const cont = pending.continuation;
+  const player = state.players[playerId];
   if (
-    canRushUnitExceptCommandHold(
-      state.players[playerId],
+    canRushUnit(
+      player,
       state.definitions,
       def,
       pending.sourceInstanceId,

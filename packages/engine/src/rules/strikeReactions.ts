@@ -6,7 +6,8 @@ import {
   hasOperationEffect,
   isSmallUnit,
 } from "../core/catalog";
-import { findInZone, opponent, removeAt, updatePlayer, applyPlayerDamage } from "../core/helpers";
+import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
 import { tryDestroyStrikerForStrike } from "./operationCounters";
 
@@ -260,13 +261,25 @@ export function finalizeStrike(
   pending: PendingStrike,
 ): GameState {
   const defenderId = opponent(pending.strikerPlayerId);
-  let nextState = { ...state, pendingStrike: undefined, activePlayer: pending.battlePhasePlayer };
 
   if (!pending.damageCancelled && pending.damage > 0) {
-    const defender = nextState.players[defenderId];
-    const nextDefender = applyPlayerDamage(defender, pending.damage);
-    nextState = { ...nextState, ...updatePlayer(nextState, defenderId, nextDefender) };
+    const withDamage = applyDamageToPlayer(state, defenderId, pending.damage, {
+      kind: "strike",
+      pending,
+    });
+    if (withDamage.pendingDamagePayment) {
+      return { ...withDamage, pendingStrike: pending };
+    }
+    return {
+      ...withDamage,
+      pendingStrike: undefined,
+      activePlayer: pending.battlePhasePlayer,
+    };
   }
 
-  return nextState;
+  return {
+    ...state,
+    pendingStrike: undefined,
+    activePlayer: pending.battlePhasePlayer,
+  };
 }

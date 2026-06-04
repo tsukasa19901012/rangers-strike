@@ -107,6 +107,22 @@ export type PendingStrike = {
   damageCancelled?: boolean;
 };
 
+export type DamagePaymentResume =
+  | { kind: "none"; activePlayer: PlayerId }
+  | { kind: "strike"; pending: PendingStrike };
+
+/** Defender chooses which face-up power cards flip when taking damage. */
+export type PendingDamagePayment = {
+  playerId: PlayerId;
+  /** Face-up power flips still to assign. */
+  remainingFlips: number;
+  /** Face-down draws from deck after power flips. */
+  deckDraws: number;
+  totalDamage: number;
+  selectedFlipIds: string[];
+  resume: DamagePaymentResume;
+};
+
 export type PendingBattle = {
   attackerPlayerId: PlayerId;
   attackerInstanceId: string;
@@ -277,6 +293,8 @@ export type GameState = {
   pendingCommandPayment?: PendingCommandPayment;
   /** Zord rush: choose material, destination, then command payment. */
   pendingZordSetup?: PendingZordSetup;
+  /** Defender picks which face-up power to flip for damage. */
+  pendingDamagePayment?: PendingDamagePayment;
   /** Opens when enter effects need a choice first. */
   deferredBattleEntry?: PendingBattleEntry;
   /** @deprecated Alias — use pendingEffectChoice */

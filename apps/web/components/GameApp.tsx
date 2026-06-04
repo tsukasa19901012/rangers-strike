@@ -52,6 +52,8 @@ import { CardModal } from "./CardModal";
 import { BattleEntryModal } from "./BattleEntryModal";
 import { AlertModal } from "./AlertModal";
 import { EffectChoiceModal } from "./EffectChoiceModal";
+import { DamagePaymentModal } from "./DamagePaymentModal";
+import { damagePaymentHint } from "@/lib/damagePaymentHint";
 import { EffectNoticeModal } from "./EffectNoticeModal";
 import { CommandPaymentModal } from "./CommandPaymentModal";
 import { ZordSetupModal } from "./ZordSetupModal";
@@ -95,7 +97,8 @@ function hasReactionWindow(game: GameState): boolean {
     game.pendingEffectChoice ||
     game.pendingBattleEntry ||
     game.pendingCommandPayment ||
-    game.pendingZordSetup
+    game.pendingZordSetup ||
+    game.pendingDamagePayment
   );
 }
 
@@ -758,6 +761,35 @@ export function GameApp() {
     [apply, legalActions],
   );
 
+  const pendingDamagePaymentTargets = useMemo(() => {
+    if (
+      !state?.pendingDamagePayment ||
+      state.pendingDamagePayment.playerId !== HUMAN_PLAYER
+    ) {
+      return undefined;
+    }
+    const ids = new Set<string>();
+    for (const action of legalActions) {
+      if (action.type === "resolve_damage_payment") {
+        ids.add(action.instanceId);
+      }
+    }
+    return ids.size > 0 ? ids : undefined;
+  }, [legalActions, state?.pendingDamagePayment]);
+
+  const handleDamagePaymentSelect = useCallback(
+    (instanceId: string) => {
+      const action = legalActions.find(
+        (a) =>
+          a.type === "resolve_damage_payment" &&
+          a.playerId === HUMAN_PLAYER &&
+          a.instanceId === instanceId,
+      );
+      if (action) apply(action);
+    },
+    [apply, legalActions],
+  );
+
   const handleAttackTargetSelect = useCallback(
     (defenderInstanceId: string) => {
       const entry = state?.pendingBattleEntry;
@@ -1116,6 +1148,11 @@ export function GameApp() {
     humanCanAct &&
     state.pendingCommandPayment?.playerId === HUMAN_PLAYER;
 
+  const pendingDamage = state.pendingDamagePayment;
+  const isHumanDamagePayment =
+    humanCanAct && pendingDamage?.playerId === HUMAN_PLAYER;
+  const showDamagePaymentModal = isHumanDamagePayment && !!pendingDamage;
+
   const showStartPhaseModal =
     humanCanAct &&
     state.phase === "start" &&
@@ -1125,7 +1162,12 @@ export function GameApp() {
 
   const boardEffectChoiceTargets = showEffectChoiceModal
     ? undefined
-    : pendingEffectChoiceTargets;
+    : showDamagePaymentModal
+      ? undefined
+      : pendingEffectChoiceTargets;
+  const boardDamagePaymentTargets = showDamagePaymentModal
+    ? pendingDamagePaymentTargets
+    : undefined;
   const boardOperationTargets = showOperationModal ? undefined : pendingTargets;
   const boardZordTargets =
     showZordSetupModal && zordSetup?.step !== "material"
@@ -1149,6 +1191,8 @@ export function GameApp() {
               ? "捨て札にするSユニットを選んでください"
               : "ゾードアップの素材を選んでください"
           : "母艦の支払いに進みます"
+    : showDamagePaymentModal && pendingDamage
+      ? damagePaymentHint(pendingDamage)
     : showEffectChoiceModal || showReactionModal || showOperationModal
     ? undefined
     : isStrikeReaction
@@ -1477,17 +1521,28 @@ export function GameApp() {
             onSubstituteSelect={handleSubstituteSelect}
             onViewPile={(pile) => handleViewPile(HUMAN_PLAYER, pile)}
             entryAttackerIds={entryAttackerIds}
-            pendingEffectChoiceTargets={boardEffectChoiceTargets}
-            onEffectChoiceSelect={handleEffectChoiceSelect}
+            pendingEffectChoiceTargets={
+              boardDamagePaymentTargets ?? boardEffectChoiceTargets
+            }
+            onEffectChoiceSelect={
+              boardDamagePaymentTargets
+                ? handleDamagePaymentSelect
+                : handleEffectChoiceSelect
+            }
           />
         </div>
 
       </div>
 
+      {showDamagePaymentModal && pendingDamage && (
+        <DamagePaymentModal pending={pendingDamage} playerId={HUMAN_PLAYER} />
+      )}
+
       <footer className="action-bar">
         {canEndPhase &&
           !showReactionModal &&
           !showEffectChoiceModal &&
+          !showDamagePaymentModal &&
           !showOperationModal &&
           !showCommandPaymentModal &&
           !showStartPhaseModal &&

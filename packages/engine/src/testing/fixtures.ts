@@ -134,6 +134,8 @@ export type TestStateOptions = {
   definitions?: Record<string, CardDefinition>;
   player1?: Partial<PlayerState>;
   player2?: Partial<PlayerState>;
+  pendingDamagePayment?: GameState["pendingDamagePayment"];
+  pendingStrike?: GameState["pendingStrike"];
 };
 
 export function createTestState(options: TestStateOptions = {}): GameState {
@@ -157,6 +159,8 @@ export function createTestState(options: TestStateOptions = {}): GameState {
     definitions: options.definitions ?? MERGED_DEFINITIONS,
     log: [],
     winner: null,
+    pendingDamagePayment: options.pendingDamagePayment,
+    pendingStrike: options.pendingStrike,
   };
 }
 

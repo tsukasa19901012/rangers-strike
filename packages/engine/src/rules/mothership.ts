@@ -13,7 +13,7 @@ import type { Category } from "@rangers-strike/cards";
 import { getZordCondition } from "@rangers-strike/cards";
 import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, PlayerState } from "../types/game";
-import { getDefinition, isMediumUnit } from "../core/catalog";
+import { getDefinition, isMediumUnit, isOperation } from "../core/catalog";
 import { findZordMaterial } from "./zord";
 
 export type MothershipHoldZone = "command" | "rush";
@@ -35,7 +35,11 @@ export function isMothershipEligibleCommand(
 ): boolean {
   if (card.commandHeld) return false;
   const def = getDefinition(definitions, card.cardId);
-  return def !== undefined && cardHasCategory(def, category);
+  return (
+    def !== undefined &&
+    isOperation(def) &&
+    cardHasCategory(def, category)
+  );
 }
 
 /** Unheld category commands in command or rush (Q3: command moved to rush). */
@@ -113,6 +117,9 @@ export function applyMothershipHolds(
     const commandIndex = nextPlayer.command.findIndex((c) => c.instanceId === instanceId);
     if (commandIndex >= 0) {
       const card = nextPlayer.command[commandIndex]!;
+      if (card.mothershipHold) {
+        continue;
+      }
       if (!isMothershipEligibleCommand(definitions, card, category)) return null;
       const command = [...nextPlayer.command];
       command[commandIndex] = { ...card, commandHeld: true, mothershipHold: true };
@@ -123,6 +130,9 @@ export function applyMothershipHolds(
     const rushIndex = nextPlayer.rush.findIndex((c) => c.instanceId === instanceId);
     if (rushIndex >= 0) {
       const card = nextPlayer.rush[rushIndex]!;
+      if (card.mothershipHold) {
+        continue;
+      }
       if (!isMothershipEligibleCommand(definitions, card, category)) return null;
       const rush = [...nextPlayer.rush];
       rush[rushIndex] = { ...card, commandHeld: true, mothershipHold: true };
@@ -156,6 +166,21 @@ export function validateMothershipHolds(
   );
   const key = [...holdInstanceIds].sort().join(",");
   return allowed.some((set) => [...set].sort().join(",") === key);
+}
+
+/** Mothership holds already applied during command payment (before rush resolves). */
+export function mothershipHoldsSatisfiedOnPlayer(
+  player: PlayerState,
+  holdInstanceIds: string[],
+  holdsRequired: number,
+): boolean {
+  if (holdInstanceIds.length !== holdsRequired) return false;
+  return holdInstanceIds.every((instanceId) => {
+    const card =
+      player.command.find((c) => c.instanceId === instanceId) ??
+      player.rush.find((c) => c.instanceId === instanceId);
+    return card?.mothershipHold === true && card.commandHeld === true;
+  });
 }
 
 export function validateZordAdditionalPayment(
@@ -210,6 +235,9 @@ export function validateZordAdditionalPayment(
 
   if (holdsRequired > 0) {
     if (!kind) return false;
+    if (mothershipHoldsSatisfiedOnPlayer(player, holdIds, holdsRequired)) {
+      return true;
+    }
     return validateMothershipHolds(
       player,
       definitions,

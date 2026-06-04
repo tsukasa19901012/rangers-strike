@@ -37,7 +37,6 @@ import {
 } from "../log/formatLog";
 import { clearTurnModifiers } from "./modifiers";
 import {
-  applyPlayerDamage,
   findInZone,
   opponent,
   payPowerCost,
@@ -45,6 +44,7 @@ import {
   updatePlayer,
 } from "./helpers";
 import { isLegalAction } from "./legalActions";
+import { resolveDamagePaymentSelect } from "../rules/damagePayment";
 import {
   battlePositionAfterMove,
   canStrikeUnit,
@@ -176,10 +176,14 @@ function finalizeTurnEnd(state: GameState): GameState {
   return withWinner(next);
 }
 
-function completeStrike(state: GameState, pending: PendingStrike, extraLogs: string[] = []): ActionResult {
-  let nextState = finalizeStrike(state, pending);
-  nextState = withWinner(nextState);
-  nextState = finishBattleEntryIf(nextState, pending.strikerInstanceId);
+function finishStrikeResolution(
+  state: GameState,
+  pending: PendingStrike,
+  nextState: GameState,
+  extraLogs: string[] = [],
+): ActionResult {
+  let resolved = withWinner(nextState);
+  resolved = finishBattleEntryIf(resolved, pending.strikerInstanceId);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -194,10 +198,18 @@ function completeStrike(state: GameState, pending: PendingStrike, extraLogs: str
   return {
     ok: true,
     state: {
-      ...nextState,
-      log: [...nextState.log, strikeLog, ...extraLogs],
+      ...resolved,
+      log: [...resolved.log, strikeLog, ...extraLogs],
     },
   };
+}
+
+function completeStrike(state: GameState, pending: PendingStrike, extraLogs: string[] = []): ActionResult {
+  const nextState = finalizeStrike(state, pending);
+  if (nextState.pendingDamagePayment) {
+    return ok(nextState, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending_damage"));
+  }
+  return finishStrikeResolution(state, pending, nextState, extraLogs);
 }
 
 export function applyAction(state: GameState, action: GameAction): ActionResult {
@@ -228,6 +240,12 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
     action.type !== "cancel_zord_setup"
   ) {
     return fail("pending_zord_setup");
+  }
+  if (
+    state.pendingDamagePayment &&
+    action.type !== "resolve_damage_payment"
+  ) {
+    return fail("pending_damage_payment");
   }
   if (!isLegalAction(state, action)) return fail("illegal_action");
 
@@ -428,6 +446,24 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       return ok(
         { ...state, pendingZordSetup: undefined },
         buildSimpleLogEntry(playerId, "zord_setup_cancel"),
+      );
+    }
+
+    case "resolve_damage_payment": {
+      const result = resolveDamagePaymentSelect(state, playerId, action.instanceId);
+      if ("error" in result) return fail(result.error);
+      if (result.state.pendingDamagePayment) {
+        return ok(
+          result.state,
+          buildSimpleLogEntry(playerId, "damage_payment", action.instanceId),
+        );
+      }
+      if (result.resume.kind === "strike") {
+        return finishStrikeResolution(state, result.resume.pending, result.state);
+      }
+      return ok(
+        result.state,
+        buildSimpleLogEntry(playerId, "damage_payment", "done"),
       );
     }
 

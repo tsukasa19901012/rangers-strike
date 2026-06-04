@@ -17,7 +17,8 @@ import {
   isSmallUnit,
   parsePowerCost,
 } from "../core/catalog";
-import { findInZone, opponent, removeAt, updatePlayer, applyPlayerDamage } from "../core/helpers";
+import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
 import { finishBattleEntryIf } from "./battleEntry";
 import {
@@ -736,11 +737,10 @@ export function finalizeLeavePending(
   }
 
   if (pending.toZone === "discard" && hasDestroySelfDamageNote(found.card.cardId)) {
-    const damaged = applyPlayerDamage(nextStateBase.players[pending.ownerPlayerId], 1);
-    return {
-      ...nextStateBase,
-      ...updatePlayer(nextStateBase, pending.ownerPlayerId, damaged),
-    };
+    return applyDamageToPlayer(nextStateBase, pending.ownerPlayerId, 1, {
+      kind: "none",
+      activePlayer: nextStateBase.activePlayer,
+    });
   }
 
   return nextStateBase;

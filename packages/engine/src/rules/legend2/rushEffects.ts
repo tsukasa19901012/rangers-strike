@@ -1,6 +1,7 @@
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition } from "../../core/catalog";
-import { applyPlayerDamage, findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
+import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
+import { applyDamageToPlayer } from "../damagePayment";
 import { buildLogEntry } from "../../log/formatLog";
 import {
   collectFieldUnitIds,
@@ -45,8 +46,10 @@ export function resolveLegend2OnRushEffects(
       break;
     }
     case "sure_win_combination": {
-      const damaged = applyPlayerDamage(state.players[enemyId], 2);
-      nextState = { ...state, ...updatePlayer(state, enemyId, damaged) };
+      nextState = applyDamageToPlayer(state, enemyId, 2, {
+        kind: "none",
+        activePlayer: rusherPlayerId,
+      });
       logs.push(
         buildLogEntry(rusherPlayerId, "named_effect", cardId, state.definitions, effectId),
       );

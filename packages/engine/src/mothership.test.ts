@@ -10,6 +10,12 @@ import {
 } from "./rules/mothership";
 import { createTestState, heldEtCommand, heldOtCommand, inst } from "./testing/fixtures";
 
+function unwrap(result: ReturnType<typeof applyAction>) {
+  expect(result.ok).toBe(true);
+  if (!result.ok) throw new Error(result.error);
+  return result.state;
+}
+
 describe("jaguar mothership (RS-076)", () => {
   const rs075Def = {
     id: "RS-075",
@@ -111,6 +117,36 @@ describe("jaguar mothership (RS-076)", () => {
         (a.zordMothershipHoldInstanceIds?.length ?? 0) > 0,
     );
     expect(mothershipRush).toHaveLength(0);
+  });
+
+  it("does not list rush units as mothership payment commands", () => {
+    const otUnit = inst("RS-046", "rush-unit");
+    const otCmd = { ...inst("TST-OP-OT", "ot-cmd"), commandHeld: false };
+    const state = createTestState({
+      player1: {
+        rush: [otUnit],
+        command: [otCmd],
+      },
+    });
+    state.definitions["RS-046"] = {
+      id: "RS-046",
+      name: "パトアーマー",
+      type: "unit",
+      category: "OT",
+      rarity: "N",
+      expansion: "test",
+      powerCost: "5+",
+      bp: 5000,
+      size: "M",
+    };
+
+    const eligible = collectMothershipEligibleCommands(
+      state.players.player1,
+      state.definitions,
+      "OT",
+    );
+    expect(eligible.some((e) => e.card.instanceId === otUnit.instanceId)).toBe(false);
+    expect(eligible.some((e) => e.card.instanceId === otCmd.instanceId)).toBe(true);
   });
 
   it("Q3: can hold ET command placed in rush (gallery-style)", () => {
@@ -293,5 +329,65 @@ describe("dekabase mothership (RS-105)", () => {
         ?.commandHeld,
     ).toBe(true);
     expect(result.state.players.player1.rush.some((c) => c.cardId === "RS-046")).toBe(true);
+  });
+
+  it("completes zord rush after mothership hold and category payment", () => {
+    const zord = inst("RS-046", "rush-zord");
+    const mothership = inst("RS-105", "mothership");
+    const otPay = { ...inst("TST-OP-OT", "ot-pay"), commandHeld: false };
+    const otMothership = { ...inst("TST-OP-OT", "ot-mship"), commandHeld: false };
+    let state = createTestState({
+      phase: "rush",
+      definitions: {
+        ...defs,
+      },
+      player1: {
+        hand: [zord],
+        rush: [mothership],
+        power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [otPay, otMothership],
+      },
+    });
+
+    state = unwrap(
+      applyAction(state, {
+        type: "begin_zord_setup",
+        playerId: "player1",
+        zordInstanceId: zord.instanceId,
+      }),
+    );
+    expect(state.pendingZordSetup?.step).toBe("mothership");
+
+    state = unwrap(
+      applyAction(state, {
+        type: "resolve_zord_setup",
+        playerId: "player1",
+      }),
+    );
+    expect(state.pendingCommandPayment?.kind).toBe("mothership_hold");
+
+    state = unwrap(
+      applyAction(state, {
+        type: "resolve_command_payment",
+        playerId: "player1",
+        commandInstanceIds: [otMothership.instanceId],
+      }),
+    );
+    expect(state.pendingCommandPayment?.kind).toBe("category_use");
+
+    state = unwrap(
+      applyAction(state, {
+        type: "resolve_command_payment",
+        playerId: "player1",
+        commandInstanceIds: [otPay.instanceId],
+      }),
+    );
+
+    expect(state.pendingCommandPayment).toBeUndefined();
+    expect(state.players.player1.rush.some((c) => c.cardId === "RS-046")).toBe(true);
+    expect(
+      state.players.player1.command.find((c) => c.instanceId === otMothership.instanceId)
+        ?.mothershipHold,
+    ).toBe(true);
   });
 });

@@ -206,7 +206,7 @@ export function hasHeldCommandForCategories(
   if (categories.length === 0) return true;
 
   return player.command.some((cmd) => {
-    if (!cmd.commandHeld) return false;
+    if (!cmd.commandHeld || cmd.mothershipHold) return false;
     const cmdCats = cardCategories(getDefinition(definitions, cmd.cardId));
     return categories.some((cat) => cmdCats.includes(cat));
   });
