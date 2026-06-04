@@ -190,8 +190,8 @@ export function GameApp() {
       setActionError(null);
       setBattleDrag(null);
       setLogOpen(false);
-      prevActivePlayerRef.current = null;
-      setTurnNotice(null);
+      prevActivePlayerRef.current = game.activePlayer;
+      setTurnNotice(game.activePlayer);
       setEffectNotice(null);
       prevLogLenRef.current = 0;
     } catch {
