@@ -14,7 +14,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:monkey": "vitest run src/monkey.test.ts"
   },
   "dependencies": {
     "@rangers-strike/cards": "*"
