@@ -21,6 +21,8 @@ import {
   pickFavorableBattle,
   pickHoldBeforeBattle,
   pickHoldBeforeRush,
+  handHasRushUnits,
+  pickRushCategoryPayment,
   pickMandatoryBattleMove,
   pickSimpleReaction,
   pickStrikeReaction,
@@ -102,17 +104,24 @@ function collectRushCandidates(
     return scoreB - scoreA;
   });
 
-  for (const rush of rankedRushes.slice(0, 10)) {
+  for (const rush of rankedRushes) {
     const hold = pickHoldBeforeRush(state, playerId, actions, rush);
     if (hold) candidates.push(hold);
     candidates.push(rush);
   }
 
-  const bestOp = pickBestOperation(state, actions);
-  if (bestOp) {
-    candidates.push(bestOp);
-  } else {
-    candidates.push(...actionsOfType(actions, "play_operation").slice(0, 2));
+  if (rankedRushes.length === 0) {
+    const categoryPay = pickRushCategoryPayment(state, playerId, actions);
+    if (categoryPay) {
+      candidates.push(categoryPay);
+    } else if (!handHasRushUnits(state, playerId)) {
+      const bestOp = pickBestOperation(state, actions);
+      if (bestOp) {
+        candidates.push(bestOp);
+      } else {
+        candidates.push(...actionsOfType(actions, "play_operation").slice(0, 2));
+      }
+    }
   }
 
   const end = endPhase(actions);
@@ -309,6 +318,10 @@ export function pickCpuAction(
         const hold = pickHoldBeforeRush(state, playerId, actions, rush);
         return hold ?? rush;
       }
+
+      const categoryPay = pickRushCategoryPayment(state, playerId, actions);
+      if (categoryPay) return categoryPay;
+
       return endPhase(actions);
     }
 

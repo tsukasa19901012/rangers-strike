@@ -67,6 +67,8 @@ export function evaluateState(state: GameState, playerId: PlayerId): number {
 
   score += self.battle.length * 120;
   score -= enemy.battle.length * 90;
+  score += self.rush.length * 220;
+  score -= enemy.rush.length * 160;
 
   score += self.power.length * 180;
   score -= enemy.power.length * 120;

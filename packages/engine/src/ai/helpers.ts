@@ -83,6 +83,35 @@ function handNeedsPowerForRush(
   return false;
 }
 
+/** Hand contains a unit that can rush now or after gaining category support. */
+export function handHasRushUnits(
+  state: GameState,
+  playerId: PlayerId,
+): boolean {
+  const player = state.players[playerId];
+  return player.hand.some((card) => {
+    const def = getDefinition(state.definitions, card.cardId);
+    return def?.type === "unit";
+  });
+}
+
+function unitCanRushNow(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): boolean {
+  const player = state.players[playerId];
+  const card = player.hand.find((c) => c.instanceId === instanceId);
+  if (!card) return false;
+  const def = getDefinition(state.definitions, card.cardId);
+  if (!def || def.type !== "unit") return false;
+  const categories = cardCategories(def);
+  if (!hasReleasedCommandForCategories(player, state.definitions, categories)) {
+    return false;
+  }
+  return player.power.length >= parsePowerCost(def.powerCost);
+}
+
 function scoreChargeCard(
   state: GameState,
   playerId: PlayerId,
@@ -98,13 +127,19 @@ function scoreChargeCard(
   let score = 0;
   const neededCats = categoriesNeededFromHand(state, playerId);
 
-  if (def.type === "operation") score += 40;
-
-  for (const cat of cardCategories(def)) {
-    if (neededCats.includes(cat)) score += 25;
+  if (mode === "power" && def.type === "unit") {
+    score += 120;
+    if (unitCanRushNow(state, playerId, instanceId)) score += 80;
+    else if (handNeedsPowerForRush(state, playerId)) score += 40;
   }
 
-  if (mode === "power" && def.type === "unit") score -= 20;
+  if (mode === "command") {
+    if (def.type === "operation") score += 40;
+    for (const cat of cardCategories(def)) {
+      if (neededCats.includes(cat)) score += 25;
+    }
+    if (def.type === "unit") score -= 60;
+  }
 
   return score;
 }
@@ -143,21 +178,27 @@ export function pickChargeAction(
   const emptyCommandZone = player.command.length === 0;
   const needsCommand = handNeedsCommandSupport(state, playerId);
   const needsPower = handNeedsPowerForRush(state, playerId);
-  const hasPlayableHand =
-    categoriesNeededFromHand(state, playerId).length > 0;
+  const hasRushUnits = handHasRushUnits(state, playerId);
 
   if (
-    commands.length > 0 &&
-    (emptyCommandZone || needsCommand) &&
-    (hasPlayableHand || emptyCommandZone)
+    emptyCommandZone &&
+    needsCommand &&
+    hasRushUnits &&
+    commands.length > 0
   ) {
-    if (!(needsPower && !needsCommand && !emptyCommandZone)) {
-      return pickBestChargeAction(state, playerId, commands, "command");
-    }
+    return pickBestChargeAction(state, playerId, commands, "command");
   }
 
   if (needsPower && powers.length > 0) {
     return pickBestChargeAction(state, playerId, powers, "power");
+  }
+
+  if (hasRushUnits && powers.length > 0) {
+    return pickBestChargeAction(state, playerId, powers, "power");
+  }
+
+  if (needsCommand && commands.length > 0) {
+    return pickBestChargeAction(state, playerId, commands, "command");
   }
 
   if (powers.length > 0) {
@@ -225,6 +266,37 @@ export function pickHoldBeforeBattle(
     }
   }
   return null;
+}
+
+/** Category hold payment so a unit can rush this turn. */
+export function pickRushCategoryPayment(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): GameAction | null {
+  const payments = actionsOfType(actions, "initiate_command_payment").filter(
+    (action) => action.kind === "category_use" && action.playerId === playerId,
+  );
+  if (payments.length === 0) return null;
+
+  let best: GameAction | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+  for (const action of payments) {
+    const card = state.players[playerId].hand.find(
+      (c) => c.instanceId === action.sourceInstanceId,
+    );
+    if (!card) continue;
+    const def = getDefinition(state.definitions, card.cardId);
+    if (!def || def.type !== "unit") continue;
+    const bp = effectiveBp(state, playerId, card);
+    const sp = strikeDamageFor(state.definitions, card, state, playerId);
+    const score = bp + sp * 2_000;
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+  return best;
 }
 
 export function pickHoldBeforeRush(
@@ -829,7 +901,9 @@ export function quickActionPriority(
   playerId: PlayerId,
   action: GameAction,
 ): number {
-  if (action.type === "end_phase") return -5_000;
+  if (action.type === "end_phase") {
+    return state.phase === "rush" || state.phase === "charge" ? -10_000 : -5_000;
+  }
 
   if (action.type === "rush") {
     const player = state.players[action.playerId];
@@ -837,7 +911,8 @@ export function quickActionPriority(
     if (!card) return 0;
     const bp = effectiveBp(state, action.playerId, card);
     const sp = strikeDamageFor(state.definitions, card, state, action.playerId);
-    return bp + sp * 2_000;
+    const base = bp + sp * 2_000;
+    return state.phase === "rush" ? base + 15_000 : base;
   }
 
   if (action.type === "strike") {
@@ -873,6 +948,15 @@ export function quickActionPriority(
   }
 
   if (action.type === "play_operation") {
+    if (state.phase === "rush") {
+      const player = state.players[action.playerId];
+      const card = player.hand.find((c) => c.instanceId === action.instanceId);
+      if (!card) return -8_000;
+      if (["RS-007", "RS-028", "RS-009", "RS-024"].includes(card.cardId)) {
+        return -4_000;
+      }
+      return -8_000;
+    }
     const player = state.players[action.playerId];
     const card = player.hand.find((c) => c.instanceId === action.instanceId);
     if (!card) return 1_000;
@@ -889,10 +973,20 @@ export function quickActionPriority(
     action.type === "initiate_command_payment" ||
     action.type === "resolve_command_payment"
   ) {
+    if (
+      state.phase === "rush" &&
+      action.type === "initiate_command_payment" &&
+      action.kind === "category_use"
+    ) {
+      return 14_000;
+    }
     return 600;
   }
+  if (action.type === "charge_power") {
+    return state.phase === "charge" ? 2_500 : 400;
+  }
   if (action.type === "charge_command") {
-    return 800;
+    return state.phase === "charge" ? 1_200 : 800;
   }
 
   if (action.type === "use_plasma_energy") return 4_000;

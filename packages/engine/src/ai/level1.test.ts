@@ -33,7 +33,7 @@ describe("CPU level 1", () => {
     expect(pickCpuAction(state, "player2")?.type).toBe("release_start_commands");
   });
 
-  it("charges power when command is ready but power is insufficient", () => {
+  it("charges power when a rush unit lacks power but command support exists", () => {
     const state = createTestState({
       phase: "charge",
       activePlayer: "player2",
@@ -44,7 +44,7 @@ describe("CPU level 1", () => {
       },
     });
 
-    expect(pickCpuAction(state, "player2")?.type).toBe("charge_command");
+    expect(pickCpuAction(state, "player2")?.type).toBe("charge_power");
   });
 
   it("takes lethal strike immediately on battle entry", () => {
@@ -245,7 +245,41 @@ describe("CPU level 1", () => {
     );
   });
 
-  it("uses simulation to pick among rush phase options", () => {
+  it("prefers rush over operation when both are legal in rush phase", () => {
+    const op = inst("RS-007", "op1");
+    const unit = inst("TST-UNIT-2", "u1");
+    const weak = inst("TST-UNIT-0", "w1");
+    const state = createTestState({
+      phase: "rush",
+      activePlayer: "player2",
+      player2: {
+        hand: [unit, op],
+        power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3")],
+        command: [heldWbCommand("c1")],
+        rushCategoryHoldReady: true,
+      },
+      player1: {
+        battle: [weak],
+      },
+    });
+    state.definitions["RS-007"] = {
+      id: "RS-007",
+      name: "Dynamite",
+      type: "operation",
+      category: "WB",
+      rarity: "R",
+      expansion: "legend1",
+      powerCost: 3,
+    };
+
+    const action = pickCpuAction(state, "player2");
+    expect(action?.type).toBe("rush");
+    if (action?.type === "rush") {
+      expect(action.instanceId).toBe(unit.instanceId);
+    }
+  });
+
+  it("plays operation in rush phase only when no unit can rush", () => {
     const op = inst("RS-007", "op1");
     const weak = inst("TST-UNIT-0", "w1");
     const state = createTestState({
