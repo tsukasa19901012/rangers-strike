@@ -4,6 +4,7 @@ import { isCpuTurn, pickCpuAction } from "./level1";
 import { dedupeActions } from "./simulation";
 import { createTestState, heldWbCommand, inst, WIN_DAMAGE } from "../testing/fixtures";
 import { getDefinition } from "../core/catalog";
+import { createZordSetup } from "../rules/zordSetup";
 
 describe("CPU level 1", () => {
   it("charges command when command zone is empty", () => {
@@ -237,10 +238,51 @@ describe("CPU level 1", () => {
     };
 
     const action = pickCpuAction(state, "player2", { enableSearch: false });
-    expect(action?.type).toBe("begin_zord_setup");
-    if (action?.type === "begin_zord_setup") {
-      expect(action.zordInstanceId).toBe(zord.instanceId);
-    }
+    expect(action?.type).not.toBe("begin_zord_setup");
+  });
+
+  it("cancels zord setup when no legal resolve remains", () => {
+    const zord = inst("RS-045", "z1");
+    const sUnit = inst("RS-080", "s1");
+    const base = createTestState({
+      phase: "rush",
+      activePlayer: "player2",
+      player2: {
+        hand: [zord],
+        rush: [sUnit],
+        power: Array.from({ length: 4 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [heldWbCommand("c1")],
+      },
+    });
+    base.definitions["RS-045"] = {
+      id: "RS-045",
+      name: "パトレーラー",
+      type: "unit",
+      category: "OT",
+      rarity: "N",
+      expansion: "legend1",
+      powerCost: "4+",
+      bp: 5000,
+      size: "M",
+    };
+    base.definitions["RS-080"] = {
+      id: "RS-080",
+      name: "S Unit",
+      type: "unit",
+      category: "WB",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 0,
+      bp: 1000,
+      size: "S",
+    };
+    const setup = createZordSetup(base, "player2", zord.instanceId);
+    expect(setup).not.toBeNull();
+    const state = { ...base, pendingZordSetup: setup! };
+
+    expect(pickCpuAction(state, "player2", { enableSearch: false })?.type).toBe(
+      "cancel_zord_setup",
+    );
   });
 
   it("completes RS-045 zord rush flow as CPU", () => {

@@ -2,8 +2,14 @@ import { describe, expect, it } from "vitest";
 import { COMMAND_ZONE_MAX } from "./types/game";
 import { applyAction } from "./core/applyAction";
 import { getLegalActions } from "./index";
-import { advanceZordSetup, createZordSetup } from "./rules/zordSetup";
-import { createTestState, heldOtCommand, inst } from "./testing/fixtures";
+import {
+  advanceZordSetup,
+  canBeginZordSetup,
+  canFinishZordSetup,
+  createZordSetup,
+  listZordSetupResolveActions,
+} from "./rules/zordSetup";
+import { createTestState, heldOtCommand, heldWbCommand, inst } from "./testing/fixtures";
 
 const fusionDef = (id: string, name: string) => ({
   id,
@@ -188,6 +194,81 @@ describe("zord setup wizard", () => {
     expect(actions.some((a) => a.type === "rush" && a.instanceId === zord.instanceId)).toBe(
       true,
     );
+  });
+
+  it("does not offer zord setup when category payment cannot be completed (RS-045)", () => {
+    const zord = inst("RS-045", "z1");
+    const sUnit = inst("RS-080", "s1");
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [zord],
+        rush: [sUnit],
+        power: Array.from({ length: 4 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [heldWbCommand("c1")],
+      },
+    });
+    state.definitions["RS-045"] = {
+      id: "RS-045",
+      name: "パトレーラー",
+      type: "unit",
+      category: "OT",
+      rarity: "N",
+      expansion: "legend1",
+      powerCost: "4+",
+      bp: 5000,
+      size: "M",
+    };
+    state.definitions["RS-080"] = { ...fusionDef("RS-080", "S1"), size: "S" };
+
+    expect(canBeginZordSetup(state, "player1", zord.instanceId)).toBe(false);
+    expect(
+      getLegalActions(state).some(
+        (a) => a.type === "begin_zord_setup" && a.zordInstanceId === zord.instanceId,
+      ),
+    ).toBe(false);
+  });
+
+  it("cancels pending zord setup when no resolve advances (CPU path)", () => {
+    const zord = inst("RS-045", "z1");
+    const sUnit = inst("RS-080", "s1");
+    let state = createTestState({
+      phase: "rush",
+      activePlayer: "player2",
+      player2: {
+        hand: [zord],
+        rush: [sUnit],
+        power: Array.from({ length: 4 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [heldOtCommand("c1")],
+      },
+    });
+    state.definitions["RS-045"] = {
+      id: "RS-045",
+      name: "パトレーラー",
+      type: "unit",
+      category: "OT",
+      rarity: "N",
+      expansion: "legend1",
+      powerCost: "4+",
+      bp: 5000,
+      size: "M",
+    };
+    state.definitions["RS-080"] = { ...fusionDef("RS-080", "S1"), size: "S" };
+
+    const setup = createZordSetup(state, "player2", zord.instanceId);
+    expect(setup).not.toBeNull();
+    if (!setup) return;
+    state = { ...state, pendingZordSetup: setup };
+
+    expect(listZordSetupResolveActions(state, setup).length).toBe(0);
+    expect(canFinishZordSetup(state, setup)).toBe(false);
+
+    const cancel = applyAction(state, {
+      type: "cancel_zord_setup",
+      playerId: "player2",
+    });
+    expect(cancel.ok).toBe(true);
+    expect(cancel.state.pendingZordSetup).toBeUndefined();
   });
 
   it("rushes RS-045 directly after category hold without duplicate payment", () => {

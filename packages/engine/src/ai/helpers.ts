@@ -23,6 +23,10 @@ import {
   needsZordMaterial,
   requiresAllFusionPartners,
 } from "../rules/zord";
+import {
+  advanceZordSetup,
+  listZordSetupResolveActions,
+} from "../rules/zordSetup";
 import { COMMAND_ZONE_MAX, WIN_DAMAGE } from "../types/game";
 import { evaluateState } from "./scoring";
 import {
@@ -564,26 +568,39 @@ export function pickZordSetupStep(
 ): GameAction | null {
   const setup = state.pendingZordSetup;
   if (!setup || setup.playerId !== playerId) return null;
+
+  const resolves = listZordSetupResolveActions(state, setup);
+  if (resolves.length === 0) {
+    return { type: "cancel_zord_setup", playerId };
+  }
+
   if (setup.step === "destination") {
-    const commandZoneHasSpace =
-      state.players[playerId].command.length < COMMAND_ZONE_MAX;
-    return {
-      type: "resolve_zord_setup",
-      playerId,
-      destination: commandZoneHasSpace ? "command" : "discard",
-    };
+    return (
+      resolves.find((a) => a.destination === "command") ?? resolves[0]!
+    );
   }
-  if (setup.step === "material" && setup.validInstanceIds[0]) {
-    return {
-      type: "resolve_zord_setup",
-      playerId,
-      materialInstanceId: setup.validInstanceIds[0],
-    };
+
+  if (setup.step === "material") {
+    let best = resolves[0]!;
+    let bestScore = Number.NEGATIVE_INFINITY;
+    for (const action of resolves) {
+      if (action.paymentPath === "mothership") continue;
+      const advanced = advanceZordSetup(state, setup, {
+        materialInstanceId: action.materialInstanceId,
+        paymentPath: action.paymentPath,
+      });
+      if (advanced.kind !== "rush") continue;
+      const score = scoreRushAction(state, advanced.action);
+      if (score > bestScore) {
+        bestScore = score;
+        best = action;
+      }
+    }
+    if (bestScore > Number.NEGATIVE_INFINITY) return best;
+    return resolves.find((a) => a.paymentPath === "mothership") ?? resolves[0]!;
   }
-  if (setup.step === "mothership") {
-    return { type: "resolve_zord_setup", playerId };
-  }
-  return { type: "cancel_zord_setup", playerId };
+
+  return resolves[0]!;
 }
 
 export function pickBestRushByScore(

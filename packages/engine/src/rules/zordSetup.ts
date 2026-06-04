@@ -1,6 +1,10 @@
 import { getZordCondition, isSendSUnitZordCondition } from "@rangers-strike/cards";
-import type { ZordMaterialDestination, RushAction } from "../types/actions";
-import type { GameState, PendingZordSetup, PlayerId } from "../types/game";
+import type {
+  ResolveZordSetupAction,
+  ZordMaterialDestination,
+  RushAction,
+} from "../types/actions";
+import type { GameState, PendingZordSetup, PlayerId, PlayerState } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import {
   canRushUnit,
@@ -81,27 +85,113 @@ export function hasLegalZordRush(
   );
 }
 
+function canAffordZordPower(
+  player: PlayerState,
+  def: NonNullable<ReturnType<typeof getDefinition>>,
+): boolean {
+  const cost = parsePowerCost(def.powerCost);
+  return player.power.length >= cost;
+}
+
+/** Resolves that advanceZordSetup accepts for the current wizard step. */
+export function listZordSetupResolveActions(
+  state: GameState,
+  setup: PendingZordSetup,
+): ResolveZordSetupAction[] {
+  const { playerId } = setup;
+  const actions: ResolveZordSetupAction[] = [];
+
+  if (setup.step === "destination") {
+    for (const destination of ["command", "discard"] as const) {
+      const advanced = advanceZordSetup(state, setup, { destination });
+      if (advanced.kind !== "error") {
+        actions.push({ type: "resolve_zord_setup", playerId, destination });
+      }
+    }
+    return actions;
+  }
+
+  if (setup.step === "material") {
+    for (const materialInstanceId of setup.validInstanceIds) {
+      const advanced = advanceZordSetup(state, setup, { materialInstanceId });
+      if (advanced.kind !== "error") {
+        actions.push({ type: "resolve_zord_setup", playerId, materialInstanceId });
+      }
+    }
+    if (setup.mothershipAvailable) {
+      const advanced = advanceZordSetup(state, setup, { paymentPath: "mothership" });
+      if (advanced.kind !== "error") {
+        actions.push({ type: "resolve_zord_setup", playerId, paymentPath: "mothership" });
+      }
+    }
+    return actions;
+  }
+
+  if (setup.step === "mothership") {
+    const advanced = advanceZordSetup(state, setup, {});
+    if (advanced.kind !== "error") {
+      actions.push({ type: "resolve_zord_setup", playerId });
+    }
+  }
+
+  return actions;
+}
+
+/** True when some resolve sequence finishes in rush or command payment. */
+export function canFinishZordSetup(
+  state: GameState,
+  setup: PendingZordSetup,
+): boolean {
+  for (const action of listZordSetupResolveActions(state, setup)) {
+    const advanced = advanceZordSetup(state, setup, {
+      materialInstanceId: action.materialInstanceId,
+      destination: action.destination,
+      paymentPath: action.paymentPath,
+    });
+    if (advanced.kind === "error") continue;
+    if (advanced.kind === "rush" || advanced.kind === "payment") return true;
+    if (advanced.kind === "continue" && canFinishZordSetup(state, advanced.setup)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function canBeginZordSetup(
   state: GameState,
   playerId: PlayerId,
   zordInstanceId: string,
 ): boolean {
-  if (state.phase !== "rush") return false;
+  const setup = createZordSetup(state, playerId, zordInstanceId);
+  if (!setup) return false;
+  return canFinishZordSetup(state, setup);
+}
+
+export function createZordSetup(
+  state: GameState,
+  playerId: PlayerId,
+  zordInstanceId: string,
+): PendingZordSetup | null {
+  if (state.phase !== "rush") return null;
 
   const player = state.players[playerId];
   const found = findInZone(player, "hand", zordInstanceId);
-  if (!found) return false;
+  if (!found) return null;
   const def = getDefinition(state.definitions, found.card.cardId);
   if (!isUnit(def) || !needsZordMaterial(state.definitions, found.card.cardId)) {
-    return false;
+    return null;
   }
 
   if (requiresAllFusionPartners(found.card.cardId)) {
-    return hasAllRequiredFusionMaterials(
-      player,
-      found.card.cardId,
-      found.card.instanceId,
-    );
+    if (
+      !hasAllRequiredFusionMaterials(
+        player,
+        found.card.cardId,
+        found.card.instanceId,
+      )
+    ) {
+      return null;
+    }
   }
 
   const materials = collectZordMaterials(
@@ -111,35 +201,12 @@ export function canBeginZordSetup(
     found.card.instanceId,
   );
   if (materials.length > 0) {
-    const cost = parsePowerCost(def!.powerCost);
-    return player.power.length >= cost;
+    if (!canAffordZordPower(player, def!)) return null;
+  } else if (canPayZordWithMothership(player, state.definitions, found.card.cardId)) {
+    if (!canAffordZordPower(player, def!)) return null;
+  } else {
+    return null;
   }
-
-  if (canPayZordWithMothership(player, state.definitions, found.card.cardId)) {
-    const cost = parsePowerCost(def!.powerCost);
-    return player.power.length >= cost;
-  }
-
-  return false;
-}
-
-export function createZordSetup(
-  state: GameState,
-  playerId: PlayerId,
-  zordInstanceId: string,
-): PendingZordSetup | null {
-  if (!canBeginZordSetup(state, playerId, zordInstanceId)) return null;
-
-  const player = state.players[playerId];
-  const found = findInZone(player, "hand", zordInstanceId);
-  if (!found) return null;
-
-  const materials = collectZordMaterials(
-    player,
-    state.definitions,
-    found.card.cardId,
-    found.card.instanceId,
-  );
 
   if (materials.length > 0) {
     const materialIds = materials.map((c) => c.instanceId);

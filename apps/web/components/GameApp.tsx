@@ -261,6 +261,20 @@ export function GameApp() {
       if (result.ok) {
         setState(result.state);
         setActionError(null);
+      } else if (
+        state.pendingZordSetup?.playerId === CPU_PLAYER &&
+        action.type === "resolve_zord_setup"
+      ) {
+        const cancel = applyAction(state, {
+          type: "cancel_zord_setup",
+          playerId: CPU_PLAYER,
+        });
+        if (cancel.ok) {
+          setState(cancel.state);
+          setActionError(null);
+        } else {
+          setActionError(formatActionError(result.error));
+        }
       } else {
         setActionError(formatActionError(result.error));
       }

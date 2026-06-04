@@ -31,7 +31,10 @@ import {
   needsEffectHoldPayment,
 } from "../rules/commandPayment";
 import { hasCommandForCardUse } from "../rules/restrictions";
-import { canBeginZordSetup } from "../rules/zordSetup";
+import {
+  canBeginZordSetup,
+  listZordSetupResolveActions,
+} from "../rules/zordSetup";
 import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart } from "../rules/startPhase";
 import { listZordRushPaymentVariants } from "../rules/mothership";
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
@@ -684,6 +687,9 @@ export function getLegalActions(state: GameState): GameAction[] {
 
   if (state.pendingZordSetup) {
     if (state.pendingZordSetup.playerId === playerId) {
+      actions.push(
+        ...listZordSetupResolveActions(state, state.pendingZordSetup),
+      );
       actions.push({ type: "cancel_zord_setup", playerId });
     }
     return actions;
@@ -938,10 +944,12 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
 
   if (action.type === "resolve_zord_setup") {
     const setup = state.pendingZordSetup;
-    return (
-      !!setup &&
-      setup.playerId === action.playerId &&
-      state.pendingZordSetup !== undefined
+    if (!setup || setup.playerId !== action.playerId) return false;
+    return listZordSetupResolveActions(state, setup).some(
+      (candidate) =>
+        candidate.destination === action.destination &&
+        candidate.materialInstanceId === action.materialInstanceId &&
+        candidate.paymentPath === action.paymentPath,
     );
   }
 
