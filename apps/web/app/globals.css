@@ -32,6 +32,12 @@ select {
   font: inherit;
 }
 
+/*
+ * Play layout contract (do not break without explicit product decision):
+ * - CPU board above, human board below (game__boards: column only; never side-by-side)
+ * - Human hand and zones at the bottom; horizontal scroll inside zones only
+ * - During a match: 100dvh session shell; page scroll off; playfield fills middle
+ */
 .game {
   max-width: var(--app-max-width);
   margin: 0 auto;
@@ -40,6 +46,88 @@ select {
   display: flex;
   flex-direction: column;
   gap: var(--app-gap);
+}
+
+/* Active match: one viewport, no document scroll */
+.game.game--session {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding-bottom: max(var(--app-padding-y), env(safe-area-inset-bottom));
+}
+
+body.body--game-session {
+  overflow: hidden;
+  height: 100dvh;
+}
+
+.game__chrome {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-gap);
+  min-width: 0;
+}
+
+.game__chrome-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: #1e293b;
+  font-size: 0.78rem;
+}
+
+.game__chrome-bar .status-bar__phase {
+  color: #7dd3fc;
+}
+
+.game__chrome-bar .action-error {
+  width: 100%;
+  margin: 0;
+  padding: 6px 8px;
+  font-size: 0.75rem;
+}
+
+.game__chrome-toggle {
+  align-self: flex-end;
+  margin-top: -4px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  background: transparent;
+  border: 1px solid #334155;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.game__chrome-toggle:hover {
+  color: #e2e8f0;
+  border-color: #64748b;
+}
+
+.game--chrome-collapsed .game__chrome {
+  gap: 4px;
+}
+
+.game--session .game__playfield {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.game--session .game__boards {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.game--session .action-bar {
+  flex-shrink: 0;
+  position: static;
+  margin-top: auto;
 }
 
 .game__playfield {
@@ -1677,7 +1765,7 @@ select {
   color: #94a3b8;
 }
 
-/* Short viewport / phone landscape: less chrome, boards side-by-side */
+/* Short viewport / phone landscape: CSS-first compact sizing (see compactViewport.ts) */
 @media (orientation: landscape) and (max-height: 520px) {
   .game {
     --card-width: 58px;

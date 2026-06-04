@@ -32,9 +32,22 @@ function applyScaleVars(game: HTMLElement, scale: number): void {
   game.classList.add("game--viewport-fit");
 }
 
+function availableHeightForBoard(game: HTMLElement, board: HTMLElement): number {
+  const boardTopInGame = board.getBoundingClientRect().top - game.getBoundingClientRect().top;
+
+  if (game.classList.contains("game--session")) {
+    return game.clientHeight - boardTopInGame - ACTION_BAR_RESERVE_PX - BOTTOM_GAP_PX;
+  }
+
+  const gameRect = game.getBoundingClientRect();
+  const boardDocTop = gameRect.top + window.scrollY + boardTopInGame;
+  const viewportH = window.visualViewport?.height ?? window.innerHeight;
+  return viewportH - boardDocTop - ACTION_BAR_RESERVE_PX - BOTTOM_GAP_PX;
+}
+
 /**
- * Shrinks the human playsheet (zones + hand) for short viewports (e.g. landscape).
- * Uses document layout position (scroll-invariant); does not listen to scroll events.
+ * Optional insurance: shrinks the human playsheet on short landscape viewports.
+ * Only enable when {@link COMPACT_VIEWPORT_MQ} matches. Scroll-invariant.
  */
 export function useViewportBoardFit(
   gameRef: RefObject<HTMLElement | null>,
@@ -52,12 +65,7 @@ export function useViewportBoardFit(
       const board = humanBoardRef.current;
       if (!game || !board) return;
 
-      const viewportH = window.visualViewport?.height ?? window.innerHeight;
-      const gameRect = game.getBoundingClientRect();
-      const boardTopInGame = board.getBoundingClientRect().top - gameRect.top;
-      const boardDocTop = gameRect.top + window.scrollY + boardTopInGame;
-      const available =
-        viewportH - boardDocTop - ACTION_BAR_RESERVE_PX - BOTTOM_GAP_PX;
+      const available = availableHeightForBoard(game, board);
 
       const scaled = game.classList.contains("game--viewport-fit");
       const naturalHeight =

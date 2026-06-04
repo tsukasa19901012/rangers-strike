@@ -73,6 +73,7 @@ import {
   formatEffectLogNotice,
   shouldShowEffectLogNotice,
 } from "@/lib/effectLogNotice";
+import { useCompactGameViewport } from "@/lib/compactViewport";
 import { useViewportBoardFit } from "@/lib/useViewportBoardFit";
 
 const CPU_PLAYER = "player2" as const;
@@ -268,14 +269,27 @@ export function GameApp() {
   const humanCanAct =
     state?.activePlayer === HUMAN_PLAYER && !state.winner;
 
-  useViewportBoardFit(gameRef, humanBoardRef, !!state);
+  const compactViewport = useCompactGameViewport();
+  const [chromeExpanded, setChromeExpanded] = useState(true);
+
+  useEffect(() => {
+    setChromeExpanded(!compactViewport);
+  }, [compactViewport]);
+
+  useEffect(() => {
+    if (!state) return;
+    document.body.classList.add("body--game-session");
+    return () => document.body.classList.remove("body--game-session");
+  }, [state]);
+
+  useViewportBoardFit(gameRef, humanBoardRef, !!state && compactViewport);
 
   const dismissTurnNotice = useCallback(() => {
     setTurnNotice((current) => {
       if (current) {
         const targetRef = current === HUMAN_PLAYER ? humanBoardRef : cpuBoardRef;
         window.requestAnimationFrame(() => {
-          targetRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+          targetRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
         });
       }
       return null;
@@ -1237,8 +1251,37 @@ export function GameApp() {
                   : "対象カードをタップしてください"
                 : undefined;
 
+  const phaseStatusSuffix =
+    state.pendingStrike &&
+    opponent(state.pendingStrike.strikerPlayerId) === HUMAN_PLAYER
+      ? "（ストライク応答）"
+      : state.pendingStrike
+        ? "（ストライク処理中）"
+        : state.pendingBattle
+          ? "（アタック応答）"
+          : state.pendingRush
+            ? "（ラッシュ応答）"
+            : state.pendingLeave
+              ? "（離場応答）"
+              : state.pendingEffectChoice
+                ? "（効果選択）"
+                : state.pendingCommandPayment
+                  ? "（コマンド支払い）"
+                  : state.pendingBattleEntry
+                    ? "（バトルアクション）"
+                    : "のターン";
+
   return (
-    <div className="game" ref={gameRef}>
+    <div
+      className={[
+        "game",
+        "game--session",
+        chromeExpanded ? "" : "game--chrome-collapsed",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      ref={gameRef}
+    >
       {previewCard && (
         <CardModal card={previewCard} onClose={() => setPreviewCard(null)} />
       )}
@@ -1415,68 +1458,90 @@ export function GameApp() {
         <TurnNoticeModal playerId={turnNotice} onDismiss={dismissTurnNotice} />
       )}
 
-      <header className="game__header">
-        <div>
-          <h1>レンジャーズストライク</h1>
-          <p className="game__subtitle">
-            {humanDeckSelection ? deckSelectionLabel(humanDeckSelection) : "—"}
-            {" vs "}
-            {cpuDeckSelection ? deckSelectionLabel(cpuDeckSelection) : "—"}
-          </p>
-        </div>
-        <button type="button" className="btn btn--ghost" onClick={returnToStart}>
-          タイトル
-        </button>
-      </header>
+      <div className="game__chrome">
+        {chromeExpanded ? (
+          <>
+            <header className="game__header">
+              <div>
+                <h1>レンジャーズストライク</h1>
+                <p className="game__subtitle">
+                  {humanDeckSelection ? deckSelectionLabel(humanDeckSelection) : "—"}
+                  {" vs "}
+                  {cpuDeckSelection ? deckSelectionLabel(cpuDeckSelection) : "—"}
+                </p>
+              </div>
+              <button type="button" className="btn btn--ghost" onClick={returnToStart}>
+                タイトル
+              </button>
+            </header>
 
-      <div className="status-bar">
-        <span>ターン {state.turn}</span>
-        <span className="status-bar__phase">
-          {PLAYER_LABELS[state.activePlayer]}
-          {state.pendingStrike &&
-          opponent(state.pendingStrike.strikerPlayerId) === HUMAN_PLAYER
-            ? "（ストライク応答）"
-            : state.pendingStrike
-              ? "（ストライク処理中）"
-              : state.pendingBattle
-              ? "（アタック応答）"
-              : state.pendingRush
-                ? "（ラッシュ応答）"
-                : state.pendingLeave
-                ? "（離場応答）"
-                : state.pendingEffectChoice
-                  ? "（効果選択）"
-                  : state.pendingCommandPayment
-                    ? "（コマンド支払い）"
-                    : state.pendingBattleEntry
-                      ? "（バトルアクション）"
-                      : "のターン"}
-        </span>
-        {state.winner && (
-          <strong className="status-bar__winner">
-            {state.winner === HUMAN_PLAYER ? "あなたの勝ち！" : "CPUの勝ち…"}
-          </strong>
+            <div className="status-bar">
+              <span>ターン {state.turn}</span>
+              <span className="status-bar__phase">
+                {PLAYER_LABELS[state.activePlayer]}
+                {phaseStatusSuffix}
+              </span>
+              {state.winner && (
+                <strong className="status-bar__winner">
+                  {state.winner === HUMAN_PLAYER ? "あなたの勝ち！" : "CPUの勝ち…"}
+                </strong>
+              )}
+              <button
+                type="button"
+                className="btn btn--log"
+                onClick={() => setLogOpen(true)}
+              >
+                ログ ({state.log.length})
+              </button>
+            </div>
+
+            {actionError && (
+              <div className="action-error" role="alert">
+                {actionError}
+              </div>
+            )}
+
+            <PhaseGuide
+              phase={state.phase}
+              isHumanTurn={humanCanAct}
+              pendingHint={pendingHint}
+            />
+          </>
+        ) : (
+          <div className="game__chrome-bar">
+            <span>ターン {state.turn}</span>
+            <span className="status-bar__phase">
+              {PLAYER_LABELS[state.activePlayer]}
+              {phaseStatusSuffix}
+            </span>
+            {state.winner && (
+              <strong className="status-bar__winner">
+                {state.winner === HUMAN_PLAYER ? "勝ち" : "敗北"}
+              </strong>
+            )}
+            <button
+              type="button"
+              className="btn btn--log"
+              onClick={() => setLogOpen(true)}
+            >
+              ログ ({state.log.length})
+            </button>
+            {actionError && (
+              <div className="action-error" role="alert">
+                {actionError}
+              </div>
+            )}
+          </div>
         )}
         <button
           type="button"
-          className="btn btn--log"
-          onClick={() => setLogOpen(true)}
+          className="game__chrome-toggle"
+          onClick={() => setChromeExpanded((open) => !open)}
+          aria-expanded={chromeExpanded}
         >
-          ログ ({state.log.length})
+          {chromeExpanded ? "情報を隠す" : "情報を表示"}
         </button>
       </div>
-
-      {actionError && (
-        <div className="action-error" role="alert">
-          {actionError}
-        </div>
-      )}
-
-      <PhaseGuide
-        phase={state.phase}
-        isHumanTurn={humanCanAct}
-        pendingHint={pendingHint}
-      />
 
       <div className="game__playfield">
         <div className="game__boards">
