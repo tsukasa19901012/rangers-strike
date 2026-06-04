@@ -233,6 +233,18 @@ export function countReleasedCommands(player: PlayerState): number {
  * 効果など支払いUIなしで※進入するとき、リリース中のコマンドを1枚ホールドする。
  * プレイヤー操作の進入は initiate_command_payment を使う。
  */
+/** Effect/auto entry: ※用ホールドが既に揃っているとき支払い済みフラグを立てる。 */
+export function markBattleEntryHoldReadyIfNoteSatisfied(
+  player: PlayerState,
+  unit: CardInstance,
+): PlayerState {
+  const unitHold = getBattleEntryHoldCount(unit.cardId);
+  if (unitHold > 0 && countBattleEntryEligibleHolds(player) >= unitHold) {
+    return { ...player, battleEntryHoldReady: true };
+  }
+  return player;
+}
+
 export function autoHoldForBattleEntry(
   player: PlayerState,
   unit: CardInstance,
@@ -240,7 +252,7 @@ export function autoHoldForBattleEntry(
   const unitHold = getBattleEntryHoldCount(unit.cardId);
   if (unitHold <= 0) return player;
 
-  if (player.battleEntryHoldReady && countBattleEntryEligibleHolds(player) >= unitHold) {
+  if (countBattleEntryEligibleHolds(player) >= unitHold) {
     return player;
   }
 
@@ -254,31 +266,24 @@ export function autoHoldForBattleEntry(
 }
 
 function passesBattleEntryHoldRequirements(
-  _state: GameState,
+  state: GameState,
   player: PlayerState,
   unit: CardInstance,
 ): boolean {
   const unitHold = getBattleEntryHoldCount(unit.cardId);
-  const lgHold = isMediumUnit(_state.definitions, unit.cardId)
-    ? countActiveLightningGravity(_state)
+  const lgHold = isMediumUnit(state.definitions, unit.cardId)
+    ? countActiveLightningGravity(state)
     : 0;
   const requiredTotal = unitHold + lgHold;
 
+  if (requiredTotal === 0) return true;
+
   if (unitHold > 0) {
-    const released = countReleasedCommands(player);
-    if (player.battleEntryHoldReady) {
-      if (countBattleEntryEligibleHolds(player) < unitHold) return false;
-    } else {
-      if (released < unitHold) return false;
-      if (released >= unitHold) return false;
-      if (countBattleEntryEligibleHolds(player) < unitHold) return false;
-    }
+    if (countBattleEntryEligibleHolds(player) < unitHold) return false;
+    if (!player.battleEntryHoldReady) return false;
   }
 
-  if (requiredTotal > 0 && countHeldCommands(player) < requiredTotal) {
-    return false;
-  }
-  return true;
+  return countHeldCommands(player) >= requiredTotal;
 }
 
 function cardName(
@@ -385,22 +390,16 @@ export function explainCannotEnterBattle(
       }
       return `「${unitName}」をバトルエリアに出すには、リリース状態の自軍コマンドが${unitHolds}枚以上必要です（リリース${released}枚）。`;
     }
-    if (released >= unitHolds && battleEntryHeld < unitHolds) {
+    if (battleEntryHeld < unitHolds) {
       return `「${unitName}」をバトルエリアに出すには、リリース状態のコマンドを${unitHolds}枚選んでホールドしてください。`;
     }
+    return `「${unitName}」をバトルエリアに出すには、※のコマンドホールド支払いを完了してください。`;
   }
-  if (unitHolds > 0 && player.battleEntryHoldReady && battleEntryHeld < unitHolds) {
-    const parts: string[] = [];
-    parts.push(`「${unitName}」の能力によりコマンドを${unitHolds}枚ホールド`);
-    if (lgCount > 0) {
-      parts.push(`【稲妻重力エネルギー】の効果によりコマンドを${lgCount}枚ホールド`);
+  if (unitHolds > 0 && battleEntryHeld < unitHolds) {
+    if (held > battleEntryHeld) {
+      return `「${unitName}」をバトルエリアに出すには、リリース状態の自軍コマンドを${unitHolds}枚ホールドする必要があります（母艦のホールドはバトル進入の条件になりません）。`;
     }
-    const requirement = parts.join("、");
-    const onlyMothership =
-      held > battleEntryHeld
-        ? "（母艦のホールドはバトル進入の条件になりません）"
-        : "";
-    return `${requirement}する必要があります（バトル進入用${battleEntryHeld}枚 / 必要${unitHolds}枚、ホールド合計${held}枚）${onlyMothership}`;
+    return `「${unitName}」をバトルエリアに出すには、リリース状態のコマンドを${unitHolds}枚選んでホールドしてください。`;
   }
   if (requiredTotal > 0 && held < requiredTotal) {
     const parts: string[] = [];

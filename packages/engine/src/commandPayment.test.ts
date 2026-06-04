@@ -54,6 +54,25 @@ describe("command payment", () => {
     expect(resolved.state.pendingCommandPayment).toBeUndefined();
   });
 
+  it("requires 2 holds for RS-053 battle entry when one RS-069 is active", () => {
+    const unit = inst("RS-053", "ptera");
+    const gravity = inst("RS-069", "lg");
+    const state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      player1: {
+        rush: [unit],
+        operation: [gravity],
+        command: [inst("RS-007", "c1"), inst("RS-008", "c2")],
+      },
+    });
+
+    expect(getBattleEntryPaymentNeeds(state, "player1", unit)).toEqual({
+      eligibleNeeded: 1,
+      totalNeeded: 2,
+    });
+  });
+
   it("rejects mothership-only hold for RS-053 battle entry payment", () => {
     const unit = inst("RS-053", "ptera");
     const state = createTestState({

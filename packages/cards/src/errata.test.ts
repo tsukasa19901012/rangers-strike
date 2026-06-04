@@ -30,6 +30,7 @@ describe("errata", () => {
   it("stacks RS-051 battle entry hold with lightning gravity (Q3)", () => {
     expect(getBattleEntryHoldCount("RS-051")).toBe(1);
     expect(requiredHeldCommandsForMBattle(1, "RS-051")).toBe(2);
+    expect(requiredHeldCommandsForMBattle(2, "RS-053")).toBe(3);
   });
 
   it("lists all battle entry hold cards from unit effect notes", () => {

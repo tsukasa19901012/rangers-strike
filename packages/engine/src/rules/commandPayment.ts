@@ -110,16 +110,23 @@ export function getBattleEntryPaymentNeeds(
   const player = state.players[playerId];
   const unitHold = getBattleEntryHoldCount(unit.cardId);
   const requiredTotal = requiredBattleEntryHolds(state, unit);
-  if (unitHold > 0) {
-    if (player.battleEntryHoldReady) return null;
-    if (countReleasedCommands(player) < unitHold) return null;
+  const held = countHeldCommands(player);
+  const battleEligible = countBattleEntryEligibleHolds(player);
+
+  const holdShortfall = Math.max(0, requiredTotal - held);
+  const noteEligibleShortfall = Math.max(0, unitHold - battleEligible);
+  const needsNoteConfirm = unitHold > 0 && !player.battleEntryHoldReady;
+
+  if (!needsNoteConfirm && holdShortfall <= 0) {
+    return null;
   }
 
-  const eligibleNeeded = unitHold;
-  const totalNeeded = Math.max(
-    Math.max(0, requiredTotal - countHeldCommands(player)),
-    eligibleNeeded,
-  );
+  const eligibleNeeded = needsNoteConfirm
+    ? noteEligibleShortfall > 0
+      ? noteEligibleShortfall
+      : unitHold
+    : 0;
+  const totalNeeded = Math.max(holdShortfall, eligibleNeeded);
   if (totalNeeded <= 0) return null;
 
   const unheld = countReleasedCommands(player);

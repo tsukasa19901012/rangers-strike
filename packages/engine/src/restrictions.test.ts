@@ -4,6 +4,7 @@ import {
   explainCannotEnterBattle,
   canMoveUnitToBattle,
   getLightningGravityHoldNotice,
+  requiredBattleEntryHolds,
 } from "./rules/restrictions";
 import { getBattleEntryHoldCount } from "@rangers-strike/cards";
 import { getLegalActions } from "./core/legalActions";
@@ -285,6 +286,140 @@ describe("battle entry hold requirements", () => {
       expect(explainCannotEnterBattle(state, "player1", unit, "rush")).toContain("リリース");
     },
   );
+
+  it("requires 2 command holds for RS-053 when one RS-069 is on field", () => {
+    const unit = inst("RS-053", "ptera");
+    const gravity = inst("RS-069", "lg");
+    const cmd1 = inst("RS-007", "c1");
+    const cmd2 = inst("RS-008", "c2");
+    const state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      player1: {
+        rush: [unit],
+        operation: [gravity],
+        command: [cmd1, cmd2],
+      },
+    });
+
+    expect(canMoveUnitToBattle(state, "player1", unit, "rush")).toBe(false);
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "battle_entry",
+      sourceInstanceId: unit.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+    expect(initiated.state.pendingCommandPayment?.totalNeeded).toBe(2);
+
+    const oneHold = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [cmd1.instanceId],
+    });
+    expect(oneHold.ok).toBe(false);
+
+    const twoHolds = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [cmd1.instanceId, cmd2.instanceId],
+    });
+    expect(twoHolds.ok).toBe(true);
+    if (!twoHolds.ok) return;
+    expect(twoHolds.state.players.player1.battle.some((c) => c.instanceId === unit.instanceId)).toBe(
+      true,
+    );
+    expect(twoHolds.state.players.player1.command.filter((c) => c.commandHeld).length).toBe(2);
+  });
+
+  it("requires 3 command holds for RS-053 when both players have RS-069", () => {
+    const unit = inst("RS-053", "ptera");
+    const cmd1 = inst("RS-007", "c1");
+    const cmd2 = inst("RS-008", "c2");
+    const cmd3 = inst("RS-009", "c3");
+    const state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      player1: {
+        rush: [unit],
+        operation: [inst("RS-069", "lg1")],
+        command: [cmd1, cmd2, cmd3],
+      },
+      player2: {
+        operation: [inst("RS-069", "lg2")],
+      },
+    });
+
+    expect(requiredBattleEntryHolds(state, unit)).toBe(3);
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "battle_entry",
+      sourceInstanceId: unit.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+    expect(initiated.state.pendingCommandPayment?.totalNeeded).toBe(3);
+
+    const twoHolds = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [cmd1.instanceId, cmd2.instanceId],
+    });
+    expect(twoHolds.ok).toBe(false);
+
+    const threeHolds = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [cmd1.instanceId, cmd2.instanceId, cmd3.instanceId],
+    });
+    expect(threeHolds.ok).toBe(true);
+    if (!threeHolds.ok) return;
+    expect(threeHolds.state.players.player1.command.filter((c) => c.commandHeld).length).toBe(3);
+  });
+
+  it("allows second battle-entry payment when RS-053 already has ※ hold but lightning gravity needs one more", () => {
+    const unit = inst("RS-053", "ptera");
+    const gravity = inst("RS-069", "lg");
+    const cmd1 = { ...inst("RS-007", "c1"), commandHeld: true };
+    const cmd2 = inst("RS-008", "c2");
+    let state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      player1: {
+        rush: [unit],
+        operation: [gravity],
+        command: [cmd1, cmd2],
+        battleEntryHoldReady: true,
+      },
+    });
+
+    expect(canMoveUnitToBattle(state, "player1", unit, "rush")).toBe(false);
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "battle_entry",
+      sourceInstanceId: unit.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+    expect(initiated.state.pendingCommandPayment?.totalNeeded).toBe(1);
+
+    const resolved = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [cmd2.instanceId],
+    });
+    expect(resolved.ok).toBe(true);
+    if (!resolved.ok) return;
+    expect(resolved.state.players.player1.battle.some((c) => c.instanceId === unit.instanceId)).toBe(
+      true,
+    );
+  });
 
   it("blocks RS-053 when only mothership hold is present", () => {
     const unit = inst("RS-053", "ptera");

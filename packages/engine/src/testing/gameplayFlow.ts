@@ -312,11 +312,13 @@ export function moveToBattleWithHolds(
         sourceInstanceId: unitInstanceId,
       }),
     );
+    const payIds =
+      needs.totalNeeded > 0 ? [commandInstanceId] : ([] as string[]);
     next = unwrapAction(
       applyAction(next, {
         type: "resolve_command_payment",
         playerId,
-        commandInstanceIds: [commandInstanceId],
+        commandInstanceIds: payIds,
       }),
     );
     if (next.players[playerId].battle.some((c) => c.instanceId === unitInstanceId)) {

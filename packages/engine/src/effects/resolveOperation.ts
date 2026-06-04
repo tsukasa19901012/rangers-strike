@@ -27,6 +27,7 @@ import { resolveInfiniteChain } from "../rules/legend2/operations";
 import {
   autoHoldForBattleEntry,
   canMoveUnitToBattle,
+  markBattleEntryHoldReadyIfNoteSatisfied,
 } from "../rules/restrictions";
 import { tryLeaveField } from "../rules/operationCounters";
 import { COMMAND_ZONE_MAX } from "../types/game";
@@ -307,7 +308,7 @@ function returnFusionMaterialsAfterBazooka(
       discard = [...discard, card];
       break;
     }
-    enemy = prepared;
+    enemy = markBattleEntryHoldReadyIfNoteSatisfied(prepared, card);
     const withPrepared = {
       ...state,
       ...updatePlayer(state, enemyId, enemy),

@@ -71,7 +71,6 @@ import { applyAllZordFusionMaterials, applyZordMaterial, findZordMaterial, requi
 import {
   canMoveUnitToBattle,
   mustEnterBattleBeforePhaseEnd,
-  countBattleEntryEligibleHolds,
   countHeldCommands,
   requiredBattleEntryHolds,
 } from "../rules/restrictions";
