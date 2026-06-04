@@ -7,6 +7,13 @@
   --card-width: 72px;
   --card-height: calc(var(--card-width) * 1.417);
   --card-power-width: calc(var(--card-width) * 0.72);
+  --power-zone-card-slot-height: calc(var(--card-power-width) + 6px);
+  --power-zone-card-gap: 6px;
+  --power-zone-max-visible-cards: 7;
+  --power-zone-cards-max-height: calc(
+    var(--power-zone-max-visible-cards) * var(--power-zone-card-slot-height) +
+      (var(--power-zone-max-visible-cards) - 1) * var(--power-zone-card-gap)
+  );
   --playsheet-sidebar-width: 92px;
   --zone-card-min-height: 56px;
   --app-max-width: 100%;
@@ -383,7 +390,10 @@ select {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  height: 100%;
+  align-self: start;
+  max-height: calc(
+    var(--power-zone-cards-max-height) + 2.25rem
+  );
 }
 
 .playsheet--opponent .playsheet__power {
@@ -483,19 +493,20 @@ select {
 }
 
 .playsheet__power .zone__cards {
-  flex: 1;
+  flex: 0 1 auto;
   flex-direction: column;
   align-items: center;
   min-height: 0;
+  max-height: var(--power-zone-cards-max-height);
   overflow-x: hidden;
-  gap: 6px;
+  gap: var(--power-zone-card-gap);
   padding: 2px 0;
 }
 
 .playsheet__power .card-wrap {
   flex-shrink: 0;
   width: calc(var(--card-power-width) + 22px);
-  height: calc(var(--card-power-width) + 6px);
+  height: var(--power-zone-card-slot-height);
   display: flex;
   align-items: center;
   justify-content: center;

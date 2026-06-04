@@ -25,7 +25,7 @@ import {
   resolveSkyMagicSlash,
 } from "./namedUnitEffects";
 import { resolveLegend2EnterBattle, applyLegend2ConditionalModifiers } from "./legend2/battleEffects";
-import { applyOpponentDrawOnEnter } from "./legend2/destroyEffects";
+import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
 import type { ComboOutcome } from "./comboTypes";
 import {
   applyNumberComboEffect,
@@ -295,7 +295,24 @@ export function resolveEnterBattleEffects(
       }
     }
 
-    nextState = applyOpponentDrawOnEnter(nextState, playerId, card.cardId);
+    nextState = tryStartOpponentDrawOnEnter(
+      nextState,
+      playerId,
+      card.cardId,
+      playerId,
+    );
+    if (nextState.pendingEffectChoice) {
+      logs.push(
+        buildLogEntry(
+          playerId,
+          "enter_battle",
+          card.cardId,
+          state.definitions,
+          "opponent_may_draw",
+        ),
+      );
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
 
     const conditional = getConditionalNamedEffect(card.cardId);
     if (conditional) {

@@ -109,6 +109,7 @@ import {
   finalizeRushPending,
 } from "../rules/operationCounters";
 import { applyResolveRuinSurvey } from "../rules/ruinSurvey";
+import { applySeabedDrawPlacement } from "../rules/pendingChoices";
 import {
   applyEffectChoicePlacement,
   applyEffectChoiceSelect,
@@ -279,10 +280,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         };
         return { ok: true, state: nextState };
       }
-      const drawn = applySuperBrainDraw(state, playerId, {
-        ...player,
-        hasDrawnThisStart: true,
-      });
+      const drawn = applySuperBrainDraw(state, playerId, player, playerId);
       if (drawn.detail === "empty_deck") {
         const nextState: GameState = {
           ...state,
@@ -290,6 +288,14 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           log: [...state.log, buildSimpleLogEntry(playerId, "deck_out")],
         };
         return { ok: true, state: nextState };
+      }
+      if (drawn.pending) {
+        const nextPlayer = { ...drawn.state.players[playerId], hasDrawnThisStart: true };
+        const nextState: GameState = {
+          ...drawn.state,
+          ...updatePlayer(drawn.state, playerId, nextPlayer),
+        };
+        return ok(nextState, buildSimpleLogEntry(playerId, "draw"));
       }
       const nextPlayer = {
         ...drawn.state.players[playerId],
@@ -312,9 +318,12 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (player.hand.length >= player.damage || player.deck.length === 0) {
         return fail("bonus_draw_unavailable");
       }
-      const drawn = applySuperBrainDraw(state, playerId, player);
+      const drawn = applySuperBrainDraw(state, playerId, player, playerId);
       if (drawn.detail === "empty_deck") {
         return fail("bonus_draw_unavailable");
+      }
+      if (drawn.pending) {
+        return ok(drawn.state, buildSimpleLogEntry(playerId, "bonus_draw"));
       }
       return withStartPhaseAutoAdvance(
         ok(drawn.state, buildSimpleLogEntry(playerId, "bonus_draw")),
@@ -1118,6 +1127,23 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       return ok(result.state, result.log);
     }
 
+    case "resolve_seabed_draw": {
+      const result = applySeabedDrawPlacement(state, playerId, action.placement);
+      if ("error" in result) return fail(result.error);
+      let nextState = result.state;
+      if (
+        nextState.phase === "start" &&
+        nextState.players[playerId].hasDrawnThisStart &&
+        !nextState.pendingEffectChoice
+      ) {
+        nextState = openEarthForceUpkeepChoiceIfNeeded(nextState, playerId);
+      }
+      return withStartPhaseAutoAdvance(
+        ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "resolve_seabed_draw")),
+        playerId,
+      );
+    }
+
     case "resolve_effect_choice": {
       const result = applyEffectChoiceSelect(state, playerId, action.instanceId);
       if ("error" in result) return fail(result.error);
@@ -1156,8 +1182,17 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       }
       const result = skipEffectChoice(state, playerId);
       if ("error" in result) return fail(result.error);
+      let afterSkip = result.state;
+      if (
+        afterSkip.phase === "start" &&
+        afterSkip.players[playerId].hasDrawnThisStart &&
+        !afterSkip.pendingEffectChoice &&
+        pending?.effectId === "seabed_survey"
+      ) {
+        afterSkip = openEarthForceUpkeepChoiceIfNeeded(afterSkip, playerId);
+      }
       return withStartPhaseAutoAdvance(
-        ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "skip_effect_choice")),
+        ok(afterSkip, result.log ?? buildSimpleLogEntry(playerId, "skip_effect_choice")),
         playerId,
       );
     }

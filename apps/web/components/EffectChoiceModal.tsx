@@ -16,6 +16,8 @@ type EffectChoiceModalProps = {
   onSelect: (instanceId: string) => void;
   onSkip: () => void;
   onRuinSurvey: (placement: "top" | "bottom") => void;
+  onSeabedDraw: (placement: "top" | "bottom") => void;
+  onOptionalDraw: () => void;
   onPreview: (card: CardDefinition) => void;
 };
 
@@ -43,6 +45,8 @@ export function EffectChoiceModal({
   onSelect,
   onSkip,
   onRuinSurvey,
+  onSeabedDraw,
+  onOptionalDraw,
   onPreview,
 }: EffectChoiceModalProps) {
   const title = effectChoiceTitle(pending);
@@ -91,6 +95,29 @@ export function EffectChoiceModal({
           )}
           <p className="effect-action-modal__hint">{hint}</p>
 
+          {pending.kind === "seabed_draw" && (
+            <div className="effect-action-modal__actions">
+              <button type="button" className="btn" onClick={() => onSeabedDraw("top")}>
+                上から引く
+              </button>
+              <button
+                type="button"
+                className="btn btn--primary"
+                onClick={() => onSeabedDraw("bottom")}
+              >
+                下から引く
+              </button>
+            </div>
+          )}
+
+          {pending.kind === "optional_deck_draw" && (
+            <div className="effect-action-modal__actions">
+              <button type="button" className="btn btn--primary" onClick={onOptionalDraw}>
+                1枚ドローする
+              </button>
+            </div>
+          )}
+
           {pending.kind === "deck_top_or_bottom" && scryCard && (
             <div className="effect-action-modal__section">
               <button
@@ -134,6 +161,8 @@ export function EffectChoiceModal({
 
           {targets.length > 0 &&
             pending.kind !== "deck_top_or_bottom" &&
+            pending.kind !== "seabed_draw" &&
+            pending.kind !== "optional_deck_draw" &&
             pending.kind !== "scry_keep_one" && (
               <div className="effect-action-modal__targets">
                 {targets.map((target) => (

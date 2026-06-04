@@ -12,6 +12,7 @@ import {
   pickBestOperation,
   pickBestRushByScore,
   pickBestStrike,
+  scoreRushAction,
   pickChargeAction,
   pickCommandPaymentResolve,
   pickDamagePayment,
@@ -80,29 +81,9 @@ function collectRushCandidates(
   const candidates: GameAction[] = [];
   const rushes = affordableRushes(state, playerId, actions);
 
-  const rankedRushes = [...rushes].sort((a, b) => {
-    const scoreA =
-      a.type === "rush"
-        ? (() => {
-            const card = state.players[a.playerId].hand.find((c) => c.instanceId === a.instanceId);
-            if (!card) return 0;
-            const bp = effectiveBp(state, a.playerId, card);
-            const sp = strikeDamageFor(state.definitions, card, state, a.playerId);
-            return bp + sp * 2_000;
-          })()
-        : 0;
-    const scoreB =
-      b.type === "rush"
-        ? (() => {
-            const card = state.players[b.playerId].hand.find((c) => c.instanceId === b.instanceId);
-            if (!card) return 0;
-            const bp = effectiveBp(state, b.playerId, card);
-            const sp = strikeDamageFor(state.definitions, card, state, b.playerId);
-            return bp + sp * 2_000;
-          })()
-        : 0;
-    return scoreB - scoreA;
-  });
+  const rankedRushes = [...rushes].sort(
+    (a, b) => scoreRushAction(state, b) - scoreRushAction(state, a),
+  );
 
   for (const rush of rankedRushes) {
     const hold = pickHoldBeforeRush(state, playerId, actions, rush);
@@ -221,6 +202,13 @@ export function pickCpuAction(
       }
     }
 
+    if (pending.kind === "seabed_draw") {
+      const placements = actionsOfType(actions, "resolve_seabed_draw");
+      if (placements.length > 0) {
+        return pickBestBySearch(state, playerId, placements) ?? placements[0] ?? null;
+      }
+    }
+
     if (enableSearch && pending.effectId === "earth_force" && pending.optional) {
       const pay = actions.find((a) => a.type === "resolve_effect_choice");
       const skip = actions.find((a) => a.type === "skip_effect_choice");
@@ -307,13 +295,8 @@ export function pickCpuAction(
       const beginZord = pickBeginZordSetup(state, playerId, actions);
       if (beginZord) return beginZord;
 
-      if (enableSearch) {
-        const candidates = collectRushCandidates(state, playerId, actions);
-        const best = pickBestBySearch(state, playerId, candidates);
-        if (best) return best;
-      }
-
-      const rush = pickBestRushByScore(state, affordableRushes(state, playerId, actions));
+      const affordable = affordableRushes(state, playerId, actions);
+      const rush = pickBestRushByScore(state, affordable);
       if (rush) {
         const hold = pickHoldBeforeRush(state, playerId, actions, rush);
         return hold ?? rush;
@@ -321,6 +304,12 @@ export function pickCpuAction(
 
       const categoryPay = pickRushCategoryPayment(state, playerId, actions);
       if (categoryPay) return categoryPay;
+
+      if (enableSearch) {
+        const candidates = collectRushCandidates(state, playerId, actions);
+        const best = pickBestBySearch(state, playerId, candidates);
+        if (best) return best;
+      }
 
       return endPhase(actions);
     }

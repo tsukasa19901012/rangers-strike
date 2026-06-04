@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { listZordFusionPartnerIds } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
@@ -17,6 +18,11 @@ import {
 import { findCardOwner } from "../rules/fieldLookup";
 import { findDirectZordRushAction } from "../core/legalActions";
 import { strikeDamageFor } from "../rules/combo";
+import {
+  hasAllRequiredFusionMaterials,
+  needsZordMaterial,
+  requiresAllFusionPartners,
+} from "../rules/zord";
 import { COMMAND_ZONE_MAX, WIN_DAMAGE } from "../types/game";
 import { evaluateState } from "./scoring";
 import {
@@ -66,10 +72,62 @@ function handNeedsCommandSupport(
   );
 }
 
+/** Max power cost among unit/operation cards still in deck or hand. */
+export function deckMaxRequiredPower(state: GameState, playerId: PlayerId): number {
+  const player = state.players[playerId];
+  let max = 0;
+  for (const card of [...player.deck, ...player.hand]) {
+    const def = getDefinition(state.definitions, card.cardId);
+    if (!def || (def.type !== "unit" && def.type !== "operation")) continue;
+    max = Math.max(max, parsePowerCost(def.powerCost));
+  }
+  return max;
+}
+
+function powerChargeAtCap(state: GameState, playerId: PlayerId): boolean {
+  const cap = deckMaxRequiredPower(state, playerId);
+  if (cap <= 0) return true;
+  return state.players[playerId].power.length >= cap;
+}
+
+function maxRushPowerCostWithCommandSupport(
+  state: GameState,
+  playerId: PlayerId,
+): number {
+  const player = state.players[playerId];
+  let max = 0;
+  for (const card of player.hand) {
+    const def = getDefinition(state.definitions, card.cardId);
+    if (!def || def.type !== "unit") continue;
+    if (!hasReleasedCommandForCategories(player, state.definitions, cardCategories(def))) {
+      continue;
+    }
+    max = Math.max(max, parsePowerCost(def.powerCost));
+  }
+  return max;
+}
+
+function hasAdequatePowerForHandRushes(state: GameState, playerId: PlayerId): boolean {
+  const player = state.players[playerId];
+  let needsAny = false;
+  for (const card of player.hand) {
+    const def = getDefinition(state.definitions, card.cardId);
+    if (!def || def.type !== "unit") continue;
+    if (!hasReleasedCommandForCategories(player, state.definitions, cardCategories(def))) {
+      continue;
+    }
+    needsAny = true;
+    if (player.power.length < parsePowerCost(def.powerCost)) return false;
+  }
+  return needsAny;
+}
+
 function handNeedsPowerForRush(
   state: GameState,
   playerId: PlayerId,
 ): boolean {
+  if (powerChargeAtCap(state, playerId)) return false;
+  if (hasAdequatePowerForHandRushes(state, playerId)) return false;
   const player = state.players[playerId];
   for (const card of player.hand) {
     const def = getDefinition(state.definitions, card.cardId);
@@ -81,6 +139,81 @@ function handNeedsPowerForRush(
     if (player.power.length < cost) return true;
   }
   return false;
+}
+
+function handHasFusionZord(state: GameState, playerId: PlayerId): boolean {
+  const player = state.players[playerId];
+  return [...player.hand, ...player.deck].some((card) =>
+    requiresAllFusionPartners(card.cardId),
+  );
+}
+
+function isFusionPartnerForHandZord(
+  state: GameState,
+  playerId: PlayerId,
+  cardId: string,
+): boolean {
+  const player = state.players[playerId];
+  for (const pileCard of [...player.hand, ...player.deck]) {
+    if (!requiresAllFusionPartners(pileCard.cardId)) continue;
+    if (listZordFusionPartnerIds(pileCard.cardId).includes(cardId)) return true;
+  }
+  return false;
+}
+
+function fusionPartnerOnField(
+  state: GameState,
+  playerId: PlayerId,
+  cardId: string,
+): boolean {
+  const player = state.players[playerId];
+  return (
+    player.rush.some((c) => c.cardId === cardId) ||
+    player.battle.some((c) => c.cardId === cardId)
+  );
+}
+
+/** Higher = rush sooner. Fusion zords and lethal strike damage are prioritized. */
+export function scoreRushAction(
+  state: GameState,
+  action: Extract<GameAction, { type: "rush" }>,
+): number {
+  const playerId = action.playerId;
+  const player = state.players[playerId];
+  const card = player.hand.find((c) => c.instanceId === action.instanceId);
+  if (!card) return Number.NEGATIVE_INFINITY;
+  const def = getDefinition(state.definitions, card.cardId);
+  if (!def || def.type !== "unit") return Number.NEGATIVE_INFINITY;
+
+  const bp = effectiveBp(state, playerId, card);
+  const sp = strikeDamageFor(state.definitions, card, state, playerId);
+  const enemy = state.players[opponent(playerId)];
+  const lethalBonus = enemy.damage + sp >= WIN_DAMAGE ? 50_000 : 0;
+  let score = bp + sp * 3_000 + lethalBonus;
+
+  if (requiresAllFusionPartners(card.cardId)) {
+    if (hasAllRequiredFusionMaterials(player, card.cardId, card.instanceId)) {
+      return 300_000 + score;
+    }
+    return 40_000 + score;
+  }
+
+  if (isFusionPartnerForHandZord(state, playerId, card.cardId)) {
+    if (!fusionPartnerOnField(state, playerId, card.cardId)) {
+      return 200_000 + score;
+    }
+    return 10_000 + score;
+  }
+
+  if (needsZordMaterial(state.definitions, card.cardId)) {
+    return 100_000 + score;
+  }
+
+  if (handHasFusionZord(state, playerId)) {
+    return score;
+  }
+
+  return score;
 }
 
 /** Hand contains a unit that can rush now or after gaining category support. */
@@ -128,7 +261,11 @@ function scoreChargeCard(
   const neededCats = categoriesNeededFromHand(state, playerId);
 
   if (mode === "power" && def.type === "unit") {
-    score += 120;
+    score += 120 + parsePowerCost(def.powerCost) * 15;
+    if (isFusionPartnerForHandZord(state, playerId, card.cardId)) score += 250;
+    if (requiresAllFusionPartners(card.cardId) || needsZordMaterial(state.definitions, card.cardId)) {
+      score += 180;
+    }
     if (unitCanRushNow(state, playerId, instanceId)) score += 80;
     else if (handNeedsPowerForRush(state, playerId)) score += 40;
   }
@@ -193,12 +330,20 @@ export function pickChargeAction(
     return pickBestChargeAction(state, playerId, powers, "power");
   }
 
-  if (hasRushUnits && powers.length > 0) {
-    return pickBestChargeAction(state, playerId, powers, "power");
-  }
-
   if (needsCommand && commands.length > 0) {
     return pickBestChargeAction(state, playerId, commands, "command");
+  }
+
+  if (hasAdequatePowerForHandRushes(state, playerId) || powerChargeAtCap(state, playerId)) {
+    if (
+      emptyCommandZone &&
+      needsCommand &&
+      hasRushUnits &&
+      commands.length > 0
+    ) {
+      return pickBestChargeAction(state, playerId, commands, "command");
+    }
+    return end;
   }
 
   if (powers.length > 0) {
@@ -286,11 +431,16 @@ export function pickRushCategoryPayment(
       (c) => c.instanceId === action.sourceInstanceId,
     );
     if (!card) continue;
-    const def = getDefinition(state.definitions, card.cardId);
-    if (!def || def.type !== "unit") continue;
-    const bp = effectiveBp(state, playerId, card);
-    const sp = strikeDamageFor(state.definitions, card, state, playerId);
-    const score = bp + sp * 2_000;
+    const rushAction = actions.find(
+      (a): a is Extract<GameAction, { type: "rush" }> =>
+        a.type === "rush" &&
+        a.playerId === playerId &&
+        a.instanceId === action.sourceInstanceId,
+    );
+    const score = rushAction
+      ? scoreRushAction(state, rushAction)
+      : effectiveBp(state, playerId, card) +
+        strikeDamageFor(state.definitions, card, state, playerId) * 3_000;
     if (score > bestScore) {
       bestScore = score;
       best = action;
@@ -359,12 +509,12 @@ export function pickBeginZordSetup(
       (c) => c.instanceId === action.zordInstanceId,
     );
     if (!card) continue;
-    const def = getDefinition(state.definitions, card.cardId);
-    if (!def) continue;
-
     const score =
-      effectiveBp(state, playerId, card) +
-      strikeDamageFor(state.definitions, card, state, playerId) * 2_000;
+      scoreRushAction(state, {
+        type: "rush",
+        playerId,
+        instanceId: action.zordInstanceId,
+      }) + 25_000;
     if (score > bestScore) {
       bestScore = score;
       best = action;
@@ -445,13 +595,7 @@ export function pickBestRushByScore(
 
   for (const action of actions) {
     if (action.type !== "rush") continue;
-    const player = state.players[action.playerId];
-    const card = player.hand.find((c) => c.instanceId === action.instanceId);
-    if (!card) continue;
-    const def = getDefinition(state.definitions, card.cardId);
-    const bp = effectiveBp(state, action.playerId, card);
-    const sp = strikeDamageFor(state.definitions, card, state, action.playerId);
-    const score = bp + sp * 2_000;
+    const score = scoreRushAction(state, action);
     if (score > bestScore) {
       bestScore = score;
       best = action;
@@ -736,6 +880,26 @@ export function pickEffectChoice(
   const playerId = pending.playerId;
   const skip = actions.find((a) => a.type === "skip_effect_choice");
 
+  if (pending.kind === "optional_deck_draw") {
+    const draw = actions.find(
+      (a) => a.type === "resolve_effect_choice" && a.instanceId === "draw",
+    );
+    if (draw && state.players[playerId].deck.length > 0 && state.players[playerId].hand.length < 6) {
+      return draw;
+    }
+    return skip ?? null;
+  }
+
+  if (pending.kind === "seabed_draw") {
+    const bottom = actions.find(
+      (a) => a.type === "resolve_seabed_draw" && a.placement === "bottom",
+    );
+    const top = actions.find(
+      (a) => a.type === "resolve_seabed_draw" && a.placement === "top",
+    );
+    return bottom ?? top ?? skip ?? null;
+  }
+
   if (pending.kind === "scry_keep_one") {
     return pickScryKeepOne(state, playerId, actions) ?? skip ?? null;
   }
@@ -906,13 +1070,17 @@ export function quickActionPriority(
   }
 
   if (action.type === "rush") {
-    const player = state.players[action.playerId];
-    const card = player.hand.find((c) => c.instanceId === action.instanceId);
-    if (!card) return 0;
-    const bp = effectiveBp(state, action.playerId, card);
-    const sp = strikeDamageFor(state.definitions, card, state, action.playerId);
-    const base = bp + sp * 2_000;
+    const base = scoreRushAction(state, action);
     return state.phase === "rush" ? base + 15_000 : base;
+  }
+
+  if (action.type === "begin_zord_setup") {
+    const base = scoreRushAction(state, {
+      type: "rush",
+      playerId: action.playerId,
+      instanceId: action.zordInstanceId,
+    });
+    return state.phase === "rush" ? base + 30_000 : base;
   }
 
   if (action.type === "strike") {

@@ -43,8 +43,6 @@ export type TurnModifiers = {
   ghostAbsorptionBp?: Record<string, number>;
   /** RS-119 shift up SP1 grant. */
   shiftUpSp1InstanceIds?: string[];
-  /** RS-122 seabed survey: draw from deck bottom. */
-  seabedSurveyActive?: boolean;
   /** RS-011: S unit gains BP+2000 per own damage this turn. */
   auraPowerInstanceId?: string;
 };
@@ -167,8 +165,21 @@ export type PendingLeave = {
 };
 
 /** Player must choose targets/options before the game continues. */
+export type SeabedDrawMeta = {
+  drawCount: number;
+  /** RS-014 超頭脳: second card goes to discard instead of hand. */
+  superBrainDiscardSecond?: boolean;
+  /** Finish this choice after seabed draw resolves (e.g. RS-115 optional draw). */
+  resume?: {
+    pending: PendingEffectChoice;
+    detail: string;
+  };
+};
+
 export type EffectChoiceKind =
   | "deck_top_or_bottom"
+  | "seabed_draw"
+  | "optional_deck_draw"
   | "select_unit"
   | "select_unit_step"
   | "select_command"
@@ -195,6 +206,7 @@ export type PendingEffectChoice = {
   unitDestination?: "power" | "discard" | "deck_top" | "hand" | "hand_from_discard" | "hand_from_power" | "enemy_battle" | "swap_battle";
   commandAction?: "discard" | "hold" | "return_hand" | "rush" | "rush_silent";
   commandFilter?: "held" | "released" | "any";
+  seabedDrawMeta?: SeabedDrawMeta;
 };
 
 /** @deprecated Use pendingEffectChoice (ruin_survey). */

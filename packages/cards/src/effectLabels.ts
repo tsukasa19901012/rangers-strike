@@ -123,6 +123,7 @@ export const EFFECT_LABELS: Record<string, string> = {
   dekabase_mothership: "母艦",
   fire_spin_blade: "ファイヤースピンブレード",
   seabed_survey: "海底探査",
+  opponent_may_draw_on_enter: "進入時ドロー",
 };
 
 export function getEffectLabel(effectId: string): string {

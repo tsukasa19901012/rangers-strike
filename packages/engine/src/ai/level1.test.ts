@@ -33,14 +33,44 @@ describe("CPU level 1", () => {
     expect(pickCpuAction(state, "player2")?.type).toBe("release_start_commands");
   });
 
-  it("charges power when a rush unit lacks power but command support exists", () => {
+  it("ends charge when power already meets deck max required power", () => {
+    const zord = inst("RS-050", "z1");
+    const powers = Array.from({ length: 7 }, (_, i) => inst("TST-P", `p${i}`));
     const state = createTestState({
       phase: "charge",
       activePlayer: "player2",
       player2: {
-        hand: [inst("TST-UNIT-2", "u1"), inst("TST-OP", "c1")],
+        hand: [zord, inst("TST-UNIT-2", "u1")],
+        deck: [],
+        power: powers,
+        command: [{ ...inst("TST-OP", "c1"), commandHeld: false }],
+      },
+    });
+    state.definitions["RS-050"] = {
+      id: "RS-050",
+      name: "Abarenoh",
+      type: "unit",
+      category: "WB",
+      rarity: "SR",
+      expansion: "test",
+      powerCost: "7+",
+      bp: 13000,
+      size: "L",
+      sp: 1,
+    };
+
+    expect(pickCpuAction(state, "player2")?.type).toBe("end_phase");
+  });
+
+  it("charges power when a rush unit lacks power but command support exists", () => {
+    const wbCmd = inst("TST-OP", "c1");
+    const state = createTestState({
+      phase: "charge",
+      activePlayer: "player2",
+      player2: {
+        hand: [inst("TST-UNIT-2", "u1")],
         power: [inst("TST-P", "p1")],
-        command: [heldWbCommand("held")],
+        command: [{ ...wbCmd, commandHeld: false }],
       },
     });
 
@@ -269,6 +299,50 @@ describe("CPU level 1", () => {
     expect(state.players.player2.hand.some((c) => c.instanceId === zord.instanceId)).toBe(
       false,
     );
+  });
+
+  it("prioritizes rushing a fusion partner when a fusion zord is in hand", () => {
+    const zord = inst("RS-050", "z1");
+    const tyranno = inst("RS-051", "f1");
+    const state = createTestState({
+      phase: "rush",
+      activePlayer: "player2",
+      player2: {
+        hand: [zord, tyranno],
+        power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3")],
+        command: [heldWbCommand("c1")],
+        rushCategoryHoldReady: true,
+      },
+    });
+    state.definitions["RS-050"] = {
+      id: "RS-050",
+      name: "Abarenoh",
+      type: "unit",
+      category: "WB",
+      rarity: "SR",
+      expansion: "test",
+      powerCost: "7+",
+      bp: 13000,
+      size: "L",
+      sp: 1,
+    };
+    state.definitions["RS-051"] = {
+      id: "RS-051",
+      name: "Tyranno",
+      type: "unit",
+      category: "WB",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 3,
+      bp: 4000,
+      size: "M",
+    };
+
+    const action = pickCpuAction(state, "player2");
+    expect(action?.type).toBe("rush");
+    if (action?.type === "rush") {
+      expect(action.instanceId).toBe(tyranno.instanceId);
+    }
   });
 
   it("prefers rush over operation when both are legal in rush phase", () => {

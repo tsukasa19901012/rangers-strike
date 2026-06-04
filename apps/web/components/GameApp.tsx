@@ -1355,7 +1355,11 @@ export function GameApp() {
           skipLabel={
             pendingChoice.effectId === "earth_force"
               ? "アースの力を捨札にする"
-              : "効果をスキップ"
+              : pendingChoice.kind === "seabed_draw"
+                ? "上から引く"
+                : pendingChoice.kind === "optional_deck_draw"
+                  ? "ドローしない"
+                  : "効果をスキップ"
           }
           onSelect={handleEffectChoiceSelect}
           onSkip={() => apply({ type: "skip_effect_choice", playerId: HUMAN_PLAYER })}
@@ -1364,6 +1368,20 @@ export function GameApp() {
               type: "resolve_ruin_survey",
               playerId: HUMAN_PLAYER,
               placement,
+            })
+          }
+          onSeabedDraw={(placement) =>
+            apply({
+              type: "resolve_seabed_draw",
+              playerId: HUMAN_PLAYER,
+              placement,
+            })
+          }
+          onOptionalDraw={() =>
+            apply({
+              type: "resolve_effect_choice",
+              playerId: HUMAN_PLAYER,
+              instanceId: "draw",
             })
           }
           onPreview={setPreviewCard}

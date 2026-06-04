@@ -1,12 +1,19 @@
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { hasOperationEffect } from "../core/catalog";
-import { removeAt, updatePlayer } from "../core/helpers";
+import { requestDrawFromDeck } from "../rules/drawFromDeck";
+
+export type SuperBrainDrawResult = {
+  state: GameState;
+  detail: string;
+  pending?: boolean;
+};
 
 export function applySuperBrainDraw(
   state: GameState,
   playerId: PlayerId,
   player: PlayerState,
-): { state: GameState; detail: string } {
+  phasePlayerId: PlayerId,
+): SuperBrainDrawResult {
   const usesSuperBrain = hasOperationEffect(
     player,
     "super_brain",
@@ -17,25 +24,23 @@ export function applySuperBrainDraw(
     if (player.deck.length === 0) {
       return { state, detail: "empty_deck" };
     }
-    const [drawn, deck] = removeAt(player.deck, 0);
-    const nextPlayer = { ...player, deck, hand: [...player.hand, drawn] };
-    return {
-      state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-      detail: "draw:1",
-    };
+    const result = requestDrawFromDeck(state, playerId, phasePlayerId, {
+      count: 1,
+      sourceCardId: "RS-014",
+    });
+    if (result.pending) {
+      return { state: result.state, detail: "seabed_pending", pending: true };
+    }
+    return { state: result.state, detail: "draw:1" };
   }
 
-  const [first, restAfterFirst] = removeAt(player.deck, 0);
-  const [second, deck] = removeAt(restAfterFirst, 0);
-  const nextPlayer = {
-    ...player,
-    deck,
-    hand: [...player.hand, first],
-    discard: [...player.discard, second],
-  };
-
-  return {
-    state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-    detail: "super_brain:1",
-  };
+  const result = requestDrawFromDeck(state, playerId, phasePlayerId, {
+    count: 2,
+    superBrainDiscardSecond: true,
+    sourceCardId: "RS-014",
+  });
+  if (result.pending) {
+    return { state: result.state, detail: "seabed_pending", pending: true };
+  }
+  return { state: result.state, detail: "super_brain:1" };
 }

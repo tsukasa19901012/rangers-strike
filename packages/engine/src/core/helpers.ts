@@ -34,13 +34,28 @@ export function removeAt<T>(items: T[], index: number): [T, T[]] {
 }
 
 export function drawOne(player: PlayerState): PlayerState {
-  if (player.deck.length === 0) return player;
-  const [drawn, deck] = removeAt(player.deck, 0);
-  return {
-    ...player,
-    deck,
-    hand: [...player.hand, drawn],
-  };
+  return performDeckDraws(player, 1, "top");
+}
+
+/** Draw from top or bottom of deck into hand (and optionally discard the 2nd super-brain card). */
+export function performDeckDraws(
+  player: PlayerState,
+  count: number,
+  from: "top" | "bottom",
+  superBrainDiscardSecond?: boolean,
+): PlayerState {
+  let next = player;
+  for (let i = 0; i < count; i++) {
+    if (next.deck.length === 0) break;
+    const index = from === "top" ? 0 : next.deck.length - 1;
+    const [drawn, deck] = removeAt(next.deck, index);
+    if (superBrainDiscardSecond && i === 1) {
+      next = { ...next, deck, discard: [...next.discard, drawn] };
+    } else {
+      next = { ...next, deck, hand: [...next.hand, drawn] };
+    }
+  }
+  return next;
 }
 
 /** Power zone total must meet cost; cards are not removed (official rules). */

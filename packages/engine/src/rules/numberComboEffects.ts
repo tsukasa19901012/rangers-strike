@@ -6,7 +6,7 @@ import {
   effectiveComboNumber,
   getDefinition,
 } from "../core/catalog";
-import { removeAt } from "../core/helpers";
+import { requestDrawFromDeck } from "./drawFromDeck";
 import { buildLogEntry } from "../log/formatLog";
 import { startRuinSurvey } from "./ruinSurvey";
 import {
@@ -156,13 +156,20 @@ export function applyNumberComboEffect(
       break;
     }
     case "future_sight": {
-      let drawnName: string | undefined;
-      nextState = patchPlayer(nextState, playerId, (player) => {
-        if (player.deck.length === 0) return player;
-        const [drawn, deck] = removeAt(player.deck, 0);
-        drawnName = cardName(state.definitions, drawn.cardId);
-        return { ...player, deck, hand: [...player.hand, drawn] };
+      const beforeDeck = nextState.players[playerId].deck;
+      const drawResult = requestDrawFromDeck(nextState, playerId, playerId, {
+        count: 1,
+        sourceCardId: card.cardId,
       });
+      nextState = drawResult.state;
+      const afterHand = nextState.players[playerId].hand;
+      const drawnCard = afterHand[afterHand.length - 1];
+      const drawnName =
+        !drawResult.pending &&
+        drawnCard &&
+        beforeDeck.some((c) => c.instanceId === drawnCard.instanceId)
+          ? cardName(state.definitions, drawnCard.cardId)
+          : undefined;
       logs.push(
         ncLog(
           playerId,

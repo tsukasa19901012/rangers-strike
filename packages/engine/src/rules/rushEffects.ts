@@ -2,6 +2,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingRush, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { requestDrawFromDeck } from "./drawFromDeck";
 import { buildLogEntry } from "../log/formatLog";
 import { hasRushCounterReactions } from "./operationCounters";
 import { resolveNamedOnRushEffects } from "./namedUnitEffects";
@@ -26,14 +27,15 @@ function applyDrawOnRush(
   state: GameState,
   playerId: PlayerId,
   cardId: string,
+  phasePlayerId: PlayerId,
 ): RushEffectOutcome {
-  const player = state.players[playerId];
-  if (player.deck.length === 0) return { state, logs: [] };
-
-  const [drawn, deck] = removeAt(player.deck, 0);
-  const nextPlayer = { ...player, deck, hand: [...player.hand, drawn] };
+  const result = requestDrawFromDeck(state, playerId, phasePlayerId, {
+    count: 1,
+    sourceCardId: cardId,
+  });
+  if (!result.drawn && !result.pending) return { state: result.state, logs: [] };
   return {
-    state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    state: result.state,
     logs: [
       buildLogEntry(playerId, "rush_effect", cardId, state.definitions, "draw_1"),
     ],
@@ -87,7 +89,12 @@ export function resolveRushTriggeredEffects(
 
   const onRush = ON_RUSH_EFFECTS[found.card.cardId];
   if (onRush === "draw_1") {
-    const result = applyDrawOnRush(nextState, rusherPlayerId, found.card.cardId);
+    const result = applyDrawOnRush(
+      nextState,
+      rusherPlayerId,
+      found.card.cardId,
+      state.activePlayer,
+    );
     nextState = result.state;
     logs.push(...result.logs);
   }

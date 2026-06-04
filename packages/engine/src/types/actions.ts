@@ -149,6 +149,12 @@ export type ResolveRuinSurveyAction = {
   placement: "top" | "bottom";
 };
 
+export type ResolveSeabedDrawAction = {
+  type: "resolve_seabed_draw";
+  playerId: PlayerId;
+  placement: "top" | "bottom";
+};
+
 export type ResolveEffectChoiceAction = {
   type: "resolve_effect_choice";
   playerId: PlayerId;
@@ -240,6 +246,7 @@ export type GameAction =
   | HidoraEggAction
   | BattleDanceRetreatAction
   | ResolveRuinSurveyAction
+  | ResolveSeabedDrawAction
   | ResolveEffectChoiceAction
   | SkipEffectChoiceAction
   | PassBattleEntryAction

@@ -143,23 +143,16 @@ export function applyKarakuriFireHawkEndTurn(
   };
 }
 
+import { startOpponentMayDrawChoice } from "../pendingChoices";
+
 /** RS-115: opponent may draw on enter battle. */
-export function applyOpponentDrawOnEnter(
+export function tryStartOpponentDrawOnEnter(
   state: GameState,
-  playerId: PlayerId,
+  enteringPlayerId: PlayerId,
   cardId: string,
+  phasePlayerId: PlayerId,
 ): GameState {
   if (cardId !== "RS-115") return state;
-  const enemyId = opponent(playerId);
-  const enemy = state.players[enemyId];
-  if (enemy.deck.length === 0) return state;
-  const [drawn, deck] = removeAt(enemy.deck, 0);
-  return {
-    ...state,
-    ...updatePlayer(state, enemyId, {
-      ...enemy,
-      deck,
-      hand: [...enemy.hand, drawn],
-    }),
-  };
+  const enemyId = opponent(enteringPlayerId);
+  return startOpponentMayDrawChoice(state, enemyId, phasePlayerId) ?? state;
 }

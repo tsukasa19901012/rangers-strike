@@ -444,11 +444,16 @@ function resolveDraw(ctx: EffectContext): EffectOutcome {
   const player = ctx.state.players[ctx.playerId];
   if (player.deck.length === 0) return fail(ctx.state, "empty_deck");
 
-  const drawn = applySuperBrainDraw(ctx.state, ctx.playerId, player);
+  const drawn = applySuperBrainDraw(
+    ctx.state,
+    ctx.playerId,
+    player,
+    ctx.playerId,
+  );
   return {
     state: drawn.state,
     detail: drawn.detail,
-    discardOperation: true,
+    discardOperation: !drawn.pending,
   };
 }
 

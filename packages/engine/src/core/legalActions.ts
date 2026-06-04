@@ -578,6 +578,17 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (pending.kind === "seabed_draw") {
+    actions.push({ type: "resolve_seabed_draw", playerId, placement: "top" });
+    actions.push({ type: "resolve_seabed_draw", playerId, placement: "bottom" });
+    return;
+  }
+
+  if (pending.kind === "optional_deck_draw") {
+    actions.push({ type: "resolve_effect_choice", playerId, instanceId: "draw" });
+    return;
+  }
+
   for (const instanceId of pending.validInstanceIds) {
     actions.push({ type: "resolve_effect_choice", playerId, instanceId });
   }
@@ -1036,6 +1047,10 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
   }
 
   if (a.type === "resolve_ruin_survey" && b.type === "resolve_ruin_survey") {
+    return a.placement === b.placement;
+  }
+
+  if (a.type === "resolve_seabed_draw" && b.type === "resolve_seabed_draw") {
     return a.placement === b.placement;
   }
 

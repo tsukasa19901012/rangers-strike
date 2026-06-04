@@ -8,6 +8,10 @@ export function effectChoiceHint(
   switch (pending.kind) {
     case "deck_top_or_bottom":
       return `見えたカードを山札の上か下に戻してください`;
+    case "seabed_draw":
+      return `山札の上から引くか、下から引くか選んでください`;
+    case "optional_deck_draw":
+      return `1枚ドローしますか？`;
     case "scry_keep_one":
       return `残す1枚を選んでください`;
     case "select_commands": {

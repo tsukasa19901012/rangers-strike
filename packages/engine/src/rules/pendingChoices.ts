@@ -4,18 +4,94 @@ import type {
   PendingEffectChoice,
   PlayerId,
   PlayerState,
+  SeabedDrawMeta,
 } from "../types/game";
 import { cardName, effectiveBp, getDefinition, unitBp } from "../core/catalog";
-import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { findInZone, opponent, performDeckDraws, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { findCardOwner } from "./fieldLookup";
 import { tryLeaveField } from "./operationCounters";
+import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
 import {
   autoHoldForBattleEntry,
   canMoveUnitToBattle,
   markBattleEntryHoldReadyIfNoteSatisfied,
 } from "./restrictions";
+
+export type RequestDrawResult =
+  | { state: GameState; pending: false; drawn: boolean }
+  | { state: GameState; pending: true };
+
+export function tryStartSeabedDrawChoice(
+  state: GameState,
+  playerId: PlayerId,
+  phasePlayerId: PlayerId,
+  meta: SeabedDrawMeta,
+  sourceCardId = "RS-122",
+): GameState | null {
+  if (!hasSeabedSurvey(state, playerId)) return null;
+  if (state.players[playerId].deck.length === 0) return null;
+  if (state.pendingEffectChoice) return null;
+
+  return openEffectChoice(state, {
+    playerId,
+    effectId: "seabed_survey",
+    sourceCardId,
+    kind: "seabed_draw",
+    phasePlayerId,
+    optional: true,
+    validInstanceIds: [],
+    seabedDrawMeta: meta,
+  });
+}
+
+/** Draw into hand; opens seabed choice when RS-122 is in rush. */
+export function requestDrawFromDeck(
+  state: GameState,
+  playerId: PlayerId,
+  phasePlayerId: PlayerId,
+  options?: {
+    count?: number;
+    superBrainDiscardSecond?: boolean;
+    sourceCardId?: string;
+    seabedResume?: NonNullable<SeabedDrawMeta["resume"]>;
+  },
+): RequestDrawResult {
+  const count = options?.count ?? 1;
+  const player = state.players[playerId];
+  if (player.deck.length === 0) {
+    return { state, pending: false, drawn: false };
+  }
+
+  const opened = tryStartSeabedDrawChoice(
+    state,
+    playerId,
+    phasePlayerId,
+    {
+      drawCount: count,
+      superBrainDiscardSecond: options?.superBrainDiscardSecond,
+      resume: options?.seabedResume,
+    },
+    options?.sourceCardId,
+  );
+  if (opened) {
+    return { state: opened, pending: true };
+  }
+
+  const nextPlayer = performDeckDraws(
+    player,
+    count,
+    "top",
+    options?.superBrainDiscardSecond,
+  );
+  return {
+    state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    pending: false,
+    drawn: true,
+  };
+}
+
 export type ChoiceOutcome =
   | { state: GameState; log?: string; logs?: string[] }
   | { error: string };
@@ -103,6 +179,56 @@ export function openEffectChoice(
     },
     activePlayer: choice.playerId,
   };
+}
+
+/** RS-115: opponent may draw one when this unit enters battle. */
+export function startOpponentMayDrawChoice(
+  state: GameState,
+  enemyId: PlayerId,
+  phasePlayerId: PlayerId,
+): GameState | null {
+  if (state.players[enemyId].deck.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: enemyId,
+    effectId: "opponent_may_draw_on_enter",
+    sourceCardId: "RS-115",
+    kind: "optional_deck_draw",
+    phasePlayerId,
+    validInstanceIds: ["draw"],
+    optional: true,
+  });
+}
+
+export function applySeabedDrawPlacement(
+  state: GameState,
+  playerId: PlayerId,
+  placement: "top" | "bottom",
+): ChoiceOutcome {
+  const pending = state.pendingEffectChoice;
+  if (!pending || pending.kind !== "seabed_draw") {
+    return { error: "no_pending_choice" };
+  }
+  if (pending.playerId !== playerId) return { error: "wrong_player" };
+
+  const meta = pending.seabedDrawMeta ?? { drawCount: 1 };
+  const from = placement === "bottom" ? "bottom" : "top";
+  const player = state.players[playerId];
+  const nextPlayer = performDeckDraws(
+    player,
+    meta.drawCount,
+    from,
+    meta.superBrainDiscardSecond,
+  );
+
+  return finishSeabedDrawChoice(
+    { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    pending,
+    from,
+  );
+}
+
+export function applySeabedDrawSkip(state: GameState, playerId: PlayerId): ChoiceOutcome {
+  return applySeabedDrawPlacement(state, playerId, "top");
 }
 
 export function startRuinSurveyChoice(
@@ -395,6 +521,19 @@ function findCommandCard(
   return null;
 }
 
+function finishSeabedDrawChoice(
+  state: GameState,
+  pending: PendingEffectChoice,
+  detail: string,
+): ChoiceOutcome {
+  const cleared = clearChoice(state, pending.phasePlayerId);
+  const resume = pending.seabedDrawMeta?.resume;
+  if (resume) {
+    return finishChoice(cleared, resume.pending, resume.detail);
+  }
+  return finishChoice(cleared, pending, detail);
+}
+
 function finishChoice(
   state: GameState,
   pending: PendingEffectChoice,
@@ -435,6 +574,12 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
   if (!pending.optional) return { error: "cannot_skip" };
+  if (pending.kind === "seabed_draw") {
+    return applySeabedDrawSkip(state, playerId);
+  }
+  if (pending.kind === "optional_deck_draw") {
+    return finishChoice(state, pending, "skipped");
+  }
   return finishChoice(state, pending, "skipped");
 }
 
@@ -479,6 +624,20 @@ export function applyEffectChoiceSelect(
   if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
 
   switch (pending.kind) {
+    case "optional_deck_draw": {
+      if (instanceId !== "draw") return { error: "invalid_target" };
+      const player = state.players[playerId];
+      if (player.deck.length === 0) return { error: "empty_deck" };
+      const drawResult = requestDrawFromDeck(state, playerId, pending.phasePlayerId, {
+        count: 1,
+        sourceCardId: pending.sourceCardId,
+        seabedResume: { pending, detail: "draw" },
+      });
+      if (drawResult.pending) {
+        return { state: drawResult.state };
+      }
+      return finishChoice(drawResult.state, pending, "draw");
+    }
     case "select_unit": {
       const dest = pending.unitDestination ?? "discard";
       if (dest === "hand" || dest === "hand_from_discard" || dest === "hand_from_power") {
