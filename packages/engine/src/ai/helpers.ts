@@ -890,6 +890,17 @@ export function pickEffectChoice(
     return skip ?? null;
   }
 
+  if (pending.kind === "denji_machine") {
+    if (pending.denjiMachineMeta?.step === "reveal") {
+      return actions.find((a) => a.type === "confirm_denji_reveal") ?? null;
+    }
+    if (pending.denjiMachineMeta?.step === "order_bottom") {
+      const pick = actions.find((a) => a.type === "resolve_effect_choice");
+      return pick ?? null;
+    }
+    return null;
+  }
+
   if (pending.kind === "seabed_draw") {
     const bottom = actions.find(
       (a) => a.type === "resolve_seabed_draw" && a.placement === "bottom",

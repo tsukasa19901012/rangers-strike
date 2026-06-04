@@ -111,6 +111,10 @@ import {
 import { applyResolveRuinSurvey } from "../rules/ruinSurvey";
 import { applySeabedDrawPlacement } from "../rules/pendingChoices";
 import {
+  applyConfirmDenjiReveal,
+  applyDenjiBottomOrderSelect,
+} from "../rules/denjiMachine";
+import {
   applyEffectChoicePlacement,
   applyEffectChoiceSelect,
   completeEffectHoldChoice,
@@ -1144,7 +1148,23 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       );
     }
 
+    case "confirm_denji_reveal": {
+      const result = applyConfirmDenjiReveal(state, playerId);
+      if ("error" in result) return fail(result.error);
+      const nextState = result.state;
+      if (nextState.pendingEffectChoice) {
+        return ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "confirm_denji_reveal"));
+      }
+      return ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "confirm_denji_reveal"));
+    }
+
     case "resolve_effect_choice": {
+      const pending = state.pendingEffectChoice;
+      if (pending?.kind === "denji_machine") {
+        const result = applyDenjiBottomOrderSelect(state, playerId, action.instanceId);
+        if ("error" in result) return fail(result.error);
+        return ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice"));
+      }
       const result = applyEffectChoiceSelect(state, playerId, action.instanceId);
       if ("error" in result) return fail(result.error);
       return withStartPhaseAutoAdvance(

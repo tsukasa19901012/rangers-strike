@@ -214,8 +214,11 @@ export function formatGameLog(
         if (detail === "placed") {
           return `${player}が常駐オペ「${cardName}」を配置`;
         }
+        if (detail === "denji:reveal") {
+          return `${player}が「${cardName}」（${getEffectLabel("denji_machine")}）を使用 → 山札上3枚を公開`;
+        }
         if (detail?.startsWith("denji:")) {
-          return `${player}が「${cardName}」（${getEffectLabel("denji_machine")}）を使用 → Sユニットを手札に`;
+          return `${player}が「${cardName}」（${getEffectLabel("denji_machine")}）を使用`;
         }
         if (detail?.startsWith("land_balkan:")) {
           return `${player}が「${cardName}」（${getEffectLabel("land_balkan")}）を使用`;

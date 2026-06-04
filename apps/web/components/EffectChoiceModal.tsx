@@ -18,7 +18,10 @@ type EffectChoiceModalProps = {
   onRuinSurvey: (placement: "top" | "bottom") => void;
   onSeabedDraw: (placement: "top" | "bottom") => void;
   onOptionalDraw: () => void;
+  onConfirmDenjiReveal: () => void;
   onPreview: (card: CardDefinition) => void;
+  /** Opponent / spectator: reveal step only (no confirm). */
+  readOnly?: boolean;
 };
 
 function TargetButton({
@@ -47,7 +50,9 @@ export function EffectChoiceModal({
   onRuinSurvey,
   onSeabedDraw,
   onOptionalDraw,
+  onConfirmDenjiReveal,
   onPreview,
+  readOnly = false,
 }: EffectChoiceModalProps) {
   const title = effectChoiceTitle(pending);
   const hint = effectChoiceHint(pending);
@@ -63,6 +68,32 @@ export function EffectChoiceModal({
     scryTop && pending.viewedInstanceIds?.[0] === scryTop.instanceId
       ? getCardById(scryTop.cardId)
       : null;
+
+  const denjiReveal =
+    pending.kind === "denji_machine" && pending.denjiMachineMeta?.step === "reveal"
+      ? (pending.viewedInstanceIds ?? [])
+          .map((id) => {
+            const ownerId = pending.playerId;
+            const inst = state.players[ownerId].deck.find((c) => c.instanceId === id);
+            if (!inst) return null;
+            const card = getCardById(inst.cardId);
+            const toHand = pending.denjiMachineMeta?.toHandInstanceIds.includes(id);
+            return card
+              ? { instanceId: inst.instanceId, card, toHand }
+              : null;
+          })
+          .filter((e): e is { instanceId: string; card: CardDefinition; toHand: boolean } => !!e)
+      : [];
+
+  const denjiOrder =
+    pending.kind === "denji_machine" && pending.denjiMachineMeta?.step === "order_bottom"
+      ? (pending.denjiMachineMeta.limboBottomCards ?? [])
+          .map((inst) => {
+            const card = getCardById(inst.cardId);
+            return card ? { instanceId: inst.instanceId, card } : null;
+          })
+          .filter((e): e is { instanceId: string; card: CardDefinition } => !!e)
+      : [];
 
   const scryKeep =
     pending.kind === "scry_keep_one"
@@ -107,6 +138,58 @@ export function EffectChoiceModal({
               >
                 下から引く
               </button>
+            </div>
+          )}
+
+          {pending.kind === "denji_machine" && denjiReveal.length > 0 && (
+            <div className="effect-action-modal__section">
+              <p className="effect-action-modal__target-meta">
+                {readOnly ? "相手の山札上3枚（公開）" : "山札の上3枚（相手に公開）"}
+              </p>
+              <div className="effect-action-modal__targets">
+                {denjiReveal.map(({ instanceId, card, toHand }) => (
+                  <button
+                    key={instanceId}
+                    type="button"
+                    className="btn effect-action-modal__target effect-action-modal__target--preview"
+                    onClick={() => onPreview(card)}
+                  >
+                    {card.name}
+                    <span className="effect-action-modal__target-meta">
+                      {toHand ? "→ 手札" : "→ 山札の下へ"}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              {!readOnly && (
+                <div className="effect-action-modal__actions">
+                  <button
+                    type="button"
+                    className="btn btn--primary"
+                    onClick={onConfirmDenjiReveal}
+                  >
+                    公開を確認して続ける
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {pending.kind === "denji_machine" && denjiOrder.length > 0 && (
+            <div className="effect-action-modal__targets">
+              {denjiOrder
+                .filter((c) => pending.validInstanceIds.includes(c.instanceId))
+                .map(({ instanceId, card }) => (
+                  <button
+                    key={instanceId}
+                    type="button"
+                    className="btn effect-action-modal__target"
+                    onClick={() => onSelect(instanceId)}
+                  >
+                    {card.name}
+                    <span className="effect-action-modal__target-meta">次に下へ</span>
+                  </button>
+                ))}
             </div>
           )}
 
@@ -163,6 +246,7 @@ export function EffectChoiceModal({
             pending.kind !== "deck_top_or_bottom" &&
             pending.kind !== "seabed_draw" &&
             pending.kind !== "optional_deck_draw" &&
+            pending.kind !== "denji_machine" &&
             pending.kind !== "scry_keep_one" && (
               <div className="effect-action-modal__targets">
                 {targets.map((target) => (
@@ -175,7 +259,7 @@ export function EffectChoiceModal({
               </div>
             )}
 
-          {canSkip && (
+          {canSkip && !readOnly && pending.kind !== "denji_machine" && (
             <button
               type="button"
               className="btn effect-action-modal__skip"

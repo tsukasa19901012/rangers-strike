@@ -157,7 +157,7 @@ describe("dynamite power RS-007", () => {
     expect(result.state.players.player1.turnModifiers?.comboNumberDelta).toBe(1);
   });
 
-  it("runs denji machine RS-004 when deck has 3+ cards", () => {
+  it("opens denji machine reveal when deck has 3+ cards", () => {
     const op = inst("RS-004", "op1");
     const sUnit = inst("TST-UNIT-0", "deck-s");
     const otCmd = { ...inst("RS-020", "c1"), commandHeld: true };
@@ -179,8 +179,9 @@ describe("dynamite power RS-007", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    expect(result.state.players.player1.hand.some((c) => c.instanceId === sUnit.instanceId)).toBe(true);
-    expect(result.state.players.player1.deck).toHaveLength(3);
+    expect(result.state.pendingEffectChoice?.effectId).toBe("denji_machine");
+    expect(result.state.pendingEffectChoice?.denjiMachineMeta?.step).toBe("reveal");
+    expect(result.state.players.player1.deck).toHaveLength(4);
   });
 
   it("returns fusion material to battle after destroying L with RS-009", () => {

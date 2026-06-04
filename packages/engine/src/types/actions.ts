@@ -155,6 +155,11 @@ export type ResolveSeabedDrawAction = {
   placement: "top" | "bottom";
 };
 
+export type ConfirmDenjiRevealAction = {
+  type: "confirm_denji_reveal";
+  playerId: PlayerId;
+};
+
 export type ResolveEffectChoiceAction = {
   type: "resolve_effect_choice";
   playerId: PlayerId;
@@ -247,6 +252,7 @@ export type GameAction =
   | BattleDanceRetreatAction
   | ResolveRuinSurveyAction
   | ResolveSeabedDrawAction
+  | ConfirmDenjiRevealAction
   | ResolveEffectChoiceAction
   | SkipEffectChoiceAction
   | PassBattleEntryAction

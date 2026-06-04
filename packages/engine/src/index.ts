@@ -16,3 +16,7 @@ export * from "./rules/battleEntry";
 export * from "./rules/commandPayment";
 export * from "./rules/zordSetup";
 export * from "./rules/damagePayment";
+export {
+  isDenjiRevealAudience,
+  canActOnDenjiChoice,
+} from "./rules/denjiMachine";

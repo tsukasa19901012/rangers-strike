@@ -12,6 +12,14 @@ export function effectChoiceHint(
       return `山札の上から引くか、下から引くか選んでください`;
     case "optional_deck_draw":
       return `1枚ドローしますか？`;
+    case "denji_machine": {
+      if (pending.denjiMachineMeta?.step === "order_bottom") {
+        const picked = pending.denjiMachineMeta.orderedBottomIds?.length ?? 0;
+        const total = pending.denjiMachineMeta.toBottomInstanceIds.length;
+        return `山札の下に戻す順に選んでください（${picked + 1}/${total}枚目・先に選んだほど下）`;
+      }
+      return `山札の上3枚を相手に見せています`;
+    }
     case "scry_keep_one":
       return `残す1枚を選んでください`;
     case "select_commands": {

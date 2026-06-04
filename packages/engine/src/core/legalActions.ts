@@ -589,6 +589,20 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (pending.kind === "denji_machine") {
+    if (pending.denjiMachineMeta?.step === "reveal") {
+      actions.push({ type: "confirm_denji_reveal", playerId });
+      return;
+    }
+    if (pending.denjiMachineMeta?.step === "order_bottom") {
+      for (const instanceId of pending.validInstanceIds) {
+        actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+      }
+      return;
+    }
+    return;
+  }
+
   for (const instanceId of pending.validInstanceIds) {
     actions.push({ type: "resolve_effect_choice", playerId, instanceId });
   }
@@ -1052,6 +1066,10 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
 
   if (a.type === "resolve_seabed_draw" && b.type === "resolve_seabed_draw") {
     return a.placement === b.placement;
+  }
+
+  if (a.type === "confirm_denji_reveal" && b.type === "confirm_denji_reveal") {
+    return true;
   }
 
   if (a.type === "resolve_effect_choice" && b.type === "resolve_effect_choice") {

@@ -202,6 +202,10 @@ export function pickCpuAction(
       }
     }
 
+    if (pending.kind === "denji_machine") {
+      return pickEffectChoice(state, pending, actions);
+    }
+
     if (pending.kind === "seabed_draw") {
       const placements = actionsOfType(actions, "resolve_seabed_draw");
       if (placements.length > 0) {

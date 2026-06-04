@@ -22,6 +22,8 @@ import {
   needsOperationTarget,
   needsEffectHoldPayment,
   needsZordMaterial,
+  isDenjiRevealAudience,
+  canActOnDenjiChoice,
   opponent,
   pickCpuAction,
   type CardInstance,
@@ -1148,8 +1150,13 @@ export function GameApp() {
     legalActions.some((a) => a.type === "use_plasma_energy");
 
   const pendingChoice = state.pendingEffectChoice;
+  const isHumanDenjiAudience =
+    !!pendingChoice && isDenjiRevealAudience(pendingChoice, HUMAN_PLAYER);
+
   const isHumanEffectChoice =
-    humanCanAct && pendingChoice?.playerId === HUMAN_PLAYER;
+    humanCanAct &&
+    !!pendingChoice &&
+    canActOnDenjiChoice(pendingChoice, HUMAN_PLAYER);
 
   const canSkipEffectChoice =
     isHumanEffectChoice &&
@@ -1177,11 +1184,18 @@ export function GameApp() {
     !showOperationModal &&
     !showZordSetupModal;
 
+  const showDenjiRevealModal =
+    isHumanDenjiAudience &&
+    !!pendingChoice &&
+    !needsEffectHoldPayment(pendingChoice) &&
+    !showEffectNotice;
+
   const showEffectChoiceModal =
     isHumanEffectChoice &&
     !!pendingChoice &&
     !needsEffectHoldPayment(pendingChoice) &&
-    !showEffectNotice;
+    !showEffectNotice &&
+    !showDenjiRevealModal;
 
   const showBattleEntryModal =
     !!battleEntryModal &&
@@ -1203,6 +1217,7 @@ export function GameApp() {
     humanCanAct &&
     state.phase === "start" &&
     !showEffectChoiceModal &&
+    !showDenjiRevealModal &&
     !showCommandPaymentModal &&
     !!startPhaseStatus;
 
@@ -1255,8 +1270,10 @@ export function GameApp() {
         ? "ラッシュへのカウンターを選ぶか「応答スキップ」"
         : state.pendingLeave
           ? "離場へのカウンターを選ぶか「応答スキップ」"
-          : isHumanEffectChoice && pendingChoice
+          : showDenjiRevealModal && pendingChoice
             ? effectChoiceHint(pendingChoice)
+            : isHumanEffectChoice && pendingChoice
+              ? effectChoiceHint(pendingChoice)
             : isHumanBattleEntry
               ? undefined
               : state.phase === "battle" &&
@@ -1346,6 +1363,23 @@ export function GameApp() {
           onPass={handleBattleEntryPass}
         />
       )}
+      {showDenjiRevealModal && pendingChoice && (
+        <EffectChoiceModal
+          state={state}
+          playerId={HUMAN_PLAYER}
+          pending={pendingChoice}
+          canSkip={false}
+          skipLabel=""
+          readOnly
+          onSelect={handleEffectChoiceSelect}
+          onSkip={() => {}}
+          onRuinSurvey={() => {}}
+          onSeabedDraw={() => {}}
+          onOptionalDraw={() => {}}
+          onConfirmDenjiReveal={() => {}}
+          onPreview={setPreviewCard}
+        />
+      )}
       {showEffectChoiceModal && pendingChoice && (
         <EffectChoiceModal
           state={state}
@@ -1383,6 +1417,9 @@ export function GameApp() {
               playerId: HUMAN_PLAYER,
               instanceId: "draw",
             })
+          }
+          onConfirmDenjiReveal={() =>
+            apply({ type: "confirm_denji_reveal", playerId: HUMAN_PLAYER })
           }
           onPreview={setPreviewCard}
         />
@@ -1664,6 +1701,7 @@ export function GameApp() {
         {canEndPhase &&
           !showReactionModal &&
           !showEffectChoiceModal &&
+          !showDenjiRevealModal &&
           !showDamagePaymentModal &&
           !showOperationModal &&
           !showCommandPaymentModal &&

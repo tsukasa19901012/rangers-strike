@@ -176,10 +176,24 @@ export type SeabedDrawMeta = {
   };
 };
 
+export type DenjiMachineMeta = {
+  step: "reveal" | "order_bottom";
+  /** Players who may view revealed cards (caster + opponent for PvP). */
+  audiencePlayerIds: PlayerId[];
+  revealedInstanceIds: string[];
+  toHandInstanceIds: string[];
+  toBottomInstanceIds: string[];
+  /** Non-S cards removed from deck, awaiting bottom order. */
+  limboBottomCards?: CardInstance[];
+  /** Bottom order: first entry sits just above rest of deck; last is deck bottom. */
+  orderedBottomIds?: string[];
+};
+
 export type EffectChoiceKind =
   | "deck_top_or_bottom"
   | "seabed_draw"
   | "optional_deck_draw"
+  | "denji_machine"
   | "select_unit"
   | "select_unit_step"
   | "select_command"
@@ -207,6 +221,7 @@ export type PendingEffectChoice = {
   commandAction?: "discard" | "hold" | "return_hand" | "rush" | "rush_silent";
   commandFilter?: "held" | "released" | "any";
   seabedDrawMeta?: SeabedDrawMeta;
+  denjiMachineMeta?: DenjiMachineMeta;
 };
 
 /** @deprecated Use pendingEffectChoice (ruin_survey). */

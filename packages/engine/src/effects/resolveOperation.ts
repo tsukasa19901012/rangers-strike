@@ -32,6 +32,7 @@ import {
 import { tryLeaveField } from "../rules/operationCounters";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { applySuperBrainDraw } from "./drawEffects";
+import { startDenjiMachineChoice } from "../rules/denjiMachine";
 
 export type EffectContext = {
   state: GameState;
@@ -87,28 +88,17 @@ function resolveDenjiMachine(ctx: EffectContext): EffectOutcome {
   const player = ctx.state.players[ctx.playerId];
   if (player.deck.length < 3) return fail(ctx.state, "insufficient_deck");
 
-  const revealed = player.deck.slice(0, 3);
-  const restDeck = player.deck.slice(3);
-  const toHand: typeof revealed = [];
-  const toBottom: typeof revealed = [];
-
-  for (const card of revealed) {
-    if (isSmallUnit(ctx.state.definitions, card.cardId)) {
-      toHand.push(card);
-    } else {
-      toBottom.push(card);
-    }
-  }
-
-  const nextPlayer = {
-    ...player,
-    deck: [...restDeck, ...toBottom],
-    hand: [...player.hand, ...toHand],
-  };
+  const withChoice = startDenjiMachineChoice(
+    ctx.state,
+    ctx.playerId,
+    ctx.playerId,
+    ctx.operationCardId,
+  );
+  if (!withChoice) return fail(ctx.state, "insufficient_deck");
 
   return {
-    state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
-    detail: `denji:${toHand.length}`,
+    state: withChoice,
+    detail: "denji:reveal",
     discardOperation: true,
   };
 }

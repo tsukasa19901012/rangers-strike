@@ -45,6 +45,7 @@ const EFFECT_ACTIONS = new Set([
   "five_tech_intercept",
   "resolve_ruin_survey",
   "resolve_seabed_draw",
+  "confirm_denji_reveal",
   "earth_force_upkeep",
   "battle_dance_retreat",
 ]);
