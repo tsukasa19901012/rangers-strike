@@ -33,7 +33,9 @@ function applyDrawOnRush(
     count: 1,
     sourceCardId: cardId,
   });
-  if (!result.drawn && !result.pending) return { state: result.state, logs: [] };
+  if (!result.pending && !result.drawn) {
+    return { state: result.state, logs: [] };
+  }
   return {
     state: result.state,
     logs: [

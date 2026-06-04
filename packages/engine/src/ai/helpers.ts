@@ -1179,7 +1179,11 @@ export function quickActionPriority(
   return 0;
 }
 
-export function affordableRushes(state: GameState, playerId: PlayerId, actions: GameAction[]): GameAction[] {
+export function affordableRushes(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): Extract<GameAction, { type: "rush" }>[] {
   const player = state.players[playerId];
   return actionsOfType(actions, "rush").filter((action) => {
     const card = player.hand.find((c) => c.instanceId === action.instanceId);
