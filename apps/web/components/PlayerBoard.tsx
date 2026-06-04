@@ -598,6 +598,7 @@ export function PlayerBoard({
         title="常駐"
         zoneId="operation"
         className="playsheet__operation"
+        imageOnly
         cards={player.operation}
         definitions={definitions}
         playerId={playerId}
@@ -695,6 +696,7 @@ export function PlayerBoard({
             zoneId="power"
             className="playsheet__hand"
             cardsScrollX
+            imageOnly
             cards={player.hand}
             definitions={definitions}
             playerId={playerId}

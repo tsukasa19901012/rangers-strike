@@ -296,6 +296,22 @@ select {
   background: linear-gradient(0deg, rgba(120, 53, 15, 0.35), rgba(15, 23, 42, 0.9));
 }
 
+.playsheet__operation .zone__cards {
+  height: var(--card-height);
+  min-height: var(--card-height);
+  align-items: flex-start;
+  padding-bottom: 2px;
+}
+
+.playsheet__operation .card-wrap {
+  flex-shrink: 0;
+  width: var(--card-width);
+  height: var(--card-height);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
 .playsheet__power {
   background: linear-gradient(180deg, rgba(161, 98, 7, 0.35), rgba(127, 29, 29, 0.25));
   padding-left: 4px;
@@ -445,17 +461,26 @@ select {
 }
 
 .playsheet__hand .zone__cards {
-  min-height: var(--zone-card-min-height);
+  height: var(--card-height);
+  min-height: var(--card-height);
+  align-items: flex-end;
   gap: 6px;
   padding: 2px 4px;
 }
 
 .playsheet__hand .zone__empty {
   flex-shrink: 0;
+  align-self: center;
+  margin: auto;
 }
 
 .playsheet__hand .card-wrap {
   flex-shrink: 0;
+  width: var(--card-width);
+  height: var(--card-height);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .pile-modal__card--target {
