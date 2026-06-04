@@ -73,6 +73,7 @@ import {
   formatEffectLogNotice,
   shouldShowEffectLogNotice,
 } from "@/lib/effectLogNotice";
+import { useViewportBoardFit } from "@/lib/useViewportBoardFit";
 
 const CPU_PLAYER = "player2" as const;
 const HUMAN_PLAYER = "player1" as const;
@@ -129,6 +130,7 @@ export function GameApp() {
   const prevLogLenRef = useRef(0);
   const prevActivePlayerRef = useRef<PlayerId | null>(null);
   const cpuBoardRef = useRef<HTMLDivElement>(null);
+  const gameRef = useRef<HTMLDivElement>(null);
   const humanBoardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -265,6 +267,8 @@ export function GameApp() {
 
   const humanCanAct =
     state?.activePlayer === HUMAN_PLAYER && !state.winner;
+
+  useViewportBoardFit(gameRef, humanBoardRef, !!state);
 
   const dismissTurnNotice = useCallback(() => {
     setTurnNotice((current) => {
@@ -1234,7 +1238,7 @@ export function GameApp() {
                 : undefined;
 
   return (
-    <div className="game">
+    <div className="game" ref={gameRef}>
       {previewCard && (
         <CardModal card={previewCard} onClose={() => setPreviewCard(null)} />
       )}

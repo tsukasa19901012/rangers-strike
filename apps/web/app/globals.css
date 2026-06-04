@@ -1677,6 +1677,109 @@ select {
   color: #94a3b8;
 }
 
+/* Short viewport / phone landscape: less chrome, boards side-by-side */
+@media (orientation: landscape) and (max-height: 520px) {
+  .game {
+    --card-width: 58px;
+    --playsheet-sidebar-width: 76px;
+    --zone-card-min-height: 48px;
+    --app-padding-y: 6px;
+    --app-padding-x: 8px;
+    --app-gap: 6px;
+    --board-padding: 8px;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+  }
+
+  .game__header {
+    gap: 8px;
+  }
+
+  .game__header h1 {
+    font-size: 0.95rem;
+  }
+
+  .game__subtitle {
+    display: none;
+  }
+
+  .status-bar {
+    font-size: 0.72rem;
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .phase-guide {
+    font-size: 0.72rem;
+    line-height: 1.35;
+    padding: 6px 10px;
+  }
+
+  .board__header {
+    margin-bottom: 4px;
+  }
+
+  .board__header h2 {
+    font-size: 0.82rem;
+  }
+
+  .zone__title {
+    font-size: 0.62rem;
+    padding: 2px 4px;
+  }
+
+  .playsheet__hand {
+    margin-top: 4px;
+  }
+
+  .pile {
+    padding: 4px 2px;
+  }
+
+  .pile__label {
+    font-size: 0.52rem;
+  }
+
+  .pile__count {
+    font-size: 0.75rem;
+  }
+
+  .game__boards {
+    display: grid;
+    grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
+    gap: 6px;
+    align-items: end;
+  }
+
+  .board--opponent {
+    --card-width: 50px;
+    --playsheet-sidebar-width: 68px;
+  }
+
+  .action-bar {
+    padding-top: 4px;
+    padding-bottom: max(4px, env(safe-area-inset-bottom));
+  }
+
+  .btn {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+}
+
+/* JS-driven fit: shrink human playsheet to remaining viewport height */
+.game.game--viewport-fit .board--self {
+  --card-width: var(--viewport-fit-card-width, var(--card-width));
+  --playsheet-sidebar-width: var(--viewport-fit-sidebar-width, var(--playsheet-sidebar-width));
+}
+
+.game.game--viewport-fit .board--self .zone__title {
+  font-size: 0.6rem;
+}
+
+.game.game--viewport-fit .board--self .playsheet__hand {
+  margin-top: 4px;
+}
+
 /*
  * Touch / tablet: page scroll on zone chrome only (title / padding), not on cards.
  * Card rows stay pan-x so hand charge and horizontal zone scroll are not stolen.
