@@ -198,7 +198,7 @@ describe("command payment", () => {
     expect(reason).toBeNull();
   });
 
-  it("offers category payment initiate for RS-045 with released OT and S material", () => {
+  it("requires zord setup before category payment for RS-045", () => {
     const zord = inst("RS-045", "zord");
     const sUnit = inst("RS-080", "s1");
     const otCmd = inst("TST-OP-OT", "ot");
@@ -237,14 +237,16 @@ describe("command payment", () => {
       },
     });
 
-    const inits = getLegalActions(state).filter(
-      (a) =>
-        a.type === "initiate_command_payment" &&
-        a.kind === "category_use" &&
-        a.sourceInstanceId === zord.instanceId,
-    );
-    expect(inits.length).toBeGreaterThan(0);
-    expect(inits.some((a) => a.zordMaterialInstanceId === sUnit.instanceId)).toBe(true);
+    const actions = getLegalActions(state);
+    expect(actions.some((a) => a.type === "begin_zord_setup")).toBe(true);
+    expect(
+      actions.some(
+        (a) =>
+          a.type === "initiate_command_payment" &&
+          a.kind === "category_use" &&
+          a.sourceInstanceId === zord.instanceId,
+      ),
+    ).toBe(false);
   });
 
   it("explains missing category hold for rush", () => {

@@ -404,6 +404,12 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           buildSimpleLogEntry(playerId, "zord_setup_step"),
         );
       }
+      if (advanced.kind === "rush") {
+        return applyAction(
+          { ...state, pendingZordSetup: undefined },
+          advanced.action,
+        );
+      }
       return ok(
         {
           ...state,

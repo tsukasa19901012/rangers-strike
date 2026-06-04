@@ -74,10 +74,7 @@ describe("jaguar mothership (RS-076)", () => {
 
     const canPayWithMothership = getLegalActions(state).some(
       (a) =>
-        a.type === "initiate_command_payment" &&
-        a.kind === "category_use" &&
-        a.sourceInstanceId === zord.instanceId &&
-        (a.zordMothershipHoldInstanceIds?.length ?? 0) > 0,
+        a.type === "begin_zord_setup" && a.zordInstanceId === zord.instanceId,
     );
     expect(canPayWithMothership).toBe(true);
   });
@@ -180,11 +177,7 @@ describe("jaguar mothership (RS-076)", () => {
 
     const mothershipPay = getLegalActions(state).filter(
       (a) =>
-        a.type === "initiate_command_payment" &&
-        a.kind === "category_use" &&
-        a.sourceInstanceId === zord.instanceId &&
-        (a.zordMothershipHoldInstanceIds?.length ?? 0) > 0 &&
-        !a.zordMaterialInstanceId,
+        a.type === "begin_zord_setup" && a.zordInstanceId === zord.instanceId,
     );
     expect(mothershipPay.length).toBeGreaterThan(0);
 

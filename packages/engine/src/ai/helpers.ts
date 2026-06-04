@@ -15,6 +15,7 @@ import {
   findMandatoryBattleEntries,
 } from "../rules/restrictions";
 import { findCardOwner } from "../rules/fieldLookup";
+import { findDirectZordRushAction } from "../core/legalActions";
 import { strikeDamageFor } from "../rules/combo";
 import { COMMAND_ZONE_MAX, WIN_DAMAGE } from "../types/game";
 import { evaluateState } from "./scoring";
@@ -229,10 +230,23 @@ export function pickHoldBeforeBattle(
 export function pickHoldBeforeRush(
   state: GameState,
   playerId: PlayerId,
-  _actions: GameAction[],
+  actions: GameAction[],
   rushAction: GameAction,
 ): GameAction | null {
   if (rushAction.type !== "rush") return null;
+
+  const matchingRush = actions.some(
+    (a) =>
+      a.type === "rush" &&
+      a.playerId === rushAction.playerId &&
+      a.instanceId === rushAction.instanceId &&
+      (a.zordMaterialInstanceId ?? "") === (rushAction.zordMaterialInstanceId ?? "") &&
+      (a.zordMaterialDestination ?? "") === (rushAction.zordMaterialDestination ?? "") &&
+      [...(a.zordMothershipHoldInstanceIds ?? [])].sort().join(",") ===
+        [...(rushAction.zordMothershipHoldInstanceIds ?? [])].sort().join(","),
+  );
+  if (matchingRush) return null;
+
   const card = state.players[playerId].hand.find(
     (c) => c.instanceId === rushAction.instanceId,
   );
@@ -255,6 +269,37 @@ export function pickHoldBeforeRush(
     zordMaterialDestination: rushAction.zordMaterialDestination,
     zordMothershipHoldInstanceIds: rushAction.zordMothershipHoldInstanceIds,
   };
+}
+
+export function pickBeginZordSetup(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): GameAction | null {
+  let best: Extract<GameAction, { type: "begin_zord_setup" }> | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+
+  for (const action of actions) {
+    if (action.type !== "begin_zord_setup" || action.playerId !== playerId) continue;
+    if (findDirectZordRushAction(state, playerId, action.zordInstanceId)) continue;
+
+    const card = state.players[playerId].hand.find(
+      (c) => c.instanceId === action.zordInstanceId,
+    );
+    if (!card) continue;
+    const def = getDefinition(state.definitions, card.cardId);
+    if (!def) continue;
+
+    const score =
+      effectiveBp(state, playerId, card) +
+      strikeDamageFor(state.definitions, card, state, playerId) * 2_000;
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+
+  return best;
 }
 
 export function pickCommandPaymentResolve(

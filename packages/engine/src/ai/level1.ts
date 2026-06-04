@@ -15,6 +15,7 @@ import {
   pickChargeAction,
   pickCommandPaymentResolve,
   pickEffectChoice,
+  pickBeginZordSetup,
   pickZordSetupStep,
   pickFavorableBattle,
   pickHoldBeforeBattle,
@@ -290,6 +291,9 @@ export function pickCpuAction(
       return pickChargeAction(state, playerId, actions) ?? endPhase(actions);
 
     case "rush": {
+      const beginZord = pickBeginZordSetup(state, playerId, actions);
+      if (beginZord) return beginZord;
+
       if (enableSearch) {
         const candidates = collectRushCandidates(state, playerId, actions);
         const best = pickBestBySearch(state, playerId, candidates);

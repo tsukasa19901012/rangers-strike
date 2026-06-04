@@ -70,7 +70,9 @@ export function CommandPaymentModal({
         ? `「${view.sourceCardName}」の母艦コスト`
         : view.kind === "effect_hold"
           ? `「${view.sourceCardName}」の効果`
-          : `「${view.sourceCardName}」を使う`;
+          : pending.continuation.type === "rush"
+            ? `「${view.sourceCardName}」をラッシュする`
+            : `「${view.sourceCardName}」を使う`;
 
   function toggle(id: string) {
     setSelected((prev) => {

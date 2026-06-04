@@ -646,6 +646,23 @@ export function isInitiateCommandPaymentLegal(
   }
   if (buildPaymentFromInitiateAction(state, action) === null) return false;
 
+  if (action.kind === "category_use" && state.phase === "rush") {
+    const player = state.players[action.playerId];
+    const handFound = findInZone(player, "hand", action.sourceInstanceId);
+    if (handFound) {
+      const def = getDefinition(state.definitions, handFound.card.cardId);
+      if (
+        def &&
+        isUnit(def) &&
+        needsZordMaterial(state.definitions, handFound.card.cardId) &&
+        !requiresAllFusionPartners(handFound.card.cardId) &&
+        canBeginZordSetup(state, action.playerId, action.sourceInstanceId)
+      ) {
+        return false;
+      }
+    }
+  }
+
   if (action.kind === "category_use" && state.phase !== "rush") return false;
   if (action.kind === "battle_entry" && state.phase !== "battle") return false;
 

@@ -184,9 +184,50 @@ describe("zord setup wizard", () => {
     expect(setup?.step).toBe("mothership");
 
     const actions = getLegalActions(state);
-    expect(actions.some((a) => a.type === "begin_zord_setup")).toBe(true);
+    expect(actions.some((a) => a.type === "begin_zord_setup")).toBe(false);
     expect(actions.some((a) => a.type === "rush" && a.instanceId === zord.instanceId)).toBe(
       true,
     );
+  });
+
+  it("rushes RS-045 directly after category hold without duplicate payment", () => {
+    const zord = inst("RS-045", "z1");
+    const sUnit = inst("RS-080", "s1");
+    const otCmd = { ...inst("TST-OP-OT", "ot-pay"), commandHeld: true };
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [zord],
+        rush: [sUnit],
+        power: Array.from({ length: 4 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [otCmd],
+        rushCategoryHoldReady: true,
+      },
+    });
+    state.definitions["RS-045"] = {
+      id: "RS-045",
+      name: "パトレーラー",
+      type: "unit",
+      category: "OT",
+      rarity: "N",
+      expansion: "legend1",
+      powerCost: "4+",
+      bp: 5000,
+      size: "M",
+    };
+    state.definitions["RS-080"] = { ...fusionDef("RS-080", "S1"), size: "S" };
+
+    const actions = getLegalActions(state);
+    expect(actions.some((a) => a.type === "begin_zord_setup")).toBe(false);
+    expect(actions.some((a) => a.type === "rush" && a.instanceId === zord.instanceId)).toBe(
+      true,
+    );
+
+    const setup = createZordSetup(state, "player1", zord.instanceId);
+    expect(setup).not.toBeNull();
+    const advanced = advanceZordSetup(state, setup!, {
+      materialInstanceId: sUnit.instanceId,
+    });
+    expect(advanced.kind).toBe("rush");
   });
 });

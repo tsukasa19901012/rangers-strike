@@ -1,5 +1,5 @@
-import { getZordCondition } from "@rangers-strike/cards";
-import type { ZordMaterialDestination } from "../types/actions";
+import { getZordCondition, isSendSUnitZordCondition } from "@rangers-strike/cards";
+import type { ZordMaterialDestination, RushAction } from "../types/actions";
 import type { GameState, PendingZordSetup, PlayerId } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import {
@@ -36,6 +36,7 @@ export type ZordSetupResolveInput = {
 export type ZordSetupAdvanceResult =
   | { kind: "continue"; setup: PendingZordSetup }
   | { kind: "payment"; payment: PendingCommandPayment }
+  | { kind: "rush"; action: RushAction }
   | { kind: "error"; error: string };
 
 export function hasLegalZordRush(
@@ -272,13 +273,21 @@ export function advanceZordSetup(
     }
 
     const commandZoneHasSpace = player.command.length < COMMAND_ZONE_MAX;
+    const condition = getZordCondition(setup.zordCardId);
     const destination =
       setup.materialDestination ??
       (needsDestinationChoice(setup.zordCardId, commandZoneHasSpace)
         ? undefined
-        : "discard");
+        : condition &&
+            isSendSUnitZordCondition(condition) &&
+            condition !== "send_s_unit_to_command_or_discard"
+          ? undefined
+          : "discard");
 
-    if (!destination) {
+    if (
+      needsDestinationChoice(setup.zordCardId, commandZoneHasSpace) &&
+      !destination
+    ) {
       return { kind: "error", error: "invalid_destination" };
     }
 
@@ -343,6 +352,18 @@ function completeZordPayment(
     undefined,
     materialDestination,
   )) {
+    if (player.rushCategoryHoldReady) {
+      return {
+        kind: "rush",
+        action: {
+          type: "rush",
+          playerId,
+          instanceId: setup.zordInstanceId,
+          zordMaterialInstanceId: materialInstanceId,
+          zordMaterialDestination: materialDestination,
+        },
+      };
+    }
     const categories = cardCategories(def);
     const payment = buildCategoryPayment(
       state,

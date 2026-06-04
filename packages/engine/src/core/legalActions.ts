@@ -1,4 +1,4 @@
-import type { GameAction } from "../types/actions";
+import type { GameAction, RushAction } from "../types/actions";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
@@ -199,6 +199,7 @@ function appendZordSetupActions(
       continue;
     }
     if (requiresAllFusionPartners(card.cardId)) continue;
+    if (findDirectZordRushAction(state, playerId, card.instanceId)) continue;
     if (!canBeginZordSetup(state, playerId, card.instanceId)) continue;
     actions.push({
       type: "begin_zord_setup",
@@ -352,6 +353,62 @@ function canDeclareRush(
   return hasCommandForCardUse(player, definitions, categories);
 }
 
+/** Zord in hand that already paid category hold and can rush immediately. */
+export function findDirectZordRushAction(
+  state: GameState,
+  playerId: PlayerId,
+  zordInstanceId: string,
+): RushAction | null {
+  const player = state.players[playerId];
+  const card = player.hand.find((c) => c.instanceId === zordInstanceId);
+  if (!card) return null;
+
+  const definition = getDefinition(state.definitions, card.cardId);
+  if (!definition || !isUnit(definition) || !needsZordMaterial(state.definitions, card.cardId)) {
+    return null;
+  }
+
+  if (requiresAllFusionPartners(card.cardId)) {
+    if (!canDeclareRush(player, state.definitions, definition, card.instanceId)) return null;
+    return { type: "rush", playerId, instanceId: card.instanceId };
+  }
+
+  const materials = collectZordMaterials(
+    player,
+    state.definitions,
+    card.cardId,
+    card.instanceId,
+  );
+  const variants = listZordRushPaymentVariants(
+    player,
+    state.definitions,
+    card.cardId,
+    card.instanceId,
+    materials,
+    player.command.length < COMMAND_ZONE_MAX,
+  );
+  for (const variant of variants) {
+    if (
+      !canDeclareRush(player, state.definitions, definition, card.instanceId, {
+        zordMaterialInstanceId: variant.zordMaterialInstanceId,
+        zordMothershipHoldInstanceIds: variant.zordMothershipHoldInstanceIds,
+        zordMaterialDestination: variant.zordMaterialDestination,
+      })
+    ) {
+      continue;
+    }
+    return {
+      type: "rush",
+      playerId,
+      instanceId: card.instanceId,
+      zordMaterialInstanceId: variant.zordMaterialInstanceId,
+      zordMaterialDestination: variant.zordMaterialDestination,
+      zordMothershipHoldInstanceIds: variant.zordMothershipHoldInstanceIds,
+    };
+  }
+  return null;
+}
+
 function appendRushCategoryPaymentActions(
   state: GameState,
   playerId: PlayerId,
@@ -414,6 +471,12 @@ function appendRushCategoryPaymentActions(
           pushPayment(card.instanceId, undefined, true);
         }
       } else {
+        if (
+          !requiresAllFusionPartners(card.cardId) &&
+          canBeginZordSetup(state, playerId, card.instanceId)
+        ) {
+          continue;
+        }
         const materials = collectZordMaterials(
           player,
           state.definitions,

@@ -16,6 +16,7 @@ import {
   formatActionError,
   getStartPhaseStatus,
   getLegalActions,
+  findDirectZordRushAction,
   getStrikeableInstanceIds,
   isCpuTurn,
   needsOperationTarget,
@@ -476,6 +477,12 @@ export function GameApp() {
         );
 
         if (needsZord) {
+          const readyRush =
+            findDirectZordRushAction(state, HUMAN_PLAYER, payload.instanceId) ??
+            rushActions[0];
+          if (readyRush && apply(readyRush)) {
+            return;
+          }
           if (beginSetup) {
             apply(beginSetup);
             return;
