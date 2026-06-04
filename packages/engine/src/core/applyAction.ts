@@ -54,12 +54,13 @@ import {
 import { finalizeRushAction } from "../rules/rushEffects";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import {
-  applyStartPhaseReset,
   canPayEarthForceUpkeep,
   discardEarthForceForUnpaidUpkeep,
-  mustDrawBeforeStartEnd,
+  canAdvanceFromStartPhase,
   mustResolveEarthForceUpkeepBeforeStartEnd,
   openEarthForceUpkeepChoiceIfNeeded,
+  releaseAllCommands,
+  returnBattleToRush,
 } from "../rules/startPhase";
 import {
   applyMothershipHolds,
@@ -280,6 +281,38 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         return fail("bonus_draw_unavailable");
       }
       return ok(drawn.state, buildSimpleLogEntry(playerId, "bonus_draw"));
+    }
+
+    case "release_start_commands": {
+      if (state.phase !== "start") return fail("wrong_phase");
+      if (player.hasReleasedCommandsThisStart) return fail("already_released");
+      if (!player.command.some((c) => c.commandHeld)) {
+        return fail("no_held_commands");
+      }
+      const nextState = releaseAllCommands(state, playerId);
+      const nextPlayer = {
+        ...nextState.players[playerId],
+        hasReleasedCommandsThisStart: true,
+      };
+      return ok(
+        { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) },
+        buildSimpleLogEntry(playerId, "release_start_commands"),
+      );
+    }
+
+    case "return_battle_to_rush": {
+      if (state.phase !== "start") return fail("wrong_phase");
+      if (player.hasReturnedBattleThisStart) return fail("already_returned");
+      if (player.battle.length === 0) return fail("no_battle_units");
+      const nextState = returnBattleToRush(state, playerId);
+      const nextPlayer = {
+        ...nextState.players[playerId],
+        hasReturnedBattleThisStart: true,
+      };
+      return ok(
+        { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) },
+        buildSimpleLogEntry(playerId, "return_battle_to_rush"),
+      );
     }
 
     case "charge_power": {
@@ -1241,24 +1274,20 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
 
     case "end_phase": {
       if (state.phase === "start") {
-        if (mustDrawBeforeStartEnd(state, playerId)) {
-          return fail("must_draw_first");
-        }
-        if (mustResolveEarthForceUpkeepBeforeStartEnd(state, playerId)) {
-          if (canPayEarthForceUpkeep(state, playerId)) {
-            return fail("earth_force_upkeep_required");
-          }
+        if (!canAdvanceFromStartPhase(state, playerId)) {
+          return fail("start_phase_incomplete");
         }
         let nextState = state;
         if (mustResolveEarthForceUpkeepBeforeStartEnd(state, playerId)) {
           const discarded = discardEarthForceForUnpaidUpkeep(nextState, playerId);
           nextState = discarded.state;
         }
-        nextState = applyStartPhaseReset(nextState, playerId);
         const resetPlayer = {
           ...nextState.players[playerId],
           hasChargedThisTurn: false,
           hasDrawnThisStart: false,
+          hasReleasedCommandsThisStart: false,
+          hasReturnedBattleThisStart: false,
           hasPaidEarthForceUpkeep: false,
         };
         nextState = {

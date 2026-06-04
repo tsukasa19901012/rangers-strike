@@ -19,6 +19,19 @@ describe("CPU level 1", () => {
     expect(pickCpuAction(state, "player2")?.type).toBe("charge_command");
   });
 
+  it("prioritizes start phase release before draw", () => {
+    const state = createTestState({
+      phase: "start",
+      activePlayer: "player2",
+      player2: {
+        deck: [inst("TST-OP", "d1")],
+        command: [heldWbCommand("held")],
+      },
+    });
+
+    expect(pickCpuAction(state, "player2")?.type).toBe("release_start_commands");
+  });
+
   it("charges power when command is ready but power is insufficient", () => {
     const state = createTestState({
       phase: "charge",

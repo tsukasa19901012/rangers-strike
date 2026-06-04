@@ -324,10 +324,22 @@ describe("phase flow", () => {
       },
     });
 
-    const afterDraw = unwrap(applyAction(state, { type: "draw", playerId: "player2" }));
+    const afterRelease = unwrap(
+      applyAction(state, { type: "release_start_commands", playerId: "player2" }),
+    );
+    expect(afterRelease.players.player2.command[0]?.commandHeld).toBe(false);
+
+    const afterReturn = unwrap(
+      applyAction(afterRelease, { type: "return_battle_to_rush", playerId: "player2" }),
+    );
+    expect(afterReturn.players.player2.battle).toHaveLength(0);
+    expect(afterReturn.players.player2.rush).toHaveLength(1);
+
+    const afterDraw = unwrap(
+      applyAction(afterReturn, { type: "draw", playerId: "player2" }),
+    );
     expect(afterDraw.phase).toBe("start");
     expect(afterDraw.players.player2.hand).toHaveLength(1);
-    expect(afterDraw.players.player2.command[0]?.commandHeld).toBe(true);
 
     const afterEnd = unwrap(
       applyAction(afterDraw, { type: "end_phase", playerId: "player2" }),

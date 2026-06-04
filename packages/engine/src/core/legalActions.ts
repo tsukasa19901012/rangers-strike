@@ -32,7 +32,7 @@ import {
 } from "../rules/commandPayment";
 import { hasCommandForCardUse } from "../rules/restrictions";
 import { canBeginZordSetup } from "../rules/zordSetup";
-import { canBonusDraw, mustDrawBeforeStartEnd, mustResolveEarthForceUpkeepBeforeStartEnd, canPayEarthForceUpkeep } from "../rules/startPhase";
+import { canBonusDraw, canAdvanceFromStartPhase, canReleaseStartCommands, canReturnBattleAtStart } from "../rules/startPhase";
 import { listZordRushPaymentVariants } from "../rules/mothership";
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
 import {
@@ -628,19 +628,20 @@ export function getLegalActions(state: GameState): GameAction[] {
 
   switch (state.phase) {
     case "start":
+      if (canReleaseStartCommands(state, playerId)) {
+        actions.push({ type: "release_start_commands", playerId });
+      }
+      if (canReturnBattleAtStart(state, playerId)) {
+        actions.push({ type: "return_battle_to_rush", playerId });
+      }
       if (!player.hasDrawnThisStart) {
         actions.push({ type: "draw", playerId });
       }
       if (canBonusDraw(state, playerId)) {
         actions.push({ type: "bonus_draw", playerId });
       }
-      if (!mustDrawBeforeStartEnd(state, playerId)) {
-        const upkeepPending =
-          mustResolveEarthForceUpkeepBeforeStartEnd(state, playerId) &&
-          canPayEarthForceUpkeep(state, playerId);
-        if (!upkeepPending) {
-          actions.push({ type: "end_phase", playerId });
-        }
+      if (canAdvanceFromStartPhase(state, playerId)) {
+        actions.push({ type: "end_phase", playerId });
       }
       break;
 

@@ -55,6 +55,14 @@ export function formatGameLog(
     return `${player}が追加ドローした（手札＜ダメージ）`;
   }
 
+  if (parts[1] === "release_start_commands") {
+    return `${player}がホールド中のコマンドをリリースした`;
+  }
+
+  if (parts[1] === "return_battle_to_rush") {
+    return `${player}がバトルエリアのユニットをラッシュに戻した`;
+  }
+
   if (parts[1] === "end_phase") {
     const phase = PHASE_LABELS[parts[2] ?? ""] ?? parts[2];
     return `${player}が${phase}フェイズを終了`;

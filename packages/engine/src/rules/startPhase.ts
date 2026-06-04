@@ -1,5 +1,5 @@
 import { getCardEffect } from "@rangers-strike/cards";
-import type { GameState, PlayerId } from "../types/game";
+import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { hasOperationEffect } from "../core/catalog";
 import { removeAt, updatePlayer } from "../core/helpers";
 import { startSelectPowerChoice } from "./pendingChoices";
@@ -28,10 +28,40 @@ export function returnBattleToRush(state: GameState, playerId: PlayerId): GameSt
   };
 }
 
-export function applyStartPhaseReset(state: GameState, playerId: PlayerId): GameState {
-  let next = releaseAllCommands(state, playerId);
-  next = returnBattleToRush(next, playerId);
-  return next;
+export function initializeStartPhasePlayer(player: PlayerState): PlayerState {
+  const hasHeld = player.command.some((c) => c.commandHeld);
+  const hasBattle = player.battle.length > 0;
+  return {
+    ...player,
+    hasDrawnThisStart: false,
+    hasPaidEarthForceUpkeep: false,
+    hasReleasedCommandsThisStart: !hasHeld,
+    hasReturnedBattleThisStart: !hasBattle,
+  };
+}
+
+export function hasCompletedStartPhaseSteps(player: PlayerState): boolean {
+  return (
+    player.hasReleasedCommandsThisStart === true &&
+    player.hasReturnedBattleThisStart === true &&
+    player.hasDrawnThisStart === true
+  );
+}
+
+export function canReleaseStartCommands(state: GameState, playerId: PlayerId): boolean {
+  if (state.phase !== "start") return false;
+  if (state.pendingEffectChoice?.playerId === playerId) return false;
+  const player = state.players[playerId];
+  if (player.hasReleasedCommandsThisStart) return false;
+  return player.command.some((c) => c.commandHeld);
+}
+
+export function canReturnBattleAtStart(state: GameState, playerId: PlayerId): boolean {
+  if (state.phase !== "start") return false;
+  if (state.pendingEffectChoice?.playerId === playerId) return false;
+  const player = state.players[playerId];
+  if (player.hasReturnedBattleThisStart) return false;
+  return player.battle.length > 0;
 }
 
 export function canBonusDraw(state: GameState, playerId: PlayerId): boolean {
@@ -43,9 +73,55 @@ export function canBonusDraw(state: GameState, playerId: PlayerId): boolean {
   );
 }
 
-export function mustDrawBeforeStartEnd(state: GameState, playerId: PlayerId): boolean {
+export function canAdvanceFromStartPhase(state: GameState, playerId: PlayerId): boolean {
   const player = state.players[playerId];
-  return !player.hasDrawnThisStart;
+  if (state.phase !== "start") return false;
+  if (state.pendingEffectChoice?.playerId === playerId) return false;
+  if (!hasCompletedStartPhaseSteps(player)) return false;
+  if (
+    mustResolveEarthForceUpkeepBeforeStartEnd(state, playerId) &&
+    canPayEarthForceUpkeep(state, playerId)
+  ) {
+    return false;
+  }
+  return true;
+}
+
+export type StartPhaseStatus = {
+  releaseDone: boolean;
+  returnDone: boolean;
+  drawDone: boolean;
+  canRelease: boolean;
+  canReturn: boolean;
+  canDraw: boolean;
+  canBonusDraw: boolean;
+  canAdvanceToCharge: boolean;
+  heldCommandCount: number;
+  battleUnitCount: number;
+};
+
+export function getStartPhaseStatus(
+  state: GameState,
+  playerId: PlayerId,
+): StartPhaseStatus {
+  const player = state.players[playerId];
+  const effectBlocksStart =
+    state.pendingEffectChoice?.playerId === playerId;
+  return {
+    releaseDone: player.hasReleasedCommandsThisStart === true,
+    returnDone: player.hasReturnedBattleThisStart === true,
+    drawDone: player.hasDrawnThisStart === true,
+    canRelease: canReleaseStartCommands(state, playerId),
+    canReturn: canReturnBattleAtStart(state, playerId),
+    canDraw:
+      state.phase === "start" &&
+      !effectBlocksStart &&
+      !player.hasDrawnThisStart,
+    canBonusDraw: !effectBlocksStart && canBonusDraw(state, playerId),
+    canAdvanceToCharge: canAdvanceFromStartPhase(state, playerId),
+    heldCommandCount: player.command.filter((c) => c.commandHeld).length,
+    battleUnitCount: player.battle.length,
+  };
 }
 
 function countFaceUpPower(state: GameState, playerId: PlayerId): number {

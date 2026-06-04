@@ -14,10 +14,10 @@ import {
   explainCannotRush,
   findMandatoryBattleEntries,
   formatActionError,
+  getStartPhaseStatus,
   getLegalActions,
   getStrikeableInstanceIds,
   isCpuTurn,
-  mustDrawBeforeStartEnd,
   needsOperationTarget,
   needsEffectHoldPayment,
   needsZordMaterial,
@@ -59,6 +59,7 @@ import { ReactionModal } from "./ReactionModal";
 import { DeckBuilderScreen } from "./DeckBuilderScreen";
 import { LogModal } from "./LogModal";
 import { PhaseGuide } from "./PhaseGuide";
+import { StartPhaseModal } from "./StartPhaseModal";
 import { PileModal } from "./PileModal";
 import { PlayerBoard } from "./PlayerBoard";
 import { StartScreen } from "./StartScreen";
@@ -914,15 +915,15 @@ export function GameApp() {
   const canPassLeaveReaction =
     isReactionTurn && legalActions.some((a) => a.type === "pass_leave_reaction");
 
-  const canBonusDraw =
-    humanCanAct &&
-    state?.phase === "start" &&
-    legalActions.some((a) => a.type === "bonus_draw");
+  const startPhaseStatus =
+    state && humanCanAct && state.phase === "start"
+      ? getStartPhaseStatus(state, HUMAN_PLAYER)
+      : null;
 
   const canEndPhase =
     humanCanAct &&
     state &&
-    (state.phase !== "start" || !mustDrawBeforeStartEnd(state, HUMAN_PLAYER)) &&
+    state.phase !== "start" &&
     legalActions.some((a) => a.type === "end_phase");
 
   const handleCounterSelect = useCallback(
@@ -1108,6 +1109,13 @@ export function GameApp() {
     humanCanAct &&
     state.pendingCommandPayment?.playerId === HUMAN_PLAYER;
 
+  const showStartPhaseModal =
+    humanCanAct &&
+    state.phase === "start" &&
+    !showEffectChoiceModal &&
+    !showCommandPaymentModal &&
+    !!startPhaseStatus;
+
   const boardEffectChoiceTargets = showEffectChoiceModal
     ? undefined
     : pendingEffectChoiceTargets;
@@ -1122,6 +1130,8 @@ export function GameApp() {
 
   const pendingHint = showCommandPaymentModal
     ? "コマンドを選んでホールド（行動と同時に確定）"
+    : showStartPhaseModal
+      ? "3つの行程を好きな順番で行ってください"
     : showZordSetupModal
       ? zordSetup?.step === "destination"
         ? "コマンドゾーンか捨て札かを選んでください"
@@ -1310,6 +1320,20 @@ export function GameApp() {
           onPrismModeChange={handleCommandPaymentPrismChange}
         />
       )}
+      {showStartPhaseModal && startPhaseStatus && (
+        <StartPhaseModal
+          status={startPhaseStatus}
+          onRelease={() =>
+            apply({ type: "release_start_commands", playerId: HUMAN_PLAYER })
+          }
+          onReturnBattle={() =>
+            apply({ type: "return_battle_to_rush", playerId: HUMAN_PLAYER })
+          }
+          onDraw={() => apply({ type: "draw", playerId: HUMAN_PLAYER })}
+          onBonusDraw={() => apply({ type: "bonus_draw", playerId: HUMAN_PLAYER })}
+          onAdvance={() => apply({ type: "end_phase", playerId: HUMAN_PLAYER })}
+        />
+      )}
       {blockedBattleAlert && (
         <AlertModal
           title="バトルエリアに出せません"
@@ -1454,29 +1478,12 @@ export function GameApp() {
       </div>
 
       <footer className="action-bar">
-        {humanCanAct && state.phase === "start" && legalActions.some((a) => a.type === "draw") && (
-          <button
-            type="button"
-            className="btn"
-            onClick={() => apply({ type: "draw", playerId: HUMAN_PLAYER })}
-          >
-            ドロー
-          </button>
-        )}
-        {canBonusDraw && (
-          <button
-            type="button"
-            className="btn"
-            onClick={() => apply({ type: "bonus_draw", playerId: HUMAN_PLAYER })}
-          >
-            追加ドロー
-          </button>
-        )}
         {canEndPhase &&
           !showReactionModal &&
           !showEffectChoiceModal &&
           !showOperationModal &&
           !showCommandPaymentModal &&
+          !showStartPhaseModal &&
           !canPassBattleEntry && (
           <button
             type="button"
@@ -1485,9 +1492,6 @@ export function GameApp() {
           >
             {PHASE_LABELS[state.phase]}フェイズ終了
           </button>
-        )}
-        {!canEndPhase && humanCanAct && state.phase === "start" && (
-          <span className="hint">先にドローしてください</span>
         )}
         {!humanCanAct && !state.winner && !state.pendingStrike && (
           <span className="hint">

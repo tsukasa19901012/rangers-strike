@@ -108,6 +108,8 @@ describe("earth force", () => {
           operation: [earthForce],
           power: [p1, p2, p3],
           hasDrawnThisStart: true,
+          hasReleasedCommandsThisStart: true,
+          hasReturnedBattleThisStart: true,
         },
       }),
       pendingEffectChoice: {
@@ -167,6 +169,8 @@ describe("earth force", () => {
           { ...inst("TST-P", "p2"), faceDown: true },
         ],
         hasDrawnThisStart: true,
+        hasReleasedCommandsThisStart: true,
+        hasReturnedBattleThisStart: true,
       },
     });
 
@@ -189,6 +193,8 @@ describe("earth force", () => {
           operation: [earthForce],
           power: [p1, p2, p3],
           hasDrawnThisStart: true,
+          hasReleasedCommandsThisStart: true,
+          hasReturnedBattleThisStart: true,
         },
       }),
       pendingEffectChoice: {

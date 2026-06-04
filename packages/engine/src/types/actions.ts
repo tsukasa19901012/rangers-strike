@@ -89,6 +89,16 @@ export type BonusDrawAction = {
   playerId: PlayerId;
 };
 
+export type ReleaseStartCommandsAction = {
+  type: "release_start_commands";
+  playerId: PlayerId;
+};
+
+export type ReturnBattleToRushAction = {
+  type: "return_battle_to_rush";
+  playerId: PlayerId;
+};
+
 export type PassStrikeReactionAction = {
   type: "pass_strike_reaction";
   playerId: PlayerId;
@@ -210,6 +220,8 @@ export type GameAction =
   | EndPhaseAction
   | PlayOperationAction
   | BonusDrawAction
+  | ReleaseStartCommandsAction
+  | ReturnBattleToRushAction
   | PassStrikeReactionAction
   | FiveTechInterceptAction
   | PlayCounterAction

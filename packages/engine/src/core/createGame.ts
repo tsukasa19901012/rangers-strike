@@ -1,6 +1,7 @@
 import { allCardsCatalog, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { resetRushPhaseFlags } from "../rules/turnModifiers";
+import { initializeStartPhasePlayer } from "../rules/startPhase";
 import {
   INITIAL_HAND_SIZE,
   hasWonByDamage,
@@ -146,6 +147,16 @@ export function advancePhase(state: GameState): GameState {
       players: {
         ...nextState.players,
         [activePlayer]: resetRushPhaseFlags(nextState.players[activePlayer]),
+      },
+    };
+  }
+
+  if (next === "start") {
+    nextState = {
+      ...nextState,
+      players: {
+        ...nextState.players,
+        [activePlayer]: initializeStartPhasePlayer(nextState.players[activePlayer]),
       },
     };
   }

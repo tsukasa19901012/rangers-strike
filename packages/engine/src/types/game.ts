@@ -86,6 +86,10 @@ export type PlayerState = {
   hasChargedThisTurn?: boolean;
   /** Start phase: true after the mandatory draw this turn. */
   hasDrawnThisStart?: boolean;
+  /** Start phase: true after releasing held commands this turn. */
+  hasReleasedCommandsThisStart?: boolean;
+  /** Start phase: true after returning battle units to rush this turn. */
+  hasReturnedBattleThisStart?: boolean;
   /** Start phase: true after RS-022 upkeep is paid this turn. */
   hasPaidEarthForceUpkeep?: boolean;
   /** ※バトル進入: 支払いでホールド済み（move_to_battle まで有効）。 */

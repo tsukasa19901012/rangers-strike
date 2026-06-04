@@ -273,6 +273,10 @@ export function pickCpuAction(
 
   switch (state.phase) {
     case "start": {
+      const release = actions.find((action) => action.type === "release_start_commands");
+      if (release) return release;
+      const returnBattle = actions.find((action) => action.type === "return_battle_to_rush");
+      if (returnBattle) return returnBattle;
       const draw = actions.find((action) => action.type === "draw");
       if (draw) return draw;
       const upkeep = actions.find((action) => action.type === "resolve_effect_choice");
