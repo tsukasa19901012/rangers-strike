@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { getCardById } from "@rangers-strike/cards";
 import {
   getCommandPaymentView,
+  isOperation,
   type GameState,
   type PlayerId,
 } from "@rangers-strike/engine";
+import { resolveCardTargets } from "@/lib/cardTargets";
 import { GameModalBackdrop } from "./GameModalBackdrop";
 
 type CommandPaymentModalProps = {
@@ -33,24 +34,24 @@ export function CommandPaymentModal({
     return getCommandPaymentView(state, pending);
   }, [pending, state]);
 
-  if (!pending || !view) return null;
+  const commands = useMemo(() => {
+    if (!pending || !view) return [];
+    return resolveCardTargets(state, pending.validInstanceIds)
+      .filter((t) => t.playerId === playerId)
+      .filter((t) => {
+        if (view.kind === "mothership_hold") {
+          if (!isOperation(t.card)) return false;
+          return t.zone === "command" || t.zone === "rush";
+        }
+        return t.zone === "command";
+      })
+      .map((t) => ({
+        instanceId: t.instanceId,
+        name: t.card.name + (t.zone === "rush" ? "（ラッシュ）" : ""),
+      }));
+  }, [pending, view, state, playerId]);
 
-  const commands = pending.validInstanceIds
-    .map((id) => {
-      const player = state.players[playerId];
-      const inst =
-        player.command.find((c) => c.instanceId === id) ??
-        (view.allowRushZoneCommands
-          ? player.rush.find((c) => c.instanceId === id)
-          : undefined);
-      if (!inst) return null;
-      const card = getCardById(inst.cardId);
-      if (!card || card.type !== "operation") return null;
-      const zone =
-        player.rush.some((c) => c.instanceId === id) ? "（ラッシュ）" : "";
-      return { instanceId: id, name: card.name + zone };
-    })
-    .filter((e): e is { instanceId: string; name: string } => !!e);
+  if (!pending || !view) return null;
 
   const required = view.selectCount;
   const canConfirm = selected.length === required;
