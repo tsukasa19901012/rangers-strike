@@ -5,8 +5,13 @@ import { quickActionPriority } from "./helpers";
 import { isCpuTurn, pickCpuAction } from "./level1";
 import { evaluateState } from "./scoring";
 
-const MAX_CANDIDATES = 42;
-const MAX_RESPONSE_DEPTH = 10;
+export type SearchOptions = {
+  maxCandidates?: number;
+  maxResponseDepth?: number;
+};
+
+const DEFAULT_MAX_CANDIDATES = 42;
+const DEFAULT_MAX_RESPONSE_DEPTH = 100;
 
 function actionKey(action: GameAction): string {
   switch (action.type) {
@@ -51,11 +56,13 @@ export function dedupeActions(actions: GameAction[]): GameAction[] {
 export function resolveOpponentResponses(
   state: GameState,
   playerId: PlayerId,
+  options?: SearchOptions,
 ): GameState {
   let current = state;
   const enemyId = playerId === "player1" ? "player2" : "player1";
+  const maxDepth = options?.maxResponseDepth ?? DEFAULT_MAX_RESPONSE_DEPTH;
 
-  for (let i = 0; i < MAX_RESPONSE_DEPTH; i++) {
+  for (let i = 0; i < maxDepth; i++) {
     if (current.winner) return current;
     if (!isCpuTurn(current, enemyId)) break;
 
@@ -74,10 +81,11 @@ export function scoreAction(
   state: GameState,
   playerId: PlayerId,
   action: GameAction,
+  options?: SearchOptions,
 ): number {
   const result = applyAction(state, action);
   if (!result.ok) return Number.NEGATIVE_INFINITY;
-  const resolved = resolveOpponentResponses(result.state, playerId);
+  const resolved = resolveOpponentResponses(result.state, playerId, options);
   return evaluateState(resolved, playerId);
 }
 
@@ -85,26 +93,29 @@ export function rankCandidatesForSearch(
   state: GameState,
   playerId: PlayerId,
   candidates: GameAction[],
+  options?: SearchOptions,
 ): GameAction[] {
+  const maxCandidates = options?.maxCandidates ?? DEFAULT_MAX_CANDIDATES;
   return dedupeActions(candidates)
     .sort(
       (a, b) =>
         quickActionPriority(state, playerId, b) - quickActionPriority(state, playerId, a),
     )
-    .slice(0, MAX_CANDIDATES);
+    .slice(0, maxCandidates);
 }
 
 export function pickBestBySearch(
   state: GameState,
   playerId: PlayerId,
   candidates: GameAction[],
+  options?: SearchOptions,
 ): GameAction | null {
-  const unique = rankCandidatesForSearch(state, playerId, candidates);
+  const unique = rankCandidatesForSearch(state, playerId, candidates, options);
   let best: GameAction | null = null;
   let bestScore = Number.NEGATIVE_INFINITY;
 
   for (const action of unique) {
-    const score = scoreAction(state, playerId, action);
+    const score = scoreAction(state, playerId, action, options);
     if (score > bestScore) {
       bestScore = score;
       best = action;

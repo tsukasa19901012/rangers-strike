@@ -44,7 +44,7 @@ export function StartScreen({
     <div className="start-screen">
       <header className="start-screen__hero">
         <h1 className="start-screen__title">レンジャーズストライク</h1>
-        <p className="start-screen__subtitle">Legend 1 — CPU対戦</p>
+        <p className="start-screen__subtitle">Legend 1〜3 — CPU対戦（Lv1〜5）</p>
       </header>
 
       <section className="start-screen__panel" aria-label="対戦設定">

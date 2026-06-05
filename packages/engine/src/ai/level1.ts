@@ -30,12 +30,24 @@ import {
   pickStrikeReaction,
   pickWinningBattle,
 } from "./helpers";
-import { dedupeActions, pickBestBySearch } from "./simulation";
+import { dedupeActions, pickBestBySearch, type SearchOptions } from "./simulation";
 
 export type PickCpuActionOptions = {
   /** When false, skip opponent-response simulation (used internally to avoid recursion). */
   enableSearch?: boolean;
+  maxCandidates?: number;
+  maxResponseDepth?: number;
 };
+
+function searchOptions(options: PickCpuActionOptions): SearchOptions | undefined {
+  if (options.maxCandidates === undefined && options.maxResponseDepth === undefined) {
+    return undefined;
+  }
+  return {
+    maxCandidates: options.maxCandidates,
+    maxResponseDepth: options.maxResponseDepth,
+  };
+}
 
 function pickReactionAction(
   state: GameState,
@@ -43,12 +55,14 @@ function pickReactionAction(
   actions: GameAction[],
   passType: GameAction["type"],
   enableSearch: boolean,
+  options: PickCpuActionOptions,
 ): GameAction | null {
   if (!enableSearch) {
     return pickSimpleReaction(state, playerId, actions, passType);
   }
 
   const pass = actions.find((a) => a.type === passType);
+  const sim = searchOptions(options);
 
   if (passType === "pass_strike_reaction") {
     const strikeCandidates = dedupeActions([
@@ -57,7 +71,7 @@ function pickReactionAction(
       ...actionsOfType(actions, "play_counter"),
       ...(pass ? [pass] : []),
     ]);
-    const searched = pickBestBySearch(state, playerId, strikeCandidates);
+    const searched = pickBestBySearch(state, playerId, strikeCandidates, sim);
     return (
       searched ??
       pickStrikeReaction(state, playerId, actions) ??
@@ -71,7 +85,7 @@ function pickReactionAction(
   const candidates = actions.filter((a) => a.type !== passType);
   if (pass) candidates.push(pass);
 
-  return pickBestBySearch(state, playerId, candidates) ?? heuristic ?? pass ?? null;
+  return pickBestBySearch(state, playerId, candidates, sim) ?? heuristic ?? pass ?? null;
 }
 
 function collectRushCandidates(
@@ -184,6 +198,7 @@ function pickCpuActionInner(
   options: PickCpuActionOptions = {},
 ): GameAction | null {
   const enableSearch = options.enableSearch ?? true;
+  const sim = searchOptions(options);
 
   if (state.winner) return null;
 
@@ -199,7 +214,7 @@ function pickCpuActionInner(
   if (state.pendingLeave) {
     if (playerId !== state.pendingLeave.ownerPlayerId) return null;
     const actions = getLegalActions(state);
-    return pickReactionAction(state, playerId, actions, "pass_leave_reaction", enableSearch);
+    return pickReactionAction(state, playerId, actions, "pass_leave_reaction", enableSearch, options);
   }
 
   if (state.pendingEffectChoice) {
@@ -210,7 +225,7 @@ function pickCpuActionInner(
     if (enableSearch && pending.kind === "deck_top_or_bottom") {
       const placements = actionsOfType(actions, "resolve_ruin_survey");
       if (placements.length > 0) {
-        return pickBestBySearch(state, playerId, placements) ?? pickEffectChoice(state, pending, actions);
+        return pickBestBySearch(state, playerId, placements, sim) ?? pickEffectChoice(state, pending, actions);
       }
     }
 
@@ -221,7 +236,7 @@ function pickCpuActionInner(
     if (pending.kind === "seabed_draw") {
       const placements = actionsOfType(actions, "resolve_seabed_draw");
       if (placements.length > 0) {
-        return pickBestBySearch(state, playerId, placements) ?? placements[0] ?? null;
+        return pickBestBySearch(state, playerId, placements, sim) ?? placements[0] ?? null;
       }
     }
 
@@ -229,7 +244,7 @@ function pickCpuActionInner(
       const pay = actions.find((a) => a.type === "resolve_effect_choice");
       const skip = actions.find((a) => a.type === "skip_effect_choice");
       if (pay && skip) {
-        return pickBestBySearch(state, playerId, [pay, skip]);
+        return pickBestBySearch(state, playerId, [pay, skip], sim);
       }
     }
 
@@ -248,7 +263,7 @@ function pickCpuActionInner(
         ...actionsOfType(actions, "battle"),
         ...actions.filter((a) => a.type === "pass_battle_entry"),
       ];
-      const searched = pickBestBySearch(state, playerId, candidates);
+      const searched = pickBestBySearch(state, playerId, candidates, sim);
       if (searched) return searched;
     } else {
       const battle = pickWinningBattle(state, actions);
@@ -269,19 +284,19 @@ function pickCpuActionInner(
   if (state.pendingRush) {
     if (playerId !== opponent(state.pendingRush.rusherPlayerId)) return null;
     const actions = getLegalActions(state);
-    return pickReactionAction(state, playerId, actions, "pass_rush_reaction", enableSearch);
+    return pickReactionAction(state, playerId, actions, "pass_rush_reaction", enableSearch, options);
   }
 
   if (state.pendingBattle) {
     if (playerId !== state.pendingBattle.defenderPlayerId) return null;
     const actions = getLegalActions(state);
-    return pickReactionAction(state, playerId, actions, "pass_battle_reaction", enableSearch);
+    return pickReactionAction(state, playerId, actions, "pass_battle_reaction", enableSearch, options);
   }
 
   if (state.pendingStrike) {
     if (playerId !== opponent(state.pendingStrike.strikerPlayerId)) return null;
     const actions = getLegalActions(state);
-    return pickReactionAction(state, playerId, actions, "pass_strike_reaction", enableSearch);
+    return pickReactionAction(state, playerId, actions, "pass_strike_reaction", enableSearch, options);
   }
 
   if (state.activePlayer !== playerId) return null;
@@ -325,7 +340,7 @@ function pickCpuActionInner(
 
       if (enableSearch) {
         const candidates = collectRushCandidates(state, playerId, actions);
-        const best = pickBestBySearch(state, playerId, candidates);
+        const best = pickBestBySearch(state, playerId, candidates, sim);
         if (best) return best;
       }
 
@@ -341,7 +356,7 @@ function pickCpuActionInner(
 
       if (enableSearch) {
         const candidates = collectBattleCandidates(state, playerId, actions);
-        const best = pickBestBySearch(state, playerId, candidates);
+        const best = pickBestBySearch(state, playerId, candidates, sim);
         if (best) return best;
       }
 

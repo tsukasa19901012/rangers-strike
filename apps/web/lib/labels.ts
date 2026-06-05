@@ -2,7 +2,11 @@ import type { CpuLevel, Phase, PlayerId } from "@rangers-strike/engine";
 import type { Category } from "@rangers-strike/cards";
 
 export const CPU_LEVEL_OPTIONS: { level: CpuLevel; label: string }[] = [
-  { level: 1, label: "Lv1 — 基本" },
+  { level: 1, label: "Lv1 — 初級（ヒューリスティック）" },
+  { level: 2, label: "Lv2 — 初中級" },
+  { level: 3, label: "Lv3 — 中級" },
+  { level: 4, label: "Lv4 — 上級" },
+  { level: 5, label: "Lv5 — 最上級" },
 ];
 
 export const PHASE_LABELS: Record<Phase, string> = {

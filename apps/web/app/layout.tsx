@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Rangers Strike",
-  description: "レンジャーズストライク CPU対戦",
+  description: "レンジャーズストライク対戦シミュレーター（Legend 1〜3、CPU Lv1〜5）",
 };
 
 export const viewport: Viewport = {
