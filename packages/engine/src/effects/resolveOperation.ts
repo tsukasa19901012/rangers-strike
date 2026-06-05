@@ -1,4 +1,4 @@
-import { getCardEffect, getZordCondition, isFusionUnit } from "@rangers-strike/cards";
+import { getCardEffect, requiresFusionPartnerReturn } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import {
   cardName,
@@ -29,11 +29,7 @@ import {
   resolveSuperDynamite,
 } from "../rules/legend3/operations";
 import { isStealthUnit } from "../rules/legend3/fieldEffects";
-import {
-  autoHoldForBattleEntry,
-  canMoveUnitToBattle,
-  markBattleEntryHoldReadyIfNoteSatisfied,
-} from "../rules/restrictions";
+import { returnFusionPartnersFromDiscard } from "../rules/fusionReturn";
 import { tryLeaveField } from "../rules/operationCounters";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { applySuperBrainDraw } from "./drawEffects";
@@ -270,66 +266,6 @@ function resolveDynamitePower(ctx: EffectContext): EffectOutcome {
   };
 }
 
-function returnFusionMaterialsAfterBazooka(
-  state: GameState,
-  enemyId: PlayerId,
-  destroyed: { cardId: string; zordMaterialCardId?: string },
-): GameState {
-  if (getZordCondition(destroyed.cardId) !== "discard_fusion_unit") {
-    return state;
-  }
-
-  let enemy = state.players[enemyId];
-  let discard = [...enemy.discard];
-  let battle = [...enemy.battle];
-  const quota = 1;
-  let returned = 0;
-
-  while (returned < quota) {
-    let index = -1;
-    if (destroyed.zordMaterialCardId) {
-      index = discard.findIndex((c) => c.cardId === destroyed.zordMaterialCardId);
-    }
-    if (index < 0) {
-      index = discard.findIndex((c) => isFusionUnit(c.cardId));
-    }
-    if (index < 0) break;
-
-    const [card, rest] = removeAt(discard, index);
-    discard = rest;
-
-    const prepared = autoHoldForBattleEntry(enemy, card);
-    if (!prepared) {
-      discard = [...discard, card];
-      break;
-    }
-    enemy = markBattleEntryHoldReadyIfNoteSatisfied(prepared, card);
-    const withPrepared = {
-      ...state,
-      ...updatePlayer(state, enemyId, enemy),
-    };
-
-    if (canMoveUnitToBattle(withPrepared, enemyId, card, "rush")) {
-      battle = [...battle, { ...card, battleActed: false }];
-      enemy = {
-        ...enemy,
-        discard,
-        battle,
-        battleEntryHoldReady: false,
-      };
-      returned += 1;
-    } else {
-      discard = [...discard, card];
-      break;
-    }
-  }
-
-  return {
-    ...state,
-    ...updatePlayer(state, enemyId, { ...enemy, discard, battle }),
-  };
-}
-
 function resolvePowerBazooka(ctx: EffectContext): EffectOutcome {
   if (!ctx.targetInstanceId) return fail(ctx.state, "target_required");
 
@@ -351,7 +287,14 @@ function resolvePowerBazooka(ctx: EffectContext): EffectOutcome {
     }),
   };
 
-  nextState = returnFusionMaterialsAfterBazooka(nextState, enemyId, found.card);
+  if (requiresFusionPartnerReturn(found.card.cardId)) {
+    nextState = returnFusionPartnersFromDiscard(
+      nextState,
+      enemyId,
+      found.card.cardId,
+      "battle",
+    );
+  }
 
   const targetName = cardName(ctx.state.definitions, found.card.cardId);
   const returned = nextState.players[enemyId].battle.length - battle.length;

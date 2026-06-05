@@ -15,6 +15,7 @@ import { findCardOwner } from "./fieldLookup";
 import { tryLeaveField } from "./operationCounters";
 import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
+import { returnFusionPartnersFromDiscard } from "./fusionReturn";
 import {
   autoHoldForBattleEntry,
   canMoveUnitToBattle,
@@ -1044,10 +1045,28 @@ export function applyEffectChoiceSelect(
           cardName(state.definitions, swapTarget.card.cardId),
         );
       }
+      const located = findCardOwner(state, instanceId);
+      const destroyedCardId = located
+        ? findInZone(state.players[located.playerId], located.zone, instanceId)?.card.cardId
+        : undefined;
       const leave = applyUnitLeave(state, instanceId, dest === "power" ? "power" : dest === "deck_top" ? "deck_top" : "discard", pending.phasePlayerId);
       if ("error" in leave) return leave;
+      let nextState = leave.state;
+      if (
+        pending.effectId === "great_assault" &&
+        dest === "discard" &&
+        located &&
+        destroyedCardId
+      ) {
+        nextState = returnFusionPartnersFromDiscard(
+          nextState,
+          located.playerId,
+          destroyedCardId,
+          "hand",
+        );
+      }
       return finishChoice(
-        leave.state,
+        nextState,
         pending,
         cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
       );

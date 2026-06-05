@@ -1,9 +1,14 @@
-import { getUnitEffectBlock, listZordFusionPartnerIds } from "./unitEffects";
+import { allCardsCatalog } from "./catalog";
 import type { RushAdditionalCondition, ZordConditionId } from "./effectTaxonomy";
+import {
+  buildFusionPartnerIdSet,
+  getUnitEffectBlock,
+  listZordFusionPartnerIds,
+} from "./unitEffects";
 
 export type { RushAdditionalCondition, ZordConditionId };
 
-/** Zord-up additional condition ids (powerCost suffix "+"). */
+/** Legacy zord-up map (Legend 1/2). Legend 3+ uses unitEffects.json / cards.json. */
 export const ZORD_CONDITIONS: Record<string, ZordConditionId> = {
   "RS-034": "discard_fusion_unit",
   "RS-042": "discard_fusion_unit",
@@ -40,7 +45,15 @@ export const ZORD_CONDITIONS: Record<string, ZordConditionId> = {
   "RS-122": "send_s_unit_to_command_or_discard",
 };
 
-/** Official 追加条件 text per condition id (atwiki 追加条件別一覧). */
+/** Fusion units not listed on any 合体― line but valid generic discard material. */
+const LEGACY_EXTRA_FUSION_UNIT_IDS = ["RS-062"] as const;
+
+/** Derived from all 合体― partner lists in unitEffects.json (+ legacy extras). */
+export const FUSION_UNIT_IDS: ReadonlySet<string> = new Set([
+  ...buildFusionPartnerIdSet(),
+  ...LEGACY_EXTRA_FUSION_UNIT_IDS,
+]);
+
 export function rushAdditionalConditionText(
   conditionId: ZordConditionId,
   unitCount = 1,
@@ -99,52 +112,28 @@ export function resolveRushAdditionalCondition(
   return getRushAdditionalCondition(cardId);
 }
 
-/** Units that satisfy 「自軍合体ユニットを捨札にする」. */
-export const FUSION_UNIT_IDS = new Set([
-  "RS-035",
-  "RS-036",
-  "RS-037",
-  "RS-038",
-  "RS-039",
-  "RS-043",
-  "RS-044",
-  "RS-045",
-  "RS-046",
-  "RS-047",
-  "RS-051",
-  "RS-052",
-  "RS-053",
-  "RS-057",
-  "RS-058",
-  "RS-059",
-  "RS-060",
-  "RS-061",
-  "RS-062",
-  "RS-074",
-  "RS-075",
-  "RS-085",
-  "RS-086",
-  "RS-087",
-  "RS-088",
-  "RS-089",
-  "RS-096",
-  "RS-097",
-  "RS-098",
-  "RS-114",
-  "RS-115",
-  "RS-118",
-  "RS-119",
-  "RS-120",
-  "RS-121",
-  "RS-122",
-]);
-
 export function isZordUpCost(powerCost: number | string): boolean {
   return typeof powerCost === "string" && powerCost.endsWith("+");
 }
 
 export function getZordCondition(cardId: string): ZordConditionId | undefined {
-  return ZORD_CONDITIONS[cardId];
+  return (
+    ZORD_CONDITIONS[cardId] ??
+    resolveRushAdditionalCondition(cardId)?.conditionId
+  );
+}
+
+/** All zord-up units with a resolved additional condition (all expansions). */
+export function listZordUpCardIds(): string[] {
+  return allCardsCatalog.cards
+    .filter(
+      (card) =>
+        card.type === "unit" &&
+        isZordUpCost(card.powerCost) &&
+        getZordCondition(card.id) !== undefined,
+    )
+    .map((card) => card.id)
+    .sort();
 }
 
 export function isFusionUnit(cardId: string): boolean {
@@ -156,8 +145,20 @@ export function isValidZordFusionMaterial(
   zordCardId: string,
   materialCardId: string,
 ): boolean {
-  if (!isFusionUnit(materialCardId)) return false;
   const partners = listZordFusionPartnerIds(zordCardId);
-  if (partners.length === 0) return true;
-  return partners.includes(materialCardId);
+  if (partners.length > 0) {
+    return partners.includes(materialCardId);
+  }
+  return isFusionUnit(materialCardId);
+}
+
+/** Whether destroying this card should return fusion partners from discard. */
+export function requiresFusionPartnerReturn(cardId: string): boolean {
+  return getZordCondition(cardId) === "discard_fusion_unit";
+}
+
+/** How many fusion partners to return after the zord is discarded. */
+export function fusionPartnerReturnCount(cardId: string): number {
+  const partners = listZordFusionPartnerIds(cardId);
+  return partners.length > 0 ? partners.length : 1;
 }

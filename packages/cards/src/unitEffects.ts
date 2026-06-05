@@ -61,6 +61,20 @@ export function listZordFusionPartnerIds(zordCardId: string): string[] {
   return zord?.partnerCardIds ?? [];
 }
 
+/** All card ids referenced as 合体― partners across unitEffects.json. */
+export function buildFusionPartnerIdSet(): Set<string> {
+  const ids = new Set<string>();
+  for (const block of Object.values(UNIT_EFFECTS)) {
+    for (const entry of block.unnamedText) {
+      if (entry.kind !== "zord") continue;
+      for (const partnerId of entry.partnerCardIds ?? []) {
+        ids.add(partnerId);
+      }
+    }
+  }
+  return ids;
+}
+
 function battleHasPartner(
   battle: Array<{ instanceId: string; cardId: string }>,
   partnerCardIds: string[],

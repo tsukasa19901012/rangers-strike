@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { legend1Catalog, legend2Catalog, legend3Catalog } from "@rangers-strike/cards";
 import { applyAction, canMoveUnitToBattle, getLegalActions, unitEffectiveCategories } from "./index";
+import { resolveNamedOnRushEffects } from "./rules/namedUnitEffects";
 import { startSagasSniperChoice } from "./rules/pendingChoices";
 import { createTestState, inst } from "./testing/fixtures";
-import { moveToBattle } from "./testing/battleEntry";
+import { legendDefinitions, moveToBattle } from "./testing/battleEntry";
+import { buildZordRushSetup } from "./testing/gameplayFlow";
 
 const defs = {
   ...Object.fromEntries(
@@ -352,5 +354,85 @@ describe("legend3 integration", () => {
     expect(pending?.validInstanceIds).toHaveLength(1);
     expect(pending?.validInstanceIds[0]).toBe("RS-079:cheap");
     expect(pending?.maxPowerCost).toBe(2);
+  });
+
+  it("RS-172 requires S-unit payment when rushing", () => {
+    const shovel = inst("RS-172", "shovel");
+    const sUnit = inst("RS-079", "silver");
+    const state = createTestState({
+      definitions: defs,
+      phase: "rush",
+      activePlayer: "player1",
+      player1: {
+        hand: [shovel],
+        rush: [sUnit],
+        power: Array.from({ length: 4 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [{ ...inst("RS-123", "cmd1"), commandHeld: true }],
+        rushCategoryHoldReady: true,
+      },
+    });
+
+    const materialRushes = getLegalActions(state).filter(
+      (a) =>
+        a.type === "rush" &&
+        a.instanceId === shovel.instanceId &&
+        a.zordMaterialInstanceId === sUnit.instanceId,
+    );
+    const bareRush = getLegalActions(state).filter(
+      (a) =>
+        a.type === "rush" &&
+        a.instanceId === shovel.instanceId &&
+        !a.zordMaterialInstanceId &&
+        (a.zordMothershipHoldInstanceIds?.length ?? 0) === 0,
+    );
+    expect(materialRushes.length).toBeGreaterThanOrEqual(1);
+    expect(bareRush).toHaveLength(0);
+  });
+
+  it("RS-128 and RS-129 can begin zord setup with multi-slot dekabase payment", () => {
+    for (const zordCardId of ["RS-128", "RS-129"] as const) {
+      const setup = buildZordRushSetup(legendDefinitions, zordCardId);
+      expect(setup, `setup failed for ${zordCardId}`).not.toBeNull();
+      if (!setup) continue;
+      expect(setup.payment?.zordMothershipHoldInstanceIds?.length ?? 0).toBeGreaterThan(0);
+    }
+  });
+
+  it("RS-176 great assault returns fusion partners to defender hand", () => {
+    const assault = inst("RS-176", "assault");
+    const enemyZord = inst("RS-117", "gogo");
+    const fusionPart = inst("RS-118", "part");
+    const state = createTestState({
+      definitions: defs,
+      phase: "rush",
+      activePlayer: "player1",
+      player1: { rush: [assault] },
+      player2: {
+        battle: [enemyZord],
+        discard: [fusionPart],
+      },
+    });
+
+    const opened = resolveNamedOnRushEffects(
+      state,
+      "player1",
+      assault.instanceId,
+      "player1",
+    );
+    expect(opened.state.pendingEffectChoice?.effectId).toBe("great_assault");
+    expect(opened.state.pendingEffectChoice?.validInstanceIds).toContain(enemyZord.instanceId);
+
+    const resolved = unwrap(
+      applyAction(opened.state, {
+        type: "resolve_effect_choice",
+        playerId: "player1",
+        instanceId: enemyZord.instanceId,
+      }),
+    );
+
+    expect(resolved.players.player2.discard.some((c) => c.cardId === "RS-117")).toBe(true);
+    expect(resolved.players.player2.hand.some((c) => c.instanceId === fusionPart.instanceId)).toBe(
+      true,
+    );
   });
 });

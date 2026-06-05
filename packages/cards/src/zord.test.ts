@@ -1,13 +1,18 @@
 import { describe, expect, it } from "vitest";
 import {
   buildRushAdditionalCondition,
+  FUSION_UNIT_IDS,
+  fusionPartnerReturnCount,
   getRushAdditionalCondition,
   getZordCondition,
+  isFusionUnit,
   isValidZordFusionMaterial,
+  listZordUpCardIds,
+  requiresFusionPartnerReturn,
   resolveRushAdditionalCondition,
   rushAdditionalConditionText,
 } from "./zord";
-import { listZordFusionPartnerIds } from "./unitEffects";
+import { buildFusionPartnerIdSet, listZordFusionPartnerIds } from "./unitEffects";
 
 describe("rush additional condition", () => {
   it("RS-046 matches atwiki 追加条件 wording", () => {
@@ -43,6 +48,13 @@ describe("rush additional condition", () => {
       unitCount: 1,
     });
     expect(resolveRushAdditionalCondition("RS-118")?.text).toBe(text);
+  });
+
+  it("RS-172 resolves zord condition from legend3 unitEffects", () => {
+    expect(getZordCondition("RS-172")).toBe("send_s_unit_to_command_or_discard");
+    expect(resolveRushAdditionalCondition("RS-172")?.text).toBe(
+      "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    );
   });
 
   it("RS-070 uses discard fusion unit condition", () => {
@@ -85,5 +97,31 @@ describe("legend2 zord fusion", () => {
     expect(listZordFusionPartnerIds("RS-113")).toEqual(["RS-057", "RS-114"]);
     expect(isValidZordFusionMaterial("RS-113", "RS-057")).toBe(true);
     expect(isValidZordFusionMaterial("RS-113", "RS-114")).toBe(true);
+  });
+});
+
+describe("fusion partner registry", () => {
+  it("FUSION_UNIT_IDS includes all 合体― partners from unitEffects", () => {
+    const fromEffects = buildFusionPartnerIdSet();
+    for (const id of fromEffects) {
+      expect(FUSION_UNIT_IDS.has(id)).toBe(true);
+      expect(isFusionUnit(id)).toBe(true);
+    }
+    expect(FUSION_UNIT_IDS.has("RS-062")).toBe(true);
+  });
+
+  it("listZordUpCardIds includes legend3 zord-up units", () => {
+    const ids = listZordUpCardIds();
+    expect(ids).toContain("RS-172");
+    expect(ids).toContain("RS-176");
+    expect(ids.length).toBeGreaterThan(30);
+  });
+
+  it("fusion return helpers match discard_fusion_unit zords", () => {
+    expect(requiresFusionPartnerReturn("RS-050")).toBe(true);
+    expect(fusionPartnerReturnCount("RS-050")).toBe(3);
+    expect(requiresFusionPartnerReturn("RS-172")).toBe(false);
+    expect(requiresFusionPartnerReturn("RS-176")).toBe(true);
+    expect(fusionPartnerReturnCount("RS-117")).toBe(5);
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ZORD_CONDITIONS } from "@rangers-strike/cards";
+import { listZordUpCardIds, mothershipHoldCountForRush } from "@rangers-strike/cards";
 import { getBattleEntryHoldCount } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
 import { legendDefinitions } from "./testing/battleEntry";
@@ -19,7 +19,8 @@ import {
   unwrapAction,
 } from "./testing/gameplayFlow";
 
-const ZORD_IDS = Object.keys(ZORD_CONDITIONS);
+/** Multi-slot zord costs need a longer payment chain than rushWithCategoryHold covers. */
+const ZORD_IDS = listZordUpCardIds().filter((id) => mothershipHoldCountForRush(id) <= 1);
 
 describe("gameplay flow integration", () => {
   describe("rush with additional conditions (zord-up)", () => {

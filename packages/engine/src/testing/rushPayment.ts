@@ -43,12 +43,23 @@ function resolveZordSetupPayment(
     );
   }
 
-  if (next.pendingZordSetup?.step === "mothership") {
+  if (
+    next.pendingZordSetup?.step === "material" &&
+    !zord.zordMaterialInstanceId &&
+    (zord.zordMothershipHoldInstanceIds?.length ?? 0) > 0
+  ) {
     next = unwrap(
       applyAction(next, {
         type: "resolve_zord_setup",
         playerId,
         paymentPath: "mothership",
+      }),
+    );
+  } else if (next.pendingZordSetup?.step === "mothership") {
+    next = unwrap(
+      applyAction(next, {
+        type: "resolve_zord_setup",
+        playerId,
       }),
     );
   }
@@ -63,12 +74,23 @@ function resolveZordSetupPayment(
     next = resolved.state;
   }
 
-  if (next.pendingCommandPayment) {
-    return applyAction(next, {
+  for (let i = 0; i < 4; i += 1) {
+    const pending = next.pendingCommandPayment;
+    if (!pending || pending.playerId !== playerId) break;
+
+    const commandInstanceIds =
+      pending.kind === "mothership_hold"
+        ? (zord.zordMothershipHoldInstanceIds ?? [])
+        : [commandInstanceId];
+    if (commandInstanceIds.length !== pending.totalNeeded) break;
+
+    const resolved = applyAction(next, {
       type: "resolve_command_payment",
       playerId,
-      commandInstanceIds: zord.zordMothershipHoldInstanceIds ?? [commandInstanceId],
+      commandInstanceIds,
     });
+    if (!resolved.ok) return resolved;
+    next = resolved.state;
   }
 
   if (next.players[playerId].rush.some((c) => c.instanceId === unitInstanceId)) {

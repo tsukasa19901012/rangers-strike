@@ -265,12 +265,6 @@ function pickCpuActionInner(
       ];
       const searched = pickBestBySearch(state, playerId, candidates, sim);
       if (searched) return searched;
-    } else {
-      const battle = pickWinningBattle(state, actions);
-      if (battle) return battle;
-      const favorable = pickFavorableBattle(state, actions);
-      if (favorable) return favorable;
-      return actions.find((a) => a.type === "pass_battle_entry") ?? null;
     }
 
     return (

@@ -3,6 +3,7 @@ import {
   isSendSUnitZordCondition,
   isZordUpCost,
   listZordFusionPartnerIds,
+  mothershipHoldCountForRush,
   mothershipSubstitutesCondition,
   MOTHERSHIP_CONFIG,
   type CardDefinition,
@@ -54,6 +55,25 @@ export function powerCards(count: number, prefix = "p"): CardInstance[] {
 
 /** Small unit usable as send_s_unit_* material for most zords. */
 export const DEFAULT_S_MATERIAL = "RS-080";
+
+function commandsForZordRush(
+  zordCardId: string,
+  categories: string[],
+): CardInstance[] {
+  const unitSlots = mothershipHoldCountForRush(zordCardId);
+  const condition = getZordCondition(zordCardId);
+  const usesDekabase =
+    unitSlots > 1 &&
+    condition !== undefined &&
+    mothershipSubstitutesCondition("dekabase", condition);
+  const cmdId = usesDekabase
+    ? commandCardIdForCategories([MOTHERSHIP_CONFIG.dekabase.commandCategory])
+    : commandCardIdForCategories(categories);
+  const count = usesDekabase ? unitSlots + 1 : 1;
+  return Array.from({ length: count }, (_, index) =>
+    inst(cmdId, index === 0 ? "cmd-pay" : `cmd-ms-${index}`),
+  );
+}
 
 function addMothershipToRush(
   rush: CardInstance[],
@@ -107,6 +127,7 @@ export function pickZordPaymentVariant(
   definitions: Record<string, CardDefinition>,
   zordCardId: string,
   zordInstanceId: string,
+  reservedCommandInstanceId?: string,
 ): ZordRushPaymentVariant | null {
   const materials = collectZordMaterials(
     player,
@@ -123,6 +144,30 @@ export function pickZordPaymentVariant(
     player.command.length < 5,
   );
   if (variants.length === 0) return null;
+
+  const unitSlots = mothershipHoldCountForRush(zordCardId);
+  if (unitSlots > 1) {
+    const reserveCategoryHold = (variant: ZordRushPaymentVariant) =>
+      !reservedCommandInstanceId ||
+      !(variant.zordMothershipHoldInstanceIds ?? []).includes(reservedCommandInstanceId);
+
+    const mothershipOnly = variants.find(
+      (variant) =>
+        !variant.zordMaterialInstanceId &&
+        (variant.zordMothershipHoldInstanceIds?.length ?? 0) === unitSlots &&
+        reserveCategoryHold(variant),
+    );
+    if (mothershipOnly) return mothershipOnly;
+
+    const materialWithHolds = variants.find(
+      (variant) =>
+        variant.zordMaterialInstanceId &&
+        (variant.zordMothershipHoldInstanceIds?.length ?? 0) === unitSlots - 1 &&
+        reserveCategoryHold(variant),
+    );
+    if (materialWithHolds) return materialWithHolds;
+  }
+
   const preferDiscard =
     getZordCondition(zordCardId) === "send_s_unit_to_command_or_discard";
   const picked =
@@ -157,7 +202,8 @@ export function buildZordRushSetup(
 
   const zord = inst(zordCardId, "zord");
   const categories = cardCategories(def);
-  const cmd = inst(commandCardIdForCategories(categories), "cmd-pay");
+  const command = commandsForZordRush(zordCardId, categories);
+  const cmd = command[0]!;
   const cost = parsePowerCost(def.powerCost);
   const condition = getZordCondition(zordCardId);
 
@@ -170,14 +216,20 @@ export function buildZordRushSetup(
     hand: [zord],
     discard: [],
     power: powerCards(cost),
-    command: [cmd],
+    command,
     rush,
     battle: [],
     operation: [],
     damage: 0,
   };
 
-  const payment = pickZordPaymentVariant(player1, definitions, zordCardId, zord.instanceId);
+  const payment = pickZordPaymentVariant(
+    player1,
+    definitions,
+    zordCardId,
+    zord.instanceId,
+    cmd.instanceId,
+  );
   const fusion = requiresAllFusionPartners(zordCardId);
   if (!payment && !fusion) return null;
 
