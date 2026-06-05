@@ -181,10 +181,14 @@ npm run build
 | 操作モーダル群 | `components/*Modal.tsx` |
 | 対戦メイン | `components/GameApp.tsx` |
 
-Legend 1 / 2 の wiki 効果テキスト照合（Legend 3 は atwiki 取り込みスクリプトで管理）:
+wiki 効果テキスト照合（Legend 1/2 は wikiwiki.jp、Legend 3 は w.atwiki.jp）:
 
 ```bash
+# 全弾
 node scripts/verify-wiki-effects.mjs
+
+# Legend 3 のみ
+node scripts/verify-wiki-effects.mjs --expansion=legend3
 ```
 
 Legend 3 カードデータのメンテナンス（開発者向け）:

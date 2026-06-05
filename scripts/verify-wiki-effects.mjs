@@ -1,42 +1,65 @@
 #!/usr/bin/env node
 /**
- * Compare card effect text in the repo against wikiwiki.jp/renst pages.
- * Usage: node scripts/verify-wiki-effects.mjs [--fix-report]
+ * Compare card effect text in the repo against official wiki pages.
+ * - Legend 1 / 2: wikiwiki.jp/renst/{cardName}
+ * - Legend 3: w.atwiki.jp/renst/pages/{page}.html
+ *
+ * Usage:
+ *   node scripts/verify-wiki-effects.mjs
+ *   node scripts/verify-wiki-effects.mjs --expansion legend3
  */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  extractEffectTextFromAtwikiHtml,
+  fetchAtwikiPage,
+} from "../packages/cards/scripts/atwikiText.js";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
-const l1 = JSON.parse(fs.readFileSync(path.join(root, "packages/cards/src/legend1/cards.json"), "utf8"));
-const l2 = JSON.parse(fs.readFileSync(path.join(root, "packages/cards/src/legend2/cards.json"), "utf8"));
-const ue1 = JSON.parse(fs.readFileSync(path.join(root, "packages/cards/src/legend1/unitEffects.json"), "utf8"));
-const ue2 = JSON.parse(fs.readFileSync(path.join(root, "packages/cards/src/legend2/unitEffects.json"), "utf8"));
+const cardsRoot = path.join(root, "packages/cards/src");
 
-/** @type {Record<string, { effectId: string, text: string }>} */
-const operations = {};
-for (const line of fs
-  .readFileSync(path.join(root, "packages/cards/src/effects.ts"), "utf8")
-  .split("\n")) {
-  const idMatch = line.match(/"(RS-\d+)":/);
-  if (idMatch) operations[idMatch[1]] = { effectId: "", text: "" };
-  const textMatch = line.match(/text: "(.+)",/);
-  if (textMatch && Object.keys(operations).length) {
-    const lastId = Object.keys(operations).at(-1);
-    if (lastId && !operations[lastId].text) operations[lastId].text = textMatch[1];
-  }
+const expansionArg = process.argv.find((arg) => arg.startsWith("--expansion="));
+const expansionFilter = expansionArg?.split("=")[1] ?? "all";
+
+const l1 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend1/cards.json"), "utf8"));
+const l2 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend2/cards.json"), "utf8"));
+const l3 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend3/cards.json"), "utf8"));
+const ue1 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend1/unitEffects.json"), "utf8"));
+const ue2 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend2/unitEffects.json"), "utf8"));
+const ue3 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend3/unitEffects.json"), "utf8"));
+const atwikiPages = JSON.parse(
+  fs.readFileSync(path.join(cardsRoot, "legend3/atwiki-pages.json"), "utf8"),
+);
+
+/** @type {Record<string, string>} */
+const wikiOps = {};
+const wikiRef = fs.readFileSync(path.join(cardsRoot, "wikiReference.ts"), "utf8");
+for (const match of wikiRef.matchAll(/"(RS-\d+|SR-\d+)":\s*(?:"([^"]+)"|(?:\n\s*"([^"]+)"))/g)) {
+  wikiOps[match[1]] = match[2] ?? match[3] ?? "";
 }
 
-const errata = fs.readFileSync(path.join(root, "packages/cards/src/errata.ts"), "utf8");
-for (const m of errata.matchAll(/"(RS-\d+)":\s*\n\s*"([^"]+)"/g)) {
-  if (operations[m[1]]) operations[m[1]].text = m[2];
+/** @type {Record<string, string>} */
+const errata = {};
+const errataSrc = fs.readFileSync(path.join(cardsRoot, "errata.ts"), "utf8");
+for (const match of errataSrc.matchAll(/"(RS-\d+|SR-\d+)":\s*\n\s*"([^"]+)"/g)) {
+  errata[match[1]] = match[2];
 }
 
-const allCards = [...l1.cards, ...l2.cards];
+/** @type {{ expansion: string, cards: object[] }[]} */
+const expansions = [
+  { expansion: "legend1", cards: l1.cards },
+  { expansion: "legend2", cards: l2.cards },
+  { expansion: "legend3", cards: l3.cards },
+].filter(
+  (entry) => expansionFilter === "all" || entry.expansion === expansionFilter,
+);
 
 function canonicalText(card) {
-  if (card.type === "operation") return operations[card.id]?.text ?? "";
-  const block = ue1[card.id] ?? ue2[card.id];
+  if (card.type === "operation") {
+    return errata[card.id] ?? wikiOps[card.id] ?? card.text ?? "";
+  }
+  const block = ue1[card.id] ?? ue2[card.id] ?? ue3[card.id];
   return card.text ?? block?.rawText ?? "";
 }
 
@@ -53,11 +76,22 @@ function normalize(text) {
     .replace(/常駐.*?$/g, "")
     .replace(/・このテキスト.*?$/g, "")
     .replace(/※カウンター.*?$/g, "")
+    .replace(/※常駐.*?$/g, "")
     .replace(/修正後は以下。.*$/g, "")
     .trim();
 }
 
-function extractWikiText(html, cardName) {
+function textsMatch(local, wiki) {
+  const localNorm = normalize(local);
+  const wikiNorm = normalize(wiki);
+  return (
+    localNorm === wikiNorm ||
+    localNorm.includes(wikiNorm) ||
+    wikiNorm.includes(localNorm)
+  );
+}
+
+function extractWikiwikiText(html, cardName) {
   const plain = html
     .replace(/<script[\s\S]*?<\/script>/gi, "")
     .replace(/<style[\s\S]*?<\/style>/gi, "")
@@ -70,10 +104,10 @@ function extractWikiText(html, cardName) {
 
   const lines = plain
     .split("\n")
-    .map((l) => l.trim())
+    .map((line) => line.trim())
     .filter(Boolean);
 
-  const startIdx = lines.findIndex((l) => l === cardName || l.includes(cardName));
+  const startIdx = lines.findIndex((line) => line === cardName || line.includes(cardName));
   if (startIdx < 0) return "";
 
   const stopWords = [
@@ -92,7 +126,7 @@ function extractWikiText(html, cardName) {
   const chunks = [];
   for (let i = startIdx + 1; i < lines.length; i += 1) {
     const line = lines[i];
-    if (stopWords.some((w) => line.startsWith(w))) break;
+    if (stopWords.some((word) => line.startsWith(word))) break;
     if (line.startsWith("---")) break;
     if (line.includes("Wiki*")) continue;
     if (line.includes("ホーム|")) continue;
@@ -100,8 +134,9 @@ function extractWikiText(html, cardName) {
   }
 
   let text = chunks.join("");
-  // Prefer errata-corrected text when present
-  const errataMatch = plain.match(/修正後は以下。\s*([\s\S]*?)(?:イラストレーター|収録|Q&A|フレーバー|カード評価|$)/);
+  const errataMatch = plain.match(
+    /修正後は以下。\s*([\s\S]*?)(?:イラストレーター|収録|Q&A|フレーバー|カード評価|$)/,
+  );
   if (errataMatch) {
     text = errataMatch[1].replace(/\s+/g, " ").trim();
   }
@@ -109,61 +144,117 @@ function extractWikiText(html, cardName) {
   return text.replace(/\s+/g, " ").trim();
 }
 
-async function fetchWiki(cardName) {
+async function fetchWikiwiki(cardName) {
   const url = `https://wikiwiki.jp/renst/${encodeURIComponent(cardName)}`;
   const res = await fetch(url, {
     headers: { "User-Agent": "rangers-strike-verify/1.0" },
   });
   if (!res.ok) return { url, status: res.status, text: "" };
   const html = await res.text();
-  return { url, status: res.status, text: extractWikiText(html, cardName) };
+  return { url, status: res.status, text: extractWikiwikiText(html, cardName) };
+}
+
+async function fetchAtwiki(cardId) {
+  const meta = atwikiPages[cardId];
+  if (!meta) {
+    return { url: "", status: 0, text: "" };
+  }
+  const url = `https://w.atwiki.jp/renst/pages/${meta.page}.html`;
+  try {
+    const html = await fetchAtwikiPage(meta.page);
+    return { url, status: 200, text: extractEffectTextFromAtwikiHtml(html) };
+  } catch (err) {
+    const status = String(err).includes("HTTP 404") ? 404 : 0;
+    return { url, status, text: "", error: String(err) };
+  }
 }
 
 function sleep(ms) {
-  return new Promise((r) => setTimeout(r, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const results = { match: [], mismatch: [], missingWiki: [], missingLocal: [], fetchError: [] };
+function emptyResults() {
+  return {
+    match: [],
+    mismatch: [],
+    missingWiki: [],
+    missingLocal: [],
+    fetchError: [],
+  };
+}
 
-for (const card of allCards) {
-  const local = canonicalText(card);
-  if (!local) {
-    results.missingLocal.push({ id: card.id, name: card.name, type: card.type });
-    continue;
-  }
+/** @type {Record<string, ReturnType<typeof emptyResults>>} */
+const byExpansion = {};
+/** @type {ReturnType<typeof emptyResults>} */
+const total = emptyResults();
 
-  await sleep(120);
-  let wiki;
-  try {
-    wiki = await fetchWiki(card.name);
-  } catch (err) {
-    results.fetchError.push({ id: card.id, name: card.name, error: String(err) });
-    continue;
-  }
+for (const { expansion, cards } of expansions) {
+  byExpansion[expansion] = emptyResults();
 
-  if (wiki.status === 404 || !wiki.text) {
-    results.missingWiki.push({ id: card.id, name: card.name, url: wiki.url, status: wiki.status });
-    continue;
-  }
+  for (const card of cards) {
+    const bucket = byExpansion[expansion];
+    const local = canonicalText(card);
+    if (!local) {
+      bucket.missingLocal.push({ id: card.id, name: card.name, type: card.type });
+      total.missingLocal.push({ id: card.id, name: card.name, type: card.type, expansion });
+      continue;
+    }
 
-  const localNorm = normalize(local);
-  const wikiNorm = normalize(wiki.text);
+    await sleep(120);
 
-  if (localNorm === wikiNorm || localNorm.includes(wikiNorm) || wikiNorm.includes(localNorm)) {
-    results.match.push(card.id);
-  } else {
-    results.mismatch.push({
-      id: card.id,
-      name: card.name,
-      type: card.type,
-      local,
-      wiki: wiki.text,
-      url: wiki.url,
-    });
+    let wiki;
+    try {
+      wiki =
+        expansion === "legend3"
+          ? await fetchAtwiki(card.id)
+          : await fetchWikiwiki(card.name);
+    } catch (err) {
+      const entry = { id: card.id, name: card.name, error: String(err) };
+      bucket.fetchError.push(entry);
+      total.fetchError.push({ ...entry, expansion });
+      continue;
+    }
+
+    if (wiki.error) {
+      const entry = { id: card.id, name: card.name, error: wiki.error, url: wiki.url };
+      bucket.fetchError.push(entry);
+      total.fetchError.push({ ...entry, expansion });
+      continue;
+    }
+
+    if (wiki.status === 404 || !wiki.text) {
+      const entry = { id: card.id, name: card.name, url: wiki.url, status: wiki.status };
+      bucket.missingWiki.push(entry);
+      total.missingWiki.push({ ...entry, expansion });
+      continue;
+    }
+
+    if (textsMatch(local, wiki.text)) {
+      bucket.match.push(card.id);
+      total.match.push(card.id);
+    } else {
+      const entry = {
+        id: card.id,
+        name: card.name,
+        type: card.type,
+        local,
+        wiki: wiki.text,
+        url: wiki.url,
+      };
+      bucket.mismatch.push(entry);
+      total.mismatch.push({ ...entry, expansion });
+    }
   }
 }
 
-console.log(JSON.stringify(results, null, 2));
+console.log(JSON.stringify({ byExpansion, total }, null, 2));
+
+for (const [expansion, results] of Object.entries(byExpansion)) {
+  console.error(
+    `\n[${expansion}] match=${results.match.length} mismatch=${results.mismatch.length} missingWiki=${results.missingWiki.length} missingLocal=${results.missingLocal.length} fetchError=${results.fetchError.length}`,
+  );
+}
+
 console.error(
-  `\nSummary: match=${results.match.length} mismatch=${results.mismatch.length} missingWiki=${results.missingWiki.length} missingLocal=${results.missingLocal.length} fetchError=${results.fetchError.length}`,
+  `\nTotal: match=${total.match.length} mismatch=${total.mismatch.length} missingWiki=${total.missingWiki.length} missingLocal=${total.missingLocal.length} fetchError=${total.fetchError.length}`,
 );
