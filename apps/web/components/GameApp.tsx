@@ -256,15 +256,24 @@ export function GameApp() {
                 a.type === "pass_leave_reaction"),
           ) ?? legal.find((a) => a.playerId === CPU_PLAYER) ?? null;
       }
-      if (!action) return;
+      if (!action) {
+        if (state.pendingZordSetup?.playerId === CPU_PLAYER) {
+          const cancel = applyAction(state, {
+            type: "cancel_zord_setup",
+            playerId: CPU_PLAYER,
+          });
+          if (cancel.ok) {
+            setState(cancel.state);
+            setActionError(null);
+          }
+        }
+        return;
+      }
       const result = applyAction(state, action);
       if (result.ok) {
         setState(result.state);
         setActionError(null);
-      } else if (
-        state.pendingZordSetup?.playerId === CPU_PLAYER &&
-        action.type === "resolve_zord_setup"
-      ) {
+      } else if (state.pendingZordSetup?.playerId === CPU_PLAYER) {
         const cancel = applyAction(state, {
           type: "cancel_zord_setup",
           playerId: CPU_PLAYER,

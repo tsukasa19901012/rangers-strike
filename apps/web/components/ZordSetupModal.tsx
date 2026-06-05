@@ -2,6 +2,7 @@
 
 import { getCardById } from "@rangers-strike/cards";
 import type { GameState, PendingZordSetup, PlayerId } from "@rangers-strike/engine";
+import { listZordSetupResolveActions } from "@rangers-strike/engine";
 import { resolveCardTargets, type CardTarget } from "@/lib/cardTargets";
 import { GameModalBackdrop } from "./GameModalBackdrop";
 
@@ -42,9 +43,20 @@ export function ZordSetupModal({
   onCancel,
 }: ZordSetupModalProps) {
   const zordCard = getCardById(setup.zordCardId);
+  const legalResolves = listZordSetupResolveActions(state, setup);
+  const legalMaterialIds = new Set(
+    legalResolves
+      .map((a) => a.materialInstanceId)
+      .filter((id): id is string => !!id),
+  );
+  const canPickCommand = legalResolves.some((a) => a.destination === "command");
+  const canPickDiscard = legalResolves.some((a) => a.destination === "discard");
+  const canUseMothership = legalResolves.some((a) => a.paymentPath === "mothership");
   const materialTargets =
     setup.step === "material"
-      ? resolveCardTargets(state, setup.validInstanceIds)
+      ? resolveCardTargets(state, setup.validInstanceIds).filter((t) =>
+          legalMaterialIds.has(t.instanceId),
+        )
       : [];
 
   const hint =
@@ -89,7 +101,7 @@ export function ZordSetupModal({
             </div>
           )}
 
-          {setup.step === "material" && setup.mothershipAvailable && onUseMothership && (
+          {setup.step === "material" && setup.mothershipAvailable && onUseMothership && canUseMothership && (
             <div className="effect-action-modal__actions">
               <button type="button" className="btn" onClick={onUseMothership}>
                 母艦で支払う（コマンドをホールド）
@@ -97,18 +109,22 @@ export function ZordSetupModal({
             </div>
           )}
 
-          {setup.step === "destination" && (
+          {setup.step === "destination" && (canPickCommand || canPickDiscard) && (
             <div className="effect-action-modal__actions">
-              <button
-                type="button"
-                className="btn btn--primary"
-                onClick={() => onSelectDestination("command")}
-              >
-                コマンドゾーンに置く
-              </button>
-              <button type="button" className="btn" onClick={() => onSelectDestination("discard")}>
-                捨て札にする
-              </button>
+              {canPickCommand && (
+                <button
+                  type="button"
+                  className="btn btn--primary"
+                  onClick={() => onSelectDestination("command")}
+                >
+                  コマンドゾーンに置く
+                </button>
+              )}
+              {canPickDiscard && (
+                <button type="button" className="btn" onClick={() => onSelectDestination("discard")}>
+                  捨て札にする
+                </button>
+              )}
             </div>
           )}
 

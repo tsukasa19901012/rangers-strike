@@ -285,6 +285,58 @@ describe("CPU level 1", () => {
     );
   });
 
+  it("recovers from stuck zord setup in a CPU step loop", () => {
+    const zord = inst("RS-045", "z1");
+    const sUnit = inst("RS-080", "s1");
+    const base = createTestState({
+      phase: "rush",
+      activePlayer: "player2",
+      player2: {
+        hand: [zord],
+        rush: [sUnit],
+        power: Array.from({ length: 4 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [heldWbCommand("c1")],
+      },
+    });
+    base.definitions["RS-045"] = {
+      id: "RS-045",
+      name: "パトレーラー",
+      type: "unit",
+      category: "OT",
+      rarity: "N",
+      expansion: "legend1",
+      powerCost: "4+",
+      bp: 5000,
+      size: "M",
+    };
+    base.definitions["RS-080"] = {
+      id: "RS-080",
+      name: "S Unit",
+      type: "unit",
+      category: "WB",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 0,
+      bp: 1000,
+      size: "S",
+    };
+    const setup = createZordSetup(base, "player2", zord.instanceId);
+    let state = { ...base, pendingZordSetup: setup! };
+
+    for (let step = 0; step < 4; step += 1) {
+      if (!state.pendingZordSetup) break;
+      const action = pickCpuAction(state, "player2", { enableSearch: false });
+      expect(action).not.toBeNull();
+      if (!action) break;
+      const result = applyAction(state, action);
+      expect(result.ok, result.ok ? undefined : result.error).toBe(true);
+      if (!result.ok) break;
+      state = result.state;
+    }
+
+    expect(state.pendingZordSetup).toBeUndefined();
+  });
+
   it("completes RS-045 zord rush flow as CPU", () => {
     const zord = inst("RS-045", "z1");
     const sUnit = inst("RS-080", "s1");

@@ -25,6 +25,7 @@ import {
 } from "../rules/zord";
 import {
   advanceZordSetup,
+  canBeginZordSetup,
   listZordSetupResolveActions,
 } from "../rules/zordSetup";
 import {
@@ -511,6 +512,7 @@ export function pickBeginZordSetup(
 
   for (const action of actions) {
     if (action.type !== "begin_zord_setup" || action.playerId !== playerId) continue;
+    if (!canBeginZordSetup(state, playerId, action.zordInstanceId)) continue;
     if (findDirectZordRushAction(state, playerId, action.zordInstanceId)) continue;
 
     const card = state.players[playerId].hand.find(
@@ -584,27 +586,26 @@ export function pickZordSetupStep(
     );
   }
 
-  if (setup.step === "material") {
-    let best = resolves[0]!;
-    let bestScore = Number.NEGATIVE_INFINITY;
-    for (const action of resolves) {
-      if (action.paymentPath === "mothership") continue;
-      const advanced = advanceZordSetup(state, setup, {
-        materialInstanceId: action.materialInstanceId,
-        paymentPath: action.paymentPath,
-      });
-      if (advanced.kind !== "rush") continue;
+  let best = resolves[0]!;
+  let bestScore = Number.NEGATIVE_INFINITY;
+  for (const action of resolves) {
+    const advanced = advanceZordSetup(state, setup, {
+      materialInstanceId: action.materialInstanceId,
+      destination: action.destination,
+      paymentPath: action.paymentPath,
+    });
+    if (advanced.kind === "rush") {
       const score = scoreRushAction(state, advanced.action);
       if (score > bestScore) {
         bestScore = score;
         best = action;
       }
+    } else if (advanced.kind === "payment" && 40_000 > bestScore) {
+      bestScore = 40_000;
+      best = action;
     }
-    if (bestScore > Number.NEGATIVE_INFINITY) return best;
-    return resolves.find((a) => a.paymentPath === "mothership") ?? resolves[0]!;
   }
-
-  return resolves[0]!;
+  return best;
 }
 
 export function pickBestRushByScore(
