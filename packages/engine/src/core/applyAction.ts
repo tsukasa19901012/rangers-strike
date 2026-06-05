@@ -74,7 +74,8 @@ import {
   mustResolveEarthForceUpkeepBeforeStartEnd,
   openEarthForceUpkeepChoiceIfNeeded,
   releaseAllCommands,
-  returnBattleUnitToRush,
+  returnAllBattleUnitsToRush,
+  continueBattleToRushEffectQueue,
   shouldAutoAdvanceFromStartPhase,
   transitionStartToChargePhase,
 } from "../rules/startPhase";
@@ -377,34 +378,13 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       );
     }
 
-    case "return_battle_unit_to_rush": {
+    case "return_all_battle_to_rush": {
       if (state.phase !== "start") return fail("wrong_phase");
       if (player.hasReturnedBattleThisStart) return fail("already_returned");
-      const found = findInZone(player, "battle", action.battleInstanceId);
-      if (!found) return fail("card_not_in_battle");
-      const card = found.card;
-      const moved = returnBattleUnitToRush(state, playerId, action.battleInstanceId);
+      const moved = returnAllBattleUnitsToRush(state, playerId);
       if (!moved) return fail("card_not_in_battle");
-      let nextState = tryLegend3BattleToRush(moved, playerId, card, playerId);
-      if (nextState.pendingEffectChoice) {
-        return withStartPhaseAutoAdvance(
-          ok(
-            nextState,
-            buildSimpleLogEntry(playerId, "return_battle_unit_to_rush", card.cardId),
-          ),
-          playerId,
-        );
-      }
-      const updatedPlayer = nextState.players[playerId];
-      const nextPlayer = {
-        ...updatedPlayer,
-        hasReturnedBattleThisStart: updatedPlayer.battle.length === 0,
-      };
       return withStartPhaseAutoAdvance(
-        ok(
-          { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) },
-          buildSimpleLogEntry(playerId, "return_battle_unit_to_rush", card.cardId),
-        ),
+        ok(moved, buildSimpleLogEntry(playerId, "return_all_battle_to_rush")),
         playerId,
       );
     }
@@ -1279,6 +1259,9 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       const result = applyEffectChoiceSelect(state, playerId, action.instanceId);
       if ("error" in result) return fail(result.error);
       let nextState = result.state;
+      if (!nextState.pendingEffectChoice && pending?.effectId === "falcon_claw") {
+        nextState = continueBattleToRushEffectQueue(nextState);
+      }
       if (
         nextState.phase === "end" &&
         !nextState.pendingEffectChoice &&
@@ -1322,6 +1305,9 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       const result = skipEffectChoice(state, playerId);
       if ("error" in result) return fail(result.error);
       let afterSkip = result.state;
+      if (!afterSkip.pendingEffectChoice && pending?.effectId === "falcon_claw") {
+        afterSkip = continueBattleToRushEffectQueue(afterSkip);
+      }
       if (
         afterSkip.phase === "start" &&
         afterSkip.players[playerId].hasDrawnThisStart &&

@@ -812,13 +812,7 @@ export function getLegalActions(state: GameState): GameAction[] {
         actions.push({ type: "release_start_commands", playerId });
       }
       if (canReturnBattleAtStart(state, playerId)) {
-        for (const card of player.battle) {
-          actions.push({
-            type: "return_battle_unit_to_rush",
-            playerId,
-            battleInstanceId: card.instanceId,
-          });
-        }
+        actions.push({ type: "return_all_battle_to_rush", playerId });
       }
       if (!player.hasDrawnThisStart) {
         actions.push({ type: "draw", playerId });
@@ -1149,8 +1143,8 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
     return a.battleInstanceId === b.battleInstanceId;
   }
 
-  if (a.type === "return_battle_unit_to_rush" && b.type === "return_battle_unit_to_rush") {
-    return a.battleInstanceId === b.battleInstanceId;
+  if (a.type === "return_all_battle_to_rush" && b.type === "return_all_battle_to_rush") {
+    return a.playerId === b.playerId;
   }
 
   if (a.type === "shiron_light" && b.type === "shiron_light") {

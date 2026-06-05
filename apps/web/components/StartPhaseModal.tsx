@@ -1,14 +1,13 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { getCardById } from "@rangers-strike/cards";
 import type { StartPhaseStatus } from "@rangers-strike/engine";
 import { GameModalBackdrop } from "./GameModalBackdrop";
 
 type StartPhaseModalProps = {
   status: StartPhaseStatus;
   onRelease: () => void;
-  onReturnBattleUnit: (battleInstanceId: string) => void;
+  onReturnAllBattle: () => void;
   onDraw: () => void;
   onBonusDraw: () => void;
 };
@@ -41,7 +40,7 @@ function StepRow({
 export function StartPhaseModal({
   status,
   onRelease,
-  onReturnBattleUnit,
+  onReturnAllBattle,
   onDraw,
   onBonusDraw,
 }: StartPhaseModalProps) {
@@ -88,29 +87,16 @@ export function StartPhaseModal({
               done={status.returnDone}
               detail={
                 !status.returnDone && status.battleUnitCount > 0
-                  ? `バトルエリア ${status.battleUnitCount} 体（1体ずつ戻してください）`
+                  ? `バトルエリア ${status.battleUnitCount} 体を一括でラッシュに戻します`
                   : status.returnDone
                     ? "すべてラッシュに戻しました"
                     : "バトルエリアにユニットなし"
               }
               action={
                 status.canReturn ? (
-                  <div className="effect-action-modal__targets">
-                    {status.battleUnits.map((unit) => {
-                      const card = getCardById(unit.cardId);
-                      return (
-                        <button
-                          key={unit.instanceId}
-                          type="button"
-                          className="btn effect-action-modal__target"
-                          onClick={() => onReturnBattleUnit(unit.instanceId)}
-                        >
-                          {card?.name ?? unit.cardId}
-                          <span className="effect-action-modal__target-meta">ラッシュに戻す</span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <button type="button" className="btn btn--primary" onClick={onReturnAllBattle}>
+                    すべてラッシュに戻す
+                  </button>
                 ) : undefined
               }
             />

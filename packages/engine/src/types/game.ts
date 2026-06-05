@@ -362,6 +362,9 @@ export type GameState = {
   deferredBattleEntry?: PendingBattleEntry;
   /** @deprecated Alias — use pendingEffectChoice */
   pendingScry?: PendingScry;
+  /** Start phase: optional battle→rush effects (e.g. falcon_claw) after bulk return. */
+  pendingBattleToRushQueue?: string[];
+  pendingBattleToRushPhasePlayerId?: PlayerId;
 };
 
 export const INITIAL_HAND_SIZE = 7;

@@ -331,9 +331,8 @@ describe("phase flow", () => {
 
     const afterReturn = unwrap(
       applyAction(afterRelease, {
-        type: "return_battle_unit_to_rush",
+        type: "return_all_battle_to_rush",
         playerId: "player2",
-        battleInstanceId: "TST-UNIT-0:b1",
       }),
     );
     expect(afterReturn.players.player2.battle).toHaveLength(0);

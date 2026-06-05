@@ -1777,12 +1777,8 @@ export function GameApp() {
           onRelease={() =>
             apply({ type: "release_start_commands", playerId: HUMAN_PLAYER })
           }
-          onReturnBattleUnit={(battleInstanceId) =>
-            apply({
-              type: "return_battle_unit_to_rush",
-              playerId: HUMAN_PLAYER,
-              battleInstanceId,
-            })
+          onReturnAllBattle={() =>
+            apply({ type: "return_all_battle_to_rush", playerId: HUMAN_PLAYER })
           }
           onDraw={() => apply({ type: "draw", playerId: HUMAN_PLAYER })}
           onBonusDraw={() => apply({ type: "bonus_draw", playerId: HUMAN_PLAYER })}

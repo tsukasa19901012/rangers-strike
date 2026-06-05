@@ -1,10 +1,11 @@
-import { getCardEffect } from "@rangers-strike/cards";
-import type { GameState, PlayerId, PlayerState } from "../types/game";
+import { findNamedEffectByEffectId, getCardEffect } from "@rangers-strike/cards";
+import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { checkWinner } from "../core/createGame";
 import { hasOperationEffect } from "../core/catalog";
 import { findInZone, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry, buildSimpleLogEntry } from "../log/formatLog";
 import { startSelectPowerChoice } from "./pendingChoices";
+import { tryLegend3BattleToRush } from "./legend3/restrictions";
 
 /** Start phase: release all held commands. */
 export function releaseAllCommands(state: GameState, playerId: PlayerId): GameState {
@@ -15,25 +16,76 @@ export function releaseAllCommands(state: GameState, playerId: PlayerId): GameSt
   return { ...state, ...updatePlayer(state, playerId, { ...player, command }) };
 }
 
-/** Start phase: return one battle unit to rush (player chooses order). */
-export function returnBattleUnitToRush(
+function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
+  return cards
+    .filter((card) => findNamedEffectByEffectId(card.cardId, "falcon_claw"))
+    .map((card) => card.instanceId);
+}
+
+/** Opens the next optional battle→rush effect after bulk start-phase return. */
+export function continueBattleToRushEffectQueue(state: GameState): GameState {
+  const queue = state.pendingBattleToRushQueue ?? [];
+  const phasePlayerId = state.pendingBattleToRushPhasePlayerId;
+  if (!phasePlayerId || queue.length === 0 || state.pendingEffectChoice) {
+    if (queue.length === 0) {
+      return {
+        ...state,
+        pendingBattleToRushQueue: undefined,
+        pendingBattleToRushPhasePlayerId: undefined,
+      };
+    }
+    return state;
+  }
+
+  const [nextId, ...rest] = queue;
+  const owner = state.players[phasePlayerId];
+  const card = owner.rush.find((c) => c.instanceId === nextId);
+  if (!card) {
+    return continueBattleToRushEffectQueue({
+      ...state,
+      pendingBattleToRushQueue: rest,
+    });
+  }
+
+  const withChoice = tryLegend3BattleToRush(state, phasePlayerId, card, phasePlayerId);
+  if (withChoice.pendingEffectChoice) {
+    return { ...withChoice, pendingBattleToRushQueue: rest };
+  }
+
+  return continueBattleToRushEffectQueue({
+    ...withChoice,
+    pendingBattleToRushQueue: rest,
+  });
+}
+
+/** Start phase: return all battle units to rush at once, then queue optional effects. */
+export function returnAllBattleUnitsToRush(
   state: GameState,
   playerId: PlayerId,
-  battleInstanceId: string,
 ): GameState | null {
   const player = state.players[playerId];
-  const found = findInZone(player, "battle", battleInstanceId);
-  if (!found) return null;
+  if (player.battle.length === 0) return null;
 
-  const [, battle] = removeAt(player.battle, found.index);
-  return {
+  const movedCards = [...player.battle];
+  const effectQueue = collectBattleToRushEffectQueue(movedCards);
+  let nextState: GameState = {
     ...state,
     ...updatePlayer(state, playerId, {
       ...player,
-      battle,
-      rush: [...player.rush, found.card],
+      battle: [],
+      rush: [...player.rush, ...movedCards],
+      hasReturnedBattleThisStart: true,
     }),
+    pendingBattleToRushQueue: effectQueue.length > 0 ? effectQueue : undefined,
+    pendingBattleToRushPhasePlayerId:
+      effectQueue.length > 0 ? playerId : undefined,
   };
+
+  if (effectQueue.length > 0) {
+    nextState = continueBattleToRushEffectQueue(nextState);
+  }
+
+  return nextState;
 }
 
 export function initializeStartPhasePlayer(player: PlayerState): PlayerState {

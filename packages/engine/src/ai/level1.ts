@@ -294,7 +294,7 @@ function pickCpuActionInner(
       const release = actions.find((action) => action.type === "release_start_commands");
       if (release) return release;
       const returnBattle = actions.find(
-        (action) => action.type === "return_battle_unit_to_rush",
+        (action) => action.type === "return_all_battle_to_rush",
       );
       if (returnBattle) return returnBattle;
       const draw = actions.find((action) => action.type === "draw");

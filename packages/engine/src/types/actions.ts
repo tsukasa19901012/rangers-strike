@@ -94,10 +94,9 @@ export type ReleaseStartCommandsAction = {
   playerId: PlayerId;
 };
 
-export type ReturnBattleUnitToRushAction = {
-  type: "return_battle_unit_to_rush";
+export type ReturnAllBattleToRushAction = {
+  type: "return_all_battle_to_rush";
   playerId: PlayerId;
-  battleInstanceId: string;
 };
 
 export type PassStrikeReactionAction = {
@@ -249,7 +248,7 @@ export type GameAction =
   | PlayOperationAction
   | BonusDrawAction
   | ReleaseStartCommandsAction
-  | ReturnBattleUnitToRushAction
+  | ReturnAllBattleToRushAction
   | PassStrikeReactionAction
   | FiveTechInterceptAction
   | PlayCounterAction

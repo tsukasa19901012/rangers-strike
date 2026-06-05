@@ -35,29 +35,30 @@ describe("start phase steps", () => {
     expect(state.players.player2.hasDrawnThisStart).toBe(false);
   });
 
-  it("completes release, return, and draw in any order before charge", () => {
+  it("returns all battle units to rush at once, then completes other steps", () => {
     const cmd = { ...inst("TST-OP", "c1"), commandHeld: true };
-    const unit = inst("TST-UNIT-0", "b1");
+    const unitA = inst("TST-UNIT-0", "b1");
+    const unitB = inst("TST-UNIT-1", "b2");
     let state = createTestState({
       phase: "start",
       player1: {
         deck: [inst("TST-OP", "d1")],
         hand: [],
         command: [cmd],
-        battle: [unit],
+        battle: [unitA, unitB],
       },
     });
 
     state = unwrap(
       applyAction(state, {
-        type: "return_battle_unit_to_rush",
+        type: "return_all_battle_to_rush",
         playerId: "player1",
-        battleInstanceId: "TST-UNIT-0:b1",
       }),
     );
     expect(state.players.player1.battle).toHaveLength(0);
-    expect(state.players.player1.rush).toHaveLength(1);
+    expect(state.players.player1.rush).toHaveLength(2);
     expect(state.players.player1.hasReturnedBattleThisStart).toBe(true);
+    expect(getLegalActions(state).some((a) => a.type === "return_all_battle_to_rush")).toBe(false);
     expect(getLegalActions(state).some((a) => a.type === "end_phase")).toBe(false);
 
     state = unwrap(
@@ -163,19 +164,19 @@ describe("start phase steps", () => {
       "illegal_action",
     );
 
-    state = unwrap(
-      applyAction(state, {
-        type: "return_battle_unit_to_rush",
-        playerId: "player1",
-        battleInstanceId: "TST-UNIT-0:b1",
-      }),
-    );
+    state = createTestState({
+      phase: "start",
+      player1: {
+        command: [cmd],
+        battle: [inst("TST-UNIT-0", "b1")],
+        hasReturnedBattleThisStart: true,
+      },
+    });
     expect(
       reject(
         applyAction(state, {
-          type: "return_battle_unit_to_rush",
+          type: "return_all_battle_to_rush",
           playerId: "player1",
-          battleInstanceId: "TST-UNIT-0:b1",
         }),
       ),
     ).toBe("illegal_action");
@@ -203,8 +204,8 @@ describe("start phase steps", () => {
     expect(formatGameLog("player1|release_start_commands", {})).toBe(
       "あなたがホールド中のコマンドをリリースした",
     );
-    expect(formatGameLog("player2|return_battle_unit_to_rush|TST-UNIT-0", {})).toBe(
-      "CPUがバトルエリアの「TST-UNIT-0」をラッシュに戻した",
+    expect(formatGameLog("player2|return_all_battle_to_rush", {})).toBe(
+      "CPUがバトルエリアのユニットをすべてラッシュに戻した",
     );
   });
 });
