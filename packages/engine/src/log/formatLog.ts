@@ -1,6 +1,18 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import { getEffectLabel } from "@rangers-strike/cards";
 import type { PlayerId } from "../types/game";
+import {
+  formatResolveEffectChoiceNotice,
+  isNoteworthyResolveEffectChoice,
+} from "./effectChoiceNotice";
+
+export {
+  formatResolveEffectChoiceNotice,
+  isNoteworthyResolveEffectChoice,
+  quoteChoiceTargets,
+  shouldSuppressChoiceNoticeEffect,
+  SUPPRESSED_CHOICE_NOTICE_EFFECT_IDS,
+} from "./effectChoiceNotice";
 
 /** Build a structured log entry: player|action|cardId|cardName|detail */
 export function buildLogEntry(
@@ -147,6 +159,9 @@ export function formatGameLog(
           const target = detail.replace("destroy:", "");
           return `${player}の「${cardName}」登場効果で「${target}」を撃破`;
         }
+        if (detail === "destroy_choice") {
+          return `${player}の「${cardName}」の登場効果の対象選択`;
+        }
         if (detail === "sky_magic_slash") {
           return `${player}の「${cardName}」が天空魔法斬りを発動（敵コマンドをホールド）`;
         }
@@ -167,6 +182,12 @@ export function formatGameLog(
           return `${player}の「${cardName}」が${getEffectLabel(detail)}を発動`;
         }
         return `${player}の「${cardName}」の効果`;
+      }
+      case "resolve_effect_choice": {
+        if (detail && isNoteworthyResolveEffectChoice(detail)) {
+          return formatResolveEffectChoiceNotice(player, cardName, detail);
+        }
+        return `${player}の「${cardName}」の効果を解決`;
       }
       case "rush_effect": {
         if (detail === "draw_1") {

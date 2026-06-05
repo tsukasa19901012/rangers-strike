@@ -602,6 +602,22 @@ function findFieldUnitCardId(state: GameState, instanceId: string): string {
   return found?.card.cardId ?? instanceId;
 }
 
+function cardNameForInstance(state: GameState, instanceId: string): string {
+  const located = findCardOwner(state, instanceId);
+  if (located) {
+    const owner = state.players[located.playerId];
+    const found = findInZone(owner, located.zone, instanceId);
+    if (found) return cardName(state.definitions, found.card.cardId);
+  }
+  const command = findCommandCard(state, instanceId);
+  if (command) return cardName(state.definitions, command.card.cardId);
+  return instanceId;
+}
+
+function formatInstanceIdsAsNames(state: GameState, instanceIds: string[]): string {
+  return instanceIds.map((id) => cardNameForInstance(state, id)).join("、");
+}
+
 function findCommandCard(
   state: GameState,
   instanceId: string,
@@ -660,7 +676,7 @@ export function completeEffectHoldChoice(
   for (const id of commandInstanceIds) {
     if (!pending.validInstanceIds.includes(id)) return { error: "invalid_target" };
   }
-  return finishChoice(state, pending, commandInstanceIds.join(","));
+  return finishChoice(state, pending, formatInstanceIdsAsNames(state, commandInstanceIds));
 }
 
 export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOutcome {
@@ -1063,7 +1079,7 @@ export function applyEffectChoiceSelect(
           ...updatePlayer(nextState, pending.playerId, { ...player, command }),
         };
       }
-      return finishChoice(nextState, pending, selected.join(","));
+      return finishChoice(nextState, pending, formatInstanceIdsAsNames(nextState, selected));
     }
 
     case "select_power": {
@@ -1124,7 +1140,7 @@ export function applyEffectChoiceSelect(
       return finishChoice(
         { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
         pending,
-        String(selected.length),
+        formatInstanceIdsAsNames(state, selected),
       );
     }
 
@@ -1213,7 +1229,7 @@ export function applyEffectChoiceSelect(
         };
       }
 
-      return finishChoice(nextState, pending, String(selected.length));
+      return finishChoice(nextState, pending, formatInstanceIdsAsNames(nextState, selected));
     }
 
     default:

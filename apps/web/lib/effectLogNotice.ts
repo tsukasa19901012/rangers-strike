@@ -1,4 +1,8 @@
-import { formatGameLog } from "@rangers-strike/engine";
+import {
+  formatGameLog,
+  isNoteworthyResolveEffectChoice,
+  shouldSuppressChoiceNoticeEffect,
+} from "@rangers-strike/engine";
 import type { CardDefinition } from "@rangers-strike/cards";
 
 const SKIP_ACTIONS = new Set([
@@ -55,8 +59,18 @@ export function shouldShowEffectLogNotice(entry: string): boolean {
   const parts = entry.split("|");
   const action = parts[1];
   if (!action || SKIP_ACTIONS.has(action)) return false;
-  if (EFFECT_ACTIONS.has(action)) return true;
   const detail = parts[4] ?? "";
+  if (action === "resolve_effect_choice") {
+    return isNoteworthyResolveEffectChoice(detail);
+  }
+  if (action === "enter_battle" && detail === "destroy_choice") {
+    return false;
+  }
+  if (action === "named_effect" && detail.startsWith("choice:")) {
+    const effectId = detail.slice("choice:".length);
+    if (shouldSuppressChoiceNoticeEffect(effectId)) return false;
+  }
+  if (EFFECT_ACTIONS.has(action)) return true;
   if (detail.startsWith("choice:")) return false;
   return action === "enter_battle" || action === "named_effect";
 }

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { applyAction, getLegalActions } from "./index";
+import { formatGameLog, isNoteworthyResolveEffectChoice } from "./log/formatLog";
 import { resolveNamedOnRushEffects } from "./rules/namedUnitEffects";
 import { legendDefinitions } from "./testing/battleEntry";
 import { createTestState, heldWbCommand, inst } from "./testing/fixtures";
@@ -33,6 +34,15 @@ describe("on-rush named effects", () => {
     expect(result.state.pendingEffectChoice?.effectId).toBe("armor_attack");
     expect(result.state.pendingEffectChoice?.validInstanceIds).toContain(
       enemyUnit.instanceId,
+    );
+  });
+
+  it("RS-046 armor attack resolve log includes target card for effect notice", () => {
+    const entry =
+      "player2|resolve_effect_choice|RS-046|パトアーマー|armor_attack:Test Unit";
+    expect(isNoteworthyResolveEffectChoice("armor_attack:Test Unit")).toBe(true);
+    expect(formatGameLog(entry, defs)).toBe(
+      "CPUの「パトアーマー」がアーマーアタックを発動 → 「Test Unit」をパワーへ",
     );
   });
 });
