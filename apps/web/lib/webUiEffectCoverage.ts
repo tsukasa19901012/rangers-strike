@@ -141,7 +141,7 @@ export function assertAllImplementedOperationsCovered(): void {
 }
 
 export function assertCatalogMatchesMechanisms(): void {
-  const wired = new Set([
+  const wired = new Set<string>([
     ...IMPLEMENTED_INSTANT_EFFECT_IDS,
     ...IMPLEMENTED_PERMANENT_EFFECT_IDS,
     ...IMPLEMENTED_COUNTER_EFFECT_IDS,

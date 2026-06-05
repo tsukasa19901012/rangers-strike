@@ -1068,7 +1068,9 @@ export function pickEffectChoice(
         if (!card) continue;
         const def = state.definitions[card.cardId];
         const score =
-          def?.type === "unit" ? (def.bp ?? 0) + (def.powerCost ?? 0) * 100 : -1000;
+          def?.type === "unit"
+            ? (def.bp ?? 0) + parsePowerCost(def.powerCost) * 100
+            : -1000;
         if (score > bestScore) {
           bestScore = score;
           best = pick;

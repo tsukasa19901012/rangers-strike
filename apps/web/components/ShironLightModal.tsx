@@ -112,7 +112,7 @@ export function ShironLightModal({
             <button
               type="button"
               className="btn effect-action-modal__target effect-action-modal__target--preview"
-              onClick={() => onPreview(picked.cardId)}
+              onClick={() => onPreview(pickedCard.id)}
             >
               {pickedCard.name}
               <span className="effect-action-modal__target-meta">
