@@ -11,6 +11,7 @@ import {
   parsePowerCost,
 } from "../core/catalog";
 import { findInZone, opponent } from "../core/helpers";
+import { getLegalActions } from "../core/legalActions";
 import {
   countHeldCommands,
   findMandatoryBattleEntries,
@@ -863,11 +864,17 @@ export function pickScryKeepOne(
   state: GameState,
   playerId: PlayerId,
   actions: GameAction[],
+  pending?: PendingEffectChoice,
 ): GameAction | null {
   let best: GameAction | null = null;
   let bestScore = Number.NEGATIVE_INFINITY;
 
-  const viewedIds = state.pendingEffectChoice?.viewedInstanceIds ?? [];
+  const choice = pending ?? state.pendingEffectChoice;
+  const selectable = choice?.validInstanceIds?.length
+    ? new Set(choice.validInstanceIds)
+    : null;
+
+  const viewedIds = choice?.viewedInstanceIds ?? [];
   const player = state.players[playerId];
   const viewedCards = new Map(
     viewedIds
@@ -878,6 +885,7 @@ export function pickScryKeepOne(
 
   for (const action of actions) {
     if (action.type !== "resolve_effect_choice") continue;
+    if (selectable && !selectable.has(action.instanceId)) continue;
     const card =
       viewedCards.get(action.instanceId) ??
       player.deck.find((c) => c.instanceId === action.instanceId);
@@ -892,6 +900,106 @@ export function pickScryKeepOne(
   }
 
   return best;
+}
+
+function handDiscardPriority(
+  definitions: GameState["definitions"],
+  cardId: string,
+): number {
+  const def = getDefinition(definitions, cardId);
+  if (!def) return 500;
+  if (def.type === "unit") return 1000 + (def.bp ?? 0);
+  if (def.type === "operation") return 100;
+  return 50;
+}
+
+function pickSelectHandChoice(
+  state: GameState,
+  playerId: PlayerId,
+  pending: PendingEffectChoice,
+  actions: GameAction[],
+): GameAction | null {
+  const selected = new Set(pending.selectedInstanceIds ?? []);
+  const selectCount = pending.selectCount ?? 1;
+  if (selected.size >= selectCount) return null;
+
+  let best: GameAction | null = null;
+  let bestPriority = Number.POSITIVE_INFINITY;
+
+  for (const action of actions) {
+    if (action.type !== "resolve_effect_choice") continue;
+    if (selected.has(action.instanceId)) continue;
+    const found = findInZone(state.players[playerId], "hand", action.instanceId);
+    if (!found) continue;
+    const priority = handDiscardPriority(state.definitions, found.card.cardId);
+    if (priority < bestPriority) {
+      bestPriority = priority;
+      best = action;
+    }
+  }
+
+  return best;
+}
+
+function pickSelectCommandsChoice(
+  state: GameState,
+  pending: PendingEffectChoice,
+  actions: GameAction[],
+): GameAction | null {
+  if (needsEffectHoldPayment(pending)) {
+    const initiate = actions.find(
+      (a) =>
+        a.type === "initiate_command_payment" &&
+        "kind" in a &&
+        a.kind === "effect_hold",
+    );
+    if (initiate) return initiate;
+  }
+
+  const selected = new Set(pending.selectedInstanceIds ?? []);
+  const selectCount = pending.selectCount ?? 1;
+  if (selected.size >= selectCount) return null;
+
+  for (const action of actions) {
+    if (action.type !== "resolve_effect_choice") continue;
+    if (selected.has(action.instanceId)) continue;
+    return action;
+  }
+
+  return null;
+}
+
+/** Last-resort CPU action when heuristics return null (avoids UI freeze). */
+export function pickCpuFallbackAction(
+  state: GameState,
+  playerId: PlayerId,
+): GameAction | null {
+  const actions = getLegalActions(state).filter((a) => a.playerId === playerId);
+  if (actions.length === 0) return null;
+
+  const preferTypes: GameAction["type"][] = [
+    "skip_effect_choice",
+    "pass_battle_entry",
+    "pass_battle_reaction",
+    "pass_strike_reaction",
+    "pass_rush_reaction",
+    "pass_leave_reaction",
+    "cancel_command_payment",
+    "cancel_zord_setup",
+    "resolve_effect_choice",
+    "confirm_effect_choice",
+    "confirm_denji_reveal",
+    "resolve_ruin_survey",
+    "resolve_seabed_draw",
+    "end_phase",
+  ];
+
+  for (const type of preferTypes) {
+    const found = actions.find((a) => a.type === type);
+    if (found) return found;
+  }
+
+  return actions[0] ?? null;
 }
 
 export function pickEffectChoice(
@@ -964,7 +1072,62 @@ export function pickEffectChoice(
   }
 
   if (pending.kind === "scry_keep_one") {
-    return pickScryKeepOne(state, playerId, actions) ?? skip ?? null;
+    return pickScryKeepOne(state, playerId, actions, pending) ?? skip ?? null;
+  }
+
+  if (pending.kind === "end_turn_menu") {
+    if (pending.optional && skip) return skip;
+    return (
+      actions.find((a) => a.type === "resolve_effect_choice") ??
+      skip ??
+      null
+    );
+  }
+
+  if (pending.kind === "select_hand") {
+    return (
+      pickSelectHandChoice(state, playerId, pending, actions) ??
+      skip ??
+      actions.find((a) => a.type === "resolve_effect_choice") ??
+      null
+    );
+  }
+
+  if (pending.kind === "select_commands") {
+    return (
+      pickSelectCommandsChoice(state, pending, actions) ??
+      skip ??
+      null
+    );
+  }
+
+  if (pending.kind === "pit_in_dive_order") {
+    return (
+      pickWeakestEffectTarget(state, actions) ??
+      actions.find((a) => a.type === "resolve_effect_choice") ??
+      skip ??
+      null
+    );
+  }
+
+  if (pending.effectId === "battle_entry_discard") {
+    return (
+      pickWeakestEffectTarget(state, actions) ??
+      actions.find((a) => a.type === "resolve_effect_choice") ??
+      null
+    );
+  }
+
+  if (
+    pending.effectId === "jet_skateboard" ||
+    pending.effectId === "falcon_claw"
+  ) {
+    if (pending.optional && skip) return skip;
+    return (
+      actions.find((a) => a.type === "resolve_effect_choice") ??
+      skip ??
+      null
+    );
   }
 
   if (pending.kind === "select_power") {

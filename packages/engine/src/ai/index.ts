@@ -6,6 +6,7 @@ import { pickCpuAction as pickCpuActionLevel1, isCpuTurn } from "./level1";
 export type { CpuLevel } from "./types";
 export { CPU_LEVELS } from "./types";
 export { isCpuTurn } from "./level1";
+export { pickCpuFallbackAction } from "./helpers";
 export { evaluateState } from "./scoring";
 
 export function pickCpuAction(

@@ -26,6 +26,7 @@ import {
   canActOnDenjiChoice,
   opponent,
   pickCpuAction,
+  pickCpuFallbackAction,
   type CardInstance,
   type GameAction,
   type GameState,
@@ -241,52 +242,29 @@ export function GameApp() {
     if (!state || !isCpuTurn(state, CPU_PLAYER)) return;
 
     const timer = window.setTimeout(() => {
-      let action = pickCpuAction(state, CPU_PLAYER, cpuLevel);
-      if (!action) {
-        const legal = getLegalActions(state);
-        action =
-          legal.find(
-            (a) =>
-              a.playerId === CPU_PLAYER &&
-              (a.type === "pass_battle_entry" ||
-                a.type === "skip_effect_choice" ||
-                a.type === "pass_battle_reaction" ||
-                a.type === "pass_strike_reaction" ||
-                a.type === "pass_rush_reaction" ||
-                a.type === "pass_leave_reaction"),
-          ) ?? legal.find((a) => a.playerId === CPU_PLAYER) ?? null;
-      }
-      if (!action) {
-        if (state.pendingZordSetup?.playerId === CPU_PLAYER) {
-          const cancel = applyAction(state, {
-            type: "cancel_zord_setup",
-            playerId: CPU_PLAYER,
-          });
-          if (cancel.ok) {
-            setState(cancel.state);
-            setActionError(null);
-          }
-        }
-        return;
-      }
+      const action =
+        pickCpuAction(state, CPU_PLAYER, cpuLevel) ??
+        pickCpuFallbackAction(state, CPU_PLAYER);
+      if (!action) return;
+
       const result = applyAction(state, action);
       if (result.ok) {
         setState(result.state);
         setActionError(null);
-      } else if (state.pendingZordSetup?.playerId === CPU_PLAYER) {
-        const cancel = applyAction(state, {
-          type: "cancel_zord_setup",
-          playerId: CPU_PLAYER,
-        });
-        if (cancel.ok) {
-          setState(cancel.state);
-          setActionError(null);
-        } else {
-          setActionError(formatActionError(result.error));
-        }
-      } else {
-        setActionError(formatActionError(result.error));
+        return;
       }
+
+      const recovery = pickCpuFallbackAction(state, CPU_PLAYER);
+      if (recovery) {
+        const retry = applyAction(state, recovery);
+        if (retry.ok) {
+          setState(retry.state);
+          setActionError(null);
+          return;
+        }
+      }
+
+      setActionError(formatActionError(result.error));
     }, 550);
 
     return () => window.clearTimeout(timer);

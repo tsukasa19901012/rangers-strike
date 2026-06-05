@@ -25,6 +25,7 @@ import {
   handHasRushUnits,
   pickRushCategoryPayment,
   pickMandatoryBattleMove,
+  pickCpuFallbackAction,
   pickSimpleReaction,
   pickStrikeReaction,
   pickWinningBattle,
@@ -167,6 +168,17 @@ function collectBattleCandidates(
  * Level 1 CPU: heuristics plus opponent-response simulation for key decisions.
  */
 export function pickCpuAction(
+  state: GameState,
+  playerId: PlayerId = state.activePlayer,
+  options: PickCpuActionOptions = {},
+): GameAction | null {
+  return (
+    pickCpuActionInner(state, playerId, options) ??
+    pickCpuFallbackAction(state, playerId)
+  );
+}
+
+function pickCpuActionInner(
   state: GameState,
   playerId: PlayerId = state.activePlayer,
   options: PickCpuActionOptions = {},
@@ -323,6 +335,9 @@ export function pickCpuAction(
     case "battle": {
       const hold = pickHoldBeforeBattle(state, playerId, actions);
       if (hold) return hold;
+
+      const mandatory = pickMandatoryBattleMove(state, playerId, actions);
+      if (mandatory) return mandatory;
 
       if (enableSearch) {
         const candidates = collectBattleCandidates(state, playerId, actions);
