@@ -499,19 +499,30 @@ export function startMultiCommandChoice(
     sourceCardId: string;
     phasePlayerId: PlayerId;
     selectCount: number;
-    commandFilter: "held" | "released";
+    commandFilter: "held" | "released" | "any";
     commandAction: PendingEffectChoice["commandAction"];
     optional?: boolean;
+    validInstanceIds?: string[];
+    sourceInstanceId?: string;
   },
 ): GameState | null {
-  const valid = collectCommandIds(state, params.playerId, params.commandFilter);
+  const valid =
+    params.validInstanceIds ??
+    collectCommandIds(state, params.playerId, params.commandFilter);
   if (valid.length === 0 && !params.optional) return null;
   if (valid.length === 0) return null;
   return openEffectChoice(state, {
-    ...params,
+    playerId: params.playerId,
+    effectId: params.effectId,
+    sourceCardId: params.sourceCardId,
+    sourceInstanceId: params.sourceInstanceId,
+    phasePlayerId: params.phasePlayerId,
     kind: "select_commands",
     validInstanceIds: valid,
     selectCount: Math.min(params.selectCount, valid.length),
+    commandFilter: params.commandFilter,
+    commandAction: params.commandAction,
+    optional: params.optional,
   });
 }
 

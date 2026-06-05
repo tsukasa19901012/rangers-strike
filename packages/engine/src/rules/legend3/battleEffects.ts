@@ -137,7 +137,6 @@ export function resolveLegend3EnterBattle(
         commandFilter: "released",
         commandAction: "hold",
         optional: false,
-        validInstanceIds: held,
       });
       return {
         state: withChoice ?? state,

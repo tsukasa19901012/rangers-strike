@@ -3,7 +3,6 @@ import type { GameState, PlayerId, PlayerState } from "../../types/game";
 import { getDefinition } from "../../core/catalog";
 import { opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { buildLogEntry } from "../../log/formatLog";
-import { requestDrawFromDeck } from "../drawFromDeck";
 import {
   collectFieldUnitIds,
   startSelectCommandChoice,
@@ -86,17 +85,15 @@ export function resolveLegend3JointComboR(
           deck: [...enemy.command, ...enemy.deck],
         };
         nextState = { ...nextState, ...updatePlayer(nextState, enemyId, nextEnemy) };
-        for (let i = 0; i < returned && nextState.players[enemyId].deck.length > 0; i++) {
-          const draw = requestDrawFromDeck(nextState, enemyId, phasePlayerId, { count: 1 });
-          nextState = draw.state;
-          const drawn = draw.drawn?.[0];
-          if (!drawn) break;
+        for (let i = 0; i < returned; i++) {
           const p = nextState.players[enemyId];
-          if (p.command.length >= 5) break;
+          if (p.deck.length === 0 || p.command.length >= 5) break;
+          const [drawn, deck] = removeAt(p.deck, 0);
           nextState = {
             ...nextState,
             ...updatePlayer(nextState, enemyId, {
               ...p,
+              deck,
               command: [...p.command, { ...drawn, commandHeld: true }],
             }),
           };

@@ -22,7 +22,9 @@ export function prepareMirageBeamForBattle(
   const player = state.players[playerId];
   if (player.deck.length === 0) return { state };
 
-  const [top, ...rest] = player.deck;
+  const top = player.deck[0];
+  if (!top) return { state };
+  const rest = player.deck.slice(1);
   const def = getDefinition(state.definitions, top.cardId);
   const bpOverride =
     def?.type === "unit" ? unitBp(def) : undefined;
