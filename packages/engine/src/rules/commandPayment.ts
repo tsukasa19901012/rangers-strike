@@ -14,6 +14,7 @@ import type {
   PendingZordSetup,
 } from "../types/game";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
+import { isShironLightRushTarget } from "./shironLight";
 import {
   canPlayOperationExceptCommandHold,
   canRushUnit,
@@ -712,6 +713,12 @@ export function explainCannotRush(
   const categories = cardCategories(def);
   if (
     categories.length === 0 &&
+    canRushUnitExceptCommandHold(player, state.definitions, def, instanceId)
+  ) {
+    return null;
+  }
+  if (
+    isShironLightRushTarget(player, instanceId) &&
     canRushUnitExceptCommandHold(player, state.definitions, def, instanceId)
   ) {
     return null;

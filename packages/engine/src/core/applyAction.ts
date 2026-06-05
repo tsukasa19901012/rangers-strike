@@ -130,6 +130,12 @@ import {
   applyDenjiBottomOrderSelect,
 } from "../rules/denjiMachine";
 import {
+  applyConfirmShironReveal,
+  applyShironPickSelect,
+  clearShironLightRushTarget,
+  startShironLightChoice,
+} from "../rules/shironLight";
+import {
   applyEffectChoicePlacement,
   applyEffectChoiceSelect,
   completeEffectHoldChoice,
@@ -847,6 +853,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         rush: [...nextPlayer.rush, rushCard],
       };
       nextPlayer = markRushedThisTurn(nextPlayer, handFound.card.instanceId);
+      nextPlayer = clearShironLightRushTarget(nextPlayer);
       nextPlayer = { ...nextPlayer, rushCategoryHoldReady: false };
       let nextState: GameState = {
         ...state,
@@ -1232,6 +1239,15 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       return ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "confirm_denji_reveal"));
     }
 
+    case "confirm_shiron_reveal": {
+      const result = applyConfirmShironReveal(state, playerId);
+      if ("error" in result) return fail(result.error);
+      return ok(
+        result.state,
+        result.log ?? buildSimpleLogEntry(playerId, "confirm_shiron_reveal"),
+      );
+    }
+
     case "confirm_effect_choice": {
       const result = applyConfirmEffectChoice(state, playerId);
       if ("error" in result) return fail(result.error);
@@ -1245,6 +1261,11 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       const pending = state.pendingEffectChoice;
       if (pending?.kind === "denji_machine") {
         const result = applyDenjiBottomOrderSelect(state, playerId, action.instanceId);
+        if ("error" in result) return fail(result.error);
+        return ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice"));
+      }
+      if (pending?.kind === "shiron_light") {
+        const result = applyShironPickSelect(state, playerId, action.instanceId);
         if ("error" in result) return fail(result.error);
         return ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice"));
       }
@@ -1481,37 +1502,15 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
 
     case "shiron_light": {
       if (state.phase !== "rush") return fail("wrong_phase");
-      if (!hasOperationEffect(player, "shiron_light", state.definitions)) {
-        return fail("illegal_action");
-      }
-      if (getTurnModifiers(player).shironLightUsed) return fail("already_used");
-
-      const handFound = findInZone(player, "hand", action.handInstanceId);
-      if (!handFound) return fail("card_not_in_hand");
-
-      const definition = getDefinition(state.definitions, handFound.card.cardId);
-      if (!isUnit(definition)) {
-        const nextPlayer = withTurnModifiers(player, { shironLightUsed: true });
-        return ok(
-          { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-          buildLogEntry(playerId, "shiron_light", "RS-013", state.definitions, "not_unit"),
-        );
-      }
-
-      const cost = parsePowerCost(definition!.powerCost);
-      if (!payPowerCost(player, cost)) return fail("insufficient_power");
-
-      const [, hand] = removeAt(player.hand, handFound.index);
-      let nextPlayer = {
-        ...player,
-        hand,
-        rush: [...player.rush, handFound.card],
-      };
-      nextPlayer = withTurnModifiers(nextPlayer, { shironLightUsed: true });
-
+      const nextState = startShironLightChoice(
+        state,
+        playerId,
+        action.operationInstanceId,
+      );
+      if (!nextState) return fail("illegal_action");
       return ok(
-        { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-        buildLogEntry(playerId, "shiron_light", "RS-013", state.definitions, definition!.name),
+        nextState,
+        buildLogEntry(playerId, "shiron_light", "RS-013", state.definitions, "start"),
       );
     }
 

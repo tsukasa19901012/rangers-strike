@@ -70,6 +70,8 @@ export type CardInstance = {
   zordMaterialCardId?: string;
   /** Vehicle this unit is riding in rush (RC support). */
   mountedOnInstanceId?: string;
+  /** RS-013: used this rush phase (permanent operation instance). */
+  shironLightUsedThisRush?: boolean;
 };
 
 export type PlayerState = {
@@ -104,6 +106,8 @@ export type PlayerState = {
   battleEntryDiscardedCardId?: string;
   /** RS-165: 手札捨札支払い済み（move_to_battle まで有効）。 */
   battleEntryHandDiscardReady?: boolean;
+  /** RS-013: hand unit revealed this rush phase; may rush without category hold. */
+  shironLightRushInstanceId?: string;
   turnModifiers?: TurnModifiers;
 };
 
@@ -217,7 +221,16 @@ export type EffectChoiceKind =
   | "scry_keep_one"
   | "pit_in_dive_order"
   | "select_units_bp_budget"
-  | "end_turn_menu";
+  | "end_turn_menu"
+  | "shiron_light";
+
+export type ShironLightMeta = {
+  step: "pick" | "reveal";
+  ownerId: PlayerId;
+  operationInstanceId: string;
+  pickedInstanceId?: string;
+  audiencePlayerIds?: PlayerId[];
+};
 
 export type PendingEffectChoice = {
   playerId: PlayerId;
@@ -242,6 +255,7 @@ export type PendingEffectChoice = {
   commandFilter?: "held" | "released" | "any";
   seabedDrawMeta?: SeabedDrawMeta;
   denjiMachineMeta?: DenjiMachineMeta;
+  shironLightMeta?: ShironLightMeta;
 };
 
 /** @deprecated Use pendingEffectChoice (ruin_survey). */

@@ -56,6 +56,12 @@ export function effectChoiceHint(
       const total = pending.selectCount ?? 1;
       return `パワーから${total}枚選んで捨札にしてください（${picked}/${total}）`;
     }
+    case "shiron_light": {
+      if (pending.shironLightMeta?.step === "pick") {
+        return "相手の手札（裏向き）から1枚選んでください";
+      }
+      return "選ばれたカードを相手に公開してください";
+    }
     case "select_hand": {
       if (pending.effectId === "battle_entry_hand_discard") {
         const picked = pending.selectedInstanceIds?.length ?? 0;

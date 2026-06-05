@@ -989,6 +989,7 @@ export function pickCpuFallbackAction(
     "resolve_effect_choice",
     "confirm_effect_choice",
     "confirm_denji_reveal",
+    "confirm_shiron_reveal",
     "resolve_ruin_survey",
     "resolve_seabed_draw",
     "end_phase",
@@ -1048,6 +1049,34 @@ export function pickEffectChoice(
       return skip ?? actions.find((a) => a.type === "confirm_effect_choice") ?? null;
     }
     return actions.find((a) => a.type === "confirm_effect_choice") ?? skip ?? null;
+  }
+
+  if (pending.kind === "shiron_light") {
+    if (pending.shironLightMeta?.step === "reveal") {
+      return actions.find((a) => a.type === "confirm_shiron_reveal") ?? null;
+    }
+    if (pending.shironLightMeta?.step === "pick") {
+      const ownerId = pending.shironLightMeta.ownerId;
+      const owner = state.players[ownerId];
+      const picks = actions.filter((a) => a.type === "resolve_effect_choice");
+      if (picks.length === 0) return null;
+      let best = picks[0]!;
+      let bestScore = -Infinity;
+      for (const pick of picks) {
+        if (pick.type !== "resolve_effect_choice") continue;
+        const card = owner.hand.find((c) => c.instanceId === pick.instanceId);
+        if (!card) continue;
+        const def = state.definitions[card.cardId];
+        const score =
+          def?.type === "unit" ? (def.bp ?? 0) + (def.powerCost ?? 0) * 100 : -1000;
+        if (score > bestScore) {
+          bestScore = score;
+          best = pick;
+        }
+      }
+      return best;
+    }
+    return null;
   }
 
   if (pending.kind === "denji_machine") {

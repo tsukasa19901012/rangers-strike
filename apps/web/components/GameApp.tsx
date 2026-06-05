@@ -24,6 +24,9 @@ import {
   needsZordMaterial,
   isDenjiRevealAudience,
   canActOnDenjiChoice,
+  canInitiateShironLight,
+  isShironRevealAudience,
+  canActOnShironChoice,
   opponent,
   pickCpuAction,
   pickCpuFallbackAction,
@@ -63,6 +66,8 @@ import { EffectNoticeModal } from "./EffectNoticeModal";
 import { CommandPaymentModal } from "./CommandPaymentModal";
 import { ZordSetupModal } from "./ZordSetupModal";
 import { OperationPromptModal } from "./OperationPromptModal";
+import { PermanentOperationModal } from "./PermanentOperationModal";
+import { ShironLightModal } from "./ShironLightModal";
 import { ReactionModal } from "./ReactionModal";
 import { DeckBuilderScreen } from "./DeckBuilderScreen";
 import { LogModal } from "./LogModal";
@@ -123,6 +128,10 @@ export function GameApp() {
   const [previewCard, setPreviewCard] = useState<CardDefinition | null>(null);
   const [pileView, setPileView] = useState<PileView | null>(null);
   const [pendingOp, setPendingOp] = useState<PendingOperation | null>(null);
+  const [pendingPermanentOp, setPendingPermanentOp] = useState<{
+    instanceId: string;
+    cardId: string;
+  } | null>(null);
   const [pendingHiddenNinja, setPendingHiddenNinja] = useState<{
     counterInstanceId: string;
   } | null>(null);
@@ -600,6 +609,33 @@ export function GameApp() {
     },
     [pendingOp, tryPlayOperation],
   );
+
+  const handleOperationCardClick = useCallback(
+    (card: CardInstance) => {
+      if (!state || !humanCanAct || state.phase !== "rush") return;
+      const effect = getCardEffect(card.cardId);
+      if (effect?.effectId === "shiron_light") {
+        setPendingPermanentOp({ instanceId: card.instanceId, cardId: card.cardId });
+      }
+    },
+    [humanCanAct, state],
+  );
+
+  const handlePermanentOpActivate = useCallback(() => {
+    if (!pendingPermanentOp || !state) return;
+    const effect = getCardEffect(pendingPermanentOp.cardId);
+    if (effect?.effectId === "shiron_light") {
+      if (
+        apply({
+          type: "shiron_light",
+          playerId: HUMAN_PLAYER,
+          operationInstanceId: pendingPermanentOp.instanceId,
+        })
+      ) {
+        setPendingPermanentOp(null);
+      }
+    }
+  }, [apply, pendingPermanentOp, state]);
 
   const handleCommandPaymentConfirm = useCallback(
     (commandInstanceIds: string[]) => {
@@ -1154,10 +1190,21 @@ export function GameApp() {
   const isHumanDenjiAudience =
     !!pendingChoice && isDenjiRevealAudience(pendingChoice, HUMAN_PLAYER);
 
+  const isHumanShironInvolved =
+    !!pendingChoice &&
+    pendingChoice.kind === "shiron_light" &&
+    (pendingChoice.shironLightMeta?.audiencePlayerIds?.includes(HUMAN_PLAYER) ||
+      isShironRevealAudience(pendingChoice, HUMAN_PLAYER) ||
+      pendingChoice.playerId === HUMAN_PLAYER);
+
+  const isHumanShironActor =
+    humanCanAct && !!pendingChoice && canActOnShironChoice(pendingChoice, HUMAN_PLAYER);
+
   const isHumanEffectChoice =
     humanCanAct &&
     !!pendingChoice &&
-    canActOnDenjiChoice(pendingChoice, HUMAN_PLAYER);
+    (canActOnDenjiChoice(pendingChoice, HUMAN_PLAYER) ||
+      canActOnShironChoice(pendingChoice, HUMAN_PLAYER));
 
   const canSkipEffectChoice =
     isHumanEffectChoice &&
@@ -1191,6 +1238,11 @@ export function GameApp() {
     !needsEffectHoldPayment(pendingChoice) &&
     !showEffectNotice;
 
+  const showShironLightModal =
+    isHumanShironInvolved &&
+    !needsEffectHoldPayment(pendingChoice) &&
+    !showEffectNotice;
+
   const isSagasRevealAudience =
     !!pendingChoice &&
     pendingChoice.effectId === "sagas_sniper" &&
@@ -1204,10 +1256,12 @@ export function GameApp() {
   const showEffectChoiceModal =
     isHumanEffectChoice &&
     !!pendingChoice &&
+    pendingChoice.kind !== "shiron_light" &&
     !needsEffectHoldPayment(pendingChoice) &&
     !showEffectNotice &&
     !showDenjiRevealModal &&
-    !showSagasRevealModal;
+    !showSagasRevealModal &&
+    !showShironLightModal;
 
   const showBattleEntryModal =
     !!battleEntryModal &&
@@ -1230,6 +1284,7 @@ export function GameApp() {
     state.phase === "start" &&
     !showEffectChoiceModal &&
     !showDenjiRevealModal &&
+    !showShironLightModal &&
     !showCommandPaymentModal &&
     !!startPhaseStatus;
 
@@ -1282,6 +1337,8 @@ export function GameApp() {
         ? "ラッシュへのカウンターを選ぶか「応答スキップ」"
         : state.pendingLeave
           ? "離場へのカウンターを選ぶか「応答スキップ」"
+          : showShironLightModal && pendingChoice
+            ? effectChoiceHint(pendingChoice)
           : showDenjiRevealModal && pendingChoice
             ? effectChoiceHint(pendingChoice)
             : isHumanEffectChoice && pendingChoice
@@ -1374,6 +1431,45 @@ export function GameApp() {
           onAttack={handleAttackTargetSelect}
           onPass={handleBattleEntryPass}
         />
+      )}
+      {showShironLightModal && pendingChoice && (
+        <ShironLightModal
+          state={state}
+          pending={pendingChoice}
+          viewerId={HUMAN_PLAYER}
+          canAct={isHumanShironActor}
+          onPick={(instanceId) =>
+            apply({
+              type: "resolve_effect_choice",
+              playerId: HUMAN_PLAYER,
+              instanceId,
+            })
+          }
+          onConfirmReveal={() =>
+            apply({ type: "confirm_shiron_reveal", playerId: HUMAN_PLAYER })
+          }
+          onPreview={(cardId) => {
+            const card = getCardById(cardId);
+            if (card) setPreviewCard(card);
+          }}
+        />
+      )}
+      {pendingPermanentOp && (
+        (() => {
+          const card = getCardById(pendingPermanentOp.cardId);
+          if (!card) return null;
+          return (
+            <PermanentOperationModal
+              card={card}
+              canActivate={
+                !!state &&
+                canInitiateShironLight(state, HUMAN_PLAYER, pendingPermanentOp.instanceId)
+              }
+              onActivate={handlePermanentOpActivate}
+              onClose={() => setPendingPermanentOp(null)}
+            />
+          );
+        })()
       )}
       {showDenjiRevealModal && pendingChoice && (
         <EffectChoiceModal
@@ -1724,6 +1820,7 @@ export function GameApp() {
             substituteIds={boardSubstituteIds}
             onSubstituteSelect={handleSubstituteSelect}
             onViewPile={(pile) => handleViewPile(HUMAN_PLAYER, pile)}
+            onOperationCardClick={handleOperationCardClick}
             entryAttackerIds={entryAttackerIds}
             pendingEffectChoiceTargets={
               boardDamagePaymentTargets ?? boardEffectChoiceTargets

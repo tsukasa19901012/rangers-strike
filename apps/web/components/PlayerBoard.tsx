@@ -333,6 +333,7 @@ export type PlayerBoardProps = {
   pendingEffectChoiceTargets?: Set<string>;
   onEffectChoiceSelect?: (instanceId: string) => void;
   onViewPile?: (pile: "deck" | "discard") => void;
+  onOperationCardClick?: (card: CardInstance) => void;
   boardRef?: RefObject<HTMLDivElement | null>;
 };
 
@@ -371,6 +372,7 @@ export function PlayerBoard({
   pendingEffectChoiceTargets,
   onEffectChoiceSelect,
   onViewPile,
+  onOperationCardClick,
   boardRef,
 }: PlayerBoardProps) {
   const interactive = isHuman && isHumanTurn;
@@ -608,6 +610,9 @@ export function PlayerBoard({
         inactive={operationZoneInactive}
         onDrop={(payload) => onZoneDrop?.("operation", payload)}
         onPreview={onPreview}
+        onCardClick={
+          interactive && phase === "rush" ? onOperationCardClick : undefined
+        }
         emptyLabel={phase === "rush" ? "使用可" : "—"}
       />
     </div>

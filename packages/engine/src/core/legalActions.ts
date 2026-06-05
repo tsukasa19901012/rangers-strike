@@ -23,6 +23,7 @@ import { findInZone, opponent, payPowerCost } from "./helpers";
 import { canStrikeUnit } from "../rules/combo";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import { canMoveUnitToBattle, countHeldCommands, mustEnterBattleBeforePhaseEnd } from "../rules/restrictions";
+import { canInitiateShironLight, isShironLightRushTarget } from "../rules/shironLight";
 import {
   canAttackDefender,
   darkDealRushPowerBudget,
@@ -297,14 +298,12 @@ function appendShironLightActions(
 ): void {
   if (state.phase !== "rush") return;
   const player = state.players[playerId];
-  if (!hasOperationEffect(player, "shiron_light", state.definitions, { state, playerId })) return;
-  if (getTurnModifiers(player).shironLightUsed) return;
-
-  for (const card of player.hand) {
+  for (const card of player.operation) {
+    if (!canInitiateShironLight(state, playerId, card.instanceId)) continue;
     actions.push({
       type: "shiron_light",
       playerId,
-      handInstanceId: card.instanceId,
+      operationInstanceId: card.instanceId,
     });
   }
 }
@@ -362,6 +361,7 @@ function canDeclareRush(
   }
   const categories = cardCategories(definition);
   if (categories.length === 0) return true;
+  if (isShironLightRushTarget(player, instanceId)) return true;
   if (!player.rushCategoryHoldReady) return false;
   return hasCommandForCardUse(player, definitions, categories);
 }
@@ -600,6 +600,20 @@ function appendEffectChoiceActions(
 
   if (pending.kind === "optional_deck_draw") {
     actions.push({ type: "resolve_effect_choice", playerId, instanceId: "draw" });
+    return;
+  }
+
+  if (pending.kind === "shiron_light") {
+    if (pending.shironLightMeta?.step === "pick") {
+      for (const instanceId of pending.validInstanceIds) {
+        actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+      }
+      return;
+    }
+    if (pending.shironLightMeta?.step === "reveal") {
+      actions.push({ type: "confirm_shiron_reveal", playerId });
+      return;
+    }
     return;
   }
 
@@ -1140,7 +1154,13 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
   }
 
   if (a.type === "shiron_light" && b.type === "shiron_light") {
-    return a.handInstanceId === b.handInstanceId;
+    return (
+      a.playerId === b.playerId &&
+      a.operationInstanceId === b.operationInstanceId
+    );
+  }
+  if (a.type === "confirm_shiron_reveal" && b.type === "confirm_shiron_reveal") {
+    return a.playerId === b.playerId;
   }
 
   if (a.type === "resolve_ruin_survey" && b.type === "resolve_ruin_survey") {

@@ -8,11 +8,13 @@ import type { GameState, PendingZordSetup, PlayerId, PlayerState } from "../type
 import { COMMAND_ZONE_MAX } from "../types/game";
 import {
   canRushUnit,
+  canRushUnitExceptCommandHold,
   cardCategories,
   getDefinition,
   isUnit,
   parsePowerCost,
 } from "../core/catalog";
+import { isShironLightRushTarget } from "./shironLight";
 import { findInZone } from "../core/helpers";
 import { buildCategoryPayment, buildMothershipHoldPayment } from "./commandPayment";
 import type { PendingCommandPayment } from "../types/game";
@@ -410,16 +412,30 @@ function completeZordPayment(
       (v.zordMothershipHoldInstanceIds?.length ?? 0) === 0,
   );
 
-  if (matching.length > 0 && canRushUnit(
-    player,
-    state.definitions,
-    def,
-    setup.zordInstanceId,
-    materialInstanceId,
-    undefined,
-    materialDestination,
-  )) {
-    if (player.rushCategoryHoldReady) {
+  const shironRush = isShironLightRushTarget(player, setup.zordInstanceId);
+  if (
+    matching.length > 0 &&
+    (shironRush
+      ? canRushUnitExceptCommandHold(
+          player,
+          state.definitions,
+          def,
+          setup.zordInstanceId,
+          materialInstanceId,
+          undefined,
+          materialDestination,
+        )
+      : canRushUnit(
+          player,
+          state.definitions,
+          def,
+          setup.zordInstanceId,
+          materialInstanceId,
+          undefined,
+          materialDestination,
+        ))
+  ) {
+    if (player.rushCategoryHoldReady || shironRush) {
       return {
         kind: "rush",
         action: {

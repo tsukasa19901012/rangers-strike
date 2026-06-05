@@ -36,7 +36,15 @@ export function markBattleBlocked(player: PlayerState, instanceId: string): Play
 }
 
 export function resetRushPhaseFlags(player: PlayerState): PlayerState {
-  return withTurnModifiers(player, { shironLightUsed: false, hidoraEggUsed: false });
+  return {
+    ...withTurnModifiers(player, { shironLightUsed: false, hidoraEggUsed: false }),
+    shironLightRushInstanceId: undefined,
+    operation: player.operation.map((card) => {
+      if (!card.shironLightUsedThisRush) return card;
+      const { shironLightUsedThisRush: _used, ...rest } = card;
+      return rest;
+    }),
+  };
 }
 
 export function markRushedThisTurn(player: PlayerState, instanceId: string): PlayerState {

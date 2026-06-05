@@ -70,7 +70,7 @@ export type PlayOperationAction = {
 export type ShironLightAction = {
   type: "shiron_light";
   playerId: PlayerId;
-  handInstanceId: string;
+  operationInstanceId: string;
 };
 
 export type HidoraEggAction = {
@@ -158,6 +158,11 @@ export type ResolveSeabedDrawAction = {
 
 export type ConfirmDenjiRevealAction = {
   type: "confirm_denji_reveal";
+  playerId: PlayerId;
+};
+
+export type ConfirmShironRevealAction = {
+  type: "confirm_shiron_reveal";
   playerId: PlayerId;
 };
 
@@ -259,6 +264,7 @@ export type GameAction =
   | ResolveRuinSurveyAction
   | ResolveSeabedDrawAction
   | ConfirmDenjiRevealAction
+  | ConfirmShironRevealAction
   | ConfirmEffectChoiceAction
   | ResolveEffectChoiceAction
   | SkipEffectChoiceAction

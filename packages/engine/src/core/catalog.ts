@@ -13,6 +13,7 @@ import { hasCommandForCardUse } from "../rules/restrictions";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
 import { validateZordAdditionalPayment } from "../rules/mothership";
 import { collectZordMaterials, hasAllRequiredFusionMaterials, needsZordMaterial, requiresAllFusionPartners } from "../rules/zord";
+import { isShironLightRushTarget } from "../rules/shironLight";
 import { getTurnModifiers } from "../rules/turnModifiers";
 import { opponentInfiniteChainBlocks } from "../rules/turnModifiers";
 import { countHeldCommands } from "../rules/restrictions";
@@ -262,7 +263,11 @@ export function canRushUnit(
   if (budget < cost) return false;
 
   const unitCats = cardCategories(unitDefinition);
-  if (unitCats.length > 0 && !hasHeldCommandForCategories(player, definitions, unitCats)) {
+  if (
+    unitCats.length > 0 &&
+    !isShironLightRushTarget(player, rushingInstanceId) &&
+    !hasHeldCommandForCategories(player, definitions, unitCats)
+  ) {
     return false;
   }
 

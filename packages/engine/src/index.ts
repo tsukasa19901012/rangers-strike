@@ -20,3 +20,10 @@ export {
   isDenjiRevealAudience,
   canActOnDenjiChoice,
 } from "./rules/denjiMachine";
+export {
+  canInitiateShironLight,
+  hasUnusedShironLightOperation,
+  isShironLightRushTarget,
+  isShironRevealAudience,
+  canActOnShironChoice,
+} from "./rules/shironLight";
