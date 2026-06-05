@@ -243,7 +243,7 @@ function appendOperationActions(
           instanceId: card.instanceId,
           targetInstanceId: others[i]!.instanceId,
         });
-        for (let j = i + 1; j < others.length && j < i + 2; j += 1) {
+        for (let j = i + 1; j < others.length; j += 1) {
           if (player.command.length + 2 > COMMAND_ZONE_MAX) continue;
           actions.push({
             type: "play_operation",

@@ -27,6 +27,8 @@ import {
   canInitiateShironLight,
   isShironRevealAudience,
   canActOnShironChoice,
+  getLightningGravityHoldNotice,
+  type LightningGravityHoldNotice,
   opponent,
   pickCpuAction,
   pickCpuFallbackAction,
@@ -68,6 +70,8 @@ import { ZordSetupModal } from "./ZordSetupModal";
 import { OperationPromptModal } from "./OperationPromptModal";
 import { PermanentOperationModal } from "./PermanentOperationModal";
 import { ShironLightModal } from "./ShironLightModal";
+import { CyberSRiderModal } from "./CyberSRiderModal";
+import { LightningGravityHoldModal } from "./LightningGravityHoldModal";
 import { ReactionModal } from "./ReactionModal";
 import { DeckBuilderScreen } from "./DeckBuilderScreen";
 import { LogModal } from "./LogModal";
@@ -128,6 +132,10 @@ export function GameApp() {
   const [previewCard, setPreviewCard] = useState<CardDefinition | null>(null);
   const [pileView, setPileView] = useState<PileView | null>(null);
   const [pendingOp, setPendingOp] = useState<PendingOperation | null>(null);
+  const [pendingCyberSRider, setPendingCyberSRider] = useState<{
+    instanceId: string;
+    cardId: string;
+  } | null>(null);
   const [pendingPermanentOp, setPendingPermanentOp] = useState<{
     instanceId: string;
     cardId: string;
@@ -140,6 +148,8 @@ export function GameApp() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [blockedBattleAlert, setBlockedBattleAlert] = useState<string | null>(null);
   const [blockedRushAlert, setBlockedRushAlert] = useState<string | null>(null);
+  const [lightningGravityNotice, setLightningGravityNotice] =
+    useState<LightningGravityHoldNotice | null>(null);
   const [turnNotice, setTurnNotice] = useState<PlayerId | null>(null);
   const [phaseNotice, setPhaseNotice] = useState<Phase | null>(null);
   const [effectNotice, setEffectNotice] = useState<string | null>(null);
@@ -200,6 +210,7 @@ export function GameApp() {
       setState(game);
       setStartError(null);
       setPendingOp(null);
+      setPendingCyberSRider(null);
       setPendingHiddenNinja(null);
       setPreviewCard(null);
       setPileView(null);
@@ -222,6 +233,7 @@ export function GameApp() {
     setAppScreen("start");
     setEditingDeckId(null);
     setPendingOp(null);
+    setPendingCyberSRider(null);
     setPendingHiddenNinja(null);
     setPreviewCard(null);
     setPileView(null);
@@ -350,6 +362,7 @@ export function GameApp() {
         action.type !== "cancel_zord_setup"
       ) {
         setPendingOp(null);
+        setPendingCyberSRider(null);
       }
       setPendingHiddenNinja(null);
       setActionError(null);
@@ -393,14 +406,17 @@ export function GameApp() {
   }, [apply, humanCanAct, legalActions, state]);
 
   const tryPlayOperation = useCallback(
-    (instanceId: string, targetInstanceId?: string) => {
+    (instanceId: string, targetInstanceId?: string, extraInstanceId?: string) => {
       const action = legalActions.find(
         (a) =>
           a.type === "play_operation" &&
           a.instanceId === instanceId &&
           (targetInstanceId
             ? a.targetInstanceId === targetInstanceId
-            : !a.targetInstanceId),
+            : !a.targetInstanceId) &&
+          (extraInstanceId
+            ? a.extraInstanceId === extraInstanceId
+            : !a.extraInstanceId),
       );
       if (action) {
         apply(action);
@@ -415,6 +431,39 @@ export function GameApp() {
       });
     },
     [apply, legalActions],
+  );
+
+  const findCyberSRiderAction = useCallback(
+    (operationInstanceId: string, selectedIds: string[]) => {
+      if (selectedIds.length === 0) return undefined;
+      if (selectedIds.length === 1) {
+        return legalActions.find(
+          (a) =>
+            a.type === "play_operation" &&
+            a.instanceId === operationInstanceId &&
+            a.targetInstanceId === selectedIds[0] &&
+            !a.extraInstanceId,
+        );
+      }
+      const [first, second] = selectedIds;
+      return (
+        legalActions.find(
+          (a) =>
+            a.type === "play_operation" &&
+            a.instanceId === operationInstanceId &&
+            a.targetInstanceId === first &&
+            a.extraInstanceId === second,
+        ) ??
+        legalActions.find(
+          (a) =>
+            a.type === "play_operation" &&
+            a.instanceId === operationInstanceId &&
+            a.targetInstanceId === second &&
+            a.extraInstanceId === first,
+        )
+      );
+    },
+    [legalActions],
   );
 
   const attemptMoveToBattle = useCallback(
@@ -443,6 +492,12 @@ export function GameApp() {
           sourceInstanceId: payload.instanceId,
         })
       ) {
+        return;
+      }
+
+      const lgNotice = getLightningGravityHoldNotice(state, HUMAN_PLAYER, card);
+      if (lgNotice) {
+        setLightningGravityNotice(lgNotice);
         return;
       }
 
@@ -482,8 +537,16 @@ export function GameApp() {
         );
         if (!card) return;
 
+        const effect = getCardEffect(card.cardId);
+        if (effect?.effectId === "cyber_s_rider") {
+          setPendingCyberSRider({
+            instanceId: payload.instanceId,
+            cardId: card.cardId,
+          });
+          return;
+        }
+
         if (needsOperationTarget(card.cardId)) {
-          const effect = getCardEffect(card.cardId);
           if (!effect?.target) return;
           setPendingOp({
             instanceId: payload.instanceId,
@@ -610,11 +673,42 @@ export function GameApp() {
     [pendingOp, tryPlayOperation],
   );
 
+  const cyberSRiderValidHandIds = useMemo(() => {
+    if (!pendingCyberSRider) return [];
+    const ids = new Set<string>();
+    for (const action of legalActions) {
+      if (
+        action.type === "play_operation" &&
+        action.instanceId === pendingCyberSRider.instanceId
+      ) {
+        if (action.targetInstanceId) ids.add(action.targetInstanceId);
+        if (action.extraInstanceId) ids.add(action.extraInstanceId);
+      }
+    }
+    return [...ids];
+  }, [legalActions, pendingCyberSRider]);
+
+  const canConfirmCyberSRider = useCallback(
+    (selectedIds: string[]) =>
+      !!pendingCyberSRider &&
+      findCyberSRiderAction(pendingCyberSRider.instanceId, selectedIds) !== undefined,
+    [findCyberSRiderAction, pendingCyberSRider],
+  );
+
+  const handleCyberSRiderConfirm = useCallback(
+    (selectedIds: string[]) => {
+      if (!pendingCyberSRider) return;
+      const action = findCyberSRiderAction(pendingCyberSRider.instanceId, selectedIds);
+      if (action) apply(action);
+    },
+    [apply, findCyberSRiderAction, pendingCyberSRider],
+  );
+
   const handleOperationCardClick = useCallback(
     (card: CardInstance) => {
       if (!state || !humanCanAct || state.phase !== "rush") return;
       const effect = getCardEffect(card.cardId);
-      if (effect?.effectId === "shiron_light") {
+      if (effect?.effectId === "shiron_light" || effect?.effectId === "hidora_egg") {
         setPendingPermanentOp({ instanceId: card.instanceId, cardId: card.cardId });
       }
     },
@@ -632,6 +726,12 @@ export function GameApp() {
           operationInstanceId: pendingPermanentOp.instanceId,
         })
       ) {
+        setPendingPermanentOp(null);
+      }
+      return;
+    }
+    if (effect?.effectId === "hidora_egg") {
+      if (apply({ type: "hidora_egg", playerId: HUMAN_PLAYER })) {
         setPendingPermanentOp(null);
       }
     }
@@ -1130,6 +1230,7 @@ export function GameApp() {
       (state.pendingRush && state.activePlayer === HUMAN_PLAYER) ||
       (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) ||
       !!pendingOp ||
+      !!pendingCyberSRider ||
       !!state.pendingZordSetup ||
       !!pendingHiddenNinja);
 
@@ -1224,12 +1325,18 @@ export function GameApp() {
   const showOperationModal =
     humanCanAct && !!pendingOp && operationTargetIds.length > 0;
 
+  const showCyberSRiderModal =
+    humanCanAct &&
+    !!pendingCyberSRider &&
+    cyberSRiderValidHandIds.length > 0;
+
   const showZordSetupModal = isHumanZordSetup && !!zordSetup;
 
   const showEffectNotice =
     !!effectNotice &&
     !showReactionModal &&
     !showOperationModal &&
+    !showCyberSRiderModal &&
     !showZordSetupModal;
 
   const showDenjiRevealModal =
@@ -1321,7 +1428,7 @@ export function GameApp() {
           : "母艦の支払いに進みます"
     : showDamagePaymentModal && pendingDamage
       ? damagePaymentHint(pendingDamage)
-    : showEffectChoiceModal || showReactionModal || showOperationModal
+    : showEffectChoiceModal || showReactionModal || showOperationModal || showCyberSRiderModal
     ? undefined
     : isHumanStrikeDefender
     ? interceptableIds?.size
@@ -1463,7 +1570,18 @@ export function GameApp() {
               card={card}
               canActivate={
                 !!state &&
-                canInitiateShironLight(state, HUMAN_PLAYER, pendingPermanentOp.instanceId)
+                (getCardEffect(pendingPermanentOp.cardId)?.effectId === "hidora_egg"
+                  ? legalActions.some((a) => a.type === "hidora_egg")
+                  : canInitiateShironLight(
+                      state,
+                      HUMAN_PLAYER,
+                      pendingPermanentOp.instanceId,
+                    ))
+              }
+              activateLabel={
+                getCardEffect(pendingPermanentOp.cardId)?.effectId === "hidora_egg"
+                  ? "発動（山札から1枚）"
+                  : "発動"
               }
               onActivate={handlePermanentOpActivate}
               onClose={() => setPendingPermanentOp(null)}
@@ -1616,6 +1734,25 @@ export function GameApp() {
           discardOnlyIds={pendingDiscardTargets ?? null}
           onSelectTarget={handleOperationTarget}
           onCancel={() => setPendingOp(null)}
+        />
+      )}
+      {showCyberSRiderModal && pendingCyberSRider && (
+        <CyberSRiderModal
+          state={state}
+          playerId={HUMAN_PLAYER}
+          operationInstanceId={pendingCyberSRider.instanceId}
+          operationCardId={pendingCyberSRider.cardId}
+          validHandInstanceIds={cyberSRiderValidHandIds}
+          canConfirmSelection={canConfirmCyberSRider}
+          onConfirm={handleCyberSRiderConfirm}
+          onCancel={() => setPendingCyberSRider(null)}
+          onPreview={(cardId) => setPreviewCard(getCardById(cardId) ?? null)}
+        />
+      )}
+      {lightningGravityNotice && (
+        <LightningGravityHoldModal
+          notice={lightningGravityNotice}
+          onClose={() => setLightningGravityNotice(null)}
         />
       )}
       {showEffectNotice && effectNotice && (

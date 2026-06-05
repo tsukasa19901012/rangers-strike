@@ -283,6 +283,42 @@ describe("cyber S rider RS-021", () => {
       ),
     ).toBe(true);
   });
+
+  it("holds two non-adjacent hand cards in command zone", () => {
+    const op = inst("RS-021", "op1");
+    const handA = inst("RS-007", "handA");
+    const handB = inst("RS-008", "handB");
+    const handC = inst("RS-009", "handC");
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [op, handA, handB, handC],
+        power: Array.from({ length: 4 }, (_, i) => inst("TST-OP", `p${i}`)),
+        command: [heldEtCommand("c1")],
+      },
+    });
+    state.definitions["RS-021"] = def("RS-021");
+    state.definitions["RS-007"] = def("RS-007");
+    state.definitions["RS-008"] = def("RS-008");
+    state.definitions["RS-009"] = def("RS-009");
+
+    const action = getLegalActions(state).find(
+      (a) =>
+        a.type === "play_operation" &&
+        a.instanceId === op.instanceId &&
+        a.targetInstanceId === handA.instanceId &&
+        a.extraInstanceId === handC.instanceId,
+    );
+    expect(action).toBeDefined();
+
+    const result = applyAction(state, action!);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    const command = result.state.players.player1.command;
+    expect(command.some((c) => c.instanceId === handA.instanceId && c.commandHeld)).toBe(true);
+    expect(command.some((c) => c.instanceId === handC.instanceId && c.commandHeld)).toBe(true);
+  });
 });
 
 describe("compression freeze RS-024", () => {

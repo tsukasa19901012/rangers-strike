@@ -647,6 +647,13 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         return fail("target_required");
       }
 
+      if (
+        getCardEffect(found.card.cardId)?.effectId === "cyber_s_rider" &&
+        !action.targetInstanceId
+      ) {
+        return fail("target_required");
+      }
+
       if (!canPlayOperation(player, state.definitions, definition)) {
         return fail("command_not_held");
       }
