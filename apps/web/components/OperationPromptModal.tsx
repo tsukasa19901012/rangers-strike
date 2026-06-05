@@ -2,12 +2,14 @@
 
 import { EFFECT_LABELS, getCardById } from "@rangers-strike/cards";
 import type { GameState } from "@rangers-strike/engine";
-import { resolveCardTargets } from "@/lib/cardTargets";
+import type { PlayerId } from "@rangers-strike/engine";
+import { cardTargetMetaLine, resolveCardTargets } from "@/lib/cardTargets";
 import type { PendingOperation } from "@/lib/dnd";
 import { GameModalBackdrop } from "./GameModalBackdrop";
 
 type OperationPromptModalProps = {
   state: GameState;
+  playerId: PlayerId;
   pendingOp: PendingOperation;
   targetInstanceIds: string[];
   discardOnlyIds: Set<string> | null;
@@ -17,6 +19,7 @@ type OperationPromptModalProps = {
 
 export function OperationPromptModal({
   state,
+  playerId,
   pendingOp,
   targetInstanceIds,
   discardOnlyIds,
@@ -82,7 +85,9 @@ export function OperationPromptModal({
                     onClick={() => onSelectTarget(target.instanceId)}
                   >
                     {target.card.name}
-                    <span className="effect-action-modal__target-meta">{target.zoneLabel}</span>
+                    <span className="effect-action-modal__target-meta">
+                      {cardTargetMetaLine(target, playerId)}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -101,7 +106,9 @@ export function OperationPromptModal({
                     onClick={() => onSelectTarget(target.instanceId)}
                   >
                     {target.card.name}
-                    <span className="effect-action-modal__target-meta">捨札</span>
+                    <span className="effect-action-modal__target-meta">
+                      {cardTargetMetaLine(target, playerId)}
+                    </span>
                   </button>
                 ))}
               </div>

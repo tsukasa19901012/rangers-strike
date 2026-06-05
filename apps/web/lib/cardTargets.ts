@@ -68,3 +68,18 @@ export function resolveCardTargets(
   }
   return out;
 }
+
+/** Owner label from the choosing player's perspective (e.g. RS-060 ピンクストーム). */
+export function cardTargetOwnerLabel(
+  target: CardTarget,
+  chooserPlayerId: PlayerId,
+): "自分" | "相手" {
+  return target.playerId === chooserPlayerId ? "自分" : "相手";
+}
+
+export function cardTargetMetaLine(
+  target: CardTarget,
+  chooserPlayerId: PlayerId,
+): string {
+  return `${cardTargetOwnerLabel(target, chooserPlayerId)} · ${target.zoneLabel}`;
+}

@@ -28,8 +28,26 @@ describe("effect choice notices", () => {
     );
   });
 
+  it("formats rescue activity and ruin excavation resolve", () => {
+    expect(
+      formatGameLog(
+        "player1|resolve_effect_choice|RS-072|レスキュー活動|rescue_activity:メカA",
+        {},
+      ),
+    ).toContain("メカA");
+    expect(
+      formatGameLog(
+        "player2|resolve_effect_choice|RS-121|遺跡発掘|ruin_excavation:ユニットB",
+        {},
+      ),
+    ).toContain("ユニットB");
+    expect(isNoteworthyResolveEffectChoice("rescue_activity:メカA")).toBe(true);
+    expect(isNoteworthyResolveEffectChoice("ruin_excavation:ユニットB")).toBe(true);
+  });
+
   it("suppresses interim choice notices for configured effects", () => {
     expect(shouldSuppressChoiceNoticeEffect("armor_attack")).toBe(true);
+    expect(shouldSuppressChoiceNoticeEffect("rescue_activity")).toBe(true);
     expect(shouldSuppressChoiceNoticeEffect("moss_breaker")).toBe(false);
   });
 

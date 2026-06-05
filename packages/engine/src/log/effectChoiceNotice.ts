@@ -14,6 +14,7 @@ export const SUPPRESSED_CHOICE_NOTICE_EFFECT_IDS = new Set([
   "ghost_absorption",
   "shift_up",
   "precious_guardian",
+  "rescue_activity",
 ]);
 
 const IGNORED_RESOLVE_TARGETS = new Set(["skipped", "draw", "none", "own_only"]);
@@ -47,6 +48,9 @@ const EFFECT_TARGET_SUFFIX: Record<string, string> = {
   radial_hammer: "を山札に残す",
   pit_in_dive: "のバトル進入順を決定",
   juu_kun_do: "を撃破",
+  rescue_activity: "を手札へ回収",
+  ruin_excavation: "をラッシュへ",
+  earth_force: "を維持コストに",
 };
 
 export const RESOLVE_EFFECT_TARGET_NOTICE_IDS = new Set([
@@ -66,6 +70,9 @@ export const RESOLVE_EFFECT_TARGET_NOTICE_IDS = new Set([
   "radial_hammer",
   "pit_in_dive",
   "juu_kun_do",
+  "rescue_activity",
+  "ruin_excavation",
+  "earth_force",
 ]);
 
 export function quoteChoiceTargets(targets: string): string {

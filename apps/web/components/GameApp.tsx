@@ -1503,6 +1503,7 @@ export function GameApp() {
       {showOperationModal && pendingOp && (
         <OperationPromptModal
           state={state}
+          playerId={HUMAN_PLAYER}
           pendingOp={pendingOp}
           targetInstanceIds={operationTargetIds}
           discardOnlyIds={pendingDiscardTargets ?? null}

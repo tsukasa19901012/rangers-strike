@@ -63,7 +63,10 @@ export function shouldShowEffectLogNotice(entry: string): boolean {
   if (action === "resolve_effect_choice") {
     return isNoteworthyResolveEffectChoice(detail);
   }
-  if (action === "enter_battle" && detail === "destroy_choice") {
+  if (
+    action === "enter_battle" &&
+    (detail === "destroy_choice" || detail === "ruin_excavation")
+  ) {
     return false;
   }
   if (action === "named_effect" && detail.startsWith("choice:")) {

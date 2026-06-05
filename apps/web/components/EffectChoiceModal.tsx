@@ -4,7 +4,11 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import { getCardById } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
 import { effectChoiceHint, effectChoiceTitle } from "@/lib/effectChoiceHint";
-import { resolveCardTargets, type CardTarget } from "@/lib/cardTargets";
+import {
+  cardTargetMetaLine,
+  resolveCardTargets,
+  type CardTarget,
+} from "@/lib/cardTargets";
 import { GameModalBackdrop } from "./GameModalBackdrop";
 
 type EffectChoiceModalProps = {
@@ -27,15 +31,19 @@ type EffectChoiceModalProps = {
 
 function TargetButton({
   target,
+  chooserPlayerId,
   onSelect,
 }: {
   target: CardTarget;
+  chooserPlayerId: PlayerId;
   onSelect: () => void;
 }) {
   return (
     <button type="button" className="btn effect-action-modal__target" onClick={onSelect}>
       {target.card.name}
-      <span className="effect-action-modal__target-meta">{target.zoneLabel}</span>
+      <span className="effect-action-modal__target-meta">
+        {cardTargetMetaLine(target, chooserPlayerId)}
+      </span>
     </button>
   );
 }
@@ -221,7 +229,8 @@ export function EffectChoiceModal({
                     >
                       {target.card.name}
                       <span className="effect-action-modal__target-meta">
-                        {target.zoneLabel} · BP {printedBp.toLocaleString()}
+                        {cardTargetMetaLine(target, playerId)} · BP{" "}
+                        {printedBp.toLocaleString()}
                       </span>
                     </button>
                   );
@@ -307,6 +316,7 @@ export function EffectChoiceModal({
                   <TargetButton
                     key={target.instanceId}
                     target={target}
+                    chooserPlayerId={playerId}
                     onSelect={() => onSelect(target.instanceId)}
                   />
                 ))}

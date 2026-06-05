@@ -54,6 +54,17 @@ export function effectChoiceHint(
       const picked = pending.selectedInstanceIds?.length ?? 0;
       return `撃破するユニットを選んでください（表記BP合計 ${budget} 以下・${picked}枚選択中）`;
     }
+    case "select_unit":
+      if (pending.effectId === "pink_storm") {
+        return "BP3000以下のユニットを1体選んでください（自分・相手のユニットが対象）";
+      }
+      if (pending.effectId === "karakuri_great_tsunami") {
+        return "BP3000以下の相手ユニットを1体選んでください";
+      }
+      if (pending.effectId === "rescue_activity") {
+        return "捨札のメカを1体選んで手札に戻してください";
+      }
+      return "対象を選んでください";
     default:
       return `対象を選んでください`;
   }
