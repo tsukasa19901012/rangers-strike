@@ -107,11 +107,9 @@ export type UnnamedUnitText = {
   holdCount?: number;
   /** For `destroy_self_damage`: damage to controller when destroyed to discard. */
   damage?: number;
-  /** For `rush_power_to_discard`: face-up power cards to discard on rush. */
+  /** For `rush_power_to_discard` / `battle_entry_discard_from_hand`. */
   discardCount?: number;
-  /** For `battle_entry_combo_from`: required ally already in battle. */
-  partnerCardIds?: string[];
-  /** Zord-up fusion partners (合体― line). */
+  /** For `battle_entry_combo_from` or zord-up fusion partners (合体― line). */
   partnerCardIds?: string[];
 };
 

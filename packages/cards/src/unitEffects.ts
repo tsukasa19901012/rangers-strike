@@ -43,7 +43,7 @@ export function hasUnnamedRule(cardId: string, rule: UnnamedUnitRule): boolean {
 function sumUnnamedRuleParam(
   cardId: string,
   rule: UnnamedUnitRule,
-  param: "holdCount" | "damage",
+  param: "holdCount" | "damage" | "discardCount",
   defaultValue: number,
 ): number {
   const block = UNIT_EFFECTS[cardId];
