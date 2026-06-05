@@ -11,6 +11,7 @@ import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers
 import { buildLogEntry } from "../../log/formatLog";
 import {
   collectCommandIds,
+  startJuuKunDoChoice,
   startSelectCommandChoice,
   startSelectUnitChoice,
 } from "../pendingChoices";
@@ -309,17 +310,12 @@ export function applyLegend2NcEffect(
       };
     }
     case "juu_kun_do": {
-      const targets = state.players[enemyId].rush
-        .filter((c) => effectiveBp(state, enemyId, c) <= 3000)
-        .map((c) => c.instanceId);
-      const withChoice = startSelectUnitChoice(state, {
+      const withChoice = startJuuKunDoChoice(state, {
         playerId,
         effectId,
         sourceCardId: card.cardId,
         sourceInstanceId: card.instanceId,
         phasePlayerId: playerId,
-        validInstanceIds: targets,
-        unitDestination: "discard",
         optional: true,
       });
       return {

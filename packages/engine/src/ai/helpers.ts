@@ -27,6 +27,10 @@ import {
   advanceZordSetup,
   listZordSetupResolveActions,
 } from "../rules/zordSetup";
+import {
+  canToggleBpBudgetTarget,
+  printedBpForInstance,
+} from "../rules/pendingChoices";
 import { COMMAND_ZONE_MAX, WIN_DAMAGE } from "../types/game";
 import { evaluateState } from "./scoring";
 import {
@@ -905,6 +909,36 @@ export function pickEffectChoice(
       return draw;
     }
     return skip ?? null;
+  }
+
+  if (pending.kind === "select_units_bp_budget") {
+    const selected = pending.selectedInstanceIds ?? [];
+    const budget = pending.bpBudget ?? 3000;
+    const enemyId = opponent(pending.playerId);
+    const candidates = state.players[enemyId].rush
+      .map((c) => ({
+        instanceId: c.instanceId,
+        bp: printedBpForInstance(state, c.instanceId) ?? 0,
+      }))
+      .filter((c) => c.bp > 0)
+      .sort((a, b) => b.bp - a.bp);
+
+    const planned: string[] = [];
+    let sum = 0;
+    for (const c of candidates) {
+      if (sum + c.bp > budget) continue;
+      planned.push(c.instanceId);
+      sum += c.bp;
+    }
+
+    const nextPick = planned.find((id) => !selected.includes(id));
+    if (nextPick && canToggleBpBudgetTarget(state, pending, nextPick)) {
+      return { type: "resolve_effect_choice", playerId: pending.playerId, instanceId: nextPick };
+    }
+    if (selected.length === 0 && !planned.length) {
+      return skip ?? actions.find((a) => a.type === "confirm_effect_choice") ?? null;
+    }
+    return actions.find((a) => a.type === "confirm_effect_choice") ?? skip ?? null;
   }
 
   if (pending.kind === "denji_machine") {

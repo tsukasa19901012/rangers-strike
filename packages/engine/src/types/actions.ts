@@ -160,6 +160,11 @@ export type ConfirmDenjiRevealAction = {
   playerId: PlayerId;
 };
 
+export type ConfirmEffectChoiceAction = {
+  type: "confirm_effect_choice";
+  playerId: PlayerId;
+};
+
 export type ResolveEffectChoiceAction = {
   type: "resolve_effect_choice";
   playerId: PlayerId;
@@ -253,6 +258,7 @@ export type GameAction =
   | ResolveRuinSurveyAction
   | ResolveSeabedDrawAction
   | ConfirmDenjiRevealAction
+  | ConfirmEffectChoiceAction
   | ResolveEffectChoiceAction
   | SkipEffectChoiceAction
   | PassBattleEntryAction

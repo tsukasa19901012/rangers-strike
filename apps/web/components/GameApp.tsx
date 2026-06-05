@@ -1391,6 +1391,7 @@ export function GameApp() {
           onSeabedDraw={() => {}}
           onOptionalDraw={() => {}}
           onConfirmDenjiReveal={() => {}}
+          onConfirmEffectChoice={() => {}}
           onPreview={setPreviewCard}
         />
       )}
@@ -1407,7 +1408,9 @@ export function GameApp() {
                 ? "上から引く"
                 : pendingChoice.kind === "optional_deck_draw"
                   ? "ドローしない"
-                  : "効果をスキップ"
+                  : pendingChoice.effectId === "juu_kun_do"
+                    ? "撃破しない"
+                    : "効果をスキップ"
           }
           onSelect={handleEffectChoiceSelect}
           onSkip={() => apply({ type: "skip_effect_choice", playerId: HUMAN_PLAYER })}
@@ -1434,6 +1437,9 @@ export function GameApp() {
           }
           onConfirmDenjiReveal={() =>
             apply({ type: "confirm_denji_reveal", playerId: HUMAN_PLAYER })
+          }
+          onConfirmEffectChoice={() =>
+            apply({ type: "confirm_effect_choice", playerId: HUMAN_PLAYER })
           }
           onPreview={setPreviewCard}
         />

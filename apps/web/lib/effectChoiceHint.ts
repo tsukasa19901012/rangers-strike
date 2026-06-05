@@ -49,6 +49,11 @@ export function effectChoiceHint(
       return pending.step === "enemy"
         ? `相手のユニットを選んでください`
         : `自分のユニットを選んでください`;
+    case "select_units_bp_budget": {
+      const budget = pending.bpBudget ?? 3000;
+      const picked = pending.selectedInstanceIds?.length ?? 0;
+      return `撃破するユニットを選んでください（表記BP合計 ${budget} 以下・${picked}枚選択中）`;
+    }
     default:
       return `対象を選んでください`;
   }

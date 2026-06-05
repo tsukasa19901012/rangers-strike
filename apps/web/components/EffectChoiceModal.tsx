@@ -19,6 +19,7 @@ type EffectChoiceModalProps = {
   onSeabedDraw: (placement: "top" | "bottom") => void;
   onOptionalDraw: () => void;
   onConfirmDenjiReveal: () => void;
+  onConfirmEffectChoice: () => void;
   onPreview: (card: CardDefinition) => void;
   /** Opponent / spectator: reveal step only (no confirm). */
   readOnly?: boolean;
@@ -51,6 +52,7 @@ export function EffectChoiceModal({
   onSeabedDraw,
   onOptionalDraw,
   onConfirmDenjiReveal,
+  onConfirmEffectChoice,
   onPreview,
   readOnly = false,
 }: EffectChoiceModalProps) {
@@ -59,6 +61,11 @@ export function EffectChoiceModal({
   const sourceCard = getCardById(pending.sourceCardId);
 
   const targets = resolveCardTargets(state, pending.validInstanceIds);
+  const bpBudgetSelected = new Set(pending.selectedInstanceIds ?? []);
+  const bpBudgetTotal = targets
+    .filter((t) => bpBudgetSelected.has(t.instanceId))
+    .reduce((sum, t) => sum + (t.card.bp ?? 0), 0);
+  const bpBudgetLimit = pending.bpBudget ?? 3000;
 
   const scryTop =
     pending.kind === "deck_top_or_bottom"
@@ -193,6 +200,52 @@ export function EffectChoiceModal({
             </div>
           )}
 
+          {pending.kind === "select_units_bp_budget" && targets.length > 0 && (
+            <div className="effect-action-modal__section">
+              <p className="effect-action-modal__target-meta">
+                表記BP合計: {bpBudgetTotal} / {bpBudgetLimit}
+              </p>
+              <div className="effect-action-modal__targets">
+                {targets.map((target) => {
+                  const printedBp = target.card.bp ?? 0;
+                  const selected = bpBudgetSelected.has(target.instanceId);
+                  const wouldExceed =
+                    !selected && bpBudgetTotal + printedBp > bpBudgetLimit;
+                  return (
+                    <button
+                      key={target.instanceId}
+                      type="button"
+                      className={`btn effect-action-modal__target${selected ? " effect-action-modal__target--selected" : ""}`}
+                      disabled={readOnly || wouldExceed}
+                      onClick={() => onSelect(target.instanceId)}
+                    >
+                      {target.card.name}
+                      <span className="effect-action-modal__target-meta">
+                        {target.zoneLabel} · BP {printedBp.toLocaleString()}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              {!readOnly && (
+                <div className="effect-action-modal__actions">
+                  <button
+                    type="button"
+                    className="btn btn--primary"
+                    onClick={onConfirmEffectChoice}
+                  >
+                    選択を確定
+                  </button>
+                  {canSkip && (
+                    <button type="button" className="btn" onClick={onSkip}>
+                      {skipLabel}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {pending.kind === "optional_deck_draw" && (
             <div className="effect-action-modal__actions">
               <button type="button" className="btn btn--primary" onClick={onOptionalDraw}>
@@ -247,6 +300,7 @@ export function EffectChoiceModal({
             pending.kind !== "seabed_draw" &&
             pending.kind !== "optional_deck_draw" &&
             pending.kind !== "denji_machine" &&
+            pending.kind !== "select_units_bp_budget" &&
             pending.kind !== "scry_keep_one" && (
               <div className="effect-action-modal__targets">
                 {targets.map((target) => (
@@ -259,7 +313,7 @@ export function EffectChoiceModal({
               </div>
             )}
 
-          {canSkip && !readOnly && pending.kind !== "denji_machine" && (
+          {canSkip && !readOnly && pending.kind !== "denji_machine" && pending.kind !== "select_units_bp_budget" && (
             <button
               type="button"
               className="btn effect-action-modal__skip"

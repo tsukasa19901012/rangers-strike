@@ -270,6 +270,100 @@ export function startSelectUnitChoice(
   });
 }
 
+/** RS-106 ジュウクンドー: multi-select enemy rush units (printed BP sum ≤ budget). */
+export function startJuuKunDoChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+    optional?: boolean;
+  },
+): GameState | null {
+  const enemyId = opponent(params.playerId);
+  const validInstanceIds = state.players[enemyId].rush.map((c) => c.instanceId);
+  if (validInstanceIds.length === 0 && !params.optional) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_units_bp_budget",
+    validInstanceIds,
+    bpBudget: 3000,
+    selectedInstanceIds: [],
+    optional: params.optional ?? true,
+  });
+}
+
+export function printedBpForInstance(
+  state: GameState,
+  instanceId: string,
+): number | null {
+  const located = findCardOwner(state, instanceId);
+  if (!located) return null;
+  const owner = state.players[located.playerId];
+  const found = findInZone(owner, located.zone, instanceId);
+  if (!found) return null;
+  return unitBp(getDefinition(state.definitions, found.card.cardId));
+}
+
+export function selectedPrintedBpSum(
+  state: GameState,
+  selectedIds: string[],
+): number {
+  let sum = 0;
+  for (const id of selectedIds) {
+    sum += printedBpForInstance(state, id) ?? 0;
+  }
+  return sum;
+}
+
+export function canToggleBpBudgetTarget(
+  state: GameState,
+  pending: PendingEffectChoice,
+  instanceId: string,
+): boolean {
+  const selected = pending.selectedInstanceIds ?? [];
+  if (selected.includes(instanceId)) return true;
+  const bp = printedBpForInstance(state, instanceId);
+  if (bp === null) return false;
+  const budget = pending.bpBudget ?? 3000;
+  return selectedPrintedBpSum(state, selected) + bp <= budget;
+}
+
+export function applyConfirmEffectChoice(
+  state: GameState,
+  playerId: PlayerId,
+): ChoiceOutcome {
+  const pending = state.pendingEffectChoice;
+  if (!pending) return { error: "no_pending_choice" };
+  if (pending.playerId !== playerId) return { error: "wrong_player" };
+
+  if (pending.kind === "select_units_bp_budget") {
+    const selected = pending.selectedInstanceIds ?? [];
+    let nextState = state;
+    for (const instanceId of selected) {
+      const leave = applyUnitLeave(
+        nextState,
+        instanceId,
+        "discard",
+        pending.phasePlayerId,
+      );
+      if ("error" in leave) return leave;
+      nextState = leave.state;
+      if (nextState.pendingLeave) {
+        return { state: nextState };
+      }
+    }
+    const names = selected
+      .map((id) => cardName(nextState.definitions, findFieldUnitCardId(nextState, id)))
+      .join(",");
+    return finishChoice(nextState, pending, names || "none");
+  }
+
+  return { error: "invalid_choice_kind" };
+}
+
 export function startTyrannoSonicChoice(
   state: GameState,
   rusherId: PlayerId,
@@ -621,9 +715,47 @@ export function applyEffectChoiceSelect(
   const pending = state.pendingEffectChoice;
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
-  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const selectedSoFar = pending.selectedInstanceIds ?? [];
+  if (pending.kind === "select_units_bp_budget") {
+    if (
+      !pending.validInstanceIds.includes(instanceId) &&
+      !selectedSoFar.includes(instanceId)
+    ) {
+      return { error: "invalid_target" };
+    }
+  } else if (!pending.validInstanceIds.includes(instanceId)) {
+    return { error: "invalid_target" };
+  }
 
   switch (pending.kind) {
+    case "select_units_bp_budget": {
+      const selected = pending.selectedInstanceIds ?? [];
+      if (selected.includes(instanceId)) {
+        return {
+          state: {
+            ...state,
+            pendingEffectChoice: {
+              ...pending,
+              selectedInstanceIds: selected.filter((id) => id !== instanceId),
+            },
+            activePlayer: playerId,
+          },
+        };
+      }
+      if (!canToggleBpBudgetTarget(state, pending, instanceId)) {
+        return { error: "bp_budget_exceeded" };
+      }
+      return {
+        state: {
+          ...state,
+          pendingEffectChoice: {
+            ...pending,
+            selectedInstanceIds: [...selected, instanceId],
+          },
+          activePlayer: playerId,
+        },
+      };
+    }
     case "optional_deck_draw": {
       if (instanceId !== "draw") return { error: "invalid_target" };
       const player = state.players[playerId];

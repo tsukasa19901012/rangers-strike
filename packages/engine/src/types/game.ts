@@ -201,7 +201,8 @@ export type EffectChoiceKind =
   | "select_power"
   | "select_hand"
   | "scry_keep_one"
-  | "pit_in_dive_order";
+  | "pit_in_dive_order"
+  | "select_units_bp_budget";
 
 export type PendingEffectChoice = {
   playerId: PlayerId;
@@ -217,6 +218,8 @@ export type PendingEffectChoice = {
   viewedInstanceIds?: string[];
   optional?: boolean;
   maxBp?: number;
+  /** Sum cap for printed BP (e.g. RS-106 ジュウクンドー). */
+  bpBudget?: number;
   unitDestination?: "power" | "discard" | "deck_top" | "hand" | "hand_from_discard" | "hand_from_power" | "enemy_battle" | "swap_battle";
   commandAction?: "discard" | "hold" | "return_hand" | "rush" | "rush_silent";
   commandFilter?: "held" | "released" | "any";

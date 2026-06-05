@@ -35,6 +35,7 @@ import {
   canBeginZordSetup,
   listZordSetupResolveActions,
 } from "../rules/zordSetup";
+import { canToggleBpBudgetTarget } from "../rules/pendingChoices";
 import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart } from "../rules/startPhase";
 import { listZordRushPaymentVariants } from "../rules/mothership";
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
@@ -606,6 +607,16 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (pending.kind === "select_units_bp_budget") {
+    for (const instanceId of pending.validInstanceIds) {
+      if (canToggleBpBudgetTarget(state, pending, instanceId)) {
+        actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+      }
+    }
+    actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
   for (const instanceId of pending.validInstanceIds) {
     actions.push({ type: "resolve_effect_choice", playerId, instanceId });
   }
@@ -1078,6 +1089,10 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
 
   if (a.type === "confirm_denji_reveal" && b.type === "confirm_denji_reveal") {
     return true;
+  }
+
+  if (a.type === "confirm_effect_choice" && b.type === "confirm_effect_choice") {
+    return a.playerId === b.playerId;
   }
 
   if (a.type === "resolve_effect_choice" && b.type === "resolve_effect_choice") {

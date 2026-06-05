@@ -119,6 +119,7 @@ import {
   applyEffectChoiceSelect,
   completeEffectHoldChoice,
   skipEffectChoice,
+  applyConfirmEffectChoice,
 } from "../rules/pendingChoices";
 import {
   afterEnterBattle,
@@ -1156,6 +1157,15 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         return ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "confirm_denji_reveal"));
       }
       return ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "confirm_denji_reveal"));
+    }
+
+    case "confirm_effect_choice": {
+      const result = applyConfirmEffectChoice(state, playerId);
+      if ("error" in result) return fail(result.error);
+      return withStartPhaseAutoAdvance(
+        ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "confirm_effect_choice")),
+        playerId,
+      );
     }
 
     case "resolve_effect_choice": {

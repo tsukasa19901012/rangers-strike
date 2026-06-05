@@ -46,6 +46,7 @@ const EFFECT_ACTIONS = new Set([
   "resolve_ruin_survey",
   "resolve_seabed_draw",
   "confirm_denji_reveal",
+  "confirm_effect_choice",
   "earth_force_upkeep",
   "battle_dance_retreat",
 ]);
