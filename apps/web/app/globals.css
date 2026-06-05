@@ -10,10 +10,11 @@
   --power-zone-card-slot-height: calc(var(--card-power-width) + 6px);
   --power-zone-card-gap: 6px;
   --power-zone-max-visible-cards: 7;
-  --power-zone-cards-max-height: calc(
+  --power-zone-cards-height: calc(
     var(--power-zone-max-visible-cards) * var(--power-zone-card-slot-height) +
       (var(--power-zone-max-visible-cards) - 1) * var(--power-zone-card-gap)
   );
+  --power-zone-cards-max-height: var(--power-zone-cards-height);
   --playsheet-sidebar-width: 92px;
   --zone-card-min-height: 56px;
   --app-max-width: 100%;
@@ -389,11 +390,9 @@ select {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 0;
   align-self: start;
-  max-height: calc(
-    var(--power-zone-cards-max-height) + 2.25rem
-  );
+  min-height: calc(var(--power-zone-cards-height) + 2.25rem);
+  max-height: calc(var(--power-zone-cards-height) + 2.25rem);
 }
 
 .playsheet--opponent .playsheet__power {
@@ -493,14 +492,24 @@ select {
 }
 
 .playsheet__power .zone__cards {
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   flex-direction: column;
   align-items: center;
-  min-height: 0;
-  max-height: var(--power-zone-cards-max-height);
+  min-height: var(--power-zone-cards-height);
+  height: var(--power-zone-cards-height);
+  max-height: var(--power-zone-cards-height);
   overflow-x: hidden;
   gap: var(--power-zone-card-gap);
   padding: 2px 0;
+}
+
+.playsheet__power .zone__empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
 }
 
 .playsheet__power .card-wrap {
