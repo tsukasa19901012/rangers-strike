@@ -1,6 +1,7 @@
 import type { CardDefinition } from "./schema";
 import legend1UnitEffectsJson from "./legend1/unitEffects.json";
 import legend2UnitEffectsJson from "./legend2/unitEffects.json";
+import legend3UnitEffectsJson from "./legend3/unitEffects.json";
 import type { UnitEffectBlock } from "./unitEffects";
 import {
   getConditionalNamedEffect,
@@ -12,6 +13,7 @@ import {
 const UNIT_EFFECTS = {
   ...(legend1UnitEffectsJson as Record<string, UnitEffectBlock>),
   ...(legend2UnitEffectsJson as Record<string, UnitEffectBlock>),
+  ...(legend3UnitEffectsJson as Record<string, UnitEffectBlock>),
 };
 
 export type WiredUnitEffect = {
@@ -34,6 +36,13 @@ export const IMPLEMENTED_ON_RUSH_EFFECT_IDS = [
   "heavenly_disaster",
   "karakuri_great_tsunami",
   "air_transport",
+  "great_assault",
+  "airlift",
+  "assault",
+  "submerge",
+  "taurus_dive",
+  "earth_resource_absorb",
+  "nature_big_bang_final",
 ] as const;
 
 /** Optional may effects on battle entry (tryStartConditionalChoice). */
@@ -47,6 +56,12 @@ export const IMPLEMENTED_CONDITIONAL_EFFECT_IDS = [
   "karakuri_fire_hawk",
   "tantrum",
   "cry",
+  "red_boot",
+  "string_fist",
+  "jet_skateboard",
+  "falcon_claw",
+  "sagas_sniper",
+  "blue_bados_life_sword",
 ] as const;
 
 /** On-attack / battle BP modifiers in namedUnitEffects. */
@@ -61,6 +76,10 @@ export const IMPLEMENTED_ON_ATTACK_EFFECT_IDS = [
   "dump_punch",
   "ptera_dagger",
   "adventure_drive_sword",
+  "super_live_crush",
+  "surging_chopper",
+  "moonlight_sonic",
+  "mirage_beam",
 ] as const;
 
 /** Enter-battle auto or choice effects. */
@@ -70,6 +89,12 @@ export const IMPLEMENTED_ENTER_BATTLE_EFFECT_IDS = [
   "mane_hurricane",
   "phantom_illusion",
   "ruin_excavation",
+  "fire_dance",
+  "crown_final_crush",
+  "hyper_civilization_guard",
+  "steel_horn",
+  "bio_particle_slash",
+  "anti_bio_cannon",
 ] as const;
 
 /** Reactive / passive unit effects wired outside battle entry. */
@@ -90,6 +115,15 @@ export const IMPLEMENTED_PASSIVE_EFFECT_IDS = [
   "seabed_survey",
   "val_shield",
   "dance_of_darkness",
+  "stealth",
+  "furious_shark_shot",
+  "heaven_earth_animal_heart",
+  "scorching_roar",
+  "data_analysis",
+  "dark_deal",
+  "star_raiser",
+  "base_attack",
+  "super_moa_cannon",
 ] as const;
 
 const ON_RUSH_SET = new Set<string>(IMPLEMENTED_ON_RUSH_EFFECT_IDS);

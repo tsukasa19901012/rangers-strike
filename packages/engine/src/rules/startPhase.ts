@@ -2,7 +2,7 @@ import { getCardEffect } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { checkWinner } from "../core/createGame";
 import { hasOperationEffect } from "../core/catalog";
-import { removeAt, updatePlayer } from "../core/helpers";
+import { findInZone, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry, buildSimpleLogEntry } from "../log/formatLog";
 import { startSelectPowerChoice } from "./pendingChoices";
 
@@ -15,17 +15,23 @@ export function releaseAllCommands(state: GameState, playerId: PlayerId): GameSt
   return { ...state, ...updatePlayer(state, playerId, { ...player, command }) };
 }
 
-/** Start phase: return battle units to rush (player chooses order — we preserve order). */
-export function returnBattleToRush(state: GameState, playerId: PlayerId): GameState {
+/** Start phase: return one battle unit to rush (player chooses order). */
+export function returnBattleUnitToRush(
+  state: GameState,
+  playerId: PlayerId,
+  battleInstanceId: string,
+): GameState | null {
   const player = state.players[playerId];
-  if (player.battle.length === 0) return state;
+  const found = findInZone(player, "battle", battleInstanceId);
+  if (!found) return null;
 
+  const [, battle] = removeAt(player.battle, found.index);
   return {
     ...state,
     ...updatePlayer(state, playerId, {
       ...player,
-      rush: [...player.rush, ...player.battle],
-      battle: [],
+      battle,
+      rush: [...player.rush, found.card],
     }),
   };
 }
@@ -145,6 +151,11 @@ export function transitionStartToChargePhase(
   };
 }
 
+export type StartPhaseBattleUnit = {
+  instanceId: string;
+  cardId: string;
+};
+
 export type StartPhaseStatus = {
   releaseDone: boolean;
   returnDone: boolean;
@@ -156,6 +167,7 @@ export type StartPhaseStatus = {
   canAdvanceToCharge: boolean;
   heldCommandCount: number;
   battleUnitCount: number;
+  battleUnits: StartPhaseBattleUnit[];
 };
 
 export function getStartPhaseStatus(
@@ -179,6 +191,10 @@ export function getStartPhaseStatus(
     canAdvanceToCharge: canAdvanceFromStartPhase(state, playerId),
     heldCommandCount: player.command.filter((c) => c.commandHeld).length,
     battleUnitCount: player.battle.length,
+    battleUnits: player.battle.map((c) => ({
+      instanceId: c.instanceId,
+      cardId: c.cardId,
+    })),
   };
 }
 

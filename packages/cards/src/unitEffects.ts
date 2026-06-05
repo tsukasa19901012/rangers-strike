@@ -7,6 +7,7 @@ import type {
 } from "./effectTaxonomy";
 import legend1UnitEffectsJson from "./legend1/unitEffects.json";
 import legend2UnitEffectsJson from "./legend2/unitEffects.json";
+import legend3UnitEffectsJson from "./legend3/unitEffects.json";
 
 export type {
   NamedEffectTrigger,
@@ -20,6 +21,7 @@ export type { NamedEffectTrigger as EffectTrigger } from "./effectTaxonomy";
 const UNIT_EFFECTS = {
   ...(legend1UnitEffectsJson as Record<string, UnitEffectBlock>),
   ...(legend2UnitEffectsJson as Record<string, UnitEffectBlock>),
+  ...(legend3UnitEffectsJson as Record<string, UnitEffectBlock>),
 };
 
 export function getUnitEffectBlock(cardId: string): UnitEffectBlock | undefined {
@@ -215,6 +217,33 @@ export function hasAutoBattleEntryNote(cardId: string): boolean {
 
 export function hasDestroySelfDamageNote(cardId: string): boolean {
   return hasUnnamedRule(cardId, "destroy_self_damage");
+}
+
+export function getBattleEntryComboFromPartnerIds(cardId: string): string[] {
+  const block = UNIT_EFFECTS[cardId];
+  if (!block) return [];
+  const note = block.unnamedText.find((entry) => entry.rule === "battle_entry_combo_from");
+  return note?.partnerCardIds ?? [];
+}
+
+export function needsBattleEntryComboFrom(cardId: string): boolean {
+  return getBattleEntryComboFromPartnerIds(cardId).length > 0;
+}
+
+export function getBattleEntryHandDiscardCount(cardId: string): number {
+  return sumUnnamedRuleParam(cardId, "battle_entry_discard_from_hand", "discardCount", 2);
+}
+
+export function needsBattleEntryHandDiscard(cardId: string): boolean {
+  return getBattleEntryHandDiscardCount(cardId) > 0;
+}
+
+export function battleHasComboPartner(
+  battle: Array<{ instanceId: string; cardId: string }>,
+  partnerCardIds: string[],
+  excludeInstanceId: string,
+): boolean {
+  return battleHasPartner(battle, partnerCardIds, excludeInstanceId);
 }
 
 export function findNamedEffectByEffectId(

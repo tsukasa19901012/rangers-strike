@@ -1,5 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
-import { legend1Catalog, legend2Catalog } from "@rangers-strike/cards";
+import { legend1Catalog, legend2Catalog, legend3Catalog } from "@rangers-strike/cards";
 import type { NumberComboEffectId } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
@@ -9,6 +9,7 @@ export const legendDefinitions: Record<string, CardDefinition> = {
   ...TEST_DEFINITIONS,
   ...Object.fromEntries(legend1Catalog.cards.map((card) => [card.id, card])),
   ...Object.fromEntries(legend2Catalog.cards.map((card) => [card.id, card])),
+  ...Object.fromEntries(legend3Catalog.cards.map((card) => [card.id, card])),
 };
 
 export function battleFillers(count: number, prefix = "fill"): CardInstance[] {

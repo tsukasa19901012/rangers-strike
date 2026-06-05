@@ -124,6 +124,17 @@ export const EFFECT_LABELS: Record<string, string> = {
   fire_spin_blade: "ファイヤースピンブレード",
   seabed_survey: "海底探査",
   opponent_may_draw_on_enter: "進入時ドロー",
+  // Legend 3
+  end_turn_effects: "ターン終了時の効果",
+  jet_skateboard: "ジェットスケボー",
+  falcon_claw: "ファルコンクロー",
+  sagas_sniper: "サガススナイパー",
+  dark_deal: "闇の取引",
+  red_boot: "レッドブーツ",
+  base_attack: "拠点攻撃",
+  mirage_beam: "ミラージュビーム",
+  super_moa_cannon: "超力モアキャノン",
+  battle_entry_hand_discard: "手札捨札",
 };
 
 export function getEffectLabel(effectId: string): string {

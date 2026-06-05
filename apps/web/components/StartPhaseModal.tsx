@@ -1,13 +1,14 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { getCardById } from "@rangers-strike/cards";
 import type { StartPhaseStatus } from "@rangers-strike/engine";
 import { GameModalBackdrop } from "./GameModalBackdrop";
 
 type StartPhaseModalProps = {
   status: StartPhaseStatus;
   onRelease: () => void;
-  onReturnBattle: () => void;
+  onReturnBattleUnit: (battleInstanceId: string) => void;
   onDraw: () => void;
   onBonusDraw: () => void;
 };
@@ -40,7 +41,7 @@ function StepRow({
 export function StartPhaseModal({
   status,
   onRelease,
-  onReturnBattle,
+  onReturnBattleUnit,
   onDraw,
   onBonusDraw,
 }: StartPhaseModalProps) {
@@ -87,16 +88,29 @@ export function StartPhaseModal({
               done={status.returnDone}
               detail={
                 !status.returnDone && status.battleUnitCount > 0
-                  ? `バトルエリア ${status.battleUnitCount} 体`
+                  ? `バトルエリア ${status.battleUnitCount} 体（1体ずつ戻してください）`
                   : status.returnDone
                     ? "すべてラッシュに戻しました"
                     : "バトルエリアにユニットなし"
               }
               action={
                 status.canReturn ? (
-                  <button type="button" className="btn btn--primary" onClick={onReturnBattle}>
-                    ラッシュに戻す
-                  </button>
+                  <div className="effect-action-modal__targets">
+                    {status.battleUnits.map((unit) => {
+                      const card = getCardById(unit.cardId);
+                      return (
+                        <button
+                          key={unit.instanceId}
+                          type="button"
+                          className="btn effect-action-modal__target"
+                          onClick={() => onReturnBattleUnit(unit.instanceId)}
+                        >
+                          {card?.name ?? unit.cardId}
+                          <span className="effect-action-modal__target-meta">ラッシュに戻す</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 ) : undefined
               }
             />

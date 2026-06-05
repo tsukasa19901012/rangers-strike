@@ -55,15 +55,12 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
       tags: ["常駐"],
     };
 
-    ON_ENEMY_RUSH_PERMANENTS["RS-124"] = "power_to_hand";
-
     state = unwrap(
       rushWithCategoryHold(state, "player1", unit.instanceId, wbPay.instanceId),
     );
 
-    expect(state.players.player2.hand.some((c) => c.instanceId === power.instanceId)).toBe(
-      true,
-    );
+    // RS-124: S rush → rusher's owner returns one face-up power to hand (both players affected).
+    expect(state.players.player1.hand.some((c) => c.cardId === "TST-OP")).toBe(true);
     expect(state.pendingRush?.rushedInstanceId).toBe(unit.instanceId);
     expect(state.activePlayer).toBe("player2");
     expect(
@@ -72,7 +69,6 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
       ),
     ).toBe(true);
 
-    delete ON_ENEMY_RUSH_PERMANENTS["RS-124"];
   });
 
   it("resolves unit on-rush effect before counter window (Q10)", () => {

@@ -57,7 +57,14 @@ export type NumberComboEffectId =
   | "deace_sniper"
   | "green_crush"
   | "backup_request"
-  | "zenibomb";
+  | "zenibomb"
+  | "fire_sword"
+  | "blazing_fire"
+  | "iron_broken"
+  | "dolphin_arrow"
+  | "bumper_bow"
+  | "side_knuckle"
+  | "star_raiser";
 
 /** Engine-implemented NC effect ids (must match switch in numberComboEffects.ts). */
 export const IMPLEMENTED_NC_EFFECT_IDS = [
@@ -89,6 +96,13 @@ export const IMPLEMENTED_NC_EFFECT_IDS = [
   "green_crush",
   "backup_request",
   "zenibomb",
+  "fire_sword",
+  "blazing_fire",
+  "iron_broken",
+  "dolphin_arrow",
+  "bumper_bow",
+  "side_knuckle",
+  "star_raiser",
 ] as const satisfies readonly NumberComboEffectId[];
 
 const IMPLEMENTED_NC_IDS = new Set<string>(IMPLEMENTED_NC_EFFECT_IDS);
@@ -163,9 +177,18 @@ export const ALT_NUMBER_COMBO_PARTNERS: Partial<Record<string, string[]>> = {
 };
 
 /** Joint combo L: grants effect to partner L unit immediately to the right. */
-export type JointComboLEffectId = "grant_sp1_to_partner";
+export type JointComboLEffectId =
+  | "grant_sp1_to_partner"
+  | "oni_neck_last"
+  | "maximum_penetration"
+  | "baki_baki_punch";
 
-export const IMPLEMENTED_JOINT_L_EFFECT_IDS = ["grant_sp1_to_partner"] as const satisfies readonly JointComboLEffectId[];
+export const IMPLEMENTED_JOINT_L_EFFECT_IDS = [
+  "grant_sp1_to_partner",
+  "oni_neck_last",
+  "maximum_penetration",
+  "baki_baki_punch",
+] as const satisfies readonly JointComboLEffectId[];
 
 const IMPLEMENTED_JOINT_L_IDS = new Set<string>(IMPLEMENTED_JOINT_L_EFFECT_IDS);
 
@@ -184,9 +207,22 @@ function buildJointLMap(): Record<string, JointComboLEffectId> {
 export const JOINT_L_EFFECTS: Record<string, JointComboLEffectId> = buildJointLMap();
 
 /** Joint combo R: this unit gains the effect when immediately right of partner L. */
-export type JointComboREffectId = "grant_sp1";
+export type JointComboREffectId =
+  | "grant_sp1"
+  | "elephant_shield"
+  | "cross_thunder"
+  | "shovel_defense"
+  | "wall_shoot"
+  | "lift_up";
 
-export const IMPLEMENTED_JOINT_R_EFFECT_IDS = ["grant_sp1"] as const satisfies readonly JointComboREffectId[];
+export const IMPLEMENTED_JOINT_R_EFFECT_IDS = [
+  "grant_sp1",
+  "elephant_shield",
+  "cross_thunder",
+  "shovel_defense",
+  "wall_shoot",
+  "lift_up",
+] as const satisfies readonly JointComboREffectId[];
 
 const IMPLEMENTED_JOINT_R_IDS = new Set<string>(IMPLEMENTED_JOINT_R_EFFECT_IDS);
 
@@ -256,7 +292,9 @@ export function getJointLEffect(cardId: string): JointComboLEffectId | undefined
   const fromMap = JOINT_L_EFFECTS[cardId];
   if (fromMap) return fromMap;
   const named = getJointLNamedEffect(cardId);
-  if (named?.effectId === "grant_sp1_to_partner") return "grant_sp1_to_partner";
+  if (named && IMPLEMENTED_JOINT_L_IDS.has(named.effectId)) {
+    return named.effectId as JointComboLEffectId;
+  }
   return undefined;
 }
 
@@ -264,7 +302,9 @@ export function getJointREffect(cardId: string): JointComboREffectId | undefined
   const fromMap = JOINT_R_EFFECTS[cardId];
   if (fromMap) return fromMap;
   const named = getJointRNamedEffect(cardId);
-  if (named?.effectId === "grant_sp1") return "grant_sp1";
+  if (named && IMPLEMENTED_JOINT_R_IDS.has(named.effectId)) {
+    return named.effectId as JointComboREffectId;
+  }
   return undefined;
 }
 

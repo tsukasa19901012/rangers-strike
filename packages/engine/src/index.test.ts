@@ -330,7 +330,11 @@ describe("phase flow", () => {
     expect(afterRelease.players.player2.command[0]?.commandHeld).toBe(false);
 
     const afterReturn = unwrap(
-      applyAction(afterRelease, { type: "return_battle_to_rush", playerId: "player2" }),
+      applyAction(afterRelease, {
+        type: "return_battle_unit_to_rush",
+        playerId: "player2",
+        battleInstanceId: "TST-UNIT-0:b1",
+      }),
     );
     expect(afterReturn.players.player2.battle).toHaveLength(0);
     expect(afterReturn.players.player2.rush).toHaveLength(1);

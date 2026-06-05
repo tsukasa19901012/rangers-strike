@@ -24,6 +24,10 @@ import { canStrikeUnit } from "../rules/combo";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import { canMoveUnitToBattle, countHeldCommands, mustEnterBattleBeforePhaseEnd } from "../rules/restrictions";
 import {
+  canAttackDefender,
+  darkDealRushPowerBudget,
+} from "../rules/legend3/restrictions";
+import {
   getCategoryPaymentOptions,
   isInitiateCommandPaymentLegal,
   isResolveCommandPaymentLegal,
@@ -329,6 +333,8 @@ const OPERATION_PHASES = new Set<GameState["phase"]>(["rush"]);
 
 /** カテゴリ支払い済み、またはカテゴリ不要なユニットのみ直接 rush 可能。 */
 function canDeclareRush(
+  state: GameState,
+  playerId: PlayerId,
   player: PlayerState,
   definitions: GameState["definitions"],
   definition: CardDefinition,
@@ -339,6 +345,7 @@ function canDeclareRush(
     zordMaterialDestination?: import("../types/actions").ZordMaterialDestination;
   },
 ): boolean {
+  const powerBudget = darkDealRushPowerBudget(state, playerId, player, definition);
   if (
     !canRushUnitExceptCommandHold(
       player,
@@ -348,6 +355,7 @@ function canDeclareRush(
       zord?.zordMaterialInstanceId,
       zord?.zordMothershipHoldInstanceIds,
       zord?.zordMaterialDestination,
+      powerBudget,
     )
   ) {
     return false;
@@ -374,7 +382,9 @@ export function findDirectZordRushAction(
   }
 
   if (requiresAllFusionPartners(card.cardId)) {
-    if (!canDeclareRush(player, state.definitions, definition, card.instanceId)) return null;
+    if (!canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId)) {
+      return null;
+    }
     return { type: "rush", playerId, instanceId: card.instanceId };
   }
 
@@ -394,7 +404,7 @@ export function findDirectZordRushAction(
   );
   for (const variant of variants) {
     if (
-      !canDeclareRush(player, state.definitions, definition, card.instanceId, {
+      !canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId, {
         zordMaterialInstanceId: variant.zordMaterialInstanceId,
         zordMothershipHoldInstanceIds: variant.zordMothershipHoldInstanceIds,
         zordMaterialDestination: variant.zordMaterialDestination,
@@ -454,7 +464,7 @@ function appendRushCategoryPaymentActions(
 
     if (needsZordMaterial(state.definitions, card.cardId)) {
       if (requiresAllFusionPartners(card.cardId)) {
-        if (canDeclareRush(player, state.definitions, definition, card.instanceId)) {
+        if (canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId)) {
           continue;
         }
         if (
@@ -502,7 +512,7 @@ function appendRushCategoryPaymentActions(
             zordMothershipHoldInstanceIds: variant.zordMothershipHoldInstanceIds,
             zordMaterialDestination: variant.zordMaterialDestination,
           };
-          if (canDeclareRush(player, state.definitions, definition, card.instanceId, zord)) {
+          if (canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId, zord)) {
             continue;
           }
           if (
@@ -529,7 +539,7 @@ function appendRushCategoryPaymentActions(
         }
       }
     } else {
-      if (canDeclareRush(player, state.definitions, definition, card.instanceId)) {
+      if (canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId)) {
         continue;
       }
       if (
@@ -639,6 +649,18 @@ function appendBattleEntryActions(
   }
 
   for (const defender of enemy.battle) {
+    if (
+      !canAttackDefender(
+        state,
+        playerId,
+        pending.instanceId,
+        opponent(playerId),
+        defender.instanceId,
+        canAttackRushWithYellowThunder,
+      )
+    ) {
+      continue;
+    }
     actions.push({
       type: "battle",
       playerId,
@@ -646,15 +668,25 @@ function appendBattleEntryActions(
       defenderInstanceId: defender.instanceId,
     });
   }
-  if (canAttackRushWithYellowThunder(state, playerId, pending.instanceId)) {
-    for (const defender of enemy.rush) {
-      actions.push({
-        type: "battle",
+  for (const defender of enemy.rush) {
+    if (
+      !canAttackDefender(
+        state,
         playerId,
-        attackerInstanceId: pending.instanceId,
-        defenderInstanceId: defender.instanceId,
-      });
+        pending.instanceId,
+        opponent(playerId),
+        defender.instanceId,
+        canAttackRushWithYellowThunder,
+      )
+    ) {
+      continue;
     }
+    actions.push({
+      type: "battle",
+      playerId,
+      attackerInstanceId: pending.instanceId,
+      defenderInstanceId: defender.instanceId,
+    });
   }
   if (canStrikeUnit(state.definitions, unit, state, playerId)) {
     actions.push({ type: "strike", playerId, instanceId: pending.instanceId });
@@ -766,7 +798,13 @@ export function getLegalActions(state: GameState): GameAction[] {
         actions.push({ type: "release_start_commands", playerId });
       }
       if (canReturnBattleAtStart(state, playerId)) {
-        actions.push({ type: "return_battle_to_rush", playerId });
+        for (const card of player.battle) {
+          actions.push({
+            type: "return_battle_unit_to_rush",
+            playerId,
+            battleInstanceId: card.instanceId,
+          });
+        }
       }
       if (!player.hasDrawnThisStart) {
         actions.push({ type: "draw", playerId });
@@ -803,7 +841,7 @@ export function getLegalActions(state: GameState): GameAction[] {
 
         if (needsZordMaterial(state.definitions, card.cardId)) {
           if (requiresAllFusionPartners(card.cardId)) {
-            if (canDeclareRush(player, state.definitions, definition!, card.instanceId)) {
+            if (canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId)) {
               actions.push({
                 type: "rush",
                 playerId,
@@ -827,7 +865,7 @@ export function getLegalActions(state: GameState): GameAction[] {
             );
             for (const variant of variants) {
               if (
-                !canDeclareRush(player, state.definitions, definition!, card.instanceId, {
+                !canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId, {
                   zordMaterialInstanceId: variant.zordMaterialInstanceId,
                   zordMothershipHoldInstanceIds: variant.zordMothershipHoldInstanceIds,
                   zordMaterialDestination: variant.zordMaterialDestination,
@@ -845,7 +883,7 @@ export function getLegalActions(state: GameState): GameAction[] {
               });
             }
           }
-        } else if (canDeclareRush(player, state.definitions, definition!, card.instanceId)) {
+        } else if (canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId)) {
           actions.push({
             type: "rush",
             playerId,
@@ -884,6 +922,18 @@ export function getLegalActions(state: GameState): GameAction[] {
       for (const attacker of player.battle) {
         if (attacker.battleActed) continue;
         for (const defender of enemy.battle) {
+          if (
+            !canAttackDefender(
+              state,
+              playerId,
+              attacker.instanceId,
+              opponent(playerId),
+              defender.instanceId,
+              canAttackRushWithYellowThunder,
+            )
+          ) {
+            continue;
+          }
           actions.push({
             type: "battle",
             playerId,
@@ -891,15 +941,25 @@ export function getLegalActions(state: GameState): GameAction[] {
             defenderInstanceId: defender.instanceId,
           });
         }
-        if (canAttackRushWithYellowThunder(state, playerId, attacker.instanceId)) {
-          for (const defender of enemy.rush) {
-            actions.push({
-              type: "battle",
+        for (const defender of enemy.rush) {
+          if (
+            !canAttackDefender(
+              state,
               playerId,
-              attackerInstanceId: attacker.instanceId,
-              defenderInstanceId: defender.instanceId,
-            });
+              attacker.instanceId,
+              opponent(playerId),
+              defender.instanceId,
+              canAttackRushWithYellowThunder,
+            )
+          ) {
+            continue;
           }
+          actions.push({
+            type: "battle",
+            playerId,
+            attackerInstanceId: attacker.instanceId,
+            defenderInstanceId: defender.instanceId,
+          });
         }
       }
 
@@ -1017,7 +1077,7 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
       if (
         definition &&
         isUnit(definition) &&
-        canDeclareRush(player, state.definitions, definition, action.instanceId, {
+        canDeclareRush(state, action.playerId, player, state.definitions, definition, action.instanceId, {
           zordMaterialInstanceId: action.zordMaterialInstanceId,
           zordMothershipHoldInstanceIds: action.zordMothershipHoldInstanceIds,
           zordMaterialDestination: action.zordMaterialDestination,
@@ -1072,6 +1132,10 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
   }
 
   if (a.type === "battle_dance_retreat" && b.type === "battle_dance_retreat") {
+    return a.battleInstanceId === b.battleInstanceId;
+  }
+
+  if (a.type === "return_battle_unit_to_rush" && b.type === "return_battle_unit_to_rush") {
     return a.battleInstanceId === b.battleInstanceId;
   }
 

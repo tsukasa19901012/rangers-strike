@@ -1,9 +1,12 @@
 import {
+  battleHasComboPartner,
   cannotEnterBattle,
   countLightningGravityPermanents,
+  getBattleEntryComboFromPartnerIds,
   getBattleEntryHoldCount,
   hasAutoBattleEntryNote,
   needsAllySInBattle,
+  needsBattleEntryComboFrom,
   noBattleEntryTurnRushed,
 } from "@rangers-strike/cards";
 import { getCardEffect } from "@rangers-strike/cards";
@@ -30,6 +33,17 @@ import {
   karakuriLionChainBlocksEntry,
   trafficControlRequiresSameSize,
 } from "./legend2/fieldEffects";
+import {
+  cannotEnterBattleOwnTurn,
+  scorchingRoarBypassesHold,
+} from "./legend3/fieldEffects";
+import {
+  battleEntryHandDiscardSatisfied,
+  battleEntryRushDiscardSatisfied,
+  canPayBattleEntryHandDiscard,
+  canPayBattleEntryRushDiscard,
+  needsBattleEntryRushDiscard,
+} from "./legend3/restrictions";
 
 export function countLightningGravityOperations(state: GameState): number {
   return countLightningGravityPermanents(
@@ -150,6 +164,13 @@ export function canMoveUnitToBattle(
     if (!hasAllyS) return false;
   }
 
+  if (needsBattleEntryComboFrom(unit.cardId)) {
+    const partners = getBattleEntryComboFromPartnerIds(unit.cardId);
+    if (!battleHasComboPartner(player.battle, partners, unit.instanceId)) {
+      return false;
+    }
+  }
+
   if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
@@ -173,7 +194,9 @@ export function canMoveUnitToBattle(
 
   if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
 
-  return passesBattleEntryHoldRequirements(state, player, unit);
+  if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
+
+  return passesBattleEntryHoldRequirements(state, playerId, player, unit);
 }
 
 /** Field / effect checks only (no ※ or 稲妻重力 hold counts). */
@@ -198,6 +221,13 @@ export function canMoveUnitToBattleExceptHoldRequirements(
     if (!hasAllyS) return false;
   }
 
+  if (needsBattleEntryComboFrom(unit.cardId)) {
+    const partners = getBattleEntryComboFromPartnerIds(unit.cardId);
+    if (!battleHasComboPartner(player.battle, partners, unit.instanceId)) {
+      return false;
+    }
+  }
+
   if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
@@ -220,6 +250,16 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   }
 
   if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
+
+  if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
+
+  if (needsBattleEntryRushDiscard(unit.cardId)) {
+    if (!canPayBattleEntryRushDiscard(player, state.definitions)) return false;
+    if (!battleEntryRushDiscardSatisfied(player, unit.cardId)) return false;
+  }
+
+  if (!canPayBattleEntryHandDiscard(player, unit.cardId)) return false;
+  if (!battleEntryHandDiscardSatisfied(player, unit.cardId)) return false;
 
   return true;
 }
@@ -267,10 +307,14 @@ export function autoHoldForBattleEntry(
 
 function passesBattleEntryHoldRequirements(
   state: GameState,
+  playerId: PlayerId,
   player: PlayerState,
   unit: CardInstance,
 ): boolean {
-  const unitHold = getBattleEntryHoldCount(unit.cardId);
+  let unitHold = getBattleEntryHoldCount(unit.cardId);
+  if (unitHold > 0 && scorchingRoarBypassesHold(unit.cardId, state, playerId)) {
+    unitHold = 0;
+  }
   const lgHold = isMediumUnit(state.definitions, unit.cardId)
     ? countActiveLightningGravity(state)
     : 0;
@@ -342,6 +386,23 @@ export function explainCannotEnterBattle(
 
   if (needsAllySInBattle(unit.cardId)) {
     return `「${unitName}」は自軍バトルエリアにSユニットがいないとバトルエリアに出せません。`;
+  }
+
+  if (needsBattleEntryComboFrom(unit.cardId)) {
+    const partners = getBattleEntryComboFromPartnerIds(unit.cardId);
+    if (!battleHasComboPartner(player.battle, partners, unit.instanceId)) {
+      const partnerName = partners
+        .map((id) => cardName(state.definitions, id))
+        .join("」「");
+      return `「${unitName}」は「${partnerName}」からコンビネーションしないとバトルエリアに出せません。`;
+    }
+  }
+
+  if (!canPayBattleEntryHandDiscard(player, unit.cardId)) {
+    return `「${unitName}」をバトルエリアに出すには、手札から2枚捨札する必要があります（手札${player.hand.length}枚）。`;
+  }
+  if (!battleEntryHandDiscardSatisfied(player, unit.cardId)) {
+    return `「${unitName}」をバトルエリアに出すには、手札から2枚選んで捨札してください。`;
   }
 
   if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {

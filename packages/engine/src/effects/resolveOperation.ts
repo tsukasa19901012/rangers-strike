@@ -25,6 +25,11 @@ import { findCardOwner } from "../rules/fieldLookup";
 import { withTurnModifiers } from "../rules/turnModifiers";
 import { resolveInfiniteChain } from "../rules/legend2/operations";
 import {
+  resolveAnimalHeart,
+  resolveSuperDynamite,
+} from "../rules/legend3/operations";
+import { isStealthUnit } from "../rules/legend3/fieldEffects";
+import {
   autoHoldForBattleEntry,
   canMoveUnitToBattle,
   markBattleEntryHoldReadyIfNoteSatisfied,
@@ -630,6 +635,27 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
       };
     }
 
+    case "super_dynamite": {
+      const result = resolveSuperDynamite(ctx.state, ctx.playerId);
+      return {
+        state: result.state,
+        detail: result.detail,
+        discardOperation: true,
+      };
+    }
+
+    case "animal_heart": {
+      const result = resolveAnimalHeart(ctx.state, ctx.playerId);
+      return {
+        state: result.state,
+        detail: result.detail,
+        discardOperation: !result.state.pendingEffectChoice,
+      };
+    }
+
+    case "super_electron_radar":
+      return { state: ctx.state, detail: "placed", discardOperation: false };
+
     default:
       if (effect.kind === "permanent") {
         return { state: ctx.state, detail: "placed", discardOperation: false };
@@ -731,6 +757,7 @@ export function isValidOperationTarget(
       );
     }
     case "enemy_field_unit": {
+      if (isStealthUnit(state, targetInstanceId)) return false;
       for (const zone of ["battle", "rush"] as const) {
         const found = findInZone(enemy, zone, targetInstanceId);
         if (!found) continue;

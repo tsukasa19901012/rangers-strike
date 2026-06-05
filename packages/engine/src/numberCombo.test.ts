@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  getBattleEntryHoldCount,
   getCardById,
   listStandardNcCards,
   type NumberComboEffectId,
@@ -27,6 +28,14 @@ function enterAtCn(
   },
 ) {
   const unit = inst(cardId, "nc-unit");
+  const holdCount = getBattleEntryHoldCount(cardId);
+  const holdCommands =
+    holdCount > 0
+      ? Array.from({ length: holdCount }, (_, index) => ({
+          ...inst("RS-007", `hold-${index}`),
+          commandHeld: true,
+        }))
+      : [];
   const state = createTestState({
     phase: "battle",
     activePlayer: "player1",
@@ -36,6 +45,8 @@ function enterAtCn(
       battle: battleFillers(comboNumber - 1),
       deck: setup?.deck ?? [inst("RS-007", "deck-top")],
       hand: [],
+      command: holdCommands,
+      battleEntryHoldReady: holdCount > 0,
     },
     player2: setup?.player2,
   });
@@ -184,12 +195,22 @@ describe("NC battle entry (standard CN position)", () => {
   )("%s does not fire NC at wrong CN position", (cardId, effectId, comboNumber) => {
     const unit = inst(cardId, "nc-unit");
     const wrongFillers = battleFillers(comboNumber - 2);
+    const holdCount = getBattleEntryHoldCount(cardId);
+    const holdCommands =
+      holdCount > 0
+        ? Array.from({ length: holdCount }, (_, index) => ({
+            ...inst("RS-007", `hold-wrong-${index}`),
+            commandHeld: true,
+          }))
+        : [];
     const state = createTestState({
       phase: "battle",
       definitions: legendDefinitions,
       player1: {
         rush: [unit],
         battle: wrongFillers,
+        command: holdCommands,
+        battleEntryHoldReady: holdCount > 0,
       },
     });
     const next = moveToBattle(state, unit.instanceId);

@@ -26,9 +26,10 @@ describe("comboEffectCatalog joint/riding wiring", () => {
   });
 
   it("Legend1 has no L/R/RC combo cards yet", () => {
-    expect(wired).toEqual([]);
-    expect(listWiredJointLEffects(getCardById)).toEqual([]);
-    expect(listWiredJointREffects(getCardById)).toEqual([]);
+    const legend1Only = wired.filter((entry) => entry.cardId < "RS-071");
+    expect(legend1Only).toEqual([]);
+    expect(listWiredJointLEffects(getCardById).filter((e) => e.cardId < "RS-071")).toEqual([]);
+    expect(listWiredJointREffects(getCardById).filter((e) => e.cardId < "RS-071")).toEqual([]);
     expect(listWiredRidingComboEffects(getCardById)).toEqual([]);
   });
 

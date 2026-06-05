@@ -29,6 +29,13 @@ const EXPANSIONS = {
     imageBasePath: "/cards/legend2",
     downloadBack: false,
   },
+  legend3: {
+    cardsJson: path.join(packageRoot, "src/legend3/cards.json"),
+    assetsDir: path.join(packageRoot, "assets/legend3"),
+    webPublicDir: path.join(repoRoot, "apps/web/public/cards/legend3"),
+    imageBasePath: "/cards/legend3",
+    downloadBack: false,
+  },
 };
 
 async function download(url) {

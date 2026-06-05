@@ -26,6 +26,7 @@ import {
   patchPlayer,
 } from "./playerPatches";
 import { applyLegend2NcEffect, isLegend2NcEffect } from "./legend2/ncEffects";
+import { applyLegend3NcEffect, isLegend3NcEffect } from "./legend3/ncEffects";
 import type { ComboOutcome } from "./comboTypes";
 
 function ncLog(
@@ -215,7 +216,11 @@ export function applyNumberComboEffect(
       break;
     }
     default: {
-      if (effectId && isLegend2NcEffect(effectId)) {
+      if (effectId && isLegend3NcEffect(effectId)) {
+        const legend3 = applyLegend3NcEffect(nextState, playerId, card, effectId);
+        nextState = legend3.state;
+        logs.push(...legend3.logs);
+      } else if (effectId && isLegend2NcEffect(effectId)) {
         const legend2 = applyLegend2NcEffect(nextState, playerId, card, effectId);
         nextState = legend2.state;
         logs.push(...legend2.logs);

@@ -4,6 +4,7 @@ import {
   getBattleEntryHoldCount,
   getCardEffect,
   listZordFusionPartnerIds,
+  needsBattleEntryHandDiscard,
 } from "@rangers-strike/cards";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { checkWinner, advancePhase } from "./createGame";
@@ -54,12 +55,26 @@ import {
 import { finalizeRushAction } from "../rules/rushEffects";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import {
+  applyDarkDealRushHolds,
+  battleEntryHandDiscardSatisfied,
+  battleEntryRushDiscardSatisfied,
+  canAttackDefender,
+  darkDealRushPowerBudget,
+  needsBattleEntryRushDiscard,
+  tryLegend3BattleToRush,
+  tryStartBattleEntryHandDiscard,
+  tryStartBattleEntryRushDiscard,
+} from "../rules/legend3/restrictions";
+import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
+import { tryOpenEndTurnEffectsMenu } from "../rules/legend3/endTurnEffects";
+import { clearBakiBakiExtraAttack } from "../rules/legend3/destroyEffects";
+import {
   canPayEarthForceUpkeep,
   discardEarthForceForUnpaidUpkeep,
   mustResolveEarthForceUpkeepBeforeStartEnd,
   openEarthForceUpkeepChoiceIfNeeded,
   releaseAllCommands,
-  returnBattleToRush,
+  returnBattleUnitToRush,
   shouldAutoAdvanceFromStartPhase,
   transitionStartToChargePhase,
 } from "../rules/startPhase";
@@ -356,19 +371,33 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       );
     }
 
-    case "return_battle_to_rush": {
+    case "return_battle_unit_to_rush": {
       if (state.phase !== "start") return fail("wrong_phase");
       if (player.hasReturnedBattleThisStart) return fail("already_returned");
-      if (player.battle.length === 0) return fail("no_battle_units");
-      const nextState = returnBattleToRush(state, playerId);
+      const found = findInZone(player, "battle", action.battleInstanceId);
+      if (!found) return fail("card_not_in_battle");
+      const card = found.card;
+      const moved = returnBattleUnitToRush(state, playerId, action.battleInstanceId);
+      if (!moved) return fail("card_not_in_battle");
+      let nextState = tryLegend3BattleToRush(moved, playerId, card, playerId);
+      if (nextState.pendingEffectChoice) {
+        return withStartPhaseAutoAdvance(
+          ok(
+            nextState,
+            buildSimpleLogEntry(playerId, "return_battle_unit_to_rush", card.cardId),
+          ),
+          playerId,
+        );
+      }
+      const updatedPlayer = nextState.players[playerId];
       const nextPlayer = {
-        ...nextState.players[playerId],
-        hasReturnedBattleThisStart: true,
+        ...updatedPlayer,
+        hasReturnedBattleThisStart: updatedPlayer.battle.length === 0,
       };
       return withStartPhaseAutoAdvance(
         ok(
           { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) },
-          buildSimpleLogEntry(playerId, "return_battle_to_rush"),
+          buildSimpleLogEntry(playerId, "return_battle_unit_to_rush", card.cardId),
         ),
         playerId,
       );
@@ -774,7 +803,14 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         }
       }
 
-      if (!payPowerCost(nextPlayer, cost)) return fail("insufficient_power");
+      if (!payPowerCost(nextPlayer, cost)) {
+        const shortage = cost - nextPlayer.power.length;
+        const withHolds = applyDarkDealRushHolds(nextPlayer, shortage);
+        if (!withHolds || darkDealRushPowerBudget(state, playerId, nextPlayer, definition!) < cost) {
+          return fail("insufficient_power");
+        }
+        nextPlayer = withHolds;
+      }
 
       const handFound = findInZone(nextPlayer, "hand", action.instanceId);
       if (!handFound) return fail("card_not_in_hand");
@@ -845,6 +881,30 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       let found = findInZone(player, "rush", action.instanceId);
       if (!found) return fail("card_not_in_rush");
 
+      if (
+        needsBattleEntryRushDiscard(found.card.cardId) &&
+        !battleEntryRushDiscardSatisfied(player, found.card.cardId)
+      ) {
+        const discardChoice = tryStartBattleEntryRushDiscard(state, playerId, found.card);
+        if (!discardChoice) return fail("cannot_enter_battle");
+        return ok(
+          discardChoice,
+          buildSimpleLogEntry(playerId, "battle_entry_discard_pending"),
+        );
+      }
+
+      if (
+        needsBattleEntryHandDiscard(found.card.cardId) &&
+        !battleEntryHandDiscardSatisfied(player, found.card.cardId)
+      ) {
+        const discardChoice = tryStartBattleEntryHandDiscard(state, playerId, found.card);
+        if (!discardChoice) return fail("cannot_enter_battle");
+        return ok(
+          discardChoice,
+          buildSimpleLogEntry(playerId, "battle_entry_hand_discard_pending"),
+        );
+      }
+
       if (!canMoveUnitToBattle(state, playerId, found.card, "rush")) {
         return fail("cannot_enter_battle");
       }
@@ -856,7 +916,12 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       ) {
         return fail("cannot_enter_battle");
       }
-      let nextPlayer: PlayerState = { ...player, battleEntryHoldReady: false };
+      let nextPlayer: PlayerState = {
+        ...player,
+        battleEntryHoldReady: false,
+        battleEntryRushDiscardReady: false,
+        battleEntryHandDiscardReady: false,
+      };
       const [, rush] = removeAt(nextPlayer.rush, found.index);
       nextPlayer = { ...nextPlayer, rush };
 
@@ -906,11 +971,18 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
             }
           : undefined,
       );
+      const withClearedDiscard = {
+        ...combo.state,
+        ...updatePlayer(combo.state, playerId, {
+          ...combo.state.players[playerId],
+          battleEntryDiscardedCardId: undefined,
+        }),
+      };
       const finalState: GameState = afterEnterBattle(
         {
-          ...combo.state,
-          log: [...combo.state.log, ...combo.logs, mainLog],
-          winner: checkWinner(combo.state),
+          ...withClearedDiscard,
+          log: [...withClearedDiscard.log, ...combo.logs, mainLog],
+          winner: checkWinner(withClearedDiscard),
         },
         entry,
       );
@@ -920,9 +992,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
     case "pass_battle_entry": {
       const pending = state.pendingBattleEntry;
       if (!pending || playerId !== pending.playerId) return fail("no_pending_battle_entry");
-      const nextPlayer = markBattleActed(player, pending.instanceId);
+      let cleared = clearBakiBakiExtraAttack(state, playerId, pending.instanceId);
+      const nextPlayer = markBattleActed(cleared.players[playerId], pending.instanceId);
       const nextState = finishBattleEntryIf(
-        { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+        { ...cleared, ...updatePlayer(cleared, playerId, nextPlayer) },
         pending.instanceId,
       );
       return ok(nextState, buildSimpleLogEntry(playerId, "pass_battle_entry"));
@@ -1177,8 +1250,16 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       }
       const result = applyEffectChoiceSelect(state, playerId, action.instanceId);
       if ("error" in result) return fail(result.error);
+      let nextState = result.state;
+      if (
+        nextState.phase === "end" &&
+        !nextState.pendingEffectChoice &&
+        pending?.effectId === "jet_skateboard"
+      ) {
+        nextState = tryOpenEndTurnEffectsMenu(nextState, playerId) ?? nextState;
+      }
       return withStartPhaseAutoAdvance(
-        ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice")),
+        ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice")),
         playerId,
       );
     }
@@ -1220,6 +1301,13 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         pending?.effectId === "seabed_survey"
       ) {
         afterSkip = openEarthForceUpkeepChoiceIfNeeded(afterSkip, playerId);
+      }
+      if (
+        afterSkip.phase === "end" &&
+        !afterSkip.pendingEffectChoice &&
+        pending?.effectId === "jet_skateboard"
+      ) {
+        afterSkip = tryOpenEndTurnEffectsMenu(afterSkip, playerId) ?? afterSkip;
       }
       return withStartPhaseAutoAdvance(
         ok(afterSkip, result.log ?? buildSimpleLogEntry(playerId, "skip_effect_choice")),
@@ -1287,6 +1375,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
 
     case "battle": {
       if (state.phase !== "battle") return fail("wrong_phase");
+      state = clearBakiBakiExtraAttack(state, playerId, action.attackerInstanceId);
       if (state.pendingBattle) return fail("pending_battle");
       if (
         state.pendingBattleEntry &&
@@ -1296,21 +1385,36 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       }
 
       const enemyId = opponent(playerId);
-      const enemy = state.players[enemyId];
+      const actor = state.players[playerId];
 
-      const attackerFound = findInZone(player, "battle", action.attackerInstanceId);
+      const attackerFound = findInZone(actor, "battle", action.attackerInstanceId);
       if (!attackerFound) return fail("attacker_not_in_battle");
       if (attackerFound.card.battleActed) return fail("already_acted");
 
-      const defenderInBattle = findInZone(enemy, "battle", action.defenderInstanceId);
-      const defenderInRush = findInZone(enemy, "rush", action.defenderInstanceId);
-      if (!defenderInBattle && !defenderInRush) return fail("defender_not_found");
+      const enemy = state.players[enemyId];
+      const defenderFound =
+        findInZone(enemy, "battle", action.defenderInstanceId) ??
+        findInZone(enemy, "rush", action.defenderInstanceId);
+      if (!defenderFound) return fail("defender_not_found");
       if (
-        defenderInRush &&
-        !canAttackRushWithYellowThunder(state, playerId, action.attackerInstanceId)
+        !canAttackDefender(
+          state,
+          playerId,
+          action.attackerInstanceId,
+          enemyId,
+          action.defenderInstanceId,
+          canAttackRushWithYellowThunder,
+        )
       ) {
         return fail("invalid_target");
       }
+
+      const miragePrep = prepareMirageBeamForBattle(
+        state,
+        playerId,
+        attackerFound.card.cardId,
+      );
+      const battleState = miragePrep.state;
 
       const pending: PendingBattle = {
         attackerPlayerId: playerId,
@@ -1318,12 +1422,14 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         defenderPlayerId: enemyId,
         defenderInstanceId: action.defenderInstanceId,
         phasePlayerId: playerId,
-        attackerBpBonus: superPowerAttackBonus(state, playerId, attackerFound.card),
+        attackerBpBonus: superPowerAttackBonus(battleState, playerId, attackerFound.card),
+        mirageBeamBpOverride: miragePrep.bpOverride,
+        mirageBeamDiscard: miragePrep.revealedCard,
       };
 
       if (
         hasBattleCounterReactions(
-          state,
+          battleState,
           enemyId,
           action.defenderInstanceId,
           playerId,
@@ -1332,7 +1438,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       ) {
         return ok(
           {
-            ...state,
+            ...battleState,
             pendingBattle: pending,
             activePlayer: enemyId,
           },
@@ -1340,7 +1446,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         );
       }
 
-      const resolved = resolveBattlePending(state, pending);
+      const resolved = resolveBattlePending(battleState, pending);
       return ok(resolved.state, resolved.log);
     }
 
@@ -1362,8 +1468,13 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         found.card.instanceId,
       );
 
+      let nextState: GameState = {
+        ...state,
+        ...updatePlayer(state, playerId, nextPlayer),
+      };
+      nextState = tryLegend3BattleToRush(nextState, playerId, found.card, playerId);
       return ok(
-        { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+        nextState,
         buildLogEntry(playerId, "battle_dance", "RS-003", state.definitions),
       );
     }
@@ -1430,6 +1541,15 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       }
 
       const nextState: GameState = { ...advancePhase(state) };
+      if (nextState.phase === "end") {
+        const withMenu = tryOpenEndTurnEffectsMenu(nextState, playerId);
+        if (withMenu) {
+          return ok(
+            withMenu,
+            buildSimpleLogEntry(playerId, "end_phase", state.phase),
+          );
+        }
+      }
 
       return ok(
         nextState,

@@ -45,6 +45,10 @@ export type TurnModifiers = {
   shiftUpSp1InstanceIds?: string[];
   /** RS-011: S unit gains BP+2000 per own damage this turn. */
   auraPowerInstanceId?: string;
+  /** RS-123: own S units use printed defender BP when attacking. */
+  superDynamiteActive?: boolean;
+  /** RS-158 baki_baki: extra battle attack allowed (strike blocked). */
+  bakiBakiExtraAttackIds?: string[];
 };
 
 export type CardInstance = {
@@ -94,6 +98,12 @@ export type PlayerState = {
   battleEntryHoldReady?: boolean;
   /** ラッシュ: カテゴリ支払いでホールド済み（rush 完了まで有効）。 */
   rushCategoryHoldReady?: boolean;
+  /** RS-132: Sユニット捨札支払い済み（move_to_battle まで有効）。 */
+  battleEntryRushDiscardReady?: boolean;
+  /** RS-132: 直前に捨札にしたSユニットの cardId（反バイオ粒子砲判定用）。 */
+  battleEntryDiscardedCardId?: string;
+  /** RS-165: 手札捨札支払い済み（move_to_battle まで有効）。 */
+  battleEntryHandDiscardReady?: boolean;
   turnModifiers?: TurnModifiers;
 };
 
@@ -134,6 +144,10 @@ export type PendingBattle = {
   battleCancelled?: boolean;
   /** RS-018: substitute unit fights instead */
   substituteInstanceId?: string;
+  /** RS-131 mirage_beam: printed BP override for this battle. */
+  mirageBeamBpOverride?: number;
+  /** RS-131: revealed deck card to discard after battle. */
+  mirageBeamDiscard?: CardInstance;
 };
 
 export type PendingRush = {
@@ -202,7 +216,8 @@ export type EffectChoiceKind =
   | "select_hand"
   | "scry_keep_one"
   | "pit_in_dive_order"
-  | "select_units_bp_budget";
+  | "select_units_bp_budget"
+  | "end_turn_menu";
 
 export type PendingEffectChoice = {
   playerId: PlayerId;
@@ -218,10 +233,12 @@ export type PendingEffectChoice = {
   viewedInstanceIds?: string[];
   optional?: boolean;
   maxBp?: number;
+  /** RS-178 sagas_sniper: destroyed unit power cost cap for deck search. */
+  maxPowerCost?: number;
   /** Sum cap for printed BP (e.g. RS-106 ジュウクンドー). */
   bpBudget?: number;
-  unitDestination?: "power" | "discard" | "deck_top" | "hand" | "hand_from_discard" | "hand_from_power" | "enemy_battle" | "swap_battle";
-  commandAction?: "discard" | "hold" | "return_hand" | "rush" | "rush_silent";
+  unitDestination?: "power" | "discard" | "deck_top" | "hand" | "hand_from_discard" | "hand_from_power" | "enemy_battle" | "enemy_command" | "swap_battle" | "rush";
+  commandAction?: "discard" | "hold" | "return_hand" | "rush" | "rush_silent" | "power";
   commandFilter?: "held" | "released" | "any";
   seabedDrawMeta?: SeabedDrawMeta;
   denjiMachineMeta?: DenjiMachineMeta;

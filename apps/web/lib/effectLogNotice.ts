@@ -16,7 +16,7 @@ const SKIP_ACTIONS = new Set([
   "hold_command",
   "release_command",
   "release_start_commands",
-  "return_battle_to_rush",
+  "return_battle_unit_to_rush",
   "rush",
   "move_to_battle",
   "battle_pending",

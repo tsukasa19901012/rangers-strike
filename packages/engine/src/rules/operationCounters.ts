@@ -33,6 +33,7 @@ import { opponentInfiniteChainBlocks } from "./turnModifiers";
 import {
   resolveLegend2OnDestroy,
 } from "./legend2/destroyEffects";
+import { resolveLegend3OnBattleWin } from "./legend3/destroyEffects";
 import { shouldMedicalRescueToPower } from "./legend2/fieldEffects";
 
 function isEnemyTurn(state: GameState, counterPlayerId: PlayerId): boolean {
@@ -618,19 +619,43 @@ export function resolveBattlePending(
       return finish({ ...leaveResult.state, pendingBattle: undefined }, log);
     }
     nextState = leaveResult.state;
+  } else if (destroyDefender) {
+    const winFx = resolveLegend3OnBattleWin(
+      nextState,
+      pending,
+      defenderFound.card,
+      defenderOwner,
+    );
+    nextState = {
+      ...winFx.state,
+      log: [...nextState.log, ...winFx.logs, ...extraLogs],
+    };
+    extraLogs = [];
+    if (!winFx.skipMarkAttackerActed) {
+      nextState = markAttackerActed(nextState);
+    }
   } else {
     nextState = markAttackerActed(nextState);
   }
 
-  return finish(
-    {
-      ...nextState,
-      log: [...nextState.log, ...extraLogs],
-      pendingBattle: undefined,
-      activePlayer: pending.phasePlayerId,
-    },
-    log,
-  );
+  let finishedState: GameState = {
+    ...nextState,
+    log: [...nextState.log, ...extraLogs],
+    pendingBattle: undefined,
+    activePlayer: pending.phasePlayerId,
+  };
+  if (pending.mirageBeamDiscard) {
+    const player = finishedState.players[pending.attackerPlayerId];
+    finishedState = {
+      ...finishedState,
+      ...updatePlayer(finishedState, pending.attackerPlayerId, {
+        ...player,
+        discard: [...player.discard, pending.mirageBeamDiscard],
+      }),
+    };
+  }
+
+  return finish(finishedState, log);
 }
 
 export function finalizeBattlePending(

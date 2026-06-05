@@ -25,7 +25,20 @@ import {
   resolveSkyMagicSlash,
 } from "./namedUnitEffects";
 import { resolveLegend2EnterBattle, applyLegend2ConditionalModifiers } from "./legend2/battleEffects";
+import {
+  isLegend3EnterBattleEffect,
+  resolveLegend3EnterBattle,
+  shouldRunConditionalOnEnter,
+} from "./legend3/battleEffects";
+import {
+  getLegend3JointLEffect,
+  getLegend3JointREffect,
+  resolveLegend3JointCombo,
+  resolveLegend3JointComboR,
+} from "./legend3/jointComboEffects";
+import { getEnterBattleNamedEffect } from "@rangers-strike/cards";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
+import { applyBaseAttackOnEnter } from "./legend3/enterBattleEffects";
 import type { ComboOutcome } from "./comboTypes";
 import {
   applyNumberComboEffect,
@@ -33,7 +46,8 @@ import {
   resolveNamedNcEffectId,
 } from "./numberComboEffects";
 import { grantSp1OnPlayer } from "./playerPatches";
-import { legend2EffectiveSp } from "./legend2/fieldEffects";
+import { legend3EffectiveSp } from "./legend3/fieldEffects";
+import { hasBakiBakiExtraAttackOnly } from "./legend3/destroyEffects";
 
 export type { ComboOutcome } from "./comboTypes";
 
@@ -72,6 +86,18 @@ function resolveJointCombos(
           ),
         );
       }
+      const legend3L = getLegend3JointLEffect(card.cardId);
+      if (legend3L) {
+        const result = resolveLegend3JointCombo(
+          nextState,
+          playerId,
+          card.cardId,
+          legend3L,
+          partner.instanceId,
+        );
+        nextState = result.state;
+        logs.push(...result.logs);
+      }
     }
 
     if (definition.comboNumber === "R") {
@@ -94,6 +120,22 @@ function resolveJointCombos(
             "sp1",
           ),
         );
+      }
+      const legend3R = getLegend3JointREffect(card.cardId);
+      if (legend3R) {
+        if (logs.length > 0 || nextPlayer !== player) {
+          nextState = { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) };
+          nextPlayer = nextState.players[playerId];
+        }
+        const result = resolveLegend3JointComboR(
+          nextState,
+          playerId,
+          card.cardId,
+          legend3R,
+          playerId,
+        );
+        nextState = result.state;
+        logs.push(...result.logs);
       }
     }
   }
@@ -295,6 +337,21 @@ export function resolveEnterBattleEffects(
       }
     }
 
+    const namedEnter = getEnterBattleNamedEffect(card.cardId);
+    if (namedEnter && isLegend3EnterBattleEffect(namedEnter.effectId)) {
+      const legend3 = resolveLegend3EnterBattle(
+        nextState,
+        playerId,
+        card.cardId,
+        namedEnter.effectId,
+      );
+      nextState = legend3.state;
+      logs.push(...legend3.logs);
+      if (nextState.pendingEffectChoice) {
+        return { state: nextState, logs, enterResumeFrom: "nc" };
+      }
+    }
+
     nextState = tryStartOpponentDrawOnEnter(
       nextState,
       playerId,
@@ -315,7 +372,7 @@ export function resolveEnterBattleEffects(
     }
 
     const conditional = getConditionalNamedEffect(card.cardId);
-    if (conditional) {
+    if (conditional && shouldRunConditionalOnEnter(conditional.effectId)) {
       const modified = applyLegend2ConditionalModifiers(nextState, playerId, battleCard, conditional.effectId);
       if (modified !== battleCard) {
         battleCard = modified;
@@ -400,6 +457,15 @@ export function resolveEnterBattleEffects(
     const courage = applyCourageMagicRelease(nextState, playerId, card.cardId);
     nextState = courage.state;
     if (courage.log) logs.push(courage.log);
+
+    const baseAttack = applyBaseAttackOnEnter(
+      nextState,
+      playerId,
+      battleCard,
+      battleBeforeEnter,
+    );
+    nextState = baseAttack.state;
+    logs.push(...baseAttack.logs);
   }
 
   return { state: nextState, logs };
@@ -438,7 +504,10 @@ export function canStrikeUnit(
   playerId?: PlayerId,
 ): boolean {
   if (state && playerId) {
-    return legend2EffectiveSp(state, playerId, instance) >= 1;
+    if (hasBakiBakiExtraAttackOnly(state, playerId, instance.instanceId)) {
+      return false;
+    }
+    return legend3EffectiveSp(state, playerId, instance) >= 1;
   }
 
   const def = getDefinition(definitions, instance.cardId);
@@ -456,7 +525,7 @@ export function strikeDamageFor(
   playerId?: PlayerId,
 ): number {
   if (state && playerId) {
-    return legend2EffectiveSp(state, playerId, instance);
+    return legend3EffectiveSp(state, playerId, instance);
   }
 
   const def = getDefinition(definitions, instance.cardId);

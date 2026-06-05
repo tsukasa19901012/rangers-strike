@@ -3,7 +3,11 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import { getCardById } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
-import { effectChoiceHint, effectChoiceTitle } from "@/lib/effectChoiceHint";
+import {
+  effectChoiceHint,
+  effectChoiceTitle,
+  sagasSniperDeckCardMeta,
+} from "@/lib/effectChoiceHint";
 import {
   cardTargetMetaLine,
   resolveCardTargets,
@@ -110,17 +114,21 @@ export function EffectChoiceModal({
           .filter((e): e is { instanceId: string; card: CardDefinition } => !!e)
       : [];
 
+  const scryDeckOwnerId = pending.playerId;
+  const scryKeepSelectable = new Set(pending.validInstanceIds);
   const scryKeep =
     pending.kind === "scry_keep_one"
       ? (pending.viewedInstanceIds ?? [])
           .map((id) => {
-            const inst = state.players[playerId].deck.find((c) => c.instanceId === id);
+            const inst = state.players[scryDeckOwnerId].deck.find((c) => c.instanceId === id);
             if (!inst) return null;
             const card = getCardById(inst.cardId);
             return card ? { instanceId: inst.instanceId, card } : null;
           })
           .filter((e): e is { instanceId: string; card: CardDefinition } => !!e)
       : [];
+  const isSagasSniper = pending.effectId === "sagas_sniper";
+  const sagasPowerCap = pending.maxPowerCost ?? 0;
 
   return (
     <GameModalBackdrop>
@@ -136,7 +144,7 @@ export function EffectChoiceModal({
           <h3 id="effect-choice-title" className="effect-action-modal__title">
             {title}
           </h3>
-          {sourceCard && (
+          {sourceCard && pending.kind !== "end_turn_menu" && (
             <p className="effect-action-modal__source">「{sourceCard.name}」の効果</p>
           )}
           <p className="effect-action-modal__hint">{hint}</p>
@@ -289,18 +297,38 @@ export function EffectChoiceModal({
           )}
 
           {pending.kind === "scry_keep_one" && scryKeep.length > 0 && (
-            <div className="effect-action-modal__targets">
-              {scryKeep.map(({ instanceId, card }) => (
-                <button
-                  key={instanceId}
-                  type="button"
-                  className="btn effect-action-modal__target"
-                  onClick={() => onSelect(instanceId)}
-                >
-                  {card.name}
-                  <span className="effect-action-modal__target-meta">残す</span>
-                </button>
-              ))}
+            <div className="effect-action-modal__section">
+              {isSagasSniper && (
+                <p className="effect-action-modal__target-meta">
+                  {readOnly
+                    ? "相手の山札（公開）"
+                    : "山札の内容（選択不可のカードはタップで拡大）"}
+                </p>
+              )}
+              <div className="effect-action-modal__targets">
+                {scryKeep.map(({ instanceId, card }) => {
+                  const selectable = scryKeepSelectable.has(instanceId);
+                  const canPick = !readOnly && (!isSagasSniper || selectable);
+                  const meta = isSagasSniper
+                    ? sagasSniperDeckCardMeta(card, sagasPowerCap, selectable)
+                    : "残す";
+                  return (
+                    <button
+                      key={instanceId}
+                      type="button"
+                      className={`btn effect-action-modal__target${canPick ? "" : " effect-action-modal__target--preview"}`}
+                      disabled={readOnly}
+                      onClick={() => {
+                        if (canPick) onSelect(instanceId);
+                        else onPreview(card);
+                      }}
+                    >
+                      {card.name}
+                      <span className="effect-action-modal__target-meta">{meta}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
 

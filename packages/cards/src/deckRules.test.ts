@@ -3,6 +3,8 @@ import { getCardById } from "./catalog";
 import abarenohDeck from "./legend1/decks/abarenoh.json";
 import dekarangerDeck from "./legend1/decks/dekaranger.json";
 import magikingDeck from "./legend1/decks/magiking.json";
+import roaringWingsDeck from "./legend3/decks/roaring-wings.json";
+import silverAdventurerDeck from "./legend3/decks/silver-adventurer.json";
 import type { DeckDefinition } from "./schema";
 import {
   DECK_NAME_COPY_LIMIT,
@@ -12,7 +14,13 @@ import {
   validateDeckEntries,
 } from "./deckRules";
 
-const starterDecks: DeckDefinition[] = [abarenohDeck, dekarangerDeck, magikingDeck];
+const starterDecks: DeckDefinition[] = [
+  abarenohDeck,
+  dekarangerDeck,
+  magikingDeck,
+  roaringWingsDeck,
+  silverAdventurerDeck,
+];
 
 describe("deck build rules", () => {
   it("allows up to 3 copies of SR cards such as RS-050", () => {

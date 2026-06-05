@@ -71,8 +71,10 @@ export function formatGameLog(
     return `${player}がホールド中のコマンドをリリースした`;
   }
 
-  if (parts[1] === "return_battle_to_rush") {
-    return `${player}がバトルエリアのユニットをラッシュに戻した`;
+  if (parts[1] === "return_battle_unit_to_rush") {
+    const cardId = parts[2];
+    const name = cardId ? (definitions[cardId]?.name ?? cardId) : "ユニット";
+    return `${player}がバトルエリアの「${name}」をラッシュに戻した`;
   }
 
   if (parts[1] === "end_phase") {

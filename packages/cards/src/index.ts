@@ -1,6 +1,8 @@
 import abarenohDeck from "./legend1/decks/abarenoh.json";
 import dekarangerDeck from "./legend1/decks/dekaranger.json";
 import magikingDeck from "./legend1/decks/magiking.json";
+import roaringWingsDeck from "./legend3/decks/roaring-wings.json";
+import silverAdventurerDeck from "./legend3/decks/silver-adventurer.json";
 import type { DeckDefinition } from "./schema";
 import { validateDeckEntries } from "./deckRules";
 import {
@@ -13,6 +15,7 @@ import {
   getCardById,
   legend1Catalog,
   legend2Catalog,
+  legend3Catalog,
   type ExpansionId,
 } from "./catalog";
 
@@ -38,12 +41,16 @@ export const LEGEND1_IMAGE_BASE_PATH = "/cards/legend1";
 /** Web path prefix for Legend 2 card images */
 export const LEGEND2_IMAGE_BASE_PATH = "/cards/legend2";
 
+/** Web path prefix for Legend 3 card images */
+export const LEGEND3_IMAGE_BASE_PATH = "/cards/legend3";
+
 /** Card back art (tcg-db.nikita.jp). */
 export const LEGEND1_CARD_BACK_IMAGE_URL = `${LEGEND1_IMAGE_BASE_PATH}/back.jpg`;
 
 /** Filesystem path to card assets (relative to @rangers-strike/cards package root) */
 export const LEGEND1_ASSETS_DIR = "assets/legend1";
 export const LEGEND2_ASSETS_DIR = "assets/legend2";
+export const LEGEND3_ASSETS_DIR = "assets/legend3";
 
 export function getCardBackImageUrl(): string {
   return LEGEND1_CARD_BACK_IMAGE_URL;
@@ -53,6 +60,8 @@ export const starterDecks = {
   abarenoh: abarenohDeck as DeckDefinition,
   dekaranger: dekarangerDeck as DeckDefinition,
   magiking: magikingDeck as DeckDefinition,
+  "roaring-wings": roaringWingsDeck as DeckDefinition,
+  "silver-adventurer": silverAdventurerDeck as DeckDefinition,
 } as const;
 
 export type StarterDeckId = keyof typeof starterDecks;
@@ -68,7 +77,7 @@ export function getStarterDeck(id: StarterDeckId): DeckDefinition {
 }
 
 export function buildStarterDeck(id: StarterDeckId): CardDefinition[] {
-  return expandDeck(starterDecks[id], legend1Catalog);
+  return expandDeck(starterDecks[id], allCardsCatalog);
 }
 
 export function buildAbarenohDeck(): CardDefinition[] {
@@ -95,7 +104,7 @@ export function validateStarterDeck(deck: DeckDefinition): void {
     }
   }
 
-  const validation = validateDeckEntries(deck.entries, legend1Catalog, {
+  const validation = validateDeckEntries(deck.entries, allCardsCatalog, {
     minSize: 40,
   });
   if (!validation.ok) {
@@ -107,4 +116,4 @@ for (const deck of Object.values(starterDecks)) {
   validateStarterDeck(deck);
 }
 
-export { legend1Catalog, legend2Catalog, allCardsCatalog, type ExpansionId };
+export { legend1Catalog, legend2Catalog, legend3Catalog, allCardsCatalog, type ExpansionId };

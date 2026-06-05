@@ -1213,12 +1213,23 @@ export function GameApp() {
     !needsEffectHoldPayment(pendingChoice) &&
     !showEffectNotice;
 
+  const isSagasRevealAudience =
+    !!pendingChoice &&
+    pendingChoice.effectId === "sagas_sniper" &&
+    pendingChoice.playerId !== HUMAN_PLAYER;
+
+  const showSagasRevealModal =
+    isSagasRevealAudience &&
+    !needsEffectHoldPayment(pendingChoice) &&
+    !showEffectNotice;
+
   const showEffectChoiceModal =
     isHumanEffectChoice &&
     !!pendingChoice &&
     !needsEffectHoldPayment(pendingChoice) &&
     !showEffectNotice &&
-    !showDenjiRevealModal;
+    !showDenjiRevealModal &&
+    !showSagasRevealModal;
 
   const showBattleEntryModal =
     !!battleEntryModal &&
@@ -1404,6 +1415,24 @@ export function GameApp() {
           onPreview={setPreviewCard}
         />
       )}
+      {showSagasRevealModal && pendingChoice && (
+        <EffectChoiceModal
+          state={state}
+          playerId={pendingChoice.playerId}
+          pending={pendingChoice}
+          canSkip={false}
+          skipLabel=""
+          readOnly
+          onSelect={handleEffectChoiceSelect}
+          onSkip={() => {}}
+          onRuinSurvey={() => {}}
+          onSeabedDraw={() => {}}
+          onOptionalDraw={() => {}}
+          onConfirmDenjiReveal={() => {}}
+          onConfirmEffectChoice={() => {}}
+          onPreview={setPreviewCard}
+        />
+      )}
       {showEffectChoiceModal && pendingChoice && (
         <EffectChoiceModal
           state={state}
@@ -1419,7 +1448,11 @@ export function GameApp() {
                   ? "ドローしない"
                   : pendingChoice.effectId === "juu_kun_do"
                     ? "撃破しない"
-                    : "効果をスキップ"
+                    : pendingChoice.effectId === "end_turn_effects"
+                      ? "発動しない"
+                      : pendingChoice.effectId === "sagas_sniper"
+                        ? "手札に加えない"
+                        : "効果をスキップ"
           }
           onSelect={handleEffectChoiceSelect}
           onSkip={() => apply({ type: "skip_effect_choice", playerId: HUMAN_PLAYER })}
@@ -1533,8 +1566,12 @@ export function GameApp() {
           onRelease={() =>
             apply({ type: "release_start_commands", playerId: HUMAN_PLAYER })
           }
-          onReturnBattle={() =>
-            apply({ type: "return_battle_to_rush", playerId: HUMAN_PLAYER })
+          onReturnBattleUnit={(battleInstanceId) =>
+            apply({
+              type: "return_battle_unit_to_rush",
+              playerId: HUMAN_PLAYER,
+              battleInstanceId,
+            })
           }
           onDraw={() => apply({ type: "draw", playerId: HUMAN_PLAYER })}
           onBonusDraw={() => apply({ type: "bonus_draw", playerId: HUMAN_PLAYER })}

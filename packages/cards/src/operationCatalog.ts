@@ -1,4 +1,4 @@
-import { LEGEND1_EFFECTS, type CardEffectMeta } from "./effects";
+import { LEGEND1_EFFECTS, LEGEND2_EFFECTS, LEGEND3_EFFECTS, type CardEffectMeta } from "./effects";
 
 export type WiredOperation = {
   cardId: string;
@@ -25,6 +25,8 @@ export const IMPLEMENTED_INSTANT_EFFECT_IDS = [
   "cyber_s_rider",
   "compression_freeze",
   "power_bazooka",
+  "infinite_chain",
+  "animal_heart",
 ] as const;
 
 /** Permanent ops placed via placePermanentOperation (+ dedicated actions). */
@@ -41,6 +43,9 @@ export const IMPLEMENTED_PERMANENT_EFFECT_IDS = [
   "adventure",
   "plasma_energy",
   "lightning_gravity",
+  "hidora_egg",
+  "super_dynamite",
+  "super_electron_radar",
 ] as const;
 
 /** Counter ops handled in operationCounters / strikeReactions. */
@@ -51,6 +56,12 @@ export const IMPLEMENTED_COUNTER_EFFECT_IDS = [
   "shippu_ninja",
   "dino_guts",
 ] as const;
+
+const ALL_OPERATION_EFFECTS: Record<string, CardEffectMeta> = {
+  ...LEGEND1_EFFECTS,
+  ...LEGEND2_EFFECTS,
+  ...LEGEND3_EFFECTS,
+};
 
 const INSTANT_SET = new Set<string>(IMPLEMENTED_INSTANT_EFFECT_IDS);
 const PERMANENT_SET = new Set<string>(IMPLEMENTED_PERMANENT_EFFECT_IDS);
@@ -67,7 +78,7 @@ export function isOperationImplemented(effectId: string): boolean {
 export function listImplementedOperations(): WiredOperation[] {
   const results: WiredOperation[] = [];
 
-  for (const [cardId, meta] of Object.entries(LEGEND1_EFFECTS)) {
+  for (const [cardId, meta] of Object.entries(ALL_OPERATION_EFFECTS)) {
     if (!isOperationImplemented(meta.effectId)) continue;
     results.push({
       cardId,
@@ -83,7 +94,7 @@ export function listImplementedOperations(): WiredOperation[] {
 export function listUnimplementedOperations(): WiredOperation[] {
   const results: WiredOperation[] = [];
 
-  for (const [cardId, meta] of Object.entries(LEGEND1_EFFECTS)) {
+  for (const [cardId, meta] of Object.entries(ALL_OPERATION_EFFECTS)) {
     if (isOperationImplemented(meta.effectId)) continue;
     results.push({
       cardId,
@@ -97,7 +108,7 @@ export function listUnimplementedOperations(): WiredOperation[] {
 }
 
 export function getOperationByEffectId(effectId: string): WiredOperation | undefined {
-  for (const [cardId, meta] of Object.entries(LEGEND1_EFFECTS)) {
+  for (const [cardId, meta] of Object.entries(ALL_OPERATION_EFFECTS)) {
     if (meta.effectId === effectId) {
       return { cardId, effectId: meta.effectId, kind: meta.kind, text: meta.text };
     }

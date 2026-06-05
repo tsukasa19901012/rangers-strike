@@ -287,6 +287,7 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
               ["all", "全弾"],
               ["legend1", "第1弾"],
               ["legend2", "第2弾"],
+              ["legend3", "第3弾"],
             ] as const
           ).map(([value, label]) => (
             <button

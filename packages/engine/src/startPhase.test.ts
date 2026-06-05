@@ -49,7 +49,11 @@ describe("start phase steps", () => {
     });
 
     state = unwrap(
-      applyAction(state, { type: "return_battle_to_rush", playerId: "player1" }),
+      applyAction(state, {
+        type: "return_battle_unit_to_rush",
+        playerId: "player1",
+        battleInstanceId: "TST-UNIT-0:b1",
+      }),
     );
     expect(state.players.player1.battle).toHaveLength(0);
     expect(state.players.player1.rush).toHaveLength(1);
@@ -160,11 +164,21 @@ describe("start phase steps", () => {
     );
 
     state = unwrap(
-      applyAction(state, { type: "return_battle_to_rush", playerId: "player1" }),
+      applyAction(state, {
+        type: "return_battle_unit_to_rush",
+        playerId: "player1",
+        battleInstanceId: "TST-UNIT-0:b1",
+      }),
     );
-    expect(reject(applyAction(state, { type: "return_battle_to_rush", playerId: "player1" }))).toBe(
-      "illegal_action",
-    );
+    expect(
+      reject(
+        applyAction(state, {
+          type: "return_battle_unit_to_rush",
+          playerId: "player1",
+          battleInstanceId: "TST-UNIT-0:b1",
+        }),
+      ),
+    ).toBe("illegal_action");
   });
 
   it("draws a second card on optional bonus draw", () => {
@@ -189,8 +203,8 @@ describe("start phase steps", () => {
     expect(formatGameLog("player1|release_start_commands", {})).toBe(
       "あなたがホールド中のコマンドをリリースした",
     );
-    expect(formatGameLog("player2|return_battle_to_rush", {})).toBe(
-      "CPUがバトルエリアのユニットをラッシュに戻した",
+    expect(formatGameLog("player2|return_battle_unit_to_rush|TST-UNIT-0", {})).toBe(
+      "CPUがバトルエリアの「TST-UNIT-0」をラッシュに戻した",
     );
   });
 });

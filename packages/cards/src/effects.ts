@@ -78,9 +78,17 @@ export const LEGEND2_EFFECTS: Record<string, CardEffectMeta> = {
   "RS-072": op("infinite_chain", "instant", "RS-072"),
 };
 
+/** Legend 3 operation card effects (Series 3: 三界の獅子). */
+export const LEGEND3_EFFECTS: Record<string, CardEffectMeta> = {
+  "RS-123": op("super_dynamite", "instant", "RS-123"),
+  "RS-124": op("super_electron_radar", "permanent", "RS-124"),
+  "RS-125": op("animal_heart", "instant", "RS-125", "enemy_field_unit"),
+};
+
 const ALL_EFFECTS: Record<string, CardEffectMeta> = {
   ...LEGEND1_EFFECTS,
   ...LEGEND2_EFFECTS,
+  ...LEGEND3_EFFECTS,
 };
 
 export function getCardEffect(cardId: string): CardEffectMeta | undefined {

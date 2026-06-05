@@ -1,5 +1,10 @@
 import type { CardDefinition, UnitSize } from "@rangers-strike/cards";
-import { cardCategories, getCardById, type Category } from "@rangers-strike/cards";
+import {
+  cardCategories,
+  getCardById,
+  hasUnnamedRule,
+  type Category,
+} from "@rangers-strike/cards";
 import { getCardEffect } from "@rangers-strike/cards";
 import type { SpValue } from "@rangers-strike/cards";
 import type { ZordMaterialDestination } from "../types/actions";
@@ -198,6 +203,21 @@ export function effectiveBp(
 
 export { cardCategories };
 
+/** RS-166: MA category while in battle. */
+export function unitEffectiveCategories(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+  zone: "battle" | "rush",
+): Category[] {
+  const def = getDefinition(state.definitions, instance.cardId);
+  const cats = cardCategories(def);
+  if (zone === "battle" && hasUnnamedRule(instance.cardId, "battle_adds_ma_category")) {
+    return cats.includes("MA") ? cats : [...cats, "MA"];
+  }
+  return cats;
+}
+
 export function hasHeldCommandForCategories(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
@@ -235,9 +255,11 @@ export function canRushUnit(
   zordMaterialInstanceId?: string,
   zordMothershipHoldInstanceIds?: string[],
   zordMaterialDestination?: ZordMaterialDestination,
+  powerBudget?: number,
 ): boolean {
   const cost = parsePowerCost(unitDefinition.powerCost);
-  if (player.power.length < cost) return false;
+  const budget = powerBudget ?? player.power.length;
+  if (budget < cost) return false;
 
   const unitCats = cardCategories(unitDefinition);
   if (unitCats.length > 0 && !hasHeldCommandForCategories(player, definitions, unitCats)) {
@@ -274,9 +296,11 @@ export function canRushUnitExceptCommandHold(
   zordMaterialInstanceId?: string,
   zordMothershipHoldInstanceIds?: string[],
   zordMaterialDestination?: ZordMaterialDestination,
+  powerBudget?: number,
 ): boolean {
   const cost = parsePowerCost(unitDefinition.powerCost);
-  if (player.power.length < cost) return false;
+  const budget = powerBudget ?? player.power.length;
+  if (budget < cost) return false;
 
   if (!needsZordMaterial(definitions, unitDefinition.id)) return true;
 

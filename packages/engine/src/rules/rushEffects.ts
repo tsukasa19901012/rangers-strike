@@ -6,6 +6,10 @@ import { requestDrawFromDeck } from "./drawFromDeck";
 import { buildLogEntry } from "../log/formatLog";
 import { hasRushCounterReactions } from "./operationCounters";
 import { resolveNamedOnRushEffects } from "./namedUnitEffects";
+import {
+  applySuperRadarOnRush,
+  resolveLegend3UnnamedRushEffects,
+} from "./legend3/rushEffects";
 
 export type RushEffectOutcome = {
   state: GameState;
@@ -15,13 +19,8 @@ export type RushEffectOutcome = {
 /** Unit effects that fire when this card is rushed (Q10: before shippu counter). */
 export const ON_RUSH_EFFECTS: Partial<Record<string, "draw_1">> = {};
 
-/** Permanent effects that fire when any unit is rushed during enemy turn. */
-export const ON_ENEMY_RUSH_PERMANENTS: Partial<
-  Record<string, "power_to_hand">
-> = {
-  /** RS-124 超電子レーダー (Q6 reference; not in Legend1). */
-  "RS-124": "power_to_hand",
-};
+/** @deprecated RS-124 handled in legend3/rushEffects.applySuperRadarOnRush */
+export const ON_ENEMY_RUSH_PERMANENTS: Partial<Record<string, "power_to_hand">> = {};
 
 function applyDrawOnRush(
   state: GameState,
@@ -101,6 +100,14 @@ export function resolveRushTriggeredEffects(
     logs.push(...result.logs);
   }
 
+  const unnamedLegend3 = resolveLegend3UnnamedRushEffects(
+    nextState,
+    rusherPlayerId,
+    rushedInstanceId,
+  );
+  nextState = unnamedLegend3.state;
+  logs.push(...unnamedLegend3.logs);
+
   const namedRush = resolveNamedOnRushEffects(
     nextState,
     rusherPlayerId,
@@ -110,22 +117,9 @@ export function resolveRushTriggeredEffects(
   nextState = namedRush.state;
   logs.push(...namedRush.logs);
 
-  const defenderId = opponent(rusherPlayerId);
-  for (const pid of [rusherPlayerId, defenderId] as const) {
-    const player = nextState.players[pid];
-    for (const permanent of player.operation) {
-      const effect = ON_ENEMY_RUSH_PERMANENTS[permanent.cardId];
-      if (effect !== "power_to_hand") continue;
-      if (pid === rusherPlayerId) continue;
-      const result = applyPowerToHandOnEnemyRush(
-        nextState,
-        pid,
-        permanent.cardId,
-      );
-      nextState = result.state;
-      logs.push(...result.logs);
-    }
-  }
+  const radar = applySuperRadarOnRush(nextState, rusherPlayerId, rushedInstanceId);
+  nextState = radar.state;
+  logs.push(...radar.logs);
 
   return { state: nextState, logs };
 }

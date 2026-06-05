@@ -53,7 +53,7 @@ export type DeckEntry = {
 export type DeckDefinition = {
   id: string;
   name: string;
-  starterType: "A" | "B" | "C";
+  starterType: "A" | "B" | "C" | "D" | "E";
   expansion: string;
   source: string;
   entries: DeckEntry[];

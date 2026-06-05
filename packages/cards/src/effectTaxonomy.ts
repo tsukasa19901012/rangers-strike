@@ -77,7 +77,25 @@ export type UnnamedUnitRule =
   /** Zord fusion material may be treated as another card name (display / deck building). */
   | "fusion_material_alias"
   /** Optional on enter; engine may implement later. */
-  | "opponent_may_draw_on_enter";
+  | "opponent_may_draw_on_enter"
+  /** Rush: send non-damage power cards to discard (RS-128 / RS-129). */
+  | "rush_power_to_discard"
+  /** Cannot enter battle during own turn (RS-170). */
+  | "cannot_enter_battle_own_turn"
+  /** Battle entry: discard S unit from own rush first (RS-132). */
+  | "battle_entry_discard_s_from_rush"
+  /** May attack enemy S units in rush zone (RS-154). */
+  | "can_attack_enemy_rush_s"
+  /** Cannot attack enemy S units in battle zone (RS-154). */
+  | "cannot_attack_enemy_battle_s"
+  /** Only units with feature 航空機 may attack this unit (RS-135). */
+  | "requires_aircraft_attacker"
+  /** Battle entry: ally with cardId in partnerCardIds must already be in battle (RS-147). */
+  | "battle_entry_combo_from"
+  /** Battle entry: discard cards from hand first (RS-165). */
+  | "battle_entry_discard_from_hand"
+  /** While in battle, unit also counts as MA category (RS-166). */
+  | "battle_adds_ma_category";
 
 /** 効果名を持たないテキスト — static rules, ※ restrictions, zord material lines. */
 export type UnnamedUnitText = {
@@ -89,6 +107,10 @@ export type UnnamedUnitText = {
   holdCount?: number;
   /** For `destroy_self_damage`: damage to controller when destroyed to discard. */
   damage?: number;
+  /** For `rush_power_to_discard`: face-up power cards to discard on rush. */
+  discardCount?: number;
+  /** For `battle_entry_combo_from`: required ally already in battle. */
+  partnerCardIds?: string[];
   /** Zord-up fusion partners (合体― line). */
   partnerCardIds?: string[];
 };

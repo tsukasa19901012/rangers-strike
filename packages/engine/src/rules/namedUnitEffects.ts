@@ -20,6 +20,18 @@ import {
   tryStartLegend2ConditionalChoice,
 } from "./legend2/battleEffects";
 import { resolveLegend2OnRushEffects } from "./legend2/rushEffects";
+import {
+  isLegend3OnRushEffect,
+  resolveLegend3OnRushEffects,
+} from "./legend3/rushEffects";
+import {
+  canAttackRushWithMoonlightSonic,
+  legend3AttackerBpBonus,
+  legend3UsePrintedDefenderBp,
+  tryStartLegend3ConditionalChoice,
+} from "./legend3/battleEffects";
+import { legend3FieldBpBonus } from "./legend3/fieldEffects";
+import { canAttackEnemyRushS } from "./legend3/restrictions";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
@@ -55,8 +67,11 @@ export function battleAttackerBpBonus(
   );
   if (!attacker) return 0;
 
+  const mirageOverride = pending.mirageBeamBpOverride;
   let total =
-    effectiveBp(state, pending.attackerPlayerId, attacker.card) +
+    (mirageOverride !== undefined
+      ? mirageOverride + (attacker.card.bpModifier ?? 0)
+      : effectiveBp(state, pending.attackerPlayerId, attacker.card)) +
     (pending.attackerBpBonus ?? 0);
   total += passiveNamedFieldBpBonus(
     state,
@@ -71,6 +86,7 @@ export function battleAttackerBpBonus(
     "attacking",
   );
   total += legend2AttackerBpBonus(state, pending);
+  total += legend3AttackerBpBonus(state, pending);
 
   if (findNamedEffectByEffectId(attacker.card.cardId, "bouken_javelin")) {
     const defenderZone = findInZone(
@@ -130,7 +146,8 @@ export function battleDefenderBp(
     attacker &&
     (getOnAttackNamedEffect(attacker.card.cardId)?.effectId === "shark_jaws" ||
       getOnAttackNamedEffect(attacker.card.cardId)?.effectId === "super_cutter" ||
-      legend2UsePrintedDefenderBp(state, pending));
+      legend2UsePrintedDefenderBp(state, pending) ||
+      legend3UsePrintedDefenderBp(state, pending));
 
   const base = usePrintedBp
     ? unitBp(getDefinition(state.definitions, defenderFound.card.cardId))
@@ -194,7 +211,11 @@ export function canAttackRushWithYellowThunder(
     attackerInstanceId,
   );
   if (!attacker) return false;
-  return !!findNamedEffectByEffectId(attacker.card.cardId, "yellow_thunder");
+  return (
+    !!findNamedEffectByEffectId(attacker.card.cardId, "yellow_thunder") ||
+    canAttackRushWithMoonlightSonic(state, attackerPlayerId, attackerInstanceId) ||
+    canAttackEnemyRushS(state, attackerPlayerId, attackerInstanceId)
+  );
 }
 
 function sendUnitToPower(
@@ -358,16 +379,29 @@ export function resolveNamedOnRushEffects(
       break;
     }
     default: {
-      const legend2 = resolveLegend2OnRushEffects(
-        nextState,
-        rusherPlayerId,
-        rushedInstanceId,
-        phasePlayerId,
-        found.card.cardId,
-        named.effectId,
-      );
-      nextState = legend2.state;
-      logs.push(...legend2.logs);
+      if (isLegend3OnRushEffect(named.effectId)) {
+        const legend3 = resolveLegend3OnRushEffects(
+          nextState,
+          rusherPlayerId,
+          rushedInstanceId,
+          phasePlayerId,
+          found.card.cardId,
+          named.effectId,
+        );
+        nextState = legend3.state;
+        logs.push(...legend3.logs);
+      } else {
+        const legend2 = resolveLegend2OnRushEffects(
+          nextState,
+          rusherPlayerId,
+          rushedInstanceId,
+          phasePlayerId,
+          found.card.cardId,
+          named.effectId,
+        );
+        nextState = legend2.state;
+        logs.push(...legend2.logs);
+      }
       break;
     }
   }
@@ -445,6 +479,9 @@ export function tryStartConditionalChoice(
       optional: true,
     });
   }
+  const legend3 = tryStartLegend3ConditionalChoice(state, playerId, card, effectId, phasePlayerId);
+  if (legend3) return legend3;
+
   const legend2 = tryStartLegend2ConditionalChoice(state, playerId, card, effectId, phasePlayerId);
   if (legend2) return legend2;
   return null;

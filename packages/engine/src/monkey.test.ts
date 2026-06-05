@@ -3,6 +3,7 @@ import {
   buildAbarenohDeck,
   buildDekarangerDeck,
   buildMagikingDeck,
+  buildStarterDeck,
 } from "@rangers-strike/cards";
 import { applyAction, createGame, getLegalActions } from "./index";
 const DEFAULT_GAMES = Number(process.env.MONKEY_GAMES ?? 80);
@@ -12,6 +13,8 @@ const DECK_BUILDERS = [
   buildAbarenohDeck,
   buildDekarangerDeck,
   buildMagikingDeck,
+  () => buildStarterDeck("roaring-wings"),
+  () => buildStarterDeck("silver-adventurer"),
 ] as const;
 
 /** Deterministic RNG for reproducible failures. */

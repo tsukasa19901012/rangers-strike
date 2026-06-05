@@ -6,7 +6,9 @@ import type {
   PlayerState,
   SeabedDrawMeta,
 } from "../types/game";
-import { cardName, effectiveBp, getDefinition, unitBp } from "../core/catalog";
+import { cardName, effectiveBp, getDefinition, parsePowerCost, unitBp } from "../core/catalog";
+import { startJetSkateboardChoiceForUnit } from "./legend3/endTurnEffects";
+import { applyAssaultToCommandHold } from "./legend3/restrictions";
 import { findInZone, opponent, performDeckDraws, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { findCardOwner } from "./fieldLookup";
@@ -270,6 +272,83 @@ export function startSelectUnitChoice(
   });
 }
 
+function shuffleDeck(deck: CardInstance[]): CardInstance[] {
+  const copy = [...deck];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
+  }
+  return copy;
+}
+
+/** RS-178 sagas_sniper: view full deck; pick one eligible unit (power cost ≤ cap), then shuffle. */
+export function startSagasSniperChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+    maxPowerCost: number;
+  },
+): GameState | null {
+  const player = state.players[params.playerId];
+  if (player.deck.length === 0) return null;
+
+  const viewedInstanceIds = player.deck.map((c) => c.instanceId);
+  const validInstanceIds = player.deck
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      if (def?.type !== "unit") return false;
+      return parsePowerCost(def.powerCost ?? 99) <= params.maxPowerCost;
+    })
+    .map((c) => c.instanceId);
+
+  return openEffectChoice(state, {
+    playerId: params.playerId,
+    effectId: "sagas_sniper",
+    sourceCardId: params.sourceCardId,
+    sourceInstanceId: params.sourceInstanceId,
+    phasePlayerId: params.phasePlayerId,
+    kind: "scry_keep_one",
+    viewedInstanceIds,
+    validInstanceIds,
+    maxPowerCost: params.maxPowerCost,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+/** RS-177 airlift: pick JC L/R from deck, rush it, shuffle rest. */
+export function startDeckJointComboSearch(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    phasePlayerId: PlayerId;
+    optional?: boolean;
+  },
+): GameState | null {
+  const player = state.players[params.playerId];
+  const valid = player.deck
+    .filter((c) => {
+      const cn = getDefinition(state.definitions, c.cardId)?.comboNumber;
+      return cn === "L" || cn === "R";
+    })
+    .map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "scry_keep_one",
+    validInstanceIds: valid,
+    viewedInstanceIds: valid,
+    unitDestination: "rush",
+    selectCount: 1,
+    optional: params.optional ?? true,
+  });
+}
+
 /** RS-106 ジュウクンドー: multi-select enemy rush units (printed BP sum ≤ budget). */
 export function startJuuKunDoChoice(
   state: GameState,
@@ -328,7 +407,33 @@ export function canToggleBpBudgetTarget(
   const bp = printedBpForInstance(state, instanceId);
   if (bp === null) return false;
   const budget = pending.bpBudget ?? 3000;
-  return selectedPrintedBpSum(state, selected) + bp <= budget;
+  if (selectedPrintedBpSum(state, selected) + bp > budget) return false;
+  const maxCount = pending.selectCount;
+  if (maxCount !== undefined && selected.length >= maxCount) return false;
+  return true;
+}
+
+/** RS-125 天地轟鳴アニマルハート: multi-select enemy units within printed BP budget. */
+export function startAnimalHeartChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    phasePlayerId: PlayerId;
+    validInstanceIds: string[];
+    bpBudget: number;
+    selectCount: number;
+    optional?: boolean;
+  },
+): GameState | null {
+  if (params.validInstanceIds.length === 0 && !params.optional) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_units_bp_budget",
+    selectedInstanceIds: [],
+    optional: params.optional ?? true,
+  });
 }
 
 export function applyConfirmEffectChoice(
@@ -788,6 +893,47 @@ export function applyEffectChoiceSelect(
     }
     case "select_unit": {
       const dest = pending.unitDestination ?? "discard";
+      if (dest === "rush") {
+        const located = findCardOwner(state, instanceId);
+        if (!located || located.zone !== "battle") return { error: "invalid_target" };
+        const owner = state.players[located.playerId];
+        const found = findInZone(owner, "battle", instanceId);
+        if (!found) return { error: "invalid_target" };
+        const [, battle] = removeAt(owner.battle, found.index);
+        return finishChoice(
+          { ...state, ...updatePlayer(state, located.playerId, { ...owner, battle, rush: [...owner.rush, found.card] }) },
+          pending,
+          cardName(state.definitions, found.card.cardId),
+        );
+      }
+      if (dest === "enemy_command") {
+        const located = findCardOwner(state, instanceId);
+        if (!located || located.zone !== "battle") return { error: "invalid_target" };
+        const nextState = applyAssaultToCommandHold(state, located.playerId, instanceId);
+        return finishChoice(
+          nextState,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(nextState, instanceId)),
+        );
+      }
+      if (pending.effectId === "battle_entry_discard") {
+        const player = state.players[pending.playerId];
+        const found = findInZone(player, "rush", instanceId);
+        if (!found || pending.sourceInstanceId === instanceId) return { error: "invalid_target" };
+        const [, rush] = removeAt(player.rush, found.index);
+        const nextPlayer: PlayerState = {
+          ...player,
+          rush,
+          discard: [...player.discard, found.card],
+          battleEntryRushDiscardReady: true,
+          battleEntryDiscardedCardId: found.card.cardId,
+        };
+        return finishChoice(
+          { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+          pending,
+          cardName(state.definitions, found.card.cardId),
+        );
+      }
       if (dest === "hand" || dest === "hand_from_discard" || dest === "hand_from_power") {
         const located = findCardOwner(state, instanceId);
         if (!located) return { error: "invalid_target" };
@@ -897,6 +1043,39 @@ export function applyEffectChoiceSelect(
     }
 
     case "select_unit_step": {
+      if (pending.effectId === "string_fist") {
+        if (pending.step === "own") {
+          const located = findCardOwner(state, instanceId);
+          if (!located || located.zone !== "battle") return { error: "invalid_target" };
+          const owner = state.players[located.playerId];
+          const found = findInZone(owner, "battle", instanceId);
+          if (!found) return { error: "invalid_target" };
+          const [, battle] = removeAt(owner.battle, found.index);
+          let nextState = {
+            ...state,
+            ...updatePlayer(state, located.playerId, {
+              ...owner,
+              battle,
+              rush: [...owner.rush, found.card],
+            }),
+          };
+          const enemyId = opponent(pending.playerId);
+          const enemyTargets = nextState.players[enemyId].rush.map((c) => c.instanceId);
+          if (enemyTargets.length === 0) {
+            return finishChoice(nextState, pending, cardName(state.definitions, found.card.cardId));
+          }
+          return {
+            state: openEffectChoice(clearChoice(nextState, pending.playerId), {
+              ...pending,
+              kind: "select_unit",
+              step: undefined,
+              validInstanceIds: enemyTargets,
+              unitDestination: "enemy_battle",
+            }),
+          };
+        }
+        return { error: "invalid_step" };
+      }
       if (pending.effectId === "tyranno_sonic") {
         const leave = applyUnitLeave(state, instanceId, "discard", pending.phasePlayerId);
         if ("error" in leave) return leave;
@@ -1025,6 +1204,13 @@ export function applyEffectChoiceSelect(
           command,
           rush: [...player.rush, found.card],
         };
+      } else if (pending.commandAction === "power") {
+        const [, command] = removeAt(player.command, found.index);
+        nextPlayer = {
+          ...player,
+          command,
+          power: [...player.power, { ...found.card, faceDown: false }],
+        };
       }
 
       let nextState = { ...state, ...updatePlayer(state, owner, nextPlayer) };
@@ -1072,11 +1258,39 @@ export function applyEffectChoiceSelect(
         const player = nextState.players[pending.playerId];
         const found = findInZone(player, "command", cmdId);
         if (!found) continue;
-        const command = [...player.command];
-        command[found.index] = { ...found.card, commandHeld: true };
+        if (pending.commandAction === "hold") {
+          const command = [...player.command];
+          command[found.index] = { ...found.card, commandHeld: true };
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, pending.playerId, { ...player, command }),
+          };
+        } else if (pending.commandAction === "power") {
+          const [, command] = removeAt(player.command, found.index);
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, pending.playerId, {
+              ...player,
+              command,
+              power: [...player.power, { ...found.card, faceDown: false }],
+            }),
+          };
+        }
+      }
+      if (pending.effectId === "bio_particle_slash" && pending.sourceCardId) {
+        const player = nextState.players[pending.playerId];
+        const battle = player.battle.map((c) =>
+          c.cardId === pending.sourceCardId
+            ? {
+                ...c,
+                spModifier: (c.spModifier ?? 0) + 2,
+                bpModifier: (c.bpModifier ?? 0) + 3000,
+              }
+            : c,
+        );
         nextState = {
           ...nextState,
-          ...updatePlayer(nextState, pending.playerId, { ...player, command }),
+          ...updatePlayer(nextState, pending.playerId, { ...player, battle }),
         };
       }
       return finishChoice(nextState, pending, formatInstanceIdsAsNames(nextState, selected));
@@ -1145,6 +1359,43 @@ export function applyEffectChoiceSelect(
     }
 
     case "select_hand": {
+      const selectCount = pending.selectCount ?? 1;
+      if (selectCount > 1) {
+        const prev = pending.selectedInstanceIds ?? [];
+        if (prev.includes(instanceId)) return { error: "already_selected" };
+        const selected = [...prev, instanceId];
+        if (selected.length < selectCount) {
+          const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+          return {
+            state: {
+              ...state,
+              pendingEffectChoice: {
+                ...pending,
+                selectedInstanceIds: selected,
+                validInstanceIds: remaining,
+              },
+            },
+          };
+        }
+
+        const player = state.players[pending.playerId];
+        const discardIds = new Set(selected);
+        const toDiscard = player.hand.filter((c) => discardIds.has(c.instanceId));
+        const nextPlayer: PlayerState = {
+          ...player,
+          hand: player.hand.filter((c) => !discardIds.has(c.instanceId)),
+          discard: [...player.discard, ...toDiscard],
+          ...(pending.effectId === "battle_entry_hand_discard"
+            ? { battleEntryHandDiscardReady: true }
+            : {}),
+        };
+        return finishChoice(
+          { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+          pending,
+          formatInstanceIdsAsNames(state, selected),
+        );
+      }
+
       const player = state.players[pending.playerId];
       const found = findInZone(player, "hand", instanceId);
       if (!found) return { error: "invalid_target" };
@@ -1179,14 +1430,38 @@ export function applyEffectChoiceSelect(
       const kept = viewed.find((c) => c.instanceId === instanceId);
       if (!kept) return { error: "invalid_target" };
       const rest = viewed.filter((c) => c.instanceId !== instanceId);
-      const deckTail = player.deck.slice(viewed.length);
-      const nextPlayer = {
-        ...player,
-        deck: [kept, ...deckTail],
-        discard: [...player.discard, ...rest],
-      };
+      const deckTail = player.deck.filter(
+        (c) => !viewed.some((v) => v.instanceId === c.instanceId),
+      );
+      let nextPlayer: PlayerState;
+      if (pending.effectId === "sagas_sniper") {
+        nextPlayer = {
+          ...player,
+          deck: shuffleDeck([...rest, ...deckTail]),
+          hand: [...player.hand, kept],
+        };
+      } else if (pending.unitDestination === "rush") {
+        nextPlayer = {
+          ...player,
+          deck: shuffleDeck([...rest, ...deckTail]),
+          rush: [...player.rush, kept],
+        };
+      } else {
+        nextPlayer = {
+          ...player,
+          deck: [kept, ...deckTail],
+          discard: [...player.discard, ...rest],
+        };
+      }
       const nextState = { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) };
       return finishChoice(nextState, pending, cardName(state.definitions, kept.cardId));
+    }
+
+    case "end_turn_menu": {
+      const cleared = clearChoice(state, pending.phasePlayerId);
+      const jet = startJetSkateboardChoiceForUnit(cleared, playerId, instanceId);
+      if (jet) return { state: jet };
+      return { error: "unsupported_end_turn_effect" };
     }
 
     case "pit_in_dive_order": {

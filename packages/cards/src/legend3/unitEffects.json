@@ -1,0 +1,1067 @@
+{
+  "RS-126": {
+    "rawText": "【レッドビュート】「SP1」自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、敵軍ラッシュエリアからBP2000以下のユニットを1体選んで撃破する。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "レッドビュート",
+        "text": "「SP1」自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、敵軍ラッシュエリアからBP2000以下のユニットを1体選んで撃破する。",
+        "effectId": "red_boot",
+        "trigger": {
+          "type": "conditional"
+        }
+      }
+    ]
+  },
+  "RS-127": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
+    "rawText": "合体―バイオジェット1号＋バイオジェット2号【バイオ粒子斬り】自軍ターン中、これがバトルエリアに出るとき、「OT」の自軍コマンドを2つ選んでパワーゾーンに送ってもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP2」「BP＋3000」",
+    "unnamedText": [
+      {
+        "kind": "zord",
+        "text": "合体―バイオジェット1号＋バイオジェット2号",
+        "partnerCardIds": [
+          "RS-128",
+          "RS-129"
+        ]
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "バイオ粒子斬り",
+        "text": "自軍ターン中、これがバトルエリアに出るとき、「OT」の自軍コマンドを2つ選んでパワーゾーンに送ってもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP2」「BP＋3000」",
+        "effectId": "bio_particle_slash",
+        "trigger": {
+          "type": "enter_battle"
+        }
+      }
+    ]
+  },
+  "RS-128": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを2体パワーゾーンに送る",
+      "unitCount": 2
+    },
+    "rawText": "※これをラッシュしたとき、自軍パワーゾーンにダメージ以外のカードがあれば、1枚選んで捨札にする。【拠点攻撃】「バイオジェット2号」からコンビネーションするとき、このターン、これは次の能力を得る⇒「SP1」",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これをラッシュしたとき、自軍パワーゾーンにダメージ以外のカードがあれば、1枚選んで捨札にする",
+        "rule": "rush_power_to_discard",
+        "discardCount": 1
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "拠点攻撃",
+        "text": "「バイオジェット2号」からコンビネーションするとき、このターン、これは次の能力を得る⇒「SP1」",
+        "effectId": "base_attack",
+        "trigger": {
+          "type": "while_in_field"
+        }
+      }
+    ]
+  },
+  "RS-129": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_power",
+      "text": "自軍Sユニットを3体パワーゾーンに送る",
+      "unitCount": 3
+    },
+    "rawText": "※これをラッシュしたとき、自軍パワーゾーンにダメージ以外のカードがあれば、２枚選んで捨札にする。1枚しかなければそれを捨札にする。【ステルス】相手がオペレーションの効果でユニットを選ぶとき、このユニットを選ぶことはできない。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これをラッシュしたとき、自軍パワーゾーンにダメージ以外のカードがあれば、２枚選んで捨札にする",
+        "rule": "rush_power_to_discard",
+        "discardCount": 2
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "ステルス",
+        "text": "相手がオペレーションの効果でユニットを選ぶとき、このユニットを選ぶことはできない。",
+        "effectId": "stealth",
+        "trigger": {
+          "type": "while_in_field"
+        }
+      }
+    ]
+  },
+  "RS-130": {
+    "rawText": "【ファイヤーソード】「SP1」常駐しているオペレーションを1つ選んで、持ち主のパワーゾーンに送ってもよい。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "ファイヤーソード",
+        "text": "「SP1」常駐しているオペレーションを1つ選んで、持ち主のパワーゾーンに送ってもよい。",
+        "effectId": "fire_sword",
+        "trigger": {
+          "type": "nc"
+        }
+      }
+    ]
+  },
+  "RS-131": {
+    "rawText": "【ミラージュビーム】このユニットがバトルするとき、自軍山札の上から1枚をオモテにする。オモテにしたカードがユニットのカードなら、そのバトルの間、このユニットのBPをオモテにしたカードのBPとしてバトルする。その後、オモテにしたカードは捨札にする。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "ミラージュビーム",
+        "text": "このユニットがバトルするとき、自軍山札の上から1枚をオモテにする。オモテにしたカードがユニットのカードなら、そのバトルの間、このユニットのBPをオモテにしたカードのBPとしてバトルする。その後、オモテにしたカードは捨札にする。",
+        "effectId": "mirage_beam",
+        "trigger": {
+          "type": "on_attack"
+        }
+      }
+    ]
+  },
+  "RS-132": {
+    "rawText": "※これは、自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。【反バイオ粒子砲】これがバトルエリアに出るとき、捨札にしたSユニットが「バイオハンター・シルバ」ならこのターン、これは次の能力を得る。⇒「SP1」「BP+5000」",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは、自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない",
+        "rule": "battle_entry_discard_s_from_rush"
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "反バイオ粒子砲",
+        "text": "これがバトルエリアに出るとき、捨札にしたSユニットが「バイオハンター・シルバ」ならこのターン、これは次の能力を得る。⇒「SP1」「BP+5000」",
+        "effectId": "anti_bio_cannon",
+        "trigger": {
+          "type": "enter_battle"
+        }
+      }
+    ]
+  },
+  "RS-133": {
+    "rawText": "【ブルバドス活人剣】自軍ターン中、これが特徴「女」を持つユニットを撃破したとき、そのユニットを持ち主の山札の上に戻す。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "ブルバドス活人剣",
+        "text": "自軍ターン中、これが特徴「女」を持つユニットを撃破したとき、そのユニットを持ち主の山札の上に戻す。",
+        "effectId": "blue_bados_life_sword",
+        "trigger": {
+          "type": "conditional"
+        }
+      }
+    ]
+  },
+  "RS-134": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
+    "rawText": "合体―ジェットファルコン＋ランドライオン＋アクアドルフィン【スーパーライブクラッシュ】これはアタックするときBP＋4000される。",
+    "unnamedText": [
+      {
+        "kind": "zord",
+        "text": "合体―ジェットファルコン＋ランドライオン＋アクアドルフィン",
+        "partnerCardIds": [
+          "RS-134",
+          "RS-135",
+          "RS-136"
+        ]
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "スーパーライブクラッシュ",
+        "text": "これはアタックするときBP＋4000される。",
+        "effectId": "super_live_crush",
+        "trigger": {
+          "type": "on_attack"
+        }
+      }
+    ]
+  },
+  "RS-135": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "※これは、特徴「航空機」を持たないユニットにアタックされない。【ファルコンクロー】これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出してもよい。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは、特徴「航空機」を持たないユニットにアタックされない",
+        "rule": "requires_aircraft_attacker"
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "ファルコンクロー",
+        "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出してもよい。",
+        "effectId": "falcon_claw",
+        "trigger": {
+          "type": "conditional"
+        }
+      }
+    ]
+  },
+  "RS-136": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "【強襲】これをラッシュしたとき次の効果を発動できる。敵軍バトルエリアからBP8000以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "強襲",
+        "text": "これをラッシュしたとき次の効果を発動できる。敵軍バトルエリアからBP8000以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+        "effectId": "assault",
+        "trigger": {
+          "type": "on_rush"
+        }
+      }
+    ]
+  },
+  "RS-137": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "【潜航】これをラッシュしたとき、自軍捨札からユニットのカードを3枚まで選んで、山札の下に好きな順で戻してもよい。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "潜航",
+        "text": "これをラッシュしたとき、自軍捨札からユニットのカードを3枚まで選んで、山札の下に好きな順で戻してもよい。",
+        "effectId": "submerge",
+        "trigger": {
+          "type": "on_rush"
+        }
+      }
+    ]
+  },
+  "RS-138": {
+    "rawText": "【ジェットスケボー】「SP1」自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "ジェットスケボー",
+        "text": "「SP1」自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。",
+        "effectId": "jet_skateboard",
+        "trigger": {
+          "type": "conditional"
+        }
+      }
+    ]
+  },
+  "RS-139": {
+    "rawText": "【ドルフィンアロー】敵軍コマンドゾーンからホールド状態のカードを1枚選んで、持ち主のパワーゾーンに送ってもよい。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "ドルフィンアロー",
+        "text": "敵軍コマンドゾーンからホールド状態のカードを1枚選んで、持ち主のパワーゾーンに送ってもよい。",
+        "effectId": "dolphin_arrow",
+        "trigger": {
+          "type": "nc"
+        }
+      }
+    ]
+  },
+  "RS-140": {
+    "rawText": "※これは自軍ターン中、バトルエリアに出られない。【データ解析】このユニットが場にある間、敵軍Sユニットのコンビネーションナンバーは1増える。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍ターン中、バトルエリアに出られない",
+        "rule": "cannot_enter_battle_own_turn"
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "データ解析",
+        "text": "このユニットが場にある間、敵軍Sユニットのコンビネーションナンバーは1増える。",
+        "effectId": "data_analysis",
+        "trigger": {
+          "type": "while_in_field"
+        }
+      }
+    ]
+  },
+  "RS-141": {
+    "rawText": "【紐拳】敵軍バトルエリアからユニットを1体選んで、ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアのユニットを1体選んで、可能ならバトルエリアに出す。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "紐拳",
+        "text": "敵軍バトルエリアからユニットを1体選んで、ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアのユニットを1体選んで、可能ならバトルエリアに出す。",
+        "effectId": "string_fist",
+        "trigger": {
+          "type": "conditional"
+        }
+      }
+    ]
+  },
+  "RS-142": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
+    "rawText": "合体―スカイフェニックス＋グランタウラス＋ダッシュレオン＋ドグランダー＋モアローダー【クラウンファイナルクラッシュ】これがバトルエリアに出たとき、自軍コマンドをすべてリリース状態に戻してもよい。",
+    "unnamedText": [
+      {
+        "kind": "zord",
+        "text": "合体―スカイフェニックス＋グランタウラス＋ダッシュレオン＋ドグランダー＋モアローダー",
+        "partnerCardIds": [
+          "RS-142",
+          "RS-144",
+          "RS-145",
+          "RS-146",
+          "RS-147"
+        ]
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "クラウンファイナルクラッシュ",
+        "text": "これがバトルエリアに出たとき、自軍コマンドをすべてリリース状態に戻してもよい。",
+        "effectId": "crown_final_crush",
+        "trigger": {
+          "type": "enter_battle"
+        }
+      }
+    ]
+  },
+  "RS-143": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_discard",
+      "text": "自軍Sユニットを1体捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "",
+    "unnamedText": [],
+    "namedEffects": []
+  },
+  "RS-144": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_discard",
+      "text": "自軍Sユニットを1体捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "【タウラスダイブ】これをラッシュしたとき、「SP1」以上または「SP！」のある敵軍Sユニットを、すべて持ち主の手札に戻す。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "タウラスダイブ",
+        "text": "これをラッシュしたとき、「SP1」以上または「SP！」のある敵軍Sユニットを、すべて持ち主の手札に戻す。",
+        "effectId": "taurus_dive",
+        "trigger": {
+          "type": "on_rush"
+        }
+      }
+    ]
+  },
+  "RS-145": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_discard",
+      "text": "自軍Sユニットを1体捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "【超文明の守護】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドをすべてリリース状態に戻す。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "超文明の守護",
+        "text": "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドをすべてリリース状態に戻す。",
+        "effectId": "hyper_civilization_guard",
+        "trigger": {
+          "type": "enter_battle"
+        }
+      }
+    ]
+  },
+  "RS-146": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_discard",
+      "text": "自軍Sユニットを1体捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "※自軍ターン中、これは「グランタウラス」からコンビネーションしなければバトルエリアに出られない。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※自軍ターン中、これは「グランタウラス」からコンビネーションしなければバトルエリアに出られない",
+        "rule": "cannot_enter_battle_own_turn"
+      }
+    ],
+    "namedEffects": []
+  },
+  "RS-147": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_discard",
+      "text": "自軍Sユニットを1体捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "※これは「ダッシュレオン」からコンビネーションしなければバトルエリアに出られない。【超力モアキャノン】これが自軍ラッシュエリアにあるとき、「モアローダー」以外の「MA」の自軍Mユニットは、敵軍ターン中、BP+1000される。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは「ダッシュレオン」からコンビネーションしなければバトルエリアに出られない",
+        "rule": "battle_entry_combo_from",
+        "partnerCardIds": [
+          "RS-145"
+        ]
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "超力モアキャノン",
+        "text": "これが自軍ラッシュエリアにあるとき、「モアローダー」以外の「MA」の自軍Mユニットは、敵軍ターン中、BP+1000される。",
+        "effectId": "super_moa_cannon",
+        "trigger": {
+          "type": "while_in_field"
+        }
+      }
+    ]
+  },
+  "RS-148": {
+    "rawText": "※これはラッシュしたターンにバトルエリアに出られない。【スターライザー】自軍ターン中、これはリリース状態の自軍コマンド1つにつきBP+2000される。（この効果は特徴「航空機」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これはラッシュしたターンにバトルエリアに出られない",
+        "rule": "no_battle_entry_turn_rushed"
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "スターライザー",
+        "text": "自軍ターン中、これはリリース状態の自軍コマンド1つにつきBP+2000される。（この効果は特徴「航空機」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+        "effectId": "star_raiser",
+        "trigger": {
+          "type": "nc"
+        }
+      }
+    ]
+  },
+  "RS-149": {
+    "rawText": "【サイドナックル】「SP1」これがストライクして、相手がパワーゾーンのカードをウラ返すとき、ウラ返しにするカードは自分が選ぶ。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "サイドナックル",
+        "text": "「SP1」これがストライクして、相手がパワーゾーンのカードをウラ返すとき、ウラ返しにするカードは自分が選ぶ。",
+        "effectId": "side_knuckle",
+        "trigger": {
+          "type": "nc"
+        }
+      }
+    ]
+  },
+  "RS-150": {
+    "rawText": "【バンパーボウ】敵軍パワーゾーンからダメージ以外のカードを1枚選んで、持ち主のコマンドゾーンにホールド状態で置く（置けなければこの効果は発動できない）。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "バンパーボウ",
+        "text": "敵軍パワーゾーンからダメージ以外のカードを1枚選んで、持ち主のコマンドゾーンにホールド状態で置く（置けなければこの効果は発動できない）。",
+        "effectId": "bumper_bow",
+        "trigger": {
+          "type": "nc"
+        }
+      }
+    ]
+  },
+  "RS-151": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
+    "rawText": "合体―ガオライオン＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー【怒涛裂断シャークショット】このユニットは、自軍バトルエリアにある「WB」のMユニット1体につきBP＋2000される。",
+    "unnamedText": [
+      {
+        "kind": "zord",
+        "text": "合体―ガオライオン＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー",
+        "partnerCardIds": [
+          "RS-152",
+          "RS-153",
+          "RS-154",
+          "RS-155",
+          "RS-156"
+        ]
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "怒涛裂断シャークショット",
+        "text": "このユニットは、自軍バトルエリアにある「WB」のMユニット1体につきBP＋2000される。",
+        "effectId": "furious_shark_shot",
+        "trigger": {
+          "type": "while_in_field"
+        }
+      }
+    ]
+  },
+  "RS-152": {
+    "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【灼熱の咆哮】このユニットが場にある間、「WB」の自軍Mユニットは、自軍捨札に同じ名前のカードがあれば「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "灼熱の咆哮",
+        "text": "このユニットが場にある間、「WB」の自軍Mユニットは、自軍捨札に同じ名前のカードがあれば「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。",
+        "effectId": "scorching_roar",
+        "trigger": {
+          "type": "while_in_field"
+        }
+      }
+    ]
+  },
+  "RS-153": {
+    "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【フェザーボム】「SP1」",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "フェザーボム",
+        "text": "「SP1」",
+        "effectId": "grant_sp1",
+        "trigger": {
+          "type": "nc"
+        }
+      }
+    ]
+  },
+  "RS-154": {
+    "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。※これは敵軍バトルエリアのSユニットにアタックできない。※これは敵軍ラッシュエリアのSユニットにアタックできる。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
+      },
+      {
+        "kind": "note",
+        "text": "※これは敵軍バトルエリアのSユニットにアタックできない",
+        "rule": "cannot_attack_enemy_battle_s"
+      },
+      {
+        "kind": "note",
+        "text": "※これは敵軍ラッシュエリアのSユニットにアタックできる",
+        "rule": "can_attack_enemy_rush_s"
+      }
+    ],
+    "namedEffects": []
+  },
+  "RS-155": {
+    "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【鋼の角】これがバトルエリアに出たとき、敵軍ユニットを1体選んで撃破してもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "鋼の角",
+        "text": "これがバトルエリアに出たとき、敵軍ユニットを1体選んで撃破してもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない。",
+        "effectId": "steel_horn",
+        "trigger": {
+          "type": "enter_battle"
+        }
+      }
+    ]
+  },
+  "RS-156": {
+    "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【鋭い爪】「SP1」",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "鋭い爪",
+        "text": "「SP1」",
+        "effectId": "grant_sp1",
+        "trigger": {
+          "type": "nc"
+        }
+      }
+    ]
+  },
+  "RS-157": {
+    "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【悪鬼貫徹ネックスラスト】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒自軍ターン中、BP+4000され、BP20000以上のとき「SP2」になる。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "悪鬼貫徹ネックスラスト",
+        "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒自軍ターン中、BP+4000され、BP20000以上のとき「SP2」になる。",
+        "effectId": "oni_neck_last",
+        "trigger": {
+          "type": "joint_combo_l"
+        }
+      }
+    ]
+  },
+  "RS-158": {
+    "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【エレファントシールド】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍ユニットはこれ以外のユニットにアタックできない。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "エレファントシールド",
+        "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍ユニットはこれ以外のユニットにアタックできない。",
+        "effectId": "elephant_shield",
+        "trigger": {
+          "type": "joint_combo_r"
+        }
+      }
+    ]
+  },
+  "RS-159": {
+    "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【ファイヤーダンス】これがバトルエリアに出たとき、敵軍コマンドを敵軍ダメージの数まで選んでホールドする。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "ファイヤーダンス",
+        "text": "これがバトルエリアに出たとき、敵軍コマンドを敵軍ダメージの数まで選んでホールドする。",
+        "effectId": "fire_dance",
+        "trigger": {
+          "type": "enter_battle"
+        }
+      }
+    ]
+  },
+  "RS-160": {
+    "rawText": "【ブレイジングファイヤー】「SP1」自軍ターン中、このユニットはBP+2000される。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "ブレイジングファイヤー",
+        "text": "「SP1」自軍ターン中、このユニットはBP+2000される。",
+        "effectId": "blazing_fire",
+        "trigger": {
+          "type": "nc"
+        }
+      }
+    ]
+  },
+  "RS-161": {
+    "rawText": "【ノーブルスラッシュ】「SP1」",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "ノーブルスラッシュ",
+        "text": "「SP1」",
+        "effectId": "grant_sp1",
+        "trigger": {
+          "type": "nc"
+        }
+      }
+    ]
+  },
+  "RS-162": {
+    "rawText": "【サージングチョッパー】自軍ターン中、Sユニットとバトルするとき、このユニットはBP+5000される。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "サージングチョッパー",
+        "text": "自軍ターン中、Sユニットとバトルするとき、このユニットはBP+5000される。",
+        "effectId": "surging_chopper",
+        "trigger": {
+          "type": "on_attack"
+        }
+      }
+    ]
+  },
+  "RS-163": {
+    "rawText": "【アイアンブロークン】自軍ターン中、このユニットはBP+3000される。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "アイアンブロークン",
+        "text": "自軍ターン中、このユニットはBP+3000される。",
+        "effectId": "iron_broken",
+        "trigger": {
+          "type": "nc"
+        }
+      }
+    ]
+  },
+  "RS-164": {
+    "rawText": "【白虎十文字斬り】「SP1」",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "白虎十文字斬り",
+        "text": "「SP1」",
+        "effectId": "grant_sp1",
+        "trigger": {
+          "type": "nc"
+        }
+      }
+    ]
+  },
+  "RS-165": {
+    "rawText": "※これは自分の手札からカードを2枚選んで捨札にしなければバトルエリアに出られない。【ムーンライトソニック】これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自分の手札からカードを2枚選んで捨札にしなければバトルエリアに出られない",
+        "rule": "battle_entry_discard_from_hand",
+        "discardCount": 2
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "ムーンライトソニック",
+        "text": "これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
+        "effectId": "moonlight_sonic",
+        "trigger": {
+          "type": "on_attack"
+        }
+      }
+    ]
+  },
+  "RS-166": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_discard",
+      "text": "自軍Sユニットを1体捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "※これはバトルエリアにあるとき、カテゴリに「MA」が追加される。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これはバトルエリアにあるとき、カテゴリに「MA」が追加される",
+        "rule": "battle_adds_ma_category"
+      }
+    ],
+    "namedEffects": []
+  },
+  "RS-167": {
+    "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【爆竜必殺バキバキパンチ】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒アタックしてバトルに勝つたび、追加でアタックできる（ストライクはできない）。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "爆竜必殺バキバキパンチ",
+        "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒アタックしてバトルに勝つたび、追加でアタックできる（ストライクはできない）。",
+        "effectId": "baki_baki_punch",
+        "trigger": {
+          "type": "joint_combo_l"
+        }
+      }
+    ]
+  },
+  "RS-168": {
+    "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【爆竜必殺クロスサンダー】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒BP5000以下のユニットを自軍と敵軍の場から1体ずつ選んで撃破する。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+        "rule": "battle_entry_hold",
+        "holdCount": 1
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "爆竜必殺クロスサンダー",
+        "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒BP5000以下のユニットを自軍と敵軍の場から1体ずつ選んで撃破する。",
+        "effectId": "cross_thunder",
+        "trigger": {
+          "type": "joint_combo_r"
+        }
+      }
+    ]
+  },
+  "RS-169": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_discard",
+      "text": "自軍Sユニットを1体捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "【地球資源吸収】これをラッシュしたとき、リリース状態の自軍コマンドがあれば、すべて自軍山札の上に好きな順で戻す。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "地球資源吸収",
+        "text": "これをラッシュしたとき、リリース状態の自軍コマンドがあれば、すべて自軍山札の上に好きな順で戻す。",
+        "effectId": "earth_resource_absorb",
+        "trigger": {
+          "type": "on_rush"
+        }
+      }
+    ]
+  },
+  "RS-170": {
+    "rawText": "※これは自軍ターン中、バトルエリアに出られない。【闇の取引】これが自軍ラッシュエリアにあるとき、自分がラッシュする「DA」のユニットの必要パワーを満たすために、次のようにしてもよい⇒必要パワーに足りない数だけ、自軍コマンドをホールドする。",
+    "unnamedText": [
+      {
+        "kind": "note",
+        "text": "※これは自軍ターン中、バトルエリアに出られない",
+        "rule": "cannot_enter_battle_own_turn"
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "闇の取引",
+        "text": "これが自軍ラッシュエリアにあるとき、自分がラッシュする「DA」のユニットの必要パワーを満たすために、次のようにしてもよい⇒必要パワーに足りない数だけ、自軍コマンドをホールドする。",
+        "effectId": "dark_deal",
+        "trigger": {
+          "type": "conditional"
+        }
+      }
+    ]
+  },
+  "RS-171": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "【マキシマムペネトレーション】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒自軍ターン中、BP+4000され、BP20000以上のとき敵軍ユニットを撃破したなら、相手に1点ダメージを与える。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "マキシマムペネトレーション",
+        "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒自軍ターン中、BP+4000され、BP20000以上のとき敵軍ユニットを撃破したなら、相手に1点ダメージを与える。",
+        "effectId": "maximum_penetration",
+        "trigger": {
+          "type": "joint_combo_l"
+        }
+      }
+    ]
+  },
+  "RS-172": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "【ショベルディフェンス】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍ユニットはストライクできない。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "ショベルディフェンス",
+        "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍ユニットはストライクできない。",
+        "effectId": "shovel_defense",
+        "trigger": {
+          "type": "joint_combo_r"
+        }
+      }
+    ]
+  },
+  "RS-173": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "【ウォールシュート】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は自分自身のコマンドゾーンのカードを全て山札に戻してシャッフルする。その後、戻した枚数を山札の上からひいて、コマンドゾーンにホールド状態で置く。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "ウォールシュート",
+        "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は自分自身のコマンドゾーンのカードを全て山札に戻してシャッフルする。その後、戻した枚数を山札の上からひいて、コマンドゾーンにホールド状態で置く。",
+        "effectId": "wall_shoot",
+        "trigger": {
+          "type": "joint_combo_r"
+        }
+      }
+    ]
+  },
+  "RS-174": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "【リフトアップ】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒自軍コマンドゾーンからカードを1枚選んで手札に戻す。その後、山札から1枚ひいて自軍コマンドゾーンに置く。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "リフトアップ",
+        "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒自軍コマンドゾーンからカードを1枚選んで手札に戻す。その後、山札から1枚ひいて自軍コマンドゾーンに置く。",
+        "effectId": "lift_up",
+        "trigger": {
+          "type": "joint_combo_r"
+        }
+      }
+    ]
+  },
+  "RS-175": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
+    "rawText": "合体―ガオコング＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー＋ガオエレファント【森羅万象ビッグバンファイナル】これをラッシュしたとき、BP20000以下の敵軍ユニットを1体選んで撃破する。",
+    "unnamedText": [
+      {
+        "kind": "zord",
+        "text": "合体―ガオコング＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー＋ガオエレファント",
+        "partnerCardIds": [
+          "RS-159",
+          "RS-153",
+          "RS-154",
+          "RS-155",
+          "RS-156",
+          "RS-158"
+        ]
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "森羅万象ビッグバンファイナル",
+        "text": "これをラッシュしたとき、BP20000以下の敵軍ユニットを1体選んで撃破する。",
+        "effectId": "nature_big_bang_final",
+        "trigger": {
+          "type": "on_rush"
+        }
+      }
+    ]
+  },
+  "RS-176": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
+    "rawText": "合体―ゴーゴードリル＋ゴーゴーショベル＋ゴーゴーミキサー＋ゴーゴークレーン＋ゴーゴージェット【大突撃】これをラッシュしたとき、敵軍Lユニットを1体選んで撃破してもよい。そうして撃破したLユニットが捨札になったとき、相手はそのLユニットの合体に必要なユニットのカードを捨札から探して手札に戻す。",
+    "unnamedText": [
+      {
+        "kind": "zord",
+        "text": "合体―ゴーゴードリル＋ゴーゴーショベル＋ゴーゴーミキサー＋ゴーゴークレーン＋ゴーゴージェット",
+        "partnerCardIds": [
+          "RS-171",
+          "RS-172",
+          "RS-173",
+          "RS-174",
+          "RS-177"
+        ]
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "大突撃",
+        "text": "これをラッシュしたとき、敵軍Lユニットを1体選んで撃破してもよい。そうして撃破したLユニットが捨札になったとき、相手はそのLユニットの合体に必要なユニットのカードを捨札から探して手札に戻す。",
+        "effectId": "great_assault",
+        "trigger": {
+          "type": "on_rush"
+        }
+      }
+    ]
+  },
+  "RS-177": {
+    "rushAdditionalCondition": {
+      "conditionId": "send_s_unit_to_command_or_discard",
+      "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+      "unitCount": 1
+    },
+    "rawText": "【空輸】これをラッシュしたとき、次の効果を発動できる。自軍山札を見て、コンビネーションナンバーに「L」または「R」とあるカードがあれば1枚選んでラッシュエリアに出す。その後、山札をシャッフルする。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "空輸",
+        "text": "これをラッシュしたとき、次の効果を発動できる。自軍山札を見て、コンビネーションナンバーに「L」または「R」とあるカードがあれば1枚選んでラッシュエリアに出す。その後、山札をシャッフルする。",
+        "effectId": "airlift",
+        "trigger": {
+          "type": "on_rush"
+        }
+      }
+    ]
+  },
+  "RS-178": {
+    "rawText": "【サガスナイパー】自軍ターン中、これがユニットを撃破したとき、自軍山札からユニットのカードを1枚選び、相手に見せてから手札に加えてもよい（選べるカードの必要パワーの数字は、これが撃破したユニットの必要パワーの数字以下に限る）。その後、山札をシャッフルする。",
+    "unnamedText": [],
+    "namedEffects": [
+      {
+        "name": "サガスナイパー",
+        "text": "自軍ターン中、これがユニットを撃破したとき、自軍山札からユニットのカードを1枚選び、相手に見せてから手札に加えてもよい（選べるカードの必要パワーの数字は、これが撃破したユニットの必要パワーの数字以下に限る）。その後、山札をシャッフルする。",
+        "effectId": "sagas_sniper",
+        "trigger": {
+          "type": "conditional"
+        }
+      }
+    ]
+  },
+  "SR-001": {
+    "rushAdditionalCondition": {
+      "conditionId": "discard_fusion_unit",
+      "text": "自軍合体ユニットを捨札にする"
+    },
+    "rawText": "合体―ガオライオン＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー【天地轟鳴アニマルハート】このユニットは、自軍バトルエリアにある「WB」のMユニット1体につきBP＋2000される。",
+    "unnamedText": [
+      {
+        "kind": "zord",
+        "text": "合体―ガオライオン＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー",
+        "partnerCardIds": [
+          "RS-152",
+          "RS-153",
+          "RS-154",
+          "RS-155",
+          "RS-156"
+        ]
+      }
+    ],
+    "namedEffects": [
+      {
+        "name": "天地轟鳴アニマルハート",
+        "text": "このユニットは、自軍バトルエリアにある「WB」のMユニット1体につきBP＋2000される。",
+        "effectId": "heaven_earth_animal_heart",
+        "trigger": {
+          "type": "while_in_field"
+        }
+      }
+    ]
+  }
+}

@@ -1,6 +1,7 @@
 import type { Category } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
+import { legend3FieldBpBonus } from "./legend3/fieldEffects";
 
 function categoriesInclude(
   categories: Category | Category[],
@@ -51,6 +52,7 @@ export function passiveNamedFieldBpBonus(
   }
 
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
+  bonus += legend3FieldBpBonus(state, playerId, instance, role);
 
   return bonus;
 }

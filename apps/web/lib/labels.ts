@@ -22,6 +22,8 @@ export const STARTER_OPTIONS = [
   { id: "abarenoh", label: "Type A: アバレンオー" },
   { id: "dekaranger", label: "Type B: デカレンジャーロボ" },
   { id: "magiking", label: "Type C: マジキング" },
+  { id: "roaring-wings", label: "轟の翼: ダイタンケン" },
+  { id: "silver-adventurer", label: "銀の冒険者: ボウケンシルバー" },
 ] as const;
 
 export type StarterId = (typeof STARTER_OPTIONS)[number]["id"];
