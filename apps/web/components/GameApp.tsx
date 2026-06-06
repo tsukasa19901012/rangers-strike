@@ -1334,6 +1334,7 @@ export function GameApp() {
 
   const showReactionModal = reactionUi?.showModal ?? false;
   const counterInstanceIds = reactionUi?.counterInstanceIds ?? [];
+  const counterTargetLabels = reactionUi?.counterTargetLabels ?? {};
 
   const showOperationModal =
     humanCanAct && !!pendingOp && operationTargetIds.length > 0;
@@ -1709,6 +1710,7 @@ export function GameApp() {
           state={state}
           playerId={HUMAN_PLAYER}
           counterInstanceIds={counterInstanceIds}
+          counterTargetLabels={counterTargetLabels}
           interceptInstanceIds={interceptableIds ? [...interceptableIds] : []}
           substituteInstanceIds={
             pendingSubstituteTargets ? [...pendingSubstituteTargets] : []

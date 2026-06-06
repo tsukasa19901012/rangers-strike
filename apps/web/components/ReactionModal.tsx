@@ -12,6 +12,7 @@ type ReactionModalProps = {
   state: GameState;
   playerId: PlayerId;
   counterInstanceIds: string[];
+  counterTargetLabels: Record<string, string>;
   interceptInstanceIds: string[];
   substituteInstanceIds: string[];
   hiddenNinjaCounterId: string | null;
@@ -37,6 +38,7 @@ export function ReactionModal({
   state,
   playerId,
   counterInstanceIds,
+  counterTargetLabels,
   interceptInstanceIds,
   substituteInstanceIds,
   hiddenNinjaCounterId,
@@ -138,7 +140,9 @@ export function ReactionModal({
                         onClick={() => onCounter(instanceId)}
                       >
                         {card.name}
-                        <span className="effect-action-modal__target-meta">手札</span>
+                        <span className="effect-action-modal__target-meta">
+                          {counterTargetLabels[instanceId] ?? "手札"}
+                        </span>
                       </button>
                     ))}
                   </div>

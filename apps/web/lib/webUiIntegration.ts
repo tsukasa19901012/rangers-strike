@@ -1,5 +1,6 @@
 import { getCardEffect } from "@rangers-strike/cards";
-import type { CardInstance, GameAction, GameState, PlayerId } from "@rangers-strike/engine";
+import type { GameAction, GameState, PlayerId } from "@rangers-strike/engine";
+import { cardTargetMetaLine, findCardTarget } from "./cardTargets";
 import {
   buildPaymentFromInitiateAction,
   collectFiveTechInterceptors,
@@ -17,6 +18,8 @@ export type ReactionModalUiState = {
   kind: ReactionKind | null;
   showModal: boolean;
   counterInstanceIds: string[];
+  /** カウンター instanceId → 効果対象ユニットの表示文言 */
+  counterTargetLabels: Record<string, string>;
   interceptInstanceIds: string[];
   canPass: boolean;
   canUsePlasma: boolean;
@@ -79,6 +82,59 @@ export function resolveCounterInstanceIds(
   return [...ids];
 }
 
+function resolveCounterEffectTargetInstanceId(
+  state: GameState,
+  counterCardId: string,
+): string | undefined {
+  const effectId = getCardEffect(counterCardId)?.effectId;
+  if (!effectId) return undefined;
+
+  if (state.pendingRush && effectId === "shippu_ninja") {
+    return state.pendingRush.rushedInstanceId;
+  }
+  if (
+    state.pendingBattle &&
+    (effectId === "new_gymnastics" || effectId === "hidden_ninja")
+  ) {
+    return state.pendingBattle.defenderInstanceId;
+  }
+  if (
+    state.pendingLeave &&
+    (effectId === "dino_chronicle" || effectId === "dino_guts")
+  ) {
+    return state.pendingLeave.instanceId;
+  }
+  return undefined;
+}
+
+export function resolveCounterEffectTargetLabels(
+  state: GameState,
+  humanPlayerId: PlayerId,
+  counterInstanceIds: string[],
+): Record<string, string> {
+  const labels: Record<string, string> = {};
+  const player = state.players[humanPlayerId];
+
+  for (const counterInstanceId of counterInstanceIds) {
+    const counterCard = player.hand.find((c) => c.instanceId === counterInstanceId);
+    if (!counterCard) continue;
+
+    const targetInstanceId = resolveCounterEffectTargetInstanceId(
+      state,
+      counterCard.cardId,
+    );
+    if (!targetInstanceId) continue;
+
+    const target = findCardTarget(state, targetInstanceId);
+    if (!target) continue;
+
+    labels[counterInstanceId] =
+      `対象: ${target.card.name}（${cardTargetMetaLine(target, humanPlayerId)}）`;
+  }
+
+  return labels;
+}
+
 export function resolveReactionModalUi(
   state: GameState,
   humanPlayerId: PlayerId,
@@ -87,6 +143,11 @@ export function resolveReactionModalUi(
   const legalActions = getLegalActions(state);
   const kind = resolveHumanReactionKind(state, humanPlayerId);
   const counterInstanceIds = resolveCounterInstanceIds(state, humanPlayerId, legalActions);
+  const counterTargetLabels = resolveCounterEffectTargetLabels(
+    state,
+    humanPlayerId,
+    counterInstanceIds,
+  );
   const interceptInstanceIds = isHumanStrikeDefender(state, humanPlayerId)
     ? collectFiveTechInterceptors(state, humanPlayerId)
     : [];
@@ -123,6 +184,7 @@ export function resolveReactionModalUi(
     kind,
     showModal,
     counterInstanceIds,
+    counterTargetLabels,
     interceptInstanceIds,
     canPass,
     canUsePlasma,

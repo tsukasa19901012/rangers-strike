@@ -359,6 +359,7 @@ describe("Web UI integration — operation counter reaction modal", () => {
       expect(ui.kind).toBe(spec.kind);
       expect(ui.showModal).toBe(true);
       expect(ui.counterInstanceIds).toContain(counter.instanceId);
+      expect(ui.counterTargetLabels[counter.instanceId]).toMatch(/^対象: .+（.+）$/);
       expect(ui.canPass).toBe(true);
     },
   );
