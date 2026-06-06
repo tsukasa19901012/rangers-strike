@@ -198,6 +198,8 @@ export type InitiateCommandPaymentAction = {
   zordMothershipHoldInstanceIds?: string[];
   targetInstanceId?: string;
   extraInstanceId?: string;
+  /** RS-018 等: カウンター支払い後に適用する代替ユニット。 */
+  substituteInstanceId?: string;
 };
 
 export type ResolveCommandPaymentAction = {

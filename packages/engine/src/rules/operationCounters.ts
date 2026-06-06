@@ -10,13 +10,18 @@ import type {
 } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import {
-  canPlayOperation,
+  canPlayOperationExceptCommandHold,
+  cardCategories,
   cardName,
   effectiveBp,
   getDefinition,
+  hasHeldCommandForCategories,
+  hasOperationEffect,
+  hasReleasedCommandForCategories,
   isSmallUnit,
   parsePowerCost,
 } from "../core/catalog";
+import { countReleasedCommands } from "./restrictions";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
@@ -98,22 +103,120 @@ export function applySuperShieldSubstitute(
   };
 }
 
+export function isCounterReactionActive(state: GameState): boolean {
+  return !!(state.pendingBattle || state.pendingRush || state.pendingLeave);
+}
+
+export function isHandCounterCard(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): boolean {
+  const found = findInZone(state.players[playerId], "hand", instanceId);
+  if (!found) return false;
+  return getCardEffect(found.card.cardId)?.kind === "counter";
+}
+
+function counterDefinition(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+) {
+  const player = state.players[playerId];
+  const found = findInZone(player, "hand", instanceId);
+  if (!found) return null;
+
+  const effect = getCardEffect(found.card.cardId);
+  if (effect?.kind !== "counter") return null;
+
+  const definition = getDefinition(state.definitions, found.card.cardId);
+  if (!definition) return null;
+
+  return { player, found, definition };
+}
+
+export function canAffordCounterPower(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): boolean {
+  const ctx = counterDefinition(state, playerId, instanceId);
+  if (!ctx) return false;
+  return canPlayOperationExceptCommandHold(ctx.player, state.definitions, ctx.definition);
+}
+
+export function canPayCounterCategoryHold(
+  player: GameState["players"][PlayerId],
+  definitions: GameState["definitions"],
+  categories: Category[],
+): boolean {
+  if (categories.length === 0) return true;
+  if (hasReleasedCommandForCategories(player, definitions, categories)) return true;
+  return (
+    hasOperationEffect(player, "prism_power", definitions) &&
+    countReleasedCommands(player) >= 2
+  );
+}
+
+export function canInitiateCounterCategoryPayment(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): boolean {
+  if (!isCounterReactionActive(state)) return false;
+
+  const ctx = counterDefinition(state, playerId, instanceId);
+  if (!ctx) return false;
+  if (!canPlayOperationExceptCommandHold(ctx.player, state.definitions, ctx.definition)) {
+    return false;
+  }
+
+  const categories = cardCategories(ctx.definition);
+  if (!canPayCounterCategoryHold(ctx.player, state.definitions, categories)) {
+    return false;
+  }
+  if (ctx.player.counterCategoryHoldReady) return false;
+  if (canExecuteHandCounter(state, playerId, instanceId)) return false;
+
+  return canPayCounterCategoryHold(ctx.player, state.definitions, categories);
+}
+
+export function canExecuteHandCounter(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): boolean {
+  const ctx = counterDefinition(state, playerId, instanceId);
+  if (!ctx) return false;
+  if (!canPlayOperationExceptCommandHold(ctx.player, state.definitions, ctx.definition)) {
+    return false;
+  }
+
+  const categories = cardCategories(ctx.definition);
+  if (categories.length === 0) return true;
+
+  return (
+    !!ctx.player.counterCategoryHoldReady &&
+    hasHeldCommandForCategories(ctx.player, state.definitions, categories)
+  );
+}
+
+/** 反応窓を開くかどうかの判定（窓が未成立でも使用可）。 */
 export function canPlayHandCounter(
   state: GameState,
   playerId: PlayerId,
   instanceId: string,
 ): boolean {
-  const player = state.players[playerId];
-  const found = findInZone(player, "hand", instanceId);
-  if (!found) return false;
+  const ctx = counterDefinition(state, playerId, instanceId);
+  if (!ctx) return false;
+  if (!canPlayOperationExceptCommandHold(ctx.player, state.definitions, ctx.definition)) {
+    return false;
+  }
 
-  const effect = getCardEffect(found.card.cardId);
-  if (effect?.kind !== "counter") return false;
-
-  const definition = getDefinition(state.definitions, found.card.cardId);
-  if (!definition) return false;
-
-  return canPlayOperation(player, state.definitions, definition);
+  const categories = cardCategories(ctx.definition);
+  if (categories.length === 0) return true;
+  if (canExecuteHandCounter(state, playerId, instanceId)) return true;
+  return canPayCounterCategoryHold(ctx.player, state.definitions, categories);
 }
 
 function discardHandCounter(

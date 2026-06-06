@@ -185,3 +185,18 @@ export function heldOtCommand(suffix = "cmd"): CardInstance {
 export function heldMaCommand(suffix = "cmd"): CardInstance {
   return { ...inst("TST-OP-MA", suffix), commandHeld: true };
 }
+
+/** MA カテゴリのリリース状態コマンド。 */
+export function releasedMaCommand(suffix = "cmd"): CardInstance {
+  return inst("TST-OP-MA", suffix);
+}
+
+/** ET カテゴリのリリース状態コマンド。 */
+export function releasedEtCommand(suffix = "cmd"): CardInstance {
+  return inst("TST-OP-ET", suffix);
+}
+
+/** WB カテゴリのリリース状態コマンド。 */
+export function releasedWbCommand(suffix = "cmd"): CardInstance {
+  return inst("TST-OP", suffix);
+}

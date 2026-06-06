@@ -100,6 +100,8 @@ export type PlayerState = {
   battleEntryHoldReady?: boolean;
   /** ラッシュ: カテゴリ支払いでホールド済み（rush 完了まで有効）。 */
   rushCategoryHoldReady?: boolean;
+  /** カウンター: カテゴリ支払いでホールド済み（play_counter まで有効）。 */
+  counterCategoryHoldReady?: boolean;
   /** RS-132: Sユニット捨札支払い済み（move_to_battle まで有効）。 */
   battleEntryRushDiscardReady?: boolean;
   /** RS-132: 直前に捨札にしたSユニットの cardId（反バイオ粒子砲判定用）。 */
@@ -300,6 +302,10 @@ export type CommandPaymentContinuation =
       type: "play_operation";
       targetInstanceId?: string;
       extraInstanceId?: string;
+    }
+  | {
+      type: "play_counter";
+      substituteInstanceId?: string;
     }
   | { type: "effect_choice" };
 

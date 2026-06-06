@@ -8,7 +8,6 @@ import {
 } from "@rangers-strike/cards";
 import {
   applyAction,
-  collectFiveTechInterceptors,
   createGame,
   explainCannotEnterBattle,
   explainCannotRush,
@@ -89,6 +88,10 @@ import {
 } from "@/lib/effectLogNotice";
 import { useCompactGameViewport } from "@/lib/compactViewport";
 import { useViewportBoardFit } from "@/lib/useViewportBoardFit";
+import {
+  isHumanStrikeDefender as checkHumanStrikeDefender,
+  resolveReactionModalUi,
+} from "@/lib/webUiIntegration";
 
 const CPU_PLAYER = "player2" as const;
 const HUMAN_PLAYER = "player1" as const;
@@ -784,6 +787,15 @@ export function GameApp() {
           targetInstanceId: cont.targetInstanceId,
           extraInstanceId: cont.extraInstanceId,
         };
+      } else if (cont.type === "play_counter") {
+        initiateAction = {
+          type: "initiate_command_payment",
+          playerId: HUMAN_PLAYER,
+          kind: "category_use",
+          sourceInstanceId: pending.sourceInstanceId,
+          prismSubstitute: usePrism,
+          substituteInstanceId: cont.substituteInstanceId,
+        };
       }
       if (!initiateAction) return;
       const initiated = applyAction(cancelled.state, initiateAction);
@@ -891,10 +903,18 @@ export function GameApp() {
   const pendingSubstituteTargets = useMemo(() => {
     if (!pendingHiddenNinja || !state) return undefined;
     const ids = new Set<string>();
+    const counterId = pendingHiddenNinja.counterInstanceId;
     for (const action of legalActions) {
       if (
         action.type === "play_counter" &&
-        action.instanceId === pendingHiddenNinja.counterInstanceId &&
+        action.instanceId === counterId &&
+        action.substituteInstanceId
+      ) {
+        ids.add(action.substituteInstanceId);
+      }
+      if (
+        action.type === "initiate_command_payment" &&
+        action.sourceInstanceId === counterId &&
         action.substituteInstanceId
       ) {
         ids.add(action.substituteInstanceId);
@@ -1094,45 +1114,26 @@ export function GameApp() {
     return ids.length > 0 ? new Set(ids) : undefined;
   }, [humanCanAct, legalActions, state]);
 
-  const isHumanStrikeDefender = useMemo(() => {
-    const pending = state?.pendingStrike;
-    if (!pending || !state) return false;
-    return (
-      opponent(pending.strikerPlayerId) === HUMAN_PLAYER &&
-      state.activePlayer === HUMAN_PLAYER &&
-      !state.pendingDamagePayment
-    );
-  }, [state]);
+  const reactionUi = useMemo(() => {
+    if (!state) return null;
+    return resolveReactionModalUi(state, HUMAN_PLAYER, {
+      pendingHiddenNinja: pendingHiddenNinja !== null,
+    });
+  }, [state, pendingHiddenNinja]);
+
+  const isHumanStrikeDefender = !!state && checkHumanStrikeDefender(state, HUMAN_PLAYER);
 
   const interceptableIds = useMemo(() => {
-    if (!isHumanStrikeDefender || !state) return undefined;
-    const ids = collectFiveTechInterceptors(state, HUMAN_PLAYER);
-    return ids.length > 0 ? new Set(ids) : undefined;
-  }, [isHumanStrikeDefender, state]);
+    if (!reactionUi?.interceptInstanceIds.length) return undefined;
+    return new Set(reactionUi.interceptInstanceIds);
+  }, [reactionUi]);
 
   const counterIds = useMemo(() => {
-    if (!state || state.activePlayer !== HUMAN_PLAYER) return undefined;
-    const ids = legalActions
-      .filter((a): a is Extract<typeof a, { type: "play_counter" }> => a.type === "play_counter")
-      .map((a) => a.instanceId);
-    return ids.length > 0 ? new Set(ids) : undefined;
-  }, [legalActions, state]);
-
-  const isReactionTurn =
-    !!state &&
-    !state.winner &&
-    state.activePlayer === HUMAN_PLAYER &&
-    (!!state.pendingStrike ||
-      !!state.pendingBattle ||
-      !!state.pendingRush ||
-      !!state.pendingLeave);
-
-  const canPassBattleReaction =
-    isReactionTurn && legalActions.some((a) => a.type === "pass_battle_reaction");
-  const canPassRushReaction =
-    isReactionTurn && legalActions.some((a) => a.type === "pass_rush_reaction");
-  const canPassLeaveReaction =
-    isReactionTurn && legalActions.some((a) => a.type === "pass_leave_reaction");
+    if (!reactionUi || reactionUi.showModal || reactionUi.counterInstanceIds.length === 0) {
+      return undefined;
+    }
+    return new Set(reactionUi.counterInstanceIds);
+  }, [reactionUi]);
 
   const startPhaseStatus =
     state && humanCanAct && state.phase === "start"
@@ -1151,17 +1152,43 @@ export function GameApp() {
         (a): a is Extract<typeof a, { type: "play_counter" }> =>
           a.type === "play_counter" && a.instanceId === instanceId,
       );
-      if (counterActions.length === 0) return;
+      const paymentActions = legalActions.filter(
+        (a): a is Extract<typeof a, { type: "initiate_command_payment" }> =>
+          a.type === "initiate_command_payment" &&
+          a.kind === "category_use" &&
+          a.sourceInstanceId === instanceId,
+      );
 
-      const needsSubstitute = counterActions.every((a) => a.substituteInstanceId);
-      if (needsSubstitute) {
+      const substituteChoices = [
+        ...counterActions.map((a) => a.substituteInstanceId),
+        ...paymentActions.map((a) => a.substituteInstanceId),
+      ].filter((id): id is string => !!id);
+      const uniqueSubstitutes = [...new Set(substituteChoices)];
+      if (uniqueSubstitutes.length > 1) {
         setPendingHiddenNinja({ counterInstanceId: instanceId });
         return;
       }
 
-      const action =
-        counterActions.find((a) => !a.substituteInstanceId) ?? counterActions[0];
-      if (action) apply(action);
+      const substituteId = uniqueSubstitutes[0];
+
+      if (counterActions.length > 0) {
+        const action =
+          counterActions.find(
+            (a) =>
+              a.substituteInstanceId === substituteId ||
+              (!a.substituteInstanceId && !substituteId),
+          ) ?? counterActions[0];
+        if (action) apply(action);
+        return;
+      }
+
+      const paymentAction =
+        paymentActions.find(
+          (a) =>
+            a.substituteInstanceId === substituteId ||
+            (!a.substituteInstanceId && !substituteId),
+        ) ?? paymentActions[0];
+      if (paymentAction) apply(paymentAction);
     },
     [apply, legalActions],
   );
@@ -1169,24 +1196,28 @@ export function GameApp() {
   const handleSubstituteSelect = useCallback(
     (substituteInstanceId: string) => {
       if (!pendingHiddenNinja) return;
-      const action = legalActions.find(
+      const counterId = pendingHiddenNinja.counterInstanceId;
+      const playAction = legalActions.find(
         (a) =>
           a.type === "play_counter" &&
-          a.instanceId === pendingHiddenNinja.counterInstanceId &&
+          a.instanceId === counterId &&
           a.substituteInstanceId === substituteInstanceId,
       );
-      if (action) apply(action);
+      if (playAction) {
+        apply(playAction);
+        return;
+      }
+      const paymentAction = legalActions.find(
+        (a) =>
+          a.type === "initiate_command_payment" &&
+          a.kind === "category_use" &&
+          a.sourceInstanceId === counterId &&
+          a.substituteInstanceId === substituteInstanceId,
+      );
+      if (paymentAction) apply(paymentAction);
     },
     [apply, legalActions, pendingHiddenNinja],
   );
-
-  const counterInstanceIds = useMemo(() => {
-    if (!state || state.activePlayer !== HUMAN_PLAYER) return [];
-    const ids = legalActions
-      .filter((a): a is Extract<typeof a, { type: "play_counter" }> => a.type === "play_counter")
-      .map((a) => a.instanceId);
-    return [...new Set(ids)];
-  }, [legalActions, state]);
 
   const operationTargetIds = useMemo(() => {
     const ids = new Set<string>();
@@ -1198,14 +1229,7 @@ export function GameApp() {
   const isHumanZordSetup =
     humanCanAct && zordSetup?.playerId === HUMAN_PLAYER;
 
-  const humanReactionKind = useMemo((): "strike" | "battle" | "rush" | "leave" | null => {
-    if (!state) return null;
-    if (isHumanStrikeDefender) return "strike";
-    if (state.pendingBattle && state.activePlayer === HUMAN_PLAYER) return "battle";
-    if (state.pendingRush && state.activePlayer === HUMAN_PLAYER) return "rush";
-    if (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) return "leave";
-    return null;
-  }, [state, isHumanStrikeDefender]);
+  const humanReactionKind = reactionUi?.kind ?? null;
 
   const handleReactionPass = useCallback(() => {
     if (!humanReactionKind) return;
@@ -1281,9 +1305,7 @@ export function GameApp() {
     !state.pendingEffectChoice &&
     legalActions.some((a) => a.type === "strike");
 
-  const canUsePlasma =
-    isHumanStrikeDefender &&
-    legalActions.some((a) => a.type === "use_plasma_energy");
+  const canUsePlasma = reactionUi?.canUsePlasma ?? false;
 
   const pendingChoice = state.pendingEffectChoice;
   const isHumanDenjiAudience =
@@ -1310,15 +1332,8 @@ export function GameApp() {
     (!!pendingChoice?.optional || pendingChoice?.effectId === "earth_force") &&
     legalActions.some((a) => a.type === "skip_effect_choice");
 
-  const showReactionModal =
-    !!humanReactionKind &&
-    (pendingHiddenNinja !== null ||
-      counterInstanceIds.length > 0 ||
-      (interceptableIds?.size ?? 0) > 0 ||
-      canPassBattleReaction ||
-      canPassRushReaction ||
-      canPassLeaveReaction ||
-      isHumanStrikeDefender);
+  const showReactionModal = reactionUi?.showModal ?? false;
+  const counterInstanceIds = reactionUi?.counterInstanceIds ?? [];
 
   const showOperationModal =
     humanCanAct && !!pendingOp && operationTargetIds.length > 0;
@@ -1700,15 +1715,7 @@ export function GameApp() {
           }
           hiddenNinjaCounterId={pendingHiddenNinja?.counterInstanceId ?? null}
           canUsePlasma={canUsePlasma}
-          canPass={
-            humanReactionKind === "strike"
-              ? isHumanStrikeDefender
-              : humanReactionKind === "battle"
-                ? canPassBattleReaction
-                : humanReactionKind === "rush"
-                  ? canPassRushReaction
-                  : canPassLeaveReaction
-          }
+          canPass={reactionUi?.canPass ?? false}
           onCounter={handleCounterSelect}
           onSubstitute={handleSubstituteSelect}
           onIntercept={(instanceId) =>

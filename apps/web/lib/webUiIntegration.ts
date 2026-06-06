@@ -1,12 +1,133 @@
 import { getCardEffect } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PlayerId } from "@rangers-strike/engine";
+import type { CardInstance, GameAction, GameState, PlayerId } from "@rangers-strike/engine";
 import {
   buildPaymentFromInitiateAction,
+  collectFiveTechInterceptors,
   explainCannotEnterBattle,
   getBattleEntryPaymentNeeds,
   getLegalActions,
   getLightningGravityHoldNotice,
+  getReactionChooserPlayerId,
+  opponent,
 } from "@rangers-strike/engine";
+
+export type ReactionKind = "strike" | "battle" | "rush" | "leave";
+
+export type ReactionModalUiState = {
+  kind: ReactionKind | null;
+  showModal: boolean;
+  counterInstanceIds: string[];
+  interceptInstanceIds: string[];
+  canPass: boolean;
+  canUsePlasma: boolean;
+};
+
+export function isHumanStrikeDefender(state: GameState, humanPlayerId: PlayerId): boolean {
+  const pending = state.pendingStrike;
+  if (!pending || state.pendingDamagePayment) return false;
+  return (
+    opponent(pending.strikerPlayerId) === humanPlayerId &&
+    getReactionChooserPlayerId(state) === humanPlayerId
+  );
+}
+
+export function resolveHumanReactionKind(
+  state: GameState,
+  humanPlayerId: PlayerId,
+): ReactionKind | null {
+  if (isHumanStrikeDefender(state, humanPlayerId)) return "strike";
+  if (state.pendingBattle && getReactionChooserPlayerId(state) === humanPlayerId) {
+    return "battle";
+  }
+  if (state.pendingRush && getReactionChooserPlayerId(state) === humanPlayerId) {
+    return "rush";
+  }
+  if (state.pendingLeave && getReactionChooserPlayerId(state) === humanPlayerId) {
+    return "leave";
+  }
+  return null;
+}
+
+function isHumanReactionTurn(state: GameState, humanPlayerId: PlayerId): boolean {
+  if (state.winner || getReactionChooserPlayerId(state) !== humanPlayerId) return false;
+  return !!(
+    (state.pendingStrike && !state.pendingDamagePayment) ||
+    state.pendingBattle ||
+    state.pendingRush ||
+    state.pendingLeave
+  );
+}
+
+export function resolveCounterInstanceIds(
+  state: GameState,
+  humanPlayerId: PlayerId,
+  legalActions: GameAction[] = getLegalActions(state),
+): string[] {
+  if (getReactionChooserPlayerId(state) !== humanPlayerId) return [];
+  const ids = new Set<string>();
+  for (const action of legalActions) {
+    if (action.type === "play_counter") {
+      ids.add(action.instanceId);
+    }
+    if (
+      action.type === "initiate_command_payment" &&
+      action.kind === "category_use"
+    ) {
+      ids.add(action.sourceInstanceId);
+    }
+  }
+  return [...ids];
+}
+
+export function resolveReactionModalUi(
+  state: GameState,
+  humanPlayerId: PlayerId,
+  options?: { pendingHiddenNinja?: boolean },
+): ReactionModalUiState {
+  const legalActions = getLegalActions(state);
+  const kind = resolveHumanReactionKind(state, humanPlayerId);
+  const counterInstanceIds = resolveCounterInstanceIds(state, humanPlayerId, legalActions);
+  const interceptInstanceIds = isHumanStrikeDefender(state, humanPlayerId)
+    ? collectFiveTechInterceptors(state, humanPlayerId)
+    : [];
+  const isReactionTurn = isHumanReactionTurn(state, humanPlayerId);
+  const canPassBattleReaction =
+    isReactionTurn && legalActions.some((a) => a.type === "pass_battle_reaction");
+  const canPassRushReaction =
+    isReactionTurn && legalActions.some((a) => a.type === "pass_rush_reaction");
+  const canPassLeaveReaction =
+    isReactionTurn && legalActions.some((a) => a.type === "pass_leave_reaction");
+  const canUsePlasma =
+    isHumanStrikeDefender(state, humanPlayerId) &&
+    legalActions.some((a) => a.type === "use_plasma_energy");
+  const canPass =
+    kind === "strike"
+      ? isHumanStrikeDefender(state, humanPlayerId)
+      : kind === "battle"
+        ? canPassBattleReaction
+        : kind === "rush"
+          ? canPassRushReaction
+          : kind === "leave"
+            ? canPassLeaveReaction
+            : false;
+
+  const showModal =
+    !!kind &&
+    (options?.pendingHiddenNinja === true ||
+      counterInstanceIds.length > 0 ||
+      interceptInstanceIds.length > 0 ||
+      canPass ||
+      isHumanStrikeDefender(state, humanPlayerId));
+
+  return {
+    kind,
+    showModal,
+    counterInstanceIds,
+    interceptInstanceIds,
+    canPass,
+    canUsePlasma,
+  };
+}
 
 /** GameApp.attemptMoveToBattle と同じ分岐（ラッシュ→バトル DnD）。 */
 export type BattleEntryUiRoute =

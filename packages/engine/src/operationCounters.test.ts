@@ -2,7 +2,14 @@ import { describe, expect, it } from "vitest";
 import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
 import { battleFillers, moveToBattle } from "./testing/battleEntry";
-import { createTestState, heldEtCommand, heldWbCommand, inst } from "./testing/fixtures";
+import {
+  createTestState,
+  inst,
+  releasedEtCommand,
+  releasedMaCommand,
+  releasedWbCommand,
+} from "./testing/fixtures";
+import { counterWithCategoryHold } from "./testing/counterPayment";
 import { rushWithCategoryHold } from "./testing/rushPayment";
 
 function def(id: string) {
@@ -29,7 +36,7 @@ describe("operation counters", () => {
       player2: {
         battle: [defender],
         hand: [counter],
-        command: [heldEtCommand("cmd")],
+        command: [releasedEtCommand("cmd")],
         power: [inst("TST-OP", "p1")],
       },
     });
@@ -47,11 +54,12 @@ describe("operation counters", () => {
     expect(state.activePlayer).toBe("player2");
 
     state = unwrap(
-      applyAction(state, {
-        type: "play_counter",
-        playerId: "player2",
-        instanceId: counter.instanceId,
-      }),
+      counterWithCategoryHold(
+        state,
+        "player2",
+        counter.instanceId,
+        releasedEtCommand("cmd").instanceId,
+      ),
     );
 
     expect(state.players.player2.rush.some((c) => c.instanceId === defender.instanceId)).toBe(true);
@@ -63,7 +71,7 @@ describe("operation counters", () => {
     const unit = inst("TST-UNIT-0", "u1");
     const counter = inst("RS-026", "c1");
     const wbPay = inst("TST-OP", "wb-pay");
-    const maCmd = { ...inst("RS-057", "cmd"), commandHeld: true };
+    const maCmd = inst("RS-057", "cmd");
     let state = createTestState({
       phase: "rush",
       activePlayer: "player1",
@@ -88,11 +96,7 @@ describe("operation counters", () => {
     expect(state.pendingRush).toBeDefined();
 
     state = unwrap(
-      applyAction(state, {
-        type: "play_counter",
-        playerId: "player2",
-        instanceId: counter.instanceId,
-      }),
+      counterWithCategoryHold(state, "player2", counter.instanceId, maCmd.instanceId),
     );
 
     expect(state.players.player1.rush).toHaveLength(0);
@@ -113,7 +117,7 @@ describe("operation counters", () => {
         battle: [defender],
         discard: [twin],
         hand: [counter],
-        command: [heldWbCommand("cmd")],
+        command: [releasedWbCommand("cmd")],
         power: [
           inst("TST-OP", "p1"),
           inst("TST-OP", "p2"),
@@ -137,11 +141,12 @@ describe("operation counters", () => {
     expect(state.activePlayer).toBe("player2");
 
     state = unwrap(
-      applyAction(state, {
-        type: "play_counter",
-        playerId: "player2",
-        instanceId: counter.instanceId,
-      }),
+      counterWithCategoryHold(
+        state,
+        "player2",
+        counter.instanceId,
+        releasedWbCommand("cmd").instanceId,
+      ),
     );
 
     expect(state.players.player2.battle.some((c) => c.instanceId === defender.instanceId)).toBe(true);
@@ -161,7 +166,7 @@ describe("operation counters", () => {
       player2: {
         battle: [defender],
         hand: [counter],
-        command: [heldWbCommand("cmd")],
+        command: [releasedWbCommand("cmd")],
         deck: [deckTop, deckSecond, inst("TST-OP", "deck3")],
         power: [
           inst("TST-OP", "p1"),
@@ -185,11 +190,12 @@ describe("operation counters", () => {
     expect(state.pendingLeave).toBeDefined();
 
     state = unwrap(
-      applyAction(state, {
-        type: "play_counter",
-        playerId: "player2",
-        instanceId: counter.instanceId,
-      }),
+      counterWithCategoryHold(
+        state,
+        "player2",
+        counter.instanceId,
+        releasedWbCommand("cmd").instanceId,
+      ),
     );
 
     expect(state.players.player2.battle.some((c) => c.instanceId === defender.instanceId)).toBe(true);
@@ -213,7 +219,7 @@ describe("RS-018 hidden ninja substitute", () => {
     const defender = inst("TST-UNIT-0", "d1");
     const substitute = inst("TST-UNIT-7", "sub1");
     const counter = inst("RS-018", "c1");
-    const maCmd = { ...inst("RS-057", "cmd"), commandHeld: true };
+    const maCmd = inst("RS-057", "cmd");
     let state = createTestState({
       phase: "battle",
       activePlayer: "player1",
@@ -244,10 +250,7 @@ describe("RS-018 hidden ninja substitute", () => {
     );
 
     state = unwrap(
-      applyAction(state, {
-        type: "play_counter",
-        playerId: "player2",
-        instanceId: counter.instanceId,
+      counterWithCategoryHold(state, "player2", counter.instanceId, maCmd.instanceId, {
         substituteInstanceId: substitute.instanceId,
       }),
     );
@@ -260,7 +263,7 @@ describe("RS-018 hidden ninja substitute", () => {
     const attacker = inst("TST-UNIT-2", "a1");
     const defender = inst("TST-UNIT-0", "d1");
     const counter = inst("RS-018", "c1");
-    const maCmd = { ...inst("RS-057", "cmd"), commandHeld: true };
+    const maCmd = inst("RS-057", "cmd");
     let state = createTestState({
       phase: "battle",
       activePlayer: "player1",
@@ -291,8 +294,9 @@ describe("RS-018 hidden ninja substitute", () => {
 
     const subs = getLegalActions(state)
       .filter(
-        (a): a is Extract<typeof a, { type: "play_counter" }> =>
-          a.type === "play_counter" && a.instanceId === counter.instanceId,
+        (a): a is Extract<typeof a, { type: "initiate_command_payment" }> =>
+          a.type === "initiate_command_payment" &&
+          a.sourceInstanceId === counter.instanceId,
       )
       .map((a) => a.substituteInstanceId);
     expect(subs).not.toContain(attacker.instanceId);

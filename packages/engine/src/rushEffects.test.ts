@@ -24,7 +24,7 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
     const radar = inst("RS-124", "radar");
     const power = inst("TST-OP", "pw1");
     const wbPay = inst("TST-OP", "wb-pay");
-    const maCmd = { ...inst("RS-057", "cmd"), commandHeld: true };
+    const maCmd = inst("RS-057", "cmd");
 
     let state = createTestState({
       phase: "rush",
@@ -65,7 +65,9 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
     expect(state.activePlayer).toBe("player2");
     expect(
       getLegalActions(state).some(
-        (a) => a.type === "play_counter" && a.instanceId === counter.instanceId,
+        (a) =>
+          a.type === "initiate_command_payment" &&
+          a.sourceInstanceId === counter.instanceId,
       ),
     ).toBe(true);
 
@@ -75,7 +77,7 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
     const unit = inst("TST-RUSH-FX", "u1");
     const counter = inst("RS-026", "c1");
     const wbPay = inst("TST-OP", "wb-pay");
-    const maCmd = { ...inst("RS-057", "cmd"), commandHeld: true };
+    const maCmd = inst("RS-057", "cmd");
 
     let state = createTestState({
       phase: "rush",
@@ -124,7 +126,7 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
   it("opens shippu counter for defender even when rusher has a pending effect choice", () => {
     const unit = inst("TST-UNIT-0", "u1");
     const counter = inst("RS-026", "c1");
-    const maCmd = { ...inst("RS-057", "cmd"), commandHeld: true };
+    const maCmd = inst("RS-057", "cmd");
     const mUnit = inst("TST-UNIT-2", "m1");
 
     let state = createTestState({
@@ -165,7 +167,10 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
     const actions = getLegalActions(state);
     expect(
       actions.some(
-        (a) => a.type === "play_counter" && a.playerId === "player2" && a.instanceId === counter.instanceId,
+        (a) =>
+          a.type === "initiate_command_payment" &&
+          a.playerId === "player2" &&
+          a.sourceInstanceId === counter.instanceId,
       ),
     ).toBe(true);
     expect(actions.some((a) => a.type === "pass_rush_reaction" && a.playerId === "player2")).toBe(

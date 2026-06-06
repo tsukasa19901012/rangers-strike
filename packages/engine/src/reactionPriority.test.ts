@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { legend1Catalog } from "@rangers-strike/cards";
-import { getLegalActions } from "./index";
-import { createTestState, heldEtCommand, heldWbCommand, inst } from "./testing/fixtures";
+import { applyAction, getLegalActions, isLegalAction } from "./index";
+import {
+  createTestState,
+  inst,
+  releasedEtCommand,
+  releasedMaCommand,
+  releasedWbCommand,
+} from "./testing/fixtures";
+import { counterWithCategoryHold } from "./testing/counterPayment";
 
 function def(id: string) {
   const card = legend1Catalog.cards.find((c) => c.id === id);
@@ -34,7 +41,7 @@ describe("counter reaction priority over effect choice", () => {
       player2: {
         battle: [defender],
         hand: [counter],
-        command: [heldEtCommand("cmd")],
+        command: [releasedEtCommand("cmd")],
         power: [inst("TST-OP", "p1")],
       },
     });
@@ -55,9 +62,9 @@ describe("counter reaction priority over effect choice", () => {
     expect(
       actions.some(
         (a) =>
-          a.type === "play_counter" &&
+          a.type === "initiate_command_payment" &&
           a.playerId === "player2" &&
-          a.instanceId === counter.instanceId,
+          a.sourceInstanceId === counter.instanceId,
       ),
     ).toBe(true);
     expect(actions.some((a) => a.type === "pass_battle_reaction" && a.playerId === "player2")).toBe(
@@ -112,7 +119,7 @@ describe("counter reaction priority over effect choice", () => {
         battle: [defender],
         discard: [twin],
         hand: [counter],
-        command: [heldWbCommand("cmd")],
+        command: [releasedWbCommand("cmd")],
         power: [
           inst("TST-OP", "p1"),
           inst("TST-OP", "p2"),
@@ -139,9 +146,9 @@ describe("counter reaction priority over effect choice", () => {
     expect(
       actions.some(
         (a) =>
-          a.type === "play_counter" &&
+          a.type === "initiate_command_payment" &&
           a.playerId === "player2" &&
-          a.instanceId === counter.instanceId,
+          a.sourceInstanceId === counter.instanceId,
       ),
     ).toBe(true);
     expect(actions.some((a) => a.type === "pass_leave_reaction" && a.playerId === "player2")).toBe(
@@ -150,5 +157,58 @@ describe("counter reaction priority over effect choice", () => {
     expect(actions.some((a) => a.type === "resolve_effect_choice" && a.playerId === "player1")).toBe(
       false,
     );
+  });
+
+  it("allows applying RS-026 rush counter while rusher has a pending effect choice", () => {
+    const unit = inst("TST-UNIT-0", "u1");
+    const counter = inst("RS-026", "c1");
+    const mUnit = inst("TST-UNIT-2", "m1");
+
+    let state = createTestState({
+      phase: "rush",
+      activePlayer: "player2",
+      player1: {
+        rush: [unit],
+        command: [mUnit],
+      },
+      player2: {
+        hand: [counter],
+        command: [releasedMaCommand("cmd")],
+        power: [inst("TST-OP", "p2"), inst("TST-OP", "p3"), inst("TST-OP", "p4")],
+      },
+    });
+    state = {
+      ...state,
+      pendingRush: {
+        rusherPlayerId: "player1",
+        rushedInstanceId: unit.instanceId,
+        phasePlayerId: "player1",
+      },
+      pendingEffectChoice: {
+        ...attackerEffectChoice,
+        validInstanceIds: [mUnit.instanceId],
+      },
+    };
+    state.definitions["RS-026"] = def("RS-026");
+
+    const paymentAction = {
+      type: "initiate_command_payment" as const,
+      playerId: "player2" as const,
+      kind: "category_use" as const,
+      sourceInstanceId: counter.instanceId,
+    };
+    expect(isLegalAction(state, paymentAction)).toBe(true);
+
+    const result = counterWithCategoryHold(
+      state,
+      "player2",
+      counter.instanceId,
+      releasedMaCommand("cmd").instanceId,
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.state.players.player1.rush).toHaveLength(0);
+    expect(result.state.players.player1.deck[0]?.instanceId).toBe(unit.instanceId);
+    expect(result.state.pendingRush).toBeUndefined();
   });
 });

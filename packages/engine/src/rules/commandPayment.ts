@@ -6,6 +6,7 @@ import {
   zordSlotsFilledByMaterial,
 } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
+import { getCardEffect } from "@rangers-strike/cards";
 import type { InitiateCommandPaymentAction, ZordMaterialDestination } from "../types/actions";
 import type {
   CommandPaymentContinuation,
@@ -63,6 +64,10 @@ import {
   requiresAllFusionPartners,
 } from "./zord";
 import { canBeginZordSetup, hasLegalZordRush } from "./zordSetup";
+import {
+  canInitiateCounterCategoryPayment,
+  isCounterReactionActive,
+} from "./operationCounters";
 
 function formatCategories(categories: Category[]): string {
   return categories.join("・");
@@ -379,6 +384,9 @@ export function applyCommandPaymentResolve(
   if (pending.kind === "category_use" && pending.continuation.type === "rush") {
     playerPatch = { ...playerPatch, rushCategoryHoldReady: true };
   }
+  if (pending.kind === "category_use" && pending.continuation.type === "play_counter") {
+    playerPatch = { ...playerPatch, counterCategoryHoldReady: true };
+  }
   if (playerPatch !== player) {
     nextState = {
       ...nextState,
@@ -626,6 +634,30 @@ export function buildPaymentFromInitiateAction(
     if (!canPlayOperationExceptCommandHold(player, state.definitions, def)) {
       return null;
     }
+
+    const isCounter =
+      getCardEffect(handFound.card.cardId)?.kind === "counter" &&
+      isCounterReactionActive(state);
+    if (isCounter) {
+      if (!canInitiateCounterCategoryPayment(state, playerId, handFound.card.instanceId)) {
+        return null;
+      }
+      const continuation: CommandPaymentContinuation = {
+        type: "play_counter",
+        substituteInstanceId: action.substituteInstanceId,
+      };
+      return buildCategoryPayment(
+        state,
+        playerId,
+        handFound.card.instanceId,
+        handFound.card.cardId,
+        categories,
+        continuation,
+        action.prismSubstitute ?? false,
+        { perRushPayment: true },
+      );
+    }
+
     const continuation: CommandPaymentContinuation = {
       type: "play_operation",
       targetInstanceId: action.targetInstanceId,
@@ -673,7 +705,14 @@ export function isInitiateCommandPaymentLegal(
     }
   }
 
-  if (action.kind === "category_use" && state.phase !== "rush") return false;
+  if (action.kind === "category_use" && state.phase !== "rush") {
+    const handFound = findInZone(state.players[action.playerId], "hand", action.sourceInstanceId);
+    const isCounterPayment =
+      !!handFound &&
+      getCardEffect(handFound.card.cardId)?.kind === "counter" &&
+      isCounterReactionActive(state);
+    if (!isCounterPayment) return false;
+  }
   if (action.kind === "battle_entry" && state.phase !== "battle") return false;
 
   return true;

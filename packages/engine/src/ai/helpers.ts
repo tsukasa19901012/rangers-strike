@@ -1,5 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
-import { listZordFusionPartnerIds } from "@rangers-strike/cards";
+import { getCardEffect, listZordFusionPartnerIds } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
@@ -1267,6 +1267,42 @@ export function pickStrikeReaction(
   return actions.find((a) => a.type === "pass_strike_reaction") ?? null;
 }
 
+function isCounterCategoryPayment(
+  state: GameState,
+  playerId: PlayerId,
+  action: GameAction,
+): action is Extract<GameAction, { type: "initiate_command_payment" }> {
+  if (action.type !== "initiate_command_payment" || action.kind !== "category_use") {
+    return false;
+  }
+  const found = state.players[playerId].hand.find(
+    (c) => c.instanceId === action.sourceInstanceId,
+  );
+  return !!found && getCardEffect(found.cardId)?.kind === "counter";
+}
+
+function simulateCounterOutcome(
+  state: GameState,
+  playerId: PlayerId,
+  action: GameAction,
+): GameState | null {
+  if (action.type === "play_counter") {
+    const result = applyAction(state, action);
+    return result.ok ? result.state : null;
+  }
+
+  if (!isCounterCategoryPayment(state, playerId, action)) return null;
+
+  const initiated = applyAction(state, action);
+  if (!initiated.ok) return null;
+
+  const resolve = pickCommandPaymentResolve(initiated.state, playerId);
+  if (!resolve || resolve.type === "cancel_command_payment") return null;
+
+  const resolved = applyAction(initiated.state, resolve);
+  return resolved.ok ? resolved.state : null;
+}
+
 export function pickBestCounter(
   state: GameState,
   playerId: PlayerId,
@@ -1274,7 +1310,12 @@ export function pickBestCounter(
   passType: GameAction["type"],
 ): GameAction | null {
   const pass = actions.find((a) => a.type === passType);
-  const counters = actionsOfType(actions, "play_counter");
+  const counterCandidates: GameAction[] = [
+    ...actionsOfType(actions, "play_counter"),
+    ...actionsOfType(actions, "initiate_command_payment").filter((action) =>
+      isCounterCategoryPayment(state, playerId, action),
+    ),
+  ];
 
   let passScore = Number.NEGATIVE_INFINITY;
   if (pass) {
@@ -1287,10 +1328,10 @@ export function pickBestCounter(
   let bestCounter: GameAction | null = null;
   let bestCounterScore = Number.NEGATIVE_INFINITY;
 
-  for (const counter of counters) {
-    const result = applyAction(state, counter);
-    if (!result.ok) continue;
-    const score = evaluateState(result.state, playerId);
+  for (const counter of counterCandidates) {
+    const nextState = simulateCounterOutcome(state, playerId, counter);
+    if (!nextState) continue;
+    const score = evaluateState(nextState, playerId);
     if (score > bestCounterScore) {
       bestCounterScore = score;
       bestCounter = counter;
@@ -1399,12 +1440,16 @@ export function quickActionPriority(
     action.type === "initiate_command_payment" ||
     action.type === "resolve_command_payment"
   ) {
-    if (
-      state.phase === "rush" &&
-      action.type === "initiate_command_payment" &&
-      action.kind === "category_use"
-    ) {
-      return 14_000;
+    if (action.type === "initiate_command_payment" && action.kind === "category_use") {
+      const card = state.players[action.playerId].hand.find(
+        (c) => c.instanceId === action.sourceInstanceId,
+      );
+      if (card && getCardEffect(card.cardId)?.kind === "counter") {
+        return 2_500;
+      }
+      if (state.phase === "rush") {
+        return 14_000;
+      }
     }
     return 600;
   }

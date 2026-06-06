@@ -118,6 +118,7 @@ import {
   applyNewGymnasticsCounter,
   applyShippuNinjaCounter,
   applySuperShieldSubstitute,
+  canExecuteHandCounter,
   getCounterEffectId,
   hasBattleCounterReactions,
   resolveBattlePending,
@@ -162,6 +163,18 @@ function ok(state: GameState, message: string): ActionResult {
       log: [...state.log, message],
       winner: checkWinner(state),
     },
+  };
+}
+
+function clearCounterHoldReady(state: GameState, playerId: PlayerId): GameState {
+  const player = state.players[playerId];
+  if (!player.counterCategoryHoldReady) return state;
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      counterCategoryHoldReady: false,
+    }),
   };
 }
 
@@ -583,6 +596,14 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           zordMothershipHoldInstanceIds: holdIds,
         });
       }
+      if (cont.type === "play_counter") {
+        return applyAction(nextState, {
+          type: "play_counter",
+          playerId,
+          instanceId: pending.sourceInstanceId,
+          substituteInstanceId: cont.substituteInstanceId,
+        });
+      }
       return applyAction(nextState, {
         type: "play_operation",
         playerId,
@@ -608,6 +629,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
               ...payer,
               battleEntryHoldReady: false,
               rushCategoryHoldReady: false,
+              counterCategoryHoldReady: false,
             },
           },
         },
@@ -1062,6 +1084,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
     }
 
     case "play_counter": {
+      if (!canExecuteHandCounter(state, playerId, action.instanceId)) {
+        return fail("command_not_held");
+      }
+
       if (state.pendingLeave) {
         const pending = state.pendingLeave;
         if (playerId !== pending.ownerPlayerId) return fail("wrong_player");
@@ -1078,9 +1104,12 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
               battlePhasePlayer: strikePending.battlePhasePlayer,
               damageCancelled: pending.resumePendingStrike.damageCancelled,
             };
-            return completeStrike(nextState, resumedStrike);
+            return completeStrike(
+            clearCounterHoldReady(nextState, playerId),
+            resumedStrike,
+          );
           }
-          return ok(nextState, result.log);
+          return ok(clearCounterHoldReady(nextState, playerId), result.log);
         }
         if (effectId === "dino_guts") {
           const result = applyDinoGutsCounter(
@@ -1099,9 +1128,12 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
               battlePhasePlayer: strikePending.battlePhasePlayer,
               damageCancelled: pending.resumePendingStrike.damageCancelled,
             };
-            return completeStrike(nextState, resumedStrike);
+            return completeStrike(
+              clearCounterHoldReady(nextState, playerId),
+              resumedStrike,
+            );
           }
-          return ok(nextState, result.log);
+          return ok(clearCounterHoldReady(nextState, playerId), result.log);
         }
         return fail("invalid_counter");
       }
@@ -1122,7 +1154,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           return {
             ok: true,
             state: {
-              ...resolved.state,
+              ...clearCounterHoldReady(resolved.state, playerId),
               log: [...resolved.state.log, result.log, resolved.log],
               winner: checkWinner(resolved.state),
             },
@@ -1141,7 +1173,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           return {
             ok: true,
             state: {
-              ...resolved.state,
+              ...clearCounterHoldReady(resolved.state, playerId),
               log: [...resolved.state.log, result.log, resolved.log],
               winner: checkWinner(resolved.state),
             },
@@ -1159,7 +1191,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         }
         const result = applyShippuNinjaCounter(state, playerId, action.instanceId, pending);
         const nextState = finalizeRushPending(result.state, pending);
-        return ok(nextState, result.log);
+        return ok(clearCounterHoldReady(nextState, playerId), result.log);
       }
 
       if (state.pendingStrike) {

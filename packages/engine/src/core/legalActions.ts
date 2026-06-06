@@ -45,11 +45,15 @@ import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart } from ".
 import { listZordRushPaymentVariants } from "../rules/mothership";
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
 import {
+  canExecuteHandCounter,
+  canInitiateCounterCategoryPayment,
   canPlayDinoGutsLeaveCounter,
   canPlayHandCounter,
   collectHiddenNinjaSubstitutes,
   getCounterEffectId,
   hasPlayableDinoChronicleCounter,
+  isCounterReactionActive,
+  isHandCounterCard,
 } from "../rules/operationCounters";
 import {
   canPlayPlasmaEnergyCounter,
@@ -64,12 +68,79 @@ function assertActive(state: GameState, playerId: PlayerId): boolean {
 }
 
 /** カウンター窓が開いているとき、応答するプレイヤー（効果選択より優先）。 */
-function reactionChooserPlayerId(state: GameState): PlayerId | undefined {
+export function getReactionChooserPlayerId(state: GameState): PlayerId | undefined {
   if (state.pendingLeave) return state.pendingLeave.ownerPlayerId;
   if (state.pendingStrike) return opponent(state.pendingStrike.strikerPlayerId);
   if (state.pendingBattle) return state.pendingBattle.defenderPlayerId;
   if (state.pendingRush) return opponent(state.pendingRush.rusherPlayerId);
   return undefined;
+}
+
+function isCounterPaymentAction(
+  state: GameState,
+  action: Extract<GameAction, { type: "initiate_command_payment" }>,
+): boolean {
+  return (
+    action.kind === "category_use" &&
+    isCounterReactionActive(state) &&
+    isHandCounterCard(state, action.playerId, action.sourceInstanceId)
+  );
+}
+
+function appendCounterCategoryPaymentActions(
+  state: GameState,
+  playerId: PlayerId,
+  counterInstanceId: string,
+  actions: GameAction[],
+  options?: { substituteInstanceId?: string },
+): void {
+  if (!canInitiateCounterCategoryPayment(state, playerId, counterInstanceId)) return;
+
+  const found = findInZone(state.players[playerId], "hand", counterInstanceId);
+  if (!found) return;
+  const categories = cardCategories(getDefinition(state.definitions, found.card.cardId)!);
+
+  const pushPayment = (prismSubstitute?: boolean) => {
+    const action: GameAction = {
+      type: "initiate_command_payment",
+      playerId,
+      kind: "category_use",
+      sourceInstanceId: counterInstanceId,
+      prismSubstitute,
+      substituteInstanceId: options?.substituteInstanceId,
+    };
+    if (isInitiateCommandPaymentLegal(state, action)) {
+      actions.push(action);
+    }
+  };
+
+  const paymentOptions = getCategoryPaymentOptions(state, playerId, categories, {
+    perRushPayment: true,
+  });
+  if (!paymentOptions) return;
+
+  pushPayment(paymentOptions.prismSubstitute);
+  if (paymentOptions.prismAvailable && !paymentOptions.prismSubstitute) {
+    pushPayment(true);
+  }
+}
+
+function isReactionWindowAction(action: GameAction): boolean {
+  switch (action.type) {
+    case "initiate_command_payment":
+      return true;
+    case "play_counter":
+    case "pass_strike_reaction":
+    case "pass_battle_reaction":
+    case "pass_rush_reaction":
+    case "pass_leave_reaction":
+    case "five_tech_intercept":
+    case "use_plasma_energy":
+    case "use_super_shield":
+      return true;
+    default:
+      return false;
+  }
 }
 
 function appendStrikeReactionActions(
@@ -110,23 +181,30 @@ function appendBattleReactionActions(
   const defenderCard = findInZone(defender, "battle", pending.defenderInstanceId)?.card;
 
   for (const card of defender.hand) {
-    if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
     const effectId = getCounterEffectId(state, playerId, card.instanceId);
     if (effectId === "new_gymnastics") {
       if (!defenderCard || !isSmallUnit(state.definitions, defenderCard.cardId)) continue;
-      actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
+      appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
+      if (canExecuteHandCounter(state, playerId, card.instanceId)) {
+        actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
+      }
     }
     if (effectId === "hidden_ninja") {
       for (const sub of collectHiddenNinjaSubstitutes(state, [
         pending.defenderInstanceId,
         pending.attackerInstanceId,
       ])) {
-        actions.push({
-          type: "play_counter",
-          playerId,
-          instanceId: card.instanceId,
+        appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions, {
           substituteInstanceId: sub.instanceId,
         });
+        if (canExecuteHandCounter(state, playerId, card.instanceId)) {
+          actions.push({
+            type: "play_counter",
+            playerId,
+            instanceId: card.instanceId,
+            substituteInstanceId: sub.instanceId,
+          });
+        }
       }
     }
   }
@@ -147,8 +225,10 @@ function appendRushReactionActions(
   const defender = state.players[defenderId];
   for (const card of defender.hand) {
     if (getCounterEffectId(state, defenderId, card.instanceId) !== "shippu_ninja") continue;
-    if (!canPlayHandCounter(state, defenderId, card.instanceId)) continue;
-    actions.push({ type: "play_counter", playerId: defenderId, instanceId: card.instanceId });
+    appendCounterCategoryPaymentActions(state, defenderId, card.instanceId, actions);
+    if (canExecuteHandCounter(state, defenderId, card.instanceId)) {
+      actions.push({ type: "play_counter", playerId: defenderId, instanceId: card.instanceId });
+    }
   }
 
   actions.push({ type: "pass_rush_reaction", playerId: defenderId });
@@ -188,12 +268,19 @@ function appendLeaveReactionActions(
     } else {
       continue;
     }
-    if (!canPlayHandCounter(state, pending.ownerPlayerId, card.instanceId)) continue;
-    actions.push({
-      type: "play_counter",
-      playerId: pending.ownerPlayerId,
-      instanceId: card.instanceId,
-    });
+    appendCounterCategoryPaymentActions(
+      state,
+      pending.ownerPlayerId,
+      card.instanceId,
+      actions,
+    );
+    if (canExecuteHandCounter(state, pending.ownerPlayerId, card.instanceId)) {
+      actions.push({
+        type: "play_counter",
+        playerId: pending.ownerPlayerId,
+        instanceId: card.instanceId,
+      });
+    }
   }
 
   if (pending.superShieldInstanceId) {
@@ -736,7 +823,7 @@ export function getLegalActions(state: GameState): GameAction[] {
     (state.pendingDamagePayment
       ? damagePaymentChoosingPlayer(state.pendingDamagePayment)
       : undefined) ??
-    reactionChooserPlayerId(state) ??
+    getReactionChooserPlayerId(state) ??
     state.pendingEffectChoice?.playerId ??
     state.activePlayer;
   const player = state.players[playerId];
@@ -1012,6 +1099,11 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
   if (state.winner) return false;
 
   if (action.type === "initiate_command_payment") {
+    const reactionActor = getReactionChooserPlayerId(state);
+    if (reactionActor && isCounterPaymentAction(state, action)) {
+      if (action.playerId !== reactionActor) return false;
+      return isInitiateCommandPaymentLegal(state, action);
+    }
     if (!assertActive(state, action.playerId)) return false;
     return isInitiateCommandPaymentLegal(state, action);
   }
@@ -1069,7 +1161,10 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
     return false;
   }
 
-  if (state.pendingLeave) {
+  const reactionActor = getReactionChooserPlayerId(state);
+  if (reactionActor && isReactionWindowAction(action)) {
+    if (action.playerId !== reactionActor) return false;
+  } else if (state.pendingLeave) {
     if (action.playerId !== state.pendingLeave.ownerPlayerId) return false;
   } else if (state.pendingEffectChoice) {
     if (action.playerId !== state.pendingEffectChoice.playerId) return false;
@@ -1077,13 +1172,6 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
     if (action.playerId !== state.pendingBattleEntry.playerId) return false;
   } else if (state.pendingScry) {
     if (action.playerId !== state.pendingScry.playerId) return false;
-  } else if (state.pendingRush) {
-    if (action.playerId !== opponent(state.pendingRush.rusherPlayerId)) return false;
-  } else if (state.pendingBattle) {
-    if (action.playerId !== state.pendingBattle.defenderPlayerId) return false;
-  } else if (state.pendingStrike) {
-    const defenderId = opponent(state.pendingStrike.strikerPlayerId);
-    if (action.playerId !== defenderId) return false;
   } else if (!assertActive(state, action.playerId)) {
     return false;
   }
@@ -1207,7 +1295,8 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
       (a.zordMaterialDestination ?? "") === (b.zordMaterialDestination ?? "") &&
       holdsA === holdsB &&
       (a.targetInstanceId ?? "") === (b.targetInstanceId ?? "") &&
-      (a.extraInstanceId ?? "") === (b.extraInstanceId ?? "")
+      (a.extraInstanceId ?? "") === (b.extraInstanceId ?? "") &&
+      (a.substituteInstanceId ?? "") === (b.substituteInstanceId ?? "")
     );
   }
 
