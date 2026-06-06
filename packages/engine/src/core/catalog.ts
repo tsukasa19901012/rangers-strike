@@ -11,6 +11,7 @@ import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { hasCommandForCardUse } from "../rules/restrictions";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
+import { legend3EnemySComboDelta } from "../rules/legend3/fieldEffects";
 import { validateZordAdditionalPayment } from "../rules/mothership";
 import { collectZordMaterials, hasAllRequiredFusionMaterials, needsZordMaterial, requiresAllFusionPartners } from "../rules/zord";
 import { isShironLightRushTarget } from "../rules/shironLight";
@@ -133,15 +134,20 @@ export function isLargeUnit(
   return getDefinition(definitions, cardId)?.size === "L";
 }
 
-/** RS-015: NC判定用の実効コンボ数（最小2、生値が2より大きい場合のみ減少）。 */
+/** RS-015 減少 + RS-140 データ解析（敵場のコロンで自軍SのCN+1）。 */
 export function effectiveComboNumber(
   state: GameState,
   playerId: PlayerId,
   rawComboNumber: number,
+  cardId?: string,
 ): number {
-  const delta = getTurnModifiers(state.players[playerId]).comboNumberDelta;
-  if (rawComboNumber <= 2) return rawComboNumber;
-  return Math.max(2, rawComboNumber - delta);
+  const turnDelta = getTurnModifiers(state.players[playerId]).comboNumberDelta;
+  let effective =
+    rawComboNumber <= 2 ? rawComboNumber : Math.max(2, rawComboNumber - turnDelta);
+  if (cardId && isSmallUnit(state.definitions, cardId)) {
+    effective += legend3EnemySComboDelta(state, playerId);
+  }
+  return effective;
 }
 
 /** 場の常駐オペレーションによるパッシブBPボーナス。 */

@@ -48,7 +48,7 @@ export function numberComboTriggers(
 ): boolean {
   const effectiveNumber =
     typeof definition.comboNumber === "number"
-      ? effectiveComboNumber(state, playerId, definition.comboNumber)
+      ? effectiveComboNumber(state, playerId, definition.comboNumber, card.cardId)
       : -1;
 
   return !!findNcNamedEffect(
@@ -70,7 +70,7 @@ export function resolveNamedNcEffectId(
 ): ReturnType<typeof getNumberComboEffect> {
   const effectiveNumber =
     typeof definition.comboNumber === "number"
-      ? effectiveComboNumber(state, playerId, definition.comboNumber)
+      ? effectiveComboNumber(state, playerId, definition.comboNumber, card.cardId)
       : -1;
   const named = findNcNamedEffect(
     card.cardId,
