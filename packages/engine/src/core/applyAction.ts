@@ -903,7 +903,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         return fail("cannot_enter_battle");
       }
 
-      const entryHoldsRequired = requiredBattleEntryHolds(state, found.card);
+      const entryHoldsRequired = requiredBattleEntryHolds(state, playerId, found.card);
       if (
         entryHoldsRequired > 0 &&
         countHeldCommands(player) < entryHoldsRequired

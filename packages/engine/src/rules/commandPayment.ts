@@ -110,7 +110,7 @@ export function getBattleEntryPaymentNeeds(
 
   const player = state.players[playerId];
   const unitHold = getBattleEntryHoldCount(unit.cardId);
-  const requiredTotal = requiredBattleEntryHolds(state, unit);
+  const requiredTotal = requiredBattleEntryHolds(state, playerId, unit);
   const held = countHeldCommands(player);
   const battleEligible = countBattleEntryEligibleHolds(player);
 

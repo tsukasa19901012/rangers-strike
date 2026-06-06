@@ -435,4 +435,49 @@ describe("legend3 integration", () => {
       true,
     );
   });
+
+  it("RS-152 scorching roar lets WB M enter battle without hold when gaolion is in rush and discard has same name", () => {
+    const gaolion = inst("RS-152", "lion");
+    const eagle = inst("RS-153", "eagle");
+    const eagleDiscard = inst("RS-153", "eagle-discard");
+    const state = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: {
+        rush: [gaolion, eagle],
+        discard: [eagleDiscard],
+        command: [inst("TST-OP-DA", "cmd")],
+      },
+    });
+
+    expect(canMoveUnitToBattle(state, "player1", eagle, "rush")).toBe(true);
+    const entered = unwrap(
+      applyAction(state, {
+        type: "move_to_battle",
+        playerId: "player1",
+        instanceId: eagle.instanceId,
+      }),
+    );
+    expect(entered.players.player1.battle.some((c) => c.instanceId === eagle.instanceId)).toBe(
+      true,
+    );
+    expect(entered.players.player1.command.every((c) => !c.commandHeld)).toBe(true);
+  });
+
+  it("RS-152 scorching roar does not bypass hold without same-name card in discard", () => {
+    const gaolion = inst("RS-152", "lion");
+    const eagle = inst("RS-153", "eagle");
+    const state = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: {
+        rush: [gaolion, eagle],
+        command: [inst("TST-OP-DA", "cmd")],
+      },
+    });
+
+    expect(canMoveUnitToBattle(state, "player1", eagle, "rush")).toBe(false);
+  });
 });

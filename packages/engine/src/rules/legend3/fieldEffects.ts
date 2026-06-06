@@ -74,11 +74,32 @@ export function isStealthUnit(state: GameState, instanceId: string): boolean {
   return false;
 }
 
-export function scorchingRoarBypassesHold(cardId: string, state: GameState, playerId: PlayerId): boolean {
+function hasScorchingRoarOnField(state: GameState, playerId: PlayerId): boolean {
+  const player = state.players[playerId];
+  for (const zone of ["rush", "battle"] as const) {
+    if (
+      player[zone].some((c) =>
+        findNamedEffectByEffectId(c.cardId, "scorching_roar"),
+      )
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/** RS-152 灼熱の咆哮: 場のガオライオンが WB M の※ホールド進入を無効化（捨札に同名あり）。 */
+export function scorchingRoarBypassesHold(
+  cardId: string,
+  state: GameState,
+  playerId: PlayerId,
+): boolean {
   const def = getDefinition(state.definitions, cardId);
   if (def?.category !== "WB" || !isMediumUnit(state.definitions, cardId)) return false;
-  return state.players[playerId].battle.some(
-    (c) => findNamedEffectByEffectId(c.cardId, "scorching_roar"),
+  if (!hasScorchingRoarOnField(state, playerId)) return false;
+  const unitName = def.name;
+  return state.players[playerId].discard.some(
+    (c) => getDefinition(state.definitions, c.cardId)?.name === unitName,
   );
 }
 

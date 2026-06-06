@@ -352,7 +352,7 @@ describe("battle entry hold requirements", () => {
       },
     });
 
-    expect(requiredBattleEntryHolds(state, unit)).toBe(3);
+    expect(requiredBattleEntryHolds(state, "player1", unit)).toBe(3);
 
     const initiated = applyAction(state, {
       type: "initiate_command_payment",

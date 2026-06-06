@@ -93,7 +93,7 @@ export function getLightningGravityHoldNotice(
   if (lgCount === 0) return null;
 
   const player = state.players[playerId];
-  const requiredHolds = requiredBattleEntryHolds(state, unit);
+  const requiredHolds = requiredBattleEntryHolds(state, playerId, unit);
   const heldHolds = countHeldCommands(player);
   if (requiredHolds === 0 || heldHolds >= requiredHolds) return null;
 
@@ -110,9 +110,13 @@ export function getLightningGravityHoldNotice(
 /** カード文面 + RS-069: 戦闘進入にホールド中コマンドが必要。 */
 export function requiredBattleEntryHolds(
   state: GameState,
+  playerId: PlayerId,
   unit: CardInstance,
 ): number {
-  const unitHold = getBattleEntryHoldCount(unit.cardId);
+  let unitHold = getBattleEntryHoldCount(unit.cardId);
+  if (unitHold > 0 && scorchingRoarBypassesHold(unit.cardId, state, playerId)) {
+    unitHold = 0;
+  }
   const lgHold = isMediumUnit(state.definitions, unit.cardId)
     ? countActiveLightningGravity(state)
     : 0;
