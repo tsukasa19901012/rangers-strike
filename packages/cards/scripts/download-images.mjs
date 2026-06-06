@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Download card images from GrnRngr.com into local assets.
- * Usage: node scripts/download-images.mjs [legend1|legend2|all]
+ * GrnRngr.com からカード画像をローカルアセットへダウンロード。
+ * 使い方: node scripts/download-images.mjs [legend1|legend2|all]
  */
 import { mkdir, readFile, writeFile, copyFile } from "node:fs/promises";
 import path from "node:path";

@@ -40,7 +40,7 @@ function attackerJointLEffectId(
   return getJointLNamedEffect(partner.cardId)?.effectId;
 }
 
-/** RS-126 red_boot / RS-178 sagas_sniper / RS-171 maximum_penetration / RS-133 blue_bados / RS-158 baki_baki. */
+/** RS-126 red_boot / RS-178 sagas_sniper / RS-171 maximum_penetration / RS-133 blue_bados / RS-158 baki_baki。 */
 export function resolveLegend3OnBattleWin(
   state: GameState,
   pending: PendingBattle,

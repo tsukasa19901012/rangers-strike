@@ -35,19 +35,19 @@ export * from "./operationCatalog";
 export * from "./unitEffectCatalog";
 export * from "./wikiReference";
 
-/** Web path prefix for Legend 1 card images */
+/** レジェンド1 カード画像の Web パス接頭辞 */
 export const LEGEND1_IMAGE_BASE_PATH = "/cards/legend1";
 
-/** Web path prefix for Legend 2 card images */
+/** レジェンド2 カード画像の Web パス接頭辞 */
 export const LEGEND2_IMAGE_BASE_PATH = "/cards/legend2";
 
-/** Web path prefix for Legend 3 card images */
+/** レジェンド3 カード画像の Web パス接頭辞 */
 export const LEGEND3_IMAGE_BASE_PATH = "/cards/legend3";
 
-/** Card back art (tcg-db.nikita.jp). */
+/** カード裏面画像（tcg-db.nikita.jp）。 */
 export const LEGEND1_CARD_BACK_IMAGE_URL = `${LEGEND1_IMAGE_BASE_PATH}/back.jpg`;
 
-/** Filesystem path to card assets (relative to @rangers-strike/cards package root) */
+/** カードアセットのファイルシステムパス（@rangers-strike/cards パッケージルートからの相対） */
 export const LEGEND1_ASSETS_DIR = "assets/legend1";
 export const LEGEND2_ASSETS_DIR = "assets/legend2";
 export const LEGEND3_ASSETS_DIR = "assets/legend3";

@@ -57,7 +57,7 @@ function isWildBeastUnit(
   return categoriesInclude(def.category, "WB");
 }
 
-/** RS-052 超シールド進化 — discard shield instead of destroying WB ally. */
+/** RS-052 超シールド進化 — WB味方を撃破する代わりにシールドを捨てる。 */
 export function findSuperShieldSubstitute(
   state: GameState,
   intent: LeaveIntent,
@@ -258,7 +258,7 @@ export function hasDinoGutsLeaveReaction(
   return false;
 }
 
-/** @deprecated Use hasDinoChronicleLeaveReaction */
+/** @deprecated hasDinoChronicleLeaveReaction を使用 */
 export function hasLeaveCounterReactions(
   state: GameState,
   ownerId: PlayerId,

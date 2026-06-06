@@ -471,7 +471,7 @@ export function resolveEnterBattleEffects(
   return { state: nextState, logs };
 }
 
-/** Resume enter-battle resolution after a combo choice (before attack/strike prompt). */
+/** コンボ選択後に戦闘進入解決を再開（攻撃/ストライクプロンプトの前）。 */
 export function continueEnterBattleEffects(
   state: GameState,
   entry: PendingBattleEntry,

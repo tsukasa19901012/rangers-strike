@@ -1220,7 +1220,7 @@ export function GameApp() {
     apply({ type: actionType, playerId: HUMAN_PLAYER });
   }, [apply, humanReactionKind]);
 
-  /** Clears floating notices when a blocking modal takes over (not battle entry / effect choice). */
+  /** ブロッキングモーダル表示時にフローティング通知をクリア（バトル登場 / 効果選択は除く）。 */
   const suppressFloatingNotices =
     !!state &&
     (isHumanStrikeDefender ||

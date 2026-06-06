@@ -16,7 +16,7 @@ import { resolveSkyMagicSlash } from "../namedUnitEffects";
 import type { NamedEffectOutcome } from "../namedUnitEffects";
 import type { ComboOutcome } from "../comboTypes";
 
-/** RS-095: return all enemy rush S to hand. */
+/** RS-095: 敵ラッシュのSをすべて手札へ戻す。 */
 export function resolveManeHurricane(
   state: GameState,
   playerId: PlayerId,
@@ -44,7 +44,7 @@ export function resolveManeHurricane(
   };
 }
 
-/** RS-121: opponent may rush unit from command (effects suppressed). */
+/** RS-121: 相手がコマンドからユニットをラッシュできる（効果は抑制）。 */
 export function resolveRuinExcavation(
   state: GameState,
   playerId: PlayerId,
@@ -241,7 +241,7 @@ export function applyLegend2ConditionalModifiers(
   card: CardInstance,
   effectId: string,
 ): CardInstance {
-  /** val_shield / dance_of_darkness are computed dynamically in legend2EffectiveSp. */
+  /** val_shield / dance_of_darkness は legend2EffectiveSp で動的に計算。 */
   if (effectId === "val_shield" || effectId === "dance_of_darkness") {
     return card;
   }

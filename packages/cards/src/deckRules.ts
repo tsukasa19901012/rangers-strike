@@ -2,13 +2,13 @@ import { allCardsCatalog } from "./catalog";
 import type { CardCatalog, CardDefinition, DeckEntry } from "./schema";
 import { hasUnnamedRule } from "./unitEffects";
 
-/** Official minimum deck size. */
+/** 公式デッキ最小枚数。 */
 export const DECK_MIN_SIZE = 40;
 
-/** Default max copies per card name in one deck. */
+/** デッキ1枚あたりの同名カード枚数上限（既定）。 */
 export const DECK_NAME_COPY_LIMIT = 3;
 
-/** Upper bound for unlimited-copy cards in the deck builder UI. */
+/** デッキビルダー UI で無制限枚数カードの上限。 */
 export const DECK_UNLIMITED_COPY_CAP = 40;
 
 const UNLIMITED_DECK_NOTE = "デッキに3枚以上入れてもよい";
@@ -19,7 +19,7 @@ export type DeckValidationResult = {
   errors: string[];
 };
 
-/** Cards that may exceed the usual 3-per-name limit (e.g. 戦闘員). */
+/** 通常3枚制限を超えてよいカード（例: 戦闘員）。 */
 export function deckCopyUnlimited(card: CardDefinition): boolean {
   if (card.features?.includes("戦闘員")) {
     return true;

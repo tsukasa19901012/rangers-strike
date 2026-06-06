@@ -7,7 +7,7 @@ export type WiredOperation = {
   text: string;
 };
 
-/** Instant ops with dedicated handlers in resolveOperation.ts. */
+/** resolveOperation.ts に専用ハンドラがある即時オペ。 */
 export const IMPLEMENTED_INSTANT_EFFECT_IDS = [
   "place_in_power",
   "dynamite_power",
@@ -29,7 +29,7 @@ export const IMPLEMENTED_INSTANT_EFFECT_IDS = [
   "animal_heart",
 ] as const;
 
-/** Permanent ops placed via placePermanentOperation (+ dedicated actions). */
+/** placePermanentOperation（+ 専用アクション）で配置する常駐オペ。 */
 export const IMPLEMENTED_PERMANENT_EFFECT_IDS = [
   "battle_dance",
   "super_brain",
@@ -48,7 +48,7 @@ export const IMPLEMENTED_PERMANENT_EFFECT_IDS = [
   "super_electron_radar",
 ] as const;
 
-/** Counter ops handled in operationCounters / strikeReactions. */
+/** operationCounters / strikeReactions で処理するカウンターオペ。 */
 export const IMPLEMENTED_COUNTER_EFFECT_IDS = [
   "new_gymnastics",
   "dino_chronicle",

@@ -1,6 +1,6 @@
 import { getEffectLabel } from "@rangers-strike/cards";
 
-/** `named_effect|choice:effectId` — hide interim notice; show resolve with targets instead. */
+/** `named_effect|choice:effectId` — 途中通知を非表示；代わりに対象付きresolveを表示。 */
 export const SUPPRESSED_CHOICE_NOTICE_EFFECT_IDS = new Set([
   "armor_attack",
   "tyranno_sonic",
@@ -19,7 +19,7 @@ export const SUPPRESSED_CHOICE_NOTICE_EFFECT_IDS = new Set([
 
 const IGNORED_RESOLVE_TARGETS = new Set(["skipped", "draw", "none", "own_only"]);
 
-/** effectId → text after quoted target name(s). */
+/** effectId → 引用された対象名の後に続くテキスト。 */
 const EFFECT_TARGET_SUFFIX: Record<string, string> = {
   armor_attack: "をパワーへ",
   tyranno_sonic: "を撃破",

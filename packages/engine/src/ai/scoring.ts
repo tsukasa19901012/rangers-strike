@@ -42,7 +42,7 @@ function maxSelfStrikePotential(
   return max;
 }
 
-/** Heuristic board evaluation from the given player's perspective. */
+/** 指定プレイヤー視点でのヒューリスティック盤面評価。 */
 export function evaluateState(state: GameState, playerId: PlayerId): number {
   if (state.winner === playerId) return 100_000;
   if (state.winner === opponent(playerId)) return -100_000;

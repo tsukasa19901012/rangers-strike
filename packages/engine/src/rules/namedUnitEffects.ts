@@ -310,7 +310,7 @@ function pickWeakestUnit(
   return best;
 }
 
-/** On-rush named effects — opens player choice when targets exist. */
+/** ラッシュ時の固有名効果 — 対象がある場合プレイヤー選択を開く。 */
 export function resolveNamedOnRushEffects(
   state: GameState,
   rusherPlayerId: PlayerId,
@@ -421,7 +421,7 @@ export function resolveNamedOnRushEffects(
   return { state: nextState, logs };
 }
 
-/** RS-070 天空魔法斬り on battle entry. */
+/** RS-070 天空魔法斬り — 戦闘進入時。 */
 export function resolveSkyMagicSlash(
   state: GameState,
   playerId: PlayerId,
@@ -438,7 +438,7 @@ export function resolveSkyMagicSlash(
   };
 }
 
-/** Optional may effects on battle entry — opens choice UI when legal. */
+/** 戦闘進入時の任意 may 効果 — 合法な場合選択UIを開く。 */
 export function tryStartConditionalChoice(
   state: GameState,
   playerId: PlayerId,
@@ -487,7 +487,7 @@ export function tryStartConditionalChoice(
   return null;
 }
 
-/** @deprecated Use tryStartConditionalChoice */
+/** @deprecated tryStartConditionalChoice を使用 */
 export function resolveConditionalOnEnter(
   state: GameState,
   playerId: PlayerId,

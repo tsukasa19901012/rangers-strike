@@ -32,7 +32,7 @@ function applyScaleVars(game: HTMLElement, scale: number): void {
   game.classList.add("game--viewport-fit");
 }
 
-/** Scroll-invariant: uses document position, not getBoundingClientRect().top alone. */
+/** スクロール不変: getBoundingClientRect().top 単独ではなくドキュメント位置を使用。 */
 function availableHeightForBoard(game: HTMLElement, board: HTMLElement): number {
   const boardTopInGame = board.getBoundingClientRect().top - game.getBoundingClientRect().top;
   const gameRect = game.getBoundingClientRect();
@@ -42,8 +42,8 @@ function availableHeightForBoard(game: HTMLElement, board: HTMLElement): number 
 }
 
 /**
- * Optional insurance: shrinks the human playsheet on short landscape viewports.
- * Only enable when {@link COMPACT_VIEWPORT_MQ} matches. Scroll-invariant.
+ * 任意の保険: 低い横向きビューポートで人間側プレイシートを縮小。
+ * {@link COMPACT_VIEWPORT_MQ} に一致するときのみ有効。スクロール不変。
  */
 export function useViewportBoardFit(
   gameRef: RefObject<HTMLElement | null>,

@@ -6,7 +6,7 @@ import type { ComboOutcome } from "../comboTypes";
 
 const BASE_ATTACK_PARTNER_IDS = ["RS-129"];
 
-/** RS-128 拠点攻撃: SP1 when entering battle with バイオジェット2号 already in battle. */
+/** RS-128 拠点攻撃: バイオジェット2号が既に戦闘中の状態で戦闘進入するとSP1。 */
 export function applyBaseAttackOnEnter(
   state: GameState,
   playerId: PlayerId,

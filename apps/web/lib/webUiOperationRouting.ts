@@ -6,7 +6,7 @@ export type OperationDropRoute =
   | { kind: "target_modal"; targetType: EffectTarget }
   | { kind: "direct_play" };
 
-/** Mirrors GameApp rush-phase operation zone drop routing. */
+/** GameApp のラッシュフェイズ・オペレーションゾーンのドロップルーティングを反映。 */
 export function resolveOperationDropRoute(cardId: string): OperationDropRoute {
   const effect = getCardEffect(cardId);
   if (effect?.effectId === "cyber_s_rider") {

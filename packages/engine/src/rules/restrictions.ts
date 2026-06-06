@@ -52,7 +52,7 @@ export function countLightningGravityOperations(state: GameState): number {
   );
 }
 
-/** RS-069 stacks on both fields; inactive when blocked by RS-072 infinite chain. */
+/** RS-069 は両フィールドで重複；RS-072 無限連鎖でブロックされると無効。 */
 export function countActiveLightningGravity(state: GameState): number {
   let count = 0;
   for (const playerId of ["player1", "player2"] as const) {
@@ -71,7 +71,7 @@ export function lightningGravityActive(state: GameState): boolean {
   return countActiveLightningGravity(state) > 0;
 }
 
-/** Notice for UI when RS-069 blocks an M unit from entering battle. */
+/** RS-069 がMユニットの戦闘進入をブロックするときのUI通知。 */
 export type LightningGravityHoldNotice = {
   unitName: string;
   requiredHolds: number;
@@ -107,7 +107,7 @@ export function getLightningGravityHoldNotice(
   };
 }
 
-/** Card text + RS-069: held commands required to enter battle. */
+/** カード文面 + RS-069: 戦闘進入にホールド中コマンドが必要。 */
 export function requiredBattleEntryHolds(
   state: GameState,
   unit: CardInstance,
@@ -119,7 +119,7 @@ export function requiredBattleEntryHolds(
   return unitHold + lgHold;
 }
 
-/** RS-047 Pat Signer: blocks M units with BP>=5000 from entering battle. */
+/** RS-047 Pat Signer: BP>=5000 のMユニットの戦闘進入をブロック。 */
 export function patSignerBlocksMove(
   state: GameState,
   playerId: PlayerId,
@@ -199,7 +199,7 @@ export function canMoveUnitToBattle(
   return passesBattleEntryHoldRequirements(state, playerId, player, unit);
 }
 
-/** Field / effect checks only (no ※ or 稲妻重力 hold counts). */
+/** フィールド / 効果チェックのみ（※ または稲妻重力のホールド数は含まない）。 */
 export function canMoveUnitToBattleExceptHoldRequirements(
   state: GameState,
   playerId: PlayerId,
@@ -273,7 +273,7 @@ export function countReleasedCommands(player: PlayerState): number {
  * 効果など支払いUIなしで※進入するとき、リリース中のコマンドを1枚ホールドする。
  * プレイヤー操作の進入は initiate_command_payment を使う。
  */
-/** Effect/auto entry: ※用ホールドが既に揃っているとき支払い済みフラグを立てる。 */
+/** 効果/自動進入: ※用ホールドが既に揃っているとき支払い済みフラグを立てる。 */
 export function markBattleEntryHoldReadyIfNoteSatisfied(
   player: PlayerState,
   unit: CardInstance,
@@ -353,7 +353,7 @@ function findCardOnField(
   return null;
 }
 
-/** Human-readable reason when a unit cannot enter the battle area. */
+/** ユニットがバトルエリアに入れない理由（人間が読める形式）。 */
 export function explainCannotEnterBattle(
   state: GameState,
   playerId: PlayerId,
@@ -477,12 +477,12 @@ export function explainCannotEnterBattle(
   return `「${unitName}」はバトルエリアに出せません。`;
 }
 
-/** RS-022: all rush units must enter battle when possible. */
+/** RS-022: 可能ならラッシュの全ユニットが戦闘進入しなければならない。 */
 export function earthForceRequiresBattleEntry(state: GameState): boolean {
   return earthForceActive(state);
 }
 
-/** RS-041/054/055 + RS-022: rush units that must enter battle before ending the battle phase. */
+/** RS-041/054/055 + RS-022: バトルフェイズ終了前に戦闘進入必須のラッシュユニット。 */
 export function findMandatoryBattleEntries(
   state: GameState,
   playerId: PlayerId,
@@ -512,12 +512,12 @@ export function countHeldCommands(player: PlayerState): number {
   return player.command.filter((c) => c.commandHeld).length;
 }
 
-/** Holds that satisfy ※ battle-entry notes (excludes 母艦 zord payment holds). */
+/** ※ 戦闘進入注記を満たすホールド（母艦ゾード支払いホールドは除く）。 */
 export function countBattleEntryEligibleHolds(player: PlayerState): number {
   return player.command.filter((c) => c.commandHeld && !c.mothershipHold).length;
 }
 
-/** Release up to `count` held commands (left-to-right in command zone). */
+/** 最大 `count` 枚までホールド中コマンドをリリース（コマンドゾーン左から右）。 */
 export function releaseHeldCommands(
   player: PlayerState,
   count: number,
@@ -534,7 +534,7 @@ export function releaseHeldCommands(
   return { ...player, command };
 }
 
-/** RS-010: 2 held commands substitute for 1 required category hold when using a card. */
+/** RS-010: カード使用時、ホールド中コマンド2枚で必要カテゴリホールド1枚分を代替。 */
 export function hasCommandForCardUse(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,

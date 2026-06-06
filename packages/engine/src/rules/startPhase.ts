@@ -7,7 +7,7 @@ import { buildLogEntry, buildSimpleLogEntry } from "../log/formatLog";
 import { startSelectPowerChoice } from "./pendingChoices";
 import { tryLegend3BattleToRush } from "./legend3/restrictions";
 
-/** Start phase: release all held commands. */
+/** スタートフェイズ: ホールド中のコマンドをすべてリリース。 */
 export function releaseAllCommands(state: GameState, playerId: PlayerId): GameState {
   const player = state.players[playerId];
   const command = player.command.map((c) =>
@@ -22,7 +22,7 @@ function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
     .map((card) => card.instanceId);
 }
 
-/** Opens the next optional battle→rush effect after bulk start-phase return. */
+/** スタートフェイズ一括復帰後、次の任意の戦闘→ラッシュ効果を開く。 */
 export function continueBattleToRushEffectQueue(state: GameState): GameState {
   const queue = state.pendingBattleToRushQueue ?? [];
   const phasePlayerId = state.pendingBattleToRushPhasePlayerId;
@@ -58,7 +58,7 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
   });
 }
 
-/** Start phase: return all battle units to rush at once, then queue optional effects. */
+/** スタートフェイズ: 戦闘ユニットを一括でラッシュに戻し、任意効果をキューに入れる。 */
 export function returnAllBattleUnitsToRush(
   state: GameState,
   playerId: PlayerId,
@@ -147,7 +147,7 @@ export function canAdvanceFromStartPhase(state: GameState, playerId: PlayerId): 
   return true;
 }
 
-/** Auto-advance after mandatory steps; optional bonus draw may still be taken first. */
+/** 必須ステップ後に自動進行；任意のボーナスドローは先に取れる場合あり。 */
 export function shouldAutoAdvanceFromStartPhase(
   state: GameState,
   playerId: PlayerId,
@@ -155,7 +155,7 @@ export function shouldAutoAdvanceFromStartPhase(
   return canAdvanceFromStartPhase(state, playerId) && !canBonusDraw(state, playerId);
 }
 
-/** Moves from start to charge when {@link canAdvanceFromStartPhase} is satisfied. */
+/** {@link canAdvanceFromStartPhase} が満たされたときスタートからチャージへ移行。 */
 export function transitionStartToChargePhase(
   state: GameState,
   playerId: PlayerId,
@@ -262,7 +262,7 @@ export function hasOwnEarthForce(state: GameState, playerId: PlayerId): boolean 
   );
 }
 
-/** RS-022: upkeep is due after the mandatory draw until paid or the permanent leaves. */
+/** RS-022: 必須ドロー後、支払うか常駐が離れるまで維持費が発生。 */
 export function needsEarthForceUpkeep(state: GameState, playerId: PlayerId): boolean {
   const player = state.players[playerId];
   if (!player.hasDrawnThisStart) return false;
@@ -305,7 +305,7 @@ export function openEarthForceUpkeepChoiceIfNeeded(
   return next ?? state;
 }
 
-/** RS-022: discard the permanent when upkeep cannot be paid. */
+/** RS-022: 維持費を支払えない場合、常駐を捨てる。 */
 export function discardEarthForceForUnpaidUpkeep(
   state: GameState,
   playerId: PlayerId,

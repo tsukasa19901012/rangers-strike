@@ -23,7 +23,7 @@ export type WiredUnitEffect = {
   triggerType: "on_rush" | "conditional" | "on_attack" | "enter_battle" | "passive";
 };
 
-/** On-rush handlers in resolveNamedOnRushEffects. */
+/** resolveNamedOnRushEffects のラッシュ時ハンドラ。 */
 export const IMPLEMENTED_ON_RUSH_EFFECT_IDS = [
   "armor_attack",
   "tyranno_sonic",
@@ -45,7 +45,7 @@ export const IMPLEMENTED_ON_RUSH_EFFECT_IDS = [
   "nature_big_bang_final",
 ] as const;
 
-/** Optional may effects on battle entry (tryStartConditionalChoice). */
+/** バトル投入時の任意効果（tryStartConditionalChoice）。 */
 export const IMPLEMENTED_CONDITIONAL_EFFECT_IDS = [
   "judgment_sword",
   "justice_flasher",
@@ -64,7 +64,7 @@ export const IMPLEMENTED_CONDITIONAL_EFFECT_IDS = [
   "blue_bados_life_sword",
 ] as const;
 
-/** On-attack / battle BP modifiers in namedUnitEffects. */
+/** アタック時 / バトル BP 修正（namedUnitEffects）。 */
 export const IMPLEMENTED_ON_ATTACK_EFFECT_IDS = [
   "bouken_javelin",
   "red_fire",
@@ -82,7 +82,7 @@ export const IMPLEMENTED_ON_ATTACK_EFFECT_IDS = [
   "mirage_beam",
 ] as const;
 
-/** Enter-battle auto or choice effects. */
+/** バトル投入時の自動または選択効果。 */
 export const IMPLEMENTED_ENTER_BATTLE_EFFECT_IDS = [
   "destroy_enemy_bp4000",
   "sky_magic_slash",
@@ -97,7 +97,7 @@ export const IMPLEMENTED_ENTER_BATTLE_EFFECT_IDS = [
   "anti_bio_cannon",
 ] as const;
 
-/** Reactive / passive unit effects wired outside battle entry. */
+/** バトル投入以外で接続済みのリアクティブ / 常駐ユニット効果。 */
 export const IMPLEMENTED_PASSIVE_EFFECT_IDS = [
   "super_shield",
   "focused_breakthrough",

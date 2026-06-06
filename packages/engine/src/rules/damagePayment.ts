@@ -109,7 +109,7 @@ export function startDamagePayment(
   };
 }
 
-/** Apply damage; opens payment choice when defender may pick which face-up power flips. */
+/** ダメージを適用。裏返し対象を選べる場合は支払い選択を開始する。 */
 export function applyDamageToPlayer(
   state: GameState,
   playerId: PlayerId,

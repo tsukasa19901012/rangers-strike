@@ -366,7 +366,7 @@ function canDeclareRush(
   return hasCommandForCardUse(player, definitions, categories);
 }
 
-/** Zord in hand that already paid category hold and can rush immediately. */
+/** カテゴリホールド済みで即ラッシュ可能な手札のゾード。 */
 export function findDirectZordRushAction(
   state: GameState,
   playerId: PlayerId,

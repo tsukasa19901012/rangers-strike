@@ -34,7 +34,7 @@ function findNextFusionMaterialIndex(
   );
 }
 
-/** Return fusion partners from discard after a fusion zord leaves the field. */
+/** 合体ゾードがフィールドを離れた後、捨札から合体パートナーを戻す。 */
 export function returnFusionPartnersFromDiscard(
   state: GameState,
   ownerId: PlayerId,

@@ -232,7 +232,7 @@ export function applyNumberComboEffect(
   return { state: nextState, logs };
 }
 
-/** Read battle unit after NC for test assertions. */
+/** NC後の戦闘ユニットを読み取り（テストアサーション用）。 */
 export function battleUnitAfterNc(
   state: GameState,
   playerId: PlayerId,

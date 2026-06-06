@@ -53,7 +53,7 @@ function sumUnnamedRuleParam(
     .reduce((sum, u) => sum + (u[param] ?? defaultValue), 0);
 }
 
-/** Fusion units listed on this zord's 合体― line (zord-up material). */
+/** このゾードの 合体― 行に載る合体ユニット（zord-up 素材）。 */
 export function listZordFusionPartnerIds(zordCardId: string): string[] {
   const block = UNIT_EFFECTS[zordCardId];
   if (!block) return [];
@@ -61,7 +61,7 @@ export function listZordFusionPartnerIds(zordCardId: string): string[] {
   return zord?.partnerCardIds ?? [];
 }
 
-/** All card ids referenced as 合体― partners across unitEffects.json. */
+/** unitEffects.json 全体で 合体― パートナーとして参照されるカード id 一覧。 */
 export function buildFusionPartnerIdSet(): Set<string> {
   const ids = new Set<string>();
   for (const block of Object.values(UNIT_EFFECTS)) {
@@ -85,7 +85,7 @@ function battleHasPartner(
   );
 }
 
-/** Named NC effect that should fire on battle entry (CN/NC or text override). */
+/** バトル投入時に発火すべき NC 効果名（CN/NC または文面上書き）。 */
 export function findNcNamedEffect(
   cardId: string,
   battlePosition: number,
@@ -121,7 +121,7 @@ export function getEnterBattleNamedEffect(cardId: string): NamedUnitEffect | und
   );
 }
 
-/** Build NC effect map for engine handlers (implemented ids only). */
+/** エンジンハンドラ用 NC 効果マップ（実装済み id のみ）。 */
 export function listNcNamedEffects(): Array<{ cardId: string; effectId: string }> {
   const results: Array<{ cardId: string; effectId: string }> = [];
   for (const [cardId, block] of Object.entries(UNIT_EFFECTS)) {
@@ -215,7 +215,7 @@ export function hasBattleEntryHoldNote(cardId: string): boolean {
   return getBattleEntryHoldCount(cardId) > 0;
 }
 
-/** Units with ※ battle-entry hold note (Legend 1 zord fusion partners, etc.). */
+/** ※ バトル投入ホールド注記のあるユニット（レジェンド1 ゾード合体パートナー等）。 */
 export function listBattleEntryHoldCardIds(): string[] {
   return Object.keys(UNIT_EFFECTS)
     .filter(hasBattleEntryHoldNote)

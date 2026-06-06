@@ -19,7 +19,7 @@ import {
   unwrapAction,
 } from "./testing/gameplayFlow";
 
-/** Multi-slot zord costs need a longer payment chain than rushWithCategoryHold covers. */
+/** 複数スロットのゾード支払いは rushWithCategoryHold より長い支払いチェーンが必要。 */
 const ZORD_IDS = listZordUpCardIds().filter((id) => mothershipHoldCountForRush(id) <= 1);
 
 describe("gameplay flow integration", () => {

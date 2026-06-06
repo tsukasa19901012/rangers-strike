@@ -35,7 +35,7 @@ export function moveToBattle(
   return result.state;
 }
 
-/** Log detail suffix for each NC effect (see numberComboEffects ncLog). */
+/** 各 NC 効果のログ詳細サフィックス（numberComboEffects の ncLog 参照）。 */
 const NC_LOG_DETAIL: Partial<Record<NumberComboEffectId, string>> = {
   grant_sp1: "sp1",
 };

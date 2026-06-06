@@ -10,7 +10,7 @@ export type DestroyEffectOutcome = {
   logs: string[];
 };
 
-/** RS-093 tantrum / RS-116 cry on destroy. */
+/** RS-093 tantrum / RS-116 cry — 撃破時。 */
 export function resolveLegend2OnDestroy(
   state: GameState,
   ownerId: PlayerId,
@@ -88,7 +88,7 @@ export function resolveLegend2OnDestroy(
   return { state: nextState, logs };
 }
 
-/** RS-112: return to hand when enemy reaches 6 damage. */
+/** RS-112: 敵が6ダメージに達したとき手札へ戻す。 */
 export function checkReturnToHandAt6Damage(
   state: GameState,
   damagedPlayerId: PlayerId,
@@ -123,7 +123,7 @@ export function checkReturnToHandAt6Damage(
   return { state: nextState, logs };
 }
 
-/** RS-096: return to hand at end of turn if in battle. */
+/** RS-096: ターン終了時、戦闘中なら手札へ戻す。 */
 export function applyKarakuriFireHawkEndTurn(
   state: GameState,
   endingPlayerId: PlayerId,
@@ -145,7 +145,7 @@ export function applyKarakuriFireHawkEndTurn(
 
 import { startOpponentMayDrawChoice } from "../pendingChoices";
 
-/** RS-115: opponent may draw on enter battle. */
+/** RS-115: 戦闘進入時に相手がドローできる。 */
 export function tryStartOpponentDrawOnEnter(
   state: GameState,
   enteringPlayerId: PlayerId,

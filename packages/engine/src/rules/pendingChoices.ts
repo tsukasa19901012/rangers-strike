@@ -49,7 +49,7 @@ export function tryStartSeabedDrawChoice(
   });
 }
 
-/** Draw into hand; opens seabed choice when RS-122 is in rush. */
+/** 手札へドロー；RS-122 がラッシュにいる場合海底選択を開く。 */
 export function requestDrawFromDeck(
   state: GameState,
   playerId: PlayerId,
@@ -184,7 +184,7 @@ export function openEffectChoice(
   };
 }
 
-/** RS-115: opponent may draw one when this unit enters battle. */
+/** RS-115: このユニットが戦闘進入したとき相手が1枚ドローできる。 */
 export function startOpponentMayDrawChoice(
   state: GameState,
   enemyId: PlayerId,
@@ -282,7 +282,7 @@ function shuffleDeck(deck: CardInstance[]): CardInstance[] {
   return copy;
 }
 
-/** RS-178 sagas_sniper: view full deck; pick one eligible unit (power cost ≤ cap), then shuffle. */
+/** RS-178 sagas_sniper: 山札全体を確認；対象ユニット1枚を選択（パワーコスト ≤ 上限）、その後シャッフル。 */
 export function startSagasSniperChoice(
   state: GameState,
   params: {
@@ -320,7 +320,7 @@ export function startSagasSniperChoice(
   });
 }
 
-/** RS-177 airlift: pick JC L/R from deck, rush it, shuffle rest. */
+/** RS-177 airlift: 山札からJC L/Rを選択してラッシュ、残りをシャッフル。 */
 export function startDeckJointComboSearch(
   state: GameState,
   params: {
@@ -350,7 +350,7 @@ export function startDeckJointComboSearch(
   });
 }
 
-/** RS-106 ジュウクンドー: multi-select enemy rush units (printed BP sum ≤ budget). */
+/** RS-106 ジュウクンドー: 敵ラッシュユニットを複数選択（印刷BP合計 ≤ 予算）。 */
 export function startJuuKunDoChoice(
   state: GameState,
   params: {
@@ -414,7 +414,7 @@ export function canToggleBpBudgetTarget(
   return true;
 }
 
-/** RS-125 天地轟鳴アニマルハート: multi-select enemy units within printed BP budget. */
+/** RS-125 天地轟鳴アニマルハート: 印刷BP予算内の敵ユニットを複数選択。 */
 export function startAnimalHeartChoice(
   state: GameState,
   params: {

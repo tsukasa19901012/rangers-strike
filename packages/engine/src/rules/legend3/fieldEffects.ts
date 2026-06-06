@@ -154,7 +154,7 @@ function jointLEffectIdForUnit(
   return getJointLNamedEffect(partner.cardId)?.effectId;
 }
 
-/** RS-157 oni_neck_last: BP20000+ grants SP2 on own turn. */
+/** RS-157 oni_neck_last: BP20000+ で自ターンにSP2付与。 */
 export function legend3EffectiveSp(
   state: GameState,
   playerId: PlayerId,

@@ -14,7 +14,7 @@ export function createBattleEntryPrompt(
   };
 }
 
-/** After move_to_battle + enter effects: open action prompt or defer through effect choice. */
+/** move_to_battle + 進入効果の後: アクションプロンプトを開くか、効果選択を経由して延期。 */
 export function afterEnterBattle(state: GameState, entry: PendingBattleEntry): GameState {
   if (state.pendingEffectChoice) {
     return { ...state, deferredBattleEntry: entry };

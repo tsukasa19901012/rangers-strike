@@ -35,7 +35,7 @@ function op(
   };
 }
 
-/** Legend 1 operation card effects (wiki-verified text). */
+/** レジェンド1 オペレーションカード効果（Wiki 確認済みテキスト）。 */
 export const LEGEND1_EFFECTS: Record<string, CardEffectMeta> = {
   "RS-001": op("goren_storm", "instant", "RS-001"),
   "RS-002": op("jacker_hurricane", "instant", "RS-002"),
@@ -72,13 +72,13 @@ export const LEGEND1_EFFECTS: Record<string, CardEffectMeta> = {
   "RS-069": op("lightning_gravity", "permanent", "RS-069"),
 };
 
-/** Legend 2 operation card effects (Series 2: 二人の黒騎士). */
+/** レジェンド2 オペレーションカード効果（シリーズ2: 二人の黒騎士）。 */
 export const LEGEND2_EFFECTS: Record<string, CardEffectMeta> = {
   "RS-071": op("hidora_egg", "permanent", "RS-071"),
   "RS-072": op("infinite_chain", "instant", "RS-072"),
 };
 
-/** Legend 3 operation card effects (Series 3: 三界の獅子). */
+/** レジェンド3 オペレーションカード効果（シリーズ3: 三界の獅子）。 */
 export const LEGEND3_EFFECTS: Record<string, CardEffectMeta> = {
   "RS-123": op("super_dynamite", "instant", "RS-123"),
   "RS-124": op("super_electron_radar", "permanent", "RS-124"),

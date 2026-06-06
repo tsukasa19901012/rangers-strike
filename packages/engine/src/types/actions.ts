@@ -18,11 +18,11 @@ export type RushAction = {
   type: "rush";
   playerId: PlayerId;
   instanceId: string;
-  /** Material card for zord-up (fusion discard or S-unit cost). */
+  /** ゾードアップの素材カード（合体破棄またはSユニットコスト）。 */
   zordMaterialInstanceId?: string;
-  /** RS-074/075/118-122: send S-unit to command zone instead of discard. */
+  /** RS-074/075/118-122: 破棄の代わりにSユニットをコマンドゾーンへ送る。 */
   zordMaterialDestination?: ZordMaterialDestination;
-  /** RS-076 / RS-105 母艦: hold commands instead of S-unit additional cost. */
+  /** RS-076 / RS-105 母艦: Sユニット追加コストの代わりにコマンドをホールド。 */
   zordMothershipHoldInstanceIds?: string[];
 };
 
@@ -30,7 +30,7 @@ export type MoveToBattleAction = {
   type: "move_to_battle";
   playerId: PlayerId;
   instanceId: string;
-  /** RC: dismount from vehicle when entering battle. */
+  /** RC: 戦闘進入時に乗り物から降りる。 */
   rideOff?: boolean;
 };
 
@@ -61,9 +61,9 @@ export type PlayOperationAction = {
   type: "play_operation";
   playerId: PlayerId;
   instanceId: string;
-  /** Target card instance for effects that require one. */
+  /** 対象が1枚必要な効果用のカードインスタンス。 */
   targetInstanceId?: string;
-  /** Second hand card for cyber_s_rider etc. */
+  /** cyber_s_rider 等の2枚目の手札カード。 */
   extraInstanceId?: string;
 };
 
@@ -114,7 +114,7 @@ export type PlayCounterAction = {
   type: "play_counter";
   playerId: PlayerId;
   instanceId: string;
-  /** RS-018: substitute unit instance id */
+  /** RS-018: 代替ユニットのインスタンスID */
   substituteInstanceId?: string;
 };
 

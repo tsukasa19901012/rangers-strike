@@ -37,7 +37,7 @@ export function drawOne(player: PlayerState): PlayerState {
   return performDeckDraws(player, 1, "top");
 }
 
-/** Draw from top or bottom of deck into hand (and optionally discard the 2nd super-brain card). */
+/** 山札の上または下から手札へドロー（任意で2枚目の超脳カードを捨てる）。 */
 export function performDeckDraws(
   player: PlayerState,
   count: number,
@@ -58,12 +58,12 @@ export function performDeckDraws(
   return next;
 }
 
-/** Power zone total must meet cost; cards are not removed (official rules). */
+/** パワーゾーン合計がコストを満たす必要あり；カードは除去しない（公式ルール）。 */
 export function canAffordPower(player: PlayerState, cost: number): boolean {
   return player.power.length >= cost;
 }
 
-/** @deprecated Use canAffordPower — power is a threshold, not consumed. */
+/** @deprecated canAffordPower を使用 — パワーは閾値であり消費されない。 */
 export function payPowerCost(
   player: PlayerState,
   cost: number,
@@ -72,7 +72,7 @@ export function payPowerCost(
   return canAffordPower(player, cost) ? player : null;
 }
 
-/** Flip face-up power to face-down, then draw face-down power from deck if needed. */
+/** 表向きパワーを裏向きにし、必要なら山札から裏向きパワーをドロー。 */
 export function applyPlayerDamage(
   player: PlayerState,
   amount: number,

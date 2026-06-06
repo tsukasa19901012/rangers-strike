@@ -16,10 +16,10 @@ export type RushEffectOutcome = {
   logs: string[];
 };
 
-/** Unit effects that fire when this card is rushed (Q10: before shippu counter). */
+/** ラッシュ時に発火するユニット効果（Q10: 疾風カウンターの前）。 */
 export const ON_RUSH_EFFECTS: Partial<Record<string, "draw_1">> = {};
 
-/** @deprecated RS-124 handled in legend3/rushEffects.applySuperRadarOnRush */
+/** @deprecated RS-124 は legend3/rushEffects.applySuperRadarOnRush で処理 */
 export const ON_ENEMY_RUSH_PERMANENTS: Partial<Record<string, "power_to_hand">> = {};
 
 function applyDrawOnRush(
@@ -73,8 +73,8 @@ function applyPowerToHandOnEnemyRush(
 }
 
 /**
- * Resolve all rush-triggered effects before opening RS-026 counter window.
- * @see RS-026 Q6/Q10 — rush effects first, then counter.
+ * RS-026 カウンターウィンドウを開く前に、ラッシュ起因の効果をすべて解決する。
+ * @see RS-026 Q6/Q10 — ラッシュ効果を先に、その後カウンター。
  */
 export function resolveRushTriggeredEffects(
   state: GameState,

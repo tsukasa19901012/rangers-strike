@@ -6,7 +6,7 @@ export type CardType = "unit" | "operation" | "vehicle" | "commander";
 
 export type Rarity = "N" | "R" | "SR" | "NR" | "SC" | "PR";
 
-/** SP value: number, "special" (!), or none */
+/** SP値: 数値、「special」（!）、またはなし */
 export type SpValue = number | "special" | null;
 
 export type ComboNumber = number | "L" | "R" | "RC" | null;
@@ -22,26 +22,26 @@ export type CardDefinition = {
   category: Category | Category[];
   rarity: Rarity;
   expansion: string;
-  /** Power cost. Suffix "+" means zord-up eligible (e.g. "7+"). */
+  /** 必要パワー。末尾が「+」の場合はゾードアップ可能（例: "7+"）。 */
   powerCost: number | string;
   bp?: number;
   sp?: SpValue;
   size?: UnitSize;
   comboNumber?: ComboNumber;
   /**
-   * Card effect text (【】 / ※ on the card). Rush 追加条件 is in `rushAdditionalCondition`.
-   * Structured parse lives in unitEffects.json; see effectTaxonomy.ts.
+   * カード効果文（【】 / ※）。Rush 追加条件は `rushAdditionalCondition` を参照。
+   * 構造化パースは unitEffects.json にあり、effectTaxonomy.ts を参照。
    */
   text?: string;
-  /** Rush 追加条件 when powerCost ends with "+" (atwiki / 追加条件別一覧). */
+  /** powerCost が「+」で終わるときの Rush 追加条件（atwiki / 追加条件別一覧）。 */
   rushAdditionalCondition?: RushAdditionalCondition;
   effectId?: string;
   tags?: string[];
-  /** Unit traits such as メカ, 男, etc. */
+  /** メカ、男 などのユニット特徴。 */
   features?: string[];
-  /** Path served from the web app root, e.g. /cards/legend1/RS-001.jpg */
+  /** Web アプリルートから配信するパス（例: /cards/legend1/RS-001.jpg） */
   imageUrl?: string;
-  /** Original image source used for download / attribution */
+  /** ダウンロード / 出典表示用の元画像 URL */
   imageSourceUrl?: string;
 };
 

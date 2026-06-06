@@ -20,57 +20,57 @@ export type ZoneName =
   | "battle"
   | "operation";
 
-/** Per-turn flags cleared when the player's turn ends. */
+/** プレイヤーのターン終了時にクリアされるターン修飾子。 */
 export type TurnModifiers = {
-  /** RS-015: combo number reduction (stacks). */
+  /** RS-015: コンボ番号の減少（スタック）。 */
   comboNumberDelta: number;
-  /** RS-001 / RS-002 finisher boost when battle is S-only combo. */
+  /** RS-001 / RS-002: バトルがSのみコンボのときのフィニッシャー強化。 */
   sComboFinisher?: "goren_storm" | "jacker_hurricane";
-  /** RS-003: units that cannot re-enter battle this turn. */
+  /** RS-003: このターン再びバトルに入れないユニット。 */
   battleBlockedInstanceIds: string[];
-  /** RS-013 / RS-071: used this rush phase. */
+  /** RS-013 / RS-071: このラッシュフェイズで使用済み。 */
   shironLightUsed: boolean;
   hidoraEggUsed?: boolean;
-  /** RS-072: opponent permanents disabled, opponent cannot counter. */
+  /** RS-072: 相手のパーマネント無効化、相手はカウンター不可。 */
   infiniteChainActive?: boolean;
-  /** RS-107: counter holds become discards for opponent. */
+  /** RS-107: 相手のカウンターホールドが捨札になる。 */
   deaceSniperActive?: boolean;
-  /** RS-110: new rush units cannot enter battle until end of turn. */
+  /** RS-110: 新たにラッシュしたユニットはターン終了までバトルに入れない。 */
   zenibombActive?: boolean;
-  /** Instance ids rushed this turn (RS-106 / RS-090 restrictions). */
+  /** このターンにラッシュしたインスタンスID（RS-106 / RS-090 制限）。 */
   rushedThisTurnInstanceIds?: string[];
-  /** RS-094 ghost absorption BP override for battle. */
+  /** RS-094: バトル用ゴースト吸収BP上書き。 */
   ghostAbsorptionBp?: Record<string, number>;
-  /** RS-119 shift up SP1 grant. */
+  /** RS-119: シフトアップSP1付与。 */
   shiftUpSp1InstanceIds?: string[];
-  /** RS-011: S unit gains BP+2000 per own damage this turn. */
+  /** RS-011: このターンの自ダメージごとにSユニットがBP+2000。 */
   auraPowerInstanceId?: string;
-  /** RS-123: own S units use printed defender BP when attacking. */
+  /** RS-123: 攻撃時、自分のSユニットは守り側の印刷BPを使用。 */
   superDynamiteActive?: boolean;
-  /** RS-158 baki_baki: extra battle attack allowed (strike blocked). */
+  /** RS-158 baki_baki: 追加バトル攻撃が可能（ストライク不可）。 */
   bakiBakiExtraAttackIds?: string[];
 };
 
 export type CardInstance = {
   instanceId: string;
   cardId: string;
-  /** Temporary BP change (cleared at end of turn). */
+  /** 一時的なBP変更（ターン終了時にクリア）。 */
   bpModifier?: number;
-  /** Command zone: true = held (sideways), false/undefined = released. */
+  /** コマンドゾーン: true = ホールド（横向き）、false/undefined = リリース。 */
   commandHeld?: boolean;
-  /** Hold from 母艦 zord payment; does not satisfy fusion battle-entry hold notes. */
+  /** 母艦ゾード支払いによるホールド。融合バトル進入ホールドの※要件は満たさない。 */
   mothershipHold?: boolean;
-  /** Power zone: true = face-down (damage marker). */
+  /** パワーゾーン: true = 裏向き（ダメージマーカー）。 */
   faceDown?: boolean;
-  /** Temporary SP change (cleared at end of turn). */
+  /** 一時的なSP変更（ターン終了時にクリア）。 */
   spModifier?: number;
-  /** Battle phase: true after this unit battled or struck this turn. */
+  /** バトルフェイズ: このターンにこのユニットがバトルまたはストライク済みなら true。 */
   battleActed?: boolean;
-  /** Fusion unit discarded when this zord was rushed (RS-009 recovery). */
+  /** このゾードがラッシュされた際に捨てた融合ユニット（RS-009 回収用）。 */
   zordMaterialCardId?: string;
-  /** Vehicle this unit is riding in rush (RC support). */
+  /** ラッシュでこのユニットが乗車しているビークル（RCサポート）。 */
   mountedOnInstanceId?: string;
-  /** RS-013: used this rush phase (permanent operation instance). */
+  /** RS-013: このラッシュフェイズで使用済み（パーマネントな操作インスタンス）。 */
   shironLightUsedThisRush?: boolean;
 };
 
@@ -84,17 +84,17 @@ export type PlayerState = {
   rush: CardInstance[];
   battle: CardInstance[];
   operation: CardInstance[];
-  /** Face-down power cards count as damage taken. */
+  /** 裏向きパワーカードは受けたダメージとしてカウント。 */
   damage: number;
-  /** Charge phase: true after placing one card to power or command this turn. */
+  /** チャージフェイズ: このターンに1枚をパワーまたはコマンドに置いた後 true。 */
   hasChargedThisTurn?: boolean;
-  /** Start phase: true after the mandatory draw this turn. */
+  /** スタートフェイズ: このターンの必須ドロー後 true。 */
   hasDrawnThisStart?: boolean;
-  /** Start phase: true after releasing held commands this turn. */
+  /** スタートフェイズ: このターンにホールド中コマンドをリリースした後 true。 */
   hasReleasedCommandsThisStart?: boolean;
-  /** Start phase: true after returning battle units to rush this turn. */
+  /** スタートフェイズ: このターンにバトルユニットをラッシュに戻した後 true。 */
   hasReturnedBattleThisStart?: boolean;
-  /** Start phase: true after RS-022 upkeep is paid this turn. */
+  /** スタートフェイズ: このターンにRS-022 アップキープ支払い後 true。 */
   hasPaidEarthForceUpkeep?: boolean;
   /** ※バトル進入: 支払いでホールド済み（move_to_battle まで有効）。 */
   battleEntryHoldReady?: boolean;
@@ -106,7 +106,7 @@ export type PlayerState = {
   battleEntryDiscardedCardId?: string;
   /** RS-165: 手札捨札支払い済み（move_to_battle まで有効）。 */
   battleEntryHandDiscardReady?: boolean;
-  /** RS-013: hand unit revealed this rush phase; may rush without category hold. */
+  /** RS-013: このラッシュフェイズで手札ユニットを公開済み。カテゴリホールドなしでラッシュ可能。 */
   shironLightRushInstanceId?: string;
   turnModifiers?: TurnModifiers;
 };
@@ -117,7 +117,7 @@ export type PendingStrike = {
   damage: number;
   battlePhasePlayer: PlayerId;
   damageCancelled?: boolean;
-  /** Set after defender finishes damage payment for this strike. */
+  /** 守り側がこのストライクのダメージ支払いを完了した後に設定。 */
   damageApplied?: boolean;
 };
 
@@ -125,15 +125,15 @@ export type DamagePaymentResume =
   | { kind: "none"; activePlayer: PlayerId }
   | { kind: "strike"; pending: PendingStrike };
 
-/** Defender chooses which face-up power cards flip when taking damage. */
+/** ダメージ時に表向きパワーの裏返し対象を選ぶ支払い待ち。 */
 export type PendingDamagePayment = {
-  /** Player whose power zone cards are flipped. */
+  /** パワーゾーンのカードが裏返されるプレイヤー。 */
   playerId: PlayerId;
-  /** Who picks the cards (defaults to playerId; RS-149 side_knuckle uses striker). */
+  /** カードを選ぶプレイヤー（省略時は playerId。RS-149 side_knuckle はストライカー）。 */
   choosingPlayerId?: PlayerId;
-  /** Face-up power flips still to assign. */
+  /** まだ割り当てていない表向きパワーの裏返し枚数。 */
   remainingFlips: number;
-  /** Face-down draws from deck after power flips. */
+  /** パワー裏返し後にデッキから引く裏向きパワー枚数。 */
   deckDraws: number;
   totalDamage: number;
   selectedFlipIds: string[];
@@ -147,13 +147,13 @@ export type PendingBattle = {
   defenderInstanceId: string;
   phasePlayerId: PlayerId;
   attackerBpBonus?: number;
-  /** RS-006: battle cancelled, defender returned to rush */
+  /** RS-006: バトルキャンセル、守り側はラッシュに戻る */
   battleCancelled?: boolean;
-  /** RS-018: substitute unit fights instead */
+  /** RS-018: 代わりに代用ユニットが戦闘 */
   substituteInstanceId?: string;
-  /** RS-131 mirage_beam: printed BP override for this battle. */
+  /** RS-131 mirage_beam: このバトル用の印刷BP上書き。 */
   mirageBeamBpOverride?: number;
-  /** RS-131: revealed deck card to discard after battle. */
+  /** RS-131: バトル後に捨てるため公開したデッキカード。 */
   mirageBeamDiscard?: CardInstance;
 };
 
@@ -170,9 +170,9 @@ export type PendingLeave = {
   toZone: "discard" | "power" | "command";
   leavingCardId: string;
   phasePlayerId: PlayerId;
-  /** Resume strike resolution after the unit leaves (five-tech / plasma). */
+  /** ユニット退場後にストライク解決を再開（five-tech / plasma）。 */
   resumePendingStrike?: { damageCancelled: boolean };
-  /** When both players' units would leave from one battle, queue attacker after defender. */
+  /** 1回のバトルで両プレイヤーのユニットが退場する場合、守り側の後に攻撃側をキュー。 */
   followUpAttackerLeave?: {
     ownerPlayerId: PlayerId;
     instanceId: string;
@@ -181,16 +181,16 @@ export type PendingLeave = {
     leavingCardId: string;
     phasePlayerId: PlayerId;
   };
-  /** RS-052: optional substitute when a WB ally would be destroyed. */
+  /** RS-052: WB味方が破壊される際の任意代用。 */
   superShieldInstanceId?: string;
 };
 
-/** Player must choose targets/options before the game continues. */
+/** ゲーム続行前にプレイヤーが対象/オプションを選ぶ必要がある。 */
 export type SeabedDrawMeta = {
   drawCount: number;
-  /** RS-014 超頭脳: second card goes to discard instead of hand. */
+  /** RS-014 超頭脳: 2枚目は手札ではなく捨札へ。 */
   superBrainDiscardSecond?: boolean;
-  /** Finish this choice after seabed draw resolves (e.g. RS-115 optional draw). */
+  /** 海底ドロー解決後にこの選択を完了（例: RS-115 任意ドロー）。 */
   resume?: {
     pending: PendingEffectChoice;
     detail: string;
@@ -199,14 +199,14 @@ export type SeabedDrawMeta = {
 
 export type DenjiMachineMeta = {
   step: "reveal" | "order_bottom";
-  /** Players who may view revealed cards (caster + opponent for PvP). */
+  /** 公開カードを閲覧できるプレイヤー（PvPでは使用者+相手）。 */
   audiencePlayerIds: PlayerId[];
   revealedInstanceIds: string[];
   toHandInstanceIds: string[];
   toBottomInstanceIds: string[];
-  /** Non-S cards removed from deck, awaiting bottom order. */
+  /** デッキから除去された非Sカード、山札下順序待ち。 */
   limboBottomCards?: CardInstance[];
-  /** Bottom order: first entry sits just above rest of deck; last is deck bottom. */
+  /** 山札下順序: 先頭は残りデッキの直上、末尾がデッキ最下段。 */
   orderedBottomIds?: string[];
 };
 
@@ -249,9 +249,9 @@ export type PendingEffectChoice = {
   viewedInstanceIds?: string[];
   optional?: boolean;
   maxBp?: number;
-  /** RS-178 sagas_sniper: destroyed unit power cost cap for deck search. */
+  /** RS-178 sagas_sniper: デッキサーチ用の破壊ユニットパワーコスト上限。 */
   maxPowerCost?: number;
-  /** Sum cap for printed BP (e.g. RS-106 ジュウクンドー). */
+  /** 印刷BPの合計上限（例: RS-106 ジュウクンドー）。 */
   bpBudget?: number;
   unitDestination?: "power" | "discard" | "deck_top" | "hand" | "hand_from_discard" | "hand_from_power" | "enemy_battle" | "enemy_command" | "swap_battle" | "rush";
   commandAction?: "discard" | "hold" | "return_hand" | "rush" | "rush_silent" | "power";
@@ -261,14 +261,14 @@ export type PendingEffectChoice = {
   shironLightMeta?: ShironLightMeta;
 };
 
-/** @deprecated Use pendingEffectChoice (ruin_survey). */
+/** @deprecated pendingEffectChoice を使用すること（ruin_survey）。 */
 export type PendingScry = {
   playerId: PlayerId;
   scriedInstanceId: string;
   sourceCardId: string;
 };
 
-/** Attacker must choose attack / strike / pass after entering battle. */
+/** バトル進入後、攻撃側は攻撃/ストライク/パスを選ぶ必要がある。 */
 export type EnterBattleResumeFrom = "conditional" | "nc" | "tail";
 
 export type EnterBattleResume = {
@@ -282,7 +282,7 @@ export type PendingBattleEntry = {
   playerId: PlayerId;
   instanceId: string;
   phasePlayerId: PlayerId;
-  /** Remaining enter-battle steps after a combo choice resolves. */
+  /** コンボ選択解決後の残りバトル進入ステップ。 */
   resumeEnterBattle?: EnterBattleResume;
 };
 
@@ -303,7 +303,7 @@ export type CommandPaymentContinuation =
 
 export type PendingZordSetupStep = "material" | "destination" | "mothership";
 
-/** Zord material / mothership wizard before command payment or rush. */
+/** コマンド支払いまたはラッシュ前のゾード素材/母艦ウィザード。 */
 export type PendingZordSetup = {
   playerId: PlayerId;
   zordInstanceId: string;
@@ -311,21 +311,21 @@ export type PendingZordSetup = {
   step: PendingZordSetupStep;
   validInstanceIds: string[];
   materialInstanceId?: string;
-  /** Chosen before material when send_s_unit_to_command_or_discard. */
+  /** send_s_unit_to_command_or_discard 時、素材選択前に選ぶ。 */
   materialDestination?: ZordMaterialDestination;
-  /** Mothership hold may substitute for S-unit material on this zord. */
+  /** このゾードでは母艦ホールドがSユニット素材の代用になる場合がある。 */
   mothershipAvailable?: boolean;
 };
 
-/** Pay command holds as part of a player action (no standalone hold). */
+/** プレイヤーアクションの一部としてコマンドホールドを支払う（単独ホールド不可）。 */
 export type PendingCommandPayment = {
   playerId: PlayerId;
   kind: "battle_entry" | "category_use" | "mothership_hold" | "effect_hold";
   sourceInstanceId: string;
   sourceCardId: string;
-  /** Min newly held cards that count for ※ battle-entry (battle_entry only). */
+  /** ※バトル進入としてカウントする新規ホールド枚数の最小値（battle_entry のみ）。 */
   eligibleNeeded: number;
-  /** How many unheld commands to hold before continuing. */
+  /** 続行前にホールドする未ホールドコマンド枚数。 */
   totalNeeded: number;
   validInstanceIds: string[];
   categories?: Category[];
@@ -336,43 +336,43 @@ export type PendingCommandPayment = {
 export type GameState = {
   turn: number;
   activePlayer: PlayerId;
-  /** Player who went first (先攻). */
+  /** 先攻プレイヤー（先攻）。 */
   firstPlayer: PlayerId;
   phase: Phase;
   players: Record<PlayerId, PlayerState>;
   definitions: Record<string, CardDefinition>;
   log: string[];
   winner: PlayerId | null;
-  /** Defender response window after a strike is declared. */
+  /** ストライク宣言後の守り側応答ウィンドウ。 */
   pendingStrike?: PendingStrike;
-  /** Defender response window after an attack is declared. */
+  /** 攻撃宣言後の守り側応答ウィンドウ。 */
   pendingBattle?: PendingBattle;
-  /** Defender response window after opponent rushes. */
+  /** 相手がラッシュした後の守り側応答ウィンドウ。 */
   pendingRush?: PendingRush;
-  /** Owner response when a unit would leave the field. */
+  /** ユニットがフィールドを離れる際の所有者応答。 */
   pendingLeave?: PendingLeave;
-  /** Effect target / option selection (「選んで」 effects). */
+  /** 効果の対象/オプション選択（「選んで」効果）。 */
   pendingEffectChoice?: PendingEffectChoice;
-  /** Entered battle — must attack, strike, or pass before next entry. */
+  /** バトル進入済み — 次の進入前に攻撃/ストライク/パス必須。 */
   pendingBattleEntry?: PendingBattleEntry;
-  /** Select commands to hold, then run continuation action. */
+  /** ホールドするコマンドを選び、続行アクションを実行。 */
   pendingCommandPayment?: PendingCommandPayment;
-  /** Zord rush: choose material, destination, then command payment. */
+  /** ゾードラッシュ: 素材、行き先、コマンド支払いの順に選択。 */
   pendingZordSetup?: PendingZordSetup;
-  /** Defender picks which face-up power to flip for damage. */
+  /** ダメージ支払いで裏返す表向きパワーを選ぶ。 */
   pendingDamagePayment?: PendingDamagePayment;
-  /** Opens when enter effects need a choice first. */
+  /** 進入効果が先に選択を必要とするときに開く。 */
   deferredBattleEntry?: PendingBattleEntry;
-  /** @deprecated Alias — use pendingEffectChoice */
+  /** @deprecated エイリアス — pendingEffectChoice を使用 */
   pendingScry?: PendingScry;
-  /** Start phase: optional battle→rush effects (e.g. falcon_claw) after bulk return. */
+  /** スタートフェイズ: 一括戻し後の任意 battle→rush 効果（例: falcon_claw）。 */
   pendingBattleToRushQueue?: string[];
   pendingBattleToRushPhasePlayerId?: PlayerId;
 };
 
 export const INITIAL_HAND_SIZE = 7;
 export const WIN_DAMAGE = 7;
-/** Official rule: command zone holds at most 5 cards. */
+/** 公式ルール: コマンドゾーンは最大5枚までホールド可能。 */
 export const COMMAND_ZONE_MAX = 5;
 
 export const PHASE_ORDER: Phase[] = [
@@ -392,7 +392,7 @@ export function hasWonByDamage(player: PlayerState): boolean {
   return player.damage >= WIN_DAMAGE;
 }
 
-/** Deck-out is checked when a mandatory draw fails (see applyAction draw). */
+/** デッキアウトは必須ドロー失敗時に判定（applyAction の draw を参照）。 */
 export function hasWonByDeckOut(_player: PlayerState): boolean {
   return false;
 }

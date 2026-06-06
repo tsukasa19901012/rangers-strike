@@ -13,7 +13,7 @@ import {
   listRidingComboNamedEffects,
 } from "./unitEffects";
 
-/** Triggered when a unit enters the battle zone. */
+/** ユニットがバトルゾーンに出たときに発動。 */
 export type EnterBattleEffectId =
   | "destroy_enemy_bp4000"
   | "sky_magic_slash"
@@ -28,7 +28,7 @@ export const ENTER_BATTLE_EFFECTS: Record<string, EnterBattleEffectId> = {
   "RS-121": "ruin_excavation",
 };
 
-/** Number combo (NC/CN) handlers wired in the engine. */
+/** エンジンに接続済みのナンバーコンボ（NC/CN）ハンドラ。 */
 export type NumberComboEffectId =
   | "grant_sp1"
   | "eagle_diving"
@@ -66,7 +66,7 @@ export type NumberComboEffectId =
   | "side_knuckle"
   | "star_raiser";
 
-/** Engine-implemented NC effect ids (must match switch in numberComboEffects.ts). */
+/** エンジン実装済み NC 効果 id（numberComboEffects.ts の switch と一致必須）。 */
 export const IMPLEMENTED_NC_EFFECT_IDS = [
   "grant_sp1",
   "eagle_diving",
@@ -128,7 +128,7 @@ function buildNumberComboMap(): Record<string, NumberComboEffectId> {
 export const NUMBER_COMBO_EFFECTS: Record<string, NumberComboEffectId> =
   buildNumberComboMap();
 
-/** NC cards wired in engine with numeric CN — used for integration tests. */
+/** エンジン接続済み NC カード（数値 CN）— 統合テスト用。 */
 export function listWiredNumberComboCards(
   lookup: (cardId: string) => CardDefinition | undefined,
 ): WiredNumberComboCard[] {
@@ -163,20 +163,20 @@ export function listWiredNumberComboCards(
   return results.sort((a, b) => a.cardId.localeCompare(b.cardId));
 }
 
-/** Standard NC cards (CN position only, not combo-from override). */
+/** 標準 NC カード（CN 位置のみ、combo-from 上書きなし）。 */
 export function listStandardNcCards(
   lookup: (cardId: string) => CardDefinition | undefined,
 ): WiredNumberComboCard[] {
   return listWiredNumberComboCards(lookup).filter((entry) => entry.triggerType === "nc");
 }
 
-/** @deprecated Use listAltNcPartnerIds from unitEffects. */
+/** @deprecated unitEffects の listAltNcPartnerIds を使用すること。 */
 export const ALT_NUMBER_COMBO_PARTNERS: Partial<Record<string, string[]>> = {
   "RS-031": listAltNcPartnerIds("RS-031"),
   "RS-056": listAltNcPartnerIds("RS-056"),
 };
 
-/** Joint combo L: grants effect to partner L unit immediately to the right. */
+/** ジョイントコンボ L: 右隣の L ユニットに効果を付与。 */
 export type JointComboLEffectId =
   | "grant_sp1_to_partner"
   | "oni_neck_last"
@@ -206,7 +206,7 @@ function buildJointLMap(): Record<string, JointComboLEffectId> {
 
 export const JOINT_L_EFFECTS: Record<string, JointComboLEffectId> = buildJointLMap();
 
-/** Joint combo R: this unit gains the effect when immediately right of partner L. */
+/** ジョイントコンボ R: L パートナーの右隣に出たとき、このユニットが効果を得る。 */
 export type JointComboREffectId =
   | "grant_sp1"
   | "elephant_shield"
@@ -240,7 +240,7 @@ function buildJointRMap(): Record<string, JointComboREffectId> {
 
 export const JOINT_R_EFFECTS: Record<string, JointComboREffectId> = buildJointRMap();
 
-/** Riding combo (RC): triggers on ride-off when entering battle. */
+/** ライディングコンボ（RC）: バトル投入時の乗り降りで発動。 */
 export type RidingComboEffectId = "grant_sp1";
 
 export const IMPLEMENTED_RIDING_COMBO_EFFECT_IDS = ["grant_sp1"] as const satisfies readonly RidingComboEffectId[];
@@ -316,7 +316,7 @@ export function getRidingComboEffect(cardId: string): RidingComboEffectId | unde
   return undefined;
 }
 
-/** Joint / riding combo cards wired in engine — used for integration tests. */
+/** エンジン接続済みジョイント / ライディングコンボカード — 統合テスト用。 */
 export function listWiredJointComboCards(
   lookup: (cardId: string) => CardDefinition | undefined,
 ): WiredJointComboCard[] {

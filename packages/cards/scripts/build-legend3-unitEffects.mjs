@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build legend3/unitEffects.json from legend3/cards.json.
+ * legend3/cards.json から legend3/unitEffects.json を生成。
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";

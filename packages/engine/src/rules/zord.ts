@@ -12,7 +12,7 @@ import { COMMAND_ZONE_MAX } from "../types/game";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, removeAt } from "../core/helpers";
 
-/** Zones where zord-up materials may be taken (field only, not hand). */
+/** ゾードアップ素材を取れるゾーン（フィールドのみ、手札不可）。 */
 export type ZordMaterialZone = "rush" | "battle";
 
 const ZORD_MATERIAL_ZONES: ZordMaterialZone[] = ["rush", "battle"];
@@ -26,7 +26,7 @@ export function needsZordMaterial(
   return getZordCondition(cardId) !== undefined;
 }
 
-/** Zords with a 合体― line require every listed partner on field. */
+/** 合体―行があるゾードは、列挙された全パートナーがフィールド上に必要。 */
 export function requiresAllFusionPartners(rushingCardId: string): boolean {
   return listZordFusionPartnerIds(rushingCardId).length > 0;
 }
@@ -48,7 +48,7 @@ function findPartnerInstance(
   return null;
 }
 
-/** All fusion partners listed on the zord card (e.g. RS-050 → 051/052/053). */
+/** ゾードカードに列挙された全合体パートナー（例: RS-050 → 051/052/053）。 */
 export function collectRequiredFusionMaterials(
   player: PlayerState,
   rushingCardId: string,

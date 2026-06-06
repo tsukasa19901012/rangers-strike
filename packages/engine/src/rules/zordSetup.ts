@@ -35,7 +35,7 @@ import {
 export type ZordSetupResolveInput = {
   materialInstanceId?: string;
   destination?: ZordMaterialDestination;
-  /** Use mothership hold instead of S-unit material (when both are legal). */
+  /** Sユニット素材の代わりに母艦ホールドを使用（両方合法な場合）。 */
   paymentPath?: "material" | "mothership";
 };
 
@@ -95,7 +95,7 @@ function canAffordZordPower(
   return player.power.length >= cost;
 }
 
-/** Resolves that advanceZordSetup accepts for the current wizard step. */
+/** advanceZordSetup が現在のウィザードステップで受け付ける解決。 */
 export function listZordSetupResolveActions(
   state: GameState,
   setup: PendingZordSetup,
@@ -139,7 +139,7 @@ export function listZordSetupResolveActions(
   return actions;
 }
 
-/** True when some resolve sequence finishes in rush or command payment. */
+/** 解決シーケンスのいずれかがラッシュまたはコマンド支払いで終了するとき true。 */
 export function canFinishZordSetup(
   state: GameState,
   setup: PendingZordSetup,

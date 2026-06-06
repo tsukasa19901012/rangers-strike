@@ -1,4 +1,4 @@
-/** When true, landscape compact CSS + optional JS playsheet fit apply. */
+/** true のとき横向きコンパクト CSS と任意の JS プレイシート fit を適用。 */
 export const COMPACT_VIEWPORT_MQ = "(orientation: landscape) and (max-height: 520px)";
 
 import { useEffect, useState } from "react";

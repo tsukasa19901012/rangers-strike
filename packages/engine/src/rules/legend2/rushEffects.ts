@@ -10,7 +10,7 @@ import {
 } from "../pendingChoices";
 import type { NamedEffectOutcome } from "../namedUnitEffects";
 
-/** Legend2 on-rush effect handlers. */
+/** Legend2 ラッシュ時効果ハンドラ。 */
 export function resolveLegend2OnRushEffects(
   state: GameState,
   rusherPlayerId: PlayerId,

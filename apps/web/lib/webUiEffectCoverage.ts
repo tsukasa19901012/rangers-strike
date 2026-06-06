@@ -34,7 +34,7 @@ export type WebUiMechanism =
   | "board_target_tap"
   | "passive_engine_only";
 
-/** UI path for each wired operation effectId. */
+/** 配線済み各 operation effectId の UI 経路。 */
 export const OPERATION_UI_MECHANISMS: Record<string, WebUiMechanism[]> = {
   place_in_power: ["operation_drag_direct"],
   dynamite_power: ["operation_drag_target_modal"],

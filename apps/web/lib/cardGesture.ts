@@ -1,6 +1,6 @@
 /**
- * Pointer gesture classification (dnd-kit / mobile map apps style).
- * Locks the primary axis after a small movement threshold so scroll and drag do not fight.
+ * ポインタジェスチャの分類（dnd-kit / モバイル地図アプリ方式）。
+ * 小さな移動閾値後に主軸をロックし、スクロールとドラッグの競合を防ぐ。
  */
 
 export const GESTURE_ACTIVATION_PX = 10;
@@ -10,11 +10,11 @@ const AXIS_DOMINANCE = 1.15;
 export type GestureKind = "pending" | "horizontal-scroll" | "vertical-scroll" | "drag";
 
 export type GestureOptions = {
-  /** Parent zone scrolls horizontally (hand / rush / battle / command). */
+  /** 親ゾーンが横スクロール（手札 / ラッシュ / バトル / コマンド）。 */
   inHorizontalScrollZone: boolean;
-  /** Card can be dragged to play (not disabled). */
+  /** カードをドラッグしてプレイ可能（無効でない）。 */
   canDrag: boolean;
-  /** Mouse uses immediate drag; touch uses axis lock for scroll coexistence. */
+  /** マウスは即ドラッグ；タッチはスクロール共存のため軸ロック。 */
   pointerType: string;
 };
 

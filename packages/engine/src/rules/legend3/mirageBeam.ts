@@ -9,7 +9,7 @@ export type MirageBeamPrep = {
   revealedCard?: CardInstance;
 };
 
-/** RS-131: reveal deck top before battle; unit cards override attacker BP. */
+/** RS-131: バトル前に山札トップを公開；ユニットカードは攻撃者BPを上書き。 */
 export function prepareMirageBeamForBattle(
   state: GameState,
   playerId: PlayerId,

@@ -42,7 +42,7 @@ export function isMothershipEligibleCommand(
   );
 }
 
-/** Unheld category commands in command or rush (Q3: command moved to rush). */
+/** 未ホールドのカテゴリコマンド（コマンドまたはラッシュ内）（Q3: コマンドがラッシュへ移動）。 */
 export function collectMothershipEligibleCommands(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
@@ -79,7 +79,7 @@ function combinations<T>(items: T[], size: number): T[][] {
   return sets;
 }
 
-/** Distinct hold sets of exact length for legal rush actions. */
+/** 合法ラッシュアクション用の指定枚数の異なるホールドセット。 */
 export function listMothershipHoldSets(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
@@ -168,7 +168,7 @@ export function validateMothershipHolds(
   return allowed.some((set) => [...set].sort().join(",") === key);
 }
 
-/** Mothership holds already applied during command payment (before rush resolves). */
+/** コマンド支払い中に既に適用された母艦ホールド（ラッシュ解決前）。 */
 export function mothershipHoldsSatisfiedOnPlayer(
   player: PlayerState,
   holdInstanceIds: string[],
@@ -278,7 +278,7 @@ export type ZordRushPaymentVariant = {
   zordMothershipHoldInstanceIds?: string[];
 };
 
-/** All valid zord material / mothership combinations for one rush. */
+/** 1回のラッシュに対する合法なゾード素材 / 母艦の全組み合わせ。 */
 export function listZordRushPaymentVariants(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,

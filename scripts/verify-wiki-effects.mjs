@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * Compare card effect text in the repo against official wiki pages.
- * - Legend 1 / 2: wikiwiki.jp/renst/{cardName}
- * - Legend 3: w.atwiki.jp/renst/pages/{page}.html
+ * リポジトリ内のカード効果テキストを公式 Wiki ページと照合する。
+ * - レジェンド1 / 2: wikiwiki.jp/renst/{cardName}
+ * - レジェンド3: w.atwiki.jp/renst/pages/{page}.html
  *
- * Usage:
+ * 使い方:
  *   node scripts/verify-wiki-effects.mjs
  *   node scripts/verify-wiki-effects.mjs --expansion legend3
  */

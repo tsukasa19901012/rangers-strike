@@ -8,7 +8,7 @@ import {
 
 export type { RushAdditionalCondition, ZordConditionId };
 
-/** Legacy zord-up map (Legend 1/2). Legend 3+ uses unitEffects.json / cards.json. */
+/** レガシー zord-up マップ（Legend 1/2）。Legend 3+ は unitEffects.json / cards.json を使用。 */
 export const ZORD_CONDITIONS: Record<string, ZordConditionId> = {
   "RS-034": "discard_fusion_unit",
   "RS-042": "discard_fusion_unit",
@@ -45,10 +45,10 @@ export const ZORD_CONDITIONS: Record<string, ZordConditionId> = {
   "RS-122": "send_s_unit_to_command_or_discard",
 };
 
-/** Fusion units not listed on any 合体― line but valid generic discard material. */
+/** いずれの 合体― 行にも載らないが、汎用捨札素材として有効な合体ユニット。 */
 const LEGACY_EXTRA_FUSION_UNIT_IDS = ["RS-062"] as const;
 
-/** Derived from all 合体― partner lists in unitEffects.json (+ legacy extras). */
+/** unitEffects.json の全 合体― パートナー一覧から導出（レガシー追加分含む）。 */
 export const FUSION_UNIT_IDS: ReadonlySet<string> = new Set([
   ...buildFusionPartnerIdSet(),
   ...LEGACY_EXTRA_FUSION_UNIT_IDS,
@@ -101,7 +101,7 @@ export function getRushAdditionalCondition(
   return buildRushAdditionalCondition(conditionId);
 }
 
-/** Prefer unitEffects.json / cards.json, then ZORD_CONDITIONS default. */
+/** unitEffects.json / cards.json を優先し、なければ ZORD_CONDITIONS のデフォルト。 */
 export function resolveRushAdditionalCondition(
   cardId: string,
   card?: { rushAdditionalCondition?: RushAdditionalCondition },
@@ -123,7 +123,7 @@ export function getZordCondition(cardId: string): ZordConditionId | undefined {
   );
 }
 
-/** All zord-up units with a resolved additional condition (all expansions). */
+/** 追加条件が解決された zord-up ユニット一覧（全拡張）。 */
 export function listZordUpCardIds(): string[] {
   return allCardsCatalog.cards
     .filter(
@@ -140,7 +140,7 @@ export function isFusionUnit(cardId: string): boolean {
   return FUSION_UNIT_IDS.has(cardId);
 }
 
-/** Whether `materialCardId` can be discarded for this zord-up rush. */
+/** `materialCardId` をこの zord-up ラッシュの捨札素材にできるか。 */
 export function isValidZordFusionMaterial(
   zordCardId: string,
   materialCardId: string,
@@ -152,12 +152,12 @@ export function isValidZordFusionMaterial(
   return isFusionUnit(materialCardId);
 }
 
-/** Whether destroying this card should return fusion partners from discard. */
+/** このカード破棄時に合体パートナーを捨札から戻すか。 */
 export function requiresFusionPartnerReturn(cardId: string): boolean {
   return getZordCondition(cardId) === "discard_fusion_unit";
 }
 
-/** How many fusion partners to return after the zord is discarded. */
+/** ゾード捨て後に戻す合体パートナーの枚数。 */
 export function fusionPartnerReturnCount(cardId: string): number {
   const partners = listZordFusionPartnerIds(cardId);
   return partners.length > 0 ? partners.length : 1;

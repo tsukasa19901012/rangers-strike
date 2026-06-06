@@ -72,7 +72,7 @@ export function isSuperRadarActive(state: GameState): boolean {
   );
 }
 
-/** RS-124: S rush → owner returns one non-damage power card to hand. */
+/** RS-124: Sラッシュ → 所有者がダメージ以外のパワーカード1枚を手札へ戻す。 */
 export function applySuperRadarOnRush(
   state: GameState,
   rusherPlayerId: PlayerId,

@@ -59,7 +59,7 @@ export function getDefinition(
   return definitions[cardId];
 }
 
-/** Game state defs may omit fields; fall back to the full card catalog. */
+/** ゲーム状態の定義にフィールドが欠けている場合、完全なカードカタログにフォールバック。 */
 export function resolveUnitSize(
   definitions: Record<string, CardDefinition>,
   cardId: string,
@@ -133,7 +133,7 @@ export function isLargeUnit(
   return getDefinition(definitions, cardId)?.size === "L";
 }
 
-/** RS-015: effective combo number for NC checks (min 2, only reduces if raw > 2). */
+/** RS-015: NC判定用の実効コンボ数（最小2、生値が2より大きい場合のみ減少）。 */
 export function effectiveComboNumber(
   state: GameState,
   playerId: PlayerId,
@@ -144,7 +144,7 @@ export function effectiveComboNumber(
   return Math.max(2, rawComboNumber - delta);
 }
 
-/** Passive BP bonus from permanent operations in play. */
+/** 場の常駐オペレーションによるパッシブBPボーナス。 */
 export function passiveBpBonus(
   state: GameState,
   playerId: PlayerId,
@@ -178,7 +178,7 @@ export function passiveBpBonus(
   return bonus;
 }
 
-/** RS-019: optional BP boost when S unit attacks. */
+/** RS-019: Sユニット攻撃時の任意BP上昇。 */
 export function superPowerAttackBonus(
   state: GameState,
   playerId: PlayerId,
@@ -204,7 +204,7 @@ export function effectiveBp(
 
 export { cardCategories };
 
-/** RS-166: MA category while in battle. */
+/** RS-166: 戦闘中にMAカテゴリ。 */
 export function unitEffectiveCategories(
   state: GameState,
   playerId: PlayerId,
@@ -292,7 +292,7 @@ export function canRushUnit(
   );
 }
 
-/** Rush legality ignoring category hold (power, zord payment, etc. still checked). */
+/** カテゴリホールドを除くラッシュ合法性（パワー、ゾード支払い等は引き続き判定）。 */
 export function canRushUnitExceptCommandHold(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,

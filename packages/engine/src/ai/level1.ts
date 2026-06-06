@@ -34,7 +34,7 @@ import {
 import { dedupeActions, pickBestBySearch, type SearchOptions } from "./simulation";
 
 export type PickCpuActionOptions = {
-  /** When false, skip opponent-response simulation (used internally to avoid recursion). */
+  /** false のとき相手応答シミュレーションをスキップ（再帰回避の内部用）。 */
   enableSearch?: boolean;
   maxCandidates?: number;
   maxResponseDepth?: number;
@@ -180,7 +180,7 @@ function collectBattleCandidates(
 }
 
 /**
- * Level 1 CPU: heuristics plus opponent-response simulation for key decisions.
+ * レベル1 CPU: ヒューリスティックと主要局面での相手応答シミュレーション。
  */
 export function pickCpuAction(
   state: GameState,

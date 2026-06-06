@@ -19,7 +19,7 @@ function playerHasInBattle(state: GameState, playerId: PlayerId, cardId: string)
   return state.players[playerId].battle.some((c) => c.cardId === cardId);
 }
 
-/** RS-034 / RS-045 / RS-037 passive BP auras. */
+/** RS-034 / RS-045 / RS-037 パッシブBPオーラ。 */
 export function passiveNamedFieldBpBonus(
   state: GameState,
   playerId: PlayerId,

@@ -29,7 +29,7 @@ type EffectChoiceModalProps = {
   onConfirmDenjiReveal: () => void;
   onConfirmEffectChoice: () => void;
   onPreview: (card: CardDefinition) => void;
-  /** Opponent / spectator: reveal step only (no confirm). */
+  /** 相手 / 観戦者: 公開ステップのみ（確定なし）。 */
   readOnly?: boolean;
 };
 

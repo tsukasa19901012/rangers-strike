@@ -40,7 +40,7 @@ export type EffectContext = {
   playerId: PlayerId;
   operationCardId: string;
   targetInstanceId?: string;
-  /** Extra hand cards for cyber_s_rider (up to 2). */
+  /** cyber_s_rider 用の追加手札カード（最大2枚）。 */
   extraInstanceIds?: string[];
 };
 

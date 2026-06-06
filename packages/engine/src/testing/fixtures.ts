@@ -166,22 +166,22 @@ export function createTestState(options: TestStateOptions = {}): GameState {
 
 export { TEST_DEFINITIONS, MERGED_DEFINITIONS, inst, WIN_DAMAGE };
 
-/** Held WB command for rush tests (TST-UNIT-* are WB category). */
+/** ラッシュテスト用の WB ホールドコマンド（TST-UNIT-* は WB カテゴリ）。 */
 export function heldWbCommand(suffix = "cmd"): CardInstance {
   return { ...inst("TST-OP", suffix), commandHeld: true };
 }
 
-/** Held ET command for ET-category operation tests. */
+/** ET カテゴリのオペレーションテスト用 ET ホールドコマンド。 */
 export function heldEtCommand(suffix = "cmd"): CardInstance {
   return { ...inst("TST-OP-ET", suffix), commandHeld: true };
 }
 
-/** Held OT command for OT-category operation tests. */
+/** OT カテゴリのオペレーションテスト用 OT ホールドコマンド。 */
 export function heldOtCommand(suffix = "cmd"): CardInstance {
   return { ...inst("TST-OP-OT", suffix), commandHeld: true };
 }
 
-/** Held MA command for MA-category rush tests. */
+/** MA カテゴリのラッシュテスト用 MA ホールドコマンド。 */
 export function heldMaCommand(suffix = "cmd"): CardInstance {
   return { ...inst("TST-OP-MA", suffix), commandHeld: true };
 }

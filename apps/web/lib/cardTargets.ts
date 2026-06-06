@@ -69,7 +69,7 @@ export function resolveCardTargets(
   return out;
 }
 
-/** Owner label from the choosing player's perspective (e.g. RS-060 ピンクストーム). */
+/** 選択プレイヤー視点の持ち主ラベル（例: RS-060 ピンクストーム）。 */
 export function cardTargetOwnerLabel(
   target: CardTarget,
   chooserPlayerId: PlayerId,

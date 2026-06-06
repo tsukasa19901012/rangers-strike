@@ -36,7 +36,7 @@ export function mothershipHoldCountForRush(rushingCardId: string): number {
   return resolveRushAdditionalCondition(rushingCardId)?.unitCount ?? 1;
 }
 
-/** S-unit slots of the zord additional cost satisfied by material (this rush). */
+/** ゾード追加コストの S ユニット枠のうち、このラッシュの素材で充足する数。 */
 export function zordSlotsFilledByMaterial(
   rushingCardId: string,
   hasMaterial: boolean,
@@ -55,7 +55,7 @@ export function zordSlotsFilledByMaterial(
   return 0;
 }
 
-/** Mothership holds still needed after S-unit material payment (Q7 partial). */
+/** S ユニット素材支払い後も必要な母艦ホールド数（Q7 部分充足）。 */
 export function mothershipHoldsRequiredForRush(
   rushingCardId: string,
   slotsFilledByMaterial: number,
@@ -63,7 +63,7 @@ export function mothershipHoldsRequiredForRush(
   return Math.max(0, mothershipHoldCountForRush(rushingCardId) - slotsFilledByMaterial);
 }
 
-/** Jaguar 母艦 cannot stack with discard-path additional cost (Q5). */
+/** ジャガー母艦は捨札経路の追加コストと併用不可（Q5）。 */
 export function jaguarMothershipAllowedWithMaterial(
   rushingCardId: string,
   materialDestination?: "command" | "discard",

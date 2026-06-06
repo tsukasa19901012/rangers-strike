@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Add `rule` (and optional params) to unnamedText notes in unitEffects.json.
- * Idempotent: skips entries that already have `rule`.
+ * unitEffects.json の unnamedText ノートに `rule`（および任意の params）を追加する。
+ * 冪等: 既に `rule` があるエントリはスキップ。
  */
 import fs from "node:fs";
 import path from "node:path";

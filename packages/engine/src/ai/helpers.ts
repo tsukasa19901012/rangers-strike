@@ -83,7 +83,7 @@ function handNeedsCommandSupport(
   );
 }
 
-/** Max power cost among unit/operation cards still in deck or hand. */
+/** デッキまたは手札に残っているユニット/オペレーションカードの最大パワーコスト。 */
 export function deckMaxRequiredPower(state: GameState, playerId: PlayerId): number {
   const player = state.players[playerId];
   let max = 0;
@@ -184,7 +184,7 @@ function fusionPartnerOnField(
   );
 }
 
-/** Higher = rush sooner. Fusion zords and lethal strike damage are prioritized. */
+/** 値が高いほど早くラッシュする。合体ゾードと致死ストライクダメージを優先。 */
 export function scoreRushAction(
   state: GameState,
   action: Extract<GameAction, { type: "rush" }>,
@@ -227,7 +227,7 @@ export function scoreRushAction(
   return score;
 }
 
-/** Hand contains a unit that can rush now or after gaining category support. */
+/** 手札に、今すぐまたはカテゴリ支援取得後にラッシュできるユニットがある。 */
 export function handHasRushUnits(
   state: GameState,
   playerId: PlayerId,
@@ -312,7 +312,7 @@ function pickBestChargeAction(
   return best;
 }
 
-/** Pick charge_power vs charge_command during the charge phase. */
+/** チャージフェイズで charge_power と charge_command のどちらを選ぶか。 */
 export function pickChargeAction(
   state: GameState,
   playerId: PlayerId,
@@ -400,7 +400,7 @@ export function pickMandatoryBattleMove(
   return best;
 }
 
-/** Pay battle-entry holds before moving a unit to battle. */
+/** ユニットをバトルへ移動する前にバトル登場ホールドを支払う。 */
 export function pickHoldBeforeBattle(
   state: GameState,
   playerId: PlayerId,
@@ -424,7 +424,7 @@ export function pickHoldBeforeBattle(
   return null;
 }
 
-/** Category hold payment so a unit can rush this turn. */
+/** このターンユニットがラッシュできるようカテゴリホールドを支払う。 */
 export function pickRushCategoryPayment(
   state: GameState,
   playerId: PlayerId,
@@ -629,7 +629,7 @@ export function pickBestRushByScore(
   return best;
 }
 
-/** Winning battle vs enemy battle or rush (yellow thunder etc.). */
+/** 敵のバトルまたはラッシュに対する勝てるバトル（イエローサンダー等）。 */
 export function pickFavorableBattle(
   state: GameState,
   actions: GameAction[],
@@ -970,7 +970,7 @@ function pickSelectCommandsChoice(
   return null;
 }
 
-/** Last-resort CPU action when heuristics return null (avoids UI freeze). */
+/** ヒューリスティックが null を返したときの CPU 最終手段（UI フリーズ回避）。 */
 export function pickCpuFallbackAction(
   state: GameState,
   playerId: PlayerId,
@@ -1317,7 +1317,7 @@ export function pickSimpleReaction(
   return pickBestCounter(state, playerId, actions, passType);
 }
 
-/** Fast ordering so search keeps the most promising actions. */
+/** 探索で有望なアクションを残すための高速並べ替え。 */
 export function quickActionPriority(
   state: GameState,
   playerId: PlayerId,

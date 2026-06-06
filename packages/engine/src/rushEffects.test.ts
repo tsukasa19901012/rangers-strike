@@ -59,7 +59,7 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
       rushWithCategoryHold(state, "player1", unit.instanceId, wbPay.instanceId),
     );
 
-    // RS-124: S rush → rusher's owner returns one face-up power to hand (both players affected).
+    // RS-124: S ラッシュ → ラッシュした側の持ち主が表向きパワー1枚を手札に戻す（双方に影響）。
     expect(state.players.player1.hand.some((c) => c.cardId === "TST-OP")).toBe(true);
     expect(state.pendingRush?.rushedInstanceId).toBe(unit.instanceId);
     expect(state.activePlayer).toBe("player2");

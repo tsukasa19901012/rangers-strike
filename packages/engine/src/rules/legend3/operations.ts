@@ -12,7 +12,7 @@ export type OperationOutcome = {
   detail: string;
 };
 
-/** RS-123: own S units battle using printed defender BP this turn. */
+/** RS-123: 自軍Sユニットがこのターン印刷ディフェンダーBPでバトル。 */
 export function resolveSuperDynamite(
   state: GameState,
   playerId: PlayerId,
@@ -24,7 +24,7 @@ export function resolveSuperDynamite(
   };
 }
 
-/** RS-125: destroy enemy units with printed BP sum ≤ 12000, count ≤ own WB M units. */
+/** RS-125: 印刷BP合計 ≤ 12000 の敵ユニットを撃破、枚数 ≤ 自軍WB Mユニット数。 */
 export function resolveAnimalHeart(
   state: GameState,
   playerId: PlayerId,

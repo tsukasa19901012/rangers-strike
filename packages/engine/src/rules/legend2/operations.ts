@@ -9,7 +9,7 @@ export type OperationOutcome = {
   detail: string;
 };
 
-/** RS-071: reveal deck top; rush ヒドラー兵 or send to bottom. */
+/** RS-071: 山札トップを公開；ヒドラー兵をラッシュするか山札の下へ。 */
 export function resolveHidoraEgg(
   state: GameState,
   playerId: PlayerId,
@@ -51,7 +51,7 @@ export function resolveHidoraEgg(
   };
 }
 
-/** RS-072: disable opponent permanents and counters this turn. */
+/** RS-072: このターン相手の常駐とカウンターを無効化。 */
 export function resolveInfiniteChain(
   state: GameState,
   playerId: PlayerId,

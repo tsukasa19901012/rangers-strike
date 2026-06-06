@@ -1,7 +1,7 @@
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { updatePlayer } from "../core/helpers";
 
-/** Immutable player patch — avoids stale-state overwrites after NC / combo effects. */
+/** 不変プレイヤーパッチ — NC / コンボ効果後の古い状態上書きを防ぐ。 */
 export function patchPlayer(
   state: GameState,
   playerId: PlayerId,

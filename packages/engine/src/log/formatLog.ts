@@ -14,7 +14,7 @@ export {
   SUPPRESSED_CHOICE_NOTICE_EFFECT_IDS,
 } from "./effectChoiceNotice";
 
-/** Build a structured log entry: player|action|cardId|cardName|detail */
+/** 構造化ログエントリを生成: player|action|cardId|cardName|detail */
 export function buildLogEntry(
   playerId: PlayerId,
   action: string,

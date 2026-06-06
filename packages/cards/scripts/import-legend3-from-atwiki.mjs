@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Build legend3/cards.json from atwiki og:description metadata + grnrngr card list.
- * Images: run `node scripts/download-images.mjs legend3` after this script.
+ * atwiki の og:description メタデータ + grnrngr カード一覧から legend3/cards.json を生成。
+ * 画像: 本スクリプト実行後に `node scripts/download-images.mjs legend3` を実行。
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -14,7 +14,7 @@ const packageRoot = path.resolve(__dirname, "..");
 const outPath = path.join(packageRoot, "src/legend3/cards.json");
 const pagesPath = path.join(packageRoot, "src/legend3/atwiki-pages.json");
 
-/** grnrngr.com series-3 list (RS-123 … RS-178, SR-001). */
+/** grnrngr.com シリーズ3 一覧（RS-123 … RS-178, SR-001）。 */
 const MANIFEST = [
   ["RS-123", "スーパーダイナマイト", "operation", "N"],
   ["RS-124", "超電子レーダー", "operation", "N"],
@@ -227,7 +227,7 @@ async function scanAtwiki() {
 async function main() {
   const metaById = await scanAtwiki();
 
-  // RS-151 shares the ガオキング page with SR-001 (page 17 metadata).
+  // RS-151 は SR-001（ページ17 メタデータ）とガオキングページを共有。
   if (!metaById["RS-151"] && metaById["SR-001"]) {
     metaById["RS-151"] = metaById["SR-001"];
   }
@@ -241,7 +241,7 @@ async function main() {
   try {
     pageMap = JSON.parse(await readFile(pagesPath, "utf8"));
   } catch {
-    /* generated on first import run */
+    /* 初回インポート実行時に生成 */
   }
 
   const cards = [];

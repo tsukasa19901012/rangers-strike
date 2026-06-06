@@ -1,6 +1,6 @@
-/** Japanese labels for named unit / NC / operation effect ids (UI + logs). */
+/** 効果名 id の日本語ラベル（UI・ログ用）。 */
 export const EFFECT_LABELS: Record<string, string> = {
-  // NC
+  // ナンバーコンボ（NC）
   grant_sp1: "SP+1",
   eagle_diving: "イーグルダイビング",
   moss_breaker: "モスブレイカー",
@@ -15,29 +15,29 @@ export const EFFECT_LABELS: Record<string, string> = {
   radial_hammer: "ラジアルハンマー",
   blow_knuckle: "ブロウナックル",
   magical_dragon_shoot: "マジカルドラゴンシュート",
-  // on rush
+  // ラッシュ時
   armor_attack: "アーマーアタック",
   tyranno_sonic: "ティラノソニック",
   moss_blizzard: "モスブリザード",
   ptera_beam: "プテラビーム",
-  // conditional (battle entry)
+  // 条件付き（バトル投入）
   judgment_sword: "ジャッジメントソード",
   justice_flasher: "ジャスティスフラッシャー",
   super_drill: "超ドリル進化",
-  // enter battle / passive
+  // バトル投入 / 常駐
   destroy_enemy_bp4000: "撃破",
   sky_magic_slash: "天空魔法斬り",
   super_shield: "超シールド進化",
   super_cutter: "超カッター進化",
   focused_breakthrough: "一点突破",
-  // on attack / field auras
+  // アタック時 / 場オーラ
   shark_jaws: "シャークジョーズ",
   panther_claw: "パンサークロー",
   signal_cannon: "シグナルキャノン",
   tricera_cannon: "トリケラキャノン",
   guardian_god: "守護神",
   pat_signer: "パットサイン",
-  // operations
+  // オペレーション
   goren_storm: "ゴーレンストーム",
   jacker_hurricane: "ジャッカーハリケーン",
   battle_dance: "バトルダンス",
@@ -71,10 +71,10 @@ export const EFFECT_LABELS: Record<string, string> = {
   plasma_energy: "プラズマエネルギー",
   discard_to_hand: "捨札回収",
   lightning_gravity: "稲妻重力",
-  // Legend 2 operations
+  // レジェンド2 オペレーション
   hidora_egg: "ヒドラー兵の卵",
   infinite_chain: "無限連鎖",
-  // Legend 2 NC
+  // レジェンド2 NC
   competition: "競争",
   ryuu_geki_ken: "龍撃剣",
   tricera_lance: "トリケランス",
@@ -89,7 +89,7 @@ export const EFFECT_LABELS: Record<string, string> = {
   green_crush: "グリーンクラッシュ",
   backup_request: "応援要請",
   zenibomb: "ゼニボム",
-  // Legend 2 on rush
+  // レジェンド2 ラッシュ時
   rescue_activity: "救助活動",
   sure_win_combination: "必勝合体",
   firefighting: "消火作業",
@@ -97,7 +97,7 @@ export const EFFECT_LABELS: Record<string, string> = {
   heavenly_disaster: "天の災",
   karakuri_great_tsunami: "カラクリ忍法・大津波",
   air_transport: "空輸搬送",
-  // Legend 2 conditional
+  // レジェンド2 条件付き
   val_shield: "バルシールド",
   dance_of_darkness: "闇の舞",
   ghost_absorption: "幽魔吸収",
@@ -106,11 +106,11 @@ export const EFFECT_LABELS: Record<string, string> = {
   karakuri_fire_hawk: "カラクリ忍法・火炎鷹",
   tantrum: "かんしゃく",
   cry: "鳴き声",
-  // Legend 2 enter battle
+  // レジェンド2 バトル投入
   mane_hurricane: "タテガミハリケーン",
   phantom_illusion: "ファントムイリュージョン",
   ruin_excavation: "遺跡発掘",
-  // Legend 2 on attack / field
+  // レジェンド2 アタック時 / 場
   val_cannon: "バルカン砲",
   dump_punch: "ダンプパンチ",
   ptera_dagger: "プテラダガー",
@@ -124,7 +124,7 @@ export const EFFECT_LABELS: Record<string, string> = {
   fire_spin_blade: "ファイヤースピンブレード",
   seabed_survey: "海底探査",
   opponent_may_draw_on_enter: "進入時ドロー",
-  // Legend 3
+  // レジェンド3
   end_turn_effects: "ターン終了時の効果",
   jet_skateboard: "ジェットスケボー",
   falcon_claw: "ファルコンクロー",

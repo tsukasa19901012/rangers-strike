@@ -691,7 +691,7 @@ export function isResolveCommandPaymentLegal(
   return true;
 }
 
-/** Human-readable reason when a hand unit cannot be rushed. */
+/** 手札ユニットをラッシュできない理由（人間が読める形式）。 */
 export function explainCannotRush(
   state: GameState,
   playerId: PlayerId,

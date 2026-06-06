@@ -3,7 +3,7 @@
   background: #0f1724;
   font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
 
-  /* Mobile-first sizing (smartphone) */
+  /* スマホ最優先のサイズ */
   --card-width: 72px;
   --card-height: calc(var(--card-width) * 1.417);
   --card-power-width: calc(var(--card-width) * 0.72);
@@ -41,10 +41,10 @@ select {
 }
 
 /*
- * Play layout contract (do not break without explicit product decision):
- * - CPU board above, human board below (game__boards: column only; never side-by-side)
- * - Human hand and zones at the bottom; horizontal scroll inside zones only
- * - Page may scroll vertically when content exceeds the viewport
+ * プレイ画面レイアウトの契約（明示的なプロダクト判断なしに変更しない）:
+ * - CPU 盤面を上、人間盤面を下（game__boards は column のみ。横並び禁止）
+ * - 人間の手札とゾーンは画面下部。ゾーン内のみ横スクロール
+ * - 内容がビューポートを超える場合はページ全体を縦スクロール可
  */
 .game {
   max-width: var(--app-max-width);
@@ -295,7 +295,7 @@ select {
 }
 
 
-/* Official play sheet layout (grnrngr playseat) — mirrored for opponent */
+/* 公式プレイシート配置（grnrngr playseat）— 相手側は左右反転 */
 .playsheet {
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--playsheet-sidebar-width);
@@ -1765,7 +1765,7 @@ select {
   color: #94a3b8;
 }
 
-/* Short viewport / phone landscape: CSS-first compact sizing (see compactViewport.ts) */
+/* 短いビューポート / 横向きスマホ: CSS 優先のコンパクトサイズ（compactViewport.ts 参照） */
 @media (orientation: landscape) and (max-height: 520px) {
   .game {
     --card-width: 58px;
@@ -1848,7 +1848,7 @@ select {
   }
 }
 
-/* JS-driven fit: shrink human playsheet to remaining viewport height */
+/* JS 連動 fit: 人間側プレイシートを残りビューポート高に合わせて縮小 */
 .game.game--viewport-fit .board--self {
   --card-width: var(--viewport-fit-card-width, var(--card-width));
   --playsheet-sidebar-width: var(--viewport-fit-sidebar-width, var(--playsheet-sidebar-width));
@@ -1863,8 +1863,8 @@ select {
 }
 
 /*
- * Touch / tablet: page scroll on zone chrome only (title / padding), not on cards.
- * Card rows stay pan-x so hand charge and horizontal zone scroll are not stolen.
+ * タッチ / タブレット: ゾーン枠（タイトル / 余白）のみページ縦スクロール。カード行は対象外。
+ * カード行は pan-x のままにし、手札チャージとゾーン横スクロールを奪わない。
  */
 @media (hover: none), (pointer: coarse) {
   .playsheet .zone.drop-zone {
@@ -1881,7 +1881,7 @@ select {
   }
 }
 
-/* Tablet (640px+) */
+/* タブレット（640px+） */
 @media (min-width: 640px) {
   :root {
     --card-width: 80px;
@@ -1936,7 +1936,7 @@ select {
   }
 }
 
-/* PC (1024px+) */
+/* PC（1024px+） */
 @media (min-width: 1024px) {
   :root {
     --card-width: 88px;

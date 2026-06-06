@@ -3,8 +3,8 @@ import type { Category } from "./schema";
 import { getCardById, legend2Catalog } from "./catalog";
 
 /**
- * Official categories from grnrngr.com card pages (2026).
- * ET = アーステクノロジー, MA = ミスティックアームズ, OT = オーバーテクノロジー, etc.
+ * grnrngr.com カードページの公式カテゴリ（2026）。
+ * ET = アーステクノロジー, MA = ミスティックアームズ, OT = オーバーテクノロジー 等。
  */
 const LEGEND2_OFFICIAL_CATEGORY: Record<string, Category> = {
   "RS-073": "ET",

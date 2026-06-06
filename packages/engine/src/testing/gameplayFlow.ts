@@ -53,7 +53,7 @@ export function powerCards(count: number, prefix = "p"): CardInstance[] {
   return Array.from({ length: count }, (_, i) => inst("TST-P", `${prefix}${i}`));
 }
 
-/** Small unit usable as send_s_unit_* material for most zords. */
+/** ほとんどのゾードの send_s_unit_* 素材として使える S ユニット。 */
 export const DEFAULT_S_MATERIAL = "RS-080";
 
 function commandsForZordRush(
@@ -192,7 +192,7 @@ export type ZordRushSetup = {
   payment: ZordRushPaymentVariant;
 };
 
-/** Minimal rush-phase state for a zord-up unit with additional condition satisfied. */
+/** 追加条件を満たしたゾードアップユニット用の最小ラッシュフェイズ状態。 */
 export function buildZordRushSetup(
   definitions: Record<string, CardDefinition>,
   zordCardId: string,
@@ -387,7 +387,7 @@ export function moveToBattleWithHolds(
   );
 }
 
-/** Battle and strike are offered together during pendingBattleEntry (pick one). */
+/** pendingBattleEntry 中はバトルとストライクを同時提示（どちらか一方を選択）。 */
 export function expectBattleEntryCombatOptions(
   state: GameState,
   attackerId: string,

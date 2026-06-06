@@ -1,65 +1,65 @@
 /**
- * Official effect text taxonomy (wikiwiki.jp/renst).
+ * 公式効果文分類（wikiwiki.jp/renst）。
  *
- * - 効果名: white/inverted text on the card only; wiki shows as 【name】.
- * - 効果名を持つテキスト / 効果名を持つ効果: body below a name; fires when NC (CN)
- *   or other conditions written in that body are met.
- * - 効果名を持たないテキスト: ※ lines and shared rules (e.g. レジスト) without a name.
+ * - 効果名: カード上の白抜き/反転テキストのみ。Wiki では【名前】表記。
+ * - 効果名を持つテキスト / 効果名を持つ効果: 効果名の下の本文。NC（CN）や
+ *   本文に書かれた条件を満たしたとき発動。
+ * - 効果名を持たないテキスト: ※ 行や共通ルール（例: レジスト）で効果名なし。
  */
 
-/** How a named effect is triggered in the engine. */
+/** エンジンでの効果名付き効果の発動タイミング。 */
 export type NamedEffectTrigger =
-  /** NC/CN: comboNumber matches battle position (after RS-015 delta). */
+  /** NC/CN: バトル位置と comboNumber が一致（RS-015 補正後）。 */
   | { type: "nc" }
-  /** NC/CN or combo-from partner units already in battle (errata/text override). */
+  /** NC/CN または既にバトルにいる combo-from パートナーユニット（エラッタ/文面上書き）。 */
   | { type: "nc_or_combo_from"; partnerCardIds: string[] }
-  /** Enters the battle zone (not NC-gated). */
+  /** バトルゾーンに出たとき（NC 条件なし）。 */
   | { type: "enter_battle" }
-  /** When this unit is rushed. */
+  /** このユニットがラッシュされたとき。 */
   | { type: "on_rush" }
-  /** When this unit attacks (optional combo partner override in card text). */
+  /** このユニットがアタックしたとき（カード文面でコンボパートナー上書き可）。 */
   | { type: "on_attack"; comboPartnerCardIds?: string[] }
-  /** Joint combo L: grants effect to same-category L partner immediately to the right. */
+  /** ジョイントコンボ L: 同カテゴリの右隣 L パートナーに効果を付与。 */
   | { type: "joint_combo_l" }
-  /** Joint combo R: this unit gains the effect when immediately right of same-category L. */
+  /** ジョイントコンボ R: 同カテゴリ L の右隣に出たとき、このユニットが効果を得る。 */
   | { type: "joint_combo_r" }
-  /** Riding combo RC: fires when entering battle after ride-off from a vehicle. */
+  /** ライディングコンボ RC: ビークルから降りてバトル投入したとき発動。 */
   | { type: "riding_combo" }
-  /** Continuous while on field (metadata; engine may implement separately). */
+  /** 場にいる間継続（メタデータ。エンジンは別途実装可）。 */
   | { type: "while_in_field" }
-  /** Other conditional text; not yet implemented. */
+  /** その他条件付き文面。未実装。 */
   | { type: "conditional" };
 
-/** Zord-up rush additional condition (powerCost suffix "+"). See zord.ts. */
+/** ゾードアップ Rush 追加条件（powerCost 末尾「+」）。zord.ts を参照。 */
 export type ZordConditionId =
   | "discard_fusion_unit"
   | "send_s_unit_to_power"
   | "send_s_unit_to_discard"
   | "send_s_unit_to_command_or_discard";
 
-/** Rush additional condition (atwiki 追加条件：…). */
+/** Rush 追加条件（atwiki 追加条件：…）。 */
 export type RushAdditionalCondition = {
   conditionId: ZordConditionId;
-  /** Official wording (e.g. 自軍Sユニットを1体パワーゾーンに送る). */
+  /** 公式文言（例: 自軍Sユニットを1体パワーゾーンに送る）。 */
   text: string;
-  /** For send-S conditions (default 1). */
+  /** S ユニット送付条件の体数（既定 1）。 */
   unitCount?: number;
 };
 
-/** 効果名を持つ効果 — maps to engine effectId when implemented. */
+/** 効果名を持つ効果 — 実装時は engine effectId に対応。 */
 export type NamedUnitEffect = {
-  /** Display name inside 【】 (not including brackets). */
+  /** 【】内の表示名（括弧は含まない）。 */
   name: string;
-  /** Engine handler id (comboEffects / battle rules). */
+  /** エンジンハンドラ id（comboEffects / バトルルール）。 */
   effectId: string;
-  /** Body text below the effect name. */
+  /** 効果名の下の本文。 */
   text: string;
   trigger: NamedEffectTrigger;
 };
 
 /**
- * Machine-readable id for 効果名を持たないテキスト (※ lines).
- * Engine and deck rules should use these instead of substring matching on `text`.
+ * 効果名を持たないテキスト（※ 行）の機械可読 id。
+ * エンジンとデッキルールは `text` の部分一致ではなくこれを使うこと。
  */
 export type UnnamedUnitRule =
   | "battle_entry_hold"
@@ -74,50 +74,50 @@ export type UnnamedUnitRule =
   | "no_attack_turn_rushed"
   | "no_strike_turn_rushed"
   | "cannot_enter_battle"
-  /** Zord fusion material may be treated as another card name (display / deck building). */
+  /** ゾード合体素材を別カード名として扱える（表示 / デッキ構築）。 */
   | "fusion_material_alias"
-  /** Optional on enter; engine may implement later. */
+  /** 投入時任意。エンジンは後日実装可。 */
   | "opponent_may_draw_on_enter"
-  /** Rush: send non-damage power cards to discard (RS-128 / RS-129). */
+  /** ラッシュ: ダメージ以外のパワーカードを捨札へ（RS-128 / RS-129）。 */
   | "rush_power_to_discard"
-  /** Cannot enter battle during own turn (RS-170). */
+  /** 自分のターン中はバトル投入不可（RS-170）。 */
   | "cannot_enter_battle_own_turn"
-  /** Battle entry: discard S unit from own rush first (RS-132). */
+  /** バトル投入: 先に自軍ラッシュから S ユニットを捨札（RS-132）。 */
   | "battle_entry_discard_s_from_rush"
-  /** May attack enemy S units in rush zone (RS-154). */
+  /** 敵ラッシュゾーンの S ユニットをアタック可能（RS-154）。 */
   | "can_attack_enemy_rush_s"
-  /** Cannot attack enemy S units in battle zone (RS-154). */
+  /** 敵バトルゾーンの S ユニットはアタック不可（RS-154）。 */
   | "cannot_attack_enemy_battle_s"
-  /** Only units with feature 航空機 may attack this unit (RS-135). */
+  /** 特徴「航空機」を持つユニットのみがアタック可能（RS-135）。 */
   | "requires_aircraft_attacker"
-  /** Battle entry: ally with cardId in partnerCardIds must already be in battle (RS-147). */
+  /** バトル投入: partnerCardIds の cardId を持つ味方が既にバトルにいる必要（RS-147）。 */
   | "battle_entry_combo_from"
-  /** Battle entry: discard cards from hand first (RS-165). */
+  /** バトル投入: 先に手札から捨札（RS-165）。 */
   | "battle_entry_discard_from_hand"
-  /** While in battle, unit also counts as MA category (RS-166). */
+  /** バトル中、このユニットは MA カテゴリも持つ（RS-166）。 */
   | "battle_adds_ma_category";
 
-/** 効果名を持たないテキスト — static rules, ※ restrictions, zord material lines. */
+/** 効果名を持たないテキスト — 静的ルール、※ 制限、ゾード素材行。 */
 export type UnnamedUnitText = {
   kind: "note" | "zord" | "fusion";
   text: string;
-  /** Engine rule id when this note is implemented or catalogued. */
+  /** 実装済みまたはカタログ済みのエンジンルール id。 */
   rule?: UnnamedUnitRule;
-  /** For `battle_entry_hold`: commands required (default 1). */
+  /** `battle_entry_hold`: 必要コマンド数（既定 1）。 */
   holdCount?: number;
-  /** For `destroy_self_damage`: damage to controller when destroyed to discard. */
+  /** `destroy_self_damage`: 捨札破壊時にコントローラーが受けるダメージ。 */
   damage?: number;
-  /** For `rush_power_to_discard` / `battle_entry_discard_from_hand`. */
+  /** `rush_power_to_discard` / `battle_entry_discard_from_hand` 用。 */
   discardCount?: number;
-  /** For `battle_entry_combo_from` or zord-up fusion partners (合体― line). */
+  /** `battle_entry_combo_from` またはゾードアップ合体パートナー（合体― 行）用。 */
   partnerCardIds?: string[];
 };
 
 export type UnitEffectBlock = {
-  /** Rush zord-up requirement (wiki 追加条件 field, separate from テキスト). */
+  /** Rush ゾードアップ要件（Wiki 追加条件フィールド。テキストとは別）。 */
   rushAdditionalCondition?: RushAdditionalCondition;
   unnamedText: UnnamedUnitText[];
   namedEffects: NamedUnitEffect[];
-  /** Card effect text (【】 abilities / ※ notes); excludes 追加条件. */
+  /** カード効果文（【】能力 / ※ 注記）。追加条件は含まない。 */
   rawText: string;
 };

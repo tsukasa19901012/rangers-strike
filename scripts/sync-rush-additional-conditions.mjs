@@ -1,12 +1,12 @@
 /**
- * Populate rushAdditionalCondition on cards.json and unitEffects.json
- * for every zord-up unit across all expansions.
+ * 全拡張のゾードアップユニットについて cards.json と unitEffects.json の
+ * rushAdditionalCondition を埋める。
  *
- * Source of truth:
- * - Legend 1/2 legacy: ZORD_CONDITIONS in packages/cards/src/zord.ts
- * - Legend 3+: unitEffects.json rushAdditionalCondition (already authored)
+ * 正とするソース:
+ * - レジェンド1/2 レガシー: packages/cards/src/zord.ts の ZORD_CONDITIONS
+ * - レジェンド3+: unitEffects.json の rushAdditionalCondition（既に記述済み）
  *
- * Usage: node scripts/sync-rush-additional-conditions.mjs
+ * 使い方: node scripts/sync-rush-additional-conditions.mjs
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -16,7 +16,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const cardsRoot = path.join(root, "packages/cards/src");
 
-/** Parsed from packages/cards/src/zord.ts ZORD_CONDITIONS (Legend 1/2 legacy). */
+/** packages/cards/src/zord.ts の ZORD_CONDITIONS から解析（レジェンド1/2 レガシー）。 */
 const ZORD_CONDITIONS = parseZordConditions(
   fs.readFileSync(path.join(cardsRoot, "zord.ts"), "utf8"),
 );

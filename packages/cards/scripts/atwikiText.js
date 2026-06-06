@@ -1,4 +1,4 @@
-/** Extract card effect text from atwiki page HTML (wikibody block). */
+/** atwiki ページ HTML（wikibody ブロック）からカード効果文を抽出。 */
 
 function htmlFragmentToText(fragment) {
   return fragment
@@ -49,7 +49,7 @@ function wikibodySlice(html) {
   return bodyIdx >= 0 ? html.slice(bodyIdx) : html;
 }
 
-/** Parse the stat block above テキスト (種類/BP/特徴 etc.). */
+/** 「テキスト」直上のステータスブロックを解析（種類/BP/特徴 等）。 */
 export function extractCardMetaFromAtwikiHtml(html) {
   const slice = wikibodySlice(html);
   const statsMatch = slice.match(

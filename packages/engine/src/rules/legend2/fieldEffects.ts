@@ -18,7 +18,7 @@ function categoriesInclude(
   return list.includes(target);
 }
 
-/** Legend2 while_in_field BP / SP passives. */
+/** Legend2 フィールド常駐 BP / SP パッシブ。 */
 export function legend2FieldBpBonus(
   state: GameState,
   playerId: PlayerId,
@@ -100,7 +100,7 @@ export function legend2EffectiveSp(
   return sp;
 }
 
-/** RS-089: WB M units go to power instead of discard when destroyed. */
+/** RS-089: WB Mユニット撃破時、捨札の代わりにパワーへ。 */
 export function shouldMedicalRescueToPower(
   state: GameState,
   ownerId: PlayerId,
@@ -112,7 +112,7 @@ export function shouldMedicalRescueToPower(
   return categoriesInclude(def.category, "WB");
 }
 
-/** RS-086: enemy must use same size when entering battle. */
+/** RS-086: 戦闘進入時、敵は同じサイズを使わなければならない。 */
 export function trafficControlRequiresSameSize(
   state: GameState,
   playerId: PlayerId,
@@ -129,7 +129,7 @@ export function trafficControlRequiresSameSize(
   return false;
 }
 
-/** RS-097: SP1+ or ! enemy units need hold to enter battle. */
+/** RS-097: SP1+ または ! の敵ユニットは戦闘進入にホールドが必要。 */
 export function karakuriLionChainBlocksEntry(
   state: GameState,
   defenderId: PlayerId,

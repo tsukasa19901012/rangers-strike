@@ -17,7 +17,7 @@ const DECK_BUILDERS = [
   () => buildStarterDeck("silver-adventurer"),
 ] as const;
 
-/** Deterministic RNG for reproducible failures. */
+/** 再現可能な失敗のための決定論的 RNG。 */
 function mulberry32(seed: number): () => number {
   let s = seed >>> 0;
   return () => {
@@ -121,7 +121,7 @@ describe("monkey test (random legal actions)", () => {
       }
 
       expect(finished + timedOut).toBe(DEFAULT_GAMES);
-      // Pure random play often stalls; step_limit is acceptable if apply/legal stay sound.
+      // 完全ランダムプレイは停滞しがち；apply/legal が健全なら step_limit は許容。
       expect(finished).toBeGreaterThan(0);
 
       console.info(

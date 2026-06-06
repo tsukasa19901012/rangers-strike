@@ -52,7 +52,7 @@ export function dedupeActions(actions: GameAction[]): GameAction[] {
   return unique;
 }
 
-/** Resolve opponent reaction windows using heuristics (no nested simulation). */
+/** ヒューリスティックで相手のリアクションウィンドウを解決（ネストしたシミュレーションなし）。 */
 export function resolveOpponentResponses(
   state: GameState,
   playerId: PlayerId,

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Refresh legend3/cards.json from atwiki wikibody (full text + metadata).
+ * atwiki wikibody から legend3/cards.json を更新（全文 + メタデータ）。
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";

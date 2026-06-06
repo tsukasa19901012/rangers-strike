@@ -1,9 +1,9 @@
 /**
- * Official effect text verified against wikiwiki.jp/renst and w.atwiki.jp/renst.
- * Errata entries take precedence over printed card text.
+ * wikiwiki.jp/renst および w.atwiki.jp/renst で確認済みの公式効果文。
+ * エラッタは印刷文面より優先。
  */
 
-/** Verified operation effect text (post-errata where applicable). */
+/** 確認済みオペレーション効果文（該当時はエラッタ反映後）。 */
 export const WIKI_OPERATION_TEXT: Record<string, string> = {
   "RS-001":
     "このターン、Sユニットだけでコンビネーションするとき、5番目のユニットは「SP1」「BP12000」になる。",
@@ -80,7 +80,7 @@ export const WIKI_OPERATION_TEXT: Record<string, string> = {
     "敵軍ユニットを、BPの合計が12000以下になるように選んで撃破する。ただし選べるユニットの数は、自軍WBのMユニットの数までとする。",
 };
 
-/** Cards whose engine behavior still uses a simplified legacy handler. */
+/** エンジン挙動が簡略レガシーハンドラのままのカード。 */
 export const WIKI_ENGINE_PENDING: Partial<
   Record<string, { effectId: string; note: string }>
 > = {};

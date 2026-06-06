@@ -11,7 +11,7 @@ export const ALL_CATALOGS = [legend1Catalog, legend2Catalog, legend3Catalog] as 
 
 export type ExpansionId = (typeof ALL_CATALOGS)[number]["expansion"];
 
-/** Merged catalog for deck building and card lookup across expansions. */
+/** 拡張パック横断のデッキ構築・カード参照用統合カタログ。 */
 export const allCardsCatalog: CardCatalog = {
   expansion: "all",
   cards: ALL_CATALOGS.flatMap((catalog) => catalog.cards),
