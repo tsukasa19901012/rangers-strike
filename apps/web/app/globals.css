@@ -1154,6 +1154,43 @@ select {
   max-width: min(92vw, 400px);
 }
 
+/* ダメージ処理: 盤面タップを妨げない固定ヒント */
+.damage-payment-banner {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 64px);
+  transform: translateX(-50%);
+  z-index: 15;
+  pointer-events: none;
+  max-width: min(92vw, 420px);
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  background: rgb(17 24 39 / 0.94);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+}
+
+.damage-payment-banner__title {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.damage-payment-banner__hint {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #e2e8f0;
+}
+
+.damage-payment-banner__sub {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #94a3b8;
+}
+
 .modal__content--effect-action {
   max-height: min(78vh, 560px);
   overflow-y: auto;

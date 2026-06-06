@@ -1985,7 +1985,7 @@ export function GameApp() {
       </div>
 
       {showDamagePaymentModal && pendingDamage && (
-        <DamagePaymentModal pending={pendingDamage} playerId={HUMAN_PLAYER} />
+        <DamagePaymentModal pending={pendingDamage} />
       )}
 
       <footer className="action-bar">
