@@ -1,5 +1,5 @@
 import { getCardEffect } from "@rangers-strike/cards";
-import type { GameAction, GameState, PlayerId } from "@rangers-strike/engine";
+import type { CardInstance, GameAction, GameState, PlayerId } from "@rangers-strike/engine";
 import { cardTargetMetaLine, findCardTarget } from "./cardTargets";
 import {
   buildPaymentFromInitiateAction,
