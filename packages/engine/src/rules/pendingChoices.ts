@@ -656,6 +656,7 @@ export function startPitInDiveOrderChoice(
     phasePlayerId: playerId,
     validInstanceIds: valid,
     selectCount: valid.length,
+    optional: true,
   });
 }
 

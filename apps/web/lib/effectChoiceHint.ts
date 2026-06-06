@@ -75,7 +75,7 @@ export function effectChoiceHint(
     case "pit_in_dive_order": {
       const picked = pending.selectedInstanceIds?.length ?? 0;
       const total = pending.selectCount ?? 1;
-      return `順番にSユニットを選んでください（${picked + 1}/${total}）`;
+      return `バトルに出すSユニットを順番に選んでください（${picked + 1}/${total}）`;
     }
     case "select_unit_step":
       return pending.step === "enemy"
