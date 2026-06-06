@@ -40,6 +40,11 @@ describe("RS-004 denji machine", () => {
     expect(pending?.denjiMachineMeta?.step).toBe("reveal");
     expect(pending?.denjiMachineMeta?.audiencePlayerIds).toContain("player2");
     expect(pending?.viewedInstanceIds).toEqual([sUnit.instanceId, c1.instanceId, c2.instanceId]);
+    expect(pending?.denjiMachineMeta?.revealedCards?.map((c) => c.instanceId)).toEqual([
+      sUnit.instanceId,
+      c1.instanceId,
+      c2.instanceId,
+    ]);
   });
 
   it("moves S to hand and orders non-S to deck bottom", () => {

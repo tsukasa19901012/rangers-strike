@@ -120,6 +120,7 @@ export function startDenjiMachineChoice(
       step: "reveal",
       audiencePlayerIds: [playerId, enemyId],
       revealedInstanceIds,
+      revealedCards: revealed.map((c) => ({ ...c })),
       toHandInstanceIds,
       toBottomInstanceIds,
     },

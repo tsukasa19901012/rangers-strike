@@ -63,6 +63,15 @@ function assertActive(state: GameState, playerId: PlayerId): boolean {
   return state.activePlayer === playerId && state.winner === null;
 }
 
+/** カウンター窓が開いているとき、応答するプレイヤー（効果選択より優先）。 */
+function reactionChooserPlayerId(state: GameState): PlayerId | undefined {
+  if (state.pendingLeave) return state.pendingLeave.ownerPlayerId;
+  if (state.pendingStrike) return opponent(state.pendingStrike.strikerPlayerId);
+  if (state.pendingBattle) return state.pendingBattle.defenderPlayerId;
+  if (state.pendingRush) return opponent(state.pendingRush.rusherPlayerId);
+  return undefined;
+}
+
 function appendStrikeReactionActions(
   state: GameState,
   playerId: PlayerId,
@@ -727,6 +736,7 @@ export function getLegalActions(state: GameState): GameAction[] {
     (state.pendingDamagePayment
       ? damagePaymentChoosingPlayer(state.pendingDamagePayment)
       : undefined) ??
+    reactionChooserPlayerId(state) ??
     state.pendingEffectChoice?.playerId ??
     state.activePlayer;
   const player = state.players[playerId];
@@ -754,13 +764,36 @@ export function getLegalActions(state: GameState): GameAction[] {
     return actions;
   }
 
-  if (state.pendingEffectChoice) {
-    appendEffectChoiceActions(state, playerId, actions);
+  if (state.pendingDamagePayment) {
+    appendDamagePaymentActions(state, playerId, actions);
     return actions;
   }
 
-  if (state.pendingDamagePayment) {
-    appendDamagePaymentActions(state, playerId, actions);
+  if (state.pendingStrike) {
+    appendStrikeReactionActions(
+      state,
+      opponent(state.pendingStrike.strikerPlayerId),
+      actions,
+    );
+    return actions;
+  }
+
+  if (state.pendingBattle) {
+    appendBattleReactionActions(state, state.pendingBattle.defenderPlayerId, actions);
+    return actions;
+  }
+
+  if (state.pendingRush) {
+    appendRushReactionActions(
+      state,
+      opponent(state.pendingRush.rusherPlayerId),
+      actions,
+    );
+    return actions;
+  }
+
+  if (state.pendingEffectChoice) {
+    appendEffectChoiceActions(state, playerId, actions);
     return actions;
   }
 
@@ -777,29 +810,6 @@ export function getLegalActions(state: GameState): GameAction[] {
         placement: "bottom",
       });
     }
-    return actions;
-  }
-
-  if (state.pendingRush) {
-    appendRushReactionActions(
-      state,
-      opponent(state.pendingRush.rusherPlayerId),
-      actions,
-    );
-    return actions;
-  }
-
-  if (state.pendingBattle) {
-    appendBattleReactionActions(state, state.pendingBattle.defenderPlayerId, actions);
-    return actions;
-  }
-
-  if (state.pendingStrike) {
-    appendStrikeReactionActions(
-      state,
-      opponent(state.pendingStrike.strikerPlayerId),
-      actions,
-    );
     return actions;
   }
 

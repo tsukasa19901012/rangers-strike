@@ -90,18 +90,25 @@ export function EffectChoiceModal({
 
   const denjiReveal =
     pending.kind === "denji_machine" && pending.denjiMachineMeta?.step === "reveal"
-      ? (pending.viewedInstanceIds ?? [])
-          .map((id) => {
-            const ownerId = pending.playerId;
-            const inst = state.players[ownerId].deck.find((c) => c.instanceId === id);
-            if (!inst) return null;
-            const card = getCardById(inst.cardId);
-            const toHand = pending.denjiMachineMeta?.toHandInstanceIds.includes(id);
-            return card
-              ? { instanceId: inst.instanceId, card, toHand }
-              : null;
-          })
-          .filter((e): e is { instanceId: string; card: CardDefinition; toHand: boolean } => !!e)
+      ? (() => {
+          const meta = pending.denjiMachineMeta;
+          const snapshot = meta?.revealedCards;
+          const source =
+            snapshot && snapshot.length > 0
+              ? snapshot
+              : (pending.viewedInstanceIds ?? [])
+                  .map((id) => state.players[pending.playerId].deck.find((c) => c.instanceId === id))
+                  .filter((c): c is NonNullable<typeof c> => !!c);
+          return source
+            .map((inst) => {
+              const card = getCardById(inst.cardId);
+              const toHand = meta?.toHandInstanceIds.includes(inst.instanceId);
+              return card ? { instanceId: inst.instanceId, card, toHand } : null;
+            })
+            .filter(
+              (e): e is { instanceId: string; card: CardDefinition; toHand: boolean } => !!e,
+            );
+        })()
       : [];
 
   const denjiOrder =
@@ -236,6 +243,9 @@ export function EffectChoiceModal({
                       onClick={() => onSelect(target.instanceId)}
                     >
                       {target.card.name}
+                      {selected && (
+                        <span className="effect-action-modal__target-badge">選択中</span>
+                      )}
                       <span className="effect-action-modal__target-meta">
                         {cardTargetMetaLine(target, playerId)} · BP{" "}
                         {printedBp.toLocaleString()}

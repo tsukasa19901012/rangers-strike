@@ -202,6 +202,8 @@ export type DenjiMachineMeta = {
   /** 公開カードを閲覧できるプレイヤー（PvPでは使用者+相手）。 */
   audiencePlayerIds: PlayerId[];
   revealedInstanceIds: string[];
+  /** 公開時点のカードスナップショット（相手UI表示用。確定後も参照可）。 */
+  revealedCards?: CardInstance[];
   toHandInstanceIds: string[];
   toBottomInstanceIds: string[];
   /** デッキから除去された非Sカード、山札下順序待ち。 */

@@ -1330,18 +1330,22 @@ export function GameApp() {
 
   const showZordSetupModal = isHumanZordSetup && !!zordSetup;
 
+  const isHumanDenjiRevealSpectator =
+    isHumanDenjiAudience &&
+    !!pendingChoice &&
+    !canActOnDenjiChoice(pendingChoice, HUMAN_PLAYER);
+
+  const showDenjiRevealModal =
+    isHumanDenjiRevealSpectator &&
+    !needsEffectHoldPayment(pendingChoice);
+
   const showEffectNotice =
     !!effectNotice &&
     !showReactionModal &&
+    !showDenjiRevealModal &&
     !showOperationModal &&
     !showCyberSRiderModal &&
     !showZordSetupModal;
-
-  const showDenjiRevealModal =
-    isHumanDenjiAudience &&
-    !!pendingChoice &&
-    !needsEffectHoldPayment(pendingChoice) &&
-    !showEffectNotice;
 
   const showShironLightModal =
     isHumanShironInvolved &&
@@ -1500,7 +1504,7 @@ export function GameApp() {
       {previewCard && (
         <CardModal card={previewCard} onClose={() => setPreviewCard(null)} />
       )}
-      {pileView && (
+      {pileView && !previewCard && (
         <PileModal
           title={pileView.title}
           cards={pileView.cards}

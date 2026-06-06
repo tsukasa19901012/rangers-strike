@@ -120,4 +120,59 @@ describe("rush counter timing (RS-026 Q6/Q10)", () => {
 
     delete ON_RUSH_EFFECTS["TST-RUSH-FX"];
   });
+
+  it("opens shippu counter for defender even when rusher has a pending effect choice", () => {
+    const unit = inst("TST-UNIT-0", "u1");
+    const counter = inst("RS-026", "c1");
+    const maCmd = { ...inst("RS-057", "cmd"), commandHeld: true };
+    const mUnit = inst("TST-UNIT-2", "m1");
+
+    let state = createTestState({
+      phase: "rush",
+      activePlayer: "player2",
+      player1: {
+        rush: [unit],
+        command: [mUnit],
+      },
+      player2: {
+        hand: [counter],
+        command: [maCmd],
+        power: [inst("TST-OP", "p2"), inst("TST-OP", "p3"), inst("TST-OP", "p4")],
+      },
+    });
+    state = {
+      ...state,
+      pendingRush: {
+        rusherPlayerId: "player1",
+        rushedInstanceId: unit.instanceId,
+        phasePlayerId: "player1",
+      },
+      pendingEffectChoice: {
+        playerId: "player1",
+        effectId: "air_transport",
+        sourceCardId: "TST-LEG2-RUSH",
+        kind: "select_command",
+        phasePlayerId: "player1",
+        validInstanceIds: [mUnit.instanceId],
+        optional: true,
+        commandFilter: "released",
+        commandAction: "rush",
+      },
+    };
+    state.definitions["RS-026"] = def("RS-026");
+    state.definitions["RS-057"] = def("RS-057");
+
+    const actions = getLegalActions(state);
+    expect(
+      actions.some(
+        (a) => a.type === "play_counter" && a.playerId === "player2" && a.instanceId === counter.instanceId,
+      ),
+    ).toBe(true);
+    expect(actions.some((a) => a.type === "pass_rush_reaction" && a.playerId === "player2")).toBe(
+      true,
+    );
+    expect(actions.some((a) => a.type === "resolve_effect_choice" && a.playerId === "player1")).toBe(
+      false,
+    );
+  });
 });

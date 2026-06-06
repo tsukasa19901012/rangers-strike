@@ -1246,7 +1246,16 @@ select {
 
 .effect-action-modal__target--selected {
   border-color: #38bdf8;
-  background: rgba(56, 189, 248, 0.12);
+  border-width: 2px;
+  background: rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35);
+}
+
+.effect-action-modal__target-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.04em;
 }
 
 .effect-action-modal__target-meta {
