@@ -252,6 +252,24 @@ function pickCpuActionInner(
     return pickEffectChoice(state, pending, actions);
   }
 
+  if (state.pendingRush) {
+    if (playerId !== opponent(state.pendingRush.rusherPlayerId)) return null;
+    const actions = getLegalActions(state);
+    return pickReactionAction(state, playerId, actions, "pass_rush_reaction", enableSearch, options);
+  }
+
+  if (state.pendingBattle) {
+    if (playerId !== state.pendingBattle.defenderPlayerId) return null;
+    const actions = getLegalActions(state);
+    return pickReactionAction(state, playerId, actions, "pass_battle_reaction", enableSearch, options);
+  }
+
+  if (state.pendingStrike) {
+    if (playerId !== opponent(state.pendingStrike.strikerPlayerId)) return null;
+    const actions = getLegalActions(state);
+    return pickReactionAction(state, playerId, actions, "pass_strike_reaction", enableSearch, options);
+  }
+
   if (state.pendingBattleEntry) {
     if (playerId !== state.pendingBattleEntry.playerId) return null;
     const actions = getLegalActions(state);
@@ -274,24 +292,6 @@ function pickCpuActionInner(
       actions.find((a) => a.type === "pass_battle_entry") ??
       null
     );
-  }
-
-  if (state.pendingRush) {
-    if (playerId !== opponent(state.pendingRush.rusherPlayerId)) return null;
-    const actions = getLegalActions(state);
-    return pickReactionAction(state, playerId, actions, "pass_rush_reaction", enableSearch, options);
-  }
-
-  if (state.pendingBattle) {
-    if (playerId !== state.pendingBattle.defenderPlayerId) return null;
-    const actions = getLegalActions(state);
-    return pickReactionAction(state, playerId, actions, "pass_battle_reaction", enableSearch, options);
-  }
-
-  if (state.pendingStrike) {
-    if (playerId !== opponent(state.pendingStrike.strikerPlayerId)) return null;
-    const actions = getLegalActions(state);
-    return pickReactionAction(state, playerId, actions, "pass_strike_reaction", enableSearch, options);
   }
 
   if (state.activePlayer !== playerId) return null;
@@ -382,9 +382,6 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
   if (state.pendingEffectChoice) {
     return state.pendingEffectChoice.playerId === cpuPlayer;
   }
-  if (state.pendingBattleEntry) {
-    return state.pendingBattleEntry.playerId === cpuPlayer;
-  }
   if (state.pendingLeave) {
     return state.pendingLeave.ownerPlayerId === cpuPlayer;
   }
@@ -399,6 +396,9 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
   if (state.pendingStrike) {
     const defenderId = opponent(state.pendingStrike.strikerPlayerId);
     return state.activePlayer === defenderId && defenderId === cpuPlayer;
+  }
+  if (state.pendingBattleEntry) {
+    return state.pendingBattleEntry.playerId === cpuPlayer;
   }
   return state.activePlayer === cpuPlayer;
 }

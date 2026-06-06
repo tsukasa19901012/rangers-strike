@@ -1,8 +1,15 @@
 import { describe, expect, it } from "vitest";
+import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction } from "../core/applyAction";
 import { isCpuTurn, pickCpuAction } from "./level1";
 import { dedupeActions } from "./simulation";
-import { createTestState, heldWbCommand, inst, WIN_DAMAGE } from "../testing/fixtures";
+import {
+  createTestState,
+  heldWbCommand,
+  inst,
+  releasedEtCommand,
+  WIN_DAMAGE,
+} from "../testing/fixtures";
 import { getDefinition } from "../core/catalog";
 import { createZordSetup } from "../rules/zordSetup";
 
@@ -173,6 +180,76 @@ describe("CPU level 1", () => {
     });
 
     expect(isCpuTurn(state, "player2")).toBe(false);
+  });
+
+  it("clears battle entry prompt when attack opens defender reaction window", () => {
+    const attacker = inst("TST-UNIT-2", "a1");
+    const defender = inst("TST-UNIT-0", "d1");
+    const counter = inst("RS-006", "c1");
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [attacker] },
+      player2: {
+        battle: [defender],
+        hand: [counter],
+        command: [releasedEtCommand("cmd")],
+        power: [inst("TST-OP", "p1")],
+      },
+    });
+    state = {
+      ...state,
+      pendingBattleEntry: {
+        playerId: "player1",
+        instanceId: attacker.instanceId,
+        phasePlayerId: "player1",
+      },
+    };
+    const rs006 = legend1Catalog.cards.find((card) => card.id === "RS-006");
+    if (!rs006) throw new Error("missing RS-006");
+    state.definitions["RS-006"] = rs006;
+
+    const result = applyAction(state, {
+      type: "battle",
+      playerId: "player1",
+      attackerInstanceId: attacker.instanceId,
+      defenderInstanceId: defender.instanceId,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.state.pendingBattle).toBeDefined();
+    expect(result.state.pendingBattleEntry).toBeUndefined();
+    expect(isCpuTurn(result.state, "player2")).toBe(true);
+  });
+
+  it("isCpuTurn stays true for defender while human battle entry is still open", () => {
+    const attacker = inst("TST-UNIT-2", "a1");
+    const defender = inst("TST-UNIT-0", "d1");
+    const state = {
+      ...createTestState({
+        phase: "battle",
+        activePlayer: "player2",
+        player1: { battle: [attacker] },
+        player2: { battle: [defender] },
+      }),
+      pendingBattleEntry: {
+        playerId: "player1",
+        instanceId: attacker.instanceId,
+        phasePlayerId: "player1",
+      },
+      pendingBattle: {
+        attackerPlayerId: "player1",
+        attackerInstanceId: attacker.instanceId,
+        defenderPlayerId: "player2",
+        defenderInstanceId: defender.instanceId,
+        phasePlayerId: "player1",
+      },
+    };
+
+    expect(isCpuTurn(state, "player2")).toBe(true);
+    const action = pickCpuAction(state, "player2");
+    expect(action).not.toBeNull();
+    expect(action?.type).toBe("pass_battle_reaction");
   });
 
   it("responds to pending strike", () => {

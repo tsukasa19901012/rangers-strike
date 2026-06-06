@@ -1053,6 +1053,9 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           pendingStrike: pending,
           activePlayer: defenderId,
         };
+        if (state.pendingBattleEntry?.instanceId === action.instanceId) {
+          nextState = { ...nextState, pendingBattleEntry: undefined };
+        }
         return ok(
           nextState,
           buildSimpleLogEntry(playerId, "strike_pending", String(damage)),
@@ -1482,14 +1485,15 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           action.attackerInstanceId,
         )
       ) {
-        return ok(
-          {
-            ...battleState,
-            pendingBattle: pending,
-            activePlayer: enemyId,
-          },
-          buildSimpleLogEntry(playerId, "battle_pending"),
-        );
+        let pendingState: GameState = {
+          ...battleState,
+          pendingBattle: pending,
+          activePlayer: enemyId,
+        };
+        if (state.pendingBattleEntry?.instanceId === action.attackerInstanceId) {
+          pendingState = { ...pendingState, pendingBattleEntry: undefined };
+        }
+        return ok(pendingState, buildSimpleLogEntry(playerId, "battle_pending"));
       }
 
       const resolved = resolveBattlePending(battleState, pending);
