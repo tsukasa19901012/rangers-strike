@@ -364,14 +364,15 @@ export function startJuuKunDoChoice(
 ): GameState | null {
   const enemyId = opponent(params.playerId);
   const validInstanceIds = state.players[enemyId].rush.map((c) => c.instanceId);
-  if (validInstanceIds.length === 0 && !params.optional) return null;
+  const optional = params.optional ?? true;
+  if (validInstanceIds.length === 0 && !optional) return null;
   return openEffectChoice(state, {
     ...params,
     kind: "select_units_bp_budget",
     validInstanceIds,
     bpBudget: 3000,
     selectedInstanceIds: [],
-    optional: params.optional ?? true,
+    optional,
   });
 }
 

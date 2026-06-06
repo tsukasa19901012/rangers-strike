@@ -169,6 +169,57 @@ describe("RS-106 juu_kun_do", () => {
     ).toBe(true);
   });
 
+  it("opens optional choice with no targets when enemy rush is empty", () => {
+    const attacker = inst("RS-106", "att");
+    const state = createTestState({
+      phase: "battle",
+      player1: { battle: [attacker] },
+      player2: { rush: [] },
+    });
+    state.definitions["RS-106"] = rs106Def;
+    const withChoice = startJuuKunDoChoice(state, {
+      playerId: "player1",
+      effectId: "juu_kun_do",
+      sourceCardId: "RS-106",
+      sourceInstanceId: attacker.instanceId,
+      phasePlayerId: "player1",
+    });
+    expect(withChoice?.pendingEffectChoice?.validInstanceIds).toEqual([]);
+    expect(withChoice?.pendingEffectChoice?.optional).toBe(true);
+  });
+
+  it("allows skip when enemy rush is empty", () => {
+    const attacker = inst("RS-106", "att");
+    const state = createTestState({
+      phase: "battle",
+      player1: { battle: [attacker] },
+      player2: { rush: [] },
+    });
+    state.definitions["RS-106"] = rs106Def;
+    const withChoice = startJuuKunDoChoice(state, {
+      playerId: "player1",
+      effectId: "juu_kun_do",
+      sourceCardId: "RS-106",
+      sourceInstanceId: attacker.instanceId,
+      phasePlayerId: "player1",
+      optional: true,
+    });
+    expect(withChoice).not.toBeNull();
+    if (!withChoice) return;
+    expect(withChoice.pendingEffectChoice?.validInstanceIds).toEqual([]);
+    const actions = getLegalActions(withChoice);
+    expect(actions.some((a) => a.type === "skip_effect_choice")).toBe(true);
+    expect(actions.some((a) => a.type === "confirm_effect_choice")).toBe(true);
+
+    const skipped = applyAction(withChoice, {
+      type: "skip_effect_choice",
+      playerId: "player1",
+    });
+    expect(skipped.ok).toBe(true);
+    if (!skipped.ok) return;
+    expect(skipped.state.pendingEffectChoice).toBeUndefined();
+  });
+
   it("lists confirm and toggle actions in legal actions", () => {
     const attacker = inst("RS-106", "att");
     const e1 = inst("E1", "e1");

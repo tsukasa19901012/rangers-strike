@@ -223,49 +223,70 @@ export function EffectChoiceModal({
             </div>
           )}
 
-          {pending.kind === "select_units_bp_budget" && targets.length > 0 && (
+          {pending.kind === "select_units_bp_budget" && (
             <div className="effect-action-modal__section">
-              <p className="effect-action-modal__target-meta">
-                表記BP合計: {bpBudgetTotal} / {bpBudgetLimit}
-              </p>
-              <div className="effect-action-modal__targets">
-                {targets.map((target) => {
-                  const printedBp = target.card.bp ?? 0;
-                  const selected = bpBudgetSelected.has(target.instanceId);
-                  const wouldExceed =
-                    !selected && bpBudgetTotal + printedBp > bpBudgetLimit;
-                  return (
-                    <button
-                      key={target.instanceId}
-                      type="button"
-                      className={`btn effect-action-modal__target${selected ? " effect-action-modal__target--selected" : ""}`}
-                      disabled={readOnly || wouldExceed}
-                      onClick={() => onSelect(target.instanceId)}
-                    >
-                      {target.card.name}
-                      {selected && (
-                        <span className="effect-action-modal__target-badge">選択中</span>
-                      )}
-                      <span className="effect-action-modal__target-meta">
-                        {cardTargetMetaLine(target, playerId)} · BP{" "}
-                        {printedBp.toLocaleString()}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+              {targets.length > 0 ? (
+                <>
+                  <p className="effect-action-modal__target-meta">
+                    表記BP合計: {bpBudgetTotal} / {bpBudgetLimit}
+                  </p>
+                  <div className="effect-action-modal__targets">
+                    {targets.map((target) => {
+                      const printedBp = target.card.bp ?? 0;
+                      const selected = bpBudgetSelected.has(target.instanceId);
+                      const wouldExceed =
+                        !selected && bpBudgetTotal + printedBp > bpBudgetLimit;
+                      return (
+                        <button
+                          key={target.instanceId}
+                          type="button"
+                          className={`btn effect-action-modal__target${selected ? " effect-action-modal__target--selected" : ""}`}
+                          disabled={readOnly || wouldExceed}
+                          onClick={() => onSelect(target.instanceId)}
+                        >
+                          {target.card.name}
+                          {selected && (
+                            <span className="effect-action-modal__target-badge">選択中</span>
+                          )}
+                          <span className="effect-action-modal__target-meta">
+                            {cardTargetMetaLine(target, playerId)} · BP{" "}
+                            {printedBp.toLocaleString()}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <p className="effect-action-modal__target-meta">撃破できる対象がいません</p>
+              )}
               {!readOnly && (
                 <div className="effect-action-modal__actions">
-                  <button
-                    type="button"
-                    className="btn btn--primary"
-                    onClick={onConfirmEffectChoice}
-                  >
-                    選択を確定
-                  </button>
+                  {targets.length > 0 && (
+                    <button
+                      type="button"
+                      className="btn btn--primary"
+                      onClick={onConfirmEffectChoice}
+                    >
+                      選択を確定
+                    </button>
+                  )}
                   {canSkip && (
-                    <button type="button" className="btn" onClick={onSkip}>
+                    <button
+                      type="button"
+                      className={`btn${targets.length === 0 ? " btn--primary" : ""}`}
+                      onClick={onSkip}
+                    >
                       {skipLabel}
+                    </button>
+                  )}
+                  {targets.length === 0 && !canSkip && (
+                    <button
+                      type="button"
+                      className="btn btn--primary"
+                      onClick={onConfirmEffectChoice}
+                    >
+                      続ける
                     </button>
                   )}
                 </div>
