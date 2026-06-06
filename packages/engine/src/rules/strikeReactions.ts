@@ -1,3 +1,4 @@
+import { findNamedEffectByEffectId } from "@rangers-strike/cards";
 import type { GameState, PendingStrike, PlayerId, PlayerState } from "../types/game";
 import {
   cardName,
@@ -256,6 +257,21 @@ function buildSimpleFiveTechLog(
   return buildLogEntry(playerId, "five_tech", "RS-014", state.definitions, detail);
 }
 
+function sideKnuckleChoosingPlayer(
+  state: GameState,
+  pending: PendingStrike,
+): PlayerId | undefined {
+  const striker = findInZone(
+    state.players[pending.strikerPlayerId],
+    "battle",
+    pending.strikerInstanceId,
+  );
+  if (!striker || !findNamedEffectByEffectId(striker.card.cardId, "side_knuckle")) {
+    return undefined;
+  }
+  return pending.strikerPlayerId;
+}
+
 export function finalizeStrike(
   state: GameState,
   pending: PendingStrike,
@@ -263,10 +279,16 @@ export function finalizeStrike(
   const defenderId = opponent(pending.strikerPlayerId);
 
   if (!pending.damageCancelled && pending.damage > 0 && !pending.damageApplied) {
-    const withDamage = applyDamageToPlayer(state, defenderId, pending.damage, {
-      kind: "strike",
-      pending,
-    });
+    const withDamage = applyDamageToPlayer(
+      state,
+      defenderId,
+      pending.damage,
+      {
+        kind: "strike",
+        pending,
+      },
+      sideKnuckleChoosingPlayer(state, pending),
+    );
     if (withDamage.pendingDamagePayment) {
       return { ...withDamage, pendingStrike: pending };
     }

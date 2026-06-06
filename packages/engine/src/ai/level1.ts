@@ -3,6 +3,7 @@ import type { GameState, PlayerId } from "../types/game";
 import { effectiveBp } from "../core/catalog";
 import { getLegalActions } from "../core/legalActions";
 import { opponent } from "../core/helpers";
+import { damagePaymentChoosingPlayer } from "../rules/damagePayment";
 import { strikeDamageFor } from "../rules/combo";
 import {
   actionsOfType,
@@ -376,7 +377,7 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
     return state.pendingZordSetup.playerId === cpuPlayer;
   }
   if (state.pendingDamagePayment) {
-    return state.pendingDamagePayment.playerId === cpuPlayer;
+    return damagePaymentChoosingPlayer(state.pendingDamagePayment) === cpuPlayer;
   }
   if (state.pendingEffectChoice) {
     return state.pendingEffectChoice.playerId === cpuPlayer;

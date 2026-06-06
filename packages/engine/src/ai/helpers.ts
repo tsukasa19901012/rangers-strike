@@ -11,6 +11,7 @@ import {
   parsePowerCost,
 } from "../core/catalog";
 import { findInZone, opponent } from "../core/helpers";
+import { damagePaymentChoosingPlayer } from "../rules/damagePayment";
 import { getLegalActions } from "../core/legalActions";
 import {
   countHeldCommands,
@@ -540,8 +541,8 @@ export function pickDamagePayment(
   playerId: PlayerId,
 ): GameAction | null {
   const pending = state.pendingDamagePayment;
-  if (!pending || pending.playerId !== playerId) return null;
-  const targets = state.players[playerId].power.filter(
+  if (!pending || damagePaymentChoosingPlayer(pending) !== playerId) return null;
+  const targets = state.players[pending.playerId].power.filter(
     (c) => !c.faceDown && !pending.selectedFlipIds.includes(c.instanceId),
   );
   if (targets.length === 0) return null;

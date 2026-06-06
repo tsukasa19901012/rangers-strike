@@ -127,7 +127,10 @@ export type DamagePaymentResume =
 
 /** Defender chooses which face-up power cards flip when taking damage. */
 export type PendingDamagePayment = {
+  /** Player whose power zone cards are flipped. */
   playerId: PlayerId;
+  /** Who picks the cards (defaults to playerId; RS-149 side_knuckle uses striker). */
+  choosingPlayerId?: PlayerId;
   /** Face-up power flips still to assign. */
   remainingFlips: number;
   /** Face-down draws from deck after power flips. */

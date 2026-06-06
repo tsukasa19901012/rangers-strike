@@ -9,6 +9,12 @@ import { applyPlayerDamage, removeAt, updatePlayer } from "../core/helpers";
 
 export type { DamagePaymentResume };
 
+export function damagePaymentChoosingPlayer(
+  pending: PendingDamagePayment,
+): PlayerId {
+  return pending.choosingPlayerId ?? pending.playerId;
+}
+
 export function requiresDamagePowerChoice(player: PlayerState, amount: number): boolean {
   if (amount <= 0) return false;
   const faceUpCount = player.power.filter((c) => !c.faceDown).length;
@@ -81,22 +87,25 @@ export function startDamagePayment(
   playerId: PlayerId,
   amount: number,
   resume: DamagePaymentResume,
+  choosingPlayerId?: PlayerId,
 ): GameState {
   const player = state.players[playerId];
   const faceUpCount = player.power.filter((c) => !c.faceDown).length;
   const flipsFromPower = Math.min(amount, faceUpCount);
+  const chooser = choosingPlayerId ?? playerId;
 
   return {
     ...state,
     pendingDamagePayment: {
       playerId,
+      choosingPlayerId: choosingPlayerId !== playerId ? choosingPlayerId : undefined,
       remainingFlips: flipsFromPower,
       deckDraws: amount - flipsFromPower,
       totalDamage: amount,
       selectedFlipIds: [],
       resume,
     },
-    activePlayer: playerId,
+    activePlayer: chooser,
   };
 }
 
@@ -106,11 +115,12 @@ export function applyDamageToPlayer(
   playerId: PlayerId,
   amount: number,
   resume: DamagePaymentResume,
+  choosingPlayerId?: PlayerId,
 ): GameState {
   if (amount <= 0) return state;
   const player = state.players[playerId];
   if (requiresDamagePowerChoice(player, amount)) {
-    return startDamagePayment(state, playerId, amount, resume);
+    return startDamagePayment(state, playerId, amount, resume, choosingPlayerId);
   }
   const nextPlayer = applyPlayerDamage(player, amount);
   const nextState = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
@@ -126,7 +136,7 @@ export function resolveDamagePaymentSelect(
   instanceId: string,
 ): { state: GameState; resume: DamagePaymentResume } | { error: string } {
   const pending = state.pendingDamagePayment;
-  if (!pending || pending.playerId !== playerId) {
+  if (!pending || damagePaymentChoosingPlayer(pending) !== playerId) {
     return { error: "no_pending_damage" };
   }
   if (!getValidDamagePowerTargets(state, pending).includes(instanceId)) {
@@ -157,10 +167,11 @@ export function resolveDamagePaymentSelect(
     };
   }
 
-  const player = state.players[playerId];
-  const allFlipIds = autoPickRemainingFlips(player, selectedFlipIds, remainingFlips);
+  const defenderId = pending.playerId;
+  const defender = state.players[defenderId];
+  const allFlipIds = autoPickRemainingFlips(defender, selectedFlipIds, remainingFlips);
   const nextPlayer = applyResolvedDamage(
-    player,
+    defender,
     allFlipIds,
     pending.deckDraws,
     pending.totalDamage,
@@ -169,7 +180,7 @@ export function resolveDamagePaymentSelect(
   const resume = pending.resume;
   let nextState: GameState = {
     ...state,
-    ...updatePlayer(state, playerId, nextPlayer),
+    ...updatePlayer(state, defenderId, nextPlayer),
     pendingDamagePayment: undefined,
   };
 

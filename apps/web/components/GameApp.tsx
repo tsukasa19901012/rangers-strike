@@ -930,15 +930,13 @@ export function GameApp() {
   );
 
   const pendingDamagePaymentTargets = useMemo(() => {
-    if (
-      !state?.pendingDamagePayment ||
-      state.pendingDamagePayment.playerId !== HUMAN_PLAYER
-    ) {
-      return undefined;
-    }
+    const pending = state?.pendingDamagePayment;
+    if (!pending) return undefined;
+    const chooser = pending.choosingPlayerId ?? pending.playerId;
+    if (chooser !== HUMAN_PLAYER) return undefined;
     const ids = new Set<string>();
     for (const action of legalActions) {
-      if (action.type === "resolve_damage_payment") {
+      if (action.type === "resolve_damage_payment" && action.playerId === HUMAN_PLAYER) {
         ids.add(action.instanceId);
       }
     }
@@ -1382,9 +1380,17 @@ export function GameApp() {
     state.pendingCommandPayment?.playerId === HUMAN_PLAYER;
 
   const pendingDamage = state.pendingDamagePayment;
+  const damageChoosingPlayer = pendingDamage
+    ? (pendingDamage.choosingPlayerId ?? pendingDamage.playerId)
+    : undefined;
+  const damageTargetPlayer = pendingDamage?.playerId;
   const isHumanDamagePayment =
-    humanCanAct && pendingDamage?.playerId === HUMAN_PLAYER;
+    humanCanAct && damageChoosingPlayer === HUMAN_PLAYER;
   const showDamagePaymentModal = isHumanDamagePayment && !!pendingDamage;
+  const damagePaymentOnCpuBoard =
+    showDamagePaymentModal && damageTargetPlayer === CPU_PLAYER;
+  const damagePaymentOnHumanBoard =
+    showDamagePaymentModal && damageTargetPlayer === HUMAN_PLAYER;
 
   const showStartPhaseModal =
     humanCanAct &&
@@ -1917,8 +1923,16 @@ export function GameApp() {
             onSubstituteSelect={handleSubstituteSelect}
             attackTargetIds={attackTargetIds}
             onAttackTargetSelect={handleAttackTargetSelect}
-            pendingEffectChoiceTargets={boardEffectChoiceTargets}
-            onEffectChoiceSelect={handleEffectChoiceSelect}
+            pendingEffectChoiceTargets={
+              damagePaymentOnCpuBoard
+                ? boardDamagePaymentTargets
+                : boardEffectChoiceTargets
+            }
+            onEffectChoiceSelect={
+              damagePaymentOnCpuBoard
+                ? handleDamagePaymentSelect
+                : handleEffectChoiceSelect
+            }
           />
 
           <PlayerBoard
@@ -1956,10 +1970,12 @@ export function GameApp() {
             onOperationCardClick={handleOperationCardClick}
             entryAttackerIds={entryAttackerIds}
             pendingEffectChoiceTargets={
-              boardDamagePaymentTargets ?? boardEffectChoiceTargets
+              damagePaymentOnHumanBoard
+                ? boardDamagePaymentTargets
+                : boardEffectChoiceTargets
             }
             onEffectChoiceSelect={
-              boardDamagePaymentTargets
+              damagePaymentOnHumanBoard
                 ? handleDamagePaymentSelect
                 : handleEffectChoiceSelect
             }

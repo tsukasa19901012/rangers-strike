@@ -55,7 +55,7 @@ import {
   canPlayPlasmaEnergyCounter,
   collectFiveTechInterceptors,
 } from "../rules/strikeReactions";
-import { getValidDamagePowerTargets } from "../rules/damagePayment";
+import { getValidDamagePowerTargets, damagePaymentChoosingPlayer } from "../rules/damagePayment";
 import { getCardEffect } from "@rangers-strike/cards";
 import { getTurnModifiers } from "../rules/turnModifiers";
 
@@ -714,7 +714,7 @@ function appendDamagePaymentActions(
   actions: GameAction[],
 ): void {
   const pending = state.pendingDamagePayment;
-  if (!pending || pending.playerId !== playerId) return;
+  if (!pending || damagePaymentChoosingPlayer(pending) !== playerId) return;
   for (const instanceId of getValidDamagePowerTargets(state, pending)) {
     actions.push({ type: "resolve_damage_payment", playerId, instanceId });
   }
@@ -724,7 +724,9 @@ export function getLegalActions(state: GameState): GameAction[] {
   if (state.winner) return [];
 
   const playerId =
-    state.pendingDamagePayment?.playerId ??
+    (state.pendingDamagePayment
+      ? damagePaymentChoosingPlayer(state.pendingDamagePayment)
+      : undefined) ??
     state.pendingEffectChoice?.playerId ??
     state.activePlayer;
   const player = state.players[playerId];
@@ -1048,7 +1050,7 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
     const pending = state.pendingDamagePayment;
     return (
       !!pending &&
-      pending.playerId === action.playerId &&
+      damagePaymentChoosingPlayer(pending) === action.playerId &&
       getValidDamagePowerTargets(state, pending).includes(action.instanceId)
     );
   }
