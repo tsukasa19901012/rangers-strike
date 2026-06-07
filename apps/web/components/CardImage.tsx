@@ -111,6 +111,7 @@ export function CardImage({
   };
 
   const handleClick = (event: React.MouseEvent) => {
+    if (!onSelect) return;
     if (consumeClickSuppression()) return;
     if (longPress.consumeLongPressSuppression()) return;
     event.stopPropagation();
