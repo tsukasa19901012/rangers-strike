@@ -1,6 +1,7 @@
 import { getCardEffect } from "@rangers-strike/cards";
 import type { CardInstance, GameAction, GameState, PlayerId } from "@rangers-strike/engine";
 import { cardTargetMetaLine, findCardTarget } from "./cardTargets";
+import { commandPaymentTargetIds } from "./commandPaymentUi";
 import {
   buildPaymentFromInitiateAction,
   collectFiveTechInterceptors,
@@ -281,4 +282,25 @@ export function cardHasOperationEffect(cardId: string): boolean {
 
 export function isBattleEntryHoldUnit(card: CardInstance, holdCount: number): boolean {
   return holdCount > 0;
+}
+
+/** 人間プレイヤーのコマンドホールド支払い中（相手ターンのカウンター支払いも含む）。 */
+export function isHumanCommandPaymentActive(
+  state: GameState,
+  humanPlayerId: PlayerId,
+): boolean {
+  return (
+    !state.winner &&
+    state.pendingCommandPayment?.playerId === humanPlayerId
+  );
+}
+
+/** 盤面タップ選択用のコマンド instanceId 集合。 */
+export function resolveCommandPaymentBoardTargetIds(
+  state: GameState,
+  humanPlayerId: PlayerId,
+): Set<string> | undefined {
+  const pending = state.pendingCommandPayment;
+  if (!pending || pending.playerId !== humanPlayerId || state.winner) return undefined;
+  return commandPaymentTargetIds(pending);
 }

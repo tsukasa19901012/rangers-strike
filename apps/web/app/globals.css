@@ -1191,6 +1191,21 @@ select {
   color: #94a3b8;
 }
 
+.command-payment-banner__prism {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 8px 0 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #cbd5e1;
+}
+
+.command-payment-banner__prism input {
+  margin-top: 2px;
+}
+
 .modal__content--effect-action {
   max-height: min(78vh, 560px);
   overflow-y: auto;

@@ -102,6 +102,7 @@ type ZoneCardsProps = {
   onCardDragStart?: (payload: DragCardPayload) => void;
   onCardDragEnd?: () => void;
   selectedId?: string | null;
+  selectedIds?: Set<string>;
   selectableIds?: Set<string>;
   strikeableIds?: Set<string>;
   interceptableIds?: Set<string>;
@@ -166,6 +167,7 @@ function ZoneCards({
   onCardDragStart,
   onCardDragEnd,
   selectedId,
+  selectedIds,
   selectableIds,
   strikeableIds,
   interceptableIds,
@@ -284,7 +286,7 @@ function ZoneCards({
                 : undefined
             }
             onDragEnd={onCardDragEnd}
-            selected={card.instanceId === selectedId}
+            selected={selectedIds?.has(card.instanceId) || card.instanceId === selectedId}
             onPreview={preview}
             onSelect={select}
             commandHeld={getCommandHeld?.(card)}
@@ -332,6 +334,11 @@ export type PlayerBoardProps = {
   onAttackTargetSelect?: (defenderInstanceId: string) => void;
   pendingEffectChoiceTargets?: Set<string>;
   onEffectChoiceSelect?: (instanceId: string) => void;
+  pendingCommandPaymentTargets?: Set<string>;
+  commandPaymentSelectedIds?: Set<string>;
+  onCommandPaymentToggle?: (instanceId: string) => void;
+  commandPaymentHighlightCommand?: boolean;
+  commandPaymentHighlightRush?: boolean;
   onViewPile?: (pile: "deck" | "discard") => void;
   onOperationCardClick?: (card: CardInstance) => void;
   boardRef?: RefObject<HTMLDivElement | null>;
@@ -371,6 +378,11 @@ export function PlayerBoard({
   onAttackTargetSelect,
   pendingEffectChoiceTargets,
   onEffectChoiceSelect,
+  pendingCommandPaymentTargets,
+  commandPaymentSelectedIds,
+  onCommandPaymentToggle,
+  commandPaymentHighlightCommand,
+  commandPaymentHighlightRush,
   onViewPile,
   onOperationCardClick,
   boardRef,
@@ -406,12 +418,14 @@ export function PlayerBoard({
     canDropPower &&
     (!dragging || (dragging.fromZone === "hand" && phase === "charge"));
   const highlightCommand =
-    canDropCommand &&
-    (!dragging || (dragging.fromZone === "hand" && phase === "charge"));
+    commandPaymentHighlightCommand ||
+    (canDropCommand &&
+      (!dragging || (dragging.fromZone === "hand" && phase === "charge")));
   const highlightOperation =
     canDropOperation && (!dragging || (draggingOperation && dragging.fromZone === "hand"));
   const highlightRush =
-    canDropRush && (!dragging || (draggingUnit && dragging.fromZone === "hand"));
+    commandPaymentHighlightRush ||
+    (canDropRush && (!dragging || (draggingUnit && dragging.fromZone === "hand")));
   const highlightBattle =
     canDropBattle && (!dragging || dragging.fromZone === "rush");
 
@@ -444,6 +458,7 @@ export function PlayerBoard({
     pendingOperationTargets?.forEach((id) => ids.add(id));
     pendingZordTargets?.forEach((id) => ids.add(id));
     pendingEffectChoiceTargets?.forEach((id) => ids.add(id));
+    pendingCommandPaymentTargets?.forEach((id) => ids.add(id));
     attackTargetIds?.forEach((id) => ids.add(id));
     return ids.size > 0 ? ids : undefined;
   })();
@@ -451,6 +466,10 @@ export function PlayerBoard({
   const handleSelectTarget = (instanceId: string) => {
     if (attackTargetIds?.has(instanceId)) {
       onAttackTargetSelect?.(instanceId);
+      return;
+    }
+    if (pendingCommandPaymentTargets?.has(instanceId)) {
+      onCommandPaymentToggle?.(instanceId);
       return;
     }
     if (pendingEffectChoiceTargets?.has(instanceId)) {
@@ -541,6 +560,7 @@ export function PlayerBoard({
       onDrop={(payload) => onZoneDrop?.("rush", payload)}
       onPreview={onPreview}
       selectableIds={selectableIds}
+      selectedIds={commandPaymentSelectedIds}
       substituteIds={substituteIds}
       interceptableIds={isHuman ? interceptableIds : undefined}
       onSelectTarget={handleSelectTarget}
@@ -567,6 +587,7 @@ export function PlayerBoard({
       onDrop={(payload) => onZoneDrop?.("command", payload)}
       onPreview={onPreview}
       selectableIds={selectableIds}
+      selectedIds={commandPaymentSelectedIds}
       onSelectTarget={handleSelectTarget}
       getCommandHeld={(card) => card.commandHeld}
       emptyLabel="—"
@@ -723,9 +744,12 @@ export function PlayerBoard({
             pendingZordTargets?.size ||
             substituteIds?.size ||
             pendingEffectChoiceTargets?.size ||
+            pendingCommandPaymentTargets?.size ||
             attackTargetIds?.size) ? (
             <p className="target-hint">
-              {substituteIds?.size
+              {pendingCommandPaymentTargets?.size
+                ? "ホールドするコマンドをタップ"
+                : substituteIds?.size
                 ? "身代わりにするユニットをタップ"
                 : attackTargetIds?.size
                   ? "アタック対象をタップ"

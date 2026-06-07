@@ -26,9 +26,15 @@ import { resolveOperationDropRoute } from "./webUiOperationRouting";
 import { applyAction, getReactionChooserPlayerId } from "@rangers-strike/engine";
 import {
   cardHasOperationEffect,
+  isHumanCommandPaymentActive,
   resolveBattleEntryUiRoute,
+  resolveCommandPaymentBoardTargetIds,
   resolveReactionModalUi,
 } from "./webUiIntegration";
+import {
+  canConfirmCommandPayment,
+  toggleCommandPaymentSelection,
+} from "./commandPaymentUi";
 
 const ALL_DEFINITIONS: Record<string, CardDefinition> = Object.fromEntries(
   allCardsCatalog.cards.map((card) => [card.id, card]),
@@ -472,5 +478,102 @@ describe("Web UI integration — operation counter reaction modal", () => {
     expect(paid.state.players.player1.rush.some((c) => c.instanceId === defender.instanceId)).toBe(
       true,
     );
+  });
+});
+
+describe("Web UI integration — command payment board selection", () => {
+  it("keeps command payment UI active during opponent-turn counter payment", () => {
+    const spec = OPERATION_COUNTER_SPECS.find((entry) => entry.kind === "rush")!;
+    const state = makeCounterReactionState(spec);
+    const counter = inst(spec.cardId, "counter");
+    const cmd = releasedCommand(spec.cmdId, "cmd");
+
+    expect(state.activePlayer).toBe(CPU_PLAYER);
+    expect(getReactionChooserPlayerId(state)).toBe(HUMAN_PLAYER);
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: HUMAN_PLAYER,
+      kind: "category_use",
+      sourceInstanceId: counter.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+
+    expect(isHumanCommandPaymentActive(initiated.state, HUMAN_PLAYER)).toBe(true);
+    expect(initiated.state.activePlayer).toBe(CPU_PLAYER);
+
+    const targets = resolveCommandPaymentBoardTargetIds(initiated.state, HUMAN_PLAYER);
+    expect(targets?.has(cmd.instanceId)).toBe(true);
+    expect(targets?.size).toBe(1);
+  });
+
+  it("resolves hold payment after board-style tap selection", () => {
+    const unit = inst("RS-053", "ptera");
+    const cmd = unheldCommand("RS-007");
+    let state = makeState({
+      phase: "battle",
+      player1: {
+        rush: [unit],
+        command: [cmd],
+      },
+    });
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: HUMAN_PLAYER,
+      kind: "battle_entry",
+      sourceInstanceId: unit.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+    state = initiated.state;
+
+    const required = state.pendingCommandPayment!.totalNeeded;
+    const selection = toggleCommandPaymentSelection([], cmd.instanceId, required);
+    expect(canConfirmCommandPayment(selection, required)).toBe(true);
+
+    const paid = applyAction(state, {
+      type: "resolve_command_payment",
+      playerId: HUMAN_PLAYER,
+      commandInstanceIds: selection,
+    });
+    expect(paid.ok).toBe(true);
+    if (!paid.ok) return;
+    expect(paid.state.players.player1.battle.some((c) => c.instanceId === unit.instanceId)).toBe(
+      true,
+    );
+    expect(paid.state.players.player1.command[0]?.commandHeld).toBe(true);
+    expect(paid.state.pendingCommandPayment).toBeUndefined();
+  });
+
+  it("exposes battle entry hold commands on the board", () => {
+    const holdUnit = HOLD_ENTRY_UNITS[0];
+    if (!holdUnit) return;
+
+    const unit = inst(holdUnit.id, "rush");
+    const cmd = unheldCommand();
+    const state = makeState({
+      phase: "battle",
+      player1: {
+        rush: [unit],
+        command: [cmd],
+      },
+    });
+
+    const route = resolveBattleEntryUiRoute(state, HUMAN_PLAYER, unit.instanceId);
+    expect(route.kind).toBe("command_payment");
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: HUMAN_PLAYER,
+      kind: "battle_entry",
+      sourceInstanceId: unit.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+
+    const targets = resolveCommandPaymentBoardTargetIds(initiated.state, HUMAN_PLAYER);
+    expect(targets?.has(cmd.instanceId)).toBe(true);
   });
 });

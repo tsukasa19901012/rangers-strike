@@ -64,7 +64,16 @@ import { EffectChoiceModal } from "./EffectChoiceModal";
 import { DamagePaymentModal } from "./DamagePaymentModal";
 import { damagePaymentHint } from "@/lib/damagePaymentHint";
 import { EffectNoticeModal } from "./EffectNoticeModal";
-import { CommandPaymentModal } from "./CommandPaymentModal";
+import { CommandPaymentBanner } from "./CommandPaymentBanner";
+import {
+  buildCommandPaymentView,
+  canConfirmCommandPayment,
+  toggleCommandPaymentSelection,
+} from "@/lib/commandPaymentUi";
+import {
+  isHumanCommandPaymentActive,
+  resolveCommandPaymentBoardTargetIds,
+} from "@/lib/webUiIntegration";
 import { ZordSetupModal } from "./ZordSetupModal";
 import { OperationPromptModal } from "./OperationPromptModal";
 import { PermanentOperationModal } from "./PermanentOperationModal";
@@ -166,6 +175,7 @@ export function GameApp() {
   const [turnNotice, setTurnNotice] = useState<PlayerId | null>(null);
   const [phaseNotice, setPhaseNotice] = useState<Phase | null>(null);
   const [effectNotice, setEffectNotice] = useState<string | null>(null);
+  const [commandPaymentSelection, setCommandPaymentSelection] = useState<string[]>([]);
   const prevLogLenRef = useRef(0);
   const prevActivePlayerRef = useRef<PlayerId | null>(null);
   const prevPhaseRef = useRef<Phase | null>(null);
@@ -408,7 +418,7 @@ export function GameApp() {
   }, [state, pendingOp, pendingHiddenNinja]);
 
   useEffect(() => {
-    if (!state || !humanCanAct) return;
+    if (!state) return;
     const choice = state.pendingEffectChoice;
     if (!choice || choice.playerId !== HUMAN_PLAYER) return;
     if (!needsEffectHoldPayment(choice)) return;
@@ -419,7 +429,16 @@ export function GameApp() {
         a.kind === "effect_hold",
     );
     if (initiate) apply(initiate);
-  }, [apply, humanCanAct, legalActions, state]);
+  }, [apply, legalActions, state]);
+
+  useEffect(() => {
+    setCommandPaymentSelection([]);
+  }, [
+    state?.pendingCommandPayment?.sourceInstanceId,
+    state?.pendingCommandPayment?.kind,
+    state?.pendingCommandPayment?.prismSubstitute,
+    state?.pendingCommandPayment?.totalNeeded,
+  ]);
 
   const tryPlayOperation = useCallback(
     (instanceId: string, targetInstanceId?: string, extraInstanceId?: string) => {
@@ -789,13 +808,26 @@ export function GameApp() {
         playerId: HUMAN_PLAYER,
         commandInstanceIds,
       });
+      setCommandPaymentSelection([]);
     },
     [apply],
   );
 
   const handleCommandPaymentCancel = useCallback(() => {
     apply({ type: "cancel_command_payment", playerId: HUMAN_PLAYER });
+    setCommandPaymentSelection([]);
   }, [apply]);
+
+  const handleCommandPaymentToggle = useCallback(
+    (instanceId: string) => {
+      const required = state?.pendingCommandPayment?.totalNeeded;
+      if (!required) return;
+      setCommandPaymentSelection((prev) =>
+        toggleCommandPaymentSelection(prev, instanceId, required),
+      );
+    },
+    [state?.pendingCommandPayment?.totalNeeded],
+  );
 
   const handleCommandPaymentPrismChange = useCallback(
     (usePrism: boolean) => {
@@ -1450,9 +1482,31 @@ export function GameApp() {
     !state.pendingDamagePayment &&
     !state.pendingLeave;
 
-  const showCommandPaymentModal =
-    humanCanAct &&
-    state.pendingCommandPayment?.playerId === HUMAN_PLAYER;
+  const isHumanCommandPayment = isHumanCommandPaymentActive(state, HUMAN_PLAYER);
+
+  const showCommandPaymentModal = isHumanCommandPayment;
+
+  const commandPaymentView = useMemo(() => {
+    const pending = state.pendingCommandPayment;
+    if (!pending || pending.playerId !== HUMAN_PLAYER) return null;
+    return buildCommandPaymentView(state, pending);
+  }, [state]);
+
+  const boardCommandPaymentTargets = resolveCommandPaymentBoardTargetIds(
+    state,
+    HUMAN_PLAYER,
+  );
+
+  const commandPaymentSelectedIds = showCommandPaymentModal
+    ? new Set(commandPaymentSelection)
+    : undefined;
+
+  const canConfirmCommandPaymentSelection =
+    showCommandPaymentModal &&
+    canConfirmCommandPayment(
+      commandPaymentSelection,
+      state.pendingCommandPayment!.totalNeeded,
+    );
 
   const pendingDamage = state.pendingDamagePayment;
   const damageChoosingPlayer = pendingDamage
@@ -1493,8 +1547,8 @@ export function GameApp() {
   const boardInterceptIds = showReactionModal ? undefined : interceptableIds;
   const boardSubstituteIds = showReactionModal ? undefined : pendingSubstituteTargets;
 
-  const pendingHint = showCommandPaymentModal
-    ? "コマンドを選んでホールド（行動と同時に確定）"
+  const pendingHint = showCommandPaymentModal && commandPaymentView
+    ? undefined
     : showStartPhaseModal
       ? "3つの行程を好きな順番で行ってください"
     : showZordSetupModal
@@ -1850,13 +1904,12 @@ export function GameApp() {
           onClose={() => setEffectNotice(null)}
         />
       )}
-      {showCommandPaymentModal && (
-        <CommandPaymentModal
-          key={`${state.pendingCommandPayment!.sourceInstanceId}-${state.pendingCommandPayment!.prismSubstitute ?? false}`}
-          state={state}
-          playerId={HUMAN_PLAYER}
-          onConfirm={handleCommandPaymentConfirm}
-          onCancel={handleCommandPaymentCancel}
+      {showCommandPaymentModal && state.pendingCommandPayment && commandPaymentView && (
+        <CommandPaymentBanner
+          pending={state.pendingCommandPayment}
+          view={commandPaymentView}
+          selectedCount={commandPaymentSelection.length}
+          usePrism={state.pendingCommandPayment.prismSubstitute ?? false}
           onPrismModeChange={handleCommandPaymentPrismChange}
         />
       )}
@@ -2028,7 +2081,7 @@ export function GameApp() {
             player={state.players[HUMAN_PLAYER]}
             definitions={state.definitions}
             isHuman
-            isHumanTurn={humanCanAct}
+            isHumanTurn={humanCanAct || isHumanCommandPayment}
             isActive={state.activePlayer === HUMAN_PLAYER}
             phase={state.phase}
             onPreview={setPreviewCard}
@@ -2065,6 +2118,13 @@ export function GameApp() {
                 ? handleDamagePaymentSelect
                 : handleEffectChoiceSelect
             }
+            pendingCommandPaymentTargets={boardCommandPaymentTargets}
+            commandPaymentSelectedIds={commandPaymentSelectedIds}
+            onCommandPaymentToggle={handleCommandPaymentToggle}
+            commandPaymentHighlightCommand={showCommandPaymentModal}
+            commandPaymentHighlightRush={
+              showCommandPaymentModal && !!commandPaymentView?.allowRushZoneCommands
+            }
           />
         </div>
 
@@ -2075,6 +2135,22 @@ export function GameApp() {
       )}
 
       <footer className="action-bar">
+        {showCommandPaymentModal && (
+          <>
+            <button type="button" className="btn" onClick={handleCommandPaymentCancel}>
+              キャンセル
+            </button>
+            <button
+              type="button"
+              className="btn btn--primary"
+              disabled={!canConfirmCommandPaymentSelection}
+              onClick={() => handleCommandPaymentConfirm(commandPaymentSelection)}
+            >
+              ホールド確定（{commandPaymentSelection.length}/
+              {state.pendingCommandPayment!.totalNeeded}）
+            </button>
+          </>
+        )}
         {canEndPhase &&
           !showReactionModal &&
           !showEffectChoiceModal &&
