@@ -51,6 +51,7 @@ const EFFECT_TARGET_SUFFIX: Record<string, string> = {
   rescue_activity: "を手札へ回収",
   ruin_excavation: "をラッシュへ",
   earth_force: "を維持コストに",
+  dolphin_arrow: "をパワーへ",
 };
 
 export const RESOLVE_EFFECT_TARGET_NOTICE_IDS = new Set([
@@ -73,6 +74,7 @@ export const RESOLVE_EFFECT_TARGET_NOTICE_IDS = new Set([
   "rescue_activity",
   "ruin_excavation",
   "earth_force",
+  "dolphin_arrow",
 ]);
 
 export function quoteChoiceTargets(targets: string): string {

@@ -70,13 +70,14 @@ export function applyLegend3NcEffect(
         .map((c) => c.instanceId);
       if (held.length > 0) {
         const withChoice = startSelectCommandChoice(nextState, {
-          playerId: enemyId,
+          playerId,
           effectId,
           sourceCardId: card.cardId,
           phasePlayerId: playerId,
           commandFilter: "held",
           commandAction: "power",
           validInstanceIds: held,
+          optional: true,
         });
         if (withChoice) nextState = withChoice;
       }

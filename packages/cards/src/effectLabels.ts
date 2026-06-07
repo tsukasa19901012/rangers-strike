@@ -135,6 +135,7 @@ export const EFFECT_LABELS: Record<string, string> = {
   mirage_beam: "ミラージュビーム",
   super_moa_cannon: "超力モアキャノン",
   battle_entry_hand_discard: "手札捨札",
+  dolphin_arrow: "ドルフィンアロー",
 };
 
 export function getEffectLabel(effectId: string): string {

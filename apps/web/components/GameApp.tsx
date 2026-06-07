@@ -1367,8 +1367,15 @@ export function GameApp() {
   const isHumanEffectChoice =
     humanCanAct &&
     !!pendingChoice &&
+    pendingChoice.playerId === HUMAN_PLAYER &&
     (canActOnDenjiChoice(pendingChoice, HUMAN_PLAYER) ||
-      canActOnShironChoice(pendingChoice, HUMAN_PLAYER));
+      canActOnShironChoice(pendingChoice, HUMAN_PLAYER) ||
+      (pendingChoice.kind !== "shiron_light" &&
+        !(
+          pendingChoice.kind === "denji_machine" &&
+          pendingChoice.denjiMachineMeta?.step === "reveal"
+        ) &&
+        pendingChoice.effectId !== "sagas_sniper"));
 
   const canSkipEffectChoice =
     isHumanEffectChoice &&
@@ -1716,6 +1723,8 @@ export function GameApp() {
                     ? "撃破しない"
                     : pendingChoice.effectId === "pit_in_dive"
                       ? "発動しない"
+                      : pendingChoice.effectId === "dolphin_arrow"
+                        ? "送らない"
                       : pendingChoice.effectId === "end_turn_effects"
                         ? "発動しない"
                       : pendingChoice.effectId === "sagas_sniper"

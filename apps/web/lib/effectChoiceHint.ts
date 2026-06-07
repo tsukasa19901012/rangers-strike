@@ -71,6 +71,9 @@ export function effectChoiceHint(
       return `手札から選んでください`;
     }
     case "select_command":
+      if (pending.effectId === "dolphin_arrow") {
+        return "相手のホールド中コマンドを1枚選んで、相手のパワーゾーンに送ります";
+      }
       return `コマンドを選んでください`;
     case "pit_in_dive_order": {
       const picked = pending.selectedInstanceIds?.length ?? 0;
