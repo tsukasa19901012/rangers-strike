@@ -680,8 +680,22 @@ select {
   touch-action: manipulation;
 }
 
+.card--previewable,
+.card--previewable .card__image {
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 .card--previewable {
   cursor: default;
+}
+
+.long-press-preview-button {
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 
 .card--command-held .card__image {

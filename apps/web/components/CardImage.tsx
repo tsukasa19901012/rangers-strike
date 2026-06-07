@@ -134,6 +134,13 @@ export function CardImage({
       onPointerUp={interactive ? longPress.handlePointerUp : undefined}
       onPointerCancel={interactive ? longPress.handlePointerCancel : undefined}
       onClick={interactive ? handleClick : undefined}
+      onContextMenu={
+        onPreview
+          ? (event) => {
+              event.preventDefault();
+            }
+          : undefined
+      }
       role={onSelect ? "button" : undefined}
       tabIndex={onSelect ? 0 : undefined}
       aria-label={ariaLabel}
