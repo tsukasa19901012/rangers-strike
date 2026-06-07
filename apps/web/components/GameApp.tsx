@@ -1871,6 +1871,9 @@ export function GameApp() {
           }
           onDraw={() => apply({ type: "draw", playerId: HUMAN_PLAYER })}
           onBonusDraw={() => apply({ type: "bonus_draw", playerId: HUMAN_PLAYER })}
+          onSkipBonusDraw={() =>
+            apply({ type: "skip_bonus_draw", playerId: HUMAN_PLAYER })
+          }
         />
       )}
       {blockedBattleAlert && (

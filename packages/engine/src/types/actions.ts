@@ -91,6 +91,11 @@ export type BonusDrawAction = {
   playerId: PlayerId;
 };
 
+export type SkipBonusDrawAction = {
+  type: "skip_bonus_draw";
+  playerId: PlayerId;
+};
+
 export type ReleaseStartCommandsAction = {
   type: "release_start_commands";
   playerId: PlayerId;
@@ -251,6 +256,7 @@ export type GameAction =
   | EndPhaseAction
   | PlayOperationAction
   | BonusDrawAction
+  | SkipBonusDrawAction
   | ReleaseStartCommandsAction
   | ReturnAllBattleToRushAction
   | PassStrikeReactionAction

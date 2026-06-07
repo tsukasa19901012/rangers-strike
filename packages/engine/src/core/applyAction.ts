@@ -69,6 +69,7 @@ import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import { tryOpenEndTurnEffectsMenu } from "../rules/legend3/endTurnEffects";
 import { clearBakiBakiExtraAttack } from "../rules/legend3/destroyEffects";
 import {
+  canBonusDraw,
   canPayEarthForceUpkeep,
   discardEarthForceForUnpaidUpkeep,
   mustResolveEarthForceUpkeepBeforeStartEnd,
@@ -369,6 +370,14 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         ok(drawn.state, buildSimpleLogEntry(playerId, "bonus_draw")),
         playerId,
       );
+    }
+
+    case "skip_bonus_draw": {
+      if (state.phase !== "start") return fail("wrong_phase");
+      if (!canBonusDraw(state, playerId)) return fail("bonus_draw_unavailable");
+      const advanced = transitionStartToChargePhase(state, playerId);
+      if (!advanced) return fail("start_phase_incomplete");
+      return ok(advanced, buildSimpleLogEntry(playerId, "skip_bonus_draw"));
     }
 
     case "release_start_commands": {

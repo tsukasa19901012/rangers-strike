@@ -10,6 +10,7 @@ type StartPhaseModalProps = {
   onReturnAllBattle: () => void;
   onDraw: () => void;
   onBonusDraw: () => void;
+  onSkipBonusDraw: () => void;
 };
 
 function StepRow({
@@ -43,6 +44,7 @@ export function StartPhaseModal({
   onReturnAllBattle,
   onDraw,
   onBonusDraw,
+  onSkipBonusDraw,
 }: StartPhaseModalProps) {
   return (
     <GameModalBackdrop>
@@ -121,8 +123,11 @@ export function StartPhaseModal({
 
           {status.canBonusDraw && (
             <div className="effect-action-modal__actions">
-              <button type="button" className="btn" onClick={onBonusDraw}>
-                追加で1枚ドロー（任意）
+              <button type="button" className="btn btn--primary" onClick={onBonusDraw}>
+                追加で1枚ドロー
+              </button>
+              <button type="button" className="btn" onClick={onSkipBonusDraw}>
+                追加ドローしない
               </button>
             </div>
           )}

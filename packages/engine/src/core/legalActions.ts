@@ -933,6 +933,7 @@ export function getLegalActions(state: GameState): GameAction[] {
       }
       if (canBonusDraw(state, playerId)) {
         actions.push({ type: "bonus_draw", playerId });
+        actions.push({ type: "skip_bonus_draw", playerId });
       }
       break;
 

@@ -91,10 +91,33 @@ describe("start phase steps", () => {
     expect(state.players.player1.hand).toHaveLength(1);
     expect(state.phase).toBe("start");
     expect(getLegalActions(state).some((a) => a.type === "bonus_draw")).toBe(true);
+    expect(getLegalActions(state).some((a) => a.type === "skip_bonus_draw")).toBe(true);
 
     state = unwrap(applyAction(state, { type: "bonus_draw", playerId: "player1" }));
     expect(state.phase).toBe("charge");
     expect(state.players.player1.hand).toHaveLength(2);
+  });
+
+  it("allows skipping optional bonus draw to advance to charge", () => {
+    let state = createTestState({
+      phase: "start",
+      player1: {
+        damage: 3,
+        deck: [inst("TST-OP", "d1"), inst("TST-OP", "d2")],
+        hand: [],
+        hasReleasedCommandsThisStart: true,
+        hasReturnedBattleThisStart: true,
+      },
+    });
+
+    state = unwrap(applyAction(state, { type: "draw", playerId: "player1" }));
+    expect(state.phase).toBe("start");
+    expect(state.players.player1.hand).toHaveLength(1);
+
+    state = unwrap(applyAction(state, { type: "skip_bonus_draw", playerId: "player1" }));
+    expect(state.phase).toBe("charge");
+    expect(state.players.player1.hand).toHaveLength(1);
+    expect(state.players.player1.deck).toHaveLength(1);
   });
 
   it("reports start phase status for UI", () => {

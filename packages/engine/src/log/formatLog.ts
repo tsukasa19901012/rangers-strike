@@ -67,6 +67,10 @@ export function formatGameLog(
     return `${player}が追加ドローした（手札＜ダメージ）`;
   }
 
+  if (parts[1] === "skip_bonus_draw") {
+    return `${player}が追加ドローを行わずチャージフェイズへ進んだ`;
+  }
+
   if (parts[1] === "release_start_commands") {
     return `${player}がホールド中のコマンドをリリースした`;
   }
