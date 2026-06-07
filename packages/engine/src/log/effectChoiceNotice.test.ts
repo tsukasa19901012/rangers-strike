@@ -20,6 +20,11 @@ describe("effect choice notices", () => {
     expect(formatGameLog(entry, {})).toContain("モスブリザード");
   });
 
+  it("formats grant_sp1 NC as SP1 not SP+1", () => {
+    const entry = "player1|number_combo|RS-054|アバレッド|sp1";
+    expect(formatGameLog(entry, {})).toBe("あなたの「アバレッド」がNCを発動（SP1）");
+  });
+
   it("formats pink storm NC resolve", () => {
     const entry =
       "player1|resolve_effect_choice|RS-060|ピンクストーム|pink_storm:敵ユニット";

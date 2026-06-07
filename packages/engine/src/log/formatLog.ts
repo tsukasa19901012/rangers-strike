@@ -128,13 +128,13 @@ export function formatGameLog(
           return `${player}の「${cardName}」が遺跡調査を発動 → 山札上「${seen}」を確認`;
         }
         if (detail === "eagle_diving") {
-          return `${player}の「${cardName}」がイーグルダイビングを発動（SP+1、BP+2000）`;
+          return `${player}の「${cardName}」がイーグルダイビングを発動（SP1、BP+2000）`;
         }
         if (detail === "moss_breaker") {
           return `${player}の「${cardName}」がモスブレイカーを発動`;
         }
         if (detail === "sp1") {
-          return `${player}の「${cardName}」がNCを発動（SP+1）`;
+          return `${player}の「${cardName}」がNCを発動（SP1）`;
         }
         if (detail?.startsWith("future_sight:")) {
           const drawn = detail.slice("future_sight:".length);

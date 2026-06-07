@@ -1,7 +1,7 @@
 /** 効果名 id の日本語ラベル（UI・ログ用）。 */
 export const EFFECT_LABELS: Record<string, string> = {
   // ナンバーコンボ（NC）
-  grant_sp1: "SP+1",
+  grant_sp1: "SP1",
   eagle_diving: "イーグルダイビング",
   moss_breaker: "モスブレイカー",
   ruin_survey: "遺跡調査",
