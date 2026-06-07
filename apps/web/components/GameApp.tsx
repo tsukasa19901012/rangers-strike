@@ -1504,14 +1504,13 @@ export function GameApp() {
     ? new Set(commandPaymentSelection)
     : undefined;
 
-  const commandPaymentSelectedCards = useMemo(() => {
-    if (!showCommandPaymentModal || !state) return [];
-    return resolveCommandPaymentSelectedCards(
-      state,
-      HUMAN_PLAYER,
-      commandPaymentSelection,
-    );
-  }, [commandPaymentSelection, showCommandPaymentModal, state]);
+  const commandPaymentSelectedCards = showCommandPaymentModal
+    ? resolveCommandPaymentSelectedCards(
+        state,
+        HUMAN_PLAYER,
+        commandPaymentSelection,
+      )
+    : [];
 
   const canConfirmCommandPaymentSelection =
     showCommandPaymentModal &&
