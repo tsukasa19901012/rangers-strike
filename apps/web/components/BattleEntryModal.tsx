@@ -78,15 +78,20 @@ export function BattleEntryModal({
                 <div className="battle-entry-modal__targets">
                   {targets.map((target) => (
                     <div key={target.instanceId} className="battle-entry-modal__target">
-                      <CardImage
-                        card={target.card}
-                        small
-                        hideMeta
-                        onSelect={() => onAttack(target.instanceId)}
-                        onPreview={
-                          onPreviewCard ? () => onPreviewCard(target.card) : undefined
-                        }
-                      />
+                      <button
+                        type="button"
+                        className="battle-entry-modal__target-btn"
+                        onClick={() => onAttack(target.instanceId)}
+                      >
+                        <CardImage
+                          card={target.card}
+                          small
+                          hideMeta
+                          onPreview={
+                            onPreviewCard ? () => onPreviewCard(target.card) : undefined
+                          }
+                        />
+                      </button>
                       <span className="battle-entry-modal__target-zone">
                         {target.zone === "rush" ? "ラッシュ" : "バトル"}
                       </span>

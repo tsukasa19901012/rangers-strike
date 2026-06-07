@@ -1236,6 +1236,20 @@ select {
   flex-shrink: 0;
 }
 
+.battle-entry-modal__target-btn {
+  display: block;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.battle-entry-modal__target-btn:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
 .battle-entry-modal__target-zone {
   font-size: 0.68rem;
   color: #64748b;

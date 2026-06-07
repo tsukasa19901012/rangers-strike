@@ -118,6 +118,7 @@ import {
   listCyberSRiderHandCandidates,
 } from "@/lib/cyberSRiderUi";
 import { findBattleDanceAction } from "@/lib/battleDanceUi";
+import { usePointerDrag } from "@/lib/PointerDragContext";
 
 const CPU_PLAYER = "player2" as const;
 const HUMAN_PLAYER = "player1" as const;
@@ -159,6 +160,7 @@ function hasReactionWindow(game: GameState): boolean {
 }
 
 export function GameApp() {
+  const { clearClickSuppression } = usePointerDrag();
   const [appScreen, setAppScreen] = useState<AppScreen>("start");
   const [editingDeckId, setEditingDeckId] = useState<string | null>(null);
   const [customDecks, setCustomDecks] = useState<CustomDeck[]>([]);
@@ -1132,7 +1134,6 @@ export function GameApp() {
   );
 
   const attackTargetIds = useMemo(() => {
-    if (state?.pendingBattleEntry?.playerId === HUMAN_PLAYER) return undefined;
     const entry = state?.pendingBattleEntry;
     if (!entry || entry.playerId !== HUMAN_PLAYER) return undefined;
     const ids = new Set<string>();
@@ -1148,7 +1149,6 @@ export function GameApp() {
   }, [legalActions, state?.pendingBattleEntry]);
 
   const entryAttackerIds = useMemo(() => {
-    if (state?.pendingBattleEntry?.playerId === HUMAN_PLAYER) return undefined;
     const entry = state?.pendingBattleEntry;
     if (!entry || entry.playerId !== HUMAN_PLAYER) return undefined;
     return new Set([entry.instanceId]);
@@ -1555,6 +1555,12 @@ export function GameApp() {
     !state.pendingStrike &&
     !state.pendingDamagePayment &&
     !state.pendingLeave;
+
+  useEffect(() => {
+    if (showBattleEntryModal) {
+      clearClickSuppression();
+    }
+  }, [clearClickSuppression, showBattleEntryModal]);
 
   const isHumanCommandPayment = isHumanCommandPaymentActive(state, HUMAN_PLAYER);
 

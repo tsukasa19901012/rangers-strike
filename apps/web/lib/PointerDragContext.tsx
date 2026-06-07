@@ -62,6 +62,7 @@ type PointerDragContextValue = {
     onEnd?: () => void;
   }) => (event: React.PointerEvent<HTMLElement>) => void;
   consumeClickSuppression: () => boolean;
+  clearClickSuppression: () => void;
   cancelPendingPointer: (pointerId: number) => void;
   suppressClick: () => void;
 };
@@ -309,6 +310,10 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
     return true;
   }, []);
 
+  const clearClickSuppression = useCallback(() => {
+    suppressClickRef.current = false;
+  }, []);
+
   const suppressClick = useCallback(() => {
     suppressClickRef.current = true;
   }, []);
@@ -320,6 +325,7 @@ export function PointerDragProvider({ children }: { children: ReactNode }) {
         registerDropTarget,
         bindDragSource,
         consumeClickSuppression,
+        clearClickSuppression,
         cancelPendingPointer: cancelPending,
         suppressClick,
       }}

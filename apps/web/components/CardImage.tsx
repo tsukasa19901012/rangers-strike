@@ -114,9 +114,7 @@ export function CardImage({
     if (consumeClickSuppression()) return;
     if (longPress.consumeLongPressSuppression()) return;
     event.stopPropagation();
-    if (onSelect) {
-      onSelect();
-    }
+    onSelect();
   };
 
   const interactive = !!(onPreview || onSelect);
@@ -133,7 +131,7 @@ export function CardImage({
       onPointerMove={interactive ? longPress.handlePointerMove : undefined}
       onPointerUp={interactive ? longPress.handlePointerUp : undefined}
       onPointerCancel={interactive ? longPress.handlePointerCancel : undefined}
-      onClick={interactive ? handleClick : undefined}
+      onClick={onSelect ? handleClick : undefined}
       onContextMenu={
         onPreview
           ? (event) => {
