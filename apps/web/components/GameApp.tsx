@@ -80,7 +80,12 @@ import {
   resolveCommandPaymentBoardTargetIds,
 } from "@/lib/webUiIntegration";
 import { zordSetupHighlightZones } from "@/lib/zordSetupUi";
+import {
+  analyzeBoardTapEffectChoice,
+  effectChoiceSkipLabel,
+} from "@/lib/effectChoiceBoardTap";
 import { ZordSetupBanner } from "./ZordSetupBanner";
+import { EffectChoiceBanner } from "./EffectChoiceBanner";
 import { OperationPromptModal } from "./OperationPromptModal";
 import { PermanentOperationModal } from "./PermanentOperationModal";
 import { ShironLightModal } from "./ShironLightModal";
@@ -1526,6 +1531,13 @@ export function GameApp() {
     !needsEffectHoldPayment(pendingChoice) &&
     !showEffectNotice;
 
+  const boardTapEffectChoice =
+    isHumanEffectChoice && pendingChoice
+      ? analyzeBoardTapEffectChoice(state, pendingChoice, HUMAN_PLAYER)
+      : null;
+
+  const showEffectChoiceBanner = !!boardTapEffectChoice;
+
   const showEffectChoiceModal =
     isHumanEffectChoice &&
     !!pendingChoice &&
@@ -1534,7 +1546,8 @@ export function GameApp() {
     !showEffectNotice &&
     !showDenjiRevealModal &&
     !showSagasRevealModal &&
-    !showShironLightModal;
+    !showShironLightModal &&
+    !showEffectChoiceBanner;
 
   const showBattleEntryModal =
     !!battleEntryModal &&
@@ -1598,9 +1611,8 @@ export function GameApp() {
     !showCommandPaymentModal &&
     !!startPhaseStatus;
 
-  const boardEffectChoiceTargets = showEffectChoiceModal
-    ? undefined
-    : showDamagePaymentModal
+  const boardEffectChoiceTargets =
+    showEffectChoiceModal || showDamagePaymentModal
       ? undefined
       : pendingEffectChoiceTargets;
   const boardDamagePaymentTargets = showDamagePaymentModal
@@ -1623,6 +1635,8 @@ export function GameApp() {
   const pendingHint = showCommandPaymentModal && commandPaymentView
     ? undefined
     : showZordSetupBanner
+      ? undefined
+    : showEffectChoiceBanner
       ? undefined
     : showStartPhaseModal
       ? "3つの行程を好きな順番で行ってください"
@@ -1834,25 +1848,7 @@ export function GameApp() {
           playerId={HUMAN_PLAYER}
           pending={pendingChoice}
           canSkip={canSkipEffectChoice}
-          skipLabel={
-            pendingChoice.effectId === "earth_force"
-              ? "アースの力を捨札にする"
-              : pendingChoice.kind === "seabed_draw"
-                ? "上から引く"
-                : pendingChoice.kind === "optional_deck_draw"
-                  ? "ドローしない"
-                  : pendingChoice.effectId === "juu_kun_do"
-                    ? "撃破しない"
-                    : pendingChoice.effectId === "pit_in_dive"
-                      ? "発動しない"
-                      : pendingChoice.effectId === "dolphin_arrow"
-                        ? "送らない"
-                      : pendingChoice.effectId === "end_turn_effects"
-                        ? "発動しない"
-                      : pendingChoice.effectId === "sagas_sniper"
-                        ? "手札に加えない"
-                        : "効果をスキップ"
-          }
+          skipLabel={effectChoiceSkipLabel(pendingChoice)}
           onSelect={handleEffectChoiceSelect}
           onSkip={() => apply({ type: "skip_effect_choice", playerId: HUMAN_PLAYER })}
           onRuinSurvey={(placement) =>
@@ -2138,6 +2134,10 @@ export function GameApp() {
                 ? handleDamagePaymentSelect
                 : handleEffectChoiceSelect
             }
+            effectChoiceHighlightCommand={boardTapEffectChoice?.opponent.command}
+            effectChoiceHighlightPower={boardTapEffectChoice?.opponent.power}
+            effectChoiceHighlightRush={boardTapEffectChoice?.opponent.rush}
+            effectChoiceHighlightBattle={boardTapEffectChoice?.opponent.battle}
           />
 
           <PlayerBoard
@@ -2193,6 +2193,10 @@ export function GameApp() {
             commandPaymentHighlightRush={
               showCommandPaymentModal && !!commandPaymentView?.allowRushZoneCommands
             }
+            effectChoiceHighlightCommand={boardTapEffectChoice?.self.command}
+            effectChoiceHighlightPower={boardTapEffectChoice?.self.power}
+            effectChoiceHighlightRush={boardTapEffectChoice?.self.rush}
+            effectChoiceHighlightBattle={boardTapEffectChoice?.self.battle}
           />
         </div>
 
@@ -2200,6 +2204,14 @@ export function GameApp() {
 
       <div className="game__scroll-pad" aria-hidden="true" />
 
+      {showEffectChoiceBanner && boardTapEffectChoice && pendingChoice && (
+        <EffectChoiceBanner
+          view={boardTapEffectChoice}
+          canSkip={canSkipEffectChoice}
+          skipLabel={effectChoiceSkipLabel(pendingChoice)}
+          onSkip={() => apply({ type: "skip_effect_choice", playerId: HUMAN_PLAYER })}
+        />
+      )}
       {showZordSetupBanner && zordSetup && (
         <ZordSetupBanner
           state={state}
@@ -2225,6 +2237,7 @@ export function GameApp() {
           !showOperationModal &&
           !showCommandPaymentModal &&
           !showZordSetupBanner &&
+          !showEffectChoiceBanner &&
           !showStartPhaseModal &&
           !canPassBattleEntry && (
           <button

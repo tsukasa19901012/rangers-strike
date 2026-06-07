@@ -74,6 +74,21 @@ export function effectChoiceHint(
       if (pending.effectId === "dolphin_arrow") {
         return "相手のホールド中コマンドを1枚選んで、相手のパワーゾーンに送ります";
       }
+      if (pending.effectId === "green_ground") {
+        return "敵軍コマンドゾーンから1枚選び、持ち主の手札に戻します";
+      }
+      if (pending.effectId === "dark_dual_blade") {
+        return "相手のパワーまたはコマンドを1枚選んで捨札にします";
+      }
+      if (pending.effectId === "dark_dual_blade_command") {
+        return "相手のコマンドを1枚選んで捨札にします";
+      }
+      if (pending.effectId === "ptera_arrow") {
+        return "相手のホールド中コマンドを1枚選んで捨札にします";
+      }
+      if (pending.effectId === "tricera_lance") {
+        return "相手の未ホールドコマンドを1枚選んでホールドします";
+      }
       return `コマンドを選んでください`;
     case "pit_in_dive_order": {
       const picked = pending.selectedInstanceIds?.length ?? 0;

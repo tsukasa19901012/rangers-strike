@@ -343,6 +343,10 @@ export type PlayerBoardProps = {
   commandPaymentHighlightRush?: boolean;
   zordSetupHighlightRush?: boolean;
   zordSetupHighlightBattle?: boolean;
+  effectChoiceHighlightCommand?: boolean;
+  effectChoiceHighlightPower?: boolean;
+  effectChoiceHighlightRush?: boolean;
+  effectChoiceHighlightBattle?: boolean;
   onViewPile?: (pile: "deck" | "discard") => void;
   onOperationCardClick?: (card: CardInstance) => void;
   boardRef?: RefObject<HTMLDivElement | null>;
@@ -389,6 +393,10 @@ export function PlayerBoard({
   commandPaymentHighlightRush,
   zordSetupHighlightRush,
   zordSetupHighlightBattle,
+  effectChoiceHighlightCommand,
+  effectChoiceHighlightPower,
+  effectChoiceHighlightRush,
+  effectChoiceHighlightBattle,
   onViewPile,
   onOperationCardClick,
   boardRef,
@@ -421,10 +429,12 @@ export function PlayerBoard({
     interactive && phase === "battle" && !!onZoneDrop;
 
   const highlightPower =
-    canDropPower &&
-    (!dragging || (dragging.fromZone === "hand" && phase === "charge"));
+    effectChoiceHighlightPower ||
+    (canDropPower &&
+      (!dragging || (dragging.fromZone === "hand" && phase === "charge")));
   const highlightCommand =
     commandPaymentHighlightCommand ||
+    effectChoiceHighlightCommand ||
     (canDropCommand &&
       (!dragging || (dragging.fromZone === "hand" && phase === "charge")));
   const highlightOperation =
@@ -432,9 +442,11 @@ export function PlayerBoard({
   const highlightRush =
     commandPaymentHighlightRush ||
     zordSetupHighlightRush ||
+    effectChoiceHighlightRush ||
     (canDropRush && (!dragging || (draggingUnit && dragging.fromZone === "hand")));
   const highlightBattle =
     zordSetupHighlightBattle ||
+    effectChoiceHighlightBattle ||
     (canDropBattle && (!dragging || dragging.fromZone === "rush"));
 
   const operationZoneInactive = isHuman && phase !== "rush";
@@ -768,10 +780,10 @@ export function PlayerBoard({
                 ? "身代わりにするユニットをタップ"
                 : attackTargetIds?.size
                   ? "アタック対象をタップ"
-                  : pendingEffectChoiceTargets?.size
-                  ? "効果の対象をタップ"
                   : pendingZordTargets?.size
                   ? "追加条件の素材をタップ"
+                  : pendingEffectChoiceTargets?.size
+                  ? "効果の対象をタップ"
                   : "対象カードをタップしてオペレーションを完了"}
             </p>
           ) : null}

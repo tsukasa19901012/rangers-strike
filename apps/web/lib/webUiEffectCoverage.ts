@@ -25,6 +25,7 @@ export type WebUiMechanism =
   | "operation_earth_force_upkeep"
   | "operation_lightning_gravity_notice"
   | "effect_choice_modal"
+  | "effect_choice_banner"
   | "shiron_light_flow"
   | "battle_entry_modal"
   | "damage_payment_modal"
@@ -81,8 +82,8 @@ export const OPERATION_UI_MECHANISMS: Record<string, WebUiMechanism[]> = {
 };
 
 const UNIT_TRIGGER_UI: Record<string, WebUiMechanism[]> = {
-  on_rush: ["board_target_tap", "effect_choice_modal"],
-  conditional: ["battle_entry_modal", "effect_choice_modal", "board_target_tap"],
+  on_rush: ["board_target_tap", "effect_choice_modal", "effect_choice_banner"],
+  conditional: ["battle_entry_modal", "effect_choice_modal", "effect_choice_banner", "board_target_tap"],
   on_attack: ["battle_drag_attack", "passive_engine_only"],
   enter_battle: ["battle_entry_modal", "effect_choice_modal", "passive_engine_only"],
   passive: ["passive_engine_only", "effect_choice_modal", "damage_payment_modal"],
