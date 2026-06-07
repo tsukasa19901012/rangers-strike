@@ -18,6 +18,28 @@ export function collectEndTurnEffectInstanceIds(
     .map((c) => c.instanceId);
 }
 
+export function hasEndPhaseBlockingPending(state: GameState): boolean {
+  return !!(
+    state.pendingEffectChoice ||
+    state.pendingBattleEntry ||
+    state.pendingCommandPayment ||
+    state.pendingDamagePayment ||
+    state.pendingStrike ||
+    state.pendingBattle ||
+    state.pendingRush ||
+    state.pendingLeave ||
+    state.pendingScry ||
+    state.pendingZordSetup
+  );
+}
+
+/** エンドフェイズで未処理の選択がなく、ターン終了してよい状態。 */
+export function shouldAutoFinalizeEndPhase(state: GameState): boolean {
+  if (state.phase !== "end") return false;
+  if (state.winner) return false;
+  return !hasEndPhaseBlockingPending(state);
+}
+
 export function tryOpenEndTurnEffectsMenu(
   state: GameState,
   playerId: PlayerId,

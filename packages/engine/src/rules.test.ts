@@ -778,6 +778,7 @@ describe("mandatory battle entry", () => {
     const ended = applyAction(state, { type: "end_phase", playerId: "player1" });
     expect(ended.ok).toBe(true);
     if (!ended.ok) return;
-    expect(ended.state.phase).toBe("end");
+    expect(ended.state.phase).toBe("start");
+    expect(ended.state.activePlayer).toBe("player2");
   });
 });

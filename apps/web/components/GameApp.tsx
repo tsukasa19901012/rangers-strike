@@ -1227,6 +1227,7 @@ export function GameApp() {
     humanCanAct &&
     state &&
     state.phase !== "start" &&
+    state.phase !== "end" &&
     legalActions.some((a) => a.type === "end_phase");
 
   const handleCounterSelect = useCallback(

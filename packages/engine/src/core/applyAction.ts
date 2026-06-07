@@ -66,7 +66,10 @@ import {
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
-import { tryOpenEndTurnEffectsMenu } from "../rules/legend3/endTurnEffects";
+import {
+  shouldAutoFinalizeEndPhase,
+  tryOpenEndTurnEffectsMenu,
+} from "../rules/legend3/endTurnEffects";
 import { clearBakiBakiExtraAttack } from "../rules/legend3/destroyEffects";
 import {
   canBonusDraw,
@@ -188,6 +191,14 @@ function withStartPhaseAutoAdvance(
   const advanced = transitionStartToChargePhase(result.state, playerId);
   if (!advanced) return result;
   return { ok: true, state: advanced };
+}
+
+function withEndPhaseAutoFinalize(
+  result: ActionResult,
+  playerId: PlayerId,
+): ActionResult {
+  if (!result.ok || !shouldAutoFinalizeEndPhase(result.state)) return result;
+  return ok(finalizeTurnEnd(result.state), buildSimpleLogEntry(playerId, "end_turn"));
 }
 
 function fail(error: string): ActionResult {
@@ -1313,8 +1324,11 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       ) {
         nextState = tryOpenEndTurnEffectsMenu(nextState, playerId) ?? nextState;
       }
-      return withStartPhaseAutoAdvance(
-        ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice")),
+      return withEndPhaseAutoFinalize(
+        withStartPhaseAutoAdvance(
+          ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice")),
+          playerId,
+        ),
         playerId,
       );
     }
@@ -1367,8 +1381,11 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       ) {
         afterSkip = tryOpenEndTurnEffectsMenu(afterSkip, playerId) ?? afterSkip;
       }
-      return withStartPhaseAutoAdvance(
-        ok(afterSkip, result.log ?? buildSimpleLogEntry(playerId, "skip_effect_choice")),
+      return withEndPhaseAutoFinalize(
+        withStartPhaseAutoAdvance(
+          ok(afterSkip, result.log ?? buildSimpleLogEntry(playerId, "skip_effect_choice")),
+          playerId,
+        ),
         playerId,
       );
     }
@@ -1606,6 +1623,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
             buildSimpleLogEntry(playerId, "end_phase", state.phase),
           );
         }
+        return withEndPhaseAutoFinalize(
+          ok(nextState, buildSimpleLogEntry(playerId, "end_phase", state.phase)),
+          playerId,
+        );
       }
 
       return ok(
