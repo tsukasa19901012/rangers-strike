@@ -5,27 +5,88 @@ import {
   type PendingCommandPayment,
   type PlayerId,
 } from "@rangers-strike/engine";
-import type { CardDefinition } from "@rangers-strike/cards";
+import {
+  getCardEffect,
+  getEffectLabel,
+  getEnterBattleNamedEffect,
+  type CardDefinition,
+} from "@rangers-strike/cards";
 
 export const CARD_PREVIEW_GESTURE_HINT = "タップで選択 · 長押しで詳細";
 
-export function commandPaymentHint(
+/** effect_hold 時は pendingEffectChoice.effectId を渡す。 */
+export type CommandPaymentUiContext = {
+  effectId?: string;
+};
+
+function categoryUseHoldDetail(
+  view: CommandPaymentView,
+  selectedCount: number,
+): string {
+  return `コマンドを${view.selectCount}枚ホールド（${selectedCount}/${view.selectCount}）`;
+}
+
+function operationCardEffectText(sourceCardId: string): string | undefined {
+  return getCardEffect(sourceCardId)?.text;
+}
+
+export function commandPaymentTitle(
+  pending: PendingCommandPayment,
+  view: CommandPaymentView,
+  context?: CommandPaymentUiContext,
+): string {
+  if (view.kind === "category_use") {
+    if (pending.continuation.type === "rush") {
+      return `「${view.sourceCardName}」のラッシュ`;
+    }
+    if (pending.continuation.type === "play_counter") {
+      return `カウンター「${view.sourceCardName}」の使用`;
+    }
+    if (pending.continuation.type === "play_operation") {
+      return `「${view.sourceCardName}」の使用`;
+    }
+  }
+
+  if (view.kind === "effect_hold") {
+    if (context?.effectId) {
+      return `【${getEffectLabel(context.effectId)}】`;
+    }
+    return `「${view.sourceCardName}」`;
+  }
+
+  if (view.kind === "mothership_hold") {
+    return "【母艦】";
+  }
+
+  if (view.kind === "battle_entry") {
+    const named = getEnterBattleNamedEffect(view.sourceCardId);
+    if (named) {
+      return `【${getEffectLabel(named.effectId)}】`;
+    }
+    return `「${view.sourceCardName}」`;
+  }
+
+  return `「${view.sourceCardName}」`;
+}
+
+export function commandPaymentDetail(
   pending: PendingCommandPayment,
   view: CommandPaymentView,
   selectedCount: number,
 ): string {
-  const purpose =
-    view.kind === "battle_entry"
-      ? `「${view.sourceCardName}」をバトルエリアに出す`
-      : view.kind === "mothership_hold"
-        ? `「${view.sourceCardName}」の母艦コスト`
-        : view.kind === "effect_hold"
-          ? `「${view.sourceCardName}」の効果`
-          : pending.continuation.type === "rush"
-            ? `「${view.sourceCardName}」をラッシュする`
-            : `「${view.sourceCardName}」を使う`;
+  if (view.kind === "category_use") {
+    const hold = categoryUseHoldDetail(view, selectedCount);
+    if (pending.continuation.type === "rush") {
+      return hold;
+    }
+    const effectText = operationCardEffectText(view.sourceCardId);
+    if (effectText) {
+      return `${effectText}。${hold}`;
+    }
+    return hold;
+  }
 
-  let detail = `コマンドを${view.selectCount}枚ホールド（${selectedCount}/${view.selectCount}）`;
+  let detail = categoryUseHoldDetail(view, selectedCount);
   if (view.kind === "battle_entry") {
     detail += "。選んだコマンドをホールドしてからバトルエリアに出ます";
   }
@@ -35,8 +96,20 @@ export function commandPaymentHint(
   if (view.kind === "mothership_hold") {
     detail += " ※母艦用のホールドです（バトル進入の※には使えません）";
   }
+  return detail;
+}
 
-  return `${purpose}：${detail}`;
+export function commandPaymentHint(
+  pending: PendingCommandPayment,
+  view: CommandPaymentView,
+  selectedCount: number,
+  context?: CommandPaymentUiContext,
+): string {
+  return `${commandPaymentTitle(pending, view, context)}：${commandPaymentDetail(
+    pending,
+    view,
+    selectedCount,
+  )}`;
 }
 
 export function commandPaymentZoneHint(view: CommandPaymentView): string {

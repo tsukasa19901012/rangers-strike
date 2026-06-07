@@ -824,13 +824,18 @@ export function GameApp() {
 
   const handleCommandPaymentToggle = useCallback(
     (instanceId: string) => {
-      const required = state?.pendingCommandPayment?.totalNeeded;
-      if (!required) return;
-      setCommandPaymentSelection((prev) =>
-        toggleCommandPaymentSelection(prev, instanceId, required),
-      );
+      const pending = state?.pendingCommandPayment;
+      if (!pending) return;
+      const required = pending.totalNeeded;
+      setCommandPaymentSelection((prev) => {
+        const next = toggleCommandPaymentSelection(prev, instanceId, required);
+        if (pending.kind === "category_use" && next.length === required) {
+          queueMicrotask(() => handleCommandPaymentConfirm(next));
+        }
+        return next;
+      });
     },
-    [state?.pendingCommandPayment?.totalNeeded],
+    [handleCommandPaymentConfirm, state?.pendingCommandPayment],
   );
 
   const handleCommandPaymentPrismChange = useCallback(
@@ -1927,6 +1932,11 @@ export function GameApp() {
           onConfirm={() => handleCommandPaymentConfirm(commandPaymentSelection)}
           onPrismModeChange={handleCommandPaymentPrismChange}
           onPreviewCard={setPreviewCard}
+          uiContext={
+            state.pendingCommandPayment.kind === "effect_hold" && state.pendingEffectChoice
+              ? { effectId: state.pendingEffectChoice.effectId }
+              : undefined
+          }
         />
       )}
       {showStartPhaseModal && startPhaseStatus && (
