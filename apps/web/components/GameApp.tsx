@@ -1922,6 +1922,9 @@ export function GameApp() {
           selectedCount={commandPaymentSelection.length}
           selectedCards={commandPaymentSelectedCards}
           usePrism={state.pendingCommandPayment.prismSubstitute ?? false}
+          canConfirm={canConfirmCommandPaymentSelection}
+          onCancel={handleCommandPaymentCancel}
+          onConfirm={() => handleCommandPaymentConfirm(commandPaymentSelection)}
           onPrismModeChange={handleCommandPaymentPrismChange}
           onPreviewCard={setPreviewCard}
         />
@@ -2150,22 +2153,6 @@ export function GameApp() {
       )}
 
       <footer className="action-bar">
-        {showCommandPaymentModal && (
-          <>
-            <button type="button" className="btn" onClick={handleCommandPaymentCancel}>
-              キャンセル
-            </button>
-            <button
-              type="button"
-              className="btn btn--primary"
-              disabled={!canConfirmCommandPaymentSelection}
-              onClick={() => handleCommandPaymentConfirm(commandPaymentSelection)}
-            >
-              ホールド確定（{commandPaymentSelection.length}/
-              {state.pendingCommandPayment!.totalNeeded}）
-            </button>
-          </>
-        )}
         {canEndPhase &&
           !showReactionModal &&
           !showEffectChoiceModal &&

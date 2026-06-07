@@ -16,6 +16,9 @@ type CommandPaymentBannerProps = {
   selectedCount: number;
   selectedCards: CommandPaymentSelectedCard[];
   usePrism: boolean;
+  canConfirm: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
   onPrismModeChange?: (usePrism: boolean) => void;
   onPreviewCard: (card: CardDefinition) => void;
 };
@@ -26,6 +29,9 @@ export function CommandPaymentBanner({
   selectedCount,
   selectedCards,
   usePrism,
+  canConfirm,
+  onCancel,
+  onConfirm,
   onPrismModeChange,
   onPreviewCard,
 }: CommandPaymentBannerProps) {
@@ -75,6 +81,20 @@ export function CommandPaymentBanner({
           【プリズムパワー】ホールド2枚でカテゴリ支払い（{view.categories.join("・")}不要）
         </label>
       )}
+
+      <div className="command-payment-banner__actions">
+        <button type="button" className="btn" onClick={onCancel}>
+          キャンセル
+        </button>
+        <button
+          type="button"
+          className="btn btn--primary"
+          disabled={!canConfirm}
+          onClick={onConfirm}
+        >
+          ホールド確定（{selectedCount}/{pending.totalNeeded}）
+        </button>
+      </div>
     </div>
   );
 }

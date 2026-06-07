@@ -699,14 +699,20 @@ select {
 }
 
 .card-wrap--target,
-.card-wrap--strikeable {
+.card-wrap--strikeable,
+.card-wrap--selected {
   position: relative;
   border-radius: 6px;
+}
+
+.card-wrap--target,
+.card-wrap--strikeable {
   cursor: pointer;
 }
 
 .card-wrap--target::after,
-.card-wrap--strikeable::after {
+.card-wrap--strikeable::after,
+.card-wrap--selected::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -723,6 +729,10 @@ select {
   box-shadow:
     inset 0 0 0 2px #38bdf8,
     0 0 10px rgba(56, 189, 248, 0.35);
+}
+
+.card-wrap--selected::after {
+  box-shadow: inset 0 0 0 2px #38bdf8;
 }
 
 .card__type,
@@ -1287,6 +1297,20 @@ select {
   margin-top: 2px;
 }
 
+.command-payment-banner__actions {
+  pointer-events: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.command-payment-banner__actions .btn {
+  flex: 1 1 calc(50% - 4px);
+  min-width: 0;
+  justify-content: center;
+}
+
 .modal__content--effect-action {
   max-height: min(78vh, 560px);
   overflow-y: auto;
@@ -1541,18 +1565,7 @@ select {
 }
 
 .card--selected {
-  position: relative;
   border-radius: 6px;
-}
-
-.card--selected::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 6px;
-  pointer-events: none;
-  z-index: 1;
-  box-shadow: inset 0 0 0 2px #38bdf8;
 }
 
 .card--disabled {
