@@ -822,6 +822,10 @@ select {
   pointer-events: auto;
 }
 
+.modal-backdrop--card-preview {
+  z-index: 130;
+}
+
 .modal-backdrop--game .modal {
   pointer-events: auto;
   touch-action: manipulation;

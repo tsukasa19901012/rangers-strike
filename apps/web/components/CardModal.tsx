@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import type { CardDefinition } from "@rangers-strike/cards";
 import {
   getCardEffect,
@@ -14,12 +16,23 @@ type CardModalProps = {
 };
 
 export function CardModal({ card, onClose }: CardModalProps) {
+  const [mounted, setMounted] = useState(false);
   const operationEffect = getCardEffect(card.id);
   const unitEffects = card.type === "unit" ? getUnitEffectBlock(card.id) : undefined;
   const rushAdditionalCondition = resolveRushAdditionalCondition(card.id, card);
 
-  return (
-    <div className="modal-backdrop" onClick={onClose} role="presentation">
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(
+    <div
+      className="modal-backdrop modal-backdrop--card-preview"
+      onClick={onClose}
+      role="presentation"
+    >
       <div
         className="modal modal--card"
         onClick={(event) => event.stopPropagation()}
@@ -124,6 +137,7 @@ export function CardModal({ card, onClose }: CardModalProps) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
