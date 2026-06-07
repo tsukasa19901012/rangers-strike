@@ -4,8 +4,16 @@
     "unnamedText": [],
     "namedEffects": [
       {
+        "name": "SP+1",
+        "text": "「SP1」",
+        "effectId": "grant_sp1",
+        "trigger": {
+          "type": "nc"
+        }
+      },
+      {
         "name": "レッドビュート",
-        "text": "「SP1」自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、敵軍ラッシュエリアからBP2000以下のユニットを1体選んで撃破する。",
+        "text": "自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、敵軍ラッシュエリアからBP2000以下のユニットを1体選んで撃破する。",
         "effectId": "red_boot",
         "trigger": {
           "type": "conditional"
@@ -250,8 +258,16 @@
     "unnamedText": [],
     "namedEffects": [
       {
+        "name": "SP+1",
+        "text": "「SP1」",
+        "effectId": "grant_sp1",
+        "trigger": {
+          "type": "nc"
+        }
+      },
+      {
         "name": "ジェットスケボー",
-        "text": "「SP1」自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。",
+        "text": "自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。",
         "effectId": "jet_skateboard",
         "trigger": {
           "type": "conditional"

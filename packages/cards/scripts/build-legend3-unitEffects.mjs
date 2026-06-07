@@ -111,12 +111,30 @@ function inferEffectId(name, body, card) {
   return slug(name);
 }
 
+const SP1_TOKEN = "「SP1」";
+
+function restAfterSp1(body) {
+  return body.startsWith(SP1_TOKEN) ? body.slice(SP1_TOKEN.length).trim() : "";
+}
+
+/** NC の SP1 と別タイミングの能力が同居する場合は分割する。 */
+function shouldSplitSp1FromNamedEffect(rest) {
+  return rest.includes("ターンを終える") || rest.includes("撃破したとき");
+}
+
 function inferTrigger(body, card) {
   if (card.comboNumber === "L" && body.includes("このユニットからコンビネーションする")) {
     return { type: "joint_combo_l" };
   }
   if (card.comboNumber === "R" && body.includes("コンビネーションするとき")) {
     return { type: "joint_combo_r" };
+  }
+  if (
+    typeof card.comboNumber === "number" &&
+    body.startsWith(SP1_TOKEN) &&
+    !shouldSplitSp1FromNamedEffect(restAfterSp1(body))
+  ) {
+    return { type: "nc" };
   }
   if (body.includes("ラッシュしたとき")) return { type: "on_rush" };
   if (body.includes("バトルエリアに出るとき") || body.includes("バトルエリアに出たとき")) {
@@ -190,7 +208,27 @@ function parseNamed(text, card) {
     const name = m[1].split("（")[0].trim();
     const body = (m[2] ?? "").trim().replace(/^⇒/, "").trim();
     if (!body && name !== "鋭い爪") continue;
-    const effectBody = body || "「SP1」";
+    const effectBody = body || SP1_TOKEN;
+    const rest = restAfterSp1(effectBody);
+    if (
+      typeof card.comboNumber === "number" &&
+      rest &&
+      shouldSplitSp1FromNamedEffect(rest)
+    ) {
+      out.push({
+        name: "SP+1",
+        text: SP1_TOKEN,
+        effectId: "grant_sp1",
+        trigger: { type: "nc" },
+      });
+      out.push({
+        name,
+        text: rest,
+        effectId: slug(name),
+        trigger: inferTrigger(rest, card),
+      });
+      continue;
+    }
     out.push({
       name,
       text: effectBody,
