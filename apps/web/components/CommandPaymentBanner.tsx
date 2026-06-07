@@ -64,7 +64,6 @@ export function CommandPaymentBanner({
                   small
                   onPreview={() => onPreviewCard(definition)}
                 />
-                <span className="command-payment-banner__chip-name">{definition.name}</span>
               </div>
             ))}
           </div>
