@@ -92,6 +92,10 @@ import {
   isHumanStrikeDefender as checkHumanStrikeDefender,
   resolveReactionModalUi,
 } from "@/lib/webUiIntegration";
+import {
+  canSelectCyberSRiderHand,
+  listCyberSRiderHandCandidates,
+} from "@/lib/cyberSRiderUi";
 
 const CPU_PLAYER = "player2" as const;
 const HUMAN_PLAYER = "player1" as const;
@@ -431,6 +435,7 @@ export function GameApp() {
         kind: "category_use",
         sourceInstanceId: instanceId,
         targetInstanceId,
+        extraInstanceId,
       });
     },
     [apply, legalActions],
@@ -542,6 +547,15 @@ export function GameApp() {
 
         const effect = getCardEffect(card.cardId);
         if (effect?.effectId === "cyber_s_rider") {
+          const others = state.players[HUMAN_PLAYER].hand.filter(
+            (c) => c.instanceId !== payload.instanceId,
+          );
+          if (others.length === 0) {
+            setBlockedRushAlert(
+              "「サイバースライダー」を発動するには、手札にホールドするカードが1枚以上必要です。",
+            );
+            return;
+          }
           setPendingCyberSRider({
             instanceId: payload.instanceId,
             cardId: card.cardId,
@@ -676,35 +690,41 @@ export function GameApp() {
     [pendingOp, tryPlayOperation],
   );
 
-  const cyberSRiderValidHandIds = useMemo(() => {
-    if (!pendingCyberSRider) return [];
-    const ids = new Set<string>();
-    for (const action of legalActions) {
-      if (
-        action.type === "play_operation" &&
-        action.instanceId === pendingCyberSRider.instanceId
-      ) {
-        if (action.targetInstanceId) ids.add(action.targetInstanceId);
-        if (action.extraInstanceId) ids.add(action.extraInstanceId);
-      }
-    }
-    return [...ids];
-  }, [legalActions, pendingCyberSRider]);
+  const cyberSRiderHandIds = useMemo(() => {
+    if (!pendingCyberSRider || !state) return [];
+    return listCyberSRiderHandCandidates(
+      state,
+      HUMAN_PLAYER,
+      pendingCyberSRider.instanceId,
+    );
+  }, [pendingCyberSRider, state]);
 
   const canConfirmCyberSRider = useCallback(
-    (selectedIds: string[]) =>
-      !!pendingCyberSRider &&
-      findCyberSRiderAction(pendingCyberSRider.instanceId, selectedIds) !== undefined,
-    [findCyberSRiderAction, pendingCyberSRider],
+    (selectedIds: string[]) => {
+      if (!pendingCyberSRider || !state) return false;
+      return canSelectCyberSRiderHand(
+        state,
+        HUMAN_PLAYER,
+        pendingCyberSRider.instanceId,
+        selectedIds,
+      );
+    },
+    [pendingCyberSRider, state],
   );
 
   const handleCyberSRiderConfirm = useCallback(
     (selectedIds: string[]) => {
       if (!pendingCyberSRider) return;
       const action = findCyberSRiderAction(pendingCyberSRider.instanceId, selectedIds);
-      if (action) apply(action);
+      if (action) {
+        apply(action);
+        return;
+      }
+      const [first, second] = selectedIds;
+      if (!first) return;
+      tryPlayOperation(pendingCyberSRider.instanceId, first, second);
     },
-    [apply, findCyberSRiderAction, pendingCyberSRider],
+    [apply, findCyberSRiderAction, pendingCyberSRider, tryPlayOperation],
   );
 
   const handleOperationCardClick = useCallback(
@@ -1342,7 +1362,8 @@ export function GameApp() {
   const showCyberSRiderModal =
     humanCanAct &&
     !!pendingCyberSRider &&
-    cyberSRiderValidHandIds.length > 0;
+    !state.pendingCommandPayment &&
+    cyberSRiderHandIds.length > 0;
 
   const showZordSetupModal = isHumanZordSetup && !!zordSetup;
 
@@ -1763,7 +1784,7 @@ export function GameApp() {
           playerId={HUMAN_PLAYER}
           operationInstanceId={pendingCyberSRider.instanceId}
           operationCardId={pendingCyberSRider.cardId}
-          validHandInstanceIds={cyberSRiderValidHandIds}
+          validHandInstanceIds={cyberSRiderHandIds}
           canConfirmSelection={canConfirmCyberSRider}
           onConfirm={handleCyberSRiderConfirm}
           onCancel={() => setPendingCyberSRider(null)}
