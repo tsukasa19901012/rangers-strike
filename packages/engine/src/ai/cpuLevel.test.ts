@@ -10,8 +10,10 @@ describe("CPU levels", () => {
 
   it("increases search depth by level", () => {
     expect(getCpuLevelConfig(1).enableSearch).toBe(false);
+    expect(getCpuLevelConfig(2).maxCandidates).toBe(16);
     expect(getCpuLevelConfig(2).maxCandidates).toBeLessThan(getCpuLevelConfig(5).maxCandidates);
     expect(getCpuLevelConfig(4).maxResponseDepth).toBeLessThan(getCpuLevelConfig(5).maxResponseDepth);
+    expect(getCpuLevelConfig(5).maxCandidates).toBe(50);
     expect(getCpuLevelConfig(5).maxResponseDepth).toBe(100);
   });
 

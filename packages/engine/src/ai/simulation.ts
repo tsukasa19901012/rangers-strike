@@ -2,16 +2,20 @@ import type { GameAction } from "../types/actions";
 import type { GameState, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
 import { quickActionPriority } from "./helpers";
-import { isCpuTurn, pickCpuAction } from "./level1";
+import { isCpuTurn, pickCpuAction, type PickCpuActionOptions } from "./level1";
 import { evaluateState } from "./scoring";
 
 export type SearchOptions = {
   maxCandidates?: number;
   maxResponseDepth?: number;
+  /** 探索の入れ子深さ。1以上で相手応答はヒューリスティックのみ（再帰防止）。 */
+  simulationDepth?: number;
 };
 
-const DEFAULT_MAX_CANDIDATES = 42;
+const DEFAULT_MAX_CANDIDATES = 50;
 const DEFAULT_MAX_RESPONSE_DEPTH = 100;
+const OPPONENT_SEARCH_MAX_CANDIDATES = 10;
+const OPPONENT_SEARCH_MAX_RESPONSE_DEPTH = 3;
 
 function actionKey(action: GameAction): string {
   switch (action.type) {
@@ -52,7 +56,29 @@ export function dedupeActions(actions: GameAction[]): GameAction[] {
   return unique;
 }
 
-/** ヒューリスティックで相手のリアクションウィンドウを解決（ネストしたシミュレーションなし）。 */
+function opponentSearchOptions(
+  options: SearchOptions | undefined,
+  simulationDepth: number,
+): PickCpuActionOptions {
+  if (simulationDepth >= 1) {
+    return { enableSearch: false };
+  }
+
+  const maxCandidates = options?.maxCandidates ?? DEFAULT_MAX_CANDIDATES;
+  const maxResponseDepth = options?.maxResponseDepth ?? DEFAULT_MAX_RESPONSE_DEPTH;
+  if (maxCandidates <= 0 || maxResponseDepth <= 0) {
+    return { enableSearch: false };
+  }
+
+  return {
+    enableSearch: true,
+    maxCandidates: Math.min(OPPONENT_SEARCH_MAX_CANDIDATES, maxCandidates),
+    maxResponseDepth: Math.min(OPPONENT_SEARCH_MAX_RESPONSE_DEPTH, maxResponseDepth),
+    simulationDepth: simulationDepth + 1,
+  };
+}
+
+/** 相手のリアクションウィンドウを解決。浅い探索で相手の最善手も考慮する。 */
 export function resolveOpponentResponses(
   state: GameState,
   playerId: PlayerId,
@@ -61,12 +87,14 @@ export function resolveOpponentResponses(
   let current = state;
   const enemyId = playerId === "player1" ? "player2" : "player1";
   const maxDepth = options?.maxResponseDepth ?? DEFAULT_MAX_RESPONSE_DEPTH;
+  const simulationDepth = options?.simulationDepth ?? 0;
+  const opponentOptions = opponentSearchOptions(options, simulationDepth);
 
   for (let i = 0; i < maxDepth; i++) {
     if (current.winner) return current;
     if (!isCpuTurn(current, enemyId)) break;
 
-    const action = pickCpuAction(current, enemyId, { enableSearch: false });
+    const action = pickCpuAction(current, enemyId, opponentOptions);
     if (!action) break;
 
     const result = applyAction(current, action);
@@ -85,7 +113,10 @@ export function scoreAction(
 ): number {
   const result = applyAction(state, action);
   if (!result.ok) return Number.NEGATIVE_INFINITY;
-  const resolved = resolveOpponentResponses(result.state, playerId, options);
+  const resolved = resolveOpponentResponses(result.state, playerId, {
+    ...options,
+    simulationDepth: options?.simulationDepth ?? 0,
+  });
   return evaluateState(resolved, playerId);
 }
 

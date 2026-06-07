@@ -1256,10 +1256,11 @@ export function pickStrikeReaction(
   }
 
   const self = state.players[playerId];
+  const lethal = self.damage + incomingDamage >= WIN_DAMAGE;
   if (
     actions.some((a) => a.type === "use_plasma_energy") &&
     incomingDamage > 0 &&
-    self.damage + incomingDamage < WIN_DAMAGE
+    (lethal || incomingDamage >= 2)
   ) {
     return actions.find((a) => a.type === "use_plasma_energy") ?? null;
   }
@@ -1352,7 +1353,10 @@ export function pickSimpleReaction(
   passType: GameAction["type"],
 ): GameAction | null {
   if (passType === "pass_strike_reaction") {
-    return pickStrikeReaction(state, playerId, actions);
+    return (
+      pickStrikeReaction(state, playerId, actions) ??
+      pickBestCounter(state, playerId, actions, passType)
+    );
   }
 
   return pickBestCounter(state, playerId, actions, passType);
@@ -1460,7 +1464,15 @@ export function quickActionPriority(
     return state.phase === "charge" ? 1_200 : 800;
   }
 
-  if (action.type === "use_plasma_energy") return 4_000;
+  if (action.type === "use_plasma_energy") {
+    const pending = state.pendingStrike;
+    if (pending) {
+      const self = state.players[playerId];
+      const lethal = self.damage + pending.damage >= WIN_DAMAGE;
+      return lethal ? 45_000 : 4_000;
+    }
+    return 4_000;
+  }
   if (action.type === "five_tech_intercept") return 3_500;
   if (action.type === "play_counter") return 2_000;
   if (action.type === "pass_strike_reaction") return -500;

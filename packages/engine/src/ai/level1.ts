@@ -38,15 +38,21 @@ export type PickCpuActionOptions = {
   enableSearch?: boolean;
   maxCandidates?: number;
   maxResponseDepth?: number;
+  simulationDepth?: number;
 };
 
 function searchOptions(options: PickCpuActionOptions): SearchOptions | undefined {
-  if (options.maxCandidates === undefined && options.maxResponseDepth === undefined) {
+  if (
+    options.maxCandidates === undefined &&
+    options.maxResponseDepth === undefined &&
+    options.simulationDepth === undefined
+  ) {
     return undefined;
   }
   return {
     maxCandidates: options.maxCandidates,
     maxResponseDepth: options.maxResponseDepth,
+    simulationDepth: options.simulationDepth,
   };
 }
 
@@ -350,12 +356,21 @@ function pickCpuActionInner(
       if (mandatory) return mandatory;
 
       if (enableSearch) {
-        const candidates = collectBattleCandidates(state, playerId, actions);
+        let candidates = collectBattleCandidates(state, playerId, actions);
+        const hasRushUnits = state.players[playerId].rush.length > 0;
+        const hasCombat =
+          actionsOfType(actions, "strike").length > 0 ||
+          actionsOfType(actions, "battle").length > 0;
+        if (hasRushUnits || hasCombat) {
+          candidates = candidates.filter((a) => a.type !== "end_phase");
+        }
         const best = pickBestBySearch(state, playerId, candidates, sim);
         if (best) return best;
       }
 
-      const battle = pickWinningBattle(state, actions);
+      const battle =
+        pickWinningBattle(state, actions) ??
+        pickFavorableBattle(state, actions);
       if (battle) return battle;
       return pickBestStrike(state, playerId, actions) ?? endPhase(actions);
     }

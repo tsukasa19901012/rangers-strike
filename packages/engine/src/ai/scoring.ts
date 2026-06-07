@@ -42,6 +42,17 @@ function maxSelfStrikePotential(
   return max;
 }
 
+function totalStrikePotential(
+  state: GameState,
+  playerId: PlayerId,
+): number {
+  let total = 0;
+  for (const card of state.players[playerId].battle) {
+    total += strikeDamageFor(state.definitions, card, state, playerId);
+  }
+  return total;
+}
+
 /** 指定プレイヤー視点でのヒューリスティック盤面評価。 */
 export function evaluateState(state: GameState, playerId: PlayerId): number {
   if (state.winner === playerId) return 100_000;
@@ -73,25 +84,39 @@ export function evaluateState(state: GameState, playerId: PlayerId): number {
   score += self.power.length * 180;
   score -= enemy.power.length * 120;
   score += self.command.length * 55;
-  score += self.command.filter((c) => c.commandHeld).length * 50;
+  const heldCommands = self.command.filter((c) => c.commandHeld).length;
+  score += heldCommands * 80;
   score += self.operation.length * 500;
 
   score -= self.hand.length * 25;
-  score -= enemy.hand.length * 25;
+  score += enemy.hand.length * 18;
+
+  const selfTotalStrike = totalStrikePotential(state, playerId);
+  score += selfTotalStrike * 120;
 
   score += self.deck.length * 6;
   score -= enemy.deck.length * 6;
 
   const selfStrike = maxSelfStrikePotential(state, playerId);
-  score += selfStrike * 400;
+  score += selfStrike * 450;
   if (enemy.damage + selfStrike >= WIN_DAMAGE) {
-    score += 4_000;
+    score += 5_500;
+  }
+  if (enemy.damage + selfTotalStrike >= WIN_DAMAGE) {
+    score += 2_500;
   }
 
   const strikeThreat = maxEnemyStrikeThreat(state, playerId);
-  score -= strikeThreat * 320;
+  score -= strikeThreat * 380;
   if (self.damage + strikeThreat >= WIN_DAMAGE) {
-    score -= 3_500;
+    score -= 4_500;
+  }
+
+  if (state.phase === "rush" && heldCommands > 0) {
+    score += heldCommands * 40;
+  }
+  if (state.phase === "battle" && self.battle.length > enemy.battle.length) {
+    score += (self.battle.length - enemy.battle.length) * 90;
   }
 
   return score;

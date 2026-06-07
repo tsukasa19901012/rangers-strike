@@ -158,7 +158,7 @@ export function GameApp() {
   const [customDecks, setCustomDecks] = useState<CustomDeck[]>([]);
   const [humanDeckKey, setHumanDeckKey] = useState(HUMAN_STARTER_KEY);
   const [cpuDeckKey, setCpuDeckKey] = useState(CPU_STARTER_KEY);
-  const [cpuLevel, setCpuLevel] = useState<CpuLevel>(1);
+  const [cpuLevel, setCpuLevel] = useState<CpuLevel>(3);
   const [firstPlayer, setFirstPlayer] = useState<PlayerId>(HUMAN_PLAYER);
   const [startError, setStartError] = useState<string | null>(null);
   const [state, setState] = useState<GameState | null>(null);
