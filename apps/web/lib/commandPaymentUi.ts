@@ -3,7 +3,11 @@ import {
   type CommandPaymentView,
   type GameState,
   type PendingCommandPayment,
+  type PlayerId,
 } from "@rangers-strike/engine";
+import type { CardDefinition } from "@rangers-strike/cards";
+
+export const CARD_PREVIEW_GESTURE_HINT = "タップで選択 · 長押しで詳細";
 
 export function commandPaymentHint(
   pending: PendingCommandPayment,
@@ -67,4 +71,26 @@ export function canConfirmCommandPayment(
   required: number,
 ): boolean {
   return selected.length === required;
+}
+
+export type CommandPaymentSelectedCard = {
+  instanceId: string;
+  definition: CardDefinition;
+};
+
+export function resolveCommandPaymentSelectedCards(
+  state: GameState,
+  playerId: PlayerId,
+  selectedInstanceIds: readonly string[],
+): CommandPaymentSelectedCard[] {
+  const player = state.players[playerId];
+  const pool = [...player.command, ...player.rush];
+
+  return selectedInstanceIds.flatMap((instanceId) => {
+    const instance = pool.find((card) => card.instanceId === instanceId);
+    if (!instance) return [];
+    const definition = state.definitions[instance.cardId];
+    if (!definition) return [];
+    return [{ instanceId, definition }];
+  });
 }

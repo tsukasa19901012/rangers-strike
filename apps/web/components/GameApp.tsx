@@ -68,6 +68,7 @@ import { CommandPaymentBanner } from "./CommandPaymentBanner";
 import {
   buildCommandPaymentView,
   canConfirmCommandPayment,
+  resolveCommandPaymentSelectedCards,
   toggleCommandPaymentSelection,
 } from "@/lib/commandPaymentUi";
 import {
@@ -1503,6 +1504,15 @@ export function GameApp() {
     ? new Set(commandPaymentSelection)
     : undefined;
 
+  const commandPaymentSelectedCards = useMemo(() => {
+    if (!showCommandPaymentModal || !state) return [];
+    return resolveCommandPaymentSelectedCards(
+      state,
+      HUMAN_PLAYER,
+      commandPaymentSelection,
+    );
+  }, [commandPaymentSelection, showCommandPaymentModal, state]);
+
   const canConfirmCommandPaymentSelection =
     showCommandPaymentModal &&
     canConfirmCommandPayment(
@@ -1911,8 +1921,10 @@ export function GameApp() {
           pending={state.pendingCommandPayment}
           view={commandPaymentView}
           selectedCount={commandPaymentSelection.length}
+          selectedCards={commandPaymentSelectedCards}
           usePrism={state.pendingCommandPayment.prismSubstitute ?? false}
           onPrismModeChange={handleCommandPaymentPrismChange}
+          onPreviewCard={setPreviewCard}
         />
       )}
       {showStartPhaseModal && startPhaseStatus && (

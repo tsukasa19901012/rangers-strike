@@ -4,6 +4,7 @@ import { EFFECT_LABELS, getCardById } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
 import { CardImage } from "./CardImage";
 import { GameModalBackdrop } from "./GameModalBackdrop";
+import { LongPressPreviewButton } from "./LongPressPreviewButton";
 
 type ShironLightModalProps = {
   state: GameState;
@@ -109,16 +110,16 @@ export function ShironLightModal({
               : "相手に選ばれたカードが公開されました"}
           </p>
           {pickedCard && (
-            <button
+            <LongPressPreviewButton
               type="button"
               className="btn effect-action-modal__target effect-action-modal__target--preview"
-              onClick={() => onPreview(pickedCard.id)}
+              onPreview={() => onPreview(pickedCard.id)}
             >
               {pickedCard.name}
               <span className="effect-action-modal__target-meta">
                 {isUnit ? "ユニット（ラッシュに出せます）" : "ユニット以外"}
               </span>
-            </button>
+            </LongPressPreviewButton>
           )}
           {canAct && (
             <div className="effect-action-modal__actions">

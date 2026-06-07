@@ -7,6 +7,14 @@ export const GESTURE_ACTIVATION_PX = 10;
 const DRAG_UP_MIN_PX = 12;
 const AXIS_DOMINANCE = 1.15;
 
+/** カード詳細表示（長押し）の待ち時間。 */
+export const CARD_LONG_PRESS_MS = 450;
+export const CARD_LONG_PRESS_MOVE_TOLERANCE_PX = 10;
+
+export function shouldCancelCardLongPress(dx: number, dy: number): boolean {
+  return Math.hypot(dx, dy) > CARD_LONG_PRESS_MOVE_TOLERANCE_PX;
+}
+
 export type GestureKind = "pending" | "horizontal-scroll" | "vertical-scroll" | "drag";
 
 export type GestureOptions = {

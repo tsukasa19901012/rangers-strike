@@ -5,6 +5,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import { getCardBackImageUrl, getCardEffect } from "@rangers-strike/cards";
 import { type DragCardPayload } from "@/lib/dnd";
 import { usePointerDrag } from "@/lib/PointerDragContext";
+import { useCardLongPress } from "@/lib/useCardLongPress";
 
 type CardImageProps = {
   card?: CardDefinition;
@@ -41,7 +42,19 @@ export function CardImage({
   hideMeta,
   faceDown,
 }: CardImageProps) {
-  const { bindDragSource, consumeClickSuppression } = usePointerDrag();
+  const {
+    bindDragSource,
+    consumeClickSuppression,
+    cancelPendingPointer,
+    suppressClick,
+  } = usePointerDrag();
+
+  const longPress = useCardLongPress({
+    enabled: !!onPreview && !faceDown && !disabled,
+    onLongPress: () => onPreview?.(),
+    onCancelPendingDrag: cancelPendingPointer,
+    onSuppressClick: suppressClick,
+  });
 
   if (!card) return null;
 
@@ -51,7 +64,8 @@ export function CardImage({
     selected ? "card--selected" : "",
     disabled ? "card--disabled" : "",
     draggable && !disabled ? "card--draggable" : "",
-    onPreview || onSelect ? "card--previewable" : "",
+    onPreview || onSelect ? "card--interactive" : "",
+    onPreview ? "card--previewable" : "",
     commandHeld ? "card--command-held" : "",
     faceDown ? "card--face-down" : "",
   ]
@@ -80,7 +94,7 @@ export function CardImage({
     fromZone === "battle" ||
     fromZone === "command";
 
-  const handlePointerDown =
+  const handleDragPointerDown =
     dragPayload &&
     bindDragSource({
       enabled: true,
@@ -91,29 +105,42 @@ export function CardImage({
       onEnd: onDragEnd,
     });
 
-  const handleClick = () => {
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    longPress.handlePointerDown(event);
+    handleDragPointerDown?.(event);
+  };
+
+  const handleClick = (event: React.MouseEvent) => {
     if (consumeClickSuppression()) return;
+    if (longPress.consumeLongPressSuppression()) return;
+    event.stopPropagation();
     if (onSelect) {
       onSelect();
-      return;
     }
-    if (onPreview) onPreview();
   };
 
   const interactive = !!(onPreview || onSelect);
+  const ariaLabel = interactive
+    ? onPreview
+      ? `${card.name}、長押しで詳細${onSelect ? "、タップで選択" : ""}`
+      : `${card.name}、タップで選択`
+    : undefined;
 
   return (
     <div
       className={className}
-      onPointerDown={handlePointerDown ?? undefined}
-      onClick={handleClick}
-      role={interactive ? "button" : undefined}
-      tabIndex={interactive ? 0 : undefined}
+      onPointerDown={interactive ? handlePointerDown : undefined}
+      onPointerMove={interactive ? longPress.handlePointerMove : undefined}
+      onPointerUp={interactive ? longPress.handlePointerUp : undefined}
+      onPointerCancel={interactive ? longPress.handlePointerCancel : undefined}
+      onClick={interactive ? handleClick : undefined}
+      role={onSelect ? "button" : undefined}
+      tabIndex={onSelect ? 0 : undefined}
+      aria-label={ariaLabel}
       onKeyDown={(event) => {
-        if (interactive && (event.key === "Enter" || event.key === " ")) {
+        if (onSelect && (event.key === "Enter" || event.key === " ")) {
           event.preventDefault();
-          if (onSelect) onSelect();
-          else if (onPreview) onPreview();
+          onSelect();
         }
       }}
     >

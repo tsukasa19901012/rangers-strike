@@ -1,22 +1,33 @@
 "use client";
 
 import type { CommandPaymentView, PendingCommandPayment } from "@rangers-strike/engine";
-import { commandPaymentHint, commandPaymentZoneHint } from "@/lib/commandPaymentUi";
+import type { CardDefinition } from "@rangers-strike/cards";
+import {
+  CARD_PREVIEW_GESTURE_HINT,
+  commandPaymentHint,
+  commandPaymentZoneHint,
+  type CommandPaymentSelectedCard,
+} from "@/lib/commandPaymentUi";
+import { CardImage } from "./CardImage";
 
 type CommandPaymentBannerProps = {
   pending: PendingCommandPayment;
   view: CommandPaymentView;
   selectedCount: number;
+  selectedCards: CommandPaymentSelectedCard[];
   usePrism: boolean;
   onPrismModeChange?: (usePrism: boolean) => void;
+  onPreviewCard: (card: CardDefinition) => void;
 };
 
 export function CommandPaymentBanner({
   pending,
   view,
   selectedCount,
+  selectedCards,
   usePrism,
   onPrismModeChange,
+  onPreviewCard,
 }: CommandPaymentBannerProps) {
   const title =
     view.kind === "battle_entry"
@@ -34,6 +45,25 @@ export function CommandPaymentBanner({
         {commandPaymentHint(pending, view, selectedCount)}
       </p>
       <p className="damage-payment-banner__sub">{commandPaymentZoneHint(view)}</p>
+      <p className="command-payment-banner__gesture">{CARD_PREVIEW_GESTURE_HINT}</p>
+
+      {selectedCards.length > 0 && (
+        <div className="command-payment-banner__selected">
+          <p className="command-payment-banner__selected-label">選択中</p>
+          <div className="command-payment-banner__chips">
+            {selectedCards.map(({ instanceId, definition }) => (
+              <div key={instanceId} className="command-payment-banner__chip">
+                <CardImage
+                  card={definition}
+                  small
+                  onPreview={() => onPreviewCard(definition)}
+                />
+                <span className="command-payment-banner__chip-name">{definition.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {view.prismAvailable && view.kind === "category_use" && onPrismModeChange && (
         <label className="command-payment-banner__prism">

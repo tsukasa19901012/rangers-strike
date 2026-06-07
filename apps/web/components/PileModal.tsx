@@ -63,7 +63,7 @@ export function PileModal({
                       small
                       faceDown={faceDown}
                       onPreview={
-                        definition && onPreview && !faceDown && !selectable
+                        definition && onPreview && !faceDown
                           ? () => onPreview(definition)
                           : undefined
                       }

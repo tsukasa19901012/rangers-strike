@@ -212,17 +212,17 @@ function ZoneCards({
     >
       {cards.map((card) => {
         const definition = definitions[card.cardId];
+        const isSelectable = selectableIds?.has(card.instanceId);
         const cardDraggable =
           getDraggable?.(card, definition) ?? draggable ?? false;
         const cardDisabled = getDisabled?.(card, definition) ?? false;
-        const preview =
-          onPreview &&
-          definition &&
-          !selectableIds?.has(card.instanceId)
-            ? () => onPreview(definition)
-            : undefined;
+        const canPreview =
+          !!onPreview &&
+          !!definition &&
+          !(fromZone === "power" && card.faceDown);
+        const preview = canPreview ? () => onPreview!(definition) : undefined;
         const select =
-          selectableIds?.has(card.instanceId) &&
+          isSelectable &&
           onSelectTarget &&
           !substituteIds?.has(card.instanceId) &&
           !interceptableIds?.has(card.instanceId) &&
@@ -748,7 +748,7 @@ export function PlayerBoard({
             attackTargetIds?.size) ? (
             <p className="target-hint">
               {pendingCommandPaymentTargets?.size
-                ? "ホールドするコマンドをタップ"
+                ? "ホールドするコマンドをタップ · 長押しで詳細"
                 : substituteIds?.size
                 ? "身代わりにするユニットをタップ"
                 : attackTargetIds?.size

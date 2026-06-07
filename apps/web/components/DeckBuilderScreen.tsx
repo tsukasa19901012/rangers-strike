@@ -238,14 +238,14 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
               if (!card) return null;
               return (
                 <div key={entry.cardId} className="deck-builder__deck-row">
-                  <button
-                    type="button"
-                    className="deck-builder__deck-card"
-                    onClick={() => setPreviewCard(card)}
-                  >
-                    <CardImage card={card} small />
+                  <div className="deck-builder__deck-card">
+                    <CardImage
+                      card={card}
+                      small
+                      onPreview={() => setPreviewCard(card)}
+                    />
                     <span className="deck-builder__deck-name">{card.name}</span>
-                  </button>
+                  </div>
                   <div className="deck-builder__deck-controls">
                     <button
                       type="button"
@@ -345,13 +345,13 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
             const disabled = current >= max;
             return (
               <div key={card.id} className="deck-builder__catalog-item">
-                <button
-                  type="button"
-                  className="deck-builder__catalog-card"
-                  onClick={() => setPreviewCard(card)}
-                >
-                  <CardImage card={card} small />
-                </button>
+                <div className="deck-builder__catalog-card">
+                  <CardImage
+                    card={card}
+                    small
+                    onPreview={() => setPreviewCard(card)}
+                  />
+                </div>
                 <div className="deck-builder__catalog-meta">
                   <span className="deck-builder__catalog-name">{card.name}</span>
                   <span className="deck-builder__catalog-id">

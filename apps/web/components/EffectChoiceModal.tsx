@@ -14,6 +14,7 @@ import {
   type CardTarget,
 } from "@/lib/cardTargets";
 import { GameModalBackdrop } from "./GameModalBackdrop";
+import { LongPressPreviewButton } from "./LongPressPreviewButton";
 
 type EffectChoiceModalProps = {
   state: GameState;
@@ -37,18 +38,25 @@ function TargetButton({
   target,
   chooserPlayerId,
   onSelect,
+  onPreview,
 }: {
   target: CardTarget;
   chooserPlayerId: PlayerId;
   onSelect: () => void;
+  onPreview: (card: CardDefinition) => void;
 }) {
   return (
-    <button type="button" className="btn effect-action-modal__target" onClick={onSelect}>
+    <LongPressPreviewButton
+      type="button"
+      className="btn effect-action-modal__target"
+      onClick={onSelect}
+      onPreview={() => onPreview(target.card)}
+    >
       {target.card.name}
       <span className="effect-action-modal__target-meta">
         {cardTargetMetaLine(target, chooserPlayerId)}
       </span>
-    </button>
+    </LongPressPreviewButton>
   );
 }
 
@@ -178,17 +186,17 @@ export function EffectChoiceModal({
               </p>
               <div className="effect-action-modal__targets">
                 {denjiReveal.map(({ instanceId, card, toHand }) => (
-                  <button
+                  <LongPressPreviewButton
                     key={instanceId}
                     type="button"
                     className="btn effect-action-modal__target effect-action-modal__target--preview"
-                    onClick={() => onPreview(card)}
+                    onPreview={() => onPreview(card)}
                   >
                     {card.name}
                     <span className="effect-action-modal__target-meta">
                       {toHand ? "→ 手札" : "→ 山札の下へ"}
                     </span>
-                  </button>
+                  </LongPressPreviewButton>
                 ))}
               </div>
               {!readOnly && (
@@ -304,14 +312,14 @@ export function EffectChoiceModal({
 
           {pending.kind === "deck_top_or_bottom" && scryCard && (
             <div className="effect-action-modal__section">
-              <button
+              <LongPressPreviewButton
                 type="button"
                 className="btn effect-action-modal__target effect-action-modal__target--preview"
-                onClick={() => onPreview(scryCard)}
+                onPreview={() => onPreview(scryCard)}
               >
                 {scryCard.name}
                 <span className="effect-action-modal__target-meta">山札上を確認</span>
-              </button>
+              </LongPressPreviewButton>
               <div className="effect-action-modal__actions">
                 <button type="button" className="btn" onClick={() => onRuinSurvey("top")}>
                   山札の上に戻す
@@ -333,7 +341,7 @@ export function EffectChoiceModal({
                 <p className="effect-action-modal__target-meta">
                   {readOnly
                     ? "相手の山札（公開）"
-                    : "山札の内容（選択不可のカードはタップで拡大）"}
+                    : "山札の内容（選択不可のカードは長押しで詳細）"}
                 </p>
               )}
               <div className="effect-action-modal__targets">
@@ -344,19 +352,19 @@ export function EffectChoiceModal({
                     ? sagasSniperDeckCardMeta(card, sagasPowerCap, selectable)
                     : "残す";
                   return (
-                    <button
+                    <LongPressPreviewButton
                       key={instanceId}
                       type="button"
                       className={`btn effect-action-modal__target${canPick ? "" : " effect-action-modal__target--preview"}`}
                       disabled={readOnly}
                       onClick={() => {
                         if (canPick) onSelect(instanceId);
-                        else onPreview(card);
                       }}
+                      onPreview={() => onPreview(card)}
                     >
                       {card.name}
                       <span className="effect-action-modal__target-meta">{meta}</span>
-                    </button>
+                    </LongPressPreviewButton>
                   );
                 })}
               </div>
@@ -377,6 +385,7 @@ export function EffectChoiceModal({
                     target={target}
                     chooserPlayerId={playerId}
                     onSelect={() => onSelect(target.instanceId)}
+                    onPreview={onPreview}
                   />
                 ))}
               </div>
