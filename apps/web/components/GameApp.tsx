@@ -8,7 +8,11 @@ import {
 } from "@rangers-strike/cards";
 import {
   applyAction,
+  canPlayOperationExceptCommandHold,
+  collectOperationTargets,
   createGame,
+  effectiveBp,
+  strikeDamageFor,
   explainCannotEnterBattle,
   explainCannotRush,
   findMandatoryBattleEntries,
@@ -111,6 +115,16 @@ import { findBattleDanceAction } from "@/lib/battleDanceUi";
 
 const CPU_PLAYER = "player2" as const;
 const HUMAN_PLAYER = "player1" as const;
+
+function formatBattleUnitSp(
+  sp: CardDefinition["sp"],
+  effectiveSp: number,
+): string {
+  if (effectiveSp > 0) return `SP${effectiveSp}`;
+  if (sp === "special") return "SP！";
+  if (typeof sp === "number") return `SP${sp}`;
+  return "SP0";
+}
 const HUMAN_STARTER_KEY = encodeDeckSelection({ kind: "starter", id: "abarenoh" });
 const CPU_STARTER_KEY = encodeDeckSelection({ kind: "starter", id: "dekaranger" });
 
@@ -597,6 +611,27 @@ export function GameApp() {
 
         if (needsOperationTarget(card.cardId)) {
           if (!effect?.target) return;
+          const opDef = getCardById(card.cardId) ?? state.definitions[card.cardId];
+          if (
+            !opDef ||
+            !canPlayOperationExceptCommandHold(
+              state.players[HUMAN_PLAYER],
+              state.definitions,
+              opDef,
+            )
+          ) {
+            setBlockedRushAlert(
+              `「${opDef?.name ?? card.cardId}」を使うにはパワーが足りません。`,
+            );
+            return;
+          }
+          const targets = collectOperationTargets(state, HUMAN_PLAYER, card.cardId);
+          if (targets.length === 0) {
+            setBlockedRushAlert(
+              `「${opDef.name}」の対象となる自軍ユニットがいません。`,
+            );
+            return;
+          }
           setPendingOp({
             instanceId: payload.instanceId,
             cardId: card.cardId,
@@ -958,6 +993,22 @@ export function GameApp() {
         ids.add(action.targetInstanceId);
       }
     }
+    if (ids.size > 0) return ids;
+
+    const player = state.players[HUMAN_PLAYER];
+    const opDef = getCardById(pendingOp.cardId) ?? state.definitions[pendingOp.cardId];
+    if (
+      opDef &&
+      canPlayOperationExceptCommandHold(player, state.definitions, opDef)
+    ) {
+      for (const targetId of collectOperationTargets(
+        state,
+        HUMAN_PLAYER,
+        pendingOp.cardId,
+      )) {
+        ids.add(targetId);
+      }
+    }
     return ids.size > 0 ? ids : undefined;
   }, [legalActions, pendingOp, state]);
 
@@ -1117,14 +1168,14 @@ export function GameApp() {
     if (!unitCard) return null;
 
     const definition = state.definitions[unit.cardId];
-    const sp = definition?.sp;
-    const modifier = unit.spModifier ?? 0;
-    let strikeDamage = Math.max(1, modifier);
-    if (typeof sp === "number") {
-      strikeDamage = sp + modifier;
-    } else if (sp === "special") {
-      strikeDamage = Math.max(1, modifier);
-    }
+    const strikeDamage = strikeDamageFor(
+      state.definitions,
+      unit,
+      state,
+      HUMAN_PLAYER,
+    );
+    const unitBp = effectiveBp(state, HUMAN_PLAYER, unit);
+    const unitSpLabel = formatBattleUnitSp(definition?.sp, strikeDamage);
 
     const canStrike = legalActions.some(
       (a) => a.type === "strike" && a.instanceId === entry.instanceId,
@@ -1158,7 +1209,7 @@ export function GameApp() {
       });
     }
 
-    return { unitCard, strikeDamage, canStrike, targets };
+    return { unitCard, unitBp, unitSpLabel, strikeDamage, canStrike, targets };
   }, [isHumanBattleEntry, state, legalActions]);
 
   const handleBattleEntryStrike = useCallback(() => {
@@ -1683,12 +1734,15 @@ export function GameApp() {
       {showBattleEntryModal && battleEntryModal && (
         <BattleEntryModal
           unitCard={battleEntryModal.unitCard}
+          unitSpLabel={battleEntryModal.unitSpLabel}
+          unitBp={battleEntryModal.unitBp}
           strikeDamage={battleEntryModal.strikeDamage}
           canStrike={battleEntryModal.canStrike}
           targets={battleEntryModal.targets}
           onStrike={handleBattleEntryStrike}
           onAttack={handleAttackTargetSelect}
           onPass={handleBattleEntryPass}
+          onPreviewCard={setPreviewCard}
         />
       )}
       {showShironLightModal && pendingChoice && (

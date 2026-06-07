@@ -115,6 +115,42 @@ describe("dynamite power RS-007", () => {
     expect(boosted?.bpModifier).toBe(4000);
   });
 
+  it("RS-025 can pay category hold then boost via initiate_command_payment", () => {
+    const op = inst("RS-025", "op1");
+    const unit = inst("TST-UNIT-0", "u1");
+    const releasedCmd = { ...inst("TST-OP", "c1"), commandHeld: false };
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [op],
+        power: [inst("TST-OP", "p1"), inst("TST-OP", "p2")],
+        command: [releasedCmd],
+        rush: [unit],
+      },
+    });
+    state.definitions["RS-025"] = def("RS-025");
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "category_use",
+      sourceInstanceId: op.instanceId,
+      targetInstanceId: unit.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+    expect(initiated.state.pendingCommandPayment?.continuation.type).toBe("play_operation");
+
+    const paid = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [releasedCmd.instanceId],
+    });
+    expect(paid.ok).toBe(true);
+    if (!paid.ok) return;
+    expect(paid.state.players.player1.rush[0]?.bpModifier).toBe(4000);
+  });
+
   it("places permanent operation RS-030", () => {
     const op = inst("RS-030", "op1");
     const state = createTestState({

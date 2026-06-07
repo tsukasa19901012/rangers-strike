@@ -13,6 +13,7 @@ export * from "./rules/startPhase";
 export * from "./rules/strikeReactions";
 export * from "./rules/restrictions";
 export * from "./rules/battleEntry";
+export { strikeDamageFor } from "./rules/combo";
 export * from "./rules/commandPayment";
 export * from "./rules/zordSetup";
 export * from "./rules/damagePayment";

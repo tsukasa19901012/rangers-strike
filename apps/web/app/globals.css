@@ -1089,7 +1089,7 @@ select {
 }
 
 .modal--battle-entry {
-  max-width: 360px;
+  max-width: min(92vw, 420px);
 }
 
 .modal--alert {
@@ -1179,11 +1179,21 @@ select {
 }
 
 .battle-entry-modal__unit {
-  margin: 0 0 16px;
+  margin: 0 0 8px;
   font-size: 0.88rem;
   color: #94a3b8;
   text-align: center;
   line-height: 1.45;
+}
+
+.battle-entry-modal__stats {
+  margin: 0 0 16px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 0.9rem;
+  color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
 }
 
 .battle-entry-modal__actions {
@@ -1204,6 +1214,35 @@ select {
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.battle-entry-modal__targets {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.battle-entry-modal__target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.battle-entry-modal__target-zone {
+  font-size: 0.68rem;
+  color: #64748b;
+}
+
+.battle-entry-modal__gesture {
+  margin: 6px 0 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: #64748b;
+  text-align: center;
 }
 
 .battle-entry-modal__action {

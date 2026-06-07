@@ -7,6 +7,10 @@ import {
 } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { getCardEffect } from "@rangers-strike/cards";
+import {
+  isValidOperationTarget,
+  needsOperationTarget,
+} from "../effects/resolveOperation";
 import type { InitiateCommandPaymentAction, ZordMaterialDestination } from "../types/actions";
 import type {
   CommandPaymentContinuation,
@@ -656,6 +660,20 @@ export function buildPaymentFromInitiateAction(
         action.prismSubstitute ?? false,
         { perRushPayment: true },
       );
+    }
+
+    if (needsOperationTarget(handFound.card.cardId)) {
+      if (!action.targetInstanceId) return null;
+      if (
+        !isValidOperationTarget(
+          state,
+          playerId,
+          handFound.card.cardId,
+          action.targetInstanceId,
+        )
+      ) {
+        return null;
+      }
     }
 
     const continuation: CommandPaymentContinuation = {

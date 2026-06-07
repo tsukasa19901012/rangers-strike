@@ -1,6 +1,8 @@
 "use client";
 
 import type { CardDefinition } from "@rangers-strike/cards";
+import { CARD_PREVIEW_GESTURE_HINT } from "@/lib/commandPaymentUi";
+import { CardImage } from "./CardImage";
 import { GameModalBackdrop } from "./GameModalBackdrop";
 
 export type BattleEntryTarget = {
@@ -11,22 +13,28 @@ export type BattleEntryTarget = {
 
 type BattleEntryModalProps = {
   unitCard: CardDefinition;
+  unitSpLabel: string;
+  unitBp: number;
   strikeDamage: number;
   canStrike: boolean;
   targets: BattleEntryTarget[];
   onStrike: () => void;
   onAttack: (defenderInstanceId: string) => void;
   onPass: () => void;
+  onPreviewCard?: (card: CardDefinition) => void;
 };
 
 export function BattleEntryModal({
   unitCard,
+  unitSpLabel,
+  unitBp,
   strikeDamage,
   canStrike,
   targets,
   onStrike,
   onAttack,
   onPass,
+  onPreviewCard,
 }: BattleEntryModalProps) {
   return (
     <GameModalBackdrop>
@@ -44,6 +52,10 @@ export function BattleEntryModal({
           </h3>
           <p className="battle-entry-modal__unit">
             「{unitCard.name}」の行動を選んでください
+          </p>
+          <p className="battle-entry-modal__stats">
+            <span>{unitSpLabel}</span>
+            <span>BP {unitBp.toLocaleString()}</span>
           </p>
 
           <div className="battle-entry-modal__actions">
@@ -63,19 +75,25 @@ export function BattleEntryModal({
             {targets.length > 0 && (
               <div className="battle-entry-modal__group">
                 <p className="battle-entry-modal__label">アタック</p>
-                {targets.map((target) => (
-                  <button
-                    key={target.instanceId}
-                    type="button"
-                    className="btn battle-entry-modal__action"
-                    onClick={() => onAttack(target.instanceId)}
-                  >
-                    {target.card.name}
-                    <span className="battle-entry-modal__detail">
-                      {target.zone === "rush" ? "ラッシュ" : "バトル"}
-                    </span>
-                  </button>
-                ))}
+                <div className="battle-entry-modal__targets">
+                  {targets.map((target) => (
+                    <div key={target.instanceId} className="battle-entry-modal__target">
+                      <CardImage
+                        card={target.card}
+                        small
+                        hideMeta
+                        onSelect={() => onAttack(target.instanceId)}
+                        onPreview={
+                          onPreviewCard ? () => onPreviewCard(target.card) : undefined
+                        }
+                      />
+                      <span className="battle-entry-modal__target-zone">
+                        {target.zone === "rush" ? "ラッシュ" : "バトル"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="battle-entry-modal__gesture">{CARD_PREVIEW_GESTURE_HINT}</p>
               </div>
             )}
 
