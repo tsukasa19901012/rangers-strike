@@ -82,6 +82,8 @@ export type BattleDanceRetreatAction = {
   type: "battle_dance_retreat";
   playerId: PlayerId;
   battleInstanceId: string;
+  /** 発動コストとしてホールドするリリース状態コマンド2枚。 */
+  commandInstanceIds: [string, string];
 };
 
 export type BonusDrawAction = {

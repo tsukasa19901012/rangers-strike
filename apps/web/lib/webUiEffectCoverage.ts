@@ -55,7 +55,7 @@ export const OPERATION_UI_MECHANISMS: Record<string, WebUiMechanism[]> = {
   infinite_chain: ["operation_drag_direct"],
   animal_heart: ["operation_drag_target_modal"],
   super_dynamite: ["operation_permanent_place"],
-  battle_dance: ["operation_permanent_place", "passive_engine_only"],
+  battle_dance: ["operation_permanent_place", "operation_permanent_click", "board_target_tap"],
   super_brain: ["operation_permanent_place", "passive_engine_only"],
   prism_power: ["operation_permanent_place", "command_payment_modal"],
   shiron_light: ["operation_permanent_place", "operation_permanent_click", "shiron_light_flow"],

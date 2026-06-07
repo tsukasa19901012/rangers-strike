@@ -1505,16 +1505,36 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (!hasOperationEffect(player, "battle_dance", state.definitions)) {
         return fail("illegal_action");
       }
-      if (countHeldCommands(player) < 2) return fail("need_two_held_commands");
 
-      const found = findInZone(player, "battle", action.battleInstanceId);
+      const commandIds = action.commandInstanceIds;
+      if (!commandIds || commandIds.length !== 2) {
+        return fail("invalid_command_payment");
+      }
+      const uniqueCommandIds = new Set(commandIds);
+      if (uniqueCommandIds.size !== 2) return fail("invalid_command_payment");
+
+      let nextPlayer = player;
+      for (const commandInstanceId of commandIds) {
+        const cmdFound = findInZone(nextPlayer, "command", commandInstanceId);
+        if (!cmdFound || cmdFound.card.commandHeld) {
+          return fail("invalid_command_payment");
+        }
+        const command = nextPlayer.command.map((c) =>
+          c.instanceId === commandInstanceId
+            ? { ...c, commandHeld: true, mothershipHold: false }
+            : c,
+        );
+        nextPlayer = { ...nextPlayer, command };
+      }
+
+      const found = findInZone(nextPlayer, "battle", action.battleInstanceId);
       if (!found || !isSmallUnit(state.definitions, found.card.cardId)) {
         return fail("invalid_target");
       }
 
-      const [, battle] = removeAt(player.battle, found.index);
-      let nextPlayer = markBattleBlocked(
-        { ...player, battle, rush: [...player.rush, found.card] },
+      const [, battle] = removeAt(nextPlayer.battle, found.index);
+      nextPlayer = markBattleBlocked(
+        { ...nextPlayer, battle, rush: [...nextPlayer.rush, found.card] },
         found.card.instanceId,
       );
 

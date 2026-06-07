@@ -22,7 +22,7 @@ import {
 import { findInZone, opponent, payPowerCost } from "./helpers";
 import { canStrikeUnit } from "../rules/combo";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
-import { canMoveUnitToBattle, countHeldCommands, mustEnterBattleBeforePhaseEnd } from "../rules/restrictions";
+import { canMoveUnitToBattle, countReleasedCommands, mustEnterBattleBeforePhaseEnd } from "../rules/restrictions";
 import { canInitiateShironLight, isShironLightRushTarget } from "../rules/shironLight";
 import {
   canAttackDefender,
@@ -412,15 +412,30 @@ function appendBattleDanceActions(
   if (state.phase !== "battle") return;
   const player = state.players[playerId];
   if (!hasOperationEffect(player, "battle_dance", state.definitions)) return;
-  if (countHeldCommands(player) < 2) return;
 
-  for (const card of player.battle) {
-    if (!isSmallUnit(state.definitions, card.cardId)) continue;
-    actions.push({
-      type: "battle_dance_retreat",
-      playerId,
-      battleInstanceId: card.instanceId,
-    });
+  const released = player.command.filter((c) => !c.commandHeld);
+  if (released.length < 2) return;
+
+  const sUnits = player.battle.filter((card) =>
+    isSmallUnit(state.definitions, card.cardId),
+  );
+  if (sUnits.length === 0) return;
+
+  for (let i = 0; i < released.length; i += 1) {
+    for (let j = i + 1; j < released.length; j += 1) {
+      const commandInstanceIds = [
+        released[i]!.instanceId,
+        released[j]!.instanceId,
+      ] as [string, string];
+      for (const unit of sUnits) {
+        actions.push({
+          type: "battle_dance_retreat",
+          playerId,
+          battleInstanceId: unit.instanceId,
+          commandInstanceIds,
+        });
+      }
+    }
   }
 }
 
@@ -1240,7 +1255,9 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
   }
 
   if (a.type === "battle_dance_retreat" && b.type === "battle_dance_retreat") {
-    return a.battleInstanceId === b.battleInstanceId;
+    const aCmd = [...a.commandInstanceIds].sort().join("\0");
+    const bCmd = [...b.commandInstanceIds].sort().join("\0");
+    return a.battleInstanceId === b.battleInstanceId && aCmd === bCmd;
   }
 
   if (a.type === "return_all_battle_to_rush" && b.type === "return_all_battle_to_rush") {

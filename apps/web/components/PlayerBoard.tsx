@@ -611,7 +611,9 @@ export function PlayerBoard({
         onDrop={(payload) => onZoneDrop?.("operation", payload)}
         onPreview={onPreview}
         onCardClick={
-          interactive && phase === "rush" ? onOperationCardClick : undefined
+          interactive && (phase === "rush" || phase === "battle")
+            ? onOperationCardClick
+            : undefined
         }
         emptyLabel={phase === "rush" ? "使用可" : "—"}
       />

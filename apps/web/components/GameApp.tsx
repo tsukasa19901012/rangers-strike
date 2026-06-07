@@ -70,6 +70,7 @@ import { OperationPromptModal } from "./OperationPromptModal";
 import { PermanentOperationModal } from "./PermanentOperationModal";
 import { ShironLightModal } from "./ShironLightModal";
 import { CyberSRiderModal } from "./CyberSRiderModal";
+import { BattleDanceModal } from "./BattleDanceModal";
 import { LightningGravityHoldModal } from "./LightningGravityHoldModal";
 import { ReactionModal } from "./ReactionModal";
 import { DeckBuilderScreen } from "./DeckBuilderScreen";
@@ -96,6 +97,7 @@ import {
   canSelectCyberSRiderHand,
   listCyberSRiderHandCandidates,
 } from "@/lib/cyberSRiderUi";
+import { findBattleDanceAction } from "@/lib/battleDanceUi";
 
 const CPU_PLAYER = "player2" as const;
 const HUMAN_PLAYER = "player1" as const;
@@ -144,6 +146,10 @@ export function GameApp() {
     cardId: string;
   } | null>(null);
   const [pendingPermanentOp, setPendingPermanentOp] = useState<{
+    instanceId: string;
+    cardId: string;
+  } | null>(null);
+  const [pendingBattleDance, setPendingBattleDance] = useState<{
     instanceId: string;
     cardId: string;
   } | null>(null);
@@ -218,6 +224,7 @@ export function GameApp() {
       setStartError(null);
       setPendingOp(null);
       setPendingCyberSRider(null);
+      setPendingBattleDance(null);
       setPendingHiddenNinja(null);
       setPreviewCard(null);
       setPileView(null);
@@ -241,6 +248,7 @@ export function GameApp() {
     setEditingDeckId(null);
     setPendingOp(null);
     setPendingCyberSRider(null);
+    setPendingBattleDance(null);
     setPendingHiddenNinja(null);
     setPreviewCard(null);
     setPileView(null);
@@ -370,6 +378,7 @@ export function GameApp() {
       ) {
         setPendingOp(null);
         setPendingCyberSRider(null);
+        setPendingBattleDance(null);
       }
       setPendingHiddenNinja(null);
       setActionError(null);
@@ -729,13 +738,26 @@ export function GameApp() {
 
   const handleOperationCardClick = useCallback(
     (card: CardInstance) => {
-      if (!state || !humanCanAct || state.phase !== "rush") return;
+      if (!state || !humanCanAct) return;
       const effect = getCardEffect(card.cardId);
+      if (state.phase === "battle" && effect?.effectId === "battle_dance") {
+        setPendingBattleDance({ instanceId: card.instanceId, cardId: card.cardId });
+        return;
+      }
+      if (state.phase !== "rush") return;
       if (effect?.effectId === "shiron_light" || effect?.effectId === "hidora_egg") {
         setPendingPermanentOp({ instanceId: card.instanceId, cardId: card.cardId });
       }
     },
     [humanCanAct, state],
+  );
+
+  const handleBattleDanceConfirm = useCallback(
+    (commandInstanceIds: [string, string], battleInstanceId: string) => {
+      const action = findBattleDanceAction(legalActions, commandInstanceIds, battleInstanceId);
+      if (action) apply(action);
+    },
+    [apply, legalActions],
   );
 
   const handlePermanentOpActivate = useCallback(() => {
@@ -1273,6 +1295,7 @@ export function GameApp() {
       (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) ||
       !!pendingOp ||
       !!pendingCyberSRider ||
+      !!pendingBattleDance ||
       !!state.pendingZordSetup ||
       !!pendingHiddenNinja);
 
@@ -1365,6 +1388,9 @@ export function GameApp() {
     !state.pendingCommandPayment &&
     cyberSRiderHandIds.length > 0;
 
+  const showBattleDanceModal =
+    humanCanAct && !!pendingBattleDance && state.phase === "battle";
+
   const showZordSetupModal = isHumanZordSetup && !!zordSetup;
 
   const isHumanDenjiRevealSpectator =
@@ -1382,6 +1408,7 @@ export function GameApp() {
     !showDenjiRevealModal &&
     !showOperationModal &&
     !showCyberSRiderModal &&
+    !showBattleDanceModal &&
     !showZordSetupModal;
 
   const showShironLightModal =
@@ -1475,7 +1502,7 @@ export function GameApp() {
           : "母艦の支払いに進みます"
     : showDamagePaymentModal && pendingDamage
       ? damagePaymentHint(pendingDamage)
-    : showEffectChoiceModal || showReactionModal || showOperationModal || showCyberSRiderModal
+    : showEffectChoiceModal || showReactionModal || showOperationModal || showCyberSRiderModal || showBattleDanceModal
     ? undefined
     : isHumanStrikeDefender
     ? interceptableIds?.size
@@ -1788,6 +1815,17 @@ export function GameApp() {
           canConfirmSelection={canConfirmCyberSRider}
           onConfirm={handleCyberSRiderConfirm}
           onCancel={() => setPendingCyberSRider(null)}
+          onPreview={(cardId) => setPreviewCard(getCardById(cardId) ?? null)}
+        />
+      )}
+      {showBattleDanceModal && pendingBattleDance && (
+        <BattleDanceModal
+          state={state}
+          playerId={HUMAN_PLAYER}
+          operationCardId={pendingBattleDance.cardId}
+          legalActions={legalActions}
+          onConfirm={handleBattleDanceConfirm}
+          onCancel={() => setPendingBattleDance(null)}
           onPreview={(cardId) => setPreviewCard(getCardById(cardId) ?? null)}
         />
       )}

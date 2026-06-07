@@ -15,6 +15,8 @@ const ERROR_LABELS: Record<string, string> = {
   command_not_held: "必要なコマンドがホールドされていません",
   target_required: "対象を選んでください",
   invalid_target: "無効な対象です",
+  invalid_command_payment: "選んだコマンドでは支払えません",
+  need_two_released_commands: "リリース状態のコマンドが2枚必要です",
   deck_out: "山札がなくドローできません",
   pending_strike: "ストライクへの応答中です",
   pending_battle: "アタックへの応答中です",
