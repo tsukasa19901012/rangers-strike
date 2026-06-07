@@ -525,7 +525,7 @@ describe("CPU level 1", () => {
       activePlayer: "player2",
       player2: {
         hand: [unit, op],
-        power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3")],
+        power: Array.from({ length: 6 }, (_, i) => inst("TST-P", `p${i}`)),
         command: [heldWbCommand("c1")],
         rushCategoryHoldReady: true,
       },
@@ -540,7 +540,7 @@ describe("CPU level 1", () => {
       category: "WB",
       rarity: "R",
       expansion: "legend1",
-      powerCost: 3,
+      powerCost: 6,
     };
 
     const action = pickCpuAction(state, "player2");
@@ -558,7 +558,7 @@ describe("CPU level 1", () => {
       activePlayer: "player2",
       player2: {
         hand: [op],
-        power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3")],
+        power: Array.from({ length: 6 }, (_, i) => inst("TST-P", `p${i}`)),
         command: [heldWbCommand("c1")],
       },
       player1: {
@@ -572,7 +572,7 @@ describe("CPU level 1", () => {
       category: "WB",
       rarity: "R",
       expansion: "legend1",
-      powerCost: 3,
+      powerCost: 6,
     };
 
     const action = pickCpuAction(state, "player2");

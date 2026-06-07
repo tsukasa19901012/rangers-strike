@@ -18,7 +18,7 @@ describe("dynamite power RS-007", () => {
       phase: "rush",
       player1: {
         hand: [op],
-        power: [inst("TST-OP", "p1")],
+        power: Array.from({ length: 6 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldEtCommand("c1")],
       },
       player2: {
@@ -55,7 +55,7 @@ describe("dynamite power RS-007", () => {
       phase: "rush",
       player1: {
         hand: [op],
-        power: [inst("TST-OP", "p1")],
+        power: Array.from({ length: 6 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldEtCommand("c1")],
       },
       player2: {
