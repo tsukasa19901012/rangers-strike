@@ -31,7 +31,7 @@ export function CyberSRiderModal({
 }: CyberSRiderModalProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const opCard = getCardById(operationCardId);
-  const effectLabel = EFFECT_LABELS.cyber_s_rider ?? "サイバーSライダー";
+  const effectLabel = EFFECT_LABELS.cyber_s_rider ?? "サイバースライダー";
   const validIds = useMemo(() => new Set(validHandInstanceIds), [validHandInstanceIds]);
   const handCards = state.players[playerId].hand.filter(
     (card) => card.instanceId !== operationInstanceId && validIds.has(card.instanceId),
@@ -86,6 +86,7 @@ export function CyberSRiderModal({
                   <CardImage
                     card={definition}
                     small
+                    hideMeta
                     onSelect={() => toggleCard(card.instanceId)}
                     onPreview={() => onPreview(card.cardId)}
                   />

@@ -59,7 +59,7 @@ export const EFFECT_LABELS: Record<string, string> = {
   ki_power: "気パワー",
   hidden_ninja: "隠れ忍",
   super_power: "超パワー",
-  cyber_s_rider: "サイバーSライダー",
+  cyber_s_rider: "サイバースライダー",
   earth_force: "アースの力",
   discard_s_unit_to_hand: "S回収",
   compression_freeze: "圧縮フリーズ",

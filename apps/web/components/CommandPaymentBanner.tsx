@@ -55,13 +55,13 @@ export function CommandPaymentBanner({
 
       {selectedCards.length > 0 && (
         <div className="command-payment-banner__selected">
-          <p className="command-payment-banner__selected-label">選択中</p>
           <div className="command-payment-banner__chips">
             {selectedCards.map(({ instanceId, definition }) => (
               <div key={instanceId} className="command-payment-banner__chip">
                 <CardImage
                   card={definition}
                   small
+                  hideMeta
                   onPreview={() => onPreviewCard(definition)}
                 />
               </div>
