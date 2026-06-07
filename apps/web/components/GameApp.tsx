@@ -338,7 +338,10 @@ export function GameApp() {
       if (current) {
         const targetRef = current === HUMAN_PLAYER ? humanBoardRef : cpuBoardRef;
         window.requestAnimationFrame(() => {
-          targetRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          targetRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: current === HUMAN_PLAYER ? "end" : "start",
+          });
         });
       }
       return null;
@@ -2128,6 +2131,8 @@ export function GameApp() {
         </div>
 
       </div>
+
+      <div className="game__scroll-pad" aria-hidden="true" />
 
       {showDamagePaymentModal && pendingDamage && (
         <DamagePaymentModal pending={pendingDamage} />

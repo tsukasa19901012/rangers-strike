@@ -22,6 +22,8 @@
   --app-padding-y: 12px;
   --app-gap: 12px;
   --board-padding: 12px;
+  /* 固定 action-bar の下に盤面が隠れないスクロール余白 */
+  --action-bar-scroll-reserve: max(56px, calc(8px + env(safe-area-inset-bottom, 0px)));
 }
 
 * {
@@ -118,6 +120,12 @@ select {
   flex-direction: column;
   gap: var(--app-gap);
   min-width: 0;
+}
+
+.game__scroll-pad {
+  flex-shrink: 0;
+  height: var(--action-bar-scroll-reserve);
+  pointer-events: none;
 }
 
 .game__boards {
@@ -237,6 +245,10 @@ select {
   border: 1px solid #243044;
   min-width: 0;
   scroll-margin-top: 12px;
+}
+
+.board--self {
+  scroll-margin-bottom: var(--action-bar-scroll-reserve);
 }
 
 .board--active {

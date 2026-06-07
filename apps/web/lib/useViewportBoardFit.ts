@@ -3,6 +3,10 @@ import { useEffect, type RefObject } from "react";
 const MIN_SCALE = 0.52;
 const ACTION_BAR_RESERVE_PX = 56;
 const BOTTOM_GAP_PX = 8;
+
+function readActionBarScrollReserve(): number {
+  return readRootPx("--action-bar-scroll-reserve", ACTION_BAR_RESERVE_PX + BOTTOM_GAP_PX);
+}
 const SCALE_EPSILON = 0.025;
 
 function readRootPx(name: string, fallback: number): number {
@@ -38,7 +42,7 @@ function availableHeightForBoard(game: HTMLElement, board: HTMLElement): number 
   const gameRect = game.getBoundingClientRect();
   const boardDocTop = gameRect.top + window.scrollY + boardTopInGame;
   const viewportH = window.visualViewport?.height ?? window.innerHeight;
-  return viewportH - boardDocTop - ACTION_BAR_RESERVE_PX - BOTTOM_GAP_PX;
+  return viewportH - boardDocTop - readActionBarScrollReserve() - BOTTOM_GAP_PX;
 }
 
 /**
