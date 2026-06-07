@@ -1486,11 +1486,10 @@ export function GameApp() {
 
   const showCommandPaymentModal = isHumanCommandPayment;
 
-  const commandPaymentView = useMemo(() => {
-    const pending = state.pendingCommandPayment;
-    if (!pending || pending.playerId !== HUMAN_PLAYER) return null;
-    return buildCommandPaymentView(state, pending);
-  }, [state]);
+  const commandPaymentView =
+    state.pendingCommandPayment?.playerId === HUMAN_PLAYER
+      ? buildCommandPaymentView(state, state.pendingCommandPayment)
+      : null;
 
   const boardCommandPaymentTargets = resolveCommandPaymentBoardTargetIds(
     state,
