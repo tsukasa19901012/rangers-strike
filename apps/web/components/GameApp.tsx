@@ -340,7 +340,7 @@ export function GameApp() {
         window.requestAnimationFrame(() => {
           targetRef.current?.scrollIntoView({
             behavior: "smooth",
-            block: current === HUMAN_PLAYER ? "end" : "start",
+            block: "start",
           });
         });
       }
