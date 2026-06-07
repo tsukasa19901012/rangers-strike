@@ -79,7 +79,8 @@ import {
   isHumanCommandPaymentActive,
   resolveCommandPaymentBoardTargetIds,
 } from "@/lib/webUiIntegration";
-import { ZordSetupModal } from "./ZordSetupModal";
+import { zordSetupHighlightZones } from "@/lib/zordSetupUi";
+import { ZordSetupBanner } from "./ZordSetupBanner";
 import { OperationPromptModal } from "./OperationPromptModal";
 import { PermanentOperationModal } from "./PermanentOperationModal";
 import { ShironLightModal } from "./ShironLightModal";
@@ -1389,7 +1390,6 @@ export function GameApp() {
       !!pendingOp ||
       !!pendingCyberSRider ||
       !!pendingBattleDance ||
-      !!state.pendingZordSetup ||
       !!pendingHiddenNinja);
 
   useEffect(() => {
@@ -1491,7 +1491,7 @@ export function GameApp() {
   const showBattleDanceModal =
     humanCanAct && !!pendingBattleDance && state.phase === "battle";
 
-  const showZordSetupModal = isHumanZordSetup && !!zordSetup;
+  const showZordSetupBanner = isHumanZordSetup && !!zordSetup;
 
   const isHumanDenjiRevealSpectator =
     isHumanDenjiAudience &&
@@ -1509,7 +1509,7 @@ export function GameApp() {
     !showOperationModal &&
     !showCyberSRiderModal &&
     !showBattleDanceModal &&
-    !showZordSetupModal;
+    !showZordSetupBanner;
 
   const showShironLightModal =
     isHumanShironInvolved &&
@@ -1608,27 +1608,24 @@ export function GameApp() {
     : undefined;
   const boardOperationTargets = showOperationModal ? undefined : pendingTargets;
   const boardZordTargets =
-    showZordSetupModal && zordSetup?.step !== "material"
-      ? undefined
-      : pendingZordSetupTargets;
+    showZordSetupBanner && zordSetup?.step === "material"
+      ? pendingZordSetupTargets
+      : undefined;
+
+  const zordSetupZoneHighlights =
+    showZordSetupBanner && zordSetup?.step === "material" && pendingZordSetupTargets
+      ? zordSetupHighlightZones(state, HUMAN_PLAYER, pendingZordSetupTargets)
+      : { rush: false, battle: false };
   const boardCounterIds = showReactionModal ? undefined : counterIds;
   const boardInterceptIds = showReactionModal ? undefined : interceptableIds;
   const boardSubstituteIds = showReactionModal ? undefined : pendingSubstituteTargets;
 
   const pendingHint = showCommandPaymentModal && commandPaymentView
     ? undefined
+    : showZordSetupBanner
+      ? undefined
     : showStartPhaseModal
       ? "3つの行程を好きな順番で行ってください"
-    : showZordSetupModal
-      ? zordSetup?.step === "destination"
-        ? "コマンドゾーンか捨て札かを選んでください"
-        : zordSetup?.step === "material"
-          ? zordSetup.materialDestination === "command"
-            ? "コマンドゾーンに置くSユニットを選んでください"
-            : zordSetup.materialDestination === "discard"
-              ? "捨て札にするSユニットを選んでください"
-              : "ゾードアップの素材を選んでください"
-          : "母艦の支払いに進みます"
     : showDamagePaymentModal && pendingDamage
       ? damagePaymentHint(pendingDamage)
     : showEffectChoiceModal || showReactionModal || showOperationModal || showCyberSRiderModal || showBattleDanceModal
@@ -1916,18 +1913,6 @@ export function GameApp() {
           onCancelSubstitute={() => setPendingHiddenNinja(null)}
         />
       )}
-      {showZordSetupModal && zordSetup && (
-        <ZordSetupModal
-          state={state}
-          playerId={HUMAN_PLAYER}
-          setup={zordSetup}
-          onSelectMaterial={handleZordMaterial}
-          onSelectDestination={handleZordDestination}
-          onUseMothership={handleZordUseMothership}
-          onContinue={handleZordSetupContinue}
-          onCancel={handleZordSetupCancel}
-        />
-      )}
       {showOperationModal && pendingOp && (
         <OperationPromptModal
           state={state}
@@ -2171,10 +2156,12 @@ export function GameApp() {
             pendingZordTargets={boardZordTargets}
             onOperationTarget={handleOperationTarget}
             onZordMaterial={
-              showZordSetupModal && zordSetup?.step === "material"
+              showZordSetupBanner && zordSetup?.step === "material"
                 ? handleZordMaterial
                 : undefined
             }
+            zordSetupHighlightRush={zordSetupZoneHighlights.rush}
+            zordSetupHighlightBattle={zordSetupZoneHighlights.battle}
             onBattleDragStart={setBattleDrag}
             onBattleDragEnd={() => setBattleDrag(null)}
             strikeableIds={strikeableIds}
@@ -2213,6 +2200,18 @@ export function GameApp() {
 
       <div className="game__scroll-pad" aria-hidden="true" />
 
+      {showZordSetupBanner && zordSetup && (
+        <ZordSetupBanner
+          state={state}
+          playerId={HUMAN_PLAYER}
+          setup={zordSetup}
+          validTargetIds={pendingZordSetupTargets ?? new Set()}
+          onSelectDestination={handleZordDestination}
+          onUseMothership={handleZordUseMothership}
+          onContinue={handleZordSetupContinue}
+          onCancel={handleZordSetupCancel}
+        />
+      )}
       {showDamagePaymentModal && pendingDamage && (
         <DamagePaymentModal pending={pendingDamage} />
       )}
@@ -2225,6 +2224,7 @@ export function GameApp() {
           !showDamagePaymentModal &&
           !showOperationModal &&
           !showCommandPaymentModal &&
+          !showZordSetupBanner &&
           !showStartPhaseModal &&
           !canPassBattleEntry && (
           <button

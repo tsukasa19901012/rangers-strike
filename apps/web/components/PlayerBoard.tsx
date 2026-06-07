@@ -341,6 +341,8 @@ export type PlayerBoardProps = {
   onCommandPaymentToggle?: (instanceId: string) => void;
   commandPaymentHighlightCommand?: boolean;
   commandPaymentHighlightRush?: boolean;
+  zordSetupHighlightRush?: boolean;
+  zordSetupHighlightBattle?: boolean;
   onViewPile?: (pile: "deck" | "discard") => void;
   onOperationCardClick?: (card: CardInstance) => void;
   boardRef?: RefObject<HTMLDivElement | null>;
@@ -385,6 +387,8 @@ export function PlayerBoard({
   onCommandPaymentToggle,
   commandPaymentHighlightCommand,
   commandPaymentHighlightRush,
+  zordSetupHighlightRush,
+  zordSetupHighlightBattle,
   onViewPile,
   onOperationCardClick,
   boardRef,
@@ -427,9 +431,11 @@ export function PlayerBoard({
     canDropOperation && (!dragging || (draggingOperation && dragging.fromZone === "hand"));
   const highlightRush =
     commandPaymentHighlightRush ||
+    zordSetupHighlightRush ||
     (canDropRush && (!dragging || (draggingUnit && dragging.fromZone === "hand")));
   const highlightBattle =
-    canDropBattle && (!dragging || dragging.fromZone === "rush");
+    zordSetupHighlightBattle ||
+    (canDropBattle && (!dragging || dragging.fromZone === "rush"));
 
   const operationZoneInactive = isHuman && phase !== "rush";
 
@@ -765,7 +771,7 @@ export function PlayerBoard({
                   : pendingEffectChoiceTargets?.size
                   ? "効果の対象をタップ"
                   : pendingZordTargets?.size
-                  ? "ゾードアップ素材をタップ"
+                  ? "追加条件の素材をタップ"
                   : "対象カードをタップしてオペレーションを完了"}
             </p>
           ) : null}

@@ -28,7 +28,7 @@ export type WebUiMechanism =
   | "shiron_light_flow"
   | "battle_entry_modal"
   | "damage_payment_modal"
-  | "zord_setup_modal"
+  | "zord_setup_banner"
   | "command_payment_modal"
   | "battle_drag_attack"
   | "board_target_tap"
