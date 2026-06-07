@@ -213,6 +213,8 @@ function ZoneCards({
       {cards.map((card) => {
         const definition = definitions[card.cardId];
         const isSelectable = selectableIds?.has(card.instanceId);
+        const isSelected =
+          selectedIds?.has(card.instanceId) || card.instanceId === selectedId;
         const cardDraggable =
           getDraggable?.(card, definition) ?? draggable ?? false;
         const cardDisabled = getDisabled?.(card, definition) ?? false;
@@ -239,12 +241,12 @@ function ZoneCards({
           onCardDrop={onCardDrop}
           className={[
             "card-wrap",
-            selectableIds?.has(card.instanceId) ? "card-wrap--target" : "",
+            isSelectable && !isSelected ? "card-wrap--target" : "",
             interceptableIds?.has(card.instanceId) ? "card-wrap--target" : "",
             counterIds?.has(card.instanceId) ? "card-wrap--target" : "",
             substituteIds?.has(card.instanceId) ? "card-wrap--target" : "",
             strikeableIds?.has(card.instanceId) ? "card-wrap--strikeable" : "",
-            card.instanceId === selectedId ? "card-wrap--selected" : "",
+            isSelected ? "card-wrap--selected" : "",
           ]
             .filter(Boolean)
             .join(" ")}
@@ -286,7 +288,7 @@ function ZoneCards({
                 : undefined
             }
             onDragEnd={onCardDragEnd}
-            selected={selectedIds?.has(card.instanceId) || card.instanceId === selectedId}
+            selected={isSelected}
             onPreview={preview}
             onSelect={select}
             commandHeld={getCommandHeld?.(card)}
