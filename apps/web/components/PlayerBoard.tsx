@@ -694,14 +694,21 @@ export function PlayerBoard({
           .join(" ")}
       >
         <h2>{label}</h2>
-        <div className="damage">
-          {Array.from({ length: 7 }).map((_, index) => (
-            <span
-              key={index}
-              className={`damage__pip ${index < player.damage ? "damage__pip--filled" : ""}`}
-            />
-          ))}
-          <span className="damage__label">{player.damage}/7</span>
+        <div className="board__header-meta">
+          {isOpponent ? (
+            <span className="board__hand-count" aria-label={`手札 ${player.hand.length}枚`}>
+              手札 <span className="board__hand-count-value">{player.hand.length}</span>
+            </span>
+          ) : null}
+          <div className="damage">
+            {Array.from({ length: 7 }).map((_, index) => (
+              <span
+                key={index}
+                className={`damage__pip ${index < player.damage ? "damage__pip--filled" : ""}`}
+              />
+            ))}
+            <span className="damage__label">{player.damage}/7</span>
+          </div>
         </div>
       </div>
 

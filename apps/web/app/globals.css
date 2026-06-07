@@ -283,6 +283,23 @@ select {
   background: rgba(127, 29, 29, 0.15);
 }
 
+.board__header-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.board__hand-count {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.board__hand-count-value {
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
 .damage {
   display: flex;
   align-items: center;
