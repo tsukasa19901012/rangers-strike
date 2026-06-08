@@ -123,6 +123,8 @@ function emptyPlayer(id: PlayerId): PlayerState {
     rush: [],
     battle: [],
     operation: [],
+    exile: [],
+    commander: [],
     damage: 0,
   };
 }
@@ -134,9 +136,19 @@ export type TestStateOptions = {
   definitions?: Record<string, CardDefinition>;
   player1?: Partial<PlayerState>;
   player2?: Partial<PlayerState>;
-  pendingDamagePayment?: GameState["pendingDamagePayment"];
-  pendingStrike?: GameState["pendingStrike"];
-};
+} & Partial<
+  Pick<
+    GameState,
+    | "pendingDamagePayment"
+    | "pendingStrike"
+    | "pendingLeave"
+    | "pendingRegister"
+    | "pendingBattle"
+    | "pendingRush"
+    | "pendingEffectChoice"
+    | "pendingBattleEntry"
+  >
+>;
 
 export function createTestState(options: TestStateOptions = {}): GameState {
   const player1 = {
@@ -150,17 +162,26 @@ export function createTestState(options: TestStateOptions = {}): GameState {
     ...options.player2,
   };
 
+  const {
+    activePlayer,
+    phase,
+    turn,
+    definitions,
+    player1: _p1,
+    player2: _p2,
+    ...pendingFields
+  } = options;
+
   return {
-    turn: options.turn ?? 1,
-    activePlayer: options.activePlayer ?? "player1",
+    turn: turn ?? 1,
+    activePlayer: activePlayer ?? "player1",
     firstPlayer: "player1",
-    phase: options.phase ?? "charge",
+    phase: phase ?? "charge",
     players: { player1, player2 },
-    definitions: options.definitions ?? MERGED_DEFINITIONS,
+    definitions: definitions ?? MERGED_DEFINITIONS,
     log: [],
     winner: null,
-    pendingDamagePayment: options.pendingDamagePayment,
-    pendingStrike: options.pendingStrike,
+    ...pendingFields,
   };
 }
 

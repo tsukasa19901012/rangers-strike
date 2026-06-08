@@ -38,6 +38,8 @@ function emptyPlayer(id: PlayerId): PlayerState {
     rush: [],
     battle: [],
     operation: [],
+    exile: [],
+    commander: [],
     damage: 0,
   };
 }

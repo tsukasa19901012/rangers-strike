@@ -88,34 +88,35 @@ export function resolveLegend2OnDestroy(
   return { state: nextState, logs };
 }
 
-/** RS-112: 敵が6ダメージに達したとき手札へ戻す。 */
+/** RS-112: 敵軍ダメージが6点に達したとき、持ち主の手札へ戻す。 */
 export function checkReturnToHandAt6Damage(
   state: GameState,
   damagedPlayerId: PlayerId,
 ): DestroyEffectOutcome {
-  const enemyId = opponent(damagedPlayerId);
-  const enemy = state.players[enemyId];
-  if (enemy.damage < 6) return { state, logs: [] };
+  const damaged = state.players[damagedPlayerId];
+  if (damaged.damage < 6) return { state, logs: [] };
 
   let nextState = state;
   const logs: string[] = [];
 
-  for (const pid of ["player1", "player2"] as const) {
-    const player = nextState.players[pid];
+  for (const ownerId of ["player1", "player2"] as const) {
+    if (opponent(ownerId) !== damagedPlayerId) continue;
+    const player = nextState.players[ownerId];
     for (const zone of ["rush", "battle"] as const) {
-      const zord = player[zone].find((c) => c.cardId === "RS-112");
-      if (!zord) continue;
-      const [, rest] = removeAt(player[zone], player[zone].indexOf(zord));
+      const index = player[zone].findIndex((c) => c.cardId === "RS-112");
+      if (index < 0) continue;
+      const zord = player[zone][index]!;
+      const [, rest] = removeAt(player[zone], index);
       nextState = {
         ...nextState,
-        ...updatePlayer(nextState, pid, {
-          ...player,
+        ...updatePlayer(nextState, ownerId, {
+          ...nextState.players[ownerId],
           [zone]: rest,
-          hand: [...player.hand, zord],
+          hand: [...nextState.players[ownerId].hand, zord],
         }),
       };
       logs.push(
-        buildLogEntry(pid, "named_effect", "RS-112", state.definitions, "return_hand"),
+        buildLogEntry(ownerId, "named_effect", "RS-112", state.definitions, "return_hand"),
       );
     }
   }

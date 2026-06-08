@@ -18,7 +18,9 @@ export type ZoneName =
   | "command"
   | "rush"
   | "battle"
-  | "operation";
+  | "operation"
+  | "exile"
+  | "commander";
 
 /** プレイヤーのターン終了時にクリアされるターン修飾子。 */
 export type TurnModifiers = {
@@ -74,6 +76,8 @@ export type CardInstance = {
   mountedOnInstanceId?: string;
   /** RS-013: このラッシュフェイズで使用済み（パーマネントな操作インスタンス）。 */
   shironLightUsedThisRush?: boolean;
+  /** レジスト: バトル撃破後にホールド留場。 */
+  registerHeld?: boolean;
 };
 
 export type PlayerState = {
@@ -86,6 +90,10 @@ export type PlayerState = {
   rush: CardInstance[];
   battle: CardInstance[];
   operation: CardInstance[];
+  /** 除外ゾーン（ゲーム外。フレームワーク）。 */
+  exile?: CardInstance[];
+  /** コマンダーゾーン（フレームワーク）。 */
+  commander?: CardInstance[];
   /** 裏向きパワーカードは受けたダメージとしてカウント。 */
   damage: number;
   /** チャージフェイズ: このターンに1枚をパワーまたはコマンドに置いた後 true。 */
@@ -174,6 +182,8 @@ export type PendingLeave = {
   toZone: "discard" | "power" | "command";
   leavingCardId: string;
   phasePlayerId: PlayerId;
+  /** レジスト選択をスキップして捨札へ。 */
+  skipRegister?: boolean;
   /** ユニット退場後にストライク解決を再開（five-tech / plasma）。 */
   resumePendingStrike?: { damageCancelled: boolean };
   /** 1回のバトルで両プレイヤーのユニットが退場する場合、守り側の後に攻撃側をキュー。 */
@@ -343,6 +353,43 @@ export type PendingCommandPayment = {
   continuation: CommandPaymentContinuation;
 };
 
+/** バトル撃破時のレジスト選択待ち。 */
+export type PendingRegister = {
+  ownerPlayerId: PlayerId;
+  instanceId: string;
+  fromZone: "battle";
+  leavingCardId: string;
+  phasePlayerId: PlayerId;
+  followUpAttackerLeave?: PendingLeave["followUpAttackerLeave"];
+  resumePendingStrike?: PendingLeave["resumePendingStrike"];
+};
+
+export type EffectStackFrameKind =
+  | "leave_reaction"
+  | "register_choice"
+  | "strike_reaction"
+  | "battle_reaction"
+  | "rush_reaction"
+  | "damage_payment"
+  | "effect_choice"
+  | "battle_entry"
+  | "command_payment"
+  | "zord_setup";
+
+export type EffectStackFrame = {
+  id: string;
+  kind: EffectStackFrameKind;
+  /** 応答プレイヤー（未設定時はターンプレイヤーが解決）。 */
+  actorPlayerId?: PlayerId;
+  /** 同時解決グループID。同じIDのフレームは一括解決。 */
+  simultaneousGroupId?: string;
+  priority: number;
+};
+
+export type EffectStack = {
+  frames: EffectStackFrame[];
+};
+
 export type GameState = {
   turn: number;
   activePlayer: PlayerId;
@@ -361,6 +408,10 @@ export type GameState = {
   pendingRush?: PendingRush;
   /** ユニットがフィールドを離れる際の所有者応答。 */
   pendingLeave?: PendingLeave;
+  /** レジスト（バトル撃破時ホールド留場）の選択待ち。 */
+  pendingRegister?: PendingRegister;
+  /** 効果解決スタック（pending* から導出。優先順位の単一ソース）。 */
+  effectStack?: EffectStack;
   /** 効果の対象/オプション選択（「選んで」効果）。 */
   pendingEffectChoice?: PendingEffectChoice;
   /** バトル進入済み — 次の進入前に攻撃/ストライク/パス必須。 */

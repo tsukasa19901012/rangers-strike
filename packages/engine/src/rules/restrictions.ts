@@ -153,6 +153,8 @@ export function canMoveUnitToBattle(
   if (!def || def.type !== "unit") return false;
   const player = state.players[playerId];
 
+  if (unit.registerHeld) return false;
+
   if (fromZone === "hand") {
     return false;
   }

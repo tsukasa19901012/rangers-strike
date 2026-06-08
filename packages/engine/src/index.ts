@@ -17,6 +17,12 @@ export { strikeDamageFor } from "./rules/combo";
 export * from "./rules/commandPayment";
 export * from "./rules/zordSetup";
 export * from "./rules/damagePayment";
+export * from "./rules/effectStack";
+export * from "./rules/resist";
+export * from "./rules/exile";
+export * from "./rules/reanimate";
+export * from "./rules/commander";
+export * from "./rules/postDamageEffects";
 export {
   isDenjiRevealAudience,
   canActOnDenjiChoice,

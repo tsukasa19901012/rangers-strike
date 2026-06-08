@@ -6,6 +6,7 @@ import type {
   PlayerState,
 } from "../types/game";
 import { applyPlayerDamage, removeAt, updatePlayer } from "../core/helpers";
+import { applyPostDamageTriggers } from "./postDamageEffects";
 
 export type { DamagePaymentResume };
 
@@ -123,9 +124,12 @@ export function applyDamageToPlayer(
     return startDamagePayment(state, playerId, amount, resume, choosingPlayerId);
   }
   const nextPlayer = applyPlayerDamage(player, amount);
-  const nextState = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+  let nextState = applyPostDamageTriggers(
+    { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    playerId,
+  );
   if (resume.kind === "none") {
-    return { ...nextState, activePlayer: resume.activePlayer };
+    nextState = { ...nextState, activePlayer: resume.activePlayer };
   }
   return nextState;
 }
@@ -178,11 +182,14 @@ export function resolveDamagePaymentSelect(
   );
 
   const resume = pending.resume;
-  let nextState: GameState = {
-    ...state,
-    ...updatePlayer(state, defenderId, nextPlayer),
-    pendingDamagePayment: undefined,
-  };
+  let nextState: GameState = applyPostDamageTriggers(
+    {
+      ...state,
+      ...updatePlayer(state, defenderId, nextPlayer),
+      pendingDamagePayment: undefined,
+    },
+    defenderId,
+  );
 
   if (resume.kind === "none") {
     nextState = { ...nextState, activePlayer: resume.activePlayer };

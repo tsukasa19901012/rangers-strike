@@ -60,6 +60,7 @@ import {
   collectFiveTechInterceptors,
 } from "../rules/strikeReactions";
 import { getValidDamagePowerTargets, damagePaymentChoosingPlayer } from "../rules/damagePayment";
+import { getStackActorPlayerId, hasOpenReactionWindow } from "../rules/effectStack";
 import { getCardEffect } from "@rangers-strike/cards";
 import { getTurnModifiers } from "../rules/turnModifiers";
 
@@ -67,13 +68,10 @@ function assertActive(state: GameState, playerId: PlayerId): boolean {
   return state.activePlayer === playerId && state.winner === null;
 }
 
-/** カウンター窓が開いているとき、応答するプレイヤー（効果選択より優先）。 */
+/** カウンター窓が開いているとき、応答するプレイヤー（効果スタック最上位）。 */
 export function getReactionChooserPlayerId(state: GameState): PlayerId | undefined {
-  if (state.pendingLeave) return state.pendingLeave.ownerPlayerId;
-  if (state.pendingStrike) return opponent(state.pendingStrike.strikerPlayerId);
-  if (state.pendingBattle) return state.pendingBattle.defenderPlayerId;
-  if (state.pendingRush) return opponent(state.pendingRush.rusherPlayerId);
-  return undefined;
+  if (!hasOpenReactionWindow(state)) return undefined;
+  return getStackActorPlayerId(state);
 }
 
 function isCounterPaymentAction(
@@ -134,6 +132,8 @@ function isReactionWindowAction(action: GameAction): boolean {
     case "pass_battle_reaction":
     case "pass_rush_reaction":
     case "pass_leave_reaction":
+    case "use_register":
+    case "pass_register":
     case "five_tech_intercept":
     case "use_plasma_energy":
     case "use_super_shield":
@@ -844,6 +844,13 @@ export function getLegalActions(state: GameState): GameAction[] {
   const player = state.players[playerId];
   const actions: GameAction[] = [];
 
+  if (state.pendingRegister) {
+    const owner = state.pendingRegister.ownerPlayerId;
+    actions.push({ type: "use_register", playerId: owner });
+    actions.push({ type: "pass_register", playerId: owner });
+    return actions;
+  }
+
   if (state.pendingLeave) {
     appendLeaveReactionActions(state, state.pendingLeave.ownerPlayerId, actions);
     return actions;
@@ -1174,6 +1181,13 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
   }
 
   if (state.pendingDamagePayment) {
+    return false;
+  }
+
+  if (state.pendingRegister) {
+    if (action.type === "use_register" || action.type === "pass_register") {
+      return action.playerId === state.pendingRegister.ownerPlayerId;
+    }
     return false;
   }
 

@@ -33,6 +33,7 @@ import {
   resolveFocusedBreakthroughDamage,
 } from "./namedUnitEffects";
 import { findCardOwner } from "./fieldLookup";
+import { canOfferRegister, toPendingRegister } from "./resist";
 import { canStrikeUnit } from "./combo";
 import { opponentInfiniteChainBlocks } from "./turnModifiers";
 import {
@@ -787,6 +788,14 @@ export function finalizeLeavePending(
     };
   }
 
+  if (canOfferRegister(state, pending)) {
+    return {
+      ...state,
+      pendingRegister: toPendingRegister(pending),
+      activePlayer: pending.ownerPlayerId,
+    };
+  }
+
   const owner = state.players[pending.ownerPlayerId];
   const found = findInZone(owner, pending.fromZone, pending.instanceId);
   if (!found) {
@@ -927,7 +936,11 @@ export function tryLeaveField(
   );
 
   if (!dinoChronicle && !dinoGuts && !superShieldInstanceId) {
-    return { state: finalizeLeavePending(state, intent, false), deferred: false };
+    const next = finalizeLeavePending(state, intent, false);
+    if (next.pendingRegister) {
+      return { state: next, deferred: true };
+    }
+    return { state: next, deferred: false };
   }
 
   return {

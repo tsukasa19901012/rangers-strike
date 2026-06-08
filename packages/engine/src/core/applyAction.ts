@@ -113,7 +113,9 @@ import {
   hasStrikeReactions,
 } from "../rules/strikeReactions";
 import { applyAdventureEndTurn, getTurnModifiers, markBattleBlocked, markRushedThisTurn, withTurnModifiers } from "../rules/turnModifiers";
-import { applyKarakuriFireHawkEndTurn, checkReturnToHandAt6Damage } from "../rules/legend2/destroyEffects";
+import { applyKarakuriFireHawkEndTurn } from "../rules/legend2/destroyEffects";
+import { withSyncedEffectStack } from "../rules/effectStack";
+import { applyRegisterHold, finalizeRegisterDiscard } from "../rules/resist";
 import { noAttackOrStrikeTurnRushed } from "@rangers-strike/cards";
 import {
   applyDinoChronicleCounter,
@@ -128,6 +130,7 @@ import {
   resolveBattlePending,
   finalizeLeaveReaction,
   finalizeRushPending,
+  tryLeaveField,
 } from "../rules/operationCounters";
 import { applyResolveRuinSurvey } from "../rules/ruinSurvey";
 import { applySeabedDrawPlacement } from "../rules/pendingChoices";
@@ -160,14 +163,12 @@ export type ActionResult =
   | { ok: false; error: string };
 
 function ok(state: GameState, message: string): ActionResult {
-  return {
-    ok: true,
-    state: {
-      ...state,
-      log: [...state.log, message],
-      winner: checkWinner(state),
-    },
-  };
+  const next = withSyncedEffectStack({
+    ...state,
+    log: [...state.log, message],
+    winner: checkWinner(state),
+  });
+  return { ok: true, state: next };
 }
 
 function clearCounterHoldReady(state: GameState, playerId: PlayerId): GameState {
@@ -1446,6 +1447,51 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         });
       }
       return ok(nextState, buildSimpleLogEntry(playerId, "pass_leave_reaction"));
+    }
+
+    case "use_register": {
+      const pending = state.pendingRegister;
+      if (!pending) return fail("no_pending_register");
+      if (playerId !== pending.ownerPlayerId) return fail("wrong_player");
+      const nextState = applyRegisterHold(state, pending);
+      if (pending.followUpAttackerLeave) {
+        const followUp = tryLeaveField(nextState, {
+          ...pending.followUpAttackerLeave,
+          phasePlayerId: pending.followUpAttackerLeave.phasePlayerId,
+        });
+        if (followUp.deferred) {
+          return ok(followUp.state, buildSimpleLogEntry(playerId, "use_register"));
+        }
+        return ok(followUp.state, buildSimpleLogEntry(playerId, "use_register"));
+      }
+      if (pending.resumePendingStrike && state.pendingStrike) {
+        return completeStrike(nextState, {
+          ...state.pendingStrike,
+          damageCancelled: pending.resumePendingStrike.damageCancelled,
+        });
+      }
+      return ok(nextState, buildSimpleLogEntry(playerId, "use_register"));
+    }
+
+    case "pass_register": {
+      const pending = state.pendingRegister;
+      if (!pending) return fail("no_pending_register");
+      if (playerId !== pending.ownerPlayerId) return fail("wrong_player");
+      let nextState = finalizeRegisterDiscard(state, pending);
+      if (pending.followUpAttackerLeave) {
+        const followUp = tryLeaveField(nextState, {
+          ...pending.followUpAttackerLeave,
+          phasePlayerId: pending.followUpAttackerLeave.phasePlayerId,
+        });
+        nextState = followUp.state;
+      }
+      if (pending.resumePendingStrike && state.pendingStrike) {
+        return completeStrike(nextState, {
+          ...state.pendingStrike,
+          damageCancelled: pending.resumePendingStrike.damageCancelled,
+        });
+      }
+      return ok(nextState, buildSimpleLogEntry(playerId, "pass_register"));
     }
 
     case "battle": {

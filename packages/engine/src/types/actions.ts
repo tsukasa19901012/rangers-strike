@@ -140,6 +140,16 @@ export type PassLeaveReactionAction = {
   playerId: PlayerId;
 };
 
+export type UseRegisterAction = {
+  type: "use_register";
+  playerId: PlayerId;
+};
+
+export type PassRegisterAction = {
+  type: "pass_register";
+  playerId: PlayerId;
+};
+
 export type UseSuperShieldAction = {
   type: "use_super_shield";
   playerId: PlayerId;
@@ -266,6 +276,8 @@ export type GameAction =
   | PassBattleReactionAction
   | PassRushReactionAction
   | PassLeaveReactionAction
+  | UseRegisterAction
+  | PassRegisterAction
   | UseSuperShieldAction
   | ShironLightAction
   | HidoraEggAction

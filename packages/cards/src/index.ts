@@ -34,6 +34,8 @@ export * from "./effectLabels";
 export * from "./operationCatalog";
 export * from "./unitEffectCatalog";
 export * from "./wikiReference";
+export * from "./resist";
+export * from "./glossaryImplementation";
 
 /** レジェンド1 カード画像の Web パス接頭辞 */
 export const LEGEND1_IMAGE_BASE_PATH = "/cards/legend1";

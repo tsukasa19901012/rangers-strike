@@ -503,6 +503,7 @@ export function canStrikeUnit(
   state?: GameState,
   playerId?: PlayerId,
 ): boolean {
+  if (instance.registerHeld) return false;
   if (state && playerId) {
     if (hasBakiBakiExtraAttackOnly(state, playerId, instance.instanceId)) {
       return false;
