@@ -13,6 +13,7 @@ import {
   blowKnuckleReturnReleasedCommands,
   grantBpBoostToBattleUnit,
   grantSp1ToBattleUnit,
+  markBattleNcEffect,
   tryStartGreenGroundChoice,
   tryStartMossBreakerChoice,
   tryStartPinkStormChoice,
@@ -150,9 +151,14 @@ export function applyNumberComboEffect(
       break;
     }
     case "red_fire":
-    case "yellow_thunder":
     case "bouken_javelin": {
       nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
+      logs.push(ncLog(playerId, card.cardId, state.definitions, effectId));
+      break;
+    }
+    case "yellow_thunder": {
+      nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
+      nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
       logs.push(ncLog(playerId, card.cardId, state.definitions, effectId));
       break;
     }

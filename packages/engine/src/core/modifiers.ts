@@ -7,7 +7,8 @@ export function clearTurnModifiers(player: PlayerState): PlayerState {
       if (
         card.bpModifier === undefined &&
         card.spModifier === undefined &&
-        card.battleActed === undefined
+        card.battleActed === undefined &&
+        card.activatedNcEffects === undefined
       ) {
         return card;
       }
@@ -15,6 +16,7 @@ export function clearTurnModifiers(player: PlayerState): PlayerState {
       delete next.bpModifier;
       delete next.spModifier;
       delete next.battleActed;
+      delete next.activatedNcEffects;
       return next;
     });
 

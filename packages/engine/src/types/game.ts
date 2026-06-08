@@ -64,6 +64,8 @@ export type CardInstance = {
   faceDown?: boolean;
   /** 一時的なSP変更（ターン終了時にクリア）。 */
   spModifier?: number;
+  /** バトル進入時に発動したNC効果ID（ターン終了時にクリア）。 */
+  activatedNcEffects?: string[];
   /** バトルフェイズ: このターンにこのユニットがバトルまたはストライク済みなら true。 */
   battleActed?: boolean;
   /** このゾードがラッシュされた際に捨てた融合ユニット（RS-009 回収用）。 */

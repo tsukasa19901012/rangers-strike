@@ -263,6 +263,7 @@ describe("special SP strike eligibility", () => {
 
   it("RS-058 cannot strike at CN 4 without yellow thunder", () => {
     const yellow = inst("RS-058", "yellow");
+    const rushDefender = inst("TST-UNIT-0", "d-rush");
     let state = createTestState({
       phase: "battle",
       definitions: defs,
@@ -270,7 +271,7 @@ describe("special SP strike eligibility", () => {
         rush: [yellow],
         battle: battleFillers(3),
       },
-      player2: { battle: [] },
+      player2: { rush: [rushDefender], battle: [] },
     });
 
     state = moveToBattle(state, yellow.instanceId);
@@ -281,10 +282,19 @@ describe("special SP strike eligibility", () => {
         (a) => a.type === "strike" && a.instanceId === yellow.instanceId,
       ),
     ).toBe(false);
+    expect(
+      getLegalActions(state).some(
+        (a) =>
+          a.type === "battle" &&
+          a.attackerInstanceId === yellow.instanceId &&
+          a.defenderInstanceId === rushDefender.instanceId,
+      ),
+    ).toBe(false);
   });
 
   it("RS-058 can strike at CN 3 with yellow thunder", () => {
     const yellow = inst("RS-058", "yellow");
+    const rushDefender = inst("TST-UNIT-0", "d-rush");
     let state = createTestState({
       phase: "battle",
       definitions: defs,
@@ -292,7 +302,7 @@ describe("special SP strike eligibility", () => {
         rush: [yellow],
         battle: battleFillers(2),
       },
-      player2: { battle: [] },
+      player2: { rush: [rushDefender], battle: [] },
     });
 
     state = moveToBattle(state, yellow.instanceId);
@@ -301,6 +311,14 @@ describe("special SP strike eligibility", () => {
     expect(
       getLegalActions(state).some(
         (a) => a.type === "strike" && a.instanceId === yellow.instanceId,
+      ),
+    ).toBe(true);
+    expect(
+      getLegalActions(state).some(
+        (a) =>
+          a.type === "battle" &&
+          a.attackerInstanceId === yellow.instanceId &&
+          a.defenderInstanceId === rushDefender.instanceId,
       ),
     ).toBe(true);
   });

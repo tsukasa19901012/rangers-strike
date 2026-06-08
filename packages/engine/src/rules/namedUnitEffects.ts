@@ -211,8 +211,11 @@ export function canAttackRushWithYellowThunder(
     attackerInstanceId,
   );
   if (!attacker) return false;
+
+  const yellowThunderActive = hasBattleNcEffect(attacker.card, "yellow_thunder");
+
   return (
-    !!findNamedEffectByEffectId(attacker.card.cardId, "yellow_thunder") ||
+    yellowThunderActive ||
     canAttackRushWithMoonlightSonic(state, attackerPlayerId, attackerInstanceId) ||
     canAttackEnemyRushS(state, attackerPlayerId, attackerInstanceId)
   );
@@ -682,6 +685,26 @@ export function grantSp1ToBattleUnit(
       : c,
   );
   return { ...state, ...updatePlayer(state, playerId, { ...player, battle }) };
+}
+
+export function markBattleNcEffect(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+  effectId: string,
+): GameState {
+  const player = state.players[playerId];
+  const battle = player.battle.map((c) => {
+    if (c.instanceId !== instanceId) return c;
+    const activated = c.activatedNcEffects ?? [];
+    if (activated.includes(effectId)) return c;
+    return { ...c, activatedNcEffects: [...activated, effectId] };
+  });
+  return { ...state, ...updatePlayer(state, playerId, { ...player, battle }) };
+}
+
+export function hasBattleNcEffect(card: CardInstance, effectId: string): boolean {
+  return card.activatedNcEffects?.includes(effectId) ?? false;
 }
 
 export function grantBpBoostToBattleUnit(

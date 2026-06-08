@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { applyAction, getLegalActions } from "./index";
+import { canAttackRushWithYellowThunder, hasBattleNcEffect } from "./rules/namedUnitEffects";
 import { createTestState, inst } from "./testing/fixtures";
+import { battleFillers, battleUnit, moveToBattle } from "./testing/battleEntry";
 import { legend1Catalog } from "@rangers-strike/cards";
 
 const defs = Object.fromEntries(legend1Catalog.cards.map((c) => [c.id, c]));
@@ -102,5 +104,46 @@ describe("named unit effects", () => {
     if (!resolved.ok) return;
     expect(resolved.state.pendingEffectChoice).toBeUndefined();
     expect(resolved.state.players.player2.command[0]?.commandHeld).toBe(true);
+  });
+
+  it("RS-058 yellow thunder requires NC activation to attack rush", () => {
+    const yellow = inst("RS-058", "yellow");
+    const rushDefender = inst("TST-UNIT-0", "d-rush");
+    const defs = Object.fromEntries(legend1Catalog.cards.map((c) => [c.id, c]));
+    let state = createTestState({
+      phase: "battle",
+      definitions: defs,
+      player1: { rush: [yellow], battle: battleFillers(2) },
+      player2: { rush: [rushDefender], battle: [] },
+    });
+    state = moveToBattle(state, yellow.instanceId);
+    expect(battleUnit(state, "player1", yellow.instanceId)?.spModifier).toBe(1);
+    expect(hasBattleNcEffect(battleUnit(state, "player1", yellow.instanceId)!, "yellow_thunder")).toBe(
+      true,
+    );
+    expect(canAttackRushWithYellowThunder(state, "player1", yellow.instanceId)).toBe(true);
+
+    const boostedOnly = createTestState({
+      phase: "battle",
+      definitions: defs,
+      player1: {
+        battle: [{ ...inst("RS-058", "boosted"), spModifier: 1 }],
+      },
+      player2: { rush: [inst("TST-UNIT-0", "d-rush-3")], battle: [] },
+    });
+    expect(canAttackRushWithYellowThunder(boostedOnly, "player1", "RS-058:boosted")).toBe(false);
+
+    const yellowCn4 = inst("RS-058", "y2");
+    const atCn4 = moveToBattle(
+      createTestState({
+        phase: "battle",
+        definitions: defs,
+        player1: { rush: [yellowCn4], battle: battleFillers(3) },
+        player2: { rush: [inst("TST-UNIT-0", "d-rush-2")], battle: [] },
+      }),
+      yellowCn4.instanceId,
+    );
+    expect(battleUnit(atCn4, "player1", yellowCn4.instanceId)?.spModifier ?? 0).toBe(0);
+    expect(canAttackRushWithYellowThunder(atCn4, "player1", yellowCn4.instanceId)).toBe(false);
   });
 });
