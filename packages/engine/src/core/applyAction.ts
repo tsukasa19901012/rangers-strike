@@ -920,11 +920,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           instanceId: handFound.card.instanceId,
         });
         if (autoBattle.ok) {
-          return {
-            ok: true,
-            state: autoBattle.state,
-            log: [mainLog, autoBattle.log].filter(Boolean).join("\n"),
-          };
+          return ok(autoBattle.state, mainLog);
         }
       }
 
