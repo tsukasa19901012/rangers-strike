@@ -222,10 +222,18 @@ export function listBattleEntryHoldCardIds(): string[] {
     .sort();
 }
 
+export function hasAutoBattleEntryEachTurnNote(cardId: string): boolean {
+  return hasUnnamedRule(cardId, "auto_battle_entry_each_turn");
+}
+
+export function hasAutoBattleEntryOnRushNote(cardId: string): boolean {
+  return hasUnnamedRule(cardId, "auto_battle_entry_on_rush");
+}
+
 export function hasAutoBattleEntryNote(cardId: string): boolean {
   return (
-    hasUnnamedRule(cardId, "auto_battle_entry_each_turn") ||
-    hasUnnamedRule(cardId, "auto_battle_entry_on_rush")
+    hasAutoBattleEntryEachTurnNote(cardId) ||
+    hasAutoBattleEntryOnRushNote(cardId)
   );
 }
 
@@ -242,6 +250,46 @@ export function getBattleEntryComboFromPartnerIds(cardId: string): string[] {
 
 export function needsBattleEntryComboFrom(cardId: string): boolean {
   return getBattleEntryComboFromPartnerIds(cardId).length > 0;
+}
+
+export function getBattleEntryComboFromOwnTurnPartnerIds(cardId: string): string[] {
+  const block = UNIT_EFFECTS[cardId];
+  if (!block) return [];
+  const note = block.unnamedText.find(
+    (entry) => entry.rule === "battle_entry_combo_from_own_turn",
+  );
+  return note?.partnerCardIds ?? [];
+}
+
+export function needsBattleEntryComboFromOwnTurn(cardId: string): boolean {
+  return getBattleEntryComboFromOwnTurnPartnerIds(cardId).length > 0;
+}
+
+export function getOnTurnEndNamedEffect(cardId: string): NamedUnitEffect | undefined {
+  return UNIT_EFFECTS[cardId]?.namedEffects.find(
+    (named) => named.trigger.type === "on_turn_end",
+  );
+}
+
+export function hasOnTurnEndNamedEffect(cardId: string, effectId: string): boolean {
+  const named = getOnTurnEndNamedEffect(cardId);
+  return named?.effectId === effectId;
+}
+
+/** 指定ゾーンに effectId を持つユニットがいるか（while_in_field / パッシブ判定用）。 */
+export function playerHasNamedEffectInZones(
+  player: { rush: Array<{ cardId: string }>; battle: Array<{ cardId: string }> },
+  effectId: string,
+  zones: Array<"rush" | "battle">,
+): boolean {
+  for (const zone of zones) {
+    for (const card of player[zone]) {
+      if (findNamedEffectByEffectId(card.cardId, effectId)) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 export function getBattleEntryHandDiscardCount(cardId: string): number {

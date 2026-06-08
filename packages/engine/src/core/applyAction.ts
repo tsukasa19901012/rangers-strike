@@ -91,6 +91,7 @@ import {
 import { applyAllZordFusionMaterials, applyZordMaterial, findZordMaterial, requiresAllFusionPartners } from "../rules/zord";
 import {
   canMoveUnitToBattle,
+  cannotAttackOrStrikeThisTurn,
   mustEnterBattleBeforePhaseEnd,
   countHeldCommands,
   requiredBattleEntryHolds,
@@ -113,10 +114,10 @@ import {
   hasStrikeReactions,
 } from "../rules/strikeReactions";
 import { applyAdventureEndTurn, getTurnModifiers, markBattleBlocked, markRushedThisTurn, withTurnModifiers } from "../rules/turnModifiers";
-import { applyKarakuriFireHawkEndTurn } from "../rules/legend2/destroyEffects";
+import { applyOnTurnEndBattleEffects } from "../rules/legend2/destroyEffects";
 import { withSyncedEffectStack } from "../rules/effectStack";
 import { applyRegisterHold, finalizeRegisterDiscard } from "../rules/resist";
-import { noAttackOrStrikeTurnRushed } from "@rangers-strike/cards";
+import { hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
 import {
   applyDinoChronicleCounter,
   applyDinoGutsCounter,
@@ -225,7 +226,7 @@ function advanceFromCharge(state: GameState, chargeLog: string): GameState {
 function finalizeTurnEnd(state: GameState): GameState {
   const prevPlayer = state.activePlayer;
   let next = applyAdventureEndTurn(state, prevPlayer);
-  next = applyKarakuriFireHawkEndTurn(next, prevPlayer);
+  next = applyOnTurnEndBattleEffects(next, prevPlayer);
   next = advancePhase(next);
 
   if (next.activePlayer !== prevPlayer) {
@@ -909,14 +910,36 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         rushFinal.counterPending ? "counter_pending" : undefined,
       );
 
+      if (
+        !rushFinal.counterPending &&
+        hasAutoBattleEntryOnRushNote(found.card.cardId)
+      ) {
+        const autoBattle = applyAction(nextState, {
+          type: "move_to_battle",
+          playerId,
+          instanceId: handFound.card.instanceId,
+        });
+        if (autoBattle.ok) {
+          return {
+            ok: true,
+            state: autoBattle.state,
+            log: [mainLog, autoBattle.log].filter(Boolean).join("\n"),
+          };
+        }
+      }
+
       return ok(nextState, mainLog);
     }
 
     case "move_to_battle": {
-      if (state.phase !== "battle") return fail("wrong_phase");
-
       let found = findInZone(player, "rush", action.instanceId);
       if (!found) return fail("card_not_in_rush");
+
+      if (state.phase !== "battle") {
+        if (state.phase !== "rush" || !hasAutoBattleEntryOnRushNote(found.card.cardId)) {
+          return fail("wrong_phase");
+        }
+      }
 
       if (
         needsBattleEntryRushDiscard(found.card.cardId) &&
@@ -1511,6 +1534,9 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       const attackerFound = findInZone(actor, "battle", action.attackerInstanceId);
       if (!attackerFound) return fail("attacker_not_in_battle");
       if (attackerFound.card.battleActed) return fail("already_acted");
+      if (cannotAttackOrStrikeThisTurn(actor, attackerFound.card)) {
+        return fail("cannot_attack_turn_rushed");
+      }
 
       const enemy = state.players[enemyId];
       const defenderFound =

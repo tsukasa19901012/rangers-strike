@@ -495,7 +495,7 @@
         "text": "自分がターンを終えるとき、このユニットがバトルエリアにあれば持ち主の手札に戻す。",
         "effectId": "karakuri_fire_hawk",
         "trigger": {
-          "type": "conditional"
+          "type": "on_turn_end"
         }
       }
     ]

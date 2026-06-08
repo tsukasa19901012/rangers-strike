@@ -27,6 +27,8 @@ export type NamedEffectTrigger =
   | { type: "riding_combo" }
   /** 場にいる間継続（メタデータ。エンジンは別途実装可）。 */
   | { type: "while_in_field" }
+  /** 自分がターンを終えるとき（バトルエリア等）。 */
+  | { type: "on_turn_end" }
   /** その他条件付き文面。未実装。 */
   | { type: "conditional" };
 
@@ -92,6 +94,8 @@ export type UnnamedUnitRule =
   | "requires_aircraft_attacker"
   /** バトル投入: partnerCardIds の cardId を持つ味方が既にバトルにいる必要（RS-147）。 */
   | "battle_entry_combo_from"
+  /** 自軍ターン中のみ、partnerCardIds からコンビネーション必須（RS-146）。 */
+  | "battle_entry_combo_from_own_turn"
   /** バトル投入: 先に手札から捨札（RS-165）。 */
   | "battle_entry_discard_from_hand"
   /** バトル中、このユニットは MA カテゴリも持つ（RS-166）。 */

@@ -53,7 +53,6 @@ export const IMPLEMENTED_CONDITIONAL_EFFECT_IDS = [
   "ghost_absorption",
   "precious_guardian",
   "shift_up",
-  "karakuri_fire_hawk",
   "tantrum",
   "cry",
   "red_boot",
@@ -62,6 +61,11 @@ export const IMPLEMENTED_CONDITIONAL_EFFECT_IDS = [
   "falcon_claw",
   "sagas_sniper",
   "blue_bados_life_sword",
+] as const;
+
+/** ターン終了時に発動するユニット効果。 */
+export const IMPLEMENTED_ON_TURN_END_EFFECT_IDS = [
+  "karakuri_fire_hawk",
 ] as const;
 
 /** アタック時 / バトル BP 修正（namedUnitEffects）。 */
@@ -131,6 +135,7 @@ const CONDITIONAL_SET = new Set<string>(IMPLEMENTED_CONDITIONAL_EFFECT_IDS);
 const ON_ATTACK_SET = new Set<string>(IMPLEMENTED_ON_ATTACK_EFFECT_IDS);
 const ENTER_BATTLE_SET = new Set<string>(IMPLEMENTED_ENTER_BATTLE_EFFECT_IDS);
 const PASSIVE_SET = new Set<string>(IMPLEMENTED_PASSIVE_EFFECT_IDS);
+const ON_TURN_END_SET = new Set<string>(IMPLEMENTED_ON_TURN_END_EFFECT_IDS);
 
 export function isUnitEffectImplemented(effectId: string): boolean {
   return (
@@ -138,7 +143,8 @@ export function isUnitEffectImplemented(effectId: string): boolean {
     CONDITIONAL_SET.has(effectId) ||
     ON_ATTACK_SET.has(effectId) ||
     ENTER_BATTLE_SET.has(effectId) ||
-    PASSIVE_SET.has(effectId)
+    PASSIVE_SET.has(effectId) ||
+    ON_TURN_END_SET.has(effectId)
   );
 }
 

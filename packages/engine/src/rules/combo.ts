@@ -39,6 +39,7 @@ import {
 import { getEnterBattleNamedEffect } from "@rangers-strike/cards";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
 import { applyBaseAttackOnEnter } from "./legend3/enterBattleEffects";
+import { cannotAttackOrStrikeThisTurn } from "./restrictions";
 import type { ComboOutcome } from "./comboTypes";
 import {
   applyNumberComboEffect,
@@ -506,6 +507,9 @@ export function canStrikeUnit(
   if (instance.registerHeld) return false;
   if (state && playerId) {
     if (hasBakiBakiExtraAttackOnly(state, playerId, instance.instanceId)) {
+      return false;
+    }
+    if (cannotAttackOrStrikeThisTurn(state.players[playerId], instance)) {
       return false;
     }
     return legend3EffectiveSp(state, playerId, instance) >= 1;

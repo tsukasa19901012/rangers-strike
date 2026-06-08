@@ -1,5 +1,6 @@
 import type { Category } from "./schema";
 import type { ZordConditionId } from "./effectTaxonomy";
+import { findNamedEffectByEffectId } from "./unitEffects";
 import { getZordCondition, resolveRushAdditionalCondition } from "./zord";
 
 export type MothershipKind = "jaguar" | "dekabase";
@@ -72,11 +73,18 @@ export function jaguarMothershipAllowedWithMaterial(
   return materialDestination !== "discard";
 }
 
+const MOTHERSHIP_EFFECT_IDS: Record<MothershipKind, string> = {
+  jaguar: "jaguar_mothership",
+  dekabase: "dekabase_mothership",
+};
+
 export function activeMothershipKindInRush(
   rushCardIds: string[],
 ): MothershipKind | null {
-  if (rushCardIds.includes(MOTHERSHIP_CONFIG.jaguar.cardId)) return "jaguar";
-  if (rushCardIds.includes(MOTHERSHIP_CONFIG.dekabase.cardId)) return "dekabase";
+  for (const cardId of rushCardIds) {
+    if (findNamedEffectByEffectId(cardId, MOTHERSHIP_EFFECT_IDS.jaguar)) return "jaguar";
+    if (findNamedEffectByEffectId(cardId, MOTHERSHIP_EFFECT_IDS.dekabase)) return "dekabase";
+  }
   return null;
 }
 

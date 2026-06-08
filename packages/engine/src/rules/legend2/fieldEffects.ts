@@ -1,14 +1,10 @@
+import {
+  findNamedEffectByEffectId,
+  playerHasNamedEffectInZones,
+} from "@rangers-strike/cards";
 import type { Category } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit, unitBp } from "../../core/catalog";
-
-function playerHasInRush(state: GameState, playerId: PlayerId, cardId: string): boolean {
-  return state.players[playerId].rush.some((c) => c.cardId === cardId);
-}
-
-function playerHasInBattle(state: GameState, playerId: PlayerId, cardId: string): boolean {
-  return state.players[playerId].battle.some((c) => c.cardId === cardId);
-}
 
 function categoriesInclude(
   categories: Category | Category[],
@@ -16,6 +12,24 @@ function categoriesInclude(
 ): boolean {
   const list = Array.isArray(categories) ? categories : [categories];
   return list.includes(target);
+}
+
+function findControllerOfNamedEffect(
+  state: GameState,
+  effectId: string,
+  zones: Array<"rush" | "battle">,
+): { playerId: PlayerId; cardId: string } | null {
+  for (const playerId of ["player1", "player2"] as const) {
+    const player = state.players[playerId];
+    for (const zone of zones) {
+      for (const card of player[zone]) {
+        if (findNamedEffectByEffectId(card.cardId, effectId)) {
+          return { playerId, cardId: card.cardId };
+        }
+      }
+    }
+  }
+  return null;
 }
 
 /** Legend2 フィールド常駐 BP / SP パッシブ。 */
@@ -30,23 +44,19 @@ export function legend2FieldBpBonus(
 
   let bonus = 0;
 
-  if (playerHasInRush(state, playerId, "RS-079") || playerHasInBattle(state, playerId, "RS-079")) {
+  if (findNamedEffectByEffectId(instance.cardId, "bio_buster")) {
     const enemyId = playerId === "player1" ? "player2" : "player1";
     const otHeld = state.players[enemyId].command.filter((c) => {
       if (!c.commandHeld) return false;
       const cmdDef = getDefinition(state.definitions, c.cardId);
       return cmdDef && categoriesInclude(cmdDef.category, "OT");
     }).length;
-    if (instance.cardId === "RS-079") {
-      bonus += otHeld * 1000;
-    }
+    bonus += otHeld * 1000;
   }
 
-  if (playerHasInBattle(state, playerId, "RS-113")) {
-    if (instance.cardId === "RS-113") {
-      const released = state.players[playerId].command.filter((c) => !c.commandHeld).length;
-      bonus += released * 1000;
-    }
+  if (findNamedEffectByEffectId(instance.cardId, "fire_spin_blade")) {
+    const released = state.players[playerId].command.filter((c) => !c.commandHeld).length;
+    bonus += released * 1000;
   }
 
   return bonus;
@@ -82,12 +92,16 @@ export function legend2EffectiveSp(
     }
   }
 
-  if (instance.cardId === "RS-079" || instance.cardId === "RS-113") {
+  if (
+    findNamedEffectByEffectId(instance.cardId, "bio_buster") ||
+    findNamedEffectByEffectId(instance.cardId, "fire_spin_blade")
+  ) {
     const bp =
       unitBp(def) +
       (instance.bpModifier ?? 0) +
       legend2FieldBpBonus(state, playerId, instance, "general");
-    if (bp >= (instance.cardId === "RS-113" ? 10000 : 5000)) {
+    const threshold = findNamedEffectByEffectId(instance.cardId, "fire_spin_blade") ? 10000 : 5000;
+    if (bp >= threshold) {
       sp = Math.max(sp, 1);
     }
   }
@@ -100,65 +114,71 @@ export function legend2EffectiveSp(
   return sp;
 }
 
-/** RS-089: WB Mユニット撃破時、捨札の代わりにパワーへ。 */
+/** RS-089 救護活動: WB Mユニット撃破時、捨札の代わりにパワーへ。 */
 export function shouldMedicalRescueToPower(
   state: GameState,
   ownerId: PlayerId,
   cardId: string,
 ): boolean {
-  if (!playerHasInRush(state, ownerId, "RS-089")) return false;
+  if (!playerHasNamedEffectInZones(state.players[ownerId], "medical_rescue", ["rush"])) {
+    return false;
+  }
   const def = getDefinition(state.definitions, cardId);
   if (!def || def.size !== "M") return false;
   return categoriesInclude(def.category, "WB");
 }
 
-/** RS-086: 戦闘進入時、敵は同じサイズを使わなければならない。 */
+/** RS-086 交通整理: 戦闘進入時、敵は同じサイズを使わなければならない。 */
 export function trafficControlRequiresSameSize(
   state: GameState,
   playerId: PlayerId,
   unitSize: string | undefined,
 ): boolean {
-  for (const pid of ["player1", "player2"] as const) {
-    if (!playerHasInBattle(state, pid, "RS-086")) continue;
-    if (pid === playerId) continue;
-    const battle = state.players[playerId].battle;
-    if (battle.length === 0) return false;
-    const firstSize = getDefinition(state.definitions, battle[0]!.cardId)?.size;
-    return unitSize !== firstSize;
-  }
-  return false;
+  const controller = findControllerOfNamedEffect(state, "traffic_control", ["battle"]);
+  if (!controller || controller.playerId === playerId) return false;
+  const battle = state.players[playerId].battle;
+  if (battle.length === 0) return false;
+  const firstSize = getDefinition(state.definitions, battle[0]!.cardId)?.size;
+  return unitSize !== firstSize;
 }
 
-/** RS-097: SP1+ または ! の敵ユニットは戦闘進入にホールドが必要。 */
+/** RS-097 連獅子: SP1+ または ! の敵ユニットは戦闘進入にホールドが必要。 */
 export function karakuriLionChainBlocksEntry(
   state: GameState,
   defenderId: PlayerId,
   unit: CardInstance,
   heldCount: number,
 ): boolean {
-  for (const pid of ["player1", "player2"] as const) {
-    if (!playerHasInBattle(state, pid, "RS-097")) continue;
-    if (pid === defenderId) continue;
-    const def = getDefinition(state.definitions, unit.cardId);
-    const sp = def?.sp;
-    const hasBang = def?.features?.includes("!");
-    const mod = unit.spModifier ?? 0;
-    const effectiveSp = typeof sp === "number" ? sp + mod : mod;
-    if (effectiveSp >= 1 || hasBang) {
-      return heldCount < 1;
-    }
+  const controller = findControllerOfNamedEffect(state, "karakuri_lion_chain", ["battle"]);
+  if (!controller || controller.playerId === defenderId) return false;
+
+  const def = getDefinition(state.definitions, unit.cardId);
+  const sp = def?.sp;
+  const hasBang = def?.features?.includes("!");
+  const mod = unit.spModifier ?? 0;
+  const effectiveSp = typeof sp === "number" ? sp + mod : mod;
+  if (effectiveSp >= 1 || hasBang) {
+    return heldCount < 1;
   }
   return false;
 }
 
+export function findLegend2NamedEffectOnField(
+  state: GameState,
+  effectId: string,
+  zones: Array<"rush" | "battle"> = ["rush", "battle"],
+): { playerId: PlayerId; cardId: string } | null {
+  return findControllerOfNamedEffect(state, effectId, zones);
+}
+
 export function hasSeabedSurvey(state: GameState, playerId: PlayerId): boolean {
-  return playerHasInRush(state, playerId, "RS-122");
+  return playerHasNamedEffectInZones(state.players[playerId], "seabed_survey", ["rush"]);
 }
 
 export function hasJaguarMothership(state: GameState, playerId: PlayerId): boolean {
-  return playerHasInRush(state, playerId, "RS-076");
+  return playerHasNamedEffectInZones(state.players[playerId], "jaguar_mothership", ["rush"]);
 }
 
 export function hasDekabaseMothership(state: GameState, playerId: PlayerId): boolean {
-  return playerHasInRush(state, playerId, "RS-105");
+  return playerHasNamedEffectInZones(state.players[playerId], "dekabase_mothership", ["rush"]);
 }

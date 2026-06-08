@@ -2,11 +2,14 @@ import {
   battleHasComboPartner,
   cannotEnterBattle,
   countLightningGravityPermanents,
+  getBattleEntryComboFromOwnTurnPartnerIds,
   getBattleEntryComboFromPartnerIds,
   getBattleEntryHoldCount,
-  hasAutoBattleEntryNote,
+  hasAutoBattleEntryEachTurnNote,
   needsAllySInBattle,
   needsBattleEntryComboFrom,
+  needsBattleEntryComboFromOwnTurn,
+  noAttackOrStrikeTurnRushed,
   noBattleEntryTurnRushed,
 } from "@rangers-strike/cards";
 import { getCardEffect } from "@rangers-strike/cards";
@@ -30,6 +33,7 @@ import {
   getTurnModifiers,
 } from "./turnModifiers";
 import {
+  findLegend2NamedEffectOnField,
   karakuriLionChainBlocksEntry,
   trafficControlRequiresSameSize,
 } from "./legend2/fieldEffects";
@@ -177,6 +181,16 @@ export function canMoveUnitToBattle(
     }
   }
 
+  if (
+    needsBattleEntryComboFromOwnTurn(unit.cardId) &&
+    state.activePlayer === playerId
+  ) {
+    const partners = getBattleEntryComboFromOwnTurnPartnerIds(unit.cardId);
+    if (!battleHasComboPartner(player.battle, partners, unit.instanceId)) {
+      return false;
+    }
+  }
+
   if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
@@ -205,6 +219,16 @@ export function canMoveUnitToBattle(
   return passesBattleEntryHoldRequirements(state, playerId, player, unit);
 }
 
+export function cannotAttackOrStrikeThisTurn(
+  player: PlayerState,
+  unit: CardInstance,
+): boolean {
+  return (
+    noAttackOrStrikeTurnRushed(unit.cardId) &&
+    wasRushedThisTurn(player, unit.instanceId)
+  );
+}
+
 /** フィールド / 効果チェックのみ（※ または稲妻重力のホールド数は含まない）。 */
 export function canMoveUnitToBattleExceptHoldRequirements(
   state: GameState,
@@ -229,6 +253,16 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (needsBattleEntryComboFrom(unit.cardId)) {
     const partners = getBattleEntryComboFromPartnerIds(unit.cardId);
+    if (!battleHasComboPartner(player.battle, partners, unit.instanceId)) {
+      return false;
+    }
+  }
+
+  if (
+    needsBattleEntryComboFromOwnTurn(unit.cardId) &&
+    state.activePlayer === playerId
+  ) {
+    const partners = getBattleEntryComboFromOwnTurnPartnerIds(unit.cardId);
     if (!battleHasComboPartner(player.battle, partners, unit.instanceId)) {
       return false;
     }
@@ -404,6 +438,19 @@ export function explainCannotEnterBattle(
     }
   }
 
+  if (
+    needsBattleEntryComboFromOwnTurn(unit.cardId) &&
+    state.activePlayer === playerId
+  ) {
+    const partners = getBattleEntryComboFromOwnTurnPartnerIds(unit.cardId);
+    if (!battleHasComboPartner(player.battle, partners, unit.instanceId)) {
+      const partnerName = partners
+        .map((id) => cardName(state.definitions, id))
+        .join("」「");
+      return `「${unitName}」は自軍ターン中、「${partnerName}」からコンビネーションしないとバトルエリアに出せません。`;
+    }
+  }
+
   if (!canPayBattleEntryHandDiscard(player, unit.cardId)) {
     return `「${unitName}」をバトルエリアに出すには、手札から2枚捨札する必要があります（手札${player.hand.length}枚）。`;
   }
@@ -420,11 +467,14 @@ export function explainCannotEnterBattle(
   }
 
   if (trafficControlRequiresSameSize(state, playerId, def?.size)) {
-    const controller = findCardOnField(state, "RS-086");
+    const controller = findLegend2NamedEffectOnField(state, "traffic_control", ["battle"]);
     const requiredSize =
       getDefinition(state.definitions, player.battle[0]?.cardId ?? "")?.size ?? "不明";
     const who = controller?.playerId === playerId ? "自軍" : "敵軍";
-    return `${who}の「${controller?.name ?? "パトトレーラー"}」の【交通整理】の効果で、先にバトルエリアへ入ったユニット（${requiredSize}）と同じサイズのユニットしか出せません。`;
+    const controllerName = controller
+      ? cardName(state.definitions, controller.cardId)
+      : "パトトレーラー";
+    return `${who}の「${controllerName}」の【交通整理】の効果で、先にバトルエリアへ入ったユニット（${requiredSize}）と同じサイズのユニットしか出せません。`;
   }
 
   if (
@@ -435,9 +485,10 @@ export function explainCannotEnterBattle(
       countHeldCommands(player),
     )
   ) {
-    const chain = findCardOnField(state, "RS-097");
+    const chain = findLegend2NamedEffectOnField(state, "karakuri_lion_chain", ["battle"]);
     const who = chain?.playerId === playerId ? "自軍" : "敵軍";
-    return `${who}の「${chain?.name ?? "ハリケンライオン"}」の【からくりライオンチェーン】の効果で、SP1以上または「!」のユニットはコマンドを1枚ホールドしないとバトルエリアに出せません。`;
+    const chainName = chain ? cardName(state.definitions, chain.cardId) : "ハリケンレオン";
+    return `${who}の「${chainName}」の【カラクリ忍法・連獅子】の効果で、SP1以上または「!」のユニットはコマンドを1枚ホールドしないとバトルエリアに出せません。`;
   }
 
   if (isBattleBlocked(player, unit.instanceId)) {
@@ -499,7 +550,7 @@ export function findMandatoryBattleEntries(
 
   for (const card of player.rush) {
     if (!canMoveUnitToBattle(state, playerId, card, "rush")) continue;
-    if (hasAutoBattleEntryNote(card.cardId) || earthForceRequiresBattleEntry(state)) {
+    if (hasAutoBattleEntryEachTurnNote(card.cardId) || earthForceRequiresBattleEntry(state)) {
       mandatory.push(card);
     }
   }

@@ -225,6 +225,37 @@ describe("legend3 integration", () => {
     expect(battled.log.some((e) => e.includes(`vs${allyBp + 1000}`))).toBe(true);
   });
 
+  it("RS-146 requires combo from グランタウラス on own turn only", () => {
+    const dog = inst("RS-146", "dog");
+    const gran = inst("RS-144", "gran");
+    const ownTurnBlocked = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { rush: [dog] },
+    });
+    expect(canMoveUnitToBattle(ownTurnBlocked, "player1", dog, "rush")).toBe(false);
+
+    const ownTurnAllowed = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: {
+        battle: [gran],
+        rush: [dog],
+      },
+    });
+    expect(canMoveUnitToBattle(ownTurnAllowed, "player1", dog, "rush")).toBe(true);
+
+    const enemyTurn = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player2",
+      player1: { rush: [dog] },
+    });
+    expect(canMoveUnitToBattle(enemyTurn, "player1", dog, "rush")).toBe(true);
+  });
+
   it("RS-147 requires combo from ダッシュレオン to enter battle", () => {
     const moa = inst("RS-147", "moa");
     const dash = inst("RS-145", "dash");

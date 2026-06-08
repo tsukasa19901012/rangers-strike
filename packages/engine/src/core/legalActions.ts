@@ -2,7 +2,7 @@ import type { GameAction, RushAction } from "../types/actions";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
-import { getRidingComboEffect } from "@rangers-strike/cards";
+import { getRidingComboEffect, hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
 import {
   canPlayOperationCard,
   collectOperationTargets,
@@ -22,7 +22,12 @@ import {
 import { findInZone, opponent, payPowerCost } from "./helpers";
 import { canStrikeUnit } from "../rules/combo";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
-import { canMoveUnitToBattle, countReleasedCommands, mustEnterBattleBeforePhaseEnd } from "../rules/restrictions";
+import {
+  canMoveUnitToBattle,
+  cannotAttackOrStrikeThisTurn,
+  countReleasedCommands,
+  mustEnterBattleBeforePhaseEnd,
+} from "../rules/restrictions";
 import { canInitiateShironLight, isShironLightRushTarget } from "../rules/shironLight";
 import {
   canAttackDefender,
@@ -773,6 +778,11 @@ function appendBattleEntryActions(
     return;
   }
 
+  if (cannotAttackOrStrikeThisTurn(player, unit)) {
+    actions.push({ type: "pass_battle_entry", playerId });
+    return;
+  }
+
   for (const defender of enemy.battle) {
     if (
       !canAttackDefender(
@@ -1051,6 +1061,7 @@ export function getLegalActions(state: GameState): GameAction[] {
 
       for (const attacker of player.battle) {
         if (attacker.battleActed) continue;
+        if (cannotAttackOrStrikeThisTurn(player, attacker)) continue;
         for (const defender of enemy.battle) {
           if (
             !canAttackDefender(
@@ -1095,6 +1106,7 @@ export function getLegalActions(state: GameState): GameAction[] {
 
       for (const card of player.battle) {
         if (card.battleActed) continue;
+        if (cannotAttackOrStrikeThisTurn(player, card)) continue;
         if (!canStrikeUnit(state.definitions, card, state, playerId)) continue;
         actions.push({
           type: "strike",
@@ -1223,6 +1235,20 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
       ) {
         return true;
       }
+    }
+  }
+
+  if (action.type === "move_to_battle" && state.phase === "rush") {
+    if (!assertActive(state, action.playerId)) return false;
+    const rushCard = state.players[action.playerId].rush.find(
+      (c) => c.instanceId === action.instanceId,
+    );
+    if (
+      rushCard &&
+      hasAutoBattleEntryOnRushNote(rushCard.cardId) &&
+      canMoveUnitToBattle(state, action.playerId, rushCard, "rush")
+    ) {
+      return true;
     }
   }
 

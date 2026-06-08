@@ -412,7 +412,10 @@
       {
         "kind": "note",
         "text": "※自軍ターン中、これは「グランタウラス」からコンビネーションしなければバトルエリアに出られない",
-        "rule": "cannot_enter_battle_own_turn"
+        "rule": "battle_entry_combo_from_own_turn",
+        "partnerCardIds": [
+          "RS-144"
+        ]
       }
     ],
     "namedEffects": []

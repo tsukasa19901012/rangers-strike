@@ -1,4 +1,8 @@
-import { getConditionalNamedEffect } from "@rangers-strike/cards";
+import {
+  getConditionalNamedEffect,
+  getOnTurnEndNamedEffect,
+  IMPLEMENTED_ON_TURN_END_EFFECT_IDS,
+} from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
 import { opponent, updatePlayer } from "../../core/helpers";
@@ -122,21 +126,46 @@ export function checkReturnToHandAt6Damage(
   return { state: nextState, logs };
 }
 
-/** RS-096: ターン終了時、戦闘中なら手札へ戻す。 */
-export function applyKarakuriFireHawkEndTurn(
+/** ターン終了時、バトル中の on_turn_end 効果を解決（karakuri_fire_hawk 等）。 */
+export function applyOnTurnEndBattleEffects(
   state: GameState,
   endingPlayerId: PlayerId,
 ): GameState {
   const player = state.players[endingPlayerId];
-  const hawk = player.battle.find((c) => c.cardId === "RS-096");
-  if (!hawk) return state;
+  let nextState = state;
 
-  const bounced = bounceToHand(state, {
-    playerId: endingPlayerId,
-    instanceId: hawk.instanceId,
-    fromZone: "battle",
-  });
-  return bounced.bounced ? bounced.state : state;
+  for (const card of player.battle) {
+    const named = getOnTurnEndNamedEffect(card.cardId);
+    if (!named) continue;
+    if (
+      !IMPLEMENTED_ON_TURN_END_EFFECT_IDS.includes(
+        named.effectId as (typeof IMPLEMENTED_ON_TURN_END_EFFECT_IDS)[number],
+      )
+    ) {
+      continue;
+    }
+
+    if (named.effectId === "karakuri_fire_hawk") {
+      const bounced = bounceToHand(nextState, {
+        playerId: endingPlayerId,
+        instanceId: card.instanceId,
+        fromZone: "battle",
+      });
+      if (bounced.bounced) {
+        nextState = bounced.state;
+      }
+    }
+  }
+
+  return nextState;
+}
+
+/** @deprecated applyOnTurnEndBattleEffects を使用すること。 */
+export function applyKarakuriFireHawkEndTurn(
+  state: GameState,
+  endingPlayerId: PlayerId,
+): GameState {
+  return applyOnTurnEndBattleEffects(state, endingPlayerId);
 }
 
 import { startOpponentMayDrawChoice } from "../pendingChoices";
