@@ -11,6 +11,8 @@ const ZONE_LABELS: Record<ZoneName, string> = {
   discard: "捨札",
   deck: "山札",
   operation: "常駐",
+  exile: "除外",
+  commander: "コマンダー",
 };
 
 export type CardTarget = {
@@ -22,7 +24,7 @@ export type CardTarget = {
   zoneLabel: string;
 };
 
-const FIELD_ZONES: ZoneName[] = [
+const FIELD_ZONES = [
   "hand",
   "power",
   "command",
@@ -31,7 +33,20 @@ const FIELD_ZONES: ZoneName[] = [
   "discard",
   "deck",
   "operation",
-];
+  "exile",
+  "commander",
+] as const satisfies readonly ZoneName[];
+
+type FieldZone = (typeof FIELD_ZONES)[number];
+
+function cardsInZone(
+  player: GameState["players"][PlayerId],
+  zone: FieldZone,
+): GameState["players"][PlayerId]["hand"] {
+  if (zone === "exile") return player.exile ?? [];
+  if (zone === "commander") return player.commander ?? [];
+  return player[zone];
+}
 
 export function findCardTarget(
   state: GameState,
@@ -40,7 +55,7 @@ export function findCardTarget(
   for (const playerId of ["player1", "player2"] as const) {
     const player = state.players[playerId];
     for (const zone of FIELD_ZONES) {
-      const inst = player[zone].find((c) => c.instanceId === instanceId);
+      const inst = cardsInZone(player, zone).find((c) => c.instanceId === instanceId);
       if (!inst) continue;
       const card = getCardById(inst.cardId) ?? state.definitions[inst.cardId];
       if (!card) continue;
