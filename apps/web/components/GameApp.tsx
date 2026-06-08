@@ -1404,6 +1404,11 @@ export function GameApp() {
     setEffectNotice(null);
   }, [suppressFloatingNotices]);
 
+  useEffect(() => {
+    if (!isHumanBattleEntry) return;
+    clearClickSuppression();
+  }, [clearClickSuppression, isHumanBattleEntry, state?.pendingBattleEntry?.instanceId]);
+
   if (!state) {
     if (appScreen === "deck-builder") {
       return (
@@ -1555,12 +1560,6 @@ export function GameApp() {
     !state.pendingStrike &&
     !state.pendingDamagePayment &&
     !state.pendingLeave;
-
-  useEffect(() => {
-    if (showBattleEntryModal) {
-      clearClickSuppression();
-    }
-  }, [clearClickSuppression, showBattleEntryModal]);
 
   const isHumanCommandPayment = isHumanCommandPaymentActive(state, HUMAN_PLAYER);
 
