@@ -344,8 +344,14 @@ export function GameApp() {
     [state],
   );
 
+  const humanMustResolveDamage =
+    state?.pendingDamagePayment &&
+    (state.pendingDamagePayment.choosingPlayerId ??
+      state.pendingDamagePayment.playerId) === HUMAN_PLAYER;
+
   const humanCanAct =
-    state?.activePlayer === HUMAN_PLAYER && !state.winner;
+    !state?.winner &&
+    (state?.activePlayer === HUMAN_PLAYER || !!humanMustResolveDamage);
 
   const compactViewport = useCompactGameViewport();
   const [chromeExpanded, setChromeExpanded] = useState(true);

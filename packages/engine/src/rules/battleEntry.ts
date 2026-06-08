@@ -62,14 +62,32 @@ export function promoteDeferredBattleEntry(state: GameState): GameState {
   };
 }
 
+export function hasBlockingPendingInteraction(state: GameState): boolean {
+  return !!(
+    state.pendingDamagePayment ||
+    state.pendingLeave ||
+    state.pendingEffectChoice ||
+    state.pendingCommandPayment ||
+    state.pendingZordSetup
+  );
+}
+
+/** ダメージ支払いなど別プレイヤーへの操作委譲中は activePlayer を上書きしない。 */
+export function restorePhaseActivePlayerUnlessBlocked(
+  state: GameState,
+  phasePlayerId: PlayerId,
+): GameState {
+  if (hasBlockingPendingInteraction(state)) {
+    return state;
+  }
+  return { ...state, activePlayer: phasePlayerId };
+}
+
 export function finishBattleEntryIf(state: GameState, instanceId: string): GameState {
   const entry = state.pendingBattleEntry;
   if (!entry || entry.instanceId !== instanceId) return state;
-  return {
-    ...state,
-    pendingBattleEntry: undefined,
-    activePlayer: entry.phasePlayerId,
-  };
+  const cleared: GameState = { ...state, pendingBattleEntry: undefined };
+  return restorePhaseActivePlayerUnlessBlocked(cleared, entry.phasePlayerId);
 }
 
 export function hasPendingBattleEntry(state: GameState): boolean {

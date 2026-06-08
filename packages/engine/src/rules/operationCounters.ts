@@ -25,7 +25,7 @@ import { countReleasedCommands } from "./restrictions";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
-import { finishBattleEntryIf } from "./battleEntry";
+import { finishBattleEntryIf, restorePhaseActivePlayerUnlessBlocked } from "./battleEntry";
 import {
   attackerBlocksDefenderCounters,
   battleAttackerBpBonus,
@@ -570,7 +570,13 @@ export function resolveBattlePending(
   pending: PendingBattle,
 ): { state: GameState; log: string } {
   const finish = (nextState: GameState, log: string) => ({
-    state: finishBattleEntryIf(nextState, pending.attackerInstanceId),
+    state: finishBattleEntryIf(
+      restorePhaseActivePlayerUnlessBlocked(
+        { ...nextState, pendingBattle: undefined },
+        pending.phasePlayerId,
+      ),
+      pending.attackerInstanceId,
+    ),
     log,
   });
 
@@ -585,8 +591,6 @@ export function resolveBattlePending(
     return finish(
       {
         ...state,
-        pendingBattle: undefined,
-        activePlayer: pending.phasePlayerId,
         ...updatePlayer(state, pending.attackerPlayerId, nextAttacker),
       },
       buildLogEntry(
@@ -638,11 +642,7 @@ export function resolveBattlePending(
     };
     const logCardId = attackerFound?.card.cardId ?? pending.attackerInstanceId;
     return finish(
-      markAttackerActedOnFail({
-        ...state,
-        pendingBattle: undefined,
-        activePlayer: pending.phasePlayerId,
-      }),
+      markAttackerActedOnFail({ ...state }),
       buildLogEntry(attackerId, "battle", logCardId, state.definitions, "failed"),
     );
   }
@@ -701,7 +701,7 @@ export function resolveBattlePending(
     });
     if (leaveResult.deferred) {
       const withAttacker = finalDestroyAttacker ? leaveResult.state : markAttackerActed(leaveResult.state);
-      return finish({ ...withAttacker, pendingBattle: undefined }, log);
+      return finish(withAttacker, log);
     }
     nextState = leaveResult.state;
 
@@ -719,7 +719,7 @@ export function resolveBattlePending(
   if (finalDestroyAttacker) {
     const leaveResult = tryLeaveField(nextState, attackerLeaveIntent);
     if (leaveResult.deferred) {
-      return finish({ ...leaveResult.state, pendingBattle: undefined }, log);
+      return finish(leaveResult.state, log);
     }
     nextState = leaveResult.state;
   } else if (destroyDefender) {
@@ -744,8 +744,6 @@ export function resolveBattlePending(
   let finishedState: GameState = {
     ...nextState,
     log: [...nextState.log, ...extraLogs],
-    pendingBattle: undefined,
-    activePlayer: pending.phasePlayerId,
   };
   if (pending.mirageBeamDiscard) {
     const player = finishedState.players[pending.attackerPlayerId];

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
+import { isCpuTurn } from "./ai/level1";
 import { createTestState, inst } from "./testing/fixtures";
 import {
   battleFillers,
@@ -46,6 +47,48 @@ describe("battle entry action prompt", () => {
     expect(getLegalActions(moved.state).some((a) => a.type === "pass_battle_entry")).toBe(true);
     expect(getLegalActions(moved.state).some((a) => a.type === "move_to_battle")).toBe(false);
     expect(getLegalActions(moved.state).some((a) => a.type === "end_phase")).toBe(false);
+  });
+
+  it("keeps human active after abared self-damage during cpu battle entry", () => {
+    const magigreen = inst("RS-061", "mg");
+    const abared = inst("RS-054", "ab");
+    const state: ReturnType<typeof createTestState> = {
+      ...createTestState({
+        phase: "battle",
+        activePlayer: "player2",
+        definitions: defs,
+        player2: { battle: [magigreen] },
+        player1: {
+          battle: [abared],
+          power: [inst("TST-P", "p1"), inst("TST-P", "p2")],
+        },
+      }),
+      pendingBattleEntry: {
+        playerId: "player2",
+        instanceId: magigreen.instanceId,
+        phasePlayerId: "player2",
+      },
+    };
+
+    const battled = applyAction(state, {
+      type: "battle",
+      playerId: "player2",
+      attackerInstanceId: magigreen.instanceId,
+      defenderInstanceId: abared.instanceId,
+    });
+    expect(battled.ok).toBe(true);
+    if (!battled.ok) return;
+
+    expect(battled.state.players.player1.battle).toHaveLength(0);
+    expect(battled.state.pendingDamagePayment?.playerId).toBe("player1");
+    expect(battled.state.activePlayer).toBe("player1");
+    expect(battled.state.pendingBattleEntry).toBeUndefined();
+    expect(isCpuTurn(battled.state, "player2")).toBe(false);
+    expect(
+      getLegalActions(battled.state).some(
+        (a) => a.type === "resolve_damage_payment" && a.playerId === "player1",
+      ),
+    ).toBe(true);
   });
 
   it("allows next entry after pass", () => {
