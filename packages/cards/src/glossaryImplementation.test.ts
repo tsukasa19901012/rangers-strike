@@ -10,9 +10,12 @@ import {
 
 describe("glossary implementation status (#9 verification)", () => {
   it("documents intentionally unimplemented glossary terms", () => {
-    expect(GLOSSARY_NOT_IMPLEMENTED.length).toBeGreaterThanOrEqual(3);
+    expect(GLOSSARY_NOT_IMPLEMENTED.length).toBeGreaterThanOrEqual(2);
     expect(GLOSSARY_NOT_IMPLEMENTED.some((e) => e.term.includes("タッグ"))).toBe(
       true,
+    );
+    expect(GLOSSARY_NOT_IMPLEMENTED.some((e) => e.term.includes("バウンス"))).toBe(
+      false,
     );
   });
 
@@ -21,6 +24,7 @@ describe("glossary implementation status (#9 verification)", () => {
     expect(modules).toContain("commander");
     expect(modules).toContain("exile");
     expect(modules).toContain("reanimate");
+    expect(modules).toContain("bounce");
   });
 
   it("confirms Legend1 operations remain fully implemented", () => {

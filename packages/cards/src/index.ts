@@ -35,6 +35,7 @@ export * from "./operationCatalog";
 export * from "./unitEffectCatalog";
 export * from "./wikiReference";
 export * from "./resist";
+export * from "./bounce";
 export * from "./glossaryImplementation";
 
 /** レジェンド1 カード画像の Web パス接頭辞 */

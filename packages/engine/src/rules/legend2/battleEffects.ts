@@ -5,7 +5,8 @@ import {
   isSmallUnit,
   unitBp,
 } from "../../core/catalog";
-import { findInZone, opponent, updatePlayer } from "../../core/helpers";
+import { findInZone, opponent } from "../../core/helpers";
+import { bounceAllFromZone } from "../bounce";
 import { buildLogEntry } from "../../log/formatLog";
 import {
   collectCommandIds,
@@ -23,21 +24,18 @@ export function resolveManeHurricane(
   cardId: string,
 ): NamedEffectOutcome {
   const enemyId = opponent(playerId);
-  const enemy = state.players[enemyId];
-  const toReturn = enemy.rush.filter((c) => isSmallUnit(state.definitions, c.cardId));
-  if (toReturn.length === 0) {
+  const bounced = bounceAllFromZone(
+    state,
+    enemyId,
+    "rush",
+    (card) => isSmallUnit(state.definitions, card.cardId),
+  );
+  if (!bounced.bounced) {
     return { state, logs: [] };
   }
 
-  const returnIds = new Set(toReturn.map((c) => c.instanceId));
-  const nextEnemy = {
-    ...enemy,
-    rush: enemy.rush.filter((c) => !returnIds.has(c.instanceId)),
-    hand: [...enemy.hand, ...toReturn],
-  };
-
   return {
-    state: { ...state, ...updatePlayer(state, enemyId, nextEnemy) },
+    state: bounced.state,
     logs: [
       buildLogEntry(playerId, "enter_battle", cardId, state.definitions, "mane_hurricane"),
     ],

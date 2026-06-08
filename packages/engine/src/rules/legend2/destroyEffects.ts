@@ -1,7 +1,8 @@
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
-import { opponent, removeAt, updatePlayer } from "../../core/helpers";
+import { opponent, updatePlayer } from "../../core/helpers";
+import { bounceToHand } from "../bounce";
 import { applyDamageToPlayer } from "../damagePayment";
 import { buildLogEntry } from "../../log/formatLog";
 
@@ -103,18 +104,15 @@ export function checkReturnToHandAt6Damage(
     if (opponent(ownerId) !== damagedPlayerId) continue;
     const player = nextState.players[ownerId];
     for (const zone of ["rush", "battle"] as const) {
-      const index = player[zone].findIndex((c) => c.cardId === "RS-112");
-      if (index < 0) continue;
-      const zord = player[zone][index]!;
-      const [, rest] = removeAt(player[zone], index);
-      nextState = {
-        ...nextState,
-        ...updatePlayer(nextState, ownerId, {
-          ...nextState.players[ownerId],
-          [zone]: rest,
-          hand: [...nextState.players[ownerId].hand, zord],
-        }),
-      };
+      const zord = player[zone].find((c) => c.cardId === "RS-112");
+      if (!zord) continue;
+      const bounced = bounceToHand(nextState, {
+        playerId: ownerId,
+        instanceId: zord.instanceId,
+        fromZone: zone,
+      });
+      if (!bounced.bounced) continue;
+      nextState = bounced.state;
       logs.push(
         buildLogEntry(ownerId, "named_effect", "RS-112", state.definitions, "return_hand"),
       );
@@ -133,15 +131,12 @@ export function applyKarakuriFireHawkEndTurn(
   const hawk = player.battle.find((c) => c.cardId === "RS-096");
   if (!hawk) return state;
 
-  const [, battle] = removeAt(player.battle, player.battle.indexOf(hawk));
-  return {
-    ...state,
-    ...updatePlayer(state, endingPlayerId, {
-      ...player,
-      battle,
-      hand: [...player.hand, hawk],
-    }),
-  };
+  const bounced = bounceToHand(state, {
+    playerId: endingPlayerId,
+    instanceId: hawk.instanceId,
+    fromZone: "battle",
+  });
+  return bounced.bounced ? bounced.state : state;
 }
 
 import { startOpponentMayDrawChoice } from "../pendingChoices";

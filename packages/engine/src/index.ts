@@ -23,6 +23,7 @@ export * from "./rules/exile";
 export * from "./rules/reanimate";
 export * from "./rules/commander";
 export * from "./rules/postDamageEffects";
+export * from "./rules/bounce";
 export {
   isDenjiRevealAudience,
   canActOnDenjiChoice,

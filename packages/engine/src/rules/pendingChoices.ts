@@ -12,6 +12,8 @@ import { applyAssaultToCommandHold } from "./legend3/restrictions";
 import { findInZone, opponent, performDeckDraws, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { findCardOwner } from "./fieldLookup";
+import { bounceToHand } from "./bounce";
+import { applyReanimate } from "./reanimate";
 import { tryLeaveField } from "./operationCounters";
 import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
@@ -949,43 +951,63 @@ export function applyEffectChoiceSelect(
         );
       }
       if (dest === "hand" || dest === "hand_from_discard" || dest === "hand_from_power") {
-        const located = findCardOwner(state, instanceId);
-        if (!located) return { error: "invalid_target" };
-        const owner = state.players[located.playerId];
-        const fromZone =
-          dest === "hand_from_discard"
-            ? "discard"
-            : dest === "hand_from_power"
-              ? "power"
-              : located.zone;
-        if (fromZone !== "discard" && fromZone !== "power" && fromZone !== "rush" && fromZone !== "battle") {
-          return { error: "invalid_target" };
-        }
-        const found = findInZone(owner, fromZone, instanceId);
-        if (!found) return { error: "invalid_target" };
-        const [, zoneCards] = removeAt(owner[fromZone], found.index);
-        let nextOwner = {
-          ...owner,
-          [fromZone]: zoneCards,
-          hand: [...owner.hand, found.card],
-        };
-        if (pending.effectId === "ghost_absorption" && pending.sourceInstanceId) {
-          const returnedBp = unitBp(getDefinition(state.definitions, found.card.cardId));
-          const battle = nextOwner.battle.map((c) =>
-            c.instanceId === pending.sourceInstanceId
-              ? {
-                  ...c,
-                  spModifier: (c.spModifier ?? 0) + 1,
-                  bpModifier: returnedBp,
-                }
-              : c,
+        if (dest === "hand_from_discard") {
+          const ownerId = pending.playerId;
+          const owner = state.players[ownerId];
+          const found = findInZone(owner, "discard", instanceId);
+          if (!found) return { error: "invalid_target" };
+          const nextState = applyReanimate(state, {
+            playerId: ownerId,
+            instanceId,
+            from: "discard",
+            to: "hand",
+          });
+          return finishChoice(
+            nextState,
+            pending,
+            cardName(state.definitions, found.card.cardId),
           );
-          nextOwner = { ...nextOwner, battle };
+        }
+
+        const located = findCardOwner(state, instanceId);
+        const ownerId =
+          dest === "hand_from_power" ? pending.playerId : located?.playerId;
+        if (!ownerId) return { error: "invalid_target" };
+        const fromZone =
+          dest === "hand_from_power" ? "power" : located!.zone;
+        const bounced = bounceToHand(state, {
+          playerId: ownerId,
+          instanceId,
+          fromZone,
+          faceUpPowerOnly: fromZone === "power",
+        });
+        if (!bounced.bounced) return { error: "invalid_target" };
+        let nextState = bounced.state;
+        if (pending.effectId === "ghost_absorption" && pending.sourceInstanceId) {
+          const actor = nextState.players[pending.playerId];
+          const returnedBp = unitBp(
+            getDefinition(state.definitions, bounced.bounced.cardId),
+          );
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, pending.playerId, {
+              ...actor,
+              battle: actor.battle.map((c) =>
+                c.instanceId === pending.sourceInstanceId
+                  ? {
+                      ...c,
+                      spModifier: (c.spModifier ?? 0) + 1,
+                      bpModifier: returnedBp,
+                    }
+                  : c,
+              ),
+            }),
+          };
         }
         return finishChoice(
-          { ...state, ...updatePlayer(state, located.playerId, nextOwner) },
+          nextState,
           pending,
-          cardName(state.definitions, found.card.cardId),
+          cardName(state.definitions, bounced.bounced.cardId),
         );
       }
       if (dest === "enemy_battle") {
@@ -1223,12 +1245,13 @@ export function applyEffectChoiceSelect(
         command[found.index] = { ...found.card, commandHeld: true };
         nextPlayer = { ...player, command };
       } else if (pending.commandAction === "return_hand") {
-        const [, command] = removeAt(player.command, found.index);
-        nextPlayer = {
-          ...player,
-          command,
-          hand: [...player.hand, found.card],
-        };
+        const bounced = bounceToHand(state, {
+          playerId: owner,
+          instanceId,
+          fromZone: "command",
+        });
+        if (!bounced.bounced) return { error: "invalid_target" };
+        return finishChoice(bounced.state, pending, cardName(state.definitions, found.card.cardId));
       } else if (pending.commandAction === "rush" || pending.commandAction === "rush_silent") {
         const [, command] = removeAt(player.command, found.index);
         nextPlayer = {
