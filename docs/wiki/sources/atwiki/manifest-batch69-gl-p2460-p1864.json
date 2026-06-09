@@ -1,0 +1,77 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch69-gl-p2460-p1864.json",
+  "pages": [
+    {
+      "id": 2460,
+      "label": "p2460",
+      "title": "色"
+    },
+    {
+      "id": 1844,
+      "label": "p1844",
+      "title": "選ぶ"
+    },
+    {
+      "id": 1840,
+      "label": "p1840",
+      "title": "素材"
+    },
+    {
+      "id": 1872,
+      "label": "p1872",
+      "title": "送る"
+    },
+    {
+      "id": 143,
+      "label": "p143",
+      "title": "多色"
+    },
+    {
+      "id": 2233,
+      "label": "p2233",
+      "title": "耐性"
+    },
+    {
+      "id": 139,
+      "label": "p139",
+      "title": "単色"
+    },
+    {
+      "id": 1413,
+      "label": "p1413",
+      "title": "置き換え"
+    },
+    {
+      "id": 586,
+      "label": "p586",
+      "title": "追加条件"
+    },
+    {
+      "id": 1827,
+      "label": "p1827",
+      "title": "同時"
+    },
+    {
+      "id": 1017,
+      "label": "p1017",
+      "title": "特徴"
+    },
+    {
+      "id": 1721,
+      "label": "p1721",
+      "title": "必要パワー"
+    },
+    {
+      "id": 1864,
+      "label": "p1864",
+      "title": "優先順位"
+    }
+  ]
+}

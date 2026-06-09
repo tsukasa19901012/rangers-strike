@@ -1,0 +1,512 @@
+{
+  "PK-001": {
+    "page": 960,
+    "name": "仮面ライダー龍騎",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-002": {
+    "page": 962,
+    "name": "ゼクトルーパー",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-003": {
+    "page": 961,
+    "name": "仮面ライダー龍騎",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-004": {
+    "page": 971,
+    "name": "仮面ライダー電王SF",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-005": {
+    "page": 967,
+    "name": "デンライナーゴウカ",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-006": {
+    "page": 964,
+    "name": "シャドームーン",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-007": {
+    "page": 966,
+    "name": "モモタロス",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-008": {
+    "page": 973,
+    "name": "ライダーマン",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-009": {
+    "page": 963,
+    "name": "仮面ライダーV3",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-010": {
+    "page": 983,
+    "name": "ウエイクアップ！",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-011": {
+    "page": 984,
+    "name": "クライマックス刑事",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-012": {
+    "page": 1140,
+    "name": "仮面ライダー龍騎サバイブ",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-013": {
+    "page": 1093,
+    "name": "変身音叉 音角",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PK-014": {
+    "page": 1395,
+    "name": "仮面ライダーキバEF",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PM-001": {
+    "page": 743,
+    "name": "ジライヤ",
+    "setTitle": "プロモーションカード（七忍の炎陣）",
+    "kind": "pm"
+  },
+  "PR-001": {
+    "page": 995,
+    "name": "ボウケンレッド",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-002": {
+    "page": 996,
+    "name": "ダイボウケン",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-003": {
+    "page": 997,
+    "name": "アドベンチャー",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-004": {
+    "page": 998,
+    "name": "バルイーグル",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-005": {
+    "page": 1003,
+    "name": "デカレンジャーロボ",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-006": {
+    "page": 1004,
+    "name": "デカレッド",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-007": {
+    "page": 1005,
+    "name": "アカレンジャー",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-008": {
+    "page": 1006,
+    "name": "バイオハンター・シルバ",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-009": {
+    "page": 1007,
+    "name": "サンバルカンロボ",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-010": {
+    "page": 1008,
+    "name": "ゴレンジャーストーム",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-011": {
+    "page": 994,
+    "name": "ボウケンレッド",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-012": {
+    "page": 993,
+    "name": "隠流忍術",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-013": {
+    "page": 991,
+    "name": "スーパーダイボウケン",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-014": {
+    "page": 990,
+    "name": "ダークナイト",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-015": {
+    "page": 989,
+    "name": "バイオロボ",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-016": {
+    "page": 988,
+    "name": "アバレッドAM",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-017": {
+    "page": 987,
+    "name": "ゲキレッド",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-018": {
+    "page": 986,
+    "name": "ゲキトージャ",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-019": {
+    "page": 985,
+    "name": "レッドファルコン",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-020": {
+    "page": 980,
+    "name": "タイムレッド",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-021": {
+    "page": 979,
+    "name": "激気",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-022": {
+    "page": 976,
+    "name": "ゴーオンレッド",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-023": {
+    "page": 1139,
+    "name": "シュリケンジャー",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-024": {
+    "page": 1094,
+    "name": "デカブレイク",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-025": {
+    "page": 1095,
+    "name": "スーパーハイウェイバスター",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-026": {
+    "page": 1396,
+    "name": "デカマスター（2nd）",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "PR-027": {
+    "page": 1397,
+    "name": "黒獅子リオ",
+    "setTitle": "プロモーションカード",
+    "kind": "pr-pk"
+  },
+  "XC-001": {
+    "page": 2158,
+    "name": "ゾル大佐",
+    "setTitle": "プロモーションカード（大会専用）",
+    "kind": "xc"
+  },
+  "XC-002": {
+    "page": 2159,
+    "name": "ヌマ・O長官",
+    "setTitle": "プロモーションカード（大会専用）",
+    "kind": "xc"
+  },
+  "XC-003": {
+    "page": 2160,
+    "name": "マスター・シャーフー",
+    "setTitle": "プロモーションカード（大会専用）",
+    "kind": "xc"
+  },
+  "XC-004": {
+    "page": 2161,
+    "name": "天空大聖者マジエル",
+    "setTitle": "プロモーションカード（大会専用）",
+    "kind": "xc"
+  },
+  "XC-005": {
+    "page": 2162,
+    "name": "仮面ライダー1号・本郷猛",
+    "setTitle": "プロモーションカード（大会専用）",
+    "kind": "xc"
+  },
+  "XC-006": {
+    "page": 2163,
+    "name": "ボウケンレッド・明石暁",
+    "setTitle": "プロモーションカード（大会専用）",
+    "kind": "xc"
+  },
+  "XC-007": {
+    "page": 2164,
+    "name": "宇宙刑事ギャバン・一条寺烈",
+    "setTitle": "プロモーションカード（大会専用）",
+    "kind": "xc"
+  },
+  "XC-008": {
+    "page": 2165,
+    "name": "シンケンレッド・志葉丈瑠",
+    "setTitle": "プロモーションカード（大会専用）",
+    "kind": "xc"
+  },
+  "XP-001": {
+    "page": 1532,
+    "name": "五色の戦士",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-002": {
+    "page": 1533,
+    "name": "戦士の魂",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-003": {
+    "page": 1539,
+    "name": "デカレッドバトライザー",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-004": {
+    "page": 1538,
+    "name": "仮面ライダーディケイド",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-005": {
+    "page": 1557,
+    "name": "仮面ライダーディケイドCF",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-006": {
+    "page": 1556,
+    "name": "侍合体",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-007": {
+    "page": 1688,
+    "name": "仮面ライダーNEW電王SF",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-008": {
+    "page": 1719,
+    "name": "仮面ライダーNEW電王VF",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-009": {
+    "page": 1700,
+    "name": "仮面ライダークウガ",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-010": {
+    "page": 1697,
+    "name": "デカブルーSWAT",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-011": {
+    "page": 1698,
+    "name": "デカレッドSWAT",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-012": {
+    "page": 1720,
+    "name": "シンケンゴールド",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-013": {
+    "page": 1882,
+    "name": "ハイパーシンケンレッド",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-014": {
+    "page": 1883,
+    "name": "仮面ライダーW・CM",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-016": {
+    "page": 1982,
+    "name": "仮面ライダークウガRU・レッドアイ",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-017": {
+    "page": 1981,
+    "name": "仮面ライダーディケイド激情態",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-018": {
+    "page": 2130,
+    "name": "ゴールド寿司",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-019": {
+    "page": 2131,
+    "name": "仮面ライダー1号",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-020": {
+    "page": 2127,
+    "name": "護星天使",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-022": {
+    "page": 2234,
+    "name": "ゴセイレッド",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-023": {
+    "page": 2253,
+    "name": "ドラゴンレンジャー",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-024": {
+    "page": 2255,
+    "name": "仮面ライダー2号",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-025": {
+    "page": 2256,
+    "name": "ダイカイシンケンオー",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-026": {
+    "page": 2257,
+    "name": "仮面ライダーアクセル",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-027": {
+    "page": 2370,
+    "name": "ダイノミッション",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-028": {
+    "page": 2369,
+    "name": "ワンダーゴセイグレート",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  },
+  "XP-029": {
+    "page": 2362,
+    "name": "仮面ライダーW・CAX",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-030": {
+    "page": 2368,
+    "name": "仮面ライダーオーズ・サゴーゾコンボ",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-031": {
+    "page": 2446,
+    "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダー電王SF",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RK"
+  },
+  "XP-032": {
+    "page": 2444,
+    "name": "ゴーカイオー",
+    "setTitle": "プロモーションカード（クロスギャザー）",
+    "kind": "xp-promo",
+    "edition": "RS"
+  }
+}

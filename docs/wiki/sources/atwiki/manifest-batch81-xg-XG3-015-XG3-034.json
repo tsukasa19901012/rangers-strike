@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch81-xg-XG3-015-XG3-034.json",
+  "pages": [
+    {
+      "id": 1893,
+      "label": "XG3-015",
+      "title": "ガオベアー",
+      "cardId": "XG3-015"
+    },
+    {
+      "id": 1894,
+      "label": "XG3-016",
+      "title": "ガオゴリラ",
+      "cardId": "XG3-016"
+    },
+    {
+      "id": 1895,
+      "label": "XG3-017",
+      "title": "猛獣使いオルグ",
+      "cardId": "XG3-017"
+    },
+    {
+      "id": 1896,
+      "label": "XG3-018",
+      "title": "スピンビー",
+      "cardId": "XG3-018"
+    },
+    {
+      "id": 1897,
+      "label": "XG3-019",
+      "title": "キャッチスパイダー",
+      "cardId": "XG3-019"
+    },
+    {
+      "id": 1961,
+      "label": "XG3-020",
+      "title": "クワガライジャー（XG3）",
+      "cardId": "XG3-020"
+    },
+    {
+      "id": 1960,
+      "label": "XG3-021",
+      "title": "カブトライジャー（XG3）",
+      "cardId": "XG3-021"
+    },
+    {
+      "id": 1898,
+      "label": "XG3-022",
+      "title": "アバレッド（XG3）",
+      "cardId": "XG3-022"
+    },
+    {
+      "id": 1969,
+      "label": "XG3-023",
+      "title": "アバレマックス",
+      "cardId": "XG3-023"
+    },
+    {
+      "id": 1899,
+      "label": "XG3-024",
+      "title": "創造の使徒ミケラ",
+      "cardId": "XG3-024"
+    },
+    {
+      "id": 1900,
+      "label": "XG3-025",
+      "title": "無限の使徒ヴォッファ",
+      "cardId": "XG3-025"
+    },
+    {
+      "id": 1999,
+      "label": "XG3-026",
+      "title": "マックスオージャ",
+      "cardId": "XG3-026"
+    },
+    {
+      "id": 1901,
+      "label": "XG3-027",
+      "title": "スティラコサウルス",
+      "cardId": "XG3-027"
+    },
+    {
+      "id": 1902,
+      "label": "XG3-028",
+      "title": "魔導馬バリキオン（XG3）",
+      "cardId": "XG3-028"
+    },
+    {
+      "id": 2016,
+      "label": "XG3-029",
+      "title": "魔導騎士ウルザード（XG3）",
+      "cardId": "XG3-029"
+    },
+    {
+      "id": 1903,
+      "label": "XG3-030",
+      "title": "ウルケンタウロス",
+      "cardId": "XG3-030"
+    },
+    {
+      "id": 1904,
+      "label": "XG3-031",
+      "title": "ゲキブルー（XG3）",
+      "cardId": "XG3-031"
+    },
+    {
+      "id": 1905,
+      "label": "XG3-032",
+      "title": "ゲキイエロー（XG3）",
+      "cardId": "XG3-032"
+    },
+    {
+      "id": 1906,
+      "label": "XG3-033",
+      "title": "ナナシ連中",
+      "cardId": "XG3-033"
+    },
+    {
+      "id": 1907,
+      "label": "XG3-034",
+      "title": "恐竜折神",
+      "cardId": "XG3-034"
+    }
+  ]
+}

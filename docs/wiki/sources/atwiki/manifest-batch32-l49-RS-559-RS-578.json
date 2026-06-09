@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch32-l49-RS-559-RS-578.json",
+  "pages": [
+    {
+      "id": 1227,
+      "label": "RS-559",
+      "title": "ガオゴッド",
+      "cardId": "RS-559"
+    },
+    {
+      "id": 1180,
+      "label": "RS-560",
+      "title": "ガオレオン",
+      "cardId": "RS-560"
+    },
+    {
+      "id": 1184,
+      "label": "RS-561",
+      "title": "ガオコンドル",
+      "cardId": "RS-561"
+    },
+    {
+      "id": 1182,
+      "label": "RS-562",
+      "title": "ガオソーシャーク",
+      "cardId": "RS-562"
+    },
+    {
+      "id": 1183,
+      "label": "RS-563",
+      "title": "ガオバッファロー",
+      "cardId": "RS-563"
+    },
+    {
+      "id": 1185,
+      "label": "RS-564",
+      "title": "ガオジャガー",
+      "cardId": "RS-564"
+    },
+    {
+      "id": 1187,
+      "label": "RS-565",
+      "title": "轟雷旋風神",
+      "cardId": "RS-565"
+    },
+    {
+      "id": 1229,
+      "label": "RS-566",
+      "title": "天雷旋風神",
+      "cardId": "RS-566"
+    },
+    {
+      "id": 1188,
+      "label": "RS-567",
+      "title": "トライコンドル",
+      "cardId": "RS-567"
+    },
+    {
+      "id": 1189,
+      "label": "RS-568",
+      "title": "風雷丸",
+      "cardId": "RS-568"
+    },
+    {
+      "id": 1230,
+      "label": "RS-569",
+      "title": "スーパーデカレンジャーロボ",
+      "cardId": "RS-569"
+    },
+    {
+      "id": 1190,
+      "label": "RS-570",
+      "title": "デカバイク",
+      "cardId": "RS-570"
+    },
+    {
+      "id": 1214,
+      "label": "RS-571",
+      "title": "デカバイクロボ",
+      "cardId": "RS-571"
+    },
+    {
+      "id": 1215,
+      "label": "RS-572",
+      "title": "デカマスター（2nd）",
+      "cardId": "RS-572"
+    },
+    {
+      "id": 1191,
+      "label": "RS-573",
+      "title": "ファイヤーカイザー（2nd）",
+      "cardId": "RS-573"
+    },
+    {
+      "id": 1218,
+      "label": "RS-574",
+      "title": "セイントカイザー",
+      "cardId": "RS-574"
+    },
+    {
+      "id": 1240,
+      "label": "RS-575",
+      "title": "一角聖馬ユニゴルオン",
+      "cardId": "RS-575"
+    },
+    {
+      "id": 1193,
+      "label": "RS-576",
+      "title": "マジフェニックス",
+      "cardId": "RS-576"
+    },
+    {
+      "id": 1228,
+      "label": "RS-577",
+      "title": "マジレッド（2nd）",
+      "cardId": "RS-577"
+    },
+    {
+      "id": 1220,
+      "label": "RS-578",
+      "title": "レジェンドマジグリーンRA",
+      "cardId": "RS-578"
+    }
+  ]
+}

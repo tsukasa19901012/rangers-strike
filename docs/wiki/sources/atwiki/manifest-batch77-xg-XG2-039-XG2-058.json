@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch77-xg-XG2-039-XG2-058.json",
+  "pages": [
+    {
+      "id": 1756,
+      "label": "XG2-039",
+      "title": "スーパーシンケンピンク",
+      "cardId": "XG2-039"
+    },
+    {
+      "id": 1757,
+      "label": "XG2-040",
+      "title": "スーパーシンケングリーン",
+      "cardId": "XG2-040"
+    },
+    {
+      "id": 1758,
+      "label": "XG2-041",
+      "title": "スーパーシンケンイエロー",
+      "cardId": "XG2-041"
+    },
+    {
+      "id": 1687,
+      "label": "XG2-042",
+      "title": "仮面ライダーディケイドCF",
+      "cardId": "XG2-042"
+    },
+    {
+      "id": 1818,
+      "label": "XG2-043",
+      "title": "仮面ライダーW・CJ",
+      "cardId": "XG2-043"
+    },
+    {
+      "id": 1815,
+      "label": "XG2-044",
+      "title": "仮面ライダーW・HM",
+      "cardId": "XG2-044"
+    },
+    {
+      "id": 1822,
+      "label": "XG2-045",
+      "title": "仮面ライダーW・LT",
+      "cardId": "XG2-045"
+    },
+    {
+      "id": 1745,
+      "label": "XG2-046",
+      "title": "仮面ライダースーパー1・PH",
+      "cardId": "XG2-046"
+    },
+    {
+      "id": 1503,
+      "label": "XG2-047",
+      "title": "仮面ライダースーパー1・RNH",
+      "cardId": "XG2-047"
+    },
+    {
+      "id": 1744,
+      "label": "XG2-048",
+      "title": "仮面ライダースーパー1・RH",
+      "cardId": "XG2-048"
+    },
+    {
+      "id": 1759,
+      "label": "XG2-049",
+      "title": "仮面ライダーギルス（XG2）",
+      "cardId": "XG2-049"
+    },
+    {
+      "id": 1856,
+      "label": "XG2-050",
+      "title": "仮面ライダーエクシードギルス",
+      "cardId": "XG2-050"
+    },
+    {
+      "id": 1760,
+      "label": "XG2-051",
+      "title": "地のエル",
+      "cardId": "XG2-051"
+    },
+    {
+      "id": 1761,
+      "label": "XG2-052",
+      "title": "ユナイトベント",
+      "cardId": "XG2-052"
+    },
+    {
+      "id": 1762,
+      "label": "XG2-053",
+      "title": "仮面ライダータイガ（XG2）",
+      "cardId": "XG2-053"
+    },
+    {
+      "id": 1763,
+      "label": "XG2-054",
+      "title": "アビスハンマー",
+      "cardId": "XG2-054"
+    },
+    {
+      "id": 1764,
+      "label": "XG2-055",
+      "title": "変身一発",
+      "cardId": "XG2-055"
+    },
+    {
+      "id": 1814,
+      "label": "XG2-056",
+      "title": "仮面ライダーファイズBF",
+      "cardId": "XG2-056"
+    },
+    {
+      "id": 1765,
+      "label": "XG2-057",
+      "title": "ローズオルフェノク",
+      "cardId": "XG2-057"
+    },
+    {
+      "id": 1766,
+      "label": "XG2-058",
+      "title": "タイガーアンデッド",
+      "cardId": "XG2-058"
+    }
+  ]
+}

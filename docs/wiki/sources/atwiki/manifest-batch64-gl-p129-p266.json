@@ -1,0 +1,112 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch64-gl-p129-p266.json",
+  "pages": [
+    {
+      "id": 129,
+      "label": "p129",
+      "title": "オーバーテクノロジー"
+    },
+    {
+      "id": 581,
+      "label": "p581",
+      "title": "オペレーション"
+    },
+    {
+      "id": 738,
+      "label": "p738",
+      "title": "カード"
+    },
+    {
+      "id": 1851,
+      "label": "p1851",
+      "title": "カードナンバー"
+    },
+    {
+      "id": 1739,
+      "label": "p1739",
+      "title": "カード名"
+    },
+    {
+      "id": 2181,
+      "label": "p2181",
+      "title": "カテゴリシンボル"
+    },
+    {
+      "id": 1746,
+      "label": "p1746",
+      "title": "グッドスタッフ"
+    },
+    {
+      "id": 2393,
+      "label": "p2393",
+      "title": "クロス"
+    },
+    {
+      "id": 1535,
+      "label": "p1535",
+      "title": "クロスギャザー"
+    },
+    {
+      "id": 1293,
+      "label": "p1293",
+      "title": "コール"
+    },
+    {
+      "id": 1691,
+      "label": "p1691",
+      "title": "コマンダー"
+    },
+    {
+      "id": 1690,
+      "label": "p1690",
+      "title": "コマンダーカード"
+    },
+    {
+      "id": 261,
+      "label": "p261",
+      "title": "コンボ"
+    },
+    {
+      "id": 600,
+      "label": "p600",
+      "title": "サーチ"
+    },
+    {
+      "id": 583,
+      "label": "p583",
+      "title": "サイズ"
+    },
+    {
+      "id": 1423,
+      "label": "p1423",
+      "title": "ザマス"
+    },
+    {
+      "id": 1867,
+      "label": "p1867",
+      "title": "システムユニット"
+    },
+    {
+      "id": 1683,
+      "label": "p1683",
+      "title": "シナジー"
+    },
+    {
+      "id": 1414,
+      "label": "p1414",
+      "title": "シャッフル"
+    },
+    {
+      "id": 266,
+      "label": "p266",
+      "title": "ジョイントコンビネーション"
+    }
+  ]
+}

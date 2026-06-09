@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch46-rb-RK-122-RK-141.json",
+  "pages": [
+    {
+      "id": 706,
+      "label": "RK-122",
+      "title": "ホースオルフェノク格闘態",
+      "cardId": "RK-122"
+    },
+    {
+      "id": 707,
+      "label": "RK-123",
+      "title": "クレインオルフェノク",
+      "cardId": "RK-123"
+    },
+    {
+      "id": 708,
+      "label": "RK-124",
+      "title": "スネークオルフェノク",
+      "cardId": "RK-124"
+    },
+    {
+      "id": 646,
+      "label": "RK-125",
+      "title": "仮面ライダーブレイド",
+      "cardId": "RK-125"
+    },
+    {
+      "id": 647,
+      "label": "RK-126",
+      "title": "仮面ライダーギャレン",
+      "cardId": "RK-126"
+    },
+    {
+      "id": 648,
+      "label": "RK-127",
+      "title": "仮面ライダーカリス",
+      "cardId": "RK-127"
+    },
+    {
+      "id": 649,
+      "label": "RK-128",
+      "title": "仮面ライダーレンゲル",
+      "cardId": "RK-128"
+    },
+    {
+      "id": 617,
+      "label": "RK-129",
+      "title": "ブルースペイダー",
+      "cardId": "RK-129"
+    },
+    {
+      "id": 640,
+      "label": "RK-130",
+      "title": "ローカストアンデッド",
+      "cardId": "RK-130"
+    },
+    {
+      "id": 634,
+      "label": "RK-131",
+      "title": "仮面ライダー剛鬼",
+      "cardId": "RK-131"
+    },
+    {
+      "id": 685,
+      "label": "RK-132",
+      "title": "仮面ライダー闘鬼",
+      "cardId": "RK-132"
+    },
+    {
+      "id": 686,
+      "label": "RK-133",
+      "title": "仮面ライダー蛮鬼",
+      "cardId": "RK-133"
+    },
+    {
+      "id": 662,
+      "label": "RK-134",
+      "title": "仮面ライダー2号（THE FIRST）",
+      "cardId": "RK-134"
+    },
+    {
+      "id": 632,
+      "label": "RK-135",
+      "title": "仮面ライダードレイクMF",
+      "cardId": "RK-135"
+    },
+    {
+      "id": 668,
+      "label": "RK-136",
+      "title": "仮面ライダードレイクRF",
+      "cardId": "RK-136"
+    },
+    {
+      "id": 638,
+      "label": "RK-137",
+      "title": "ワームサナギ体",
+      "cardId": "RK-137"
+    },
+    {
+      "id": 639,
+      "label": "RK-138",
+      "title": "ウカワーム",
+      "cardId": "RK-138"
+    },
+    {
+      "id": 670,
+      "label": "RK-139",
+      "title": "仮面ライダーゼロノスAF",
+      "cardId": "RK-139"
+    },
+    {
+      "id": 671,
+      "label": "RK-140",
+      "title": "仮面ライダー電王LF",
+      "cardId": "RK-140"
+    },
+    {
+      "id": 669,
+      "label": "RK-141",
+      "title": "仮面ライダーゼロノスZF",
+      "cardId": "RK-141"
+    }
+  ]
+}

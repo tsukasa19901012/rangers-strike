@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch103-pr-PK-001-PR-006.json",
+  "pages": [
+    {
+      "id": 960,
+      "label": "PK-001",
+      "title": "仮面ライダー龍騎",
+      "cardId": "PK-001"
+    },
+    {
+      "id": 962,
+      "label": "PK-002",
+      "title": "ゼクトルーパー",
+      "cardId": "PK-002"
+    },
+    {
+      "id": 961,
+      "label": "PK-003",
+      "title": "仮面ライダー龍騎",
+      "cardId": "PK-003"
+    },
+    {
+      "id": 971,
+      "label": "PK-004",
+      "title": "仮面ライダー電王SF",
+      "cardId": "PK-004"
+    },
+    {
+      "id": 967,
+      "label": "PK-005",
+      "title": "デンライナーゴウカ",
+      "cardId": "PK-005"
+    },
+    {
+      "id": 964,
+      "label": "PK-006",
+      "title": "シャドームーン",
+      "cardId": "PK-006"
+    },
+    {
+      "id": 966,
+      "label": "PK-007",
+      "title": "モモタロス",
+      "cardId": "PK-007"
+    },
+    {
+      "id": 973,
+      "label": "PK-008",
+      "title": "ライダーマン",
+      "cardId": "PK-008"
+    },
+    {
+      "id": 963,
+      "label": "PK-009",
+      "title": "仮面ライダーV3",
+      "cardId": "PK-009"
+    },
+    {
+      "id": 983,
+      "label": "PK-010",
+      "title": "ウエイクアップ！",
+      "cardId": "PK-010"
+    },
+    {
+      "id": 984,
+      "label": "PK-011",
+      "title": "クライマックス刑事",
+      "cardId": "PK-011"
+    },
+    {
+      "id": 1140,
+      "label": "PK-012",
+      "title": "仮面ライダー龍騎サバイブ",
+      "cardId": "PK-012"
+    },
+    {
+      "id": 1093,
+      "label": "PK-013",
+      "title": "変身音叉 音角",
+      "cardId": "PK-013"
+    },
+    {
+      "id": 1395,
+      "label": "PK-014",
+      "title": "仮面ライダーキバEF",
+      "cardId": "PK-014"
+    },
+    {
+      "id": 995,
+      "label": "PR-001",
+      "title": "ボウケンレッド",
+      "cardId": "PR-001"
+    },
+    {
+      "id": 996,
+      "label": "PR-002",
+      "title": "ダイボウケン",
+      "cardId": "PR-002"
+    },
+    {
+      "id": 997,
+      "label": "PR-003",
+      "title": "アドベンチャー",
+      "cardId": "PR-003"
+    },
+    {
+      "id": 998,
+      "label": "PR-004",
+      "title": "バルイーグル",
+      "cardId": "PR-004"
+    },
+    {
+      "id": 1003,
+      "label": "PR-005",
+      "title": "デカレンジャーロボ",
+      "cardId": "PR-005"
+    },
+    {
+      "id": 1004,
+      "label": "PR-006",
+      "title": "デカレッド",
+      "cardId": "PR-006"
+    }
+  ]
+}

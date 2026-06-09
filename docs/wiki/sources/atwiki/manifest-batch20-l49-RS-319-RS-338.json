@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch20-l49-RS-319-RS-338.json",
+  "pages": [
+    {
+      "id": 47,
+      "label": "RS-319",
+      "title": "デカマスター",
+      "cardId": "RS-319"
+    },
+    {
+      "id": 426,
+      "label": "RS-320",
+      "title": "デカスワン",
+      "cardId": "RS-320"
+    },
+    {
+      "id": 430,
+      "label": "RS-321",
+      "title": "アーナロイド",
+      "cardId": "RS-321"
+    },
+    {
+      "id": 431,
+      "label": "RS-322",
+      "title": "ベン・G",
+      "cardId": "RS-322"
+    },
+    {
+      "id": 484,
+      "label": "RS-323",
+      "title": "マジグリーン・マッスル",
+      "cardId": "RS-323"
+    },
+    {
+      "id": 486,
+      "label": "RS-324",
+      "title": "マジマザー",
+      "cardId": "RS-324"
+    },
+    {
+      "id": 485,
+      "label": "RS-325",
+      "title": "天空勇者マジシャイン",
+      "cardId": "RS-325"
+    },
+    {
+      "id": 487,
+      "label": "RS-326",
+      "title": "魔法猫スモーキー",
+      "cardId": "RS-326"
+    },
+    {
+      "id": 488,
+      "label": "RS-327",
+      "title": "天空聖者ブレイジェル",
+      "cardId": "RS-327"
+    },
+    {
+      "id": 489,
+      "label": "RS-328",
+      "title": "魔法鉄神トラベリオン",
+      "cardId": "RS-328"
+    },
+    {
+      "id": 490,
+      "label": "RS-329",
+      "title": "トラベリオンエクスプレス",
+      "cardId": "RS-329"
+    },
+    {
+      "id": 491,
+      "label": "RS-330",
+      "title": "マジレジェンド",
+      "cardId": "RS-330"
+    },
+    {
+      "id": 492,
+      "label": "RS-331",
+      "title": "マジファイヤーバード",
+      "cardId": "RS-331"
+    },
+    {
+      "id": 493,
+      "label": "RS-332",
+      "title": "マジライオン",
+      "cardId": "RS-332"
+    },
+    {
+      "id": 494,
+      "label": "RS-333",
+      "title": "レジェンドマジレッド",
+      "cardId": "RS-333"
+    },
+    {
+      "id": 495,
+      "label": "RS-334",
+      "title": "レジェンドマジイエロー",
+      "cardId": "RS-334"
+    },
+    {
+      "id": 496,
+      "label": "RS-335",
+      "title": "レジェンドマジブルー",
+      "cardId": "RS-335"
+    },
+    {
+      "id": 497,
+      "label": "RS-336",
+      "title": "レジェンドマジピンク",
+      "cardId": "RS-336"
+    },
+    {
+      "id": 498,
+      "label": "RS-337",
+      "title": "レジェンドマジグリーン",
+      "cardId": "RS-337"
+    },
+    {
+      "id": 428,
+      "label": "RS-338",
+      "title": "ジャリュウ兵",
+      "cardId": "RS-338"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch26-l49-RS-439-RS-458.json",
+  "pages": [
+    {
+      "id": 781,
+      "label": "RS-439",
+      "title": "バトルシャーク",
+      "cardId": "RS-439"
+    },
+    {
+      "id": 780,
+      "label": "RS-440",
+      "title": "バトルフィーバーロボ（2nd）",
+      "cardId": "RS-440"
+    },
+    {
+      "id": 782,
+      "label": "RS-441",
+      "title": "バトルコサック",
+      "cardId": "RS-441"
+    },
+    {
+      "id": 751,
+      "label": "RS-442",
+      "title": "バトルフランス",
+      "cardId": "RS-442"
+    },
+    {
+      "id": 754,
+      "label": "RS-443",
+      "title": "バトルジャパン",
+      "cardId": "RS-443"
+    },
+    {
+      "id": 783,
+      "label": "RS-444",
+      "title": "バトルケニア",
+      "cardId": "RS-444"
+    },
+    {
+      "id": 784,
+      "label": "RS-445",
+      "title": "ミスアメリカ",
+      "cardId": "RS-445"
+    },
+    {
+      "id": 785,
+      "label": "RS-446",
+      "title": "ダイジュピター",
+      "cardId": "RS-446"
+    },
+    {
+      "id": 786,
+      "label": "RS-447",
+      "title": "ダイナブラック",
+      "cardId": "RS-447"
+    },
+    {
+      "id": 787,
+      "label": "RS-448",
+      "title": "ダイナイエロー",
+      "cardId": "RS-448"
+    },
+    {
+      "id": 797,
+      "label": "RS-449",
+      "title": "イエローマスク",
+      "cardId": "RS-449"
+    },
+    {
+      "id": 821,
+      "label": "RS-450",
+      "title": "地帝忍オヨブー",
+      "cardId": "RS-450"
+    },
+    {
+      "id": 822,
+      "label": "RS-451",
+      "title": "シノビドグラー",
+      "cardId": "RS-451"
+    },
+    {
+      "id": 788,
+      "label": "RS-452",
+      "title": "テトラボーイ",
+      "cardId": "RS-452"
+    },
+    {
+      "id": 798,
+      "label": "RS-453",
+      "title": "サムライマン",
+      "cardId": "RS-453"
+    },
+    {
+      "id": 799,
+      "label": "RS-454",
+      "title": "ニンジャマン",
+      "cardId": "RS-454"
+    },
+    {
+      "id": 800,
+      "label": "RS-455",
+      "title": "ニンジャブラック",
+      "cardId": "RS-455"
+    },
+    {
+      "id": 801,
+      "label": "RS-456",
+      "title": "ニンジャブルー",
+      "cardId": "RS-456"
+    },
+    {
+      "id": 802,
+      "label": "RS-457",
+      "title": "ニンジャレッド",
+      "cardId": "RS-457"
+    },
+    {
+      "id": 803,
+      "label": "RS-458",
+      "title": "ニンジャホワイト",
+      "cardId": "RS-458"
+    }
+  ]
+}

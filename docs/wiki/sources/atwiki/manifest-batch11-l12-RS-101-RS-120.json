@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch11-l12-RS-101-RS-120.json",
+  "pages": [
+    {
+      "id": 319,
+      "label": "RS-101",
+      "title": "ハリケンブルー",
+      "cardId": "RS-101"
+    },
+    {
+      "id": 330,
+      "label": "RS-102",
+      "title": "五の槍サーガイン",
+      "cardId": "RS-102"
+    },
+    {
+      "id": 331,
+      "label": "RS-103",
+      "title": "七の槍サンダール",
+      "cardId": "RS-103"
+    },
+    {
+      "id": 233,
+      "label": "RS-104",
+      "title": "アバレイエロー",
+      "cardId": "RS-104"
+    },
+    {
+      "id": 304,
+      "label": "RS-105",
+      "title": "デカベースクローラー",
+      "cardId": "RS-105"
+    },
+    {
+      "id": 23,
+      "label": "RS-106",
+      "title": "デカレッド",
+      "cardId": "RS-106"
+    },
+    {
+      "id": 305,
+      "label": "RS-107",
+      "title": "デカブルー",
+      "cardId": "RS-107"
+    },
+    {
+      "id": 307,
+      "label": "RS-108",
+      "title": "デカグリーン",
+      "cardId": "RS-108"
+    },
+    {
+      "id": 306,
+      "label": "RS-109",
+      "title": "デカイエロー",
+      "cardId": "RS-109"
+    },
+    {
+      "id": 308,
+      "label": "RS-110",
+      "title": "デカピンク",
+      "cardId": "RS-110"
+    },
+    {
+      "id": 24,
+      "label": "RS-111",
+      "title": "マジキング",
+      "cardId": "RS-111"
+    },
+    {
+      "id": 332,
+      "label": "RS-112",
+      "title": "ウルカイザー",
+      "cardId": "RS-112"
+    },
+    {
+      "id": 320,
+      "label": "RS-113",
+      "title": "ファイヤーカイザー",
+      "cardId": "RS-113"
+    },
+    {
+      "id": 333,
+      "label": "RS-114",
+      "title": "魔導馬バリキオン",
+      "cardId": "RS-114"
+    },
+    {
+      "id": 28,
+      "label": "RS-115",
+      "title": "魔導騎士ウルザード",
+      "cardId": "RS-115"
+    },
+    {
+      "id": 321,
+      "label": "RS-116",
+      "title": "マンドラ坊や",
+      "cardId": "RS-116"
+    },
+    {
+      "id": 291,
+      "label": "RS-117",
+      "title": "ダイボウケン",
+      "cardId": "RS-117"
+    },
+    {
+      "id": 292,
+      "label": "RS-118",
+      "title": "ゴーゴーダンプ",
+      "cardId": "RS-118"
+    },
+    {
+      "id": 293,
+      "label": "RS-119",
+      "title": "ゴーゴーフォーミュラ",
+      "cardId": "RS-119"
+    },
+    {
+      "id": 294,
+      "label": "RS-120",
+      "title": "ゴーゴージャイロ",
+      "cardId": "RS-120"
+    }
+  ]
+}

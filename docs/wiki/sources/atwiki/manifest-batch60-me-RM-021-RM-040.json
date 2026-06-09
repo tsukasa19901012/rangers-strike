@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch60-me-RM-021-RM-040.json",
+  "pages": [
+    {
+      "id": 836,
+      "label": "RM-021",
+      "title": "ギラン円盤",
+      "cardId": "RM-021"
+    },
+    {
+      "id": 837,
+      "label": "RM-022",
+      "title": "サイバリアン",
+      "cardId": "RM-022"
+    },
+    {
+      "id": 838,
+      "label": "RM-023",
+      "title": "スクーパー",
+      "cardId": "RM-023"
+    },
+    {
+      "id": 839,
+      "label": "RM-024",
+      "title": "高次元戦闘車ギャビオン",
+      "cardId": "RM-024"
+    },
+    {
+      "id": 894,
+      "label": "RM-025",
+      "title": "宇宙刑事シャリバン",
+      "cardId": "RM-025"
+    },
+    {
+      "id": 840,
+      "label": "RM-026",
+      "title": "超次元戦闘母艦グランドバース",
+      "cardId": "RM-026"
+    },
+    {
+      "id": 841,
+      "label": "RM-027",
+      "title": "バトルバースフォーメーション",
+      "cardId": "RM-027"
+    },
+    {
+      "id": 842,
+      "label": "RM-028",
+      "title": "モトシャリアン",
+      "cardId": "RM-028"
+    },
+    {
+      "id": 896,
+      "label": "RM-029",
+      "title": "ジャスピオン",
+      "cardId": "RM-029"
+    },
+    {
+      "id": 843,
+      "label": "RM-030",
+      "title": "超惑星戦闘母艦ダイレオン",
+      "cardId": "RM-030"
+    },
+    {
+      "id": 844,
+      "label": "RM-031",
+      "title": "戦闘巨人ダイレオン",
+      "cardId": "RM-031"
+    },
+    {
+      "id": 845,
+      "label": "RM-032",
+      "title": "アイアンウルフ",
+      "cardId": "RM-032"
+    },
+    {
+      "id": 870,
+      "label": "RM-033",
+      "title": "メタルダー",
+      "cardId": "RM-033"
+    },
+    {
+      "id": 877,
+      "label": "RM-034",
+      "title": "暴魂トップガンダー",
+      "cardId": "RM-034"
+    },
+    {
+      "id": 846,
+      "label": "RM-035",
+      "title": "凱聖クールギン",
+      "cardId": "RM-035"
+    },
+    {
+      "id": 847,
+      "label": "RM-036",
+      "title": "暴魂チューボ",
+      "cardId": "RM-036"
+    },
+    {
+      "id": 848,
+      "label": "RM-037",
+      "title": "凱聖ゲルドリング",
+      "cardId": "RM-037"
+    },
+    {
+      "id": 849,
+      "label": "RM-038",
+      "title": "凱聖バルスキー",
+      "cardId": "RM-038"
+    },
+    {
+      "id": 872,
+      "label": "RM-039",
+      "title": "ジライヤ第二装着",
+      "cardId": "RM-039"
+    },
+    {
+      "id": 852,
+      "label": "RM-040",
+      "title": "姫忍　恵美破",
+      "cardId": "RM-040"
+    }
+  ]
+}

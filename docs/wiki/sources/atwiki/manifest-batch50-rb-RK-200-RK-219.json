@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch50-rb-RK-200-RK-219.json",
+  "pages": [
+    {
+      "id": 923,
+      "label": "RK-200",
+      "title": "マガゼール",
+      "cardId": "RK-200"
+    },
+    {
+      "id": 924,
+      "label": "RK-201",
+      "title": "ドラグブラッカー",
+      "cardId": "RK-201"
+    },
+    {
+      "id": 925,
+      "label": "RK-202",
+      "title": "仮面ライダー王蛇ブランク体",
+      "cardId": "RK-202"
+    },
+    {
+      "id": 873,
+      "label": "RK-203",
+      "title": "仮面ライダーファイズAF",
+      "cardId": "RK-203"
+    },
+    {
+      "id": 1077,
+      "label": "RK-204",
+      "title": "仮面ライダーオーガ",
+      "cardId": "RK-204"
+    },
+    {
+      "id": 956,
+      "label": "RK-205",
+      "title": "仮面ライダーサイガ",
+      "cardId": "RK-205"
+    },
+    {
+      "id": 926,
+      "label": "RK-206",
+      "title": "ウルフオルフェノク",
+      "cardId": "RK-206"
+    },
+    {
+      "id": 927,
+      "label": "RK-207",
+      "title": "ホースオルフェノク激情態",
+      "cardId": "RK-207"
+    },
+    {
+      "id": 928,
+      "label": "RK-208",
+      "title": "クレインオルフェノク激情態",
+      "cardId": "RK-208"
+    },
+    {
+      "id": 929,
+      "label": "RK-209",
+      "title": "エラスモテリウムオルフェノク",
+      "cardId": "RK-209"
+    },
+    {
+      "id": 1079,
+      "label": "RK-210",
+      "title": "仮面ライダーギャレンJF",
+      "cardId": "RK-210"
+    },
+    {
+      "id": 1078,
+      "label": "RK-211",
+      "title": "仮面ライダーブレイドJF",
+      "cardId": "RK-211"
+    },
+    {
+      "id": 930,
+      "label": "RK-212",
+      "title": "仮面ライダーラルク",
+      "cardId": "RK-212"
+    },
+    {
+      "id": 899,
+      "label": "RK-213",
+      "title": "仮面ライダーグレイブ",
+      "cardId": "RK-213"
+    },
+    {
+      "id": 931,
+      "label": "RK-214",
+      "title": "仮面ライダーランス",
+      "cardId": "RK-214"
+    },
+    {
+      "id": 943,
+      "label": "RK-215",
+      "title": "リザードアンデッド",
+      "cardId": "RK-215"
+    },
+    {
+      "id": 944,
+      "label": "RK-216",
+      "title": "ドラゴンフライアンデッド",
+      "cardId": "RK-216"
+    },
+    {
+      "id": 904,
+      "label": "RK-217",
+      "title": "イーグルアンデッド",
+      "cardId": "RK-217"
+    },
+    {
+      "id": 945,
+      "label": "RK-218",
+      "title": "ピーコックアンデッド",
+      "cardId": "RK-218"
+    },
+    {
+      "id": 946,
+      "label": "RK-219",
+      "title": "アルビローチ",
+      "cardId": "RK-219"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch27-l49-RS-459-RS-478.json",
+  "pages": [
+    {
+      "id": 804,
+      "label": "RS-459",
+      "title": "ニンジャイエロー",
+      "cardId": "RS-459"
+    },
+    {
+      "id": 823,
+      "label": "RS-460",
+      "title": "花忍者ラン",
+      "cardId": "RS-460"
+    },
+    {
+      "id": 824,
+      "label": "RS-461",
+      "title": "花忍者スイレン",
+      "cardId": "RS-461"
+    },
+    {
+      "id": 825,
+      "label": "RS-462",
+      "title": "花忍者サクラ",
+      "cardId": "RS-462"
+    },
+    {
+      "id": 747,
+      "label": "RS-463",
+      "title": "花忍者アヤメ",
+      "cardId": "RS-463"
+    },
+    {
+      "id": 826,
+      "label": "RS-464",
+      "title": "花忍者ユリ",
+      "cardId": "RS-464"
+    },
+    {
+      "id": 827,
+      "label": "RS-465",
+      "title": "ドロドロ",
+      "cardId": "RS-465"
+    },
+    {
+      "id": 765,
+      "label": "RS-466",
+      "title": "ギンガレオン",
+      "cardId": "RS-466"
+    },
+    {
+      "id": 766,
+      "label": "RS-467",
+      "title": "ギンガルコン",
+      "cardId": "RS-467"
+    },
+    {
+      "id": 767,
+      "label": "RS-468",
+      "title": "ギンガリラ",
+      "cardId": "RS-468"
+    },
+    {
+      "id": 741,
+      "label": "RS-469",
+      "title": "ギンガベリック",
+      "cardId": "RS-469"
+    },
+    {
+      "id": 768,
+      "label": "RS-470",
+      "title": "ギンガット",
+      "cardId": "RS-470"
+    },
+    {
+      "id": 789,
+      "label": "RS-471",
+      "title": "グランドライナー",
+      "cardId": "RS-471"
+    },
+    {
+      "id": 790,
+      "label": "RS-472",
+      "title": "ゴーライナー",
+      "cardId": "RS-472"
+    },
+    {
+      "id": 791,
+      "label": "RS-473",
+      "title": "タイムシャドウ",
+      "cardId": "RS-473"
+    },
+    {
+      "id": 792,
+      "label": "RS-474",
+      "title": "タイムシャドウSM",
+      "cardId": "RS-474"
+    },
+    {
+      "id": 769,
+      "label": "RS-475",
+      "title": "ガオハンタージャスティス",
+      "cardId": "RS-475"
+    },
+    {
+      "id": 828,
+      "label": "RS-476",
+      "title": "ガオハンターイビル",
+      "cardId": "RS-476"
+    },
+    {
+      "id": 770,
+      "label": "RS-477",
+      "title": "ガオウルフ",
+      "cardId": "RS-477"
+    },
+    {
+      "id": 771,
+      "label": "RS-478",
+      "title": "ガオリゲーター",
+      "cardId": "RS-478"
+    }
+  ]
+}

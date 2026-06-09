@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch28-l49-RS-479-RS-498.json",
+  "pages": [
+    {
+      "id": 772,
+      "label": "RS-479",
+      "title": "ガオハンマーヘッド",
+      "cardId": "RS-479"
+    },
+    {
+      "id": 773,
+      "label": "RS-480",
+      "title": "ガオシルバー",
+      "cardId": "RS-480"
+    },
+    {
+      "id": 805,
+      "label": "RS-481",
+      "title": "天空神",
+      "cardId": "RS-481"
+    },
+    {
+      "id": 806,
+      "label": "RS-482",
+      "title": "天空神・飛行モード",
+      "cardId": "RS-482"
+    },
+    {
+      "id": 745,
+      "label": "RS-483",
+      "title": "シュリケンジャー",
+      "cardId": "RS-483"
+    },
+    {
+      "id": 752,
+      "label": "RS-484",
+      "title": "旋風神ハリアー",
+      "cardId": "RS-484"
+    },
+    {
+      "id": 807,
+      "label": "RS-485",
+      "title": "ハムスター館長",
+      "cardId": "RS-485"
+    },
+    {
+      "id": 808,
+      "label": "RS-486",
+      "title": "ソードスラッシャー",
+      "cardId": "RS-486"
+    },
+    {
+      "id": 809,
+      "label": "RS-487",
+      "title": "ゴートクラッシャー",
+      "cardId": "RS-487"
+    },
+    {
+      "id": 810,
+      "label": "RS-488",
+      "title": "ハリケンウィンガー",
+      "cardId": "RS-488"
+    },
+    {
+      "id": 814,
+      "label": "RS-489",
+      "title": "二の槍チュウズーボ",
+      "cardId": "RS-489"
+    },
+    {
+      "id": 813,
+      "label": "RS-490",
+      "title": "三の槍マンマルバ幼体",
+      "cardId": "RS-490"
+    },
+    {
+      "id": 748,
+      "label": "RS-491",
+      "title": "三の槍マンマルバ成体",
+      "cardId": "RS-491"
+    },
+    {
+      "id": 815,
+      "label": "RS-492",
+      "title": "炎の騎馬",
+      "cardId": "RS-492"
+    },
+    {
+      "id": 816,
+      "label": "RS-493",
+      "title": "六の槍サタラクラ",
+      "cardId": "RS-493"
+    },
+    {
+      "id": 817,
+      "label": "RS-494",
+      "title": "縁切り忍者シラーンス",
+      "cardId": "RS-494"
+    },
+    {
+      "id": 818,
+      "label": "RS-495",
+      "title": "重力忍者オモ・カル",
+      "cardId": "RS-495"
+    },
+    {
+      "id": 793,
+      "label": "RS-496",
+      "title": "デカブルーSWAT",
+      "cardId": "RS-496"
+    },
+    {
+      "id": 819,
+      "label": "RS-497",
+      "title": "冥獣人ニンジャキリカゲ",
+      "cardId": "RS-497"
+    },
+    {
+      "id": 774,
+      "label": "RS-498",
+      "title": "ゲキウルフ",
+      "cardId": "RS-498"
+    }
+  ]
+}

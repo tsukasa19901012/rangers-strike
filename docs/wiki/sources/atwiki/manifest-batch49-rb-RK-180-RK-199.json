@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch49-rb-RK-180-RK-199.json",
+  "pages": [
+    {
+      "id": 910,
+      "label": "RK-180",
+      "title": "モグラ獣人",
+      "cardId": "RK-180"
+    },
+    {
+      "id": 761,
+      "label": "RK-181",
+      "title": "仮面ライダーシン",
+      "cardId": "RK-181"
+    },
+    {
+      "id": 913,
+      "label": "RK-182",
+      "title": "Zブリンガー",
+      "cardId": "RK-182"
+    },
+    {
+      "id": 1000,
+      "label": "RK-183",
+      "title": "仮面ライダーZO",
+      "cardId": "RK-183"
+    },
+    {
+      "id": 1001,
+      "label": "RK-184",
+      "title": "ドラス",
+      "cardId": "RK-184"
+    },
+    {
+      "id": 1048,
+      "label": "RK-185",
+      "title": "レッドドラス",
+      "cardId": "RK-185"
+    },
+    {
+      "id": 915,
+      "label": "RK-186",
+      "title": "仮面ライダーJ",
+      "cardId": "RK-186"
+    },
+    {
+      "id": 1086,
+      "label": "RK-187",
+      "title": "仮面ライダーJジャンボフォーメーション",
+      "cardId": "RK-187"
+    },
+    {
+      "id": 916,
+      "label": "RK-188",
+      "title": "ベリー",
+      "cardId": "RK-188"
+    },
+    {
+      "id": 914,
+      "label": "RK-189",
+      "title": "ジェイクロッサー",
+      "cardId": "RK-189"
+    },
+    {
+      "id": 911,
+      "label": "RK-190",
+      "title": "フォッグマザー",
+      "cardId": "RK-190"
+    },
+    {
+      "id": 917,
+      "label": "RK-191",
+      "title": "ガライ",
+      "cardId": "RK-191"
+    },
+    {
+      "id": 918,
+      "label": "RK-192",
+      "title": "アギト",
+      "cardId": "RK-192"
+    },
+    {
+      "id": 919,
+      "label": "RK-193",
+      "title": "ズー",
+      "cardId": "RK-193"
+    },
+    {
+      "id": 999,
+      "label": "RK-194",
+      "title": "仮面ライダーG3-X",
+      "cardId": "RK-194"
+    },
+    {
+      "id": 957,
+      "label": "RK-195",
+      "title": "仮面ライダーG4",
+      "cardId": "RK-195"
+    },
+    {
+      "id": 920,
+      "label": "RK-196",
+      "title": "クイーンアントロード",
+      "cardId": "RK-196"
+    },
+    {
+      "id": 921,
+      "label": "RK-197",
+      "title": "アントロード",
+      "cardId": "RK-197"
+    },
+    {
+      "id": 903,
+      "label": "RK-198",
+      "title": "仮面ライダーインペラー",
+      "cardId": "RK-198"
+    },
+    {
+      "id": 922,
+      "label": "RK-199",
+      "title": "オメガゼール",
+      "cardId": "RK-199"
+    }
+  ]
+}

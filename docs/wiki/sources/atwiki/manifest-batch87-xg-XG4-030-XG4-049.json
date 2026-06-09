@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch87-xg-XG4-030-XG4-049.json",
+  "pages": [
+    {
+      "id": 2100,
+      "label": "XG4-030",
+      "title": "ゲキチョッパー（XG4）",
+      "cardId": "XG4-030"
+    },
+    {
+      "id": 2094,
+      "label": "XG4-031",
+      "title": "ロケットブースター",
+      "cardId": "XG4-031"
+    },
+    {
+      "id": 2042,
+      "label": "XG4-032",
+      "title": "ゴーオンゴールド（XG4）",
+      "cardId": "XG4-032"
+    },
+    {
+      "id": 2143,
+      "label": "XG4-033",
+      "title": "ゴーオンシルバー（XG4）",
+      "cardId": "XG4-033"
+    },
+    {
+      "id": 2104,
+      "label": "XG4-034",
+      "title": "ダイカイオーニシ",
+      "cardId": "XG4-034"
+    },
+    {
+      "id": 2044,
+      "label": "XG4-035",
+      "title": "シンケンゴールド（XG4）",
+      "cardId": "XG4-035"
+    },
+    {
+      "id": 2065,
+      "label": "XG4-036",
+      "title": "ダイカイオーミナミ",
+      "cardId": "XG4-036"
+    },
+    {
+      "id": 2090,
+      "label": "XG4-037",
+      "title": "牛折神",
+      "cardId": "XG4-037"
+    },
+    {
+      "id": 2147,
+      "label": "XG4-038",
+      "title": "モウギュウダイオー",
+      "cardId": "XG4-038"
+    },
+    {
+      "id": 2125,
+      "label": "XG4-039",
+      "title": "サムライハオー",
+      "cardId": "XG4-039"
+    },
+    {
+      "id": 2107,
+      "label": "XG4-040",
+      "title": "ゴセイグレート",
+      "cardId": "XG4-040"
+    },
+    {
+      "id": 2047,
+      "label": "XG4-041",
+      "title": "ゴセイイエロー",
+      "cardId": "XG4-041"
+    },
+    {
+      "id": 2051,
+      "label": "XG4-042",
+      "title": "ゴセイブルー",
+      "cardId": "XG4-042"
+    },
+    {
+      "id": 2046,
+      "label": "XG4-043",
+      "title": "ゴセイレッド",
+      "cardId": "XG4-043"
+    },
+    {
+      "id": 2096,
+      "label": "XG4-044",
+      "title": "ゴセイブラック",
+      "cardId": "XG4-044"
+    },
+    {
+      "id": 2050,
+      "label": "XG4-045",
+      "title": "ゴセイピンク",
+      "cardId": "XG4-045"
+    },
+    {
+      "id": 2149,
+      "label": "XG4-046",
+      "title": "腑破十臓",
+      "cardId": "XG4-046"
+    },
+    {
+      "id": 2108,
+      "label": "XG4-047",
+      "title": "シンケンレッド（XG4）",
+      "cardId": "XG4-047"
+    },
+    {
+      "id": 2070,
+      "label": "XG4-048",
+      "title": "ウガッツバイク",
+      "cardId": "XG4-048"
+    },
+    {
+      "id": 2076,
+      "label": "XG4-049",
+      "title": "アクロバッター（XG4）",
+      "cardId": "XG4-049"
+    }
+  ]
+}

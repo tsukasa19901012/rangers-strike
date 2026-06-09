@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch24-l49-RS-399-RS-418.json",
+  "pages": [
+    {
+      "id": 557,
+      "label": "RS-399",
+      "title": "タイムジェット3",
+      "cardId": "RS-399"
+    },
+    {
+      "id": 558,
+      "label": "RS-400",
+      "title": "タイムジェット4",
+      "cardId": "RS-400"
+    },
+    {
+      "id": 559,
+      "label": "RS-401",
+      "title": "タイムジェット5",
+      "cardId": "RS-401"
+    },
+    {
+      "id": 543,
+      "label": "RS-402",
+      "title": "ガオレッド（2nd）",
+      "cardId": "RS-402"
+    },
+    {
+      "id": 560,
+      "label": "RS-403",
+      "title": "デカレッド（2nd）",
+      "cardId": "RS-403"
+    },
+    {
+      "id": 561,
+      "label": "RS-404",
+      "title": "マーフィーK9",
+      "cardId": "RS-404"
+    },
+    {
+      "id": 562,
+      "label": "RS-405",
+      "title": "デカブレイク",
+      "cardId": "RS-405"
+    },
+    {
+      "id": 563,
+      "label": "RS-406",
+      "title": "マシンボクサー",
+      "cardId": "RS-406"
+    },
+    {
+      "id": 570,
+      "label": "RS-407",
+      "title": "天空大聖者マジエル",
+      "cardId": "RS-407"
+    },
+    {
+      "id": 573,
+      "label": "RS-408",
+      "title": "天空聖者サンジェル",
+      "cardId": "RS-408"
+    },
+    {
+      "id": 598,
+      "label": "RS-409",
+      "title": "冥府神スレイプニル",
+      "cardId": "RS-409"
+    },
+    {
+      "id": 607,
+      "label": "RS-410",
+      "title": "冥府神ドレイク",
+      "cardId": "RS-410"
+    },
+    {
+      "id": 608,
+      "label": "RS-411",
+      "title": "冥府神ダゴン",
+      "cardId": "RS-411"
+    },
+    {
+      "id": 599,
+      "label": "RS-412",
+      "title": "冥府神スフィンクス",
+      "cardId": "RS-412"
+    },
+    {
+      "id": 609,
+      "label": "RS-413",
+      "title": "冥府神ゴーゴン",
+      "cardId": "RS-413"
+    },
+    {
+      "id": 611,
+      "label": "RS-414",
+      "title": "冥府神ティターン",
+      "cardId": "RS-414"
+    },
+    {
+      "id": 612,
+      "label": "RS-415",
+      "title": "冥府神ワイバーン",
+      "cardId": "RS-415"
+    },
+    {
+      "id": 610,
+      "label": "RS-416",
+      "title": "冥府神トード",
+      "cardId": "RS-416"
+    },
+    {
+      "id": 614,
+      "label": "RS-417",
+      "title": "冥府神サイクロプス",
+      "cardId": "RS-417"
+    },
+    {
+      "id": 613,
+      "label": "RS-418",
+      "title": "冥府神イフリート",
+      "cardId": "RS-418"
+    }
+  ]
+}

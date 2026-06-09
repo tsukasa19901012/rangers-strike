@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch53-rb-RK-259-RK-278.json",
+  "pages": [
+    {
+      "id": 1258,
+      "label": "RK-259",
+      "title": "ジェネラルシャドウ",
+      "cardId": "RK-259"
+    },
+    {
+      "id": 1257,
+      "label": "RK-260",
+      "title": "一ツ目タイタン",
+      "cardId": "RK-260"
+    },
+    {
+      "id": 1242,
+      "label": "RK-261",
+      "title": "仮面ライダーBLACK RX",
+      "cardId": "RK-261"
+    },
+    {
+      "id": 1393,
+      "label": "RK-262",
+      "title": "ロボライダー",
+      "cardId": "RK-262"
+    },
+    {
+      "id": 1359,
+      "label": "RK-263",
+      "title": "バイオライダー",
+      "cardId": "RK-263"
+    },
+    {
+      "id": 1373,
+      "label": "RK-264",
+      "title": "アクロバッター",
+      "cardId": "RK-264"
+    },
+    {
+      "id": 1374,
+      "label": "RK-265",
+      "title": "ライドロン",
+      "cardId": "RK-265"
+    },
+    {
+      "id": 1259,
+      "label": "RK-266",
+      "title": "機甲隊長ガテゾーン",
+      "cardId": "RK-266"
+    },
+    {
+      "id": 1363,
+      "label": "RK-267",
+      "title": "海兵隊長ボスガン",
+      "cardId": "RK-267"
+    },
+    {
+      "id": 1349,
+      "label": "RK-268",
+      "title": "デスガロン",
+      "cardId": "RK-268"
+    },
+    {
+      "id": 1283,
+      "label": "RK-269",
+      "title": "シャドームーン（2nd）",
+      "cardId": "RK-269"
+    },
+    {
+      "id": 1390,
+      "label": "RK-270",
+      "title": "チャップ",
+      "cardId": "RK-270"
+    },
+    {
+      "id": 1399,
+      "label": "RK-271",
+      "title": "仮面ライダークウガRM",
+      "cardId": "RK-271"
+    },
+    {
+      "id": 1370,
+      "label": "RK-272",
+      "title": "仮面ライダークウガRD",
+      "cardId": "RK-272"
+    },
+    {
+      "id": 1277,
+      "label": "RK-273",
+      "title": "仮面ライダークウガRP",
+      "cardId": "RK-273"
+    },
+    {
+      "id": 1371,
+      "label": "RK-274",
+      "title": "ビートチェイサー",
+      "cardId": "RK-274"
+    },
+    {
+      "id": 1255,
+      "label": "RK-275",
+      "title": "ゴ・ガドル・バ",
+      "cardId": "RK-275"
+    },
+    {
+      "id": 1391,
+      "label": "RK-276",
+      "title": "ズ・バヅー・バ",
+      "cardId": "RK-276"
+    },
+    {
+      "id": 1254,
+      "label": "RK-277",
+      "title": "ン・ダグバ・ゼバ",
+      "cardId": "RK-277"
+    },
+    {
+      "id": 1382,
+      "label": "RK-278",
+      "title": "仮面ライダーナイト（2nd）",
+      "cardId": "RK-278"
+    }
+  ]
+}

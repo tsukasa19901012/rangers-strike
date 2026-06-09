@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch8-l12-RS-041-RS-060.json",
+  "pages": [
+    {
+      "id": 236,
+      "label": "RS-041",
+      "title": "タイガーレンジャー",
+      "cardId": "RS-041"
+    },
+    {
+      "id": 279,
+      "label": "RS-042",
+      "title": "デカレンジャーロボ",
+      "cardId": "RS-042"
+    },
+    {
+      "id": 280,
+      "label": "RS-043",
+      "title": "パトストライカー",
+      "cardId": "RS-043"
+    },
+    {
+      "id": 281,
+      "label": "RS-044",
+      "title": "パトジャイラー",
+      "cardId": "RS-044"
+    },
+    {
+      "id": 282,
+      "label": "RS-045",
+      "title": "パトレーラー",
+      "cardId": "RS-045"
+    },
+    {
+      "id": 283,
+      "label": "RS-046",
+      "title": "パトアーマー",
+      "cardId": "RS-046"
+    },
+    {
+      "id": 284,
+      "label": "RS-047",
+      "title": "パトシグナー",
+      "cardId": "RS-047"
+    },
+    {
+      "id": 285,
+      "label": "RS-048",
+      "title": "ブルーレーサー",
+      "cardId": "RS-048"
+    },
+    {
+      "id": 286,
+      "label": "RS-049",
+      "title": "グリーンレーサー",
+      "cardId": "RS-049"
+    },
+    {
+      "id": 77,
+      "label": "RS-050",
+      "title": "アバレンオー",
+      "cardId": "RS-050"
+    },
+    {
+      "id": 83,
+      "label": "RS-051",
+      "title": "爆竜ティラノサウルス",
+      "cardId": "RS-051"
+    },
+    {
+      "id": 84,
+      "label": "RS-052",
+      "title": "爆竜トリケラトプス",
+      "cardId": "RS-052"
+    },
+    {
+      "id": 85,
+      "label": "RS-053",
+      "title": "爆竜プテラノドン",
+      "cardId": "RS-053"
+    },
+    {
+      "id": 54,
+      "label": "RS-054",
+      "title": "アバレッド",
+      "cardId": "RS-054"
+    },
+    {
+      "id": 237,
+      "label": "RS-055",
+      "title": "アバレブルー",
+      "cardId": "RS-055"
+    },
+    {
+      "id": 38,
+      "label": "RS-056",
+      "title": "マジドラゴン",
+      "cardId": "RS-056"
+    },
+    {
+      "id": 14,
+      "label": "RS-057",
+      "title": "マジレッド",
+      "cardId": "RS-057"
+    },
+    {
+      "id": 238,
+      "label": "RS-058",
+      "title": "マジイエロー",
+      "cardId": "RS-058"
+    },
+    {
+      "id": 48,
+      "label": "RS-059",
+      "title": "マジブルー",
+      "cardId": "RS-059"
+    },
+    {
+      "id": 239,
+      "label": "RS-060",
+      "title": "マジピンク",
+      "cardId": "RS-060"
+    }
+  ]
+}

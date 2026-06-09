@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch104-pr-PR-007-PR-026.json",
+  "pages": [
+    {
+      "id": 1005,
+      "label": "PR-007",
+      "title": "アカレンジャー",
+      "cardId": "PR-007"
+    },
+    {
+      "id": 1006,
+      "label": "PR-008",
+      "title": "バイオハンター・シルバ",
+      "cardId": "PR-008"
+    },
+    {
+      "id": 1007,
+      "label": "PR-009",
+      "title": "サンバルカンロボ",
+      "cardId": "PR-009"
+    },
+    {
+      "id": 1008,
+      "label": "PR-010",
+      "title": "ゴレンジャーストーム",
+      "cardId": "PR-010"
+    },
+    {
+      "id": 994,
+      "label": "PR-011",
+      "title": "ボウケンレッド",
+      "cardId": "PR-011"
+    },
+    {
+      "id": 993,
+      "label": "PR-012",
+      "title": "隠流忍術",
+      "cardId": "PR-012"
+    },
+    {
+      "id": 991,
+      "label": "PR-013",
+      "title": "スーパーダイボウケン",
+      "cardId": "PR-013"
+    },
+    {
+      "id": 990,
+      "label": "PR-014",
+      "title": "ダークナイト",
+      "cardId": "PR-014"
+    },
+    {
+      "id": 989,
+      "label": "PR-015",
+      "title": "バイオロボ",
+      "cardId": "PR-015"
+    },
+    {
+      "id": 988,
+      "label": "PR-016",
+      "title": "アバレッドAM",
+      "cardId": "PR-016"
+    },
+    {
+      "id": 987,
+      "label": "PR-017",
+      "title": "ゲキレッド",
+      "cardId": "PR-017"
+    },
+    {
+      "id": 986,
+      "label": "PR-018",
+      "title": "ゲキトージャ",
+      "cardId": "PR-018"
+    },
+    {
+      "id": 985,
+      "label": "PR-019",
+      "title": "レッドファルコン",
+      "cardId": "PR-019"
+    },
+    {
+      "id": 980,
+      "label": "PR-020",
+      "title": "タイムレッド",
+      "cardId": "PR-020"
+    },
+    {
+      "id": 979,
+      "label": "PR-021",
+      "title": "激気",
+      "cardId": "PR-021"
+    },
+    {
+      "id": 976,
+      "label": "PR-022",
+      "title": "ゴーオンレッド",
+      "cardId": "PR-022"
+    },
+    {
+      "id": 1139,
+      "label": "PR-023",
+      "title": "シュリケンジャー",
+      "cardId": "PR-023"
+    },
+    {
+      "id": 1094,
+      "label": "PR-024",
+      "title": "デカブレイク",
+      "cardId": "PR-024"
+    },
+    {
+      "id": 1095,
+      "label": "PR-025",
+      "title": "スーパーハイウェイバスター",
+      "cardId": "PR-025"
+    },
+    {
+      "id": 1396,
+      "label": "PR-026",
+      "title": "デカマスター（2nd）",
+      "cardId": "PR-026"
+    }
+  ]
+}

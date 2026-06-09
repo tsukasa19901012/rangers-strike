@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch52-rb-RK-240-RK-258.json",
+  "pages": [
+    {
+      "id": 954,
+      "label": "RK-240",
+      "title": "仮面ライダー電王CF（2nd）",
+      "cardId": "RK-240"
+    },
+    {
+      "id": 958,
+      "label": "RK-241",
+      "title": "仮面ライダーミニ電王SF",
+      "cardId": "RK-241"
+    },
+    {
+      "id": 762,
+      "label": "RK-242",
+      "title": "クライマックス刑事",
+      "cardId": "RK-242"
+    },
+    {
+      "id": 1010,
+      "label": "RK-243",
+      "title": "仮面ライダーリュウガ",
+      "cardId": "RK-243"
+    },
+    {
+      "id": 932,
+      "label": "RK-244",
+      "title": "ミッシングエース",
+      "cardId": "RK-244"
+    },
+    {
+      "id": 876,
+      "label": "RK-245",
+      "title": "仮面ライダーキバ",
+      "cardId": "RK-245"
+    },
+    {
+      "id": 959,
+      "label": "RK-246",
+      "title": "仮面ライダーキバGF",
+      "cardId": "RK-246"
+    },
+    {
+      "id": 1011,
+      "label": "RK-247",
+      "title": "仮面ライダーネガ電王",
+      "cardId": "RK-247"
+    },
+    {
+      "id": 951,
+      "label": "RK-248",
+      "title": "パラダイス・ロスト",
+      "cardId": "RK-248"
+    },
+    {
+      "id": 1083,
+      "label": "SK-003",
+      "title": "仮面ライダーファム（2nd）",
+      "cardId": "SK-003"
+    },
+    {
+      "id": 1246,
+      "label": "RK-249",
+      "title": "アドベント",
+      "cardId": "RK-249"
+    },
+    {
+      "id": 1350,
+      "label": "RK-250",
+      "title": "サバイブ",
+      "cardId": "RK-250"
+    },
+    {
+      "id": 1377,
+      "label": "RK-251",
+      "title": "ゴルゴムの仕業",
+      "cardId": "RK-251"
+    },
+    {
+      "id": 1339,
+      "label": "RK-252",
+      "title": "変身音叉 音角",
+      "cardId": "RK-252"
+    },
+    {
+      "id": 1376,
+      "label": "RK-253",
+      "title": "親子の絆",
+      "cardId": "RK-253"
+    },
+    {
+      "id": 1398,
+      "label": "RK-254",
+      "title": "仮面ライダーストロンガー",
+      "cardId": "RK-254"
+    },
+    {
+      "id": 1345,
+      "label": "RK-255",
+      "title": "電波人間タックル（2nd）",
+      "cardId": "RK-255"
+    },
+    {
+      "id": 1357,
+      "label": "RK-256",
+      "title": "カブトロー",
+      "cardId": "RK-256"
+    },
+    {
+      "id": 1358,
+      "label": "RK-257",
+      "title": "テントロー",
+      "cardId": "RK-257"
+    },
+    {
+      "id": 1256,
+      "label": "RK-258",
+      "title": "ドクターケイト",
+      "cardId": "RK-258"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch91-xg-XG5-005-XG5-024.json",
+  "pages": [
+    {
+      "id": 2187,
+      "label": "XG5-005",
+      "title": "ゴーグルピンク",
+      "cardId": "XG5-005"
+    },
+    {
+      "id": 2231,
+      "label": "XG5-006",
+      "title": "ゴーグルロボ",
+      "cardId": "XG5-006"
+    },
+    {
+      "id": 2188,
+      "label": "XG5-007",
+      "title": "ゴーグルジェット",
+      "cardId": "XG5-007"
+    },
+    {
+      "id": 2189,
+      "label": "XG5-008",
+      "title": "ゴーグルタンク",
+      "cardId": "XG5-008"
+    },
+    {
+      "id": 2190,
+      "label": "XG5-009",
+      "title": "ゴーグルダンプ",
+      "cardId": "XG5-009"
+    },
+    {
+      "id": 2277,
+      "label": "XG5-010",
+      "title": "恐竜剣ゴッドホーン",
+      "cardId": "XG5-010"
+    },
+    {
+      "id": 2191,
+      "label": "XG5-011",
+      "title": "呪士ピエール",
+      "cardId": "XG5-011"
+    },
+    {
+      "id": 2192,
+      "label": "XG5-012",
+      "title": "ゴレムカード",
+      "cardId": "XG5-012"
+    },
+    {
+      "id": 2169,
+      "label": "XG5-013",
+      "title": "再生カード",
+      "cardId": "XG5-013"
+    },
+    {
+      "id": 2268,
+      "label": "XG5-014",
+      "title": "マックスビクトリーロボBV",
+      "cardId": "XG5-014"
+    },
+    {
+      "id": 2193,
+      "label": "XG5-015",
+      "title": "スティライザー",
+      "cardId": "XG5-015"
+    },
+    {
+      "id": 2194,
+      "label": "XG5-016",
+      "title": "シグナルキャノン",
+      "cardId": "XG5-016"
+    },
+    {
+      "id": 2184,
+      "label": "XG5-017",
+      "title": "魔法剣キングカリバー",
+      "cardId": "XG5-017"
+    },
+    {
+      "id": 2239,
+      "label": "XG5-018",
+      "title": "ゴーゴーボイジャー",
+      "cardId": "XG5-018"
+    },
+    {
+      "id": 2279,
+      "label": "XG5-019",
+      "title": "ダイボイジャー",
+      "cardId": "XG5-019"
+    },
+    {
+      "id": 2230,
+      "label": "XG5-020",
+      "title": "ボウケンレッド（XG5）",
+      "cardId": "XG5-020"
+    },
+    {
+      "id": 2195,
+      "label": "XG5-021",
+      "title": "ボウケンブラック（XG5）",
+      "cardId": "XG5-021"
+    },
+    {
+      "id": 2196,
+      "label": "XG5-022",
+      "title": "ボウケンブルー（XG5）",
+      "cardId": "XG5-022"
+    },
+    {
+      "id": 2197,
+      "label": "XG5-023",
+      "title": "ボウケンイエロー（XG5）",
+      "cardId": "XG5-023"
+    },
+    {
+      "id": 2240,
+      "label": "XG5-024",
+      "title": "ボウケンピンク（XG5）",
+      "cardId": "XG5-024"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "pages": [
+    { "id": 604, "label": "beginner", "title": "初心者指南" },
+    { "id": 57, "label": "glossary", "title": "レンスト用語集" },
+    { "id": 1725, "label": "renst", "title": "レンスト" },
+    { "id": 110, "label": "power", "title": "パワー" },
+    { "id": 146, "label": "rush", "title": "ラッシュ" },
+    { "id": 151, "label": "command", "title": "コマンド" },
+    { "id": 585, "label": "striker", "title": "ストライカー" },
+    { "id": 1295, "label": "counter-term", "title": "カウンター（用語）" },
+    { "id": 1292, "label": "chase-term", "title": "チェイス（用語）" },
+    { "id": 1974, "label": "rule-qa", "title": "ルール質問所" },
+    { "id": 587, "label": "text", "title": "テキスト" },
+    { "id": 70, "label": "category", "title": "カテゴリ" },
+    { "id": 750, "label": "tag-strike", "title": "タッグストライク" },
+    { "id": 260, "label": "counter-old", "title": "カウンター" },
+    { "id": 2079, "label": "banned", "title": "禁止カード一覧" },
+    { "id": 1553, "label": "s-unit", "title": "Sユニット" },
+    { "id": 1551, "label": "l-unit", "title": "Lユニット" },
+    { "id": 1559, "label": "multi-category", "title": "マルチカテゴリ" },
+    { "id": 141, "label": "vehicle", "title": "ビークル" },
+    { "id": 156, "label": "ride", "title": "ライド" }
+  ]
+}

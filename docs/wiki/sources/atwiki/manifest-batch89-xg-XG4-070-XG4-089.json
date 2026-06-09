@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch89-xg-XG4-070-XG4-089.json",
+  "pages": [
+    {
+      "id": 2084,
+      "label": "XG4-070",
+      "title": "クレイドール・ドーパント",
+      "cardId": "XG4-070"
+    },
+    {
+      "id": 2112,
+      "label": "XG4-071",
+      "title": "ナスカ・ドーパント",
+      "cardId": "XG4-071"
+    },
+    {
+      "id": 2066,
+      "label": "XG4-072",
+      "title": "タブー・ドーパント",
+      "cardId": "XG4-072"
+    },
+    {
+      "id": 2067,
+      "label": "XG4-073",
+      "title": "仮面ライダークウガDF（XG4）",
+      "cardId": "XG4-073"
+    },
+    {
+      "id": 2055,
+      "label": "XG4-074",
+      "title": "仮面ライダーX（XG4）",
+      "cardId": "XG4-074"
+    },
+    {
+      "id": 2062,
+      "label": "XG4-075",
+      "title": "アポロガイスト（XG4）",
+      "cardId": "XG4-075"
+    },
+    {
+      "id": 2113,
+      "label": "XG4-076",
+      "title": "スーパーアポロガイスト",
+      "cardId": "XG4-076"
+    },
+    {
+      "id": 2052,
+      "label": "XG4-077",
+      "title": "仮面ライダーZX（XG4）",
+      "cardId": "XG4-077"
+    },
+    {
+      "id": 2053,
+      "label": "XG4-078",
+      "title": "仮面ライダー龍騎（XG4）",
+      "cardId": "XG4-078"
+    },
+    {
+      "id": 2059,
+      "label": "XG4-079",
+      "title": "ディケイド カブトRF（XG4）",
+      "cardId": "XG4-079"
+    },
+    {
+      "id": 2071,
+      "label": "XG4-080",
+      "title": "ロボライダー（XG4）",
+      "cardId": "XG4-080"
+    },
+    {
+      "id": 2072,
+      "label": "XG4-081",
+      "title": "仮面ライダーブレイド（XG4）",
+      "cardId": "XG4-081"
+    },
+    {
+      "id": 2057,
+      "label": "XG4-082",
+      "title": "バイオライダー（XG4）",
+      "cardId": "XG4-082"
+    },
+    {
+      "id": 2068,
+      "label": "XG4-083",
+      "title": "ディケイド ファイズ（XG4）",
+      "cardId": "XG4-083"
+    },
+    {
+      "id": 2150,
+      "label": "XG4-084",
+      "title": "仮面ライダー幽汽HF",
+      "cardId": "XG4-084"
+    },
+    {
+      "id": 2151,
+      "label": "XG4-085",
+      "title": "仮面ライダー幽汽SF",
+      "cardId": "XG4-085"
+    },
+    {
+      "id": 2064,
+      "label": "XG4-086",
+      "title": "仮面ライダーイクサBM（XG4）",
+      "cardId": "XG4-086"
+    },
+    {
+      "id": 2063,
+      "label": "XG4-087",
+      "title": "スカイライダー（XG4）",
+      "cardId": "XG4-087"
+    },
+    {
+      "id": 2039,
+      "label": "XG4-088",
+      "title": "仮面ライダーW・CC",
+      "cardId": "XG4-088"
+    },
+    {
+      "id": 2101,
+      "label": "XG4-089",
+      "title": "仮面ライダーW・JJ",
+      "cardId": "XG4-089"
+    }
+  ]
+}

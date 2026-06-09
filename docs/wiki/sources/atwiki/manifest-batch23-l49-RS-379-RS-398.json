@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch23-l49-RS-379-RS-398.json",
+  "pages": [
+    {
+      "id": 504,
+      "label": "RS-379",
+      "title": "ギンガイエロー",
+      "cardId": "RS-379"
+    },
+    {
+      "id": 505,
+      "label": "RS-380",
+      "title": "ギンガピンク",
+      "cardId": "RS-380"
+    },
+    {
+      "id": 522,
+      "label": "RS-381",
+      "title": "ガレオパルサー",
+      "cardId": "RS-381"
+    },
+    {
+      "id": 541,
+      "label": "RS-382",
+      "title": "ビクトリーロボ",
+      "cardId": "RS-382"
+    },
+    {
+      "id": 528,
+      "label": "RS-383",
+      "title": "レッドラダー",
+      "cardId": "RS-383"
+    },
+    {
+      "id": 529,
+      "label": "RS-384",
+      "title": "ブルースローワー",
+      "cardId": "RS-384"
+    },
+    {
+      "id": 530,
+      "label": "RS-385",
+      "title": "グリーンホバー",
+      "cardId": "RS-385"
+    },
+    {
+      "id": 531,
+      "label": "RS-386",
+      "title": "イエローアーマー",
+      "cardId": "RS-386"
+    },
+    {
+      "id": 532,
+      "label": "RS-387",
+      "title": "ピンクエイダー",
+      "cardId": "RS-387"
+    },
+    {
+      "id": 537,
+      "label": "RS-388",
+      "title": "ゴーレッド（2nd）",
+      "cardId": "RS-388"
+    },
+    {
+      "id": 533,
+      "label": "RS-389",
+      "title": "ゴーブルー",
+      "cardId": "RS-389"
+    },
+    {
+      "id": 534,
+      "label": "RS-390",
+      "title": "ゴーグリーン",
+      "cardId": "RS-390"
+    },
+    {
+      "id": 535,
+      "label": "RS-391",
+      "title": "ゴーイエロー",
+      "cardId": "RS-391"
+    },
+    {
+      "id": 536,
+      "label": "RS-392",
+      "title": "ゴーピンク",
+      "cardId": "RS-392"
+    },
+    {
+      "id": 539,
+      "label": "RS-393",
+      "title": "コマンドアタッカー",
+      "cardId": "RS-393"
+    },
+    {
+      "id": 518,
+      "label": "RS-394",
+      "title": "タイムロボα",
+      "cardId": "RS-394"
+    },
+    {
+      "id": 553,
+      "label": "RS-395",
+      "title": "タイムロボβ",
+      "cardId": "RS-395"
+    },
+    {
+      "id": 554,
+      "label": "RS-396",
+      "title": "タイムジェットγ",
+      "cardId": "RS-396"
+    },
+    {
+      "id": 555,
+      "label": "RS-397",
+      "title": "タイムジェット1",
+      "cardId": "RS-397"
+    },
+    {
+      "id": 556,
+      "label": "RS-398",
+      "title": "タイムジェット2",
+      "cardId": "RS-398"
+    }
+  ]
+}

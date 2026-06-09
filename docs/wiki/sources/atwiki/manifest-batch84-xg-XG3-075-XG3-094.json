@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch84-xg-XG3-075-XG3-094.json",
+  "pages": [
+    {
+      "id": 1965,
+      "label": "XG3-075",
+      "title": "仮面ライダーディケイドCFジャンボフォーメーション",
+      "cardId": "XG3-075"
+    },
+    {
+      "id": 1933,
+      "label": "XG3-076",
+      "title": "仮面ライダーアギト",
+      "cardId": "XG3-076"
+    },
+    {
+      "id": 1935,
+      "label": "XG3-077",
+      "title": "アギトトルネイダー",
+      "cardId": "XG3-077"
+    },
+    {
+      "id": 1936,
+      "label": "XG3-078",
+      "title": "マシンハードボイルダー",
+      "cardId": "XG3-078"
+    },
+    {
+      "id": 2003,
+      "label": "XG3-079",
+      "title": "仮面ライダーW・LJ",
+      "cardId": "XG3-079"
+    },
+    {
+      "id": 1957,
+      "label": "XG3-080",
+      "title": "仮面ライダーW・HJ",
+      "cardId": "XG3-080"
+    },
+    {
+      "id": 1937,
+      "label": "XG3-081",
+      "title": "仮面ライダーW・HT",
+      "cardId": "XG3-081"
+    },
+    {
+      "id": 1953,
+      "label": "XG3-082",
+      "title": "ドン・ホラー",
+      "cardId": "XG3-082"
+    },
+    {
+      "id": 1938,
+      "label": "XG3-083",
+      "title": "宇宙忍デモスト",
+      "cardId": "XG3-083"
+    },
+    {
+      "id": 1939,
+      "label": "XG3-084",
+      "title": "大甲神カブテリオス",
+      "cardId": "XG3-084"
+    },
+    {
+      "id": 1940,
+      "label": "XG3-085",
+      "title": "邪甲神クワガタイタン",
+      "cardId": "XG3-085"
+    },
+    {
+      "id": 1941,
+      "label": "XG3-086",
+      "title": "冷血鎧将ムカデリンガー",
+      "cardId": "XG3-086"
+    },
+    {
+      "id": 1942,
+      "label": "XG3-087",
+      "title": "魔剣鎧将キルマンティス",
+      "cardId": "XG3-087"
+    },
+    {
+      "id": 1943,
+      "label": "XG3-088",
+      "title": "変幻鎧将ビーザック",
+      "cardId": "XG3-088"
+    },
+    {
+      "id": 1973,
+      "label": "XG3-089",
+      "title": "ブルービート（XG3）",
+      "cardId": "XG3-089"
+    },
+    {
+      "id": 1958,
+      "label": "XG3-090",
+      "title": "スーパーブルービート",
+      "cardId": "XG3-090"
+    },
+    {
+      "id": 1944,
+      "label": "XG3-091",
+      "title": "ジースタッグ（XG3）",
+      "cardId": "XG3-091"
+    },
+    {
+      "id": 1945,
+      "label": "XG3-092",
+      "title": "レッドル（XG3）",
+      "cardId": "XG3-092"
+    },
+    {
+      "id": 1946,
+      "label": "XG3-093",
+      "title": "ビーファイターミン",
+      "cardId": "XG3-093"
+    },
+    {
+      "id": 1947,
+      "label": "XG3-094",
+      "title": "カブタック",
+      "cardId": "XG3-094"
+    }
+  ]
+}

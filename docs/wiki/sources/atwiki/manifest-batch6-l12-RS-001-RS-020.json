@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch6-l12-RS-001-RS-020.json",
+  "pages": [
+    {
+      "id": 246,
+      "label": "RS-001",
+      "title": "ゴレンジャーストーム",
+      "cardId": "RS-001"
+    },
+    {
+      "id": 247,
+      "label": "RS-002",
+      "title": "ジャッカーハリケーン",
+      "cardId": "RS-002"
+    },
+    {
+      "id": 248,
+      "label": "RS-003",
+      "title": "バトルダンス",
+      "cardId": "RS-003"
+    },
+    {
+      "id": 274,
+      "label": "RS-004",
+      "title": "デンジマシーン",
+      "cardId": "RS-004"
+    },
+    {
+      "id": 249,
+      "label": "RS-005",
+      "title": "ランドバルカン",
+      "cardId": "RS-005"
+    },
+    {
+      "id": 250,
+      "label": "RS-006",
+      "title": "新体操アクション",
+      "cardId": "RS-006"
+    },
+    {
+      "id": 251,
+      "label": "RS-007",
+      "title": "ダイナマイトパワー",
+      "cardId": "RS-007"
+    },
+    {
+      "id": 275,
+      "label": "RS-008",
+      "title": "超電子頭脳",
+      "cardId": "RS-008"
+    },
+    {
+      "id": 252,
+      "label": "RS-009",
+      "title": "パワーバズーカ",
+      "cardId": "RS-009"
+    },
+    {
+      "id": 276,
+      "label": "RS-010",
+      "title": "プリズムパワー",
+      "cardId": "RS-010"
+    },
+    {
+      "id": 241,
+      "label": "RS-011",
+      "title": "オーラパワー",
+      "cardId": "RS-011"
+    },
+    {
+      "id": 253,
+      "label": "RS-012",
+      "title": "科学アカデミアの科学力",
+      "cardId": "RS-012"
+    },
+    {
+      "id": 254,
+      "label": "RS-013",
+      "title": "シーロンの光",
+      "cardId": "RS-013"
+    },
+    {
+      "id": 255,
+      "label": "RS-014",
+      "title": "ファイブテクター",
+      "cardId": "RS-014"
+    },
+    {
+      "id": 256,
+      "label": "RS-015",
+      "title": "バードニックウェーブ",
+      "cardId": "RS-015"
+    },
+    {
+      "id": 49,
+      "label": "RS-016",
+      "title": "ダイノ伝記",
+      "cardId": "RS-016"
+    },
+    {
+      "id": 27,
+      "label": "RS-017",
+      "title": "気力",
+      "cardId": "RS-017"
+    },
+    {
+      "id": 242,
+      "label": "RS-018",
+      "title": "隠流忍術",
+      "cardId": "RS-018"
+    },
+    {
+      "id": 243,
+      "label": "RS-019",
+      "title": "超力",
+      "cardId": "RS-019"
+    },
+    {
+      "id": 277,
+      "label": "RS-020",
+      "title": "クルマジックパワー",
+      "cardId": "RS-020"
+    }
+  ]
+}

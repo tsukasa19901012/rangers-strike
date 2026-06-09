@@ -9,15 +9,23 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./dsl": {
+      "types": "./dist/dsl/index.d.ts",
+      "import": "./dist/dsl/index.js"
+    },
+    "./schema/*": "./schema/*"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
+    "generate-card-tests": "node scripts/generate-card-tests.mjs",
+    "validate-cards": "node scripts/validate-cards.mjs",
     "download-images": "node scripts/download-images.mjs"
   },
   "devDependencies": {
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
   }

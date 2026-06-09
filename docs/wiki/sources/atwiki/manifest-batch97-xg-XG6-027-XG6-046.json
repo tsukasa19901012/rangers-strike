@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch97-xg-XG6-027-XG6-046.json",
+  "pages": [
+    {
+      "id": 2286,
+      "label": "XG6-027",
+      "title": "シーレオン",
+      "cardId": "XG6-027"
+    },
+    {
+      "id": 2285,
+      "label": "XG6-028",
+      "title": "スカイオン",
+      "cardId": "XG6-028"
+    },
+    {
+      "id": 2323,
+      "label": "XG6-029",
+      "title": "強化スカイライダー",
+      "cardId": "XG6-029"
+    },
+    {
+      "id": 2324,
+      "label": "XG6-030",
+      "title": "ネオショッカー大首領",
+      "cardId": "XG6-030"
+    },
+    {
+      "id": 2327,
+      "label": "XG6-031",
+      "title": "ジョーカーアンデッド",
+      "cardId": "XG6-031"
+    },
+    {
+      "id": 2288,
+      "label": "XG6-032",
+      "title": "巨大邪神14",
+      "cardId": "XG6-032"
+    },
+    {
+      "id": 2291,
+      "label": "XG6-033",
+      "title": "シロネリオオザル",
+      "cardId": "XG6-033"
+    },
+    {
+      "id": 2295,
+      "label": "XG6-034",
+      "title": "ケシズミガラス",
+      "cardId": "XG6-034"
+    },
+    {
+      "id": 2317,
+      "label": "XG6-035",
+      "title": "仮面ライダーW・CJX（XG6）",
+      "cardId": "XG6-035"
+    },
+    {
+      "id": 2321,
+      "label": "XG6-036",
+      "title": "仮面ライダーW・CJ（XG6）",
+      "cardId": "XG6-036"
+    },
+    {
+      "id": 2318,
+      "label": "XG6-037",
+      "title": "仮面ライダーアクセル（XG6）",
+      "cardId": "XG6-037"
+    },
+    {
+      "id": 2319,
+      "label": "XG6-038",
+      "title": "仮面ライダーアクセルトライアル（XG6）",
+      "cardId": "XG6-038"
+    },
+    {
+      "id": 2292,
+      "label": "XG6-039",
+      "title": "スタッグフォン",
+      "cardId": "XG6-039"
+    },
+    {
+      "id": 2310,
+      "label": "XG6-040",
+      "title": "仮面ライダージョーカー",
+      "cardId": "XG6-040"
+    },
+    {
+      "id": 2316,
+      "label": "XG6-041",
+      "title": "仮面ライダーエターナル",
+      "cardId": "XG6-041"
+    },
+    {
+      "id": 2347,
+      "label": "XG6-042",
+      "title": "仮面ライダーゼロノスAF（XG6）",
+      "cardId": "XG6-042"
+    },
+    {
+      "id": 2336,
+      "label": "XG6-043",
+      "title": "仮面ライダーゼロノスZF（XG6）",
+      "cardId": "XG6-043"
+    },
+    {
+      "id": 2322,
+      "label": "XG6-044",
+      "title": "仮面ライダーNEW電王SF（XG6）",
+      "cardId": "XG6-044"
+    },
+    {
+      "id": 2305,
+      "label": "XG6-045",
+      "title": "テディ",
+      "cardId": "XG6-045"
+    },
+    {
+      "id": 2314,
+      "label": "XG6-046",
+      "title": "仮面ライダーディエンドCF",
+      "cardId": "XG6-046"
+    }
+  ]
+}

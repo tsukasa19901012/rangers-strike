@@ -1,0 +1,112 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch66-gl-p590-p102.json",
+  "pages": [
+    {
+      "id": 590,
+      "label": "p590",
+      "title": "ナンバー"
+    },
+    {
+      "id": 226,
+      "label": "p226",
+      "title": "ナンバーコンビネーション"
+    },
+    {
+      "id": 2252,
+      "label": "p2252",
+      "title": "ハイランダー"
+    },
+    {
+      "id": 1742,
+      "label": "p1742",
+      "title": "バウンス"
+    },
+    {
+      "id": 592,
+      "label": "p592",
+      "title": "バトル"
+    },
+    {
+      "id": 457,
+      "label": "p457",
+      "title": "バトルエリア"
+    },
+    {
+      "id": 593,
+      "label": "p593",
+      "title": "バトルフェイズ"
+    },
+    {
+      "id": 2032,
+      "label": "p2032",
+      "title": "バニラ"
+    },
+    {
+      "id": 109,
+      "label": "p109",
+      "title": "パワーゾーン"
+    },
+    {
+      "id": 1505,
+      "label": "p1505",
+      "title": "ビークルカード"
+    },
+    {
+      "id": 1550,
+      "label": "p1550",
+      "title": "ビークルサイズ"
+    },
+    {
+      "id": 69,
+      "label": "p69",
+      "title": "フェイズ"
+    },
+    {
+      "id": 1701,
+      "label": "p1701",
+      "title": "ブラスト"
+    },
+    {
+      "id": 2355,
+      "label": "p2355",
+      "title": "ブレイカー"
+    },
+    {
+      "id": 1424,
+      "label": "p1424",
+      "title": "プレイシート"
+    },
+    {
+      "id": 622,
+      "label": "p622",
+      "title": "フレーバーテキスト"
+    },
+    {
+      "id": 1865,
+      "label": "p1865",
+      "title": "プロモーションカード"
+    },
+    {
+      "id": 618,
+      "label": "p618",
+      "title": "ベルト"
+    },
+    {
+      "id": 157,
+      "label": "p157",
+      "title": "ホールド"
+    },
+    {
+      "id": 102,
+      "label": "p102",
+      "title": "ミスティックアームズ"
+    }
+  ]
+}

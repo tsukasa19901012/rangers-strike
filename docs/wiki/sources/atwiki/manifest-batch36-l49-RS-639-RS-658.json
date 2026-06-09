@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch36-l49-RS-639-RS-658.json",
+  "pages": [
+    {
+      "id": 1439,
+      "label": "RS-639",
+      "title": "ネジイエロー",
+      "cardId": "RS-639"
+    },
+    {
+      "id": 1464,
+      "label": "RS-640",
+      "title": "ギガバイタスCM",
+      "cardId": "RS-640"
+    },
+    {
+      "id": 1465,
+      "label": "RS-641",
+      "title": "ギガバイタスSM",
+      "cardId": "RS-641"
+    },
+    {
+      "id": 1493,
+      "label": "RS-642",
+      "title": "ギガライノス",
+      "cardId": "RS-642"
+    },
+    {
+      "id": 1466,
+      "label": "RS-643",
+      "title": "分身獣ギガホイール",
+      "cardId": "RS-643"
+    },
+    {
+      "id": 1467,
+      "label": "RS-644",
+      "title": "分身獣ギガウイング",
+      "cardId": "RS-644"
+    },
+    {
+      "id": 1492,
+      "label": "RS-645",
+      "title": "ビクトリーマーズ",
+      "cardId": "RS-645"
+    },
+    {
+      "id": 1468,
+      "label": "RS-646",
+      "title": "マーズマシン",
+      "cardId": "RS-646"
+    },
+    {
+      "id": 1469,
+      "label": "RS-647",
+      "title": "ピヨちゃん",
+      "cardId": "RS-647"
+    },
+    {
+      "id": 1497,
+      "label": "RS-648",
+      "title": "ガオイカロス",
+      "cardId": "RS-648"
+    },
+    {
+      "id": 1470,
+      "label": "RS-649",
+      "title": "ガオファルコン",
+      "cardId": "RS-649"
+    },
+    {
+      "id": 1471,
+      "label": "RS-650",
+      "title": "ガオライノス",
+      "cardId": "RS-650"
+    },
+    {
+      "id": 1472,
+      "label": "RS-651",
+      "title": "ガオマジロ",
+      "cardId": "RS-651"
+    },
+    {
+      "id": 1473,
+      "label": "RS-652",
+      "title": "ガオディアス",
+      "cardId": "RS-652"
+    },
+    {
+      "id": 1518,
+      "label": "RS-653",
+      "title": "レッドファルコン（2nd）",
+      "cardId": "RS-653"
+    },
+    {
+      "id": 1519,
+      "label": "RS-654",
+      "title": "ガオイエロー（2nd）",
+      "cardId": "RS-654"
+    },
+    {
+      "id": 1528,
+      "label": "RS-655",
+      "title": "デカウイングロボ",
+      "cardId": "RS-655"
+    },
+    {
+      "id": 1474,
+      "label": "RS-656",
+      "title": "デカウイングキャノン",
+      "cardId": "RS-656"
+    },
+    {
+      "id": 1475,
+      "label": "RS-657",
+      "title": "パトウイング",
+      "cardId": "RS-657"
+    },
+    {
+      "id": 1526,
+      "label": "RS-658",
+      "title": "デカグリーンSWAT",
+      "cardId": "RS-658"
+    }
+  ]
+}

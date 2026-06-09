@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch73-xg-XG1-060-XG1-079.json",
+  "pages": [
+    {
+      "id": 1580,
+      "label": "XG1-060",
+      "title": "コーカサスビートルアンデッド",
+      "cardId": "XG1-060"
+    },
+    {
+      "id": 1639,
+      "label": "XG1-061",
+      "title": "仮面ライダーカリス（XG）",
+      "cardId": "XG1-061"
+    },
+    {
+      "id": 1667,
+      "label": "XG1-062",
+      "title": "仮面ライダーワイルドカリス",
+      "cardId": "XG1-062"
+    },
+    {
+      "id": 1606,
+      "label": "XG1-063",
+      "title": "シャドーチェイサー",
+      "cardId": "XG1-063"
+    },
+    {
+      "id": 1603,
+      "label": "XG1-064",
+      "title": "ディケイド アギトGF",
+      "cardId": "XG1-064"
+    },
+    {
+      "id": 1636,
+      "label": "XG1-065",
+      "title": "ディケイド 龍騎",
+      "cardId": "XG1-065"
+    },
+    {
+      "id": 1626,
+      "label": "XG1-066",
+      "title": "ディケイド ファイズ",
+      "cardId": "XG1-066"
+    },
+    {
+      "id": 1605,
+      "label": "XG1-067",
+      "title": "ディケイド ブレイド",
+      "cardId": "XG1-067"
+    },
+    {
+      "id": 1668,
+      "label": "XG1-068",
+      "title": "ディケイド クウガMF",
+      "cardId": "XG1-068"
+    },
+    {
+      "id": 1604,
+      "label": "XG1-069",
+      "title": "ディケイド 響鬼",
+      "cardId": "XG1-069"
+    },
+    {
+      "id": 1602,
+      "label": "XG1-070",
+      "title": "ディケイド カブトRF",
+      "cardId": "XG1-070"
+    },
+    {
+      "id": 1600,
+      "label": "XG1-071",
+      "title": "ディケイド 電王SF",
+      "cardId": "XG1-071"
+    },
+    {
+      "id": 1601,
+      "label": "XG1-072",
+      "title": "ディケイド キバ",
+      "cardId": "XG1-072"
+    },
+    {
+      "id": 1569,
+      "label": "XG1-073",
+      "title": "仮面ライダーザビーMF（XG）",
+      "cardId": "XG1-073"
+    },
+    {
+      "id": 1570,
+      "label": "XG1-074",
+      "title": "仮面ライダーザビーRF（XG）",
+      "cardId": "XG1-074"
+    },
+    {
+      "id": 1662,
+      "label": "XG1-075",
+      "title": "仮面ライダーダークキバ",
+      "cardId": "XG1-075"
+    },
+    {
+      "id": 1616,
+      "label": "XG1-076",
+      "title": "ディケイドライバー",
+      "cardId": "XG1-076"
+    },
+    {
+      "id": 1542,
+      "label": "XG1-077",
+      "title": "仮面ライダーディケイド",
+      "cardId": "XG1-077"
+    },
+    {
+      "id": 1608,
+      "label": "XG1-078",
+      "title": "コピーベント",
+      "cardId": "XG1-078"
+    },
+    {
+      "id": 1588,
+      "label": "XG1-079",
+      "title": "アビスラッシャー",
+      "cardId": "XG1-079"
+    }
+  ]
+}

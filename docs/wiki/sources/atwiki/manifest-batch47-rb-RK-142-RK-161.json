@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch47-rb-RK-142-RK-161.json",
+  "pages": [
+    {
+      "id": 514,
+      "label": "RK-142",
+      "title": "モモタロス",
+      "cardId": "RK-142"
+    },
+    {
+      "id": 651,
+      "label": "RK-143",
+      "title": "ウラタロス",
+      "cardId": "RK-143"
+    },
+    {
+      "id": 652,
+      "label": "RK-144",
+      "title": "キンタロス",
+      "cardId": "RK-144"
+    },
+    {
+      "id": 653,
+      "label": "RK-145",
+      "title": "リュウタロス",
+      "cardId": "RK-145"
+    },
+    {
+      "id": 672,
+      "label": "RK-146",
+      "title": "デネブ",
+      "cardId": "RK-146"
+    },
+    {
+      "id": 673,
+      "label": "RK-147",
+      "title": "デンライナーイスルギ",
+      "cardId": "RK-147"
+    },
+    {
+      "id": 674,
+      "label": "RK-148",
+      "title": "デンライナーレッコウ",
+      "cardId": "RK-148"
+    },
+    {
+      "id": 675,
+      "label": "RK-149",
+      "title": "デンライナーイカヅチ",
+      "cardId": "RK-149"
+    },
+    {
+      "id": 676,
+      "label": "RK-150",
+      "title": "ゼロライナードリル",
+      "cardId": "RK-150"
+    },
+    {
+      "id": 677,
+      "label": "RK-151",
+      "title": "ゼロライナーナギナタ",
+      "cardId": "RK-151"
+    },
+    {
+      "id": 633,
+      "label": "RK-152",
+      "title": "仮面ライダー電王PF",
+      "cardId": "RK-152"
+    },
+    {
+      "id": 705,
+      "label": "RK-153",
+      "title": "仮面ライダーガオウ",
+      "cardId": "RK-153"
+    },
+    {
+      "id": 679,
+      "label": "RK-154",
+      "title": "ジーク",
+      "cardId": "RK-154"
+    },
+    {
+      "id": 678,
+      "label": "RK-155",
+      "title": "キングライナー",
+      "cardId": "RK-155"
+    },
+    {
+      "id": 680,
+      "label": "RK-156",
+      "title": "マシンデンバード",
+      "cardId": "RK-156"
+    },
+    {
+      "id": 637,
+      "label": "RK-157",
+      "title": "バットイマジン",
+      "cardId": "RK-157"
+    },
+    {
+      "id": 704,
+      "label": "RK-158",
+      "title": "ギガンデスヘブン",
+      "cardId": "RK-158"
+    },
+    {
+      "id": 655,
+      "label": "RK-159",
+      "title": "仮面ライダーV3（THE NEXT）",
+      "cardId": "RK-159"
+    },
+    {
+      "id": 703,
+      "label": "RK-160",
+      "title": "シザーズジャガー",
+      "cardId": "RK-160"
+    },
+    {
+      "id": 702,
+      "label": "RK-161",
+      "title": "ショッカーライダー",
+      "cardId": "RK-161"
+    }
+  ]
+}

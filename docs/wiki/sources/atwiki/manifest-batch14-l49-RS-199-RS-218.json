@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch14-l49-RS-199-RS-218.json",
+  "pages": [
+    {
+      "id": 407,
+      "label": "RS-199",
+      "title": "グリーンツー",
+      "cardId": "RS-199"
+    },
+    {
+      "id": 408,
+      "label": "RS-200",
+      "title": "ブルースリー",
+      "cardId": "RS-200"
+    },
+    {
+      "id": 409,
+      "label": "RS-201",
+      "title": "イエローフォー",
+      "cardId": "RS-201"
+    },
+    {
+      "id": 410,
+      "label": "RS-202",
+      "title": "ピンクファイブ",
+      "cardId": "RS-202"
+    },
+    {
+      "id": 383,
+      "label": "RS-203",
+      "title": "大帝ラー・デウス",
+      "cardId": "RS-203"
+    },
+    {
+      "id": 401,
+      "label": "RS-204",
+      "title": "レッドファルコン",
+      "cardId": "RS-204"
+    },
+    {
+      "id": 116,
+      "label": "RS-205",
+      "title": "リュウレンジャー",
+      "cardId": "RS-205"
+    },
+    {
+      "id": 117,
+      "label": "RS-206",
+      "title": "シシレンジャー",
+      "cardId": "RS-206"
+    },
+    {
+      "id": 118,
+      "label": "RS-207",
+      "title": "テンマレンジャー",
+      "cardId": "RS-207"
+    },
+    {
+      "id": 119,
+      "label": "RS-208",
+      "title": "キリンレンジャー",
+      "cardId": "RS-208"
+    },
+    {
+      "id": 120,
+      "label": "RS-209",
+      "title": "ホウオウレンジャー",
+      "cardId": "RS-209"
+    },
+    {
+      "id": 107,
+      "label": "RS-210",
+      "title": "ゴーマ16世",
+      "cardId": "RS-210"
+    },
+    {
+      "id": 112,
+      "label": "RS-211",
+      "title": "オーブルー",
+      "cardId": "RS-211"
+    },
+    {
+      "id": 113,
+      "label": "RS-212",
+      "title": "オーグリーン",
+      "cardId": "RS-212"
+    },
+    {
+      "id": 114,
+      "label": "RS-213",
+      "title": "オーイエロー",
+      "cardId": "RS-213"
+    },
+    {
+      "id": 115,
+      "label": "RS-214",
+      "title": "オーピンク",
+      "cardId": "RS-214"
+    },
+    {
+      "id": 384,
+      "label": "RS-215",
+      "title": "皇帝バッカスフンド",
+      "cardId": "RS-215"
+    },
+    {
+      "id": 385,
+      "label": "RS-216",
+      "title": "暴走皇帝エグゾス",
+      "cardId": "RS-216"
+    },
+    {
+      "id": 386,
+      "label": "RS-217",
+      "title": "SSスタタンゾ",
+      "cardId": "RS-217"
+    },
+    {
+      "id": 415,
+      "label": "RS-218",
+      "title": "タイムレッド",
+      "cardId": "RS-218"
+    }
+  ]
+}

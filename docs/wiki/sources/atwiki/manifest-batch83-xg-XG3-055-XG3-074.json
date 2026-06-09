@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch83-xg-XG3-055-XG3-074.json",
+  "pages": [
+    {
+      "id": 1919,
+      "label": "XG3-055",
+      "title": "セイジガエル",
+      "cardId": "XG3-055"
+    },
+    {
+      "id": 1920,
+      "label": "XG3-056",
+      "title": "仮面ライダー響鬼（XG3）",
+      "cardId": "XG3-056"
+    },
+    {
+      "id": 1921,
+      "label": "XG3-057",
+      "title": "ヒビキアカネタカ",
+      "cardId": "XG3-057"
+    },
+    {
+      "id": 1922,
+      "label": "XG3-058",
+      "title": "仮面ライダー斬鬼（XG3）",
+      "cardId": "XG3-058"
+    },
+    {
+      "id": 1923,
+      "label": "XG3-059",
+      "title": "仮面ライダー轟鬼（XG3）",
+      "cardId": "XG3-059"
+    },
+    {
+      "id": 1924,
+      "label": "XG3-060",
+      "title": "仮面ライダー天鬼",
+      "cardId": "XG3-060"
+    },
+    {
+      "id": 1925,
+      "label": "XG3-061",
+      "title": "仮面ライダーガタックMF（XG3）",
+      "cardId": "XG3-061"
+    },
+    {
+      "id": 2002,
+      "label": "XG3-062",
+      "title": "仮面ライダーガタックRF（XG3）",
+      "cardId": "XG3-062"
+    },
+    {
+      "id": 1926,
+      "label": "XG3-063",
+      "title": "仮面ライダードレイクMF（XG3）",
+      "cardId": "XG3-063"
+    },
+    {
+      "id": 1954,
+      "label": "XG3-064",
+      "title": "仮面ライダードレイクRF（XG3）",
+      "cardId": "XG3-064"
+    },
+    {
+      "id": 1927,
+      "label": "XG3-065",
+      "title": "仮面ライダーサソードMF（XG3）",
+      "cardId": "XG3-065"
+    },
+    {
+      "id": 1928,
+      "label": "XG3-066",
+      "title": "仮面ライダーサソードRF（XG3）",
+      "cardId": "XG3-066"
+    },
+    {
+      "id": 1929,
+      "label": "XG3-067",
+      "title": "インビジブル",
+      "cardId": "XG3-067"
+    },
+    {
+      "id": 2004,
+      "label": "XG3-068",
+      "title": "仮面ライダーディケイド（XG3）",
+      "cardId": "XG3-068"
+    },
+    {
+      "id": 2005,
+      "label": "XG3-069",
+      "title": "仮面ライダーディエンド（XG3）",
+      "cardId": "XG3-069"
+    },
+    {
+      "id": 1930,
+      "label": "XG3-070",
+      "title": "ズ・ザイン・ダ",
+      "cardId": "XG3-070"
+    },
+    {
+      "id": 1931,
+      "label": "XG3-071",
+      "title": "キバーラ",
+      "cardId": "XG3-071"
+    },
+    {
+      "id": 1963,
+      "label": "XG3-072",
+      "title": "仮面ライダーキバーラ",
+      "cardId": "XG3-072"
+    },
+    {
+      "id": 1932,
+      "label": "XG3-073",
+      "title": "仮面ライダーJジャンボフォーメーション（XG3）",
+      "cardId": "XG3-073"
+    },
+    {
+      "id": 1964,
+      "label": "XG3-074",
+      "title": "キングダーク",
+      "cardId": "XG3-074"
+    }
+  ]
+}

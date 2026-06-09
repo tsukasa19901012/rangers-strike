@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch21-l49-RS-339-RS-358.json",
+  "pages": [
+    {
+      "id": 439,
+      "label": "RS-339",
+      "title": "闇のヤイバ",
+      "cardId": "RS-339"
+    },
+    {
+      "id": 45,
+      "label": "RS-340",
+      "title": "ゲキレッド",
+      "cardId": "RS-340"
+    },
+    {
+      "id": 36,
+      "label": "RS-341",
+      "title": "ゲキブルー",
+      "cardId": "RS-341"
+    },
+    {
+      "id": 41,
+      "label": "RS-342",
+      "title": "ゲキイエロー",
+      "cardId": "RS-342"
+    },
+    {
+      "id": 45,
+      "label": "RS-343",
+      "title": "ゲキレッド",
+      "cardId": "RS-343"
+    },
+    {
+      "id": 499,
+      "label": "RS-344",
+      "title": "天空勇者ウルザードファイヤー",
+      "cardId": "RS-344"
+    },
+    {
+      "id": 310,
+      "label": "RS-345",
+      "title": "デカレッドSWAT",
+      "cardId": "RS-345"
+    },
+    {
+      "id": 473,
+      "label": "RS-346",
+      "title": "バトルフィーバーロボ",
+      "cardId": "RS-346"
+    },
+    {
+      "id": 388,
+      "label": "RS-347",
+      "title": "スーパーフォーメーション",
+      "cardId": "RS-347"
+    },
+    {
+      "id": 524,
+      "label": "RS-348",
+      "title": "メディテーション",
+      "cardId": "RS-348"
+    },
+    {
+      "id": 523,
+      "label": "RS-349",
+      "title": "スーパー戦隊アドレスブック",
+      "cardId": "RS-349"
+    },
+    {
+      "id": 525,
+      "label": "RS-350",
+      "title": "暗黒の鎧",
+      "cardId": "RS-350"
+    },
+    {
+      "id": 538,
+      "label": "RS-351",
+      "title": "アカレンジャー（2nd）",
+      "cardId": "RS-351"
+    },
+    {
+      "id": 550,
+      "label": "RS-352",
+      "title": "ダイデンジン",
+      "cardId": "RS-352"
+    },
+    {
+      "id": 551,
+      "label": "RS-353",
+      "title": "デンジファイター",
+      "cardId": "RS-353"
+    },
+    {
+      "id": 548,
+      "label": "RS-354",
+      "title": "デンジレッド",
+      "cardId": "RS-354"
+    },
+    {
+      "id": 547,
+      "label": "RS-355",
+      "title": "デンジブルー",
+      "cardId": "RS-355"
+    },
+    {
+      "id": 544,
+      "label": "RS-356",
+      "title": "デンジイエロー",
+      "cardId": "RS-356"
+    },
+    {
+      "id": 545,
+      "label": "RS-357",
+      "title": "デンジグリーン",
+      "cardId": "RS-357"
+    },
+    {
+      "id": 546,
+      "label": "RS-358",
+      "title": "デンジピンク",
+      "cardId": "RS-358"
+    }
+  ]
+}

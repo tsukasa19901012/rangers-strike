@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch93-xg-XG5-045-XG5-064.json",
+  "pages": [
+    {
+      "id": 2275,
+      "label": "XG5-045",
+      "title": "スカイックゴセイグレート",
+      "cardId": "XG5-045"
+    },
+    {
+      "id": 2205,
+      "label": "XG5-046",
+      "title": "データス",
+      "cardId": "XG5-046"
+    },
+    {
+      "id": 2206,
+      "label": "XG5-047",
+      "title": "キューユソウル",
+      "cardId": "XG5-047"
+    },
+    {
+      "id": 2207,
+      "label": "XG5-048",
+      "title": "パーフェクター",
+      "cardId": "XG5-048"
+    },
+    {
+      "id": 2271,
+      "label": "XG5-049",
+      "title": "再生アポロガイスト",
+      "cardId": "XG5-049"
+    },
+    {
+      "id": 2254,
+      "label": "XG5-050",
+      "title": "仮面ライダー装甲響鬼（XG5）",
+      "cardId": "XG5-050"
+    },
+    {
+      "id": 2258,
+      "label": "XG5-051",
+      "title": "仮面ライダーカブトHF（XG5）",
+      "cardId": "XG5-051"
+    },
+    {
+      "id": 2226,
+      "label": "XG5-052",
+      "title": "仮面ライダー電王CF（XG5）",
+      "cardId": "XG5-052"
+    },
+    {
+      "id": 2259,
+      "label": "XG5-053",
+      "title": "仮面ライダーキバEF（XG5）",
+      "cardId": "XG5-053"
+    },
+    {
+      "id": 2244,
+      "label": "XG5-054",
+      "title": "仮面ライダーディケイドCF（XG5）",
+      "cardId": "XG5-054"
+    },
+    {
+      "id": 2173,
+      "label": "XG5-055",
+      "title": "仮面ライダーギャレン（XG5）",
+      "cardId": "XG5-055"
+    },
+    {
+      "id": 2174,
+      "label": "XG5-056",
+      "title": "仮面ライダーギャレンJF（XG5）",
+      "cardId": "XG5-056"
+    },
+    {
+      "id": 2208,
+      "label": "XG5-057",
+      "title": "レッドランバス",
+      "cardId": "XG5-057"
+    },
+    {
+      "id": 2262,
+      "label": "XG5-058",
+      "title": "ロイヤルストレートフラッシュ",
+      "cardId": "XG5-058"
+    },
+    {
+      "id": 2172,
+      "label": "XG5-059",
+      "title": "仮面ライダーカリス（XG5）",
+      "cardId": "XG5-059"
+    },
+    {
+      "id": 2171,
+      "label": "XG5-060",
+      "title": "仮面ライダーワイルドカリス（XG5）",
+      "cardId": "XG5-060"
+    },
+    {
+      "id": 2183,
+      "label": "XG5-061",
+      "title": "バッファローアンデッド",
+      "cardId": "XG5-061"
+    },
+    {
+      "id": 2209,
+      "label": "XG5-062",
+      "title": "モスアンデッド",
+      "cardId": "XG5-062"
+    },
+    {
+      "id": 2210,
+      "label": "XG5-063",
+      "title": "ペッカーアンデッド",
+      "cardId": "XG5-063"
+    },
+    {
+      "id": 2211,
+      "label": "XG5-064",
+      "title": "コンファインベント",
+      "cardId": "XG5-064"
+    }
+  ]
+}

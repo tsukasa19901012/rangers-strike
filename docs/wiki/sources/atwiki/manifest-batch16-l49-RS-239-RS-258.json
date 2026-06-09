@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch16-l49-RS-239-RS-258.json",
+  "pages": [
+    {
+      "id": 404,
+      "label": "RS-239",
+      "title": "ゴーゴーポリス",
+      "cardId": "RS-239"
+    },
+    {
+      "id": 405,
+      "label": "RS-240",
+      "title": "ゴーゴーエイダー",
+      "cardId": "RS-240"
+    },
+    {
+      "id": 29,
+      "label": "RS-241",
+      "title": "ボウケンレッドAT",
+      "cardId": "RS-241"
+    },
+    {
+      "id": 56,
+      "label": "RS-242",
+      "title": "創造王リュウオーン",
+      "cardId": "RS-242"
+    },
+    {
+      "id": 418,
+      "label": "RS-243",
+      "title": "獣奏剣",
+      "cardId": "RS-243"
+    },
+    {
+      "id": 419,
+      "label": "RS-244",
+      "title": "命の泉",
+      "cardId": "RS-244"
+    },
+    {
+      "id": 420,
+      "label": "RS-245",
+      "title": "ガオメインバスター",
+      "cardId": "RS-245"
+    },
+    {
+      "id": 27,
+      "label": "RS-246",
+      "title": "気力",
+      "cardId": "RS-246"
+    },
+    {
+      "id": 424,
+      "label": "RS-247",
+      "title": "疾風流超忍法",
+      "cardId": "RS-247"
+    },
+    {
+      "id": 276,
+      "label": "RS-248",
+      "title": "プリズムパワー",
+      "cardId": "RS-248"
+    },
+    {
+      "id": 421,
+      "label": "RS-249",
+      "title": "Vコマンダー",
+      "cardId": "RS-249"
+    },
+    {
+      "id": 32,
+      "label": "RS-250",
+      "title": "ジャッジメント",
+      "cardId": "RS-250"
+    },
+    {
+      "id": 422,
+      "label": "RS-251",
+      "title": "ブン・ターの特訓",
+      "cardId": "RS-251"
+    },
+    {
+      "id": 423,
+      "label": "RS-252",
+      "title": "バイモーションバスター",
+      "cardId": "RS-252"
+    },
+    {
+      "id": 255,
+      "label": "RS-253",
+      "title": "ファイブテクター",
+      "cardId": "RS-253"
+    },
+    {
+      "id": 256,
+      "label": "RS-254",
+      "title": "バードニックウェーブ",
+      "cardId": "RS-254"
+    },
+    {
+      "id": 37,
+      "label": "RS-255",
+      "title": "巨大化爆弾",
+      "cardId": "RS-255"
+    },
+    {
+      "id": 425,
+      "label": "RS-256",
+      "title": "闇の戒律",
+      "cardId": "RS-256"
+    },
+    {
+      "id": 432,
+      "label": "RS-257",
+      "title": "野球仮面",
+      "cardId": "RS-257"
+    },
+    {
+      "id": 459,
+      "label": "RS-258",
+      "title": "アオレンジャー",
+      "cardId": "RS-258"
+    }
+  ]
+}

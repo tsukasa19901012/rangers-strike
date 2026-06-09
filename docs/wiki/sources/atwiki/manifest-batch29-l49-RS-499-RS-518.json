@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch29-l49-RS-499-RS-518.json",
+  "pages": [
+    {
+      "id": 775,
+      "label": "RS-499",
+      "title": "ゲキバイオレット",
+      "cardId": "RS-499"
+    },
+    {
+      "id": 776,
+      "label": "RS-500",
+      "title": "ゲキチョッパー",
+      "cardId": "RS-500"
+    },
+    {
+      "id": 742,
+      "label": "RS-501",
+      "title": "エレハン・キンポー",
+      "cardId": "RS-501"
+    },
+    {
+      "id": 777,
+      "label": "RS-502",
+      "title": "バット・リー",
+      "cardId": "RS-502"
+    },
+    {
+      "id": 778,
+      "label": "RS-503",
+      "title": "シャッキー・チェン",
+      "cardId": "RS-503"
+    },
+    {
+      "id": 820,
+      "label": "RS-504",
+      "title": "獣人メレ",
+      "cardId": "RS-504"
+    },
+    {
+      "id": 756,
+      "label": "RS-505",
+      "title": "スピードル",
+      "cardId": "RS-505"
+    },
+    {
+      "id": 757,
+      "label": "RS-506",
+      "title": "バスオン",
+      "cardId": "RS-506"
+    },
+    {
+      "id": 759,
+      "label": "RS-507",
+      "title": "ベアールV",
+      "cardId": "RS-507"
+    },
+    {
+      "id": 740,
+      "label": "RS-508",
+      "title": "ゴーオンレッド",
+      "cardId": "RS-508"
+    },
+    {
+      "id": 758,
+      "label": "RS-509",
+      "title": "ゴーオンブルー",
+      "cardId": "RS-509"
+    },
+    {
+      "id": 794,
+      "label": "RS-510",
+      "title": "ゴーオンイエロー",
+      "cardId": "RS-510"
+    },
+    {
+      "id": 795,
+      "label": "RS-511",
+      "title": "ゴーオングリーン",
+      "cardId": "RS-511"
+    },
+    {
+      "id": 796,
+      "label": "RS-512",
+      "title": "ゴーオンブラック",
+      "cardId": "RS-512"
+    },
+    {
+      "id": 812,
+      "label": "RS-513",
+      "title": "無敵将軍",
+      "cardId": "RS-513"
+    },
+    {
+      "id": 779,
+      "label": "RS-514",
+      "title": "ゲキトージャウルフ",
+      "cardId": "RS-514"
+    },
+    {
+      "id": 760,
+      "label": "RS-515",
+      "title": "エンジンオー",
+      "cardId": "RS-515"
+    },
+    {
+      "id": 1149,
+      "label": "RS-516",
+      "title": "アースフォース",
+      "cardId": "RS-516"
+    },
+    {
+      "id": 1234,
+      "label": "RS-517",
+      "title": "バードニック反応炉",
+      "cardId": "RS-517"
+    },
+    {
+      "id": 1147,
+      "label": "RS-518",
+      "title": "獣撃棒",
+      "cardId": "RS-518"
+    }
+  ]
+}

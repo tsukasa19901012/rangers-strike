@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch25-l49-RS-419-RS-438.json",
+  "pages": [
+    {
+      "id": 571,
+      "label": "RS-419",
+      "title": "聖剣ズバーン",
+      "cardId": "RS-419"
+    },
+    {
+      "id": 572,
+      "label": "RS-420",
+      "title": "大剣人ズバーン",
+      "cardId": "RS-420"
+    },
+    {
+      "id": 574,
+      "label": "RS-421",
+      "title": "アカレッド",
+      "cardId": "RS-421"
+    },
+    {
+      "id": 542,
+      "label": "RS-422",
+      "title": "ゲキトージャ",
+      "cardId": "RS-422"
+    },
+    {
+      "id": 519,
+      "label": "RS-423",
+      "title": "ゲキタイガー",
+      "cardId": "RS-423"
+    },
+    {
+      "id": 520,
+      "label": "RS-424",
+      "title": "ゲキチーター",
+      "cardId": "RS-424"
+    },
+    {
+      "id": 521,
+      "label": "RS-425",
+      "title": "ゲキジャガー",
+      "cardId": "RS-425"
+    },
+    {
+      "id": 509,
+      "label": "RS-426",
+      "title": "スーパーゲキレッド",
+      "cardId": "RS-426"
+    },
+    {
+      "id": 510,
+      "label": "RS-427",
+      "title": "スーパーゲキイエロー",
+      "cardId": "RS-427"
+    },
+    {
+      "id": 511,
+      "label": "RS-428",
+      "title": "スーパーゲキブルー",
+      "cardId": "RS-428"
+    },
+    {
+      "id": 508,
+      "label": "RS-429",
+      "title": "マスター・シャーフー",
+      "cardId": "RS-429"
+    },
+    {
+      "id": 507,
+      "label": "RS-430",
+      "title": "ロボタフ",
+      "cardId": "RS-430"
+    },
+    {
+      "id": 506,
+      "label": "RS-431",
+      "title": "黒獅子リオ",
+      "cardId": "RS-431"
+    },
+    {
+      "id": 736,
+      "label": "RS-432",
+      "title": "隠流マキビシ",
+      "cardId": "RS-432"
+    },
+    {
+      "id": 737,
+      "label": "RS-433",
+      "title": "ネコマル",
+      "cardId": "RS-433"
+    },
+    {
+      "id": 746,
+      "label": "RS-434",
+      "title": "ライフバード",
+      "cardId": "RS-434"
+    },
+    {
+      "id": 753,
+      "label": "RS-435",
+      "title": "アレ",
+      "cardId": "RS-435"
+    },
+    {
+      "id": 515,
+      "label": "RS-436",
+      "title": "激気",
+      "cardId": "RS-436"
+    },
+    {
+      "id": 764,
+      "label": "RS-437",
+      "title": "白熱する実況",
+      "cardId": "RS-437"
+    },
+    {
+      "id": 755,
+      "label": "RS-438",
+      "title": "炎神ソウル",
+      "cardId": "RS-438"
+    }
+  ]
+}

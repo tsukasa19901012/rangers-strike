@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch78-xg-XG2-059-XG2-078.json",
+  "pages": [
+    {
+      "id": 1767,
+      "label": "XG2-059",
+      "title": "仮面ライダーレンゲル（XG2）",
+      "cardId": "XG2-059"
+    },
+    {
+      "id": 1768,
+      "label": "XG2-060",
+      "title": "スカラベアンデッド",
+      "cardId": "XG2-060"
+    },
+    {
+      "id": 1769,
+      "label": "XG2-061",
+      "title": "リョクオオザル",
+      "cardId": "XG2-061"
+    },
+    {
+      "id": 1855,
+      "label": "XG2-062",
+      "title": "仮面ライダー装甲響鬼",
+      "cardId": "XG2-062"
+    },
+    {
+      "id": 1770,
+      "label": "XG2-063",
+      "title": "仮面ライダー響鬼（XG2）",
+      "cardId": "XG2-063"
+    },
+    {
+      "id": 1747,
+      "label": "XG2-064",
+      "title": "仮面ライダーカブトMF（XG2）",
+      "cardId": "XG2-064"
+    },
+    {
+      "id": 895,
+      "label": "XG2-065",
+      "title": "仮面ライダーカブトHF",
+      "cardId": "XG2-065"
+    },
+    {
+      "id": 1771,
+      "label": "XG2-066",
+      "title": "仮面ライダーカブトRF（XG2）",
+      "cardId": "XG2-066"
+    },
+    {
+      "id": 1772,
+      "label": "XG2-067",
+      "title": "仮面ライダー電王GF（XG2）",
+      "cardId": "XG2-067"
+    },
+    {
+      "id": 1773,
+      "label": "XG2-068",
+      "title": "リュウタロス（XG2）",
+      "cardId": "XG2-068"
+    },
+    {
+      "id": 1723,
+      "label": "XG2-069",
+      "title": "仮面ライダーNEW電王SF",
+      "cardId": "XG2-069"
+    },
+    {
+      "id": 1774,
+      "label": "XG2-070",
+      "title": "ライドブッカー・ブックモード",
+      "cardId": "XG2-070"
+    },
+    {
+      "id": 1819,
+      "label": "XG2-071",
+      "title": "仮面ライダーディエンド",
+      "cardId": "XG2-071"
+    },
+    {
+      "id": 1810,
+      "label": "XG2-072",
+      "title": "トライゴウラム",
+      "cardId": "XG2-072"
+    },
+    {
+      "id": 1743,
+      "label": "XG2-073",
+      "title": "仮面ライダークウガ",
+      "cardId": "XG2-073"
+    },
+    {
+      "id": 1775,
+      "label": "XG2-074",
+      "title": "クウガゴウラム",
+      "cardId": "XG2-074"
+    },
+    {
+      "id": 1776,
+      "label": "XG2-075",
+      "title": "仮面ライダーブレイド（XG2）",
+      "cardId": "XG2-075"
+    },
+    {
+      "id": 982,
+      "label": "XG2-076",
+      "title": "仮面ライダーキバ（XG2）",
+      "cardId": "XG2-076"
+    },
+    {
+      "id": 1748,
+      "label": "XG2-077",
+      "title": "仮面ライダーディケイド（XG2）",
+      "cardId": "XG2-077"
+    },
+    {
+      "id": 1777,
+      "label": "XG2-078",
+      "title": "仮面ライダーファイズ（XG2）",
+      "cardId": "XG2-078"
+    }
+  ]
+}

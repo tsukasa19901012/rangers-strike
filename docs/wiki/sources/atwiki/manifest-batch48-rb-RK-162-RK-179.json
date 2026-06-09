@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch48-rb-RK-162-RK-179.json",
+  "pages": [
+    {
+      "id": 692,
+      "label": "RK-162",
+      "title": "仮面ライダーアギトGF",
+      "cardId": "RK-162"
+    },
+    {
+      "id": 650,
+      "label": "RK-163",
+      "title": "オルタナティブ・ゼロ",
+      "cardId": "RK-163"
+    },
+    {
+      "id": 663,
+      "label": "RK-164",
+      "title": "仮面ライダー1号（THE FIRST）",
+      "cardId": "RK-164"
+    },
+    {
+      "id": 681,
+      "label": "RK-165",
+      "title": "仮面ライダー電王WF",
+      "cardId": "RK-165"
+    },
+    {
+      "id": 636,
+      "label": "RK-166",
+      "title": "仮面ライダーG3",
+      "cardId": "RK-166"
+    },
+    {
+      "id": 664,
+      "label": "RK-167",
+      "title": "仮面ライダーカイザ",
+      "cardId": "RK-167"
+    },
+    {
+      "id": 682,
+      "label": "RK-168",
+      "title": "仮面ライダー電王CF",
+      "cardId": "RK-168"
+    },
+    {
+      "id": 683,
+      "label": "RK-169",
+      "title": "仮面ライダーゼロノスVF",
+      "cardId": "RK-169"
+    },
+    {
+      "id": 665,
+      "label": "SK-002",
+      "title": "仮面ライダーV3",
+      "cardId": "SK-002"
+    },
+    {
+      "id": 942,
+      "label": "BK-019",
+      "title": "キバットベルト",
+      "cardId": "BK-019"
+    },
+    {
+      "id": 905,
+      "label": "RK-170",
+      "title": "プロジェクトG4",
+      "cardId": "RK-170"
+    },
+    {
+      "id": 902,
+      "label": "RK-171",
+      "title": "コントラクト",
+      "cardId": "RK-171"
+    },
+    {
+      "id": 906,
+      "label": "RK-172",
+      "title": "ルリオオカミ",
+      "cardId": "RK-172"
+    },
+    {
+      "id": 907,
+      "label": "RK-173",
+      "title": "鬼の鎧",
+      "cardId": "RK-173"
+    },
+    {
+      "id": 908,
+      "label": "RK-174",
+      "title": "プットオン",
+      "cardId": "RK-174"
+    },
+    {
+      "id": 1084,
+      "label": "RK-175",
+      "title": "仮面ライダー新1号",
+      "cardId": "RK-175"
+    },
+    {
+      "id": 1085,
+      "label": "RK-176",
+      "title": "仮面ライダー新2号",
+      "cardId": "RK-176"
+    },
+    {
+      "id": 909,
+      "label": "RK-177",
+      "title": "蜂女",
+      "cardId": "RK-177"
+    },
+    {
+      "id": 952,
+      "label": "RK-178",
+      "title": "仮面ライダーアマゾン",
+      "cardId": "RK-178"
+    },
+    {
+      "id": 912,
+      "label": "RK-179",
+      "title": "ジャングラー",
+      "cardId": "RK-179"
+    }
+  ]
+}

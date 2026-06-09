@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch3.json",
+  "pages": [
+    {
+      "id": 367,
+      "label": "RS-143",
+      "title": "スカイフェニックス",
+      "cardId": "RS-143"
+    },
+    {
+      "id": 369,
+      "label": "RS-144",
+      "title": "グランタウラス",
+      "cardId": "RS-144"
+    },
+    {
+      "id": 312,
+      "label": "RS-145",
+      "title": "ダッシュレオン",
+      "cardId": "RS-145"
+    },
+    {
+      "id": 370,
+      "label": "RS-146",
+      "title": "ドグランダー",
+      "cardId": "RS-146"
+    },
+    {
+      "id": 371,
+      "label": "RS-147",
+      "title": "モアローダー",
+      "cardId": "RS-147"
+    },
+    {
+      "id": 372,
+      "label": "RS-148",
+      "title": "オーレッド",
+      "cardId": "RS-148"
+    },
+    {
+      "id": 365,
+      "label": "RS-149",
+      "title": "イエローレーサー",
+      "cardId": "RS-149"
+    },
+    {
+      "id": 366,
+      "label": "RS-150",
+      "title": "ピンクレーサー",
+      "cardId": "RS-150"
+    },
+    {
+      "id": 17,
+      "label": "RS-151",
+      "title": "ガオキング",
+      "cardId": "RS-151"
+    },
+    {
+      "id": 86,
+      "label": "RS-152",
+      "title": "ガオライオン",
+      "cardId": "RS-152"
+    },
+    {
+      "id": 87,
+      "label": "RS-153",
+      "title": "ガオイーグル",
+      "cardId": "RS-153"
+    },
+    {
+      "id": 89,
+      "label": "RS-154",
+      "title": "ガオシャーク",
+      "cardId": "RS-154"
+    },
+    {
+      "id": 90,
+      "label": "RS-155",
+      "title": "ガオバイソン",
+      "cardId": "RS-155"
+    },
+    {
+      "id": 88,
+      "label": "RS-156",
+      "title": "ガオタイガー",
+      "cardId": "RS-156"
+    },
+    {
+      "id": 91,
+      "label": "RS-157",
+      "title": "ガオジュラフ",
+      "cardId": "RS-157"
+    },
+    {
+      "id": 92,
+      "label": "RS-158",
+      "title": "ガオエレファント",
+      "cardId": "RS-158"
+    },
+    {
+      "id": 93,
+      "label": "RS-159",
+      "title": "ガオコング",
+      "cardId": "RS-159"
+    },
+    {
+      "id": 603,
+      "label": "RS-160",
+      "title": "ガオレッド",
+      "cardId": "RS-160"
+    },
+    {
+      "id": 344,
+      "label": "RS-161",
+      "title": "ガオイエロー",
+      "cardId": "RS-161"
+    },
+    {
+      "id": 345,
+      "label": "RS-162",
+      "title": "ガオブルー",
+      "cardId": "RS-162"
+    }
+  ]
+}

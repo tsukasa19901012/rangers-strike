@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch18-l49-RS-279-RS-298.json",
+  "pages": [
+    {
+      "id": 467,
+      "label": "RS-279",
+      "title": "グリーンサイ",
+      "cardId": "RS-279"
+    },
+    {
+      "id": 468,
+      "label": "RS-280",
+      "title": "レッドホーク",
+      "cardId": "RS-280"
+    },
+    {
+      "id": 469,
+      "label": "RS-281",
+      "title": "ブラックコンドル",
+      "cardId": "RS-281"
+    },
+    {
+      "id": 470,
+      "label": "RS-282",
+      "title": "イエローオウル",
+      "cardId": "RS-282"
+    },
+    {
+      "id": 471,
+      "label": "RS-283",
+      "title": "ブルースワロー",
+      "cardId": "RS-283"
+    },
+    {
+      "id": 472,
+      "label": "RS-284",
+      "title": "ホワイトスワン",
+      "cardId": "RS-284"
+    },
+    {
+      "id": 437,
+      "label": "RS-285",
+      "title": "ファイタージゲン",
+      "cardId": "RS-285"
+    },
+    {
+      "id": 76,
+      "label": "RS-286",
+      "title": "大獣神",
+      "cardId": "RS-286"
+    },
+    {
+      "id": 417,
+      "label": "RS-287",
+      "title": "剛龍神",
+      "cardId": "RS-287"
+    },
+    {
+      "id": 99,
+      "label": "RS-288",
+      "title": "守護獣ドラゴンシーザー",
+      "cardId": "RS-288"
+    },
+    {
+      "id": 416,
+      "label": "RS-289",
+      "title": "ドラゴンレンジャー",
+      "cardId": "RS-289"
+    },
+    {
+      "id": 474,
+      "label": "RS-290",
+      "title": "気伝武人龍星王",
+      "cardId": "RS-290"
+    },
+    {
+      "id": 475,
+      "label": "RS-291",
+      "title": "気伝獣龍星王",
+      "cardId": "RS-291"
+    },
+    {
+      "id": 476,
+      "label": "RS-292",
+      "title": "気伝武人ウォンタイガー",
+      "cardId": "RS-292"
+    },
+    {
+      "id": 477,
+      "label": "RS-293",
+      "title": "気伝獣ウォンタイガー",
+      "cardId": "RS-293"
+    },
+    {
+      "id": 478,
+      "label": "RS-294",
+      "title": "キバレンジャー",
+      "cardId": "RS-294"
+    },
+    {
+      "id": 433,
+      "label": "RS-295",
+      "title": "磁石神父",
+      "cardId": "RS-295"
+    },
+    {
+      "id": 434,
+      "label": "RS-296",
+      "title": "バラクティカ",
+      "cardId": "RS-296"
+    },
+    {
+      "id": 435,
+      "label": "RS-297",
+      "title": "タコンパス",
+      "cardId": "RS-297"
+    },
+    {
+      "id": 427,
+      "label": "RS-298",
+      "title": "バーロ兵",
+      "cardId": "RS-298"
+    }
+  ]
+}

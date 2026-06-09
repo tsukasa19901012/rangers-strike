@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch75-xg-XG1-100-XG2-018.json",
+  "pages": [
+    {
+      "id": 1669,
+      "label": "XG1-100",
+      "title": "ロボコン",
+      "cardId": "XG1-100"
+    },
+    {
+      "id": 1831,
+      "label": "SX-002",
+      "title": "仮面ライダークウガRU",
+      "cardId": "SX-002"
+    },
+    {
+      "id": 1852,
+      "label": "XG2-001",
+      "title": "ファイブレッド（XG2）",
+      "cardId": "XG2-001"
+    },
+    {
+      "id": 1786,
+      "label": "XG2-002",
+      "title": "ファイブブルー（XG2）",
+      "cardId": "XG2-002"
+    },
+    {
+      "id": 1750,
+      "label": "XG2-003",
+      "title": "ファイブピンク（XG2）",
+      "cardId": "XG2-003"
+    },
+    {
+      "id": 1693,
+      "label": "XG2-004",
+      "title": "ファイブロボ",
+      "cardId": "XG2-004"
+    },
+    {
+      "id": 1787,
+      "label": "XG2-005",
+      "title": "スカイアルファー",
+      "cardId": "XG2-005"
+    },
+    {
+      "id": 1788,
+      "label": "XG2-006",
+      "title": "キャリアベータ",
+      "cardId": "XG2-006"
+    },
+    {
+      "id": 1789,
+      "label": "XG2-007",
+      "title": "ランドガンマ",
+      "cardId": "XG2-007"
+    },
+    {
+      "id": 1752,
+      "label": "XG2-008",
+      "title": "ロケットタイガー",
+      "cardId": "XG2-008"
+    },
+    {
+      "id": 1753,
+      "label": "XG2-009",
+      "title": "コンピュータードラゴン",
+      "cardId": "XG2-009"
+    },
+    {
+      "id": 1805,
+      "label": "XG2-010",
+      "title": "気伝武人龍星王（XG2）",
+      "cardId": "XG2-010"
+    },
+    {
+      "id": 1804,
+      "label": "XG2-011",
+      "title": "気伝武人ウォンタイガー（XG2）",
+      "cardId": "XG2-011"
+    },
+    {
+      "id": 1145,
+      "label": "XG2-012",
+      "title": "牙大王",
+      "cardId": "XG2-012"
+    },
+    {
+      "id": 1790,
+      "label": "XG2-013",
+      "title": "キバレンジャー（XG2）",
+      "cardId": "XG2-013"
+    },
+    {
+      "id": 1754,
+      "label": "XG2-014",
+      "title": "鉄面臂張遼",
+      "cardId": "XG2-014"
+    },
+    {
+      "id": 1791,
+      "label": "XG2-015",
+      "title": "リュウレンジャー（XG2）",
+      "cardId": "XG2-015"
+    },
+    {
+      "id": 1792,
+      "label": "XG2-016",
+      "title": "天空気殿",
+      "cardId": "XG2-016"
+    },
+    {
+      "id": 1824,
+      "label": "XG2-017",
+      "title": "大連王",
+      "cardId": "XG2-017"
+    },
+    {
+      "id": 1793,
+      "label": "XG2-018",
+      "title": "ゲキタイガー（XG2）",
+      "cardId": "XG2-018"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch88-xg-XG4-050-XG4-069.json",
+  "pages": [
+    {
+      "id": 2075,
+      "label": "XG4-050",
+      "title": "ロボイザー",
+      "cardId": "XG4-050"
+    },
+    {
+      "id": 2056,
+      "label": "XG4-051",
+      "title": "マックジャバー",
+      "cardId": "XG4-051"
+    },
+    {
+      "id": 2148,
+      "label": "XG4-052",
+      "title": "仮面ライダークウガUF（XG4）",
+      "cardId": "XG4-052"
+    },
+    {
+      "id": 2111,
+      "label": "XG4-053",
+      "title": "仮面ライダーアギトSHF（XG4）",
+      "cardId": "XG4-053"
+    },
+    {
+      "id": 2134,
+      "label": "XG4-054",
+      "title": "仮面ライダーブレイドKF（XG4）",
+      "cardId": "XG4-054"
+    },
+    {
+      "id": 2077,
+      "label": "XG4-055",
+      "title": "ドラグランザー（XG4）",
+      "cardId": "XG4-055"
+    },
+    {
+      "id": 2080,
+      "label": "XG4-056",
+      "title": "ドラグランザー（バイク形態）",
+      "cardId": "XG4-056"
+    },
+    {
+      "id": 2135,
+      "label": "XG4-057",
+      "title": "仮面ライダー龍騎サバイブ（XG4）",
+      "cardId": "XG4-057"
+    },
+    {
+      "id": 2114,
+      "label": "XG4-058",
+      "title": "オートバジンBM（XG4）",
+      "cardId": "XG4-058"
+    },
+    {
+      "id": 2085,
+      "label": "XG4-059",
+      "title": "オートバジンVM（XG4）",
+      "cardId": "XG4-059"
+    },
+    {
+      "id": 2115,
+      "label": "XG4-060",
+      "title": "仮面ライダーファイズBF（XG4）",
+      "cardId": "XG4-060"
+    },
+    {
+      "id": 2138,
+      "label": "XG4-061",
+      "title": "仮面ライダーアクセル",
+      "cardId": "XG4-061"
+    },
+    {
+      "id": 2139,
+      "label": "XG4-062",
+      "title": "仮面ライダーアクセル バイクフォーム",
+      "cardId": "XG4-062"
+    },
+    {
+      "id": 2124,
+      "label": "XG4-063",
+      "title": "仮面ライダースカル",
+      "cardId": "XG4-063"
+    },
+    {
+      "id": 2116,
+      "label": "XG4-064",
+      "title": "リボルギャリー",
+      "cardId": "XG4-064"
+    },
+    {
+      "id": 2040,
+      "label": "XG4-065",
+      "title": "マシンハードタービュラー",
+      "cardId": "XG4-065"
+    },
+    {
+      "id": 2095,
+      "label": "XG4-066",
+      "title": "マシンハードスプラッシャー",
+      "cardId": "XG4-066"
+    },
+    {
+      "id": 2117,
+      "label": "XG4-067",
+      "title": "仮面ライダーW・LM",
+      "cardId": "XG4-067"
+    },
+    {
+      "id": 2136,
+      "label": "XG4-068",
+      "title": "仮面ライダーW・CT",
+      "cardId": "XG4-068"
+    },
+    {
+      "id": 2043,
+      "label": "XG4-069",
+      "title": "仮面ライダーW・FJ（XG4）",
+      "cardId": "XG4-069"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch67-gl-p733-p136.json",
+  "pages": [
+    {
+      "id": 733,
+      "label": "p733",
+      "title": "メタ"
+    },
+    {
+      "id": 1871,
+      "label": "p1871",
+      "title": "メタルヒーローシリーズ"
+    },
+    {
+      "id": 1294,
+      "label": "p1294",
+      "title": "モーフ"
+    },
+    {
+      "id": 137,
+      "label": "p137",
+      "title": "ユニット"
+    },
+    {
+      "id": 739,
+      "label": "p739",
+      "title": "ユニットカード"
+    },
+    {
+      "id": 144,
+      "label": "p144",
+      "title": "ユニットサイズ"
+    },
+    {
+      "id": 1845,
+      "label": "p1845",
+      "title": "ユニットでなくなるとき"
+    },
+    {
+      "id": 731,
+      "label": "p731",
+      "title": "ライダー単"
+    },
+    {
+      "id": 228,
+      "label": "p228",
+      "title": "ライディングコンビネーション"
+    },
+    {
+      "id": 594,
+      "label": "p594",
+      "title": "ライドオフ"
+    },
+    {
+      "id": 147,
+      "label": "p147",
+      "title": "ラッシュエリア"
+    },
+    {
+      "id": 516,
+      "label": "p516",
+      "title": "ラッシュフェイズ"
+    },
+    {
+      "id": 517,
+      "label": "p517",
+      "title": "リアニメイト"
+    },
+    {
+      "id": 2250,
+      "label": "p2250",
+      "title": "リード"
+    },
+    {
+      "id": 158,
+      "label": "p158",
+      "title": "リリース"
+    },
+    {
+      "id": 595,
+      "label": "p595",
+      "title": "レアリティ"
+    },
+    {
+      "id": 1289,
+      "label": "p1289",
+      "title": "レジスト"
+    },
+    {
+      "id": 1740,
+      "label": "p1740",
+      "title": "レッカー"
+    },
+    {
+      "id": 596,
+      "label": "p596",
+      "title": "ロック"
+    },
+    {
+      "id": 136,
+      "label": "p136",
+      "title": "ワイルドビースト"
+    }
+  ]
+}

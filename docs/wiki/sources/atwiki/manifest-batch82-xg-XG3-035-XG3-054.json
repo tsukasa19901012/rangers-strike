@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch82-xg-XG3-035-XG3-054.json",
+  "pages": [
+    {
+      "id": 1908,
+      "label": "XG3-035",
+      "title": "海老折神",
+      "cardId": "XG3-035"
+    },
+    {
+      "id": 1873,
+      "label": "XG3-036",
+      "title": "ダイカイオーヒガシ",
+      "cardId": "XG3-036"
+    },
+    {
+      "id": 1909,
+      "label": "XG3-037",
+      "title": "烏賊折神",
+      "cardId": "XG3-037"
+    },
+    {
+      "id": 1881,
+      "label": "XG3-038",
+      "title": "イカダイカイオー",
+      "cardId": "XG3-038"
+    },
+    {
+      "id": 1910,
+      "label": "XG3-039",
+      "title": "ダイゴヨウ",
+      "cardId": "XG3-039"
+    },
+    {
+      "id": 2006,
+      "label": "XG3-040",
+      "title": "シンケンレッド（XG3）",
+      "cardId": "XG3-040"
+    },
+    {
+      "id": 2007,
+      "label": "XG3-041",
+      "title": "仮面ライダーディケイドCF（XG3）",
+      "cardId": "XG3-041"
+    },
+    {
+      "id": 1879,
+      "label": "XG3-042",
+      "title": "立花藤兵衛",
+      "cardId": "XG3-042"
+    },
+    {
+      "id": 1911,
+      "label": "XG3-043",
+      "title": "ライダーマン（XG3）",
+      "cardId": "XG3-043"
+    },
+    {
+      "id": 1912,
+      "label": "XG3-044",
+      "title": "仮面ライダーストロンガー（XG3）",
+      "cardId": "XG3-044"
+    },
+    {
+      "id": 2015,
+      "label": "XG3-045",
+      "title": "チャージアップストロンガー",
+      "cardId": "XG3-045"
+    },
+    {
+      "id": 1967,
+      "label": "XG3-046",
+      "title": "仮面ライダーBLACK（XG3）",
+      "cardId": "XG3-046"
+    },
+    {
+      "id": 1968,
+      "label": "XG3-047",
+      "title": "シャドームーン（XG3）",
+      "cardId": "XG3-047"
+    },
+    {
+      "id": 2008,
+      "label": "XG3-048",
+      "title": "仮面ライダーBLACK RX（XG3）",
+      "cardId": "XG3-048"
+    },
+    {
+      "id": 1913,
+      "label": "XG3-049",
+      "title": "ストレンジベント",
+      "cardId": "XG3-049"
+    },
+    {
+      "id": 1914,
+      "label": "XG3-050",
+      "title": "仮面ライダーゾルダ（XG3）",
+      "cardId": "XG3-050"
+    },
+    {
+      "id": 1915,
+      "label": "XG3-051",
+      "title": "仮面ライダー王蛇（XG3）",
+      "cardId": "XG3-051"
+    },
+    {
+      "id": 1916,
+      "label": "XG3-052",
+      "title": "オックスオルフェノク",
+      "cardId": "XG3-052"
+    },
+    {
+      "id": 1917,
+      "label": "XG3-053",
+      "title": "港区のウワン",
+      "cardId": "XG3-053"
+    },
+    {
+      "id": 1918,
+      "label": "XG3-054",
+      "title": "牛鬼",
+      "cardId": "XG3-054"
+    }
+  ]
+}

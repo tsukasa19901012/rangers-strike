@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch76-xg-XG2-019-XG2-038.json",
+  "pages": [
+    {
+      "id": 1751,
+      "label": "XG2-019",
+      "title": "知恵の樹モーク",
+      "cardId": "XG2-019"
+    },
+    {
+      "id": 1823,
+      "label": "XG2-020",
+      "title": "合身獣士・ブルタウラス",
+      "cardId": "XG2-020"
+    },
+    {
+      "id": 1192,
+      "label": "XG2-021",
+      "title": "重騎士",
+      "cardId": "XG2-021"
+    },
+    {
+      "id": 1794,
+      "label": "XG2-022",
+      "title": "重星獣・ゴウタウラス",
+      "cardId": "XG2-022"
+    },
+    {
+      "id": 1795,
+      "label": "XG2-023",
+      "title": "黒騎士ブルブラック",
+      "cardId": "XG2-023"
+    },
+    {
+      "id": 1741,
+      "label": "XG2-024",
+      "title": "剣将ブドー",
+      "cardId": "XG2-024"
+    },
+    {
+      "id": 1233,
+      "label": "XG2-025",
+      "title": "ギンガレッド（XG2）",
+      "cardId": "XG2-025"
+    },
+    {
+      "id": 1749,
+      "label": "XG2-026",
+      "title": "ギンガブルー（XG2）",
+      "cardId": "XG2-026"
+    },
+    {
+      "id": 1796,
+      "label": "XG2-027",
+      "title": "ギンガイエロー（XG2）",
+      "cardId": "XG2-027"
+    },
+    {
+      "id": 1797,
+      "label": "XG2-028",
+      "title": "サラマンデスドラゴン",
+      "cardId": "XG2-028"
+    },
+    {
+      "id": 1798,
+      "label": "XG2-029",
+      "title": "幽魔王サラマンデス",
+      "cardId": "XG2-029"
+    },
+    {
+      "id": 1689,
+      "label": "XG2-030",
+      "title": "ヌマ・O長官",
+      "cardId": "XG2-030"
+    },
+    {
+      "id": 1799,
+      "label": "XG2-031",
+      "title": "デカマシン",
+      "cardId": "XG2-031"
+    },
+    {
+      "id": 1800,
+      "label": "XG2-032",
+      "title": "デカレンジャーロボ（XG2）",
+      "cardId": "XG2-032"
+    },
+    {
+      "id": 133,
+      "label": "XG2-033",
+      "title": "デカブライト",
+      "cardId": "XG2-033"
+    },
+    {
+      "id": 1801,
+      "label": "XG2-034",
+      "title": "ブラストバギー",
+      "cardId": "XG2-034"
+    },
+    {
+      "id": 1820,
+      "label": "XG2-035",
+      "title": "デカレンジャーロボFC",
+      "cardId": "XG2-035"
+    },
+    {
+      "id": 1755,
+      "label": "XG2-036",
+      "title": "トラシンケンオー",
+      "cardId": "XG2-036"
+    },
+    {
+      "id": 1853,
+      "label": "XG2-037",
+      "title": "スーパーシンケンレッド",
+      "cardId": "XG2-037"
+    },
+    {
+      "id": 1854,
+      "label": "XG2-038",
+      "title": "スーパーシンケンブルー",
+      "cardId": "XG2-038"
+    }
+  ]
+}

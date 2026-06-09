@@ -1,0 +1,3074 @@
+{
+  "RS-179": {
+    "page": 39,
+    "name": "恐竜やのカレー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-180": {
+    "page": 377,
+    "name": "ライドラプター",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-181": {
+    "page": 378,
+    "name": "破邪百獣剣",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-182": {
+    "page": 379,
+    "name": "ジャイアントローラー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-183": {
+    "page": 42,
+    "name": "黒子ロボの記憶操作",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-184": {
+    "page": 311,
+    "name": "マジパンチ",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-185": {
+    "page": 389,
+    "name": "カーナビック",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-186": {
+    "page": 390,
+    "name": "プロバイダーベース",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-187": {
+    "page": 387,
+    "name": "ゴーマ宮",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-188": {
+    "page": 121,
+    "name": "アチャとコチャ",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-189": {
+    "page": 391,
+    "name": "キレンジャー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-190": {
+    "page": 392,
+    "name": "ミドレンジャー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-191": {
+    "page": 393,
+    "name": "ダイナレッド",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-192": {
+    "page": 394,
+    "name": "ダイナブルー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-193": {
+    "page": 395,
+    "name": "ダイナピンク",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-194": {
+    "page": 396,
+    "name": "ダイナロボ",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-195": {
+    "page": 397,
+    "name": "ダイナマッハ",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-196": {
+    "page": 398,
+    "name": "ダイナモビル",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-197": {
+    "page": 399,
+    "name": "ダイナギャリー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-198": {
+    "page": 382,
+    "name": "帝王アトン",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-199": {
+    "page": 407,
+    "name": "グリーンツー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-200": {
+    "page": 408,
+    "name": "ブルースリー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-201": {
+    "page": 409,
+    "name": "イエローフォー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-202": {
+    "page": 410,
+    "name": "ピンクファイブ",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-203": {
+    "page": 383,
+    "name": "大帝ラー・デウス",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-204": {
+    "page": 401,
+    "name": "レッドファルコン",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-205": {
+    "page": 116,
+    "name": "リュウレンジャー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-206": {
+    "page": 117,
+    "name": "シシレンジャー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-207": {
+    "page": 118,
+    "name": "テンマレンジャー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-208": {
+    "page": 119,
+    "name": "キリンレンジャー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-209": {
+    "page": 120,
+    "name": "ホウオウレンジャー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-210": {
+    "page": 107,
+    "name": "ゴーマ16世",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-211": {
+    "page": 112,
+    "name": "オーブルー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-212": {
+    "page": 113,
+    "name": "オーグリーン",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-213": {
+    "page": 114,
+    "name": "オーイエロー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-214": {
+    "page": 115,
+    "name": "オーピンク",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-215": {
+    "page": 384,
+    "name": "皇帝バッカスフンド",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-216": {
+    "page": 385,
+    "name": "暴走皇帝エグゾス",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-217": {
+    "page": 386,
+    "name": "SSスタタンゾ",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-218": {
+    "page": 415,
+    "name": "タイムレッド",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-219": {
+    "page": 411,
+    "name": "タイムブルー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-220": {
+    "page": 412,
+    "name": "タイムグリーン",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-221": {
+    "page": 413,
+    "name": "タイムイエロー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-222": {
+    "page": 414,
+    "name": "タイムピンク",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-223": {
+    "page": 406,
+    "name": "タック",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-224": {
+    "page": 380,
+    "name": "トータスハンマー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-225": {
+    "page": 381,
+    "name": "ガトリングレオ",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-226": {
+    "page": 376,
+    "name": "キラーオー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-227": {
+    "page": 96,
+    "name": "爆竜トップゲイラー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-228": {
+    "page": 1285,
+    "name": "爆竜ステゴスライドン",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-229": {
+    "page": 98,
+    "name": "爆竜ブラキオサウルス",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-230": {
+    "page": 72,
+    "name": "アバレッドAM",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-231": {
+    "page": 373,
+    "name": "アバレブルーAM",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-232": {
+    "page": 374,
+    "name": "アバレイエローAM",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-233": {
+    "page": 375,
+    "name": "アバレブラック",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-234": {
+    "page": 26,
+    "name": "アバレキラー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-235": {
+    "page": 500,
+    "name": "デカベースロボ",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-236": {
+    "page": 400,
+    "name": "スーパーダイボウケン",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-237": {
+    "page": 402,
+    "name": "サイレンビルダー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-238": {
+    "page": 403,
+    "name": "ゴーゴーファイヤー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-239": {
+    "page": 404,
+    "name": "ゴーゴーポリス",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-240": {
+    "page": 405,
+    "name": "ゴーゴーエイダー",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-241": {
+    "page": 29,
+    "name": "ボウケンレッドAT",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-242": {
+    "page": 56,
+    "name": "創造王リュウオーン",
+    "expansion": 4,
+    "expansionTitle": "四雄の覚醒"
+  },
+  "RS-243": {
+    "page": 418,
+    "name": "獣奏剣",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-244": {
+    "page": 419,
+    "name": "命の泉",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-245": {
+    "page": 420,
+    "name": "ガオメインバスター",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-246": {
+    "page": 27,
+    "name": "気力",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-247": {
+    "page": 424,
+    "name": "疾風流超忍法",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-248": {
+    "page": 276,
+    "name": "プリズムパワー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-249": {
+    "page": 421,
+    "name": "Vコマンダー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-250": {
+    "page": 32,
+    "name": "ジャッジメント",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-251": {
+    "page": 422,
+    "name": "ブン・ターの特訓",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-252": {
+    "page": 423,
+    "name": "バイモーションバスター",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-253": {
+    "page": 255,
+    "name": "ファイブテクター",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-254": {
+    "page": 256,
+    "name": "バードニックウェーブ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-255": {
+    "page": 37,
+    "name": "巨大化爆弾",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-256": {
+    "page": 425,
+    "name": "闇の戒律",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-257": {
+    "page": 432,
+    "name": "野球仮面",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-258": {
+    "page": 459,
+    "name": "アオレンジャー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-259": {
+    "page": 460,
+    "name": "モモレンジャー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-260": {
+    "page": 456,
+    "name": "バイオドラゴン",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-261": {
+    "page": 436,
+    "name": "メラージュ戦闘機",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-262": {
+    "page": 452,
+    "name": "フラッシュキング",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-263": {
+    "page": 453,
+    "name": "タンクコマンド",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-264": {
+    "page": 454,
+    "name": "ジェットデルタ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-265": {
+    "page": 455,
+    "name": "ジェットシーカー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-266": {
+    "page": 127,
+    "name": "レッドフラッシュ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-267": {
+    "page": 448,
+    "name": "ブルーフラッシュ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-268": {
+    "page": 449,
+    "name": "グリーンフラッシュ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-269": {
+    "page": 450,
+    "name": "イエローフラッシュ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-270": {
+    "page": 451,
+    "name": "ピンクフラッシュ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-271": {
+    "page": 447,
+    "name": "マグ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-272": {
+    "page": 461,
+    "name": "ファイブレッド",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-273": {
+    "page": 462,
+    "name": "ファイブブルー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-274": {
+    "page": 463,
+    "name": "ファイブブラック",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-275": {
+    "page": 464,
+    "name": "ファイブピンク",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-276": {
+    "page": 465,
+    "name": "ファイブイエロー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-277": {
+    "page": 438,
+    "name": "ガロア艦長",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-278": {
+    "page": 466,
+    "name": "ブラックバイソン",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-279": {
+    "page": 467,
+    "name": "グリーンサイ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-280": {
+    "page": 468,
+    "name": "レッドホーク",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-281": {
+    "page": 469,
+    "name": "ブラックコンドル",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-282": {
+    "page": 470,
+    "name": "イエローオウル",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-283": {
+    "page": 471,
+    "name": "ブルースワロー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-284": {
+    "page": 472,
+    "name": "ホワイトスワン",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-285": {
+    "page": 437,
+    "name": "ファイタージゲン",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-286": {
+    "page": 76,
+    "name": "大獣神",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-287": {
+    "page": 417,
+    "name": "剛龍神",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-288": {
+    "page": 99,
+    "name": "守護獣ドラゴンシーザー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-289": {
+    "page": 416,
+    "name": "ドラゴンレンジャー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-290": {
+    "page": 474,
+    "name": "気伝武人龍星王",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-291": {
+    "page": 475,
+    "name": "気伝獣龍星王",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-292": {
+    "page": 476,
+    "name": "気伝武人ウォンタイガー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-293": {
+    "page": 477,
+    "name": "気伝獣ウォンタイガー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-294": {
+    "page": 478,
+    "name": "キバレンジャー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-295": {
+    "page": 433,
+    "name": "磁石神父",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-296": {
+    "page": 434,
+    "name": "バラクティカ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-297": {
+    "page": 435,
+    "name": "タコンパス",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-298": {
+    "page": 427,
+    "name": "バーロ兵",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-299": {
+    "page": 446,
+    "name": "VRVマスター",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-300": {
+    "page": 22,
+    "name": "ワンパー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-301": {
+    "page": 445,
+    "name": "Vレックスロボ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-302": {
+    "page": 444,
+    "name": "Vレックス",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-303": {
+    "page": 443,
+    "name": "タイムファイヤー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-304": {
+    "page": 35,
+    "name": "シティガーディアンズ隊員",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-305": {
+    "page": 100,
+    "name": "ガオパンダ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-306": {
+    "page": 317,
+    "name": "ハリケンレッド",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-307": {
+    "page": 318,
+    "name": "ハリケンイエロー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-308": {
+    "page": 319,
+    "name": "ハリケンブルー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-309": {
+    "page": 479,
+    "name": "轟雷神",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-310": {
+    "page": 480,
+    "name": "ゴウライビートル",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-311": {
+    "page": 481,
+    "name": "ゴウライスタッグ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-312": {
+    "page": 482,
+    "name": "カブトライジャー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-313": {
+    "page": 483,
+    "name": "クワガライジャー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-314": {
+    "page": 429,
+    "name": "マゲラッパ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-315": {
+    "page": 440,
+    "name": "バクレンオー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-316": {
+    "page": 441,
+    "name": "爆竜カルノリュータス",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-317": {
+    "page": 442,
+    "name": "爆竜カスモシールドン",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-318": {
+    "page": 21,
+    "name": "ドギー・クルーガー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-319": {
+    "page": 47,
+    "name": "デカマスター",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-320": {
+    "page": 426,
+    "name": "デカスワン",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-321": {
+    "page": 430,
+    "name": "アーナロイド",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-322": {
+    "page": 431,
+    "name": "ベン・G",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-323": {
+    "page": 484,
+    "name": "マジグリーン・マッスル",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-324": {
+    "page": 486,
+    "name": "マジマザー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-325": {
+    "page": 485,
+    "name": "天空勇者マジシャイン",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-326": {
+    "page": 487,
+    "name": "魔法猫スモーキー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-327": {
+    "page": 488,
+    "name": "天空聖者ブレイジェル",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-328": {
+    "page": 489,
+    "name": "魔法鉄神トラベリオン",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-329": {
+    "page": 490,
+    "name": "トラベリオンエクスプレス",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-330": {
+    "page": 491,
+    "name": "マジレジェンド",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-331": {
+    "page": 492,
+    "name": "マジファイヤーバード",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-332": {
+    "page": 493,
+    "name": "マジライオン",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-333": {
+    "page": 494,
+    "name": "レジェンドマジレッド",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-334": {
+    "page": 495,
+    "name": "レジェンドマジイエロー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-335": {
+    "page": 496,
+    "name": "レジェンドマジブルー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-336": {
+    "page": 497,
+    "name": "レジェンドマジピンク",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-337": {
+    "page": 498,
+    "name": "レジェンドマジグリーン",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-338": {
+    "page": 428,
+    "name": "ジャリュウ兵",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-339": {
+    "page": 439,
+    "name": "闇のヤイバ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-340": {
+    "page": 45,
+    "name": "ゲキレッド",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-341": {
+    "page": 36,
+    "name": "ゲキブルー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-342": {
+    "page": 41,
+    "name": "ゲキイエロー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-343": {
+    "page": 45,
+    "name": "ゲキレッド",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-344": {
+    "page": 499,
+    "name": "天空勇者ウルザードファイヤー",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-345": {
+    "page": 310,
+    "name": "デカレッドSWAT",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-346": {
+    "page": 473,
+    "name": "バトルフィーバーロボ",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-347": {
+    "page": 388,
+    "name": "スーパーフォーメーション",
+    "expansion": 5,
+    "expansionTitle": "五龍の激鱗"
+  },
+  "RS-348": {
+    "page": 524,
+    "name": "メディテーション",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-349": {
+    "page": 523,
+    "name": "スーパー戦隊アドレスブック",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-350": {
+    "page": 525,
+    "name": "暗黒の鎧",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-351": {
+    "page": 538,
+    "name": "アカレンジャー（2nd）",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-352": {
+    "page": 550,
+    "name": "ダイデンジン",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-353": {
+    "page": 551,
+    "name": "デンジファイター",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-354": {
+    "page": 548,
+    "name": "デンジレッド",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-355": {
+    "page": 547,
+    "name": "デンジブルー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-356": {
+    "page": 544,
+    "name": "デンジイエロー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-357": {
+    "page": 545,
+    "name": "デンジグリーン",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-358": {
+    "page": 546,
+    "name": "デンジピンク",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-359": {
+    "page": 549,
+    "name": "デンジ犬アイシー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-360": {
+    "page": 601,
+    "name": "ヘドリアン女王",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-361": {
+    "page": 512,
+    "name": "バルイーグル（2nd）",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-362": {
+    "page": 526,
+    "name": "バルシャーク（2nd）",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-363": {
+    "page": 527,
+    "name": "バルパンサー（2nd）",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-364": {
+    "page": 576,
+    "name": "ヘルサターン総統",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-365": {
+    "page": 605,
+    "name": "イナズマギンガー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-366": {
+    "page": 606,
+    "name": "グランギズモ",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-367": {
+    "page": 575,
+    "name": "ゾロー兵",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-368": {
+    "page": 569,
+    "name": "レッドマスク",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-369": {
+    "page": 565,
+    "name": "ブルーマスク",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-370": {
+    "page": 566,
+    "name": "ブラックマスク",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-371": {
+    "page": 567,
+    "name": "ピンクマスク",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-372": {
+    "page": 568,
+    "name": "X1マスク",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-373": {
+    "page": 540,
+    "name": "ファイブレッドFT",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-374": {
+    "page": 602,
+    "name": "魔女バンドーラ",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-375": {
+    "page": 552,
+    "name": "レッドレーサー（2nd）",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-376": {
+    "page": 501,
+    "name": "ギンガレッド",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-377": {
+    "page": 502,
+    "name": "ギンガグリーン",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-378": {
+    "page": 503,
+    "name": "ギンガブルー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-379": {
+    "page": 504,
+    "name": "ギンガイエロー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-380": {
+    "page": 505,
+    "name": "ギンガピンク",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-381": {
+    "page": 522,
+    "name": "ガレオパルサー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-382": {
+    "page": 541,
+    "name": "ビクトリーロボ",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-383": {
+    "page": 528,
+    "name": "レッドラダー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-384": {
+    "page": 529,
+    "name": "ブルースローワー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-385": {
+    "page": 530,
+    "name": "グリーンホバー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-386": {
+    "page": 531,
+    "name": "イエローアーマー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-387": {
+    "page": 532,
+    "name": "ピンクエイダー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-388": {
+    "page": 537,
+    "name": "ゴーレッド（2nd）",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-389": {
+    "page": 533,
+    "name": "ゴーブルー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-390": {
+    "page": 534,
+    "name": "ゴーグリーン",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-391": {
+    "page": 535,
+    "name": "ゴーイエロー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-392": {
+    "page": 536,
+    "name": "ゴーピンク",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-393": {
+    "page": 539,
+    "name": "コマンドアタッカー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-394": {
+    "page": 518,
+    "name": "タイムロボα",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-395": {
+    "page": 553,
+    "name": "タイムロボβ",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-396": {
+    "page": 554,
+    "name": "タイムジェットγ",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-397": {
+    "page": 555,
+    "name": "タイムジェット1",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-398": {
+    "page": 556,
+    "name": "タイムジェット2",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-399": {
+    "page": 557,
+    "name": "タイムジェット3",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-400": {
+    "page": 558,
+    "name": "タイムジェット4",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-401": {
+    "page": 559,
+    "name": "タイムジェット5",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-402": {
+    "page": 543,
+    "name": "ガオレッド（2nd）",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-403": {
+    "page": 560,
+    "name": "デカレッド（2nd）",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-404": {
+    "page": 561,
+    "name": "マーフィーK9",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-405": {
+    "page": 562,
+    "name": "デカブレイク",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-406": {
+    "page": 563,
+    "name": "マシンボクサー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-407": {
+    "page": 570,
+    "name": "天空大聖者マジエル",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-408": {
+    "page": 573,
+    "name": "天空聖者サンジェル",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-409": {
+    "page": 598,
+    "name": "冥府神スレイプニル",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-410": {
+    "page": 607,
+    "name": "冥府神ドレイク",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-411": {
+    "page": 608,
+    "name": "冥府神ダゴン",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-412": {
+    "page": 599,
+    "name": "冥府神スフィンクス",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-413": {
+    "page": 609,
+    "name": "冥府神ゴーゴン",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-414": {
+    "page": 611,
+    "name": "冥府神ティターン",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-415": {
+    "page": 612,
+    "name": "冥府神ワイバーン",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-416": {
+    "page": 610,
+    "name": "冥府神トード",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-417": {
+    "page": 614,
+    "name": "冥府神サイクロプス",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-418": {
+    "page": 613,
+    "name": "冥府神イフリート",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-419": {
+    "page": 571,
+    "name": "聖剣ズバーン",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-420": {
+    "page": 572,
+    "name": "大剣人ズバーン",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-421": {
+    "page": 574,
+    "name": "アカレッド",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-422": {
+    "page": 542,
+    "name": "ゲキトージャ",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-423": {
+    "page": 519,
+    "name": "ゲキタイガー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-424": {
+    "page": 520,
+    "name": "ゲキチーター",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-425": {
+    "page": 521,
+    "name": "ゲキジャガー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-426": {
+    "page": 509,
+    "name": "スーパーゲキレッド",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-427": {
+    "page": 510,
+    "name": "スーパーゲキイエロー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-428": {
+    "page": 511,
+    "name": "スーパーゲキブルー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-429": {
+    "page": 508,
+    "name": "マスター・シャーフー",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-430": {
+    "page": 507,
+    "name": "ロボタフ",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-431": {
+    "page": 506,
+    "name": "黒獅子リオ",
+    "expansion": 6,
+    "expansionTitle": "紅き六戦士の帰還"
+  },
+  "RS-432": {
+    "page": 736,
+    "name": "隠流マキビシ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-433": {
+    "page": 737,
+    "name": "ネコマル",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-434": {
+    "page": 746,
+    "name": "ライフバード",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-435": {
+    "page": 753,
+    "name": "アレ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-436": {
+    "page": 515,
+    "name": "激気",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-437": {
+    "page": 764,
+    "name": "白熱する実況",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-438": {
+    "page": 755,
+    "name": "炎神ソウル",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-439": {
+    "page": 781,
+    "name": "バトルシャーク",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-440": {
+    "page": 780,
+    "name": "バトルフィーバーロボ（2nd）",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-441": {
+    "page": 782,
+    "name": "バトルコサック",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-442": {
+    "page": 751,
+    "name": "バトルフランス",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-443": {
+    "page": 754,
+    "name": "バトルジャパン",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-444": {
+    "page": 783,
+    "name": "バトルケニア",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-445": {
+    "page": 784,
+    "name": "ミスアメリカ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-446": {
+    "page": 785,
+    "name": "ダイジュピター",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-447": {
+    "page": 786,
+    "name": "ダイナブラック",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-448": {
+    "page": 787,
+    "name": "ダイナイエロー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-449": {
+    "page": 797,
+    "name": "イエローマスク",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-450": {
+    "page": 821,
+    "name": "地帝忍オヨブー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-451": {
+    "page": 822,
+    "name": "シノビドグラー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-452": {
+    "page": 788,
+    "name": "テトラボーイ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-453": {
+    "page": 798,
+    "name": "サムライマン",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-454": {
+    "page": 799,
+    "name": "ニンジャマン",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-455": {
+    "page": 800,
+    "name": "ニンジャブラック",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-456": {
+    "page": 801,
+    "name": "ニンジャブルー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-457": {
+    "page": 802,
+    "name": "ニンジャレッド",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-458": {
+    "page": 803,
+    "name": "ニンジャホワイト",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-459": {
+    "page": 804,
+    "name": "ニンジャイエロー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-460": {
+    "page": 823,
+    "name": "花忍者ラン",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-461": {
+    "page": 824,
+    "name": "花忍者スイレン",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-462": {
+    "page": 825,
+    "name": "花忍者サクラ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-463": {
+    "page": 747,
+    "name": "花忍者アヤメ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-464": {
+    "page": 826,
+    "name": "花忍者ユリ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-465": {
+    "page": 827,
+    "name": "ドロドロ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-466": {
+    "page": 765,
+    "name": "ギンガレオン",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-467": {
+    "page": 766,
+    "name": "ギンガルコン",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-468": {
+    "page": 767,
+    "name": "ギンガリラ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-469": {
+    "page": 741,
+    "name": "ギンガベリック",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-470": {
+    "page": 768,
+    "name": "ギンガット",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-471": {
+    "page": 789,
+    "name": "グランドライナー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-472": {
+    "page": 790,
+    "name": "ゴーライナー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-473": {
+    "page": 791,
+    "name": "タイムシャドウ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-474": {
+    "page": 792,
+    "name": "タイムシャドウSM",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-475": {
+    "page": 769,
+    "name": "ガオハンタージャスティス",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-476": {
+    "page": 828,
+    "name": "ガオハンターイビル",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-477": {
+    "page": 770,
+    "name": "ガオウルフ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-478": {
+    "page": 771,
+    "name": "ガオリゲーター",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-479": {
+    "page": 772,
+    "name": "ガオハンマーヘッド",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-480": {
+    "page": 773,
+    "name": "ガオシルバー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-481": {
+    "page": 805,
+    "name": "天空神",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-482": {
+    "page": 806,
+    "name": "天空神・飛行モード",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-483": {
+    "page": 745,
+    "name": "シュリケンジャー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-484": {
+    "page": 752,
+    "name": "旋風神ハリアー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-485": {
+    "page": 807,
+    "name": "ハムスター館長",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-486": {
+    "page": 808,
+    "name": "ソードスラッシャー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-487": {
+    "page": 809,
+    "name": "ゴートクラッシャー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-488": {
+    "page": 810,
+    "name": "ハリケンウィンガー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-489": {
+    "page": 814,
+    "name": "二の槍チュウズーボ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-490": {
+    "page": 813,
+    "name": "三の槍マンマルバ幼体",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-491": {
+    "page": 748,
+    "name": "三の槍マンマルバ成体",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-492": {
+    "page": 815,
+    "name": "炎の騎馬",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-493": {
+    "page": 816,
+    "name": "六の槍サタラクラ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-494": {
+    "page": 817,
+    "name": "縁切り忍者シラーンス",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-495": {
+    "page": 818,
+    "name": "重力忍者オモ・カル",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-496": {
+    "page": 793,
+    "name": "デカブルーSWAT",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-497": {
+    "page": 819,
+    "name": "冥獣人ニンジャキリカゲ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-498": {
+    "page": 774,
+    "name": "ゲキウルフ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-499": {
+    "page": 775,
+    "name": "ゲキバイオレット",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-500": {
+    "page": 776,
+    "name": "ゲキチョッパー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-501": {
+    "page": 742,
+    "name": "エレハン・キンポー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-502": {
+    "page": 777,
+    "name": "バット・リー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-503": {
+    "page": 778,
+    "name": "シャッキー・チェン",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-504": {
+    "page": 820,
+    "name": "獣人メレ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-505": {
+    "page": 756,
+    "name": "スピードル",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-506": {
+    "page": 757,
+    "name": "バスオン",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-507": {
+    "page": 759,
+    "name": "ベアールV",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-508": {
+    "page": 740,
+    "name": "ゴーオンレッド",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-509": {
+    "page": 758,
+    "name": "ゴーオンブルー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-510": {
+    "page": 794,
+    "name": "ゴーオンイエロー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-511": {
+    "page": 795,
+    "name": "ゴーオングリーン",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-512": {
+    "page": 796,
+    "name": "ゴーオンブラック",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-513": {
+    "page": 812,
+    "name": "無敵将軍",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-514": {
+    "page": 779,
+    "name": "ゲキトージャウルフ",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-515": {
+    "page": 760,
+    "name": "エンジンオー",
+    "expansion": 7,
+    "expansionTitle": "七忍の炎陣"
+  },
+  "RS-516": {
+    "page": 1149,
+    "name": "アースフォース",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-517": {
+    "page": 1234,
+    "name": "バードニック反応炉",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-518": {
+    "page": 1147,
+    "name": "獣撃棒",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-519": {
+    "page": 1155,
+    "name": "インフェルシアの花嫁",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-520": {
+    "page": 1148,
+    "name": "スコープショット",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-521": {
+    "page": 1154,
+    "name": "スーパー戦隊魂",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-522": {
+    "page": 1152,
+    "name": "ボウケンスピリッツ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-523": {
+    "page": 1150,
+    "name": "臨気",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-524": {
+    "page": 1151,
+    "name": "呉越同舟",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-525": {
+    "page": 1153,
+    "name": "頼もしい相棒",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-526": {
+    "page": 1142,
+    "name": "スーパーハイウェイバスター",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-527": {
+    "page": 1156,
+    "name": "バルジオン（2nd）",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-528": {
+    "page": 1232,
+    "name": "バイオハンター・シルバ（2nd）",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-529": {
+    "page": 1226,
+    "name": "チェンジロボ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-530": {
+    "page": 1157,
+    "name": "ジェットチェンジャー1",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-531": {
+    "page": 1158,
+    "name": "ヘリチェンジャー2",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-532": {
+    "page": 1159,
+    "name": "ランドチェンジャー3",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-533": {
+    "page": 1160,
+    "name": "チェンジフェニックス",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-534": {
+    "page": 1161,
+    "name": "チェンジペガサス",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-535": {
+    "page": 1222,
+    "name": "チェンジドラゴン",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-536": {
+    "page": 1162,
+    "name": "チェンジグリフォン",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-537": {
+    "page": 1163,
+    "name": "チェンジマーメイド",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-538": {
+    "page": 1213,
+    "name": "ユイ・イブキ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-539": {
+    "page": 1164,
+    "name": "ギョダーイ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-540": {
+    "page": 1165,
+    "name": "J1",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-541": {
+    "page": 1166,
+    "name": "J2",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-542": {
+    "page": 1167,
+    "name": "J3",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-543": {
+    "page": 1168,
+    "name": "J4",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-544": {
+    "page": 1169,
+    "name": "J5",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-545": {
+    "page": 1210,
+    "name": "究極大獣神",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-546": {
+    "page": 1170,
+    "name": "獣帝大獣神",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-547": {
+    "page": 1171,
+    "name": "獣騎神キングブラキオン",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-548": {
+    "page": 1225,
+    "name": "ティラノレンジャー（2nd）",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-549": {
+    "page": 1172,
+    "name": "トリケラレンジャー（2nd）",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-550": {
+    "page": 1217,
+    "name": "隠大将軍",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-551": {
+    "page": 1173,
+    "name": "ゴッドガンマー",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-552": {
+    "page": 1174,
+    "name": "ゴッドロウガン",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-553": {
+    "page": 1175,
+    "name": "ゴッドサルダー",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-554": {
+    "page": 1176,
+    "name": "ゴッドカーク",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-555": {
+    "page": 1177,
+    "name": "ゴッドクマード",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-556": {
+    "page": 1178,
+    "name": "バトルサルダー",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-557": {
+    "page": 1179,
+    "name": "ビンボーガミ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-558": {
+    "page": 1186,
+    "name": "ガンマジン",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-559": {
+    "page": 1227,
+    "name": "ガオゴッド",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-560": {
+    "page": 1180,
+    "name": "ガオレオン",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-561": {
+    "page": 1184,
+    "name": "ガオコンドル",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-562": {
+    "page": 1182,
+    "name": "ガオソーシャーク",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-563": {
+    "page": 1183,
+    "name": "ガオバッファロー",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-564": {
+    "page": 1185,
+    "name": "ガオジャガー",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-565": {
+    "page": 1187,
+    "name": "轟雷旋風神",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-566": {
+    "page": 1229,
+    "name": "天雷旋風神",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-567": {
+    "page": 1188,
+    "name": "トライコンドル",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-568": {
+    "page": 1189,
+    "name": "風雷丸",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-569": {
+    "page": 1230,
+    "name": "スーパーデカレンジャーロボ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-570": {
+    "page": 1190,
+    "name": "デカバイク",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-571": {
+    "page": 1214,
+    "name": "デカバイクロボ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-572": {
+    "page": 1215,
+    "name": "デカマスター（2nd）",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-573": {
+    "page": 1191,
+    "name": "ファイヤーカイザー（2nd）",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-574": {
+    "page": 1218,
+    "name": "セイントカイザー",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-575": {
+    "page": 1240,
+    "name": "一角聖馬ユニゴルオン",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-576": {
+    "page": 1193,
+    "name": "マジフェニックス",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-577": {
+    "page": 1228,
+    "name": "マジレッド（2nd）",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-578": {
+    "page": 1220,
+    "name": "レジェンドマジグリーンRA",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-579": {
+    "page": 1194,
+    "name": "ルナジェル",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-580": {
+    "page": 1219,
+    "name": "絶対神ン・マ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-581": {
+    "page": 1195,
+    "name": "魔導馬バリキオン（2nd）",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-582": {
+    "page": 1196,
+    "name": "魔導神官メーミィ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-583": {
+    "page": 1211,
+    "name": "ボウケンレッドHM",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-584": {
+    "page": 1212,
+    "name": "ボウケンブラックAT",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-585": {
+    "page": 1141,
+    "name": "ボウケンシルバー（2nd）",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-586": {
+    "page": 1221,
+    "name": "巨神ゴードム",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-587": {
+    "page": 1197,
+    "name": "怒りの鬼神　ガイ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-588": {
+    "page": 1198,
+    "name": "大いなる獣　レイ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-589": {
+    "page": 1199,
+    "name": "クエスター・ガイ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-590": {
+    "page": 1200,
+    "name": "クエスター・レイ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-591": {
+    "page": 1201,
+    "name": "ガンバルオー",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-592": {
+    "page": 1223,
+    "name": "エンジンオーG6",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-593": {
+    "page": 1202,
+    "name": "バルカ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-594": {
+    "page": 1203,
+    "name": "ガンパード",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-595": {
+    "page": 1204,
+    "name": "キャリゲーター",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-596": {
+    "page": 1216,
+    "name": "炎神大将軍",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-597": {
+    "page": 1205,
+    "name": "レツタカ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-598": {
+    "page": 1206,
+    "name": "シシノシン",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-599": {
+    "page": 1207,
+    "name": "ツキノワ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-600": {
+    "page": 1143,
+    "name": "ゴーオンシルバー",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-601": {
+    "page": 1144,
+    "name": "ゴーオンゴールド",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-602": {
+    "page": 1231,
+    "name": "害水大臣ケガレシア",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-603": {
+    "page": 1208,
+    "name": "蛮機獣ボンベバンキ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-604": {
+    "page": 1209,
+    "name": "蛮機兵ウガッツ",
+    "expansion": 8,
+    "expansionTitle": "究極の八神"
+  },
+  "RS-605": {
+    "page": 1448,
+    "name": "異次元からの翼",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-606": {
+    "page": 1447,
+    "name": "雷鳴剣ヒカリマル",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-607": {
+    "page": 1449,
+    "name": "ファルコンサモナー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-608": {
+    "page": 1495,
+    "name": "五色の戦士",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-609": {
+    "page": 1496,
+    "name": "戦士の魂",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-610": {
+    "page": 1440,
+    "name": "秘伝ディスク",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-611": {
+    "page": 1450,
+    "name": "バリブルーン",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-612": {
+    "page": 1451,
+    "name": "スカイエース",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-613": {
+    "page": 1452,
+    "name": "ダイヤジャック",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-614": {
+    "page": 1453,
+    "name": "クローバーキング",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-615": {
+    "page": 1454,
+    "name": "ハートクイン",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-616": {
+    "page": 1455,
+    "name": "クライマー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-617": {
+    "page": 1499,
+    "name": "グレートイカロス",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-618": {
+    "page": 1456,
+    "name": "ジェットイカロス",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-619": {
+    "page": 1457,
+    "name": "ジェットマシン",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-620": {
+    "page": 1458,
+    "name": "ジェットガルーダ",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-621": {
+    "page": 1459,
+    "name": "バードガルーダ",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-622": {
+    "page": 1487,
+    "name": "グリフォーザー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-623": {
+    "page": 1460,
+    "name": "ツバサマル",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-624": {
+    "page": 1491,
+    "name": "メガウインガー・ファイターモード",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-625": {
+    "page": 1461,
+    "name": "メガウインガー・フライヤーモード",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-626": {
+    "page": 1525,
+    "name": "ギャラクシーメガ",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-627": {
+    "page": 1462,
+    "name": "メガシップ",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-628": {
+    "page": 1432,
+    "name": "メガピンク",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-629": {
+    "page": 1430,
+    "name": "メガイエロー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-630": {
+    "page": 1429,
+    "name": "メガブルー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-631": {
+    "page": 1431,
+    "name": "メガブラック",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-632": {
+    "page": 1418,
+    "name": "メガレッド",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-633": {
+    "page": 1529,
+    "name": "メガシルバー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-634": {
+    "page": 1463,
+    "name": "ユガンデ",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-635": {
+    "page": 1436,
+    "name": "ネジピンク",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-636": {
+    "page": 1437,
+    "name": "ネジブラック",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-637": {
+    "page": 1488,
+    "name": "ネジレッド",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-638": {
+    "page": 1438,
+    "name": "ネジブルー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-639": {
+    "page": 1439,
+    "name": "ネジイエロー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-640": {
+    "page": 1464,
+    "name": "ギガバイタスCM",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-641": {
+    "page": 1465,
+    "name": "ギガバイタスSM",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-642": {
+    "page": 1493,
+    "name": "ギガライノス",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-643": {
+    "page": 1466,
+    "name": "分身獣ギガホイール",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-644": {
+    "page": 1467,
+    "name": "分身獣ギガウイング",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-645": {
+    "page": 1492,
+    "name": "ビクトリーマーズ",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-646": {
+    "page": 1468,
+    "name": "マーズマシン",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-647": {
+    "page": 1469,
+    "name": "ピヨちゃん",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-648": {
+    "page": 1497,
+    "name": "ガオイカロス",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-649": {
+    "page": 1470,
+    "name": "ガオファルコン",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-650": {
+    "page": 1471,
+    "name": "ガオライノス",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-651": {
+    "page": 1472,
+    "name": "ガオマジロ",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-652": {
+    "page": 1473,
+    "name": "ガオディアス",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-653": {
+    "page": 1518,
+    "name": "レッドファルコン（2nd）",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-654": {
+    "page": 1519,
+    "name": "ガオイエロー（2nd）",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-655": {
+    "page": 1528,
+    "name": "デカウイングロボ",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-656": {
+    "page": 1474,
+    "name": "デカウイングキャノン",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-657": {
+    "page": 1475,
+    "name": "パトウイング",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-658": {
+    "page": 1526,
+    "name": "デカグリーンSWAT",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-659": {
+    "page": 1504,
+    "name": "デカイエローSWAT",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-660": {
+    "page": 1527,
+    "name": "デカピンクSWAT",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-661": {
+    "page": 1500,
+    "name": "幻獣王リオ",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-662": {
+    "page": 1501,
+    "name": "鳳凰メレ",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-663": {
+    "page": 1502,
+    "name": "エンジンオーG12",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-664": {
+    "page": 1494,
+    "name": "エンジンオーG9",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-665": {
+    "page": 1476,
+    "name": "キョウレツオー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-666": {
+    "page": 1477,
+    "name": "ジェットラス",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-667": {
+    "page": 1478,
+    "name": "ジャン・ボエール",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-668": {
+    "page": 1479,
+    "name": "トリプター",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-669": {
+    "page": 1446,
+    "name": "キシャモス",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-670": {
+    "page": 1444,
+    "name": "ティライン",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-671": {
+    "page": 1445,
+    "name": "ケライン",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-672": {
+    "page": 1521,
+    "name": "ゴローダーGT",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-673": {
+    "page": 1443,
+    "name": "ボンパー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-674": {
+    "page": 1421,
+    "name": "シンケンレッド",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-675": {
+    "page": 1425,
+    "name": "シンケンブルー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-676": {
+    "page": 1428,
+    "name": "シンケンピンク",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-677": {
+    "page": 1426,
+    "name": "シンケングリーン",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-678": {
+    "page": 1427,
+    "name": "シンケンイエロー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-679": {
+    "page": 1485,
+    "name": "シンケンオー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-680": {
+    "page": 1480,
+    "name": "獅子折神",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-681": {
+    "page": 1481,
+    "name": "龍折神",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-682": {
+    "page": 1482,
+    "name": "亀折神",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-683": {
+    "page": 1483,
+    "name": "熊折神",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-684": {
+    "page": 1484,
+    "name": "猿折神",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-685": {
+    "page": 1530,
+    "name": "ブラックコンドル（2nd）",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-686": {
+    "page": 1489,
+    "name": "セイクウオー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-687": {
+    "page": 1433,
+    "name": "ギンガイオー",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-688": {
+    "page": 1498,
+    "name": "ギガフェニックス",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-689": {
+    "page": 1531,
+    "name": "レッドホーク（2nd）",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  },
+  "RS-690": {
+    "page": 1490,
+    "name": "スペードエース",
+    "expansion": 9,
+    "expansionTitle": "蒼九の翼"
+  }
+}

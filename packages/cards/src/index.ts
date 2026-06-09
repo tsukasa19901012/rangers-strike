@@ -37,6 +37,7 @@ export * from "./wikiReference";
 export * from "./resist";
 export * from "./bounce";
 export * from "./glossaryImplementation";
+export * as cardDsl from "./dsl";
 
 /** レジェンド1 カード画像の Web パス接頭辞 */
 export const LEGEND1_IMAGE_BASE_PATH = "/cards/legend1";

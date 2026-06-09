@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch51-rb-RK-220-RK-239.json",
+  "pages": [
+    {
+      "id": 947,
+      "label": "RK-220",
+      "title": "アルビノジョーカー",
+      "cardId": "RK-220"
+    },
+    {
+      "id": 955,
+      "label": "RK-221",
+      "title": "仮面ライダー響鬼",
+      "cardId": "RK-221"
+    },
+    {
+      "id": 874,
+      "label": "RK-222",
+      "title": "仮面ライダー響鬼紅",
+      "cardId": "RK-222"
+    },
+    {
+      "id": 1087,
+      "label": "RK-223",
+      "title": "仮面ライダー威吹鬼",
+      "cardId": "RK-223"
+    },
+    {
+      "id": 900,
+      "label": "RK-224",
+      "title": "京介変身体",
+      "cardId": "RK-224"
+    },
+    {
+      "id": 901,
+      "label": "RK-225",
+      "title": "仮面ライダー朱鬼",
+      "cardId": "RK-225"
+    },
+    {
+      "id": 935,
+      "label": "RK-226",
+      "title": "仮面ライダー歌舞鬼",
+      "cardId": "RK-226"
+    },
+    {
+      "id": 936,
+      "label": "RK-227",
+      "title": "仮面ライダー凍鬼",
+      "cardId": "RK-227"
+    },
+    {
+      "id": 937,
+      "label": "RK-228",
+      "title": "仮面ライダー羽撃鬼",
+      "cardId": "RK-228"
+    },
+    {
+      "id": 938,
+      "label": "RK-229",
+      "title": "仮面ライダー煌鬼",
+      "cardId": "RK-229"
+    },
+    {
+      "id": 939,
+      "label": "RK-230",
+      "title": "仮面ライダー西鬼",
+      "cardId": "RK-230"
+    },
+    {
+      "id": 948,
+      "label": "RK-231",
+      "title": "オロチ",
+      "cardId": "RK-231"
+    },
+    {
+      "id": 949,
+      "label": "RK-232",
+      "title": "火焔大将",
+      "cardId": "RK-232"
+    },
+    {
+      "id": 953,
+      "label": "RK-233",
+      "title": "仮面ライダーコーカサス",
+      "cardId": "RK-233"
+    },
+    {
+      "id": 933,
+      "label": "RK-234",
+      "title": "仮面ライダーケタロス",
+      "cardId": "RK-234"
+    },
+    {
+      "id": 934,
+      "label": "RK-235",
+      "title": "仮面ライダーヘラクス",
+      "cardId": "RK-235"
+    },
+    {
+      "id": 950,
+      "label": "RK-236",
+      "title": "ネガタロス",
+      "cardId": "RK-236"
+    },
+    {
+      "id": 940,
+      "label": "RK-237",
+      "title": "仮面ライダーキバBF",
+      "cardId": "RK-237"
+    },
+    {
+      "id": 941,
+      "label": "RK-238",
+      "title": "キャッスルドラン",
+      "cardId": "RK-238"
+    },
+    {
+      "id": 763,
+      "label": "RK-239",
+      "title": "ウエイクアップ！",
+      "cardId": "RK-239"
+    }
+  ]
+}

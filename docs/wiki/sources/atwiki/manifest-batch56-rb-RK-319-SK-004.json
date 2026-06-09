@@ -1,0 +1,120 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch56-rb-RK-319-SK-004.json",
+  "pages": [
+    {
+      "id": 1408,
+      "label": "RK-319",
+      "title": "仮面ライダーイクサBM",
+      "cardId": "RK-319"
+    },
+    {
+      "id": 1250,
+      "label": "RK-320",
+      "title": "仮面ライダーライジングイクサ",
+      "cardId": "RK-320"
+    },
+    {
+      "id": 1253,
+      "label": "RK-321",
+      "title": "仮面ライダーサガ",
+      "cardId": "RK-321"
+    },
+    {
+      "id": 1249,
+      "label": "RK-322",
+      "title": "仮面ライダーレイ",
+      "cardId": "RK-322"
+    },
+    {
+      "id": 1348,
+      "label": "RK-323",
+      "title": "マシンキバー",
+      "cardId": "RK-323"
+    },
+    {
+      "id": 1356,
+      "label": "RK-324",
+      "title": "ブロンブースター",
+      "cardId": "RK-324"
+    },
+    {
+      "id": 1347,
+      "label": "RK-325",
+      "title": "パワードイクサー",
+      "cardId": "RK-325"
+    },
+    {
+      "id": 1351,
+      "label": "RK-326",
+      "title": "ガルル獣人態",
+      "cardId": "RK-326"
+    },
+    {
+      "id": 1352,
+      "label": "RK-327",
+      "title": "バッシャー獣人態",
+      "cardId": "RK-327"
+    },
+    {
+      "id": 1353,
+      "label": "RK-328",
+      "title": "ドッガ怪人態",
+      "cardId": "RK-328"
+    },
+    {
+      "id": 1410,
+      "label": "RK-329",
+      "title": "仮面ライダーアーク",
+      "cardId": "RK-329"
+    },
+    {
+      "id": 1368,
+      "label": "RK-330",
+      "title": "仮面ライダークウガRT",
+      "cardId": "RK-330"
+    },
+    {
+      "id": 1245,
+      "label": "RK-331",
+      "title": "仮面ライダークウガAM",
+      "cardId": "RK-331"
+    },
+    {
+      "id": 1252,
+      "label": "RK-332",
+      "title": "仮面ライダー龍騎（2nd）",
+      "cardId": "RK-332"
+    },
+    {
+      "id": 1243,
+      "label": "RK-333",
+      "title": "仮面ライダー龍騎サバイブ",
+      "cardId": "RK-333"
+    },
+    {
+      "id": 1369,
+      "label": "RK-334",
+      "title": "仮面ライダー電王LF（2nd）",
+      "cardId": "RK-334"
+    },
+    {
+      "id": 1279,
+      "label": "RK-335",
+      "title": "モモタロス（2nd）",
+      "cardId": "RK-335"
+    },
+    {
+      "id": 1411,
+      "label": "SK-004",
+      "title": "仮面ライダークウガUF",
+      "cardId": "SK-004"
+    }
+  ]
+}

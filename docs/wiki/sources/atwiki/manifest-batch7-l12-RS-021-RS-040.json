@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch7-l12-RS-021-RS-040.json",
+  "pages": [
+    {
+      "id": 257,
+      "label": "RS-021",
+      "title": "サイバースライダー",
+      "cardId": "RS-021"
+    },
+    {
+      "id": 55,
+      "label": "RS-022",
+      "title": "アースの力",
+      "cardId": "RS-022"
+    },
+    {
+      "id": 258,
+      "label": "RS-023",
+      "title": "スーパーレスキュー",
+      "cardId": "RS-023"
+    },
+    {
+      "id": 278,
+      "label": "RS-024",
+      "title": "圧縮冷凍",
+      "cardId": "RS-024"
+    },
+    {
+      "id": 75,
+      "label": "RS-025",
+      "title": "ガオ・ソウル",
+      "cardId": "RS-025"
+    },
+    {
+      "id": 424,
+      "label": "RS-026",
+      "title": "疾風流超忍法",
+      "cardId": "RS-026"
+    },
+    {
+      "id": 234,
+      "label": "RS-027",
+      "title": "ダイノガッツ",
+      "cardId": "RS-027"
+    },
+    {
+      "id": 32,
+      "label": "RS-028",
+      "title": "ジャッジメント",
+      "cardId": "RS-028"
+    },
+    {
+      "id": 245,
+      "label": "RS-029",
+      "title": "勇気の魔法",
+      "cardId": "RS-029"
+    },
+    {
+      "id": 259,
+      "label": "RS-030",
+      "title": "アドベンチャー",
+      "cardId": "RS-030"
+    },
+    {
+      "id": 33,
+      "label": "RS-031",
+      "title": "バルイーグル",
+      "cardId": "RS-031"
+    },
+    {
+      "id": 73,
+      "label": "RS-032",
+      "title": "バルシャーク",
+      "cardId": "RS-032"
+    },
+    {
+      "id": 74,
+      "label": "RS-033",
+      "title": "バルパンサー",
+      "cardId": "RS-033"
+    },
+    {
+      "id": 76,
+      "label": "RS-034",
+      "title": "大獣神",
+      "cardId": "RS-034"
+    },
+    {
+      "id": 78,
+      "label": "RS-035",
+      "title": "守護獣ティラノザウルス",
+      "cardId": "RS-035"
+    },
+    {
+      "id": 79,
+      "label": "RS-036",
+      "title": "守護獣ジュウマンモス",
+      "cardId": "RS-036"
+    },
+    {
+      "id": 80,
+      "label": "RS-037",
+      "title": "守護獣トリケラトプス",
+      "cardId": "RS-037"
+    },
+    {
+      "id": 82,
+      "label": "RS-038",
+      "title": "守護獣サーベルタイガー",
+      "cardId": "RS-038"
+    },
+    {
+      "id": 81,
+      "label": "RS-039",
+      "title": "守護獣プテラノドン",
+      "cardId": "RS-039"
+    },
+    {
+      "id": 235,
+      "label": "RS-040",
+      "title": "マンモスレンジャー",
+      "cardId": "RS-040"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch100-xg-XG7-020-XG7-039.json",
+  "pages": [
+    {
+      "id": 2435,
+      "label": "XG7-020",
+      "title": "クワガライジャー×カブトライジャー",
+      "cardId": "XG7-020"
+    },
+    {
+      "id": 2389,
+      "label": "XG7-021",
+      "title": "デカピンク×デカイエロー",
+      "cardId": "XG7-021"
+    },
+    {
+      "id": 2390,
+      "label": "XG7-022",
+      "title": "マジピンク×マジブルー",
+      "cardId": "XG7-022"
+    },
+    {
+      "id": 2453,
+      "label": "XG7-023",
+      "title": "獣拳巨神サイダイオー",
+      "cardId": "XG7-023"
+    },
+    {
+      "id": 2418,
+      "label": "XG7-024",
+      "title": "獣拳神サイダイン",
+      "cardId": "XG7-024"
+    },
+    {
+      "id": 2391,
+      "label": "XG7-025",
+      "title": "ゴーオンシルバー×ゴーオンゴールド",
+      "cardId": "XG7-025"
+    },
+    {
+      "id": 2386,
+      "label": "XG7-026",
+      "title": "ゴセイブラック×ゴセイイエロー",
+      "cardId": "XG7-026"
+    },
+    {
+      "id": 2419,
+      "label": "XG7-027",
+      "title": "雷撃ディスク",
+      "cardId": "XG7-027"
+    },
+    {
+      "id": 2425,
+      "label": "XG7-028",
+      "title": "ゴセイアルティメット",
+      "cardId": "XG7-028"
+    },
+    {
+      "id": 2405,
+      "label": "XG7-029",
+      "title": "ゴセイアルティメットMM",
+      "cardId": "XG7-029"
+    },
+    {
+      "id": 2420,
+      "label": "XG7-030",
+      "title": "ゴセイヘッダー",
+      "cardId": "XG7-030"
+    },
+    {
+      "id": 2429,
+      "label": "XG7-031",
+      "title": "新サイクロン号",
+      "cardId": "XG7-031"
+    },
+    {
+      "id": 2388,
+      "label": "XG7-032",
+      "title": "仮面ライダー新2号×仮面ライダー新1号",
+      "cardId": "XG7-032"
+    },
+    {
+      "id": 2427,
+      "label": "XG7-033",
+      "title": "仮面ライダーV3×ライダーマン",
+      "cardId": "XG7-033"
+    },
+    {
+      "id": 2384,
+      "label": "XG7-034",
+      "title": "仮面ライダーストロンガー×電波人間タックル",
+      "cardId": "XG7-034"
+    },
+    {
+      "id": 2421,
+      "label": "XG7-035",
+      "title": "ヨロイ騎士",
+      "cardId": "XG7-035"
+    },
+    {
+      "id": 2436,
+      "label": "XG7-036",
+      "title": "仮面ライダーナイト×仮面ライダー龍騎",
+      "cardId": "XG7-036"
+    },
+    {
+      "id": 2428,
+      "label": "XG7-037",
+      "title": "仮面ライダーカイザ×仮面ライダーファイズ",
+      "cardId": "XG7-037"
+    },
+    {
+      "id": 2437,
+      "label": "XG7-038",
+      "title": "仮面ライダーギャレン×仮面ライダーブレイド",
+      "cardId": "XG7-038"
+    },
+    {
+      "id": 2402,
+      "label": "XG7-039",
+      "title": "GOD SPEED LOVE",
+      "cardId": "XG7-039"
+    }
+  ]
+}

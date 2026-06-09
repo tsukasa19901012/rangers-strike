@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch10-l12-RS-081-RS-100.json",
+  "pages": [
+    {
+      "id": 230,
+      "label": "RS-081",
+      "title": "ティラノレンジャー",
+      "cardId": "RS-081"
+    },
+    {
+      "id": 231,
+      "label": "RS-082",
+      "title": "トリケラレンジャー",
+      "cardId": "RS-082"
+    },
+    {
+      "id": 232,
+      "label": "RS-083",
+      "title": "プテラレンジャー",
+      "cardId": "RS-083"
+    },
+    {
+      "id": 297,
+      "label": "RS-084",
+      "title": "VRVロボ",
+      "cardId": "RS-084"
+    },
+    {
+      "id": 298,
+      "label": "RS-085",
+      "title": "ファイヤーファイター",
+      "cardId": "RS-085"
+    },
+    {
+      "id": 299,
+      "label": "RS-086",
+      "title": "ポリスファイター",
+      "cardId": "RS-086"
+    },
+    {
+      "id": 300,
+      "label": "RS-087",
+      "title": "ダンプファイター",
+      "cardId": "RS-087"
+    },
+    {
+      "id": 301,
+      "label": "RS-088",
+      "title": "ドーザーファイター",
+      "cardId": "RS-088"
+    },
+    {
+      "id": 302,
+      "label": "RS-089",
+      "title": "レスキューファイター",
+      "cardId": "RS-089"
+    },
+    {
+      "id": 303,
+      "label": "RS-090",
+      "title": "レッドレーサー",
+      "cardId": "RS-090"
+    },
+    {
+      "id": 290,
+      "label": "RS-091",
+      "title": "ゴーレッド",
+      "cardId": "RS-091"
+    },
+    {
+      "id": 327,
+      "label": "RS-092",
+      "title": "冥王ジルフィーザ",
+      "cardId": "RS-092"
+    },
+    {
+      "id": 328,
+      "label": "RS-093",
+      "title": "童鬼ドロップ",
+      "cardId": "RS-093"
+    },
+    {
+      "id": 329,
+      "label": "RS-094",
+      "title": "龍冥王サラマンデス",
+      "cardId": "RS-094"
+    },
+    {
+      "id": 309,
+      "label": "RS-095",
+      "title": "旋風神",
+      "cardId": "RS-095"
+    },
+    {
+      "id": 314,
+      "label": "RS-096",
+      "title": "ハリケンホーク",
+      "cardId": "RS-096"
+    },
+    {
+      "id": 315,
+      "label": "RS-097",
+      "title": "ハリケンレオン",
+      "cardId": "RS-097"
+    },
+    {
+      "id": 316,
+      "label": "RS-098",
+      "title": "ハリケンドルフィン",
+      "cardId": "RS-098"
+    },
+    {
+      "id": 317,
+      "label": "RS-099",
+      "title": "ハリケンレッド",
+      "cardId": "RS-099"
+    },
+    {
+      "id": 318,
+      "label": "RS-100",
+      "title": "ハリケンイエロー",
+      "cardId": "RS-100"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch90-xg-XG4-090-XG5-004.json",
+  "pages": [
+    {
+      "id": 2082,
+      "label": "XG4-090",
+      "title": "GGスレイヤー",
+      "cardId": "XG4-090"
+    },
+    {
+      "id": 2118,
+      "label": "XG4-091",
+      "title": "ガンギブソン（XG4）",
+      "cardId": "XG4-091"
+    },
+    {
+      "id": 2140,
+      "label": "XG4-092",
+      "title": "ジャンパーソン（XG4）",
+      "cardId": "XG4-092"
+    },
+    {
+      "id": 2152,
+      "label": "XG4-093",
+      "title": "ビルゴルディ",
+      "cardId": "XG4-093"
+    },
+    {
+      "id": 2144,
+      "label": "XG4-094",
+      "title": "宇宙刑事シャイダー（XG4）",
+      "cardId": "XG4-094"
+    },
+    {
+      "id": 2121,
+      "label": "XG4-095",
+      "title": "バビロスSF",
+      "cardId": "XG4-095"
+    },
+    {
+      "id": 2122,
+      "label": "XG4-096",
+      "title": "バビロスBF",
+      "cardId": "XG4-096"
+    },
+    {
+      "id": 2058,
+      "label": "XG4-097",
+      "title": "ヘレンレディ",
+      "cardId": "XG4-097"
+    },
+    {
+      "id": 2119,
+      "label": "XG4-098",
+      "title": "スピルバン（XG4）",
+      "cardId": "XG4-098"
+    },
+    {
+      "id": 2120,
+      "label": "XG4-099",
+      "title": "ホバリアン",
+      "cardId": "XG4-099"
+    },
+    {
+      "id": 2109,
+      "label": "XG4-100",
+      "title": "バイクロッサー・ケン",
+      "cardId": "XG4-100"
+    },
+    {
+      "id": 2110,
+      "label": "XG4-101",
+      "title": "バイクロッサー・ギン",
+      "cardId": "XG4-101"
+    },
+    {
+      "id": 2060,
+      "label": "XG4-102",
+      "title": "ケンローダー",
+      "cardId": "XG4-102"
+    },
+    {
+      "id": 2078,
+      "label": "XP-021",
+      "title": "ファイナルカメンアタックフォームライド",
+      "cardId": "XP-021"
+    },
+    {
+      "id": 2267,
+      "label": "SX-005",
+      "title": "仮面ライダーW・CJX",
+      "cardId": "SX-005"
+    },
+    {
+      "id": 2269,
+      "label": "SX-006",
+      "title": "仮面ライダーG電王",
+      "cardId": "SX-006"
+    },
+    {
+      "id": 2180,
+      "label": "XG5-001",
+      "title": "ゴーグルレッド（XG5）",
+      "cardId": "XG5-001"
+    },
+    {
+      "id": 2274,
+      "label": "XG5-002",
+      "title": "ゴーグルブラック",
+      "cardId": "XG5-002"
+    },
+    {
+      "id": 2185,
+      "label": "XG5-003",
+      "title": "ゴーグルブルー",
+      "cardId": "XG5-003"
+    },
+    {
+      "id": 2186,
+      "label": "XG5-004",
+      "title": "ゴーグルイエロー",
+      "cardId": "XG5-004"
+    }
+  ]
+}

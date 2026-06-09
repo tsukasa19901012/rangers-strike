@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch61-me-RM-041-RM-060.json",
+  "pages": [
+    {
+      "id": 853,
+      "label": "RM-041",
+      "title": "城忍　フクロウ男爵",
+      "cardId": "RM-041"
+    },
+    {
+      "id": 850,
+      "label": "RM-042",
+      "title": "蝶忍　紅牙",
+      "cardId": "RM-042"
+    },
+    {
+      "id": 851,
+      "label": "RM-043",
+      "title": "鳥忍　カラス天狗",
+      "cardId": "RM-043"
+    },
+    {
+      "id": 878,
+      "label": "RM-044",
+      "title": "ジャンパーソン",
+      "cardId": "RM-044"
+    },
+    {
+      "id": 887,
+      "label": "RM-045",
+      "title": "ガンギブソン",
+      "cardId": "RM-045"
+    },
+    {
+      "id": 856,
+      "label": "RM-046",
+      "title": "アールジーコ",
+      "cardId": "RM-046"
+    },
+    {
+      "id": 857,
+      "label": "RM-047",
+      "title": "ダークジェイカー",
+      "cardId": "RM-047"
+    },
+    {
+      "id": 886,
+      "label": "RM-048",
+      "title": "隊員コード153 ショウ",
+      "cardId": "RM-048"
+    },
+    {
+      "id": 858,
+      "label": "RM-049",
+      "title": "隊員コード011 サラ",
+      "cardId": "RM-049"
+    },
+    {
+      "id": 859,
+      "label": "RM-050",
+      "title": "隊員コード071 シグ",
+      "cardId": "RM-050"
+    },
+    {
+      "id": 861,
+      "label": "RM-051",
+      "title": "メガヘラクレス",
+      "cardId": "RM-051"
+    },
+    {
+      "id": 862,
+      "label": "RM-052",
+      "title": "ビートルーダー",
+      "cardId": "RM-052"
+    },
+    {
+      "id": 863,
+      "label": "RM-053",
+      "title": "スタッガータンク",
+      "cardId": "RM-053"
+    },
+    {
+      "id": 864,
+      "label": "RM-054",
+      "title": "レッドジャイロ",
+      "cardId": "RM-054"
+    },
+    {
+      "id": 871,
+      "label": "RM-055",
+      "title": "ブルービート",
+      "cardId": "RM-055"
+    },
+    {
+      "id": 865,
+      "label": "RM-056",
+      "title": "ジースタッグ",
+      "cardId": "RM-056"
+    },
+    {
+      "id": 866,
+      "label": "RM-057",
+      "title": "レッドル",
+      "cardId": "RM-057"
+    },
+    {
+      "id": 867,
+      "label": "RM-058",
+      "title": "老師グル",
+      "cardId": "RM-058"
+    },
+    {
+      "id": 868,
+      "label": "RM-059",
+      "title": "異次元調達屋カブト",
+      "cardId": "RM-059"
+    },
+    {
+      "id": 854,
+      "label": "RM-060",
+      "title": "ジャマー",
+      "cardId": "RM-060"
+    }
+  ]
+}

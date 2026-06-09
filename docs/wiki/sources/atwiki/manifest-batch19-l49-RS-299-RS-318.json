@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch19-l49-RS-299-RS-318.json",
+  "pages": [
+    {
+      "id": 446,
+      "label": "RS-299",
+      "title": "VRVマスター",
+      "cardId": "RS-299"
+    },
+    {
+      "id": 22,
+      "label": "RS-300",
+      "title": "ワンパー",
+      "cardId": "RS-300"
+    },
+    {
+      "id": 445,
+      "label": "RS-301",
+      "title": "Vレックスロボ",
+      "cardId": "RS-301"
+    },
+    {
+      "id": 444,
+      "label": "RS-302",
+      "title": "Vレックス",
+      "cardId": "RS-302"
+    },
+    {
+      "id": 443,
+      "label": "RS-303",
+      "title": "タイムファイヤー",
+      "cardId": "RS-303"
+    },
+    {
+      "id": 35,
+      "label": "RS-304",
+      "title": "シティガーディアンズ隊員",
+      "cardId": "RS-304"
+    },
+    {
+      "id": 100,
+      "label": "RS-305",
+      "title": "ガオパンダ",
+      "cardId": "RS-305"
+    },
+    {
+      "id": 317,
+      "label": "RS-306",
+      "title": "ハリケンレッド",
+      "cardId": "RS-306"
+    },
+    {
+      "id": 318,
+      "label": "RS-307",
+      "title": "ハリケンイエロー",
+      "cardId": "RS-307"
+    },
+    {
+      "id": 319,
+      "label": "RS-308",
+      "title": "ハリケンブルー",
+      "cardId": "RS-308"
+    },
+    {
+      "id": 479,
+      "label": "RS-309",
+      "title": "轟雷神",
+      "cardId": "RS-309"
+    },
+    {
+      "id": 480,
+      "label": "RS-310",
+      "title": "ゴウライビートル",
+      "cardId": "RS-310"
+    },
+    {
+      "id": 481,
+      "label": "RS-311",
+      "title": "ゴウライスタッグ",
+      "cardId": "RS-311"
+    },
+    {
+      "id": 482,
+      "label": "RS-312",
+      "title": "カブトライジャー",
+      "cardId": "RS-312"
+    },
+    {
+      "id": 483,
+      "label": "RS-313",
+      "title": "クワガライジャー",
+      "cardId": "RS-313"
+    },
+    {
+      "id": 429,
+      "label": "RS-314",
+      "title": "マゲラッパ",
+      "cardId": "RS-314"
+    },
+    {
+      "id": 440,
+      "label": "RS-315",
+      "title": "バクレンオー",
+      "cardId": "RS-315"
+    },
+    {
+      "id": 441,
+      "label": "RS-316",
+      "title": "爆竜カルノリュータス",
+      "cardId": "RS-316"
+    },
+    {
+      "id": 442,
+      "label": "RS-317",
+      "title": "爆竜カスモシールドン",
+      "cardId": "RS-317"
+    },
+    {
+      "id": 21,
+      "label": "RS-318",
+      "title": "ドギー・クルーガー",
+      "cardId": "RS-318"
+    }
+  ]
+}

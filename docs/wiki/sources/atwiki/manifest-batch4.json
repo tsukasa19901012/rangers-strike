@@ -1,0 +1,114 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch4.json",
+  "pages": [
+    {
+      "id": 346,
+      "label": "RS-163",
+      "title": "ガオブラック",
+      "cardId": "RS-163"
+    },
+    {
+      "id": 347,
+      "label": "RS-164",
+      "title": "ガオホワイト",
+      "cardId": "RS-164"
+    },
+    {
+      "id": 337,
+      "label": "RS-165",
+      "title": "狼鬼",
+      "cardId": "RS-165"
+    },
+    {
+      "id": 338,
+      "label": "RS-166",
+      "title": "ガインガイン",
+      "cardId": "RS-166"
+    },
+    {
+      "id": 94,
+      "label": "RS-167",
+      "title": "爆竜バキケロナグルス",
+      "cardId": "RS-167"
+    },
+    {
+      "id": 95,
+      "label": "RS-168",
+      "title": "爆竜ディメノコドン",
+      "cardId": "RS-168"
+    },
+    {
+      "id": 339,
+      "label": "RS-169",
+      "title": "ファンクラッシャー",
+      "cardId": "RS-169"
+    },
+    {
+      "id": 340,
+      "label": "RS-170",
+      "title": "エージェント・アブレラ",
+      "cardId": "RS-170"
+    },
+    {
+      "id": 353,
+      "label": "RS-171",
+      "title": "ゴーゴードリル",
+      "cardId": "RS-171"
+    },
+    {
+      "id": 354,
+      "label": "RS-172",
+      "title": "ゴーゴーショベル",
+      "cardId": "RS-172"
+    },
+    {
+      "id": 355,
+      "label": "RS-173",
+      "title": "ゴーゴーミキサー",
+      "cardId": "RS-173"
+    },
+    {
+      "id": 356,
+      "label": "RS-174",
+      "title": "ゴーゴークレーン",
+      "cardId": "RS-174"
+    },
+    {
+      "id": 348,
+      "label": "RS-175",
+      "title": "ガオナイト",
+      "cardId": "RS-175"
+    },
+    {
+      "id": 342,
+      "label": "RS-176",
+      "title": "ダイタンケン",
+      "cardId": "RS-176"
+    },
+    {
+      "id": 359,
+      "label": "RS-177",
+      "title": "ゴーゴージェット",
+      "cardId": "RS-177"
+    },
+    {
+      "id": 31,
+      "label": "RS-178",
+      "title": "ボウケンシルバー",
+      "cardId": "RS-178"
+    },
+    {
+      "id": 17,
+      "label": "SR-001",
+      "title": "ガオキング",
+      "cardId": "SR-001"
+    }
+  ]
+}

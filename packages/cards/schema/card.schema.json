@@ -1,0 +1,190 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rangers-strike.dev/schema/card.schema.json",
+  "title": "CardDocument",
+  "description": "カード定義 + 効果 DSL の統合ドキュメント（自動生成・検証用）",
+  "type": "object",
+  "required": ["id", "name", "type", "category", "rarity", "expansion", "powerCost"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,3}-\\d{3}$"
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "type": {
+      "type": "string",
+      "enum": ["unit", "operation", "vehicle", "commander"]
+    },
+    "category": {
+      "oneOf": [
+        { "type": "string", "enum": ["ET", "WB", "OT", "MA", "DA"] },
+        {
+          "type": "array",
+          "items": { "type": "string", "enum": ["ET", "WB", "OT", "MA", "DA"] },
+          "minItems": 2,
+          "uniqueItems": true
+        }
+      ]
+    },
+    "rarity": {
+      "type": "string",
+      "enum": ["N", "R", "SR", "NR", "SC", "PR"]
+    },
+    "expansion": {
+      "type": "string",
+      "enum": ["legend1", "legend2", "legend3", "legend4", "legend5", "sr", "promo"]
+    },
+    "powerCost": {
+      "oneOf": [
+        { "type": "number", "minimum": 0 },
+        { "type": "string", "pattern": "^\\d+\\+$" }
+      ]
+    },
+    "bp": { "type": "integer", "minimum": 0 },
+    "sp": {
+      "oneOf": [
+        { "type": "integer", "minimum": 0 },
+        { "type": "string", "const": "special" },
+        { "type": "null" }
+      ]
+    },
+    "size": {
+      "type": "string",
+      "enum": ["S", "M", "L", "XL", "SC"]
+    },
+    "comboNumber": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "enum": ["L", "R", "RC"] },
+        { "type": "null" }
+      ]
+    },
+    "text": { "type": "string" },
+    "rawText": {
+      "type": "string",
+      "description": "unitEffects.json 互換の効果全文"
+    },
+    "effectId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "オペレーション等の単一 effectId（レガシー）"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "features": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "imageUrl": { "type": "string" },
+    "imageSourceUrl": { "type": "string", "format": "uri" },
+    "rushAdditionalCondition": {
+      "type": "object",
+      "required": ["conditionId", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "conditionId": {
+          "type": "string",
+          "enum": [
+            "discard_fusion_unit",
+            "send_s_unit_to_power",
+            "send_s_unit_to_discard",
+            "send_s_unit_to_command_or_discard"
+          ]
+        },
+        "text": { "type": "string", "minLength": 1 },
+        "unitCount": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "unnamedRules": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/unnamed_rule" }
+    },
+    "effects": {
+      "type": "array",
+      "items": { "$ref": "effect.schema.json" },
+      "description": "DSL 効果定義（新形式）"
+    },
+    "implementation": {
+      "type": "object",
+      "description": "実装メタデータ（自動生成・CI 用）",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["dsl", "legacy_unit_effects", "legacy_operation", "hybrid"]
+        },
+        "handler": {
+          "type": "string",
+          "enum": ["interpreter", "typescript", "unimplemented"]
+        },
+        "testGenerated": { "type": "boolean" }
+      }
+    }
+  },
+  "$defs": {
+    "unnamed_rule": {
+      "type": "object",
+      "required": ["kind", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string", "enum": ["note", "zord", "fusion"] },
+        "text": { "type": "string", "minLength": 1 },
+        "rule": {
+          "type": "string",
+          "enum": [
+            "battle_entry_hold",
+            "auto_battle_entry_each_turn",
+            "auto_battle_entry_on_rush",
+            "destroy_self_damage",
+            "deck_copy_unlimited",
+            "needs_ally_s_in_battle",
+            "win_but_destroyed_vs_sp1",
+            "return_to_hand_at_6_damage",
+            "no_battle_entry_turn_rushed",
+            "no_attack_turn_rushed",
+            "no_strike_turn_rushed",
+            "cannot_enter_battle",
+            "fusion_material_alias",
+            "opponent_may_draw_on_enter",
+            "rush_power_to_discard",
+            "cannot_enter_battle_own_turn",
+            "battle_entry_discard_s_from_rush",
+            "can_attack_enemy_rush_s",
+            "cannot_attack_enemy_battle_s",
+            "requires_aircraft_attacker",
+            "battle_entry_combo_from",
+            "battle_entry_combo_from_own_turn",
+            "battle_entry_discard_from_hand",
+            "battle_adds_ma_category"
+          ]
+        },
+        "holdCount": { "type": "integer", "minimum": 1 },
+        "damage": { "type": "integer", "minimum": 0 },
+        "discardCount": { "type": "integer", "minimum": 1 },
+        "partnerCardIds": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z]{2,3}-\\d{3}$" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "const": "unit" } }, "required": ["type"] },
+      "then": { "required": ["bp", "size"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "operation" } }, "required": ["type"] },
+      "then": {
+        "anyOf": [
+          { "required": ["effectId"] },
+          { "required": ["effects"] }
+        ]
+      }
+    }
+  ]
+}

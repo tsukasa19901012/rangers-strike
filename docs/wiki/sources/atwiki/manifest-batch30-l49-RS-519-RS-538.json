@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch30-l49-RS-519-RS-538.json",
+  "pages": [
+    {
+      "id": 1155,
+      "label": "RS-519",
+      "title": "インフェルシアの花嫁",
+      "cardId": "RS-519"
+    },
+    {
+      "id": 1148,
+      "label": "RS-520",
+      "title": "スコープショット",
+      "cardId": "RS-520"
+    },
+    {
+      "id": 1154,
+      "label": "RS-521",
+      "title": "スーパー戦隊魂",
+      "cardId": "RS-521"
+    },
+    {
+      "id": 1152,
+      "label": "RS-522",
+      "title": "ボウケンスピリッツ",
+      "cardId": "RS-522"
+    },
+    {
+      "id": 1150,
+      "label": "RS-523",
+      "title": "臨気",
+      "cardId": "RS-523"
+    },
+    {
+      "id": 1151,
+      "label": "RS-524",
+      "title": "呉越同舟",
+      "cardId": "RS-524"
+    },
+    {
+      "id": 1153,
+      "label": "RS-525",
+      "title": "頼もしい相棒",
+      "cardId": "RS-525"
+    },
+    {
+      "id": 1142,
+      "label": "RS-526",
+      "title": "スーパーハイウェイバスター",
+      "cardId": "RS-526"
+    },
+    {
+      "id": 1156,
+      "label": "RS-527",
+      "title": "バルジオン（2nd）",
+      "cardId": "RS-527"
+    },
+    {
+      "id": 1232,
+      "label": "RS-528",
+      "title": "バイオハンター・シルバ（2nd）",
+      "cardId": "RS-528"
+    },
+    {
+      "id": 1226,
+      "label": "RS-529",
+      "title": "チェンジロボ",
+      "cardId": "RS-529"
+    },
+    {
+      "id": 1157,
+      "label": "RS-530",
+      "title": "ジェットチェンジャー1",
+      "cardId": "RS-530"
+    },
+    {
+      "id": 1158,
+      "label": "RS-531",
+      "title": "ヘリチェンジャー2",
+      "cardId": "RS-531"
+    },
+    {
+      "id": 1159,
+      "label": "RS-532",
+      "title": "ランドチェンジャー3",
+      "cardId": "RS-532"
+    },
+    {
+      "id": 1160,
+      "label": "RS-533",
+      "title": "チェンジフェニックス",
+      "cardId": "RS-533"
+    },
+    {
+      "id": 1161,
+      "label": "RS-534",
+      "title": "チェンジペガサス",
+      "cardId": "RS-534"
+    },
+    {
+      "id": 1222,
+      "label": "RS-535",
+      "title": "チェンジドラゴン",
+      "cardId": "RS-535"
+    },
+    {
+      "id": 1162,
+      "label": "RS-536",
+      "title": "チェンジグリフォン",
+      "cardId": "RS-536"
+    },
+    {
+      "id": 1163,
+      "label": "RS-537",
+      "title": "チェンジマーメイド",
+      "cardId": "RS-537"
+    },
+    {
+      "id": 1213,
+      "label": "RS-538",
+      "title": "ユイ・イブキ",
+      "cardId": "RS-538"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch107-pr-XP-012-RS-XP-032-RS.json",
+  "pages": [
+    {
+      "id": 1720,
+      "label": "XP-012-RS",
+      "title": "シンケンゴールド",
+      "cardId": "XP-012-RS"
+    },
+    {
+      "id": 1882,
+      "label": "XP-013-RS",
+      "title": "ハイパーシンケンレッド",
+      "cardId": "XP-013-RS"
+    },
+    {
+      "id": 1883,
+      "label": "XP-014-RK",
+      "title": "仮面ライダーW・CM",
+      "cardId": "XP-014-RK"
+    },
+    {
+      "id": 1982,
+      "label": "XP-016-RK",
+      "title": "仮面ライダークウガRU・レッドアイ",
+      "cardId": "XP-016-RK"
+    },
+    {
+      "id": 1981,
+      "label": "XP-017-RK",
+      "title": "仮面ライダーディケイド激情態",
+      "cardId": "XP-017-RK"
+    },
+    {
+      "id": 2130,
+      "label": "XP-018-RS",
+      "title": "ゴールド寿司",
+      "cardId": "XP-018-RS"
+    },
+    {
+      "id": 2131,
+      "label": "XP-019-RK",
+      "title": "仮面ライダー1号",
+      "cardId": "XP-019-RK"
+    },
+    {
+      "id": 2127,
+      "label": "XP-020-RS",
+      "title": "護星天使",
+      "cardId": "XP-020-RS"
+    },
+    {
+      "id": 2234,
+      "label": "XP-022-RS",
+      "title": "ゴセイレッド",
+      "cardId": "XP-022-RS"
+    },
+    {
+      "id": 2253,
+      "label": "XP-023-RS",
+      "title": "ドラゴンレンジャー",
+      "cardId": "XP-023-RS"
+    },
+    {
+      "id": 2255,
+      "label": "XP-024-RK",
+      "title": "仮面ライダー2号",
+      "cardId": "XP-024-RK"
+    },
+    {
+      "id": 2256,
+      "label": "XP-025-RS",
+      "title": "ダイカイシンケンオー",
+      "cardId": "XP-025-RS"
+    },
+    {
+      "id": 2257,
+      "label": "XP-026-RK",
+      "title": "仮面ライダーアクセル",
+      "cardId": "XP-026-RK"
+    },
+    {
+      "id": 2370,
+      "label": "XP-027-RS",
+      "title": "ダイノミッション",
+      "cardId": "XP-027-RS"
+    },
+    {
+      "id": 2369,
+      "label": "XP-028-RS",
+      "title": "ワンダーゴセイグレート",
+      "cardId": "XP-028-RS"
+    },
+    {
+      "id": 2362,
+      "label": "XP-029-RK",
+      "title": "仮面ライダーW・CAX",
+      "cardId": "XP-029-RK"
+    },
+    {
+      "id": 2368,
+      "label": "XP-030-RK",
+      "title": "仮面ライダーオーズ・サゴーゾコンボ",
+      "cardId": "XP-030-RK"
+    },
+    {
+      "id": 2446,
+      "label": "XP-031-RK",
+      "title": "仮面ライダーオーズ・タトバコンボ×仮面ライダー電王SF",
+      "cardId": "XP-031-RK"
+    },
+    {
+      "id": 2444,
+      "label": "XP-032-RS",
+      "title": "ゴーカイオー",
+      "cardId": "XP-032-RS"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch22-l49-RS-359-RS-378.json",
+  "pages": [
+    {
+      "id": 549,
+      "label": "RS-359",
+      "title": "デンジ犬アイシー",
+      "cardId": "RS-359"
+    },
+    {
+      "id": 601,
+      "label": "RS-360",
+      "title": "ヘドリアン女王",
+      "cardId": "RS-360"
+    },
+    {
+      "id": 512,
+      "label": "RS-361",
+      "title": "バルイーグル（2nd）",
+      "cardId": "RS-361"
+    },
+    {
+      "id": 526,
+      "label": "RS-362",
+      "title": "バルシャーク（2nd）",
+      "cardId": "RS-362"
+    },
+    {
+      "id": 527,
+      "label": "RS-363",
+      "title": "バルパンサー（2nd）",
+      "cardId": "RS-363"
+    },
+    {
+      "id": 576,
+      "label": "RS-364",
+      "title": "ヘルサターン総統",
+      "cardId": "RS-364"
+    },
+    {
+      "id": 605,
+      "label": "RS-365",
+      "title": "イナズマギンガー",
+      "cardId": "RS-365"
+    },
+    {
+      "id": 606,
+      "label": "RS-366",
+      "title": "グランギズモ",
+      "cardId": "RS-366"
+    },
+    {
+      "id": 575,
+      "label": "RS-367",
+      "title": "ゾロー兵",
+      "cardId": "RS-367"
+    },
+    {
+      "id": 569,
+      "label": "RS-368",
+      "title": "レッドマスク",
+      "cardId": "RS-368"
+    },
+    {
+      "id": 565,
+      "label": "RS-369",
+      "title": "ブルーマスク",
+      "cardId": "RS-369"
+    },
+    {
+      "id": 566,
+      "label": "RS-370",
+      "title": "ブラックマスク",
+      "cardId": "RS-370"
+    },
+    {
+      "id": 567,
+      "label": "RS-371",
+      "title": "ピンクマスク",
+      "cardId": "RS-371"
+    },
+    {
+      "id": 568,
+      "label": "RS-372",
+      "title": "X1マスク",
+      "cardId": "RS-372"
+    },
+    {
+      "id": 540,
+      "label": "RS-373",
+      "title": "ファイブレッドFT",
+      "cardId": "RS-373"
+    },
+    {
+      "id": 602,
+      "label": "RS-374",
+      "title": "魔女バンドーラ",
+      "cardId": "RS-374"
+    },
+    {
+      "id": 552,
+      "label": "RS-375",
+      "title": "レッドレーサー（2nd）",
+      "cardId": "RS-375"
+    },
+    {
+      "id": 501,
+      "label": "RS-376",
+      "title": "ギンガレッド",
+      "cardId": "RS-376"
+    },
+    {
+      "id": 502,
+      "label": "RS-377",
+      "title": "ギンガグリーン",
+      "cardId": "RS-377"
+    },
+    {
+      "id": 503,
+      "label": "RS-378",
+      "title": "ギンガブルー",
+      "cardId": "RS-378"
+    }
+  ]
+}

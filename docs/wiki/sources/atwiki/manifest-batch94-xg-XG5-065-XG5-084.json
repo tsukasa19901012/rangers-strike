@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch94-xg-XG5-065-XG5-084.json",
+  "pages": [
+    {
+      "id": 2261,
+      "label": "XG5-065",
+      "title": "タイムベント",
+      "cardId": "XG5-065"
+    },
+    {
+      "id": 2212,
+      "label": "XG5-066",
+      "title": "仮面ライダーベルデ（XG5）",
+      "cardId": "XG5-066"
+    },
+    {
+      "id": 2213,
+      "label": "XG5-067",
+      "title": "仮面ライダーナイト（XG5）",
+      "cardId": "XG5-067"
+    },
+    {
+      "id": 2229,
+      "label": "XG5-068",
+      "title": "仮面ライダーナイトサバイブ（XG5）",
+      "cardId": "XG5-068"
+    },
+    {
+      "id": 2214,
+      "label": "XG5-069",
+      "title": "キハダガニ",
+      "cardId": "XG5-069"
+    },
+    {
+      "id": 2215,
+      "label": "XG5-070",
+      "title": "ニビイロヘビ",
+      "cardId": "XG5-070"
+    },
+    {
+      "id": 2264,
+      "label": "XG5-071",
+      "title": "仮面ライダー響鬼（XG5）",
+      "cardId": "XG5-071"
+    },
+    {
+      "id": 2278,
+      "label": "XG5-072",
+      "title": "仮面ライダー威吹鬼（XG5）",
+      "cardId": "XG5-072"
+    },
+    {
+      "id": 2243,
+      "label": "XG5-073",
+      "title": "仮面ライダー電王SF（XG5）",
+      "cardId": "XG5-073"
+    },
+    {
+      "id": 2245,
+      "label": "XG5-074",
+      "title": "仮面ライダーキバ（XG5）",
+      "cardId": "XG5-074"
+    },
+    {
+      "id": 2246,
+      "label": "XG5-075",
+      "title": "仮面ライダーイクサSM（XG5）",
+      "cardId": "XG5-075"
+    },
+    {
+      "id": 2247,
+      "label": "XG5-076",
+      "title": "仮面ライダーイクサBM（XG5）",
+      "cardId": "XG5-076"
+    },
+    {
+      "id": 2266,
+      "label": "XG5-077",
+      "title": "仮面ライダーキバーラ（XG5）",
+      "cardId": "XG5-077"
+    },
+    {
+      "id": 2179,
+      "label": "XG5-078",
+      "title": "ファイナルフォームライド",
+      "cardId": "XG5-078"
+    },
+    {
+      "id": 2216,
+      "label": "XG5-079",
+      "title": "仮面ライダーディケイド（XG5）",
+      "cardId": "XG5-079"
+    },
+    {
+      "id": 2217,
+      "label": "XG5-080",
+      "title": "マシンディケイダー",
+      "cardId": "XG5-080"
+    },
+    {
+      "id": 2236,
+      "label": "XG5-081",
+      "title": "仮面ライダーアクセルトライアル",
+      "cardId": "XG5-081"
+    },
+    {
+      "id": 2218,
+      "label": "XG5-082",
+      "title": "バットショット",
+      "cardId": "XG5-082"
+    },
+    {
+      "id": 2219,
+      "label": "XG5-083",
+      "title": "スパイダーショック",
+      "cardId": "XG5-083"
+    },
+    {
+      "id": 2227,
+      "label": "XG5-084",
+      "title": "仮面ライダーW・CJ（XG5）",
+      "cardId": "XG5-084"
+    }
+  ]
+}

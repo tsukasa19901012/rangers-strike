@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch43-rb-RK-063-RK-081.json",
+  "pages": [
+    {
+      "id": 178,
+      "label": "RK-063",
+      "title": "仮面ライダー龍騎",
+      "cardId": "RK-063"
+    },
+    {
+      "id": 207,
+      "label": "RK-064",
+      "title": "仮面ライダーファイズ",
+      "cardId": "RK-064"
+    },
+    {
+      "id": 163,
+      "label": "RK-065",
+      "title": "仮面ライダーカブトRF",
+      "cardId": "RK-065"
+    },
+    {
+      "id": 169,
+      "label": "RK-066",
+      "title": "仮面ライダー電王SF",
+      "cardId": "RK-066"
+    },
+    {
+      "id": 188,
+      "label": "RK-067",
+      "title": "仮面ライダーナイト",
+      "cardId": "RK-067"
+    },
+    {
+      "id": 189,
+      "label": "RK-068",
+      "title": "仮面ライダー王蛇",
+      "cardId": "RK-068"
+    },
+    {
+      "id": 53,
+      "label": "RK-069",
+      "title": "仮面ライダーファム",
+      "cardId": "RK-069"
+    },
+    {
+      "id": 164,
+      "label": "RK-070",
+      "title": "仮面ライダーカブトMF",
+      "cardId": "RK-070"
+    },
+    {
+      "id": 165,
+      "label": "RK-071",
+      "title": "仮面ライダーキックホッパー",
+      "cardId": "RK-071"
+    },
+    {
+      "id": 168,
+      "label": "RK-072",
+      "title": "仮面ライダー電王GF",
+      "cardId": "RK-072"
+    },
+    {
+      "id": 208,
+      "label": "RK-073",
+      "title": "仮面ライダー2号",
+      "cardId": "RK-073"
+    },
+    {
+      "id": 131,
+      "label": "RK-074",
+      "title": "ライダーマン",
+      "cardId": "RK-074"
+    },
+    {
+      "id": 176,
+      "label": "RK-075",
+      "title": "ミラーワールド",
+      "cardId": "RK-075"
+    },
+    {
+      "id": 197,
+      "label": "RK-076",
+      "title": "ミッションメモリー",
+      "cardId": "RK-076"
+    },
+    {
+      "id": 177,
+      "label": "RK-077",
+      "title": "ラウズカード",
+      "cardId": "RK-077"
+    },
+    {
+      "id": 173,
+      "label": "RK-078",
+      "title": "クロックアップ",
+      "cardId": "RK-078"
+    },
+    {
+      "id": 43,
+      "label": "SK-001",
+      "title": "シャドームーン",
+      "cardId": "SK-001"
+    },
+    {
+      "id": 661,
+      "label": "RK-079",
+      "title": "仮面ライダーの称号",
+      "cardId": "RK-079"
+    },
+    {
+      "id": 684,
+      "label": "RK-080",
+      "title": "超変身",
+      "cardId": "RK-080"
+    },
+    {
+      "id": 709,
+      "label": "RK-081",
+      "title": "ゲゲル",
+      "cardId": "RK-081"
+    }
+  ]
+}

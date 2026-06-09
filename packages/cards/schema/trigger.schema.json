@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rangers-strike.dev/schema/trigger.schema.json",
+  "title": "EffectTrigger",
+  "description": "レンジャーズストライク効果の発火タイミング（effectTaxonomy.NamedEffectTrigger 準拠）",
+  "oneOf": [
+    { "$ref": "#/$defs/trigger_nc" },
+    { "$ref": "#/$defs/trigger_nc_or_combo_from" },
+    { "$ref": "#/$defs/trigger_enter_battle" },
+    { "$ref": "#/$defs/trigger_on_rush" },
+    { "$ref": "#/$defs/trigger_on_attack" },
+    { "$ref": "#/$defs/trigger_on_strike" },
+    { "$ref": "#/$defs/trigger_on_destroy" },
+    { "$ref": "#/$defs/trigger_on_leave" },
+    { "$ref": "#/$defs/trigger_on_turn_end" },
+    { "$ref": "#/$defs/trigger_on_damage" },
+    { "$ref": "#/$defs/trigger_joint_combo_l" },
+    { "$ref": "#/$defs/trigger_joint_combo_r" },
+    { "$ref": "#/$defs/trigger_riding_combo" },
+    { "$ref": "#/$defs/trigger_while_in_field" },
+    { "$ref": "#/$defs/trigger_operation" },
+    { "$ref": "#/$defs/trigger_conditional" }
+  ],
+  "$defs": {
+    "card_id": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,3}-\\d{3}$"
+    },
+    "trigger_nc": {
+      "type": "object",
+      "properties": { "type": { "const": "nc" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_nc_or_combo_from": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "nc_or_combo_from" },
+        "partnerCardIds": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/card_id" },
+          "minItems": 1
+        }
+      },
+      "required": ["type", "partnerCardIds"],
+      "additionalProperties": false
+    },
+    "trigger_enter_battle": {
+      "type": "object",
+      "properties": { "type": { "const": "enter_battle" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_on_rush": {
+      "type": "object",
+      "properties": { "type": { "const": "on_rush" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_on_attack": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "on_attack" },
+        "comboPartnerCardIds": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/card_id" }
+        }
+      },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_on_strike": {
+      "type": "object",
+      "properties": { "type": { "const": "on_strike" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_on_destroy": {
+      "type": "object",
+      "properties": { "type": { "const": "on_destroy" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_on_leave": {
+      "type": "object",
+      "properties": { "type": { "const": "on_leave" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_on_turn_end": {
+      "type": "object",
+      "properties": { "type": { "const": "on_turn_end" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_on_damage": {
+      "type": "object",
+      "properties": { "type": { "const": "on_damage" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_joint_combo_l": {
+      "type": "object",
+      "properties": { "type": { "const": "joint_combo_l" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_joint_combo_r": {
+      "type": "object",
+      "properties": { "type": { "const": "joint_combo_r" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_riding_combo": {
+      "type": "object",
+      "properties": { "type": { "const": "riding_combo" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_while_in_field": {
+      "type": "object",
+      "properties": { "type": { "const": "while_in_field" } },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "trigger_operation": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "operation" },
+        "timing": {
+          "type": "string",
+          "enum": ["rush", "battle", "counter", "resident"]
+        }
+      },
+      "required": ["type", "timing"],
+      "additionalProperties": false
+    },
+    "trigger_conditional": {
+      "type": "object",
+      "properties": { "type": { "const": "conditional" } },
+      "required": ["type"],
+      "additionalProperties": false
+    }
+  }
+}

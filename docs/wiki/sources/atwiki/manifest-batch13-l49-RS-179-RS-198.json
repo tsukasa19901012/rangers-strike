@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch13-l49-RS-179-RS-198.json",
+  "pages": [
+    {
+      "id": 39,
+      "label": "RS-179",
+      "title": "恐竜やのカレー",
+      "cardId": "RS-179"
+    },
+    {
+      "id": 377,
+      "label": "RS-180",
+      "title": "ライドラプター",
+      "cardId": "RS-180"
+    },
+    {
+      "id": 378,
+      "label": "RS-181",
+      "title": "破邪百獣剣",
+      "cardId": "RS-181"
+    },
+    {
+      "id": 379,
+      "label": "RS-182",
+      "title": "ジャイアントローラー",
+      "cardId": "RS-182"
+    },
+    {
+      "id": 42,
+      "label": "RS-183",
+      "title": "黒子ロボの記憶操作",
+      "cardId": "RS-183"
+    },
+    {
+      "id": 311,
+      "label": "RS-184",
+      "title": "マジパンチ",
+      "cardId": "RS-184"
+    },
+    {
+      "id": 389,
+      "label": "RS-185",
+      "title": "カーナビック",
+      "cardId": "RS-185"
+    },
+    {
+      "id": 390,
+      "label": "RS-186",
+      "title": "プロバイダーベース",
+      "cardId": "RS-186"
+    },
+    {
+      "id": 387,
+      "label": "RS-187",
+      "title": "ゴーマ宮",
+      "cardId": "RS-187"
+    },
+    {
+      "id": 121,
+      "label": "RS-188",
+      "title": "アチャとコチャ",
+      "cardId": "RS-188"
+    },
+    {
+      "id": 391,
+      "label": "RS-189",
+      "title": "キレンジャー",
+      "cardId": "RS-189"
+    },
+    {
+      "id": 392,
+      "label": "RS-190",
+      "title": "ミドレンジャー",
+      "cardId": "RS-190"
+    },
+    {
+      "id": 393,
+      "label": "RS-191",
+      "title": "ダイナレッド",
+      "cardId": "RS-191"
+    },
+    {
+      "id": 394,
+      "label": "RS-192",
+      "title": "ダイナブルー",
+      "cardId": "RS-192"
+    },
+    {
+      "id": 395,
+      "label": "RS-193",
+      "title": "ダイナピンク",
+      "cardId": "RS-193"
+    },
+    {
+      "id": 396,
+      "label": "RS-194",
+      "title": "ダイナロボ",
+      "cardId": "RS-194"
+    },
+    {
+      "id": 397,
+      "label": "RS-195",
+      "title": "ダイナマッハ",
+      "cardId": "RS-195"
+    },
+    {
+      "id": 398,
+      "label": "RS-196",
+      "title": "ダイナモビル",
+      "cardId": "RS-196"
+    },
+    {
+      "id": 399,
+      "label": "RS-197",
+      "title": "ダイナギャリー",
+      "cardId": "RS-197"
+    },
+    {
+      "id": 382,
+      "label": "RS-198",
+      "title": "帝王アトン",
+      "cardId": "RS-198"
+    }
+  ]
+}

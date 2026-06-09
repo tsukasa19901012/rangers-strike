@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch86-xg-XG4-010-XG4-029.json",
+  "pages": [
+    {
+      "id": 2103,
+      "label": "XG4-010",
+      "title": "獣装光ギンガブルー",
+      "cardId": "XG4-010"
+    },
+    {
+      "id": 2099,
+      "label": "XG4-011",
+      "title": "獣装光ギンガグリーン",
+      "cardId": "XG4-011"
+    },
+    {
+      "id": 2097,
+      "label": "XG4-012",
+      "title": "獣装光ギンガイエロー",
+      "cardId": "XG4-012"
+    },
+    {
+      "id": 2092,
+      "label": "XG4-013",
+      "title": "ギンガグリーン（XG4）",
+      "cardId": "XG4-013"
+    },
+    {
+      "id": 2091,
+      "label": "XG4-014",
+      "title": "ギンガピンク（XG4）",
+      "cardId": "XG4-014"
+    },
+    {
+      "id": 2081,
+      "label": "XG4-015",
+      "title": "血祭ドウコク",
+      "cardId": "XG4-015"
+    },
+    {
+      "id": 2141,
+      "label": "XG4-016",
+      "title": "タイムファイヤー（XG4）",
+      "cardId": "XG4-016"
+    },
+    {
+      "id": 2133,
+      "label": "XG4-017",
+      "title": "ガオシルバー（XG4）",
+      "cardId": "XG4-017"
+    },
+    {
+      "id": 2098,
+      "label": "XG4-018",
+      "title": "ウルフローダー",
+      "cardId": "XG4-018"
+    },
+    {
+      "id": 2089,
+      "label": "XG4-019",
+      "title": "ピタットヒトデ",
+      "cardId": "XG4-019"
+    },
+    {
+      "id": 2106,
+      "label": "XG4-020",
+      "title": "リボルバーマンモス",
+      "cardId": "XG4-020"
+    },
+    {
+      "id": 2054,
+      "label": "XG4-021",
+      "title": "カラクリマント",
+      "cardId": "XG4-021"
+    },
+    {
+      "id": 2045,
+      "label": "XG4-022",
+      "title": "シュリケンジャー（XG4）",
+      "cardId": "XG4-022"
+    },
+    {
+      "id": 2145,
+      "label": "XG4-023",
+      "title": "シュリケンジャーFM（XG4）",
+      "cardId": "XG4-023"
+    },
+    {
+      "id": 2073,
+      "label": "XG4-024",
+      "title": "エージェント・アブレラ（XG4）",
+      "cardId": "XG4-024"
+    },
+    {
+      "id": 2142,
+      "label": "XG4-025",
+      "title": "デカブレイク（XG4）",
+      "cardId": "XG4-025"
+    },
+    {
+      "id": 2146,
+      "label": "XG4-026",
+      "title": "天空勇者マジシャイン（XG4）",
+      "cardId": "XG4-026"
+    },
+    {
+      "id": 2086,
+      "label": "XG4-027",
+      "title": "スカーペット",
+      "cardId": "XG4-027"
+    },
+    {
+      "id": 2074,
+      "label": "XG4-028",
+      "title": "ゴリー・イェン",
+      "cardId": "XG4-028"
+    },
+    {
+      "id": 2153,
+      "label": "XG4-029",
+      "title": "ゲキバイオレット（XG4）",
+      "cardId": "XG4-029"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch2.json",
+  "pages": [
+    {
+      "id": 349,
+      "label": "RS-123",
+      "title": "スーパーダイナマイト",
+      "cardId": "RS-123"
+    },
+    {
+      "id": 362,
+      "label": "RS-124",
+      "title": "超電子レーダー",
+      "cardId": "RS-124"
+    },
+    {
+      "id": 343,
+      "label": "RS-125",
+      "title": "百獣アニマルハート",
+      "cardId": "RS-125"
+    },
+    {
+      "id": 25,
+      "label": "RS-126",
+      "title": "アカレンジャー",
+      "cardId": "RS-126"
+    },
+    {
+      "id": 363,
+      "label": "RS-127",
+      "title": "バイオロボ",
+      "cardId": "RS-127"
+    },
+    {
+      "id": 360,
+      "label": "RS-128",
+      "title": "バイオジェット1号",
+      "cardId": "RS-128"
+    },
+    {
+      "id": 361,
+      "label": "RS-129",
+      "title": "バイオジェット2号",
+      "cardId": "RS-129"
+    },
+    {
+      "id": 364,
+      "label": "RS-130",
+      "title": "レッドワン",
+      "cardId": "RS-130"
+    },
+    {
+      "id": 334,
+      "label": "RS-131",
+      "title": "メッツラー",
+      "cardId": "RS-131"
+    },
+    {
+      "id": 40,
+      "label": "RS-132",
+      "title": "バルジオン",
+      "cardId": "RS-132"
+    },
+    {
+      "id": 335,
+      "label": "RS-133",
+      "title": "副官ブーバ",
+      "cardId": "RS-133"
+    },
+    {
+      "id": 341,
+      "label": "RS-134",
+      "title": "ライブロボ",
+      "cardId": "RS-134"
+    },
+    {
+      "id": 350,
+      "label": "RS-135",
+      "title": "ジェットファルコン",
+      "cardId": "RS-135"
+    },
+    {
+      "id": 351,
+      "label": "RS-136",
+      "title": "ランドライオン",
+      "cardId": "RS-136"
+    },
+    {
+      "id": 352,
+      "label": "RS-137",
+      "title": "アクアドルフィン",
+      "cardId": "RS-137"
+    },
+    {
+      "id": 357,
+      "label": "RS-138",
+      "title": "イエローライオン",
+      "cardId": "RS-138"
+    },
+    {
+      "id": 358,
+      "label": "RS-139",
+      "title": "ブルードルフィン",
+      "cardId": "RS-139"
+    },
+    {
+      "id": 313,
+      "label": "RS-140",
+      "title": "コロン",
+      "cardId": "RS-140"
+    },
+    {
+      "id": 336,
+      "label": "RS-141",
+      "title": "紐男爵",
+      "cardId": "RS-141"
+    },
+    {
+      "id": 368,
+      "label": "RS-142",
+      "title": "オーレンジャーロボ",
+      "cardId": "RS-142"
+    }
+  ]
+}

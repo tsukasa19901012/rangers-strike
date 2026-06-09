@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch37-l49-RS-659-RS-678.json",
+  "pages": [
+    {
+      "id": 1504,
+      "label": "RS-659",
+      "title": "デカイエローSWAT",
+      "cardId": "RS-659"
+    },
+    {
+      "id": 1527,
+      "label": "RS-660",
+      "title": "デカピンクSWAT",
+      "cardId": "RS-660"
+    },
+    {
+      "id": 1500,
+      "label": "RS-661",
+      "title": "幻獣王リオ",
+      "cardId": "RS-661"
+    },
+    {
+      "id": 1501,
+      "label": "RS-662",
+      "title": "鳳凰メレ",
+      "cardId": "RS-662"
+    },
+    {
+      "id": 1502,
+      "label": "RS-663",
+      "title": "エンジンオーG12",
+      "cardId": "RS-663"
+    },
+    {
+      "id": 1494,
+      "label": "RS-664",
+      "title": "エンジンオーG9",
+      "cardId": "RS-664"
+    },
+    {
+      "id": 1476,
+      "label": "RS-665",
+      "title": "キョウレツオー",
+      "cardId": "RS-665"
+    },
+    {
+      "id": 1477,
+      "label": "RS-666",
+      "title": "ジェットラス",
+      "cardId": "RS-666"
+    },
+    {
+      "id": 1478,
+      "label": "RS-667",
+      "title": "ジャン・ボエール",
+      "cardId": "RS-667"
+    },
+    {
+      "id": 1479,
+      "label": "RS-668",
+      "title": "トリプター",
+      "cardId": "RS-668"
+    },
+    {
+      "id": 1446,
+      "label": "RS-669",
+      "title": "キシャモス",
+      "cardId": "RS-669"
+    },
+    {
+      "id": 1444,
+      "label": "RS-670",
+      "title": "ティライン",
+      "cardId": "RS-670"
+    },
+    {
+      "id": 1445,
+      "label": "RS-671",
+      "title": "ケライン",
+      "cardId": "RS-671"
+    },
+    {
+      "id": 1521,
+      "label": "RS-672",
+      "title": "ゴローダーGT",
+      "cardId": "RS-672"
+    },
+    {
+      "id": 1443,
+      "label": "RS-673",
+      "title": "ボンパー",
+      "cardId": "RS-673"
+    },
+    {
+      "id": 1421,
+      "label": "RS-674",
+      "title": "シンケンレッド",
+      "cardId": "RS-674"
+    },
+    {
+      "id": 1425,
+      "label": "RS-675",
+      "title": "シンケンブルー",
+      "cardId": "RS-675"
+    },
+    {
+      "id": 1428,
+      "label": "RS-676",
+      "title": "シンケンピンク",
+      "cardId": "RS-676"
+    },
+    {
+      "id": 1426,
+      "label": "RS-677",
+      "title": "シンケングリーン",
+      "cardId": "RS-677"
+    },
+    {
+      "id": 1427,
+      "label": "RS-678",
+      "title": "シンケンイエロー",
+      "cardId": "RS-678"
+    }
+  ]
+}

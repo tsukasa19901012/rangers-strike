@@ -1,0 +1,837 @@
+{
+  "2nd": {
+    "page": 1646,
+    "name": "2nd",
+    "slug": "2nd"
+  },
+  "bp": {
+    "page": 458,
+    "name": "ＢＰ",
+    "slug": "bp"
+  },
+  "cn": {
+    "page": 58,
+    "name": "ＣＮ",
+    "slug": "cn"
+  },
+  "da": {
+    "page": 60,
+    "name": "DA",
+    "slug": "da"
+  },
+  "et": {
+    "page": 61,
+    "name": "ET",
+    "slug": "et"
+  },
+  "jc": {
+    "page": 66,
+    "name": "ＪＣ",
+    "slug": "jc"
+  },
+  "l-unit": {
+    "page": 1551,
+    "name": "Lユニット",
+    "slug": "l-unit"
+  },
+  "ma": {
+    "page": 62,
+    "name": "MA",
+    "slug": "ma"
+  },
+  "p1552": {
+    "page": 1552,
+    "name": "Mユニット",
+    "slug": "p1552"
+  },
+  "nc": {
+    "page": 59,
+    "name": "ＮＣ",
+    "slug": "nc"
+  },
+  "ot": {
+    "page": 63,
+    "name": "OT",
+    "slug": "ot"
+  },
+  "rc": {
+    "page": 227,
+    "name": "ＲＣ",
+    "slug": "rc"
+  },
+  "sc": {
+    "page": 1555,
+    "name": "SCユニット",
+    "slug": "sc"
+  },
+  "sp": {
+    "page": 65,
+    "name": "ＳＰ",
+    "slug": "sp"
+  },
+  "s-unit": {
+    "page": 1553,
+    "name": "Sユニット",
+    "slug": "s-unit"
+  },
+  "wb": {
+    "page": 64,
+    "name": "WB",
+    "slug": "wb"
+  },
+  "xl": {
+    "page": 1554,
+    "name": "XLユニット",
+    "slug": "xl"
+  },
+  "p142": {
+    "page": 142,
+    "name": "アーステクノロジー",
+    "slug": "p142"
+  },
+  "p2166": {
+    "page": 2166,
+    "name": "アタッカー",
+    "slug": "p2166"
+  },
+  "attack": {
+    "page": 138,
+    "name": "アタック",
+    "slug": "attack"
+  },
+  "winny": {
+    "page": 111,
+    "name": "ウィニー",
+    "slug": "winny"
+  },
+  "wing": {
+    "page": 1537,
+    "name": "ウイング",
+    "slug": "wing"
+  },
+  "p174": {
+    "page": 174,
+    "name": "エクスパンション",
+    "slug": "p174"
+  },
+  "p579": {
+    "page": 579,
+    "name": "エラッタ",
+    "slug": "p579"
+  },
+  "p1512": {
+    "page": 1512,
+    "name": "エリア",
+    "slug": "p1512"
+  },
+  "end-phase": {
+    "page": 155,
+    "name": "エンドフェイズ",
+    "slug": "end-phase"
+  },
+  "p129": {
+    "page": 129,
+    "name": "オーバーテクノロジー",
+    "slug": "p129"
+  },
+  "p581": {
+    "page": 581,
+    "name": "オペレーション",
+    "slug": "p581"
+  },
+  "p738": {
+    "page": 738,
+    "name": "カード",
+    "slug": "p738"
+  },
+  "p1851": {
+    "page": 1851,
+    "name": "カードナンバー",
+    "slug": "p1851"
+  },
+  "p1739": {
+    "page": 1739,
+    "name": "カード名",
+    "slug": "p1739"
+  },
+  "counter-term": {
+    "page": 1295,
+    "name": "カウンター",
+    "slug": "counter-term"
+  },
+  "category": {
+    "page": 70,
+    "name": "カテゴリ",
+    "slug": "category"
+  },
+  "p2181": {
+    "page": 2181,
+    "name": "カテゴリシンボル",
+    "slug": "p2181"
+  },
+  "p1746": {
+    "page": 1746,
+    "name": "グッドスタッフ",
+    "slug": "p1746"
+  },
+  "p2393": {
+    "page": 2393,
+    "name": "クロス",
+    "slug": "p2393"
+  },
+  "p1535": {
+    "page": 1535,
+    "name": "クロスギャザー",
+    "slug": "p1535"
+  },
+  "p1293": {
+    "page": 1293,
+    "name": "コール",
+    "slug": "p1293"
+  },
+  "p1691": {
+    "page": 1691,
+    "name": "コマンダー",
+    "slug": "p1691"
+  },
+  "p1690": {
+    "page": 1690,
+    "name": "コマンダーカード",
+    "slug": "p1690"
+  },
+  "command": {
+    "page": 151,
+    "name": "コマンド",
+    "slug": "command"
+  },
+  "command-zone": {
+    "page": 108,
+    "name": "コマンドゾーン",
+    "slug": "command-zone"
+  },
+  "combination": {
+    "page": 267,
+    "name": "コンビネーション",
+    "slug": "combination"
+  },
+  "combo-number": {
+    "page": 140,
+    "name": "コンビネーションナンバー",
+    "slug": "combo-number"
+  },
+  "p261": {
+    "page": 261,
+    "name": "コンボ",
+    "slug": "p261"
+  },
+  "p600": {
+    "page": 600,
+    "name": "サーチ",
+    "slug": "p600"
+  },
+  "p583": {
+    "page": 583,
+    "name": "サイズ",
+    "slug": "p583"
+  },
+  "p1423": {
+    "page": 1423,
+    "name": "ザマス",
+    "slug": "p1423"
+  },
+  "p1867": {
+    "page": 1867,
+    "name": "システムユニット",
+    "slug": "p1867"
+  },
+  "p1683": {
+    "page": 1683,
+    "name": "シナジー",
+    "slug": "p1683"
+  },
+  "p1414": {
+    "page": 1414,
+    "name": "シャッフル",
+    "slug": "p1414"
+  },
+  "p266": {
+    "page": 266,
+    "name": "ジョイントコンビネーション",
+    "slug": "p266"
+  },
+  "p1849": {
+    "page": 1849,
+    "name": "スーパー戦隊シリーズ",
+    "slug": "p1849"
+  },
+  "p1290": {
+    "page": 1290,
+    "name": "スクラム",
+    "slug": "p1290"
+  },
+  "p1866": {
+    "page": 1866,
+    "name": "スターター",
+    "slug": "p1866"
+  },
+  "start-phase": {
+    "page": 264,
+    "name": "スタートフェイズ",
+    "slug": "start-phase"
+  },
+  "striker": {
+    "page": 585,
+    "name": "ストライカー",
+    "slug": "striker"
+  },
+  "strike": {
+    "page": 103,
+    "name": "ストライク",
+    "slug": "strike"
+  },
+  "strike-point": {
+    "page": 104,
+    "name": "ストライクポイント",
+    "slug": "strike-point"
+  },
+  "p1847": {
+    "page": 1847,
+    "name": "スリーブ",
+    "slug": "p1847"
+  },
+  "p2395": {
+    "page": 2395,
+    "name": "するかわりに",
+    "slug": "p2395"
+  },
+  "p1825": {
+    "page": 1825,
+    "name": "そうしたとき",
+    "slug": "p1825"
+  },
+  "zord-up": {
+    "page": 584,
+    "name": "ゾードアップ",
+    "slug": "zord-up"
+  },
+  "p1517": {
+    "page": 1517,
+    "name": "ゾーン",
+    "slug": "p1517"
+  },
+  "p101": {
+    "page": 101,
+    "name": "ダークアライアンス",
+    "slug": "p101"
+  },
+  "p588": {
+    "page": 588,
+    "name": "ターン",
+    "slug": "p588"
+  },
+  "p2167": {
+    "page": 2167,
+    "name": "ターンプレイヤー",
+    "slug": "p2167"
+  },
+  "p1828": {
+    "page": 1828,
+    "name": "タイミング",
+    "slug": "p1828"
+  },
+  "p1291": {
+    "page": 1291,
+    "name": "タクス",
+    "slug": "p1291"
+  },
+  "p1297": {
+    "page": 1297,
+    "name": "タッグ",
+    "slug": "p1297"
+  },
+  "tag-strike": {
+    "page": 750,
+    "name": "タッグストライク",
+    "slug": "tag-strike"
+  },
+  "p1536": {
+    "page": 1536,
+    "name": "タッチ",
+    "slug": "p1536"
+  },
+  "damage": {
+    "page": 105,
+    "name": "ダメージ",
+    "slug": "damage"
+  },
+  "chase-term": {
+    "page": 1292,
+    "name": "チェイス",
+    "slug": "chase-term"
+  },
+  "p153": {
+    "page": 153,
+    "name": "チャージ",
+    "slug": "p153"
+  },
+  "p145": {
+    "page": 145,
+    "name": "チャージフェイズ",
+    "slug": "p145"
+  },
+  "text": {
+    "page": 587,
+    "name": "テキスト",
+    "slug": "text"
+  },
+  "p71": {
+    "page": 71,
+    "name": "デッキ",
+    "slug": "p71"
+  },
+  "p623": {
+    "page": 623,
+    "name": "デッキアウト",
+    "slug": "p623"
+  },
+  "p589": {
+    "page": 589,
+    "name": "デッキタイプ",
+    "slug": "p589"
+  },
+  "p123": {
+    "page": 123,
+    "name": "ドロー",
+    "slug": "p123"
+  },
+  "p590": {
+    "page": 590,
+    "name": "ナンバー",
+    "slug": "p590"
+  },
+  "p226": {
+    "page": 226,
+    "name": "ナンバーコンビネーション",
+    "slug": "p226"
+  },
+  "p2252": {
+    "page": 2252,
+    "name": "ハイランダー",
+    "slug": "p2252"
+  },
+  "p1742": {
+    "page": 1742,
+    "name": "バウンス",
+    "slug": "p1742"
+  },
+  "p592": {
+    "page": 592,
+    "name": "バトル",
+    "slug": "p592"
+  },
+  "p457": {
+    "page": 457,
+    "name": "バトルエリア",
+    "slug": "p457"
+  },
+  "p593": {
+    "page": 593,
+    "name": "バトルフェイズ",
+    "slug": "p593"
+  },
+  "p2032": {
+    "page": 2032,
+    "name": "バニラ",
+    "slug": "p2032"
+  },
+  "power": {
+    "page": 110,
+    "name": "パワー",
+    "slug": "power"
+  },
+  "p109": {
+    "page": 109,
+    "name": "パワーゾーン",
+    "slug": "p109"
+  },
+  "vehicle": {
+    "page": 141,
+    "name": "ビークル",
+    "slug": "vehicle"
+  },
+  "p1505": {
+    "page": 1505,
+    "name": "ビークルカード",
+    "slug": "p1505"
+  },
+  "p1550": {
+    "page": 1550,
+    "name": "ビークルサイズ",
+    "slug": "p1550"
+  },
+  "p69": {
+    "page": 69,
+    "name": "フェイズ",
+    "slug": "p69"
+  },
+  "p1701": {
+    "page": 1701,
+    "name": "ブラスト",
+    "slug": "p1701"
+  },
+  "p2355": {
+    "page": 2355,
+    "name": "ブレイカー",
+    "slug": "p2355"
+  },
+  "p1424": {
+    "page": 1424,
+    "name": "プレイシート",
+    "slug": "p1424"
+  },
+  "p622": {
+    "page": 622,
+    "name": "フレーバーテキスト",
+    "slug": "p622"
+  },
+  "p1865": {
+    "page": 1865,
+    "name": "プロモーションカード",
+    "slug": "p1865"
+  },
+  "p618": {
+    "page": 618,
+    "name": "ベルト",
+    "slug": "p618"
+  },
+  "p157": {
+    "page": 157,
+    "name": "ホールド",
+    "slug": "p157"
+  },
+  "multi-category": {
+    "page": 1559,
+    "name": "マルチカテゴリ",
+    "slug": "multi-category"
+  },
+  "p102": {
+    "page": 102,
+    "name": "ミスティックアームズ",
+    "slug": "p102"
+  },
+  "p733": {
+    "page": 733,
+    "name": "メタ",
+    "slug": "p733"
+  },
+  "p1871": {
+    "page": 1871,
+    "name": "メタルヒーローシリーズ",
+    "slug": "p1871"
+  },
+  "p1294": {
+    "page": 1294,
+    "name": "モーフ",
+    "slug": "p1294"
+  },
+  "p137": {
+    "page": 137,
+    "name": "ユニット",
+    "slug": "p137"
+  },
+  "p739": {
+    "page": 739,
+    "name": "ユニットカード",
+    "slug": "p739"
+  },
+  "p144": {
+    "page": 144,
+    "name": "ユニットサイズ",
+    "slug": "p144"
+  },
+  "p1845": {
+    "page": 1845,
+    "name": "ユニットでなくなるとき",
+    "slug": "p1845"
+  },
+  "p731": {
+    "page": 731,
+    "name": "ライダー単",
+    "slug": "p731"
+  },
+  "p228": {
+    "page": 228,
+    "name": "ライディングコンビネーション",
+    "slug": "p228"
+  },
+  "ride": {
+    "page": 156,
+    "name": "ライド",
+    "slug": "ride"
+  },
+  "p594": {
+    "page": 594,
+    "name": "ライドオフ",
+    "slug": "p594"
+  },
+  "rush": {
+    "page": 146,
+    "name": "ラッシュ",
+    "slug": "rush"
+  },
+  "p147": {
+    "page": 147,
+    "name": "ラッシュエリア",
+    "slug": "p147"
+  },
+  "p516": {
+    "page": 516,
+    "name": "ラッシュフェイズ",
+    "slug": "p516"
+  },
+  "p517": {
+    "page": 517,
+    "name": "リアニメイト",
+    "slug": "p517"
+  },
+  "p2250": {
+    "page": 2250,
+    "name": "リード",
+    "slug": "p2250"
+  },
+  "p158": {
+    "page": 158,
+    "name": "リリース",
+    "slug": "p158"
+  },
+  "p595": {
+    "page": 595,
+    "name": "レアリティ",
+    "slug": "p595"
+  },
+  "p1289": {
+    "page": 1289,
+    "name": "レジスト",
+    "slug": "p1289"
+  },
+  "p1740": {
+    "page": 1740,
+    "name": "レッカー",
+    "slug": "p1740"
+  },
+  "renst": {
+    "page": 1725,
+    "name": "レンスト",
+    "slug": "renst"
+  },
+  "p596": {
+    "page": 596,
+    "name": "ロック",
+    "slug": "p596"
+  },
+  "p136": {
+    "page": 136,
+    "name": "ワイルドビースト",
+    "slug": "p136"
+  },
+  "p124": {
+    "page": 124,
+    "name": "圧縮",
+    "slug": "p124"
+  },
+  "p1850": {
+    "page": 1850,
+    "name": "仮面ライダーシリーズ",
+    "slug": "p1850"
+  },
+  "p1843": {
+    "page": 1843,
+    "name": "加速",
+    "slug": "p1843"
+  },
+  "p1704": {
+    "page": 1704,
+    "name": "禁止カード",
+    "slug": "p1704"
+  },
+  "p2466": {
+    "page": 2466,
+    "name": "空撃ち",
+    "slug": "p2466"
+  },
+  "p582": {
+    "page": 582,
+    "name": "軽い",
+    "slug": "p582"
+  },
+  "destroy": {
+    "page": 262,
+    "name": "撃破",
+    "slug": "destroy"
+  },
+  "p1860": {
+    "page": 1860,
+    "name": "公開情報",
+    "slug": "p1860"
+  },
+  "effect-resolution": {
+    "page": 1869,
+    "name": "効果の解決",
+    "slug": "effect-resolution"
+  },
+  "p1685": {
+    "page": 1685,
+    "name": "効果名",
+    "slug": "p1685"
+  },
+  "p1841": {
+    "page": 1841,
+    "name": "合体",
+    "slug": "p1841"
+  },
+  "p1842": {
+    "page": 1842,
+    "name": "合体ユニット",
+    "slug": "p1842"
+  },
+  "p730": {
+    "page": 730,
+    "name": "混合",
+    "slug": "p730"
+  },
+  "p1868": {
+    "page": 1868,
+    "name": "再録",
+    "slug": "p1868"
+  },
+  "p2465": {
+    "page": 2465,
+    "name": "作品名",
+    "slug": "p2465"
+  },
+  "p154": {
+    "page": 154,
+    "name": "山札",
+    "slug": "p154"
+  },
+  "p1806": {
+    "page": 1806,
+    "name": "自爆",
+    "slug": "p1806"
+  },
+  "p1287": {
+    "page": 1287,
+    "name": "捨札",
+    "slug": "p1287"
+  },
+  "p1288": {
+    "page": 1288,
+    "name": "捨山",
+    "slug": "p1288"
+  },
+  "p122": {
+    "page": 122,
+    "name": "手札",
+    "slug": "p122"
+  },
+  "p580": {
+    "page": 580,
+    "name": "重い",
+    "slug": "p580"
+  },
+  "exile": {
+    "page": 1970,
+    "name": "除外",
+    "slug": "exile"
+  },
+  "removal": {
+    "page": 1736,
+    "name": "除去",
+    "slug": "removal"
+  },
+  "p591": {
+    "page": 591,
+    "name": "場",
+    "slug": "p591"
+  },
+  "permanent-op": {
+    "page": 1296,
+    "name": "常駐",
+    "slug": "permanent-op"
+  },
+  "permanent-zone": {
+    "page": 149,
+    "name": "常駐置き場",
+    "slug": "permanent-zone"
+  },
+  "p2460": {
+    "page": 2460,
+    "name": "色",
+    "slug": "p2460"
+  },
+  "p1844": {
+    "page": 1844,
+    "name": "選ぶ",
+    "slug": "p1844"
+  },
+  "p1840": {
+    "page": 1840,
+    "name": "素材",
+    "slug": "p1840"
+  },
+  "mutual-destroy": {
+    "page": 1826,
+    "name": "相打ち",
+    "slug": "mutual-destroy"
+  },
+  "p1872": {
+    "page": 1872,
+    "name": "送る",
+    "slug": "p1872"
+  },
+  "p143": {
+    "page": 143,
+    "name": "多色",
+    "slug": "p143"
+  },
+  "p2233": {
+    "page": 2233,
+    "name": "耐性",
+    "slug": "p2233"
+  },
+  "p139": {
+    "page": 139,
+    "name": "単色",
+    "slug": "p139"
+  },
+  "p1413": {
+    "page": 1413,
+    "name": "置き換え",
+    "slug": "p1413"
+  },
+  "p586": {
+    "page": 586,
+    "name": "追加条件",
+    "slug": "p586"
+  },
+  "p1827": {
+    "page": 1827,
+    "name": "同時",
+    "slug": "p1827"
+  },
+  "p1017": {
+    "page": 1017,
+    "name": "特徴",
+    "slug": "p1017"
+  },
+  "p1721": {
+    "page": 1721,
+    "name": "必要パワー",
+    "slug": "p1721"
+  },
+  "p1864": {
+    "page": 1864,
+    "name": "優先順位",
+    "slug": "p1864"
+  }
+}

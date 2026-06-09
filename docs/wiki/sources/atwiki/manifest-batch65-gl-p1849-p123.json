@@ -1,0 +1,112 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch65-gl-p1849-p123.json",
+  "pages": [
+    {
+      "id": 1849,
+      "label": "p1849",
+      "title": "スーパー戦隊シリーズ"
+    },
+    {
+      "id": 1290,
+      "label": "p1290",
+      "title": "スクラム"
+    },
+    {
+      "id": 1866,
+      "label": "p1866",
+      "title": "スターター"
+    },
+    {
+      "id": 1847,
+      "label": "p1847",
+      "title": "スリーブ"
+    },
+    {
+      "id": 2395,
+      "label": "p2395",
+      "title": "するかわりに"
+    },
+    {
+      "id": 1825,
+      "label": "p1825",
+      "title": "そうしたとき"
+    },
+    {
+      "id": 1517,
+      "label": "p1517",
+      "title": "ゾーン"
+    },
+    {
+      "id": 101,
+      "label": "p101",
+      "title": "ダークアライアンス"
+    },
+    {
+      "id": 588,
+      "label": "p588",
+      "title": "ターン"
+    },
+    {
+      "id": 2167,
+      "label": "p2167",
+      "title": "ターンプレイヤー"
+    },
+    {
+      "id": 1828,
+      "label": "p1828",
+      "title": "タイミング"
+    },
+    {
+      "id": 1291,
+      "label": "p1291",
+      "title": "タクス"
+    },
+    {
+      "id": 1297,
+      "label": "p1297",
+      "title": "タッグ"
+    },
+    {
+      "id": 1536,
+      "label": "p1536",
+      "title": "タッチ"
+    },
+    {
+      "id": 153,
+      "label": "p153",
+      "title": "チャージ"
+    },
+    {
+      "id": 145,
+      "label": "p145",
+      "title": "チャージフェイズ"
+    },
+    {
+      "id": 71,
+      "label": "p71",
+      "title": "デッキ"
+    },
+    {
+      "id": 623,
+      "label": "p623",
+      "title": "デッキアウト"
+    },
+    {
+      "id": 589,
+      "label": "p589",
+      "title": "デッキタイプ"
+    },
+    {
+      "id": 123,
+      "label": "p123",
+      "title": "ドロー"
+    }
+  ]
+}

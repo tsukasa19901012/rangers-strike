@@ -1,0 +1,112 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch63-gl-2nd-p1512.json",
+  "pages": [
+    {
+      "id": 1646,
+      "label": "2nd",
+      "title": "2nd"
+    },
+    {
+      "id": 458,
+      "label": "bp",
+      "title": "ＢＰ"
+    },
+    {
+      "id": 58,
+      "label": "cn",
+      "title": "ＣＮ"
+    },
+    {
+      "id": 60,
+      "label": "da",
+      "title": "DA"
+    },
+    {
+      "id": 61,
+      "label": "et",
+      "title": "ET"
+    },
+    {
+      "id": 66,
+      "label": "jc",
+      "title": "ＪＣ"
+    },
+    {
+      "id": 62,
+      "label": "ma",
+      "title": "MA"
+    },
+    {
+      "id": 1552,
+      "label": "p1552",
+      "title": "Mユニット"
+    },
+    {
+      "id": 59,
+      "label": "nc",
+      "title": "ＮＣ"
+    },
+    {
+      "id": 63,
+      "label": "ot",
+      "title": "OT"
+    },
+    {
+      "id": 227,
+      "label": "rc",
+      "title": "ＲＣ"
+    },
+    {
+      "id": 1555,
+      "label": "sc",
+      "title": "SCユニット"
+    },
+    {
+      "id": 65,
+      "label": "sp",
+      "title": "ＳＰ"
+    },
+    {
+      "id": 64,
+      "label": "wb",
+      "title": "WB"
+    },
+    {
+      "id": 1554,
+      "label": "xl",
+      "title": "XLユニット"
+    },
+    {
+      "id": 142,
+      "label": "p142",
+      "title": "アーステクノロジー"
+    },
+    {
+      "id": 2166,
+      "label": "p2166",
+      "title": "アタッカー"
+    },
+    {
+      "id": 174,
+      "label": "p174",
+      "title": "エクスパンション"
+    },
+    {
+      "id": 579,
+      "label": "p579",
+      "title": "エラッタ"
+    },
+    {
+      "id": 1512,
+      "label": "p1512",
+      "title": "エリア"
+    }
+  ]
+}

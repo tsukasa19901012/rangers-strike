@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch44-rb-RK-082-RK-101.json",
+  "pages": [
+    {
+      "id": 621,
+      "label": "RK-082",
+      "title": "オルタフォース",
+      "cardId": "RK-082"
+    },
+    {
+      "id": 624,
+      "label": "RK-083",
+      "title": "ストライクベント",
+      "cardId": "RK-083"
+    },
+    {
+      "id": 642,
+      "label": "RK-084",
+      "title": "トリックベント",
+      "cardId": "RK-084"
+    },
+    {
+      "id": 643,
+      "label": "RK-085",
+      "title": "ガードベント",
+      "cardId": "RK-085"
+    },
+    {
+      "id": 626,
+      "label": "RK-086",
+      "title": "アカネタカ",
+      "cardId": "RK-086"
+    },
+    {
+      "id": 666,
+      "label": "RK-087",
+      "title": "ゼクトマイザー",
+      "cardId": "RK-087"
+    },
+    {
+      "id": 710,
+      "label": "RK-088",
+      "title": "イマジンとの契約",
+      "cardId": "RK-088"
+    },
+    {
+      "id": 667,
+      "label": "RK-089",
+      "title": "乗車拒否",
+      "cardId": "RK-089"
+    },
+    {
+      "id": 700,
+      "label": "RK-090",
+      "title": "ショッカー戦闘員",
+      "cardId": "RK-090"
+    },
+    {
+      "id": 699,
+      "label": "RK-091",
+      "title": "ゾル大佐",
+      "cardId": "RK-091"
+    },
+    {
+      "id": 697,
+      "label": "RK-092",
+      "title": "狼男",
+      "cardId": "RK-092"
+    },
+    {
+      "id": 625,
+      "label": "RK-093",
+      "title": "蜘蛛男",
+      "cardId": "RK-093"
+    },
+    {
+      "id": 701,
+      "label": "RK-094",
+      "title": "ショッカー戦闘員バイク部隊",
+      "cardId": "RK-094"
+    },
+    {
+      "id": 658,
+      "label": "RK-095",
+      "title": "ハリケーン",
+      "cardId": "RK-095"
+    },
+    {
+      "id": 696,
+      "label": "RK-096",
+      "title": "ハサミジャガー",
+      "cardId": "RK-096"
+    },
+    {
+      "id": 615,
+      "label": "RK-097",
+      "title": "仮面ライダーX",
+      "cardId": "RK-097"
+    },
+    {
+      "id": 659,
+      "label": "RK-098",
+      "title": "クルーザー",
+      "cardId": "RK-098"
+    },
+    {
+      "id": 698,
+      "label": "RK-099",
+      "title": "アポロガイスト",
+      "cardId": "RK-099"
+    },
+    {
+      "id": 654,
+      "label": "RK-100",
+      "title": "仮面ライダーZX",
+      "cardId": "RK-100"
+    },
+    {
+      "id": 641,
+      "label": "RK-101",
+      "title": "タイガーロイド",
+      "cardId": "RK-101"
+    }
+  ]
+}

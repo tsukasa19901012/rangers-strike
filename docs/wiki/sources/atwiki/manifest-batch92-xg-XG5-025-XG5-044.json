@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch92-xg-XG5-025-XG5-044.json",
+  "pages": [
+    {
+      "id": 2265,
+      "label": "XG5-025",
+      "title": "ボウケンブルーAT",
+      "cardId": "XG5-025"
+    },
+    {
+      "id": 2272,
+      "label": "XG5-026",
+      "title": "ボウケンイエローAT",
+      "cardId": "XG5-026"
+    },
+    {
+      "id": 2270,
+      "label": "XG5-027",
+      "title": "ボウケンピンクAT",
+      "cardId": "XG5-027"
+    },
+    {
+      "id": 2237,
+      "label": "XG5-028",
+      "title": "バーニングレジェンドダイボイジャー",
+      "cardId": "XG5-028"
+    },
+    {
+      "id": 2281,
+      "label": "XG5-029",
+      "title": "ゲキファイヤー",
+      "cardId": "XG5-029"
+    },
+    {
+      "id": 2198,
+      "label": "XG5-030",
+      "title": "ゲキゴリラ",
+      "cardId": "XG5-030"
+    },
+    {
+      "id": 2199,
+      "label": "XG5-031",
+      "title": "ゲキガゼル",
+      "cardId": "XG5-031"
+    },
+    {
+      "id": 2200,
+      "label": "XG5-032",
+      "title": "ゲキペンギン",
+      "cardId": "XG5-032"
+    },
+    {
+      "id": 2170,
+      "label": "XG5-033",
+      "title": "シンケンレッド（志葉 薫）",
+      "cardId": "XG5-033"
+    },
+    {
+      "id": 2263,
+      "label": "XG5-034",
+      "title": "シンケンレッド（XG5）",
+      "cardId": "XG5-034"
+    },
+    {
+      "id": 2175,
+      "label": "XG5-035",
+      "title": "獅子ディスク",
+      "cardId": "XG5-035"
+    },
+    {
+      "id": 2201,
+      "label": "XG5-036",
+      "title": "龍ディスク",
+      "cardId": "XG5-036"
+    },
+    {
+      "id": 2228,
+      "label": "XG5-037",
+      "title": "ゴセイレッド（XG5）",
+      "cardId": "XG5-037"
+    },
+    {
+      "id": 2202,
+      "label": "XG5-038",
+      "title": "ゴセイピンク（XG5）",
+      "cardId": "XG5-038"
+    },
+    {
+      "id": 2203,
+      "label": "XG5-039",
+      "title": "ゴセイブルー（XG5）",
+      "cardId": "XG5-039"
+    },
+    {
+      "id": 2241,
+      "label": "XG5-040",
+      "title": "ゴセイブラック（XG5）",
+      "cardId": "XG5-040"
+    },
+    {
+      "id": 2232,
+      "label": "XG5-041",
+      "title": "ゴセイイエロー（XG5）",
+      "cardId": "XG5-041"
+    },
+    {
+      "id": 2204,
+      "label": "XG5-042",
+      "title": "ゴセイマシン",
+      "cardId": "XG5-042"
+    },
+    {
+      "id": 2242,
+      "label": "XG5-043",
+      "title": "シーイックゴセイグレート",
+      "cardId": "XG5-043"
+    },
+    {
+      "id": 2176,
+      "label": "XG5-044",
+      "title": "ランディックゴセイグレート",
+      "cardId": "XG5-044"
+    }
+  ]
+}

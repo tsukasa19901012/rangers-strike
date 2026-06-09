@@ -1,0 +1,112 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch68-gl-p124-p591.json",
+  "pages": [
+    {
+      "id": 124,
+      "label": "p124",
+      "title": "圧縮"
+    },
+    {
+      "id": 1850,
+      "label": "p1850",
+      "title": "仮面ライダーシリーズ"
+    },
+    {
+      "id": 1843,
+      "label": "p1843",
+      "title": "加速"
+    },
+    {
+      "id": 1704,
+      "label": "p1704",
+      "title": "禁止カード"
+    },
+    {
+      "id": 2466,
+      "label": "p2466",
+      "title": "空撃ち"
+    },
+    {
+      "id": 582,
+      "label": "p582",
+      "title": "軽い"
+    },
+    {
+      "id": 1860,
+      "label": "p1860",
+      "title": "公開情報"
+    },
+    {
+      "id": 1685,
+      "label": "p1685",
+      "title": "効果名"
+    },
+    {
+      "id": 1841,
+      "label": "p1841",
+      "title": "合体"
+    },
+    {
+      "id": 1842,
+      "label": "p1842",
+      "title": "合体ユニット"
+    },
+    {
+      "id": 730,
+      "label": "p730",
+      "title": "混合"
+    },
+    {
+      "id": 1868,
+      "label": "p1868",
+      "title": "再録"
+    },
+    {
+      "id": 2465,
+      "label": "p2465",
+      "title": "作品名"
+    },
+    {
+      "id": 154,
+      "label": "p154",
+      "title": "山札"
+    },
+    {
+      "id": 1806,
+      "label": "p1806",
+      "title": "自爆"
+    },
+    {
+      "id": 1287,
+      "label": "p1287",
+      "title": "捨札"
+    },
+    {
+      "id": 1288,
+      "label": "p1288",
+      "title": "捨山"
+    },
+    {
+      "id": 122,
+      "label": "p122",
+      "title": "手札"
+    },
+    {
+      "id": 580,
+      "label": "p580",
+      "title": "重い"
+    },
+    {
+      "id": 591,
+      "label": "p591",
+      "title": "場"
+    }
+  ]
+}

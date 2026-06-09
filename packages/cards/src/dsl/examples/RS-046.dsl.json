@@ -1,0 +1,59 @@
+{
+  "$schema": "../../../schema/card.schema.json",
+  "id": "RS-046",
+  "name": "アーマーアタック（DSL 例）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "bp": 8000,
+  "size": "L",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "armor_attack",
+      "name": "アーマーアタック",
+      "trigger": { "type": "on_rush" },
+      "optional": true,
+      "text": "これをラッシュしたとき発動できる。敵軍バトルエリアからBP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。",
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": { "maxBp": 8000 }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": { "maxBp": 8000 }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": { "type": "trigger_source" },
+              "to": "power"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch58-sk-SK-000-SK-000.json",
+  "pages": [
+    {
+      "id": 20,
+      "label": "SK-000",
+      "title": "仮面ライダー龍騎ブランク体",
+      "cardId": "SK-000"
+    }
+  ]
+}

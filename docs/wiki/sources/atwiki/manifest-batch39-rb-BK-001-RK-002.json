@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch39-rb-BK-001-RK-002.json",
+  "pages": [
+    {
+      "id": 715,
+      "label": "BK-001",
+      "title": "タイフーン（1号）",
+      "cardId": "BK-001"
+    },
+    {
+      "id": 716,
+      "label": "BK-002",
+      "title": "ダブルタイフーン",
+      "cardId": "BK-002"
+    },
+    {
+      "id": 717,
+      "label": "BK-003",
+      "title": "ライドル",
+      "cardId": "BK-003"
+    },
+    {
+      "id": 712,
+      "label": "BK-004",
+      "title": "コンドラー",
+      "cardId": "BK-004"
+    },
+    {
+      "id": 718,
+      "label": "BK-005",
+      "title": "エレクトラー",
+      "cardId": "BK-005"
+    },
+    {
+      "id": 719,
+      "label": "BK-006",
+      "title": "トルネード",
+      "cardId": "BK-006"
+    },
+    {
+      "id": 720,
+      "label": "BK-007",
+      "title": "サイクロード",
+      "cardId": "BK-007"
+    },
+    {
+      "id": 721,
+      "label": "BK-008",
+      "title": "ゼクロスベルト",
+      "cardId": "BK-008"
+    },
+    {
+      "id": 725,
+      "label": "BK-009",
+      "title": "キングストーン（太陽の石）",
+      "cardId": "BK-009"
+    },
+    {
+      "id": 726,
+      "label": "BK-010",
+      "title": "サンライザー",
+      "cardId": "BK-010"
+    },
+    {
+      "id": 727,
+      "label": "BK-011",
+      "title": "アークル",
+      "cardId": "BK-011"
+    },
+    {
+      "id": 728,
+      "label": "BK-012",
+      "title": "オルタリング",
+      "cardId": "BK-012"
+    },
+    {
+      "id": 713,
+      "label": "BK-013",
+      "title": "Vバックル（龍騎）",
+      "cardId": "BK-013"
+    },
+    {
+      "id": 722,
+      "label": "BK-014",
+      "title": "ファイズドライバー",
+      "cardId": "BK-014"
+    },
+    {
+      "id": 714,
+      "label": "BK-015",
+      "title": "ブレイバックル",
+      "cardId": "BK-015"
+    },
+    {
+      "id": 729,
+      "label": "BK-016",
+      "title": "火炎鼓装備帯",
+      "cardId": "BK-016"
+    },
+    {
+      "id": 723,
+      "label": "BK-017",
+      "title": "カブトゼクター",
+      "cardId": "BK-017"
+    },
+    {
+      "id": 724,
+      "label": "BK-018",
+      "title": "デンオウベルト",
+      "cardId": "BK-018"
+    },
+    {
+      "id": 190,
+      "label": "RK-001",
+      "title": "改造人間",
+      "cardId": "RK-001"
+    },
+    {
+      "id": 191,
+      "label": "RK-002",
+      "title": "V3ホッパー",
+      "cardId": "RK-002"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch41-rb-RK-023-RK-042.json",
+  "pages": [
+    {
+      "id": 106,
+      "label": "RK-023",
+      "title": "仮面ライダー1号",
+      "cardId": "RK-023"
+    },
+    {
+      "id": 50,
+      "label": "RK-024",
+      "title": "サイクロン号",
+      "cardId": "RK-024"
+    },
+    {
+      "id": 200,
+      "label": "RK-025",
+      "title": "電波人間タックル",
+      "cardId": "RK-025"
+    },
+    {
+      "id": 201,
+      "label": "RK-026",
+      "title": "がんがんじい",
+      "cardId": "RK-026"
+    },
+    {
+      "id": 215,
+      "label": "RK-027",
+      "title": "仮面ライダーBLACK",
+      "cardId": "RK-027"
+    },
+    {
+      "id": 216,
+      "label": "RK-028",
+      "title": "バトルホッパー",
+      "cardId": "RK-028"
+    },
+    {
+      "id": 217,
+      "label": "RK-029",
+      "title": "仮面ライダークウガMF",
+      "cardId": "RK-029"
+    },
+    {
+      "id": 202,
+      "label": "RK-030",
+      "title": "トライチェイサー",
+      "cardId": "RK-030"
+    },
+    {
+      "id": 203,
+      "label": "RK-031",
+      "title": "仮面ライダーG3MILD",
+      "cardId": "RK-031"
+    },
+    {
+      "id": 218,
+      "label": "RK-032",
+      "title": "アナザーアギト",
+      "cardId": "RK-032"
+    },
+    {
+      "id": 178,
+      "label": "RK-033",
+      "title": "仮面ライダー龍騎",
+      "cardId": "RK-033"
+    },
+    {
+      "id": 179,
+      "label": "RK-034",
+      "title": "ドラグレッダー",
+      "cardId": "RK-034"
+    },
+    {
+      "id": 180,
+      "label": "RK-035",
+      "title": "ダークウイング",
+      "cardId": "RK-035"
+    },
+    {
+      "id": 181,
+      "label": "RK-036",
+      "title": "仮面ライダーライア",
+      "cardId": "RK-036"
+    },
+    {
+      "id": 182,
+      "label": "RK-037",
+      "title": "エビルダイバー",
+      "cardId": "RK-037"
+    },
+    {
+      "id": 51,
+      "label": "RK-038",
+      "title": "仮面ライダーガイ",
+      "cardId": "RK-038"
+    },
+    {
+      "id": 183,
+      "label": "RK-039",
+      "title": "メタルゲラス",
+      "cardId": "RK-039"
+    },
+    {
+      "id": 184,
+      "label": "RK-040",
+      "title": "ベノスネーカー",
+      "cardId": "RK-040"
+    },
+    {
+      "id": 185,
+      "label": "RK-041",
+      "title": "ジェノサイダー",
+      "cardId": "RK-041"
+    },
+    {
+      "id": 186,
+      "label": "RK-042",
+      "title": "ブランウイング",
+      "cardId": "RK-042"
+    }
+  ]
+}

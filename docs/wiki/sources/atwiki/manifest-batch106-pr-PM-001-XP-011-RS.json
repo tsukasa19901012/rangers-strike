@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch106-pr-PM-001-XP-011-RS.json",
+  "pages": [
+    {
+      "id": 743,
+      "label": "PM-001",
+      "title": "ジライヤ",
+      "cardId": "PM-001"
+    },
+    {
+      "id": 2158,
+      "label": "XC-001",
+      "title": "ゾル大佐",
+      "cardId": "XC-001"
+    },
+    {
+      "id": 2159,
+      "label": "XC-002",
+      "title": "ヌマ・O長官",
+      "cardId": "XC-002"
+    },
+    {
+      "id": 2160,
+      "label": "XC-003",
+      "title": "マスター・シャーフー",
+      "cardId": "XC-003"
+    },
+    {
+      "id": 2161,
+      "label": "XC-004",
+      "title": "天空大聖者マジエル",
+      "cardId": "XC-004"
+    },
+    {
+      "id": 2162,
+      "label": "XC-005",
+      "title": "仮面ライダー1号・本郷猛",
+      "cardId": "XC-005"
+    },
+    {
+      "id": 2163,
+      "label": "XC-006",
+      "title": "ボウケンレッド・明石暁",
+      "cardId": "XC-006"
+    },
+    {
+      "id": 2164,
+      "label": "XC-007",
+      "title": "宇宙刑事ギャバン・一条寺烈",
+      "cardId": "XC-007"
+    },
+    {
+      "id": 2165,
+      "label": "XC-008",
+      "title": "シンケンレッド・志葉丈瑠",
+      "cardId": "XC-008"
+    },
+    {
+      "id": 1532,
+      "label": "XP-001-RS",
+      "title": "五色の戦士",
+      "cardId": "XP-001-RS"
+    },
+    {
+      "id": 1533,
+      "label": "XP-002-RS",
+      "title": "戦士の魂",
+      "cardId": "XP-002-RS"
+    },
+    {
+      "id": 1539,
+      "label": "XP-003-RS",
+      "title": "デカレッドバトライザー",
+      "cardId": "XP-003-RS"
+    },
+    {
+      "id": 1538,
+      "label": "XP-004-RK",
+      "title": "仮面ライダーディケイド",
+      "cardId": "XP-004-RK"
+    },
+    {
+      "id": 1557,
+      "label": "XP-005-RK",
+      "title": "仮面ライダーディケイドCF",
+      "cardId": "XP-005-RK"
+    },
+    {
+      "id": 1556,
+      "label": "XP-006-RS",
+      "title": "侍合体",
+      "cardId": "XP-006-RS"
+    },
+    {
+      "id": 1688,
+      "label": "XP-007-RK",
+      "title": "仮面ライダーNEW電王SF",
+      "cardId": "XP-007-RK"
+    },
+    {
+      "id": 1719,
+      "label": "XP-008-RK",
+      "title": "仮面ライダーNEW電王VF",
+      "cardId": "XP-008-RK"
+    },
+    {
+      "id": 1700,
+      "label": "XP-009-RK",
+      "title": "仮面ライダークウガ",
+      "cardId": "XP-009-RK"
+    },
+    {
+      "id": 1697,
+      "label": "XP-010-RS",
+      "title": "デカブルーSWAT",
+      "cardId": "XP-010-RS"
+    },
+    {
+      "id": 1698,
+      "label": "XP-011-RS",
+      "title": "デカレッドSWAT",
+      "cardId": "XP-011-RS"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch95-xg-XG5-085-XG6-006.json",
+  "pages": [
+    {
+      "id": 2220,
+      "label": "XG5-085",
+      "title": "超時空戦闘母艦グランナスカ",
+      "cardId": "XG5-085"
+    },
+    {
+      "id": 2248,
+      "label": "XG5-086",
+      "title": "グランナスカ・コンバットフォーメーション",
+      "cardId": "XG5-086"
+    },
+    {
+      "id": 2276,
+      "label": "XG5-087",
+      "title": "グランナスカ・カノンフォーメーション",
+      "cardId": "XG5-087"
+    },
+    {
+      "id": 2221,
+      "label": "XG5-088",
+      "title": "カバドス",
+      "cardId": "XG5-088"
+    },
+    {
+      "id": 2222,
+      "label": "XG5-089",
+      "title": "カバドスSM",
+      "cardId": "XG5-089"
+    },
+    {
+      "id": 2223,
+      "label": "XG5-090",
+      "title": "クワジーロ",
+      "cardId": "XG5-090"
+    },
+    {
+      "id": 2238,
+      "label": "XG5-091",
+      "title": "キカイダー01",
+      "cardId": "XG5-091"
+    },
+    {
+      "id": 2224,
+      "label": "XG5-092",
+      "title": "ビジンダー",
+      "cardId": "XG5-092"
+    },
+    {
+      "id": 2273,
+      "label": "XG5-093",
+      "title": "ダブルブラザーパワー",
+      "cardId": "XG5-093"
+    },
+    {
+      "id": 2280,
+      "label": "XG5-094",
+      "title": "ギルハカイダー",
+      "cardId": "XG5-094"
+    },
+    {
+      "id": 2177,
+      "label": "XG5-095",
+      "title": "ブラックドラゴン",
+      "cardId": "XG5-095"
+    },
+    {
+      "id": 2225,
+      "label": "XG5-096",
+      "title": "ギルの笛の音",
+      "cardId": "XG5-096"
+    },
+    {
+      "id": 2356,
+      "label": "SX-007",
+      "title": "スーパーゴセイレッド",
+      "cardId": "SX-007"
+    },
+    {
+      "id": 2357,
+      "label": "SX-008",
+      "title": "超・電王トリロジー",
+      "cardId": "SX-008"
+    },
+    {
+      "id": 2332,
+      "label": "XG6-001",
+      "title": "火の山、吠える",
+      "cardId": "XG6-001"
+    },
+    {
+      "id": 2283,
+      "label": "XG6-002",
+      "title": "銀河超越・三神合体",
+      "cardId": "XG6-002"
+    },
+    {
+      "id": 2335,
+      "label": "XG6-003",
+      "title": "キラーアバレンオー",
+      "cardId": "XG6-003"
+    },
+    {
+      "id": 2331,
+      "label": "XG6-004",
+      "title": "フルブラスト・アクション",
+      "cardId": "XG6-004"
+    },
+    {
+      "id": 2330,
+      "label": "XG6-005",
+      "title": "セイントカイザー（XG6）",
+      "cardId": "XG6-005"
+    },
+    {
+      "id": 2329,
+      "label": "XG6-006",
+      "title": "ダイタンケン（XG6）",
+      "cardId": "XG6-006"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch35-l49-RS-619-RS-638.json",
+  "pages": [
+    {
+      "id": 1457,
+      "label": "RS-619",
+      "title": "ジェットマシン",
+      "cardId": "RS-619"
+    },
+    {
+      "id": 1458,
+      "label": "RS-620",
+      "title": "ジェットガルーダ",
+      "cardId": "RS-620"
+    },
+    {
+      "id": 1459,
+      "label": "RS-621",
+      "title": "バードガルーダ",
+      "cardId": "RS-621"
+    },
+    {
+      "id": 1487,
+      "label": "RS-622",
+      "title": "グリフォーザー",
+      "cardId": "RS-622"
+    },
+    {
+      "id": 1460,
+      "label": "RS-623",
+      "title": "ツバサマル",
+      "cardId": "RS-623"
+    },
+    {
+      "id": 1491,
+      "label": "RS-624",
+      "title": "メガウインガー・ファイターモード",
+      "cardId": "RS-624"
+    },
+    {
+      "id": 1461,
+      "label": "RS-625",
+      "title": "メガウインガー・フライヤーモード",
+      "cardId": "RS-625"
+    },
+    {
+      "id": 1525,
+      "label": "RS-626",
+      "title": "ギャラクシーメガ",
+      "cardId": "RS-626"
+    },
+    {
+      "id": 1462,
+      "label": "RS-627",
+      "title": "メガシップ",
+      "cardId": "RS-627"
+    },
+    {
+      "id": 1432,
+      "label": "RS-628",
+      "title": "メガピンク",
+      "cardId": "RS-628"
+    },
+    {
+      "id": 1430,
+      "label": "RS-629",
+      "title": "メガイエロー",
+      "cardId": "RS-629"
+    },
+    {
+      "id": 1429,
+      "label": "RS-630",
+      "title": "メガブルー",
+      "cardId": "RS-630"
+    },
+    {
+      "id": 1431,
+      "label": "RS-631",
+      "title": "メガブラック",
+      "cardId": "RS-631"
+    },
+    {
+      "id": 1418,
+      "label": "RS-632",
+      "title": "メガレッド",
+      "cardId": "RS-632"
+    },
+    {
+      "id": 1529,
+      "label": "RS-633",
+      "title": "メガシルバー",
+      "cardId": "RS-633"
+    },
+    {
+      "id": 1463,
+      "label": "RS-634",
+      "title": "ユガンデ",
+      "cardId": "RS-634"
+    },
+    {
+      "id": 1436,
+      "label": "RS-635",
+      "title": "ネジピンク",
+      "cardId": "RS-635"
+    },
+    {
+      "id": 1437,
+      "label": "RS-636",
+      "title": "ネジブラック",
+      "cardId": "RS-636"
+    },
+    {
+      "id": 1488,
+      "label": "RS-637",
+      "title": "ネジレッド",
+      "cardId": "RS-637"
+    },
+    {
+      "id": 1438,
+      "label": "RS-638",
+      "title": "ネジブルー",
+      "cardId": "RS-638"
+    }
+  ]
+}

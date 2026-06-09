@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch79-xg-XG2-079-XG2-098.json",
+  "pages": [
+    {
+      "id": 1541,
+      "label": "XG2-079",
+      "title": "仮面ライダー龍騎（XG2）",
+      "cardId": "XG2-079"
+    },
+    {
+      "id": 1778,
+      "label": "XG2-080",
+      "title": "リュウキドラグレッダー",
+      "cardId": "XG2-080"
+    },
+    {
+      "id": 1779,
+      "label": "XG2-081",
+      "title": "デンオウモモタロス",
+      "cardId": "XG2-081"
+    },
+    {
+      "id": 1807,
+      "label": "XG2-082",
+      "title": "電子星獣ドル（XG2）",
+      "cardId": "XG2-082"
+    },
+    {
+      "id": 981,
+      "label": "XG2-083",
+      "title": "宇宙刑事ギャバン（XG2）",
+      "cardId": "XG2-083"
+    },
+    {
+      "id": 1808,
+      "label": "XG2-084",
+      "title": "バビロス",
+      "cardId": "XG2-084"
+    },
+    {
+      "id": 1780,
+      "label": "XG2-085",
+      "title": "隊員コード153 ショウ（XG2）",
+      "cardId": "XG2-085"
+    },
+    {
+      "id": 97,
+      "label": "XG2-086",
+      "title": "ハイパーショウ",
+      "cardId": "XG2-086"
+    },
+    {
+      "id": 1781,
+      "label": "XG2-087",
+      "title": "ゴールドプラチナム",
+      "cardId": "XG2-087"
+    },
+    {
+      "id": 244,
+      "label": "XG2-088",
+      "title": "マッド・ガルボ",
+      "cardId": "XG2-088"
+    },
+    {
+      "id": 134,
+      "label": "XG2-089",
+      "title": "機動刑事ジバン",
+      "cardId": "XG2-089"
+    },
+    {
+      "id": 1811,
+      "label": "XG2-090",
+      "title": "レゾン",
+      "cardId": "XG2-090"
+    },
+    {
+      "id": 1821,
+      "label": "XG2-091",
+      "title": "正木俊介本部長",
+      "cardId": "XG2-091"
+    },
+    {
+      "id": 132,
+      "label": "XG2-092",
+      "title": "ナイトファイヤー",
+      "cardId": "XG2-092"
+    },
+    {
+      "id": 1809,
+      "label": "XG2-093",
+      "title": "ソルドーザー",
+      "cardId": "XG2-093"
+    },
+    {
+      "id": 1802,
+      "label": "XG2-094",
+      "title": "向井健三博士",
+      "cardId": "XG2-094"
+    },
+    {
+      "id": 152,
+      "label": "XG2-095",
+      "title": "ブラックビート",
+      "cardId": "XG2-095"
+    },
+    {
+      "id": 1782,
+      "label": "XG2-096",
+      "title": "ビーファイターヤンマ",
+      "cardId": "XG2-096"
+    },
+    {
+      "id": 1783,
+      "label": "XG2-097",
+      "title": "ビーファイターゲンジ",
+      "cardId": "XG2-097"
+    },
+    {
+      "id": 1784,
+      "label": "XG2-098",
+      "title": "カメロック",
+      "cardId": "XG2-098"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch5.json",
+  "pages": [
+    { "id": 11, "label": "category-world", "title": "カテゴリ・世界観" },
+    { "id": 155, "label": "end-phase", "title": "エンドフェイズ" },
+    { "id": 264, "label": "start-phase", "title": "スタートフェイズ" },
+    { "id": 584, "label": "zord-up", "title": "ゾードアップ" },
+    { "id": 138, "label": "attack", "title": "アタック" },
+    { "id": 103, "label": "strike", "title": "ストライク" },
+    { "id": 104, "label": "strike-point", "title": "ストライクポイント" },
+    { "id": 105, "label": "damage", "title": "ダメージ" },
+    { "id": 140, "label": "combo-number", "title": "コンビネーションナンバー" },
+    { "id": 267, "label": "combination", "title": "コンビネーション" },
+    { "id": 262, "label": "destroy", "title": "撃破" },
+    { "id": 1826, "label": "mutual-destroy", "title": "相打ち" },
+    { "id": 108, "label": "command-zone", "title": "コマンドゾーン" },
+    { "id": 1296, "label": "permanent-op", "title": "常駐" },
+    { "id": 149, "label": "permanent-zone", "title": "常駐置き場" },
+    { "id": 1869, "label": "effect-resolution", "title": "効果の解決" },
+    { "id": 1970, "label": "exile", "title": "除外" },
+    { "id": 1736, "label": "removal", "title": "除去" },
+    { "id": 1537, "label": "wing", "title": "ウイング" },
+    { "id": 111, "label": "winny", "title": "ウィニー" }
+  ]
+}

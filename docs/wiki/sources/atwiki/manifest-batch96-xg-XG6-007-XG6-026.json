@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch96-xg-XG6-007-XG6-026.json",
+  "pages": [
+    {
+      "id": 2352,
+      "label": "XG6-007",
+      "title": "ゲキリントージャ",
+      "cardId": "XG6-007"
+    },
+    {
+      "id": 2345,
+      "label": "XG6-008",
+      "title": "炎神剣",
+      "cardId": "XG6-008"
+    },
+    {
+      "id": 2302,
+      "label": "XG6-009",
+      "title": "キョウリュウシンケンオー",
+      "cardId": "XG6-009"
+    },
+    {
+      "id": 2313,
+      "label": "XG6-010",
+      "title": "グレートタイタン",
+      "cardId": "XG6-010"
+    },
+    {
+      "id": 2346,
+      "label": "XG6-011",
+      "title": "タイタンボーイ",
+      "cardId": "XG6-011"
+    },
+    {
+      "id": 2284,
+      "label": "XG6-012",
+      "title": "フラッシュタイタン",
+      "cardId": "XG6-012"
+    },
+    {
+      "id": 2326,
+      "label": "XG6-013",
+      "title": "英雄タイタン",
+      "cardId": "XG6-013"
+    },
+    {
+      "id": 2304,
+      "label": "XG6-014",
+      "title": "レー・バラキ",
+      "cardId": "XG6-014"
+    },
+    {
+      "id": 2298,
+      "label": "XG6-015",
+      "title": "爆竜パラサロッキル",
+      "cardId": "XG6-015"
+    },
+    {
+      "id": 2303,
+      "label": "XG6-016",
+      "title": "爆竜アンキロベイルス",
+      "cardId": "XG6-016"
+    },
+    {
+      "id": 2290,
+      "label": "XG6-017",
+      "title": "ヤツデンワニ",
+      "cardId": "XG6-017"
+    },
+    {
+      "id": 2334,
+      "label": "XG6-018",
+      "title": "アバレキラー（XG6）",
+      "cardId": "XG6-018"
+    },
+    {
+      "id": 2328,
+      "label": "XG6-019",
+      "title": "ダイボウケン（XG6）",
+      "cardId": "XG6-019"
+    },
+    {
+      "id": 2325,
+      "label": "XG6-020",
+      "title": "アルティメットダイボウケン",
+      "cardId": "XG6-020"
+    },
+    {
+      "id": 2351,
+      "label": "XG6-021",
+      "title": "リンライオン",
+      "cardId": "XG6-021"
+    },
+    {
+      "id": 2306,
+      "label": "XG6-022",
+      "title": "リンカメレオン",
+      "cardId": "XG6-022"
+    },
+    {
+      "id": 2293,
+      "label": "XG6-023",
+      "title": "データスハイパー",
+      "cardId": "XG6-023"
+    },
+    {
+      "id": 2348,
+      "label": "XG6-024",
+      "title": "ゴセイナイト",
+      "cardId": "XG6-024"
+    },
+    {
+      "id": 2349,
+      "label": "XG6-025",
+      "title": "ゴセイグランド",
+      "cardId": "XG6-025"
+    },
+    {
+      "id": 2350,
+      "label": "XG6-026",
+      "title": "グランディオン",
+      "cardId": "XG6-026"
+    }
+  ]
+}

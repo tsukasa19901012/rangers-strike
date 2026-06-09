@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch31-l49-RS-539-RS-558.json",
+  "pages": [
+    {
+      "id": 1164,
+      "label": "RS-539",
+      "title": "ギョダーイ",
+      "cardId": "RS-539"
+    },
+    {
+      "id": 1165,
+      "label": "RS-540",
+      "title": "J1",
+      "cardId": "RS-540"
+    },
+    {
+      "id": 1166,
+      "label": "RS-541",
+      "title": "J2",
+      "cardId": "RS-541"
+    },
+    {
+      "id": 1167,
+      "label": "RS-542",
+      "title": "J3",
+      "cardId": "RS-542"
+    },
+    {
+      "id": 1168,
+      "label": "RS-543",
+      "title": "J4",
+      "cardId": "RS-543"
+    },
+    {
+      "id": 1169,
+      "label": "RS-544",
+      "title": "J5",
+      "cardId": "RS-544"
+    },
+    {
+      "id": 1210,
+      "label": "RS-545",
+      "title": "究極大獣神",
+      "cardId": "RS-545"
+    },
+    {
+      "id": 1170,
+      "label": "RS-546",
+      "title": "獣帝大獣神",
+      "cardId": "RS-546"
+    },
+    {
+      "id": 1171,
+      "label": "RS-547",
+      "title": "獣騎神キングブラキオン",
+      "cardId": "RS-547"
+    },
+    {
+      "id": 1225,
+      "label": "RS-548",
+      "title": "ティラノレンジャー（2nd）",
+      "cardId": "RS-548"
+    },
+    {
+      "id": 1172,
+      "label": "RS-549",
+      "title": "トリケラレンジャー（2nd）",
+      "cardId": "RS-549"
+    },
+    {
+      "id": 1217,
+      "label": "RS-550",
+      "title": "隠大将軍",
+      "cardId": "RS-550"
+    },
+    {
+      "id": 1173,
+      "label": "RS-551",
+      "title": "ゴッドガンマー",
+      "cardId": "RS-551"
+    },
+    {
+      "id": 1174,
+      "label": "RS-552",
+      "title": "ゴッドロウガン",
+      "cardId": "RS-552"
+    },
+    {
+      "id": 1175,
+      "label": "RS-553",
+      "title": "ゴッドサルダー",
+      "cardId": "RS-553"
+    },
+    {
+      "id": 1176,
+      "label": "RS-554",
+      "title": "ゴッドカーク",
+      "cardId": "RS-554"
+    },
+    {
+      "id": 1177,
+      "label": "RS-555",
+      "title": "ゴッドクマード",
+      "cardId": "RS-555"
+    },
+    {
+      "id": 1178,
+      "label": "RS-556",
+      "title": "バトルサルダー",
+      "cardId": "RS-556"
+    },
+    {
+      "id": 1179,
+      "label": "RS-557",
+      "title": "ビンボーガミ",
+      "cardId": "RS-557"
+    },
+    {
+      "id": 1186,
+      "label": "RS-558",
+      "title": "ガンマジン",
+      "cardId": "RS-558"
+    }
+  ]
+}

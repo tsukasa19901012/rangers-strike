@@ -1,0 +1,84 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch38-l49-RS-679-RS-690.json",
+  "pages": [
+    {
+      "id": 1485,
+      "label": "RS-679",
+      "title": "シンケンオー",
+      "cardId": "RS-679"
+    },
+    {
+      "id": 1480,
+      "label": "RS-680",
+      "title": "獅子折神",
+      "cardId": "RS-680"
+    },
+    {
+      "id": 1481,
+      "label": "RS-681",
+      "title": "龍折神",
+      "cardId": "RS-681"
+    },
+    {
+      "id": 1482,
+      "label": "RS-682",
+      "title": "亀折神",
+      "cardId": "RS-682"
+    },
+    {
+      "id": 1483,
+      "label": "RS-683",
+      "title": "熊折神",
+      "cardId": "RS-683"
+    },
+    {
+      "id": 1484,
+      "label": "RS-684",
+      "title": "猿折神",
+      "cardId": "RS-684"
+    },
+    {
+      "id": 1530,
+      "label": "RS-685",
+      "title": "ブラックコンドル（2nd）",
+      "cardId": "RS-685"
+    },
+    {
+      "id": 1489,
+      "label": "RS-686",
+      "title": "セイクウオー",
+      "cardId": "RS-686"
+    },
+    {
+      "id": 1433,
+      "label": "RS-687",
+      "title": "ギンガイオー",
+      "cardId": "RS-687"
+    },
+    {
+      "id": 1498,
+      "label": "RS-688",
+      "title": "ギガフェニックス",
+      "cardId": "RS-688"
+    },
+    {
+      "id": 1531,
+      "label": "RS-689",
+      "title": "レッドホーク（2nd）",
+      "cardId": "RS-689"
+    },
+    {
+      "id": 1490,
+      "label": "RS-690",
+      "title": "スペードエース",
+      "cardId": "RS-690"
+    }
+  ]
+}

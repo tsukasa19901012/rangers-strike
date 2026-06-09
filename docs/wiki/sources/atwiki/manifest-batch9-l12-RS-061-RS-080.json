@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch9-l12-RS-061-RS-080.json",
+  "pages": [
+    {
+      "id": 240,
+      "label": "RS-061",
+      "title": "マジグリーン",
+      "cardId": "RS-061"
+    },
+    {
+      "id": 30,
+      "label": "RS-062",
+      "title": "ボウケンレッド",
+      "cardId": "RS-062"
+    },
+    {
+      "id": 265,
+      "label": "RS-063",
+      "title": "ボウケンブラック",
+      "cardId": "RS-063"
+    },
+    {
+      "id": 268,
+      "label": "RS-064",
+      "title": "ボウケンブルー",
+      "cardId": "RS-064"
+    },
+    {
+      "id": 269,
+      "label": "RS-065",
+      "title": "ボウケンイエロー",
+      "cardId": "RS-065"
+    },
+    {
+      "id": 270,
+      "label": "RS-066",
+      "title": "ボウケンピンク",
+      "cardId": "RS-066"
+    },
+    {
+      "id": 271,
+      "label": "RS-067",
+      "title": "プラズマエネルギー",
+      "cardId": "RS-067"
+    },
+    {
+      "id": 272,
+      "label": "RS-068",
+      "title": "地球と宇宙のエネルギー",
+      "cardId": "RS-068"
+    },
+    {
+      "id": 273,
+      "label": "RS-069",
+      "title": "稲妻重力エネルギー",
+      "cardId": "RS-069"
+    },
+    {
+      "id": 24,
+      "label": "RS-070",
+      "title": "マジキング",
+      "cardId": "RS-070"
+    },
+    {
+      "id": 322,
+      "label": "RS-071",
+      "title": "ヒドラー兵の卵",
+      "cardId": "RS-071"
+    },
+    {
+      "id": 323,
+      "label": "RS-072",
+      "title": "無限連鎖カード",
+      "cardId": "RS-072"
+    },
+    {
+      "id": 130,
+      "label": "RS-073",
+      "title": "サンバルカンロボ",
+      "cardId": "RS-073"
+    },
+    {
+      "id": 287,
+      "label": "RS-074",
+      "title": "コスモバルカン",
+      "cardId": "RS-074"
+    },
+    {
+      "id": 288,
+      "label": "RS-075",
+      "title": "ブルバルカン",
+      "cardId": "RS-075"
+    },
+    {
+      "id": 289,
+      "label": "RS-076",
+      "title": "ジャガーバルカン",
+      "cardId": "RS-076"
+    },
+    {
+      "id": 324,
+      "label": "RS-077",
+      "title": "機関車仮面",
+      "cardId": "RS-077"
+    },
+    {
+      "id": 325,
+      "label": "RS-078",
+      "title": "ダークナイト",
+      "cardId": "RS-078"
+    },
+    {
+      "id": 15,
+      "label": "RS-079",
+      "title": "バイオハンター・シルバ",
+      "cardId": "RS-079"
+    },
+    {
+      "id": 326,
+      "label": "RS-080",
+      "title": "ヒドラー兵",
+      "cardId": "RS-080"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch45-rb-RK-102-RK-121.json",
+  "pages": [
+    {
+      "id": 688,
+      "label": "RK-102",
+      "title": "仮面ライダークウガDF",
+      "cardId": "RK-102"
+    },
+    {
+      "id": 689,
+      "label": "RK-103",
+      "title": "仮面ライダークウガPF",
+      "cardId": "RK-103"
+    },
+    {
+      "id": 687,
+      "label": "RK-104",
+      "title": "仮面ライダークウガTF",
+      "cardId": "RK-104"
+    },
+    {
+      "id": 690,
+      "label": "RK-105",
+      "title": "仮面ライダーアギトSF",
+      "cardId": "RK-105"
+    },
+    {
+      "id": 691,
+      "label": "RK-106",
+      "title": "仮面ライダーアギトFF",
+      "cardId": "RK-106"
+    },
+    {
+      "id": 694,
+      "label": "RK-107",
+      "title": "マシントルネイダー",
+      "cardId": "RK-107"
+    },
+    {
+      "id": 693,
+      "label": "RK-108",
+      "title": "仮面ライダーギルス",
+      "cardId": "RK-108"
+    },
+    {
+      "id": 695,
+      "label": "RK-109",
+      "title": "ギルスレイダー",
+      "cardId": "RK-109"
+    },
+    {
+      "id": 631,
+      "label": "RK-110",
+      "title": "V-1システム",
+      "cardId": "RK-110"
+    },
+    {
+      "id": 660,
+      "label": "RK-111",
+      "title": "ガードチェイサー",
+      "cardId": "RK-111"
+    },
+    {
+      "id": 644,
+      "label": "RK-112",
+      "title": "オルタナティブ",
+      "cardId": "RK-112"
+    },
+    {
+      "id": 629,
+      "label": "RK-113",
+      "title": "サイコローグ",
+      "cardId": "RK-113"
+    },
+    {
+      "id": 616,
+      "label": "RK-114",
+      "title": "サイコローダー",
+      "cardId": "RK-114"
+    },
+    {
+      "id": 627,
+      "label": "RK-115",
+      "title": "仮面ライダーゾルダ",
+      "cardId": "RK-115"
+    },
+    {
+      "id": 645,
+      "label": "RK-116",
+      "title": "マグナギガ",
+      "cardId": "RK-116"
+    },
+    {
+      "id": 635,
+      "label": "RK-117",
+      "title": "仮面ライダータイガ",
+      "cardId": "RK-117"
+    },
+    {
+      "id": 630,
+      "label": "RK-118",
+      "title": "デストワイルダー",
+      "cardId": "RK-118"
+    },
+    {
+      "id": 628,
+      "label": "RK-119",
+      "title": "ギガゼール",
+      "cardId": "RK-119"
+    },
+    {
+      "id": 657,
+      "label": "RK-120",
+      "title": "サイドバッシャーVM",
+      "cardId": "RK-120"
+    },
+    {
+      "id": 656,
+      "label": "RK-121",
+      "title": "サイドバッシャーBM",
+      "cardId": "RK-121"
+    }
+  ]
+}

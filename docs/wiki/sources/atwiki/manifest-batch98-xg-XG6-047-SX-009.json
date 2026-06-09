@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch98-xg-XG6-047-SX-009.json",
+  "pages": [
+    {
+      "id": 2307,
+      "label": "XG6-047",
+      "title": "仮面ライダーG4（XG6）",
+      "cardId": "XG6-047"
+    },
+    {
+      "id": 2340,
+      "label": "XG6-048",
+      "title": "仮面ライダーリュウガ（XG6）",
+      "cardId": "XG6-048"
+    },
+    {
+      "id": 2339,
+      "label": "XG6-049",
+      "title": "仮面ライダーオーガ（XG6）",
+      "cardId": "XG6-049"
+    },
+    {
+      "id": 2338,
+      "label": "XG6-050",
+      "title": "仮面ライダーグレイブ（XG6）",
+      "cardId": "XG6-050"
+    },
+    {
+      "id": 2300,
+      "label": "XG6-051",
+      "title": "仮面ライダー歌舞鬼（XG6）",
+      "cardId": "XG6-051"
+    },
+    {
+      "id": 2287,
+      "label": "XG6-052",
+      "title": "仮面ライダーコーカサス（XG6）",
+      "cardId": "XG6-052"
+    },
+    {
+      "id": 2308,
+      "label": "XG6-053",
+      "title": "仮面ライダーアーク（XG6）",
+      "cardId": "XG6-053"
+    },
+    {
+      "id": 2294,
+      "label": "XG6-054",
+      "title": "仮面ライダースカル（XG6）",
+      "cardId": "XG6-054"
+    },
+    {
+      "id": 2337,
+      "label": "XG6-055",
+      "title": "仮面ライダーオーズ・タトバコンボ",
+      "cardId": "XG6-055"
+    },
+    {
+      "id": 2344,
+      "label": "XG6-056",
+      "title": "仮面ライダーオーズ・ガタキリバコンボ",
+      "cardId": "XG6-056"
+    },
+    {
+      "id": 2312,
+      "label": "XG6-057",
+      "title": "仮面ライダーオーズ・ラトラーターコンボ",
+      "cardId": "XG6-057"
+    },
+    {
+      "id": 2297,
+      "label": "XG6-058",
+      "title": "仮面ライダーオーズ・タカキリバ",
+      "cardId": "XG6-058"
+    },
+    {
+      "id": 2296,
+      "label": "XG6-059",
+      "title": "仮面ライダーオーズ・タカトラーター",
+      "cardId": "XG6-059"
+    },
+    {
+      "id": 2301,
+      "label": "XG6-060",
+      "title": "タカカン",
+      "cardId": "XG6-060"
+    },
+    {
+      "id": 2289,
+      "label": "XG6-061",
+      "title": "ライドベンダー",
+      "cardId": "XG6-061"
+    },
+    {
+      "id": 2311,
+      "label": "XG6-062",
+      "title": "戦闘ワンセブン",
+      "cardId": "XG6-062"
+    },
+    {
+      "id": 2353,
+      "label": "XG6-063",
+      "title": "ワンエイト",
+      "cardId": "XG6-063"
+    },
+    {
+      "id": 2333,
+      "label": "XG6-064",
+      "title": "要塞ワンセブン",
+      "cardId": "XG6-064"
+    },
+    {
+      "id": 2299,
+      "label": "XG6-065",
+      "title": "サブマシーン",
+      "cardId": "XG6-065"
+    },
+    {
+      "id": 2457,
+      "label": "SX-009",
+      "title": "ゴセイレッド×ゴーカイレッド",
+      "cardId": "SX-009"
+    }
+  ]
+}

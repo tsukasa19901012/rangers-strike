@@ -1,0 +1,66 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch102-xg-XG7-060-XG7-068.json",
+  "pages": [
+    {
+      "id": 2432,
+      "label": "XG7-060",
+      "title": "ドデカブタック",
+      "cardId": "XG7-060"
+    },
+    {
+      "id": 2410,
+      "label": "XG7-061",
+      "title": "トンデモジョーズ",
+      "cardId": "XG7-061"
+    },
+    {
+      "id": 2381,
+      "label": "XG7-062",
+      "title": "シャークラー",
+      "cardId": "XG7-062"
+    },
+    {
+      "id": 2382,
+      "label": "XG7-063",
+      "title": "シャークラーSM",
+      "cardId": "XG7-063"
+    },
+    {
+      "id": 2442,
+      "label": "XG7-064",
+      "title": "ドラフトレッダー",
+      "cardId": "XG7-064"
+    },
+    {
+      "id": 2380,
+      "label": "XG7-065",
+      "title": "ドラフトブルース",
+      "cardId": "XG7-065"
+    },
+    {
+      "id": 2424,
+      "label": "XG7-066",
+      "title": "ドラフトキース",
+      "cardId": "XG7-066"
+    },
+    {
+      "id": 2448,
+      "label": "XG7-067",
+      "title": "シンクレッダー",
+      "cardId": "XG7-067"
+    },
+    {
+      "id": 2433,
+      "label": "XG7-068",
+      "title": "宇宙刑事シャリバン×ギャバン×シャイダー",
+      "cardId": "XG7-068"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch99-xg-SX-010-XG7-019.json",
+  "pages": [
+    {
+      "id": 2459,
+      "label": "SX-010",
+      "title": "仮面ライダーオーズ・タトバコンボ×仮面ライダーW・CJ",
+      "cardId": "SX-010"
+    },
+    {
+      "id": 2406,
+      "label": "XG7-001",
+      "title": "ゴーカイピンク",
+      "cardId": "XG7-001"
+    },
+    {
+      "id": 2407,
+      "label": "XG7-002",
+      "title": "ゴーカイグリーン",
+      "cardId": "XG7-002"
+    },
+    {
+      "id": 2401,
+      "label": "XG7-003",
+      "title": "ゴーカイレッド",
+      "cardId": "XG7-003"
+    },
+    {
+      "id": 2408,
+      "label": "XG7-004",
+      "title": "ゴーカイブルー",
+      "cardId": "XG7-004"
+    },
+    {
+      "id": 2409,
+      "label": "XG7-005",
+      "title": "ゴーカイイエロー",
+      "cardId": "XG7-005"
+    },
+    {
+      "id": 2411,
+      "label": "XG7-006",
+      "title": "ギンガピンク（XG7）",
+      "cardId": "XG7-006"
+    },
+    {
+      "id": 2447,
+      "label": "XG7-007",
+      "title": "ドラゴンレンジャー×ティラノレンジャー",
+      "cardId": "XG7-007"
+    },
+    {
+      "id": 2412,
+      "label": "XG7-008",
+      "title": "黒騎士ヒュウガ×獣装光ギンガレッド",
+      "cardId": "XG7-008"
+    },
+    {
+      "id": 2449,
+      "label": "XG7-009",
+      "title": "タイムレッド（XG7）",
+      "cardId": "XG7-009"
+    },
+    {
+      "id": 2413,
+      "label": "XG7-010",
+      "title": "ガオレッド×ガオライオン",
+      "cardId": "XG7-010"
+    },
+    {
+      "id": 2414,
+      "label": "XG7-011",
+      "title": "ハリケンレッド（XG7）",
+      "cardId": "XG7-011"
+    },
+    {
+      "id": 2387,
+      "label": "XG7-012",
+      "title": "アバレッド×爆竜ティラノサウルス",
+      "cardId": "XG7-012"
+    },
+    {
+      "id": 2450,
+      "label": "XG7-013",
+      "title": "デカブルー×デカレッド",
+      "cardId": "XG7-013"
+    },
+    {
+      "id": 2416,
+      "label": "XG7-014",
+      "title": "マジレッド（XG7）",
+      "cardId": "XG7-014"
+    },
+    {
+      "id": 2415,
+      "label": "XG7-015",
+      "title": "ボウケンレッド（XG7）",
+      "cardId": "XG7-015"
+    },
+    {
+      "id": 2452,
+      "label": "XG7-016",
+      "title": "黒獅子リオ×スーパーゲキレッド",
+      "cardId": "XG7-016"
+    },
+    {
+      "id": 2417,
+      "label": "XG7-017",
+      "title": "ゴーオンレッド（XG7）",
+      "cardId": "XG7-017"
+    },
+    {
+      "id": 2403,
+      "label": "XG7-018",
+      "title": "シンケンレッド（XG7）",
+      "cardId": "XG7-018"
+    },
+    {
+      "id": 2385,
+      "label": "XG7-019",
+      "title": "ゴセイレッド×ゴセイピンク",
+      "cardId": "XG7-019"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch101-xg-XG7-040-XG7-059.json",
+  "pages": [
+    {
+      "id": 2438,
+      "label": "XG7-040",
+      "title": "仮面ライダー電王LF×モモタロス",
+      "cardId": "XG7-040"
+    },
+    {
+      "id": 2443,
+      "label": "XG7-041",
+      "title": "仮面ライダーW・CJGX",
+      "cardId": "XG7-041"
+    },
+    {
+      "id": 2439,
+      "label": "XG7-042",
+      "title": "仮面ライダークウガ×仮面ライダーディケイド",
+      "cardId": "XG7-042"
+    },
+    {
+      "id": 2451,
+      "label": "XG7-043",
+      "title": "仮面ライダーパンチホッパー×仮面ライダーキックホッパー",
+      "cardId": "XG7-043"
+    },
+    {
+      "id": 2440,
+      "label": "XG7-044",
+      "title": "仮面ライダーアクセル×仮面ライダーW・CJ",
+      "cardId": "XG7-044"
+    },
+    {
+      "id": 2399,
+      "label": "XG7-045",
+      "title": "ロストドライバー",
+      "cardId": "XG7-045"
+    },
+    {
+      "id": 2441,
+      "label": "XG7-046",
+      "title": "仮面ライダーオーズ・サゴーゾコンボ",
+      "cardId": "XG7-046"
+    },
+    {
+      "id": 2422,
+      "label": "XG7-047",
+      "title": "仮面ライダーオーズ・タカキリーター",
+      "cardId": "XG7-047"
+    },
+    {
+      "id": 2383,
+      "label": "XG7-048",
+      "title": "仮面ライダーオーズ・ガタトラバ",
+      "cardId": "XG7-048"
+    },
+    {
+      "id": 2398,
+      "label": "XG7-049",
+      "title": "仮面ライダーオーズ・ガタキリバコンボ（XG7）",
+      "cardId": "XG7-049"
+    },
+    {
+      "id": 2392,
+      "label": "XG7-050",
+      "title": "仮面ライダーオーズ・タトバコンボ×仮面ライダーバース",
+      "cardId": "XG7-050"
+    },
+    {
+      "id": 2397,
+      "label": "XG7-051",
+      "title": "仮面ライダーオーズ・ラトラーターコンボ（XG7）",
+      "cardId": "XG7-051"
+    },
+    {
+      "id": 2426,
+      "label": "XG7-052",
+      "title": "仮面ライダーオーズ・タジャドルコンボ",
+      "cardId": "XG7-052"
+    },
+    {
+      "id": 2431,
+      "label": "XG7-053",
+      "title": "仮面ライダーオーズ・シャウタコンボ",
+      "cardId": "XG7-053"
+    },
+    {
+      "id": 2404,
+      "label": "XG7-054",
+      "title": "オーズドライバー",
+      "cardId": "XG7-054"
+    },
+    {
+      "id": 2423,
+      "label": "XG7-055",
+      "title": "サイクロン・ドーパント",
+      "cardId": "XG7-055"
+    },
+    {
+      "id": 2376,
+      "label": "XG7-056",
+      "title": "ルナ・ドーパント",
+      "cardId": "XG7-056"
+    },
+    {
+      "id": 2377,
+      "label": "XG7-057",
+      "title": "ヒート・ドーパント",
+      "cardId": "XG7-057"
+    },
+    {
+      "id": 2378,
+      "label": "XG7-058",
+      "title": "メタル・ドーパント",
+      "cardId": "XG7-058"
+    },
+    {
+      "id": 2379,
+      "label": "XG7-059",
+      "title": "トリガー・ドーパント",
+      "cardId": "XG7-059"
+    }
+  ]
+}

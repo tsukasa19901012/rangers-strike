@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch80-xg-XG2-099-XG3-014.json",
+  "pages": [
+    {
+      "id": 1785,
+      "label": "XG2-099",
+      "title": "カメロックSM",
+      "cardId": "XG2-099"
+    },
+    {
+      "id": 52,
+      "label": "XG2-100",
+      "title": "善と悪",
+      "cardId": "XG2-100"
+    },
+    {
+      "id": 1817,
+      "label": "XG2-101",
+      "title": "ハカイダー",
+      "cardId": "XG2-101"
+    },
+    {
+      "id": 1816,
+      "label": "XG2-102",
+      "title": "キカイダー",
+      "cardId": "XG2-102"
+    },
+    {
+      "id": 1812,
+      "label": "XG2-103",
+      "title": "サイドマシーン",
+      "cardId": "XG2-103"
+    },
+    {
+      "id": 2017,
+      "label": "SX-003",
+      "title": "仮面ライダーW・FJ",
+      "cardId": "SX-003"
+    },
+    {
+      "id": 1962,
+      "label": "XG3-001",
+      "title": "ダップ",
+      "cardId": "XG3-001"
+    },
+    {
+      "id": 1885,
+      "label": "XG3-002",
+      "title": "ラジエッカー",
+      "cardId": "XG3-002"
+    },
+    {
+      "id": 1886,
+      "label": "XG3-003",
+      "title": "ラジエッカーロボ",
+      "cardId": "XG3-003"
+    },
+    {
+      "id": 1887,
+      "label": "XG3-004",
+      "title": "芋長の芋ヨーカン",
+      "cardId": "XG3-004"
+    },
+    {
+      "id": 2000,
+      "label": "XG3-005",
+      "title": "マックスビクトリーロボ",
+      "cardId": "XG3-005"
+    },
+    {
+      "id": 1888,
+      "label": "XG3-006",
+      "title": "ビクトリーウォーカー",
+      "cardId": "XG3-006"
+    },
+    {
+      "id": 1889,
+      "label": "XG3-007",
+      "title": "マックスライナー",
+      "cardId": "XG3-007"
+    },
+    {
+      "id": 2013,
+      "label": "XG3-008",
+      "title": "ライナーボーイ",
+      "cardId": "XG3-008"
+    },
+    {
+      "id": 1890,
+      "label": "XG3-009",
+      "title": "ミント",
+      "cardId": "XG3-009"
+    },
+    {
+      "id": 1891,
+      "label": "XG3-010",
+      "title": "ジークジェンヌ",
+      "cardId": "XG3-010"
+    },
+    {
+      "id": 2009,
+      "label": "XG3-011",
+      "title": "獣魔ハンター・ジーク",
+      "cardId": "XG3-011"
+    },
+    {
+      "id": 2011,
+      "label": "XG3-012",
+      "title": "獣装光ギンガレッド",
+      "cardId": "XG3-012"
+    },
+    {
+      "id": 1892,
+      "label": "XG3-013",
+      "title": "ガオポーラー",
+      "cardId": "XG3-013"
+    },
+    {
+      "id": 1972,
+      "label": "XG3-014",
+      "title": "ガオマッスル",
+      "cardId": "XG3-014"
+    }
+  ]
+}

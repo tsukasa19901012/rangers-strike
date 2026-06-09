@@ -181,7 +181,9 @@ npm run build
 | 操作モーダル群 | `components/*Modal.tsx` |
 | 対戦メイン | `components/GameApp.tsx` |
 
-wiki 効果テキスト照合（Legend 1/2 は wikiwiki.jp、Legend 3 は w.atwiki.jp）:
+Wiki 収集状況は [docs/wiki/report.md](docs/wiki/report.md) を参照（カード md 1810件・atwiki 1983ページ）。
+
+wiki 効果テキスト照合（Legend 1/2 は grnrngr FAQ + atwiki、Legend 3+ は w.atwiki.jp）:
 
 ```bash
 # 全弾

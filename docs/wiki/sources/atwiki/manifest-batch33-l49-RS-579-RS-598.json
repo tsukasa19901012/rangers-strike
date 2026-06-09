@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch33-l49-RS-579-RS-598.json",
+  "pages": [
+    {
+      "id": 1194,
+      "label": "RS-579",
+      "title": "ルナジェル",
+      "cardId": "RS-579"
+    },
+    {
+      "id": 1219,
+      "label": "RS-580",
+      "title": "絶対神ン・マ",
+      "cardId": "RS-580"
+    },
+    {
+      "id": 1195,
+      "label": "RS-581",
+      "title": "魔導馬バリキオン（2nd）",
+      "cardId": "RS-581"
+    },
+    {
+      "id": 1196,
+      "label": "RS-582",
+      "title": "魔導神官メーミィ",
+      "cardId": "RS-582"
+    },
+    {
+      "id": 1211,
+      "label": "RS-583",
+      "title": "ボウケンレッドHM",
+      "cardId": "RS-583"
+    },
+    {
+      "id": 1212,
+      "label": "RS-584",
+      "title": "ボウケンブラックAT",
+      "cardId": "RS-584"
+    },
+    {
+      "id": 1141,
+      "label": "RS-585",
+      "title": "ボウケンシルバー（2nd）",
+      "cardId": "RS-585"
+    },
+    {
+      "id": 1221,
+      "label": "RS-586",
+      "title": "巨神ゴードム",
+      "cardId": "RS-586"
+    },
+    {
+      "id": 1197,
+      "label": "RS-587",
+      "title": "怒りの鬼神　ガイ",
+      "cardId": "RS-587"
+    },
+    {
+      "id": 1198,
+      "label": "RS-588",
+      "title": "大いなる獣　レイ",
+      "cardId": "RS-588"
+    },
+    {
+      "id": 1199,
+      "label": "RS-589",
+      "title": "クエスター・ガイ",
+      "cardId": "RS-589"
+    },
+    {
+      "id": 1200,
+      "label": "RS-590",
+      "title": "クエスター・レイ",
+      "cardId": "RS-590"
+    },
+    {
+      "id": 1201,
+      "label": "RS-591",
+      "title": "ガンバルオー",
+      "cardId": "RS-591"
+    },
+    {
+      "id": 1223,
+      "label": "RS-592",
+      "title": "エンジンオーG6",
+      "cardId": "RS-592"
+    },
+    {
+      "id": 1202,
+      "label": "RS-593",
+      "title": "バルカ",
+      "cardId": "RS-593"
+    },
+    {
+      "id": 1203,
+      "label": "RS-594",
+      "title": "ガンパード",
+      "cardId": "RS-594"
+    },
+    {
+      "id": 1204,
+      "label": "RS-595",
+      "title": "キャリゲーター",
+      "cardId": "RS-595"
+    },
+    {
+      "id": 1216,
+      "label": "RS-596",
+      "title": "炎神大将軍",
+      "cardId": "RS-596"
+    },
+    {
+      "id": 1205,
+      "label": "RS-597",
+      "title": "レツタカ",
+      "cardId": "RS-597"
+    },
+    {
+      "id": 1206,
+      "label": "RS-598",
+      "title": "シシノシン",
+      "cardId": "RS-598"
+    }
+  ]
+}

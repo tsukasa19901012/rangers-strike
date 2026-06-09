@@ -1,0 +1,377 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rangers-strike.dev/schema/effect.schema.json",
+  "title": "EffectDefinition",
+  "description": "カード効果 DSL（trigger + condition + primitives）",
+  "type": "object",
+  "required": ["id", "trigger", "effects"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "effectId（snake_case）"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "【効果名】"
+    },
+    "trigger": { "$ref": "trigger.schema.json" },
+    "condition": { "$ref": "#/$defs/condition" },
+    "optional": {
+      "type": "boolean",
+      "default": false
+    },
+    "text": {
+      "type": "string",
+      "description": "効果本文（Wiki 参照用）"
+    },
+    "effects": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/primitive" },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "player_ref": {
+      "oneOf": [
+        { "type": "string", "enum": ["controller", "opponent", "phase_player"] },
+        { "type": "string", "enum": ["player1", "player2"] }
+      ]
+    },
+    "zone_name": {
+      "type": "string",
+      "enum": [
+        "deck", "hand", "discard", "power", "command",
+        "rush", "battle", "operation", "exile", "commander"
+      ]
+    },
+    "target_selector": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": { "type": { "const": "self" } },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "type": { "const": "controller" } },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "type": { "const": "opponent" } },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "type": { "const": "trigger_source" } },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "instance" },
+            "instanceId": { "type": "string", "minLength": 1 }
+          },
+          "required": ["type", "instanceId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "card_id" },
+            "cardId": { "type": "string", "pattern": "^[A-Z]{2,3}-\\d{3}$" }
+          },
+          "required": ["type", "cardId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "zone" },
+            "zone": { "$ref": "#/$defs/zone_name" },
+            "owner": { "type": "string", "enum": ["self", "opponent", "any"] },
+            "filter": {
+              "type": "object",
+              "properties": {
+                "size": { "type": "string", "enum": ["S", "M", "L", "XL", "SC"] },
+                "category": { "type": "string" },
+                "faceDown": { "type": "boolean" },
+                "commandHeld": { "type": "boolean" },
+                "maxBp": { "type": "number", "minimum": 0 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": ["type", "zone", "owner"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "condition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": { "type": { "const": "always" } },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "has_target" },
+            "target": { "$ref": "#/$defs/target_selector" }
+          },
+          "required": ["type", "target"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "bp_compare" },
+            "target": { "$ref": "#/$defs/target_selector" },
+            "op": { "type": "string", "enum": ["<", "<=", ">", ">="] },
+            "value": { "type": "number" }
+          },
+          "required": ["type", "target", "op", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "zone_count" },
+            "zone": { "$ref": "#/$defs/zone_name" },
+            "owner": { "type": "string", "enum": ["self", "opponent"] },
+            "op": { "type": "string", "enum": [">=", "=="] },
+            "count": { "type": "number", "minimum": 0 }
+          },
+          "required": ["type", "zone", "owner", "op", "count"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "type": { "const": "controller_is_phase_player" } },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "and" },
+            "conditions": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/condition" },
+              "minItems": 1
+            }
+          },
+          "required": ["type", "conditions"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "not" },
+            "condition": { "$ref": "#/$defs/condition" }
+          },
+          "required": ["type", "condition"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "effect_choice_kind": {
+      "type": "string",
+      "enum": [
+        "deck_top_or_bottom", "seabed_draw", "optional_deck_draw",
+        "select_unit", "select_command", "select_power", "select_hand",
+        "scry_keep_one", "end_turn_menu", "simultaneous_order", "confirm"
+      ]
+    },
+    "primitive": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "draw" },
+            "amount": { "type": "integer", "minimum": 1 },
+            "player": { "$ref": "#/$defs/player_ref" }
+          },
+          "required": ["type", "amount"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "move" },
+            "target": { "$ref": "#/$defs/target_selector" },
+            "to": { "$ref": "#/$defs/zone_name" },
+            "position": { "type": "string", "enum": ["left", "right"] }
+          },
+          "required": ["type", "target", "to"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "discard" },
+            "target": { "$ref": "#/$defs/target_selector" }
+          },
+          "required": ["type", "target"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "flip_power" },
+            "target": { "$ref": "#/$defs/target_selector" },
+            "faceDown": { "type": "boolean" }
+          },
+          "required": ["type", "target", "faceDown"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "modify_bp" },
+            "target": { "$ref": "#/$defs/target_selector" },
+            "amount": { "type": "number" },
+            "duration": { "type": "string", "enum": ["turn", "permanent"] }
+          },
+          "required": ["type", "target", "amount", "duration"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "modify_sp" },
+            "target": { "$ref": "#/$defs/target_selector" },
+            "amount": { "type": "number" },
+            "duration": { "type": "string", "enum": ["turn", "permanent"] }
+          },
+          "required": ["type", "target", "amount", "duration"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "set_bp" },
+            "target": { "$ref": "#/$defs/target_selector" },
+            "value": { "type": "number", "minimum": 0 },
+            "duration": { "type": "string", "enum": ["turn", "permanent"] }
+          },
+          "required": ["type", "target", "value", "duration"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "deal_damage" },
+            "amount": { "type": "integer", "minimum": 1 },
+            "target": { "$ref": "#/$defs/player_ref" }
+          },
+          "required": ["type", "amount", "target"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "type": { "const": "cancel_damage" } },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "type": { "const": "prevent_battle" } },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "hold_command" },
+            "target": { "$ref": "#/$defs/target_selector" }
+          },
+          "required": ["type", "target"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "release_command" },
+            "target": { "$ref": "#/$defs/target_selector" }
+          },
+          "required": ["type", "target"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "block_battle_entry" },
+            "target": { "$ref": "#/$defs/target_selector" },
+            "duration": { "type": "string", "enum": ["turn", "permanent"] }
+          },
+          "required": ["type", "target", "duration"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "grant_keyword" },
+            "keyword": { "type": "string", "minLength": 1 },
+            "duration": { "type": "string", "enum": ["turn", "permanent"] }
+          },
+          "required": ["type", "keyword", "duration"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "choose" },
+            "kind": { "$ref": "#/$defs/effect_choice_kind" },
+            "valid": { "$ref": "#/$defs/target_selector" },
+            "count": { "type": "integer", "minimum": 0 },
+            "then": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/primitive" },
+              "minItems": 1
+            }
+          },
+          "required": ["type", "kind", "valid", "count", "then"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "open_reaction" },
+            "window": { "type": "string", "enum": ["rush", "battle", "strike", "leave"] }
+          },
+          "required": ["type", "window"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "enqueue_trigger" },
+            "effectId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+          },
+          "required": ["type", "effectId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "fallback_handler" },
+            "effectId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+          },
+          "required": ["type", "effectId"],
+          "additionalProperties": false,
+          "description": "DSL 未表現の効果。TS ハンドラへ委譲。"
+        }
+      ]
+    }
+  }
+}

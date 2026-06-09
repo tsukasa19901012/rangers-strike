@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch34-l49-RS-599-RS-618.json",
+  "pages": [
+    {
+      "id": 1207,
+      "label": "RS-599",
+      "title": "ツキノワ",
+      "cardId": "RS-599"
+    },
+    {
+      "id": 1143,
+      "label": "RS-600",
+      "title": "ゴーオンシルバー",
+      "cardId": "RS-600"
+    },
+    {
+      "id": 1144,
+      "label": "RS-601",
+      "title": "ゴーオンゴールド",
+      "cardId": "RS-601"
+    },
+    {
+      "id": 1231,
+      "label": "RS-602",
+      "title": "害水大臣ケガレシア",
+      "cardId": "RS-602"
+    },
+    {
+      "id": 1208,
+      "label": "RS-603",
+      "title": "蛮機獣ボンベバンキ",
+      "cardId": "RS-603"
+    },
+    {
+      "id": 1209,
+      "label": "RS-604",
+      "title": "蛮機兵ウガッツ",
+      "cardId": "RS-604"
+    },
+    {
+      "id": 1448,
+      "label": "RS-605",
+      "title": "異次元からの翼",
+      "cardId": "RS-605"
+    },
+    {
+      "id": 1447,
+      "label": "RS-606",
+      "title": "雷鳴剣ヒカリマル",
+      "cardId": "RS-606"
+    },
+    {
+      "id": 1449,
+      "label": "RS-607",
+      "title": "ファルコンサモナー",
+      "cardId": "RS-607"
+    },
+    {
+      "id": 1495,
+      "label": "RS-608",
+      "title": "五色の戦士",
+      "cardId": "RS-608"
+    },
+    {
+      "id": 1496,
+      "label": "RS-609",
+      "title": "戦士の魂",
+      "cardId": "RS-609"
+    },
+    {
+      "id": 1440,
+      "label": "RS-610",
+      "title": "秘伝ディスク",
+      "cardId": "RS-610"
+    },
+    {
+      "id": 1450,
+      "label": "RS-611",
+      "title": "バリブルーン",
+      "cardId": "RS-611"
+    },
+    {
+      "id": 1451,
+      "label": "RS-612",
+      "title": "スカイエース",
+      "cardId": "RS-612"
+    },
+    {
+      "id": 1452,
+      "label": "RS-613",
+      "title": "ダイヤジャック",
+      "cardId": "RS-613"
+    },
+    {
+      "id": 1453,
+      "label": "RS-614",
+      "title": "クローバーキング",
+      "cardId": "RS-614"
+    },
+    {
+      "id": 1454,
+      "label": "RS-615",
+      "title": "ハートクイン",
+      "cardId": "RS-615"
+    },
+    {
+      "id": 1455,
+      "label": "RS-616",
+      "title": "クライマー",
+      "cardId": "RS-616"
+    },
+    {
+      "id": 1499,
+      "label": "RS-617",
+      "title": "グレートイカロス",
+      "cardId": "RS-617"
+    },
+    {
+      "id": 1456,
+      "label": "RS-618",
+      "title": "ジェットイカロス",
+      "cardId": "RS-618"
+    }
+  ]
+}

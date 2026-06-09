@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch72-xg-XG1-040-XG1-059.json",
+  "pages": [
+    {
+      "id": 1593,
+      "label": "XG1-040",
+      "title": "虎折神",
+      "cardId": "XG1-040"
+    },
+    {
+      "id": 1543,
+      "label": "XG1-041",
+      "title": "仮面ライダーアマゾン（XG）",
+      "cardId": "XG1-041"
+    },
+    {
+      "id": 1586,
+      "label": "XG1-042",
+      "title": "十面鬼ゴルゴス",
+      "cardId": "XG1-042"
+    },
+    {
+      "id": 1612,
+      "label": "XG1-043",
+      "title": "カメバズーカ",
+      "cardId": "XG1-043"
+    },
+    {
+      "id": 1619,
+      "label": "XG1-044",
+      "title": "仮面ライダーV3（XG）",
+      "cardId": "XG1-044"
+    },
+    {
+      "id": 1614,
+      "label": "XG1-045",
+      "title": "イカファイア",
+      "cardId": "XG1-045"
+    },
+    {
+      "id": 1607,
+      "label": "XG1-046",
+      "title": "Vマシーン（Vジェット）",
+      "cardId": "XG1-046"
+    },
+    {
+      "id": 1635,
+      "label": "XG1-047",
+      "title": "仮面ライダースーパー1",
+      "cardId": "XG1-047"
+    },
+    {
+      "id": 1632,
+      "label": "XG1-048",
+      "title": "仮面ライダースーパー1・EH",
+      "cardId": "XG1-048"
+    },
+    {
+      "id": 1540,
+      "label": "XG1-049",
+      "title": "スカイライダー",
+      "cardId": "XG1-049"
+    },
+    {
+      "id": 1633,
+      "label": "XG1-050",
+      "title": "ライダーシンドローム",
+      "cardId": "XG1-050"
+    },
+    {
+      "id": 1637,
+      "label": "XG1-051",
+      "title": "仮面ライダーZX（XG）",
+      "cardId": "XG1-051"
+    },
+    {
+      "id": 1673,
+      "label": "XG1-052",
+      "title": "仮面ライダーアギトTF",
+      "cardId": "XG1-052"
+    },
+    {
+      "id": 1571,
+      "label": "XG1-053",
+      "title": "仮面ライダーアギトBF",
+      "cardId": "XG1-053"
+    },
+    {
+      "id": 1670,
+      "label": "XG1-054",
+      "title": "仮面ライダーアギトSHF",
+      "cardId": "XG1-054"
+    },
+    {
+      "id": 1572,
+      "label": "XG1-055",
+      "title": "マンティスロード",
+      "cardId": "XG1-055"
+    },
+    {
+      "id": 1573,
+      "label": "XG1-056",
+      "title": "水のエル",
+      "cardId": "XG1-056"
+    },
+    {
+      "id": 1564,
+      "label": "XG1-057",
+      "title": "ブラックファング",
+      "cardId": "XG1-057"
+    },
+    {
+      "id": 1565,
+      "label": "XG1-058",
+      "title": "ウルフアンデッド",
+      "cardId": "XG1-058"
+    },
+    {
+      "id": 1546,
+      "label": "XG1-059",
+      "title": "仮面ライダーブレイドKF",
+      "cardId": "XG1-059"
+    }
+  ]
+}

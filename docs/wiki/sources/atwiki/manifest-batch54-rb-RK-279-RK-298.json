@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch54-rb-RK-279-RK-298.json",
+  "pages": [
+    {
+      "id": 1284,
+      "label": "RK-279",
+      "title": "仮面ライダーナイトサバイブ",
+      "cardId": "RK-279"
+    },
+    {
+      "id": 1375,
+      "label": "RK-280",
+      "title": "ダークレイダー",
+      "cardId": "RK-280"
+    },
+    {
+      "id": 1367,
+      "label": "RK-281",
+      "title": "ドラグランザー",
+      "cardId": "RK-281"
+    },
+    {
+      "id": 1244,
+      "label": "RK-282",
+      "title": "仮面ライダーシザース",
+      "cardId": "RK-282"
+    },
+    {
+      "id": 1380,
+      "label": "RK-283",
+      "title": "ボルキャンサー",
+      "cardId": "RK-283"
+    },
+    {
+      "id": 1251,
+      "label": "RK-284",
+      "title": "仮面ライダーベルデ",
+      "cardId": "RK-284"
+    },
+    {
+      "id": 1354,
+      "label": "RK-285",
+      "title": "バイオグリーザ",
+      "cardId": "RK-285"
+    },
+    {
+      "id": 1276,
+      "label": "RK-286",
+      "title": "仮面ライダーオーディン",
+      "cardId": "RK-286"
+    },
+    {
+      "id": 1355,
+      "label": "RK-287",
+      "title": "ゴルトフェニックス",
+      "cardId": "RK-287"
+    },
+    {
+      "id": 1381,
+      "label": "RK-288",
+      "title": "仮面ライダーデルタ",
+      "cardId": "RK-288"
+    },
+    {
+      "id": 1384,
+      "label": "RK-289",
+      "title": "ジェットスライガー",
+      "cardId": "RK-289"
+    },
+    {
+      "id": 1361,
+      "label": "RK-290",
+      "title": "ロブスターオルフェノク",
+      "cardId": "RK-290"
+    },
+    {
+      "id": 1366,
+      "label": "RK-291",
+      "title": "ドラゴンオルフェノク魔人態",
+      "cardId": "RK-291"
+    },
+    {
+      "id": 1360,
+      "label": "RK-292",
+      "title": "クロコダイルオルフェノク格闘態",
+      "cardId": "RK-292"
+    },
+    {
+      "id": 1362,
+      "label": "RK-293",
+      "title": "センチピードオルフェノク",
+      "cardId": "RK-293"
+    },
+    {
+      "id": 1340,
+      "label": "RK-294",
+      "title": "仮面ライダーサソードMF",
+      "cardId": "RK-294"
+    },
+    {
+      "id": 1341,
+      "label": "RK-295",
+      "title": "仮面ライダーサソードRF",
+      "cardId": "RK-295"
+    },
+    {
+      "id": 1392,
+      "label": "RK-296",
+      "title": "仮面ライダーキックホッパー（2nd）",
+      "cardId": "RK-296"
+    },
+    {
+      "id": 1386,
+      "label": "RK-297",
+      "title": "仮面ライダーパンチホッパー（2nd）",
+      "cardId": "RK-297"
+    },
+    {
+      "id": 1387,
+      "label": "RK-298",
+      "title": "仮面ライダーダークカブトMF",
+      "cardId": "RK-298"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch59-me-RM-001-RM-020.json",
+  "pages": [
+    {
+      "id": 888,
+      "label": "RM-001",
+      "title": "蒸着",
+      "cardId": "RM-001"
+    },
+    {
+      "id": 889,
+      "label": "RM-002",
+      "title": "赤射",
+      "cardId": "RM-002"
+    },
+    {
+      "id": 890,
+      "label": "RM-003",
+      "title": "焼結",
+      "cardId": "RM-003"
+    },
+    {
+      "id": 891,
+      "label": "RM-004",
+      "title": "巨獣特捜",
+      "cardId": "RM-004"
+    },
+    {
+      "id": 892,
+      "label": "RM-005",
+      "title": "ダブルスナイパー",
+      "cardId": "RM-005"
+    },
+    {
+      "id": 879,
+      "label": "RM-006",
+      "title": "怒（いか）る！",
+      "cardId": "RM-006"
+    },
+    {
+      "id": 831,
+      "label": "RM-007",
+      "title": "世界忍者戦",
+      "cardId": "RM-007"
+    },
+    {
+      "id": 880,
+      "label": "RM-008",
+      "title": "対バイオロン法",
+      "cardId": "RM-008"
+    },
+    {
+      "id": 830,
+      "label": "RM-009",
+      "title": "マルチパック",
+      "cardId": "RM-009"
+    },
+    {
+      "id": 881,
+      "label": "RM-010",
+      "title": "ソルインジケーター",
+      "cardId": "RM-010"
+    },
+    {
+      "id": 882,
+      "label": "RM-011",
+      "title": "ターボユニット-W",
+      "cardId": "RM-011"
+    },
+    {
+      "id": 883,
+      "label": "RM-012",
+      "title": "JPカード",
+      "cardId": "RM-012"
+    },
+    {
+      "id": 884,
+      "label": "RM-013",
+      "title": "BSフォーメーション",
+      "cardId": "RM-013"
+    },
+    {
+      "id": 875,
+      "label": "RM-014",
+      "title": "ソニックフラップ",
+      "cardId": "RM-014"
+    },
+    {
+      "id": 893,
+      "label": "RM-015",
+      "title": "インプットカードガン",
+      "cardId": "RM-015"
+    },
+    {
+      "id": 832,
+      "label": "RM-016",
+      "title": "スターピース",
+      "cardId": "RM-016"
+    },
+    {
+      "id": 885,
+      "label": "RM-017",
+      "title": "オメデトロフィー",
+      "cardId": "RM-017"
+    },
+    {
+      "id": 869,
+      "label": "RM-018",
+      "title": "宇宙刑事ギャバン",
+      "cardId": "RM-018"
+    },
+    {
+      "id": 834,
+      "label": "RM-019",
+      "title": "超次元高速機ドルギラン",
+      "cardId": "RM-019"
+    },
+    {
+      "id": 835,
+      "label": "RM-020",
+      "title": "電子星獣ドル",
+      "cardId": "RM-020"
+    }
+  ]
+}

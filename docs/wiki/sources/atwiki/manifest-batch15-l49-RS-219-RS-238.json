@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch15-l49-RS-219-RS-238.json",
+  "pages": [
+    {
+      "id": 411,
+      "label": "RS-219",
+      "title": "タイムブルー",
+      "cardId": "RS-219"
+    },
+    {
+      "id": 412,
+      "label": "RS-220",
+      "title": "タイムグリーン",
+      "cardId": "RS-220"
+    },
+    {
+      "id": 413,
+      "label": "RS-221",
+      "title": "タイムイエロー",
+      "cardId": "RS-221"
+    },
+    {
+      "id": 414,
+      "label": "RS-222",
+      "title": "タイムピンク",
+      "cardId": "RS-222"
+    },
+    {
+      "id": 406,
+      "label": "RS-223",
+      "title": "タック",
+      "cardId": "RS-223"
+    },
+    {
+      "id": 380,
+      "label": "RS-224",
+      "title": "トータスハンマー",
+      "cardId": "RS-224"
+    },
+    {
+      "id": 381,
+      "label": "RS-225",
+      "title": "ガトリングレオ",
+      "cardId": "RS-225"
+    },
+    {
+      "id": 376,
+      "label": "RS-226",
+      "title": "キラーオー",
+      "cardId": "RS-226"
+    },
+    {
+      "id": 96,
+      "label": "RS-227",
+      "title": "爆竜トップゲイラー",
+      "cardId": "RS-227"
+    },
+    {
+      "id": 1285,
+      "label": "RS-228",
+      "title": "爆竜ステゴスライドン",
+      "cardId": "RS-228"
+    },
+    {
+      "id": 98,
+      "label": "RS-229",
+      "title": "爆竜ブラキオサウルス",
+      "cardId": "RS-229"
+    },
+    {
+      "id": 72,
+      "label": "RS-230",
+      "title": "アバレッドAM",
+      "cardId": "RS-230"
+    },
+    {
+      "id": 373,
+      "label": "RS-231",
+      "title": "アバレブルーAM",
+      "cardId": "RS-231"
+    },
+    {
+      "id": 374,
+      "label": "RS-232",
+      "title": "アバレイエローAM",
+      "cardId": "RS-232"
+    },
+    {
+      "id": 375,
+      "label": "RS-233",
+      "title": "アバレブラック",
+      "cardId": "RS-233"
+    },
+    {
+      "id": 26,
+      "label": "RS-234",
+      "title": "アバレキラー",
+      "cardId": "RS-234"
+    },
+    {
+      "id": 500,
+      "label": "RS-235",
+      "title": "デカベースロボ",
+      "cardId": "RS-235"
+    },
+    {
+      "id": 400,
+      "label": "RS-236",
+      "title": "スーパーダイボウケン",
+      "cardId": "RS-236"
+    },
+    {
+      "id": 402,
+      "label": "RS-237",
+      "title": "サイレンビルダー",
+      "cardId": "RS-237"
+    },
+    {
+      "id": 403,
+      "label": "RS-238",
+      "title": "ゴーゴーファイヤー",
+      "cardId": "RS-238"
+    }
+  ]
+}

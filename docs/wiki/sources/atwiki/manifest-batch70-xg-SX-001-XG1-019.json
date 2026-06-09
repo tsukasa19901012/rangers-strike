@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch70-xg-SX-001-XG1-019.json",
+  "pages": [
+    {
+      "id": 1681,
+      "label": "SX-001",
+      "title": "仮面ライダー電王超CF",
+      "cardId": "SX-001"
+    },
+    {
+      "id": 1544,
+      "label": "XG1-001",
+      "title": "バトルジャパン（XG）",
+      "cardId": "XG1-001"
+    },
+    {
+      "id": 1597,
+      "label": "XG1-002",
+      "title": "デンジレッド（XG）",
+      "cardId": "XG1-002"
+    },
+    {
+      "id": 1594,
+      "label": "XG1-003",
+      "title": "バルイーグル（XG）",
+      "cardId": "XG1-003"
+    },
+    {
+      "id": 1680,
+      "label": "XG1-004",
+      "title": "ゴーグルレッド",
+      "cardId": "XG1-004"
+    },
+    {
+      "id": 1595,
+      "label": "XG1-005",
+      "title": "ダイナレッド（XG）",
+      "cardId": "XG1-005"
+    },
+    {
+      "id": 1598,
+      "label": "XG1-006",
+      "title": "レッドワン（XG）",
+      "cardId": "XG1-006"
+    },
+    {
+      "id": 1643,
+      "label": "XG1-007",
+      "title": "チェンジドラゴン（XG）",
+      "cardId": "XG1-007"
+    },
+    {
+      "id": 1609,
+      "label": "XG1-008",
+      "title": "レッドフラッシュ（XG）",
+      "cardId": "XG1-008"
+    },
+    {
+      "id": 1596,
+      "label": "XG1-009",
+      "title": "レッドマスク（XG）",
+      "cardId": "XG1-009"
+    },
+    {
+      "id": 1599,
+      "label": "XG1-010",
+      "title": "レッドファルコン（XG）",
+      "cardId": "XG1-010"
+    },
+    {
+      "id": 1644,
+      "label": "XG1-011",
+      "title": "巨大バッカスフンド",
+      "cardId": "XG1-011"
+    },
+    {
+      "id": 1615,
+      "label": "XG1-012",
+      "title": "レッドパンチャー",
+      "cardId": "XG1-012"
+    },
+    {
+      "id": 1642,
+      "label": "XG1-013",
+      "title": "キングピラミッダーPF",
+      "cardId": "XG1-013"
+    },
+    {
+      "id": 1675,
+      "label": "XG1-014",
+      "title": "キングレンジャー",
+      "cardId": "XG1-014"
+    },
+    {
+      "id": 1584,
+      "label": "XG1-015",
+      "title": "宇宙警察",
+      "cardId": "XG1-015"
+    },
+    {
+      "id": 1671,
+      "label": "XG1-016",
+      "title": "サイレンダーRM",
+      "cardId": "XG1-016"
+    },
+    {
+      "id": 1672,
+      "label": "XG1-017",
+      "title": "シグナルマン",
+      "cardId": "XG1-017"
+    },
+    {
+      "id": 1585,
+      "label": "XG1-018",
+      "title": "サイレンダーPM",
+      "cardId": "XG1-018"
+    },
+    {
+      "id": 1647,
+      "label": "XG1-019",
+      "title": "ターボマシン",
+      "cardId": "XG1-019"
+    }
+  ]
+}

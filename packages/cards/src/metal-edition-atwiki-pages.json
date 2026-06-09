@@ -1,0 +1,380 @@
+{
+  "RM-001": {
+    "page": 888,
+    "name": "蒸着",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-002": {
+    "page": 889,
+    "name": "赤射",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-003": {
+    "page": 890,
+    "name": "焼結",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-004": {
+    "page": 891,
+    "name": "巨獣特捜",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-005": {
+    "page": 892,
+    "name": "ダブルスナイパー",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-006": {
+    "page": 879,
+    "name": "怒（いか）る！",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-007": {
+    "page": 831,
+    "name": "世界忍者戦",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-008": {
+    "page": 880,
+    "name": "対バイオロン法",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-009": {
+    "page": 830,
+    "name": "マルチパック",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-010": {
+    "page": 881,
+    "name": "ソルインジケーター",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-011": {
+    "page": 882,
+    "name": "ターボユニット-W",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-012": {
+    "page": 883,
+    "name": "JPカード",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-013": {
+    "page": 884,
+    "name": "BSフォーメーション",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-014": {
+    "page": 875,
+    "name": "ソニックフラップ",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-015": {
+    "page": 893,
+    "name": "インプットカードガン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-016": {
+    "page": 832,
+    "name": "スターピース",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-017": {
+    "page": 885,
+    "name": "オメデトロフィー",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-018": {
+    "page": 869,
+    "name": "宇宙刑事ギャバン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-019": {
+    "page": 834,
+    "name": "超次元高速機ドルギラン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-020": {
+    "page": 835,
+    "name": "電子星獣ドル",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-021": {
+    "page": 836,
+    "name": "ギラン円盤",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-022": {
+    "page": 837,
+    "name": "サイバリアン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-023": {
+    "page": 838,
+    "name": "スクーパー",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-024": {
+    "page": 839,
+    "name": "高次元戦闘車ギャビオン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-025": {
+    "page": 894,
+    "name": "宇宙刑事シャリバン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-026": {
+    "page": 840,
+    "name": "超次元戦闘母艦グランドバース",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-027": {
+    "page": 841,
+    "name": "バトルバースフォーメーション",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-028": {
+    "page": 842,
+    "name": "モトシャリアン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-029": {
+    "page": 896,
+    "name": "ジャスピオン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-030": {
+    "page": 843,
+    "name": "超惑星戦闘母艦ダイレオン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-031": {
+    "page": 844,
+    "name": "戦闘巨人ダイレオン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-032": {
+    "page": 845,
+    "name": "アイアンウルフ",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-033": {
+    "page": 870,
+    "name": "メタルダー",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-034": {
+    "page": 877,
+    "name": "暴魂トップガンダー",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-035": {
+    "page": 846,
+    "name": "凱聖クールギン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-036": {
+    "page": 847,
+    "name": "暴魂チューボ",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-037": {
+    "page": 848,
+    "name": "凱聖ゲルドリング",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-038": {
+    "page": 849,
+    "name": "凱聖バルスキー",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-039": {
+    "page": 872,
+    "name": "ジライヤ第二装着",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-040": {
+    "page": 852,
+    "name": "姫忍　恵美破",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-041": {
+    "page": 853,
+    "name": "城忍　フクロウ男爵",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-042": {
+    "page": 850,
+    "name": "蝶忍　紅牙",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-043": {
+    "page": 851,
+    "name": "鳥忍　カラス天狗",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-044": {
+    "page": 878,
+    "name": "ジャンパーソン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-045": {
+    "page": 887,
+    "name": "ガンギブソン",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-046": {
+    "page": 856,
+    "name": "アールジーコ",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-047": {
+    "page": 857,
+    "name": "ダークジェイカー",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-048": {
+    "page": 886,
+    "name": "隊員コード153 ショウ",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-049": {
+    "page": 858,
+    "name": "隊員コード011 サラ",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-050": {
+    "page": 859,
+    "name": "隊員コード071 シグ",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-051": {
+    "page": 861,
+    "name": "メガヘラクレス",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-052": {
+    "page": 862,
+    "name": "ビートルーダー",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-053": {
+    "page": 863,
+    "name": "スタッガータンク",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-054": {
+    "page": 864,
+    "name": "レッドジャイロ",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-055": {
+    "page": 871,
+    "name": "ブルービート",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-056": {
+    "page": 865,
+    "name": "ジースタッグ",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-057": {
+    "page": 866,
+    "name": "レッドル",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-058": {
+    "page": 867,
+    "name": "老師グル",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-059": {
+    "page": 868,
+    "name": "異次元調達屋カブト",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-060": {
+    "page": 854,
+    "name": "ジャマー",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-061": {
+    "page": 855,
+    "name": "ジャマール戦闘機",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "RM-062": {
+    "page": 860,
+    "name": "テントリーナ",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  },
+  "SM-001": {
+    "page": 898,
+    "name": "3人の宇宙刑事",
+    "set": "metal-edition",
+    "setTitle": "スペシャルメタルエディション"
+  }
+}

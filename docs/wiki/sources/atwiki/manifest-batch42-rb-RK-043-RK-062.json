@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch42-rb-RK-043-RK-062.json",
+  "pages": [
+    {
+      "id": 187,
+      "label": "RK-043",
+      "title": "ライドシューター",
+      "cardId": "RK-043"
+    },
+    {
+      "id": 204,
+      "label": "RK-044",
+      "title": "ライオトルーパー",
+      "cardId": "RK-044"
+    },
+    {
+      "id": 205,
+      "label": "RK-045",
+      "title": "オートバジンVM",
+      "cardId": "RK-045"
+    },
+    {
+      "id": 206,
+      "label": "RK-046",
+      "title": "オートバジンBM",
+      "cardId": "RK-046"
+    },
+    {
+      "id": 219,
+      "label": "RK-047",
+      "title": "仮面ライダー轟鬼",
+      "cardId": "RK-047"
+    },
+    {
+      "id": 220,
+      "label": "RK-048",
+      "title": "仮面ライダー斬鬼",
+      "cardId": "RK-048"
+    },
+    {
+      "id": 221,
+      "label": "RK-049",
+      "title": "仮面ライダー勝鬼",
+      "cardId": "RK-049"
+    },
+    {
+      "id": 222,
+      "label": "RK-050",
+      "title": "仮面ライダー裁鬼",
+      "cardId": "RK-050"
+    },
+    {
+      "id": 223,
+      "label": "RK-051",
+      "title": "仮面ライダー鋭鬼",
+      "cardId": "RK-051"
+    },
+    {
+      "id": 224,
+      "label": "RK-052",
+      "title": "仮面ライダー弾鬼",
+      "cardId": "RK-052"
+    },
+    {
+      "id": 170,
+      "label": "RK-053",
+      "title": "仮面ライダーガタックMF",
+      "cardId": "RK-053"
+    },
+    {
+      "id": 171,
+      "label": "RK-054",
+      "title": "仮面ライダーガタックRF",
+      "cardId": "RK-054"
+    },
+    {
+      "id": 172,
+      "label": "RK-055",
+      "title": "仮面ライダーパンチホッパー",
+      "cardId": "RK-055"
+    },
+    {
+      "id": 160,
+      "label": "RK-056",
+      "title": "仮面ライダーザビーMF",
+      "cardId": "RK-056"
+    },
+    {
+      "id": 161,
+      "label": "RK-057",
+      "title": "仮面ライダーザビーRF",
+      "cardId": "RK-057"
+    },
+    {
+      "id": 162,
+      "label": "RK-058",
+      "title": "マシンゼクトロン",
+      "cardId": "RK-058"
+    },
+    {
+      "id": 159,
+      "label": "RK-059",
+      "title": "ゼクトルーパー",
+      "cardId": "RK-059"
+    },
+    {
+      "id": 135,
+      "label": "RK-060",
+      "title": "デンライナーゴウカ",
+      "cardId": "RK-060"
+    },
+    {
+      "id": 166,
+      "label": "RK-061",
+      "title": "仮面ライダー電王RF",
+      "cardId": "RK-061"
+    },
+    {
+      "id": 167,
+      "label": "RK-062",
+      "title": "仮面ライダー電王AF",
+      "cardId": "RK-062"
+    }
+  ]
+}

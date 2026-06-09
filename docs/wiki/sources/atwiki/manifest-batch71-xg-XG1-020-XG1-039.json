@@ -1,0 +1,132 @@
+{
+  "accessRules": {
+    "intervalSeconds": "3-10",
+    "maxPagesPerRun": 20,
+    "concurrent": false,
+    "sameDomainConsecutive": false,
+    "domainBreak": "https://www.grnrngr.com/documents/rangersstrike/rule/index.html"
+  },
+  "batch": "manifest-batch71-xg-XG1-020-XG1-039.json",
+  "pages": [
+    {
+      "id": 1545,
+      "label": "XG1-020",
+      "title": "ターボロボ",
+      "cardId": "XG1-020"
+    },
+    {
+      "id": 1574,
+      "label": "XG1-021",
+      "title": "ブルーターボ",
+      "cardId": "XG1-021"
+    },
+    {
+      "id": 1575,
+      "label": "XG1-022",
+      "title": "ピンクターボ",
+      "cardId": "XG1-022"
+    },
+    {
+      "id": 1660,
+      "label": "XG1-023",
+      "title": "レッドターボ",
+      "cardId": "XG1-023"
+    },
+    {
+      "id": 1576,
+      "label": "XG1-024",
+      "title": "イエローターボ",
+      "cardId": "XG1-024"
+    },
+    {
+      "id": 1663,
+      "label": "XG1-025",
+      "title": "ブラックターボ",
+      "cardId": "XG1-025"
+    },
+    {
+      "id": 1676,
+      "label": "XG1-026",
+      "title": "ヤミマル",
+      "cardId": "XG1-026"
+    },
+    {
+      "id": 1613,
+      "label": "XG1-027",
+      "title": "ウーラー兵",
+      "cardId": "XG1-027"
+    },
+    {
+      "id": 1665,
+      "label": "XG1-028",
+      "title": "アバレンオージ",
+      "cardId": "XG1-028"
+    },
+    {
+      "id": 1620,
+      "label": "XG1-029",
+      "title": "アバレブラックAM",
+      "cardId": "XG1-029"
+    },
+    {
+      "id": 1666,
+      "label": "XG1-030",
+      "title": "アバレキラーAM",
+      "cardId": "XG1-030"
+    },
+    {
+      "id": 1638,
+      "label": "XG1-031",
+      "title": "ゴーオンレッド（XG）",
+      "cardId": "XG1-031"
+    },
+    {
+      "id": 1640,
+      "label": "XG1-032",
+      "title": "ゲキレッド（XG）",
+      "cardId": "XG1-032"
+    },
+    {
+      "id": 1581,
+      "label": "XG1-033",
+      "title": "害地大臣ヨゴシュタイン",
+      "cardId": "XG1-033"
+    },
+    {
+      "id": 1582,
+      "label": "XG1-034",
+      "title": "害気大臣キタネイダス",
+      "cardId": "XG1-034"
+    },
+    {
+      "id": 1591,
+      "label": "XG1-035",
+      "title": "兜折神",
+      "cardId": "XG1-035"
+    },
+    {
+      "id": 1592,
+      "label": "XG1-036",
+      "title": "舵木折神",
+      "cardId": "XG1-036"
+    },
+    {
+      "id": 1641,
+      "label": "XG1-037",
+      "title": "ダイテンクウ",
+      "cardId": "XG1-037"
+    },
+    {
+      "id": 1634,
+      "label": "XG1-038",
+      "title": "シンケンゴールド",
+      "cardId": "XG1-038"
+    },
+    {
+      "id": 1589,
+      "label": "XG1-039",
+      "title": "テンクウシンケンオー",
+      "cardId": "XG1-039"
+    }
+  ]
+}
