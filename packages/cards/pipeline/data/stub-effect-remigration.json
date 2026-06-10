@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-10T04:43:18.628Z",
-  "scanned": 66,
+  "generatedAt": "2026-06-10T04:43:35.718Z",
+  "scanned": 56,
   "migratedToPrimitives": 56,
   "remainingEffectDelegate": 0,
   "samples": [
@@ -25,16 +25,6 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-154",
-      "effectId": "named_e9a0ade3818ce9ab98e38184",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "RK-228",
-      "effectId": "named_e99fb3e69283e5a58fe383bb",
-      "to": "grant_keyword"
-    },
-    {
       "cardId": "RK-231",
       "effectId": "named_e6bd9ce6b0b4",
       "to": "grant_keyword"
@@ -42,6 +32,11 @@
     {
       "cardId": "RK-231",
       "effectId": "named_e6bd9ce6b0b4",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-282",
+      "effectId": "named_e382b7e382b6e383bce382b9",
       "to": "grant_keyword"
     },
     {
@@ -55,8 +50,18 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "RS-336",
-      "effectId": "named_e3839ee382b8e3839ce383ab",
+      "cardId": "RS-382",
+      "effectId": "named_e4babae381aee591bde381af",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-397",
+      "effectId": "named_e4ba88e69c9fe3819be381ac",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-427",
+      "effectId": "named_e382aae3838de382b9e38388",
       "to": "grant_keyword"
     },
     {
@@ -70,11 +75,6 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "RS-455",
-      "effectId": "named_e5b2a9e59cb0e78d84e381ae",
-      "to": "grant_keyword"
-    },
-    {
       "cardId": "RS-486",
       "effectId": "named_e58886e8baabe5b9bbe696ac",
       "to": "grant_keyword"
@@ -82,11 +82,6 @@
     {
       "cardId": "RS-486",
       "effectId": "named_e58886e8baabe5b9bbe696ac",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "RS-489",
-      "effectId": "named_e5ae87e5ae99e5bf8de6b395",
       "to": "grant_keyword"
     },
     {
@@ -122,6 +117,11 @@
     {
       "cardId": "RS-603",
       "effectId": "named_e8b685e69c89e6af92e6b6b2",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-622",
+      "effectId": "named_e382b0e383aae38395e382a9",
       "to": "grant_keyword"
     },
     {
