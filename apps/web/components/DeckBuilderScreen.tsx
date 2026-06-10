@@ -29,6 +29,7 @@ import {
 import { formatDeckValidationMessage } from "@/lib/formatDeckValidation";
 import { CardImage } from "./CardImage";
 import { CardModal } from "./CardModal";
+import { DeckBuilderCatalogList } from "./DeckBuilderCatalogList";
 import { DeckWarningBanner } from "./DeckWarningBanner";
 
 type FilterType = "all" | "unit" | "operation";
@@ -354,39 +355,12 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
             {catalogCards.length.toLocaleString()} 件
           </p>
         )}
-        <div className="deck-builder__catalog">
-          {catalogCards.map((card) => {
-            const current = counts.get(card.id) ?? 0;
-            const max = maxCopiesForCard(card);
-            const disabled = current >= max;
-            return (
-              <div key={card.id} className="deck-builder__catalog-item">
-                <div className="deck-builder__catalog-card">
-                  <CardImage
-                    card={card}
-                    small
-                    onPreview={() => setPreviewCard(card)}
-                  />
-                </div>
-                <div className="deck-builder__catalog-meta">
-                  <span className="deck-builder__catalog-name">{card.name}</span>
-                  <span className="deck-builder__catalog-id">
-                    {card.id} · {current}/{max}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn--icon"
-                  aria-label={`${card.name} を追加`}
-                  disabled={disabled}
-                  onClick={() => addCard(card)}
-                >
-                  +
-                </button>
-              </div>
-            );
-          })}
-        </div>
+        <DeckBuilderCatalogList
+          cards={catalogCards}
+          counts={counts}
+          onAdd={addCard}
+          onPreview={setPreviewCard}
+        />
       </section>
       </div>
 

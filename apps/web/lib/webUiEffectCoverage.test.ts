@@ -1,13 +1,55 @@
 import { describe, expect, it } from "vitest";
 import { listImplementedOperations } from "@rangers-strike/cards";
+import type { PendingEffectChoice } from "@rangers-strike/engine";
 import {
   assertAllImplementedOperationsCovered,
   assertCatalogMatchesMechanisms,
+  isKnownEffectChoice,
   listOperationCoverageGaps,
   OPERATION_UI_MECHANISMS,
   summarizeOperationCoverage,
 } from "./webUiEffectCoverage";
 import { resolveOperationDropRoute } from "./webUiOperationRouting";
+
+function stubPending(
+  overrides: Partial<PendingEffectChoice>,
+): PendingEffectChoice {
+  return {
+    playerId: "player1",
+    effectId: "unknown_effect",
+    sourceCardId: "BK-001",
+    kind: "confirm",
+    phasePlayerId: "player1",
+    validInstanceIds: [],
+    ...overrides,
+  };
+}
+
+describe("isKnownEffectChoice", () => {
+  it("returns true for wired L1–3 effect choices", () => {
+    expect(
+      isKnownEffectChoice(
+        stubPending({ effectId: "armor_attack", kind: "select_unit" }),
+      ),
+    ).toBe(true);
+  });
+
+  it("returns false for unknown promoted effect ids", () => {
+    expect(
+      isKnownEffectChoice(
+        stubPending({ effectId: "dsl_unknown_xyz", kind: "select_unit" }),
+      ),
+    ).toBe(false);
+  });
+
+  it("returns false for unsupported choice kinds", () => {
+    expect(
+      isKnownEffectChoice(
+        stubPending({ effectId: "armor_attack", kind: "confirm" }),
+      ),
+    ).toBe(false);
+  });
+});
 
 describe("Web UI operation effect coverage", () => {
   it("maps every implemented operation to a UI mechanism", () => {

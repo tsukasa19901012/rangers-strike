@@ -157,3 +157,41 @@ export function estimateDeckWarnings(entries: DeckEntry[]): DeckWarningEstimate
 - **80 収録セット:** `<select>` は長いがモバイルでもスクロール可能。W3 でグルーピング検討可
 - **XG2 禁止 ID 不明:** W2 着手前に wiki / catalog 横断で ID 確定必須
 - **1849 件 DOM:** 空検索時は 0 件表示 + 促し文言（PR-2）。全件 map 禁止
+
+---
+
+## 10. W3 設計（2026-06-10）
+
+### PR 分割
+
+| PR | 内容 | 要件 |
+|----|------|------|
+| **W3-1** | デッキビルダー検索結果の仮想スクロール | DB-11, GAP-09 |
+| **W3-2** | promoted 画像: `resolveCardImageUrl` + grnrngr リモート URL + Next remotePatterns | GAP-05, OQ-05 |
+
+### W3-1: 仮想スクロール
+
+- `@tanstack/react-virtual` を `apps/web` に追加
+- `DeckBuilderCatalogList.tsx` — 固定行高 (~72px) の `useVirtualizer`
+- 検索結果 0 件 / 空検索 UX は現状維持
+- デッキ内容パネルは件数少ないため仮想化不要
+
+### W3-2: 画像（段階取得 MVP）
+
+- `packages/cards/src/cardImages.ts`: `resolveCardImageUrl(id)` = catalog `imageUrl` → grnrngr 慣例 URL
+- `getCardImageUrl` を `resolvePlayableCard` + 上記に更新
+- `CardImage.tsx`: `resolveCardImageUrl` 使用、`onError` でプレースホルダ fallback
+- `next.config.ts`: `images.remotePatterns` に `www.grnrngr.com`
+- **一括ダウンロード完了（2026-06-10）:** `npm run download-promoted-images` — 1,004 成功 / 666 404（grnrngr 未掲載）。`/cards/promoted/{id}.jpg` + catalog `imageUrl` 更新。manifest: `pipeline/data/promoted-image-download.json`
+
+---
+
+## 11. W4 設計（2026-06-10）
+
+| PR | 内容 | 要件 |
+|----|------|------|
+| **W4** | 実装ステータスバッジ + 汎用 EffectChoice + 効果デバッグ | DB-06, GA-04–06, GAP-06–07 |
+
+- `cardImplementationStatus.ts` — Core 無バッジ / promoted → `UI未確認`
+- `isKnownEffectChoice` — 未知 pending は汎用 modal + スキップ（UI未対応）
+- `debugEffectLog` — development トグル + console / ログ modal

@@ -85,7 +85,8 @@
     "extract-ruling-cards": "tsx scripts/extract-ruling-cards.ts",
     "extract-implementation-feasibility": "tsx scripts/extract-implementation-feasibility.ts",
     "validate-cards": "node scripts/validate-cards.mjs",
-    "download-images": "node scripts/download-images.mjs"
+    "download-images": "node scripts/download-images.mjs",
+    "download-promoted-images": "node scripts/download-promoted-images.mjs"
   },
   "devDependencies": {
     "tsx": "^4.20.3",

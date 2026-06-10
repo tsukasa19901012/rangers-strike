@@ -9,7 +9,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 2,
-      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダー1号」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍Sユニットを1体選ぶ。このターン、選んだユニットは特徴「仮面ライダー」が追加される。"
+      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダー1号」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍Sユニットを1体選ぶ。このターン、選んだユニットは特徴「仮面ライダー」が追加される。",
+      "imageUrl": "/cards/promoted/BK-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-001.jpg"
     },
     {
       "id": "BK-002",
@@ -19,7 +21,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 2,
-      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーV3」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍山札の上から1枚を見て、そのカードを山札の上か下かに戻す。"
+      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーV3」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍山札の上から1枚を見て、そのカードを山札の上か下かに戻す。",
+      "imageUrl": "/cards/promoted/BK-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-002.jpg"
     },
     {
       "id": "BK-003",
@@ -29,7 +33,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 3,
-      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーX」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍捨札からSユニットのカードを1枚選び、自軍山札の下に戻す。"
+      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーX」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍捨札からSユニットのカードを1枚選び、自軍山札の下に戻す。",
+      "imageUrl": "/cards/promoted/BK-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-003.jpg"
     },
     {
       "id": "BK-004",
@@ -39,7 +45,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 3,
-      "text": "自軍Sユニットを1体選ぶ。このターン、選んだユニットはBP+1000される。 選んだユニットが「仮面ライダーアマゾン」なら、さらにBP+4000される。"
+      "text": "自軍Sユニットを1体選ぶ。このターン、選んだユニットはBP+1000される。 選んだユニットが「仮面ライダーアマゾン」なら、さらにBP+4000される。",
+      "imageUrl": "/cards/promoted/BK-004.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-004.jpg"
     },
     {
       "id": "BK-005",
@@ -49,7 +57,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 3,
-      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーストロンガー」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍Sユニットを1体選ぶ。このターン、選んだユニットは「SP1/5」になる。"
+      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーストロンガー」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍Sユニットを1体選ぶ。このターン、選んだユニットは「SP1/5」になる。",
+      "imageUrl": "/cards/promoted/BK-005.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-005.jpg"
     },
     {
       "id": "BK-006",
@@ -59,7 +69,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 4,
-      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「スカイライダー」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎敵軍バトルエリアから特徴「航空機」を持つ敵軍Mユニットを1体選び、自軍Sユニットを1体選ぶ。その後、選んだユニット同士でバトルする。"
+      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「スカイライダー」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎敵軍バトルエリアから特徴「航空機」を持つ敵軍Mユニットを1体選び、自軍Sユニットを1体選ぶ。その後、選んだユニット同士でバトルする。",
+      "imageUrl": "/cards/promoted/BK-006.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-006.jpg"
     },
     {
       "id": "BK-007",
@@ -69,7 +81,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 4,
-      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダースーパー1」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍捨札から特徴「改造人間」を持つSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く。（コマンドゾーンに置けるカードは通常5枚まで）"
+      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダースーパー1」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍捨札から特徴「改造人間」を持つSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く。（コマンドゾーンに置けるカードは通常5枚まで）",
+      "imageUrl": "/cards/promoted/BK-007.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-007.jpg"
     },
     {
       "id": "BK-008",
@@ -79,7 +93,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 2,
-      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーZX」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍コマンドゾーンから、特徴「改造人間」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出す。ただし、必要パワーと追加条件は満たすこと。"
+      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーZX」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍コマンドゾーンから、特徴「改造人間」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出す。ただし、必要パワーと追加条件は満たすこと。",
+      "imageUrl": "/cards/promoted/BK-008.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-008.jpg"
     },
     {
       "id": "BK-009",
@@ -89,7 +105,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 1,
-      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーBLACK」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sビークルを1体選ぶ。このターン、選んだビークルは、ライドされていなくてもバトルエリアに出すことができる。"
+      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーBLACK」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sビークルを1体選ぶ。このターン、選んだビークルは、ライドされていなくてもバトルエリアに出すことができる。",
+      "imageUrl": "/cards/promoted/BK-009.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-009.jpg"
     },
     {
       "id": "BK-010",
@@ -99,7 +117,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 3,
-      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーBLACK RX」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎1枚ドローする。その後、自分の手札からカードを1枚選び、自軍山札の上に戻す。"
+      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーBLACK RX」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎1枚ドローする。その後、自分の手札からカードを1枚選び、自軍山札の上に戻す。",
+      "imageUrl": "/cards/promoted/BK-010.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-010.jpg"
     },
     {
       "id": "BK-011",
@@ -109,7 +129,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 3,
-      "text": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「アマダム」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。"
+      "text": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「アマダム」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。",
+      "imageUrl": "/cards/promoted/BK-011.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-011.jpg"
     },
     {
       "id": "BK-012",
@@ -119,7 +141,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 3,
-      "text": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「賢者の石」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。"
+      "text": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「賢者の石」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。",
+      "imageUrl": "/cards/promoted/BK-012.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-012.jpg"
     },
     {
       "id": "BK-013",
@@ -129,7 +153,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 3,
-      "text": "次の効果から1つ選び発動する。 ◎自分の手札から「仮面ライダー龍騎」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎このターン、特徴「ミラーライダー」を持つユニットカードの必要パワーの数字は、自軍エリアにある特徴「ミラーモンスター」を持つユニット1体につき1少なくなる。"
+      "text": "次の効果から1つ選び発動する。 ◎自分の手札から「仮面ライダー龍騎」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎このターン、特徴「ミラーライダー」を持つユニットカードの必要パワーの数字は、自軍エリアにある特徴「ミラーモンスター」を持つユニット1体につき1少なくなる。",
+      "imageUrl": "/cards/promoted/BK-013.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-013.jpg"
     },
     {
       "id": "BK-014",
@@ -139,7 +165,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 3,
-      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーファイズ」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍山札の上から1枚ひいて、自軍コマンドゾーンにホールド状態で置く。（コマンドゾーンに置けるカードは通常5枚まで）"
+      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーファイズ」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍山札の上から1枚ひいて、自軍コマンドゾーンにホールド状態で置く。（コマンドゾーンに置けるカードは通常5枚まで）",
+      "imageUrl": "/cards/promoted/BK-014.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-014.jpg"
     },
     {
       "id": "BK-015",
@@ -149,7 +177,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 2,
-      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーブレイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sユニットを1体選ぶ。このターン、選んだユニットは「SP1/2」になる。"
+      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーブレイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sユニットを1体選ぶ。このターン、選んだユニットは「SP1/2」になる。",
+      "imageUrl": "/cards/promoted/BK-015.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-015.jpg"
     },
     {
       "id": "BK-016",
@@ -159,7 +189,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 5,
-      "text": "特徴「猛士」を持つ自軍ユニット2体につき1枚ドローする。"
+      "text": "特徴「猛士」を持つ自軍ユニット2体につき1枚ドローする。",
+      "imageUrl": "/cards/promoted/BK-016.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-016.jpg"
     },
     {
       "id": "BK-017",
@@ -169,7 +201,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 5,
-      "text": "次の効果から1つ選び発動する。 ◎自軍山札から「仮面ライダーカブトMF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。 ◎このターン、特徴「加速」を持つBP2000以下のSユニットのカードは、追加条件を満たさなくてもラッシュできる。"
+      "text": "次の効果から1つ選び発動する。 ◎自軍山札から「仮面ライダーカブトMF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。 ◎このターン、特徴「加速」を持つBP2000以下のSユニットのカードは、追加条件を満たさなくてもラッシュできる。",
+      "imageUrl": "/cards/promoted/BK-017.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-017.jpg"
     },
     {
       "id": "BK-018",
@@ -179,7 +213,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 4,
-      "text": "自軍山札か、自軍常駐置き場でオモテ向きになっているになっているカードの中から、本来の特徴に「DEN-O」を持つユニットカードを1枚選び、ラッシュエリアに出す。 ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。 その後、山札から選んだ場合は山札をシャッフルする。"
+      "text": "自軍山札か、自軍常駐置き場でオモテ向きになっているになっているカードの中から、本来の特徴に「DEN-O」を持つユニットカードを1枚選び、ラッシュエリアに出す。 ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。 その後、山札から選んだ場合は山札をシャッフルする。",
+      "imageUrl": "/cards/promoted/BK-018.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-018.jpg"
     },
     {
       "id": "BK-019",
@@ -189,7 +225,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 3,
-      "text": "次の効果から1つ選び発動する。 ◎自分の手札から本来の特徴に｢魔皇力｣を持つカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。 ◎自軍Sユニットを1体選び、リリースする。"
+      "text": "次の効果から1つ選び発動する。 ◎自分の手札から本来の特徴に｢魔皇力｣を持つカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。 ◎自軍Sユニットを1体選び、リリースする。",
+      "imageUrl": "/cards/promoted/BK-019.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-019.jpg"
     },
     {
       "id": "PK-001",
@@ -207,7 +245,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/PK-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PK-001.jpg"
     },
     {
       "id": "PK-003",
@@ -225,7 +265,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/PK-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PK-003.jpg"
     },
     {
       "id": "PK-009",
@@ -244,7 +286,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/PK-009.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PK-009.jpg"
     },
     {
       "id": "PK-013",
@@ -254,7 +298,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 2,
-      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から、｢仮面ライダー響鬼｣のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎敵軍山札の上から1枚をオモテにする。このカードを使用したコマンドが特徴に｢ディスクアニマル｣を持つカードなら自分は1枚ドローする。その後、オモテにしたカードを山札に戻す。"
+      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から、｢仮面ライダー響鬼｣のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎敵軍山札の上から1枚をオモテにする。このカードを使用したコマンドが特徴に｢ディスクアニマル｣を持つカードなら自分は1枚ドローする。その後、オモテにしたカードを山札に戻す。",
+      "imageUrl": "/cards/promoted/PK-013.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PK-013.jpg"
     },
     {
       "id": "PK-014",
@@ -272,7 +318,9 @@
         "仮面ライダー",
         "男",
         "魔皇力"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/PK-014.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PK-014.jpg"
     },
     {
       "id": "PR-001",
@@ -290,7 +338,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/PR-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-001.jpg"
     },
     {
       "id": "PR-010",
@@ -300,7 +350,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 8,
-      "text": "このターン、Sユニットだけでコンビネーションするとき、5番目のユニットは「SP1」「BP12000」になる。"
+      "text": "このターン、Sユニットだけでコンビネーションするとき、5番目のユニットは「SP1」「BP12000」になる。",
+      "imageUrl": "/cards/promoted/PR-010.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-010.jpg"
     },
     {
       "id": "PR-011",
@@ -318,7 +370,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/PR-011.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-011.jpg"
     },
     {
       "id": "PR-015",
@@ -335,7 +389,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/PR-015.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-015.jpg"
     },
     {
       "id": "PR-016",
@@ -354,7 +410,9 @@
         "レッド",
         "男",
         "アバレモード"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/PR-016.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-016.jpg"
     },
     {
       "id": "PR-025",
@@ -364,7 +422,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 2,
-      "text": "自軍山札を見て、特徴「炎神」を持つMユニットのカードを1枚選び、自軍パワーゾーンに置いてもよい。そうしたとき、山札をシャッフルした後で、置いたユニットカードのBP以下の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。"
+      "text": "自軍山札を見て、特徴「炎神」を持つMユニットのカードを1枚選び、自軍パワーゾーンに置いてもよい。そうしたとき、山札をシャッフルした後で、置いたユニットカードのBP以下の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
+      "imageUrl": "/cards/promoted/PR-025.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-025.jpg"
     },
     {
       "id": "RK-002",
@@ -374,7 +434,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 0,
-      "text": "自軍山札の上から3枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。"
+      "text": "自軍山札の上から3枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。",
+      "imageUrl": "/cards/promoted/RK-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-002.jpg"
     },
     {
       "id": "RK-005",
@@ -384,7 +446,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 0,
-      "text": "特徴「改造人間」を持つ自軍Sユニットを1体選ぶ。そうしたとき、このターン、選んだユニットは次の能力を得る⇒SPが空欄ではないユニットを撃破したとき、相手に1点ダメージを与える。"
+      "text": "特徴「改造人間」を持つ自軍Sユニットを1体選ぶ。そうしたとき、このターン、選んだユニットは次の能力を得る⇒SPが空欄ではないユニットを撃破したとき、相手に1点ダメージを与える。",
+      "imageUrl": "/cards/promoted/RK-005.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-005.jpg"
     },
     {
       "id": "RK-007",
@@ -394,7 +458,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 2,
-      "text": "自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び手札に戻す。その後、自軍捨札に特徴「改造人間」を持つSユニットのカードがあれば1枚選び、自軍コマンドゾーンにホールド状態で置く。"
+      "text": "自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び手札に戻す。その後、自軍捨札に特徴「改造人間」を持つSユニットのカードがあれば1枚選び、自軍コマンドゾーンにホールド状態で置く。",
+      "imageUrl": "/cards/promoted/RK-007.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-007.jpg"
     },
     {
       "id": "RK-013",
@@ -404,7 +470,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 4,
-      "text": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは特徴「人型」を追加されて「Lユニット」になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。"
+      "text": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは特徴「人型」を追加されて「Lユニット」になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+      "imageUrl": "/cards/promoted/RK-013.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-013.jpg"
     },
     {
       "id": "RK-017",
@@ -414,7 +482,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 2,
-      "text": "ＲＣを持つ自軍Sユニットを1体選ぶ。選んだユニットは、このターン、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる。その後、このカードを自軍コマンドゾーンにホールド状態で置く。置けなければ捨札にする。"
+      "text": "ＲＣを持つ自軍Sユニットを1体選ぶ。選んだユニットは、このターン、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる。その後、このカードを自軍コマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "imageUrl": "/cards/promoted/RK-017.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-017.jpg"
     },
     {
       "id": "RK-018",
@@ -424,7 +494,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 2,
-      "text": "自軍ラッシュエリアからSユニットを1体選ぶ。そして自軍捨札からSユニットのカードを1枚選ぶ。そうしたとき、このターン、ラッシュエリアから選んだSユニットのBPに、捨札から選んだユニットカードのBPを「＋」する。"
+      "text": "自軍ラッシュエリアからSユニットを1体選ぶ。そして自軍捨札からSユニットのカードを1枚選ぶ。そうしたとき、このターン、ラッシュエリアから選んだSユニットのBPに、捨札から選んだユニットカードのBPを「＋」する。",
+      "imageUrl": "/cards/promoted/RK-018.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-018.jpg"
     },
     {
       "id": "RK-019",
@@ -434,7 +506,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 4,
-      "text": "特徴「メカ」を持たない敵軍ユニットを1体選ぶ。そうしたとき、このターン、選んだユニットは「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱う。"
+      "text": "特徴「メカ」を持たない敵軍ユニットを1体選ぶ。そうしたとき、このターン、選んだユニットは「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱う。",
+      "imageUrl": "/cards/promoted/RK-019.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-019.jpg"
     },
     {
       "id": "RK-020",
@@ -444,7 +518,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 6,
-      "text": "自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを2体選ぶ。このターン、選んだ2体のユニットが自軍バトルエリアで隣り合ったとき、敵軍バトルエリアからBP8000以下の敵軍ユニットを1体選び撃破する。"
+      "text": "自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを2体選ぶ。このターン、選んだ2体のユニットが自軍バトルエリアで隣り合ったとき、敵軍バトルエリアからBP8000以下の敵軍ユニットを1体選び撃破する。",
+      "imageUrl": "/cards/promoted/RK-020.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-020.jpg"
     },
     {
       "id": "RK-030",
@@ -454,7 +530,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 1,
-      "text": "※これにライドしているユニットはBP+1000される。 【無線通信】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚を見てもよい。そうしたとき、それを元に戻すか、山札の下に戻すかを選択する。"
+      "text": "※これにライドしているユニットはBP+1000される。 【無線通信】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚を見てもよい。そうしたとき、それを元に戻すか、山札の下に戻すかを選択する。",
+      "imageUrl": "/cards/promoted/RK-030.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-030.jpg"
     },
     {
       "id": "RK-033",
@@ -472,7 +550,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-033.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-033.jpg"
     },
     {
       "id": "RK-063",
@@ -490,7 +570,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-063.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-063.jpg"
     },
     {
       "id": "RK-076",
@@ -500,7 +582,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 2,
-      "text": "ＲＣを持つ自軍Sユニットを1体選ぶ。選んだユニットは、このターン、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる。その後、このカードを自軍コマンドゾーンにホールド状態で置く。置けなければ捨札にする。"
+      "text": "ＲＣを持つ自軍Sユニットを1体選ぶ。選んだユニットは、このターン、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる。その後、このカードを自軍コマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "imageUrl": "/cards/promoted/RK-076.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-076.jpg"
     },
     {
       "id": "RK-077",
@@ -510,7 +594,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 2,
-      "text": "自軍ラッシュエリアからSユニットを1体選ぶ。そして自軍捨札からSユニットのカードを1枚選ぶ。そうしたとき、このターン、ラッシュエリアから選んだSユニットのBPに、捨札から選んだユニットカードのBPを「＋」する。"
+      "text": "自軍ラッシュエリアからSユニットを1体選ぶ。そして自軍捨札からSユニットのカードを1枚選ぶ。そうしたとき、このターン、ラッシュエリアから選んだSユニットのBPに、捨札から選んだユニットカードのBPを「＋」する。",
+      "imageUrl": "/cards/promoted/RK-077.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-077.jpg"
     },
     {
       "id": "RK-079",
@@ -520,7 +606,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 5,
-      "text": "ナンバーに数字を持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットのナンバーはＲＣになり、特徴「仮面ライダー」が追加される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。"
+      "text": "ナンバーに数字を持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットのナンバーはＲＣになり、特徴「仮面ライダー」が追加される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+      "imageUrl": "/cards/promoted/RK-079.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-079.jpg"
     },
     {
       "id": "RK-083",
@@ -530,7 +618,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 3,
-      "text": "特徴「ミラーライダー」を持つ自軍ユニットを1体選び、必要パワーの数字を見る。その後、敵軍バトルエリアから、その数字以下の必要パワーの数字を持つSユニットを1体選び、撃破する。"
+      "text": "特徴「ミラーライダー」を持つ自軍ユニットを1体選び、必要パワーの数字を見る。その後、敵軍バトルエリアから、その数字以下の必要パワーの数字を持つSユニットを1体選び、撃破する。",
+      "imageUrl": "/cards/promoted/RK-083.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-083.jpg"
     },
     {
       "id": "RK-084",
@@ -540,7 +630,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 4,
-      "text": "自軍山札の上から3枚をオモテにする。その中から特徴「ミラーライダー」を持つユニットカードをすべて自軍ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、それ以外のオモテにしたカードはすべて捨札になる。"
+      "text": "自軍山札の上から3枚をオモテにする。その中から特徴「ミラーライダー」を持つユニットカードをすべて自軍ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、それ以外のオモテにしたカードはすべて捨札になる。",
+      "imageUrl": "/cards/promoted/RK-084.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-084.jpg"
     },
     {
       "id": "RK-087",
@@ -550,7 +642,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 3,
-      "text": "敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。その後、敵軍バトルエリアのユニットを、好きな順に並べ替える。"
+      "text": "敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。その後、敵軍バトルエリアのユニットを、好きな順に並べ替える。",
+      "imageUrl": "/cards/promoted/RK-087.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-087.jpg"
     },
     {
       "id": "RK-088",
@@ -560,7 +654,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 0,
-      "text": "特徴「イマジン」を持たない自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットが自軍エリアにある間、特徴「イマジン」を持つ自軍ユニットは、「これはバトルエリアに出たとき撃破される」と書かれていても、そのテキストは無効になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。"
+      "text": "特徴「イマジン」を持たない自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットが自軍エリアにある間、特徴「イマジン」を持つ自軍ユニットは、「これはバトルエリアに出たとき撃破される」と書かれていても、そのテキストは無効になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+      "imageUrl": "/cards/promoted/RK-088.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-088.jpg"
     },
     {
       "id": "RK-089",
@@ -570,7 +666,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 1,
-      "text": "次の効果を、相手、自分の順に行う。 自分自身の山札の上から3枚をオモテにして相手に見せる。その中から特徴「車両」を持つMユニットのカードをすべて自分自身のパワーゾーンに置き、それ以外は好きな順で自分自身の山札の下に戻す。"
+      "text": "次の効果を、相手、自分の順に行う。 自分自身の山札の上から3枚をオモテにして相手に見せる。その中から特徴「車両」を持つMユニットのカードをすべて自分自身のパワーゾーンに置き、それ以外は好きな順で自分自身の山札の下に戻す。",
+      "imageUrl": "/cards/promoted/RK-089.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-089.jpg"
     },
     {
       "id": "RK-096",
@@ -589,7 +687,9 @@
         "怪人",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-096.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-096.jpg"
     },
     {
       "id": "RK-097",
@@ -608,7 +708,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-097.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-097.jpg"
     },
     {
       "id": "RK-099",
@@ -626,7 +728,9 @@
         "GOD",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-099.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-099.jpg"
     },
     {
       "id": "RK-102",
@@ -645,7 +749,9 @@
         "仮面ライダー",
         "男",
         "アマダム"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-102.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-102.jpg"
     },
     {
       "id": "RK-104",
@@ -662,7 +768,9 @@
         "仮面ライダー",
         "男",
         "アマダム"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-104.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-104.jpg"
     },
     {
       "id": "RK-108",
@@ -679,7 +787,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-108.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-108.jpg"
     },
     {
       "id": "RK-118",
@@ -695,7 +805,9 @@
       "features": [
         "ミラーモンスター",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-118.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-118.jpg"
     },
     {
       "id": "RK-126",
@@ -712,7 +824,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-126.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-126.jpg"
     },
     {
       "id": "RK-130",
@@ -728,7 +842,9 @@
       "features": [
         "アンデッド",
         "昆虫"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-130.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-130.jpg"
     },
     {
       "id": "RK-132",
@@ -746,7 +862,9 @@
         "仮面ライダー",
         "男",
         "猛士"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-132.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-132.jpg"
     },
     {
       "id": "RK-133",
@@ -765,7 +883,9 @@
         "仮面ライダー",
         "男",
         "猛士"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-133.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-133.jpg"
     },
     {
       "id": "RK-134",
@@ -784,7 +904,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-134.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-134.jpg"
     },
     {
       "id": "RK-140",
@@ -802,7 +924,9 @@
         "仮面ライダー",
         "男",
         "DEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-140.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-140.jpg"
     },
     {
       "id": "RK-151",
@@ -820,7 +944,9 @@
         "メカ",
         "車両",
         "航空機"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-151.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-151.jpg"
     },
     {
       "id": "RK-152",
@@ -839,7 +965,9 @@
         "仮面ライダー",
         "男",
         "DEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-152.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-152.jpg"
     },
     {
       "id": "RK-159",
@@ -858,7 +986,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-159.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-159.jpg"
     },
     {
       "id": "RK-162",
@@ -877,7 +1007,9 @@
         "仮面ライダー",
         "男",
         "賢者の石"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-162.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-162.jpg"
     },
     {
       "id": "RK-163",
@@ -896,7 +1028,9 @@
         "男",
         "ミラーライダー",
         "加速"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-163.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-163.jpg"
     },
     {
       "id": "RK-164",
@@ -915,7 +1049,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-164.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-164.jpg"
     },
     {
       "id": "RK-166",
@@ -935,7 +1071,9 @@
         "メカ",
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-166.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-166.jpg"
     },
     {
       "id": "RK-168",
@@ -953,7 +1091,9 @@
         "仮面ライダー",
         "男",
         "DEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-168.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-168.jpg"
     },
     {
       "id": "RK-169",
@@ -970,7 +1110,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-169.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-169.jpg"
     },
     {
       "id": "RK-171",
@@ -980,7 +1122,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 0,
-      "text": "本来の特徴に「ミラーライダー」を持つ自軍ユニットを1体選ぶ。このターン、選んだユニットは、指定されたユニットからコンビネーションしたときに発動できる効果名を持つ効果を、指定されたユニットのかわりに、本来の特徴に「ミラーモンスター」を持つユニットからコンビネーションすれば、その効果を発動できる。"
+      "text": "本来の特徴に「ミラーライダー」を持つ自軍ユニットを1体選ぶ。このターン、選んだユニットは、指定されたユニットからコンビネーションしたときに発動できる効果名を持つ効果を、指定されたユニットのかわりに、本来の特徴に「ミラーモンスター」を持つユニットからコンビネーションすれば、その効果を発動できる。",
+      "imageUrl": "/cards/promoted/RK-171.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-171.jpg"
     },
     {
       "id": "RK-173",
@@ -990,7 +1134,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 1,
-      "text": "自軍Sユニットを選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。"
+      "text": "自軍Sユニットを選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+      "imageUrl": "/cards/promoted/RK-173.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-173.jpg"
     },
     {
       "id": "RK-174",
@@ -1000,7 +1146,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 3,
-      "text": "カード名に「RF（ライダーフォーム）」を含む自軍ユニットを1体選び、手札に戻してもよい。そうしたとき、自軍パワーゾーンのオモテ向きのカードから、カード名に「MF（マスクドフォーム）」を含むユニットカードを1枚選び、自軍ラッシュエリアに出す。その後、このカードを自軍パワーゾーンに置く。"
+      "text": "カード名に「RF（ライダーフォーム）」を含む自軍ユニットを1体選び、手札に戻してもよい。そうしたとき、自軍パワーゾーンのオモテ向きのカードから、カード名に「MF（マスクドフォーム）」を含むユニットカードを1枚選び、自軍ラッシュエリアに出す。その後、このカードを自軍パワーゾーンに置く。",
+      "imageUrl": "/cards/promoted/RK-174.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-174.jpg"
     },
     {
       "id": "RK-175",
@@ -1019,7 +1167,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-175.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-175.jpg"
     },
     {
       "id": "RK-178",
@@ -1036,7 +1186,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-178.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-178.jpg"
     },
     {
       "id": "RK-181",
@@ -1054,7 +1206,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-181.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-181.jpg"
     },
     {
       "id": "RK-184",
@@ -1071,7 +1225,9 @@
       "features": [
         "メカ",
         "怪人"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-184.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-184.jpg"
     },
     {
       "id": "RK-186",
@@ -1089,7 +1245,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-186.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-186.jpg"
     },
     {
       "id": "RK-191",
@@ -1106,7 +1264,9 @@
       "features": [
         "男",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-191.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-191.jpg"
     },
     {
       "id": "RK-192",
@@ -1122,7 +1282,9 @@
       "features": [
         "男",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-192.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-192.jpg"
     },
     {
       "id": "RK-194",
@@ -1142,7 +1304,9 @@
         "メカ",
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-194.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-194.jpg"
     },
     {
       "id": "RK-195",
@@ -1160,7 +1324,9 @@
         "仮面ライダー",
         "メカ",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-195.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-195.jpg"
     },
     {
       "id": "RK-196",
@@ -1178,7 +1344,9 @@
         "女王",
         "女",
         "昆虫"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-196.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-196.jpg"
     },
     {
       "id": "RK-197",
@@ -1194,7 +1362,9 @@
       "features": [
         "アンノウン",
         "昆虫"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-197.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-197.jpg"
     },
     {
       "id": "RK-198",
@@ -1212,7 +1382,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-198.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-198.jpg"
     },
     {
       "id": "RK-202",
@@ -1229,7 +1401,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-202.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-202.jpg"
     },
     {
       "id": "RK-214",
@@ -1246,7 +1420,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-214.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-214.jpg"
     },
     {
       "id": "RK-217",
@@ -1262,7 +1438,9 @@
       "features": [
         "アンデッド",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-217.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-217.jpg"
     },
     {
       "id": "RK-221",
@@ -1281,7 +1459,9 @@
         "仮面ライダー",
         "男",
         "猛士"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-221.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-221.jpg"
     },
     {
       "id": "RK-222",
@@ -1300,7 +1480,9 @@
         "仮面ライダー",
         "男",
         "猛士"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-222.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-222.jpg"
     },
     {
       "id": "RK-226",
@@ -1316,7 +1498,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-226.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-226.jpg"
     },
     {
       "id": "RK-227",
@@ -1333,7 +1517,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-227.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-227.jpg"
     },
     {
       "id": "RK-245",
@@ -1350,7 +1536,9 @@
         "仮面ライダー",
         "男",
         "魔皇力"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-245.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-245.jpg"
     },
     {
       "id": "RK-250",
@@ -1360,7 +1548,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 5,
-      "text": "WBを持ち、特徴「サバイブ」を持たない自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、BP+1500され、特徴「サバイブ」が追加される。また、重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める。"
+      "text": "WBを持ち、特徴「サバイブ」を持たない自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、BP+1500され、特徴「サバイブ」が追加される。また、重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める。",
+      "imageUrl": "/cards/promoted/RK-250.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-250.jpg"
     },
     {
       "id": "RK-252",
@@ -1370,7 +1560,9 @@
       "rarity": "N",
       "expansion": "legend2",
       "powerCost": 2,
-      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から、「仮面ライダー響鬼」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎敵軍山札の上から1枚をオモテにする。このカードを使用するためにホールドしたコマンドが特徴「ディスクアニマル」を持つなら、自分は1枚ドローする。その後、オモテにしたカードは持ち主の山札の上に戻す。"
+      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から、「仮面ライダー響鬼」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎敵軍山札の上から1枚をオモテにする。このカードを使用するためにホールドしたコマンドが特徴「ディスクアニマル」を持つなら、自分は1枚ドローする。その後、オモテにしたカードは持ち主の山札の上に戻す。",
+      "imageUrl": "/cards/promoted/RK-252.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-252.jpg"
     },
     {
       "id": "RK-254",
@@ -1389,7 +1581,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-254.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-254.jpg"
     },
     {
       "id": "RK-262",
@@ -1408,7 +1602,9 @@
         "男",
         "改造人間",
         "ハイブリッドエネルギー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-262.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-262.jpg"
     },
     {
       "id": "RK-263",
@@ -1427,7 +1623,9 @@
         "男",
         "改造人間",
         "ハイブリッドエネルギー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-263.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-263.jpg"
     },
     {
       "id": "RK-267",
@@ -1443,7 +1641,9 @@
       "features": [
         "クライシス帝国",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-267.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-267.jpg"
     },
     {
       "id": "RK-278",
@@ -1462,7 +1662,9 @@
         "男",
         "ミラーライダー",
         "2nd"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-278.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-278.jpg"
     },
     {
       "id": "RK-282",
@@ -1481,7 +1683,9 @@
         "男",
         "ミラーライダー",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-282.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-282.jpg"
     },
     {
       "id": "RK-288",
@@ -1498,7 +1702,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-288.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-288.jpg"
     },
     {
       "id": "RK-310",
@@ -1516,7 +1722,9 @@
       "features": [
         "イマジン",
         "2nd"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-310.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-310.jpg"
     },
     {
       "id": "RK-313",
@@ -1534,7 +1742,9 @@
         "仮面ライダー",
         "男",
         "魔皇力"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-313.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-313.jpg"
     },
     {
       "id": "RK-314",
@@ -1552,7 +1762,9 @@
         "仮面ライダー",
         "男",
         "魔皇力"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-314.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-314.jpg"
     },
     {
       "id": "RK-322",
@@ -1569,7 +1781,9 @@
         "仮面ライダー",
         "メカ",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-322.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-322.jpg"
     },
     {
       "id": "RK-330",
@@ -1588,7 +1802,9 @@
         "男",
         "アマダム",
         "ライジング"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-330.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-330.jpg"
     },
     {
       "id": "RK-331",
@@ -1607,7 +1823,9 @@
         "男",
         "アマダム",
         "ライジング"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-331.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-331.jpg"
     },
     {
       "id": "RK-334",
@@ -1627,7 +1845,9 @@
         "男",
         "DEN-O",
         "2nd"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-334.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-334.jpg"
     },
     {
       "id": "RK-335",
@@ -1645,7 +1865,9 @@
       "features": [
         "イマジン",
         "2nd"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RK-335.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-335.jpg"
     },
     {
       "id": "RM-001",
@@ -1655,7 +1877,9 @@
       "rarity": "N",
       "expansion": "legend3",
       "powerCost": 4,
-      "text": "次の効果から１つ選び発動する⇒◎自軍山札から「宇宙刑事ギャバン」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。◎自軍Sユニットを1体選ぶ。このターン、選んだユニットはSP1/4になる。"
+      "text": "次の効果から１つ選び発動する⇒◎自軍山札から「宇宙刑事ギャバン」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。◎自軍Sユニットを1体選ぶ。このターン、選んだユニットはSP1/4になる。",
+      "imageUrl": "/cards/promoted/RM-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-001.jpg"
     },
     {
       "id": "RM-002",
@@ -1665,7 +1889,9 @@
       "rarity": "N",
       "expansion": "legend3",
       "powerCost": 2,
-      "text": "次の効果から1つ選び発動する⇒◎自軍山札から「宇宙刑事シャリバン」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。◎自軍Sユニットを1体選ぶ。このターン、選んだユニットの特徴に「レッド」を追加する。"
+      "text": "次の効果から1つ選び発動する⇒◎自軍山札から「宇宙刑事シャリバン」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。◎自軍Sユニットを1体選ぶ。このターン、選んだユニットの特徴に「レッド」を追加する。",
+      "imageUrl": "/cards/promoted/RM-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-002.jpg"
     },
     {
       "id": "RM-003",
@@ -1675,7 +1901,9 @@
       "rarity": "N",
       "expansion": "legend3",
       "powerCost": 3,
-      "text": "次の効果から1つ選び発動する⇒◎自軍山札から「宇宙刑事シャイダー」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後山札をシャッフルする。◎自軍Sユニットを1体選ぶ。このターン、選んだユニットの特徴に「ブルー」を追加する。"
+      "text": "次の効果から1つ選び発動する⇒◎自軍山札から「宇宙刑事シャイダー」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後山札をシャッフルする。◎自軍Sユニットを1体選ぶ。このターン、選んだユニットの特徴に「ブルー」を追加する。",
+      "imageUrl": "/cards/promoted/RM-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-003.jpg"
     },
     {
       "id": "RM-004",
@@ -1685,7 +1913,9 @@
       "rarity": "N",
       "expansion": "legend3",
       "powerCost": 8,
-      "text": "敵軍山札の上から、自軍ダメージの点数と同じ数までオモテにする。そして、オモテにしたカードの中から、特徴「獣」または「恐竜」を持つユニットカードを好きな順で持ち主のラッシュエリアに出し、それ以外は山札に戻してシャッフルする。そうして出したユニットが1体以上あれば、自軍山札を見て、OTのLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。"
+      "text": "敵軍山札の上から、自軍ダメージの点数と同じ数までオモテにする。そして、オモテにしたカードの中から、特徴「獣」または「恐竜」を持つユニットカードを好きな順で持ち主のラッシュエリアに出し、それ以外は山札に戻してシャッフルする。そうして出したユニットが1体以上あれば、自軍山札を見て、OTのLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+      "imageUrl": "/cards/promoted/RM-004.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-004.jpg"
     },
     {
       "id": "RM-005",
@@ -1695,7 +1925,9 @@
       "rarity": "N",
       "expansion": "legend3",
       "powerCost": 6,
-      "text": "特徴「男」を持つ自軍ユニットを1体と、特徴「女」を持つ自軍ユニットを1体選び、選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。"
+      "text": "特徴「男」を持つ自軍ユニットを1体と、特徴「女」を持つ自軍ユニットを1体選び、選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+      "imageUrl": "/cards/promoted/RM-005.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-005.jpg"
     },
     {
       "id": "RM-008",
@@ -1705,7 +1937,9 @@
       "rarity": "N",
       "expansion": "legend3",
       "powerCost": 3,
-      "text": "敵軍バトルエリアから「これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれた敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。"
+      "text": "敵軍バトルエリアから「これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれた敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "imageUrl": "/cards/promoted/RM-008.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-008.jpg"
     },
     {
       "id": "RM-009",
@@ -1715,7 +1949,9 @@
       "rarity": "N",
       "expansion": "legend3",
       "powerCost": 4,
-      "text": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。このカードに重ねたユニットがストライクしてダメージを与えたとき、自軍捨札からSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く。置けなければ手札に加える。"
+      "text": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。このカードに重ねたユニットがストライクしてダメージを与えたとき、自軍捨札からSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く。置けなければ手札に加える。",
+      "imageUrl": "/cards/promoted/RM-009.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-009.jpg"
     },
     {
       "id": "RM-010",
@@ -1725,7 +1961,9 @@
       "rarity": "N",
       "expansion": "legend3",
       "powerCost": 2,
-      "text": "自軍山札からビークルカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。"
+      "text": "自軍山札からビークルカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+      "imageUrl": "/cards/promoted/RM-010.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-010.jpg"
     },
     {
       "id": "RM-011",
@@ -1735,7 +1973,9 @@
       "rarity": "N",
       "expansion": "legend3",
       "powerCost": 3,
-      "text": "ナンバーに数字を持ち、ETを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。このカードに重ねたユニットのナンバーの数字は1少なくなる。ただし、2より少なくならない。"
+      "text": "ナンバーに数字を持ち、ETを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。このカードに重ねたユニットのナンバーの数字は1少なくなる。ただし、2より少なくならない。",
+      "imageUrl": "/cards/promoted/RM-011.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-011.jpg"
     },
     {
       "id": "RM-015",
@@ -1745,7 +1985,9 @@
       "rarity": "N",
       "expansion": "legend3",
       "powerCost": 3,
-      "text": "このオペレーションカードを使用するためにホールドしたコマンドの必要パワーの数字を見て、その数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。そうして撃破したユニットが捨札になる前に敵軍捨札を見て、撃破したユニットと同じカード名のユニットカードがあれば、このカードが捨札になるとき、かわりに手札に戻してもよい。"
+      "text": "このオペレーションカードを使用するためにホールドしたコマンドの必要パワーの数字を見て、その数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。そうして撃破したユニットが捨札になる前に敵軍捨札を見て、撃破したユニットと同じカード名のユニットカードがあれば、このカードが捨札になるとき、かわりに手札に戻してもよい。",
+      "imageUrl": "/cards/promoted/RM-015.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-015.jpg"
     },
     {
       "id": "RM-016",
@@ -1755,7 +1997,9 @@
       "rarity": "N",
       "expansion": "legend3",
       "powerCost": 13,
-      "text": "自軍パワーゾーンのダメージになってるカードをすべてオモテにする。そして、相手は自分自身の山札を見て、ユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。その後、相手は自分自身の山札をシャッフルする。"
+      "text": "自軍パワーゾーンのダメージになってるカードをすべてオモテにする。そして、相手は自分自身の山札を見て、ユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。その後、相手は自分自身の山札をシャッフルする。",
+      "imageUrl": "/cards/promoted/RM-016.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-016.jpg"
     },
     {
       "id": "RM-027",
@@ -1772,7 +2016,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RM-027.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-027.jpg"
     },
     {
       "id": "RM-031",
@@ -1789,7 +2035,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RM-031.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-031.jpg"
     },
     {
       "id": "RM-041",
@@ -1805,7 +2053,9 @@
       "features": [
         "男",
         "忍者"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RM-041.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-041.jpg"
     },
     {
       "id": "RM-044",
@@ -1823,7 +2073,9 @@
         "メカ",
         "人型",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RM-044.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-044.jpg"
     },
     {
       "id": "RM-051",
@@ -1840,7 +2092,9 @@
       "features": [
         "メカ",
         "昆虫"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RM-051.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-051.jpg"
     },
     {
       "id": "RM-055",
@@ -1860,7 +2114,9 @@
         "昆虫",
         "ブルー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RM-055.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-055.jpg"
     },
     {
       "id": "RM-056",
@@ -1880,7 +2136,9 @@
         "昆虫",
         "グリーン",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RM-056.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-056.jpg"
     },
     {
       "id": "RM-057",
@@ -1900,7 +2158,9 @@
         "昆虫",
         "レッド",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RM-057.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-057.jpg"
     },
     {
       "id": "RS-181",
@@ -1910,7 +2170,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 5,
-      "text": "ナンバーを持たないSユニットを、敵軍コマンドゾーンのカテゴリの数まで好きな数選び撃破する。"
+      "text": "ナンバーを持たないSユニットを、敵軍コマンドゾーンのカテゴリの数まで好きな数選び撃破する。",
+      "imageUrl": "/cards/promoted/RS-181.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-181.jpg"
     },
     {
       "id": "RS-182",
@@ -1920,7 +2182,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 6,
-      "text": "自軍Sユニットを1体選ぶ。このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。"
+      "text": "自軍Sユニットを1体選ぶ。このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。",
+      "imageUrl": "/cards/promoted/RS-182.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-182.jpg"
     },
     {
       "id": "RS-183",
@@ -1930,7 +2194,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 2,
-      "text": "この効果は、自分が行ったあとで相手も行う⇒3枚までドローする。そして、以下の手順を3回行う。自分の手札を相手に見せずに1枚選ばせ、選ばれたカードを自軍山札の上に戻す。ただし、自軍コマンドを1つホールドすれば戻さなくてもよい。"
+      "text": "この効果は、自分が行ったあとで相手も行う⇒3枚までドローする。そして、以下の手順を3回行う。自分の手札を相手に見せずに1枚選ばせ、選ばれたカードを自軍山札の上に戻す。ただし、自軍コマンドを1つホールドすれば戻さなくてもよい。",
+      "imageUrl": "/cards/promoted/RS-183.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-183.jpg"
     },
     {
       "id": "RS-185",
@@ -1940,7 +2206,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 3,
-      "text": "相手の手札を見て、カウンターのオペレーションカードがあれば1枚選び、持ち主のパワーゾーンにダメージにして置く。"
+      "text": "相手の手札を見て、カウンターのオペレーションカードがあれば1枚選び、持ち主のパワーゾーンにダメージにして置く。",
+      "imageUrl": "/cards/promoted/RS-185.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-185.jpg"
     },
     {
       "id": "RS-186",
@@ -1950,7 +2218,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 3,
-      "text": "自軍山札を見て、Sユニット以外の特徴「メカ」を持つユニットのカードを5枚まで選び、相手に見せる。その後、山札をシャッフルし、選んだカードを好きな順で山札の上に戻す。"
+      "text": "自軍山札を見て、Sユニット以外の特徴「メカ」を持つユニットのカードを5枚まで選び、相手に見せる。その後、山札をシャッフルし、選んだカードを好きな順で山札の上に戻す。",
+      "imageUrl": "/cards/promoted/RS-186.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-186.jpg"
     },
     {
       "id": "RS-191",
@@ -1968,7 +2238,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-191.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-191.jpg"
     },
     {
       "id": "RS-195",
@@ -1985,7 +2257,9 @@
       "features": [
         "メカ",
         "航空機"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-195.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-195.jpg"
     },
     {
       "id": "RS-230",
@@ -2004,7 +2278,9 @@
         "レッド",
         "男",
         "アバレモード"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-230.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-230.jpg"
     },
     {
       "id": "RS-231",
@@ -2023,7 +2299,9 @@
         "ブルー",
         "男",
         "アバレモード"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-231.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-231.jpg"
     },
     {
       "id": "RS-239",
@@ -2040,7 +2318,9 @@
       "features": [
         "メカ",
         "車両"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-239.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-239.jpg"
     },
     {
       "id": "RS-240",
@@ -2057,7 +2337,9 @@
       "features": [
         "メカ",
         "車両"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-240.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-240.jpg"
     },
     {
       "id": "RS-243",
@@ -2067,7 +2349,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 3,
-      "text": "このターン、すべての自軍ユニットは、「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。"
+      "text": "このターン、すべての自軍ユニットは、「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。",
+      "imageUrl": "/cards/promoted/RS-243.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-243.jpg"
     },
     {
       "id": "RS-245",
@@ -2077,7 +2361,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 5,
-      "text": "敵軍Sユニットを1体選び撃破する。"
+      "text": "敵軍Sユニットを1体選び撃破する。",
+      "imageUrl": "/cards/promoted/RS-245.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-245.jpg"
     },
     {
       "id": "RS-249",
@@ -2087,7 +2373,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 5,
-      "text": "自軍山札を見て、特徴「恐竜」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、山札をシャッフルする。"
+      "text": "自軍山札を見て、特徴「恐竜」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、山札をシャッフルする。",
+      "imageUrl": "/cards/promoted/RS-249.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-249.jpg"
     },
     {
       "id": "RS-250",
@@ -2097,7 +2385,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 5,
-      "text": "敵軍ユニットを1体選んでターゲットとする。そして 自軍山札の上から1枚をオモテにし、それがターゲットと同じサイズのユニットなら、ターゲットを撃破する。その後、オモテにしたカードは山札の下に戻す。"
+      "text": "敵軍ユニットを1体選んでターゲットとする。そして 自軍山札の上から1枚をオモテにし、それがターゲットと同じサイズのユニットなら、ターゲットを撃破する。その後、オモテにしたカードは山札の下に戻す。",
+      "imageUrl": "/cards/promoted/RS-250.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-250.jpg"
     },
     {
       "id": "RS-251",
@@ -2107,7 +2397,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 0,
-      "text": "自軍山札を見て、必要パワーの数字に「－」のあるユニットカードを1枚選び、ラッシュエリアに出す。ただし、必要パワーと追加条件は満たすこと。その後、山札をシャッフルする。"
+      "text": "自軍山札を見て、必要パワーの数字に「－」のあるユニットカードを1枚選び、ラッシュエリアに出す。ただし、必要パワーと追加条件は満たすこと。その後、山札をシャッフルする。",
+      "imageUrl": "/cards/promoted/RS-251.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-251.jpg"
     },
     {
       "id": "RS-252",
@@ -2117,7 +2409,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 4,
-      "text": "敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。"
+      "text": "敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "imageUrl": "/cards/promoted/RS-252.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-252.jpg"
     },
     {
       "id": "RS-254",
@@ -2127,7 +2421,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 2,
-      "text": "このターン、すべての自軍ユニットのコンビネーションナンバーは1少なくなる。ただし、2より少なくならない。"
+      "text": "このターン、すべての自軍ユニットのコンビネーションナンバーは1少なくなる。ただし、2より少なくならない。",
+      "imageUrl": "/cards/promoted/RS-254.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-254.jpg"
     },
     {
       "id": "RS-260",
@@ -2143,7 +2439,9 @@
       "features": [
         "メカ",
         "母艦"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-260.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-260.jpg"
     },
     {
       "id": "RS-267",
@@ -2161,7 +2459,9 @@
       "features": [
         "ブルー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-267.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-267.jpg"
     },
     {
       "id": "RS-272",
@@ -2179,7 +2479,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-272.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-272.jpg"
     },
     {
       "id": "RS-283",
@@ -2197,7 +2499,9 @@
       "features": [
         "ブルー",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-283.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-283.jpg"
     },
     {
       "id": "RS-288",
@@ -2213,7 +2517,9 @@
       "features": [
         "恐竜",
         "ドラゴン"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-288.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-288.jpg"
     },
     {
       "id": "RS-306",
@@ -2232,7 +2538,9 @@
         "レッド",
         "男",
         "忍者"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-306.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-306.jpg"
     },
     {
       "id": "RS-333",
@@ -2252,7 +2560,9 @@
         "男",
         "魔法",
         "レジェンドフォーム"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-333.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-333.jpg"
     },
     {
       "id": "RS-334",
@@ -2272,7 +2582,9 @@
         "男",
         "魔法",
         "レジェンドフォーム"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-334.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-334.jpg"
     },
     {
       "id": "RS-341",
@@ -2290,7 +2602,9 @@
       "features": [
         "ブルー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-341.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-341.jpg"
     },
     {
       "id": "RS-347",
@@ -2300,7 +2614,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 6,
-      "text": "このターン、5体以上の合体ユニットを必要とする特徴「メカ」を持つユニットのカードをラッシュするとき、追加条件を満たすために次のようにしてもよい⇒自軍コマンドゾーンのリリース状態のカードから、合体ユニットに足りない分のユニットと同じ名前のカードを捨札にする。"
+      "text": "このターン、5体以上の合体ユニットを必要とする特徴「メカ」を持つユニットのカードをラッシュするとき、追加条件を満たすために次のようにしてもよい⇒自軍コマンドゾーンのリリース状態のカードから、合体ユニットに足りない分のユニットと同じ名前のカードを捨札にする。",
+      "imageUrl": "/cards/promoted/RS-347.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-347.jpg"
     },
     {
       "id": "RS-349",
@@ -2310,7 +2626,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 3,
-      "text": "自軍山札から、追加条件を持たないDA以外のSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。"
+      "text": "自軍山札から、追加条件を持たないDA以外のSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+      "imageUrl": "/cards/promoted/RS-349.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-349.jpg"
     },
     {
       "id": "RS-350",
@@ -2320,7 +2638,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 0,
-      "text": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、カテゴリがDAになり、「SP1」以上のユニット以外にはアタックされない。重ねたユニットがユニットでなくなるとき、このカードを自軍パワーゾーンにダメージにして置く。"
+      "text": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、カテゴリがDAになり、「SP1」以上のユニット以外にはアタックされない。重ねたユニットがユニットでなくなるとき、このカードを自軍パワーゾーンにダメージにして置く。",
+      "imageUrl": "/cards/promoted/RS-350.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-350.jpg"
     },
     {
       "id": "RS-357",
@@ -2339,7 +2659,9 @@
         "グリーン",
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-357.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-357.jpg"
     },
     {
       "id": "RS-424",
@@ -2356,7 +2678,9 @@
       "text": "【瞬瞬弾】「SP1」",
       "features": [
         "激気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-424.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-424.jpg"
     },
     {
       "id": "RS-426",
@@ -2375,7 +2699,9 @@
         "レッド",
         "男",
         "激気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-426.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-426.jpg"
     },
     {
       "id": "RS-438",
@@ -2385,7 +2711,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 2,
-      "text": "このカードを自軍パワーゾーンに置く。その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、手札に加えてもよい。"
+      "text": "このカードを自軍パワーゾーンに置く。その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、手札に加えてもよい。",
+      "imageUrl": "/cards/promoted/RS-438.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-438.jpg"
     },
     {
       "id": "RS-440",
@@ -2403,7 +2731,9 @@
         "メカ",
         "人型",
         "2nd"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-440.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-440.jpg"
     },
     {
       "id": "RS-466",
@@ -2413,7 +2743,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 3,
-      "text": "※特徴「レッド」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【炎の星獣】これにライドしているSユニットは次の能力を得る⇒※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）"
+      "text": "※特徴「レッド」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【炎の星獣】これにライドしているSユニットは次の能力を得る⇒※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "imageUrl": "/cards/promoted/RS-466.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-466.jpg"
     },
     {
       "id": "RS-499",
@@ -2432,7 +2764,9 @@
         "バイオレット",
         "男",
         "激気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-499.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-499.jpg"
     },
     {
       "id": "RS-500",
@@ -2451,7 +2785,9 @@
         "ホワイト",
         "男",
         "激気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-500.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-500.jpg"
     },
     {
       "id": "RS-504",
@@ -2467,7 +2803,9 @@
       "features": [
         "女",
         "臨気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-504.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-504.jpg"
     },
     {
       "id": "RS-518",
@@ -2477,7 +2815,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 3,
-      "text": "敵軍Sユニットを1体選ぶ。選んだユニットがホールド状態なら撃破し、リリース状態ならホールドする。"
+      "text": "敵軍Sユニットを1体選ぶ。選んだユニットがホールド状態なら撃破し、リリース状態ならホールドする。",
+      "imageUrl": "/cards/promoted/RS-518.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-518.jpg"
     },
     {
       "id": "RS-520",
@@ -2487,7 +2827,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 0,
-      "text": "自軍山札から1枚ひいて、そのカードを自軍コマンドゾーンに置く。置けなければ手札に加える。"
+      "text": "自軍山札から1枚ひいて、そのカードを自軍コマンドゾーンに置く。置けなければ手札に加える。",
+      "imageUrl": "/cards/promoted/RS-520.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-520.jpg"
     },
     {
       "id": "RS-523",
@@ -2497,7 +2839,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 4,
-      "text": "本来のSPが1以上のDAを持つ自軍ユニットを1体選ぶ。このターンのバトルフェイズ中、選んだユニットは次の能力を得る⇒バトルエリアに出たとき、相手に1点ダメージを与える。ただし、ストライクすることはできない。"
+      "text": "本来のSPが1以上のDAを持つ自軍ユニットを1体選ぶ。このターンのバトルフェイズ中、選んだユニットは次の能力を得る⇒バトルエリアに出たとき、相手に1点ダメージを与える。ただし、ストライクすることはできない。",
+      "imageUrl": "/cards/promoted/RS-523.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-523.jpg"
     },
     {
       "id": "RS-526",
@@ -2507,7 +2851,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 2,
-      "text": "自軍山札を見て、特徴「炎神」を持つMユニットのカードを1枚選び、自軍パワーゾーンに置いてもよい。そうしたとき、山札をシャッフルした後で、置いたユニットカードのBP以下の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。"
+      "text": "自軍山札を見て、特徴「炎神」を持つMユニットのカードを1枚選び、自軍パワーゾーンに置いてもよい。そうしたとき、山札をシャッフルした後で、置いたユニットカードのBP以下の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
+      "imageUrl": "/cards/promoted/RS-526.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-526.jpg"
     },
     {
       "id": "RS-528",
@@ -2524,7 +2870,9 @@
         "メカ",
         "人型",
         "2nd"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-528.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-528.jpg"
     },
     {
       "id": "RS-535",
@@ -2541,7 +2889,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-535.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-535.jpg"
     },
     {
       "id": "RS-538",
@@ -2556,7 +2906,9 @@
       "text": "※レジスト 【頼れる指揮官】これが自軍ラッシュエリアにある間、敵軍ターン中、「ユイ・イブキ」以外のホールド状態の自軍ユニットが撃破されて捨札になったとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
       "features": [
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-538.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-538.jpg"
     },
     {
       "id": "RS-544",
@@ -2573,7 +2925,9 @@
       "text": "※これは特徴を3つ以上持つユニットにアタックされない。 【フレアーバスター】「SP1」",
       "features": [
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-544.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-544.jpg"
     },
     {
       "id": "RS-547",
@@ -2588,7 +2942,9 @@
       "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。 【守護獣の使徒】これが自軍エリアにある間、WBを持つ自軍Mユニットは、『※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）』を得る。ただし、そのユニットが持つ「ラッシュしたとき」の効果を発動したときは、そのユニットをホールドする。",
       "features": [
         "恐竜"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-547.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-547.jpg"
     },
     {
       "id": "RS-548",
@@ -2607,7 +2963,9 @@
         "レッド",
         "男",
         "2nd"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-548.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-548.jpg"
     },
     {
       "id": "RS-549",
@@ -2626,7 +2984,9 @@
         "ブルー",
         "男",
         "2nd"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-549.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-549.jpg"
     },
     {
       "id": "RS-561",
@@ -2643,7 +3003,9 @@
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【吹き荒らす翼】「SP1」",
       "features": [
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-561.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-561.jpg"
     },
     {
       "id": "RS-564",
@@ -2660,7 +3022,9 @@
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【引き裂く爪】「SP1」",
       "features": [
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-564.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-564.jpg"
     },
     {
       "id": "RS-573",
@@ -2678,7 +3042,9 @@
         "魔法",
         "人型",
         "2nd"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-573.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-573.jpg"
     },
     {
       "id": "RS-577",
@@ -2698,7 +3064,9 @@
         "男",
         "魔法",
         "2nd"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-577.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-577.jpg"
     },
     {
       "id": "RS-607",
@@ -2708,7 +3076,9 @@
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 4,
-      "text": "次の効果を、敵軍ダメージの点数と同じ数まで好きな回数実行する⇒自軍山札の上からカードを1枚オモテにする。オモテにしたカードが特徴「獣」を持つユニットカードかビークルカードだったなら、それを自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。出せなかったなら、オモテにしたカードを手札に加えた後、自分の手札からカードを1枚選び捨札にする。"
+      "text": "次の効果を、敵軍ダメージの点数と同じ数まで好きな回数実行する⇒自軍山札の上からカードを1枚オモテにする。オモテにしたカードが特徴「獣」を持つユニットカードかビークルカードだったなら、それを自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。出せなかったなら、オモテにしたカードを手札に加えた後、自分の手札からカードを1枚選び捨札にする。",
+      "imageUrl": "/cards/promoted/RS-607.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-607.jpg"
     },
     {
       "id": "RS-626",
@@ -2725,7 +3095,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-626.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-626.jpg"
     },
     {
       "id": "RS-632",
@@ -2743,7 +3115,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-632.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-632.jpg"
     },
     {
       "id": "RS-642",
@@ -2761,7 +3135,9 @@
         "メカ",
         "獣",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-642.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-642.jpg"
     },
     {
       "id": "RS-643",
@@ -2778,7 +3154,9 @@
         "メカ",
         "獣",
         "車両"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-643.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-643.jpg"
     },
     {
       "id": "RS-647",
@@ -2793,7 +3171,9 @@
       "text": "※これは自軍ターン中バトルエリアに出られない。 【ソウルバード】自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒※レジスト",
       "features": [
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-647.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-647.jpg"
     },
     {
       "id": "RS-652",
@@ -2809,7 +3189,9 @@
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【清輝顕現バブルキャプチャー】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍バトルエリアの1番目のユニットは、ラッシュエリアに戻せない。",
       "features": [
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-652.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-652.jpg"
     },
     {
       "id": "RS-674",
@@ -2828,7 +3210,9 @@
         "レッド",
         "男",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-674.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-674.jpg"
     },
     {
       "id": "RS-677",
@@ -2847,7 +3231,9 @@
         "グリーン",
         "男",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-677.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-677.jpg"
     },
     {
       "id": "RS-680",
@@ -2865,7 +3251,9 @@
       "features": [
         "獣",
         "折神獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-680.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-680.jpg"
     },
     {
       "id": "RS-682",
@@ -2882,7 +3270,9 @@
       "features": [
         "獣",
         "折神獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-682.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-682.jpg"
     },
     {
       "id": "RS-683",
@@ -2900,7 +3290,9 @@
       "features": [
         "獣",
         "折神獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-683.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-683.jpg"
     },
     {
       "id": "RS-688",
@@ -2918,7 +3310,9 @@
         "メカ",
         "獣",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-688.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-688.jpg"
     },
     {
       "id": "RS-689",
@@ -2936,7 +3330,9 @@
         "レッド",
         "男",
         "2nd"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/RS-689.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-689.jpg"
     },
     {
       "id": "SK-000",
@@ -2953,7 +3349,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/SK-000.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SK-000.jpg"
     },
     {
       "id": "SK-002",
@@ -2972,7 +3370,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/SK-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SK-002.jpg"
     },
     {
       "id": "SM-001",
@@ -2982,7 +3382,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 7,
-      "text": "特徴「宇宙刑事」を持つ自軍ユニットが1体もなければ、自軍山札を見て、特徴「宇宙刑事」を持つユニットカードを3枚まで選び、選んだカードを自軍ラッシュエリアに出してもよい。ただし、この効果でカードを選ぶとき、同じカード名のユニットカードを2枚以上選ぶことはできない。その後、山札をシャッフルする。"
+      "text": "特徴「宇宙刑事」を持つ自軍ユニットが1体もなければ、自軍山札を見て、特徴「宇宙刑事」を持つユニットカードを3枚まで選び、選んだカードを自軍ラッシュエリアに出してもよい。ただし、この効果でカードを選ぶとき、同じカード名のユニットカードを2枚以上選ぶことはできない。その後、山札をシャッフルする。",
+      "imageUrl": "/cards/promoted/SM-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SM-001.jpg"
     },
     {
       "id": "SR-002",
@@ -2992,7 +3394,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 6,
-      "text": "このターン、5体以上の合体ユニットを必要とする特徴「メカ」を持つユニットのカードをラッシュするとき、追加条件を満たすために次のようにしてもよい⇒自軍コマンドゾーンのリリース状態のカードから、合体ユニットに足りない分のユニットと同じ名前のカードを捨札にする。"
+      "text": "このターン、5体以上の合体ユニットを必要とする特徴「メカ」を持つユニットのカードをラッシュするとき、追加条件を満たすために次のようにしてもよい⇒自軍コマンドゾーンのリリース状態のカードから、合体ユニットに足りない分のユニットと同じ名前のカードを捨札にする。",
+      "imageUrl": "/cards/promoted/SR-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-002.jpg"
     },
     {
       "id": "SR-008",
@@ -3010,7 +3414,9 @@
         "メカ",
         "ホワイト",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/SR-008.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-008.jpg"
     },
     {
       "id": "SX-002",
@@ -4229,7 +4635,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 4,
-      "text": "自分の手札から、Sビークルのカードと、MAを持ちRCを持つSユニットのカードをそれぞれ1枚ずつ選び、相手に見せてもよい。そうしたとき、見せた2枚のカードを好きな順番で自軍ラッシュエリアに出す。ただし、追加条件はそれぞれ満たすこと。"
+      "text": "自分の手札から、Sビークルのカードと、MAを持ちRCを持つSユニットのカードをそれぞれ1枚ずつ選び、相手に見せてもよい。そうしたとき、見せた2枚のカードを好きな順番で自軍ラッシュエリアに出す。ただし、追加条件はそれぞれ満たすこと。",
+      "imageUrl": "/cards/promoted/XG3-100.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-100.jpg"
     },
     {
       "id": "XG3-101",
@@ -4247,7 +4655,9 @@
       "features": [
         "昆虫",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-101.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-101.jpg"
     },
     {
       "id": "XG3-102",
@@ -4263,7 +4673,9 @@
       "features": [
         "昆虫",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-102.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-102.jpg"
     },
     {
       "id": "XG4-003",
@@ -4546,7 +4958,9 @@
       "features": [
         "メカ",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-100.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-100.jpg"
     },
     {
       "id": "XG5-005",
@@ -4862,7 +5276,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 6,
-      "text": "特徴「人型」を持つ自軍ユニットを2体選び、選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。"
+      "text": "特徴「人型」を持つ自軍ユニットを2体選び、選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "imageUrl": "/cards/promoted/XG5-093.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-093.jpg"
     },
     {
       "id": "XG6-002",

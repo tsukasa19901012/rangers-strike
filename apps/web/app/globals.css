@@ -1484,6 +1484,17 @@ select {
   margin-top: 12px;
 }
 
+.effect-action-modal__generic-meta {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.effect-action-modal__mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+}
+
 .effect-action-modal__skip {
   width: 100%;
   margin-top: 8px;
@@ -1960,8 +1971,7 @@ select {
   font-size: 0.8rem;
 }
 
-.deck-builder__deck-list,
-.deck-builder__catalog {
+.deck-builder__deck-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1969,11 +1979,29 @@ select {
   overflow-y: auto;
 }
 
+.deck-builder__catalog {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.deck-builder__catalog-virtual {
+  position: relative;
+  width: 100%;
+}
+
 .deck-builder__deck-row,
 .deck-builder__catalog-item {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.deck-builder__catalog-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .deck-builder__deck-card,
@@ -2010,6 +2038,20 @@ select {
 .deck-builder__catalog-id {
   font-size: 0.7rem;
   color: #64748b;
+}
+
+.deck-builder__status-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 4px;
+  vertical-align: middle;
 }
 
 .deck-builder__deck-controls {

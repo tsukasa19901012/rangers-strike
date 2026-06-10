@@ -1,8 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import type { CardDefinition } from "@rangers-strike/cards";
-import { cardCategories, getCardBackImageUrl, getCardEffect } from "@rangers-strike/cards";
+import {
+  cardCategories,
+  getCardBackImageUrl,
+  getCardEffect,
+  resolveCardImageUrl,
+} from "@rangers-strike/cards";
 import { type DragCardPayload } from "@/lib/dnd";
 import { usePointerDrag } from "@/lib/PointerDragContext";
 import { useCardLongPress } from "@/lib/useCardLongPress";
@@ -56,6 +62,12 @@ export function CardImage({
     onSuppressClick: suppressClick,
   });
 
+  const [imageFailed, setImageFailed] = useState(false);
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [card?.id]);
+
   if (!card) return null;
 
   const className = [
@@ -73,8 +85,9 @@ export function CardImage({
     .join(" ");
 
   const effect = getCardEffect(card.id);
-  const imageSrc = faceDown ? getCardBackImageUrl() : card.imageUrl;
+  const imageSrc = faceDown ? getCardBackImageUrl() : resolveCardImageUrl(card.id);
   const imageAlt = faceDown ? "カード裏" : card.name;
+  const showImage = !!imageSrc && !imageFailed;
 
   const canDrag =
     draggable && !disabled && !!instanceId && !!fromZone && !!playerId;
@@ -150,7 +163,7 @@ export function CardImage({
         }
       }}
     >
-      {imageSrc ? (
+      {showImage ? (
         <Image
           src={imageSrc}
           alt={imageAlt}
@@ -159,6 +172,7 @@ export function CardImage({
           className="card__image"
           unoptimized
           draggable={false}
+          onError={() => setImageFailed(true)}
         />
       ) : (
         <div className="card__placeholder">

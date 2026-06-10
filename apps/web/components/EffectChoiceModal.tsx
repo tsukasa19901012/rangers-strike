@@ -13,6 +13,7 @@ import {
   resolveCardTargets,
   type CardTarget,
 } from "@/lib/cardTargets";
+import { isKnownEffectChoice } from "@/lib/webUiEffectCoverage";
 import { GameModalBackdrop } from "./GameModalBackdrop";
 import { LongPressPreviewButton } from "./LongPressPreviewButton";
 
@@ -144,6 +145,9 @@ export function EffectChoiceModal({
       : [];
   const isSagasSniper = pending.effectId === "sagas_sniper";
   const sagasPowerCap = pending.maxPowerCost ?? 0;
+  const isGenericFallback = !isKnownEffectChoice(pending);
+  const effectiveCanSkip = canSkip || isGenericFallback;
+  const effectiveSkipLabel = isGenericFallback ? "スキップ（UI未対応）" : skipLabel;
 
   return (
     <GameModalBackdrop>
@@ -164,7 +168,44 @@ export function EffectChoiceModal({
           )}
           <p className="effect-action-modal__hint">{hint}</p>
 
-          {pending.kind === "seabed_draw" && (
+          {isGenericFallback && (
+            <div className="effect-action-modal__section effect-action-modal__section--generic">
+              <p className="effect-action-modal__target-meta">
+                Web UI 未配線の効果です（汎用フォールバック）
+              </p>
+              <p className="effect-action-modal__generic-meta">
+                <span>effectId: </span>
+                <code className="effect-action-modal__mono">{pending.effectId}</code>
+              </p>
+              <p className="effect-action-modal__generic-meta">
+                kind: <code className="effect-action-modal__mono">{pending.kind}</code>
+              </p>
+              {targets.length > 0 && (
+                <div className="effect-action-modal__targets">
+                  {targets.map((target) => (
+                    <TargetButton
+                      key={target.instanceId}
+                      target={target}
+                      chooserPlayerId={playerId}
+                      onSelect={() => onSelect(target.instanceId)}
+                      onPreview={onPreview}
+                    />
+                  ))}
+                </div>
+              )}
+              {effectiveCanSkip && !readOnly && (
+                <button
+                  type="button"
+                  className="btn effect-action-modal__skip"
+                  onClick={onSkip}
+                >
+                  {effectiveSkipLabel}
+                </button>
+              )}
+            </div>
+          )}
+
+          {!isGenericFallback && pending.kind === "seabed_draw" && (
             <div className="effect-action-modal__actions">
               <button type="button" className="btn" onClick={() => onSeabedDraw("top")}>
                 上から引く
@@ -179,7 +220,7 @@ export function EffectChoiceModal({
             </div>
           )}
 
-          {pending.kind === "denji_machine" && denjiReveal.length > 0 && (
+          {!isGenericFallback && pending.kind === "denji_machine" && denjiReveal.length > 0 && (
             <div className="effect-action-modal__section">
               <p className="effect-action-modal__target-meta">
                 {readOnly ? "相手の山札上3枚（公開）" : "山札の上3枚（相手に公開）"}
@@ -213,7 +254,7 @@ export function EffectChoiceModal({
             </div>
           )}
 
-          {pending.kind === "denji_machine" && denjiOrder.length > 0 && (
+          {!isGenericFallback && pending.kind === "denji_machine" && denjiOrder.length > 0 && (
             <div className="effect-action-modal__targets">
               {denjiOrder
                 .filter((c) => pending.validInstanceIds.includes(c.instanceId))
@@ -231,7 +272,7 @@ export function EffectChoiceModal({
             </div>
           )}
 
-          {pending.kind === "select_units_bp_budget" && (
+          {!isGenericFallback && pending.kind === "select_units_bp_budget" && (
             <div className="effect-action-modal__section">
               {targets.length > 0 ? (
                 <>
@@ -302,7 +343,7 @@ export function EffectChoiceModal({
             </div>
           )}
 
-          {pending.kind === "optional_deck_draw" && (
+          {!isGenericFallback && pending.kind === "optional_deck_draw" && (
             <div className="effect-action-modal__actions">
               <button type="button" className="btn btn--primary" onClick={onOptionalDraw}>
                 1枚ドローする
@@ -310,7 +351,7 @@ export function EffectChoiceModal({
             </div>
           )}
 
-          {pending.kind === "deck_top_or_bottom" && scryCard && (
+          {!isGenericFallback && pending.kind === "deck_top_or_bottom" && scryCard && (
             <div className="effect-action-modal__section">
               <LongPressPreviewButton
                 type="button"
@@ -335,7 +376,7 @@ export function EffectChoiceModal({
             </div>
           )}
 
-          {pending.kind === "scry_keep_one" && scryKeep.length > 0 && (
+          {!isGenericFallback && pending.kind === "scry_keep_one" && scryKeep.length > 0 && (
             <div className="effect-action-modal__section">
               {isSagasSniper && (
                 <p className="effect-action-modal__target-meta">
@@ -371,7 +412,8 @@ export function EffectChoiceModal({
             </div>
           )}
 
-          {targets.length > 0 &&
+          {!isGenericFallback &&
+            targets.length > 0 &&
             pending.kind !== "deck_top_or_bottom" &&
             pending.kind !== "seabed_draw" &&
             pending.kind !== "optional_deck_draw" &&
@@ -391,13 +433,17 @@ export function EffectChoiceModal({
               </div>
             )}
 
-          {canSkip && !readOnly && pending.kind !== "denji_machine" && pending.kind !== "select_units_bp_budget" && (
+          {effectiveCanSkip &&
+            !readOnly &&
+            !isGenericFallback &&
+            pending.kind !== "denji_machine" &&
+            pending.kind !== "select_units_bp_budget" && (
             <button
               type="button"
               className="btn effect-action-modal__skip"
               onClick={onSkip}
             >
-              {skipLabel}
+              {effectiveSkipLabel}
             </button>
           )}
         </div>

@@ -111,6 +111,13 @@ import {
   isHumanStrikeDefender as checkHumanStrikeDefender,
   resolveReactionModalUi,
 } from "@/lib/webUiIntegration";
+import { isKnownEffectChoice } from "@/lib/webUiEffectCoverage";
+import {
+  isEffectDebugEnabled,
+  isEffectDebugToggleVisible,
+  logEffectDebug,
+  setEffectDebugEnabled,
+} from "@/lib/debugEffectLog";
 import {
   canSelectCyberSRiderHand,
   listCyberSRiderHandCandidates,
@@ -187,6 +194,9 @@ export function GameApp() {
     counterInstanceId: string;
   } | null>(null);
   const [logOpen, setLogOpen] = useState(false);
+  const [effectDebugLog, setEffectDebugLog] = useState<string[]>([]);
+  const [effectDebugEnabled, setEffectDebugEnabledState] = useState(false);
+  const prevPendingEffectKeyRef = useRef<string | null>(null);
   const [battleDrag, setBattleDrag] = useState<DragCardPayload | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [blockedBattleAlert, setBlockedBattleAlert] = useState<string | null>(null);
@@ -206,6 +216,20 @@ export function GameApp() {
 
   useEffect(() => {
     setCustomDecks(loadCustomDecks());
+  }, []);
+
+  useEffect(() => {
+    setEffectDebugEnabledState(isEffectDebugEnabled());
+  }, []);
+
+  const appendEffectDebugLog = useCallback((line: string) => {
+    setEffectDebugLog((prev) => [...prev, line]);
+  }, []);
+
+  const toggleEffectDebug = useCallback(() => {
+    const next = !isEffectDebugEnabled();
+    setEffectDebugEnabled(next);
+    setEffectDebugEnabledState(next);
   }, []);
 
   const refreshCustomDecks = useCallback(() => {
@@ -469,6 +493,21 @@ export function GameApp() {
       }
     }
   }, [state, pendingOp, pendingHiddenNinja]);
+
+  useEffect(() => {
+    const choice = state?.pendingEffectChoice;
+    if (!choice) {
+      prevPendingEffectKeyRef.current = null;
+      return;
+    }
+    const key = `${choice.effectId}:${choice.kind}:${choice.sourceInstanceId ?? ""}`;
+    if (prevPendingEffectKeyRef.current === key) return;
+    prevPendingEffectKeyRef.current = key;
+    logEffectDebug(
+      `pendingEffectChoice effectId=${choice.effectId} kind=${choice.kind} optional=${String(!!choice.optional)}`,
+      appendEffectDebugLog,
+    );
+  }, [appendEffectDebugLog, state?.pendingEffectChoice]);
 
   useEffect(() => {
     if (!state) return;
@@ -1399,6 +1438,24 @@ export function GameApp() {
 
   const humanReactionKind = reactionUi?.kind ?? null;
 
+  const handleSkipEffectChoice = useCallback(() => {
+    const pending = state?.pendingEffectChoice;
+    if (!pending) return;
+    const unknown = !isKnownEffectChoice(pending);
+    if (legalActions.some((a) => a.type === "skip_effect_choice")) {
+      apply({ type: "skip_effect_choice", playerId: HUMAN_PLAYER });
+      return;
+    }
+    if (unknown) {
+      const confirm = legalActions.find((a) => a.type === "confirm_effect_choice");
+      if (confirm) {
+        apply(confirm);
+        return;
+      }
+      apply({ type: "skip_effect_choice", playerId: HUMAN_PLAYER });
+    }
+  }, [apply, legalActions, state?.pendingEffectChoice]);
+
   const handleReactionPass = useCallback(() => {
     if (!humanReactionKind) return;
     const actionType =
@@ -1467,6 +1524,9 @@ export function GameApp() {
         onOpenDeckBuilder={openDeckBuilder}
         onStart={startGame}
         startError={startError}
+        effectDebugToggleVisible={isEffectDebugToggleVisible()}
+        effectDebugEnabled={effectDebugEnabled}
+        onToggleEffectDebug={toggleEffectDebug}
       />
     );
   }
@@ -1510,10 +1570,13 @@ export function GameApp() {
         ) &&
         pendingChoice.effectId !== "sagas_sniper"));
 
+  const isUnknownEffectChoice =
+    !!pendingChoice && !isKnownEffectChoice(pendingChoice);
   const canSkipEffectChoice =
     isHumanEffectChoice &&
-    (!!pendingChoice?.optional || pendingChoice?.effectId === "earth_force") &&
-    legalActions.some((a) => a.type === "skip_effect_choice");
+    (isUnknownEffectChoice ||
+      ((!!pendingChoice?.optional || pendingChoice?.effectId === "earth_force") &&
+        legalActions.some((a) => a.type === "skip_effect_choice")));
 
   const showReactionModal = reactionUi?.showModal ?? false;
   const counterInstanceIds = reactionUi?.counterInstanceIds ?? [];
@@ -1772,7 +1835,7 @@ export function GameApp() {
       )}
       {logOpen && (
         <LogModal
-          entries={state.log}
+          entries={[...effectDebugLog, ...state.log]}
           definitions={state.definitions}
           onClose={() => setLogOpen(false)}
         />
@@ -1885,7 +1948,7 @@ export function GameApp() {
           canSkip={canSkipEffectChoice}
           skipLabel={effectChoiceSkipLabel(pendingChoice)}
           onSelect={handleEffectChoiceSelect}
-          onSkip={() => apply({ type: "skip_effect_choice", playerId: HUMAN_PLAYER })}
+          onSkip={handleSkipEffectChoice}
           onRuinSurvey={(placement) =>
             apply({
               type: "resolve_ruin_survey",
@@ -2083,8 +2146,18 @@ export function GameApp() {
                 className="btn btn--log"
                 onClick={() => setLogOpen(true)}
               >
-                ログ ({state.log.length})
+                ログ ({state.log.length + effectDebugLog.length})
               </button>
+              {isEffectDebugToggleVisible() && (
+                <button
+                  type="button"
+                  className="btn btn--ghost btn--debug"
+                  onClick={toggleEffectDebug}
+                  aria-pressed={effectDebugEnabled}
+                >
+                  効果デバッグ{effectDebugEnabled ? " ON" : ""}
+                </button>
+              )}
             </div>
 
             {actionError && (
@@ -2116,8 +2189,18 @@ export function GameApp() {
               className="btn btn--log"
               onClick={() => setLogOpen(true)}
             >
-              ログ ({state.log.length})
+              ログ ({state.log.length + effectDebugLog.length})
             </button>
+            {isEffectDebugToggleVisible() && (
+              <button
+                type="button"
+                className="btn btn--ghost btn--debug"
+                onClick={toggleEffectDebug}
+                aria-pressed={effectDebugEnabled}
+              >
+                効果デバッグ{effectDebugEnabled ? " ON" : ""}
+              </button>
+            )}
             <button type="button" className="btn btn--ghost" onClick={returnToStart}>
               タイトル
             </button>

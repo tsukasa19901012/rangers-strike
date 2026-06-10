@@ -21,6 +21,9 @@ type StartScreenProps = {
   onOpenDeckBuilder: (editDeckId?: string) => void;
   onStart: () => void;
   startError?: string | null;
+  effectDebugToggleVisible?: boolean;
+  effectDebugEnabled?: boolean;
+  onToggleEffectDebug?: () => void;
 };
 
 function parseCustomId(key: string): string | null {
@@ -56,6 +59,9 @@ export function StartScreen({
   onOpenDeckBuilder,
   onStart,
   startError,
+  effectDebugToggleVisible = false,
+  effectDebugEnabled = false,
+  onToggleEffectDebug,
 }: StartScreenProps) {
   const humanCustomId = parseCustomId(humanDeckKey);
   const cpuCustomId = parseCustomId(cpuDeckKey);
@@ -230,6 +236,17 @@ export function StartScreen({
         <button type="button" className="btn btn--primary start-screen__start" onClick={onStart}>
           ゲーム開始
         </button>
+
+        {effectDebugToggleVisible && onToggleEffectDebug && (
+          <button
+            type="button"
+            className="btn btn--ghost start-screen__debug"
+            onClick={onToggleEffectDebug}
+            aria-pressed={effectDebugEnabled}
+          >
+            効果デバッグ{effectDebugEnabled ? " ON" : ""}
+          </button>
+        )}
 
         <p className="start-screen__notice" role="note">
           {SS06_SUPPLEMENT}

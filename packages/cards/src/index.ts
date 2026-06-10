@@ -18,6 +18,7 @@ import {
   legend3Catalog,
   type ExpansionId,
 } from "./catalog";
+import { resolveCardImageUrl } from "./cardImages";
 
 export * from "./schema";
 export * from "./bannedCards";
@@ -71,10 +72,14 @@ export const starterDecks = {
 export type StarterDeckId = keyof typeof starterDecks;
 
 export function getCardImageUrl(idOrCard: string | CardDefinition): string | undefined {
-  const card =
-    typeof idOrCard === "string" ? getCardById(idOrCard) : idOrCard;
-  return card?.imageUrl;
+  return resolveCardImageUrl(idOrCard);
 }
+
+export {
+  GRNRNGR_CARD_IMAGE_BASE,
+  grnrngrCardImageUrl,
+  resolveCardImageUrl,
+} from "./cardImages";
 
 export function getStarterDeck(id: StarterDeckId): DeckDefinition {
   return starterDecks[id];

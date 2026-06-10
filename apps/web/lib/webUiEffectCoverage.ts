@@ -11,6 +11,7 @@ import {
   IMPLEMENTED_ON_RUSH_EFFECT_IDS,
   IMPLEMENTED_PASSIVE_EFFECT_IDS,
 } from "@rangers-strike/cards";
+import type { PendingEffectChoice } from "@rangers-strike/engine";
 
 export type WebUiMechanism =
   | "operation_drag_direct"
@@ -80,6 +81,40 @@ export const OPERATION_UI_MECHANISMS: Record<string, WebUiMechanism[]> = {
   shippu_ninja: ["operation_counter_reaction"],
   dino_guts: ["operation_counter_reaction"],
 };
+
+const KNOWN_EFFECT_CHOICE_KINDS = new Set<PendingEffectChoice["kind"]>([
+  "deck_top_or_bottom",
+  "seabed_draw",
+  "optional_deck_draw",
+  "denji_machine",
+  "scry_keep_one",
+  "select_commands",
+  "select_power",
+  "shiron_light",
+  "select_hand",
+  "select_command",
+  "pit_in_dive_order",
+  "select_unit_step",
+  "select_units_bp_budget",
+  "select_unit",
+  "end_turn_menu",
+]);
+
+const KNOWN_EFFECT_IDS = new Set<string>([
+  ...Object.keys(OPERATION_UI_MECHANISMS),
+  ...IMPLEMENTED_ON_RUSH_EFFECT_IDS,
+  ...IMPLEMENTED_CONDITIONAL_EFFECT_IDS,
+  ...IMPLEMENTED_ON_ATTACK_EFFECT_IDS,
+  ...IMPLEMENTED_ENTER_BATTLE_EFFECT_IDS,
+  ...IMPLEMENTED_PASSIVE_EFFECT_IDS,
+]);
+
+export function isKnownEffectChoice(pending: PendingEffectChoice): boolean {
+  return (
+    KNOWN_EFFECT_IDS.has(pending.effectId) &&
+    KNOWN_EFFECT_CHOICE_KINDS.has(pending.kind)
+  );
+}
 
 const UNIT_TRIGGER_UI: Record<string, WebUiMechanism[]> = {
   on_rush: ["board_target_tap", "effect_choice_modal", "effect_choice_banner"],
