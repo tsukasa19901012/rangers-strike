@@ -5156,6 +5156,105 @@ const PATTERNS: PatternMatch[] = [
       matchedPattern: "counter_note",
     }),
   },
+  {
+    pattern: "cannot_restrict",
+    test: (body) => (/(?:アタックすることができない|バトルエリアに出られない)/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `cannot_restrict_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "cannot_restrict",
+    }),
+  },
+  {
+    pattern: "reveal_faceup",
+    test: (body) => (/オモテに/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `reveal_faceup_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "reveal_faceup",
+    }),
+  },
+  {
+    pattern: "stack_cards",
+    test: (body) => (/重ね/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `stack_cards_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "stack_cards",
+    }),
+  },
 
 ];
 

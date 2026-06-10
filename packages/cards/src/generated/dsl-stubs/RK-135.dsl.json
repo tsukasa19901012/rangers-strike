@@ -40,9 +40,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "reveal_faceup_e695b0e5ad97",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

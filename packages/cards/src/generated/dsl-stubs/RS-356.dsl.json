@@ -26,9 +26,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "cannot_restrict_e6aca1e381ae",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

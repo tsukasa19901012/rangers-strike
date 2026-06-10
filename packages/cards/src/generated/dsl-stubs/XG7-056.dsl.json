@@ -37,13 +37,16 @@
       "name": "嫌いじゃないわ！",
       "text": "これが自分の手札にある間、特徴「男」を持つ敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、そのターン、そのユニットはバトルエリアに出られない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "cannot_restrict_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

@@ -37,6 +37,7 @@ const GRANT_KEYWORD_IDS = [
   "RK-076",
   "RK-077",
   "RK-079",
+  "RK-084",
   "RK-088",
   "RK-089",
   "RK-097",
@@ -47,12 +48,10 @@ const GRANT_KEYWORD_IDS = [
   "RK-118",
   "RK-126",
   "RK-130",
-  "RK-132",
-  "RK-133"
+  "RK-132"
 ] as const;
 const INTERPRET_EFFECT_IDS = [
   "RK-083",
-  "RK-084",
   "RK-087",
   "RK-159",
   "RK-163",
@@ -74,7 +73,6 @@ const INTERPRET_EFFECT_IDS = [
   "RS-181",
   "RS-183",
   "RS-245",
-  "RS-250",
   "RS-252",
   "RS-504",
   "RS-518",
@@ -88,9 +86,11 @@ const INTERPRET_EFFECT_IDS = [
   "XG1-050",
   "XG1-078",
   "XG1-100",
-  "XG2-049",
   "XG2-089",
-  "XG3-062"
+  "XG3-062",
+  "XG3-100",
+  "XG4-030",
+  "XG4-041"
 ] as const;
 const ACTION_PRIMITIVE_IDS = [
   "BK-001",

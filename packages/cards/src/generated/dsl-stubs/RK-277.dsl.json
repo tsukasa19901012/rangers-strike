@@ -27,9 +27,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "stack_cards_e38193e3828c",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

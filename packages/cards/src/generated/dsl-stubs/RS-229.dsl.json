@@ -39,9 +39,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "cannot_restrict_e887aae8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

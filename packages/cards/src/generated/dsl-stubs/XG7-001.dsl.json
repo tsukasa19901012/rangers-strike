@@ -42,9 +42,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "reveal_faceup_e887aae8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

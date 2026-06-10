@@ -20,9 +20,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "stack_cards_e59088e4bd93",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {
