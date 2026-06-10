@@ -1,7 +1,7 @@
 "use client";
 
-import { formatGameLog } from "@rangers-strike/engine";
 import type { CardDefinition } from "@rangers-strike/cards";
+import { formatLogEntryForDisplay } from "@/lib/effectLogNotice";
 
 type LogModalProps = {
   entries: string[];
@@ -32,7 +32,7 @@ export function LogModal({ entries, definitions, onClose }: LogModalProps) {
             ) : (
               visible.map((entry, index) => (
                 <div key={`${entry}-${index}`} className="log-modal__entry">
-                  {formatGameLog(entry, definitions)}
+                  {formatLogEntryForDisplay(entry, definitions)}
                 </div>
               ))
             )}

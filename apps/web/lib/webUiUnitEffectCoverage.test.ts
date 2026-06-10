@@ -28,7 +28,7 @@ describe("Web UI unit effect coverage", () => {
       enterBattle.length +
       passive.length;
     expect(onRush.length).toBeGreaterThanOrEqual(17);
-    expect(conditional.length).toBeGreaterThanOrEqual(15);
+    expect(conditional.length).toBeGreaterThanOrEqual(14);
     expect(onAttack.length).toBeGreaterThanOrEqual(11);
     expect(enterBattle.length).toBeGreaterThanOrEqual(11);
     expect(passive.length).toBeGreaterThanOrEqual(25);

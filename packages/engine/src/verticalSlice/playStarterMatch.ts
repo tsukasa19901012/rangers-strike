@@ -4,6 +4,10 @@ import { pickCpuAction } from "../ai/index";
 import type { GameAction } from "../types/actions";
 import type { GameState, Phase, PlayerId } from "../types/game";
 import { WIN_DAMAGE } from "../types/game";
+import {
+  collectEffectResolutionMetrics,
+  type EffectResolutionTrace,
+} from "./effectResolutionMetrics";
 
 export type StarterMatchStopReason =
   | "winner"
@@ -22,8 +26,27 @@ export type StarterMatchResult = {
     strikes: number;
     battles: number;
     winType?: "damage" | "deck_out" | "unknown";
+    effectResolution: EffectResolutionTrace;
   };
 };
+
+function buildTrace(
+  phasesSeen: Set<Phase>,
+  actionCounts: Record<string, number>,
+  strikes: number,
+  battles: number,
+  log: string[],
+  winType?: "damage" | "deck_out" | "unknown",
+): StarterMatchResult["trace"] {
+  return {
+    phasesSeen,
+    actionCounts,
+    strikes,
+    battles,
+    winType,
+    effectResolution: collectEffectResolutionMetrics(log),
+  };
+}
 
 function classifyWin(state: GameState): "damage" | "deck_out" | "unknown" {
   if (!state.winner) return "unknown";
@@ -56,13 +79,14 @@ export function playStarterMatchUntilEnd(
         state,
         steps,
         reason: "winner",
-        trace: {
+        trace: buildTrace(
           phasesSeen,
           actionCounts,
           strikes,
           battles,
-          winType: classifyWin(state),
-        },
+          state.log,
+          classifyWin(state),
+        ),
       };
     }
 
@@ -72,7 +96,7 @@ export function playStarterMatchUntilEnd(
         state,
         steps,
         reason: "no_legal_actions",
-        trace: { phasesSeen, actionCounts, strikes, battles },
+        trace: buildTrace(phasesSeen, actionCounts, strikes, battles, state.log),
       };
     }
 
@@ -92,7 +116,7 @@ export function playStarterMatchUntilEnd(
         steps,
         reason: "apply_failed",
         error: result.error,
-        trace: { phasesSeen, actionCounts, strikes, battles },
+        trace: buildTrace(phasesSeen, actionCounts, strikes, battles, state.log),
       };
     }
     state = result.state;
@@ -102,6 +126,6 @@ export function playStarterMatchUntilEnd(
     state,
     steps: maxSteps,
     reason: "step_limit",
-    trace: { phasesSeen, actionCounts, strikes, battles },
+    trace: buildTrace(phasesSeen, actionCounts, strikes, battles, state.log),
   };
 }

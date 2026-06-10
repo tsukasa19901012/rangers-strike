@@ -35,6 +35,13 @@ import {
   canConfirmCommandPayment,
   toggleCommandPaymentSelection,
 } from "./commandPaymentUi";
+import {
+  createGameFromDeckSelections,
+  decodeDeckSelection,
+  deckSelectionLabel,
+  fullPlayablePoolSize,
+  FULL_PLAYABLE_DECK_OPTIONS,
+} from "./deckSelection";
 
 const ALL_DEFINITIONS: Record<string, CardDefinition> = Object.fromEntries(
   allCardsCatalog.cards.map((card) => [card.id, card]),
@@ -194,6 +201,50 @@ const HOLD_ENTRY_UNITS = ALL_CARDS.filter(
 );
 const OPERATION_CARDS = ALL_CARDS.filter((card) => card.type === "operation");
 const EFFECT_OPERATIONS = OPERATION_CARDS.filter((card) => cardHasOperationEffect(card.id));
+
+describe("Web UI integration — full-playable deck selection (G5)", () => {
+  it("exposes full-playable pool from catalog", () => {
+    expect(fullPlayablePoolSize()).toBe(1849);
+  });
+
+  it.each(FULL_PLAYABLE_DECK_OPTIONS.map((option) => [option.key, option.label] as const))(
+    "decodes preset %s",
+    (key) => {
+      expect(decodeDeckSelection(key)).not.toBeNull();
+      expect(deckSelectionLabel(decodeDeckSelection(key)!)).toBeTruthy();
+    },
+  );
+
+  it("starts a game from full-promoted presets", () => {
+    const human = decodeDeckSelection("full-promoted");
+    const cpu = decodeDeckSelection("hybrid-promoted:10");
+    expect(human?.kind).toBe("full-promoted");
+    expect(cpu?.kind).toBe("hybrid-promoted");
+
+    const game = createGameFromDeckSelections(human!, cpu!, {
+      firstPlayer: "player1",
+      rng: () => 0.42,
+    });
+
+    expect(game.players.player1.hand.length).toBeGreaterThan(0);
+    expect(game.players.player2.hand.length).toBeGreaterThan(0);
+    expect(game.players.player1.deck.length + game.players.player2.deck.length).toBeGreaterThan(
+      50,
+    );
+    expect(game.definitions).toBeDefined();
+    expect(Object.keys(game.definitions).length).toBeGreaterThan(100);
+  });
+
+  it("starts a game when both players use full-promoted", () => {
+    const selection = { kind: "full-promoted" as const };
+    const game = createGameFromDeckSelections(selection, selection, {
+      firstPlayer: "player2",
+      rng: () => 0.77,
+    });
+    expect(game.phase).toBe("charge");
+    expect(game.winner).toBeNull();
+  });
+});
 
 describe("Web UI integration — all catalog cards", () => {
   it.each(ALL_CARDS.map((card) => [card.id, card] as const))(

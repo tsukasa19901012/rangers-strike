@@ -96,7 +96,9 @@ export function tryResolveDslTriggeredEffects(args: {
         ? `choice:${effect.id}`
         : args.logAction === "number_combo"
           ? effect.id
-          : (outcome.detail ?? effect.id);
+          : outcome.detail === "interpret_effect_unresolved"
+            ? `interpret_effect_unresolved:${effect.id}`
+            : (outcome.detail ?? effect.id);
       logs.push(
         buildLogEntry(
           args.playerId,

@@ -1,6 +1,6 @@
 import type { PlayerId, CpuLevel } from "@rangers-strike/engine";
 import type { CustomDeck } from "@/lib/deckBuilder";
-import { encodeDeckSelection } from "@/lib/deckSelection";
+import { encodeDeckSelection, FULL_PLAYABLE_DECK_OPTIONS } from "@/lib/deckSelection";
 import { CPU_LEVEL_OPTIONS, STARTER_OPTIONS } from "@/lib/labels";
 
 type StartScreenProps = {
@@ -44,7 +44,7 @@ export function StartScreen({
     <div className="start-screen">
       <header className="start-screen__hero">
         <h1 className="start-screen__title">レンジャーズストライク</h1>
-        <p className="start-screen__subtitle">Legend 1〜3 — CPU対戦（Lv1〜5）</p>
+        <p className="start-screen__subtitle">Legend 1〜3 / フルプレイアブル — CPU対戦（Lv1〜5）</p>
       </header>
 
       <section className="start-screen__panel" aria-label="対戦設定">
@@ -63,6 +63,13 @@ export function StartScreen({
                     key={option.id}
                     value={encodeDeckSelection({ kind: "starter", id: option.id })}
                   >
+                    {option.label}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="フルプレイアブル">
+                {FULL_PLAYABLE_DECK_OPTIONS.map((option) => (
+                  <option key={option.key} value={option.key}>
                     {option.label}
                   </option>
                 ))}
@@ -105,6 +112,13 @@ export function StartScreen({
                     key={option.id}
                     value={encodeDeckSelection({ kind: "starter", id: option.id })}
                   >
+                    {option.label}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="フルプレイアブル">
+                {FULL_PLAYABLE_DECK_OPTIONS.map((option) => (
+                  <option key={option.key} value={option.key}>
                     {option.label}
                   </option>
                 ))}

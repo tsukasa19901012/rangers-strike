@@ -78,9 +78,41 @@ export function shouldShowEffectLogNotice(entry: string): boolean {
   return action === "enter_battle" || action === "named_effect";
 }
 
+const DEV_EFFECT_ACTIONS = new Set([
+  "named_effect",
+  "number_combo",
+  "play_operation",
+  "rush_effect",
+  "enter_battle",
+  "resolve_effect_choice",
+  "resident_operation",
+]);
+
+function isDevEffectLogDebugEnabled(): boolean {
+  return process.env.NODE_ENV === "development";
+}
+
+/** 開発モードのみ DSL effectId / detail を末尾に付与。 */
+export function appendDevEffectLogDetail(entry: string, formatted: string): string {
+  if (!isDevEffectLogDebugEnabled()) return formatted;
+  const parts = entry.split("|");
+  const action = parts[1];
+  if (!action || !DEV_EFFECT_ACTIONS.has(action)) return formatted;
+  const detail = parts.length >= 5 ? parts.slice(4).join("|") : undefined;
+  if (!detail) return formatted;
+  return `${formatted} [${detail}]`;
+}
+
 export function formatEffectLogNotice(
   entry: string,
   definitions: Record<string, CardDefinition>,
 ): string {
-  return formatGameLog(entry, definitions);
+  return appendDevEffectLogDetail(entry, formatGameLog(entry, definitions));
+}
+
+export function formatLogEntryForDisplay(
+  entry: string,
+  definitions: Record<string, CardDefinition>,
+): string {
+  return appendDevEffectLogDetail(entry, formatGameLog(entry, definitions));
 }

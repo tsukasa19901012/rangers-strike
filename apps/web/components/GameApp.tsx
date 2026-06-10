@@ -10,7 +10,6 @@ import {
   applyAction,
   canPlayOperationExceptCommandHold,
   collectOperationTargets,
-  createGameForDecks,
   effectiveBp,
   strikeDamageFor,
   explainCannotEnterBattle,
@@ -53,10 +52,11 @@ import {
   type CustomDeck,
 } from "@/lib/deckBuilder";
 import {
+  createGameFromDeckSelections,
   decodeDeckSelection,
   deckSelectionLabel,
   encodeDeckSelection,
-  resolveDeckCards,
+  isFullPlayableSelection,
   type DeckSelection,
 } from "@/lib/deckSelection";
 import { resolveCardTargets } from "@/lib/cardTargets";
@@ -232,6 +232,7 @@ export function GameApp() {
 
   const resolveSelection = useCallback((selection: DeckSelection | null): boolean => {
     if (!selection) return false;
+    if (isFullPlayableSelection(selection)) return true;
     if (selection.kind === "custom") {
       const deck = getCustomDeck(selection.id);
       if (!deck) return false;
@@ -247,9 +248,9 @@ export function GameApp() {
     }
 
     try {
-      const game = createGameForDecks(
-        resolveDeckCards(humanDeckSelection!),
-        resolveDeckCards(cpuDeckSelection!),
+      const game = createGameFromDeckSelections(
+        humanDeckSelection!,
+        cpuDeckSelection!,
         {
           firstPlayer,
           rng: () => Math.random(),

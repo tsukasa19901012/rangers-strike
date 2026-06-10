@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-06-10T05:08:42.746Z",
+  "generatedAt": "2026-06-10T05:14:18.832Z",
   "summary": {
-    "gatesPassed": 4,
+    "gatesPassed": 5,
     "gatesPartial": 0,
-    "gatesTotal": 6,
+    "gatesTotal": 7,
     "overallPercent": 100
   },
   "baseline": {
@@ -16,6 +16,24 @@
     "passiveNative": 1881
   },
   "topDelegates": [],
+  "effectResolution": {
+    "scope": "promoted",
+    "totalEffectsInCorpus": 2843,
+    "promotedCards": 1634,
+    "effectsWithText": 2843,
+    "interpretEffectMarkers": 0,
+    "markersRematchResolved": 0,
+    "markersRematchUnresolved": 0,
+    "markerUnresolvedRate": 0,
+    "rematchCoverageResolved": 2843,
+    "rematchCoverageUnresolved": 0,
+    "rematchCoverageRate": 1,
+    "rematchEffectiveResolved": 2833,
+    "rematchCatchallFallback": 10,
+    "effectiveRematchRate": 0.9964825888146325,
+    "dslRematchedEffects": 2843,
+    "topUnresolvedSamples": []
+  },
   "gates": [
     {
       "id": "G0",
@@ -45,6 +63,14 @@
       "status": "pass",
       "target": "delegate/enqueue ゼロ + interpret_effect / engine キーワード接続",
       "current": "interpret_effect=0, engine=710, passive_native=1881"
+    },
+    {
+      "id": "G3.5",
+      "name": "効果解決率",
+      "status": "pass",
+      "target": "marker_unresolved≤5.0%, effective_rematch≥95.0%",
+      "current": "markers=0, unresolved=0 (0.0%), effective_rematch=99.6%, catchall=10",
+      "note": "DSL rematched; runtime rematch sim on promoted corpus"
     },
     {
       "id": "G4",

@@ -18,3 +18,10 @@ export {
   type StarterMatchResult,
   type StarterMatchStopReason,
 } from "./playStarterMatch";
+export {
+  collectEffectResolutionMetrics,
+  mergeEffectResolutionTraces,
+  INTERPRET_EFFECT_UNRESOLVED,
+  type EffectResolutionTrace,
+  type AggregatedEffectResolutionMetrics,
+} from "./effectResolutionMetrics";

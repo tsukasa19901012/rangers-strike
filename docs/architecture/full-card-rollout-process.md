@@ -24,7 +24,7 @@
 | G1 DSL 登録 | ✅ | `unimplemented=0` |
 | G2 プリミティブ化 | ✅ | `effect_delegate=0` |
 | G3 エンジン接続 | ✅ | `interpret_effect=1,426` |
-| **G3.5 効果解決率** | 🔄 **主戦場** | rematch 未解決が多数残存 |
+| **G3.5 効果解決率** | 🔄 **主戦場** | `audit:rollout-status` → `effectResolution` で計測 |
 | G4 対戦検証 | 部分 | vertical slice PASS、フル昇格は拡張中 |
 | G5 プロダクト | 未着手 | Web full-playable 未接続 |
 
@@ -47,7 +47,7 @@
 
 | ゲート | 名称 | 完了条件 |
 |--------|------|----------|
-| **G3.5** | 効果解決率 | promoted カードの `interpret_effect` が rematch または runtime で **実効果** を返す割合が目標値以上（下記 §3.5） |
+| **G3.5** | 効果解決率 | promoted 効果の rematch 成功率・`interpret_effect_unresolved` 率が目標値以上（下記 §4.5） |
 | **G4** | 対戦検証 | vertical slice: `apply_failed === 0`、hybrid / full promoted シミュレーション PASS |
 | **G5** | プロダクト接続 | Web `GameApp` が full-playable デッキで対戦可能 |
 
@@ -115,7 +115,7 @@ npm run pipeline:rollout-sync -w @rangers-strike/cards -- --skip-tests
 ```bash
 npm run audit:rollout-status -w @rangers-strike/cards
 # → packages/cards/pipeline/data/rollout-status.json
-# gatesPassed === 6（将来 G3.5 を正式ゲート化後）
+# gatesPassed === 7（G0–G3 + G3.5 + G4 + G5。G4/G5 は unknown 可）
 ```
 
 ---
@@ -213,6 +213,38 @@ interpret_effect 実行
 - core 179 は runtime bridge で後方互換を維持
 - promoted は PATTERNS 追加で rematch 成功率を上げる（G3.5 の主作業）
 
+### 4.5 G3.5 効果解決率 — 数値基準
+
+`audit:rollout-status` が promoted カード全効果（または `--sample=N`）に対し、エンジンと同じ rematch ロジック（`interpretEffectRuntime`）でシミュレーションする。
+
+| 指標 | フィールド | 説明 |
+|------|-----------|------|
+| **interpret_effect マーカー数** | `effectResolution.interpretEffectMarkers` | DSL 上 `{ type: "interpret_effect" }` のままの効果数 |
+| **マーカー unresolved 率** | `effectResolution.markerUnresolvedRate` | マーカー効果のうち rematch 失敗 → 実行時 `interpret_effect_unresolved` になる割合 |
+| **rematch カバレッジ** | `effectResolution.rematchCoverageRate` | 全 promoted 効果文に対する rematch 成功率（catchall 含む） |
+| **実効 rematch 率** | `effectResolution.effectiveRematchRate` | 非 catchall パターンにマッチした割合（G3.5 合格の主指標） |
+| **catchall フォールバック** | `effectResolution.rematchCatchallFallback` | `catchall_interpret` に落ちた効果数（エンジン未実装キーワード） |
+| **DSL 済み** | `effectResolution.dslRematchedEffects` | 既に primitive 化済み（`interpret_effect` 以外）の効果数 |
+
+**G3.5 合格しきい値**（`measureEffectResolution.ts` の `G35_THRESHOLDS` と同期）:
+
+| 条件 | pass | partial | fail |
+|------|------|---------|------|
+| マーカー unresolved 率 | ≤ **5%** | ≤ 50% | > 50% |
+| rematch カバレッジ | ≥ **95%**（`effectiveRematchRate`） | ≥ 80% | < 80% |
+
+**判定:** マーカー 0 件かつ rematch カバレッジ ≥ 95% → **pass**（DSL remigrate 完了）。マーカーありの場合は unresolved 率 ≤ 5% で pass。
+
+```bash
+# フル計測（promoted ~2,800 効果、<1s）
+npm run audit:rollout-status -w @rangers-strike/cards
+
+# CI 向けサンプリング
+npm run audit:rollout-status -w @rangers-strike/cards -- --sample=200
+```
+
+`rollout-status.json` の `effectResolution` セクションと `gates[G3.5]` を週次 delta の記録に使う。
+
 ---
 
 ## 5. 週次イテレーションサイクル
@@ -250,7 +282,8 @@ interpret_effect 実行
 | 指標 | 確認方法 | 目標（週次） |
 |------|----------|--------------|
 | remigrate migrated 件数 | `stub-effect-remigration.json` | +30〜100 |
-| interpret_effect 内訳 | `effect-keyword-coverage.json` | rematch 成功分が増加 |
+| マーカー unresolved 率 | `rollout-status.json` → `effectResolution.markerUnresolvedRate` | 週次 −5pp 以上 |
+| rematch カバレッジ | `rollout-status.json` → `effectResolution.effectiveRematchRate` | ≥ 80%（M23 目標）→ 95% |
 | engine smoke | `npm run test -w @rangers-strike/engine` | 700+ PASS |
 | vertical slice | `simulate100` / `simulateFullPromoted` | `apply_failed: 0` |
 
@@ -446,7 +479,7 @@ npm run pipeline:rollout-sync -w @rangers-strike/cards
 
 | ファイル | 内容 | 確認コマンド |
 |----------|------|--------------|
-| `rollout-status.json` | **ゲート総合** | `audit:rollout-status` |
+| `rollout-status.json` | **ゲート総合 + G3.5 effectResolution** | `audit:rollout-status` |
 | `full-playable-metrics.json` | dslReady / unimplemented | `metrics:full-playable` |
 | `effect-keyword-coverage.json` | interpret_effect / engine / passive | `audit:effect-keywords` |
 | `runtime-effect-audit.json` | primitive 別集計 | `audit:runtime-effects` |
