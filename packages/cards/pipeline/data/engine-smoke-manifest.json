@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T04:41:15.317Z",
+  "generatedAt": "2026-06-10T04:41:33.762Z",
   "promotedDslReady": 1670,
   "grantKeywordSamples": 40,
   "interpretEffectSamples": 40,
@@ -85,8 +85,8 @@
     "XG2-024",
     "XG2-082",
     "XG3-037",
-    "XG3-054",
-    "XG3-072"
+    "XG3-072",
+    "XG3-073"
   ],
   "actionPrimitive": [
     "BK-001",
