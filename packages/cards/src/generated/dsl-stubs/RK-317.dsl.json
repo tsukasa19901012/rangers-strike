@@ -35,13 +35,16 @@
       "name": "ポッドバッティング",
       "text": "これが自軍エリアにある間、モーフの効果で自軍コマンドゾーンか自軍パワーゾーンのオモテ向きのカードからユニットカードを選ぶとき、DAを持つ自軍コマンドを2つ（自軍エリアに｢キャッスルドラン｣があれば1つ）ホールドしてもよい。そうしたとき、かわりに自軍捨札から選んでもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

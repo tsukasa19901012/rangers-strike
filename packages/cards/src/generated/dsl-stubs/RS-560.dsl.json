@@ -34,13 +34,16 @@
       "name": "轟く咆哮",
       "text": "これが自軍エリアにある間、特徴「獣」を持つ自軍Mユニットは、自軍捨札に同じカード名のユニットカードがあれば、BP+1000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

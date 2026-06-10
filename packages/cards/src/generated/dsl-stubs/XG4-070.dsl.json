@@ -22,13 +22,16 @@
       "name": "不死身のドーパント",
       "text": "敵軍ターン中、これが撃破されて捨札になるとき、捨札にするかわりに持ち主の山札に戻してシャッフルする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "return_to_zone_e695b5e8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

@@ -40,9 +40,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "return_to_zone_e3839be383bc",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

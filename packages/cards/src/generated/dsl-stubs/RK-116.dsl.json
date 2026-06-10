@@ -49,13 +49,16 @@
       "name": "そびえる巨体",
       "text": "これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは敵軍ユニットの効果によってホールドされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

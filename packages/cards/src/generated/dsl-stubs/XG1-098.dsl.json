@@ -21,13 +21,16 @@
       "name": "ポイズンアンカー",
       "text": "これが自軍エリアにある間、自分も相手も次のようにする⇒自分自身のターンを終えるとき、特徴「男」または「女」または「獣」または「恐竜」を持つホールド状態のユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

@@ -26,13 +26,16 @@
       "name": "プロジェットカノン",
       "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、自軍コマンドゾーンのカードがコマンドゾーンを離れたとき、自軍捨札からカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

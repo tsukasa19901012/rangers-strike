@@ -22,13 +22,16 @@
       "name": "ブルームーンスラッシュ",
       "text": "これが自軍バトルエリアにある間、敵軍ターン中、相手がパワーゾーンにカードを置かずにチャージフェイズを終えたとき、敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が2以下のカードを1枚選び、ダメージにしてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

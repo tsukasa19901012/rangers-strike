@@ -37,13 +37,16 @@
       "name": "ハロー・ミラージュ",
       "text": "これが自軍ラッシュエリアにある間、すべてのSユニットは、そのカテゴリごとに次の制限を受ける⇒バトルエリアでの並び順が、WBなら2番目、MAなら3番目、OTなら4番目、ETなら5番目、DAなら1番目でなければストライクできない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

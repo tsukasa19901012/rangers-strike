@@ -37,13 +37,16 @@
       "name": "キングスティック",
       "text": "これが自軍エリアにある間、自軍ラッシュフェイズ中、ホールド状態のDAを持たないSユニットを1体選び、自軍コマンドを2つ（選んだユニットがウイングを持つなら4つ）ホールドしてもよい。そうしたとき、選んだユニットをリリースする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

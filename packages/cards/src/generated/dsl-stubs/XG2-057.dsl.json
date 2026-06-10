@@ -36,13 +36,16 @@
       "name": "ラッキークローバー招集",
       "text": "これが自軍エリアにある間、自軍スタートフェイズを終えるとき、自軍ユニットが4体以下なら、これをリリースしてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

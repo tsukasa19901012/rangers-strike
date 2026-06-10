@@ -22,13 +22,16 @@
       "name": "宇宙忍法・重力無秩序",
       "text": "これが自軍エリアにある間、SPが空欄で、ナンバーに数字を持つすべてのユニットは、次の効果を受ける⇒そのユニットのナンバーの数字は、そのユニットの必要パワーの数字になる。（ナンバー0になったユニットは、ＮＣ効果を発動できない）",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

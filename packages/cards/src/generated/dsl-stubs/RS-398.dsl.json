@@ -26,13 +26,16 @@
       "name": "時間漂流者の送還",
       "text": "これが自軍ラッシュエリアにある間、自分がターンを終えるとき、自軍バトルエリアから特徴「忍者」を持つSユニットを2体まで選び、自軍パワーゾーンに送ってもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

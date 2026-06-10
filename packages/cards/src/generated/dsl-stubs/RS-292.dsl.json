@@ -22,13 +22,16 @@
       "name": "虎の子大秘術",
       "text": "これが自軍ラッシュエリアにある間、自分が手札からオペレーションカードを使用するためにホールドするコマンドは、使用するカードと同じカテゴリのコマンドでなくてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

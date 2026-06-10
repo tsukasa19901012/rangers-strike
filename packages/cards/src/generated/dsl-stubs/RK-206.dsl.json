@@ -74,13 +74,16 @@
       "name": "望まない争い",
       "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒アタックを1度でも行った場合、そのターン中はアタックすることができない。また、ストライクを1度でも行った場合、そのターン中はストライクすることができない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

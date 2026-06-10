@@ -26,13 +26,16 @@
       "name": "ゴウライキャノン",
       "text": "これがストライクしてダメージを与えたとき、敵軍コマンドゾーンと敵軍パワーゾーンのダメージ以外のカードから、それぞれ1枚ずつ選んでもよい。そうしたとき、選んだカードを持ち主の手札に戻す。",
       "trigger": {
-        "type": "nc"
+        "type": "on_strike"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "return_to_zone_e38193e3828c",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

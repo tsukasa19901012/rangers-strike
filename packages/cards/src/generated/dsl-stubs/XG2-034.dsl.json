@@ -26,13 +26,16 @@
       "name": "奇襲",
       "text": "これが自軍エリアにある間、ブラストの効果は次のルールに変更される⇒自分がゲームに負けるまで残りダメージ1点または2点で、自軍Lユニットが1体もなければ、これの追加条件は満たさなくてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

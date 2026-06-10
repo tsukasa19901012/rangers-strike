@@ -58,13 +58,16 @@
       "name": "武器換装",
       "text": "これが自軍バトルエリアにある間、自軍バトルフェイズ中、自軍コマンドを3つホールドしてもよい。そうしたとき、これをラッシュエリアに戻す。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

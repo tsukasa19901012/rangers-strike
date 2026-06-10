@@ -37,13 +37,16 @@
       "name": "グラビトン攻撃",
       "text": "これが自軍エリアにある間、自分がターンを終えるとき、このユニットのBP以下のBPを持つ敵軍ユニットを１体選び撃破してもよい。そうしたとき、このユニットを捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

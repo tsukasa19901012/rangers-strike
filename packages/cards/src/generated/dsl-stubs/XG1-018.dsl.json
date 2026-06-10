@@ -26,13 +26,16 @@
       "name": "治安維持",
       "text": "これが自軍バトルエリアにある間、相手は次の制限を受ける⇒Sユニットは、MユニットまたはSCユニットまたはLユニットにアタックすることができない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

@@ -21,13 +21,16 @@
       "name": "スワンイリュージョン",
       "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、敵軍Sユニットにストライクされてダメージを受けたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

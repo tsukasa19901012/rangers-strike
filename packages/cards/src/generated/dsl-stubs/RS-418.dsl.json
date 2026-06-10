@@ -23,13 +23,16 @@
       "name": "炎の眼光",
       "text": "これが自軍バトルエリアにある間、敵軍ユニットがＮＣの効果を発動させたとき、自軍常駐置き場からカードを1枚選び捨札にしてもよい。そうしたとき、そのNCの効果を無効にする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

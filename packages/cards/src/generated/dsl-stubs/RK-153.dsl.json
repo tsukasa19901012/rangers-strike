@@ -36,13 +36,16 @@
       "name": "車両強奪",
       "text": "これが自軍ラッシュエリアにある間、自分がターンを終えるとき、敵軍バトルエリアから特徴「車両」を持つユニットを1体選んでもよい。そうしたとき、次の相手のターン、相手はスタートフェイズにバトルエリアのユニットをラッシュエリアに戻すとき、選ばれたユニットをラッシュエリアに戻すことはできない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

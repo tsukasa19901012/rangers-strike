@@ -34,13 +34,16 @@
       "name": "超シールド進化",
       "text": "これが自軍ラッシュエリアにある間、DAの自軍ユニットが撃破されたとき、自軍ラッシュエリアから特徴「恐竜」を持つユニットを2体選び、かわりに捨札にしてもよい。",
       "trigger": {
-        "type": "on_destroy"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

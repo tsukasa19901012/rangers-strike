@@ -51,13 +51,16 @@
       "name": "生命維持プール",
       "text": "これが自軍エリアにある間、これがホールド状態になったとき、自軍常駐置き場からカードを1枚選び捨札にしてもよい（ウラ向きのカードはウラ向きのまま選ぶ）。そうしたとき、これをリリースする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

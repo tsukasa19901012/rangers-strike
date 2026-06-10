@@ -37,13 +37,16 @@
       "name": "再起動と暴走",
       "text": "これが自軍エリアにある間、これがホールド状態からリリース状態になったとき、これ以外の自軍Sユニットを1体選びホールドしても良い。そうしたとき、敵軍Sユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

@@ -39,13 +39,16 @@
       "name": "ケミカルディスチャージャー",
       "text": "これが自軍エリアにある間、敵軍ターン中、オモテ向きの自軍パワーがウラ向きになるとき、ETの自軍コマンドを2つ選びホールドしてもよい。そうしたとき、そのダメージは無効になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

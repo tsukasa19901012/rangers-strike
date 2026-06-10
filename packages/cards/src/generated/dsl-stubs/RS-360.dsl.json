@@ -36,13 +36,16 @@
       "name": "宇宙で一番美しいのは誰？",
       "text": "これが自軍ラッシュエリアにある間、相手は次の制限を受ける⇒自分自身のターンを終えるとき、特徴「女」を持つ自分自身のユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

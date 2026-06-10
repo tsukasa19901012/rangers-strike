@@ -35,13 +35,16 @@
       "name": "汚れた大地",
       "text": "これが自軍エリアにある間、コマンドゾーンにある本来のカテゴリにDAを持たないカードのうち、必要パワーの数字が3以下のカードは、カテゴリにDAが追加される（この効果は重複しない）。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

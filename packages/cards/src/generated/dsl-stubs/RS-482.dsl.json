@@ -40,13 +40,16 @@
       "name": "カラクリ忍法・天空裂破",
       "text": "これが自軍エリアにある間、特徴「航空機」を持たないMユニットは次の制限を受ける⇒アタックもストライクもできない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

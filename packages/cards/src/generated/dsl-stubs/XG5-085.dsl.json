@@ -36,13 +36,16 @@
       "name": "ワープ",
       "text": "これが自軍山札にある間、このカードがオモテになったとき、これを効果の対象にする前に自軍ラッシュエリアに出してもよい。そうしたとき、自軍山札の上から1枚をオモテにして、かわりに効果の対象にする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

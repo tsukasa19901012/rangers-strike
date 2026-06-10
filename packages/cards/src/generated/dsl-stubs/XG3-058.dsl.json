@@ -38,13 +38,16 @@
       "name": "蘇る雷",
       "text": "これが自軍捨札にある間、自軍ラッシュフェイズ中、自分の手札から特徴「ディスクアニマル」を持つカードを1枚選び捨札にしてもよい。そうしたとき、これを自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

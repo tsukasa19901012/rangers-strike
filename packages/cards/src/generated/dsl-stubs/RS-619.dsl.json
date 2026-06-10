@@ -40,13 +40,16 @@
       "name": "航空戦力の奇襲",
       "text": "これが自軍エリアにある間、ウイングを持つユニットは、特徴「航空機」を持たないユニットにアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

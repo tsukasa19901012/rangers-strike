@@ -21,13 +21,16 @@
       "name": "カラクリ忍法・消身の術",
       "text": "これが自軍エリアにある間、敵軍ターン中、合体を必要とする自軍Lユニットが撃破されたとき、捨札にするかわりに自軍パワーゾーンに送ってもよい。そうしたとき、相手がそのターンを終えたとき、この効果で自軍パワーゾーンに送ったユニットカードが自軍パワーゾーンにオモテ向きであれば、自分はそのユニットカードを自軍ラッシュエリアに出してもよい。",
       "trigger": {
-        "type": "on_destroy"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

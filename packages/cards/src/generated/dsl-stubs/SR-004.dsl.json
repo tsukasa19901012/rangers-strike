@@ -38,13 +38,16 @@
       "name": "妖魔力",
       "text": "これが自軍エリアにある間、相手は次の制限を受ける⇒自分自身のコマンドゾーンにOTまたはETのカードをリリース状態で置いたとき、そのカードをホールドする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

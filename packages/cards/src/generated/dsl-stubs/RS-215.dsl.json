@@ -36,13 +36,16 @@
       "name": "不滅のマシン帝国",
       "text": "これが自軍エリアにある間、特徴「メカ」を持つ自軍ユニットがアタックされたとき、自分の手札からカードを2枚選び、捨札にしてもよい。そうしたとき、バトルは行われない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

@@ -38,13 +38,16 @@
       "name": "戦わなければ生き残れない",
       "text": "これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、SP1/2、コールWB、リードWB、クロス1のどれか1つを宣言してもよい。そうしたとき、このターン、これは宣言した能力を得る。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

@@ -23,13 +23,16 @@
       "name": "消滅の緋色",
       "text": "これが自軍ラッシュエリアにある間、敵軍Sユニットがバトルエリアからラッシュエリアに戻るたび、自軍常駐置き場からカードを1枚選び捨札にしてもよい。そうしたとき、そのユニットを撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

@@ -66,13 +66,16 @@
       "name": "地獄の兄弟",
       "text": "これが自軍パワーゾーンにある間、敵軍ターン中、特徴「加速」を持つ自軍ユニットが撃破されて捨札になったとき、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

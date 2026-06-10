@@ -21,13 +21,16 @@
       "name": "昆虫の精",
       "text": "これが自軍ラッシュエリアにある間、次の効果を発動する⇒特徴「メカ」を持つユニットと、特徴「メカ」を持つビークルに、特徴「昆虫」を追加する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

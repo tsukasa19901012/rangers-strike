@@ -35,13 +35,16 @@
       "name": "修復作業",
       "text": "これが自軍ラッシュエリアにある間、自軍スタートフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自軍パワーゾーンからダメージになっているカードを1枚選びオモテにする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

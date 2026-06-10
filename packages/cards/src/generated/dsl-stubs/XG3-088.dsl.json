@@ -35,13 +35,16 @@
       "name": "ハードックショッカー",
       "text": "これが自軍の手札にある間、レジストまたはウイングを持つ敵軍Sユニットがラッシュされたとき、DAを持つ自軍コマンドを1つホールドしてから、これを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットをホールドする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

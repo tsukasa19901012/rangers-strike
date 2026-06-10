@@ -38,13 +38,16 @@
       "name": "黒い瞳に映るもの",
       "text": "これが自軍バトルエリアにある間、特徴「仮面ライダー」を持つユニットは、アタックかストライクを選ぶとき、可能ならアタックを選ぶ。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

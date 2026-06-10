@@ -36,13 +36,16 @@
       "name": "ジャリュウ一族の侵攻",
       "text": "これが自軍ラッシュエリアにある間、自分が特徴「戦闘員」を持つユニットのカードをラッシュするとき、コマンドをホールドせずにラッシュしてもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
       "trigger": {
-        "type": "nc"
+        "type": "on_rush"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

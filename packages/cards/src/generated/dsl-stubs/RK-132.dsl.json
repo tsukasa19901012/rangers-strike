@@ -37,13 +37,16 @@
       "name": "妻子のバックアップ",
       "text": "これが自軍エリアにある間、敵軍山札がシャッフルされたとき、これがホールド状態ならリリースしてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

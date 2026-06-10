@@ -38,13 +38,16 @@
       "name": "赤い瞳に宿るもの",
       "text": "これが自軍エリアにある間、このユニットよりBPの低い自軍ユニットがアタックされたとき、アタックされたユニットをホールドしてもよい。そうしたとき、アタックしてきたユニットは、ホールドしたユニットのかわりに、このユニットとバトルする。このバトル中、自軍エリアに「仮面ライダーディケイド」があれば、これはBP+2000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

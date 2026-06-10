@@ -34,13 +34,16 @@
       "name": "プラズマ衝撃波",
       "text": "これが自軍エリアにある間、自分も相手も次のようにする⇒自分自身のスタートフェイズ中、バトルエリアのユニットをラッシュエリアに戻せない。そのかわりに、自分自身のバトルエリアのユニットを好きな数選び撃破できる。このスタートフェイズを終えるとき、自分自身のバトルエリアに「大神龍」以外のユニットが1体もなければ、これを持ち主の山札に戻してシャッフルする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

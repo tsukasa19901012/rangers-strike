@@ -21,13 +21,16 @@
       "name": "巨大要塞",
       "text": "これが自軍ラッシュエリアにある間、自分がラッシュするMユニットまたはLユニットの追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを1体捨札にするかわりに、自軍Sユニットを1体ホールドする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

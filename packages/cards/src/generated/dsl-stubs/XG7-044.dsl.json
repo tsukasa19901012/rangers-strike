@@ -51,13 +51,16 @@
       "name": "風都の護り手",
       "text": "これがリリース状態で自軍コマンドゾーンにある間、相手の手札以外から敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "release_command_action_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

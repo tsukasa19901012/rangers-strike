@@ -37,13 +37,16 @@
       "name": "チーキュでは1分間しかもたない",
       "text": "これが自軍エリアにある間、自分がターンを終えるとき、自軍捨札の「ラジエッカー」のカードとこれを置き換える。置き換えられなければこれを捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

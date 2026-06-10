@@ -56,13 +56,16 @@
       "name": "俺はもっと大事なものを見つけた",
       "text": "これが自軍エリアにある間、これ以外の自軍ラッシュエリアのユニットはアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

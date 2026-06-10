@@ -40,13 +40,16 @@
       "name": "折神の結集",
       "text": "これが自軍エリアにある間、自軍捨札にある効果名「侍武装」を持つユニットカードは、このユニットが重ねられているかのように効果を発動する。ただし、同じカード名の効果は重複して発動しない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

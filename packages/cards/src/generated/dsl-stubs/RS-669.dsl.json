@@ -36,13 +36,16 @@
       "name": "アイスエイジエクスプレス",
       "text": "これが自軍バトルエリアにある間、このユニットから「ティライン、ケライン」の順にコンビネーションしたとき、敵軍バトルエリアから本来のBPが5000以下の敵軍ユニットを1体選び持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

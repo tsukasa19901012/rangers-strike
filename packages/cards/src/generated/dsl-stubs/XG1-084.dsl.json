@@ -20,13 +20,16 @@
       "name": "人質と脅迫",
       "text": "これが自軍バトルエリアにある間、相手は次の制限を受ける⇒自分自身のバトルエリアにあるホールド状態のSユニットはラッシュエリアに戻せない。また、自分自身の手札を1枚選び捨札にしなければ、このユニットにアタックすることができない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

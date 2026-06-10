@@ -22,13 +22,16 @@
       "name": "ダイデンジンブーメラン",
       "text": "これが自軍エリアにある間、自軍パワーゾーンのカードがパワーゾーンを離れるとき、そのカードの必要パワーの数字をお互いに見る。そして、その数字以下の必要パワーを持つユニットを、相手は自分自身のユニットから1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

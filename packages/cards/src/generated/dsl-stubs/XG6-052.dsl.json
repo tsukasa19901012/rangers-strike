@@ -36,13 +36,16 @@
       "name": "ハイパークロックアップ",
       "text": "自軍ターン中、これが自軍バトルエリアにある間、敵軍バトルエリアにあるSユニットの効果名を持たないテキストは無効になり、発動もできない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e887aae8bb8d",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

@@ -35,13 +35,16 @@
       "name": "許可なき戦いへの介入",
       "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒Sユニットは、追加条件を持つ、MユニットまたはSCユニットにアタックすることができない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

@@ -23,13 +23,16 @@
       "name": "捕縛する鞭",
       "text": "これが自軍バトルエリアにある間、敵軍ターン中、次の効果を発揮できる⇒敵軍ユニットがラッシュされたとき、自軍コマンドを1つホールドしてもよい。そうしたとき、相手は自分自身のコマンドを1つホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

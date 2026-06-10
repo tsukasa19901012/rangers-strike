@@ -35,13 +35,16 @@
       "name": "契約解除者の捕食",
       "text": "これが自軍エリアにある間、敵軍ターン中、特徴「ミラーライダー」を持つ自軍ユニットが撃破されて捨札になったとき、自分も相手も次のようにする⇒撃破されたユニットの必要パワーの数字と同じ必要パワーの数字を持つSユニットのカードを、自分自身のコマンドゾーンから1枚選び捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

@@ -36,13 +36,16 @@
       "name": "災いを受け止める覚悟",
       "text": "これが自軍エリアにある間、相手によってこれ以外の自軍ユニットが選ばれたとき、このユニットが選ぶ対象として適切なら、このターン中に一度だけ、選ばれたユニットの代わりに、このユニットが選ばれたことにしてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

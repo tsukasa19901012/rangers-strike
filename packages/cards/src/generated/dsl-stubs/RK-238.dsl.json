@@ -35,13 +35,16 @@
       "name": "魂の捕獲",
       "text": "これが自軍エリアにある間、特徴「仮面ライダー」を持つユニットがユニットを撃破して捨札にしたとき、その特徴「仮面ライダー」を持つユニットの持ち主は1枚ドローしてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

@@ -35,13 +35,16 @@
       "name": "ヨロイ軍団の統率",
       "text": "これが自軍バトルエリアにある間、敵軍バトルフェイズ中、バトルエリアに出た特徴「メカ」を持つ敵軍Sユニットは、可能なら特徴「ヨロイ軍団」を持つユニットにアタックする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

@@ -27,13 +27,16 @@
       "name": "巨龍形態",
       "text": "これが自軍バトルエリアにある間、このユニットから「デンライナーゴウカ、デンライナーイスルギ、デンライナーレッコウ」の順にコンビネーションしたとき、本来のBPが3000以下の敵軍ユニットをすべて撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

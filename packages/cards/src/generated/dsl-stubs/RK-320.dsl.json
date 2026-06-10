@@ -42,13 +42,16 @@
       "name": "ファイナルライジングブラスト",
       "text": "これが自軍バトルエリアにある間、敵軍ターン中、ストライクを2回以上されてダメージを受けたとき、これをラッシュエリアに戻してもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

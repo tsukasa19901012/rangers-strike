@@ -42,13 +42,16 @@
       "name": "ボクシングスタイル",
       "text": "自軍バトルフェイズ中、これが自軍バトルエリアにある間、ETを持つ自軍コマンドを3つホールドしてもよい。そうしたとき、これをラッシュエリアに戻す。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e887aae8bb8d",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

@@ -35,13 +35,16 @@
       "name": "ダイレオンレーザー",
       "text": "これが自軍ラッシュエリアにある間、OTを持つ自軍Lユニットは、アタックされるときBP+2000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

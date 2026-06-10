@@ -51,13 +51,16 @@
       "name": "神出鬼没の疾風",
       "text": "これが自軍コマンドゾーンにある間、敵軍ターン中、自軍Sユニットがアタックされたとき、アタックされたユニットとこれを置き換えてもよい。そうしたとき、アタックされたユニットのかわりにこのユニットがバトルする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

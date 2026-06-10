@@ -49,13 +49,16 @@
       "name": "影に向かいて影を斬り、光に向かいて光を斬る",
       "text": "これが自分の手札にある間、クロスを持たない特徴「忍者」を持つ敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、そのユニットを持ち主の山札に戻してシャッフルする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "return_to_zone_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

@@ -34,13 +34,16 @@
       "name": "守護獣の使徒",
       "text": "これが自軍エリアにある間、WBを持つ自軍Mユニットは、『",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "unnamed_register",

@@ -23,13 +23,16 @@
       "name": "カメンライド",
       "text": "これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、自軍パワーゾーンのオモテ向きのカードから特徴「仮面ライダー」を持ち追加条件を持たないユニットカードを2枚まで選び、自軍ラッシュエリアに出してもよい。この効果で出したユニットは、このターン、アタックもストライクもできず、このターンを終えるとき、自軍エリアにあれば捨札になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {
