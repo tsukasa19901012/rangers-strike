@@ -172,4 +172,20 @@ describe("rematchExtractedEffect (M20)", () => {
     );
     expect(built?.matchedPattern).toBe("hand_pick_show_opponent");
   });
+
+  it("matches enemy to power damage generic", () => {
+    const built = rematchExtractedEffect(
+      "敵軍バトルエリアから、ホールド状態のSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("enemy_to_power_damage_generic");
+  });
+
+  it("matches grant ability generic", () => {
+    const built = rematchExtractedEffect(
+      "※これが自軍捨札に特徴「女」を持つユニットカードがあれば次の能力を得る⇒レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      { kind: "note", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("grant_ability_generic");
+  });
 });

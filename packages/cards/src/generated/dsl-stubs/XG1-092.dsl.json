@@ -28,7 +28,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "grant_ability_e887aae8bb8d",
+          "duration": "turn"
         }
       ]
     }

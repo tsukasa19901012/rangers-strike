@@ -27,11 +27,13 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、必要パワーの数字が「1」「9」「3」の自軍コマンドがそれぞれあれば、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_note_e280bbe38193",
+          "duration": "permanent"
         }
       ]
     },

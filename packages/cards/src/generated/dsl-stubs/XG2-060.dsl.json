@@ -21,13 +21,16 @@
       "name": "スペード10―タイム",
       "text": "自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりにゲームから除外して、次の効果を発動できる⇒このターンと、次の相手ターン、バトルフェイズは行われない。",
       "trigger": {
-        "type": "nc"
+        "type": "on_rush"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "exclude_game_e887aae8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

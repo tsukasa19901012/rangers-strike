@@ -25,11 +25,13 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍パワーが5以上あればこれを捨札にしてから、必要パワーの数字が4以下の自軍捨札を1枚選び手札に加えてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_note_e280bbe38193",
+          "duration": "permanent"
         }
       ]
     },

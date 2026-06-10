@@ -21,11 +21,13 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍パワーゾーンにある間、「デカブライト」以外の自軍パワーゾーンのカードは相手に選ばれない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_note_e280bbe38193",
+          "duration": "permanent"
         }
       ]
     },

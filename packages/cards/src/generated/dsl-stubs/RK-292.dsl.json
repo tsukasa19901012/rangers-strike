@@ -50,13 +50,16 @@
       "name": "三つの魂",
       "text": "敵軍ターン中、これが撃破されて捨札になったとき、次の効果を発動できる⇒自軍山札を見て「クロコダイルオルフェノク格闘態」のカードを1枚選び、相手に見せてから自分の手札に加えてもよい。その後、自軍山札をシャッフルする。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "deck_search_e695b5e8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

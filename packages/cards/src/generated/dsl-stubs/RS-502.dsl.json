@@ -36,11 +36,13 @@
       "name": "忘我の中に修行あり",
       "text": "これが自軍ラッシュエリアにある間、特徴「ブルー」を持つすべてのSユニットは次の能力を得る⇒これが撃破されて捨札になるとき、かわりに自分の手札からユニットカードを1枚選び捨札にしてもよい。そうしたとき、撃破されたユニットのBPと捨札にしたユニットカードのBPを合計して、その合計と同じBPを持つ敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "grant_ability_e38193e3828c",
+          "duration": "permanent"
         }
       ]
     }

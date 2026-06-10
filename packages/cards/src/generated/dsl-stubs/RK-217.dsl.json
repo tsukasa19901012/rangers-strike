@@ -20,11 +20,13 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自分の手札にある間、自分が「仮面ライダーブレイドJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーブレイド」を1体捨札にしたことにできる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_note_e280bbe38193",
+          "duration": "permanent"
         }
       ]
     },

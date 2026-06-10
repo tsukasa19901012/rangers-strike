@@ -19,11 +19,13 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍捨札にある間、自軍スタートフェイズ中、本来のカテゴリにMAを持ち、ナンバーを持たない自軍Sユニットがバトルエリアからラッシュエリアに戻るとき、自軍エリアに｢火焔大将｣がなければ、これをラッシュエリアに出してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_note_e280bbe38193",
+          "duration": "permanent"
         }
       ]
     }

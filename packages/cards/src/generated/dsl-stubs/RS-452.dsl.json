@@ -21,11 +21,13 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍バトルエリアにある間、BP6000以上の敵軍ユニットがバトルエリアに出たとき、これをラッシュエリアに戻してもよい。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_note_e280bbe38193",
+          "duration": "permanent"
         }
       ]
     },

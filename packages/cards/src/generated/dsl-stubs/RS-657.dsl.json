@@ -38,11 +38,13 @@
       "name": "航空戦力との連携",
       "text": "これが自軍エリアにある間、特徴「航空機」を持つユニットは次の能力を得る⇒",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "grant_ability_e38193e3828c",
+          "duration": "permanent"
         }
       ]
     },

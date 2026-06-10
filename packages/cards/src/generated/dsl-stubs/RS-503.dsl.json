@@ -36,11 +36,13 @@
       "name": "シャッキーン！の中に修行あり",
       "text": "これが自軍ラッシュエリアにある間、特徴「レッド」を持つすべてのSユニットは次の能力を得る⇒これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "grant_ability_e38193e3828c",
+          "duration": "permanent"
         }
       ]
     }

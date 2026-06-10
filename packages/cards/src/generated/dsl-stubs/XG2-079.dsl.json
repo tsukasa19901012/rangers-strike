@@ -23,13 +23,16 @@
       "name": "タイムベント",
       "text": "敵軍ターン中、これが自軍エリアにある間、これ以外の自軍Sユニットがバトルで撃破されたとき、捨札にするかわりに手札から1枚選びゲームから除外してよい。そうしたとき、撃破されたユニットはその場に留まる。",
       "trigger": {
-        "type": "on_destroy"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "exclude_game_e695b5e8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

@@ -21,11 +21,13 @@
       "name": "ガンマカノン砲",
       "text": "これが自軍エリアにある間、カテゴリを2つ以上持つ自軍Mユニットは次の能力を得る⇒アタックされるとき、カテゴリを2つ以上持つ自軍コマンド1つにつきBP＋3000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "grant_ability_e38193e3828c",
+          "duration": "permanent"
         }
       ]
     }

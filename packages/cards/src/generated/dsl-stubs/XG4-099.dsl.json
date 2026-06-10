@@ -31,7 +31,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "grant_ability_e38193e3828c",
+          "duration": "turn"
         }
       ]
     }

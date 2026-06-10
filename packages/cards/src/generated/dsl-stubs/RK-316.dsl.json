@@ -20,11 +20,13 @@
       "name": "フエッスル",
       "text": "これが自軍エリアにある間、特徴「魔皇力」を持つ自軍Sユニットは、次の能力を得る⇒",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "grant_ability_e38193e3828c",
+          "duration": "permanent"
         }
       ]
     },

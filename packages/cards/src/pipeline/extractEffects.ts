@@ -4474,6 +4474,259 @@ const PATTERNS: PatternMatch[] = [
       };
     },
   },
+  {
+    pattern: "opponent_hold_commands_by_category",
+    test: (body) =>
+      /相手は次のようにする⇒自分自身のコマンドを、自分自身のコマンドゾーンのカテゴリの数まで/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "opponent_hold_commands_by_category",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "opponent_hold_commands_by_category",
+    }),
+  },
+  {
+    pattern: "combo_from_named_card",
+    test: (body) => /「[^」]+」からコンビネーションしたとき発動できる⇒/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `combo_from_named_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "combo_from_named_card",
+    }),
+  },
+  {
+    pattern: "enemy_s_count_balance",
+    test: (body) =>
+      /敵軍Sユニットの数が自軍Sユニットの数より\d+体以上多いとき、自軍Sユニットと同じ数になるまで敵軍Sユニットを/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enemy_s_count_balance",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enemy_s_count_balance",
+    }),
+  },
+  {
+    pattern: "opponent_self_turn_order",
+    test: (body) => /次の効果を、相手、自分の順に行う/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `opponent_self_order_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "opponent_self_turn_order",
+    }),
+  },
+  {
+    pattern: "deck_bottom_hold_command",
+    test: (body) =>
+      /自軍山札の下から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置[いっ]てもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "deck_bottom_hold_command",
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body) ? { type: "enter_battle" } : trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "deck_bottom_hold_command",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "deck_bottom_hold_command",
+    }),
+  },
+  {
+    pattern: "ride_s_grant_ability",
+    test: (body) => /これにライドしているSユニットは次の能力を得る⇒/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `ride_s_ability_${hashEffectText(body).slice(0, 12)}`,
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "ride_s_grant_ability",
+    }),
+  },
+  {
+    pattern: "enemy_to_power_damage_generic",
+    test: (body) => /持ち主のパワーゾーンにダメージにして置(いてもよい|く)/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき/.test(body)
+          ? { type: "on_rush" }
+          : trigger,
+      optional: /してもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `enemy_power_damage_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enemy_to_power_damage_generic",
+    }),
+  },
+  {
+    pattern: "exclude_from_game_generic",
+    test: (body) => /ゲームから除外/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+            : trigger,
+      optional: /してもよい|してよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `exclude_game_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "exclude_from_game_generic",
+    }),
+  },
+  {
+    pattern: "deck_search_generic",
+    test: (body) => /自軍山札を見て/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /撃破されて捨札になったとき/.test(body)
+        ? { type: "on_destroy" }
+        : /ラッシュしたとき/.test(body)
+          ? { type: "on_rush" }
+          : trigger,
+      optional: /してもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `deck_search_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "deck_search_generic",
+    }),
+  },
+  {
+    pattern: "while_in_field_note_generic",
+    test: (body) =>
+      /^※これが/.test(body) && (/にある間/.test(body) || /自分の手札にある間/.test(body)),
+    build: (body) => ({
+      id: noteEffectIdFromBody(body),
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `while_note_${hashEffectText(body).slice(0, 12)}`,
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_in_field_note_generic",
+    }),
+  },
+  {
+    pattern: "grant_ability_generic",
+    test: (body) => /次の能力を得る⇒/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /にある間/.test(body)
+          ? { type: "while_in_field" }
+          : trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `grant_ability_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "grant_ability_generic",
+    }),
+  },
+  {
+    pattern: "grant_effect_generic",
+    test: (body) => /次の効果を発動できる⇒/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /ラッシュしたとき|ラッシュするとき/.test(body)
+        ? { type: "on_rush" }
+        : /バトルエリアに出たとき/.test(body)
+          ? { type: "enter_battle" }
+          : trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `grant_effect_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "grant_effect_generic",
+    }),
+  },
 ];
 
 function delegateEffectKeyword(effectId: string): EffectPrimitive {

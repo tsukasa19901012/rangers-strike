@@ -20,7 +20,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "opponent_self_order_e6aca1e381ae",
+          "duration": "turn"
         }
       ]
     }

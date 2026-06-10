@@ -27,9 +27,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "deck_search_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
       "id": "named_e382a4e382afe382b5e383bb",

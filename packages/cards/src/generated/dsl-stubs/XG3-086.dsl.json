@@ -36,13 +36,16 @@
       "name": "ハンドレットフィーラー",
       "text": "これが自軍バトルエリアにある間、相手が自分自身のリリース状態のSユニットをバトルエリアに出すために選んだとき、そのユニットの必要パワーの数字を見て、自軍捨札から同じ必要パワーの数字を持つカードを1枚選びゲームから除外してもよい。そうしたとき、そのユニットをホールドする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "exclude_game_e38193e3828c",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

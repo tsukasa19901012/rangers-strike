@@ -22,11 +22,13 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍エリアにある間、自分がターンを終えるとき、自軍コマンドゾーンか自軍捨札の「カブタック」のカードとこれを置き換える。置き換えられなければこれを捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_note_e280bbe38193",
+          "duration": "permanent"
         }
       ]
     },
