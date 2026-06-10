@@ -4,7 +4,7 @@
 カードデータ・ルールエンジン・Web UI をモノレポ構成で管理しています。
 
 - **プレイ形式:** 1人 vs CPU（CPU レベル Lv1〜Lv5 を選択可能）
-- **対応カード:** Legend 1（RS-001〜070）/ Legend 2（RS-071〜122）/ Legend 3（RS-123〜178, SR-001）
+- **対応カード:** コア 179 枚（L1–L3）+ promoted 1,670 枚 — **フルプレイアブル計 1,849 枚**（`fullPlayableCatalog`）
 - **UI:** スマホ・タブレット・PC 向けレスポンシブ
 
 ## 対戦画面のレイアウト方針
@@ -30,8 +30,9 @@
 | 機能 | 説明 |
 |------|------|
 | CPU 対戦 | ターン進行・ラッシュ・バトル・ストライクなど基本ルールを実装。Lv1〜Lv5 で強さを調整 |
-| デッキ作成 | カード検索・カテゴリー絞り込み・自作デッキ保存（最低40枚・同名3枚まで、戦闘員等は例外） |
+| デッキ作成 | 1,849 枚プールから検索・収録セット絞り込み・自作デッキ保存（40枚固定・同名3枚まで、戦闘員等は例外） |
 | スターターデッキ | Type A/B/C（L1）＋ 轟の翼 / 銀の冒険者（L3）の計5種 |
+| フルプレイアブル | full-promoted / hybrid-promoted ランダムプリセット、promoted 混在の自作デッキ |
 | カード詳細 | 画像と効果テキストをモーダルで表示 |
 | エラタ対応 | 公式 wiki のエラタ・Q&A を `packages/cards` で管理 |
 | 効果 UI | オペレーション・効果選択・ダメージ支払い・ゾード構築など、カード効果ごとの操作モーダルを配線 |
@@ -120,7 +121,13 @@ npm test -w @rangers-strike/web
 |-----------|-----------|
 | `engine` | ルール統合、CPU AI（`src/ai/`）、スタートフェイズ、カード効果 |
 | `cards` | デッキルール、効果カタログ、スキーマ |
-| `web` | Web UI 効果カバレッジ（`apps/web/lib/webUiEffectCoverage.ts`） |
+| `web` | Web UI 効果カバレッジ、`g5Acceptance`、Playwright E2E（AC-06） |
+
+Web E2E（初回は `npm run test:e2e:install -w @rangers-strike/web`）:
+
+```bash
+npm run test:e2e -w @rangers-strike/web
+```
 
 エンジンのモンキーテスト（長時間ランダム対戦）:
 
@@ -151,6 +158,8 @@ npm run build
 | 内容 | ファイル |
 |------|----------|
 | カード定義 L1 / L2 / L3 | `src/legend1/cards.json`、`src/legend2/cards.json`、`src/legend3/cards.json` |
+| フルプレイアブルカタログ | `src/extendedCatalog.ts`（`fullPlayableCatalog`）、`generated/catalog/*-promoted/` |
+| ロールアウト進捗 | `npm run audit:rollout-status -w @rangers-strike/cards` → `pipeline/data/rollout-status.json` |
 | ユニット効果 JSON L1 / L2 / L3 | `src/legend1/unitEffects.json`、`src/legend2/unitEffects.json`、`src/legend3/unitEffects.json` |
 | 実装済み効果 ID 一覧 | `src/unitEffectCatalog.ts` |
 | NC（ナンバーコンボ） | `src/comboEffects.ts` |
@@ -182,6 +191,12 @@ npm run build
 | 対戦メイン | `components/GameApp.tsx` |
 
 Wiki 収集状況は [docs/wiki/report.md](docs/wiki/report.md) を参照（カード md 1810件・atwiki 1983ページ）。
+
+フルプレイアブル（G5）の要件・設計:
+
+- [docs/architecture/web-full-playable-requirements.md](docs/architecture/web-full-playable-requirements.md)
+- [docs/architecture/web-full-playable-design.md](docs/architecture/web-full-playable-design.md)
+- [docs/architecture/full-card-rollout-process.md](docs/architecture/full-card-rollout-process.md)
 
 wiki 効果テキスト照合（Legend 1/2 は grnrngr FAQ + atwiki、Legend 3+ は w.atwiki.jp）:
 

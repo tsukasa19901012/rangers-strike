@@ -2,6 +2,8 @@
 
 **目的:** Wiki 全カード（1,849 枚）を Web UI から「選べる・組める・対戦開始できる」状態に接続する。  
 **更新:** 2026-06-10  
+**状態:** **W1–W5 完了** — `audit:rollout-status` G5 pass、AC-01–AC-07 テスト済み  
+**設計:** [web-full-playable-design.md](./web-full-playable-design.md)  
 **関連:** [full-card-rollout-process.md](./full-card-rollout-process.md)（G5）, [card-generation-pipeline.md](./card-generation-pipeline.md), [effect_catalog.md](./effect_catalog.md), [vertical-slice-gaps.md](./vertical-slice-gaps.md)
 
 ---
@@ -23,7 +25,10 @@
 
 ---
 
-## Phase 0 — 現状棚卸し
+## Phase 0 — 起点棚卸し（W1 着手前・参考）
+
+> **注:** 以下は G5 着手前（2026-06-10 初版）の事実記録。実装後の状態は [Phase 3 サマリー](#phase-3--レビュー用サマリー1-ページ) を参照。
+
 
 ### 0-A: カタログ・デッキルール
 
@@ -129,17 +134,17 @@ flowchart TD
 
 ---
 
-### 現状 vs 目標 比較表
+### 起点 vs 目標 比較表（W1 着手前 → **2026-06-10 完了**）
 
-| 観点 | 現状 | 目標（G5 / PO 前提） |
-|------|------|---------------------|
-| カタログ枚数（ビルダー） | 179 | 1,849 |
-| カタログ枚数（検証） | 179 | 1,849 |
-| 自作 full デッキ対戦 | 不可（promoted ID で破綻） | 可 |
-| ランダム full-promoted 対戦 | 可 | 維持 |
-| UI 効果カバレッジ | L1–3 named ~120 effectId | promoted DSL 効果は W4–W5 で可視化 |
-| 画像 | promoted 0% | W3 でプレースホルダ改善最低限 |
-| G5 ゲート | `unknown` / 未接続 | W1–W2 完了で pass 再定義 |
+| 観点 | 起点（Phase 0） | 目標 | **完了時** |
+|------|----------------|------|-----------|
+| カタログ枚数（ビルダー） | 179 | 1,849 | ✅ `fullPlayableCatalog` |
+| カタログ枚数（検証） | 179 | 1,849 | ✅ `deckBuilder.ts` |
+| 自作 full デッキ対戦 | 不可 | 可 | ✅ `createGameFromDeckSelections` |
+| ランダム full-promoted 対戦 | 可 | 維持 | ✅ |
+| UI 効果カバレッジ | L1–3 ~120 effectId | W4–W5 可視化 | ✅ バッジ + 汎用 modal（完全配線は継続） |
+| 画像 | promoted 0% | W3 改善 | ✅ 1,004 枚ローカル + プレースホルダ |
+| G5 ゲート | `unknown` | pass | ✅ AC-01–AC-07 |
 
 ---
 
@@ -147,20 +152,20 @@ flowchart TD
 
 「選べる / 組める / 始められる / 動く / 操作できる / 分かる」の 6 観点。
 
-| ID | ギャップ | 観点 | 深刻度 | ブロッカー |
-|----|---------|------|--------|-----------|
-| GAP-01 | デッキビルダーが `allCardsCatalog`（179）固定 | 選べる | **P0** | **G5 ブロッカー** |
-| GAP-02 | `validateDeckEntries` / `buildCardDefinitions` が L1–3 カタログ固定 | 組める | **P0** | **G5 ブロッカー** |
-| GAP-03 | custom デッキの game 生成が L1–3 展開のみ | 始められる | **P0** | **G5 ブロッカー** |
-| GAP-04 | `getCardById` が promoted を解決しない（対戦 UI 全体） | 分かる | **P1** | GAP-03 とセット |
-| GAP-05 | promoted `imageUrl` 全欠損 | 分かる | **P2** | 非ブロッカー（W3） |
-| GAP-06 | `webUiEffectCoverage` が L1–3 named effect のみ | 操作できる | **P1** | W4 まで許容（警告で期待値調整） |
-| GAP-07 | 未実装 UI 効果で `pendingEffectChoice` スタールの可能性 | 操作できる | **P1** | G4 + W4 |
-| GAP-08 | 部分実装のユーザー通知なし | 分かる | **P1** | PO 方針（警告のみ）で W2 着手 |
-| GAP-09 | 1,849 件リストのパフォーマンス未対策 | 選べる | **P2** | W1 は検索必須で緩和、W3 で本対策 |
-| GAP-10 | デッキ選択・対戦設定がリロードで消失 | 始められる | **P3** | 非ブロッカー |
-| GAP-11 | 公式 banned リスト未実装 | 組める | **P3** | PO 確認待ち |
-| GAP-12 | `buildFullPromotedDeck` quotas と自作ルールの差（同名 1 vs 3） | 組める | **P2** | プリセット専用として文書化で可 |
+| ID | ギャップ | 観点 | 深刻度 | 状態 |
+|----|---------|------|--------|------|
+| GAP-01 | デッキビルダーが `allCardsCatalog`（179）固定 | 選べる | P0 | ✅ W1 |
+| GAP-02 | `validateDeckEntries` / `buildCardDefinitions` が L1–3 固定 | 組める | P0 | ✅ W1–W2 |
+| GAP-03 | custom デッキの game 生成が L1–3 展開のみ | 始められる | P0 | ✅ W2 |
+| GAP-04 | `getCardById` が promoted を解決しない | 分かる | P1 | ✅ W2 `resolvePlayableCard` |
+| GAP-05 | promoted `imageUrl` 全欠損 | 分かる | P2 | ✅ W3（666 枚は 404 継続） |
+| GAP-06 | `webUiEffectCoverage` が L1–3 のみ | 操作できる | P1 | ⚠️ W4 緩和（完全配線は継続） |
+| GAP-07 | 未実装 UI でスタールの可能性 | 操作できる | P1 | ⚠️ W4 汎用 modal + G4 sim |
+| GAP-08 | 部分実装のユーザー通知なし | 分かる | P1 | ✅ W2 警告バナー |
+| GAP-09 | 1,849 件リストのパフォーマンス | 選べる | P2 | ✅ W3 仮想スクロール |
+| GAP-10 | デッキ選択・対戦設定がリロードで消失 | 始められる | P3 | 未着手（任意） |
+| GAP-11 | 公式 banned リスト未実装 | 組める | P3 | ⚠️ 骨格のみ（ID 未収録） |
+| GAP-12 | full-promoted quotas と自作ルールの差 | 組める | P2 | ✅ プリセット専用として文書化 |
 
 ### 深刻度定義
 
@@ -323,19 +328,19 @@ flowchart TD
 
 ---
 
-### 8. 受け入れ基準（G5 再定義案）
+### 8. 受け入れ基準（G5）
 
-| # | 基準 |
-|---|------|
-| AC-01 | デッキビルダーで `fullPlayableCatalog` から任意カードを検索・追加できる |
-| AC-02 | 40 枚・枚数制限を満たす自作デッキを保存できる（部分実装カード含む。警告表示あり） |
-| AC-03 | StartScreen で自作デッキを選択し CPU 対戦を開始できる |
-| AC-04 | 対戦中、promoted カードが **名前・テキスト付き**で表示される（画像はプレースホルダ可） |
-| AC-05 | 既存 starter 5 種・既存 L1–3 custom デッキ・full-promoted プリセットが回帰なく動作 |
-| AC-06 | モバイル幅（〜767px）でデッキビルダーの検索・追加・保存が完了できる |
-| AC-07 | （推奨・W4 以降）vertical slice / 手動 smoke で自作 full デッキの `apply_failed: 0` |
+| # | 基準 | 検証 |
+|---|------|------|
+| AC-01 | デッキビルダーで `fullPlayableCatalog` から任意カードを検索・追加できる | `g5Acceptance.test.ts` |
+| AC-02 | 40 枚・枚数制限を満たす自作デッキを保存できる（警告表示あり） | `g5Acceptance.test.ts` |
+| AC-03 | StartScreen で自作デッキを選択し CPU 対戦を開始できる | `g5Acceptance.test.ts` |
+| AC-04 | 対戦中、promoted カードが **名前・テキスト付き**で表示される | `g5Acceptance.test.ts` |
+| AC-05 | starter 5 種・L1–3 custom・full-promoted プリセットが回帰なく動作 | `g5Acceptance.test.ts` |
+| AC-06 | モバイル幅（〜767px）でデッキビルダーの検索・追加・保存が完了できる | `mobileDeckBuilderLayout.test.ts` + `e2e/deck-builder-mobile.spec.ts` |
+| AC-07 | 自作 full デッキの vertical slice で `apply_failed: 0` | `simulateCustomFullDeck.test.ts` |
 
-`audit:rollout-status` の G5 を **「AC-01–AC-06 満たす」** に更新する提案。
+`audit:rollout-status` の G5 は **AC-01–AC-07 満たす** で **pass**。
 
 ---
 
@@ -369,8 +374,8 @@ flowchart TD
 14. **W4:** 汎用 `EffectChoiceModal` フォールバック（未知 effectId）
 15. **W4:** 開発者向け effect ログ（effectId / unresolved）トグル
 16. **W5:** `rollout-status.json` / G3.5 メトリクスと UI バッジ連動
-17. **横断:** `webUiIntegration.test.ts` を full カタログのサンプルデッキで拡張
-18. **横断:** `audit:rollout-status` G5 判定を AC-01–06 に同期（ドキュメント PR）
+17. ~~**横断:** `webUiIntegration.test.ts` を full カタログのサンプルデッキで拡張~~ ✅
+18. ~~**横断:** `audit:rollout-status` G5 判定を AC-01–07 に同期~~ ✅
 19. **将来:** localStorage v2（警告確認タイムスタンプ）設計
 20. **将来:** 公式 banned リスト対応（`deckRules.ts`）
 
@@ -420,3 +425,4 @@ flowchart TD
 | 2026-06-10 | W5 完了: `estimateCardUiCoverage` バッジ + `audit:rollout-status` G5 pass |
 | 2026-06-10 | AC-06 レイアウト契約テスト + AC-07 custom promoted vertical slice + G4 sim-metrics 連動 |
 | 2026-06-10 | Phase 3 サマリー更新・Playwright AC-06 E2E・webUiIntegration full サンプル拡張 |
+| 2026-06-10 | Phase 0–1 を完了状態に整合、AC 表・バックログ #17–18 を更新 |

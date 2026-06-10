@@ -1,8 +1,8 @@
 # 全カード反映プロセス（1,849 枚）
 
 **目的:** Wiki 全カード（1,849 枚）をエンジンで対戦可能にし、効果が意図どおり解決される状態まで到達する。  
-**更新:** 2026-06-10（G1–G3 完了後）  
-**関連:** [card-generation-pipeline.md](./card-generation-pipeline.md)（Wiki→DSL 技術設計）, [implementation-feasibility.md](./implementation-feasibility.md), [card-classification-abcde.md](./card-classification-abcde.md)
+**更新:** 2026-06-10（**G0–G5 全ゲート pass**）  
+**関連:** [card-generation-pipeline.md](./card-generation-pipeline.md)（Wiki→DSL 技術設計）, [web-full-playable-requirements.md](./web-full-playable-requirements.md)（G5）, [implementation-feasibility.md](./implementation-feasibility.md), [card-classification-abcde.md](./card-classification-abcde.md)
 
 ---
 
@@ -16,17 +16,17 @@
 | Web 担当 | §6 Phase 6（G5） |
 | 進捗確認 | §7 コマンド → `npm run audit:rollout-status` |
 
-**現在地（2026-06-10）**
+**現在地（2026-06-10）— `gatesPassed: 7/7`**
 
 | ゲート | 状態 | 一言 |
 |--------|------|------|
 | G0 カタログ整合 | ✅ | 1,849 枚 |
-| G1 DSL 登録 | ✅ | `unimplemented=0` |
+| G1 DSL 登録 | ✅ | `dslReady=1849`, `unimplemented=0` |
 | G2 プリミティブ化 | ✅ | `effect_delegate=0` |
-| G3 エンジン接続 | ✅ | `interpret_effect=1,426` |
-| **G3.5 効果解決率** | 🔄 **主戦場** | `audit:rollout-status` → `effectResolution` で計測 |
-| G4 対戦検証 | 部分 | vertical slice PASS、フル昇格は拡張中 |
-| G5 プロダクト | 未着手 | Web full-playable 未接続 |
+| G3 エンジン接続 | ✅ | engine=710, passive_native=1881 |
+| G3.5 効果解決率 | ✅ | effective_rematch=99.6% |
+| G4 対戦検証 | ✅ | `sim-metrics.json` — `apply_failed=0`（50/50 games） |
+| G5 プロダクト | ✅ | Web full-playable — AC-01–AC-07 |
 
 ---
 
@@ -43,15 +43,15 @@
 | **G2** | 効果プリミティブ化 | `effect_delegate === 0`、`enqueue_trigger` のみ === 0 |
 | **G3** | エンジン接続 | `interpret_effect` 登録済み、レガシー bridge 接続、engine smoke PASS |
 
-### 1.2 品質ゲート（G3.5–G5）— 残作業
+### 1.2 品質ゲート（G3.5–G5）— 完了
 
-| ゲート | 名称 | 完了条件 |
-|--------|------|----------|
-| **G3.5** | 効果解決率 | promoted 効果の rematch 成功率・`interpret_effect_unresolved` 率が目標値以上（下記 §4.5） |
-| **G4** | 対戦検証 | vertical slice: `apply_failed === 0`、hybrid / full promoted シミュレーション PASS |
-| **G5** | プロダクト接続 | Web `GameApp` が full-playable デッキで対戦可能 |
+| ゲート | 名称 | 完了条件 | 状態 |
+|--------|------|----------|------|
+| **G3.5** | 効果解決率 | rematch 成功率が目標値以上（§4.5） | ✅ 99.6% |
+| **G4** | 対戦検証 | vertical slice `apply_failed === 0` | ✅ `simulateFullPromoted` + `simulateCustomFullDeck` |
+| **G5** | プロダクト接続 | Web が full-playable デッキで対戦可能 | ✅ [web-full-playable-requirements.md](./web-full-playable-requirements.md) |
 
-> **注意:** G3 完了後も、多くの `interpret_effect` は実行時に `interpret_effect_unresolved`（実質 noop）のまま。G3 は「DSL 構造とエンジン配線」、G3.5 は「実際に効果が動く」ことを測る。
+> **注意:** G3 は「DSL 構造とエンジン配線」、G3.5 は「実際に効果が動く」ことの計測。G5 完了後も **Web UI 効果の完全配線**（GAP-06/07）は継続改善対象。
 
 ---
 
@@ -71,7 +71,7 @@ flowchart LR
     G3[G3 エンジン接続]
   end
 
-  subgraph quality["品質フェーズ（現在）"]
+  subgraph quality["品質フェーズ（完了）"]
     G35[G3.5 効果解決率]
     G4[G4 対戦検証]
     G5[G5 Web 接続]
@@ -79,7 +79,7 @@ flowchart LR
 
   W --> P --> G0 --> G1 --> G2 --> G3
   G3 --> G35 --> G4 --> G5
-  G35 -.->|週次ループ| G35
+  G35 -.->|週次メンテ| G35
 ```
 
 ### 2.1 初回セットアップ（リポジトリ clone 後 / wiki 大更新後）
@@ -115,7 +115,7 @@ npm run pipeline:rollout-sync -w @rangers-strike/cards -- --skip-tests
 ```bash
 npm run audit:rollout-status -w @rangers-strike/cards
 # → packages/cards/pipeline/data/rollout-status.json
-# gatesPassed === 7（G0–G3 + G3.5 + G4 + G5。G4/G5 は unknown 可）
+# gatesPassed === 7（G0–G3 + G3.5 + G4 + G5）
 ```
 
 ---
@@ -407,23 +407,33 @@ npm run test -w @rangers-strike/engine -- src/verticalSlice/simulate100.test.ts
 # ハイブリッド昇格（10/25/35 枚差し替え）
 npm run test -w @rangers-strike/engine -- src/verticalSlice/simulatePromoted.test.ts
 
-# フル昇格 40 枚デッキ × 50 試合
+# フル昇格 40 枚デッキ × 50 試合（→ sim-metrics.json）
 npm run test -w @rangers-strike/engine -- src/verticalSlice/simulateFullPromoted.test.ts
+
+# 自作 hybrid デッキ（abarenoh + BK-001）× 10 試合（AC-07）
+npm run test -w @rangers-strike/engine -- src/verticalSlice/simulateCustomFullDeck.test.ts
 ```
 
 | テスト | 合格条件 |
 |--------|----------|
 | simulate100 | `apply_failed: 0`, winner > 0 |
 | simulatePromoted | 全 tier `apply_failed: 0`, rush/battle フェイズ到達 |
-| simulateFullPromoted | `apply_failed: 0`, rush/battle フェイズ到達 |
+| simulateFullPromoted | `apply_failed: 0`, rush/battle フェイズ到達 → `sim-metrics.json` |
+| simulateCustomFullDeck | `apply_failed: 0`, winner = game count |
 
 ---
 
-### Phase 6 — G5 プロダクト接続
+### Phase 6 — G5 プロダクト接続（完了）
 
-1. `GameApp` で `createFullPromotedGame` / `fullPlayableCatalog` を選択可能に
-2. 効果ログに DSL `effectId` を表示（デバッグ）
-3. リリース段階: スターター → hybrid promoted → full-playable
+詳細: [web-full-playable-design.md](./web-full-playable-design.md), [web-full-playable-requirements.md](./web-full-playable-requirements.md)
+
+| フェーズ | 主な成果物 |
+|---------|-----------|
+| W1–W2 | `fullPlayableCatalog` デッキビルダー、`resolvePlayableCard`、警告バナー、`g5Acceptance` |
+| W3 | 仮想スクロール、promoted 画像 1,004 枚、`resolveCardImageUrl` |
+| W4 | UI未確認バッジ、汎用 `EffectChoiceModal`、`debugEffectLog` |
+| W5 | `estimateCardUiCoverage`、`dsl-ready-ids`、G5 gate pass |
+| 横断 | Playwright AC-06 E2E、`webUiIntegration` promoted サンプル 30 枚 |
 
 ---
 
@@ -490,6 +500,8 @@ npm run pipeline:rollout-sync -w @rangers-strike/cards
 | `engine-smoke-manifest.json` | smoke サンプル cardId | `generate-engine-smoke` |
 | `implementation-feasibility.json` | A/B/C 区分 | `audit:implementation-feasibility` |
 | `card-classification.json` | ABCDE 区分 | `audit:card-classification` |
+| `sim-metrics.json` | G4 対戦 sim 結果 | `simulateFullPromoted.test.ts` |
+| `promoted-image-download.json` | 画像一括 DL 結果 | `download-promoted-images` |
 
 ### ベースライン（G1–G3 完了時点）
 
@@ -513,12 +525,12 @@ npm run pipeline:rollout-sync -w @rangers-strike/cards
 |----------------|------|--------|------|
 | **M16–M20** | 昇格パイプライン + delegate bridge | G0–G2 部分 | ✅ |
 | **M21** | G1–G3 構造完了 | G1–G3 | ✅ |
-| **M22** | top-30 テキストパターン | G3.5 | 🔄 次 |
-| **M23** | B/C 区分 80% rematch | G3.5 | 予定 |
-| **M24** | D 区分キーワード（wing/chase） | G3.5 + engine | 予定 |
-| **M25** | E 区分 + full promoted sim 安定 | G4 | 予定 |
-| **M26** | Web full-playable | G5 | 予定 |
-| **Done** | 全ゲート + 効果解決率目標 | G0–G5 | — |
+| **M22** | top-30 テキストパターン | G3.5 | ✅ 99.6% rematch |
+| **M23** | B/C 区分 rematch | G3.5 | ✅ ゲート pass |
+| **M24** | D 区分キーワード（wing/chase） | G3.5 + engine | 🔄 継続改善 |
+| **M25** | full promoted sim 安定 | G4 | ✅ `apply_failed=0` |
+| **M26** | Web full-playable | G5 | ✅ AC-01–AC-07 |
+| **Done** | 全ゲート + 効果解決率目標 | G0–G5 | **到達（2026-06-10）** |
 
 **M22 の具体的タスク例**
 
@@ -553,4 +565,6 @@ npm run pipeline:rollout-sync -w @rangers-strike/cards
 | [trigger_catalog.md](./trigger_catalog.md) | 誘発タイミング |
 | [card-flags-migration.md](./card-flags-migration.md) | Modifier / Event 移行 |
 | [legend1-starter-dsl-gaps.md](./legend1-starter-dsl-gaps.md) | コア 179 の TS→DSL 移行 |
+| [web-full-playable-requirements.md](./web-full-playable-requirements.md) | G5 Web 接続要件・AC |
+| [web-full-playable-design.md](./web-full-playable-design.md) | G5 設計メモ W1–W5 |
 | [implementation-roadmap.md](./implementation-roadmap.md) | エンジン Tier 別実装順序 |

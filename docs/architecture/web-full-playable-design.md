@@ -1,6 +1,7 @@
-# Web フルプレイアブル — 設計メモ（W1–W2）
+# Web フルプレイアブル — 設計メモ（W1–W5）
 
 **更新:** 2026-06-10  
+**状態:** W1–W5 完了 — G5 pass（AC-01–AC-07）  
 **要件:** [web-full-playable-requirements.md](./web-full-playable-requirements.md)（OQ 確定済み）
 
 ---

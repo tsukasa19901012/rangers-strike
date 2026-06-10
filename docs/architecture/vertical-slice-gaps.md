@@ -1,9 +1,10 @@
 # Vertical Slice — 実装と設計ギャップ
 
-**日付:** 2026-06-09  
-**目的:** 第1弾スターター（abarenoh / dekaranger / magiking）で  
+**日付:** 2026-06-10（G4 拡張反映）  
+**目的:** スターターおよび full-promoted / 自作 hybrid デッキで  
 ゲーム開始 → ドロー → チャージ → ラッシュ → バトル → ストライク → 勝敗まで完走  
-**実装:** `packages/engine/src/verticalSlice/`
+**実装:** `packages/engine/src/verticalSlice/`  
+**関連:** [full-card-rollout-process.md](./full-card-rollout-process.md)（G4）, [web-full-playable-requirements.md](./web-full-playable-requirements.md)（G5）
 
 ---
 
@@ -11,10 +12,11 @@
 
 | 項目 | 内容 |
 |------|------|
-| ゲーム生成 | `createStarterGame()` — `definitionScope: "full"`、L1 スターターデッキ |
+| ゲーム生成 | `createStarterGame()` / `createFullPromotedGame()` / `createGameForDecks()` — `definitionScope: "full"` |
 | 対戦ループ | `playStarterMatchUntilEnd()` — CPU Lv1 双方 |
 | エクスポート | `packages/engine/src/index.ts` から公開 |
-| テスト | `starterMatch.test.ts`（コアフロー）、`simulate100.test.ts`（100試合） |
+| テスト | `starterMatch.test.ts`、`simulate100.test.ts`、`simulatePromoted.test.ts`、`simulateFullPromoted.test.ts`、`simulateCustomFullDeck.test.ts` |
+| G4 ゲート | `sim-metrics.json` — `apply_failed=0`（50 games full-promoted） |
 
 ### 完走可能なフェイズ
 
@@ -51,7 +53,7 @@
 | VS-02 | **`applyAction` 一部パスが `withSyncedEffectStack` を通らない** | Medium | `ok()` 以外の `{ ok: true, state }` 返却が複数。キャッシュ不整合の温床 |
 | VS-03 | **`end` フェイズ未到達** | Low | 100試合で `end: 0`。勝利がバトルフェイズ中に確定しフェイズ遷移前に終了 |
 | VS-04 | **Event 層 / リプレイ** | Low | 未実装（`event-architecture.md` 参照） |
-| VS-05 | **Web UI 未配線** | Medium | `createStarterGame` はエンジンのみ。GameApp は未接続 |
+| VS-05 | **Web UI 効果の完全配線** | Medium | G5 完了: `GameApp` は full-playable 接続済み。promoted の named effect UI は W4 緩和（バッジ・汎用 modal）で継続改善 |
 
 ### CPU / ゲームプレイ品質
 
@@ -80,7 +82,10 @@ DSL ギャップの詳細は [legend1-starter-dsl-gaps.md](./legend1-starter-dsl
 | ファイル | 内容 |
 |----------|------|
 | `verticalSlice/starterMatch.test.ts` | 生成・ドロー・seed 完走 |
-| `verticalSlice/simulate100.test.ts` | 100試合 AI シミュレーション |
+| `verticalSlice/simulate100.test.ts` | L1 スターター 100 試合 |
+| `verticalSlice/simulatePromoted.test.ts` | hybrid promoted（10/25/35 枚差し替え） |
+| `verticalSlice/simulateFullPromoted.test.ts` | full-promoted 40 枚 × 50 試合 → `sim-metrics.json` |
+| `verticalSlice/simulateCustomFullDeck.test.ts` | 自作 hybrid（abarenoh + BK-001）× 10 試合（AC-07） |
 | `effectStack.test.ts` | スタック順序 + ステールキャッシュ回帰 |
 
 ---
