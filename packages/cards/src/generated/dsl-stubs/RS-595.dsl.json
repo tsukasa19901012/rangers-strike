@@ -39,7 +39,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "ignore_rule_text_e38193e3828c",
+          "duration": "turn"
         }
       ]
     }

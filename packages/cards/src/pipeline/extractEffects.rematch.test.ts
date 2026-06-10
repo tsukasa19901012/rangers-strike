@@ -98,6 +98,23 @@ describe("rematchExtractedEffect (M20)", () => {
     expect(built?.matchedPattern).toBe("category_wb_battle_phase");
   });
 
+  it("matches ignore rule text override (RS-243)", () => {
+    const built = rematchExtractedEffect(
+      "このターン、すべての自軍ユニットは、「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("ignore_rule_text_override");
+  });
+
+  it("matches enemy S to power by feature (RK-032)", () => {
+    const built = rematchExtractedEffect(
+      "敵軍バトルエリアから、特徴「仮面ライダー」を持つSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("enemy_s_to_power_feature");
+    expect(built?.effects[0]?.type).toBe("choose");
+  });
+
   it("matches choice one of effects (BK-009)", () => {
     const built = rematchExtractedEffect(
       "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーBLACK」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",

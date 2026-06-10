@@ -33,7 +33,26 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
         }
       ]
     }

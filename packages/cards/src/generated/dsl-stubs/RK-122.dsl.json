@@ -19,14 +19,16 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "power_min_6_entry",
       "text": "※これは自軍パワーゾーンに6枚以上カードが無ければバトルエリアに出られない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "power_min_6_entry",
+          "duration": "permanent"
         }
       ]
     },

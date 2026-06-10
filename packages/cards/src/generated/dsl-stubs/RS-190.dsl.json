@@ -26,7 +26,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "cannot_counter_combo_named_e382a4e382a8e383ade383bc",
+          "duration": "turn"
         }
       ]
     }

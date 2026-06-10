@@ -18,14 +18,16 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_destroy_win_only_turn_entry",
       "text": "※これは、敵軍ユニットを撃破したターンにしかバトルエリアに出られない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "destroy_win_only_turn_entry",
+          "duration": "permanent"
         }
       ]
     },

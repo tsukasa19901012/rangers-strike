@@ -19,7 +19,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "counter_recruit_on_destroy",
+          "duration": "permanent"
         }
       ]
     }

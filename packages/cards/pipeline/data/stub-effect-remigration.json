@@ -1,92 +1,77 @@
 {
-  "generatedAt": "2026-06-10T03:52:11.529Z",
-  "scanned": 1272,
-  "migratedToPrimitives": 25,
+  "generatedAt": "2026-06-10T03:56:43.761Z",
+  "scanned": 1251,
+  "migratedToPrimitives": 19,
   "remainingEffectDelegate": 0,
   "samples": [
     {
-      "cardId": "BK-009",
-      "effectId": "named_e382ade383b3e382b0e382b9",
+      "cardId": "PR-019",
+      "effectId": "named_e38395e382a1e383abe382b3",
       "to": "grant_keyword"
     },
     {
-      "cardId": "BK-010",
-      "effectId": "named_e382b5e383b3e383a9e382a4",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "BK-011",
-      "effectId": "named_e382a2e383bce382afe383ab",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "BK-012",
-      "effectId": "named_e382aae383abe382bfe383aa",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "BK-013",
-      "effectId": "named_56e38390e38383e382afe383",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "BK-015",
-      "effectId": "named_e38396e383ace382a4e38390",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "BK-017",
-      "effectId": "named_e382abe38396e38388e382bc",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "BK-019",
-      "effectId": "named_e382ade38390e38383e38388",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "RK-009",
+      "cardId": "RK-015",
       "effectId": "note_e280bbe382abe382a6e383b3",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-029",
-      "effectId": "unnamed_no_attack_while_riding_enemy_s",
+      "cardId": "RK-028",
+      "effectId": "named_e38380e382a4e3838ae3839f",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-032",
+      "effectId": "named_e382a2e3838ae382b6e383bc",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-034",
+      "effectId": "adjacent_named_e3839fe383a9e383bce383a9_bp_2000",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-095",
-      "effectId": "named_e3838fe383aae382b1e383bc",
+      "cardId": "RK-053",
+      "effectId": "named_e382ace382bfe38383e382af",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-280",
-      "effectId": "note_e280bbe38193e3828ce381af",
+      "cardId": "RK-061",
+      "effectId": "named_e4b880e69cace987a3e3828a",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-281",
-      "effectId": "note_e280bbe38193e3828ce381af",
+      "cardId": "RK-067",
+      "effectId": "named_e9a39be7bf94e696ac",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RM-002",
-      "effectId": "named_e8b5a4e5b084",
+      "cardId": "RK-069",
+      "effectId": "named_e3839fe382b9e38386e382a3",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RM-003",
-      "effectId": "named_e784bce7b590",
+      "cardId": "RK-122",
+      "effectId": "power_min_6_entry",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RS-184",
-      "effectId": "note_e280bbe382abe382a6e383b3",
+      "cardId": "RK-153",
+      "effectId": "unnamed_destroy_win_only_turn_entry",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RS-189",
-      "effectId": "named_e382ade383bce382b9e38386",
+      "cardId": "RK-199",
+      "effectId": "named_e382bce383bce383abe7a8ae",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-190",
+      "effectId": "named_e3839fe38389e383a1e383a9",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-243",
+      "effectId": "named_e78da3e5a58fe589a3",
       "to": "grant_keyword"
     },
     {
@@ -100,18 +85,8 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "XG1-076",
-      "effectId": "named_e38387e382a3e382b1e382a4",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG3-024",
-      "effectId": "named_e38388e383aae3838ee382a4",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG3-025",
-      "effectId": "named_e382aee382ace3838ee382a4",
+      "cardId": "RS-595",
+      "effectId": "named_e9a0bce38282e38197e38184",
       "to": "grant_keyword"
     },
     {
@@ -122,11 +97,6 @@
     {
       "cardId": "XG6-044",
       "effectId": "named_e382abe382a6e383b3e382bf",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG7-054",
-      "effectId": "named_e382aae383bce382bae38389",
       "to": "grant_keyword"
     }
   ],

@@ -2909,7 +2909,8 @@ const PATTERNS: PatternMatch[] = [
     test: (body) =>
       /自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードの必要パワーの数字を見て、その数字と同じ並びにある敵軍Sユニット/.test(
         body,
-      ),
+      ) ||
+      /その数字と同じ並びにある敵軍Sユニット、またはライドされていない敵軍S/.test(body),
     build: (body, segment, trigger) => ({
       id: segment.name ? slugifyEffectId(segment.name) : "deck_reveal_position_destroy_s",
       name: segment.name,
@@ -3248,6 +3249,282 @@ const PATTERNS: PatternMatch[] = [
           },
         ],
         matchedPattern: "battle_original_bp_combo_feature",
+      };
+    },
+  },
+  {
+    pattern: "ignore_rule_text_override",
+    test: (body) => /書かれていても、そのテキストは無効/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `ignore_rule_text_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "ignore_rule_text_override",
+    }),
+  },
+  {
+    pattern: "combo_from_partner_orig_bp",
+    test: (body) =>
+      /「[^」]+」からコンビネーションしたとき発動できる⇒これは敵軍ユニットのBPをカードに表記された本来の値としてバトルする/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "combo_from_partner_original_bp",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "combo_from_partner_orig_bp",
+    }),
+  },
+  {
+    pattern: "combo_extra_attack_no_strike",
+    test: (body) =>
+      /「[^」]+」からコンビネーションしたとき発動できる⇒.*追加でアタックできる（ストライクはできない）/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "combo_extra_attack_no_strike",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "combo_extra_attack_no_strike",
+    }),
+  },
+  {
+    pattern: "counter_recruit_on_destroy",
+    test: (body) =>
+      /^※カウンター/.test(body) &&
+      /撃破されて捨札になったとき発動できる/.test(body) &&
+      /自軍山札の上からカードを1枚ひく/.test(body),
+    build: (body) => ({
+      id: noteEffectIdFromBody(body),
+      text: body,
+      trigger: { type: "operation", timing: "counter" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "counter_recruit_on_destroy",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "counter_recruit_on_destroy",
+    }),
+  },
+  {
+    pattern: "enemy_s_to_power_feature",
+    test: (body) =>
+      /敵軍バトルエリアから、特徴「([^」]+)」を持つSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `enemy_s_to_power_${feature}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        optional: /してもよい/.test(body),
+        condition: {
+          type: "has_target",
+          target: zone("battle", "opponent", { size: "S" }),
+        },
+        effects: [
+          chooseUnit(zone("battle", "opponent", { size: "S" }), 1, [
+            { type: "move", target: { type: "trigger_source" }, to: "power" },
+          ]),
+        ],
+        matchedPattern: "enemy_s_to_power_feature",
+      };
+    },
+  },
+  {
+    pattern: "rush_block_discard_power",
+    test: (body) =>
+      /敵軍Sユニットがラッシュされたとき、自軍パワーゾーンのダメージ以外のカードを1枚選び捨札にしてもよい/.test(
+        body,
+      ) && /ターンが終わるまでバトルエリアに出られない/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "rush_block_discard_power",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "rush_block_discard_power",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "rush_block_discard_power",
+    }),
+  },
+  {
+    pattern: "enemy_s_from_power_to_battle",
+    test: (body) =>
+      /敵軍パワーゾーンのダメージ以外のカードから、Sユニットのカードを1枚選び、敵軍バトルエリアに出してもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enemy_s_from_power_to_battle",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enemy_s_from_power_to_battle",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enemy_s_from_power_to_battle",
+    }),
+  },
+  {
+    pattern: "power_min_cards_entry",
+    test: (body) =>
+      /^※これは自軍パワーゾーンに(\d+)枚以上カードが無ければバトルエリアに出られない/.test(body),
+    build: (body) => {
+      const count = body.match(/(\d+)枚以上/)?.[1] ?? "6";
+      return {
+        id: `power_min_${count}_entry`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `power_min_${count}_entry`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "power_min_cards_entry",
+      };
+    },
+  },
+  {
+    pattern: "destroy_win_only_turn_entry",
+    test: (body) =>
+      /^※これは、敵軍ユニットを撃破したターンにしかバトルエリアに出られない/.test(body),
+    build: (body) => ({
+      id: "unnamed_destroy_win_only_turn_entry",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "destroy_win_only_turn_entry",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "destroy_win_only_turn_entry",
+    }),
+  },
+  {
+    pattern: "return_enemy_s_hand_ride_bp",
+    test: (body) =>
+      /ライドしているユニットの本来のBP以下のBPを持つSユニットを敵軍バトルエリアから1体選び、持ち主の手札に戻す/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "return_enemy_s_hand_ride_bp",
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      effects: [
+        chooseUnit(zone("battle", "opponent", { size: "S" }), 1, [
+          { type: "move", target: { type: "trigger_source" }, to: "hand" },
+        ]),
+      ],
+      matchedPattern: "return_enemy_s_hand_ride_bp",
+    }),
+  },
+  {
+    pattern: "cannot_counter_combo_feature",
+    test: (body) =>
+      /アタックするとき、相手はカウンターを発動できない。（この効果は特徴「([^」]+)」を持つユニットからコンビネーションするとき/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `cannot_counter_combo_${feature}`,
+        name: segment.name,
+        text: body,
+        trigger: trigger.type === "nc" ? { type: "on_attack" } : trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `cannot_counter_combo_${feature}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "cannot_counter_combo_feature",
+      };
+    },
+  },
+  {
+    pattern: "sp_if_lowest_bp",
+    test: (body) =>
+      /SP(\d+)（この効果は、敵軍ユニットが1体以上あるとき、このユニットのBPがすべての敵軍ユニットとくらべて一番低ければ/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const sp = body.match(/SP(\d+)/)?.[1] ?? "1";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `sp_if_lowest_bp_${sp}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [{ type: "grant_keyword", keyword: `SP${sp}`, duration: "turn" }],
+        matchedPattern: "sp_if_lowest_bp",
+      };
+    },
+  },
+  {
+    pattern: "per_adjacent_feature_bp",
+    test: (body) =>
+      /隣り合う特徴「([^」]+)」を持つSユニットは、バトルするときBP\+(\d+)される/.test(body),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const amount = body.match(/BP\+(\d+)される/)?.[1] ?? "2000";
+      return {
+        id: `adjacent_${feature}_bp_${amount}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `adjacent_${feature}_bp_${amount}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "per_adjacent_feature_bp",
       };
     },
   },

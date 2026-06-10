@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e38389e383a9e382b0e38396",
+      "id": "adjacent_named_e3839fe383a9e383bce383a9_bp_2000",
       "name": "ドラグブレス",
       "text": "このユニットと隣り合う特徴「ミラーライダー」を持つSユニットは、バトルするときBP+2000される。",
       "trigger": {
@@ -40,7 +40,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "adjacent_named_e3839fe383a9e383bce383a9_bp_2000",
+          "duration": "permanent"
         }
       ]
     }
