@@ -26,9 +26,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "feature_match_e38390e38388",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

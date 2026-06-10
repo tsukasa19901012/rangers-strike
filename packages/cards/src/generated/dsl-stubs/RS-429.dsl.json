@@ -36,13 +36,16 @@
       "name": "暮らしの中に修行あり",
       "text": "これは自軍ラッシュエリアにある間、次の効果を発動する⇒すべてのSユニットの特徴に「激気」を追加する。また、自軍ターン中、「MA」の自軍コマンドをホールドする代わりに「WB」の自軍コマンドをホールドしてもよい。ただし、追加で自軍コマンドを1つホールドすること。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "wb_category_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [
