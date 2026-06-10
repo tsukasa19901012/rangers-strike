@@ -25,9 +25,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e8aa98e38184e381aee7bda0",
@@ -38,12 +41,15 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "hold_entry_destroy_named_e794b7",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
-      "id": "named_e8aa98e38184e381aee7bda0_2",
+      "id": "named_e8aa98e38184e381aee7bda0_e887aae8",
       "name": "誘いの罠",
       "text": "自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、特徴「男」を持つ敵軍ユニットを１体選び撃破する。そうしたとき、撃破したユニットと特徴が完全一致するオモテ向きの敵軍パワーがあれば、１枚選びウラ向きにしてダメージにする。",
       "trigger": {
@@ -51,9 +57,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "hold_entry_destroy_named_e794b7",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

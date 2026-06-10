@@ -19,12 +19,15 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "rush_discard_search_e887aae8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
-      "id": "named_e382aee383b3e382afe383ad_2",
+      "id": "named_e382aee383b3e382afe383ad_e887aae8",
       "name": "ギンクロン発進",
       "text": "自軍ラッシュフェイズ中、このビークルを捨札にして次の効果を発動できる⇒自軍山札を見て「ケンローダー」以外のＯＴを持つＳビークルのカードを１枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。その後、山札をシャッフルする。",
       "trigger": {
@@ -32,9 +35,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "rush_discard_search_e887aae8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

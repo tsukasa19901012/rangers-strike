@@ -33,12 +33,15 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "discard_vehicle_mirror_rider",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     },
     {
-      "id": "named_e7aa81e585a5_2",
+      "id": "named_e7aa81e585a5_e887aae8",
       "name": "突入",
       "text": "自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、次にラッシュする特徴「ミラーライダー」を持つユニットカードの必要パワーの数字は3少なくなり、コマンドをホールドせずにラッシュできる（この効果は重複しない）。",
       "trigger": {
@@ -46,9 +49,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "discard_vehicle_mirror_rider",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

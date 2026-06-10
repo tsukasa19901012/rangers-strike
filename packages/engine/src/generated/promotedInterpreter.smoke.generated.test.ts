@@ -1,6 +1,6 @@
 /**
  * Auto-generated promoted interpreter smoke (M14/M15)
- * grant_keyword: 40 | interpret_effect: 21 | action_primitive: 40
+ * grant_keyword: 40 | interpret_effect: 0 | action_primitive: 40
  */
 import { describe, it, expect } from "vitest";
 import { cardDsl } from "@rangers-strike/cards";
@@ -50,29 +50,7 @@ const GRANT_KEYWORD_IDS = [
   "RK-118",
   "RK-126"
 ] as const;
-const INTERPRET_EFFECT_IDS = [
-  "RS-504",
-  "XG4-046",
-  "RK-043",
-  "RK-146",
-  "RK-231",
-  "RS-227",
-  "RS-446",
-  "RS-486",
-  "RS-575",
-  "RS-603",
-  "RS-633",
-  "XG1-048",
-  "XG2-082",
-  "XG3-072",
-  "XG4-004",
-  "XG4-023",
-  "XG4-062",
-  "XG4-102",
-  "XG5-091",
-  "XG6-031",
-  "XG6-044"
-] as const;
+const INTERPRET_EFFECT_IDS = [] as const;
 const ACTION_PRIMITIVE_IDS = [
   "BK-001",
   "BK-002",

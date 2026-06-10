@@ -25,12 +25,15 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
-      "id": "named_e887a8e78da3e382abe383a1_2",
+      "id": "named_e887a8e78da3e382abe383a1_e38193e3",
       "name": "臨獣カメレオン拳",
       "text": "これが自軍エリアにある間、「獣人メレ」以外の自軍ユニットがバトルエリアに出たとき、次の効果から1つ選び発動できる⇒ ◎自軍コマンドゾーンからカードを1枚選び捨札にする。 ◎自軍コマンドゾーンにカードが1枚も無ければ、自軍捨札からカードを1枚選び、自軍コマンドゾーンにリリース状態で置く。",
       "trigger": {
@@ -38,9 +41,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_in_field_body_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

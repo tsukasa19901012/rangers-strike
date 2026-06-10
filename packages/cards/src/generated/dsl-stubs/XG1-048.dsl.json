@@ -43,12 +43,15 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "adjacent_units_e695b5e8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
-      "id": "named_e382a8e383ace382ade58589_2",
+      "id": "named_e382a8e383ace382ade58589_e695b5e8",
       "name": "エレキ光線",
       "text": "敵軍Ｓユニットを１体選んでもよい。次の相手のターン、選んだユニットがバトルエリアにあるとき、選んだユニットと隣り合っているユニットは、そのターンを終えるとき撃破される。",
       "trigger": {
@@ -56,9 +59,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "adjacent_units_e695b5e8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

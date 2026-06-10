@@ -25,9 +25,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "note_e280bbe887aae8bb8de383a9",
@@ -37,21 +40,27 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe887aa",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
-      "id": "note_e280bbe887aae8bb8de383a9_2",
+      "id": "note_e280bbe887aae8bb8de383a9_e280bbe8",
       "text": "※自軍ラッシュフェイズ中、このビークルがライドされていないなら、リリースしてもよい。",
       "trigger": {
         "type": "nc"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe887aa",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
       "id": "named_e38389e383abe38395e382a1",

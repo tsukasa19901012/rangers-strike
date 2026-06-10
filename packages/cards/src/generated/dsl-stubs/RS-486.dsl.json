@@ -40,12 +40,15 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "combo_l_attack_strike_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     },
     {
-      "id": "named_e58886e8baabe5b9bbe696ac_2",
+      "id": "named_e58886e8baabe5b9bbe696ac_e38193e3",
       "name": "分身幻斬り",
       "text": "これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたLユニットがアタックまたはストライクしたとき、その処理をすべて終えてから、そのLユニットと同じカード名のユニットカードを、その合体に必要なユニットの数まで、自分の手札から好きな枚数選び、自軍ラッシュエリアに出してもよい。",
       "trigger": {
@@ -53,9 +56,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "combo_l_attack_strike_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

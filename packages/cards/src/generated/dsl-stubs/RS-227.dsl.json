@@ -38,12 +38,14 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "opponent_hold_commands_by_category",
+          "duration": "turn"
         }
       ]
     },
     {
-      "id": "named_e38388e38383e38397e382a6_2",
+      "id": "named_e38388e38383e38397e382a6_e887aae8",
       "name": "トップウインド",
       "text": "自軍ターン中、これがバトルエリアに出たとき、相手は次のようにする⇒自分自身のコマンドを、自分自身のコマンドゾーンのカテゴリの数まで可能な限り選びホールドする。",
       "trigger": {
@@ -51,7 +53,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "opponent_hold_commands_by_category",
+          "duration": "turn"
         }
       ]
     }

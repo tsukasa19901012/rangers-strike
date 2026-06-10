@@ -34,12 +34,15 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "ride_action_e383a9e382a4",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
-      "id": "named_e382a2e382afe382bbe383ab_2",
+      "id": "named_e382a2e382afe382bbe383ab_e383a9e3",
       "name": "アクセルメモリ",
       "text": "ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない敵軍Sユニットは次の制限を受ける⇒自分自身のコマンドを1つホールドしなければバトルエリアに出られない。",
       "trigger": {
@@ -47,9 +50,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "ride_action_e383a9e382a4",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

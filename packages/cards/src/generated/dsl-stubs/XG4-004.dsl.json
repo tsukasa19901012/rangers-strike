@@ -38,12 +38,15 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "deck_search_e38193e3828c",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
-      "id": "named_e383afe383b3e38391e383bc_2",
+      "id": "named_e383afe383b3e38391e383bc_e38193e3",
       "name": "ワンパーの壺",
       "text": "これをラッシュしたとき、次の効果を発動できる⇒自軍山札を見て特徴「戦闘員」を持つカードを2枚まで選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
       "trigger": {
@@ -51,9 +54,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "deck_search_e38193e3828c",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

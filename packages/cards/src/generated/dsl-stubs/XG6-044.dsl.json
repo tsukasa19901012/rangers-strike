@@ -27,9 +27,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
       "id": "sp_at_bp5000",
@@ -54,12 +57,15 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "deck_reveal_position_destroy_s",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
-      "id": "named_e382abe382a6e383b3e382bf_2",
+      "id": "named_e382abe382a6e383b3e382bf_e887aae8",
       "name": "カウンターストライク",
       "text": "自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードの必要パワーの数字を見て、その数字と同じ並びにある敵軍Sユニット、またはライドされていない敵軍Sビークルがあれば1体選び捨札にする。その後、オモテにしたカードは山札の下に戻す。",
       "trigger": {
@@ -67,9 +73,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "deck_reveal_position_destroy_s",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

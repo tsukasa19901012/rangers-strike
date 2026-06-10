@@ -18,9 +18,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bb4441e3",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "unnamed_fusion_vehicle_alias",
@@ -45,12 +48,14 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "grant_ability_e38193e3828c",
+          "duration": "turn"
         }
       ]
     },
     {
-      "id": "named_e4b896e7958ce38292e9a786_2",
+      "id": "named_e4b896e7958ce38292e9a786_e38193e3",
       "name": "世界を駆ける力",
       "text": "これにライドしているユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
@@ -58,7 +63,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "grant_ability_e38193e3828c",
+          "duration": "turn"
         }
       ]
     }

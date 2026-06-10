@@ -65,12 +65,15 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "opponent_must_e887aae8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
-      "id": "named_e8b685e5bf8de6b395e383bb_2",
+      "id": "named_e8b685e5bf8de6b395e383bb_e887aae8",
       "name": "超忍法・秘打千本ノック",
       "text": "自軍コマンドを好きな数選び、自分の手札に戻してもよい。そうしたとき、相手は、戻した数と同じ数まで可能な限り自分自身のラッシュエリアのSユニットを選び、持ち主の山札の下に好きな順番で戻す。",
       "trigger": {
@@ -78,9 +81,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "opponent_must_e887aae8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

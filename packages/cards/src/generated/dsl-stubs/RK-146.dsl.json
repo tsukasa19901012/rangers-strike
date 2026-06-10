@@ -25,12 +25,14 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "opponent_self_order_e38193e3828c",
+          "duration": "turn"
         }
       ]
     },
     {
-      "id": "named_e38387e3838de38396e382ad_2",
+      "id": "named_e38387e3838de38396e382ad_e38193e3",
       "name": "デネブキャンディー",
       "text": "これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札を見てもよい。そうしたとき、その中からオペレーションカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
       "trigger": {
@@ -38,7 +40,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "opponent_self_order_e38193e3828c",
+          "duration": "turn"
         }
       ]
     }

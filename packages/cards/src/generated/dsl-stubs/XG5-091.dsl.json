@@ -26,21 +26,27 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
-      "id": "note_e280bbe38193e3828ce381af_2",
+      "id": "note_e280bbe38193e3828ce381af_e280bbe3",
       "text": "※これは自軍パワーゾーンにオモテ向きのカードが1枚もなければBP-5000される。",
       "trigger": {
         "type": "nc"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e38396e383a9e382b9e38388",

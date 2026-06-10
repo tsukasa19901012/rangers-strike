@@ -38,19 +38,24 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "exclude_game_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
-      "id": "note_e280bbe38193e3828ce3818c_2",
+      "id": "note_e280bbe38193e3828ce3818c_e280bbe3",
       "text": "※これが自軍エリアにある間、本来のBPの下三桁が500でない自軍ユニットはラッシュできない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "while_note_e280bbe38193",
+          "duration": "permanent"
         }
       ]
     },

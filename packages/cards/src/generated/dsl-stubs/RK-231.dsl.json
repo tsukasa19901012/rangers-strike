@@ -39,12 +39,15 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "hold_remaining_e887aae58886",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
-      "id": "named_e6bd9ce6b0b4_2",
+      "id": "named_e6bd9ce6b0b4_e887aae5",
       "name": "潜水",
       "text": "自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。",
       "trigger": {
@@ -52,9 +55,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "hold_remaining_e887aae58886",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

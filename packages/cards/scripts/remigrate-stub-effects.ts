@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import type { CardDocument, EffectPrimitive } from "../src/dsl/types";
 import { validateCardDocument } from "../src/dsl/validator";
 import { rematchExtractedEffect } from "../src/pipeline/extractEffects";
+import { hashEffectText } from "../src/pipeline/metaMaps";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
@@ -68,6 +69,24 @@ function remigrateEffect(
   return { changed: false };
 }
 
+/** errata 重複効果が同じ slug id に収束するのを防ぐ */
+function deduplicateEffectIds(effects: NonNullable<CardDocument["effects"]>): void {
+  const used = new Set<string>();
+  for (const effect of effects) {
+    let id = effect.id;
+    if (used.has(id)) {
+      id = `${id}_${hashEffectText(effect.text ?? "").slice(0, 8)}`;
+    }
+    let n = 2;
+    while (used.has(id)) {
+      id = `${effect.id}_${n}`;
+      n += 1;
+    }
+    effect.id = id;
+    used.add(id);
+  }
+}
+
 function main(): void {
   let scanned = 0;
   let migrated = 0;
@@ -107,6 +126,7 @@ function main(): void {
     }
 
     if (!changed) continue;
+    if (doc.effects?.length) deduplicateEffectIds(doc.effects);
     doc.implementation = { source: "dsl", handler: "interpreter", testGenerated: true };
     const validation = validateCardDocument(doc);
     if (!validation.ok) continue;

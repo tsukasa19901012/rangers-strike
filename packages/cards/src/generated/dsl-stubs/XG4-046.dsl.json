@@ -25,21 +25,27 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
-      "id": "note_e280bbe38193e3828ce381af_2",
+      "id": "note_e280bbe38193e3828ce381af_e280bbe3",
       "text": "※これはホールド状態のときBP-3000される。",
       "trigger": {
         "type": "nc"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e5a696e58880e383bbe8a38f",
