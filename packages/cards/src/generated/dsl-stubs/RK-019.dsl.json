@@ -20,7 +20,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "impose_destroy_rule_on_enemy",
+          "duration": "turn"
         }
       ]
     }

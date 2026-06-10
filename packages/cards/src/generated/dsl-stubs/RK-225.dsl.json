@@ -41,7 +41,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "counter_cost_reduce_3",
+          "duration": "permanent"
         }
       ]
     }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T03:56:45.016Z",
+  "generatedAt": "2026-06-10T03:57:57.014Z",
   "promotedDslReady": 1670,
   "grantKeywordSamples": 40,
   "interpretEffectSamples": 40,
@@ -21,9 +21,11 @@
     "PR-010",
     "PR-011",
     "RK-002",
+    "RK-007",
     "RK-013",
     "RK-017",
     "RK-018",
+    "RK-019",
     "RK-030",
     "RK-033",
     "RK-063",
@@ -42,16 +44,11 @@
     "RK-132",
     "RK-133",
     "RK-134",
-    "RK-152",
-    "RK-159",
-    "RK-162"
+    "RK-152"
   ],
   "interpretEffect": [
     "BK-018",
-    "RK-007",
-    "RK-019",
     "RK-020",
-    "RK-030",
     "RK-083",
     "RK-084",
     "RK-087",
@@ -86,7 +83,10 @@
     "RK-288",
     "RK-331",
     "RM-001",
-    "RM-004"
+    "RM-004",
+    "RM-005",
+    "RM-015",
+    "RM-016"
   ],
   "actionPrimitive": [
     "BK-001",

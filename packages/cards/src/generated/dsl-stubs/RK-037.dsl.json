@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382b0e383a9e382a4e38387",
+      "id": "adjacent_named_e3839fe383a9e383bce383a9_no_attack",
       "name": "グライディング",
       "text": "このユニットと隣り合う特徴「ミラーライダー」を持つSユニットは、敵軍ユニットにアタックされない。",
       "trigger": {
@@ -40,7 +40,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "adjacent_named_e3839fe383a9e383bce383a9_no_attack",
+          "duration": "permanent"
         }
       ]
     }

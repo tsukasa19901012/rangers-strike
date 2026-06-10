@@ -20,14 +20,16 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "grant_sp_riding_1",
       "text": "※これはライド中、「SP1/3」になる。",
       "trigger": {
         "type": "nc"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
         }
       ]
     },

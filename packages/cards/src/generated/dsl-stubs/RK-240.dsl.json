@@ -26,14 +26,16 @@
   },
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "grant_sp_hold_turn_1",
       "text": "※これは特徴「仮面ライダー」を持つ自軍ユニットがホールドされたターン「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
         }
       ]
     },

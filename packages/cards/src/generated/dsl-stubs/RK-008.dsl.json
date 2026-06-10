@@ -19,7 +19,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "counter_hold_kamen_s",
+          "duration": "permanent"
         }
       ]
     }

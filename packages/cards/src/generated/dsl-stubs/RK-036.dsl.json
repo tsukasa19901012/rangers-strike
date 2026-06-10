@@ -27,7 +27,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "counter_without_hold",
+          "duration": "permanent"
         }
       ]
     }

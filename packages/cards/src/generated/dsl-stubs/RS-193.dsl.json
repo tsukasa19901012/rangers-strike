@@ -26,7 +26,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "return_all_enemy_command_hand",
+          "duration": "turn"
         }
       ]
     }

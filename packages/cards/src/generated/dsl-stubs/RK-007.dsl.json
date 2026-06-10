@@ -20,7 +20,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "command_return_then_recruit_discard",
+          "duration": "turn"
         }
       ]
     }

@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e99fb3e69283e68993e383bb",
+      "id": "bp_if_no_named_e383a1e382ab_5000",
       "name": "音撃打・破砕細石",
       "text": "敵軍バトルエリアに特徴「メカ」を持つユニットがなければ、これはBP4000以上のSユニットとバトルするとき、BP+5000される フレーバテキスト 相手が強いほど弾け甲斐があるもんだ。…もっとも、ハジかれるのは貴様の方だがな！",
       "trigger": {
@@ -26,7 +26,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "bp_if_no_enemy_named_e383a1e382ab_5000",
+          "duration": "turn"
         }
       ]
     }

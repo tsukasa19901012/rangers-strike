@@ -98,6 +98,14 @@ describe("rematchExtractedEffect (M20)", () => {
     expect(built?.matchedPattern).toBe("category_wb_battle_phase");
   });
 
+  it("matches reveal enemy deck hold (RK-025)", () => {
+    const built = rematchExtractedEffect(
+      "敵軍山札の上から2枚をオモテにする。オモテにしたカードの中から、特徴「男」を持つユニットカードを持ち主のコマンドゾーンにホールド状態で置く。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("reveal_enemy_deck_hold");
+  });
+
   it("matches ignore rule text override (RS-243)", () => {
     const built = rematchExtractedEffect(
       "このターン、すべての自軍ユニットは、「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。",
