@@ -1,4 +1,4 @@
-import type { CardDocument, RushAdditionalCondition } from "../dsl/types";
+import type { CardDocument, Category, RushAdditionalCondition } from "../dsl/types";
 
 const CATEGORY_CODES = new Set(["ET", "WB", "OT", "MA", "DA"]);
 
@@ -14,21 +14,21 @@ export const CATEGORY_MAP: Record<string, CardDocument["category"]> = {
 export function inferCategoryFromWikiLabels(
   ...labels: (string | undefined)[]
 ): CardDocument["category"] {
-  const codes: Array<NonNullable<CardDocument["category"]> & string> = [];
+  const codes: Category[] = [];
   for (const label of labels) {
     if (!label) continue;
     for (const part of label.split(/[/／]/).map((s) => s.trim()).filter(Boolean)) {
       if (CATEGORY_CODES.has(part)) {
-        codes.push(part as NonNullable<CardDocument["category"]> & string);
+        codes.push(part as Category);
       } else if (CATEGORY_MAP[part]) {
-        codes.push(CATEGORY_MAP[part] as NonNullable<CardDocument["category"]> & string);
+        codes.push(CATEGORY_MAP[part] as Category);
       }
     }
   }
   const unique = [...new Set(codes)];
   if (unique.length === 0) return "OT";
-  if (unique.length === 1) return unique[0];
-  return unique as CardDocument["category"];
+  if (unique.length === 1) return unique[0]!;
+  return unique;
 }
 
 export const SIZE_MAP: Record<string, NonNullable<CardDocument["size"]>> = {
