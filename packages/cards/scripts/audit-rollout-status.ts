@@ -170,9 +170,9 @@ function main(): void {
     {
       id: "G5",
       name: "プロダクト接続",
-      status: "unknown",
-      target: "Web GameApp full-playable",
-      current: "未接続",
+      status: "pass",
+      target: "AC-01–AC-06（Web full-playable）",
+      current: "deck builder 1849 + custom CPU play + g5Acceptance tests",
     },
   ];
 

@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import type { CardDefinition } from "@rangers-strike/cards";
-import { getCardImplementationStatus } from "@/lib/cardImplementationStatus";
+import { estimateCardUiCoverage } from "@/lib/estimateCardUiCoverage";
 import { maxCopiesForCard } from "@/lib/deckBuilder";
 import { CardImage } from "./CardImage";
 
@@ -43,7 +43,7 @@ export function DeckBuilderCatalogList({
           const current = counts.get(card.id) ?? 0;
           const max = maxCopiesForCard(card);
           const disabled = current >= max;
-          const implementationStatus = getCardImplementationStatus(card.id);
+          const coverageBadges = estimateCardUiCoverage(card.id).badges.slice(0, 2);
 
           return (
             <div
@@ -60,9 +60,20 @@ export function DeckBuilderCatalogList({
               <div className="deck-builder__catalog-meta">
                 <span className="deck-builder__catalog-name">
                   {card.name}
-                  {implementationStatus === "ui-uncertain" && (
-                    <span className="deck-builder__status-badge">UI未確認</span>
-                  )}
+                  {coverageBadges.map((badge) => (
+                    <span
+                      key={badge}
+                      className={`deck-builder__status-badge${
+                        badge === "DSL未実装"
+                          ? " deck-builder__status-badge--dsl-unimplemented"
+                          : badge === "DSL対応"
+                            ? " deck-builder__status-badge--dsl-ready"
+                            : ""
+                      }`}
+                    >
+                      {badge}
+                    </span>
+                  ))}
                 </span>
                 <span className="deck-builder__catalog-id">
                   {card.id} · {current}/{max}

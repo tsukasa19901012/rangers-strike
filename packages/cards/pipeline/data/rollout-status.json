@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-06-10T05:14:18.832Z",
+  "generatedAt": "2026-06-10T07:38:28.896Z",
   "summary": {
-    "gatesPassed": 5,
+    "gatesPassed": 6,
     "gatesPartial": 0,
     "gatesTotal": 7,
     "overallPercent": 100
@@ -83,9 +83,9 @@
     {
       "id": "G5",
       "name": "プロダクト接続",
-      "status": "unknown",
-      "target": "Web GameApp full-playable",
-      "current": "未接続"
+      "status": "pass",
+      "target": "AC-01–AC-06（Web full-playable）",
+      "current": "deck builder 1849 + custom CPU play + g5Acceptance tests"
     }
   ],
   "nextActions": [

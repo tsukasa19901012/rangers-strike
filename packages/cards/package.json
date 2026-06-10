@@ -48,6 +48,7 @@
     "pipeline:batch": "tsx scripts/batch-wiki-pipeline.ts",
     "generate-wiki-stubs": "tsx scripts/generate-wiki-catalog-stubs.ts",
     "generate-wiki-set-labels": "tsx scripts/generate-wiki-set-labels.ts",
+    "generate-dsl-ready-ids": "tsx scripts/generate-dsl-ready-ids.ts",
     "emit-catalog-shards": "tsx scripts/generate-wiki-catalog-stubs.ts",
     "pipeline:compile-stubs": "tsx scripts/batch-compile-stubs.ts",
     "pipeline:compile-stubs-extended": "tsx scripts/batch-compile-stubs.ts -- --grades C,D,E --merge-report",

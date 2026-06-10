@@ -1011,6 +1011,37 @@ select {
   color: #94a3b8;
 }
 
+.modal__coverage-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0 8px;
+}
+
+.modal__coverage-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 4px;
+}
+
+.modal__coverage-badge--dsl-ready {
+  color: #1e40af;
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.modal__coverage-badge--dsl-unimplemented {
+  color: #991b1b;
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
 .modal--command-payment {
   max-width: 400px;
   width: calc(100% - 24px);
@@ -2052,6 +2083,18 @@ select {
   border: 1px solid #fcd34d;
   border-radius: 4px;
   vertical-align: middle;
+}
+
+.deck-builder__status-badge--dsl-ready {
+  color: #1e40af;
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.deck-builder__status-badge--dsl-unimplemented {
+  color: #991b1b;
+  background: #fee2e2;
+  border-color: #fca5a5;
 }
 
 .deck-builder__deck-controls {

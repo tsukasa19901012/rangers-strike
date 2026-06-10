@@ -413,3 +413,4 @@ flowchart TD
 |------|------|
 | 2026-06-10 | 初版草稿（Phase 0–3、PO 前提反映） |
 | 2026-06-10 | OQ 確定（OQ-01〜05 PO 回答反映、§前提追記） |
+| 2026-06-10 | W5 完了: `estimateCardUiCoverage` バッジ + `audit:rollout-status` G5 pass |

@@ -154,3 +154,4 @@ export {
   isWikiStubCardId,
 } from "./extendedCatalog";
 export { getWikiSetLabel, getWikiSetLabels } from "./wikiSetLabels";
+export { isCardDslReady, isCardDslUnimplemented } from "./dslReady";

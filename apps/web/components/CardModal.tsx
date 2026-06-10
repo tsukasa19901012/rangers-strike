@@ -7,8 +7,10 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import {
   getCardEffect,
   getUnitEffectBlock,
+  resolveCardImageUrl,
   resolveRushAdditionalCondition,
 } from "@rangers-strike/cards";
+import { estimateCardUiCoverage } from "@/lib/estimateCardUiCoverage";
 
 type CardModalProps = {
   card: CardDefinition;
@@ -20,6 +22,8 @@ export function CardModal({ card, onClose }: CardModalProps) {
   const operationEffect = getCardEffect(card.id);
   const unitEffects = card.type === "unit" ? getUnitEffectBlock(card.id) : undefined;
   const rushAdditionalCondition = resolveRushAdditionalCondition(card.id, card);
+  const imageUrl = resolveCardImageUrl(card.id);
+  const coverage = estimateCardUiCoverage(card.id);
 
   useEffect(() => {
     setMounted(true);
@@ -44,10 +48,10 @@ export function CardModal({ card, onClose }: CardModalProps) {
           ✕
         </button>
         <div className="modal__content modal__content--card">
-          {card.imageUrl && (
+          {imageUrl && (
             <div className="modal__media">
               <Image
-                src={card.imageUrl}
+                src={imageUrl}
                 alt={card.name}
                 width={220}
                 height={308}
@@ -59,6 +63,24 @@ export function CardModal({ card, onClose }: CardModalProps) {
           <div className="modal__info">
             <h3>{card.name}</h3>
             <p className="modal__id">{card.id}</p>
+            {coverage.badges.length > 0 && (
+              <div className="modal__coverage-badges">
+                {coverage.badges.map((badge) => (
+                  <span
+                    key={badge}
+                    className={`modal__coverage-badge${
+                      badge === "DSL未実装"
+                        ? " modal__coverage-badge--dsl-unimplemented"
+                        : badge === "DSL対応"
+                          ? " modal__coverage-badge--dsl-ready"
+                          : ""
+                    }`}
+                  >
+                    {badge}
+                  </span>
+                ))}
+              </div>
+            )}
             <dl className="modal__stats">
               <div>
                 <dt>種類</dt>
