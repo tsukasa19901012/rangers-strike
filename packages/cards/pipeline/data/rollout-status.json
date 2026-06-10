@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-06-10T07:38:28.896Z",
+  "generatedAt": "2026-06-10T07:47:28.985Z",
   "summary": {
-    "gatesPassed": 6,
+    "gatesPassed": 7,
     "gatesPartial": 0,
     "gatesTotal": 7,
     "overallPercent": 100
@@ -75,17 +75,17 @@
     {
       "id": "G4",
       "name": "対戦検証",
-      "status": "unknown",
+      "status": "pass",
       "target": "vertical slice apply_failed=0",
-      "current": "npm run test -w @rangers-strike/engine -- src/verticalSlice/",
-      "note": "手動または CI で確認"
+      "current": "apply_failed=0, winner=50/50 (simulateFullPromoted)",
+      "note": "sim-metrics.json from engine verticalSlice tests"
     },
     {
       "id": "G5",
       "name": "プロダクト接続",
       "status": "pass",
-      "target": "AC-01–AC-06（Web full-playable）",
-      "current": "deck builder 1849 + custom CPU play + g5Acceptance tests"
+      "target": "AC-01–AC-07（Web full-playable）",
+      "current": "deck builder 1849 + custom CPU play + g5Acceptance + AC-06/07 tests"
     }
   ],
   "nextActions": [

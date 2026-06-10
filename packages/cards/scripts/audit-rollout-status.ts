@@ -28,6 +28,15 @@ const TARGET_PLAYABLE = 1849;
 
 type GateStatus = "pass" | "fail" | "partial" | "unknown";
 
+type SimMetrics = {
+  suite?: string;
+  games?: number;
+  gameplay?: {
+    applyFailed?: number;
+    winner?: number;
+  };
+};
+
 type Gate = {
   id: string;
   name: string;
@@ -47,6 +56,24 @@ function gateStatus(ratio: number): GateStatus {
   if (ratio >= 1) return "pass";
   if (ratio >= 0.9) return "partial";
   return "fail";
+}
+
+function evaluateG4Gate(sim: SimMetrics | null): GateStatus {
+  const applyFailed = sim?.gameplay?.applyFailed;
+  const winner = sim?.gameplay?.winner ?? 0;
+  if (applyFailed === undefined) return "unknown";
+  if (applyFailed === 0 && winner > 0) return "pass";
+  return "fail";
+}
+
+function formatG4Current(sim: SimMetrics | null): string {
+  if (!sim?.gameplay) {
+    return "npm run test -w @rangers-strike/engine -- src/verticalSlice/";
+  }
+  const { applyFailed, winner } = sim.gameplay;
+  const suite = sim.suite ?? "verticalSlice";
+  const games = sim.games ?? "?";
+  return `apply_failed=${applyFailed}, winner=${winner}/${games} (${suite})`;
 }
 
 function parseSampleSize(argv: string[]): number | undefined {
@@ -96,6 +123,8 @@ function main(): void {
     0;
   const enqueueOnly =
     enqueueAudit?.enqueueOnlyEffects ?? runtimeAudit?.byPrimitive.enqueue_trigger ?? 0;
+
+  const simMetrics = readJson<SimMetrics>("sim-metrics.json");
 
   const gates: Gate[] = [
     {
@@ -162,17 +191,17 @@ function main(): void {
     {
       id: "G4",
       name: "対戦検証",
-      status: "unknown",
+      status: evaluateG4Gate(simMetrics),
       target: "vertical slice apply_failed=0",
-      current: "npm run test -w @rangers-strike/engine -- src/verticalSlice/",
-      note: "手動または CI で確認",
+      current: formatG4Current(simMetrics),
+      note: "sim-metrics.json from engine verticalSlice tests",
     },
     {
       id: "G5",
       name: "プロダクト接続",
       status: "pass",
-      target: "AC-01–AC-06（Web full-playable）",
-      current: "deck builder 1849 + custom CPU play + g5Acceptance tests",
+      target: "AC-01–AC-07（Web full-playable）",
+      current: "deck builder 1849 + custom CPU play + g5Acceptance + AC-06/07 tests",
     },
   ];
 

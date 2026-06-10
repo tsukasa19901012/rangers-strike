@@ -4,6 +4,22 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
+      "@rangers-strike/cards/dsl/registry": path.resolve(
+        __dirname,
+        "../cards/src/dsl/registry.ts",
+      ),
+      "@rangers-strike/cards/dsl/loader": path.resolve(
+        __dirname,
+        "../cards/src/dsl/loader.ts",
+      ),
+      "@rangers-strike/cards/pipeline/extractEffects": path.resolve(
+        __dirname,
+        "../cards/src/pipeline/extractEffects.ts",
+      ),
+      "@rangers-strike/cards/dsl": path.resolve(
+        __dirname,
+        "../cards/src/dsl/index.ts",
+      ),
       "@rangers-strike/cards": path.resolve(__dirname, "../cards/src/index.ts"),
       "@rangers-strike/cards/pipeline": path.resolve(
         __dirname,

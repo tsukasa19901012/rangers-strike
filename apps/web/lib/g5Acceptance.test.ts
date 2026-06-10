@@ -135,9 +135,4 @@ describe("AC-05 — starter decks and full-playable presets", () => {
   });
 });
 
-describe.skip("AC-06 — mobile UI (E2E scope)", () => {
-  // Playwright E2E で検証。ユニットテストではスキップ。
-  it("AC-06: deck builder and game UI are usable on mobile viewport", () => {
-    expect(true).toBe(true);
-  });
-});
+// AC-06: mobile layout contract — see mobileDeckBuilderLayout.test.ts
