@@ -5453,6 +5453,105 @@ const PATTERNS: PatternMatch[] = [
       matchedPattern: "resident_zone",
     }),
   },
+  {
+    pattern: "pick_from_hand",
+    test: (body) => (/手札から.*選び|手札を.*選び/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `pick_from_hand_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "pick_from_hand",
+    }),
+  },
+  {
+    pattern: "pick_from_discard",
+    test: (body) => (/捨札から.*選び|捨札に.*選び/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `pick_from_discard_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "pick_from_discard",
+    }),
+  },
+  {
+    pattern: "pick_from_deck",
+    test: (body) => (/山札.*選び/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `pick_from_deck_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "pick_from_deck",
+    }),
+  },
 
 ];
 

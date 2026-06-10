@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T04:39:26.298Z",
+  "generatedAt": "2026-06-10T04:39:45.186Z",
   "promotedDslReady": 1670,
   "grantKeywordSamples": 40,
   "interpretEffectSamples": 40,
@@ -50,7 +50,6 @@
     "RK-083",
     "RK-087",
     "RK-159",
-    "RK-163",
     "RK-191",
     "RK-192",
     "RK-217",
@@ -71,9 +70,7 @@
     "XG1-100",
     "XG2-089",
     "XG4-030",
-    "XG4-041",
     "XG4-046",
-    "XG5-013",
     "XG6-039",
     "XG6-051",
     "XG6-054",
@@ -85,8 +82,11 @@
     "RK-228",
     "RK-231",
     "RK-266",
-    "RK-279",
-    "RK-287"
+    "RK-287",
+    "RK-307",
+    "RK-311",
+    "RS-194",
+    "RS-203"
   ],
   "actionPrimitive": [
     "BK-001",

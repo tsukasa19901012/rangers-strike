@@ -57,9 +57,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "pick_from_hand_e887aae58886",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [
