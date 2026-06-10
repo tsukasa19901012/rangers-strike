@@ -20,7 +20,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "recruit_den_o_deck_resident",
+          "duration": "turn"
         }
       ]
     }

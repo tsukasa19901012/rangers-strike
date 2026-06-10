@@ -28,9 +28,20 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "destroy_hold_commands_then",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
     }
   ],
   "implementation": {

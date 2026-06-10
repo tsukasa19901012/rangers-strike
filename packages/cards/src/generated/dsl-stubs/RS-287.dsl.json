@@ -30,9 +30,38 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "maxBp": 8000
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
-      ]
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "maxBp": 8000
+          }
+        }
+      }
     }
   ],
   "implementation": {

@@ -545,8 +545,10 @@ const PATTERNS: PatternMatch[] = [
   {
     pattern: "destroy_enemy_bp",
     test: (body) =>
-      /敵軍バトルエリアからBP(\d+)以下のユニットを1体選んで撃破/.test(body) ||
-      /これがバトルエリアに出たとき、敵軍バトルエリアからBP(\d+)以下のユニットを1体選んで撃破/.test(body),
+      /敵軍バトルエリアからBP(\d+)以下の(?:敵軍)?ユニットを1体選(び|んで).*撃破/.test(body) ||
+      /これがバトルエリアに出たとき、敵軍バトルエリアからBP(\d+)以下の(?:敵軍)?ユニットを1体選(び|んで).*撃破/.test(
+        body,
+      ),
     build: (body, segment, trigger) => {
       const maxBp = Number(body.match(/BP(\d+)以下/)?.[1] ?? 4000);
       const enter = /バトルエリアに出たとき/.test(body);
@@ -2101,7 +2103,7 @@ const PATTERNS: PatternMatch[] = [
   {
     pattern: "deck_top_hold_command",
     test: (body) =>
-      /自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置ってもよい/.test(
+      /自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置[いっ]てもよい/.test(
         body,
       ),
     build: (body, segment, trigger) => ({
@@ -3980,6 +3982,495 @@ const PATTERNS: PatternMatch[] = [
           },
         ],
         matchedPattern: "counter_defender_bp_boost",
+      };
+    },
+  },
+  {
+    pattern: "destroy_hold_commands_then",
+    test: (body) =>
+      /敵軍バトルエリアからユニットを1体選ぶ。そして、選んだユニットの必要パワーの数字より1つ多い数だけ自軍コマンドを(ホールド|リリース)してもよい。そうしたとき、選んだユニットを撃破する/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const mode = /リリース/.test(body) ? "release" : "hold";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `destroy_${mode}_commands_then`,
+        name: segment.name,
+        text: body,
+        trigger,
+        optional: true,
+        condition: {
+          type: "has_target",
+          target: zone("battle", "opponent"),
+        },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `destroy_${mode}_commands_then`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "destroy_hold_commands_then",
+      };
+    },
+  },
+  {
+    pattern: "enemy_all_s_bp_debuff",
+    test: (body) =>
+      /これが自軍バトルエリアにある間、敵軍バトルエリアのすべてのSユニットはBP-(\d+)される/.test(body),
+    build: (body) => {
+      const amount = body.match(/BP-(\d+)される/)?.[1] ?? "500";
+      return {
+        id: `enemy_all_s_bp_debuff_${amount}`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `enemy_all_s_bp_debuff_${amount}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "enemy_all_s_bp_debuff",
+      };
+    },
+  },
+  {
+    pattern: "destroy_adjacent_s_bp_sum",
+    test: (body) =>
+      /敵軍バトルエリアから、BPの合計が(\d+)になるように隣り合う2体のSユニットを選び撃破/.test(body),
+    build: (body, segment, trigger) => {
+      const sum = body.match(/BPの合計が(\d+)/)?.[1] ?? "6000";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `destroy_adjacent_s_bp_${sum}`,
+        name: segment.name,
+        text: body,
+        trigger: trigger.type === "nc" ? { type: "on_rush" } : trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `destroy_adjacent_s_bp_${sum}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "destroy_adjacent_s_bp_sum",
+      };
+    },
+  },
+  {
+    pattern: "return_enemy_s_to_rush_any",
+    test: (body) =>
+      /敵軍バトルエリアからSユニットを好きな数選び、ラッシュエリアに戻してもよい/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "return_enemy_s_to_rush_any",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "return_enemy_s_to_rush_any",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "return_enemy_s_to_rush_any",
+    }),
+  },
+  {
+    pattern: "rush_move_enemy_s_to_power_min",
+    test: (body) =>
+      /これをラッシュしたとき、敵軍バトルエリアからBP(\d+)以上のSユニットを1体選び持ち主のパワーゾーンに置く/.test(
+        body,
+      ),
+    build: (body, segment) => {
+      const minBp = body.match(/BP(\d+)以上/)?.[1] ?? "4000";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `rush_enemy_s_to_power_bp${minBp}`,
+        name: segment.name,
+        text: body,
+        trigger: { type: "on_rush" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `rush_enemy_s_to_power_bp${minBp}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "rush_move_enemy_s_to_power_min",
+      };
+    },
+  },
+  {
+    pattern: "discard_vehicle_mirror_rider",
+    test: (body) =>
+      /自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、次にラッシュする特徴「ミラーライダー」/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "discard_vehicle_mirror_rider",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "discard_vehicle_mirror_rider",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "discard_vehicle_mirror_rider",
+    }),
+  },
+  {
+    pattern: "destroy_on_win_male_female",
+    test: (body) =>
+      /これとバトルしたユニットは、特徴「男」または「女」を持つとき、バトルに勝っても撃破される/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "destroy_on_win_male_female",
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "destroy_on_win_male_female",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "destroy_on_win_male_female",
+    }),
+  },
+  {
+    pattern: "opponent_start_phase_hold_command",
+    test: (body) =>
+      /相手は次の制限を受ける⇒スタートフェイズにリリースするコマンドが2つ以上あれば、スタートフェイズを終えるとき、自分自身のコマンドを1つ選びホールドする/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: "unnamed_opponent_start_phase_hold_command",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "opponent_start_phase_hold_command",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "opponent_start_phase_hold_command",
+    }),
+  },
+  {
+    pattern: "recruit_all_named_from_discard",
+    test: (body) =>
+      /自軍捨札に「([^」]+)」のユニットカードが(\d+)枚以上あれば、それをすべて手札に加える/.test(body),
+    build: (body, segment, trigger) => {
+      const name = slugifyEffectId(body.match(/「([^」]+)」/)?.[1] ?? "named");
+      const count = body.match(/(\d+)枚以上/)?.[1] ?? "10";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `recruit_all_${name}_${count}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `recruit_all_${name}_${count}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "recruit_all_named_from_discard",
+      };
+    },
+  },
+  {
+    pattern: "power_discard_bp_per_card",
+    test: (body) =>
+      /自軍パワーゾーンのダメージ以外のカードを好きな枚数捨札にしてもよい。そうしたとき、このターン、これは捨札にしたカード1枚につきBP\+(\d+)される/.test(
+        body,
+      ),
+    build: (body, segment) => {
+      const amount = body.match(/BP\+(\d+)される/)?.[1] ?? "1000";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `power_discard_bp_${amount}`,
+        name: segment.name,
+        text: body,
+        trigger: { type: "enter_battle" },
+        optional: true,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `power_discard_bp_${amount}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "power_discard_bp_per_card",
+      };
+    },
+  },
+  {
+    pattern: "adjacent_riders_destroy_bp",
+    test: (body) =>
+      /選んだ2体のユニットが自軍バトルエリアで隣り合ったとき、敵軍バトルエリアからBP(\d+)以下の敵軍ユニットを1体選び撃破/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const maxBp = body.match(/BP(\d+)以下/)?.[1] ?? "8000";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `adjacent_riders_destroy_bp${maxBp}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `adjacent_riders_destroy_bp${maxBp}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "adjacent_riders_destroy_bp",
+      };
+    },
+  },
+  {
+    pattern: "recruit_feature_deck_or_resident",
+    test: (body) =>
+      /自軍山札か、自軍常駐置き場でオモテ向きになっている/.test(body) &&
+      /本来の特徴に「([^」]+)」を持つユニットカードを1枚選び、ラッシュエリアに出す/.test(body),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/本来の特徴に「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `recruit_${feature}_deck_resident`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `recruit_${feature}_deck_resident`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "recruit_feature_deck_or_resident",
+      };
+    },
+  },
+  {
+    pattern: "hand_pick_show_opponent",
+    test: (body) => /自分の手札を\d+枚選び、相手に見せてもよい/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body) ? { type: "enter_battle" } : trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `hand_pick_show_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "hand_pick_show_opponent",
+    }),
+  },
+  {
+    pattern: "enter_hold_then_enemy",
+    test: (body) =>
+      /自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍バトルエリア/.test(
+        body,
+      ) && !/特徴「[^」]+」を持つ敵軍ユニットを.*撃破/.test(body),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `enter_hold_enemy_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_hold_then_enemy",
+    }),
+  },
+  {
+    pattern: "reveal_enemy_deck_faceup_optional",
+    test: (body) =>
+      /敵軍山札の上から(\d+)枚をオモテにしてもよい/.test(body) &&
+      !/持ち主のコマンドゾーンにホールド状態で置く/.test(body),
+    build: (body, segment, trigger) => {
+      const count = body.match(/(\d+)枚をオモテ/)?.[1] ?? "3";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `reveal_enemy_deck_${count}`,
+        name: segment.name,
+        text: body,
+        trigger: /バトルエリアに出たとき/.test(body) ? { type: "enter_battle" } : trigger,
+        optional: true,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `reveal_enemy_deck_${count}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "reveal_enemy_deck_faceup_optional",
+      };
+    },
+  },
+  {
+    pattern: "enemy_resident_pick_to_power",
+    test: (body) =>
+      /敵軍常駐置き場にカードが2枚以上あれば、その中から1枚選んでもよい/.test(body) &&
+      /持ち主のパワーゾーンに置く/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enemy_resident_pick_to_power",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enemy_resident_pick_to_power",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enemy_resident_pick_to_power",
+    }),
+  },
+  {
+    pattern: "enemy_resident_pick_hold",
+    test: (body) =>
+      /敵軍常駐置き場にカードが2枚以上あれば、その中から1枚選んでもよい/.test(body) &&
+      /持ち主のコマンドゾーンにホールド状態で置く/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enemy_resident_pick_hold",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enemy_resident_pick_hold",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enemy_resident_pick_hold",
+    }),
+  },
+  {
+    pattern: "combo_hold_on_s_combo",
+    test: (body) =>
+      /このユニットからSユニットがコンビネーションするとき、これをホールドして次の効果を発動できる⇒/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `combo_hold_s_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "combo_hold_on_s_combo",
+    }),
+  },
+  {
+    pattern: "rush_discard_instead_effect",
+    test: (body) =>
+      /ラッシュエリアに出すかわりに捨札にして、次の効果を発動できる⇒/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: trigger.type === "nc" ? { type: "on_rush" } : trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `rush_discard_instead_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "rush_discard_instead_effect",
+    }),
+  },
+  {
+    pattern: "ride_discard_trigger_effect",
+    test: (body) =>
+      (/これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒/.test(
+        body,
+      ) ||
+        /これにライドしたユニットがある間、次の効果を発動する⇒/.test(body)) &&
+      !/次の能力を得る⇒/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `ride_discard_trigger_${hashEffectText(body).slice(0, 12)}`,
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "ride_discard_trigger_effect",
+    }),
+  },
+  {
+    pattern: "rush_discard_deck_search",
+    test: (body) =>
+      /捨札にして次の効果を発動できる⇒自軍山札(を見て|から)/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `rush_discard_search_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "rush_discard_deck_search",
+    }),
+  },
+  {
+    pattern: "hold_entry_feature_destroy",
+    test: (body) =>
+      /自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、特徴「([^」]+)」を持つ敵軍ユニットを/.test(
+        body,
+      ) && /撃破/.test(body),
+    build: (body, segment) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `hold_entry_destroy_${feature}`,
+        name: segment.name,
+        text: body,
+        trigger: { type: "enter_battle" },
+        optional: true,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `hold_entry_destroy_${feature}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "hold_entry_feature_destroy",
       };
     },
   },

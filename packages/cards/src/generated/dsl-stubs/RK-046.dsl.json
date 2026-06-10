@@ -37,15 +37,17 @@
       ]
     },
     {
-      "id": "named_e38390e382b9e382bfe383bc",
+      "id": "enemy_all_s_bp_debuff_500",
       "name": "バスターホイール",
       "text": "これが自軍バトルエリアにある間、敵軍バトルエリアのすべてのSユニットはBP-500される。（BP0以下になったユニットは撃破される）",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "enemy_all_s_bp_debuff_500",
+          "duration": "permanent"
         }
       ]
     }

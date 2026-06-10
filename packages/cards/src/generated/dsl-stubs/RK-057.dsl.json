@@ -46,7 +46,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "rush_enemy_s_to_power_bp4000",
+          "duration": "turn"
         }
       ]
     }

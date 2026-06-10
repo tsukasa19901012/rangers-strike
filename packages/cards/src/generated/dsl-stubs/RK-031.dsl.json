@@ -27,9 +27,25 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "choose",
+          "kind": "optional_deck_draw",
+          "valid": {
+            "type": "zone",
+            "zone": "deck",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

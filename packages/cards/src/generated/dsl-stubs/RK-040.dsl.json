@@ -40,7 +40,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_male_female",
+          "duration": "permanent"
         }
       ]
     }

@@ -21,13 +21,16 @@
       "name": "ハート8－リフレクト",
       "text": "自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして、次の効果を発動できる⇒このターン、相手はカウンターを発動できない。",
       "trigger": {
-        "type": "nc"
+        "type": "on_rush"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "rush_discard_instead_e887aae8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

@@ -19,7 +19,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "ride_discard_trigger_e38193e3828c",
+          "duration": "permanent"
         }
       ]
     }

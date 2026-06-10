@@ -46,7 +46,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "destroy_adjacent_s_bp_6000",
+          "duration": "turn"
         }
       ]
     }

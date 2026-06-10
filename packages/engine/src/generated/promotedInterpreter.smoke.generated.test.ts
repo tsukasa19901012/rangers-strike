@@ -16,6 +16,7 @@ const GRANT_KEYWORD_IDS = [
   "BK-013",
   "BK-015",
   "BK-017",
+  "BK-018",
   "BK-019",
   "PK-001",
   "PK-003",
@@ -47,19 +48,15 @@ const GRANT_KEYWORD_IDS = [
   "RK-130",
   "RK-132",
   "RK-133",
-  "RK-134",
-  "RK-152"
+  "RK-134"
 ] as const;
 const INTERPRET_EFFECT_IDS = [
-  "BK-018",
-  "RK-020",
   "RK-083",
   "RK-084",
   "RK-087",
   "RK-089",
   "RK-108",
   "RK-118",
-  "RK-126",
   "RK-132",
   "RK-159",
   "RK-163",
@@ -90,7 +87,10 @@ const INTERPRET_EFFECT_IDS = [
   "RM-004",
   "RM-005",
   "RM-015",
-  "RM-016"
+  "RM-016",
+  "RM-031",
+  "RM-041",
+  "RM-044"
 ] as const;
 const ACTION_PRIMITIVE_IDS = [
   "BK-001",
@@ -106,6 +106,7 @@ const ACTION_PRIMITIVE_IDS = [
   "PK-013",
   "PR-025",
   "RK-005",
+  "RK-020",
   "RK-096",
   "RK-097",
   "RK-102",
@@ -131,8 +132,7 @@ const ACTION_PRIMITIVE_IDS = [
   "RS-334",
   "RS-349",
   "RS-438",
-  "RS-523",
-  "RS-526"
+  "RS-523"
 ] as const;
 
 function toDefinition(doc: NonNullable<ReturnType<typeof cardDsl.createFullPlayableRegistry>["getCard"]>): CardDefinition {

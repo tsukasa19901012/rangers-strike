@@ -147,4 +147,29 @@ describe("rematchExtractedEffect (M20)", () => {
     expect(built?.matchedPattern).toBe("enter_hold_enemy_s_command");
     expect(built?.effects[0]?.type).toBe("choose");
   });
+
+  it("matches deck top hold command with 置いて (RK-031)", () => {
+    const built = rematchExtractedEffect(
+      "自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい（置けなければこの効果は発動できない）。",
+      { name: "バッテリー交換", kind: "named", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("deck_top_hold_command");
+    expect(built?.effects[0]?.type).toBe("choose");
+  });
+
+  it("matches destroy hold commands then (RK-047)", () => {
+    const built = rematchExtractedEffect(
+      "敵軍バトルエリアからユニットを1体選ぶ。そして、選んだユニットの必要パワーの数字より1つ多い数だけ自軍コマンドをホールドしてもよい。そうしたとき、選んだユニットを撃破する。このとき、これはアタックすることができない。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("destroy_hold_commands_then");
+  });
+
+  it("matches hand pick show opponent (RK-126)", () => {
+    const built = rematchExtractedEffect(
+      "自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの必要パワーの数字が番号順（例：0、1、2や3、4、5など）に揃うなら、敵軍Sユニットを1体選び撃破する。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("hand_pick_show_opponent");
+  });
 });

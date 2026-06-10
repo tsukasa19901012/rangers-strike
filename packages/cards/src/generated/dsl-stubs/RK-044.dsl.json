@@ -40,7 +40,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "recruit_all_named_e383a9e382a4e382aae38388_10",
+          "duration": "turn"
         }
       ]
     }

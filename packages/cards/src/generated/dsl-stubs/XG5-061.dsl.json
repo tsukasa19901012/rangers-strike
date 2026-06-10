@@ -21,13 +21,16 @@
       "name": "スペード8－マグネット",
       "text": "自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして、次の効果を発動できる⇒敵軍ラッシュエリアにある特徴「メカ」を持つSユニットをすべて敵軍バトルエリアに出してもよい（出す順番は自分が選ぶ）。",
       "trigger": {
-        "type": "nc"
+        "type": "on_rush"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "rush_discard_instead_e887aae8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {
