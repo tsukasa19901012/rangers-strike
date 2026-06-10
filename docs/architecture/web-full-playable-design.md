@@ -195,3 +195,37 @@ export function estimateDeckWarnings(entries: DeckEntry[]): DeckWarningEstimate
 - `cardImplementationStatus.ts` — Core 無バッジ / promoted → `UI未確認`
 - `isKnownEffectChoice` — 未知 pending は汎用 modal + スキップ（UI未対応）
 - `debugEffectLog` — development トグル + console / ログ modal
+
+---
+
+## 12. W5 設計・完了（2026-06-10）
+
+| PR | 内容 | 要件 |
+|----|------|------|
+| **W5** | DSL-ready カバレッジバッジ + rollout 連動 | DB-10, カバレッジヘルパー |
+
+- `generate-dsl-ready-ids.ts` → `dsl-ready-ids.json`（1,849 dslReady）
+- `dslReady.ts` — `isCardDslReady` / `isCardDslUnimplemented`
+- `estimateCardUiCoverage.ts` — tiers: core / promoted-dsl / promoted-partial
+- `DeckBuilderCatalogList` / `CardModal` — DSL対応・DSL未実装・UI未確認バッジ（最大 2）
+- `audit-rollout-status` — G5 pass、G4 は `sim-metrics.json` 連動
+
+---
+
+## 13. 横断テスト・E2E（2026-06-10）
+
+| 項目 | 実装 |
+|------|------|
+| AC-06 CSS 契約 | `apps/web/lib/mobileDeckBuilderLayout.test.ts` |
+| AC-06 Playwright E2E | `apps/web/e2e/deck-builder-mobile.spec.ts`（390×844 mobile Chromium） |
+| AC-07 engine smoke | `packages/engine/src/verticalSlice/simulateCustomFullDeck.test.ts` |
+| full カタログ統合 | `webUiIntegration.test.ts` — promoted サンプル 30 枚 + hybrid デッキ検証 |
+| g5Acceptance | AC-01–AC-05 回帰 |
+
+### E2E 実行
+
+```bash
+npm run test:e2e -w @rangers-strike/web
+```
+
+`playwright.config.ts` が dev サーバー（`:3000`）を起動。CI では `CI=1` で retry 有効。

@@ -135,4 +135,4 @@ describe("AC-05 — starter decks and full-playable presets", () => {
   });
 });
 
-// AC-06: mobile layout contract — see mobileDeckBuilderLayout.test.ts
+// AC-06: mobileDeckBuilderLayout.test.ts (CSS) + e2e/deck-builder-mobile.spec.ts (Playwright)

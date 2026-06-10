@@ -378,32 +378,36 @@ flowchart TD
 
 ## Phase 3 — レビュー用サマリー（1 ページ）
 
-### 現状 3 行
+### 現状 3 行（2026-06-10 完了時点）
 
-- エンジン／カード基盤は **1,849 枚（G0–G3 完了）**。G3.5 rematch は audit 上 **pass（99.6%）**。
-- Web は **デッキビルダー・検証・custom 対戦が L1–3（179 枚）固定**。full-promoted **ランダムプリセットのみ** full 接続。
-- 対戦 UI の effect 配線は **L1–3 named effect ~120 件**中心。promoted は `getCardById` 非解決・画像 0%。
+- エンジン／カード基盤は **1,849 枚（G0–G3.5 完了）**。`audit:rollout-status` は **G0–G5 すべて pass（7/7）**。
+- Web は **デッキビルダー・検証・custom 対戦が `fullPlayableCatalog`（1,849 枚）接続済み**。スターター 5 種・自作デッキ・full-promoted プリセットで CPU 対戦開始可能。
+- 対戦 UI は `resolvePlayableCard` 統一・警告バッジ・汎用 EffectChoice・画像 1,004 枚ローカル化。promoted 666 枚は grnrngr 404 → プレースホルダ fallback。
 
-### 最大ギャップ 5 件
+### 解消済みギャップ（W1–W5）
 
-1. **GAP-01** デッキビルダーが 179 枚カタログ固定（P0 / G5 ブロッカー）
-2. **GAP-02** 検証・展開が `allCardsCatalog` 固定（P0）
-3. **GAP-03** 自作デッキで full 対戦開始不可（P0）
-4. **GAP-04** `getCardById` により promoted の対戦表示が欠落（P1）
-5. **GAP-06/07** UI 効果カバレッジが L1–3 中心。未配線で操作不能リスク（P1）
+| ID | 内容 | 状態 |
+|----|------|------|
+| GAP-01 | デッキビルダー 179 枚固定 | ✅ `fullPlayableCatalog` |
+| GAP-02 | 検証・展開が core 固定 | ✅ W1–W2 |
+| GAP-03 | 自作デッキで full 対戦不可 | ✅ W2 |
+| GAP-04 | promoted 表示欠落 | ✅ `resolvePlayableCard` |
+| GAP-05/09 | 画像・リスト DOM | ✅ W3 仮想化 + 画像 |
+| GAP-06/07 | UI 効果未配線 | ⚠️ W4 緩和（バッジ・汎用 modal）。完全配線は継続 |
 
-### 推奨 W1–W2 スコープ
+### 受け入れ・ゲート
 
-- **W1:** `fullPlayableCatalog` 接続、検索・expansion フィルタ、検証・表示修正
-- **W2:** custom の `createGameForDecks` 起動、`resolvePlayableCard` 統一、警告バッジ、回帰テスト
+- **AC-01–AC-07** テスト済み（AC-06 は CSS 契約 + Playwright E2E）
+- **G4** `sim-metrics.json` 連動（`apply_failed=0`）
+- **G5** Web full-playable pass
 
-→ PO 成功定義「**組める・始められる**」を満たし、G5 を **unknown → pass（再定義）** にできる最小セット。
+### 残課題（G5 スコープ外・任意）
 
-### PO に聞くべき質問 3 件
-
-1. 公式 **banned リスト**の有無とソース（OQ-01）
-2. promoted **expansion のユーザー向け表示名**（OQ-02）
-3. ランダム full-promoted と自作デッキ、**どちらを主導線**にするか（OQ-04）
+1. **画像 666 枚** — grnrngr 未掲載（プレースホルダで運用）
+2. **banned リスト** — XG2 ドギー・クルーガー ID がカタログ未収録のため `BANNED_CARD_IDS = []`
+3. **G3.5 catchall** — 10 件 rematch fallback（ゲート pass 維持）
+4. **localStorage v2** — 警告確認タイムスタンプ（将来）
+5. **収録セット UI** — 80 件 `<select>` のグルーピング（任意）
 
 ---
 
@@ -415,3 +419,4 @@ flowchart TD
 | 2026-06-10 | OQ 確定（OQ-01〜05 PO 回答反映、§前提追記） |
 | 2026-06-10 | W5 完了: `estimateCardUiCoverage` バッジ + `audit:rollout-status` G5 pass |
 | 2026-06-10 | AC-06 レイアウト契約テスト + AC-07 custom promoted vertical slice + G4 sim-metrics 連動 |
+| 2026-06-10 | Phase 3 サマリー更新・Playwright AC-06 E2E・webUiIntegration full サンプル拡張 |

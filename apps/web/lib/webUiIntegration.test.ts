@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   allCardsCatalog,
+  fullPlayableCatalog,
   getBattleEntryHoldCount,
   getCardById,
   getCardEffect,
+  getFullPlayableCardById,
   getStarterDeck,
   legend1Catalog,
   legend2Catalog,
@@ -37,7 +39,7 @@ import {
   canConfirmCommandPayment,
   toggleCommandPaymentSelection,
 } from "./commandPaymentUi";
-import { buildCardDefinitions } from "./deckBuilder";
+import { buildCardDefinitions, validateDeckEntries } from "./deckBuilder";
 import {
   createGameFromDeckSelections,
   decodeDeckSelection,
@@ -261,6 +263,60 @@ describe("Web UI integration — full-playable deck selection (G5)", () => {
     );
     expect(definitions["BK-001"]).toBeDefined();
     expect(definitions["BK-001"]?.name).toBeTruthy();
+  });
+});
+
+const PROMOTED_CATALOG_CARDS = fullPlayableCatalog.cards.filter((card) =>
+  card.expansion.includes("promoted"),
+);
+const PROMOTED_SAMPLE_IDS = Array.from({ length: 30 }, (_, index) => {
+  const cardIndex = Math.floor((index * PROMOTED_CATALOG_CARDS.length) / 30);
+  return PROMOTED_CATALOG_CARDS[cardIndex]!.id;
+});
+
+describe("Web UI integration — full playable catalog samples", () => {
+  it("samples 30 promoted cards across the catalog", () => {
+    expect(PROMOTED_CATALOG_CARDS.length).toBeGreaterThan(100);
+    expect(PROMOTED_SAMPLE_IDS.length).toBe(30);
+    expect(new Set(PROMOTED_SAMPLE_IDS).size).toBe(30);
+  });
+
+  it.each(PROMOTED_SAMPLE_IDS.map((cardId) => [cardId] as const))(
+    "%s resolves via resolvePlayableCard and fullPlayableCatalog",
+    (cardId) => {
+      const fromResolver = resolvePlayableCard(cardId);
+      const fromCatalog = getFullPlayableCardById(cardId);
+      expect(fromResolver).toEqual(fromCatalog);
+      expect(fromResolver?.name.length).toBeGreaterThan(0);
+      expect(getCardById(cardId)).toBeUndefined();
+    },
+  );
+
+  it("validates and expands hybrid starter deck with promoted substitution", () => {
+    const entries = getStarterDeck("abarenoh").entries.map((entry) =>
+      entry.cardId === "RS-014" ? { cardId: "BK-001", count: 1 } : { ...entry },
+    );
+    const validation = validateDeckEntries(entries);
+    expect(validation.ok).toBe(true);
+    expect(validation.total).toBe(40);
+
+    const definitions = buildCardDefinitions(entries);
+    expect(definitions).toHaveLength(40);
+    expect(definitions.some((card) => card.id === "BK-001")).toBe(true);
+  });
+
+  it("starts CPU game from hybrid-promoted preset against starter", () => {
+    const game = createGameFromDeckSelections(
+      { kind: "hybrid-promoted", tier: 15 },
+      { kind: "starter", id: "magiking" },
+      { firstPlayer: "player1", rng: () => 0.33 },
+    );
+    expect(game.phase).toBe("charge");
+    expect(Object.keys(game.definitions).length).toBeGreaterThan(179);
+    const promotedInPool = Object.values(game.definitions).some((card) =>
+      card.expansion.includes("promoted"),
+    );
+    expect(promotedInPool).toBe(true);
   });
 });
 

@@ -9,3 +9,14 @@ dist/
 .DS_Store
 .vercel
 .wiki-*.html
+
+# Accidental tsc output under packages/cards/src (outDir is dist/)
+packages/cards/src/**/*.js
+packages/cards/src/**/*.d.ts
+packages/cards/src/**/*.js.map
+packages/cards/src/**/*.d.ts.map
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
