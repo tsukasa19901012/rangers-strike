@@ -1,6 +1,7 @@
 import { hasResist } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { findInZone } from "../core/helpers";
+import { cardHasDslGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { cardHasKeyword } from "./cardKeywords";
 
 /** レジスト: 場に留まる（反撃不能・離場阻止等）。 */
@@ -17,6 +18,7 @@ export function cardHasRegisterKeyword(
   cardId: string,
 ): boolean {
   return (
+    cardHasDslGrantKeyword(cardId, "register") ||
     cardHasKeyword(state.definitions, cardId, "register") ||
     hasResist(state.definitions, cardId)
   );

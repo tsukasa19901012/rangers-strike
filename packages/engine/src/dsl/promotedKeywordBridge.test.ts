@@ -2,13 +2,25 @@ import { describe, expect, it } from "vitest";
 import { createTestState, inst } from "../testing/fixtures";
 import {
   cardHasGrantKeyword,
+  decodeRideWithoutRcFeature,
+  isEngineNativeGrantKeyword,
   promotedKeywordBpBonus,
   promotedKeywordSpFloor,
 } from "./promotedKeywordBridge";
 
 describe("promotedKeywordBridge", () => {
+  it("recognizes engine-native keyword markers", () => {
+    expect(isEngineNativeGrantKeyword("morph")).toBe(true);
+    expect(isEngineNativeGrantKeyword("resident")).toBe(true);
+    expect(decodeRideWithoutRcFeature("ride_without_rc_named_e382b7e383abe38390e383bc")).toBe(
+      "シルバー",
+    );
+  });
+
   it("reads grant_keyword from promoted card DSL", () => {
     expect(cardHasGrantKeyword("RK-152", "register")).toBe(true);
+    expect(cardHasGrantKeyword("RK-263", "morph")).toBe(true);
+    expect(cardHasGrantKeyword("RS-632", "wing")).toBe(true);
     expect(
       cardHasGrantKeyword(
         "RK-152",

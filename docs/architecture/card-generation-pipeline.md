@@ -2,8 +2,10 @@
 
 **目的:** Wiki 情報を起点に、カードテキストから DSL・JSON・テストまで一気通貫で生成する  
 **対象:** `docs/wiki/`, `packages/cards/`, `packages/engine/`  
-**関連:** [full-card-rollout-process.md](./full-card-rollout-process.md)（全カード反映の運用プロセス）, [codebase-scalability-review.md](./codebase-scalability-review.md) §6, [test-strategy.md](./test-strategy.md), [replay-system-design.md](./replay-system-design.md)  
-**日付:** 2026-06-09
+**関連:** [full-card-rollout-process.md](./full-card-rollout-process.md)（**全カード反映の運用プロセス**）, [codebase-scalability-review.md](./codebase-scalability-review.md) §6, [test-strategy.md](./test-strategy.md), [replay-system-design.md](./replay-system-design.md)  
+**日付:** 2026-06-10
+
+> **運用と技術の分担:** 本ドキュメントは Wiki→DSL の**技術設計**（Stage 1–4）。週次イテレーション・ゲート判定・完了定義は [full-card-rollout-process.md](./full-card-rollout-process.md) を参照。
 
 ---
 
@@ -660,6 +662,7 @@ packages/engine/src/
 
 | 文書 / コード | 内容 |
 |--------------|------|
+| [full-card-rollout-process.md](./full-card-rollout-process.md) | 全カード反映の運用プロセス（G0–G5、週次コマンド） |
 | [codebase-scalability-review.md](./codebase-scalability-review.md) §6 | A/B/C 分類 |
 | [test-strategy.md](./test-strategy.md) | Golden / Replay |
 | `packages/cards/schema/` | CardDocument schema |

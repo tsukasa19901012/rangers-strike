@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T04:45:20.911Z",
+  "generatedAt": "2026-06-10T05:08:42.746Z",
   "summary": {
     "gatesPassed": 4,
     "gatesPartial": 0,
@@ -12,8 +12,8 @@
     "unimplemented": 0,
     "effectDelegate": 0,
     "enqueueOnly": 0,
-    "engineKeywords": 1858,
-    "passiveNative": 739
+    "engineKeywords": 710,
+    "passiveNative": 1881
   },
   "topDelegates": [],
   "gates": [
@@ -44,7 +44,7 @@
       "name": "エンジン解決",
       "status": "pass",
       "target": "delegate/enqueue ゼロ + interpret_effect / engine キーワード接続",
-      "current": "interpret_effect=1324, engine=1858, passive_native=739"
+      "current": "interpret_effect=0, engine=710, passive_native=1881"
     },
     {
       "id": "G4",

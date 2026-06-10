@@ -4,6 +4,29 @@ import { getDefinition, instanceBp, isSmallUnit } from "../core/catalog";
 import { findInZone } from "../core/helpers";
 import { getCardDslDocument } from "./effectLookup";
 
+/** rematch 不可の D/E 区分キーワード（grant_keyword マーカー）。 */
+export const ENGINE_NATIVE_KEYWORDS = new Set([
+  "morph",
+  "resident",
+  "wing",
+  "chase",
+  "register",
+  "commander",
+  "mothership",
+  "ride_bp_boost_500",
+  "ride_bp_boost_1000",
+]);
+
+const ENGINE_NATIVE_PREFIXES = [
+  "ride_without_rc_",
+  "ride_command_without_rc_",
+] as const;
+
+export function isEngineNativeGrantKeyword(keyword: string): boolean {
+  if (ENGINE_NATIVE_KEYWORDS.has(keyword)) return true;
+  return ENGINE_NATIVE_PREFIXES.some((prefix) => keyword.startsWith(prefix));
+}
+
 function featureSlug(feature: string): string {
   const ascii = feature
     .normalize("NFKD")
@@ -130,6 +153,44 @@ export function promotedKeywordSpFloor(
 
 /** while_in_field / passive grant_keyword のフィールド検索用。 */
 export function cardHasDslGrantKeyword(cardId: string, keyword: string): boolean {
+  return cardHasGrantKeyword(cardId, keyword);
+}
+
+/** ride_without_rc_* キーワードから特徴名を復元（hex slug または named_* 形式）。 */
+export function decodeRideWithoutRcFeature(keyword: string): string | null {
+  const match = keyword.match(/^ride_(?:command_)?without_rc_(?:named_)?(.+)$/);
+  if (!match) return null;
+  const slug = match[1]!;
+  if (/^[0-9a-f]+$/.test(slug) && slug.length >= 4) {
+    try {
+      return Buffer.from(slug, "hex").toString("utf8");
+    } catch {
+      return null;
+    }
+  }
+  return slug;
+}
+
+export function listRideWithoutRcFeatures(vehicleCardId: string): string[] {
+  return listCardGrantKeywords(vehicleCardId)
+    .map(decodeRideWithoutRcFeature)
+    .filter((feature): feature is string => feature !== null);
+}
+
+/** ビークルが RC 不要ライドを許可する特徴を rider が持つか。 */
+export function riderMatchesVehicleRideWithoutRc(
+  definitions: Record<string, CardDefinition>,
+  vehicleCardId: string,
+  riderCardId: string,
+): boolean {
+  const allowedFeatures = listRideWithoutRcFeatures(vehicleCardId);
+  if (allowedFeatures.length === 0) return false;
+  const riderDef = definitions[riderCardId];
+  if (!riderDef?.features?.length) return false;
+  return allowedFeatures.some((feature) => riderDef.features!.includes(feature));
+}
+
+export function cardHasEngineNativeKeyword(cardId: string, keyword: string): boolean {
   return cardHasGrantKeyword(cardId, keyword);
 }
 

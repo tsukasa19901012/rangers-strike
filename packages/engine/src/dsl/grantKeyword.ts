@@ -25,6 +25,7 @@ import {
   runtimeEffectIdFromKeyword,
 } from "./runtimeEffectDispatch";
 import { effectDelegateSlot } from "./effectDelegateSlot";
+import { isEngineNativeGrantKeyword } from "./promotedKeywordBridge";
 
 export const PASSIVE_GRANT_KEYWORDS = new Set([
   "over_technology_m_bp_plus_on_attacked",
@@ -44,6 +45,15 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "substitute_on_wb_destroy",
   "win_but_destroyed_vs_sp1",
   "no_battle_entry_turn_rushed",
+  "morph",
+  "resident",
+  "wing",
+  "chase",
+  "register",
+  "commander",
+  "mothership",
+  "ride_bp_boost_500",
+  "ride_bp_boost_1000",
 ]);
 
 export const SUPPORTED_GRANT_KEYWORDS = new Set([
@@ -309,7 +319,7 @@ export function applyGrantKeyword(
         if (resolved) return resolved;
         return { state, detail: keyword };
       }
-      if (PASSIVE_GRANT_KEYWORDS.has(keyword)) {
+      if (PASSIVE_GRANT_KEYWORDS.has(keyword) || isEngineNativeGrantKeyword(keyword)) {
         return { state, detail: keyword };
       }
       return { state };

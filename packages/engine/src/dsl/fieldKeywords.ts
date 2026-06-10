@@ -2,7 +2,7 @@ import type { GameState, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
 import { listDslEffectsForTrigger } from "./effectLookup";
 
-type FieldZone = "rush" | "battle";
+type FieldZone = "rush" | "battle" | "operation";
 
 function cardHasWhileInFieldKeyword(cardId: string, keyword: string): boolean {
   const effects = listDslEffectsForTrigger(cardId, "while_in_field");
@@ -53,7 +53,7 @@ export function playerHasActiveFieldKeyword(
   state: GameState,
   playerId: PlayerId,
   keyword: string,
-  zones: FieldZone[] = ["rush", "battle"],
+  zones: FieldZone[] = ["rush", "battle", "operation"],
 ): boolean {
   const player = state.players[playerId];
   for (const zone of zones) {
@@ -68,7 +68,7 @@ export function playerHasActiveFieldKeyword(
 export function anyPlayerHasActiveFieldKeyword(
   state: GameState,
   keyword: string,
-  zones: FieldZone[] = ["rush", "battle"],
+  zones: FieldZone[] = ["rush", "battle", "operation"],
 ): boolean {
   return (
     playerHasActiveFieldKeyword(state, "player1", keyword, zones) ||
@@ -79,7 +79,7 @@ export function anyPlayerHasActiveFieldKeyword(
 export function findFieldCardByKeyword(
   state: GameState,
   keyword: string,
-  zones: FieldZone[] = ["rush", "battle"],
+  zones: FieldZone[] = ["rush", "battle", "operation"],
 ): { playerId: PlayerId; cardId: string; name: string } | null {
   for (const playerId of ["player1", "player2"] as const) {
     const player = state.players[playerId];

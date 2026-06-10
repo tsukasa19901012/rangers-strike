@@ -1,31 +1,30 @@
 {
-  "generatedAt": "2026-06-10T03:40:30.705Z",
-  "uniqueKeywords": 144,
-  "interpretEffectCount": 1324,
+  "generatedAt": "2026-06-10T05:08:42.220Z",
+  "uniqueKeywords": 490,
+  "interpretEffectCount": 0,
   "byCategory": {
-    "engine": 1858,
-    "passive_native": 739,
-    "interpret_effect": 1324
+    "passive_native": 1881,
+    "engine": 710
   },
   "topEffectDelegate": [],
   "topPassiveNative": [
     {
-      "keyword": "morph",
-      "cardCount": 68,
+      "keyword": "while_in_field_body_e38193e3828c",
+      "cardCount": 149,
       "sampleCardIds": [
-        "RK-262",
-        "RK-263",
-        "RK-330"
+        "RK-132",
+        "RK-184",
+        "RK-195"
       ],
       "category": "passive_native"
     },
     {
-      "keyword": "resident",
-      "cardCount": 65,
+      "keyword": "note_other_e280bbe38193",
+      "cardCount": 144,
       "sampleCardIds": [
-        "XP-018",
-        "PK-010",
-        "PK-011"
+        "RK-184",
+        "RK-198",
+        "RM-044"
       ],
       "category": "passive_native"
     },
@@ -50,6 +49,16 @@
       "category": "passive_native"
     },
     {
+      "keyword": "destroy_enter_battle_e887aae8bb8d",
+      "cardCount": 30,
+      "sampleCardIds": [
+        "RK-196",
+        "RS-642",
+        "XG1-075"
+      ],
+      "category": "passive_native"
+    },
+    {
       "keyword": "destroy_on_win_vs_sp1",
       "cardCount": 30,
       "sampleCardIds": [
@@ -60,12 +69,82 @@
       "category": "passive_native"
     },
     {
+      "keyword": "hold_on_enter_battle_e887aae8bb8d",
+      "cardCount": 29,
+      "sampleCardIds": [
+        "RK-118",
+        "XG2-044",
+        "XG2-062"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "while_note_e280bbe38193",
+      "cardCount": 29,
+      "sampleCardIds": [
+        "RK-194",
+        "RK-197",
+        "RK-217"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "grant_effect_e38193e3828c",
+      "cardCount": 28,
+      "sampleCardIds": [
+        "XG3-090",
+        "RK-188",
+        "RK-220"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "note_other_e280bbe887aa",
+      "cardCount": 26,
+      "sampleCardIds": [
+        "XG7-016",
+        "RM-018",
+        "RS-216"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "grant_ability_e38193e3828c",
+      "cardCount": 24,
+      "sampleCardIds": [
+        "RK-197",
+        "SR-008",
+        "XG4-099"
+      ],
+      "category": "passive_native"
+    },
+    {
       "keyword": "scrum",
       "cardCount": 23,
       "sampleCardIds": [
         "XG3-031",
         "RK-212",
         "RK-213"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "enemy_power_damage_e887aae8bb8d",
+      "cardCount": 22,
+      "sampleCardIds": [
+        "RK-227",
+        "RK-331",
+        "RS-182"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "bp_modify_e38193e3828c",
+      "cardCount": 21,
+      "sampleCardIds": [
+        "RK-186",
+        "RK-121",
+        "RK-183"
       ],
       "category": "passive_native"
     },
@@ -90,122 +169,42 @@
       "category": "passive_native"
     },
     {
+      "keyword": "destroy_on_rush_e38193e3828c",
+      "cardCount": 17,
+      "sampleCardIds": [
+        "RK-193",
+        "RK-286",
+        "RS-420"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "grant_effect_e887aae8bb8d",
+      "cardCount": 16,
+      "sampleCardIds": [
+        "RK-233",
+        "RK-234",
+        "RK-274"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "power_zone_action_e887aae8bb8d",
+      "cardCount": 15,
+      "sampleCardIds": [
+        "RK-168",
+        "RM-031",
+        "XG3-062"
+      ],
+      "category": "passive_native"
+    },
+    {
       "keyword": "cannot_attack",
       "cardCount": 15,
       "sampleCardIds": [
         "RS-682",
         "PR-022",
         "RK-116"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "to_power_on_destroy",
-      "cardCount": 15,
-      "sampleCardIds": [
-        "RS-505",
-        "RS-506",
-        "RS-507"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "not_selectable_except_attack",
-      "cardCount": 14,
-      "sampleCardIds": [
-        "XG1-074",
-        "XG2-066",
-        "XG3-062"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "taxis_MA",
-      "cardCount": 14,
-      "sampleCardIds": [
-        "XG6-024",
-        "RS-458",
-        "RS-459"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "lead_MA",
-      "cardCount": 13,
-      "sampleCardIds": [
-        "XG5-040",
-        "XG5-041",
-        "XG5-071"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "no_battle_rush_turn",
-      "cardCount": 13,
-      "sampleCardIds": [
-        "PR-006",
-        "PR-027",
-        "RK-046"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "cannot_enter_battle",
-      "cardCount": 11,
-      "sampleCardIds": [
-        "RS-223",
-        "RS-271",
-        "RS-359"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "blast",
-      "cardCount": 11,
-      "sampleCardIds": [
-        "RS-617",
-        "RS-648",
-        "RS-679"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "breaker",
-      "cardCount": 11,
-      "sampleCardIds": [
-        "SX-007",
-        "XG6-003",
-        "XG6-010"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "ride_bp_boost_1000",
-      "cardCount": 10,
-      "sampleCardIds": [
-        "RK-030",
-        "RK-024",
-        "RK-027"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "no_enter_battle_own_turn",
-      "cardCount": 10,
-      "sampleCardIds": [
-        "RS-647",
-        "RS-429",
-        "RS-430"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "taxis_ET",
-      "cardCount": 10,
-      "sampleCardIds": [
-        "XG6-054",
-        "RS-441",
-        "RS-443"
       ],
       "category": "passive_native"
     }

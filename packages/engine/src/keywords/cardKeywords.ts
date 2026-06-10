@@ -1,14 +1,16 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
+import { cardHasDslGrantKeyword } from "../dsl/promotedKeywordBridge";
 
-export type CardKeyword = "wing" | "chase" | "commander" | "register";
+export type CardKeyword = "wing" | "chase" | "commander" | "register" | "morph" | "resident";
 
-/** カード定義からキーワードを検出（tags / features / keywords / 効果文）。 */
+/** カード定義からキーワードを検出（tags / features / keywords / 効果文 / DSL grant_keyword）。 */
 export function cardHasKeyword(
   definitions: Record<string, CardDefinition>,
   cardId: string,
   keyword: CardKeyword,
 ): boolean {
+  if (cardHasDslGrantKeyword(cardId, keyword)) return true;
   const def = definitions[cardId];
   if (!def) return false;
   if (def.type === "commander" && keyword === "commander") return true;
@@ -17,6 +19,8 @@ export function cardHasKeyword(
     chase: ["chase", "チェイス"],
     commander: ["commander", "コマンダー"],
     register: ["register", "レジスト", "resist"],
+    morph: ["morph", "モーフ"],
+    resident: ["resident", "常駐"],
   };
   const needles = labels[keyword];
   const explicitKeywords = (def as CardDefinition & { keywords?: string[] }).keywords;

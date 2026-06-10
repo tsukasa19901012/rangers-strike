@@ -3,6 +3,17 @@ import type { GameState, PlayerId } from "../types/game";
 import { listDslEffectsForTrigger } from "./effectLookup";
 
 function operationCardHasResidentKeyword(cardId: string, keyword: string): boolean {
+  const whileInField = listDslEffectsForTrigger(cardId, "while_in_field");
+  if (
+    whileInField.some((effect) =>
+      effect.effects.some(
+        (primitive) =>
+          primitive.type === "grant_keyword" && primitive.keyword === keyword,
+      ),
+    )
+  ) {
+    return true;
+  }
   const effects = listDslEffectsForTrigger(cardId, "operation");
   return effects.some(
     (effect) =>
