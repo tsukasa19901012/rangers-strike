@@ -15,13 +15,16 @@
       "name": "第六世代コンピューター",
       "text": "これが自軍バトルエリアにあり、ユニットにライドされていなければ、敵軍ターン中、自軍バトルエリアのSユニットがホールド状態になったとき、そのユニットをこのビークルにライドさせてから、ラッシュエリアに戻してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "ride_action_e38193e3828c",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

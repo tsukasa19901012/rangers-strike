@@ -36,13 +36,16 @@
       "name": "ゼロのスタート",
       "text": "これがストライクしてダメージを与えたとき、相手に1枚ドローさせてもよい。そうしたとき、次の相手ターンのスタートフェイズ中、相手は山札からカードをドローできない。",
       "trigger": {
-        "type": "nc"
+        "type": "on_strike"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "opponent_must_e38193e3828c",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

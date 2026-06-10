@@ -36,13 +36,16 @@
       "name": "ブラッドベセル",
       "text": "このターン、自軍ユニットがストライクして、相手が自分自身のパワーゾーンのカードをウラ向きにしてダメージにするとき、相手は自分自身のパワーゾーンにモーフを持つユニットカードがあれば、それを選びダメージにする。",
       "trigger": {
-        "type": "nc"
+        "type": "on_strike"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "opponent_must_e38193e381ae",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

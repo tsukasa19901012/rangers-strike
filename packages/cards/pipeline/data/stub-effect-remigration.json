@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-06-10T04:37:30.179Z",
-  "scanned": 659,
-  "migratedToPrimitives": 220,
+  "generatedAt": "2026-06-10T04:37:48.109Z",
+  "scanned": 477,
+  "migratedToPrimitives": 141,
   "remainingEffectDelegate": 0,
   "samples": [
     {
@@ -15,53 +15,38 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-092",
-      "effectId": "named_e78bbce4bd9ce688a6",
+      "cardId": "RK-103",
+      "effectId": "named_e38396e383a9e382b9e38388",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-100",
-      "effectId": "named_e8999ae5838fe68a95e5bdb1",
+      "cardId": "RK-109",
+      "effectId": "named_e887aae5b7b1e4bfaee5bea9",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-101",
-      "effectId": "named_e382bfe382a4e382ace383bc",
+      "cardId": "RK-113",
+      "effectId": "named_e695a3e5bcbe",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-105",
-      "effectId": "named_e3838fe383abe38390e383bc",
+      "cardId": "RK-114",
+      "effectId": "named_e38387e38383e38389e382a8",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-107",
-      "effectId": "named_e7a1ace58c96e8a385e794b2",
+      "cardId": "RK-115",
+      "effectId": "named_e382a8e383b3e38389e382aa",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-116",
-      "effectId": "named_e3819de381b3e38188e3828b",
+      "cardId": "RK-138",
+      "effectId": "named_e4b88de5ae89e5ae9ae381aa",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-122",
-      "effectId": "named_e4bdbfe98094e5868de7949f",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "RK-123",
-      "effectId": "named_e588b6e8a381e38199e3828b",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "RK-124",
-      "effectId": "named_e4babae38292e5ae88e3828b",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "RK-132",
-      "effectId": "named_e5a6bbe5ad90e381aee38390",
+      "cardId": "RK-139",
+      "effectId": "named_e4bfbae381afe3818be383bc",
       "to": "grant_keyword"
     },
     {
@@ -75,58 +60,73 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-149",
-      "effectId": "named_e5b7a8e9be8de5bda2e6858b",
+      "cardId": "RK-167",
+      "effectId": "named_e382abe382a4e382b6e38396",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-153",
-      "effectId": "named_e8bb8ae4b8a1e5bcb7e5a5aa",
+      "cardId": "RK-171",
+      "effectId": "named_e382b3e383b3e38388e383a9",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-160",
-      "effectId": "named_e3838ae3838ee383ade3839c",
+      "cardId": "RK-176",
+      "effectId": "named_e383a9e382a4e38380e383bc",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-173",
-      "effectId": "named_e9acbce381aee98ea7",
+      "cardId": "RK-180",
+      "effectId": "named_e7a59ee587bae9acbce6b2a1",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-177",
-      "effectId": "named_e582ace79ca0e99fb3e6b3a2",
+      "cardId": "RK-182",
+      "effectId": "named_5ae38396e383aae383b3e382",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-184",
-      "effectId": "named_e7949fe591bde7b6ade68c81",
+      "cardId": "RK-198",
+      "effectId": "named_e38389e383a9e382a4e38396",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-189",
-      "effectId": "named_e59cb0e7a9bae4babae381ae",
+      "cardId": "RK-200",
+      "effectId": "named_e7bea4e3828ce381aee8a5b2",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-195",
-      "effectId": "named_e5868de8b5b7e58b95e381a8",
+      "cardId": "RK-212",
+      "effectId": "named_e383ace382a4e38390e383ac",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-206",
-      "effectId": "named_e69c9be381bee381aae38184",
+      "cardId": "RK-214",
+      "effectId": "named_e382a4e383b3e38391e382af",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-208",
-      "effectId": "named_e8bf8ee69283e381aee6af92",
+      "cardId": "RK-264",
+      "effectId": "named_e382a2e382afe383ade38390",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-224",
-      "effectId": "named_e382b5e3839de383bce38388",
+      "cardId": "RK-265",
+      "effectId": "named_e383a9e382a4e38387e382a3",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-273",
+      "effectId": "named_e383a9e382a4e382b8e383b3",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-275",
+      "effectId": "named_e382b6e38390e382aee383b3",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-294",
+      "effectId": "named_e38396e383a9e38383e38389",
       "to": "grant_keyword"
     }
   ],

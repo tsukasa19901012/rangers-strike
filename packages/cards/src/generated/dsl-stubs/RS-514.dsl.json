@@ -41,13 +41,16 @@
       "name": "大狼狼蹴",
       "text": "これがストライクして、相手が山札の上からひいたカードをダメージにしたとき、相手は自分自身のユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "on_strike"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "opponent_must_e38193e3828c",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
