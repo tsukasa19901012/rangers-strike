@@ -25,13 +25,16 @@
       "name": "絶望がお前のゴールだ",
       "text": "これがストライクして敵軍パワーゾーンのカードがウラ向きになったとき、そのカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "on_strike"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "power_zone_action_e38193e3828c",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
