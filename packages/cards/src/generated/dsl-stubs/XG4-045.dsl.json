@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-045",
+  "name": "ゴセイピンク",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※ウイング 【スカイックショット】Sユニットを1体選び、持ち主の山札の上に戻す。",
+  "rawText": "※ウイング 【スカイックショット】Sユニットを1体選び、持ち主の山札の上に戻す。",
+  "bp": 500,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e382ab",
+      "name": "スカイックショット",
+      "text": "Sユニットを1体選び、持ち主の山札の上に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e382ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

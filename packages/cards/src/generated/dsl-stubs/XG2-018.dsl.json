@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-018",
+  "name": "ゲキタイガー（XG2）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【来来獣】これをラッシュしたとき、特徴「レッド」を持つ自軍ユニットを1体選びホールドしてもよい。そうしたとき、このターン、これはBP＋3000される。",
+  "rawText": "【来来獣】これをラッシュしたとき、特徴「レッド」を持つ自軍ユニットを1体選びホールドしてもよい。そうしたとき、このターン、これはBP＋3000される。",
+  "bp": 4000,
+  "size": "M",
+  "sp": 12,
+  "features": [
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "named_e69da5e69da5",
+      "name": "来来獣",
+      "text": "これをラッシュしたとき、特徴「レッド」を持つ自軍ユニットを1体選びホールドしてもよい。そうしたとき、このターン、これはBP＋3000される。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 3000,
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

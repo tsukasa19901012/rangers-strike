@@ -1,0 +1,26 @@
+{
+  "id": "RS-022",
+  "effects": [
+    {
+      "id": "earth_force",
+      "name": "RS-022",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_from_rush",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

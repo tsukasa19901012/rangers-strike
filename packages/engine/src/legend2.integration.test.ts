@@ -36,13 +36,17 @@ describe("legend2 integration", () => {
         instanceId: "RS-072:chain",
       }),
     );
-    expect(played.players.player1.turnModifiers?.infiniteChainActive).toBe(true);
+    expect(played.players.player1.modifiers).toContainEqual(
+      expect.objectContaining({ kind: "rule", ruleId: "infinite_chain", scope: "turn" }),
+    );
   });
 
   it("RS-072 resolveInfiniteChain sets turn modifier", () => {
     const state = createTestState({ definitions: defs });
     const result = resolveInfiniteChain(state, "player1");
-    expect(result.state.players.player1.turnModifiers?.infiniteChainActive).toBe(true);
+    expect(result.state.players.player1.modifiers).toContainEqual(
+      expect.objectContaining({ kind: "rule", ruleId: "infinite_chain", scope: "turn" }),
+    );
   });
 
   it("RS-075 rescue activity opens discard choice on rush", () => {
@@ -212,7 +216,9 @@ describe("legend2 integration", () => {
       },
     });
     const entered = moveToBattle(state, unit.instanceId);
-    expect(entered.players.player2.turnModifiers?.deaceSniperActive).toBe(true);
+    expect(entered.players.player2.modifiers).toContainEqual(
+      expect.objectContaining({ kind: "rule", ruleId: "deace_sniper", scope: "turn" }),
+    );
   });
 
   it("RS-111 phantom illusion holds enemy commands on enter", () => {

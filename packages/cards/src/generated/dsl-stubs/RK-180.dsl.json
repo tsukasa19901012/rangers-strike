@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-180",
+  "name": "モグラ獣人",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。 ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍「仮面ライダーアマゾン」があれば、これを自軍ラッシュエリアに出してもよい。 【神出鬼没】敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい。そうしたとき、ライドしていない敵軍Sユニットを1体選び、選んだビークルにライドさせる。",
+  "rawText": "※これはBP2000以上の敵軍Sユニットにアタックされない。 ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍「仮面ライダーアマゾン」があれば、これを自軍ラッシュエリアに出してもよい。 【神出鬼没】敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい。そうしたとき、ライドしていない敵軍Sユニットを1体選び、選んだビークルにライドさせる。",
+  "bp": 500,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "怪人",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "note_bp2000_s",
+      "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_enemy_s_bp2000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍「仮面ライダーアマゾン」があれば、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e7a59ee587ba",
+      "name": "神出鬼没",
+      "text": "敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい。そうしたとき、ライドしていない敵軍Sユニットを1体選び、選んだビークルにライドさせる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7a59ee587ba",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-140",
+  "name": "仮面ライダー電王LF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "",
+  "rawText": "",
+  "bp": 6000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "DEN-O"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍「仮面ライダー電王PF」1体をパワーゾーンに送る",
+    "unitCount": 1
+  },
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

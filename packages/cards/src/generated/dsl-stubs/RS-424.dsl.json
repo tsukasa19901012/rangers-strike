@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-424",
+  "name": "ゲキチーター",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "0+",
+  "text": "【瞬瞬弾】「SP1」",
+  "rawText": "【瞬瞬弾】「SP1」",
+  "bp": 5500,
+  "size": "M",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "named_e79eace79eac",
+      "name": "瞬瞬弾",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

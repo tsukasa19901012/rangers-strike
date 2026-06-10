@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-574",
+  "name": "セイントカイザー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "合体―マジフェニックス＋一角聖馬ユニゴルオン 【セイントホーンフィニッシュ】自軍ターン中、これがバトルエリアに出たとき、DAを持つ敵軍ユニットを1体選び撃破する。ただし、必要パワーの数字が自軍ダメージの点数以下のユニットしか選べない。",
+  "rawText": "合体―マジフェニックス＋一角聖馬ユニゴルオン 【セイントホーンフィニッシュ】自軍ターン中、これがバトルエリアに出たとき、DAを持つ敵軍ユニットを1体選び撃破する。ただし、必要パワーの数字が自軍ダメージの点数以下のユニットしか選べない。",
+  "bp": 7000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "魔法",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e382bbe382a4",
+      "name": "セイントホーンフィニッシュ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、DAを持つ敵軍ユニットを1体選び撃破する。ただし、必要パワーの数字が自軍ダメージの点数以下のユニットしか選べない。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382bbe382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

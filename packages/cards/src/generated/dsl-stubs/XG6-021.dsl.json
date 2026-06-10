@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-021",
+  "name": "リンライオン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※これは自軍バトルフェイズ中、カテゴリにWBが追加される。 【激臨剣】このユニットからコンビネーションする同カテゴリのLユニットは、このターン、次の能力を得る⇒これは、自軍捨札にあるカテゴリを2つ以上持つカード1枚につきBP+2000され、BP20000以上のとき「SP2」になる。",
+  "rawText": "※これは自軍バトルフェイズ中、カテゴリにWBが追加される。 【激臨剣】このユニットからコンビネーションする同カテゴリのLユニットは、このターン、次の能力を得る⇒これは、自軍捨札にあるカテゴリを2つ以上持つカード1枚につきBP+2000され、BP20000以上のとき「SP2」になる。",
+  "bp": 6500,
+  "size": "M",
+  "sp": 12,
+  "comboNumber": "L",
+  "features": [
+    "臨気"
+  ],
+  "effects": [
+    {
+      "id": "note_wb",
+      "text": "※これは自軍バトルフェイズ中、カテゴリにWBが追加される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_wb",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6bf80e887a8",
+      "name": "激臨剣",
+      "text": "このユニットからコンビネーションする同カテゴリのLユニットは、このターン、次の能力を得る⇒これは、自軍捨札にあるカテゴリを2つ以上持つカード1枚につきBP+2000され、BP20000以上のとき「SP2」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP2",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

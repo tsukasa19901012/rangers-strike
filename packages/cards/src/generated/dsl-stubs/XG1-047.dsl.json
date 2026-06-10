@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-047",
+  "name": "仮面ライダースーパー1",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※モーフ 【赤心少林拳】BP1000またはBP3000またはBP5000の敵軍Sユニットを1体選び、撃破してもよい。また、MAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これはSP1になる。",
+  "rawText": "※モーフ 【赤心少林拳】BP1000またはBP3000またはBP5000の敵軍Sユニットを1体選び、撃破してもよい。また、MAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これはSP1になる。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間",
+    "ファイブハンド"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8b5a4e5bf83",
+      "name": "赤心少林拳",
+      "text": "BP1000またはBP3000またはBP5000の敵軍Sユニットを1体選び、撃破してもよい。また、MAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これはSP1になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8b5a4e5bf83",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

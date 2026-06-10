@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-033",
+  "name": "ナナシ連中",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 【隙間より這い出す者達】これが自軍ゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、これを自軍ラッシュエリアに出してもよい。（この効果でラッシュできる「ナナシ連中」の数は、1ターンにつき2体までとする）",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 【隙間より這い出す者達】これが自軍ゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、これを自軍ラッシュエリアに出してもよい。（この効果でラッシュできる「ナナシ連中」の数は、1ターンにつき2体までとする）",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "妖怪",
+    "戦闘員"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e99a99e99693",
+      "name": "隙間より這い出す者達",
+      "text": "これが自軍ゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、これを自軍ラッシュエリアに出してもよい。（この効果でラッシュできる「ナナシ連中」の数は、1ターンにつき2体までとする）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e99a99e99693",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

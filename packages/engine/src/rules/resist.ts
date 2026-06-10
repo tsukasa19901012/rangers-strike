@@ -1,5 +1,7 @@
-import { hasResist } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
+import { hasResist } from "@rangers-strike/cards";
+import { cardHasKeyword } from "../keywords/cardKeywords";
+import { cardHasRegisterKeyword } from "../keywords/registerReaction";
 import type {
   GameState,
   PendingLeave,
@@ -16,7 +18,7 @@ export function canOfferRegister(
 ): boolean {
   if (pending.skipRegister) return false;
   if (pending.toZone !== "discard" || pending.fromZone !== "battle") return false;
-  return hasResist(state.definitions, pending.leavingCardId);
+  return cardHasRegisterKeyword(state, pending.leavingCardId);
 }
 
 export function toPendingRegister(intent: LeaveIntent): PendingRegister {
@@ -95,7 +97,9 @@ export function isRegisterHeldUnit(
   cardId: string,
   instance?: { registerHeld?: boolean },
 ): boolean {
-  return !!instance?.registerHeld && hasResist(definitions, cardId);
+  return !!instance?.registerHeld && (
+    cardHasKeyword(definitions, cardId, "register") || hasResist(definitions, cardId)
+  );
 }
 
 /** レジストホールド中はバトル／ストライク不可。 */

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-093",
+  "name": "ビーファイターミン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【ソニックプレッシャー】このターン、これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットをホールドしてもよい。",
+  "rawText": "【ソニックプレッシャー】このターン、これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットをホールドしてもよい。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "メカ",
+    "昆虫",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382bde3838b",
+      "name": "ソニックプレッシャー",
+      "text": "このターン、これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットをホールドしてもよい。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382bde3838b",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

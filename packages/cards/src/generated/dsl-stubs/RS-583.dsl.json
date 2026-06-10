@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-583",
+  "name": "ボウケンレッドHM",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※タクスET（これがバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットは「SP1」を得る） 【災いを受け止める覚悟】これが自軍エリアにある間、相手によってこれ以外の自軍ユニットが選ばれたとき、このユニットが選ぶ対象として適切なら、このターン中に一度だけ、選ばれたユニットの代わりに、このユニットが選ばれたことにしてもよい。",
+  "rawText": "※タクスET（これがバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットは「SP1」を得る） 【災いを受け止める覚悟】これが自軍エリアにある間、相手によってこれ以外の自軍ユニットが選ばれたとき、このユニットが選ぶ対象として適切なら、このターン中に一度だけ、選ばれたユニットの代わりに、このユニットが選ばれたことにしてもよい。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "レッド",
+    "男",
+    "ハッピーモード"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_taxis_et",
+      "text": "※タクスET（これがバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットは「SP1」を得る）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e781bde38184",
+      "name": "災いを受け止める覚悟",
+      "text": "これが自軍エリアにある間、相手によってこれ以外の自軍ユニットが選ばれたとき、このユニットが選ぶ対象として適切なら、このターン中に一度だけ、選ばれたユニットの代わりに、このユニットが選ばれたことにしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e781bde38184",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※タクスET（これがバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットは「SP1」を得る）",
+      "rule": "taxis_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

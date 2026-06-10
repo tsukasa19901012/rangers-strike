@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-053",
+  "name": "仮面ライダータイガ（XG2）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【間違った英雄】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを1体選び捨札にしてもよい。そうしたとき、このターン、このユニットのBPは、捨札にしたユニットの本来のBPを「+」した値になる。",
+  "rawText": "【間違った英雄】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを1体選び捨札にしてもよい。そうしたとき、このターン、このユニットのBPは、捨札にしたユニットの本来のBPを「+」した値になる。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "named_e99693e98195",
+      "name": "間違った英雄",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを1体選び捨札にしてもよい。そうしたとき、このターン、このユニットのBPは、捨札にしたユニットの本来のBPを「+」した値になる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e99693e98195",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

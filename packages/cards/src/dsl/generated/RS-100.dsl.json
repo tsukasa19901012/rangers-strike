@@ -1,0 +1,42 @@
+{
+  "id": "RS-100",
+  "name": "ハリケンイエロー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 1,
+  "text": "【超忍法・舞獅子】これはアタックするかわりに次の効果を発動できる。自軍山札を見て「ハリケンイエロー」のカードを1枚選んで自軍バトルエリアに出してもよい。その後、山札をシャッフルする。",
+  "rawText": "【超忍法・舞獅子】これはアタックするかわりに次の効果を発動できる。自軍山札を見て「ハリケンイエロー」のカードを1枚選んで自軍バトルエリアに出してもよい。その後、山札をシャッフルする。",
+  "features": [
+    "イエロー",
+    "男",
+    "忍者"
+  ],
+  "imageUrl": "/cards/legend2/RS-100.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-100.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "super_ninpo_lion_dance",
+      "name": "超忍法・舞獅子",
+      "text": "これはアタックするかわりに次の効果を発動できる。自軍山札を見て「ハリケンイエロー」のカードを1枚選んで自軍バトルエリアに出してもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "super_ninpo_lion_dance"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

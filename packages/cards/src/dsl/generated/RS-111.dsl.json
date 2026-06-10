@@ -1,0 +1,59 @@
+{
+  "id": "RS-111",
+  "name": "マジキング",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "7+",
+  "bp": 16000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―マジフェニックス＋マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス 【ファントムイリュージョン】これがバトルエリアに出たとき、敵軍コマンドをすべてホールドしてもよい。",
+  "rawText": "合体―マジフェニックス＋マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス 【ファントムイリュージョン】これがバトルエリアに出たとき、敵軍コマンドをすべてホールドしてもよい。",
+  "features": [
+    "魔法",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend2/RS-111.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-111.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―マジフェニックス＋マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス",
+      "partnerCardIds": [
+        "RS-057",
+        "RS-058",
+        "RS-059",
+        "RS-060",
+        "RS-061"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "phantom_illusion",
+      "name": "ファントムイリュージョン",
+      "text": "これがバトルエリアに出たとき、敵軍コマンドをすべてホールドしてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "hold_all_enemy_commands",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

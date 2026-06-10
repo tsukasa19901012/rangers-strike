@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-043",
+  "name": "仮面ライダーW・CJ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※モーフ 【ジョーカーエクストリーム】「SP1」",
+  "rawText": "※モーフ 【ジョーカーエクストリーム】「SP1」",
+  "bp": 4000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ダブルドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b8e383a7",
+      "name": "ジョーカーエクストリーム",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

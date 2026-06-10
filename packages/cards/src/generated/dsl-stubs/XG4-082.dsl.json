@@ -1,0 +1,86 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-082",
+  "name": "バイオライダー（XG4）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※モーフ 【バイオアタック】敵軍ターン中、これがバトルエリアに出たとき、相手は自分自身のSユニットを1体選び撃破するか、これを持ち主の手札に戻すか選ぶ。",
+  "rawText": "※モーフ 【バイオアタック】敵軍ターン中、これがバトルエリアに出たとき、相手は自分自身のSユニットを1体選び撃破するか、これを持ち主の手札に戻すか選ぶ。",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間",
+    "ハイブリッドエネルギー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38390e382a4",
+      "name": "バイオアタック",
+      "text": "敵軍ターン中、これがバトルエリアに出たとき、相手は自分自身のSユニットを1体選び撃破するか、これを持ち主の手札に戻すか選ぶ。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

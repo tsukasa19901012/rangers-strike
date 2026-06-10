@@ -1,0 +1,83 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-083",
+  "name": "ディケイド ファイズ（XG4）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※モーフ ※これは「仮面ライダーファイズ」としてつかえる。 【アタックライド】このターン、これがバトルで撃破したユニットのBPの下三桁が500だったなら、相手に1点ダメージを与える。",
+  "rawText": "※モーフ ※これは「仮面ライダーファイズ」としてつかえる。 【アタックライド】このターン、これがバトルで撃破したユニットのBPの下三桁が500だったなら、相手に1点ダメージを与える。",
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ディケイドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_alias_named_e4bbaee99da2",
+      "text": "※これは「仮面ライダーファイズ」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_named_e4bbaee99da2",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e382bf",
+      "name": "アタックライド",
+      "text": "このターン、これがバトルで撃破したユニットのBPの下三桁が500だったなら、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    },
+    {
+      "kind": "fusion",
+      "text": "※これは「仮面ライダーファイズ」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

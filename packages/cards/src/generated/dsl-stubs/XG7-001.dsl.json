@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-001",
+  "name": "ゴーカイピンク",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これをラッシュしたとき、「ゴーカイピンク」以外のオモテ向きの自軍パワーから、追加条件を持たない、特徴「ピンク」またはホワイトを持つSユニットのカードを1枚選び、これと置き換えてもよい。 【レンジャーキー】自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードが特徴に色を持つなら自軍パワーゾーンに置き、それ以外なら山札の下に戻す。",
+  "rawText": "※これをラッシュしたとき、「ゴーカイピンク」以外のオモテ向きの自軍パワーから、追加条件を持たない、特徴「ピンク」またはホワイトを持つSユニットのカードを1枚選び、これと置き換えてもよい。 【レンジャーキー】自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードが特徴に色を持つなら自軍パワーゾーンに置き、それ以外なら山札の下に戻す。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "ピンク",
+    "女",
+    "宇宙海賊"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これをラッシュしたとき、「ゴーカイピンク」以外のオモテ向きの自軍パワーから、追加条件を持たない、特徴「ピンク」またはホワイトを持つSユニットのカードを1枚選び、これと置き換えてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383ace383b3",
+      "name": "レンジャーキー",
+      "text": "自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードが特徴に色を持つなら自軍パワーゾーンに置き、それ以外なら山札の下に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ace383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

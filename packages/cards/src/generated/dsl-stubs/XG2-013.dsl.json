@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-013",
+  "name": "キバレンジャー（XG2）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【白虎真剣】「SP1」敵軍バトルエリアから、カテゴリを2つ以上持つSユニットを1体選び、撃破してもよい。",
+  "rawText": "【白虎真剣】「SP1」敵軍バトルエリアから、カテゴリを2つ以上持つSユニットを1体選び、撃破してもよい。",
+  "bp": 1000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "ホワイト",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e799bde8998e",
+      "name": "白虎真剣",
+      "text": "「SP1」敵軍バトルエリアから、カテゴリを2つ以上持つSユニットを1体選び、撃破してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

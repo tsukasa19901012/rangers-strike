@@ -1,0 +1,43 @@
+{
+  "id": "RS-062",
+  "name": "ボウケンレッド",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "SR",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "bp": 4000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 5,
+  "text": "【ボウケンジャベリン】「SP1」これは特徴「メカ」をもつユニットにアタックするとき、BP＋4000される。",
+  "rawText": "【ボウケンジャベリン】「SP1」これは特徴「メカ」をもつユニットにアタックするとき、BP＋4000される。",
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "imageUrl": "/cards/legend1/RS-062.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-062.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "bouken_javelin",
+      "name": "ボウケンジャベリン",
+      "text": "「SP1」これは特徴「メカ」をもつユニットにアタックするとき、BP＋4000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

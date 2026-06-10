@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-468",
+  "name": "ギンガリラ",
+  "type": "vehicle",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※特徴「ブルー」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【水の星獣】これにライドしたユニットがある間、次の効果を発動する⇒特徴「車両」を持つユニットは「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれているかのように扱う。",
+  "rawText": "※特徴「ブルー」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【水の星獣】これにライドしたユニットがある間、次の効果を発動する⇒特徴「車両」を持つユニットは「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれているかのように扱う。",
+  "effects": [
+    {
+      "id": "note_s_1",
+      "text": "※特徴「ブルー」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_without_rc_named_e38396e383ab",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6b0b4e381ae",
+      "name": "水の星獣",
+      "text": "これにライドしたユニットがある間、次の効果を発動する⇒特徴「車両」を持つユニットは「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれているかのように扱う。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6b0b4e381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

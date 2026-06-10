@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-477",
+  "name": "ガオウルフ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【威圧する咆哮】これが自軍エリアにある間、敵軍ターン中、敵軍ユニットがＮＣの効果を発動するとき、そのユニットと同じカード名のユニットカードが敵軍捨札にあれば、そのNCの効果を発動する前に、次の効果を発動できる⇒そのユニットが持つカテゴリと同じカテゴリを持つ敵軍コマンドをすべて捨札にする。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【威圧する咆哮】これが自軍エリアにある間、敵軍ターン中、敵軍ユニットがＮＣの効果を発動するとき、そのユニットと同じカード名のユニットカードが敵軍捨札にあれば、そのNCの効果を発動する前に、次の効果を発動できる⇒そのユニットが持つカテゴリと同じカテゴリを持つ敵軍コマンドをすべて捨札にする。",
+  "bp": 5000,
+  "size": "M",
+  "features": [
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a881e59ca7",
+      "name": "威圧する咆哮",
+      "text": "これが自軍エリアにある間、敵軍ターン中、敵軍ユニットがＮＣの効果を発動するとき、そのユニットと同じカード名のユニットカードが敵軍捨札にあれば、そのNCの効果を発動する前に、次の効果を発動できる⇒そのユニットが持つカテゴリと同じカテゴリを持つ敵軍コマンドをすべて捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a881e59ca7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

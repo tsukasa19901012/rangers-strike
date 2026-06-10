@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-254",
+  "name": "バードニックウェーブ",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "このターン、すべての自軍ユニットのコンビネーションナンバーは1少なくなる。ただし、2より少なくならない。",
+  "rawText": "このターン、すべての自軍ユニットのコンビネーションナンバーは1少なくなる。ただし、2より少なくならない。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-031",
+  "name": "新サイクロン号",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※ブレイカー ※これにライドしているユニットは、「仮面ライダー1号」または「仮面ライダー2号」ならクロス1を得る。 【サイクロンアタック】これにライドしているユニットはBP+1000され、敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない。",
+  "rawText": "※ブレイカー ※これにライドしているユニットは、「仮面ライダー1号」または「仮面ライダー2号」ならクロス1を得る。 【サイクロンアタック】これにライドしているユニットはBP+1000され、敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない。",
+  "effects": [
+    {
+      "id": "unnamed_breaker",
+      "text": "※ブレイカー",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "breaker",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これにライドしているユニットは、「仮面ライダー1号」または「仮面ライダー2号」ならクロス1を得る。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b5e382a4",
+      "name": "サイクロンアタック",
+      "text": "これにライドしているユニットはBP+1000され、敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b5e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブレイカー",
+      "rule": "breaker"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { buildEffectStack, getStackActorPlayerId } from "./rules/effectStack";
+import {
+  buildEffectStack,
+  getStackActorPlayerId,
+  hasOpenReactionWindow,
+} from "./rules/effectStack";
 import { getReactionChooserPlayerId } from "./core/legalActions";
 import { createTestState, inst } from "./testing/fixtures";
 
@@ -43,6 +47,26 @@ describe("effectStack", () => {
     ]);
     expect(getReactionChooserPlayerId(state)).toBe("player2");
     expect(getStackActorPlayerId(state)).toBe("player2");
+  });
+
+  it("ignores stale cached effectStack when pending fields are cleared", () => {
+    const state = createTestState({
+      phase: "battle",
+      activePlayer: "player2",
+      effectStack: {
+        frames: [
+          {
+            id: "stale",
+            kind: "strike_reaction",
+            actorPlayerId: "player1",
+            priority: 2,
+          },
+        ],
+      },
+    });
+    expect(hasOpenReactionWindow(state)).toBe(false);
+    expect(getReactionChooserPlayerId(state)).toBeUndefined();
+    expect(getStackActorPlayerId(state)).toBeUndefined();
   });
 
   it("includes register_choice before strike reactions", () => {

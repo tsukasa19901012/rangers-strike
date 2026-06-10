@@ -1,0 +1,39 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-094",
+  "name": "カブタック",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【友情】このユニットは、これ以外の自軍バトルエリアのSユニット1体につきBP+1000される。",
+  "rawText": "【友情】このユニットは、これ以外の自軍バトルエリアのSユニット1体につきBP+1000される。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "メカ"
+  ],
+  "effects": [
+    {
+      "id": "named_e58f8be68385",
+      "name": "友情",
+      "text": "このユニットは、これ以外の自軍バトルエリアのSユニット1体につきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58f8be68385",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

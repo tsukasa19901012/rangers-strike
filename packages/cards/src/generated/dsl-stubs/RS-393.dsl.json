@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-393",
+  "name": "コマンドアタッカー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【アタッカーポッド】これがライドされたままなら、このビークルからコンビネーションするSユニットは、次の能力を得る⇒自軍ターン中、ナンバーは3少なくなる。 ただし、2より少なくならない。",
+  "rawText": "※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【アタッカーポッド】これがライドされたままなら、このビークルからコンビネーションするSユニットは、次の能力を得る⇒自軍ターン中、ナンバーは3少なくなる。 ただし、2より少なくならない。",
+  "effects": [
+    {
+      "id": "note_et_s_rc",
+      "text": "※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_et_s_rc",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e382bf",
+      "name": "アタッカーポッド",
+      "text": "これがライドされたままなら、このビークルからコンビネーションするSユニットは、次の能力を得る⇒自軍ターン中、ナンバーは3少なくなる。 ただし、2より少なくならない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e382bf",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

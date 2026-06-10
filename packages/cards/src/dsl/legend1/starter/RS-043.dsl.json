@@ -1,0 +1,31 @@
+{
+  "id": "RS-043",
+  "effects": [
+    {
+      "id": "judgment_sword",
+      "name": "ジャッジメントソード",
+      "text": "自軍パワーゾーンからダメージ以外のカードを2枚選んで捨て札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+      "trigger": {
+        "type": "conditional"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "pay_power_discard_2_for_sp1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  }
+}

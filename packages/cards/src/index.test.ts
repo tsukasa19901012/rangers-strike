@@ -87,9 +87,13 @@ describe("legend3 catalog", () => {
   });
 
   it("merges into allCardsCatalog without duplicate ids", () => {
-    expect(allCardsCatalog.cards).toHaveLength(179);
+    const expectedCount =
+      legend1Catalog.cards.length +
+      legend2Catalog.cards.length +
+      legend3Catalog.cards.length;
+    expect(allCardsCatalog.cards).toHaveLength(expectedCount);
     const ids = new Set(allCardsCatalog.cards.map((card) => card.id));
-    expect(ids.size).toBe(179);
+    expect(ids.size).toBe(expectedCount);
     expect(getCardById("RS-123")?.name).toBe("スーパーダイナマイト");
     expect(getCardById("RS-151")?.name).toBe("ガオキング");
     expect(getCardById("SR-001")?.rarity).toBe("SC");

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-081",
+  "name": "仮面ライダーアクセルトライアル",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "【絶望がお前のゴールだ】これがストライクして敵軍パワーゾーンのカードがウラ向きになったとき、そのカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "【絶望がお前のゴールだ】これがストライクして敵軍パワーゾーンのカードがウラ向きになったとき、そのカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 4500,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "警察",
+    "アクセルドライバー",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "named_e7b5b6e69c9b",
+      "name": "絶望がお前のゴールだ",
+      "text": "これがストライクして敵軍パワーゾーンのカードがウラ向きになったとき、そのカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7b5b6e69c9b",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

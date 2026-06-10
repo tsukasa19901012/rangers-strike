@@ -1,0 +1,82 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-033",
+  "name": "仮面ライダーV3×ライダーマン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※クロス1 ※レジスト 【復讐の果てに得たもの】これが自軍バトルエリアからラッシュエリアに戻ったとき、これをホールドしてもよい。そうしたとき、敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出す。",
+  "rawText": "※クロス1 ※レジスト 【復讐の果てに得たもの】これが自軍バトルエリアからラッシュエリアに戻ったとき、これをホールドしてもよい。そうしたとき、敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出す。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 15,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5bea9e8ae90",
+      "name": "復讐の果てに得たもの",
+      "text": "これが自軍バトルエリアからラッシュエリアに戻ったとき、これをホールドしてもよい。そうしたとき、敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5bea9e8ae90",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

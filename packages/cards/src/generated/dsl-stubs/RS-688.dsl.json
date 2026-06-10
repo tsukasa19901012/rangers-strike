@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-688",
+  "name": "ギガフェニックス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※ウイング 【ギガニックブーメラン】これをラッシュしたとき、レジストまたはウイングを持つ敵軍ユニットをすべてホールドしてもよい。",
+  "rawText": "※ウイング 【ギガニックブーメラン】これをラッシュしたとき、レジストまたはウイングを持つ敵軍ユニットをすべてホールドしてもよい。",
+  "bp": 6000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "獣",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382aee382ac",
+      "name": "ギガニックブーメラン",
+      "text": "これをラッシュしたとき、レジストまたはウイングを持つ敵軍ユニットをすべてホールドしてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382aee382ac",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-378",
+  "name": "ギンガブルー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【流水の鼓動】「SP1」「MA」の自軍コマンドを１つホールドして次の効果を発動できる⇒ホールドしたコマンドにナンバーがあれば、そのナンバーと同じナンバーを持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "【流水の鼓動】「SP1」「MA」の自軍コマンドを１つホールドして次の効果を発動できる⇒ホールドしたコマンドにナンバーがあれば、そのナンバーと同じナンバーを持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e6b581e6b0b4",
+      "name": "流水の鼓動",
+      "text": "「SP1」「MA」の自軍コマンドを１つホールドして次の効果を発動できる⇒ホールドしたコマンドにナンバーがあれば、そのナンバーと同じナンバーを持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

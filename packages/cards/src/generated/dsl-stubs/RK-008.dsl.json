@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-008",
+  "name": "メカニック忍者",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍Sユニットがアタックされたとき発動できる⇒自軍コマンドゾーンから、追加条件を持たない特徴「改造人間」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出す。その後、アタックされたユニットを自軍コマンドゾーンにホールド状態で置く。このとき、バトルは行われない。",
+  "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍Sユニットがアタックされたとき発動できる⇒自軍コマンドゾーンから、追加条件を持たない特徴「改造人間」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出す。その後、アタックされたユニットを自軍コマンドゾーンにホールド状態で置く。このとき、バトルは行われない。",
+  "effects": [
+    {
+      "id": "note_named_e280bbe382ab",
+      "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍Sユニットがアタックされたとき発動できる⇒自軍コマンドゾーンから、追加条件を持たない特徴「改造人間」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出す。その後、アタックされたユニットを自軍コマンドゾーンにホールド状態で置く。このとき、バトルは行われない。",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe382ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

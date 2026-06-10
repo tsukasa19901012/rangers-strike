@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-059",
+  "name": "仮面ライダーレンゲル（XG2）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【力の誇示】自分の手札をすべて相手に見せてもよい。そうしたとき、見せた枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "【力の誇示】自分の手札をすべて相手に見せてもよい。そうしたとき、見せた枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e58a9be381ae",
+      "name": "力の誇示",
+      "text": "自分の手札をすべて相手に見せてもよい。そうしたとき、見せた枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58a9be381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

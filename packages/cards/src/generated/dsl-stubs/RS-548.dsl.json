@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-548",
+  "name": "ティラノレンジャー（2nd）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト ※このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える。 【龍撃剣】「SP1」",
+  "rawText": "※レジスト ※このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える。 【龍撃剣】「SP1」",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "レッド",
+    "男",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9be8de69283",
+      "name": "龍撃剣",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

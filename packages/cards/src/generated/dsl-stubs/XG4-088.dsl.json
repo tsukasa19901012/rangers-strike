@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-088",
+  "name": "仮面ライダーW・CC",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【旋風の右半身】このユニットからコンビネーションするSユニットは、次の能力を得る⇒自軍ターン中、BP+3000され、BP8000以上のとき「SP1」になる。",
+  "rawText": "【旋風の右半身】このユニットからコンビネーションするSユニットは、次の能力を得る⇒自軍ターン中、BP+3000され、BP8000以上のとき「SP1」になる。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": "L",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ダブルドライバー",
+    "FFR"
+  ],
+  "effects": [
+    {
+      "id": "named_e6978be9a2a8",
+      "name": "旋風の右半身",
+      "text": "このユニットからコンビネーションするSユニットは、次の能力を得る⇒自軍ターン中、BP+3000され、BP8000以上のとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

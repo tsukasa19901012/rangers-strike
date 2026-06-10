@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-181",
+  "name": "破邪百獣剣",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "ナンバーを持たないSユニットを、敵軍コマンドゾーンのカテゴリの数まで好きな数選び撃破する。",
+  "rawText": "ナンバーを持たないSユニットを、敵軍コマンドゾーンのカテゴリの数まで好きな数選び撃破する。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

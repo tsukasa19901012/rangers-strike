@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-326",
+  "name": "ガルル獣人態",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【ガルルフエッスル】自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍山札を見て「仮面ライダーキバGF」のカードを1枚か、自軍捨札に「バッシャー獣人態」と「ドッガ怪人態」があれば「仮面ライダーキバDGBKF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+  "rawText": "【ガルルフエッスル】自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍山札を見て「仮面ライダーキバGF」のカードを1枚か、自軍捨札に「バッシャー獣人態」と「ドッガ怪人態」があれば「仮面ライダーキバDGBKF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "ウルフェン族",
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382ace383ab",
+      "name": "ガルルフエッスル",
+      "text": "自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍山札を見て「仮面ライダーキバGF」のカードを1枚か、自軍捨札に「バッシャー獣人態」と「ドッガ怪人態」があれば「仮面ライダーキバDGBKF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ace383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

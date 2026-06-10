@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-038",
+  "name": "ゴセイピンク（XG5）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※ウイング ※リードMA 【息吹のスカイックパワー】カテゴリを2つ以上持つ自軍Sユニットを1体選びリリースしてもよい。（自分の手札が1枚以下なら、カテゴリを2つ以上持つ自軍Sユニットを2体選んでもよい）",
+  "rawText": "※ウイング ※リードMA 【息吹のスカイックパワー】カテゴリを2つ以上持つ自軍Sユニットを1体選びリリースしてもよい。（自分の手札が1枚以下なら、カテゴリを2つ以上持つ自軍Sユニットを2体選んでもよい）",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_lead_ma",
+      "text": "※リードMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e681afe590b9",
+      "name": "息吹のスカイックパワー",
+      "text": "カテゴリを2つ以上持つ自軍Sユニットを1体選びリリースしてもよい。（自分の手札が1枚以下なら、カテゴリを2つ以上持つ自軍Sユニットを2体選んでもよい）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e681afe590b9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    },
+    {
+      "kind": "note",
+      "text": "※リードMA",
+      "rule": "lead_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

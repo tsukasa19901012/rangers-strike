@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-042",
+  "name": "立花藤兵衛",
+  "type": "commander",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札から、追加条件を持たないビークルカードを1枚選び、自軍ラッシュエリアに出す。そうしたとき、自分の第1ターンのラッシュフェイズを飛ばす。",
+  "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札から、追加条件を持たないビークルカードを1枚選び、自軍ラッシュエリアに出す。そうしたとき、自分の第1ターンのラッシュフェイズを飛ばす。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

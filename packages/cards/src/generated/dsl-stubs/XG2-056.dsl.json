@@ -1,0 +1,68 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-056",
+  "name": "仮面ライダーファイズBF",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※ウイング 【強化クリムゾンスマッシュ】これが、BPが本来のBPでない敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のコマンドゾーンに置いてもよい。置けなければ捨札にする。そうしたとき、バトル相手のユニットのBPの下三桁が500だったなら、相手に1点ダメージを与える。",
+  "rawText": "※ウイング 【強化クリムゾンスマッシュ】これが、BPが本来のBPでない敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のコマンドゾーンに置いてもよい。置けなければ捨札にする。そうしたとき、バトル相手のユニットのBPの下三桁が500だったなら、相手に1点ダメージを与える。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ブラスターフォーム"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍「仮面ライダーファイズ」1体をコマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5bcb7e58c96",
+      "name": "強化クリムゾンスマッシュ",
+      "text": "これが、BPが本来のBPでない敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のコマンドゾーンに置いてもよい。置けなければ捨札にする。そうしたとき、バトル相手のユニットのBPの下三桁が500だったなら、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

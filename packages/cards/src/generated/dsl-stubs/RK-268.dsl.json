@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-268",
+  "name": "デスガロン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※敵軍ターン中、これがバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置いてもよい。（コマンドゾーンに置けるカードは通常5枚まで） 【分析能力】 これが自軍バトルエリアにある間、すべてのバトルは本来のBPで行う。",
+  "rawText": "※敵軍ターン中、これがバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置いてもよい。（コマンドゾーンに置けるカードは通常5枚まで） 【分析能力】 これが自軍バトルエリアにある間、すべてのバトルは本来のBPで行う。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "クライシス帝国",
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe695b5",
+      "text": "※敵軍ターン中、これがバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置いてもよい。（コマンドゾーンに置けるカードは通常5枚まで）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe695b5",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58886e69e90",
+      "name": "分析能力",
+      "text": "これが自軍バトルエリアにある間、すべてのバトルは本来のBPで行う。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58886e69e90",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

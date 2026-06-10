@@ -1,0 +1,99 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-040",
+  "name": "シンケンレッド（XG3）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※レジスト ※タクスOT 【シンケンマル】 カテゴリにDAを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※レジスト ※タクスOT 【シンケンマル】 カテゴリにDAを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "レッド",
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_taxis_ot",
+      "text": "※タクスOT",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_OT",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b7e383b3",
+      "name": "シンケンマル",
+      "text": "カテゴリにDAを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "power"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "note",
+      "text": "※タクスOT",
+      "rule": "taxis_OT"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-185",
+  "name": "レッドドラス",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※これをラッシュしたとき、特徴「仮面ライダー」を持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す。 【合体吸収】自軍ターン中、これがバトルエリアに出たとき、敵軍山札の下から1枚ひいてオモテにしてもよい。オモテにしたカードがＲＣを持つユニットカードなら、このターン、これはSP1になり、オモテにしたカードのRCの効果をこのユニットの効果として発動する。その後、オモテにしたカードは持ち主の山札の下に戻す。",
+  "rawText": "※これをラッシュしたとき、特徴「仮面ライダー」を持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す。 【合体吸収】自軍ターン中、これがバトルエリアに出たとき、敵軍山札の下から1枚ひいてオモテにしてもよい。オモテにしたカードがＲＣを持つユニットカードなら、このターン、これはSP1になり、オモテにしたカードのRCの効果をこのユニットの効果として発動する。その後、オモテにしたカードは持ち主の山札の下に戻す。",
+  "bp": 6000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "怪人"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これをラッシュしたとき、特徴「仮面ライダー」を持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e59088e4bd93",
+      "name": "合体吸収",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍山札の下から1枚ひいてオモテにしてもよい。オモテにしたカードがＲＣを持つユニットカードなら、このターン、これはSP1になり、オモテにしたカードのRCの効果をこのユニットの効果として発動する。その後、オモテにしたカードは持ち主の山札の下に戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e59088e4bd93",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

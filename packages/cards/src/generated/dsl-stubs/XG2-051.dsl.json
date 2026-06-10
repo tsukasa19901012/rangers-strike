@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-051",
+  "name": "地のエル",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "【塵は塵に】 これをラッシュしたとき、敵軍捨札からSユニットのカードを1枚選んでもよい。そうしたとき、選んだカードと同じカード名の敵軍ユニットがあれば、すべて撃破する。",
+  "rawText": "【塵は塵に】 これをラッシュしたとき、敵軍捨札からSユニットのカードを1枚選んでもよい。そうしたとき、選んだカードと同じカード名の敵軍ユニットがあれば、すべて撃破する。",
+  "bp": 6000,
+  "size": "S",
+  "features": [
+    "アンノウン",
+    "エルロード",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "named_e5a1b5e381af",
+      "name": "塵は塵に",
+      "text": "これをラッシュしたとき、敵軍捨札からSユニットのカードを1枚選んでもよい。そうしたとき、選んだカードと同じカード名の敵軍ユニットがあれば、すべて撃破する。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a1b5e381af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

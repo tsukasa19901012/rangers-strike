@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-008",
+  "name": "ライナーボーイ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※自分が「マックスライナー」をラッシュしたとき、自軍エリアに「ライナーボーイ」があれば1体選んで手札に戻す。 【ライナーコンボ】これが特徴「人型」を持つLユニットまたはXLユニットからコンビネーションするとき、次の効果を発動できる⇒これは「SP1」になる。",
+  "rawText": "※自分が「マックスライナー」をラッシュしたとき、自軍エリアに「ライナーボーイ」があれば1体選んで手札に戻す。 【ライナーコンボ】これが特徴「人型」を持つLユニットまたはXLユニットからコンビネーションするとき、次の効果を発動できる⇒これは「SP1」になる。",
+  "bp": 7000,
+  "size": "M",
+  "sp": "special",
+  "comboNumber": "R",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_e280bbe887aae58886e3818c",
+      "text": "※自分が「マックスライナー」をラッシュしたとき、自軍エリアに「ライナーボーイ」があれば1体選んで手札に戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "return_self_on_ally_rush_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライナーコンボ",
+      "text": "これが特徴「人型」を持つLユニットまたはXLユニットからコンビネーションするとき、次の効果を発動できる⇒これは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

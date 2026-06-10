@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-030",
+  "name": "超惑星戦闘母艦ダイレオン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはSユニットにアタックすることができない。 【ダイレオンレーザー】これが自軍ラッシュエリアにある間、OTを持つ自軍Lユニットは、アタックされるときBP+2000される。",
+  "rawText": "※これはSユニットにアタックすることができない。 【ダイレオンレーザー】これが自軍ラッシュエリアにある間、OTを持つ自軍Lユニットは、アタックされるときBP+2000される。",
+  "bp": 4000,
+  "size": "L",
+  "features": [
+    "メカ",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack_s",
+      "text": "※これはSユニットにアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38380e382a4",
+      "name": "ダイレオンレーザー",
+      "text": "これが自軍ラッシュエリアにある間、OTを持つ自軍Lユニットは、アタックされるときBP+2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38380e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはSユニットにアタックすることができない。",
+      "rule": "cannot_attack_s"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

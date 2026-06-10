@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-327",
+  "name": "天空聖者ブレイジェル",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【フェイタルブレイドの伝授】これが自軍ラッシュエリアにある間、特徴「レッド」を持つ自軍ユニットが敵軍ユニットを撃破するたび、自分は1枚ドローする。",
+  "rawText": "【フェイタルブレイドの伝授】これが自軍ラッシュエリアにある間、特徴「レッド」を持つ自軍ユニットが敵軍ユニットを撃破するたび、自分は1枚ドローする。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "男",
+    "魔法",
+    "天空聖者"
+  ],
+  "effects": [
+    {
+      "id": "named_e38395e382a7",
+      "name": "フェイタルブレイドの伝授",
+      "text": "これが自軍ラッシュエリアにある間、特徴「レッド」を持つ自軍ユニットが敵軍ユニットを撃破するたび、自分は1枚ドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "controller"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

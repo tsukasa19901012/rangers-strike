@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-102",
+  "name": "サナギマン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※レジスト 【チョーリキショーライ！】敵軍ターン中、このユニットがホールド状態になったとき、MAを持つ自軍コマンドを1つホールドして次の効果を発動できる⇒これをリリースするか、自分の手札から「イナズマン」のユニットカードを1枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。",
+  "rawText": "※レジスト 【チョーリキショーライ！】敵軍ターン中、このユニットがホールド状態になったとき、MAを持つ自軍コマンドを1つホールドして次の効果を発動できる⇒これをリリースするか、自分の手札から「イナズマン」のユニットカードを1枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "昆虫",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38381e383a7",
+      "name": "チョーリキショーライ！",
+      "text": "敵軍ターン中、このユニットがホールド状態になったとき、MAを持つ自軍コマンドを1つホールドして次の効果を発動できる⇒これをリリースするか、自分の手札から「イナズマン」のユニットカードを1枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38381e383a7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-284",
+  "name": "ホワイトスワン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※これは、自軍バトルフェイズを終えるときのバトルエリアでの並び順が、カードに表記された本来のナンバーと違うなら、自分がターンを終えるとき、手札に戻す。 【スワンウィング】敵軍コマンドゾーンにあるSユニットのカードをすべてラッシュエリアに出してもよい。",
+  "rawText": "※これは、自軍バトルフェイズを終えるときのバトルエリアでの並び順が、カードに表記された本来のナンバーと違うなら、自分がターンを終えるとき、手札に戻す。 【スワンウィング】敵軍コマンドゾーンにあるSユニットのカードをすべてラッシュエリアに出してもよい。",
+  "bp": 500,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "ホワイト",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは、自軍バトルフェイズを終えるときのバトルエリアでの並び順が、カードに表記された本来のナンバーと違うなら、自分がターンを終えるとき、手札に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e383af",
+      "name": "スワンウィング",
+      "text": "敵軍コマンドゾーンにあるSユニットのカードをすべてラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e383af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

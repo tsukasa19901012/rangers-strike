@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-045",
+  "name": "ガンギブソン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※このユニットからコンビネーションする特徴「メカ」を持つSユニットは、ライドオフしなくてもＲＣの効果を発動できる。 【ホーミングブリッド】敵軍Sユニットの中から1体を、相手に選ばせてもよい（相手が選ぶたび、まだ相手に選ばれてない敵軍Sユニットがあれば、その中から選びなおさせてもよい。ただし、自軍コマンドを1つホールドすること）。その後、相手が最終的に選んだ1体を撃破する。",
+  "rawText": "※このユニットからコンビネーションする特徴「メカ」を持つSユニットは、ライドオフしなくてもＲＣの効果を発動できる。 【ホーミングブリッド】敵軍Sユニットの中から1体を、相手に選ばせてもよい（相手が選ぶたび、まだ相手に選ばれてない敵軍Sユニットがあれば、その中から選びなおさせてもよい。ただし、自軍コマンドを1つホールドすること）。その後、相手が最終的に選んだ1体を撃破する。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※このユニットからコンビネーションする特徴「メカ」を持つSユニットは、ライドオフしなくてもＲＣの効果を発動できる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839be383bc",
+      "name": "ホーミングブリッド",
+      "text": "敵軍Sユニットの中から1体を、相手に選ばせてもよい（相手が選ぶたび、まだ相手に選ばれてない敵軍Sユニットがあれば、その中から選びなおさせてもよい。ただし、自軍コマンドを1つホールドすること）。その後、相手が最終的に選んだ1体を撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839be383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

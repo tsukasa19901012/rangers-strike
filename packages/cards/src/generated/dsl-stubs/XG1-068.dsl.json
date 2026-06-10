@@ -1,0 +1,84 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-068",
+  "name": "ディケイド クウガMF",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※モーフ ※これは「仮面ライダークウガMF」としてつかえる。 【アタックライド】このターン、これは特徴「警察」を持つ自軍ユニット1体につきBP+1000される。",
+  "rawText": "※モーフ ※これは「仮面ライダークウガMF」としてつかえる。 【アタックライド】このターン、これは特徴「警察」を持つ自軍ユニット1体につきBP+1000される。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ディケイドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_alias_mf",
+      "text": "※これは「仮面ライダークウガMF」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_mf",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e382bf",
+      "name": "アタックライド",
+      "text": "このターン、これは特徴「警察」を持つ自軍ユニット1体につきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e382bf",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    },
+    {
+      "kind": "fusion",
+      "text": "※これは「仮面ライダークウガMF」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

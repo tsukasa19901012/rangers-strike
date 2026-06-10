@@ -4,8 +4,8 @@ import {
   isSendSUnitZordCondition,
   isValidZordFusionMaterial,
   isZordUpCost,
-  listZordFusionPartnerIds,
 } from "@rangers-strike/cards";
+import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
 import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, PlayerState } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
@@ -28,7 +28,7 @@ export function needsZordMaterial(
 
 /** 合体―行があるゾードは、列挙された全パートナーがフィールド上に必要。 */
 export function requiresAllFusionPartners(rushingCardId: string): boolean {
-  return listZordFusionPartnerIds(rushingCardId).length > 0;
+  return resolveZordFusionPartnerIds(rushingCardId).length > 0;
 }
 
 function findPartnerInstance(
@@ -54,7 +54,7 @@ export function collectRequiredFusionMaterials(
   rushingCardId: string,
   rushingInstanceId: string,
 ): Array<{ zone: ZordMaterialZone; index: number; card: CardInstance }> | null {
-  const partners = listZordFusionPartnerIds(rushingCardId);
+  const partners = resolveZordFusionPartnerIds(rushingCardId);
   if (partners.length === 0) return null;
 
   const found: Array<{ zone: ZordMaterialZone; index: number; card: CardInstance }> = [];

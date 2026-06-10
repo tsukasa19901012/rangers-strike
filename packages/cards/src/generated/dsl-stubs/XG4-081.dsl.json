@@ -1,0 +1,82 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-081",
+  "name": "仮面ライダーブレイド（XG4）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト ※これはライドオフしたときストライクできない。 【ライトニングスラッシュ】自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍バトルエリアのSユニットを1体選びホールドする。その後、見せたカードの必要パワーの数字が「2」と「6」なら、このターン、このユニットのBPを+3000する。",
+  "rawText": "※レジスト ※これはライドオフしたときストライクできない。 【ライトニングスラッシュ】自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍バトルエリアのSユニットを1体選びホールドする。その後、見せたカードの必要パワーの数字が「2」と「6」なら、このターン、このユニットのBPを+3000する。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_no_strike_after_rideoff",
+      "text": "※これはライドオフしたときストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_after_rideoff",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライトニングスラッシュ",
+      "text": "自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍バトルエリアのSユニットを1体選びホールドする。その後、見せたカードの必要パワーの数字が「2」と「6」なら、このターン、このユニットのBPを+3000する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "note",
+      "text": "※これはライドオフしたときストライクできない。",
+      "rule": "no_strike_after_rideoff"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-311",
+  "name": "キンタロス（2nd）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これは自軍ユニットの数が敵軍ユニットの数より多いときアタックできない。 【俺の強さにお前が泣いた】次の相手ターン、バトルエリアに出た敵軍Sユニットは、可能ならこれにアタックする。",
+  "rawText": "※これは自軍ユニットの数が敵軍ユニットの数より多いときアタックできない。 【俺の強さにお前が泣いた】次の相手ターン、バトルエリアに出た敵軍Sユニットは、可能ならこれにアタックする。",
+  "bp": 5000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "イマジン",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは自軍ユニットの数が敵軍ユニットの数より多いときアタックできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4bfbae381ae",
+      "name": "俺の強さにお前が泣いた",
+      "text": "次の相手ターン、バトルエリアに出た敵軍Sユニットは、可能ならこれにアタックする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4bfbae381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

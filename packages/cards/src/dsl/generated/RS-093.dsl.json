@@ -1,0 +1,46 @@
+{
+  "id": "RS-093",
+  "name": "童鬼ドロップ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 0,
+  "bp": 2000,
+  "size": "S",
+  "text": "※これはバトルエリアに出られない。 【かんしゃく】これが撃破されたとき、お互いに1点ダメージを受ける。",
+  "rawText": "※これはバトルエリアに出られない。 【かんしゃく】これが撃破されたとき、お互いに1点ダメージを受ける。",
+  "features": [
+    "災魔一族",
+    "男"
+  ],
+  "imageUrl": "/cards/legend2/RS-093.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-093.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出られない。",
+      "rule": "cannot_enter_battle"
+    }
+  ],
+  "effects": [
+    {
+      "id": "tantrum",
+      "name": "かんしゃく",
+      "text": "これが撃破されたとき、お互いに1点ダメージを受ける。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "tantrum"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

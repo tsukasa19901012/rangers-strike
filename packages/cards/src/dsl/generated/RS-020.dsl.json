@@ -1,0 +1,37 @@
+{
+  "id": "RS-020",
+  "name": "クルマジックパワー",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "effectId": "place_in_power",
+  "imageUrl": "/cards/legend1/RS-020.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-020.jpg",
+  "effects": [
+    {
+      "id": "place_in_power",
+      "name": "RS-020",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "move",
+          "target": {
+            "type": "self"
+          },
+          "to": "power"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

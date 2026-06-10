@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-004",
+  "name": "フルブラスト・アクション",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 8,
+  "text": "自軍パワーゾーンのオモテ向きのカードを好きな枚数選びウラ向きにしてもよい。 ただし、自分がゲームに負ける点数以上ウラ向きにすることはできない。その後、自分の手札にあるBP16000以下のLユニットのカードは、このターン、ブラストを得る。",
+  "rawText": "自軍パワーゾーンのオモテ向きのカードを好きな枚数選びウラ向きにしてもよい。 ただし、自分がゲームに負ける点数以上ウラ向きにすることはできない。その後、自分の手札にあるBP16000以下のLユニットのカードは、このターン、ブラストを得る。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

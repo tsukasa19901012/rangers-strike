@@ -1,0 +1,61 @@
+{
+  "id": "RS-167",
+  "name": "爆竜バキケロナグルス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 3,
+  "bp": 4000,
+  "size": "M",
+  "comboNumber": "L",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【爆竜必殺バキバキパンチ】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒アタックしてバトルに勝つたび、追加でアタックできる（ストライクはできない）。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【爆竜必殺バキバキパンチ】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒アタックしてバトルに勝つたび、追加でアタックできる（ストライクはできない）。",
+  "features": [
+    "恐竜"
+  ],
+  "imageUrl": "/cards/legend3/RS-167.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-167.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "baki_baki_punch",
+      "name": "爆竜必殺バキバキパンチ",
+      "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒アタックしてバトルに勝つたび、追加でアタックできる（ストライクはできない）。",
+      "trigger": {
+        "type": "joint_combo_l"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "baki_baki_punch"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

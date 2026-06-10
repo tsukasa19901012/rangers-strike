@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-079",
+  "name": "仮面ライダーの称号",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "ナンバーに数字を持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットのナンバーはＲＣになり、特徴「仮面ライダー」が追加される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+  "rawText": "ナンバーに数字を持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットのナンバーはＲＣになり、特徴「仮面ライダー」が追加される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+  "effects": [
+    {
+      "id": "named_e4bbaee99da2",
+      "name": "仮面ライダーの称号",
+      "text": "ナンバーに数字を持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットのナンバーはＲＣになり、特徴「仮面ライダー」が追加される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "fallback_handler",
+          "effectId": "named_e4bbaee99da2"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "hybrid",
+    "handler": "typescript",
+    "testGenerated": true
+  }
+}

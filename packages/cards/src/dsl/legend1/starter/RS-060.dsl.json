@@ -1,0 +1,65 @@
+{
+  "id": "RS-060",
+  "effects": [
+    {
+      "id": "pink_storm",
+      "name": "ピンクストーム",
+      "text": "BP3000以下のユニットを1体選んで持ち主の山札の上に戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "any",
+            "filter": {
+              "maxBp": 3000
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "deck",
+              "position": "left"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unnamed_fusion_material_alias",
+      "text": "※これは「マジフェアリー」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "fusion_material_alias",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは「マジフェアリー」としてつかえる。",
+      "rule": "fusion_material_alias"
+    }
+  ]
+}

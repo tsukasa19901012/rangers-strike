@@ -1,0 +1,97 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-084",
+  "name": "仮面ライダー幽汽HF",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※コールDA ※これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない。 【乱れ独楽】これが自軍ラッシュエリアにある間、自軍エンドフェイズ中、次の効果を好きなだけ発動できる⇒自分の手札を1枚選び捨札にする。そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する。",
+  "rawText": "※コールDA ※これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない。 【乱れ独楽】これが自軍ラッシュエリアにある間、自軍エンドフェイズ中、次の効果を好きなだけ発動できる⇒自分の手札を1枚選び捨札にする。そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_call_da",
+      "text": "※コールDA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_DA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4b9b1e3828ce78bace6a5bd",
+      "name": "乱れ独楽",
+      "text": "これが自軍ラッシュエリアにある間、自軍エンドフェイズ中、次の効果を好きなだけ発動できる⇒自分の手札を1枚選び捨札にする。そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※コールDA",
+      "rule": "call_DA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

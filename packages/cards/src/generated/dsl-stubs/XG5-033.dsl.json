@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-033",
+  "name": "シンケンレッド（志葉 薫）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはラッシュしたターンにバトルエリアに出られない。 【封印のモヂカラ】 自軍ターン中、これがバトルエリアに出たとき、自分の手札を1枚選び相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字と同じ必要パワーの数字を持つ、追加条件を持たない敵軍ユニットを1体選び、持ち主の山札の下に戻す。（選んだユニットがDAを持つなら、山札の下に戻すかわりにゲームから除外する）",
+  "rawText": "※これはラッシュしたターンにバトルエリアに出られない。 【封印のモヂカラ】 自軍ターン中、これがバトルエリアに出たとき、自分の手札を1枚選び相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字と同じ必要パワーの数字を持つ、追加条件を持たない敵軍ユニットを1体選び、持ち主の山札の下に戻す。（選んだユニットがDAを持つなら、山札の下に戻すかわりにゲームから除外する）",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "レッド",
+    "女",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_battle_rush_turn",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_battle_rush_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5b081e58db0",
+      "name": "封印のモヂカラ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自分の手札を1枚選び相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字と同じ必要パワーの数字を持つ、追加条件を持たない敵軍ユニットを1体選び、持ち主の山札の下に戻す。（選んだユニットがDAを持つなら、山札の下に戻すかわりにゲームから除外する）",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5b081e58db0",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "rule": "no_battle_rush_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

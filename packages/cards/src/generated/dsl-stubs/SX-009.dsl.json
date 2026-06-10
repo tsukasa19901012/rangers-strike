@@ -1,0 +1,80 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SX-009",
+  "name": "ゴセイレッド×ゴーカイレッド",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "0+",
+  "text": "※クロス1 ※タクスOT 【バトンタッチ】これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、これ以外の自軍Sユニットを捨札にしてもよい。そうしたとき、自軍山札を見て、捨札にしたユニットと作品名が異なるSユニットのカードを1枚選び自軍ラッシュエリアに出す（必要パワーと追加条件は満たすこと）。このとき、捨札にしたユニットの作品名が「天装戦隊ゴセイジャー」、ラッシュしたユニットの作品名が「海賊戦隊ゴーカイジャー」だったなら、敵軍Sユニットを1体選び撃破する。その後、山札をシャッフルする。",
+  "rawText": "※クロス1 ※タクスOT 【バトンタッチ】これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、これ以外の自軍Sユニットを捨札にしてもよい。そうしたとき、自軍山札を見て、捨札にしたユニットと作品名が異なるSユニットのカードを1枚選び自軍ラッシュエリアに出す（必要パワーと追加条件は満たすこと）。このとき、捨札にしたユニットの作品名が「天装戦隊ゴセイジャー」、ラッシュしたユニットの作品名が「海賊戦隊ゴーカイジャー」だったなら、敵軍Sユニットを1体選び撃破する。その後、山札をシャッフルする。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_taxis_ot",
+      "text": "※タクスOT",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_OT",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38390e38388",
+      "name": "バトンタッチ",
+      "text": "これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、これ以外の自軍Sユニットを捨札にしてもよい。そうしたとき、自軍山札を見て、捨札にしたユニットと作品名が異なるSユニットのカードを1枚選び自軍ラッシュエリアに出す（必要パワーと追加条件は満たすこと）。このとき、捨札にしたユニットの作品名が「天装戦隊ゴセイジャー」、ラッシュしたユニットの作品名が「海賊戦隊ゴーカイジャー」だったなら、敵軍Sユニットを1体選び撃破する。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38390e38388",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※タクスOT",
+      "rule": "taxis_OT"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-102",
+  "name": "仮面ライダークウガDF",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【スプラッシュドラゴン】敵軍常駐置き場のカード枚数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主の手札に戻してもよい（敵軍常駐置き場にカードが1枚も無ければ0と数える）。",
+  "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【スプラッシュドラゴン】敵軍常駐置き場のカード枚数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主の手札に戻してもよい（敵軍常駐置き場にカードが1枚も無ければ0と数える）。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "アマダム"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e38397",
+      "name": "スプラッシュドラゴン",
+      "text": "敵軍常駐置き場のカード枚数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主の手札に戻してもよい（敵軍常駐置き場にカードが1枚も無ければ0と数える）。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

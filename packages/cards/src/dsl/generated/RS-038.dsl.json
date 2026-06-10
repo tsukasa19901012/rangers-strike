@@ -1,0 +1,47 @@
+{
+  "id": "RS-038",
+  "name": "守護獣サーベルタイガー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 8,
+  "bp": 3000,
+  "sp": 1,
+  "size": "M",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+  "features": [
+    "恐竜"
+  ],
+  "imageUrl": "/cards/legend1/RS-038.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-038.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

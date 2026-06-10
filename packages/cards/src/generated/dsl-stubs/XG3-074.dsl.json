@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-074",
+  "name": "キングダーク",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "9+",
+  "text": "※ブラスト 【大ショッカーの巨大幹部】これが自分の手札にある間、自軍ラッシュフェイズ中、自軍Lユニットが1体もなければ次の効果を発動できる⇒自軍山札の上から7枚を捨札にしてから、これをラッシュエリアに出してもよい。ただし、必要パワーは満たす事。",
+  "rawText": "※ブラスト 【大ショッカーの巨大幹部】これが自分の手札にある間、自軍ラッシュフェイズ中、自軍Lユニットが1体もなければ次の効果を発動できる⇒自軍山札の上から7枚を捨札にしてから、これをラッシュエリアに出してもよい。ただし、必要パワーは満たす事。",
+  "bp": 9000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "大ショッカー",
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_blast",
+      "text": "※ブラスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "blast",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a4a7e382b7",
+      "name": "大ショッカーの巨大幹部",
+      "text": "これが自分の手札にある間、自軍ラッシュフェイズ中、自軍Lユニットが1体もなければ次の効果を発動できる⇒自軍山札の上から7枚を捨札にしてから、これをラッシュエリアに出してもよい。ただし、必要パワーは満たす事。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4a7e382b7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブラスト",
+      "rule": "blast"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-004",
+  "name": "ゴーグルイエロー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【イエローボール】敵軍ラッシュエリアから、必要パワーの数字が2以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
+  "rawText": "【イエローボール】敵軍ラッシュエリアから、必要パワーの数字が2以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "イエロー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382a4e382a8",
+      "name": "イエローボール",
+      "text": "敵軍ラッシュエリアから、必要パワーの数字が2以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a4e382a8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

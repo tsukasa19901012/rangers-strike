@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-528",
+  "name": "バイオハンター・シルバ（2nd）",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト 【バイオ粒子反応アリ！】これが自軍エリアにある間、OTを持つ敵軍ユニットがラッシュされたとき、これをリリースしてもよい。そうしたとき、相手はラッシュしたユニットを撃破するか、1点ダメージを受けるかを選ぶ。ダメージを受けることを選んだ場合、OTを持つ自軍ユニットがあれば、自分も1点ダメージを受ける。",
+  "rawText": "※レジスト 【バイオ粒子反応アリ！】これが自軍エリアにある間、OTを持つ敵軍ユニットがラッシュされたとき、これをリリースしてもよい。そうしたとき、相手はラッシュしたユニットを撃破するか、1点ダメージを受けるかを選ぶ。ダメージを受けることを選んだ場合、OTを持つ自軍ユニットがあれば、自分も1点ダメージを受ける。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "人型",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38390e382a4",
+      "name": "バイオ粒子反応アリ！",
+      "text": "これが自軍エリアにある間、OTを持つ敵軍ユニットがラッシュされたとき、これをリリースしてもよい。そうしたとき、相手はラッシュしたユニットを撃破するか、1点ダメージを受けるかを選ぶ。ダメージを受けることを選んだ場合、OTを持つ自軍ユニットがあれば、自分も1点ダメージを受ける。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "controller"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

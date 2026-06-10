@@ -1,0 +1,35 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-078",
+  "name": "ファイナルフォームライド",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "自軍Sユニットを1体選び、自軍パワーゾーンのオモテ向きのカードからSユニットまたはSビークルのカードを1枚選ぶ。そうしたとき、選んだユニットとカードを置き換える。ただし、必要パワーは満たすこと（追加条件は満たさなくてもよい）。このとき、出したユニットの効果は発動しない。",
+  "rawText": "自軍Sユニットを1体選び、自軍パワーゾーンのオモテ向きのカードからSユニットまたはSビークルのカードを1枚選ぶ。そうしたとき、選んだユニットとカードを置き換える。ただし、必要パワーは満たすこと（追加条件は満たさなくてもよい）。このとき、出したユニットの効果は発動しない。",
+  "effects": [
+    {
+      "id": "named_e38395e382a1",
+      "name": "ファイナルフォームライド",
+      "text": "自軍Sユニットを1体選び、自軍パワーゾーンのオモテ向きのカードからSユニットまたはSビークルのカードを1枚選ぶ。そうしたとき、選んだユニットとカードを置き換える。ただし、必要パワーは満たすこと（追加条件は満たさなくてもよい）。このとき、出したユニットの効果は発動しない。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e382a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-039",
+  "name": "テンクウシンケンオー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―獅子折神＋龍折神＋亀折神＋熊折神＋猿折神＋ダイテンクウ（または兜折神＋舵木折神＋虎折神） ※ウイング 【折神の結集】これが自軍エリアにある間、自軍捨札にある効果名「侍武装」を持つユニットカードは、このユニットが重ねられているかのように効果を発動する。ただし、同じカード名の効果は重複して発動しない。",
+  "rawText": "合体―獅子折神＋龍折神＋亀折神＋熊折神＋猿折神＋ダイテンクウ（または兜折神＋舵木折神＋虎折神） ※ウイング 【折神の結集】これが自軍エリアにある間、自軍捨札にある効果名「侍武装」を持つユニットカードは、このユニットが重ねられているかのように効果を発動する。ただし、同じカード名の効果は重複して発動しない。",
+  "bp": 20000,
+  "size": "L",
+  "sp": 2,
+  "features": [
+    "人型",
+    "侍"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍「シンケンオー」1体または自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e68a98e7a59e",
+      "name": "折神の結集",
+      "text": "これが自軍エリアにある間、自軍捨札にある効果名「侍武装」を持つユニットカードは、このユニットが重ねられているかのように効果を発動する。ただし、同じカード名の効果は重複して発動しない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e68a98e7a59e",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

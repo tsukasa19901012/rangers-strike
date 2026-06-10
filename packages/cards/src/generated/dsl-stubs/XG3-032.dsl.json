@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-032",
+  "name": "ゲキイエロー（XG3）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【弾弾丸】「SP1」 自分の手札から、特徴「激気」を持つMユニットのカードを1枚選び捨札にしてもよい。そうしたとき、敵軍ラッシュエリアにSユニットがあれば1体選び撃破する。その後、自分は1枚ドローする。",
+  "rawText": "【弾弾丸】「SP1」 自分の手札から、特徴「激気」を持つMユニットのカードを1枚選び捨札にしてもよい。そうしたとき、敵軍ラッシュエリアにSユニットがあれば1体選び撃破する。その後、自分は1枚ドローする。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "イエロー",
+    "女",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "named_e5bcbee5bcbe",
+      "name": "弾弾丸",
+      "text": "「SP1」 自分の手札から、特徴「激気」を持つMユニットのカードを1枚選び捨札にしてもよい。そうしたとき、敵軍ラッシュエリアにSユニットがあれば1体選び撃破する。その後、自分は1枚ドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

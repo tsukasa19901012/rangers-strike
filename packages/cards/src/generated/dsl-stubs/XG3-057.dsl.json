@@ -1,0 +1,97 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-057",
+  "name": "ヒビキアカネタカ",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "2+",
+  "text": "※自分が「仮面ライダー響鬼」をラッシュしたとき、自軍エリアに「ヒビキアカネタカ」があれば1体選んで手札に戻す。 ※ウイング 【ヒビキオンゲキコ】ホールド状態のこのユニットから、「仮面ライダーディケイド」または「仮面ライダーディエンド」または特徴「猛士」を持つユニットがコンビネーションしたとき、次の効果を発動できる⇒敵軍バトルエリアから特徴「男」または「女」または「人型」を持たないユニットを1体選び撃破する。",
+  "rawText": "※自分が「仮面ライダー響鬼」をラッシュしたとき、自軍エリアに「ヒビキアカネタカ」があれば1体選んで手札に戻す。 ※ウイング 【ヒビキオンゲキコ】ホールド状態のこのユニットから、「仮面ライダーディケイド」または「仮面ライダーディエンド」または特徴「猛士」を持つユニットがコンビネーションしたとき、次の効果を発動できる⇒敵軍バトルエリアから特徴「男」または「女」または「人型」を持たないユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "猛士",
+    "FFR"
+  ],
+  "effects": [
+    {
+      "id": "note_e280bbe887aae58886e3818c",
+      "text": "※自分が「仮面ライダー響鬼」をラッシュしたとき、自軍エリアに「ヒビキアカネタカ」があれば1体選んで手札に戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "return_self_on_ally_rush_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38392e38393e382ade382aa",
+      "name": "ヒビキオンゲキコ",
+      "text": "ホールド状態のこのユニットから、「仮面ライダーディケイド」または「仮面ライダーディエンド」または特徴「猛士」を持つユニットがコンビネーションしたとき、次の効果を発動できる⇒敵軍バトルエリアから特徴「男」または「女」または「人型」を持たないユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

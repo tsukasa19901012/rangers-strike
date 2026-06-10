@@ -1,0 +1,102 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-070",
+  "name": "ディケイド カブトRF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※モーフ ※これは「仮面ライダーカブトRF」としてつかえる。 ※これは敵軍Sユニットにアタックされない。 【アタックライド】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを3つホールドしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "rawText": "※モーフ ※これは「仮面ライダーカブトRF」としてつかえる。 ※これは敵軍Sユニットにアタックされない。 【アタックライド】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを3つホールドしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ディケイドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_alias_rf",
+      "text": "※これは「仮面ライダーカブトRF」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_rf",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_no_attack_from_enemy_s",
+      "text": "※これは敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_enemy_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e382bf",
+      "name": "アタックライド",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを3つホールドしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    },
+    {
+      "kind": "fusion",
+      "text": "※これは「仮面ライダーカブトRF」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    },
+    {
+      "kind": "note",
+      "text": "※これは敵軍Sユニットにアタックされない。",
+      "rule": "no_attack_from_enemy_s"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

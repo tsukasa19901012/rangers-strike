@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-028",
+  "name": "ゴリー・イェン",
+  "type": "commander",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を好きな枚数選び、相手に見せる。そうしたとき、見せた枚数と同じ枚数だけ、相手は自分自身の手札を選び見せる。",
+  "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を好きな枚数選び、相手に見せる。そうしたとき、見せた枚数と同じ枚数だけ、相手は自分自身の手札を選び見せる。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-065",
+  "name": "仮面ライダーカブトHF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "※これはアタックされる以外では相手に選ばれない。 【ハイパークロックアップ】これは、自軍常駐置き場にカードが5枚以上あるとき、次の能力を得る⇒特徴「加速」を持たないユニットにアタックされない。",
+  "rawText": "※これはアタックされる以外では相手に選ばれない。 【ハイパークロックアップ】これは、自軍常駐置き場にカードが5枚以上あるとき、次の能力を得る⇒特徴「加速」を持たないユニットにアタックされない。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍「仮面ライダーカブトRF」1枚をパワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_not_selectable_except_attack",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "not_selectable_except_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3838fe382a4",
+      "name": "ハイパークロックアップ",
+      "text": "これは、自軍常駐置き場にカードが5枚以上あるとき、次の能力を得る⇒特徴「加速」を持たないユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838fe382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "rule": "not_selectable_except_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "RS-012",
+  "name": "科学アカデミアの科学力",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "effectId": "science_academy",
+  "imageUrl": "/cards/legend1/RS-012.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-012.jpg",
+  "effects": [
+    {
+      "id": "science_academy",
+      "text": "自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "science_academy"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

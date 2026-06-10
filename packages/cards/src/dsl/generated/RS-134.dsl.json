@@ -1,0 +1,55 @@
+{
+  "id": "RS-134",
+  "name": "ライブロボ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend3",
+  "powerCost": "7+",
+  "bp": 12000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―ジェットファルコン＋ランドライオン＋アクアドルフィン【スーパーライブクラッシュ】これはアタックするときBP＋4000される。",
+  "rawText": "合体―ジェットファルコン＋ランドライオン＋アクアドルフィン【スーパーライブクラッシュ】これはアタックするときBP＋4000される。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend3/RS-134.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-134.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ジェットファルコン＋ランドライオン＋アクアドルフィン",
+      "partnerCardIds": [
+        "RS-134",
+        "RS-135",
+        "RS-136"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "super_live_crush",
+      "name": "スーパーライブクラッシュ",
+      "text": "これはアタックするときBP＋4000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "super_live_crush"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "RS-048",
+  "name": "ブルーレーサー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "bp": 1000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 4,
+  "text": "【ヘアピンキック】「SP1」",
+  "rawText": "【ヘアピンキック】「SP1」",
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "imageUrl": "/cards/legend1/RS-048.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-048.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "grant_sp1",
+      "name": "ヘアピンキック",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

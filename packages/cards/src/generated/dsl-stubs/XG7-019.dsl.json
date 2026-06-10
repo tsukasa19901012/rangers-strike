@@ -1,0 +1,84 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-019",
+  "name": "ゴセイレッド×ゴセイピンク",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "2+",
+  "text": "※クロス1 ※ウイング 【スカイコンビブレイク】このターン、自軍ユニットは、ウイングでアタックしたとき、そのバトル中、BP+2000される。（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
+  "rawText": "※クロス1 ※ウイング 【スカイコンビブレイク】このターン、自軍ユニットは、ウイングでアタックしたとき、そのバトル中、BP+2000される。（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
+  "bp": 3000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": 1,
+  "features": [
+    "レッド",
+    "ピンク",
+    "男",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e382ab",
+      "name": "スカイコンビブレイク",
+      "text": "このターン、自軍ユニットは、ウイングでアタックしたとき、そのバトル中、BP+2000される。（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e382ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-013",
+  "name": "ギンガグリーン（XG4）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これをラッシュしたとき、ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい。 ※これはライド中、ウイングを持たないユニットにアタックされない。 【疾風一陣】相手は自分自身の山札の上から1枚を捨札にするか、自分自身のコマンドを2つ選び手札に戻すかを選ぶ。",
+  "rawText": "※これをラッシュしたとき、ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい。 ※これはライド中、ウイングを持たないユニットにアタックされない。 【疾風一陣】相手は自分自身の山札の上から1枚を捨札にするか、自分自身のコマンドを2つ選び手札に戻すかを選ぶ。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "グリーン",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これをラッシュしたとき、ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "stack_vehicle_on_rush",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193_2",
+      "text": "※これはライド中、ウイングを持たないユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e796bee9a2a8",
+      "name": "疾風一陣",
+      "text": "相手は自分自身の山札の上から1枚を捨札にするか、自分自身のコマンドを2つ選び手札に戻すかを選ぶ。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e796bee9a2a8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

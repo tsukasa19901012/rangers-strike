@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-554",
+  "name": "ゴッドカーク",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャホワイト」のカードを1枚選び、自軍ラッシュエリアに出す。 【フライングビーム】敵軍パワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャホワイト」のカードを1枚選び、自軍ラッシュエリアに出す。 【フライングビーム】敵軍パワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 3500,
+  "size": "M",
+  "comboNumber": 4,
+  "features": [
+    "忍者",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャホワイト」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e38395e383a9",
+      "name": "フライングビーム",
+      "text": "敵軍パワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

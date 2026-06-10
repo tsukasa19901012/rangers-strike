@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-086",
+  "name": "仮面ライダーイクサBM（XG4）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【イクサカリバー・ガンモード】ウイングを持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "【イクサカリバー・ガンモード】ウイングを持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "メカ",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382a4e382af",
+      "name": "イクサカリバー・ガンモード",
+      "text": "ウイングを持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a4e382af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "RS-145",
+  "name": "ダッシュレオン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "3+",
+  "bp": 5000,
+  "size": "M",
+  "text": "【超文明の守護】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドをすべてリリース状態に戻す。",
+  "rawText": "【超文明の守護】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドをすべてリリース状態に戻す。",
+  "features": [
+    "メカ"
+  ],
+  "imageUrl": "/cards/legend3/RS-145.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-145.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを1体捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "hyper_civilization_guard",
+      "name": "超文明の守護",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドをすべてリリース状態に戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "hyper_civilization_guard"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "RS-027",
+  "effects": [
+    {
+      "id": "dino_guts",
+      "name": "RS-027",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "cancel_damage"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "prevent_leave_with_power_cost",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

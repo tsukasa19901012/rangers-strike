@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-301",
+  "name": "Vレックスロボ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「Vコマンダー」をホールドしなければバトルエリアに出られない。 【リボルバーミサイル】これがバトルエリアに出たとき、敵軍ユニットを1体選び、敵軍パワーゾーンからカードを1枚選ぶ。そうしたとき、相手はどちらかを選び捨札にする。",
+  "rawText": "※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「Vコマンダー」をホールドしなければバトルエリアに出られない。 【リボルバーミサイル】これがバトルエリアに出たとき、敵軍ユニットを1体選び、敵軍パワーゾーンからカードを1枚選ぶ。そうしたとき、相手はどちらかを選び捨札にする。",
+  "bp": 7000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "恐竜",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「Vコマンダー」をホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383aae3839c",
+      "name": "リボルバーミサイル",
+      "text": "これがバトルエリアに出たとき、敵軍ユニットを1体選び、敵軍パワーゾーンからカードを1枚選ぶ。そうしたとき、相手はどちらかを選び捨札にする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383aae3839c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-044",
+  "name": "ゴセイブラック",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※レジスト 【ランディックアックス】このターン、これは、リリース状態の自軍コマンド1つにつきBP+1000される。",
+  "rawText": "※レジスト 【ランディックアックス】このターン、これは、リリース状態の自軍コマンド1つにつきBP+1000される。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e383b3",
+      "name": "ランディックアックス",
+      "text": "このターン、これは、リリース状態の自軍コマンド1つにつきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

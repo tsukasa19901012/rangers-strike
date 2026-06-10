@@ -1,0 +1,85 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-061",
+  "name": "仮面ライダーカリス（XG）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはライドオフしたときストライクできない。 【スピニングウェーブ】自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍コマンドをすべてホールドする。その後、見せたカードの必要パワーの数字が「3」と「6」なら、敵軍バトルエリアからSユニットを1体選び撃破する。",
+  "rawText": "※これはライドオフしたときストライクできない。 【スピニングウェーブ】自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍コマンドをすべてホールドする。その後、見せたカードの必要パワーの数字が「3」と「6」なら、敵軍バトルエリアからSユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": "RC",
+  "features": [
+    "アンデッド",
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_strike_after_rideoff",
+      "text": "※これはライドオフしたときストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_after_rideoff",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e38394",
+      "name": "スピニングウェーブ",
+      "text": "自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍コマンドをすべてホールドする。その後、見せたカードの必要パワーの数字が「3」と「6」なら、敵軍バトルエリアからSユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはライドオフしたときストライクできない。",
+      "rule": "no_strike_after_rideoff"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

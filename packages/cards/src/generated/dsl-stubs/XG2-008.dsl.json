@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-008",
+  "name": "ロケットタイガー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【ハンドロケット】 これがアタックするとき、相手は「アタックされたとき発動できる」と書かれたカウンターオペレーションを発動できない。",
+  "rawText": "【ハンドロケット】 これがアタックするとき、相手は「アタックされたとき発動できる」と書かれたカウンターオペレーションを発動できない。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "獣",
+    "怪人"
+  ],
+  "effects": [
+    {
+      "id": "named_e3838fe383b3",
+      "name": "ハンドロケット",
+      "text": "これがアタックするとき、相手は「アタックされたとき発動できる」と書かれたカウンターオペレーションを発動できない。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838fe383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

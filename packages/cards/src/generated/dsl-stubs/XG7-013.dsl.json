@@ -1,0 +1,99 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-013",
+  "name": "デカブルー×デカレッド",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※クロス1 ※タクスOT 【ファイヤーソウル・クールブレイン】これがアタックするとき、敵軍ラッシュエリアからSユニットを1体選び撃破してもよい。（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）",
+  "rawText": "※クロス1 ※タクスOT 【ファイヤーソウル・クールブレイン】これがアタックするとき、敵軍ラッシュエリアからSユニットを1体選び撃破してもよい。（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）",
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "レッド",
+    "ブルー",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_taxis_ot",
+      "text": "※タクスOT",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_OT",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38395e382a1",
+      "name": "ファイヤーソウル・クールブレイン",
+      "text": "これがアタックするとき、敵軍ラッシュエリアからSユニットを1体選び撃破してもよい。（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "rush",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※タクスOT",
+      "rule": "taxis_OT"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

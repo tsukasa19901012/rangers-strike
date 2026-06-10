@@ -9,7 +9,7 @@ import {
   createZordSetup,
   listZordSetupResolveActions,
 } from "./rules/zordSetup";
-import { createTestState, heldOtCommand, heldWbCommand, inst } from "./testing/fixtures";
+import { createTestState, heldOtCommand, heldWbCommand, inst, withCostWindow } from "./testing/fixtures";
 
 const fusionDef = (id: string, name: string) => ({
   id,
@@ -160,7 +160,7 @@ describe("zord setup wizard", () => {
         rush: [mothership],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
         command: [heldOtCommand("held"), otCmd],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
       },
     });
     state.definitions["RS-046"] = {
@@ -282,7 +282,7 @@ describe("zord setup wizard", () => {
         rush: [sUnit],
         power: Array.from({ length: 4 }, (_, i) => inst("TST-P", `p${i}`)),
         command: [otCmd],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
       },
     });
     state.definitions["RS-045"] = {

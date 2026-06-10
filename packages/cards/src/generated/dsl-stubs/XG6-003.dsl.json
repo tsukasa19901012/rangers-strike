@@ -1,0 +1,85 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-003",
+  "name": "キラーアバレンオー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―アバレンオー（または爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン）+キラーオー（または爆竜トップゲイラー+爆竜ステゴスライドン） ※ブレイカー ※ウイング 【爆竜マルチコンバイン】自軍ターン中、これがバトルエリアに出たとき、自分の手札から ナンバーに「L」または「R」を持つカードを1枚選び、相手に見せてもよい。そうしたとき、これが見せたカードのJCの対象として適切なら、これとコンビネーションしたかのように、そのJCの効果を発動する。",
+  "rawText": "合体―アバレンオー（または爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン）+キラーオー（または爆竜トップゲイラー+爆竜ステゴスライドン） ※ブレイカー ※ウイング 【爆竜マルチコンバイン】自軍ターン中、これがバトルエリアに出たとき、自分の手札から ナンバーに「L」または「R」を持つカードを1枚選び、相手に見せてもよい。そうしたとき、これが見せたカードのJCの対象として適切なら、これとコンビネーションしたかのように、そのJCの効果を発動する。",
+  "bp": 16000,
+  "size": "L",
+  "sp": 2,
+  "features": [
+    "恐竜",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_breaker",
+      "text": "※ブレイカー",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "breaker",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e78886e7ab9c",
+      "name": "爆竜マルチコンバイン",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自分の手札から ナンバーに「L」または「R」を持つカードを1枚選び、相手に見せてもよい。そうしたとき、これが見せたカードのJCの対象として適切なら、これとコンビネーションしたかのように、そのJCの効果を発動する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e78886e7ab9c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブレイカー",
+      "rule": "breaker"
+    },
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

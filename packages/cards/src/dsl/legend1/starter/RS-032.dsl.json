@@ -1,0 +1,29 @@
+{
+  "id": "RS-032",
+  "effects": [
+    {
+      "id": "shark_jaws",
+      "name": "シャークジョーズ",
+      "text": "これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。（この効果は「バルイーグル」または「バルパンサー」からコンビネーションするときは、ナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "on_attack",
+        "comboPartnerCardIds": [
+          "RS-031",
+          "RS-033"
+        ]
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "use_printed_bp_in_battle",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

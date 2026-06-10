@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-292",
+  "name": "気伝武人ウォンタイガー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【虎の子大秘術】これが自軍ラッシュエリアにある間、自分が手札からオペレーションカードを使用するためにホールドするコマンドは、使用するカードと同じカテゴリのコマンドでなくてもよい。",
+  "rawText": "【虎の子大秘術】これが自軍ラッシュエリアにある間、自分が手札からオペレーションカードを使用するためにホールドするコマンドは、使用するカードと同じカテゴリのコマンドでなくてもよい。",
+  "bp": 6000,
+  "size": "M",
+  "sp": 1,
+  "features": [
+    "獣",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e8998ee381ae",
+      "name": "虎の子大秘術",
+      "text": "これが自軍ラッシュエリアにある間、自分が手札からオペレーションカードを使用するためにホールドするコマンドは、使用するカードと同じカテゴリのコマンドでなくてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8998ee381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

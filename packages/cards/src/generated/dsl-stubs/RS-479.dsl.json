@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-479",
+  "name": "ガオハンマーヘッド",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは敵軍バトルエリアのユニットにアタックできない。 ※これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは敵軍バトルエリアのユニットにアタックできない。 ※これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_cannot_attack_enemy_battle",
+      "text": "※これは敵軍バトルエリアのユニットにアタックできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_enemy_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_wing_attack_enemy_rush",
+      "text": "※これは敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing_attack_enemy_rush",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    },
+    {
+      "kind": "note",
+      "text": "※これは敵軍ラッシュエリアのユニットにアタックできる。",
+      "rule": "wing_attack_enemy_rush"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

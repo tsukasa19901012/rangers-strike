@@ -1,0 +1,47 @@
+{
+  "id": "RS-047",
+  "name": "パトシグナー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "bp": 3000,
+  "size": "M",
+  "text": "【進入禁止サインボード】これがバトルエリアにあるとき、BP5000以上のすべてのMユニットはバトルエリアに出ることはできない。",
+  "rawText": "【進入禁止サインボード】これがバトルエリアにあるとき、BP5000以上のすべてのMユニットはバトルエリアに出ることはできない。",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend1/RS-047.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-047.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "pat_signer",
+      "name": "進入禁止サインボード",
+      "text": "これがバトルエリアにあるとき、BP5000以上のすべてのMユニットはバトルエリアに出ることはできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "block_m_battle_entry_bp5000_plus",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

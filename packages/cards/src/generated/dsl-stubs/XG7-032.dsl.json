@@ -1,0 +1,100 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-032",
+  "name": "仮面ライダー新2号×仮面ライダー新1号",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※クロス1 ※ブレイカー ※これは「仮面ライダー1号」または「仮面ライダー2号」としてつかえる。 【ライダーダブルキック】SP1 このターン、これはBP+2000される。また、これがアタックするとき、バトル相手のユニットのBPをカードに表記された本来の値としてバトルし、自分が次の行動を宣言するまで、すべての敵軍ユニットはホールドすることができない。",
+  "rawText": "※クロス1 ※ブレイカー ※これは「仮面ライダー1号」または「仮面ライダー2号」としてつかえる。 【ライダーダブルキック】SP1 このターン、これはBP+2000される。また、これがアタックするとき、バトル相手のユニットのBPをカードに表記された本来の値としてバトルし、自分が次の行動を宣言するまで、すべての敵軍ユニットはホールドすることができない。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_breaker",
+      "text": "※ブレイカー",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "breaker",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_fx_1_2",
+      "text": "※これは「仮面ライダー1号」または「仮面ライダー2号」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_1_2",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライダーダブルキック",
+      "text": "SP1 このターン、これはBP+2000される。また、これがアタックするとき、バトル相手のユニットのBPをカードに表記された本来の値としてバトルし、自分が次の行動を宣言するまで、すべての敵軍ユニットはホールドすることができない。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 2000,
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※ブレイカー",
+      "rule": "breaker"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

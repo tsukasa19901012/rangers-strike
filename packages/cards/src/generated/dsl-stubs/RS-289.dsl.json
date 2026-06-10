@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-289",
+  "name": "ドラゴンレンジャー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない。 ※自分がターンを終えるとき、ゲームに負けるまでの自軍ダメージが残り3点以下なら、これを撃破する。 【獣奏剣】これが自軍エリアにある間、特徴「恐竜」を持つすべての自軍ユニットはBP＋1000される。",
+  "rawText": "※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない。 ※自分がターンを終えるとき、ゲームに負けるまでの自軍ダメージが残り3点以下なら、これを撃破する。 【獣奏剣】これが自軍エリアにある間、特徴「恐竜」を持つすべての自軍ユニットはBP＋1000される。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "グリーン",
+    "男",
+    "獣奏剣"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe887aa",
+      "text": "※自分がターンを終えるとき、ゲームに負けるまでの自軍ダメージが残り3点以下なら、これを撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e78da3e5a58f",
+      "name": "獣奏剣",
+      "text": "これが自軍エリアにある間、特徴「恐竜」を持つすべての自軍ユニットはBP＋1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e78da3e5a58f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

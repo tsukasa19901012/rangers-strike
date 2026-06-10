@@ -1,0 +1,46 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-032",
+  "name": "デカレンジャーロボ（XG2）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "【ジャイロワッパー】これが敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "【ジャイロワッパー】これが敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい。",
+  "bp": 17000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍「デカマシン」1体をパワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "named_e382b8e383a3",
+      "name": "ジャイロワッパー",
+      "text": "これが敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b8e383a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-014",
+  "name": "共同戦線",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※常駐（場に配置して、離れるまで効果が有効になる） 自軍バトルエリアに特徴「警察」を持つユニットがある間、特徴「仮面ライダー」を持つ自軍ユニットは、敵軍Sユニットにアタックされない。",
+  "rawText": "※常駐（場に配置して、離れるまで効果が有効になる） 自軍バトルエリアに特徴「警察」を持つユニットがある間、特徴「仮面ライダー」を持つ自軍ユニットは、敵軍Sユニットにアタックされない。",
+  "effects": [
+    {
+      "id": "unnamed_resident",
+      "text": "※常駐（場に配置して、離れるまで効果が有効になる） 自軍バトルエリアに特徴「警察」を持つユニットがある間、特徴「仮面ライダー」を持つ自軍ユニットは、敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※常駐（場に配置して、離れるまで効果が有効になる） 自軍バトルエリアに特徴「警察」を持つユニットがある間、特徴「仮面ライダー」を持つ自軍ユニットは、敵軍Sユニットにアタックされない。",
+      "rule": "resident"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

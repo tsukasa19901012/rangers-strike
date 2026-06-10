@@ -1,15 +1,12 @@
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PendingRush, PlayerId } from "../types/game";
-import { getDefinition } from "../core/catalog";
-import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
-import { requestDrawFromDeck } from "./drawFromDeck";
-import { buildLogEntry } from "../log/formatLog";
+import type { GameState, PlayerId } from "../types/game";
+import { findInZone, opponent } from "../core/helpers";
 import { hasRushCounterReactions } from "./operationCounters";
-import { resolveNamedOnRushEffects } from "./namedUnitEffects";
-import {
-  applySuperRadarOnRush,
-  resolveLegend3UnnamedRushEffects,
-} from "./legend3/rushEffects";
+import { buildUnitRushedEvent } from "../events/builders";
+import { EventQueue } from "../events/EventQueue";
+import { getEngineEventDispatcher } from "../events/globalDispatcher";
+import { resolveUntilBlocked } from "../events/EventResolver";
+import { emitUnitRushedAndFinalize } from "../events/emitUnitRushed";
 
 export type RushEffectOutcome = {
   state: GameState;
@@ -22,58 +19,9 @@ export const ON_RUSH_EFFECTS: Partial<Record<string, "draw_1">> = {};
 /** @deprecated RS-124 は legend3/rushEffects.applySuperRadarOnRush で処理 */
 export const ON_ENEMY_RUSH_PERMANENTS: Partial<Record<string, "power_to_hand">> = {};
 
-function applyDrawOnRush(
-  state: GameState,
-  playerId: PlayerId,
-  cardId: string,
-  phasePlayerId: PlayerId,
-): RushEffectOutcome {
-  const result = requestDrawFromDeck(state, playerId, phasePlayerId, {
-    count: 1,
-    sourceCardId: cardId,
-  });
-  if (!result.pending && !result.drawn) {
-    return { state: result.state, logs: [] };
-  }
-  return {
-    state: result.state,
-    logs: [
-      buildLogEntry(playerId, "rush_effect", cardId, state.definitions, "draw_1"),
-    ],
-  };
-}
-
-function applyPowerToHandOnEnemyRush(
-  state: GameState,
-  ownerId: PlayerId,
-  permanentCardId: string,
-): RushEffectOutcome {
-  const player = state.players[ownerId];
-  const faceUpIndex = player.power.findIndex((c) => !c.faceDown);
-  if (faceUpIndex < 0) return { state, logs: [] };
-
-  const [card, restPower] = removeAt(player.power, faceUpIndex);
-  const nextPlayer = {
-    ...player,
-    power: restPower,
-    hand: [...player.hand, card],
-  };
-  return {
-    state: { ...state, ...updatePlayer(state, ownerId, nextPlayer) },
-    logs: [
-      buildLogEntry(
-        ownerId,
-        "rush_effect",
-        permanentCardId,
-        state.definitions,
-        "power_to_hand",
-      ),
-    ],
-  };
-}
-
 /**
  * RS-026 カウンターウィンドウを開く前に、ラッシュ起因の効果をすべて解決する。
+ * `UnitRushed` イベント経由（後方互換 API）。
  * @see RS-026 Q6/Q10 — ラッシュ効果を先に、その後カウンター。
  */
 export function resolveRushTriggeredEffects(
@@ -85,43 +33,19 @@ export function resolveRushTriggeredEffects(
   const found = findInZone(rusher, "rush", rushedInstanceId);
   if (!found) return { state, logs: [] };
 
-  let nextState = state;
-  const logs: string[] = [];
-
-  const onRush = ON_RUSH_EFFECTS[found.card.cardId];
-  if (onRush === "draw_1") {
-    const result = applyDrawOnRush(
-      nextState,
+  const queue = new EventQueue();
+  queue.enqueue(
+    buildUnitRushedEvent({
+      state,
+      phasePlayerId: state.activePlayer,
       rusherPlayerId,
-      found.card.cardId,
-      state.activePlayer,
-    );
-    nextState = result.state;
-    logs.push(...result.logs);
-  }
-
-  const unnamedLegend3 = resolveLegend3UnnamedRushEffects(
-    nextState,
-    rusherPlayerId,
-    rushedInstanceId,
+      instanceId: rushedInstanceId,
+      cardId: found.card.cardId,
+    }),
   );
-  nextState = unnamedLegend3.state;
-  logs.push(...unnamedLegend3.logs);
 
-  const namedRush = resolveNamedOnRushEffects(
-    nextState,
-    rusherPlayerId,
-    rushedInstanceId,
-    state.activePlayer,
-  );
-  nextState = namedRush.state;
-  logs.push(...namedRush.logs);
-
-  const radar = applySuperRadarOnRush(nextState, rusherPlayerId, rushedInstanceId);
-  nextState = radar.state;
-  logs.push(...radar.logs);
-
-  return { state: nextState, logs };
+  const resolved = resolveUntilBlocked(state, queue, getEngineEventDispatcher());
+  return { state: resolved.state, logs: resolved.logs };
 }
 
 export function openRushCounterWindow(
@@ -153,30 +77,19 @@ export function openRushCounterWindow(
   };
 }
 
+/** @deprecated applyAction は emitUnitRushedAndFinalize を使用すること。 */
 export function finalizeRushAction(
   state: GameState,
   rusherPlayerId: PlayerId,
   rushedInstanceId: string,
   phasePlayerId: PlayerId,
 ): RushEffectOutcome & { counterPending: boolean } {
-  const triggered = resolveRushTriggeredEffects(
+  return emitUnitRushedAndFinalize(
     state,
-    rusherPlayerId,
-    rushedInstanceId,
-  );
-  const beforePending = triggered.state.pendingRush;
-  const withCounter = openRushCounterWindow(
-    triggered.state,
     rusherPlayerId,
     rushedInstanceId,
     phasePlayerId,
   );
-
-  return {
-    state: withCounter,
-    logs: triggered.logs,
-    counterPending: !beforePending && !!withCounter.pendingRush,
-  };
 }
 
 export function categoriesOverlap(

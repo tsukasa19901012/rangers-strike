@@ -1,0 +1,75 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-098",
+  "name": "ロボタック",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト 【ジシャックチェンジ】これが自軍バトルエリアからラッシュエリアに戻るとき、これをホールドして次の効果を発動できる⇒自軍山札から特徴「スペシャルモード」を持つカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
+  "rawText": "※レジスト 【ジシャックチェンジ】これが自軍バトルエリアからラッシュエリアに戻るとき、これをホールドして次の効果を発動できる⇒自軍山札から特徴「スペシャルモード」を持つカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "メカ"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b8e382b7",
+      "name": "ジシャックチェンジ",
+      "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、これをホールドして次の効果を発動できる⇒自軍山札から特徴「スペシャルモード」を持つカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "optional_deck_draw",
+          "valid": {
+            "type": "zone",
+            "zone": "deck",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

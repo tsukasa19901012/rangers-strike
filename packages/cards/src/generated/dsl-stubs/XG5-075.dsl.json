@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-075",
+  "name": "仮面ライダーイクサSM（XG5）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【母娘の絆】このターン、次に特徴「女」を持つ自軍ユニットが敵軍ユニットを撃破したとき、自軍捨札から特徴「男」を持つユニットカードを1枚選び、手札に加えてもよい。",
+  "rawText": "【母娘の絆】このターン、次に特徴「女」を持つ自軍ユニットが敵軍ユニットを撃破したとき、自軍捨札から特徴「男」を持つユニットカードを1枚選び、手札に加えてもよい。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "仮面ライダー",
+    "メカ",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e6af8de5a898",
+      "name": "母娘の絆",
+      "text": "このターン、次に特徴「女」を持つ自軍ユニットが敵軍ユニットを撃破したとき、自軍捨札から特徴「男」を持つユニットカードを1枚選び、手札に加えてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6af8de5a898",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

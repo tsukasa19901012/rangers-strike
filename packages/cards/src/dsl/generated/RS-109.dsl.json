@@ -1,0 +1,43 @@
+{
+  "id": "RS-109",
+  "name": "デカイエロー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "bp": 2000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 4,
+  "text": "【応援要請】「SP1」自軍パワーゾーンのダメージになっていないカードの中から、Sユニットのカードを1枚選んで手札に加えてもよい。",
+  "rawText": "【応援要請】「SP1」自軍パワーゾーンのダメージになっていないカードの中から、Sユニットのカードを1枚選んで手札に加えてもよい。",
+  "features": [
+    "イエロー",
+    "女",
+    "警察"
+  ],
+  "imageUrl": "/cards/legend2/RS-109.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-109.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "backup_request",
+      "name": "応援要請",
+      "text": "「SP1」自軍パワーゾーンのダメージになっていないカードの中から、Sユニットのカードを1枚選んで手札に加えてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "backup_request"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

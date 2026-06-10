@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-06-10T00:56:23.436Z",
+  "total": 1849,
+  "playable": 179,
+  "stubs": 1670,
+  "dslReady": 255,
+  "legacyHandler": 1593,
+  "unimplemented": 1,
+  "stubCompiled": 1669,
+  "stubHandlers": {
+    "interpreter": 31,
+    "typescript": 730,
+    "unimplemented": 1
+  }
+}

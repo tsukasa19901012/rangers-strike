@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-139",
+  "name": "仮面ライダーゼロノスAF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【俺はかーなーり強い】相手は自分自身のラッシュエリアからユニットを1体選び、可能ならバトルエリアに出す。",
+  "rawText": "【俺はかーなーり強い】相手は自分自身のラッシュエリアからユニットを1体選び、可能ならバトルエリアに出す。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 14,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e4bfbae381af",
+      "name": "俺はかーなーり強い",
+      "text": "相手は自分自身のラッシュエリアからユニットを1体選び、可能ならバトルエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4bfbae381af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

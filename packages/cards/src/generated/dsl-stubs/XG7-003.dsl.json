@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-003",
+  "name": "ゴーカイレッド",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これをラッシュしたとき、「ゴーカイレッド」以外のオモテ向きの自軍パワーから、追加条件を持たない特徴「レッド」を持つSユニットのカードを1枚選び、これと置き換えてもよい。 【赤きレジェンド】オモテ向きの自軍パワーから、特徴「レッド」を持つカードを1枚選び捨札にしてもよい。そうしたとき、相手に1点ダメージを与える。",
+  "rawText": "※これをラッシュしたとき、「ゴーカイレッド」以外のオモテ向きの自軍パワーから、追加条件を持たない特徴「レッド」を持つSユニットのカードを1枚選び、これと置き換えてもよい。 【赤きレジェンド】オモテ向きの自軍パワーから、特徴「レッド」を持つカードを1枚選び捨札にしてもよい。そうしたとき、相手に1点ダメージを与える。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 14,
+  "comboNumber": 3,
+  "features": [
+    "レッド",
+    "男",
+    "宇宙海賊"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これをラッシュしたとき、「ゴーカイレッド」以外のオモテ向きの自軍パワーから、追加条件を持たない特徴「レッド」を持つSユニットのカードを1枚選び、これと置き換えてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8b5a4e3818d",
+      "name": "赤きレジェンド",
+      "text": "オモテ向きの自軍パワーから、特徴「レッド」を持つカードを1枚選び捨札にしてもよい。そうしたとき、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

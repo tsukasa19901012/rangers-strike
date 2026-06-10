@@ -1,0 +1,54 @@
+{
+  "id": "RS-128",
+  "name": "バイオジェット1号",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "5+",
+  "bp": 6000,
+  "sp": "special",
+  "size": "M",
+  "text": "※これをラッシュしたとき、自軍パワーゾーンにダメージ以外のカードがあれば、1枚選んで捨札にする。【拠点攻撃】「バイオジェット2号」からコンビネーションするとき、このターン、これは次の能力を得る⇒「SP1」",
+  "rawText": "※これをラッシュしたとき、自軍パワーゾーンにダメージ以外のカードがあれば、1枚選んで捨札にする。【拠点攻撃】「バイオジェット2号」からコンビネーションするとき、このターン、これは次の能力を得る⇒「SP1」",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "imageUrl": "/cards/legend3/RS-128.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-128.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを2体パワーゾーンに送る",
+    "unitCount": 2
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これをラッシュしたとき、自軍パワーゾーンにダメージ以外のカードがあれば、1枚選んで捨札にする",
+      "rule": "rush_power_to_discard",
+      "discardCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "base_attack",
+      "name": "拠点攻撃",
+      "text": "「バイオジェット2号」からコンビネーションするとき、このターン、これは次の能力を得る⇒「SP1」",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_base_attack",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

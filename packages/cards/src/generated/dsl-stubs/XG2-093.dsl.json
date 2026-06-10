@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-093",
+  "name": "ソルドーザー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これはアタックすることができない。 【道路封鎖】これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは相手に選ばれない。",
+  "rawText": "※これはアタックすることができない。 【道路封鎖】これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは相手に選ばれない。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "人型",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack",
+      "text": "※これはアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e98193e8b7af",
+      "name": "道路封鎖",
+      "text": "これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは相手に選ばれない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e98193e8b7af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックすることができない。",
+      "rule": "cannot_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

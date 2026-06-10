@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SX-006",
+  "name": "仮面ライダーG電王",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【時間警察の使者】これをラッシュしたとき、必要パワーを満たしていないSユニットとSビークルを可能な限りすべて選び、捨札にする。",
+  "rawText": "【時間警察の使者】これをラッシュしたとき、必要パワーを満たしていないSユニットとSビークルを可能な限りすべて選び、捨札にする。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "GDEN-O",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "named_e69982e99693",
+      "name": "時間警察の使者",
+      "text": "これをラッシュしたとき、必要パワーを満たしていないSユニットとSビークルを可能な限りすべて選び、捨札にする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e69982e99693",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

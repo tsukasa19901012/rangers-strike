@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-616",
+  "name": "クライマー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 【巨大ボール化】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから「クライマー」を2体選び捨札にしてもよい。そうしたとき、このターン、これは次の能力を得る⇒BP+4000",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 【巨大ボール化】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから「クライマー」を2体選び捨札にしてもよい。そうしたとき、このターン、これは次の能力を得る⇒BP+4000",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "男",
+    "戦闘員"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5b7a8e5a4a7",
+      "name": "巨大ボール化",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから「クライマー」を2体選び捨札にしてもよい。そうしたとき、このターン、これは次の能力を得る⇒BP+4000",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5b7a8e5a4a7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-058",
+  "name": "タイガーアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※これが自軍捨札にある間、自軍「仮面ライダーレンゲル」はBP+1000される。（この効果は重複しない） 【種のための戦い】これは、これと同じ特徴を1つ以上持つ、これ以外の自軍バトルエリアのユニット1体につき、BP+1000される。",
+  "rawText": "※これが自軍捨札にある間、自軍「仮面ライダーレンゲル」はBP+1000される。（この効果は重複しない） 【種のための戦い】これは、これと同じ特徴を1つ以上持つ、これ以外の自軍バトルエリアのユニット1体につき、BP+1000される。",
+  "bp": 2500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "note_bp_1",
+      "text": "※これが自軍捨札にある間、自軍「仮面ライダーレンゲル」はBP+1000される。（この効果は重複しない）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp_1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e7a8aee381ae",
+      "name": "種のための戦い",
+      "text": "これは、これと同じ特徴を1つ以上持つ、これ以外の自軍バトルエリアのユニット1体につき、BP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7a8aee381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

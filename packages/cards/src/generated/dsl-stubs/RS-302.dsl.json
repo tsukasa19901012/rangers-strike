@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-302",
+  "name": "Vレックス",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「Vコマンダー」をホールドしなければバトルエリアに出られない。 【レックスレーザー】これをラッシュしたとき、カードに表記された本来のBPが3000のユニットをすべて持ち主のパワーゾーンに送る。",
+  "rawText": "※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「Vコマンダー」をホールドしなければバトルエリアに出られない。 【レックスレーザー】これをラッシュしたとき、カードに表記された本来のBPが3000のユニットをすべて持ち主のパワーゾーンに送る。",
+  "bp": 6000,
+  "size": "L",
+  "features": [
+    "メカ",
+    "恐竜"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「Vコマンダー」をホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383ace38383",
+      "name": "レックスレーザー",
+      "text": "これをラッシュしたとき、カードに表記された本来のBPが3000のユニットをすべて持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ace38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

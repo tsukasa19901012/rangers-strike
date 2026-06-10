@@ -1,0 +1,67 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-573",
+  "name": "ファイヤーカイザー（2nd）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―マジフェニックス＋魔導馬バリキオン ※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【バリランサー】自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このターン、これは「SP2」になり、敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "合体―マジフェニックス＋魔導馬バリキオン ※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【バリランサー】自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このターン、これは「SP2」になり、敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 6000,
+  "size": "L",
+  "sp": "special",
+  "features": [
+    "魔法",
+    "人型",
+    "2nd"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38390e383aa",
+      "name": "バリランサー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このターン、これは「SP2」になり、敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP2",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

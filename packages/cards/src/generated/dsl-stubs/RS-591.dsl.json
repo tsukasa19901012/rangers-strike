@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-591",
+  "name": "ガンバルオー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―バルカ＋ガンパード＋キャリゲーター 【ガンバルグランプリ】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP4000以下のユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "合体―バルカ＋ガンパード＋キャリゲーター 【ガンバルグランプリ】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP4000以下のユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "bp": 14000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "人型",
+    "炎神"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e382ace383b3",
+      "name": "ガンバルグランプリ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP4000以下のユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ace383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

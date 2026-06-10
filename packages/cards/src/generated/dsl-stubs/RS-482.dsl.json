@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-482",
+  "name": "天空神・飛行モード",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※これは、特徴「航空機」を持たないユニットにアタックされない。 【カラクリ忍法・天空裂破】これが自軍エリアにある間、特徴「航空機」を持たないMユニットは次の制限を受ける⇒アタックもストライクもできない。",
+  "rawText": "※これは、特徴「航空機」を持たないユニットにアタックされない。 【カラクリ忍法・天空裂破】これが自軍エリアにある間、特徴「航空機」を持たないMユニットは次の制限を受ける⇒アタックもストライクもできない。",
+  "bp": 4000,
+  "size": "L",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを1体捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは、特徴「航空機」を持たないユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_without_named_e888aae7a9ba",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382abe383a9",
+      "name": "カラクリ忍法・天空裂破",
+      "text": "これが自軍エリアにある間、特徴「航空機」を持たないMユニットは次の制限を受ける⇒アタックもストライクもできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382abe383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

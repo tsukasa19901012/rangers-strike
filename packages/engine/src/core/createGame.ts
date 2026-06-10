@@ -71,6 +71,18 @@ export type CreateGameOptions = {
   rng?: () => number;
 };
 
+export function createGameForDecks(
+  player1Deck: CardDefinition[],
+  player2Deck: CardDefinition[],
+  options: Omit<CreateGameOptions, "player1Deck" | "player2Deck"> = {},
+): GameState {
+  return createGame({
+    player1Deck,
+    player2Deck,
+    ...options,
+  });
+}
+
 export function createGame(options: CreateGameOptions): GameState {
   instanceCounter = 0;
   const rng = options.rng ?? Math.random;

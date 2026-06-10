@@ -1,0 +1,414 @@
+{
+  "generatedAt": "2026-06-10T02:48:27.876Z",
+  "uniqueKeywords": 835,
+  "byCategory": {
+    "effect_delegate": 1341,
+    "engine": 521,
+    "passive_native": 679
+  },
+  "topEffectDelegate": [
+    {
+      "keyword": "effect_note_named_e280bbe38193",
+      "cardCount": 154,
+      "sampleCardIds": [
+        "RK-198",
+        "RK-278",
+        "RK-310"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_note_named_e280bbe887aa",
+      "cardCount": 27,
+      "sampleCardIds": [
+        "XG7-016",
+        "RM-018",
+        "RS-216"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e383a9e382a4",
+      "cardCount": 24,
+      "sampleCardIds": [
+        "XG3-062",
+        "XG4-081",
+        "RK-054"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e38395e382a1",
+      "cardCount": 20,
+      "sampleCardIds": [
+        "PR-019",
+        "RK-320",
+        "RS-330"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_note_named_e280bbe382ab",
+      "cardCount": 14,
+      "sampleCardIds": [
+        "RK-008",
+        "RK-009",
+        "RK-015"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e38380e382a4",
+      "cardCount": 8,
+      "sampleCardIds": [
+        "RK-028",
+        "RK-062",
+        "RK-306"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e3838fe382a4",
+      "cardCount": 7,
+      "sampleCardIds": [
+        "RK-181",
+        "XG7-066",
+        "RK-233"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e38389e383a9",
+      "cardCount": 7,
+      "sampleCardIds": [
+        "RK-198",
+        "RS-535",
+        "PK-012"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e99fb3e69283",
+      "cardCount": 7,
+      "sampleCardIds": [
+        "RK-227",
+        "RK-047",
+        "RK-048"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e382b7e383a3",
+      "cardCount": 7,
+      "sampleCardIds": [
+        "RK-323",
+        "RM-025",
+        "RS-362"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e382b8e383a3",
+      "cardCount": 6,
+      "sampleCardIds": [
+        "RM-044",
+        "RK-187",
+        "RS-242"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_note_ot",
+      "cardCount": 6,
+      "sampleCardIds": [
+        "RS-267",
+        "RS-266",
+        "RS-268"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e382a2e382bf",
+      "cardCount": 6,
+      "sampleCardIds": [
+        "XG1-064",
+        "RS-393",
+        "XG1-066"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_note_named_e280bbe695b5",
+      "cardCount": 6,
+      "sampleCardIds": [
+        "XG3-101",
+        "RK-268",
+        "RS-471"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e4bfbae381ae",
+      "cardCount": 6,
+      "sampleCardIds": [
+        "RK-066",
+        "RK-144",
+        "RK-305"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_note_s_rc",
+      "cardCount": 6,
+      "sampleCardIds": [
+        "RK-257",
+        "RK-300",
+        "RK-301"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e38388e383aa",
+      "cardCount": 6,
+      "sampleCardIds": [
+        "RS-237",
+        "XG2-045",
+        "XG3-024"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e5ae87e5ae99",
+      "cardCount": 6,
+      "sampleCardIds": [
+        "RS-360",
+        "RS-489",
+        "RS-494"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e382b4e383bc",
+      "cardCount": 6,
+      "sampleCardIds": [
+        "RS-419",
+        "XG5-007",
+        "XG5-008"
+      ],
+      "category": "effect_delegate"
+    },
+    {
+      "keyword": "effect_named_e382aee382ac",
+      "cardCount": 5,
+      "sampleCardIds": [
+        "RS-642",
+        "RS-688",
+        "XG3-025"
+      ],
+      "category": "effect_delegate"
+    }
+  ],
+  "topPassiveNative": [
+    {
+      "keyword": "morph",
+      "cardCount": 68,
+      "sampleCardIds": [
+        "RK-262",
+        "RK-263",
+        "RK-330"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "resident",
+      "cardCount": 65,
+      "sampleCardIds": [
+        "XP-018",
+        "PK-010",
+        "PK-011"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "require_command_hold_entry",
+      "cardCount": 61,
+      "sampleCardIds": [
+        "RK-104",
+        "RK-118",
+        "RK-330"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "deck_unlimited",
+      "cardCount": 34,
+      "sampleCardIds": [
+        "RK-197",
+        "PK-002",
+        "RK-043"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "destroy_on_win_vs_sp1",
+      "cardCount": 30,
+      "sampleCardIds": [
+        "PK-006",
+        "RK-231",
+        "RK-269"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "scrum",
+      "cardCount": 23,
+      "sampleCardIds": [
+        "XG3-031",
+        "RK-212",
+        "RK-213"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "tag",
+      "cardCount": 18,
+      "sampleCardIds": [
+        "PK-010",
+        "PK-011",
+        "RK-170"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "auto_battle_entry_each_turn",
+      "cardCount": 17,
+      "sampleCardIds": [
+        "PR-022",
+        "RS-410",
+        "RS-505"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "cannot_attack",
+      "cardCount": 15,
+      "sampleCardIds": [
+        "RS-682",
+        "PR-022",
+        "RK-116"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "to_power_on_destroy",
+      "cardCount": 15,
+      "sampleCardIds": [
+        "RS-505",
+        "RS-506",
+        "RS-507"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "not_selectable_except_attack",
+      "cardCount": 14,
+      "sampleCardIds": [
+        "XG1-074",
+        "XG2-066",
+        "XG3-062"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "taxis_MA",
+      "cardCount": 14,
+      "sampleCardIds": [
+        "XG6-024",
+        "RS-458",
+        "RS-459"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "lead_MA",
+      "cardCount": 13,
+      "sampleCardIds": [
+        "XG5-040",
+        "XG5-041",
+        "XG5-071"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "no_battle_rush_turn",
+      "cardCount": 13,
+      "sampleCardIds": [
+        "PR-006",
+        "PR-027",
+        "RK-046"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "cannot_enter_battle",
+      "cardCount": 11,
+      "sampleCardIds": [
+        "RS-223",
+        "RS-271",
+        "RS-359"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "blast",
+      "cardCount": 11,
+      "sampleCardIds": [
+        "RS-617",
+        "RS-648",
+        "RS-679"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "breaker",
+      "cardCount": 11,
+      "sampleCardIds": [
+        "SX-007",
+        "XG6-003",
+        "XG6-010"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "ride_bp_boost_1000",
+      "cardCount": 10,
+      "sampleCardIds": [
+        "RK-030",
+        "RK-024",
+        "RK-027"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "no_enter_battle_own_turn",
+      "cardCount": 10,
+      "sampleCardIds": [
+        "RS-647",
+        "RS-429",
+        "RS-430"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "taxis_ET",
+      "cardCount": 10,
+      "sampleCardIds": [
+        "XG6-054",
+        "RS-441",
+        "RS-443"
+      ],
+      "category": "passive_native"
+    }
+  ],
+  "note": "M18 promotedKeywordBridge handles power_faceup / power_feature_bp_sp / sp_at_bp patterns."
+}

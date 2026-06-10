@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-047",
+  "name": "ダークジェイカー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【ビッグキャノン】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、ライドされていないSビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
+  "rawText": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【ビッグキャノン】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、ライドされていないSビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
+  "effects": [
+    {
+      "id": "note_s_rc",
+      "text": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_without_rc_named_e8ada6e5af9f",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38393e38383",
+      "name": "ビッグキャノン",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、ライドされていないSビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38393e38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

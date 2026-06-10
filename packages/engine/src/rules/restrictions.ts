@@ -14,6 +14,7 @@ import {
 } from "@rangers-strike/cards";
 import { getCardEffect } from "@rangers-strike/cards";
 import type { CardDefinition, Category } from "@rangers-strike/cards";
+import { anyPlayerHasActiveFieldKeyword, findFieldCardByKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import {
   effectiveBp,
@@ -24,13 +25,15 @@ import {
   isSmallUnit,
   isUnit,
 } from "../core/catalog";
+import { isCostWindowSatisfied, satisfyCostWindow as satisfyCostWindowBridge } from "../core/costWindow";
+import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { findInZone, opponent } from "../core/helpers";
+import { TURN_RULE_IDS } from "../types/scopedModifiers";
 import { earthForceActive } from "./strikeReactions";
 import {
   isBattleBlocked,
   opponentInfiniteChainBlocks,
   wasRushedThisTurn,
-  getTurnModifiers,
 } from "./turnModifiers";
 import {
   findLegend2NamedEffectOnField,
@@ -140,6 +143,9 @@ export function patSignerBlocksMove(
   if (bp < 5000) return false;
 
   for (const pid of ["player1", "player2"] as const) {
+    if (anyPlayerHasActiveFieldKeyword(state, "block_m_battle_entry_bp5000_plus", ["battle"])) {
+      return true;
+    }
     const hasSigner = state.players[pid].battle.some((c) => c.cardId === "RS-047");
     if (hasSigner) return true;
   }
@@ -195,7 +201,7 @@ export function canMoveUnitToBattle(
     return false;
   }
 
-  if (getTurnModifiers(player).zenibombActive && wasRushedThisTurn(player, unit.instanceId)) {
+  if (hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
 
@@ -272,7 +278,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
     return false;
   }
 
-  if (getTurnModifiers(player).zenibombActive && wasRushedThisTurn(player, unit.instanceId)) {
+  if (hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
 
@@ -320,7 +326,7 @@ export function markBattleEntryHoldReadyIfNoteSatisfied(
 ): PlayerState {
   const unitHold = getBattleEntryHoldCount(unit.cardId);
   if (unitHold > 0 && countBattleEntryEligibleHolds(player) >= unitHold) {
-    return { ...player, battleEntryHoldReady: true };
+    return satisfyCostWindowBridge(player, "battle_entry_hold");
   }
   return player;
 }
@@ -342,7 +348,7 @@ export function autoHoldForBattleEntry(
   const command = player.command.map((c, i) =>
     i === idx ? { ...c, commandHeld: true, mothershipHold: false } : c,
   );
-  return { ...player, command, battleEntryHoldReady: true };
+  return satisfyCostWindowBridge({ ...player, command }, "battle_entry_hold");
 }
 
 function passesBattleEntryHoldRequirements(
@@ -364,7 +370,7 @@ function passesBattleEntryHoldRequirements(
 
   if (unitHold > 0) {
     if (countBattleEntryEligibleHolds(player) < unitHold) return false;
-    if (!player.battleEntryHoldReady) return false;
+    if (!isCostWindowSatisfied(player, "battle_entry_hold")) return false;
   }
 
   return countHeldCommands(player) >= requiredTotal;
@@ -415,7 +421,8 @@ export function explainCannotEnterBattle(
   }
 
   if (patSignerBlocksMove(state, playerId, unit)) {
-    const signer = findCardOnField(state, "RS-047");
+    const signer = findFieldCardByKeyword(state, "block_m_battle_entry_bp5000_plus", ["battle"])
+      ?? findCardOnField(state, "RS-047");
     const who = signer?.playerId === playerId ? "自軍" : "敵軍";
     return `${who}の「${signer?.name ?? "パトシグナー"}」の【進入禁止サインボード】の効果で、BP5000以上のMユニットはバトルエリアに出られません。`;
   }
@@ -462,7 +469,7 @@ export function explainCannotEnterBattle(
     return `「${unitName}」はラッシュしたターンはバトルエリアに出せません。`;
   }
 
-  if (getTurnModifiers(player).zenibombActive && wasRushedThisTurn(player, unit.instanceId)) {
+  if (hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB) && wasRushedThisTurn(player, unit.instanceId)) {
     return "相手の【ゼニボム】の効果で、このターンにラッシュしたユニットはバトルエリアに出せません。";
   }
 
@@ -501,7 +508,7 @@ export function explainCannotEnterBattle(
   const held = countHeldCommands(player);
   const released = countReleasedCommands(player);
   const battleEntryHeld = countBattleEntryEligibleHolds(player);
-  if (unitHolds > 0 && !player.battleEntryHoldReady) {
+  if (unitHolds > 0 && !isCostWindowSatisfied(player, "battle_entry_hold")) {
     if (released < unitHolds) {
       if (held > battleEntryHeld) {
         return `「${unitName}」をバトルエリアに出すには、リリース状態の自軍コマンドを${unitHolds}枚ホールドする必要があります（母艦のホールドはバトル進入の条件になりません）。`;

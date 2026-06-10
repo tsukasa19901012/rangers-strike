@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-091",
+  "name": "正木俊介本部長",
+  "type": "commander",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札をすべて自軍山札に戻してからシャッフルし、戻した枚数と同じだけドローする。",
+  "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札をすべて自軍山札に戻してからシャッフルし、戻した枚数と同じだけドローする。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

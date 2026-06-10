@@ -1,0 +1,26 @@
+{
+  "id": "RS-028",
+  "effects": [
+    {
+      "id": "judgment",
+      "name": "RS-028",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "reveal_top_destroy_if_same_size",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

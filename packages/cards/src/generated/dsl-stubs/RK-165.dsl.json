@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-165",
+  "name": "仮面ライダー電王WF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【恩返し】敵軍ターン中、これが撃破されて捨札になったとき次の効果を発動できる⇒自軍パワーゾーンからダメージになっているカードを1枚選び、オモテにする。このとき、オモテにしたカードが「ジーク」なら、そのカードを捨札にしてこの効果をもう一度発動できる。",
+  "rawText": "【恩返し】敵軍ターン中、これが撃破されて捨札になったとき次の効果を発動できる⇒自軍パワーゾーンからダメージになっているカードを1枚選び、オモテにする。このとき、オモテにしたカードが「ジーク」なら、そのカードを捨札にしてこの効果をもう一度発動できる。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "DEN-O"
+  ],
+  "effects": [
+    {
+      "id": "named_e681a9e8bf94",
+      "name": "恩返し",
+      "text": "敵軍ターン中、これが撃破されて捨札になったとき次の効果を発動できる⇒自軍パワーゾーンからダメージになっているカードを1枚選び、オモテにする。このとき、オモテにしたカードが「ジーク」なら、そのカードを捨札にしてこの効果をもう一度発動できる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e681a9e8bf94",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

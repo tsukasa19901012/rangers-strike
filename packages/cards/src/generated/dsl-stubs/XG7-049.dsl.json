@@ -1,0 +1,76 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-049",
+  "name": "仮面ライダーオーズ・ガタキリバコンボ（XG7）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 ※これはカード名に「ガタ」を含む自軍ユニット1体につきBP+500される。 【分身体】これを手札からラッシュしたとき、自軍山札の上から2枚をオモテにして、その中から「仮面ライダーオーズ・ガタキリバコンボ」のカードをすべて自軍ラッシュエリアに出し、それ以外は捨札にする。",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 ※これはカード名に「ガタ」を含む自軍ユニット1体につきBP+500される。 【分身体】これを手札からラッシュしたとき、自軍山札の上から2枚をオモテにして、その中から「仮面ライダーオーズ・ガタキリバコンボ」のカードをすべて自軍ラッシュエリアに出し、それ以外は捨札にする。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "オーズドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_fx_1_bp_50",
+      "text": "※これはカード名に「ガタ」を含む自軍ユニット1体につきBP+500される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_1_bp_50",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58886e8baab",
+      "name": "分身体",
+      "text": "これを手札からラッシュしたとき、自軍山札の上から2枚をオモテにして、その中から「仮面ライダーオーズ・ガタキリバコンボ」のカードをすべて自軍ラッシュエリアに出し、それ以外は捨札にする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58886e8baab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

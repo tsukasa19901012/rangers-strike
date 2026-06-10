@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-047",
+  "name": "仮面ライダースーパー1・RNH",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※モーフ 【超高火炎＆冷凍ガス】WBかOTを持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき、ホールドしたコマンドの持つカテゴリごとに、次の効果を発動する⇒WBなら追加条件を持たないSユニットを1体選び撃破してもよい。OTなら追加条件を持つSユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "※モーフ 【超高火炎＆冷凍ガス】WBかOTを持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき、ホールドしたコマンドの持つカテゴリごとに、次の効果を発動する⇒WBなら追加条件を持たないSユニットを1体選び撃破してもよい。OTなら追加条件を持つSユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間",
+    "ファイブハンド"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8b685e9ab98",
+      "name": "超高火炎＆冷凍ガス",
+      "text": "WBかOTを持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき、ホールドしたコマンドの持つカテゴリごとに、次の効果を発動する⇒WBなら追加条件を持たないSユニットを1体選び撃破してもよい。OTなら追加条件を持つSユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8b685e9ab98",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

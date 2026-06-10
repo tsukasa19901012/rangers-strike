@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-089",
+  "name": "ファイヤー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【警視庁特別救急警察隊】「SP1」自軍捨札から特徴「警察」を持たないSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。置けなければ手札に加える。(この効果は「ウォルター」または「バイクル」からコンビネーションするときはナンバーに関係なく発動する)",
+  "rawText": "【警視庁特別救急警察隊】「SP1」自軍捨札から特徴「警察」を持たないSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。置けなければ手札に加える。(この効果は「ウォルター」または「バイクル」からコンビネーションするときはナンバーに関係なく発動する)",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "メカ",
+    "レッド",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "named_e8ada6e8a696",
+      "name": "警視庁特別救急警察隊",
+      "text": "「SP1」自軍捨札から特徴「警察」を持たないSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。置けなければ手札に加える。(この効果は「ウォルター」または「バイクル」からコンビネーションするときはナンバーに関係なく発動する)",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

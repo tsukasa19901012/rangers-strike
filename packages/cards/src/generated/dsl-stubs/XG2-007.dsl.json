@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-007",
+  "name": "ランドガンマ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【ガンマカノン砲】これが自軍エリアにある間、カテゴリを2つ以上持つ自軍Mユニットは次の能力を得る⇒アタックされるとき、カテゴリを2つ以上持つ自軍コマンド1つにつきBP＋3000される。",
+  "rawText": "【ガンマカノン砲】これが自軍エリアにある間、カテゴリを2つ以上持つ自軍Mユニットは次の能力を得る⇒アタックされるとき、カテゴリを2つ以上持つ自軍コマンド1つにつきBP＋3000される。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "effects": [
+    {
+      "id": "named_e382ace383b3",
+      "name": "ガンマカノン砲",
+      "text": "これが自軍エリアにある間、カテゴリを2つ以上持つ自軍Mユニットは次の能力を得る⇒アタックされるとき、カテゴリを2つ以上持つ自軍コマンド1つにつきBP＋3000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ace383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "id": "RS-082",
+  "name": "トリケラレンジャー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 3,
+  "text": "【トリケランス】敵軍コマンドを1つ選んでホールドする。",
+  "rawText": "【トリケランス】敵軍コマンドを1つ選んでホールドする。",
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "imageUrl": "/cards/legend2/RS-082.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-082.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "tricera_lance",
+      "name": "トリケランス",
+      "text": "敵軍コマンドを1つ選んでホールドする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

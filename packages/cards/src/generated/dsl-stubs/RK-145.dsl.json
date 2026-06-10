@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-145",
+  "name": "リュウタロス",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これはバトルエリアに出たとき撃破される。 【ネコ達いじめたのお前？】これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、自軍捨札にある特徴「獣」を持つユニットカードの枚数以下の必要パワーの数字を持つ敵軍ユニットを1体撃破する。",
+  "rawText": "※これはバトルエリアに出たとき撃破される。 【ネコ達いじめたのお前？】これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、自軍捨札にある特徴「獣」を持つユニットカードの枚数以下の必要パワーの数字を持つ敵軍ユニットを1体撃破する。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "イマジン"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_enter_battle",
+      "text": "※これはバトルエリアに出たとき撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3838de382b3",
+      "name": "ネコ達いじめたのお前？",
+      "text": "これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、自軍捨札にある特徴「獣」を持つユニットカードの枚数以下の必要パワーの数字を持つ敵軍ユニットを1体撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838de382b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出たとき撃破される。",
+      "rule": "destroy_on_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

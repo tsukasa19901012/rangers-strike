@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-049",
+  "name": "仮面ライダーオーガ（XG6）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはウイングを持つユニットとバトルしたときバトルに勝っても撃破される。 【オルフェノクの帝王】自分の手札を1枚選び自軍コマンドゾーンにホールド状態で置いてもよい。そうしたとき、そのカードの必要パワーの数字以下の必要パワーを持つ敵軍バトルエリアのSユニットを好きな数選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "※これはウイングを持つユニットとバトルしたときバトルに勝っても撃破される。 【オルフェノクの帝王】自分の手札を1枚選び自軍コマンドゾーンにホールド状態で置いてもよい。そうしたとき、そのカードの必要パワーの数字以下の必要パワーを持つ敵軍バトルエリアのSユニットを好きな数選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "bp": 7000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "皇帝"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはウイングを持つユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382aae383ab",
+      "name": "オルフェノクの帝王",
+      "text": "自分の手札を1枚選び自軍コマンドゾーンにホールド状態で置いてもよい。そうしたとき、そのカードの必要パワーの数字以下の必要パワーを持つ敵軍バトルエリアのSユニットを好きな数選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382aae383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

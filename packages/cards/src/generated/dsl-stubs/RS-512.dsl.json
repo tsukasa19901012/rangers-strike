@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-512",
+  "name": "ゴーオンブラック",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【マンタンガン】敵軍パワーゾーンのオモテ向きのカードから1枚選んでもよい。そうしたとき、選んだカードをウラ返してダメージにする。",
+  "rawText": "【マンタンガン】敵軍パワーゾーンのオモテ向きのカードから1枚選んでもよい。そうしたとき、選んだカードをウラ返してダメージにする。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "ブラック",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "named_e3839ee383b3",
+      "name": "マンタンガン",
+      "text": "敵軍パワーゾーンのオモテ向きのカードから1枚選んでもよい。そうしたとき、選んだカードをウラ返してダメージにする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839ee383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

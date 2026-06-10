@@ -1,0 +1,26 @@
+{
+  "id": "RS-029",
+  "effects": [
+    {
+      "id": "courage_magic",
+      "name": "RS-029",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "release_command_on_s_battle_entry",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

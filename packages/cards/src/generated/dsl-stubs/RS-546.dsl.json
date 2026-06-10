@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-546",
+  "name": "獣帝大獣神",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "8+",
+  "text": "合体―守護獣ドラゴンシーザー＋大獣神（または守護獣ティラノザウルス＋守護獣ジュウマンモス＋守護獣トリケラトプス＋守護獣サーベルタイガー＋守護獣プテラノドン） 【エンパイアアタック】自軍ターン中、これがバトルエリアに出たとき、バトルエリアにあるWBを持たないユニットをすべて撃破する。",
+  "rawText": "合体―守護獣ドラゴンシーザー＋大獣神（または守護獣ティラノザウルス＋守護獣ジュウマンモス＋守護獣トリケラトプス＋守護獣サーベルタイガー＋守護獣プテラノドン） 【エンパイアアタック】自軍ターン中、これがバトルエリアに出たとき、バトルエリアにあるWBを持たないユニットをすべて撃破する。",
+  "bp": 18000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "恐竜",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e382a8e383b3",
+      "name": "エンパイアアタック",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、バトルエリアにあるWBを持たないユニットをすべて撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a8e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

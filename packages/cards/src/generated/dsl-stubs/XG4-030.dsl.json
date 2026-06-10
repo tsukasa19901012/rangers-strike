@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-030",
+  "name": "ゲキチョッパー（XG4）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※レジスト 【千千斬】自軍ラッシュエリアから、特徴「激気」を持つ自軍Mユニットを1体選びホールドしてもよい。そうしたとき、ホールドしたユニットの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを全て撃破する。",
+  "rawText": "※レジスト 【千千斬】自軍ラッシュエリアから、特徴「激気」を持つ自軍Mユニットを1体選びホールドしてもよい。そうしたとき、ホールドしたユニットの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを全て撃破する。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": 1,
+  "features": [
+    "ホワイト",
+    "男",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58d83e58d83",
+      "name": "千千斬",
+      "text": "自軍ラッシュエリアから、特徴「激気」を持つ自軍Mユニットを1体選びホールドしてもよい。そうしたとき、ホールドしたユニットの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを全て撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58d83e58d83",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

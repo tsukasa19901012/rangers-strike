@@ -1,0 +1,85 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-018",
+  "name": "スピンビー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはSユニットにアタックされない。 【暴れ独楽】 このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒これがストライクしたとき、追加条件を持たない敵軍ユニットを1体選び、持ち主の手札に戻す。",
+  "rawText": "※これはSユニットにアタックされない。 【暴れ独楽】 このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒これがストライクしたとき、追加条件を持たない敵軍ユニットを1体選び、持ち主の手札に戻す。",
+  "bp": 3000,
+  "size": "M",
+  "comboNumber": "L",
+  "features": [
+    "メカ",
+    "カラクリボール"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_attack_from_s",
+      "text": "※これはSユニットにアタックされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e69ab4e3828c",
+      "name": "暴れ独楽",
+      "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒これがストライクしたとき、追加条件を持たない敵軍ユニットを1体選び、持ち主の手札に戻す。",
+      "trigger": {
+        "type": "on_strike"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはSユニットにアタックされない。",
+      "rule": "no_attack_from_s"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

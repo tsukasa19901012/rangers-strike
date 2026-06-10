@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-090",
+  "name": "ウォルター",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※ウイング 【救助と安全確保】自軍捨札からSユニットのカードを1枚選び、自軍山札の上に置いてもよい。（この効果は「ファイヤー」または「バイクル」からコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "※ウイング 【救助と安全確保】自軍捨札からSユニットのカードを1枚選び、自軍山札の上に置いてもよい。（この効果は「ファイヤー」または「バイクル」からコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "メカ",
+    "航空機",
+    "人型",
+    "グリーン",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e69591e58aa9",
+      "name": "救助と安全確保",
+      "text": "自軍捨札からSユニットのカードを1枚選び、自軍山札の上に置いてもよい。（この効果は「ファイヤー」または「バイクル」からコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e69591e58aa9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

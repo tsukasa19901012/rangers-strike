@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-001",
+  "name": "ゴーグルレッド（XG5）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これが自軍エリアにある間、ナンバーに数字を持つ自軍ユニットは次の能力を得る⇒スクラム 【レッドロープ】「SP1」これがストライクしたとき、その処理をすべて終えてから、このバトルフェイズを終える。",
+  "rawText": "※これが自軍エリアにある間、ナンバーに数字を持つ自軍ユニットは次の能力を得る⇒スクラム 【レッドロープ】「SP1」これがストライクしたとき、その処理をすべて終えてから、このバトルフェイズを終える。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 1,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自軍エリアにある間、ナンバーに数字を持つ自軍ユニットは次の能力を得る⇒スクラム",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383ace38383",
+      "name": "レッドロープ",
+      "text": "「SP1」これがストライクしたとき、その処理をすべて終えてから、このバトルフェイズを終える。",
+      "trigger": {
+        "type": "on_strike"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

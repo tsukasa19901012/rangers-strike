@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-052",
+  "name": "仮面ライダークウガUF（XG4）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 7,
+  "text": "※レジスト ※これは手札または常駐置場からしかラッシュできない。 【空我】敵軍バトルエリアのユニットが1体だけなら、敵軍バトルエリアのユニットを持ち主のパワーゾーンにダメージにして置く。そうしたとき、これを捨札にする。",
+  "rawText": "※レジスト ※これは手札または常駐置場からしかラッシュできない。 【空我】敵軍バトルエリアのユニットが1体だけなら、敵軍バトルエリアのユニットを持ち主のパワーゾーンにダメージにして置く。そうしたとき、これを捨札にする。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "アマダム"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは手札または常駐置場からしかラッシュできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e7a9bae68891",
+      "name": "空我",
+      "text": "敵軍バトルエリアのユニットが1体だけなら、敵軍バトルエリアのユニットを持ち主のパワーゾーンにダメージにして置く。そうしたとき、これを捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7a9bae68891",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

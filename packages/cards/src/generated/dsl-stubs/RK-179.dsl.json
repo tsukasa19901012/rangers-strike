@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-179",
+  "name": "ジャングラー",
+  "type": "vehicle",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【体当たり攻撃】自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍Sユニットを1体選んでもよい。そうしたとき、選んだユニットの持つカテゴリと、選んだユニットがライドしているビークルの持つカテゴリが違うなら、そのビークルを捨札にした後で、選んだユニットを撃破する。",
+  "rawText": "【体当たり攻撃】自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍Sユニットを1体選んでもよい。そうしたとき、選んだユニットの持つカテゴリと、選んだユニットがライドしているビークルの持つカテゴリが違うなら、そのビークルを捨札にした後で、選んだユニットを撃破する。",
+  "effects": [
+    {
+      "id": "named_e4bd93e5bd93",
+      "name": "体当たり攻撃",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍Sユニットを1体選んでもよい。そうしたとき、選んだユニットの持つカテゴリと、選んだユニットがライドしているビークルの持つカテゴリが違うなら、そのビークルを捨札にした後で、選んだユニットを撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4bd93e5bd93",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

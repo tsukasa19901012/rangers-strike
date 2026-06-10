@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-006",
+  "name": "キャリアベータ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "【ベータランチャー】これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のバトルエリアのユニットは、自分自身のスタートフェイズ中と対戦相手のターン中以外はラッシュエリアに戻せない。",
+  "rawText": "【ベータランチャー】これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のバトルエリアのユニットは、自分自身のスタートフェイズ中と対戦相手のターン中以外はラッシュエリアに戻せない。",
+  "bp": 6000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "effects": [
+    {
+      "id": "named_e38399e383bc",
+      "name": "ベータランチャー",
+      "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のバトルエリアのユニットは、自分自身のスタートフェイズ中と対戦相手のターン中以外はラッシュエリアに戻せない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38399e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

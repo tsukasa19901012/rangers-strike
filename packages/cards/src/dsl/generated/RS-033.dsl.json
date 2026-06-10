@@ -1,0 +1,47 @@
+{
+  "id": "RS-033",
+  "name": "バルパンサー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 5,
+  "text": "【パンサークロー】これがアタックするとき、相手はカウンターを発動できない。（この効果は「バルイーグル」または「バルシャーク」からコンビネーションするときは、ナンバーに関係なく発動する）",
+  "rawText": "【パンサークロー】これがアタックするとき、相手はカウンターを発動できない。（この効果は「バルイーグル」または「バルシャーク」からコンビネーションするときは、ナンバーに関係なく発動する）",
+  "features": [
+    "イエロー",
+    "男"
+  ],
+  "imageUrl": "/cards/legend1/RS-033.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-033.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "panther_claw",
+      "name": "パンサークロー",
+      "text": "これがアタックするとき、相手はカウンターを発動できない。（この効果は「バルイーグル」または「バルシャーク」からコンビネーションするときは、ナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "on_attack",
+        "comboPartnerCardIds": [
+          "RS-031",
+          "RS-032"
+        ]
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "prevent_counter",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

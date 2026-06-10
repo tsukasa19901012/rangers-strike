@@ -1,0 +1,46 @@
+{
+  "id": "RS-119",
+  "name": "ゴーゴーフォーミュラ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "6+",
+  "bp": 5000,
+  "sp": "special",
+  "size": "M",
+  "text": "【シフトアップ】自軍バトルフェイズ中、これを自軍バトルエリアに出すとき、自軍コマンドを5つホールドしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+  "rawText": "【シフトアップ】自軍バトルフェイズ中、これを自軍バトルエリアに出すとき、自軍コマンドを5つホールドしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend2/RS-119.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-119.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "shift_up",
+      "name": "シフトアップ",
+      "text": "自軍バトルフェイズ中、これを自軍バトルエリアに出すとき、自軍コマンドを5つホールドしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "shift_up"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

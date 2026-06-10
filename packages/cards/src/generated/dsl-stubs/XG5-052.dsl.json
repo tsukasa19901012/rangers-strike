@@ -1,0 +1,76 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-052",
+  "name": "仮面ライダー電王CF（XG5）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※モーフ ※これは毎ターン可能ならバトルエリアに出る。 【俺達の必殺技】自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、撃破したユニットを捨札にするかわりに持ち主のパワーゾーンに送ってもよい。そうしたとき、相手に1点ダメージを与える。",
+  "rawText": "※モーフ ※これは毎ターン可能ならバトルエリアに出る。 【俺達の必殺技】自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、撃破したユニットを捨札にするかわりに持ち主のパワーゾーンに送ってもよい。そうしたとき、相手に1点ダメージを与える。",
+  "bp": 6000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "DEN-O"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_auto_battle_entry_each_turn",
+      "text": "※これは毎ターン可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_each_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4bfbae98194",
+      "name": "俺達の必殺技",
+      "text": "自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、撃破したユニットを捨札にするかわりに持ち主のパワーゾーンに送ってもよい。そうしたとき、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

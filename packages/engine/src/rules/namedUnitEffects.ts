@@ -144,7 +144,9 @@ export function battleDefenderBp(
   );
   const usePrintedBp =
     attacker &&
-    (getOnAttackNamedEffect(attacker.card.cardId)?.effectId === "shark_jaws" ||
+    (hasBattleNcEffect(attacker.card, "shark_jaws") ||
+      hasBattleNcEffect(attacker.card, "super_cutter") ||
+      getOnAttackNamedEffect(attacker.card.cardId)?.effectId === "shark_jaws" ||
       getOnAttackNamedEffect(attacker.card.cardId)?.effectId === "super_cutter" ||
       legend2UsePrintedDefenderBp(state, pending) ||
       legend3UsePrintedDefenderBp(state, pending));
@@ -195,6 +197,7 @@ export function attackerBlocksDefenderCounters(
     attackerInstanceId,
   );
   return (
+    hasBattleNcEffect(attacker.card, "panther_claw") ||
     getOnAttackNamedEffect(attacker?.card.cardId ?? "")?.effectId === "panther_claw" ||
     legend2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId)
   );

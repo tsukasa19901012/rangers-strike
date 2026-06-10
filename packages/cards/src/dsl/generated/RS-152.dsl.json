@@ -1,0 +1,61 @@
+{
+  "id": "RS-152",
+  "name": "ガオライオン",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "R",
+  "expansion": "legend3",
+  "powerCost": 4,
+  "bp": 5000,
+  "size": "M",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【灼熱の咆哮】このユニットが場にある間、「WB」の自軍Mユニットは、自軍捨札に同じ名前のカードがあれば「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【灼熱の咆哮】このユニットが場にある間、「WB」の自軍Mユニットは、自軍捨札に同じ名前のカードがあれば「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。",
+  "features": [
+    "獣"
+  ],
+  "imageUrl": "/cards/legend3/RS-152.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-152.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "scorching_roar",
+      "name": "灼熱の咆哮",
+      "text": "このユニットが場にある間、「WB」の自軍Mユニットは、自軍捨札に同じ名前のカードがあれば「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_scorching_roar",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

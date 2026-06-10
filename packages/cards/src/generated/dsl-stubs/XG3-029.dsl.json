@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-029",
+  "name": "魔導騎士ウルザード（XG3）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※自軍Mビークルがあれば、これはMユニットになり、特徴「人型」が追加される。 【ウルサーベル 】自軍ターン中、これがバトルエリアに出たとき、自分の手札を1枚選び捨札にしてもよい。そうしたとき、このターン、これはBP+2000され、「SP1」になる。",
+  "rawText": "※自軍Mビークルがあれば、これはMユニットになり、特徴「人型」が追加される。 【ウルサーベル 】自軍ターン中、これがバトルエリアに出たとき、自分の手札を1枚選び捨札にしてもよい。そうしたとき、このターン、これはBP+2000され、「SP1」になる。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "魔法",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_m_m",
+      "text": "※自軍Mビークルがあれば、これはMユニットになり、特徴「人型」が追加される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_m_m",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a6e383ab",
+      "name": "ウルサーベル",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自分の手札を1枚選び捨札にしてもよい。そうしたとき、このターン、これはBP+2000され、「SP1」になる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

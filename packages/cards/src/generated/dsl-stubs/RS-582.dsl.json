@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-582",
+  "name": "魔導神官メーミィ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【メー・メガロ】これが自軍エリアにある間、自分がカウンターを持つオペレーションの効果を発動して、そのカードが捨札になったとき、そのカードと同じカード名のカードを、自軍山札を見て1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+  "rawText": "【メー・メガロ】これが自軍エリアにある間、自分がカウンターを持つオペレーションの効果を発動して、そのカードが捨札になったとき、そのカードと同じカード名のカードを、自軍山札を見て1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "男",
+    "魔法"
+  ],
+  "effects": [
+    {
+      "id": "named_e383a1e383bc",
+      "name": "メー・メガロ",
+      "text": "これが自軍エリアにある間、自分がカウンターを持つオペレーションの効果を発動して、そのカードが捨札になったとき、そのカードと同じカード名のカードを、自軍山札を見て1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a1e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

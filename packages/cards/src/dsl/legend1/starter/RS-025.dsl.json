@@ -1,0 +1,51 @@
+{
+  "id": "RS-025",
+  "effects": [
+    {
+      "id": "bp_boost_4000",
+      "name": "RS-025",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zones",
+            "zones": [
+              {
+                "type": "zone",
+                "zone": "rush",
+                "owner": "self"
+              },
+              {
+                "type": "zone",
+                "zone": "battle",
+                "owner": "self"
+              }
+            ]
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "modify_bp",
+              "target": {
+                "type": "trigger_source"
+              },
+              "amount": 4000,
+              "duration": "turn"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

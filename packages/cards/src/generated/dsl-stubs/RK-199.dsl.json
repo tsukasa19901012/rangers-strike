@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-199",
+  "name": "オメガゼール",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ゼール種の統率】これが自軍エリアにある間、次の効果を発動する⇒「オメガゼール」以外の特徴「レイヨウ型」を持つ自軍ユニットは「これはコマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。また相手は特徴「レイヨウ型」を持つユニットを撃破したとき、1枚ドローしてもよい。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ゼール種の統率】これが自軍エリアにある間、次の効果を発動する⇒「オメガゼール」以外の特徴「レイヨウ型」を持つ自軍ユニットは「これはコマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。また相手は特徴「レイヨウ型」を持つユニットを撃破したとき、1枚ドローしてもよい。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "獣",
+    "レイヨウ型"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382bce383bc",
+      "name": "ゼール種の統率",
+      "text": "これが自軍エリアにある間、次の効果を発動する⇒「オメガゼール」以外の特徴「レイヨウ型」を持つ自軍ユニットは「これはコマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。また相手は特徴「レイヨウ型」を持つユニットを撃破したとき、1枚ドローしてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382bce383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

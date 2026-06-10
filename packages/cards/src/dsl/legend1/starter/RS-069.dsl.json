@@ -1,0 +1,26 @@
+{
+  "id": "RS-069",
+  "effects": [
+    {
+      "id": "lightning_gravity",
+      "name": "RS-069",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "m_battle_entry_requires_hold",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

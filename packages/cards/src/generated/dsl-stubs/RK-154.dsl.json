@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-154",
+  "name": "ジーク",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはバトルエリアに出たとき撃破される。 【頭が高い！】これをラッシュしたとき、敵軍Sユニットか、敵軍Mユニットを1体選んでもよい。そうしたとき、選んだユニットがSユニットなら、このターン、そのユニットはBP500になり、そのBPより高いBPになる効果はすべて無効になる。選んだユニットがMユニットなら、このターン、そのユニットはSユニットになる。",
+  "rawText": "※これはバトルエリアに出たとき撃破される。 【頭が高い！】これをラッシュしたとき、敵軍Sユニットか、敵軍Mユニットを1体選んでもよい。そうしたとき、選んだユニットがSユニットなら、このターン、そのユニットはBP500になり、そのBPより高いBPになる効果はすべて無効になる。選んだユニットがMユニットなら、このターン、そのユニットはSユニットになる。",
+  "bp": 1000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "イマジン"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_enter_battle",
+      "text": "※これはバトルエリアに出たとき撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9a0ade3818c",
+      "name": "頭が高い！",
+      "text": "これをラッシュしたとき、敵軍Sユニットか、敵軍Mユニットを1体選んでもよい。そうしたとき、選んだユニットがSユニットなら、このターン、そのユニットはBP500になり、そのBPより高いBPになる効果はすべて無効になる。選んだユニットがMユニットなら、このターン、そのユニットはSユニットになる。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9a0ade3818c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出たとき撃破される。",
+      "rule": "destroy_on_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

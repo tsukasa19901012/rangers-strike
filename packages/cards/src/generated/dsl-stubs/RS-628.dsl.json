@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-628",
+  "name": "メガピンク",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※ウイング 【メガキャプチャー】このターン、次に自軍コマンドゾーンにカードが置かれたとき、相手は自分自身のコマンドを1つ選び手札に戻す。",
+  "rawText": "※ウイング 【メガキャプチャー】このターン、次に自軍コマンドゾーンにカードが置かれたとき、相手は自分自身のコマンドを1つ選び手札に戻す。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a1e382ac",
+      "name": "メガキャプチャー",
+      "text": "このターン、次に自軍コマンドゾーンにカードが置かれたとき、相手は自分自身のコマンドを1つ選び手札に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a1e382ac",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

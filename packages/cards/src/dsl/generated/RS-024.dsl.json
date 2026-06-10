@@ -1,0 +1,32 @@
+{
+  "id": "RS-024",
+  "name": "圧縮冷凍",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "effectId": "compression_freeze",
+  "imageUrl": "/cards/legend1/RS-024.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-024.jpg",
+  "effects": [
+    {
+      "id": "compression_freeze",
+      "text": "BP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "compression_freeze"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

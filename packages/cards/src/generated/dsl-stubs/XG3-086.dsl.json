@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-086",
+  "name": "冷血鎧将ムカデリンガー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト 【ハンドレットフィーラー】これが自軍バトルエリアにある間、相手が自分自身のリリース状態のSユニットをバトルエリアに出すために選んだとき、そのユニットの必要パワーの数字を見て、自軍捨札から同じ必要パワーの数字を持つカードを1枚選びゲームから除外してもよい。そうしたとき、そのユニットをホールドする。",
+  "rawText": "※レジスト 【ハンドレットフィーラー】これが自軍バトルエリアにある間、相手が自分自身のリリース状態のSユニットをバトルエリアに出すために選んだとき、そのユニットの必要パワーの数字を見て、自軍捨札から同じ必要パワーの数字を持つカードを1枚選びゲームから除外してもよい。そうしたとき、そのユニットをホールドする。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "昆虫",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3838fe383b3",
+      "name": "ハンドレットフィーラー",
+      "text": "これが自軍バトルエリアにある間、相手が自分自身のリリース状態のSユニットをバトルエリアに出すために選んだとき、そのユニットの必要パワーの数字を見て、自軍捨札から同じ必要パワーの数字を持つカードを1枚選びゲームから除外してもよい。そうしたとき、そのユニットをホールドする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838fe383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-398",
+  "name": "タイムジェット2",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【時間漂流者の送還】これが自軍ラッシュエリアにある間、自分がターンを終えるとき、自軍バトルエリアから特徴「忍者」を持つSユニットを2体まで選び、自軍パワーゾーンに送ってもよい。",
+  "rawText": "【時間漂流者の送還】これが自軍ラッシュエリアにある間、自分がターンを終えるとき、自軍バトルエリアから特徴「忍者」を持つSユニットを2体まで選び、自軍パワーゾーンに送ってもよい。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "named_e69982e99693",
+      "name": "時間漂流者の送還",
+      "text": "これが自軍ラッシュエリアにある間、自分がターンを終えるとき、自軍バトルエリアから特徴「忍者」を持つSユニットを2体まで選び、自軍パワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e69982e99693",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

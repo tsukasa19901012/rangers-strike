@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XP-003",
+  "name": "デカレッドバトライザー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―デカレッド＋マーフィーK9 ※これはアタックされるとき、BP+5000される。 【バトライズファイヤードライブ】これをラッシュしたとき、自軍パワーゾーンからカードを1枚選び捨札にしてもよい。そうしたとき、捨札にしたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、撃破する。",
+  "rawText": "合体―デカレッド＋マーフィーK9 ※これはアタックされるとき、BP+5000される。 【バトライズファイヤードライブ】これをラッシュしたとき、自軍パワーゾーンからカードを1枚選び捨札にしてもよい。そうしたとき、捨札にしたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "レッド",
+    "男",
+    "警察",
+    "バトライザー"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "note_bp_5000",
+      "text": "※これはアタックされるとき、BP+5000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp_5000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38390e38388",
+      "name": "バトライズファイヤードライブ",
+      "text": "これをラッシュしたとき、自軍パワーゾーンからカードを1枚選び捨札にしてもよい。そうしたとき、捨札にしたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、撃破する。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38390e38388",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

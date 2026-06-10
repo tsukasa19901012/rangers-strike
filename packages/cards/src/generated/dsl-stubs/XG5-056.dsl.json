@@ -1,0 +1,82 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-056",
+  "name": "仮面ライダーギャレンJF（XG5）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※ウイング ※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。 【捨て身の一撃】これが敵軍Sユニットにアタックされたとき、このユニットをホールドするか撃破してもよい。そうしたとき、アタックしてきた敵軍Sユニットを撃破する。（このとき、バトルは行われない）",
+  "rawText": "※ウイング ※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。 【捨て身の一撃】これが敵軍Sユニットにアタックされたとき、このユニットをホールドするか撃破してもよい。そうしたとき、アタックしてきた敵軍Sユニットを撃破する。（このとき、バトルは行われない）",
+  "bp": 5000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ジャックフォーム"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_undead_command_rush_hold",
+      "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "undead_command_rush_hold",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e68da8e381a6",
+      "name": "捨て身の一撃",
+      "text": "これが敵軍Sユニットにアタックされたとき、このユニットをホールドするか撃破してもよい。そうしたとき、アタックしてきた敵軍Sユニットを撃破する。（このとき、バトルは行われない）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e68da8e381a6",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    },
+    {
+      "kind": "note",
+      "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
+      "rule": "undead_command_rush_hold"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

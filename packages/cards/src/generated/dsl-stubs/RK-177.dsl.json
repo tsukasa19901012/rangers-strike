@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-177",
+  "name": "蜂女",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【催眠音波】これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のラッシュフェイズを終えるとき、そのターン中にラッシュした自分自身のSユニットをホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
+  "rawText": "【催眠音波】これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のラッシュフェイズを終えるとき、そのターン中にラッシュした自分自身のSユニットをホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "ショッカー",
+    "怪人",
+    "女",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "named_e582ace79ca0",
+      "name": "催眠音波",
+      "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のラッシュフェイズを終えるとき、そのターン中にラッシュした自分自身のSユニットをホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e582ace79ca0",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

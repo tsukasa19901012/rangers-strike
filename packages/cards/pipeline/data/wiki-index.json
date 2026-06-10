@@ -1,0 +1,1497 @@
+{
+  "summary": {
+    "generatedAt": "2026-06-10T00:20:10.802Z",
+    "grades": [
+      "A",
+      "B"
+    ],
+    "prefix": "RS-",
+    "total": 72,
+    "wikiFound": 72,
+    "wikiMissing": 0,
+    "validationOk": 66,
+    "validationFailed": 6,
+    "needsFallback": 53
+  },
+  "cards": [
+    {
+      "id": "RS-005",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ランドバルカン",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-006",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "新体操アクション",
+      "validationOk": true,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        },
+        {
+          "type": "operation",
+          "timing": "counter",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-007",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ダイナマイトパワー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-011",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "オーラパワー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-012",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "科学アカデミアの科学力",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-015",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "バードニックウェーブ",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-020",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "B",
+      "name": "クルマジックパワー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-021",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "サイバースライダー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-023",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "スーパーレスキュー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-024",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "圧縮冷凍",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-025",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ガオ・ソウル",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-028",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ジャッジメント",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-038",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "守護獣サーベルタイガー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "while_in_field",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-044",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "パトジャイラー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-046",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "パトアーマー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "on_rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-048",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "B",
+      "name": "ブルーレーサー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-050",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "アバレンオー",
+      "validationOk": false,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "enter_battle",
+          "confidence": "high"
+        },
+        {
+          "type": "enter_battle",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-055",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "アバレブルー",
+      "validationOk": true,
+      "effectCount": 2,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "while_in_field",
+          "confidence": "high"
+        },
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-062",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "ボウケンレッド",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "on_attack",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-063",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "ボウケンブラック",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-066",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "ボウケンピンク",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-068",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "地球と宇宙のエネルギー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-099",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "B",
+      "name": "ハリケンレッド",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-119",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "ゴーゴーフォーミュラ",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-128",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "バイオジェット1号",
+      "validationOk": true,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "on_rush",
+          "confidence": "high"
+        },
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-143",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "スカイフェニックス",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-153",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "ガオイーグル",
+      "validationOk": true,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "while_in_field",
+          "confidence": "high"
+        },
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-156",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "ガオタイガー",
+      "validationOk": true,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "while_in_field",
+          "confidence": "high"
+        },
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-161",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "B",
+      "name": "ガオイエロー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-164",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "B",
+      "name": "ガオホワイト",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-181",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "破邪百獣剣",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-182",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ジャイアントローラー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-183",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "黒子ロボの記憶操作",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-185",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "カーナビック",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "counter",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-186",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "プロバイダーベース",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-191",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "ダイナレッド",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-195",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ダイナマッハ",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-230",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "A",
+      "name": "アバレッドAM",
+      "validationOk": false,
+      "effectCount": 0,
+      "warnings": [],
+      "triggers": [],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-231",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "アバレブルーAM",
+      "validationOk": false,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        },
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-239",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ゴーゴーポリス",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-240",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ゴーゴーエイダー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-243",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "獣奏剣",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-245",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ガオメインバスター",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-249",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "Vコマンダー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-250",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ジャッジメント",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-251",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ブン・ターの特訓",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-252",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "バイモーションバスター",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-254",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "バードニックウェーブ",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-267",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "ブルーフラッシュ",
+      "validationOk": true,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        },
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-272",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "B",
+      "name": "ファイブレッド",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-283",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "ブルースワロー",
+      "validationOk": true,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        },
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-288",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "A",
+      "name": "守護獣ドラゴンシーザー",
+      "validationOk": true,
+      "effectCount": 0,
+      "warnings": [],
+      "triggers": [],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-306",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "B",
+      "name": "ハリケンレッド",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-333",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "レジェンドマジレッド",
+      "validationOk": false,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        },
+        {
+          "type": "on_attack",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-334",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "レジェンドマジイエロー",
+      "validationOk": false,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        },
+        {
+          "type": "on_attack",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-341",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "B",
+      "name": "ゲキブルー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-347",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "スーパーフォーメーション",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-349",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "スーパー戦隊アドレスブック",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-350",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "暗黒の鎧",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-357",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "B",
+      "name": "デンジグリーン",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-424",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "B",
+      "name": "ゲキチーター",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-426",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "スーパーゲキレッド",
+      "validationOk": false,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        },
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-438",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "B",
+      "name": "炎神ソウル",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-518",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "獣撃棒",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-520",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "スコープショット",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-523",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "臨気",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-526",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "スーパーハイウェイバスター",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-544",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "C",
+      "name": "J5",
+      "validationOk": true,
+      "effectCount": 2,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        },
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-607",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "ファルコンサモナー",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "operation",
+          "timing": "rush",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-643",
+      "implClass": "A",
+      "classificationGrade": "A",
+      "pipelineGrade": "C",
+      "name": "分身獣ギガホイール",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [
+        "one or more segments require fallback_handler / TS implementation"
+      ],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "low"
+        }
+      ],
+      "needsFallback": true,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-677",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "B",
+      "name": "シンケングリーン",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    },
+    {
+      "id": "RS-683",
+      "implClass": "B",
+      "classificationGrade": "B",
+      "pipelineGrade": "B",
+      "name": "熊折神",
+      "validationOk": true,
+      "effectCount": 1,
+      "warnings": [],
+      "triggers": [
+        {
+          "type": "nc",
+          "confidence": "high"
+        }
+      ],
+      "needsFallback": false,
+      "wikiFound": true
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-122",
+  "name": "ホースオルフェノク格闘態",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは自軍パワーゾーンに6枚以上カードが無ければバトルエリアに出られない。 【使途再生】これが自軍エリアにある間、ホールド状態の自軍Sユニットは特徴「オルフェノク」が追加される。",
+  "rawText": "※これは自軍パワーゾーンに6枚以上カードが無ければバトルエリアに出られない。 【使途再生】これが自軍エリアにある間、ホールド状態の自軍Sユニットは特徴「オルフェノク」が追加される。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "オルフェノク",
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは自軍パワーゾーンに6枚以上カードが無ければバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4bdbfe98094",
+      "name": "使途再生",
+      "text": "これが自軍エリアにある間、ホールド状態の自軍Sユニットは特徴「オルフェノク」が追加される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4bdbfe98094",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

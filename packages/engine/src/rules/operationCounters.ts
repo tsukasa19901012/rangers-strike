@@ -1,5 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
-import { getCardEffect, hasDestroySelfDamageNote, winButDestroyedVsSp1 } from "@rangers-strike/cards";
+import { getCardEffect, winButDestroyedVsSp1 } from "@rangers-strike/cards";
 import type {
   GameState,
   PendingBattle,
@@ -23,7 +23,8 @@ import {
 } from "../core/catalog";
 import { countReleasedCommands } from "./restrictions";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
-import { applyDamageToPlayer } from "./damagePayment";
+import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
+import { isCostWindowSatisfied } from "../core/costWindow";
 import { buildLogEntry } from "../log/formatLog";
 import { finishBattleEntryIf, restorePhaseActivePlayerUnlessBlocked } from "./battleEntry";
 import {
@@ -36,11 +37,13 @@ import { findCardOwner } from "./fieldLookup";
 import { canOfferRegister, toPendingRegister } from "./resist";
 import { canStrikeUnit } from "./combo";
 import { opponentInfiniteChainBlocks } from "./turnModifiers";
-import {
-  resolveLegend2OnDestroy,
-} from "./legend2/destroyEffects";
 import { resolveLegend3OnBattleWin } from "./legend3/destroyEffects";
 import { shouldMedicalRescueToPower } from "./legend2/fieldEffects";
+import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
+import { buildPendingChaseFromIntent, buildPendingChaseOnVehicleDestroyed, canInitiateChase } from "../keywords";
+import { findFieldInstanceByKeyword } from "../dsl/fieldKeywords";
+import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
+import { registerBattlePendingResolver } from "../events/listeners/battleDeclaredListener";
 
 function isEnemyTurn(state: GameState, counterPlayerId: PlayerId): boolean {
   return state.activePlayer !== counterPlayerId;
@@ -63,7 +66,7 @@ function isWildBeastUnit(
   return categoriesInclude(def.category, "WB");
 }
 
-/** RS-052 超シールド進化 — WB味方を撃破する代わりにシールドを捨てる。 */
+/** 超シールド進化 — WB味方を撃破する代わりにシールドを捨てる。 */
 export function findSuperShieldSubstitute(
   state: GameState,
   intent: LeaveIntent,
@@ -71,10 +74,13 @@ export function findSuperShieldSubstitute(
   if (intent.toZone !== "discard") return undefined;
   if (!isWildBeastUnit(state.definitions, intent.leavingCardId)) return undefined;
 
-  const shield = state.players[intent.ownerPlayerId].battle.find(
-    (card) => card.cardId === "RS-052" && card.instanceId !== intent.instanceId,
+  return findFieldInstanceByKeyword(
+    state,
+    intent.ownerPlayerId,
+    "substitute_on_wb_destroy",
+    ["battle"],
+    intent.instanceId,
   );
-  return shield?.instanceId;
 }
 
 export function applySuperShieldSubstitute(
@@ -100,7 +106,13 @@ export function applySuperShieldSubstitute(
 
   return {
     state: { ...state, ...updatePlayer(state, ownerId, nextOwner) },
-    log: buildLogEntry(ownerId, "named_effect", "RS-052", state.definitions, "super_shield"),
+    log: buildLogEntry(
+      ownerId,
+      "named_effect",
+      found.card.cardId,
+      state.definitions,
+      "super_shield",
+    ),
   };
 }
 
@@ -176,7 +188,7 @@ export function canInitiateCounterCategoryPayment(
   if (!canPayCounterCategoryHold(ctx.player, state.definitions, categories)) {
     return false;
   }
-  if (ctx.player.counterCategoryHoldReady) return false;
+  if (isCostWindowSatisfied(ctx.player, "counter_category")) return false;
   if (canExecuteHandCounter(state, playerId, instanceId)) return false;
 
   return canPayCounterCategoryHold(ctx.player, state.definitions, categories);
@@ -197,7 +209,7 @@ export function canExecuteHandCounter(
   if (categories.length === 0) return true;
 
   return (
-    !!ctx.player.counterCategoryHoldReady &&
+    isCostWindowSatisfied(ctx.player, "counter_category") &&
     hasHeldCommandForCategories(ctx.player, state.definitions, categories)
   );
 }
@@ -566,7 +578,8 @@ export function applyDinoChronicleCounter(
   };
 }
 
-export function resolveBattlePending(
+/** Event Listener から呼ばれるバトル解決の実装本体。 */
+export function resolveBattlePendingCore(
   state: GameState,
   pending: PendingBattle,
 ): { state: GameState; log: string } {
@@ -606,30 +619,55 @@ export function resolveBattlePending(
 
   const attackerId = pending.attackerPlayerId;
   const defenderId = pending.defenderPlayerId;
-  const attacker = state.players[attackerId];
+  let battleState = state;
+  const attacker = battleState.players[attackerId];
   const defenderInstanceId = pending.substituteInstanceId ?? pending.defenderInstanceId;
 
   let defenderOwner = defenderId;
   let defenderZone: "rush" | "battle" = "battle";
   if (pending.substituteInstanceId) {
-    const located = findCardOwner(state, pending.substituteInstanceId);
+    const located = findCardOwner(battleState, pending.substituteInstanceId);
     if (located) {
       defenderOwner = located.playerId;
       defenderZone = located.zone;
     }
   } else if (
-    findInZone(state.players[defenderId], "rush", pending.defenderInstanceId)
+    findInZone(battleState.players[defenderId], "rush", pending.defenderInstanceId)
   ) {
     defenderZone = "rush";
   }
 
-  const defenderPlayer = state.players[defenderOwner];
+  const defenderPlayer = battleState.players[defenderOwner];
   const attackerFound = findInZone(attacker, "battle", pending.attackerInstanceId);
   const defenderFound = findInZone(defenderPlayer, defenderZone, defenderInstanceId);
 
-  if (!attackerFound || !defenderFound) {
+  if (attackerFound) {
+    battleState = tryResolveDslTriggeredEffects({
+      state: battleState,
+      cardId: attackerFound.card.cardId,
+      instanceId: pending.attackerInstanceId,
+      playerId: attackerId,
+      phasePlayerId: pending.phasePlayerId,
+      triggerType: "on_attack",
+    }).state;
+  }
+
+  const refreshedAttacker = battleState.players[attackerId];
+  const refreshedAttackerFound = findInZone(
+    refreshedAttacker,
+    "battle",
+    pending.attackerInstanceId,
+  );
+  const refreshedDefenderPlayer = battleState.players[defenderOwner];
+  const refreshedDefenderFound = findInZone(
+    refreshedDefenderPlayer,
+    defenderZone,
+    defenderInstanceId,
+  );
+
+  if (!refreshedAttackerFound || !refreshedDefenderFound) {
     const markAttackerActedOnFail = (base: GameState): GameState => {
-      if (!attackerFound) return base;
+      if (!refreshedAttackerFound) return base;
       const currentAttacker = base.players[attackerId];
       return {
         ...base,
@@ -641,15 +679,15 @@ export function resolveBattlePending(
         }),
       };
     };
-    const logCardId = attackerFound?.card.cardId ?? pending.attackerInstanceId;
+    const logCardId = refreshedAttackerFound?.card.cardId ?? pending.attackerInstanceId;
     return finish(
-      markAttackerActedOnFail({ ...state }),
-      buildLogEntry(attackerId, "battle", logCardId, state.definitions, "failed"),
+      markAttackerActedOnFail({ ...battleState }),
+      buildLogEntry(attackerId, "battle", logCardId, battleState.definitions, "failed"),
     );
   }
 
-  const attackerBp = battleAttackerBpBonus(state, pending);
-  const defenderBp = battleDefenderBp(state, pending);
+  const attackerBp = battleAttackerBpBonus(battleState, pending);
+  const defenderBp = battleDefenderBp(battleState, pending);
 
   const destroyAttacker = attackerBp <= defenderBp;
   const destroyDefender = defenderBp <= attackerBp;
@@ -657,13 +695,19 @@ export function resolveBattlePending(
   const winButSelfDestruct =
     !destroyAttacker &&
     destroyDefender &&
-    state.activePlayer !== attackerId &&
-    winButDestroyedVsSp1(attackerFound.card.cardId) &&
-    canStrikeUnit(state.definitions, defenderFound.card, state, defenderOwner);
+    battleState.activePlayer !== attackerId &&
+    winButDestroyedVsSp1(refreshedAttackerFound.card.cardId) &&
+    canStrikeUnit(battleState.definitions, refreshedDefenderFound.card, battleState, defenderOwner);
 
   const finalDestroyAttacker = destroyAttacker || winButSelfDestruct;
-  const detail = `${cardName(state.definitions, defenderFound.card.cardId)}:${attackerBp}vs${defenderBp}`;
-  const log = buildLogEntry(attackerId, "battle", attackerFound.card.cardId, state.definitions, detail);
+  const detail = `${cardName(battleState.definitions, refreshedDefenderFound.card.cardId)}:${attackerBp}vs${defenderBp}`;
+  const log = buildLogEntry(
+    attackerId,
+    "battle",
+    refreshedAttackerFound.card.cardId,
+    battleState.definitions,
+    detail,
+  );
 
   const markAttackerActed = (base: GameState): GameState => {
     const currentAttacker = base.players[attackerId];
@@ -683,11 +727,11 @@ export function resolveBattlePending(
     instanceId: pending.attackerInstanceId,
     fromZone: "battle",
     toZone: "discard",
-    leavingCardId: attackerFound.card.cardId,
+    leavingCardId: refreshedAttackerFound.card.cardId,
     phasePlayerId: pending.phasePlayerId,
   };
 
-  let nextState = state;
+  let nextState = battleState;
   let extraLogs: string[] = [];
 
   if (destroyDefender) {
@@ -696,7 +740,7 @@ export function resolveBattlePending(
       instanceId: defenderInstanceId,
       fromZone: defenderZone,
       toZone: "discard",
-      leavingCardId: defenderFound.card.cardId,
+      leavingCardId: refreshedDefenderFound.card.cardId,
       phasePlayerId: pending.phasePlayerId,
       followUpAttackerLeave: finalDestroyAttacker ? attackerLeaveIntent : undefined,
     });
@@ -706,11 +750,11 @@ export function resolveBattlePending(
     }
     nextState = leaveResult.state;
 
-    if (canStrikeUnit(state.definitions, defenderFound.card, state, defenderOwner)) {
+    if (canStrikeUnit(battleState.definitions, refreshedDefenderFound.card, battleState, defenderOwner)) {
       const fb = resolveFocusedBreakthroughDamage(
         nextState,
         attackerId,
-        defenderFound.card.cardId,
+        refreshedDefenderFound.card.cardId,
       );
       nextState = fb.state;
       extraLogs = fb.logs;
@@ -727,7 +771,7 @@ export function resolveBattlePending(
     const winFx = resolveLegend3OnBattleWin(
       nextState,
       pending,
-      defenderFound.card,
+      refreshedDefenderFound.card,
       defenderOwner,
     );
     nextState = {
@@ -758,6 +802,16 @@ export function resolveBattlePending(
   }
 
   return finish(finishedState, log);
+}
+
+registerBattlePendingResolver(resolveBattlePendingCore);
+
+/** `BattleDeclared` イベント経由でバトルを解決する（後方互換 API）。 */
+export function resolveBattlePending(
+  state: GameState,
+  pending: PendingBattle,
+): { state: GameState; log: string } {
+  return emitBattleDeclaredAndResolve(state, pending);
 }
 
 export function finalizeBattlePending(
@@ -853,32 +907,24 @@ export function finalizeLeavePending(
     ...updatePlayer(state, pending.ownerPlayerId, nextOwner),
   };
 
-  const wentToDiscard =
-    pending.toZone === "discard" ||
-    (pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX);
+  const effectiveToZone =
+    pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX
+      ? "discard"
+      : pending.toZone;
 
-  if (wentToDiscard) {
-    const destroyFx = resolveLegend2OnDestroy(
-      nextStateBase,
-      pending.ownerPlayerId,
-      found.card.cardId,
-    );
-    nextStateBase = {
-      ...nextStateBase,
-      ...destroyFx.state,
-      pendingLeave: undefined,
-      log: [...nextStateBase.log, ...destroyFx.logs],
-    };
-  }
+  const leaveFx = emitUnitLeftZoneAndResolve(nextStateBase, {
+    ownerPlayerId: pending.ownerPlayerId,
+    instanceId: pending.instanceId,
+    cardId: found.card.cardId,
+    fromZone: pending.fromZone,
+    toZone: effectiveToZone,
+    phasePlayerId: pending.phasePlayerId,
+  });
 
-  if (pending.toZone === "discard" && hasDestroySelfDamageNote(found.card.cardId)) {
-    return applyDamageToPlayer(nextStateBase, pending.ownerPlayerId, 1, {
-      kind: "none",
-      activePlayer: nextStateBase.activePlayer,
-    });
-  }
-
-  return nextStateBase;
+  return {
+    ...leaveFx.state,
+    log: [...leaveFx.state.log, ...leaveFx.logs],
+  };
 }
 
 export function getCounterEffectId(state: GameState, playerId: PlayerId, instanceId: string): string | undefined {
@@ -936,6 +982,35 @@ export function tryLeaveField(
   );
 
   if (!dinoChronicle && !dinoGuts && !superShieldInstanceId) {
+    const owner = state.players[intent.ownerPlayerId];
+    const found = findInZone(owner, intent.fromZone, intent.instanceId);
+
+    const vehicleChase = buildPendingChaseOnVehicleDestroyed(state, intent);
+    if (vehicleChase) {
+      return {
+        state: {
+          ...state,
+          pendingChase: vehicleChase,
+          activePlayer: intent.ownerPlayerId,
+        },
+        deferred: true,
+      };
+    }
+
+    if (found && canInitiateChase(state, intent.ownerPlayerId, found.card)) {
+      const pendingChase = buildPendingChaseFromIntent(state, intent);
+      if (pendingChase) {
+        return {
+          state: {
+            ...state,
+            pendingChase,
+            activePlayer: intent.ownerPlayerId,
+          },
+          deferred: true,
+        };
+      }
+    }
+
     const next = finalizeLeavePending(state, intent, false);
     if (next.pendingRegister) {
       return { state: next, deferred: true };

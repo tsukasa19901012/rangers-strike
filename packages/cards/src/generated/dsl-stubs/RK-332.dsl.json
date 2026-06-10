@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-332",
+  "name": "仮面ライダー龍騎（2nd）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これは特徴「ドラゴン」を持つ自軍ユニット1体につきBP+1000される。 【叶えたい願いを胸に】特徴「ドラゴン」を持つユニットからコンビネーションしたとき発動できる⇒敵軍バトルエリアから、これがコンビネーションしているユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+  "rawText": "※これは特徴「ドラゴン」を持つ自軍ユニット1体につきBP+1000される。 【叶えたい願いを胸に】特徴「ドラゴン」を持つユニットからコンビネーションしたとき発動できる⇒敵軍バトルエリアから、これがコンビネーションしているユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "note_fx_1_bp_100",
+      "text": "※これは特徴「ドラゴン」を持つ自軍ユニット1体につきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_1_bp_100",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58fb6e38188e3819fe38184",
+      "name": "叶えたい願いを胸に",
+      "text": "特徴「ドラゴン」を持つユニットからコンビネーションしたとき発動できる⇒敵軍バトルエリアから、これがコンビネーションしているユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-085",
+  "name": "ガードベント",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき発動できる⇒そのバトルは行われない。そして、アタックされたユニットの必要パワーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+  "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） 特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき発動できる⇒そのバトルは行われない。そして、アタックされたユニットの必要パワーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+  "effects": [
+    {
+      "id": "note_named_e280bbe382ab",
+      "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき発動できる⇒そのバトルは行われない。そして、アタックされたユニットの必要パワーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe382ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

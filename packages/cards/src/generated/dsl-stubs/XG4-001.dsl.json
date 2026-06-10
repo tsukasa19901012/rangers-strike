@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-001",
+  "name": "牛靴仮面",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【黒十字ハリケーン】このターン、このユニットは、特徴「戦闘員」を持つ自軍ユニット1体につきBP+1000され、BP8000以上のときSP2になる。",
+  "rawText": "【黒十字ハリケーン】このターン、このユニットは、特徴「戦闘員」を持つ自軍ユニット1体につきBP+1000され、BP8000以上のときSP2になる。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e9bb92e58d81",
+      "name": "黒十字ハリケーン",
+      "text": "このターン、このユニットは、特徴「戦闘員」を持つ自軍ユニット1体につきBP+1000され、BP8000以上のときSP2になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9bb92e58d81",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

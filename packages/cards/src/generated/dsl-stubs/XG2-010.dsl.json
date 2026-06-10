@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-010",
+  "name": "気伝武人龍星王（XG2）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "【龍星キック】「SP1」これがDAを持つ敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主の山札の上に戻してもよい。",
+  "rawText": "【龍星キック】「SP1」これがDAを持つ敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主の山札の上に戻してもよい。",
+  "bp": 5000,
+  "size": "M",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "獣",
+    "ドラゴン",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e9be8de6989f",
+      "name": "龍星キック",
+      "text": "「SP1」これがDAを持つ敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主の山札の上に戻してもよい。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

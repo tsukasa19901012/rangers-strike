@@ -1,0 +1,82 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-054",
+  "name": "仮面ライダースカル（XG6）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※レジスト ※タクスET 【帽子が似合う男になれ】自軍バトルエリアのSユニットを1体選び、ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。そうしたとき、このターン、このユニットのBPに戻したユニットのBPを「+」する。",
+  "rawText": "※レジスト ※タクスET 【帽子が似合う男になれ】自軍バトルエリアのSユニットを1体選び、ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。そうしたとき、このターン、このユニットのBPに戻したユニットのBPを「+」する。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ロストドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_taxis_et",
+      "text": "※タクスET",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5b8bde5ad90",
+      "name": "帽子が似合う男になれ",
+      "text": "自軍バトルエリアのSユニットを1体選び、ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。そうしたとき、このターン、このユニットのBPに戻したユニットのBPを「+」する。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5b8bde5ad90",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "note",
+      "text": "※タクスET",
+      "rule": "taxis_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

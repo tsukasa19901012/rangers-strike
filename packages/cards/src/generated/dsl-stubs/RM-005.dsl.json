@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-005",
+  "name": "ダブルスナイパー",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "特徴「男」を持つ自軍ユニットを1体と、特徴「女」を持つ自軍ユニットを1体選び、選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "rawText": "特徴「男」を持つ自軍ユニットを1体と、特徴「女」を持つ自軍ユニットを1体選び、選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

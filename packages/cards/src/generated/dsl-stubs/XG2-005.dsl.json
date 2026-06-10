@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-005",
+  "name": "スカイアルファー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※ウイング 【アルファーレーザー】自軍ターン中、これがバトルエリアに出たとき、ホールド状態の敵軍コマンドをすべてリリースしてもよい。そうしたとき、リリースした枚数を数えて、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のゾーンに置く。",
+  "rawText": "※ウイング 【アルファーレーザー】自軍ターン中、これがバトルエリアに出たとき、ホールド状態の敵軍コマンドをすべてリリースしてもよい。そうしたとき、リリースした枚数を数えて、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のゾーンに置く。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e383ab",
+      "name": "アルファーレーザー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、ホールド状態の敵軍コマンドをすべてリリースしてもよい。そうしたとき、リリースした枚数を数えて、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のゾーンに置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

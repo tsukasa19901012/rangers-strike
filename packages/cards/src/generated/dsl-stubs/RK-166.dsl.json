@@ -1,0 +1,79 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-166",
+  "name": "仮面ライダーG3",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) ※これはホールド状態のときビークルにライドできない。 【GM-01】ホールド状態の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く（置けなければこの効果は発動できない)。",
+  "rawText": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) ※これはホールド状態のときビークルにライドできない。 【GM-01】ホールド状態の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く（置けなければこの効果は発動できない)。",
+  "bp": 1000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "メカ",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_no_ride_while_held",
+      "text": "※これはホールド状態のときビークルにライドできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_ride_while_held",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "gm_01",
+      "name": "GM-01",
+      "text": "ホールド状態の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く（置けなければこの効果は発動できない)。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_gm_01",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

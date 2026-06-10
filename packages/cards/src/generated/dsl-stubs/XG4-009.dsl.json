@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-009",
+  "name": "オートスライダー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※特徴「シルバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+1000される。 【緊急出動】これをラッシュしたとき、次の効果を発動できる⇒ 自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び、これの上に重ねて自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。",
+  "rawText": "※特徴「シルバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+1000される。 【緊急出動】これをラッシュしたとき、次の効果を発動できる⇒ 自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び、これの上に重ねて自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。",
+  "effects": [
+    {
+      "id": "note_s_rc",
+      "text": "※特徴「シルバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_without_rc_named_e382b7e383ab",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_ride_bp_boost_1000",
+      "text": "※これにライドしているユニットはBP+1000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_1000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e7b78ae680a5",
+      "name": "緊急出動",
+      "text": "これをラッシュしたとき、次の効果を発動できる⇒ 自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び、これの上に重ねて自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7b78ae680a5",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットはBP+1000される。",
+      "rule": "ride_bp_boost_1000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-241",
+  "name": "仮面ライダーミニ電王SF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。 【ムリヤリな変身】これが撃破されて捨札になったとき、自軍捨札から「モモタロス」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+  "rawText": "※これはBP2000以上の敵軍Sユニットにアタックされない。 【ムリヤリな変身】これが撃破されて捨札になったとき、自軍捨札から「モモタロス」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+  "bp": 500,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "DEN-O"
+  ],
+  "effects": [
+    {
+      "id": "note_bp2000_s",
+      "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_enemy_s_bp2000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a0e383aa",
+      "name": "ムリヤリな変身",
+      "text": "これが撃破されて捨札になったとき、自軍捨札から「モモタロス」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a0e383aa",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "RS-044",
+  "name": "パトジャイラー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "bp": 4000,
+  "sp": 1,
+  "size": "M",
+  "rawText": "",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "imageUrl": "/cards/legend1/RS-044.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-044.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

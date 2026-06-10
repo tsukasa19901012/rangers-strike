@@ -1,0 +1,76 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-075",
+  "name": "アポロガイスト（XG4）",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※コールDA ※これが自軍エリアにある間、自分がターンを終えるとき、これがホールド状態なら捨札にする。 【生命の強奪】自軍ターン中、ホールド状態のこのユニットがバトルエリアに出たとき、次の効果を発動する⇒相手は自分自身のSユニットを1体選び撃破するか、このユニットをリリースするかを選ぶ。",
+  "rawText": "※コールDA ※これが自軍エリアにある間、自分がターンを終えるとき、これがホールド状態なら捨札にする。 【生命の強奪】自軍ターン中、ホールド状態のこのユニットがバトルエリアに出たとき、次の効果を発動する⇒相手は自分自身のSユニットを1体選び撃破するか、このユニットをリリースするかを選ぶ。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "大ショッカー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_call_da",
+      "text": "※コールDA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_DA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自軍エリアにある間、自分がターンを終えるとき、これがホールド状態なら捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e7949fe591bd",
+      "name": "生命の強奪",
+      "text": "自軍ターン中、ホールド状態のこのユニットがバトルエリアに出たとき、次の効果を発動する⇒相手は自分自身のSユニットを1体選び撃破するか、このユニットをリリースするかを選ぶ。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7949fe591bd",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※コールDA",
+      "rule": "call_DA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

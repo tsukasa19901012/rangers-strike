@@ -1,0 +1,67 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-041",
+  "name": "仮面ライダーディケイドCF（XG3）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※レジスト 【通りすがりの仮面ライダー】このターン中にＮＣまたはRCの効果を発動した、カテゴリにDA以外を持つSユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションするユニットのNCまたはRCの効果を、このユニットの効果として発動する。",
+  "rawText": "※レジスト 【通りすがりの仮面ライダー】このターン中にＮＣまたはRCの効果を発動した、カテゴリにDA以外を持つSユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションするユニットのNCまたはRCの効果を、このユニットの効果として発動する。",
+  "bp": 6000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ディケイドライバー"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "特徴「ディケイドライバー」を持つ自軍ユニット1体をパワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9809ae3828a",
+      "name": "通りすがりの仮面ライダー",
+      "text": "このターン中にＮＣまたはRCの効果を発動した、カテゴリにDA以外を持つSユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションするユニットのNCまたはRCの効果を、このユニットの効果として発動する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9809ae3828a",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

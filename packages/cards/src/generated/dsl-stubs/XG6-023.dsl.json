@@ -1,0 +1,68 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-023",
+  "name": "データスハイパー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「データス」のカードを1枚選び、自軍ラッシュエリアに出す。 【ハイパーパンチ】敵軍Lユニットがあれば、これはBP+5000される。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「データス」のカードを1枚選び、自軍ラッシュエリアに出す。 【ハイパーパンチ】敵軍Lユニットがあれば、これはBP+5000される。",
+  "bp": 3500,
+  "size": "L",
+  "sp": 13,
+  "features": [
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「データス」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e3838fe382a4",
+      "name": "ハイパーパンチ",
+      "text": "敵軍Lユニットがあれば、これはBP+5000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838fe382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

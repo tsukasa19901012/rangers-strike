@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-207",
+  "name": "テンマレンジャー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【天重星・天馬回転蹴り】「SP1」敵軍Sユニットの数が自軍Sユニットの数より4体以上多いとき、次の効果を発動できる⇒自軍Sユニットと同じ数になるまで、相手は自分自身のSユニットを選び手札に戻す。",
+  "rawText": "【天重星・天馬回転蹴り】「SP1」敵軍Sユニットの数が自軍Sユニットの数より4体以上多いとき、次の効果を発動できる⇒自軍Sユニットと同じ数になるまで、相手は自分自身のSユニットを選び手札に戻す。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e5a4a9e9878d",
+      "name": "天重星・天馬回転蹴り",
+      "text": "「SP1」敵軍Sユニットの数が自軍Sユニットの数より4体以上多いとき、次の効果を発動できる⇒自軍Sユニットと同じ数になるまで、相手は自分自身のSユニットを選び手札に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

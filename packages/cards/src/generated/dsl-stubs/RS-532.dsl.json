@@ -1,0 +1,68 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-532",
+  "name": "ランドチェンジャー3",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない） 【ミサイル発射】合体の必要な敵軍ユニットを1体選び撃破する。ただし、選んだユニットの合体に必要なユニットカードのうち、どれか1枚でも敵軍捨札にあれば、そのユニットは撃破できない。",
+  "rawText": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない） 【ミサイル発射】合体の必要な敵軍ユニットを1体選び撃破する。ただし、選んだユニットの合体に必要なユニットカードのうち、どれか1枚でも敵軍捨札にあれば、そのユニットは撃破できない。",
+  "bp": 5000,
+  "size": "M",
+  "comboNumber": 3,
+  "features": [
+    "メカ",
+    "車両",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを2体コマンドゾーンに送るか捨札にする",
+    "unitCount": 2
+  },
+  "effects": [
+    {
+      "id": "unnamed_scrum",
+      "text": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "scrum",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839fe382b5",
+      "name": "ミサイル発射",
+      "text": "合体の必要な敵軍ユニットを1体選び撃破する。ただし、選んだユニットの合体に必要なユニットカードのうち、どれか1枚でも敵軍捨札にあれば、そのユニットは撃破できない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839fe382b5",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "rule": "scrum"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-211",
+  "name": "オーブルー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【稲妻超力トンファ】自軍ターン中、これがバトルでユニットを撃破したとき、相手は自分自身のコマンドゾーンからカードを1枚選び、自分自身のパワーゾーンにダメージにして置く。",
+  "rawText": "【稲妻超力トンファ】自軍ターン中、これがバトルでユニットを撃破したとき、相手は自分自身のコマンドゾーンからカードを1枚選び、自分自身のパワーゾーンにダメージにして置く。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e7a8b2e5a6bb",
+      "name": "稲妻超力トンファ",
+      "text": "自軍ターン中、これがバトルでユニットを撃破したとき、相手は自分自身のコマンドゾーンからカードを1枚選び、自分自身のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7a8b2e5a6bb",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

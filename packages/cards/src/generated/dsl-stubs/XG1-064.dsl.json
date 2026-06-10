@@ -1,0 +1,103 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-064",
+  "name": "ディケイド アギトGF",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※モーフ ※レジスト ※これは「仮面ライダーアギトGF」としてつかえる。 【アタックライド】DAを持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "※モーフ ※レジスト ※これは「仮面ライダーアギトGF」としてつかえる。 【アタックライド】DAを持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ディケイドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_alias_gf",
+      "text": "※これは「仮面ライダーアギトGF」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_gf",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e382bf",
+      "name": "アタックライド",
+      "text": "DAを持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e382bf",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    },
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "fusion",
+      "text": "※これは「仮面ライダーアギトGF」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

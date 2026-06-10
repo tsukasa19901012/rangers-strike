@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-039",
+  "name": "スタッグフォン",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "自軍コマンドゾーンのカードを1枚選び手札に加える。そうしたとき、このカードを自軍コマンドゾーンにホールド状態で置く。",
+  "rawText": "自軍コマンドゾーンのカードを1枚選び手札に加える。そうしたとき、このカードを自軍コマンドゾーンにホールド状態で置く。",
+  "effects": [
+    {
+      "id": "named_e382b9e382bf",
+      "name": "スタッグフォン",
+      "text": "自軍コマンドゾーンのカードを1枚選び手札に加える。そうしたとき、このカードを自軍コマンドゾーンにホールド状態で置く。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "fallback_handler",
+          "effectId": "named_e382b9e382bf"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "hybrid",
+    "handler": "typescript",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-452",
+  "name": "テトラボーイ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これが自軍バトルエリアにある間、BP6000以上の敵軍ユニットがバトルエリアに出たとき、これをラッシュエリアに戻してもよい。 【テトラバスター】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒追加条件に「自軍合体ユニットを捨札にする」と表記されていない敵軍Lユニットを1体選び、撃破する。",
+  "rawText": "※これが自軍バトルエリアにある間、BP6000以上の敵軍ユニットがバトルエリアに出たとき、これをラッシュエリアに戻してもよい。 【テトラバスター】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒追加条件に「自軍合体ユニットを捨札にする」と表記されていない敵軍Lユニットを1体選び、撃破する。",
+  "bp": 4000,
+  "size": "M",
+  "comboNumber": "R",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_bp6000",
+      "text": "※これが自軍バトルエリアにある間、BP6000以上の敵軍ユニットがバトルエリアに出たとき、これをラッシュエリアに戻してもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp6000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38386e38388",
+      "name": "テトラバスター",
+      "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒追加条件に「自軍合体ユニットを捨札にする」と表記されていない敵軍Lユニットを1体選び、撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38386e38388",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-592",
+  "name": "エンジンオーG6",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―エンジンオー（またはスピードル＋バスオン＋ベアールV）＋ガンバルオー（またはバルカ＋ガンパード＋キャリゲーター） 【G6グランプリ】自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンのカードの枚数が6枚になるように、自軍パワーゾーンのオモテ向きのカードを選び捨札にしてもよい。そうしたとき、捨札にした枚数と同じ数まで、BP6000以下の敵軍ユニットを選び撃破する。",
+  "rawText": "合体―エンジンオー（またはスピードル＋バスオン＋ベアールV）＋ガンバルオー（またはバルカ＋ガンパード＋キャリゲーター） 【G6グランプリ】自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンのカードの枚数が6枚になるように、自軍パワーゾーンのオモテ向きのカードを選び捨札にしてもよい。そうしたとき、捨札にした枚数と同じ数まで、BP6000以下の敵軍ユニットを選び撃破する。",
+  "bp": 18000,
+  "size": "L",
+  "sp": 2,
+  "features": [
+    "人型",
+    "炎神"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットをパワーゾーンに送る"
+  },
+  "effects": [
+    {
+      "id": "g6",
+      "name": "G6グランプリ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンのカードの枚数が6枚になるように、自軍パワーゾーンのオモテ向きのカードを選び捨札にしてもよい。そうしたとき、捨札にした枚数と同じ数まで、BP6000以下の敵軍ユニットを選び撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_g6",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

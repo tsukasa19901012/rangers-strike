@@ -1,0 +1,25 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-062",
+  "name": "仮面ライダーワイルドカリス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "",
+  "rawText": "",
+  "bp": 4500,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "アンデッド",
+    "仮面ライダー",
+    "男"
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-062",
+  "name": "シャークラー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【シャーブラシ】これをラッシュしたとき、ホールド状態の自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、自軍山札の上から1枚ひいて、そのカードが特徴「メカ」を持つならリリース状態で、持たないならホールド状態で自軍コマンドゾーンに置く。",
+  "rawText": "【シャーブラシ】これをラッシュしたとき、ホールド状態の自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、自軍山札の上から1枚ひいて、そのカードが特徴「メカ」を持つならリリース状態で、持たないならホールド状態で自軍コマンドゾーンに置く。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "メカ"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b7e383a3",
+      "name": "シャーブラシ",
+      "text": "これをラッシュしたとき、ホールド状態の自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、自軍山札の上から1枚ひいて、そのカードが特徴「メカ」を持つならリリース状態で、持たないならホールド状態で自軍コマンドゾーンに置く。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

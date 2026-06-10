@@ -1,0 +1,67 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-085",
+  "name": "邪甲神クワガタイタン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※レジスト 【タイタニックフレア】自軍ターン中、このユニットは、WBを持つ自軍コマンド1つにつきBP+1000される。",
+  "rawText": "※レジスト 【タイタニックフレア】自軍ターン中、このユニットは、WBを持つ自軍コマンド1つにつきBP+1000される。",
+  "bp": 5000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "昆虫",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "特徴「昆虫」を持つ自軍Sユニット1体を捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382bfe382a4",
+      "name": "タイタニックフレア",
+      "text": "自軍ターン中、このユニットは、WBを持つ自軍コマンド1つにつきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382bfe382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-023",
+  "name": "アバレマックス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※レジスト 【大気爆裂マックスフィールド】自軍バトルエリアのユニットがこのユニット1体だけなら、次の効果が有効になる⇒自軍バトルエリアのユニットはBP+2000され、敵軍バトルエリアのユニットはBP-2000される。（BP0以下になったユニットは撃破される）",
+  "rawText": "※レジスト 【大気爆裂マックスフィールド】自軍バトルエリアのユニットがこのユニット1体だけなら、次の効果が有効になる⇒自軍バトルエリアのユニットはBP+2000され、敵軍バトルエリアのユニットはBP-2000される。（BP0以下になったユニットは撃破される）",
+  "bp": 6000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "レッド",
+    "男",
+    "スティライザー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a4a7e6b097",
+      "name": "大気爆裂マックスフィールド",
+      "text": "自軍バトルエリアのユニットがこのユニット1体だけなら、次の効果が有効になる⇒自軍バトルエリアのユニットはBP+2000され、敵軍バトルエリアのユニットはBP-2000される。（BP0以下になったユニットは撃破される）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4a7e6b097",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-011",
+  "name": "タイタンボーイ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【ラジアルボンバー】これが自軍バトルエリアにある間、自分がターンを終えるとき、これを自軍パワーゾーンに送ってもよい。そうしたとき、BP4000以下の敵軍ユニットを1体選び持ち主のパワーゾーンに送る。",
+  "rawText": "【ラジアルボンバー】これが自軍バトルエリアにある間、自分がターンを終えるとき、これを自軍パワーゾーンに送ってもよい。そうしたとき、BP4000以下の敵軍ユニットを1体選び持ち主のパワーゾーンに送る。",
+  "bp": 8000,
+  "size": "L",
+  "sp": 14,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e383a9e382b8",
+      "name": "ラジアルボンバー",
+      "text": "これが自軍バトルエリアにある間、自分がターンを終えるとき、これを自軍パワーゾーンに送ってもよい。そうしたとき、BP4000以下の敵軍ユニットを1体選び持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e382b8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

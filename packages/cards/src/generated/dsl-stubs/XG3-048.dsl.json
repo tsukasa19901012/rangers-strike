@@ -1,0 +1,84 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-048",
+  "name": "仮面ライダーBLACK RX（XG3）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※レジスト ※モーフ 【リボルクラッシュ】敵軍バトルエリアのユニットがSユニット1体だけなら、そのユニットを持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "※レジスト ※モーフ 【リボルクラッシュ】敵軍バトルエリアのユニットがSユニット1体だけなら、そのユニットを持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間",
+    "ハイブリッドエネルギー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383aae3839c",
+      "name": "リボルクラッシュ",
+      "text": "敵軍バトルエリアのユニットがSユニット1体だけなら、そのユニットを持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383aae3839c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

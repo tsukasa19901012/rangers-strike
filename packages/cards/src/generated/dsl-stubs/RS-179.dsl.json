@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-179",
+  "name": "恐竜やのカレー",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※常駐（場に配置して、離れるまで効果が有効になる） 特徴「イエロー」を持つ自軍SユニットはBP＋2000される。",
+  "rawText": "※常駐（場に配置して、離れるまで効果が有効になる） 特徴「イエロー」を持つ自軍SユニットはBP＋2000される。",
+  "effects": [
+    {
+      "id": "unnamed_resident",
+      "text": "※常駐（場に配置して、離れるまで効果が有効になる） 特徴「イエロー」を持つ自軍SユニットはBP＋2000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※常駐（場に配置して、離れるまで効果が有効になる） 特徴「イエロー」を持つ自軍SユニットはBP＋2000される。",
+      "rule": "resident"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

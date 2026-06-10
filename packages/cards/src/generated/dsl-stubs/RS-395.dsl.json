@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-395",
+  "name": "タイムロボβ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―タイムジェット1+タイムジェット2+タイムジェット3+タイムジェット4+タイムジェット5 【チェンジフォーメーション】これがバトルエリアからラッシュエリアに戻るとき、ダメージ以外の自軍パワーから｢タイムロボα｣のカードを1枚選び、これと置き換えてもよい。",
+  "rawText": "合体―タイムジェット1+タイムジェット2+タイムジェット3+タイムジェット4+タイムジェット5 【チェンジフォーメーション】これがバトルエリアからラッシュエリアに戻るとき、ダメージ以外の自軍パワーから｢タイムロボα｣のカードを1枚選び、これと置き換えてもよい。",
+  "bp": 8000,
+  "size": "L",
+  "sp": 3,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする。"
+  },
+  "effects": [
+    {
+      "id": "named_e38381e382a7",
+      "name": "チェンジフォーメーション",
+      "text": "これがバトルエリアからラッシュエリアに戻るとき、ダメージ以外の自軍パワーから｢タイムロボα｣のカードを1枚選び、これと置き換えてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38381e382a7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

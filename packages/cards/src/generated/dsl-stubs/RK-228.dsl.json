@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-228",
+  "name": "仮面ライダー羽撃鬼",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【音撃奏・旋風一閃】自分の手札より相手の手札の枚数が多ければ、相手の手札を見ないで1枚選んでもよい。 そうしたとき、選んだカードを持ち主の山札の上に戻す。",
+  "rawText": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【音撃奏・旋風一閃】自分の手札より相手の手札の枚数が多ければ、相手の手札を見ないで1枚選んでもよい。 そうしたとき、選んだカードを持ち主の山札の上に戻す。",
+  "bp": 500,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": 4,
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_scrum",
+      "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "scrum",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e99fb3e69283",
+      "name": "音撃奏・旋風一閃",
+      "text": "自分の手札より相手の手札の枚数が多ければ、相手の手札を見ないで1枚選んでもよい。 そうしたとき、選んだカードを持ち主の山札の上に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e99fb3e69283",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "rule": "scrum"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

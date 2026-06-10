@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-262",
+  "name": "フラッシュキング",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―タンクコマンド＋ジェットデルタ＋ジェットシーカー 【スーパーコズモフラッシュ】自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンにあるダメージ以外のカードから、「OT」以外のカードを2枚選び捨札にしてもよい。そうしたとき、このターン、これは「SP2」になる。",
+  "rawText": "合体―タンクコマンド＋ジェットデルタ＋ジェットシーカー 【スーパーコズモフラッシュ】自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンにあるダメージ以外のカードから、「OT」以外のカードを2枚選び捨札にしてもよい。そうしたとき、このターン、これは「SP2」になる。",
+  "bp": 14000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e382b9e383bc",
+      "name": "スーパーコズモフラッシュ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンにあるダメージ以外のカードから、「OT」以外のカードを2枚選び捨札にしてもよい。そうしたとき、このターン、これは「SP2」になる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP2",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-334",
+  "name": "レジェンドマジイエロー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【マジボルト】「SP1」これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「マジイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【マジボルト】「SP1」これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 3500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "イエロー",
+    "男",
+    "魔法",
+    "レジェンドフォーム"
+  ],
+  "effects": [
+    {
+      "id": "recruit_named_e3839ee382b8e382a4e382a8_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
+    },
+    {
+      "id": "named_e3839ee382b8",
+      "name": "マジボルト",
+      "text": "「SP1」これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

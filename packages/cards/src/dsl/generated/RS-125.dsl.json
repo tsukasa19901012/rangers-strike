@@ -1,0 +1,33 @@
+{
+  "id": "RS-125",
+  "name": "百獣アニマルハート",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 8,
+  "text": "敵軍ユニットを、BPの合計が12000以下になるように選んで撃破する。ただし選べるユニットの数は、自軍WBのMユニットの数までとする。",
+  "effectId": "animal_heart",
+  "imageUrl": "/cards/legend3/RS-125.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-125.jpg",
+  "effects": [
+    {
+      "id": "animal_heart",
+      "text": "敵軍ユニットを、BPの合計が12000以下になるように選んで撃破する。ただし選べるユニットの数は、自軍WBのMユニットの数までとする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "animal_heart"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

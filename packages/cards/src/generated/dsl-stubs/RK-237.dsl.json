@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-237",
+  "name": "仮面ライダーキバBF",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【バッシャー・アクアトルネード】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、常駐しているオペレーションを1つ選び、選んだオペレーションを持ち主の山札に戻してシャッフルする。",
+  "rawText": "【バッシャー・アクアトルネード】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、常駐しているオペレーションを1つ選び、選んだオペレーションを持ち主の山札に戻してシャッフルする。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "魔皇力"
+  ],
+  "effects": [
+    {
+      "id": "named_e38390e38383",
+      "name": "バッシャー・アクアトルネード",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、常駐しているオペレーションを1つ選び、選んだオペレーションを持ち主の山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38390e38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-429",
+  "name": "マスター・シャーフー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※これは自軍ターン中バトルエリアに出られない。 【暮らしの中に修行あり】これは自軍ラッシュエリアにある間、次の効果を発動する⇒すべてのSユニットの特徴に「激気」を追加する。また、自軍ターン中、「MA」の自軍コマンドをホールドする代わりに「WB」の自軍コマンドをホールドしてもよい。ただし、追加で自軍コマンドを1つホールドすること。",
+  "rawText": "※これは自軍ターン中バトルエリアに出られない。 【暮らしの中に修行あり】これは自軍ラッシュエリアにある間、次の効果を発動する⇒すべてのSユニットの特徴に「激気」を追加する。また、自軍ターン中、「MA」の自軍コマンドをホールドする代わりに「WB」の自軍コマンドをホールドしてもよい。ただし、追加で自軍コマンドを1つホールドすること。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "男",
+    "拳聖",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_enter_battle_own_turn",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_enter_battle_own_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e69aaee38289",
+      "name": "暮らしの中に修行あり",
+      "text": "これは自軍ラッシュエリアにある間、次の効果を発動する⇒すべてのSユニットの特徴に「激気」を追加する。また、自軍ターン中、「MA」の自軍コマンドをホールドする代わりに「WB」の自軍コマンドをホールドしてもよい。ただし、追加で自軍コマンドを1つホールドすること。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e69aaee38289",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "rule": "no_enter_battle_own_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

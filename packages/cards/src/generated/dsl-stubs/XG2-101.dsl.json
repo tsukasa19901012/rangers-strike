@@ -1,0 +1,92 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-101",
+  "name": "ハカイダー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※特徴「メカ」を持つ敵軍ユニットがあるとき、これはストライクできない。 ※自分がターンを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら山札に戻してシャッフルする。 【ハカイダーショット】敵軍バトルエリアから、特徴「メカ」を持つ、SユニットまたはMユニットを1体選び撃破してもよい。",
+  "rawText": "※特徴「メカ」を持つ敵軍ユニットがあるとき、これはストライクできない。 ※自分がターンを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら山札に戻してシャッフルする。 【ハカイダーショット】敵軍バトルエリアから、特徴「メカ」を持つ、SユニットまたはMユニットを1体選び撃破してもよい。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 1,
+  "comboNumber": "RC",
+  "features": [
+    "改造人間",
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe789b9",
+      "text": "※特徴「メカ」を持つ敵軍ユニットがあるとき、これはストライクできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe789b9",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe887aa",
+      "text": "※自分がターンを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3838fe382abe382a4e38380",
+      "name": "ハカイダーショット",
+      "text": "敵軍バトルエリアから、特徴「メカ」を持つ、SユニットまたはMユニットを1体選び撃破してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

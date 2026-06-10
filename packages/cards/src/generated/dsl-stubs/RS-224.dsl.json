@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-224",
+  "name": "トータスハンマー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはSユニットにアタックされない。 【ロックドバスター】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒「SP+1」",
+  "rawText": "※これはSユニットにアタックされない。 【ロックドバスター】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒「SP+1」",
+  "bp": 3000,
+  "size": "M",
+  "comboNumber": "L",
+  "features": [
+    "メカ",
+    "カラクリボール"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_attack_from_s",
+      "text": "※これはSユニットにアタックされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383ade38383",
+      "name": "ロックドバスター",
+      "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒「SP+1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ade38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはSユニットにアタックされない。",
+      "rule": "no_attack_from_s"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

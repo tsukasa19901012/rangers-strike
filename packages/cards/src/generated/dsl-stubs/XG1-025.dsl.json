@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-025",
+  "name": "ブラックターボ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※タクスMA 【Tハンマー】SP1",
+  "rawText": "※タクスMA 【Tハンマー】SP1",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_taxis_ma",
+      "text": "※タクスMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_54e3838fe383",
+      "name": "Tハンマー",
+      "text": "SP1",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_54e3838fe383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※タクスMA",
+      "rule": "taxis_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

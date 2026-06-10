@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-026",
+  "name": "ヤミマル",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これをラッシュしたとき、自軍ダメージが3点以下なら、1点ダメージを受ける。 【ヤミオノ】自軍ダメージが3点以下なら、これは次の能力を得る⇒「SP1」",
+  "rawText": "※これをラッシュしたとき、自軍ダメージが3点以下なら、1点ダメージを受ける。 【ヤミオノ】自軍ダメージが3点以下なら、これは次の能力を得る⇒「SP1」",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "流れ暴魔",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_fx_3_1",
+      "text": "※これをラッシュしたとき、自軍ダメージが3点以下なら、1点ダメージを受ける。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_3_1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a4e3839f",
+      "name": "ヤミオノ",
+      "text": "自軍ダメージが3点以下なら、これは次の能力を得る⇒「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

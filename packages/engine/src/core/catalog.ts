@@ -10,12 +10,13 @@ import type { SpValue } from "@rangers-strike/cards";
 import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { hasCommandForCardUse } from "../rules/restrictions";
+import { promotedKeywordBpBonus } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
 import { legend3EnemySComboDelta } from "../rules/legend3/fieldEffects";
 import { validateZordAdditionalPayment } from "../rules/mothership";
 import { collectZordMaterials, hasAllRequiredFusionMaterials, needsZordMaterial, requiresAllFusionPartners } from "../rules/zord";
 import { isShironLightRushTarget } from "../rules/shironLight";
-import { getTurnModifiers } from "../rules/turnModifiers";
+import { getAuraPowerInstanceId, getComboNumberDelta } from "../rules/turnModifierBridge";
 import { opponentInfiniteChainBlocks } from "../rules/turnModifiers";
 import { countHeldCommands } from "../rules/restrictions";
 
@@ -141,7 +142,7 @@ export function effectiveComboNumber(
   rawComboNumber: number,
   cardId?: string,
 ): number {
-  const turnDelta = getTurnModifiers(state.players[playerId]).comboNumberDelta;
+  const turnDelta = getComboNumberDelta(state.players[playerId]);
   let effective =
     rawComboNumber <= 2 ? rawComboNumber : Math.max(2, rawComboNumber - turnDelta);
   if (cardId && isSmallUnit(state.definitions, cardId)) {
@@ -173,7 +174,7 @@ export function passiveBpBonus(
     }
   }
 
-  const auraTarget = getTurnModifiers(player).auraPowerInstanceId;
+  const auraTarget = getAuraPowerInstanceId(player);
   if (
     auraTarget === instance.instanceId &&
     isSmallUnit(state.definitions, instance.cardId)
@@ -204,7 +205,8 @@ export function effectiveBp(
   return (
     instanceBp(state.definitions, instance) +
     passiveBpBonus(state, playerId, instance) +
-    passiveNamedFieldBpBonus(state, playerId, instance, "general")
+    passiveNamedFieldBpBonus(state, playerId, instance, "general") +
+    promotedKeywordBpBonus(state, playerId, instance)
   );
 }
 

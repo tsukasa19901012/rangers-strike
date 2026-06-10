@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-291",
+  "name": "気伝獣龍星王",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【大火炎】これが特徴「レッド」を持つユニットからコンビネーションするとき、敵軍バトルエリアから特徴「メカ」を持たないBP5000以下のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【大火炎】これが特徴「レッド」を持つユニットからコンビネーションするとき、敵軍バトルエリアから特徴「メカ」を持たないBP5000以下のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "獣",
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a4a7e781ab",
+      "name": "大火炎",
+      "text": "これが特徴「レッド」を持つユニットからコンビネーションするとき、敵軍バトルエリアから特徴「メカ」を持たないBP5000以下のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4a7e781ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

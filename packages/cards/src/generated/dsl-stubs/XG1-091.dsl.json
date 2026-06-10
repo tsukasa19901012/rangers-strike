@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-091",
+  "name": "ブライアン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【外された安全装置】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからナンバーにＲＣを持つSユニットを1体選び撃破してもよい。",
+  "rawText": "【外された安全装置】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからナンバーにＲＣを持つSユニットを1体選び撃破してもよい。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "人型",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "named_e5a496e38195e3828ce3819f",
+      "name": "外された安全装置",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからナンバーにＲＣを持つSユニットを1体選び撃破してもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

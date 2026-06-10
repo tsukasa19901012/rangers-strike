@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-022",
+  "name": "サイバリアン",
+  "type": "vehicle",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【サイバリアンレーザースピード】自軍ターン中、これがバトルエリアに出たとき、OTを持つ自軍コマンドを2つホールドしてもよい。そうしたとき、これにライドしているユニットは、このターン、ライドオフしなくてもＲＣの効果を発動できる。",
+  "rawText": "【サイバリアンレーザースピード】自軍ターン中、これがバトルエリアに出たとき、OTを持つ自軍コマンドを2つホールドしてもよい。そうしたとき、これにライドしているユニットは、このターン、ライドオフしなくてもＲＣの効果を発動できる。",
+  "effects": [
+    {
+      "id": "named_e382b5e382a4",
+      "name": "サイバリアンレーザースピード",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、OTを持つ自軍コマンドを2つホールドしてもよい。そうしたとき、これにライドしているユニットは、このターン、ライドオフしなくてもＲＣの効果を発動できる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b5e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

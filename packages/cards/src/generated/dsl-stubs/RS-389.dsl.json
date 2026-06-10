@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-389",
+  "name": "ゴーブルー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【人命検索】自軍捨札をすべてウラ向きにしてシャッフルしてもよい。そうしたとき、その中から相手にウラ向きのまま1枚選ばせてから、すべてオモテにする。相手の選んだカードがSユニットのカードだったなら、そのユニットカードを自分の手札に加える。",
+  "rawText": "【人命検索】自軍捨札をすべてウラ向きにしてシャッフルしてもよい。そうしたとき、その中から相手にウラ向きのまま1枚選ばせてから、すべてオモテにする。相手の選んだカードがSユニットのカードだったなら、そのユニットカードを自分の手札に加える。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e4babae591bd",
+      "name": "人命検索",
+      "text": "自軍捨札をすべてウラ向きにしてシャッフルしてもよい。そうしたとき、その中から相手にウラ向きのまま1枚選ばせてから、すべてオモテにする。相手の選んだカードがSユニットのカードだったなら、そのユニットカードを自分の手札に加える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4babae591bd",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

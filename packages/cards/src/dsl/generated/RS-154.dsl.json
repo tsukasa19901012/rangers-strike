@@ -1,0 +1,56 @@
+{
+  "id": "RS-154",
+  "name": "ガオシャーク",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 4,
+  "bp": 4000,
+  "size": "M",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。※これは敵軍バトルエリアのSユニットにアタックできない。※これは敵軍ラッシュエリアのSユニットにアタックできる。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。※これは敵軍バトルエリアのSユニットにアタックできない。※これは敵軍ラッシュエリアのSユニットにアタックできる。",
+  "features": [
+    "獣"
+  ],
+  "imageUrl": "/cards/legend3/RS-154.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-154.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    },
+    {
+      "kind": "note",
+      "text": "※これは敵軍バトルエリアのSユニットにアタックできない",
+      "rule": "cannot_attack_enemy_battle_s"
+    },
+    {
+      "kind": "note",
+      "text": "※これは敵軍ラッシュエリアのSユニットにアタックできる",
+      "rule": "can_attack_enemy_rush_s"
+    }
+  ],
+  "effects": [
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

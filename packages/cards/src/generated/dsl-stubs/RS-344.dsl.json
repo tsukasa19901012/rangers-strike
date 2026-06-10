@@ -1,0 +1,79 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-344",
+  "name": "天空勇者ウルザードファイヤー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「天空聖者ブレイジェル」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【ブレイジングストームスラッシュ】これはアタックするときリリース状態の自軍コマンド1つにつきBP＋1000される。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「天空聖者ブレイジェル」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【ブレイジングストームスラッシュ】これはアタックするときリリース状態の自軍コマンド1つにつきBP＋1000される。",
+  "bp": 7500,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "男",
+    "魔法",
+    "天空聖者"
+  ],
+  "effects": [
+    {
+      "id": "recruit_named_e5a4a9e7a9bae88196e88085_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「天空聖者ブレイジェル」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
+    },
+    {
+      "id": "named_e38396e383ac",
+      "name": "ブレイジングストームスラッシュ",
+      "text": "これはアタックするときリリース状態の自軍コマンド1つにつきBP＋1000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38396e383ac",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

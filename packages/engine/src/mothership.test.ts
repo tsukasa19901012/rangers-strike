@@ -8,7 +8,7 @@ import {
   applyMothershipHolds,
   collectMothershipEligibleCommands,
 } from "./rules/mothership";
-import { createTestState, heldEtCommand, heldOtCommand, inst } from "./testing/fixtures";
+import { createTestState, heldEtCommand, heldOtCommand, inst, withCostWindow } from "./testing/fixtures";
 
 function unwrap(result: ReturnType<typeof applyAction>) {
   expect(result.ok).toBe(true);
@@ -40,7 +40,7 @@ describe("jaguar mothership (RS-076)", () => {
         rush: [mothership],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
         command: [heldEtCommand("held"), etCmd],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
       },
     });
     state.definitions["RS-075"] = rs075Def;
@@ -312,7 +312,7 @@ describe("dekabase mothership (RS-105)", () => {
         rush: [mothership, sUnit],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
         command: [heldOtCommand("held"), otCmd],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
       },
     });
 

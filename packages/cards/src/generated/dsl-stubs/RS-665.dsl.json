@@ -1,0 +1,46 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-665",
+  "name": "キョウレツオー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―キシャモス＋ティライン＋ケライン 【キョウレツエクスプレス】 自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札の上から1枚をオモテにして、それが特徴「炎神」または「恐竜」を持つカードだったなら、このターン、これは「SP1」になる。その後、オモテにしたカードは山札の下に戻す。",
+  "rawText": "合体―キシャモス＋ティライン＋ケライン 【キョウレツエクスプレス】 自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札の上から1枚をオモテにして、それが特徴「炎神」または「恐竜」を持つカードだったなら、このターン、これは「SP1」になる。その後、オモテにしたカードは山札の下に戻す。",
+  "bp": 16000,
+  "size": "L",
+  "sp": "special",
+  "features": [
+    "恐竜",
+    "人型",
+    "炎神"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e382ade383a7",
+      "name": "キョウレツエクスプレス",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札の上から1枚をオモテにして、それが特徴「炎神」または「恐竜」を持つカードだったなら、このターン、これは「SP1」になる。その後、オモテにしたカードは山札の下に戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

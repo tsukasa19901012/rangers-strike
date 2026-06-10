@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-690",
+  "name": "スペードエース",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※タクスET 【スペードアーツ】敵軍バトルエリアと敵軍ラッシュエリアから、同じBPを持つSユニットを1体ずつ選んでもよい。そうしたとき、選んだユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "※タクスET 【スペードアーツ】敵軍バトルエリアと敵軍ラッシュエリアから、同じBPを持つSユニットを1体ずつ選んでもよい。そうしたとき、選んだユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "メカ",
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_taxis_et",
+      "text": "※タクスET",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e3839a",
+      "name": "スペードアーツ",
+      "text": "敵軍バトルエリアと敵軍ラッシュエリアから、同じBPを持つSユニットを1体ずつ選んでもよい。そうしたとき、選んだユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e3839a",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※タクスET",
+      "rule": "taxis_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

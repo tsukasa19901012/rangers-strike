@@ -1,0 +1,67 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-025",
+  "name": "ゴセイグランド",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―グランディオン＋シーレオン＋スカイオン ※リードMA 【ここからは私のターンだ】これが自軍バトルエリアにある間、敵軍バトルフェイズ中、自分がダメージを受けたとき、自分の手札が1枚以上あればすべて捨札にしてもよい。そうしたとき、そのバトルフェイズを終了する。",
+  "rawText": "合体―グランディオン＋シーレオン＋スカイオン ※リードMA 【ここからは私のターンだ】これが自軍バトルエリアにある間、敵軍バトルフェイズ中、自分がダメージを受けたとき、自分の手札が1枚以上あればすべて捨札にしてもよい。そうしたとき、そのバトルフェイズを終了する。",
+  "bp": 9000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "魔法",
+    "獣",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_lead_ma",
+      "text": "※リードMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38193e38193",
+      "name": "ここからは私のターンだ",
+      "text": "これが自軍バトルエリアにある間、敵軍バトルフェイズ中、自分がダメージを受けたとき、自分の手札が1枚以上あればすべて捨札にしてもよい。そうしたとき、そのバトルフェイズを終了する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38193e38193",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※リードMA",
+      "rule": "lead_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-091",
+  "name": "ゾル大佐",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【戦闘員の統率】これが自軍エリアにある間、自軍バトルエリアにある特徴「戦闘員」を持つ自軍SユニットのBPは、自軍バトルエリアにある特徴「戦闘員」を持つ自軍Sユニットの本来のBPをすべて「＋」した値になる。また、特徴「戦闘員」を持つ自軍Sユニットは、BP3000のとき「SP1」になる。",
+  "rawText": "【戦闘員の統率】これが自軍エリアにある間、自軍バトルエリアにある特徴「戦闘員」を持つ自軍SユニットのBPは、自軍バトルエリアにある特徴「戦闘員」を持つ自軍Sユニットの本来のBPをすべて「＋」した値になる。また、特徴「戦闘員」を持つ自軍Sユニットは、BP3000のとき「SP1」になる。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "ショッカー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "named_e688a6e99798",
+      "name": "戦闘員の統率",
+      "text": "これが自軍エリアにある間、自軍バトルエリアにある特徴「戦闘員」を持つ自軍SユニットのBPは、自軍バトルエリアにある特徴「戦闘員」を持つ自軍Sユニットの本来のBPをすべて「＋」した値になる。また、特徴「戦闘員」を持つ自軍Sユニットは、BP3000のとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

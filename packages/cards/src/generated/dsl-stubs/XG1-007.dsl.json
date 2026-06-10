@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-007",
+  "name": "チェンジドラゴン（XG）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※コールET 【チェンジソード】「SP1」",
+  "rawText": "※コールET 【チェンジソード】「SP1」",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "レッド",
+    "男",
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_call_et",
+      "text": "※コールET",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38381e382a7",
+      "name": "チェンジソード",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※コールET",
+      "rule": "call_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

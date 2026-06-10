@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-461",
+  "name": "花忍者スイレン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※スクラム （これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【忍法花夢幻】敵軍Sユニットを1体選び、特徴を1つ宣言してもよい。そうしたとき、このターン、宣言した特徴を選んだユニットに追加する。",
+  "rawText": "※スクラム （これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【忍法花夢幻】敵軍Sユニットを1体選び、特徴を1つ宣言してもよい。そうしたとき、このターン、宣言した特徴を選んだユニットに追加する。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "女",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_scrum",
+      "text": "※スクラム （これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "scrum",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5bf8de6b395",
+      "name": "忍法花夢幻",
+      "text": "敵軍Sユニットを1体選び、特徴を1つ宣言してもよい。そうしたとき、このターン、宣言した特徴を選んだユニットに追加する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5bf8de6b395",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※スクラム （これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "rule": "scrum"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

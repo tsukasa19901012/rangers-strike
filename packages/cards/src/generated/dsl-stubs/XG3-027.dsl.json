@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-027",
+  "name": "スティラコサウルス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ファイヤーボールクラッシュ】これをラッシュしたとき、敵軍バトルエリアからBP3000以下のユニットを3体まで選び撃破してもよい。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ファイヤーボールクラッシュ】これをラッシュしたとき、敵軍バトルエリアからBP3000以下のユニットを3体まで選び撃破してもよい。",
+  "bp": 7000,
+  "size": "L",
+  "features": [
+    "恐竜"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38395e382a1",
+      "name": "ファイヤーボールクラッシュ",
+      "text": "これをラッシュしたとき、敵軍バトルエリアからBP3000以下のユニットを3体まで選び撃破してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e382a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

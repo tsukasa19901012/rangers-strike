@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-570",
+  "name": "デカバイク",
+  "type": "vehicle",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※DAを持たない特徴「人型」を持つLユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。 ※このビークルは合体ユニットとしてつかえる。 【ウィリー走行】これにライドしているLユニットは、必要パワーに「＋」を持たないユニットにアタックされない。",
+  "rawText": "※DAを持たない特徴「人型」を持つLユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。 ※このビークルは合体ユニットとしてつかえる。 【ウィリー走行】これにライドしているLユニットは、必要パワーに「＋」を持たないユニットにアタックされない。",
+  "effects": [
+    {
+      "id": "note_da_l_rc",
+      "text": "※DAを持たない特徴「人型」を持つLユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_da_l_rc",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_fusion_vehicle_alias",
+      "text": "※このビークルは合体ユニットとしてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "fusion_vehicle_alias",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a6e382a3",
+      "name": "ウィリー走行",
+      "text": "これにライドしているLユニットは、必要パワーに「＋」を持たないユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a6e382a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このビークルは合体ユニットとしてつかえる。",
+      "rule": "fusion_vehicle_alias"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

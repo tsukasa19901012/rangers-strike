@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-051",
+  "name": "仮面ライダー王蛇（XG3）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【ここが祭りの場所か】このユニットは、特徴「仮面ライダー」を持つオモテ向きの敵軍パワー1枚につきBP+1000される。",
+  "rawText": "【ここが祭りの場所か】このユニットは、特徴「仮面ライダー」を持つオモテ向きの敵軍パワー1枚につきBP+1000される。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "named_e38193e38193",
+      "name": "ここが祭りの場所か",
+      "text": "このユニットは、特徴「仮面ライダー」を持つオモテ向きの敵軍パワー1枚につきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38193e38193",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

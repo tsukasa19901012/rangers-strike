@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-050",
+  "name": "ロボイザー",
+  "type": "vehicle",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※自軍ターン開始時、自分の手札から「アクロバッター」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。 【後部バルカン砲】ライドされているこのビークルが自軍バトルエリアからラッシュエリアに戻るとき、敵軍バトルエリアからBP3000のSユニットを1体選び、撃破してもよい。",
+  "rawText": "※自軍ターン開始時、自分の手札から「アクロバッター」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。 【後部バルカン砲】ライドされているこのビークルが自軍バトルエリアからラッシュエリアに戻るとき、敵軍バトルエリアからBP3000のSユニットを1体選び、撃破してもよい。",
+  "effects": [
+    {
+      "id": "note_named_e280bbe887aa",
+      "text": "※自軍ターン開始時、自分の手札から「アクロバッター」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5be8ce983a8",
+      "name": "後部バルカン砲",
+      "text": "ライドされているこのビークルが自軍バトルエリアからラッシュエリアに戻るとき、敵軍バトルエリアからBP3000のSユニットを1体選び、撃破してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5be8ce983a8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

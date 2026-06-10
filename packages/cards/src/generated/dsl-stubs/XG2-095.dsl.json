@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-095",
+  "name": "ブラックビート",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※レジスト 【スティンガービュート】敵軍バトルエリアから、「BP」「必要パワーの数字」「ナンバーの数字」の3つのうちのいずれかの値が、このユニットよりも低いユニットを1体選び撃破してもよい。そうして撃破したユニットの3つの値すべてがこのユニットよりも低かったなら、相手に1点ダメージを与える。",
+  "rawText": "※レジスト 【スティンガービュート】敵軍バトルエリアから、「BP」「必要パワーの数字」「ナンバーの数字」の3つのうちのいずれかの値が、このユニットよりも低いユニットを1体選び撃破してもよい。そうして撃破したユニットの3つの値すべてがこのユニットよりも低かったなら、相手に1点ダメージを与える。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": 3,
+  "features": [
+    "メカ",
+    "昆虫",
+    "ブラック",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e38386",
+      "name": "スティンガービュート",
+      "text": "敵軍バトルエリアから、「BP」「必要パワーの数字」「ナンバーの数字」の3つのうちのいずれかの値が、このユニットよりも低いユニットを1体選び撃破してもよい。そうして撃破したユニットの3つの値すべてがこのユニットよりも低かったなら、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

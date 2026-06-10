@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-038",
+  "name": "凱聖バルスキー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【部下の修理と改造】 これが自軍エリアにある間、自軍ラッシュフェイズ中、DAを持つ自軍コマンドを3つホールドしてもよい。そうしたとき、自軍捨札からDAを持ち特徴「メカ」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出す。",
+  "rawText": "【部下の修理と改造】 これが自軍エリアにある間、自軍ラッシュフェイズ中、DAを持つ自軍コマンドを3つホールドしてもよい。そうしたとき、自軍捨札からDAを持ち特徴「メカ」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出す。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "戦闘ロボット軍団",
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e983a8e4b88b",
+      "name": "部下の修理と改造",
+      "text": "これが自軍エリアにある間、自軍ラッシュフェイズ中、DAを持つ自軍コマンドを3つホールドしてもよい。そうしたとき、自軍捨札からDAを持ち特徴「メカ」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e983a8e4b88b",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-226",
+  "name": "仮面ライダー歌舞鬼",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【音撃打・業火絢爛】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアからDAを持つ自軍ユニットを1体選び捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
+  "rawText": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【音撃打・業火絢爛】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアからDAを持つ自軍ユニットを1体選び捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e99fb3e69283",
+      "name": "音撃打・業火絢爛",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアからDAを持つ自軍ユニットを1体選び捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "controller"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

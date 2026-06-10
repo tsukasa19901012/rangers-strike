@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XP-005",
+  "name": "仮面ライダーディケイドCF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※これがユニットでなくなるとき、オモテ向きの自軍パワーから特徴「仮面ライダー」を持つカードを1枚選び捨札にすれば、その場に留まる。 【全てを集めた先にあるもの】自軍ターン中、これがバトルエリアに出たとき、オモテ向きの自軍パワーから効果名「アタックライド」を持つカードを1枚選んでもよい。そうしたとき、選んだカードの「アタックライド」の効果を、このユニットの効果としてナンバーに関係なく発動する。",
+  "rawText": "※これがユニットでなくなるとき、オモテ向きの自軍パワーから特徴「仮面ライダー」を持つカードを1枚選び捨札にすれば、その場に留まる。 【全てを集めた先にあるもの】自軍ターン中、これがバトルエリアに出たとき、オモテ向きの自軍パワーから効果名「アタックライド」を持つカードを1枚選んでもよい。そうしたとき、選んだカードの「アタックライド」の効果を、このユニットの効果としてナンバーに関係なく発動する。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ディケイドライバー"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "特徴「ディケイドライバー」を持つ自軍ユニット1体をパワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これがユニットでなくなるとき、オモテ向きの自軍パワーから特徴「仮面ライダー」を持つカードを1枚選び捨札にすれば、その場に留まる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e585a8e381a6",
+      "name": "全てを集めた先にあるもの",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、オモテ向きの自軍パワーから効果名「アタックライド」を持つカードを1枚選んでもよい。そうしたとき、選んだカードの「アタックライド」の効果を、このユニットの効果としてナンバーに関係なく発動する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e585a8e381a6",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

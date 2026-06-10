@@ -1,0 +1,80 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-048",
+  "name": "仮面ライダースーパー1・EH",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※モーフ 【エレキ光線】敵軍Sユニットを1体選んでもよい。そうしたとき、次の相手ターン、選んだユニットと隣り合ったユニットは、そのターンを終えるとき撃破される。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【エレキ光線】敵軍Ｓユニットを１体選んでもよい。次の相手のターン、選んだユニットがバトルエリアにあるとき、選んだユニットと隣り合っているユニットは、そのターンを終えるとき撃破される。",
+  "rawText": "※モーフ 【エレキ光線】敵軍Sユニットを1体選んでもよい。そうしたとき、次の相手ターン、選んだユニットと隣り合ったユニットは、そのターンを終えるとき撃破される。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【エレキ光線】敵軍Ｓユニットを１体選んでもよい。次の相手のターン、選んだユニットがバトルエリアにあるとき、選んだユニットと隣り合っているユニットは、そのターンを終えるとき撃破される。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間",
+    "ファイブハンド"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a8e383ac",
+      "name": "エレキ光線",
+      "text": "敵軍Sユニットを1体選んでもよい。そうしたとき、次の相手ターン、選んだユニットと隣り合ったユニットは、そのターンを終えるとき撃破される。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a8e383ac",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a8e383ac_2",
+      "name": "エレキ光線",
+      "text": "敵軍Ｓユニットを１体選んでもよい。次の相手のターン、選んだユニットがバトルエリアにあるとき、選んだユニットと隣り合っているユニットは、そのターンを終えるとき撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a8e383ac",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

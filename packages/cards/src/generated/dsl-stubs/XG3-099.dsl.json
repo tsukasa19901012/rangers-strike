@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-099",
+  "name": "ロボタックSM",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札から「ロボタック」のカードを1枚選び、自軍ラッシュエリアに出す。 【RKバー】 敵軍バトルエリアからSユニットを1体選んでもよい。そうしたとき、選んだユニットは、次の相手ターン、アタックもストライクもできない。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札から「ロボタック」のカードを1枚選び、自軍ラッシュエリアに出す。 【RKバー】 敵軍バトルエリアからSユニットを1体選んでもよい。そうしたとき、選んだユニットは、次の相手ターン、アタックもストライクもできない。",
+  "bp": 4500,
+  "size": "S",
+  "sp": 1,
+  "comboNumber": 5,
+  "features": [
+    "メカ",
+    "人型",
+    "スペシャルモード"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札から「ロボタック」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "rk",
+      "name": "RKバー",
+      "text": "敵軍バトルエリアからSユニットを1体選んでもよい。そうしたとき、選んだユニットは、次の相手ターン、アタックもストライクもできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_rk",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

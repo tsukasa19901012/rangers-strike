@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "PK-004",
+  "name": "仮面ライダー電王SF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【俺の必殺技・パートⅡ】これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
+  "rawText": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【俺の必殺技・パートⅡ】これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "DEN-O"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_strike_if_enemy_battle",
+      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_if_enemy_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "ii",
+      "name": "俺の必殺技・パートⅡ",
+      "text": "これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_ii",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
+      "rule": "no_strike_if_enemy_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

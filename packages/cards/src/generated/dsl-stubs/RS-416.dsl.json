@@ -1,0 +1,73 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-416",
+  "name": "冥府神トード",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "2+",
+  "text": "※これは自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。 【魂のコレクション】自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンにダメージになっているカードがあれば1枚選び捨札にしてもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※これは自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。 【魂のコレクション】自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンにダメージになっているカードがあれば1枚選び捨札にしてもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 5000,
+  "size": "L",
+  "features": [
+    "冥府神",
+    "五武神",
+    "男",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_s_1",
+      "text": "※これは自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_discard_rush_s_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9ad82e381ae",
+      "name": "魂のコレクション",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンにダメージになっているカードがあれば1枚選び捨札にしてもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "power"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

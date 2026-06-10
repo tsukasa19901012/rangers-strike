@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-068",
+  "name": "仮面ライダー王蛇",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【ベノクラッシュ】「ベノスネーカー」からコンビネーションしたとき発動できる⇒敵軍コマンドゾーンから、ユニットカードを1枚選び捨札にしてもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のカードしか選べない。",
+  "rawText": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【ベノクラッシュ】「ベノスネーカー」からコンビネーションしたとき発動できる⇒敵軍コマンドゾーンから、ユニットカードを1枚選び捨札にしてもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のカードしか選べない。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_strike_if_enemy_battle",
+      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_if_enemy_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38399e3838e",
+      "name": "ベノクラッシュ",
+      "text": "「ベノスネーカー」からコンビネーションしたとき発動できる⇒敵軍コマンドゾーンから、ユニットカードを1枚選び捨札にしてもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のカードしか選べない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38399e3838e",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
+      "rule": "no_strike_if_enemy_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

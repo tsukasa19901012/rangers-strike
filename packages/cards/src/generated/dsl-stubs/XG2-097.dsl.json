@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-097",
+  "name": "ビーファイターゲンジ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【ライトニングキャノン】自軍コマンドゾーンから、カテゴリを2つ以上持つカードを1枚選び、自分の手札に戻してもよい。そうしたとき、戻したカードの持つカテゴリと同じカテゴリを1つ以上持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "【ライトニングキャノン】自軍コマンドゾーンから、カテゴリを2つ以上持つカードを1枚選び、自分の手札に戻してもよい。そうしたとき、戻したカードの持つカテゴリと同じカテゴリを1つ以上持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "メカ",
+    "昆虫",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライトニングキャノン",
+      "text": "自軍コマンドゾーンから、カテゴリを2つ以上持つカードを1枚選び、自分の手札に戻してもよい。そうしたとき、戻したカードの持つカテゴリと同じカテゴリを1つ以上持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

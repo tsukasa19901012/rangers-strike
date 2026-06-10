@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-494",
+  "name": "縁切り忍者シラーンス",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【宇宙忍法・縁切り】敵軍バトルエリアから、ＣＮの数字が昇順（例:1、2や3、4など）で隣り合っている2体のSユニットを選んでもよい。そうしたとき、選んだ2体でバトルさせる。",
+  "rawText": "【宇宙忍法・縁切り】敵軍バトルエリアから、ＣＮの数字が昇順（例:1、2や3、4など）で隣り合っている2体のSユニットを選んでもよい。そうしたとき、選んだ2体でバトルさせる。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "怪人",
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "named_e5ae87e5ae99",
+      "name": "宇宙忍法・縁切り",
+      "text": "敵軍バトルエリアから、ＣＮの数字が昇順（例:1、2や3、4など）で隣り合っている2体のSユニットを選んでもよい。そうしたとき、選んだ2体でバトルさせる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5ae87e5ae99",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

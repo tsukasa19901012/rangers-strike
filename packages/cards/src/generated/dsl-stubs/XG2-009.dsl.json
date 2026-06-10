@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-009",
+  "name": "コンピュータードラゴン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【行動予測】 これが自軍バトルエリアにある間、敵軍バトルフェイズ開始時、次の効果を発動できる⇒敵軍Sユニットを1体選び、アタックかストライクのどちらかを宣言する。選んだユニットは、そのターン、宣言した行動を行えない。",
+  "rawText": "【行動予測】 これが自軍バトルエリアにある間、敵軍バトルフェイズ開始時、次の効果を発動できる⇒敵軍Sユニットを1体選び、アタックかストライクのどちらかを宣言する。選んだユニットは、そのターン、宣言した行動を行えない。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "獣",
+    "ドラゴン",
+    "怪人"
+  ],
+  "effects": [
+    {
+      "id": "named_e8a18ce58b95",
+      "name": "行動予測",
+      "text": "これが自軍バトルエリアにある間、敵軍バトルフェイズ開始時、次の効果を発動できる⇒敵軍Sユニットを1体選び、アタックかストライクのどちらかを宣言する。選んだユニットは、そのターン、宣言した行動を行えない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8a18ce58b95",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

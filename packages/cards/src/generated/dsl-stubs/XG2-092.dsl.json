@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-092",
+  "name": "ナイトファイヤー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "※レジスト 【パイルトルネード】「SP1」相手は自分自身のユニットを1体選び、自分自身のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
+  "rawText": "※レジスト 【パイルトルネード】「SP1」相手は自分自身のユニットを1体選び、自分自身のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "メカ",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38391e382a4",
+      "name": "パイルトルネード",
+      "text": "「SP1」相手は自分自身のユニットを1体選び、自分自身のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-319",
+  "name": "仮面ライダーイクサBM",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これをラッシュしたとき、自軍コマンドゾーンのカードを１枚選び捨札にしてもよい。そうしたとき、自軍山札を見て、必要パワーの数字が「1」か「9」か「3」のカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。その後、山札をシャッフルする。 【イクサ・ジャッジメント】敵軍バトルエリアから、BPが本来のBPでないユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "※これをラッシュしたとき、自軍コマンドゾーンのカードを１枚選び捨札にしてもよい。そうしたとき、自軍山札を見て、必要パワーの数字が「1」か「9」か「3」のカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。その後、山札をシャッフルする。 【イクサ・ジャッジメント】敵軍バトルエリアから、BPが本来のBPでないユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "メカ",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これをラッシュしたとき、自軍コマンドゾーンのカードを１枚選び捨札にしてもよい。そうしたとき、自軍山札を見て、必要パワーの数字が「1」か「9」か「3」のカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a4e382af",
+      "name": "イクサ・ジャッジメント",
+      "text": "敵軍バトルエリアから、BPが本来のBPでないユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a4e382af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-471",
+  "name": "グランドライナー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍コマンドゾーンに特徴「メカ」を持つMユニットのカードがあれば、その中から好きな枚数選び、自軍ラッシュエリアに出してもよい。 【グランドストーム】これは自軍コマンドゾーンに特徴「メカ」を持つMユニットのカードが5枚あれば「SP1」になる。",
+  "rawText": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍コマンドゾーンに特徴「メカ」を持つMユニットのカードがあれば、その中から好きな枚数選び、自軍ラッシュエリアに出してもよい。 【グランドストーム】これは自軍コマンドゾーンに特徴「メカ」を持つMユニットのカードが5枚あれば「SP1」になる。",
+  "bp": 7000,
+  "size": "XL",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe695b5",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍コマンドゾーンに特徴「メカ」を持つMユニットのカードがあれば、その中から好きな枚数選び、自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe695b5",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b0e383a9",
+      "name": "グランドストーム",
+      "text": "これは自軍コマンドゾーンに特徴「メカ」を持つMユニットのカードが5枚あれば「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

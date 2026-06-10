@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
 import { createTestState, heldEtCommand, heldWbCommand, inst } from "./testing/fixtures";
+import { getComboNumberDelta } from "./rules/turnModifierBridge";
 
 function def(id: string) {
   const card = legend1Catalog.cards.find((c) => c.id === id);
@@ -190,7 +191,12 @@ describe("dynamite power RS-007", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    expect(result.state.players.player1.turnModifiers?.comboNumberDelta).toBe(1);
+    expect(getComboNumberDelta(result.state.players.player1)).toBe(1);
+    expect(
+      result.state.players.player1.modifiers?.some(
+        (m) => m.kind === "rule" && m.ruleId === "combo_number_delta",
+      ),
+    ).toBe(true);
   });
 
   it("opens denji machine reveal when deck has 3+ cards", () => {

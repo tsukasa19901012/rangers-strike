@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-536",
+  "name": "チェンジグリフォン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【グリフォンマグマギャラクシィ】自分の手札が1枚以上あれば、その枚数と同じ数の必要パワーの数字を持つ敵軍バトルエリアのSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "【グリフォンマグマギャラクシィ】自分の手札が1枚以上あれば、その枚数と同じ数の必要パワーの数字を持つ敵軍バトルエリアのSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b0e383aa",
+      "name": "グリフォンマグマギャラクシィ",
+      "text": "自分の手札が1枚以上あれば、その枚数と同じ数の必要パワーの数字を持つ敵軍バトルエリアのSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b0e383aa",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

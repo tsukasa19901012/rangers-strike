@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-067",
+  "name": "インビジブル",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、敵軍ターン中、撃破されて捨札になるとき、かわりに持ち主のパワーゾーンに送る。このカードに重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+  "rawText": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、敵軍ターン中、撃破されて捨札になるとき、かわりに持ち主のパワーゾーンに送る。このカードに重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-029",
+  "name": "ゲキバイオレット（XG4）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【天地転変打】「SP1」特徴「激気」を持つ自軍MユニットのBPを合計して、その合計以下のBPを持つ敵軍ユニットを敵軍バトルエリアから1体選び撃破する。",
+  "rawText": "【天地転変打】「SP1」特徴「激気」を持つ自軍MユニットのBPを合計して、その合計以下のBPを持つ敵軍ユニットを敵軍バトルエリアから1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": 2,
+  "features": [
+    "バイオレット",
+    "男",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "named_e5a4a9e59cb0",
+      "name": "天地転変打",
+      "text": "「SP1」特徴「激気」を持つ自軍MユニットのBPを合計して、その合計以下のBPを持つ敵軍ユニットを敵軍バトルエリアから1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

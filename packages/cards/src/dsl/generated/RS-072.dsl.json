@@ -1,0 +1,35 @@
+{
+  "id": "RS-072",
+  "name": "無限連鎖カード",
+  "type": "operation",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "このターン、相手の常駐オペレーションは無効になり、相手はカウンターを発動できない。",
+  "rawText": "このターン、相手の常駐オペレーションは無効になり、相手はカウンターを発動できない。",
+  "effectId": "infinite_chain",
+  "imageUrl": "/cards/legend2/RS-072.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-072.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "infinite_chain",
+      "text": "このターン、相手の常駐オペレーションは無効になり、相手はカウンターを発動できない。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "infinite_chain"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

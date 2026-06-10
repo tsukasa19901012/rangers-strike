@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-500",
+  "name": "ゲキチョッパー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【サイブレードカッター】自分の手札から特徴「激気」を持つユニットカードを1枚選び、相手に見せてもよい。そうしたとき、このターン、このユニットのBPは、見せたカードのBPを「＋」した値になり、BP5000以上のとき「SP1」になる。",
+  "rawText": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【サイブレードカッター】自分の手札から特徴「激気」を持つユニットカードを1枚選び、相手に見せてもよい。そうしたとき、このターン、このユニットのBPは、見せたカードのBPを「＋」した値になり、BP5000以上のとき「SP1」になる。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "ホワイト",
+    "男",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b5e382a4",
+      "name": "サイブレードカッター",
+      "text": "自分の手札から特徴「激気」を持つユニットカードを1枚選び、相手に見せてもよい。そうしたとき、このターン、このユニットのBPは、見せたカードのBPを「＋」した値になり、BP5000以上のとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-038",
+  "name": "イカダイカイオー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―ダイカイオーヒガシ+烏賊折神 【槍烏賊突貫】これをラッシュしたとき、BP5000以下の敵軍ユニットを1体選び、持ち主の手札に戻してもよい。そうしたとき、相手は自分自身の手札を1枚選び捨札にする。",
+  "rawText": "合体―ダイカイオーヒガシ+烏賊折神 【槍烏賊突貫】これをラッシュしたとき、BP5000以下の敵軍ユニットを1体選び、持ち主の手札に戻してもよい。そうしたとき、相手は自分自身の手札を1枚選び捨札にする。",
+  "bp": 10000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "侍",
+    "人型",
+    "電子モヂカラ"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e6a78de7838f",
+      "name": "槍烏賊突貫",
+      "text": "これをラッシュしたとき、BP5000以下の敵軍ユニットを1体選び、持ち主の手札に戻してもよい。そうしたとき、相手は自分自身の手札を1枚選び捨札にする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

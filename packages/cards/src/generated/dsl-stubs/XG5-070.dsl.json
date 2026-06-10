@@ -1,0 +1,53 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-070",
+  "name": "ニビイロヘビ",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。 【偵察】これが自軍エリアにある間、敵軍SユニットがＮＣまたはＲＣまたはＪＣの効果を発動させたとき、その効果を実行する前に、これをホールドしてもよい。そうしたとき、そのNCまたはRCまたはJCの効果を無効にする。",
+  "rawText": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。 【偵察】これが自軍エリアにある間、敵軍SユニットがＮＣまたはＲＣまたはＪＣの効果を発動させたとき、その効果を実行する前に、これをホールドしてもよい。そうしたとき、そのNCまたはRCまたはJCの効果を無効にする。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "ディスクアニマル"
+  ],
+  "effects": [
+    {
+      "id": "note_ma_bp_10",
+      "text": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_ma_bp_10",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e581b5e5af9f",
+      "name": "偵察",
+      "text": "これが自軍エリアにある間、敵軍SユニットがＮＣまたはＲＣまたはＪＣの効果を発動させたとき、その効果を実行する前に、これをホールドしてもよい。そうしたとき、そのNCまたはRCまたはJCの効果を無効にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e581b5e5af9f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

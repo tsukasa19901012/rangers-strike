@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-039",
+  "name": "ダイゴヨウ",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【秘伝ディスク乱れ撃ち】これをラッシュしたとき、自分の手札からオペレーションカードを1枚選び捨札にしてもよい。そうしたとき、相手は自分自身の手札を1枚選び山札に戻してシャッフルする。",
+  "rawText": "【秘伝ディスク乱れ撃ち】これをラッシュしたとき、自分の手札からオペレーションカードを1枚選び捨札にしてもよい。そうしたとき、相手は自分自身の手札を1枚選び山札に戻してシャッフルする。",
+  "bp": 4000,
+  "size": "L",
+  "features": [
+    "人型",
+    "電子モヂカラ"
+  ],
+  "effects": [
+    {
+      "id": "named_e7a798e4bc9d",
+      "name": "秘伝ディスク乱れ撃ち",
+      "text": "これをラッシュしたとき、自分の手札からオペレーションカードを1枚選び捨札にしてもよい。そうしたとき、相手は自分自身の手札を1枚選び山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7a798e4bc9d",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

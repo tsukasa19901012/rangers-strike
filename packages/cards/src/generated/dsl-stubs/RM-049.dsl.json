@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-049",
+  "name": "隊員コード011 サラ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【ディクテイター】敵軍コマンドゾーンから、DAまたはOTを持つカードを1枚選び、持ち主のパワーゾーンに送る。（この効果は、特徴「スワット」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）",
+  "rawText": "【ディクテイター】敵軍コマンドゾーンから、DAまたはOTを持つカードを1枚選び、持ち主のパワーゾーンに送る。（この効果は、特徴「スワット」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）",
+  "bp": 1000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": 2,
+  "features": [
+    "女",
+    "警察",
+    "スワット"
+  ],
+  "effects": [
+    {
+      "id": "named_e38387e382a3",
+      "name": "ディクテイター",
+      "text": "敵軍コマンドゾーンから、DAまたはOTを持つカードを1枚選び、持ち主のパワーゾーンに送る。（この効果は、特徴「スワット」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38387e382a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

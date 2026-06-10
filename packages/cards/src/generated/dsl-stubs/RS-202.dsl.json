@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-202",
+  "name": "ピンクファイブ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【ピンクバリヤー】次の相手ターン、自軍パワーゾーンのカードをウラ返してダメージにするとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットをすべて撃破する。",
+  "rawText": "【ピンクバリヤー】次の相手ターン、自軍パワーゾーンのカードをウラ返してダメージにするとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットをすべて撃破する。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e38394e383b3",
+      "name": "ピンクバリヤー",
+      "text": "次の相手ターン、自軍パワーゾーンのカードをウラ返してダメージにするとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットをすべて撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38394e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

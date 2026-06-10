@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-088",
+  "name": "変幻鎧将ビーザック",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは敵軍Sユニットにアタックされない。 【ハードックショッカー】これが自軍の手札にある間、レジストまたはウイングを持つ敵軍Sユニットがラッシュされたとき、DAを持つ自軍コマンドを1つホールドしてから、これを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットをホールドする。",
+  "rawText": "※これは敵軍Sユニットにアタックされない。 【ハードックショッカー】これが自軍の手札にある間、レジストまたはウイングを持つ敵軍Sユニットがラッシュされたとき、DAを持つ自軍コマンドを1つホールドしてから、これを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットをホールドする。",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "昆虫",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_attack_from_enemy_s",
+      "text": "※これは敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_enemy_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3838fe383bc",
+      "name": "ハードックショッカー",
+      "text": "これが自軍の手札にある間、レジストまたはウイングを持つ敵軍Sユニットがラッシュされたとき、DAを持つ自軍コマンドを1つホールドしてから、これを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットをホールドする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838fe383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍Sユニットにアタックされない。",
+      "rule": "no_attack_from_enemy_s"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

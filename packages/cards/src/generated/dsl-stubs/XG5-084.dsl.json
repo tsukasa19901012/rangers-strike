@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-084",
+  "name": "仮面ライダーW・CJ（XG5）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※モーフ 【『お前の罪を数えろ』】これは自軍捨札にSユニットのカードが5枚以上あれば、次の相手ターン中、次の効果を得る⇒これ以外のSユニットがアタックされたとき、アタックされたユニットのかわりにこのユニットがバトルしてもよい。そうしたとき、そのバトル中、これはBP+3000される。",
+  "rawText": "※モーフ 【『お前の罪を数えろ』】これは自軍捨札にSユニットのカードが5枚以上あれば、次の相手ターン中、次の効果を得る⇒これ以外のSユニットがアタックされたとき、アタックされたユニットのかわりにこのユニットがバトルしてもよい。そうしたとき、そのバトル中、これはBP+3000される。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ダブルドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3808ee3818a",
+      "name": "『お前の罪を数えろ』",
+      "text": "これは自軍捨札にSユニットのカードが5枚以上あれば、次の相手ターン中、次の効果を得る⇒これ以外のSユニットがアタックされたとき、アタックされたユニットのかわりにこのユニットがバトルしてもよい。そうしたとき、そのバトル中、これはBP+3000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3808ee3818a",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

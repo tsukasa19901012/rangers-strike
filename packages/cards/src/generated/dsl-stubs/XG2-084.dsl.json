@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-084",
+  "name": "バビロス",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはSユニットにアタックすることができない。 【バビロスレーザー】自軍ターン中、これがバトルエリアに出たとき、敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードと同じカード名の敵軍ユニットをすべて撃破する。その後、オモテにしたカードは山札の下に戻す。",
+  "rawText": "※これはSユニットにアタックすることができない。 【バビロスレーザー】自軍ターン中、これがバトルエリアに出たとき、敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードと同じカード名の敵軍ユニットをすべて撃破する。その後、オモテにしたカードは山札の下に戻す。",
+  "bp": 4000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack_s",
+      "text": "※これはSユニットにアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38390e38393",
+      "name": "バビロスレーザー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードと同じカード名の敵軍ユニットをすべて撃破する。その後、オモテにしたカードは山札の下に戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38390e38393",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはSユニットにアタックすることができない。",
+      "rule": "cannot_attack_s"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

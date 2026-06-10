@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-096",
+  "name": "ハサミジャガー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【切断溶解】レジストを持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "【切断溶解】レジストを持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "デストロン",
+    "怪人",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "named_e58887e696ad",
+      "name": "切断溶解",
+      "text": "レジストを持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

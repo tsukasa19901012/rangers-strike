@@ -12,6 +12,7 @@ import {
   needsOperationTarget,
 } from "../effects/resolveOperation";
 import type { InitiateCommandPaymentAction, ZordMaterialDestination } from "../types/actions";
+import { isCostWindowSatisfied, satisfyCostWindow } from "../core/costWindow";
 import type {
   CommandPaymentContinuation,
   PendingCommandPayment,
@@ -125,7 +126,7 @@ export function getBattleEntryPaymentNeeds(
 
   const holdShortfall = Math.max(0, requiredTotal - held);
   const noteEligibleShortfall = Math.max(0, unitHold - battleEligible);
-  const needsNoteConfirm = unitHold > 0 && !player.battleEntryHoldReady;
+  const needsNoteConfirm = unitHold > 0 && !isCostWindowSatisfied(player, "battle_entry_hold");
 
   if (!needsNoteConfirm && holdShortfall <= 0) {
     return null;
@@ -383,13 +384,13 @@ export function applyCommandPaymentResolve(
   const player = nextState.players[playerId];
   let playerPatch: typeof player = player;
   if (pending.kind === "battle_entry") {
-    playerPatch = { ...playerPatch, battleEntryHoldReady: true };
+    playerPatch = satisfyCostWindow(playerPatch, "battle_entry_hold");
   }
   if (pending.kind === "category_use" && pending.continuation.type === "rush") {
-    playerPatch = { ...playerPatch, rushCategoryHoldReady: true };
+    playerPatch = satisfyCostWindow(playerPatch, "rush_category");
   }
   if (pending.kind === "category_use" && pending.continuation.type === "play_counter") {
-    playerPatch = { ...playerPatch, counterCategoryHoldReady: true };
+    playerPatch = satisfyCostWindow(playerPatch, "counter_category");
   }
   if (playerPatch !== player) {
     nextState = {
@@ -781,7 +782,7 @@ export function explainCannotRush(
     return null;
   }
   if (
-    player.rushCategoryHoldReady &&
+    isCostWindowSatisfied(player, "rush_category") &&
     hasCommandForCardUse(player, state.definitions, categories) &&
     canRushUnitExceptCommandHold(player, state.definitions, def, instanceId)
   ) {
@@ -816,7 +817,7 @@ export function explainCannotRush(
 
   if (
     categories.length > 0 &&
-    !player.rushCategoryHoldReady &&
+    !isCostWindowSatisfied(player, "rush_category") &&
     getCategoryPaymentOptions(state, playerId, categories, { perRushPayment: true })
   ) {
     return null;

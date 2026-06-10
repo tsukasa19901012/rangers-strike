@@ -1,0 +1,82 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-056",
+  "name": "仮面ライダーオーズ・ガタキリバコンボ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※モーフ ※リードET 【忍ばせた大鎌】敵軍Ｓユニットを、ＢＰの合計がこのユニットのＢＰ以下になるように２体まで選んで撃破してもよい。そうしたとき、このターン、これはアタックすることができない。",
+  "rawText": "※モーフ ※リードET 【忍ばせた大鎌】敵軍Ｓユニットを、ＢＰの合計がこのユニットのＢＰ以下になるように２体まで選んで撃破してもよい。そうしたとき、このターン、これはアタックすることができない。",
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "オーズドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_lead_et",
+      "text": "※リードET",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5bf8de381b0",
+      "name": "忍ばせた大鎌",
+      "text": "敵軍Ｓユニットを、ＢＰの合計がこのユニットのＢＰ以下になるように２体まで選んで撃破してもよい。そうしたとき、このターン、これはアタックすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5bf8de381b0",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    },
+    {
+      "kind": "note",
+      "text": "※リードET",
+      "rule": "lead_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

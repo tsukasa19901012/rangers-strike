@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-301",
+  "name": "ガタックエクステンダー",
+  "type": "vehicle",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+500される。 【エクステンドライダー落とし】ライドされている「カブトエクステンダー」からこのビークルがコンビネーションしたとき、次の効果を発動できる⇒本来のBPが8000以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "rawText": "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+500される。 【エクステンドライダー落とし】ライドされている「カブトエクステンダー」からこのビークルがコンビネーションしたとき、次の効果を発動できる⇒本来のBPが8000以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "effects": [
+    {
+      "id": "note_s_rc",
+      "text": "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_s_rc",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_ride_bp_boost_500",
+      "text": "※これにライドしているユニットはBP+500される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_500",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a8e382af",
+      "name": "エクステンドライダー落とし",
+      "text": "ライドされている「カブトエクステンダー」からこのビークルがコンビネーションしたとき、次の効果を発動できる⇒本来のBPが8000以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a8e382af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットはBP+500される。",
+      "rule": "ride_bp_boost_500"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

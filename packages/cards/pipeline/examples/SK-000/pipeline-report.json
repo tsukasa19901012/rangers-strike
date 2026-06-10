@@ -1,0 +1,33 @@
+{
+  "cardId": "SK-000",
+  "completedSteps": [
+    "parse",
+    "analyze",
+    "extract_triggers",
+    "extract_effects",
+    "generate_dsl",
+    "validate",
+    "generate_tests"
+  ],
+  "grade": "C",
+  "validation": {
+    "ok": true,
+    "issues": []
+  },
+  "warnings": [],
+  "triggers": [
+    {
+      "index": 0,
+      "type": "nc",
+      "confidence": "low",
+      "reason": "default_nc"
+    }
+  ],
+  "effects": [
+    {
+      "id": "no_effect",
+      "pattern": "no_effect",
+      "needsFallback": false
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XC-007",
+  "name": "宇宙刑事ギャバン・一条寺烈",
+  "type": "commander",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "このゲーム中、チェイスのテキストを次のように読みかえる⇒ ※チェイス（これがユニットでなくなるとき、かわりにこれがライドしているビークルか、これの左隣にあるビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）。",
+  "rawText": "このゲーム中、チェイスのテキストを次のように読みかえる⇒ ※チェイス（これがユニットでなくなるとき、かわりにこれがライドしているビークルか、これの左隣にあるビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）。",
+  "effects": [
+    {
+      "id": "unnamed_chase",
+      "text": "※チェイス（これがユニットでなくなるとき、かわりにこれがライドしているビークルか、これの左隣にあるビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "chase",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※チェイス（これがユニットでなくなるとき、かわりにこれがライドしているビークルか、これの左隣にあるビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）。",
+      "rule": "chase"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

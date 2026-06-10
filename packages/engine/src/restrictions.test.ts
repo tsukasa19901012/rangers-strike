@@ -9,8 +9,9 @@ import {
 import { getBattleEntryHoldCount } from "@rangers-strike/cards";
 import { getLegalActions } from "./core/legalActions";
 import { applyAction } from "./core/applyAction";
-import { createTestState, inst } from "./testing/fixtures";
+import { createTestState, inst, withCostWindow } from "./testing/fixtures";
 import { legendDefinitions } from "./testing/battleEntry";
+import { isCostWindowSatisfied } from "./core/costWindow";
 
 describe("explainCannotEnterBattle", () => {
   it("returns null when the unit can enter battle", () => {
@@ -135,7 +136,7 @@ describe("explainCannotEnterBattle", () => {
         command: [],
       },
       player2: {
-        turnModifiers: { infiniteChainActive: true },
+        modifiers: [{ kind: "rule", ruleId: "infinite_chain", scope: "turn" }],
       },
     });
 
@@ -188,11 +189,15 @@ describe("explainCannotEnterBattle", () => {
         ...state.players,
         player1: {
           ...state.players.player1,
-          turnModifiers: {
-            ...state.players.player1.turnModifiers,
-            rushedThisTurnInstanceIds: [unit.instanceId],
-            zenibombActive: true,
-          },
+          modifiers: [
+            { kind: "rule", ruleId: "zenibomb", scope: "turn" },
+            {
+              kind: "restriction",
+              instanceId: unit.instanceId,
+              restriction: "rushed_this_turn",
+              scope: "turn",
+            },
+          ],
         },
       },
     };
@@ -393,7 +398,7 @@ describe("battle entry hold requirements", () => {
         rush: [unit],
         operation: [gravity],
         command: [cmd1, cmd2],
-        battleEntryHoldReady: true,
+        ...withCostWindow("battle_entry_hold"),
       },
     });
 
@@ -486,7 +491,7 @@ describe("battle entry hold requirements", () => {
         true,
       );
       expect(resolved.state.players.player1.command[0]?.commandHeld).toBe(true);
-      expect(resolved.state.players.player1.battleEntryHoldReady).toBe(false);
+      expect(isCostWindowSatisfied(resolved.state.players.player1, "battle_entry_hold")).toBe(false);
     },
   );
 

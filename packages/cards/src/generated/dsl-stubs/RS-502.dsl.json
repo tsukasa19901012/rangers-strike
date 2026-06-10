@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-502",
+  "name": "バット・リー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは自軍ターン中バトルエリアに出られない。 【忘我の中に修行あり】これが自軍ラッシュエリアにある間、特徴「ブルー」を持つすべてのSユニットは次の能力を得る⇒これが撃破されて捨札になるとき、かわりに自分の手札からユニットカードを1枚選び捨札にしてもよい。そうしたとき、撃破されたユニットのBPと捨札にしたユニットカードのBPを合計して、その合計と同じBPを持つ敵軍ユニットを1体選び撃破する。",
+  "rawText": "※これは自軍ターン中バトルエリアに出られない。 【忘我の中に修行あり】これが自軍ラッシュエリアにある間、特徴「ブルー」を持つすべてのSユニットは次の能力を得る⇒これが撃破されて捨札になるとき、かわりに自分の手札からユニットカードを1枚選び捨札にしてもよい。そうしたとき、撃破されたユニットのBPと捨札にしたユニットカードのBPを合計して、その合計と同じBPを持つ敵軍ユニットを1体選び撃破する。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "男",
+    "拳聖",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_enter_battle_own_turn",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_enter_battle_own_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5bf98e68891",
+      "name": "忘我の中に修行あり",
+      "text": "これが自軍ラッシュエリアにある間、特徴「ブルー」を持つすべてのSユニットは次の能力を得る⇒これが撃破されて捨札になるとき、かわりに自分の手札からユニットカードを1枚選び捨札にしてもよい。そうしたとき、撃破されたユニットのBPと捨札にしたユニットカードのBPを合計して、その合計と同じBPを持つ敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5bf98e68891",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "rule": "no_enter_battle_own_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

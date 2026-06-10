@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-405",
+  "name": "デカブレイク",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはBP1000以下のユニットにアタックできない。 【光速拳ライトニングフィスト】相手に1点ダメージを与える。(この効果はライドオフしたとき、ナンバーに関係なく発動する)",
+  "rawText": "※これはBP1000以下のユニットにアタックできない。 【光速拳ライトニングフィスト】相手に1点ダメージを与える。(この効果はライドオフしたとき、ナンバーに関係なく発動する)",
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": 6,
+  "features": [
+    "男",
+    "警察",
+    "特キョウ"
+  ],
+  "effects": [
+    {
+      "id": "note_bp1000",
+      "text": "※これはBP1000以下のユニットにアタックできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_bp1000_or_less",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58589e9809f",
+      "name": "光速拳ライトニングフィスト",
+      "text": "相手に1点ダメージを与える。(この効果はライドオフしたとき、ナンバーに関係なく発動する)",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

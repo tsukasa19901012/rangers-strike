@@ -1,0 +1,33 @@
+{
+  "cardId": "RK-174",
+  "completedSteps": [
+    "parse",
+    "analyze",
+    "extract_triggers",
+    "extract_effects",
+    "generate_dsl",
+    "validate",
+    "generate_tests"
+  ],
+  "grade": "B",
+  "validation": {
+    "ok": true,
+    "issues": []
+  },
+  "warnings": [],
+  "triggers": [
+    {
+      "index": 0,
+      "type": "operation",
+      "confidence": "high",
+      "reason": "default_operation_rush"
+    }
+  ],
+  "effects": [
+    {
+      "id": "place_in_power",
+      "pattern": "place_in_power",
+      "needsFallback": false
+    }
+  ]
+}

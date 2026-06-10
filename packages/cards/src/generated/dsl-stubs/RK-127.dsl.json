@@ -1,0 +1,99 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-127",
+  "name": "仮面ライダーカリス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これはライドオフしたときストライクできない。 ※これは相手の手札1枚につきBP+2000される。 【カリスアロー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字がすべて同じなら、敵軍コマンドゾーンからホールド状態のカードを1枚選び捨札にする。",
+  "rawText": "※これはライドオフしたときストライクできない。 ※これは相手の手札1枚につきBP+2000される。 【カリスアロー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字がすべて同じなら、敵軍コマンドゾーンからホールド状態のカードを1枚選び捨札にする。",
+  "bp": 1000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": "RC",
+  "features": [
+    "アンデッド",
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_strike_after_rideoff",
+      "text": "※これはライドオフしたときストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_after_rideoff",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_fx_1_bp_2000",
+      "text": "※これは相手の手札1枚につきBP+2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_1_bp_2000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382abe383aa",
+      "name": "カリスアロー",
+      "text": "自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字がすべて同じなら、敵軍コマンドゾーンからホールド状態のカードを1枚選び捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはライドオフしたときストライクできない。",
+      "rule": "no_strike_after_rideoff"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

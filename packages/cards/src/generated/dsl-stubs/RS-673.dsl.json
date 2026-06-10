@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-673",
+  "name": "ボンパー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはバトルエリアに出られない。 【炎神キャスト転送】これが自軍エリアにある間、自軍チャージフェイズ中、自軍パワーゾーンにカードを置いたとき、置いたカード以外のオモテ向きの自軍パワーから、特徴「炎神」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+  "rawText": "※これはバトルエリアに出られない。 【炎神キャスト転送】これが自軍エリアにある間、自軍チャージフェイズ中、自軍パワーゾーンにカードを置いたとき、置いたカード以外のオモテ向きの自軍パワーから、特徴「炎神」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "メカ"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_enter_battle",
+      "text": "※これはバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e7828ee7a59e",
+      "name": "炎神キャスト転送",
+      "text": "これが自軍エリアにある間、自軍チャージフェイズ中、自軍パワーゾーンにカードを置いたとき、置いたカード以外のオモテ向きの自軍パワーから、特徴「炎神」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7828ee7a59e",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出られない。",
+      "rule": "cannot_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

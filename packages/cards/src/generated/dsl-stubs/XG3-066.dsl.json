@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-066",
+  "name": "仮面ライダーサソードRF（XG3）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これはアタックされる以外では相手に選ばれない。 【ライダースラッシュ】必要パワーの数字が1か、ナンバーの数字が1か、「SP1」を持つ敵軍Sユニットを1体選び、撃破してもよい。",
+  "rawText": "※これはアタックされる以外では相手に選ばれない。 【ライダースラッシュ】必要パワーの数字が1か、ナンバーの数字が1か、「SP1」を持つ敵軍Sユニットを1体選び、撃破してもよい。",
+  "bp": 2500,
+  "size": "S",
+  "sp": 14,
+  "comboNumber": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_not_selectable_except_attack",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "not_selectable_except_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライダースラッシュ",
+      "text": "必要パワーの数字が1か、ナンバーの数字が1か、「SP1」を持つ敵軍Sユニットを1体選び、撃破してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "rule": "not_selectable_except_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

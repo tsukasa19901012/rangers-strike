@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-085",
+  "name": "超時空戦闘母艦グランナスカ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはSユニットにアタックすることが出来ない。 【ワープ】これが自軍山札にある間、このカードがオモテになったとき、これを効果の対象にする前に自軍ラッシュエリアに出してもよい。そうしたとき、自軍山札の上から1枚をオモテにして、かわりに効果の対象にする。",
+  "rawText": "※これはSユニットにアタックすることが出来ない。 【ワープ】これが自軍山札にある間、このカードがオモテになったとき、これを効果の対象にする前に自軍ラッシュエリアに出してもよい。そうしたとき、自軍山札の上から1枚をオモテにして、かわりに効果の対象にする。",
+  "bp": 5000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはSユニットにアタックすることが出来ない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383afe383bc",
+      "name": "ワープ",
+      "text": "これが自軍山札にある間、このカードがオモテになったとき、これを効果の対象にする前に自軍ラッシュエリアに出してもよい。そうしたとき、自軍山札の上から1枚をオモテにして、かわりに効果の対象にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383afe383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

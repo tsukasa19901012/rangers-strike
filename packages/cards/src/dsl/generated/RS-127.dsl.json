@@ -1,0 +1,54 @@
+{
+  "id": "RS-127",
+  "name": "バイオロボ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "SR",
+  "expansion": "legend3",
+  "powerCost": "6+",
+  "bp": 11000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―バイオジェット1号＋バイオジェット2号【バイオ粒子斬り】自軍ターン中、これがバトルエリアに出るとき、「OT」の自軍コマンドを2つ選んでパワーゾーンに送ってもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP2」「BP＋3000」",
+  "rawText": "合体―バイオジェット1号＋バイオジェット2号【バイオ粒子斬り】自軍ターン中、これがバトルエリアに出るとき、「OT」の自軍コマンドを2つ選んでパワーゾーンに送ってもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP2」「BP＋3000」",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend3/RS-127.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-127.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―バイオジェット1号＋バイオジェット2号",
+      "partnerCardIds": [
+        "RS-128",
+        "RS-129"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "bio_particle_slash",
+      "name": "バイオ粒子斬り",
+      "text": "自軍ターン中、これがバトルエリアに出るとき、「OT」の自軍コマンドを2つ選んでパワーゾーンに送ってもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP2」「BP＋3000」",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "bio_particle_slash"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

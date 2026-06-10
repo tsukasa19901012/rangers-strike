@@ -1,0 +1,85 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-022",
+  "name": "マジピンク×マジブルー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※クロス1 ※これは「マジマーメイド＋マジフェアリー」としてつかえる。 【トゥインクルイリュージョン】SP1 自軍山札の上から1枚をオモテにしてから手札に加える。そうしたとき、そのカードと同じ必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の上に戻してもよい。",
+  "rawText": "※クロス1 ※これは「マジマーメイド＋マジフェアリー」としてつかえる。 【トゥインクルイリュージョン】SP1 自軍山札の上から1枚をオモテにしてから手札に加える。そうしたとき、そのカードと同じ必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の上に戻してもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "ブルー",
+    "ピンク",
+    "女",
+    "魔法"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_alias_named_e3839ee382b8",
+      "text": "※これは「マジマーメイド＋マジフェアリー」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_named_e3839ee382b8",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38388e382a5",
+      "name": "トゥインクルイリュージョン",
+      "text": "SP1 自軍山札の上から1枚をオモテにしてから手札に加える。そうしたとき、そのカードと同じ必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の上に戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38388e382a5",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "fusion",
+      "text": "※これは「マジマーメイド＋マジフェアリー」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

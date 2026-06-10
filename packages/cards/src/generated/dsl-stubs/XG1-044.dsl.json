@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-044",
+  "name": "仮面ライダーV3（XG）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※レジスト ※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、自軍捨札に「仮面ライダー1号」のカードと「仮面ライダー2号」のカードがあれば、これを自軍ラッシュエリアに出してもよい。 【V3反転キック】敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンに置いてもよい。置けなければ捨札にする。このとき選んだユニットのSPが1以上だったなら、これはSP1になる。",
+  "rawText": "※レジスト ※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、自軍捨札に「仮面ライダー1号」のカードと「仮面ライダー2号」のカードがあれば、これを自軍ラッシュエリアに出してもよい。 【V3反転キック】敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンに置いてもよい。置けなければ捨札にする。このとき選んだユニットのSPが1以上だったなら、これはSP1になる。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、自軍捨札に「仮面ライダー1号」のカードと「仮面ライダー2号」のカードがあれば、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "v3",
+      "name": "V3反転キック",
+      "text": "敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンに置いてもよい。置けなければ捨札にする。このとき選んだユニットのSPが1以上だったなら、これはSP1になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_v3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-241",
+  "name": "ボウケンレッドAT",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「ボウケンレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【デュアルクラッシャー・ドリルヘッド】これは特徴「メカ」を持つユニットにアタックするときBP＋4000される。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「ボウケンレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【デュアルクラッシャー・ドリルヘッド】これは特徴「メカ」を持つユニットにアタックするときBP＋4000される。",
+  "bp": 4500,
+  "size": "S",
+  "sp": 1,
+  "comboNumber": 5,
+  "features": [
+    "レッド",
+    "男",
+    "アクセルテクター"
+  ],
+  "effects": [
+    {
+      "id": "recruit_named_e3839ce382a6e382b1e383b3_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「ボウケンレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
+    },
+    {
+      "id": "named_e38387e383a5",
+      "name": "デュアルクラッシャー・ドリルヘッド",
+      "text": "これは特徴「メカ」を持つユニットにアタックするときBP＋4000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38387e383a5",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

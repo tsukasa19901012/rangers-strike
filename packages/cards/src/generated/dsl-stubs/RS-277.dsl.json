@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-277",
+  "name": "ガロア艦長",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 【古傷の因縁】自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドゾーンか、敵軍パワーゾーンのダメージ以外のカードに特徴「レッド」を持つユニットカードがあれば1枚選び、敵軍ラッシュエリアに出してもよい。",
+  "rawText": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 【古傷の因縁】自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドゾーンか、敵軍パワーゾーンのダメージ以外のカードに特徴「レッド」を持つユニットカードがあれば1枚選び、敵軍ラッシュエリアに出してもよい。",
+  "bp": 7000,
+  "size": "S",
+  "features": [
+    "艦長",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_win_vs_sp1",
+      "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58fa4e582b7",
+      "name": "古傷の因縁",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドゾーンか、敵軍パワーゾーンのダメージ以外のカードに特徴「レッド」を持つユニットカードがあれば1枚選び、敵軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58fa4e582b7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "destroy_on_win_vs_sp1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

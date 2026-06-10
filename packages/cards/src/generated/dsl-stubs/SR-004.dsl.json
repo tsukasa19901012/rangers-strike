@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SR-004",
+  "name": "ヘドリアン女王（2nd）",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたとき、バトルに勝っても撃破される。 【妖魔力】これが自軍エリアにある間、相手は次の制限を受ける⇒自分自身のコマンドゾーンにOTまたはETのカードをリリース状態で置いたとき、そのカードをホールドする。",
+  "rawText": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたとき、バトルに勝っても撃破される。 【妖魔力】これが自軍エリアにある間、相手は次の制限を受ける⇒自分自身のコマンドゾーンにOTまたはETのカードをリリース状態で置いたとき、そのカードをホールドする。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "女王",
+    "ベーダー一族",
+    "女",
+    "メカ",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_win_vs_sp1",
+      "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたとき、バトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a696e9ad94",
+      "name": "妖魔力",
+      "text": "これが自軍エリアにある間、相手は次の制限を受ける⇒自分自身のコマンドゾーンにOTまたはETのカードをリリース状態で置いたとき、そのカードをホールドする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a696e9ad94",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたとき、バトルに勝っても撃破される。",
+      "rule": "destroy_on_win_vs_sp1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

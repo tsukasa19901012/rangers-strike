@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-007",
+  "name": "ゲキリントージャ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―ゲキレッドまたはゲキタイガー＋ゲキブルーまたはゲキジャガー＋ゲキイエローまたはゲキチーター＋黒獅子リオまたはリンライオン＋獣人メレまたはリンカメレオン ※このカードの合体ユニットは、自軍捨札が7枚以上のとき、次のように変更される⇒合体―ゲキレッド＋黒獅子リオ 【激激臨臨斬】自軍ターン中、これがバトルエリアに出たとき、WBのみを持つ自軍捨札とDAのみを持つ自軍捨札を1枚ずつ選びゲームから除外するか、WBとDAの両方を持つ自軍捨札を1枚選んでもよい。そうしたとき、このユニットのBP以下のBPを持つ敵軍ユニットを1体選びゲームから除外する。",
+  "rawText": "合体―ゲキレッドまたはゲキタイガー＋ゲキブルーまたはゲキジャガー＋ゲキイエローまたはゲキチーター＋黒獅子リオまたはリンライオン＋獣人メレまたはリンカメレオン ※このカードの合体ユニットは、自軍捨札が7枚以上のとき、次のように変更される⇒合体―ゲキレッド＋黒獅子リオ 【激激臨臨斬】自軍ターン中、これがバトルエリアに出たとき、WBのみを持つ自軍捨札とDAのみを持つ自軍捨札を1枚ずつ選びゲームから除外するか、WBとDAの両方を持つ自軍捨札を1枚選んでもよい。そうしたとき、このユニットのBP以下のBPを持つ敵軍ユニットを1体選びゲームから除外する。",
+  "bp": 14000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "激気",
+    "臨気",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※このカードの合体ユニットは、自軍捨札が7枚以上のとき、次のように変更される⇒合体―ゲキレッド＋黒獅子リオ",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6bf80e6bf80",
+      "name": "激激臨臨斬",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、WBのみを持つ自軍捨札とDAのみを持つ自軍捨札を1枚ずつ選びゲームから除外するか、WBとDAの両方を持つ自軍捨札を1枚選んでもよい。そうしたとき、このユニットのBP以下のBPを持つ敵軍ユニットを1体選びゲームから除外する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6bf80e6bf80",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

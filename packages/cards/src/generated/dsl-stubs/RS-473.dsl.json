@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-473",
+  "name": "タイムシャドウ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "【ブルームーンスラッシュ】これが自軍バトルエリアにある間、敵軍ターン中、相手がパワーゾーンにカードを置かずにチャージフェイズを終えたとき、敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が2以下のカードを1枚選び、ダメージにしてもよい。",
+  "rawText": "【ブルームーンスラッシュ】これが自軍バトルエリアにある間、敵軍ターン中、相手がパワーゾーンにカードを置かずにチャージフェイズを終えたとき、敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が2以下のカードを1枚選び、ダメージにしてもよい。",
+  "bp": 9000,
+  "size": "L",
+  "features": [
+    "メカ",
+    "人型",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "named_e38396e383ab",
+      "name": "ブルームーンスラッシュ",
+      "text": "これが自軍バトルエリアにある間、敵軍ターン中、相手がパワーゾーンにカードを置かずにチャージフェイズを終えたとき、敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が2以下のカードを1枚選び、ダメージにしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38396e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

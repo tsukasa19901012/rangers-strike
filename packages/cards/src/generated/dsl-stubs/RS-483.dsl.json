@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-483",
+  "name": "シュリケンジャー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【宇宙統一忍者流】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアから、ナンバーに数字を持つSユニットを1体選んでも良い。そうしたとき、選んだユニットのＮＣの効果を、このユニットの効果として発動する。",
+  "rawText": "【宇宙統一忍者流】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアから、ナンバーに数字を持つSユニットを1体選んでも良い。そうしたとき、選んだユニットのＮＣの効果を、このユニットの効果として発動する。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "グリーン",
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "named_e5ae87e5ae99",
+      "name": "宇宙統一忍者流",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアから、ナンバーに数字を持つSユニットを1体選んでも良い。そうしたとき、選んだユニットのＮＣの効果を、このユニットの効果として発動する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "copy_nc_from_rush_s",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

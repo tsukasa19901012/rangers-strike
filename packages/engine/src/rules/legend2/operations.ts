@@ -2,7 +2,8 @@ import type { GameState, PlayerId } from "../../types/game";
 import { cardName, getDefinition, isUnit } from "../../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { buildLogEntry } from "../../log/formatLog";
-import { withTurnModifiers } from "../turnModifiers";
+import { addTurnRuleModifier } from "../../core/scopedModifiers";
+import { TURN_RULE_IDS } from "../../types/scopedModifiers";
 
 export type OperationOutcome = {
   state: GameState;
@@ -57,7 +58,9 @@ export function resolveInfiniteChain(
   playerId: PlayerId,
 ): OperationOutcome {
   const player = state.players[playerId];
-  const nextPlayer = withTurnModifiers(player, { infiniteChainActive: true });
+  const nextPlayer = addTurnRuleModifier(player, TURN_RULE_IDS.INFINITE_CHAIN, {
+    sourceCardId: "RS-072",
+  });
   return {
     state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
     detail: "infinite_chain",

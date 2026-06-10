@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-016",
+  "name": "スターピース",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 13,
+  "text": "自軍パワーゾーンのダメージになってるカードをすべてオモテにする。そして、相手は自分自身の山札を見て、ユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。その後、相手は自分自身の山札をシャッフルする。",
+  "rawText": "自軍パワーゾーンのダメージになってるカードをすべてオモテにする。そして、相手は自分自身の山札を見て、ユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。その後、相手は自分自身の山札をシャッフルする。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

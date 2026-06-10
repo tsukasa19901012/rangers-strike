@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-618",
+  "name": "ジェットイカロス",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "【ジェットランサー】 これは、自軍捨札にあるウイングを持つユニットカード1体につきBP+1000される。",
+  "rawText": "【ジェットランサー】 これは、自軍捨札にあるウイングを持つユニットカード1体につきBP+1000される。",
+  "bp": 6000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b8e382a7",
+      "name": "ジェットランサー",
+      "text": "これは、自軍捨札にあるウイングを持つユニットカード1体につきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b8e382a7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,5 +1,5 @@
 import type { CardInstance, PlayerState } from "../types/game";
-import { emptyTurnModifiers } from "../rules/turnModifiers";
+import { clearTurnScopedModifiers } from "./scopedModifiers";
 
 export function clearTurnModifiers(player: PlayerState): PlayerState {
   const clear = (cards: CardInstance[]) =>
@@ -20,13 +20,12 @@ export function clearTurnModifiers(player: PlayerState): PlayerState {
       return next;
     });
 
-  return {
+  return clearTurnScopedModifiers({
     ...player,
     hand: clear(player.hand),
     rush: clear(player.rush),
     battle: clear(player.battle),
-    turnModifiers: emptyTurnModifiers(),
-  };
+  });
 }
 
 export function findCardInPlayer(

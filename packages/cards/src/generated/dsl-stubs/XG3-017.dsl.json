@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-017",
+  "name": "猛獣使いオルグ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【猛獣使いの鞭】 自軍ターン中、これがバトルエリアに出たとき、特徴「獣」を持つユニットを2体選んでもよい。そうしたとき、選んだ2体でバトルする。",
+  "rawText": "【猛獣使いの鞭】 自軍ターン中、これがバトルエリアに出たとき、特徴「獣」を持つユニットを2体選んでもよい。そうしたとき、選んだ2体でバトルする。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e78c9be78da3",
+      "name": "猛獣使いの鞭",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、特徴「獣」を持つユニットを2体選んでもよい。そうしたとき、選んだ2体でバトルする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e78c9be78da3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

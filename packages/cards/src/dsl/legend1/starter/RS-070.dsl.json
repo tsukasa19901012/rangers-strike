@@ -1,0 +1,43 @@
+{
+  "id": "RS-070",
+  "effects": [
+    {
+      "id": "sky_magic_slash",
+      "name": "天空魔法斬り",
+      "text": "これがバトルエリアに出たとき、敵軍コマンドをすべてホールドしてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "hold_all_enemy_commands",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―マジフェニックス＋マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス",
+      "partnerCardIds": [
+        "RS-057",
+        "RS-058",
+        "RS-059",
+        "RS-060",
+        "RS-061"
+      ]
+    }
+  ]
+}

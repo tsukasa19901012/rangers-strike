@@ -1,0 +1,20 @@
+{
+  "cardId": "PR-016",
+  "completedSteps": [
+    "parse",
+    "analyze",
+    "extract_triggers",
+    "extract_effects",
+    "generate_dsl",
+    "validate",
+    "generate_tests"
+  ],
+  "grade": "A",
+  "validation": {
+    "ok": true,
+    "issues": []
+  },
+  "warnings": [],
+  "triggers": [],
+  "effects": []
+}

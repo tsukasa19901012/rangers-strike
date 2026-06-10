@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-655",
+  "name": "デカウイングロボ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "※ウイング 【パトマグナム】自軍捨札に特徴「スワット」を持つユニットカードが5枚以上あれば、これは「SP2」になる。",
+  "rawText": "※ウイング 【パトマグナム】自軍捨札に特徴「スワット」を持つユニットカードが5枚以上あれば、これは「SP2」になる。",
+  "bp": 9000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型",
+    "航空機"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38391e38388",
+      "name": "パトマグナム",
+      "text": "自軍捨札に特徴「スワット」を持つユニットカードが5枚以上あれば、これは「SP2」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP2",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-331",
+  "name": "マジファイヤーバード",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「レジェンドマジレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「レジェンドマジレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+  "bp": 6000,
+  "size": "M",
+  "features": [
+    "魔法"
+  ],
+  "effects": [
+    {
+      "id": "recruit_named_e383ace382b8e382a7e383b3_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「レジェンドマジレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

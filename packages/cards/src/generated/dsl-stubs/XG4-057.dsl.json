@@ -1,0 +1,58 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-057",
+  "name": "仮面ライダー龍騎サバイブ（XG4）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 7,
+  "text": "※これは常駐置場にカードが1枚もなければ、「SP1」になる。 【叶えたい願い】上にカードが重なっている常駐オペレーションをすべて捨札にしてもよい。そうしたとき、ウラ向きの自軍パワーを1枚選び捨札にしてもよい。",
+  "rawText": "※これは常駐置場にカードが1枚もなければ、「SP1」になる。 【叶えたい願い】上にカードが重なっている常駐オペレーションをすべて捨札にしてもよい。そうしたとき、ウラ向きの自軍パワーを1枚選び捨札にしてもよい。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー",
+    "サバイブ"
+  ],
+  "effects": [
+    {
+      "id": "note_fx_1_sp1",
+      "text": "※これは常駐置場にカードが1枚もなければ、「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_1_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58fb6e38188",
+      "name": "叶えたい願い",
+      "text": "上にカードが重なっている常駐オペレーションをすべて捨札にしてもよい。そうしたとき、ウラ向きの自軍パワーを1枚選び捨札にしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58fb6e38188",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -17,7 +17,11 @@ import {
   startSelectUnitChoice,
 } from "../pendingChoices";
 import { battleAttackerBpBonus } from "../namedUnitEffects";
-import { withTurnModifiers } from "../turnModifiers";
+import {
+  addBakiBakiExtraAttack,
+  clearBakiBakiExtraAttackModifier,
+  hasBakiBakiExtraAttack,
+} from "../turnModifierBridge";
 
 export type BattleWinOutcome = {
   state: GameState;
@@ -147,16 +151,10 @@ export function resolveLegend3OnBattleWin(
 
   if (jointEffect === "baki_baki_punch") {
     const player = nextState.players[attackerId];
-    const mods = player.turnModifiers ?? {
-      comboNumberDelta: 0,
-      battleBlockedInstanceIds: [],
-      shironLightUsed: false,
-    };
-    const ids = new Set(mods.bakiBakiExtraAttackIds ?? []);
-    ids.add(attacker.card.instanceId);
+    const withExtra = addBakiBakiExtraAttack(player, attacker.card.instanceId);
     nextState = {
       ...nextState,
-      ...updatePlayer(nextState, attackerId, withTurnModifiers(player, { bakiBakiExtraAttackIds: [...ids] })),
+      ...updatePlayer(nextState, attackerId, withExtra),
     };
     skipMarkAttackerActed = true;
     logs.push(
@@ -179,17 +177,10 @@ export function clearBakiBakiExtraAttack(
   instanceId: string,
 ): GameState {
   const player = state.players[playerId];
-  const ids = player.turnModifiers?.bakiBakiExtraAttackIds ?? [];
-  if (!ids.includes(instanceId)) return state;
+  if (!hasBakiBakiExtraAttack(player, instanceId)) return state;
   return {
     ...state,
-    ...updatePlayer(
-      state,
-      playerId,
-      withTurnModifiers(player, {
-        bakiBakiExtraAttackIds: ids.filter((id) => id !== instanceId),
-      }),
-    ),
+    ...updatePlayer(state, playerId, clearBakiBakiExtraAttackModifier(player, instanceId)),
   };
 }
 
@@ -198,5 +189,5 @@ export function hasBakiBakiExtraAttackOnly(
   playerId: PlayerId,
   instanceId: string,
 ): boolean {
-  return (state.players[playerId].turnModifiers?.bakiBakiExtraAttackIds ?? []).includes(instanceId);
+  return hasBakiBakiExtraAttack(state.players[playerId], instanceId);
 }

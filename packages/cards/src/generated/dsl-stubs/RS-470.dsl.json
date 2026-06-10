@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-470",
+  "name": "ギンガット",
+  "type": "vehicle",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※特徴「ピンク」を持つSユニットは、自軍コマンドを1つホールドすれば、RCを持っていなくてもこのビークルにライドできる。 【花の星獣】これにライドしたユニットがある間、次の効果を発動する⇒自分がバトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい。",
+  "rawText": "※特徴「ピンク」を持つSユニットは、自軍コマンドを1つホールドすれば、RCを持っていなくてもこのビークルにライドできる。 【花の星獣】これにライドしたユニットがある間、次の効果を発動する⇒自分がバトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい。",
+  "effects": [
+    {
+      "id": "note_s_1",
+      "text": "※特徴「ピンク」を持つSユニットは、自軍コマンドを1つホールドすれば、RCを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_s_1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e88ab1e381ae",
+      "name": "花の星獣",
+      "text": "これにライドしたユニットがある間、次の効果を発動する⇒自分がバトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e88ab1e381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

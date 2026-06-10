@@ -1,0 +1,103 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-071",
+  "name": "ディケイド 電王SF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※モーフ ※これは「仮面ライダー電王SF」としてつかえる。 ※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【アタックライド】「SP1」これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
+  "rawText": "※モーフ ※これは「仮面ライダー電王SF」としてつかえる。 ※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【アタックライド】「SP1」これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ディケイドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_alias_sf",
+      "text": "※これは「仮面ライダー電王SF」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_sf",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_no_strike_if_enemy_battle",
+      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_if_enemy_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e382bf",
+      "name": "アタックライド",
+      "text": "「SP1」これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    },
+    {
+      "kind": "fusion",
+      "text": "※これは「仮面ライダー電王SF」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    },
+    {
+      "kind": "note",
+      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
+      "rule": "no_strike_if_enemy_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

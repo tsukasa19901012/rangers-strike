@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-046",
+  "name": "仮面ライダーオーズ・サゴーゾコンボ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※モーフ ※レジスト 【ゴリバゴーン】自軍ターン中、これをラッシュしたとき、ライドしている敵軍Sユニットを1体選び、撃破してもよい。",
+  "rawText": "※モーフ ※レジスト 【ゴリバゴーン】自軍ターン中、これをラッシュしたとき、ライドしている敵軍Sユニットを1体選び、撃破してもよい。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "オーズドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b4e383aa",
+      "name": "ゴリバゴーン",
+      "text": "自軍ターン中、これをラッシュしたとき、ライドしている敵軍Sユニットを1体選び、撃破してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b4e383aa",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    },
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

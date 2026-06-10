@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-005",
+  "name": "ダイナレッド（XG）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【ドリームギャラクシー】自軍コマンドのカテゴリの数を数えて、その数以下の必要パワーの数字を持つ敵軍Sユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "【ドリームギャラクシー】自軍コマンドのカテゴリの数を数えて、その数以下の必要パワーの数字を持つ敵軍Sユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e38389e383aa",
+      "name": "ドリームギャラクシー",
+      "text": "自軍コマンドのカテゴリの数を数えて、その数以下の必要パワーの数字を持つ敵軍Sユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38389e383aa",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

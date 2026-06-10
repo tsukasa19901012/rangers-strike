@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-595",
+  "name": "キャリゲーター",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。 【頼もしい背中】これが自軍エリアにある間、特徴「炎神」を持つ自軍ユニットは｢これは毎ターン、可能ならバトルエリアに出る｣と書かれていても、そのテキストは無効になる。",
+  "rawText": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。 【頼もしい背中】これが自軍エリアにある間、特徴「炎神」を持つ自軍ユニットは｢これは毎ターン、可能ならバトルエリアに出る｣と書かれていても、そのテキストは無効になる。",
+  "bp": 3000,
+  "size": "M",
+  "features": [
+    "車両",
+    "炎神"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_to_power_on_destroy",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "to_power_on_destroy",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9a0bce38282",
+      "name": "頼もしい背中",
+      "text": "これが自軍エリアにある間、特徴「炎神」を持つ自軍ユニットは｢これは毎ターン、可能ならバトルエリアに出る｣と書かれていても、そのテキストは無効になる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9a0bce38282",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。",
+      "rule": "to_power_on_destroy"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

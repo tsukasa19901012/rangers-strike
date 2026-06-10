@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-064",
+  "name": "リボルギャリー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【リボルバーハンガー】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍コマンドゾーンから、カテゴリを2つ以上持つビークルカードを1枚選び、カテゴリを2つ以上持つ自軍ビークル1体と置き換える。ただし、必要パワーと追加条件は満たすこと。",
+  "rawText": "【リボルバーハンガー】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍コマンドゾーンから、カテゴリを2つ以上持つビークルカードを1枚選び、カテゴリを2つ以上持つ自軍ビークル1体と置き換える。ただし、必要パワーと追加条件は満たすこと。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "effects": [
+    {
+      "id": "named_e383aae3839c",
+      "name": "リボルバーハンガー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍コマンドゾーンから、カテゴリを2つ以上持つビークルカードを1枚選び、カテゴリを2つ以上持つ自軍ビークル1体と置き換える。ただし、必要パワーと追加条件は満たすこと。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383aae3839c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

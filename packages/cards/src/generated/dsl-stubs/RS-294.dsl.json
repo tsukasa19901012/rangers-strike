@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-294",
+  "name": "キバレンジャー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【吼新星・乱れ山彦】敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、相手はオモテにしたカードを手札に加えるか、自分自身のパワーゾーンにダメージにして置くかを選ぶ。相手が手札に加えることを選んだとき、敵軍Sユニットがあれば1体選び撃破する。",
+  "rawText": "【吼新星・乱れ山彦】敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、相手はオモテにしたカードを手札に加えるか、自分自身のパワーゾーンにダメージにして置くかを選ぶ。相手が手札に加えることを選んだとき、敵軍Sユニットがあれば1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "ホワイト",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e590bce696b0",
+      "name": "吼新星・乱れ山彦",
+      "text": "敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、相手はオモテにしたカードを手札に加えるか、自分自身のパワーゾーンにダメージにして置くかを選ぶ。相手が手札に加えることを選んだとき、敵軍Sユニットがあれば1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e590bce696b0",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-379",
+  "name": "ギンガイエロー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【雷の雄叫び】「MA」の自軍コマンドを１つホールドして次の効果を発動できる⇒このターン、特徴「メカ」を持つ敵軍ユニットの、効果名を持つテキストは無効になり、発動もできない。",
+  "rawText": "【雷の雄叫び】「MA」の自軍コマンドを１つホールドして次の効果を発動できる⇒このターン、特徴「メカ」を持つ敵軍ユニットの、効果名を持つテキストは無効になり、発動もできない。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "イエロー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e99bb7e381ae",
+      "name": "雷の雄叫び",
+      "text": "「MA」の自軍コマンドを１つホールドして次の効果を発動できる⇒このターン、特徴「メカ」を持つ敵軍ユニットの、効果名を持つテキストは無効になり、発動もできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e99bb7e381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

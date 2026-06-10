@@ -120,4 +120,30 @@ for (const deck of Object.values(starterDecks)) {
   validateStarterDeck(deck);
 }
 
-export { legend1Catalog, legend2Catalog, legend3Catalog, allCardsCatalog, type ExpansionId };
+export {
+  allCardsCatalog,
+  getCardById,
+  legend1Catalog,
+  legend2Catalog,
+  legend3Catalog,
+  type ExpansionId,
+} from "./catalog";
+export {
+  complexityPromotedCatalog,
+  extendedCardsCatalog,
+  fullPlayableCatalog,
+  playableCardsCatalog,
+  stubPromotedCatalog,
+  vanillaPromotedCatalog,
+  wikiStubsCatalog,
+  getComplexityPromotedCardById,
+  getExtendedCardById,
+  getFullPlayableCardById,
+  getPlayableCardById,
+  getVanillaPromotedCardById,
+  isComplexityPromotedCardId,
+  isFullPlayableCardId,
+  isPlayableCardId,
+  isVanillaPromotedCardId,
+  isWikiStubCardId,
+} from "./extendedCatalog";

@@ -1,0 +1,45 @@
+{
+  "id": "RS-137",
+  "name": "アクアドルフィン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "6+",
+  "bp": 4000,
+  "size": "M",
+  "text": "【潜航】これをラッシュしたとき、自軍捨札からユニットのカードを3枚まで選んで、山札の下に好きな順で戻してもよい。",
+  "rawText": "【潜航】これをラッシュしたとき、自軍捨札からユニットのカードを3枚まで選んで、山札の下に好きな順で戻してもよい。",
+  "features": [
+    "メカ",
+    "潜水艦"
+  ],
+  "imageUrl": "/cards/legend3/RS-137.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-137.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "submerge",
+      "name": "潜航",
+      "text": "これをラッシュしたとき、自軍捨札からユニットのカードを3枚まで選んで、山札の下に好きな順で戻してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "submerge"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

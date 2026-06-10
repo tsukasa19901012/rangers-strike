@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-259",
+  "name": "モモレンジャー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【ゴレンジャーハリケーン】このターン、このユニットから「キレンジャー，ミドレンジャー，アオレンジャー，アカレンジャー」の順にコンビネーションしたとき、BP8000以下の敵軍ユニットをすべて撃破する。このとき、その「アカレンジャー」は「SP2」になる。",
+  "rawText": "【ゴレンジャーハリケーン】このターン、このユニットから「キレンジャー，ミドレンジャー，アオレンジャー，アカレンジャー」の順にコンビネーションしたとき、BP8000以下の敵軍ユニットをすべて撃破する。このとき、その「アカレンジャー」は「SP2」になる。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b4e383ac",
+      "name": "ゴレンジャーハリケーン",
+      "text": "このターン、このユニットから「キレンジャー，ミドレンジャー，アオレンジャー，アカレンジャー」の順にコンビネーションしたとき、BP8000以下の敵軍ユニットをすべて撃破する。このとき、その「アカレンジャー」は「SP2」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP2",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-631",
+  "name": "メガブラック",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※ウイング 【サテライトサーチ】自軍コマンドが3つ以下なら、自軍山札の上から1枚ひいて自軍コマンドゾーンにホールド状態で置いてもよい。",
+  "rawText": "※ウイング 【サテライトサーチ】自軍コマンドが3つ以下なら、自軍山札の上から1枚ひいて自軍コマンドゾーンにホールド状態で置いてもよい。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b5e38386",
+      "name": "サテライトサーチ",
+      "text": "自軍コマンドが3つ以下なら、自軍山札の上から1枚ひいて自軍コマンドゾーンにホールド状態で置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b5e38386",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

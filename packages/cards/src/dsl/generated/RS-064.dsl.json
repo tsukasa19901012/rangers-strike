@@ -1,0 +1,42 @@
+{
+  "id": "RS-064",
+  "name": "ボウケンブルー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "bp": 3000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 5,
+  "text": "【ブロウナックル】「SP1」リリース状態の自軍コマンドをすべて手札に戻してもよい。そうしたとき、相手も同じようにする。",
+  "rawText": "【ブロウナックル】「SP1」リリース状態の自軍コマンドをすべて手札に戻してもよい。そうしたとき、相手も同じようにする。",
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "imageUrl": "/cards/legend1/RS-064.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-064.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "blow_knuckle",
+      "name": "ブロウナックル",
+      "text": "「SP1」リリース状態の自軍コマンドをすべて手札に戻してもよい。そうしたとき、相手も同じようにする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "blow_knuckle"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

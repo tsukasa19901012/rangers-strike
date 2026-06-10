@@ -1,0 +1,85 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-496",
+  "name": "デカブルーSWAT",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「デカブルー」のカードを1枚選び、自軍ラッシュエリアに出す。 ※これが自軍エリアにある間、特徴「スワット」を持つ自軍ユニットは、アタックされるときBP+3000される。 【精密射撃】敵軍パワーゾーンのダメージになっているカードを1枚選び、オモテにしてもよい。そうしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、ダメージにする。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「デカブルー」のカードを1枚選び、自軍ラッシュエリアに出す。 ※これが自軍エリアにある間、特徴「スワット」を持つ自軍ユニットは、アタックされるときBP+3000される。 【精密射撃】敵軍パワーゾーンのダメージになっているカードを1枚選び、オモテにしてもよい。そうしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、ダメージにする。",
+  "bp": 4500,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "男",
+    "警察",
+    "スワット"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「デカブルー」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193_2",
+      "text": "※これが自軍エリアにある間、特徴「スワット」を持つ自軍ユニットは、アタックされるときBP+3000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e7b2bee5af86",
+      "name": "精密射撃",
+      "text": "敵軍パワーゾーンのダメージになっているカードを1枚選び、オモテにしてもよい。そうしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、ダメージにする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7b2bee5af86",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

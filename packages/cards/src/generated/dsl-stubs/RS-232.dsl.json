@@ -1,0 +1,79 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-232",
+  "name": "アバレイエローAM",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「アバレイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【アバレウィング】これがアタックするとき、これはBP+1000され、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「アバレイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【アバレウィング】これがアタックするとき、これはBP+1000され、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "bp": 4500,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "イエロー",
+    "女",
+    "アバレモード"
+  ],
+  "effects": [
+    {
+      "id": "recruit_named_e382a2e38390e383ace382a4_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「アバレイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
+    },
+    {
+      "id": "named_e382a2e38390",
+      "name": "アバレウィング",
+      "text": "これがアタックするとき、これはBP+1000され、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e38390",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

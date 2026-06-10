@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-008",
+  "name": "レッドフラッシュ（XG）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【レッドバル】「SP1」自軍パワーゾーンからユニットカードを1枚選び手札に戻してもよい。そうしたとき、そのカードの必要パワーの数字を見て、同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "rawText": "【レッドバル】「SP1」自軍パワーゾーンからユニットカードを1枚選び手札に戻してもよい。そうしたとき、そのカードの必要パワーの数字を見て、同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e383ace38383",
+      "name": "レッドバル",
+      "text": "「SP1」自軍パワーゾーンからユニットカードを1枚選び手札に戻してもよい。そうしたとき、そのカードの必要パワーの数字を見て、同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

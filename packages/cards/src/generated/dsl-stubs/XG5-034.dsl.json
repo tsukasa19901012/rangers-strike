@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-034",
+  "name": "シンケンレッド（XG5）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト ※これは自軍ターン中、これ以外の特徴「侍」を持つSユニット1体につきBP+2000される。 【二刀流烈火大斬刀】これがアタックして敵軍ユニットをバトルで撃破するたび、特徴「侍」を持つ自軍Sユニットを1体選びホールドしてもよい。そうしたとき、これは追加でアタックを行ってもよい。",
+  "rawText": "※レジスト ※これは自軍ターン中、これ以外の特徴「侍」を持つSユニット1体につきBP+2000される。 【二刀流烈火大斬刀】これがアタックして敵軍ユニットをバトルで撃破するたび、特徴「侍」を持つ自軍Sユニットを1体選びホールドしてもよい。そうしたとき、これは追加でアタックを行ってもよい。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": 1,
+  "features": [
+    "レッド",
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_s_1",
+      "text": "※これは自軍ターン中、これ以外の特徴「侍」を持つSユニット1体につきBP+2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_s_1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4ba8ce58880",
+      "name": "二刀流烈火大斬刀",
+      "text": "これがアタックして敵軍ユニットをバトルで撃破するたび、特徴「侍」を持つ自軍Sユニットを1体選びホールドしてもよい。そうしたとき、これは追加でアタックを行ってもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4ba8ce58880",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

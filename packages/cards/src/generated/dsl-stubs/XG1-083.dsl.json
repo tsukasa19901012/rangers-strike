@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-083",
+  "name": "宇宙刑事シャイダー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※チェイス 【シャイダーブルーフラッシュ】敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が3以下のカードを1枚選び、ダメージにしてもよい。",
+  "rawText": "※チェイス 【シャイダーブルーフラッシュ】敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が3以下のカードを1枚選び、ダメージにしてもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 14,
+  "comboNumber": "RC",
+  "features": [
+    "宇宙刑事",
+    "メカ",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_chase",
+      "text": "※チェイス",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "chase",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b7e383a3",
+      "name": "シャイダーブルーフラッシュ",
+      "text": "敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が3以下のカードを1枚選び、ダメージにしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b7e383a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※チェイス",
+      "rule": "chase"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

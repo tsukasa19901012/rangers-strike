@@ -1,0 +1,71 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-037",
+  "name": "スーパーシンケンレッド",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「シンケンレッド」のカードを1枚選び、自軍ラッシュエリアに出す。 【スーパーシンケンマル】DAを持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「シンケンレッド」のカードを1枚選び、自軍ラッシュエリアに出す。 【スーパーシンケンマル】DAを持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 4500,
+  "size": "S",
+  "sp": 1,
+  "comboNumber": 1,
+  "features": [
+    "レッド",
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「シンケンレッド」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e383bc",
+      "name": "スーパーシンケンマル",
+      "text": "DAを持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

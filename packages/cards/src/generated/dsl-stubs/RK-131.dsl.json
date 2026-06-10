@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-131",
+  "name": "仮面ライダー剛鬼",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【音響打・豪腕無双】敵軍Lユニットを1体選び、自軍山札の上から7枚までオモテにしてもよい。そうしたとき、オモテにしたユニットカードのBPの合計が、選んだLユニットのBP以上なら、選んだLユニットを撃破する。その後、オモテにしたカードはすべて捨札になる。",
+  "rawText": "【音響打・豪腕無双】敵軍Lユニットを1体選び、自軍山札の上から7枚までオモテにしてもよい。そうしたとき、オモテにしたユニットカードのBPの合計が、選んだLユニットのBP以上なら、選んだLユニットを撃破する。その後、オモテにしたカードはすべて捨札になる。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": 2,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "猛士"
+  ],
+  "effects": [
+    {
+      "id": "named_e99fb3e99fbf",
+      "name": "音響打・豪腕無双",
+      "text": "敵軍Lユニットを1体選び、自軍山札の上から7枚までオモテにしてもよい。そうしたとき、オモテにしたユニットカードのBPの合計が、選んだLユニットのBP以上なら、選んだLユニットを撃破する。その後、オモテにしたカードはすべて捨札になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e99fb3e99fbf",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

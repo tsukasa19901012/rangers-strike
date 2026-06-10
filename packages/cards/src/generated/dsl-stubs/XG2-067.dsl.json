@@ -1,0 +1,77 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-067",
+  "name": "仮面ライダー電王GF（XG2）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "※モーフ ※このユニットの下にオモテ向きの「リュウタロス」のカードが重なっている間、これは「SP1」になる。 【邪魔するなら撃つよ】これがバトルエリアに出たとき、BP3000のユニットを1体選び撃破する。",
+  "rawText": "※モーフ ※このユニットの下にオモテ向きの「リュウタロス」のカードが重なっている間、これは「SP1」になる。 【邪魔するなら撃つよ】これがバトルエリアに出たとき、BP3000のユニットを1体選び撃破する。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "DEN-O"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※このユニットの下にオモテ向きの「リュウタロス」のカードが重なっている間、これは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e982aae9ad94",
+      "name": "邪魔するなら撃つよ",
+      "text": "これがバトルエリアに出たとき、BP3000のユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e982aae9ad94",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

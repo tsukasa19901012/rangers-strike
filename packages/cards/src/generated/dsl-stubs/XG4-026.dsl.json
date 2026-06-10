@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-026",
+  "name": "天空勇者マジシャイン（XG4）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【マジランプバスター】 これをラッシュしたとき、自軍コマンドを好きな数選びホールドしてもよい。そうしたとき、ホールドしたコマンド1つにつきBP2000として、そのBPの合計以下のBPを持つ敵軍ユニットを1体選び撃破する。",
+  "rawText": "【マジランプバスター】 これをラッシュしたとき、自軍コマンドを好きな数選びホールドしてもよい。そうしたとき、ホールドしたコマンド1つにつきBP2000として、そのBPの合計以下のBPを持つ敵軍ユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "男",
+    "魔法",
+    "天空聖者"
+  ],
+  "effects": [
+    {
+      "id": "named_e3839ee382b8",
+      "name": "マジランプバスター",
+      "text": "これをラッシュしたとき、自軍コマンドを好きな数選びホールドしてもよい。そうしたとき、ホールドしたコマンド1つにつきBP2000として、そのBPの合計以下のBPを持つ敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

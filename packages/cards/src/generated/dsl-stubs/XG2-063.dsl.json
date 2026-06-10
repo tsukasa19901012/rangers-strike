@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-063",
+  "name": "仮面ライダー響鬼（XG2）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※レジスト 【鬼幻術・鬼火】これが自軍エリアにある間、自軍バトルフェイズ中、敵軍ユニットがラッシュされたとき、これをホールドしてもよい。そうしたとき、ラッシュされたユニットを持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※レジスト 【鬼幻術・鬼火】これが自軍エリアにある間、自軍バトルフェイズ中、敵軍ユニットがラッシュされたとき、これをホールドしてもよい。そうしたとき、ラッシュされたユニットを持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "猛士"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9acbce5b9bb",
+      "name": "鬼幻術・鬼火",
+      "text": "これが自軍エリアにある間、自軍バトルフェイズ中、敵軍ユニットがラッシュされたとき、これをホールドしてもよい。そうしたとき、ラッシュされたユニットを持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9acbce5b9bb",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

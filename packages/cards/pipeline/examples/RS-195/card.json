@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-195",
+  "name": "ダイナマッハ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "なし",
+  "rawText": "なし",
+  "bp": 2000,
+  "size": "M",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "segment_body",
+      "text": "なし",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "fallback_handler",
+          "effectId": "segment_body"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "hybrid",
+    "handler": "typescript",
+    "testGenerated": true
+  }
+}

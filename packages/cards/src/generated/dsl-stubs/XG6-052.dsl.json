@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-052",
+  "name": "仮面ライダーコーカサス（XG6）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 7,
+  "text": "※これは相手に選ばれない。 【ハイパークロックアップ】 自軍ターン中、これが自軍バトルエリアにある間、敵軍バトルエリアにあるSユニットの効果名を持たないテキストは無効になり、発動もできない。",
+  "rawText": "※これは相手に選ばれない。 【ハイパークロックアップ】 自軍ターン中、これが自軍バトルエリアにある間、敵軍バトルエリアにあるSユニットの効果名を持たないテキストは無効になり、発動もできない。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_not_selectable",
+      "text": "※これは相手に選ばれない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "not_selectable",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3838fe382a4",
+      "name": "ハイパークロックアップ",
+      "text": "自軍ターン中、これが自軍バトルエリアにある間、敵軍バトルエリアにあるSユニットの効果名を持たないテキストは無効になり、発動もできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838fe382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

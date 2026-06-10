@@ -1,0 +1,83 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-459",
+  "name": "ニンジャイエロー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは「イエロークマード」としてつかえる。 ※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」になる） 【隠流三段斬り】敵軍バトルエリアからホールド状態の敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "※これは「イエロークマード」としてつかえる。 ※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」になる） 【隠流三段斬り】敵軍バトルエリアからホールド状態の敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "イエロー",
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_alias_named_e382a4e382a8",
+      "text": "※これは「イエロークマード」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_named_e382a4e382a8",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_taxis_ma",
+      "text": "※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」になる）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e99aa0e6b581",
+      "name": "隠流三段斬り",
+      "text": "敵軍バトルエリアからホールド状態の敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e99aa0e6b581",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "fusion",
+      "text": "※これは「イエロークマード」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    },
+    {
+      "kind": "note",
+      "text": "※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」になる）",
+      "rule": "taxis_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-022",
+  "name": "シュリケンジャー（XG4）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【ニンジャミセン】これが自軍ラッシュエリアにある間、特徴「メカ」を持つ自軍ユニットがバトルエリアに出たとき、自軍コマンドを1つ選びリリースしてもよい。",
+  "rawText": "【ニンジャミセン】これが自軍ラッシュエリアにある間、特徴「メカ」を持つ自軍ユニットがバトルエリアに出たとき、自軍コマンドを1つ選びリリースしてもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "グリーン",
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "named_e3838be383b3",
+      "name": "ニンジャミセン",
+      "text": "これが自軍ラッシュエリアにある間、特徴「メカ」を持つ自軍ユニットがバトルエリアに出たとき、自軍コマンドを1つ選びリリースしてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838be383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

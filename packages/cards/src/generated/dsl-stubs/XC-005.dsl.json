@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XC-005",
+  "name": "仮面ライダー1号・本郷猛",
+  "type": "commander",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "このゲーム中、次のルールを追加する⇒ 特徴「仮面ライダー」を持つ自分自身のユニットをラッシュしたとき、ライドされていない自分自身のSビークルを1体選び、ラッシュしたそのユニットの下に重ねてもよい。",
+  "rawText": "このゲーム中、次のルールを追加する⇒ 特徴「仮面ライダー」を持つ自分自身のユニットをラッシュしたとき、ライドされていない自分自身のSビークルを1体選び、ラッシュしたそのユニットの下に重ねてもよい。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

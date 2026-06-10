@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-653",
+  "name": "レッドファルコン（2nd）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※ウイング 【後輩戦士への叱咤】このユニットからコンビネーションする特徴「イエロー」を持つSユニットは、このターン、次の能力を得る⇒BP+3000、「SP1」",
+  "rawText": "※ウイング 【後輩戦士への叱咤】このユニットからコンビネーションする特徴「イエロー」を持つSユニットは、このターン、次の能力を得る⇒BP+3000、「SP1」",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "レッド",
+    "男",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5be8ce8bca9",
+      "name": "後輩戦士への叱咤",
+      "text": "このユニットからコンビネーションする特徴「イエロー」を持つSユニットは、このターン、次の能力を得る⇒BP+3000、「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

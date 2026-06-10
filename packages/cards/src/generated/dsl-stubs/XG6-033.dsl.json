@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-033",
+  "name": "シロネリオオザル",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 （この効果はリードMAを持つ自軍ユニットがあるとき無効になる）",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 （この効果はリードMAを持つ自軍ユニットがあるとき無効になる）",
+  "bp": 6000,
+  "size": "M",
+  "features": [
+    "ディスクアニマル"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 （この効果はリードMAを持つ自軍ユニットがあるとき無効になる）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 （この効果はリードMAを持つ自軍ユニットがあるとき無効になる）",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

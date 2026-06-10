@@ -1,0 +1,32 @@
+{
+  "id": "RS-009",
+  "name": "パワーバズーカ",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 8,
+  "effectId": "power_bazooka",
+  "imageUrl": "/cards/legend1/RS-009.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-009.jpg",
+  "effects": [
+    {
+      "id": "power_bazooka",
+      "text": "敵軍Lユニットを1体選んで撃破する。そうして撃破したLユニットが捨札になったとき、相手はそのLユニットの合体に必要なユニットのカードを捨札から探してバトルエリアに戻す。このとき、戻したユニットの効果は発動しない。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "power_bazooka"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

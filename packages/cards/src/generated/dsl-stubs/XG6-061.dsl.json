@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-061",
+  "name": "ライドベンダー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これにライドしているユニットはBP+1000される。 【ベンダーモード】自軍ラッシュフェイズ中、このビークルを捨札にして次の効果を発動できる→自軍山札を見てオペレーションカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（置けなければ自軍コマンドを1つ選び、捨札にしてから置く）。その後、山札をシャッフルする。",
+  "rawText": "※これにライドしているユニットはBP+1000される。 【ベンダーモード】自軍ラッシュフェイズ中、このビークルを捨札にして次の効果を発動できる→自軍山札を見てオペレーションカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（置けなければ自軍コマンドを1つ選び、捨札にしてから置く）。その後、山札をシャッフルする。",
+  "effects": [
+    {
+      "id": "unnamed_ride_bp_boost_1000",
+      "text": "※これにライドしているユニットはBP+1000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_1000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38399e383b3",
+      "name": "ベンダーモード",
+      "text": "自軍ラッシュフェイズ中、このビークルを捨札にして次の効果を発動できる→自軍山札を見てオペレーションカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（置けなければ自軍コマンドを1つ選び、捨札にしてから置く）。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38399e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットはBP+1000される。",
+      "rule": "ride_bp_boost_1000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

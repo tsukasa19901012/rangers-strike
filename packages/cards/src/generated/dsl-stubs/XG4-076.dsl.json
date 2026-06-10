@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-076",
+  "name": "スーパーアポロガイスト",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※コールDA 【世界の融合】これをラッシュしたとき、すべての捨札を持ち主の山札に戻してシャッフルする。",
+  "rawText": "※コールDA 【世界の融合】これをラッシュしたとき、すべての捨札を持ち主の山札に戻してシャッフルする。",
+  "bp": 5500,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "大ショッカー",
+    "男",
+    "改造人間",
+    "ファンガイア"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_call_da",
+      "text": "※コールDA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_DA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4b896e7958c",
+      "name": "世界の融合",
+      "text": "これをラッシュしたとき、すべての捨札を持ち主の山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4b896e7958c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※コールDA",
+      "rule": "call_DA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-326",
+  "name": "魔法猫スモーキー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【究極奥義・猫だまし】自分の手札からBP16000以下のLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。この効果で出したユニットは、アタックもストライクもできず、自分がターンを終えるとき捨札になる。",
+  "rawText": "【究極奥義・猫だまし】自分の手札からBP16000以下のLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。この効果で出したユニットは、アタックもストライクもできず、自分がターンを終えるとき捨札になる。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "魔法"
+  ],
+  "effects": [
+    {
+      "id": "named_e7a9b6e6a5b5",
+      "name": "究極奥義・猫だまし",
+      "text": "自分の手札からBP16000以下のLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。この効果で出したユニットは、アタックもストライクもできず、自分がターンを終えるとき捨札になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7a9b6e6a5b5",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

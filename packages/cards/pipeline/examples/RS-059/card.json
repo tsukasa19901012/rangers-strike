@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-059",
+  "name": "マジブルー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは「マジマーメイド」としてつかえる。【未来予知】自分は1枚ドローする。",
+  "rawText": "※これは「マジマーメイド」としてつかえる。【未来予知】自分は1枚ドローする。",
+  "imageUrl": "/cards/legend1/RS-059.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-059.jpg",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "女",
+    "魔法"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_alias_magimermaid",
+      "text": "※これは「マジマーメイド」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_magimermaid",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "future_sight",
+      "name": "未来予知",
+      "text": "自分は1枚ドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "controller"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "fusion",
+      "text": "※これは「マジマーメイド」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

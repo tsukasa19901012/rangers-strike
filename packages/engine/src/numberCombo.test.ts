@@ -8,7 +8,7 @@ import {
 import { applyAction } from "./core/applyAction";
 import { applyNumberComboEffect } from "./rules/numberComboEffects";
 import { strikeDamageFor } from "./rules/combo";
-import { createTestState, inst } from "./testing/fixtures";
+import { createTestState, inst, withCostWindow } from "./testing/fixtures";
 import {
   battleFillers,
   battleUnit,
@@ -46,7 +46,7 @@ function enterAtCn(
       deck: setup?.deck ?? [inst("RS-007", "deck-top")],
       hand: [],
       command: holdCommands,
-      battleEntryHoldReady: holdCount > 0,
+      ...(holdCount > 0 ? withCostWindow("battle_entry_hold") : {}),
     },
     player2: setup?.player2,
   });
@@ -210,7 +210,7 @@ describe("NC battle entry (standard CN position)", () => {
         rush: [unit],
         battle: wrongFillers,
         command: holdCommands,
-        battleEntryHoldReady: holdCount > 0,
+        ...(holdCount > 0 ? withCostWindow("battle_entry_hold") : {}),
       },
     });
     const next = moveToBattle(state, unit.instanceId);

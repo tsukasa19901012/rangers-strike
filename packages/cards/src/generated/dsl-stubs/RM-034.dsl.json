@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-034",
+  "name": "暴魂トップガンダー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これがバトルエリアに出たとき、相手は1枚ドローしてもよい。 【正確な射撃】自軍コマンドゾーンからカードを1枚選びホールドしてもよい。そうしたとき、ホールドしたカードの必要パワーの数字を見て、その数字と同じパワーの数字を持つカードを、敵軍パワーゾーンのオモテ向きのカードの中から1枚選び、ウラ返してダメージにする。",
+  "rawText": "※これがバトルエリアに出たとき、相手は1枚ドローしてもよい。 【正確な射撃】自軍コマンドゾーンからカードを1枚選びホールドしてもよい。そうしたとき、ホールドしたカードの必要パワーの数字を見て、その数字と同じパワーの数字を持つカードを、敵軍パワーゾーンのオモテ向きのカードの中から1枚選び、ウラ返してダメージにする。",
+  "bp": 6000,
+  "size": "S",
+  "features": [
+    "戦闘ロボット軍団",
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "opponent_draw",
+      "text": "※これがバトルエリアに出たとき、相手は1枚ドローしてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "opponent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6ada3e7a2ba",
+      "name": "正確な射撃",
+      "text": "自軍コマンドゾーンからカードを1枚選びホールドしてもよい。そうしたとき、ホールドしたカードの必要パワーの数字を見て、その数字と同じパワーの数字を持つカードを、敵軍パワーゾーンのオモテ向きのカードの中から1枚選び、ウラ返してダメージにする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6ada3e7a2ba",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

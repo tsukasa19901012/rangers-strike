@@ -1,0 +1,55 @@
+{
+  "id": "RS-113",
+  "name": "ファイヤーカイザー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "SR",
+  "expansion": "legend2",
+  "powerCost": "6+",
+  "bp": 5000,
+  "sp": "special",
+  "size": "L",
+  "text": "合体―マジフェニックス＋魔導馬バリキオン 【ファイヤースピンブレード】 これはリリース状態の自軍コマンド1つにつきBP＋1000される。これはBP10000以上のとき「SP1」になる。",
+  "rawText": "合体―マジフェニックス＋魔導馬バリキオン 【ファイヤースピンブレード】 これはリリース状態の自軍コマンド1つにつきBP＋1000される。これはBP10000以上のとき「SP1」になる。",
+  "features": [
+    "魔法",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend2/RS-113.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-113.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―マジフェニックス＋魔導馬バリキオン",
+      "partnerCardIds": [
+        "RS-057",
+        "RS-114"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "fire_spin_blade",
+      "name": "ファイヤースピンブレード",
+      "text": "これはリリース状態の自軍コマンド1つにつきBP＋1000される。これはBP10000以上のとき「SP1」になる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_fire_spin_blade",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

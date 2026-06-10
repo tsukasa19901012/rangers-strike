@@ -1,4 +1,4 @@
-import type { Category } from "@rangers-strike/cards";
+import { playerHasActiveFieldKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
@@ -40,7 +40,10 @@ export function passiveNamedFieldBpBonus(
   }
 
   if (role === "defending" && def.size === "M" && categoriesInclude(def.category, "OT")) {
-    if (playerHasInRush(state, playerId, "RS-045")) {
+    if (
+      playerHasInRush(state, playerId, "RS-045") ||
+      playerHasActiveFieldKeyword(state, playerId, "over_technology_m_bp_plus_on_attacked", ["rush"])
+    ) {
       bonus += 1000;
     }
   }

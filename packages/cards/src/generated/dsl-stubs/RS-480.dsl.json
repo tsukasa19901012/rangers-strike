@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-480",
+  "name": "ガオシルバー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【邪気玉砕】「SP1」 敵軍バトルエリアから、ナンバーの数字が昇順で連続して並んでいるユニットの組み合わせを1組選んでもよい（1、2、3や4、5など）。そうしたとき、選んだ1組の中で一番小さいナンバーの数字を持つユニットから順に、自分の手札の枚数と同じ数まで選び撃破する。",
+  "rawText": "【邪気玉砕】「SP1」 敵軍バトルエリアから、ナンバーの数字が昇順で連続して並んでいるユニットの組み合わせを1組選んでもよい（1、2、3や4、5など）。そうしたとき、選んだ1組の中で一番小さいナンバーの数字を持つユニットから順に、自分の手札の枚数と同じ数まで選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "シルバー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e982aae6b097",
+      "name": "邪気玉砕",
+      "text": "「SP1」 敵軍バトルエリアから、ナンバーの数字が昇順で連続して並んでいるユニットの組み合わせを1組選んでもよい（1、2、3や4、5など）。そうしたとき、選んだ1組の中で一番小さいナンバーの数字を持つユニットから順に、自分の手札の枚数と同じ数まで選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

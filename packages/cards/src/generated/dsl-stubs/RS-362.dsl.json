@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-362",
+  "name": "バルシャーク（2nd）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。 【シャークジョーズ】敵軍バトルエリアから、必要パワーの数字が3以下で特徴「メカ」を持たないユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
+  "rawText": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。 【シャークジョーズ】敵軍バトルエリアから、必要パワーの数字が3以下で特徴「メカ」を持たないユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "男",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_category_wb_in_battle",
+      "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "category_wb_in_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b7e383a3",
+      "name": "シャークジョーズ",
+      "text": "敵軍バトルエリアから、必要パワーの数字が3以下で特徴「メカ」を持たないユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b7e383a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。",
+      "rule": "category_wb_in_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

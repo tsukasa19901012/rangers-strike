@@ -1,0 +1,39 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-498",
+  "name": "ゲキウルフ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【狼狼弾】これをラッシュしたとき、BPの合計が5000以下になるように敵軍ユニットを選び撃破してもよい。ただし選べるユニットの数は、WBの自軍Mユニットの数までとする。",
+  "rawText": "【狼狼弾】これをラッシュしたとき、BPの合計が5000以下になるように敵軍ユニットを選び撃破してもよい。ただし選べるユニットの数は、WBの自軍Mユニットの数までとする。",
+  "bp": 6500,
+  "size": "M",
+  "features": [
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "named_e78bbce78bbc",
+      "name": "狼狼弾",
+      "text": "これをラッシュしたとき、BPの合計が5000以下になるように敵軍ユニットを選び撃破してもよい。ただし選べるユニットの数は、WBの自軍Mユニットの数までとする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e78bbce78bbc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

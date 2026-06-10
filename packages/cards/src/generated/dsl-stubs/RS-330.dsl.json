@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-330",
+  "name": "マジレジェンド",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―マジファイヤーバード＋マジライオン 【ファイヤートルネード】これをラッシュしたとき、敵軍ユニットと敵軍コマンドゾーンのカードを、すべて持ち主の山札に戻してシャッフルする。",
+  "rawText": "合体―マジファイヤーバード＋マジライオン 【ファイヤートルネード】これをラッシュしたとき、敵軍ユニットと敵軍コマンドゾーンのカードを、すべて持ち主の山札に戻してシャッフルする。",
+  "bp": 21000,
+  "size": "L",
+  "sp": 2,
+  "features": [
+    "魔法",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e38395e382a1",
+      "name": "ファイヤートルネード",
+      "text": "これをラッシュしたとき、敵軍ユニットと敵軍コマンドゾーンのカードを、すべて持ち主の山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e382a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

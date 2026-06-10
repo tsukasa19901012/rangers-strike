@@ -7,6 +7,7 @@ import {
   hasOperationEffect,
   isSmallUnit,
 } from "../core/catalog";
+import { playerHasOperationGrantKeyword } from "../dsl/operationKeywords";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
@@ -24,7 +25,12 @@ export function collectFiveTechInterceptors(
   defenderId: PlayerId,
 ): string[] {
   const defender = state.players[defenderId];
-  if (!hasOperationEffect(defender, "five_tech", state.definitions)) return [];
+  if (
+    !playerHasOperationGrantKeyword(state, defenderId, "strike_intercept_with_s_unit") &&
+    !hasOperationEffect(defender, "five_tech", state.definitions)
+  ) {
+    return [];
+  }
 
   return defender.rush
     .filter((card) => isSmallUnit(state.definitions, card.cardId))
@@ -35,10 +41,13 @@ export function canPlayPlasmaEnergyCounter(
   state: GameState,
   defenderId: PlayerId,
 ): boolean {
-  return hasOperationEffect(
-    state.players[defenderId],
-    "plasma_energy",
-    state.definitions,
+  return (
+    playerHasOperationGrantKeyword(
+      state,
+      defenderId,
+      "destroy_striker_on_strike_self_discard",
+    ) ||
+    hasOperationEffect(state.players[defenderId], "plasma_energy", state.definitions)
   );
 }
 

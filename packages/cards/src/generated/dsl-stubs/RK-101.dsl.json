@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-101",
+  "name": "タイガーロイド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【タイガーボンバー】これが自軍バトルエリアにある間、敵軍ターン中、敵軍バトルエリアの特徴「忍者」を持たないユニットは、アタックするとき、バトルの前にBP-3000される。（BP0以下になったユニットは撃破される）この効果は重複しない。",
+  "rawText": "【タイガーボンバー】これが自軍バトルエリアにある間、敵軍ターン中、敵軍バトルエリアの特徴「忍者」を持たないユニットは、アタックするとき、バトルの前にBP-3000される。（BP0以下になったユニットは撃破される）この効果は重複しない。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "バダン",
+    "怪人",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "named_e382bfe382a4",
+      "name": "タイガーボンバー",
+      "text": "これが自軍バトルエリアにある間、敵軍ターン中、敵軍バトルエリアの特徴「忍者」を持たないユニットは、アタックするとき、バトルの前にBP-3000される。（BP0以下になったユニットは撃破される）この効果は重複しない。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382bfe382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

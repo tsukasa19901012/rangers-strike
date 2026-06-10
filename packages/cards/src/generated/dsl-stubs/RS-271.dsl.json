@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-271",
+  "name": "マグ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはバトルエリアに出られない。 【修復作業】これが自軍ラッシュエリアにある間、自軍スタートフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自軍パワーゾーンからダメージになっているカードを1枚選びオモテにする。",
+  "rawText": "※これはバトルエリアに出られない。 【修復作業】これが自軍ラッシュエリアにある間、自軍スタートフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自軍パワーゾーンからダメージになっているカードを1枚選びオモテにする。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_enter_battle",
+      "text": "※これはバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4bfaee5bea9",
+      "name": "修復作業",
+      "text": "これが自軍ラッシュエリアにある間、自軍スタートフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自軍パワーゾーンからダメージになっているカードを1枚選びオモテにする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4bfaee5bea9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出られない。",
+      "rule": "cannot_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

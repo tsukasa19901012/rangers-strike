@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-036",
+  "name": "ダイカイオーヒガシ",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※モーフ 【海老ばさみ本手返し】これをラッシュしたとき、そのターン中、これは、BP+3000される。",
+  "rawText": "※モーフ 【海老ばさみ本手返し】これをラッシュしたとき、そのターン中、これは、BP+3000される。",
+  "bp": 7000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "侍",
+    "人型",
+    "電子モヂカラ"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6b5b7e88081",
+      "name": "海老ばさみ本手返し",
+      "text": "これをラッシュしたとき、そのターン中、これは、BP+3000される。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6b5b7e88081",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

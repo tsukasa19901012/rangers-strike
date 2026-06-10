@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XP-032",
+  "name": "ゴーカイオー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※これは、自軍パワーの数5につきBP+2000される。 【レジェンドを求めて】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札を見て、Sユニット以外のユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。その後、山札をシャッフルする。",
+  "rawText": "※これは、自軍パワーの数5につきBP+2000される。 【レジェンドを求めて】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札を見て、Sユニット以外のユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。その後、山札をシャッフルする。",
+  "bp": 7000,
+  "size": "L",
+  "sp": 14,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_fx_5_bp_2000",
+      "text": "※これは、自軍パワーの数5につきBP+2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_5_bp_2000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383ace382b8",
+      "name": "レジェンドを求めて",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札を見て、Sユニット以外のユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ace382b8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

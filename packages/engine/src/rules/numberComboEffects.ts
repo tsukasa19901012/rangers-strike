@@ -28,6 +28,9 @@ import {
 } from "./playerPatches";
 import { applyLegend2NcEffect, isLegend2NcEffect } from "./legend2/ncEffects";
 import { applyLegend3NcEffect, isLegend3NcEffect } from "./legend3/ncEffects";
+import { isDslInterpretableEffect } from "../dsl/dslCatalog";
+import { listDslEffectsForTrigger } from "../dsl/effectLookup";
+import { tryResolveDslNcEffects } from "../dsl/triggerResolver";
 import type { ComboOutcome } from "./comboTypes";
 
 function ncLog(
@@ -86,6 +89,17 @@ export function resolveNamedNcEffectId(
   return getNumberComboEffect(card.cardId);
 }
 
+function ncEffectUsesDsl(cardId: string): boolean {
+  const effects = listDslEffectsForTrigger(cardId, "nc");
+  if (effects.length !== 1) return false;
+  const effect = effects[0]!;
+  if (!isDslInterpretableEffect(effect)) return false;
+  return !LEGACY_NC_EFFECT_IDS.has(effect.id);
+}
+
+/** NC 効果のうち DSL interpreter 未対応の選択 UX。 */
+const LEGACY_NC_EFFECT_IDS = new Set<string>();
+
 export function applyNumberComboEffect(
   state: GameState,
   playerId: PlayerId,
@@ -94,6 +108,29 @@ export function applyNumberComboEffect(
 ): ComboOutcome {
   if (!effectId) return { state, logs: [] };
 
+  if (ncEffectUsesDsl(card.cardId)) {
+    const dslNc = tryResolveDslNcEffects({
+      state,
+      cardId: card.cardId,
+      instanceId: card.instanceId,
+      playerId,
+      phasePlayerId: playerId,
+    });
+    if (dslNc.handled) {
+      return { state: dslNc.state, logs: dslNc.logs };
+    }
+  }
+
+  return applyLegacyNumberComboEffect(state, playerId, card, effectId);
+}
+
+/** NC 効果のレガシー switch 本体（runtime 委譲用）。 */
+export function applyLegacyNumberComboEffect(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+  effectId: NonNullable<ReturnType<typeof getNumberComboEffect>>,
+): ComboOutcome {
   let nextState = state;
   const logs: string[] = [];
 

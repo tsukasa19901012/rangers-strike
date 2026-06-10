@@ -1,0 +1,34 @@
+{
+  "cardId": "RK-077",
+  "completedSteps": [
+    "parse",
+    "analyze",
+    "extract_triggers",
+    "extract_effects",
+    "generate_dsl",
+    "validate",
+    "generate_tests"
+  ],
+  "grade": "C",
+  "validation": {
+    "ok": true,
+    "issues": []
+  },
+  "warnings": [
+    "one or more segments require fallback_handler / TS implementation"
+  ],
+  "triggers": [
+    {
+      "index": 0,
+      "type": "operation",
+      "confidence": "high",
+      "reason": "default_operation_rush"
+    }
+  ],
+  "effects": [
+    {
+      "id": "named_e383a9e382a6",
+      "needsFallback": true
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-044",
+  "name": "仮面ライダーストロンガー（XG3）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【エレクトロファイヤー】敵軍コマンドゾーンから、SPが空欄ではないユニットカードを1枚選び、敵軍ラッシュエリアにホールド状態で出してもよい。",
+  "rawText": "【エレクトロファイヤー】敵軍コマンドゾーンから、SPが空欄ではないユニットカードを1枚選び、敵軍ラッシュエリアにホールド状態で出してもよい。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "named_e382a8e383ac",
+      "name": "エレクトロファイヤー",
+      "text": "敵軍コマンドゾーンから、SPが空欄ではないユニットカードを1枚選び、敵軍ラッシュエリアにホールド状態で出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

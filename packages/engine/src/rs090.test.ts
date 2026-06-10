@@ -17,12 +17,9 @@ describe("RS-090 Red Racer", () => {
     const racer = inst("RS-090", "racer");
     const player = {
       battle: [racer, ...battleFillers(2)],
-      turnModifiers: {
-        comboNumberDelta: 0,
-        battleBlockedInstanceIds: [],
-        shironLightUsed: false,
-        rushedThisTurnInstanceIds: [racer.instanceId],
-      },
+      modifiers: [
+        { kind: "restriction", instanceId: racer.instanceId, restriction: "rushed_this_turn", scope: "turn" },
+      ],
     };
     const state = createTestState({
       definitions: defs,

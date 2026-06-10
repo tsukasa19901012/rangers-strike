@@ -19,7 +19,8 @@ import {
   grantBpBoostToBattleUnit,
   grantSp1ToBattleUnit,
 } from "../namedUnitEffects";
-import { withTurnModifiers } from "../turnModifiers";
+import { addTurnRuleModifier } from "../../core/scopedModifiers";
+import { TURN_RULE_IDS } from "../../types/scopedModifiers";
 import type { ComboOutcome } from "../comboTypes";
 
 function ncLog(
@@ -296,14 +297,18 @@ export function applyLegend2NcEffect(
       };
     }
     case "zenibomb": {
-      const enemy = withTurnModifiers(state.players[enemyId], { zenibombActive: true });
+      const enemy = addTurnRuleModifier(state.players[enemyId], TURN_RULE_IDS.ZENIBOMB, {
+        sourceCardId: card.cardId,
+      });
       return {
         state: { ...state, ...updatePlayer(state, enemyId, enemy) },
         logs: [ncLog(playerId, card.cardId, state.definitions, "zenibomb")],
       };
     }
     case "deace_sniper": {
-      const enemy = withTurnModifiers(state.players[enemyId], { deaceSniperActive: true });
+      const enemy = addTurnRuleModifier(state.players[enemyId], TURN_RULE_IDS.DEACE_SNIPER, {
+        sourceCardId: card.cardId,
+      });
       return {
         state: { ...state, ...updatePlayer(state, enemyId, enemy) },
         logs: [ncLog(playerId, card.cardId, state.definitions, "deace_sniper")],

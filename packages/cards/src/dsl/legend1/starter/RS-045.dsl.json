@@ -1,0 +1,30 @@
+{
+  "id": "RS-045",
+  "effects": [
+    {
+      "id": "signal_cannon",
+      "name": "シグナルキャノン",
+      "text": "これが自軍ラッシュエリアにあるとき、「オーバーテクノロジー」の自軍Mユニットは、アタックされるときBP＋1000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "over_technology_m_bp_plus_on_attacked",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  }
+}

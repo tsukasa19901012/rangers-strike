@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-565",
+  "name": "轟雷旋風神",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―風雷丸＋旋風神（またはハリケンホーク＋ハリケンレオン＋ハリケンドルフィン）＋轟雷神（またはゴウライビートル＋ゴウライスタッグ） 【ローリングサンダーハリケーン】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアのSユニットをすべて持ち主の手札に戻してもよい。そうしたとき、相手は自分自身の手札からカードを1枚選び、自分自身の山札に戻してシャッフルする。",
+  "rawText": "合体―風雷丸＋旋風神（またはハリケンホーク＋ハリケンレオン＋ハリケンドルフィン）＋轟雷神（またはゴウライビートル＋ゴウライスタッグ） 【ローリングサンダーハリケーン】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアのSユニットをすべて持ち主の手札に戻してもよい。そうしたとき、相手は自分自身の手札からカードを1枚選び、自分自身の山札に戻してシャッフルする。",
+  "bp": 19000,
+  "size": "L",
+  "sp": 2,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e383ade383bc",
+      "name": "ローリングサンダーハリケーン",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアのSユニットをすべて持ち主の手札に戻してもよい。そうしたとき、相手は自分自身の手札からカードを1枚選び、自分自身の山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ade383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

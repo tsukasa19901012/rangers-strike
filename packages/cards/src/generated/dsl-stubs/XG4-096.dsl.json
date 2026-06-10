@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-096",
+  "name": "バビロスBF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※自分が「バビロス」をラッシュしたとき、自軍エリアに「バビロスBF」または「バビロスSF」があれば1体選び手札に戻す。 【バビロスファイヤー】 これをラッシュしたとき、敵軍パワーゾーンからカードを1枚選び捨札にしてもよい。そうしたとき、敵軍捨札からカードを1枚選び敵軍パワーゾーンにオモテ向きで置く。",
+  "rawText": "※自分が「バビロス」をラッシュしたとき、自軍エリアに「バビロスBF」または「バビロスSF」があれば1体選び手札に戻す。 【バビロスファイヤー】 これをラッシュしたとき、敵軍パワーゾーンからカードを1枚選び捨札にしてもよい。そうしたとき、敵軍捨札からカードを1枚選び敵軍パワーゾーンにオモテ向きで置く。",
+  "bp": 6000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe887aa",
+      "text": "※自分が「バビロス」をラッシュしたとき、自軍エリアに「バビロスBF」または「バビロスSF」があれば1体選び手札に戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38390e38393",
+      "name": "バビロスファイヤー",
+      "text": "これをラッシュしたとき、敵軍パワーゾーンからカードを1枚選び捨札にしてもよい。そうしたとき、敵軍捨札からカードを1枚選び敵軍パワーゾーンにオモテ向きで置く。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38390e38393",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

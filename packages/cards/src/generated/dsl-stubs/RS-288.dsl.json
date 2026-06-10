@@ -1,0 +1,23 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-288",
+  "name": "守護獣ドラゴンシーザー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "",
+  "rawText": "",
+  "bp": 6000,
+  "size": "M",
+  "features": [
+    "恐竜",
+    "ドラゴン"
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

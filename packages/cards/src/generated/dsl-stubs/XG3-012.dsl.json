@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-012",
+  "name": "獣装光ギンガレッド",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「ギンガレッド」のカードを1枚選び、自軍ラッシュエリアに出す。 【閃光星獣剣】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからナンバーを持たないSユニットを1体選びゲームから除外する。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「ギンガレッド」のカードを1枚選び、自軍ラッシュエリアに出す。 【閃光星獣剣】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからナンバーを持たないSユニットを1体選びゲームから除外する。",
+  "bp": 4500,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "レッド",
+    "男",
+    "ギンガの光"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「ギンガレッド」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e99683e58589",
+      "name": "閃光星獣剣",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからナンバーを持たないSユニットを1体選びゲームから除外する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e99683e58589",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

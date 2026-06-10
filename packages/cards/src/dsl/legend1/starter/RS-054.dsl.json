@@ -1,0 +1,66 @@
+{
+  "id": "RS-054",
+  "effects": [
+    {
+      "id": "grant_sp1",
+      "name": "ティラノロッド",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_destroy_self_damage",
+      "text": "※これが撃破されたとき、1点ダメージを受ける。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_self_damage_1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_auto_battle_entry_each_turn",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_each_turn",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これが撃破されたとき、1点ダメージを受ける。",
+      "rule": "destroy_self_damage",
+      "damage": 1
+    },
+    {
+      "kind": "note",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "rule": "auto_battle_entry_each_turn"
+    }
+  ]
+}

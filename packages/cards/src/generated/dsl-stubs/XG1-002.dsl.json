@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-002",
+  "name": "デンジレッド（XG）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【デンジスティック】敵軍常駐置き場にカードが2枚以上あれば、その中から1枚選んでもよい（ウラ向きのカードはウラ向きのまま選ぶ）。そうしたとき、選んだカードを持ち主のパワーゾーンに置く。このとき、選んだカードがウラ向きだったなら、ダメージにして置く。",
+  "rawText": "【デンジスティック】敵軍常駐置き場にカードが2枚以上あれば、その中から1枚選んでもよい（ウラ向きのカードはウラ向きのまま選ぶ）。そうしたとき、選んだカードを持ち主のパワーゾーンに置く。このとき、選んだカードがウラ向きだったなら、ダメージにして置く。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e38387e383b3",
+      "name": "デンジスティック",
+      "text": "敵軍常駐置き場にカードが2枚以上あれば、その中から1枚選んでもよい（ウラ向きのカードはウラ向きのまま選ぶ）。そうしたとき、選んだカードを持ち主のパワーゾーンに置く。このとき、選んだカードがウラ向きだったなら、ダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38387e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

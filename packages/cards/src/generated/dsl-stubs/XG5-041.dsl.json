@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-041",
+  "name": "ゴセイイエロー（XG5）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※レジスト ※リードMA 【兄妹の絆】これは次の相手ターン終了時まで、次の能力を得る⇒「BP+3000｣「スクラム」（自分の手札が1枚以下なら、追加で次の能力を得る⇒これはアタックされる以外では相手に選ばれない）",
+  "rawText": "※レジスト ※リードMA 【兄妹の絆】これは次の相手ターン終了時まで、次の能力を得る⇒「BP+3000｣「スクラム」（自分の手札が1枚以下なら、追加で次の能力を得る⇒これはアタックされる以外では相手に選ばれない）",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "イエロー",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_lead_ma",
+      "text": "※リードMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58584e5a6b9",
+      "name": "兄妹の絆",
+      "text": "これは次の相手ターン終了時まで、次の能力を得る⇒「BP+3000｣「スクラム」（自分の手札が1枚以下なら、追加で次の能力を得る⇒これはアタックされる以外では相手に選ばれない）",
+      "trigger": {
+        "type": "on_turn_end"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58584e5a6b9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "note",
+      "text": "※リードMA",
+      "rule": "lead_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

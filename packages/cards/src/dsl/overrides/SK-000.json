@@ -1,0 +1,10 @@
+{
+  "bp": 0,
+  "size": "S",
+  "effects": [],
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "note": "SC blank template — wiki stats incomplete"
+  }
+}

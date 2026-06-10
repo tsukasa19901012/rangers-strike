@@ -1,0 +1,60 @@
+{
+  "id": "RS-042",
+  "name": "デカレンジャーロボ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "SR",
+  "expansion": "legend1",
+  "powerCost": "8+",
+  "bp": 19000,
+  "sp": 2,
+  "size": "L",
+  "text": "合体―パトストライカー＋パトジャイラー＋パトレーラー＋パトアーマー＋パトシグナー【ジャスティスフラッシャー】自軍パワーゾーンからダメージ以外のカードを5枚選び捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP3」",
+  "rawText": "合体―パトストライカー＋パトジャイラー＋パトレーラー＋パトアーマー＋パトシグナー【ジャスティスフラッシャー】自軍パワーゾーンからダメージ以外のカードを5枚選び捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP3」",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend1/RS-042.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-042.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―パトストライカー＋パトジャイラー＋パトレーラー＋パトアーマー＋パトシグナー",
+      "partnerCardIds": [
+        "RS-043",
+        "RS-044",
+        "RS-045",
+        "RS-046",
+        "RS-047"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "justice_flasher",
+      "name": "ジャスティスフラッシャー",
+      "text": "自軍パワーゾーンからダメージ以外のカードを5枚選び捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP3」",
+      "trigger": {
+        "type": "conditional"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "pay_power_discard_5_for_sp3",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

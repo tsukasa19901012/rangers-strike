@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-004",
+  "name": "ファイブロボ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "8+",
+  "text": "合体―スカイアルファー＋キャリアベータ＋ランドガンマ ※ブラスト 【超次元ソード】このユニットは、カテゴリを2つ以上持つ自軍コマンドが2つ以上あれば「SP2」になる。",
+  "rawText": "合体―スカイアルファー＋キャリアベータ＋ランドガンマ ※ブラスト 【超次元ソード】このユニットは、カテゴリを2つ以上持つ自軍コマンドが2つ以上あれば「SP2」になる。",
+  "bp": 12000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_blast",
+      "text": "※ブラスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "blast",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8b685e6aca1",
+      "name": "超次元ソード",
+      "text": "このユニットは、カテゴリを2つ以上持つ自軍コマンドが2つ以上あれば「SP2」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP2",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブラスト",
+      "rule": "blast"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

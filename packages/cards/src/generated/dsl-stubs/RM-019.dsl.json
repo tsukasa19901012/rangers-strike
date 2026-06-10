@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-019",
+  "name": "超次元高速機ドルギラン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはアタックされるときBP+5000される。 ※これが自軍捨札にある間、自分が「電子星獣ドル」または「ギラン円盤」をラッシュするとき、ラッシュするユニットと同じカード名のユニットが自軍エリアになければ、その追加条件を満たさなくてもよい。",
+  "rawText": "※これはアタックされるときBP+5000される。 ※これが自軍捨札にある間、自分が「電子星獣ドル」または「ギラン円盤」をラッシュするとき、ラッシュするユニットと同じカード名のユニットが自軍エリアになければ、その追加条件を満たさなくてもよい。",
+  "bp": 2000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_attacked_bp_boost_5000",
+      "text": "※これはアタックされるときBP+5000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "attacked_bp_boost_5000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自軍捨札にある間、自分が「電子星獣ドル」または「ギラン円盤」をラッシュするとき、ラッシュするユニットと同じカード名のユニットが自軍エリアになければ、その追加条件を満たさなくてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされるときBP+5000される。",
+      "rule": "attacked_bp_boost_5000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

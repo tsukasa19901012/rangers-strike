@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-382",
+  "name": "ビクトリーロボ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―レッドラダー＋ブルースローワー＋グリーンホバー＋イエローアーマー＋ピンクエイダー 【人の命は地球の未来】これはストライクするとき、このターン中に自軍捨札から手札に加えたSユニットのカード1枚につきSP+1される。",
+  "rawText": "合体―レッドラダー＋ブルースローワー＋グリーンホバー＋イエローアーマー＋ピンクエイダー 【人の命は地球の未来】これはストライクするとき、このターン中に自軍捨札から手札に加えたSユニットのカード1枚につきSP+1される。",
+  "bp": 12000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e4babae381ae",
+      "name": "人の命は地球の未来",
+      "text": "これはストライクするとき、このターン中に自軍捨札から手札に加えたSユニットのカード1枚につきSP+1される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4babae381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

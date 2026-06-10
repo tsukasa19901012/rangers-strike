@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-087",
+  "name": "グランナスカ・カノンフォーメーション",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※これはバトルエリアに出られない。 【ビッグバンカノン】これが自軍エリアにある間、自軍バトルフェイズ終了時、自軍バトルエリアからOTを持つSユニットを1体選んでもよい。そうしたとき、選んだ自軍ユニットのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。その後、選んだ自軍ユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
+  "rawText": "※これはバトルエリアに出られない。 【ビッグバンカノン】これが自軍エリアにある間、自軍バトルフェイズ終了時、自軍バトルエリアからOTを持つSユニットを1体選んでもよい。そうしたとき、選んだ自軍ユニットのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。その後、選んだ自軍ユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
+  "bp": 13000,
+  "size": "XL",
+  "features": [
+    "メカ"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_enter_battle",
+      "text": "※これはバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38393e38383",
+      "name": "ビッグバンカノン",
+      "text": "これが自軍エリアにある間、自軍バトルフェイズ終了時、自軍バトルエリアからOTを持つSユニットを1体選んでもよい。そうしたとき、選んだ自軍ユニットのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。その後、選んだ自軍ユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出られない。",
+      "rule": "cannot_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

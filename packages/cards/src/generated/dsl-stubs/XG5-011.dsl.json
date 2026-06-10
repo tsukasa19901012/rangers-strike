@@ -1,0 +1,46 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-011",
+  "name": "呪士ピエール",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※リードDA",
+  "rawText": "※リードDA",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "災魔一族",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_lead_da",
+      "text": "※リードDA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_DA",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※リードDA",
+      "rule": "lead_DA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

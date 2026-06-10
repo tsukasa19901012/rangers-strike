@@ -1,0 +1,83 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-071",
+  "name": "仮面ライダー響鬼（XG5）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト ※リードMA 【鍛えてます】このユニットよりBPの低い自軍ユニットがあれば、このターン、これは次の能力を得る⇒BP+1000され、このターンを終えるときホールド状態ならリリースしてもよい。",
+  "rawText": "※レジスト ※リードMA 【鍛えてます】このユニットよりBPの低い自軍ユニットがあれば、このターン、これは次の能力を得る⇒BP+1000され、このターンを終えるときホールド状態ならリリースしてもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "猛士"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_lead_ma",
+      "text": "※リードMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e98d9be38188",
+      "name": "鍛えてます",
+      "text": "このユニットよりBPの低い自軍ユニットがあれば、このターン、これは次の能力を得る⇒BP+1000され、このターンを終えるときホールド状態ならリリースしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e98d9be38188",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "note",
+      "text": "※リードMA",
+      "rule": "lead_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

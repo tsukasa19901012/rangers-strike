@@ -1,0 +1,32 @@
+{
+  "id": "RS-002",
+  "name": "ジャッカーハリケーン",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "effectId": "jacker_hurricane",
+  "imageUrl": "/cards/legend1/RS-002.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-002.jpg",
+  "effects": [
+    {
+      "id": "jacker_hurricane",
+      "text": "このターン、Sユニットだけでコンビネーションするとき、4番目のユニットは「SP1」「BP8000」になる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "jacker_hurricane"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

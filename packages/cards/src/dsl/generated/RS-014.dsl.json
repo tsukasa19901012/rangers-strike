@@ -1,0 +1,38 @@
+{
+  "id": "RS-014",
+  "name": "ファイブテクター",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "effectId": "five_tech",
+  "tags": [
+    "常駐"
+  ],
+  "imageUrl": "/cards/legend1/RS-014.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-014.jpg",
+  "effects": [
+    {
+      "id": "five_tech",
+      "name": "RS-014",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "strike_intercept_with_s_unit",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

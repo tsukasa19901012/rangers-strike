@@ -1,0 +1,42 @@
+{
+  "id": "RS-110",
+  "name": "デカピンク",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 0,
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 5,
+  "text": "【ゼニボム】次の相手ターン、新しくラッシュエリアに出たユニットは、ターンが終わるまでバトルエリアに出られない。",
+  "rawText": "【ゼニボム】次の相手ターン、新しくラッシュエリアに出たユニットは、ターンが終わるまでバトルエリアに出られない。",
+  "features": [
+    "ピンク",
+    "女",
+    "警察"
+  ],
+  "imageUrl": "/cards/legend2/RS-110.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-110.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "zenibomb",
+      "name": "ゼニボム",
+      "text": "次の相手ターン、新しくラッシュエリアに出たユニットは、ターンが終わるまでバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "zenibomb"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

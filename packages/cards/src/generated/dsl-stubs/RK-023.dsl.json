@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-023",
+  "name": "仮面ライダー1号",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【技の1号】「SP1」これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルし、自分が次の行動の宣言をするまで相手はカウンターを発動できない。",
+  "rawText": "【技の1号】「SP1」これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルし、自分が次の行動の宣言をするまで相手はカウンターを発動できない。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 15,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "named_e68a80e381ae",
+      "name": "技の1号",
+      "text": "「SP1」これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルし、自分が次の行動の宣言をするまで相手はカウンターを発動できない。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

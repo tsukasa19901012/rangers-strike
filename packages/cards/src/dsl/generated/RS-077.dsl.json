@@ -1,0 +1,61 @@
+{
+  "id": "RS-077",
+  "name": "機関車仮面",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "text": "※これは毎ターン、可能ならバトルエリアに出る。 【競争】お互いに山札の上から1枚をオモテにし、必要パワーの数字をくらべる。そして数字の大きい方を持ち主の手札に加え、小さい方を持ち主の山札の下に戻す。同じならそれぞれ山札の上に戻す。",
+  "rawText": "※これは毎ターン、可能ならバトルエリアに出る。 【競争】お互いに山札の上から1枚をオモテにし、必要パワーの数字をくらべる。そして数字の大きい方を持ち主の手札に加え、小さい方を持ち主の山札の下に戻す。同じならそれぞれ山札の上に戻す。",
+  "features": [
+    "怪人",
+    "男"
+  ],
+  "imageUrl": "/cards/legend2/RS-077.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-077.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "rule": "auto_battle_entry_each_turn"
+    }
+  ],
+  "effects": [
+    {
+      "id": "competition",
+      "name": "競争",
+      "text": "お互いに山札の上から1枚をオモテにし、必要パワーの数字をくらべる。そして数字の大きい方を持ち主の手札に加え、小さい方を持ち主の山札の下に戻す。同じならそれぞれ山札の上に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "competition"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_auto_battle_entry_each_turn",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_each_turn",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

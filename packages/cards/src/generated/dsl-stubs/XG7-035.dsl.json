@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-035",
+  "name": "ヨロイ騎士",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【結束するデルザー改造魔人】自軍捨札を1枚選び、ゲームから除外してもよい。そうしたとき、このターン、これはクロス1を得る。その後、クロス1を持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "【結束するデルザー改造魔人】自軍捨札を1枚選び、ゲームから除外してもよい。そうしたとき、このターン、これはクロス1を得る。その後、クロス1を持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "デルザー軍団",
+    "メカ",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "named_e7b590e69d9f",
+      "name": "結束するデルザー改造魔人",
+      "text": "自軍捨札を1枚選び、ゲームから除外してもよい。そうしたとき、このターン、これはクロス1を得る。その後、クロス1を持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7b590e69d9f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

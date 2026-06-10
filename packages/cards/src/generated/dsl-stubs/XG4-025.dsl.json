@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-025",
+  "name": "デカブレイク（XG4）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【必殺拳ソニックハンマー】 オモテ向きの自軍パワーの枚数を数えてもよい。そうしたき、敵軍バトルエリアから、その数以下の必要パワーの数字を持つ敵軍ユニットを１体選び持ち主のパワーゾーンに送る。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
+  "rawText": "【必殺拳ソニックハンマー】 オモテ向きの自軍パワーの枚数を数えてもよい。そうしたき、敵軍バトルエリアから、その数以下の必要パワーの数字を持つ敵軍ユニットを１体選び持ち主のパワーゾーンに送る。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
+  "bp": 4000,
+  "size": "S",
+  "sp": 14,
+  "comboNumber": 6,
+  "features": [
+    "男",
+    "警察",
+    "特キョウ"
+  ],
+  "effects": [
+    {
+      "id": "named_e5bf85e6aeba",
+      "name": "必殺拳ソニックハンマー",
+      "text": "オモテ向きの自軍パワーの枚数を数えてもよい。そうしたき、敵軍バトルエリアから、その数以下の必要パワーの数字を持つ敵軍ユニットを１体選び持ち主のパワーゾーンに送る。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5bf85e6aeba",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

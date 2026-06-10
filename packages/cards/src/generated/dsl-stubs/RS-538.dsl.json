@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-538",
+  "name": "ユイ・イブキ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※レジスト 【頼れる指揮官】これが自軍ラッシュエリアにある間、敵軍ターン中、「ユイ・イブキ」以外のホールド状態の自軍ユニットが撃破されて捨札になったとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
+  "rawText": "※レジスト 【頼れる指揮官】これが自軍ラッシュエリアにある間、敵軍ターン中、「ユイ・イブキ」以外のホールド状態の自軍ユニットが撃破されて捨札になったとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9a0bce3828c",
+      "name": "頼れる指揮官",
+      "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、「ユイ・イブキ」以外のホールド状態の自軍ユニットが撃破されて捨札になったとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9a0bce3828c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

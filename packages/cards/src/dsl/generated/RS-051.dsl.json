@@ -1,0 +1,64 @@
+{
+  "id": "RS-051",
+  "name": "爆竜ティラノサウルス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "bp": 5000,
+  "sp": "special",
+  "size": "M",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【超ドリル進化】自分の手札から「爆竜ティラノサウルス」を1枚捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【超ドリル進化】自分の手札から「爆竜ティラノサウルス」を1枚捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+  "features": [
+    "恐竜"
+  ],
+  "imageUrl": "/cards/legend1/RS-051.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-051.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "super_drill",
+      "name": "超ドリル進化",
+      "text": "自分の手札から「爆竜ティラノサウルス」を1枚捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+      "trigger": {
+        "type": "conditional"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "discard_named_from_hand_for_sp1",
+          "duration": "turn"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

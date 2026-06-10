@@ -1,0 +1,46 @@
+{
+  "id": "RS-170",
+  "name": "エージェント・アブレラ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 2,
+  "bp": 1000,
+  "size": "S",
+  "text": "※これは自軍ターン中、バトルエリアに出られない。【闇の取引】これが自軍ラッシュエリアにあるとき、自分がラッシュする「DA」のユニットの必要パワーを満たすために、次のようにしてもよい⇒必要パワーに足りない数だけ、自軍コマンドをホールドする。",
+  "rawText": "※これは自軍ターン中、バトルエリアに出られない。【闇の取引】これが自軍ラッシュエリアにあるとき、自分がラッシュする「DA」のユニットの必要パワーを満たすために、次のようにしてもよい⇒必要パワーに足りない数だけ、自軍コマンドをホールドする。",
+  "features": [
+    "商人",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-170.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-170.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍ターン中、バトルエリアに出られない",
+      "rule": "cannot_enter_battle_own_turn"
+    }
+  ],
+  "effects": [
+    {
+      "id": "dark_deal",
+      "name": "闇の取引",
+      "text": "これが自軍ラッシュエリアにあるとき、自分がラッシュする「DA」のユニットの必要パワーを満たすために、次のようにしてもよい⇒必要パワーに足りない数だけ、自軍コマンドをホールドする。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "dark_deal"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

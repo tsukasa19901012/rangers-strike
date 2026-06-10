@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-056",
+  "name": "ルナ・ドーパント",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、MAが追加される。 【嫌いじゃないわ！】これが自分の手札にある間、特徴「男」を持つ敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、そのターン、そのユニットはバトルエリアに出られない。",
+  "rawText": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、MAが追加される。 【嫌いじゃないわ！】これが自分の手札にある間、特徴「男」を持つ敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、そのターン、そのユニットはバトルエリアに出られない。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "怪人",
+    "男",
+    "ドーパント"
+  ],
+  "effects": [
+    {
+      "id": "note_ma",
+      "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、MAが追加される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_ma",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5ab8ce38184",
+      "name": "嫌いじゃないわ！",
+      "text": "これが自分の手札にある間、特徴「男」を持つ敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、そのターン、そのユニットはバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5ab8ce38184",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

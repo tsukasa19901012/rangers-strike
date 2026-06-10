@@ -1,0 +1,24 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-643",
+  "name": "分身獣ギガホイール",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "なし",
+  "rawText": "なし",
+  "bp": 5000,
+  "size": "SC",
+  "features": [
+    "メカ",
+    "獣",
+    "車両"
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-020",
+  "name": "ターボロボ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※これは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。 【高速剣ターボクラッシュ】 これはBP10000以上の時、次の能力を得る⇒SP1",
+  "rawText": "※これは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。 【高速剣ターボクラッシュ】 これはBP10000以上の時、次の能力を得る⇒SP1",
+  "bp": 8000,
+  "size": "L",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_fx_2_1_bp_10",
+      "text": "※これは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_2_1_bp_10",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9ab98e9809f",
+      "name": "高速剣ターボクラッシュ",
+      "text": "これはBP10000以上の時、次の能力を得る⇒SP1",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9ab98e9809f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

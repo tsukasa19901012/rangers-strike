@@ -1,0 +1,76 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-501",
+  "name": "エレハン・キンポー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これは自軍ターン中バトルエリアに出られない。 ※これは特徴「女」を持つユニット1体につきBP＋1000される。 【遊びの中に修行あり】これが自軍ラッシュエリアにある間、特徴「イエロー」を持つすべてのSユニットは次の能力を得る⇒バトルエリアで2番目に並んだとき「SP1」になる。",
+  "rawText": "※これは自軍ターン中バトルエリアに出られない。 ※これは特徴「女」を持つユニット1体につきBP＋1000される。 【遊びの中に修行あり】これが自軍ラッシュエリアにある間、特徴「イエロー」を持つすべてのSユニットは次の能力を得る⇒バトルエリアで2番目に並んだとき「SP1」になる。",
+  "bp": 0,
+  "size": "S",
+  "features": [
+    "男",
+    "拳聖",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_enter_battle_own_turn",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_enter_battle_own_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_fx_1_bp_1000",
+      "text": "※これは特徴「女」を持つユニット1体につきBP＋1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_1_bp_1000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9818ae381b3",
+      "name": "遊びの中に修行あり",
+      "text": "これが自軍ラッシュエリアにある間、特徴「イエロー」を持つすべてのSユニットは次の能力を得る⇒バトルエリアで2番目に並んだとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "rule": "no_enter_battle_own_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

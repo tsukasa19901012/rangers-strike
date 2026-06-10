@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-003",
+  "name": "ゴーグルブルー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【ブルージェットダッシュ】このターン、敵軍ユニットの必要パワーの数字は1少なくなる。",
+  "rawText": "【ブルージェットダッシュ】このターン、敵軍ユニットの必要パワーの数字は1少なくなる。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e38396e383ab",
+      "name": "ブルージェットダッシュ",
+      "text": "このターン、敵軍ユニットの必要パワーの数字は1少なくなる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38396e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

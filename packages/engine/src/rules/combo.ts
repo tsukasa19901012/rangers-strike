@@ -18,7 +18,8 @@ import {
 import { opponent, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { applyCourageMagicRelease } from "./strikeReactions";
-import { getTurnModifiers, isSOnlyComboLine } from "./turnModifiers";
+import { getSComboFinisher } from "./turnModifierBridge";
+import { isSOnlyComboLine } from "./turnModifiers";
 import {
   tryStartConditionalChoice,
   tryStartDestroyEnemyChoice,
@@ -49,6 +50,11 @@ import {
 import { grantSp1OnPlayer } from "./playerPatches";
 import { legend3EffectiveSp } from "./legend3/fieldEffects";
 import { hasBakiBakiExtraAttackOnly } from "./legend3/destroyEffects";
+import { tryStartDslConditionalChoice } from "../dsl/conditionalEffects";
+import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
+import { wingAllowsEmptyBattleStrike } from "../keywords";
+import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
+import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
 
 export type { ComboOutcome } from "./comboTypes";
 
@@ -179,15 +185,15 @@ function applySComboFinisher(
   battlePosition: number,
 ): CardInstance {
   const player = state.players[playerId];
-  const mods = getTurnModifiers(player);
-  if (!mods.sComboFinisher || !isSOnlyComboLine(state.definitions, player.battle)) {
+  const finisher = getSComboFinisher(player);
+  if (!finisher || !isSOnlyComboLine(state.definitions, player.battle)) {
     return card;
   }
 
   const definition = getDefinition(state.definitions, card.cardId);
   if (!definition || !isSmallUnit(state.definitions, card.cardId)) return card;
 
-  if (mods.sComboFinisher === "goren_storm" && battlePosition === 5) {
+  if (finisher === "goren_storm" && battlePosition === 5) {
     const baseBp = unitBp(definition);
     return {
       ...card,
@@ -196,7 +202,7 @@ function applySComboFinisher(
     };
   }
 
-  if (mods.sComboFinisher === "jacker_hurricane" && battlePosition === 4) {
+  if (finisher === "jacker_hurricane" && battlePosition === 4) {
     const baseBp = unitBp(definition);
     return {
       ...card,
@@ -261,7 +267,8 @@ function shouldRunEnterStep(
   return order.indexOf(step) >= order.indexOf(resumeFrom);
 }
 
-export function resolveEnterBattleEffects(
+/** Event Listener から呼ばれる進入効果の実装本体。 */
+export function resolveEnterBattleEffectsImpl(
   state: GameState,
   playerId: PlayerId,
   card: CardInstance,
@@ -307,8 +314,23 @@ export function resolveEnterBattleEffects(
   }
 
   if (shouldRunEnterStep(resumeFrom, "conditional")) {
+    const dslEnter = tryResolveDslTriggeredEffects({
+      state: nextState,
+      cardId: card.cardId,
+      instanceId: card.instanceId,
+      playerId,
+      phasePlayerId: playerId,
+      triggerType: "enter_battle",
+      logAction: "enter_battle",
+    });
+    nextState = dslEnter.state;
+    logs.push(...dslEnter.logs);
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+
     const enterEffect = getEnterBattleEffect(card.cardId);
-    if (enterEffect === "destroy_enemy_bp4000") {
+    if (!dslEnter.handled && enterEffect === "destroy_enemy_bp4000") {
       const withChoice = tryStartDestroyEnemyChoice(
         nextState,
         playerId,
@@ -324,12 +346,15 @@ export function resolveEnterBattleEffects(
         return { state: nextState, logs, enterResumeFrom: "nc" };
       }
     }
-    if (enterEffect === "sky_magic_slash") {
+    if (!dslEnter.handled && enterEffect === "sky_magic_slash") {
       const slash = resolveSkyMagicSlash(nextState, playerId, card.cardId);
       nextState = slash.state;
       logs.push(...slash.logs);
     }
-    if (enterEffect === "mane_hurricane" || enterEffect === "ruin_excavation") {
+    if (
+      !dslEnter.handled &&
+      (enterEffect === "mane_hurricane" || enterEffect === "ruin_excavation")
+    ) {
       const legend2 = resolveLegend2EnterBattle(nextState, playerId, card.cardId, enterEffect);
       nextState = legend2.state;
       logs.push(...legend2.logs);
@@ -339,7 +364,11 @@ export function resolveEnterBattleEffects(
     }
 
     const namedEnter = getEnterBattleNamedEffect(card.cardId);
-    if (namedEnter && isLegend3EnterBattleEffect(namedEnter.effectId)) {
+    if (
+      !dslEnter.handled &&
+      namedEnter &&
+      isLegend3EnterBattleEffect(namedEnter.effectId)
+    ) {
       const legend3 = resolveLegend3EnterBattle(
         nextState,
         playerId,
@@ -367,6 +396,26 @@ export function resolveEnterBattleEffects(
           card.cardId,
           state.definitions,
           "opponent_may_draw",
+        ),
+      );
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+
+    const dslConditional = tryStartDslConditionalChoice(
+      nextState,
+      playerId,
+      battleCard,
+      playerId,
+    );
+    if (dslConditional) {
+      nextState = dslConditional;
+      logs.push(
+        buildLogEntry(
+          playerId,
+          "named_effect",
+          card.cardId,
+          state.definitions,
+          "choice:dsl_conditional",
         ),
       );
       return { state: nextState, logs, enterResumeFrom: "nc" };
@@ -472,6 +521,23 @@ export function resolveEnterBattleEffects(
   return { state: nextState, logs };
 }
 
+registerEnterBattleEffectsImpl(resolveEnterBattleEffectsImpl);
+
+/** `UnitEnteredBattle` イベント経由で進入効果を解決する（後方互換 API）。 */
+export function resolveEnterBattleEffects(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+  battlePosition: number,
+  options?: {
+    battleBeforeEnter?: CardInstance[];
+    rideOff?: boolean;
+    resumeFrom?: EnterBattleResumeFrom;
+  },
+): ComboOutcome {
+  return emitUnitEnteredBattleEffects(state, playerId, card, battlePosition, options);
+}
+
 /** コンボ選択後に戦闘進入解決を再開（攻撃/ストライクプロンプトの前）。 */
 export function continueEnterBattleEffects(
   state: GameState,
@@ -511,6 +577,9 @@ export function canStrikeUnit(
     }
     if (cannotAttackOrStrikeThisTurn(state.players[playerId], instance)) {
       return false;
+    }
+    if (wingAllowsEmptyBattleStrike(state, playerId, instance)) {
+      return legend3EffectiveSp(state, playerId, instance) >= 1;
     }
     return legend3EffectiveSp(state, playerId, instance) >= 1;
   }

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-620",
+  "name": "ジェットガルーダ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "【ガルーダクロー】これをラッシュしたとき、敵軍パワーゾーンからダメージ以外のカードを1枚選び、持ち主の山札の上に戻してもよい。",
+  "rawText": "【ガルーダクロー】これをラッシュしたとき、敵軍パワーゾーンからダメージ以外のカードを1枚選び、持ち主の山札の上に戻してもよい。",
+  "bp": 10000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型",
+    "航空機"
+  ],
+  "effects": [
+    {
+      "id": "named_e382ace383ab",
+      "name": "ガルーダクロー",
+      "text": "これをラッシュしたとき、敵軍パワーゾーンからダメージ以外のカードを1枚選び、持ち主の山札の上に戻してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ace383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

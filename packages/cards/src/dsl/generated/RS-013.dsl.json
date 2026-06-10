@@ -1,0 +1,36 @@
+{
+  "id": "RS-013",
+  "name": "シーロンの光",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "effectId": "shiron_light",
+  "tags": [
+    "常駐"
+  ],
+  "imageUrl": "/cards/legend1/RS-013.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-013.jpg",
+  "effects": [
+    {
+      "id": "shiron_light",
+      "text": "自分のラッシュフェイズごとに1度だけ発動できる。自分の手札から相手に1枚選ばせ見せる。ユニットカードが選ばれたならラッシュエリアに出してよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_shiron_light",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

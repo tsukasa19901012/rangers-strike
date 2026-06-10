@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-390",
+  "name": "ゴーグリーン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ファイブレイザー】「SP1」敵軍捨札からカードを1枚選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ敵軍コマンドを1つ選び、捨札にしてから置く。（この効果は特徴「航空機」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "【ファイブレイザー】「SP1」敵軍捨札からカードを1枚選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ敵軍コマンドを1つ選び、捨札にしてから置く。（この効果は特徴「航空機」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "グリーン",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e38395e382a1",
+      "name": "ファイブレイザー",
+      "text": "「SP1」敵軍捨札からカードを1枚選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ敵軍コマンドを1つ選び、捨札にしてから置く。（この効果は特徴「航空機」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

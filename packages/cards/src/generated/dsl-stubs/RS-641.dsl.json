@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-641",
+  "name": "ギガバイタスSM",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※これはDAを持たないユニットにアタックすることができない。 【スクランブル】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードがSCユニットのカードだったなら、それを自軍ラッシュエリアに出す。ただし追加条件は満たすこと。出せなかったなら、オモテにしたカードは山札の下に戻す。",
+  "rawText": "※これはDAを持たないユニットにアタックすることができない。 【スクランブル】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードがSCユニットのカードだったなら、それを自軍ラッシュエリアに出す。ただし追加条件は満たすこと。出せなかったなら、オモテにしたカードは山札の下に戻す。",
+  "bp": 8000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "獣",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack_non_da",
+      "text": "※これはDAを持たないユニットにアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_non_da",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e382af",
+      "name": "スクランブル",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードがSCユニットのカードだったなら、それを自軍ラッシュエリアに出す。ただし追加条件は満たすこと。出せなかったなら、オモテにしたカードは山札の下に戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e382af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはDAを持たないユニットにアタックすることができない。",
+      "rule": "cannot_attack_non_da"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

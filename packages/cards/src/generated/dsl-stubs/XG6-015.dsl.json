@@ -1,0 +1,23 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-015",
+  "name": "爆竜パラサロッキル",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "",
+  "rawText": "",
+  "bp": 3000,
+  "size": "M",
+  "comboNumber": "R",
+  "features": [
+    "恐竜"
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

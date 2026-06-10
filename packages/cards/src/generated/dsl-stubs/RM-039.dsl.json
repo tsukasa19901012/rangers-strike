@@ -1,0 +1,71 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-039",
+  "name": "ジライヤ第二装着",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「ジライヤ」のカードを1枚選び、自軍ラッシュエリアに出す。 【十文字斬り】自軍ターン中、これがバトルエリアに出たとき、敵軍捨札からユニットカードを1枚選んでもよい。そうしたとき、選んだユニットカードと同じカード名の敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「ジライヤ」のカードを1枚選び、自軍ラッシュエリアに出す。 【十文字斬り】自軍ターン中、これがバトルエリアに出たとき、敵軍捨札からユニットカードを1枚選んでもよい。そうしたとき、選んだユニットカードと同じカード名の敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 4500,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "戸隠流",
+    "男",
+    "忍者",
+    "パワープロテクター"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「ジライヤ」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e58d81e69687",
+      "name": "十文字斬り",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍捨札からユニットカードを1枚選んでもよい。そうしたとき、選んだユニットカードと同じカード名の敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58d81e69687",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

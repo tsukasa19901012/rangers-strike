@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-034",
+  "name": "恐竜折神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "【キョウリュウマル】このユニットからコンビネーションする特徴「侍」を持つユニットは、次の能力を得る⇒アタックするかわりに、敵軍バトルエリアのユニットを、BPの合計がこのユニットのBP以下になるように好きな数選び、撃破してもよい。",
+  "rawText": "【キョウリュウマル】このユニットからコンビネーションする特徴「侍」を持つユニットは、次の能力を得る⇒アタックするかわりに、敵軍バトルエリアのユニットを、BPの合計がこのユニットのBP以下になるように好きな数選び、撃破してもよい。",
+  "bp": 5000,
+  "size": "M",
+  "comboNumber": "L",
+  "features": [
+    "恐竜",
+    "折神獣"
+  ],
+  "effects": [
+    {
+      "id": "named_e382ade383a7",
+      "name": "キョウリュウマル",
+      "text": "このユニットからコンビネーションする特徴「侍」を持つユニットは、次の能力を得る⇒アタックするかわりに、敵軍バトルエリアのユニットを、BPの合計がこのユニットのBP以下になるように好きな数選び、撃破してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ade383a7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

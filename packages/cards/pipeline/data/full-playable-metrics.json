@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-06-10T02:07:27.550Z",
+  "fullPlayable": 1849,
+  "vanillaPromoted": 354,
+  "complexityPromoted": 1316,
+  "registry": {
+    "total": 1849,
+    "core": 179,
+    "vanillaPromoted": 354,
+    "complexityPromoted": 1316,
+    "dslReady": 1730,
+    "legacyHandler": 0,
+    "unimplemented": 119,
+    "fallbackOnly": 0
+  },
+  "validationFailed": 0,
+  "failedIds": []
+}

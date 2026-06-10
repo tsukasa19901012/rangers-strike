@@ -1,0 +1,71 @@
+{
+  "id": "RS-091",
+  "name": "ゴーレッド",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 5,
+  "text": "【人命救助】自軍捨札からSユニットのカードを1枚選んで手札に加えてもよい。",
+  "rawText": "【人命救助】自軍捨札からSユニットのカードを1枚選んで手札に加えてもよい。",
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "imageUrl": "/cards/legend2/RS-091.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-091.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "life_rescue",
+      "name": "人命救助",
+      "text": "自軍捨札からSユニットのカードを1枚選んで手札に加えてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

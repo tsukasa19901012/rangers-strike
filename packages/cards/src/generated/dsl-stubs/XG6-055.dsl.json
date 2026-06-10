@@ -1,0 +1,102 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-055",
+  "name": "仮面ライダーオーズ・タトバコンボ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※モーフ ※ウイング ※リードET 【コンボチェンジ】カード名に「タトバ」を含まない、モーフと特徴「オーズドライバー」を持つユニットカードを自分の手札から1枚選び、これと置き換えてもよい。このとき出したユニットは、BP+2000され、ライドオフした直後のユニットとして扱い、RCの効果を持っていれば、その効果を発動する。",
+  "rawText": "※モーフ ※ウイング ※リードET 【コンボチェンジ】カード名に「タトバ」を含まない、モーフと特徴「オーズドライバー」を持つユニットカードを自分の手札から1枚選び、これと置き換えてもよい。このとき出したユニットは、BP+2000され、ライドオフした直後のユニットとして扱い、RCの効果を持っていれば、その効果を発動する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "オーズドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_lead_et",
+      "text": "※リードET",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b3e383b3",
+      "name": "コンボチェンジ",
+      "text": "カード名に「タトバ」を含まない、モーフと特徴「オーズドライバー」を持つユニットカードを自分の手札から1枚選び、これと置き換えてもよい。このとき出したユニットは、BP+2000され、ライドオフした直後のユニットとして扱い、RCの効果を持っていれば、その効果を発動する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b3e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    },
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    },
+    {
+      "kind": "note",
+      "text": "※リードET",
+      "rule": "lead_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

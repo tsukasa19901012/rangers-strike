@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-491",
+  "name": "三の槍マンマルバ成体",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "【目覚めた凶暴性】自軍Sユニットの数が敵軍Sユニットの数より少なければ、相手は自分自身のSユニットを1体選び撃破する。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
+  "rawText": "【目覚めた凶暴性】自軍Sユニットの数が敵軍Sユニットの数より少なければ、相手は自分自身のSユニットを1体選び撃破する。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
+  "bp": 5000,
+  "size": "S",
+  "sp": 1,
+  "comboNumber": 3,
+  "features": [
+    "暗黒七本槍",
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "named_e79baee8a69a",
+      "name": "目覚めた凶暴性",
+      "text": "自軍Sユニットの数が敵軍Sユニットの数より少なければ、相手は自分自身のSユニットを1体選び撃破する。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e79baee8a69a",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-086",
+  "name": "グランナスカ・コンバットフォーメーション",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【ナックルボンバー】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "【ナックルボンバー】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "bp": 9000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e3838ae38383",
+      "name": "ナックルボンバー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838ae38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

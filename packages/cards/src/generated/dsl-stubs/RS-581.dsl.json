@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-581",
+  "name": "魔導馬バリキオン（2nd）",
+  "type": "vehicle",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※特徴「人型」を持つMユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。 ※このビークルは合体ユニットとしてつかえる。 【1500万馬力】これにライドしているユニットは、敵軍ターン中、BP+1500される。",
+  "rawText": "※特徴「人型」を持つMユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。 ※このビークルは合体ユニットとしてつかえる。 【1500万馬力】これにライドしているユニットは、敵軍ターン中、BP+1500される。",
+  "effects": [
+    {
+      "id": "note_m_rc",
+      "text": "※特徴「人型」を持つMユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_m_rc",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_fusion_vehicle_alias",
+      "text": "※このビークルは合体ユニットとしてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "fusion_vehicle_alias",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "fx_1500",
+      "name": "1500万馬力",
+      "text": "これにライドしているユニットは、敵軍ターン中、BP+1500される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_fx_1500",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このビークルは合体ユニットとしてつかえる。",
+      "rule": "fusion_vehicle_alias"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

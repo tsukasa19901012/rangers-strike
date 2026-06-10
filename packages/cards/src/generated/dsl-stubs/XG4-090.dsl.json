@@ -1,0 +1,33 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-090",
+  "name": "GGスレイヤー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これにライドしているユニットは、アタックするときBP+2000される。",
+  "rawText": "※これにライドしているユニットは、アタックするときBP+2000される。",
+  "effects": [
+    {
+      "id": "note_bp_2000",
+      "text": "※これにライドしているユニットは、アタックするときBP+2000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp_2000",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-413",
+  "name": "冥府神ゴーゴン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【もの言わぬ石と化せ】これが自軍バトルエリアにある間、相手は次の制限を受ける⇒自分自身のコマンドゾーンにあるSユニットのカードは、リリースできない。ただし、自分自身のターンを終えるとき、自分自身のコマンドを1つ選び捨札にしてもよい。",
+  "rawText": "【もの言わぬ石と化せ】これが自軍バトルエリアにある間、相手は次の制限を受ける⇒自分自身のコマンドゾーンにあるSユニットのカードは、リリースできない。ただし、自分自身のターンを終えるとき、自分自身のコマンドを1つ選び捨札にしてもよい。",
+  "bp": 5000,
+  "size": "L",
+  "features": [
+    "冥府神",
+    "三賢神",
+    "女",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e38282e381ae",
+      "name": "もの言わぬ石と化せ",
+      "text": "これが自軍バトルエリアにある間、相手は次の制限を受ける⇒自分自身のコマンドゾーンにあるSユニットのカードは、リリースできない。ただし、自分自身のターンを終えるとき、自分自身のコマンドを1つ選び捨札にしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38282e381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

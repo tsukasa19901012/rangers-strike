@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-443",
+  "name": "バトルジャパン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※タクスET（これががバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットは「SP1」になる） 【カンフーダンス】自軍ラッシュエリアのSユニットを2体まで選び、自軍コマンドゾーンにリリース状態で置いてもよい。(コマンドゾーンに置けるカードは通常5枚まで)",
+  "rawText": "※タクスET（これががバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットは「SP1」になる） 【カンフーダンス】自軍ラッシュエリアのSユニットを2体まで選び、自軍コマンドゾーンにリリース状態で置いてもよい。(コマンドゾーンに置けるカードは通常5枚まで)",
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_taxis_et",
+      "text": "※タクスET（これががバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットは「SP1」になる）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382abe383b3",
+      "name": "カンフーダンス",
+      "text": "自軍ラッシュエリアのSユニットを2体まで選び、自軍コマンドゾーンにリリース状態で置いてもよい。(コマンドゾーンに置けるカードは通常5枚まで)",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382abe383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※タクスET（これががバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットは「SP1」になる）",
+      "rule": "taxis_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

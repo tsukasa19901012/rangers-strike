@@ -9,6 +9,7 @@ import {
   inst,
   releasedEtCommand,
   WIN_DAMAGE,
+  withCostWindow,
 } from "../testing/fixtures";
 import { getDefinition } from "../core/catalog";
 import { createZordSetup } from "../rules/zordSetup";
@@ -482,7 +483,7 @@ describe("CPU level 1", () => {
         hand: [zord, tyranno],
         power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3")],
         command: [heldWbCommand("c1")],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
       },
     });
     state.definitions["RS-050"] = {
@@ -527,7 +528,7 @@ describe("CPU level 1", () => {
         hand: [unit, op],
         power: Array.from({ length: 6 }, (_, i) => inst("TST-P", `p${i}`)),
         command: [heldWbCommand("c1")],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
       },
       player1: {
         battle: [weak],

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-007",
+  "name": "世界忍者戦",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "※常駐 自軍ラッシュフェイズ中、自軍ユニットをラッシュしたとき、本来の特徴に「忍者」を持つすべてのユニットの本来のカテゴリを見て、WB、MA、OT、ET、DAがそれぞれ1つ以上あれば、次の効果を発動できる⇒特徴「忍者」を持たない敵軍Sユニットをすべて持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※常駐 自軍ラッシュフェイズ中、自軍ユニットをラッシュしたとき、本来の特徴に「忍者」を持つすべてのユニットの本来のカテゴリを見て、WB、MA、OT、ET、DAがそれぞれ1つ以上あれば、次の効果を発動できる⇒特徴「忍者」を持たない敵軍Sユニットをすべて持ち主のパワーゾーンにダメージにして置く。",
+  "effects": [
+    {
+      "id": "unnamed_resident",
+      "text": "※常駐 自軍ラッシュフェイズ中、自軍ユニットをラッシュしたとき、本来の特徴に「忍者」を持つすべてのユニットの本来のカテゴリを見て、WB、MA、OT、ET、DAがそれぞれ1つ以上あれば、次の効果を発動できる⇒特徴「忍者」を持たない敵軍Sユニットをすべて持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※常駐 自軍ラッシュフェイズ中、自軍ユニットをラッシュしたとき、本来の特徴に「忍者」を持つすべてのユニットの本来のカテゴリを見て、WB、MA、OT、ET、DAがそれぞれ1つ以上あれば、次の効果を発動できる⇒特徴「忍者」を持たない敵軍Sユニットをすべて持ち主のパワーゾーンにダメージにして置く。",
+      "rule": "resident"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

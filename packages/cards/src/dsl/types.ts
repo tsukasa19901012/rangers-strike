@@ -75,7 +75,23 @@ export type TargetSelector =
         faceDown?: boolean;
         commandHeld?: boolean;
         maxBp?: number;
+        minBp?: number;
       };
+    }
+  | {
+      type: "zones";
+      zones: Array<{
+        zone: ZoneName;
+        owner: "self" | "opponent" | "any";
+        filter?: {
+          size?: UnitSize;
+          category?: string;
+          faceDown?: boolean;
+          commandHeld?: boolean;
+          maxBp?: number;
+          minBp?: number;
+        };
+      }>;
     };
 
 export type EffectCondition =
@@ -202,6 +218,7 @@ export type ValidationResult = {
   issues: ValidationIssue[];
 };
 
-export const CARD_ID_PATTERN = /^[A-Z]{2,3}-\d{3}$/;
+export const CARD_ID_PATTERN = /^[A-Z]{2,3}\d?-\d{3}$/;
 export const EFFECT_ID_PATTERN = /^[a-z][a-z0-9_]*$/;
-export const ZORD_POWER_COST_PATTERN = /^\d+\+$/;
+/** ゾードアップ/ダウン可能な必要パワー（例: 7+, 7-） */
+export const ZORD_POWER_COST_PATTERN = /^\d+[+-]$/;

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-092",
+  "name": "ソルブレイバー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【ケルベロスΔ（デルタ）】自軍ターン中、これがバトルエリアに出たとき、このターン、これは次の能力を得る⇒このターン中に自軍捨札から手札に加えたSユニットのカード1枚につきBP+2000される。",
+  "rawText": "【ケルベロスΔ（デルタ）】自軍ターン中、これがバトルエリアに出たとき、このターン、これは次の能力を得る⇒このターン中に自軍捨札から手札に加えたSユニットのカード1枚につきBP+2000される。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": 2,
+  "features": [
+    "メカ",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b1e383ab",
+      "name": "ケルベロスΔ（デルタ）",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、このターン、これは次の能力を得る⇒このターン中に自軍捨札から手札に加えたSユニットのカード1枚につきBP+2000される。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b1e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

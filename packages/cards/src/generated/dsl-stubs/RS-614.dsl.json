@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-614",
+  "name": "クローバーキング",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【クラブメガトン】BP4000の敵軍Sユニットをすべて持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
+  "rawText": "【クラブメガトン】BP4000の敵軍Sユニットをすべて持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "メカ",
+    "グリーン",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382afe383a9",
+      "name": "クラブメガトン",
+      "text": "BP4000の敵軍Sユニットをすべて持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382afe383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

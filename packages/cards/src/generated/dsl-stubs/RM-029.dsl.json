@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-029",
+  "name": "ジャスピオン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※SPが空欄ではない自軍Sユニットがあれば、これはバトルエリアに出られない。 【コズミックハーレー】敵軍山札の上から1枚をオモテにする。オモテにしたカードがWBを持つユニットカードなら、それを持ち主のラッシュエリアに出す。違うなら、そのカードを持ち主のパワーゾーンに送ってから、相手に1点ダメージを与える。",
+  "rawText": "※SPが空欄ではない自軍Sユニットがあれば、これはバトルエリアに出られない。 【コズミックハーレー】敵軍山札の上から1枚をオモテにする。オモテにしたカードがWBを持つユニットカードなら、それを持ち主のラッシュエリアに出す。違うなら、そのカードを持ち主のパワーゾーンに送ってから、相手に1点ダメージを与える。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_sp_s",
+      "text": "※SPが空欄ではない自軍Sユニットがあれば、これはバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_sp_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b3e382ba",
+      "name": "コズミックハーレー",
+      "text": "敵軍山札の上から1枚をオモテにする。オモテにしたカードがWBを持つユニットカードなら、それを持ち主のラッシュエリアに出す。違うなら、そのカードを持ち主のパワーゾーンに送ってから、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

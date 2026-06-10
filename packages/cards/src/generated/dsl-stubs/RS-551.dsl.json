@@ -1,0 +1,90 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-551",
+  "name": "ゴッドガンマー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャブラック」のカードを1枚選び、自軍ラッシュエリアに出す。 ※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」を得る） 【ガンマーダイナマイト】相手は、特徴「怪人」を持つ自分自身のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャブラック」のカードを1枚選び、自軍ラッシュエリアに出す。 ※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」を得る） 【ガンマーダイナマイト】相手は、特徴「怪人」を持つ自分自身のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 4500,
+  "size": "M",
+  "comboNumber": 1,
+  "features": [
+    "忍者",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャブラック」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unnamed_taxis_ma",
+      "text": "※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」を得る）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382ace383b3",
+      "name": "ガンマーダイナマイト",
+      "text": "相手は、特徴「怪人」を持つ自分自身のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ace383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」を得る）",
+      "rule": "taxis_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

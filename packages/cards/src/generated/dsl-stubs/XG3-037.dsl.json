@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-037",
+  "name": "烏賊折神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "2+",
+  "text": "【烏賊墨砲】これをラッシュしたとき、テキストに「アタックされない」と書かれた敵軍ユニットを1体選んでもよい。そうしたとき、このターン、そのユニットの持つ「アタックされない」という記述のあるテキストは無効になる。",
+  "rawText": "【烏賊墨砲】これをラッシュしたとき、テキストに「アタックされない」と書かれた敵軍ユニットを1体選んでもよい。そうしたとき、このターン、そのユニットの持つ「アタックされない」という記述のあるテキストは無効になる。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "獣",
+    "折神獣"
+  ],
+  "effects": [
+    {
+      "id": "named_e7838fe8b38a",
+      "name": "烏賊墨砲",
+      "text": "これをラッシュしたとき、テキストに「アタックされない」と書かれた敵軍ユニットを1体選んでもよい。そうしたとき、このターン、そのユニットの持つ「アタックされない」という記述のあるテキストは無効になる。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7838fe8b38a",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

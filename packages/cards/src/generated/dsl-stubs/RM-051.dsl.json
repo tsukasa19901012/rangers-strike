@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-051",
+  "name": "メガヘラクレス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【メガビートフォーメーション】これは、自軍エリアに「ビートルーダー」があれば「SP1」になり、「スタッガータンク」があればBP+3000され、「レッドジャイロ」があればレジストを得る。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【メガビートフォーメーション】これは、自軍エリアに「ビートルーダー」があれば「SP1」になり、「スタッガータンク」があればBP+3000され、「レッドジャイロ」があればレジストを得る。",
+  "bp": 6000,
+  "size": "L",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "昆虫"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a1e382ac",
+      "name": "メガビートフォーメーション",
+      "text": "これは、自軍エリアに「ビートルーダー」があれば「SP1」になり、「スタッガータンク」があればBP+3000され、「レッドジャイロ」があればレジストを得る。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

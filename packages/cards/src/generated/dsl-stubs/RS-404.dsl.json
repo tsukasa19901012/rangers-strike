@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-404",
+  "name": "マーフィーK9",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【追跡】これをラッシュしたとき、次の効果を発動できる ⇒特徴「メカ」を持たないSユニットを1体選ぶ。そして選んだユニットと同じカード名のユニットカードを自軍山札から1枚選び、相手に見せてから自分の手札に加えてもよい。その後、山札をシャッフルする。",
+  "rawText": "【追跡】これをラッシュしたとき、次の効果を発動できる ⇒特徴「メカ」を持たないSユニットを1体選ぶ。そして選んだユニットと同じカード名のユニットカードを自軍山札から1枚選び、相手に見せてから自分の手札に加えてもよい。その後、山札をシャッフルする。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "メカ"
+  ],
+  "effects": [
+    {
+      "id": "named_e8bfbde8b7a1",
+      "name": "追跡",
+      "text": "これをラッシュしたとき、次の効果を発動できる ⇒特徴「メカ」を持たないSユニットを1体選ぶ。そして選んだユニットと同じカード名のユニットカードを自軍山札から1枚選び、相手に見せてから自分の手札に加えてもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "optional_deck_draw",
+          "valid": {
+            "type": "zone",
+            "zone": "deck",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

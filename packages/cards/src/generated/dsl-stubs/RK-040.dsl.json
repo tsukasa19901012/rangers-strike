@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-040",
+  "name": "ベノスネーカー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【毒液】敵軍ターン中、これとバトルしたユニットは、特徴「男」または「女」を持つとき、バトルに勝っても撃破される。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【毒液】敵軍ターン中、これとバトルしたユニットは、特徴「男」または「女」を持つとき、バトルに勝っても撃破される。",
+  "bp": 1000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "ミラーモンスター",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6af92e6b6b2",
+      "name": "毒液",
+      "text": "敵軍ターン中、これとバトルしたユニットは、特徴「男」または「女」を持つとき、バトルに勝っても撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6af92e6b6b2",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

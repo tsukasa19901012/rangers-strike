@@ -1,0 +1,47 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SX-005",
+  "name": "仮面ライダーW・CJX",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【ビッカーファイナリュージョン】このユニットは自軍コマンドゾーンにあるカードのカテゴリごとに次の能力を得る⇒WBがあればレジストを得る。MAがあれば、これが敵軍ユニットをバトルで撃破したとき、撃破したユニットを捨札にするかわりに持ち主のパワーゾーンにダメージにして置いてもよい。ETがあればBP+3000される。DAがあれば「SP1」になる。",
+  "rawText": "【ビッカーファイナリュージョン】このユニットは自軍コマンドゾーンにあるカードのカテゴリごとに次の能力を得る⇒WBがあればレジストを得る。MAがあれば、これが敵軍ユニットをバトルで撃破したとき、撃破したユニットを捨札にするかわりに持ち主のパワーゾーンにダメージにして置いてもよい。ETがあればBP+3000される。DAがあれば「SP1」になる。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ダブルドライバー"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "特徴「ダブルドライバー」を持つ自軍ユニット1体をコマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "named_e38393e38383",
+      "name": "ビッカーファイナリュージョン",
+      "text": "このユニットは自軍コマンドゾーンにあるカードのカテゴリごとに次の能力を得る⇒WBがあればレジストを得る。MAがあれば、これが敵軍ユニットをバトルで撃破したとき、撃破したユニットを捨札にするかわりに持ち主のパワーゾーンにダメージにして置いてもよい。ETがあればBP+3000される。DAがあれば「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

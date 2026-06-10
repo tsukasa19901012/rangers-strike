@@ -1,0 +1,49 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-156",
+  "name": "マシンデンバード",
+  "type": "vehicle",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【デンライナー搭乗】これがバトルエリアからラッシュエリアに戻るとき、これがライドされていれば次の効果を発動できる⇒自軍山札から特徴「車両」を持つMユニットのカードを1枚選び、相手に見せてから自分の手札に加えてもよい。その後、山札をシャッフルする。",
+  "rawText": "【デンライナー搭乗】これがバトルエリアからラッシュエリアに戻るとき、これがライドされていれば次の効果を発動できる⇒自軍山札から特徴「車両」を持つMユニットのカードを1枚選び、相手に見せてから自分の手札に加えてもよい。その後、山札をシャッフルする。",
+  "effects": [
+    {
+      "id": "named_e38387e383b3",
+      "name": "デンライナー搭乗",
+      "text": "これがバトルエリアからラッシュエリアに戻るとき、これがライドされていれば次の効果を発動できる⇒自軍山札から特徴「車両」を持つMユニットのカードを1枚選び、相手に見せてから自分の手札に加えてもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "optional_deck_draw",
+          "valid": {
+            "type": "zone",
+            "zone": "deck",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

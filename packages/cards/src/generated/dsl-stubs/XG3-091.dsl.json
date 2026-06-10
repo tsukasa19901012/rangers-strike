@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-091",
+  "name": "ジースタッグ（XG3）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【パルセイバー】これが敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットのBPを-2000してもよい。（BP0以下になったユニットは撃破される）（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "【パルセイバー】これが敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットのBPを-2000してもよい。（BP0以下になったユニットは撃破される）（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": "RC",
+  "features": [
+    "メカ",
+    "昆虫",
+    "グリーン",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e38391e383ab",
+      "name": "パルセイバー",
+      "text": "これが敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットのBPを-2000してもよい。（BP0以下になったユニットは撃破される）（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38391e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

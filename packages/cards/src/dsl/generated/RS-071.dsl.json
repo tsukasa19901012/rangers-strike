@@ -1,0 +1,36 @@
+{
+  "id": "RS-071",
+  "name": "ヒドラー兵の卵",
+  "type": "operation",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "常駐（場に配置して、離れるまで効果が有効になる）　自分のラッシュフェイズごとに1度だけ発動できる。自軍山札の上から1枚をオモテにする。オモテにしたカードが「ヒドラー兵」ならラッシュエリアに出し、それ以外なら山札の下に戻す。",
+  "rawText": "常駐（場に配置して、離れるまで効果が有効になる） 自分のラッシュフェイズごとに1度だけ発動できる。自軍山札の上から1枚をオモテにする。オモテにしたカードが「ヒドラー兵」ならラッシュエリアに出し、それ以外なら山札の下に戻す。",
+  "effectId": "hidora_egg",
+  "imageUrl": "/cards/legend2/RS-071.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-071.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "hidora_egg",
+      "text": "常駐。自分のラッシュフェイズごとに1度だけ発動できる。自軍山札の上から1枚をオモテにする。オモテにしたカードが「ヒドラー兵」ならラッシュエリアに出し、それ以外なら山札の下に戻す。",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_hidora_egg",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

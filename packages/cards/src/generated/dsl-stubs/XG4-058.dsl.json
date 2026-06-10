@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-058",
+  "name": "オートバジンBM（XG4）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【忠実な愛機】これが自軍バトルエリアの最後に並んでいる間、これ以外の自軍Sユニットはアタックされない。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【忠実な愛機】これが自軍バトルエリアの最後に並んでいる間、これ以外の自軍Sユニットはアタックされない。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 15,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5bfa0e5ae9f",
+      "name": "忠実な愛機",
+      "text": "これが自軍バトルエリアの最後に並んでいる間、これ以外の自軍Sユニットはアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5bfa0e5ae9f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

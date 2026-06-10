@@ -59,7 +59,7 @@ function isObject(v: unknown): v is Record<string, unknown> {
 
 function validateCardId(value: unknown, path: string): ValidationIssue[] {
   if (typeof value !== "string" || !CARD_ID_PATTERN.test(value)) {
-    return [issue(path, "must match pattern RS-XXX", "invalid_card_id")];
+    return [issue(path, "must match pattern XX-NNN or XXN-NNN", "invalid_card_id")];
   }
   return [];
 }
@@ -135,6 +135,16 @@ function validateTargetSelector(value: unknown, path: string): ValidationIssue[]
       }
       if (value.owner !== "self" && value.owner !== "opponent" && value.owner !== "any") {
         issues.push(issue(`${path}.owner`, "must be self|opponent|any", "invalid_owner"));
+      }
+      return issues;
+    }
+    case "zones": {
+      if (!Array.isArray(value.zones)) {
+        return [issue(`${path}.zones`, "must be array", "invalid_zones")];
+      }
+      const issues: ValidationIssue[] = [];
+      for (let i = 0; i < value.zones.length; i += 1) {
+        issues.push(...validateTargetSelector(value.zones[i], `${path}.zones[${i}]`));
       }
       return issues;
     }
@@ -359,7 +369,9 @@ export function validateCardDocument(value: unknown): ValidationResult {
   if (value.type === "operation") {
     const hasLegacy = typeof value.effectId === "string";
     const hasDsl = Array.isArray(value.effects) && value.effects.length > 0;
-    if (!hasLegacy && !hasDsl) {
+    const isVanillaOperation =
+      value.implementation?.handler === "unimplemented" && !hasLegacy && !hasDsl;
+    if (!hasLegacy && !hasDsl && !isVanillaOperation) {
       issues.push(issue("effectId", "operation requires effectId or effects[]", "missing_operation_effect"));
     }
     if (hasLegacy) {

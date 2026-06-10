@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-011",
+  "name": "ハリケンレッド（XG7）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※ウイング 【ジャイロ手裏剣】これのバトルエリアでの並び順を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主の山札の上に戻してもよい。（この効果は、特徴「忍者」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）",
+  "rawText": "※ウイング 【ジャイロ手裏剣】これのバトルエリアでの並び順を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主の山札の上に戻してもよい。（この効果は、特徴「忍者」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "レッド",
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b8e383a3",
+      "name": "ジャイロ手裏剣",
+      "text": "これのバトルエリアでの並び順を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主の山札の上に戻してもよい。（この効果は、特徴「忍者」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b8e383a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

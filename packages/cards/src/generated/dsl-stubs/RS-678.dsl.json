@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-678",
+  "name": "シンケンイエロー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【ランドスライサー】このターン、次に自軍Sユニットが撃破されて捨札になったとき、そのカードを手札に戻してもよい。",
+  "rawText": "【ランドスライサー】このターン、次に自軍Sユニットが撃破されて捨札になったとき、そのカードを手札に戻してもよい。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "イエロー",
+    "女",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "named_e383a9e383b3",
+      "name": "ランドスライサー",
+      "text": "このターン、次に自軍Sユニットが撃破されて捨札になったとき、そのカードを手札に戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

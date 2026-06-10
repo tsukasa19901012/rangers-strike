@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XP-024",
+  "name": "仮面ライダー2号",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト ※これは自軍ターン中、バトルするとき、BP+2000される。 【力の2号】BP4000以上の敵軍Sユニットを1体選び、このユニットと選んだユニットでバトルしてもよい。そうしたとき、このターン、これはアタックする事ができない。",
+  "rawText": "※レジスト ※これは自軍ターン中、バトルするとき、BP+2000される。 【力の2号】BP4000以上の敵軍Sユニットを1体選び、このユニットと選んだユニットでバトルしてもよい。そうしたとき、このターン、これはアタックする事ができない。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_bp_2000",
+      "text": "※これは自軍ターン中、バトルするとき、BP+2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp_2000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58a9be381ae",
+      "name": "力の2号",
+      "text": "BP4000以上の敵軍Sユニットを1体選び、このユニットと選んだユニットでバトルしてもよい。そうしたとき、このターン、これはアタックする事ができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58a9be381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

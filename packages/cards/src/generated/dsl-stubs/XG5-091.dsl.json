@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-091",
+  "name": "キカイダー01",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これは特徴「男」または「女」を持つユニットにアタックすることができない。 ※これは自軍パワーゾーンにオモテ向きのカードが1枚もなければBP-5000される。 【ブラストエンド】SP1特徴「メカ」を持つかカテゴリにDAを持つ敵軍Sユニットを1体選び撃破してもよい。そうしたとき、このターン、これはストライクすることができない。",
+  "rawText": "※これは特徴「男」または「女」を持つユニットにアタックすることができない。 ※これは自軍パワーゾーンにオモテ向きのカードが1枚もなければBP-5000される。 【ブラストエンド】SP1特徴「メカ」を持つかカテゴリにDAを持つ敵軍Sユニットを1体選び撃破してもよい。そうしたとき、このターン、これはストライクすることができない。",
+  "bp": 6000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": "RC",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは特徴「男」または「女」を持つユニットにアタックすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_fx_1_bp",
+      "text": "※これは自軍パワーゾーンにオモテ向きのカードが1枚もなければBP-5000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_1_bp",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38396e383a9",
+      "name": "ブラストエンド",
+      "text": "SP1特徴「メカ」を持つかカテゴリにDAを持つ敵軍Sユニットを1体選び撃破してもよい。そうしたとき、このターン、これはストライクすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38396e383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "id": "RS-157",
+  "name": "ガオジュラフ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 3,
+  "bp": 4000,
+  "size": "M",
+  "comboNumber": "L",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【悪鬼貫徹ネックスラスト】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒自軍ターン中、BP+4000され、BP20000以上のとき「SP2」になる。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【悪鬼貫徹ネックスラスト】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒自軍ターン中、BP+4000され、BP20000以上のとき「SP2」になる。",
+  "features": [
+    "獣"
+  ],
+  "imageUrl": "/cards/legend3/RS-157.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-157.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "oni_neck_last",
+      "name": "悪鬼貫徹ネックスラスト",
+      "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒自軍ターン中、BP+4000され、BP20000以上のとき「SP2」になる。",
+      "trigger": {
+        "type": "joint_combo_l"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "oni_neck_last"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-082",
+  "name": "ブルホーク",
+  "type": "vehicle",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【戦士シャイダーの遺産】このビークルが捨札になったとき、自軍パワーゾーンのオモテ向きのカードからビークルカードを1枚選び、自分の手札に加えてもよい。",
+  "rawText": "【戦士シャイダーの遺産】このビークルが捨札になったとき、自軍パワーゾーンのオモテ向きのカードからビークルカードを1枚選び、自分の手札に加えてもよい。",
+  "effects": [
+    {
+      "id": "named_e688a6e5a3ab",
+      "name": "戦士シャイダーの遺産",
+      "text": "このビークルが捨札になったとき、自軍パワーゾーンのオモテ向きのカードからビークルカードを1枚選び、自分の手札に加えてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e688a6e5a3ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

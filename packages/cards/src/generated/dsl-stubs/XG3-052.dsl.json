@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-052",
+  "name": "オックスオルフェノク",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【強力無双の怪腕】自軍ターン中、これはBP+2000される。",
+  "rawText": "【強力無双の怪腕】自軍ターン中、これはBP+2000される。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "オルフェノク",
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e5bcb7e58a9b",
+      "name": "強力無双の怪腕",
+      "text": "自軍ターン中、これはBP+2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5bcb7e58a9b",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

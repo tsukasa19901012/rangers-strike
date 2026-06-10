@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-058",
+  "name": "老師グル",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【昆虫の精】これが自軍ラッシュエリアにある間、次の効果を発動する⇒特徴「メカ」を持つユニットと、特徴「メカ」を持つビークルに、特徴「昆虫」を追加する。",
+  "rawText": "【昆虫の精】これが自軍ラッシュエリアにある間、次の効果を発動する⇒特徴「メカ」を持つユニットと、特徴「メカ」を持つビークルに、特徴「昆虫」を追加する。",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "昆虫",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e69886e899ab",
+      "name": "昆虫の精",
+      "text": "これが自軍ラッシュエリアにある間、次の効果を発動する⇒特徴「メカ」を持つユニットと、特徴「メカ」を持つビークルに、特徴「昆虫」を追加する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e69886e899ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

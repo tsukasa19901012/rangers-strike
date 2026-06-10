@@ -1,0 +1,46 @@
+{
+  "id": "RS-059",
+  "effects": [
+    {
+      "id": "future_sight",
+      "name": "未来予知",
+      "text": "自分は1枚ドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "controller"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_fusion_material_alias",
+      "text": "※これは「マジマーメイド」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "fusion_material_alias",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは「マジマーメイド」としてつかえる。",
+      "rule": "fusion_material_alias"
+    }
+  ]
+}

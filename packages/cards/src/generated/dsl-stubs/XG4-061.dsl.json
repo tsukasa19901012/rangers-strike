@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-061",
+  "name": "仮面ライダーアクセル",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【エンジンブレード】これをラッシュしたとき、特徴「加速」を持たない敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "【エンジンブレード】これをラッシュしたとき、特徴「加速」を持たない敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 15,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "アクセルドライバー"
+  ],
+  "effects": [
+    {
+      "id": "named_e382a8e383b3",
+      "name": "エンジンブレード",
+      "text": "これをラッシュしたとき、特徴「加速」を持たない敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a8e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

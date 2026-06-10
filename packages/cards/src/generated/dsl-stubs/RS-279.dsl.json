@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-279",
+  "name": "グリーンサイ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【サイカッター】このターン、BP4000以下の敵軍ユニットが新しくラッシュされたとき、それを撃破する。",
+  "rawText": "【サイカッター】このターン、BP4000以下の敵軍ユニットが新しくラッシュされたとき、それを撃破する。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "グリーン",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b5e382a4",
+      "name": "サイカッター",
+      "text": "このターン、BP4000以下の敵軍ユニットが新しくラッシュされたとき、それを撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b5e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

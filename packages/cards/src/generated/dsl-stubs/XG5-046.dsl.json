@@ -1,0 +1,79 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-046",
+  "name": "データス",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※コールMA ※これは自軍ターン中バトルエリアに出られない。 【マスターヘッドの加護】これが自軍エリアにある間、自軍ラッシュフェイズを終えるとき、次の効果を発動できる⇒自軍エリアにSユニットが5体以上とLユニットが1体以上あれば、自分は1枚ドローする。",
+  "rawText": "※コールMA ※これは自軍ターン中バトルエリアに出られない。 【マスターヘッドの加護】これが自軍エリアにある間、自軍ラッシュフェイズを終えるとき、次の効果を発動できる⇒自軍エリアにSユニットが5体以上とLユニットが1体以上あれば、自分は1枚ドローする。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_call_ma",
+      "text": "※コールMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_no_enter_battle_own_turn",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_enter_battle_own_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839ee382b9",
+      "name": "マスターヘッドの加護",
+      "text": "これが自軍エリアにある間、自軍ラッシュフェイズを終えるとき、次の効果を発動できる⇒自軍エリアにSユニットが5体以上とLユニットが1体以上あれば、自分は1枚ドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "controller"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※コールMA",
+      "rule": "call_MA"
+    },
+    {
+      "kind": "note",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "rule": "no_enter_battle_own_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

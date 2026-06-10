@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-161",
+  "name": "ショッカーライダー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 ※これは「ショッカーライダー」だけでコンビネーションしてバトルエリアの6番目に並んだとき「SP1」になる。",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 ※これは「ショッカーライダー」だけでコンビネーションしてバトルエリアの6番目に並んだとき「SP1」になる。",
+  "bp": 2500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": "RC",
+  "features": [
+    "ショッカー",
+    "怪人",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは「ショッカーライダー」だけでコンビネーションしてバトルエリアの6番目に並んだとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

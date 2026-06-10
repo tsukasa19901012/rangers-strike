@@ -1,0 +1,47 @@
+{
+  "id": "RS-140",
+  "name": "コロン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 2,
+  "bp": 500,
+  "size": "S",
+  "text": "※これは自軍ターン中、バトルエリアに出られない。【データ解析】このユニットが場にある間、敵軍Sユニットのコンビネーションナンバーは1増える。",
+  "rawText": "※これは自軍ターン中、バトルエリアに出られない。【データ解析】このユニットが場にある間、敵軍Sユニットのコンビネーションナンバーは1増える。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend3/RS-140.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-140.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍ターン中、バトルエリアに出られない",
+      "rule": "cannot_enter_battle_own_turn"
+    }
+  ],
+  "effects": [
+    {
+      "id": "data_analysis",
+      "name": "データ解析",
+      "text": "このユニットが場にある間、敵軍Sユニットのコンビネーションナンバーは1増える。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_data_analysis",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

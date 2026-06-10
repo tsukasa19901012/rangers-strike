@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-053",
+  "name": "仮面ライダーアギトBF",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【バーニングライダーパンチ】これは、アタックしてバトルに勝つたび、可能なら追加でアタックする。ただし、これはバトルを終えるたび、このターン、BP+500され、自分がターンを終えるときBP6000以上なら撃破される。",
+  "rawText": "【バーニングライダーパンチ】これは、アタックしてバトルに勝つたび、可能なら追加でアタックする。ただし、これはバトルを終えるたび、このターン、BP+500され、自分がターンを終えるときBP6000以上なら撃破される。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "賢者の石"
+  ],
+  "effects": [
+    {
+      "id": "named_e38390e383bc",
+      "name": "バーニングライダーパンチ",
+      "text": "これは、アタックしてバトルに勝つたび、可能なら追加でアタックする。ただし、これはバトルを終えるたび、このターン、BP+500され、自分がターンを終えるときBP6000以上なら撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38390e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "RS-090",
+  "name": "レッドレーサー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "bp": 4000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 4,
+  "text": "※これはラッシュするとき可能ならバトルエリアに置く。 ※これはラッシュしたターンにアタックできない。 ※これはラッシュしたターンにストライクできない。 【フェンダーソード】「SP1」",
+  "rawText": "※これはラッシュするとき可能ならバトルエリアに置く。 ※これはラッシュしたターンにアタックできない。 ※これはラッシュしたターンにストライクできない。 【フェンダーソード】「SP1」",
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "imageUrl": "/cards/legend2/RS-090.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-090.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはラッシュするとき可能ならバトルエリアに置く。",
+      "rule": "auto_battle_entry_on_rush"
+    },
+    {
+      "kind": "note",
+      "text": "※これはラッシュしたターンにアタックできない。",
+      "rule": "no_attack_turn_rushed"
+    },
+    {
+      "kind": "note",
+      "text": "※これはラッシュしたターンにストライクできない。",
+      "rule": "no_strike_turn_rushed"
+    }
+  ],
+  "effects": [
+    {
+      "id": "grant_sp1",
+      "name": "フェンダーソード",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

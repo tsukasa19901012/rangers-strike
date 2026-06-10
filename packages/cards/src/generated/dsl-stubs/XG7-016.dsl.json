@@ -1,0 +1,98 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-016",
+  "name": "黒獅子リオ×スーパーゲキレッド",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※クロス1 ※コールWB ※自軍Lユニットが無ければ、これは「ゲキレッド+黒獅子リオ」として使える。 【俺達の道】自分の手札から、必要パワーの数字が5以下のWBのMユニットのカードを2枚まで選び、自軍ラッシュエリアに出してもよい。（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）",
+  "rawText": "※クロス1 ※コールWB ※自軍Lユニットが無ければ、これは「ゲキレッド+黒獅子リオ」として使える。 【俺達の道】自分の手札から、必要パワーの数字が5以下のWBのMユニットのカードを2枚まで選び、自軍ラッシュエリアに出してもよい。（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）",
+  "bp": 5000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": 1,
+  "features": [
+    "レッド",
+    "男",
+    "激気",
+    "臨気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_call_wb",
+      "text": "※コールWB",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_WB",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe887aa",
+      "text": "※自軍Lユニットが無ければ、これは「ゲキレッド+黒獅子リオ」として使える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4bfbae98194",
+      "name": "俺達の道",
+      "text": "自分の手札から、必要パワーの数字が5以下のWBのMユニットのカードを2枚まで選び、自軍ラッシュエリアに出してもよい。（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4bfbae98194",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※コールWB",
+      "rule": "call_WB"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

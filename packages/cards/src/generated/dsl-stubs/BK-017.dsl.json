@@ -1,0 +1,35 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "BK-017",
+  "name": "カブトゼクター",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "次の効果から1つ選び発動する。 ◎自軍山札から「仮面ライダーカブトMF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。 ◎このターン、特徴「加速」を持つBP2000以下のSユニットのカードは、追加条件を満たさなくてもラッシュできる。",
+  "rawText": "次の効果から1つ選び発動する。 ◎自軍山札から「仮面ライダーカブトMF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。 ◎このターン、特徴「加速」を持つBP2000以下のSユニットのカードは、追加条件を満たさなくてもラッシュできる。",
+  "effects": [
+    {
+      "id": "named_e382abe38396",
+      "name": "カブトゼクター",
+      "text": "次の効果から1つ選び発動する。 ◎自軍山札から「仮面ライダーカブトMF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。 ◎このターン、特徴「加速」を持つBP2000以下のSユニットのカードは、追加条件を満たさなくてもラッシュできる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382abe38396",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

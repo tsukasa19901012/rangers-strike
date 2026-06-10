@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-070",
+  "name": "クレイドール・ドーパント",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【不死身のドーパント】敵軍ターン中、これが撃破されて捨札になるとき、捨札にするかわりに持ち主の山札に戻してシャッフルする。",
+  "rawText": "【不死身のドーパント】敵軍ターン中、これが撃破されて捨札になるとき、捨札にするかわりに持ち主の山札に戻してシャッフルする。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "怪人",
+    "女",
+    "ドーパント"
+  ],
+  "effects": [
+    {
+      "id": "named_e4b88de6adbb",
+      "name": "不死身のドーパント",
+      "text": "敵軍ターン中、これが撃破されて捨札になるとき、捨札にするかわりに持ち主の山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4b88de6adbb",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

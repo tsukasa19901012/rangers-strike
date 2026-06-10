@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-056",
+  "name": "ジースタッグ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【スティンガークロー】ライド中の敵軍Sユニットを1体選んでもよい。そうしたとき、相手はそのSユニットか、そのSユニットがライドしているビークルのうち、どちらか1体を選び捨札にする。",
+  "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【スティンガークロー】ライド中の敵軍Sユニットを1体選んでもよい。そうしたとき、相手はそのSユニットか、そのSユニットがライドしているビークルのうち、どちらか1体を選び捨札にする。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": 3,
+  "features": [
+    "メカ",
+    "昆虫",
+    "グリーン",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e38386",
+      "name": "スティンガークロー",
+      "text": "ライド中の敵軍Sユニットを1体選んでもよい。そうしたとき、相手はそのSユニットか、そのSユニットがライドしているビークルのうち、どちらか1体を選び捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e38386",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

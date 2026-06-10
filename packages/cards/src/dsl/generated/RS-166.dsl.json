@@ -1,0 +1,35 @@
+{
+  "id": "RS-166",
+  "name": "ガインガイン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "R",
+  "expansion": "legend3",
+  "powerCost": "4+",
+  "bp": 6000,
+  "size": "L",
+  "text": "※これはバトルエリアにあるとき、カテゴリに「MA」が追加される。",
+  "rawText": "※これはバトルエリアにあるとき、カテゴリに「MA」が追加される。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend3/RS-166.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-166.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを1体捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアにあるとき、カテゴリに「MA」が追加される",
+      "rule": "battle_adds_ma_category"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

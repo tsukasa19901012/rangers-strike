@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-238",
+  "name": "キャッスルドラン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。 【魂の捕獲】これが自軍エリアにある間、特徴「仮面ライダー」を持つユニットがユニットを撃破して捨札にしたとき、その特徴「仮面ライダー」を持つユニットの持ち主は1枚ドローしてもよい。",
+  "rawText": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。 【魂の捕獲】これが自軍エリアにある間、特徴「仮面ライダー」を持つユニットがユニットを撃破して捨札にしたとき、その特徴「仮面ライダー」を持つユニットの持ち主は1枚ドローしてもよい。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "獣",
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9ad82e381ae",
+      "name": "魂の捕獲",
+      "text": "これが自軍エリアにある間、特徴「仮面ライダー」を持つユニットがユニットを撃破して捨札にしたとき、その特徴「仮面ライダー」を持つユニットの持ち主は1枚ドローしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9ad82e381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

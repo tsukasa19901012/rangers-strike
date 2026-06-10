@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-358",
+  "name": "デンジピンク",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【デンジサンダー投げ】相手は自分自身のラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出す。",
+  "rawText": "【デンジサンダー投げ】相手は自分自身のラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出す。",
+  "bp": 500,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e38387e383b3",
+      "name": "デンジサンダー投げ",
+      "text": "相手は自分自身のラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38387e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

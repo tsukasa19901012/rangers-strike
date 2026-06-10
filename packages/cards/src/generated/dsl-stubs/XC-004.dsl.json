@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XC-004",
+  "name": "天空大聖者マジエル",
+  "type": "commander",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "ゲーム開始前に一度だけ発動できる⇒自軍山札を見て、オペレーションカードを１枚選び、相手に見せてから自分の手札に加える。その後、自分の手札からカードを１枚選び、自軍山札に戻してシャッフルする。",
+  "rawText": "ゲーム開始前に一度だけ発動できる⇒自軍山札を見て、オペレーションカードを１枚選び、相手に見せてから自分の手札に加える。その後、自分の手札からカードを１枚選び、自軍山札に戻してシャッフルする。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

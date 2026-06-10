@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-009",
+  "name": "ミント",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはバトルエリアに出られない。 【戦いの記録】自軍スタートフェイズ開始時、このユニットを捨札にして次の効果を発動できる⇒自軍ラッシュエリアから、効果名を持つテキストに「これをラッシュしたとき」と書かれたユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。",
+  "rawText": "※これはバトルエリアに出られない。 【戦いの記録】自軍スタートフェイズ開始時、このユニットを捨札にして次の効果を発動できる⇒自軍ラッシュエリアから、効果名を持つテキストに「これをラッシュしたとき」と書かれたユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "メカ"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_enter_battle",
+      "text": "※これはバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e688a6e38184",
+      "name": "戦いの記録",
+      "text": "自軍スタートフェイズ開始時、このユニットを捨札にして次の効果を発動できる⇒自軍ラッシュエリアから、効果名を持つテキストに「これをラッシュしたとき」と書かれたユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e688a6e38184",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出られない。",
+      "rule": "cannot_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

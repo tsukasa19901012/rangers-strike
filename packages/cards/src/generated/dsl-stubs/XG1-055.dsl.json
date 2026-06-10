@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-055",
+  "name": "マンティスロード",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【血に飢えた予言者】これが自分の手札にある間、必要パワーに「＋」を持つ敵軍Sユニットがラッシュされたとき、DAを持つ自軍コマンドを1つホールドしてからこれを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットを撃破する。",
+  "rawText": "【血に飢えた予言者】これが自分の手札にある間、必要パワーに「＋」を持つ敵軍Sユニットがラッシュされたとき、DAを持つ自軍コマンドを1つホールドしてからこれを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットを撃破する。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "アンノウン",
+    "昆虫"
+  ],
+  "effects": [
+    {
+      "id": "named_e8a180e381ab",
+      "name": "血に飢えた予言者",
+      "text": "これが自分の手札にある間、必要パワーに「＋」を持つ敵軍Sユニットがラッシュされたとき、DAを持つ自軍コマンドを1つホールドしてからこれを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットを撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8a180e381ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

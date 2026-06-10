@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-214",
+  "name": "オーピンク",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【閃光ミラクル気功弾】このターン、自軍Sユニットがバトルでユニットを撃破するたび、自軍コマンドを2つまで選び、リリースしてもよい。",
+  "rawText": "【閃光ミラクル気功弾】このターン、自軍Sユニットがバトルでユニットを撃破するたび、自軍コマンドを2つまで選び、リリースしてもよい。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e99683e58589",
+      "name": "閃光ミラクル気功弾",
+      "text": "このターン、自軍Sユニットがバトルでユニットを撃破するたび、自軍コマンドを2つまで選び、リリースしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e99683e58589",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

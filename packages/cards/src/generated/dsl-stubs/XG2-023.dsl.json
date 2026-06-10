@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-023",
+  "name": "黒騎士ブルブラック",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※レジスト 【黒の一撃】敵軍バトルエリアからナンバーを持たないSユニットを1体選び、撃破してもよい。また、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "rawText": "※レジスト 【黒の一撃】敵軍バトルエリアからナンバーを持たないSユニットを1体選び、撃破してもよい。また、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9bb92e381ae",
+      "name": "黒の一撃",
+      "text": "敵軍バトルエリアからナンバーを持たないSユニットを1体選び、撃破してもよい。また、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

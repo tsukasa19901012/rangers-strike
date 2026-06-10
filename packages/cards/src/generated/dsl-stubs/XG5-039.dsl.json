@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-039",
+  "name": "ゴセイブルー（XG5）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※タクスMA ※リードMA 【ブルーチェック】敵軍コマンドゾーンから、自分の手札の枚数以上の必要パワーの数字を持つユニットカードを1枚選び捨札にする。（自分の手札が1枚以下なら、捨札にするかわりに持ち主の山札の上に戻してもよい）",
+  "rawText": "※タクスMA ※リードMA 【ブルーチェック】敵軍コマンドゾーンから、自分の手札の枚数以上の必要パワーの数字を持つユニットカードを1枚選び捨札にする。（自分の手札が1枚以下なら、捨札にするかわりに持ち主の山札の上に戻してもよい）",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_taxis_ma",
+      "text": "※タクスMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_lead_ma",
+      "text": "※リードMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38396e383ab",
+      "name": "ブルーチェック",
+      "text": "敵軍コマンドゾーンから、自分の手札の枚数以上の必要パワーの数字を持つユニットカードを1枚選び捨札にする。（自分の手札が1枚以下なら、捨札にするかわりに持ち主の山札の上に戻してもよい）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38396e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※タクスMA",
+      "rule": "taxis_MA"
+    },
+    {
+      "kind": "note",
+      "text": "※リードMA",
+      "rule": "lead_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

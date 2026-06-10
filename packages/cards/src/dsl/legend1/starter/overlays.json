@@ -1,0 +1,1448 @@
+{
+  "cards": [
+    {
+      "id": "RS-010",
+      "effects": [
+        {
+          "id": "prism_power",
+          "name": "RS-010",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "resident"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "category_substitute_via_hold",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-011",
+      "effects": [
+        {
+          "id": "aura_power",
+          "name": "RS-011",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "rush"
+          },
+          "effects": [
+            {
+              "type": "choose",
+              "kind": "select_unit",
+              "valid": {
+                "type": "zone",
+                "zone": "rush",
+                "owner": "self",
+                "filter": {
+                  "size": "S"
+                }
+              },
+              "count": 1,
+              "then": [
+                {
+                  "type": "grant_keyword",
+                  "keyword": "bp_plus_per_own_damage",
+                  "duration": "turn"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-014",
+      "effects": [
+        {
+          "id": "five_tech",
+          "name": "RS-014",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "resident"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "strike_intercept_with_s_unit",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-017",
+      "effects": [
+        {
+          "id": "ki_power",
+          "name": "RS-017",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "resident"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "s_bp_plus_per_released_command_on_opponent_turn",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-020",
+      "effects": [
+        {
+          "id": "place_in_power",
+          "name": "RS-020",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "rush"
+          },
+          "effects": [
+            {
+              "type": "move",
+              "target": {
+                "type": "self"
+              },
+              "to": "power"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-022",
+      "effects": [
+        {
+          "id": "earth_force",
+          "name": "RS-022",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "resident"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "auto_battle_entry_from_rush",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-023",
+      "effects": [
+        {
+          "id": "discard_s_unit_to_hand",
+          "name": "RS-023",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "rush"
+          },
+          "condition": {
+            "type": "has_target",
+            "target": {
+              "type": "zone",
+              "zone": "discard",
+              "owner": "self",
+              "filter": {
+                "size": "S"
+              }
+            }
+          },
+          "effects": [
+            {
+              "type": "choose",
+              "kind": "select_unit",
+              "valid": {
+                "type": "zone",
+                "zone": "discard",
+                "owner": "self",
+                "filter": {
+                  "size": "S"
+                }
+              },
+              "count": 1,
+              "then": [
+                {
+                  "type": "move",
+                  "target": {
+                    "type": "trigger_source"
+                  },
+                  "to": "hand"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-025",
+      "effects": [
+        {
+          "id": "bp_boost_4000",
+          "name": "RS-025",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "rush"
+          },
+          "effects": [
+            {
+              "type": "choose",
+              "kind": "select_unit",
+              "valid": {
+                "type": "zones",
+                "zones": [
+                  {
+                    "type": "zone",
+                    "zone": "rush",
+                    "owner": "self"
+                  },
+                  {
+                    "type": "zone",
+                    "zone": "battle",
+                    "owner": "self"
+                  }
+                ]
+              },
+              "count": 1,
+              "then": [
+                {
+                  "type": "modify_bp",
+                  "target": {
+                    "type": "trigger_source"
+                  },
+                  "amount": 4000,
+                  "duration": "turn"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-027",
+      "effects": [
+        {
+          "id": "dino_guts",
+          "name": "RS-027",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "counter"
+          },
+          "effects": [
+            {
+              "type": "cancel_damage"
+            },
+            {
+              "type": "grant_keyword",
+              "keyword": "prevent_leave_with_power_cost",
+              "duration": "turn"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-028",
+      "effects": [
+        {
+          "id": "judgment",
+          "name": "RS-028",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "rush"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "reveal_top_destroy_if_same_size",
+              "duration": "turn"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-029",
+      "effects": [
+        {
+          "id": "courage_magic",
+          "name": "RS-029",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "resident"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "release_command_on_s_battle_entry",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-030",
+      "effects": [
+        {
+          "id": "adventure",
+          "name": "RS-030",
+          "text": "",
+          "trigger": {
+            "type": "on_turn_end"
+          },
+          "condition": {
+            "type": "controller_is_phase_player"
+          },
+          "effects": [
+            {
+              "type": "choose",
+              "kind": "select_command",
+              "valid": {
+                "type": "zone",
+                "zone": "command",
+                "owner": "self",
+                "filter": {
+                  "commandHeld": true
+                }
+              },
+              "count": 1,
+              "then": [
+                {
+                  "type": "move",
+                  "target": {
+                    "type": "trigger_source"
+                  },
+                  "to": "hand"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-032",
+      "effects": [
+        {
+          "id": "shark_jaws",
+          "name": "シャークジョーズ",
+          "text": "これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。（この効果は「バルイーグル」または「バルパンサー」からコンビネーションするときは、ナンバーに関係なく発動する）",
+          "trigger": {
+            "type": "on_attack",
+            "comboPartnerCardIds": [
+              "RS-031",
+              "RS-033"
+            ]
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "use_printed_bp_in_battle",
+              "duration": "turn"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-033",
+      "effects": [
+        {
+          "id": "panther_claw",
+          "name": "パンサークロー",
+          "text": "これがアタックするとき、相手はカウンターを発動できない。（この効果は「バルイーグル」または「バルシャーク」からコンビネーションするときは、ナンバーに関係なく発動する）",
+          "trigger": {
+            "type": "on_attack",
+            "comboPartnerCardIds": [
+              "RS-031",
+              "RS-032"
+            ]
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "prevent_counter",
+              "duration": "turn"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-042",
+      "effects": [
+        {
+          "id": "justice_flasher",
+          "name": "ジャスティスフラッシャー",
+          "text": "自軍パワーゾーンからダメージ以外のカードを5枚選び捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP3」",
+          "trigger": {
+            "type": "conditional"
+          },
+          "optional": true,
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "pay_power_discard_5_for_sp3",
+              "duration": "turn"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
+      "unnamedRules": [
+        {
+          "kind": "zord",
+          "text": "合体―パトストライカー＋パトジャイラー＋パトレーラー＋パトアーマー＋パトシグナー",
+          "partnerCardIds": [
+            "RS-043",
+            "RS-044",
+            "RS-045",
+            "RS-046",
+            "RS-047"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "RS-043",
+      "effects": [
+        {
+          "id": "judgment_sword",
+          "name": "ジャッジメントソード",
+          "text": "自軍パワーゾーンからダメージ以外のカードを2枚選んで捨て札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+          "trigger": {
+            "type": "conditional"
+          },
+          "optional": true,
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "pay_power_discard_2_for_sp1",
+              "duration": "turn"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      }
+    },
+    {
+      "id": "RS-044",
+      "effects": [],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      }
+    },
+    {
+      "id": "RS-045",
+      "effects": [
+        {
+          "id": "signal_cannon",
+          "name": "シグナルキャノン",
+          "text": "これが自軍ラッシュエリアにあるとき、「オーバーテクノロジー」の自軍Mユニットは、アタックされるときBP＋1000される。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "over_technology_m_bp_plus_on_attacked",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      }
+    },
+    {
+      "id": "RS-046",
+      "effects": [
+        {
+          "id": "armor_attack",
+          "name": "アーマーアタック",
+          "text": "これをラッシュしたとき発動できる。敵軍バトルエリアからBP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。",
+          "trigger": {
+            "type": "on_rush"
+          },
+          "optional": true,
+          "condition": {
+            "type": "has_target",
+            "target": {
+              "type": "zone",
+              "zone": "battle",
+              "owner": "opponent",
+              "filter": {
+                "maxBp": 8000
+              }
+            }
+          },
+          "effects": [
+            {
+              "type": "choose",
+              "kind": "select_unit",
+              "valid": {
+                "type": "zone",
+                "zone": "battle",
+                "owner": "opponent",
+                "filter": {
+                  "maxBp": 8000
+                }
+              },
+              "count": 1,
+              "then": [
+                {
+                  "type": "move",
+                  "target": {
+                    "type": "trigger_source"
+                  },
+                  "to": "power"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      }
+    },
+    {
+      "id": "RS-047",
+      "effects": [
+        {
+          "id": "pat_signer",
+          "name": "進入禁止サインボード",
+          "text": "これがバトルエリアにあるとき、BP5000以上のすべてのMユニットはバトルエリアに出ることはできない。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "block_m_battle_entry_bp5000_plus",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "unitCount": 1
+      }
+    },
+    {
+      "id": "RS-049",
+      "effects": [
+        {
+          "id": "pit_in_dive",
+          "name": "ピットインダイブ",
+          "text": "「SP1」敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。",
+          "trigger": {
+            "type": "nc"
+          },
+          "optional": true,
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "SP1",
+              "duration": "turn"
+            },
+            {
+              "type": "grant_keyword",
+              "keyword": "force_enemy_s_rush_to_battle",
+              "duration": "turn"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-050",
+      "effects": [
+        {
+          "id": "destroy_enemy_bp4000",
+          "name": "爆竜電撃ドリルスピン",
+          "text": "これがバトルエリアに出たとき、敵軍バトルエリアからBP4000以下のユニットを1体選んで撃破する。",
+          "trigger": {
+            "type": "enter_battle"
+          },
+          "optional": false,
+          "condition": {
+            "type": "has_target",
+            "target": {
+              "type": "zone",
+              "zone": "battle",
+              "owner": "opponent",
+              "filter": {
+                "maxBp": 4000
+              }
+            }
+          },
+          "effects": [
+            {
+              "type": "choose",
+              "kind": "select_unit",
+              "valid": {
+                "type": "zone",
+                "zone": "battle",
+                "owner": "opponent",
+                "filter": {
+                  "maxBp": 4000
+                }
+              },
+              "count": 1,
+              "then": [
+                {
+                  "type": "discard",
+                  "target": {
+                    "type": "trigger_source"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
+      "unnamedRules": [
+        {
+          "kind": "zord",
+          "text": "合体―爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン",
+          "partnerCardIds": [
+            "RS-051",
+            "RS-052",
+            "RS-053"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "RS-051",
+      "effects": [
+        {
+          "id": "super_drill",
+          "name": "超ドリル進化",
+          "text": "自分の手札から「爆竜ティラノサウルス」を1枚捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+          "trigger": {
+            "type": "conditional"
+          },
+          "optional": true,
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "discard_named_from_hand_for_sp1",
+              "duration": "turn"
+            }
+          ]
+        },
+        {
+          "id": "unnamed_battle_entry_hold",
+          "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "battle_entry_hold_1",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "unnamedRules": [
+        {
+          "kind": "note",
+          "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+          "rule": "battle_entry_hold",
+          "holdCount": 1
+        }
+      ]
+    },
+    {
+      "id": "RS-052",
+      "effects": [
+        {
+          "id": "super_shield",
+          "name": "超シールド進化",
+          "text": "「ワイルドビースト」の自軍ユニットが撃破されるとき、これをかわりに捨札にしてもよい。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "substitute_on_wb_destroy",
+              "duration": "permanent"
+            }
+          ]
+        },
+        {
+          "id": "unnamed_battle_entry_hold",
+          "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "battle_entry_hold_1",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "unnamedRules": [
+        {
+          "kind": "note",
+          "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+          "rule": "battle_entry_hold",
+          "holdCount": 1
+        }
+      ]
+    },
+    {
+      "id": "RS-053",
+      "effects": [
+        {
+          "id": "super_cutter",
+          "name": "超カッター進化",
+          "text": "これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+          "trigger": {
+            "type": "on_attack"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "use_printed_bp_in_battle",
+              "duration": "turn"
+            }
+          ]
+        },
+        {
+          "id": "unnamed_battle_entry_hold",
+          "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "battle_entry_hold_1",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "unnamedRules": [
+        {
+          "kind": "note",
+          "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+          "rule": "battle_entry_hold",
+          "holdCount": 1
+        }
+      ]
+    },
+    {
+      "id": "RS-054",
+      "effects": [
+        {
+          "id": "grant_sp1",
+          "name": "ティラノロッド",
+          "text": "「SP1」",
+          "trigger": {
+            "type": "nc"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "SP1",
+              "duration": "turn"
+            }
+          ]
+        },
+        {
+          "id": "unnamed_destroy_self_damage",
+          "text": "※これが撃破されたとき、1点ダメージを受ける。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "destroy_self_damage_1",
+              "duration": "permanent"
+            }
+          ]
+        },
+        {
+          "id": "unnamed_auto_battle_entry_each_turn",
+          "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "auto_battle_entry_each_turn",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "unnamedRules": [
+        {
+          "kind": "note",
+          "text": "※これが撃破されたとき、1点ダメージを受ける。",
+          "rule": "destroy_self_damage",
+          "damage": 1
+        },
+        {
+          "kind": "note",
+          "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+          "rule": "auto_battle_entry_each_turn"
+        }
+      ]
+    },
+    {
+      "id": "RS-057",
+      "effects": [
+        {
+          "id": "red_fire",
+          "name": "レッドファイヤー",
+          "text": "「SP1」これはアタックするときリリース状態の自軍コマンド1つにつきBP＋1000される。",
+          "trigger": {
+            "type": "nc"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "SP1",
+              "duration": "turn"
+            },
+            {
+              "type": "grant_keyword",
+              "keyword": "bp_plus_per_released_command_on_attack",
+              "duration": "turn"
+            }
+          ]
+        },
+        {
+          "id": "unnamed_fusion_material_alias",
+          "text": "※これは「マジフェニックス」としてつかえる。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "fusion_material_alias",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "unnamedRules": [
+        {
+          "kind": "note",
+          "text": "※これは「マジフェニックス」としてつかえる。",
+          "rule": "fusion_material_alias"
+        }
+      ]
+    },
+    {
+      "id": "RS-058",
+      "effects": [
+        {
+          "id": "yellow_thunder",
+          "name": "イエローサンダー",
+          "text": "「SP1」これは敵軍ラッシュエリアのユニットにアタックできる。",
+          "trigger": {
+            "type": "nc"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "SP1",
+              "duration": "turn"
+            },
+            {
+              "type": "grant_keyword",
+              "keyword": "attack_rush_zone",
+              "duration": "turn"
+            }
+          ]
+        },
+        {
+          "id": "unnamed_fusion_material_alias",
+          "text": "※これは「マジガルーダ」としてつかえる。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "fusion_material_alias",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "unnamedRules": [
+        {
+          "kind": "note",
+          "text": "※これは「マジガルーダ」としてつかえる。",
+          "rule": "fusion_material_alias"
+        }
+      ]
+    },
+    {
+      "id": "RS-059",
+      "effects": [
+        {
+          "id": "future_sight",
+          "name": "未来予知",
+          "text": "自分は1枚ドローする。",
+          "trigger": {
+            "type": "nc"
+          },
+          "effects": [
+            {
+              "type": "draw",
+              "amount": 1,
+              "player": "controller"
+            }
+          ]
+        },
+        {
+          "id": "unnamed_fusion_material_alias",
+          "text": "※これは「マジマーメイド」としてつかえる。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "fusion_material_alias",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "unnamedRules": [
+        {
+          "kind": "note",
+          "text": "※これは「マジマーメイド」としてつかえる。",
+          "rule": "fusion_material_alias"
+        }
+      ]
+    },
+    {
+      "id": "RS-060",
+      "effects": [
+        {
+          "id": "pink_storm",
+          "name": "ピンクストーム",
+          "text": "BP3000以下のユニットを1体選んで持ち主の山札の上に戻してもよい。",
+          "trigger": {
+            "type": "nc"
+          },
+          "optional": true,
+          "effects": [
+            {
+              "type": "choose",
+              "kind": "select_unit",
+              "valid": {
+                "type": "zone",
+                "zone": "battle",
+                "owner": "any",
+                "filter": {
+                  "maxBp": 3000
+                }
+              },
+              "count": 1,
+              "then": [
+                {
+                  "type": "move",
+                  "target": {
+                    "type": "trigger_source"
+                  },
+                  "to": "deck",
+                  "position": "left"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "unnamed_fusion_material_alias",
+          "text": "※これは「マジフェアリー」としてつかえる。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "fusion_material_alias",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "unnamedRules": [
+        {
+          "kind": "note",
+          "text": "※これは「マジフェアリー」としてつかえる。",
+          "rule": "fusion_material_alias"
+        }
+      ]
+    },
+    {
+      "id": "RS-061",
+      "effects": [
+        {
+          "id": "green_ground",
+          "name": "グリーングラウンド",
+          "text": "「SP1」敵軍コマンドゾーンからカードを1枚選んで、持ち主の手札に戻してもよい。",
+          "trigger": {
+            "type": "nc"
+          },
+          "optional": true,
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "SP1",
+              "duration": "turn"
+            },
+            {
+              "type": "choose",
+              "kind": "select_command",
+              "valid": {
+                "type": "zone",
+                "zone": "command",
+                "owner": "opponent"
+              },
+              "count": 1,
+              "then": [
+                {
+                  "type": "move",
+                  "target": {
+                    "type": "trigger_source"
+                  },
+                  "to": "hand"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "unnamed_fusion_material_alias",
+          "text": "※これは「マジタウロス」としてつかえる。",
+          "trigger": {
+            "type": "while_in_field"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "fusion_material_alias",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "unnamedRules": [
+        {
+          "kind": "note",
+          "text": "※これは「マジタウロス」としてつかえる。",
+          "rule": "fusion_material_alias"
+        }
+      ]
+    },
+    {
+      "id": "RS-063",
+      "effects": [
+        {
+          "id": "radial_hammer",
+          "name": "ラジアルハンマー",
+          "text": "「SP1」自軍山札の上から3枚を見てもよい。そうしたとき、1枚選んで山札の上に戻し、それ以外を捨札にする。",
+          "trigger": {
+            "type": "nc"
+          },
+          "optional": true,
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "SP1",
+              "duration": "turn"
+            },
+            {
+              "type": "choose",
+              "kind": "scry_keep_one",
+              "valid": {
+                "type": "zone",
+                "zone": "deck",
+                "owner": "self"
+              },
+              "count": 3,
+              "then": [
+                {
+                  "type": "move",
+                  "target": {
+                    "type": "trigger_source"
+                  },
+                  "to": "deck",
+                  "position": "left"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-067",
+      "effects": [
+        {
+          "id": "plasma_energy",
+          "name": "RS-067",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "counter"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "destroy_striker_on_strike_self_discard",
+              "duration": "turn"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-068",
+      "effects": [
+        {
+          "id": "discard_to_hand",
+          "name": "RS-068",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "rush"
+          },
+          "condition": {
+            "type": "has_target",
+            "target": {
+              "type": "zone",
+              "zone": "discard",
+              "owner": "self"
+            }
+          },
+          "effects": [
+            {
+              "type": "choose",
+              "kind": "select_unit",
+              "valid": {
+                "type": "zone",
+                "zone": "discard",
+                "owner": "self"
+              },
+              "count": 1,
+              "then": [
+                {
+                  "type": "move",
+                  "target": {
+                    "type": "trigger_source"
+                  },
+                  "to": "hand"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-069",
+      "effects": [
+        {
+          "id": "lightning_gravity",
+          "name": "RS-069",
+          "text": "",
+          "trigger": {
+            "type": "operation",
+            "timing": "resident"
+          },
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "m_battle_entry_requires_hold",
+              "duration": "permanent"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      }
+    },
+    {
+      "id": "RS-070",
+      "effects": [
+        {
+          "id": "sky_magic_slash",
+          "name": "天空魔法斬り",
+          "text": "これがバトルエリアに出たとき、敵軍コマンドをすべてホールドしてもよい。",
+          "trigger": {
+            "type": "enter_battle"
+          },
+          "optional": true,
+          "effects": [
+            {
+              "type": "grant_keyword",
+              "keyword": "hold_all_enemy_commands",
+              "duration": "turn"
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "source": "dsl",
+        "handler": "interpreter",
+        "testGenerated": true
+      },
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
+      "unnamedRules": [
+        {
+          "kind": "zord",
+          "text": "合体―マジフェニックス＋マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス",
+          "partnerCardIds": [
+            "RS-057",
+            "RS-058",
+            "RS-059",
+            "RS-060",
+            "RS-061"
+          ]
+        }
+      ]
+    }
+  ]
+}

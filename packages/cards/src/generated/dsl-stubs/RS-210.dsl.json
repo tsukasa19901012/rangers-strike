@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-210",
+  "name": "ゴーマ16世",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【大地動転の玉】これが自軍エリアにある間、ナンバーを持つすべてのSユニットは、BPが「＋」されるかわりにBPが「－」される。（BP0以下になったユニットは撃破される）",
+  "rawText": "【大地動転の玉】これが自軍エリアにある間、ナンバーを持つすべてのSユニットは、BPが「＋」されるかわりにBPが「－」される。（BP0以下になったユニットは撃破される）",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "皇帝",
+    "ゴーマ族",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e5a4a7e59cb0",
+      "name": "大地動転の玉",
+      "text": "これが自軍エリアにある間、ナンバーを持つすべてのSユニットは、BPが「＋」されるかわりにBPが「－」される。（BP0以下になったユニットは撃破される）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4a7e59cb0",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

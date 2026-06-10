@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-045",
+  "name": "スカイックゴセイグレート",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※ウイング 【スカイックストライク】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動する⇒自軍捨札にあるウイングを持つカードの枚数を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※ウイング 【スカイックストライク】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動する⇒自軍捨札にあるウイングを持つカードの枚数を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 19000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "魔法",
+    "獣",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e382ab",
+      "name": "スカイックストライク",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動する⇒自軍捨札にあるウイングを持つカードの枚数を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e382ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-064",
+  "name": "仮面ライダードレイクRF（XG3）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これはアタックされる以外では相手に選ばれない。 【ライダーシューティング】自軍ターン中、これがバトルエリアに出たとき、特徴「女」を持つユニットの数を数えてもよい。そうしたとき、その数以下の必要パワーの数字を持つ追加条件を持たない敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "rawText": "※これはアタックされる以外では相手に選ばれない。 【ライダーシューティング】自軍ターン中、これがバトルエリアに出たとき、特徴「女」を持つユニットの数を数えてもよい。そうしたとき、その数以下の必要パワーの数字を持つ追加条件を持たない敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "bp": 1500,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_not_selectable_except_attack",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "not_selectable_except_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライダーシューティング",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、特徴「女」を持つユニットの数を数えてもよい。そうしたとき、その数以下の必要パワーの数字を持つ追加条件を持たない敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "rule": "not_selectable_except_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

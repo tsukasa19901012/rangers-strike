@@ -1,0 +1,40 @@
+{
+  "id": "RS-133",
+  "name": "副官ブーバ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 3,
+  "bp": 4000,
+  "size": "S",
+  "text": "【ブルバドス活人剣】自軍ターン中、これが特徴「女」を持つユニットを撃破したとき、そのユニットを持ち主の山札の上に戻す。",
+  "rawText": "【ブルバドス活人剣】自軍ターン中、これが特徴「女」を持つユニットを撃破したとき、そのユニットを持ち主の山札の上に戻す。",
+  "features": [
+    "宇宙海賊",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-133.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-133.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "blue_bados_life_sword",
+      "name": "ブルバドス活人剣",
+      "text": "自軍ターン中、これが特徴「女」を持つユニットを撃破したとき、そのユニットを持ち主の山札の上に戻す。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "blue_bados_life_sword"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

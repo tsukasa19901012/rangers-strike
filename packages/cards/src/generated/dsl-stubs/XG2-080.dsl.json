@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-080",
+  "name": "リュウキドラグレッダー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※自分が「仮面ライダー龍騎」をラッシュしたとき、自軍エリアに「リュウキドラグレッダー」があれば1体選んで手札に戻す。 【ファイナルアタックライド】このユニットからコンビネーションする、「仮面ライダーディケイド」または「仮面ライダーディエンド」は、次の能力を得る⇒BP+3000",
+  "rawText": "※自分が「仮面ライダー龍騎」をラッシュしたとき、自軍エリアに「リュウキドラグレッダー」があれば1体選んで手札に戻す。 【ファイナルアタックライド】このユニットからコンビネーションする、「仮面ライダーディケイド」または「仮面ライダーディエンド」は、次の能力を得る⇒BP+3000",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "獣",
+    "ドラゴン",
+    "FFR"
+  ],
+  "effects": [
+    {
+      "id": "note_e280bbe887aae58886e3818c",
+      "text": "※自分が「仮面ライダー龍騎」をラッシュしたとき、自軍エリアに「リュウキドラグレッダー」があれば1体選んで手札に戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "return_self_on_ally_rush_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "named_e38395e382a1",
+      "name": "ファイナルアタックライド",
+      "text": "このユニットからコンビネーションする、「仮面ライダーディケイド」または「仮面ライダーディエンド」は、次の能力を得る⇒BP+3000",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e382a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-335",
+  "name": "レジェンドマジブルー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジブルー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【マジボルト】自分は2枚までドローしてもよい。そうしたとき、相手は1枚ドローしてもよい。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「マジブルー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【マジボルト】自分は2枚までドローしてもよい。そうしたとき、相手は1枚ドローしてもよい。",
+  "bp": 3500,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "女",
+    "魔法",
+    "レジェンドフォーム"
+  ],
+  "effects": [
+    {
+      "id": "recruit_named_e3839ee382b8e38396e383ab_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジブルー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
+    },
+    {
+      "id": "named_e3839ee382b8",
+      "name": "マジボルト",
+      "text": "自分は2枚までドローしてもよい。そうしたとき、相手は1枚ドローしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

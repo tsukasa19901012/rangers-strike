@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-081",
+  "name": "デンオウモモタロス",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【俺の必殺技・ディケイドバージョン】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアからホールド状態のSユニットを1体選んでもよい。そうしたとき、選んだユニットをパワーゾーンに送ってから、そのユニットのBP以下のBPを持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "rawText": "【俺の必殺技・ディケイドバージョン】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアからホールド状態のSユニットを1体選んでもよい。そうしたとき、選んだユニットをパワーゾーンに送ってから、そのユニットのBP以下のBPを持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "イマジン",
+    "FFR"
+  ],
+  "effects": [
+    {
+      "id": "named_e4bfbae381ae",
+      "name": "俺の必殺技・ディケイドバージョン",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアからホールド状態のSユニットを1体選んでもよい。そうしたとき、選んだユニットをパワーゾーンに送ってから、そのユニットのBP以下のBPを持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4bfbae381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

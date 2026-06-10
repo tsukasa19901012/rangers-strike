@@ -1,0 +1,36 @@
+{
+  "id": "RS-008",
+  "name": "超電子頭脳",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "effectId": "super_brain",
+  "tags": [
+    "常駐"
+  ],
+  "imageUrl": "/cards/legend1/RS-008.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-008.jpg",
+  "effects": [
+    {
+      "id": "super_brain",
+      "text": "自分はドローするとき2枚ひいて、そのうちの1枚を手札に加え、もう1枚を捨札にする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_super_brain",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

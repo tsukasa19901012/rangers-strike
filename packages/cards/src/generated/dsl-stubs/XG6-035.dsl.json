@@ -1,0 +1,101 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-035",
+  "name": "仮面ライダーW・CJX（XG6）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※ブレイカー ※これは自軍コマンドゾーンにあるカテゴリが追加される。 ※これは手札からしかラッシュできない。 【ビッカーチャージブレイク】このユニットは、これが持っているカテゴリ１つにつきBP＋2000される。また、これがアタックして敵軍ユニットを撃破したとき、これのBPが11000以上なら相手に1点ダメージを与える。",
+  "rawText": "※ブレイカー ※これは自軍コマンドゾーンにあるカテゴリが追加される。 ※これは手札からしかラッシュできない。 【ビッカーチャージブレイク】このユニットは、これが持っているカテゴリ１つにつきBP＋2000される。また、これがアタックして敵軍ユニットを撃破したとき、これのBPが11000以上なら相手に1点ダメージを与える。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ダブルドライバー"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "特徴「ダブルドライバー」を持つ自軍ユニットを１体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_breaker",
+      "text": "※ブレイカー",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "breaker",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは自軍コマンドゾーンにあるカテゴリが追加される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_rush_from_hand_only",
+      "text": "※これは手札からしかラッシュできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rush_from_hand_only",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38393e38383",
+      "name": "ビッカーチャージブレイク",
+      "text": "このユニットは、これが持っているカテゴリ１つにつきBP＋2000される。また、これがアタックして敵軍ユニットを撃破したとき、これのBPが11000以上なら相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブレイカー",
+      "rule": "breaker"
+    },
+    {
+      "kind": "note",
+      "text": "※これは手札からしかラッシュできない。",
+      "rule": "rush_from_hand_only"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

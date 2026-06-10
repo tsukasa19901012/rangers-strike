@@ -1,0 +1,52 @@
+{
+  "id": "RS-115",
+  "name": "魔導騎士ウルザード",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "bp": 6000,
+  "sp": 1,
+  "size": "S",
+  "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。※これがバトルエリアに出たとき、相手は1枚ドローしてもよい。",
+  "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。※これがバトルエリアに出たとき、相手は1枚ドローしてもよい。",
+  "features": [
+    "魔法",
+    "男"
+  ],
+  "imageUrl": "/cards/legend2/RS-115.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-115.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "win_but_destroyed_vs_sp1"
+    },
+    {
+      "kind": "note",
+      "text": "※これがバトルエリアに出たとき、相手は1枚ドローしてもよい。",
+      "rule": "opponent_may_draw_on_enter"
+    }
+  ],
+  "effects": [
+    {
+      "id": "unnamed_win_but_destroyed_vs_sp1",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "win_but_destroyed_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

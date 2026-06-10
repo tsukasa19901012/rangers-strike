@@ -10,7 +10,7 @@ import {
   applyAction,
   canPlayOperationExceptCommandHold,
   collectOperationTargets,
-  createGame,
+  createGameForDecks,
   effectiveBp,
   strikeDamageFor,
   explainCannotEnterBattle,
@@ -247,12 +247,14 @@ export function GameApp() {
     }
 
     try {
-      const game = createGame({
-        player1Deck: resolveDeckCards(humanDeckSelection!),
-        player2Deck: resolveDeckCards(cpuDeckSelection!),
-        firstPlayer,
-        rng: () => Math.random(),
-      });
+      const game = createGameForDecks(
+        resolveDeckCards(humanDeckSelection!),
+        resolveDeckCards(cpuDeckSelection!),
+        {
+          firstPlayer,
+          rng: () => Math.random(),
+        },
+      );
       setState(game);
       setStartError(null);
       setPendingOp(null);

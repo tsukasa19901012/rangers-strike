@@ -1,0 +1,67 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-009",
+  "name": "キョウリュウシンケンオー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体─シンケンオー（または獅子折神+龍折神+亀折神+熊折神+猿折神）+恐竜折神 ※ブラスト 【キョウリュウマル天地一閃】これをラッシュしたとき、次の効果を発動できる→DAを持つBP8000以下の敵軍ユニットをすべて撃破する。（この効果は自軍ラッシュフェイズ中、自軍パワーが6以上あれば、自分の手札からこのカードを捨札にして発動できる）",
+  "rawText": "合体─シンケンオー（または獅子折神+龍折神+亀折神+熊折神+猿折神）+恐竜折神 ※ブラスト 【キョウリュウマル天地一閃】これをラッシュしたとき、次の効果を発動できる→DAを持つBP8000以下の敵軍ユニットをすべて撃破する。（この効果は自軍ラッシュフェイズ中、自軍パワーが6以上あれば、自分の手札からこのカードを捨札にして発動できる）",
+  "bp": 18000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "侍",
+    "恐竜",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_blast",
+      "text": "※ブラスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "blast",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382ade383a7",
+      "name": "キョウリュウマル天地一閃",
+      "text": "これをラッシュしたとき、次の効果を発動できる→DAを持つBP8000以下の敵軍ユニットをすべて撃破する。（この効果は自軍ラッシュフェイズ中、自軍パワーが6以上あれば、自分の手札からこのカードを捨札にして発動できる）",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ade383a7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブラスト",
+      "rule": "blast"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

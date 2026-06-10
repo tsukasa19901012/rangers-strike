@@ -1,0 +1,57 @@
+{
+  "id": "RS-138",
+  "name": "イエローライオン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 4,
+  "bp": 1000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 5,
+  "text": "【ジェットスケボー】「SP1」自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。",
+  "rawText": "【ジェットスケボー】「SP1」自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。",
+  "features": [
+    "イエロー",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-138.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-138.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "grant_sp1",
+      "name": "SP+1",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    },
+    {
+      "id": "jet_skateboard",
+      "name": "ジェットスケボー",
+      "text": "自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "jet_skateboard"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-092",
+  "name": "狼男",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【狼作戦】これが自軍エリアにある間、特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される。",
+  "rawText": "【狼作戦】これが自軍エリアにある間、特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "ショッカー",
+    "怪人",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "named_e78bbce4bd9c",
+      "name": "狼作戦",
+      "text": "これが自軍エリアにある間、特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e78bbce4bd9c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

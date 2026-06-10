@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-094",
+  "name": "ビーファイターテントウ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これはホールド状態のユニットにアタックされない。 【テントウスピアー】敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードを持ち主の山札の上に戻すか、持ち主のコマンドゾーンにホールド状態で置く。（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "※これはホールド状態のユニットにアタックされない。 【テントウスピアー】敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードを持ち主の山札の上に戻すか、持ち主のコマンドゾーンにホールド状態で置く。（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 1000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": "RC",
+  "features": [
+    "メカ",
+    "昆虫",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはホールド状態のユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38386e383b3",
+      "name": "テントウスピアー",
+      "text": "敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードを持ち主の山札の上に戻すか、持ち主のコマンドゾーンにホールド状態で置く。（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38386e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

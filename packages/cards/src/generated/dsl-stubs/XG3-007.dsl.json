@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-007",
+  "name": "マックスライナー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※ウイング 【マックスシャトル】このユニットは、ホールド状態の間、次の能力を得る⇒「これはウイングを持たないユニットにアタックされない」と書かれているかのように扱い、BP-2000される。",
+  "rawText": "※ウイング 【マックスシャトル】このユニットは、ホールド状態の間、次の能力を得る⇒「これはウイングを持たないユニットにアタックされない」と書かれているかのように扱い、BP-2000される。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両",
+    "航空機"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839ee38383",
+      "name": "マックスシャトル",
+      "text": "このユニットは、ホールド状態の間、次の能力を得る⇒「これはウイングを持たないユニットにアタックされない」と書かれているかのように扱い、BP-2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839ee38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

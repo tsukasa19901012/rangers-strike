@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-439",
+  "name": "バトルシャーク",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【万能戦艦】これをラッシュしたとき、次の効果を発動できる⇒自軍山札から、Lユニットのカードを1枚か、ナンバーに「L」または「R」を持つユニットカードを2枚まで選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+  "rawText": "【万能戦艦】これをラッシュしたとき、次の効果を発動できる⇒自軍山札から、Lユニットのカードを1枚か、ナンバーに「L」または「R」を持つユニットカードを2枚まで選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+  "bp": 5000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "named_e4b887e883bd",
+      "name": "万能戦艦",
+      "text": "これをラッシュしたとき、次の効果を発動できる⇒自軍山札から、Lユニットのカードを1枚か、ナンバーに「L」または「R」を持つユニットカードを2枚まで選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "optional_deck_draw",
+          "valid": {
+            "type": "zone",
+            "zone": "deck",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

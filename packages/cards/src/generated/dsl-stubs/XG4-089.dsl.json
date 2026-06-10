@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-089",
+  "name": "仮面ライダーW・JJ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【切札の左半身】これがSユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、撃破する。また、自軍バトルエリアに「仮面ライダーW・CC」があれば、これは「SP1」になる。",
+  "rawText": "【切札の左半身】これがSユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、撃破する。また、自軍バトルエリアに「仮面ライダーW・CC」があれば、これは「SP1」になる。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": "R",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ダブルドライバー",
+    "FFR"
+  ],
+  "effects": [
+    {
+      "id": "named_e58887e69cad",
+      "name": "切札の左半身",
+      "text": "これがSユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、撃破する。また、自軍バトルエリアに「仮面ライダーW・CC」があれば、これは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

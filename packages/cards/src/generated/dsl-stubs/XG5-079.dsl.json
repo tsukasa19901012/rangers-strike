@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-079",
+  "name": "仮面ライダーディケイド（XG5）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※モーフ 【ライダーカード】敵軍捨札から、ナンバーにＲＣを持つユニットカードを1枚選んでもよい。そうしたとき、選んだカードのRCの効果をこのユニットの効果として発動する。",
+  "rawText": "※モーフ 【ライダーカード】敵軍捨札から、ナンバーにＲＣを持つユニットカードを1枚選んでもよい。そうしたとき、選んだカードのRCの効果をこのユニットの効果として発動する。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ディケイドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライダーカード",
+      "text": "敵軍捨札から、ナンバーにＲＣを持つユニットカードを1枚選んでもよい。そうしたとき、選んだカードのRCの効果をこのユニットの効果として発動する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

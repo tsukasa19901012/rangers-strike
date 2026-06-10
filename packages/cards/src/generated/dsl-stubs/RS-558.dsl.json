@@ -1,0 +1,53 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-558",
+  "name": "ガンマジン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※自分か相手のLユニットがあれば、これはLユニットになり、BP+4000される。 【鍵の持ち主の願い】これが自軍エリアにある間、自分も相手も次のようにする⇒必要パワーに「＋」を持つユニットカードの追加条件を実行して満たしたとき、そのカードの持ち主は1枚ドローしてもよい。",
+  "rawText": "※自分か相手のLユニットがあれば、これはLユニットになり、BP+4000される。 【鍵の持ち主の願い】これが自軍エリアにある間、自分も相手も次のようにする⇒必要パワーに「＋」を持つユニットカードの追加条件を実行して満たしたとき、そのカードの持ち主は1枚ドローしてもよい。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_l_l_bp",
+      "text": "※自分か相手のLユニットがあれば、これはLユニットになり、BP+4000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_l_l_bp",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e98db5e381ae",
+      "name": "鍵の持ち主の願い",
+      "text": "これが自軍エリアにある間、自分も相手も次のようにする⇒必要パワーに「＋」を持つユニットカードの追加条件を実行して満たしたとき、そのカードの持ち主は1枚ドローしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e98db5e381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

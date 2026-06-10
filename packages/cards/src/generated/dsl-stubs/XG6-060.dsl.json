@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-060",
+  "name": "タカカン",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これが自軍コマンドゾーンに置かれたとき、これを手札に加えてもよい。 ◎コマンドを１つ選び、カテゴリを１つ宣言する。そうしたとき、このターン、宣言したカテゴリを選んだコマンドに追加する。",
+  "rawText": "※これが自軍コマンドゾーンに置かれたとき、これを手札に加えてもよい。 ◎コマンドを１つ選び、カテゴリを１つ宣言する。そうしたとき、このターン、宣言したカテゴリを選んだコマンドに追加する。",
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自軍コマンドゾーンに置かれたとき、これを手札に加えてもよい。 ◎コマンドを１つ選び、カテゴリを１つ宣言する。そうしたとき、このターン、宣言したカテゴリを選んだコマンドに追加する。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

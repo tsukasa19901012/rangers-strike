@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-322",
+  "name": "仮面ライダーレイ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【ブリザードクロー・エクスキュージョン】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、このターン、これはBP+4000される。",
+  "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【ブリザードクロー・エクスキュージョン】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、このターン、これはBP+4000される。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "メカ",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38396e383aa",
+      "name": "ブリザードクロー・エクスキュージョン",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、このターン、これはBP+4000される。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 4000,
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-019",
+  "name": "キャッチスパイダー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "※これはSユニットにアタックされない。 【カラクリボール奪還】 このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒これがストライクしたとき、自分は1枚ドローする。",
+  "rawText": "※これはSユニットにアタックされない。 【カラクリボール奪還】 このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒これがストライクしたとき、自分は1枚ドローする。",
+  "bp": 3000,
+  "size": "M",
+  "comboNumber": "L",
+  "features": [
+    "メカ",
+    "カラクリボール"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_attack_from_s",
+      "text": "※これはSユニットにアタックされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382abe383a9",
+      "name": "カラクリボール奪還",
+      "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒これがストライクしたとき、自分は1枚ドローする。",
+      "trigger": {
+        "type": "on_strike"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "controller"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはSユニットにアタックされない。",
+      "rule": "no_attack_from_s"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

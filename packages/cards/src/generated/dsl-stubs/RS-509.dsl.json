@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-509",
+  "name": "ゴーオンブルー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【ガレージランチャー】自軍パワーゾーンのオモテ向きのカードからオペレーションカードを1枚選び、自分の手札に加えても良い。そうしたとき、このターン、これは「SP1」になる。",
+  "rawText": "【ガレージランチャー】自軍パワーゾーンのオモテ向きのカードからオペレーションカードを1枚選び、自分の手札に加えても良い。そうしたとき、このターン、これは「SP1」になる。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382ace383ac",
+      "name": "ガレージランチャー",
+      "text": "自軍パワーゾーンのオモテ向きのカードからオペレーションカードを1枚選び、自分の手札に加えても良い。そうしたとき、このターン、これは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

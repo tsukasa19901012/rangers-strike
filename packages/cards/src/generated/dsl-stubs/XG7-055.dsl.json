@@ -1,0 +1,76 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-055",
+  "name": "サイクロン・ドーパント",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、ETが追加される。 ※リードET 【神出鬼没の疾風】これが自軍コマンドゾーンにある間、敵軍ターン中、自軍Sユニットがアタックされたとき、アタックされたユニットとこれを置き換えてもよい。そうしたとき、アタックされたユニットのかわりにこのユニットがバトルする。",
+  "rawText": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、ETが追加される。 ※リードET 【神出鬼没の疾風】これが自軍コマンドゾーンにある間、敵軍ターン中、自軍Sユニットがアタックされたとき、アタックされたユニットとこれを置き換えてもよい。そうしたとき、アタックされたユニットのかわりにこのユニットがバトルする。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "怪人",
+    "女",
+    "ドーパント"
+  ],
+  "effects": [
+    {
+      "id": "note_et",
+      "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、ETが追加される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_et",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_lead_et",
+      "text": "※リードET",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e7a59ee587ba",
+      "name": "神出鬼没の疾風",
+      "text": "これが自軍コマンドゾーンにある間、敵軍ターン中、自軍Sユニットがアタックされたとき、アタックされたユニットとこれを置き換えてもよい。そうしたとき、アタックされたユニットのかわりにこのユニットがバトルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7a59ee587ba",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※リードET",
+      "rule": "lead_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

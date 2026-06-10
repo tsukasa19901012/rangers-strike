@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XP-031",
+  "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダー電王SF",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※クロス1 【メダルと切符と40周年】これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、「ライダー」か「イマジン」か「ショッカー」のどれかを含む特徴を持つ自軍捨札を1枚選び、ゲームから除外してもよい。そうしたとき、自軍山札の上から3枚をオモテにして、その中から1枚選び手札に加え、それ以外は好きな順で山札の下に戻す。",
+  "rawText": "※クロス1 【メダルと切符と40周年】これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、「ライダー」か「イマジン」か「ショッカー」のどれかを含む特徴を持つ自軍捨札を1枚選び、ゲームから除外してもよい。そうしたとき、自軍山札の上から3枚をオモテにして、その中から1枚選び手札に加え、それ以外は好きな順で山札の下に戻す。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "DEN-O",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "fx_40",
+      "name": "メダルと切符と40周年",
+      "text": "これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、「ライダー」か「イマジン」か「ショッカー」のどれかを含む特徴を持つ自軍捨札を1枚選び、ゲームから除外してもよい。そうしたとき、自軍山札の上から3枚をオモテにして、その中から1枚選び手札に加え、それ以外は好きな順で山札の下に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_fx_40",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

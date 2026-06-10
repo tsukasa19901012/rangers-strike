@@ -1,0 +1,77 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-077",
+  "name": "仮面ライダーディケイド",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※モーフ ※これはリリース状態のユニットにアタックすることができない。 【ライドブッカー】自軍山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中から、特徴「仮面ライダー」を持つユニットカードを1枚選び、自軍パワーゾーンに置く。その後、それ以外のカードは好きな順で山札の下に戻す。",
+  "rawText": "※モーフ ※これはリリース状態のユニットにアタックすることができない。 【ライドブッカー】自軍山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中から、特徴「仮面ライダー」を持つユニットカードを1枚選び、自軍パワーゾーンに置く。その後、それ以外のカードは好きな順で山札の下に戻す。",
+  "bp": 5000,
+  "size": "S",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ディケイドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはリリース状態のユニットにアタックすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライドブッカー",
+      "text": "自軍山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中から、特徴「仮面ライダー」を持つユニットカードを1枚選び、自軍パワーゾーンに置く。その後、それ以外のカードは好きな順で山札の下に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-557",
+  "name": "ビンボーガミ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【札束の誘惑】これが自軍エリアにある間、自分も相手も次の制限を受ける⇒相手の手札が1枚以上あれば、その枚数と同じＣＮの数字を持つ自分自身のSユニットは、毎ターン、可能ならバトルエリアに出る。",
+  "rawText": "【札束の誘惑】これが自軍エリアにある間、自分も相手も次の制限を受ける⇒相手の手札が1枚以上あれば、その枚数と同じＣＮの数字を持つ自分自身のSユニットは、毎ターン、可能ならバトルエリアに出る。",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "怪人",
+    "男",
+    "妖怪"
+  ],
+  "effects": [
+    {
+      "id": "named_e69cade69d9f",
+      "name": "札束の誘惑",
+      "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒相手の手札が1枚以上あれば、その枚数と同じＣＮの数字を持つ自分自身のSユニットは、毎ターン、可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e69cade69d9f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

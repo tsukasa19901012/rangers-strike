@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-217",
+  "name": "イーグルアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これが自分の手札にある間、自分が「仮面ライダーブレイドJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーブレイド」を1体捨札にしたことにできる。 【滑空攻撃】これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる。",
+  "rawText": "※これが自分の手札にある間、自分が「仮面ライダーブレイドJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーブレイド」を1体捨札にしたことにできる。 【滑空攻撃】これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる。",
+  "bp": 4500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "note_jf",
+      "text": "※これが自分の手札にある間、自分が「仮面ライダーブレイドJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーブレイド」を1体捨札にしたことにできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_jf",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6bb91e7a9ba",
+      "name": "滑空攻撃",
+      "text": "これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6bb91e7a9ba",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

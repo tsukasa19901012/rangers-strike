@@ -1,0 +1,75 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-419",
+  "name": "聖剣ズバーン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※これはSユニットかLユニットからコンビネーションしなければバトルエリアに出られない。 ※これはアタックすることができない。 【ゴールデンクラッシュ】これがDA以外のユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※これはSユニットかLユニットからコンビネーションしなければバトルエリアに出られない。 ※これはアタックすることができない。 【ゴールデンクラッシュ】これがDA以外のユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": "R",
+  "features": [
+    "魔法"
+  ],
+  "effects": [
+    {
+      "id": "note_s_l",
+      "text": "※これはSユニットかLユニットからコンビネーションしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_s_l",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_cannot_attack",
+      "text": "※これはアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b4e383bc",
+      "name": "ゴールデンクラッシュ",
+      "text": "これがDA以外のユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b4e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックすることができない。",
+      "rule": "cannot_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-035",
+  "name": "デカレンジャーロボFC",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―デカレンジャーロボ（またはデカマシン）+ブラストバギー ※ブラスト 【フルブラストランチャー】自分がゲームに負けるまで残りダメージ1点なら、自軍ターン中、これがバトルエリアに出たとき、オモテ向きの自軍パワーを好きな枚数選び捨札にしてもよい。そうしたとき、捨札にしたカード1枚につき、敵軍ユニット1体か敵軍パワーゾーンのカードを1枚選び捨札にする。",
+  "rawText": "合体―デカレンジャーロボ（またはデカマシン）+ブラストバギー ※ブラスト 【フルブラストランチャー】自分がゲームに負けるまで残りダメージ1点なら、自軍ターン中、これがバトルエリアに出たとき、オモテ向きの自軍パワーを好きな枚数選び捨札にしてもよい。そうしたとき、捨札にしたカード1枚につき、敵軍ユニット1体か敵軍パワーゾーンのカードを1枚選び捨札にする。",
+  "bp": 20000,
+  "size": "L",
+  "sp": 2,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットをパワーゾーンに送る"
+  },
+  "effects": [
+    {
+      "id": "unnamed_blast",
+      "text": "※ブラスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "blast",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38395e383ab",
+      "name": "フルブラストランチャー",
+      "text": "自分がゲームに負けるまで残りダメージ1点なら、自軍ターン中、これがバトルエリアに出たとき、オモテ向きの自軍パワーを好きな枚数選び捨札にしてもよい。そうしたとき、捨札にしたカード1枚につき、敵軍ユニット1体か敵軍パワーゾーンのカードを1枚選び捨札にする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブラスト",
+      "rule": "blast"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

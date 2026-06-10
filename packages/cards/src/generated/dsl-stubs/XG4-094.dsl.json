@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-094",
+  "name": "宇宙刑事シャイダー（XG4）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※チェイス 【ビデオビームガン】敵軍コマンドを1つ選びリリースしてもよい。そうしたとき、リリースしたカードと同じカテゴリを持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "※チェイス 【ビデオビームガン】敵軍コマンドを1つ選びリリースしてもよい。そうしたとき、リリースしたカードと同じカテゴリを持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 14,
+  "comboNumber": "RC",
+  "features": [
+    "宇宙刑事",
+    "メカ",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_chase",
+      "text": "※チェイス",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "chase",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38393e38387",
+      "name": "ビデオビームガン",
+      "text": "敵軍コマンドを1つ選びリリースしてもよい。そうしたとき、リリースしたカードと同じカテゴリを持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38393e38387",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※チェイス",
+      "rule": "chase"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

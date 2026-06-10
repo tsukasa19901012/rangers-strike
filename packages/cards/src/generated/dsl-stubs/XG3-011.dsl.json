@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-011",
+  "name": "獣魔ハンター・ジーク",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ジークブラスター】このユニットは、本来のカテゴリにDAを持つ敵軍ユニットがあれば「SP1」になり、本来の特徴に「獣」を持つ敵軍ユニットがあればBP+2000される。",
+  "rawText": "【ジークブラスター】このユニットは、本来のカテゴリにDAを持つ敵軍ユニットがあれば「SP1」になり、本来の特徴に「獣」を持つ敵軍ユニットがあればBP+2000される。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "男",
+    "ジークテクター"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b8e383bc",
+      "name": "ジークブラスター",
+      "text": "このユニットは、本来のカテゴリにDAを持つ敵軍ユニットがあれば「SP1」になり、本来の特徴に「獣」を持つ敵軍ユニットがあればBP+2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

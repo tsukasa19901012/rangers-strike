@@ -1,0 +1,68 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XP-028",
+  "name": "ワンダーゴセイグレート",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※ウイング 【サモン・ワンダーパワー】これが自分の手札にある間、相手が常駐以外のオペレーションカードを使用して、その処理をすべて終えたとき、MAとMA以外の自軍コマンドを1つずつホールドして、これを自軍ラッシュエリアに出してもよい。そうしたとき、敵軍捨札からオペレーションカードを1枚選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "※ウイング 【サモン・ワンダーパワー】これが自分の手札にある間、相手が常駐以外のオペレーションカードを使用して、その処理をすべて終えたとき、MAとMA以外の自軍コマンドを1つずつホールドして、これを自軍ラッシュエリアに出してもよい。そうしたとき、敵軍捨札からオペレーションカードを1枚選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 7000,
+  "size": "L",
+  "sp": 13,
+  "features": [
+    "魔法",
+    "獣",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "リードを持つ自軍Sユニット1体を捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b5e383a2",
+      "name": "サモン・ワンダーパワー",
+      "text": "これが自分の手札にある間、相手が常駐以外のオペレーションカードを使用して、その処理をすべて終えたとき、MAとMA以外の自軍コマンドを1つずつホールドして、これを自軍ラッシュエリアに出してもよい。そうしたとき、敵軍捨札からオペレーションカードを1枚選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b5e383a2",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

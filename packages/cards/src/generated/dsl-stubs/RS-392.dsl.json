@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-392",
+  "name": "ゴーピンク",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【救急医療】敵軍捨札からSユニットのカードを1枚選んでもよい。そうしたとき、自軍捨札からSユニットのカードを相手に1枚選ばせる。その後、選ばれたカードはそれぞれ持ち主の手札に加える。",
+  "rawText": "【救急医療】敵軍捨札からSユニットのカードを1枚選んでもよい。そうしたとき、自軍捨札からSユニットのカードを相手に1枚選ばせる。その後、選ばれたカードはそれぞれ持ち主の手札に加える。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e69591e680a5",
+      "name": "救急医療",
+      "text": "敵軍捨札からSユニットのカードを1枚選んでもよい。そうしたとき、自軍捨札からSユニットのカードを相手に1枚選ばせる。その後、選ばれたカードはそれぞれ持ち主の手札に加える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

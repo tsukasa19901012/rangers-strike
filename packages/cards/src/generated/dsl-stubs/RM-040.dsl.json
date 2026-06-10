@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-040",
+  "name": "姫忍　恵美破",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【忍法花吹雪】「SP1」カテゴリまたは特徴の追加されている敵軍Sユニットを1体選び、持ち主の山札の下に戻してもよい。",
+  "rawText": "【忍法花吹雪】「SP1」カテゴリまたは特徴の追加されている敵軍Sユニットを1体選び、持ち主の山札の下に戻してもよい。",
+  "bp": 500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "戸隠流",
+    "女",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "named_e5bf8de6b395",
+      "name": "忍法花吹雪",
+      "text": "「SP1」カテゴリまたは特徴の追加されている敵軍Sユニットを1体選び、持ち主の山札の下に戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

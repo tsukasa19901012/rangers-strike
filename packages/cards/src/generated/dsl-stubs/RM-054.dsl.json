@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-054",
+  "name": "レッドジャイロ",
+  "type": "vehicle",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※特徴「昆虫」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【レッドパルサー】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP3000以下の特徴「航空機」を持つ敵軍ユニットを1体選びホールドする。",
+  "rawText": "※特徴「昆虫」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【レッドパルサー】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP3000以下の特徴「航空機」を持つ敵軍ユニットを1体選びホールドする。",
+  "effects": [
+    {
+      "id": "note_s_1",
+      "text": "※特徴「昆虫」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_without_rc_named_e69886e899ab",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383ace38383",
+      "name": "レッドパルサー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP3000以下の特徴「航空機」を持つ敵軍ユニットを1体選びホールドする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ace38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

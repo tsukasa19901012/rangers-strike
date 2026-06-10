@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-430",
+  "name": "ロボタフ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは自軍ターン中バトルエリアに出られない。 【獣拳トレーナー】これが自軍ラッシュエリアにある間、追加条件を持たない「WB」のすべてのSユニットは、次の能力を得る⇒必要パワーの数字2ごとにBP＋1000され、バトルエリアで2番目に並んだとき「SP1」になる。",
+  "rawText": "※これは自軍ターン中バトルエリアに出られない。 【獣拳トレーナー】これが自軍ラッシュエリアにある間、追加条件を持たない「WB」のすべてのSユニットは、次の能力を得る⇒必要パワーの数字2ごとにBP＋1000され、バトルエリアで2番目に並んだとき「SP1」になる。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_enter_battle_own_turn",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_enter_battle_own_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e78da3e68bb3",
+      "name": "獣拳トレーナー",
+      "text": "これが自軍ラッシュエリアにある間、追加条件を持たない「WB」のすべてのSユニットは、次の能力を得る⇒必要パワーの数字2ごとにBP＋1000され、バトルエリアで2番目に並んだとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "rule": "no_enter_battle_own_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

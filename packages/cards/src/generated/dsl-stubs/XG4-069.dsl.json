@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-069",
+  "name": "仮面ライダーW・FJ（XG4）",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※モーフ 【ショルダー・ファング】これがバトルエリアに出たとき、特徴「獣」または「恐竜」を持つ自軍コマンドを1つ選び、ホールドしてもよい。そうしたとき、必要パワーの数字が同じ敵軍Sユニットを3体まで選びホールドする。",
+  "rawText": "※モーフ 【ショルダー・ファング】これがバトルエリアに出たとき、特徴「獣」または「恐竜」を持つ自軍コマンドを1つ選び、ホールドしてもよい。そうしたとき、必要パワーの数字が同じ敵軍Sユニットを3体まで選びホールドする。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ダブルドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b7e383a7",
+      "name": "ショルダー・ファング",
+      "text": "これがバトルエリアに出たとき、特徴「獣」または「恐竜」を持つ自軍コマンドを1つ選び、ホールドしてもよい。そうしたとき、必要パワーの数字が同じ敵軍Sユニットを3体まで選びホールドする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b7e383a7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

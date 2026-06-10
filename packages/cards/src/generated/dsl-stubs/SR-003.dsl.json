@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SR-003",
+  "name": "アームドティラノレンジャー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【龍撃剣＆獣奏剣】自軍ターン中、これは自軍捨札にある特徴「恐竜」を持つカード1枚につきBP＋1000される。これはBP8000以上のとき「SP1」になる。",
+  "rawText": "【龍撃剣＆獣奏剣】自軍ターン中、これは自軍捨札にある特徴「恐竜」を持つカード1枚につきBP＋1000される。これはBP8000以上のとき「SP1」になる。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "レッド",
+    "男",
+    "獣奏剣"
+  ],
+  "effects": [
+    {
+      "id": "named_e9be8de69283",
+      "name": "龍撃剣＆獣奏剣",
+      "text": "自軍ターン中、これは自軍捨札にある特徴「恐竜」を持つカード1枚につきBP＋1000される。これはBP8000以上のとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

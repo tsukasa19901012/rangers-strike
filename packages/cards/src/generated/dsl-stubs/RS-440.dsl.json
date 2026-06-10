@@ -1,0 +1,75 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-440",
+  "name": "バトルフィーバーロボ（2nd）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※このカードの追加条件は、自軍捨札が7枚以上のとき、次のように変更される⇒特徴「母艦」を持つ自軍ユニットを1体捨札にする。 ※これはナンバーに「L」または「R」を持つ自軍ユニット1体につきBP+1000される。 【武器換装】これが自軍バトルエリアにある間、自軍バトルフェイズ中、自軍コマンドを3つホールドしてもよい。そうしたとき、これをラッシュエリアに戻す。",
+  "rawText": "※このカードの追加条件は、自軍捨札が7枚以上のとき、次のように変更される⇒特徴「母艦」を持つ自軍ユニットを1体捨札にする。 ※これはナンバーに「L」または「R」を持つ自軍ユニット1体につきBP+1000される。 【武器換装】これが自軍バトルエリアにある間、自軍バトルフェイズ中、自軍コマンドを3つホールドしてもよい。そうしたとき、これをラッシュエリアに戻す。",
+  "bp": 6000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型",
+    "2nd"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを5体捨札にする",
+    "unitCount": 5
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※このカードの追加条件は、自軍捨札が7枚以上のとき、次のように変更される⇒特徴「母艦」を持つ自軍ユニットを1体捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_l_r_1",
+      "text": "※これはナンバーに「L」または「R」を持つ自軍ユニット1体につきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_l_r_1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6ada6e599a8",
+      "name": "武器換装",
+      "text": "これが自軍バトルエリアにある間、自軍バトルフェイズ中、自軍コマンドを3つホールドしてもよい。そうしたとき、これをラッシュエリアに戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6ada6e599a8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

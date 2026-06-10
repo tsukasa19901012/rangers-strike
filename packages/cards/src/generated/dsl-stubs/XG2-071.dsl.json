@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-071",
+  "name": "仮面ライダーディエンド",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは敵軍Sユニットにアタックされない。 【ディメンションシュート】自軍ターン中、これがバトルエリアに出たとき、これ以外の特徴「仮面ライダー」を持つ自軍ユニットを2体選び、パワーゾーンに送ってもよい。そうしたとき、本来のBPが8000以下の敵軍ユニットを1体選び撃破する。",
+  "rawText": "※これは敵軍Sユニットにアタックされない。 【ディメンションシュート】自軍ターン中、これがバトルエリアに出たとき、これ以外の特徴「仮面ライダー」を持つ自軍ユニットを2体選び、パワーゾーンに送ってもよい。そうしたとき、本来のBPが8000以下の敵軍ユニットを1体選び撃破する。",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ディエンドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_attack_from_enemy_s",
+      "text": "※これは敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_enemy_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38387e382a3",
+      "name": "ディメンションシュート",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、これ以外の特徴「仮面ライダー」を持つ自軍ユニットを2体選び、パワーゾーンに送ってもよい。そうしたとき、本来のBPが8000以下の敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38387e382a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍Sユニットにアタックされない。",
+      "rule": "no_attack_from_enemy_s"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

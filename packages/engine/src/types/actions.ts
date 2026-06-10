@@ -150,6 +150,17 @@ export type PassRegisterAction = {
   playerId: PlayerId;
 };
 
+export type ResolveChaseAction = {
+  type: "resolve_chase";
+  playerId: PlayerId;
+  newVehicleInstanceId: string;
+};
+
+export type PassChaseAction = {
+  type: "pass_chase";
+  playerId: PlayerId;
+};
+
 export type UseSuperShieldAction = {
   type: "use_super_shield";
   playerId: PlayerId;
@@ -278,6 +289,8 @@ export type GameAction =
   | PassLeaveReactionAction
   | UseRegisterAction
   | PassRegisterAction
+  | ResolveChaseAction
+  | PassChaseAction
   | UseSuperShieldAction
   | ShironLightAction
   | HidoraEggAction

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-527",
+  "name": "バルジオン（2nd）",
+  "type": "vehicle",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※本来のカテゴリにDAを持つSユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。 【反バイオ粒子砲】これにライドしているユニットは「Lユニット」になり、OTを持つ敵軍コマンド1つにつき、「BP+1000」される。また、これにライドしているユニットは、「バイオハンター・シルバ」なら「SP1」になる。",
+  "rawText": "※本来のカテゴリにDAを持つSユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。 【反バイオ粒子砲】これにライドしているユニットは「Lユニット」になり、OTを持つ敵軍コマンド1つにつき、「BP+1000」される。また、これにライドしているユニットは、「バイオハンター・シルバ」なら「SP1」になる。",
+  "effects": [
+    {
+      "id": "note_da_s_rc",
+      "text": "※本来のカテゴリにDAを持つSユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_da_s_rc",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58f8de38390",
+      "name": "反バイオ粒子砲",
+      "text": "これにライドしているユニットは「Lユニット」になり、OTを持つ敵軍コマンド1つにつき、「BP+1000」される。また、これにライドしているユニットは、「バイオハンター・シルバ」なら「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

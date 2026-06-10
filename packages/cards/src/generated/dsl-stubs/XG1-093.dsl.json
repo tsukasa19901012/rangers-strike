@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-093",
+  "name": "ソルジャンヌ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【メディカルパック】自分の手札から1枚選び捨札にしてもよい。そうしたとき、自軍捨札からSユニットのカードを1枚選び、手札に加える。",
+  "rawText": "【メディカルパック】自分の手札から1枚選び捨札にしてもよい。そうしたとき、自軍捨札からSユニットのカードを1枚選び、手札に加える。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "メカ",
+    "女",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "named_e383a1e38387",
+      "name": "メディカルパック",
+      "text": "自分の手札から1枚選び捨札にしてもよい。そうしたとき、自軍捨札からSユニットのカードを1枚選び、手札に加える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

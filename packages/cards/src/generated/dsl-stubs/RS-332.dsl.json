@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-332",
+  "name": "マジライオン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―レジェンドマジイエロー＋レジェンドマジブルー＋レジェンドマジピンク＋レジェンドマジグリーン ※これが撃破されて捨札になったとき、このユニットの合体に必要なユニットのカードが自軍捨札にあれば、それぞれ1枚ずつ選び、自軍ラッシュエリアに出す。",
+  "rawText": "合体―レジェンドマジイエロー＋レジェンドマジブルー＋レジェンドマジピンク＋レジェンドマジグリーン ※これが撃破されて捨札になったとき、このユニットの合体に必要なユニットのカードが自軍捨札にあれば、それぞれ1枚ずつ選び、自軍ラッシュエリアに出す。",
+  "bp": 9000,
+  "size": "M",
+  "sp": 1,
+  "features": [
+    "魔法"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、このユニットの合体に必要なユニットのカードが自軍捨札にあれば、それぞれ1枚ずつ選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-026",
+  "name": "ボウケンイエローAT",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「ボウケンイエロー」のカードを1枚選び、自軍ラッシュエリアに出す。 【仲間の支え】｢SP1｣ 自軍バトルエリアに、特徴に「レッド」「ブラック」「ブルー」「ピンク」を持つSユニットがそれぞれあれば、本来のBPが6000以下の敵軍ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「ボウケンイエロー」のカードを1枚選び、自軍ラッシュエリアに出す。 【仲間の支え】｢SP1｣ 自軍バトルエリアに、特徴に「レッド」「ブラック」「ブルー」「ピンク」を持つSユニットがそれぞれあれば、本来のBPが6000以下の敵軍ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "bp": 2500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "イエロー",
+    "女",
+    "アクセルテクター"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「ボウケンイエロー」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e4bbb2e99693",
+      "name": "仲間の支え",
+      "text": "｢SP1｣ 自軍バトルエリアに、特徴に「レッド」「ブラック」「ブルー」「ピンク」を持つSユニットがそれぞれあれば、本来のBPが6000以下の敵軍ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4bbb2e99693",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

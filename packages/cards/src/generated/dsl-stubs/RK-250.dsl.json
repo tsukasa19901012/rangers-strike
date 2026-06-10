@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-250",
+  "name": "サバイブ",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "WBを持ち、特徴「サバイブ」を持たない自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、BP+1500され、特徴「サバイブ」が追加される。また、重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める。",
+  "rawText": "WBを持ち、特徴「サバイブ」を持たない自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、BP+1500され、特徴「サバイブ」が追加される。また、重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

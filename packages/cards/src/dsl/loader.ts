@@ -1,20 +1,23 @@
 import { allCardsCatalog } from "../catalog";
 import { getCardEffect } from "../effects";
+import { applyLegend1StarterOverlay } from "./legend1/starter/loadStarterOverlays";
+import { applyGeneratedDslOverlay } from "./generated/loadGeneratedOverlays";
+import { applyStubDslOverlay } from "./stubs/loadStubOverlays";
+import { wikiStubsCatalog, vanillaPromotedCatalog, complexityPromotedCatalog } from "../extendedCatalog";
 import type { CardDefinition } from "../schema";
 import type { NamedUnitEffect, UnitEffectBlock } from "../effectTaxonomy";
 import { getUnitEffectBlock } from "../unitEffects";
 import type { CardDocument, EffectDefinition, EffectPrimitive, ImplementationMeta } from "./types";
 import { assertValidCardDocument, validateCardDocument } from "./validator";
+import {
+  buildNamedEffectDsl,
+  buildOperationEffectDsl,
+  buildUnnamedRuleEffects,
+} from "./effectBuilders";
 
-/** レガシー named effect → DSL EffectDefinition（primitives は fallback） */
-function namedEffectToDsl(named: NamedUnitEffect): EffectDefinition {
-  return {
-    id: named.effectId,
-    name: named.name,
-    text: named.text,
-    trigger: named.trigger,
-    effects: [{ type: "fallback_handler", effectId: named.effectId }],
-  };
+/** レガシー named effect → DSL EffectDefinition */
+function namedEffectToDsl(named: NamedUnitEffect, cardId?: string): EffectDefinition {
+  return buildNamedEffectDsl(named, cardId);
 }
 
 function unitBlockToUnnamedRules(block: UnitEffectBlock): CardDocument["unnamedRules"] {
@@ -50,6 +53,12 @@ function inferImplementation(card: CardDocument): ImplementationMeta {
   if (hasFallbackOnly && (card.effects?.length ?? 0) > 0) {
     return { source: "legacy_unit_effects", handler: "typescript" };
   }
+  if (
+    (card.effects?.length ?? 0) === 0 &&
+    (card.rushAdditionalCondition || (card.unnamedRules?.length ?? 0) > 0)
+  ) {
+    return { source: "dsl", handler: "interpreter" };
+  }
   if ((card.effects?.length ?? 0) === 0 && !card.effectId) {
     return { source: "dsl", handler: "unimplemented" };
   }
@@ -64,19 +73,26 @@ export function cardDefinitionToDocument(def: CardDefinition): CardDocument {
   const effects: EffectDefinition[] = [];
 
   if (block) {
-    effects.push(...block.namedEffects.map(namedEffectToDsl));
+    effects.push(...block.namedEffects.map((n) => namedEffectToDsl(n, def.id)));
+    for (const unnamed of block.unnamedText) {
+      const built = buildUnnamedRuleEffects(unnamed);
+      if (built) effects.push(built);
+    }
   }
 
   if (opMeta && !effects.some((e) => e.id === opMeta.effectId)) {
-    effects.push({
-      id: opMeta.effectId,
-      text: opMeta.text,
-      trigger: {
-        type: "operation",
-        timing: opMeta.kind === "counter" ? "counter" : opMeta.kind === "permanent" ? "resident" : "rush",
+    const built = buildOperationEffectDsl(def.id, opMeta);
+    effects.push(
+      built ?? {
+        id: opMeta.effectId,
+        text: opMeta.text,
+        trigger: {
+          type: "operation",
+          timing: opMeta.kind === "counter" ? "counter" : opMeta.kind === "permanent" ? "resident" : "rush",
+        },
+        effects: [{ type: "fallback_handler", effectId: opMeta.effectId }],
       },
-      effects: [{ type: "fallback_handler", effectId: opMeta.effectId }],
-    });
+    );
   }
 
   const doc: CardDocument = {
@@ -133,16 +149,64 @@ export function tryLoadCardDocument(raw: unknown): {
   return { document: doc, validation };
 }
 
-/** 既存カタログから全 CardDocument を生成 */
+/** 既存カタログから全 CardDocument を生成（一括生成 DSL → L1 スターターで上書き） */
 export function loadAllCardDocuments(): CardDocument[] {
-  return allCardsCatalog.cards.map(cardDefinitionToDocument);
+  return allCardsCatalog.cards.map((def) =>
+    applyLegend1StarterOverlay(applyGeneratedDslOverlay(cardDefinitionToDocument(def))),
+  );
 }
 
 /** 拡張パック単位で読み込み */
 export function loadExpansionDocuments(expansion: string): CardDocument[] {
   return allCardsCatalog.cards
     .filter((c) => c.expansion === expansion)
-    .map(cardDefinitionToDocument);
+    .map((def) =>
+      applyLegend1StarterOverlay(applyGeneratedDslOverlay(cardDefinitionToDocument(def))),
+    );
+}
+
+/** Wiki スタブカードの CardDocument（プレイ不可・DSL オーバーレイ適用）。 */
+export function loadWikiStubDocuments(): CardDocument[] {
+  return wikiStubsCatalog.cards.map((def) =>
+    applyStubDslOverlay(cardDefinitionToDocument(def)),
+  );
+}
+
+/** A/E/B 昇格カードの CardDocument（stub DSL オーバーレイ適用）。 */
+export function loadVanillaPromotedDocuments(): CardDocument[] {
+  return vanillaPromotedCatalog.cards.map((def) =>
+    applyStubDslOverlay(cardDefinitionToDocument(def)),
+  );
+}
+
+/** C/D 昇格カードの CardDocument（stub DSL オーバーレイ適用）。 */
+export function loadComplexityPromotedDocuments(): CardDocument[] {
+  return complexityPromotedCatalog.cards.map((def) =>
+    applyStubDslOverlay(cardDefinitionToDocument(def)),
+  );
+}
+
+/** プレイ可能 179 + vanilla-promoted + complexity-promoted の CardDocument。 */
+export function loadFullPlayableDocuments(): CardDocument[] {
+  const core = loadAllCardDocuments();
+  const seen = new Set(core.map((c) => c.id));
+  const promoted = [
+    ...loadVanillaPromotedDocuments(),
+    ...loadComplexityPromotedDocuments(),
+  ].filter((c) => {
+    if (seen.has(c.id)) return false;
+    seen.add(c.id);
+    return true;
+  });
+  return [...core, ...promoted];
+}
+
+/** プレイ可能 179 + Wiki スタブの全 CardDocument。 */
+export function loadExtendedCardDocuments(): CardDocument[] {
+  const playable = loadAllCardDocuments();
+  const playableIds = new Set(playable.map((c) => c.id));
+  const stubs = loadWikiStubDocuments().filter((c) => !playableIds.has(c.id));
+  return [...playable, ...stubs];
 }
 
 /** DSL JSON ファイルのマージ（上書き） */
@@ -157,7 +221,7 @@ export function mergeCardDocument(base: CardDocument, overlay: Partial<CardDocum
     features: overlay.features ?? base.features,
   };
   assertValidCardDocument(merged);
-  merged.implementation = inferImplementation(merged);
+  merged.implementation = overlay.implementation ?? inferImplementation(merged);
   return merged;
 }
 

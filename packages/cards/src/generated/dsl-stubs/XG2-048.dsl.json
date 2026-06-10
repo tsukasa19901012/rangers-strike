@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-048",
+  "name": "仮面ライダースーパー1・RH",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※モーフ 【レーダーアイ】これが自軍バトルエリアからラッシュエリアに戻るとき、お互いの山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードを、それぞれ持ち主の山札の上に戻すか下に戻すか選択する。",
+  "rawText": "※モーフ 【レーダーアイ】これが自軍バトルエリアからラッシュエリアに戻るとき、お互いの山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードを、それぞれ持ち主の山札の上に戻すか下に戻すか選択する。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 15,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間",
+    "ファイブハンド"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383ace383bc",
+      "name": "レーダーアイ",
+      "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、お互いの山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードを、それぞれ持ち主の山札の上に戻すか下に戻すか選択する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ace383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

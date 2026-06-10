@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-060",
+  "name": "仮面ライダーワイルドカリス（XG5）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。 【ワイルド】これは、自軍の手札が1枚のとき次の能力を得る⇒自軍ターン中、これがバトルエリアに出たとき、相手に1点ダメージを与える。",
+  "rawText": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。 【ワイルド】これは、自軍の手札が1枚のとき次の能力を得る⇒自軍ターン中、これがバトルエリアに出たとき、相手に1点ダメージを与える。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "アンデッド",
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_undead_command_rush_hold",
+      "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "undead_command_rush_hold",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383afe382a4",
+      "name": "ワイルド",
+      "text": "これは、自軍の手札が1枚のとき次の能力を得る⇒自軍ターン中、これがバトルエリアに出たとき、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
+      "rule": "undead_command_rush_hold"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

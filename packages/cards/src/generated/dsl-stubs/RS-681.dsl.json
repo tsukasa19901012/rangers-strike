@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-681",
+  "name": "龍折神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【押し寄せる水流】敵軍ラッシュエリアのホールド状態のユニットをすべて持ち主の山札に戻してシャッフルしてもよい。",
+  "rawText": "【押し寄せる水流】敵軍ラッシュエリアのホールド状態のユニットをすべて持ち主の山札に戻してシャッフルしてもよい。",
+  "bp": 4000,
+  "size": "M",
+  "comboNumber": 4,
+  "features": [
+    "獣",
+    "折神獣",
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "named_e68abce38197",
+      "name": "押し寄せる水流",
+      "text": "敵軍ラッシュエリアのホールド状態のユニットをすべて持ち主の山札に戻してシャッフルしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e68abce38197",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

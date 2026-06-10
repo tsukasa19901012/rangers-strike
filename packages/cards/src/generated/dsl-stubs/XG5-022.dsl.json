@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-022",
+  "name": "ボウケンブルー（XG5）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※ウイング 【ナックルキャノン】これがアタックしたとき、自軍コマンドが3つ以下なら、自軍捨札から必要パワーの数字が2以下のオペレーションカードを1枚選び自軍コマンドゾーンにホールド状態で置いてもよい。（この効果は「ボウケンレッド」からコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "※ウイング 【ナックルキャノン】これがアタックしたとき、自軍コマンドが3つ以下なら、自軍捨札から必要パワーの数字が2以下のオペレーションカードを1枚選び自軍コマンドゾーンにホールド状態で置いてもよい。（この効果は「ボウケンレッド」からコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3838ae38383",
+      "name": "ナックルキャノン",
+      "text": "これがアタックしたとき、自軍コマンドが3つ以下なら、自軍捨札から必要パワーの数字が2以下のオペレーションカードを1枚選び自軍コマンドゾーンにホールド状態で置いてもよい。（この効果は「ボウケンレッド」からコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838ae38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

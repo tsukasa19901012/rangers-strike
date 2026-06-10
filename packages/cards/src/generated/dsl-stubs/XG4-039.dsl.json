@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-039",
+  "name": "サムライハオー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "11+",
+  "text": "合体―獅子折神＋龍折神＋亀折神＋熊折神＋猿折神＋兜折神＋舵木折神＋虎折神＋海老折神＋烏賊折神＋牛折神 ※これの追加条件を満たすとき、自軍捨札に合体ユニットと同名のカードがあれば、そのユニットは捨札にしなくてもよい。 【モヂカラ大弾円】これが自軍エリアにある間、自分がターンを終えるとき、敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "合体―獅子折神＋龍折神＋亀折神＋熊折神＋猿折神＋兜折神＋舵木折神＋虎折神＋海老折神＋烏賊折神＋牛折神 ※これの追加条件を満たすとき、自軍捨札に合体ユニットと同名のカードがあれば、そのユニットは捨札にしなくてもよい。 【モヂカラ大弾円】これが自軍エリアにある間、自分がターンを終えるとき、敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 24000,
+  "size": "L",
+  "sp": 3,
+  "features": [
+    "侍",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これの追加条件を満たすとき、自軍捨札に合体ユニットと同名のカードがあれば、そのユニットは捨札にしなくてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a2e38382",
+      "name": "モヂカラ大弾円",
+      "text": "これが自軍エリアにある間、自分がターンを終えるとき、敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a2e38382",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-019",
+  "name": "ターボマシン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※このカードの追加条件は、自軍捨札にカテゴリを2つ以上持つSユニットのカードが5枚以上あるとき、次のように変更される⇒自軍ゾーンのオモテ向きのカードからSユニットのカードを1枚選び捨札にする。",
+  "rawText": "※このカードの追加条件は、自軍捨札にカテゴリを2つ以上持つSユニットのカードが5枚以上あるとき、次のように変更される⇒自軍ゾーンのオモテ向きのカードからSユニットのカードを1枚選び捨札にする。",
+  "bp": 8000,
+  "size": "SC",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニット5体をそれぞれコマンドゾーンに送るか捨札にする",
+    "unitCount": 5
+  },
+  "effects": [
+    {
+      "id": "note_fx_2_s",
+      "text": "※このカードの追加条件は、自軍捨札にカテゴリを2つ以上持つSユニットのカードが5枚以上あるとき、次のように変更される⇒自軍ゾーンのオモテ向きのカードからSユニットのカードを1枚選び捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_2_s",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

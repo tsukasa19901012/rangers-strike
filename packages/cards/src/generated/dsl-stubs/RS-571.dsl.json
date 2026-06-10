@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-571",
+  "name": "デカバイクロボ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "【ソードトルネード】これが自軍エリアにある間、自分か相手の山札がシャッフルされたとき、そのターン中、これは「SP1」になる。",
+  "rawText": "【ソードトルネード】これが自軍エリアにある間、自分か相手の山札がシャッフルされたとき、そのターン中、これは「SP1」になる。",
+  "bp": 7000,
+  "size": "L",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e382bde383bc",
+      "name": "ソードトルネード",
+      "text": "これが自軍エリアにある間、自分か相手の山札がシャッフルされたとき、そのターン中、これは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-588",
+  "name": "大いなる獣　レイ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはBP3000以下のユニットにアタックされない。 【術魂】相手の手札を見てもよい。そうしたとき、ＮＣを持つSユニットのカードがあれば1枚選び、そのNCの効果をこのユニットの効果として発動する。（この効果は「怒りの鬼神 ガイ」からコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "※これはBP3000以下のユニットにアタックされない。 【術魂】相手の手札を見てもよい。そうしたとき、ＮＣを持つSユニットのカードがあれば1枚選び、そのNCの効果をこのユニットの効果として発動する。（この効果は「怒りの鬼神 ガイ」からコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "アシュ",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_bp3000",
+      "text": "※これはBP3000以下のユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp3000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8a193e9ad82",
+      "name": "術魂",
+      "text": "相手の手札を見てもよい。そうしたとき、ＮＣを持つSユニットのカードがあれば1枚選び、そのNCの効果をこのユニットの効果として発動する。（この効果は「怒りの鬼神 ガイ」からコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8a193e9ad82",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

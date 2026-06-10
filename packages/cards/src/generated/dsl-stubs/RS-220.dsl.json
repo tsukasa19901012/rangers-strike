@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-220",
+  "name": "タイムグリーン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【反射バリア】次の相手ターン、自軍Sユニットとバトルした敵軍Sユニットは、バトルに勝っても撃破される。",
+  "rawText": "【反射バリア】次の相手ターン、自軍Sユニットとバトルした敵軍Sユニットは、バトルに勝っても撃破される。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "グリーン",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "named_e58f8de5b084",
+      "name": "反射バリア",
+      "text": "次の相手ターン、自軍Sユニットとバトルした敵軍Sユニットは、バトルに勝っても撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58f8de5b084",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

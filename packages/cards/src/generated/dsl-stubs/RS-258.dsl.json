@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-258",
+  "name": "アオレンジャー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【ブルーチェリー】敵軍コマンドゾーンからホールド状態のカードを1枚選び、持ち主のパワーゾーンに送ってもよい。（この効果は特徴「グリーン」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "【ブルーチェリー】敵軍コマンドゾーンからホールド状態のカードを1枚選び、持ち主のパワーゾーンに送ってもよい。（この効果は特徴「グリーン」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e38396e383ab",
+      "name": "ブルーチェリー",
+      "text": "敵軍コマンドゾーンからホールド状態のカードを1枚選び、持ち主のパワーゾーンに送ってもよい。（この効果は特徴「グリーン」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-639",
+  "name": "ネジイエロー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【ネジスリング】特徴「イエロー」を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "【ネジスリング】特徴「イエロー」を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "イエロー",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e3838de382b8",
+      "name": "ネジスリング",
+      "text": "特徴「イエロー」を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838de382b8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

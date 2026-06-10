@@ -1,7 +1,10 @@
 import { getOnAttackNamedEffect, getJointLNamedEffect } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
+import { getCostWindowMetadata } from "../../core/costWindow";
+import { hasTurnRuleModifier } from "../../core/scopedModifiers";
 import { findInZone, opponent, updatePlayer } from "../../core/helpers";
+import { TURN_RULE_IDS } from "../../types/scopedModifiers";
 import { buildLogEntry } from "../../log/formatLog";
 import {
   collectFieldUnitIds,
@@ -91,7 +94,10 @@ export function legend3UsePrintedDefenderBp(
     pending.attackerInstanceId,
   );
   if (!attacker || !isSmallUnit(state.definitions, attacker.card.cardId)) return false;
-  return !!state.players[pending.attackerPlayerId].turnModifiers?.superDynamiteActive;
+  return hasTurnRuleModifier(
+    state.players[pending.attackerPlayerId],
+    TURN_RULE_IDS.SUPER_DYNAMITE,
+  );
 }
 
 export function resolveLegend3EnterBattle(
@@ -104,7 +110,9 @@ export function resolveLegend3EnterBattle(
 
   switch (effectId) {
     case "anti_bio_cannon": {
-      const discarded = state.players[playerId].battleEntryDiscardedCardId;
+      const discarded =
+        getCostWindowMetadata(state.players[playerId], "battle_entry_rush_discard")
+          ?.discardedCardId;
       if (discarded !== "RS-079") return { state, logs: [] };
       const player = state.players[playerId];
       const battle = player.battle.map((c) =>

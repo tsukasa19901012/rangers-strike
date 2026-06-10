@@ -1,0 +1,80 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-064",
+  "name": "要塞ワンセブン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※ウイング ※これはバトルエリアに出られない。 【要塞能力】これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、自分の手札を1枚捨札にしてもよい。そうしたとき、捨札にしたカードの必要パワーの数字以下の必要パワーの数字を持ち、特徴「メカ」を持つカードを自軍捨札から1枚選び手札に加える。",
+  "rawText": "※ウイング ※これはバトルエリアに出られない。 【要塞能力】これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、自分の手札を1枚捨札にしてもよい。そうしたとき、捨札にしたカードの必要パワーの数字以下の必要パワーの数字を持ち、特徴「メカ」を持つカードを自軍捨札から1枚選び手札に加える。",
+  "bp": 5000,
+  "size": "L",
+  "features": [
+    "メカ",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_cannot_enter_battle",
+      "text": "※これはバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8a681e5a19e",
+      "name": "要塞能力",
+      "text": "これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、自分の手札を1枚捨札にしてもよい。そうしたとき、捨札にしたカードの必要パワーの数字以下の必要パワーの数字を持ち、特徴「メカ」を持つカードを自軍捨札から1枚選び手札に加える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8a681e5a19e",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    },
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出られない。",
+      "rule": "cannot_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

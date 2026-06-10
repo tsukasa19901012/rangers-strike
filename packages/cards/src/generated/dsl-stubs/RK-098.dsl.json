@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-098",
+  "name": "クルーザー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これにライドしているユニットはBP+1000される。 【水中走行】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒ 自軍山札の下から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい（コマンドゾーンに置けるカードは通常5枚まで）。そうしたとき、相手も同じようにしてもよい。",
+  "rawText": "※これにライドしているユニットはBP+1000される。 【水中走行】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒ 自軍山札の下から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい（コマンドゾーンに置けるカードは通常5枚まで）。そうしたとき、相手も同じようにしてもよい。",
+  "effects": [
+    {
+      "id": "unnamed_ride_bp_boost_1000",
+      "text": "※これにライドしているユニットはBP+1000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_1000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6b0b4e4b8ad",
+      "name": "水中走行",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒ 自軍山札の下から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい（コマンドゾーンに置けるカードは通常5枚まで）。そうしたとき、相手も同じようにしてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6b0b4e4b8ad",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットはBP+1000される。",
+      "rule": "ride_bp_boost_1000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

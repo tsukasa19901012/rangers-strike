@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-287",
+  "name": "剛龍神",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "8+",
+  "text": "合体―守護獣ドラゴンシーザー＋守護獣ジュウマンモス＋守護獣トリケラトプス＋守護獣サーベルタイガー 【超爆裂龍神突き】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP8000以下のユニットを1体選び撃破してもよい。そうしたとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する。",
+  "rawText": "合体―守護獣ドラゴンシーザー＋守護獣ジュウマンモス＋守護獣トリケラトプス＋守護獣サーベルタイガー 【超爆裂龍神突き】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP8000以下のユニットを1体選び撃破してもよい。そうしたとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する。",
+  "bp": 14000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "恐竜",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e8b685e78886",
+      "name": "超爆裂龍神突き",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP8000以下のユニットを1体選び撃破してもよい。そうしたとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8b685e78886",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

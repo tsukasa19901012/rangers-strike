@@ -1,0 +1,26 @@
+{
+  "id": "RS-017",
+  "effects": [
+    {
+      "id": "ki_power",
+      "name": "RS-017",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "s_bp_plus_per_released_command_on_opponent_turn",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

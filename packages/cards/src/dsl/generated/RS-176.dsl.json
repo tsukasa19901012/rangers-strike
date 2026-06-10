@@ -1,0 +1,57 @@
+{
+  "id": "RS-176",
+  "name": "ダイタンケン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "SR",
+  "expansion": "legend3",
+  "powerCost": "5+",
+  "bp": 12000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―ゴーゴードリル＋ゴーゴーショベル＋ゴーゴーミキサー＋ゴーゴークレーン＋ゴーゴージェット【大突撃】これをラッシュしたとき、敵軍Lユニットを1体選んで撃破してもよい。そうして撃破したLユニットが捨札になったとき、相手はそのLユニットの合体に必要なユニットのカードを捨札から探して手札に戻す。",
+  "rawText": "合体―ゴーゴードリル＋ゴーゴーショベル＋ゴーゴーミキサー＋ゴーゴークレーン＋ゴーゴージェット【大突撃】これをラッシュしたとき、敵軍Lユニットを1体選んで撃破してもよい。そうして撃破したLユニットが捨札になったとき、相手はそのLユニットの合体に必要なユニットのカードを捨札から探して手札に戻す。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend3/RS-176.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-176.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ゴーゴードリル＋ゴーゴーショベル＋ゴーゴーミキサー＋ゴーゴークレーン＋ゴーゴージェット",
+      "partnerCardIds": [
+        "RS-171",
+        "RS-172",
+        "RS-173",
+        "RS-174",
+        "RS-177"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "great_assault",
+      "name": "大突撃",
+      "text": "これをラッシュしたとき、敵軍Lユニットを1体選んで撃破してもよい。そうして撃破したLユニットが捨札になったとき、相手はそのLユニットの合体に必要なユニットのカードを捨札から探して手札に戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "great_assault"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

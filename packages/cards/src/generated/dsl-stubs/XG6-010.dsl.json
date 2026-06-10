@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-010",
+  "name": "グレートタイタン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※ブレイカー 【タイタンノバ】自軍ターン中、これがバトルエリアに出たとき、カード名に「タイタン」を含む自軍コマンドか追加条件を持つオモテ向きの自軍パワーを、2枚まで選び捨札にしてもよい。そうしたとき、捨札にした枚数と同じ数だけ、相手にダメージを与える。",
+  "rawText": "※ブレイカー 【タイタンノバ】自軍ターン中、これがバトルエリアに出たとき、カード名に「タイタン」を含む自軍コマンドか追加条件を持つオモテ向きの自軍パワーを、2枚まで選び捨札にしてもよい。そうしたとき、捨札にした枚数と同じ数だけ、相手にダメージを与える。",
+  "bp": 16000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍「フラッシュタイタン」１体と「タイタンボーイ」１体をパワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_breaker",
+      "text": "※ブレイカー",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "breaker",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382bfe382a4",
+      "name": "タイタンノバ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、カード名に「タイタン」を含む自軍コマンドか追加条件を持つオモテ向きの自軍パワーを、2枚まで選び捨札にしてもよい。そうしたとき、捨札にした枚数と同じ数だけ、相手にダメージを与える。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382bfe382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブレイカー",
+      "rule": "breaker"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

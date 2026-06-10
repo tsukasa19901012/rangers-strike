@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-035",
+  "name": "獅子ディスク",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "自軍ラッシュエリアから、MAを持つ自軍Sユニットを１体選ぶ。そうしたとき、選んだユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "自軍ラッシュエリアから、MAを持つ自軍Sユニットを１体選ぶ。そうしたとき、選んだユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "effects": [
+    {
+      "id": "named_e78d85e5ad90",
+      "name": "獅子ディスク",
+      "text": "自軍ラッシュエリアから、MAを持つ自軍Sユニットを１体選ぶ。そうしたとき、選んだユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "fallback_handler",
+          "effectId": "named_e78d85e5ad90"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "hybrid",
+    "handler": "typescript",
+    "testGenerated": true
+  }
+}

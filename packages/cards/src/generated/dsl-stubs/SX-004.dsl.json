@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SX-004",
+  "name": "ハイパーゴーオンレッド",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※これは特徴「車両」を持つビークルにライドできる。 【音速の赤き侍】「SP1」 敵軍バトルエリアから、ライドされている敵軍ビークルを1体選び、持ち主のパワーゾーンに送る。 （この効果は、ライドオフしたときナンバーに関係なく発動する）",
+  "rawText": "※これは特徴「車両」を持つビークルにライドできる。 【音速の赤き侍】「SP1」 敵軍バトルエリアから、ライドされている敵軍ビークルを1体選び、持ち主のパワーゾーンに送る。 （この効果は、ライドオフしたときナンバーに関係なく発動する）",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "レッド",
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは特徴「車両」を持つビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "can_ride_vehicle_named_e8bb8ae4b8a1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e99fb3e9809f",
+      "name": "音速の赤き侍",
+      "text": "「SP1」 敵軍バトルエリアから、ライドされている敵軍ビークルを1体選び、持ち主のパワーゾーンに送る。 （この効果は、ライドオフしたときナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

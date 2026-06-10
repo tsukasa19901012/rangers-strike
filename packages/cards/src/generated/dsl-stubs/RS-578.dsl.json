@@ -1,0 +1,71 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-578",
+  "name": "レジェンドマジグリーンRA",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "10-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「レジェンドマジグリーン」のカードを1枚選び、自軍ラッシュエリアに出す。 【岩の装甲】これが自軍バトルエリアにある間、敵軍ターン中、「レジェンドマジグリーンRA」以外の特徴「魔法」を持つ自軍Sユニットはアタックされない。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「レジェンドマジグリーン」のカードを1枚選び、自軍ラッシュエリアに出す。 【岩の装甲】これが自軍バトルエリアにある間、敵軍ターン中、「レジェンドマジグリーンRA」以外の特徴「魔法」を持つ自軍Sユニットはアタックされない。",
+  "bp": 6500,
+  "size": "S",
+  "features": [
+    "グリーン",
+    "男",
+    "魔法",
+    "レジェンドフォーム",
+    "ロックアーマー"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「レジェンドマジグリーン」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e5b2a9e381ae",
+      "name": "岩の装甲",
+      "text": "これが自軍バトルエリアにある間、敵軍ターン中、「レジェンドマジグリーンRA」以外の特徴「魔法」を持つ自軍Sユニットはアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5b2a9e381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-078",
+  "name": "マシンハードボイルダー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「ダブルドライバー」を持つ自軍コマンドをホールドしてから、これを自軍ラッシュエリアに出してもよい。 【リモコン操作】特徴「ダブルドライバー」を持つ自軍ユニットがあれば、このビークルはライドされていなくてもバトルエリアに出ることができる。",
+  "rawText": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「ダブルドライバー」を持つ自軍コマンドをホールドしてから、これを自軍ラッシュエリアに出してもよい。 【リモコン操作】特徴「ダブルドライバー」を持つ自軍ユニットがあれば、このビークルはライドされていなくてもバトルエリアに出ることができる。",
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「ダブルドライバー」を持つ自軍コマンドをホールドしてから、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383aae383a2",
+      "name": "リモコン操作",
+      "text": "特徴「ダブルドライバー」を持つ自軍ユニットがあれば、このビークルはライドされていなくてもバトルエリアに出ることができる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383aae383a2",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

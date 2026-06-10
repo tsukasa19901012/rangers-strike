@@ -1,0 +1,41 @@
+{
+  "id": "RS-104",
+  "name": "アバレイエロー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 3,
+  "text": "【プテラダガー】これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "rawText": "【プテラダガー】これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "features": [
+    "イエロー",
+    "女"
+  ],
+  "imageUrl": "/cards/legend2/RS-104.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-104.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "ptera_dagger",
+      "name": "プテラダガー",
+      "text": "これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "ptera_dagger"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

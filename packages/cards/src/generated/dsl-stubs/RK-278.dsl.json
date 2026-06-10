@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-278",
+  "name": "仮面ライダーナイト（2nd）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "※これは自軍捨札に特徴「女」を持つユニットカードがあれば次の能力を得る⇒レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【飛翔斬】「ダークウイング」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、特徴の数が1番少ないSユニットを1体選び撃破する。",
+  "rawText": "※これは自軍捨札に特徴「女」を持つユニットカードがあれば次の能力を得る⇒レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【飛翔斬】「ダークウイング」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、特徴の数が1番少ないSユニットを1体選び撃破する。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは自軍捨札に特徴「女」を持つユニットカードがあれば次の能力を得る⇒レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9a39be7bf94e696ac",
+      "name": "飛翔斬",
+      "text": "「ダークウイング」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、特徴の数が1番少ないSユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

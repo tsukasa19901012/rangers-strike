@@ -1,0 +1,92 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-090",
+  "name": "スーパーブルービート",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※レジスト ※これが撃破されて捨札になったとき、自軍捨札から「ブルービート」のカードを1枚選び、自軍ラッシュエリアに出す。 【スーパーファイナルブロー】 これをラッシュしたとき、次の効果を発動できる⇒ユニット1体につきBP2000として、特徴「昆虫」を持つ自軍ユニットの数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破する。",
+  "rawText": "※レジスト ※これが撃破されて捨札になったとき、自軍捨札から「ブルービート」のカードを1枚選び、自軍ラッシュエリアに出す。 【スーパーファイナルブロー】 これをラッシュしたとき、次の効果を発動できる⇒ユニット1体につきBP2000として、特徴「昆虫」を持つ自軍ユニットの数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破する。",
+  "bp": 5500,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "メカ",
+    "昆虫",
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「ブルービート」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e383bc",
+      "name": "スーパーファイナルブロー",
+      "text": "これをラッシュしたとき、次の効果を発動できる⇒ユニット1体につきBP2000として、特徴「昆虫」を持つ自軍ユニットの数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

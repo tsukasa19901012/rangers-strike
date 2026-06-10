@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-066",
+  "name": "マシンハードスプラッシャー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これにライドしているユニットは、アタックするときBP+1500される。 【水中魚雷】これをラッシュしたとき、敵軍山札の上から3枚をオモテにしてよい。そうしたとき、オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す。",
+  "rawText": "※これにライドしているユニットは、アタックするときBP+1500される。 【水中魚雷】これをラッシュしたとき、敵軍山札の上から3枚をオモテにしてよい。そうしたとき、オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す。",
+  "effects": [
+    {
+      "id": "note_bp_1500",
+      "text": "※これにライドしているユニットは、アタックするときBP+1500される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp_1500",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6b0b4e4b8ad",
+      "name": "水中魚雷",
+      "text": "これをラッシュしたとき、敵軍山札の上から3枚をオモテにしてよい。そうしたとき、オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6b0b4e4b8ad",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

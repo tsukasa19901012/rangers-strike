@@ -1,0 +1,82 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-058",
+  "name": "仮面ライダーオーズ・タカキリバ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※モーフ ※ウイング 【虚空より狙う鎌】自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、捨札にしたコマンドと同じカテゴリを持つ敵軍コマンドを1つ選びゲームから除外する。",
+  "rawText": "※モーフ ※ウイング 【虚空より狙う鎌】自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、捨札にしたコマンドと同じカテゴリを持つ敵軍コマンドを1つ選びゲームから除外する。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "オーズドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8999ae7a9ba",
+      "name": "虚空より狙う鎌",
+      "text": "自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、捨札にしたコマンドと同じカテゴリを持つ敵軍コマンドを1つ選びゲームから除外する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8999ae7a9ba",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    },
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

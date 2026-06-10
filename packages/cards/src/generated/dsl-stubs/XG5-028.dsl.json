@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-028",
+  "name": "バーニングレジェンドダイボイジャー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "【スーパーサーティーセンタイソウル】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒作品名に「戦隊」を含む、DAを持たない自軍捨札の枚数を数え、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "【スーパーサーティーセンタイソウル】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒作品名に「戦隊」を含む、DAを持たない自軍捨札の枚数を数え、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 20000,
+  "size": "XL",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b9e383bc",
+      "name": "スーパーサーティーセンタイソウル",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒作品名に「戦隊」を含む、DAを持たない自軍捨札の枚数を数え、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

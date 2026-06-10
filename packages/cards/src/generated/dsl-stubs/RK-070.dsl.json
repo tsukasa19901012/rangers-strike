@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-070",
+  "name": "仮面ライダーカブトMF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これはアタックされるときBP+4000される。 【アバランチブレイク】敵軍Sユニットの数が自軍Sユニットの数より5体以上多いとき、自軍Sユニットと同じ数になるまで敵軍Sユニットを選び、選んだユニットを持ち主のパワーゾーンに送る",
+  "rawText": "※これはアタックされるときBP+4000される。 【アバランチブレイク】敵軍Sユニットの数が自軍Sユニットの数より5体以上多いとき、自軍Sユニットと同じ数になるまで敵軍Sユニットを選び、選んだユニットを持ち主のパワーゾーンに送る",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_attacked_bp_boost_4000",
+      "text": "※これはアタックされるときBP+4000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "attacked_bp_boost_4000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e38390",
+      "name": "アバランチブレイク",
+      "text": "敵軍Sユニットの数が自軍Sユニットの数より5体以上多いとき、自軍Sユニットと同じ数になるまで敵軍Sユニットを選び、選んだユニットを持ち主のパワーゾーンに送る",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e38390",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされるときBP+4000される。",
+      "rule": "attacked_bp_boost_4000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

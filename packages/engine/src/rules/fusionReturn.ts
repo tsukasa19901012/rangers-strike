@@ -6,6 +6,7 @@ import {
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { removeAt, updatePlayer } from "../core/helpers";
+import { clearCostWindow } from "../core/costWindow";
 import {
   autoHoldForBattleEntry,
   canMoveUnitToBattle,
@@ -79,7 +80,7 @@ export function returnFusionPartnersFromDiscard(
       break;
     }
     battle = [...battle, { ...card, battleActed: false }];
-    owner = { ...owner, battleEntryHoldReady: false };
+    owner = clearCostWindow(owner, "battle_entry_hold");
     returned += 1;
   }
 

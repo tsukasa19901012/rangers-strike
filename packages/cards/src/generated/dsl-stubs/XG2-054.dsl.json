@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-054",
+  "name": "アビスハンマー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【土中からの奇襲】これが自軍捨札にある間、自軍ラッシュフェイズ中、自軍ダメージの数がこれの必要パワーの数字以上あれば、WBを持つ自軍コマンドを2つホールドしてから、これを自軍ラッシュエリアに出してもよい。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【土中からの奇襲】これが自軍捨札にある間、自軍ラッシュフェイズ中、自軍ダメージの数がこれの必要パワーの数字以上あれば、WBを持つ自軍コマンドを2つホールドしてから、これを自軍ラッシュエリアに出してもよい。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e59c9fe4b8ad",
+      "name": "土中からの奇襲",
+      "text": "これが自軍捨札にある間、自軍ラッシュフェイズ中、自軍ダメージの数がこれの必要パワーの数字以上あれば、WBを持つ自軍コマンドを2つホールドしてから、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e59c9fe4b8ad",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

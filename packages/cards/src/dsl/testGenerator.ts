@@ -135,7 +135,7 @@ export function generateCardTestFile(card: CardDocument): string {
  * Regenerate: npm run generate-card-tests -- ${card.id}
  */
 import { describe, it, expect } from "vitest";
-import { getDefaultCardRegistry } from "../dsl/registry";
+import { getDefaultCardRegistry } from "../registry";
 
 describe("${card.id} ${card.name}", () => {
   const registry = getDefaultCardRegistry();
@@ -162,8 +162,8 @@ export function generateRegistrySmokeTest(registry: CardRegistry): string {
  * Cards: ${snap.cards.size} | Effects: ${snap.effectsById.size}
  */
 import { describe, it, expect } from "vitest";
-import { createCardRegistryFromCatalog } from "../dsl/registry";
-import { validateCardDocument } from "../dsl/validator";
+import { createCardRegistryFromCatalog } from "../registry";
+import { validateCardDocument } from "../validator";
 
 describe("CardRegistry smoke", () => {
   const registry = createCardRegistryFromCatalog();

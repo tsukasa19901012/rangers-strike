@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-049",
+  "name": "スカイライダー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※ウイング ※これはウイングを持たないユニットにアタックされない。 【セイリングジャンプ】敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードがSユニットのカードなら持ち主の山札の下に、それ以外なら上に戻す。",
+  "rawText": "※ウイング ※これはウイングを持たないユニットにアタックされない。 【セイリングジャンプ】敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードがSユニットのカードなら持ち主の山札の下に、それ以外なら上に戻す。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはウイングを持たないユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382bbe382a4",
+      "name": "セイリングジャンプ",
+      "text": "敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードがSユニットのカードなら持ち主の山札の下に、それ以外なら上に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382bbe382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SK-003",
+  "name": "仮面ライダーファム（2nd）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【復讐の女詐欺師】これが自軍バトルエリアにある間、敵軍バトルフェイズ中、ホールド状態の敵軍コマンドが1つ以上あれば、特徴「男」を持つ敵軍Sユニットは、次の制限を受ける⇒アタックもストライクもすることができない。",
+  "rawText": "【復讐の女詐欺師】これが自軍バトルエリアにある間、敵軍バトルフェイズ中、ホールド状態の敵軍コマンドが1つ以上あれば、特徴「男」を持つ敵軍Sユニットは、次の制限を受ける⇒アタックもストライクもすることができない。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "女",
+    "ミラーライダー",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "named_e5bea9e8ae90",
+      "name": "復讐の女詐欺師",
+      "text": "これが自軍バトルエリアにある間、敵軍バトルフェイズ中、ホールド状態の敵軍コマンドが1つ以上あれば、特徴「男」を持つ敵軍Sユニットは、次の制限を受ける⇒アタックもストライクもすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5bea9e8ae90",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

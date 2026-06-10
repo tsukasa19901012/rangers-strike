@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-046",
+  "name": "腑破十臓",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはレジストを持たないBP3000以下のユニットにアタックできない。 ※これはホールド状態のときBP-3000される。 【妖刀・裏正】これが敵軍ユニットをバトルで撃破した時、撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
+  "rawText": "※これはレジストを持たないBP3000以下のユニットにアタックできない。 ※これはホールド状態のときBP-3000される。 【妖刀・裏正】これが敵軍ユニットをバトルで撃破した時、撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
+  "bp": 6000,
+  "size": "S",
+  "features": [
+    "妖怪",
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "note_bp3000",
+      "text": "※これはレジストを持たないBP3000以下のユニットにアタックできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp3000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_bp_3000",
+      "text": "※これはホールド状態のときBP-3000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp_3000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a696e58880",
+      "name": "妖刀・裏正",
+      "text": "これが敵軍ユニットをバトルで撃破した時、撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

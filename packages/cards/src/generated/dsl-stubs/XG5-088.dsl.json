@@ -1,0 +1,39 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-088",
+  "name": "カバドス",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【力まかせ】これがバトルするとき、そのバトルは本来のBPで行う。",
+  "rawText": "【力まかせ】これがバトルするとき、そのバトルは本来のBPで行う。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "メカ"
+  ],
+  "effects": [
+    {
+      "id": "named_e58a9be381be",
+      "name": "力まかせ",
+      "text": "これがバトルするとき、そのバトルは本来のBPで行う。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58a9be381be",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

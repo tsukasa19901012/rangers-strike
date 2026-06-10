@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-442",
+  "name": "バトルフランス",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは特徴「女」を持つユニットにアタックされない。 【スパニッシュダンス】このターン、これは、特徴「女」を持つユニット1体につきBP+1000される。また、これがBP5000以上のとき、これの次に並ぶ特徴「女」を持つ自軍SユニットはSP1になる。",
+  "rawText": "※これは特徴「女」を持つユニットにアタックされない。 【スパニッシュダンス】このターン、これは、特徴「女」を持つユニット1体につきBP+1000される。また、これがBP5000以上のとき、これの次に並ぶ特徴「女」を持つ自軍SユニットはSP1になる。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは特徴「女」を持つユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e38391",
+      "name": "スパニッシュダンス",
+      "text": "このターン、これは、特徴「女」を持つユニット1体につきBP+1000される。また、これがBP5000以上のとき、これの次に並ぶ特徴「女」を持つ自軍SユニットはSP1になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e38391",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

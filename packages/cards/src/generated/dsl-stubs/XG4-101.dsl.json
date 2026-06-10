@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-101",
+  "name": "バイクロッサー・ギン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【ブレーザーカノン】これがライドしていれば、相手に1点ダメージを与える。",
+  "rawText": "【ブレーザーカノン】これがライドしていれば、相手に1点ダメージを与える。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": "RC",
+  "features": [
+    "メカ",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e38396e383ac",
+      "name": "ブレーザーカノン",
+      "text": "これがライドしていれば、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

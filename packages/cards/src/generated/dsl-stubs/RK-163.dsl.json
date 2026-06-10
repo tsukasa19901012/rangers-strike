@@ -1,0 +1,83 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-163",
+  "name": "オルタナティブ・ゼロ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これはライドオフしたときストライクできない。 ※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【無意識の記憶力】敵軍捨札からユニットカードを1枚選んでもよい。そうしたとき、選んだカードと同じカード名の敵軍ユニットを1体選び、撃破する。",
+  "rawText": "※これはライドオフしたときストライクできない。 ※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【無意識の記憶力】敵軍捨札からユニットカードを1枚選んでもよい。そうしたとき、選んだカードと同じカード名の敵軍ユニットを1体選び、撃破する。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": "RC",
+  "features": [
+    "男",
+    "ミラーライダー",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_strike_after_rideoff",
+      "text": "※これはライドオフしたときストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_after_rideoff",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e784a1e6848f",
+      "name": "無意識の記憶力",
+      "text": "敵軍捨札からユニットカードを1枚選んでもよい。そうしたとき、選んだカードと同じカード名の敵軍ユニットを1体選び、撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e784a1e6848f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはライドオフしたときストライクできない。",
+      "rule": "no_strike_after_rideoff"
+    },
+    {
+      "kind": "note",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

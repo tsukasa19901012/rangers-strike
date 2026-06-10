@@ -1,0 +1,68 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-136",
+  "name": "仮面ライダードレイクRF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※これはアタックされる以外では相手に選ばれない。 【ライダーシューティング】これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードを見て、その枚数以下の必要パワーの数値を持つ追加条件を持たない敵軍ユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "※これはアタックされる以外では相手に選ばれない。 【ライダーシューティング】これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードを見て、その枚数以下の必要パワーの数値を持つ追加条件を持たない敵軍ユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍「仮面ライダードレイクMF」1体をパワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_not_selectable_except_attack",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "not_selectable_except_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライダーシューティング",
+      "text": "これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードを見て、その枚数以下の必要パワーの数値を持つ追加条件を持たない敵軍ユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "rule": "not_selectable_except_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

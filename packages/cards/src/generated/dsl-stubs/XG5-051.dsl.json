@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-051",
+  "name": "仮面ライダーカブトHF（XG5）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 7,
+  "text": "※これは相手に選ばれない。 ※これは、カード名に「カブト」「ザビー」「ドレイク」「サソード」を含むオモテ向きの自軍パワーがそれぞれあれば、SP1になる。 【天の道】これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、OTを持つ常駐オペレーションのカードを1枚選び自軍常駐置き場に配置してもよい。",
+  "rawText": "※これは相手に選ばれない。 ※これは、カード名に「カブト」「ザビー」「ドレイク」「サソード」を含むオモテ向きの自軍パワーがそれぞれあれば、SP1になる。 【天の道】これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、OTを持つ常駐オペレーションのカードを1枚選び自軍常駐置き場に配置してもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_not_selectable",
+      "text": "※これは相手に選ばれない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "not_selectable",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193_2",
+      "text": "※これは、カード名に「カブト」「ザビー」「ドレイク」「サソード」を含むオモテ向きの自軍パワーがそれぞれあれば、SP1になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a4a9e381ae",
+      "name": "天の道",
+      "text": "これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、OTを持つ常駐オペレーションのカードを1枚選び自軍常駐置き場に配置してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4a9e381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

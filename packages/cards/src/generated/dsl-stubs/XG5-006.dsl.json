@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-006",
+  "name": "ゴーグルロボ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―ゴーグルジェット＋ゴーグルタンク＋ゴーグルダンプ ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍パワーが5以上あればこれを捨札にしてから、必要パワーの数字が4以下の自軍捨札を1枚選び手札に加えてもよい。 【ストップ・ザ・バトル】これをラッシュしたとき、次の効果を発動する⇒次の相手ターン、BP9000以下のユニットはアタックすることができない。",
+  "rawText": "合体―ゴーグルジェット＋ゴーグルタンク＋ゴーグルダンプ ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍パワーが5以上あればこれを捨札にしてから、必要パワーの数字が4以下の自軍捨札を1枚選び手札に加えてもよい。 【ストップ・ザ・バトル】これをラッシュしたとき、次の効果を発動する⇒次の相手ターン、BP9000以下のユニットはアタックすることができない。",
+  "bp": 9000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍パワーが5以上あればこれを捨札にしてから、必要パワーの数字が4以下の自軍捨札を1枚選び手札に加えてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e38388",
+      "name": "ストップ・ザ・バトル",
+      "text": "これをラッシュしたとき、次の効果を発動する⇒次の相手ターン、BP9000以下のユニットはアタックすることができない。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e38388",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

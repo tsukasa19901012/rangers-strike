@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-065",
+  "name": "ドラフトブルース",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※スクラム 【トライキャノン】自軍ラッシュエリアから、特徴「メカ」を持つビークルを1体選んでもよい。そうしたとき、このターン、これは選んだビークルの必要パワーの数字1ごとにBP+1000される。",
+  "rawText": "※スクラム 【トライキャノン】自軍ラッシュエリアから、特徴「メカ」を持つビークルを1体選んでもよい。そうしたとき、このターン、これは選んだビークルの必要パワーの数字1ごとにBP+1000される。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "メカ",
+    "ブルー",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_scrum",
+      "text": "※スクラム",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "scrum",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38388e383a9",
+      "name": "トライキャノン",
+      "text": "自軍ラッシュエリアから、特徴「メカ」を持つビークルを1体選んでもよい。そうしたとき、このターン、これは選んだビークルの必要パワーの数字1ごとにBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38388e383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※スクラム",
+      "rule": "scrum"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

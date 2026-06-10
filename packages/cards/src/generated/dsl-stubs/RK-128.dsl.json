@@ -1,0 +1,77 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-128",
+  "name": "仮面ライダーレンゲル",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはライドオフしたときストライクできない。 ※これが撃破されて捨札になるとき、かわりにダークアライアンスを持つ自軍Sユニットを1体選び捨札にしてもよい。 【レンゲルラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードがすべて、BPの下三桁が500の追加条件を持たないユニットカードなら、そのカードをすべて自軍ラッシュエリアに出す。",
+  "rawText": "※これはライドオフしたときストライクできない。 ※これが撃破されて捨札になるとき、かわりにダークアライアンスを持つ自軍Sユニットを1体選び捨札にしてもよい。 【レンゲルラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードがすべて、BPの下三桁が500の追加条件を持たないユニットカードなら、そのカードをすべて自軍ラッシュエリアに出す。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_strike_after_rideoff",
+      "text": "※これはライドオフしたときストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_after_rideoff",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になるとき、かわりにダークアライアンスを持つ自軍Sユニットを1体選び捨札にしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383ace383b3",
+      "name": "レンゲルラウザー",
+      "text": "自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードがすべて、BPの下三桁が500の追加条件を持たないユニットカードなら、そのカードをすべて自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ace383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはライドオフしたときストライクできない。",
+      "rule": "no_strike_after_rideoff"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

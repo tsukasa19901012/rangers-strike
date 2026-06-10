@@ -980,6 +980,10 @@ export function pickCpuFallbackAction(
 
   const preferTypes: GameAction["type"][] = [
     "skip_effect_choice",
+    "pass_register",
+    "use_register",
+    "pass_chase",
+    "resolve_chase",
     "pass_battle_entry",
     "pass_battle_reaction",
     "pass_strike_reaction",

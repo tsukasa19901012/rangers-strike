@@ -1,0 +1,96 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-052",
+  "name": "仮面ライダーオーズ・タジャドルコンボ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※ブレイカー ※ウイング ※これは、ウイングでアタックするときBP+2000される。 【タジャスピナー】これが自軍エリアにある間、WBを持つ自軍コマンドが3つ以上あれば、自軍バトルフェイズごとに1度だけ、敵軍Sユニットを1体選び、これとバトルさせてもよい。（敵軍捨札が7枚以上あれば、敵軍Sユニットを1体選ぶかわりに、敵軍ユニットを1体選んでもよい）",
+  "rawText": "※ブレイカー ※ウイング ※これは、ウイングでアタックするときBP+2000される。 【タジャスピナー】これが自軍エリアにある間、WBを持つ自軍コマンドが3つ以上あれば、自軍バトルフェイズごとに1度だけ、敵軍Sユニットを1体選び、これとバトルさせてもよい。（敵軍捨札が7枚以上あれば、敵軍Sユニットを1体選ぶかわりに、敵軍ユニットを1体選んでもよい）",
+  "bp": 4500,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "オーズドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_breaker",
+      "text": "※ブレイカー",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "breaker",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_bp_2000",
+      "text": "※これは、ウイングでアタックするときBP+2000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp_2000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382bfe382b8",
+      "name": "タジャスピナー",
+      "text": "これが自軍エリアにある間、WBを持つ自軍コマンドが3つ以上あれば、自軍バトルフェイズごとに1度だけ、敵軍Sユニットを1体選び、これとバトルさせてもよい。（敵軍捨札が7枚以上あれば、敵軍Sユニットを1体選ぶかわりに、敵軍ユニットを1体選んでもよい）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382bfe382b8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブレイカー",
+      "rule": "breaker"
+    },
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

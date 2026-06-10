@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-056",
+  "name": "水のエル",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【アギトの殲滅】これをラッシュしたとき、カテゴリにMAを持つ敵軍Sユニットを1体選び撃破してもよい。",
+  "rawText": "【アギトの殲滅】これをラッシュしたとき、カテゴリにMAを持つ敵軍Sユニットを1体選び撃破してもよい。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "アンノウン",
+    "エルロード",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "named_e382a2e382ae",
+      "name": "アギトの殲滅",
+      "text": "これをラッシュしたとき、カテゴリにMAを持つ敵軍Sユニットを1体選び撃破してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e382ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

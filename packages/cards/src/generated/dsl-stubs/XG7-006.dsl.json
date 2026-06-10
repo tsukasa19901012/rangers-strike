@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-006",
+  "name": "ギンガピンク（XG7）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「獣」を持つ自軍ビークルか、特徴「ブラック」を持つ自軍ユニットがあれば、これを自軍ラッシュエリアに出してもよい。 【花一心】「SP1」",
+  "rawText": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「獣」を持つ自軍ビークルか、特徴「ブラック」を持つ自軍ユニットがあれば、これを自軍ラッシュエリアに出してもよい。 【花一心】「SP1」",
+  "bp": 500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「獣」を持つ自軍ビークルか、特徴「ブラック」を持つ自軍ユニットがあれば、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e88ab1e4b880",
+      "name": "花一心",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

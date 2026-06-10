@@ -1,0 +1,58 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-045",
+  "name": "チャージアップストロンガー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが自軍エリアにある間、自分がターンを終えるとき、自軍捨札の「仮面ライダーストロンガー」のカードとこれを置き換える。置き換えられなければこれを捨札にする。 【超電稲妻キック】このターン、これがSPが空欄ではないユニットをバトルで撃破したとき、相手に1点ダメージを与える。",
+  "rawText": "※これが自軍エリアにある間、自分がターンを終えるとき、自軍捨札の「仮面ライダーストロンガー」のカードとこれを置き換える。置き換えられなければこれを捨札にする。 【超電稲妻キック】このターン、これがSPが空欄ではないユニットをバトルで撃破したとき、相手に1点ダメージを与える。",
+  "bp": 6500,
+  "size": "S",
+  "sp": 1,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間",
+    "超電子ダイナモ"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自軍エリアにある間、自分がターンを終えるとき、自軍捨札の「仮面ライダーストロンガー」のカードとこれを置き換える。置き換えられなければこれを捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8b685e99bbb",
+      "name": "超電稲妻キック",
+      "text": "このターン、これがSPが空欄ではないユニットをバトルで撃破したとき、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

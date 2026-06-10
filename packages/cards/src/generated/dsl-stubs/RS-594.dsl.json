@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-594",
+  "name": "ガンパード",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは毎ターン、可能ならバトルエリアに出る。 ※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。 【ガンパードガン】相手の手札を見ないで3枚まで選んでもよい。そうしたとき、選んだカードをお互いで見る。選んだカードの中からSユニットのカードを1枚選び、持ち主のパワーゾーンに置く。次の相手ターン、相手はターンを終えるとき、自分自身のパワーゾーンからオモテ向きのカードを1枚選び、手札に戻してもよい。",
+  "rawText": "※これは毎ターン、可能ならバトルエリアに出る。 ※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。 【ガンパードガン】相手の手札を見ないで3枚まで選んでもよい。そうしたとき、選んだカードをお互いで見る。選んだカードの中からSユニットのカードを1枚選び、持ち主のパワーゾーンに置く。次の相手ターン、相手はターンを終えるとき、自分自身のパワーゾーンからオモテ向きのカードを1枚選び、手札に戻してもよい。",
+  "bp": 2000,
+  "size": "M",
+  "comboNumber": 5,
+  "features": [
+    "車両",
+    "炎神"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_auto_battle_entry_each_turn",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_each_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_to_power_on_destroy",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "to_power_on_destroy",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382ace383b3",
+      "name": "ガンパードガン",
+      "text": "相手の手札を見ないで3枚まで選んでもよい。そうしたとき、選んだカードをお互いで見る。選んだカードの中からSユニットのカードを1枚選び、持ち主のパワーゾーンに置く。次の相手ターン、相手はターンを終えるとき、自分自身のパワーゾーンからオモテ向きのカードを1枚選び、手札に戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ace383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "rule": "auto_battle_entry_each_turn"
+    },
+    {
+      "kind": "note",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。",
+      "rule": "to_power_on_destroy"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

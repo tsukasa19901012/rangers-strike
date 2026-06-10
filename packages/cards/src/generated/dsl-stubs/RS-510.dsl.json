@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-510",
+  "name": "ゴーオンイエロー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【レーシングバレット】自分の手札から、特徴「車両」を持つユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。そうした時、相手は置いたカードの必要パワーの数字と同じ必要パワーの数字を持つ自分自身のSユニットを1体選び、自分自身のパワーゾーンに送る。",
+  "rawText": "【レーシングバレット】自分の手札から、特徴「車両」を持つユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。そうした時、相手は置いたカードの必要パワーの数字と同じ必要パワーの数字を持つ自分自身のSユニットを1体選び、自分自身のパワーゾーンに送る。",
+  "bp": 500,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "イエロー",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e383ace383bc",
+      "name": "レーシングバレット",
+      "text": "自分の手札から、特徴「車両」を持つユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。そうした時、相手は置いたカードの必要パワーの数字と同じ必要パワーの数字を持つ自分自身のSユニットを1体選び、自分自身のパワーゾーンに送る。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ace383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

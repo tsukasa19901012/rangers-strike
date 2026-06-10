@@ -1,0 +1,39 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-236",
+  "name": "ネガタロス",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ネガタロス軍団（仮）結成の野望】これが自軍エリアにある間、敵軍ラッシュフェイズ中、特徴「警察」を持つ敵軍ユニットがラッシュされたとき、次の効果を発動できる⇒自分の手札からDAを持つBP3000以下のSユニットのカードを1枚選び、ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。",
+  "rawText": "【ネガタロス軍団（仮）結成の野望】これが自軍エリアにある間、敵軍ラッシュフェイズ中、特徴「警察」を持つ敵軍ユニットがラッシュされたとき、次の効果を発動できる⇒自分の手札からDAを持つBP3000以下のSユニットのカードを1枚選び、ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "イマジン"
+  ],
+  "effects": [
+    {
+      "id": "named_e3838de382ac",
+      "name": "ネガタロス軍団（仮）結成の野望",
+      "text": "これが自軍エリアにある間、敵軍ラッシュフェイズ中、特徴「警察」を持つ敵軍ユニットがラッシュされたとき、次の効果を発動できる⇒自分の手札からDAを持つBP3000以下のSユニットのカードを1枚選び、ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838de382ac",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

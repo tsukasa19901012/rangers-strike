@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-007",
+  "name": "ドラゴンレンジャー（XG4）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはラッシュフェイズ中に自分のカードが捨札に置かれたターンにしかバトルエリアに出られない。 ※自分がターンを終えるとき、自軍捨札が5枚以上あれば、これを撃破する。 【獣奏剣】これが自軍エリアにある間、特徴「恐竜」を持つすべての自軍ユニットは、アタックするときBP+2000される。",
+  "rawText": "※これはラッシュフェイズ中に自分のカードが捨札に置かれたターンにしかバトルエリアに出られない。 ※自分がターンを終えるとき、自軍捨札が5枚以上あれば、これを撃破する。 【獣奏剣】これが自軍エリアにある間、特徴「恐竜」を持つすべての自軍ユニットは、アタックするときBP+2000される。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "グリーン",
+    "男",
+    "獣奏剣"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはラッシュフェイズ中に自分のカードが捨札に置かれたターンにしかバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe887aa",
+      "text": "※自分がターンを終えるとき、自軍捨札が5枚以上あれば、これを撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e78da3e5a58f",
+      "name": "獣奏剣",
+      "text": "これが自軍エリアにある間、特徴「恐竜」を持つすべての自軍ユニットは、アタックするときBP+2000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e78da3e5a58f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

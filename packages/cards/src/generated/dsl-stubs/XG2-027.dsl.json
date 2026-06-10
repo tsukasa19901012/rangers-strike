@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-027",
+  "name": "ギンガイエロー（XG2）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これをラッシュしたとき、ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい。 【雷一掃】「SP1」特徴「メカ」を持つ敵軍Sユニットを好きな数選びホールドしてもよい。ただし、選べるユニットの数は、リリース状態の自軍コマンドの数までとする。",
+  "rawText": "※これをラッシュしたとき、ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい。 【雷一掃】「SP1」特徴「メカ」を持つ敵軍Sユニットを好きな数選びホールドしてもよい。ただし、選べるユニットの数は、リリース状態の自軍コマンドの数までとする。",
+  "bp": 500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "イエロー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これをラッシュしたとき、ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "stack_vehicle_on_rush",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e99bb7e4b880",
+      "name": "雷一掃",
+      "text": "「SP1」特徴「メカ」を持つ敵軍Sユニットを好きな数選びホールドしてもよい。ただし、選べるユニットの数は、リリース状態の自軍コマンドの数までとする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

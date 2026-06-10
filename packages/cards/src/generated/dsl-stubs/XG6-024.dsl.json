@@ -1,0 +1,122 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-024",
+  "name": "ゴセイナイト",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※ウイング ※タクスMA ※レジスト ※これは「グランディオン」としてつかえる。 【ナイトダイナミック】「SP1」OTまたはETまたはDAを持つ敵軍Sユニットを1体選び撃破する。その後、自分の手札が1枚以下なら、これをリリースする。",
+  "rawText": "※ウイング ※タクスMA ※レジスト ※これは「グランディオン」としてつかえる。 【ナイトダイナミック】「SP1」OTまたはETまたはDAを持つ敵軍Sユニットを1体選び撃破する。その後、自分の手札が1枚以下なら、これをリリースする。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "魔法",
+    "獣",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_taxis_ma",
+      "text": "※タクスMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_alias_named_e382b0e383a9",
+      "text": "※これは「グランディオン」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_named_e382b0e383a9",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3838ae382a4",
+      "name": "ナイトダイナミック",
+      "text": "「SP1」OTまたはETまたはDAを持つ敵軍Sユニットを1体選び撃破する。その後、自分の手札が1枚以下なら、これをリリースする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    },
+    {
+      "kind": "note",
+      "text": "※タクスMA",
+      "rule": "taxis_MA"
+    },
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "fusion",
+      "text": "※これは「グランディオン」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

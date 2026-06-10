@@ -1,0 +1,42 @@
+{
+  "id": "RS-107",
+  "name": "デカブルー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 2,
+  "text": "【ディースナイパー】このターン、相手がカウンターを発動するためにホールドしたコマンドは捨札になる。",
+  "rawText": "【ディースナイパー】このターン、相手がカウンターを発動するためにホールドしたコマンドは捨札になる。",
+  "features": [
+    "ブルー",
+    "男",
+    "警察"
+  ],
+  "imageUrl": "/cards/legend2/RS-107.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-107.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "deace_sniper",
+      "name": "ディースナイパー",
+      "text": "このターン、相手がカウンターを発動するためにホールドしたコマンドは捨札になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "deace_sniper"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-072",
+  "name": "仮面ライダー威吹鬼（XG5）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※リードMA 【挫けぬ疾風】敵軍山札をシャッフルしてもよい。そうしたとき、敵軍山札の上から3枚をオモテにし、その中にDAを持つカードがあれば、このユニットをリリースする。その後、オモテにしたカードを山札の上に好きな順で戻す。",
+  "rawText": "※リードMA 【挫けぬ疾風】敵軍山札をシャッフルしてもよい。そうしたとき、敵軍山札の上から3枚をオモテにし、その中にDAを持つカードがあれば、このユニットをリリースする。その後、オモテにしたカードを山札の上に好きな順で戻す。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "猛士"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_lead_ma",
+      "text": "※リードMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e68cabe38191",
+      "name": "挫けぬ疾風",
+      "text": "敵軍山札をシャッフルしてもよい。そうしたとき、敵軍山札の上から3枚をオモテにし、その中にDAを持つカードがあれば、このユニットをリリースする。その後、オモテにしたカードを山札の上に好きな順で戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e68cabe38191",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※リードMA",
+      "rule": "lead_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

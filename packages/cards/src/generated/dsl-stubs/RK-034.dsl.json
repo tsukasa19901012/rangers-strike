@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-034",
+  "name": "ドラグレッダー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ドラグブレス】このユニットと隣り合う特徴「ミラーライダー」を持つSユニットは、バトルするときBP+2000される。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ドラグブレス】このユニットと隣り合う特徴「ミラーライダー」を持つSユニットは、バトルするときBP+2000される。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "獣",
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38389e383a9",
+      "name": "ドラグブレス",
+      "text": "このユニットと隣り合う特徴「ミラーライダー」を持つSユニットは、バトルするときBP+2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38389e383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

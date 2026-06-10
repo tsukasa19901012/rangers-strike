@@ -1,0 +1,26 @@
+{
+  "id": "RS-014",
+  "effects": [
+    {
+      "id": "five_tech",
+      "name": "RS-014",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "strike_intercept_with_s_unit",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

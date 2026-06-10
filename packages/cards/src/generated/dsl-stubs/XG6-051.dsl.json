@@ -1,0 +1,100 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-051",
+  "name": "仮面ライダー歌舞鬼（XG6）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※レジスト ※リードMA ※コールDA 【人間への絶望】これが特徴「男」または「女」を持つ敵軍ユニットとバトルするとき、これをリリースする。",
+  "rawText": "※レジスト ※リードMA ※コールDA 【人間への絶望】これが特徴「男」または「女」を持つ敵軍ユニットとバトルするとき、これをリリースする。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_lead_ma",
+      "text": "※リードMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_call_da",
+      "text": "※コールDA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_DA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4babae99693",
+      "name": "人間への絶望",
+      "text": "これが特徴「男」または「女」を持つ敵軍ユニットとバトルするとき、これをリリースする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4babae99693",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "note",
+      "text": "※リードMA",
+      "rule": "lead_MA"
+    },
+    {
+      "kind": "note",
+      "text": "※コールDA",
+      "rule": "call_DA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

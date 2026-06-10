@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-062",
+  "name": "仮面ライダーガタックRF（XG3）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※レジスト ※これはアタックされる以外では相手に選ばれない。 【ライダーキック】自軍ターン中、これがバトルエリアに出たとき、必要パワーの数字が「1」「2」「3」のオモテ向きの自軍パワーがそれぞれあれば、敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "※レジスト ※これはアタックされる以外では相手に選ばれない。 【ライダーキック】自軍ターン中、これがバトルエリアに出たとき、必要パワーの数字が「1」「2」「3」のオモテ向きの自軍パワーがそれぞれあれば、敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "bp": 3500,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_not_selectable_except_attack",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "not_selectable_except_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライダーキック",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、必要パワーの数字が「1」「2」「3」のオモテ向きの自軍パワーがそれぞれあれば、敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "note",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "rule": "not_selectable_except_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

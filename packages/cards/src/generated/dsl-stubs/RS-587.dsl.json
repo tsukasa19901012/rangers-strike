@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-587",
+  "name": "怒りの鬼神　ガイ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはBP3000以下のユニットにアタックされない。 【激しい闘争心】これ以外の自軍Sユニットを1体選び撃破してもよい。そうしたとき、相手は自分自身のユニットを1体選び撃破する。",
+  "rawText": "※これはBP3000以下のユニットにアタックされない。 【激しい闘争心】これ以外の自軍Sユニットを1体選び撃破してもよい。そうしたとき、相手は自分自身のユニットを1体選び撃破する。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "アシュ",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_bp3000",
+      "text": "※これはBP3000以下のユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp3000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6bf80e38197",
+      "name": "激しい闘争心",
+      "text": "これ以外の自軍Sユニットを1体選び撃破してもよい。そうしたとき、相手は自分自身のユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6bf80e38197",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-015",
+  "name": "ガオベアー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは自軍「ガオポーラー」があればBP+3000される。 【氷牙炎滅ベアーストライク】これが、「ガオポーラー」か特徴「人型」を持つLユニットからコンビネーションするとき、次の効果を発動できる⇒ホールド状態の敵軍ユニットを1体選び撃破する。また、自軍バトルエリアに「ガオポーラー」と特徴「人型」を持つLユニットがあれば、これは「SP1」になる。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは自軍「ガオポーラー」があればBP+3000される。 【氷牙炎滅ベアーストライク】これが、「ガオポーラー」か特徴「人型」を持つLユニットからコンビネーションするとき、次の効果を発動できる⇒ホールド状態の敵軍ユニットを1体選び撃破する。また、自軍バトルエリアに「ガオポーラー」と特徴「人型」を持つLユニットがあれば、これは「SP1」になる。",
+  "bp": 1000,
+  "size": "M",
+  "sp": 12,
+  "comboNumber": "R",
+  "features": [
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_bp_3000",
+      "text": "※これは自軍「ガオポーラー」があればBP+3000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp_3000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6b0b7e78999",
+      "name": "氷牙炎滅ベアーストライク",
+      "text": "これが、「ガオポーラー」か特徴「人型」を持つLユニットからコンビネーションするとき、次の効果を発動できる⇒ホールド状態の敵軍ユニットを1体選び撃破する。また、自軍バトルエリアに「ガオポーラー」と特徴「人型」を持つLユニットがあれば、これは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-189",
+  "name": "ジェイクロッサー",
+  "type": "vehicle",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【地空人の精霊パワー】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを2つまで選び、リリースしてもよい。",
+  "rawText": "【地空人の精霊パワー】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを2つまで選び、リリースしてもよい。",
+  "effects": [
+    {
+      "id": "named_e59cb0e7a9ba",
+      "name": "地空人の精霊パワー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを2つまで選び、リリースしてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e59cb0e7a9ba",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

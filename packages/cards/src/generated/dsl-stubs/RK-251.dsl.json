@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-251",
+  "name": "ゴルゴムの仕業",
+  "type": "operation",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 相手が通常のオペレーションカードを使用したとき、その効果を実行する前に発動できる。相手の使用したオペレーションカードの必要パワーの数字を見て、その数字以上の枚数のカードが自軍パワーゾーンにあれば、そのオペレーションカードの効果を無効にして、捨札にする。",
+  "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） 相手が通常のオペレーションカードを使用したとき、その効果を実行する前に発動できる。相手の使用したオペレーションカードの必要パワーの数字を見て、その数字以上の枚数のカードが自軍パワーゾーンにあれば、そのオペレーションカードの効果を無効にして、捨札にする。",
+  "effects": [
+    {
+      "id": "note_named_e280bbe382ab",
+      "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 相手が通常のオペレーションカードを使用したとき、その効果を実行する前に発動できる。相手の使用したオペレーションカードの必要パワーの数字を見て、その数字以上の枚数のカードが自軍パワーゾーンにあれば、そのオペレーションカードの効果を無効にして、捨札にする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe382ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

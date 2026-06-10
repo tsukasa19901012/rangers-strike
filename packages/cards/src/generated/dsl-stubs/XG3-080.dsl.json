@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-080",
+  "name": "仮面ライダーW・HJ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※モーフ 【ジョーカーグレネイト】敵軍バトルエリアから、Sユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
+  "rawText": "※モーフ 【ジョーカーグレネイト】敵軍バトルエリアから、Sユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ダブルドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b8e383a7",
+      "name": "ジョーカーグレネイト",
+      "text": "敵軍バトルエリアから、Sユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

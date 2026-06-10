@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-356",
+  "name": "デンジイエロー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【ハンマーパンチ】次の相手ターン、必要パワーの数字が3以下の敵軍ユニットは、ターンが終わるまでバトルエリアに出られない。",
+  "rawText": "【ハンマーパンチ】次の相手ターン、必要パワーの数字が3以下の敵軍ユニットは、ターンが終わるまでバトルエリアに出られない。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "イエロー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e3838fe383b3",
+      "name": "ハンマーパンチ",
+      "text": "次の相手ターン、必要パワーの数字が3以下の敵軍ユニットは、ターンが終わるまでバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838fe383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

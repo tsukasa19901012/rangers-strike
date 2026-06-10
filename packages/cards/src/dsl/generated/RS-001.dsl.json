@@ -1,0 +1,32 @@
+{
+  "id": "RS-001",
+  "name": "ゴレンジャーストーム",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 8,
+  "effectId": "goren_storm",
+  "imageUrl": "/cards/legend1/RS-001.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-001.jpg",
+  "effects": [
+    {
+      "id": "goren_storm",
+      "text": "このターン、Sユニットだけでコンビネーションするとき、5番目のユニットは「SP1」「BP12000」になる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "goren_storm"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

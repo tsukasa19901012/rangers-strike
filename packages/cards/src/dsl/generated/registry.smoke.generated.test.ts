@@ -1,10 +1,10 @@
 /**
  * Auto-generated registry smoke test
- * Cards: 179 | Effects: 160
+ * Cards: 179 | Effects: 166
  */
 import { describe, it, expect } from "vitest";
-import { createCardRegistryFromCatalog } from "../dsl/registry";
-import { validateCardDocument } from "../dsl/validator";
+import { createCardRegistryFromCatalog } from "../registry";
+import { validateCardDocument } from "../validator";
 
 describe("CardRegistry smoke", () => {
   const registry = createCardRegistryFromCatalog();

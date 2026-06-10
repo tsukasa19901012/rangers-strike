@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-024",
+  "name": "剣将ブドー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【一騎打ち】敵軍バトルエリアのユニットが1体だけなら、これのBPを+4000してもよい。そうしたとき、自軍バトルフェイズ終了時にこれを撃破する。",
+  "rawText": "【一騎打ち】敵軍バトルエリアのユニットが1体だけなら、これのBPを+4000してもよい。そうしたとき、自軍バトルフェイズ終了時にこれを撃破する。",
+  "bp": 5000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "宇宙海賊",
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "named_e4b880e9a88e",
+      "name": "一騎打ち",
+      "text": "敵軍バトルエリアのユニットが1体だけなら、これのBPを+4000してもよい。そうしたとき、自軍バトルフェイズ終了時にこれを撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4b880e9a88e",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

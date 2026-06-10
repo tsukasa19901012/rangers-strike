@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-027",
+  "name": "シーレオン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※タクスMA 【青き海の獅子】これをラッシュしたとき、自軍山札の下から1枚をオモテにする。オモテにしたカードが「シーレオン」以外の特徴「獣」を持つユニットカードなら、手札に加える。それ以外なら、オモテにしたカードを山札に戻してシャッフルする。",
+  "rawText": "※タクスMA 【青き海の獅子】これをラッシュしたとき、自軍山札の下から1枚をオモテにする。オモテにしたカードが「シーレオン」以外の特徴「獣」を持つユニットカードなら、手札に加える。それ以外なら、オモテにしたカードを山札に戻してシャッフルする。",
+  "bp": 3000,
+  "size": "M",
+  "features": [
+    "魔法",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_taxis_ma",
+      "text": "※タクスMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e99d92e3818d",
+      "name": "青き海の獅子",
+      "text": "これをラッシュしたとき、自軍山札の下から1枚をオモテにする。オモテにしたカードが「シーレオン」以外の特徴「獣」を持つユニットカードなら、手札に加える。それ以外なら、オモテにしたカードを山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e99d92e3818d",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※タクスMA",
+      "rule": "taxis_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

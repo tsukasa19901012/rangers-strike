@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "BK-016",
+  "name": "火炎鼓装備帯",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "特徴「猛士」を持つ自軍ユニット2体につき1枚ドローする。",
+  "rawText": "特徴「猛士」を持つ自軍ユニット2体につき1枚ドローする。",
+  "effects": [
+    {
+      "id": "named_e781abe7828e",
+      "name": "火炎鼓装備帯",
+      "text": "特徴「猛士」を持つ自軍ユニット2体につき1枚ドローする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "fallback_handler",
+          "effectId": "named_e781abe7828e"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "hybrid",
+    "handler": "typescript",
+    "testGenerated": true
+  }
+}

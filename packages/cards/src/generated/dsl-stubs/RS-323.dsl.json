@@ -1,0 +1,79 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-323",
+  "name": "マジグリーン・マッスル",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジグリーン」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【マジ・マージ】このユニットからコンビネーションするSユニットは、敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「マジグリーン」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【マジ・マージ】このユニットからコンビネーションするSユニットは、敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 4500,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "グリーン",
+    "男",
+    "魔法"
+  ],
+  "effects": [
+    {
+      "id": "recruit_named_e3839ee382b8e382b0e383aa_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジグリーン」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
+    },
+    {
+      "id": "named_e3839ee382b8",
+      "name": "マジ・マージ",
+      "text": "このユニットからコンビネーションするSユニットは、敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839ee382b8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

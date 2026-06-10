@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-511",
+  "name": "ゴーオングリーン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【マンタンガン・ロッドモード】自軍パワーゾーンのカード枚数が、敵軍パワーゾ－ンのカード枚数より少なければ、自軍山札の上から1枚ひいて、自軍パワーゾーンに置いてもよい。",
+  "rawText": "【マンタンガン・ロッドモード】自軍パワーゾーンのカード枚数が、敵軍パワーゾ－ンのカード枚数より少なければ、自軍山札の上から1枚ひいて、自軍パワーゾーンに置いてもよい。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "グリーン",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e3839ee383b3",
+      "name": "マンタンガン・ロッドモード",
+      "text": "自軍パワーゾーンのカード枚数が、敵軍パワーゾ－ンのカード枚数より少なければ、自軍山札の上から1枚ひいて、自軍パワーゾーンに置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839ee383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

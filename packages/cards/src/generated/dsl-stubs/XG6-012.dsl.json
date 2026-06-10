@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-012",
+  "name": "フラッシュタイタン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※自軍「タイタンボーイ」があるとき、これはアタックすることができない。 【フラッシュターン】これをラッシュしたとき、ウラ向きの自軍パワーを1枚選び、オモテにしてもよい。このとき、オモテにしたカードが「タイタンボーイ」以外ならウラ向きに戻す。その後、オモテ向きの自軍パワーから「タイタンボーイ」のカードを1枚選び、ラッシュエリアに出してもよい。",
+  "rawText": "※自軍「タイタンボーイ」があるとき、これはアタックすることができない。 【フラッシュターン】これをラッシュしたとき、ウラ向きの自軍パワーを1枚選び、オモテにしてもよい。このとき、オモテにしたカードが「タイタンボーイ」以外ならウラ向きに戻す。その後、オモテ向きの自軍パワーから「タイタンボーイ」のカードを1枚選び、ラッシュエリアに出してもよい。",
+  "bp": 6000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "車両",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニット1体をパワーゾーンに送る。",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe887aa",
+      "text": "※自軍「タイタンボーイ」があるとき、これはアタックすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38395e383a9",
+      "name": "フラッシュターン",
+      "text": "これをラッシュしたとき、ウラ向きの自軍パワーを1枚選び、オモテにしてもよい。このとき、オモテにしたカードが「タイタンボーイ」以外ならウラ向きに戻す。その後、オモテ向きの自軍パワーから「タイタンボーイ」のカードを1枚選び、ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

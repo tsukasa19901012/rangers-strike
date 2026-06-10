@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XC-003",
+  "name": "マスター・シャーフー",
+  "type": "commander",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "ゲーム開始前に一度だけ発動できる⇒自分の手札をすべて好きな順番で自軍山札の下に戻してから、戻した枚数と同じだけドローする。",
+  "rawText": "ゲーム開始前に一度だけ発動できる⇒自分の手札をすべて好きな順番で自軍山札の下に戻してから、戻した枚数と同じだけドローする。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

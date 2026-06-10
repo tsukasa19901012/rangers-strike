@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-409",
+  "name": "冥府神スレイプニル",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【フレンジー・スピア・クラッシュ】これは自軍と敵軍の常駐置き場にあるカード1枚につきBP＋1000され、BP6000以上のとき「SP1」になる。",
+  "rawText": "【フレンジー・スピア・クラッシュ】これは自軍と敵軍の常駐置き場にあるカード1枚につきBP＋1000され、BP6000以上のとき「SP1」になる。",
+  "bp": 4000,
+  "size": "L",
+  "sp": "special",
+  "features": [
+    "冥府神",
+    "二極神",
+    "男",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e38395e383ac",
+      "name": "フレンジー・スピア・クラッシュ",
+      "text": "これは自軍と敵軍の常駐置き場にあるカード1枚につきBP＋1000され、BP6000以上のとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-027",
+  "name": "ボウケンピンクAT",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※レジスト ※これが撃破されて捨札になったとき、自軍捨札から「ボウケンピンク」のカードを1枚選び、自軍ラッシュエリアに出す。 【デュアルクラッシャー・コンビネーションクラッシュ】このターン、次に敵軍ユニットがホールド状態になったとき、そのユニットを撃破する。",
+  "rawText": "※レジスト ※これが撃破されて捨札になったとき、自軍捨札から「ボウケンピンク」のカードを1枚選び、自軍ラッシュエリアに出す。 【デュアルクラッシャー・コンビネーションクラッシュ】このターン、次に敵軍ユニットがホールド状態になったとき、そのユニットを撃破する。",
+  "bp": 3500,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "ピンク",
+    "女",
+    "アクセルテクター"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「ボウケンピンク」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e38387e383a5",
+      "name": "デュアルクラッシャー・コンビネーションクラッシュ",
+      "text": "このターン、次に敵軍ユニットがホールド状態になったとき、そのユニットを撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38387e383a5",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

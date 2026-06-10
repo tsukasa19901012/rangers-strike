@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-303",
+  "name": "タイムファイヤー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【シティガーディアンズ隊長】これは自軍バトルエリアの特徴「戦闘員」を持つユニット1体につきBP＋1000され、BP5000以上のとき「SP1」になる。これが撃破されたとき、特徴「戦闘員」を持つ自軍ユニットを2体選び、かわりに捨札にしてもよい。",
+  "rawText": "【シティガーディアンズ隊長】これは自軍バトルエリアの特徴「戦闘員」を持つユニット1体につきBP＋1000され、BP5000以上のとき「SP1」になる。これが撃破されたとき、特徴「戦闘員」を持つ自軍ユニットを2体選び、かわりに捨札にしてもよい。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "レッド",
+    "男",
+    "Vコマンダー"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b7e38386",
+      "name": "シティガーディアンズ隊長",
+      "text": "これは自軍バトルエリアの特徴「戦闘員」を持つユニット1体につきBP＋1000され、BP5000以上のとき「SP1」になる。これが撃破されたとき、特徴「戦闘員」を持つ自軍ユニットを2体選び、かわりに捨札にしてもよい。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

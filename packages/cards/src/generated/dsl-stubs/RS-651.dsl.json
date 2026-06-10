@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-651",
+  "name": "ガオマジロ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【体当たり】これが「ガオライノス」か、特徴「人型」を持つLユニットからコンビネーションするとき、次の効果を発動できる⇒このターン、これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【体当たり】これが「ガオライノス」か、特徴「人型」を持つLユニットからコンビネーションするとき、次の効果を発動できる⇒このターン、これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 3000,
+  "size": "M",
+  "comboNumber": "R",
+  "features": [
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4bd93e5bd93",
+      "name": "体当たり",
+      "text": "これが「ガオライノス」か、特徴「人型」を持つLユニットからコンビネーションするとき、次の効果を発動できる⇒このターン、これは敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4bd93e5bd93",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

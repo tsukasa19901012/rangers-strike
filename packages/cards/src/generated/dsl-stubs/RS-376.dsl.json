@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-376",
+  "name": "ギンガレッド",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【炎一閃】「SP1」「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒敵軍バトルエリアからナンバーを持たないSユニットを1体選び、撃破する。",
+  "rawText": "【炎一閃】「SP1」「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒敵軍バトルエリアからナンバーを持たないSユニットを1体選び、撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e7828ee4b880",
+      "name": "炎一閃",
+      "text": "「SP1」「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒敵軍バトルエリアからナンバーを持たないSユニットを1体選び、撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

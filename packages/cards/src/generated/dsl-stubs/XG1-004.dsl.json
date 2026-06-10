@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-004",
+  "name": "ゴーグルレッド",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【レッドルビームチ】敵軍コマンドゾーンからSユニットのカードを1枚選んでもよい。そうしたとき、相手は選ばれたカードをラッシュエリアかバトルエリアに出す。このときバトルエリアに出したなら、相手は自分自身の山札の上から1枚引いて、自分自身のコマンドゾーンに置く。",
+  "rawText": "【レッドルビームチ】敵軍コマンドゾーンからSユニットのカードを1枚選んでもよい。そうしたとき、相手は選ばれたカードをラッシュエリアかバトルエリアに出す。このときバトルエリアに出したなら、相手は自分自身の山札の上から1枚引いて、自分自身のコマンドゾーンに置く。",
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e383ace38383",
+      "name": "レッドルビームチ",
+      "text": "敵軍コマンドゾーンからSユニットのカードを1枚選んでもよい。そうしたとき、相手は選ばれたカードをラッシュエリアかバトルエリアに出す。このときバトルエリアに出したなら、相手は自分自身の山札の上から1枚引いて、自分自身のコマンドゾーンに置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ace38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

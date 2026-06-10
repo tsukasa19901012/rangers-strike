@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "PR-011",
+  "name": "ボウケンレッド",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【サバイバスター】「SP1」これは特徴「メカ」をもつユニットにアタックするとき、BP＋4000される。",
+  "rawText": "【サバイバスター】「SP1」これは特徴「メカ」をもつユニットにアタックするとき、BP＋4000される。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b5e38390",
+      "name": "サバイバスター",
+      "text": "「SP1」これは特徴「メカ」をもつユニットにアタックするとき、BP＋4000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

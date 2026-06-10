@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-190",
+  "name": "ミドレンジャー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【ミドメラン】これがアタックするとき、相手はカウンターを発動できない。（この効果は特徴「イエロー」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "【ミドメラン】これがアタックするとき、相手はカウンターを発動できない。（この効果は特徴「イエロー」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "グリーン",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e3839fe38389",
+      "name": "ミドメラン",
+      "text": "これがアタックするとき、相手はカウンターを発動できない。（この効果は特徴「イエロー」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839fe38389",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

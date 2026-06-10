@@ -1,0 +1,46 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-031",
+  "name": "デカマシン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "【宇宙警察のバックアップ】これが自軍エリアにある間、特徴「警察」を持つユニットはBP+1000される。",
+  "rawText": "【宇宙警察のバックアップ】これが自軍エリアにある間、特徴「警察」を持つユニットはBP+1000される。",
+  "bp": 6000,
+  "size": "SC",
+  "features": [
+    "メカ",
+    "車両",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニット5体を捨札にする",
+    "unitCount": 5
+  },
+  "effects": [
+    {
+      "id": "named_e5ae87e5ae99",
+      "name": "宇宙警察のバックアップ",
+      "text": "これが自軍エリアにある間、特徴「警察」を持つユニットはBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5ae87e5ae99",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

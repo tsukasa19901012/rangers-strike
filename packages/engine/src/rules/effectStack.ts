@@ -132,9 +132,13 @@ export function withSyncedEffectStack(state: GameState): GameState {
   return { ...state, effectStack: buildEffectStack(state) };
 }
 
+/** pending* から毎回導出する（state.effectStack キャッシュは読み取りに使わない）。 */
+function resolveEffectStack(state: GameState): EffectStack {
+  return buildEffectStack(state);
+}
+
 export function peekEffectStackTop(state: GameState): EffectStackFrame | undefined {
-  const stack = state.effectStack ?? buildEffectStack(state);
-  return stack.frames[0];
+  return resolveEffectStack(state).frames[0];
 }
 
 /** スタック最上位フレームの応答プレイヤー。 */
@@ -146,7 +150,7 @@ export function getStackActorPlayerId(state: GameState): PlayerId | undefined {
 export function getSimultaneousGroup(
   state: GameState,
 ): EffectStackFrame[] {
-  const stack = state.effectStack ?? buildEffectStack(state);
+  const stack = resolveEffectStack(state);
   const top = stack.frames[0];
   if (!top?.simultaneousGroupId) return top ? [top] : [];
   return stack.frames.filter(
@@ -155,7 +159,7 @@ export function getSimultaneousGroup(
 }
 
 export function hasOpenEffectStack(state: GameState): boolean {
-  return (state.effectStack ?? buildEffectStack(state)).frames.length > 0;
+  return resolveEffectStack(state).frames.length > 0;
 }
 
 /** 反応窓が開いているか（ダメージ支払い・効果選択を除く）。 */

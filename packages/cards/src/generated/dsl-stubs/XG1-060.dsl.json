@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-060",
+  "name": "コーカサスビートルアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これはアタックされるときBP+2000される。 【カード強奪】これがバトルエリアからラッシュエリアに戻るとき、相手の手札を見ないで1枚選んでもよい。そうしたとき、選んだカードを持ち主の山札に戻してシャッフルした後で、相手は1枚ドローする。",
+  "rawText": "※これはアタックされるときBP+2000される。 【カード強奪】これがバトルエリアからラッシュエリアに戻るとき、相手の手札を見ないで1枚選んでもよい。そうしたとき、選んだカードを持ち主の山札に戻してシャッフルした後で、相手は1枚ドローする。",
+  "bp": 4500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "昆虫"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_attacked_bp_boost_2000",
+      "text": "※これはアタックされるときBP+2000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "attacked_bp_boost_2000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382abe383bc",
+      "name": "カード強奪",
+      "text": "これがバトルエリアからラッシュエリアに戻るとき、相手の手札を見ないで1枚選んでもよい。そうしたとき、選んだカードを持ち主の山札に戻してシャッフルした後で、相手は1枚ドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382abe383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされるときBP+2000される。",
+      "rule": "attacked_bp_boost_2000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

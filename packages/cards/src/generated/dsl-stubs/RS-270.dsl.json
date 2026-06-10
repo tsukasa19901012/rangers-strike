@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-270",
+  "name": "ピンクフラッシュ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつき「BP-1000」され、BP0以下のとき撃破される。 【プリズムブーツ】このターン、自分と相手のコマンドゾーンにあるホールド状態のコマンドのカテゴリは、すべて「OT」になる（ただし、「オーバーテクノロジー」をホールドしたことにはならない）。",
+  "rawText": "※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつき「BP-1000」され、BP0以下のとき撃破される。 【プリズムブーツ】このターン、自分と相手のコマンドゾーンにあるホールド状態のコマンドのカテゴリは、すべて「OT」になる（ただし、「オーバーテクノロジー」をホールドしたことにはならない）。",
+  "bp": 5500,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "note_ot",
+      "text": "※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつき「BP-1000」され、BP0以下のとき撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_ot",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38397e383aa",
+      "name": "プリズムブーツ",
+      "text": "このターン、自分と相手のコマンドゾーンにあるホールド状態のコマンドのカテゴリは、すべて「OT」になる（ただし、「オーバーテクノロジー」をホールドしたことにはならない）。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38397e383aa",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

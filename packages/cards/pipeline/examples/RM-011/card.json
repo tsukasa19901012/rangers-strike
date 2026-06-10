@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-011",
+  "name": "ターボユニット-W",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "ナンバーに数字を持ち、ETを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。このカードに重ねたユニットのナンバーの数字は1少なくなる。ただし、2より少なくならない。",
+  "rawText": "ナンバーに数字を持ち、ETを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。このカードに重ねたユニットのナンバーの数字は1少なくなる。ただし、2より少なくならない。",
+  "effects": [
+    {
+      "id": "named_e382bfe383bc",
+      "name": "ターボユニット-W",
+      "text": "ナンバーに数字を持ち、ETを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。このカードに重ねたユニットのナンバーの数字は1少なくなる。ただし、2より少なくならない。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "fallback_handler",
+          "effectId": "named_e382bfe383bc"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "hybrid",
+    "handler": "typescript",
+    "testGenerated": true
+  }
+}

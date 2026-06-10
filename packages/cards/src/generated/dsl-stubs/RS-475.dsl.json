@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-475",
+  "name": "ガオハンタージャスティス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体－ガオウルフ＋ガオリゲーター＋ガオハンマーヘッド 【悪鬼突貫リボルバーファントム】これがバトルエリアに出たとき、自軍捨札をすべてウラ向きにしてシャッフルしてもよい。そうしたとき、その中から相手に1枚選ばせてから、すべてオモテにする。そして、相手の選んだカードの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+  "rawText": "合体－ガオウルフ＋ガオリゲーター＋ガオハンマーヘッド 【悪鬼突貫リボルバーファントム】これがバトルエリアに出たとき、自軍捨札をすべてウラ向きにしてシャッフルしてもよい。そうしたとき、その中から相手に1枚選ばせてから、すべてオモテにする。そして、相手の選んだカードの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+  "bp": 11000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "獣",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e682aae9acbc",
+      "name": "悪鬼突貫リボルバーファントム",
+      "text": "これがバトルエリアに出たとき、自軍捨札をすべてウラ向きにしてシャッフルしてもよい。そうしたとき、その中から相手に1枚選ばせてから、すべてオモテにする。そして、相手の選んだカードの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e682aae9acbc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

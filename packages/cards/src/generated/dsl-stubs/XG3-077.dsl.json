@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-077",
+  "name": "アギトトルネイダー",
+  "type": "vehicle",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※自分が「仮面ライダーアギト」をラッシュしたとき、自軍エリアに「アギトトルネイダー」があれば1体選んで手札に戻す。 ※これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる。 【ファイナルアタックライド】これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※自分が「仮面ライダーアギト」をラッシュしたとき、自軍エリアに「アギトトルネイダー」があれば1体選んで手札に戻す。 ※これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる。 【ファイナルアタックライド】これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "effects": [
+    {
+      "id": "note_e280bbe887aae58886e3818c",
+      "text": "※自分が「仮面ライダーアギト」をラッシュしたとき、自軍エリアに「アギトトルネイダー」があれば1体選んで手札に戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "return_self_on_ally_rush_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38395e382a1",
+      "name": "ファイナルアタックライド",
+      "text": "これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e382a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

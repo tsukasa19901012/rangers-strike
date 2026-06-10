@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-073",
+  "name": "仮面ライダークウガDF（XG4）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※モーフ 【水の心の戦士】これが敵軍ユニットにアタックされたとき、自軍コマンドを2つ選びホールドしてもよい。そうしたとき、そのバトルは行われない。",
+  "rawText": "※モーフ 【水の心の戦士】これが敵軍ユニットにアタックされたとき、自軍コマンドを2つ選びホールドしてもよい。そうしたとき、そのバトルは行われない。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "アマダム"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6b0b4e381ae",
+      "name": "水の心の戦士",
+      "text": "これが敵軍ユニットにアタックされたとき、自軍コマンドを2つ選びホールドしてもよい。そうしたとき、そのバトルは行われない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6b0b4e381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

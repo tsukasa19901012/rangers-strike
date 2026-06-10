@@ -22,7 +22,11 @@ import {
 import { applyDamageToPlayer } from "../rules/damagePayment";
 import { findCardInPlayer, findOwnUnit } from "../core/modifiers";
 import { findCardOwner } from "../rules/fieldLookup";
-import { withTurnModifiers } from "../rules/turnModifiers";
+import {
+  addComboNumberDelta,
+  setAuraPowerInstanceId,
+  setSComboFinisher,
+} from "../rules/turnModifierBridge";
 import { resolveInfiniteChain } from "../rules/legend2/operations";
 import {
   resolveAnimalHeart,
@@ -34,6 +38,7 @@ import { tryLeaveField } from "../rules/operationCounters";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { applySuperBrainDraw } from "./drawEffects";
 import { startDenjiMachineChoice } from "../rules/denjiMachine";
+import { tryResolveP0OperationEffect } from "./p0EffectBridge";
 
 export type EffectContext = {
   state: GameState;
@@ -401,6 +406,9 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
     return { state: ctx.state, detail: "no_effect", discardOperation: true };
   }
 
+  const p0Outcome = tryResolveP0OperationEffect(ctx, effect.effectId);
+  if (p0Outcome) return p0Outcome;
+
   const player = ctx.state.players[ctx.playerId];
   const enemyId = opponent(ctx.playerId);
   const enemy = ctx.state.players[enemyId];
@@ -442,9 +450,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
       if (!found || !isSmallUnit(ctx.state.definitions, found.card.cardId)) {
         return fail(ctx.state, "invalid_target");
       }
-      const nextPlayer = withTurnModifiers(player, {
-        auraPowerInstanceId: ctx.targetInstanceId,
-      });
+      const nextPlayer = setAuraPowerInstanceId(player, ctx.targetInstanceId, ctx.cardId);
       const targetName = cardName(ctx.state.definitions, found.card.cardId);
       return {
         state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
@@ -519,7 +525,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
     }
 
     case "goren_storm": {
-      const nextPlayer = withTurnModifiers(player, { sComboFinisher: "goren_storm" });
+      const nextPlayer = setSComboFinisher(player, "goren_storm", ctx.cardId);
       return {
         state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
         detail: "goren_storm",
@@ -528,7 +534,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
     }
 
     case "jacker_hurricane": {
-      const nextPlayer = withTurnModifiers(player, { sComboFinisher: "jacker_hurricane" });
+      const nextPlayer = setSComboFinisher(player, "jacker_hurricane", ctx.cardId);
       return {
         state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
         detail: "jacker_hurricane",
@@ -537,10 +543,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
     }
 
     case "bird_nick_wave": {
-      const mods = player.turnModifiers;
-      const nextPlayer = withTurnModifiers(player, {
-        comboNumberDelta: (mods?.comboNumberDelta ?? 0) + 1,
-      });
+      const nextPlayer = addComboNumberDelta(player, 1);
       return {
         state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
         detail: "bird_nick_wave",

@@ -1,0 +1,44 @@
+{
+  "cardId": "RS-059",
+  "completedSteps": [
+    "parse",
+    "analyze",
+    "extract_triggers",
+    "extract_effects",
+    "generate_dsl",
+    "validate",
+    "generate_tests"
+  ],
+  "grade": "B",
+  "validation": {
+    "ok": true,
+    "issues": []
+  },
+  "warnings": [],
+  "triggers": [
+    {
+      "index": 0,
+      "type": "while_in_field",
+      "confidence": "high",
+      "reason": "static_rule_note"
+    },
+    {
+      "index": 1,
+      "type": "nc",
+      "confidence": "high",
+      "reason": "named_or_sp_keyword"
+    }
+  ],
+  "effects": [
+    {
+      "id": "unnamed_alias_magimermaid",
+      "pattern": "alias_keyword",
+      "needsFallback": false
+    },
+    {
+      "id": "future_sight",
+      "pattern": "draw_n",
+      "needsFallback": false
+    }
+  ]
+}

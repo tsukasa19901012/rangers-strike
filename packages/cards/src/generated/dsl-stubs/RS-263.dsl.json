@@ -1,0 +1,46 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-263",
+  "name": "タンクコマンド",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "【弾幕タンクコマンドミサイル】これが自軍ラッシュエリアにある間、リリース状態の自軍コマンドに、ナンバーを持つユニットカードがあれば、カードに表記された本来のナンバーがそのユニットカードと同じSユニットは、ＮＣの効果を発動できない。",
+  "rawText": "【弾幕タンクコマンドミサイル】これが自軍ラッシュエリアにある間、リリース状態の自軍コマンドに、ナンバーを持つユニットカードがあれば、カードに表記された本来のナンバーがそのユニットカードと同じSユニットは、ＮＣの効果を発動できない。",
+  "bp": 5000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "named_e5bcbee5b995",
+      "name": "弾幕タンクコマンドミサイル",
+      "text": "これが自軍ラッシュエリアにある間、リリース状態の自軍コマンドに、ナンバーを持つユニットカードがあれば、カードに表記された本来のナンバーがそのユニットカードと同じSユニットは、ＮＣの効果を発動できない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5bcbee5b995",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

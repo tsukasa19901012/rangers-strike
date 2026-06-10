@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-028",
+  "name": "ゴセイアルティメット",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※リードMA 【アルティメットストライク】自軍ターン中、これがバトルエリアに出たとき、「自軍コマンドを1つリリースするか、自軍ユニットを1体リリースする」を1～5回実行してもよい。そうしたとき、実行した回数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※リードMA 【アルティメットストライク】自軍ターン中、これがバトルエリアに出たとき、「自軍コマンドを1つリリースするか、自軍ユニットを1体リリースする」を1～5回実行してもよい。そうしたとき、実行した回数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 9000,
+  "size": "XL",
+  "features": [
+    "魔法",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_lead_ma",
+      "text": "※リードMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e383ab",
+      "name": "アルティメットストライク",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、「自軍コマンドを1つリリースするか、自軍ユニットを1体リリースする」を1～5回実行してもよい。そうしたとき、実行した回数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※リードMA",
+      "rule": "lead_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

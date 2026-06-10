@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-024",
+  "name": "エージェント・アブレラ（XG4）",
+  "type": "commander",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分は1枚ドローしてもよい。そうしたとき、相手の山札の上から1枚を敵軍ゾーンにオモテ向きで置く。",
+  "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分は1枚ドローしてもよい。そうしたとき、相手の山札の上から1枚を敵軍ゾーンにオモテ向きで置く。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

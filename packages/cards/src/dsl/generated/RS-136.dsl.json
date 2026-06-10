@@ -1,0 +1,44 @@
+{
+  "id": "RS-136",
+  "name": "ランドライオン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "5+",
+  "bp": 5000,
+  "size": "M",
+  "text": "【強襲】これをラッシュしたとき次の効果を発動できる。敵軍バトルエリアからBP8000以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "【強襲】これをラッシュしたとき次の効果を発動できる。敵軍バトルエリアからBP8000以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "features": [
+    "メカ"
+  ],
+  "imageUrl": "/cards/legend3/RS-136.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-136.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "assault",
+      "name": "強襲",
+      "text": "これをラッシュしたとき次の効果を発動できる。敵軍バトルエリアからBP8000以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "assault"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

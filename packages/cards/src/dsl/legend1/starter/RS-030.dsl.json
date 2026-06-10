@@ -1,0 +1,45 @@
+{
+  "id": "RS-030",
+  "effects": [
+    {
+      "id": "adventure",
+      "name": "RS-030",
+      "text": "",
+      "trigger": {
+        "type": "on_turn_end"
+      },
+      "condition": {
+        "type": "controller_is_phase_player"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "self",
+            "filter": {
+              "commandHeld": true
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

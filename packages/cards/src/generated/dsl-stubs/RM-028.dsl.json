@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-028",
+  "name": "モトシャリアン",
+  "type": "vehicle",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これにライドしているユニットはBP+500される。 ※これが自軍パワーゾーンでオモテ向きになっている間、特徴「宇宙刑事」を持つ自軍ユニットをラッシュしたとき、これを自軍ラッシュエリアに出してもよい。",
+  "rawText": "※これにライドしているユニットはBP+500される。 ※これが自軍パワーゾーンでオモテ向きになっている間、特徴「宇宙刑事」を持つ自軍ユニットをラッシュしたとき、これを自軍ラッシュエリアに出してもよい。",
+  "effects": [
+    {
+      "id": "unnamed_ride_bp_boost_500",
+      "text": "※これにライドしているユニットはBP+500される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_500",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自軍パワーゾーンでオモテ向きになっている間、特徴「宇宙刑事」を持つ自軍ユニットをラッシュしたとき、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットはBP+500される。",
+      "rule": "ride_bp_boost_500"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

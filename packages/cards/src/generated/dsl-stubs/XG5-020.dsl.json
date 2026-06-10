@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-020",
+  "name": "ボウケンレッド（XG5）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※タクスET 【レッドゾーンクラッシュ】自軍コマンドを1つ選び手札に戻してもよい。そうしたとき、このターン、これはBP+2000され、戻したカードが特徴「メカ」を持つMユニットだったなら、さらにBP+2000される。",
+  "rawText": "※タクスET 【レッドゾーンクラッシュ】自軍コマンドを1つ選び手札に戻してもよい。そうしたとき、このターン、これはBP+2000され、戻したカードが特徴「メカ」を持つMユニットだったなら、さらにBP+2000される。",
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_taxis_et",
+      "text": "※タクスET",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383ace38383",
+      "name": "レッドゾーンクラッシュ",
+      "text": "自軍コマンドを1つ選び手札に戻してもよい。そうしたとき、このターン、これはBP+2000され、戻したカードが特徴「メカ」を持つMユニットだったなら、さらにBP+2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ace38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※タクスET",
+      "rule": "taxis_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

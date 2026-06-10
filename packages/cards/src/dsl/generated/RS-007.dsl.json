@@ -1,0 +1,32 @@
+{
+  "id": "RS-007",
+  "name": "ダイナマイトパワー",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "effectId": "dynamite_power",
+  "imageUrl": "/cards/legend1/RS-007.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-007.jpg",
+  "effects": [
+    {
+      "id": "dynamite_power",
+      "text": "BP8000以下の敵軍ユニットを1体選ぶ。選んだユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "dynamite_power"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

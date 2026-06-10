@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-018",
+  "name": "ゴーゴーボイジャー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※これはDAを持たないユニットにアタックすることができない 【アンドック】これが自軍コマンドゾーンにある間、敵軍ターン中、自軍ユニットがユニットでなくなり、自軍ユニットが1体もなくなったとき、これを自軍ラッシュエリアに出してもよい。ただし、必要パワーは満たすこと。（この効果でラッシュできる「ゴーゴーボイジャー」は、1つのタイミングにつき 1枚までとする）",
+  "rawText": "※これはDAを持たないユニットにアタックすることができない 【アンドック】これが自軍コマンドゾーンにある間、敵軍ターン中、自軍ユニットがユニットでなくなり、自軍ユニットが1体もなくなったとき、これを自軍ラッシュエリアに出してもよい。ただし、必要パワーは満たすこと。（この効果でラッシュできる「ゴーゴーボイジャー」は、1つのタイミングにつき 1枚までとする）",
+  "bp": 8000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "母艦"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニット5体をそれぞれコマンドゾーンに送るか捨札にする",
+    "unitCount": 5
+  },
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack_non_da",
+      "text": "※これはDAを持たないユニットにアタックすることができない",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_non_da",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e383b3",
+      "name": "アンドック",
+      "text": "これが自軍コマンドゾーンにある間、敵軍ターン中、自軍ユニットがユニットでなくなり、自軍ユニットが1体もなくなったとき、これを自軍ラッシュエリアに出してもよい。ただし、必要パワーは満たすこと。（この効果でラッシュできる「ゴーゴーボイジャー」は、1つのタイミングにつき 1枚までとする）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはDAを持たないユニットにアタックすることができない",
+      "rule": "cannot_attack_non_da"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

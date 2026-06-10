@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-367",
+  "name": "ゾロー兵",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 【軍隊アリの遺伝子】このユニットをラッシュしたとき、自軍Sユニットの数が5体以下なら、自軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが「ゾロー兵」なら自軍ラッシュエリアに出し、それ以外なら捨札にする。",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 【軍隊アリの遺伝子】このユニットをラッシュしたとき、自軍Sユニットの数が5体以下なら、自軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが「ゾロー兵」なら自軍ラッシュエリアに出し、それ以外なら捨札にする。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "戦闘員"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8bb8de99a8a",
+      "name": "軍隊アリの遺伝子",
+      "text": "このユニットをラッシュしたとき、自軍Sユニットの数が5体以下なら、自軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが「ゾロー兵」なら自軍ラッシュエリアに出し、それ以外なら捨札にする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8bb8de99a8a",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

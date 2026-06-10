@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-06-10T01:42:14.750Z",
+  "registry": {
+    "total": 1849,
+    "core": 179,
+    "vanillaPromoted": 354,
+    "complexityPromoted": 1316,
+    "dslReady": 1028,
+    "legacyHandler": 648,
+    "unimplemented": 173,
+    "fallbackOnly": 648
+  },
+  "dslReady": 1028,
+  "legacyHandler": 648,
+  "unimplemented": 173,
+  "byTier": {
+    "vanilla": {
+      "total": 354,
+      "interpreter": 181,
+      "typescript": 0,
+      "unimplemented": 173,
+      "fallbackOnly": 0
+    },
+    "complexity": {
+      "total": 1316,
+      "interpreter": 668,
+      "typescript": 648,
+      "unimplemented": 0,
+      "fallbackOnly": 648
+    }
+  },
+  "targets": {
+    "fullPlayable": 1849,
+    "dslReadyGoal": 1200,
+    "fallbackOnlyGoal": 500
+  }
+}

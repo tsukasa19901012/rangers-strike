@@ -1,0 +1,26 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-029",
+  "name": "アバレブラックAM",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "",
+  "rawText": "",
+  "bp": 5500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 1,
+  "features": [
+    "ブラック",
+    "男",
+    "アバレモード"
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

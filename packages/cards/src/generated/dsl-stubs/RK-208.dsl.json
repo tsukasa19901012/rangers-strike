@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-208",
+  "name": "クレインオルフェノク激情態",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「クレインオルフェノク」のカードを1枚選び、自軍ラッシュエリアに出す。 【迎撃の毒矢】これが自軍ラッシュエリアにある間、効果に「ラッシュしたとき」とある敵軍ユニットが手札からラッシュされたとき、その効果を実行する前に、これをバトルエリアに出してもよい。そうしたとき、その効果は無効になる。その後、そのユニットとこのユニットでバトルする。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「クレインオルフェノク」のカードを1枚選び、自軍ラッシュエリアに出す。 【迎撃の毒矢】これが自軍ラッシュエリアにある間、効果に「ラッシュしたとき」とある敵軍ユニットが手札からラッシュされたとき、その効果を実行する前に、これをバトルエリアに出してもよい。そうしたとき、その効果は無効になる。その後、そのユニットとこのユニットでバトルする。",
+  "bp": 4500,
+  "size": "S",
+  "features": [
+    "オルフェノク",
+    "怪人",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「クレインオルフェノク」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e8bf8ee69283",
+      "name": "迎撃の毒矢",
+      "text": "これが自軍ラッシュエリアにある間、効果に「ラッシュしたとき」とある敵軍ユニットが手札からラッシュされたとき、その効果を実行する前に、これをバトルエリアに出してもよい。そうしたとき、その効果は無効になる。その後、そのユニットとこのユニットでバトルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8bf8ee69283",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

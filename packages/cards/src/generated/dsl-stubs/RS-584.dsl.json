@@ -1,0 +1,79 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-584",
+  "name": "ボウケンブラックAT",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「ボウケンブラック」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【闇を振り払う心】自軍パワーのオモテ向きのカードと自軍コマンドゾーンのカードにDA持つカードが1枚もなければ、これは「SP1」になる。また、DAを持つ敵軍ユニットがあれば、これはBP＋3000される。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「ボウケンブラック」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【闇を振り払う心】自軍パワーのオモテ向きのカードと自軍コマンドゾーンのカードにDA持つカードが1枚もなければ、これは「SP1」になる。また、DAを持つ敵軍ユニットがあれば、これはBP＋3000される。",
+  "bp": 3500,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "ブラック",
+    "男",
+    "アクセルテクター"
+  ],
+  "effects": [
+    {
+      "id": "recruit_named_e3839ce382a6e382b1e383b3_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「ボウケンブラック」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
+    },
+    {
+      "id": "named_e99787e38292",
+      "name": "闇を振り払う心",
+      "text": "自軍パワーのオモテ向きのカードと自軍コマンドゾーンのカードにDA持つカードが1枚もなければ、これは「SP1」になる。また、DAを持つ敵軍ユニットがあれば、これはBP＋3000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

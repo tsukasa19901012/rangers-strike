@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-085",
+  "name": "ダイアナレディ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【レディスナイパー】このユニットからコンビネーションするOTを持ち特徴「男」を持つSユニットは、このターン、次の能力を得る⇒BP+2000され、ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる。",
+  "rawText": "【レディスナイパー】このユニットからコンビネーションするOTを持ち特徴「男」を持つSユニットは、このターン、次の能力を得る⇒BP+2000され、ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる。",
+  "bp": 1000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "メカ",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e383ace38387",
+      "name": "レディスナイパー",
+      "text": "このユニットからコンビネーションするOTを持ち特徴「男」を持つSユニットは、このターン、次の能力を得る⇒BP+2000され、ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ace38387",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

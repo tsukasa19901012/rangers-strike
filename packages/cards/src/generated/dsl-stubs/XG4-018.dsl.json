@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-018",
+  "name": "ウルフローダー",
+  "type": "vehicle",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※WBを持つSユニットは、自軍コマンドを1つホールドすればRCを持っていなくてもこのビークルにライドできる。 【白銀の疾風】自軍ターン中、これがバトルエリアに出たとき、特徴「獣」を持つ自軍ユニットの数を数え、その数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破してもよい。",
+  "rawText": "※WBを持つSユニットは、自軍コマンドを1つホールドすればRCを持っていなくてもこのビークルにライドできる。 【白銀の疾風】自軍ターン中、これがバトルエリアに出たとき、特徴「獣」を持つ自軍ユニットの数を数え、その数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破してもよい。",
+  "effects": [
+    {
+      "id": "note_wb_s_1_rc",
+      "text": "※WBを持つSユニットは、自軍コマンドを1つホールドすればRCを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_wb_s_1_rc",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e799bde98a80",
+      "name": "白銀の疾風",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、特徴「獣」を持つ自軍ユニットの数を数え、その数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破してもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e799bde98a80",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

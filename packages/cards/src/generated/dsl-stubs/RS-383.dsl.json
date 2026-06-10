@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-383",
+  "name": "レッドラダー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "【救出作業】これをラッシュしたとき、自軍捨札から、Sユニットのカードを2枚まで選び手札に加えてもよい。",
+  "rawText": "【救出作業】これをラッシュしたとき、自軍捨札から、Sユニットのカードを2枚まで選び手札に加えてもよい。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "named_e69591e587ba",
+      "name": "救出作業",
+      "text": "これをラッシュしたとき、自軍捨札から、Sユニットのカードを2枚まで選び手札に加えてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e69591e587ba",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

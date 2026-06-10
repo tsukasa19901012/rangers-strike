@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-214",
+  "name": "仮面ライダーランス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※レジスト （これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【インパクトスタッブ】敵軍バトルエリアのSユニットを2体選んでもよい。そうしたとき、相手は次のようにする⇒選ばれたユニットのうち1体を撃破する。その後、もう1体をホールドする。",
+  "rawText": "※レジスト （これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【インパクトスタッブ】敵軍バトルエリアのSユニットを2体選んでもよい。そうしたとき、相手は次のようにする⇒選ばれたユニットのうち1体を撃破する。その後、もう1体をホールドする。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト （これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a4e383b3",
+      "name": "インパクトスタッブ",
+      "text": "敵軍バトルエリアのSユニットを2体選んでもよい。そうしたとき、相手は次のようにする⇒選ばれたユニットのうち1体を撃破する。その後、もう1体をホールドする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a4e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト （これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-024",
+  "name": "獣拳神サイダイン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※これをラッシュしたとき、自軍「ゲキチョッパー」があれば、自分は1枚ドローする。 【獣力開花】これが自軍エリアにある間、カード名に「サイダイ」を含まない、特徴「激気」を持つユニットは次の能力を得る⇒これがバトルエリアに出たとき、自分自身の手札から、これの必要パワーの数字よりも必要パワーの数字が小さいWBのMユニットのカードを1枚選び、自分自身のラッシュエリアに出してもよい。",
+  "rawText": "※これをラッシュしたとき、自軍「ゲキチョッパー」があれば、自分は1枚ドローする。 【獣力開花】これが自軍エリアにある間、カード名に「サイダイ」を含まない、特徴「激気」を持つユニットは次の能力を得る⇒これがバトルエリアに出たとき、自分自身の手札から、これの必要パワーの数字よりも必要パワーの数字が小さいWBのMユニットのカードを1枚選び、自分自身のラッシュエリアに出してもよい。",
+  "bp": 6000,
+  "size": "XL",
+  "features": [
+    "拳聖",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "draw_cards",
+      "text": "※これをラッシュしたとき、自軍「ゲキチョッパー」があれば、自分は1枚ドローする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "controller"
+        }
+      ]
+    },
+    {
+      "id": "named_e78da3e58a9b",
+      "name": "獣力開花",
+      "text": "これが自軍エリアにある間、カード名に「サイダイ」を含まない、特徴「激気」を持つユニットは次の能力を得る⇒これがバトルエリアに出たとき、自分自身の手札から、これの必要パワーの数字よりも必要パワーの数字が小さいWBのMユニットのカードを1枚選び、自分自身のラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e78da3e58a9b",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

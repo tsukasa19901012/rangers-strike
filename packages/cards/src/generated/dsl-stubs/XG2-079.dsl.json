@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-079",
+  "name": "仮面ライダー龍騎（XG2）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【タイムベント】敵軍ターン中、これが自軍エリアにある間、これ以外の自軍Sユニットがバトルで撃破されたとき、捨札にするかわりに手札から1枚選びゲームから除外してよい。そうしたとき、撃破されたユニットはその場に留まる。",
+  "rawText": "【タイムベント】敵軍ターン中、これが自軍エリアにある間、これ以外の自軍Sユニットがバトルで撃破されたとき、捨札にするかわりに手札から1枚選びゲームから除外してよい。そうしたとき、撃破されたユニットはその場に留まる。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "named_e382bfe382a4",
+      "name": "タイムベント",
+      "text": "敵軍ターン中、これが自軍エリアにある間、これ以外の自軍Sユニットがバトルで撃破されたとき、捨札にするかわりに手札から1枚選びゲームから除外してよい。そうしたとき、撃破されたユニットはその場に留まる。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382bfe382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

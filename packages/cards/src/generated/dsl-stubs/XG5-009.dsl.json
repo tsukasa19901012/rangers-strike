@@ -1,0 +1,46 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-009",
+  "name": "ゴーグルダンプ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【ゴーゴーチェンジ】自軍コマンドゾーンから、リリース状態の特徴「メカ」を持つLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。そうしたとき、出したユニットが「ゴーグルロボ」だったなら、相手に1点ダメージを与える。",
+  "rawText": "【ゴーゴーチェンジ】自軍コマンドゾーンから、リリース状態の特徴「メカ」を持つLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。そうしたとき、出したユニットが「ゴーグルロボ」だったなら、相手に1点ダメージを与える。",
+  "bp": 5000,
+  "size": "M",
+  "comboNumber": 3,
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "named_e382b4e383bc",
+      "name": "ゴーゴーチェンジ",
+      "text": "自軍コマンドゾーンから、リリース状態の特徴「メカ」を持つLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。そうしたとき、出したユニットが「ゴーグルロボ」だったなら、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

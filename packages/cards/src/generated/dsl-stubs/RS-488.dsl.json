@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-488",
+  "name": "ハリケンウィンガー",
+  "type": "vehicle",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※特徴「忍者」を持つ自軍SユニットはＲＣを持っていなくてもこのビークルにライドできる。 【滑空】これにライドしているSユニットは次の能力を得る⇒これはSユニットにアタックされない。",
+  "rawText": "※特徴「忍者」を持つ自軍SユニットはＲＣを持っていなくてもこのビークルにライドできる。 【滑空】これにライドしているSユニットは次の能力を得る⇒これはSユニットにアタックされない。",
+  "effects": [
+    {
+      "id": "ride_without_rc_named_e5bf8de88085",
+      "text": "※特徴「忍者」を持つ自軍SユニットはＲＣを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_without_rc_named_e5bf8de88085",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6bb91e7a9ba",
+      "name": "滑空",
+      "text": "これにライドしているSユニットは次の能力を得る⇒これはSユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6bb91e7a9ba",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

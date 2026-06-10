@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-417",
+  "name": "冥府神サイクロプス",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【消滅の緋色】これが自軍ラッシュエリアにある間、敵軍Sユニットがバトルエリアからラッシュエリアに戻るたび、自軍常駐置き場からカードを1枚選び捨札にしてもよい。そうしたとき、そのユニットを撃破する。",
+  "rawText": "【消滅の緋色】これが自軍ラッシュエリアにある間、敵軍Sユニットがバトルエリアからラッシュエリアに戻るたび、自軍常駐置き場からカードを1枚選び捨札にしてもよい。そうしたとき、そのユニットを撃破する。",
+  "bp": 2000,
+  "size": "L",
+  "features": [
+    "冥府神",
+    "五武神",
+    "男",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e6b688e6bb85",
+      "name": "消滅の緋色",
+      "text": "これが自軍ラッシュエリアにある間、敵軍Sユニットがバトルエリアからラッシュエリアに戻るたび、自軍常駐置き場からカードを1枚選び捨札にしてもよい。そうしたとき、そのユニットを撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6b688e6bb85",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

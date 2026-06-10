@@ -1,0 +1,55 @@
+{
+  "cardId": "RS-054",
+  "completedSteps": [
+    "parse",
+    "analyze",
+    "extract_triggers",
+    "extract_effects",
+    "generate_dsl",
+    "validate",
+    "generate_tests"
+  ],
+  "grade": "C",
+  "validation": {
+    "ok": true,
+    "issues": []
+  },
+  "warnings": [],
+  "triggers": [
+    {
+      "index": 0,
+      "type": "on_destroy",
+      "confidence": "medium",
+      "reason": "destroy_text"
+    },
+    {
+      "index": 1,
+      "type": "while_in_field",
+      "confidence": "high",
+      "reason": "static_rule_note"
+    },
+    {
+      "index": 2,
+      "type": "nc",
+      "confidence": "high",
+      "reason": "named_or_sp_keyword"
+    }
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_self_damage",
+      "pattern": "destroy_self_damage",
+      "needsFallback": false
+    },
+    {
+      "id": "unnamed_auto_battle_entry_each_turn",
+      "pattern": "auto_battle_entry",
+      "needsFallback": false
+    },
+    {
+      "id": "grant_sp1",
+      "pattern": "grant_sp",
+      "needsFallback": false
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-403",
+  "name": "デカレッド（2nd）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ハイブリッドマグナム】敵軍ラッシュエリアから、BPの下三桁が500の敵軍Sユニットを1体選び、撃破してもよい。",
+  "rawText": "【ハイブリッドマグナム】敵軍ラッシュエリアから、BPの下三桁が500の敵軍Sユニットを1体選び、撃破してもよい。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "レッド",
+    "男",
+    "警察",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "named_e3838fe382a4",
+      "name": "ハイブリッドマグナム",
+      "text": "敵軍ラッシュエリアから、BPの下三桁が500の敵軍Sユニットを1体選び、撃破してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838fe382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

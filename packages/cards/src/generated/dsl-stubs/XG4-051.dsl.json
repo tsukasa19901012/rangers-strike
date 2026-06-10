@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-051",
+  "name": "マックジャバー",
+  "type": "vehicle",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※自軍ターン開始時、自分の手札から「アクロバッター」か「ロボイザー」のカードを1枚選び、これと置き換えてもよい。 【液化】自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
+  "rawText": "※自軍ターン開始時、自分の手札から「アクロバッター」か「ロボイザー」のカードを1枚選び、これと置き換えてもよい。 【液化】自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
+  "effects": [
+    {
+      "id": "note_named_e280bbe887aa",
+      "text": "※自軍ターン開始時、自分の手札から「アクロバッター」か「ロボイザー」のカードを1枚選び、これと置き換えてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6b6b2e58c96",
+      "name": "液化",
+      "text": "自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "controller"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

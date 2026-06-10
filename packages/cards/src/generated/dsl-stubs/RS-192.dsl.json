@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-192",
+  "name": "ダイナブルー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【アタックボード】自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。",
+  "rawText": "【アタックボード】自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382a2e382bf",
+      "name": "アタックボード",
+      "text": "自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "move",
+          "target": {
+            "type": "trigger_source"
+          },
+          "to": "rush"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

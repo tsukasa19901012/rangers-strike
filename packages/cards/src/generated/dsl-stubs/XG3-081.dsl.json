@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-081",
+  "name": "仮面ライダーW・HT",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※モーフ 【トリガー・エクスプロージョン】これをラッシュしたとき、ホールド状態の敵軍Sユニットを1体選んでもよい。そうしたとき、相手は選んだユニットを捨札にするか、自分自身のパワーゾーンのオモテ向きのカードを1枚捨札にするかを選ぶ。",
+  "rawText": "※モーフ 【トリガー・エクスプロージョン】これをラッシュしたとき、ホールド状態の敵軍Sユニットを1体選んでもよい。そうしたとき、相手は選んだユニットを捨札にするか、自分自身のパワーゾーンのオモテ向きのカードを1枚捨札にするかを選ぶ。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ダブルドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38388e383aa",
+      "name": "トリガー・エクスプロージョン",
+      "text": "これをラッシュしたとき、ホールド状態の敵軍Sユニットを1体選んでもよい。そうしたとき、相手は選んだユニットを捨札にするか、自分自身のパワーゾーンのオモテ向きのカードを1枚捨札にするかを選ぶ。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38388e383aa",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

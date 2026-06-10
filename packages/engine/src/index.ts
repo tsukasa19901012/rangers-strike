@@ -1,6 +1,8 @@
 export * from "./types/game";
 export * from "./types/actions";
+export * from "./events";
 export * from "./core/createGame";
+export * from "./verticalSlice";
 export * from "./core/catalog";
 export * from "./core/helpers";
 export * from "./core/legalActions";
@@ -12,6 +14,9 @@ export * from "./log/formatError";
 export * from "./rules/startPhase";
 export * from "./rules/strikeReactions";
 export * from "./rules/restrictions";
+export * from "./keywords";
+export * from "./rules/turnModifierBridge";
+export * from "./rules/staticRestrictions";
 export * from "./rules/battleEntry";
 export { strikeDamageFor } from "./rules/combo";
 export * from "./rules/commandPayment";

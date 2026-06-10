@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-205",
+  "name": "リュウレンジャー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【天火星・稲妻炎上破】「SP1」「MA」の自軍コマンドを、「DA」の敵軍Sユニットの数まで好きな数ホールドしてもよい。そうしたとき、ホールドした数だけ「DA」の敵軍Sユニットを撃破する。",
+  "rawText": "【天火星・稲妻炎上破】「SP1」「MA」の自軍コマンドを、「DA」の敵軍Sユニットの数まで好きな数ホールドしてもよい。そうしたとき、ホールドした数だけ「DA」の敵軍Sユニットを撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e5a4a9e781ab",
+      "name": "天火星・稲妻炎上破",
+      "text": "「SP1」「MA」の自軍コマンドを、「DA」の敵軍Sユニットの数まで好きな数ホールドしてもよい。そうしたとき、ホールドした数だけ「DA」の敵軍Sユニットを撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

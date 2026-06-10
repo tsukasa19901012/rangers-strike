@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-309",
+  "name": "ウラタロス（2nd）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【僕に釣られてみる？】自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしている特徴「女」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい（ただし追加条件は満たすこと）。この効果でラッシュしたユニットは、このターン、バトルエリアに出られない。",
+  "rawText": "【僕に釣られてみる？】自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしている特徴「女」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい（ただし追加条件は満たすこと）。この効果でラッシュしたユニットは、このターン、バトルエリアに出られない。",
+  "bp": 1000,
+  "size": "S",
+  "sp": 14,
+  "comboNumber": 3,
+  "features": [
+    "イマジン",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "named_e58395e381ab",
+      "name": "僕に釣られてみる？",
+      "text": "自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしている特徴「女」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい（ただし追加条件は満たすこと）。この効果でラッシュしたユニットは、このターン、バトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58395e381ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

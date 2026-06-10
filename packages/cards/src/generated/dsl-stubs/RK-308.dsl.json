@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-308",
+  "name": "リュウタロス（2nd）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これは特徴「獣」を持つユニットにアタックできない。 ※自軍ターン中、これは、敵軍バトルエリアにユニットがあれば、可能ならバトルエリアに出る。 【猫はこっち、アンタは嫌い】自軍パワーゾーンのオモテ向きのカードから、特徴「獣」を持つユニットカードを1枚選び自分の手札に戻してもよい。そうしたとき、敵軍ラッシュエリアから本来のBPが3000以下のユニットを1体選び撃破する。",
+  "rawText": "※これは特徴「獣」を持つユニットにアタックできない。 ※自軍ターン中、これは、敵軍バトルエリアにユニットがあれば、可能ならバトルエリアに出る。 【猫はこっち、アンタは嫌い】自軍パワーゾーンのオモテ向きのカードから、特徴「獣」を持つユニットカードを1枚選び自分の手札に戻してもよい。そうしたとき、敵軍ラッシュエリアから本来のBPが3000以下のユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 14,
+  "comboNumber": 2,
+  "features": [
+    "イマジン",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは特徴「獣」を持つユニットにアタックできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_auto_battle_if_enemy_battle",
+      "text": "※自軍ターン中、これは、敵軍バトルエリアにユニットがあれば、可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_if_enemy_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e78cabe381af",
+      "name": "猫はこっち、アンタは嫌い",
+      "text": "自軍パワーゾーンのオモテ向きのカードから、特徴「獣」を持つユニットカードを1枚選び自分の手札に戻してもよい。そうしたとき、敵軍ラッシュエリアから本来のBPが3000以下のユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e78cabe381af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

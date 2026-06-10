@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-075",
+  "name": "仮面ライダーダークキバ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "※レジスト 【キングスバーストエンド】自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍パワーゾーンのオモテ向きのカードを1枚選び、選んだカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットがあればすべて撃破する。このとき、1体以上撃破したなら、選んだカードをダメージにする。",
+  "rawText": "※レジスト 【キングスバーストエンド】自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍パワーゾーンのオモテ向きのカードを1枚選び、選んだカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットがあればすべて撃破する。このとき、1体以上撃破したなら、選んだカードをダメージにする。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ファンガイア"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382ade383b3",
+      "name": "キングスバーストエンド",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍パワーゾーンのオモテ向きのカードを1枚選び、選んだカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットがあればすべて撃破する。このとき、1体以上撃破したなら、選んだカードをダメージにする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ade383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

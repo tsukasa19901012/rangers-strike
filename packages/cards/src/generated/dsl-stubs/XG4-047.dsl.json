@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-047",
+  "name": "シンケンレッド（XG4）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※レジスト 【車上の赤き侍】ライドしている敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。（この効果はライドしている自軍ユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "※レジスト 【車上の赤き侍】ライドしている敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。（この効果はライドしている自軍ユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "レッド",
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8bb8ae4b88a",
+      "name": "車上の赤き侍",
+      "text": "ライドしている敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。（この効果はライドしている自軍ユニットからコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8bb8ae4b88a",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

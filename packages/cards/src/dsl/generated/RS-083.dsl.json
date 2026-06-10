@@ -1,0 +1,69 @@
+{
+  "id": "RS-083",
+  "name": "プテラレンジャー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 5,
+  "text": "【プテラアロー】敵軍コマンドゾーンからホールド状態のカードを1枚選んで捨札にする。",
+  "rawText": "【プテラアロー】敵軍コマンドゾーンからホールド状態のカードを1枚選んで捨札にする。",
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "imageUrl": "/cards/legend2/RS-083.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-083.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "ptera_arrow",
+      "name": "プテラアロー",
+      "text": "敵軍コマンドゾーンからホールド状態のカードを1枚選んで捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent",
+          "filter": {
+            "commandHeld": true
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent",
+            "filter": {
+              "commandHeld": true
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

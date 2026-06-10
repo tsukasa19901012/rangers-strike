@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-065",
+  "name": "サブマシーン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※ウイング 【友情の証】これは自軍Lユニットがあれば、敵軍ユニットにアタックされない。また、このユニットと隣り合うETを持つLユニットはBP+1000される。",
+  "rawText": "※ウイング 【友情の証】これは自軍Lユニットがあれば、敵軍ユニットにアタックされない。また、このユニットと隣り合うETを持つLユニットはBP+1000される。",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両",
+    "航空機"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58f8be68385",
+      "name": "友情の証",
+      "text": "これは自軍Lユニットがあれば、敵軍ユニットにアタックされない。また、このユニットと隣り合うETを持つLユニットはBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e58f8be68385",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

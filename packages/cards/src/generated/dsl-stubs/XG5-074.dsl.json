@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-074",
+  "name": "仮面ライダーキバ（XG5）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※モーフ ※コールDA 【ファンガイアの王】これをホールドしてDAを持つユニットをラッシュしたとき、このターン中、そのユニットは次の効果を得る⇒BP+3000され、本来のSPが空欄なら「SP1/3」になる。",
+  "rawText": "※モーフ ※コールDA 【ファンガイアの王】これをホールドしてDAを持つユニットをラッシュしたとき、このターン中、そのユニットは次の効果を得る⇒BP+3000され、本来のSPが空欄なら「SP1/3」になる。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "魔皇力"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_call_da",
+      "text": "※コールDA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_DA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38395e382a1",
+      "name": "ファンガイアの王",
+      "text": "これをホールドしてDAを持つユニットをラッシュしたとき、このターン中、そのユニットは次の効果を得る⇒BP+3000され、本来のSPが空欄なら「SP1/3」になる。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e382a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    },
+    {
+      "kind": "note",
+      "text": "※コールDA",
+      "rule": "call_DA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

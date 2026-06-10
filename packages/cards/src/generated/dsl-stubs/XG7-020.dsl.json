@@ -1,0 +1,80 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-020",
+  "name": "クワガライジャー×カブトライジャー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "1+",
+  "text": "※クロス1 ※タクスMA 【影に向かいて影を斬り、光に向かいて光を斬る】 これが自分の手札にある間、クロスを持たない特徴「忍者」を持つ敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、そのユニットを持ち主の山札に戻してシャッフルする。",
+  "rawText": "※クロス1 ※タクスMA 【影に向かいて影を斬り、光に向かいて光を斬る】 これが自分の手札にある間、クロスを持たない特徴「忍者」を持つ敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、そのユニットを持ち主の山札に戻してシャッフルする。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_taxis_ma",
+      "text": "※タクスMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5bdb1e381ab",
+      "name": "影に向かいて影を斬り、光に向かいて光を斬る",
+      "text": "これが自分の手札にある間、クロスを持たない特徴「忍者」を持つ敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、そのユニットを持ち主の山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5bdb1e381ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※タクスMA",
+      "rule": "taxis_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

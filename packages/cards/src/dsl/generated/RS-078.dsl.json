@@ -1,0 +1,42 @@
+{
+  "id": "RS-078",
+  "name": "ダークナイト",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "SR",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "bp": 4000,
+  "sp": "special",
+  "size": "S",
+  "text": "【闇の舞】敵軍ラッシュエリアか敵軍バトルエリアに特徴「レッド」を持つユニットがあるとき、このユニットは次の能力を得る⇒「SP1」",
+  "rawText": "【闇の舞】敵軍ラッシュエリアか敵軍バトルエリアに特徴「レッド」を持つユニットがあるとき、このユニットは次の能力を得る⇒「SP1」",
+  "features": [
+    "有尾人一族",
+    "男"
+  ],
+  "imageUrl": "/cards/legend2/RS-078.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-078.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "dance_of_darkness",
+      "name": "闇の舞",
+      "text": "敵軍ラッシュエリアか敵軍バトルエリアに特徴「レッド」を持つユニットがあるとき、このユニットは次の能力を得る⇒「SP1」",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_dance_of_darkness",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

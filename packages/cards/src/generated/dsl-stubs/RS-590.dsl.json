@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-590",
+  "name": "クエスター・レイ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【グレイボンバー】相手の手札を見てもよい。そうしたとき、ＮＣかＲＣを持つSユニットのカードを1枚選び、そのNCまたはRCの効果を、このユニットの効果として発動する。（この効果は「クエスター・ガイ」からコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "【グレイボンバー】相手の手札を見てもよい。そうしたとき、ＮＣかＲＣを持つSユニットのカードを1枚選び、そのNCまたはRCの効果を、このユニットの効果として発動する。（この効果は「クエスター・ガイ」からコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 7000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "アシュ",
+    "男",
+    "クエスター"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b0e383ac",
+      "name": "グレイボンバー",
+      "text": "相手の手札を見てもよい。そうしたとき、ＮＣかＲＣを持つSユニットのカードを1枚選び、そのNCまたはRCの効果を、このユニットの効果として発動する。（この効果は「クエスター・ガイ」からコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b0e383ac",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-092",
+  "name": "ジャンパーソン（XG4）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは、カテゴリにDAを持たない、特徴「男」または「女」を持つユニットにアタックできない。 【JANPERSON FOR JUSTICE】これはカテゴリにDAを持つユニットにアタックするとき、BP+2000される。また、これがカテゴリにDAを持つユニットをバトルで撃破したとき、相手に1点ダメージを与える。",
+  "rawText": "※これは、カテゴリにDAを持たない、特徴「男」または「女」を持つユニットにアタックできない。 【JANPERSON FOR JUSTICE】これはカテゴリにDAを持つユニットにアタックするとき、BP+2000される。また、これがカテゴリにDAを持つユニットをバトルで撃破したとき、相手に1点ダメージを与える。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "メカ",
+    "人型",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "note_da",
+      "text": "※これは、カテゴリにDAを持たない、特徴「男」または「女」を持つユニットにアタックできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_da",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "janperson_for_justice",
+      "name": "JANPERSON FOR JUSTICE",
+      "text": "これはカテゴリにDAを持つユニットにアタックするとき、BP+2000される。また、これがカテゴリにDAを持つユニットをバトルで撃破したとき、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

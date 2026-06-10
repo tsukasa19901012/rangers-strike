@@ -5,6 +5,7 @@ import { getLegalActions } from "../core/legalActions";
 import { isCpuTurn, pickCpuAction } from "./level1";
 import { pickCpuFallbackAction } from "./helpers";
 import { createTestState, inst } from "../testing/fixtures";
+import { isCostWindowSatisfied } from "../core/costWindow";
 
 const defs = {
   ...Object.fromEntries(
@@ -74,7 +75,7 @@ describe("legend3 CPU", () => {
     expect(state.pendingEffectChoice).toBeUndefined();
     expect(
       state.players.player2.battle.some((c) => c.cardId === "RS-165") ||
-        state.players.player2.battleEntryHandDiscardReady === true,
+        isCostWindowSatisfied(state.players.player2, "battle_entry_hand_discard"),
     ).toBe(true);
   });
 

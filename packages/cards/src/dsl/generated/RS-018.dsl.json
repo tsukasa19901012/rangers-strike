@@ -1,0 +1,35 @@
+{
+  "id": "RS-018",
+  "name": "隠流忍術",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "effectId": "hidden_ninja",
+  "tags": [
+    "カウンター"
+  ],
+  "imageUrl": "/cards/legend1/RS-018.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-018.jpg",
+  "effects": [
+    {
+      "id": "hidden_ninja",
+      "text": "自軍ユニットがアタックされたとき発動できる。アタックしてきたユニット以外のユニットをすべての場から1体選んで、かわりにバトルさせる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "hidden_ninja"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

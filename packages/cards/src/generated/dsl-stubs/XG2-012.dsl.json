@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-012",
+  "name": "牙大王",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―気伝武人ウォンタイガー（または気伝獣ウォンタイガー）＋天空気殿 【飛翔剣・木端微塵】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアから、DAを持つ敵軍ユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがLユニットだったなら、捨札にするかわりに持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "合体―気伝武人ウォンタイガー（または気伝獣ウォンタイガー）＋天空気殿 【飛翔剣・木端微塵】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアから、DAを持つ敵軍ユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがLユニットだったなら、捨札にするかわりに持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 13000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットまたは自軍「大連王」1体を捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e9a39be7bf94",
+      "name": "飛翔剣・木端微塵",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアから、DAを持つ敵軍ユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがLユニットだったなら、捨札にするかわりに持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9a39be7bf94",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

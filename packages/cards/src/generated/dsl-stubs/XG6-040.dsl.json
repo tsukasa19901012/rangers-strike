@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-040",
+  "name": "仮面ライダージョーカー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※リードET 【ライダーキック】これ以外の自軍Sユニットが１体もなければ、相手は自分自身のSユニットを１体選び撃破する。そうしたとき、これはSP1になる。",
+  "rawText": "※リードET 【ライダーキック】これ以外の自軍Sユニットが１体もなければ、相手は自分自身のSユニットを１体選び撃破する。そうしたとき、これはSP1になる。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ロストドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_lead_et",
+      "text": "※リードET",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライダーキック",
+      "text": "これ以外の自軍Sユニットが１体もなければ、相手は自分自身のSユニットを１体選び撃破する。そうしたとき、これはSP1になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※リードET",
+      "rule": "lead_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

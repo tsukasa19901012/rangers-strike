@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-063",
+  "name": "仮面ライダースカル",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※タクスET 【お前の罪を数えろ】これは自軍捨札にSユニットのカードが5枚以上あるとき、次の効果を得る⇒アタックするときBP+3000される。",
+  "rawText": "※タクスET 【お前の罪を数えろ】これは自軍捨札にSユニットのカードが5枚以上あるとき、次の効果を得る⇒アタックするときBP+3000される。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ロストドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_taxis_et",
+      "text": "※タクスET",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3818ae5898d",
+      "name": "お前の罪を数えろ",
+      "text": "これは自軍捨札にSユニットのカードが5枚以上あるとき、次の効果を得る⇒アタックするときBP+3000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3818ae5898d",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※タクスET",
+      "rule": "taxis_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

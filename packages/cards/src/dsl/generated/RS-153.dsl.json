@@ -1,0 +1,63 @@
+{
+  "id": "RS-153",
+  "name": "ガオイーグル",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 4,
+  "bp": 4000,
+  "sp": "special",
+  "size": "M",
+  "comboNumber": 2,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【フェザーボム】「SP1」",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【フェザーボム】「SP1」",
+  "features": [
+    "獣"
+  ],
+  "imageUrl": "/cards/legend3/RS-153.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-153.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "grant_sp1",
+      "name": "フェザーボム",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

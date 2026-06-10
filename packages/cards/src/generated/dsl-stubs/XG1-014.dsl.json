@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-014",
+  "name": "キングレンジャー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはホールド状態のユニットにアタックすることができない。 【キングスティック】これが自軍エリアにある間、自軍ラッシュフェイズ中、ホールド状態のDAを持たないSユニットを1体選び、自軍コマンドを2つ（選んだユニットがウイングを持つなら4つ）ホールドしてもよい。そうしたとき、選んだユニットをリリースする。",
+  "rawText": "※これはホールド状態のユニットにアタックすることができない。 【キングスティック】これが自軍エリアにある間、自軍ラッシュフェイズ中、ホールド状態のDAを持たないSユニットを1体選び、自軍コマンドを2つ（選んだユニットがウイングを持つなら4つ）ホールドしてもよい。そうしたとき、選んだユニットをリリースする。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはホールド状態のユニットにアタックすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382ade383b3",
+      "name": "キングスティック",
+      "text": "これが自軍エリアにある間、自軍ラッシュフェイズ中、ホールド状態のDAを持たないSユニットを1体選び、自軍コマンドを2つ（選んだユニットがウイングを持つなら4つ）ホールドしてもよい。そうしたとき、選んだユニットをリリースする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ade383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

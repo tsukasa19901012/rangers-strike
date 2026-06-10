@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-295",
+  "name": "磁石神父",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはラッシュしたターンにバトルエリアに出られない。 【磁力拳】特徴に「男」または「女」の性別を持つ敵軍ユニットを2体選んでもよい。そうしたとき、選んだ2体の性別が同じならそれぞれ持ち主の手札に戻し、違うなら選んだ2体でバトルする。",
+  "rawText": "※これはラッシュしたターンにバトルエリアに出られない。 【磁力拳】特徴に「男」または「女」の性別を持つ敵軍ユニットを2体選んでもよい。そうしたとき、選んだ2体の性別が同じならそれぞれ持ち主の手札に戻し、違うなら選んだ2体でバトルする。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_battle_rush_turn",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_battle_rush_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e7a381e58a9b",
+      "name": "磁力拳",
+      "text": "特徴に「男」または「女」の性別を持つ敵軍ユニットを2体選んでもよい。そうしたとき、選んだ2体の性別が同じならそれぞれ持ち主の手札に戻し、違うなら選んだ2体でバトルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7a381e58a9b",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "rule": "no_battle_rush_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

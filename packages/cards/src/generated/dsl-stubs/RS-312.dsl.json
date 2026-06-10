@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-312",
+  "name": "カブトライジャー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【迅雷流剣技・雷撃斬】これがユニットを撃破したとき、これが撃破したユニットと同じ特徴を1つ以上持つユニットが敵軍ラッシュエリアにあれば1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "【迅雷流剣技・雷撃斬】これがユニットを撃破したとき、これが撃破したユニットと同じ特徴を1つ以上持つユニットが敵軍ラッシュエリアにあれば1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "named_e8bf85e99bb7",
+      "name": "迅雷流剣技・雷撃斬",
+      "text": "これがユニットを撃破したとき、これが撃破したユニットと同じ特徴を1つ以上持つユニットが敵軍ラッシュエリアにあれば1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8bf85e99bb7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

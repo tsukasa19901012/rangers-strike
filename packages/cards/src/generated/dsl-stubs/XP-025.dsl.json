@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XP-025",
+  "name": "ダイカイシンケンオー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※合体─獅子折神（またはシンケンレッド）+龍折神（またはシンケンブルー）+亀折神（またはシンケンピンク）+熊折神（またはシンケングリーン）+猿折神（またはシンケンイエロー）+海老折神（またはシンケンゴールド） 【二天一流乱れ斬り】自軍ターン中、これがバトルエリアに出たとき、追加条件を持たない敵軍ユニットを2体まで選び、持ち主の手札に戻してもよい。",
+  "rawText": "※合体─獅子折神（またはシンケンレッド）+龍折神（またはシンケンブルー）+亀折神（またはシンケンピンク）+熊折神（またはシンケングリーン）+猿折神（またはシンケンイエロー）+海老折神（またはシンケンゴールド） 【二天一流乱れ斬り】自軍ターン中、これがバトルエリアに出たとき、追加条件を持たない敵軍ユニットを2体まで選び、持ち主の手札に戻してもよい。",
+  "bp": 18000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "侍",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe59088",
+      "text": "※合体─獅子折神（またはシンケンレッド）+龍折神（またはシンケンブルー）+亀折神（またはシンケンピンク）+熊折神（またはシンケングリーン）+猿折神（またはシンケンイエロー）+海老折神（またはシンケンゴールド）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe59088",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4ba8ce5a4a9",
+      "name": "二天一流乱れ斬り",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、追加条件を持たない敵軍ユニットを2体まで選び、持ち主の手札に戻してもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4ba8ce5a4a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

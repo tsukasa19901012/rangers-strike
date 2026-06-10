@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-075",
+  "name": "仮面ライダーブレイド（XG2）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ブレイドブレード】自軍バトルフェイズ中、このユニットからSユニットがコンビネーションするとき、これをホールドして次の効果を発動できる⇒敵軍バトルエリアからSユニットを1体選び撃破する。（コンビネーションしたSユニットが「仮面ライダーディケイド」または「仮面ライダーディエンド」なら、撃破するかわりにゲームから除外する）",
+  "rawText": "【ブレイドブレード】自軍バトルフェイズ中、このユニットからSユニットがコンビネーションするとき、これをホールドして次の効果を発動できる⇒敵軍バトルエリアからSユニットを1体選び撃破する。（コンビネーションしたSユニットが「仮面ライダーディケイド」または「仮面ライダーディエンド」なら、撃破するかわりにゲームから除外する）",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "FFR"
+  ],
+  "effects": [
+    {
+      "id": "named_e38396e383ace382a4e38389",
+      "name": "ブレイドブレード",
+      "text": "自軍バトルフェイズ中、このユニットからSユニットがコンビネーションするとき、これをホールドして次の効果を発動できる⇒敵軍バトルエリアからSユニットを1体選び撃破する。（コンビネーションしたSユニットが「仮面ライダーディケイド」または「仮面ライダーディエンド」なら、撃破するかわりにゲームから除外する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

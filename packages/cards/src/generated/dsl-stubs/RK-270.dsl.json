@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-270",
+  "name": "チャップ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 【偵察】 自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアの「チャップ」が3体なら、敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、そのカードを山札の上に戻すか、下に戻すか選択する。",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 【偵察】 自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアの「チャップ」が3体なら、敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、そのカードを山札の上に戻すか、下に戻すか選択する。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "クライシス帝国",
+    "戦闘員"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e581b5e5af9f",
+      "name": "偵察",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアの「チャップ」が3体なら、敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、そのカードを山札の上に戻すか、下に戻すか選択する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e581b5e5af9f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

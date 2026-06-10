@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-600",
+  "name": "ゴーオンシルバー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※コールOT（このユニットはOTのユニットをラッシュするためのコマンドとしてホールドできる） 【ミッション1 バーニング】このターン、このユニットの次にコンビネーションするCN4を持つ自軍Sユニットは、そのＮＣの効果を発動する。ただし、ストライクはできない。",
+  "rawText": "※コールOT（このユニットはOTのユニットをラッシュするためのコマンドとしてホールドできる） 【ミッション1 バーニング】このターン、このユニットの次にコンビネーションするCN4を持つ自軍Sユニットは、そのＮＣの効果を発動する。ただし、ストライクはできない。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "シルバー",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_call_ot",
+      "text": "※コールOT（このユニットはOTのユニットをラッシュするためのコマンドとしてホールドできる）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_OT",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839fe38383",
+      "name": "ミッション1 バーニング",
+      "text": "このターン、このユニットの次にコンビネーションするCN4を持つ自軍Sユニットは、そのＮＣの効果を発動する。ただし、ストライクはできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839fe38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※コールOT（このユニットはOTのユニットをラッシュするためのコマンドとしてホールドできる）",
+      "rule": "call_OT"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

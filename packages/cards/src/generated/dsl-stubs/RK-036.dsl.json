@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-036",
+  "name": "仮面ライダーライア",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【運命への反抗】これが自軍バトルエリアにある間、自分は自軍コマンドをホールドせずにカウンターのオペレーションを使用できる。ただし、使用するオペレーションと同じカテゴリのカードを自軍コマンドゾーンから1枚選び、捨札にしなければ使用できない。",
+  "rawText": "【運命への反抗】これが自軍バトルエリアにある間、自分は自軍コマンドをホールドせずにカウンターのオペレーションを使用できる。ただし、使用するオペレーションと同じカテゴリのカードを自軍コマンドゾーンから1枚選び、捨札にしなければ使用できない。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "named_e9818be591bd",
+      "name": "運命への反抗",
+      "text": "これが自軍バトルエリアにある間、自分は自軍コマンドをホールドせずにカウンターのオペレーションを使用できる。ただし、使用するオペレーションと同じカテゴリのカードを自軍コマンドゾーンから1枚選び、捨札にしなければ使用できない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9818be591bd",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

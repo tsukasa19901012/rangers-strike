@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "PR-009",
+  "name": "サンバルカンロボ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―コスモバルカン＋ブルバルカン 【オーロラプラズマ返し】自軍ダメージが6点のとき、このユニットは次の能力を得る。⇒SP2",
+  "rawText": "合体―コスモバルカン＋ブルバルカン 【オーロラプラズマ返し】自軍ダメージが6点のとき、このユニットは次の能力を得る。⇒SP2",
+  "bp": 9000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e382aae383bc",
+      "name": "オーロラプラズマ返し",
+      "text": "自軍ダメージが6点のとき、このユニットは次の能力を得る。⇒SP2",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382aae383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

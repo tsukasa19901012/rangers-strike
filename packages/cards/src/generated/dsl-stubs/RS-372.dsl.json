@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-372",
+  "name": "X1マスク",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【チェンジパワー】これは自軍ダメージ1点につきBP＋1000され、自分がターンを終えるときBP8000以上なら撃破される。",
+  "rawText": "【チェンジパワー】これは自軍ダメージ1点につきBP＋1000され、自分がターンを終えるときBP8000以上なら撃破される。",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "グリーン",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e38381e382a7",
+      "name": "チェンジパワー",
+      "text": "これは自軍ダメージ1点につきBP＋1000され、自分がターンを終えるときBP8000以上なら撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38381e382a7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

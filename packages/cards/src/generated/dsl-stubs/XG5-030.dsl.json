@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-030",
+  "name": "ゲキゴリラ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※レジスト 【ゴリゴリ波】これをラッシュしたとき、敵軍Sユニットか敵軍コマンドを敵軍ダメージの数まで選びホールドしてもよい。",
+  "rawText": "※レジスト 【ゴリゴリ波】これをラッシュしたとき、敵軍Sユニットか敵軍コマンドを敵軍ダメージの数まで選びホールドしてもよい。",
+  "bp": 6000,
+  "size": "M",
+  "features": [
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b4e383aa",
+      "name": "ゴリゴリ波",
+      "text": "これをラッシュしたとき、敵軍Sユニットか敵軍コマンドを敵軍ダメージの数まで選びホールドしてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

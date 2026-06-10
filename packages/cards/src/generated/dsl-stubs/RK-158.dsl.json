@@ -1,0 +1,39 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-158",
+  "name": "ギガンデスヘブン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これは自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない。",
+  "rawText": "※これは自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない。",
+  "bp": 7500,
+  "size": "M",
+  "sp": 1,
+  "features": [
+    "イマジン"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

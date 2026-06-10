@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-085",
+  "name": "隊員コード153 ショウ（XG2）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【日本刀】このターン、OTまたはDAを持つすべての敵軍SユニットはBP-1000される。（BP0以下になったユニットは撃破される）",
+  "rawText": "【日本刀】このターン、OTまたはDAを持つすべての敵軍SユニットはBP-1000される。（BP0以下になったユニットは撃破される）",
+  "bp": 2000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": 1,
+  "features": [
+    "男",
+    "警察",
+    "スワット"
+  ],
+  "effects": [
+    {
+      "id": "named_e697a5e69cac",
+      "name": "日本刀",
+      "text": "このターン、OTまたはDAを持つすべての敵軍SユニットはBP-1000される。（BP0以下になったユニットは撃破される）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e697a5e69cac",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

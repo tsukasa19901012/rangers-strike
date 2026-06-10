@@ -5,6 +5,7 @@ import type {
   RushAction,
 } from "../types/actions";
 import type { GameState, PendingZordSetup, PlayerId, PlayerState } from "../types/game";
+import { isCostWindowSatisfied } from "../core/costWindow";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import {
   canRushUnit,
@@ -435,7 +436,7 @@ function completeZordPayment(
           materialDestination,
         ))
   ) {
-    if (player.rushCategoryHoldReady || shironRush) {
+    if (isCostWindowSatisfied(player, "rush_category") || shironRush) {
       return {
         kind: "rush",
         action: {

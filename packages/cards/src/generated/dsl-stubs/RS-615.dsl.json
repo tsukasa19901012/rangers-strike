@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-615",
+  "name": "ハートクイン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【ジャッカーコバック】自軍バトルエリアから、特徴「ブルー」「レッド」「グリーン」を持つSユニットをそれぞれ1体ずつ好きな順にホールドして、次の効果を発動できる⇒このターン、これはSP1になり、ホールド状態の敵軍コマンドをすべて捨札にする。",
+  "rawText": "【ジャッカーコバック】自軍バトルエリアから、特徴「ブルー」「レッド」「グリーン」を持つSユニットをそれぞれ1体ずつ好きな順にホールドして、次の効果を発動できる⇒このターン、これはSP1になり、ホールド状態の敵軍コマンドをすべて捨札にする。",
+  "bp": 1000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "メカ",
+    "ピンク",
+    "女",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b8e383a3",
+      "name": "ジャッカーコバック",
+      "text": "自軍バトルエリアから、特徴「ブルー」「レッド」「グリーン」を持つSユニットをそれぞれ1体ずつ好きな順にホールドして、次の効果を発動できる⇒このターン、これはSP1になり、ホールド状態の敵軍コマンドをすべて捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b8e383a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

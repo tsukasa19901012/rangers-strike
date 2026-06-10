@@ -5,6 +5,7 @@ import {
 } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
+import { isCostWindowSatisfied } from "../../core/costWindow";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import {
   cardCategories,
@@ -12,6 +13,11 @@ import {
   isSmallUnit,
   parsePowerCost,
 } from "../../core/catalog";
+import {
+  promotedAttackerCannotTarget,
+  promotedDefenderBlocksAttack,
+} from "../../dsl/promotedKeywordBridge";
+import { wingCanAttackEnemyRush } from "../../keywords";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { countReleasedCommands } from "../restrictions";
 import {
@@ -68,7 +74,7 @@ export function canPayBattleEntryRushDiscard(player: PlayerState, definitions: G
 
 export function battleEntryRushDiscardSatisfied(player: PlayerState, cardId: string): boolean {
   if (!needsBattleEntryRushDiscard(cardId)) return true;
-  return player.battleEntryRushDiscardReady === true;
+  return isCostWindowSatisfied(player, "battle_entry_rush_discard");
 }
 
 export function canPayBattleEntryHandDiscard(
@@ -84,7 +90,7 @@ export function battleEntryHandDiscardSatisfied(
   cardId: string,
 ): boolean {
   if (!needsBattleEntryHandDiscard(cardId)) return true;
-  return player.battleEntryHandDiscardReady === true;
+  return isCostWindowSatisfied(player, "battle_entry_hand_discard");
 }
 
 export function tryStartBattleEntryHandDiscard(
@@ -197,10 +203,58 @@ export function canAttackDefender(
   const inRush = findInZone(enemy, "rush", defenderInstanceId);
 
   if (inRush) {
+    if (
+      promotedDefenderBlocksAttack(
+        state,
+        attackerPlayerId,
+        attackerInstanceId,
+        defenderPlayerId,
+        defenderInstanceId,
+      ) ||
+      promotedAttackerCannotTarget(
+        state,
+        attackerPlayerId,
+        attackerInstanceId,
+        defenderPlayerId,
+        defenderInstanceId,
+      )
+    ) {
+      return false;
+    }
+    if (
+      wingCanAttackEnemyRush(state, attackerPlayerId, attacker.card.cardId) &&
+      isSmallUnit(state.definitions, inRush.card.cardId)
+    ) {
+      return true;
+    }
     return canAttackRushFn(state, attackerPlayerId, attackerInstanceId);
   }
 
   if (!inBattle) return false;
+
+  if (
+    promotedDefenderBlocksAttack(
+      state,
+      attackerPlayerId,
+      attackerInstanceId,
+      defenderPlayerId,
+      defenderInstanceId,
+    )
+  ) {
+    return false;
+  }
+
+  if (
+    promotedAttackerCannotTarget(
+      state,
+      attackerPlayerId,
+      attackerInstanceId,
+      defenderPlayerId,
+      defenderInstanceId,
+    )
+  ) {
+    return false;
+  }
 
   if (
     cannotAttackEnemyBattleS(attacker.card.cardId) &&

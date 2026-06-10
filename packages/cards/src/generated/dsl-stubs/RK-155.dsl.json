@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-155",
+  "name": "キングライナー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※これはアタックされるときBP+4000される。 【車両の収納と発車】自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアから特徴「車両」を持つMユニットを1体選び、自軍パワーゾーンに送ってもよい。また、これがラッシュエリアに戻るとき、自軍パワーゾーンのオモテ向きのカードから、特徴「車両」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+  "rawText": "※これはアタックされるときBP+4000される。 【車両の収納と発車】自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアから特徴「車両」を持つMユニットを1体選び、自軍パワーゾーンに送ってもよい。また、これがラッシュエリアに戻るとき、自軍パワーゾーンのオモテ向きのカードから、特徴「車両」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+  "bp": 5000,
+  "size": "L",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る。",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_attacked_bp_boost_4000",
+      "text": "※これはアタックされるときBP+4000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "attacked_bp_boost_4000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8bb8ae4b8a1",
+      "name": "車両の収納と発車",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアから特徴「車両」を持つMユニットを1体選び、自軍パワーゾーンに送ってもよい。また、これがラッシュエリアに戻るとき、自軍パワーゾーンのオモテ向きのカードから、特徴「車両」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8bb8ae4b8a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされるときBP+4000される。",
+      "rule": "attacked_bp_boost_4000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

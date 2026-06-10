@@ -1,0 +1,98 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-029",
+  "name": "強化スカイライダー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※ウイング ※これは「スカイライダー」としてつかえる。 ※これは特徴「仮面ライダー」を持つ自軍コマンド1つにつきBP+500される。 【大反転スカイキック】これをラッシュエリアに戻してもよい。そうしたとき、敵軍バトルエリアからユニットを1体選び、これとバトルさせてもよい。その後、このターン、これはバトルエリアに出られない。",
+  "rawText": "※ウイング ※これは「スカイライダー」としてつかえる。 ※これは特徴「仮面ライダー」を持つ自軍コマンド1つにつきBP+500される。 【大反転スカイキック】これをラッシュエリアに戻してもよい。そうしたとき、敵軍バトルエリアからユニットを1体選び、これとバトルさせてもよい。その後、このターン、これはバトルエリアに出られない。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_alias_named_e382b9e382ab",
+      "text": "※これは「スカイライダー」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_named_e382b9e382ab",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_fx_1_bp_5",
+      "text": "※これは特徴「仮面ライダー」を持つ自軍コマンド1つにつきBP+500される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_1_bp_5",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a4a7e58f8d",
+      "name": "大反転スカイキック",
+      "text": "これをラッシュエリアに戻してもよい。そうしたとき、敵軍バトルエリアからユニットを1体選び、これとバトルさせてもよい。その後、このターン、これはバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4a7e58f8d",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    },
+    {
+      "kind": "fusion",
+      "text": "※これは「スカイライダー」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

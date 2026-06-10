@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-035",
+  "name": "シンケンゴールド（XG4）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【モヂカラのプログラム】これが自軍エリアにある間、自軍ラッシュフェイズ中、 ETを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、自軍山札の上から1枚をオモテにし、オモテにしたカードが「特徴」を持つMAのカードなら手札に加え、それ以外なら山札の上か下に戻す。",
+  "rawText": "【モヂカラのプログラム】これが自軍エリアにある間、自軍ラッシュフェイズ中、 ETを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、自軍山札の上から1枚をオモテにし、オモテにしたカードが「特徴」を持つMAのカードなら手札に加え、それ以外なら山札の上か下に戻す。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "ゴールド",
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "named_e383a2e38382",
+      "name": "モヂカラのプログラム",
+      "text": "これが自軍エリアにある間、自軍ラッシュフェイズ中、 ETを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、自軍山札の上から1枚をオモテにし、オモテにしたカードが「特徴」を持つMAのカードなら手札に加え、それ以外なら山札の上か下に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a2e38382",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

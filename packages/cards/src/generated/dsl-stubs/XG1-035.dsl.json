@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-035",
+  "name": "兜折神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※これをラッシュしたとき、DAを持つSユニットを1体選び撃破する。 【侍武装】自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※これをラッシュしたとき、DAを持つSユニットを1体選び撃破する。 【侍武装】自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 5000,
+  "size": "M",
+  "features": [
+    "昆虫",
+    "折神獣"
+  ],
+  "effects": [
+    {
+      "id": "note_da_s_1",
+      "text": "※これをラッシュしたとき、DAを持つSユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_da_s_1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4be8de6ada6",
+      "name": "侍武装",
+      "text": "自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4be8de6ada6",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

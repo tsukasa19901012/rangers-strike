@@ -1,0 +1,25 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SK-000",
+  "name": "仮面ライダー龍騎ブランク体",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "なし",
+  "rawText": "なし",
+  "bp": 0,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "note": "SC blank template — wiki stats incomplete"
+  },
+  "effects": []
+}

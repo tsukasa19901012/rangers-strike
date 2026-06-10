@@ -4,7 +4,7 @@
  * Regenerate: npm run generate-card-tests -- RS-046
  */
 import { describe, it, expect } from "vitest";
-import { getDefaultCardRegistry } from "../dsl/registry";
+import { getDefaultCardRegistry } from "../registry";
 
 describe("RS-046 パトアーマー", () => {
   const registry = getDefaultCardRegistry();

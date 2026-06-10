@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-648",
+  "name": "ガオイカロス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―-ガオファルコン＋ガオライノス＋ガオマジロ＋ガオジュラフ＋ガオディアス ※ブラスト 【イカロスバインド】これがバトルエリアに出たとき、敵軍ユニットを1体選びホールドしてもよい。また、これが自軍バトルエリアにある間、相手は次の制限を受ける⇒ホールド状態のユニットをラッシュエリアに戻すとき、それを撃破するか戻さないかを選ぶ。",
+  "rawText": "合体―-ガオファルコン＋ガオライノス＋ガオマジロ＋ガオジュラフ＋ガオディアス ※ブラスト 【イカロスバインド】これがバトルエリアに出たとき、敵軍ユニットを1体選びホールドしてもよい。また、これが自軍バトルエリアにある間、相手は次の制限を受ける⇒ホールド状態のユニットをラッシュエリアに戻すとき、それを撃破するか戻さないかを選ぶ。",
+  "bp": 17000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "獣",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_blast",
+      "text": "※ブラスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "blast",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a4e382ab",
+      "name": "イカロスバインド",
+      "text": "これがバトルエリアに出たとき、敵軍ユニットを1体選びホールドしてもよい。また、これが自軍バトルエリアにある間、相手は次の制限を受ける⇒ホールド状態のユニットをラッシュエリアに戻すとき、それを撃破するか戻さないかを選ぶ。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a4e382ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブラスト",
+      "rule": "blast"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

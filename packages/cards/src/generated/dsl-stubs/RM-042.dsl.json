@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-042",
+  "name": "蝶忍　紅牙",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【妖魔忍法乱れ蝶】自分の手札からカードを2枚選び相手に見せてもよい。そうしたとき、見せた2枚のカードの必要パワーの数字を合計して、その合計と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "【妖魔忍法乱れ蝶】自分の手札からカードを2枚選び相手に見せてもよい。そうしたとき、見せた2枚のカードの必要パワーの数字を合計して、その合計と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "妖魔一族",
+    "女",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "named_e5a696e9ad94",
+      "name": "妖魔忍法乱れ蝶",
+      "text": "自分の手札からカードを2枚選び相手に見せてもよい。そうしたとき、見せた2枚のカードの必要パワーの数字を合計して、その合計と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "power"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

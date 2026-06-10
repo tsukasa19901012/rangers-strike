@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-023",
+  "name": "スクーパー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※これは、チェイスを持つ自軍ユニットがあるか、ライドされている間、Sビークルとして扱う。 【地中潜行】これをラッシュしたとき、敵軍パワーゾーンのオモテ向きのカードから1枚選び、捨札にしてもよい。そうしたとき、敵軍捨札からカードを1枚選び敵軍パワーゾーンにオモテ向きで置く。",
+  "rawText": "※これは、チェイスを持つ自軍ユニットがあるか、ライドされている間、Sビークルとして扱う。 【地中潜行】これをラッシュしたとき、敵軍パワーゾーンのオモテ向きのカードから1枚選び、捨札にしてもよい。そうしたとき、敵軍捨札からカードを1枚選び敵軍パワーゾーンにオモテ向きで置く。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは、チェイスを持つ自軍ユニットがあるか、ライドされている間、Sビークルとして扱う。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e59cb0e4b8ad",
+      "name": "地中潜行",
+      "text": "これをラッシュしたとき、敵軍パワーゾーンのオモテ向きのカードから1枚選び、捨札にしてもよい。そうしたとき、敵軍捨札からカードを1枚選び敵軍パワーゾーンにオモテ向きで置く。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e59cb0e4b8ad",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

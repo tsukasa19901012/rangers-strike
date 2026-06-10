@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-062",
+  "name": "モスアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ハート8－リフレクト】自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして、次の効果を発動できる⇒このターン、相手はカウンターを発動できない。",
+  "rawText": "【ハート8－リフレクト】自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして、次の効果を発動できる⇒このターン、相手はカウンターを発動できない。",
+  "bp": 1500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "昆虫"
+  ],
+  "effects": [
+    {
+      "id": "named_e3838fe383bc",
+      "name": "ハート8－リフレクト",
+      "text": "自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして、次の効果を発動できる⇒このターン、相手はカウンターを発動できない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838fe383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

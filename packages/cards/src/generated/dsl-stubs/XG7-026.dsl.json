@@ -1,0 +1,83 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-026",
+  "name": "ゴセイブラック×ゴセイイエロー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※クロス1 ※レジスト 【ランドコンビアタック】レジストを持つ敵軍Sユニットを1体選ぶか、レジストを持つ敵軍コマンドを1つ選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※クロス1 ※レジスト 【ランドコンビアタック】レジストを持つ敵軍Sユニットを1体選ぶか、レジストを持つ敵軍コマンドを1つ選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "ブラック",
+    "イエロー",
+    "男",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e383b3",
+      "name": "ランドコンビアタック",
+      "text": "レジストを持つ敵軍Sユニットを1体選ぶか、レジストを持つ敵軍コマンドを1つ選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-035",
+  "name": "海老折神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【太巻き光輪】これをラッシュしたとき、相手の手札が1枚以上あれば、次の効果を発動できる⇒敵軍コマンドゾーンのカードを1枚選び、相手の手札を見ないで1枚選ぶ。そうしたとき、選んだ2枚を置き換える。",
+  "rawText": "【太巻き光輪】これをラッシュしたとき、相手の手札が1枚以上あれば、次の効果を発動できる⇒敵軍コマンドゾーンのカードを1枚選び、相手の手札を見ないで1枚選ぶ。そうしたとき、選んだ2枚を置き換える。",
+  "bp": 6000,
+  "size": "L",
+  "features": [
+    "獣",
+    "折神獣",
+    "電子モヂカラ"
+  ],
+  "effects": [
+    {
+      "id": "named_e5a4aae5b7bb",
+      "name": "太巻き光輪",
+      "text": "これをラッシュしたとき、相手の手札が1枚以上あれば、次の効果を発動できる⇒敵軍コマンドゾーンのカードを1枚選び、相手の手札を見ないで1枚選ぶ。そうしたとき、選んだ2枚を置き換える。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4aae5b7bb",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

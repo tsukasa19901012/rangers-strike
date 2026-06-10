@@ -1,0 +1,35 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-054",
+  "name": "オーズドライバー",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から本来の特徴に「オーズドライバー」を持つカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。 ◎このターン、次に自分が手札から使用するカードの必要パワーの数字は、3少なくなる。",
+  "rawText": "次の効果から1つ選び発動する⇒ ◎自分の手札から本来の特徴に「オーズドライバー」を持つカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。 ◎このターン、次に自分が手札から使用するカードの必要パワーの数字は、3少なくなる。",
+  "effects": [
+    {
+      "id": "named_e382aae383bc",
+      "name": "オーズドライバー",
+      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から本来の特徴に「オーズドライバー」を持つカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。 ◎このターン、次に自分が手札から使用するカードの必要パワーの数字は、3少なくなる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382aae383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

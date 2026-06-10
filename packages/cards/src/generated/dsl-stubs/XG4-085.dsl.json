@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-085",
+  "name": "仮面ライダー幽汽SF",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これが撃破されて捨札になるとき、かわりに特徴「男」を持つ自軍ユニット1体を捨札にすれば、これはその場にとどまる。 【ターミネイトフラッシュ】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからホールド状態の敵軍Sユニットを自軍ダメージの数まで選び、撃破する。",
+  "rawText": "※これが撃破されて捨札になるとき、かわりに特徴「男」を持つ自軍ユニット1体を捨札にすれば、これはその場にとどまる。 【ターミネイトフラッシュ】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからホールド状態の敵軍Sユニットを自軍ダメージの数まで選び、撃破する。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になるとき、かわりに特徴「男」を持つ自軍ユニット1体を捨札にすれば、これはその場にとどまる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382bfe383bc",
+      "name": "ターミネイトフラッシュ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからホールド状態の敵軍Sユニットを自軍ダメージの数まで選び、撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382bfe383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-505",
+  "name": "スピードル",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※これは毎ターン、可能ならバトルエリアに出る。 ※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。 【滑空突撃】「SP1」このターン、これは特徴「航空機」が追加される。",
+  "rawText": "※これは毎ターン、可能ならバトルエリアに出る。 ※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。 【滑空突撃】「SP1」このターン、これは特徴「航空機」が追加される。",
+  "bp": 500,
+  "size": "M",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "車両",
+    "炎神"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_auto_battle_entry_each_turn",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_each_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_to_power_on_destroy",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "to_power_on_destroy",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6bb91e7a9ba",
+      "name": "滑空突撃",
+      "text": "「SP1」このターン、これは特徴「航空機」が追加される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "rule": "auto_battle_entry_each_turn"
+    },
+    {
+      "kind": "note",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。",
+      "rule": "to_power_on_destroy"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

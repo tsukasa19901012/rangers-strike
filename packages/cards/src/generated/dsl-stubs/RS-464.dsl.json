@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-464",
+  "name": "花忍者ユリ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【斬撃の回避】次の相手ターン、相手はこのユニットを選べない。",
+  "rawText": "【斬撃の回避】次の相手ターン、相手はこのユニットを選べない。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "女",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "named_e696ace69283",
+      "name": "斬撃の回避",
+      "text": "次の相手ターン、相手はこのユニットを選べない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e696ace69283",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

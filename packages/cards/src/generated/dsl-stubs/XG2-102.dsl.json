@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-102",
+  "name": "キカイダー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは、DAを持つ自軍コマンドがないとき、特徴「男」または「女」を持つユニットにアタックできない。 【デンジエンド】特徴「メカ」または「人型」を持つ敵軍Sユニットを1体選び撃破してもよい。",
+  "rawText": "※これは、DAを持つ自軍コマンドがないとき、特徴「男」または「女」を持つユニットにアタックできない。 【デンジエンド】特徴「メカ」または「人型」を持つ敵軍Sユニットを1体選び撃破してもよい。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_da",
+      "text": "※これは、DAを持つ自軍コマンドがないとき、特徴「男」または「女」を持つユニットにアタックできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_da",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38387e383b3",
+      "name": "デンジエンド",
+      "text": "特徴「メカ」または「人型」を持つ敵軍Sユニットを1体選び撃破してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38387e383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

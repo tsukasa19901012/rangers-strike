@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-096",
+  "name": "ギルの笛の音",
+  "type": "operation",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※常駐 特徴に「メカ」と「人型」を持つすべてのユニットは、カテゴリにDAが追加され、毎ターン可能ならバトルエリアに出る。",
+  "rawText": "※常駐 特徴に「メカ」と「人型」を持つすべてのユニットは、カテゴリにDAが追加され、毎ターン可能ならバトルエリアに出る。",
+  "effects": [
+    {
+      "id": "unnamed_resident",
+      "text": "※常駐 特徴に「メカ」と「人型」を持つすべてのユニットは、カテゴリにDAが追加され、毎ターン可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※常駐 特徴に「メカ」と「人型」を持つすべてのユニットは、カテゴリにDAが追加され、毎ターン可能ならバトルエリアに出る。",
+      "rule": "resident"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

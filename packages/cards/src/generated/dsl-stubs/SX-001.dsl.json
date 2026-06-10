@@ -1,0 +1,68 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SX-001",
+  "name": "仮面ライダー電王超CF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※ウイング 【超ボイスターズキック】自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンから、オモテ向きのカードとウラ向きのカードをそれぞれ1枚ずつ選び捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "rawText": "※ウイング 【超ボイスターズキック】自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンから、オモテ向きのカードとウラ向きのカードをそれぞれ1枚ずつ選び捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "DEN-O"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍「仮面ライダー電王SF」1体をパワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8b685e3839c",
+      "name": "超ボイスターズキック",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンから、オモテ向きのカードとウラ向きのカードをそれぞれ1枚ずつ選び捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

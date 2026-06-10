@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-230",
+  "name": "仮面ライダー西鬼",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない） 【音撃響・偉羅射威】敵軍ユニットの下にオモテ向きで重ねたオペレーションカードを1体選んでもよい。そうしたとき、選んだカードを持ち主の山札に戻してシャッフルする。",
+  "rawText": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない） 【音撃響・偉羅射威】敵軍ユニットの下にオモテ向きで重ねたオペレーションカードを1体選んでもよい。そうしたとき、選んだカードを持ち主の山札に戻してシャッフルする。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": 5,
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_scrum",
+      "text": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "scrum",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e99fb3e69283",
+      "name": "音撃響・偉羅射威",
+      "text": "敵軍ユニットの下にオモテ向きで重ねたオペレーションカードを1体選んでもよい。そうしたとき、選んだカードを持ち主の山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e99fb3e69283",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "rule": "scrum"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

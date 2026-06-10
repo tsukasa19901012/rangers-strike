@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-366",
+  "name": "グランギズモ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【総員搭乗】これが自軍ラッシュエリアにある間、自軍ラッシュフェイズ中、特徴「戦闘員」を持つ自軍ユニットを1体捨札にして次の効果を発動できる⇒自軍山札から、追加条件に「自軍Sユニットを1体捨札にする」とあるDAのMユニットのカードを1枚選び、ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+  "rawText": "【総員搭乗】これが自軍ラッシュエリアにある間、自軍ラッシュフェイズ中、特徴「戦闘員」を持つ自軍ユニットを1体捨札にして次の効果を発動できる⇒自軍山札から、追加条件に「自軍Sユニットを1体捨札にする」とあるDAのMユニットのカードを1枚選び、ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+  "bp": 4000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "named_e7b78fe593a1",
+      "name": "総員搭乗",
+      "text": "これが自軍ラッシュエリアにある間、自軍ラッシュフェイズ中、特徴「戦闘員」を持つ自軍ユニットを1体捨札にして次の効果を発動できる⇒自軍山札から、追加条件に「自軍Sユニットを1体捨札にする」とあるDAのMユニットのカードを1枚選び、ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e7b78fe593a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

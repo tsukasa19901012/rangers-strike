@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-019",
+  "name": "ダイボウケン（XG6）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン ※このカードの追加条件は、自軍捨札が7枚以上あるとき、次のように変更される→ 特徴「イエロー」を持つ自軍Sユニット1体を捨札にする 【奥の手】これが自軍バトルエリアにある間、敵軍ユニットがアタックまたはストライクをするとき、 これをホールドしてもよい。そうしたとき、そのアタックまたはストライクは無効になる。",
+  "rawText": "合体―ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン ※このカードの追加条件は、自軍捨札が7枚以上あるとき、次のように変更される→ 特徴「イエロー」を持つ自軍Sユニット1体を捨札にする 【奥の手】これが自軍バトルエリアにある間、敵軍ユニットがアタックまたはストライクをするとき、 これをホールドしてもよい。そうしたとき、そのアタックまたはストライクは無効になる。",
+  "bp": 9000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※このカードの追加条件は、自軍捨札が7枚以上あるとき、次のように変更される→ 特徴「イエロー」を持つ自軍Sユニット1体を捨札にする",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a5a5e381ae",
+      "name": "奥の手",
+      "text": "これが自軍バトルエリアにある間、敵軍ユニットがアタックまたはストライクをするとき、 これをホールドしてもよい。そうしたとき、そのアタックまたはストライクは無効になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a5a5e381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

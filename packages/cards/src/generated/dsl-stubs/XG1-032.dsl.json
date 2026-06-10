@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-032",
+  "name": "ゲキレッド（XG）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※レジスト 【咆咆弾】「SP1」自軍ラッシュエリアから、特徴「激気」を持つMユニットを1体選び手札に戻してもよい。そうしたとき、戻したユニットのBP以下のBPを持つユニットを、敵軍バトルエリアから1体選び撃破する。",
+  "rawText": "※レジスト 【咆咆弾】「SP1」自軍ラッシュエリアから、特徴「激気」を持つMユニットを1体選び手札に戻してもよい。そうしたとき、戻したユニットのBP以下のBPを持つユニットを、敵軍バトルエリアから1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": 2,
+  "features": [
+    "レッド",
+    "男",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e59286e59286",
+      "name": "咆咆弾",
+      "text": "「SP1」自軍ラッシュエリアから、特徴「激気」を持つMユニットを1体選び手札に戻してもよい。そうしたとき、戻したユニットのBP以下のBPを持つユニットを、敵軍バトルエリアから1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

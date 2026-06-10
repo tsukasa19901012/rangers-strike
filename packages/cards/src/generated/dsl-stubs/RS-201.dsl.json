@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-201",
+  "name": "イエローフォー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【超電子ホログラフィー】自軍山札を見る。そして、オペレーションのカードがあれば1枚選び、自軍パワーゾーンに置く。その後、山札をシャッフルする。",
+  "rawText": "【超電子ホログラフィー】自軍山札を見る。そして、オペレーションのカードがあれば1枚選び、自軍パワーゾーンに置く。その後、山札をシャッフルする。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "イエロー",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e8b685e99bbb",
+      "name": "超電子ホログラフィー",
+      "text": "自軍山札を見る。そして、オペレーションのカードがあれば1枚選び、自軍パワーゾーンに置く。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8b685e99bbb",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

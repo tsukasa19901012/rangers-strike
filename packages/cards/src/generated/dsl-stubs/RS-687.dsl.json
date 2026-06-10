@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-687",
+  "name": "ギンガイオー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―ギンガレオン＋ギンガルコン＋ギンガリラ＋ギンガベリック＋ギンガット ※ブラスト 【ガルコンボーガン】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する。",
+  "rawText": "合体―ギンガレオン＋ギンガルコン＋ギンガリラ＋ギンガベリック＋ギンガット ※ブラスト 【ガルコンボーガン】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する。",
+  "bp": 12000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "獣",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_blast",
+      "text": "※ブラスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "blast",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382ace383ab",
+      "name": "ガルコンボーガン",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ace383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブラスト",
+      "rule": "blast"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

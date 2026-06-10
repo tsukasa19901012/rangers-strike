@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-030",
+  "name": "ウルケンタウロス",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "合体―魔導騎士ウルザード＋魔導馬バリキオン ※これは「SP1」以上のユニットにしかアタックできない。",
+  "rawText": "合体―魔導騎士ウルザード＋魔導馬バリキオン ※これは「SP1」以上のユニットにしかアタックできない。",
+  "bp": 8000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "魔法"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "note_sp1",
+      "text": "※これは「SP1」以上のユニットにしかアタックできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_sp1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

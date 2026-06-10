@@ -1,0 +1,42 @@
+{
+  "id": "RS-079",
+  "name": "バイオハンター・シルバ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "R",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "bp": 3000,
+  "sp": "special",
+  "size": "S",
+  "text": "【バイバスター】これは敵軍コマンドゾーンにある「オーバーテクノロジー」のコマンド1つにつきBP＋1000される。これはBP5000以上のとき「SP1」になる。",
+  "rawText": "【バイバスター】これは敵軍コマンドゾーンにある「オーバーテクノロジー」のコマンド1つにつきBP＋1000される。これはBP5000以上のとき「SP1」になる。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend2/RS-079.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-079.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "bio_buster",
+      "name": "バイバスター",
+      "text": "これは敵軍コマンドゾーンにある「オーバーテクノロジー」のコマンド1つにつきBP＋1000される。これはBP5000以上のとき「SP1」になる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_bio_buster",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

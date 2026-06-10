@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-555",
+  "name": "ゴッドクマード",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャイエロー」のカードを1枚選び、自軍ラッシュエリアに出す。 【地割れ】敵軍バトルエリアからホールド状態のSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャイエロー」のカードを1枚選び、自軍ラッシュエリアに出す。 【地割れ】敵軍バトルエリアからホールド状態のSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 3500,
+  "size": "M",
+  "comboNumber": 5,
+  "features": [
+    "忍者",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャイエロー」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e59cb0e589b2",
+      "name": "地割れ",
+      "text": "敵軍バトルエリアからホールド状態のSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e59cb0e589b2",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

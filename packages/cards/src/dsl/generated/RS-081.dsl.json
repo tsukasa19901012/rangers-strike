@@ -1,0 +1,42 @@
+{
+  "id": "RS-081",
+  "name": "ティラノレンジャー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "R",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "bp": 3000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 4,
+  "text": "【龍撃剣】このターン、これはホールド状態の敵軍コマンド1つにつきBP＋1000される。これはBP5000以上のとき「SP1」になる。",
+  "rawText": "【龍撃剣】このターン、これはホールド状態の敵軍コマンド1つにつきBP＋1000される。これはBP5000以上のとき「SP1」になる。",
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "imageUrl": "/cards/legend2/RS-081.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-081.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "ryuu_geki_ken",
+      "name": "龍撃剣",
+      "text": "このターン、これはホールド状態の敵軍コマンド1つにつきBP＋1000される。これはBP5000以上のとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "ryuu_geki_ken"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-037",
+  "name": "牛折神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これはラッシュするとき可能ならバトルエリアに置く。 【荒ぶる折神】これをラッシュしたとき、お互いのダメージの点数が違うなら、少ない方は自分自身のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※これはラッシュするとき可能ならバトルエリアに置く。 【荒ぶる折神】これをラッシュしたとき、お互いのダメージの点数が違うなら、少ない方は自分自身のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 6000,
+  "size": "L",
+  "features": [
+    "獣",
+    "折神獣"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはラッシュするとき可能ならバトルエリアに置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e88d92e381b6",
+      "name": "荒ぶる折神",
+      "text": "これをラッシュしたとき、お互いのダメージの点数が違うなら、少ない方は自分自身のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e88d92e381b6",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

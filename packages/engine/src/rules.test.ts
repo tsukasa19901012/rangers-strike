@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { applyAction, getLegalActions } from "./index";
-import { createTestState, heldEtCommand, heldMaCommand, heldOtCommand, heldWbCommand, inst } from "./testing/fixtures";
+import { createTestState, heldEtCommand, heldMaCommand, heldOtCommand, heldWbCommand, inst, withCostWindow } from "./testing/fixtures";
 
 describe("zord-up rush", () => {
   const abarenohDef = {
@@ -37,7 +37,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 7 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldWbCommand("c1")],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
         rush: [tyranno],
       },
     });
@@ -62,7 +62,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 7 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldWbCommand("c1")],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
         rush: [tyranno, tricera, ptera],
       },
     });
@@ -104,7 +104,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 8 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldOtCommand("c1")],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
         rush: partners,
       },
     });
@@ -153,7 +153,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 7 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldMaCommand("c1")],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
         rush: partners,
       },
     });
@@ -200,7 +200,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldEtCommand("c1")],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
         rush: [sUnit],
       },
     });
@@ -243,7 +243,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldEtCommand("c1")],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
         rush: [sUnit],
       },
     });
@@ -289,7 +289,7 @@ describe("zord-up rush", () => {
         hand: [zord, sUnit],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldEtCommand("c1")],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
         rush: [],
       },
     });
@@ -333,8 +333,8 @@ describe("zord-up rush", () => {
           hand: [zord],
           power: Array.from({ length: 7 }, (_, i) => inst("TST-OP", `p${i}`)),
           command: [heldWbCommand("c1")],
-          rushCategoryHoldReady: true,
-        rushCategoryHoldReady: true,
+          ...withCostWindow("rush_category"),
+        ...withCostWindow("rush_category"),
           rush: partners,
         },
       });
@@ -360,7 +360,7 @@ describe("zord-up rush", () => {
         hand: [zord],
         power: Array.from({ length: 7 }, (_, i) => inst("TST-OP", `p${i}`)),
         command: [heldWbCommand("c1")],
-        rushCategoryHoldReady: true,
+        ...withCostWindow("rush_category"),
         rush: [wrongFusion],
       },
     });

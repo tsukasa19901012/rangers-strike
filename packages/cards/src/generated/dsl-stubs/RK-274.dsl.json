@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-274",
+  "name": "ビートチェイサー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これにライドしているユニットはBP+500される。 【ニューマシンの性能】 自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札の上から2枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。",
+  "rawText": "※これにライドしているユニットはBP+500される。 【ニューマシンの性能】 自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札の上から2枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。",
+  "effects": [
+    {
+      "id": "unnamed_ride_bp_boost_500",
+      "text": "※これにライドしているユニットはBP+500される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_500",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3838be383a5",
+      "name": "ニューマシンの性能",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札の上から2枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838be383a5",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットはBP+500される。",
+      "rule": "ride_bp_boost_500"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

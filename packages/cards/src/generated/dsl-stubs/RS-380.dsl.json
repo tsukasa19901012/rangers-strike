@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-380",
+  "name": "ギンガピンク",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【花弁の爪】「SP1」「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒敵軍コマンドをすべてホールドする。",
+  "rawText": "【花弁の爪】「SP1」「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒敵軍コマンドをすべてホールドする。",
+  "bp": 500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e88ab1e5bc81",
+      "name": "花弁の爪",
+      "text": "「SP1」「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒敵軍コマンドをすべてホールドする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

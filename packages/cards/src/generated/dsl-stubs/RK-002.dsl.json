@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-002",
+  "name": "V3ホッパー",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "自軍山札の上から3枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。",
+  "rawText": "自軍山札の上から3枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

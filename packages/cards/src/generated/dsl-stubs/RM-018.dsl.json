@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-018",
+  "name": "宇宙刑事ギャバン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※チェイス （これがライド中にユニットでなくなるとき、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい） ※自軍Sユニットがこれ以外にあれば、これはストライクできない。 【ギャバンダイナミック】本来のBPが4000以上の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "※チェイス （これがライド中にユニットでなくなるとき、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい） ※自軍Sユニットがこれ以外にあれば、これはストライクできない。 【ギャバンダイナミック】本来のBPが4000以上の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "宇宙刑事",
+    "メカ",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_chase",
+      "text": "※チェイス （これがライド中にユニットでなくなるとき、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "chase",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe887aa",
+      "text": "※自軍Sユニットがこれ以外にあれば、これはストライクできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382aee383a3",
+      "name": "ギャバンダイナミック",
+      "text": "本来のBPが4000以上の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382aee383a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※チェイス （これがライド中にユニットでなくなるとき、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）",
+      "rule": "chase"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

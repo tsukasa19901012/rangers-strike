@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-013",
+  "name": "BSフォーメーション",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※常駐（場に配置して、離れるまで効果が有効になる） 特徴「ブルー」または「スワット」を持つ自軍ユニットは、次の能力を得る⇒スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+  "rawText": "※常駐（場に配置して、離れるまで効果が有効になる） 特徴「ブルー」または「スワット」を持つ自軍ユニットは、次の能力を得る⇒スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+  "effects": [
+    {
+      "id": "unnamed_resident",
+      "text": "※常駐（場に配置して、離れるまで効果が有効になる） 特徴「ブルー」または「スワット」を持つ自軍ユニットは、次の能力を得る⇒スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※常駐（場に配置して、離れるまで効果が有効になる） 特徴「ブルー」または「スワット」を持つ自軍ユニットは、次の能力を得る⇒スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "rule": "resident"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

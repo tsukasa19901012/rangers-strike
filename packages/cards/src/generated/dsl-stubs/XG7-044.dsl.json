@@ -1,0 +1,82 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-044",
+  "name": "仮面ライダーアクセル×仮面ライダーW・CJ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "2+",
+  "text": "※クロス1 ※リードET 【風都の護り手】これがリリース状態で自軍コマンドゾーンにある間、相手の手札以外から敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "※クロス1 ※リードET 【風都の護り手】これがリリース状態で自軍コマンドゾーンにある間、相手の手札以外から敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 15,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_lead_et",
+      "text": "※リードET",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9a2a8e983bd",
+      "name": "風都の護り手",
+      "text": "これがリリース状態で自軍コマンドゾーンにある間、相手の手札以外から敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9a2a8e983bd",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※リードET",
+      "rule": "lead_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

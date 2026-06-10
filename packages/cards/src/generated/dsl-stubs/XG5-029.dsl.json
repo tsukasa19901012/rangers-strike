@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-029",
+  "name": "ゲキファイヤー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―ゲキレッドまたはゲキゴリラ＋ゲキブルーまたはゲキガゼル＋ゲキイエローまたはゲキペンギン 【頑頑ナックル落とし】これがアタックして敵軍ユニットをバトルで撃破するたび、自分コマンドを1つ選びホールドしてもよい。そうしたとき、このターン、これはBP+2000され、追加でアタックかストライクを行ってもよい。",
+  "rawText": "合体―ゲキレッドまたはゲキゴリラ＋ゲキブルーまたはゲキガゼル＋ゲキイエローまたはゲキペンギン 【頑頑ナックル落とし】これがアタックして敵軍ユニットをバトルで撃破するたび、自分コマンドを1つ選びホールドしてもよい。そうしたとき、このターン、これはBP+2000され、追加でアタックかストライクを行ってもよい。",
+  "bp": 12000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "激気",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e9a091e9a091",
+      "name": "頑頑ナックル落とし",
+      "text": "これがアタックして敵軍ユニットをバトルで撃破するたび、自分コマンドを1つ選びホールドしてもよい。そうしたとき、このターン、これはBP+2000され、追加でアタックかストライクを行ってもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9a091e9a091",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

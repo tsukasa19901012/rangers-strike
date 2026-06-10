@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-052",
+  "name": "ビートルーダー",
+  "type": "vehicle",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※特徴「昆虫」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【マグネアタッチメント】これがライドされている間、自軍エリアに「スタッガータンク」があれば、相手はスタートフェイズ中に自分自身のバトルエリアのユニットをラッシュエリアに戻すとき、特徴「メカ」を持つホールド状態のユニットは戻せない。",
+  "rawText": "※特徴「昆虫」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【マグネアタッチメント】これがライドされている間、自軍エリアに「スタッガータンク」があれば、相手はスタートフェイズ中に自分自身のバトルエリアのユニットをラッシュエリアに戻すとき、特徴「メカ」を持つホールド状態のユニットは戻せない。",
+  "effects": [
+    {
+      "id": "note_s_1",
+      "text": "※特徴「昆虫」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_without_rc_named_e69886e899ab",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839ee382b0",
+      "name": "マグネアタッチメント",
+      "text": "これがライドされている間、自軍エリアに「スタッガータンク」があれば、相手はスタートフェイズ中に自分自身のバトルエリアのユニットをラッシュエリアに戻すとき、特徴「メカ」を持つホールド状態のユニットは戻せない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839ee382b0",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-048",
+  "name": "隊員コード153 ショウ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【フレイムスローワー】敵軍バトルエリアから、DAまたはOTを持つSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。（この効果は、特徴「スワット」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）",
+  "rawText": "【フレイムスローワー】敵軍バトルエリアから、DAまたはOTを持つSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。（この効果は、特徴「スワット」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）",
+  "bp": 3000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": 1,
+  "features": [
+    "男",
+    "警察",
+    "スワット"
+  ],
+  "effects": [
+    {
+      "id": "named_e38395e383ac",
+      "name": "フレイムスローワー",
+      "text": "敵軍バトルエリアから、DAまたはOTを持つSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。（この効果は、特徴「スワット」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e383ac",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

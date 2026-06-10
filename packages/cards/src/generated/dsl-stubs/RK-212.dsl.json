@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-212",
+  "name": "仮面ライダーラルク",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【レイバレット】ホールド状態の敵軍Sユニットを2体選んでもよい。そうしたとき、選んだ2体の持つカテゴリが違うなら、相手はそのどちらか1体を選び撃破する。",
+  "rawText": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【レイバレット】ホールド状態の敵軍Sユニットを2体選んでもよい。そうしたとき、選んだ2体の持つカテゴリが違うなら、相手はそのどちらか1体を選び撃破する。",
+  "bp": 500,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": 1,
+  "features": [
+    "仮面ライダー",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_scrum",
+      "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "scrum",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383ace382a4",
+      "name": "レイバレット",
+      "text": "ホールド状態の敵軍Sユニットを2体選んでもよい。そうしたとき、選んだ2体の持つカテゴリが違うなら、相手はそのどちらか1体を選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383ace382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "rule": "scrum"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

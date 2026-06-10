@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-031",
+  "name": "ゴーオンレッド（XG）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これが自軍エリアにある間、自軍バトルフェイズ中、自分の手札にある特徴「炎神」を持つユニットカードはカテゴリにWBが追加される。 【ドルドル弾】自軍ラッシュエリアから、特徴「炎神」を持ち、ナンバーに数字を持つMユニットを1体選び手札に戻してもよい。そうしたとき、戻したユニットのナンバーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "rawText": "※これが自軍エリアにある間、自軍バトルフェイズ中、自分の手札にある特徴「炎神」を持つユニットカードはカテゴリにWBが追加される。 【ドルドル弾】自軍ラッシュエリアから、特徴「炎神」を持ち、ナンバーに数字を持つMユニットを1体選び手札に戻してもよい。そうしたとき、戻したユニットのナンバーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "comboNumber": 1,
+  "features": [
+    "レッド",
+    "男",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自軍エリアにある間、自軍バトルフェイズ中、自分の手札にある特徴「炎神」を持つユニットカードはカテゴリにWBが追加される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38389e383ab",
+      "name": "ドルドル弾",
+      "text": "自軍ラッシュエリアから、特徴「炎神」を持ち、ナンバーに数字を持つMユニットを1体選び手札に戻してもよい。そうしたとき、戻したユニットのナンバーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38389e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

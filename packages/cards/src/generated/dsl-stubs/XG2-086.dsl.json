@@ -1,0 +1,86 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-086",
+  "name": "ハイパーショウ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "10-",
+  "text": "合体―隊員コード153 ショウ＋ゴールドプラチナム ※敵軍ターン中、これとバトルしたユニットは、バトルに勝っても撃破される。 ※これが撃破されて捨札になったとき、自軍捨札から「隊員コード153 ショウ」のカードを1枚選び、自軍ラッシュエリアに出す。 【ドラムガンファイヤー】敵軍バトルエリアから、OTまたはDAを持つユニットを1体選び、持ち主のゾーンに置いてもよい。",
+  "rawText": "合体―隊員コード153 ショウ＋ゴールドプラチナム ※敵軍ターン中、これとバトルしたユニットは、バトルに勝っても撃破される。 ※これが撃破されて捨札になったとき、自軍捨札から「隊員コード153 ショウ」のカードを1枚選び、自軍ラッシュエリアに出す。 【ドラムガンファイヤー】敵軍バトルエリアから、OTまたはDAを持つユニットを1体選び、持ち主のゾーンに置いてもよい。",
+  "bp": 4500,
+  "size": "S",
+  "sp": 1,
+  "comboNumber": 1,
+  "features": [
+    "男",
+    "警察",
+    "スワット",
+    "シルバニックギア"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe695b5",
+      "text": "※敵軍ターン中、これとバトルしたユニットは、バトルに勝っても撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe695b5",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_fx_15",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「隊員コード153 ショウ」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e38389e383a9",
+      "name": "ドラムガンファイヤー",
+      "text": "敵軍バトルエリアから、OTまたはDAを持つユニットを1体選び、持ち主のゾーンに置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38389e383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-031",
+  "name": "ゲキガゼル",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【ガゼル脚】このユニットからコンビネーションする特徴「メカ」を持たないMユニットは、BP+3000され「SP1/2」になり、アタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする。",
+  "rawText": "【ガゼル脚】このユニットからコンビネーションする特徴「メカ」を持たないMユニットは、BP+3000され「SP1/2」になり、アタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする。",
+  "bp": 4000,
+  "size": "M",
+  "comboNumber": "L",
+  "features": [
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "named_e382ace382bc",
+      "name": "ガゼル脚",
+      "text": "このユニットからコンビネーションする特徴「メカ」を持たないMユニットは、BP+3000され「SP1/2」になり、アタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ace382bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

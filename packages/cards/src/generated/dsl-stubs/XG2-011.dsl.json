@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-011",
+  "name": "気伝武人ウォンタイガー（XG2）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【虎の子大秘術】好きなカード名1つを宣言してから、敵軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが宣言したカード名と同名なら、そのカードを持ち主のパワーゾーンにダメージにして置く。それ以外なら山札の上に戻す。",
+  "rawText": "【虎の子大秘術】好きなカード名1つを宣言してから、敵軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが宣言したカード名と同名なら、そのカードを持ち主のパワーゾーンにダメージにして置く。それ以外なら山札の上に戻す。",
+  "bp": 5000,
+  "size": "M",
+  "comboNumber": 4,
+  "features": [
+    "獣",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e8998ee381ae",
+      "name": "虎の子大秘術",
+      "text": "好きなカード名1つを宣言してから、敵軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが宣言したカード名と同名なら、そのカードを持ち主のパワーゾーンにダメージにして置く。それ以外なら山札の上に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8998ee381ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

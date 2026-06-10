@@ -1,0 +1,104 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-082",
+  "name": "電子星獣ドル（XG2）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※これは、自軍エリアでホールド状態かライドされている間、Lビークルとして扱う。 ※自軍ラッシュフェイズ中、このユニットをホールドしてもよい。 ※自軍ラッシュフェイズ中、このビークルがライドされていないなら、リリースしてもよい。 【ドルファイヤー】このビークルがチェイスの効果でライドされたとき、敵軍バトルエリアから本来のBPが5000以下のユニットを1体選び撃破してもよい。",
+  "rawText": "※これは、自軍エリアでホールド状態かライドされている間、Lビークルとして扱う。 ※自軍ラッシュフェイズ中、このユニットをホールドしてもよい。 ※自軍ラッシュフェイズ中、このビークルがライドされていないなら、リリースしてもよい。 【ドルファイヤー】このビークルがチェイスの効果でライドされたとき、敵軍バトルエリアから本来のBPが5000以下のユニットを1体選び撃破してもよい。",
+  "bp": 5000,
+  "size": "L",
+  "features": [
+    "メカ",
+    "獣",
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは、自軍エリアでホールド状態かライドされている間、Lビークルとして扱う。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe887aa",
+      "text": "※自軍ラッシュフェイズ中、このユニットをホールドしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe887aa_2",
+      "text": "※自軍ラッシュフェイズ中、このビークルがライドされていないなら、リリースしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe887aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38389e383abe38395e382a1",
+      "name": "ドルファイヤー",
+      "text": "このビークルがチェイスの効果でライドされたとき、敵軍バトルエリアから本来のBPが5000以下のユニットを1体選び撃破してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

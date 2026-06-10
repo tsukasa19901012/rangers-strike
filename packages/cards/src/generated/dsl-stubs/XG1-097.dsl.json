@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-097",
+  "name": "ビーファイターアゲハ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【ブルームキャノン】敵軍ユニットをBPの合計が5000以下になるように選び撃破してもよい。ただし選べるユニットの数は、これ以外の特徴「昆虫」を持つ自軍バトルエリアのユニットの数までとする。",
+  "rawText": "【ブルームキャノン】敵軍ユニットをBPの合計が5000以下になるように選び撃破してもよい。ただし選べるユニットの数は、これ以外の特徴「昆虫」を持つ自軍バトルエリアのユニットの数までとする。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "メカ",
+    "昆虫",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e38396e383ab",
+      "name": "ブルームキャノン",
+      "text": "敵軍ユニットをBPの合計が5000以下になるように選び撃破してもよい。ただし選べるユニットの数は、これ以外の特徴「昆虫」を持つ自軍バトルエリアのユニットの数までとする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38396e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

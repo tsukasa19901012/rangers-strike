@@ -1,0 +1,38 @@
+{
+  "id": "RS-010",
+  "name": "プリズムパワー",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "effectId": "prism_power",
+  "tags": [
+    "常駐"
+  ],
+  "imageUrl": "/cards/legend1/RS-010.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-010.jpg",
+  "effects": [
+    {
+      "id": "prism_power",
+      "name": "RS-010",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "category_substitute_via_hold",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

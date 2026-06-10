@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-060",
+  "name": "スカラベアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "【スペード10―タイム】自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりにゲームから除外して、次の効果を発動できる⇒このターンと、次の相手ターン、バトルフェイズは行われない。",
+  "rawText": "【スペード10―タイム】自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりにゲームから除外して、次の効果を発動できる⇒このターンと、次の相手ターン、バトルフェイズは行われない。",
+  "bp": 3500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "昆虫"
+  ],
+  "effects": [
+    {
+      "id": "fx_10",
+      "name": "スペード10―タイム",
+      "text": "自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりにゲームから除外して、次の効果を発動できる⇒このターンと、次の相手ターン、バトルフェイズは行われない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_fx_10",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

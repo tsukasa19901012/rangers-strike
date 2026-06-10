@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-050",
+  "name": "仮面ライダーグレイブ（XG6）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。 【試させてもらいますよ】「SP1」お互いの手札が1枚以上あれば、次の効果を発動できる⇒自分の手札を1～3枚選び相手に見せてから、その必要パワーの数字を合計する。そうしたとき、相手も同じようにして、合計した数字が低い方に1点ダメージを与える。",
+  "rawText": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。 【試させてもらいますよ】「SP1」お互いの手札が1枚以上あれば、次の効果を発動できる⇒自分の手札を1～3枚選び相手に見せてから、その必要パワーの数字を合計する。そうしたとき、相手も同じようにして、合計した数字が低い方に1点ダメージを与える。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_undead_command_rush_hold",
+      "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "undead_command_rush_hold",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8a9a6e38195",
+      "name": "試させてもらいますよ",
+      "text": "「SP1」お互いの手札が1枚以上あれば、次の効果を発動できる⇒自分の手札を1～3枚選び相手に見せてから、その必要パワーの数字を合計する。そうしたとき、相手も同じようにして、合計した数字が低い方に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
+      "rule": "undead_command_rush_hold"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

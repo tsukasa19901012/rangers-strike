@@ -1,0 +1,35 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "BK-015",
+  "name": "ブレイバックル",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーブレイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sユニットを1体選ぶ。このターン、選んだユニットは「SP1/2」になる。",
+  "rawText": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーブレイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sユニットを1体選ぶ。このターン、選んだユニットは「SP1/2」になる。",
+  "effects": [
+    {
+      "id": "named_e38396e383ac",
+      "name": "ブレイバックル",
+      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーブレイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sユニットを1体選ぶ。このターン、選んだユニットは「SP1/2」になる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38396e383ac",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

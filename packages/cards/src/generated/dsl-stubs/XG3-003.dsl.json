@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-003",
+  "name": "ラジエッカーロボ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※自分か相手のLユニットがあれば、これはLユニットになり、BP+3000される。 【チーキュでは1分間しかもたない】これが自軍エリアにある間、自分がターンを終えるとき、自軍捨札の「ラジエッカー」のカードとこれを置き換える。置き換えられなければこれを捨札にする。",
+  "rawText": "※自分か相手のLユニットがあれば、これはLユニットになり、BP+3000される。 【チーキュでは1分間しかもたない】これが自軍エリアにある間、自分がターンを終えるとき、自軍捨札の「ラジエッカー」のカードとこれを置き換える。置き換えられなければこれを捨札にする。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_l_l_bp",
+      "text": "※自分か相手のLユニットがあれば、これはLユニットになり、BP+3000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_l_l_bp",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38381e383bc",
+      "name": "チーキュでは1分間しかもたない",
+      "text": "これが自軍エリアにある間、自分がターンを終えるとき、自軍捨札の「ラジエッカー」のカードとこれを置き換える。置き換えられなければこれを捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38381e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

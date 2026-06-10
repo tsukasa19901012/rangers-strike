@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-014",
+  "name": "鉄面臂張遼",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたとき、バトルに勝っても撃破される。 【気力妖力合体】「SP1」 MAとDAの両方を持つ自軍コマンドを1つ選ぶか、MAのみを持つ自軍コマンドとDAのみを持つ自軍コマンドを1つずつ選びホールドしてもよい。そうしたとき、敵軍Sユニットを1体選び撃破する。 ・このテキストは修正されています。修正後は以下。 【気力妖力合体】「SP1」 MAとDAの両方を持つ自軍コマンドを1つ選びホールドするか、MAのみを持つ自軍コマンドとDAのみを持つ自軍コマンドを1つずつ選びホールドしてもよい。そうしたとき、敵軍Sユニットを1体選び撃破する。",
+  "rawText": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたとき、バトルに勝っても撃破される。 【気力妖力合体】「SP1」 MAとDAの両方を持つ自軍コマンドを1つ選ぶか、MAのみを持つ自軍コマンドとDAのみを持つ自軍コマンドを1つずつ選びホールドしてもよい。そうしたとき、敵軍Sユニットを1体選び撃破する。 ・このテキストは修正されています。修正後は以下。 【気力妖力合体】「SP1」 MAとDAの両方を持つ自軍コマンドを1つ選びホールドするか、MAのみを持つ自軍コマンドとDAのみを持つ自軍コマンドを1つずつ選びホールドしてもよい。そうしたとき、敵軍Sユニットを1体選び撃破する。",
+  "bp": 5000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "ダイ族",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_win_vs_sp1",
+      "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたとき、バトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6b097e58a9b",
+      "name": "気力妖力合体",
+      "text": "「SP1」 MAとDAの両方を持つ自軍コマンドを1つ選ぶか、MAのみを持つ自軍コマンドとDAのみを持つ自軍コマンドを1つずつ選びホールドしてもよい。そうしたとき、敵軍Sユニットを1体選び撃破する。 ・このテキストは修正されています。修正後は以下。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    },
+    {
+      "id": "named_e6b097e58a9b_2",
+      "name": "気力妖力合体",
+      "text": "「SP1」 MAとDAの両方を持つ自軍コマンドを1つ選びホールドするか、MAのみを持つ自軍コマンドとDAのみを持つ自軍コマンドを1つずつ選びホールドしてもよい。そうしたとき、敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたとき、バトルに勝っても撃破される。",
+      "rule": "destroy_on_win_vs_sp1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-034",
+  "name": "ブラストバギー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "2+",
+  "text": "【奇襲】これが自軍エリアにある間、ブラストの効果は次のルールに変更される⇒自分がゲームに負けるまで残りダメージ1点または2点で、自軍Lユニットが1体もなければ、これの追加条件は満たさなくてもよい。",
+  "rawText": "【奇襲】これが自軍エリアにある間、ブラストの効果は次のルールに変更される⇒自分がゲームに負けるまで残りダメージ1点または2点で、自軍Lユニットが1体もなければ、これの追加条件は満たさなくてもよい。",
+  "bp": 3000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニット1体をパワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "named_e5a587e8a5b2",
+      "name": "奇襲",
+      "text": "これが自軍エリアにある間、ブラストの効果は次のルールに変更される⇒自分がゲームに負けるまで残りダメージ1点または2点で、自軍Lユニットが1体もなければ、これの追加条件は満たさなくてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a587e8a5b2",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

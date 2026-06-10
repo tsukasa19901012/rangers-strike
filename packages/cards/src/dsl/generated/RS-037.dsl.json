@@ -1,0 +1,60 @@
+{
+  "id": "RS-037",
+  "name": "守護獣トリケラトプス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "bp": 5000,
+  "size": "M",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【トリケラカノン】これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、アタックするときBP＋1000される。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【トリケラカノン】これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、アタックするときBP＋1000される。",
+  "features": [
+    "恐竜"
+  ],
+  "imageUrl": "/cards/legend1/RS-037.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-037.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "tricera_cannon",
+      "name": "トリケラカノン",
+      "text": "これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、アタックするときBP＋1000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "tricera_cannon"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

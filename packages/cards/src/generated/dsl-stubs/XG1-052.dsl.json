@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-052",
+  "name": "仮面ライダーアギトTF",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーアギトGF」のカードを1枚選び、自軍ラッシュエリアに出す。 【ファイヤーストームアタック】これが自軍エリアにある間、相手がターンを終えるとき、次の効果を発動できる⇒そのターン中にホールド状態になった敵軍ユニットを、すべて持ち主の山札に戻してシャッフルする。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーアギトGF」のカードを1枚選び、自軍ラッシュエリアに出す。 【ファイヤーストームアタック】これが自軍エリアにある間、相手がターンを終えるとき、次の効果を発動できる⇒そのターン中にホールド状態になった敵軍ユニットを、すべて持ち主の山札に戻してシャッフルする。",
+  "bp": 3500,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "賢者の石"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーアギトGF」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e38395e382a1",
+      "name": "ファイヤーストームアタック",
+      "text": "これが自軍エリアにある間、相手がターンを終えるとき、次の効果を発動できる⇒そのターン中にホールド状態になった敵軍ユニットを、すべて持ち主の山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e382a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

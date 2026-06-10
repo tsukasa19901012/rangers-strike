@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-073",
+  "name": "仮面ライダーJジャンボフォーメーション（XG3）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【とっておきのお宝】これは、自軍「仮面ライダーディエンド」があれば「SP1/3」になる。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【とっておきのお宝】これは、自軍「仮面ライダーディエンド」があれば「SP1/3」になる。",
+  "bp": 5000,
+  "size": "L",
+  "sp": "special",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e381a8e381a3",
+      "name": "とっておきのお宝",
+      "text": "これは、自軍「仮面ライダーディエンド」があれば「SP1/3」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e381a8e381a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-022",
+  "name": "重星獣・ゴウタウラス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【騎獣激突】自軍コマンドを1つ選びホールドしてもよい。そうしたとき、ホールド状態の敵軍コマンドを1つ選び捨札にする。（この効果は、特徴「人型」を持つMユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【騎獣激突】自軍コマンドを1つ選びホールドしてもよい。そうしたとき、ホールド状態の敵軍コマンドを1つ選び捨札にする。（この効果は、特徴「人型」を持つMユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 5000,
+  "size": "M",
+  "comboNumber": 5,
+  "features": [
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9a88ee78da3",
+      "name": "騎獣激突",
+      "text": "自軍コマンドを1つ選びホールドしてもよい。そうしたとき、ホールド状態の敵軍コマンドを1つ選び捨札にする。（この効果は、特徴「人型」を持つMユニットからコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9a88ee78da3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

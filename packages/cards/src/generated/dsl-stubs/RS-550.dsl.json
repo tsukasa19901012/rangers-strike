@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-550",
+  "name": "隠大将軍",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―ゴッドガンマー＋ゴッドロウガン＋ゴッドサルダー＋ゴッドカーク＋ゴッドクマード 【鉄拳ゴッドフィニッシュ】自軍ターン中、これがバトルエリアに出たとき、必要パワーに「＋」を持たない敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "合体―ゴッドガンマー＋ゴッドロウガン＋ゴッドサルダー＋ゴッドカーク＋ゴッドクマード 【鉄拳ゴッドフィニッシュ】自軍ターン中、これがバトルエリアに出たとき、必要パワーに「＋」を持たない敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 17000,
+  "size": "L",
+  "sp": 2,
+  "features": [
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e98984e68bb3",
+      "name": "鉄拳ゴッドフィニッシュ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、必要パワーに「＋」を持たない敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e98984e68bb3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

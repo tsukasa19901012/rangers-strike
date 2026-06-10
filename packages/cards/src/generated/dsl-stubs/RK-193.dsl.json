@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-193",
+  "name": "ズー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【バームニードル】これをラッシュしたとき、カード1枚につきBP1000として、相手の手札の枚数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破してもよい。",
+  "rawText": "【バームニードル】これをラッシュしたとき、カード1枚につきBP1000として、相手の手札の枚数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破してもよい。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "女",
+    "昆虫"
+  ],
+  "effects": [
+    {
+      "id": "named_e38390e383bc",
+      "name": "バームニードル",
+      "text": "これをラッシュしたとき、カード1枚につきBP1000として、相手の手札の枚数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38390e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

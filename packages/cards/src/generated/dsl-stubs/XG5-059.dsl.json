@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-059",
+  "name": "仮面ライダーカリス（XG5）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。 【暴走する本能】これは、自分の手札が1枚以下のとき、BP+3000され、次の能力を得る⇒これは毎ターン可能ならバトルエリアに出る。また、これはアタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする。",
+  "rawText": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。 【暴走する本能】これは、自分の手札が1枚以下のとき、BP+3000され、次の能力を得る⇒これは毎ターン可能ならバトルエリアに出る。また、これはアタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "アンデッド",
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_undead_command_rush_hold",
+      "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "undead_command_rush_hold",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e69ab4e8b5b0",
+      "name": "暴走する本能",
+      "text": "これは、自分の手札が1枚以下のとき、BP+3000され、次の能力を得る⇒これは毎ターン可能ならバトルエリアに出る。また、これはアタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e69ab4e8b5b0",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
+      "rule": "undead_command_rush_hold"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

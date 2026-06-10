@@ -1,0 +1,51 @@
+{
+  "id": "RS-135",
+  "name": "ジェットファルコン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "4+",
+  "bp": 1000,
+  "size": "M",
+  "text": "※これは、特徴「航空機」を持たないユニットにアタックされない。【ファルコンクロー】これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出してもよい。",
+  "rawText": "※これは、特徴「航空機」を持たないユニットにアタックされない。【ファルコンクロー】これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出してもよい。",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "imageUrl": "/cards/legend3/RS-135.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-135.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは、特徴「航空機」を持たないユニットにアタックされない",
+      "rule": "requires_aircraft_attacker"
+    }
+  ],
+  "effects": [
+    {
+      "id": "falcon_claw",
+      "name": "ファルコンクロー",
+      "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出してもよい。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "falcon_claw"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

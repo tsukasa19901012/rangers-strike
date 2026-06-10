@@ -1,0 +1,46 @@
+{
+  "id": "RS-116",
+  "name": "マンドラ坊や",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "bp": 500,
+  "size": "S",
+  "text": "※これはバトルエリアに出られない。 【鳴き声】これが撃破されたとき、特徴「魔法」を持たないSユニットをすべて持ち主の手札に戻す。",
+  "rawText": "※これはバトルエリアに出られない。 【鳴き声】これが撃破されたとき、特徴「魔法」を持たないSユニットをすべて持ち主の手札に戻す。",
+  "features": [
+    "魔法",
+    "植物"
+  ],
+  "imageUrl": "/cards/legend2/RS-116.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-116.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出られない。",
+      "rule": "cannot_enter_battle"
+    }
+  ],
+  "effects": [
+    {
+      "id": "cry",
+      "name": "鳴き声",
+      "text": "これが撃破されたとき、特徴「魔法」を持たないSユニットをすべて持ち主の手札に戻す。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "cry"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

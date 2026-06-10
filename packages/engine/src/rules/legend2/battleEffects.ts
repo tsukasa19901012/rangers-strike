@@ -123,14 +123,6 @@ export function legend2AttackerBpBonus(
   if (atkEffect?.effectId === "dump_punch") bonus += 2000;
   if (atkEffect?.effectId === "adventure_drive_sword") bonus += 4000;
 
-  const mods = state.players[pending.attackerPlayerId].turnModifiers?.ghostAbsorptionBp;
-  if (mods?.[attacker.card.instanceId]) {
-    return (
-      mods[attacker.card.instanceId]! -
-      unitBp(getDefinition(state.definitions, attacker.card.cardId))
-    );
-  }
-
   return bonus;
 }
 

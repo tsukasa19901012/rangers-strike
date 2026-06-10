@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-084",
+  "name": "トリックベント",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "自軍山札の上から3枚をオモテにする。その中から特徴「ミラーライダー」を持つユニットカードをすべて自軍ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、それ以外のオモテにしたカードはすべて捨札になる。",
+  "rawText": "自軍山札の上から3枚をオモテにする。その中から特徴「ミラーライダー」を持つユニットカードをすべて自軍ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、それ以外のオモテにしたカードはすべて捨札になる。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

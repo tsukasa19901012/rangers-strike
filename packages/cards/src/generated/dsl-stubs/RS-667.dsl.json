@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-667",
+  "name": "ジャン・ボエール",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンに置いてもよい。 【ファーストクラスな教官】これをラッシュしたとき、自軍山札を見て「ジャン・ボエール」以外の特徴「炎神」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+  "rawText": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンに置いてもよい。 【ファーストクラスな教官】これをラッシュしたとき、自軍山札を見て「ジャン・ボエール」以外の特徴「炎神」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+  "bp": 3000,
+  "size": "M",
+  "features": [
+    "航空機",
+    "炎神"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_to_power_on_destroy",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンに置いてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "to_power_on_destroy",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38395e382a1",
+      "name": "ファーストクラスな教官",
+      "text": "これをラッシュしたとき、自軍山札を見て「ジャン・ボエール」以外の特徴「炎神」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e382a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンに置いてもよい。",
+      "rule": "to_power_on_destroy"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "RS-149",
+  "name": "イエローレーサー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 2,
+  "bp": 3000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 4,
+  "text": "【サイドナックル】「SP1」これがストライクして、相手がパワーゾーンのカードをウラ返すとき、ウラ返しにするカードは自分が選ぶ。",
+  "rawText": "【サイドナックル】「SP1」これがストライクして、相手がパワーゾーンのカードをウラ返すとき、ウラ返しにするカードは自分が選ぶ。",
+  "features": [
+    "イエロー",
+    "女"
+  ],
+  "imageUrl": "/cards/legend3/RS-149.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-149.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "side_knuckle",
+      "name": "サイドナックル",
+      "text": "「SP1」これがストライクして、相手がパワーゾーンのカードをウラ返すとき、ウラ返しにするカードは自分が選ぶ。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "side_knuckle"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

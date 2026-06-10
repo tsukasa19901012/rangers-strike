@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-029",
+  "name": "仮面ライダークウガMF",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはライド中、ライドしていない敵軍Sユニットにアタックされない。 【マイティキック】自軍ターン中、これは自軍バトルエリアにある特徴「警察」を持つユニット1体につきBP+1000される。",
+  "rawText": "※これはライド中、ライドしていない敵軍Sユニットにアタックされない。 【マイティキック】自軍ターン中、これは自軍バトルエリアにある特徴「警察」を持つユニット1体につきBP+1000される。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "アマダム"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはライド中、ライドしていない敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839ee382a4",
+      "name": "マイティキック",
+      "text": "自軍ターン中、これは自軍バトルエリアにある特徴「警察」を持つユニット1体につきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839ee382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

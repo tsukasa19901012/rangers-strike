@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-619",
+  "name": "ジェットマシン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※ウイング 【航空戦力の奇襲】 これが自軍エリアにある間、ウイングを持つユニットは、特徴「航空機」を持たないユニットにアタックされない。",
+  "rawText": "※ウイング 【航空戦力の奇襲】 これが自軍エリアにある間、ウイングを持つユニットは、特徴「航空機」を持たないユニットにアタックされない。",
+  "bp": 2000,
+  "size": "SC",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニット5体をそれぞれコマンドゾーンに送るか捨札にする",
+    "unitCount": 5
+  },
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e888aae7a9ba",
+      "name": "航空戦力の奇襲",
+      "text": "これが自軍エリアにある間、ウイングを持つユニットは、特徴「航空機」を持たないユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e888aae7a9ba",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

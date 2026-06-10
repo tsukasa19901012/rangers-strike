@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-041",
+  "name": "ジェノサイダー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―ベノスネーカー＋メタルゲラス＋エビルダイバー 【ドゥームズデイ】これが自軍バトルエリアにある間、敵軍Sユニットはストライクしてダメージを与えたとき撃破される。",
+  "rawText": "合体―ベノスネーカー＋メタルゲラス＋エビルダイバー 【ドゥームズデイ】これが自軍バトルエリアにある間、敵軍Sユニットはストライクしてダメージを与えたとき撃破される。",
+  "bp": 9000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "ミラーモンスター",
+    "獣"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e38389e382a5",
+      "name": "ドゥームズデイ",
+      "text": "これが自軍バトルエリアにある間、敵軍Sユニットはストライクしてダメージを与えたとき撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38389e382a5",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

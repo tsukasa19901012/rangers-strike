@@ -1,0 +1,111 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-068",
+  "name": "宇宙刑事シャリバン×ギャバン×シャイダー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※ブレイカー ※クロス2 ※チェイス ※これはビークルにライドできる。 【蒸着・赤射・焼結】これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、特徴「宇宙刑事」を持つ自軍ユニットがなければ、自軍コマンドゾーンからオペレーションカードを3枚選びホールドしてもよい。そうしたとき、これを自軍ラッシュエリアに出す。",
+  "rawText": "※ブレイカー ※クロス2 ※チェイス ※これはビークルにライドできる。 【蒸着・赤射・焼結】これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、特徴「宇宙刑事」を持つ自軍ユニットがなければ、自軍コマンドゾーンからオペレーションカードを3枚選びホールドしてもよい。そうしたとき、これを自軍ラッシュエリアに出す。",
+  "bp": 7000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "宇宙刑事",
+    "メカ",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_breaker",
+      "text": "※ブレイカー",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "breaker",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe382af",
+      "text": "※クロス2",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe382af",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_chase",
+      "text": "※チェイス",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "chase",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "can_ride_vehicle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e892b8e79d80",
+      "name": "蒸着・赤射・焼結",
+      "text": "これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、特徴「宇宙刑事」を持つ自軍ユニットがなければ、自軍コマンドゾーンからオペレーションカードを3枚選びホールドしてもよい。そうしたとき、これを自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e892b8e79d80",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブレイカー",
+      "rule": "breaker"
+    },
+    {
+      "kind": "note",
+      "text": "※チェイス",
+      "rule": "chase"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

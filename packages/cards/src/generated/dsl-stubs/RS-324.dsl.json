@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-324",
+  "name": "マジマザー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【ジルマ・マジュナ】これが自軍ラッシュエリアにある間、次の効果を発動できる⇒敵軍ターン中、自軍ユニットが撃破されたとき、これをかわりに捨札にしてもよい。そうしたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
+  "rawText": "【ジルマ・マジュナ】これが自軍ラッシュエリアにある間、次の効果を発動できる⇒敵軍ターン中、自軍ユニットが撃破されたとき、これをかわりに捨札にしてもよい。そうしたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "ホワイト",
+    "女",
+    "魔法"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b8e383ab",
+      "name": "ジルマ・マジュナ",
+      "text": "これが自軍ラッシュエリアにある間、次の効果を発動できる⇒敵軍ターン中、自軍ユニットが撃破されたとき、これをかわりに捨札にしてもよい。そうしたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b8e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

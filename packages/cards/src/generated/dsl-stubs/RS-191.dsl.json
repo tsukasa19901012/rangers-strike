@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-191",
+  "name": "ダイナレッド",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ダイナ剣・夢の翼】「SP1」これはアタックとストライクを1度ずつ行ってもよい。",
+  "rawText": "【ダイナ剣・夢の翼】「SP1」これはアタックとストライクを1度ずつ行ってもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e38380e382a4",
+      "name": "ダイナ剣・夢の翼",
+      "text": "「SP1」これはアタックとストライクを1度ずつ行ってもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

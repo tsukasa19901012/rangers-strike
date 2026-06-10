@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-343",
+  "name": "ゲキレッド",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ゲキヌンチャク】「SP1」特徴「獣」を持つユニットからコンビネーションするとき、このターン、これはBP＋2000される。",
+  "rawText": "【ゲキヌンチャク】「SP1」特徴「獣」を持つユニットからコンビネーションするとき、このターン、これはBP＋2000される。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b2e382ad",
+      "name": "ゲキヌンチャク",
+      "text": "「SP1」特徴「獣」を持つユニットからコンビネーションするとき、このターン、これはBP＋2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

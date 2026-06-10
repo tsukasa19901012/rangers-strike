@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-684",
+  "name": "猿折神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【軽業】敵軍Sユニットが6体以上あれば、BPの一番低い敵軍ユニットを1体選び、持ち主の山札の上に戻してもよい。",
+  "rawText": "【軽業】敵軍Sユニットが6体以上あれば、BPの一番低い敵軍ユニットを1体選び、持ち主の山札の上に戻してもよい。",
+  "bp": 3000,
+  "size": "M",
+  "comboNumber": 2,
+  "features": [
+    "獣",
+    "折神獣"
+  ],
+  "effects": [
+    {
+      "id": "named_e8bbbde6a5ad",
+      "name": "軽業",
+      "text": "敵軍Sユニットが6体以上あれば、BPの一番低い敵軍ユニットを1体選び、持ち主の山札の上に戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8bbbde6a5ad",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XP-007",
+  "name": "仮面ライダーNEW電王SF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはアタックすることができない。 【カウント】数字を1つ宣言してもよい。そうしたとき、自軍山札の上から1枚をオモテにする。オモテにしたカードの必要パワーの数字が宣言した数字以上なら、宣言した数字と同じ必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。その後、オモテにしたカードは山札の下に戻す。",
+  "rawText": "※これはアタックすることができない。 【カウント】数字を1つ宣言してもよい。そうしたとき、自軍山札の上から1枚をオモテにする。オモテにしたカードの必要パワーの数字が宣言した数字以上なら、宣言した数字と同じ必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。その後、オモテにしたカードは山札の下に戻す。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 14,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "NEWDEN-O"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack",
+      "text": "※これはアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382abe382a6",
+      "name": "カウント",
+      "text": "数字を1つ宣言してもよい。そうしたとき、自軍山札の上から1枚をオモテにする。オモテにしたカードの必要パワーの数字が宣言した数字以上なら、宣言した数字と同じ必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。その後、オモテにしたカードは山札の下に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382abe382a6",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックすることができない。",
+      "rule": "cannot_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

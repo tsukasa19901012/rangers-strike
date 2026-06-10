@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-035",
+  "name": "凱聖クールギン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "※これはアタックされるときBP+5000される。 【ヨロイ軍団の統率】これが自軍バトルエリアにある間、敵軍バトルフェイズ中、バトルエリアに出た特徴「メカ」を持つ敵軍Sユニットは、可能なら特徴「ヨロイ軍団」を持つユニットにアタックする。",
+  "rawText": "※これはアタックされるときBP+5000される。 【ヨロイ軍団の統率】これが自軍バトルエリアにある間、敵軍バトルフェイズ中、バトルエリアに出た特徴「メカ」を持つ敵軍Sユニットは、可能なら特徴「ヨロイ軍団」を持つユニットにアタックする。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "ヨロイ軍団",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_attacked_bp_boost_5000",
+      "text": "※これはアタックされるときBP+5000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "attacked_bp_boost_5000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a8e383ad",
+      "name": "ヨロイ軍団の統率",
+      "text": "これが自軍バトルエリアにある間、敵軍バトルフェイズ中、バトルエリアに出た特徴「メカ」を持つ敵軍Sユニットは、可能なら特徴「ヨロイ軍団」を持つユニットにアタックする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a8e383ad",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされるときBP+5000される。",
+      "rule": "attacked_bp_boost_5000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

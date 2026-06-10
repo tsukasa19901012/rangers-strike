@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-025",
+  "name": "宇宙刑事シャリバン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※チェイス （これがライド中にユニットでなくなる時、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい） 【シャリバンクラッシュ】本来のBPが3000の敵軍ユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "※チェイス （これがライド中にユニットでなくなる時、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい） 【シャリバンクラッシュ】本来のBPが3000の敵軍ユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "宇宙刑事",
+    "メカ",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_chase",
+      "text": "※チェイス （これがライド中にユニットでなくなる時、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "chase",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b7e383a3",
+      "name": "シャリバンクラッシュ",
+      "text": "本来のBPが3000の敵軍ユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b7e383a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※チェイス （これがライド中にユニットでなくなる時、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）",
+      "rule": "chase"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-080",
+  "name": "マシンディケイダー",
+  "type": "vehicle",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これにライドしているユニットはBP+500される。 【アタックライド】これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしているSビークルのカードを1枚選び、これと置き換えてもよい。ただし、追加条件は満たすこと。",
+  "rawText": "※これにライドしているユニットはBP+500される。 【アタックライド】これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしているSビークルのカードを1枚選び、これと置き換えてもよい。ただし、追加条件は満たすこと。",
+  "effects": [
+    {
+      "id": "unnamed_ride_bp_boost_500",
+      "text": "※これにライドしているユニットはBP+500される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_500",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e382bf",
+      "name": "アタックライド",
+      "text": "これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしているSビークルのカードを1枚選び、これと置き換えてもよい。ただし、追加条件は満たすこと。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e382bf",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットはBP+500される。",
+      "rule": "ride_bp_boost_500"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

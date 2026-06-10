@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-004",
+  "name": "ゴーカイブルー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これをラッシュしたとき、「ゴーカイブルー」以外のオモテ向きの自軍パワーから、追加条件を持たない特徴「ブルー」を持つSユニットのカードを1枚選び、これと置き換えてもよい。 【ゴーカイサーベル】SP1 特徴に色を持つオモテ向きの自軍パワーを1枚選び、自軍山札の上に戻してもよい。そうしたとき、戻したカードと同じ特徴を2つ以上持つ、敵軍バトルエリアのSユニットを1体選び撃破する。",
+  "rawText": "※これをラッシュしたとき、「ゴーカイブルー」以外のオモテ向きの自軍パワーから、追加条件を持たない特徴「ブルー」を持つSユニットのカードを1枚選び、これと置き換えてもよい。 【ゴーカイサーベル】SP1 特徴に色を持つオモテ向きの自軍パワーを1枚選び、自軍山札の上に戻してもよい。そうしたとき、戻したカードと同じ特徴を2つ以上持つ、敵軍バトルエリアのSユニットを1体選び撃破する。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "ブルー",
+    "男",
+    "宇宙海賊"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これをラッシュしたとき、「ゴーカイブルー」以外のオモテ向きの自軍パワーから、追加条件を持たない特徴「ブルー」を持つSユニットのカードを1枚選び、これと置き換えてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b4e383bc",
+      "name": "ゴーカイサーベル",
+      "text": "SP1 特徴に色を持つオモテ向きの自軍パワーを1枚選び、自軍山札の上に戻してもよい。そうしたとき、戻したカードと同じ特徴を2つ以上持つ、敵軍バトルエリアのSユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b4e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

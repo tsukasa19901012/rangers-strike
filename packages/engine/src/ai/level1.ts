@@ -224,6 +224,22 @@ function pickCpuActionInner(
     return pickReactionAction(state, playerId, actions, "pass_leave_reaction", enableSearch, options);
   }
 
+  if (state.pendingRegister) {
+    if (playerId !== state.pendingRegister.ownerPlayerId) return null;
+    const actions = getLegalActions(state);
+    const useRegister = actions.find((a) => a.type === "use_register");
+    if (useRegister) return useRegister;
+    return actions.find((a) => a.type === "pass_register") ?? null;
+  }
+
+  if (state.pendingChase) {
+    if (playerId !== state.pendingChase.chaserPlayerId) return null;
+    const actions = getLegalActions(state);
+    const vehicles = actionsOfType(actions, "resolve_chase");
+    if (vehicles.length > 0) return vehicles[0]!;
+    return actions.find((a) => a.type === "pass_chase") ?? null;
+  }
+
   if (state.pendingEffectChoice) {
     if (playerId !== state.pendingEffectChoice.playerId) return null;
     const actions = getLegalActions(state);
@@ -399,6 +415,12 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
   }
   if (state.pendingLeave) {
     return state.pendingLeave.ownerPlayerId === cpuPlayer;
+  }
+  if (state.pendingRegister) {
+    return state.pendingRegister.ownerPlayerId === cpuPlayer;
+  }
+  if (state.pendingChase) {
+    return state.pendingChase.chaserPlayerId === cpuPlayer;
   }
   if (state.pendingRush) {
     const defenderId = opponent(state.pendingRush.rusherPlayerId);

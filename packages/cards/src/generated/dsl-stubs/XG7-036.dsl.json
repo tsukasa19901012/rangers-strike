@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-036",
+  "name": "仮面ライダーナイト×仮面ライダー龍騎",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※これは「仮面ライダー龍騎」または「仮面ライダーナイト」としてつかえる。 【戦わなければ生き残れない】これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、SP1/2、コールWB、リードWB、クロス1のどれか1つを宣言してもよい。そうしたとき、このターン、これは宣言した能力を得る。",
+  "rawText": "※これは「仮面ライダー龍騎」または「仮面ライダーナイト」としてつかえる。 【戦わなければ生き残れない】これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、SP1/2、コールWB、リードWB、クロス1のどれか1つを宣言してもよい。そうしたとき、このターン、これは宣言した能力を得る。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは「仮面ライダー龍騎」または「仮面ライダーナイト」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e688a6e3828f",
+      "name": "戦わなければ生き残れない",
+      "text": "これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、SP1/2、コールWB、リードWB、クロス1のどれか1つを宣言してもよい。そうしたとき、このターン、これは宣言した能力を得る。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e688a6e3828f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

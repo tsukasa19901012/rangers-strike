@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-089",
+  "name": "カバドスSM",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札から「カバドス」のカードを1枚選び、自軍ラッシュエリアに出す。 【マサカリホーク】自軍ターン中、このユニットはBP+3000される。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札から「カバドス」のカードを1枚選び、自軍ラッシュエリアに出す。 【マサカリホーク】自軍ターン中、このユニットはBP+3000される。",
+  "bp": 4500,
+  "size": "S",
+  "features": [
+    "メカ",
+    "人型",
+    "スペシャルモード"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札から「カバドス」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839ee382b5",
+      "name": "マサカリホーク",
+      "text": "自軍ターン中、このユニットはBP+3000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839ee382b5",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

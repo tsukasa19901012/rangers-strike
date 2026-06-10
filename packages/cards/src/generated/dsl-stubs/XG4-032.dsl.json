@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-032",
+  "name": "ゴーオンゴールド（XG4）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※ウイング 【バーニングダガー】「SP1」これが敵軍ユニットをバトルで撃破したとき、撃破したユニットと同じカテゴリを持つオモテ向きの敵軍パワーを1枚選び捨札にしてもよい。（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
+  "rawText": "※ウイング 【バーニングダガー】「SP1」これが敵軍ユニットをバトルで撃破したとき、撃破したユニットと同じカテゴリを持つオモテ向きの敵軍パワーを1枚選び捨札にしてもよい。（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "ゴールド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38390e383bc",
+      "name": "バーニングダガー",
+      "text": "「SP1」これが敵軍ユニットをバトルで撃破したとき、撃破したユニットと同じカテゴリを持つオモテ向きの敵軍パワーを1枚選び捨札にしてもよい。（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

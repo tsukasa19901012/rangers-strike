@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-664",
+  "name": "エンジンオーG9",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "9+",
+  "text": "合体―エンジンオー（またはスピードル＋バスオン＋ベアールV）＋ガンバルオー（またはバルカ＋ガンパード＋キャリゲーター）＋セイクウオー（またはトリプター＋ジェットラス＋ジャン・ボエール） ※このカードの追加条件は、特徴「炎神」を持つオモテ向きの自軍パワーが9枚以上あるとき、次のように変更される⇒本来の特徴に「炎神」を持つ自軍Lユニット1体を捨札にする。 【G9グランプリ】これをラッシュしたとき、本来のBPが9000以下の敵軍ユニットを1体選び、撃破してもよい。",
+  "rawText": "合体―エンジンオー（またはスピードル＋バスオン＋ベアールV）＋ガンバルオー（またはバルカ＋ガンパード＋キャリゲーター）＋セイクウオー（またはトリプター＋ジェットラス＋ジャン・ボエール） ※このカードの追加条件は、特徴「炎神」を持つオモテ向きの自軍パワーが9枚以上あるとき、次のように変更される⇒本来の特徴に「炎神」を持つ自軍Lユニット1体を捨札にする。 【G9グランプリ】これをラッシュしたとき、本来のBPが9000以下の敵軍ユニットを1体選び、撃破してもよい。",
+  "bp": 22000,
+  "size": "L",
+  "sp": 3,
+  "features": [
+    "人型",
+    "炎神"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットをパワーゾーンに送る"
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※このカードの追加条件は、特徴「炎神」を持つオモテ向きの自軍パワーが9枚以上あるとき、次のように変更される⇒本来の特徴に「炎神」を持つ自軍Lユニット1体を捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "g9",
+      "name": "G9グランプリ",
+      "text": "これをラッシュしたとき、本来のBPが9000以下の敵軍ユニットを1体選び、撃破してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_g9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

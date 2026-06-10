@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-005",
+  "name": "セイントカイザー（XG6）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "合体―マジフェニックス＋一角聖馬ユニゴルオン ※これをラッシュしたとき、自分は1枚ドローする。 【マジカルショータイム】これが自分の手札にある間、敵軍ターン中、特徴「魔法」を持つ自軍ユニットがアタックされたとき、アタックされたユニットとこれを置き換えてもよい。そうしたとき、アタックされたユニットのかわりにこのユニットがバトルする。そのターン終了時に、このユニットを捨札にするか山札の下に戻す。",
+  "rawText": "合体―マジフェニックス＋一角聖馬ユニゴルオン ※これをラッシュしたとき、自分は1枚ドローする。 【マジカルショータイム】これが自分の手札にある間、敵軍ターン中、特徴「魔法」を持つ自軍ユニットがアタックされたとき、アタックされたユニットとこれを置き換えてもよい。そうしたとき、アタックされたユニットのかわりにこのユニットがバトルする。そのターン終了時に、このユニットを捨札にするか山札の下に戻す。",
+  "bp": 6000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "魔法",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "draw_cards",
+      "text": "※これをラッシュしたとき、自分は1枚ドローする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "controller"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839ee382b8",
+      "name": "マジカルショータイム",
+      "text": "これが自分の手札にある間、敵軍ターン中、特徴「魔法」を持つ自軍ユニットがアタックされたとき、アタックされたユニットとこれを置き換えてもよい。そうしたとき、アタックされたユニットのかわりにこのユニットがバトルする。そのターン終了時に、このユニットを捨札にするか山札の下に戻す。",
+      "trigger": {
+        "type": "on_turn_end"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839ee382b8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

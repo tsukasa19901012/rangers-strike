@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-061",
+  "name": "ジャマール戦闘機",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "2+",
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 【ミサイル射出】これをラッシュしたとき、次の効果を発動できる⇒敵軍バトルエリアから、スクラムを持つユニットを1体選び、ラッシュエリアに戻す。",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 【ミサイル射出】これをラッシュしたとき、次の効果を発動できる⇒敵軍バトルエリアから、スクラムを持つユニットを1体選び、ラッシュエリアに戻す。",
+  "bp": 2500,
+  "size": "M",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを1体捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839fe382b5",
+      "name": "ミサイル射出",
+      "text": "これをラッシュしたとき、次の効果を発動できる⇒敵軍バトルエリアから、スクラムを持つユニットを1体選び、ラッシュエリアに戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839fe382b5",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

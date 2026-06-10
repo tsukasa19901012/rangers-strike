@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-309",
+  "name": "轟雷神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―ゴウライビートル＋ゴウライスタッグ 【ゴウライキャノン】これがストライクしてダメージを与えたとき、敵軍コマンドゾーンと敵軍パワーゾーンのダメージ以外のカードから、それぞれ1枚ずつ選んでもよい。そうしたとき、選んだカードを持ち主の手札に戻す。",
+  "rawText": "合体―ゴウライビートル＋ゴウライスタッグ 【ゴウライキャノン】これがストライクしてダメージを与えたとき、敵軍コマンドゾーンと敵軍パワーゾーンのダメージ以外のカードから、それぞれ1枚ずつ選んでもよい。そうしたとき、選んだカードを持ち主の手札に戻す。",
+  "bp": 8000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e382b4e382a6",
+      "name": "ゴウライキャノン",
+      "text": "これがストライクしてダメージを与えたとき、敵軍コマンドゾーンと敵軍パワーゾーンのダメージ以外のカードから、それぞれ1枚ずつ選んでもよい。そうしたとき、選んだカードを持ち主の手札に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b4e382a6",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

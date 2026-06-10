@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-020",
+  "name": "合身獣士・ブルタウラス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―重騎士＋重星獣・ゴウタウラス ※レジスト 【野牛鋭断】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアのSユニットを好きな数選び撃破してもよい。ただし選べるユニットの数は、敵軍ダメージの点数と同じ数までとする。",
+  "rawText": "合体―重騎士＋重星獣・ゴウタウラス ※レジスト 【野牛鋭断】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアのSユニットを好きな数選び撃破してもよい。ただし選べるユニットの数は、敵軍ダメージの点数と同じ数までとする。",
+  "bp": 9000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "獣",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9878ee7899b",
+      "name": "野牛鋭断",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアのSユニットを好きな数選び撃破してもよい。ただし選べるユニットの数は、敵軍ダメージの点数と同じ数までとする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9878ee7899b",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

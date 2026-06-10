@@ -1,0 +1,79 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-083",
+  "name": "宇宙刑事ギャバン（XG2）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※チェイス ※これが自軍エリアにある間、特徴「宇宙刑事」を持つ自軍ユニットは、アタックされるとき、BP+1000される 【銀河パトロール隊隊長】自軍ラッシュエリアから、RCを持つユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる。",
+  "rawText": "※チェイス ※これが自軍エリアにある間、特徴「宇宙刑事」を持つ自軍ユニットは、アタックされるとき、BP+1000される 【銀河パトロール隊隊長】自軍ラッシュエリアから、RCを持つユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 14,
+  "comboNumber": "RC",
+  "features": [
+    "宇宙刑事",
+    "メカ",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_chase",
+      "text": "※チェイス",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "chase",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自軍エリアにある間、特徴「宇宙刑事」を持つ自軍ユニットは、アタックされるとき、BP+1000される",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e98a80e6b2b3",
+      "name": "銀河パトロール隊隊長",
+      "text": "自軍ラッシュエリアから、RCを持つユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e98a80e6b2b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※チェイス",
+      "rule": "chase"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

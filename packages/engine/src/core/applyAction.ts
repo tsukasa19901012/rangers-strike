@@ -37,6 +37,7 @@ import {
   buildSimpleLogEntry,
 } from "../log/formatLog";
 import { clearTurnModifiers } from "./modifiers";
+import { clearAllCostWindows, clearCostWindow, isCostWindowSatisfied } from "./costWindow";
 import {
   findInZone,
   opponent,
@@ -49,10 +50,15 @@ import { resolveDamagePaymentSelect } from "../rules/damagePayment";
 import {
   battlePositionAfterMove,
   canStrikeUnit,
-  resolveEnterBattleEffects,
   strikeDamageFor,
 } from "../rules/combo";
-import { finalizeRushAction } from "../rules/rushEffects";
+import { addRushPhaseRuleModifier } from "./scopedModifiers";
+import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
+import { emitStrikeDeclared } from "../events/emitStrikeDeclared";
+import { emitTurnEndingAndResolve } from "../events/emitTurnEnding";
+import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
+import { emitUnitRushedAndFinalize } from "../events/emitUnitRushed";
+import { RUSH_PHASE_RULE_IDS } from "../types/scopedModifiers";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import {
   applyDarkDealRushHolds,
@@ -113,8 +119,16 @@ import {
   finalizeStrike,
   hasStrikeReactions,
 } from "../rules/strikeReactions";
-import { applyAdventureEndTurn, getTurnModifiers, markBattleBlocked, markRushedThisTurn, withTurnModifiers } from "../rules/turnModifiers";
-import { applyOnTurnEndBattleEffects } from "../rules/legend2/destroyEffects";
+import { isHidoraEggUsed, markBattleBlocked, markRushedThisTurn } from "../rules/turnModifiers";
+import { applyPassChase, applyResolveChase, listValidChaseVehicleIds } from "../keywords/chase";
+import {
+  attachOperationCardToDslResume,
+  dslOperationOpensChoose,
+  getDslOperationEffect,
+  isDslInterpretableEffect,
+  tryResolveDslLeaveCounter,
+  tryResolveDslOperation,
+} from "../dsl/cardInterpreter";
 import { withSyncedEffectStack } from "../rules/effectStack";
 import { applyRegisterHold, finalizeRegisterDiscard } from "../rules/resist";
 import { hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
@@ -128,7 +142,6 @@ import {
   canExecuteHandCounter,
   getCounterEffectId,
   hasBattleCounterReactions,
-  resolveBattlePending,
   finalizeLeaveReaction,
   finalizeRushPending,
   tryLeaveField,
@@ -174,13 +187,10 @@ function ok(state: GameState, message: string): ActionResult {
 
 function clearCounterHoldReady(state: GameState, playerId: PlayerId): GameState {
   const player = state.players[playerId];
-  if (!player.counterCategoryHoldReady) return state;
+  if (!isCostWindowSatisfied(player, "counter_category")) return state;
   return {
     ...state,
-    ...updatePlayer(state, playerId, {
-      ...player,
-      counterCategoryHoldReady: false,
-    }),
+    ...updatePlayer(state, playerId, clearCostWindow(player, "counter_category")),
   };
 }
 
@@ -225,9 +235,8 @@ function advanceFromCharge(state: GameState, chargeLog: string): GameState {
 
 function finalizeTurnEnd(state: GameState): GameState {
   const prevPlayer = state.activePlayer;
-  let next = applyAdventureEndTurn(state, prevPlayer);
-  next = applyOnTurnEndBattleEffects(next, prevPlayer);
-  next = advancePhase(next);
+  const { state: afterEffects } = emitTurnEndingAndResolve(state, prevPlayer);
+  let next = advancePhase(afterEffects);
 
   if (next.activePlayer !== prevPlayer) {
     next = {
@@ -280,6 +289,14 @@ function completeStrike(state: GameState, pending: PendingStrike, extraLogs: str
     return ok(nextState, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending_damage"));
   }
   return finishStrikeResolution(state, pending, nextState, extraLogs);
+}
+
+function operationNeedsUpfrontTarget(cardId: string): boolean {
+  const dslEffect = getDslOperationEffect(cardId, "rush");
+  if (dslEffect && isDslInterpretableEffect(dslEffect) && dslOperationOpensChoose(dslEffect)) {
+    return false;
+  }
+  return needsOperationTarget(cardId);
 }
 
 export function applyAction(state: GameState, action: GameAction): ActionResult {
@@ -647,12 +664,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           pendingCommandPayment: undefined,
           players: {
             ...state.players,
-            [playerId]: {
-              ...payer,
-              battleEntryHoldReady: false,
-              rushCategoryHoldReady: false,
-              counterCategoryHoldReady: false,
-            },
+            [playerId]: clearAllCostWindows(payer),
           },
         },
         buildSimpleLogEntry(playerId, "command_payment_cancel"),
@@ -667,7 +679,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       const definition = getDefinition(state.definitions, found.card.cardId);
       if (!definition || definition.type !== "operation") return fail("not_operation");
 
-      if (needsOperationTarget(found.card.cardId) && !action.targetInstanceId) {
+      if (operationNeedsUpfrontTarget(found.card.cardId) && !action.targetInstanceId) {
         return fail("target_required");
       }
 
@@ -693,7 +705,11 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       };
 
       const effectMeta = getCardEffect(found.card.cardId);
-      if (effectMeta?.effectId === "place_in_power") {
+      const dslEffect = getDslOperationEffect(found.card.cardId, "rush");
+      const useDsl =
+        dslEffect !== undefined && isDslInterpretableEffect(dslEffect);
+
+      if (!useDsl && effectMeta?.effectId === "place_in_power") {
         const current = nextState.players[playerId];
         nextState = {
           ...nextState,
@@ -719,41 +735,82 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         nextState = placePermanentOperation(nextState, playerId, found.card);
       }
 
-      const outcome = resolveOperationEffect({
-        state: nextState,
-        playerId,
-        operationCardId: found.card.cardId,
-        targetInstanceId: action.targetInstanceId,
-        extraInstanceIds: [
-          ...(action.targetInstanceId ? [action.targetInstanceId] : []),
-          ...(action.extraInstanceId ? [action.extraInstanceId] : []),
-        ],
-      });
+      let outcomeDetail: string | undefined;
+      if (useDsl) {
+        let dslOutcome = tryResolveDslOperation({
+          state: nextState,
+          playerId,
+          operationCard: found.card,
+          targetInstanceId: action.targetInstanceId,
+          extraInstanceId: action.extraInstanceId,
+        });
+        if (!dslOutcome) {
+          return fail("dsl_unavailable");
+        }
+        if (dslOutcome.state.pendingEffectChoice?.dslResume) {
+          dslOutcome = {
+            ...dslOutcome,
+            state: attachOperationCardToDslResume(dslOutcome.state, found.card),
+          };
+        }
+        nextState = dslOutcome.state;
+        outcomeDetail = dslOutcome.detail;
+        if (
+          dslOutcome.discardOperation !== false &&
+          !isPermanent &&
+          !nextState.pendingEffectChoice
+        ) {
+          const current = nextState.players[playerId];
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, playerId, {
+              ...current,
+              discard: [...current.discard, found.card],
+            }),
+          };
+        }
+      } else {
+        const outcome = resolveOperationEffect({
+          state: nextState,
+          playerId,
+          operationCardId: found.card.cardId,
+          targetInstanceId: action.targetInstanceId,
+          extraInstanceIds: [
+            ...(action.targetInstanceId ? [action.targetInstanceId] : []),
+            ...(action.extraInstanceId ? [action.extraInstanceId] : []),
+          ],
+        });
 
-      nextState = outcome.state;
+        nextState = outcome.state;
+        outcomeDetail = outcome.detail;
 
-      if (outcome.discardOperation !== false && !isPermanent) {
-        const current = nextState.players[playerId];
-        nextState = {
-          ...nextState,
-          ...updatePlayer(nextState, playerId, {
-            ...current,
-            discard: [...current.discard, found.card],
-          }),
-        };
-      } else if (outcome.discardOperation === true && isPermanent) {
-        const current = nextState.players[playerId];
-        const operation = current.operation.filter(
-          (c) => c.instanceId !== found.card.instanceId,
-        );
-        nextState = {
-          ...nextState,
-          ...updatePlayer(nextState, playerId, {
-            ...current,
-            operation,
-            discard: [...current.discard, found.card],
-          }),
-        };
+        if (
+          outcome.discardOperation !== false &&
+          !isPermanent &&
+          !nextState.pendingEffectChoice
+        ) {
+          const current = nextState.players[playerId];
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, playerId, {
+              ...current,
+              discard: [...current.discard, found.card],
+            }),
+          };
+        } else if (outcome.discardOperation === true && isPermanent) {
+          const current = nextState.players[playerId];
+          const operation = current.operation.filter(
+            (c) => c.instanceId !== found.card.instanceId,
+          );
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, playerId, {
+              ...current,
+              operation,
+              discard: [...current.discard, found.card],
+            }),
+          };
+        }
       }
 
       return ok(
@@ -763,7 +820,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           "play_operation",
           found.card.cardId,
           state.definitions,
-          outcome.detail,
+          outcomeDetail,
         ),
       );
     }
@@ -885,13 +942,13 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       };
       nextPlayer = markRushedThisTurn(nextPlayer, handFound.card.instanceId);
       nextPlayer = clearShironLightRushTarget(nextPlayer);
-      nextPlayer = { ...nextPlayer, rushCategoryHoldReady: false };
+      nextPlayer = clearCostWindow(nextPlayer, "rush_category");
       let nextState: GameState = {
         ...state,
         ...updatePlayer(state, playerId, nextPlayer),
       };
 
-      const rushFinal = finalizeRushAction(
+      const rushFinal = emitUnitRushedAndFinalize(
         nextState,
         playerId,
         handFound.card.instanceId,
@@ -972,12 +1029,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       ) {
         return fail("cannot_enter_battle");
       }
-      let nextPlayer: PlayerState = {
-        ...player,
-        battleEntryHoldReady: false,
-        battleEntryRushDiscardReady: false,
-        battleEntryHandDiscardReady: false,
-      };
+      let nextPlayer: PlayerState = clearCostWindow(
+        clearCostWindow(player, "battle_entry_hold"),
+        "battle_entry_hand_discard",
+      );
       const [, rush] = removeAt(nextPlayer.rush, found.index);
       nextPlayer = { ...nextPlayer, rush };
 
@@ -998,7 +1053,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         ...updatePlayer(state, playerId, nextPlayer),
       };
 
-      const combo = resolveEnterBattleEffects(
+      const combo = emitUnitEnteredBattleEffects(
         nextState,
         playerId,
         battleCard,
@@ -1029,10 +1084,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       );
       const withClearedDiscard = {
         ...combo.state,
-        ...updatePlayer(combo.state, playerId, {
-          ...combo.state.players[playerId],
-          battleEntryDiscardedCardId: undefined,
-        }),
+        ...updatePlayer(combo.state, playerId, clearCostWindow(
+          combo.state.players[playerId],
+          "battle_entry_rush_discard",
+        )),
       };
       const finalState: GameState = afterEnterBattle(
         {
@@ -1085,6 +1140,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         damage,
         battlePhasePlayer: playerId,
       };
+      nextState = emitStrikeDeclared(nextState, pending);
 
       const defenderId = opponent(playerId);
       if (hasStrikeReactions(nextState, defenderId)) {
@@ -1155,12 +1211,26 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           return ok(clearCounterHoldReady(nextState, playerId), result.log);
         }
         if (effectId === "dino_guts") {
-          const result = applyDinoGutsCounter(
-            state,
-            playerId,
-            action.instanceId,
-            pending.leavingCardId,
+          const counterCard = state.players[playerId].hand.find(
+            (c) => c.instanceId === action.instanceId,
           );
+          const dslResult =
+            counterCard &&
+            tryResolveDslLeaveCounter({
+              state,
+              playerId,
+              counterInstanceId: action.instanceId,
+              leavingCardId: pending.leavingCardId,
+              sourceCardId: counterCard.cardId,
+            });
+          const result = dslResult
+            ? { state: dslResult.state, log: buildLogEntry(playerId, "play_counter", counterCard!.cardId, state.definitions, dslResult.detail), prevented: dslResult.prevented }
+            : applyDinoGutsCounter(
+              state,
+              playerId,
+              action.instanceId,
+              pending.leavingCardId,
+            );
           const nextState = finalizeLeaveReaction(result.state, pending, result.prevented);
           const strikePending = state.pendingStrike;
           if (!result.prevented && pending.resumePendingStrike && strikePending) {
@@ -1193,7 +1263,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
             pending,
           );
           const nextPending: PendingBattle = { ...pending, battleCancelled: true };
-          const resolved = resolveBattlePending(result.state, nextPending);
+          const resolved = emitBattleDeclaredAndResolve(result.state, nextPending);
           return {
             ok: true,
             state: {
@@ -1212,7 +1282,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
             action.substituteInstanceId,
             pending,
           );
-          const resolved = resolveBattlePending(result.state, result.pending);
+          const resolved = emitBattleDeclaredAndResolve(result.state, result.pending);
           return {
             ok: true,
             state: {
@@ -1422,7 +1492,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       const pending = state.pendingBattle;
       if (!pending) return fail("no_pending_battle");
       if (playerId !== pending.defenderPlayerId) return fail("wrong_player");
-      const resolved = resolveBattlePending(state, pending);
+      const resolved = emitBattleDeclaredAndResolve(state, pending);
       return ok(resolved.state, resolved.log);
     }
 
@@ -1513,6 +1583,32 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       return ok(nextState, buildSimpleLogEntry(playerId, "pass_register"));
     }
 
+    case "resolve_chase": {
+      const pending = state.pendingChase;
+      if (!pending) return fail("no_pending_chase");
+      if (playerId !== pending.chaserPlayerId) return fail("wrong_player");
+      if (!listValidChaseVehicleIds(state, pending).includes(action.newVehicleInstanceId)) {
+        return fail("invalid_chase_vehicle");
+      }
+      const result = applyResolveChase(state, pending, action.newVehicleInstanceId);
+      if (!result.log) return fail("invalid_chase_vehicle");
+      return ok(result.state, result.log);
+    }
+
+    case "pass_chase": {
+      const pending = state.pendingChase;
+      if (!pending) return fail("no_pending_chase");
+      if (playerId !== pending.chaserPlayerId) return fail("wrong_player");
+      let nextState = applyPassChase(state, pending);
+      if (pending.leaveIntent.resumePendingStrike && state.pendingStrike) {
+        return completeStrike(nextState, {
+          ...state.pendingStrike,
+          damageCancelled: pending.leaveIntent.resumePendingStrike.damageCancelled,
+        });
+      }
+      return ok(nextState, buildSimpleLogEntry(playerId, "pass_chase"));
+    }
+
     case "battle": {
       if (state.phase !== "battle") return fail("wrong_phase");
       state = clearBakiBakiExtraAttack(state, playerId, action.attackerInstanceId);
@@ -1590,7 +1686,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         return ok(pendingState, buildSimpleLogEntry(playerId, "battle_pending"));
       }
 
-      const resolved = resolveBattlePending(battleState, pending);
+      const resolved = emitBattleDeclaredAndResolve(battleState, pending);
       return ok(resolved.state, resolved.log);
     }
 
@@ -1662,10 +1758,12 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (!hasOperationEffect(player, "hidora_egg", state.definitions, { state, playerId })) {
         return fail("illegal_action");
       }
-      if (getTurnModifiers(player).hidoraEggUsed) return fail("already_used");
+      if (isHidoraEggUsed(player)) return fail("already_used");
 
       const result = resolveHidoraEgg(state, playerId);
-      let nextPlayer = withTurnModifiers(player, { hidoraEggUsed: true });
+      let nextPlayer = addRushPhaseRuleModifier(player, RUSH_PHASE_RULE_IDS.HIDORA_EGG, {
+        sourceCardId: "RS-071",
+      });
       return ok(
         { ...result.state, ...updatePlayer(result.state, playerId, nextPlayer) },
         hidoraEggLog(playerId, result.detail, state.definitions),

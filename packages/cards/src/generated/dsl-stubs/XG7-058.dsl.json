@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-058",
+  "name": "メタル・ドーパント",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、特徴「メカ」を得る。 【鋼鉄のマッチョボディ】これがユニットでなくなるとき、これをホールドしてその場に留めてもよい。また、これはホールド状態なら、アタックするときBP+2000される。",
+  "rawText": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、特徴「メカ」を得る。 【鋼鉄のマッチョボディ】これがユニットでなくなるとき、これをホールドしてその場に留めてもよい。また、これはホールド状態なら、アタックするときBP+2000される。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "怪人",
+    "男",
+    "ドーパント"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、特徴「メカ」を得る。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e98bbce98984",
+      "name": "鋼鉄のマッチョボディ",
+      "text": "これがユニットでなくなるとき、これをホールドしてその場に留めてもよい。また、これはホールド状態なら、アタックするときBP+2000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e98bbce98984",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

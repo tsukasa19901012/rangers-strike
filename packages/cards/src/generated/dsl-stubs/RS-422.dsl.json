@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-422",
+  "name": "ゲキトージャ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体－ゲキレッドまたはゲキタイガー＋ゲキイエローまたはゲキチーター＋ゲキブルーまたはゲキジャガー 【大頑頑拳】これがアタックしてバトルに勝つたび、敵軍コマンドを1つ選びホールドしてもよい。そうしたとき、これは追加でアタックできる（ストライクはできない）。",
+  "rawText": "合体－ゲキレッドまたはゲキタイガー＋ゲキイエローまたはゲキチーター＋ゲキブルーまたはゲキジャガー 【大頑頑拳】これがアタックしてバトルに勝つたび、敵軍コマンドを1つ選びホールドしてもよい。そうしたとき、これは追加でアタックできる（ストライクはできない）。",
+  "bp": 9000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "激気",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e5a4a7e9a091",
+      "name": "大頑頑拳",
+      "text": "これがアタックしてバトルに勝つたび、敵軍コマンドを1つ選びホールドしてもよい。そうしたとき、これは追加でアタックできる（ストライクはできない）。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

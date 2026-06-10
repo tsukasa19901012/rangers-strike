@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-053",
+  "name": "仮面ライダーアギトSHF（XG4）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※レジスト 【AGITΩ】これが自分の手札にある間、敵軍ターン中、特徴「仮面ライダー」を持つ自軍ユニットがユニットでなくなり、自軍ユニットが1体もなくなったとき、MAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、これを自軍ラッシュエリアに出す。その後、自分は1枚ドローする。",
+  "rawText": "※レジスト 【AGITΩ】これが自分の手札にある間、敵軍ターン中、特徴「仮面ライダー」を持つ自軍ユニットがユニットでなくなり、自軍ユニットが1体もなくなったとき、MAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、これを自軍ラッシュエリアに出す。その後、自分は1枚ドローする。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "賢者の石"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "agit",
+      "name": "AGITΩ",
+      "text": "これが自分の手札にある間、敵軍ターン中、特徴「仮面ライダー」を持つ自軍ユニットがユニットでなくなり、自軍ユニットが1体もなくなったとき、MAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、これを自軍ラッシュエリアに出す。その後、自分は1枚ドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "controller"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

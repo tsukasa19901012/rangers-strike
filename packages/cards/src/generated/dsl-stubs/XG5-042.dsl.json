@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-042",
+  "name": "ゴセイマシン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※このカードの追加条件は、自軍捨札にリードを持つSユニットのカードが5枚以上あるとき、次のように変更される⇒追加で自軍コマンドを2つホールドする。 【天装合体】自軍ラッシュフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自分の手札から「ゴセイグレート」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+  "rawText": "※このカードの追加条件は、自軍捨札にリードを持つSユニットのカードが5枚以上あるとき、次のように変更される⇒追加で自軍コマンドを2つホールドする。 【天装合体】自軍ラッシュフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自分の手札から「ゴセイグレート」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+  "bp": 6000,
+  "size": "SC",
+  "features": [
+    "魔法",
+    "獣"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニット5体を捨札にする",
+    "unitCount": 5
+  },
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※このカードの追加条件は、自軍捨札にリードを持つSユニットのカードが5枚以上あるとき、次のように変更される⇒追加で自軍コマンドを2つホールドする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a4a9e8a385",
+      "name": "天装合体",
+      "text": "自軍ラッシュフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自分の手札から「ゴセイグレート」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4a9e8a385",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

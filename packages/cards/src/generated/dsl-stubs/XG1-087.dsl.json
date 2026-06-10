@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-087",
+  "name": "少女仮面ヘルバイラ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【瞬間移動】敵軍ターン中、これがアタックされたとき、これのバトルエリアでの並び順が自分から見て左から1番目以外なら、これを自分から見て左隣のユニットと置き替えてもよい。そうしたとき、バトルは行われない。",
+  "rawText": "【瞬間移動】敵軍ターン中、これがアタックされたとき、これのバトルエリアでの並び順が自分から見て左から1番目以外なら、これを自分から見て左隣のユニットと置き替えてもよい。そうしたとき、バトルは行われない。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "ワーラー帝国",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e79eace99693",
+      "name": "瞬間移動",
+      "text": "敵軍ターン中、これがアタックされたとき、これのバトルエリアでの並び順が自分から見て左から1番目以外なら、これを自分から見て左隣のユニットと置き替えてもよい。そうしたとき、バトルは行われない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e79eace99693",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

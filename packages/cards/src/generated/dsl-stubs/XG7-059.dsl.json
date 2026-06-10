@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-059",
+  "name": "トリガー・ドーパント",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、OTが追加される。 【ゲームスタート……】これが自軍パワーゾーンでオモテ向きになっている間、効果に「ラッシュしたとき」とある敵軍ユニットがその効果を発動するとき、それを実行する前に、これを自軍ラッシュエリアに出してもよい。そうしたとき、その効果は無効になる。",
+  "rawText": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、OTが追加される。 【ゲームスタート……】これが自軍パワーゾーンでオモテ向きになっている間、効果に「ラッシュしたとき」とある敵軍ユニットがその効果を発動するとき、それを実行する前に、これを自軍ラッシュエリアに出してもよい。そうしたとき、その効果は無効になる。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "怪人",
+    "男",
+    "ドーパント"
+  ],
+  "effects": [
+    {
+      "id": "note_ot",
+      "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、OTが追加される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_ot",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b2e383bc",
+      "name": "ゲームスタート……",
+      "text": "これが自軍パワーゾーンでオモテ向きになっている間、効果に「ラッシュしたとき」とある敵軍ユニットがその効果を発動するとき、それを実行する前に、これを自軍ラッシュエリアに出してもよい。そうしたとき、その効果は無効になる。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b2e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

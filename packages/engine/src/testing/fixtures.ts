@@ -3,6 +3,7 @@ import { legend1Catalog } from "@rangers-strike/cards";
 import type { CardInstance } from "../types/game";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { WIN_DAMAGE } from "../types/game";
+import type { CostWindowKind, CostWindowMetadata } from "../types/costWindow";
 
 const TEST_DEFINITIONS: Record<string, CardDefinition> = {
   "TST-UNIT-0": {
@@ -186,6 +187,18 @@ export function createTestState(options: TestStateOptions = {}): GameState {
 }
 
 export { TEST_DEFINITIONS, MERGED_DEFINITIONS, inst, WIN_DAMAGE };
+
+/** Test helper: cost window satisfaction patch for createTestState player overrides. */
+export function withCostWindow(
+  kind: CostWindowKind,
+  metadata?: CostWindowMetadata,
+): Pick<PlayerState, "costWindows"> {
+  return {
+    costWindows: {
+      [kind]: { kind, satisfied: true, metadata },
+    },
+  };
+}
 
 /** ラッシュテスト用の WB ホールドコマンド（TST-UNIT-* は WB カテゴリ）。 */
 export function heldWbCommand(suffix = "cmd"): CardInstance {

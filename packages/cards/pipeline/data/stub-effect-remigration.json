@@ -1,0 +1,134 @@
+{
+  "generatedAt": "2026-06-10T02:48:13.150Z",
+  "scanned": 1408,
+  "migratedToPrimitives": 67,
+  "remainingEffectDelegate": 1341,
+  "samples": [
+    {
+      "cardId": "PR-012",
+      "effectId": "note_e280bbe382abe382a6e383b3",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "PR-026",
+      "effectId": "recruit_named_e38389e382aee383bce383bb_on_destroy",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-004",
+      "effectId": "counter_defender_bp_2000",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-051",
+      "effectId": "named_e99fb3e69283e68993e383bb",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-058",
+      "effectId": "ride_without_rc_named_e4bbaee99da2e383a9e382a4",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-064",
+      "effectId": "named_e38395e382a1e382a4e382ba",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-112",
+      "effectId": "named_e382b9e383a9e38383e382b7",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-117",
+      "effectId": "named_e382afe383aae382b9e382bf",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-125",
+      "effectId": "named_e38396e383ace382a4e383a9",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-162",
+      "effectId": "named_e383a9e382a4e38380e383bc",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-166",
+      "effectId": "unnamed_no_ride_while_held",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-178",
+      "effectId": "named_e5a4a7e58887e696ad",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-243",
+      "effectId": "named_e38389e383a9e382b4e383b3",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-278",
+      "effectId": "named_e9a39be7bf94e696ac",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-308",
+      "effectId": "unnamed_auto_battle_if_enemy_battle",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-312",
+      "effectId": "named_e38389e38383e382ace383bb",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-332",
+      "effectId": "named_e58fb6e38188e3819fe38184",
+      "to": "choose"
+    },
+    {
+      "cardId": "RM-027",
+      "effectId": "note_e280bbe887aae58886e3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RM-031",
+      "effectId": "note_e280bbe887aae58886e3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RM-046",
+      "effectId": "named_e382b8e38383e382afe382ad",
+      "to": "choose"
+    },
+    {
+      "cardId": "RS-232",
+      "effectId": "recruit_named_e382a2e38390e383ace382a4_on_destroy",
+      "to": "choose"
+    },
+    {
+      "cardId": "RS-235",
+      "effectId": "note_e280bbe887aae58886e3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-241",
+      "effectId": "recruit_named_e3839ce382a6e382b1e383b3_on_destroy",
+      "to": "choose"
+    },
+    {
+      "cardId": "RS-323",
+      "effectId": "recruit_named_e3839ee382b8e382b0e383aa_on_destroy",
+      "to": "choose"
+    },
+    {
+      "cardId": "RS-331",
+      "effectId": "recruit_named_e383ace382b8e382a7e383b3_on_destroy",
+      "to": "choose"
+    }
+  ],
+  "note": "M19 remigrate-stub-effects: re-match enqueue + effect_* delegates."
+}

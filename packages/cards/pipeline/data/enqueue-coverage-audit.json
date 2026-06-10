@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-06-10T02:19:44.409Z",
+  "dispatchSource": "packages/engine/src/dsl/runtimeEffectDispatch.ts",
+  "uniqueEnqueueEffectIds": 90,
+  "byCategory": {
+    "core_legacy": 90
+  },
+  "legacyDelegatePatternsFound": [
+    "resolveOperationEffect",
+    "applyLegacyNumberComboEffect",
+    "resolveLegend2EnterBattle",
+    "resolveLegend3EnterBattle",
+    "resolveNamedOnRushEffects"
+  ],
+  "topPromotedNoop": [],
+  "note": "promoted_noop = enqueue-only stub; grant_keyword/choose primitives resolve via effectLookup full-playable fallback (M16)."
+}

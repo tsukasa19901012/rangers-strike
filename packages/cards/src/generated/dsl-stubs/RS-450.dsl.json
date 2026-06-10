@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-450",
+  "name": "地帝忍オヨブー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 【皇帝への忠義】これが敵軍ユニットとバトルして、お互いに撃破されて捨札になったとき、自軍エリアに特徴「皇帝」を持つユニットがあれば、これとバトルした敵軍ユニットのカードを、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 【皇帝への忠義】これが敵軍ユニットとバトルして、お互いに撃破されて捨札になったとき、自軍エリアに特徴「皇帝」を持つユニットがあれば、これとバトルした敵軍ユニットのカードを、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "ブヨン族",
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_win_vs_sp1",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e79a87e5b89d",
+      "name": "皇帝への忠義",
+      "text": "これが敵軍ユニットとバトルして、お互いに撃破されて捨札になったとき、自軍エリアに特徴「皇帝」を持つユニットがあれば、これとバトルした敵軍ユニットのカードを、持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e79a87e5b89d",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "destroy_on_win_vs_sp1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

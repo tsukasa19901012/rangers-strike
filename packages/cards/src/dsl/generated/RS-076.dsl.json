@@ -1,0 +1,41 @@
+{
+  "id": "RS-076",
+  "name": "ジャガーバルカン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "bp": 4000,
+  "size": "L",
+  "text": "【母艦】これが自軍ラッシュエリアにあるとき、自分がラッシュするMユニットの追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを1体コマンドゾーンに送るかわりに、「アーステクノロジー」の自軍コマンドを1つホールドする。",
+  "rawText": "【母艦】これが自軍ラッシュエリアにあるとき、自分がラッシュするMユニットの追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを1体コマンドゾーンに送るかわりに、「アーステクノロジー」の自軍コマンドを1つホールドする。",
+  "features": [
+    "メカ",
+    "母艦"
+  ],
+  "imageUrl": "/cards/legend2/RS-076.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-076.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "jaguar_mothership",
+      "name": "母艦",
+      "text": "これが自軍ラッシュエリアにあるとき、自分がラッシュするMユニットの追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを1体コマンドゾーンに送るかわりに、「アーステクノロジー」の自軍コマンドを1つホールドする。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_jaguar_mothership",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

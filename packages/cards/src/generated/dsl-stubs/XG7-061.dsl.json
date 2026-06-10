@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-061",
+  "name": "トンデモジョーズ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "【蠍座のスターピース】これをラッシュしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、捨札にしてもよい。そうしたとき、捨札にしたカードがオペレーションカードなら、敵軍パワーゾーンにダメージにして置き直してもよい。",
+  "rawText": "【蠍座のスターピース】これをラッシュしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、捨札にしてもよい。そうしたとき、捨札にしたカードがオペレーションカードなら、敵軍パワーゾーンにダメージにして置き直してもよい。",
+  "bp": 7000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e8a08de5baa7",
+      "name": "蠍座のスターピース",
+      "text": "これをラッシュしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、捨札にしてもよい。そうしたとき、捨札にしたカードがオペレーションカードなら、敵軍パワーゾーンにダメージにして置き直してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8a08de5baa7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

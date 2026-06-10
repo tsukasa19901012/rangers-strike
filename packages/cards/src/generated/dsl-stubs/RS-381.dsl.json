@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-381",
+  "name": "ガレオパルサー",
+  "type": "vehicle",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※特徴「レッド」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【獅子の装光】自軍ターン中、これにライドしたユニットをライドオフさせるかわりに次の効果を発動できる⇒ライドされていない敵軍Sビークルを1体選び捨札にする。その後、これを捨札にする。",
+  "rawText": "※特徴「レッド」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【獅子の装光】自軍ターン中、これにライドしたユニットをライドオフさせるかわりに次の効果を発動できる⇒ライドされていない敵軍Sビークルを1体選び捨札にする。その後、これを捨札にする。",
+  "effects": [
+    {
+      "id": "note_s_1",
+      "text": "※特徴「レッド」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_without_rc_named_e383ace38383",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e78d85e5ad90",
+      "name": "獅子の装光",
+      "text": "自軍ターン中、これにライドしたユニットをライドオフさせるかわりに次の効果を発動できる⇒ライドされていない敵軍Sビークルを1体選び捨札にする。その後、これを捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e78d85e5ad90",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

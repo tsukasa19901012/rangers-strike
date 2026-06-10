@@ -1,0 +1,46 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-310",
+  "name": "ゴウライビートル",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【カラクリ忍法・角変化】これは、自分と相手のダメージ1点につきBP＋1000され、BP8000以上のとき「SP1」になる。これは、自分か相手がターンを終えるときBP8000以上なら撃破される。",
+  "rawText": "【カラクリ忍法・角変化】これは、自分と相手のダメージ1点につきBP＋1000され、BP8000以上のとき「SP1」になる。これは、自分か相手がターンを終えるときBP8000以上なら撃破される。",
+  "bp": 2000,
+  "size": "M",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを1体捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "named_e382abe383a9",
+      "name": "カラクリ忍法・角変化",
+      "text": "これは、自分と相手のダメージ1点につきBP＋1000され、BP8000以上のとき「SP1」になる。これは、自分か相手がターンを終えるときBP8000以上なら撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

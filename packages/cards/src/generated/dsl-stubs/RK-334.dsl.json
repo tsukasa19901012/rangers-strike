@@ -1,0 +1,27 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-334",
+  "name": "仮面ライダー電王LF（2nd）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "",
+  "rawText": "",
+  "bp": 4500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "DEN-O",
+    "2nd"
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SX-002",
+  "name": "仮面ライダークウガRU",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "※レジスト 【黒い瞳に映るもの】これが自軍バトルエリアにある間、特徴「仮面ライダー」を持つユニットは、アタックかストライクを選ぶとき、可能ならアタックを選ぶ。",
+  "rawText": "※レジスト 【黒い瞳に映るもの】これが自軍バトルエリアにある間、特徴「仮面ライダー」を持つユニットは、アタックかストライクを選ぶとき、可能ならアタックを選ぶ。",
+  "bp": 7000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "アマダム",
+    "ライジング"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9bb92e38184",
+      "name": "黒い瞳に映るもの",
+      "text": "これが自軍バトルエリアにある間、特徴「仮面ライダー」を持つユニットは、アタックかストライクを選ぶとき、可能ならアタックを選ぶ。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9bb92e38184",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -11,6 +11,7 @@ import {
   unitEffectiveCategories,
 } from "../../core/catalog";
 import { countReleasedCommands } from "../restrictions";
+import { promotedKeywordSpFloor } from "../../dsl/promotedKeywordBridge";
 import { legend2EffectiveSp } from "../legend2/fieldEffects";
 
 export function legend3FieldBpBonus(
@@ -190,6 +191,11 @@ export function legend3EffectiveSp(
     if (bp >= 20000) {
       sp = Math.max(sp, 2);
     }
+  }
+
+  const promotedFloor = promotedKeywordSpFloor(state, playerId, instance);
+  if (promotedFloor > 0) {
+    sp = Math.max(sp, promotedFloor);
   }
 
   return sp;

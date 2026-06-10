@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-036",
+  "name": "トラシンケンオー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "14-",
+  "text": "【虎ドリル突撃】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP8000以下のユニットを1体選び持ち主のパワーゾーンにダメージにして置いてもよい。そうしたとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "【虎ドリル突撃】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP8000以下のユニットを1体選び持ち主のパワーゾーンにダメージにして置いてもよい。そうしたとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 17500,
+  "size": "L",
+  "features": [
+    "侍",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e8998ee38389",
+      "name": "虎ドリル突撃",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP8000以下のユニットを1体選び持ち主のパワーゾーンにダメージにして置いてもよい。そうしたとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8998ee38389",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

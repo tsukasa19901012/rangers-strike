@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-503",
+  "name": "シャッキー・チェン",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは自軍ターン中バトルエリアに出られない。 【シャッキーン！の中に修行あり】これが自軍ラッシュエリアにある間、特徴「レッド」を持つすべてのSユニットは次の能力を得る⇒これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "rawText": "※これは自軍ターン中バトルエリアに出られない。 【シャッキーン！の中に修行あり】これが自軍ラッシュエリアにある間、特徴「レッド」を持つすべてのSユニットは次の能力を得る⇒これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "男",
+    "拳聖",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_enter_battle_own_turn",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_enter_battle_own_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b7e383a3",
+      "name": "シャッキーン！の中に修行あり",
+      "text": "これが自軍ラッシュエリアにある間、特徴「レッド」を持つすべてのSユニットは次の能力を得る⇒これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b7e383a3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍ターン中バトルエリアに出られない。",
+      "rule": "no_enter_battle_own_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

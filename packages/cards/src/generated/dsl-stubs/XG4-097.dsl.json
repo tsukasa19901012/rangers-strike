@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-097",
+  "name": "ヘレンレディ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【ヘレンカッター】これは、BP5000以上の、OTを持ち特徴「男」を持つSユニットと隣り合っている間、次の能力を得る⇒SP1",
+  "rawText": "【ヘレンカッター】これは、BP5000以上の、OTを持ち特徴「男」を持つSユニットと隣り合っている間、次の能力を得る⇒SP1",
+  "bp": 2000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "メカ",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e38398e383ac",
+      "name": "ヘレンカッター",
+      "text": "これは、BP5000以上の、OTを持ち特徴「男」を持つSユニットと隣り合っている間、次の能力を得る⇒SP1",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38398e383ac",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

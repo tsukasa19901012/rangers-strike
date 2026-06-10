@@ -1,6 +1,7 @@
 import type { GameAction, RushAction } from "../types/actions";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
+import { isCostWindowSatisfied } from "./costWindow";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { getRidingComboEffect, hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
 import {
@@ -8,6 +9,12 @@ import {
   collectOperationTargets,
   needsOperationTarget,
 } from "../effects/resolveOperation";
+import {
+  dslOperationOpensChoose,
+  getDslOperationEffect,
+  isDslInterpretableEffect,
+} from "../dsl/dslCatalog";
+import { collectTargetInstanceIds } from "../dsl/targetSelectors";
 import {
   canPlayOperation,
   canRushUnitExceptCommandHold,
@@ -67,7 +74,8 @@ import {
 import { getValidDamagePowerTargets, damagePaymentChoosingPlayer } from "../rules/damagePayment";
 import { getStackActorPlayerId, hasOpenReactionWindow } from "../rules/effectStack";
 import { getCardEffect } from "@rangers-strike/cards";
-import { getTurnModifiers } from "../rules/turnModifiers";
+import { isHidoraEggUsed } from "../rules/turnModifiers";
+import { listValidChaseVehicleIds } from "../keywords/chase";
 
 function assertActive(state: GameState, playerId: PlayerId): boolean {
   return state.activePlayer === playerId && state.winner === null;
@@ -139,6 +147,8 @@ function isReactionWindowAction(action: GameAction): boolean {
     case "pass_leave_reaction":
     case "use_register":
     case "pass_register":
+    case "resolve_chase":
+    case "pass_chase":
     case "five_tech_intercept":
     case "use_plasma_energy":
     case "use_super_shield":
@@ -358,7 +368,38 @@ function appendOperationActions(
       continue;
     }
 
-    if (needsOperationTarget(card.cardId)) {
+    const dslEffect = getDslOperationEffect(card.cardId, "rush");
+    const dslChoose =
+      dslEffect !== undefined &&
+      isDslInterpretableEffect(dslEffect) &&
+      dslOperationOpensChoose(dslEffect);
+
+    if (dslChoose && dslEffect.effects[0]?.type === "choose") {
+      const choose = dslEffect.effects[0];
+      const targets = collectTargetInstanceIds(
+        state,
+        playerId,
+        choose.valid,
+        card.instanceId,
+      );
+      if (targets.length === 0) continue;
+      actions.push({
+        type: "play_operation",
+        playerId,
+        instanceId: card.instanceId,
+      });
+      for (const targetInstanceId of targets) {
+        actions.push({
+          type: "play_operation",
+          playerId,
+          instanceId: card.instanceId,
+          targetInstanceId,
+        });
+      }
+      continue;
+    }
+
+    if (needsOperationTarget(card.cardId) && !dslChoose) {
       for (const targetInstanceId of collectOperationTargets(state, playerId, card.cardId)) {
         actions.push({
           type: "play_operation",
@@ -387,7 +428,7 @@ function appendHidoraEggActions(
   if (state.phase !== "rush") return;
   const player = state.players[playerId];
   if (!hasOperationEffect(player, "hidora_egg", state.definitions, { state, playerId })) return;
-  if (getTurnModifiers(player).hidoraEggUsed) return;
+  if (isHidoraEggUsed(player)) return;
   if (player.deck.length === 0) return;
   actions.push({ type: "hidora_egg", playerId });
 }
@@ -478,7 +519,7 @@ function canDeclareRush(
   const categories = cardCategories(definition);
   if (categories.length === 0) return true;
   if (isShironLightRushTarget(player, instanceId)) return true;
-  if (!player.rushCategoryHoldReady) return false;
+  if (!isCostWindowSatisfied(player, "rush_category")) return false;
   return hasCommandForCardUse(player, definitions, categories);
 }
 
@@ -861,6 +902,19 @@ export function getLegalActions(state: GameState): GameAction[] {
     return actions;
   }
 
+  if (state.pendingChase) {
+    const pending = state.pendingChase;
+    for (const vehicleId of listValidChaseVehicleIds(state, pending)) {
+      actions.push({
+        type: "resolve_chase",
+        playerId: pending.chaserPlayerId,
+        newVehicleInstanceId: vehicleId,
+      });
+    }
+    actions.push({ type: "pass_chase", playerId: pending.chaserPlayerId });
+    return actions;
+  }
+
   if (state.pendingLeave) {
     appendLeaveReactionActions(state, state.pendingLeave.ownerPlayerId, actions);
     return actions;
@@ -1203,6 +1257,19 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
     return false;
   }
 
+  if (state.pendingChase) {
+    if (action.type === "pass_chase") {
+      return action.playerId === state.pendingChase.chaserPlayerId;
+    }
+    if (action.type === "resolve_chase") {
+      return (
+        action.playerId === state.pendingChase.chaserPlayerId &&
+        listValidChaseVehicleIds(state, state.pendingChase).includes(action.newVehicleInstanceId)
+      );
+    }
+    return false;
+  }
+
   const reactionActor = getReactionChooserPlayerId(state);
   if (reactionActor && isReactionWindowAction(action)) {
     if (action.playerId !== reactionActor) return false;
@@ -1274,6 +1341,10 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
       (a.zordMaterialDestination ?? "") === (b.zordMaterialDestination ?? "") &&
       holdsA === holdsB
     );
+  }
+
+  if (a.type === "resolve_chase" && b.type === "resolve_chase") {
+    return a.newVehicleInstanceId === b.newVehicleInstanceId;
   }
 
   if (a.type === "play_operation" && b.type === "play_operation") {

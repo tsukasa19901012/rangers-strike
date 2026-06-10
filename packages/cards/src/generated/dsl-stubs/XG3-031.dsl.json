@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-031",
+  "name": "ゲキブルー（XG3）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※スクラム 【宙宙斬】 このターン、自軍バトルエリアの2番目に並ぶ、特徴「激気」を持つMユニットは次の能力を得る⇒「SP1」",
+  "rawText": "※スクラム 【宙宙斬】 このターン、自軍バトルエリアの2番目に並ぶ、特徴「激気」を持つMユニットは次の能力を得る⇒「SP1」",
+  "bp": 3000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": 1,
+  "features": [
+    "ブルー",
+    "男",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_scrum",
+      "text": "※スクラム",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "scrum",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5ae99e5ae99",
+      "name": "宙宙斬",
+      "text": "このターン、自軍バトルエリアの2番目に並ぶ、特徴「激気」を持つMユニットは次の能力を得る⇒「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※スクラム",
+      "rule": "scrum"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

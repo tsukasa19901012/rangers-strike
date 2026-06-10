@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-407",
+  "name": "天空大聖者マジエル",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これはバトルエリアに出られない。 【ハロー・ミラージュ】これが自軍ラッシュエリアにある間、すべてのSユニットは、そのカテゴリごとに次の制限を受ける⇒バトルエリアでの並び順が、WBなら2番目、MAなら3番目、OTなら4番目、ETなら5番目、DAなら1番目でなければストライクできない。",
+  "rawText": "※これはバトルエリアに出られない。 【ハロー・ミラージュ】これが自軍ラッシュエリアにある間、すべてのSユニットは、そのカテゴリごとに次の制限を受ける⇒バトルエリアでの並び順が、WBなら2番目、MAなら3番目、OTなら4番目、ETなら5番目、DAなら1番目でなければストライクできない。",
+  "bp": 6000,
+  "size": "L",
+  "features": [
+    "女",
+    "人型",
+    "魔法",
+    "天空聖者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_enter_battle",
+      "text": "※これはバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3838fe383ad",
+      "name": "ハロー・ミラージュ",
+      "text": "これが自軍ラッシュエリアにある間、すべてのSユニットは、そのカテゴリごとに次の制限を受ける⇒バトルエリアでの並び順が、WBなら2番目、MAなら3番目、OTなら4番目、ETなら5番目、DAなら1番目でなければストライクできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838fe383ad",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出られない。",
+      "rule": "cannot_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

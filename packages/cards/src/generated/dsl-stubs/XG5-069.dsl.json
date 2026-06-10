@@ -1,0 +1,53 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-069",
+  "name": "キハダガニ",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。 【待ち伏せ】敵軍ターン中、これがSユニットとのバトルで撃破されて捨札になったとき、これとバトルしたユニットを、持ち主の山札の下に戻してもよい。",
+  "rawText": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。 【待ち伏せ】敵軍ターン中、これがSユニットとのバトルで撃破されて捨札になったとき、これとバトルしたユニットを、持ち主の山札の下に戻してもよい。",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "ディスクアニマル"
+  ],
+  "effects": [
+    {
+      "id": "note_ma_bp_10",
+      "text": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_ma_bp_10",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5be85e381a1",
+      "name": "待ち伏せ",
+      "text": "敵軍ターン中、これがSユニットとのバトルで撃破されて捨札になったとき、これとバトルしたユニットを、持ち主の山札の下に戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5be85e381a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

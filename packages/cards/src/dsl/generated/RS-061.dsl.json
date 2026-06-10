@@ -1,0 +1,85 @@
+{
+  "id": "RS-061",
+  "name": "マジグリーン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "bp": 3000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 3,
+  "text": "※これは「マジタウロス」としてつかえる。【グリーングラウンド】「SP1」敵軍コマンドゾーンからカードを1枚選んで、持ち主の手札に戻してもよい。",
+  "rawText": "※これは「マジタウロス」としてつかえる。【グリーングラウンド】「SP1」敵軍コマンドゾーンからカードを1枚選んで、持ち主の手札に戻してもよい。",
+  "features": [
+    "グリーン",
+    "男",
+    "魔法"
+  ],
+  "imageUrl": "/cards/legend1/RS-061.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-061.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは「マジタウロス」としてつかえる。",
+      "rule": "fusion_material_alias"
+    }
+  ],
+  "effects": [
+    {
+      "id": "green_ground",
+      "name": "グリーングラウンド",
+      "text": "「SP1」敵軍コマンドゾーンからカードを1枚選んで、持ち主の手札に戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unnamed_fusion_material_alias",
+      "text": "※これは「マジタウロス」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "fusion_material_alias",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

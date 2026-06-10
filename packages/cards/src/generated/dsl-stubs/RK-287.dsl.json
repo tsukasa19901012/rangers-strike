@@ -1,0 +1,75 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-287",
+  "name": "ゴルトフェニックス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは特徴「仮面ライダー」を持つユニット以外にアタックする事ができない。 【瞬間の悪夢】 これをラッシュしたとき、敵軍コマンドゾーンから、モーフを持つユニットカードを1枚選び捨札にしてもよい。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは特徴「仮面ライダー」を持つユニット以外にアタックする事ができない。 【瞬間の悪夢】 これをラッシュしたとき、敵軍コマンドゾーンから、モーフを持つユニットカードを1枚選び捨札にしてもよい。",
+  "bp": 8000,
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これは特徴「仮面ライダー」を持つユニット以外にアタックする事ができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e79eace99693",
+      "name": "瞬間の悪夢",
+      "text": "これをラッシュしたとき、敵軍コマンドゾーンから、モーフを持つユニットカードを1枚選び捨札にしてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e79eace99693",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

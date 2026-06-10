@@ -1,0 +1,57 @@
+{
+  "id": "RS-126",
+  "name": "アカレンジャー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "SR",
+  "expansion": "legend3",
+  "powerCost": 6,
+  "bp": 4000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 5,
+  "text": "【レッドビュート】「SP1」自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、敵軍ラッシュエリアからBP2000以下のユニットを1体選んで撃破する。",
+  "rawText": "【レッドビュート】「SP1」自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、敵軍ラッシュエリアからBP2000以下のユニットを1体選んで撃破する。",
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-126.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-126.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "grant_sp1",
+      "name": "SP+1",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    },
+    {
+      "id": "red_boot",
+      "name": "レッドビュート",
+      "text": "自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、敵軍ラッシュエリアからBP2000以下のユニットを1体選んで撃破する。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "red_boot"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

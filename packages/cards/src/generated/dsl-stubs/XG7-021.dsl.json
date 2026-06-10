@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-021",
+  "name": "デカピンク×デカイエロー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※クロス1 【ガールズ・イン・トラブル！】SP1 自軍パワーゾーンからSユニットのカードを1枚選び、手札に加えてもよい。そうしたとき、相手は、自分自身のパワーゾーンから、そのカードと同じ必要パワーの数字を持つSユニットのカードを1枚選び、手札に加える。",
+  "rawText": "※クロス1 【ガールズ・イン・トラブル！】SP1 自軍パワーゾーンからSユニットのカードを1枚選び、手札に加えてもよい。そうしたとき、相手は、自分自身のパワーゾーンから、そのカードと同じ必要パワーの数字を持つSユニットのカードを1枚選び、手札に加える。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "イエロー",
+    "ピンク",
+    "女",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382ace383bc",
+      "name": "ガールズ・イン・トラブル！",
+      "text": "SP1 自軍パワーゾーンからSユニットのカードを1枚選び、手札に加えてもよい。そうしたとき、相手は、自分自身のパワーゾーンから、そのカードと同じ必要パワーの数字を持つSユニットのカードを1枚選び、手札に加える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ace383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

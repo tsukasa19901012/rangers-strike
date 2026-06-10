@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-061",
+  "name": "バッファローアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【スペード8－マグネット】自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして、次の効果を発動できる⇒敵軍ラッシュエリアにある特徴「メカ」を持つSユニットをすべて敵軍バトルエリアに出してもよい（出す順番は自分が選ぶ）。",
+  "rawText": "【スペード8－マグネット】自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして、次の効果を発動できる⇒敵軍ラッシュエリアにある特徴「メカ」を持つSユニットをすべて敵軍バトルエリアに出してもよい（出す順番は自分が選ぶ）。",
+  "bp": 3500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b9e3839a",
+      "name": "スペード8－マグネット",
+      "text": "自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして、次の効果を発動できる⇒敵軍ラッシュエリアにある特徴「メカ」を持つSユニットをすべて敵軍バトルエリアに出してもよい（出す順番は自分が選ぶ）。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e3839a",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

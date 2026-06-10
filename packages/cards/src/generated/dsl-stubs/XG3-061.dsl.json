@@ -1,0 +1,75 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-061",
+  "name": "仮面ライダーガタックMF（XG3）",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはアタックされるときBP+2000される。 【キャストオフ】これをラッシュしたとき、OTを持つ自軍コマンドを1つホールドして次の効果を発動できる⇒自軍山札を見て「仮面ライダーガタックRF」のカードを1枚選び自軍ラッシュエリアに出す。ただし、必要パワーと追加条件は満たすこと。その後、山札をシャッフルする。",
+  "rawText": "※これはアタックされるときBP+2000される。 【キャストオフ】これをラッシュしたとき、OTを持つ自軍コマンドを1つホールドして次の効果を発動できる⇒自軍山札を見て「仮面ライダーガタックRF」のカードを1枚選び自軍ラッシュエリアに出す。ただし、必要パワーと追加条件は満たすこと。その後、山札をシャッフルする。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_attacked_bp_boost_2000",
+      "text": "※これはアタックされるときBP+2000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "attacked_bp_boost_2000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382ade383a3",
+      "name": "キャストオフ",
+      "text": "これをラッシュしたとき、OTを持つ自軍コマンドを1つホールドして次の効果を発動できる⇒自軍山札を見て「仮面ライダーガタックRF」のカードを1枚選び自軍ラッシュエリアに出す。ただし、必要パワーと追加条件は満たすこと。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされるときBP+2000される。",
+      "rule": "attacked_bp_boost_2000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

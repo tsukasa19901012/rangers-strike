@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-043",
+  "name": "シーイックゴセイグレート",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※タクスMA 【シーイックストライク】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動する⇒自軍捨札にあるタクスを持つカードの枚数を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※タクスMA 【シーイックストライク】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動する⇒自軍捨札にあるタクスを持つカードの枚数を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 18000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "魔法",
+    "獣",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_taxis_ma",
+      "text": "※タクスMA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b7e383bc",
+      "name": "シーイックストライク",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動する⇒自軍捨札にあるタクスを持つカードの枚数を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b7e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※タクスMA",
+      "rule": "taxis_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

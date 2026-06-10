@@ -1,0 +1,41 @@
+{
+  "id": "RS-150",
+  "name": "ピンクレーサー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 1,
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 2,
+  "text": "【バンパーボウ】敵軍パワーゾーンからダメージ以外のカードを1枚選んで、持ち主のコマンドゾーンにホールド状態で置く（置けなければこの効果は発動できない）。",
+  "rawText": "【バンパーボウ】敵軍パワーゾーンからダメージ以外のカードを1枚選んで、持ち主のコマンドゾーンにホールド状態で置く（置けなければこの効果は発動できない）。",
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "imageUrl": "/cards/legend3/RS-150.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-150.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "bumper_bow",
+      "name": "バンパーボウ",
+      "text": "敵軍パワーゾーンからダメージ以外のカードを1枚選んで、持ち主のコマンドゾーンにホールド状態で置く（置けなければこの効果は発動できない）。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "bumper_bow"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

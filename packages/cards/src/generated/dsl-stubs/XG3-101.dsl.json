@@ -1,0 +1,77 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-101",
+  "name": "イナズマン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※レジスト ※敵軍ターン中、これをラッシュしたとき、そのターンのバトルフェイズを飛ばす。 【逆転チェスト】次の相手ターン中、1度だけ次の効果を発動できる⇒これがユニットでなくなるとき、これをホールドしてその場に留めてもよい。そうしたとき、これのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。",
+  "rawText": "※レジスト ※敵軍ターン中、これをラッシュしたとき、そのターンのバトルフェイズを飛ばす。 【逆転チェスト】次の相手ターン中、1度だけ次の効果を発動できる⇒これがユニットでなくなるとき、これをホールドしてその場に留めてもよい。そうしたとき、これのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 13,
+  "comboNumber": "RC",
+  "features": [
+    "昆虫",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe695b5",
+      "text": "※敵軍ターン中、これをラッシュしたとき、そのターンのバトルフェイズを飛ばす。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe695b5",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e98086e8bba2",
+      "name": "逆転チェスト",
+      "text": "次の相手ターン中、1度だけ次の効果を発動できる⇒これがユニットでなくなるとき、これをホールドしてその場に留めてもよい。そうしたとき、これのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e98086e8bba2",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

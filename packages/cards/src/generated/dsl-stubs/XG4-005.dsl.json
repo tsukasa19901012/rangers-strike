@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-005",
+  "name": "バギバギルガー－",
+  "type": "vehicle",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【バキバキビックサンダー】これをラッシュしたとき、必要パワーの数字が3以下の敵軍ユニットを1体選びホールドしてもよい。",
+  "rawText": "【バキバキビックサンダー】これをラッシュしたとき、必要パワーの数字が3以下の敵軍ユニットを1体選びホールドしてもよい。",
+  "effects": [
+    {
+      "id": "named_e38390e382ad",
+      "name": "バキバキビックサンダー",
+      "text": "これをラッシュしたとき、必要パワーの数字が3以下の敵軍ユニットを1体選びホールドしてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38390e382ad",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

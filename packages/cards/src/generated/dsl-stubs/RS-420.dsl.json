@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-420",
+  "name": "大剣人ズバーン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※自分か相手のLユニットがあれば、これはLユニットになる。 【ズバズバンキック】これが自軍ラッシュエリアにある間、自分が特徴「メカ」を持つLユニットをラッシュしたとき、その追加条件を満たすために捨札にした合体ユニット1体につき、敵軍Sユニットを1体選び撃破してもよい。",
+  "rawText": "※自分か相手のLユニットがあれば、これはLユニットになる。 【ズバズバンキック】これが自軍ラッシュエリアにある間、自分が特徴「メカ」を持つLユニットをラッシュしたとき、その追加条件を満たすために捨札にした合体ユニット1体につき、敵軍Sユニットを1体選び撃破してもよい。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "魔法",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_l_l",
+      "text": "※自分か相手のLユニットがあれば、これはLユニットになる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_l_l",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382bae38390",
+      "name": "ズバズバンキック",
+      "text": "これが自軍ラッシュエリアにある間、自分が特徴「メカ」を持つLユニットをラッシュしたとき、その追加条件を満たすために捨札にした合体ユニット1体につき、敵軍Sユニットを1体選び撃破してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382bae38390",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

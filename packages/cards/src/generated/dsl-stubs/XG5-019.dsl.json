@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-019",
+  "name": "ダイボイジャー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※これはDAを持たないユニットにアタックすることができない。 【アドベンチャーダブルスクリュー】自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、リリース状態の自分自身のコマンドが2つ以上あればすべて選び手札に戻すかを選ぶ。",
+  "rawText": "※これはDAを持たないユニットにアタックすることができない。 【アドベンチャーダブルスクリュー】自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、リリース状態の自分自身のコマンドが2つ以上あればすべて選び手札に戻すかを選ぶ。",
+  "bp": 18000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack_non_da",
+      "text": "※これはDAを持たないユニットにアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_non_da",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e38389",
+      "name": "アドベンチャーダブルスクリュー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、リリース状態の自分自身のコマンドが2つ以上あればすべて選び手札に戻すかを選ぶ。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "controller"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはDAを持たないユニットにアタックすることができない。",
+      "rule": "cannot_attack_non_da"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

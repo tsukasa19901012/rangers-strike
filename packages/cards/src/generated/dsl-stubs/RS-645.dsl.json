@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-645",
+  "name": "ビクトリーマーズ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "※これは敵軍常駐置き場のカード1枚につきSP+1される。 【マーズフレア】 自軍ターン中、これがバトルエリアに出たとき、相手は自分自身の常駐置き場からカードを1枚選び（ウラ向きのカードはウラ向きのまま選ぶ）、自分自身のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "※これは敵軍常駐置き場のカード1枚につきSP+1される。 【マーズフレア】 自軍ターン中、これがバトルエリアに出たとき、相手は自分自身の常駐置き場からカードを1枚選び（ウラ向きのカードはウラ向きのまま選ぶ）、自分自身のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "bp": 11000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_fx_1_sp_1",
+      "text": "※これは敵軍常駐置き場のカード1枚につきSP+1される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_1_sp_1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839ee383bc",
+      "name": "マーズフレア",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、相手は自分自身の常駐置き場からカードを1枚選び（ウラ向きのカードはウラ向きのまま選ぶ）、自分自身のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839ee383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

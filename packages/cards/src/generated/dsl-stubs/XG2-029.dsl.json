@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-029",
+  "name": "幽魔王サラマンデス",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 【災魔ツリー】これが自軍エリアにある間、敵軍ユニットが撃破されたとき、自軍山札の上から1枚ひいて、これの下にウラ向きで重ねてもよい。これは下に重なっているウラ向きのカード1枚につきBP+500され、BP8000以上のとき、LユニットになりSP1を得る。これがユニットでなくなるとき、この下に重ねたウラ向きのカードから、ウラ向きのまま1枚選び手札に加えて、残りを捨札にする。",
+  "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 【災魔ツリー】これが自軍エリアにある間、敵軍ユニットが撃破されたとき、自軍山札の上から1枚ひいて、これの下にウラ向きで重ねてもよい。これは下に重なっているウラ向きのカード1枚につきBP+500され、BP8000以上のとき、LユニットになりSP1を得る。これがユニットでなくなるとき、この下に重ねたウラ向きのカードから、ウラ向きのまま1枚選び手札に加えて、残りを捨札にする。",
+  "bp": 6500,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "災魔一族",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_win_vs_sp1",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e781bde9ad94",
+      "name": "災魔ツリー",
+      "text": "これが自軍エリアにある間、敵軍ユニットが撃破されたとき、自軍山札の上から1枚ひいて、これの下にウラ向きで重ねてもよい。これは下に重なっているウラ向きのカード1枚につきBP+500され、BP8000以上のとき、LユニットになりSP1を得る。これがユニットでなくなるとき、この下に重ねたウラ向きのカードから、ウラ向きのまま1枚選び手札に加えて、残りを捨札にする。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e781bde9ad94",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "destroy_on_win_vs_sp1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

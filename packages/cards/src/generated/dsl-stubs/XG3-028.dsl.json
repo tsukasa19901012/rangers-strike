@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-028",
+  "name": "魔導馬バリキオン（XG3）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【荒ぶる駿馬】これが自分の手札にある間、自軍ラッシュフェイズ中、「魔導馬バリキオン」以外の特徴「魔法」を持つ自軍ユニットがあれば、これをラッシュエリアに出してもよい。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【荒ぶる駿馬】これが自分の手札にある間、自軍ラッシュフェイズ中、「魔導馬バリキオン」以外の特徴「魔法」を持つ自軍ユニットがあれば、これをラッシュエリアに出してもよい。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "魔法"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e88d92e381b6",
+      "name": "荒ぶる駿馬",
+      "text": "これが自分の手札にある間、自軍ラッシュフェイズ中、「魔導馬バリキオン」以外の特徴「魔法」を持つ自軍ユニットがあれば、これをラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e88d92e381b6",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-067",
+  "name": "シンクレッダー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※レジスト ※これがリリース状態で自軍コマンドゾーンにある間、相手にストライクされたとき、これを捨札にしてそのストライクを無効にしてもよい。 【ヘビーサイクロン】SP1 （この効果は「ドラフトブルース」または「ドラフトキース」からコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "※レジスト ※これがリリース状態で自軍コマンドゾーンにある間、相手にストライクされたとき、これを捨札にしてそのストライクを無効にしてもよい。 【ヘビーサイクロン】SP1 （この効果は「ドラフトブルース」または「ドラフトキース」からコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "メカ",
+    "レッド",
+    "男",
+    "警察",
+    "スワット"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これがリリース状態で自軍コマンドゾーンにある間、相手にストライクされたとき、これを捨札にしてそのストライクを無効にしてもよい。",
+      "trigger": {
+        "type": "on_strike"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38398e38393",
+      "name": "ヘビーサイクロン",
+      "text": "SP1 （この効果は「ドラフトブルース」または「ドラフトキース」からコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38398e38393",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

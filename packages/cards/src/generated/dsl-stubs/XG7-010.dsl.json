@@ -1,0 +1,86 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-010",
+  "name": "ガオレッド×ガオライオン",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※クロス1 ※これは「ガオライオン」としてつかえる。 【獅子、吼える！！】このターン、これはBP+5000される。",
+  "rawText": "※クロス1 ※これは「ガオライオン」としてつかえる。 【獅子、吼える！！】このターン、これはBP+5000される。",
+  "bp": 6000,
+  "size": "M",
+  "comboNumber": 5,
+  "features": [
+    "レッド",
+    "男",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_alias_named_e382ace382aa",
+      "text": "※これは「ガオライオン」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_named_e382ace382aa",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e78d85e5ad90",
+      "name": "獅子、吼える！！",
+      "text": "このターン、これはBP+5000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 5000,
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "fusion",
+      "text": "※これは「ガオライオン」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

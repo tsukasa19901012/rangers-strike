@@ -1,0 +1,39 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-240",
+  "name": "ゴーゴーエイダー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "なし",
+  "rawText": "なし",
+  "bp": 3000,
+  "size": "M",
+  "comboNumber": "R",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "effects": [
+    {
+      "id": "segment_body",
+      "text": "なし",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "fallback_handler",
+          "effectId": "segment_body"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "hybrid",
+    "handler": "typescript",
+    "testGenerated": true
+  }
+}

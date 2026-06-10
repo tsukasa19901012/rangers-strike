@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-023",
+  "name": "獣拳巨神サイダイオー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※ブレイカー 【大大砕大斬】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき、選んだユニットがリリース状態ならホールドする。その後、選んだユニットとこのユニットでバトルする。",
+  "rawText": "※ブレイカー 【大大砕大斬】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき、選んだユニットがリリース状態ならホールドする。その後、選んだユニットとこのユニットでバトルする。",
+  "bp": 13000,
+  "size": "XL",
+  "sp": 1,
+  "features": [
+    "拳聖",
+    "激気",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_breaker",
+      "text": "※ブレイカー",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "breaker",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a4a7e5a4a7",
+      "name": "大大砕大斬",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき、選んだユニットがリリース状態ならホールドする。その後、選んだユニットとこのユニットでバトルする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4a7e5a4a7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブレイカー",
+      "rule": "breaker"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

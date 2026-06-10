@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-002",
+  "name": "ファイブブルー（XG2）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【ツインフリスビー】「SP1」特徴「獣」または「昆虫」を持つ敵軍Sユニットを1体選び、持ち主のゾーンに置いてもよい。",
+  "rawText": "【ツインフリスビー】「SP1」特徴「獣」または「昆虫」を持つ敵軍Sユニットを1体選び、持ち主のゾーンに置いてもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e38384e382a4",
+      "name": "ツインフリスビー",
+      "text": "「SP1」特徴「獣」または「昆虫」を持つ敵軍Sユニットを1体選び、持ち主のゾーンに置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

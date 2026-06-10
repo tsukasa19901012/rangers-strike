@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-021",
+  "name": "ギラン円盤",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※これはアタックされるときBP+5000される。 【ビークル射出】これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が4以下の、MユニットかSビークルのカードを1枚選んでもよい。そうしたとき、選んだカードを自軍ラッシュエリアに出す。",
+  "rawText": "※これはアタックされるときBP+5000される。 【ビークル射出】これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が4以下の、MユニットかSビークルのカードを1枚選んでもよい。そうしたとき、選んだカードを自軍ラッシュエリアに出す。",
+  "bp": 1000,
+  "size": "L",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_attacked_bp_boost_5000",
+      "text": "※これはアタックされるときBP+5000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "attacked_bp_boost_5000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38393e383bc",
+      "name": "ビークル射出",
+      "text": "これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が4以下の、MユニットかSビークルのカードを1枚選んでもよい。そうしたとき、選んだカードを自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38393e383bc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされるときBP+5000される。",
+      "rule": "attacked_bp_boost_5000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

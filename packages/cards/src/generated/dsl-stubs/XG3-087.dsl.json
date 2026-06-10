@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-087",
+  "name": "魔剣鎧将キルマンティス",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※敵軍ターン中、これとバトルしたSユニットは、バトルに勝っても撃破される。 【フェリンガースナイプ】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから特徴「メカ」または「昆虫」を持つSユニットを1体選びホールドしてもよい。",
+  "rawText": "※敵軍ターン中、これとバトルしたSユニットは、バトルに勝っても撃破される。 【フェリンガースナイプ】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから特徴「メカ」または「昆虫」を持つSユニットを1体選びホールドしてもよい。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "昆虫",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe695b5",
+      "text": "※敵軍ターン中、これとバトルしたSユニットは、バトルに勝っても撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe695b5",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38395e382a7",
+      "name": "フェリンガースナイプ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから特徴「メカ」または「昆虫」を持つSユニットを1体選びホールドしてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e382a7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

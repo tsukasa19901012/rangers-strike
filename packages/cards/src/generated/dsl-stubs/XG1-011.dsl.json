@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-011",
+  "name": "巨大バッカスフンド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※ブラスト 【スペースメタルの魔剣】自軍ゾーンか敵軍ゾーンに、OTを持つカードがオモテ向きであれば、これは「SP1」になる。",
+  "rawText": "※ブラスト 【スペースメタルの魔剣】自軍ゾーンか敵軍ゾーンに、OTを持つカードがオモテ向きであれば、これは「SP1」になる。",
+  "bp": 8000,
+  "size": "L",
+  "sp": "special",
+  "features": [
+    "皇帝",
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_blast",
+      "text": "※ブラスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "blast",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e3839a",
+      "name": "スペースメタルの魔剣",
+      "text": "自軍ゾーンか敵軍ゾーンに、OTを持つカードがオモテ向きであれば、これは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブラスト",
+      "rule": "blast"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

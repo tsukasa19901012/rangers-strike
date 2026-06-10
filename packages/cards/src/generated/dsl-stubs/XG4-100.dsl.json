@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-100",
+  "name": "バイクロッサー・ケン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト ※タクスOT 【隠烈剛】これが自軍エリアにある間、次の敵軍ターン中、ライドしている自軍Sユニットは敵軍ユニットにアタックされない。",
+  "rawText": "※レジスト ※タクスOT 【隠烈剛】これが自軍エリアにある間、次の敵軍ターン中、ライドしている自軍Sユニットは敵軍ユニットにアタックされない。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": "RC",
+  "features": [
+    "メカ",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_taxis_ot",
+      "text": "※タクスOT",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_OT",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e99aa0e78388",
+      "name": "隠烈剛",
+      "text": "これが自軍エリアにある間、次の敵軍ターン中、ライドしている自軍Sユニットは敵軍ユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e99aa0e78388",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "note",
+      "text": "※タクスOT",
+      "rule": "taxis_OT"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

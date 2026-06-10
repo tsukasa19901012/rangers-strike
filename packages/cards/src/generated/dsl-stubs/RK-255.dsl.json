@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-255",
+  "name": "電波人間タックル（2nd）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。 【ウルトラサイクロン】このユニットを捨札にして、次の効果を発動してもよい⇒敵軍バトルエリアから必要パワーの数字が3以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ敵軍コマンドを1つ選び、捨札にしてから置く。",
+  "rawText": "※特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。 【ウルトラサイクロン】このユニットを捨札にして、次の効果を発動してもよい⇒敵軍バトルエリアから必要パワーの数字が3以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ敵軍コマンドを1つ選び、捨札にしてから置く。",
+  "bp": 1000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "女",
+    "改造人間",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe789b9",
+      "text": "※特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe789b9",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a6e383ab",
+      "name": "ウルトラサイクロン",
+      "text": "このユニットを捨札にして、次の効果を発動してもよい⇒敵軍バトルエリアから必要パワーの数字が3以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ敵軍コマンドを1つ選び、捨札にしてから置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a6e383ab",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

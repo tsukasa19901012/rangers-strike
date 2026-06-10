@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-070",
+  "name": "ズ・ザイン・ダ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※レジスト 【車両への憎悪】これは、敵軍バトルエリアに特徴「車両」を持つユニットか、特徴「車両」を持つビークルにライドしているユニットがあれば、可能ならそのユニットにアタックする。そうしたとき、これは、このターン、BP+2000される。",
+  "rawText": "※レジスト 【車両への憎悪】これは、敵軍バトルエリアに特徴「車両」を持つユニットか、特徴「車両」を持つビークルにライドしているユニットがあれば、可能ならそのユニットにアタックする。そうしたとき、これは、このターン、BP+2000される。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "グロンギ",
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8bb8ae4b8a1",
+      "name": "車両への憎悪",
+      "text": "これは、敵軍バトルエリアに特徴「車両」を持つユニットか、特徴「車両」を持つビークルにライドしているユニットがあれば、可能ならそのユニットにアタックする。そうしたとき、これは、このターン、BP+2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8bb8ae4b8a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

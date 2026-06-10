@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-327",
+  "name": "バッシャー獣人態",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※このユニットはホールド状態のとき、敵軍ユニットにアタックされない。 【バッシャーフエッスル】自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍山札を見て「仮面ライダーキバBF」のカードを1枚か、自軍捨札に「ガルル獣人態」と「ドッガ怪人態」があれば「仮面ライダーキバDGBKF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+  "rawText": "※このユニットはホールド状態のとき、敵軍ユニットにアタックされない。 【バッシャーフエッスル】自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍山札を見て「仮面ライダーキバBF」のカードを1枚か、自軍捨札に「ガルル獣人態」と「ドッガ怪人態」があれば「仮面ライダーキバDGBKF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "マーマン族",
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※このユニットはホールド状態のとき、敵軍ユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38390e38383",
+      "name": "バッシャーフエッスル",
+      "text": "自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍山札を見て「仮面ライダーキバBF」のカードを1枚か、自軍捨札に「ガルル獣人態」と「ドッガ怪人態」があれば「仮面ライダーキバDGBKF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38390e38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

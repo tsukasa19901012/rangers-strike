@@ -1,0 +1,79 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-194",
+  "name": "仮面ライダーG3-X",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト（これがバトルで撃破されたとき、捨て札にするかわりにこれをホールドしてその場に留めてもよい） ※これが自軍エリアにある間、自軍ラッシュエリアのSPが空欄のユニットは相手に選ばれない。 【GX-05】ホールド状態の自軍ユニットの数を数えて、その数以下の必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
+  "rawText": "※レジスト（これがバトルで撃破されたとき、捨て札にするかわりにこれをホールドしてその場に留めてもよい） ※これが自軍エリアにある間、自軍ラッシュエリアのSPが空欄のユニットは相手に選ばれない。 【GX-05】ホールド状態の自軍ユニットの数を数えて、その数以下の必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "メカ",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨て札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_sp",
+      "text": "※これが自軍エリアにある間、自軍ラッシュエリアのSPが空欄のユニットは相手に選ばれない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_sp",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "gx_05",
+      "name": "GX-05",
+      "text": "ホールド状態の自軍ユニットの数を数えて、その数以下の必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_gx_05",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨て札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

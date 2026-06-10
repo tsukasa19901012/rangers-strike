@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-017",
+  "name": "大連王",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―気伝武人龍星王（または気伝獣龍星王）＋天空気殿 【大王剣・疾風怒濤】自軍ターン中、これが自軍バトルエリアに出たとき、敵軍バトルエリアからDAを持つ敵軍ユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがLユニットなら、捨札にするかわりに持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "合体―気伝武人龍星王（または気伝獣龍星王）＋天空気殿 【大王剣・疾風怒濤】自軍ターン中、これが自軍バトルエリアに出たとき、敵軍バトルエリアからDAを持つ敵軍ユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがLユニットなら、捨札にするかわりに持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 12000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットまたは自軍「牙大王」1体を捨て札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e5a4a7e78e8be589a3e383bb",
+      "name": "大王剣・疾風怒濤",
+      "text": "自軍ターン中、これが自軍バトルエリアに出たとき、敵軍バトルエリアからDAを持つ敵軍ユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがLユニットなら、捨札にするかわりに持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

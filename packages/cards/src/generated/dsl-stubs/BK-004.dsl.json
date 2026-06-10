@@ -1,0 +1,17 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "BK-004",
+  "name": "コンドラー",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "自軍Sユニットを1体選ぶ。このターン、選んだユニットはBP+1000される。 選んだユニットが「仮面ライダーアマゾン」なら、さらにBP+4000される。",
+  "rawText": "自軍Sユニットを1体選ぶ。このターン、選んだユニットはBP+1000される。 選んだユニットが「仮面ライダーアマゾン」なら、さらにBP+4000される。",
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

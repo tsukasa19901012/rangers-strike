@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-057",
+  "name": "ローズオルフェノク",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※コールDA 【ラッキークローバー招集】これが自軍エリアにある間、自軍スタートフェイズを終えるとき、自軍ユニットが4体以下なら、これをリリースしてもよい。",
+  "rawText": "※コールDA 【ラッキークローバー招集】これが自軍エリアにある間、自軍スタートフェイズを終えるとき、自軍ユニットが4体以下なら、これをリリースしてもよい。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "オルフェノク",
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_call_da",
+      "text": "※コールDA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_DA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e38383",
+      "name": "ラッキークローバー招集",
+      "text": "これが自軍エリアにある間、自軍スタートフェイズを終えるとき、自軍ユニットが4体以下なら、これをリリースしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e38383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※コールDA",
+      "rule": "call_DA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

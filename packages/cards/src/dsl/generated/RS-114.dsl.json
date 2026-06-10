@@ -1,0 +1,29 @@
+{
+  "id": "RS-114",
+  "name": "魔導馬バリキオン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "bp": 4000,
+  "size": "M",
+  "text": "※これは、自軍Sユニットがバトルエリアになければバトルエリアに出られない。",
+  "rawText": "※これは、自軍Sユニットがバトルエリアになければバトルエリアに出られない。",
+  "features": [
+    "魔法"
+  ],
+  "imageUrl": "/cards/legend2/RS-114.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-114.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは、自軍Sユニットがバトルエリアになければバトルエリアに出られない。",
+      "rule": "needs_ally_s_in_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

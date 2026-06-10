@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-009",
+  "name": "レッドマスク（XG）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※スクラム 【マスキークラッシュ】SP1 これがストライクしてダメージを与えるとき、かわりに敵軍捨札を1枚選び持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "※スクラム 【マスキークラッシュ】SP1 これがストライクしてダメージを与えるとき、かわりに敵軍捨札を1枚選び持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_scrum",
+      "text": "※スクラム",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "scrum",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3839ee382b9",
+      "name": "マスキークラッシュ",
+      "text": "SP1 これがストライクしてダメージを与えるとき、かわりに敵軍捨札を1枚選び持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839ee382b9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※スクラム",
+      "rule": "scrum"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "PR-012",
+  "name": "隠流忍術",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍ユニットがアタックされたとき発動できる⇒アタックしてきたユニット以外のユニットをすべての場からユニットを1体選んで、かわりにバトルさせる。",
+  "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍ユニットがアタックされたとき発動できる⇒アタックしてきたユニット以外のユニットをすべての場からユニットを1体選んで、かわりにバトルさせる。",
+  "effects": [
+    {
+      "id": "note_e280bbe382abe382a6e383b3",
+      "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍ユニットがアタックされたとき発動できる⇒アタックしてきたユニット以外のユニットをすべての場からユニットを1体選んで、かわりにバトルさせる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "counter_redirect_attack",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

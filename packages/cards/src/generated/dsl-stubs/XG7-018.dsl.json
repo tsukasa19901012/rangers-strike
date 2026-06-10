@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-018",
+  "name": "シンケンレッド（XG7）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※レジスト 【影武者】これが自軍エリアにある間、特徴「レッド」を持つユニットがラッシュされたとき、これを捨札にする。",
+  "rawText": "※レジスト 【影武者】これが自軍エリアにある間、特徴「レッド」を持つユニットがラッシュされたとき、これを捨札にする。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "レッド",
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5bdb1e6ada6",
+      "name": "影武者",
+      "text": "これが自軍エリアにある間、特徴「レッド」を持つユニットがラッシュされたとき、これを捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5bdb1e6ada6",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

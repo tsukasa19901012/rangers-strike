@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-093",
+  "name": "ビルゴルディ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【BILLGOLDY FOR EVIL】自軍ターン中、これがバトルエリアに出たとき、自軍ゾーンのオモテ向きのカードがすべてDAを持つなら、本来のBPが5000以下の敵軍ユニットを1体選び撃破する。",
+  "rawText": "【BILLGOLDY FOR EVIL】自軍ターン中、これがバトルエリアに出たとき、自軍ゾーンのオモテ向きのカードがすべてDAを持つなら、本来のBPが5000以下の敵軍ユニットを1体選び撃破する。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "billgoldy_for_evil",
+      "name": "BILLGOLDY FOR EVIL",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ゾーンのオモテ向きのカードがすべてDAを持つなら、本来のBPが5000以下の敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_billgoldy_for_evil",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

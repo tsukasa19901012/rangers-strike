@@ -1,5 +1,8 @@
 import type { CardDefinition, Category } from "@rangers-strike/cards";
 import type { ZordMaterialDestination } from "./actions";
+import type { PendingChase } from "./keywords";
+import type { PlayerCostWindows } from "./costWindow";
+import type { ScopedModifier } from "./scopedModifiers";
 
 export type PlayerId = "player1" | "player2";
 
@@ -22,36 +25,10 @@ export type ZoneName =
   | "exile"
   | "commander";
 
-/** プレイヤーのターン終了時にクリアされるターン修飾子。 */
-export type TurnModifiers = {
-  /** RS-015: コンボ番号の減少（スタック）。 */
-  comboNumberDelta: number;
-  /** RS-001 / RS-002: バトルがSのみコンボのときのフィニッシャー強化。 */
-  sComboFinisher?: "goren_storm" | "jacker_hurricane";
-  /** RS-003: このターン再びバトルに入れないユニット。 */
-  battleBlockedInstanceIds: string[];
-  /** RS-013 / RS-071: このラッシュフェイズで使用済み。 */
-  shironLightUsed: boolean;
-  hidoraEggUsed?: boolean;
-  /** RS-072: 相手のパーマネント無効化、相手はカウンター不可。 */
-  infiniteChainActive?: boolean;
-  /** RS-107: 相手のカウンターホールドが捨札になる。 */
-  deaceSniperActive?: boolean;
-  /** RS-110: 新たにラッシュしたユニットはターン終了までバトルに入れない。 */
-  zenibombActive?: boolean;
-  /** このターンにラッシュしたインスタンスID（RS-106 / RS-090 制限）。 */
-  rushedThisTurnInstanceIds?: string[];
-  /** RS-094: バトル用ゴースト吸収BP上書き。 */
-  ghostAbsorptionBp?: Record<string, number>;
-  /** RS-119: シフトアップSP1付与。 */
-  shiftUpSp1InstanceIds?: string[];
-  /** RS-011: このターンの自ダメージごとにSユニットがBP+2000。 */
-  auraPowerInstanceId?: string;
-  /** RS-123: 攻撃時、自分のSユニットは守り側の印刷BPを使用。 */
-  superDynamiteActive?: boolean;
-  /** RS-158 baki_baki: 追加バトル攻撃が可能（ストライク不可）。 */
-  bakiBakiExtraAttackIds?: string[];
-};
+export type { CostWindow, CostWindowKind, CostWindowMetadata, PlayerCostWindows } from "./costWindow";
+export type { PendingChase, WingBattleRule, CommanderZoneRule } from "./keywords";
+export type { ScopedModifier, ModifierScope, RushPhaseRuleId, TurnRuleId } from "./scopedModifiers";
+export { RUSH_PHASE_RULE_IDS, RESTRICTION_IDS, TURN_RULE_IDS } from "./scopedModifiers";
 
 export type CardInstance = {
   instanceId: string;
@@ -106,21 +83,12 @@ export type PlayerState = {
   hasReturnedBattleThisStart?: boolean;
   /** スタートフェイズ: このターンにRS-022 アップキープ支払い後 true。 */
   hasPaidEarthForceUpkeep?: boolean;
-  /** ※バトル進入: 支払いでホールド済み（move_to_battle まで有効）。 */
-  battleEntryHoldReady?: boolean;
-  /** ラッシュ: カテゴリ支払いでホールド済み（rush 完了まで有効）。 */
-  rushCategoryHoldReady?: boolean;
-  /** カウンター: カテゴリ支払いでホールド済み（play_counter まで有効）。 */
-  counterCategoryHoldReady?: boolean;
-  /** RS-132: Sユニット捨札支払い済み（move_to_battle まで有効）。 */
-  battleEntryRushDiscardReady?: boolean;
-  /** RS-132: 直前に捨札にしたSユニットの cardId（反バイオ粒子砲判定用）。 */
-  battleEntryDiscardedCardId?: string;
-  /** RS-165: 手札捨札支払い済み（move_to_battle まで有効）。 */
-  battleEntryHandDiscardReady?: boolean;
   /** RS-013: このラッシュフェイズで手札ユニットを公開済み。カテゴリホールドなしでラッシュ可能。 */
   shironLightRushInstanceId?: string;
-  turnModifiers?: TurnModifiers;
+  /** ターン / フェイズスコープのルール・ステータス修飾子。 */
+  modifiers?: ScopedModifier[];
+  /** コスト支払いウィンドウ（hold-ready 統合）。 */
+  costWindows?: PlayerCostWindows;
 };
 
 export type PendingStrike = {
@@ -251,6 +219,22 @@ export type ShironLightMeta = {
   audiencePlayerIds?: PlayerId[];
 };
 
+/** DSL choose 解決後に続行する primitive 列。 */
+export type DslChoiceResume = {
+  remaining: import("@rangers-strike/cards/dsl/types").EffectPrimitive[];
+  context: {
+    effectId: string;
+    sourceCardId: string;
+    playerId: PlayerId;
+    phasePlayerId: PlayerId;
+    operationInstanceId?: string;
+    triggerSourceInstanceId?: string;
+    discardOperation: boolean;
+  };
+  /** ラッシュ OP 解決後に捨札へ送るカード。 */
+  operationCard?: CardInstance;
+};
+
 export type PendingEffectChoice = {
   playerId: PlayerId;
   effectId: string;
@@ -275,6 +259,8 @@ export type PendingEffectChoice = {
   seabedDrawMeta?: SeabedDrawMeta;
   denjiMachineMeta?: DenjiMachineMeta;
   shironLightMeta?: ShironLightMeta;
+  /** DSL choose 解決後の続行データ。 */
+  dslResume?: DslChoiceResume;
 };
 
 /** @deprecated pendingEffectChoice を使用すること（ruin_survey）。 */
@@ -408,6 +394,8 @@ export type GameState = {
   pendingRush?: PendingRush;
   /** ユニットがフィールドを離れる際の所有者応答。 */
   pendingLeave?: PendingLeave;
+  /** チェイス: ライド中ユニット離場時のビークル乗り換え選択。 */
+  pendingChase?: PendingChase;
   /** レジスト（バトル撃破時ホールド留場）の選択待ち。 */
   pendingRegister?: PendingRegister;
   /** 効果解決スタック（pending* から導出。優先順位の単一ソース）。 */

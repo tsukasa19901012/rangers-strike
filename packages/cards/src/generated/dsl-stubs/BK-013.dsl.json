@@ -1,0 +1,35 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "BK-013",
+  "name": "Vバックル（龍騎）",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "次の効果から1つ選び発動する。 ◎自分の手札から「仮面ライダー龍騎」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎このターン、特徴「ミラーライダー」を持つユニットカードの必要パワーの数字は、自軍エリアにある特徴「ミラーモンスター」を持つユニット1体につき1少なくなる。",
+  "rawText": "次の効果から1つ選び発動する。 ◎自分の手札から「仮面ライダー龍騎」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎このターン、特徴「ミラーライダー」を持つユニットカードの必要パワーの数字は、自軍エリアにある特徴「ミラーモンスター」を持つユニット1体につき1少なくなる。",
+  "effects": [
+    {
+      "id": "named_56e38390e383",
+      "name": "Vバックル（龍騎）",
+      "text": "次の効果から1つ選び発動する。 ◎自分の手札から「仮面ライダー龍騎」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎このターン、特徴「ミラーライダー」を持つユニットカードの必要パワーの数字は、自軍エリアにある特徴「ミラーモンスター」を持つユニット1体につき1少なくなる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_56e38390e383",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

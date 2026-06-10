@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-226",
+  "name": "キラーオー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―爆竜トップゲイラー＋爆竜ステゴスライドン 【爆竜必殺デススティンガー】自軍ターン中、これがバトルでユニットを撃破したとき、これがバトルで撃破したユニットよりBPの低いユニットを、相手は自分自身のユニットの中から1体選び撃破する。",
+  "rawText": "合体―爆竜トップゲイラー＋爆竜ステゴスライドン 【爆竜必殺デススティンガー】自軍ターン中、これがバトルでユニットを撃破したとき、これがバトルで撃破したユニットよりBPの低いユニットを、相手は自分自身のユニットの中から1体選び撃破する。",
+  "bp": 8000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "恐竜",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e78886e7ab9c",
+      "name": "爆竜必殺デススティンガー",
+      "text": "自軍ターン中、これがバトルでユニットを撃破したとき、これがバトルで撃破したユニットよりBPの低いユニットを、相手は自分自身のユニットの中から1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e78886e7ab9c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-048",
+  "name": "ウガッツバイク",
+  "type": "vehicle",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 ※特徴「戦闘員」を持つユニットはＲＣがなくてもこのビークルにライドでき、これにライドしている間BP+500される。",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 ※特徴「戦闘員」を持つユニットはＲＣがなくてもこのビークルにライドでき、これにライドしている間BP+500される。",
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_rc",
+      "text": "※特徴「戦闘員」を持つユニットはＲＣがなくてもこのビークルにライドでき、これにライドしている間BP+500される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_rc",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "RS-067",
+  "effects": [
+    {
+      "id": "plasma_energy",
+      "name": "RS-067",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_striker_on_strike_self_discard",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

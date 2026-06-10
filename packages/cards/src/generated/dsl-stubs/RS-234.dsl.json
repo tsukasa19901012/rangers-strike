@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-234",
+  "name": "アバレキラー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ウイングペンタクト】自軍ターン中、このユニットからコンビネーションする「WB」のMユニットは、BP+3000され、BP8000以上のとき「SP1」になる。自分がターンを終えるとき、このユニットからコンビネーションした「WB」のMユニットは撃破される。",
+  "rawText": "【ウイングペンタクト】自軍ターン中、このユニットからコンビネーションする「WB」のMユニットは、BP+3000され、BP8000以上のとき「SP1」になる。自分がターンを終えるとき、このユニットからコンビネーションした「WB」のMユニットは撃破される。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "ホワイト",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e382a6e382a4",
+      "name": "ウイングペンタクト",
+      "text": "自軍ターン中、このユニットからコンビネーションする「WB」のMユニットは、BP+3000され、BP8000以上のとき「SP1」になる。自分がターンを終えるとき、このユニットからコンビネーションした「WB」のMユニットは撃破される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-021",
+  "name": "ボウケンブラック（XG5）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【ハンマーブレイク】「SP1」DAを持つ、本来のBPが8000以下の敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。（この効果は「ボウケンレッド」からコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "【ハンマーブレイク】「SP1」DAを持つ、本来のBPが8000以下の敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。（この効果は「ボウケンレッド」からコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e3838fe383b3",
+      "name": "ハンマーブレイク",
+      "text": "「SP1」DAを持つ、本来のBPが8000以下の敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。（この効果は「ボウケンレッド」からコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

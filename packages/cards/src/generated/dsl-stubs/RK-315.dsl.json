@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-315",
+  "name": "仮面ライダーキバ飛翔態",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "【飛翔する翼】これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "【飛翔する翼】これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 9000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "魔皇力",
+    "ファンガイア"
+  ],
+  "effects": [
+    {
+      "id": "named_e9a39be7bf94",
+      "name": "飛翔する翼",
+      "text": "これは敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing_attack_enemy_rush",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

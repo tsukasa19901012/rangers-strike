@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-192",
+  "name": "アギト",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【アギトファング】これをラッシュしたとき、レジストを持つ敵軍Sユニットを1体選んでもよい。そうしたとき、そのユニットとこのユニットでバトルする。",
+  "rawText": "【アギトファング】これをラッシュしたとき、レジストを持つ敵軍Sユニットを1体選んでもよい。そうしたとき、そのユニットとこのユニットでバトルする。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "男",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "named_e382a2e382ae",
+      "name": "アギトファング",
+      "text": "これをラッシュしたとき、レジストを持つ敵軍Sユニットを1体選んでもよい。そうしたとき、そのユニットとこのユニットでバトルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e382ae",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

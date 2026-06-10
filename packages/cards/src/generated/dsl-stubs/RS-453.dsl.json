@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-453",
+  "name": "サムライマン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャマン」のカードを1枚選び、自軍ラッシュエリアに出す。 【激怒斬り】これが自軍ラッシュエリアにある間、敵軍ターン中、「サムライマン」以外の自軍ユニットがユニットサイズの違うユニットとバトルして撃破された時、敵軍ユニットを1体選び撃破してもよい。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャマン」のカードを1枚選び、自軍ラッシュエリアに出す。 【激怒斬り】これが自軍ラッシュエリアにある間、敵軍ターン中、「サムライマン」以外の自軍ユニットがユニットサイズの違うユニットとバトルして撃破された時、敵軍ユニットを1体選び撃破してもよい。",
+  "bp": 4500,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャマン」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e6bf80e68092",
+      "name": "激怒斬り",
+      "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、「サムライマン」以外の自軍ユニットがユニットサイズの違うユニットとバトルして撃破された時、敵軍ユニットを1体選び撃破してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6bf80e68092",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

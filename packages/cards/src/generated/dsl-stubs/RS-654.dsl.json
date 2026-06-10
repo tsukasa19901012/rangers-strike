@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-654",
+  "name": "ガオイエロー（2nd）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※ウイング 【先輩戦士の教え】「SP1」特徴「レッド」を持つ自軍Sユニットを1体選びホールドしてもよい。そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する。（この効果は、「レッドファルコン｣からコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "※ウイング 【先輩戦士の教え】「SP1」特徴「レッド」を持つ自軍Sユニットを1体選びホールドしてもよい。そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する。（この効果は、「レッドファルコン｣からコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "イエロー",
+    "男",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e58588e8bca9",
+      "name": "先輩戦士の教え",
+      "text": "「SP1」特徴「レッド」を持つ自軍Sユニットを1体選びホールドしてもよい。そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する。（この効果は、「レッドファルコン｣からコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

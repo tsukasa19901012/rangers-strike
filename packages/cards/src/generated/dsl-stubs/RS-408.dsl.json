@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-408",
+  "name": "天空聖者サンジェル",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【プロミネンス・シャワー】これが自軍バトルエリアにある間、敵軍ユニットが「これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される」の効果で撃破されたとき、その持ち主は1点ダメージを受ける。",
+  "rawText": "【プロミネンス・シャワー】これが自軍バトルエリアにある間、敵軍ユニットが「これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される」の効果で撃破されたとき、その持ち主は1点ダメージを受ける。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "男",
+    "魔法",
+    "天空聖者"
+  ],
+  "effects": [
+    {
+      "id": "named_e38397e383ad",
+      "name": "プロミネンス・シャワー",
+      "text": "これが自軍バトルエリアにある間、敵軍ユニットが「これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される」の効果で撃破されたとき、その持ち主は1点ダメージを受ける。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

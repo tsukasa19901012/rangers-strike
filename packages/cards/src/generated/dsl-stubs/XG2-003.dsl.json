@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-003",
+  "name": "ファイブピンク（XG2）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【サークルピュータ】「SP1」数字（漢字も含む）を含む特徴を持つ敵軍Sユニットを1体選び、持ち主のゾーンに置いてもよい。",
+  "rawText": "【サークルピュータ】「SP1」数字（漢字も含む）を含む特徴を持つ敵軍Sユニットを1体選び、持ち主のゾーンに置いてもよい。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b5e383bc",
+      "name": "サークルピュータ",
+      "text": "「SP1」数字（漢字も含む）を含む特徴を持つ敵軍Sユニットを1体選び、持ち主のゾーンに置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

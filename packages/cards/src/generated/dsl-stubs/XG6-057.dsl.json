@@ -1,0 +1,91 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-057",
+  "name": "仮面ライダーオーズ・ラトラーターコンボ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※モーフ ※これは毎ターン、可能ならバトルエリア に出る。 ※これはBP3000以上のユニットにアタックされない。 【トラクロー】これをラッシュしたとき、必要パワーを満たしていない敵軍ユニットまたは敵軍ビークルを1体選びゲームから除外する。",
+  "rawText": "※モーフ ※これは毎ターン、可能ならバトルエリア に出る。 ※これはBP3000以上のユニットにアタックされない。 【トラクロー】これをラッシュしたとき、必要パワーを満たしていない敵軍ユニットまたは敵軍ビークルを1体選びゲームから除外する。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "オーズドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_auto_battle_entry_each_turn",
+      "text": "※これは毎ターン、可能ならバトルエリア に出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_each_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_bp3000",
+      "text": "※これはBP3000以上のユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_bp3000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38388e383a9",
+      "name": "トラクロー",
+      "text": "これをラッシュしたとき、必要パワーを満たしていない敵軍ユニットまたは敵軍ビークルを1体選びゲームから除外する。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38388e383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

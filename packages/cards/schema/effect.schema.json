@@ -111,6 +111,19 @@
           },
           "required": ["type", "zone", "owner"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "zones" },
+            "zones": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/target_selector" },
+              "minItems": 1
+            }
+          },
+          "required": ["type", "zones"],
+          "additionalProperties": false
         }
       ]
     },

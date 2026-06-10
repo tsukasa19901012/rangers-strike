@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-034",
+  "name": "仮面ライダーストロンガー×電波人間タックル",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "2+",
+  "text": "※クロス1 ※これはビークルにライドできる。 【天が呼ぶ、地が呼ぶ、人が呼ぶ】これは、DAを持つかSPが空欄ではないユニットにアタックするとき、BP+2000される。",
+  "rawText": "※クロス1 ※これはビークルにライドできる。 【天が呼ぶ、地が呼ぶ、人が呼ぶ】これは、DAを持つかSPが空欄ではないユニットにアタックするとき、BP+2000される。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 15,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "女",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これはビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "can_ride_vehicle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a4a9e3818c",
+      "name": "天が呼ぶ、地が呼ぶ、人が呼ぶ",
+      "text": "これは、DAを持つかSPが空欄ではないユニットにアタックするとき、BP+2000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4a9e3818c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-066",
+  "name": "ドラフトキース",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト 【ハイドランダー】自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにリリース状態で置く。",
+  "rawText": "※レジスト 【ハイドランダー】自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにリリース状態で置く。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "メカ",
+    "イエロー",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3838fe382a4",
+      "name": "ハイドランダー",
+      "text": "自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにリリース状態で置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3838fe382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

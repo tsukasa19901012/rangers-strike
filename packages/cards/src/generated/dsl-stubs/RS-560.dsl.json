@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-560",
+  "name": "ガオレオン",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【轟く咆哮】これが自軍エリアにある間、特徴「獣」を持つ自軍Mユニットは、自軍捨札に同じカード名のユニットカードがあれば、BP+1000される。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【轟く咆哮】これが自軍エリアにある間、特徴「獣」を持つ自軍Mユニットは、自軍捨札に同じカード名のユニットカードがあれば、BP+1000される。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8bd9fe3818f",
+      "name": "轟く咆哮",
+      "text": "これが自軍エリアにある間、特徴「獣」を持つ自軍Mユニットは、自軍捨札に同じカード名のユニットカードがあれば、BP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8bd9fe3818f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

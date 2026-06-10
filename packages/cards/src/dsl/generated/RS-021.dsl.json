@@ -1,0 +1,32 @@
+{
+  "id": "RS-021",
+  "name": "サイバースライダー",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "effectId": "cyber_s_rider",
+  "imageUrl": "/cards/legend1/RS-021.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-021.jpg",
+  "effects": [
+    {
+      "id": "cyber_s_rider",
+      "text": "自分の手札からカードを2枚まで選んで、自軍コマンドゾーンにホールド状態で置く。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "cyber_s_rider"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XP-017",
+  "name": "仮面ライダーディケイド激情態",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これは手札からしかラッシュできない。 【世界の破壊者】自分と相手のパワーゾーンのカードの枚数をくらべ、枚数が多いパワーゾーンの持ち主は次のようにする⇒自分自身のパワーゾーンのカードの枚数が対戦相手と同じになるまで、自分自身のオモテ向きのパワーを可能な限り選び捨札にする。",
+  "rawText": "※これは手札からしかラッシュできない。 【世界の破壊者】自分と相手のパワーゾーンのカードの枚数をくらべ、枚数が多いパワーゾーンの持ち主は次のようにする⇒自分自身のパワーゾーンのカードの枚数が対戦相手と同じになるまで、自分自身のオモテ向きのパワーを可能な限り選び捨札にする。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 14,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ディケイドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_rush_from_hand_only",
+      "text": "※これは手札からしかラッシュできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rush_from_hand_only",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e4b896e7958c",
+      "name": "世界の破壊者",
+      "text": "自分と相手のパワーゾーンのカードの枚数をくらべ、枚数が多いパワーゾーンの持ち主は次のようにする⇒自分自身のパワーゾーンのカードの枚数が対戦相手と同じになるまで、自分自身のオモテ向きのパワーを可能な限り選び捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4b896e7958c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは手札からしかラッシュできない。",
+      "rule": "rush_from_hand_only"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

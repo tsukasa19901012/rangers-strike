@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-041",
+  "name": "仮面ライダーエターナル",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※ブレイカー ※リードDA 【死神のパーティータイムだ】これが自軍エリアにある間、本来のカード名にアルファベットを含むユニットはBP－1000され、含んだアルファベットが3文字以上あれば次の制限を受ける→これはストライクすることができない。",
+  "rawText": "※ブレイカー ※リードDA 【死神のパーティータイムだ】これが自軍エリアにある間、本来のカード名にアルファベットを含むユニットはBP－1000され、含んだアルファベットが3文字以上あれば次の制限を受ける→これはストライクすることができない。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ロストドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_breaker",
+      "text": "※ブレイカー",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "breaker",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_lead_da",
+      "text": "※リードDA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_DA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e6adbbe7a59e",
+      "name": "死神のパーティータイムだ",
+      "text": "これが自軍エリアにある間、本来のカード名にアルファベットを含むユニットはBP－1000され、含んだアルファベットが3文字以上あれば次の制限を受ける→これはストライクすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6adbbe7a59e",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブレイカー",
+      "rule": "breaker"
+    },
+    {
+      "kind": "note",
+      "text": "※リードDA",
+      "rule": "lead_DA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

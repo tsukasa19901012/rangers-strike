@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-043",
+  "name": "鳥忍　カラス天狗",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 【3人1組】これをラッシュしたとき、自軍エリアの「鳥忍 カラス天狗」が3体以下なら、3体になるまで、自軍パワーゾーンのオモテ向きのカードか自軍コマンドゾーンのカードから「鳥忍 カラス天狗」のカードを選び、自軍ラッシュエリアに出してもよい。",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 【3人1組】これをラッシュしたとき、自軍エリアの「鳥忍 カラス天狗」が3体以下なら、3体になるまで、自軍パワーゾーンのオモテ向きのカードか自軍コマンドゾーンのカードから「鳥忍 カラス天狗」のカードを選び、自軍ラッシュエリアに出してもよい。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "妖魔一族",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "fx_3_1",
+      "name": "3人1組",
+      "text": "これをラッシュしたとき、自軍エリアの「鳥忍 カラス天狗」が3体以下なら、3体になるまで、自軍パワーゾーンのオモテ向きのカードか自軍コマンドゾーンのカードから「鳥忍 カラス天狗」のカードを選び、自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_fx_3_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": "RS-175",
+  "name": "ガオナイト",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "R",
+  "expansion": "legend3",
+  "powerCost": "8+",
+  "bp": 15000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―ガオコング＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー＋ガオエレファント【森羅万象ビッグバンファイナル】これをラッシュしたとき、BP20000以下の敵軍ユニットを1体選んで撃破する。",
+  "rawText": "合体―ガオコング＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー＋ガオエレファント【森羅万象ビッグバンファイナル】これをラッシュしたとき、BP20000以下の敵軍ユニットを1体選んで撃破する。",
+  "features": [
+    "獣",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend3/RS-175.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-175.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ガオコング＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー＋ガオエレファント",
+      "partnerCardIds": [
+        "RS-159",
+        "RS-153",
+        "RS-154",
+        "RS-155",
+        "RS-156",
+        "RS-158"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "nature_big_bang_final",
+      "name": "森羅万象ビッグバンファイナル",
+      "text": "これをラッシュしたとき、BP20000以下の敵軍ユニットを1体選んで撃破する。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "enqueue_trigger",
+          "effectId": "nature_big_bang_final"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

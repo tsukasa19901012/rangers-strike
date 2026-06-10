@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-325",
+  "name": "パワードイクサー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これにライドしているユニットは、「仮面ライダーイクサBM」なら「SP1」になる。 【イクサポッド】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドゾーンからカードを1枚選び、自軍山札の上か下に戻してもよい。そうしたとき、戻したカードの必要パワーの数字と同じ必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "※これにライドしているユニットは、「仮面ライダーイクサBM」なら「SP1」になる。 【イクサポッド】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドゾーンからカードを1枚選び、自軍山札の上か下に戻してもよい。そうしたとき、戻したカードの必要パワーの数字と同じ必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "effects": [
+    {
+      "id": "note_bm",
+      "text": "※これにライドしているユニットは、「仮面ライダーイクサBM」なら「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bm",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a4e382af",
+      "name": "イクサポッド",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドゾーンからカードを1枚選び、自軍山札の上か下に戻してもよい。そうしたとき、戻したカードの必要パワーの数字と同じ必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a4e382af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

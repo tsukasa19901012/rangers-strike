@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-476",
+  "name": "ガオハンターイビル",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体－ガオウルフ+ガオリゲーター+ガオハンマーヘッド ※これはバトルエリアにあるとき、カテゴリにWBが追加される。 【天地震撼ビーストハリケーン】自軍ターン中、これがバトルエリアに出たとき、自分の手札から特徴「獣」を持つユニットカードを1枚選び捨札にしてもよい。そうしたとき、捨札にしたユニットカードのBPと同じBPのユニットをすべて撃破する。",
+  "rawText": "合体－ガオウルフ+ガオリゲーター+ガオハンマーヘッド ※これはバトルエリアにあるとき、カテゴリにWBが追加される。 【天地震撼ビーストハリケーン】自軍ターン中、これがバトルエリアに出たとき、自分の手札から特徴「獣」を持つユニットカードを1枚選び捨札にしてもよい。そうしたとき、捨札にしたユニットカードのBPと同じBPのユニットをすべて撃破する。",
+  "bp": 11000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "獣",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_category_wb_in_battle",
+      "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "category_wb_in_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a4a9e59cb0",
+      "name": "天地震撼ビーストハリケーン",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自分の手札から特徴「獣」を持つユニットカードを1枚選び捨札にしてもよい。そうしたとき、捨札にしたユニットカードのBPと同じBPのユニットをすべて撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4a9e59cb0",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。",
+      "rule": "category_wb_in_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

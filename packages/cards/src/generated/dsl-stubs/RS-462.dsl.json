@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-462",
+  "name": "花忍者サクラ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※スクラム （これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【くノ一ミサイル】自分の手札からカードを1枚選び、相手に見せてもよい。そうしたとき、見せたカードの特徴と同じ特徴を2つ以上持つ敵軍ユニットがあれば、相手はその中から1体選び撃破するか、1点ダメージを受けるかを選ぶ。",
+  "rawText": "※スクラム （これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【くノ一ミサイル】自分の手札からカードを1枚選び、相手に見せてもよい。そうしたとき、見せたカードの特徴と同じ特徴を2つ以上持つ敵軍ユニットがあれば、相手はその中から1体選び撃破するか、1点ダメージを受けるかを選ぶ。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "女",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_scrum",
+      "text": "※スクラム （これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "scrum",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e3818fe3838e",
+      "name": "くノ一ミサイル",
+      "text": "自分の手札からカードを1枚選び、相手に見せてもよい。そうしたとき、見せたカードの特徴と同じ特徴を2つ以上持つ敵軍ユニットがあれば、相手はその中から1体選び撃破するか、1点ダメージを受けるかを選ぶ。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "controller"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※スクラム （これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "rule": "scrum"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

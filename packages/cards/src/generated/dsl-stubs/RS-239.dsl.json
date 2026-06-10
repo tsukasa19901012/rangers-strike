@@ -1,0 +1,24 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-239",
+  "name": "ゴーゴーポリス",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "なし",
+  "rawText": "なし",
+  "bp": 3000,
+  "size": "M",
+  "comboNumber": "L",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "unimplemented",
+    "testGenerated": true
+  }
+}

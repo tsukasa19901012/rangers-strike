@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-057",
+  "name": "ヒート・ドーパント",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、WBが追加される。 【冷たいファイヤーガール】「SP1/2」 これがアタックしたとき、相手は自分自身の捨札を1枚選び、ゲームから除外する。",
+  "rawText": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、WBが追加される。 【冷たいファイヤーガール】「SP1/2」 これがアタックしたとき、相手は自分自身の捨札を1枚選び、ゲームから除外する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": "RC",
+  "features": [
+    "怪人",
+    "女",
+    "ドーパント"
+  ],
+  "effects": [
+    {
+      "id": "note_wb",
+      "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、WBが追加される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_wb",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e586b7e3819f",
+      "name": "冷たいファイヤーガール",
+      "text": "「SP1/2」 これがアタックしたとき、相手は自分自身の捨札を1枚選び、ゲームから除外する。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e586b7e3819f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

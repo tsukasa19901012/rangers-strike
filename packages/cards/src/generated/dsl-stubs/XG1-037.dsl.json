@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-037",
+  "name": "ダイテンクウ",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―-兜折神＋舵木折神＋虎折神 ※ウイング 【虚空からの一撃】これがウイングでアタックした敵軍ユニットが、撃破されて捨札になったとき、そのユニットカードを持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "合体―-兜折神＋舵木折神＋虎折神 ※ウイング 【虚空からの一撃】これがウイングでアタックした敵軍ユニットが、撃破されて捨札になったとき、そのユニットカードを持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 9000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "獣",
+    "折神獣"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8999ae7a9ba",
+      "name": "虚空からの一撃",
+      "text": "これがウイングでアタックした敵軍ユニットが、撃破されて捨札になったとき、そのユニットカードを持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8999ae7a9ba",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

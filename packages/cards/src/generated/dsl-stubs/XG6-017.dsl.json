@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-017",
+  "name": "ヤツデンワニ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 8,
+  "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「イエロー」または「ホワイト」を持つ自軍ユニットがあれば、これを自軍ラッシュエリアに出してもよい。 【どこにでも繋がる電話】自軍ゾーンのオモテ向きのカードから1枚選び、手札に加えてもよい。そうしたとき、このユニットをそのカードがあった場所に置く。",
+  "rawText": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「イエロー」または「ホワイト」を持つ自軍ユニットがあれば、これを自軍ラッシュエリアに出してもよい。 【どこにでも繋がる電話】自軍ゾーンのオモテ向きのカードから1枚選び、手札に加えてもよい。そうしたとき、このユニットをそのカードがあった場所に置く。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "獣",
+    "植物",
+    "怪人"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「イエロー」または「ホワイト」を持つ自軍ユニットがあれば、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e381a9e38193",
+      "name": "どこにでも繋がる電話",
+      "text": "自軍ゾーンのオモテ向きのカードから1枚選び、手札に加えてもよい。そうしたとき、このユニットをそのカードがあった場所に置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e381a9e38193",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

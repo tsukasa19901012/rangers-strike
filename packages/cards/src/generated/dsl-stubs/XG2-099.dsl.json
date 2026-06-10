@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-099",
+  "name": "カメロックSM",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札から「カメロック」のカードを1枚選び、自軍ラッシュエリアに出す。 【カメラズーカ】 「SP1」敵軍コマンドゾーンから、Sユニットのカードを1枚選んでもよい。そうしたとき、次の相手のターン、選んだカードはリリースできない。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札から「カメロック」のカードを1枚選び、自軍ラッシュエリアに出す。 【カメラズーカ】 「SP1」敵軍コマンドゾーンから、Sユニットのカードを1枚選んでもよい。そうしたとき、次の相手のターン、選んだカードはリリースできない。",
+  "bp": 3500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "メカ",
+    "人型",
+    "スペシャルモード"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札から「カメロック」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382abe383a1",
+      "name": "カメラズーカ",
+      "text": "「SP1」敵軍コマンドゾーンから、Sユニットのカードを1枚選んでもよい。そうしたとき、次の相手のターン、選んだカードはリリースできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

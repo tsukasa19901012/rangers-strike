@@ -1,0 +1,39 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-084",
+  "name": "マッドギャラン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【人質と脅迫】これが自軍バトルエリアにある間、相手は次の制限を受ける⇒自分自身のバトルエリアにあるホールド状態のSユニットはラッシュエリアに戻せない。また、自分自身の手札を1枚選び捨札にしなければ、このユニットにアタックすることができない。",
+  "rawText": "【人質と脅迫】これが自軍バトルエリアにある間、相手は次の制限を受ける⇒自分自身のバトルエリアにあるホールド状態のSユニットはラッシュエリアに戻せない。また、自分自身の手札を1枚選び捨札にしなければ、このユニットにアタックすることができない。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e4babae8b3aa",
+      "name": "人質と脅迫",
+      "text": "これが自軍バトルエリアにある間、相手は次の制限を受ける⇒自分自身のバトルエリアにあるホールド状態のSユニットはラッシュエリアに戻せない。また、自分自身の手札を1枚選び捨札にしなければ、このユニットにアタックすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e4babae8b3aa",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

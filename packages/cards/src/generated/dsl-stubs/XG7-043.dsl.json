@@ -1,0 +1,96 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-043",
+  "name": "仮面ライダーパンチホッパー×仮面ライダーキックホッパー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※クロス1 ※これはアタックされる以外では相手に選ばれない。 ※これ以外の自軍ユニットがあれば、これはBP-6000されストライクできない。 【地獄の兄弟】これが自軍パワーゾーンにある間、敵軍ターン中、特徴「加速」を持つ自軍ユニットが撃破されて捨札になったとき、これを自軍ラッシュエリアに出してもよい。",
+  "rawText": "※クロス1 ※これはアタックされる以外では相手に選ばれない。 ※これ以外の自軍ユニットがあれば、これはBP-6000されストライクできない。 【地獄の兄弟】これが自軍パワーゾーンにある間、敵軍ターン中、特徴「加速」を持つ自軍ユニットが撃破されて捨札になったとき、これを自軍ラッシュエリアに出してもよい。",
+  "bp": 7000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_not_selectable_except_attack",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "not_selectable_except_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_bp_6000",
+      "text": "※これ以外の自軍ユニットがあれば、これはBP-6000されストライクできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp_6000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e59cb0e78d84",
+      "name": "地獄の兄弟",
+      "text": "これが自軍パワーゾーンにある間、敵軍ターン中、特徴「加速」を持つ自軍ユニットが撃破されて捨札になったとき、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e59cb0e78d84",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "rule": "not_selectable_except_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

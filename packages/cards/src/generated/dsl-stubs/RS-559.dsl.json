@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-559",
+  "name": "ガオゴッド",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―ガオレオン＋ガオコンドル＋ガオソーシャーク＋ガオバッファロー＋ガオジャガー 【パワーアロー】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動出来る⇒BP8000以下の敵軍ユニットを1体選び撃破する。（この効果は、自軍ラッシュフェイズ中、自軍パワーが8以上あれば、自分の手札からこのカードを捨札にして発動できる）",
+  "rawText": "合体―ガオレオン＋ガオコンドル＋ガオソーシャーク＋ガオバッファロー＋ガオジャガー 【パワーアロー】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動出来る⇒BP8000以下の敵軍ユニットを1体選び撃破する。（この効果は、自軍ラッシュフェイズ中、自軍パワーが8以上あれば、自分の手札からこのカードを捨札にして発動できる）",
+  "bp": 14000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "獣",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e38391e383af",
+      "name": "パワーアロー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動出来る⇒BP8000以下の敵軍ユニットを1体選び撃破する。（この効果は、自軍ラッシュフェイズ中、自軍パワーが8以上あれば、自分の手札からこのカードを捨札にして発動できる）",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38391e383af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

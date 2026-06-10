@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-010",
+  "name": "レッドファルコン（XG）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※ウイング 【ライブラスター】「SP1」カテゴリを1つ宣言してもよい。そうしたとき、宣言したカテゴリを持つSユニットを相手に1枚選ばせ、持ち主のコマンドゾーンに置く。置けなければ捨札にする。",
+  "rawText": "※ウイング 【ライブラスター】「SP1」カテゴリを1つ宣言してもよい。そうしたとき、宣言したカテゴリを持つSユニットを相手に1枚選ばせ、持ち主のコマンドゾーンに置く。置けなければ捨札にする。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライブラスター",
+      "text": "「SP1」カテゴリを1つ宣言してもよい。そうしたとき、宣言したカテゴリを持つSユニットを相手に1枚選ばせ、持ち主のコマンドゾーンに置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

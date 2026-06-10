@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG2-033",
+  "name": "デカブライト",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これが自軍パワーゾーンにある間、「デカブライト」以外の自軍パワーゾーンのカードは相手に選ばれない。 【防御拳バリアーフィスト】このユニットが自軍ラッシュエリアにある間、敵軍ターン中、自分がダメージを受けたとき、このユニットを ホールドしてもよい。そうしたとき、そのターン中、敵軍Sユニットはストライクすることができない。",
+  "rawText": "※これが自軍パワーゾーンにある間、「デカブライト」以外の自軍パワーゾーンのカードは相手に選ばれない。 【防御拳バリアーフィスト】このユニットが自軍ラッシュエリアにある間、敵軍ターン中、自分がダメージを受けたとき、このユニットを ホールドしてもよい。そうしたとき、そのターン中、敵軍Sユニットはストライクすることができない。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "女",
+    "警察",
+    "特キョウ"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自軍パワーゾーンにある間、「デカブライト」以外の自軍パワーゾーンのカードは相手に選ばれない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e998b2e5bea1",
+      "name": "防御拳バリアーフィスト",
+      "text": "このユニットが自軍ラッシュエリアにある間、敵軍ターン中、自分がダメージを受けたとき、このユニットを ホールドしてもよい。そうしたとき、そのターン中、敵軍Sユニットはストライクすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e998b2e5bea1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

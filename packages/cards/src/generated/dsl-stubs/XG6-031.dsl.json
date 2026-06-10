@@ -1,0 +1,89 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-031",
+  "name": "ジョーカーアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※これは手札からしかラッシュできない。 ※これがユニットでなくなるとき、自軍捨札を3枚選びゲームから除外すれば、その場に留まる。 ※これが自軍エリアにある間、本来のBPの下三桁が500でない自軍ユニットはラッシュできない。 【種の根絶】これをラッシュしたとき、これ以外の自軍ユニットをすべて捨札にする。また、ユニットがこれ1体だけなら、これは「SP3」になる。",
+  "rawText": "※これは手札からしかラッシュできない。 ※これがユニットでなくなるとき、自軍捨札を3枚選びゲームから除外すれば、その場に留まる。 ※これが自軍エリアにある間、本来のBPの下三桁が500でない自軍ユニットはラッシュできない。 【種の根絶】これをラッシュしたとき、これ以外の自軍ユニットをすべて捨札にする。また、ユニットがこれ1体だけなら、これは「SP3」になる。",
+  "bp": 6500,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "アンデッド"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_rush_from_hand_only",
+      "text": "※これは手札からしかラッシュできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rush_from_hand_only",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これがユニットでなくなるとき、自軍捨札を3枚選びゲームから除外すれば、その場に留まる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_bp_500",
+      "text": "※これが自軍エリアにある間、本来のBPの下三桁が500でない自軍ユニットはラッシュできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_bp_500",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e7a8aee381ae",
+      "name": "種の根絶",
+      "text": "これをラッシュしたとき、これ以外の自軍ユニットをすべて捨札にする。また、ユニットがこれ1体だけなら、これは「SP3」になる。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP3",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは手札からしかラッシュできない。",
+      "rule": "rush_from_hand_only"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

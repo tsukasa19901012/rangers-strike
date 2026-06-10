@@ -1,67 +1,57 @@
-import type { CardInstance, GameState, PlayerId, PlayerState, TurnModifiers } from "../types/game";
-
-export function emptyTurnModifiers(): TurnModifiers {
-  return {
-    comboNumberDelta: 0,
-    battleBlockedInstanceIds: [],
-    shironLightUsed: false,
-    rushedThisTurnInstanceIds: [],
-  };
-}
-
-export function getTurnModifiers(player: PlayerState): TurnModifiers {
-  return player.turnModifiers ?? emptyTurnModifiers();
-}
-
-export function withTurnModifiers(
-  player: PlayerState,
-  patch: Partial<TurnModifiers>,
-): PlayerState {
-  return {
-    ...player,
-    turnModifiers: { ...getTurnModifiers(player), ...patch },
-  };
-}
+import {
+  addTurnRestrictionModifier,
+  clearRushPhaseScopedModifiers,
+  hasRushPhaseRuleModifier,
+  hasScopedRestriction,
+  hasTurnRuleModifier,
+} from "../core/scopedModifiers";
+import { RESTRICTION_IDS, RUSH_PHASE_RULE_IDS, TURN_RULE_IDS } from "../types/scopedModifiers";
+import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 
 export function isBattleBlocked(player: PlayerState, instanceId: string): boolean {
-  return getTurnModifiers(player).battleBlockedInstanceIds.includes(instanceId);
+  return hasScopedRestriction(player, instanceId, RESTRICTION_IDS.CANNOT_ENTER_BATTLE, "turn");
 }
 
 export function markBattleBlocked(player: PlayerState, instanceId: string): PlayerState {
-  const mods = getTurnModifiers(player);
-  if (mods.battleBlockedInstanceIds.includes(instanceId)) return player;
-  return withTurnModifiers(player, {
-    battleBlockedInstanceIds: [...mods.battleBlockedInstanceIds, instanceId],
-  });
+  if (isBattleBlocked(player, instanceId)) return player;
+  return addTurnRestrictionModifier(
+    player,
+    instanceId,
+    RESTRICTION_IDS.CANNOT_ENTER_BATTLE,
+  );
 }
 
 export function resetRushPhaseFlags(player: PlayerState): PlayerState {
-  return {
-    ...withTurnModifiers(player, { shironLightUsed: false, hidoraEggUsed: false }),
+  return clearRushPhaseScopedModifiers({
+    ...player,
     shironLightRushInstanceId: undefined,
     operation: player.operation.map((card) => {
       if (!card.shironLightUsedThisRush) return card;
       const { shironLightUsedThisRush: _used, ...rest } = card;
       return rest;
     }),
-  };
-}
-
-export function markRushedThisTurn(player: PlayerState, instanceId: string): PlayerState {
-  const mods = getTurnModifiers(player);
-  const ids = mods.rushedThisTurnInstanceIds ?? [];
-  if (ids.includes(instanceId)) return player;
-  return withTurnModifiers(player, {
-    rushedThisTurnInstanceIds: [...ids, instanceId],
   });
 }
 
+export function markRushedThisTurn(player: PlayerState, instanceId: string): PlayerState {
+  if (wasRushedThisTurn(player, instanceId)) return player;
+  return addTurnRestrictionModifier(
+    player,
+    instanceId,
+    RESTRICTION_IDS.RUSHED_THIS_TURN,
+  );
+}
+
 export function wasRushedThisTurn(player: PlayerState, instanceId: string): boolean {
-  return (getTurnModifiers(player).rushedThisTurnInstanceIds ?? []).includes(instanceId);
+  return hasScopedRestriction(player, instanceId, RESTRICTION_IDS.RUSHED_THIS_TURN, "turn");
+}
+
+export function isHidoraEggUsed(player: PlayerState): boolean {
+  return hasRushPhaseRuleModifier(player, RUSH_PHASE_RULE_IDS.HIDORA_EGG);
 }
 
 export function isInfiniteChainActive(state: GameState, playerId: PlayerId): boolean {
-  return !!getTurnModifiers(state.players[playerId]).infiniteChainActive;
+  return hasTurnRuleModifier(state.players[playerId], TURN_RULE_IDS.INFINITE_CHAIN);
 }
 
 export function opponentInfiniteChainBlocks(

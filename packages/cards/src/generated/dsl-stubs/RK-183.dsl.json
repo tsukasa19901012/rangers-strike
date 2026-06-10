@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-183",
+  "name": "仮面ライダーZO",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ZOキック】これは、アタックしてバトルに勝つたび、追加でアタックできる。ただし、これはバトルを終えるたび、このターン、BP-1000される。（BP0以下になったユニットは撃破される）",
+  "rawText": "【ZOキック】これは、アタックしてバトルに勝つたび、追加でアタックできる。ただし、これはバトルを終えるたび、このターン、BP-1000される。（BP0以下になったユニットは撃破される）",
+  "bp": 4000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "zo",
+      "name": "ZOキック",
+      "text": "これは、アタックしてバトルに勝つたび、追加でアタックできる。ただし、これはバトルを終えるたび、このターン、BP-1000される。（BP0以下になったユニットは撃破される）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_zo",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

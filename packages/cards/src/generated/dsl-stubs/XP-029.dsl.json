@@ -1,0 +1,96 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XP-029",
+  "name": "仮面ライダーW・CAX",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※ブレイカー ※これは毎ターン、可能ならバトルエリアに出る。 ※これはホールド状態のコマンド1つにつきBP+1000される。 【まだよ・・・まだまだ憎しみが足りないわ・・・】これがバトルエリアにある間、相手がターンを終えるとき、これのBPが9000以上なら、相手に1点ダメージを与える。8500以下なら、自分は1点ダメージを受けるか、自軍ユニットを1体選び撃破するかを選ぶ。",
+  "rawText": "※ブレイカー ※これは毎ターン、可能ならバトルエリアに出る。 ※これはホールド状態のコマンド1つにつきBP+1000される。 【まだよ・・・まだまだ憎しみが足りないわ・・・】これがバトルエリアにある間、相手がターンを終えるとき、これのBPが9000以上なら、相手に1点ダメージを与える。8500以下なら、自分は1点ダメージを受けるか、自軍ユニットを1体選び撃破するかを選ぶ。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "警察",
+    "ダブルドライバー"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_breaker",
+      "text": "※ブレイカー",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "breaker",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_auto_battle_entry_each_turn",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_each_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_fx_1_bp_1000",
+      "text": "※これはホールド状態のコマンド1つにつきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_fx_1_bp_1000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e381bee381a0",
+      "name": "まだよ・・・まだまだ憎しみが足りないわ・・・",
+      "text": "これがバトルエリアにある間、相手がターンを終えるとき、これのBPが9000以上なら、相手に1点ダメージを与える。8500以下なら、自分は1点ダメージを受けるか、自軍ユニットを1体選び撃破するかを選ぶ。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ブレイカー",
+      "rule": "breaker"
+    },
+    {
+      "kind": "note",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "rule": "auto_battle_entry_each_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

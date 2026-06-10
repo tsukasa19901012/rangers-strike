@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-487",
+  "name": "ゴートクラッシャー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "※これはSユニットにアタックされない。 【疾風豪快落とし】これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒追加条件を持たない敵軍ユニットを、コンビネーションしたLユニットの合体に必要なユニットの数まで好きな数選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※これはSユニットにアタックされない。 【疾風豪快落とし】これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒追加条件を持たない敵軍ユニットを、コンビネーションしたLユニットの合体に必要なユニットの数まで好きな数選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 3000,
+  "size": "M",
+  "comboNumber": "L",
+  "features": [
+    "メカ",
+    "カラクリボール"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_attack_from_s",
+      "text": "※これはSユニットにアタックされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e796bee9a2a8",
+      "name": "疾風豪快落とし",
+      "text": "これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒追加条件を持たない敵軍ユニットを、コンビネーションしたLユニットの合体に必要なユニットの数まで好きな数選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e796bee9a2a8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはSユニットにアタックされない。",
+      "rule": "no_attack_from_s"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

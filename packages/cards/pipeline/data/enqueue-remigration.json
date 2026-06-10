@@ -1,0 +1,130 @@
+{
+  "generatedAt": "2026-06-10T02:19:32.901Z",
+  "scannedEnqueueOnly": 1536,
+  "migratedToPrimitives": 68,
+  "convertedToEffectDelegate": 1468,
+  "remainingEnqueueOnly": 0,
+  "samples": [
+    {
+      "cardId": "PK-008",
+      "effectId": "note_named_e280bbe38193",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "PR-002",
+      "effectId": "named_e382b4e383bc",
+      "from": "enqueue_trigger",
+      "to": "modify_bp"
+    },
+    {
+      "cardId": "PR-013",
+      "effectId": "named_e38380e38396",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "PR-024",
+      "effectId": "note_bp1000",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "PR-027",
+      "effectId": "note_named_e280bbe38193",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-026",
+      "effectId": "note_bp2000_s",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-074",
+      "effectId": "note_named_e280bbe38193",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-097",
+      "effectId": "named_e383a9e382a4",
+      "from": "enqueue_trigger",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-111",
+      "effectId": "note_s_rc",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-152",
+      "effectId": "note_named_e280bbe38193",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-167",
+      "effectId": "note_s_1",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-180",
+      "effectId": "note_bp2000_s",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-241",
+      "effectId": "note_bp2000_s",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-245",
+      "effectId": "note_named_e280bbe38193",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-245",
+      "effectId": "named_e38380e383bc",
+      "from": "enqueue_trigger",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-246",
+      "effectId": "note_fx_1_bp_10",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-267",
+      "effectId": "note_bp2000",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-269",
+      "effectId": "named_e382b7e383a3",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-285",
+      "effectId": "named_e8a68be38188",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-292",
+      "effectId": "note_bp5000_sp1",
+      "from": "enqueue_trigger",
+      "to": "grant_keyword"
+    }
+  ],
+  "note": "M17 remigrate-enqueue-effects: PATTERNS first, then effect_* grant_keyword delegate."
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-333",
+  "name": "仮面ライダー龍騎サバイブ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "10-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダー龍騎」を1体選び、自軍ラッシュエリアに出す。 【ドラグバイザーツバイ】自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい。そうしたとき選んだカードの必要パワーの数字を合計して、その合計以下の必要パワーの数字を持つ敵軍ユニットを1体撃破する",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダー龍騎」を1体選び、自軍ラッシュエリアに出す。 【ドラグバイザーツバイ】自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい。そうしたとき選んだカードの必要パワーの数字を合計して、その合計以下の必要パワーの数字を持つ敵軍ユニットを1体撃破する",
+  "bp": 6500,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー",
+    "サバイブ"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダー龍騎」を1体選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e38389e383a9",
+      "name": "ドラグバイザーツバイ",
+      "text": "自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい。そうしたとき選んだカードの必要パワーの数字を合計して、その合計以下の必要パワーの数字を持つ敵軍ユニットを1体撃破する",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38389e383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

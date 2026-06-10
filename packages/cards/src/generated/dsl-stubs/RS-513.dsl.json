@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-513",
+  "name": "無敵将軍",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体－レッドサルダー+ホワイトカーク+ブルーロウガン+イエロークマード+ブラックガンマー 【将軍花吹雪】これをラッシュしたとき、敵軍ユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む）をすべて持ち主の山札に戻してシャッフルする。",
+  "rawText": "合体－レッドサルダー+ホワイトカーク+ブルーロウガン+イエロークマード+ブラックガンマー 【将軍花吹雪】これをラッシュしたとき、敵軍ユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む）をすべて持ち主の山札に戻してシャッフルする。",
+  "bp": 17000,
+  "size": "L",
+  "sp": 2,
+  "features": [
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "named_e5b086e8bb8d",
+      "name": "将軍花吹雪",
+      "text": "これをラッシュしたとき、敵軍ユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む）をすべて持ち主の山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5b086e8bb8d",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

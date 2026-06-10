@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XP-008",
+  "name": "仮面ライダーNEW電王VF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "10-",
+  "text": "合体―仮面ライダーNEW電王SF＋デネブ ※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーNEW電王SF」のカードを1枚選び、自軍ラッシュエリアに出す。 【最初に言っておく】これをラッシュしたとき、相手に1点ダメージを与える。",
+  "rawText": "合体―仮面ライダーNEW電王SF＋デネブ ※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーNEW電王SF」のカードを1枚選び、自軍ラッシュエリアに出す。 【最初に言っておく】これをラッシュしたとき、相手に1点ダメージを与える。",
+  "bp": 6500,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "NEWDEN-O"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーNEW電王SF」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "named_e69c80e5889d",
+      "name": "最初に言っておく",
+      "text": "これをラッシュしたとき、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

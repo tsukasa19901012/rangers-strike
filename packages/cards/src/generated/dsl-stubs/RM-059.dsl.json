@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-059",
+  "name": "異次元調達屋カブト",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【トランクの中身】これが自軍ラッシュエリアにある間、WBを持つ自軍Sユニットがバトルエリアに出たとき、常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、自分の手札に加えてもよい（ウラ向きのカードはウラ向きのまま選ぶ）。",
+  "rawText": "【トランクの中身】これが自軍ラッシュエリアにある間、WBを持つ自軍Sユニットがバトルエリアに出たとき、常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、自分の手札に加えてもよい（ウラ向きのカードはウラ向きのまま選ぶ）。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "昆虫",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "named_e38388e383a9",
+      "name": "トランクの中身",
+      "text": "これが自軍ラッシュエリアにある間、WBを持つ自軍Sユニットがバトルエリアに出たとき、常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、自分の手札に加えてもよい（ウラ向きのカードはウラ向きのまま選ぶ）。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38388e383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

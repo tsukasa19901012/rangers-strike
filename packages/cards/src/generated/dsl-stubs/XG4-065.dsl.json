@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-065",
+  "name": "マシンハードタービュラー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※特徴「ダブルドライバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【飛行】これにライドしているユニットは次の能力を得る⇒「ウイング」",
+  "rawText": "※特徴「ダブルドライバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【飛行】これにライドしているユニットは次の能力を得る⇒「ウイング」",
+  "effects": [
+    {
+      "id": "note_s_rc",
+      "text": "※特徴「ダブルドライバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_without_rc_named_e38380e38396",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9a39be8a18c",
+      "name": "飛行",
+      "text": "これにライドしているユニットは次の能力を得る⇒「ウイング」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9a39be8a18c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

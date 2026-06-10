@@ -1,7 +1,8 @@
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition, isMediumUnit, isUnit } from "../../core/catalog";
 import { opponent, updatePlayer } from "../../core/helpers";
-import { withTurnModifiers } from "../turnModifiers";
+import { addTurnRuleModifier, hasTurnRuleModifier } from "../../core/scopedModifiers";
+import { TURN_RULE_IDS } from "../../types/scopedModifiers";
 import {
   collectFieldUnitIds,
   startAnimalHeartChoice,
@@ -17,7 +18,9 @@ export function resolveSuperDynamite(
   state: GameState,
   playerId: PlayerId,
 ): OperationOutcome {
-  const player = withTurnModifiers(state.players[playerId], { superDynamiteActive: true });
+  const player = addTurnRuleModifier(state.players[playerId], TURN_RULE_IDS.SUPER_DYNAMITE, {
+    sourceCardId: "RS-123",
+  });
   return {
     state: { ...state, ...updatePlayer(state, playerId, player) },
     detail: "super_dynamite",
@@ -71,5 +74,5 @@ export function resolveAnimalHeart(
 }
 
 export function isSuperDynamiteActive(state: GameState, playerId: PlayerId): boolean {
-  return !!state.players[playerId].turnModifiers?.superDynamiteActive;
+  return hasTurnRuleModifier(state.players[playerId], TURN_RULE_IDS.SUPER_DYNAMITE);
 }

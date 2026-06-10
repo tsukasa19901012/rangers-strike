@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-026",
+  "name": "マックスオージャ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "【爆竜必殺マックスショルダーアタック】自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、リリース状態の自軍コマンドが2つ以上あればすべて選びホールドするかを選ぶ。",
+  "rawText": "【爆竜必殺マックスショルダーアタック】自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、リリース状態の自軍コマンドが2つ以上あればすべて選びホールドするかを選ぶ。",
+  "bp": 9000,
+  "size": "L",
+  "features": [
+    "恐竜",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e78886e7ab9c",
+      "name": "爆竜必殺マックスショルダーアタック",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、リリース状態の自軍コマンドが2つ以上あればすべて選びホールドするかを選ぶ。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e78886e7ab9c",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

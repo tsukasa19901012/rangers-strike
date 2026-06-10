@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-006",
+  "name": "ビクトリーウォーカー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "※これは「ブルースローワー＋イエローアーマー＋ピンクエイダー」としてつかえる。 【ケミカルディスチャージャー】これが自軍エリアにある間、敵軍ターン中、オモテ向きの自軍パワーがウラ向きになるとき、ETの自軍コマンドを2つ選びホールドしてもよい。そうしたとき、そのダメージは無効になる。",
+  "rawText": "※これは「ブルースローワー＋イエローアーマー＋ピンクエイダー」としてつかえる。 【ケミカルディスチャージャー】これが自軍エリアにある間、敵軍ターン中、オモテ向きの自軍パワーがウラ向きになるとき、ETの自軍コマンドを2つ選びホールドしてもよい。そうしたとき、そのダメージは無効になる。",
+  "bp": 8000,
+  "size": "L",
+  "features": [
+    "メカ"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニット3体をそれぞれコマンドゾーンに送るか捨札にする",
+    "unitCount": 3
+  },
+  "effects": [
+    {
+      "id": "unnamed_alias_named_e38396e383ab",
+      "text": "※これは「ブルースローワー＋イエローアーマー＋ピンクエイダー」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_named_e38396e383ab",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b1e3839f",
+      "name": "ケミカルディスチャージャー",
+      "text": "これが自軍エリアにある間、敵軍ターン中、オモテ向きの自軍パワーがウラ向きになるとき、ETの自軍コマンドを2つ選びホールドしてもよい。そうしたとき、そのダメージは無効になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b1e3839f",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "fusion",
+      "text": "※これは「ブルースローワー＋イエローアーマー＋ピンクエイダー」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

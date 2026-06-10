@@ -6,6 +6,7 @@ import type {
   PlayerState,
   SeabedDrawMeta,
 } from "../types/game";
+import { clearCostWindow, satisfyCostWindow } from "../core/costWindow";
 import { cardName, effectiveBp, getDefinition, parsePowerCost, unitBp } from "../core/catalog";
 import { startJetSkateboardChoiceForUnit } from "./legend3/endTurnEffects";
 import { applyAssaultToCommandHold } from "./legend3/restrictions";
@@ -17,6 +18,7 @@ import { applyReanimate } from "./reanimate";
 import { tryLeaveField } from "./operationCounters";
 import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
+import { continueDslAfterChoice } from "../dsl/cardInterpreter";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
 import {
   autoHoldForBattleEntry,
@@ -852,6 +854,19 @@ export function applyEffectChoiceSelect(
   const pending = state.pendingEffectChoice;
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
+
+  const dslResumeSimpleKinds = new Set([
+    "select_unit",
+    "select_command",
+    "select_hand",
+    "select_power",
+  ]);
+  if (pending.dslResume && dslResumeSimpleKinds.has(pending.kind)) {
+    const result = continueDslAfterChoice(state, playerId, instanceId, pending);
+    if (result.error) return { error: result.error };
+    return { state: result.state, log: result.log };
+  }
+
   const selectedSoFar = pending.selectedInstanceIds ?? [];
   if (pending.kind === "select_units_bp_budget") {
     if (
@@ -937,13 +952,15 @@ export function applyEffectChoiceSelect(
         const found = findInZone(player, "rush", instanceId);
         if (!found || pending.sourceInstanceId === instanceId) return { error: "invalid_target" };
         const [, rush] = removeAt(player.rush, found.index);
-        const nextPlayer: PlayerState = {
-          ...player,
-          rush,
-          discard: [...player.discard, found.card],
-          battleEntryRushDiscardReady: true,
-          battleEntryDiscardedCardId: found.card.cardId,
-        };
+        const nextPlayer = satisfyCostWindow(
+          {
+            ...player,
+            rush,
+            discard: [...player.discard, found.card],
+          },
+          "battle_entry_rush_discard",
+          { discardedCardId: found.card.cardId },
+        );
         return finishChoice(
           { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
           pending,
@@ -1027,12 +1044,14 @@ export function applyEffectChoiceSelect(
           return { error: "cannot_enter_battle" };
         }
         const [, rush] = removeAt(readyOwner.rush, found.index);
-        const nextOwner: PlayerState = {
-          ...readyOwner,
-          rush,
-          battle: [...readyOwner.battle, found.card],
-          battleEntryHoldReady: false,
-        };
+        const nextOwner = clearCostWindow(
+          {
+            ...readyOwner,
+            rush,
+            battle: [...readyOwner.battle, found.card],
+          },
+          "battle_entry_hold",
+        );
         return finishChoice(
           { ...state, ...updatePlayer(state, located.playerId, nextOwner) },
           pending,
@@ -1057,12 +1076,14 @@ export function applyEffectChoiceSelect(
         let battle = readyPlayer.battle.filter((c) => c.instanceId !== instanceId);
         battle = [...battle, { ...entering.card, battleActed: true }];
         const rush = readyPlayer.rush.filter((c) => c.instanceId !== pending.sourceInstanceId);
-        const nextPlayer: PlayerState = {
-          ...readyPlayer,
-          battle,
-          rush: [...rush, swapTarget.card],
-          battleEntryHoldReady: false,
-        };
+        const nextPlayer = clearCostWindow(
+          {
+            ...readyPlayer,
+            battle,
+            rush: [...rush, swapTarget.card],
+          },
+          "battle_entry_hold",
+        );
         return finishChoice(
           { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
           pending,
@@ -1436,14 +1457,15 @@ export function applyEffectChoiceSelect(
         const player = state.players[pending.playerId];
         const discardIds = new Set(selected);
         const toDiscard = player.hand.filter((c) => discardIds.has(c.instanceId));
-        const nextPlayer: PlayerState = {
+        const basePlayer = {
           ...player,
           hand: player.hand.filter((c) => !discardIds.has(c.instanceId)),
           discard: [...player.discard, ...toDiscard],
-          ...(pending.effectId === "battle_entry_hand_discard"
-            ? { battleEntryHandDiscardReady: true }
-            : {}),
         };
+        const nextPlayer =
+          pending.effectId === "battle_entry_hand_discard"
+            ? satisfyCostWindow(basePlayer, "battle_entry_hand_discard")
+            : basePlayer;
         return finishChoice(
           { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
           pending,
@@ -1535,12 +1557,14 @@ export function applyEffectChoiceSelect(
       }
 
       const [, rush] = removeAt(prepared.rush, found.index);
-      const nextEnemy: PlayerState = {
-        ...readyEnemy,
-        rush,
-        battle: [...readyEnemy.battle, found.card],
-        battleEntryHoldReady: false,
-      };
+      const nextEnemy = clearCostWindow(
+        {
+          ...readyEnemy,
+          rush,
+          battle: [...readyEnemy.battle, found.card],
+        },
+        "battle_entry_hold",
+      );
       let nextState = { ...state, ...updatePlayer(state, enemyId, nextEnemy) };
 
       const selected = [...(pending.selectedInstanceIds ?? []), instanceId];

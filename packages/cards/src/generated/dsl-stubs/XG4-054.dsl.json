@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-054",
+  "name": "仮面ライダーブレイドKF（XG4）",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "※レジスト 【ストレートフラッシュ】自軍ターン中、これがバトルエリアに出たとき、自軍捨札を5枚選びゲームから除外してもよい。そうしたとき、 本来のBPが6000以下の敵軍ユニットを1体選び撃破する。その後、除外したカードのカテゴリがすべて同じなら、このターン、これは「SP1」になる。",
+  "rawText": "※レジスト 【ストレートフラッシュ】自軍ターン中、これがバトルエリアに出たとき、自軍捨札を5枚選びゲームから除外してもよい。そうしたとき、 本来のBPが6000以下の敵軍ユニットを1体選び撃破する。その後、除外したカードのカテゴリがすべて同じなら、このターン、これは「SP1」になる。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "アンデッド",
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b9e38388",
+      "name": "ストレートフラッシュ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍捨札を5枚選びゲームから除外してもよい。そうしたとき、 本来のBPが6000以下の敵軍ユニットを1体選び撃破する。その後、除外したカードのカテゴリがすべて同じなら、このターン、これは「SP1」になる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

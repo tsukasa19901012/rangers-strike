@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RM-041",
+  "name": "城忍　フクロウ男爵",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【アイアム偽者などノーサンキュー】敵軍ユニットを1体選んでもよい。そうしたとき、選んだユニットと同じカード名の敵軍ユニットが、選んだユニット以外にあれば、選んだユニットを持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【アイアム偽者などノーサンキュー】敵軍ユニットを1体選んでもよい。そうしたとき、選んだユニットと同じカード名の敵軍ユニットが、選んだユニット以外にあれば、選んだユニットを持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382a2e382a4",
+      "name": "アイアム偽者などノーサンキュー",
+      "text": "敵軍ユニットを1体選んでもよい。そうしたとき、選んだユニットと同じカード名の敵軍ユニットが、選んだユニット以外にあれば、選んだユニットを持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382a2e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

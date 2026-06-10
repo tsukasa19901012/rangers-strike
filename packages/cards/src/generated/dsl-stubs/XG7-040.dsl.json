@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-040",
+  "name": "仮面ライダー電王LF×モモタロス",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※クロス1 【ダブルアクション】これが自分の手札にある間、敵軍ユニットがバトルエリアに出たとき、自軍ユニットが1体もなければ、OTの自軍コマンドを2つホールドしてから、これを自軍バトルエリアに出してもよい。そうしたとき、敵軍バトルエリアのSユニットをすべて持ち主のパワーゾーンに送る。",
+  "rawText": "※クロス1 【ダブルアクション】これが自分の手札にある間、敵軍ユニットがバトルエリアに出たとき、自軍ユニットが1体もなければ、OTの自軍コマンドを2つホールドしてから、これを自軍バトルエリアに出してもよい。そうしたとき、敵軍バトルエリアのSユニットをすべて持ち主のパワーゾーンに送る。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 14,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "イマジン",
+    "DEN-O"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38380e38396",
+      "name": "ダブルアクション",
+      "text": "これが自分の手札にある間、敵軍ユニットがバトルエリアに出たとき、自軍ユニットが1体もなければ、OTの自軍コマンドを2つホールドしてから、これを自軍バトルエリアに出してもよい。そうしたとき、敵軍バトルエリアのSユニットをすべて持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38380e38396",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

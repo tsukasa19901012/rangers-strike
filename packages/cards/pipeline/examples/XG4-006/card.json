@@ -1,0 +1,34 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-006",
+  "name": "ドラゴンアーマー",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "カテゴリにWBを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットはBP+1000され、特徴「獣奏剣」が追加される。重ねたユニットがユニットでなくなるとき、このカードを持ち主の手札に戻す。",
+  "rawText": "カテゴリにWBを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットはBP+1000され、特徴「獣奏剣」が追加される。重ねたユニットがユニットでなくなるとき、このカードを持ち主の手札に戻す。",
+  "effects": [
+    {
+      "id": "named_e38389e383a9",
+      "name": "ドラゴンアーマー",
+      "text": "カテゴリにWBを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットはBP+1000され、特徴「獣奏剣」が追加される。重ねたユニットがユニットでなくなるとき、このカードを持ち主の手札に戻す。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "fallback_handler",
+          "effectId": "named_e38389e383a9"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "hybrid",
+    "handler": "typescript",
+    "testGenerated": true
+  }
+}

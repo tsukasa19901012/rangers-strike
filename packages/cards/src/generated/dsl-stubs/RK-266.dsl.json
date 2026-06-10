@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-266",
+  "name": "機甲隊長ガテゾーン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【ショットガン】敵軍ラッシュエリアのユニットを、BPの合計が3000以下になるように選び撃破してもよい。ただし、選べるユニットの数は、特徴「メカ」を持つ自軍ユニットの数までとする。",
+  "rawText": "【ショットガン】敵軍ラッシュエリアのユニットを、BPの合計が3000以下になるように選び撃破してもよい。ただし、選べるユニットの数は、特徴「メカ」を持つ自軍ユニットの数までとする。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": "RC",
+  "features": [
+    "クライシス帝国",
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b7e383a7",
+      "name": "ショットガン",
+      "text": "敵軍ラッシュエリアのユニットを、BPの合計が3000以下になるように選び撃破してもよい。ただし、選べるユニットの数は、特徴「メカ」を持つ自軍ユニットの数までとする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b7e383a7",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

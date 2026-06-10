@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-041",
+  "name": "仮面ライダーW・CJGX",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※これが自軍エリアにある間、自分がターンを終えるとき、これをゲームから除外する。 【黄金の希望】これを手札からラッシュしたとき、自軍コマンドをすべて捨札にする。そうしたとき、捨札にしたコマンドと同じカテゴリを持つ敵軍Sユニットをすべて撃破する。その後、自軍捨札が敵軍捨札より多ければ、これはSP2になる。",
+  "rawText": "※これが自軍エリアにある間、自分がターンを終えるとき、これをゲームから除外する。 【黄金の希望】これを手札からラッシュしたとき、自軍コマンドをすべて捨札にする。そうしたとき、捨札にしたコマンドと同じカテゴリを持つ敵軍Sユニットをすべて撃破する。その後、自軍捨札が敵軍捨札より多ければ、これはSP2になる。",
+  "bp": 9000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "ゴールド",
+    "男",
+    "ダブルドライバー"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自軍エリアにある間、自分がターンを終えるとき、これをゲームから除外する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e9bb84e98791",
+      "name": "黄金の希望",
+      "text": "これを手札からラッシュしたとき、自軍コマンドをすべて捨札にする。そうしたとき、捨札にしたコマンドと同じカテゴリを持つ敵軍Sユニットをすべて撃破する。その後、自軍捨札が敵軍捨札より多ければ、これはSP2になる。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e9bb84e98791",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

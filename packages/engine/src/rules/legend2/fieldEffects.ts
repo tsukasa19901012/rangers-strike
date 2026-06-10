@@ -106,11 +106,6 @@ export function legend2EffectiveSp(
     }
   }
 
-  const shiftUp = state.players[playerId].turnModifiers?.shiftUpSp1InstanceIds ?? [];
-  if (shiftUp.includes(instance.instanceId)) {
-    sp = Math.max(sp, 1);
-  }
-
   return sp;
 }
 

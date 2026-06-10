@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-455",
+  "name": "ニンジャブラック",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これは「ブラックガンマー」としてつかえる。 ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍ダメージの数がこれの必要パワーの数字以上あれば、これを自軍ラッシュエリアに出してもよい。 【岩地獄の術】SPが空欄ではない敵軍Sユニットを自分の手札の枚数と同じ数まで選び、持ち主の山札の下に好きな順で戻してもよい。",
+  "rawText": "※これは「ブラックガンマー」としてつかえる。 ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍ダメージの数がこれの必要パワーの数字以上あれば、これを自軍ラッシュエリアに出してもよい。 【岩地獄の術】SPが空欄ではない敵軍Sユニットを自分の手札の枚数と同じ数まで選び、持ち主の山札の下に好きな順で戻してもよい。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "ブラック",
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_alias_named_e38396e383a9",
+      "text": "※これは「ブラックガンマー」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_named_e38396e383a9",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍ダメージの数がこれの必要パワーの数字以上あれば、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5b2a9e59cb0",
+      "name": "岩地獄の術",
+      "text": "SPが空欄ではない敵軍Sユニットを自分の手札の枚数と同じ数まで選び、持ち主の山札の下に好きな順で戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5b2a9e59cb0",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "fusion",
+      "text": "※これは「ブラックガンマー」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

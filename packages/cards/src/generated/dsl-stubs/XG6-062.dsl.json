@@ -1,0 +1,55 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG6-062",
+  "name": "戦闘ワンセブン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※これがユニットでなくなったとき、自軍捨札から「要塞ワンセブン」のカードを１枚選び、自軍ラッシュエリアに出す。 【グラビトン攻撃】これが自軍エリアにある間、自分がターンを終えるとき、このユニットのBP以下のBPを持つ敵軍ユニットを１体選び撃破してもよい。そうしたとき、このユニットを捨札にする。",
+  "rawText": "※これがユニットでなくなったとき、自軍捨札から「要塞ワンセブン」のカードを１枚選び、自軍ラッシュエリアに出す。 【グラビトン攻撃】これが自軍エリアにある間、自分がターンを終えるとき、このユニットのBP以下のBPを持つ敵軍ユニットを１体選び撃破してもよい。そうしたとき、このユニットを捨札にする。",
+  "bp": 8000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これがユニットでなくなったとき、自軍捨札から「要塞ワンセブン」のカードを１枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b0e383a9",
+      "name": "グラビトン攻撃",
+      "text": "これが自軍エリアにある間、自分がターンを終えるとき、このユニットのBP以下のBPを持つ敵軍ユニットを１体選び撃破してもよい。そうしたとき、このユニットを捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b0e383a9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

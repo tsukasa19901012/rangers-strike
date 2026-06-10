@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-099",
+  "name": "ガンツ先生",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これは自軍ターン中、バトルエリアに出られない。 【採点】これが自軍エリアにある間、自軍バトルフェイズ中、次の効果を発動できる⇒Sユニットを1体選んでから、自軍コマンドを1つホールドする。このターン、選んだユニットの必要パワーの数字は、ホールドした自軍コマンドの必要パワーの数字になる。",
+  "rawText": "※これは自軍ターン中、バトルエリアに出られない。 【採点】これが自軍エリアにある間、自軍バトルフェイズ中、次の効果を発動できる⇒Sユニットを1体選んでから、自軍コマンドを1つホールドする。このターン、選んだユニットの必要パワーの数字は、ホールドした自軍コマンドの必要パワーの数字になる。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_enter_battle_own_turn",
+      "text": "※これは自軍ターン中、バトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_enter_battle_own_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e68ea1e782b9",
+      "name": "採点",
+      "text": "これが自軍エリアにある間、自軍バトルフェイズ中、次の効果を発動できる⇒Sユニットを1体選んでから、自軍コマンドを1つホールドする。このターン、選んだユニットの必要パワーの数字は、ホールドした自軍コマンドの必要パワーの数字になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e68ea1e782b9",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍ターン中、バトルエリアに出られない。",
+      "rule": "no_enter_battle_own_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

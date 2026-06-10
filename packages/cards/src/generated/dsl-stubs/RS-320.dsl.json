@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-320",
+  "name": "デカスワン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【スワンイリュージョン】これが自軍ラッシュエリアにある間、敵軍ターン中、敵軍Sユニットにストライクされてダメージを受けたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
+  "rawText": "【スワンイリュージョン】これが自軍ラッシュエリアにある間、敵軍ターン中、敵軍Sユニットにストライクされてダメージを受けたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "女",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "named_e382b9e383af",
+      "name": "スワンイリュージョン",
+      "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、敵軍Sユニットにストライクされてダメージを受けたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b9e383af",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

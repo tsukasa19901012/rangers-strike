@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG1-018",
+  "name": "サイレンダーPM",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【治安維持】これが自軍バトルエリアにある間、相手は次の制限を受ける⇒Sユニットは、MユニットまたはSCユニットまたはLユニットにアタックすることができない。",
+  "rawText": "【治安維持】これが自軍バトルエリアにある間、相手は次の制限を受ける⇒Sユニットは、MユニットまたはSCユニットまたはLユニットにアタックすることができない。",
+  "bp": 5000,
+  "size": "L",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "特徴「警察」を持つ自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "named_e6b2bbe5ae89",
+      "name": "治安維持",
+      "text": "これが自軍バトルエリアにある間、相手は次の制限を受ける⇒Sユニットは、MユニットまたはSCユニットまたはLユニットにアタックすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e6b2bbe5ae89",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

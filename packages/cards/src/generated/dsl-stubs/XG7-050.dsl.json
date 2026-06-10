@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-050",
+  "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダーバース",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※クロス1 ※リードET 【行けますって、俺達が力を合わせれば】自軍ターン中、これとコンビネーションする、ナンバーに「L」または「R」を持つETのユニットのJCの効果は、これがJCの対象外でも発動できる。",
+  "rawText": "※クロス1 ※リードET 【行けますって、俺達が力を合わせれば】自軍ターン中、これとコンビネーションする、ナンバーに「L」または「R」を持つETのユニットのJCの効果は、これがJCの対象外でも発動できる。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 12,
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_lead_et",
+      "text": "※リードET",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "lead_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e8a18ce38191",
+      "name": "行けますって、俺達が力を合わせれば",
+      "text": "自軍ターン中、これとコンビネーションする、ナンバーに「L」または「R」を持つETのユニットのJCの効果は、これがJCの対象外でも発動できる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e8a18ce38191",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※リードET",
+      "rule": "lead_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

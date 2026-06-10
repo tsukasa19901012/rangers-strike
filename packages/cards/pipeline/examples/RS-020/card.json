@@ -1,0 +1,39 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-020",
+  "name": "クルマジックパワー",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "このカードを自軍パワーゾーンに置く。",
+  "rawText": "このカードを自軍パワーゾーンに置く。",
+  "imageUrl": "/cards/legend1/RS-020.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-020.jpg",
+  "effectId": "place_in_power",
+  "effects": [
+    {
+      "id": "place_in_power",
+      "text": "このカードを自軍パワーゾーンに置く。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "move",
+          "target": {
+            "type": "self"
+          },
+          "to": "power"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

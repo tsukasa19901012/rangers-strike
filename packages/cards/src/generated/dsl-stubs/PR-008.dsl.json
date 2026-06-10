@@ -1,0 +1,41 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "PR-008",
+  "name": "バイオハンター・シルバ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【バイバスター】これは敵軍コマンドゾーンにある「OT」のコマンド1つにつきBP+1000される。これはBP5000以上のとき「SP1」になる。",
+  "rawText": "【バイバスター】これは敵軍コマンドゾーンにある「OT」のコマンド1つにつきBP+1000される。これはBP5000以上のとき「SP1」になる。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "named_e38390e382a4",
+      "name": "バイバスター",
+      "text": "これは敵軍コマンドゾーンにある「OT」のコマンド1つにつきBP+1000される。これはBP5000以上のとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

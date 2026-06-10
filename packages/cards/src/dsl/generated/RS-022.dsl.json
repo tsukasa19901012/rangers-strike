@@ -1,0 +1,38 @@
+{
+  "id": "RS-022",
+  "name": "アースの力",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "effectId": "earth_force",
+  "tags": [
+    "常駐"
+  ],
+  "imageUrl": "/cards/legend1/RS-022.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-022.jpg",
+  "effects": [
+    {
+      "id": "earth_force",
+      "name": "RS-022",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_from_rush",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

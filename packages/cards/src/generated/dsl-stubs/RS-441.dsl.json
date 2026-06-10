@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-441",
+  "name": "バトルコサック",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※タクスET（これがバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットはSP1になる） 【コサックダンス】このターン、自軍ユニットがバトルエリアからラッシュエリアに戻るたび、そのユニットを自分の手札に戻してもよい。そうしたとき、自軍コマンドを1つホールドして、手札に戻したユニットカードと同じカード名のユニットカードを自分の手札から1枚選び、自軍ラッシュエリアに出してもよい。",
+  "rawText": "※タクスET（これがバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットはSP1になる） 【コサックダンス】このターン、自軍ユニットがバトルエリアからラッシュエリアに戻るたび、そのユニットを自分の手札に戻してもよい。そうしたとき、自軍コマンドを1つホールドして、手札に戻したユニットカードと同じカード名のユニットカードを自分の手札から1枚選び、自軍ラッシュエリアに出してもよい。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "イエロー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_taxis_et",
+      "text": "※タクスET（これがバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットはSP1になる）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_ET",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382b3e382b5",
+      "name": "コサックダンス",
+      "text": "このターン、自軍ユニットがバトルエリアからラッシュエリアに戻るたび、そのユニットを自分の手札に戻してもよい。そうしたとき、自軍コマンドを1つホールドして、手札に戻したユニットカードと同じカード名のユニットカードを自分の手札から1枚選び、自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382b3e382b5",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※タクスET（これがバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットはSP1になる）",
+      "rule": "taxis_ET"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

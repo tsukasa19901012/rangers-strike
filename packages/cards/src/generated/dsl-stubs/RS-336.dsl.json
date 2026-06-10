@@ -1,0 +1,80 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-336",
+  "name": "レジェンドマジピンク",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジピンク」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【マジボルト】追加条件を持たないユニットを1体選び、持ち主の山札の上に戻してもよい。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「マジピンク」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【マジボルト】追加条件を持たないユニットを1体選び、持ち主の山札の上に戻してもよい。",
+  "bp": 2500,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "ピンク",
+    "女",
+    "魔法",
+    "レジェンドフォーム"
+  ],
+  "effects": [
+    {
+      "id": "recruit_named_e3839ee382b8e38394e383b3_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジピンク」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
+    },
+    {
+      "id": "named_e3839ee382b8",
+      "name": "マジボルト",
+      "text": "追加条件を持たないユニットを1体選び、持ち主の山札の上に戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e3839ee382b8",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

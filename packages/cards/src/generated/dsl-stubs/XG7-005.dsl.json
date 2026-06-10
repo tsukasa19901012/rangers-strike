@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG7-005",
+  "name": "ゴーカイイエロー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※これをラッシュしたとき、「ゴーカイイエロー」以外のオモテ向きの自軍パワーから、追加条件を持たない特徴「イエロー」を持つSユニットのカードを1枚選び、これと置き換えてもよい。 【モバイレーツ】次の相手ターン、カード名に「ゴーカイ」を含む自軍ユニットが撃破されて捨札になるとき、そのユニットと同じ特徴を2つ以上持つ、オモテ向きの自軍パワーを1枚捨札にして、その場に留めてもよい。",
+  "rawText": "※これをラッシュしたとき、「ゴーカイイエロー」以外のオモテ向きの自軍パワーから、追加条件を持たない特徴「イエロー」を持つSユニットのカードを1枚選び、これと置き換えてもよい。 【モバイレーツ】次の相手ターン、カード名に「ゴーカイ」を含む自軍ユニットが撃破されて捨札になるとき、そのユニットと同じ特徴を2つ以上持つ、オモテ向きの自軍パワーを1枚捨札にして、その場に留めてもよい。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "イエロー",
+    "女",
+    "宇宙海賊"
+  ],
+  "effects": [
+    {
+      "id": "note_named_e280bbe38193",
+      "text": "※これをラッシュしたとき、「ゴーカイイエロー」以外のオモテ向きの自軍パワーから、追加条件を持たない特徴「イエロー」を持つSユニットのカードを1枚選び、これと置き換えてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe38193",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e383a2e38390",
+      "name": "モバイレーツ",
+      "text": "次の相手ターン、カード名に「ゴーカイ」を含む自軍ユニットが撃破されて捨札になるとき、そのユニットと同じ特徴を2つ以上持つ、オモテ向きの自軍パワーを1枚捨札にして、その場に留めてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a2e38390",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

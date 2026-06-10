@@ -1,0 +1,86 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-040",
+  "name": "ゴセイグレート",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―ゴセイドラゴン（またはゴセイレッド）＋ゴセイフェニックス（またはゴセイピンク）＋ゴセイスネーク（またはゴセイブラック）＋ゴセイタイガー（またはゴセイイエロー）＋ゴセイシャーク（またはゴセイブルー） ※ウイング ※ブラスト 【天装合体】これをラッシュしたとき、ウイングを持たない敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "合体―ゴセイドラゴン（またはゴセイレッド）＋ゴセイフェニックス（またはゴセイピンク）＋ゴセイスネーク（またはゴセイブラック）＋ゴセイタイガー（またはゴセイイエロー）＋ゴセイシャーク（またはゴセイブルー） ※ウイング ※ブラスト 【天装合体】これをラッシュしたとき、ウイングを持たない敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 18000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "魔法",
+    "獣",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_blast",
+      "text": "※ブラスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "blast",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e5a4a9e8a385",
+      "name": "天装合体",
+      "text": "これをラッシュしたとき、ウイングを持たない敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e5a4a9e8a385",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    },
+    {
+      "kind": "note",
+      "text": "※ブラスト",
+      "rule": "blast"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

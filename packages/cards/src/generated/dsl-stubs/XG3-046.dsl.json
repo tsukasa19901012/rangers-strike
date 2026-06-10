@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-046",
+  "name": "仮面ライダーBLACK（XG3）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※チェイス ※敵軍ターン中、これが撃破されて捨札になったとき、これを自軍パワーゾーンにダメージにして置いてもよい。そうしたとき、自分の手札から「仮面ライダーBLACK RX」のカードを1枚選び、自軍ラッシュエリアに出す。 【キングストーンフラッシュ】自分は1枚ドローしてから、自分の手札を1枚選び捨札にする。そうしたとき、捨札にしたカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す。",
+  "rawText": "※チェイス ※敵軍ターン中、これが撃破されて捨札になったとき、これを自軍パワーゾーンにダメージにして置いてもよい。そうしたとき、自分の手札から「仮面ライダーBLACK RX」のカードを1枚選び、自軍ラッシュエリアに出す。 【キングストーンフラッシュ】自分は1枚ドローしてから、自分の手札を1枚選び捨札にする。そうしたとき、捨札にしたカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 13,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間",
+    "世紀王"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_chase",
+      "text": "※チェイス",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "chase",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_named_e280bbe695b5",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、これを自軍パワーゾーンにダメージにして置いてもよい。そうしたとき、自分の手札から「仮面ライダーBLACK RX」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_note_named_e280bbe695b5",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e382ade383b3",
+      "name": "キングストーンフラッシュ",
+      "text": "自分は1枚ドローしてから、自分の手札を1枚選び捨札にする。そうしたとき、捨札にしたカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382ade383b3",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※チェイス",
+      "rule": "chase"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

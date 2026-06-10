@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-223",
+  "name": "タック",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これはバトルエリアに出られない。 【緊急システム発動要請】これが自軍ラッシュエリアにある間、自軍ラッシュフェイズ中、自分がMユニットをラッシュするとき、敵軍コマンドを1つリリースしてもよい。そうしたとき、そのユニットのラッシュに必要な自軍コマンドを1つホールドしたことにできる。",
+  "rawText": "※これはバトルエリアに出られない。 【緊急システム発動要請】これが自軍ラッシュエリアにある間、自軍ラッシュフェイズ中、自分がMユニットをラッシュするとき、敵軍コマンドを1つリリースしてもよい。そうしたとき、そのユニットのラッシュに必要な自軍コマンドを1つホールドしたことにできる。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "メカ"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_enter_battle",
+      "text": "※これはバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e7b78ae680a5",
+      "name": "緊急システム発動要請",
+      "text": "これが自軍ラッシュエリアにある間、自軍ラッシュフェイズ中、自分がMユニットをラッシュするとき、敵軍コマンドを1つリリースしてもよい。そうしたとき、そのユニットのラッシュに必要な自軍コマンドを1つホールドしたことにできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出られない。",
+      "rule": "cannot_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

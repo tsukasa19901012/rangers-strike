@@ -1,0 +1,28 @@
+{
+  "id": "RS-020",
+  "effects": [
+    {
+      "id": "place_in_power",
+      "name": "RS-020",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "move",
+          "target": {
+            "type": "self"
+          },
+          "to": "power"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

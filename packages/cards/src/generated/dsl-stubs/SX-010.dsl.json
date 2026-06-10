@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SX-010",
+  "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダーW・CJ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※クロス1 【MOVIE大戦】「SP1」 自軍捨札からクロスを持つカードを1枚選び、山札の下に戻すか、ゲームから除外してもよい。そうしたとき、山札の下に戻したなら、このターン、これはBP+4000される。ゲームから除外したなら、敵軍Sユニット1体か敵軍捨札1枚を選びゲームから除外する。",
+  "rawText": "※クロス1 【MOVIE大戦】「SP1」 自軍捨札からクロスを持つカードを1枚選び、山札の下に戻すか、ゲームから除外してもよい。そうしたとき、山札の下に戻したなら、このターン、これはBP+4000される。ゲームから除外したなら、敵軍Sユニット1体か敵軍捨札1枚を選びゲームから除外する。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": 2,
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cross1",
+      "text": "※クロス1",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cross1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "movie",
+      "name": "MOVIE大戦",
+      "text": "「SP1」 自軍捨札からクロスを持つカードを1枚選び、山札の下に戻すか、ゲームから除外してもよい。そうしたとき、山札の下に戻したなら、このターン、これはBP+4000される。ゲームから除外したなら、敵軍Sユニット1体か敵軍捨札1枚を選びゲームから除外する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※クロス1",
+      "rule": "cross1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

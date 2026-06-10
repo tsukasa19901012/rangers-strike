@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG4-074",
+  "name": "仮面ライダーX（XG4）",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ライドルスティック】これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のコマンドゾーンに送ってもよい。置けなければ捨札にする。",
+  "rawText": "【ライドルスティック】これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のコマンドゾーンに送ってもよい。置けなければ捨札にする。",
+  "bp": 4000,
+  "size": "S",
+  "sp": 15,
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "named_e383a9e382a4",
+      "name": "ライドルスティック",
+      "text": "これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のコマンドゾーンに送ってもよい。置けなければ捨札にする。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e383a9e382a4",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

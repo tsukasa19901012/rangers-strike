@@ -1,0 +1,39 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG3-071",
+  "name": "キバーラ",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【カプッ】これをラッシュしたとき、自軍山札の上から1枚をオモテにする。そうしたとき、オモテにしたカードがユニットカードだったなら捨札にする。それ以外だったなら自分の手札に加える。",
+  "rawText": "【カプッ】これをラッシュしたとき、自軍山札の上から1枚をオモテにする。そうしたとき、オモテにしたカードがユニットカードだったなら捨札にする。それ以外だったなら自分の手札に加える。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "キバット族"
+  ],
+  "effects": [
+    {
+      "id": "named_e382abe38397",
+      "name": "カプッ",
+      "text": "これをラッシュしたとき、自軍山札の上から1枚をオモテにする。そうしたとき、オモテにしたカードがユニットカードだったなら捨札にする。それ以外だったなら自分の手札に加える。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e382abe38397",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "XG5-053",
+  "name": "仮面ライダーキバEF（XG5）",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※コールDA 【ファイナルザンバット斬】自軍ターン中、これがバトルエリアに出たとき、特徴「怪人」を持つ自軍ユニットを1体選びホールドするか、特徴「怪人」を持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき、BP5000以下の敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※コールDA 【ファイナルザンバット斬】自軍ターン中、これがバトルエリアに出たとき、特徴「怪人」を持つ自軍ユニットを1体選びホールドするか、特徴「怪人」を持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき、BP5000以下の敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "魔皇力"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_call_da",
+      "text": "※コールDA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_DA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "named_e38395e382a1",
+      "name": "ファイナルザンバット斬",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、特徴「怪人」を持つ自軍ユニットを1体選びホールドするか、特徴「怪人」を持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき、BP5000以下の敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_named_e38395e382a1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※コールDA",
+      "rule": "call_DA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}
