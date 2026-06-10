@@ -40,13 +40,16 @@
       "name": "マジカルショータイム",
       "text": "これが自分の手札にある間、敵軍ターン中、特徴「魔法」を持つ自軍ユニットがアタックされたとき、アタックされたユニットとこれを置き換えてもよい。そうしたとき、アタックされたユニットのかわりにこのユニットがバトルする。そのターン終了時に、このユニットを捨札にするか山札の下に戻す。",
       "trigger": {
-        "type": "on_turn_end"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "discard_to_zone_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

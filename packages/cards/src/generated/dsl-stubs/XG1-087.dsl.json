@@ -22,13 +22,16 @@
       "name": "瞬間移動",
       "text": "敵軍ターン中、これがアタックされたとき、これのバトルエリアでの並び順が自分から見て左から1番目以外なら、これを自分から見て左隣のユニットと置き替えてもよい。そうしたとき、バトルは行われない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "enemy_turn_action_e695b5e8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

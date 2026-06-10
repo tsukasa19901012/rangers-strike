@@ -46,9 +46,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "discard_to_zone_e59088e4bd93",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

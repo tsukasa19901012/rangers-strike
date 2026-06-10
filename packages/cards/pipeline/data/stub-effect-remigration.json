@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-06-10T04:39:43.983Z",
-  "scanned": 159,
-  "migratedToPrimitives": 53,
+  "generatedAt": "2026-06-10T04:40:01.829Z",
+  "scanned": 148,
+  "migratedToPrimitives": 61,
   "remainingEffectDelegate": 0,
   "samples": [
     {
@@ -25,13 +25,18 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-163",
-      "effectId": "named_e784a1e6848fe8ad98e381ae",
+      "cardId": "RK-287",
+      "effectId": "named_e79eace99693e381aee682aa",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-279",
-      "effectId": "named_e38380e383bce382afe38390",
+      "cardId": "RM-015",
+      "effectId": "named_e382a4e383b3e38397e38383",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-203",
+      "effectId": "named_e38387e382a6e382b9e981ba",
       "to": "grant_keyword"
     },
     {
@@ -45,11 +50,6 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "RS-383",
-      "effectId": "named_e69591e587bae4bd9ce6a5ad",
-      "to": "grant_keyword"
-    },
-    {
       "cardId": "RS-446",
       "effectId": "named_e382b9e382afe383a9e383b3",
       "to": "grant_keyword"
@@ -57,11 +57,6 @@
     {
       "cardId": "RS-446",
       "effectId": "named_e382b9e382afe383a9e383b3",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "RS-472",
-      "effectId": "named_e78fbee5a0b4e381b8e381ae",
       "to": "grant_keyword"
     },
     {
@@ -82,6 +77,16 @@
     {
       "cardId": "RS-504",
       "effectId": "named_e887a8e78da3e382abe383a1",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-532",
+      "effectId": "named_e3839fe382b5e382a4e383ab",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-569",
+      "effectId": "named_e382ace38388e383aae383b3",
       "to": "grant_keyword"
     },
     {
@@ -110,8 +115,8 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "RS-633",
-      "effectId": "note_e280bbe887aae8bb8de382b9",
+      "cardId": "RS-631",
+      "effectId": "named_e382b5e38386e383a9e382a4",
       "to": "grant_keyword"
     },
     {
@@ -120,13 +125,8 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "XG2-082",
-      "effectId": "note_e280bbe38193e3828ce381af",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG2-082",
-      "effectId": "note_e280bbe887aae8bb8de383a9",
+      "cardId": "RS-633",
+      "effectId": "note_e280bbe887aae8bb8de382b9",
       "to": "grant_keyword"
     }
   ],

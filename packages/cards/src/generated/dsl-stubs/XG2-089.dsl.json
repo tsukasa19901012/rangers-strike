@@ -42,9 +42,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "discard_to_zone_4441e38292e6",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

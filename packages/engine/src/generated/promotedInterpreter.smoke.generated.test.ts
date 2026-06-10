@@ -60,7 +60,6 @@ const INTERPRET_EFFECT_IDS = [
   "RK-263",
   "RK-267",
   "RK-282",
-  "RM-015",
   "RS-181",
   "RS-183",
   "RS-245",
@@ -69,10 +68,7 @@ const INTERPRET_EFFECT_IDS = [
   "RS-682",
   "XG1-041",
   "XG1-043",
-  "XG1-044",
   "XG1-078",
-  "XG1-100",
-  "XG2-089",
   "XG4-030",
   "XG4-046",
   "XG6-039",
@@ -86,11 +82,15 @@ const INTERPRET_EFFECT_IDS = [
   "RK-228",
   "RK-231",
   "RK-266",
-  "RK-287",
   "RK-307",
   "RK-311",
   "RS-194",
-  "RS-203"
+  "RS-217",
+  "RS-220",
+  "RS-227",
+  "RS-270",
+  "RS-279",
+  "RS-313"
 ] as const;
 const ACTION_PRIMITIVE_IDS = [
   "BK-001",
