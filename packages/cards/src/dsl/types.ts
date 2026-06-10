@@ -140,6 +140,7 @@ export type EffectPrimitive =
     }
   | { type: "open_reaction"; window: "rush" | "battle" | "strike" | "leave" }
   | { type: "enqueue_trigger"; effectId: string }
+  | { type: "interpret_effect" }
   | { type: "fallback_handler"; effectId: string };
 
 export type EffectDefinition = {

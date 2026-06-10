@@ -22,9 +22,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_battle_dance",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

@@ -11,7 +11,51 @@
   "rawText": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。このカードに重ねたユニットがストライクしてダメージを与えたとき、自軍捨札からSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く。置けなければ手札に加える。",
   "implementation": {
     "source": "dsl",
-    "handler": "unimplemented",
+    "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "effects": [
+    {
+      "id": "discard_s_unit_to_hand",
+      "text": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。このカードに重ねたユニットがストライクしてダメージを与えたとき、自軍捨札からSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く。置けなければ手札に加える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

@@ -33,8 +33,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "dark_deal"
+          "type": "interpret_effect"
         }
       ]
     }

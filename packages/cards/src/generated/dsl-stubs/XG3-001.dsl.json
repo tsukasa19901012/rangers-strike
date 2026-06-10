@@ -11,7 +11,21 @@
   "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を相手に見せずに1枚選ばせ、自軍パワーゾーンにオモテ向きで置く。",
   "implementation": {
     "source": "dsl",
-    "handler": "unimplemented",
+    "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "effects": [
+    {
+      "id": "body_interpret",
+      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を相手に見せずに1枚選ばせ、自軍パワーゾーンにオモテ向きで置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ]
 }

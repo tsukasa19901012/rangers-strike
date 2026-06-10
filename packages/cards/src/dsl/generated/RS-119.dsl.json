@@ -33,8 +33,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "shift_up"
+          "type": "interpret_effect"
         }
       ]
     }

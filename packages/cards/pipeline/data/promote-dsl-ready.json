@@ -1,0 +1,11 @@
+{
+  "generatedAt": "2026-06-10T03:03:45.778Z",
+  "scanned": 119,
+  "promoted": 119,
+  "byMode": {
+    "rematched": 14,
+    "interpret_effect": 85,
+    "vanilla": 20
+  },
+  "note": "G1 promote-dsl-ready: unimplemented → interpreter"
+}

@@ -29,8 +29,7 @@
       "optional": true,
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "ruin_survey"
+          "type": "interpret_effect"
         }
       ]
     }

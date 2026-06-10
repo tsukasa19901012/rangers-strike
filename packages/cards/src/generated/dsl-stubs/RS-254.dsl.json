@@ -11,7 +11,21 @@
   "rawText": "このターン、すべての自軍ユニットのコンビネーションナンバーは1少なくなる。ただし、2より少なくならない。",
   "implementation": {
     "source": "dsl",
-    "handler": "unimplemented",
+    "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "effects": [
+    {
+      "id": "body_interpret",
+      "text": "このターン、すべての自軍ユニットのコンビネーションナンバーは1少なくなる。ただし、2より少なくならない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ]
 }

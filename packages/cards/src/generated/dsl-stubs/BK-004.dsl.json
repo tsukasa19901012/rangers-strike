@@ -11,7 +11,52 @@
   "rawText": "自軍Sユニットを1体選ぶ。このターン、選んだユニットはBP+1000される。 選んだユニットが「仮面ライダーアマゾン」なら、さらにBP+4000される。",
   "implementation": {
     "source": "dsl",
-    "handler": "unimplemented",
+    "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "effects": [
+    {
+      "id": "bp_boost_ally_1000",
+      "text": "自軍Sユニットを1体選ぶ。このターン、選んだユニットはBP+1000される。 選んだユニットが「仮面ライダーアマゾン」なら、さらにBP+4000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "self",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "self",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "modify_bp",
+              "target": {
+                "type": "trigger_source"
+              },
+              "amount": 1000,
+              "duration": "turn"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

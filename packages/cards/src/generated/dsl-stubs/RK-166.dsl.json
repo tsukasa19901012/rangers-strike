@@ -57,9 +57,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_gm_01",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

@@ -31,8 +31,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "hyper_civilization_guard"
+          "type": "interpret_effect"
         }
       ]
     }

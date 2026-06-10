@@ -11,7 +11,21 @@
   "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札の上から3枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。",
   "implementation": {
     "source": "dsl",
-    "handler": "unimplemented",
+    "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "effects": [
+    {
+      "id": "body_interpret",
+      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札の上から3枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ]
 }

@@ -19,8 +19,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "bird_nick_wave"
+          "type": "interpret_effect"
         }
       ]
     }

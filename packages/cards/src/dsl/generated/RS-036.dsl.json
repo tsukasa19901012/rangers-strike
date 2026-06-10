@@ -33,8 +33,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "moss_blizzard"
+          "type": "interpret_effect"
         }
       ]
     },

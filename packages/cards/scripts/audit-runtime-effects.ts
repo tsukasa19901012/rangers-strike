@@ -27,6 +27,9 @@ type RuntimeEntry = {
 function classifyPrimitive(effect: {
   effects: Array<{ type: string; keyword?: string; effectId?: string }>;
 }): RuntimeEntry["primitive"] {
+  if (effect.effects.every((p) => p.type === "interpret_effect")) {
+    return "native";
+  }
   for (const p of effect.effects) {
     if (p.type === "enqueue_trigger") return "enqueue_trigger";
     if (p.type === "grant_keyword" && p.keyword?.startsWith("effect_")) {

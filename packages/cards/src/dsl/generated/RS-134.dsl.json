@@ -42,8 +42,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "super_live_crush"
+          "type": "interpret_effect"
         }
       ]
     }

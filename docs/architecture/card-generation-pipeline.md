@@ -2,7 +2,7 @@
 
 **目的:** Wiki 情報を起点に、カードテキストから DSL・JSON・テストまで一気通貫で生成する  
 **対象:** `docs/wiki/`, `packages/cards/`, `packages/engine/`  
-**関連:** [codebase-scalability-review.md](./codebase-scalability-review.md) §6, [test-strategy.md](./test-strategy.md), [replay-system-design.md](./replay-system-design.md)  
+**関連:** [full-card-rollout-process.md](./full-card-rollout-process.md)（全カード反映の運用プロセス）, [codebase-scalability-review.md](./codebase-scalability-review.md) §6, [test-strategy.md](./test-strategy.md), [replay-system-design.md](./replay-system-design.md)  
 **日付:** 2026-06-09
 
 ---

@@ -11,7 +11,21 @@
   "rawText": "このゲーム中、次のルールを追加する⇒ 5体以上の合体ユニットを必要とするLユニットの追加条件を満たすとき、合体ユニットを捨札にするかわりに、同名のカードを自分自身の手札から捨ててもよい。",
   "implementation": {
     "source": "dsl",
-    "handler": "unimplemented",
+    "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "effects": [
+    {
+      "id": "body_interpret",
+      "text": "このゲーム中、次のルールを追加する⇒ 5体以上の合体ユニットを必要とするLユニットの追加条件を満たすとき、合体ユニットを捨札にするかわりに、同名のカードを自分自身の手札から捨ててもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ]
 }

@@ -19,7 +19,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "unimplemented",
+    "handler": "interpreter",
     "testGenerated": true
   }
 }

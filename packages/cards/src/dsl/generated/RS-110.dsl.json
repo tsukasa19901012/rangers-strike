@@ -29,8 +29,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "zenibomb"
+          "type": "interpret_effect"
         }
       ]
     }

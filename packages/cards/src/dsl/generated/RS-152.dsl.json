@@ -33,9 +33,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_scorching_roar",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     },

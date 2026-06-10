@@ -32,8 +32,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "air_transport"
+          "type": "interpret_effect"
         }
       ]
     }

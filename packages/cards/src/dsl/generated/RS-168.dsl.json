@@ -34,8 +34,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "cross_thunder"
+          "type": "interpret_effect"
         }
       ]
     },

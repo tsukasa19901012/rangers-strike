@@ -29,8 +29,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "ryuu_geki_ken"
+          "type": "interpret_effect"
         }
       ]
     }

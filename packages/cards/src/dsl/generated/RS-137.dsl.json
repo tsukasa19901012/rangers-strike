@@ -32,8 +32,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "submerge"
+          "type": "interpret_effect"
         }
       ]
     }

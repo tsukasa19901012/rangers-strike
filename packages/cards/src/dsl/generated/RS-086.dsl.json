@@ -38,9 +38,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_traffic_control",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     },

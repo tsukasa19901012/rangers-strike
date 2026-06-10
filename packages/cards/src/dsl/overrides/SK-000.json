@@ -4,7 +4,7 @@
   "effects": [],
   "implementation": {
     "source": "dsl",
-    "handler": "unimplemented",
-    "note": "SC blank template — wiki stats incomplete"
+    "handler": "interpreter",
+    "note": "SC blank template — stats-only vanilla"
   }
 }

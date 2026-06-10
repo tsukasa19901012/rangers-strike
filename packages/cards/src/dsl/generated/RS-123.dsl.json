@@ -20,8 +20,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "super_dynamite"
+          "type": "interpret_effect"
         }
       ]
     }

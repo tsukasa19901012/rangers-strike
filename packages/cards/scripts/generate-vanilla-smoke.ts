@@ -76,7 +76,8 @@ describe("vanilla-promoted catalog", () => {
     const typescript = promotedDocs.filter((c) => c.implementation?.handler === "typescript").length;
     const unimplemented = promotedDocs.filter((c) => c.implementation?.handler === "unimplemented").length;
     expect(interpreter + typescript + unimplemented).toBe(promotedDocs.length);
-    expect(unimplemented).toBeGreaterThan(0);
+    expect(unimplemented).toBe(0);
+    expect(interpreter).toBeGreaterThan(0);
   });
 });
 `;

@@ -174,7 +174,7 @@ export function generateCardDocument(
   if (analysis.grade === "A") {
     card.implementation = {
       source: "dsl",
-      handler: "unimplemented",
+      handler: "interpreter",
       testGenerated: true,
     };
     return card;

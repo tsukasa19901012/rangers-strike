@@ -36,6 +36,7 @@ const steps = [
   ["metrics:full-playable", "metrics:full-playable"],
   ["audit:runtime-effects", "audit:runtime-effects"],
   ["extract-effect-catalog", "extract-effect-catalog"],
+  ["audit:rollout-status", "audit:rollout-status"],
 ];
 
 for (const [label, script] of steps) {

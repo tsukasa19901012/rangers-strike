@@ -44,13 +44,13 @@ function normalize(doc: CardDocument, stubGrade: string): CardDocument {
 
   if (stubGrade === "A" || text === "なし" || text === "なし。") {
     delete next.effects;
-    next.implementation = { source: "dsl", handler: "unimplemented", testGenerated: true };
+    next.implementation = { source: "dsl", handler: "interpreter", testGenerated: true };
     return next;
   }
 
   if (isFallbackOnly(next) && !next.unnamedRules?.length) {
     delete next.effects;
-    next.implementation = { source: "dsl", handler: "unimplemented", testGenerated: true };
+    next.implementation = { source: "dsl", handler: "interpreter", testGenerated: true };
     return next;
   }
 

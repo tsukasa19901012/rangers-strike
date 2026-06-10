@@ -377,6 +377,15 @@
         {
           "type": "object",
           "properties": {
+            "type": { "const": "interpret_effect" }
+          },
+          "required": ["type"],
+          "additionalProperties": false,
+          "description": "効果本文を実行時に PATTERNS 再マッチしてインタープリタ解決（G2/G3）。"
+        },
+        {
+          "type": "object",
+          "properties": {
             "type": { "const": "fallback_handler" },
             "effectId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
           },

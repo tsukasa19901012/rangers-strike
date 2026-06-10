@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T02:19:44.409Z",
+  "generatedAt": "2026-06-10T03:04:00.534Z",
   "dispatchSource": "packages/engine/src/dsl/runtimeEffectDispatch.ts",
   "uniqueEnqueueEffectIds": 90,
   "byCategory": {

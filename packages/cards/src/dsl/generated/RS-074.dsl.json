@@ -32,8 +32,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "val_cannon"
+          "type": "interpret_effect"
         }
       ]
     }

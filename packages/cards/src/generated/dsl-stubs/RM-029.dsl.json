@@ -24,9 +24,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_note_sp_s",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     },

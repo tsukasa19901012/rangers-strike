@@ -31,9 +31,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_karakuri_lion_chain",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

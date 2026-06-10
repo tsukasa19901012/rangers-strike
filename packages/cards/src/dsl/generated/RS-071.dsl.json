@@ -22,9 +22,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_hidora_egg",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

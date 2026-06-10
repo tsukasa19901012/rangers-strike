@@ -69,9 +69,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_named_e69c9be381be",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

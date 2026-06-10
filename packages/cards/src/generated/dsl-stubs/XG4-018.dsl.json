@@ -18,9 +18,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_note_wb_s_1_rc",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     },
@@ -33,9 +31,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_named_e799bde98a80",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

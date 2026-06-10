@@ -44,9 +44,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_furious_shark_shot",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

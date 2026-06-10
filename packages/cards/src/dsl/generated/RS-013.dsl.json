@@ -22,9 +22,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_shiron_light",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

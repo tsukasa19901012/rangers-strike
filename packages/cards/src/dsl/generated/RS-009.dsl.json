@@ -19,8 +19,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "power_bazooka"
+          "type": "interpret_effect"
         }
       ]
     }

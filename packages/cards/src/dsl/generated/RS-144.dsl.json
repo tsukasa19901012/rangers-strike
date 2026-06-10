@@ -31,8 +31,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "taurus_dive"
+          "type": "interpret_effect"
         }
       ]
     }

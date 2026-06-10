@@ -22,9 +22,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_super_power",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

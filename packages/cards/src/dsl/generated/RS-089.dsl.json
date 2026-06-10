@@ -38,9 +38,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_medical_rescue",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     },

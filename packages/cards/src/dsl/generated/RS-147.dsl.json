@@ -41,9 +41,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_super_moa_cannon",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

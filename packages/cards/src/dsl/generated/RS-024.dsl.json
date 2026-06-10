@@ -19,8 +19,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "compression_freeze"
+          "type": "interpret_effect"
         }
       ]
     }

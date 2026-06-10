@@ -28,9 +28,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_zo",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

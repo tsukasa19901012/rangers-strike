@@ -33,8 +33,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "maximum_penetration"
+          "type": "interpret_effect"
         }
       ]
     }

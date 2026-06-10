@@ -35,8 +35,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "space_ninpo_rope_skull"
+          "type": "interpret_effect"
         }
       ]
     },

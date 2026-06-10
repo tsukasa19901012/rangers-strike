@@ -33,8 +33,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "shovel_defense"
+          "type": "interpret_effect"
         }
       ]
     }

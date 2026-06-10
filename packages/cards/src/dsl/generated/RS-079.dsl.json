@@ -28,9 +28,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_bio_buster",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

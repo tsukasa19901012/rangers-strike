@@ -22,6 +22,7 @@ import {
   isValidOwnSmallUnitTarget,
   resolveTargetInstanceId,
 } from "./targetSelectors";
+import { tryInterpretEffectDefinition } from "./interpretEffectRuntime";
 
 export type DslCardContext = {
   effectId: string;
@@ -262,6 +263,28 @@ function applyPrimitive(
         leavingCardId: ctx.leavingCardId,
       }, primitive.keyword);
       return { state: result.state, detail: result.detail };
+    }
+    case "interpret_effect": {
+      const runtimeCtx = {
+        playerId: ctx.playerId,
+        phasePlayerId: ctx.phasePlayerId,
+        sourceCardId: ctx.sourceCardId,
+        effectId: ctx.effectId,
+        triggerSourceInstanceId: ctx.triggerSourceInstanceId ?? ctx.operationInstanceId,
+        operationInstanceId: ctx.operationInstanceId,
+        extraInstanceIds: ctx.extraInstanceIds,
+        leavingCardId: ctx.leavingCardId,
+      };
+      const runtimeResult = applyRuntimeGrantKeyword(state, runtimeCtx, ctx.effectId);
+      if (runtimeResult.detail && !runtimeResult.detail.startsWith("runtime:")) {
+        return { state: runtimeResult.state, detail: runtimeResult.detail };
+      }
+      const outcome = tryInterpretEffectDefinition(state, ctx, interpretEffectPrimitives);
+      if (!outcome) return { state };
+      if (outcome.detail === "interpret_effect_unresolved") {
+        return { state: runtimeResult.state, detail: runtimeResult.detail };
+      }
+      return { state: outcome.state, detail: outcome.detail };
     }
     case "enqueue_trigger": {
       const result = applyRuntimeGrantKeyword(state, {

@@ -25,9 +25,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_fx_10",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

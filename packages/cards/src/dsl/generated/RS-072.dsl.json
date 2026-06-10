@@ -22,8 +22,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "infinite_chain"
+          "type": "interpret_effect"
         }
       ]
     }

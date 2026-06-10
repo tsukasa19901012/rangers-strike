@@ -19,8 +19,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "land_balkan"
+          "type": "interpret_effect"
         }
       ]
     }

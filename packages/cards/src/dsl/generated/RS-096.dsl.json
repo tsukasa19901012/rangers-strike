@@ -32,8 +32,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "karakuri_fire_hawk"
+          "type": "interpret_effect"
         }
       ]
     }

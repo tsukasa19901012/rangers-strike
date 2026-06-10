@@ -44,9 +44,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_heaven_earth_animal_heart",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

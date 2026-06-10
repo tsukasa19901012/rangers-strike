@@ -19,9 +19,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_note_bp3000_s",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

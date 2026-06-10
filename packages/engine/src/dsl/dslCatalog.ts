@@ -47,6 +47,8 @@ function isSupportedPrimitive(primitive: EffectPrimitive): boolean {
       );
     case "enqueue_trigger":
       return typeof primitive.effectId === "string" && primitive.effectId.length > 0;
+    case "interpret_effect":
+      return true;
     case "choose":
       return primitive.then.every(isSupportedPrimitive);
     case "fallback_handler":

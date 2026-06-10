@@ -28,8 +28,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "focused_breakthrough"
+          "type": "interpret_effect"
         }
       ]
     }

@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-06-10T03:12:26.463Z",
+  "summary": {
+    "gatesPassed": 4,
+    "gatesPartial": 0,
+    "gatesTotal": 6,
+    "overallPercent": 100
+  },
+  "baseline": {
+    "fullPlayable": 1849,
+    "dslReady": 1849,
+    "unimplemented": 0,
+    "effectDelegate": 0,
+    "enqueueOnly": 0,
+    "engineKeywords": 1950,
+    "passiveNative": 679
+  },
+  "topDelegates": [],
+  "gates": [
+    {
+      "id": "G0",
+      "name": "カタログ整合",
+      "status": "pass",
+      "target": "fullPlayable=1849",
+      "current": "total=1849"
+    },
+    {
+      "id": "G1",
+      "name": "DSL 登録",
+      "status": "pass",
+      "target": "dslReady=1849",
+      "current": "dslReady=1849, unimplemented=0, fallbackOnly=0"
+    },
+    {
+      "id": "G2",
+      "name": "効果プリミティブ化",
+      "status": "pass",
+      "target": "effect_delegate=0, enqueue_only=0",
+      "current": "effect_delegate=0, enqueue_only=0",
+      "note": "last remigrate: migrated=67, remaining=1341"
+    },
+    {
+      "id": "G3",
+      "name": "エンジン解決",
+      "status": "pass",
+      "target": "delegate/enqueue ゼロ + interpret_effect / engine キーワード接続",
+      "current": "interpret_effect=1426, engine=1950, passive_native=679"
+    },
+    {
+      "id": "G4",
+      "name": "対戦検証",
+      "status": "unknown",
+      "target": "vertical slice apply_failed=0",
+      "current": "npm run test -w @rangers-strike/engine -- src/verticalSlice/",
+      "note": "手動または CI で確認"
+    },
+    {
+      "id": "G5",
+      "name": "プロダクト接続",
+      "status": "unknown",
+      "target": "Web GameApp full-playable",
+      "current": "未接続"
+    }
+  ],
+  "nextActions": [
+    "npm run pipeline:rollout-sync -w @rangers-strike/cards",
+    "npm run test -w @rangers-strike/engine"
+  ],
+  "docs": "docs/architecture/full-card-rollout-process.md"
+}

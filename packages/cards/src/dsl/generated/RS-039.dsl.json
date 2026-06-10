@@ -33,8 +33,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "ptera_beam"
+          "type": "interpret_effect"
         }
       ]
     },

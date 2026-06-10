@@ -29,9 +29,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_note_fx_2_s",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

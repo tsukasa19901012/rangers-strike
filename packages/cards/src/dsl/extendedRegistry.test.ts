@@ -113,7 +113,7 @@ describe("full playable CardRegistry (M11/M12)", () => {
       );
     }).length;
     expect(fallbackOnly).toBe(0);
-    expect(metrics.unimplemented).toBeGreaterThan(50);
+    expect(metrics.unimplemented).toBe(0);
   });
 
   it("tracks complexity promoted interpreter progress (M13/M14/M15)", () => {
@@ -122,9 +122,9 @@ describe("full playable CardRegistry (M11/M12)", () => {
     const interpreter = complexityDocs.filter(
       (c) => c.implementation?.handler === "interpreter",
     ).length;
-    expect(interpreter).toBeGreaterThan(900);
-    expect(metrics.fallbackOnly).toBeLessThan(200);
-    expect(metrics.dslReady).toBeGreaterThan(1200);
+    expect(interpreter).toBeGreaterThan(1200);
+    expect(metrics.fallbackOnly).toBe(0);
+    expect(metrics.dslReady).toBe(1849);
   });
 });
 

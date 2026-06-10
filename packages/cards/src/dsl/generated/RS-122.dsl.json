@@ -32,9 +32,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_seabed_survey",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

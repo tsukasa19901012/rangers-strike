@@ -28,7 +28,7 @@ const PRIMITIVE_TYPES = new Set([
   "draw", "move", "discard", "flip_power", "modify_bp", "modify_sp",
   "set_bp", "deal_damage", "cancel_damage", "prevent_battle",
   "hold_command", "release_command", "block_battle_entry", "grant_keyword",
-  "choose", "open_reaction", "enqueue_trigger", "fallback_handler",
+  "choose", "open_reaction", "enqueue_trigger", "interpret_effect", "fallback_handler",
 ]);
 const CHOICE_KINDS = new Set([
   "deck_top_or_bottom", "seabed_draw", "optional_deck_draw",
@@ -267,6 +267,8 @@ export function validatePrimitive(value: unknown, path: string): ValidationResul
       if (!["rush", "battle", "strike", "leave"].includes(String(value.window))) {
         issues.push(issue(`${path}.window`, "invalid reaction window", "invalid_window"));
       }
+      break;
+    case "interpret_effect":
       break;
     case "enqueue_trigger":
     case "fallback_handler":

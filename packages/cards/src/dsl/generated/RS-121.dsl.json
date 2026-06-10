@@ -32,8 +32,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "ruin_excavation"
+          "type": "interpret_effect"
         }
       ]
     }

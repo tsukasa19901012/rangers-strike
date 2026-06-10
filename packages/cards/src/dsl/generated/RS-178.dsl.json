@@ -27,8 +27,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "sagas_sniper"
+          "type": "interpret_effect"
         }
       ]
     }

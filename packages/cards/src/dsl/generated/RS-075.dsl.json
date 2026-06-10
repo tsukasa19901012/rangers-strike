@@ -32,8 +32,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "rescue_activity"
+          "type": "interpret_effect"
         }
       ]
     }

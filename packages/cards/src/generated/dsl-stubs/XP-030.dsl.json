@@ -53,9 +53,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_note_bp_2000",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     },

@@ -34,8 +34,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "baki_baki_punch"
+          "type": "interpret_effect"
         }
       ]
     },

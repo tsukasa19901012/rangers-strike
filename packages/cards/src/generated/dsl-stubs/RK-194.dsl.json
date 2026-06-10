@@ -42,9 +42,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_note_sp",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     },
@@ -57,9 +55,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_gx_05",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

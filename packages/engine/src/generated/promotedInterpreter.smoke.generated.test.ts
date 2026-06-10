@@ -1,6 +1,6 @@
 /**
  * Auto-generated promoted interpreter smoke (M14/M15)
- * grant_keyword: 40 | effect_delegate: 40 | action_primitive: 40
+ * grant_keyword: 40 | interpret_effect: 40 | action_primitive: 40
  */
 import { describe, it, expect } from "vitest";
 import { cardDsl } from "@rangers-strike/cards";
@@ -50,16 +50,35 @@ const GRANT_KEYWORD_IDS = [
   "RK-214",
   "RK-221"
 ] as const;
-const EFFECT_DELEGATE_IDS = [
+const INTERPRET_EFFECT_IDS = [
   "BK-009",
   "BK-010",
+  "BK-011",
+  "BK-012",
   "BK-013",
   "BK-015",
+  "BK-016",
   "BK-017",
+  "BK-018",
   "BK-019",
   "PK-009",
   "PK-014",
+  "PR-025",
+  "RK-002",
+  "RK-007",
+  "RK-013",
+  "RK-017",
+  "RK-018",
+  "RK-019",
+  "RK-020",
   "RK-030",
+  "RK-076",
+  "RK-077",
+  "RK-079",
+  "RK-083",
+  "RK-084",
+  "RK-087",
+  "RK-088",
   "RK-089",
   "RK-108",
   "RK-118",
@@ -70,44 +89,28 @@ const EFFECT_DELEGATE_IDS = [
   "RK-163",
   "RK-166",
   "RK-168",
-  "RK-181",
-  "RK-184",
-  "RK-186",
-  "RK-191",
-  "RK-192",
-  "RK-194",
-  "RK-195",
-  "RK-196",
-  "RK-197",
-  "RK-198",
-  "RK-214",
-  "RK-217",
-  "RK-227",
-  "RK-263",
-  "RK-267",
-  "RK-278",
-  "RK-282",
-  "RK-288",
-  "RK-310",
-  "RK-314",
-  "RK-331"
+  "RK-171",
+  "RK-173"
 ] as const;
 const ACTION_PRIMITIVE_IDS = [
   "BK-001",
   "BK-002",
   "BK-003",
+  "BK-004",
   "BK-005",
   "BK-006",
   "BK-007",
   "BK-008",
   "BK-014",
   "PK-013",
+  "RK-005",
   "RK-096",
   "RK-097",
   "RK-102",
   "RK-134",
   "RK-162",
   "RK-169",
+  "RK-174",
   "RK-178",
   "RK-198",
   "RK-222",
@@ -119,20 +122,17 @@ const ACTION_PRIMITIVE_IDS = [
   "RK-313",
   "RK-322",
   "RK-331",
+  "RM-009",
+  "RM-010",
   "RS-231",
   "RS-333",
   "RS-334",
+  "RS-349",
+  "RS-438",
+  "RS-523",
   "RS-528",
   "XG2-040",
-  "XG2-050",
-  "XG2-073",
-  "XG2-095",
-  "XG3-021",
-  "XG3-040",
-  "XG3-089",
-  "XG3-090",
-  "XG3-098",
-  "XG4-046"
+  "XG2-050"
 ] as const;
 
 function toDefinition(doc: NonNullable<ReturnType<typeof cardDsl.createFullPlayableRegistry>["getCard"]>): CardDefinition {
@@ -182,7 +182,7 @@ describe("promoted interpreter smoke", () => {
   const registry = cardDsl.createFullPlayableRegistry();
 
   it("has promoted dslReady cards", () => {
-    expect(1551).toBeGreaterThan(1000);
+    expect(1670).toBeGreaterThan(1000);
   });
 
   for (const cardId of GRANT_KEYWORD_IDS) {
@@ -196,16 +196,14 @@ describe("promoted interpreter smoke", () => {
     });
   }
 
-  for (const cardId of EFFECT_DELEGATE_IDS) {
-    it(`${cardId} effect_delegate primitives`, () => {
+  for (const cardId of INTERPRET_EFFECT_IDS) {
+    it(`${cardId} interpret_effect primitives`, () => {
       const doc = registry.getCard(cardId);
-      const delegateEffects = (doc?.effects ?? []).filter((e) =>
-        e.effects.every(
-          (p) => p.type === "grant_keyword" && p.keyword?.startsWith("effect_"),
-        ),
+      const interpretEffects = (doc?.effects ?? []).filter((e) =>
+        e.effects.every((p) => p.type === "interpret_effect"),
       );
-      expect(delegateEffects.length).toBeGreaterThan(0);
-      runEffects(cardId, delegateEffects.map((e) => e.id));
+      expect(interpretEffects.length).toBeGreaterThan(0);
+      runEffects(cardId, interpretEffects.map((e) => e.id));
     });
   }
 

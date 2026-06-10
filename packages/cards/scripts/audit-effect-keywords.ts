@@ -52,10 +52,16 @@ function main(): void {
 
   const byKeyword = new Map<string, { count: number; sampleCardIds: string[] }>();
 
+  let interpretEffectCount = 0;
+
   for (const card of registry.listCards()) {
     if (!promotedIds.has(card.id) || coreIds.has(card.id)) continue;
     for (const effect of card.effects ?? []) {
       for (const p of effect.effects) {
+        if (p.type === "interpret_effect") {
+          interpretEffectCount += 1;
+          continue;
+        }
         if (p.type !== "grant_keyword") continue;
         const bucket = byKeyword.get(p.keyword) ?? { count: 0, sampleCardIds: [] };
         bucket.count += 1;
@@ -77,9 +83,15 @@ function main(): void {
     return acc;
   }, {});
 
+  if (interpretEffectCount > 0) {
+    byCategory.interpret_effect = interpretEffectCount;
+    byCategory.engine = (byCategory.engine ?? 0) + interpretEffectCount;
+  }
+
   const report = {
     generatedAt: new Date().toISOString(),
     uniqueKeywords: entries.length,
+    interpretEffectCount,
     byCategory,
     topEffectDelegate: entries
       .filter((e) => e.category === "effect_delegate")

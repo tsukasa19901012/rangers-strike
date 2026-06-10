@@ -1,24 +1,7 @@
-import { rematchEffectPrimitives } from "../../../cards/src/pipeline/extractEffects";
-import type { EffectPrimitive } from "../../../cards/src/dsl/types";
 import type { GameState } from "../types/game";
-import { getCardDslDocument } from "./effectLookup";
-import type { DslCardContext } from "./cardInterpreter";
 import type { GrantKeywordContext, GrantKeywordResult } from "./grantKeyword";
 import { setEffectDelegateResolver } from "./effectDelegateSlot";
-
-type InterpretFn = (
-  state: GameState,
-  ctx: DslCardContext,
-  primitives: EffectPrimitive[],
-) => { state: GameState; detail?: string };
-
-function isStillDelegate(primitives: EffectPrimitive[]): boolean {
-  return (
-    primitives.length === 1 &&
-    primitives[0]?.type === "grant_keyword" &&
-    primitives[0].keyword.startsWith("effect_")
-  );
-}
+import { tryInterpretEffectDefinition, type InterpretFn } from "./interpretEffectRuntime";
 
 function tryResolveEffectDelegate(
   state: GameState,
@@ -29,21 +12,10 @@ function tryResolveEffectDelegate(
   if (!keyword.startsWith("effect_")) return null;
 
   const effectId = keyword.slice("effect_".length);
-  const doc = getCardDslDocument(ctx.sourceCardId);
-  const effect = doc?.effects?.find((e) => e.id === effectId);
-  if (!effect?.text) return null;
-
-  const rematched = rematchEffectPrimitives(effect.text, {
-    name: effect.name,
-    kind: effect.text.startsWith("※") ? "note" : effect.name ? "named" : "body",
-    trigger: effect.trigger,
-  });
-  if (!rematched || isStillDelegate(rematched)) return null;
-
-  const outcome = interpret(
+  const outcome = tryInterpretEffectDefinition(
     state,
     {
-      effectId: effect.id,
+      effectId,
       sourceCardId: ctx.sourceCardId,
       playerId: ctx.playerId,
       phasePlayerId: ctx.phasePlayerId,
@@ -52,11 +24,10 @@ function tryResolveEffectDelegate(
       extraInstanceIds: ctx.extraInstanceIds,
       leavingCardId: ctx.leavingCardId,
       discardOperation: false,
-      optional: effect.optional,
     },
-    rematched,
+    interpret,
   );
-
+  if (!outcome) return null;
   return { state: outcome.state, detail: outcome.detail ?? keyword };
 }
 

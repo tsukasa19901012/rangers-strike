@@ -26,9 +26,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_note_fx_1_bp_1000",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     },

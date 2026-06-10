@@ -19,8 +19,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "jacker_hurricane"
+          "type": "interpret_effect"
         }
       ]
     }

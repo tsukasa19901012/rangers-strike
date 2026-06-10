@@ -45,8 +45,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "nature_big_bang_final"
+          "type": "interpret_effect"
         }
       ]
     }

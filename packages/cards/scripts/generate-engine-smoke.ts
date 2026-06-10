@@ -17,7 +17,7 @@ const manifestPath = join(cardsRoot, "pipeline/data/engine-smoke-manifest.json")
 
 function collectSmokeCardIds(): {
   grantKeyword: string[];
-  effectDelegate: string[];
+  interpretEffect: string[];
   actionPrimitive: string[];
 } {
   const registry = createFullPlayableRegistry();
@@ -26,7 +26,7 @@ function collectSmokeCardIds(): {
     ...complexityPromotedCatalog.cards.map((c) => c.id),
   ]);
   const grantKeyword: string[] = [];
-  const effectDelegate: string[] = [];
+  const interpretEffect: string[] = [];
   const actionPrimitive: string[] = [];
 
   for (const card of registry.listCards()) {
@@ -37,10 +37,8 @@ function collectSmokeCardIds(): {
         (p) => p.type === "grant_keyword" && !p.keyword?.startsWith("effect_"),
       ),
     );
-    const hasDelegate = card.effects?.some((e) =>
-      e.effects.every(
-        (p) => p.type === "grant_keyword" && p.keyword?.startsWith("effect_"),
-      ),
+    const hasInterpret = card.effects?.some((e) =>
+      e.effects.every((p) => p.type === "interpret_effect"),
     );
     const hasAction = card.effects?.some((e) =>
       e.effects.some((p) =>
@@ -48,16 +46,16 @@ function collectSmokeCardIds(): {
       ),
     );
     if (hasGrant && grantKeyword.length < 40) grantKeyword.push(card.id);
-    if (hasDelegate && effectDelegate.length < 40) effectDelegate.push(card.id);
+    if (hasInterpret && interpretEffect.length < 40) interpretEffect.push(card.id);
     if (hasAction && actionPrimitive.length < 40) actionPrimitive.push(card.id);
   }
 
-  return { grantKeyword, effectDelegate, actionPrimitive };
+  return { grantKeyword, interpretEffect, actionPrimitive };
 }
 
 function main(): void {
   const registry = createFullPlayableRegistry();
-  const { grantKeyword, effectDelegate, actionPrimitive } = collectSmokeCardIds();
+  const { grantKeyword, interpretEffect, actionPrimitive } = collectSmokeCardIds();
   const promotedDslReady = registry
     .listDslReady()
     .filter(
@@ -68,7 +66,7 @@ function main(): void {
 
   const content = `/**
  * Auto-generated promoted interpreter smoke (M14/M15)
- * grant_keyword: ${grantKeyword.length} | effect_delegate: ${effectDelegate.length} | action_primitive: ${actionPrimitive.length}
+ * grant_keyword: ${grantKeyword.length} | interpret_effect: ${interpretEffect.length} | action_primitive: ${actionPrimitive.length}
  */
 import { describe, it, expect } from "vitest";
 import { cardDsl } from "@rangers-strike/cards";
@@ -77,7 +75,7 @@ import { createTestState, inst } from "../testing/fixtures";
 import type { CardDefinition } from "@rangers-strike/cards";
 
 const GRANT_KEYWORD_IDS = ${JSON.stringify(grantKeyword, null, 2)} as const;
-const EFFECT_DELEGATE_IDS = ${JSON.stringify(effectDelegate, null, 2)} as const;
+const INTERPRET_EFFECT_IDS = ${JSON.stringify(interpretEffect, null, 2)} as const;
 const ACTION_PRIMITIVE_IDS = ${JSON.stringify(actionPrimitive, null, 2)} as const;
 
 function toDefinition(doc: NonNullable<ReturnType<typeof cardDsl.createFullPlayableRegistry>["getCard"]>): CardDefinition {
@@ -141,16 +139,14 @@ describe("promoted interpreter smoke", () => {
     });
   }
 
-  for (const cardId of EFFECT_DELEGATE_IDS) {
-    it(\`\${cardId} effect_delegate primitives\`, () => {
+  for (const cardId of INTERPRET_EFFECT_IDS) {
+    it(\`\${cardId} interpret_effect primitives\`, () => {
       const doc = registry.getCard(cardId);
-      const delegateEffects = (doc?.effects ?? []).filter((e) =>
-        e.effects.every(
-          (p) => p.type === "grant_keyword" && p.keyword?.startsWith("effect_"),
-        ),
+      const interpretEffects = (doc?.effects ?? []).filter((e) =>
+        e.effects.every((p) => p.type === "interpret_effect"),
       );
-      expect(delegateEffects.length).toBeGreaterThan(0);
-      runEffects(cardId, delegateEffects.map((e) => e.id));
+      expect(interpretEffects.length).toBeGreaterThan(0);
+      runEffects(cardId, interpretEffects.map((e) => e.id));
     });
   }
 
@@ -178,10 +174,10 @@ describe("promoted interpreter smoke", () => {
         generatedAt: new Date().toISOString(),
         promotedDslReady,
         grantKeywordSamples: grantKeyword.length,
-        effectDelegateSamples: effectDelegate.length,
+        interpretEffectSamples: interpretEffect.length,
         actionPrimitiveSamples: actionPrimitive.length,
         grantKeyword,
-        effectDelegate,
+        interpretEffect,
         actionPrimitive,
       },
       null,
@@ -190,7 +186,7 @@ describe("promoted interpreter smoke", () => {
   );
 
   console.log(
-    `→ ${engineOut} (grant=${grantKeyword.length}, delegate=${effectDelegate.length}, action=${actionPrimitive.length})`,
+    `→ ${engineOut} (grant=${grantKeyword.length}, interpret=${interpretEffect.length}, action=${actionPrimitive.length})`,
   );
   console.log(`→ ${manifestPath}`);
 }

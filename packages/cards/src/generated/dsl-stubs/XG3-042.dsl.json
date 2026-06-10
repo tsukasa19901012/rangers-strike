@@ -11,7 +11,21 @@
   "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札から、追加条件を持たないビークルカードを1枚選び、自軍ラッシュエリアに出す。そうしたとき、自分の第1ターンのラッシュフェイズを飛ばす。",
   "implementation": {
     "source": "dsl",
-    "handler": "unimplemented",
+    "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "effects": [
+    {
+      "id": "body_interpret",
+      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札から、追加条件を持たないビークルカードを1枚選び、自軍ラッシュエリアに出す。そうしたとき、自分の第1ターンのラッシュフェイズを飛ばす。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ]
 }

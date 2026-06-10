@@ -27,8 +27,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "blue_bados_life_sword"
+          "type": "interpret_effect"
         }
       ]
     }

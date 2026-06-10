@@ -34,8 +34,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "elephant_shield"
+          "type": "interpret_effect"
         }
       ]
     },

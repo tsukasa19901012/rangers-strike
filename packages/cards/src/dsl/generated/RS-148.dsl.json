@@ -34,8 +34,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "star_raiser"
+          "type": "interpret_effect"
         }
       ]
     },

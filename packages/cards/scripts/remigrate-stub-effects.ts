@@ -57,6 +57,11 @@ function remigrateEffect(
     return { changed: true, to: rematched.effects.map((p) => p.type).join("+") };
   }
 
+  if (isRemigratable(effect.effects)) {
+    effect.effects = [{ type: "interpret_effect" }];
+    return { changed: true, to: "interpret_effect" };
+  }
+
   return { changed: false };
 }
 

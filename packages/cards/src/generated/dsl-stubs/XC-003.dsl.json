@@ -11,7 +11,21 @@
   "rawText": "ゲーム開始前に一度だけ発動できる⇒自分の手札をすべて好きな順番で自軍山札の下に戻してから、戻した枚数と同じだけドローする。",
   "implementation": {
     "source": "dsl",
-    "handler": "unimplemented",
+    "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "effects": [
+    {
+      "id": "body_interpret",
+      "text": "ゲーム開始前に一度だけ発動できる⇒自分の手札をすべて好きな順番で自軍山札の下に戻してから、戻した枚数と同じだけドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ]
 }

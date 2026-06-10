@@ -41,9 +41,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_fire_spin_blade",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

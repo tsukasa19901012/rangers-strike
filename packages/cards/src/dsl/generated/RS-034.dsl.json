@@ -44,9 +44,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_guardian_god",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

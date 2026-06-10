@@ -32,9 +32,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_note_rc",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

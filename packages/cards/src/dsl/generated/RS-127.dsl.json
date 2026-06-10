@@ -41,8 +41,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "bio_particle_slash"
+          "type": "interpret_effect"
         }
       ]
     }

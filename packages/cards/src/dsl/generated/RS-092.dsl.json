@@ -34,8 +34,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "heavenly_disaster"
+          "type": "interpret_effect"
         }
       ]
     },

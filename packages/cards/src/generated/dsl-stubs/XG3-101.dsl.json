@@ -40,9 +40,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_note_named_e280bbe695b5",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     },
@@ -55,9 +53,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_named_e98086e8bba2",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

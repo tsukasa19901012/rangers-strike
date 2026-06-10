@@ -26,9 +26,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_billgoldy_for_evil",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

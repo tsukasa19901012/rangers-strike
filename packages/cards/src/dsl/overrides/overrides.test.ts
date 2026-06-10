@@ -22,6 +22,6 @@ describe("card overrides", () => {
     const result = validateCardDocument(merged);
     expect(result.ok, result.issues.map((i) => i.message).join(", ")).toBe(true);
     expect(merged.bp).toBe(0);
-    expect(merged.implementation?.handler).toBe("unimplemented");
+    expect(merged.implementation?.handler).toBe("interpreter");
   });
 });

@@ -22,8 +22,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "new_gymnastics"
+          "type": "interpret_effect"
         }
       ]
     }

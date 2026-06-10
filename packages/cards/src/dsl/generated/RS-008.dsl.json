@@ -22,9 +22,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_super_brain",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

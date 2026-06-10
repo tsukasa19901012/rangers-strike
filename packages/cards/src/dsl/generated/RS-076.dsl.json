@@ -27,9 +27,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "effect_jaguar_mothership",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     }

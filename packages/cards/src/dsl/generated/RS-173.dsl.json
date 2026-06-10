@@ -33,8 +33,7 @@
       },
       "effects": [
         {
-          "type": "enqueue_trigger",
-          "effectId": "wall_shoot"
+          "type": "interpret_effect"
         }
       ]
     }
