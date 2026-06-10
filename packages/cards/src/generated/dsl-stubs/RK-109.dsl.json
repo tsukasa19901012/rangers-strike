@@ -11,14 +11,16 @@
   "rawText": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出る事ができる。 【自己修復能力】ホールド状態のユニットがこれにライドするとき、そのユニットをリリースしてもよい。",
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_can_enter_battle_without_ride",
       "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出る事ができる。",
       "trigger": {
         "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "can_enter_battle_without_ride",
+          "duration": "permanent"
         }
       ]
     },

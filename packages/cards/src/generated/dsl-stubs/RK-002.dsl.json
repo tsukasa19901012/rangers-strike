@@ -20,7 +20,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "deck_scry_three_reorder",
+          "duration": "turn"
         }
       ]
     }

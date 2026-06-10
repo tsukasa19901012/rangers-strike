@@ -39,7 +39,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "rideoff_enemy_s_on_enter",
+          "duration": "turn"
         }
       ]
     }

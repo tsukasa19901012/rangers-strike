@@ -1,132 +1,82 @@
 {
-  "generatedAt": "2026-06-10T03:47:26.028Z",
-  "scanned": 1325,
-  "migratedToPrimitives": 26,
+  "generatedAt": "2026-06-10T03:48:43.617Z",
+  "scanned": 1299,
+  "migratedToPrimitives": 15,
   "remainingEffectDelegate": 0,
   "samples": [
     {
-      "cardId": "PK-009",
-      "effectId": "named_e38380e38396e383abe382bf",
+      "cardId": "PK-006",
+      "effectId": "named_e382b5e382bfe383b3e382b5",
       "to": "grant_keyword"
     },
     {
-      "cardId": "PK-012",
-      "effectId": "named_e38389e383a9e382b0e38390",
+      "cardId": "PR-006",
+      "effectId": "named_e382b8e383a5e382a6e382af",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-013",
-      "effectId": "named_4ae38391e383afe383bc",
+      "cardId": "PR-014",
+      "effectId": "named_e99787e381aee8889e",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-017",
-      "effectId": "named_e3839fe38383e382b7e383a7",
+      "cardId": "RK-002",
+      "effectId": "v3",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-029",
-      "effectId": "per_ally_named_e8ada6e5af9f_bp_1000",
+      "cardId": "RK-018",
+      "effectId": "named_e383a9e382a6e382bae382ab",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-076",
-      "effectId": "named_e3839fe38383e382b7e383a7",
+      "cardId": "RK-024",
+      "effectId": "named_e382b5e382a4e382afe383ad",
+      "to": "choose"
+    },
+    {
+      "cardId": "RK-032",
+      "effectId": "unnamed_require_discard_kamen_rush_entry",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-079",
-      "effectId": "named_e4bbaee99da2e383a9e382a4",
+      "cardId": "RK-039",
+      "effectId": "named_e7aa81e980b2",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-088",
-      "effectId": "named_e382a4e3839ee382b8e383b3",
+      "cardId": "RK-041",
+      "effectId": "named_e38389e382a5e383bce383a0",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-250",
-      "effectId": "named_e382b5e38390e382a4e38396",
+      "cardId": "RK-077",
+      "effectId": "named_e383a9e382a6e382bae382ab",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-333",
-      "effectId": "named_e38389e383a9e382b0e38390",
+      "cardId": "RK-094",
+      "effectId": "unnamed_destroy_if_no_ride_end_turn",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RM-011",
-      "effectId": "named_e382bfe383bce3839ce383a6",
+      "cardId": "RK-109",
+      "effectId": "unnamed_can_enter_battle_without_ride",
       "to": "grant_keyword"
     },
     {
-      "cardId": "SK-002",
-      "effectId": "named_e38380e38396e383abe382bf",
+      "cardId": "RK-205",
+      "effectId": "unnamed_end_turn_return_hand_from_rush",
       "to": "grant_keyword"
     },
     {
-      "cardId": "SR-005",
-      "effectId": "unnamed_attacked_bp_boost_5000",
+      "cardId": "XG2-069",
+      "effectId": "named_e382abe382a6e383b3e38388",
       "to": "grant_keyword"
     },
     {
-      "cardId": "SR-005",
-      "effectId": "named_e38390e38388e383a9e382a4",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG1-038",
-      "effectId": "named_e382b5e382abe3838ae3839e",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG3-004",
-      "effectId": "named_e88a8be995b7e381aee88a8b",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG3-067",
-      "effectId": "named_e382a4e383b3e38393e382b8",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG4-006",
-      "effectId": "named_e38389e383a9e382b4e383b3",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG5-015",
-      "effectId": "named_e382b9e38386e382a3e383a9",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG5-069",
-      "effectId": "lead_ma_bp_boost_1000",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG5-070",
-      "effectId": "lead_ma_bp_boost_1000",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG6-021",
-      "effectId": "unnamed_category_wb_battle_phase",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG6-022",
-      "effectId": "unnamed_category_wb_battle_phase",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XP-003",
-      "effectId": "unnamed_attacked_bp_boost_5000",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XP-003",
-      "effectId": "named_e38390e38388e383a9e382a4",
+      "cardId": "XP-007",
+      "effectId": "named_e382abe382a6e383b3e38388",
       "to": "grant_keyword"
     }
   ],

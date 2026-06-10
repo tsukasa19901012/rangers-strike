@@ -42,9 +42,22 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "destroy_vehicle_and_rider",
+          "duration": "turn"
         }
-      ]
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
     }
   ],
   "unnamedRules": [

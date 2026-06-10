@@ -20,7 +20,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "dual_bp_rush_discard_combine",
+          "duration": "turn"
         }
       ]
     }

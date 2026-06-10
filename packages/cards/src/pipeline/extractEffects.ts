@@ -210,7 +210,7 @@ const KEYWORD_NOTE_PATTERNS: PatternMatch[] = [
   keywordNoteMatch(
     "enter_without_ride_note",
     "can_enter_battle_without_ride",
-    /^※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる/,
+    /^※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出る(こと|事)ができる/,
   ),
   keywordNoteMatch(
     "fusion_vehicle_note",
@@ -2626,6 +2626,258 @@ const PATTERNS: PatternMatch[] = [
         },
       ],
       matchedPattern: "category_wb_battle_phase",
+    }),
+  },
+  {
+    pattern: "dual_bp_rush_discard_combine",
+    test: (body) =>
+      /自軍ラッシュエリアからSユニットを1体選ぶ。そして自軍捨札からSユニットのカードを1枚選ぶ/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "dual_bp_rush_discard_combine",
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "dual_bp_rush_discard_combine",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "dual_bp_rush_discard_combine",
+    }),
+  },
+  {
+    pattern: "declare_number_deck_reveal_destroy",
+    test: (body) =>
+      /数字を1つ宣言してもよい。そうしたとき、自軍山札の上から1枚をオモテにする/.test(body) &&
+      /宣言した数字と同じ必要パワーの数字を持つ敵軍/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "declare_number_deck_reveal_destroy",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "declare_number_deck_reveal_destroy",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "declare_number_deck_reveal_destroy",
+    }),
+  },
+  {
+    pattern: "deck_scry_three_reorder",
+    test: (body) =>
+      /自軍山札の上から3枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "deck_scry_three_reorder",
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "deck_scry_three_reorder",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "deck_scry_three_reorder",
+    }),
+  },
+  {
+    pattern: "enter_hold_enemy_s_command",
+    test: (body) =>
+      /自軍ターン中、これがバトルエリアに出たとき、追加条件を持たないBP(\d+)以上の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く/.test(
+        body,
+      ),
+    build: (body, segment) => {
+      const minBp = Number(body.match(/BP(\d+)以上/)?.[1] ?? 4000);
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `enter_hold_enemy_s_bp${minBp}`,
+        name: segment.name,
+        text: body,
+        trigger: { type: "enter_battle" },
+        optional: true,
+        condition: {
+          type: "has_target",
+          target: zone("battle", "opponent", { size: "S" }),
+        },
+        effects: [
+          chooseUnit(zone("battle", "opponent", { size: "S" }), 1, [
+            { type: "hold_command", target: { type: "trigger_source" } },
+          ]),
+        ],
+        matchedPattern: "enter_hold_enemy_s_command",
+      };
+    },
+  },
+  {
+    pattern: "strike_destroy_s_on_damage",
+    test: (body) =>
+      /これが自軍バトルエリアにある間、敵軍Sユニットはストライクしてダメージを与えたとき撃破される/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "strike_destroy_s_on_damage",
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "strike_destroy_s_on_damage",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "strike_destroy_s_on_damage",
+    }),
+  },
+  {
+    pattern: "destroy_vehicle_and_rider",
+    test: (body) =>
+      /敵軍バトルエリアからSビークルを１体選ぶ。選んだビークルにライドしているユニットがあれば、それを撃破する/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "destroy_vehicle_and_rider",
+      name: segment.name,
+      text: body,
+      trigger,
+      condition: { type: "has_target", target: zone("battle", "opponent", { size: "S" }) },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "destroy_vehicle_and_rider",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "destroy_vehicle_and_rider",
+    }),
+  },
+  {
+    pattern: "conditional_sp_if_red_present",
+    test: (body) =>
+      /敵軍ラッシュエリアか敵軍バトルエリアに特徴「レッド」を持つユニットがあるとき、このユニットは次の能力を得る/.test(
+        body,
+      ) && /SP\d+/.test(body),
+    build: (body, segment, trigger) => {
+      const sp = body.match(/SP(\d+)/)?.[1] ?? "1";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `conditional_sp_red_${sp}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [{ type: "grant_keyword", keyword: `SP${sp}`, duration: "turn" }],
+        matchedPattern: "conditional_sp_if_red_present",
+      };
+    },
+  },
+  {
+    pattern: "attack_destroy_variable_bp_sum",
+    test: (body) =>
+      /アタックするかわりに次の効果を発動できる。敵軍ラッシュエリアにあるユニットを、カードに表記された本来のBPの合計が(\d+)以下になるように好きな数選んで撃破/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const maxSum = Number(body.match(/合計が(\d+)以下/)?.[1] ?? 3000);
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `attack_destroy_bp_sum_${maxSum}`,
+        name: segment.name,
+        text: body,
+        trigger: trigger.type === "nc" ? { type: "on_attack" } : trigger,
+        optional: true,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `attack_destroy_bp_sum_${maxSum}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "attack_destroy_variable_bp_sum",
+      };
+    },
+  },
+  {
+    pattern: "end_turn_return_hand_from_rush",
+    test: (body) =>
+      /^※これは、自分がターンを終えるときラッシュエリアにあれば手札に戻してもよい/.test(body),
+    build: (body) => ({
+      id: "unnamed_end_turn_return_hand_from_rush",
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "end_turn_return_hand_from_rush",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "end_turn_return_hand_from_rush",
+    }),
+  },
+  {
+    pattern: "rideoff_enemy_s_on_enter",
+    test: (body) =>
+      /自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍Sユニットを１体選び、ライドオフさせる/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "rideoff_enemy_s_on_enter",
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "rideoff_enemy_s_on_enter",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "rideoff_enemy_s_on_enter",
+    }),
+  },
+  {
+    pattern: "destroy_if_no_ride_end_turn",
+    test: (body) =>
+      /^※これは、自分がターンを終えるとき、ビークルにライドしていなければ撃破される/.test(body),
+    build: (body) => ({
+      id: "unnamed_destroy_if_no_ride_end_turn",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "destroy_if_no_ride_end_turn",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "destroy_if_no_ride_end_turn",
+    }),
+  },
+  {
+    pattern: "require_discard_kamen_rush_entry",
+    test: (body) =>
+      /^※これは自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットを1体捨札にしなければバトルエリアに出られない/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: "unnamed_require_discard_kamen_rush_entry",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "require_discard_kamen_rush_entry",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "require_discard_kamen_rush_entry",
     }),
   },
   {

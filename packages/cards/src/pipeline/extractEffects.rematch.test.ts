@@ -97,4 +97,13 @@ describe("rematchExtractedEffect (M20)", () => {
     );
     expect(built?.matchedPattern).toBe("category_wb_battle_phase");
   });
+
+  it("matches enter hold enemy S to command (RK-024)", () => {
+    const built = rematchExtractedEffect(
+      "自軍ターン中、これがバトルエリアに出たとき、追加条件を持たないBP4000以上の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("enter_hold_enemy_s_command");
+    expect(built?.effects[0]?.type).toBe("choose");
+  });
 });

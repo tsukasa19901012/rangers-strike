@@ -30,7 +30,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "strike_destroy_s_on_damage",
+          "duration": "permanent"
         }
       ]
     }

@@ -20,16 +20,19 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_end_turn_return_hand_from_rush",
       "text": "※これは、自分がターンを終えるときラッシュエリアにあれば手札に戻してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "end_turn_return_hand_from_rush",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     },
     {
       "id": "named_e38395e383a9e382a4e383b3",
