@@ -49,13 +49,15 @@ function classifyGrade(parse: WikiParseResult): Pick<CardAnalysis, "grade" | "gr
   const named = parse.segments.filter((s) => s.kind === "named");
   const notes = parse.segments.filter((s) => s.kind === "note");
 
-  if (named.length === 1 && isSimpleBody(named[0].body) && notes.every((n) => isAliasNote(n.body))) {
+  const soleNamed = named[0];
+  if (named.length === 1 && soleNamed && isSimpleBody(soleNamed.body) && notes.every((n) => isAliasNote(n.body))) {
     return { grade: "B", gradeReasons: ["simple_named_with_alias"] };
   }
-  if (named.length === 1 && notes.length === 0 && isSimpleBody(named[0].body)) {
+  if (named.length === 1 && notes.length === 0 && soleNamed && isSimpleBody(soleNamed.body)) {
     return { grade: "B", gradeReasons: ["simple_named"] };
   }
-  if (parse.segments.length === 1 && parse.segments[0].kind === "body" && isSimpleBody(parse.segments[0].body)) {
+  const soleSegment = parse.segments[0];
+  if (parse.segments.length === 1 && soleSegment?.kind === "body" && isSimpleBody(soleSegment.body)) {
     return { grade: "B", gradeReasons: ["simple_body"] };
   }
   if (notes.length > 0 && named.length === 0 && notes.every((n) => isAliasNote(n.body))) {

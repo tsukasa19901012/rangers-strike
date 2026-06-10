@@ -30,7 +30,9 @@ export type NamedEffectTrigger =
   /** 自分がターンを終えるとき（バトルエリア等）。 */
   | { type: "on_turn_end" }
   /** その他条件付き文面。未実装。 */
-  | { type: "conditional" };
+  | { type: "conditional" }
+  /** オペレーションカードの発動タイミング。 */
+  | { type: "operation"; timing: "rush" | "battle" | "counter" | "resident" };
 
 /** ゾードアップ Rush 追加条件（powerCost 末尾「+」）。zord.ts を参照。 */
 export type ZordConditionId =

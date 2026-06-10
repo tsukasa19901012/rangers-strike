@@ -371,8 +371,9 @@ export function validateCardDocument(value: unknown): ValidationResult {
   if (value.type === "operation") {
     const hasLegacy = typeof value.effectId === "string";
     const hasDsl = Array.isArray(value.effects) && value.effects.length > 0;
+    const impl = value.implementation;
     const isVanillaOperation =
-      value.implementation?.handler === "unimplemented" && !hasLegacy && !hasDsl;
+      isObject(impl) && impl.handler === "unimplemented" && !hasLegacy && !hasDsl;
     if (!hasLegacy && !hasDsl && !isVanillaOperation) {
       issues.push(issue("effectId", "operation requires effectId or effects[]", "missing_operation_effect"));
     }

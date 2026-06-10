@@ -95,7 +95,12 @@ function seededShuffle<T>(items: T[], seed: number): T[] {
   for (let i = copy.length - 1; i > 0; i -= 1) {
     s = (s * 1103515245 + 12345) & 0x7fffffff;
     const j = s % (i + 1);
-    [copy[i], copy[j]] = [copy[j], copy[i]];
+    const a = copy[i];
+    const b = copy[j];
+    if (a !== undefined && b !== undefined) {
+      copy[i] = b;
+      copy[j] = a;
+    }
   }
   return copy;
 }

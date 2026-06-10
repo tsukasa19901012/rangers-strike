@@ -5,7 +5,11 @@ import type { CardDocument } from "../dsl/types";
 
 type CatalogFile = { cards: CardDocument[] };
 
-const CATALOGS: CatalogFile[] = [legend1Cards, legend2Cards, legend3Cards];
+const CATALOGS: CatalogFile[] = [
+  legend1Cards as CatalogFile,
+  legend2Cards as CatalogFile,
+  legend3Cards as CatalogFile,
+];
 
 export function lookupCatalogCard(cardId: string): CardDocument | undefined {
   for (const catalog of CATALOGS) {

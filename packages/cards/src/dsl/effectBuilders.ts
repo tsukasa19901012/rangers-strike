@@ -542,7 +542,7 @@ function legacyEnqueueTrigger(effectId: string): EffectPrimitive {
 
 /** @deprecated runtime_* grant_keyword — regenerate DSL to use enqueue_trigger */
 function runtimeEffectKeyword(effectId: string): EffectPrimitive {
-  return { type: "grant_keyword", keyword: `runtime_${effectId}` };
+  return { type: "grant_keyword", keyword: `runtime_${effectId}`, duration: "permanent" };
 }
 
 function opTiming(kind: CardEffectMeta["kind"]): OperationTiming {

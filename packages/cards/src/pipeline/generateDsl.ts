@@ -166,7 +166,7 @@ export function generateCardDocument(
 
   if (cardType === "operation" && extractedEffects.length === 1) {
     const only = extractedEffects[0];
-    if (!only.needsFallback && only.matchedPattern === "place_in_power") {
+    if (only && !only.needsFallback && only.matchedPattern === "place_in_power") {
       card.effectId = only.id;
     }
   }

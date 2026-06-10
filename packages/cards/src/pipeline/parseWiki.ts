@@ -17,7 +17,9 @@ export function extractEffectTexts(content: string): string[] {
     /(?:^|\n)(?:atwiki 効果文|効果文[^:\n]*):\s*\n> (.+?)(?=\n\n|\natwiki ステータス|\n## |\nconfidence:|\n発動条件:)/gs;
   let m: RegExpExecArray | null;
   while ((m = re.exec(content)) !== null) {
-    const t = m[1].replace(/\n> /g, "\n").trim();
+    const raw = m[1];
+    if (!raw) continue;
+    const t = raw.replace(/\n> /g, "\n").trim();
     if (
       t &&
       !t.includes("atwiki 未取得") &&
@@ -70,18 +72,23 @@ export function splitEffectSegments(text: string): WikiEffectSegment[] {
   const tagged: Tagged[] = [];
 
   for (const m of text.matchAll(/【([^】]+)】([^【※]*)/g)) {
+    const name = m[1]?.trim();
+    const body = m[2]?.trim();
+    if (!name) continue;
     tagged.push({
       index: m.index ?? 0,
       kind: "named",
-      name: m[1].trim(),
-      body: m[2].trim(),
+      name,
+      body: body ?? "",
     });
   }
   for (const m of text.matchAll(/※([^【※]+)/g)) {
+    const noteBody = m[1]?.trim();
+    if (!noteBody) continue;
     tagged.push({
       index: m.index ?? 0,
       kind: "note",
-      body: `※${m[1].trim()}`,
+      body: `※${noteBody}`,
     });
   }
 
@@ -90,20 +97,20 @@ export function splitEffectSegments(text: string): WikiEffectSegment[] {
   }
 
   tagged.sort((a, b) => a.index - b.index);
-  return tagged.map(({ kind, ...rest }) =>
-    kind === "named"
-      ? { kind, name: rest.name!, body: rest.body }
-      : { kind, body: rest.body },
+  return tagged.map((t) =>
+    t.kind === "named"
+      ? { kind: "named" as const, name: t.name, body: t.body }
+      : { kind: "note" as const, body: t.body },
   );
 }
 
 function parseAtwikiStatus(content: string): WikiStatus {
   const block = content.match(/atwiki ステータス:\s*\n([\s\S]*?)(?=\n\n|atwiki Q&A|confidence:)/);
-  if (!block) return {};
+  if (!block?.[1]) return {};
   const status: WikiStatus = {};
   for (const line of block[1].split("\n")) {
     const m = line.match(/^\*\s*([^:]+):\s*(.+)$/);
-    if (m) status[m[1].trim() as keyof WikiStatus] = m[2].trim();
+    if (m?.[1] && m[2]) status[m[1].trim() as keyof WikiStatus] = m[2].trim();
   }
   return status;
 }
