@@ -6,9 +6,9 @@ import type {
 } from "./types";
 import { lookupCatalogCard } from "./catalogLookup";
 import {
-  CATEGORY_MAP,
   EXPANSION_FROM_SET,
   SIZE_MAP,
+  inferCategoryFromWikiLabels,
   inferRushAdditionalCondition,
   parseComboNumber,
   parsePowerCost,
@@ -111,8 +111,7 @@ function inferExpansion(parse: WikiParseResult, catalog?: CardDocument): CardDoc
 
 function inferCategory(parse: WikiParseResult, catalog?: CardDocument): CardDocument["category"] {
   if (catalog?.category) return catalog.category;
-  const label = parse.status.カテゴリ ?? parse.categoryLabel ?? "";
-  return CATEGORY_MAP[label] ?? "ET";
+  return inferCategoryFromWikiLabels(parse.categoryLabel, parse.status.カテゴリ);
 }
 
 export function generateCardDocument(

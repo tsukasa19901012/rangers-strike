@@ -24,6 +24,21 @@ export type EmitPromotedOptions = {
   manifestName: string;
 };
 
+function loadExistingImageFields(
+  outputPath: string,
+): Map<string, Pick<CardDefinition, "imageUrl" | "imageSourceUrl">> {
+  if (!existsSync(outputPath)) return new Map();
+  const file = JSON.parse(readFileSync(outputPath, "utf8")) as { cards: CardDefinition[] };
+  return new Map(
+    file.cards
+      .filter((card) => card.imageUrl)
+      .map((card) => [
+        card.id,
+        { imageUrl: card.imageUrl, imageSourceUrl: card.imageSourceUrl },
+      ]),
+  );
+}
+
 function enrichFromDsl(root: string, base: CardDefinition): CardDefinition {
   const dslPath = join(root, "src/generated/dsl-stubs", `${base.id}.dsl.json`);
   if (!existsSync(dslPath)) return base;
@@ -50,6 +65,7 @@ export function emitPromotedCatalog(options: EmitPromotedOptions): {
 
   const playableIds = new Set(allCardsCatalog.cards.map((c) => c.id));
   const stubsFile = JSON.parse(readFileSync(stubsPath, "utf8")) as StubsFile;
+  const existingImages = loadExistingImageFields(outputPath);
 
   const promoted = stubsFile.stubs
     .filter((s) => options.grades.has(s.grade) && !playableIds.has(s.id))
@@ -62,6 +78,7 @@ export function emitPromotedCatalog(options: EmitPromotedOptions): {
         rarity: stub.rarity,
         expansion: stub.expansion === "wiki_stub" ? options.expansionLabel : stub.expansion,
         powerCost: stub.powerCost,
+        ...(existingImages.get(stub.id) ?? {}),
       }),
     )
     .sort((a, b) => a.id.localeCompare(b.id));

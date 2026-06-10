@@ -1,5 +1,7 @@
 import type { CardDocument, RushAdditionalCondition } from "../dsl/types";
 
+const CATEGORY_CODES = new Set(["ET", "WB", "OT", "MA", "DA"]);
+
 export const CATEGORY_MAP: Record<string, CardDocument["category"]> = {
   アーステクノロジー: "ET",
   ワイルドビースト: "WB",
@@ -7,6 +9,27 @@ export const CATEGORY_MAP: Record<string, CardDocument["category"]> = {
   ミスティックアームズ: "MA",
   ダークアライアンス: "DA",
 };
+
+/** Wiki カテゴリ行 / atwiki ステータスから CardDefinition 用カテゴリを推論。 */
+export function inferCategoryFromWikiLabels(
+  ...labels: (string | undefined)[]
+): CardDocument["category"] {
+  const codes: Array<NonNullable<CardDocument["category"]> & string> = [];
+  for (const label of labels) {
+    if (!label) continue;
+    for (const part of label.split(/[/／]/).map((s) => s.trim()).filter(Boolean)) {
+      if (CATEGORY_CODES.has(part)) {
+        codes.push(part as NonNullable<CardDocument["category"]> & string);
+      } else if (CATEGORY_MAP[part]) {
+        codes.push(CATEGORY_MAP[part] as NonNullable<CardDocument["category"]> & string);
+      }
+    }
+  }
+  const unique = [...new Set(codes)];
+  if (unique.length === 0) return "OT";
+  if (unique.length === 1) return unique[0];
+  return unique as CardDocument["category"];
+}
 
 export const SIZE_MAP: Record<string, NonNullable<CardDocument["size"]>> = {
   Sユニット: "S",

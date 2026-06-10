@@ -8,6 +8,7 @@ import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { allCardsCatalog } from "../src/catalog";
+import { inferCategoryFromWikiLabels } from "../src/pipeline/metaMaps";
 import { parseWikiMarkdown } from "../src/pipeline/parseWiki";
 import type { CardDefinition } from "../src/schema";
 
@@ -75,10 +76,10 @@ function main(): void {
       const parsed = parseWikiMarkdown(cardId, wikiDir);
       name = parsed.name || cardId;
       type = inferType(parsed.status.種類);
-      const cat = parsed.categoryLabel?.split(/[/／]/)[0]?.trim();
-      if (cat === "ET" || cat === "WB" || cat === "OT" || cat === "MA" || cat === "DA") {
-        category = cat;
-      }
+      category = inferCategoryFromWikiLabels(
+        parsed.categoryLabel,
+        parsed.status.カテゴリ,
+      );
       const pc = parsed.status.必要パワー ?? parsed.status.BP;
       if (pc && /^\d+\+?$/.test(pc)) {
         powerCost = pc.includes("+") ? pc : Number(pc);
