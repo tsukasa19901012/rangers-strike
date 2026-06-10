@@ -14,14 +14,16 @@
       "id": "note_e280bbe382abe382a6e383b3",
       "text": "※カウンター 自軍Sユニットがバトルで撃破されて捨札になったとき発動できる⇒そのユニットのカードを自軍コマンドゾーンにホールド状態で置く。置けなければ手札に加える。",
       "trigger": {
-        "type": "operation",
-        "timing": "counter"
+        "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe382ab",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

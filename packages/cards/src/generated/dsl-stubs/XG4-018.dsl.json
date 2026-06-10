@@ -18,9 +18,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bb5742e3",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e799bde98a80e381aee796be",
@@ -31,9 +34,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

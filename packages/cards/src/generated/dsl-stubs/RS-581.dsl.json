@@ -18,9 +18,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe789b9",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "unnamed_fusion_vehicle_alias",

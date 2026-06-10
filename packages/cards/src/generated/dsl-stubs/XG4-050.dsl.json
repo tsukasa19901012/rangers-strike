@@ -18,9 +18,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe887aa",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e5be8ce983a8e38390e383ab",

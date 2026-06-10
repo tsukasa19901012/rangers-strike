@@ -20,13 +20,16 @@
       "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはラッシュするとき可能ならバトルエリアに置く。",
       "trigger": {
-        "type": "nc"
+        "type": "on_rush"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e88d92e381b6e3828be68a98",

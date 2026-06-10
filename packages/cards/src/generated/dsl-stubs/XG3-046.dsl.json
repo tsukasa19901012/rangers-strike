@@ -37,13 +37,16 @@
       "id": "note_e280bbe695b5e8bb8de382bf",
       "text": "※敵軍ターン中、これが撃破されて捨札になったとき、これを自軍パワーゾーンにダメージにして置いてもよい。そうしたとき、自分の手札から「仮面ライダーBLACK RX」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe695b5",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e382ade383b3e382b0e382b9",

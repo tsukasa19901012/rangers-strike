@@ -15,14 +15,16 @@
       "name": "ゴセイヘッダー",
       "text": "ウイング、タクス、レジスト、リードのどれかを持つ自軍ユニットを1体選ぶ。このターン、選んだユニットはBP+1000され、ホールド状態ならリリースする。（これが自軍コマンドゾーンにある間、カード名に「ゴセイ」を含む自軍ユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する）",
       "trigger": {
-        "type": "operation",
-        "timing": "rush"
+        "type": "enter_battle"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "hold_on_enter_battle_e382a6e382a4",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

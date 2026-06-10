@@ -23,13 +23,16 @@
       "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、WBが追加される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e586b7e3819fe38184e38395",

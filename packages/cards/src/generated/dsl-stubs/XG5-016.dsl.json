@@ -15,14 +15,16 @@
       "name": "シグナルキャノン",
       "text": "BP6000以下の敵軍ユニットを1体選び持ち主のパワーゾーンに送る。（これが自軍コマンドゾーンにある間、OTを持つ自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する）",
       "trigger": {
-        "type": "operation",
-        "timing": "rush"
+        "type": "enter_battle"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "hold_on_enter_battle_425036303030",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

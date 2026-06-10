@@ -21,13 +21,16 @@
       "id": "note_e280bbe695b5e8bb8de382bf",
       "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍コマンドゾーンに特徴「メカ」を持つMユニットのカードがあれば、その中から好きな枚数選び、自軍ラッシュエリアに出してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe695b5",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
       "id": "named_e382b0e383a9e383b3e38389",

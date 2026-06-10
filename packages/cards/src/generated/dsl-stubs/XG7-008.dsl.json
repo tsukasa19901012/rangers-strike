@@ -37,13 +37,16 @@
       "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはMAの自軍コマンドがあれば、バトルエリアの2番目か3番目にある間、SP1になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e382a2e383bce382b9e381ae",

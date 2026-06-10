@@ -4704,6 +4704,7 @@ const PATTERNS: PatternMatch[] = [
       matchedPattern: "grant_ability_generic",
     }),
   },
+  // __G35_ITERATION_PATTERNS__
   {
     pattern: "grant_effect_generic",
     test: (body) => /次の効果を発動できる⇒/.test(body),
@@ -4726,7 +4727,139 @@ const PATTERNS: PatternMatch[] = [
       ],
       matchedPattern: "grant_effect_generic",
     }),
+  },  {
+    pattern: "destroy_enter_battle",
+    test: (body) => (/自軍ターン中、これがバトルエリアに出たとき/.test(body) && /撃破/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `destroy_enter_battle_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "destroy_enter_battle",
+    }),
   },
+  {
+    pattern: "destroy_on_rush",
+    test: (body) => (/(?:ラッシュしたとき|ラッシュするとき)/.test(body) && /撃破/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `destroy_on_rush_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "destroy_on_rush",
+    }),
+  },
+  {
+    pattern: "hold_on_enter_battle",
+    test: (body) => (/バトルエリアに出たとき/.test(body) && /ホールド/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `hold_on_enter_battle_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "hold_on_enter_battle",
+    }),
+  },
+  {
+    pattern: "note_other",
+    test: (body) => (/^※/.test(body) && !/^※これが.*にある間/.test(body) && !/^※これが自分の手札にある間/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `note_other_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "note_other",
+    }),
+  },
+
 ];
 
 function delegateEffectKeyword(effectId: string): EffectPrimitive {

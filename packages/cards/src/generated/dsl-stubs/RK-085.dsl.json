@@ -14,14 +14,16 @@
       "id": "note_e280bbe382abe382a6e383b3",
       "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき発動できる⇒そのバトルは行われない。そして、アタックされたユニットの必要パワーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "operation",
-        "timing": "counter"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe382ab",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

@@ -21,13 +21,16 @@
       "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、MAが追加される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e5ab8ce38184e38198e38283",

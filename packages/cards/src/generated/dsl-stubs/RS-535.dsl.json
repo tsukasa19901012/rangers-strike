@@ -35,13 +35,16 @@
       "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは自軍バトルエリアにある間、特徴「ドラゴン」が追加される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e38389e383a9e382b4e383b3",

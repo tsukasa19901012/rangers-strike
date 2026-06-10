@@ -76,9 +76,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe8b5a4",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

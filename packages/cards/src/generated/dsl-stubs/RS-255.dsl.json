@@ -14,14 +14,16 @@
       "id": "note_e280bbe382abe382a6e383b3",
       "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 敵軍ターン中、特徴「怪人」を持つ自軍ユニットが撃破されて捨札になったとき発動できる⇒そのユニットカードを、このカードに重ねてラッシュエリアに出す。このカードに重ねたユニットはBP＋3000され、「SP1」「Lユニット」になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
       "trigger": {
-        "type": "operation",
-        "timing": "counter"
+        "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe382ab",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

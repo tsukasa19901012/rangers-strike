@@ -24,13 +24,16 @@
       "id": "note_e280bbe695b5e8bb8de382bf",
       "text": "※敵軍ターン中、これとバトルしたユニットは、バトルに勝っても撃破される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe695b5",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "recruit_from_discard_on_destroy",

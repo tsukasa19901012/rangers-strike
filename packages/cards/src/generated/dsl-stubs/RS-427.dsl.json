@@ -22,13 +22,16 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが撃破されて捨札になったとき、自軍捨札に｢ゲキイエロー｣のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e382aae3838de382b9e38388",

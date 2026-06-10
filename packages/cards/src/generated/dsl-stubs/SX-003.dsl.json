@@ -35,13 +35,16 @@
       "id": "note_e280bbe887aae8bb8de382bf",
       "text": "※自軍ターン中、これが自軍バトルエリアにある間、敵軍バトルエリアにあるユニットの効果名を持たないテキストは無効になり、発動もできない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe887aa",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "named_e382a2e383bce383a0e383bb",
