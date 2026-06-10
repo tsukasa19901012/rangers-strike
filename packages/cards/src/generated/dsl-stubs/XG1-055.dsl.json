@@ -21,13 +21,16 @@
       "name": "血に飢えた予言者",
       "text": "これが自分の手札にある間、必要パワーに「＋」を持つ敵軍Sユニットがラッシュされたとき、DAを持つ自軍コマンドを1つホールドしてからこれを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットを撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "hold_enemy_unit_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

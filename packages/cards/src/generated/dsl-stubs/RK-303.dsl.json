@@ -35,13 +35,16 @@
       "name": "擬態の解除",
       "text": "これが自分の手札にある間、敵軍ターン中、特徴「男」または「女」を持つ自軍ユニットが撃破されて捨札になったとき、捨札になったユニットカード1枚につき、自分の手札から「ワームサナギ体」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "deploy_rush_area_e38193e3828c",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

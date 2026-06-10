@@ -23,13 +23,16 @@
       "name": "性能の限界",
       "text": "敵軍ターン中、これが撃破されて捨札になったとき、このユニットカードを自軍コマンドゾーンにホールド状態で置いてもよい。（置けなければこの効果は発動できない）",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "hold_enemy_unit_e695b5e8bb8d",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

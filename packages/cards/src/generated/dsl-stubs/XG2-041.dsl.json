@@ -60,13 +60,16 @@
       "name": "真・土煙の舞い",
       "text": "このターン、次に自軍Sユニットが撃破されて捨札になったとき、そのカードを手札に戻してもよい。そうしたとき、手札に戻したカードと同名のカードを自分の手札から1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "deploy_rush_area_e38193e381ae",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {
