@@ -14172,7 +14172,9 @@
         "仮面ライダー",
         "男",
         "DEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/SX-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SX-001-RK.jpg"
     },
     {
       "id": "SX-003",
@@ -14189,7 +14191,9 @@
         "仮面ライダー",
         "男",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/SX-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SX-003-RK.jpg"
     },
     {
       "id": "SX-004",
@@ -14211,7 +14215,9 @@
         "レッド",
         "男",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/SX-004.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SX-004-RS.jpg"
     },
     {
       "id": "SX-006",
@@ -14230,7 +14236,9 @@
         "男",
         "GDEN-O",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/SX-006.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SX-006-RK.jpg"
     },
     {
       "id": "SX-007",
@@ -14248,7 +14256,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/SX-007.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SX-007-RS.jpg"
     },
     {
       "id": "SX-009",
@@ -14267,7 +14277,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/SX-009.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SX-009-RS.jpg"
     },
     {
       "id": "SX-010",
@@ -14288,7 +14300,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/SX-010.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SX-010-RK.jpg"
     },
     {
       "id": "XG1-002",
@@ -14305,7 +14319,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-002-RS.jpg"
     },
     {
       "id": "XG1-003",
@@ -14323,7 +14339,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-003-RS.jpg"
     },
     {
       "id": "XG1-004",
@@ -14340,7 +14358,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-004.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-004-RS.jpg"
     },
     {
       "id": "XG1-005",
@@ -14357,7 +14377,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-005.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-005-RS.jpg"
     },
     {
       "id": "XG1-006",
@@ -14375,7 +14397,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-006.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-006-RS.jpg"
     },
     {
       "id": "XG1-008",
@@ -14393,7 +14417,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-008.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-008-RS.jpg"
     },
     {
       "id": "XG1-009",
@@ -14411,7 +14437,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-009.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-009-RS.jpg"
     },
     {
       "id": "XG1-010",
@@ -14429,7 +14457,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-010.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-010-RS.jpg"
     },
     {
       "id": "XG1-011",
@@ -14447,7 +14477,9 @@
         "皇帝",
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-011.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-011-RS.jpg"
     },
     {
       "id": "XG1-012",
@@ -14464,7 +14496,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-012.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-012-RS.jpg"
     },
     {
       "id": "XG1-013",
@@ -14480,7 +14514,9 @@
       "features": [
         "メカ",
         "母艦"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-013.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-013-RS.jpg"
     },
     {
       "id": "XG1-014",
@@ -14497,7 +14533,9 @@
       "features": [
         "ブラック",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-014.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-014-RS.jpg"
     },
     {
       "id": "XG1-015",
@@ -14507,7 +14545,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 5,
-      "text": "※常駐 特徴「警察」を持つSユニットはチェイスを得る。さらにそのユニットがOTを持つなら、特徴「宇宙刑事」が追加され、コールOTを得る。"
+      "text": "※常駐 特徴「警察」を持つSユニットはチェイスを得る。さらにそのユニットがOTを持つなら、特徴「宇宙刑事」が追加され、コールOTを得る。",
+      "imageUrl": "/cards/promoted/XG1-015.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-015-RS.jpg"
     },
     {
       "id": "XG1-016",
@@ -14524,7 +14564,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-016.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-016-RS.jpg"
     },
     {
       "id": "XG1-017",
@@ -14540,7 +14582,9 @@
       "features": [
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-017.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-017-RS.jpg"
     },
     {
       "id": "XG1-018",
@@ -14556,7 +14600,9 @@
       "features": [
         "メカ",
         "車両"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-018.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-018-RS.jpg"
     },
     {
       "id": "XG1-019",
@@ -14572,7 +14618,9 @@
       "features": [
         "メカ",
         "車両"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-019.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-019-RS.jpg"
     },
     {
       "id": "XG1-020",
@@ -14589,7 +14637,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-020.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-020-RS.jpg"
     },
     {
       "id": "XG1-021",
@@ -14609,7 +14659,9 @@
       "features": [
         "ブルー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-021.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-021-RS.jpg"
     },
     {
       "id": "XG1-022",
@@ -14629,7 +14681,9 @@
       "features": [
         "ピンク",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-022.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-022-RS.jpg"
     },
     {
       "id": "XG1-023",
@@ -14650,7 +14704,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-023.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-023-RS.jpg"
     },
     {
       "id": "XG1-024",
@@ -14670,7 +14726,9 @@
       "features": [
         "イエロー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-024.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-024-RS.jpg"
     },
     {
       "id": "XG1-025",
@@ -14691,7 +14749,9 @@
       "features": [
         "ブラック",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-025.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-025-RS.jpg"
     },
     {
       "id": "XG1-027",
@@ -14706,7 +14766,9 @@
       "text": "※このカードはデッキに好きな枚数入れてもよい。",
       "features": [
         "戦闘員"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-027.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-027-RS.jpg"
     },
     {
       "id": "XG1-031",
@@ -14728,7 +14790,9 @@
         "レッド",
         "男",
         "激気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-031.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-031-RS.jpg"
     },
     {
       "id": "XG1-033",
@@ -14744,7 +14808,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-033.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-033-RS.jpg"
     },
     {
       "id": "XG1-034",
@@ -14760,7 +14826,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-034.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-034-RS.jpg"
     },
     {
       "id": "XG1-035",
@@ -14776,7 +14844,9 @@
       "features": [
         "昆虫",
         "折神獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-035.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-035-RS.jpg"
     },
     {
       "id": "XG1-036",
@@ -14792,7 +14862,9 @@
       "features": [
         "獣",
         "折神獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-036.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-036-RS.jpg"
     },
     {
       "id": "XG1-037",
@@ -14809,7 +14881,9 @@
       "features": [
         "獣",
         "折神獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-037.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-037-RS.jpg"
     },
     {
       "id": "XG1-038",
@@ -14827,7 +14901,9 @@
         "ゴールド",
         "男",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-038.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-038-RS.jpg"
     },
     {
       "id": "XG1-039",
@@ -14844,7 +14920,9 @@
       "features": [
         "人型",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-039.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-039-RS.jpg"
     },
     {
       "id": "XG1-040",
@@ -14860,7 +14938,9 @@
       "features": [
         "獣",
         "折神獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-040.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-040-RS.jpg"
     },
     {
       "id": "XG1-042",
@@ -14878,7 +14958,9 @@
         "ゲドン",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-042.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-042-RK.jpg"
     },
     {
       "id": "XG1-045",
@@ -14896,7 +14978,9 @@
         "怪人",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-045.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-045-RK.jpg"
     },
     {
       "id": "XG1-046",
@@ -14906,7 +14990,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 2,
-      "text": "【Vジェット】このビークルにライドしているユニットがモーフで置き換えられたとき、このビークルにライドしているユニットをラッシュエリアに戻してもよい。（ライドオフしない限り、ユニットとビークルは重ねたまま扱う）"
+      "text": "【Vジェット】このビークルにライドしているユニットがモーフで置き換えられたとき、このビークルにライドしているユニットをラッシュエリアに戻してもよい。（ライドオフしない限り、ユニットとビークルは重ねたまま扱う）",
+      "imageUrl": "/cards/promoted/XG1-046.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-046-RK.jpg"
     },
     {
       "id": "XG1-047",
@@ -14926,7 +15012,9 @@
         "男",
         "改造人間",
         "ファイブハンド"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-047.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-047-RK.jpg"
     },
     {
       "id": "XG1-048",
@@ -14946,7 +15034,9 @@
         "男",
         "改造人間",
         "ファイブハンド"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-048.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-048-RK.jpg"
     },
     {
       "id": "XG1-049",
@@ -14965,7 +15055,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-049.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-049-RK.jpg"
     },
     {
       "id": "XG1-051",
@@ -14986,7 +15078,9 @@
         "改造人間",
         "メカ",
         "忍者"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-051.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-051-RK.jpg"
     },
     {
       "id": "XG1-052",
@@ -15004,7 +15098,9 @@
         "仮面ライダー",
         "男",
         "賢者の石"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-052.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-052-RK.jpg"
     },
     {
       "id": "XG1-053",
@@ -15021,7 +15117,9 @@
         "仮面ライダー",
         "男",
         "賢者の石"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-053.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-053-RK.jpg"
     },
     {
       "id": "XG1-054",
@@ -15039,7 +15137,9 @@
         "仮面ライダー",
         "男",
         "賢者の石"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-054.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-054-RK.jpg"
     },
     {
       "id": "XG1-055",
@@ -15055,7 +15155,9 @@
       "features": [
         "アンノウン",
         "昆虫"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-055.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-055-RK.jpg"
     },
     {
       "id": "XG1-056",
@@ -15072,7 +15174,9 @@
         "アンノウン",
         "エルロード",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-056.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-056-RK.jpg"
     },
     {
       "id": "XG1-057",
@@ -15082,7 +15186,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 2,
-      "text": "【衝撃波】これがライドされている間、敵軍Sユニットは次の制限を受ける⇒ライドしてバトルエリアに出たとき、ホールド状態になる。"
+      "text": "【衝撃波】これがライドされている間、敵軍Sユニットは次の制限を受ける⇒ライドしてバトルエリアに出たとき、ホールド状態になる。",
+      "imageUrl": "/cards/promoted/XG1-057.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-057-RK.jpg"
     },
     {
       "id": "XG1-058",
@@ -15099,7 +15205,9 @@
       "features": [
         "アンデッド",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-058.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-058-RK.jpg"
     },
     {
       "id": "XG1-059",
@@ -15117,7 +15225,9 @@
         "アンデッド",
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-059.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-059-RK.jpg"
     },
     {
       "id": "XG1-060",
@@ -15133,7 +15243,9 @@
       "features": [
         "アンデッド",
         "昆虫"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-060.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-060-RK.jpg"
     },
     {
       "id": "XG1-061",
@@ -15152,7 +15264,9 @@
         "アンデッド",
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-061.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-061-RK.jpg"
     },
     {
       "id": "XG1-063",
@@ -15162,7 +15276,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 0,
-      "text": "【トルネードチェイサー】これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒敵軍コマンドを1つ選びホールドする。"
+      "text": "【トルネードチェイサー】これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒敵軍コマンドを1つ選びホールドする。",
+      "imageUrl": "/cards/promoted/XG1-063.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-063-RK.jpg"
     },
     {
       "id": "XG1-065",
@@ -15180,7 +15296,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-065.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-065-RK.jpg"
     },
     {
       "id": "XG1-066",
@@ -15199,7 +15317,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-066.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-066-RK.jpg"
     },
     {
       "id": "XG1-067",
@@ -15217,7 +15337,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-067.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-067-RK.jpg"
     },
     {
       "id": "XG1-068",
@@ -15236,7 +15358,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-068.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-068-RK.jpg"
     },
     {
       "id": "XG1-070",
@@ -15254,7 +15378,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-070.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-070-RK.jpg"
     },
     {
       "id": "XG1-071",
@@ -15273,7 +15399,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-071.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-071-RK.jpg"
     },
     {
       "id": "XG1-072",
@@ -15290,7 +15418,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-072.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-072-RK.jpg"
     },
     {
       "id": "XG1-073",
@@ -15306,7 +15436,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-073.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-073-RK.jpg"
     },
     {
       "id": "XG1-077",
@@ -15324,7 +15456,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-077.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-077-RK.jpg"
     },
     {
       "id": "XG1-079",
@@ -15341,7 +15475,9 @@
       "features": [
         "ミラーモンスター",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-079.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-079-RK.jpg"
     },
     {
       "id": "XG1-080",
@@ -15362,7 +15498,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-080.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-080-RK.jpg"
     },
     {
       "id": "XG1-081",
@@ -15382,7 +15520,9 @@
       "features": [
         "侍",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-081.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-081-RM.jpg"
     },
     {
       "id": "XG1-082",
@@ -15392,7 +15532,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 1,
-      "text": "【戦士シャイダーの遺産】このビークルが捨札になったとき、自軍パワーゾーンのオモテ向きのカードからビークルカードを1枚選び、自分の手札に加えてもよい。"
+      "text": "【戦士シャイダーの遺産】このビークルが捨札になったとき、自軍パワーゾーンのオモテ向きのカードからビークルカードを1枚選び、自分の手札に加えてもよい。",
+      "imageUrl": "/cards/promoted/XG1-082.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-082-RM.jpg"
     },
     {
       "id": "XG1-083",
@@ -15412,7 +15554,9 @@
         "メカ",
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-083.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-083-RM.jpg"
     },
     {
       "id": "XG1-084",
@@ -15427,7 +15571,9 @@
       "text": "【人質と脅迫】これが自軍バトルエリアにある間、相手は次の制限を受ける⇒自分自身のバトルエリアにあるホールド状態のSユニットはラッシュエリアに戻せない。また、自分自身の手札を1枚選び捨札にしなければ、このユニットにアタックすることができない。",
       "features": [
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-084.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-084-RM.jpg"
     },
     {
       "id": "XG1-085",
@@ -15444,7 +15590,9 @@
       "features": [
         "メカ",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-085.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-085-RM.jpg"
     },
     {
       "id": "XG1-086",
@@ -15462,7 +15610,9 @@
       "features": [
         "メカ",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-086.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-086-RM.jpg"
     },
     {
       "id": "XG1-087",
@@ -15479,7 +15629,9 @@
         "メカ",
         "ワーラー帝国",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-087.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-087-RM.jpg"
     },
     {
       "id": "XG1-088",
@@ -15500,7 +15652,9 @@
         "人型",
         "イエロー",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-088.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-088-RM.jpg"
     },
     {
       "id": "XG1-089",
@@ -15520,7 +15674,9 @@
         "レッド",
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-089.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-089-RM.jpg"
     },
     {
       "id": "XG1-090",
@@ -15540,7 +15696,9 @@
         "人型",
         "グリーン",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-090.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-090-RM.jpg"
     },
     {
       "id": "XG1-091",
@@ -15557,7 +15715,9 @@
         "メカ",
         "人型",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-091.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-091-RM.jpg"
     },
     {
       "id": "XG1-092",
@@ -15576,7 +15736,9 @@
         "メカ",
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-092.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-092-RM.jpg"
     },
     {
       "id": "XG1-093",
@@ -15594,7 +15756,9 @@
         "メカ",
         "女",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-093.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-093-RM.jpg"
     },
     {
       "id": "XG1-094",
@@ -15616,7 +15780,9 @@
         "メカ",
         "昆虫",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-094.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-094-RM.jpg"
     },
     {
       "id": "XG1-096",
@@ -15638,7 +15804,9 @@
         "メカ",
         "昆虫",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-096.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-096-RM.jpg"
     },
     {
       "id": "XG1-097",
@@ -15659,7 +15827,9 @@
         "メカ",
         "昆虫",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-097.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-097-RM.jpg"
     },
     {
       "id": "XG1-098",
@@ -15678,7 +15848,9 @@
       "features": [
         "昆虫",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-098.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-098-RM.jpg"
     },
     {
       "id": "XG1-099",
@@ -15694,7 +15866,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG1-099.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-099.jpg"
     },
     {
       "id": "XG2-001",
@@ -15715,7 +15889,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-001-RS.jpg"
     },
     {
       "id": "XG2-002",
@@ -15736,7 +15912,9 @@
       "features": [
         "ブルー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-002-RS.jpg"
     },
     {
       "id": "XG2-003",
@@ -15757,7 +15935,9 @@
       "features": [
         "ピンク",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-003-RS.jpg"
     },
     {
       "id": "XG2-004",
@@ -15777,7 +15957,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-004.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-004-RS.jpg"
     },
     {
       "id": "XG2-005",
@@ -15796,7 +15978,9 @@
       "features": [
         "メカ",
         "航空機"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-005.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-005-RS.jpg"
     },
     {
       "id": "XG2-006",
@@ -15815,7 +15999,9 @@
       "features": [
         "メカ",
         "車両"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-006.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-006-RS.jpg"
     },
     {
       "id": "XG2-007",
@@ -15834,7 +16020,9 @@
       "features": [
         "メカ",
         "車両"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-007.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-007-RS.jpg"
     },
     {
       "id": "XG2-008",
@@ -15851,7 +16039,9 @@
         "メカ",
         "獣",
         "怪人"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-008.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-008-RS.jpg"
     },
     {
       "id": "XG2-009",
@@ -15869,7 +16059,9 @@
         "獣",
         "ドラゴン",
         "怪人"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-009.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-009-RS.jpg"
     },
     {
       "id": "XG2-010",
@@ -15888,7 +16080,9 @@
         "獣",
         "ドラゴン",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-010.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-010-RS.jpg"
     },
     {
       "id": "XG2-011",
@@ -15905,7 +16099,9 @@
       "features": [
         "獣",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-011.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-011-RS.jpg"
     },
     {
       "id": "XG2-012",
@@ -15921,7 +16117,9 @@
       "text": "合体―気伝武人ウォンタイガー（または気伝獣ウォンタイガー）＋天空気殿 【飛翔剣・木端微塵】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアから、DAを持つ敵軍ユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがLユニットだったなら、捨札にするかわりに持ち主のパワーゾーンにダメージにして置く。",
       "features": [
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-012.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-012-RS.jpg"
     },
     {
       "id": "XG2-013",
@@ -15939,7 +16137,9 @@
       "features": [
         "ホワイト",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-013.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-013-RS.jpg"
     },
     {
       "id": "XG2-014",
@@ -15960,7 +16160,9 @@
       "features": [
         "ダイ族",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-014.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-014-RS.jpg"
     },
     {
       "id": "XG2-015",
@@ -15978,7 +16180,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-015.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-015-RS.jpg"
     },
     {
       "id": "XG2-016",
@@ -15994,7 +16198,9 @@
       "text": "※このカードの追加条件は、カード名に「気伝武人」を含む自軍ユニットがあるとき、次のように変更される⇒追加で自軍コマンドを2つホールドする 【天空大風車】このユニットからコンビネーションする、特徴「人型」を持つMユニットは、次の能力を得る⇒これがストライクしてダメージを与えたとき、DAを持つ敵軍ユニットを1体選び撃破してもよい。",
       "features": [
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-016.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-016-RS.jpg"
     },
     {
       "id": "XG2-017",
@@ -16010,7 +16216,9 @@
       "text": "合体―気伝武人龍星王（または気伝獣龍星王）＋天空気殿 【大王剣・疾風怒濤】自軍ターン中、これが自軍バトルエリアに出たとき、敵軍バトルエリアからDAを持つ敵軍ユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがLユニットなら、捨札にするかわりに持ち主のパワーゾーンにダメージにして置く。",
       "features": [
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-017.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-017-RS.jpg"
     },
     {
       "id": "XG2-018",
@@ -16029,7 +16237,9 @@
       "text": "【来来獣】これをラッシュしたとき、特徴「レッド」を持つ自軍ユニットを1体選びホールドしてもよい。そうしたとき、このターン、これはBP＋3000される。",
       "features": [
         "激気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-018.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-018-RS.jpg"
     },
     {
       "id": "XG2-019",
@@ -16039,7 +16249,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 3,
-      "text": "※常駐 自軍バトルフェイズ中、自軍ラッシュエリアから、ライドされていない特徴「獣」を持つMビークルを1体選んでもよい。そうしたとき、選んだビークルは、このターン、テキストを持たないMユニットとして扱い、次の情報が追加される⇒「BP3000」「SP空欄」"
+      "text": "※常駐 自軍バトルフェイズ中、自軍ラッシュエリアから、ライドされていない特徴「獣」を持つMビークルを1体選んでもよい。そうしたとき、選んだビークルは、このターン、テキストを持たないMユニットとして扱い、次の情報が追加される⇒「BP3000」「SP空欄」",
+      "imageUrl": "/cards/promoted/XG2-019.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-019-RS.jpg"
     },
     {
       "id": "XG2-022",
@@ -16055,7 +16267,9 @@
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【騎獣激突】自軍コマンドを1つ選びホールドしてもよい。そうしたとき、ホールド状態の敵軍コマンドを1つ選び捨札にする。（この効果は、特徴「人型」を持つMユニットからコンビネーションするときはナンバーに関係なく発動する）",
       "features": [
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-022.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-022-RS.jpg"
     },
     {
       "id": "XG2-024",
@@ -16073,7 +16287,9 @@
         "宇宙海賊",
         "男",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-024.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-024-RS.jpg"
     },
     {
       "id": "XG2-025",
@@ -16093,7 +16309,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-025.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-025-RS.jpg"
     },
     {
       "id": "XG2-026",
@@ -16114,7 +16332,9 @@
       "features": [
         "ブルー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-026.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-026-RS.jpg"
     },
     {
       "id": "XG2-027",
@@ -16135,7 +16355,9 @@
       "features": [
         "イエロー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-027.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-027-RS.jpg"
     },
     {
       "id": "XG2-028",
@@ -16154,7 +16376,9 @@
         "男",
         "獣",
         "ドラゴン"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-028.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-028-RS.jpg"
     },
     {
       "id": "XG2-029",
@@ -16171,7 +16395,9 @@
       "features": [
         "災魔一族",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-029.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-029-RS.jpg"
     },
     {
       "id": "XG2-031",
@@ -16188,7 +16414,9 @@
         "メカ",
         "車両",
         "航空機"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-031.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-031-RS.jpg"
     },
     {
       "id": "XG2-032",
@@ -16205,7 +16433,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-032.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-032-RS.jpg"
     },
     {
       "id": "XG2-033",
@@ -16222,7 +16452,9 @@
         "女",
         "警察",
         "特キョウ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-033.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-033-RS.jpg"
     },
     {
       "id": "XG2-034",
@@ -16238,7 +16470,9 @@
       "features": [
         "メカ",
         "車両"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-034.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-034-RS.jpg"
     },
     {
       "id": "XG2-035",
@@ -16255,7 +16489,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-035.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-035-RS.jpg"
     },
     {
       "id": "XG2-036",
@@ -16271,7 +16507,9 @@
       "features": [
         "侍",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-036.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-036-RS.jpg"
     },
     {
       "id": "XG2-037",
@@ -16290,7 +16528,9 @@
         "レッド",
         "男",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-037.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-037-RS.jpg"
     },
     {
       "id": "XG2-038",
@@ -16308,7 +16548,9 @@
         "ブルー",
         "男",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-038.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-038-RS.jpg"
     },
     {
       "id": "XG2-039",
@@ -16327,7 +16569,9 @@
         "ピンク",
         "女",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-039.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-039-RS.jpg"
     },
     {
       "id": "XG2-041",
@@ -16345,7 +16589,9 @@
         "イエロー",
         "女",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-041.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-041-RS.jpg"
     },
     {
       "id": "XG2-042",
@@ -16364,7 +16610,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-042.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-042-RK.jpg"
     },
     {
       "id": "XG2-045",
@@ -16384,7 +16632,9 @@
         "仮面ライダー",
         "男",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-045.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-045-RK.jpg"
     },
     {
       "id": "XG2-047",
@@ -16404,7 +16654,9 @@
         "男",
         "改造人間",
         "ファイブハンド"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-047.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-047-RK.jpg"
     },
     {
       "id": "XG2-048",
@@ -16423,7 +16675,9 @@
         "男",
         "改造人間",
         "ファイブハンド"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-048.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-048-RK.jpg"
     },
     {
       "id": "XG2-051",
@@ -16440,7 +16694,9 @@
         "アンノウン",
         "エルロード",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-051.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-051-RK.jpg"
     },
     {
       "id": "XG2-053",
@@ -16458,7 +16714,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-053.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-053-RK.jpg"
     },
     {
       "id": "XG2-054",
@@ -16474,7 +16732,9 @@
       "features": [
         "ミラーモンスター",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-054.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-054-RK.jpg"
     },
     {
       "id": "XG2-055",
@@ -16484,7 +16744,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 0,
-      "text": "自分の手札から特徴「男」または「女」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。このとき、出したユニットの効果は発動しない。また、この効果で出したユニットは、このターン、ストライクすることができず、自分がターンを終えるとき、自軍エリアにあれば持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。"
+      "text": "自分の手札から特徴「男」または「女」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。このとき、出したユニットの効果は発動しない。また、この効果で出したユニットは、このターン、ストライクすることができず、自分がターンを終えるとき、自軍エリアにあれば持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "imageUrl": "/cards/promoted/XG2-055.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-055-RK.jpg"
     },
     {
       "id": "XG2-056",
@@ -16502,7 +16764,9 @@
         "仮面ライダー",
         "男",
         "ブラスターフォーム"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-056.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-056-RK.jpg"
     },
     {
       "id": "XG2-057",
@@ -16519,7 +16783,9 @@
         "オルフェノク",
         "怪人",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-057.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-057-RK.jpg"
     },
     {
       "id": "XG2-058",
@@ -16535,7 +16801,9 @@
       "features": [
         "アンデッド",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-058.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-058-RK.jpg"
     },
     {
       "id": "XG2-059",
@@ -16556,7 +16824,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-059.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-059-RK.jpg"
     },
     {
       "id": "XG2-060",
@@ -16572,7 +16842,9 @@
       "features": [
         "アンデッド",
         "昆虫"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-060.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-060-RK.jpg"
     },
     {
       "id": "XG2-061",
@@ -16582,7 +16854,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 0,
-      "text": "※カウンター 敵軍ユニットにアタックされたとき発動できる⇒このターン、すべての自軍ユニットは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。"
+      "text": "※カウンター 敵軍ユニットにアタックされたとき発動できる⇒このターン、すべての自軍ユニットは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。",
+      "imageUrl": "/cards/promoted/XG2-061.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-061-RK.jpg"
     },
     {
       "id": "XG2-064",
@@ -16598,7 +16872,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-064.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-064-RK.jpg"
     },
     {
       "id": "XG2-065",
@@ -16616,7 +16892,9 @@
         "仮面ライダー",
         "男",
         "加速"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-065.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-065-RK.jpg"
     },
     {
       "id": "XG2-067",
@@ -16634,7 +16912,9 @@
         "仮面ライダー",
         "男",
         "DEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-067.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-067-RK.jpg"
     },
     {
       "id": "XG2-068",
@@ -16650,7 +16930,9 @@
       "text": "※これはバトルエリアに出たとき撃破される。 【憑依】自軍ラッシュフェイズ中、ライドしていない自軍Sユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒これが自軍バトルエリアにある間、すべての敵軍Sユニットは、可能ならバトルエリアに出る。",
       "features": [
         "イマジン"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-068.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-068-RK.jpg"
     },
     {
       "id": "XG2-069",
@@ -16669,7 +16951,9 @@
         "仮面ライダー",
         "男",
         "NEWDEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-069.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-069-RK.jpg"
     },
     {
       "id": "XG2-070",
@@ -16679,7 +16963,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 4,
-      "text": "※常駐 これを配置するとき、自軍山札からモーフを持つユニットカードを3枚まで選び、相手に見せてからこれに重ねて置いた後、山札をシャッフルする。これが自軍常駐置き場にある間、モーフの効果で自軍コマンドゾーンか自軍パワーゾーンのオモテ向きのカードからユニットカードを選ぶとき、かわりにこれに重ねたカードから選んでもよい。これが常駐置き場を離れるとき、重ねたカードはすべて捨札になる。"
+      "text": "※常駐 これを配置するとき、自軍山札からモーフを持つユニットカードを3枚まで選び、相手に見せてからこれに重ねて置いた後、山札をシャッフルする。これが自軍常駐置き場にある間、モーフの効果で自軍コマンドゾーンか自軍パワーゾーンのオモテ向きのカードからユニットカードを選ぶとき、かわりにこれに重ねたカードから選んでもよい。これが常駐置き場を離れるとき、重ねたカードはすべて捨札になる。",
+      "imageUrl": "/cards/promoted/XG2-070.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-070-RK.jpg"
     },
     {
       "id": "XG2-071",
@@ -16696,7 +16982,9 @@
         "仮面ライダー",
         "男",
         "ディエンドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-071.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-071-RK.jpg"
     },
     {
       "id": "XG2-072",
@@ -16709,7 +16997,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": "3+",
-      "text": "※これにライドしているユニットはBP+1500される。 【トライゴウラムアタック】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ、持ち主のパワーゾーンにダメージにして置く。"
+      "text": "※これにライドしているユニットはBP+1500される。 【トライゴウラムアタック】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ、持ち主のパワーゾーンにダメージにして置く。",
+      "imageUrl": "/cards/promoted/XG2-072.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-072-RK.jpg"
     },
     {
       "id": "XG2-074",
@@ -16719,7 +17009,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": "5+",
-      "text": "※自分が「仮面ライダークウガ」をラッシュしたとき、自軍エリアに「クウガゴウラム」があれば1体選んで手札に戻す。 ※これは、自軍「仮面ライダーディケイド」があれば、ライドされていなくてもバトルエリアに出ることができる。 【ファイナルアタックライド 】自軍ターン中、これがバトルエリアに出たとき、BP4000以上の敵軍Sユニットを1体選び撃破してもよい。"
+      "text": "※自分が「仮面ライダークウガ」をラッシュしたとき、自軍エリアに「クウガゴウラム」があれば1体選んで手札に戻す。 ※これは、自軍「仮面ライダーディケイド」があれば、ライドされていなくてもバトルエリアに出ることができる。 【ファイナルアタックライド 】自軍ターン中、これがバトルエリアに出たとき、BP4000以上の敵軍Sユニットを1体選び撃破してもよい。",
+      "imageUrl": "/cards/promoted/XG2-074.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-074-RK.jpg"
     },
     {
       "id": "XG2-075",
@@ -16736,7 +17028,9 @@
         "仮面ライダー",
         "男",
         "FFR"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-075.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-075-RK.jpg"
     },
     {
       "id": "XG2-076",
@@ -16754,7 +17048,9 @@
         "男",
         "魔皇力",
         "FFR"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-076.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-076-RK.jpg"
     },
     {
       "id": "XG2-077",
@@ -16773,7 +17069,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-077.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-077-RK.jpg"
     },
     {
       "id": "XG2-078",
@@ -16791,7 +17089,9 @@
         "仮面ライダー",
         "男",
         "FFR"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-078.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-078-RK.jpg"
     },
     {
       "id": "XG2-079",
@@ -16809,7 +17109,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-079.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-079-RK.jpg"
     },
     {
       "id": "XG2-080",
@@ -16826,7 +17128,9 @@
         "獣",
         "ドラゴン",
         "FFR"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-080.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-080-RK.jpg"
     },
     {
       "id": "XG2-081",
@@ -16843,7 +17147,9 @@
       "features": [
         "イマジン",
         "FFR"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-081.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-081-RK.jpg"
     },
     {
       "id": "XG2-082",
@@ -16860,7 +17166,9 @@
         "メカ",
         "獣",
         "ドラゴン"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-082.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-082-RM.jpg"
     },
     {
       "id": "XG2-083",
@@ -16880,7 +17188,9 @@
         "メカ",
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-083.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-083-RM.jpg"
     },
     {
       "id": "XG2-084",
@@ -16896,7 +17206,9 @@
       "features": [
         "メカ",
         "母艦"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-084.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-084-RM.jpg"
     },
     {
       "id": "XG2-085",
@@ -16915,7 +17227,9 @@
         "男",
         "警察",
         "スワット"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-085.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-085-RM.jpg"
     },
     {
       "id": "XG2-086",
@@ -16938,7 +17252,9 @@
         "警察",
         "スワット",
         "シルバニックギア"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-086.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-086-RM.jpg"
     },
     {
       "id": "XG2-087",
@@ -16954,7 +17270,9 @@
       "features": [
         "ゴールド",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-087.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-087-RM.jpg"
     },
     {
       "id": "XG2-088",
@@ -16972,7 +17290,9 @@
         "メカ",
         "女",
         "バイオロン"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-088.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-088-RM.jpg"
     },
     {
       "id": "XG2-090",
@@ -16982,7 +17302,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 2,
-      "text": "【第六世代コンピューター】これが自軍バトルエリアにあり、ユニットにライドされていなければ、敵軍ターン中、自軍バトルエリアのSユニットがホールド状態になったとき、そのユニットをこのビークルにライドさせてから、ラッシュエリアに戻してもよい。"
+      "text": "【第六世代コンピューター】これが自軍バトルエリアにあり、ユニットにライドされていなければ、敵軍ターン中、自軍バトルエリアのSユニットがホールド状態になったとき、そのユニットをこのビークルにライドさせてから、ラッシュエリアに戻してもよい。",
+      "imageUrl": "/cards/promoted/XG2-090.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-090-RM.jpg"
     },
     {
       "id": "XG2-093",
@@ -16999,7 +17321,9 @@
         "メカ",
         "人型",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-093.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-093-RM.jpg"
     },
     {
       "id": "XG2-096",
@@ -17021,7 +17345,9 @@
         "メカ",
         "昆虫",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-096.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-096-RM.jpg"
     },
     {
       "id": "XG2-097",
@@ -17042,7 +17368,9 @@
         "メカ",
         "昆虫",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-097.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-097-RM.jpg"
     },
     {
       "id": "XG2-099",
@@ -17061,7 +17389,9 @@
         "メカ",
         "人型",
         "スペシャルモード"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG2-099.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-099-RM.jpg"
     },
     {
       "id": "XG2-100",
@@ -17136,7 +17466,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 1,
-      "text": "【宇宙を走る車】 これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、次の効果を発動できる⇒自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしているOTのSユニットのカードを1枚選び、これの上に重ねて自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。"
+      "text": "【宇宙を走る車】 これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、次の効果を発動できる⇒自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしているOTのSユニットのカードを1枚選び、これの上に重ねて自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。",
+      "imageUrl": "/cards/promoted/XG3-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-002-RS.jpg"
     },
     {
       "id": "XG3-003",
@@ -17153,7 +17485,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-003-RS.jpg"
     },
     {
       "id": "XG3-006",
@@ -17168,7 +17502,9 @@
       "text": "※これは「ブルースローワー＋イエローアーマー＋ピンクエイダー」としてつかえる。 【ケミカルディスチャージャー】これが自軍エリアにある間、敵軍ターン中、オモテ向きの自軍パワーがウラ向きになるとき、ETの自軍コマンドを2つ選びホールドしてもよい。そうしたとき、そのダメージは無効になる。",
       "features": [
         "メカ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-006.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-006-RS.jpg"
     },
     {
       "id": "XG3-007",
@@ -17185,7 +17521,9 @@
         "メカ",
         "車両",
         "航空機"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-007.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-007-RS.jpg"
     },
     {
       "id": "XG3-008",
@@ -17203,7 +17541,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-008.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-008-RS.jpg"
     },
     {
       "id": "XG3-009",
@@ -17218,7 +17558,9 @@
       "text": "※これはバトルエリアに出られない。 【戦いの記録】自軍スタートフェイズ開始時、このユニットを捨札にして次の効果を発動できる⇒自軍ラッシュエリアから、効果名を持つテキストに「これをラッシュしたとき」と書かれたユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。",
       "features": [
         "メカ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-009.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-009-RS.jpg"
     },
     {
       "id": "XG3-010",
@@ -17235,7 +17577,9 @@
       "features": [
         "女",
         "ジークテクター"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-010.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-010-RS.jpg"
     },
     {
       "id": "XG3-011",
@@ -17252,7 +17596,9 @@
       "features": [
         "男",
         "ジークテクター"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-011.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-011-RS.jpg"
     },
     {
       "id": "XG3-012",
@@ -17273,7 +17619,9 @@
         "レッド",
         "男",
         "ギンガの光"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-012.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-012-RS.jpg"
     },
     {
       "id": "XG3-013",
@@ -17289,7 +17637,9 @@
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは自軍「ガオベアー」があればBP+3000される。 【冷凍光線】「ガオベアー」か特徴「人型」を持つLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットのBP以下のBPを持つ敵軍ユニットを1体選びホールドする。",
       "features": [
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-013.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-013-RS.jpg"
     },
     {
       "id": "XG3-014",
@@ -17306,7 +17656,9 @@
       "features": [
         "獣",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-014.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-014-RS.jpg"
     },
     {
       "id": "XG3-015",
@@ -17323,7 +17675,9 @@
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは自軍「ガオポーラー」があればBP+3000される。 【氷牙炎滅ベアーストライク】これが、「ガオポーラー」か特徴「人型」を持つLユニットからコンビネーションするとき、次の効果を発動できる⇒ホールド状態の敵軍ユニットを1体選び撃破する。また、自軍バトルエリアに「ガオポーラー」と特徴「人型」を持つLユニットがあれば、これは「SP1」になる。",
       "features": [
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-015.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-015-RS.jpg"
     },
     {
       "id": "XG3-016",
@@ -17338,7 +17692,9 @@
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【バナナボム】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからホールド状態の敵軍ユニットを1体選び撃破してもよい。",
       "features": [
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-016.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-016-RS.jpg"
     },
     {
       "id": "XG3-017",
@@ -17354,7 +17710,9 @@
       "features": [
         "怪人",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-017.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-017-RS.jpg"
     },
     {
       "id": "XG3-018",
@@ -17371,7 +17729,9 @@
       "features": [
         "メカ",
         "カラクリボール"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-018.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-018-RS.jpg"
     },
     {
       "id": "XG3-019",
@@ -17388,7 +17748,9 @@
       "features": [
         "メカ",
         "カラクリボール"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-019.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-019-RS.jpg"
     },
     {
       "id": "XG3-020",
@@ -17405,7 +17767,9 @@
       "features": [
         "男",
         "忍者"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-020.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-020-RS.jpg"
     },
     {
       "id": "XG3-024",
@@ -17420,7 +17784,9 @@
       "text": "【トリノイド創造】これが自軍エリアにある間、自軍ラッシュフェイズを行うとき、かわりに次の効果を発動できる⇒DAの自軍コマンドを3つホールドしてから、自軍山札を見て、特徴が3つ以上でDAを持つSユニットのカードを自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。その後、山札をシャッフルする。",
       "features": [
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-024.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-024-RS.jpg"
     },
     {
       "id": "XG3-025",
@@ -17435,7 +17801,9 @@
       "text": "【ギガノイド創造】これが自軍エリアにある間、自軍ラッシュフェイズを行うとき、かわりに次の効果を発動できる⇒DAの自軍コマンドを3つホールドしてから、自軍山札を見て、DAを持つLユニットのカードを自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。その後、山札をシャッフルする。",
       "features": [
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-025.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-025-RS.jpg"
     },
     {
       "id": "XG3-026",
@@ -17451,7 +17819,9 @@
       "features": [
         "恐竜",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-026.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-026-RS.jpg"
     },
     {
       "id": "XG3-027",
@@ -17466,7 +17836,9 @@
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ファイヤーボールクラッシュ】これをラッシュしたとき、敵軍バトルエリアからBP3000以下のユニットを3体まで選び撃破してもよい。",
       "features": [
         "恐竜"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-027.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-027-RS.jpg"
     },
     {
       "id": "XG3-028",
@@ -17484,7 +17856,9 @@
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【荒ぶる駿馬】これが自分の手札にある間、自軍ラッシュフェイズ中、「魔導馬バリキオン」以外の特徴「魔法」を持つ自軍ユニットがあれば、これをラッシュエリアに出してもよい。",
       "features": [
         "魔法"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-028.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-028-RS.jpg"
     },
     {
       "id": "XG3-029",
@@ -17504,7 +17878,9 @@
       "features": [
         "魔法",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-029.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-029-RS.jpg"
     },
     {
       "id": "XG3-030",
@@ -17523,7 +17899,9 @@
       "text": "合体―魔導騎士ウルザード＋魔導馬バリキオン ※これは「SP1」以上のユニットにしかアタックできない。",
       "features": [
         "魔法"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-030.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-030-RS.jpg"
     },
     {
       "id": "XG3-032",
@@ -17545,7 +17923,9 @@
         "イエロー",
         "女",
         "激気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-032.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-032-RS.jpg"
     },
     {
       "id": "XG3-033",
@@ -17561,7 +17941,9 @@
       "features": [
         "妖怪",
         "戦闘員"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-033.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-033-RS.jpg"
     },
     {
       "id": "XG3-034",
@@ -17578,7 +17960,9 @@
       "features": [
         "恐竜",
         "折神獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-034.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-034-RS.jpg"
     },
     {
       "id": "XG3-035",
@@ -17595,7 +17979,9 @@
         "獣",
         "折神獣",
         "電子モヂカラ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-035.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-035-RS.jpg"
     },
     {
       "id": "XG3-036",
@@ -17613,7 +17999,9 @@
         "侍",
         "人型",
         "電子モヂカラ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-036.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-036-RS.jpg"
     },
     {
       "id": "XG3-037",
@@ -17629,7 +18017,9 @@
       "features": [
         "獣",
         "折神獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-037.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-037-RS.jpg"
     },
     {
       "id": "XG3-038",
@@ -17647,7 +18037,9 @@
         "侍",
         "人型",
         "電子モヂカラ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-038.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-038-RS.jpg"
     },
     {
       "id": "XG3-039",
@@ -17663,7 +18055,9 @@
       "features": [
         "人型",
         "電子モヂカラ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-039.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-039-RS.jpg"
     },
     {
       "id": "XG3-043",
@@ -17680,7 +18074,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-043.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-043-RK.jpg"
     },
     {
       "id": "XG3-044",
@@ -17699,7 +18095,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-044.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-044-RK.jpg"
     },
     {
       "id": "XG3-045",
@@ -17719,7 +18117,9 @@
         "男",
         "改造人間",
         "超電子ダイナモ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-045.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-045-RK.jpg"
     },
     {
       "id": "XG3-046",
@@ -17738,7 +18138,9 @@
         "男",
         "改造人間",
         "世紀王"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-046.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-046-RK.jpg"
     },
     {
       "id": "XG3-047",
@@ -17757,7 +18159,9 @@
         "男",
         "改造人間",
         "世紀王"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-047.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-047-RK.jpg"
     },
     {
       "id": "XG3-050",
@@ -17775,7 +18179,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-050.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-050-RK.jpg"
     },
     {
       "id": "XG3-051",
@@ -17793,7 +18199,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-051.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-051-RK.jpg"
     },
     {
       "id": "XG3-052",
@@ -17810,7 +18218,9 @@
         "オルフェノク",
         "怪人",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-052.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-052-RK.jpg"
     },
     {
       "id": "XG3-053",
@@ -17826,7 +18236,9 @@
       "features": [
         "怪人",
         "妖怪"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-053.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-053-RK.jpg"
     },
     {
       "id": "XG3-054",
@@ -17844,7 +18256,9 @@
         "怪人",
         "男",
         "妖怪"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-054.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-054-RK.jpg"
     },
     {
       "id": "XG3-055",
@@ -17854,7 +18268,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 4,
-      "text": "※カウンター BP3000以下の自軍Sユニットがバトルで撃破されて捨札になるとき発動できる⇒そのユニットを捨札にするかわりに、自分の手札に戻す。"
+      "text": "※カウンター BP3000以下の自軍Sユニットがバトルで撃破されて捨札になるとき発動できる⇒そのユニットを捨札にするかわりに、自分の手札に戻す。",
+      "imageUrl": "/cards/promoted/XG3-055.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-055-RK.jpg"
     },
     {
       "id": "XG3-056",
@@ -17871,7 +18287,9 @@
         "仮面ライダー",
         "男",
         "猛士"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-056.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-056-RK.jpg"
     },
     {
       "id": "XG3-057",
@@ -17887,7 +18305,9 @@
       "features": [
         "猛士",
         "FFR"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-057.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-057-RK.jpg"
     },
     {
       "id": "XG3-058",
@@ -17905,7 +18325,9 @@
         "仮面ライダー",
         "男",
         "猛士"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-058.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-058-RK.jpg"
     },
     {
       "id": "XG3-060",
@@ -17923,7 +18345,9 @@
         "仮面ライダー",
         "女",
         "猛士"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-060.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-060-RK.jpg"
     },
     {
       "id": "XG3-061",
@@ -17939,7 +18363,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-061.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-061-RK.jpg"
     },
     {
       "id": "XG3-063",
@@ -17955,7 +18381,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-063.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-063-RK.jpg"
     },
     {
       "id": "XG3-064",
@@ -17973,7 +18401,9 @@
         "仮面ライダー",
         "男",
         "加速"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-064.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-064-RK.jpg"
     },
     {
       "id": "XG3-065",
@@ -17989,7 +18419,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-065.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-065-RK.jpg"
     },
     {
       "id": "XG3-066",
@@ -18008,7 +18440,9 @@
         "仮面ライダー",
         "男",
         "加速"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-066.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-066-RK.jpg"
     },
     {
       "id": "XG3-068",
@@ -18026,7 +18460,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-068.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-068-RK.jpg"
     },
     {
       "id": "XG3-069",
@@ -18044,7 +18480,9 @@
         "仮面ライダー",
         "男",
         "ディエンドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-069.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-069-RK.jpg"
     },
     {
       "id": "XG3-071",
@@ -18059,7 +18497,9 @@
       "text": "【カプッ】これをラッシュしたとき、自軍山札の上から1枚をオモテにする。そうしたとき、オモテにしたカードがユニットカードだったなら捨札にする。それ以外だったなら自分の手札に加える。",
       "features": [
         "キバット族"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-071.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-071-RK.jpg"
     },
     {
       "id": "XG3-072",
@@ -18076,7 +18516,9 @@
         "仮面ライダー",
         "女",
         "魔皇力"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-072.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-072-RK.jpg"
     },
     {
       "id": "XG3-073",
@@ -18094,7 +18536,9 @@
         "仮面ライダー",
         "男",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-073.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-073-RK.jpg"
     },
     {
       "id": "XG3-074",
@@ -18112,7 +18556,9 @@
         "大ショッカー",
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-074.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-074-RK.jpg"
     },
     {
       "id": "XG3-075",
@@ -18134,7 +18580,9 @@
         "男",
         "人型",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-075.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-075-RK.jpg"
     },
     {
       "id": "XG3-077",
@@ -18144,7 +18592,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": "4+",
-      "text": "※自分が「仮面ライダーアギト」をラッシュしたとき、自軍エリアに「アギトトルネイダー」があれば1体選んで手札に戻す。 ※これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる。 【ファイナルアタックライド】これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。"
+      "text": "※自分が「仮面ライダーアギト」をラッシュしたとき、自軍エリアに「アギトトルネイダー」があれば1体選んで手札に戻す。 ※これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる。 【ファイナルアタックライド】これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
+      "imageUrl": "/cards/promoted/XG3-077.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-077-RK.jpg"
     },
     {
       "id": "XG3-078",
@@ -18157,7 +18607,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 1,
-      "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「ダブルドライバー」を持つ自軍コマンドをホールドしてから、これを自軍ラッシュエリアに出してもよい。 【リモコン操作】特徴「ダブルドライバー」を持つ自軍ユニットがあれば、このビークルはライドされていなくてもバトルエリアに出ることができる。"
+      "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「ダブルドライバー」を持つ自軍コマンドをホールドしてから、これを自軍ラッシュエリアに出してもよい。 【リモコン操作】特徴「ダブルドライバー」を持つ自軍ユニットがあれば、このビークルはライドされていなくてもバトルエリアに出ることができる。",
+      "imageUrl": "/cards/promoted/XG3-078.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-078-RK.jpg"
     },
     {
       "id": "XG3-079",
@@ -18179,7 +18631,9 @@
         "仮面ライダー",
         "男",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-079.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-079-RK.jpg"
     },
     {
       "id": "XG3-080",
@@ -18201,7 +18655,9 @@
         "仮面ライダー",
         "男",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-080.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-080-RK.jpg"
     },
     {
       "id": "XG3-081",
@@ -18222,7 +18678,9 @@
         "仮面ライダー",
         "男",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-081.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-081-RK.jpg"
     },
     {
       "id": "XG3-083",
@@ -18242,7 +18700,9 @@
       "features": [
         "男",
         "忍者"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-083.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-083-RM.jpg"
     },
     {
       "id": "XG3-087",
@@ -18261,7 +18721,9 @@
       "features": [
         "昆虫",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-087.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-087-RM.jpg"
     },
     {
       "id": "XG3-091",
@@ -18283,7 +18745,9 @@
         "昆虫",
         "グリーン",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-091.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-091-RM.jpg"
     },
     {
       "id": "XG3-092",
@@ -18306,7 +18770,9 @@
         "昆虫",
         "レッド",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-092.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-092-RM.jpg"
     },
     {
       "id": "XG3-093",
@@ -18327,7 +18793,9 @@
         "メカ",
         "昆虫",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-093.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-093-RM.jpg"
     },
     {
       "id": "XG3-094",
@@ -18342,7 +18810,9 @@
       "text": "【友情】このユニットは、これ以外の自軍バトルエリアのSユニット1体につきBP+1000される。",
       "features": [
         "メカ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-094.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-094-RM.jpg"
     },
     {
       "id": "XG3-095",
@@ -18360,7 +18830,9 @@
         "メカ",
         "人型",
         "スーパーモード"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-095.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-095-RM.jpg"
     },
     {
       "id": "XG3-096",
@@ -18376,7 +18848,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-096.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-096-RM.jpg"
     },
     {
       "id": "XG3-097",
@@ -18392,7 +18866,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-097.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-097-RM.jpg"
     },
     {
       "id": "XG3-099",
@@ -18411,7 +18887,9 @@
         "メカ",
         "人型",
         "スペシャルモード"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG3-099.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-099-RM.jpg"
     },
     {
       "id": "XG3-103",
@@ -18441,7 +18919,9 @@
       "features": [
         "怪人",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-001-RS.jpg"
     },
     {
       "id": "XG4-002",
@@ -18458,7 +18938,9 @@
       "features": [
         "怪人",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-002-RS.jpg"
     },
     {
       "id": "XG4-004",
@@ -18473,7 +18955,9 @@
       "text": "※これは特徴「車両」を持つビークルにライドできる。 【ワンパーの壺】これをラッシュしたとき、自軍山札を見て特徴「戦闘員」を持つカードを2枚まで選び、自軍ラッシュエリアに出してもよい。そうしたとき、山札をシャッフルする。 ・このテキストは修正されています。修正後は以下。 【ワンパーの壺】これをラッシュしたとき、次の効果を発動できる⇒自軍山札を見て特徴「戦闘員」を持つカードを2枚まで選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
       "features": [
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-004.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-004-RS.jpg"
     },
     {
       "id": "XG4-005",
@@ -18483,7 +18967,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 3,
-      "text": "【バキバキビックサンダー】これをラッシュしたとき、必要パワーの数字が3以下の敵軍ユニットを1体選びホールドしてもよい。"
+      "text": "【バキバキビックサンダー】これをラッシュしたとき、必要パワーの数字が3以下の敵軍ユニットを1体選びホールドしてもよい。",
+      "imageUrl": "/cards/promoted/XG4-005.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-005-RS.jpg"
     },
     {
       "id": "XG4-007",
@@ -18501,7 +18987,9 @@
         "グリーン",
         "男",
         "獣奏剣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-007.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-007-RS.jpg"
     },
     {
       "id": "XG4-008",
@@ -18518,7 +19006,9 @@
       "features": [
         "シルバー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-008.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-008-RS.jpg"
     },
     {
       "id": "XG4-009",
@@ -18528,7 +19018,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 4,
-      "text": "※特徴「シルバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+1000される。 【緊急出動】これをラッシュしたとき、次の効果を発動できる⇒ 自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び、これの上に重ねて自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。"
+      "text": "※特徴「シルバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+1000される。 【緊急出動】これをラッシュしたとき、次の効果を発動できる⇒ 自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び、これの上に重ねて自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。",
+      "imageUrl": "/cards/promoted/XG4-009.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-009-RS.jpg"
     },
     {
       "id": "XG4-010",
@@ -18550,7 +19042,9 @@
         "ブルー",
         "男",
         "ギンガの光"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-010.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-010-RS.jpg"
     },
     {
       "id": "XG4-011",
@@ -18572,7 +19066,9 @@
         "グリーン",
         "男",
         "ギンガの光"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-011.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-011-RS.jpg"
     },
     {
       "id": "XG4-012",
@@ -18594,7 +19090,9 @@
         "イエロー",
         "男",
         "ギンガの光"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-012.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-012-RS.jpg"
     },
     {
       "id": "XG4-013",
@@ -18614,7 +19112,9 @@
       "features": [
         "グリーン",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-013.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-013-RS.jpg"
     },
     {
       "id": "XG4-014",
@@ -18635,7 +19135,9 @@
       "features": [
         "ピンク",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-014.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-014-RS.jpg"
     },
     {
       "id": "XG4-015",
@@ -18651,7 +19153,9 @@
       "features": [
         "妖怪",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-015.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-015-RS.jpg"
     },
     {
       "id": "XG4-016",
@@ -18669,7 +19173,9 @@
         "レッド",
         "男",
         "Vコマンダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-016.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-016-RS.jpg"
     },
     {
       "id": "XG4-017",
@@ -18687,7 +19193,9 @@
       "features": [
         "シルバー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-017.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-017-RS.jpg"
     },
     {
       "id": "XG4-018",
@@ -18697,7 +19205,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 4,
-      "text": "※WBを持つSユニットは、自軍コマンドを1つホールドすればRCを持っていなくてもこのビークルにライドできる。 【白銀の疾風】自軍ターン中、これがバトルエリアに出たとき、特徴「獣」を持つ自軍ユニットの数を数え、その数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破してもよい。"
+      "text": "※WBを持つSユニットは、自軍コマンドを1つホールドすればRCを持っていなくてもこのビークルにライドできる。 【白銀の疾風】自軍ターン中、これがバトルエリアに出たとき、特徴「獣」を持つ自軍ユニットの数を数え、その数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破してもよい。",
+      "imageUrl": "/cards/promoted/XG4-018.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-018-RS.jpg"
     },
     {
       "id": "XG4-019",
@@ -18714,7 +19224,9 @@
       "features": [
         "メカ",
         "カラクリボール"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-019.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-019-RS.jpg"
     },
     {
       "id": "XG4-020",
@@ -18730,7 +19242,9 @@
       "features": [
         "メカ",
         "母艦"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-020.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-020-RS.jpg"
     },
     {
       "id": "XG4-021",
@@ -18740,7 +19254,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 5,
-      "text": "※カウンター 自軍Lユニットがアタックされたとき発動できる⇒アタックしてきたユニットを持ち主のパワーゾーンにダメージにして置く。このとき、バトルは行われない。"
+      "text": "※カウンター 自軍Lユニットがアタックされたとき発動できる⇒アタックしてきたユニットを持ち主のパワーゾーンにダメージにして置く。このとき、バトルは行われない。",
+      "imageUrl": "/cards/promoted/XG4-021.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-021-RS.jpg"
     },
     {
       "id": "XG4-022",
@@ -18758,7 +19274,9 @@
         "グリーン",
         "男",
         "忍者"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-022.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-022-RS.jpg"
     },
     {
       "id": "XG4-023",
@@ -18777,7 +19295,9 @@
         "グリーン",
         "男",
         "忍者"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-023.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-023-RS.jpg"
     },
     {
       "id": "XG4-025",
@@ -18796,7 +19316,9 @@
         "男",
         "警察",
         "特キョウ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-025.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-025-RS.jpg"
     },
     {
       "id": "XG4-026",
@@ -18814,7 +19336,9 @@
         "男",
         "魔法",
         "天空聖者"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-026.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-026-RS.jpg"
     },
     {
       "id": "XG4-027",
@@ -18824,7 +19348,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 3,
-      "text": "※特徴「魔法」を持つ自軍Sユニットは、自軍コマンドを1つホールドすればＲＣを持っていなくてもこのビークルにライドできる。 【魔法の絨毯】これがバトルエリアからラッシュエリアに戻るとき、このビークルにライドしているユニットを手札に戻してもよい。"
+      "text": "※特徴「魔法」を持つ自軍Sユニットは、自軍コマンドを1つホールドすればＲＣを持っていなくてもこのビークルにライドできる。 【魔法の絨毯】これがバトルエリアからラッシュエリアに戻るとき、このビークルにライドしているユニットを手札に戻してもよい。",
+      "imageUrl": "/cards/promoted/XG4-027.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-027-RS.jpg"
     },
     {
       "id": "XG4-029",
@@ -18846,7 +19372,9 @@
         "バイオレット",
         "男",
         "激気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-029.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-029-RS.jpg"
     },
     {
       "id": "XG4-031",
@@ -18856,7 +19384,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 3,
-      "text": "カード名を１つ宣言する。このターン、宣言したカード名と同じカード名を持つSユニットとSユニットのカードは次のテキストを得る⇒「ウイング」、「このユニットの持ち主は、自分自身のターンを終えるとき、このユニットがラッシュエリアにあれば手札に戻してもよい。」"
+      "text": "カード名を１つ宣言する。このターン、宣言したカード名と同じカード名を持つSユニットとSユニットのカードは次のテキストを得る⇒「ウイング」、「このユニットの持ち主は、自分自身のターンを終えるとき、このユニットがラッシュエリアにあれば手札に戻してもよい。」",
+      "imageUrl": "/cards/promoted/XG4-031.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-031-RS.jpg"
     },
     {
       "id": "XG4-032",
@@ -18874,7 +19404,9 @@
       "features": [
         "ゴールド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-032.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-032-RS.jpg"
     },
     {
       "id": "XG4-033",
@@ -18891,7 +19423,9 @@
       "features": [
         "シルバー",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-033.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-033-RS.jpg"
     },
     {
       "id": "XG4-034",
@@ -18908,7 +19442,9 @@
         "侍",
         "人型",
         "電子モヂカラ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-034.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-034-RS.jpg"
     },
     {
       "id": "XG4-035",
@@ -18929,7 +19465,9 @@
         "ゴールド",
         "男",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-035.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-035-RS.jpg"
     },
     {
       "id": "XG4-036",
@@ -18947,7 +19485,9 @@
         "侍",
         "人型",
         "電子モヂカラ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-036.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-036-RS.jpg"
     },
     {
       "id": "XG4-037",
@@ -18963,7 +19503,9 @@
       "features": [
         "獣",
         "折神獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-037.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-037-RS.jpg"
     },
     {
       "id": "XG4-038",
@@ -18980,7 +19522,9 @@
       "features": [
         "侍",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-038.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-038-RS.jpg"
     },
     {
       "id": "XG4-039",
@@ -18997,7 +19541,9 @@
       "features": [
         "侍",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-039.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-039-RS.jpg"
     },
     {
       "id": "XG4-040",
@@ -19018,7 +19564,9 @@
         "魔法",
         "獣",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-040.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-040-RS.jpg"
     },
     {
       "id": "XG4-042",
@@ -19039,7 +19587,9 @@
       "features": [
         "ブルー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-042.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-042-RS.jpg"
     },
     {
       "id": "XG4-043",
@@ -19060,7 +19610,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-043.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-043-RS.jpg"
     },
     {
       "id": "XG4-045",
@@ -19080,7 +19632,9 @@
       "features": [
         "ピンク",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-045.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-045-RS.jpg"
     },
     {
       "id": "XG4-048",
@@ -19090,7 +19644,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 0,
-      "text": "※このカードはデッキに好きな枚数入れてもよい。 ※特徴「戦闘員」を持つユニットはＲＣがなくてもこのビークルにライドでき、これにライドしている間BP+500される。"
+      "text": "※このカードはデッキに好きな枚数入れてもよい。 ※特徴「戦闘員」を持つユニットはＲＣがなくてもこのビークルにライドでき、これにライドしている間BP+500される。",
+      "imageUrl": "/cards/promoted/XG4-048.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-048-RS.jpg"
     },
     {
       "id": "XG4-049",
@@ -19100,7 +19656,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 2,
-      "text": "※自軍ターン開始時、自分の手札から「ロボイザー」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。 ※これにライドしているユニットはBP+500される。 【光機動生命体】これはライドされていなくてもバトルエリアに出ることができる。"
+      "text": "※自軍ターン開始時、自分の手札から「ロボイザー」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。 ※これにライドしているユニットはBP+500される。 【光機動生命体】これはライドされていなくてもバトルエリアに出ることができる。",
+      "imageUrl": "/cards/promoted/XG4-049.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-049-RK.jpg"
     },
     {
       "id": "XG4-050",
@@ -19110,7 +19668,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 3,
-      "text": "※自軍ターン開始時、自分の手札から「アクロバッター」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。 【後部バルカン砲】ライドされているこのビークルが自軍バトルエリアからラッシュエリアに戻るとき、敵軍バトルエリアからBP3000のSユニットを1体選び、撃破してもよい。"
+      "text": "※自軍ターン開始時、自分の手札から「アクロバッター」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。 【後部バルカン砲】ライドされているこのビークルが自軍バトルエリアからラッシュエリアに戻るとき、敵軍バトルエリアからBP3000のSユニットを1体選び、撃破してもよい。",
+      "imageUrl": "/cards/promoted/XG4-050.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-050-RK.jpg"
     },
     {
       "id": "XG4-051",
@@ -19120,7 +19680,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 1,
-      "text": "※自軍ターン開始時、自分の手札から「アクロバッター」か「ロボイザー」のカードを1枚選び、これと置き換えてもよい。 【液化】自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする。"
+      "text": "※自軍ターン開始時、自分の手札から「アクロバッター」か「ロボイザー」のカードを1枚選び、これと置き換えてもよい。 【液化】自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
+      "imageUrl": "/cards/promoted/XG4-051.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-051-RK.jpg"
     },
     {
       "id": "XG4-056",
@@ -19130,7 +19692,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": "5+",
-      "text": "※自分が「ドラグランザー」をラッシュしたとき、自軍エリアに「ドラグランザー（バイク形態）」があれば1体選び手札に戻す。 ※特徴「サバイブ」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドすることができ、ライド中BP＋1500される。"
+      "text": "※自分が「ドラグランザー」をラッシュしたとき、自軍エリアに「ドラグランザー（バイク形態）」があれば1体選び手札に戻す。 ※特徴「サバイブ」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドすることができ、ライド中BP＋1500される。",
+      "imageUrl": "/cards/promoted/XG4-056.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-056-RK.jpg"
     },
     {
       "id": "XG4-057",
@@ -19150,7 +19714,9 @@
         "男",
         "ミラーライダー",
         "サバイブ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-057.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-057-RK.jpg"
     },
     {
       "id": "XG4-058",
@@ -19167,7 +19733,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-058.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-058-RK.jpg"
     },
     {
       "id": "XG4-059",
@@ -19177,7 +19745,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 2,
-      "text": "【自律変形】敵軍バトルフェイズ開始時、このビークルを自軍コマンドゾーンに送ってもよい。そうしたとき、自軍コマンドゾーンから「オートバジンBM」のカードを1枚選び、自軍バトルエリアの最後に出す。"
+      "text": "【自律変形】敵軍バトルフェイズ開始時、このビークルを自軍コマンドゾーンに送ってもよい。そうしたとき、自軍コマンドゾーンから「オートバジンBM」のカードを1枚選び、自軍バトルエリアの最後に出す。",
+      "imageUrl": "/cards/promoted/XG4-059.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-059-RK.jpg"
     },
     {
       "id": "XG4-060",
@@ -19196,7 +19766,9 @@
         "仮面ライダー",
         "男",
         "ブラスターフォーム"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-060.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-060-RK.jpg"
     },
     {
       "id": "XG4-061",
@@ -19214,7 +19786,9 @@
         "仮面ライダー",
         "男",
         "アクセルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-061.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-061-RK.jpg"
     },
     {
       "id": "XG4-062",
@@ -19224,7 +19798,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": "4+",
-      "text": "※これは、ライドされていなくてもバトルエリアに出ることができる。 【アクセルメモリ】ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない敵軍Sユニットは、自軍コマンドを1つホールドしなければバトルエリアに出られない。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 ※これは、ライドされていなくてもバトルエリアに出ることができる。 【アクセルメモリ】ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない敵軍Sユニットは次の制限を受ける⇒自分自身のコマンドを1つホールドしなければバトルエリアに出られない。"
+      "text": "※これは、ライドされていなくてもバトルエリアに出ることができる。 【アクセルメモリ】ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない敵軍Sユニットは、自軍コマンドを1つホールドしなければバトルエリアに出られない。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 ※これは、ライドされていなくてもバトルエリアに出ることができる。 【アクセルメモリ】ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない敵軍Sユニットは次の制限を受ける⇒自分自身のコマンドを1つホールドしなければバトルエリアに出られない。",
+      "imageUrl": "/cards/promoted/XG4-062.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-062-RK.jpg"
     },
     {
       "id": "XG4-063",
@@ -19241,7 +19817,9 @@
         "仮面ライダー",
         "男",
         "ロストドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-063.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-063-RK.jpg"
     },
     {
       "id": "XG4-064",
@@ -19257,7 +19835,9 @@
       "features": [
         "メカ",
         "車両"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-064.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-064-RK.jpg"
     },
     {
       "id": "XG4-065",
@@ -19270,7 +19850,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 4,
-      "text": "※特徴「ダブルドライバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【飛行】これにライドしているユニットは次の能力を得る⇒「ウイング」"
+      "text": "※特徴「ダブルドライバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【飛行】これにライドしているユニットは次の能力を得る⇒「ウイング」",
+      "imageUrl": "/cards/promoted/XG4-065.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-065-RK.jpg"
     },
     {
       "id": "XG4-066",
@@ -19283,7 +19865,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 3,
-      "text": "※これにライドしているユニットは、アタックするときBP+1500される。 【水中魚雷】これをラッシュしたとき、敵軍山札の上から3枚をオモテにしてよい。そうしたとき、オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す。"
+      "text": "※これにライドしているユニットは、アタックするときBP+1500される。 【水中魚雷】これをラッシュしたとき、敵軍山札の上から3枚をオモテにしてよい。そうしたとき、オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す。",
+      "imageUrl": "/cards/promoted/XG4-066.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-066-RK.jpg"
     },
     {
       "id": "XG4-068",
@@ -19304,7 +19888,9 @@
         "仮面ライダー",
         "男",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-068.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-068-RK.jpg"
     },
     {
       "id": "XG4-069",
@@ -19321,7 +19907,9 @@
         "仮面ライダー",
         "男",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-069.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-069-RK.jpg"
     },
     {
       "id": "XG4-070",
@@ -19338,7 +19926,9 @@
         "怪人",
         "女",
         "ドーパント"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-070.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-070-RK.jpg"
     },
     {
       "id": "XG4-071",
@@ -19355,7 +19945,9 @@
         "怪人",
         "男",
         "ドーパント"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-071.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-071-RK.jpg"
     },
     {
       "id": "XG4-072",
@@ -19372,7 +19964,9 @@
         "怪人",
         "女",
         "ドーパント"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-072.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-072-RK.jpg"
     },
     {
       "id": "XG4-073",
@@ -19390,7 +19984,9 @@
         "仮面ライダー",
         "男",
         "アマダム"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-073.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-073-RK.jpg"
     },
     {
       "id": "XG4-074",
@@ -19409,7 +20005,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-074.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-074-RK.jpg"
     },
     {
       "id": "XG4-075",
@@ -19426,7 +20024,9 @@
         "大ショッカー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-075.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-075-RK.jpg"
     },
     {
       "id": "XG4-076",
@@ -19445,7 +20045,9 @@
         "男",
         "改造人間",
         "ファンガイア"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-076.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-076-RK.jpg"
     },
     {
       "id": "XG4-077",
@@ -19465,7 +20067,9 @@
         "改造人間",
         "メカ",
         "忍者"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-077.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-077-RK.jpg"
     },
     {
       "id": "XG4-078",
@@ -19483,7 +20087,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-078.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-078-RK.jpg"
     },
     {
       "id": "XG4-079",
@@ -19501,7 +20107,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-079.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-079-RK.jpg"
     },
     {
       "id": "XG4-082",
@@ -19519,7 +20127,9 @@
         "男",
         "改造人間",
         "ハイブリッドエネルギー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-082.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-082-RK.jpg"
     },
     {
       "id": "XG4-083",
@@ -19537,7 +20147,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-083.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-083-RK.jpg"
     },
     {
       "id": "XG4-084",
@@ -19554,7 +20166,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-084.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-084-RK.jpg"
     },
     {
       "id": "XG4-085",
@@ -19570,7 +20184,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-085.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-085-RK.jpg"
     },
     {
       "id": "XG4-086",
@@ -19589,7 +20205,9 @@
         "仮面ライダー",
         "メカ",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-086.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-086-RK.jpg"
     },
     {
       "id": "XG4-087",
@@ -19606,7 +20224,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-087.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-087-RK.jpg"
     },
     {
       "id": "XG4-088",
@@ -19625,7 +20245,9 @@
         "男",
         "ダブルドライバー",
         "FFR"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-088.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-088-RK.jpg"
     },
     {
       "id": "XG4-089",
@@ -19645,7 +20267,9 @@
         "男",
         "ダブルドライバー",
         "FFR"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-089.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-089-RK.jpg"
     },
     {
       "id": "XG4-090",
@@ -19655,7 +20279,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 3,
-      "text": "※これにライドしているユニットは、アタックするときBP+2000される。"
+      "text": "※これにライドしているユニットは、アタックするときBP+2000される。",
+      "imageUrl": "/cards/promoted/XG4-090.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-090-RM.jpg"
     },
     {
       "id": "XG4-091",
@@ -19673,7 +20299,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-091.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-091-RM.jpg"
     },
     {
       "id": "XG4-092",
@@ -19692,7 +20320,9 @@
         "メカ",
         "人型",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-092.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-092-RM.jpg"
     },
     {
       "id": "XG4-093",
@@ -19709,7 +20339,9 @@
         "メカ",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-093.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-093-RM.jpg"
     },
     {
       "id": "XG4-094",
@@ -19729,7 +20361,9 @@
         "メカ",
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-094.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-094-RM.jpg"
     },
     {
       "id": "XG4-095",
@@ -19744,7 +20378,9 @@
       "text": "※自分が「バビロス」をラッシュしたとき、自軍エリアに「バビロスBF」または「バビロスSF」があれば1体選び手札に戻す。 ※これはバトルエリアに出られない。 【ビッグマグナム】 これが自軍エリアにある間、特徴「宇宙刑事」を持つ自軍ユニットがバトルエリアに出たとき、これをホールドして次の効果を発動できる⇒敵軍バトルエリアから、BP8000以下のユニットを1体選び、持ち主のパワーゾーンに送る。",
       "features": [
         "メカ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-095.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-095-RM.jpg"
     },
     {
       "id": "XG4-096",
@@ -19760,7 +20396,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-096.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-096-RM.jpg"
     },
     {
       "id": "XG4-097",
@@ -19777,7 +20415,9 @@
       "features": [
         "メカ",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-097.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-097-RM.jpg"
     },
     {
       "id": "XG4-098",
@@ -19794,7 +20434,9 @@
       "features": [
         "メカ",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG4-098.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-098-RM.jpg"
     },
     {
       "id": "XG4-101",
@@ -19843,7 +20485,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-001-RS.jpg"
     },
     {
       "id": "XG5-002",
@@ -19860,7 +20504,9 @@
       "features": [
         "ブラック",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-002-RS.jpg"
     },
     {
       "id": "XG5-003",
@@ -19877,7 +20523,9 @@
       "features": [
         "ブルー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-003-RS.jpg"
     },
     {
       "id": "XG5-004",
@@ -19894,7 +20542,9 @@
       "features": [
         "イエロー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-004.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-004-RS.jpg"
     },
     {
       "id": "XG5-006",
@@ -19911,7 +20561,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-006.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-006-RS.jpg"
     },
     {
       "id": "XG5-007",
@@ -19928,7 +20580,9 @@
       "features": [
         "メカ",
         "航空機"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-007.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-007-RS.jpg"
     },
     {
       "id": "XG5-008",
@@ -19945,7 +20599,9 @@
       "features": [
         "メカ",
         "車両"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-008.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-008-RS.jpg"
     },
     {
       "id": "XG5-009",
@@ -19962,7 +20618,9 @@
       "features": [
         "メカ",
         "車両"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-009.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-009-RS.jpg"
     },
     {
       "id": "XG5-011",
@@ -19978,7 +20636,9 @@
       "features": [
         "災魔一族",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-011.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-011-RS.jpg"
     },
     {
       "id": "XG5-012",
@@ -19988,7 +20648,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 5,
-      "text": "自軍捨札から、追加条件を持たないDAのSユニットのカードを1枚選び、このカードに重ねて自軍ラッシュエリアに出す。このとき出したユニットの効果は発動しない。このカードに重ねたユニットはLユニットになる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。"
+      "text": "自軍捨札から、追加条件を持たないDAのSユニットのカードを1枚選び、このカードに重ねて自軍ラッシュエリアに出す。このとき出したユニットの効果は発動しない。このカードに重ねたユニットはLユニットになる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+      "imageUrl": "/cards/promoted/XG5-012.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-012-RS.jpg"
     },
     {
       "id": "XG5-018",
@@ -20004,7 +20666,9 @@
       "features": [
         "メカ",
         "母艦"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-018.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-018-RS.jpg"
     },
     {
       "id": "XG5-019",
@@ -20020,7 +20684,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-019.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-019-RS.jpg"
     },
     {
       "id": "XG5-020",
@@ -20037,7 +20703,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-020.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-020-RS.jpg"
     },
     {
       "id": "XG5-021",
@@ -20055,7 +20723,9 @@
       "features": [
         "ブラック",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-021.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-021-RS.jpg"
     },
     {
       "id": "XG5-022",
@@ -20072,7 +20742,9 @@
       "features": [
         "ブルー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-022.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-022-RS.jpg"
     },
     {
       "id": "XG5-023",
@@ -20090,7 +20762,9 @@
       "features": [
         "イエロー",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-023.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-023-RS.jpg"
     },
     {
       "id": "XG5-024",
@@ -20107,7 +20781,9 @@
       "features": [
         "ピンク",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-024.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-024-RS.jpg"
     },
     {
       "id": "XG5-025",
@@ -20124,7 +20800,9 @@
         "ブルー",
         "男",
         "アクセルテクター"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-025.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-025-RS.jpg"
     },
     {
       "id": "XG5-026",
@@ -20143,7 +20821,9 @@
         "イエロー",
         "女",
         "アクセルテクター"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-026.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-026-RS.jpg"
     },
     {
       "id": "XG5-028",
@@ -20163,7 +20843,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-028.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-028-RS.jpg"
     },
     {
       "id": "XG5-029",
@@ -20183,7 +20865,9 @@
       "features": [
         "激気",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-029.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-029-RS.jpg"
     },
     {
       "id": "XG5-031",
@@ -20202,7 +20886,9 @@
       "text": "【ガゼル脚】このユニットからコンビネーションする特徴「メカ」を持たないMユニットは、BP+3000され「SP1/2」になり、アタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする。",
       "features": [
         "激気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-031.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-031-RS.jpg"
     },
     {
       "id": "XG5-032",
@@ -20220,7 +20906,9 @@
       "text": "※ウイング 【ジェットボード】自分がターンを終えるとき、このユニットがバトルエリアにあれば、自軍ラッシュエリアに戻してもよい。",
       "features": [
         "激気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-032.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-032-RS.jpg"
     },
     {
       "id": "XG5-033",
@@ -20237,7 +20925,9 @@
         "レッド",
         "女",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-033.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-033-RS.jpg"
     },
     {
       "id": "XG5-037",
@@ -20257,7 +20947,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-037.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-037-RS.jpg"
     },
     {
       "id": "XG5-038",
@@ -20277,7 +20969,9 @@
       "features": [
         "ピンク",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-038.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-038-RS.jpg"
     },
     {
       "id": "XG5-039",
@@ -20297,7 +20991,9 @@
       "features": [
         "ブルー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-039.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-039-RS.jpg"
     },
     {
       "id": "XG5-042",
@@ -20316,7 +21012,9 @@
       "features": [
         "魔法",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-042.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-042-RS.jpg"
     },
     {
       "id": "XG5-043",
@@ -20337,7 +21035,9 @@
         "魔法",
         "獣",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-043.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-043-RS.jpg"
     },
     {
       "id": "XG5-045",
@@ -20358,7 +21058,9 @@
         "魔法",
         "獣",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-045.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-045-RS.jpg"
     },
     {
       "id": "XG5-046",
@@ -20373,7 +21075,9 @@
       "text": "※コールMA ※これは自軍ターン中バトルエリアに出られない。 【マスターヘッドの加護】これが自軍エリアにある間、自軍ラッシュフェイズを終えるとき、次の効果を発動できる⇒自軍エリアにSユニットが5体以上とLユニットが1体以上あれば、自分は1枚ドローする。",
       "features": [
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-046.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-046-RS.jpg"
     },
     {
       "id": "XG5-051",
@@ -20391,7 +21095,9 @@
         "仮面ライダー",
         "男",
         "加速"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-051.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-051-RK.jpg"
     },
     {
       "id": "XG5-052",
@@ -20408,7 +21114,9 @@
         "仮面ライダー",
         "男",
         "DEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-052.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-052-RK.jpg"
     },
     {
       "id": "XG5-053",
@@ -20425,7 +21133,9 @@
         "仮面ライダー",
         "男",
         "魔皇力"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-053.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-053-RK.jpg"
     },
     {
       "id": "XG5-054",
@@ -20443,7 +21153,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-054.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-054-RK.jpg"
     },
     {
       "id": "XG5-055",
@@ -20460,7 +21172,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-055.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-055-RK.jpg"
     },
     {
       "id": "XG5-056",
@@ -20478,7 +21192,9 @@
         "仮面ライダー",
         "男",
         "ジャックフォーム"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-056.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-056-RK.jpg"
     },
     {
       "id": "XG5-057",
@@ -20488,7 +21204,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 2,
-      "text": "【ファイアランバス】これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒捨札に置かれたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍捨札を1枚選びゲームから除外する。"
+      "text": "【ファイアランバス】これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒捨札に置かれたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍捨札を1枚選びゲームから除外する。",
+      "imageUrl": "/cards/promoted/XG5-057.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-057-RK.jpg"
     },
     {
       "id": "XG5-059",
@@ -20509,7 +21227,9 @@
         "アンデッド",
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-059.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-059-RK.jpg"
     },
     {
       "id": "XG5-060",
@@ -20530,7 +21250,9 @@
         "アンデッド",
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-060.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-060-RK.jpg"
     },
     {
       "id": "XG5-061",
@@ -20546,7 +21268,9 @@
       "features": [
         "アンデッド",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-061.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-061-RK.jpg"
     },
     {
       "id": "XG5-062",
@@ -20562,7 +21286,9 @@
       "features": [
         "アンデッド",
         "昆虫"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-062.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-062-RK.jpg"
     },
     {
       "id": "XG5-063",
@@ -20578,7 +21304,9 @@
       "features": [
         "アンデッド",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-063.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-063-RK.jpg"
     },
     {
       "id": "XG5-064",
@@ -20588,7 +21316,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 0,
-      "text": "※カウンター 敵軍バトルフェイズ開始時に発動できる⇒敵軍ユニットまたは敵軍ビークルを1体選ぶ。このターン、そのユニットまたはビークルの効果名を持つテキストは無効になり、発動もできない。"
+      "text": "※カウンター 敵軍バトルフェイズ開始時に発動できる⇒敵軍ユニットまたは敵軍ビークルを1体選ぶ。このターン、そのユニットまたはビークルの効果名を持つテキストは無効になり、発動もできない。",
+      "imageUrl": "/cards/promoted/XG5-064.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-064-RK.jpg"
     },
     {
       "id": "XG5-066",
@@ -20606,7 +21336,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-066.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-066-RK.jpg"
     },
     {
       "id": "XG5-067",
@@ -20623,7 +21355,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-067.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-067-RK.jpg"
     },
     {
       "id": "XG5-068",
@@ -20643,7 +21377,9 @@
         "男",
         "ミラーライダー",
         "サバイブ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-068.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-068-RK.jpg"
     },
     {
       "id": "XG5-069",
@@ -20658,7 +21394,9 @@
       "text": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。 【待ち伏せ】敵軍ターン中、これがSユニットとのバトルで撃破されて捨札になったとき、これとバトルしたユニットを、持ち主の山札の下に戻してもよい。",
       "features": [
         "ディスクアニマル"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-069.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-069-RK.jpg"
     },
     {
       "id": "XG5-070",
@@ -20673,7 +21411,9 @@
       "text": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。 【偵察】これが自軍エリアにある間、敵軍SユニットがＮＣまたはＲＣまたはＪＣの効果を発動させたとき、その効果を実行する前に、これをホールドしてもよい。そうしたとき、そのNCまたはRCまたはJCの効果を無効にする。",
       "features": [
         "ディスクアニマル"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-070.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-070-RK.jpg"
     },
     {
       "id": "XG5-072",
@@ -20692,7 +21432,9 @@
         "仮面ライダー",
         "男",
         "猛士"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-072.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-072-RK.jpg"
     },
     {
       "id": "XG5-073",
@@ -20711,7 +21453,9 @@
         "仮面ライダー",
         "男",
         "DEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-073.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-073-RK.jpg"
     },
     {
       "id": "XG5-074",
@@ -20728,7 +21472,9 @@
         "仮面ライダー",
         "男",
         "魔皇力"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-074.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-074-RK.jpg"
     },
     {
       "id": "XG5-075",
@@ -20746,7 +21492,9 @@
         "仮面ライダー",
         "メカ",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-075.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-075-RK.jpg"
     },
     {
       "id": "XG5-076",
@@ -20764,7 +21512,9 @@
         "仮面ライダー",
         "メカ",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-076.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-076-RK.jpg"
     },
     {
       "id": "XG5-077",
@@ -20781,7 +21531,9 @@
         "仮面ライダー",
         "女",
         "魔皇力"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-077.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-077-RK.jpg"
     },
     {
       "id": "XG5-078",
@@ -20791,7 +21543,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 5,
-      "text": "自軍Sユニットを1体選び、自軍パワーゾーンのオモテ向きのカードからSユニットまたはSビークルのカードを1枚選ぶ。そうしたとき、選んだユニットとカードを置き換える。ただし、必要パワーは満たすこと（追加条件は満たさなくてもよい）。このとき、出したユニットの効果は発動しない。"
+      "text": "自軍Sユニットを1体選び、自軍パワーゾーンのオモテ向きのカードからSユニットまたはSビークルのカードを1枚選ぶ。そうしたとき、選んだユニットとカードを置き換える。ただし、必要パワーは満たすこと（追加条件は満たさなくてもよい）。このとき、出したユニットの効果は発動しない。",
+      "imageUrl": "/cards/promoted/XG5-078.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-078-RK.jpg"
     },
     {
       "id": "XG5-079",
@@ -20809,7 +21563,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-079.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-079-RK.jpg"
     },
     {
       "id": "XG5-080",
@@ -20819,7 +21575,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 2,
-      "text": "※これにライドしているユニットはBP+500される。 【アタックライド】これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしているSビークルのカードを1枚選び、これと置き換えてもよい。ただし、追加条件は満たすこと。"
+      "text": "※これにライドしているユニットはBP+500される。 【アタックライド】これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしているSビークルのカードを1枚選び、これと置き換えてもよい。ただし、追加条件は満たすこと。",
+      "imageUrl": "/cards/promoted/XG5-080.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-080-RK.jpg"
     },
     {
       "id": "XG5-081",
@@ -20839,7 +21597,9 @@
         "警察",
         "アクセルドライバー",
         "加速"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-081.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-081-RK.jpg"
     },
     {
       "id": "XG5-082",
@@ -20849,7 +21609,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 3,
-      "text": "敵軍コマンドゾーンからSユニットのカードを1枚選び、敵軍ラッシュエリアに出してもよい。このとき、出したユニットの効果は発動しない。その後、このカードを自軍コマンドゾーンにホールド状態で置く。置けなければ捨札にする。"
+      "text": "敵軍コマンドゾーンからSユニットのカードを1枚選び、敵軍ラッシュエリアに出してもよい。このとき、出したユニットの効果は発動しない。その後、このカードを自軍コマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "imageUrl": "/cards/promoted/XG5-082.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-082-RK.jpg"
     },
     {
       "id": "XG5-083",
@@ -20859,7 +21621,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 1,
-      "text": "※カウンター 自軍Sユニットがバトルで撃破されて捨札になったとき発動できる⇒そのユニットのカードを自軍コマンドゾーンにホールド状態で置く。置けなければ手札に加える。"
+      "text": "※カウンター 自軍Sユニットがバトルで撃破されて捨札になったとき発動できる⇒そのユニットのカードを自軍コマンドゾーンにホールド状態で置く。置けなければ手札に加える。",
+      "imageUrl": "/cards/promoted/XG5-083.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-083-RK.jpg"
     },
     {
       "id": "XG5-084",
@@ -20880,7 +21644,9 @@
         "仮面ライダー",
         "男",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-084.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-084-RK.jpg"
     },
     {
       "id": "XG5-085",
@@ -20896,7 +21662,9 @@
       "features": [
         "メカ",
         "母艦"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-085.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-085-RM.jpg"
     },
     {
       "id": "XG5-086",
@@ -20912,7 +21680,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-086.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-086-RM.jpg"
     },
     {
       "id": "XG5-087",
@@ -20927,7 +21697,9 @@
       "text": "※これはバトルエリアに出られない。 【ビッグバンカノン】これが自軍エリアにある間、自軍バトルフェイズ終了時、自軍バトルエリアからOTを持つSユニットを1体選んでもよい。そうしたとき、選んだ自軍ユニットのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。その後、選んだ自軍ユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
       "features": [
         "メカ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-087.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-087-RM.jpg"
     },
     {
       "id": "XG5-088",
@@ -20942,7 +21714,9 @@
       "text": "【力まかせ】これがバトルするとき、そのバトルは本来のBPで行う。",
       "features": [
         "メカ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-088.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-088-RM.jpg"
     },
     {
       "id": "XG5-089",
@@ -20959,7 +21733,9 @@
         "メカ",
         "人型",
         "スペシャルモード"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-089.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-089-RM.jpg"
     },
     {
       "id": "XG5-090",
@@ -20974,7 +21750,9 @@
       "text": "【友情】自軍ターン中、このユニットは、これ以外の自軍バトルエリアのSユニット1体につきBP+2000される。",
       "features": [
         "メカ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG5-090.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-090-RM.jpg"
     },
     {
       "id": "XG5-091",
@@ -21076,7 +21854,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 5,
-      "text": "※常駐 敵軍ターン中、自軍ユニットが撃破されて捨札になるたび、次の効果を発動できる⇒ 自軍ダメージの数まで、自軍山札の上をオモテにして、その中から撃破されたユニットと同じカテゴリを持つ、Sユニット以外のカードを１枚まで選び自軍ラッシュエリアに出す。ただし、自軍ダメージの数だけ必要パワーを少なくした上で、必要パワーと追加条件は満たすこと。その後、残りのカードを山札の下に好きな順番で戻す。"
+      "text": "※常駐 敵軍ターン中、自軍ユニットが撃破されて捨札になるたび、次の効果を発動できる⇒ 自軍ダメージの数まで、自軍山札の上をオモテにして、その中から撃破されたユニットと同じカテゴリを持つ、Sユニット以外のカードを１枚まで選び自軍ラッシュエリアに出す。ただし、自軍ダメージの数だけ必要パワーを少なくした上で、必要パワーと追加条件は満たすこと。その後、残りのカードを山札の下に好きな順番で戻す。",
+      "imageUrl": "/cards/promoted/XG6-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-001-RS.jpg"
     },
     {
       "id": "XG6-003",
@@ -21093,7 +21873,9 @@
       "features": [
         "恐竜",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-003-RS.jpg"
     },
     {
       "id": "XG6-005",
@@ -21110,7 +21892,9 @@
       "features": [
         "魔法",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-005.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-005-RS.jpg"
     },
     {
       "id": "XG6-006",
@@ -21126,7 +21910,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-006.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-006-RS.jpg"
     },
     {
       "id": "XG6-007",
@@ -21147,7 +21933,9 @@
         "激気",
         "臨気",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-007.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-007-RS.jpg"
     },
     {
       "id": "XG6-009",
@@ -21165,7 +21953,9 @@
         "侍",
         "恐竜",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-009.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-009-RS.jpg"
     },
     {
       "id": "XG6-010",
@@ -21181,7 +21971,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-010.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-010-RS.jpg"
     },
     {
       "id": "XG6-011",
@@ -21198,7 +21990,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-011.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-011-RS.jpg"
     },
     {
       "id": "XG6-012",
@@ -21215,7 +22009,9 @@
         "メカ",
         "車両",
         "航空機"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-012.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-012-RS.jpg"
     },
     {
       "id": "XG6-013",
@@ -21230,7 +22026,9 @@
       "text": "※これは、「OT」以外のカテゴリを持つコマンド1つにつきBP-1000される。 【未来の戦士達へ】これが自軍コマンドゾーンにある間、このカードはカテゴリにWB、MA、ETが追加され、敵軍パワーは追加で2増える。",
       "features": [
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-013.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-013-RS.jpg"
     },
     {
       "id": "XG6-014",
@@ -21245,7 +22043,9 @@
       "text": "【英雄の遺産】自軍パワーゾーンのオモテ向きのカードがこれだけなら、自軍ラッシュフェイズ中、次の効果を発動できる→自軍山札を見て、OTを持ち合体を必要としない、 Sユニット以外のユニットカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーは満たすこと。その後、山札をシャッフルし、これを捨札にする。",
       "features": [
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-014.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-014-RS.jpg"
     },
     {
       "id": "XG6-016",
@@ -21262,7 +22062,9 @@
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【爆竜必殺ダブルトルネード】これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる→コンビネーションしたユニットが持つ、効果名を持つテキスト中の「これがバトルエリアに出たとき」以降の効果を発動する。（この効果は1ターンにつき1回しか発動できない）",
       "features": [
         "恐竜"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-016.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-016-RS.jpg"
     },
     {
       "id": "XG6-017",
@@ -21280,7 +22082,9 @@
         "獣",
         "植物",
         "怪人"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-017.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-017-RS.jpg"
     },
     {
       "id": "XG6-018",
@@ -21298,7 +22102,9 @@
       "features": [
         "ホワイト",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-018.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-018-RS.jpg"
     },
     {
       "id": "XG6-019",
@@ -21315,7 +22121,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-019.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-019-RS.jpg"
     },
     {
       "id": "XG6-020",
@@ -21332,7 +22140,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-020.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-020-RS.jpg"
     },
     {
       "id": "XG6-021",
@@ -21349,7 +22159,9 @@
       "text": "※これは自軍バトルフェイズ中、カテゴリにWBが追加される。 【激臨剣】このユニットからコンビネーションする同カテゴリのLユニットは、このターン、次の能力を得る⇒これは、自軍捨札にあるカテゴリを2つ以上持つカード1枚につきBP+2000され、BP20000以上のとき「SP2」になる。",
       "features": [
         "臨気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-021.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-021-RS.jpg"
     },
     {
       "id": "XG6-022",
@@ -21365,7 +22177,9 @@
       "text": "※これは自軍バトルフェイズ中、カテゴリにWBが追加される。 ※これは敵軍ユニットにアタックされない。 【リンギ・がんじがため】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒敵軍ユニットを1体選ぶ。そうしたとき、選んだユニットがリリース状態ならホールドし、ホールド状態なら撃破する。ただし、必要パワーの数字が、自軍捨札にあるカテゴリを2つ以上持つカードの枚数以下のユニットしか選べない。",
       "features": [
         "臨気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-022.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-022-RS.jpg"
     },
     {
       "id": "XG6-023",
@@ -21381,7 +22195,9 @@
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「データス」のカードを1枚選び、自軍ラッシュエリアに出す。 【ハイパーパンチ】敵軍Lユニットがあれば、これはBP+5000される。",
       "features": [
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-023.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-023-RS.jpg"
     },
     {
       "id": "XG6-025",
@@ -21399,7 +22215,9 @@
         "魔法",
         "獣",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-025.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-025-RS.jpg"
     },
     {
       "id": "XG6-027",
@@ -21415,7 +22233,9 @@
       "features": [
         "魔法",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-027.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-027-RS.jpg"
     },
     {
       "id": "XG6-028",
@@ -21431,7 +22251,9 @@
       "features": [
         "魔法",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-028.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-028-RS.jpg"
     },
     {
       "id": "XG6-029",
@@ -21450,7 +22272,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-029.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-029-RK.jpg"
     },
     {
       "id": "XG6-030",
@@ -21468,7 +22292,9 @@
         "ネオショッカー",
         "獣",
         "ドラゴン"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-030.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-030-RK.jpg"
     },
     {
       "id": "XG6-031",
@@ -21484,7 +22310,9 @@
       "text": "※これは手札からしかラッシュできない。 ※これがユニットでなくなるとき、自軍捨札を3枚選びゲームから除外すれば、その場に留まる。 ※これが自軍エリアにある間、本来のBPの下三桁が500でない自軍ユニットはラッシュできない。 【種の根絶】これをラッシュしたとき、これ以外の自軍ユニットをすべて捨札にする。また、ユニットがこれ1体だけなら、これは「SP3」になる。",
       "features": [
         "アンデッド"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-031.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-031-RK.jpg"
     },
     {
       "id": "XG6-032",
@@ -21500,7 +22328,9 @@
       "text": "※これをラッシュしたとき、自軍Sユニットを1体選び、これの下にウラ向きで重ねる。 これがユニットでなくなるとき、これにウラ向きで重ねたカードは捨札になる。 【絶対的な最強の力】 このユニットの下にウラ向きで重ねたカードがあれば、これは次の能力を得る⇒敵軍ユニット1体につきBP+1000され、BP12000以上のときSP2になる。",
       "features": [
         "ドラゴン"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-032.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-032-RK.jpg"
     },
     {
       "id": "XG6-033",
@@ -21515,7 +22345,9 @@
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 （この効果はリードMAを持つ自軍ユニットがあるとき無効になる）",
       "features": [
         "ディスクアニマル"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-033.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-033-RK.jpg"
     },
     {
       "id": "XG6-034",
@@ -21531,7 +22363,9 @@
       "text": "※ウイング ※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 （このテキストはリードMAを持つ自軍ユニットがあるとき無効になる）",
       "features": [
         "ディスクアニマル"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-034.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-034-RK.jpg"
     },
     {
       "id": "XG6-035",
@@ -21549,7 +22383,9 @@
         "仮面ライダー",
         "男",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-035.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-035-RK.jpg"
     },
     {
       "id": "XG6-036",
@@ -21568,7 +22404,9 @@
         "仮面ライダー",
         "男",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-036.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-036-RK.jpg"
     },
     {
       "id": "XG6-037",
@@ -21586,7 +22424,9 @@
         "男",
         "警察",
         "アクセルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-037.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-037-RK.jpg"
     },
     {
       "id": "XG6-038",
@@ -21606,7 +22446,9 @@
         "警察",
         "アクセルドライバー",
         "加速"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-038.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-038-RK.jpg"
     },
     {
       "id": "XG6-040",
@@ -21625,7 +22467,9 @@
         "仮面ライダー",
         "男",
         "ロストドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-040.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-040-RK.jpg"
     },
     {
       "id": "XG6-041",
@@ -21642,7 +22486,9 @@
         "仮面ライダー",
         "男",
         "ロストドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-041.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-041-RK.jpg"
     },
     {
       "id": "XG6-042",
@@ -21658,7 +22504,9 @@
       "text": "※自分の手札が0枚のとき、これを撃破する。 【ゼロのスタート】これがストライクしてダメージを与えたとき、相手に1枚ドローさせてもよい。そうしたとき、次の相手ターンのスタートフェイズ中、相手は山札からカードをドローできない。",
       "features": [
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-042.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-042-RK.jpg"
     },
     {
       "id": "XG6-044",
@@ -21677,7 +22525,9 @@
         "仮面ライダー",
         "男",
         "NEWDEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-044.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-044-RK.jpg"
     },
     {
       "id": "XG6-045",
@@ -21693,7 +22543,9 @@
       "text": "※このユニットからコンビネーションする「仮面ライダーNEW電王SF」は、ナンバーにRCを持っていればライドオフしなくてもその効果を発動できる。また、このコンビネーションが成立している間BP+2000される。 【危険の排除】これをラッシュしたとき、自軍山札の上から1枚を見て、そのカードを自軍パワーゾーンのオモテ向きのカード1枚と置き換えるか、山札の上に戻す。",
       "features": [
         "イマジン"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-045.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-045-RK.jpg"
     },
     {
       "id": "XG6-046",
@@ -21711,7 +22563,9 @@
         "仮面ライダー",
         "男",
         "ディエンドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-046.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-046-RK.jpg"
     },
     {
       "id": "XG6-047",
@@ -21732,7 +22586,9 @@
         "仮面ライダー",
         "メカ",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-047.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-047-RK.jpg"
     },
     {
       "id": "XG6-048",
@@ -21753,7 +22609,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-048.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-048-RK.jpg"
     },
     {
       "id": "XG6-049",
@@ -21774,7 +22632,9 @@
         "仮面ライダー",
         "男",
         "皇帝"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-049.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-049-RK.jpg"
     },
     {
       "id": "XG6-050",
@@ -21795,7 +22655,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-050.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-050-RK.jpg"
     },
     {
       "id": "XG6-052",
@@ -21815,7 +22677,9 @@
         "仮面ライダー",
         "男",
         "加速"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-052.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-052-RK.jpg"
     },
     {
       "id": "XG6-053",
@@ -21835,7 +22699,9 @@
         "仮面ライダー",
         "男",
         "レジェンドルガ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-053.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-053-RK.jpg"
     },
     {
       "id": "XG6-055",
@@ -21854,7 +22720,9 @@
         "仮面ライダー",
         "男",
         "オーズドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-055.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-055-RK.jpg"
     },
     {
       "id": "XG6-056",
@@ -21872,7 +22740,9 @@
         "仮面ライダー",
         "男",
         "オーズドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-056.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-056-RK.jpg"
     },
     {
       "id": "XG6-057",
@@ -21890,7 +22760,9 @@
         "仮面ライダー",
         "男",
         "オーズドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-057.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-057-RK.jpg"
     },
     {
       "id": "XG6-058",
@@ -21908,7 +22780,9 @@
         "仮面ライダー",
         "男",
         "オーズドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-058.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-058-RK.jpg"
     },
     {
       "id": "XG6-059",
@@ -21926,7 +22800,9 @@
         "仮面ライダー",
         "男",
         "オーズドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG6-059.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-059-RK.jpg"
     },
     {
       "id": "XG6-060",
@@ -21936,7 +22812,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 1,
-      "text": "※これが自軍コマンドゾーンに置かれたとき、これを手札に加えてもよい。 ◎コマンドを１つ選び、カテゴリを１つ宣言する。そうしたとき、このターン、宣言したカテゴリを選んだコマンドに追加する。"
+      "text": "※これが自軍コマンドゾーンに置かれたとき、これを手札に加えてもよい。 ◎コマンドを１つ選び、カテゴリを１つ宣言する。そうしたとき、このターン、宣言したカテゴリを選んだコマンドに追加する。",
+      "imageUrl": "/cards/promoted/XG6-060.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-060-RK.jpg"
     },
     {
       "id": "XG6-061",
@@ -21946,7 +22824,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 2,
-      "text": "※これにライドしているユニットはBP+1000される。 【ベンダーモード】自軍ラッシュフェイズ中、このビークルを捨札にして次の効果を発動できる→自軍山札を見てオペレーションカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（置けなければ自軍コマンドを1つ選び、捨札にしてから置く）。その後、山札をシャッフルする。"
+      "text": "※これにライドしているユニットはBP+1000される。 【ベンダーモード】自軍ラッシュフェイズ中、このビークルを捨札にして次の効果を発動できる→自軍山札を見てオペレーションカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（置けなければ自軍コマンドを1つ選び、捨札にしてから置く）。その後、山札をシャッフルする。",
+      "imageUrl": "/cards/promoted/XG6-061.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-061-RK.jpg"
     },
     {
       "id": "XG6-062",
@@ -22042,7 +22922,9 @@
         "ピンク",
         "女",
         "宇宙海賊"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-001-RS.jpg"
     },
     {
       "id": "XG7-002",
@@ -22060,7 +22942,9 @@
         "グリーン",
         "男",
         "宇宙海賊"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-002-RS.jpg"
     },
     {
       "id": "XG7-003",
@@ -22079,7 +22963,9 @@
         "レッド",
         "男",
         "宇宙海賊"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-003-RS.jpg"
     },
     {
       "id": "XG7-004",
@@ -22098,7 +22984,9 @@
         "ブルー",
         "男",
         "宇宙海賊"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-004.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-004-RS.jpg"
     },
     {
       "id": "XG7-005",
@@ -22116,7 +23004,9 @@
         "イエロー",
         "女",
         "宇宙海賊"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-005.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-005-RS.jpg"
     },
     {
       "id": "XG7-007",
@@ -22135,7 +23025,9 @@
         "グリーン",
         "男",
         "獣奏剣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-007.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-007-RS.jpg"
     },
     {
       "id": "XG7-008",
@@ -22157,7 +23049,9 @@
         "ブラック",
         "男",
         "ギンガの光"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-008.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-008-RS.jpg"
     },
     {
       "id": "XG7-009",
@@ -22176,7 +23070,9 @@
         "男",
         "加速",
         "Vコマンダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-009.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-009-RS.jpg"
     },
     {
       "id": "XG7-010",
@@ -22194,7 +23090,9 @@
         "レッド",
         "男",
         "獣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-010.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-010-RS.jpg"
     },
     {
       "id": "XG7-011",
@@ -22212,7 +23110,9 @@
         "レッド",
         "男",
         "忍者"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-011.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-011-RS.jpg"
     },
     {
       "id": "XG7-012",
@@ -22229,7 +23129,9 @@
         "レッド",
         "男",
         "恐竜"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-012.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-012-RS.jpg"
     },
     {
       "id": "XG7-014",
@@ -22248,7 +23150,9 @@
         "レッド",
         "男",
         "魔法"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-014.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-014-RS.jpg"
     },
     {
       "id": "XG7-015",
@@ -22265,7 +23169,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-015.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-015-RS.jpg"
     },
     {
       "id": "XG7-017",
@@ -22281,7 +23187,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-017.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-017-RS.jpg"
     },
     {
       "id": "XG7-019",
@@ -22301,7 +23209,9 @@
         "ピンク",
         "男",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-019.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-019-RS.jpg"
     },
     {
       "id": "XG7-020",
@@ -22317,7 +23227,9 @@
       "features": [
         "男",
         "忍者"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-020.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-020-RS.jpg"
     },
     {
       "id": "XG7-021",
@@ -22337,7 +23249,9 @@
         "ピンク",
         "女",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-021.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-021-RS.jpg"
     },
     {
       "id": "XG7-022",
@@ -22357,7 +23271,9 @@
         "ピンク",
         "女",
         "魔法"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-022.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-022-RS.jpg"
     },
     {
       "id": "XG7-023",
@@ -22378,7 +23294,9 @@
         "拳聖",
         "激気",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-023.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-023-RS.jpg"
     },
     {
       "id": "XG7-024",
@@ -22397,7 +23315,9 @@
       "features": [
         "拳聖",
         "激気"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-024.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-024-RS.jpg"
     },
     {
       "id": "XG7-025",
@@ -22416,7 +23336,9 @@
         "シルバー",
         "男",
         "女"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-025.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-025-RS.jpg"
     },
     {
       "id": "XG7-027",
@@ -22426,7 +23348,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 1,
-      "text": "※カウンター 敵軍Sユニットがラッシュされたとき発動できる⇒自軍ラッシュエリアから、MAを持つ自軍Sユニットを1体選ぶ。そうしたとき、選んだユニットより必要パワーの数字が大きい、追加条件を持たない敵軍Sユニットを1体選び撃破する。"
+      "text": "※カウンター 敵軍Sユニットがラッシュされたとき発動できる⇒自軍ラッシュエリアから、MAを持つ自軍Sユニットを1体選ぶ。そうしたとき、選んだユニットより必要パワーの数字が大きい、追加条件を持たない敵軍Sユニットを1体選び撃破する。",
+      "imageUrl": "/cards/promoted/XG7-027.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-027-RS.jpg"
     },
     {
       "id": "XG7-028",
@@ -22442,7 +23366,9 @@
       "features": [
         "魔法",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-028.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-028-RS.jpg"
     },
     {
       "id": "XG7-029",
@@ -22458,7 +23384,9 @@
       "text": "※ウイング ※これは敵軍ユニットにアタックされない。 【アルティメットグレートストライク】カテゴリを2つ以上持つLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒ウイングを持たない敵軍ユニットを1体選び撃破する。",
       "features": [
         "魔法"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-029.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-029-RS.jpg"
     },
     {
       "id": "XG7-031",
@@ -22468,7 +23396,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 3,
-      "text": "※ブレイカー ※これにライドしているユニットは、「仮面ライダー1号」または「仮面ライダー2号」ならクロス1を得る。 【サイクロンアタック】これにライドしているユニットはBP+1000され、敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない。"
+      "text": "※ブレイカー ※これにライドしているユニットは、「仮面ライダー1号」または「仮面ライダー2号」ならクロス1を得る。 【サイクロンアタック】これにライドしているユニットはBP+1000され、敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない。",
+      "imageUrl": "/cards/promoted/XG7-031.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-031-RK.jpg"
     },
     {
       "id": "XG7-032",
@@ -22487,7 +23417,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-032.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-032-RK.jpg"
     },
     {
       "id": "XG7-034",
@@ -22506,7 +23438,9 @@
         "男",
         "女",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-034.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-034-RK.jpg"
     },
     {
       "id": "XG7-035",
@@ -22525,7 +23459,9 @@
         "メカ",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-035.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-035-RK.jpg"
     },
     {
       "id": "XG7-036",
@@ -22543,7 +23479,9 @@
         "仮面ライダー",
         "男",
         "ミラーライダー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-036.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-036-RK.jpg"
     },
     {
       "id": "XG7-037",
@@ -22559,7 +23497,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-037.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-037-RK.jpg"
     },
     {
       "id": "XG7-038",
@@ -22575,7 +23515,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-038.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-038-RK.jpg"
     },
     {
       "id": "XG7-039",
@@ -22585,7 +23527,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 7,
-      "text": "※常駐 ※タッグ 自軍ラッシュフェイズごとに1度だけ、『特徴「加速」を持つ自軍ユニット1体をゲームから除外する』を実行してもよい。そうしたとき、次の効果を自分、相手の順に行う⇒自分自身のパワーゾーンのカードを（ウラ向きのカードはウラ向きのまま）1枚選び、オモテにするか手札に戻す。"
+      "text": "※常駐 ※タッグ 自軍ラッシュフェイズごとに1度だけ、『特徴「加速」を持つ自軍ユニット1体をゲームから除外する』を実行してもよい。そうしたとき、次の効果を自分、相手の順に行う⇒自分自身のパワーゾーンのカードを（ウラ向きのカードはウラ向きのまま）1枚選び、オモテにするか手札に戻す。",
+      "imageUrl": "/cards/promoted/XG7-039.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-039-RK.jpg"
     },
     {
       "id": "XG7-040",
@@ -22604,7 +23548,9 @@
         "男",
         "イマジン",
         "DEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-040.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-040-RK.jpg"
     },
     {
       "id": "XG7-041",
@@ -22623,7 +23569,9 @@
         "ゴールド",
         "男",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-041.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-041-RK.jpg"
     },
     {
       "id": "XG7-042",
@@ -22642,7 +23590,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-042.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-042-RK.jpg"
     },
     {
       "id": "XG7-043",
@@ -22660,7 +23610,9 @@
         "仮面ライダー",
         "男",
         "加速"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-043.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-043-RK.jpg"
     },
     {
       "id": "XG7-044",
@@ -22678,7 +23630,9 @@
         "仮面ライダー",
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-044.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-044-RK.jpg"
     },
     {
       "id": "XG7-045",
@@ -22688,7 +23642,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 0,
-      "text": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、これをホールドして、自分の手札から特徴「ロストドライバー」を持つユニットカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。 ◎自軍山札を見て、これを使用するためにホールドしたコマンドと同じ必要パワーを持つSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。"
+      "text": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、これをホールドして、自分の手札から特徴「ロストドライバー」を持つユニットカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。 ◎自軍山札を見て、これを使用するためにホールドしたコマンドと同じ必要パワーを持つSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+      "imageUrl": "/cards/promoted/XG7-045.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-045-RK.jpg"
     },
     {
       "id": "XG7-047",
@@ -22705,7 +23661,9 @@
         "仮面ライダー",
         "男",
         "オーズドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-047.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-047-RK.jpg"
     },
     {
       "id": "XG7-048",
@@ -22724,7 +23682,9 @@
         "仮面ライダー",
         "男",
         "オーズドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-048.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-048-RK.jpg"
     },
     {
       "id": "XG7-049",
@@ -22741,7 +23701,9 @@
         "仮面ライダー",
         "男",
         "オーズドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-049.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-049-RK.jpg"
     },
     {
       "id": "XG7-050",
@@ -22761,7 +23723,9 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-050.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-050-RK.jpg"
     },
     {
       "id": "XG7-051",
@@ -22779,7 +23743,9 @@
         "仮面ライダー",
         "男",
         "オーズドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-051.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-051-RK.jpg"
     },
     {
       "id": "XG7-052",
@@ -22797,7 +23763,9 @@
         "仮面ライダー",
         "男",
         "オーズドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-052.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-052-RK.jpg"
     },
     {
       "id": "XG7-053",
@@ -22814,7 +23782,9 @@
         "仮面ライダー",
         "男",
         "オーズドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-053.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-053-RK.jpg"
     },
     {
       "id": "XG7-055",
@@ -22831,7 +23801,9 @@
         "怪人",
         "女",
         "ドーパント"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-055.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-055-RK.jpg"
     },
     {
       "id": "XG7-056",
@@ -22848,7 +23820,9 @@
         "怪人",
         "男",
         "ドーパント"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-056.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-056-RK.jpg"
     },
     {
       "id": "XG7-057",
@@ -22867,7 +23841,9 @@
         "怪人",
         "女",
         "ドーパント"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-057.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-057-RK.jpg"
     },
     {
       "id": "XG7-058",
@@ -22884,7 +23860,9 @@
         "怪人",
         "男",
         "ドーパント"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-058.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-058-RK.jpg"
     },
     {
       "id": "XG7-059",
@@ -22901,7 +23879,9 @@
         "怪人",
         "男",
         "ドーパント"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-059.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-059-RK.jpg"
     },
     {
       "id": "XG7-060",
@@ -22920,7 +23900,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-060.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-060-RM.jpg"
     },
     {
       "id": "XG7-061",
@@ -22939,7 +23921,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-061.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-061-RM.jpg"
     },
     {
       "id": "XG7-062",
@@ -22954,7 +23938,9 @@
       "text": "【シャーブラシ】これをラッシュしたとき、ホールド状態の自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、自軍山札の上から1枚ひいて、そのカードが特徴「メカ」を持つならリリース状態で、持たないならホールド状態で自軍コマンドゾーンに置く。",
       "features": [
         "メカ"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-062.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-062-RM.jpg"
     },
     {
       "id": "XG7-063",
@@ -22972,7 +23958,9 @@
         "メカ",
         "人型",
         "スーパーモード"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-063.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-063-RM.jpg"
     },
     {
       "id": "XG7-064",
@@ -22992,7 +23980,9 @@
         "男",
         "警察",
         "スワット"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-064.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-064-RM.jpg"
     },
     {
       "id": "XG7-065",
@@ -23011,7 +24001,9 @@
         "ブルー",
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-065.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-065-RM.jpg"
     },
     {
       "id": "XG7-068",
@@ -23030,7 +24022,9 @@
         "メカ",
         "男",
         "警察"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XG7-068.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-068-RM.jpg"
     },
     {
       "id": "XP-001",
@@ -23040,7 +24034,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 4,
-      "text": "※常駐 ※タッグ 自軍ラッシュフェイズごとに1度だけ『WBを持つ自軍コマンドを1つホールドする』を実行してもよい。そうしたとき、自軍Sユニットを1体選び、特徴「レッド」「イエロー」「ブルー」「ブラック」「ホワイト」のうちどれか1つを宣言する。このターン、宣言した特徴を選んだユニットに追加する。"
+      "text": "※常駐 ※タッグ 自軍ラッシュフェイズごとに1度だけ『WBを持つ自軍コマンドを1つホールドする』を実行してもよい。そうしたとき、自軍Sユニットを1体選び、特徴「レッド」「イエロー」「ブルー」「ブラック」「ホワイト」のうちどれか1つを宣言する。このターン、宣言した特徴を選んだユニットに追加する。",
+      "imageUrl": "/cards/promoted/XP-001.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-001-RS.jpg"
     },
     {
       "id": "XP-002",
@@ -23050,7 +24046,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 5,
-      "text": "※常駐 ※タッグ 自軍バトルフェイズごとに１度だけ、『自軍ラッシュエリアのSユニットを１体コマンドゾーンに送るか捨札にする』を実行してもよい。そうしたとき、ナンバーに数字を持ちカテゴリにDAを持たない自軍Sユニットを、バトルエリアとラッシュエリアから１体ずつ選ぶ。このターン、このカードの効果でラッシュエリアから選んだユニットがＮＣを発動するとき、そのユニットの本来のNCの効果を発動するかわりに、このカードの効果でバトルエリアから選んだユニットのNCの効果を発動してもよい。"
+      "text": "※常駐 ※タッグ 自軍バトルフェイズごとに１度だけ、『自軍ラッシュエリアのSユニットを１体コマンドゾーンに送るか捨札にする』を実行してもよい。そうしたとき、ナンバーに数字を持ちカテゴリにDAを持たない自軍Sユニットを、バトルエリアとラッシュエリアから１体ずつ選ぶ。このターン、このカードの効果でラッシュエリアから選んだユニットがＮＣを発動するとき、そのユニットの本来のNCの効果を発動するかわりに、このカードの効果でバトルエリアから選んだユニットのNCの効果を発動してもよい。",
+      "imageUrl": "/cards/promoted/XP-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-002-RS.jpg"
     },
     {
       "id": "XP-003",
@@ -23069,7 +24067,9 @@
         "男",
         "警察",
         "バトライザー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-003-RS.jpg"
     },
     {
       "id": "XP-004",
@@ -23088,7 +24088,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-004.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-004-RK.jpg"
     },
     {
       "id": "XP-005",
@@ -23106,7 +24108,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-005.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-005-RK.jpg"
     },
     {
       "id": "XP-007",
@@ -23125,7 +24129,9 @@
         "仮面ライダー",
         "男",
         "NEWDEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-007.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-007-RK.jpg"
     },
     {
       "id": "XP-008",
@@ -23143,7 +24149,9 @@
         "仮面ライダー",
         "男",
         "NEWDEN-O"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-008.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-008-RK.jpg"
     },
     {
       "id": "XP-010",
@@ -23162,7 +24170,9 @@
         "男",
         "警察",
         "スワット"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-010.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-010-RS.jpg"
     },
     {
       "id": "XP-011",
@@ -23182,7 +24192,9 @@
         "男",
         "警察",
         "スワット"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-011.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-011-RS.jpg"
     },
     {
       "id": "XP-012",
@@ -23200,7 +24212,9 @@
         "ゴールド",
         "男",
         "侍"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-012.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-012-RS.jpg"
     },
     {
       "id": "XP-015",
@@ -23213,7 +24227,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 6,
-      "text": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、これをホールドして、自分の手札から特徴「ダブルドライバー」を持つユニットカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。 ◎自軍山札を見て、特徴「ダブルドライバー」を持つユニットカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。"
+      "text": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、これをホールドして、自分の手札から特徴「ダブルドライバー」を持つユニットカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。 ◎自軍山札を見て、特徴「ダブルドライバー」を持つユニットカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+      "imageUrl": "/cards/promoted/XP-015.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-015-RK.jpg"
     },
     {
       "id": "XP-017",
@@ -23235,7 +24251,9 @@
         "仮面ライダー",
         "男",
         "ディケイドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-017.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-017-RK.jpg"
     },
     {
       "id": "XP-019",
@@ -23254,7 +24272,9 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-019.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-019-RK.jpg"
     },
     {
       "id": "XP-020",
@@ -23264,7 +24284,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 2,
-      "text": "※常駐（場に配置して、離れるまで効果が有効になる） カテゴリを2つ以上持つSユニットのうち、MAを持つSユニットは次の能力を得る⇒このユニットは敵軍ターン中BP+1000され、MAのオペレーションカードを使用するためのコマンドとしてホールドできる。"
+      "text": "※常駐（場に配置して、離れるまで効果が有効になる） カテゴリを2つ以上持つSユニットのうち、MAを持つSユニットは次の能力を得る⇒このユニットは敵軍ターン中BP+1000され、MAのオペレーションカードを使用するためのコマンドとしてホールドできる。",
+      "imageUrl": "/cards/promoted/XP-020.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-020-RS.jpg"
     },
     {
       "id": "XP-021",
@@ -23274,7 +24296,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 25,
-      "text": "※これは特徴「仮面ライダー」を持つユニット1体ごとと、特徴「仮面ライダー」を持つゾーンのオモテ向きのカード1枚ごとと、特徴「仮面ライダー」を持つ捨札1枚ごとにつき、必要パワーの数字が1減る。 ◎敵軍ユニットを1体選び撃破する。"
+      "text": "※これは特徴「仮面ライダー」を持つユニット1体ごとと、特徴「仮面ライダー」を持つゾーンのオモテ向きのカード1枚ごとと、特徴「仮面ライダー」を持つ捨札1枚ごとにつき、必要パワーの数字が1減る。 ◎敵軍ユニットを1体選び撃破する。",
+      "imageUrl": "/cards/promoted/XP-021.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-021-RK.jpg"
     },
     {
       "id": "XP-022",
@@ -23294,7 +24318,9 @@
       "features": [
         "レッド",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-022.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-022-RS.jpg"
     },
     {
       "id": "XP-023",
@@ -23312,7 +24338,9 @@
         "グリーン",
         "男",
         "獣奏剣"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-023.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-023-RS.jpg"
     },
     {
       "id": "XP-025",
@@ -23329,7 +24357,9 @@
       "features": [
         "侍",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-025.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-025-RS.jpg"
     },
     {
       "id": "XP-026",
@@ -23348,7 +24378,9 @@
         "男",
         "警察",
         "アクセルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-026.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-026-RK.jpg"
     },
     {
       "id": "XP-028",
@@ -23366,7 +24398,9 @@
         "魔法",
         "獣",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-028.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-028-RS.jpg"
     },
     {
       "id": "XP-029",
@@ -23384,7 +24418,9 @@
         "男",
         "警察",
         "ダブルドライバー"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-029.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-029-RK.jpg"
     },
     {
       "id": "XP-031",
@@ -23405,7 +24441,9 @@
         "仮面ライダー",
         "DEN-O",
         "男"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-031.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-031-RK.jpg"
     },
     {
       "id": "XP-032",
@@ -23422,7 +24460,9 @@
       "features": [
         "メカ",
         "人型"
-      ]
+      ],
+      "imageUrl": "/cards/promoted/XP-032.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-032-RS.jpg"
     }
   ]
 }

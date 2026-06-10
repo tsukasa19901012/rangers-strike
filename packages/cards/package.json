@@ -56,6 +56,8 @@
     "audit:runtime-effects": "tsx scripts/audit-runtime-effects.ts",
     "emit-vanilla-catalog": "tsx scripts/emit-vanilla-catalog.ts",
     "emit-complexity-catalog": "tsx scripts/emit-complexity-catalog.ts",
+    "download-xgather-images": "node scripts/download-xgather-images.mjs",
+    "download-promo-images": "node scripts/download-promo-images.mjs",
     "normalize-vanilla-dsl": "tsx scripts/normalize-vanilla-dsl.ts",
     "normalize-complexity-dsl": "tsx scripts/normalize-complexity-dsl.ts",
     "pipeline:recompile-vanilla": "tsx scripts/batch-compile-stubs.ts -- --grades A,B,E --merge-report && tsx scripts/normalize-vanilla-dsl.ts",
