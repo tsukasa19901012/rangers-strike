@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-06-10T04:41:32.539Z",
-  "scanned": 83,
-  "migratedToPrimitives": 44,
+  "generatedAt": "2026-06-10T04:41:49.819Z",
+  "scanned": 81,
+  "migratedToPrimitives": 43,
   "remainingEffectDelegate": 0,
   "samples": [
     {
@@ -115,13 +115,13 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "XG3-054",
-      "effectId": "named_e58f97e38191e6ada2e38281",
+      "cardId": "XG3-072",
+      "effectId": "note_e280bbe38193e3828ce3818c",
       "to": "grant_keyword"
     },
     {
       "cardId": "XG3-072",
-      "effectId": "note_e280bbe38193e3828ce3818c",
+      "effectId": "named_e8aa98e38184e381aee7bda0",
       "to": "grant_keyword"
     },
     {

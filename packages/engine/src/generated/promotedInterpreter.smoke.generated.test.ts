@@ -90,7 +90,7 @@ const INTERPRET_EFFECT_IDS = [
   "XG2-082",
   "XG3-037",
   "XG3-072",
-  "XG3-073"
+  "XG3-099"
 ] as const;
 const ACTION_PRIMITIVE_IDS = [
   "BK-001",
