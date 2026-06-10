@@ -41,13 +41,16 @@
       "name": "セイクウインパルス",
       "text": "これがストライクしてダメージを与えたとき、敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が3以下のユニットカードを1枚選び捨札にしてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "on_strike"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "damage_action_e38193e3828c",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

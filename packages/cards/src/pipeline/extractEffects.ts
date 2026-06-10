@@ -5057,6 +5057,105 @@ const PATTERNS: PatternMatch[] = [
       matchedPattern: "opponent_must",
     }),
   },
+  {
+    pattern: "bp_modify",
+    test: (body) => (/BP[＋+\-－]/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `bp_modify_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "bp_modify",
+    }),
+  },
+  {
+    pattern: "damage_action",
+    test: (body) => (/ダメージ/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `damage_action_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "damage_action",
+    }),
+  },
+  {
+    pattern: "counter_note",
+    test: (body) => (/^※カウンター/.test(body)),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: /バトルエリアに出たとき/.test(body)
+        ? { type: "enter_battle" }
+        : /ラッシュしたとき|ラッシュするとき/.test(body)
+          ? { type: "on_rush" }
+          : /アタックしたとき|アタックするとき/.test(body)
+            ? { type: "on_attack" }
+          : /ストライクしたとき|ストライクして/.test(body)
+            ? { type: "on_strike" }
+          : /撃破されて捨札になったとき/.test(body)
+            ? { type: "on_destroy" }
+          : /敵軍ターン中/.test(body)
+            ? { type: "while_in_field" }
+          : /にある間/.test(body)
+            ? { type: "while_in_field" }
+          : trigger,
+      optional: /してもよい|してよい|選んでもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `counter_note_${hashEffectText(body).slice(0, 12)}`,
+          duration: /にある間/.test(body) ? "permanent" : "turn",
+        },
+      ],
+      matchedPattern: "counter_note",
+    }),
+  },
 
 ];
 

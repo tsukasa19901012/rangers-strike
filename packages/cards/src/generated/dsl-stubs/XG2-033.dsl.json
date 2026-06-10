@@ -36,13 +36,16 @@
       "name": "防御拳バリアーフィスト",
       "text": "このユニットが自軍ラッシュエリアにある間、敵軍ターン中、自分がダメージを受けたとき、このユニットを ホールドしてもよい。そうしたとき、そのターン中、敵軍Sユニットはストライクすることができない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "damage_action_e38193e381ae",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {
