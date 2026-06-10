@@ -98,6 +98,14 @@ describe("rematchExtractedEffect (M20)", () => {
     expect(built?.matchedPattern).toBe("category_wb_battle_phase");
   });
 
+  it("matches power faceup feature on enter (RK-143)", () => {
+    const built = rematchExtractedEffect(
+      "これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを自軍バトルエリアに出してもよい。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("power_faceup_feature_enter_battle");
+  });
+
   it("matches enter hold enemy S to command (RK-024)", () => {
     const built = rematchExtractedEffect(
       "自軍ターン中、これがバトルエリアに出たとき、追加条件を持たないBP4000以上の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",

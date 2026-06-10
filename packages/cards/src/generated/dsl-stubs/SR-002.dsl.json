@@ -20,9 +20,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "mecha_fusion_command_substitute",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

@@ -2881,6 +2881,191 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "power_faceup_feature_enter_battle",
+    test: (body) =>
+      /これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「([^」]+)」を持つ自軍ユニットがバトルエリアに出たとき/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: `power_faceup_${feature}_on_enter`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `power_faceup_${feature}_enter_battle`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "power_faceup_feature_enter_battle",
+      };
+    },
+  },
+  {
+    pattern: "deck_reveal_position_destroy_s",
+    test: (body) =>
+      /自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードの必要パワーの数字を見て、その数字と同じ並びにある敵軍Sユニット/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "deck_reveal_position_destroy_s",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "deck_reveal_position_destroy_s",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "deck_reveal_position_destroy_s",
+    }),
+  },
+  {
+    pattern: "return_ally_on_or_named_rush",
+    test: (body) =>
+      /^※自分が「[^」]+」をラッシュしたとき、自軍エリアに「[^」]+」(?:または「[^」]+」)?があれば1体選び手札に戻す/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: noteEffectIdFromBody(body),
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `return_ally_on_rush_${hashEffectText(body).slice(0, 12)}`,
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "return_ally_on_or_named_rush",
+    }),
+  },
+  {
+    pattern: "attack_ride_replace",
+    test: (body) =>
+      /効果名「アタックライド」を持つオモテ向きのユニットカードを自軍ゾーンから1枚選び、これと置き換えてもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "attack_ride_replace",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "attack_ride_replace",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "attack_ride_replace",
+    }),
+  },
+  {
+    pattern: "enemy_resident_pick_discard",
+    test: (body) =>
+      /敵軍常駐置き場にカードが2枚以上あれば、その中から1枚選んでもよい/.test(body) &&
+      /選んだカードを持ち主の捨札にする/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enemy_resident_pick_discard",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enemy_resident_pick_discard",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enemy_resident_pick_discard",
+    }),
+  },
+  {
+    pattern: "mecha_fusion_command_substitute",
+    test: (body) =>
+      /5体以上の合体ユニットを必要とする特徴「メカ」を持つユニットのカードをラッシュするとき、追加条件を満たすために次のようにしてもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "mecha_fusion_command_substitute",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "mecha_fusion_command_substitute",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "mecha_fusion_command_substitute",
+    }),
+  },
+  {
+    pattern: "damage_threshold_grant_sp",
+    test: (body) =>
+      /自軍ダメージが(\d+)点のとき、このユニットは次の能力を得る。⇒SP(\d+)/.test(body),
+    build: (body, segment, trigger) => {
+      const sp = body.match(/SP(\d+)/)?.[1] ?? "2";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `damage_sp${sp}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [{ type: "grant_keyword", keyword: `SP${sp}`, duration: "turn" }],
+        matchedPattern: "damage_threshold_grant_sp",
+      };
+    },
+  },
+  {
+    pattern: "draw_per_two_ally_feature",
+    test: (body) => /特徴「([^」]+)」を持つ自軍ユニット2体につき1枚ドローする/.test(body),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `draw_per2_${feature}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [{ type: "draw", amount: 1, player: "controller" }],
+        matchedPattern: "draw_per_two_ally_feature",
+      };
+    },
+  },
+  {
+    pattern: "combo_l_attack_or_strike_grant",
+    test: (body) =>
+      /これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたLユニットがアタックまたはストライク/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `combo_l_attack_strike_${hashEffectText(body).slice(0, 12)}`,
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "combo_l_attack_or_strike_grant",
+    }),
+  },
+  {
     pattern: "counter_redirect_attack",
     test: (body) =>
       /^※カウンター/.test(body) &&

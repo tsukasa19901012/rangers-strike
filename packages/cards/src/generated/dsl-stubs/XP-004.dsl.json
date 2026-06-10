@@ -42,9 +42,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "attack_ride_replace",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

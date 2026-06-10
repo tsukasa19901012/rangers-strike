@@ -30,7 +30,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "SP2",
+          "duration": "turn"
         }
       ]
     }

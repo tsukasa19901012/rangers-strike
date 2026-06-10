@@ -18,9 +18,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "return_ally_on_rush_e280bbe887aa",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     },
     {
       "id": "note_e280bbe789b9e5beb4e3808c",
