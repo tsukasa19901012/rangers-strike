@@ -13,19 +13,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "effects": [
-    {
-      "id": "body_interpret",
-      "text": "ゲーム開始前に一度だけ発動できる⇒自軍山札を見て、必要パワーに「＋」または「－」を持つ、Ｓユニットのカードを３枚まで選び（同名カードは１枚まで）、相手に見せてから自分の手札に加える。その後、手札に加えた枚数と同じだけ手札からカードを選び、自軍山札に戻してシャッフルする。",
-      "trigger": {
-        "type": "nc"
-      },
-      "effects": [
-        {
-          "type": "interpret_effect"
-        }
-      ]
-    }
-  ]
+  }
 }

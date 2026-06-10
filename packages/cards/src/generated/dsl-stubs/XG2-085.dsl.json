@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e697a5e69cac",
+      "id": "named_e697a5e69cace58880",
       "name": "日本刀",
       "text": "このターン、OTまたはDAを持つすべての敵軍SユニットはBP-1000される。（BP0以下になったユニットは撃破される）",
       "trigger": {

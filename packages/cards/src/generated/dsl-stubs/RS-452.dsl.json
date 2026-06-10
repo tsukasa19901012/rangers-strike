@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_bp6000",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍バトルエリアにある間、BP6000以上の敵軍ユニットがバトルエリアに出たとき、これをラッシュエリアに戻してもよい。",
       "trigger": {
         "type": "enter_battle"
@@ -30,15 +30,18 @@
       ]
     },
     {
-      "id": "named_e38386e38388",
+      "id": "named_e38386e38388e383a9e38390",
       "name": "テトラバスター",
       "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒追加条件に「自軍合体ユニットを捨札にする」と表記されていない敵軍Lユニットを1体選び、撃破する。",
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "combo_l_effect_e38193e3828c",
+          "duration": "permanent"
         }
       ]
     }

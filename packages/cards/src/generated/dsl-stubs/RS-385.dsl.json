@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "no_attack_without_named_e888aae7a9bae6a99f",
       "text": "※これは、特徴「航空機」を持たないユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -30,13 +30,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "no_attack_without_named_e888aae7a9ba",
+          "keyword": "no_attack_without_named_e888aae7a9bae6a99f",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e789b9e6ae8a",
+      "id": "named_e789b9e6ae8ae6b688e58c96",
       "name": "特殊消化弾",
       "text": "これが自軍ラッシュエリアにある間、自軍コマンドゾーンにホールド状態でカードを置くとき、かわりにリリース状態で置いてもよい。",
       "trigger": {

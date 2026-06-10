@@ -24,6 +24,15 @@
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -44,19 +53,10 @@
             }
           ]
         }
-      ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      }
+      ]
     },
     {
-      "id": "named_e3839ee382b8",
+      "id": "named_e3839ee382b8e383bbe3839e",
       "name": "マジ・マージ",
       "text": "このユニットからコンビネーションするSユニットは、敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {

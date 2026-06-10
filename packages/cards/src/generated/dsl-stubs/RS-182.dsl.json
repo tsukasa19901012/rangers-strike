@@ -9,17 +9,14 @@
   "powerCost": 6,
   "text": "自軍Sユニットを1体選ぶ。このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。",
   "rawText": "自軍Sユニットを1体選ぶ。このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
-      "id": "body_interpret",
+      "id": "named_e382b8e383a3e382a4e382a2",
+      "name": "ジャイアントローラー",
       "text": "自軍Sユニットを1体選ぶ。このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "effects": [
         {
@@ -27,5 +24,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

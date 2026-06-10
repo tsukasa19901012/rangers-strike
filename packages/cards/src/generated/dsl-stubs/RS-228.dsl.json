@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e8b685e382b9",
+      "id": "named_e8b685e382b9e383a9e382a4",
       "name": "超スライダー進化",
       "text": "自軍ターン中、これがバトルエリアに出たとき、「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれている自軍ユニットを1体選んでもよい。そうしたとき、このターン、そのテキストを無効にする。",
       "trigger": {
@@ -38,7 +38,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "enter_battle_ignore_hold_requirement",
+          "duration": "turn"
         }
       ]
     }

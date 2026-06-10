@@ -20,11 +20,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーファイズ」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -48,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e382a2e382af",
+      "id": "named_e382a2e382afe382bbe383ab",
       "name": "アクセルモード",
       "text": "自軍ターン中、これがアタックしてバトルに勝ったとき、常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、山札の下に戻してもよい（ウラ向きのカードはウラ向きのまま選ぶ）。そうしたとき、これをラッシュエリアに戻す。",
       "trigger": {

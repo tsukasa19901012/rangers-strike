@@ -19,15 +19,44 @@
   ],
   "effects": [
     {
-      "id": "named_e383afe382a4",
+      "id": "named_e383afe382a4e383abe38389",
       "name": "ワイルドショット",
       "text": "敵軍ラッシュエリアから、カードに表記された本来のBPが3000以下のユニットを1体選び撃破する。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "rush",
+          "owner": "opponent",
+          "filter": {
+            "maxBp": 3000
+          }
+        }
+      },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "rush",
+            "owner": "opponent",
+            "filter": {
+              "maxBp": 3000
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
       ]
     }

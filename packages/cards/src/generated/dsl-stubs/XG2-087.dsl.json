@@ -17,19 +17,21 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "unnamed_discard_on_end_turn_battle",
       "text": "※これは、自分がターンを終えるときバトルエリアにあれば捨札になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "discard_on_end_turn_battle",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382a8e3838d",
+      "id": "named_e382a8e3838de383abe382ae",
       "name": "エネルギー照射",
       "text": "これをラッシュしたとき、自軍山札を見て、カテゴリを2つ以上持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。その後、山札をシャッフルする。",
       "trigger": {

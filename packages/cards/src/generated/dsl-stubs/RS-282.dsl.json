@@ -18,19 +18,21 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "unnamed_end_turn_return_hand_wrong_number",
       "text": "※これは、自軍バトルフェイズを終えるときのバトルエリアでの並び順が、カードに表記された本来のナンバーと違うなら、自分がターンを終えるとき、手札に戻す。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "end_turn_return_hand_wrong_number",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e5b2a9e79fb3",
+      "id": "named_e5b2a9e79fb3e890bde381a8",
       "name": "岩石落とし",
       "text": "BP2000以下の敵軍ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {

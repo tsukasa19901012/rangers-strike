@@ -24,17 +24,17 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "return_self_on_ally_rush_e280bbe887aa",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
-      "id": "named_e383a9e382a4",
+      "id": "named_e383a9e382a4e3838ae383bc",
       "name": "ライナーコンボ",
       "text": "これが特徴「人型」を持つLユニットまたはXLユニットからコンビネーションするとき、次の効果を発動できる⇒これは「SP1」になる。",
       "trigger": {

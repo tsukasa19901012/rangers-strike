@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、自軍エリアでホールド状態かライドされている間、Lビークルとして扱う。",
       "trigger": {
         "type": "nc"
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe887aa",
+      "id": "note_e280bbe887aae8bb8de383a9",
       "text": "※自軍ラッシュフェイズ中、このユニットをホールドしてもよい。",
       "trigger": {
         "type": "nc"
@@ -42,7 +42,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe887aa_2",
+      "id": "note_e280bbe887aae8bb8de383a9_2",
       "text": "※自軍ラッシュフェイズ中、このビークルがライドされていないなら、リリースしてもよい。",
       "trigger": {
         "type": "nc"
@@ -59,6 +59,14 @@
       "text": "このビークルがチェイスの効果でライドされたとき、敵軍バトルエリアから本来のBPが5000以下のユニットを1体選び撃破してもよい。",
       "trigger": {
         "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
       },
       "effects": [
         {
@@ -79,15 +87,7 @@
             }
           ]
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      }
+      ]
     }
   ],
   "implementation": {

@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e3839ae382ac",
+      "id": "named_e3839ae382ace382b5e382b9",
       "name": "ペガサスイナズマスパーク",
       "text": "これは敵軍ラッシュエリアのホールド状態のユニットにアタックできる。",
       "trigger": {
@@ -40,7 +40,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "attack_held_rush_units",
+          "duration": "permanent"
         }
       ]
     }

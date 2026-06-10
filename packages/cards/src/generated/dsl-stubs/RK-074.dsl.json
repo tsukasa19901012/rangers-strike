@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "ally_named_e4bbaee99da2e383a9e382a4_protects_from_enemy_s",
       "text": "※これ以外の特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -26,21 +26,24 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ally_named_e4bbaee99da2_protects_from_enemy_s",
+          "keyword": "ally_named_e4bbaee99da2e383a9e382a4_protects_from_enemy_s",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382abe382ae",
+      "id": "named_e382abe382aee788aae382a2",
       "name": "カギ爪アーム",
       "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "on_leave"
       },
+      "optional": true,
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "return_rush_deploy_enemy_s",
+          "duration": "permanent"
         }
       ]
     }

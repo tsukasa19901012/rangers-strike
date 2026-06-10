@@ -47,12 +47,13 @@
       ]
     },
     {
-      "id": "named_e382b7e383a3",
+      "id": "named_e382b7e383a3e38389e383bc",
       "name": "シャドーセイバー",
       "text": "自軍ターン中、これがアタックしてバトルに勝ったとき、追加でアタックかストライクを行ってもよい。ただし、このユニットの追加のアタックまたはストライクは、1ターンに1度だけとする。",
       "trigger": {
-        "type": "nc"
+        "type": "on_attack"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",

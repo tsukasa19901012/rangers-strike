@@ -11,7 +11,7 @@
   "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） BP4000以上のSユニットがラッシュされたとき発動できる⇒このターン、相手はバトルフェイズを飛ばす。",
   "effects": [
     {
-      "id": "note_bp4000",
+      "id": "note_e280bbe382abe382a6e383b3",
       "text": "※カウンター（これは敵軍ターン中にのみ使用できる） BP4000以上のSユニットがラッシュされたとき発動できる⇒このターン、相手はバトルフェイズを飛ばす。",
       "trigger": {
         "type": "operation",
@@ -19,7 +19,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "counter_skip_battle_phase",
+          "duration": "permanent"
         }
       ]
     }

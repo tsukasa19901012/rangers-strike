@@ -12,7 +12,7 @@ describe("promotedKeywordBridge", () => {
     expect(
       cardHasGrantKeyword(
         "RK-152",
-        "power_feature_bp_sp_named_e382a4e3839e_1000_3000_sp1",
+        "power_feature_bp_sp_named_e382a4e3839ee382b8e383b3_1000_3000_sp1",
       ),
     ).toBe(true);
   });

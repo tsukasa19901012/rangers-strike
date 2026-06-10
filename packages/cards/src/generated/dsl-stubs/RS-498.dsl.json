@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "named_e78bbce78bbc",
+      "id": "named_e78bbce78bbce5bcbe",
       "name": "狼狼弾",
       "text": "これをラッシュしたとき、BPの合計が5000以下になるように敵軍ユニットを選び撃破してもよい。ただし選べるユニットの数は、WBの自軍Mユニットの数までとする。",
       "trigger": {

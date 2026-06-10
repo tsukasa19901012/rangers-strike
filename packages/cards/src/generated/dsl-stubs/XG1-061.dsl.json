@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e382b9e38394",
+      "id": "named_e382b9e38394e3838be383b3",
       "name": "スピニングウェーブ",
       "text": "自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍コマンドをすべてホールドする。その後、見せたカードの必要パワーの数字が「3」と「6」なら、敵軍バトルエリアからSユニットを1体選び撃破する。",
       "trigger": {
@@ -44,23 +44,23 @@
         "type": "has_target",
         "target": {
           "type": "zone",
-          "zone": "command",
+          "zone": "battle",
           "owner": "opponent"
         }
       },
       "effects": [
         {
           "type": "choose",
-          "kind": "select_command",
+          "kind": "select_unit",
           "valid": {
             "type": "zone",
-            "zone": "command",
+            "zone": "battle",
             "owner": "opponent"
           },
           "count": 1,
           "then": [
             {
-              "type": "hold_command",
+              "type": "discard",
               "target": {
                 "type": "trigger_source"
               }

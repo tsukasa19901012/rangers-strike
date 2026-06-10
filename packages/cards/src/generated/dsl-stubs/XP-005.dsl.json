@@ -24,19 +24,21 @@
   },
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "register_stay_named_e4bbaee99da2e383a9e382a4",
       "text": "※これがユニットでなくなるとき、オモテ向きの自軍パワーから特徴「仮面ライダー」を持つカードを1枚選び捨札にすれば、その場に留まる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "register_stay_on_power_discard_named_e4bbaee99da2e383a9e382a4",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e585a8e381a6",
+      "id": "named_e585a8e381a6e38292e99b86",
       "name": "全てを集めた先にあるもの",
       "text": "自軍ターン中、これがバトルエリアに出たとき、オモテ向きの自軍パワーから効果名「アタックライド」を持つカードを1枚選んでもよい。そうしたとき、選んだカードの「アタックライド」の効果を、このユニットの効果としてナンバーに関係なく発動する。",
       "trigger": {

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T03:06:44.672Z",
+  "generatedAt": "2026-06-10T03:40:32.416Z",
   "catalog": {
     "vanillaPromoted": 354,
     "complexityPromoted": 1316,
@@ -10,9 +10,9 @@
     "core": 179,
     "vanillaPromoted": 354,
     "complexityPromoted": 1316,
-    "dslReady": 1849,
+    "dslReady": 1845,
     "legacyHandler": 0,
-    "unimplemented": 0,
+    "unimplemented": 4,
     "fallbackOnly": 0
   }
 }

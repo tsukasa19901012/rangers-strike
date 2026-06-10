@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "unnamed_can_ride_vehicle",
       "text": "※これはビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "named_e5a4a9e3818c",
+      "id": "named_e5a4a9e3818ce591bce381b6",
       "name": "天が呼ぶ、地が呼ぶ、人が呼ぶ",
       "text": "これは、DAを持つかSPが空欄ではないユニットにアタックするとき、BP+2000される。",
       "trigger": {

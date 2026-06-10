@@ -9,17 +9,14 @@
   "powerCost": 2,
   "text": "自軍ラッシュエリアからSユニットを1体選ぶ。そして自軍捨札からSユニットのカードを1枚選ぶ。そうしたとき、このターン、ラッシュエリアから選んだSユニットのBPに、捨札から選んだユニットカードのBPを「＋」する。",
   "rawText": "自軍ラッシュエリアからSユニットを1体選ぶ。そして自軍捨札からSユニットのカードを1枚選ぶ。そうしたとき、このターン、ラッシュエリアから選んだSユニットのBPに、捨札から選んだユニットカードのBPを「＋」する。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
-      "id": "body_interpret",
+      "id": "named_e383a9e382a6e382bae382ab",
+      "name": "ラウズカード",
       "text": "自軍ラッシュエリアからSユニットを1体選ぶ。そして自軍捨札からSユニットのカードを1枚選ぶ。そうしたとき、このターン、ラッシュエリアから選んだSユニットのBPに、捨札から選んだユニットカードのBPを「＋」する。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "effects": [
         {
@@ -27,5 +24,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

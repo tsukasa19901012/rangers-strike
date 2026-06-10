@@ -33,11 +33,20 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「ボウケンピンク」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -61,7 +70,7 @@
       ]
     },
     {
-      "id": "named_e38387e383a5",
+      "id": "named_e38387e383a5e382a2e383ab",
       "name": "デュアルクラッシャー・コンビネーションクラッシュ",
       "text": "このターン、次に敵軍ユニットがホールド状態になったとき、そのユニットを撃破する。",
       "trigger": {

@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "note_ma_bp_10",
+      "id": "note_e280bbe38193e381aee383a6",
       "text": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。",
       "trigger": {
         "type": "nc"

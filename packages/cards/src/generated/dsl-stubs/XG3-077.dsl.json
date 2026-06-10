@@ -16,17 +16,17 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "return_self_on_ally_rush_e280bbe887aa",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e3828ce381ab",
       "text": "※これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる。",
       "trigger": {
         "type": "nc"
@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": "named_e38395e382a1",
+      "id": "named_e38395e382a1e382a4e3838a",
       "name": "ファイナルアタックライド",
       "text": "これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {

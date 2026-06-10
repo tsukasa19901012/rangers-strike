@@ -13,19 +13,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "effects": [
-    {
-      "id": "body_interpret",
-      "text": "このゲーム中、次のルールを追加する⇒ 特徴「仮面ライダー」を持つ自分自身のユニットをラッシュしたとき、ライドされていない自分自身のSビークルを1体選び、ラッシュしたそのユニットの下に重ねてもよい。",
-      "trigger": {
-        "type": "nc"
-      },
-      "effects": [
-        {
-          "type": "interpret_effect"
-        }
-      ]
-    }
-  ]
+  }
 }

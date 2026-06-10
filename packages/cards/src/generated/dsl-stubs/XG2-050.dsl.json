@@ -31,11 +31,20 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーギルス」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -59,7 +68,7 @@
       ]
     },
     {
-      "id": "named_e382aee383ab",
+      "id": "named_e382aee383abe382b9e382b9",
       "name": "ギルススティンガー",
       "text": "自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍バトルエリアのユニットを必要パワーの数字の合計が3以下になるように2体まで選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {

@@ -66,6 +66,11 @@
     },
     {
       "kind": "note",
+      "text": "※これは敵軍バトルエリアのユニットにアタックできない。",
+      "rule": "cannot_attack_enemy_battle"
+    },
+    {
+      "kind": "note",
       "text": "※これは敵軍ラッシュエリアのユニットにアタックできる。",
       "rule": "wing_attack_enemy_rush"
     }

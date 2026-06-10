@@ -9,17 +9,13 @@
   "powerCost": 1,
   "text": "自分は1枚ドローする。（これが自軍コマンドゾーンにある間、MAを持ち合体を必要とする自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する)",
   "rawText": "自分は1枚ドローする。（これが自軍コマンドゾーンにある間、MAを持ち合体を必要とする自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する)",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
       "id": "draw_cards",
       "text": "自分は1枚ドローする。（これが自軍コマンドゾーンにある間、MAを持ち合体を必要とする自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する)",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "effects": [
         {
@@ -29,5 +25,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

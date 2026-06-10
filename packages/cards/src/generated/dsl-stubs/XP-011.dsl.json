@@ -26,6 +26,15 @@
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -46,27 +55,47 @@
             }
           ]
         }
-      ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      }
+      ]
     },
     {
-      "id": "named_44e383aae383",
+      "id": "named_44e383aae3839ce383abe383",
       "name": "Dリボルバー",
       "text": "敵軍ラッシュエリアから、カードに表記された本来のBPが3000以下のユニットを1体選び、撃破する。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "rush",
+          "owner": "opponent",
+          "filter": {
+            "maxBp": 3000
+          }
+        }
+      },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "rush",
+            "owner": "opponent",
+            "filter": {
+              "maxBp": 3000
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
       ]
     }

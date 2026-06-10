@@ -16,17 +16,17 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "return_self_on_ally_rush_e280bbe887aa",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、自軍「仮面ライダーディケイド」があれば、ライドされていなくてもバトルエリアに出ることができる。",
       "trigger": {
         "type": "while_in_field"
@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": "named_e38395e382a1",
+      "id": "named_e38395e382a1e382a4e3838a",
       "name": "ファイナルアタックライド",
       "text": "自軍ターン中、これがバトルエリアに出たとき、BP4000以上の敵軍Sユニットを1体選び撃破してもよい。",
       "trigger": {

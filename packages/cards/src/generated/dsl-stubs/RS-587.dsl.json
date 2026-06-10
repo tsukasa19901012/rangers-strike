@@ -18,19 +18,21 @@
   ],
   "effects": [
     {
-      "id": "note_bp3000",
+      "id": "no_attack_from_bp3000_or_less",
       "text": "※これはBP3000以下のユニットにアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_bp3000_or_less",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e6bf80e38197",
+      "id": "named_e6bf80e38197e38184e99798",
       "name": "激しい闘争心",
       "text": "これ以外の自軍Sユニットを1体選び撃破してもよい。そうしたとき、相手は自分自身のユニットを1体選び撃破する。",
       "trigger": {

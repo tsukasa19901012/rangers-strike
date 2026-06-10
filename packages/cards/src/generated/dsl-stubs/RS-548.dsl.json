@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e381aee383a6",
       "text": "※このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える。",
       "trigger": {
         "type": "nc"
@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": "named_e9be8de69283",
+      "id": "named_e9be8de69283e589a3",
       "name": "龍撃剣",
       "text": "「SP1」",
       "trigger": {

@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "named_e7ab9ce99798",
+      "id": "named_e7ab9ce99798e6b097e78886",
       "name": "竜闘気爆炸球",
       "text": "これは敵軍ユニットが1体もなければ「SP1」になる。",
       "trigger": {
@@ -68,6 +68,11 @@
       "kind": "note",
       "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
       "rule": "destroy_on_win_vs_sp1"
+    },
+    {
+      "kind": "note",
+      "text": "※これは毎ターン可能ならバトルエリアに出る。",
+      "rule": "auto_battle_entry_each_turn"
     }
   ],
   "implementation": {

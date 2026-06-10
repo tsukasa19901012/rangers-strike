@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "note_bp3000",
+      "id": "no_attack_from_bp3000",
       "text": "※これはBP3000以上のユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -61,7 +61,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4",
+      "id": "named_e383a9e382a4e382aae38387",
       "name": "ライオディアス",
       "text": "これをラッシュしたとき、自軍捨札を好きな枚数選びゲームから除外してもよい。そうしたとき、選んだ枚数と同じ数だけ相手は自分自身の捨札を選びゲームから除外する。",
       "trigger": {
@@ -79,6 +79,11 @@
       "kind": "note",
       "text": "※モーフ",
       "rule": "morph"
+    },
+    {
+      "kind": "note",
+      "text": "※これは毎ターン、可能ならバトルエリア に出る。",
+      "rule": "auto_battle_entry_each_turn"
     }
   ],
   "implementation": {

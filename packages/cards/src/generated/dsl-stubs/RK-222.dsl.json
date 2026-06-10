@@ -34,11 +34,20 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダー響鬼」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -62,7 +71,7 @@
       ]
     },
     {
-      "id": "named_e99fb3e69283",
+      "id": "named_e99fb3e69283e68993e383bb",
       "name": "音撃打・灼熱真紅の型",
       "text": "MAを持つコマンドを2つホールドしてもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP1」になり、このターンを終えるときホールド状態なら、リリースしてもよい。",
       "trigger": {

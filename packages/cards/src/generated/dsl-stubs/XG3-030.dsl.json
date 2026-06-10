@@ -21,7 +21,7 @@
   },
   "effects": [
     {
-      "id": "note_sp1",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは「SP1」以上のユニットにしかアタックできない。",
       "trigger": {
         "type": "nc"

@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-10T03:05:24.809Z",
-  "uniqueKeywords": 114,
-  "interpretEffectCount": 1426,
+  "generatedAt": "2026-06-10T03:40:30.705Z",
+  "uniqueKeywords": 144,
+  "interpretEffectCount": 1324,
   "byCategory": {
-    "engine": 1950,
-    "passive_native": 679,
-    "interpret_effect": 1426
+    "engine": 1858,
+    "passive_native": 739,
+    "interpret_effect": 1324
   },
   "topEffectDelegate": [],
   "topPassiveNative": [

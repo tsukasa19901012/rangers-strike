@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T00:48:22.672Z",
+  "generatedAt": "2026-06-10T03:40:31.481Z",
   "sourceFile": "packages/engine/src/dsl/runtimeEffectDispatch.ts",
   "entryPoint": "applyRuntimeGrantKeyword",
   "legacyDelegatePaths": 5,

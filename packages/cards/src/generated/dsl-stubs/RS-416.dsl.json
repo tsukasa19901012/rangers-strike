@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_s_1",
+      "id": "require_discard_rush_s_entry",
       "text": "※これは自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。",
       "trigger": {
         "type": "nc"
@@ -33,12 +33,24 @@
       ]
     },
     {
-      "id": "named_e9ad82e381ae",
+      "id": "named_e9ad82e381aee382b3e383ac",
       "name": "魂のコレクション",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンにダメージになっているカードがあれば1枚選び捨札にしてもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
         "type": "enter_battle"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",

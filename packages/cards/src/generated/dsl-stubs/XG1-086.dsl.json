@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_bp5000_sp1",
+      "id": "sp_at_bp5000",
       "text": "※これはBP5000以上のとき「SP1」になる。",
       "trigger": {
         "type": "nc"
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e382a2e383bc",
+      "id": "named_e382a2e383bce382afe382a4",
       "name": "アークインパルス",
       "text": "このユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {

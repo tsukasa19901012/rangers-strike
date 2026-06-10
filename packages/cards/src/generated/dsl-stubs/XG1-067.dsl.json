@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_named_e4bbaee99da2",
+      "id": "unnamed_alias_named_e4bbaee99da2e383a9e382a4",
       "text": "※これは「仮面ライダーブレイド」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e4bbaee99da2",
+          "keyword": "alias_named_e4bbaee99da2e383a9e382a4",
           "duration": "permanent"
         }
       ]
@@ -52,6 +52,14 @@
       "text": "自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら、敵軍バトルエリアからSユニットを1体選び撃破する。",
       "trigger": {
         "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
       },
       "effects": [
         {
@@ -72,15 +80,7 @@
             }
           ]
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      }
+      ]
     }
   ],
   "unnamedRules": [

@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍バトルエリアにある間、敵軍Sユニットがバトルエリアに出たとき、これを自軍コマンドゾーンにホールド状態で置いてもよい。置けなければ手札に加える。",
       "trigger": {
         "type": "enter_battle"
@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e38394e383b3",
+      "id": "named_e38394e383b3e382afe383aa",
       "name": "ピンクリボン",
       "text": "「SP1」",
       "trigger": {

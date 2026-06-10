@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_alias_named_e38396e383a9",
+      "id": "unnamed_alias_named_e38396e383a9e38383e382af",
       "text": "※これは「ブラックガンマー」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -27,13 +27,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e38396e383a9",
+          "keyword": "alias_named_e38396e383a9e38383e382af",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍ダメージの数がこれの必要パワーの数字以上あれば、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
         "type": "nc"
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e5b2a9e59cb0",
+      "id": "named_e5b2a9e59cb0e78d84e381ae",
       "name": "岩地獄の術",
       "text": "SPが空欄ではない敵軍Sユニットを自分の手札の枚数と同じ数まで選び、持ち主の山札の下に好きな順で戻してもよい。",
       "trigger": {

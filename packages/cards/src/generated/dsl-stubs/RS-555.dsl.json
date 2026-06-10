@@ -18,11 +18,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャイエロー」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -46,7 +55,7 @@
       ]
     },
     {
-      "id": "named_e59cb0e589b2",
+      "id": "named_e59cb0e589b2e3828c",
       "name": "地割れ",
       "text": "敵軍バトルエリアからホールド状態のSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {

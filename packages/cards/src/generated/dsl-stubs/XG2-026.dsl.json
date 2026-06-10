@@ -19,11 +19,12 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "stack_vehicle_on_rush",
       "text": "※これをラッシュしたとき、ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい。",
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
@@ -33,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e6bf80e6b581",
+      "id": "named_e6bf80e6b581e4b880e58880",
       "name": "激流一刀",
       "text": "「SP1」これが敵軍ユニットをバトルで撃破したとき、1枚ドローしてもよい。",
       "trigger": {

@@ -33,15 +33,38 @@
       ]
     },
     {
-      "id": "named_e4bfbae381ae",
+      "id": "named_e4bfbae381aee5bf85e6aeba",
       "name": "俺の必殺技！",
       "text": "これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "on_strike"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
       ]
     }

@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "note_bp3000",
+      "id": "no_attack_from_bp3000",
       "text": "※これはBP3000以上のユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -61,7 +61,7 @@
       ]
     },
     {
-      "id": "named_e38388e383a9",
+      "id": "named_e38388e383a9e382afe383ad",
       "name": "トラクロー",
       "text": "これをラッシュしたとき、必要パワーを満たしていない敵軍ユニットまたは敵軍ビークルを1体選びゲームから除外する。",
       "trigger": {
@@ -79,6 +79,11 @@
       "kind": "note",
       "text": "※モーフ",
       "rule": "morph"
+    },
+    {
+      "kind": "note",
+      "text": "※これは毎ターン、可能ならバトルエリア に出る。",
+      "rule": "auto_battle_entry_each_turn"
     }
   ],
   "implementation": {

@@ -20,11 +20,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「デカブルー」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -48,27 +57,32 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193_2",
+      "id": "ally_named_e382b9e383afe38383e38388_attacked_bp_3000",
       "text": "※これが自軍エリアにある間、特徴「スワット」を持つ自軍ユニットは、アタックされるときBP+3000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "ally_named_e382b9e383afe38383e38388_attacked_bp_3000",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e7b2bee5af86",
+      "id": "named_e7b2bee5af86e5b084e69283",
       "name": "精密射撃",
       "text": "敵軍パワーゾーンのダメージになっているカードを1枚選び、オモテにしてもよい。そうしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、ダメージにする。",
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "flip_enemy_power_damage",
+          "duration": "turn"
         }
       ]
     }

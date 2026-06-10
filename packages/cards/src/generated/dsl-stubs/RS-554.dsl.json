@@ -18,11 +18,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャホワイト」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -46,7 +55,7 @@
       ]
     },
     {
-      "id": "named_e38395e383a9",
+      "id": "named_e38395e383a9e382a4e383b3",
       "name": "フライングビーム",
       "text": "敵軍パワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {

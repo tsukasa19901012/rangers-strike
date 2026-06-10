@@ -11,21 +11,19 @@
   "rawText": "※特徴「魔法」を持つ自軍Sユニットは、自軍コマンドを1つホールドすればＲＣを持っていなくてもこのビークルにライドできる。 【魔法の絨毯】これがバトルエリアからラッシュエリアに戻るとき、このビークルにライドしているユニットを手札に戻してもよい。",
   "effects": [
     {
-      "id": "ride_without_rc_named_e9ad94e6b395",
+      "id": "note_e280bbe789b9e5beb4e3808c",
       "text": "※特徴「魔法」を持つ自軍Sユニットは、自軍コマンドを1つホールドすればＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "ride_without_rc_named_e9ad94e6b395",
-          "duration": "permanent"
+          "type": "interpret_effect"
         }
       ]
     },
     {
-      "id": "named_e9ad94e6b395",
+      "id": "named_e9ad94e6b395e381aee7b5a8",
       "name": "魔法の絨毯",
       "text": "これがバトルエリアからラッシュエリアに戻るとき、このビークルにライドしているユニットを手札に戻してもよい。",
       "trigger": {

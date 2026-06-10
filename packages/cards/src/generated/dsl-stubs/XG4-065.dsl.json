@@ -11,7 +11,7 @@
   "rawText": "※特徴「ダブルドライバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【飛行】これにライドしているユニットは次の能力を得る⇒「ウイング」",
   "effects": [
     {
-      "id": "note_s_rc",
+      "id": "ride_without_rc_named_e38380e38396e383abe38389",
       "text": "※特徴「ダブルドライバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,7 +19,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_named_e38380e38396",
+          "keyword": "ride_without_rc_named_e38380e38396e383abe38389",
           "duration": "permanent"
         }
       ]

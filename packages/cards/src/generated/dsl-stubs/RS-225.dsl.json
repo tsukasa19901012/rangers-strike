@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e5a4a7e59b9e",
+      "id": "named_e5a4a7e59b9ee8bba2e78d85",
       "name": "大回転獅子爆裂弾",
       "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
@@ -40,7 +40,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "combo_l_ability_e38193e381ae",
+          "duration": "permanent"
         }
       ]
     }

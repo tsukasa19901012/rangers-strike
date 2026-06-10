@@ -19,11 +19,12 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "stack_vehicle_on_rush",
       "text": "※これをラッシュしたとき、ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい。",
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
@@ -33,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e99bb7e4b880",
+      "id": "named_e99bb7e4b880e68e83",
       "name": "雷一掃",
       "text": "「SP1」特徴「メカ」を持つ敵軍Sユニットを好きな数選びホールドしてもよい。ただし、選べるユニットの数は、リリース状態の自軍コマンドの数までとする。",
       "trigger": {

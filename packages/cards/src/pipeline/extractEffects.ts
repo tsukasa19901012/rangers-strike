@@ -928,7 +928,7 @@ const PATTERNS: PatternMatch[] = [
   {
     pattern: "ride_without_rc_feature",
     test: (body) =>
-      /^※特徴「([^」]+)」を持つ(?:自軍)?Sユニットは.*ＲＣを持っていなくてもこのビークルにライドできる/.test(
+      /^※特徴「([^」]+)」を持つ(?:自軍)?Sユニットは、?(?:ＲＣ|RC)を持っていなくてもこのビークルにライドできる/.test(
         body,
       ),
     build: (body, segment, trigger) => {
@@ -1233,7 +1233,7 @@ const PATTERNS: PatternMatch[] = [
       id: segment.name ? slugifyEffectId(segment.name) : "end_turn_return_to_rush",
       name: segment.name,
       text: body,
-      trigger: trigger.type === "nc" ? { type: "end_phase" } : trigger,
+      trigger: trigger.type === "nc" ? { type: "on_turn_end" } : trigger,
       optional: true,
       effects: [
         {
@@ -1429,7 +1429,7 @@ const PATTERNS: PatternMatch[] = [
     build: (body, segment, trigger) => ({
       id: "end_turn_stack_on_resident",
       text: body,
-      trigger: trigger.type === "nc" ? { type: "end_phase" } : trigger,
+      trigger: trigger.type === "nc" ? { type: "on_turn_end" } : trigger,
       optional: true,
       effects: [
         {
@@ -1639,6 +1639,796 @@ const PATTERNS: PatternMatch[] = [
         },
       ],
       matchedPattern: "return_self_on_ally_rush_named",
+    }),
+  },
+  {
+    pattern: "stack_da_less_l_on_rush",
+    test: (body) =>
+      /自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "stack_da_less_l_on_rush",
+      name: segment.name,
+      text: body,
+      trigger: trigger.type === "nc" ? { type: "on_rush" } : trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "stack_da_less_l_on_rush",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "stack_da_less_l_on_rush",
+    }),
+  },
+  {
+    pattern: "end_turn_return_hand_wrong_number",
+    test: (body) =>
+      /自軍バトルフェイズを終えるときのバトルエリアでの並び順が、カードに表記された本来のナンバーと違うなら、自分がターンを終えるとき、手札に戻す/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: "unnamed_end_turn_return_hand_wrong_number",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "end_turn_return_hand_wrong_number",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "end_turn_return_hand_wrong_number",
+    }),
+  },
+  {
+    pattern: "destroy_enemy_s_da",
+    test: (body) => /DAを持つ敵軍Sユニットを1体選び撃破/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "destroy_enemy_s_da",
+      name: segment.name,
+      text: body,
+      trigger,
+      condition: {
+        type: "has_target",
+        target: zone("battle", "opponent", { size: "S" }),
+      },
+      effects: [
+        chooseUnit(zone("battle", "opponent", { size: "S" }), 1, [
+          { type: "discard", target: { type: "trigger_source" } },
+        ]),
+      ],
+      matchedPattern: "destroy_enemy_s_da",
+    }),
+  },
+  {
+    pattern: "destroy_rush_original_bp",
+    test: (body) =>
+      /敵軍ラッシュエリアから、?カードに表記された本来のBPが(\d+)以下のユニットを1体選び、?撃破/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const maxBp = Number(body.match(/BPが(\d+)以下/)?.[1] ?? 3000);
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `destroy_rush_orig_bp${maxBp}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        condition: {
+          type: "has_target",
+          target: zone("rush", "opponent", { maxBp }),
+        },
+        effects: [
+          chooseUnit(zone("rush", "opponent", { maxBp }), 1, [
+            { type: "discard", target: { type: "trigger_source" } },
+          ]),
+        ],
+        matchedPattern: "destroy_rush_original_bp",
+      };
+    },
+  },
+  {
+    pattern: "replace_rush_kamen_rider",
+    test: (body) =>
+      /自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "replace_rush_kamen_rider",
+      name: segment.name,
+      text: body,
+      trigger: trigger.type === "nc" ? { type: "on_rush" } : trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "replace_rush_kamen_rider",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "replace_rush_kamen_rider",
+    }),
+  },
+  {
+    pattern: "ally_feature_bp_while_in_field",
+    test: (body) =>
+      /これが自軍エリアにある間、特徴「([^」]+)」を持つすべての自軍ユニットはBP[＋+](\d+)される/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const amount = body.match(/BP[＋+](\d+)される/)?.[1] ?? "1000";
+      return {
+        id: `ally_${feature}_bp_${amount}`,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `ally_${feature}_bp_boost_${amount}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "ally_feature_bp_while_in_field",
+      };
+    },
+  },
+  {
+    pattern: "enter_battle_enemy_bp_to_power",
+    test: (body) =>
+      /自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP(\d+)以下のユニットを1体選び、持ち主のパワーゾーンに送ってもよい/.test(
+        body,
+      ),
+    build: (body, segment) => {
+      const maxBp = Number(body.match(/BP(\d+)以下/)?.[1] ?? 4000);
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `enter_enemy_bp${maxBp}_to_power`,
+        name: segment.name,
+        text: body,
+        trigger: { type: "enter_battle" },
+        optional: true,
+        condition: {
+          type: "has_target",
+          target: zone("battle", "opponent", { maxBp }),
+        },
+        effects: [
+          chooseUnit(zone("battle", "opponent", { maxBp }), 1, [
+            { type: "move", target: { type: "trigger_source" }, to: "power" },
+          ]),
+        ],
+        matchedPattern: "enter_battle_enemy_bp_to_power",
+      };
+    },
+  },
+  {
+    pattern: "return_rush_deploy_enemy_s",
+    test: (body) =>
+      /バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出してもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "return_rush_deploy_enemy_s",
+      name: segment.name,
+      text: body,
+      trigger: trigger.type === "nc" ? { type: "on_leave" } : trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "return_rush_deploy_enemy_s",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "return_rush_deploy_enemy_s",
+    }),
+  },
+  {
+    pattern: "rush_from_discard_count_command",
+    test: (body) =>
+      /自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、自軍捨札の枚数がこれの必要パワーの数字以上なら、これを自軍ラッシュエリアに出してもよい/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: "rush_from_discard_count_command",
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "rush_from_discard_count_command",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "rush_from_discard_count_command",
+    }),
+  },
+  {
+    pattern: "rush_from_discard_count_power",
+    test: (body) =>
+      /自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、自軍捨札の枚数がこれの必要パワーの数字以上/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: "rush_from_discard_count_power",
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "rush_from_discard_count_power",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "rush_from_discard_count_power",
+    }),
+  },
+  {
+    pattern: "destroy_on_win_vs_feature",
+    test: (body) =>
+      /^※これは特徴「([^」]+)」を持つユニットとバトルしたとき、バトルに勝っても撃破される/.test(body),
+    build: (body) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: `destroy_on_win_vs_${feature}`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `destroy_on_win_vs_${feature}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "destroy_on_win_vs_feature",
+      };
+    },
+  },
+  {
+    pattern: "no_attack_from_bp_or_less",
+    test: (body) => /^※これはBP(\d+)以下のユニットにアタックされない/.test(body),
+    build: (body) => {
+      const threshold = body.match(/BP(\d+)以下/)?.[1] ?? "3000";
+      return {
+        id: `no_attack_from_bp${threshold}_or_less`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `no_attack_from_bp${threshold}_or_less`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "no_attack_from_bp_or_less",
+      };
+    },
+  },
+  {
+    pattern: "discard_on_end_turn_battle",
+    test: (body) => /^※これは、自分がターンを終えるときバトルエリアにあれば捨札になる/.test(body),
+    build: (body) => ({
+      id: "unnamed_discard_on_end_turn_battle",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "discard_on_end_turn_battle",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "discard_on_end_turn_battle",
+    }),
+  },
+  {
+    pattern: "becomes_l_if_l_present",
+    test: (body) => /^※自分か相手のLユニットがあれば、これはLユニットになる/.test(body),
+    build: (body) => ({
+      id: "unnamed_becomes_l_if_l_present",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "becomes_l_if_l_present",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "becomes_l_if_l_present",
+    }),
+  },
+  {
+    pattern: "attack_minus_power_bp_boost",
+    test: (body) =>
+      /必要パワーの数字に「－」のあるユニットにアタックするときBP\+(\d+)される/.test(body),
+    build: (body, segment, trigger) => {
+      const amount = Number(body.match(/BP\+(\d+)される/)?.[1] ?? 5000);
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `attack_minus_power_bp_${amount}`,
+        name: segment.name,
+        text: body,
+        trigger: trigger.type === "nc" ? { type: "on_attack" } : trigger,
+        effects: [
+          {
+            type: "modify_bp",
+            target: { type: "trigger_source" },
+            amount,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "attack_minus_power_bp_boost",
+      };
+    },
+  },
+  {
+    pattern: "attack_rush_if_more_units",
+    test: (body) =>
+      /敵軍ラッシュエリアのユニットの数が、敵軍バトルエリアのユニットの数より多ければ、これは敵軍ラッシュエリアのユニットにアタックできる/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "attack_rush_if_more_units",
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "attack_rush_if_more_units",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "attack_rush_if_more_units",
+    }),
+  },
+  {
+    pattern: "attack_held_rush_units",
+    test: (body) => /敵軍ラッシュエリアのホールド状態のユニットにアタックできる/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "attack_held_rush_units",
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "attack_held_rush_units",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "attack_held_rush_units",
+    }),
+  },
+  {
+    pattern: "grant_sp_body_only",
+    test: (body) => /^SP(\d+)$/.test(body.trim()),
+    build: (body, segment, trigger) => {
+      const n = body.trim().match(/^SP(\d+)$/)?.[1] ?? "1";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `grant_sp${n}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [{ type: "grant_keyword", keyword: `SP${n}`, duration: "turn" }],
+        matchedPattern: "grant_sp_body_only",
+      };
+    },
+  },
+  {
+    pattern: "enter_battle_ignore_hold_requirement",
+    test: (body) =>
+      /バトルエリアに出たとき、「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書か/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enter_battle_ignore_hold_requirement",
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_battle_ignore_hold_requirement",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_ignore_hold_requirement",
+    }),
+  },
+  {
+    pattern: "hold_turn_only_entry",
+    test: (body) => /^※これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない/.test(body),
+    build: (body) => ({
+      id: "unnamed_hold_turn_only_entry",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "hold_turn_only_entry",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "hold_turn_only_entry",
+    }),
+  },
+  {
+    pattern: "treat_as_s_vehicle_while_held",
+    test: (body) =>
+      /^※これは、自軍エリアでホールド状態かライドされている間、Sビークルとして扱う/.test(body),
+    build: (body) => ({
+      id: "unnamed_treat_as_s_vehicle_while_held",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "treat_as_s_vehicle_while_held",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "treat_as_s_vehicle_while_held",
+    }),
+  },
+  {
+    pattern: "ally_feature_attacked_bp_boost",
+    test: (body) =>
+      /^※これが自軍エリアにある間、特徴「([^」]+)」を持つ自軍ユニットは、アタックされるときBP\+(\d+)される/.test(
+        body,
+      ),
+    build: (body) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const amount = body.match(/BP\+(\d+)される/)?.[1] ?? "3000";
+      return {
+        id: `ally_${feature}_attacked_bp_${amount}`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `ally_${feature}_attacked_bp_${amount}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "ally_feature_attacked_bp_boost",
+      };
+    },
+  },
+  {
+    pattern: "deck_top_hold_command",
+    test: (body) =>
+      /自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置ってもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "deck_top_hold_command",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "choose",
+          kind: "optional_deck_draw",
+          valid: { type: "zone", zone: "deck", owner: "self" },
+          count: 1,
+          then: [{ type: "hold_command", target: { type: "trigger_source" } }],
+        },
+      ],
+      matchedPattern: "deck_top_hold_command",
+    }),
+  },
+  {
+    pattern: "flip_enemy_power_damage",
+    test: (body) =>
+      /敵軍パワーゾーンのダメージになっているカードを1枚選び、オモテにしてもよい/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "flip_enemy_power_damage",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "flip_enemy_power_damage",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "flip_enemy_power_damage",
+    }),
+  },
+  {
+    pattern: "bp_debuff_per_non_ot_command",
+    test: (body) =>
+      /コマンドゾーンにある「OT」以外のコマンド1つにつき「BP-1000」され、BP0以下のとき撃破される/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: "unnamed_bp_debuff_per_non_ot_command",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "bp_debuff_per_non_ot_command",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "bp_debuff_per_non_ot_command",
+    }),
+  },
+  {
+    pattern: "combo_l_grant_ability",
+    test: (body) =>
+      /このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `combo_l_ability_${hashEffectText(body).slice(0, 12)}`,
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "combo_l_grant_ability",
+    }),
+  },
+  {
+    pattern: "combo_l_grant_effect",
+    test: (body) =>
+      /これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `combo_l_effect_${hashEffectText(body).slice(0, 12)}`,
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "combo_l_grant_effect",
+    }),
+  },
+  {
+    pattern: "damage_gate_battle_entry",
+    test: (body) =>
+      /^※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない/.test(body),
+    build: (body) => ({
+      id: "unnamed_damage_gate_battle_entry",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "damage_gate_battle_entry",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "damage_gate_battle_entry",
+    }),
+  },
+  {
+    pattern: "self_destroy_low_damage_remaining",
+    test: (body) =>
+      /^※自分がターンを終えるとき、ゲームに負けるまでの自軍ダメージが残り3点以下なら、これを撃破する/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: "unnamed_self_destroy_low_damage_remaining",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "self_destroy_low_damage_remaining",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "self_destroy_low_damage_remaining",
+    }),
+  },
+  {
+    pattern: "v_commander_hold_entry",
+    test: (body) =>
+      /^※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「Vコマンダー」をホールドしなければバトルエリアに出られない/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: "unnamed_v_commander_hold_entry",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "v_commander_hold_entry",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "v_commander_hold_entry",
+    }),
+  },
+  {
+    pattern: "register_stay_on_power_discard",
+    test: (body) =>
+      /^※これがユニットでなくなるとき、オモテ向きの自軍パワーから特徴「([^」]+)」を持つカードを1枚選び捨札にすれば、その場に留まる/.test(
+        body,
+      ),
+    build: (body) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: `register_stay_${feature}`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `register_stay_on_power_discard_${feature}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "register_stay_on_power_discard",
+      };
+    },
+  },
+  {
+    pattern: "destroy_strike_match_power",
+    test: (body) =>
+      /ストライクして相手がパワーゾーンのカードをウラ返すとき.*必要パワーの数字が同じ敵軍ユニットを1体選び撃破/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "destroy_strike_match_power",
+      name: segment.name,
+      text: body,
+      trigger: trigger.type === "nc" ? { type: "on_strike" } : trigger,
+      condition: {
+        type: "has_target",
+        target: zone("battle", "opponent"),
+      },
+      effects: [
+        chooseUnit(zone("battle", "opponent"), 1, [
+          { type: "discard", target: { type: "trigger_source" } },
+        ]),
+      ],
+      matchedPattern: "destroy_strike_match_power",
+    }),
+  },
+  {
+    pattern: "deck_search_feature_to_power",
+    test: (body) =>
+      /自軍山札を見て、特徴「([^」]+)」を持つMユニットのカードを1枚選び、自軍パワーゾーンに置いてもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "deck_search_feature_to_power",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "choose",
+          kind: "optional_deck_draw",
+          valid: { type: "zone", zone: "deck", owner: "self" },
+          count: 1,
+          then: [{ type: "move", target: { type: "trigger_source" }, to: "power" }],
+        },
+      ],
+      matchedPattern: "deck_search_feature_to_power",
+    }),
+  },
+  {
+    pattern: "hand_rush_feature_s_on_battle",
+    test: (body) =>
+      /バトルエリアに出るとき、自分の手札から特徴「([^」]+)」を持つ.*Sユニットのカードを1枚選び/.test(body),
+    build: (body, segment) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `hand_rush_${feature}_s`,
+        name: segment.name,
+        text: body,
+        trigger: { type: "enter_battle" },
+        optional: true,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `hand_rush_${feature}_s_on_battle`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "hand_rush_feature_s_on_battle",
+      };
+    },
+  },
+  {
+    pattern: "block_enemy_number_match_entry",
+    test: (body) =>
+      /敵軍ターン中、カードに表記された本来のナンバーが.*バトルエリアに出られない/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "block_enemy_number_match_entry",
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "block_enemy_number_match_entry",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "block_enemy_number_match_entry",
+    }),
+  },
+  {
+    pattern: "counter_return_rush_to_deck",
+    test: (body) =>
+      /^※カウンター/.test(body) &&
+      /ラッシュされたとき発動できる/.test(body) &&
+      /そのユニットを持ち主の山札の上に戻す/.test(body),
+    build: (body) => ({
+      id: noteEffectIdFromBody(body),
+      text: body,
+      trigger: { type: "operation", timing: "counter" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "counter_return_rush_to_deck",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "counter_return_rush_to_deck",
+    }),
+  },
+  {
+    pattern: "counter_skip_battle_phase",
+    test: (body) =>
+      /^※カウンター/.test(body) &&
+      /ラッシュされたとき発動できる/.test(body) &&
+      /このターン、相手はバトルフェイズを飛ばす/.test(body),
+    build: (body) => ({
+      id: noteEffectIdFromBody(body),
+      text: body,
+      trigger: { type: "operation", timing: "counter" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "counter_skip_battle_phase",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "counter_skip_battle_phase",
+    }),
+  },
+  {
+    pattern: "cannot_counter_on_attack",
+    test: (body) =>
+      /アタックするとき、相手はカウンターを発動できない/.test(body) &&
+      !/コンビネーション/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "cannot_counter_on_attack",
+      name: segment.name,
+      text: body,
+      trigger: trigger.type === "nc" ? { type: "on_attack" } : trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "cannot_counter_on_attack",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "cannot_counter_on_attack",
     }),
   },
   {

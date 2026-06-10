@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "note_wb",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは自軍バトルフェイズ中、カテゴリにWBが追加される。",
       "trigger": {
         "type": "nc"
@@ -29,7 +29,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "enemy_cannot_attack",
       "text": "※これは敵軍ユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -43,15 +43,18 @@
       ]
     },
     {
-      "id": "named_e383aae383b3",
+      "id": "named_e383aae383b3e382aee383bb",
       "name": "リンギ・がんじがため",
       "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒敵軍ユニットを1体選ぶ。そうしたとき、選んだユニットがリリース状態ならホールドし、ホールド状態なら撃破する。ただし、必要パワーの数字が、自軍捨札にあるカテゴリを2つ以上持つカードの枚数以下のユニットしか選べない。",
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "combo_l_effect_e38193e3828c",
+          "duration": "permanent"
         }
       ]
     }

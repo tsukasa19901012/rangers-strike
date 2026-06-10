@@ -21,14 +21,17 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "rush_from_discard_count_command",
       "text": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、自軍捨札の枚数がこれの必要パワーの数字以上なら、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "rush_from_discard_count_command",
+          "duration": "permanent"
         }
       ]
     }

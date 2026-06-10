@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_alias_named_e38396e383ab",
+      "id": "unnamed_alias_named_e38396e383abe383bce383ad",
       "text": "※これは「ブルーロウガン」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -27,13 +27,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e38396e383ab",
+          "keyword": "alias_named_e38396e383abe383bce383ad",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e5bf8de6b395",
+      "id": "named_e5bf8de6b395e6b0b4e8b5b0",
       "name": "忍法水走り",
       "text": "敵軍ラッシュエリアのユニットの数が、敵軍バトルエリアのユニットの数より多ければ、これは敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
@@ -41,7 +41,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "attack_rush_if_more_units",
+          "duration": "permanent"
         }
       ]
     }

@@ -24,6 +24,15 @@
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -44,19 +53,10 @@
             }
           ]
         }
-      ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      }
+      ]
     },
     {
-      "id": "named_e99787e38292",
+      "id": "named_e99787e38292e68cafe3828a",
       "name": "闇を振り払う心",
       "text": "自軍パワーのオモテ向きのカードと自軍コマンドゾーンのカードにDA持つカードが1枚もなければ、これは「SP1」になる。また、DAを持つ敵軍ユニットがあれば、これはBP＋3000される。",
       "trigger": {

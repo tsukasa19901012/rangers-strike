@@ -31,15 +31,18 @@
       ]
     },
     {
-      "id": "named_e6b885e8bc9d",
+      "id": "named_e6b885e8bc9de9a195e78fbe",
       "name": "清輝顕現バブルキャプチャー",
       "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍バトルエリアの1番目のユニットは、ラッシュエリアに戻せない。",
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "combo_l_effect_e38193e3828c",
+          "duration": "permanent"
         }
       ]
     }

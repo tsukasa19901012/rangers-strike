@@ -20,11 +20,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「ギンガイエロー」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -48,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e99683e58589",
+      "id": "named_e99683e58589e6989fe78da3",
       "name": "閃光星獣剣",
       "text": "「SP1」自軍捨札を1枚選びゲームから除外してもよい。そうしたとき、敵軍バトルエリアから、特徴「メカ」を持つホールド状態のユニットを1体選び、ゲームから除外する。",
       "trigger": {

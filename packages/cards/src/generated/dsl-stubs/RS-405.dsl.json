@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_bp1000",
+      "id": "cannot_attack_bp1000_or_less",
       "text": "※これはBP1000以下のユニットにアタックできない。",
       "trigger": {
         "type": "nc"
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e58589e9809f",
+      "id": "named_e58589e9809fe68bb3e383a9",
       "name": "光速拳ライトニングフィスト",
       "text": "相手に1点ダメージを与える。(この効果はライドオフしたとき、ナンバーに関係なく発動する)",
       "trigger": {

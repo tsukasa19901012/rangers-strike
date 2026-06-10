@@ -19,11 +19,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーNEW電王SF」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -47,7 +56,7 @@
       ]
     },
     {
-      "id": "named_e69c80e5889d",
+      "id": "named_e69c80e5889de381abe8a880",
       "name": "最初に言っておく",
       "text": "これをラッシュしたとき、相手に1点ダメージを与える。",
       "trigger": {

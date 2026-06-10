@@ -18,14 +18,16 @@
   ],
   "effects": [
     {
-      "id": "note_bp3000",
+      "id": "no_attack_from_bp3000_or_less",
       "text": "※これはBP3000以下のユニットにアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_bp3000_or_less",
+          "duration": "permanent"
         }
       ]
     },

@@ -25,6 +25,15 @@
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -45,19 +54,10 @@
             }
           ]
         }
-      ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      }
+      ]
     },
     {
-      "id": "named_e38387e383a5",
+      "id": "named_e38387e383a5e382a2e383ab",
       "name": "デュアルクラッシャー・ドリルヘッド",
       "text": "これは特徴「メカ」を持つユニットにアタックするときBP＋4000される。",
       "trigger": {

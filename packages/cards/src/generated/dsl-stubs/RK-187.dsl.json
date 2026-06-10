@@ -18,11 +18,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーJ」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -46,7 +55,7 @@
       ]
     },
     {
-      "id": "named_e382b8e383a3",
+      "id": "named_e382b8e383a3e383b3e3839c",
       "name": "ジャンボライダーキック",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、追加条件に「自軍合体ユニットを捨札にする」と表記されていないDAを持つ敵軍Lユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {

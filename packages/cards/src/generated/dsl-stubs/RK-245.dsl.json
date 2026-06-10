@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "rush_prefer_hold",
       "text": "※これはラッシュするとき、可能ならホールド状態で置く。",
       "trigger": {
         "type": "nc"
@@ -46,12 +46,24 @@
       ]
     },
     {
-      "id": "named_e38380e383bc",
+      "id": "named_e38380e383bce382afe3838d",
       "name": "ダークネスムーンブレイク",
       "text": "自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
         "type": "enter_battle"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",

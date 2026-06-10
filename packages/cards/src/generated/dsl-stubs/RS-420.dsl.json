@@ -17,19 +17,21 @@
   ],
   "effects": [
     {
-      "id": "note_l_l",
+      "id": "unnamed_becomes_l_if_l_present",
       "text": "※自分か相手のLユニットがあれば、これはLユニットになる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "becomes_l_if_l_present",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382bae38390",
+      "id": "named_e382bae38390e382bae38390",
       "name": "ズバズバンキック",
       "text": "これが自軍ラッシュエリアにある間、自分が特徴「メカ」を持つLユニットをラッシュしたとき、その追加条件を満たすために捨札にした合体ユニット1体につき、敵軍Sユニットを1体選び撃破してもよい。",
       "trigger": {

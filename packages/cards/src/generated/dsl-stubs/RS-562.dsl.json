@@ -44,7 +44,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193_2",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは自軍捨札にあるユニットカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
         "type": "nc"
@@ -61,6 +61,11 @@
       "kind": "note",
       "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
       "rule": "require_command_hold_entry"
+    },
+    {
+      "kind": "note",
+      "text": "※これは敵軍バトルエリアのユニットにアタックできない。",
+      "rule": "cannot_attack_enemy_battle"
     }
   ],
   "implementation": {

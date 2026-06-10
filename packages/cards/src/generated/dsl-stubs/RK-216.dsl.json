@@ -17,15 +17,18 @@
   ],
   "effects": [
     {
-      "id": "named_e3838fe383bc",
+      "id": "named_e3838fe383bce3838834e280",
       "name": "ハート4―フロート",
       "text": "自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒このターンを終えるとき、これが自軍バトルエリアにあれば、これを手札に戻す。",
       "trigger": {
-        "type": "nc"
+        "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "replace_rush_kamen_rider",
+          "duration": "turn"
         }
       ]
     }

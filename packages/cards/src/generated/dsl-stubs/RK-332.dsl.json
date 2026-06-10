@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "note_fx_1_bp_100",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは特徴「ドラゴン」を持つ自軍ユニット1体につきBP+1000される。",
       "trigger": {
         "type": "nc"
@@ -37,6 +37,14 @@
       "text": "特徴「ドラゴン」を持つユニットからコンビネーションしたとき発動できる⇒敵軍バトルエリアから、これがコンビネーションしているユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
       "trigger": {
         "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
       },
       "effects": [
         {
@@ -57,15 +65,7 @@
             }
           ]
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      }
+      ]
     }
   ],
   "implementation": {

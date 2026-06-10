@@ -40,6 +40,17 @@
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
       "effects": [
         {
           "type": "choose",
@@ -62,18 +73,7 @@
             }
           ]
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      }
+      ]
     }
   ],
   "unnamedRules": [

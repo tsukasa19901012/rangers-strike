@@ -21,7 +21,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_alias_named_e38396e383ab",
+      "id": "unnamed_alias_named_e38396e383abe383bce382b9",
       "text": "※これは「ブルースローワー＋イエローアーマー＋ピンクエイダー」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -29,13 +29,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e38396e383ab",
+          "keyword": "alias_named_e38396e383abe383bce382b9",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382b1e3839f",
+      "id": "named_e382b1e3839fe382abe383ab",
       "name": "ケミカルディスチャージャー",
       "text": "これが自軍エリアにある間、敵軍ターン中、オモテ向きの自軍パワーがウラ向きになるとき、ETの自軍コマンドを2つ選びホールドしてもよい。そうしたとき、そのダメージは無効になる。",
       "trigger": {

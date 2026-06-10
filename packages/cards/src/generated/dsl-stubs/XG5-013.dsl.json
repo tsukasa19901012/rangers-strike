@@ -9,17 +9,14 @@
   "powerCost": 5,
   "text": "自軍捨札から、DAを持つカードを1枚選び手札に加える。",
   "rawText": "自軍捨札から、DAを持つカードを1枚選び手札に加える。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
-      "id": "body_interpret",
+      "id": "named_e5868de7949fe382abe383bc",
+      "name": "再生カード",
       "text": "自軍捨札から、DAを持つカードを1枚選び手札に加える。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "effects": [
         {
@@ -27,5 +24,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

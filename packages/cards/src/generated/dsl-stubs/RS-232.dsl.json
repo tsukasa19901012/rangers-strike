@@ -24,6 +24,15 @@
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -44,19 +53,10 @@
             }
           ]
         }
-      ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      }
+      ]
     },
     {
-      "id": "named_e382a2e38390",
+      "id": "named_e382a2e38390e383ace382a6",
       "name": "アバレウィング",
       "text": "これがアタックするとき、これはBP+1000され、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
       "trigger": {

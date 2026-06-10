@@ -19,19 +19,21 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "unnamed_v_commander_hold_entry",
       "text": "※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「Vコマンダー」をホールドしなければバトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "v_commander_hold_entry",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e383aae3839c",
+      "id": "named_e383aae3839ce383abe38390",
       "name": "リボルバーミサイル",
       "text": "これがバトルエリアに出たとき、敵軍ユニットを1体選び、敵軍パワーゾーンからカードを1枚選ぶ。そうしたとき、相手はどちらかを選び捨札にする。",
       "trigger": {

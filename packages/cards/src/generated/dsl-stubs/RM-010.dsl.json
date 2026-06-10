@@ -9,17 +9,13 @@
   "powerCost": 2,
   "text": "自軍山札からビークルカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
   "rawText": "自軍山札からビークルカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
       "id": "deck_to_hand",
       "text": "自軍山札からビークルカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "optional": false,
       "effects": [
@@ -44,5 +40,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

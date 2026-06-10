@@ -34,11 +34,20 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「ブルービート」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -62,7 +71,7 @@
       ]
     },
     {
-      "id": "named_e382b9e383bc",
+      "id": "named_e382b9e383bce38391e383bc",
       "name": "スーパーファイナルブロー",
       "text": "これをラッシュしたとき、次の効果を発動できる⇒ユニット1体につきBP2000として、特徴「昆虫」を持つ自軍ユニットの数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破する。",
       "trigger": {

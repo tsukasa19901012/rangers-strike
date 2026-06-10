@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "power_named_e382a4e3839ee382b8e383b3_bp1000_sp1",
       "text": "※これは、自軍パワーゾーンのオモテ向きのカードのうち、特徴「イマジン」を持つユニットカード1枚につきBP+1000され、BP3000以上なら「SP1/4」になる。",
       "trigger": {
         "type": "nc"
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_feature_bp_sp_named_e382a4e3839e_1000_3000_sp1",
+          "keyword": "power_feature_bp_sp_named_e382a4e3839ee382b8e383b3_1000_3000_sp1",
           "duration": "permanent"
         }
       ]

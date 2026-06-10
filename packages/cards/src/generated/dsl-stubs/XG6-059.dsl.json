@@ -61,7 +61,7 @@
       ]
     },
     {
-      "id": "note_bp3000",
+      "id": "no_attack_from_bp3000",
       "text": "※これはBP3000以上のユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -85,6 +85,11 @@
       "kind": "note",
       "text": "※ウイング",
       "rule": "wing"
+    },
+    {
+      "kind": "note",
+      "text": "※これは毎ターン、可能ならバトルエリア に出る。",
+      "rule": "auto_battle_entry_each_turn"
     }
   ],
   "implementation": {

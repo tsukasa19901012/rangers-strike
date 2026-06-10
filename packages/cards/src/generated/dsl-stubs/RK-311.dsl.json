@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは自軍ユニットの数が敵軍ユニットの数より多いときアタックできない。",
       "trigger": {
         "type": "nc"
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e4bfbae381ae",
+      "id": "named_e4bfbae381aee5bcb7e38195",
       "name": "俺の強さにお前が泣いた",
       "text": "次の相手ターン、バトルエリアに出た敵軍Sユニットは、可能ならこれにアタックする。",
       "trigger": {

@@ -1,18 +1,17 @@
 {
-  "generatedAt": "2026-06-10T02:07:26.828Z",
+  "generatedAt": "2026-06-10T03:40:26.928Z",
   "grades": [
-    "A",
-    "B",
-    "E"
+    "C",
+    "D"
   ],
   "prefix": null,
-  "batchTargets": 354,
-  "batchCompiled": 354,
-  "batchValidationOk": 354,
+  "batchTargets": 1316,
+  "batchCompiled": 1316,
+  "batchValidationOk": 1314,
   "totalEntries": 1670,
   "totalDslFiles": 1670,
-  "validationOk": 1670,
-  "validationFailed": 0,
+  "validationOk": 1668,
+  "validationFailed": 2,
   "wikiMissing": 0,
   "dryRun": false,
   "outputDir": "src/generated/dsl-stubs"

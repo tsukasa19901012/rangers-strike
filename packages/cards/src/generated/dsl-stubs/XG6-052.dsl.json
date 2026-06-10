@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e3838fe382a4",
+      "id": "named_e3838fe382a4e38391e383bc",
       "name": "ハイパークロックアップ",
       "text": "自軍ターン中、これが自軍バトルエリアにある間、敵軍バトルエリアにあるSユニットの効果名を持たないテキストは無効になり、発動もできない。",
       "trigger": {
@@ -43,6 +43,13 @@
           "type": "interpret_effect"
         }
       ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは相手に選ばれない。",
+      "rule": "not_selectable"
     }
   ],
   "implementation": {

@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "note_bp2000_s",
+      "id": "no_attack_enemy_s_bp2000",
       "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -50,6 +50,14 @@
       "text": "これが特徴「メカ」と「警察」を持つSユニットからコンビネーションするとき、次の効果を発動できる⇒敵軍バトルエリアから、自軍コマンドゾーンにないカテゴリを持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
         "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
       },
       "effects": [
         {
@@ -70,15 +78,7 @@
             }
           ]
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      }
+      ]
     }
   ],
   "unnamedRules": [

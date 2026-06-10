@@ -17,19 +17,21 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "unnamed_v_commander_hold_entry",
       "text": "※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「Vコマンダー」をホールドしなければバトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "v_commander_hold_entry",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e383ace38383",
+      "id": "named_e383ace38383e382afe382b9",
       "name": "レックスレーザー",
       "text": "これをラッシュしたとき、カードに表記された本来のBPが3000のユニットをすべて持ち主のパワーゾーンに送る。",
       "trigger": {

@@ -23,11 +23,20 @@
   },
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "discard_power_on_rush",
       "text": "※これをラッシュしたとき、自軍パワーゾーンにダメージ以外のカードがあれば、1枚選び捨札にする。",
       "trigger": {
         "type": "on_rush"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "power",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",

@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e38395e382a9",
+      "id": "named_e38395e382a9e383bce383a1",
       "name": "フォーメーションα",
       "text": "これが自軍バトルエリアにある間、敵軍ターン中、カードに表記された本来のナンバーが自軍バトルエリアの「ゼクトルーパー」の数と同じ敵軍Sユニットは、バトルエリアに出られない。",
       "trigger": {
@@ -39,7 +39,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "block_enemy_number_match_entry",
+          "duration": "permanent"
         }
       ]
     }

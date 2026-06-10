@@ -23,17 +23,17 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "return_self_on_ally_rush_e280bbe887aa",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
-      "id": "note_named_e280bbe887aa_2",
+      "id": "note_e280bbe887aae8bb8de38391",
       "text": "※自軍パワーゾーンからダメージ以外のカードを2枚選んで捨札にしなければバトルエリアに出られない。",
       "trigger": {
         "type": "nc"

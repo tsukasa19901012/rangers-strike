@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-06-10T03:05:23.399Z",
-  "scanned": 114,
-  "finalized": 114,
-  "fromDelegate": 24,
-  "fromEnqueue": 90,
+  "generatedAt": "2026-06-10T03:40:28.544Z",
+  "scanned": 1,
+  "finalized": 1,
+  "fromDelegate": 1,
+  "fromEnqueue": 0,
   "note": "G2/G3 finalize-effect-primitives: stub delegates → interpret_effect"
 }

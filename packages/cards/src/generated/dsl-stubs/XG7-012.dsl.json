@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_named_e78886e7ab9c",
+      "id": "unnamed_alias_named_e78886e7ab9ce38386e382a3",
       "text": "※これは「爆竜ティラノサウルス」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -40,13 +40,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e78886e7ab9c",
+          "keyword": "alias_named_e78886e7ab9ce38386e382a3",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e88d92e381b6",
+      "id": "named_e88d92e381b6e3828be38380",
       "name": "荒ぶるダイノガッツ",
       "text": "これが自軍バトルエリアにある間、1ターンごとに1度だけ、次の効果を発動できる⇒自軍ユニットが撃破されたとき、そのユニットを捨札にするかわりに、自軍山札の上からそのユニットの必要パワーの数字と同じ枚数を捨札にして、その場に留めてもよい。",
       "trigger": {

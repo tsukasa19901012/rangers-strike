@@ -18,11 +18,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャマン」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -46,7 +55,7 @@
       ]
     },
     {
-      "id": "named_e6bf80e68092",
+      "id": "named_e6bf80e68092e696ace3828a",
       "name": "激怒斬り",
       "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、「サムライマン」以外の自軍ユニットがユニットサイズの違うユニットとバトルして撃破された時、敵軍ユニットを1体選び撃破してもよい。",
       "trigger": {

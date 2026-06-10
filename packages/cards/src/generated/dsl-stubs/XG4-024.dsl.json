@@ -13,19 +13,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "effects": [
-    {
-      "id": "body_interpret",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分は1枚ドローしてもよい。そうしたとき、相手の山札の上から1枚を敵軍ゾーンにオモテ向きで置く。",
-      "trigger": {
-        "type": "nc"
-      },
-      "effects": [
-        {
-          "type": "interpret_effect"
-        }
-      ]
-    }
-  ]
+  }
 }

@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193_2",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、カード名に「カブト」「ザビー」「ドレイク」「サソード」を含むオモテ向きの自軍パワーがそれぞれあれば、SP1になる。",
       "trigger": {
         "type": "nc"
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e5a4a9e381ae",
+      "id": "named_e5a4a9e381aee98193",
       "name": "天の道",
       "text": "これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、OTを持つ常駐オペレーションのカードを1枚選び自軍常駐置き場に配置してもよい。",
       "trigger": {
@@ -56,6 +56,13 @@
           "type": "interpret_effect"
         }
       ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは相手に選ばれない。",
+      "rule": "not_selectable"
     }
   ],
   "implementation": {

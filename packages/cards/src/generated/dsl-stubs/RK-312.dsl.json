@@ -38,6 +38,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      },
       "effects": [
         {
           "type": "choose",
@@ -57,15 +65,7 @@
             }
           ]
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      }
+      ]
     }
   ],
   "unnamedRules": [

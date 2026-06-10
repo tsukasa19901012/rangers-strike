@@ -11,7 +11,7 @@
   "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） BP8000以下のユニットがラッシュされたとき発動できる⇒そのユニットを持ち主の山札の上に戻す。",
   "effects": [
     {
-      "id": "note_bp8000",
+      "id": "note_e280bbe382abe382a6e383b3",
       "text": "※カウンター（これは敵軍ターン中にのみ使用できる） BP8000以下のユニットがラッシュされたとき発動できる⇒そのユニットを持ち主の山札の上に戻す。",
       "trigger": {
         "type": "operation",
@@ -19,7 +19,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "counter_return_rush_to_deck",
+          "duration": "permanent"
         }
       ]
     }

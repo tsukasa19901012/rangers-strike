@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_alias_named_e383ace38383",
+      "id": "unnamed_alias_named_e383ace38383e38389e382b5",
       "text": "※これは「レッドサルダー」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -28,13 +28,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e383ace38383",
+          "keyword": "alias_named_e383ace38383e38389e382b5",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e781abe7828e",
+      "id": "named_e781abe7828ee381a4e38280",
       "name": "火炎つむじの術",
       "text": "「SP1」 敵軍ユニットの数と同じ枚数、敵軍山札の上からオモテにしてもよい。そうしたとき、オモテにしたカードと同じカード名の敵軍ユニットをすべて撃破する。そして相手はオモテにしたカードの中から、撃破されたユニットの数と同じ枚数まで好きな枚数選び手札に加えた後、それ以外を山札の下に好きな順で戻す。",
       "trigger": {

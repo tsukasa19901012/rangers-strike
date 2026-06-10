@@ -19,13 +19,11 @@ const reportPath = join(root, "pipeline/data/stub-effect-remigration.json");
 function isRemigratable(primitives: EffectPrimitive[]): boolean {
   if (primitives.length === 0) return false;
   if (primitives.every((p) => p.type === "enqueue_trigger")) return true;
-  if (
-    primitives.length === 1 &&
-    primitives[0]?.type === "grant_keyword" &&
-    primitives[0].keyword.startsWith("effect_")
-  ) {
-    return true;
-  }
+  if (primitives.length !== 1) return false;
+  const only = primitives[0];
+  if (!only) return false;
+  if (only.type === "interpret_effect") return true;
+  if (only.type === "grant_keyword" && only.keyword.startsWith("effect_")) return true;
   return false;
 }
 
@@ -33,6 +31,9 @@ function remigrateEffect(
   effect: NonNullable<CardDocument["effects"]>[number],
 ): { changed: boolean; to?: string } {
   if (!isRemigratable(effect.effects)) return { changed: false };
+
+  const wasInterpretOnly =
+    effect.effects.length === 1 && effect.effects[0]?.type === "interpret_effect";
 
   const rematched = rematchExtractedEffect(effect.text ?? "", {
     name: effect.name,
@@ -56,6 +57,8 @@ function remigrateEffect(
     if (rematched.condition !== undefined) effect.condition = rematched.condition;
     return { changed: true, to: rematched.effects.map((p) => p.type).join("+") };
   }
+
+  if (wasInterpretOnly) return { changed: false };
 
   if (isRemigratable(effect.effects)) {
     effect.effects = [{ type: "interpret_effect" }];

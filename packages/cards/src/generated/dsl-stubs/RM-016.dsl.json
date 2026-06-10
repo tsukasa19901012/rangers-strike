@@ -9,17 +9,14 @@
   "powerCost": 13,
   "text": "自軍パワーゾーンのダメージになってるカードをすべてオモテにする。そして、相手は自分自身の山札を見て、ユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。その後、相手は自分自身の山札をシャッフルする。",
   "rawText": "自軍パワーゾーンのダメージになってるカードをすべてオモテにする。そして、相手は自分自身の山札を見て、ユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。その後、相手は自分自身の山札をシャッフルする。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
-      "id": "body_interpret",
+      "id": "named_e382b9e382bfe383bce38394",
+      "name": "スターピース",
       "text": "自軍パワーゾーンのダメージになってるカードをすべてオモテにする。そして、相手は自分自身の山札を見て、ユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。その後、相手は自分自身の山札をシャッフルする。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "effects": [
         {
@@ -27,5 +24,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

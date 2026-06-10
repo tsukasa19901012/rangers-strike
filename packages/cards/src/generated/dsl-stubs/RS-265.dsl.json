@@ -22,11 +22,20 @@
   },
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "discard_power_on_rush",
       "text": "※これをラッシュしたとき、自軍パワーゾーンにダメージ以外のカードがあれば、1枚選び捨札にする。",
       "trigger": {
         "type": "on_rush"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "power",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -49,7 +58,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a6",
+      "id": "named_e383a9e382a6e383b3e38389",
       "name": "ラウンドレーダー",
       "text": "これが自軍ラッシュエリアにある間、相手が手札からオペレーションカードを使用したとき、敵軍パワーゾーンからカードを2枚まで選び捨札にしてもよい。",
       "trigger": {

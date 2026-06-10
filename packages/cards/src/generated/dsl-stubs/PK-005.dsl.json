@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e69982e381ae",
+      "id": "named_e69982e381aee58897e8bb8a",
       "name": "時の列車",
       "text": "これは必要パワーの数字に「－」のあるユニットにアタックするときBP+5000される。",
       "trigger": {
@@ -30,7 +30,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 5000,
+          "duration": "turn"
         }
       ]
     }

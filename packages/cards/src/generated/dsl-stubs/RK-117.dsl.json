@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_fx_1_bp_1000",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはホールド状態の敵軍ユニット1体につきBP+1000される。",
       "trigger": {
         "type": "nc"
@@ -36,6 +36,14 @@
       "text": "｢デストワイルダー｣からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、ホールド状態のSユニットを1体選び撃破してもよい。",
       "trigger": {
         "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
       },
       "effects": [
         {
@@ -56,15 +64,7 @@
             }
           ]
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      }
+      ]
     }
   ],
   "implementation": {

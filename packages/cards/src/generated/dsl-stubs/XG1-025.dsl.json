@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_54e3838fe383",
+      "id": "named_54e3838fe383b3e3839ee383",
       "name": "Tハンマー",
       "text": "SP1",
       "trigger": {
@@ -41,7 +41,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
         }
       ]
     }

@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e3828ce38292",
       "text": "※これをラッシュしたとき、Sユニットをすべてリリースする。",
       "trigger": {
         "type": "on_rush"
@@ -29,15 +29,18 @@
       ]
     },
     {
-      "id": "named_e4be8de6ada6",
+      "id": "named_e4be8de6ada6e8a385",
       "name": "侍武装",
       "text": "自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍コマンドを1つ選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "stack_da_less_l_on_rush",
+          "duration": "permanent"
         }
       ]
     }

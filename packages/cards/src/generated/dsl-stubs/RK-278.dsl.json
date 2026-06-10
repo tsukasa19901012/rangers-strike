@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは自軍捨札に特徴「女」を持つユニットカードがあれば次の能力を得る⇒レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
       "trigger": {
         "type": "on_destroy"
@@ -37,6 +37,14 @@
       "text": "「ダークウイング」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、特徴の数が1番少ないSユニットを1体選び撃破する。",
       "trigger": {
         "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
       },
       "effects": [
         {
@@ -57,15 +65,7 @@
             }
           ]
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      }
+      ]
     }
   ],
   "implementation": {

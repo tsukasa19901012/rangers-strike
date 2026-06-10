@@ -25,6 +25,15 @@
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -45,19 +54,10 @@
             }
           ]
         }
-      ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      }
+      ]
     },
     {
-      "id": "named_e3839ee382b8",
+      "id": "named_e3839ee382b8e3839ce383ab",
       "name": "マジボルト",
       "text": "自分は2枚までドローしてもよい。そうしたとき、相手は1枚ドローしてもよい。",
       "trigger": {

@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない。",
       "trigger": {
         "type": "nc"

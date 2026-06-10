@@ -32,14 +32,16 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "unnamed_hold_turn_only_entry",
       "text": "※これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "hold_turn_only_entry",
+          "duration": "permanent"
         }
       ]
     },
@@ -49,6 +51,14 @@
       "text": "これが自軍ラッシュエリアにある間、自軍エンドフェイズ中、次の効果を好きなだけ発動できる⇒自分の手札を1枚選び捨札にする。そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する。",
       "trigger": {
         "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
       },
       "effects": [
         {
@@ -69,15 +79,7 @@
             }
           ]
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      }
+      ]
     }
   ],
   "unnamedRules": [

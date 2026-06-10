@@ -9,19 +9,14 @@
   "powerCost": 5,
   "text": "自軍ラッシュエリアから、MAを持つ自軍Sユニットを１体選ぶ。そうしたとき、選んだユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
   "rawText": "自軍ラッシュエリアから、MAを持つ自軍Sユニットを１体選ぶ。そうしたとき、選んだユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
       "id": "hold_enemy_s_to_power",
       "text": "自軍ラッシュエリアから、MAを持つ自軍Sユニットを１体選ぶ。そうしたとき、選んだユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
-      "optional": true,
       "condition": {
         "type": "has_target",
         "target": {
@@ -33,6 +28,7 @@
           }
         }
       },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -58,5 +54,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

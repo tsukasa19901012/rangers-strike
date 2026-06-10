@@ -39,6 +39,14 @@
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      },
       "effects": [
         {
           "type": "choose",
@@ -58,18 +66,10 @@
             }
           ]
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      }
+      ]
     },
     {
-      "id": "note_named_e280bbe8b5a4",
+      "id": "note_e280bbe8b5a4e69687e5ad97",
       "text": "※赤文字は公式発表のエラッタ修正の部分",
       "trigger": {
         "type": "nc"

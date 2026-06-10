@@ -18,11 +18,12 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "stack_vehicle_on_rush",
       "text": "※これをラッシュしたとき、ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい。",
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
@@ -32,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e4ba8ce58883",
+      "id": "named_e4ba8ce58883e4b880e99683",
       "name": "二刃一閃",
       "text": "自分も相手も次のようにする⇒自分自身のエリアに同名ユニットが2体以上あれば、1体選びゲームから除外する",
       "trigger": {

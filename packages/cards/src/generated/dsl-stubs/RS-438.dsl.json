@@ -10,18 +10,15 @@
   "text": "このカードを自軍パワーゾーンに置く。その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、手札に加えてもよい。",
   "rawText": "このカードを自軍パワーゾーンに置く。その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、手札に加えてもよい。",
   "effectId": "place_in_power",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
       "id": "place_in_power",
       "text": "このカードを自軍パワーゾーンに置く。その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、手札に加えてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "move",
@@ -32,5 +29,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

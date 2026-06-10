@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_alias_named_e4bbaee99da2",
+      "id": "unnamed_alias_named_e4bbaee99da2e383a9e382a4",
       "text": "※これは「仮面ライダー1号」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -28,13 +28,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e4bbaee99da2",
+          "keyword": "alias_named_e4bbaee99da2e383a9e382a4",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e383a9e382a4",
+      "id": "named_e383a9e382a4e38380e383bc",
       "name": "ライダーキック",
       "text": "このターン、敵軍ユニットのレジストとスクラムとチェイスの効果は無効になる。また、これがアタックしなかったとき、このユニットの次にコンビネーションするSユニットのBPは、このユニットのBPを「＋」した値になる。",
       "trigger": {

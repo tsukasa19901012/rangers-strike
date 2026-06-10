@@ -47,12 +47,24 @@
       ]
     },
     {
-      "id": "named_e382b7e383b3",
+      "id": "named_e382b7e383b3e382b1e383b3",
       "name": "シンケンマル",
       "text": "カテゴリにDAを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",

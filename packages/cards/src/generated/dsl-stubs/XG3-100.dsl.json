@@ -9,17 +9,14 @@
   "powerCost": 4,
   "text": "自分の手札から、Sビークルのカードと、MAを持ちRCを持つSユニットのカードをそれぞれ1枚ずつ選び、相手に見せてもよい。そうしたとき、見せた2枚のカードを好きな順番で自軍ラッシュエリアに出す。ただし、追加条件はそれぞれ満たすこと。",
   "rawText": "自分の手札から、Sビークルのカードと、MAを持ちRCを持つSユニットのカードをそれぞれ1枚ずつ選び、相手に見せてもよい。そうしたとき、見せた2枚のカードを好きな順番で自軍ラッシュエリアに出す。ただし、追加条件はそれぞれ満たすこと。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
-      "id": "body_interpret",
+      "id": "named_e5b091e5b9b4e5908ce79b9f",
+      "name": "少年同盟",
       "text": "自分の手札から、Sビークルのカードと、MAを持ちRCを持つSユニットのカードをそれぞれ1枚ずつ選び、相手に見せてもよい。そうしたとき、見せた2枚のカードを好きな順番で自軍ラッシュエリアに出す。ただし、追加条件はそれぞれ満たすこと。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "effects": [
         {
@@ -27,5 +24,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

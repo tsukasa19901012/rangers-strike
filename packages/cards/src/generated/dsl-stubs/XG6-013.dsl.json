@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "note_ot_1_bp_1",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、「OT」以外のカテゴリを持つコマンド1つにつきBP-1000される。",
       "trigger": {
         "type": "nc"
@@ -28,7 +28,7 @@
       ]
     },
     {
-      "id": "named_e69caae69da5",
+      "id": "named_e69caae69da5e381aee688a6",
       "name": "未来の戦士達へ",
       "text": "これが自軍コマンドゾーンにある間、このカードはカテゴリにWB、MA、ETが追加され、敵軍パワーは追加で2増える。",
       "trigger": {

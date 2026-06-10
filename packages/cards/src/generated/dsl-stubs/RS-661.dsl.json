@@ -19,11 +19,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から｢黒獅子リオ｣のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -47,7 +56,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193_2",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはラッシュしたターン、ストライクできない。",
       "trigger": {
         "type": "nc"
@@ -59,7 +68,7 @@
       ]
     },
     {
-      "id": "named_e7a0b4e5a4a9",
+      "id": "named_e7a0b4e5a4a9e694bb",
       "name": "破天攻",
       "text": "これは敵軍Sユニット1体につきBP+1000される。",
       "trigger": {

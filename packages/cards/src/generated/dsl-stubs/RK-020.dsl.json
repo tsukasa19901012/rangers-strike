@@ -9,17 +9,14 @@
   "powerCost": 6,
   "text": "自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを2体選ぶ。このターン、選んだ2体のユニットが自軍バトルエリアで隣り合ったとき、敵軍バトルエリアからBP8000以下の敵軍ユニットを1体選び撃破する。",
   "rawText": "自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを2体選ぶ。このターン、選んだ2体のユニットが自軍バトルエリアで隣り合ったとき、敵軍バトルエリアからBP8000以下の敵軍ユニットを1体選び撃破する。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
-      "id": "body_interpret",
+      "id": "named_e38380e38396e383abe383a9",
+      "name": "ダブルライダーキック",
       "text": "自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを2体選ぶ。このターン、選んだ2体のユニットが自軍バトルエリアで隣り合ったとき、敵軍バトルエリアからBP8000以下の敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "effects": [
         {
@@ -27,5 +24,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

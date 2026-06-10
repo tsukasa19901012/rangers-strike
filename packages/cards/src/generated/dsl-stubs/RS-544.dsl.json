@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは特徴を3つ以上持つユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e38395e383ac",
+      "id": "named_e38395e383ace382a2e383bc",
       "name": "フレアーバスター",
       "text": "「SP1」",
       "trigger": {

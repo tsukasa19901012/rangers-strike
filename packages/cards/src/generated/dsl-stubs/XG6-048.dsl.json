@@ -33,19 +33,21 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "unnamed_discard_on_end_turn_battle",
       "text": "※これは、自分がターンを終えるときバトルエリアにあれば捨札になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "discard_on_end_turn_battle",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e98fa1e5838f",
+      "id": "named_e98fa1e5838fe381aee688a6",
       "name": "鏡像の戦士",
       "text": "これが自分の手札か自軍捨札にある間、自軍ラッシュフェイズごとに1度だけ、自軍常駐置き場にあるカードを1枚選び捨札にしてよい。そうしたとき、これを自軍ラッシュエリアに出す。",
       "trigger": {

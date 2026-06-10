@@ -20,11 +20,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「シュリケンジャー」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -48,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e8b685e5bf8d",
+      "id": "named_e8b685e5bf8de6b395e383bb",
       "name": "超忍法・秘打千本ノック",
       "text": "自軍コマンドを好きな数選び、自分の手札に戻してもよい。そうしたとき、相手は、戻した数と同じ数まで自分自身のラッシュエリアのSユニットを選び、持ち主の山札の下に好きな順番で戻す。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。",
       "trigger": {
@@ -61,7 +70,7 @@
       ]
     },
     {
-      "id": "named_e8b685e5bf8d_2",
+      "id": "named_e8b685e5bf8de6b395e383bb_2",
       "name": "超忍法・秘打千本ノック",
       "text": "自軍コマンドを好きな数選び、自分の手札に戻してもよい。そうしたとき、相手は、戻した数と同じ数まで可能な限り自分自身のラッシュエリアのSユニットを選び、持ち主の山札の下に好きな順番で戻す。",
       "trigger": {

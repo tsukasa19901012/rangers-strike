@@ -20,11 +20,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャレッド」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -48,7 +57,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe887aa",
+      "id": "note_e280bbe887aae8bb8de38390",
       "text": "※自軍バトルエリアにこれ以外の「ゴッドサルダー」があれば、これはアタックされない。",
       "trigger": {
         "type": "nc"
@@ -60,7 +69,7 @@
       ]
     },
     {
-      "id": "named_e382b5e383ab",
+      "id": "named_e382b5e383abe38380e383bc",
       "name": "サルダーダブルソード",
       "text": "「SP1」",
       "trigger": {

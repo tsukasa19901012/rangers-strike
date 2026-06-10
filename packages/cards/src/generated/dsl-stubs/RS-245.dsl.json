@@ -9,17 +9,14 @@
   "powerCost": 5,
   "text": "敵軍Sユニットを1体選び撃破する。",
   "rawText": "敵軍Sユニットを1体選び撃破する。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
-      "id": "body_interpret",
+      "id": "named_e382ace382aae383a1e382a4",
+      "name": "ガオメインバスター",
       "text": "敵軍Sユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "effects": [
         {
@@ -27,5 +24,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

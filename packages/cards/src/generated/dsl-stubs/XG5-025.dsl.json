@@ -37,6 +37,15 @@
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -57,19 +66,10 @@
             }
           ]
         }
-      ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      }
+      ]
     },
     {
-      "id": "named_e4b88ae7a9ba",
+      "id": "named_e4b88ae7a9bae3818be38289",
       "name": "上空からの牽制",
       "text": "これが自軍エリアにある間、リリース状態の敵軍ユニットは次の制限を受ける⇒これは、自分自身のターン中、ホールドすることができない。",
       "trigger": {

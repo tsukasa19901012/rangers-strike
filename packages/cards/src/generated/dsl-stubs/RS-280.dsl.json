@@ -19,19 +19,21 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "unnamed_end_turn_return_hand_wrong_number",
       "text": "※これは、自軍バトルフェイズを終えるときのバトルエリアでの並び順が、カードに表記された本来のナンバーと違うなら、自分がターンを終えるとき、手札に戻す。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "end_turn_return_hand_wrong_number",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382a6e382a3",
+      "id": "named_e382a6e382a3e383b3e382b0",
       "name": "ウィングガントレット",
       "text": "「SP1」自軍ターン中、これはBP＋2000される。",
       "trigger": {

@@ -33,11 +33,20 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーファイズ」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -61,7 +70,7 @@
       ]
     },
     {
-      "id": "named_e69c9be381be",
+      "id": "named_e69c9be381bee381aae38184",
       "name": "望まない争い",
       "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒アタックを1度でも行った場合、そのターン中はアタックすることができない。また、ストライクを1度でも行った場合、そのターン中はストライクすることができない。",
       "trigger": {

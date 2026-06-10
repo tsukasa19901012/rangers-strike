@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_named_e382b9e382ab",
+      "id": "unnamed_alias_named_e382b9e382abe382a4e383a9",
       "text": "※これは「スカイライダー」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -42,13 +42,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e382b9e382ab",
+          "keyword": "alias_named_e382b9e382abe382a4e383a9",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "note_fx_1_bp_5",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは特徴「仮面ライダー」を持つ自軍コマンド1つにつきBP+500される。",
       "trigger": {
         "type": "nc"
@@ -60,7 +60,7 @@
       ]
     },
     {
-      "id": "named_e5a4a7e58f8d",
+      "id": "named_e5a4a7e58f8de8bba2e382b9",
       "name": "大反転スカイキック",
       "text": "これをラッシュエリアに戻してもよい。そうしたとき、敵軍バトルエリアからユニットを1体選び、これとバトルさせてもよい。その後、このターン、これはバトルエリアに出られない。",
       "trigger": {

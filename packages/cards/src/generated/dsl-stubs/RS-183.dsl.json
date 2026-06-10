@@ -9,17 +9,14 @@
   "powerCost": 2,
   "text": "この効果は、自分が行ったあとで相手も行う⇒3枚までドローする。そして、以下の手順を3回行う。自分の手札を相手に見せずに1枚選ばせ、選ばれたカードを自軍山札の上に戻す。ただし、自軍コマンドを1つホールドすれば戻さなくてもよい。",
   "rawText": "この効果は、自分が行ったあとで相手も行う⇒3枚までドローする。そして、以下の手順を3回行う。自分の手札を相手に見せずに1枚選ばせ、選ばれたカードを自軍山札の上に戻す。ただし、自軍コマンドを1つホールドすれば戻さなくてもよい。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
-      "id": "body_interpret",
+      "id": "named_e9bb92e5ad90e383ade3839c",
+      "name": "黒子ロボの記憶操作",
       "text": "この効果は、自分が行ったあとで相手も行う⇒3枚までドローする。そして、以下の手順を3回行う。自分の手札を相手に見せずに1枚選ばせ、選ばれたカードを自軍山札の上に戻す。ただし、自軍コマンドを1つホールドすれば戻さなくてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "effects": [
         {
@@ -27,5 +24,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

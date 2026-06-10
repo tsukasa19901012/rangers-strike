@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_bp2000_s",
+      "id": "no_attack_enemy_s_bp2000",
       "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e383a0e383aa",
+      "id": "named_e383a0e383aae383a4e383aa",
       "name": "ムリヤリな変身",
       "text": "これが撃破されて捨札になったとき、自軍捨札から「モモタロス」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
       "trigger": {

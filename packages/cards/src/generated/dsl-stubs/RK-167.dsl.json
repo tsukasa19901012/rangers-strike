@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_s_1",
+      "id": "require_hold_other_s_entry",
       "text": "※これは、これ以外の自軍Sユニットを１体ホールドしなければバトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e382abe382a4",
+      "id": "named_e382abe382a4e382b6e38396",
       "name": "カイザブレイガン",
       "text": "BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「サイドバッシャーBM」からコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {

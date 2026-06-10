@@ -9,17 +9,14 @@
   "powerCost": 8,
   "text": "追加条件を持たないユニットをすべて撃破する。",
   "rawText": "追加条件を持たないユニットをすべて撃破する。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
-      "id": "body_interpret",
+      "id": "named_e382bfe382a4e383a0e38399",
+      "name": "タイムベント",
       "text": "追加条件を持たないユニットをすべて撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "effects": [
         {
@@ -27,5 +24,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

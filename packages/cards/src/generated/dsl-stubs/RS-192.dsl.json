@@ -18,12 +18,13 @@
   ],
   "effects": [
     {
-      "id": "named_e382a2e382bf",
+      "id": "named_e382a2e382bfe38383e382af",
       "name": "アタックボード",
       "text": "自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。",
-      "trigger": {
-        "type": "nc"
-      },
+    "trigger": {
+      "type": "on_turn_end"
+    },
+      "optional": true,
       "effects": [
         {
           "type": "move",

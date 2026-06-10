@@ -23,17 +23,17 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "return_self_on_ally_rush_e280bbe887aa",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
-      "id": "named_e38397e383a9",
+      "id": "named_e38397e383a9e382bae3839e",
       "name": "プラズマカノン",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンからオモテ向きのカードから1枚選び捨札にしてもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP1」「BP+3000」",
       "trigger": {

@@ -24,6 +24,15 @@
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -44,19 +53,10 @@
             }
           ]
         }
-      ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      }
+      ]
     },
     {
-      "id": "named_e38396e383ac",
+      "id": "named_e38396e383ace382a4e382b8",
       "name": "ブレイジングストームスラッシュ",
       "text": "これはアタックするときリリース状態の自軍コマンド1つにつきBP＋1000される。",
       "trigger": {

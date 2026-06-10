@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "unnamed_can_ride_vehicle_named_e8bb8ae4b8a1",
       "text": "※これは特徴「車両」を持つビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e99fb3e9809f",
+      "id": "named_e99fb3e9809fe381aee8b5a4",
       "name": "音速の赤き侍",
       "text": "「SP1」 敵軍バトルエリアから、ライドされている敵軍ビークルを1体選び、持ち主のパワーゾーンに送る。 （この効果は、ライドオフしたときナンバーに関係なく発動する）",
       "trigger": {

@@ -23,17 +23,17 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "return_self_on_ally_rush_e280bbe887aa",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
-      "id": "named_e38395e382a1",
+      "id": "named_e38395e382a1e382a4e3838a",
       "name": "ファイナルアタックライド",
       "text": "このユニットからコンビネーションする、「仮面ライダーディケイド」または「仮面ライダーディエンド」は、次の能力を得る⇒BP+3000",
       "trigger": {

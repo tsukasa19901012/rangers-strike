@@ -13,19 +13,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "effects": [
-    {
-      "id": "body_interpret",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を好きな枚数選び、相手に見せる。そうしたとき、見せた枚数と同じ枚数だけ、相手は自分自身の手札を選び見せる。",
-      "trigger": {
-        "type": "nc"
-      },
-      "effects": [
-        {
-          "type": "interpret_effect"
-        }
-      ]
-    }
-  ]
+  }
 }

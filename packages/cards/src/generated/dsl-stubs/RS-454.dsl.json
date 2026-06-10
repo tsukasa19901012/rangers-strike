@@ -19,19 +19,21 @@
   ],
   "effects": [
     {
-      "id": "note_l_l",
+      "id": "unnamed_becomes_l_if_l_present",
       "text": "※自分か相手のLユニットがあれば、これはLユニットになる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "becomes_l_if_l_present",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "note_fx_1_bp_10",
+      "id": "power_faceup_bp_per_1000",
       "text": "※これは自軍パワーゾーンのオモテ向きのカード1枚につきBP+1000される。",
       "trigger": {
         "type": "nc"
@@ -45,7 +47,7 @@
       ]
     },
     {
-      "id": "named_e3838be383b3",
+      "id": "named_e3838be383b3e382b8e383a3",
       "name": "ニンジャソード",
       "text": "「SP1」",
       "trigger": {

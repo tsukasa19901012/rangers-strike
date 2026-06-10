@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe887aa",
+      "id": "note_e280bbe887aae58886e3818c",
       "text": "※自分がターンを終えるとき、特徴「女」を持つユニットが1体もなければ、このユニットを手札に戻す。",
       "trigger": {
         "type": "nc"
@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e4bfbae381ab",
+      "id": "named_e4bfbae381abe6839ae3828c",
       "name": "俺に惚れろ！",
       "text": "自軍ラッシュエリアに特徴「女」を持つユニットが2体以上あれば、このターン、これは「SP1」になる。",
       "trigger": {

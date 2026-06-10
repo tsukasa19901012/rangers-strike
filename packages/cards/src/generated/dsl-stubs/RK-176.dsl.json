@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_alias_named_e4bbaee99da2",
+      "id": "unnamed_alias_named_e4bbaee99da2e383a9e382a4",
       "text": "※これは「仮面ライダー2号」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -28,13 +28,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e4bbaee99da2",
+          "keyword": "alias_named_e4bbaee99da2e383a9e382a4",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e383a9e382a4",
+      "id": "named_e383a9e382a4e38380e383bc",
       "name": "ライダーキック",
       "text": "敵軍バトルエリアから、BP4000以上の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。（この効果は「仮面ライダー1号」からコンビネーションするときは、ナンバーに関係なく発動する）",
       "trigger": {

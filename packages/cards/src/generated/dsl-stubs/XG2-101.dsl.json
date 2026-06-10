@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe789b9",
+      "id": "note_e280bbe789b9e5beb4e3808c",
       "text": "※特徴「メカ」を持つ敵軍ユニットがあるとき、これはストライクできない。",
       "trigger": {
         "type": "nc"
@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe887aa",
+      "id": "note_e280bbe887aae58886e3818c",
       "text": "※自分がターンを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら山札に戻してシャッフルする。",
       "trigger": {
         "type": "nc"
@@ -49,6 +49,14 @@
       "text": "敵軍バトルエリアから、特徴「メカ」を持つ、SユニットまたはMユニットを1体選び撃破してもよい。",
       "trigger": {
         "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
       },
       "effects": [
         {
@@ -69,15 +77,7 @@
             }
           ]
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      }
+      ]
     }
   ],
   "implementation": {

@@ -20,11 +20,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「レジェンドマジグリーン」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -48,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e5b2a9e381ae",
+      "id": "named_e5b2a9e381aee8a385e794b2",
       "name": "岩の装甲",
       "text": "これが自軍バトルエリアにある間、敵軍ターン中、「レジェンドマジグリーンRA」以外の特徴「魔法」を持つ自軍Sユニットはアタックされない。",
       "trigger": {

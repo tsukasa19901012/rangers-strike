@@ -18,12 +18,24 @@
   ],
   "effects": [
     {
-      "id": "named_e5ae87e5ae99",
+      "id": "named_e5ae87e5ae99e7b5b1e4b880",
       "name": "宇宙統一忍者流",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアから、ナンバーに数字を持つSユニットを1体選んでも良い。そうしたとき、選んだユニットのＮＣの効果を、このユニットの効果として発動する。",
       "trigger": {
         "type": "enter_battle"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "rush",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",

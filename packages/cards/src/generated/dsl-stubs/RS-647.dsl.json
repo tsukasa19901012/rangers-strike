@@ -30,15 +30,18 @@
       ]
     },
     {
-      "id": "named_e382bde382a6",
+      "id": "named_e382bde382a6e383abe38390",
       "name": "ソウルバード",
       "text": "自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒",
       "trigger": {
-        "type": "nc"
+        "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "stack_da_less_l_on_rush",
+          "duration": "permanent"
         }
       ]
     },

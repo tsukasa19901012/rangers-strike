@@ -33,19 +33,21 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193",
+      "id": "destroy_on_win_vs_named_e5a5b3",
       "text": "※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_named_e5a5b3",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e69c80e5be8c",
+      "id": "named_e69c80e5be8ce381bee381a7",
       "name": "最後までクライマックスだぜ！",
       "text": "「SP1」",
       "trigger": {

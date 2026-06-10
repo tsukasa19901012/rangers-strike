@@ -13,19 +13,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "effects": [
-    {
-      "id": "body_interpret",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札をすべて自軍山札に戻してからシャッフルし、戻した枚数と同じだけドローする。",
-      "trigger": {
-        "type": "nc"
-      },
-      "effects": [
-        {
-          "type": "interpret_effect"
-        }
-      ]
-    }
-  ]
+  }
 }

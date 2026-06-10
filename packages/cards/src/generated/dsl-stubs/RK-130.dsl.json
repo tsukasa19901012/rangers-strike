@@ -17,15 +17,18 @@
   ],
   "effects": [
     {
-      "id": "named_e382b9e3839a",
+      "id": "named_e382b9e3839ae383bce38389",
       "name": "スペード5－キック",
       "text": "自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒ストライクしたとき、レジストを持つ敵軍Sユニットを1体選び、撃破する。",
       "trigger": {
         "type": "on_strike"
       },
+      "optional": true,
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "replace_rush_kamen_rider",
+          "duration": "turn"
         }
       ]
     }

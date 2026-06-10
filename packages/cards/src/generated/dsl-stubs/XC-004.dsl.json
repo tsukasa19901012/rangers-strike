@@ -13,19 +13,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "effects": [
-    {
-      "id": "body_interpret",
-      "text": "ゲーム開始前に一度だけ発動できる⇒自軍山札を見て、オペレーションカードを１枚選び、相手に見せてから自分の手札に加える。その後、自分の手札からカードを１枚選び、自軍山札に戻してシャッフルする。",
-      "trigger": {
-        "type": "nc"
-      },
-      "effects": [
-        {
-          "type": "interpret_effect"
-        }
-      ]
-    }
-  ]
+  }
 }

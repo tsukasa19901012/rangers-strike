@@ -33,15 +33,18 @@
       ]
     },
     {
-      "id": "named_e383a2e383b3",
+      "id": "named_e383a2e383b3e382b9e382bf",
       "name": "モンスターフィーバー",
       "text": "自軍ターン中、これがバトルエリアに出るとき、自分の手札から特徴「魔皇力」を持つ、追加条件を持たないSユニットのカードを1枚選び相手に見せてもよい。そうしたとき、そのユニットカードの効果名を持つ効果を、このユニットの効果として発動する。",
       "trigger": {
-        "type": "while_in_field"
+        "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "hand_rush_named_e9ad94e79a87e58a9b_s_on_battle",
+          "duration": "turn"
         }
       ]
     }

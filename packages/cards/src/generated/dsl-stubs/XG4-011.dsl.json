@@ -20,11 +20,20 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「ギンガグリーン」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -48,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e98a80e6b2b3",
+      "id": "named_e98a80e6b2b3e381aee688a6",
       "name": "銀河の戦光",
       "text": "本来の特徴に「ギンガの光」を持つユニットが5体以上あれば、敵軍バトルエリアのユニットをすべてゲームから除外する。",
       "trigger": {

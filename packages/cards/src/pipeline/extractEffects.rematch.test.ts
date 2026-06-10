@@ -29,4 +29,56 @@ describe("rematchExtractedEffect (M20)", () => {
     expect(built?.matchedPattern).toBe("recruit_named_from_discard_if_present");
     expect(built?.trigger).toEqual({ type: "nc" });
   });
+
+  it("matches DA enemy S destroy (XG1-064)", () => {
+    const built = rematchExtractedEffect("DAを持つ敵軍Sユニットを1体選び撃破する。", {
+      name: "ライダーキック",
+      kind: "named",
+      trigger: { type: "nc" },
+    });
+    expect(built?.matchedPattern).toBe("destroy_enemy_s_da");
+    expect(built?.effects[0]?.type).toBe("choose");
+  });
+
+  it("matches stack DA-less L on rush (RS-647)", () => {
+    const built = rematchExtractedEffect(
+      "自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられたとき、重ねたユニットの効果を発動する。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("stack_da_less_l_on_rush");
+    expect(built?.effects[0]).toEqual({
+      type: "grant_keyword",
+      keyword: "stack_da_less_l_on_rush",
+      duration: "permanent",
+    });
+  });
+
+  it("matches ride without RC for feature S (RK-300)", () => {
+    const built = rematchExtractedEffect(
+      "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。",
+      { kind: "note", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("ride_without_rc_feature");
+    expect(built?.effects[0]?.type).toBe("grant_keyword");
+    expect((built?.effects[0] as { keyword: string }).keyword).toMatch(/^ride_without_rc_/);
+  });
+
+  it("matches grant SP body only (RS-370)", () => {
+    const built = rematchExtractedEffect("SP1", {
+      name: "SP付与",
+      kind: "named",
+      trigger: { type: "nc" },
+    });
+    expect(built?.matchedPattern).toBe("grant_sp_body_only");
+    expect(built?.effects).toEqual([{ type: "grant_keyword", keyword: "SP1", duration: "turn" }]);
+  });
+
+  it("matches destroy rush original BP (RS-345)", () => {
+    const built = rematchExtractedEffect(
+      "敵軍ラッシュエリアから、カードに表記された本来のBPが3000以下のユニットを1体選び、撃破する。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("destroy_rush_original_bp");
+    expect(built?.effects[0]?.type).toBe("choose");
+  });
 });

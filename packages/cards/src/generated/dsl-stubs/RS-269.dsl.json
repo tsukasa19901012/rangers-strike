@@ -19,19 +19,21 @@
   ],
   "effects": [
     {
-      "id": "note_ot",
+      "id": "unnamed_bp_debuff_per_non_ot_command",
       "text": "※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつき「BP-1000」され、BP0以下のとき撃破される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "bp_debuff_per_non_ot_command",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e38397e383aa",
+      "id": "named_e38397e383aae382bae383a0",
       "name": "プリズムバトン",
       "text": "自軍ラッシュエリアから、「MA」のユニットを1体選び自軍パワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP1」になる。",
       "trigger": {

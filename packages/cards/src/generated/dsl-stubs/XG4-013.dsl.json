@@ -18,11 +18,12 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "stack_vehicle_on_rush",
       "text": "※これをラッシュしたとき、ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい。",
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
@@ -32,7 +33,7 @@
       ]
     },
     {
-      "id": "note_named_e280bbe38193_2",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはライド中、ウイングを持たないユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -44,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e796bee9a2a8",
+      "id": "named_e796bee9a2a8e4b880e999a3",
       "name": "疾風一陣",
       "text": "相手は自分自身の山札の上から1枚を捨札にするか、自分自身のコマンドを2つ選び手札に戻すかを選ぶ。",
       "trigger": {

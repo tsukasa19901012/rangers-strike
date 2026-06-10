@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_fx_2_1_bp_10",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。",
       "trigger": {
         "type": "nc"
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e9ab98e9809f",
+      "id": "named_e9ab98e9809fe589a3e382bf",
       "name": "高速剣ターボクラッシュ",
       "text": "これはBP10000以上の時、次の能力を得る⇒SP1",
       "trigger": {

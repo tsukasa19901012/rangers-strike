@@ -19,39 +19,44 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "unnamed_damage_gate_battle_entry",
       "text": "※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "damage_gate_battle_entry",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "note_named_e280bbe887aa",
+      "id": "unnamed_self_destroy_low_damage_remaining",
       "text": "※自分がターンを終えるとき、ゲームに負けるまでの自軍ダメージが残り3点以下なら、これを撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "self_destroy_low_damage_remaining",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e78da3e5a58f",
-      "name": "獣奏剣",
+      "id": "ally_named_e68190e7ab9c_bp_1000",
       "text": "これが自軍エリアにある間、特徴「恐竜」を持つすべての自軍ユニットはBP＋1000される。",
       "trigger": {
         "type": "nc"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "ally_named_e68190e7ab9c_bp_boost_1000",
+          "duration": "permanent"
         }
       ]
     }

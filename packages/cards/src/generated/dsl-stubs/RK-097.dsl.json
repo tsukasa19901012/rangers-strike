@@ -34,12 +34,21 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4",
+      "id": "named_e383a9e382a4e38389e383ab",
       "name": "ライドルスティック",
       "text": "自軍コマンドゾーンから、ホールド状態のＲＣを持つユニットカードを1枚選び、手札に戻してもよい。そうしたとき、戻したカードのRCの効果を、このユニットの効果として発動する。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",

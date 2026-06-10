@@ -62,15 +62,44 @@
       ]
     },
     {
-      "id": "named_e382a2e382bf",
+      "id": "named_e382a2e382bfe38383e382af",
       "name": "アタックライド",
       "text": "DAを持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
       ]
     }

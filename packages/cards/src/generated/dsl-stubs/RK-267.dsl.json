@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "note_bp2000",
+      "id": "cannot_attack_bp2000_or_less",
       "text": "※これはBP2000以下のユニットにアタックできない。",
       "trigger": {
         "type": "nc"
@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e680aae9ad94",
+      "id": "named_e680aae9ad94e7a8b2e5a6bb",
       "name": "怪魔稲妻剣",
       "text": "このユニットとバトルして撃破された敵軍ユニットは、レジストを発動する事ができない。",
       "trigger": {

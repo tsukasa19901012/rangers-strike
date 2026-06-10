@@ -41,7 +41,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "enter_battle_ignore_hold_requirement",
+          "duration": "turn"
         }
       ]
     }

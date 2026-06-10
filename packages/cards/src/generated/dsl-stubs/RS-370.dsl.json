@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、特徴「女」を持つ敵軍ユニットがあるときストライクできない（この制限は自軍ダメージが4点以上あれば無効になる）。",
       "trigger": {
         "type": "nc"
@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e3839ee382b9",
+      "id": "named_e3839ee382b9e382ade383bc",
       "name": "マスキーロッド",
       "text": "SP1",
       "trigger": {
@@ -39,7 +39,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
         }
       ]
     }

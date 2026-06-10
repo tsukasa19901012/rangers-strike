@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_named_e4bbaee99da2",
+      "id": "unnamed_alias_named_e4bbaee99da2e383a9e382a4",
       "text": "※これは「仮面ライダーキバ」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -40,13 +40,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e4bbaee99da2",
+          "keyword": "alias_named_e4bbaee99da2e383a9e382a4",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382a2e382bf",
+      "id": "named_e382a2e382bfe38383e382af",
       "name": "アタックライド",
       "text": "自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {

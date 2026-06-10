@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e688a6e99798",
+      "id": "named_e688a6e99798e383a2e383bc",
       "name": "戦闘モード",
       "text": "これは必要パワーの数字に「－」のあるユニットにアタックするときBP+5000される。",
       "trigger": {
@@ -30,7 +30,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 5000,
+          "duration": "turn"
         }
       ]
     }

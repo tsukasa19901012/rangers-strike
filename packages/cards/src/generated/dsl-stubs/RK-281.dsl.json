@@ -19,19 +19,21 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe38193",
+      "id": "unnamed_treat_as_s_vehicle_while_held",
       "text": "※これは、自軍エリアでホールド状態かライドされている間、Sビークルとして扱う。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "treat_as_s_vehicle_while_held",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "note_named_e280bbe38193_2",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはユニットの間、次のテキストを得る⇒これは自軍コマンドを1つホールドしなければバトルエリアに出られない。また、自軍ラッシュフェイズ中、これをホールドしてもよい。",
       "trigger": {
         "type": "while_in_field"
@@ -43,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e38389e383a9",
+      "id": "named_e38389e383a9e382b4e383b3",
       "name": "ドラゴンファイヤーストーム",
       "text": "これにライドしている特徴「サバイブ」を持つユニットは「SP1」になる。",
       "trigger": {

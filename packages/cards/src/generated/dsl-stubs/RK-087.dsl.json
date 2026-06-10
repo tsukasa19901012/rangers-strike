@@ -9,17 +9,14 @@
   "powerCost": 3,
   "text": "敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。その後、敵軍バトルエリアのユニットを、好きな順に並べ替える。",
   "rawText": "敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。その後、敵軍バトルエリアのユニットを、好きな順に並べ替える。",
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "effects": [
     {
-      "id": "body_interpret",
+      "id": "named_e382bce382afe38388e3839e",
+      "name": "ゼクトマイザー",
       "text": "敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。その後、敵軍バトルエリアのユニットを、好きな順に並べ替える。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "rush"
       },
       "effects": [
         {
@@ -27,5 +24,10 @@
         }
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

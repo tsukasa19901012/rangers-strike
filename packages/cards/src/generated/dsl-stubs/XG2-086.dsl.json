@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "note_named_e280bbe695b5",
+      "id": "note_e280bbe695b5e8bb8de382bf",
       "text": "※敵軍ターン中、これとバトルしたユニットは、バトルに勝っても撃破される。",
       "trigger": {
         "type": "nc"
@@ -33,11 +33,20 @@
       ]
     },
     {
-      "id": "note_fx_15",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「隊員コード153 ショウ」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -61,7 +70,7 @@
       ]
     },
     {
-      "id": "named_e38389e383a9",
+      "id": "named_e38389e383a9e383a0e382ac",
       "name": "ドラムガンファイヤー",
       "text": "敵軍バトルエリアから、OTまたはDAを持つユニットを1体選び、持ち主のゾーンに置いてもよい。",
       "trigger": {

@@ -23,6 +23,15 @@
       "trigger": {
         "type": "nc"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -43,19 +52,10 @@
             }
           ]
         }
-      ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      }
+      ]
     },
     {
-      "id": "named_e38387e382a3",
+      "id": "named_e38387e382a3e383bce382bd",
       "name": "ディーソードベガ",
       "text": "自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、自分自身のユニットを1体選び撃破するかを選ぶ。",
       "trigger": {
