@@ -157,6 +157,8 @@ export type CreateHybridPromotedGameOptions = Omit<
 > &
   Omit<CreateStarterGameOptions, "player1Deck" | "player2Deck"> & {
     swapCount?: number;
+    player1Deck?: CardDefinition[];
+    player2Deck?: CardDefinition[];
   };
 
 /**

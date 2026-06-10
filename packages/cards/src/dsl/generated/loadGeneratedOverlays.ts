@@ -1,34 +1,17 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import generatedOverlays from "./overlays-bundle.json";
 import type { CardDocument } from "../types";
 import { mergeCardDocument } from "../loader";
 import { validateCardDocument } from "../validator";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const generatedDir = join(__dirname);
 
 let cachedGenerated: Map<string, Partial<CardDocument>> | null = null;
 
 /** Phase 4: 一括生成 DSL オーバーレイ（generate-all-dsl 出力）。 */
 export function loadGeneratedDslOverlays(): Map<string, Partial<CardDocument>> {
   if (cachedGenerated) return cachedGenerated;
-
-  const map = new Map<string, Partial<CardDocument>>();
-  if (!existsSync(join(generatedDir, "manifest.json"))) {
-    cachedGenerated = map;
-    return map;
-  }
-
-  for (const file of readdirSync(generatedDir)) {
-    if (!file.endsWith(".dsl.json")) continue;
-    const cardId = file.replace(/\.dsl\.json$/, "");
-    const raw = readFileSync(join(generatedDir, file), "utf8");
-    map.set(cardId, JSON.parse(raw) as Partial<CardDocument>);
-  }
-
-  cachedGenerated = map;
-  return map;
+  cachedGenerated = new Map(
+    Object.entries(generatedOverlays as Record<string, Partial<CardDocument>>),
+  );
+  return cachedGenerated;
 }
 
 export function resetGeneratedDslOverlayCache(): void {

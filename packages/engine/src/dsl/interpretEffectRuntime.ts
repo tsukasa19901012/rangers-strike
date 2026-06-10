@@ -1,5 +1,5 @@
-import { rematchEffectPrimitives } from "../../../cards/src/pipeline/extractEffects";
-import type { EffectPrimitive } from "../../../cards/src/dsl/types";
+import { rematchEffectPrimitives } from "@rangers-strike/cards/pipeline/extractEffects";
+import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
 import type { GameState } from "../types/game";
 import { getCardDslDocument } from "./effectLookup";
 import type { DslCardContext } from "./cardInterpreter";

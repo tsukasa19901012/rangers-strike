@@ -75,7 +75,14 @@ export function collectTargetInstanceIds(
     case "zones": {
       const ids: string[] = [];
       for (const part of selector.zones) {
-        ids.push(...collectTargetInstanceIds(state, playerId, part, operationInstanceId));
+        ids.push(
+          ...collectTargetInstanceIds(
+            state,
+            playerId,
+            { type: "zone", zone: part.zone, owner: part.owner, filter: part.filter },
+            operationInstanceId,
+          ),
+        );
       }
       return ids;
     }

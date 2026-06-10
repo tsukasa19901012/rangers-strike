@@ -14,14 +14,30 @@
       "types": "./dist/dsl/index.d.ts",
       "import": "./dist/dsl/index.js"
     },
+    "./dsl/types": {
+      "types": "./dist/dsl/types.d.ts",
+      "import": "./dist/dsl/types.js"
+    },
+    "./dsl/loader": {
+      "types": "./dist/dsl/loader.d.ts",
+      "import": "./dist/dsl/loader.js"
+    },
+    "./dsl/registry": {
+      "types": "./dist/dsl/registry.d.ts",
+      "import": "./dist/dsl/registry.js"
+    },
     "./pipeline": {
       "types": "./dist/pipeline/index.d.ts",
       "import": "./dist/pipeline/index.js"
     },
+    "./pipeline/extractEffects": {
+      "types": "./dist/pipeline/extractEffects.d.ts",
+      "import": "./dist/pipeline/extractEffects.js"
+    },
     "./schema/*": "./schema/*"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node scripts/bundle-dsl-overlays.mjs && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "generate-card-tests": "node scripts/generate-card-tests.mjs",

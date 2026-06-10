@@ -7,6 +7,8 @@ import type {
   ZoneName,
 } from "../types/game";
 
+export type { EnterBattleResumeFrom };
+
 /** Phase 2 移行対象のゲーム事実イベント種別。 */
 export type GameEventType =
   | "UnitRushed"

@@ -124,9 +124,11 @@ export function applyDamageToPlayer(
     return startDamagePayment(state, playerId, amount, resume, choosingPlayerId);
   }
   const nextPlayer = applyPlayerDamage(player, amount);
+  const phasePlayerId =
+    resume.kind === "none" ? resume.activePlayer : resume.pending.battlePhasePlayer;
   let nextState = emitDamageAppliedAndResolve(
     { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-    { playerId, amount, source: resume.kind, phasePlayerId: resume.activePlayer },
+    { playerId, amount, source: resume.kind, phasePlayerId },
   );
   if (resume.kind === "none") {
     nextState = { ...nextState, activePlayer: resume.activePlayer };

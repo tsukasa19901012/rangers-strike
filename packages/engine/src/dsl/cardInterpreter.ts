@@ -493,12 +493,12 @@ export function continueDslAfterChoice(
   pending: NonNullable<GameState["pendingEffectChoice"]>,
 ): { state: GameState; log?: string; error?: string } {
   const resume = pending.dslResume;
-  if (!resume) return { error: "no_dsl_resume" };
-  if (pending.playerId !== playerId) return { error: "wrong_player" };
-  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  if (!resume) return { state, error: "no_dsl_resume" };
+  if (pending.playerId !== playerId) return { state, error: "wrong_player" };
+  if (!pending.validInstanceIds.includes(instanceId)) return { state, error: "invalid_target" };
 
   if (pending.effectId === "aura_power" && !isValidOwnSmallUnitTarget(state, playerId, instanceId)) {
-    return { error: "invalid_target" };
+    return { state, error: "invalid_target" };
   }
 
   const ctx: DslCardContext = {

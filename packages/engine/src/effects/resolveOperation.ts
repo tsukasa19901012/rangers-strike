@@ -450,7 +450,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
       if (!found || !isSmallUnit(ctx.state.definitions, found.card.cardId)) {
         return fail(ctx.state, "invalid_target");
       }
-      const nextPlayer = setAuraPowerInstanceId(player, ctx.targetInstanceId, ctx.cardId);
+      const nextPlayer = setAuraPowerInstanceId(player, ctx.targetInstanceId, ctx.operationCardId);
       const targetName = cardName(ctx.state.definitions, found.card.cardId);
       return {
         state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
@@ -525,7 +525,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
     }
 
     case "goren_storm": {
-      const nextPlayer = setSComboFinisher(player, "goren_storm", ctx.cardId);
+      const nextPlayer = setSComboFinisher(player, "goren_storm", ctx.operationCardId);
       return {
         state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
         detail: "goren_storm",
@@ -534,7 +534,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
     }
 
     case "jacker_hurricane": {
-      const nextPlayer = setSComboFinisher(player, "jacker_hurricane", ctx.cardId);
+      const nextPlayer = setSComboFinisher(player, "jacker_hurricane", ctx.operationCardId);
       return {
         state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
         detail: "jacker_hurricane",

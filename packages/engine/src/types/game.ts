@@ -209,7 +209,9 @@ export type EffectChoiceKind =
   | "pit_in_dive_order"
   | "select_units_bp_budget"
   | "end_turn_menu"
-  | "shiron_light";
+  | "shiron_light"
+  | "simultaneous_order"
+  | "confirm";
 
 export type ShironLightMeta = {
   step: "pick" | "reveal";

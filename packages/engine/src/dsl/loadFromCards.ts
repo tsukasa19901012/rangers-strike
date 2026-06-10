@@ -1,4 +1,4 @@
-import { cardDsl } from "@rangers-strike/cards";
+import { loadAllCardDocuments } from "@rangers-strike/cards/dsl/loader";
 import type { EffectPrimitive, EffectTrigger } from "@rangers-strike/cards/dsl/types";
 import type { GameEvent, GameEventType } from "../events/types";
 import { registerDslEffect } from "./registry";
@@ -82,7 +82,7 @@ function eventCardId(event: GameEvent): string | undefined {
 
 /** @rangers-strike/cards の CardDocument から legacy event DSL 効果を registry へ登録。 */
 export function loadCardDslEffectsFromCatalog(): number {
-  const documents = cardDsl.loadAllCardDocuments();
+  const documents = loadAllCardDocuments();
   let registered = 0;
 
   for (const doc of documents) {

@@ -69,7 +69,7 @@ function main(): void {
  * grant_keyword: ${grantKeyword.length} | interpret_effect: ${interpretEffect.length} | action_primitive: ${actionPrimitive.length}
  */
 import { describe, it, expect } from "vitest";
-import { cardDsl } from "@rangers-strike/cards";
+import * as cardDsl from "@rangers-strike/cards/dsl";
 import { interpretEffectPrimitives } from "../dsl/cardInterpreter";
 import { createTestState, inst } from "../testing/fixtures";
 import type { CardDefinition } from "@rangers-strike/cards";

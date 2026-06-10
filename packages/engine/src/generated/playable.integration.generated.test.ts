@@ -3,7 +3,7 @@
  * Regenerate: npm run generate-integration-tests -w @rangers-strike/cards
  */
 import { describe, it, expect } from "vitest";
-import { cardDsl } from "@rangers-strike/cards";
+import * as cardDsl from "@rangers-strike/cards/dsl";
 
 describe("full-playable DSL integration manifest", () => {
   const coreRegistry = cardDsl.createCardRegistryFromCatalog();

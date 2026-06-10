@@ -1,33 +1,18 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import sk000 from "./SK-000.json";
 import type { CardDocument } from "../types";
 import { mergeCardDocument } from "../loader";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const overridesDir = join(__dirname);
+const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
+  "SK-000": sk000 as Partial<CardDocument>,
+};
 
 let cachedOverrides: Map<string, Partial<CardDocument>> | null = null;
 
 /** 人手修正 DSL（`src/dsl/overrides/{cardId}.json`）。 */
 export function loadCardOverrides(): Map<string, Partial<CardDocument>> {
   if (cachedOverrides) return cachedOverrides;
-
-  const map = new Map<string, Partial<CardDocument>>();
-  if (!existsSync(overridesDir)) {
-    cachedOverrides = map;
-    return map;
-  }
-
-  for (const file of readdirSync(overridesDir)) {
-    if (!file.endsWith(".json") || file === "manifest.json") continue;
-    const cardId = file.replace(/\.json$/, "");
-    const raw = readFileSync(join(overridesDir, file), "utf8");
-    map.set(cardId, JSON.parse(raw) as Partial<CardDocument>);
-  }
-
-  cachedOverrides = map;
-  return map;
+  cachedOverrides = new Map(Object.entries(CARD_OVERRIDES));
+  return cachedOverrides;
 }
 
 export function resetCardOverrideCache(): void {

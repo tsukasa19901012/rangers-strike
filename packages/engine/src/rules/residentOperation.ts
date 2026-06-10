@@ -9,7 +9,7 @@ export function applyResidentOperationTurnEnd(
 ): GameState {
   let nextState = state;
   for (const card of state.players[endingPlayerId].operation) {
-    if (!isPermanentOperation(state.definitions, card.cardId)) continue;
+    if (!isPermanentOperation(state.definitions[card.cardId])) continue;
     const result = tryResolveDslTriggeredEffects({
       state: nextState,
       cardId: card.cardId,

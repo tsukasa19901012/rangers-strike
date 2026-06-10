@@ -1,35 +1,18 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import stubOverlays from "../../generated/dsl-stubs/stubs-bundle.json";
 import type { CardDocument } from "../types";
 import { mergeCardDocument } from "../loader";
 import { validateCardDocument } from "../validator";
 import { applyCardOverride } from "../overrides/loadCardOverrides";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const stubDslDir = join(__dirname, "../../generated/dsl-stubs");
 
 let cachedStubOverlays: Map<string, Partial<CardDocument>> | null = null;
 
 /** batch-compile-stubs が出力した Wiki スタブ DSL オーバーレイ。 */
 export function loadStubDslOverlays(): Map<string, Partial<CardDocument>> {
   if (cachedStubOverlays) return cachedStubOverlays;
-
-  const map = new Map<string, Partial<CardDocument>>();
-  if (!existsSync(join(stubDslDir, "manifest.json"))) {
-    cachedStubOverlays = map;
-    return map;
-  }
-
-  for (const file of readdirSync(stubDslDir)) {
-    if (!file.endsWith(".dsl.json")) continue;
-    const cardId = file.replace(/\.dsl\.json$/, "");
-    const raw = readFileSync(join(stubDslDir, file), "utf8");
-    map.set(cardId, JSON.parse(raw) as Partial<CardDocument>);
-  }
-
-  cachedStubOverlays = map;
-  return map;
+  cachedStubOverlays = new Map(
+    Object.entries(stubOverlays as Record<string, Partial<CardDocument>>),
+  );
+  return cachedStubOverlays;
 }
 
 export function resetStubDslOverlayCache(): void {

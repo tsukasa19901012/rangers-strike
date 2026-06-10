@@ -1,4 +1,4 @@
-import type { PlayerState } from "../types/game";
+import type { PlayerState, ScopedModifier } from "../types/game";
 import {
   addTurnRestrictionModifier,
   getPlayerModifiers,
@@ -9,16 +9,21 @@ import { RESTRICTION_IDS, TURN_RULE_IDS } from "../types/scopedModifiers";
 
 export type SComboFinisher = "goren_storm" | "jacker_hurricane";
 
+function isTurnRuleModifier(
+  m: ScopedModifier,
+  ruleId: string,
+): m is Extract<ScopedModifier, { kind: "rule" }> {
+  return m.kind === "rule" && m.ruleId === ruleId && m.scope === "turn";
+}
+
 function sumRulePayload(player: PlayerState, ruleId: string): number {
   return getPlayerModifiers(player)
-    .filter((m) => m.kind === "rule" && m.ruleId === ruleId && m.scope === "turn")
+    .filter((m) => isTurnRuleModifier(m, ruleId))
     .reduce((sum, m) => sum + (typeof m.payload === "number" ? m.payload : 0), 0);
 }
 
 function firstRulePayload<T>(player: PlayerState, ruleId: string): T | undefined {
-  const mod = getPlayerModifiers(player).find(
-    (m) => m.kind === "rule" && m.ruleId === ruleId && m.scope === "turn",
-  );
+  const mod = getPlayerModifiers(player).find((m) => isTurnRuleModifier(m, ruleId));
   return mod?.payload as T | undefined;
 }
 

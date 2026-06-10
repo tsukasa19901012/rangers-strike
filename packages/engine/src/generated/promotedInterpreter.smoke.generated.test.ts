@@ -3,7 +3,7 @@
  * grant_keyword: 40 | interpret_effect: 0 | action_primitive: 40
  */
 import { describe, it, expect } from "vitest";
-import { cardDsl } from "@rangers-strike/cards";
+import * as cardDsl from "@rangers-strike/cards/dsl";
 import { interpretEffectPrimitives } from "../dsl/cardInterpreter";
 import { createTestState, inst } from "../testing/fixtures";
 import type { CardDefinition } from "@rangers-strike/cards";

@@ -1,22 +1,26 @@
-import { cardDsl } from "@rangers-strike/cards";
+import {
+  createFullPlayableRegistry,
+  getDefaultCardRegistry,
+  type CardRegistry,
+} from "@rangers-strike/cards/dsl/registry";
 import type {
   EffectDefinition,
   EffectTrigger,
   OperationTiming,
 } from "@rangers-strike/cards/dsl/types";
 
-let fullPlayableRegistry: ReturnType<typeof cardDsl.createFullPlayableRegistry> | null = null;
+let fullPlayableRegistry: CardRegistry | null = null;
 
-function getFullPlayableRegistry(): ReturnType<typeof cardDsl.createFullPlayableRegistry> {
+function getFullPlayableRegistry(): CardRegistry {
   if (!fullPlayableRegistry) {
-    fullPlayableRegistry = cardDsl.createFullPlayableRegistry();
+    fullPlayableRegistry = createFullPlayableRegistry();
   }
   return fullPlayableRegistry;
 }
 
 /** コア 179 枚 → なければ full-playable（昇格 stub）レジストリへフォールバック。 */
 export function getCardDslDocument(cardId: string) {
-  const core = cardDsl.getDefaultCardRegistry().getCard(cardId);
+  const core = getDefaultCardRegistry().getCard(cardId);
   if (core) return core;
   return getFullPlayableRegistry().getCard(cardId);
 }

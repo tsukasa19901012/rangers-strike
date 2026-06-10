@@ -1,3 +1,4 @@
+import type { Category } from "@rangers-strike/cards";
 import { playerHasActiveFieldKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";

@@ -196,9 +196,10 @@ export function attackerBlocksDefenderCounters(
     "battle",
     attackerInstanceId,
   );
+  if (!attacker) return legend2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId);
   return (
     hasBattleNcEffect(attacker.card, "panther_claw") ||
-    getOnAttackNamedEffect(attacker?.card.cardId ?? "")?.effectId === "panther_claw" ||
+    getOnAttackNamedEffect(attacker.card.cardId)?.effectId === "panther_claw" ||
     legend2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId)
   );
 }

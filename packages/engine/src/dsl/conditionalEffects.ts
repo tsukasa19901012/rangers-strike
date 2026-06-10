@@ -47,7 +47,6 @@ export function tryStartDslConditionalChoice(
           sourceInstanceId: card.instanceId,
           phasePlayerId,
           cardId: card.cardId,
-          selectCount: 1,
           optional: true,
         });
       default:

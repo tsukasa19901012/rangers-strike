@@ -1,19 +1,15 @@
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import starterBundle from "./overlays.json";
+import starterManifest from "./manifest.json";
 import type { CardDocument } from "../../types";
 import { mergeCardDocument } from "../../loader";
 import { validateCardDocument } from "../../validator";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 type StarterBundle = { cards: Partial<CardDocument>[] };
 
 let cachedOverlays: Map<string, Partial<CardDocument>> | null = null;
 
 function readBundle(): StarterBundle {
-  const raw = readFileSync(join(__dirname, "overlays.json"), "utf8");
-  return JSON.parse(raw) as StarterBundle;
+  return starterBundle as StarterBundle;
 }
 
 /** Legend 1 スターター DSL オーバーレイ（TypeScript ハンドラ不使用） */
@@ -37,10 +33,7 @@ export function getLegend1StarterOverlay(cardId: string): Partial<CardDocument> 
 }
 
 export function listLegend1StarterCardIds(): string[] {
-  const manifest = JSON.parse(
-    readFileSync(join(__dirname, "manifest.json"), "utf8"),
-  ) as { cardIds: string[] };
-  return manifest.cardIds;
+  return (starterManifest as { cardIds: string[] }).cardIds;
 }
 
 export function resetLegend1StarterOverlayCache(): void {
