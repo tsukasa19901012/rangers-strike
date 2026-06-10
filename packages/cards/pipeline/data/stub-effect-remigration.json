@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-06-10T04:40:01.829Z",
-  "scanned": 148,
-  "migratedToPrimitives": 61,
+  "generatedAt": "2026-06-10T04:40:19.865Z",
+  "scanned": 129,
+  "migratedToPrimitives": 44,
   "remainingEffectDelegate": 0,
   "samples": [
     {
@@ -25,21 +25,6 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-287",
-      "effectId": "named_e79eace99693e381aee682aa",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "RM-015",
-      "effectId": "named_e382a4e383b3e38397e38383",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "RS-203",
-      "effectId": "named_e38387e382a6e382b9e981ba",
-      "to": "grant_keyword"
-    },
-    {
       "cardId": "RS-227",
       "effectId": "named_e38388e38383e38397e382a6",
       "to": "grant_keyword"
@@ -77,16 +62,6 @@
     {
       "cardId": "RS-504",
       "effectId": "named_e887a8e78da3e382abe383a1",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "RS-532",
-      "effectId": "named_e3839fe382b5e382a4e383ab",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "RS-569",
-      "effectId": "named_e382ace38388e383aae383b3",
       "to": "grant_keyword"
     },
     {
@@ -115,11 +90,6 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "RS-631",
-      "effectId": "named_e382b5e38386e383a9e382a4",
-      "to": "grant_keyword"
-    },
-    {
       "cardId": "RS-633",
       "effectId": "note_e280bbe887aae8bb8de382b9",
       "to": "grant_keyword"
@@ -127,6 +97,36 @@
     {
       "cardId": "RS-633",
       "effectId": "note_e280bbe887aae8bb8de382b9",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "XG2-082",
+      "effectId": "note_e280bbe38193e3828ce381af",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "XG2-082",
+      "effectId": "note_e280bbe887aae8bb8de383a9",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "XG2-082",
+      "effectId": "note_e280bbe887aae8bb8de383a9",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "XG3-072",
+      "effectId": "note_e280bbe38193e3828ce3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "XG3-072",
+      "effectId": "named_e8aa98e38184e381aee7bda0",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "XG3-072",
+      "effectId": "named_e8aa98e38184e381aee7bda0",
       "to": "grant_keyword"
     }
   ],

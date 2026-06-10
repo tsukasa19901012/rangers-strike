@@ -42,9 +42,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "on_attack_action_e38193e3828c",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [
