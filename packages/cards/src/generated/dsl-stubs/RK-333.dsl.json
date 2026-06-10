@@ -65,9 +65,20 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "destroy_advent_power_sum",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
     }
   ],
   "implementation": {

@@ -158,7 +158,7 @@ const KEYWORD_NOTE_PATTERNS: PatternMatch[] = [
   },
   {
     pattern: "attacked_bp_boost_note",
-    test: (body) => /^※これはアタックされるときBP[＋+](\d+)される/.test(body),
+    test: (body) => /^※これはアタックされるとき、?BP[＋+](\d+)される/.test(body),
     build: (body) => {
       const amount = body.match(/BP[＋+](\d+)/)?.[1] ?? "1000";
       const keyword = `attacked_bp_boost_${amount}`;
@@ -2429,6 +2429,203 @@ const PATTERNS: PatternMatch[] = [
         },
       ],
       matchedPattern: "cannot_counter_on_attack",
+    }),
+  },
+  {
+    pattern: "stack_s_on_self_rush",
+    test: (body) =>
+      /自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "stack_s_on_self_rush",
+      name: segment.name,
+      text: body,
+      trigger: trigger.type === "nc" ? { type: "on_rush" } : trigger,
+      optional: /してもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "stack_s_on_self_rush",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "stack_s_on_self_rush",
+    }),
+  },
+  {
+    pattern: "destroy_advent_power_sum",
+    test: (body) =>
+      /自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい/.test(body) &&
+      /必要パワーの数字を合計して、その合計以下の必要パワーの数字を持つ敵軍ユニットを1体撃破/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "destroy_advent_power_sum",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      condition: { type: "has_target", target: zone("discard", "self") },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "destroy_advent_power_sum",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "destroy_advent_power_sum",
+    }),
+  },
+  {
+    pattern: "hold_named_riders_rc_copy",
+    test: (body) =>
+      /自軍コマンドゾーンから「仮面ライダー1号」か「仮面ライダー2号」のカードを1枚選びホールドしてもよい/.test(
+        body,
+      ) && /ＲＣの効果を、このユニットの効果として発動する/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "hold_named_riders_rc_copy",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "hold_named_riders_rc_copy",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "hold_named_riders_rc_copy",
+    }),
+  },
+  {
+    pattern: "rc_hold_skip_rideoff",
+    test: (body) =>
+      /ＲＣを持つ自軍Sユニットを1体選ぶ。選んだユニットは、このターン、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "rc_hold_skip_rideoff",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: /してもよい/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "rc_hold_skip_rideoff",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "rc_hold_skip_rideoff",
+    }),
+  },
+  {
+    pattern: "destroy_power_match_on_rush",
+    test: (body) =>
+      /ラッシュしたとき、自軍パワーゾーンからカードを1枚選び捨札にしてもよい/.test(body) &&
+      /捨札にしたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、撃破/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "destroy_power_match_on_rush",
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "destroy_power_match_on_rush",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "destroy_power_match_on_rush",
+    }),
+  },
+  {
+    pattern: "rush_battle_intercept_draw",
+    test: (body) =>
+      /敵軍バトルフェイズ中、相手が自分自身のSユニットをバトルエリアに出すために選んだとき、これを自軍バトルエリアに出してもよい/.test(
+        body,
+      ) && /自分は1枚ドローしてから/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "rush_battle_intercept_draw",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "rush_battle_intercept_draw",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "rush_battle_intercept_draw",
+    }),
+  },
+  {
+    pattern: "per_ally_feature_bp_in_battle",
+    test: (body) =>
+      /自軍ターン中、これは自軍バトルエリアにある特徴「([^」]+)」を持つユニット1体につきBP\+(\d+)される/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const amount = body.match(/BP\+(\d+)される/)?.[1] ?? "1000";
+      return {
+        id: `per_ally_${feature}_bp_${amount}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `per_ally_${feature}_bp_${amount}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "per_ally_feature_bp_in_battle",
+      };
+    },
+  },
+  {
+    pattern: "lead_ma_bp_boost_note",
+    test: (body) => /^※このユニットは、リードMAを持つ自軍ユニットがあればBP\+(\d+)される/.test(body),
+    build: (body) => {
+      const amount = body.match(/BP\+(\d+)される/)?.[1] ?? "1000";
+      return {
+        id: `lead_ma_bp_boost_${amount}`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `lead_ma_bp_boost_${amount}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "lead_ma_bp_boost_note",
+      };
+    },
+  },
+  {
+    pattern: "category_wb_battle_phase",
+    test: (body) => /^※これは自軍バトルフェイズ中、カテゴリにWBが追加される/.test(body),
+    build: (body) => ({
+      id: "unnamed_category_wb_battle_phase",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "category_wb_battle_phase",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "category_wb_battle_phase",
     }),
   },
   {

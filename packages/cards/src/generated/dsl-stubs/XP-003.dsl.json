@@ -24,14 +24,16 @@
   },
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_attacked_bp_boost_5000",
       "text": "※これはアタックされるとき、BP+5000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "attacked_bp_boost_5000",
+          "duration": "permanent"
         }
       ]
     },
@@ -44,9 +46,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "destroy_power_match_on_rush",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

@@ -17,14 +17,16 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_category_wb_battle_phase",
       "text": "※これは自軍バトルフェイズ中、カテゴリにWBが追加される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "category_wb_battle_phase",
+          "duration": "permanent"
         }
       ]
     },

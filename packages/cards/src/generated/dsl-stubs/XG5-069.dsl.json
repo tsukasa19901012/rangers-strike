@@ -16,14 +16,16 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e381aee383a6",
+      "id": "lead_ma_bp_boost_1000",
       "text": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "lead_ma_bp_boost_1000",
+          "duration": "permanent"
         }
       ]
     },

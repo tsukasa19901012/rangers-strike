@@ -81,4 +81,20 @@ describe("rematchExtractedEffect (M20)", () => {
     expect(built?.matchedPattern).toBe("destroy_rush_original_bp");
     expect(built?.effects[0]?.type).toBe("choose");
   });
+
+  it("matches stack S on rush (RK-013)", () => {
+    const built = rematchExtractedEffect(
+      "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは特徴「人型」を追加されて「Lユニット」になる。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("stack_s_on_self_rush");
+  });
+
+  it("matches category WB in battle phase (XG6-021)", () => {
+    const built = rematchExtractedEffect(
+      "※これは自軍バトルフェイズ中、カテゴリにWBが追加される。",
+      { kind: "note", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("category_wb_battle_phase");
+  });
 });
