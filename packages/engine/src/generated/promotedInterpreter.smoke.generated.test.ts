@@ -1,6 +1,6 @@
 /**
  * Auto-generated promoted interpreter smoke (M14/M15)
- * grant_keyword: 40 | interpret_effect: 40 | action_primitive: 40
+ * grant_keyword: 40 | interpret_effect: 31 | action_primitive: 40
  */
 import { describe, it, expect } from "vitest";
 import { cardDsl } from "@rangers-strike/cards";
@@ -57,40 +57,31 @@ const INTERPRET_EFFECT_IDS = [
   "XG4-046",
   "RK-043",
   "RK-146",
-  "RK-154",
-  "RK-228",
   "RK-231",
   "RS-227",
-  "RS-336",
   "RS-382",
   "RS-397",
   "RS-427",
   "RS-446",
-  "RS-455",
   "RS-486",
-  "RS-489",
   "RS-575",
   "RS-603",
   "RS-622",
   "RS-633",
-  "RS-684",
   "XG1-048",
   "XG2-082",
-  "XG3-037",
   "XG3-072",
-  "XG3-099",
   "XG4-004",
   "XG4-023",
   "XG4-031",
-  "XG4-045",
   "XG4-058",
   "XG4-062",
   "XG4-102",
   "XG5-003",
   "XG5-032",
   "XG5-091",
-  "XG6-017",
-  "XG6-031"
+  "XG6-031",
+  "XG6-044"
 ] as const;
 const ACTION_PRIMITIVE_IDS = [
   "BK-001",
