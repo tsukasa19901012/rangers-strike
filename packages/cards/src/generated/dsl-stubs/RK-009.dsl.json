@@ -19,7 +19,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "counter_return_all_s_on_attack",
+          "duration": "permanent"
         }
       ]
     }

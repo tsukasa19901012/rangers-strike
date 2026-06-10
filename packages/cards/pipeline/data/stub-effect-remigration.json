@@ -1,37 +1,92 @@
 {
-  "generatedAt": "2026-06-10T03:50:08.402Z",
-  "scanned": 1284,
-  "migratedToPrimitives": 16,
+  "generatedAt": "2026-06-10T03:52:11.529Z",
+  "scanned": 1272,
+  "migratedToPrimitives": 25,
   "remainingEffectDelegate": 0,
   "samples": [
     {
-      "cardId": "BK-016",
-      "effectId": "named_e781abe7828ee9bc93e8a385",
-      "to": "draw"
-    },
-    {
-      "cardId": "PR-009",
-      "effectId": "named_e382aae383bce383ade383a9",
+      "cardId": "BK-009",
+      "effectId": "named_e382ade383b3e382b0e382b9",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-143",
-      "effectId": "power_faceup_named_e4bbaee99da2e383a9e382a4_on_enter",
+      "cardId": "BK-010",
+      "effectId": "named_e382b5e383b3e383a9e382a4",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-144",
-      "effectId": "power_faceup_named_e4bbaee99da2e383a9e382a4_on_enter",
+      "cardId": "BK-011",
+      "effectId": "named_e382a2e383bce382afe383ab",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-145",
-      "effectId": "power_faceup_named_e4bbaee99da2e383a9e382a4_on_enter",
+      "cardId": "BK-012",
+      "effectId": "named_e382aae383abe382bfe383aa",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RS-347",
-      "effectId": "named_e382b9e383bce38391e383bc",
+      "cardId": "BK-013",
+      "effectId": "named_56e38390e38383e382afe383",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "BK-015",
+      "effectId": "named_e38396e383ace382a4e38390",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "BK-017",
+      "effectId": "named_e382abe38396e38388e382bc",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "BK-019",
+      "effectId": "named_e382ade38390e38383e38388",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-009",
+      "effectId": "note_e280bbe382abe382a6e383b3",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-029",
+      "effectId": "unnamed_no_attack_while_riding_enemy_s",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-095",
+      "effectId": "named_e3838fe383aae382b1e383bc",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-280",
+      "effectId": "note_e280bbe38193e3828ce381af",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-281",
+      "effectId": "note_e280bbe38193e3828ce381af",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RM-002",
+      "effectId": "named_e8b5a4e5b084",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RM-003",
+      "effectId": "named_e784bce7b590",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-184",
+      "effectId": "note_e280bbe382abe382a6e383b3",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-189",
+      "effectId": "named_e382ade383bce382b9e38386",
       "to": "grant_keyword"
     },
     {
@@ -45,28 +100,18 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "SR-002",
-      "effectId": "named_e382b9e383bce38391e383bc",
+      "cardId": "XG1-076",
+      "effectId": "named_e38387e382a3e382b1e382a4",
       "to": "grant_keyword"
     },
     {
-      "cardId": "XG2-077",
-      "effectId": "named_e382abe383a1e383b3e383a9",
+      "cardId": "XG3-024",
+      "effectId": "named_e38388e383aae3838ee382a4",
       "to": "grant_keyword"
     },
     {
-      "cardId": "XG4-056",
-      "effectId": "note_e280bbe887aae58886e3818c",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG4-095",
-      "effectId": "note_e280bbe887aae58886e3818c",
-      "to": "grant_keyword"
-    },
-    {
-      "cardId": "XG4-096",
-      "effectId": "note_e280bbe887aae58886e3818c",
+      "cardId": "XG3-025",
+      "effectId": "named_e382aee382ace3838ee382a4",
       "to": "grant_keyword"
     },
     {
@@ -80,8 +125,8 @@
       "to": "grant_keyword"
     },
     {
-      "cardId": "XP-004",
-      "effectId": "named_e382abe383a1e383b3e383a9",
+      "cardId": "XG7-054",
+      "effectId": "named_e382aae383bce382bae38389",
       "to": "grant_keyword"
     }
   ],

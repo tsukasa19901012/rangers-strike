@@ -98,6 +98,14 @@ describe("rematchExtractedEffect (M20)", () => {
     expect(built?.matchedPattern).toBe("category_wb_battle_phase");
   });
 
+  it("matches choice one of effects (BK-009)", () => {
+    const built = rematchExtractedEffect(
+      "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーBLACK」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+      { kind: "body", trigger: { type: "nc" } },
+    );
+    expect(built?.matchedPattern).toBe("choice_one_of_effects");
+  });
+
   it("matches power faceup feature on enter (RK-143)", () => {
     const built = rematchExtractedEffect(
       "これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを自軍バトルエリアに出してもよい。",

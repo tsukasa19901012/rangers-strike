@@ -9,6 +9,14 @@ import { createTestState, inst } from "../testing/fixtures";
 import type { CardDefinition } from "@rangers-strike/cards";
 
 const GRANT_KEYWORD_IDS = [
+  "BK-009",
+  "BK-010",
+  "BK-011",
+  "BK-012",
+  "BK-013",
+  "BK-015",
+  "BK-017",
+  "BK-019",
   "PK-001",
   "PK-003",
   "PK-009",
@@ -40,26 +48,10 @@ const GRANT_KEYWORD_IDS = [
   "RK-134",
   "RK-152",
   "RK-159",
-  "RK-162",
-  "RK-163",
-  "RK-164",
-  "RK-166",
-  "RK-168",
-  "RK-169",
-  "RK-175",
-  "RK-178",
-  "RK-181"
+  "RK-162"
 ] as const;
 const INTERPRET_EFFECT_IDS = [
-  "BK-009",
-  "BK-010",
-  "BK-011",
-  "BK-012",
-  "BK-013",
-  "BK-015",
-  "BK-017",
   "BK-018",
-  "BK-019",
   "RK-007",
   "RK-019",
   "RK-020",
@@ -90,7 +82,15 @@ const INTERPRET_EFFECT_IDS = [
   "RK-198",
   "RK-214",
   "RK-217",
-  "RK-227"
+  "RK-227",
+  "RK-263",
+  "RK-267",
+  "RK-278",
+  "RK-282",
+  "RK-288",
+  "RK-331",
+  "RM-001",
+  "RM-004"
 ] as const;
 const ACTION_PRIMITIVE_IDS = [
   "BK-001",

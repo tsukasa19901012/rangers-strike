@@ -19,14 +19,16 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_no_attack_while_riding_enemy_s",
       "text": "※これはライド中、ライドしていない敵軍Sユニットにアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "no_attack_while_riding_enemy_s",
+          "duration": "permanent"
         }
       ]
     },

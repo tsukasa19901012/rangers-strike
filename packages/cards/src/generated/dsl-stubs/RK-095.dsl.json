@@ -15,13 +15,16 @@
       "name": "ハリケーンダッシュ",
       "text": "自分がターンを終えるとき、このビークルがバトルエリアでライドされていれば、このビークルにライドしているユニットをラッシュエリアに戻してもよい。（ライドオフしない限り、ユニットとビークルは重ねたまま扱う）",
       "trigger": {
-        "type": "nc"
+        "type": "on_turn_end"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "return_rider_to_rush_end_turn",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

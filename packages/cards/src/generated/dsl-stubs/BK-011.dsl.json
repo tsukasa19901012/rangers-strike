@@ -20,7 +20,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "hand_resident_rush_named_e382a2e3839ee38380e383a0",
+          "duration": "turn"
         }
       ]
     }

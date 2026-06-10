@@ -19,7 +19,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "counter_strike_return_attacker",
+          "duration": "permanent"
         }
       ]
     }

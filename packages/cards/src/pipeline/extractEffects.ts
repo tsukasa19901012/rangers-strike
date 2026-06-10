@@ -3066,6 +3066,192 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "choice_one_of_effects",
+    test: (body) => /次の効果から1つ選び発動する/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: `choice_one_of_${hashEffectText(body).slice(0, 12)}`,
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "choice_one_of_effects",
+    }),
+  },
+  {
+    pattern: "hold_entry_and_rush_hold",
+    test: (body) =>
+      /ユニットの間、次のテキストを得る⇒これは自軍コマンドを1つホールドしなければバトルエリアに出られない。また、自軍ラッシュフェイズ中、これをホールドしてもよい/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: noteEffectIdFromBody(body),
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "hold_entry_and_rush_hold",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "hold_entry_and_rush_hold",
+    }),
+  },
+  {
+    pattern: "da_hold_then_deck_manipulation",
+    test: (body) =>
+      /DAの自軍コマンドを3つホールドしてから、自軍山札を/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "da_hold_then_deck",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "da_hold_then_deck_manipulation",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "da_hold_then_deck_manipulation",
+    }),
+  },
+  {
+    pattern: "hand_or_resident_rush_feature",
+    test: (body) =>
+      /手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「([^」]+)」を持つユニットカードを1枚選び、ラッシュエリアに出す/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/本来の特徴に「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `hand_resident_rush_${feature}`,
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `hand_resident_rush_${feature}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "hand_or_resident_rush_feature",
+      };
+    },
+  },
+  {
+    pattern: "return_rider_to_rush_end_turn",
+    test: (body) =>
+      /このビークルがバトルエリアでライドされていれば、このビークルにライドしているユニットをラッシュエリアに戻してもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "return_rider_to_rush_end_turn",
+      name: segment.name,
+      text: body,
+      trigger: trigger.type === "nc" ? { type: "on_turn_end" } : trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "return_rider_to_rush_end_turn",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "return_rider_to_rush_end_turn",
+    }),
+  },
+  {
+    pattern: "counter_return_all_s_on_attack",
+    test: (body) =>
+      /^※カウンター/.test(body) &&
+      /アタックされたとき発動できる/.test(body) &&
+      /バトルを行うユニット以外のSユニットをすべて手札に戻す/.test(body),
+    build: (body) => ({
+      id: noteEffectIdFromBody(body),
+      text: body,
+      trigger: { type: "operation", timing: "counter" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "counter_return_all_s_on_attack",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "counter_return_all_s_on_attack",
+    }),
+  },
+  {
+    pattern: "counter_strike_return_attacker",
+    test: (body) =>
+      /^※カウンター/.test(body) &&
+      /ストライクされたとき発動できる/.test(body) &&
+      /ストライクしてきた敵軍ユニットを持ち主の手札に戻す/.test(body),
+    build: (body) => ({
+      id: noteEffectIdFromBody(body),
+      text: body,
+      trigger: { type: "operation", timing: "counter" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "counter_strike_return_attacker",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "counter_strike_return_attacker",
+    }),
+  },
+  {
+    pattern: "no_attack_while_riding_enemy_s",
+    test: (body) => /^※これはライド中、ライドしていない敵軍Sユニットにアタックされない/.test(body),
+    build: (body) => ({
+      id: "unnamed_no_attack_while_riding_enemy_s",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "no_attack_while_riding_enemy_s",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "no_attack_while_riding_enemy_s",
+    }),
+  },
+  {
+    pattern: "battle_original_bp_combo_feature",
+    test: (body) =>
+      /アタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。（この効果は特徴「([^」]+)」を持つユニットからコンビネーションするとき/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : `battle_orig_bp_${feature}`,
+        name: segment.name,
+        text: body,
+        trigger: trigger.type === "nc" ? { type: "on_attack" } : trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `battle_original_bp_combo_${feature}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "battle_original_bp_combo_feature",
+      };
+    },
+  },
+  {
     pattern: "counter_redirect_attack",
     test: (body) =>
       /^※カウンター/.test(body) &&

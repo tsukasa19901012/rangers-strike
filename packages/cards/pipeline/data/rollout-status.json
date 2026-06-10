@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T03:50:25.708Z",
+  "generatedAt": "2026-06-10T03:52:21.551Z",
   "summary": {
     "gatesPassed": 4,
     "gatesPartial": 0,
@@ -37,7 +37,7 @@
       "status": "pass",
       "target": "effect_delegate=0, enqueue_only=0",
       "current": "effect_delegate=0, enqueue_only=0",
-      "note": "last remigrate: migrated=16, remaining=0"
+      "note": "last remigrate: migrated=25, remaining=0"
     },
     {
       "id": "G3",
