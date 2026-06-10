@@ -13,7 +13,11 @@ import {
   type Legend1StarterId,
   type PlayerId,
 } from "@rangers-strike/engine";
-import { buildCardDefinitions, getCustomDeck } from "./deckBuilder";
+import {
+  buildCardDefinitions,
+  getCustomDeck,
+  validateDeckEntries,
+} from "./deckBuilder";
 import { STARTER_OPTIONS, type StarterId } from "./labels";
 
 export type HybridPromotedTier = 10 | 25 | 35;
@@ -85,6 +89,19 @@ function deckRngFrom(rng: () => number): () => number {
   };
 }
 
+export function validateDeckSelection(
+  selection: DeckSelection,
+): { ok: boolean; errors: string[] } {
+  if (selection.kind === "custom") {
+    const deck = getCustomDeck(selection.id);
+    if (!deck) {
+      return { ok: false, errors: ["デッキが見つかりません"] };
+    }
+    return validateDeckEntries(deck.entries);
+  }
+  return { ok: true, errors: [] };
+}
+
 /** スターター / 自作デッキ用。promoted プリセットは createGameFromDeckSelections を使う。 */
 export function resolveDeckCards(selection: DeckSelection): CardDefinition[] {
   if (selection.kind === "full-promoted") {
@@ -104,6 +121,7 @@ export function resolveDeckCards(selection: DeckSelection): CardDefinition[] {
   if (!deck) {
     throw new Error(`Custom deck not found: ${selection.id}`);
   }
+  // custom: fullPlayableCatalog 経由で expandDeck
   return buildCardDefinitions(deck.entries);
 }
 

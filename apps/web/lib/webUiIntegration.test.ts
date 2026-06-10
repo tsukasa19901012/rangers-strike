@@ -4,10 +4,12 @@ import {
   getBattleEntryHoldCount,
   getCardById,
   getCardEffect,
+  getStarterDeck,
   legend1Catalog,
   legend2Catalog,
   legend3Catalog,
   listImplementedOperations,
+  resolvePlayableCard,
 } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "@rangers-strike/engine";
@@ -35,6 +37,7 @@ import {
   canConfirmCommandPayment,
   toggleCommandPaymentSelection,
 } from "./commandPaymentUi";
+import { buildCardDefinitions } from "./deckBuilder";
 import {
   createGameFromDeckSelections,
   decodeDeckSelection,
@@ -243,6 +246,21 @@ describe("Web UI integration — full-playable deck selection (G5)", () => {
     });
     expect(game.phase).toBe("charge");
     expect(game.winner).toBeNull();
+  });
+
+  it("resolves promoted card BK-001 through resolvePlayableCard", () => {
+    expect(resolvePlayableCard("BK-001")?.name).toBeTruthy();
+  });
+
+  it("builds definitions with BK-001 from abarenoh + promoted substitution", () => {
+    const entries = getStarterDeck("abarenoh").entries.map((entry) =>
+      entry.cardId === "RS-014" ? { cardId: "BK-001", count: 1 } : { ...entry },
+    );
+    const definitions = Object.fromEntries(
+      buildCardDefinitions(entries).map((card) => [card.id, card]),
+    );
+    expect(definitions["BK-001"]).toBeDefined();
+    expect(definitions["BK-001"]?.name).toBeTruthy();
   });
 });
 

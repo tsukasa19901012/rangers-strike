@@ -2,13 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  allCardsCatalog,
   cardHasCategory,
-  getCardById,
-  getCatalogByExpansion,
+  fullPlayableCatalog,
+  getFullPlayableCardById,
+  getWikiSetLabel,
+  getWikiSetLabels,
   type CardDefinition,
   type Category,
-  type ExpansionId,
   type StarterDeckId,
 } from "@rangers-strike/cards";
 import { CATEGORY_OPTIONS, STARTER_OPTIONS } from "@/lib/labels";
@@ -26,11 +26,13 @@ import {
   validateDeckEntries,
   type CustomDeck,
 } from "@/lib/deckBuilder";
+import { formatDeckValidationMessage } from "@/lib/formatDeckValidation";
 import { CardImage } from "./CardImage";
 import { CardModal } from "./CardModal";
+import { DeckWarningBanner } from "./DeckWarningBanner";
 
 type FilterType = "all" | "unit" | "operation";
-type ExpansionFilter = "all" | ExpansionId;
+type ExpansionFilter = "all" | string;
 type CategoryFilter = "all" | Category;
 
 type DeckBuilderScreenProps = {
@@ -58,20 +60,21 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
   const deckCards = useMemo(
     () =>
       entries.flatMap((entry) => {
-        const card = getCardById(entry.cardId);
+        const card = getFullPlayableCardById(entry.cardId);
         if (!card) return [];
         return Array.from({ length: entry.count }, () => card);
       }),
     [entries],
   );
 
-  const catalogSource = useMemo(
-    () =>
-      expansionFilter === "all"
-        ? allCardsCatalog.cards
-        : getCatalogByExpansion(expansionFilter).cards,
-    [expansionFilter],
-  );
+  const wikiSetOptions = useMemo(() => getWikiSetLabels(), []);
+
+  const catalogSource = useMemo(() => {
+    if (expansionFilter === "all") return fullPlayableCatalog.cards;
+    return fullPlayableCatalog.cards.filter(
+      (card) => getWikiSetLabel(card.id) === expansionFilter,
+    );
+  }, [expansionFilter]);
 
   const availableCategories = useMemo(() => {
     const present = new Set<Category>();
@@ -93,19 +96,20 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
     }
   }, [availableCategories, categoryFilter]);
 
+  const searchQuery = search.trim().toLowerCase();
+
   const catalogCards = useMemo(() => {
-    const query = search.trim().toLowerCase();
+    if (!searchQuery) return [];
     return catalogSource.filter((card) => {
       if (filter === "unit" && card.type !== "unit") return false;
       if (filter === "operation" && card.type !== "operation") return false;
       if (categoryFilter !== "all" && !cardHasCategory(card, categoryFilter)) return false;
-      if (!query) return true;
       return (
-        card.id.toLowerCase().includes(query) ||
-        card.name.toLowerCase().includes(query)
+        card.id.toLowerCase().includes(searchQuery) ||
+        card.name.toLowerCase().includes(searchQuery)
       );
     });
-  }, [catalogSource, categoryFilter, filter, search]);
+  }, [catalogSource, categoryFilter, filter, searchQuery]);
 
   const addCard = (card: CardDefinition) => {
     const current = counts.get(card.id) ?? 0;
@@ -146,7 +150,7 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
       return;
     }
     if (!validation.ok) {
-      setSaveError(validation.errors[0] ?? "デッキが完成していません");
+      setSaveError(formatDeckValidationMessage(validation.errors));
       return;
     }
 
@@ -221,9 +225,11 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
       </div>
 
       {!validation.ok && validation.errors.length > 0 && total > 0 && (
-        <div className="deck-builder__hint" role="status">
-          {validation.errors[0]}
-        </div>
+        <ul className="deck-builder__hint" role="alert">
+          {validation.errors.map((error) => (
+            <li key={error}>{error}</li>
+          ))}
+        </ul>
       )}
 
       <div className="deck-builder__panels">
@@ -234,7 +240,7 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
         ) : (
           <div className="deck-builder__deck-list">
             {entries.map((entry) => {
-              const card = getCardById(entry.cardId);
+              const card = getFullPlayableCardById(entry.cardId);
               if (!card) return null;
               return (
                 <div key={entry.cardId} className="deck-builder__deck-row">
@@ -281,25 +287,20 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
           onChange={(event) => setSearch(event.target.value)}
           placeholder="名前または ID で検索"
         />
-        <div className="deck-builder__filters">
-          {(
-            [
-              ["all", "全弾"],
-              ["legend1", "第1弾"],
-              ["legend2", "第2弾"],
-              ["legend3", "第3弾"],
-            ] as const
-          ).map(([value, label]) => (
-            <button
-              key={value}
-              type="button"
-              className={`btn ${expansionFilter === value ? "btn--primary" : ""}`}
-              onClick={() => setExpansionFilter(value)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        <label className="deck-builder__field deck-builder__field--inline">
+          <span className="deck-builder__label">収録セット</span>
+          <select
+            value={expansionFilter}
+            onChange={(event) => setExpansionFilter(event.target.value)}
+          >
+            <option value="all">全件</option>
+            {wikiSetOptions.map((label) => (
+              <option key={label} value={label}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
         <div className="deck-builder__filters">
           {(
             [
@@ -338,6 +339,21 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
             </button>
           ))}
         </div>
+        {!searchQuery && (
+          <p className="deck-builder__empty" role="status">
+            名前または ID で検索してください（全 {fullPlayableCatalog.cards.length.toLocaleString()} 枚）
+          </p>
+        )}
+        {searchQuery && catalogCards.length === 0 && (
+          <p className="deck-builder__empty" role="status">
+            「{search.trim()}」に一致するカードはありません
+          </p>
+        )}
+        {searchQuery && catalogCards.length > 0 && (
+          <p className="deck-builder__search-count" role="status">
+            {catalogCards.length.toLocaleString()} 件
+          </p>
+        )}
         <div className="deck-builder__catalog">
           {catalogCards.map((card) => {
             const current = counts.get(card.id) ?? 0;
@@ -379,6 +395,8 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
           {saveError}
         </div>
       )}
+
+      <DeckWarningBanner entries={entries} />
 
       <footer className="deck-builder__footer">
         {existing && (

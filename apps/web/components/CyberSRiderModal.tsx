@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { EFFECT_LABELS, getCardById } from "@rangers-strike/cards";
+import { EFFECT_LABELS, resolvePlayableCard } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
 import { CardImage } from "./CardImage";
 import { GameModalBackdrop } from "./GameModalBackdrop";
@@ -30,7 +30,7 @@ export function CyberSRiderModal({
   onPreview,
 }: CyberSRiderModalProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const opCard = getCardById(operationCardId);
+  const opCard = resolvePlayableCard(operationCardId);
   const effectLabel = EFFECT_LABELS.cyber_s_rider ?? "サイバースライダー";
   const validIds = useMemo(() => new Set(validHandInstanceIds), [validHandInstanceIds]);
   const handCards = state.players[playerId].hand.filter(
@@ -71,7 +71,7 @@ export function CyberSRiderModal({
 
           <div className="pile-modal__grid">
             {handCards.map((card) => {
-              const definition = getCardById(card.cardId);
+              const definition = resolvePlayableCard(card.cardId);
               const selected = selectedIds.includes(card.instanceId);
               return (
                 <div

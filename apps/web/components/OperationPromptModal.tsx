@@ -1,6 +1,6 @@
 "use client";
 
-import { EFFECT_LABELS, getCardById } from "@rangers-strike/cards";
+import { EFFECT_LABELS, resolvePlayableCard } from "@rangers-strike/cards";
 import type { GameState } from "@rangers-strike/engine";
 import type { PlayerId } from "@rangers-strike/engine";
 import { cardTargetMetaLine, resolveCardTargets } from "@/lib/cardTargets";
@@ -26,7 +26,7 @@ export function OperationPromptModal({
   onSelectTarget,
   onCancel,
 }: OperationPromptModalProps) {
-  const opCard = getCardById(pendingOp.cardId);
+  const opCard = resolvePlayableCard(pendingOp.cardId);
   const effectLabel = EFFECT_LABELS[pendingOp.effectId] ?? pendingOp.effectId;
 
   const targets = resolveCardTargets(state, [...targetInstanceIds]);

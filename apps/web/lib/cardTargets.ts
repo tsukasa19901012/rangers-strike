@@ -1,5 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
-import { getCardById } from "@rangers-strike/cards";
+import { resolvePlayableCard } from "@rangers-strike/cards";
 import type { GameState, PlayerId, ZoneName } from "@rangers-strike/engine";
 
 const ZONE_LABELS: Record<ZoneName, string> = {
@@ -57,7 +57,7 @@ export function findCardTarget(
     for (const zone of FIELD_ZONES) {
       const inst = cardsInZone(player, zone).find((c) => c.instanceId === instanceId);
       if (!inst) continue;
-      const card = getCardById(inst.cardId) ?? state.definitions[inst.cardId];
+      const card = resolvePlayableCard(inst.cardId) ?? state.definitions[inst.cardId];
       if (!card) continue;
       return {
         instanceId,

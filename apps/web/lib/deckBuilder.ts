@@ -1,8 +1,8 @@
 import {
-  allCardsCatalog,
   deckCardCount,
   DECK_MIN_SIZE,
   expandDeck,
+  fullPlayableCatalog,
   getStarterDeck,
   maxCopiesForCard,
   validateDeckEntries as validateDeckEntriesCore,
@@ -58,7 +58,7 @@ function emptyDeckShell(): DeckDefinition {
 }
 
 export function validateDeckEntries(entries: DeckEntry[]): DeckValidation {
-  return validateDeckEntriesCore(entries, allCardsCatalog);
+  return validateDeckEntriesCore(entries, fullPlayableCatalog);
 }
 
 export function buildCardDefinitions(entries: DeckEntry[]): CardDefinition[] {
@@ -71,7 +71,7 @@ export function buildCardDefinitions(entries: DeckEntry[]): CardDefinition[] {
       source: "custom",
       entries,
     },
-    allCardsCatalog,
+    fullPlayableCatalog,
   );
 }
 

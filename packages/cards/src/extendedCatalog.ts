@@ -1,4 +1,4 @@
-import { allCardsCatalog } from "./catalog";
+import { allCardsCatalog, getCardById } from "./catalog";
 import complexityPromotedCards from "./generated/catalog/complexity-promoted/cards.json";
 import vanillaPromotedCards from "./generated/catalog/vanilla-promoted/cards.json";
 import wikiStubsCards from "./generated/catalog/wiki-stubs/cards.json";
@@ -65,6 +65,11 @@ export function getComplexityPromotedCardById(id: string): CardDefinition | unde
 
 export function getFullPlayableCardById(id: string): CardDefinition | undefined {
   return FULL_PLAYABLE_BY_ID.get(id);
+}
+
+/** Core カードを優先し、なければ full playable（promoted 含む）を返す。 */
+export function resolvePlayableCard(id: string): CardDefinition | undefined {
+  return getCardById(id) ?? getFullPlayableCardById(id);
 }
 
 export function getExtendedCardById(id: string): CardDefinition | undefined {

@@ -1,3 +1,4 @@
+import { isBannedCardId } from "./bannedCards";
 import { allCardsCatalog } from "./catalog";
 import type { CardCatalog, CardDefinition, DeckEntry } from "./schema";
 import { hasUnnamedRule } from "./unitEffects";
@@ -12,6 +13,12 @@ export const DECK_NAME_COPY_LIMIT = 3;
 export const DECK_UNLIMITED_COPY_CAP = 40;
 
 const UNLIMITED_DECK_NOTE = "デッキに3枚以上入れてもよい";
+
+const FULL_PLAYABLE_POOL_SIZE = 1849;
+
+function formatCardRef(card: CardDefinition): string {
+  return `${card.name}（${card.id}）`;
+}
 
 export type DeckValidationResult = {
   ok: boolean;
@@ -52,7 +59,10 @@ export function validateDeckEntries(
   const total = entries.reduce((sum, entry) => sum + entry.count, 0);
 
   if (total < minSize) {
-    errors.push(`デッキは最低${minSize}枚必要です（現在 ${total} 枚）`);
+    const shortfall = minSize - total;
+    errors.push(
+      `デッキは最低${minSize}枚必要です（現在 ${total} 枚）。あと ${shortfall} 枚必要です`,
+    );
   }
 
   const byName = new Map<string, { count: number; cards: CardDefinition[] }>();
@@ -60,17 +70,24 @@ export function validateDeckEntries(
   for (const entry of entries) {
     const card = byId.get(entry.cardId);
     if (!card) {
-      errors.push(`不明なカード: ${entry.cardId}`);
+      errors.push(
+        `カタログにないカードです: ${entry.cardId}（${FULL_PLAYABLE_POOL_SIZE.toLocaleString()}枚プール外の可能性）`,
+      );
       continue;
     }
     if (entry.count <= 0) {
-      errors.push(`${card.name} の枚数が不正です`);
+      errors.push(`${formatCardRef(card)} の枚数が不正です`);
+      continue;
+    }
+
+    if (isBannedCardId(entry.cardId)) {
+      errors.push(`禁止カードが含まれています: ${formatCardRef(card)}`);
       continue;
     }
 
     const perCardMax = maxCopiesForCard(card);
     if (entry.count > perCardMax) {
-      errors.push(`${card.name} は最大 ${perCardMax} 枚までです`);
+      errors.push(`${formatCardRef(card)}は最大 ${perCardMax} 枚までです`);
     }
 
     const bucket = byName.get(card.name) ?? { count: 0, cards: [] };
@@ -84,7 +101,10 @@ export function validateDeckEntries(
   for (const [name, { count, cards }] of byName) {
     const limit = nameCopyLimit(cards);
     if (count > limit) {
-      errors.push(`「${name}」は同名で最大 ${limit} 枚までです（現在 ${count} 枚）`);
+      const ids = cards.map((c) => c.id).join(", ");
+      errors.push(
+        `「${name}（${ids}）」は同名で最大 ${limit} 枚までです（現在 ${count} 枚）`,
+      );
     }
   }
 

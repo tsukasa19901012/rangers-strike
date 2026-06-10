@@ -11,6 +11,18 @@ function extractField(content: string, label: string): string | undefined {
   return m?.[1]?.trim();
 }
 
+/** Wiki「収録」行の先頭トークン（全角スペース前まで）。 */
+export function normalizeWikiSetLabel(raw: string): string {
+  const trimmed = raw.trim();
+  const idx = trimmed.indexOf("\u3000");
+  return idx >= 0 ? trimmed.slice(0, idx).trim() : trimmed;
+}
+
+export function extractWikiSetLabel(content: string): string | undefined {
+  const raw = extractField(content, "収録");
+  return raw ? normalizeWikiSetLabel(raw) : undefined;
+}
+
 export function extractEffectTexts(content: string): string[] {
   const texts: string[] = [];
   const re =

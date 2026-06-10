@@ -20,6 +20,7 @@ import {
 } from "./catalog";
 
 export * from "./schema";
+export * from "./bannedCards";
 export * from "./deckRules";
 export * from "./catalog";
 export * from "./effects";
@@ -140,9 +141,11 @@ export {
   getFullPlayableCardById,
   getPlayableCardById,
   getVanillaPromotedCardById,
+  resolvePlayableCard,
   isComplexityPromotedCardId,
   isFullPlayableCardId,
   isPlayableCardId,
   isVanillaPromotedCardId,
   isWikiStubCardId,
 } from "./extendedCatalog";
+export { getWikiSetLabel, getWikiSetLabels } from "./wikiSetLabels";

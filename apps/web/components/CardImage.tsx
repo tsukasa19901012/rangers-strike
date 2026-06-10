@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import type { CardDefinition } from "@rangers-strike/cards";
-import { getCardBackImageUrl, getCardEffect } from "@rangers-strike/cards";
+import { cardCategories, getCardBackImageUrl, getCardEffect } from "@rangers-strike/cards";
 import { type DragCardPayload } from "@/lib/dnd";
 import { usePointerDrag } from "@/lib/PointerDragContext";
 import { useCardLongPress } from "@/lib/useCardLongPress";
@@ -161,7 +161,20 @@ export function CardImage({
           draggable={false}
         />
       ) : (
-        <div className="card__placeholder">{faceDown ? "裏" : card.id}</div>
+        <div className="card__placeholder">
+          {faceDown ? (
+            "裏"
+          ) : (
+            <>
+              <span className="card__placeholder-name">{card.name}</span>
+              <span className="card__placeholder-meta">
+                {cardCategories(card).join(" / ")}
+                {card.bp !== undefined && ` · BP ${card.bp}`}
+                {card.type === "operation" && ` · OP ${card.powerCost}`}
+              </span>
+            </>
+          )}
+        </div>
       )}
       {!faceDown && !hideMeta && (
       <div className="card__meta">

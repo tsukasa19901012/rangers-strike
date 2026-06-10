@@ -185,6 +185,26 @@ select {
   font-size: 0.85rem;
 }
 
+.deck-warning-banner {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(113, 63, 18, 0.35);
+  border: 1px solid #f59e0b;
+  color: #fef3c7;
+  font-size: 0.85rem;
+}
+
+.deck-warning-banner__message {
+  margin: 0;
+}
+
+.deck-warning-banner__supplement {
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #fde68a;
+}
+
 .scry-panel {
   margin: 12px 0;
   padding: 14px 16px;
@@ -1656,11 +1676,32 @@ select {
 .card__placeholder {
   width: var(--card-width);
   height: var(--card-height);
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px;
+  text-align: center;
   background: #1e293b;
   border-radius: 6px;
   font-size: 0.7rem;
+}
+
+.card__placeholder-name {
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.card__placeholder-meta {
+  font-size: 0.58rem;
+  color: #94a3b8;
+  line-height: 1.2;
 }
 
 .card__meta {
@@ -1793,6 +1834,14 @@ select {
   width: 100%;
 }
 
+.start-screen__notice {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #94a3b8;
+  text-align: center;
+}
+
 .start-screen__deck-row {
   display: flex;
   gap: 8px;
@@ -1874,7 +1923,8 @@ select {
 }
 
 .deck-builder__hint {
-  padding: 10px 12px;
+  margin: 0;
+  padding: 10px 12px 10px 1.75rem;
   border-radius: 10px;
   background: rgba(30, 41, 59, 0.8);
   border: 1px solid #475569;
@@ -1902,6 +1952,12 @@ select {
   margin: 0;
   color: #64748b;
   font-size: 0.9rem;
+}
+
+.deck-builder__search-count {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.8rem;
 }
 
 .deck-builder__deck-list,

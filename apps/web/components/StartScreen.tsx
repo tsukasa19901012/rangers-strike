@@ -1,7 +1,9 @@
 import type { PlayerId, CpuLevel } from "@rangers-strike/engine";
-import type { CustomDeck } from "@/lib/deckBuilder";
+import { countEntries, type CustomDeck } from "@/lib/deckBuilder";
+import type { DeckWarningEstimate } from "@/lib/deckWarnings";
 import { encodeDeckSelection, FULL_PLAYABLE_DECK_OPTIONS } from "@/lib/deckSelection";
 import { CPU_LEVEL_OPTIONS, STARTER_OPTIONS } from "@/lib/labels";
+import { DeckWarningBanner, SS06_SUPPLEMENT } from "./DeckWarningBanner";
 
 type StartScreenProps = {
   humanDeckKey: string;
@@ -9,6 +11,9 @@ type StartScreenProps = {
   cpuLevel: CpuLevel;
   firstPlayer: PlayerId;
   customDecks: CustomDeck[];
+  deckWarningsById?: ReadonlyMap<string, DeckWarningEstimate>;
+  humanDeckWarnings?: DeckWarningEstimate | null;
+  cpuDeckWarnings?: DeckWarningEstimate | null;
   onHumanDeckChange: (key: string) => void;
   onCpuDeckChange: (key: string) => void;
   onCpuLevelChange: (level: CpuLevel) => void;
@@ -23,12 +28,27 @@ function parseCustomId(key: string): string | null {
   return key.slice("custom:".length);
 }
 
+function formatCustomDeckLabel(
+  deck: CustomDeck,
+  warnings?: DeckWarningEstimate | null,
+): string {
+  const total = countEntries(deck.entries);
+  const warningSuffix =
+    warnings && warnings.uiUncertainCount > 0
+      ? ` · UI未確認${warnings.uiUncertainCount}枚`
+      : "";
+  return `${deck.name}（${total}枚${warningSuffix}）`;
+}
+
 export function StartScreen({
   humanDeckKey,
   cpuDeckKey,
   cpuLevel,
   firstPlayer,
   customDecks,
+  deckWarningsById,
+  humanDeckWarnings,
+  cpuDeckWarnings,
   onHumanDeckChange,
   onCpuDeckChange,
   onCpuLevelChange,
@@ -39,12 +59,26 @@ export function StartScreen({
 }: StartScreenProps) {
   const humanCustomId = parseCustomId(humanDeckKey);
   const cpuCustomId = parseCustomId(cpuDeckKey);
+  const selectedWarnings = [humanDeckWarnings, cpuDeckWarnings].filter(
+    (estimate): estimate is DeckWarningEstimate =>
+      !!estimate && estimate.uiUncertainCount > 0,
+  );
+  const combinedWarningEstimate =
+    selectedWarnings.length > 0
+      ? {
+          uiUncertainCount: selectedWarnings.reduce(
+            (sum, estimate) => sum + estimate.uiUncertainCount,
+            0,
+          ),
+          uncertainCardIds: [...new Set(selectedWarnings.flatMap((estimate) => estimate.uncertainCardIds))],
+        }
+      : null;
 
   return (
     <div className="start-screen">
       <header className="start-screen__hero">
         <h1 className="start-screen__title">レンジャーズストライク</h1>
-        <p className="start-screen__subtitle">Legend 1〜3 / フルプレイアブル — CPU対戦（Lv1〜5）</p>
+        <p className="start-screen__subtitle">全カード（1,849枚）— CPU対戦（Lv1〜5）</p>
       </header>
 
       <section className="start-screen__panel" aria-label="対戦設定">
@@ -81,7 +115,7 @@ export function StartScreen({
                       key={deck.id}
                       value={encodeDeckSelection({ kind: "custom", id: deck.id })}
                     >
-                      {deck.name}
+                      {formatCustomDeckLabel(deck, deckWarningsById?.get(deck.id))}
                     </option>
                   ))}
                 </optgroup>
@@ -130,7 +164,7 @@ export function StartScreen({
                       key={deck.id}
                       value={encodeDeckSelection({ kind: "custom", id: deck.id })}
                     >
-                      {deck.name}
+                      {formatCustomDeckLabel(deck, deckWarningsById?.get(deck.id))}
                     </option>
                   ))}
                 </optgroup>
@@ -189,9 +223,17 @@ export function StartScreen({
           </div>
         )}
 
+        {combinedWarningEstimate && (
+          <DeckWarningBanner estimate={combinedWarningEstimate} showSupplement={false} />
+        )}
+
         <button type="button" className="btn btn--primary start-screen__start" onClick={onStart}>
           ゲーム開始
         </button>
+
+        <p className="start-screen__notice" role="note">
+          {SS06_SUPPLEMENT}
+        </p>
       </div>
     </div>
   );

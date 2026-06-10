@@ -1,6 +1,6 @@
 "use client";
 
-import { EFFECT_LABELS, getCardById } from "@rangers-strike/cards";
+import { EFFECT_LABELS, resolvePlayableCard } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
 import { resolveCardTargets } from "@/lib/cardTargets";
 import { GameModalBackdrop } from "./GameModalBackdrop";
@@ -56,10 +56,10 @@ export function ReactionModal({
     .map((id) => {
       const inst = state.players[playerId].hand.find((c) => c.instanceId === id);
       if (!inst) return null;
-      const card = getCardById(inst.cardId);
+      const card = resolvePlayableCard(inst.cardId);
       return card ? { instanceId: id, card } : null;
     })
-    .filter((e): e is { instanceId: string; card: NonNullable<ReturnType<typeof getCardById>> } => !!e);
+    .filter((e): e is { instanceId: string; card: NonNullable<ReturnType<typeof resolvePlayableCard>> } => !!e);
 
   const interceptors = resolveCardTargets(state, interceptInstanceIds);
   const substitutes = resolveCardTargets(state, substituteInstanceIds);

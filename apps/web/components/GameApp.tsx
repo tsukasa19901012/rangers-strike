@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   getCardEffect,
-  getCardById,
+  resolvePlayableCard,
   type CardDefinition,
 } from "@rangers-strike/cards";
 import {
@@ -45,18 +45,16 @@ import {
   PHASE_LABELS,
   PLAYER_LABELS,
 } from "@/lib/labels";
-import {
-  getCustomDeck,
-  loadCustomDecks,
-  validateDeckEntries,
-  type CustomDeck,
-} from "@/lib/deckBuilder";
+import { loadCustomDecks, type CustomDeck } from "@/lib/deckBuilder";
+import { estimateDeckWarnings } from "@/lib/deckWarnings";
+import { formatDeckValidationMessage } from "@/lib/formatDeckValidation";
 import {
   createGameFromDeckSelections,
   decodeDeckSelection,
   deckSelectionLabel,
   encodeDeckSelection,
   isFullPlayableSelection,
+  validateDeckSelection,
   type DeckSelection,
 } from "@/lib/deckSelection";
 import { resolveCardTargets } from "@/lib/cardTargets";
@@ -230,20 +228,36 @@ export function GameApp() {
   );
   const cpuDeckSelection = useMemo(() => decodeDeckSelection(cpuDeckKey), [cpuDeckKey]);
 
-  const resolveSelection = useCallback((selection: DeckSelection | null): boolean => {
-    if (!selection) return false;
-    if (isFullPlayableSelection(selection)) return true;
-    if (selection.kind === "custom") {
-      const deck = getCustomDeck(selection.id);
-      if (!deck) return false;
-      return validateDeckEntries(deck.entries).ok;
+  const deckWarningsById = useMemo(() => {
+    const map = new Map<string, ReturnType<typeof estimateDeckWarnings>>();
+    for (const deck of customDecks) {
+      map.set(deck.id, estimateDeckWarnings(deck.entries));
     }
-    return true;
+    return map;
+  }, [customDecks]);
+
+  const humanDeckWarnings = useMemo(() => {
+    if (humanDeckSelection?.kind !== "custom") return null;
+    return deckWarningsById.get(humanDeckSelection.id) ?? null;
+  }, [deckWarningsById, humanDeckSelection]);
+
+  const cpuDeckWarnings = useMemo(() => {
+    if (cpuDeckSelection?.kind !== "custom") return null;
+    return deckWarningsById.get(cpuDeckSelection.id) ?? null;
+  }, [deckWarningsById, cpuDeckSelection]);
+
+  const collectSelectionErrors = useCallback((selection: DeckSelection | null): string[] => {
+    if (!selection) return ["デッキが選択されていません"];
+    return validateDeckSelection(selection).errors;
   }, []);
 
   const startGame = useCallback(() => {
-    if (!resolveSelection(humanDeckSelection) || !resolveSelection(cpuDeckSelection)) {
-      setStartError("選択した自作デッキが使えません。編集するか別のデッキを選んでください。");
+    const startErrors = [
+      ...collectSelectionErrors(humanDeckSelection),
+      ...collectSelectionErrors(cpuDeckSelection),
+    ];
+    if (startErrors.length > 0) {
+      setStartError(formatDeckValidationMessage(startErrors));
       return;
     }
 
@@ -273,10 +287,14 @@ export function GameApp() {
       setEffectNotice(null);
       prevLogLenRef.current = 0;
       prevPhaseRef.current = game.phase;
-    } catch {
-      setStartError("デッキの読み込みに失敗しました。");
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "デッキの読み込みに失敗しました。";
+      setStartError(message);
     }
-  }, [cpuDeckSelection, firstPlayer, humanDeckSelection, resolveSelection]);
+  }, [collectSelectionErrors, cpuDeckSelection, firstPlayer, humanDeckSelection]);
 
   const returnToStart = useCallback(() => {
     setState(null);
@@ -575,7 +593,7 @@ export function GameApp() {
       const reason = explainCannotEnterBattle(state, HUMAN_PLAYER, card, "rush");
       setBlockedBattleAlert(
         reason ??
-          `「${getCardById(card.cardId)?.name ?? card.cardId}」はバトルエリアに出せません。`,
+          `「${resolvePlayableCard(card.cardId)?.name ?? card.cardId}」はバトルエリアに出せません。`,
       );
     },
     [apply, humanCanAct, legalActions, state],
@@ -628,7 +646,7 @@ export function GameApp() {
 
         if (needsOperationTarget(card.cardId)) {
           if (!effect?.target) return;
-          const opDef = getCardById(card.cardId) ?? state.definitions[card.cardId];
+          const opDef = resolvePlayableCard(card.cardId) ?? state.definitions[card.cardId];
           if (
             !opDef ||
             !canPlayOperationExceptCommandHold(
@@ -663,7 +681,7 @@ export function GameApp() {
       }
 
       if (target === "rush" && state.phase === "rush") {
-        const zordCard = getCardById(payload.cardId);
+        const zordCard = resolvePlayableCard(payload.cardId);
         const needsZord =
           !!zordCard &&
           zordCard.type === "unit" &&
@@ -725,7 +743,7 @@ export function GameApp() {
         const reason = explainCannotRush(state, HUMAN_PLAYER, payload.instanceId);
         setBlockedRushAlert(
           reason ??
-            `「${getCardById(payload.cardId)?.name ?? payload.cardId}」はラッシュできません。`,
+            `「${resolvePlayableCard(payload.cardId)?.name ?? payload.cardId}」はラッシュできません。`,
         );
         return;
       }
@@ -1013,7 +1031,7 @@ export function GameApp() {
     if (ids.size > 0) return ids;
 
     const player = state.players[HUMAN_PLAYER];
-    const opDef = getCardById(pendingOp.cardId) ?? state.definitions[pendingOp.cardId];
+    const opDef = resolvePlayableCard(pendingOp.cardId) ?? state.definitions[pendingOp.cardId];
     if (
       opDef &&
       canPlayOperationExceptCommandHold(player, state.definitions, opDef)
@@ -1179,7 +1197,7 @@ export function GameApp() {
     );
     if (!unit) return null;
 
-    const unitCard = getCardById(unit.cardId);
+    const unitCard = resolvePlayableCard(unit.cardId);
     if (!unitCard) return null;
 
     const definition = state.definitions[unit.cardId];
@@ -1215,7 +1233,7 @@ export function GameApp() {
       );
       const card = inBattle ?? inRush;
       if (!card) continue;
-      const targetCard = getCardById(card.cardId);
+      const targetCard = resolvePlayableCard(card.cardId);
       if (!targetCard) continue;
       targets.push({
         instanceId: card.instanceId,
@@ -1439,6 +1457,9 @@ export function GameApp() {
         cpuLevel={cpuLevel}
         firstPlayer={firstPlayer}
         customDecks={customDecks}
+        deckWarningsById={deckWarningsById}
+        humanDeckWarnings={humanDeckWarnings}
+        cpuDeckWarnings={cpuDeckWarnings}
         onHumanDeckChange={setHumanDeckKey}
         onCpuDeckChange={setCpuDeckKey}
         onCpuLevelChange={setCpuLevel}
@@ -1787,14 +1808,14 @@ export function GameApp() {
             apply({ type: "confirm_shiron_reveal", playerId: HUMAN_PLAYER })
           }
           onPreview={(cardId) => {
-            const card = getCardById(cardId);
+            const card = resolvePlayableCard(cardId);
             if (card) setPreviewCard(card);
           }}
         />
       )}
       {pendingPermanentOp && (
         (() => {
-          const card = getCardById(pendingPermanentOp.cardId);
+          const card = resolvePlayableCard(pendingPermanentOp.cardId);
           if (!card) return null;
           return (
             <PermanentOperationModal
@@ -1944,7 +1965,7 @@ export function GameApp() {
           canConfirmSelection={canConfirmCyberSRider}
           onConfirm={handleCyberSRiderConfirm}
           onCancel={() => setPendingCyberSRider(null)}
-          onPreview={(cardId) => setPreviewCard(getCardById(cardId) ?? null)}
+          onPreview={(cardId) => setPreviewCard(resolvePlayableCard(cardId) ?? null)}
         />
       )}
       {showBattleDanceModal && pendingBattleDance && (
@@ -1955,7 +1976,7 @@ export function GameApp() {
           legalActions={legalActions}
           onConfirm={handleBattleDanceConfirm}
           onCancel={() => setPendingBattleDance(null)}
-          onPreview={(cardId) => setPreviewCard(getCardById(cardId) ?? null)}
+          onPreview={(cardId) => setPreviewCard(resolvePlayableCard(cardId) ?? null)}
         />
       )}
       {lightningGravityNotice && (

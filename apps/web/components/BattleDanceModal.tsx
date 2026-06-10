@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { EFFECT_LABELS, getCardById } from "@rangers-strike/cards";
+import { EFFECT_LABELS, resolvePlayableCard } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
 import { cardTargetMetaLine, resolveCardTargets } from "@/lib/cardTargets";
 import {
@@ -34,7 +34,7 @@ export function BattleDanceModal({
   const [selectedCommandIds, setSelectedCommandIds] = useState<string[]>([]);
   const [step, setStep] = useState<"commands" | "unit">("commands");
 
-  const opCard = getCardById(operationCardId);
+  const opCard = resolvePlayableCard(operationCardId);
   const effectLabel = EFFECT_LABELS.battle_dance ?? "バトルダンス";
   const releasedIds = useMemo(
     () => new Set(listBattleDanceReleasedCommandIds(state, playerId)),
@@ -96,7 +96,7 @@ export function BattleDanceModal({
               </p>
               <div className="pile-modal__grid">
                 {commandCards.map((card) => {
-                  const definition = getCardById(card.cardId);
+                  const definition = resolvePlayableCard(card.cardId);
                   const selected = selectedCommandIds.includes(card.instanceId);
                   return (
                     <div

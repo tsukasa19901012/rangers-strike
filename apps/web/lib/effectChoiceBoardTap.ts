@@ -1,4 +1,4 @@
-import { getCardById } from "@rangers-strike/cards";
+import { resolvePlayableCard } from "@rangers-strike/cards";
 import type { GameState, PendingEffectChoice, PlayerId, ZoneName } from "@rangers-strike/engine";
 import { findCardTarget } from "./cardTargets";
 import { effectChoiceHint, effectChoiceTitle } from "./effectChoiceHint";
@@ -98,7 +98,7 @@ export function analyzeBoardTapEffectChoice(
     }
   }
 
-  const sourceCard = getCardById(pending.sourceCardId);
+  const sourceCard = resolvePlayableCard(pending.sourceCardId);
   const sourceLine =
     sourceCard && pending.kind === "select_command"
       ? `「${sourceCard.name}」の効果`

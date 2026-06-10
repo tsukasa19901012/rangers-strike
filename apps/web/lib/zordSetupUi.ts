@@ -1,9 +1,9 @@
-import { getCardById } from "@rangers-strike/cards";
+import { resolvePlayableCard } from "@rangers-strike/cards";
 import type { GameState, PendingZordSetup, PlayerId } from "@rangers-strike/engine";
 import { listZordSetupResolveActions } from "@rangers-strike/engine";
 
 export function zordSetupTitle(setup: PendingZordSetup): string {
-  const card = getCardById(setup.zordCardId);
+  const card = resolvePlayableCard(setup.zordCardId);
   const name = card?.name ?? setup.zordCardId;
   return `追加条件 — ${name}をラッシュ`;
 }

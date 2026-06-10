@@ -1,5 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import * as bannedCards from "./bannedCards";
 import { getCardById } from "./catalog";
+import { fullPlayableCatalog } from "./extendedCatalog";
 import abarenohDeck from "./legend1/decks/abarenoh.json";
 import dekarangerDeck from "./legend1/decks/dekaranger.json";
 import magikingDeck from "./legend1/decks/magiking.json";
@@ -49,9 +51,29 @@ describe("deck build rules", () => {
   });
 
   it("rejects more than 3 copies of the same card name", () => {
-    const over = validateDeckEntries([{ cardId: "RS-054", count: 4 }]).errors;
+    const over = validateDeckEntries([{ cardId: "RS-054", count: 4 }], undefined, {
+      minSize: 0,
+    }).errors;
     expect(over.length).toBeGreaterThan(0);
-    expect(over.join(" ")).toMatch(/アバレッド|同名|最大/);
+    expect(over.join(" ")).toMatch(/アバレッド（RS-054）|同名|最大/);
+  });
+
+  it("reports shortfall when deck is below minimum size", () => {
+    const result = validateDeckEntries([{ cardId: "RS-050", count: 10 }]);
+    expect(result.errors).toContain(
+      "デッキは最低40枚必要です（現在 10 枚）。あと 30 枚必要です",
+    );
+  });
+
+  it("flags unknown ids against fullPlayableCatalog with pool context", () => {
+    const result = validateDeckEntries(
+      [{ cardId: "RS-9999", count: 1 }],
+      fullPlayableCatalog,
+      { minSize: 0 },
+    );
+    expect(result.errors).toContain(
+      "カタログにないカードです: RS-9999（1,849枚プール外の可能性）",
+    );
   });
 
   it("validates official starter decks", () => {
@@ -60,5 +82,29 @@ describe("deck build rules", () => {
       expect(result.errors, deck.id).toEqual([]);
       expect(result.total).toBe(40);
     }
+  });
+
+  it("validates all 5 starter decks against fullPlayableCatalog", () => {
+    for (const deck of starterDecks) {
+      const result = validateDeckEntries(deck.entries, fullPlayableCatalog);
+      expect(result.errors, deck.id).toEqual([]);
+      expect(result.total).toBe(40);
+    }
+  });
+
+  it("rejects banned cards when isBannedCardId returns true", () => {
+    const spy = vi.spyOn(bannedCards, "isBannedCardId").mockImplementation((id) => id === "RS-050");
+    const result = validateDeckEntries([{ cardId: "RS-050", count: 1 }], undefined, {
+      minSize: 0,
+    });
+    expect(result.errors).toContain("禁止カードが含まれています: アバレンオー（RS-050）");
+    spy.mockRestore();
+  });
+});
+
+describe("isBannedCardId", () => {
+  it("returns false for ids not in BANNED_CARD_IDS", () => {
+    expect(bannedCards.isBannedCardId("RS-050")).toBe(false);
+    expect(bannedCards.isBannedCardId("RS-318")).toBe(false);
   });
 });

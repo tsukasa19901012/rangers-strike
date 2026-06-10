@@ -1,6 +1,6 @@
 "use client";
 
-import { EFFECT_LABELS, getCardById } from "@rangers-strike/cards";
+import { EFFECT_LABELS, resolvePlayableCard } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
 import { CardImage } from "./CardImage";
 import { GameModalBackdrop } from "./GameModalBackdrop";
@@ -55,7 +55,7 @@ export function ShironLightModal({
             </p>
             <div className="pile-modal__grid">
               {owner.hand.map((card) => {
-                const definition = getCardById(card.cardId);
+                const definition = resolvePlayableCard(card.cardId);
                 const selectable = canAct && pending.validInstanceIds.includes(card.instanceId);
                 return (
                   <div
@@ -87,7 +87,7 @@ export function ShironLightModal({
   const picked = pickedId
     ? owner.hand.find((c) => c.instanceId === pickedId)
     : undefined;
-  const pickedCard = picked ? getCardById(picked.cardId) : undefined;
+  const pickedCard = picked ? resolvePlayableCard(picked.cardId) : undefined;
   const isUnit = pickedCard?.type === "unit";
 
   return (

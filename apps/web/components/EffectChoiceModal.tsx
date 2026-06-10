@@ -1,7 +1,7 @@
 "use client";
 
 import type { CardDefinition } from "@rangers-strike/cards";
-import { getCardById } from "@rangers-strike/cards";
+import { resolvePlayableCard } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
 import {
   effectChoiceHint,
@@ -78,7 +78,7 @@ export function EffectChoiceModal({
 }: EffectChoiceModalProps) {
   const title = effectChoiceTitle(pending);
   const hint = effectChoiceHint(pending);
-  const sourceCard = getCardById(pending.sourceCardId);
+  const sourceCard = resolvePlayableCard(pending.sourceCardId);
 
   const targets = resolveCardTargets(state, pending.validInstanceIds);
   const bpBudgetSelected = new Set(pending.selectedInstanceIds ?? []);
@@ -93,7 +93,7 @@ export function EffectChoiceModal({
       : null;
   const scryCard =
     scryTop && pending.viewedInstanceIds?.[0] === scryTop.instanceId
-      ? getCardById(scryTop.cardId)
+      ? resolvePlayableCard(scryTop.cardId)
       : null;
 
   const denjiReveal =
@@ -109,7 +109,7 @@ export function EffectChoiceModal({
                   .filter((c): c is NonNullable<typeof c> => !!c);
           return source
             .map((inst) => {
-              const card = getCardById(inst.cardId);
+              const card = resolvePlayableCard(inst.cardId);
               const toHand = meta?.toHandInstanceIds.includes(inst.instanceId);
               return card ? { instanceId: inst.instanceId, card, toHand } : null;
             })
@@ -123,7 +123,7 @@ export function EffectChoiceModal({
     pending.kind === "denji_machine" && pending.denjiMachineMeta?.step === "order_bottom"
       ? (pending.denjiMachineMeta.limboBottomCards ?? [])
           .map((inst) => {
-            const card = getCardById(inst.cardId);
+            const card = resolvePlayableCard(inst.cardId);
             return card ? { instanceId: inst.instanceId, card } : null;
           })
           .filter((e): e is { instanceId: string; card: CardDefinition } => !!e)
@@ -137,7 +137,7 @@ export function EffectChoiceModal({
           .map((id) => {
             const inst = state.players[scryDeckOwnerId].deck.find((c) => c.instanceId === id);
             if (!inst) return null;
-            const card = getCardById(inst.cardId);
+            const card = resolvePlayableCard(inst.cardId);
             return card ? { instanceId: inst.instanceId, card } : null;
           })
           .filter((e): e is { instanceId: string; card: CardDefinition } => !!e)
