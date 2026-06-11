@@ -34,14 +34,16 @@ function parseRsLinks(html) {
 }
 
 async function main() {
-  const l1 = JSON.parse(
-    await readFile(path.join(packageRoot, "src/legend1/cards.json"), "utf8"),
-  );
-  const l2 = JSON.parse(
-    await readFile(path.join(packageRoot, "src/legend2/cards.json"), "utf8"),
+  const coreCatalog = JSON.parse(
+    await readFile(
+      path.join(packageRoot, "src/generated/catalog/core-playable/cards.json"),
+      "utf8",
+    ),
   );
   const allIds = new Set(
-    [...l1.cards, ...l2.cards].map((c) => c.id),
+    coreCatalog.cards
+      .filter((c) => c.expansion === "legend1" || c.expansion === "legend2")
+      .map((c) => c.id),
   );
 
   const m12 = parseRsLinks(await fetchIndex(12));

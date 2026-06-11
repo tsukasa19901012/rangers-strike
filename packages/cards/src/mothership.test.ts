@@ -28,4 +28,10 @@ describe("mothership", () => {
     expect(mothershipHoldsRequiredForRush("RS-075", 1)).toBe(0);
     expect(mothershipHoldsRequiredForRush("RS-075", 0)).toBe(1);
   });
+
+  it("fusion discard material fills zord slot (promoted zord-up)", () => {
+    expect(zordSlotsFilledByMaterial("RS-073", true, "discard")).toBe(1);
+    expect(zordSlotsFilledByMaterial("RK-169", true, "discard")).toBe(1);
+    expect(mothershipHoldsRequiredForRush("RK-169", 1)).toBe(0);
+  });
 });

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * legend3/cards.json から legend3/unitEffects.json を生成。
+ * core-playable catalog から legend3 unit effect スナップショットを生成（メンテ用）。
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -8,8 +8,8 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(__dirname, "..");
-const cardsPath = path.join(packageRoot, "src/legend3/cards.json");
-const outPath = path.join(packageRoot, "src/legend3/unitEffects.json");
+const cardsPath = path.join(packageRoot, "src/generated/catalog/core-playable/cards.json");
+const outPath = path.join(packageRoot, "pipeline/data/legend3-unit-effects-snapshot.json");
 
 const NAME_TO_ID = {
   アカレンジャー: "RS-126",

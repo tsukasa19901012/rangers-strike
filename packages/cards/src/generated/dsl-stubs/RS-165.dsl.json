@@ -1,0 +1,47 @@
+{
+  "id": "RS-165",
+  "name": "狼鬼",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 4,
+  "bp": 5000,
+  "sp": 1,
+  "size": "S",
+  "text": "※これは自分の手札からカードを2枚選んで捨札にしなければバトルエリアに出られない。【ムーンライトソニック】これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※これは自分の手札からカードを2枚選んで捨札にしなければバトルエリアに出られない。【ムーンライトソニック】これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
+  "features": [
+    "デュークオルグ",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-165.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-165.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自分の手札からカードを2枚選んで捨札にしなければバトルエリアに出られない",
+      "rule": "battle_entry_discard_from_hand",
+      "discardCount": 2
+    }
+  ],
+  "effects": [
+    {
+      "id": "moonlight_sonic",
+      "name": "ムーンライトソニック",
+      "text": "これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

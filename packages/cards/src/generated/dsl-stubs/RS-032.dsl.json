@@ -1,0 +1,47 @@
+{
+  "id": "RS-032",
+  "name": "バルシャーク",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 5,
+  "text": "【シャークジョーズ】これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。（この効果は「バルイーグル」または「バルパンサー」からコンビネーションするときは、ナンバーに関係なく発動する）",
+  "rawText": "【シャークジョーズ】これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。（この効果は「バルイーグル」または「バルパンサー」からコンビネーションするときは、ナンバーに関係なく発動する）",
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "imageUrl": "/cards/legend1/RS-032.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-032.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "shark_jaws",
+      "name": "シャークジョーズ",
+      "text": "これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。（この効果は「バルイーグル」または「バルパンサー」からコンビネーションするときは、ナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "on_attack",
+        "comboPartnerCardIds": [
+          "RS-031",
+          "RS-033"
+        ]
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "use_printed_bp_in_battle",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

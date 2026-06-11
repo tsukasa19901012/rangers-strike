@@ -25,6 +25,7 @@ import {
   canUseMothershipForZordRush,
   collectMothershipEligibleCommands,
   listZordRushPaymentVariants,
+  validateZordAdditionalPayment,
 } from "./mothership";
 import {
   collectZordMaterials,
@@ -474,6 +475,19 @@ function completeZordPayment(
     materialDestination,
   );
   if (mothershipPayment) return { kind: "payment", payment: mothershipPayment };
+
+  if (
+    !validateZordAdditionalPayment(
+      player,
+      state.definitions,
+      setup.zordCardId,
+      setup.zordInstanceId,
+      materialInstanceId,
+      materialDestination,
+    )
+  ) {
+    return { kind: "error", error: "cannot_complete_zord" };
+  }
 
   const categories = cardCategories(def);
   const categoryPayment = buildCategoryPayment(

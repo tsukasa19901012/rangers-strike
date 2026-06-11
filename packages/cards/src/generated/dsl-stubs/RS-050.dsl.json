@@ -1,0 +1,85 @@
+{
+  "id": "RS-050",
+  "name": "アバレンオー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "SR",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "bp": 13000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン【爆竜電撃ドリルスピン】これがバトルエリアに出たとき、敵軍バトルエリアからBP4000以下のユニットを1体選んで撃破する。",
+  "rawText": "合体―爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン【爆竜電撃ドリルスピン】これがバトルエリアに出たとき、敵軍バトルエリアからBP4000以下のユニットを1体選んで撃破する。",
+  "features": [
+    "恐竜",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend1/RS-050.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-050.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン",
+      "partnerCardIds": [
+        "RS-051",
+        "RS-052",
+        "RS-053"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "destroy_enemy_bp4000",
+      "name": "爆竜電撃ドリルスピン",
+      "text": "これがバトルエリアに出たとき、敵軍バトルエリアからBP4000以下のユニットを1体選んで撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "maxBp": 4000
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "maxBp": 4000
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

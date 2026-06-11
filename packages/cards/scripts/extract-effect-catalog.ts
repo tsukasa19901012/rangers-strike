@@ -1,9 +1,7 @@
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import legend1UnitEffects from "../src/legend1/unitEffects.json";
-import legend2UnitEffects from "../src/legend2/unitEffects.json";
-import legend3UnitEffects from "../src/legend3/unitEffects.json";
+import { loadCoreRegistryUnitEffects } from "./shared/registryUnitEffects";
 import { isOperationImplemented } from "../src/operationCatalog";
 import { isUnitEffectImplemented } from "../src/unitEffectCatalog";
 import {
@@ -27,11 +25,7 @@ type CatalogRow = {
   implemented: boolean;
 };
 
-const UNIT_EFFECTS = {
-  ...(legend1UnitEffects as Record<string, UnitEffectBlock>),
-  ...(legend2UnitEffects as Record<string, UnitEffectBlock>),
-  ...(legend3UnitEffects as Record<string, UnitEffectBlock>),
-};
+const UNIT_EFFECTS = loadCoreRegistryUnitEffects();
 
 type UnitEffectBlock = {
   rawText?: string;
@@ -257,13 +251,13 @@ function renderMarkdown(
     "## 注記",
     "",
     "- **パターン行**（`grant_sp`, `bp_boost` 等）は Wiki 全文スキャンによる共通構文の出現回数",
-    "- **固有 effectId 行**（`future_sight`, `red_fire` 等）は `unitEffects.json` の named 効果",
+    "- **固有 effectId 行**（`future_sight`, `red_fire` 等）は registry の named 効果",
     "- 同一カードが複数パターンに該当する場合があり、枚数の合計はカード総数を超えうる",
     "",
     "## データソース",
     "",
     "- Wiki: `docs/wiki/cards/*.md` 効果文パターンマッチ",
-    "- `unitEffects.json`（Legend 1–3）の `namedEffects` / `unnamedText`",
+    "- `loadCoreRegistryUnitEffects()`（Legend 1–3 コア）の `namedEffects` / `unnamedText`",
     "- 実装状態: `unitEffectCatalog.ts` / `operationCatalog.ts`",
     "",
   );

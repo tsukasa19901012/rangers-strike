@@ -2,7 +2,7 @@
  * Legend 1 スターター（Type A/B/C）36枚の DSL オーバーレイを生成する。
  * TypeScript 効果ハンドラは使わず、primitives / grant_keyword のみ。
  */
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -14,9 +14,22 @@ const decks = ["abarenoh", "dekaranger", "magiking"].map((id) =>
 );
 const starterIds = [...new Set(decks.flatMap((d) => d.entries.map((e) => e.cardId)))].sort();
 
-const unitEffects = JSON.parse(
-  readFileSync(join(root, "src/legend1/unitEffects.json"), "utf8"),
-);
+function loadRegistryUnitBlock(cardId) {
+  const stubPath = join(root, `src/generated/dsl-stubs/${cardId}.dsl.json`);
+  if (!existsSync(stubPath)) return undefined;
+  const stub = JSON.parse(readFileSync(stubPath, "utf8"));
+  return {
+    rawText: stub.rawText ?? stub.text ?? "",
+    namedEffects: (stub.effects ?? []).map((effect) => ({
+      name: effect.name ?? effect.id,
+      effectId: effect.id,
+      text: effect.text ?? "",
+      trigger: effect.trigger,
+    })),
+    unnamedText: stub.unnamedRules ?? [],
+    rushAdditionalCondition: stub.rushAdditionalCondition,
+  };
+}
 
 /** @type {Record<string, { kind: string, target?: string }>} */
 const OP_META = {
@@ -385,7 +398,7 @@ const UNNAMED_KEYWORDS = {
 };
 
 function buildCardOverlay(cardId) {
-  const block = unitEffects[cardId];
+  const block = loadRegistryUnitBlock(cardId);
   const op = OP_META[cardId];
   const effects = [];
 

@@ -1,0 +1,39 @@
+{
+  "id": "RS-178",
+  "name": "ボウケンシルバー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "SR",
+  "expansion": "legend3",
+  "powerCost": 5,
+  "bp": 4000,
+  "size": "S",
+  "text": "【サガスナイパー】自軍ターン中、これがユニットを撃破したとき、自軍山札からユニットのカードを1枚選び、相手に見せてから手札に加えてもよい（選べるカードの必要パワーの数字は、これが撃破したユニットの必要パワーの数字以下に限る）。その後、山札をシャッフルする。",
+  "rawText": "【サガスナイパー】自軍ターン中、これがユニットを撃破したとき、自軍山札からユニットのカードを1枚選び、相手に見せてから手札に加えてもよい（選べるカードの必要パワーの数字は、これが撃破したユニットの必要パワーの数字以下に限る）。その後、山札をシャッフルする。",
+  "features": [
+    "シルバー",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-178.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-178.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "sagas_sniper",
+      "name": "サガスナイパー",
+      "text": "自軍ターン中、これがユニットを撃破したとき、自軍山札からユニットのカードを1枚選び、相手に見せてから手札に加えてもよい（選べるカードの必要パワーの数字は、これが撃破したユニットの必要パワーの数字以下に限る）。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

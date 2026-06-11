@@ -5,9 +5,11 @@ import type {
   UnnamedUnitRule,
   UnnamedUnitText,
 } from "./effectTaxonomy";
-import legend1UnitEffectsJson from "./legend1/unitEffects.json";
-import legend2UnitEffectsJson from "./legend2/unitEffects.json";
-import legend3UnitEffectsJson from "./legend3/unitEffects.json";
+import {
+  cardDocumentToUnitEffectBlock,
+  unitEffectBlockHasData,
+} from "./catalog/cardDocumentToUnitBlock";
+import { inferCatalogTierForCardId, loadCardById, loadCards } from "./dsl/loader";
 
 export type {
   NamedEffectTrigger,
@@ -18,21 +20,60 @@ export type {
 };
 export type { NamedEffectTrigger as EffectTrigger } from "./effectTaxonomy";
 
-const UNIT_EFFECTS = {
-  ...(legend1UnitEffectsJson as Record<string, UnitEffectBlock>),
-  ...(legend2UnitEffectsJson as Record<string, UnitEffectBlock>),
-  ...(legend3UnitEffectsJson as Record<string, UnitEffectBlock>),
-};
+const blockCache = new Map<string, UnitEffectBlock | undefined>();
+let fullPlayableBlocks: Map<string, UnitEffectBlock> | null = null;
+
+export function resetUnitEffectBlockCache(): void {
+  blockCache.clear();
+  fullPlayableBlocks = null;
+}
+
+function loadBlockForCard(cardId: string): UnitEffectBlock | undefined {
+  if (blockCache.has(cardId)) {
+    return blockCache.get(cardId);
+  }
+  try {
+    const doc = loadCardById(cardId, inferCatalogTierForCardId(cardId));
+    const block = cardDocumentToUnitEffectBlock(doc);
+    const value = unitEffectBlockHasData(block) ? block : undefined;
+    blockCache.set(cardId, value);
+    return value;
+  } catch {
+    blockCache.set(cardId, undefined);
+    return undefined;
+  }
+}
+
+function loadAllBlocks(): Map<string, UnitEffectBlock> {
+  if (fullPlayableBlocks) return fullPlayableBlocks;
+  const map = new Map<string, UnitEffectBlock>();
+  for (const doc of loadCards("full-playable")) {
+    const block = cardDocumentToUnitEffectBlock(doc);
+    if (unitEffectBlockHasData(block)) {
+      map.set(doc.id, block);
+    }
+  }
+  fullPlayableBlocks = map;
+  return map;
+}
+
+function forEachUnitEffectBlock(
+  fn: (cardId: string, block: UnitEffectBlock) => void,
+): void {
+  for (const [cardId, block] of loadAllBlocks()) {
+    fn(cardId, block);
+  }
+}
 
 export function getUnitEffectBlock(cardId: string): UnitEffectBlock | undefined {
-  return UNIT_EFFECTS[cardId];
+  return loadBlockForCard(cardId);
 }
 
 export function listUnnamedRules(cardId: string): UnnamedUnitRule[] {
-  const block = UNIT_EFFECTS[cardId];
+  const block = loadBlockForCard(cardId);
   if (!block) return [];
   return block.unnamedText
-    .map((u) => u.rule)
+    .map((entry) => entry.rule)
     .filter((rule): rule is UnnamedUnitRule => rule !== undefined);
 }
 
@@ -46,32 +87,32 @@ function sumUnnamedRuleParam(
   param: "holdCount" | "damage" | "discardCount",
   defaultValue: number,
 ): number {
-  const block = UNIT_EFFECTS[cardId];
+  const block = loadBlockForCard(cardId);
   if (!block) return 0;
   return block.unnamedText
-    .filter((u) => u.rule === rule)
-    .reduce((sum, u) => sum + (u[param] ?? defaultValue), 0);
+    .filter((entry) => entry.rule === rule)
+    .reduce((sum, entry) => sum + (entry[param] ?? defaultValue), 0);
 }
 
 /** このゾードの 合体― 行に載る合体ユニット（zord-up 素材）。 */
 export function listZordFusionPartnerIds(zordCardId: string): string[] {
-  const block = UNIT_EFFECTS[zordCardId];
+  const block = loadBlockForCard(zordCardId);
   if (!block) return [];
   const zord = block.unnamedText.find((entry) => entry.kind === "zord");
   return zord?.partnerCardIds ?? [];
 }
 
-/** unitEffects.json 全体で 合体― パートナーとして参照されるカード id 一覧。 */
+/** 全カードの 合体― パートナーとして参照されるカード id 一覧。 */
 export function buildFusionPartnerIdSet(): Set<string> {
   const ids = new Set<string>();
-  for (const block of Object.values(UNIT_EFFECTS)) {
+  forEachUnitEffectBlock((_cardId, block) => {
     for (const entry of block.unnamedText) {
       if (entry.kind !== "zord") continue;
       for (const partnerId of entry.partnerCardIds ?? []) {
         ids.add(partnerId);
       }
     }
-  }
+  });
   return ids;
 }
 
@@ -81,7 +122,7 @@ function battleHasPartner(
   excludeInstanceId: string,
 ): boolean {
   return battle.some(
-    (c) => c.instanceId !== excludeInstanceId && partnerCardIds.includes(c.cardId),
+    (entry) => entry.instanceId !== excludeInstanceId && partnerCardIds.includes(entry.cardId),
   );
 }
 
@@ -93,7 +134,7 @@ export function findNcNamedEffect(
   battleBeforeEnter: Array<{ instanceId: string; cardId: string }>,
   excludeInstanceId: string,
 ): NamedUnitEffect | undefined {
-  const block = UNIT_EFFECTS[cardId];
+  const block = loadBlockForCard(cardId);
   if (!block) return undefined;
 
   for (const named of block.namedEffects) {
@@ -116,7 +157,7 @@ export function findNcNamedEffect(
 }
 
 export function getEnterBattleNamedEffect(cardId: string): NamedUnitEffect | undefined {
-  return UNIT_EFFECTS[cardId]?.namedEffects.find(
+  return loadBlockForCard(cardId)?.namedEffects.find(
     (named) => named.trigger.type === "enter_battle",
   );
 }
@@ -124,18 +165,18 @@ export function getEnterBattleNamedEffect(cardId: string): NamedUnitEffect | und
 /** エンジンハンドラ用 NC 効果マップ（実装済み id のみ）。 */
 export function listNcNamedEffects(): Array<{ cardId: string; effectId: string }> {
   const results: Array<{ cardId: string; effectId: string }> = [];
-  for (const [cardId, block] of Object.entries(UNIT_EFFECTS)) {
+  forEachUnitEffectBlock((cardId, block) => {
     for (const named of block.namedEffects) {
       if (named.trigger.type === "nc" || named.trigger.type === "nc_or_combo_from") {
         results.push({ cardId, effectId: named.effectId });
       }
     }
-  }
+  });
   return results;
 }
 
 export function listAltNcPartnerIds(cardId: string): string[] {
-  const block = UNIT_EFFECTS[cardId];
+  const block = loadBlockForCard(cardId);
   if (!block) return [];
   for (const named of block.namedEffects) {
     if (named.trigger.type === "nc_or_combo_from") {
@@ -146,37 +187,37 @@ export function listAltNcPartnerIds(cardId: string): string[] {
 }
 
 export function getOnRushNamedEffect(cardId: string): NamedUnitEffect | undefined {
-  return UNIT_EFFECTS[cardId]?.namedEffects.find(
+  return loadBlockForCard(cardId)?.namedEffects.find(
     (named) => named.trigger.type === "on_rush",
   );
 }
 
 export function getOnAttackNamedEffect(cardId: string): NamedUnitEffect | undefined {
-  return UNIT_EFFECTS[cardId]?.namedEffects.find(
+  return loadBlockForCard(cardId)?.namedEffects.find(
     (named) => named.trigger.type === "on_attack",
   );
 }
 
 export function getConditionalNamedEffect(cardId: string): NamedUnitEffect | undefined {
-  return UNIT_EFFECTS[cardId]?.namedEffects.find(
+  return loadBlockForCard(cardId)?.namedEffects.find(
     (named) => named.trigger.type === "conditional",
   );
 }
 
 export function getJointLNamedEffect(cardId: string): NamedUnitEffect | undefined {
-  return UNIT_EFFECTS[cardId]?.namedEffects.find(
+  return loadBlockForCard(cardId)?.namedEffects.find(
     (named) => named.trigger.type === "joint_combo_l",
   );
 }
 
 export function getJointRNamedEffect(cardId: string): NamedUnitEffect | undefined {
-  return UNIT_EFFECTS[cardId]?.namedEffects.find(
+  return loadBlockForCard(cardId)?.namedEffects.find(
     (named) => named.trigger.type === "joint_combo_r",
   );
 }
 
 export function getRidingComboNamedEffect(cardId: string): NamedUnitEffect | undefined {
-  return UNIT_EFFECTS[cardId]?.namedEffects.find(
+  return loadBlockForCard(cardId)?.namedEffects.find(
     (named) => named.trigger.type === "riding_combo",
   );
 }
@@ -185,13 +226,13 @@ function listNamedEffectsByTrigger(
   triggerType: NamedEffectTrigger["type"],
 ): Array<{ cardId: string; effectId: string }> {
   const results: Array<{ cardId: string; effectId: string }> = [];
-  for (const [cardId, block] of Object.entries(UNIT_EFFECTS)) {
+  forEachUnitEffectBlock((cardId, block) => {
     for (const named of block.namedEffects) {
       if (named.trigger.type === triggerType) {
         results.push({ cardId, effectId: named.effectId });
       }
     }
-  }
+  });
   return results;
 }
 
@@ -217,7 +258,7 @@ export function hasBattleEntryHoldNote(cardId: string): boolean {
 
 /** ※ バトル投入ホールド注記のあるユニット（レジェンド1 ゾード合体パートナー等）。 */
 export function listBattleEntryHoldCardIds(): string[] {
-  return Object.keys(UNIT_EFFECTS)
+  return [...loadAllBlocks().keys()]
     .filter(hasBattleEntryHoldNote)
     .sort();
 }
@@ -231,10 +272,7 @@ export function hasAutoBattleEntryOnRushNote(cardId: string): boolean {
 }
 
 export function hasAutoBattleEntryNote(cardId: string): boolean {
-  return (
-    hasAutoBattleEntryEachTurnNote(cardId) ||
-    hasAutoBattleEntryOnRushNote(cardId)
-  );
+  return hasAutoBattleEntryEachTurnNote(cardId) || hasAutoBattleEntryOnRushNote(cardId);
 }
 
 export function hasDestroySelfDamageNote(cardId: string): boolean {
@@ -242,7 +280,7 @@ export function hasDestroySelfDamageNote(cardId: string): boolean {
 }
 
 export function getBattleEntryComboFromPartnerIds(cardId: string): string[] {
-  const block = UNIT_EFFECTS[cardId];
+  const block = loadBlockForCard(cardId);
   if (!block) return [];
   const note = block.unnamedText.find((entry) => entry.rule === "battle_entry_combo_from");
   return note?.partnerCardIds ?? [];
@@ -253,7 +291,7 @@ export function needsBattleEntryComboFrom(cardId: string): boolean {
 }
 
 export function getBattleEntryComboFromOwnTurnPartnerIds(cardId: string): string[] {
-  const block = UNIT_EFFECTS[cardId];
+  const block = loadBlockForCard(cardId);
   if (!block) return [];
   const note = block.unnamedText.find(
     (entry) => entry.rule === "battle_entry_combo_from_own_turn",
@@ -266,7 +304,7 @@ export function needsBattleEntryComboFromOwnTurn(cardId: string): boolean {
 }
 
 export function getOnTurnEndNamedEffect(cardId: string): NamedUnitEffect | undefined {
-  return UNIT_EFFECTS[cardId]?.namedEffects.find(
+  return loadBlockForCard(cardId)?.namedEffects.find(
     (named) => named.trigger.type === "on_turn_end",
   );
 }
@@ -312,7 +350,7 @@ export function findNamedEffectByEffectId(
   cardId: string,
   effectId: string,
 ): NamedUnitEffect | undefined {
-  return UNIT_EFFECTS[cardId]?.namedEffects.find(
+  return loadBlockForCard(cardId)?.namedEffects.find(
     (named) => named.effectId === effectId,
   );
 }

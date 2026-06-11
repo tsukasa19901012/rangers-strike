@@ -1,0 +1,45 @@
+{
+  "id": "RS-173",
+  "name": "ゴーゴーミキサー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "4+",
+  "bp": 5000,
+  "size": "M",
+  "comboNumber": "R",
+  "text": "【ウォールシュート】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は自分自身のコマンドゾーンのカードを全て山札に戻してシャッフルする。その後、戻した枚数を山札の上からひいて、コマンドゾーンにホールド状態で置く。",
+  "rawText": "【ウォールシュート】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は自分自身のコマンドゾーンのカードを全て山札に戻してシャッフルする。その後、戻した枚数を山札の上からひいて、コマンドゾーンにホールド状態で置く。",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend3/RS-173.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-173.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "wall_shoot",
+      "name": "ウォールシュート",
+      "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は自分自身のコマンドゾーンのカードを全て山札に戻してシャッフルする。その後、戻した枚数を山札の上からひいて、コマンドゾーンにホールド状態で置く。",
+      "trigger": {
+        "type": "joint_combo_r"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

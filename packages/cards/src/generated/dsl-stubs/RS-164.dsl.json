@@ -1,0 +1,43 @@
+{
+  "id": "RS-164",
+  "name": "ガオホワイト",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 2,
+  "bp": 2000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 2,
+  "text": "【白虎十文字斬り】「SP1」",
+  "rawText": "【白虎十文字斬り】「SP1」",
+  "features": [
+    "ホワイト",
+    "女"
+  ],
+  "imageUrl": "/cards/legend3/RS-164.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-164.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "grant_sp1",
+      "name": "白虎十文字斬り",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

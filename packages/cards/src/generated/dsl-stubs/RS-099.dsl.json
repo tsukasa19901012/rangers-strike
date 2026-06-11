@@ -1,0 +1,44 @@
+{
+  "id": "RS-099",
+  "name": "ハリケンレッド",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "bp": 2000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 3,
+  "text": "【超忍法・空駆け】「SP1」",
+  "rawText": "【超忍法・空駆け】「SP1」",
+  "features": [
+    "レッド",
+    "男",
+    "忍者"
+  ],
+  "imageUrl": "/cards/legend2/RS-099.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-099.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "grant_sp1",
+      "name": "超忍法・空駆け",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

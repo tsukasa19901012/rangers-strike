@@ -1,0 +1,34 @@
+{
+  "id": "RS-006",
+  "name": "新体操アクション",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "effectId": "new_gymnastics",
+  "tags": [
+    "カウンター"
+  ],
+  "imageUrl": "/cards/legend1/RS-006.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-006.jpg",
+  "effects": [
+    {
+      "id": "new_gymnastics",
+      "text": "自軍Sユニットがアタックされたとき発動できる。アタックされたユニットをラッシュエリアに戻す。このときバトルは行われない。",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

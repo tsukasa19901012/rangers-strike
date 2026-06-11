@@ -1,0 +1,60 @@
+{
+  "id": "RS-158",
+  "name": "ガオエレファント",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 4,
+  "bp": 5000,
+  "size": "M",
+  "comboNumber": "R",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【エレファントシールド】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍ユニットはこれ以外のユニットにアタックできない。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【エレファントシールド】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍ユニットはこれ以外のユニットにアタックできない。",
+  "features": [
+    "獣"
+  ],
+  "imageUrl": "/cards/legend3/RS-158.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-158.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "elephant_shield",
+      "name": "エレファントシールド",
+      "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍ユニットはこれ以外のユニットにアタックできない。",
+      "trigger": {
+        "type": "joint_combo_r"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

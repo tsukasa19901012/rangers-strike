@@ -1,0 +1,50 @@
+{
+  "id": "RS-049",
+  "name": "グリーンレーサー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "bp": 2000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 4,
+  "text": "【ピットインダイブ】「SP1」敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。",
+  "rawText": "【ピットインダイブ】「SP1」敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。",
+  "features": [
+    "グリーン",
+    "男"
+  ],
+  "imageUrl": "/cards/legend1/RS-049.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-049.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "pit_in_dive",
+      "name": "ピットインダイブ",
+      "text": "「SP1」敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "force_enemy_s_rush_to_battle",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

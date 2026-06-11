@@ -1,6 +1,6 @@
 import generatedOverlays from "./overlays-bundle.json";
 import type { CardDocument } from "../types";
-import { mergeCardDocument } from "../loader";
+import { mergeCardDocument } from "../cardDocumentMerge";
 import { validateCardDocument } from "../validator";
 
 let cachedGenerated: Map<string, Partial<CardDocument>> | null = null;

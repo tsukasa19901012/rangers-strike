@@ -1,0 +1,47 @@
+{
+  "id": "RS-045",
+  "name": "パトレーラー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "bp": 5000,
+  "size": "M",
+  "text": "【シグナルキャノン】これが自軍ラッシュエリアにあるとき、「オーバーテクノロジー」の自軍Mユニットは、アタックされるときBP＋1000される。",
+  "rawText": "【シグナルキャノン】これが自軍ラッシュエリアにあるとき、「オーバーテクノロジー」の自軍Mユニットは、アタックされるときBP＋1000される。",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend1/RS-045.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-045.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "signal_cannon",
+      "name": "シグナルキャノン",
+      "text": "これが自軍ラッシュエリアにあるとき、「オーバーテクノロジー」の自軍Mユニットは、アタックされるときBP＋1000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "over_technology_m_bp_plus_on_attacked",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "RS-043",
+  "name": "パトストライカー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "bp": 6000,
+  "sp": "special",
+  "size": "M",
+  "text": "【ジャッジメントソード】自軍パワーゾーンからダメージ以外のカードを2枚選んで捨て札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+  "rawText": "【ジャッジメントソード】自軍パワーゾーンからダメージ以外のカードを2枚選んで捨て札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend1/RS-043.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-043.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "judgment_sword",
+      "name": "ジャッジメントソード",
+      "text": "自軍パワーゾーンからダメージ以外のカードを2枚選んで捨て札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」",
+      "trigger": {
+        "type": "conditional"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "pay_power_discard_2_for_sp1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "RS-108",
+  "name": "デカグリーン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "text": "【グリーンクラッシュ】敵軍ラッシュエリアにあるSユニットを2体まで選んでバトルエリアに出してもよい（出す順番は自分が選ぶ）。",
+  "rawText": "【グリーンクラッシュ】敵軍ラッシュエリアにあるSユニットを2体まで選んでバトルエリアに出してもよい（出す順番は自分が選ぶ）。",
+  "features": [
+    "グリーン",
+    "男",
+    "警察"
+  ],
+  "imageUrl": "/cards/legend2/RS-108.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-108.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "green_crush",
+      "name": "グリーンクラッシュ",
+      "text": "敵軍ラッシュエリアにあるSユニットを2体まで選んでバトルエリアに出してもよい（出す順番は自分が選ぶ）。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

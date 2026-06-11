@@ -2,7 +2,9 @@ import { describe, it, expect } from "vitest";
 import {
   cardDefinitionToDocument,
   loadAllCardDocuments,
+  loadCardById,
   loadCardDocument,
+  loadCards,
   isFullyDslEffect,
 } from "./loader";
 import { getCardById } from "../catalog";
@@ -33,8 +35,13 @@ describe("dsl/loader", () => {
 
   it("loadAllCardDocuments returns full catalog", () => {
     const docs = loadAllCardDocuments();
-    expect(docs.length).toBeGreaterThan(100);
+    expect(docs.length).toBe(179);
     expect(docs.every((d) => d.id && d.name)).toBe(true);
+  });
+
+  it("loadCardById matches loadCards for core tier", () => {
+    const fromTier = loadCards("core");
+    expect(fromTier.every((doc) => loadCardById(doc.id, "core").id === doc.id)).toBe(true);
   });
 
   it("detects fully DSL effects", () => {

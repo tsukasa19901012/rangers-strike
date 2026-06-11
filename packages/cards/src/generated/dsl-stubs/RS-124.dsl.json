@@ -1,0 +1,32 @@
+{
+  "id": "RS-124",
+  "name": "超電子レーダー",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 4,
+  "text": "※常駐（場に配置して、離れるまで効果が有効になる）自分も相手も次の制限を受ける。Sユニットをラッシュしたとき、そのユニットの持ち主は、パワーゾーンにダメージ以外のカードがあれば1枚選んで手札に戻す。",
+  "effectId": "super_electron_radar",
+  "imageUrl": "/cards/legend3/RS-124.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-124.jpg",
+  "effects": [
+    {
+      "id": "super_electron_radar",
+      "text": "※常駐（場に配置して、離れるまで効果が有効になる）自分も相手も次の制限を受ける。Sユニットをラッシュしたとき、そのユニットの持ち主は、パワーゾーンにダメージ以外のカードがあれば1枚選んで手札に戻す。",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

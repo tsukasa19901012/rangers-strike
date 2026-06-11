@@ -1,0 +1,40 @@
+{
+  "id": "RS-139",
+  "name": "ブルードルフィン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 1,
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 2,
+  "text": "【ドルフィンアロー】敵軍コマンドゾーンからホールド状態のカードを1枚選んで、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "【ドルフィンアロー】敵軍コマンドゾーンからホールド状態のカードを1枚選んで、持ち主のパワーゾーンに送ってもよい。",
+  "features": [
+    "ブルー",
+    "女"
+  ],
+  "imageUrl": "/cards/legend3/RS-139.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-139.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "dolphin_arrow",
+      "name": "ドルフィンアロー",
+      "text": "敵軍コマンドゾーンからホールド状態のカードを1枚選んで、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

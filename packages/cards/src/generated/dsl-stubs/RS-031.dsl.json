@@ -1,0 +1,51 @@
+{
+  "id": "RS-031",
+  "name": "バルイーグル",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "SR",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "bp": 3000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 5,
+  "text": "【イーグルダイビング】「SP1」このターン、これはBP＋2000される。（この効果は「バルシャーク」または「バルパンサー」からコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "【イーグルダイビング】「SP1」このターン、これはBP＋2000される。（この効果は「バルシャーク」または「バルパンサー」からコンビネーションするときはナンバーに関係なく発動する）",
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "imageUrl": "/cards/legend1/RS-031.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-031.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "eagle_diving",
+      "name": "イーグルダイビング",
+      "text": "「SP1」このターン、これはBP＋2000される。（この効果は「バルシャーク」または「バルパンサー」からコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 2000,
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

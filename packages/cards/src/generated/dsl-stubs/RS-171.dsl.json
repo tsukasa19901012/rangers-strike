@@ -1,0 +1,45 @@
+{
+  "id": "RS-171",
+  "name": "ゴーゴードリル",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "4+",
+  "bp": 5000,
+  "size": "M",
+  "comboNumber": "L",
+  "text": "【マキシマムペネトレーション】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒自軍ターン中、BP+4000され、BP20000以上のとき敵軍ユニットを撃破したなら、相手に1点ダメージを与える。",
+  "rawText": "【マキシマムペネトレーション】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒自軍ターン中、BP+4000され、BP20000以上のとき敵軍ユニットを撃破したなら、相手に1点ダメージを与える。",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend3/RS-171.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-171.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "maximum_penetration",
+      "name": "マキシマムペネトレーション",
+      "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒自軍ターン中、BP+4000され、BP20000以上のとき敵軍ユニットを撃破したなら、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "joint_combo_l"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "RS-028",
+  "name": "ジャッジメント",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "effectId": "judgment",
+  "imageUrl": "/cards/legend1/RS-028.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-028.jpg",
+  "effects": [
+    {
+      "id": "judgment",
+      "name": "RS-028",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "reveal_top_destroy_if_same_size",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

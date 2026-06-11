@@ -14,13 +14,17 @@ import {
   listWiredPassiveEffects,
   listWiredNumberComboCards,
 } from "@rangers-strike/cards";
-import legend2UnitEffects from "./legend2/unitEffects.json";
+import { corePlayableCatalog } from "./catalog/unifiedCatalog";
+import { getUnitEffectBlock } from "./unitEffects";
+
+function countLegend2NamedEffects(): number {
+  return corePlayableCatalog.cards
+    .filter((card) => card.id >= "RS-071" && card.id <= "RS-122")
+    .reduce((sum, card) => sum + (getUnitEffectBlock(card.id)?.namedEffects.length ?? 0), 0);
+}
 
 describe("legend2 unitEffects wiring", () => {
-  const legend2NamedCount = Object.values(legend2UnitEffects).reduce(
-    (sum, block) => sum + block.namedEffects.length,
-    0,
-  );
+  const legend2NamedCount = countLegend2NamedEffects();
 
   it("catalog lists all legend2 NC effects", () => {
     const nc = listWiredNumberComboCards(getCardById).filter((entry) =>

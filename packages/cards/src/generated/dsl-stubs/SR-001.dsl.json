@@ -1,0 +1,56 @@
+{
+  "id": "SR-001",
+  "name": "ガオキング",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "SC",
+  "expansion": "legend3",
+  "powerCost": "6+",
+  "bp": 14000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―ガオライオン＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー【天地轟鳴アニマルハート】このユニットは、自軍バトルエリアにある「WB」のMユニット1体につきBP＋2000される。",
+  "rawText": "合体―ガオライオン＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー【天地轟鳴アニマルハート】このユニットは、自軍バトルエリアにある「WB」のMユニット1体につきBP＋2000される。",
+  "features": [
+    "獣",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend3/SR-001.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-001.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ガオライオン＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー",
+      "partnerCardIds": [
+        "RS-152",
+        "RS-153",
+        "RS-154",
+        "RS-155",
+        "RS-156"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "heaven_earth_animal_heart",
+      "name": "天地轟鳴アニマルハート",
+      "text": "このユニットは、自軍バトルエリアにある「WB」のMユニット1体につきBP＋2000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

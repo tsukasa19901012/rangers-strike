@@ -30,7 +30,7 @@ export type CardDefinition = {
   comboNumber?: ComboNumber;
   /**
    * カード効果文（【】 / ※）。Rush 追加条件は `rushAdditionalCondition` を参照。
-   * 構造化パースは unitEffects.json にあり、effectTaxonomy.ts を参照。
+   * 構造化パースは CardDocument / registry にあり、effectTaxonomy.ts を参照。
    */
   text?: string;
   /** powerCost が「+」で終わるときの Rush 追加条件（atwiki / 追加条件別一覧）。 */

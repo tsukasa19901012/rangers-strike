@@ -1,14 +1,16 @@
-import legend1Cards from "../legend1/cards.json";
-import legend2Cards from "../legend2/cards.json";
-import legend3Cards from "../legend3/cards.json";
+import {
+  legend1Catalog,
+  legend2Catalog,
+  legend3Catalog,
+} from "../catalog/unifiedCatalog";
 import type { CardDocument } from "../dsl/types";
 
 type CatalogFile = { cards: CardDocument[] };
 
 const CATALOGS: CatalogFile[] = [
-  legend1Cards as CatalogFile,
-  legend2Cards as CatalogFile,
-  legend3Cards as CatalogFile,
+  legend1Catalog as CatalogFile,
+  legend2Catalog as CatalogFile,
+  legend3Catalog as CatalogFile,
 ];
 
 export function lookupCatalogCard(cardId: string): CardDocument | undefined {

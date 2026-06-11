@@ -1,0 +1,43 @@
+{
+  "id": "RS-040",
+  "name": "マンモスレンジャー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 2,
+  "text": "【モスブレイカー】相手は可能ならコマンドを1つ選んでホールドする。",
+  "rawText": "【モスブレイカー】相手は可能ならコマンドを1つ選んでホールドする。",
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "imageUrl": "/cards/legend1/RS-040.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-040.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "moss_breaker",
+      "name": "モスブレイカー",
+      "text": "相手は可能ならコマンドを1つ選んでホールドする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "force_opponent_hold_command",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

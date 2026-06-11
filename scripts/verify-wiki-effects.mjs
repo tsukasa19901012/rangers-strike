@@ -22,12 +22,15 @@ const cardsRoot = path.join(root, "packages/cards/src");
 const expansionArg = process.argv.find((arg) => arg.startsWith("--expansion="));
 const expansionFilter = expansionArg?.split("=")[1] ?? "all";
 
-const l1 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend1/cards.json"), "utf8"));
-const l2 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend2/cards.json"), "utf8"));
-const l3 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend3/cards.json"), "utf8"));
-const ue1 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend1/unitEffects.json"), "utf8"));
-const ue2 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend2/unitEffects.json"), "utf8"));
-const ue3 = JSON.parse(fs.readFileSync(path.join(cardsRoot, "legend3/unitEffects.json"), "utf8"));
+const coreCatalog = JSON.parse(
+  fs.readFileSync(
+    path.join(cardsRoot, "generated/catalog/core-playable/cards.json"),
+    "utf8",
+  ),
+);
+const stubBundle = JSON.parse(
+  fs.readFileSync(path.join(cardsRoot, "generated/dsl-stubs/stubs-bundle.json"), "utf8"),
+);
 const atwikiPages = JSON.parse(
   fs.readFileSync(path.join(cardsRoot, "legend3/atwiki-pages.json"), "utf8"),
 );
@@ -47,11 +50,12 @@ for (const match of errataSrc.matchAll(/"(RS-\d+|SR-\d+)":\s*\n\s*"([^"]+)"/g)) 
 }
 
 /** @type {{ expansion: string, cards: object[] }[]} */
-const expansions = [
-  { expansion: "legend1", cards: l1.cards },
-  { expansion: "legend2", cards: l2.cards },
-  { expansion: "legend3", cards: l3.cards },
-].filter(
+const expansions = ["legend1", "legend2", "legend3"]
+  .map((expansion) => ({
+    expansion,
+    cards: coreCatalog.cards.filter((card) => card.expansion === expansion),
+  }))
+  .filter(
   (entry) => expansionFilter === "all" || entry.expansion === expansionFilter,
 );
 
@@ -59,8 +63,8 @@ function canonicalText(card) {
   if (card.type === "operation") {
     return errata[card.id] ?? wikiOps[card.id] ?? card.text ?? "";
   }
-  const block = ue1[card.id] ?? ue2[card.id] ?? ue3[card.id];
-  return card.text ?? block?.rawText ?? "";
+  const block = stubBundle[card.id];
+  return card.text ?? block?.rawText ?? block?.text ?? "";
 }
 
 function normalize(text) {

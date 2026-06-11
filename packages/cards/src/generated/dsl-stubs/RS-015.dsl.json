@@ -1,0 +1,31 @@
+{
+  "id": "RS-015",
+  "name": "バードニックウェーブ",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "effectId": "bird_nick_wave",
+  "imageUrl": "/cards/legend1/RS-015.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-015.jpg",
+  "effects": [
+    {
+      "id": "bird_nick_wave",
+      "text": "このターン、すべての自軍ユニットのコンビネーションナンバーは1少なくなる。ただし、2より少なくならない。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

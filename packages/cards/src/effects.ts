@@ -1,5 +1,7 @@
 import { WIKI_OPERATION_TEXT } from "./wikiReference";
 import { ERRATA_EFFECT_TEXT } from "./errata";
+import { inferCatalogTierForCardId, loadCardById } from "./dsl/loader";
+import type { OperationTiming } from "./dsl/types";
 
 export type EffectKind = "instant" | "permanent" | "counter";
 
@@ -91,10 +93,55 @@ const ALL_EFFECTS: Record<string, CardEffectMeta> = {
   ...LEGEND3_EFFECTS,
 };
 
-export function getCardEffect(cardId: string): CardEffectMeta | undefined {
-  const base = ALL_EFFECTS[cardId];
-  if (!base) return undefined;
+function operationKindFromTiming(timing: OperationTiming): EffectKind {
+  if (timing === "counter") return "counter";
+  if (timing === "resident") return "permanent";
+  return "instant";
+}
+
+function resolveEffectText(
+  cardId: string,
+  doc: { text?: string },
+  operation: { text?: string },
+  staticMeta?: CardEffectMeta,
+): string {
   const errataText = ERRATA_EFFECT_TEXT[cardId];
-  if (!errataText) return base;
-  return { ...base, text: errataText };
+  if (errataText) return errataText;
+  for (const candidate of [staticMeta?.text, doc.text, operation.text]) {
+    if (candidate?.trim()) return candidate;
+  }
+  return "";
+}
+
+function resolveEffectKind(
+  doc: { tags?: string[] },
+  trigger: { type: "operation"; timing: OperationTiming },
+  staticMeta?: CardEffectMeta,
+): EffectKind {
+  if (staticMeta?.kind) return staticMeta.kind;
+  if (doc.tags?.includes("常駐")) return "permanent";
+  return operationKindFromTiming(trigger.timing);
+}
+
+/** U4 — CardDocument 優先。静的 ALL_EFFECTS は target / 空テキスト・kind 補完用。 */
+export function getCardEffect(cardId: string): CardEffectMeta | undefined {
+  const staticMeta = ALL_EFFECTS[cardId];
+  try {
+    const doc = loadCardById(cardId, inferCatalogTierForCardId(cardId));
+    const operation = doc.effects?.find((effect) => effect.trigger.type === "operation");
+    if (operation?.trigger.type === "operation") {
+      return {
+        effectId: operation.id,
+        text: resolveEffectText(cardId, doc, operation, staticMeta),
+        kind: resolveEffectKind(doc, operation.trigger, staticMeta),
+        target: staticMeta?.target,
+      };
+    }
+  } catch {
+    /* fall through */
+  }
+  if (!staticMeta) return undefined;
+  const errataText = ERRATA_EFFECT_TEXT[cardId];
+  if (!errataText) return staticMeta;
+  return { ...staticMeta, text: errataText };
 }

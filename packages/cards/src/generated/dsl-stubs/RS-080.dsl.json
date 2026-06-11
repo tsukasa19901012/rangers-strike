@@ -1,0 +1,29 @@
+{
+  "id": "RS-080",
+  "name": "ヒドラー兵",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 0,
+  "bp": 500,
+  "size": "S",
+  "text": "※このカードはデッキに3枚以上入れてもよい。",
+  "rawText": "※このカードはデッキに3枚以上入れてもよい。",
+  "features": [
+    "戦闘員"
+  ],
+  "imageUrl": "/cards/legend2/RS-080.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-080.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに3枚以上入れてもよい。",
+      "rule": "deck_copy_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

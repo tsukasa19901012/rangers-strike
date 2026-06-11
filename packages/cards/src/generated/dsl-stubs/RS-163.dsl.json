@@ -1,0 +1,48 @@
+{
+  "id": "RS-163",
+  "name": "ガオブラック",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 1,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 4,
+  "text": "【アイアンブロークン】自軍ターン中、このユニットはBP+3000される。",
+  "rawText": "【アイアンブロークン】自軍ターン中、このユニットはBP+3000される。",
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-163.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-163.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "iron_broken",
+      "name": "アイアンブロークン",
+      "text": "自軍ターン中、このユニットはBP+3000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "controller_is_phase_player"
+      },
+      "effects": [
+        {
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 3000,
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

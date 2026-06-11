@@ -1,0 +1,50 @@
+{
+  "id": "RS-011",
+  "name": "オーラパワー",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "effectId": "aura_power",
+  "imageUrl": "/cards/legend1/RS-011.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-011.jpg",
+  "effects": [
+    {
+      "id": "aura_power",
+      "name": "RS-011",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "rush",
+            "owner": "self",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "grant_keyword",
+              "keyword": "bp_plus_per_own_damage",
+              "duration": "turn"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

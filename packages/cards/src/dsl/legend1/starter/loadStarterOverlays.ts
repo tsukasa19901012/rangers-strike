@@ -1,7 +1,7 @@
 import starterBundle from "./overlays.json";
 import starterManifest from "./manifest.json";
 import type { CardDocument } from "../../types";
-import { mergeCardDocument } from "../../loader";
+import { mergeCardDocument } from "../../cardDocumentMerge";
 import { validateCardDocument } from "../../validator";
 
 type StarterBundle = { cards: Partial<CardDocument>[] };

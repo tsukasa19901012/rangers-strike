@@ -13,24 +13,25 @@ const repoRoot = path.resolve(packageRoot, "../..");
 
 const IMAGE_BASE = "https://www.grnrngr.com/cards/rangers-strike/cards";
 const CARD_BACK_URL = "https://tcg-db.nikita.jp/img/card/rs/back.jpg";
+const CORE_CATALOG_PATH = path.join(
+  packageRoot,
+  "src/generated/catalog/core-playable/cards.json",
+);
 
 const EXPANSIONS = {
   legend1: {
-    cardsJson: path.join(packageRoot, "src/legend1/cards.json"),
     assetsDir: path.join(packageRoot, "assets/legend1"),
     webPublicDir: path.join(repoRoot, "apps/web/public/cards/legend1"),
     imageBasePath: "/cards/legend1",
     downloadBack: true,
   },
   legend2: {
-    cardsJson: path.join(packageRoot, "src/legend2/cards.json"),
     assetsDir: path.join(packageRoot, "assets/legend2"),
     webPublicDir: path.join(repoRoot, "apps/web/public/cards/legend2"),
     imageBasePath: "/cards/legend2",
     downloadBack: false,
   },
   legend3: {
-    cardsJson: path.join(packageRoot, "src/legend3/cards.json"),
     assetsDir: path.join(packageRoot, "assets/legend3"),
     webPublicDir: path.join(repoRoot, "apps/web/public/cards/legend3"),
     imageBasePath: "/cards/legend3",
@@ -52,16 +53,16 @@ async function download(url) {
   return data;
 }
 
-async function downloadExpansion(expansionId) {
+async function downloadExpansion(expansionId, catalog) {
   const config = EXPANSIONS[expansionId];
-  const catalog = JSON.parse(await readFile(config.cardsJson, "utf8"));
+  const cards = catalog.cards.filter((card) => card.expansion === expansionId);
 
   await mkdir(config.assetsDir, { recursive: true });
   await mkdir(config.webPublicDir, { recursive: true });
 
   const failed = [];
 
-  for (const card of catalog.cards) {
+  for (const card of cards) {
     const sourceUrl = `${IMAGE_BASE}/${card.id}.jpg`;
     const filename = `${card.id}.jpg`;
     const assetPath = path.join(config.assetsDir, filename);
@@ -79,8 +80,6 @@ async function downloadExpansion(expansionId) {
       process.stderr.write(`FAIL ${expansionId} ${card.id}: ${error}\n`);
     }
   }
-
-  await writeFile(config.cardsJson, `${JSON.stringify(catalog, null, 2)}\n`);
 
   if (config.downloadBack) {
     try {
@@ -100,20 +99,22 @@ async function downloadExpansion(expansionId) {
     throw new Error(`${expansionId}: failed to download ${failed.length} image(s)`);
   }
 
-  console.log(`Downloaded ${catalog.cards.length} ${expansionId} images.`);
+  console.log(`Downloaded ${cards.length} ${expansionId} images.`);
 }
 
 async function main() {
   const target = process.argv[2] ?? "all";
-  const expansions =
-    target === "all" ? Object.keys(EXPANSIONS) : [target];
+  const expansions = target === "all" ? Object.keys(EXPANSIONS) : [target];
+  const catalog = JSON.parse(await readFile(CORE_CATALOG_PATH, "utf8"));
 
   for (const expansionId of expansions) {
     if (!EXPANSIONS[expansionId]) {
       throw new Error(`Unknown expansion: ${expansionId}`);
     }
-    await downloadExpansion(expansionId);
+    await downloadExpansion(expansionId, catalog);
   }
+
+  await writeFile(CORE_CATALOG_PATH, `${JSON.stringify(catalog, null, 2)}\n`);
 }
 
 main().catch((error) => {

@@ -1,9 +1,7 @@
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import legend1Cards from "../src/legend1/cards.json";
-import legend2Cards from "../src/legend2/cards.json";
-import legend3Cards from "../src/legend3/cards.json";
+import { loadCorePlayableCards } from "../src/catalog/coreCatalogSources";
 import { dedupeEffectTexts, splitEffectSegments } from "../src/pipeline/parseWiki";
 import {
   CATEGORY_PRIORITY,
@@ -30,10 +28,8 @@ type CardRuling = {
 };
 
 const NAME_MAP = new Map<string, string>();
-for (const catalog of [legend1Cards, legend2Cards, legend3Cards]) {
-  for (const c of catalog.cards) {
-    NAME_MAP.set(c.id, c.name);
-  }
+for (const card of loadCorePlayableCards()) {
+  NAME_MAP.set(card.id, card.name);
 }
 
 function extractField(content: string, label: string): string | undefined {

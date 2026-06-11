@@ -1,0 +1,65 @@
+{
+  "id": "RS-094",
+  "name": "龍冥王サラマンデス",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "4+",
+  "bp": 6000,
+  "sp": "special",
+  "size": "S",
+  "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【幽魔吸収】自軍バトルフェイズに次の効果を発動できる。敵軍捨札からSユニットのカードを1枚選んで持ち主の手札に戻す。そうしたとき、このターンこのユニットのBPは相手の手札に戻したカードのBPとの合計になり、「SP1」になる。",
+  "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【幽魔吸収】自軍バトルフェイズに次の効果を発動できる。敵軍捨札からSユニットのカードを1枚選んで持ち主の手札に戻す。そうしたとき、このターンこのユニットのBPは相手の手札に戻したカードのBPとの合計になり、「SP1」になる。",
+  "features": [
+    "災魔一族",
+    "男"
+  ],
+  "imageUrl": "/cards/legend2/RS-094.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-094.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "win_but_destroyed_vs_sp1"
+    }
+  ],
+  "effects": [
+    {
+      "id": "ghost_absorption",
+      "name": "幽魔吸収",
+      "text": "自軍バトルフェイズに次の効果を発動できる。敵軍捨札からSユニットのカードを1枚選んで持ち主の手札に戻す。そうしたとき、このターンこのユニットのBPは相手の手札に戻したカードのBPとの合計になり、「SP1」になる。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_win_but_destroyed_vs_sp1",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "win_but_destroyed_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

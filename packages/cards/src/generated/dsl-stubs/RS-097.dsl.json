@@ -1,0 +1,43 @@
+{
+  "id": "RS-097",
+  "name": "ハリケンレオン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "5+",
+  "bp": 5000,
+  "size": "M",
+  "text": "【カラクリ忍法・連獅子】これが自軍バトルエリアにあるとき、SP1以上または「！」のある敵軍ユニットはコマンドを1つホールドしなければバトルエリアに出られない。",
+  "rawText": "【カラクリ忍法・連獅子】これが自軍バトルエリアにあるとき、SP1以上または「！」のある敵軍ユニットはコマンドを1つホールドしなければバトルエリアに出られない。",
+  "features": [
+    "メカ"
+  ],
+  "imageUrl": "/cards/legend2/RS-097.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-097.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを1体捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "karakuri_lion_chain",
+      "name": "カラクリ忍法・連獅子",
+      "text": "これが自軍バトルエリアにあるとき、SP1以上または「！」のある敵軍ユニットはコマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

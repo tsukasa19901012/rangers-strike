@@ -1,0 +1,46 @@
+{
+  "id": "RS-132",
+  "name": "バルジオン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "R",
+  "expansion": "legend3",
+  "powerCost": 6,
+  "bp": 6000,
+  "sp": "special",
+  "size": "L",
+  "text": "※これは、自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。【反バイオ粒子砲】これがバトルエリアに出るとき、捨札にしたSユニットが「バイオハンター・シルバ」ならこのターン、これは次の能力を得る。⇒「SP1」「BP+5000」",
+  "rawText": "※これは、自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。【反バイオ粒子砲】これがバトルエリアに出るとき、捨札にしたSユニットが「バイオハンター・シルバ」ならこのターン、これは次の能力を得る。⇒「SP1」「BP+5000」",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend3/RS-132.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-132.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは、自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない",
+      "rule": "battle_entry_discard_s_from_rush"
+    }
+  ],
+  "effects": [
+    {
+      "id": "anti_bio_cannon",
+      "name": "反バイオ粒子砲",
+      "text": "これがバトルエリアに出るとき、捨札にしたSユニットが「バイオハンター・シルバ」ならこのターン、これは次の能力を得る。⇒「SP1」「BP+5000」",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

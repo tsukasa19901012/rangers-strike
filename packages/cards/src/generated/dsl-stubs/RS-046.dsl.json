@@ -1,0 +1,76 @@
+{
+  "id": "RS-046",
+  "name": "パトアーマー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "bp": 5000,
+  "size": "M",
+  "text": "【アーマーアタック】これをラッシュしたとき発動できる。敵軍バトルエリアからBP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。",
+  "rawText": "【アーマーアタック】これをラッシュしたとき発動できる。敵軍バトルエリアからBP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend1/RS-046.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-046.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "armor_attack",
+      "name": "アーマーアタック",
+      "text": "これをラッシュしたとき発動できる。敵軍バトルエリアからBP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "maxBp": 8000
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "maxBp": 8000
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "power"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": "RS-052",
+  "name": "爆竜トリケラトプス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "bp": 4000,
+  "size": "M",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【超シールド進化】「ワイルドビースト」の自軍ユニットが撃破されるとき、これをかわりに捨札にしてもよい。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【超シールド進化】「ワイルドビースト」の自軍ユニットが撃破されるとき、これをかわりに捨札にしてもよい。",
+  "features": [
+    "恐竜"
+  ],
+  "imageUrl": "/cards/legend1/RS-052.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-052.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "super_shield",
+      "name": "超シールド進化",
+      "text": "「ワイルドビースト」の自軍ユニットが撃破されるとき、これをかわりに捨札にしてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "substitute_on_wb_destroy",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

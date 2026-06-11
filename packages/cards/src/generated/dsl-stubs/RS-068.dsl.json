@@ -1,0 +1,57 @@
+{
+  "id": "RS-068",
+  "name": "地球と宇宙のエネルギー",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "effectId": "discard_to_hand",
+  "imageUrl": "/cards/legend1/RS-068.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-068.jpg",
+  "effects": [
+    {
+      "id": "discard_to_hand",
+      "name": "RS-068",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

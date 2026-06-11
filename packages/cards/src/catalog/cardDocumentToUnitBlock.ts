@@ -1,0 +1,107 @@
+import type {
+  NamedEffectTrigger,
+  NamedUnitEffect,
+  UnitEffectBlock,
+  UnnamedUnitRule,
+  UnnamedUnitText,
+} from "../effectTaxonomy";
+import type { CardDocument, EffectDefinition, EffectTrigger } from "../dsl/types";
+import { corePlayableCatalog, fullPlayableCatalog } from "./unifiedCatalog";
+
+const CARD_NAME_TO_ID = new Map(
+  fullPlayableCatalog.cards.map((card) => [card.name, card.id]),
+);
+
+/** コアのみ — promoted の同名エイリアスで上書きしない（例: マジフェニックス → RS-057）。 */
+const CARD_ALIAS_TO_ID = new Map<string, string>();
+for (const card of corePlayableCatalog.cards) {
+  const aliasMatch = card.text?.match(/※これは「([^」]+)」としてつかえる/);
+  if (aliasMatch?.[1]) {
+    CARD_ALIAS_TO_ID.set(aliasMatch[1], card.id);
+  }
+}
+
+function resolveCardNameToId(name: string): string | undefined {
+  return CARD_ALIAS_TO_ID.get(name) ?? CARD_NAME_TO_ID.get(name);
+}
+
+function extractComboFromPartnerIds(text: string): string[] {
+  const comboIdx = text.indexOf("からコンビネーション");
+  if (comboIdx < 0) return [];
+
+  const segment = text.slice(Math.max(0, comboIdx - 120), comboIdx);
+  const partnerCardIds = [
+    ...new Set(
+      [...segment.matchAll(/「([^」]+)」/g)]
+        .map((match) => resolveCardNameToId(match[1]!))
+        .filter((id): id is string => id !== undefined),
+    ),
+  ];
+  return partnerCardIds;
+}
+
+function enrichNcComboFromTrigger(
+  trigger: NamedEffectTrigger,
+  text: string,
+): NamedEffectTrigger {
+  if (trigger.type !== "nc") return trigger;
+
+  const hasComboFromOverride =
+    text.includes("ナンバーに関係なく発動") ||
+    /「[^」]+」からコンビネーション/.test(text);
+  if (!hasComboFromOverride) return trigger;
+
+  const partnerCardIds = extractComboFromPartnerIds(text);
+  if (partnerCardIds.length === 0) return trigger;
+  return { type: "nc_or_combo_from", partnerCardIds };
+}
+
+function toNamedTrigger(
+  trigger: EffectTrigger,
+  text: string,
+): NamedEffectTrigger | undefined {
+  if (trigger.type === "operation" || trigger.type === "on_strike" || trigger.type === "on_destroy" || trigger.type === "on_leave" || trigger.type === "on_damage") {
+    return undefined;
+  }
+  return enrichNcComboFromTrigger(trigger as NamedEffectTrigger, text);
+}
+
+function toNamedUnitEffect(effect: EffectDefinition): NamedUnitEffect | undefined {
+  const text = effect.text ?? "";
+  const trigger = toNamedTrigger(effect.trigger, text);
+  if (!trigger) return undefined;
+  return {
+    name: effect.name ?? effect.id,
+    effectId: effect.id,
+    text,
+    trigger,
+  };
+}
+
+/** CardDocument → unitEffects 互換ブロック（U4 レジストリ参照用）。 */
+export function cardDocumentToUnitEffectBlock(doc: CardDocument): UnitEffectBlock {
+  const namedEffects = (doc.effects ?? [])
+    .map(toNamedUnitEffect)
+    .filter((entry): entry is NamedUnitEffect => entry !== undefined);
+
+  const unnamedText: UnnamedUnitText[] = (doc.unnamedRules ?? []).map((rule) => ({
+    kind: rule.kind as UnnamedUnitText["kind"],
+    text: rule.text,
+    rule: rule.rule as UnnamedUnitRule | undefined,
+    holdCount: rule.holdCount,
+    damage: rule.damage,
+    discardCount: rule.discardCount,
+    partnerCardIds: rule.partnerCardIds,
+  }));
+
+  return {
+    rushAdditionalCondition: doc.rushAdditionalCondition,
+    unnamedText,
+    namedEffects,
+    rawText: doc.rawText ?? doc.text ?? "",
+  };
+}
+
+export function unitEffectBlockHasData(block: UnitEffectBlock): boolean {
+  return block.namedEffects.length > 0 || block.unnamedText.length > 0 || !!block.rushAdditionalCondition;
+}

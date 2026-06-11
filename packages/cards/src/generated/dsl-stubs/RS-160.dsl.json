@@ -1,0 +1,54 @@
+{
+  "id": "RS-160",
+  "name": "ガオレッド",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "R",
+  "expansion": "legend3",
+  "powerCost": 3,
+  "bp": 2000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 2,
+  "text": "【ブレイジングファイヤー】「SP1」自軍ターン中、このユニットはBP+2000される。",
+  "rawText": "【ブレイジングファイヤー】「SP1」自軍ターン中、このユニットはBP+2000される。",
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-160.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-160.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "blazing_fire",
+      "name": "ブレイジングファイヤー",
+      "text": "「SP1」自軍ターン中、このユニットはBP+2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "controller_is_phase_player"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 2000,
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

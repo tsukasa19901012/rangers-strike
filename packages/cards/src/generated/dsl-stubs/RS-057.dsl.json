@@ -1,0 +1,70 @@
+{
+  "id": "RS-057",
+  "name": "マジレッド",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "bp": 2000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 3,
+  "text": "※これは「マジフェニックス」としてつかえる。【レッドファイヤー】「SP1」これはアタックするときリリース状態の自軍コマンド1つにつきBP＋1000される。",
+  "rawText": "※これは「マジフェニックス」としてつかえる。【レッドファイヤー】「SP1」これはアタックするときリリース状態の自軍コマンド1つにつきBP＋1000される。",
+  "features": [
+    "レッド",
+    "男",
+    "魔法"
+  ],
+  "imageUrl": "/cards/legend1/RS-057.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-057.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは「マジフェニックス」としてつかえる。",
+      "rule": "fusion_material_alias"
+    }
+  ],
+  "effects": [
+    {
+      "id": "red_fire",
+      "name": "レッドファイヤー",
+      "text": "「SP1」これはアタックするときリリース状態の自軍コマンド1つにつきBP＋1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "bp_plus_per_released_command_on_attack",
+          "duration": "turn"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_fusion_material_alias",
+      "text": "※これは「マジフェニックス」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "fusion_material_alias",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,9 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import legend1UnitEffects from "../src/legend1/unitEffects.json";
-import legend2UnitEffects from "../src/legend2/unitEffects.json";
-import legend3UnitEffects from "../src/legend3/unitEffects.json";
+import { loadCoreRegistryUnitEffects } from "./shared/registryUnitEffects";
 import { NUMBER_COMBO_EFFECTS } from "../src/comboEffects";
 import { getCardEffect } from "../src/effects";
 import { isOperationImplemented } from "../src/operationCatalog";
@@ -34,11 +32,7 @@ type FeasibilityResult = {
   implemented: boolean;
 };
 
-const UNIT_EFFECTS = {
-  ...(legend1UnitEffects as Record<string, UnitEffectBlock>),
-  ...(legend2UnitEffects as Record<string, UnitEffectBlock>),
-  ...(legend3UnitEffects as Record<string, UnitEffectBlock>),
-};
+const UNIT_EFFECTS = loadCoreRegistryUnitEffects();
 
 type UnitEffectBlock = {
   namedEffects?: Array<{ effectId: string }>;

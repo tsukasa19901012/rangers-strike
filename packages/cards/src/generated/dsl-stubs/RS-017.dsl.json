@@ -1,0 +1,38 @@
+{
+  "id": "RS-017",
+  "name": "気力",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "effectId": "ki_power",
+  "tags": [
+    "常駐"
+  ],
+  "imageUrl": "/cards/legend1/RS-017.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-017.jpg",
+  "effects": [
+    {
+      "id": "ki_power",
+      "name": "RS-017",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "s_bp_plus_per_released_command_on_opponent_turn",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

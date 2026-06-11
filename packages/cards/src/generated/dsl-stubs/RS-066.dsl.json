@@ -1,0 +1,41 @@
+{
+  "id": "RS-066",
+  "name": "ボウケンピンク",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 2,
+  "text": "【遺跡調査】自軍山札の上から1枚を見てもよい。そうしたとき、それを元に戻すか、山札の下に戻すかを選択する。",
+  "rawText": "【遺跡調査】自軍山札の上から1枚を見てもよい。そうしたとき、それを元に戻すか、山札の下に戻すかを選択する。",
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "imageUrl": "/cards/legend1/RS-066.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-066.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "ruin_survey",
+      "name": "遺跡調査",
+      "text": "自軍山札の上から1枚を見てもよい。そうしたとき、それを元に戻すか、山札の下に戻すかを選択する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

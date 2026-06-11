@@ -746,7 +746,37 @@ export function isResolveCommandPaymentLegal(
   if (validatePaymentSelection(state, pending, action.commandInstanceIds) !== null) {
     return false;
   }
-  return true;
+
+  const resolved = applyCommandPaymentResolve(
+    state,
+    pending.playerId,
+    pending,
+    action.commandInstanceIds,
+  );
+  if ("error" in resolved) return false;
+  if (resolved.nextPending) return true;
+
+  const cont = pending.continuation;
+  if (cont.type !== "rush") return true;
+
+  const player = resolved.state.players[pending.playerId];
+  const def = getDefinition(resolved.state.definitions, pending.sourceCardId);
+  if (!def || !isUnit(def)) return false;
+
+  const holdIds =
+    pending.kind === "mothership_hold"
+      ? action.commandInstanceIds
+      : cont.zordMothershipHoldInstanceIds;
+
+  return canRushUnitExceptCommandHold(
+    player,
+    resolved.state.definitions,
+    def,
+    pending.sourceInstanceId,
+    cont.zordMaterialInstanceId,
+    holdIds,
+    cont.zordMaterialDestination,
+  );
 }
 
 /** 手札ユニットをラッシュできない理由（人間が読める形式）。 */
@@ -783,7 +813,6 @@ export function explainCannotRush(
   }
   if (
     isCostWindowSatisfied(player, "rush_category") &&
-    hasCommandForCardUse(player, state.definitions, categories) &&
     canRushUnitExceptCommandHold(player, state.definitions, def, instanceId)
   ) {
     return null;

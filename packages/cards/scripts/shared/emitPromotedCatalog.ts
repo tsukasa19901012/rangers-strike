@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { allCardsCatalog } from "../../src/catalog";
+import { listCoreCardIds } from "../../src/catalog/unifiedCatalog";
 import type { CardDefinition } from "../../src/schema";
 
 type StubsFile = {
@@ -63,7 +63,7 @@ export function emitPromotedCatalog(options: EmitPromotedOptions): {
   const outputPath = join(options.root, options.outputDir, "cards.json");
   const manifestPath = join(options.root, options.outputDir, options.manifestName);
 
-  const playableIds = new Set(allCardsCatalog.cards.map((c) => c.id));
+  const playableIds = listCoreCardIds();
   const stubsFile = JSON.parse(readFileSync(stubsPath, "utf8")) as StubsFile;
   const existingImages = loadExistingImageFields(outputPath);
 

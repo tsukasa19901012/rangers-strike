@@ -1,0 +1,60 @@
+{
+  "id": "RS-056",
+  "name": "マジドラゴン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "SR",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "bp": 15000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス【マジカルドラゴンシュート】「マジフェニックス」からコンビネーションするとき発動できる。このターン、これはBP＋4000される。",
+  "rawText": "合体―マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス【マジカルドラゴンシュート】「マジフェニックス」からコンビネーションするとき発動できる。このターン、これはBP＋4000される。",
+  "features": [
+    "魔法",
+    "ドラゴン"
+  ],
+  "imageUrl": "/cards/legend1/RS-056.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-056.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス",
+      "partnerCardIds": [
+        "RS-058",
+        "RS-059",
+        "RS-060",
+        "RS-061"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "magical_dragon_shoot",
+      "name": "マジカルドラゴンシュート",
+      "text": "「マジフェニックス」からコンビネーションするとき発動できる。このターン、これはBP＋4000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 4000,
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

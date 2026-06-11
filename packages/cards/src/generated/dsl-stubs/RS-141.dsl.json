@@ -1,0 +1,40 @@
+{
+  "id": "RS-141",
+  "name": "紐男爵",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 1,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "text": "【紐拳】敵軍バトルエリアからユニットを1体選んで、ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアのユニットを1体選んで、可能ならバトルエリアに出す。",
+  "rawText": "【紐拳】敵軍バトルエリアからユニットを1体選んで、ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアのユニットを1体選んで、可能ならバトルエリアに出す。",
+  "features": [
+    "怪人",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-141.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-141.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "string_fist",
+      "name": "紐拳",
+      "text": "敵軍バトルエリアからユニットを1体選んで、ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアのユニットを1体選んで、可能ならバトルエリアに出す。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

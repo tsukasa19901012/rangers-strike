@@ -1,0 +1,38 @@
+{
+  "id": "RS-067",
+  "name": "プラズマエネルギー",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "effectId": "plasma_energy",
+  "tags": [
+    "常駐"
+  ],
+  "imageUrl": "/cards/legend1/RS-067.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-067.jpg",
+  "effects": [
+    {
+      "id": "plasma_energy",
+      "name": "RS-067",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_striker_on_strike_self_discard",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

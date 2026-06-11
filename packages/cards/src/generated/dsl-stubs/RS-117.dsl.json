@@ -1,0 +1,56 @@
+{
+  "id": "RS-117",
+  "name": "ダイボウケン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "SR",
+  "expansion": "legend2",
+  "powerCost": "7+",
+  "bp": 16000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン 【轟轟剣アドベンチャードライブ】 これはアタックするときBP＋4000される。",
+  "rawText": "合体―ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン 【轟轟剣アドベンチャードライブ】 これはアタックするときBP＋4000される。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend2/RS-117.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-117.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン",
+      "partnerCardIds": [
+        "RS-118",
+        "RS-119",
+        "RS-120",
+        "RS-121",
+        "RS-122"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "adventure_drive_sword",
+      "name": "轟轟剣アドベンチャードライブ",
+      "text": "これはアタックするときBP＋4000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

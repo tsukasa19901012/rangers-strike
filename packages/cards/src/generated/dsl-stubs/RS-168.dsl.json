@@ -1,0 +1,60 @@
+{
+  "id": "RS-168",
+  "name": "爆竜ディメノコドン",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 4,
+  "bp": 5000,
+  "size": "M",
+  "comboNumber": "R",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【爆竜必殺クロスサンダー】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒BP5000以下のユニットを自軍と敵軍の場から1体ずつ選んで撃破する。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【爆竜必殺クロスサンダー】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒BP5000以下のユニットを自軍と敵軍の場から1体ずつ選んで撃破する。",
+  "features": [
+    "恐竜"
+  ],
+  "imageUrl": "/cards/legend3/RS-168.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-168.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "cross_thunder",
+      "name": "爆竜必殺クロスサンダー",
+      "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒BP5000以下のユニットを自軍と敵軍の場から1体ずつ選んで撃破する。",
+      "trigger": {
+        "type": "joint_combo_r"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

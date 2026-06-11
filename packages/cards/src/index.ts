@@ -24,6 +24,28 @@ export * from "./schema";
 export * from "./bannedCards";
 export * from "./deckRules";
 export * from "./catalog";
+export type { CatalogTier, CorePlayableExpansion } from "./catalog/tiers";
+export { CATALOG_TIERS, FULL_PLAYABLE_CARD_COUNT } from "./catalog/tiers";
+export {
+  getCatalog,
+  getCardDefinition,
+  listCardIds,
+  listCoreCardIds,
+  assertFullPlayableCatalogIntegrity,
+  generatedCorePlayableCatalog,
+  generatedFullPlayableCatalog,
+} from "./catalog/unifiedCatalog";
+export {
+  loadCorePlayableCards,
+  loadCorePlayableCatalog,
+  loadLegacyCoreCards,
+  loadLegacyCoreCatalog,
+} from "./catalog/coreCatalogSources";
+export {
+  allParityGatesPassed,
+  runCatalogParityAudit,
+  type CatalogParityReport,
+} from "./catalog/parity";
 export * from "./effects";
 export * from "./errata";
 export * from "./effectTaxonomy";
@@ -155,3 +177,4 @@ export {
 } from "./extendedCatalog";
 export { getWikiSetLabel, getWikiSetLabels } from "./wikiSetLabels";
 export { isCardDslReady, isCardDslUnimplemented } from "./dslReady";
+export { loadCardById, loadCards, inferCatalogTierForCardId } from "./dsl/loader";

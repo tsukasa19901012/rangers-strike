@@ -1,0 +1,38 @@
+{
+  "id": "RS-029",
+  "name": "勇気の魔法",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "effectId": "courage_magic",
+  "tags": [
+    "常駐"
+  ],
+  "imageUrl": "/cards/legend1/RS-029.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-029.jpg",
+  "effects": [
+    {
+      "id": "courage_magic",
+      "name": "RS-029",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "release_command_on_s_battle_entry",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

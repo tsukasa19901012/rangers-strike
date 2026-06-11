@@ -1,0 +1,61 @@
+{
+  "id": "RS-106",
+  "name": "デカレッド",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 1,
+  "text": "※これはラッシュしたターンにバトルエリアに出られない。 【ジュウクンドー】これはアタックするかわりに次の効果を発動できる。敵軍ラッシュエリアにあるユニットを、カードに表記された本来のBPの合計が3000以下になるように好きな数選んで撃破する。",
+  "rawText": "※これはラッシュしたターンにバトルエリアに出られない。 【ジュウクンドー】これはアタックするかわりに次の効果を発動できる。敵軍ラッシュエリアにあるユニットを、カードに表記された本来のBPの合計が3000以下になるように好きな数選んで撃破する。",
+  "features": [
+    "レッド",
+    "男",
+    "警察"
+  ],
+  "imageUrl": "/cards/legend2/RS-106.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-106.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "rule": "no_battle_entry_turn_rushed"
+    }
+  ],
+  "effects": [
+    {
+      "id": "juu_kun_do",
+      "name": "ジュウクンドー",
+      "text": "これはアタックするかわりに次の効果を発動できる。敵軍ラッシュエリアにあるユニットを、カードに表記された本来のBPの合計が3000以下になるように好きな数選んで撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_no_battle_entry_turn_rushed",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_battle_entry_turn_rushed",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

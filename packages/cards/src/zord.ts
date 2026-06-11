@@ -8,7 +8,7 @@ import {
 
 export type { RushAdditionalCondition, ZordConditionId };
 
-/** レガシー zord-up マップ（Legend 1/2）。Legend 3+ は unitEffects.json / cards.json を使用。 */
+/** レガシー zord-up マップ（Legend 1/2）。Legend 3+ は registry / CardDocument を使用。 */
 export const ZORD_CONDITIONS: Record<string, ZordConditionId> = {
   "RS-034": "discard_fusion_unit",
   "RS-042": "discard_fusion_unit",
@@ -48,7 +48,7 @@ export const ZORD_CONDITIONS: Record<string, ZordConditionId> = {
 /** いずれの 合体― 行にも載らないが、汎用捨札素材として有効な合体ユニット。 */
 const LEGACY_EXTRA_FUSION_UNIT_IDS = ["RS-062"] as const;
 
-/** unitEffects.json の全 合体― パートナー一覧から導出（レガシー追加分含む）。 */
+/** registry の全 合体― パートナー一覧から導出（レガシー追加分含む）。 */
 export const FUSION_UNIT_IDS: ReadonlySet<string> = new Set([
   ...buildFusionPartnerIdSet(),
   ...LEGACY_EXTRA_FUSION_UNIT_IDS,
@@ -101,7 +101,7 @@ export function getRushAdditionalCondition(
   return buildRushAdditionalCondition(conditionId);
 }
 
-/** unitEffects.json / cards.json を優先し、なければ ZORD_CONDITIONS のデフォルト。 */
+/** registry / CardDocument を優先し、なければ ZORD_CONDITIONS のデフォルト。 */
 export function resolveRushAdditionalCondition(
   cardId: string,
   card?: { rushAdditionalCondition?: RushAdditionalCondition },

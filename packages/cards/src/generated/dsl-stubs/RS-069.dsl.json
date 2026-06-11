@@ -1,0 +1,38 @@
+{
+  "id": "RS-069",
+  "name": "稲妻重力エネルギー",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "effectId": "lightning_gravity",
+  "tags": [
+    "常駐"
+  ],
+  "imageUrl": "/cards/legend1/RS-069.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-069.jpg",
+  "effects": [
+    {
+      "id": "lightning_gravity",
+      "name": "RS-069",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "m_battle_entry_requires_hold",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

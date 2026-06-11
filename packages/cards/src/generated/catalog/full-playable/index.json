@@ -1,0 +1,5551 @@
+{
+  "byId": {
+    "RS-001": {
+      "tier": "core"
+    },
+    "RS-002": {
+      "tier": "core"
+    },
+    "RS-003": {
+      "tier": "core"
+    },
+    "RS-004": {
+      "tier": "core"
+    },
+    "RS-005": {
+      "tier": "core"
+    },
+    "RS-006": {
+      "tier": "core"
+    },
+    "RS-007": {
+      "tier": "core"
+    },
+    "RS-008": {
+      "tier": "core"
+    },
+    "RS-009": {
+      "tier": "core"
+    },
+    "RS-010": {
+      "tier": "core"
+    },
+    "RS-011": {
+      "tier": "core"
+    },
+    "RS-012": {
+      "tier": "core"
+    },
+    "RS-013": {
+      "tier": "core"
+    },
+    "RS-014": {
+      "tier": "core"
+    },
+    "RS-015": {
+      "tier": "core"
+    },
+    "RS-016": {
+      "tier": "core"
+    },
+    "RS-017": {
+      "tier": "core"
+    },
+    "RS-018": {
+      "tier": "core"
+    },
+    "RS-019": {
+      "tier": "core"
+    },
+    "RS-020": {
+      "tier": "core"
+    },
+    "RS-021": {
+      "tier": "core"
+    },
+    "RS-022": {
+      "tier": "core"
+    },
+    "RS-023": {
+      "tier": "core"
+    },
+    "RS-024": {
+      "tier": "core"
+    },
+    "RS-025": {
+      "tier": "core"
+    },
+    "RS-026": {
+      "tier": "core"
+    },
+    "RS-027": {
+      "tier": "core"
+    },
+    "RS-028": {
+      "tier": "core"
+    },
+    "RS-029": {
+      "tier": "core"
+    },
+    "RS-030": {
+      "tier": "core"
+    },
+    "RS-031": {
+      "tier": "core"
+    },
+    "RS-032": {
+      "tier": "core"
+    },
+    "RS-033": {
+      "tier": "core"
+    },
+    "RS-034": {
+      "tier": "core"
+    },
+    "RS-035": {
+      "tier": "core"
+    },
+    "RS-036": {
+      "tier": "core"
+    },
+    "RS-037": {
+      "tier": "core"
+    },
+    "RS-038": {
+      "tier": "core"
+    },
+    "RS-039": {
+      "tier": "core"
+    },
+    "RS-040": {
+      "tier": "core"
+    },
+    "RS-041": {
+      "tier": "core"
+    },
+    "RS-042": {
+      "tier": "core"
+    },
+    "RS-043": {
+      "tier": "core"
+    },
+    "RS-044": {
+      "tier": "core"
+    },
+    "RS-045": {
+      "tier": "core"
+    },
+    "RS-046": {
+      "tier": "core"
+    },
+    "RS-047": {
+      "tier": "core"
+    },
+    "RS-048": {
+      "tier": "core"
+    },
+    "RS-049": {
+      "tier": "core"
+    },
+    "RS-050": {
+      "tier": "core"
+    },
+    "RS-051": {
+      "tier": "core"
+    },
+    "RS-052": {
+      "tier": "core"
+    },
+    "RS-053": {
+      "tier": "core"
+    },
+    "RS-054": {
+      "tier": "core"
+    },
+    "RS-055": {
+      "tier": "core"
+    },
+    "RS-056": {
+      "tier": "core"
+    },
+    "RS-057": {
+      "tier": "core"
+    },
+    "RS-058": {
+      "tier": "core"
+    },
+    "RS-059": {
+      "tier": "core"
+    },
+    "RS-060": {
+      "tier": "core"
+    },
+    "RS-061": {
+      "tier": "core"
+    },
+    "RS-062": {
+      "tier": "core"
+    },
+    "RS-063": {
+      "tier": "core"
+    },
+    "RS-064": {
+      "tier": "core"
+    },
+    "RS-065": {
+      "tier": "core"
+    },
+    "RS-066": {
+      "tier": "core"
+    },
+    "RS-067": {
+      "tier": "core"
+    },
+    "RS-068": {
+      "tier": "core"
+    },
+    "RS-069": {
+      "tier": "core"
+    },
+    "RS-070": {
+      "tier": "core"
+    },
+    "RS-071": {
+      "tier": "core"
+    },
+    "RS-072": {
+      "tier": "core"
+    },
+    "RS-073": {
+      "tier": "core"
+    },
+    "RS-074": {
+      "tier": "core"
+    },
+    "RS-075": {
+      "tier": "core"
+    },
+    "RS-076": {
+      "tier": "core"
+    },
+    "RS-077": {
+      "tier": "core"
+    },
+    "RS-078": {
+      "tier": "core"
+    },
+    "RS-079": {
+      "tier": "core"
+    },
+    "RS-080": {
+      "tier": "core"
+    },
+    "RS-081": {
+      "tier": "core"
+    },
+    "RS-082": {
+      "tier": "core"
+    },
+    "RS-083": {
+      "tier": "core"
+    },
+    "RS-084": {
+      "tier": "core"
+    },
+    "RS-085": {
+      "tier": "core"
+    },
+    "RS-086": {
+      "tier": "core"
+    },
+    "RS-087": {
+      "tier": "core"
+    },
+    "RS-088": {
+      "tier": "core"
+    },
+    "RS-089": {
+      "tier": "core"
+    },
+    "RS-090": {
+      "tier": "core"
+    },
+    "RS-091": {
+      "tier": "core"
+    },
+    "RS-092": {
+      "tier": "core"
+    },
+    "RS-093": {
+      "tier": "core"
+    },
+    "RS-094": {
+      "tier": "core"
+    },
+    "RS-095": {
+      "tier": "core"
+    },
+    "RS-096": {
+      "tier": "core"
+    },
+    "RS-097": {
+      "tier": "core"
+    },
+    "RS-098": {
+      "tier": "core"
+    },
+    "RS-099": {
+      "tier": "core"
+    },
+    "RS-100": {
+      "tier": "core"
+    },
+    "RS-101": {
+      "tier": "core"
+    },
+    "RS-102": {
+      "tier": "core"
+    },
+    "RS-103": {
+      "tier": "core"
+    },
+    "RS-104": {
+      "tier": "core"
+    },
+    "RS-105": {
+      "tier": "core"
+    },
+    "RS-106": {
+      "tier": "core"
+    },
+    "RS-107": {
+      "tier": "core"
+    },
+    "RS-108": {
+      "tier": "core"
+    },
+    "RS-109": {
+      "tier": "core"
+    },
+    "RS-110": {
+      "tier": "core"
+    },
+    "RS-111": {
+      "tier": "core"
+    },
+    "RS-112": {
+      "tier": "core"
+    },
+    "RS-113": {
+      "tier": "core"
+    },
+    "RS-114": {
+      "tier": "core"
+    },
+    "RS-115": {
+      "tier": "core"
+    },
+    "RS-116": {
+      "tier": "core"
+    },
+    "RS-117": {
+      "tier": "core"
+    },
+    "RS-118": {
+      "tier": "core"
+    },
+    "RS-119": {
+      "tier": "core"
+    },
+    "RS-120": {
+      "tier": "core"
+    },
+    "RS-121": {
+      "tier": "core"
+    },
+    "RS-122": {
+      "tier": "core"
+    },
+    "RS-123": {
+      "tier": "core"
+    },
+    "RS-124": {
+      "tier": "core"
+    },
+    "RS-125": {
+      "tier": "core"
+    },
+    "RS-126": {
+      "tier": "core"
+    },
+    "RS-127": {
+      "tier": "core"
+    },
+    "RS-128": {
+      "tier": "core"
+    },
+    "RS-129": {
+      "tier": "core"
+    },
+    "RS-130": {
+      "tier": "core"
+    },
+    "RS-131": {
+      "tier": "core"
+    },
+    "RS-132": {
+      "tier": "core"
+    },
+    "RS-133": {
+      "tier": "core"
+    },
+    "RS-134": {
+      "tier": "core"
+    },
+    "RS-135": {
+      "tier": "core"
+    },
+    "RS-136": {
+      "tier": "core"
+    },
+    "RS-137": {
+      "tier": "core"
+    },
+    "RS-138": {
+      "tier": "core"
+    },
+    "RS-139": {
+      "tier": "core"
+    },
+    "RS-140": {
+      "tier": "core"
+    },
+    "RS-141": {
+      "tier": "core"
+    },
+    "RS-142": {
+      "tier": "core"
+    },
+    "RS-143": {
+      "tier": "core"
+    },
+    "RS-144": {
+      "tier": "core"
+    },
+    "RS-145": {
+      "tier": "core"
+    },
+    "RS-146": {
+      "tier": "core"
+    },
+    "RS-147": {
+      "tier": "core"
+    },
+    "RS-148": {
+      "tier": "core"
+    },
+    "RS-149": {
+      "tier": "core"
+    },
+    "RS-150": {
+      "tier": "core"
+    },
+    "RS-151": {
+      "tier": "core"
+    },
+    "RS-152": {
+      "tier": "core"
+    },
+    "RS-153": {
+      "tier": "core"
+    },
+    "RS-154": {
+      "tier": "core"
+    },
+    "RS-155": {
+      "tier": "core"
+    },
+    "RS-156": {
+      "tier": "core"
+    },
+    "RS-157": {
+      "tier": "core"
+    },
+    "RS-158": {
+      "tier": "core"
+    },
+    "RS-159": {
+      "tier": "core"
+    },
+    "RS-160": {
+      "tier": "core"
+    },
+    "RS-161": {
+      "tier": "core"
+    },
+    "RS-162": {
+      "tier": "core"
+    },
+    "RS-163": {
+      "tier": "core"
+    },
+    "RS-164": {
+      "tier": "core"
+    },
+    "RS-165": {
+      "tier": "core"
+    },
+    "RS-166": {
+      "tier": "core"
+    },
+    "RS-167": {
+      "tier": "core"
+    },
+    "RS-168": {
+      "tier": "core"
+    },
+    "RS-169": {
+      "tier": "core"
+    },
+    "RS-170": {
+      "tier": "core"
+    },
+    "RS-171": {
+      "tier": "core"
+    },
+    "RS-172": {
+      "tier": "core"
+    },
+    "RS-173": {
+      "tier": "core"
+    },
+    "RS-174": {
+      "tier": "core"
+    },
+    "RS-175": {
+      "tier": "core"
+    },
+    "RS-176": {
+      "tier": "core"
+    },
+    "RS-177": {
+      "tier": "core"
+    },
+    "RS-178": {
+      "tier": "core"
+    },
+    "SR-001": {
+      "tier": "core"
+    },
+    "BK-001": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-002": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-003": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-004": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-005": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-006": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-007": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-008": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-009": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-010": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-011": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-012": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-013": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-014": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-015": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-016": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-017": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-018": {
+      "tier": "vanilla-promoted"
+    },
+    "BK-019": {
+      "tier": "vanilla-promoted"
+    },
+    "PK-001": {
+      "tier": "vanilla-promoted"
+    },
+    "PK-003": {
+      "tier": "vanilla-promoted"
+    },
+    "PK-009": {
+      "tier": "vanilla-promoted"
+    },
+    "PK-013": {
+      "tier": "vanilla-promoted"
+    },
+    "PK-014": {
+      "tier": "vanilla-promoted"
+    },
+    "PR-001": {
+      "tier": "vanilla-promoted"
+    },
+    "PR-010": {
+      "tier": "vanilla-promoted"
+    },
+    "PR-011": {
+      "tier": "vanilla-promoted"
+    },
+    "PR-015": {
+      "tier": "vanilla-promoted"
+    },
+    "PR-016": {
+      "tier": "vanilla-promoted"
+    },
+    "PR-025": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-002": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-005": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-007": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-013": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-017": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-018": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-019": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-020": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-030": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-033": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-063": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-076": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-077": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-079": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-083": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-084": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-087": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-088": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-089": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-096": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-097": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-099": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-102": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-104": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-108": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-118": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-126": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-130": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-132": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-133": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-134": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-140": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-151": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-152": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-159": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-162": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-163": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-164": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-166": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-168": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-169": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-171": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-173": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-174": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-175": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-178": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-181": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-184": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-186": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-191": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-192": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-194": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-195": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-196": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-197": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-198": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-202": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-214": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-217": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-221": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-222": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-226": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-227": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-245": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-250": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-252": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-254": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-262": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-263": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-267": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-278": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-282": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-288": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-310": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-313": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-314": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-322": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-330": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-331": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-334": {
+      "tier": "vanilla-promoted"
+    },
+    "RK-335": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-001": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-002": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-003": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-004": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-005": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-008": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-009": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-010": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-011": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-015": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-016": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-027": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-031": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-041": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-044": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-051": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-055": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-056": {
+      "tier": "vanilla-promoted"
+    },
+    "RM-057": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-181": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-182": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-183": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-185": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-186": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-191": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-195": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-230": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-231": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-239": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-240": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-243": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-245": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-249": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-250": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-251": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-252": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-254": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-260": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-267": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-272": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-283": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-288": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-306": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-333": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-334": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-341": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-347": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-349": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-350": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-357": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-424": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-426": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-438": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-440": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-466": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-499": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-500": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-504": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-518": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-520": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-523": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-526": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-528": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-535": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-538": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-544": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-547": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-548": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-549": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-561": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-564": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-573": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-577": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-607": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-626": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-632": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-642": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-643": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-647": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-652": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-674": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-677": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-680": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-682": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-683": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-688": {
+      "tier": "vanilla-promoted"
+    },
+    "RS-689": {
+      "tier": "vanilla-promoted"
+    },
+    "SK-000": {
+      "tier": "vanilla-promoted"
+    },
+    "SK-002": {
+      "tier": "vanilla-promoted"
+    },
+    "SM-001": {
+      "tier": "vanilla-promoted"
+    },
+    "SR-002": {
+      "tier": "vanilla-promoted"
+    },
+    "SR-008": {
+      "tier": "vanilla-promoted"
+    },
+    "SX-002": {
+      "tier": "vanilla-promoted"
+    },
+    "SX-005": {
+      "tier": "vanilla-promoted"
+    },
+    "SX-008": {
+      "tier": "vanilla-promoted"
+    },
+    "XC-001": {
+      "tier": "vanilla-promoted"
+    },
+    "XC-002": {
+      "tier": "vanilla-promoted"
+    },
+    "XC-003": {
+      "tier": "vanilla-promoted"
+    },
+    "XC-004": {
+      "tier": "vanilla-promoted"
+    },
+    "XC-005": {
+      "tier": "vanilla-promoted"
+    },
+    "XC-006": {
+      "tier": "vanilla-promoted"
+    },
+    "XC-007": {
+      "tier": "vanilla-promoted"
+    },
+    "XC-008": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-001": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-007": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-026": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-028": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-029": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-030": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-032": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-041": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-043": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-044": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-050": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-062": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-064": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-069": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-074": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-075": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-076": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-078": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-095": {
+      "tier": "vanilla-promoted"
+    },
+    "XG1-100": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-020": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-021": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-023": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-030": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-040": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-043": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-044": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-046": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-049": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-050": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-052": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-062": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-063": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-066": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-073": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-089": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-091": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-092": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-094": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-095": {
+      "tier": "vanilla-promoted"
+    },
+    "XG2-098": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-001": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-004": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-005": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-021": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-022": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-023": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-031": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-040": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-041": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-042": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-048": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-049": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-059": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-062": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-067": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-070": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-076": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-082": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-084": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-085": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-086": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-088": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-089": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-090": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-098": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-100": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-101": {
+      "tier": "vanilla-promoted"
+    },
+    "XG3-102": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-003": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-006": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-024": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-028": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-030": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-041": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-044": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-046": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-047": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-052": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-053": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-054": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-055": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-067": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-080": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-081": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-099": {
+      "tier": "vanilla-promoted"
+    },
+    "XG4-100": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-005": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-010": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-013": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-014": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-015": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-016": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-017": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-027": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-030": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-034": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-035": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-036": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-040": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-041": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-044": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-047": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-048": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-049": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-050": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-058": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-065": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-071": {
+      "tier": "vanilla-promoted"
+    },
+    "XG5-093": {
+      "tier": "vanilla-promoted"
+    },
+    "XG6-002": {
+      "tier": "vanilla-promoted"
+    },
+    "XG6-004": {
+      "tier": "vanilla-promoted"
+    },
+    "XG6-008": {
+      "tier": "vanilla-promoted"
+    },
+    "XG6-015": {
+      "tier": "vanilla-promoted"
+    },
+    "XG6-024": {
+      "tier": "vanilla-promoted"
+    },
+    "XG6-026": {
+      "tier": "vanilla-promoted"
+    },
+    "XG6-039": {
+      "tier": "vanilla-promoted"
+    },
+    "XG6-043": {
+      "tier": "vanilla-promoted"
+    },
+    "XG6-051": {
+      "tier": "vanilla-promoted"
+    },
+    "XG6-054": {
+      "tier": "vanilla-promoted"
+    },
+    "XG7-006": {
+      "tier": "vanilla-promoted"
+    },
+    "XG7-013": {
+      "tier": "vanilla-promoted"
+    },
+    "XG7-016": {
+      "tier": "vanilla-promoted"
+    },
+    "XG7-018": {
+      "tier": "vanilla-promoted"
+    },
+    "XG7-026": {
+      "tier": "vanilla-promoted"
+    },
+    "XG7-030": {
+      "tier": "vanilla-promoted"
+    },
+    "XG7-033": {
+      "tier": "vanilla-promoted"
+    },
+    "XG7-046": {
+      "tier": "vanilla-promoted"
+    },
+    "XG7-054": {
+      "tier": "vanilla-promoted"
+    },
+    "XG7-066": {
+      "tier": "vanilla-promoted"
+    },
+    "XG7-067": {
+      "tier": "vanilla-promoted"
+    },
+    "XP-006": {
+      "tier": "vanilla-promoted"
+    },
+    "XP-009": {
+      "tier": "vanilla-promoted"
+    },
+    "XP-013": {
+      "tier": "vanilla-promoted"
+    },
+    "XP-014": {
+      "tier": "vanilla-promoted"
+    },
+    "XP-016": {
+      "tier": "vanilla-promoted"
+    },
+    "XP-018": {
+      "tier": "vanilla-promoted"
+    },
+    "XP-024": {
+      "tier": "vanilla-promoted"
+    },
+    "XP-027": {
+      "tier": "vanilla-promoted"
+    },
+    "XP-030": {
+      "tier": "vanilla-promoted"
+    },
+    "PK-002": {
+      "tier": "complexity-promoted"
+    },
+    "PK-004": {
+      "tier": "complexity-promoted"
+    },
+    "PK-005": {
+      "tier": "complexity-promoted"
+    },
+    "PK-006": {
+      "tier": "complexity-promoted"
+    },
+    "PK-007": {
+      "tier": "complexity-promoted"
+    },
+    "PK-008": {
+      "tier": "complexity-promoted"
+    },
+    "PK-010": {
+      "tier": "complexity-promoted"
+    },
+    "PK-011": {
+      "tier": "complexity-promoted"
+    },
+    "PK-012": {
+      "tier": "complexity-promoted"
+    },
+    "PM-001": {
+      "tier": "complexity-promoted"
+    },
+    "PR-002": {
+      "tier": "complexity-promoted"
+    },
+    "PR-003": {
+      "tier": "complexity-promoted"
+    },
+    "PR-004": {
+      "tier": "complexity-promoted"
+    },
+    "PR-005": {
+      "tier": "complexity-promoted"
+    },
+    "PR-006": {
+      "tier": "complexity-promoted"
+    },
+    "PR-007": {
+      "tier": "complexity-promoted"
+    },
+    "PR-008": {
+      "tier": "complexity-promoted"
+    },
+    "PR-009": {
+      "tier": "complexity-promoted"
+    },
+    "PR-012": {
+      "tier": "complexity-promoted"
+    },
+    "PR-013": {
+      "tier": "complexity-promoted"
+    },
+    "PR-014": {
+      "tier": "complexity-promoted"
+    },
+    "PR-017": {
+      "tier": "complexity-promoted"
+    },
+    "PR-018": {
+      "tier": "complexity-promoted"
+    },
+    "PR-019": {
+      "tier": "complexity-promoted"
+    },
+    "PR-020": {
+      "tier": "complexity-promoted"
+    },
+    "PR-021": {
+      "tier": "complexity-promoted"
+    },
+    "PR-022": {
+      "tier": "complexity-promoted"
+    },
+    "PR-023": {
+      "tier": "complexity-promoted"
+    },
+    "PR-024": {
+      "tier": "complexity-promoted"
+    },
+    "PR-026": {
+      "tier": "complexity-promoted"
+    },
+    "PR-027": {
+      "tier": "complexity-promoted"
+    },
+    "RK-001": {
+      "tier": "complexity-promoted"
+    },
+    "RK-003": {
+      "tier": "complexity-promoted"
+    },
+    "RK-004": {
+      "tier": "complexity-promoted"
+    },
+    "RK-006": {
+      "tier": "complexity-promoted"
+    },
+    "RK-008": {
+      "tier": "complexity-promoted"
+    },
+    "RK-009": {
+      "tier": "complexity-promoted"
+    },
+    "RK-010": {
+      "tier": "complexity-promoted"
+    },
+    "RK-011": {
+      "tier": "complexity-promoted"
+    },
+    "RK-012": {
+      "tier": "complexity-promoted"
+    },
+    "RK-014": {
+      "tier": "complexity-promoted"
+    },
+    "RK-015": {
+      "tier": "complexity-promoted"
+    },
+    "RK-016": {
+      "tier": "complexity-promoted"
+    },
+    "RK-021": {
+      "tier": "complexity-promoted"
+    },
+    "RK-022": {
+      "tier": "complexity-promoted"
+    },
+    "RK-023": {
+      "tier": "complexity-promoted"
+    },
+    "RK-024": {
+      "tier": "complexity-promoted"
+    },
+    "RK-025": {
+      "tier": "complexity-promoted"
+    },
+    "RK-026": {
+      "tier": "complexity-promoted"
+    },
+    "RK-027": {
+      "tier": "complexity-promoted"
+    },
+    "RK-028": {
+      "tier": "complexity-promoted"
+    },
+    "RK-029": {
+      "tier": "complexity-promoted"
+    },
+    "RK-031": {
+      "tier": "complexity-promoted"
+    },
+    "RK-032": {
+      "tier": "complexity-promoted"
+    },
+    "RK-034": {
+      "tier": "complexity-promoted"
+    },
+    "RK-035": {
+      "tier": "complexity-promoted"
+    },
+    "RK-036": {
+      "tier": "complexity-promoted"
+    },
+    "RK-037": {
+      "tier": "complexity-promoted"
+    },
+    "RK-038": {
+      "tier": "complexity-promoted"
+    },
+    "RK-039": {
+      "tier": "complexity-promoted"
+    },
+    "RK-040": {
+      "tier": "complexity-promoted"
+    },
+    "RK-041": {
+      "tier": "complexity-promoted"
+    },
+    "RK-042": {
+      "tier": "complexity-promoted"
+    },
+    "RK-043": {
+      "tier": "complexity-promoted"
+    },
+    "RK-044": {
+      "tier": "complexity-promoted"
+    },
+    "RK-045": {
+      "tier": "complexity-promoted"
+    },
+    "RK-046": {
+      "tier": "complexity-promoted"
+    },
+    "RK-047": {
+      "tier": "complexity-promoted"
+    },
+    "RK-048": {
+      "tier": "complexity-promoted"
+    },
+    "RK-049": {
+      "tier": "complexity-promoted"
+    },
+    "RK-050": {
+      "tier": "complexity-promoted"
+    },
+    "RK-051": {
+      "tier": "complexity-promoted"
+    },
+    "RK-052": {
+      "tier": "complexity-promoted"
+    },
+    "RK-053": {
+      "tier": "complexity-promoted"
+    },
+    "RK-054": {
+      "tier": "complexity-promoted"
+    },
+    "RK-055": {
+      "tier": "complexity-promoted"
+    },
+    "RK-056": {
+      "tier": "complexity-promoted"
+    },
+    "RK-057": {
+      "tier": "complexity-promoted"
+    },
+    "RK-058": {
+      "tier": "complexity-promoted"
+    },
+    "RK-059": {
+      "tier": "complexity-promoted"
+    },
+    "RK-060": {
+      "tier": "complexity-promoted"
+    },
+    "RK-061": {
+      "tier": "complexity-promoted"
+    },
+    "RK-062": {
+      "tier": "complexity-promoted"
+    },
+    "RK-064": {
+      "tier": "complexity-promoted"
+    },
+    "RK-065": {
+      "tier": "complexity-promoted"
+    },
+    "RK-066": {
+      "tier": "complexity-promoted"
+    },
+    "RK-067": {
+      "tier": "complexity-promoted"
+    },
+    "RK-068": {
+      "tier": "complexity-promoted"
+    },
+    "RK-069": {
+      "tier": "complexity-promoted"
+    },
+    "RK-070": {
+      "tier": "complexity-promoted"
+    },
+    "RK-071": {
+      "tier": "complexity-promoted"
+    },
+    "RK-072": {
+      "tier": "complexity-promoted"
+    },
+    "RK-073": {
+      "tier": "complexity-promoted"
+    },
+    "RK-074": {
+      "tier": "complexity-promoted"
+    },
+    "RK-075": {
+      "tier": "complexity-promoted"
+    },
+    "RK-078": {
+      "tier": "complexity-promoted"
+    },
+    "RK-080": {
+      "tier": "complexity-promoted"
+    },
+    "RK-081": {
+      "tier": "complexity-promoted"
+    },
+    "RK-082": {
+      "tier": "complexity-promoted"
+    },
+    "RK-085": {
+      "tier": "complexity-promoted"
+    },
+    "RK-086": {
+      "tier": "complexity-promoted"
+    },
+    "RK-090": {
+      "tier": "complexity-promoted"
+    },
+    "RK-091": {
+      "tier": "complexity-promoted"
+    },
+    "RK-092": {
+      "tier": "complexity-promoted"
+    },
+    "RK-093": {
+      "tier": "complexity-promoted"
+    },
+    "RK-094": {
+      "tier": "complexity-promoted"
+    },
+    "RK-095": {
+      "tier": "complexity-promoted"
+    },
+    "RK-098": {
+      "tier": "complexity-promoted"
+    },
+    "RK-100": {
+      "tier": "complexity-promoted"
+    },
+    "RK-101": {
+      "tier": "complexity-promoted"
+    },
+    "RK-103": {
+      "tier": "complexity-promoted"
+    },
+    "RK-105": {
+      "tier": "complexity-promoted"
+    },
+    "RK-106": {
+      "tier": "complexity-promoted"
+    },
+    "RK-107": {
+      "tier": "complexity-promoted"
+    },
+    "RK-109": {
+      "tier": "complexity-promoted"
+    },
+    "RK-110": {
+      "tier": "complexity-promoted"
+    },
+    "RK-111": {
+      "tier": "complexity-promoted"
+    },
+    "RK-112": {
+      "tier": "complexity-promoted"
+    },
+    "RK-113": {
+      "tier": "complexity-promoted"
+    },
+    "RK-114": {
+      "tier": "complexity-promoted"
+    },
+    "RK-115": {
+      "tier": "complexity-promoted"
+    },
+    "RK-116": {
+      "tier": "complexity-promoted"
+    },
+    "RK-117": {
+      "tier": "complexity-promoted"
+    },
+    "RK-119": {
+      "tier": "complexity-promoted"
+    },
+    "RK-120": {
+      "tier": "complexity-promoted"
+    },
+    "RK-121": {
+      "tier": "complexity-promoted"
+    },
+    "RK-122": {
+      "tier": "complexity-promoted"
+    },
+    "RK-123": {
+      "tier": "complexity-promoted"
+    },
+    "RK-124": {
+      "tier": "complexity-promoted"
+    },
+    "RK-125": {
+      "tier": "complexity-promoted"
+    },
+    "RK-127": {
+      "tier": "complexity-promoted"
+    },
+    "RK-128": {
+      "tier": "complexity-promoted"
+    },
+    "RK-129": {
+      "tier": "complexity-promoted"
+    },
+    "RK-131": {
+      "tier": "complexity-promoted"
+    },
+    "RK-135": {
+      "tier": "complexity-promoted"
+    },
+    "RK-136": {
+      "tier": "complexity-promoted"
+    },
+    "RK-137": {
+      "tier": "complexity-promoted"
+    },
+    "RK-138": {
+      "tier": "complexity-promoted"
+    },
+    "RK-139": {
+      "tier": "complexity-promoted"
+    },
+    "RK-141": {
+      "tier": "complexity-promoted"
+    },
+    "RK-142": {
+      "tier": "complexity-promoted"
+    },
+    "RK-143": {
+      "tier": "complexity-promoted"
+    },
+    "RK-144": {
+      "tier": "complexity-promoted"
+    },
+    "RK-145": {
+      "tier": "complexity-promoted"
+    },
+    "RK-146": {
+      "tier": "complexity-promoted"
+    },
+    "RK-147": {
+      "tier": "complexity-promoted"
+    },
+    "RK-148": {
+      "tier": "complexity-promoted"
+    },
+    "RK-149": {
+      "tier": "complexity-promoted"
+    },
+    "RK-150": {
+      "tier": "complexity-promoted"
+    },
+    "RK-153": {
+      "tier": "complexity-promoted"
+    },
+    "RK-154": {
+      "tier": "complexity-promoted"
+    },
+    "RK-155": {
+      "tier": "complexity-promoted"
+    },
+    "RK-156": {
+      "tier": "complexity-promoted"
+    },
+    "RK-157": {
+      "tier": "complexity-promoted"
+    },
+    "RK-158": {
+      "tier": "complexity-promoted"
+    },
+    "RK-160": {
+      "tier": "complexity-promoted"
+    },
+    "RK-161": {
+      "tier": "complexity-promoted"
+    },
+    "RK-165": {
+      "tier": "complexity-promoted"
+    },
+    "RK-167": {
+      "tier": "complexity-promoted"
+    },
+    "RK-170": {
+      "tier": "complexity-promoted"
+    },
+    "RK-172": {
+      "tier": "complexity-promoted"
+    },
+    "RK-176": {
+      "tier": "complexity-promoted"
+    },
+    "RK-177": {
+      "tier": "complexity-promoted"
+    },
+    "RK-179": {
+      "tier": "complexity-promoted"
+    },
+    "RK-180": {
+      "tier": "complexity-promoted"
+    },
+    "RK-182": {
+      "tier": "complexity-promoted"
+    },
+    "RK-183": {
+      "tier": "complexity-promoted"
+    },
+    "RK-185": {
+      "tier": "complexity-promoted"
+    },
+    "RK-187": {
+      "tier": "complexity-promoted"
+    },
+    "RK-188": {
+      "tier": "complexity-promoted"
+    },
+    "RK-189": {
+      "tier": "complexity-promoted"
+    },
+    "RK-190": {
+      "tier": "complexity-promoted"
+    },
+    "RK-193": {
+      "tier": "complexity-promoted"
+    },
+    "RK-199": {
+      "tier": "complexity-promoted"
+    },
+    "RK-200": {
+      "tier": "complexity-promoted"
+    },
+    "RK-201": {
+      "tier": "complexity-promoted"
+    },
+    "RK-203": {
+      "tier": "complexity-promoted"
+    },
+    "RK-204": {
+      "tier": "complexity-promoted"
+    },
+    "RK-205": {
+      "tier": "complexity-promoted"
+    },
+    "RK-206": {
+      "tier": "complexity-promoted"
+    },
+    "RK-207": {
+      "tier": "complexity-promoted"
+    },
+    "RK-208": {
+      "tier": "complexity-promoted"
+    },
+    "RK-209": {
+      "tier": "complexity-promoted"
+    },
+    "RK-210": {
+      "tier": "complexity-promoted"
+    },
+    "RK-211": {
+      "tier": "complexity-promoted"
+    },
+    "RK-212": {
+      "tier": "complexity-promoted"
+    },
+    "RK-213": {
+      "tier": "complexity-promoted"
+    },
+    "RK-215": {
+      "tier": "complexity-promoted"
+    },
+    "RK-216": {
+      "tier": "complexity-promoted"
+    },
+    "RK-218": {
+      "tier": "complexity-promoted"
+    },
+    "RK-219": {
+      "tier": "complexity-promoted"
+    },
+    "RK-220": {
+      "tier": "complexity-promoted"
+    },
+    "RK-223": {
+      "tier": "complexity-promoted"
+    },
+    "RK-224": {
+      "tier": "complexity-promoted"
+    },
+    "RK-225": {
+      "tier": "complexity-promoted"
+    },
+    "RK-228": {
+      "tier": "complexity-promoted"
+    },
+    "RK-229": {
+      "tier": "complexity-promoted"
+    },
+    "RK-230": {
+      "tier": "complexity-promoted"
+    },
+    "RK-231": {
+      "tier": "complexity-promoted"
+    },
+    "RK-232": {
+      "tier": "complexity-promoted"
+    },
+    "RK-233": {
+      "tier": "complexity-promoted"
+    },
+    "RK-234": {
+      "tier": "complexity-promoted"
+    },
+    "RK-235": {
+      "tier": "complexity-promoted"
+    },
+    "RK-236": {
+      "tier": "complexity-promoted"
+    },
+    "RK-237": {
+      "tier": "complexity-promoted"
+    },
+    "RK-238": {
+      "tier": "complexity-promoted"
+    },
+    "RK-239": {
+      "tier": "complexity-promoted"
+    },
+    "RK-240": {
+      "tier": "complexity-promoted"
+    },
+    "RK-241": {
+      "tier": "complexity-promoted"
+    },
+    "RK-242": {
+      "tier": "complexity-promoted"
+    },
+    "RK-243": {
+      "tier": "complexity-promoted"
+    },
+    "RK-244": {
+      "tier": "complexity-promoted"
+    },
+    "RK-246": {
+      "tier": "complexity-promoted"
+    },
+    "RK-247": {
+      "tier": "complexity-promoted"
+    },
+    "RK-248": {
+      "tier": "complexity-promoted"
+    },
+    "RK-249": {
+      "tier": "complexity-promoted"
+    },
+    "RK-251": {
+      "tier": "complexity-promoted"
+    },
+    "RK-253": {
+      "tier": "complexity-promoted"
+    },
+    "RK-255": {
+      "tier": "complexity-promoted"
+    },
+    "RK-256": {
+      "tier": "complexity-promoted"
+    },
+    "RK-257": {
+      "tier": "complexity-promoted"
+    },
+    "RK-258": {
+      "tier": "complexity-promoted"
+    },
+    "RK-259": {
+      "tier": "complexity-promoted"
+    },
+    "RK-260": {
+      "tier": "complexity-promoted"
+    },
+    "RK-261": {
+      "tier": "complexity-promoted"
+    },
+    "RK-264": {
+      "tier": "complexity-promoted"
+    },
+    "RK-265": {
+      "tier": "complexity-promoted"
+    },
+    "RK-266": {
+      "tier": "complexity-promoted"
+    },
+    "RK-268": {
+      "tier": "complexity-promoted"
+    },
+    "RK-269": {
+      "tier": "complexity-promoted"
+    },
+    "RK-270": {
+      "tier": "complexity-promoted"
+    },
+    "RK-271": {
+      "tier": "complexity-promoted"
+    },
+    "RK-272": {
+      "tier": "complexity-promoted"
+    },
+    "RK-273": {
+      "tier": "complexity-promoted"
+    },
+    "RK-274": {
+      "tier": "complexity-promoted"
+    },
+    "RK-275": {
+      "tier": "complexity-promoted"
+    },
+    "RK-276": {
+      "tier": "complexity-promoted"
+    },
+    "RK-277": {
+      "tier": "complexity-promoted"
+    },
+    "RK-279": {
+      "tier": "complexity-promoted"
+    },
+    "RK-280": {
+      "tier": "complexity-promoted"
+    },
+    "RK-281": {
+      "tier": "complexity-promoted"
+    },
+    "RK-283": {
+      "tier": "complexity-promoted"
+    },
+    "RK-284": {
+      "tier": "complexity-promoted"
+    },
+    "RK-285": {
+      "tier": "complexity-promoted"
+    },
+    "RK-286": {
+      "tier": "complexity-promoted"
+    },
+    "RK-287": {
+      "tier": "complexity-promoted"
+    },
+    "RK-289": {
+      "tier": "complexity-promoted"
+    },
+    "RK-290": {
+      "tier": "complexity-promoted"
+    },
+    "RK-291": {
+      "tier": "complexity-promoted"
+    },
+    "RK-292": {
+      "tier": "complexity-promoted"
+    },
+    "RK-293": {
+      "tier": "complexity-promoted"
+    },
+    "RK-294": {
+      "tier": "complexity-promoted"
+    },
+    "RK-295": {
+      "tier": "complexity-promoted"
+    },
+    "RK-296": {
+      "tier": "complexity-promoted"
+    },
+    "RK-297": {
+      "tier": "complexity-promoted"
+    },
+    "RK-298": {
+      "tier": "complexity-promoted"
+    },
+    "RK-299": {
+      "tier": "complexity-promoted"
+    },
+    "RK-300": {
+      "tier": "complexity-promoted"
+    },
+    "RK-301": {
+      "tier": "complexity-promoted"
+    },
+    "RK-302": {
+      "tier": "complexity-promoted"
+    },
+    "RK-303": {
+      "tier": "complexity-promoted"
+    },
+    "RK-304": {
+      "tier": "complexity-promoted"
+    },
+    "RK-305": {
+      "tier": "complexity-promoted"
+    },
+    "RK-306": {
+      "tier": "complexity-promoted"
+    },
+    "RK-307": {
+      "tier": "complexity-promoted"
+    },
+    "RK-308": {
+      "tier": "complexity-promoted"
+    },
+    "RK-309": {
+      "tier": "complexity-promoted"
+    },
+    "RK-311": {
+      "tier": "complexity-promoted"
+    },
+    "RK-312": {
+      "tier": "complexity-promoted"
+    },
+    "RK-315": {
+      "tier": "complexity-promoted"
+    },
+    "RK-316": {
+      "tier": "complexity-promoted"
+    },
+    "RK-317": {
+      "tier": "complexity-promoted"
+    },
+    "RK-318": {
+      "tier": "complexity-promoted"
+    },
+    "RK-319": {
+      "tier": "complexity-promoted"
+    },
+    "RK-320": {
+      "tier": "complexity-promoted"
+    },
+    "RK-321": {
+      "tier": "complexity-promoted"
+    },
+    "RK-323": {
+      "tier": "complexity-promoted"
+    },
+    "RK-324": {
+      "tier": "complexity-promoted"
+    },
+    "RK-325": {
+      "tier": "complexity-promoted"
+    },
+    "RK-326": {
+      "tier": "complexity-promoted"
+    },
+    "RK-327": {
+      "tier": "complexity-promoted"
+    },
+    "RK-328": {
+      "tier": "complexity-promoted"
+    },
+    "RK-329": {
+      "tier": "complexity-promoted"
+    },
+    "RK-332": {
+      "tier": "complexity-promoted"
+    },
+    "RK-333": {
+      "tier": "complexity-promoted"
+    },
+    "RM-006": {
+      "tier": "complexity-promoted"
+    },
+    "RM-007": {
+      "tier": "complexity-promoted"
+    },
+    "RM-012": {
+      "tier": "complexity-promoted"
+    },
+    "RM-013": {
+      "tier": "complexity-promoted"
+    },
+    "RM-014": {
+      "tier": "complexity-promoted"
+    },
+    "RM-017": {
+      "tier": "complexity-promoted"
+    },
+    "RM-018": {
+      "tier": "complexity-promoted"
+    },
+    "RM-019": {
+      "tier": "complexity-promoted"
+    },
+    "RM-020": {
+      "tier": "complexity-promoted"
+    },
+    "RM-021": {
+      "tier": "complexity-promoted"
+    },
+    "RM-022": {
+      "tier": "complexity-promoted"
+    },
+    "RM-023": {
+      "tier": "complexity-promoted"
+    },
+    "RM-024": {
+      "tier": "complexity-promoted"
+    },
+    "RM-025": {
+      "tier": "complexity-promoted"
+    },
+    "RM-026": {
+      "tier": "complexity-promoted"
+    },
+    "RM-028": {
+      "tier": "complexity-promoted"
+    },
+    "RM-029": {
+      "tier": "complexity-promoted"
+    },
+    "RM-030": {
+      "tier": "complexity-promoted"
+    },
+    "RM-032": {
+      "tier": "complexity-promoted"
+    },
+    "RM-033": {
+      "tier": "complexity-promoted"
+    },
+    "RM-034": {
+      "tier": "complexity-promoted"
+    },
+    "RM-035": {
+      "tier": "complexity-promoted"
+    },
+    "RM-036": {
+      "tier": "complexity-promoted"
+    },
+    "RM-037": {
+      "tier": "complexity-promoted"
+    },
+    "RM-038": {
+      "tier": "complexity-promoted"
+    },
+    "RM-039": {
+      "tier": "complexity-promoted"
+    },
+    "RM-040": {
+      "tier": "complexity-promoted"
+    },
+    "RM-042": {
+      "tier": "complexity-promoted"
+    },
+    "RM-043": {
+      "tier": "complexity-promoted"
+    },
+    "RM-045": {
+      "tier": "complexity-promoted"
+    },
+    "RM-046": {
+      "tier": "complexity-promoted"
+    },
+    "RM-047": {
+      "tier": "complexity-promoted"
+    },
+    "RM-048": {
+      "tier": "complexity-promoted"
+    },
+    "RM-049": {
+      "tier": "complexity-promoted"
+    },
+    "RM-050": {
+      "tier": "complexity-promoted"
+    },
+    "RM-052": {
+      "tier": "complexity-promoted"
+    },
+    "RM-053": {
+      "tier": "complexity-promoted"
+    },
+    "RM-054": {
+      "tier": "complexity-promoted"
+    },
+    "RM-058": {
+      "tier": "complexity-promoted"
+    },
+    "RM-059": {
+      "tier": "complexity-promoted"
+    },
+    "RM-060": {
+      "tier": "complexity-promoted"
+    },
+    "RM-061": {
+      "tier": "complexity-promoted"
+    },
+    "RM-062": {
+      "tier": "complexity-promoted"
+    },
+    "RS-179": {
+      "tier": "complexity-promoted"
+    },
+    "RS-180": {
+      "tier": "complexity-promoted"
+    },
+    "RS-184": {
+      "tier": "complexity-promoted"
+    },
+    "RS-187": {
+      "tier": "complexity-promoted"
+    },
+    "RS-188": {
+      "tier": "complexity-promoted"
+    },
+    "RS-189": {
+      "tier": "complexity-promoted"
+    },
+    "RS-190": {
+      "tier": "complexity-promoted"
+    },
+    "RS-192": {
+      "tier": "complexity-promoted"
+    },
+    "RS-193": {
+      "tier": "complexity-promoted"
+    },
+    "RS-194": {
+      "tier": "complexity-promoted"
+    },
+    "RS-196": {
+      "tier": "complexity-promoted"
+    },
+    "RS-197": {
+      "tier": "complexity-promoted"
+    },
+    "RS-198": {
+      "tier": "complexity-promoted"
+    },
+    "RS-199": {
+      "tier": "complexity-promoted"
+    },
+    "RS-200": {
+      "tier": "complexity-promoted"
+    },
+    "RS-201": {
+      "tier": "complexity-promoted"
+    },
+    "RS-202": {
+      "tier": "complexity-promoted"
+    },
+    "RS-203": {
+      "tier": "complexity-promoted"
+    },
+    "RS-204": {
+      "tier": "complexity-promoted"
+    },
+    "RS-205": {
+      "tier": "complexity-promoted"
+    },
+    "RS-206": {
+      "tier": "complexity-promoted"
+    },
+    "RS-207": {
+      "tier": "complexity-promoted"
+    },
+    "RS-208": {
+      "tier": "complexity-promoted"
+    },
+    "RS-209": {
+      "tier": "complexity-promoted"
+    },
+    "RS-210": {
+      "tier": "complexity-promoted"
+    },
+    "RS-211": {
+      "tier": "complexity-promoted"
+    },
+    "RS-212": {
+      "tier": "complexity-promoted"
+    },
+    "RS-213": {
+      "tier": "complexity-promoted"
+    },
+    "RS-214": {
+      "tier": "complexity-promoted"
+    },
+    "RS-215": {
+      "tier": "complexity-promoted"
+    },
+    "RS-216": {
+      "tier": "complexity-promoted"
+    },
+    "RS-217": {
+      "tier": "complexity-promoted"
+    },
+    "RS-218": {
+      "tier": "complexity-promoted"
+    },
+    "RS-219": {
+      "tier": "complexity-promoted"
+    },
+    "RS-220": {
+      "tier": "complexity-promoted"
+    },
+    "RS-221": {
+      "tier": "complexity-promoted"
+    },
+    "RS-222": {
+      "tier": "complexity-promoted"
+    },
+    "RS-223": {
+      "tier": "complexity-promoted"
+    },
+    "RS-224": {
+      "tier": "complexity-promoted"
+    },
+    "RS-225": {
+      "tier": "complexity-promoted"
+    },
+    "RS-226": {
+      "tier": "complexity-promoted"
+    },
+    "RS-227": {
+      "tier": "complexity-promoted"
+    },
+    "RS-228": {
+      "tier": "complexity-promoted"
+    },
+    "RS-229": {
+      "tier": "complexity-promoted"
+    },
+    "RS-232": {
+      "tier": "complexity-promoted"
+    },
+    "RS-233": {
+      "tier": "complexity-promoted"
+    },
+    "RS-234": {
+      "tier": "complexity-promoted"
+    },
+    "RS-235": {
+      "tier": "complexity-promoted"
+    },
+    "RS-236": {
+      "tier": "complexity-promoted"
+    },
+    "RS-237": {
+      "tier": "complexity-promoted"
+    },
+    "RS-238": {
+      "tier": "complexity-promoted"
+    },
+    "RS-241": {
+      "tier": "complexity-promoted"
+    },
+    "RS-242": {
+      "tier": "complexity-promoted"
+    },
+    "RS-244": {
+      "tier": "complexity-promoted"
+    },
+    "RS-246": {
+      "tier": "complexity-promoted"
+    },
+    "RS-247": {
+      "tier": "complexity-promoted"
+    },
+    "RS-248": {
+      "tier": "complexity-promoted"
+    },
+    "RS-253": {
+      "tier": "complexity-promoted"
+    },
+    "RS-255": {
+      "tier": "complexity-promoted"
+    },
+    "RS-256": {
+      "tier": "complexity-promoted"
+    },
+    "RS-257": {
+      "tier": "complexity-promoted"
+    },
+    "RS-258": {
+      "tier": "complexity-promoted"
+    },
+    "RS-259": {
+      "tier": "complexity-promoted"
+    },
+    "RS-261": {
+      "tier": "complexity-promoted"
+    },
+    "RS-262": {
+      "tier": "complexity-promoted"
+    },
+    "RS-263": {
+      "tier": "complexity-promoted"
+    },
+    "RS-264": {
+      "tier": "complexity-promoted"
+    },
+    "RS-265": {
+      "tier": "complexity-promoted"
+    },
+    "RS-266": {
+      "tier": "complexity-promoted"
+    },
+    "RS-268": {
+      "tier": "complexity-promoted"
+    },
+    "RS-269": {
+      "tier": "complexity-promoted"
+    },
+    "RS-270": {
+      "tier": "complexity-promoted"
+    },
+    "RS-271": {
+      "tier": "complexity-promoted"
+    },
+    "RS-273": {
+      "tier": "complexity-promoted"
+    },
+    "RS-274": {
+      "tier": "complexity-promoted"
+    },
+    "RS-275": {
+      "tier": "complexity-promoted"
+    },
+    "RS-276": {
+      "tier": "complexity-promoted"
+    },
+    "RS-277": {
+      "tier": "complexity-promoted"
+    },
+    "RS-278": {
+      "tier": "complexity-promoted"
+    },
+    "RS-279": {
+      "tier": "complexity-promoted"
+    },
+    "RS-280": {
+      "tier": "complexity-promoted"
+    },
+    "RS-281": {
+      "tier": "complexity-promoted"
+    },
+    "RS-282": {
+      "tier": "complexity-promoted"
+    },
+    "RS-284": {
+      "tier": "complexity-promoted"
+    },
+    "RS-285": {
+      "tier": "complexity-promoted"
+    },
+    "RS-286": {
+      "tier": "complexity-promoted"
+    },
+    "RS-287": {
+      "tier": "complexity-promoted"
+    },
+    "RS-289": {
+      "tier": "complexity-promoted"
+    },
+    "RS-290": {
+      "tier": "complexity-promoted"
+    },
+    "RS-291": {
+      "tier": "complexity-promoted"
+    },
+    "RS-292": {
+      "tier": "complexity-promoted"
+    },
+    "RS-293": {
+      "tier": "complexity-promoted"
+    },
+    "RS-294": {
+      "tier": "complexity-promoted"
+    },
+    "RS-295": {
+      "tier": "complexity-promoted"
+    },
+    "RS-296": {
+      "tier": "complexity-promoted"
+    },
+    "RS-297": {
+      "tier": "complexity-promoted"
+    },
+    "RS-298": {
+      "tier": "complexity-promoted"
+    },
+    "RS-299": {
+      "tier": "complexity-promoted"
+    },
+    "RS-300": {
+      "tier": "complexity-promoted"
+    },
+    "RS-301": {
+      "tier": "complexity-promoted"
+    },
+    "RS-302": {
+      "tier": "complexity-promoted"
+    },
+    "RS-303": {
+      "tier": "complexity-promoted"
+    },
+    "RS-304": {
+      "tier": "complexity-promoted"
+    },
+    "RS-305": {
+      "tier": "complexity-promoted"
+    },
+    "RS-307": {
+      "tier": "complexity-promoted"
+    },
+    "RS-308": {
+      "tier": "complexity-promoted"
+    },
+    "RS-309": {
+      "tier": "complexity-promoted"
+    },
+    "RS-310": {
+      "tier": "complexity-promoted"
+    },
+    "RS-311": {
+      "tier": "complexity-promoted"
+    },
+    "RS-312": {
+      "tier": "complexity-promoted"
+    },
+    "RS-313": {
+      "tier": "complexity-promoted"
+    },
+    "RS-314": {
+      "tier": "complexity-promoted"
+    },
+    "RS-315": {
+      "tier": "complexity-promoted"
+    },
+    "RS-316": {
+      "tier": "complexity-promoted"
+    },
+    "RS-317": {
+      "tier": "complexity-promoted"
+    },
+    "RS-318": {
+      "tier": "complexity-promoted"
+    },
+    "RS-319": {
+      "tier": "complexity-promoted"
+    },
+    "RS-320": {
+      "tier": "complexity-promoted"
+    },
+    "RS-321": {
+      "tier": "complexity-promoted"
+    },
+    "RS-322": {
+      "tier": "complexity-promoted"
+    },
+    "RS-323": {
+      "tier": "complexity-promoted"
+    },
+    "RS-324": {
+      "tier": "complexity-promoted"
+    },
+    "RS-325": {
+      "tier": "complexity-promoted"
+    },
+    "RS-326": {
+      "tier": "complexity-promoted"
+    },
+    "RS-327": {
+      "tier": "complexity-promoted"
+    },
+    "RS-328": {
+      "tier": "complexity-promoted"
+    },
+    "RS-329": {
+      "tier": "complexity-promoted"
+    },
+    "RS-330": {
+      "tier": "complexity-promoted"
+    },
+    "RS-331": {
+      "tier": "complexity-promoted"
+    },
+    "RS-332": {
+      "tier": "complexity-promoted"
+    },
+    "RS-335": {
+      "tier": "complexity-promoted"
+    },
+    "RS-336": {
+      "tier": "complexity-promoted"
+    },
+    "RS-337": {
+      "tier": "complexity-promoted"
+    },
+    "RS-338": {
+      "tier": "complexity-promoted"
+    },
+    "RS-339": {
+      "tier": "complexity-promoted"
+    },
+    "RS-340": {
+      "tier": "complexity-promoted"
+    },
+    "RS-342": {
+      "tier": "complexity-promoted"
+    },
+    "RS-343": {
+      "tier": "complexity-promoted"
+    },
+    "RS-344": {
+      "tier": "complexity-promoted"
+    },
+    "RS-345": {
+      "tier": "complexity-promoted"
+    },
+    "RS-346": {
+      "tier": "complexity-promoted"
+    },
+    "RS-348": {
+      "tier": "complexity-promoted"
+    },
+    "RS-351": {
+      "tier": "complexity-promoted"
+    },
+    "RS-352": {
+      "tier": "complexity-promoted"
+    },
+    "RS-353": {
+      "tier": "complexity-promoted"
+    },
+    "RS-354": {
+      "tier": "complexity-promoted"
+    },
+    "RS-355": {
+      "tier": "complexity-promoted"
+    },
+    "RS-356": {
+      "tier": "complexity-promoted"
+    },
+    "RS-358": {
+      "tier": "complexity-promoted"
+    },
+    "RS-359": {
+      "tier": "complexity-promoted"
+    },
+    "RS-360": {
+      "tier": "complexity-promoted"
+    },
+    "RS-361": {
+      "tier": "complexity-promoted"
+    },
+    "RS-362": {
+      "tier": "complexity-promoted"
+    },
+    "RS-363": {
+      "tier": "complexity-promoted"
+    },
+    "RS-364": {
+      "tier": "complexity-promoted"
+    },
+    "RS-365": {
+      "tier": "complexity-promoted"
+    },
+    "RS-366": {
+      "tier": "complexity-promoted"
+    },
+    "RS-367": {
+      "tier": "complexity-promoted"
+    },
+    "RS-368": {
+      "tier": "complexity-promoted"
+    },
+    "RS-369": {
+      "tier": "complexity-promoted"
+    },
+    "RS-370": {
+      "tier": "complexity-promoted"
+    },
+    "RS-371": {
+      "tier": "complexity-promoted"
+    },
+    "RS-372": {
+      "tier": "complexity-promoted"
+    },
+    "RS-373": {
+      "tier": "complexity-promoted"
+    },
+    "RS-374": {
+      "tier": "complexity-promoted"
+    },
+    "RS-375": {
+      "tier": "complexity-promoted"
+    },
+    "RS-376": {
+      "tier": "complexity-promoted"
+    },
+    "RS-377": {
+      "tier": "complexity-promoted"
+    },
+    "RS-378": {
+      "tier": "complexity-promoted"
+    },
+    "RS-379": {
+      "tier": "complexity-promoted"
+    },
+    "RS-380": {
+      "tier": "complexity-promoted"
+    },
+    "RS-381": {
+      "tier": "complexity-promoted"
+    },
+    "RS-382": {
+      "tier": "complexity-promoted"
+    },
+    "RS-383": {
+      "tier": "complexity-promoted"
+    },
+    "RS-384": {
+      "tier": "complexity-promoted"
+    },
+    "RS-385": {
+      "tier": "complexity-promoted"
+    },
+    "RS-386": {
+      "tier": "complexity-promoted"
+    },
+    "RS-387": {
+      "tier": "complexity-promoted"
+    },
+    "RS-388": {
+      "tier": "complexity-promoted"
+    },
+    "RS-389": {
+      "tier": "complexity-promoted"
+    },
+    "RS-390": {
+      "tier": "complexity-promoted"
+    },
+    "RS-391": {
+      "tier": "complexity-promoted"
+    },
+    "RS-392": {
+      "tier": "complexity-promoted"
+    },
+    "RS-393": {
+      "tier": "complexity-promoted"
+    },
+    "RS-394": {
+      "tier": "complexity-promoted"
+    },
+    "RS-395": {
+      "tier": "complexity-promoted"
+    },
+    "RS-396": {
+      "tier": "complexity-promoted"
+    },
+    "RS-397": {
+      "tier": "complexity-promoted"
+    },
+    "RS-398": {
+      "tier": "complexity-promoted"
+    },
+    "RS-399": {
+      "tier": "complexity-promoted"
+    },
+    "RS-400": {
+      "tier": "complexity-promoted"
+    },
+    "RS-401": {
+      "tier": "complexity-promoted"
+    },
+    "RS-402": {
+      "tier": "complexity-promoted"
+    },
+    "RS-403": {
+      "tier": "complexity-promoted"
+    },
+    "RS-404": {
+      "tier": "complexity-promoted"
+    },
+    "RS-405": {
+      "tier": "complexity-promoted"
+    },
+    "RS-406": {
+      "tier": "complexity-promoted"
+    },
+    "RS-407": {
+      "tier": "complexity-promoted"
+    },
+    "RS-408": {
+      "tier": "complexity-promoted"
+    },
+    "RS-409": {
+      "tier": "complexity-promoted"
+    },
+    "RS-410": {
+      "tier": "complexity-promoted"
+    },
+    "RS-411": {
+      "tier": "complexity-promoted"
+    },
+    "RS-412": {
+      "tier": "complexity-promoted"
+    },
+    "RS-413": {
+      "tier": "complexity-promoted"
+    },
+    "RS-414": {
+      "tier": "complexity-promoted"
+    },
+    "RS-415": {
+      "tier": "complexity-promoted"
+    },
+    "RS-416": {
+      "tier": "complexity-promoted"
+    },
+    "RS-417": {
+      "tier": "complexity-promoted"
+    },
+    "RS-418": {
+      "tier": "complexity-promoted"
+    },
+    "RS-419": {
+      "tier": "complexity-promoted"
+    },
+    "RS-420": {
+      "tier": "complexity-promoted"
+    },
+    "RS-421": {
+      "tier": "complexity-promoted"
+    },
+    "RS-422": {
+      "tier": "complexity-promoted"
+    },
+    "RS-423": {
+      "tier": "complexity-promoted"
+    },
+    "RS-425": {
+      "tier": "complexity-promoted"
+    },
+    "RS-427": {
+      "tier": "complexity-promoted"
+    },
+    "RS-428": {
+      "tier": "complexity-promoted"
+    },
+    "RS-429": {
+      "tier": "complexity-promoted"
+    },
+    "RS-430": {
+      "tier": "complexity-promoted"
+    },
+    "RS-431": {
+      "tier": "complexity-promoted"
+    },
+    "RS-432": {
+      "tier": "complexity-promoted"
+    },
+    "RS-433": {
+      "tier": "complexity-promoted"
+    },
+    "RS-434": {
+      "tier": "complexity-promoted"
+    },
+    "RS-435": {
+      "tier": "complexity-promoted"
+    },
+    "RS-436": {
+      "tier": "complexity-promoted"
+    },
+    "RS-437": {
+      "tier": "complexity-promoted"
+    },
+    "RS-439": {
+      "tier": "complexity-promoted"
+    },
+    "RS-441": {
+      "tier": "complexity-promoted"
+    },
+    "RS-442": {
+      "tier": "complexity-promoted"
+    },
+    "RS-443": {
+      "tier": "complexity-promoted"
+    },
+    "RS-444": {
+      "tier": "complexity-promoted"
+    },
+    "RS-445": {
+      "tier": "complexity-promoted"
+    },
+    "RS-446": {
+      "tier": "complexity-promoted"
+    },
+    "RS-447": {
+      "tier": "complexity-promoted"
+    },
+    "RS-448": {
+      "tier": "complexity-promoted"
+    },
+    "RS-449": {
+      "tier": "complexity-promoted"
+    },
+    "RS-450": {
+      "tier": "complexity-promoted"
+    },
+    "RS-451": {
+      "tier": "complexity-promoted"
+    },
+    "RS-452": {
+      "tier": "complexity-promoted"
+    },
+    "RS-453": {
+      "tier": "complexity-promoted"
+    },
+    "RS-454": {
+      "tier": "complexity-promoted"
+    },
+    "RS-455": {
+      "tier": "complexity-promoted"
+    },
+    "RS-456": {
+      "tier": "complexity-promoted"
+    },
+    "RS-457": {
+      "tier": "complexity-promoted"
+    },
+    "RS-458": {
+      "tier": "complexity-promoted"
+    },
+    "RS-459": {
+      "tier": "complexity-promoted"
+    },
+    "RS-460": {
+      "tier": "complexity-promoted"
+    },
+    "RS-461": {
+      "tier": "complexity-promoted"
+    },
+    "RS-462": {
+      "tier": "complexity-promoted"
+    },
+    "RS-463": {
+      "tier": "complexity-promoted"
+    },
+    "RS-464": {
+      "tier": "complexity-promoted"
+    },
+    "RS-465": {
+      "tier": "complexity-promoted"
+    },
+    "RS-467": {
+      "tier": "complexity-promoted"
+    },
+    "RS-468": {
+      "tier": "complexity-promoted"
+    },
+    "RS-469": {
+      "tier": "complexity-promoted"
+    },
+    "RS-470": {
+      "tier": "complexity-promoted"
+    },
+    "RS-471": {
+      "tier": "complexity-promoted"
+    },
+    "RS-472": {
+      "tier": "complexity-promoted"
+    },
+    "RS-473": {
+      "tier": "complexity-promoted"
+    },
+    "RS-474": {
+      "tier": "complexity-promoted"
+    },
+    "RS-475": {
+      "tier": "complexity-promoted"
+    },
+    "RS-476": {
+      "tier": "complexity-promoted"
+    },
+    "RS-477": {
+      "tier": "complexity-promoted"
+    },
+    "RS-478": {
+      "tier": "complexity-promoted"
+    },
+    "RS-479": {
+      "tier": "complexity-promoted"
+    },
+    "RS-480": {
+      "tier": "complexity-promoted"
+    },
+    "RS-481": {
+      "tier": "complexity-promoted"
+    },
+    "RS-482": {
+      "tier": "complexity-promoted"
+    },
+    "RS-483": {
+      "tier": "complexity-promoted"
+    },
+    "RS-484": {
+      "tier": "complexity-promoted"
+    },
+    "RS-485": {
+      "tier": "complexity-promoted"
+    },
+    "RS-486": {
+      "tier": "complexity-promoted"
+    },
+    "RS-487": {
+      "tier": "complexity-promoted"
+    },
+    "RS-488": {
+      "tier": "complexity-promoted"
+    },
+    "RS-489": {
+      "tier": "complexity-promoted"
+    },
+    "RS-490": {
+      "tier": "complexity-promoted"
+    },
+    "RS-491": {
+      "tier": "complexity-promoted"
+    },
+    "RS-492": {
+      "tier": "complexity-promoted"
+    },
+    "RS-493": {
+      "tier": "complexity-promoted"
+    },
+    "RS-494": {
+      "tier": "complexity-promoted"
+    },
+    "RS-495": {
+      "tier": "complexity-promoted"
+    },
+    "RS-496": {
+      "tier": "complexity-promoted"
+    },
+    "RS-497": {
+      "tier": "complexity-promoted"
+    },
+    "RS-498": {
+      "tier": "complexity-promoted"
+    },
+    "RS-501": {
+      "tier": "complexity-promoted"
+    },
+    "RS-502": {
+      "tier": "complexity-promoted"
+    },
+    "RS-503": {
+      "tier": "complexity-promoted"
+    },
+    "RS-505": {
+      "tier": "complexity-promoted"
+    },
+    "RS-506": {
+      "tier": "complexity-promoted"
+    },
+    "RS-507": {
+      "tier": "complexity-promoted"
+    },
+    "RS-508": {
+      "tier": "complexity-promoted"
+    },
+    "RS-509": {
+      "tier": "complexity-promoted"
+    },
+    "RS-510": {
+      "tier": "complexity-promoted"
+    },
+    "RS-511": {
+      "tier": "complexity-promoted"
+    },
+    "RS-512": {
+      "tier": "complexity-promoted"
+    },
+    "RS-513": {
+      "tier": "complexity-promoted"
+    },
+    "RS-514": {
+      "tier": "complexity-promoted"
+    },
+    "RS-515": {
+      "tier": "complexity-promoted"
+    },
+    "RS-516": {
+      "tier": "complexity-promoted"
+    },
+    "RS-517": {
+      "tier": "complexity-promoted"
+    },
+    "RS-519": {
+      "tier": "complexity-promoted"
+    },
+    "RS-521": {
+      "tier": "complexity-promoted"
+    },
+    "RS-522": {
+      "tier": "complexity-promoted"
+    },
+    "RS-524": {
+      "tier": "complexity-promoted"
+    },
+    "RS-525": {
+      "tier": "complexity-promoted"
+    },
+    "RS-527": {
+      "tier": "complexity-promoted"
+    },
+    "RS-529": {
+      "tier": "complexity-promoted"
+    },
+    "RS-530": {
+      "tier": "complexity-promoted"
+    },
+    "RS-531": {
+      "tier": "complexity-promoted"
+    },
+    "RS-532": {
+      "tier": "complexity-promoted"
+    },
+    "RS-533": {
+      "tier": "complexity-promoted"
+    },
+    "RS-534": {
+      "tier": "complexity-promoted"
+    },
+    "RS-536": {
+      "tier": "complexity-promoted"
+    },
+    "RS-537": {
+      "tier": "complexity-promoted"
+    },
+    "RS-539": {
+      "tier": "complexity-promoted"
+    },
+    "RS-540": {
+      "tier": "complexity-promoted"
+    },
+    "RS-541": {
+      "tier": "complexity-promoted"
+    },
+    "RS-542": {
+      "tier": "complexity-promoted"
+    },
+    "RS-543": {
+      "tier": "complexity-promoted"
+    },
+    "RS-545": {
+      "tier": "complexity-promoted"
+    },
+    "RS-546": {
+      "tier": "complexity-promoted"
+    },
+    "RS-550": {
+      "tier": "complexity-promoted"
+    },
+    "RS-551": {
+      "tier": "complexity-promoted"
+    },
+    "RS-552": {
+      "tier": "complexity-promoted"
+    },
+    "RS-553": {
+      "tier": "complexity-promoted"
+    },
+    "RS-554": {
+      "tier": "complexity-promoted"
+    },
+    "RS-555": {
+      "tier": "complexity-promoted"
+    },
+    "RS-556": {
+      "tier": "complexity-promoted"
+    },
+    "RS-557": {
+      "tier": "complexity-promoted"
+    },
+    "RS-558": {
+      "tier": "complexity-promoted"
+    },
+    "RS-559": {
+      "tier": "complexity-promoted"
+    },
+    "RS-560": {
+      "tier": "complexity-promoted"
+    },
+    "RS-562": {
+      "tier": "complexity-promoted"
+    },
+    "RS-563": {
+      "tier": "complexity-promoted"
+    },
+    "RS-565": {
+      "tier": "complexity-promoted"
+    },
+    "RS-566": {
+      "tier": "complexity-promoted"
+    },
+    "RS-567": {
+      "tier": "complexity-promoted"
+    },
+    "RS-568": {
+      "tier": "complexity-promoted"
+    },
+    "RS-569": {
+      "tier": "complexity-promoted"
+    },
+    "RS-570": {
+      "tier": "complexity-promoted"
+    },
+    "RS-571": {
+      "tier": "complexity-promoted"
+    },
+    "RS-572": {
+      "tier": "complexity-promoted"
+    },
+    "RS-574": {
+      "tier": "complexity-promoted"
+    },
+    "RS-575": {
+      "tier": "complexity-promoted"
+    },
+    "RS-576": {
+      "tier": "complexity-promoted"
+    },
+    "RS-578": {
+      "tier": "complexity-promoted"
+    },
+    "RS-579": {
+      "tier": "complexity-promoted"
+    },
+    "RS-580": {
+      "tier": "complexity-promoted"
+    },
+    "RS-581": {
+      "tier": "complexity-promoted"
+    },
+    "RS-582": {
+      "tier": "complexity-promoted"
+    },
+    "RS-583": {
+      "tier": "complexity-promoted"
+    },
+    "RS-584": {
+      "tier": "complexity-promoted"
+    },
+    "RS-585": {
+      "tier": "complexity-promoted"
+    },
+    "RS-586": {
+      "tier": "complexity-promoted"
+    },
+    "RS-587": {
+      "tier": "complexity-promoted"
+    },
+    "RS-588": {
+      "tier": "complexity-promoted"
+    },
+    "RS-589": {
+      "tier": "complexity-promoted"
+    },
+    "RS-590": {
+      "tier": "complexity-promoted"
+    },
+    "RS-591": {
+      "tier": "complexity-promoted"
+    },
+    "RS-592": {
+      "tier": "complexity-promoted"
+    },
+    "RS-593": {
+      "tier": "complexity-promoted"
+    },
+    "RS-594": {
+      "tier": "complexity-promoted"
+    },
+    "RS-595": {
+      "tier": "complexity-promoted"
+    },
+    "RS-596": {
+      "tier": "complexity-promoted"
+    },
+    "RS-597": {
+      "tier": "complexity-promoted"
+    },
+    "RS-598": {
+      "tier": "complexity-promoted"
+    },
+    "RS-599": {
+      "tier": "complexity-promoted"
+    },
+    "RS-600": {
+      "tier": "complexity-promoted"
+    },
+    "RS-601": {
+      "tier": "complexity-promoted"
+    },
+    "RS-602": {
+      "tier": "complexity-promoted"
+    },
+    "RS-603": {
+      "tier": "complexity-promoted"
+    },
+    "RS-604": {
+      "tier": "complexity-promoted"
+    },
+    "RS-605": {
+      "tier": "complexity-promoted"
+    },
+    "RS-606": {
+      "tier": "complexity-promoted"
+    },
+    "RS-608": {
+      "tier": "complexity-promoted"
+    },
+    "RS-609": {
+      "tier": "complexity-promoted"
+    },
+    "RS-610": {
+      "tier": "complexity-promoted"
+    },
+    "RS-611": {
+      "tier": "complexity-promoted"
+    },
+    "RS-612": {
+      "tier": "complexity-promoted"
+    },
+    "RS-613": {
+      "tier": "complexity-promoted"
+    },
+    "RS-614": {
+      "tier": "complexity-promoted"
+    },
+    "RS-615": {
+      "tier": "complexity-promoted"
+    },
+    "RS-616": {
+      "tier": "complexity-promoted"
+    },
+    "RS-617": {
+      "tier": "complexity-promoted"
+    },
+    "RS-618": {
+      "tier": "complexity-promoted"
+    },
+    "RS-619": {
+      "tier": "complexity-promoted"
+    },
+    "RS-620": {
+      "tier": "complexity-promoted"
+    },
+    "RS-621": {
+      "tier": "complexity-promoted"
+    },
+    "RS-622": {
+      "tier": "complexity-promoted"
+    },
+    "RS-623": {
+      "tier": "complexity-promoted"
+    },
+    "RS-624": {
+      "tier": "complexity-promoted"
+    },
+    "RS-625": {
+      "tier": "complexity-promoted"
+    },
+    "RS-627": {
+      "tier": "complexity-promoted"
+    },
+    "RS-628": {
+      "tier": "complexity-promoted"
+    },
+    "RS-629": {
+      "tier": "complexity-promoted"
+    },
+    "RS-630": {
+      "tier": "complexity-promoted"
+    },
+    "RS-631": {
+      "tier": "complexity-promoted"
+    },
+    "RS-633": {
+      "tier": "complexity-promoted"
+    },
+    "RS-634": {
+      "tier": "complexity-promoted"
+    },
+    "RS-635": {
+      "tier": "complexity-promoted"
+    },
+    "RS-636": {
+      "tier": "complexity-promoted"
+    },
+    "RS-637": {
+      "tier": "complexity-promoted"
+    },
+    "RS-638": {
+      "tier": "complexity-promoted"
+    },
+    "RS-639": {
+      "tier": "complexity-promoted"
+    },
+    "RS-640": {
+      "tier": "complexity-promoted"
+    },
+    "RS-641": {
+      "tier": "complexity-promoted"
+    },
+    "RS-644": {
+      "tier": "complexity-promoted"
+    },
+    "RS-645": {
+      "tier": "complexity-promoted"
+    },
+    "RS-646": {
+      "tier": "complexity-promoted"
+    },
+    "RS-648": {
+      "tier": "complexity-promoted"
+    },
+    "RS-649": {
+      "tier": "complexity-promoted"
+    },
+    "RS-650": {
+      "tier": "complexity-promoted"
+    },
+    "RS-651": {
+      "tier": "complexity-promoted"
+    },
+    "RS-653": {
+      "tier": "complexity-promoted"
+    },
+    "RS-654": {
+      "tier": "complexity-promoted"
+    },
+    "RS-655": {
+      "tier": "complexity-promoted"
+    },
+    "RS-656": {
+      "tier": "complexity-promoted"
+    },
+    "RS-657": {
+      "tier": "complexity-promoted"
+    },
+    "RS-658": {
+      "tier": "complexity-promoted"
+    },
+    "RS-659": {
+      "tier": "complexity-promoted"
+    },
+    "RS-660": {
+      "tier": "complexity-promoted"
+    },
+    "RS-661": {
+      "tier": "complexity-promoted"
+    },
+    "RS-662": {
+      "tier": "complexity-promoted"
+    },
+    "RS-663": {
+      "tier": "complexity-promoted"
+    },
+    "RS-664": {
+      "tier": "complexity-promoted"
+    },
+    "RS-665": {
+      "tier": "complexity-promoted"
+    },
+    "RS-666": {
+      "tier": "complexity-promoted"
+    },
+    "RS-667": {
+      "tier": "complexity-promoted"
+    },
+    "RS-668": {
+      "tier": "complexity-promoted"
+    },
+    "RS-669": {
+      "tier": "complexity-promoted"
+    },
+    "RS-670": {
+      "tier": "complexity-promoted"
+    },
+    "RS-671": {
+      "tier": "complexity-promoted"
+    },
+    "RS-672": {
+      "tier": "complexity-promoted"
+    },
+    "RS-673": {
+      "tier": "complexity-promoted"
+    },
+    "RS-675": {
+      "tier": "complexity-promoted"
+    },
+    "RS-676": {
+      "tier": "complexity-promoted"
+    },
+    "RS-678": {
+      "tier": "complexity-promoted"
+    },
+    "RS-679": {
+      "tier": "complexity-promoted"
+    },
+    "RS-681": {
+      "tier": "complexity-promoted"
+    },
+    "RS-684": {
+      "tier": "complexity-promoted"
+    },
+    "RS-685": {
+      "tier": "complexity-promoted"
+    },
+    "RS-686": {
+      "tier": "complexity-promoted"
+    },
+    "RS-687": {
+      "tier": "complexity-promoted"
+    },
+    "RS-690": {
+      "tier": "complexity-promoted"
+    },
+    "SK-001": {
+      "tier": "complexity-promoted"
+    },
+    "SK-003": {
+      "tier": "complexity-promoted"
+    },
+    "SK-004": {
+      "tier": "complexity-promoted"
+    },
+    "SR-003": {
+      "tier": "complexity-promoted"
+    },
+    "SR-004": {
+      "tier": "complexity-promoted"
+    },
+    "SR-005": {
+      "tier": "complexity-promoted"
+    },
+    "SR-006": {
+      "tier": "complexity-promoted"
+    },
+    "SR-007": {
+      "tier": "complexity-promoted"
+    },
+    "SX-001": {
+      "tier": "complexity-promoted"
+    },
+    "SX-003": {
+      "tier": "complexity-promoted"
+    },
+    "SX-004": {
+      "tier": "complexity-promoted"
+    },
+    "SX-006": {
+      "tier": "complexity-promoted"
+    },
+    "SX-007": {
+      "tier": "complexity-promoted"
+    },
+    "SX-009": {
+      "tier": "complexity-promoted"
+    },
+    "SX-010": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-002": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-003": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-004": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-005": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-006": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-008": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-009": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-010": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-011": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-012": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-013": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-014": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-015": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-016": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-017": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-018": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-019": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-020": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-021": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-022": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-023": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-024": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-025": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-027": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-031": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-033": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-034": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-035": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-036": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-037": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-038": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-039": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-040": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-042": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-045": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-046": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-047": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-048": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-049": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-051": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-052": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-053": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-054": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-055": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-056": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-057": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-058": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-059": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-060": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-061": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-063": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-065": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-066": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-067": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-068": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-070": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-071": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-072": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-073": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-077": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-079": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-080": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-081": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-082": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-083": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-084": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-085": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-086": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-087": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-088": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-089": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-090": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-091": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-092": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-093": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-094": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-096": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-097": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-098": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-099": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-001": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-002": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-003": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-004": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-005": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-006": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-007": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-008": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-009": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-010": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-011": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-012": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-013": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-014": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-015": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-016": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-017": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-018": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-019": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-022": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-024": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-025": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-026": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-027": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-028": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-029": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-031": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-032": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-033": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-034": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-035": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-036": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-037": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-038": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-039": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-041": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-042": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-045": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-047": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-048": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-051": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-053": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-054": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-055": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-056": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-057": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-058": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-059": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-060": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-061": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-064": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-065": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-067": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-068": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-069": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-070": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-071": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-072": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-074": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-075": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-076": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-077": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-078": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-079": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-080": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-081": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-082": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-083": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-084": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-085": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-086": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-087": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-088": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-090": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-093": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-096": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-097": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-099": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-100": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-101": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-102": {
+      "tier": "complexity-promoted"
+    },
+    "XG2-103": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-002": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-003": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-006": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-007": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-008": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-009": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-010": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-011": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-012": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-013": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-014": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-015": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-016": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-017": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-018": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-019": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-020": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-024": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-025": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-026": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-027": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-028": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-029": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-030": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-032": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-033": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-034": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-035": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-036": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-037": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-038": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-039": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-043": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-044": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-045": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-046": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-047": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-050": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-051": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-052": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-053": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-054": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-055": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-056": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-057": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-058": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-060": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-061": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-063": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-064": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-065": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-066": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-068": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-069": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-071": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-072": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-073": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-074": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-075": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-077": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-078": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-079": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-080": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-081": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-083": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-087": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-091": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-092": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-093": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-094": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-095": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-096": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-097": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-099": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-103": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-001": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-002": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-004": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-005": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-007": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-008": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-009": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-010": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-011": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-012": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-013": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-014": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-015": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-016": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-017": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-018": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-019": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-020": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-021": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-022": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-023": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-025": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-026": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-027": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-029": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-031": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-032": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-033": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-034": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-035": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-036": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-037": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-038": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-039": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-040": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-042": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-043": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-045": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-048": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-049": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-050": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-051": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-056": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-057": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-058": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-059": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-060": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-061": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-062": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-063": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-064": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-065": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-066": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-068": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-069": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-070": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-071": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-072": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-073": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-074": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-075": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-076": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-077": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-078": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-079": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-082": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-083": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-084": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-085": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-086": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-087": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-088": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-089": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-090": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-091": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-092": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-093": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-094": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-095": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-096": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-097": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-098": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-101": {
+      "tier": "complexity-promoted"
+    },
+    "XG4-102": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-001": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-002": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-003": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-004": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-006": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-007": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-008": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-009": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-011": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-012": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-018": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-019": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-020": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-021": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-022": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-023": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-024": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-025": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-026": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-028": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-029": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-031": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-032": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-033": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-037": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-038": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-039": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-042": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-043": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-045": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-046": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-051": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-052": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-053": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-054": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-055": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-056": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-057": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-059": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-060": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-061": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-062": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-063": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-064": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-066": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-067": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-068": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-069": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-070": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-072": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-073": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-074": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-075": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-076": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-077": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-078": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-079": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-080": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-081": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-082": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-083": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-084": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-085": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-086": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-087": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-088": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-089": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-090": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-091": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-092": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-094": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-095": {
+      "tier": "complexity-promoted"
+    },
+    "XG5-096": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-001": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-003": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-005": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-006": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-007": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-009": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-010": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-011": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-012": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-013": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-014": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-016": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-017": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-018": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-019": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-020": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-021": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-022": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-023": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-025": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-027": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-028": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-029": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-030": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-031": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-032": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-033": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-034": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-035": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-036": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-037": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-038": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-040": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-041": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-042": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-044": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-045": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-046": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-047": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-048": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-049": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-050": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-052": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-053": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-055": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-056": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-057": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-058": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-059": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-060": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-061": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-062": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-063": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-064": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-065": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-001": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-002": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-003": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-004": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-005": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-007": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-008": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-009": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-010": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-011": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-012": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-014": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-015": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-017": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-019": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-020": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-021": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-022": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-023": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-024": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-025": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-027": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-028": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-029": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-031": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-032": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-034": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-035": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-036": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-037": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-038": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-039": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-040": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-041": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-042": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-043": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-044": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-045": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-047": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-048": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-049": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-050": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-051": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-052": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-053": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-055": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-056": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-057": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-058": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-059": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-060": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-061": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-062": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-063": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-064": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-065": {
+      "tier": "complexity-promoted"
+    },
+    "XG7-068": {
+      "tier": "complexity-promoted"
+    },
+    "XP-001": {
+      "tier": "complexity-promoted"
+    },
+    "XP-002": {
+      "tier": "complexity-promoted"
+    },
+    "XP-003": {
+      "tier": "complexity-promoted"
+    },
+    "XP-004": {
+      "tier": "complexity-promoted"
+    },
+    "XP-005": {
+      "tier": "complexity-promoted"
+    },
+    "XP-007": {
+      "tier": "complexity-promoted"
+    },
+    "XP-008": {
+      "tier": "complexity-promoted"
+    },
+    "XP-010": {
+      "tier": "complexity-promoted"
+    },
+    "XP-011": {
+      "tier": "complexity-promoted"
+    },
+    "XP-012": {
+      "tier": "complexity-promoted"
+    },
+    "XP-015": {
+      "tier": "complexity-promoted"
+    },
+    "XP-017": {
+      "tier": "complexity-promoted"
+    },
+    "XP-019": {
+      "tier": "complexity-promoted"
+    },
+    "XP-020": {
+      "tier": "complexity-promoted"
+    },
+    "XP-021": {
+      "tier": "complexity-promoted"
+    },
+    "XP-022": {
+      "tier": "complexity-promoted"
+    },
+    "XP-023": {
+      "tier": "complexity-promoted"
+    },
+    "XP-025": {
+      "tier": "complexity-promoted"
+    },
+    "XP-026": {
+      "tier": "complexity-promoted"
+    },
+    "XP-028": {
+      "tier": "complexity-promoted"
+    },
+    "XP-029": {
+      "tier": "complexity-promoted"
+    },
+    "XP-031": {
+      "tier": "complexity-promoted"
+    },
+    "XP-032": {
+      "tier": "complexity-promoted"
+    }
+  }
+}

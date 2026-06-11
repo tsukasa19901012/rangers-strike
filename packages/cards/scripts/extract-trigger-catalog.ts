@@ -1,9 +1,7 @@
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import legend1UnitEffects from "../src/legend1/unitEffects.json";
-import legend2UnitEffects from "../src/legend2/unitEffects.json";
-import legend3UnitEffects from "../src/legend3/unitEffects.json";
+import { loadCoreRegistryUnitEffects } from "./shared/registryUnitEffects";
 import { getCardEffect } from "../src/effects";
 import { dedupeEffectTexts, splitEffectSegments } from "../src/pipeline/parseWiki";
 import {
@@ -24,11 +22,7 @@ type TriggerStats = {
   sources: Set<"wiki" | "unit_effects" | "operations">;
 };
 
-const UNIT_EFFECTS = {
-  ...(legend1UnitEffects as Record<string, UnitEffectBlock>),
-  ...(legend2UnitEffects as Record<string, UnitEffectBlock>),
-  ...(legend3UnitEffects as Record<string, UnitEffectBlock>),
-};
+const UNIT_EFFECTS = loadCoreRegistryUnitEffects();
 
 type UnitEffectBlock = {
   namedEffects?: Array<{
@@ -270,7 +264,7 @@ function renderMarkdown(
     "## 集計方法",
     "",
     "1. **Wiki 全文スキャン** — `docs/wiki/cards/*.md` の効果文をセグメント分割し、正規表現で Trigger 推論",
-    "2. **unitEffects.json** — Legend 1–3 の `namedEffects[].trigger.type` を加算",
+    "2. **core registry** — Legend 1–3 の `namedEffects[].trigger.type` を加算",
     "3. **operations** — `effects.ts` のオペ `kind`（instant→rush, counter, permanent→resident）",
     "",
     "同一カードが複数 Trigger に該当する場合あり。効果数はセグメント／named 効果の件数。",

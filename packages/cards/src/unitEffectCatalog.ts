@@ -1,20 +1,12 @@
+import { loadCards } from "./dsl/loader";
 import type { CardDefinition } from "./schema";
-import legend1UnitEffectsJson from "./legend1/unitEffects.json";
-import legend2UnitEffectsJson from "./legend2/unitEffects.json";
-import legend3UnitEffectsJson from "./legend3/unitEffects.json";
-import type { UnitEffectBlock } from "./unitEffects";
 import {
   getConditionalNamedEffect,
   getEnterBattleNamedEffect,
   getOnAttackNamedEffect,
   getOnRushNamedEffect,
+  getUnitEffectBlock,
 } from "./unitEffects";
-
-const UNIT_EFFECTS = {
-  ...(legend1UnitEffectsJson as Record<string, UnitEffectBlock>),
-  ...(legend2UnitEffectsJson as Record<string, UnitEffectBlock>),
-  ...(legend3UnitEffectsJson as Record<string, UnitEffectBlock>),
-};
 
 export type WiredUnitEffect = {
   cardId: string;
@@ -150,6 +142,18 @@ export function isUnitEffectImplemented(effectId: string): boolean {
 
 type TriggerFilter = "on_rush" | "conditional" | "on_attack" | "enter_battle";
 
+function forEachLookupBlock(
+  lookup: (cardId: string) => CardDefinition | undefined,
+  fn: (cardId: string, block: NonNullable<ReturnType<typeof getUnitEffectBlock>>) => void,
+): void {
+  for (const doc of loadCards("full-playable")) {
+    if (!lookup(doc.id)) continue;
+    const block = getUnitEffectBlock(doc.id);
+    if (!block) continue;
+    fn(doc.id, block);
+  }
+}
+
 function listByTrigger(
   triggerType: TriggerFilter,
   lookup: (cardId: string) => CardDefinition | undefined,
@@ -157,9 +161,7 @@ function listByTrigger(
 ): WiredUnitEffect[] {
   const results: WiredUnitEffect[] = [];
 
-  for (const [cardId, block] of Object.entries(UNIT_EFFECTS)) {
-    if (!lookup(cardId)) continue;
-
+  forEachLookupBlock(lookup, (cardId, block) => {
     for (const named of block.namedEffects) {
       if (named.trigger.type !== triggerType) continue;
       if (!effectIdSet.has(named.effectId)) continue;
@@ -171,7 +173,7 @@ function listByTrigger(
         triggerType,
       });
     }
-  }
+  });
 
   return results.sort((a, b) => a.cardId.localeCompare(b.cardId));
 }
@@ -181,9 +183,7 @@ function listPassiveEffects(
 ): WiredUnitEffect[] {
   const results: WiredUnitEffect[] = [];
 
-  for (const [cardId, block] of Object.entries(UNIT_EFFECTS)) {
-    if (!lookup(cardId)) continue;
-
+  forEachLookupBlock(lookup, (cardId, block) => {
     for (const named of block.namedEffects) {
       if (!PASSIVE_SET.has(named.effectId)) continue;
       results.push({
@@ -193,7 +193,7 @@ function listPassiveEffects(
         triggerType: "passive",
       });
     }
-  }
+  });
 
   return results.sort((a, b) => a.cardId.localeCompare(b.cardId));
 }

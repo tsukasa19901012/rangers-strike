@@ -1,0 +1,56 @@
+{
+  "id": "RS-034",
+  "name": "大獣神",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "SR",
+  "expansion": "legend1",
+  "powerCost": "8+",
+  "bp": 17000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―守護獣ティラノザウルス＋守護獣ジュウマンモス＋守護獣トリケラトプス＋守護獣サーベルタイガー＋守護獣プテラノドン【守護獣の神】これがバトルエリアにあるとき、これ以外の「ワイルドビースト」のユニットすべてはBP＋2000される。",
+  "rawText": "合体―守護獣ティラノザウルス＋守護獣ジュウマンモス＋守護獣トリケラトプス＋守護獣サーベルタイガー＋守護獣プテラノドン【守護獣の神】これがバトルエリアにあるとき、これ以外の「ワイルドビースト」のユニットすべてはBP＋2000される。",
+  "features": [
+    "恐竜",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend1/RS-034.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-034.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―守護獣ティラノザウルス＋守護獣ジュウマンモス＋守護獣トリケラトプス＋守護獣サーベルタイガー＋守護獣プテラノドン",
+      "partnerCardIds": [
+        "RS-035",
+        "RS-036",
+        "RS-037",
+        "RS-038",
+        "RS-039"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "guardian_god",
+      "name": "守護獣の神",
+      "text": "これがバトルエリアにあるとき、これ以外の「ワイルドビースト」のユニットすべてはBP＋2000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

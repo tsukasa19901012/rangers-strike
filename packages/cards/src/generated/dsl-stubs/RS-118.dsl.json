@@ -1,0 +1,44 @@
+{
+  "id": "RS-118",
+  "name": "ゴーゴーダンプ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "5+",
+  "bp": 5000,
+  "size": "M",
+  "text": "【プレシャスの護り手】自軍バトルフェイズ中、これを自軍バトルエリアに出すとき、自軍バトルエリアのSユニット1体と置きかえて出してもよい。そうしたとき、これはアタックできず、置きかえたSユニットはこのターン、再びバトルエリアに出られない。",
+  "rawText": "【プレシャスの護り手】自軍バトルフェイズ中、これを自軍バトルエリアに出すとき、自軍バトルエリアのSユニット1体と置きかえて出してもよい。そうしたとき、これはアタックできず、置きかえたSユニットはこのターン、再びバトルエリアに出られない。",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend2/RS-118.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-118.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "precious_guardian",
+      "name": "プレシャスの護り手",
+      "text": "自軍バトルフェイズ中、これを自軍バトルエリアに出すとき、自軍バトルエリアのSユニット1体と置きかえて出してもよい。そうしたとき、これはアタックできず、置きかえたSユニットはこのターン、再びバトルエリアに出られない。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "RS-121",
+  "name": "ゴーゴードーザー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "4+",
+  "bp": 7000,
+  "size": "M",
+  "text": "【遺跡発掘】これがバトルエリアに出たとき、相手は自分自身のコマンドゾーンからSユニットかMユニットのカードを1枚選び、ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない。",
+  "rawText": "【遺跡発掘】これがバトルエリアに出たとき、相手は自分自身のコマンドゾーンからSユニットかMユニットのカードを1枚選び、ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない。",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend2/RS-121.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-121.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "ruin_excavation",
+      "name": "遺跡発掘",
+      "text": "これがバトルエリアに出たとき、相手は自分自身のコマンドゾーンからSユニットかMユニットのカードを1枚選び、ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

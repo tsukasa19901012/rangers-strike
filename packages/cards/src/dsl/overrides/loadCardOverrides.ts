@@ -1,6 +1,6 @@
 import sk000 from "./SK-000.json";
 import type { CardDocument } from "../types";
-import { mergeCardDocument } from "../loader";
+import { mergeCardDocument } from "../cardDocumentMerge";
 
 const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   "SK-000": sk000 as Partial<CardDocument>,

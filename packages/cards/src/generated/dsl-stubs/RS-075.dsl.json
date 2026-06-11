@@ -1,0 +1,44 @@
+{
+  "id": "RS-075",
+  "name": "ブルバルカン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "5+",
+  "bp": 5000,
+  "size": "M",
+  "text": "【救助活動】これをラッシュしたとき、自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。",
+  "rawText": "【救助活動】これをラッシュしたとき、自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend2/RS-075.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-075.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "rescue_activity",
+      "name": "救助活動",
+      "text": "これをラッシュしたとき、自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

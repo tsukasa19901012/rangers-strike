@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import legend1UnitEffects from "./legend1/unitEffects.json";
-import legend2UnitEffects from "./legend2/unitEffects.json";
+import { corePlayableCatalog } from "./catalog/unifiedCatalog";
 import {
   findNcNamedEffect,
   getBattleEntryHoldCount,
@@ -13,8 +12,6 @@ import {
   listZordFusionPartnerIds,
 } from "./unitEffects";
 import { getNumberComboEffect } from "./comboEffects";
-
-const ALL_BLOCKS = { ...legend1UnitEffects, ...legend2UnitEffects };
 
 describe("effect taxonomy (Legend1 units)", () => {
   it("parses RS-066 as named effect 遺跡調査 with NC trigger", () => {
@@ -137,13 +134,15 @@ describe("effect taxonomy (Legend1 units)", () => {
 });
 
 describe("unnamedText rule coverage", () => {
-  it("assigns a rule id to every note line in unitEffects.json", () => {
+  it("assigns a rule id to every note line in core registry blocks", () => {
     const missing: string[] = [];
-    for (const [cardId, block] of Object.entries(ALL_BLOCKS)) {
+    for (const card of corePlayableCatalog.cards) {
+      const block = getUnitEffectBlock(card.id);
+      if (!block) continue;
       for (const entry of block.unnamedText) {
         if (entry.kind !== "note") continue;
         if (!entry.rule) {
-          missing.push(`${cardId}: ${entry.text}`);
+          missing.push(`${card.id}: ${entry.text}`);
         }
       }
     }

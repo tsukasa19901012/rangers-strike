@@ -1,0 +1,43 @@
+{
+  "id": "RS-161",
+  "name": "ガオイエロー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 3,
+  "bp": 3000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 2,
+  "text": "【ノーブルスラッシュ】「SP1」",
+  "rawText": "【ノーブルスラッシュ】「SP1」",
+  "features": [
+    "イエロー",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-161.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-161.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "grant_sp1",
+      "name": "ノーブルスラッシュ",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

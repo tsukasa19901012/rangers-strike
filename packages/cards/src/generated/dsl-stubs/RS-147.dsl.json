@@ -1,0 +1,53 @@
+{
+  "id": "RS-147",
+  "name": "モアローダー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "4+",
+  "bp": 5000,
+  "size": "M",
+  "text": "※これは「ダッシュレオン」からコンビネーションしなければバトルエリアに出られない。【超力モアキャノン】これが自軍ラッシュエリアにあるとき、「モアローダー」以外の「MA」の自軍Mユニットは、敵軍ターン中、BP+1000される。",
+  "rawText": "※これは「ダッシュレオン」からコンビネーションしなければバトルエリアに出られない。【超力モアキャノン】これが自軍ラッシュエリアにあるとき、「モアローダー」以外の「MA」の自軍Mユニットは、敵軍ターン中、BP+1000される。",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend3/RS-147.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-147.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを1体捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは「ダッシュレオン」からコンビネーションしなければバトルエリアに出られない",
+      "rule": "battle_entry_combo_from",
+      "partnerCardIds": [
+        "RS-145"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "super_moa_cannon",
+      "name": "超力モアキャノン",
+      "text": "これが自軍ラッシュエリアにあるとき、「モアローダー」以外の「MA」の自軍Mユニットは、敵軍ターン中、BP+1000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

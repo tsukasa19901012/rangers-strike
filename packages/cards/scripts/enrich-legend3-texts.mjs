@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * atwiki wikibody から legend3/cards.json を更新（全文 + メタデータ）。
+ * atwiki wikibody から core-playable catalog の legend3 カードを更新（全文 + メタデータ）。
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -15,7 +15,7 @@ import { buildLegend3Card } from "./legend3CardBuilder.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(__dirname, "..");
 const pagesPath = path.join(packageRoot, "src/legend3/atwiki-pages.json");
-const cardsPath = path.join(packageRoot, "src/legend3/cards.json");
+const cardsPath = path.join(packageRoot, "src/generated/catalog/core-playable/cards.json");
 
 async function main() {
   const pageMap = JSON.parse(await readFile(pagesPath, "utf8"));
@@ -23,7 +23,8 @@ async function main() {
   const missing = [];
 
   const refreshed = [];
-  for (const existing of catalog.cards) {
+  const legend3Cards = catalog.cards.filter((card) => card.expansion === "legend3");
+  for (const existing of legend3Cards) {
     const entry = pageMap[existing.id];
     if (!entry) {
       missing.push(`${existing.id}:no-page`);
@@ -49,7 +50,8 @@ async function main() {
     await new Promise((r) => setTimeout(r, 60));
   }
 
-  catalog.cards = refreshed;
+  const refreshedById = new Map(refreshed.map((card) => [card.id, card]));
+  catalog.cards = catalog.cards.map((card) => refreshedById.get(card.id) ?? card);
   await writeFile(cardsPath, `${JSON.stringify(catalog, null, 2)}\n`);
 
   if (missing.length > 0) {

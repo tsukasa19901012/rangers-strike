@@ -7,7 +7,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { allCardsCatalog } from "../src/catalog";
+import { listCoreCardIds } from "../src/catalog/unifiedCatalog";
 import { inferCategoryFromWikiLabels } from "../src/pipeline/metaMaps";
 import { parseWikiMarkdown } from "../src/pipeline/parseWiki";
 import type { CardDefinition } from "../src/schema";
@@ -52,7 +52,7 @@ function inferType(statusKind?: string): CardDefinition["type"] {
 }
 
 function main(): void {
-  const catalogIds = new Set(allCardsCatalog.cards.map((c) => c.id));
+  const catalogIds = listCoreCardIds();
   const classification = JSON.parse(
     readFileSync(classificationPath, "utf8"),
   ) as ClassificationFile;

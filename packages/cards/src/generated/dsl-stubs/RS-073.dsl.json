@@ -1,0 +1,53 @@
+{
+  "id": "RS-073",
+  "name": "サンバルカンロボ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "6+",
+  "bp": 9000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―コスモバルカン＋ブルバルカン 【バルシールド】自軍ダメージが6点のとき、このユニットは次の能力を得る⇒「SP2」",
+  "rawText": "合体―コスモバルカン＋ブルバルカン 【バルシールド】自軍ダメージが6点のとき、このユニットは次の能力を得る⇒「SP2」",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend2/RS-073.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-073.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―コスモバルカン＋ブルバルカン",
+      "partnerCardIds": [
+        "RS-074",
+        "RS-075"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "val_shield",
+      "name": "バルシールド",
+      "text": "自軍ダメージが6点のとき、このユニットは次の能力を得る⇒「SP2」",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

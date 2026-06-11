@@ -1,0 +1,41 @@
+{
+  "id": "RS-130",
+  "name": "レッドワン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 4,
+  "bp": 3000,
+  "sp": "special",
+  "size": "S",
+  "comboNumber": 4,
+  "text": "【ファイヤーソード】「SP1」常駐しているオペレーションを1つ選んで、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "【ファイヤーソード】「SP1」常駐しているオペレーションを1つ選んで、持ち主のパワーゾーンに送ってもよい。",
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-130.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-130.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "fire_sword",
+      "name": "ファイヤーソード",
+      "text": "「SP1」常駐しているオペレーションを1つ選んで、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

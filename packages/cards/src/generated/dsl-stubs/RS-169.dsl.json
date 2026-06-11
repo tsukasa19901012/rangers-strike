@@ -1,0 +1,44 @@
+{
+  "id": "RS-169",
+  "name": "ファンクラッシャー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "6+",
+  "bp": 5000,
+  "sp": 1,
+  "size": "L",
+  "text": "【地球資源吸収】これをラッシュしたとき、リリース状態の自軍コマンドがあれば、すべて自軍山札の上に好きな順で戻す。",
+  "rawText": "【地球資源吸収】これをラッシュしたとき、リリース状態の自軍コマンドがあれば、すべて自軍山札の上に好きな順で戻す。",
+  "features": [
+    "メカ"
+  ],
+  "imageUrl": "/cards/legend3/RS-169.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-169.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを1体捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "earth_resource_absorb",
+      "name": "地球資源吸収",
+      "text": "これをラッシュしたとき、リリース状態の自軍コマンドがあれば、すべて自軍山札の上に好きな順で戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

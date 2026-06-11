@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * atwiki の og:description メタデータ + grnrngr カード一覧から legend3/cards.json を生成。
+ * atwiki の og:description メタデータ + grnrngr カード一覧から core-playable の legend3 カードを生成。
  * 画像: 本スクリプト実行後に `node scripts/download-images.mjs legend3` を実行。
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -11,7 +11,7 @@ import { buildLegend3Card } from "./legend3CardBuilder.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(__dirname, "..");
-const outPath = path.join(packageRoot, "src/legend3/cards.json");
+const outPath = path.join(packageRoot, "pipeline/data/legend3-catalog-draft.json");
 const pagesPath = path.join(packageRoot, "src/legend3/atwiki-pages.json");
 
 /** grnrngr.com シリーズ3 一覧（RS-123 … RS-178, SR-001）。 */

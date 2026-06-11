@@ -1,0 +1,34 @@
+{
+  "id": "RS-019",
+  "name": "超力",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "effectId": "super_power",
+  "tags": [
+    "常駐"
+  ],
+  "imageUrl": "/cards/legend1/RS-019.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-019.jpg",
+  "effects": [
+    {
+      "id": "super_power",
+      "text": "自軍Sユニットがアタックするとき発動できる。アタックするユニットは、自軍コマンドを1つホールドするごとにBP＋1000される。",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

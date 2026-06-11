@@ -1,0 +1,34 @@
+{
+  "id": "RS-016",
+  "name": "ダイノ伝記",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "effectId": "dino_chronicle",
+  "tags": [
+    "カウンター"
+  ],
+  "imageUrl": "/cards/legend1/RS-016.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-016.jpg",
+  "effects": [
+    {
+      "id": "dino_chronicle",
+      "text": "自軍ユニットが場を離れるとき発動できる。場を離れるユニットと同じ名前のユニットのカードが自軍捨札にあれば、その場に留まる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

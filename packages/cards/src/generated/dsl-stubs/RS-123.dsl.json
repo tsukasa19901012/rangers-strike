@@ -1,0 +1,32 @@
+{
+  "id": "RS-123",
+  "name": "スーパーダイナマイト",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 3,
+  "text": "このターン、すべての自軍Sユニットは次の能力を得る。⇒アタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "effectId": "super_dynamite",
+  "imageUrl": "/cards/legend3/RS-123.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-123.jpg",
+  "effects": [
+    {
+      "id": "super_dynamite",
+      "text": "このターン、すべての自軍Sユニットは次の能力を得る。⇒アタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "RS-144",
+  "name": "グランタウラス",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "5+",
+  "bp": 5000,
+  "size": "M",
+  "text": "【タウラスダイブ】これをラッシュしたとき、「SP1」以上または「SP！」のある敵軍Sユニットを、すべて持ち主の手札に戻す。",
+  "rawText": "【タウラスダイブ】これをラッシュしたとき、「SP1」以上または「SP！」のある敵軍Sユニットを、すべて持ち主の手札に戻す。",
+  "features": [
+    "メカ"
+  ],
+  "imageUrl": "/cards/legend3/RS-144.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-144.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを1体捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "taurus_dive",
+      "name": "タウラスダイブ",
+      "text": "これをラッシュしたとき、「SP1」以上または「SP！」のある敵軍Sユニットを、すべて持ち主の手札に戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

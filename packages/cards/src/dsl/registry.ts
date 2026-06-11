@@ -5,7 +5,7 @@ import {
   loadExtendedCardDocuments,
   loadFullPlayableDocuments,
 } from "./loader";
-import { complexityPromotedCatalog, vanillaPromotedCatalog } from "../extendedCatalog";
+import { complexityPromotedCatalog, vanillaPromotedCatalog } from "../catalog/unifiedCatalog";
 
 export type RegistryEntry = {
   card: CardDocument;

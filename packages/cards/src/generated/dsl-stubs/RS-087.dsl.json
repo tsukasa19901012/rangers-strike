@@ -1,0 +1,64 @@
+{
+  "id": "RS-087",
+  "name": "ダンプファイター",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "5+",
+  "bp": 6000,
+  "size": "M",
+  "text": "※これは「Vダンプ」としてつかえる。 【ダンプパンチ】これはアタックするときBP＋2000される。",
+  "rawText": "※これは「Vダンプ」としてつかえる。 【ダンプパンチ】これはアタックするときBP＋2000される。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend2/RS-087.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-087.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは「Vダンプ」としてつかえる。",
+      "rule": "fusion_material_alias"
+    }
+  ],
+  "effects": [
+    {
+      "id": "dump_punch",
+      "name": "ダンプパンチ",
+      "text": "これはアタックするときBP＋2000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_fusion_material_alias",
+      "text": "※これは「Vダンプ」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "fusion_material_alias",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

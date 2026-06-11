@@ -1,0 +1,45 @@
+{
+  "id": "RS-172",
+  "name": "ゴーゴーショベル",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "4+",
+  "bp": 5000,
+  "size": "M",
+  "comboNumber": "R",
+  "text": "【ショベルディフェンス】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍ユニットはストライクできない。",
+  "rawText": "【ショベルディフェンス】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍ユニットはストライクできない。",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/legend3/RS-172.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-172.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "shovel_defense",
+      "name": "ショベルディフェンス",
+      "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒このコンビネーションが成立している間、敵軍ユニットはストライクできない。",
+      "trigger": {
+        "type": "joint_combo_r"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

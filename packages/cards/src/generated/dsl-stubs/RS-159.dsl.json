@@ -1,0 +1,59 @@
+{
+  "id": "RS-159",
+  "name": "ガオコング",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 5,
+  "bp": 6000,
+  "size": "M",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【ファイヤーダンス】これがバトルエリアに出たとき、敵軍コマンドを敵軍ダメージの数まで選んでホールドする。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【ファイヤーダンス】これがバトルエリアに出たとき、敵軍コマンドを敵軍ダメージの数まで選んでホールドする。",
+  "features": [
+    "獣"
+  ],
+  "imageUrl": "/cards/legend3/RS-159.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-159.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "fire_dance",
+      "name": "ファイヤーダンス",
+      "text": "これがバトルエリアに出たとき、敵軍コマンドを敵軍ダメージの数まで選んでホールドする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

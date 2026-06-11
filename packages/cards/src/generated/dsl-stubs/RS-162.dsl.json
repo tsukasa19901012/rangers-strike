@@ -1,0 +1,40 @@
+{
+  "id": "RS-162",
+  "name": "ガオブルー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 2,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 3,
+  "text": "【サージングチョッパー】自軍ターン中、Sユニットとバトルするとき、このユニットはBP+5000される。",
+  "rawText": "【サージングチョッパー】自軍ターン中、Sユニットとバトルするとき、このユニットはBP+5000される。",
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "imageUrl": "/cards/legend3/RS-162.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-162.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "surging_chopper",
+      "name": "サージングチョッパー",
+      "text": "自軍ターン中、Sユニットとバトルするとき、このユニットはBP+5000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "id": "RS-070",
+  "name": "マジキング",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "SR",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "bp": 16000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―マジフェニックス＋マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス【天空魔法斬り】これがバトルエリアに出たとき、敵軍コマンドをすべてホールドしてもよい。",
+  "rawText": "合体―マジフェニックス＋マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス【天空魔法斬り】これがバトルエリアに出たとき、敵軍コマンドをすべてホールドしてもよい。",
+  "features": [
+    "魔法",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend1/RS-070.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-070.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―マジフェニックス＋マジガルーダ＋マジマーメイド＋マジフェアリー＋マジタウロス",
+      "partnerCardIds": [
+        "RS-057",
+        "RS-058",
+        "RS-059",
+        "RS-060",
+        "RS-061"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "sky_magic_slash",
+      "name": "天空魔法斬り",
+      "text": "これがバトルエリアに出たとき、敵軍コマンドをすべてホールドしてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "hold_all_enemy_commands",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "id": "RS-092",
+  "name": "冥王ジルフィーザ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "SR",
+  "expansion": "legend2",
+  "powerCost": "9+",
+  "bp": 8000,
+  "sp": 1,
+  "size": "S",
+  "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【天の災】これをラッシュしたとき、お互いに次のようにする。自分自身のパワーゾーンからダメージではないカードをすべて捨札にする。その後、手札をすべてパワーゾーンに置く。",
+  "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【天の災】これをラッシュしたとき、お互いに次のようにする。自分自身のパワーゾーンからダメージではないカードをすべて捨札にする。その後、手札をすべてパワーゾーンに置く。",
+  "features": [
+    "災魔一族",
+    "男"
+  ],
+  "imageUrl": "/cards/legend2/RS-092.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-092.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "win_but_destroyed_vs_sp1"
+    }
+  ],
+  "effects": [
+    {
+      "id": "heavenly_disaster",
+      "name": "天の災",
+      "text": "これをラッシュしたとき、お互いに次のようにする。自分自身のパワーゾーンからダメージではないカードをすべて捨札にする。その後、手札をすべてパワーゾーンに置く。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_win_but_destroyed_vs_sp1",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "win_but_destroyed_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

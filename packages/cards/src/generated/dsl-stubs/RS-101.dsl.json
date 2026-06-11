@@ -1,0 +1,41 @@
+{
+  "id": "RS-101",
+  "name": "ハリケンブルー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 0,
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 4,
+  "text": "【超忍法・水変化】相手は自分自身のラッシュエリアからSユニットを1体選んで手札に戻す。",
+  "rawText": "【超忍法・水変化】相手は自分自身のラッシュエリアからSユニットを1体選んで手札に戻す。",
+  "features": [
+    "ブルー",
+    "女",
+    "忍者"
+  ],
+  "imageUrl": "/cards/legend2/RS-101.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-101.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "super_ninpo_water_transform",
+      "name": "超忍法・水変化",
+      "text": "相手は自分自身のラッシュエリアからSユニットを1体選んで手札に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

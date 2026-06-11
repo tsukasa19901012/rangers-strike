@@ -1,0 +1,56 @@
+{
+  "id": "RS-142",
+  "name": "オーレンジャーロボ",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "SR",
+  "expansion": "legend3",
+  "powerCost": "6+",
+  "bp": 19000,
+  "sp": 2,
+  "size": "L",
+  "text": "合体―スカイフェニックス＋グランタウラス＋ダッシュレオン＋ドグランダー＋モアローダー【クラウンファイナルクラッシュ】これがバトルエリアに出たとき、自軍コマンドをすべてリリース状態に戻してもよい。",
+  "rawText": "合体―スカイフェニックス＋グランタウラス＋ダッシュレオン＋ドグランダー＋モアローダー【クラウンファイナルクラッシュ】これがバトルエリアに出たとき、自軍コマンドをすべてリリース状態に戻してもよい。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend3/RS-142.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-142.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―スカイフェニックス＋グランタウラス＋ダッシュレオン＋ドグランダー＋モアローダー",
+      "partnerCardIds": [
+        "RS-142",
+        "RS-144",
+        "RS-145",
+        "RS-146",
+        "RS-147"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "crown_final_crush",
+      "name": "クラウンファイナルクラッシュ",
+      "text": "これがバトルエリアに出たとき、自軍コマンドをすべてリリース状態に戻してもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

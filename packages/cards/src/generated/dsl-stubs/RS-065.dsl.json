@@ -1,0 +1,40 @@
+{
+  "id": "RS-065",
+  "name": "ボウケンイエロー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 3,
+  "text": "【一点突破】ストライクできるユニット（コンビネーションによってストライク可能になるユニットも含む）を撃破したとき、相手に1点ダメージを与える。",
+  "rawText": "【一点突破】ストライクできるユニット（コンビネーションによってストライク可能になるユニットも含む）を撃破したとき、相手に1点ダメージを与える。",
+  "features": [
+    "イエロー",
+    "女"
+  ],
+  "imageUrl": "/cards/legend1/RS-065.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-065.jpg",
+  "unnamedRules": [],
+  "effects": [
+    {
+      "id": "focused_breakthrough",
+      "name": "一点突破",
+      "text": "ストライクできるユニット（コンビネーションによってストライク可能になるユニットも含む）を撃破したとき、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "conditional"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

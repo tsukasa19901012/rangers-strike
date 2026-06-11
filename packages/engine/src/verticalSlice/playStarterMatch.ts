@@ -1,6 +1,6 @@
 import { applyAction } from "../core/applyAction";
 import { getLegalActions, isLegalAction } from "../core/legalActions";
-import { pickCpuAction } from "../ai/index";
+import { pickCpuAction, type CpuLevel } from "../ai/index";
 import type { GameAction } from "../types/actions";
 import type { GameState, Phase, PlayerId } from "../types/game";
 import { WIN_DAMAGE } from "../types/game";
@@ -57,11 +57,11 @@ function classifyWin(state: GameState): "damage" | "deck_out" | "unknown" {
 }
 
 /**
- * CPU ヒューリスティック（Lv1）で双方を進め、勝敗または停止条件まで進める。
+ * CPU ヒューリスティックで双方を進め、勝敗または停止条件まで進める。
  */
 export function playStarterMatchUntilEnd(
   initial: GameState,
-  options: { maxSteps?: number; cpuLevel?: 1 } = {},
+  options: { maxSteps?: number; cpuLevel?: CpuLevel } = {},
 ): StarterMatchResult {
   const maxSteps = options.maxSteps ?? 12_000;
   const cpuLevel = options.cpuLevel ?? 1;

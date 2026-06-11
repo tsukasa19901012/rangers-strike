@@ -2,7 +2,7 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { allCardsCatalog } from "../src/catalog.js";
-import { cardDefinitionToDocument } from "../src/dsl/loader.js";
+import { loadCardById } from "../src/dsl/loader.js";
 import { applyLegend1StarterOverlay, listLegend1StarterCardIds } from "../src/dsl/legend1/starter/loadStarterOverlays.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -14,7 +14,7 @@ function main(): void {
   let written = 0;
 
   for (const def of allCardsCatalog.cards) {
-    let doc = cardDefinitionToDocument(def);
+    let doc = loadCardById(def.id, "core");
     if (starterIds.has(def.id)) {
       doc = applyLegend1StarterOverlay(doc);
     }

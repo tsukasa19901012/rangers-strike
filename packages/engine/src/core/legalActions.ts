@@ -519,8 +519,9 @@ function canDeclareRush(
   const categories = cardCategories(definition);
   if (categories.length === 0) return true;
   if (isShironLightRushTarget(player, instanceId)) return true;
-  if (!isCostWindowSatisfied(player, "rush_category")) return false;
-  return hasCommandForCardUse(player, definitions, categories);
+  // カテゴリ支払い済み（resolve_command_payment 後）— ホールド済みでも rush 継続可
+  if (isCostWindowSatisfied(player, "rush_category")) return true;
+  return false;
 }
 
 /** カテゴリホールド済みで即ラッシュ可能な手札のゾード。 */

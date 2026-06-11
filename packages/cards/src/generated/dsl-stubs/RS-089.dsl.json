@@ -1,0 +1,64 @@
+{
+  "id": "RS-089",
+  "name": "レスキューファイター",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "3+",
+  "bp": 4000,
+  "size": "M",
+  "text": "※これは「Vレスキュー」としてつかえる。 【救護活動】これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、撃破されたとき捨札にするかわりに自軍パワーゾーンに送る。",
+  "rawText": "※これは「Vレスキュー」としてつかえる。 【救護活動】これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、撃破されたとき捨札にするかわりに自軍パワーゾーンに送る。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend2/RS-089.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-089.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは「Vレスキュー」としてつかえる。",
+      "rule": "fusion_material_alias"
+    }
+  ],
+  "effects": [
+    {
+      "id": "medical_rescue",
+      "name": "救護活動",
+      "text": "これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、撃破されたとき捨札にするかわりに自軍パワーゾーンに送る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_fusion_material_alias",
+      "text": "※これは「Vレスキュー」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "fusion_material_alias",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

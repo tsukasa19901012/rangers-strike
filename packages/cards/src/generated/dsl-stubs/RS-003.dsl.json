@@ -1,0 +1,34 @@
+{
+  "id": "RS-003",
+  "name": "バトルダンス",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "effectId": "battle_dance",
+  "tags": [
+    "常駐"
+  ],
+  "imageUrl": "/cards/legend1/RS-003.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-003.jpg",
+  "effects": [
+    {
+      "id": "battle_dance",
+      "text": "自分のバトルフェイズに発動できる。自軍コマンドを2つホールドして、自軍Sユニットを1体ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

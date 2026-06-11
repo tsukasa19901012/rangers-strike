@@ -1,0 +1,31 @@
+{
+  "id": "RS-005",
+  "name": "ランドバルカン",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "effectId": "land_balkan",
+  "imageUrl": "/cards/legend1/RS-005.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-005.jpg",
+  "effects": [
+    {
+      "id": "land_balkan",
+      "text": "自軍コマンドゾーンからリリース状態のSユニットのカードを2枚まで選び、ラッシュエリアに出してもよい。ただし、ラッシュするための必要パワーと追加条件は満たすこと。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

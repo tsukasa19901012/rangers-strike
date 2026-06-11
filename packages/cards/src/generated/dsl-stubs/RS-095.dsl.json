@@ -1,0 +1,54 @@
+{
+  "id": "RS-095",
+  "name": "旋風神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "7+",
+  "bp": 16000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―ハリケンホーク＋ハリケンレオン＋ハリケンドルフィン【タテガミハリケーン】これがバトルエリアに出たとき、敵軍ラッシュエリアにあるSユニットをすべて持ち主の手札に戻す。",
+  "rawText": "合体―ハリケンホーク＋ハリケンレオン＋ハリケンドルフィン【タテガミハリケーン】これがバトルエリアに出たとき、敵軍ラッシュエリアにあるSユニットをすべて持ち主の手札に戻す。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend2/RS-095.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-095.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ハリケンホーク＋ハリケンレオン＋ハリケンドルフィン",
+      "partnerCardIds": [
+        "RS-096",
+        "RS-097",
+        "RS-098"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "mane_hurricane",
+      "name": "タテガミハリケーン",
+      "text": "これがバトルエリアに出たとき、敵軍ラッシュエリアにあるSユニットをすべて持ち主の手札に戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

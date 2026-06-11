@@ -1,0 +1,31 @@
+{
+  "id": "RS-004",
+  "name": "デンジマシーン",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "effectId": "denji_machine",
+  "imageUrl": "/cards/legend1/RS-004.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-004.jpg",
+  "effects": [
+    {
+      "id": "denji_machine",
+      "text": "自軍山札の上から3枚をオモテにして相手に見せる。その中からSユニットのカードをすべて手札に加え、それ以外は好きな順で山札の下に戻す。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": "RS-084",
+  "name": "VRVロボ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "R",
+  "expansion": "legend2",
+  "powerCost": "8+",
+  "bp": 18000,
+  "sp": 1,
+  "size": "L",
+  "text": "合体―Vファイヤー＋Vポリス＋Vダンプ＋Vドーザー＋Vレスキュー 【必勝合体】これをラッシュしたとき、相手に2点ダメージを与える。",
+  "rawText": "合体―Vファイヤー＋Vポリス＋Vダンプ＋Vドーザー＋Vレスキュー 【必勝合体】これをラッシュしたとき、相手に2点ダメージを与える。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend2/RS-084.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-084.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―Vファイヤー＋Vポリス＋Vダンプ＋Vドーザー＋Vレスキュー",
+      "partnerCardIds": [
+        "RS-085",
+        "RS-086",
+        "RS-087",
+        "RS-088",
+        "RS-089"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "sure_win_combination",
+      "name": "必勝合体",
+      "text": "これをラッシュしたとき、相手に2点ダメージを与える。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 2,
+          "target": "controller"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

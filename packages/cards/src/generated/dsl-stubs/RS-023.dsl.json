@@ -1,0 +1,63 @@
+{
+  "id": "RS-023",
+  "name": "スーパーレスキュー",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "R",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "effectId": "discard_s_unit_to_hand",
+  "imageUrl": "/cards/legend1/RS-023.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-023.jpg",
+  "effects": [
+    {
+      "id": "discard_s_unit_to_hand",
+      "name": "RS-023",
+      "text": "",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

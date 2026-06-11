@@ -1,0 +1,61 @@
+{
+  "id": "RS-102",
+  "name": "五の槍サーガイン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 5,
+  "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【暗黒二刀流・巌流剣】敵軍パワーゾーンからダメージになっていないカードを1枚選ぶ。そして敵軍コマンドゾーンからもカードを1枚選ぶ。そうしたとき、選んだ2枚を捨札にする。",
+  "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【暗黒二刀流・巌流剣】敵軍パワーゾーンからダメージになっていないカードを1枚選ぶ。そして敵軍コマンドゾーンからもカードを1枚選ぶ。そうしたとき、選んだ2枚を捨札にする。",
+  "features": [
+    "暗黒七本槍",
+    "男",
+    "忍者"
+  ],
+  "imageUrl": "/cards/legend2/RS-102.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-102.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "win_but_destroyed_vs_sp1"
+    }
+  ],
+  "effects": [
+    {
+      "id": "dark_dual_blade",
+      "name": "暗黒二刀流・巌流剣",
+      "text": "敵軍パワーゾーンからダメージになっていないカードを1枚選ぶ。そして敵軍コマンドゾーンからもカードを1枚選ぶ。そうしたとき、選んだ2枚を捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_win_but_destroyed_vs_sp1",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "win_but_destroyed_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

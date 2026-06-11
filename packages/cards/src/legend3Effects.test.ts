@@ -17,13 +17,17 @@ import {
   listWiredOnRushEffects,
   listWiredPassiveEffects,
 } from "@rangers-strike/cards";
-import legend3UnitEffects from "./legend3/unitEffects.json";
+import { corePlayableCatalog } from "./catalog/unifiedCatalog";
+import { getUnitEffectBlock } from "./unitEffects";
+
+function countLegend3NamedEffects(): number {
+  return corePlayableCatalog.cards
+    .filter((card) => card.id >= "RS-126" && card.id <= "RS-178")
+    .reduce((sum, card) => sum + (getUnitEffectBlock(card.id)?.namedEffects.length ?? 0), 0);
+}
 
 describe("legend3 unitEffects wiring", () => {
-  const legend3NamedCount = Object.values(legend3UnitEffects).reduce(
-    (sum, block) => sum + block.namedEffects.length,
-    0,
-  );
+  const legend3NamedCount = countLegend3NamedEffects();
 
   const isLegend3 = (cardId: string) => cardId >= "RS-126" && cardId <= "RS-178";
 

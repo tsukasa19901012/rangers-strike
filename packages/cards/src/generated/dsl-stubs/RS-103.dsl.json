@@ -1,0 +1,61 @@
+{
+  "id": "RS-103",
+  "name": "七の槍サンダール",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "R",
+  "expansion": "legend2",
+  "powerCost": 7,
+  "bp": 4000,
+  "size": "S",
+  "comboNumber": 7,
+  "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【宇宙忍法・縄頭蓋】BP3000以下の敵軍ユニットを全て撃破する。",
+  "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。【宇宙忍法・縄頭蓋】BP3000以下の敵軍ユニットを全て撃破する。",
+  "features": [
+    "暗黒七本槍",
+    "男",
+    "忍者"
+  ],
+  "imageUrl": "/cards/legend2/RS-103.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-103.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "win_but_destroyed_vs_sp1"
+    }
+  ],
+  "effects": [
+    {
+      "id": "space_ninpo_rope_skull",
+      "name": "宇宙忍法・縄頭蓋",
+      "text": "BP3000以下の敵軍ユニットを全て撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_win_but_destroyed_vs_sp1",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "win_but_destroyed_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

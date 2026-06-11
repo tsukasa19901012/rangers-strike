@@ -1,14 +1,12 @@
 import { describe, expect, it } from "vitest";
-import legend1Cards from "./legend1/cards.json";
-import legend2Cards from "./legend2/cards.json";
-import legend1UnitEffects from "./legend1/unitEffects.json";
-import legend2UnitEffects from "./legend2/unitEffects.json";
+import { legend1Catalog, legend2Catalog } from "./catalog/unifiedCatalog";
 import { getCardEffect } from "./effects";
+import { getUnitEffectBlock } from "./unitEffects";
 import { WIKI_OPERATION_TEXT } from "./wikiReference";
 
 describe("wikiReference", () => {
   it("documents all legend1 and legend2 operations", () => {
-    const ops = [...legend1Cards.cards, ...legend2Cards.cards].filter(
+    const ops = [...legend1Catalog.cards, ...legend2Catalog.cards].filter(
       (c) => c.type === "operation",
     );
     for (const card of ops) {
@@ -27,14 +25,13 @@ describe("wikiReference", () => {
     }
   });
 
-  it("keeps unit cards.json text aligned with unitEffects rawText", () => {
-    const units = [...legend1Cards.cards, ...legend2Cards.cards].filter(
+  it("keeps unit catalog text aligned with registry rawText", () => {
+    const units = [...legend1Catalog.cards, ...legend2Catalog.cards].filter(
       (c) => c.type === "unit",
     );
-    const blocks = { ...legend1UnitEffects, ...legend2UnitEffects };
 
     for (const card of units) {
-      const block = blocks[card.id as keyof typeof blocks];
+      const block = getUnitEffectBlock(card.id);
       expect(block, card.id).toBeDefined();
       const cardText = card.text ?? "";
       expect(cardText, card.id).toBe(block?.rawText ?? "");

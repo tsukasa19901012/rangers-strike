@@ -21,14 +21,18 @@ const cardSteps = [
   "promote-dsl-ready",
   "finalize-effect-primitives",
   "remigrate-enqueue-effects",
+  "emit-core-dsl-stubs",
+  "emit-core-catalog",
   "emit-vanilla-catalog",
   "emit-complexity-catalog",
+  "emit-full-playable-catalog",
   "generate-engine-smoke",
   "audit:effect-keywords",
   "audit:runtime-effects",
   "audit:runtime-delegates",
   "audit:enqueue-coverage",
   "metrics:full-playable",
+  "audit:catalog-parity",
   "audit:rollout-status",
 ];
 

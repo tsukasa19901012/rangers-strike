@@ -1,0 +1,64 @@
+{
+  "id": "RS-086",
+  "name": "ポリスファイター",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "4+",
+  "bp": 5000,
+  "size": "M",
+  "text": "※これは「Vポリス」としてつかえる。 【交通整理】これが自軍バトルエリアにあるとき、相手は次の制限を受ける。バトルエリアに並べるユニットはすべて同じサイズでなければならない。",
+  "rawText": "※これは「Vポリス」としてつかえる。 【交通整理】これが自軍バトルエリアにあるとき、相手は次の制限を受ける。バトルエリアに並べるユニットはすべて同じサイズでなければならない。",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "imageUrl": "/cards/legend2/RS-086.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-086.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは「Vポリス」としてつかえる。",
+      "rule": "fusion_material_alias"
+    }
+  ],
+  "effects": [
+    {
+      "id": "traffic_control",
+      "name": "交通整理",
+      "text": "これが自軍バトルエリアにあるとき、相手は次の制限を受ける。バトルエリアに並べるユニットはすべて同じサイズでなければならない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_fusion_material_alias",
+      "text": "※これは「Vポリス」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "fusion_material_alias",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

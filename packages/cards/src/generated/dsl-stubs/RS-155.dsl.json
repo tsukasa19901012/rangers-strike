@@ -1,0 +1,59 @@
+{
+  "id": "RS-155",
+  "name": "ガオバイソン",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": 6,
+  "bp": 4000,
+  "size": "M",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【鋼の角】これがバトルエリアに出たとき、敵軍ユニットを1体選んで撃破してもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【鋼の角】これがバトルエリアに出たとき、敵軍ユニットを1体選んで撃破してもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない。",
+  "features": [
+    "獣"
+  ],
+  "imageUrl": "/cards/legend3/RS-155.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-155.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ],
+  "effects": [
+    {
+      "id": "steel_horn",
+      "name": "鋼の角",
+      "text": "これがバトルエリアに出たとき、敵軍ユニットを1体選んで撃破してもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_battle_entry_hold",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_entry_hold_1",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

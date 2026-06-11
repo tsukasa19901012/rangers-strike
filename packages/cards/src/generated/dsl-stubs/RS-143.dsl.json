@@ -1,0 +1,29 @@
+{
+  "id": "RS-143",
+  "name": "スカイフェニックス",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend3",
+  "powerCost": "5+",
+  "bp": 4000,
+  "sp": 1,
+  "size": "M",
+  "rawText": "",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "imageUrl": "/cards/legend3/RS-143.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-143.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを1体捨札にする",
+    "unitCount": 1
+  },
+  "unnamedRules": [],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter"
+  }
+}

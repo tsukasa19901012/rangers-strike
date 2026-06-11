@@ -1,0 +1,130 @@
+{
+  "generatedAt": "2026-06-11T00:05:37.565Z",
+  "gates": [
+    {
+      "id": "U2-a",
+      "name": "core-playable emit",
+      "status": "pass",
+      "target": "generated core-playable = 179",
+      "current": "generated=179"
+    },
+    {
+      "id": "U2-b",
+      "name": "core catalog integrity",
+      "status": "pass",
+      "target": "generated core 179 枚すべて必須 stats あり",
+      "current": "cards=179, invalid=0"
+    },
+    {
+      "id": "U2-c",
+      "name": "core DSL stubs",
+      "status": "pass",
+      "target": "core 179 枚すべて dsl-stubs/{id}.dsl.json あり",
+      "current": "missing=0"
+    },
+    {
+      "id": "U0-a2",
+      "name": "tier と core の ID 重複",
+      "status": "pass",
+      "target": "promoted tiers と core の重複 = 0",
+      "current": "promoted_overlap=0, wiki_stub_overlap=0"
+    },
+    {
+      "id": "U0-a4",
+      "name": "wiki-stubs と core 排他",
+      "status": "pass",
+      "target": "wiki-stubs に core ID が含まれない",
+      "current": "overlap=0"
+    },
+    {
+      "id": "U0-a3",
+      "name": "promoted catalog vs DSL stub stats",
+      "status": "pass",
+      "target": "emit enrich フィールド（bp/sp/size/comboNumber/text/features）の矛盾 = 0",
+      "current": "mismatches=0"
+    },
+    {
+      "id": "U0-b",
+      "name": "full-playable 件数",
+      "status": "pass",
+      "target": "cards=1849, unique=1849",
+      "current": "cards=1849, unique=1849"
+    },
+    {
+      "id": "U0-b2",
+      "name": "loader フィンガープリント",
+      "status": "pass",
+      "target": "loadCards(full-playable).length=1849",
+      "current": "length=1849, fingerprint=46e1e2409efb…"
+    },
+    {
+      "id": "U3-a",
+      "name": "unified loader parity",
+      "status": "pass",
+      "target": "loadCards と loadFullPlayableDocuments の fingerprint 一致",
+      "current": "unified=1849, legacy=1849, match=true"
+    },
+    {
+      "id": "U4-a",
+      "name": "runtime unitEffects.json 参照ゼロ",
+      "status": "pass",
+      "target": "unitEffects.ts / catalog / loader に legend unitEffects.json import なし",
+      "current": "violations=0"
+    },
+    {
+      "id": "U4-b",
+      "name": "registry effect lookup",
+      "status": "pass",
+      "target": "findNamedEffectByEffectId がコア代表カードで解決",
+      "current": "missing=0"
+    },
+    {
+      "id": "U5-a",
+      "name": "legend JSON import ゼロ",
+      "status": "pass",
+      "target": "src/ scripts/ に legend*/cards.json / unitEffects.json import なし",
+      "current": "violations=0"
+    },
+    {
+      "id": "U5-b",
+      "name": "legend JSON ファイル削除",
+      "status": "pass",
+      "target": "legend1–3 の cards.json / unitEffects.json が存在しない",
+      "current": "remaining=0"
+    },
+    {
+      "id": "U0-c",
+      "name": "DSL 登録",
+      "status": "pass",
+      "target": "dslReady=1849",
+      "current": "dslReady=1849, unimplemented=0, legacy=0"
+    }
+  ],
+  "gatesPassed": 14,
+  "gatesTotal": 14,
+  "summary": {
+    "coreCount": 179,
+    "fullPlayableCount": 1849,
+    "uniqueFullPlayableIds": 1849,
+    "dslReady": 1849,
+    "loaderFingerprint": "46e1e2409efbdd3b8b0d0706673c8d6c2a9baf941cf7bd498425be5f4a54e0d2"
+  },
+  "samples": {
+    "coreStatsDiffs": [],
+    "promotedDslStatsDiffs": [],
+    "tierOverlaps": [
+      {
+        "tier": "vanilla-promoted",
+        "overlapWithCore": []
+      },
+      {
+        "tier": "complexity-promoted",
+        "overlapWithCore": []
+      },
+      {
+        "tier": "wiki-stubs",
+        "overlapWithCore": []
+      }
+    ]
+  }
+}

@@ -53,6 +53,7 @@ export function zordSlotsFilledByMaterial(
   }
   if (condition === "send_s_unit_to_power") return 1;
   if (condition === "send_s_unit_to_discard") return 1;
+  if (condition === "discard_fusion_unit") return 1;
   return 0;
 }
 
