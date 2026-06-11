@@ -3,7 +3,6 @@ import {
   getEnterBattleEffect,
   getJointLEffect,
   getJointREffect,
-  getRidingComboEffect,
   partnerCategoryMatches,
 } from "@rangers-strike/cards";
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
@@ -51,6 +50,7 @@ import {
   numberComboTriggers,
   resolveNamedNcEffectId,
 } from "./numberComboEffects";
+import { resolveRidingComboOnRideOff } from "./ridingComboEffects";
 import { grantSp1OnPlayer } from "./playerPatches";
 import { legend3EffectiveSp } from "./legend3/fieldEffects";
 import { hasBakiBakiExtraAttackOnly } from "./legend3/destroyEffects";
@@ -157,30 +157,6 @@ function resolveJointCombos(
   }
 
   return { state: nextState, logs };
-}
-
-function resolveRidingComboOnRideOff(
-  state: GameState,
-  playerId: PlayerId,
-  card: CardInstance,
-): ComboOutcome {
-  const ridingEffect = getRidingComboEffect(card.cardId);
-  if (ridingEffect !== "grant_sp1") return { state, logs: [] };
-
-  const player = state.players[playerId];
-  const nextPlayer = grantSp1OnPlayer(player, card.instanceId);
-  return {
-    state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-    logs: [
-      buildLogEntry(
-        playerId,
-        "riding_combo",
-        card.cardId,
-        state.definitions,
-        "sp1",
-      ),
-    ],
-  };
 }
 
 function applySComboFinisher(

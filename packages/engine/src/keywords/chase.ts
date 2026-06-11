@@ -7,6 +7,7 @@ import {
   type LeaveIntent,
 } from "../rules/operationCounters";
 import { cardHasKeyword, playerHasChaseUnitInField } from "./cardKeywords";
+import { canRiderMountVehicle } from "./ride";
 
 export function listValidChaseVehicleIds(
   state: GameState,
@@ -17,7 +18,8 @@ export function listValidChaseVehicleIds(
     if (!findInZone(player, "rush", instanceId)) return false;
     const chaser = findInZone(player, pending.leaveIntent.fromZone, pending.chaserInstanceId);
     if (!chaser) return false;
-    return instanceId !== chaser.card.mountedOnInstanceId;
+    if (instanceId === chaser.card.mountedOnInstanceId) return false;
+    return canRiderMountVehicle(state, pending.chaserPlayerId, chaser.card, instanceId);
   });
 }
 
@@ -47,25 +49,39 @@ export function applyResolveChase(
   );
   const chaserSource =
     chaserZone === "rush" ? rushAfterVehicleRemoval : player[chaserZone];
-  const updatedChaserZone = chaserSource.map((c) =>
-    c.instanceId === pending.chaserInstanceId
-      ? { ...c, mountedOnInstanceId: newVehicleInstanceId }
-      : c,
-  );
+  const remountedChaser = {
+    ...chaserFound.card,
+    mountedOnInstanceId: newVehicleInstanceId,
+  };
 
-  const nextPlayer =
-    chaserZone === "rush"
-      ? {
-          ...player,
-          rush: updatedChaserZone,
-          discard: [...player.discard, oldVehicle.card],
-        }
-      : {
-          ...player,
-          rush: rushAfterVehicleRemoval,
-          [chaserZone]: updatedChaserZone,
-          discard: [...player.discard, oldVehicle.card],
-        };
+  let nextPlayer: typeof player;
+  if (chaserZone === "battle") {
+    nextPlayer = {
+      ...player,
+      battle: player.battle.filter((c) => c.instanceId !== pending.chaserInstanceId),
+      rush: [...rushAfterVehicleRemoval, remountedChaser],
+      discard: [...player.discard, oldVehicle.card],
+    };
+  } else if (chaserZone === "rush") {
+    const updatedRush = chaserSource.map((c) =>
+      c.instanceId === pending.chaserInstanceId ? remountedChaser : c,
+    );
+    nextPlayer = {
+      ...player,
+      rush: updatedRush,
+      discard: [...player.discard, oldVehicle.card],
+    };
+  } else {
+    const updatedChaserZone = chaserSource.map((c) =>
+      c.instanceId === pending.chaserInstanceId ? remountedChaser : c,
+    );
+    nextPlayer = {
+      ...player,
+      rush: rushAfterVehicleRemoval,
+      [chaserZone]: updatedChaserZone,
+      discard: [...player.discard, oldVehicle.card],
+    };
+  }
 
   const log = buildSimpleLogEntry(playerId, "resolve_chase", pending.chaserInstanceId);
 

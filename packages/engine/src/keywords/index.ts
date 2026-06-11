@@ -19,7 +19,9 @@ export {
   unitHasRegister,
 } from "./registerReaction";
 export {
+  attachRideForBattleEntry,
   attachRideIfEligible,
+  canRiderMountVehicle,
   findRideVehicleForRider,
 } from "./ride";
 export {

@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { buildDefinitionMap } from "../core/catalog";
 import { createTestState, inst } from "../testing/fixtures";
-import { attachRideIfEligible, findRideVehicleForRider } from "./ride";
+import { attachRideForBattleEntry, attachRideIfEligible, findRideVehicleForRider } from "./ride";
+import { markBattleBlocked } from "../rules/turnModifiers";
 
 describe("ride on battle entry", () => {
   const defs = buildDefinitionMap([
@@ -73,5 +74,25 @@ describe("ride on battle entry", () => {
 
     const detached = attachRideIfEligible(state, "player1", rider, true);
     expect(detached.mountedOnInstanceId).toBeUndefined();
+  });
+
+  it("rolls back ride when battle entry would be illegal after mounting", () => {
+    const vehicle = inst("TST-VEHICLE", "v1");
+    const rider = inst("TST-RIDER", "r1");
+    const base = createTestState(defs);
+    const blockedPlayer = markBattleBlocked(base.players.player1, rider.instanceId);
+    const state = {
+      ...base,
+      definitions: defs,
+      players: {
+        ...base.players,
+        player1: { ...blockedPlayer, rush: [vehicle, rider] },
+      },
+    };
+
+    expect(attachRideIfEligible(state, "player1", rider).mountedOnInstanceId).toBe(
+      vehicle.instanceId,
+    );
+    expect(attachRideForBattleEntry(state, "player1", rider).mountedOnInstanceId).toBeUndefined();
   });
 });

@@ -22,6 +22,7 @@ import {
 import { applyDamageToPlayer } from "../rules/damagePayment";
 import { findCardInPlayer, findOwnUnit } from "../core/modifiers";
 import { findCardOwner } from "../rules/fieldLookup";
+import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import {
   addComboNumberDelta,
   setAuraPowerInstanceId,
@@ -732,7 +733,13 @@ export function isValidOperationTarget(
       const found = findInZone(enemy, "battle", targetInstanceId);
       return (
         found !== null &&
-        isLargeUnit(state.definitions, found.card.cardId)
+        isLargeUnit(state.definitions, found.card.cardId) &&
+        isSelectableByOpponentEffect(
+          state,
+          playerId,
+          targetInstanceId,
+          operationCardId,
+        )
       );
     }
     case "enemy_field_unit": {
@@ -740,7 +747,15 @@ export function isValidOperationTarget(
       for (const zone of ["battle", "rush"] as const) {
         const found = findInZone(enemy, zone, targetInstanceId);
         if (!found) continue;
-        return isUnit(getDefinition(state.definitions, found.card.cardId));
+        return (
+          isUnit(getDefinition(state.definitions, found.card.cardId)) &&
+          isSelectableByOpponentEffect(
+            state,
+            playerId,
+            targetInstanceId,
+            operationCardId,
+          )
+        );
       }
       return false;
     }
@@ -748,7 +763,15 @@ export function isValidOperationTarget(
       for (const zone of ["battle", "rush"] as const) {
         const found = findInZone(enemy, zone, targetInstanceId);
         if (!found) continue;
-        return effectiveBp(state, enemyId, found.card) <= 8000;
+        return (
+          effectiveBp(state, enemyId, found.card) <= 8000 &&
+          isSelectableByOpponentEffect(
+            state,
+            playerId,
+            targetInstanceId,
+            operationCardId,
+          )
+        );
       }
       return false;
     }

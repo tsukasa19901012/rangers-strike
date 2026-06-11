@@ -1,6 +1,8 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition, isUnit } from "../core/catalog";
+import { findInZone } from "../core/helpers";
+import { canMoveUnitToBattle } from "../rules/restrictions";
 import {
   listRideWithoutRcFeatures,
   riderMatchesVehicleRideWithoutRc,
@@ -73,6 +75,39 @@ export function findRideVehicleForRider(
   );
 }
 
+/** チェイス等: ライダーが対象ビークルにライド可能か。 */
+export function canRiderMountVehicle(
+  state: GameState,
+  playerId: PlayerId,
+  rider: CardInstance,
+  vehicleInstanceId: string,
+): boolean {
+  const player = state.players[playerId];
+  const vehicle = findInZone(player, "rush", vehicleInstanceId);
+  if (!vehicle) return false;
+  if (vehicleAlreadyRidden(player.rush, vehicleInstanceId)) return false;
+
+  const riderDef = getDefinition(state.definitions, rider.cardId);
+  if (!riderDef || !isUnit(riderDef)) return false;
+
+  if (riderHasRc(riderDef)) return true;
+
+  if (
+    riderMatchesVehicleRideWithoutRc(
+      state.definitions,
+      vehicle.card.cardId,
+      rider.cardId,
+    )
+  ) {
+    return true;
+  }
+
+  const allowed = listRideWithoutRcFeatures(vehicle.card.cardId);
+  if (allowed.length > 0) return false;
+
+  return false;
+}
+
 /** ライド状態を付与（バトル進入前検証用）。 */
 export function attachRideIfEligible(
   state: GameState,
@@ -88,4 +123,19 @@ export function attachRideIfEligible(
   const vehicle = findRideVehicleForRider(state, playerId, rider);
   if (!vehicle) return rider;
   return { ...rider, mountedOnInstanceId: vehicle.instanceId };
+}
+
+/** バトル進入時ライド — 進入不可ならライドを巻き戻す（ride.md）。 */
+export function attachRideForBattleEntry(
+  state: GameState,
+  playerId: PlayerId,
+  rider: CardInstance,
+  rideOff?: boolean,
+): CardInstance {
+  const attached = attachRideIfEligible(state, playerId, rider, rideOff);
+  if (rideOff || !attached.mountedOnInstanceId) return attached;
+  if (!canMoveUnitToBattle(state, playerId, attached, "rush")) {
+    return rider;
+  }
+  return attached;
 }

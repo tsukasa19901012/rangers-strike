@@ -33,15 +33,15 @@
 |-----------|-------------------|---------------|--------|-------------|
 | **レジスト** | バトル BP 比較で撃破されたときのみ、任意でホールド留場。効果撃破不可 | `resist.ts`, `registerEligible` on battle destroy | **高** | 「勝っても撃破」FAQ の残パターン |
 | **スクラム** | 右隣ユニットの CN が「自 CN + 1」の間、アタック不可 | `scrumBlocksAttack` | **高** | — |
-| **ライドオフ / RC** | ライドオフ時 RC。`no_strike_after_rideoff` はストライク不可 | `combo.ts`, `applyNoStrikeAfterRideOff` | **中** | RC 汎用解決（SP1 以外）は P1 |
+| **ライドオフ / RC** | ライドオフ時 RC。`no_strike_after_rideoff` はストライク不可 | `combo.ts`, `ridingComboEffects.ts`, `applyNoStrikeAfterRideOff` | **高** | NC レガシー/DSl 個別効果の網羅 |
 | **ウイング** | BF 中ラッシュでホールド→ラッシュからアタック。当ターン BA/ストライク不可 | `hold_for_wing`, `canWingAttackFromRush`, wing turn restrictions | **中** | 同一ターン複数ウイング — P2 |
 | **クロス** | クロス N = 以降ユニットの CN・分数 SP が N 繰り上げ。重複は合算。タクス順は不変 | `battleKeywords.ts` (`crossValueForCard`, `crossAdjustedBattlePosition`) | **高** | NC/SP 解決への配線は済。追加条件のクロス分ホールドはカード別 |
 | **ブラスト** | 敗北直前（実質ダメージ6）のみ、追加条件無視でラッシュ可。必要パワーは要充足 | `blastBypassesRushAdditionalCondition` → `rushAdditionalCondition.ts` | **高** | 代理条件: 表パワー≤1枚。ダメージ数明示チェックは未 |
-| **ブレイカー** | 敵ユニット/ビークル**効果**の対象にならない（ブレイカー同士は可）。同名2体目ラッシュ不可 | `breakerBlocksEffectTarget`, `breakerBlocksSameNameRush` | **中** | `targetSelectors.ts` 等一部経路のみ。手札/パワー発動効果は対象外（公式通り） |
+| **ブレイカー** | 敵ユニット/ビークル**効果**の対象にならない（ブレイカー同士は可）。同名2体目ラッシュ不可 | `effectTargetability.ts`, `breakerBlocksEffectTarget` | **高** | `not_selectable_except_attack`（カブト系）との共存 |
 | **タクス** | タクス○が絶対位置 P にいると、右隣の○カテゴリユニット SP=1。クロス非影響 | `taxisSpFloor`, `parseTaxisCategory` → `fractionalSp.ts` | **中** | 生インデックス判定（クロスと整合は wiki 通り）。WB/DA タクスカード少数 |
-| **モーフ** | 敵ラッシュ時、特徴完全一致の自軍ユニット↔ゾーン内ユニットカード置換。通常ラッシュではない | `morph.ts`, `morphReaction.ts`, `emitUnitRushed` | **中** | ラッシュ反応窓・置換・状態引継ぎ済。能動モーフ（カメンライド等）はカード別 |
-| **ライド** | 自軍 BF 中、ラッシュ→バトル進入時に未搭乗ビークルへ重ね。1 ビークル 1 ライダー | `ride.ts` (`attachRideIfEligible`) | **中** | バトル進入時のみ。チェイス/効果ライドは別経路 |
-| **チェイス** | ライド中ユニットが離場するとき、ビークル捨てて別ビークルへ。RC 付与なし | `chase.ts`, `operationCounters.ts` | **中** | PendingChase・乗り換え骨格あり。全離場経路・ラッシュ直接ライドの E2E 不足 |
+| **モーフ** | 敵ラッシュ時、特徴完全一致の自軍ユニット↔ゾーン内ユニットカード置換。通常ラッシュではない | `morph.ts`, `morphReaction.ts`, `emitUnitRushed` | **高** | 能動モーフ（カメンライド等）はカード別 |
+| **ライド** | 自軍 BF 中、ラッシュ→バトル進入時に未搭乗ビークルへ重ね。1 ビークル 1 ライダー | `ride.ts` (`attachRideForBattleEntry`) | **高** | チェイス/効果ライドは別経路 |
+| **チェイス** | ライド中ユニットが離場するとき、ビークル捨てて別ビークルへ。RC 付与なし | `chase.ts`, `operationCounters.ts` | **高** | 全離場 intent 監査・vehicle_destroyed E2E 拡充 |
 
 ---
 
@@ -150,13 +150,11 @@
 **Wiki (156, 228):** ラッシュ→BA 進入時ライド。RC は**ライドオフ時**にのみコンボ効果。効果によるライドオフでは RC 不発。
 
 **実装:**
-- `attachRideIfEligible`, `mountedOnInstanceId`
-- `resolveRidingComboOnRideOff`: `getRidingComboEffect === "grant_sp1"` のみ
+- `attachRideForBattleEntry` — 進入不可時ライド巻き戻し
+- `resolveRidingComboOnRideOff` in `ridingComboEffects.ts` — grant_sp/bp_boost + NC + DSL
 - `no_strike_after_rideoff` — `applyNoStrikeAfterRideOff` 配線済
 
-**ギャップ:**
-- RC 効果 id の汎用解決（SP1 以外）
-- ライド巻き戻し（進入不可時）
+**ギャップ:** NC レガシー個別効果の riding 経路テスト拡充
 
 ---
 
@@ -164,9 +162,9 @@
 
 **Wiki (1292):** 「ユニットでなくなるとき」。レジストより広い。RC 付与なし。ラッシュ上ビークルへ直接可。
 
-**実装:** `canInitiateChase`, `PendingChase`, `applyResolveChase`, leave 連鎖 (`operationCounters.ts`)
+**実装:** `canInitiateChase`, `PendingChase`, `applyResolveChase`, `canRiderMountVehicle`, battle→rush remount
 
-**ギャップ:** 全離場 intent からの chase 窓、vehicle_destroyed モード、ラッシュ待機後の BA 再進入 E2E。
+**ギャップ:** 全離場 intent 監査、vehicle_destroyed 統合テスト拡充
 
 ---
 
@@ -196,15 +194,15 @@
 | **KW-P0-04** | RC `no_strike_after_rideoff` | ✅ `applyNoStrikeAfterRideOff` |
 | **KW-P0-05** | レジスト: バトル BP 撃破のみ | ✅ `registerEligible` on battle destroy |
 
-### P1 — フレームワーク完成
+### P1 — フレームワーク完成 ✅ 2026-06-11 完了
 
-| ID | 項目 | 作業 |
+| ID | 項目 | 状態 |
 |----|------|------|
-| **KW-P1-01** | RC 汎用解決 | `resolveRidingComboOnRideOff` を effectId テーブル化（SP1 以外） |
-| **KW-P1-02** | ブレイカー全経路 | ターゲット選択を `breakerBlocksEffectTarget` 経由に統一 |
-| **KW-P1-03** | チェイス E2E | leave 全経路 + ラッシュ直接ライド + 統合テスト |
-| **KW-P1-04** | ライド巻き戻し | BA 進入不可時ライド無効（ride.md） |
-| **KW-P1-05** | モーフ敵ターン順序 | 複数モーフ時の防御側順序選択（p1827） |
+| **KW-P1-01** | RC 汎用解決 | ✅ `ridingComboEffects.ts` — P0/NC/DSL テーブル |
+| **KW-P1-02** | ブレイカー全経路 | ✅ `effectTargetability.ts` → DSL + オペ |
+| **KW-P1-03** | チェイス E2E | ✅ battle→rush、`canRiderMountVehicle` |
+| **KW-P1-04** | ライド巻き戻し | ✅ `attachRideForBattleEntry` |
+| **KW-P1-05** | モーフ敵ターン順序 | ✅ `select_morph_unit` + 複数モーフテスト |
 
 ### P2 — 拡張・品質
 
@@ -231,10 +229,11 @@ packages/engine/src/
 │   └── registerReaction.ts
 ├── rules/
 │   ├── resist.ts             # PendingRegister 解決
-│   ├── combo.ts              # RC on ride-off, NC + cross position
+│   ├── combo.ts              # RC on ride-off dispatch
+│   ├── ridingComboEffects.ts # RC effectId テーブル
 │   ├── fractionalSp.ts       # cross + taxis → SP
 │   └── rushAdditionalCondition.ts  # blast bypass
-└── dsl/targetSelectors.ts    # breaker フィルタ（一部）
+└── dsl/targetSelectors.ts    # effectTargetability フィルタ
 ```
 
 ---
@@ -255,4 +254,5 @@ packages/engine/src/
 
 | 日付 | 内容 |
 |------|------|
+| 2026-06-11 | P1 完了 — RC 汎用、ブレイカー統一、チェイス/ライド/モーフ |
 | 2026-06-11 | 初版 — atwiki 用語集再読込 + エンジン突合 + P0–P2 TODO |

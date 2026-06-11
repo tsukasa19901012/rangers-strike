@@ -241,9 +241,30 @@ function buildJointRMap(): Record<string, JointComboREffectId> {
 export const JOINT_R_EFFECTS: Record<string, JointComboREffectId> = buildJointRMap();
 
 /** ライディングコンボ（RC）: バトル投入時の乗り降りで発動。 */
-export type RidingComboEffectId = "grant_sp1";
+export type RidingComboEffectId =
+  | "grant_sp1"
+  | "grant_sp2"
+  | "grant_sp3"
+  | "bp_boost_1000"
+  | "bp_boost_2000"
+  | "bp_boost_3000"
+  | "bp_boost_4000"
+  | "bp_boost_5000"
+  | "bp_boost_6000"
+  | "bp_boost_8000";
 
-export const IMPLEMENTED_RIDING_COMBO_EFFECT_IDS = ["grant_sp1"] as const satisfies readonly RidingComboEffectId[];
+export const IMPLEMENTED_RIDING_COMBO_EFFECT_IDS = [
+  "grant_sp1",
+  "grant_sp2",
+  "grant_sp3",
+  "bp_boost_1000",
+  "bp_boost_2000",
+  "bp_boost_3000",
+  "bp_boost_4000",
+  "bp_boost_5000",
+  "bp_boost_6000",
+  "bp_boost_8000",
+] as const satisfies readonly RidingComboEffectId[];
 
 const IMPLEMENTED_RIDING_IDS = new Set<string>(IMPLEMENTED_RIDING_COMBO_EFFECT_IDS);
 
@@ -312,7 +333,9 @@ export function getRidingComboEffect(cardId: string): RidingComboEffectId | unde
   const fromMap = RIDING_COMBO_EFFECTS[cardId];
   if (fromMap) return fromMap;
   const named = getRidingComboNamedEffect(cardId);
-  if (named?.effectId === "grant_sp1") return "grant_sp1";
+  if (named && IMPLEMENTED_RIDING_IDS.has(named.effectId)) {
+    return named.effectId as RidingComboEffectId;
+  }
   return undefined;
 }
 

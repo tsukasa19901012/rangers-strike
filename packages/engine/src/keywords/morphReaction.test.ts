@@ -64,6 +64,43 @@ describe("morph reaction window", () => {
     );
   });
 
+  it("offers morph unit selection when multiple morph units can react", () => {
+    const rusher = inst("ENEMY-RUSH", "enemy");
+    const morphField1 = inst("MORPH-FIELD-1", "morph-field-1");
+    const morphField2 = inst("MORPH-FIELD-2", "morph-field-2");
+    const morphHand1 = inst("MORPH-HAND-1", "morph-hand-1");
+    const morphHand2 = inst("MORPH-HAND-2", "morph-hand-2");
+
+    let state = createTestState({
+      phase: "rush",
+      activePlayer: "player1",
+      player1: { rush: [rusher] },
+      player2: {
+        rush: [morphField1, morphField2],
+        hand: [morphHand1, morphHand2],
+      },
+    });
+
+    state.definitions["ENEMY-RUSH"] = morphUnitDef("ENEMY-RUSH");
+    state.definitions["MORPH-FIELD-1"] = morphUnitDef("MORPH-FIELD-1", true);
+    state.definitions["MORPH-FIELD-2"] = morphUnitDef("MORPH-FIELD-2", true);
+    state.definitions["MORPH-HAND-1"] = morphUnitDef("MORPH-HAND-1");
+    state.definitions["MORPH-HAND-2"] = morphUnitDef("MORPH-HAND-2");
+
+    const result = emitUnitRushedAndFinalize(
+      state,
+      "player1",
+      rusher.instanceId,
+      "player1",
+    );
+
+    expect(result.state.pendingMorph?.morphUnitInstanceIds).toHaveLength(2);
+    expect(result.state.pendingEffectChoice).toBeUndefined();
+    expect(
+      getLegalActions(result.state).some((a) => a.type === "select_morph_unit"),
+    ).toBe(true);
+  });
+
   it("swaps morph field unit with matching hand card and inherits hold state", () => {
     const morphField = {
       ...inst("MORPH-FIELD", "morph-field"),

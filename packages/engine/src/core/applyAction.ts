@@ -150,7 +150,7 @@ import {
 } from "../rules/strikeReactions";
 import { isHidoraEggUsed, markBattleBlocked, markRushedThisTurn } from "../rules/turnModifiers";
 import { applyPassChase, applyResolveChase, listValidChaseVehicleIds } from "../keywords/chase";
-import { attachRideIfEligible } from "../keywords/ride";
+import { attachRideForBattleEntry } from "../keywords/ride";
 import {
   beginMorphUnitSelection,
   passMorphReaction,
@@ -1206,7 +1206,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (action.rideOff && found.card.mountedOnInstanceId) {
         battleCard = { ...battleCard, mountedOnInstanceId: undefined };
       } else {
-        battleCard = attachRideIfEligible(state, playerId, battleCard, action.rideOff);
+        battleCard = attachRideForBattleEntry(state, playerId, battleCard, action.rideOff);
       }
 
       nextPlayer = {
