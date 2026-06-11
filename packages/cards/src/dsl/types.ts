@@ -163,17 +163,9 @@ export type UnnamedRuleEntry = {
   partnerCardIds?: string[];
 };
 
-export type ZordConditionId =
-  | "discard_fusion_unit"
-  | "send_s_unit_to_power"
-  | "send_s_unit_to_discard"
-  | "send_s_unit_to_command_or_discard";
+import type { RushAdditionalCondition } from "../effectTaxonomy";
 
-export type RushAdditionalCondition = {
-  conditionId: ZordConditionId;
-  text: string;
-  unitCount?: number;
-};
+export type { RushAdditionalCondition, ZordConditionId } from "../effectTaxonomy";
 
 export type ImplementationMeta = {
   source: "dsl" | "legacy_unit_effects" | "legacy_operation" | "hybrid";

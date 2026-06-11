@@ -128,7 +128,9 @@ export function isMediumUnit(
   return resolveUnitSize(definitions, cardId) === "M";
 }
 
-export function isUnit(definition: CardDefinition | undefined): boolean {
+export function isUnit(
+  definition: CardDefinition | undefined,
+): definition is CardDefinition & { type: "unit" } {
   return definition?.type === "unit";
 }
 
@@ -430,7 +432,7 @@ function evaluateRushPowerAndZord(
 
   if (needsZordStateGate(definitions, unitDefinition.id)) {
     if (!powerContext || !resolved) return false;
-    return evaluateStateGate(powerContext as GameState, powerContext.playerId, resolved);
+    return evaluateStateGate(powerContext, powerContext.playerId, resolved);
   }
 
   if (needsOpponentDrawCost(definitions, unitDefinition.id)) {

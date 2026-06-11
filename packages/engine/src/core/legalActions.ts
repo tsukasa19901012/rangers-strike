@@ -325,6 +325,7 @@ function appendZordSetupActions(
   const player = state.players[playerId];
   for (const card of player.hand) {
     const definition = getDefinition(state.definitions, card.cardId);
+    if (!definition) continue;
     const isZordDown = needsZordDownPayment(
       card.cardId,
       definition.powerCost,

@@ -60,6 +60,7 @@ function isValidZordDownFusionMaterial(cardId: string): boolean {
 }
 
 export function isValidZordDownMaterial(
+  player: PlayerState,
   definitions: Record<string, CardDefinition>,
   rushingCardId: string,
   rushingInstanceId: string,
@@ -114,7 +115,7 @@ export function collectZordDownMaterials(
   for (const zone of ZORD_DOWN_MATERIAL_ZONES) {
     for (const card of player[zone]) {
       if (
-        isValidZordDownMaterial(definitions, rushingCardId, rushingInstanceId, card)
+        isValidZordDownMaterial(player, definitions, rushingCardId, rushingInstanceId, card)
       ) {
         candidates.push(card);
       }
@@ -135,6 +136,7 @@ export function findZordDownMaterial(
     if (!found) continue;
     if (
       !isValidZordDownMaterial(
+        player,
         definitions,
         rushingCardId,
         rushingInstanceId,

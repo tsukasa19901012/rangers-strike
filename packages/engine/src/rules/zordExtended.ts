@@ -7,6 +7,8 @@ import {
 } from "@rangers-strike/cards";
 import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
+
+type StateGateContext = Pick<GameState, "players" | "definitions">;
 import { COMMAND_ZONE_MAX } from "../types/game";
 import {
   getDefinition,
@@ -104,7 +106,7 @@ function selfFieldCards(player: PlayerState): CardInstance[] {
   ];
 }
 
-function countFieldUnits(state: GameState): number {
+function countFieldUnits(state: StateGateContext): number {
   let count = 0;
   for (const player of Object.values(state.players)) {
     for (const zone of ["rush", "battle"] as const) {
@@ -157,7 +159,7 @@ function hasSelfCommandWithFeature(
 }
 
 function hasOpponentUnitWithFeature(
-  state: GameState,
+  state: StateGateContext,
   playerId: PlayerId,
   feature: string,
 ): boolean {
@@ -201,7 +203,7 @@ function hasSelfUnitOrCommandWithFeature(
 
 /** state_gate 追加条件の状態チェック（素材支払い不要）。 */
 export function evaluateStateGate(
-  state: GameState,
+  state: StateGateContext,
   playerId: PlayerId,
   condition: RushAdditionalCondition,
 ): boolean {
