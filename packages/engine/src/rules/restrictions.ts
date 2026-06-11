@@ -38,6 +38,7 @@ import { findInZone, opponent } from "../core/helpers";
 import { TURN_RULE_IDS } from "../types/scopedModifiers";
 import { earthForceActive } from "./strikeReactions";
 import { effectiveBattleEntryHoldCount } from "./rushAdditionalCondition";
+import { wingTurnBlocksStrike } from "../keywords/battleKeywords";
 import {
   isBattleBlocked,
   opponentInfiniteChainBlocks,
@@ -572,6 +573,7 @@ export function findMandatoryBattleEntries(
   const mandatory: CardInstance[] = [];
 
   for (const card of player.rush) {
+    if (wingTurnBlocksStrike(player, card.instanceId)) continue;
     if (!canMoveUnitToBattle(state, playerId, card, "rush")) continue;
     if (hasAutoBattleEntryEachTurnNote(card.cardId) || earthForceRequiresBattleEntry(state)) {
       mandatory.push(card);

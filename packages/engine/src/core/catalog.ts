@@ -11,6 +11,7 @@ import type { SpFraction, SpValue } from "@rangers-strike/cards";
 import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { hasCommandForCardUse } from "../rules/restrictions";
+import { isDslPermanentOperation } from "../dsl/dslCatalog";
 import { promotedKeywordBpBonus } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
 import { legend3EnemySComboDelta } from "../rules/legend3/fieldEffects";
@@ -164,7 +165,9 @@ export function isPermanentOperation(definition: CardDefinition | undefined): bo
   if (!isOperation(definition)) return false;
   const effect = getCardEffect(definition!.id);
   if (effect?.kind === "permanent") return true;
-  return definition?.tags?.includes("常駐") ?? false;
+  if (definition?.tags?.includes("常駐")) return true;
+  if (definition?.text?.includes("※常駐")) return true;
+  return isDslPermanentOperation(definition!.id);
 }
 
 export function isCounterOperation(definition: CardDefinition | undefined): boolean {

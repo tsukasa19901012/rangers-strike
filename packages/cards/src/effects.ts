@@ -123,6 +123,28 @@ function resolveEffectKind(
   return operationKindFromTiming(trigger.timing);
 }
 
+function isPassivePermanentOperationDoc(doc: {
+  type?: string;
+  text?: string;
+  unnamedRules?: { rule?: string }[];
+  effects?: {
+    trigger: { type: string };
+    effects: { type: string; keyword?: string }[];
+  }[];
+}): boolean {
+  if (doc.type !== "operation") return false;
+  if (doc.text?.includes("※常駐")) return true;
+  if (doc.unnamedRules?.some((rule) => rule.rule === "resident")) return true;
+  return (doc.effects ?? []).some(
+    (effect) =>
+      effect.trigger.type === "while_in_field" &&
+      effect.effects.some(
+        (primitive) =>
+          primitive.type === "grant_keyword" && primitive.keyword === "resident",
+      ),
+  );
+}
+
 /** U4 — CardDocument 優先。静的 ALL_EFFECTS は target / 空テキスト・kind 補完用。 */
 export function getCardEffect(cardId: string): CardEffectMeta | undefined {
   const staticMeta = ALL_EFFECTS[cardId];
@@ -134,6 +156,15 @@ export function getCardEffect(cardId: string): CardEffectMeta | undefined {
         effectId: operation.id,
         text: resolveEffectText(cardId, doc, operation, staticMeta),
         kind: resolveEffectKind(doc, operation.trigger, staticMeta),
+        target: staticMeta?.target,
+      };
+    }
+    if (isPassivePermanentOperationDoc(doc)) {
+      const passive = doc.effects?.find((effect) => effect.trigger.type === "while_in_field");
+      return {
+        effectId: passive?.id ?? "unnamed_resident",
+        text: resolveEffectText(cardId, doc, passive ?? { text: doc.text ?? "" }, staticMeta),
+        kind: "permanent",
         target: staticMeta?.target,
       };
     }

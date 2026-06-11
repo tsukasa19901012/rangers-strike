@@ -51,6 +51,12 @@ export type BattleAction = {
   defenderInstanceId: string;
 };
 
+export type HoldForWingAction = {
+  type: "hold_for_wing";
+  playerId: PlayerId;
+  instanceId: string;
+};
+
 export type DrawAction = {
   type: "draw";
   playerId: PlayerId;
@@ -290,6 +296,7 @@ export type GameAction =
   | MoveToBattleAction
   | StrikeAction
   | BattleAction
+  | HoldForWingAction
   | DrawAction
   | EndPhaseAction
   | PlayOperationAction

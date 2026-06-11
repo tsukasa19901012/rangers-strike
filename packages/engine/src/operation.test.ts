@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { legend1Catalog } from "@rangers-strike/cards";
+import { fullPlayableCatalog, legend1Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
-import { createTestState, heldEtCommand, heldWbCommand, inst } from "./testing/fixtures";
+import { createTestState, heldEtCommand, heldMaCommand, heldWbCommand, inst } from "./testing/fixtures";
 import { getComboNumberDelta } from "./rules/turnModifierBridge";
 
 function def(id: string) {
@@ -172,6 +172,32 @@ describe("dynamite power RS-007", () => {
 
     expect(result.state.players.player1.operation).toHaveLength(1);
     expect(result.state.players.player1.operation[0]?.cardId).toBe("RS-030");
+  });
+
+  it("places DSL passive permanent operation RS-433 in operation zone", () => {
+    const op = inst("RS-433", "op1");
+    const card = fullPlayableCatalog.cards.find((c) => c.id === "RS-433");
+    if (!card) throw new Error("missing RS-433");
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [op],
+        command: [heldMaCommand("c1")],
+      },
+    });
+    state.definitions["RS-433"] = card;
+
+    const action = getLegalActions(state).find(
+      (a) => a.type === "play_operation" && a.instanceId === op.instanceId,
+    );
+    expect(action).toBeDefined();
+    const result = applyAction(state, action!);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.state.players.player1.operation).toHaveLength(1);
+    expect(result.state.players.player1.operation[0]?.cardId).toBe("RS-433");
+    expect(result.state.players.player1.discard.some((c) => c.cardId === "RS-433")).toBe(false);
   });
 
   it("applies bird nick wave combo delta RS-015", () => {

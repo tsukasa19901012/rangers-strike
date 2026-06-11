@@ -155,7 +155,8 @@ import {
   beginMorphUnitSelection,
   passMorphReaction,
 } from "../keywords/morphReaction";
-import { canWingAttackFromRush } from "../keywords/battleKeywords";
+import { canWingAttackFromRush, applyHoldForWing, applyNoStrikeAfterRideOff } from "../keywords/battleKeywords";
+import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import {
   attachOperationCardToDslResume,
   dslOperationOpensChoose,
@@ -1212,6 +1213,12 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         ...nextPlayer,
         battle: [...nextPlayer.battle, battleCard],
       };
+      if (
+        action.rideOff &&
+        cardHasGrantKeyword(battleCard.cardId, "no_strike_after_rideoff")
+      ) {
+        nextPlayer = applyNoStrikeAfterRideOff(nextPlayer, battleCard.instanceId);
+      }
       let nextState: GameState = {
         ...state,
         ...updatePlayer(state, playerId, nextPlayer),
@@ -1791,6 +1798,13 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       return ok(nextState, buildSimpleLogEntry(playerId, "pass_chase"));
     }
 
+    case "hold_for_wing": {
+      if (state.phase !== "battle") return fail("wrong_phase");
+      const held = applyHoldForWing(state, playerId, action.instanceId);
+      if (!held) return fail("illegal_action");
+      return ok(held, buildSimpleLogEntry(playerId, "hold_for_wing", action.instanceId));
+    }
+
     case "battle": {
       if (state.phase !== "battle") return fail("wrong_phase");
       state = clearBakiBakiExtraAttack(state, playerId, action.attackerInstanceId);
@@ -1888,7 +1902,6 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           const rush = [...wingPlayer.rush];
           rush[rushIndex] = {
             ...rush[rushIndex]!,
-            commandHeld: true,
             battleActed: true,
           };
           wingPlayer = markBattleBlocked({ ...wingPlayer, rush }, action.attackerInstanceId);

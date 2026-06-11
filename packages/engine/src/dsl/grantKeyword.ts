@@ -66,6 +66,7 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "breaker",
   "scrum",
   "not_selectable_except_attack",
+  "no_strike_after_rideoff",
 ]);
 
 export const SUPPORTED_GRANT_KEYWORDS = new Set([

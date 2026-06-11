@@ -13,7 +13,7 @@ atwiki: page 156
 
 関連: UNKNOWN
 
-実装仕様: 未確認
+実装仕様: **部分** — `ride.ts`, `attachRideIfEligible`。ライドオフ RC は `grant_sp1` のみ
 
 
 ## atwiki 取得（atwiki）

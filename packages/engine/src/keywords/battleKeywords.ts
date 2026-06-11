@@ -1,11 +1,15 @@
 import type { Category } from "@rangers-strike/cards";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PlayerId } from "../types/game";
+import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardHasKeyword } from "./cardKeywords";
 import { getDefinition, isLargeUnit } from "../core/catalog";
+import { addTurnRestrictionModifier } from "../core/scopedModifiers";
 import { cardHasGrantKeyword, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
 import { battlePositionOneBased } from "../rules/fractionalSp";
+import { isBattleBlocked, markBattleBlocked } from "../rules/turnModifiers";
+import { RESTRICTION_IDS } from "../types/scopedModifiers";
+import { findInZone, updatePlayer } from "../core/helpers";
 
 const TAXIS_POSITION: Record<Category, number> = {
   WB: 1,
@@ -99,39 +103,39 @@ export function taxisSpFloor(
   return 1;
 }
 
-function numericComboNumbers(
-  battle: CardInstance[],
+function numericComboNumber(
   definitions: Record<string, CardDefinition>,
-): number[] {
-  const numbers: number[] = [];
-  for (const card of battle) {
-    const def = getDefinition(definitions, card.cardId);
-    if (typeof def?.comboNumber === "number") {
-      numbers.push(def.comboNumber);
-    }
-  }
-  return numbers;
+  cardId: string,
+): number | null {
+  const def = getDefinition(definitions, cardId);
+  return typeof def?.comboNumber === "number" ? def.comboNumber : null;
 }
 
-/** スクラム: バトル CN が左から昇順ならアタック不可。 */
+/** スクラム: 右隣ユニットの CN が「自 CN + 1」の間、アタック不可。 */
 export function scrumBlocksAttack(
   state: GameState,
   defenderPlayerId: PlayerId,
   defenderInstanceId: string,
 ): boolean {
   const player = state.players[defenderPlayerId];
-  const defender = player.battle.find((c) => c.instanceId === defenderInstanceId);
-  if (!defender) return false;
+  const defenderIndex = player.battle.findIndex((c) => c.instanceId === defenderInstanceId);
+  if (defenderIndex < 0) return false;
+
+  const defender = player.battle[defenderIndex]!;
   if (!cardHasBattleKeyword(state.definitions, defender.cardId, "scrum")) {
     return false;
   }
 
-  const numbers = numericComboNumbers(player.battle, state.definitions);
-  if (numbers.length < 2) return false;
-  for (let i = 1; i < numbers.length; i += 1) {
-    if (numbers[i]! <= numbers[i - 1]!) return false;
-  }
-  return true;
+  const defenderCn = numericComboNumber(state.definitions, defender.cardId);
+  if (defenderCn === null) return false;
+
+  const right = player.battle[defenderIndex + 1];
+  if (!right) return false;
+
+  const rightCn = numericComboNumber(state.definitions, right.cardId);
+  if (rightCn === null) return false;
+
+  return rightCn === defenderCn + 1;
 }
 
 /** ブレイカー: 敵ユニット/ビークル効果の対象にならない（ブレイカー同士は可）。 */
@@ -235,12 +239,86 @@ export function canWingAttackFromRush(
   playerId: PlayerId,
   unit: CardInstance,
 ): boolean {
+  if (state.phase !== "battle") return false;
   if (!cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId })) {
     return false;
   }
   if (unit.battleActed) return false;
+  if (!unit.commandHeld) return false;
   const inRush = state.players[playerId].rush.some((c) => c.instanceId === unit.instanceId);
   return inRush;
+}
+
+export function canHoldForWing(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+): boolean {
+  if (state.phase !== "battle") return false;
+  if (!cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId })) {
+    return false;
+  }
+  if (unit.battleActed) return false;
+  if (unit.commandHeld) return false;
+  if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
+  return state.players[playerId].rush.some((c) => c.instanceId === unit.instanceId);
+}
+
+export function applyHoldForWing(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): GameState | null {
+  const player = state.players[playerId];
+  const found = findInZone(player, "rush", instanceId);
+  if (!found || !canHoldForWing(state, playerId, found.card)) return null;
+
+  const rush = player.rush.map((c) =>
+    c.instanceId === instanceId ? { ...c, commandHeld: true } : c,
+  );
+  let nextPlayer = markBattleBlocked({ ...player, rush }, instanceId);
+  nextPlayer = addTurnRestrictionModifier(
+    nextPlayer,
+    instanceId,
+    RESTRICTION_IDS.WING_TURN_NO_STRIKE,
+  );
+
+  return { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+}
+
+export function wingTurnBlocksStrike(player: PlayerState, instanceId: string): boolean {
+  return (
+    player.modifiers?.some(
+      (m) =>
+        m.kind === "restriction" &&
+        m.instanceId === instanceId &&
+        m.restriction === RESTRICTION_IDS.WING_TURN_NO_STRIKE &&
+        m.scope === "turn",
+    ) ?? false
+  );
+}
+
+export function rideOffBlocksStrike(player: PlayerState, instanceId: string): boolean {
+  return (
+    player.modifiers?.some(
+      (m) =>
+        m.kind === "restriction" &&
+        m.instanceId === instanceId &&
+        m.restriction === RESTRICTION_IDS.NO_STRIKE_AFTER_RIDEOFF &&
+        m.scope === "turn",
+    ) ?? false
+  );
+}
+
+export function applyNoStrikeAfterRideOff(
+  player: PlayerState,
+  instanceId: string,
+): PlayerState {
+  return addTurnRestrictionModifier(
+    player,
+    instanceId,
+    RESTRICTION_IDS.NO_STRIKE_AFTER_RIDEOFF,
+  );
 }
 
 export function battlePositionForInstance(

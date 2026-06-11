@@ -17,6 +17,7 @@ export function canOfferRegister(
   pending: Pick<PendingLeave, "toZone" | "fromZone" | "leavingCardId" | "skipRegister">,
 ): boolean {
   if (pending.skipRegister) return false;
+  if (pending.registerEligible !== true) return false;
   if (pending.toZone !== "discard" || pending.fromZone !== "battle") return false;
   return cardHasRegisterKeyword(state, pending.leavingCardId);
 }

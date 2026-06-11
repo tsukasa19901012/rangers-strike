@@ -252,9 +252,26 @@ confidence: LOW
 * リリース手段があれば同一ユニットで複数回ウイング可
 
 実装仕様:
-* **未実装**（framework 外）
+* `hold_for_wing`, `canWingAttackFromRush`, `WING_TURN_NO_STRIKE`（P0 対応済 2026-06-11）
+* 複数回ウイング / BA→rush→wing は P2
 
-confidence: HIGH（ルール）/ LOW（実装）
+confidence: HIGH（ルール）/ **中**（実装）
+
+---
+
+## スクラム
+
+出典:
+* https://w.atwiki.jp/renst/pages/1290.html
+
+概要:
+「これの CN より 1 多い CN を持つユニットが**次**に並んでいる間、これはアタックされない」
+
+実装仕様:
+* `scrumBlocksAttack` — 右隣 CN === 自 CN + 1 のみ（2026-06-11）
+* 旧 XG 全体昇順 variant は削除
+
+confidence: HIGH（ルール）/ **高**（実装）
 
 ---
 

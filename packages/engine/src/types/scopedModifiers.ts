@@ -49,4 +49,6 @@ export const RESTRICTION_IDS = {
   CANNOT_ENTER_BATTLE: "cannot_enter_battle",
   RUSHED_THIS_TURN: "rushed_this_turn",
   BAKI_BAKI_EXTRA_ATTACK: "baki_baki_extra_attack_only",
+  WING_TURN_NO_STRIKE: "wing_turn_no_strike",
+  NO_STRIKE_AFTER_RIDEOFF: "no_strike_after_rideoff",
 } as const;

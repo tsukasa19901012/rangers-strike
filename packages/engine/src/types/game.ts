@@ -168,6 +168,8 @@ export type PendingLeave = {
   phasePlayerId: PlayerId;
   /** レジスト選択をスキップして捨札へ。 */
   skipRegister?: boolean;
+  /** バトル BP 比較による撃破のみ true（効果撃破は false）。 */
+  registerEligible?: boolean;
   /** ユニット退場後にストライク解決を再開（five-tech / plasma）。 */
   resumePendingStrike?: { damageCancelled: boolean };
   /** 1回のバトルで両プレイヤーのユニットが退場する場合、守り側の後に攻撃側をキュー。 */

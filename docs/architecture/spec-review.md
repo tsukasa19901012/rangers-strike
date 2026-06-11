@@ -1,7 +1,7 @@
 # レンジャーズストライク 仕様レビュー
 
-更新日: 2026-06-09  
-レビュー対象: `docs/wiki/*`, `docs/wiki/cards/*`, `docs/wiki/unresolved.md`  
+更新日: 2026-06-11  
+レビュー対象: `docs/wiki/*`, `docs/wiki/cards/*`, `docs/wiki/unresolved.md`, [keyword-implementation.md](./keyword-implementation.md)  
 目的: 実装前の仕様確定
 
 ---
@@ -205,13 +205,13 @@ Wiki 上ルールは概ね確定しているが、エンジン設計・スコー
 
 ## 3. 中期（Legend 4-9 / EXP 前）
 
-7. **I-05 ウイング / I-06 チェイス** — キーワード実装か、対象カードをプール外とするかをスコープ判断。
-8. **I-07 JC/RC** — EXP（RK-*）カード実装に必須。combo.ts 設計レビュー。
-9. **U-01 エンドフェイズ grnrngr 画像** — OCR または手動転記。現行 atwiki 155 で足りるか最終宣言。
+7. **I-05 ウイング / I-06 チェイス / I-07 JC/RC** — 骨格部分実装済。残ギャップは [keyword-implementation.md](./keyword-implementation.md) P0–P1。
+8. **U-01 エンドフェイズ grnrngr 画像** — OCR または手動転記。現行 atwiki 155 で足りるか最終宣言。
 
 ## 4. スコープ外として確定可
 
-10. **U-08 タッグストライク / U-09 XG / U-10 コマンダー** — Wiki 収集完了。本シミュレーター v1 スコープ外と明記済み。再議不要。
+9. **U-08 タッグストライク / U-10 コマンダー** — 意図的未実装。再議不要。
+10. **U-09 XG 全カード** — キーワード骨格は実装中。729枚の個別効果は backlog。
 11. **U-04 / U-05** — grnrngr FAQ 追加取得は優先度 LOW。現行 FAQ + atwiki で足りる範囲を文書化。
 
 ---
@@ -228,8 +228,9 @@ Wiki 上ルールは概ね確定しているが、エンジン設計・スコー
 | ダメージ・ストライク | **HIGH** | 着手可（タッグ除く） |
 | パワー計算（敵マルチ） | **HIGH（ルール）** | **未実装 — 要 I-01** |
 | カード効果データ | MEDIUM | verify 実行前は要注意 |
-| ウイング・チェイス | HIGH（ルール） | スコープ判断待ち |
-| XG / プロモ | Wiki HIGH / ルール LOW | スコープ外 |
+| ウイング・チェイス | HIGH（ルール） | **部分実装** — P0 TODO 参照 |
+| XG キーワード（クロス等） | Wiki HIGH | **部分〜高** — スクラム RK 未 |
+| XG / プロモ 全カード | Wiki HIGH / 効果多数未 | カード効果は個別 backlog |
 
 ### 結論
 
@@ -240,7 +241,7 @@ Wiki 上ルールは概ね確定しているが、エンジン設計・スコー
 - 敵マルチ→パワー加算（I-01）の実装仕様確定
 - cards.json と Wiki の全弾突合（I-02）
 - エラッタ差分の統一（C-06）
-- ウイング・チェイス・JC/RC を v1 スコープに含めるかのプロダクト判断（I-05〜07）
+- ウイング・チェイス・JC/RC の **P0 ギャップ** 完了（[keyword-implementation.md](./keyword-implementation.md)）
 
 ---
 
@@ -254,6 +255,7 @@ Wiki 上ルールは概ね確定しているが、エンジン設計・スコー
 | `docs/wiki/battle.md` | バトル・NC・レジスト |
 | `docs/wiki/damage.md` | ストライク・ダメージ支払い |
 | `docs/wiki/keywords.md` | キーワード・マルチ・ウイング等 |
+| [keyword-implementation.md](./keyword-implementation.md) | キーワード × 実装 × TODO |
 | `docs/wiki/timing.md` | 効果スタック・優先度 |
 | `docs/wiki/faq.md` | 公式 FAQ 整理 |
 | `docs/wiki/state-mapping.md` | ルール→エンジン gap |

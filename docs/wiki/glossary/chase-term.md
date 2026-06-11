@@ -13,7 +13,7 @@ atwiki: page 1292
 
 関連: UNKNOWN
 
-実装仕様: 未確認
+実装仕様: **部分** — `chase.ts`, `PendingChase`
 
 
 ## atwiki 取得（atwiki）

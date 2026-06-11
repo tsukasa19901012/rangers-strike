@@ -1431,10 +1431,19 @@ export function quickActionPriority(
     return (lethal ? 80_000 : nearLethal ? 25_000 : 0) + damage * 800;
   }
 
+  if (action.type === "hold_for_wing") {
+    const player = state.players[action.playerId];
+    const unit = player.rush.find((c) => c.instanceId === action.instanceId);
+    if (!unit) return 0;
+    return effectiveBp(state, action.playerId, unit) + 6_000;
+  }
+
   if (action.type === "battle") {
     const player = state.players[action.playerId];
     const enemy = state.players[opponent(action.playerId)];
-    const attacker = player.battle.find((c) => c.instanceId === action.attackerInstanceId);
+    const attacker =
+      player.battle.find((c) => c.instanceId === action.attackerInstanceId) ??
+      player.rush.find((c) => c.instanceId === action.attackerInstanceId);
     const defender = enemy.battle.find((c) => c.instanceId === action.defenderInstanceId)
       ?? enemy.rush.find((c) => c.instanceId === action.defenderInstanceId);
     if (!attacker || !defender) return 0;

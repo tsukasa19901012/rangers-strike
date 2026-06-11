@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-11T16:12:53.408Z",
+  "generatedAt": "2026-06-11T22:22:24.366Z",
   "suite": "simulateFullPromoted",
   "games": 50,
   "unresolvedCount": 0,
-  "effectLogCount": 693,
+  "effectLogCount": 505,
   "unresolvedRate": 0,
   "warnThreshold": 0.25,
   "topUnresolvedByEffectId": [],
   "topUnresolvedByCardId": [],
   "gameplay": {
-    "winner": 33,
-    "applyFailed": 17,
+    "winner": 18,
+    "applyFailed": 32,
     "withRushPhase": 50,
     "withBattlePhase": 50,
-    "withBattleAction": 49,
-    "withStrike": 25
+    "withBattleAction": 46,
+    "withStrike": 19
   }
 }

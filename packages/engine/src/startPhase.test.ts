@@ -143,6 +143,22 @@ describe("start phase steps", () => {
     expect(status.battleUnitCount).toBe(1);
   });
 
+  it("auto-advances when turn-end effects cleared holds before release_start_commands", () => {
+    let state = createTestState({
+      phase: "start",
+      player1: {
+        deck: [inst("TST-OP", "d1")],
+        command: [],
+        hand: [{ ...inst("TST-OP", "c1"), commandHeld: false }],
+        hasReleasedCommandsThisStart: false,
+        hasReturnedBattleThisStart: true,
+      },
+    });
+
+    state = unwrap(applyAction(state, { type: "draw", playerId: "player1" }));
+    expect(state.phase).toBe("charge");
+  });
+
   it("auto-advances to charge when mandatory steps complete and no bonus draw", () => {
     let state = createTestState({
       phase: "start",

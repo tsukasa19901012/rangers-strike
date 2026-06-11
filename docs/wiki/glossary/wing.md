@@ -13,7 +13,7 @@ atwiki: page 1537
 
 関連: UNKNOWN
 
-実装仕様: 未確認
+実装仕様: **部分** — `canWingAttackFromRush`, `wingAllowsEmptyBattleStrike`。事前ホールド未 — [keyword-implementation.md](../../architecture/keyword-implementation.md) KW-P0-02
 
 
 ## atwiki 取得（manifest-batch5.json）

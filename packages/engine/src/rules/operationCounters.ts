@@ -1,12 +1,14 @@
 import type { Category } from "@rangers-strike/cards";
 import { getCardEffect, winButDestroyedVsSp1 } from "@rangers-strike/cards";
 import type {
+  CardInstance,
   GameState,
   PendingBattle,
   PendingLeave,
   PendingRush,
   PendingStrike,
   PlayerId,
+  PlayerState,
 } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import {
@@ -43,6 +45,31 @@ import { shouldMedicalRescueToPower } from "./legend2/fieldEffects";
 import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
 import { buildPendingChaseFromIntent, buildPendingChaseOnVehicleDestroyed, canInitiateChase } from "../keywords";
 import { findFieldInstanceByKeyword } from "../dsl/fieldKeywords";
+
+function findUnitInRushOrBattle(
+  player: PlayerState,
+  instanceId: string,
+): { zone: "rush" | "battle"; index: number; card: CardInstance } | null {
+  for (const zone of ["battle", "rush"] as const) {
+    const index = player[zone].findIndex((c) => c.instanceId === instanceId);
+    if (index >= 0) return { zone, index, card: player[zone][index]! };
+  }
+  return null;
+}
+
+function markUnitBattleActed(player: PlayerState, instanceId: string): PlayerState {
+  for (const zone of ["battle", "rush"] as const) {
+    const index = player[zone].findIndex((c) => c.instanceId === instanceId);
+    if (index < 0) continue;
+    return {
+      ...player,
+      [zone]: player[zone].map((c) =>
+        c.instanceId === instanceId ? { ...c, battleActed: true } : c,
+      ),
+    };
+  }
+  return player;
+}
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { registerBattlePendingResolver } from "../events/listeners/battleDeclaredListener";
 
@@ -598,12 +625,7 @@ export function resolveBattlePendingCore(
 
   if (pending.battleCancelled) {
     const attacker = state.players[pending.attackerPlayerId];
-    const nextAttacker = {
-      ...attacker,
-      battle: attacker.battle.map((c) =>
-        c.instanceId === pending.attackerInstanceId ? { ...c, battleActed: true } : c,
-      ),
-    };
+    const nextAttacker = markUnitBattleActed(attacker, pending.attackerInstanceId);
     return finish(
       {
         ...state,
@@ -640,7 +662,9 @@ export function resolveBattlePendingCore(
   }
 
   const defenderPlayer = battleState.players[defenderOwner];
-  const attackerFound = findInZone(attacker, "battle", pending.attackerInstanceId);
+  const attackerFound =
+    findInZone(attacker, "battle", pending.attackerInstanceId) ??
+    findInZone(attacker, "rush", pending.attackerInstanceId);
   const defenderFound = findInZone(defenderPlayer, defenderZone, defenderInstanceId);
 
   if (attackerFound) {
@@ -655,9 +679,8 @@ export function resolveBattlePendingCore(
   }
 
   const refreshedAttacker = battleState.players[attackerId];
-  const refreshedAttackerFound = findInZone(
+  const refreshedAttackerFound = findUnitInRushOrBattle(
     refreshedAttacker,
-    "battle",
     pending.attackerInstanceId,
   );
   const refreshedDefenderPlayer = battleState.players[defenderOwner];
@@ -673,12 +696,10 @@ export function resolveBattlePendingCore(
       const currentAttacker = base.players[attackerId];
       return {
         ...base,
-        ...updatePlayer(base, attackerId, {
-          ...currentAttacker,
-          battle: currentAttacker.battle.map((c) =>
-            c.instanceId === pending.attackerInstanceId ? { ...c, battleActed: true } : c,
-          ),
-        }),
+        ...updatePlayer(base, attackerId, markUnitBattleActed(
+          currentAttacker,
+          pending.attackerInstanceId,
+        )),
       };
     };
     const logCardId = refreshedAttackerFound?.card.cardId ?? pending.attackerInstanceId;
@@ -715,22 +736,23 @@ export function resolveBattlePendingCore(
     const currentAttacker = base.players[attackerId];
     return {
       ...base,
-      ...updatePlayer(base, attackerId, {
-        ...currentAttacker,
-        battle: currentAttacker.battle.map((c) =>
-          c.instanceId === pending.attackerInstanceId ? { ...c, battleActed: true } : c,
-        ),
-      }),
+      ...updatePlayer(base, attackerId, markUnitBattleActed(
+        currentAttacker,
+        pending.attackerInstanceId,
+      )),
     };
   };
 
+  const attackerZone = refreshedAttackerFound.zone;
   const attackerLeaveIntent: LeaveIntent = {
     ownerPlayerId: attackerId,
     instanceId: pending.attackerInstanceId,
-    fromZone: "battle",
+    fromZone: attackerZone,
     toZone: "discard",
     leavingCardId: refreshedAttackerFound.card.cardId,
     phasePlayerId: pending.phasePlayerId,
+    registerEligible:
+      finalDestroyAttacker && !winButSelfDestruct && attackerZone === "battle",
   };
 
   let nextState = battleState;
@@ -744,6 +766,7 @@ export function resolveBattlePendingCore(
       toZone: "discard",
       leavingCardId: refreshedDefenderFound.card.cardId,
       phasePlayerId: pending.phasePlayerId,
+      registerEligible: defenderZone === "battle",
       followUpAttackerLeave: finalDestroyAttacker ? attackerLeaveIntent : undefined,
     });
     if (leaveResult.deferred) {

@@ -211,6 +211,27 @@ confidence: HIGH
 
 ---
 
+## ウイング
+
+出典:
+* https://w.atwiki.jp/renst/pages/1537.html
+* `glossary/wing.md`
+
+概要:
+ラッシュエリアでホールドし、BA に出さずラッシュからアタック。
+
+ルール:
+* 自軍 BF 中のみ / ラッシュのみ / 当ターン BA 不可 / ストライク不可（SP1+ 含む）
+* BA 出場→ラッシュ戻り→再ウイング可
+
+実装仕様:
+* `canWingAttackFromRush`, `applyAction` attack from rush
+* **部分** — [keyword-implementation.md](../architecture/keyword-implementation.md) KW-P0-02/03
+
+confidence: HIGH（ルール）/ MED（実装）
+
+---
+
 ## 代用・バトルキャンセル
 
 出典:

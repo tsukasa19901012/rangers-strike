@@ -3,8 +3,9 @@
 **目的:** 最小リスクで Legend 1–3 コアループを完成させるための実装順序  
 **対象:** `packages/engine`, `packages/cards`, `apps/web`  
 **参照:** [event-architecture.md](./event-architecture.md), [state-gap-analysis.md](./state-gap-analysis.md), [spec-review.md](./spec-review.md)  
-**日付:** 2026-06-09  
-**コード変更:** なし（計画のみ）
+**日付:** 2026-06-11  
+**コード変更:** なし（計画のみ）  
+**キーワード状況:** [keyword-implementation.md](./keyword-implementation.md)
 
 ---
 
@@ -169,9 +170,11 @@ flowchart TD
 |----|------|------|------|
 | T3-01 | **同時効果のプレイヤー順序選択** | `simultaneousGroupId` 書き込み + `simultaneous_order` Pending | インフラのみ（I-04） |
 | T3-02 | **JC（ジョイントコンボ）** | L/R 配置・能力付加 | `jointComboEffects.ts` 部分 |
-| T3-03 | **RC（ライディングコンボ）** | 乗車・ライドオフ・バトル進入 | `mountedOnInstanceId` あり、解決未確認（I-07） |
-| T3-04 | **ウイング** | 空バトルエリア例外 | 未実装（U-06, I-05） |
-| T3-05 | **チェイス** | 追撃・連鎖カウンター | 未実装（U-07, I-06） |
+| T3-03 | **RC（ライディングコンボ）** | 乗車・ライドオフ・バトル進入 | `ride.ts` + `grant_sp1` のみ。`no_strike_after_rideoff` 未配線 |
+| T3-04 | **ウイング** | ラッシュからアタック・空BAストライク | **部分** — 事前ホールド・ストライク禁止未（KW-P0-02/03） |
+| T3-05 | **チェイス** | ライド乗り換え | **部分** — `PendingChase` 骨格あり、E2E 不足（KW-P1-03） |
+| T3-05b | **XG キーワード横断** | クロス・スクラム・タクス・ブレイカー・ブラスト | **部分〜高** — スクラム RK variant 未（KW-P0-01） |
+| T3-05c | **モーフ** | 敵ラッシュ反応置換 | **部分** — `morphReaction.ts` 済、能動モーフはカード別 |
 | T3-06 | オペレーション解決フレームワーク | `resolveOperation.ts` + 常駐/非常駐 | 実装済 |
 | T3-07 | フィールドオーラ / BP 常駐修正 | `fieldAuras.ts`, `fieldEffects` | 実装済 |
 | T3-08 | 名前付きユニット効果フレームワーク | `namedUnitEffects.ts` | 実装済 |
@@ -196,11 +199,13 @@ flowchart TD
 | T3-03 RC | T2-07（バトル進入）, T2-11（離場） |
 | T3-04 ウイング | T2-09（アタック制限の例外） |
 | T3-05 チェイス | T2-06（カウンター）, T3-03（RC ライドオフ） |
+| T3-05b XG キーワード | T2-08（NC / combo 基盤） |
+| T3-05c モーフ | T2-04（ラッシュ窓） |
 | T3-01 同時順序 | T2-15（`pendingEffectChoice`） |
 | T3-11 Event 層 | T2 コアループ安定後 |
 | Tier 4 カード群 | T3-02〜05 のスコープ判断完了後 |
 
-**プロダクト判断待ち:** I-05（ウイング）, I-06（チェイス）, I-07（JC/RC）— v1 スコープに含めるか要 ADR
+**プロダクト判断待ち:** I-05（ウイング残ギャップ）, I-06（チェイス E2E）, I-07（RC 汎用解決）— 骨格は部分実装済。P0 TODO 参照 [keyword-implementation.md](./keyword-implementation.md)
 
 ### 想定工数
 
@@ -209,8 +214,9 @@ flowchart TD
 | T3-01 同時順序 UI + エンジン | **3–5 人日** | Pending 拡張 + Web UI |
 | T3-02 JC フレームワーク完成 | **3–4 人日** | combo.ts 拡張 + 代表カード 2–3 枚で検証 |
 | T3-03 RC フレームワーク完成 | **4–6 人日** | 乗車・ライドオフ・進入連鎖 |
-| T3-04 ウイング | **2–3 人日** | スコープ入りの場合 |
-| T3-05 チェイス | **3–5 人日** | 新 Pending 候補。RC 後が望ましい |
+| T3-04 ウイング残 | **1–2 人日** | 事前ホールド + ストライク禁止 |
+| T3-05 チェイス E2E | **2–3 人日** | RC 後が望ましい |
+| T3-05b スクラム RK | **1 人日** | KW-P0-01 |
 | T3-10 エンドフェイズ詳細 | **1–2 人日** | grnrngr 画像未取得なら LOW 優先 |
 | T3-11 Event Phase 1–2 | **5–8 人日** | 全面導入ではなく主要 3 経路のみ |
 | T3-12 Pending 分割 | **5–8 人日** | リファクタ。機能追加と分離推奨 |
@@ -220,7 +226,7 @@ flowchart TD
 
 | リスク | 深刻度 | 緩和策 |
 |--------|--------|--------|
-| ウイング・チェイスのスコープ未決定 | **HIGH** | Tier 3 着手前に ADR。対象外なら依存カードをプール外明示 |
+| ウイング・チェイスのスコープ未決定 | MED | P0 TODO 完了で v1 採用可。対象外カードはプール外明示 |
 | JC/RC の engine 実装詳細不明（U-15） | MED | 用語集 + 代表 EXP カードでスパイク実装 |
 | Event 層導入による回帰 | MED | Phase 1 は rush/leave/strike のみ。既存テストを維持 |
 | ウイング + SP 撃破の裁定（C-04） | LOW | 実装時 grnrngr FAQ 再確認 |
@@ -421,6 +427,7 @@ M6: Tier5 表面化した裁定のみ対応
 
 | 文書 | 役割 |
 |------|------|
+| [keyword-implementation.md](./keyword-implementation.md) | **キーワードルール × 実装 × P0–P2 TODO** |
 | [implementation-inventory.md](./implementation-inventory.md) | **未実装一覧（ルール・カード・UI 3層）** — 開発バックログの入口 |
 | [spec-review.md](./spec-review.md) | 確定/未確定仕様、I-01〜14 |
 | [state-gap-analysis.md](./state-gap-analysis.md) | State ギャップ、P0–P4 改善 |

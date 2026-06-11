@@ -26,6 +26,30 @@ export function getDslOperationEffect(
   );
 }
 
+/** while_in_field + resident 等、ラッシュ発動時に常駐置き場へ置く DSL オペ。 */
+export function isDslPermanentOperation(cardId: string): boolean {
+  const doc = getCardDocument(cardId);
+  if (!doc || doc.type !== "operation") return false;
+  if (doc.implementation?.handler !== "interpreter") return false;
+
+  if (doc.text?.includes("※常駐")) return true;
+  if (doc.unnamedRules?.some((rule) => rule.rule === "resident")) return true;
+  if (getDslOperationEffect(cardId, "resident")) return true;
+
+  for (const effect of doc.effects ?? []) {
+    if (effect.trigger.type !== "while_in_field") continue;
+    if (
+      effect.effects.some(
+        (primitive) =>
+          primitive.type === "grant_keyword" && primitive.keyword === "resident",
+      )
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function isSupportedPrimitive(primitive: EffectPrimitive): boolean {
   switch (primitive.type) {
     case "draw":

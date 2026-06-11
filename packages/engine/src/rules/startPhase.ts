@@ -100,9 +100,19 @@ export function initializeStartPhasePlayer(player: PlayerState): PlayerState {
   };
 }
 
+function hasHeldCommands(player: PlayerState): boolean {
+  return player.command.some((c) => c.commandHeld);
+}
+
+/** ターン終了効果（冒険 RS-030 等）でホールドが先に解消された場合も完了とみなす。 */
+export function isReleaseStepComplete(player: PlayerState): boolean {
+  if (player.hasReleasedCommandsThisStart === true) return true;
+  return !hasHeldCommands(player);
+}
+
 export function hasCompletedStartPhaseSteps(player: PlayerState): boolean {
   return (
-    player.hasReleasedCommandsThisStart === true &&
+    isReleaseStepComplete(player) &&
     player.hasReturnedBattleThisStart === true &&
     player.hasDrawnThisStart === true
   );
@@ -230,7 +240,7 @@ export function getStartPhaseStatus(
   const effectBlocksStart =
     state.pendingEffectChoice?.playerId === playerId;
   return {
-    releaseDone: player.hasReleasedCommandsThisStart === true,
+    releaseDone: isReleaseStepComplete(player),
     returnDone: player.hasReturnedBattleThisStart === true,
     drawDone: player.hasDrawnThisStart === true,
     canRelease: canReleaseStartCommands(state, playerId),

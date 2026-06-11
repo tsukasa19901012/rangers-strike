@@ -41,6 +41,10 @@ import { getEnterBattleNamedEffect } from "@rangers-strike/cards";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
 import { applyBaseAttackOnEnter } from "./legend3/enterBattleEffects";
 import { cannotAttackOrStrikeThisTurn } from "./restrictions";
+import {
+  rideOffBlocksStrike,
+  wingTurnBlocksStrike,
+} from "../keywords/battleKeywords";
 import type { ComboOutcome } from "./comboTypes";
 import {
   applyNumberComboEffect,
@@ -577,6 +581,12 @@ export function canStrikeUnit(
       return false;
     }
     if (cannotAttackOrStrikeThisTurn(state.players[playerId], instance)) {
+      return false;
+    }
+    if (wingTurnBlocksStrike(state.players[playerId], instance.instanceId)) {
+      return false;
+    }
+    if (rideOffBlocksStrike(state.players[playerId], instance.instanceId)) {
       return false;
     }
     if (!canStrikeWithHelloMirage(state, playerId, instance)) {

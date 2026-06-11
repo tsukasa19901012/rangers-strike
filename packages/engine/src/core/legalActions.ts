@@ -4,7 +4,7 @@ import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { isCostWindowSatisfied } from "./costWindow";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { getRidingComboEffect, hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
-import { canWingAttackFromRush } from "../keywords/battleKeywords";
+import { canWingAttackFromRush, canHoldForWing } from "../keywords/battleKeywords";
 import {
   canPlayOperationCard,
   collectOperationTargets,
@@ -1306,6 +1306,16 @@ export function getLegalActions(state: GameState): GameAction[] {
             playerId,
             instanceId: card.instanceId,
             rideOff: true,
+          });
+        }
+      }
+
+      for (const card of player.rush) {
+        if (canHoldForWing(state, playerId, card)) {
+          actions.push({
+            type: "hold_for_wing",
+            playerId,
+            instanceId: card.instanceId,
           });
         }
       }

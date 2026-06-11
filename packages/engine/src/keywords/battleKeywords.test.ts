@@ -3,13 +3,20 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import { buildDefinitionMap } from "../core/catalog";
 import { createTestState, inst } from "../testing/fixtures";
 import {
+  applyHoldForWing,
   blastBypassesRushAdditionalCondition,
   breakerBlocksSameNameRush,
+  canHoldForWing,
+  canWingAttackFromRush,
   crossAdjustedBattlePosition,
   crossValueForCard,
   scrumBlocksAttack,
   taxisSpFloor,
+  wingTurnBlocksStrike,
 } from "./battleKeywords";
+import { canStrikeUnit } from "../rules/combo";
+import { addTurnRestrictionModifier } from "../core/scopedModifiers";
+import { RESTRICTION_IDS } from "../types/scopedModifiers";
 
 describe("cross1 keyword", () => {
   it("shifts battle position for units to the right of cross holder", () => {
@@ -83,49 +90,49 @@ describe("taxis keyword", () => {
 });
 
 describe("scrum keyword", () => {
-  it("blocks attack when battle CN is ascending", () => {
-    const defs = buildDefinitionMap([
-      [
-        {
-          id: "TST-SCRUM",
-          name: "Scrum Unit",
-          type: "unit",
-          category: "MA",
-          rarity: "N",
-          expansion: "test",
-          powerCost: 2,
-          bp: 2000,
-          size: "S",
-          comboNumber: 4,
-          text: "※スクラム",
-        },
-        {
-          id: "TST-A",
-          name: "A",
-          type: "unit",
-          category: "MA",
-          rarity: "N",
-          expansion: "test",
-          powerCost: 1,
-          bp: 1000,
-          size: "S",
-          comboNumber: 2,
-        },
-        {
-          id: "TST-B",
-          name: "B",
-          type: "unit",
-          category: "MA",
-          rarity: "N",
-          expansion: "test",
-          powerCost: 1,
-          bp: 1000,
-          size: "S",
-          comboNumber: 3,
-        },
-      ],
-    ]);
+  const defs = buildDefinitionMap([
+    [
+      {
+        id: "TST-SCRUM",
+        name: "Scrum Unit",
+        type: "unit",
+        category: "MA",
+        rarity: "N",
+        expansion: "test",
+        powerCost: 2,
+        bp: 2000,
+        size: "S",
+        comboNumber: 3,
+        text: "※スクラム",
+      },
+      {
+        id: "TST-NEXT",
+        name: "Next",
+        type: "unit",
+        category: "MA",
+        rarity: "N",
+        expansion: "test",
+        powerCost: 1,
+        bp: 1000,
+        size: "S",
+        comboNumber: 4,
+      },
+      {
+        id: "TST-LEFT",
+        name: "Left",
+        type: "unit",
+        category: "MA",
+        rarity: "N",
+        expansion: "test",
+        powerCost: 1,
+        bp: 1000,
+        size: "S",
+        comboNumber: 2,
+      },
+    ],
+  ]);
 
+  it("blocks attack when adjacent right unit has CN + 1", () => {
     const state = {
       ...createTestState(defs),
       definitions: defs,
@@ -133,14 +140,108 @@ describe("scrum keyword", () => {
         ...createTestState(defs).players,
         player2: {
           ...createTestState(defs).players.player2,
-          battle: [inst("TST-A", "a"), inst("TST-B", "b"), inst("TST-SCRUM", "s")],
+          battle: [
+            inst("TST-LEFT", "left"),
+            inst("TST-SCRUM", "s"),
+            inst("TST-NEXT", "next"),
+          ],
         },
       },
     };
 
     expect(
-      scrumBlocksAttack(state, "player2", state.players.player2.battle[2]!.instanceId),
+      scrumBlocksAttack(state, "player2", state.players.player2.battle[1]!.instanceId),
     ).toBe(true);
+  });
+
+  it("does not block when ascending line exists but adjacent CN+1 is missing", () => {
+    const state = {
+      ...createTestState(defs),
+      definitions: defs,
+      players: {
+        ...createTestState(defs).players,
+        player2: {
+          ...createTestState(defs).players.player2,
+          battle: [
+            inst("TST-LEFT", "left"),
+            inst("TST-SCRUM", "s"),
+          ],
+        },
+      },
+    };
+
+    expect(
+      scrumBlocksAttack(state, "player2", state.players.player2.battle[1]!.instanceId),
+    ).toBe(false);
+  });
+
+  it("does not block when right neighbor CN is not +1", () => {
+    const wrongNext = inst("TST-LEFT", "wrong");
+    const state = {
+      ...createTestState(defs),
+      definitions: defs,
+      players: {
+        ...createTestState(defs).players,
+        player2: {
+          ...createTestState(defs).players.player2,
+          battle: [inst("TST-SCRUM", "s"), wrongNext],
+        },
+      },
+    };
+
+    expect(
+      scrumBlocksAttack(state, "player2", state.players.player2.battle[0]!.instanceId),
+    ).toBe(false);
+  });
+});
+
+describe("wing keyword", () => {
+  const WING_DEF: CardDefinition = {
+    id: "TST-WING",
+    name: "Wing Unit",
+    type: "unit",
+    category: "OT",
+    rarity: "N",
+    expansion: "test",
+    powerCost: 3,
+    bp: 5000,
+    sp: 1,
+    size: "M",
+    tags: ["wing"],
+  };
+
+  it("requires hold before wing attack from rush", () => {
+    const wingUnit = inst("TST-WING", "w1");
+    const state = createTestState({
+      phase: "battle",
+      player1: { rush: [wingUnit] },
+    });
+    state.definitions["TST-WING"] = WING_DEF;
+
+    expect(canHoldForWing(state, "player1", wingUnit)).toBe(true);
+    expect(canWingAttackFromRush(state, "player1", wingUnit)).toBe(false);
+
+    const held = applyHoldForWing(state, "player1", wingUnit.instanceId);
+    expect(held).not.toBeNull();
+    const heldUnit = held!.players.player1.rush[0]!;
+    expect(heldUnit.commandHeld).toBe(true);
+    expect(canWingAttackFromRush(held!, "player1", heldUnit)).toBe(true);
+  });
+
+  it("blocks strike on wing turn after hold", () => {
+    const wingUnit = { ...inst("TST-WING", "w1"), commandHeld: true };
+    const state = createTestState({
+      phase: "battle",
+      player1: { battle: [wingUnit] },
+    });
+    state.definitions["TST-WING"] = WING_DEF;
+    state.players.player1 = addTurnRestrictionModifier(
+      state.players.player1,
+      wingUnit.instanceId,
+      RESTRICTION_IDS.WING_TURN_NO_STRIKE,
+    );
+    expect(wingTurnBlocksStrike(state.players.player1, wingUnit.instanceId)).toBe(true);
+    expect(canStrikeUnit(state.definitions, wingUnit, state, "player1")).toBe(false);
   });
 });
 

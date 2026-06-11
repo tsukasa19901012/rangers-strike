@@ -36,11 +36,36 @@ describe("register (resist)", () => {
         toZone: "discard",
         leavingCardId: defender.cardId,
         phasePlayerId: "player1",
+        registerEligible: true,
       },
       false,
     );
     expect(next.pendingRegister?.ownerPlayerId).toBe("player2");
     expect(next.players.player2.battle).toHaveLength(1);
+  });
+
+  it("does not offer register for effect destroys without registerEligible", () => {
+    const defender = inst("TST-RESIST", "d1");
+    const state = createTestState({
+      phase: "battle",
+      player2: { battle: [defender] },
+    });
+    state.definitions["TST-RESIST"] = RESIST_UNIT;
+
+    const next = finalizeLeavePending(
+      state,
+      {
+        ownerPlayerId: "player2",
+        instanceId: defender.instanceId,
+        fromZone: "battle",
+        toZone: "discard",
+        leavingCardId: defender.cardId,
+        phasePlayerId: "player1",
+      },
+      false,
+    );
+    expect(next.pendingRegister).toBeUndefined();
+    expect(next.players.player2.battle).toHaveLength(0);
   });
 
   it("holds unit on field when use_register is chosen", () => {
