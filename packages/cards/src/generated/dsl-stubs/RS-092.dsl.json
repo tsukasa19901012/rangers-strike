@@ -56,5 +56,10 @@
   "implementation": {
     "source": "dsl",
     "handler": "interpreter"
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを3体捨札にする",
+    "unitCount": 3
   }
 }

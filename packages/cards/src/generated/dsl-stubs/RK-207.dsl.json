@@ -74,5 +74,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「ホースオルフェノク格闘態」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ホースオルフェノク格闘態",
+    "unitCount": 1
   }
 }

@@ -20,10 +20,14 @@ export type RushAction = {
   instanceId: string;
   /** ゾードアップの素材カード（合体破棄またはSユニットコスト）。 */
   zordMaterialInstanceId?: string;
+  /** ゾードダウン等: 複数枚の素材（パワー捨て・複数体捨札等）。 */
+  zordMaterialInstanceIds?: string[];
   /** RS-074/075/118-122: 破棄の代わりにSユニットをコマンドゾーンへ送る。 */
   zordMaterialDestination?: ZordMaterialDestination;
   /** RS-076 / RS-105 母艦: Sユニット追加コストの代わりにコマンドをホールド。 */
   zordMothershipHoldInstanceIds?: string[];
+  /** hold_extra_command: 追加でホールドするコマンド。 */
+  zordExtraCommandHoldInstanceIds?: string[];
 };
 
 export type MoveToBattleAction = {
@@ -222,8 +226,10 @@ export type InitiateCommandPaymentAction = {
   prismSubstitute?: boolean;
   rideOff?: boolean;
   zordMaterialInstanceId?: string;
+  zordMaterialInstanceIds?: string[];
   zordMaterialDestination?: ZordMaterialDestination;
   zordMothershipHoldInstanceIds?: string[];
+  zordExtraCommandHoldInstanceIds?: string[];
   targetInstanceId?: string;
   extraInstanceId?: string;
   /** RS-018 等: カウンター支払い後に適用する代替ユニット。 */

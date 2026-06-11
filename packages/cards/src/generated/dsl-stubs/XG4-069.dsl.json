@@ -59,5 +59,9 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「獣」または「恐竜」を持つ自軍コマンドがある"
   }
 }

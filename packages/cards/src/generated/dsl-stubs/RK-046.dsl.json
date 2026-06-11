@@ -17,8 +17,9 @@
     "人型"
   ],
   "rushAdditionalCondition": {
-    "conditionId": "send_s_unit_to_command_or_discard",
+    "conditionId": "discard_named_unit",
     "text": "自軍「オートバジンVM」1体をコマンドゾーンに送るか捨札にする",
+    "partnerName": "オートバジンVM",
     "unitCount": 1
   },
   "effects": [

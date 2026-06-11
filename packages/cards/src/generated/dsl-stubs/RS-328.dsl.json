@@ -39,5 +39,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「トラベリオンエクスプレス」1体を捨札にする",
+    "partnerName": "トラベリオンエクスプレス",
+    "unitCount": 1
   }
 }

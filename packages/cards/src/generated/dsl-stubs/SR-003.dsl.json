@@ -39,5 +39,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍捨札に「ドラゴンレンジャー」があるとき、自軍「ティラノレンジャー」1体を捨札にする",
+    "partnerName": "ティラノレンジャー",
+    "unitCount": 1
   }
 }

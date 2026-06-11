@@ -72,5 +72,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "return_named_to_hand",
+    "text": "自軍「バビロス」または「バビロスBF」を手札に戻す",
+    "partnerName": "バビロス",
+    "unitCount": 1
   }
 }

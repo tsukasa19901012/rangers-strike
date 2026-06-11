@@ -72,5 +72,10 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "hold_extra_command",
+    "text": "追加で自軍コマンドを1つホールドする",
+    "unitCount": 1
   }
 }

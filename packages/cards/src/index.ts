@@ -45,6 +45,7 @@ export * from "./effects";
 export * from "./errata";
 export * from "./effectTaxonomy";
 export * from "./unitEffects";
+export * from "./powerCost";
 export * from "./zord";
 export * from "./mothership";
 export * from "./comboEffects";

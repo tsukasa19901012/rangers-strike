@@ -51,5 +51,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_power_cards",
+    "text": "必要パワーの数字が5以上の自軍パワーを4枚捨札にすれば必要パワー0になる",
+    "minPrintedPowerCost": 5,
+    "unitCount": 4
   }
 }

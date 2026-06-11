@@ -320,6 +320,8 @@ export type PendingZordSetup = {
   playerId: PlayerId;
   zordInstanceId: string;
   zordCardId: string;
+  /** up = ゾードアップ（+）、down = ゾードダウン（-）。 */
+  direction?: "up" | "down";
   step: PendingZordSetupStep;
   validInstanceIds: string[];
   materialInstanceId?: string;

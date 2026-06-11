@@ -77,5 +77,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「仮面ライダーナイト」を1体捨札にすれば必要パワー0になる",
+    "partnerName": "仮面ライダーナイト",
+    "unitCount": 1
   }
 }

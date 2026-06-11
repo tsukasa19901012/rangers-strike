@@ -67,5 +67,11 @@
     "昆虫",
     "アマダム",
     "FFR"
-  ]
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "return_named_to_hand",
+    "text": "自軍「仮面ライダークウガ」1体を手札に戻す",
+    "partnerName": "仮面ライダークウガ",
+    "unitCount": 1
+  }
 }

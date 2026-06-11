@@ -53,5 +53,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "return_named_to_hand",
+    "text": "自軍「超惑星戦闘母艦ダイレオン」1体を手札に戻す",
+    "partnerName": "超惑星戦闘母艦ダイレオン",
+    "unitCount": 1
   }
 }

@@ -18,8 +18,9 @@
     "男"
   ],
   "rushAdditionalCondition": {
-    "conditionId": "send_s_unit_to_command_or_discard",
+    "conditionId": "discard_named_unit",
     "text": "自軍「仮面ライダーイクサBM」1体をコマンドゾーンに送るか捨札にする",
+    "partnerName": "仮面ライダーイクサBM",
     "unitCount": 1
   },
   "effects": [

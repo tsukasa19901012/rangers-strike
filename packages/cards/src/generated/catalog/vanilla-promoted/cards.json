@@ -312,6 +312,12 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/PK-014.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PK-014.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_feature_unit",
+        "text": "特徴「魔皇力」を持つ自軍ユニット1体を捨札にする",
+        "requiredFeature": "魔皇力",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "S",
       "sp": "1/3",
@@ -384,6 +390,10 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/PR-015.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-015.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 11000,
       "size": "L",
       "sp": 1,
@@ -400,9 +410,15 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/PR-016.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-016.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「アバレッド」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "アバレッド",
+        "unitCount": 1
+      },
       "bp": 5500,
       "size": "S",
       "sp": "special",
@@ -923,6 +939,11 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/RK-140.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-140.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍「仮面ライダー電王PF」1体をパワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 6000,
       "size": "S",
       "sp": "1/4",
@@ -943,6 +964,11 @@
       "powerCost": "7+",
       "imageUrl": "/cards/promoted/RK-151.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-151.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍Sユニットを1体パワーゾーンに送る。",
+        "unitCount": 1
+      },
       "bp": 3000,
       "size": "M",
       "sp": 1,
@@ -1090,6 +1116,11 @@
       "powerCost": "4+",
       "imageUrl": "/cards/promoted/RK-168.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-168.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍「仮面ライダー電王PF」1体をパワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "S",
       "sp": "1/4",
@@ -1110,6 +1141,10 @@
       "powerCost": "4+",
       "imageUrl": "/cards/promoted/RK-169.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-169.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 6000,
       "size": "S",
       "sp": 1,
@@ -1225,6 +1260,12 @@
       "powerCost": "4+",
       "imageUrl": "/cards/promoted/RK-184.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-184.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_feature_unit",
+        "text": "特徴「メカ」を持つ自軍ユニットを1体捨札にする",
+        "requiredFeature": "メカ",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "S",
       "sp": "special",
@@ -1475,9 +1516,15 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/RK-222.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-222.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「仮面ライダー響鬼」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "仮面ライダー響鬼",
+        "unitCount": 1
+      },
       "bp": 4500,
       "size": "S",
       "sp": "1/3",
@@ -1738,9 +1785,15 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/RK-313.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-313.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「仮面ライダーキバ」を1体捨札にすれば必要パワー0になる",
+        "partnerName": "仮面ライダーキバ",
+        "unitCount": 1
+      },
       "bp": 4500,
       "size": "S",
       "sp": "1/3",
@@ -1761,6 +1814,12 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/RK-314.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-314.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_feature_unit",
+        "text": "特徴「魔皇力」を持つ自軍ユニット1体を捨札にする",
+        "requiredFeature": "魔皇力",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "S",
       "sp": "1/3",
@@ -1797,9 +1856,15 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/RK-330.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-330.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_feature",
+        "text": "特徴「アマダム」を持つ自軍ユニット1体を捨札にすれば必要パワー0になる",
+        "requiredFeature": "アマダム",
+        "unitCount": 1
+      },
       "bp": 5500,
       "size": "S",
       "sp": 1,
@@ -1818,9 +1883,15 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "10-",
       "imageUrl": "/cards/promoted/RK-331.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-331.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「仮面ライダークウガRM」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "仮面ライダークウガRM",
+        "unitCount": 1
+      },
       "bp": 5500,
       "size": "S",
       "sp": "1/3",
@@ -1839,9 +1910,15 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/RK-334.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-334.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_feature",
+        "text": "特徴「DEN-O」を持つ自軍ユニット1体を捨札にすれば必要パワー0になる",
+        "requiredFeature": "DEN-O",
+        "unitCount": 1
+      },
       "bp": 4500,
       "size": "S",
       "sp": "special",
@@ -2016,6 +2093,12 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/RM-027.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-027.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "return_named_to_hand",
+        "text": "自軍「超次元戦闘母艦グランドバース」１体を手札に戻す",
+        "partnerName": "超次元戦闘母艦グランドバース",
+        "unitCount": 1
+      },
       "bp": 7000,
       "size": "XL",
       "sp": "special",
@@ -2035,6 +2118,12 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/RM-031.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-031.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "return_named_to_hand",
+        "text": "自軍「超惑星戦闘母艦ダイレオン」1体を手札に戻す",
+        "partnerName": "超惑星戦闘母艦ダイレオン",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "L",
       "sp": 1,
@@ -2257,6 +2346,11 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/RS-195.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-195.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_command_or_discard",
+        "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+        "unitCount": 1
+      },
       "bp": 2000,
       "size": "M",
       "sp": 1,
@@ -2273,9 +2367,15 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/RS-230.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-230.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「アバレッド」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "アバレッド",
+        "unitCount": 1
+      },
       "bp": 5500,
       "size": "S",
       "sp": "special",
@@ -2294,9 +2394,15 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/RS-231.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-231.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「アバレブルー」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "アバレブルー",
+        "unitCount": 1
+      },
       "bp": 4500,
       "size": "S",
       "sp": "special",
@@ -2554,9 +2660,15 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/RS-333.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-333.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「マジレッド」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "マジレッド",
+        "unitCount": 1
+      },
       "bp": 4500,
       "size": "S",
       "sp": "special",
@@ -2576,9 +2688,15 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/RS-334.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-334.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「マジイエロー」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "マジイエロー",
+        "unitCount": 1
+      },
       "bp": 3500,
       "size": "S",
       "sp": "special",
@@ -2678,6 +2796,12 @@
       "powerCost": "0+",
       "imageUrl": "/cards/promoted/RS-424.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-424.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "特徴「激気」と「イエロー」を持つ自軍ユニット1体を捨札にする",
+        "partnerName": "激気",
+        "unitCount": 1
+      },
       "bp": 5500,
       "size": "M",
       "sp": "special",
@@ -2694,9 +2818,15 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/RS-426.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-426.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍｢ゲキレッド｣1体を捨札にすれば必要パワー0になる",
+        "partnerName": "ゲキレッド",
+        "unitCount": 1
+      },
       "bp": 5500,
       "size": "S",
       "sp": "special",
@@ -2730,6 +2860,11 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/RS-440.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-440.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_discard",
+        "text": "自軍Sユニットを5体捨札にする",
+        "unitCount": 5
+      },
       "bp": 6000,
       "size": "L",
       "sp": 1,
@@ -3045,6 +3180,10 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/RS-573.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-573.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 6000,
       "size": "L",
       "sp": "special",
@@ -3099,6 +3238,12 @@
       "powerCost": "7+",
       "imageUrl": "/cards/promoted/RS-626.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-626.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "自軍「メガシップ」1体を捨札にする",
+        "partnerName": "メガシップ",
+        "unitCount": 1
+      },
       "bp": 9000,
       "size": "L",
       "sp": 1,
@@ -3138,6 +3283,12 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/RS-642.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-642.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "自軍「分身獣ギガホイール」1体を捨札にする",
+        "partnerName": "分身獣ギガホイール",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "L",
       "sp": 1,
@@ -3158,6 +3309,10 @@
       "powerCost": "3+",
       "imageUrl": "/cards/promoted/RS-643.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-643.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "state_gate",
+        "text": "特徴「母艦」を持つ自軍ユニットがある"
+      },
       "bp": 5000,
       "size": "SC",
       "text": "なし",
@@ -3313,6 +3468,12 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/RS-688.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-688.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "自軍「分身獣ギガウイング」1体を捨札にする",
+        "partnerName": "分身獣ギガウイング",
+        "unitCount": 1
+      },
       "bp": 6000,
       "size": "L",
       "sp": 1,
@@ -3440,6 +3601,12 @@
       "powerCost": "7+",
       "imageUrl": "/cards/promoted/SX-002.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SX-002-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_name_contains_unit",
+        "text": "カード名に「クウガ」を含む自軍ユニット1体を捨札にする",
+        "nameContains": "クウガ",
+        "unitCount": 1
+      },
       "bp": 7000,
       "size": "S",
       "sp": 1,
@@ -3464,6 +3631,12 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/SX-005.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SX-005-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_feature_unit",
+        "text": "特徴「ダブルドライバー」を持つ自軍ユニット1体をコマンドゾーンに送るか捨札にする",
+        "requiredFeature": "ダブルドライバー",
+        "unitCount": 1
+      },
       "bp": 4000,
       "size": "S",
       "sp": "special",
@@ -3643,6 +3816,10 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/XG1-028.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-028-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 8000,
       "size": "L",
       "sp": 1,
@@ -3659,9 +3836,15 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG1-029.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-029-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「アバレブラック」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "アバレブラック",
+        "unitCount": 1
+      },
       "bp": 5500,
       "size": "S",
       "sp": "special",
@@ -3680,9 +3863,15 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG1-030.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-030-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「アバレキラー」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "アバレキラー",
+        "unitCount": 1
+      },
       "bp": 4500,
       "size": "S",
       "sp": "special",
@@ -3801,9 +3990,15 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG1-062.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-062-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「仮面ライダーカリス」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "仮面ライダーカリス",
+        "unitCount": 1
+      },
       "bp": 4500,
       "size": "S",
       "sp": "1/2",
@@ -3866,6 +4061,11 @@
       "powerCost": "3+",
       "imageUrl": "/cards/promoted/XG1-074.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-074-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "自軍「仮面ライダーザビーMF」1体をパワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 3000,
       "size": "S",
       "sp": "1/4",
@@ -3974,6 +4174,10 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/XG2-020.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-020-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 9000,
       "size": "L",
       "sp": 1,
@@ -3993,6 +4197,12 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/XG2-021.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-021-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "自軍「黒騎士ブルブラック」1体を捨札にする",
+        "partnerName": "黒騎士ブルブラック",
+        "unitCount": 1
+      },
       "bp": 6000,
       "size": "M",
       "sp": "1/2",
@@ -4042,9 +4252,15 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG2-040.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-040-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「シンケングリーン」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "シンケングリーン",
+        "unitCount": 1
+      },
       "bp": 5500,
       "size": "S",
       "sp": "special",
@@ -4090,6 +4306,10 @@
       "powerCost": "3+",
       "imageUrl": "/cards/promoted/XG2-044.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-044-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "state_gate",
+        "text": "特徴「メカ」を持つ自軍コマンドがある"
+      },
       "bp": 3000,
       "size": "S",
       "sp": "1/2",
@@ -4147,9 +4367,15 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG2-050.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-050-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「仮面ライダーギルス」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "仮面ライダーギルス",
+        "unitCount": 1
+      },
       "bp": 3500,
       "size": "S",
       "text": "※レジスト ※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーギルス」のカードを1枚選び、自軍ラッシュエリアに出す。 【ギルススティンガー】自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍バトルエリアのユニットを必要パワーの数字の合計が3以下になるように2体まで選び、持ち主のパワーゾーンにダメージにして置く。",
@@ -4180,6 +4406,12 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/XG2-062.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-062-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "自軍「仮面ライダー響鬼」1体を捨札する",
+        "partnerName": "仮面ライダー響鬼",
+        "unitCount": 1
+      },
       "bp": 6000,
       "size": "S",
       "sp": "1/3",
@@ -4217,9 +4449,15 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG2-066.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-066-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_send_to_power",
+        "text": "自軍「仮面ライダーカブトMF」1枚をパワーゾーンに送れば必要パワー0になる",
+        "partnerName": "仮面ライダーカブトMF",
+        "unitCount": 1
+      },
       "bp": 2500,
       "size": "S",
       "sp": "1/4",
@@ -4393,6 +4631,10 @@
       "powerCost": "7+",
       "imageUrl": "/cards/promoted/XG3-005.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-005-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
       "bp": 17000,
       "size": "L",
       "sp": 1,
@@ -4451,6 +4693,12 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/XG3-023.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-023-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "自軍「アバレッド」1体を捨札にする",
+        "partnerName": "アバレッド",
+        "unitCount": 1
+      },
       "bp": 6000,
       "size": "S",
       "sp": 1,
@@ -4515,6 +4763,11 @@
       "powerCost": "4+",
       "imageUrl": "/cards/promoted/XG3-041.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-041-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_power",
+        "text": "特徴「ディケイドライバー」を持つ自軍ユニット1体をパワーゾーンに送る",
+        "unitCount": 1
+      },
       "bp": 6000,
       "size": "S",
       "text": "※レジスト 【通りすがりの仮面ライダー】このターン中にＮＣまたはRCの効果を発動した、カテゴリにDA以外を持つSユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションするユニットのNCまたはRCの効果を、このユニットの効果として発動する。",
@@ -4598,9 +4851,15 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG3-062.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-062-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_send_to_power",
+        "text": "自軍「仮面ライダーガタックMF」1体をパワーゾーンに送れば必要パワー0になる",
+        "partnerName": "仮面ライダーガタックMF",
+        "unitCount": 1
+      },
       "bp": 3500,
       "size": "S",
       "text": "※レジスト ※これはアタックされる以外では相手に選ばれない。 【ライダーキック】自軍ターン中、これがバトルエリアに出たとき、必要パワーの数字が「1」「2」「3」のオモテ向きの自軍パワーがそれぞれあれば、敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
@@ -4683,6 +4942,12 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/XG3-084.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-084-RM.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "特徴「昆虫」を持つ自軍Sユニット1体を捨札にする",
+        "partnerName": "昆虫",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "L",
       "sp": 1,
@@ -4702,6 +4967,12 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/XG3-085.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-085-RM.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "特徴「昆虫」を持つ自軍Sユニット1体を捨札にする",
+        "partnerName": "昆虫",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "L",
       "sp": 1,
@@ -4789,9 +5060,15 @@
       ],
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG3-090.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-090-RM.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「ブルービート」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "ブルービート",
+        "unitCount": 1
+      },
       "bp": 5500,
       "size": "S",
       "sp": "1/2",
@@ -4842,6 +5119,12 @@
       "powerCost": "4+",
       "imageUrl": "/cards/promoted/XG3-101.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-101.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "自軍「サナギマン」1体を捨札する",
+        "partnerName": "サナギマン",
+        "unitCount": 1
+      },
       "bp": 4000,
       "size": "S",
       "sp": "1/3",
@@ -5115,6 +5398,10 @@
       "powerCost": "3+",
       "imageUrl": "/cards/promoted/XG4-067.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-067-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "state_gate",
+        "text": "特徴「メカ」を持つ自軍コマンドがある"
+      },
       "bp": 2000,
       "size": "S",
       "sp": "1/3",
@@ -5258,6 +5545,11 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/XG5-014.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-014-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_command_or_discard",
+        "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+        "unitCount": 1
+      },
       "bp": 8000,
       "size": "L",
       "sp": "special",
@@ -5310,9 +5602,15 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG5-027.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-027-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「ボウケンピンク」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "ボウケンピンク",
+        "unitCount": 1
+      },
       "bp": 3500,
       "size": "S",
       "comboNumber": 1,
@@ -5336,6 +5634,10 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/XG5-030.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-030-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "state_gate",
+        "text": "特徴「レッド」を持つ自軍ユニットがある"
+      },
       "bp": 6000,
       "size": "M",
       "text": "※レジスト 【ゴリゴリ波】これをラッシュしたとき、敵軍Sユニットか敵軍コマンドを敵軍ダメージの数まで選びホールドしてもよい。",
@@ -5446,6 +5748,12 @@
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/XG5-044.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-044-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "自軍「ゴセイグレート」または「ゴセイマシン」1体を捨札にする",
+        "partnerName": "ゴセイグレート",
+        "unitCount": 1
+      },
       "bp": 20000,
       "size": "L",
       "sp": 1,
@@ -5490,6 +5798,12 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/XG5-049.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG5-049-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "ホールド状態の自軍「アポロガイスト」1体を捨札にする",
+        "partnerName": "アポロガイスト",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "S",
       "sp": 1,
@@ -5660,9 +5974,15 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG6-026.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-026-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「ゴセイナイト」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "ゴセイナイト",
+        "unitCount": 1
+      },
       "bp": 5500,
       "size": "M",
       "comboNumber": 3,
@@ -5694,6 +6014,10 @@
       "powerCost": "0+",
       "imageUrl": "/cards/promoted/XG6-043.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-043-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "state_gate",
+        "text": "自軍捨札が7枚以上ある"
+      },
       "bp": 6000,
       "size": "S",
       "sp": 1,
@@ -5778,6 +6102,11 @@
       "powerCost": "3+",
       "imageUrl": "/cards/promoted/XG7-013.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-013-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "hold_extra_command",
+        "text": "追加で自軍コマンドを1つホールドする",
+        "unitCount": 1
+      },
       "bp": 4000,
       "size": "S",
       "comboNumber": 1,
@@ -5802,6 +6131,11 @@
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/XG7-016.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-016-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "hold_extra_command",
+        "text": "追加で自軍コマンドを1つホールドする",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "S",
       "sp": "1/2",
@@ -5844,6 +6178,11 @@
       "powerCost": "4+",
       "imageUrl": "/cards/promoted/XG7-026.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-026-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "hold_extra_command",
+        "text": "追加で自軍コマンドを1つホールドする",
+        "unitCount": 1
+      },
       "bp": 4000,
       "size": "S",
       "comboNumber": 3,
@@ -5880,6 +6219,11 @@
       "powerCost": "3+",
       "imageUrl": "/cards/promoted/XG7-033.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG7-033-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "hold_extra_command",
+        "text": "追加で自軍コマンドを1つホールドする",
+        "unitCount": 1
+      },
       "bp": 5000,
       "size": "S",
       "sp": "1/5",
@@ -6005,9 +6349,15 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "vanilla-promoted",
-      "powerCost": 0,
+      "powerCost": "7-",
       "imageUrl": "/cards/promoted/XP-013.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-013-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「シンケンレッド」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "シンケンレッド",
+        "unitCount": 1
+      },
       "bp": 4500,
       "size": "S",
       "text": "※レジスト ※これが撃破されて捨札になったとき、自軍捨札から「シンケンレッド」のカードを1枚選び、自軍ラッシュエリアに出す。 【キョウリュウマル】これが自軍エリアにある間、自軍ターン中、自軍Sユニットがホールド状態になったとき、敵軍ゾーンのオモテ向きのカードから、追加条件を持つSユニットのカードを1枚選び、持ち主の山札の下に戻してもよい。",
@@ -6027,6 +6377,10 @@
       "powerCost": "2+",
       "imageUrl": "/cards/promoted/XP-014.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-014-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "state_gate",
+        "text": "特徴「メカ」を持つ自軍コマンドがある"
+      },
       "bp": 2000,
       "size": "S",
       "text": "※モーフ ※レジスト 【メタルシャフト】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからホールド状態のＳユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
@@ -6046,6 +6400,12 @@
       "powerCost": "7+",
       "imageUrl": "/cards/promoted/XP-016.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XP-016-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある",
+        "partnerName": "仮面ライダー",
+        "unitCount": 8
+      },
       "bp": 6000,
       "size": "S",
       "sp": 1,

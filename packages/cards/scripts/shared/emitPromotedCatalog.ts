@@ -45,6 +45,9 @@ function enrichFromDsl(root: string, base: CardDefinition): CardDefinition {
   const dsl = JSON.parse(readFileSync(dslPath, "utf8")) as CardDefinition;
   return {
     ...base,
+    powerCost: dsl.powerCost ?? base.powerCost,
+    rushAdditionalCondition:
+      dsl.rushAdditionalCondition ?? base.rushAdditionalCondition,
     bp: dsl.bp ?? base.bp,
     size: dsl.size ?? base.size,
     sp: dsl.sp ?? base.sp,

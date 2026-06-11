@@ -18,8 +18,9 @@
     "ブラスターフォーム"
   ],
   "rushAdditionalCondition": {
-    "conditionId": "send_s_unit_to_command_or_discard",
+    "conditionId": "discard_named_unit",
     "text": "自軍「仮面ライダーファイズ」1体をコマンドゾーンに送るか捨札にする",
+    "partnerName": "仮面ライダーファイズ",
     "unitCount": 1
   },
   "effects": [

@@ -10,11 +10,22 @@ import {
 } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { Category } from "@rangers-strike/cards";
-import { getZordCondition } from "@rangers-strike/cards";
+import { getZordCondition, isSendSUnitZordCondition } from "@rangers-strike/cards";
 import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, PlayerState } from "../types/game";
 import { getDefinition, isMediumUnit, isOperation } from "../core/catalog";
 import { findZordMaterial } from "./zord";
+import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
+import type { GameState, PlayerId } from "../types/game";
+import { COMMAND_ZONE_MAX } from "../types/game";
+import {
+  evaluateStateGate,
+  listExtendedZordRushVariants,
+  listFieldZordRushVariants,
+  listHoldExtraCommandVariants,
+  validateFieldZordMaterials,
+} from "./zordExtended";
+import { collectZordMaterials, requiresAllFusionPartners } from "./zord";
 
 export type MothershipHoldZone = "command" | "rush";
 
@@ -191,31 +202,44 @@ export function validateZordAdditionalPayment(
   materialInstanceId?: string,
   materialDestination?: ZordMaterialDestination,
   mothershipHoldInstanceIds?: string[],
+  materialInstanceIds?: string[],
 ): boolean {
   const condition = getZordCondition(rushingCardId);
   if (!condition) return true;
+  if (
+    condition === "state_gate" ||
+    condition === "hold_extra_command" ||
+    condition === "opponent_draw"
+  ) {
+    return true;
+  }
 
   const unitSlots = mothershipHoldCountForRush(rushingCardId);
   const kind = canUseMothershipForZordRush(definitions, player, rushingCardId);
-  const hasMaterial = !!materialInstanceId;
+  const materialIds =
+    materialInstanceIds ?? (materialInstanceId ? [materialInstanceId] : []);
+  const hasMaterial = materialIds.length > 0;
   const holdIds = mothershipHoldInstanceIds ?? [];
 
   if (hasMaterial) {
-    const material = findZordMaterial(
-      player,
-      definitions,
-      rushingCardId,
-      rushingInstanceId,
-      materialInstanceId!,
-    );
-    if (!material) return false;
+    if (
+      !validateFieldZordMaterials(
+        player,
+        definitions,
+        rushingCardId,
+        rushingInstanceId,
+        materialIds,
+        materialDestination,
+      )
+    ) {
+      return false;
+    }
   }
 
-  const slotsFilled = zordSlotsFilledByMaterial(
-    rushingCardId,
-    hasMaterial,
-    materialDestination,
-  );
+  const slotsFilled =
+    hasMaterial && condition && isSendSUnitZordCondition(condition)
+      ? materialIds.length
+      : zordSlotsFilledByMaterial(rushingCardId, hasMaterial, materialDestination);
 
   if (
     kind === "jaguar" &&
@@ -274,8 +298,10 @@ export function canPayZordWithMothership(
 
 export type ZordRushPaymentVariant = {
   zordMaterialInstanceId?: string;
+  zordMaterialInstanceIds?: string[];
   zordMaterialDestination?: ZordMaterialDestination;
   zordMothershipHoldInstanceIds?: string[];
+  zordExtraCommandHoldInstanceIds?: string[];
 };
 
 /** 1回のラッシュに対する合法なゾード素材 / 母艦の全組み合わせ。 */
@@ -292,77 +318,56 @@ export function listZordRushPaymentVariants(
   const kind = canUseMothershipForZordRush(definitions, player, rushingCardId);
 
   const pushIfValid = (variant: ZordRushPaymentVariant) => {
+    const materialIds =
+      variant.zordMaterialInstanceIds ??
+      (variant.zordMaterialInstanceId ? [variant.zordMaterialInstanceId] : []);
     if (
       validateZordAdditionalPayment(
         player,
         definitions,
         rushingCardId,
         rushingInstanceId,
-        variant.zordMaterialInstanceId,
+        variant.zordMaterialInstanceId ?? materialIds[0],
         variant.zordMaterialDestination,
         variant.zordMothershipHoldInstanceIds,
+        materialIds.length > 0 ? materialIds : undefined,
       )
     ) {
       variants.push(variant);
     }
   };
 
-  for (const material of materials) {
-    if (condition === "send_s_unit_to_command_or_discard") {
-      if (commandZoneHasSpace) {
-        const slotsFilled = 1;
-        const holdsRequired = kind
-          ? mothershipHoldsRequiredForRush(rushingCardId, slotsFilled)
-          : 0;
+  const fieldVariants = listFieldZordRushVariants(
+    player,
+    definitions,
+    rushingCardId,
+    rushingInstanceId,
+    commandZoneHasSpace,
+  );
 
-        if (kind && jaguarMothershipAllowedWithMaterial(rushingCardId, "command")) {
-          for (const holdIds of listMothershipHoldSets(
-            player,
-            definitions,
-            rushingCardId,
-            kind,
-            holdsRequired,
-          )) {
-            pushIfValid({
-              zordMaterialInstanceId: material.instanceId,
-              zordMaterialDestination: "command",
-              zordMothershipHoldInstanceIds:
-                holdIds.length > 0 ? holdIds : undefined,
-            });
-          }
-        } else {
-          pushIfValid({
-            zordMaterialInstanceId: material.instanceId,
-            zordMaterialDestination: "command",
-          });
-        }
+  for (const fieldVariant of fieldVariants) {
+    const materialId =
+      fieldVariant.zordMaterialInstanceId ?? fieldVariant.zordMaterialInstanceIds?.[0];
+    const slotsFilled = materialId ? 1 : 0;
+    const holdsRequired = kind
+      ? mothershipHoldsRequiredForRush(rushingCardId, slotsFilled)
+      : 0;
+
+    if (kind && holdsRequired > 0) {
+      for (const holdIds of listMothershipHoldSets(
+        player,
+        definitions,
+        rushingCardId,
+        kind,
+        holdsRequired,
+      )) {
+        pushIfValid({
+          ...fieldVariant,
+          zordMothershipHoldInstanceIds: holdIds.length > 0 ? holdIds : undefined,
+        });
       }
-      pushIfValid({
-        zordMaterialInstanceId: material.instanceId,
-        zordMaterialDestination: "discard",
-      });
     } else {
-      const slotsFilled = 1;
-      const holdsRequired = kind
-        ? mothershipHoldsRequiredForRush(rushingCardId, slotsFilled)
-        : 0;
-
-      if (kind) {
-        for (const holdIds of listMothershipHoldSets(
-          player,
-          definitions,
-          rushingCardId,
-          kind,
-          holdsRequired,
-        )) {
-          pushIfValid({
-            zordMaterialInstanceId: material.instanceId,
-            zordMothershipHoldInstanceIds: holdIds.length > 0 ? holdIds : undefined,
-          });
-        }
-      } else {
-        pushIfValid({ zordMaterialInstanceId: material.instanceId });
-      }
+      pushIfValid(fieldVariant);
     }
   }
 
@@ -381,4 +386,66 @@ export function listZordRushPaymentVariants(
   }
 
   return variants;
+}
+
+/** ゾードアップの全支払いパターン（state_gate / 拡張素材 / ホールド / フィールド素材）。 */
+export function listZordUpRushPaymentVariants(
+  state: GameState,
+  playerId: PlayerId,
+  rushingCardId: string,
+  rushingInstanceId: string,
+): ZordRushPaymentVariant[] {
+  const player = state.players[playerId];
+  const def = getDefinition(state.definitions, rushingCardId);
+  const condition = resolveRushAdditionalCondition(rushingCardId, def);
+  if (!condition) return [];
+
+  if (requiresAllFusionPartners(rushingCardId)) {
+    return [{}];
+  }
+
+  if (condition.conditionId === "state_gate") {
+    return evaluateStateGate(state, playerId, condition) ? [{}] : [];
+  }
+
+  if (condition.conditionId === "opponent_draw") {
+    return [{}];
+  }
+
+  if (condition.conditionId === "hold_extra_command") {
+    return listHoldExtraCommandVariants(player, state.definitions, rushingCardId);
+  }
+
+  if (
+    condition.conditionId === "return_named_to_hand" ||
+    condition.conditionId === "discard_operation_cards" ||
+    condition.conditionId === "discard_category_l_unit" ||
+    condition.conditionId === "discard_command_card" ||
+    condition.conditionId === "discard_all_hand" ||
+    condition.conditionId === "discard_hand_card" ||
+    condition.conditionId === "discard_generic_unit" ||
+    condition.conditionId === "discard_all_face_up_power"
+  ) {
+    return listExtendedZordRushVariants(
+      player,
+      state.definitions,
+      rushingCardId,
+      rushingInstanceId,
+    );
+  }
+
+  const materials = collectZordMaterials(
+    player,
+    state.definitions,
+    rushingCardId,
+    rushingInstanceId,
+  );
+  return listZordRushPaymentVariants(
+    player,
+    state.definitions,
+    rushingCardId,
+    rushingInstanceId,
+    materials,
+    player.command.length < COMMAND_ZONE_MAX,
+  );
 }

@@ -81,8 +81,13 @@ function main(): void {
         parsed.status.カテゴリ,
       );
       const pc = parsed.status.必要パワー ?? parsed.status.BP;
-      if (pc && /^\d+\+?$/.test(pc)) {
-        powerCost = pc.includes("+") ? pc : Number(pc);
+      if (pc) {
+        const normalized = pc.replace(/[＋+]/g, "+").replace(/[－-]/g, "-").trim();
+        if (normalized.endsWith("+") || normalized.endsWith("-")) {
+          powerCost = normalized;
+        } else if (/^\d+$/.test(normalized)) {
+          powerCost = Number(normalized);
+        }
       }
     } catch {
       wikiFound = false;

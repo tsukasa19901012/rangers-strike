@@ -39,5 +39,10 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_hand_card",
+    "text": "自分の手札を1枚選び捨札にする",
+    "unitCount": 1
   }
 }

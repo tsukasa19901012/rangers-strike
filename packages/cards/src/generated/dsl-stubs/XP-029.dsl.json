@@ -93,5 +93,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "追加条件：特徴「ダブルドライバー」か「アクセルドライバー」を持つ自軍ユニット１体を捨札にする",
+    "partnerName": "ダブルドライバー",
+    "unitCount": 1
   }
 }

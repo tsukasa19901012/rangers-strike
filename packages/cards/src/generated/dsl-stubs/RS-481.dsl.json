@@ -75,5 +75,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「天空神・飛行モード」1体を捨札にする",
+    "partnerName": "天空神・飛行モード",
+    "unitCount": 1
   }
 }

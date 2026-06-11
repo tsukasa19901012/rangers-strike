@@ -13,6 +13,7 @@ import {
   startSelectCommandChoice,
   startSelectUnitChoice,
 } from "../pendingChoices";
+import { defenderHasPowerCostMinus } from "../zordDown";
 import { resolveSkyMagicSlash } from "../namedUnitEffects";
 import type { NamedEffectOutcome } from "../namedUnitEffects";
 import type { ComboOutcome } from "../comboTypes";
@@ -122,6 +123,29 @@ export function legend2AttackerBpBonus(
 
   if (atkEffect?.effectId === "dump_punch") bonus += 2000;
   if (atkEffect?.effectId === "adventure_drive_sword") bonus += 4000;
+
+  if (
+    atkEffect &&
+    (atkEffect.name === "時の列車" || atkEffect.name === "戦闘モード")
+  ) {
+    const defenderZone = findInZone(
+      state.players[pending.defenderPlayerId],
+      "battle",
+      pending.defenderInstanceId,
+    )
+      ? "battle"
+      : "rush";
+    if (
+      defenderHasPowerCostMinus(
+        state,
+        pending.defenderPlayerId,
+        pending.defenderInstanceId,
+        defenderZone,
+      )
+    ) {
+      bonus += 5000;
+    }
+  }
 
   return bonus;
 }

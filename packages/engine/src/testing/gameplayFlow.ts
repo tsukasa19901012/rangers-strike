@@ -2,6 +2,7 @@ import {
   getZordCondition,
   isSendSUnitZordCondition,
   isZordUpCost,
+  resolveRushAdditionalCondition,
   listZordFusionPartnerIds,
   mothershipHoldCountForRush,
   mothershipSubstitutesCondition,
@@ -119,6 +120,26 @@ function buildRushZone(
     return [inst("TST-UNIT-0", "s-material")];
   }
 
+  if (condition === "discard_named_unit" || condition === "discard_feature_unit") {
+    const resolved = resolveRushAdditionalCondition(zordCardId, definitions[zordCardId]);
+    const materialId = `TST-ZORD-MAT-${zordCardId}`;
+    if (!definitions[materialId]) {
+      definitions[materialId] = {
+        id: materialId,
+        name: resolved?.partnerName ?? "ゾード素材",
+        type: "unit",
+        category: "WB",
+        rarity: "N",
+        expansion: "test",
+        powerCost: 1,
+        bp: 1000,
+        size: "S",
+        features: resolved?.requiredFeature ? [resolved.requiredFeature] : undefined,
+      };
+    }
+    return [inst(materialId, "named-material")];
+  }
+
   return [];
 }
 
@@ -205,7 +226,9 @@ export function buildZordRushSetup(
   const command = commandsForZordRush(zordCardId, categories);
   const cmd = command[0]!;
   const cost = parsePowerCost(def.powerCost);
-  const condition = getZordCondition(zordCardId);
+  const condition =
+    resolveRushAdditionalCondition(zordCardId, def)?.conditionId ??
+    getZordCondition(zordCardId);
 
   let rush = buildRushZone(zordCardId, condition, definitions, zord.instanceId);
   rush = addMothershipToRush(rush, zordCardId, definitions);

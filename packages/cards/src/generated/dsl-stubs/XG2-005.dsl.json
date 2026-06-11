@@ -58,5 +58,10 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_units_to_zones",
+    "text": "自軍Sユニット1体を自軍ゾーンに送る",
+    "unitCount": 1
   }
 }

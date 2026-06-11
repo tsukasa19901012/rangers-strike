@@ -57,5 +57,9 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "ユニットが7体以上ある"
   }
 }

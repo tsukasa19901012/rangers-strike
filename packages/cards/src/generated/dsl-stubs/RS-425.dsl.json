@@ -36,5 +36,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "特徴「激気」と「ブルー」を持つ自軍ユニット1体を捨札にする",
+    "partnerName": "激気",
+    "unitCount": 1
   }
 }

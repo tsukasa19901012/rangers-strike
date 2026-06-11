@@ -95,5 +95,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「仮面ライダーギルス」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "仮面ライダーギルス",
+    "unitCount": 1
   }
 }

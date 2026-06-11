@@ -38,5 +38,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ジェットマシン」1体を捨札にする",
+    "partnerName": "ジェットマシン",
+    "unitCount": 1
   }
 }

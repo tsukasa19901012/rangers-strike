@@ -29,6 +29,11 @@ import {
   validateZordAdditionalPayment,
 } from "./mothership";
 import {
+  collectZordDownMaterials,
+  needsZordDownDestinationChoice,
+  needsZordDownPayment,
+} from "./zordDown";
+import {
   collectZordMaterials,
   hasAllRequiredFusionMaterials,
   needsZordMaterial,
@@ -196,7 +201,13 @@ export function createZordSetup(
   const found = findInZone(player, "hand", zordInstanceId);
   if (!found) return null;
   const def = getDefinition(state.definitions, found.card.cardId);
-  if (!isUnit(def) || !needsZordMaterial(state.definitions, found.card.cardId)) {
+  if (!isUnit(def)) return null;
+
+  if (needsZordDownPayment(found.card.cardId, def.powerCost, def)) {
+    return createZordDownSetup(state, playerId, found.card);
+  }
+
+  if (!needsZordMaterial(state.definitions, found.card.cardId)) {
     return null;
   }
 
@@ -292,6 +303,43 @@ function needsDestinationChoice(
   );
 }
 
+function createZordDownSetup(
+  state: GameState,
+  playerId: PlayerId,
+  rushingCard: { cardId: string; instanceId: string },
+): PendingZordSetup | null {
+  const player = state.players[playerId];
+  const materials = collectZordDownMaterials(
+    player,
+    state.definitions,
+    rushingCard.cardId,
+    rushingCard.instanceId,
+  );
+  if (materials.length === 0) return null;
+
+  const commandZoneHasSpace = player.command.length < COMMAND_ZONE_MAX;
+  const base = {
+    playerId,
+    zordInstanceId: rushingCard.instanceId,
+    zordCardId: rushingCard.cardId,
+    direction: "down" as const,
+    validInstanceIds: materials.map((c) => c.instanceId),
+    mothershipAvailable: false,
+  };
+
+  if (
+    needsZordDownDestinationChoice(
+      rushingCard.cardId,
+      state.definitions,
+      commandZoneHasSpace,
+    )
+  ) {
+    return { ...base, step: "destination" };
+  }
+
+  return { ...base, step: "material" };
+}
+
 export function advanceZordSetup(
   state: GameState,
   setup: PendingZordSetup,
@@ -311,12 +359,19 @@ export function advanceZordSetup(
     const materialIds =
       setup.validInstanceIds.length > 0
         ? setup.validInstanceIds
-        : collectZordMaterials(
-            player,
-            state.definitions,
-            setup.zordCardId,
-            setup.zordInstanceId,
-          ).map((c) => c.instanceId);
+        : setup.direction === "down"
+          ? collectZordDownMaterials(
+              player,
+              state.definitions,
+              setup.zordCardId,
+              setup.zordInstanceId,
+            ).map((c) => c.instanceId)
+          : collectZordMaterials(
+              player,
+              state.definitions,
+              setup.zordCardId,
+              setup.zordInstanceId,
+            ).map((c) => c.instanceId);
 
     if (materialIds.length === 0) {
       return { kind: "error", error: "invalid_material" };
@@ -334,6 +389,33 @@ export function advanceZordSetup(
   }
 
   if (setup.step === "material") {
+    if (setup.direction === "down") {
+      const materialId = input.materialInstanceId;
+      if (!materialId || !setup.validInstanceIds.includes(materialId)) {
+        return { kind: "error", error: "invalid_material" };
+      }
+      const destination =
+        setup.materialDestination ??
+        (needsZordDownDestinationChoice(
+          setup.zordCardId,
+          state.definitions,
+          player.command.length < COMMAND_ZONE_MAX,
+        )
+          ? undefined
+          : "discard");
+      if (
+        needsZordDownDestinationChoice(
+          setup.zordCardId,
+          state.definitions,
+          player.command.length < COMMAND_ZONE_MAX,
+        ) &&
+        !destination
+      ) {
+        return { kind: "error", error: "invalid_destination" };
+      }
+      return completeZordDownPayment(state, setup, materialId, destination);
+    }
+
     if (input.paymentPath === "mothership") {
       if (!setup.mothershipAvailable) {
         return { kind: "error", error: "invalid_mothership" };
@@ -392,6 +474,76 @@ export function advanceZordSetup(
   }
 
   return { kind: "error", error: "invalid_step" };
+}
+
+function completeZordDownPayment(
+  state: GameState,
+  setup: PendingZordSetup,
+  materialInstanceId: string,
+  materialDestination: ZordMaterialDestination | undefined,
+): ZordSetupAdvanceResult {
+  const playerId = setup.playerId;
+  const player = state.players[playerId];
+  const def = getDefinition(state.definitions, setup.zordCardId);
+  if (!def) return { kind: "error", error: "invalid_card" };
+
+  const shironRush = isShironLightRushTarget(player, setup.zordInstanceId);
+  const canRush = shironRush
+    ? canRushUnitExceptCommandHold(
+        player,
+        state.definitions,
+        def,
+        setup.zordInstanceId,
+        materialInstanceId,
+        undefined,
+        materialDestination,
+        undefined,
+        { ...state, playerId },
+      )
+    : canRushUnit(
+        player,
+        state.definitions,
+        def,
+        setup.zordInstanceId,
+        materialInstanceId,
+        undefined,
+        materialDestination,
+        undefined,
+        { ...state, playerId },
+      );
+
+  if (!canRush) return { kind: "error", error: "cannot_complete_zord" };
+
+  if (isCostWindowSatisfied(player, "rush_category") || shironRush) {
+    return {
+      kind: "rush",
+      action: {
+        type: "rush",
+        playerId,
+        instanceId: setup.zordInstanceId,
+        zordMaterialInstanceId: materialInstanceId,
+        zordMaterialDestination: materialDestination,
+      },
+    };
+  }
+
+  const categories = cardCategories(def);
+  const payment = buildCategoryPayment(
+    state,
+    playerId,
+    setup.zordInstanceId,
+    setup.zordCardId,
+    categories,
+    {
+      type: "rush",
+      zordMaterialInstanceId: materialInstanceId,
+      zordMaterialDestination: materialDestination,
+    },
+    false,
+    { perRushPayment: true },
+  );
+  if (payment) return { kind: "payment", payment };
+  return { kind: "error", error: "cannot_complete_zord" };
 }
 
 function completeZordPayment(

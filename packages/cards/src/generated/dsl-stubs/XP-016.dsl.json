@@ -61,5 +61,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある",
+    "partnerName": "仮面ライダー",
+    "unitCount": 8
   }
 }

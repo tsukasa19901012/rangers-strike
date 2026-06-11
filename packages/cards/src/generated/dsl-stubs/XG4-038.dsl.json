@@ -38,5 +38,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「牛折神」1体を捨札にする",
+    "partnerName": "牛折神",
+    "unitCount": 1
   }
 }

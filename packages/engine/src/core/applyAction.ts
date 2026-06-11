@@ -19,6 +19,7 @@ import {
   isUnit,
   needsZordMaterial,
   parsePowerCost,
+  rushPowerCost,
   superPowerAttackBonus,
 } from "./catalog";
 import {
@@ -97,7 +98,32 @@ import {
   canUseMothershipForZordRush,
   validateZordAdditionalPayment,
 } from "../rules/mothership";
-import { applyAllZordFusionMaterials, applyZordMaterial, findZordMaterial, requiresAllFusionPartners } from "../rules/zord";
+import { getZordDownCondition, isZordUpCost, resolveRushAdditionalCondition } from "@rangers-strike/cards";
+import {
+  applyMultipleZordDownMaterials,
+  applyZordDownMaterial,
+  applyZordDownPowerMaterials,
+  findZordDownMaterial,
+  needsZordDownPayment,
+  validateZordDownPayment,
+} from "../rules/zordDown";
+import {
+  applyAllZordFusionMaterials,
+  applyZordMaterial,
+  findZordMaterial,
+  requiresAllFusionPartners,
+} from "../rules/zord";
+import {
+  applyExtendedZordPayment,
+  applyHoldExtraCommandPayment,
+  applyMultipleFieldZordMaterials,
+  applyOpponentDrawCost,
+  evaluateStateGate,
+  needsHoldExtraCommand,
+  needsOpponentDrawCost,
+  needsZordExtendedMaterial,
+  needsZordStateGate,
+} from "../rules/zordExtended";
 import {
   canMoveUnitToBattle,
   cannotAttackOrStrikeThisTurn,
@@ -836,11 +862,72 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       const definition = getDefinition(state.definitions, found.card.cardId);
       if (!isRushable(definition)) return fail("not_a_unit");
 
-      const cost = parsePowerCost(definition!.powerCost);
+      const zordMaterialIds =
+        action.zordMaterialInstanceIds ??
+        (action.zordMaterialInstanceId ? [action.zordMaterialInstanceId] : []);
+      const cost = rushPowerCost(state, playerId, definition!, {
+        zordMaterialInstanceId: action.zordMaterialInstanceId,
+        zordMaterialInstanceIds: action.zordMaterialInstanceIds,
+      });
       let nextPlayer = player;
 
-      if (needsZordMaterial(state.definitions, found.card.cardId)) {
-        if (requiresAllFusionPartners(found.card.cardId)) {
+      if (
+        needsZordDownPayment(found.card.cardId, definition!.powerCost, definition!) &&
+        zordMaterialIds.length > 0
+      ) {
+        if (
+          !validateZordDownPayment(
+            nextPlayer,
+            state.definitions,
+            found.card.cardId,
+            found.card.instanceId,
+            action.zordMaterialInstanceId,
+            action.zordMaterialDestination,
+            action.zordMaterialInstanceIds ?? zordMaterialIds,
+          )
+        ) {
+          return fail("invalid_zord_material");
+        }
+        const downCondition = getZordDownCondition(
+          found.card.cardId,
+          definition!,
+        );
+        let afterZordDown: PlayerState | null = null;
+        if (downCondition?.conditionId === "zord_down_discard_power_cards") {
+          afterZordDown = applyZordDownPowerMaterials(
+            nextPlayer,
+            state.definitions,
+            found.card.cardId,
+            zordMaterialIds,
+          );
+        } else if (zordMaterialIds.length === 1) {
+          afterZordDown = applyZordDownMaterial(
+            nextPlayer,
+            state.definitions,
+            found.card.cardId,
+            found.card.instanceId,
+            zordMaterialIds[0]!,
+            action.zordMaterialDestination,
+          );
+        } else {
+          afterZordDown = applyMultipleZordDownMaterials(
+            nextPlayer,
+            state.definitions,
+            found.card.cardId,
+            found.card.instanceId,
+            zordMaterialIds,
+            action.zordMaterialDestination,
+          );
+        }
+        if (!afterZordDown) return fail("invalid_zord_material");
+        nextPlayer = afterZordDown;
+      } else if (isZordUpCost(definition!.powerCost)) {
+        if (needsZordStateGate(state.definitions, found.card.cardId)) {
+          const gate = resolveRushAdditionalCondition(found.card.cardId, definition!);
+          if (!gate || !evaluateStateGate(state, playerId, gate)) {
+            return fail("zord_state_gate_unmet");
+          }
+        } else if (requiresAllFusionPartners(found.card.cardId)) {
           const afterZord = applyAllZordFusionMaterials(
             nextPlayer,
             found.card.cardId,
@@ -848,9 +935,38 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           );
           if (!afterZord) return fail("zord_material_required");
           nextPlayer = afterZord;
-        } else {
+        } else if (needsZordExtendedMaterial(state.definitions, found.card.cardId)) {
+          const extendedIds =
+            action.zordMaterialInstanceIds ??
+            (action.zordMaterialInstanceId ? [action.zordMaterialInstanceId] : []);
+          if (extendedIds.length === 0) return fail("zord_material_required");
+          const afterExtended = applyExtendedZordPayment(
+            nextPlayer,
+            state.definitions,
+            found.card.cardId,
+            found.card.instanceId,
+            extendedIds,
+          );
+          if (!afterExtended) return fail("invalid_zord_material");
+          nextPlayer = afterExtended;
+        } else if (needsHoldExtraCommand(state.definitions, found.card.cardId)) {
+          const holdIds = action.zordExtraCommandHoldInstanceIds ?? [];
+          const afterHold = applyHoldExtraCommandPayment(
+            nextPlayer,
+            state.definitions,
+            found.card.cardId,
+            holdIds,
+          );
+          if (!afterHold) return fail("invalid_zord_material");
+          nextPlayer = afterHold;
+        } else if (needsOpponentDrawCost(state.definitions, found.card.cardId)) {
+          // 相手ドローのみ。支払い不要。
+        } else if (needsZordMaterial(state.definitions, found.card.cardId)) {
           const mothershipHolds = action.zordMothershipHoldInstanceIds ?? [];
-          const hasMaterial = !!action.zordMaterialInstanceId;
+          const fieldIds =
+            action.zordMaterialInstanceIds ??
+            (action.zordMaterialInstanceId ? [action.zordMaterialInstanceId] : []);
+          const hasMaterial = fieldIds.length > 0;
           if (!hasMaterial && mothershipHolds.length === 0) {
             return fail("zord_material_required");
           }
@@ -860,23 +976,36 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
               state.definitions,
               found.card.cardId,
               found.card.instanceId,
-              action.zordMaterialInstanceId,
+              fieldIds[0],
               action.zordMaterialDestination,
               mothershipHolds,
+              fieldIds.length > 0 ? fieldIds : undefined,
             )
           ) {
             return fail("invalid_zord_material");
           }
 
           if (hasMaterial) {
-            const afterZord = applyZordMaterial(
-              nextPlayer,
-              state.definitions,
-              found.card.cardId,
-              found.card.instanceId,
-              action.zordMaterialInstanceId!,
-              action.zordMaterialDestination,
-            );
+            let afterZord: PlayerState | null = null;
+            if (fieldIds.length === 1) {
+              afterZord = applyZordMaterial(
+                nextPlayer,
+                state.definitions,
+                found.card.cardId,
+                found.card.instanceId,
+                fieldIds[0]!,
+                action.zordMaterialDestination,
+              );
+            } else {
+              afterZord = applyMultipleFieldZordMaterials(
+                nextPlayer,
+                state.definitions,
+                found.card.cardId,
+                found.card.instanceId,
+                fieldIds,
+                action.zordMaterialDestination,
+              );
+            }
             if (!afterZord) return fail("invalid_zord_material");
             nextPlayer = afterZord;
           }
@@ -900,6 +1029,11 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         }
       }
 
+      let nextStateAfterRush = state;
+      if (needsOpponentDrawCost(state.definitions, found.card.cardId)) {
+        nextStateAfterRush = applyOpponentDrawCost(state, playerId);
+      }
+
       if (!payPowerCost(state, playerId, cost)) {
         const shortage =
           cost -
@@ -917,6 +1051,20 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       const [, hand] = removeAt(nextPlayer.hand, handFound.index);
       let rushCard = handFound.card;
       if (
+        needsZordDownPayment(found.card.cardId, definition!.powerCost, definition!) &&
+        action.zordMaterialInstanceId
+      ) {
+        const material = findZordDownMaterial(
+          player,
+          state.definitions,
+          found.card.cardId,
+          found.card.instanceId,
+          action.zordMaterialInstanceId,
+        );
+        if (material) {
+          rushCard = { ...rushCard, zordMaterialCardId: material.card.cardId };
+        }
+      } else if (
         needsZordMaterial(state.definitions, found.card.cardId) &&
         !requiresAllFusionPartners(found.card.cardId) &&
         action.zordMaterialInstanceId
@@ -949,8 +1097,8 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       nextPlayer = clearShironLightRushTarget(nextPlayer);
       nextPlayer = clearCostWindow(nextPlayer, "rush_category");
       let nextState: GameState = {
-        ...state,
-        ...updatePlayer(state, playerId, nextPlayer),
+        ...nextStateAfterRush,
+        ...updatePlayer(nextStateAfterRush, playerId, nextPlayer),
       };
 
       const rushFinal = emitUnitRushedAndFinalize(

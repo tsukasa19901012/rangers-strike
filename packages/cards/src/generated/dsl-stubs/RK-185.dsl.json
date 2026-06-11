@@ -53,5 +53,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ドラス」1体を捨札にする",
+    "partnerName": "ドラス",
+    "unitCount": 1
   }
 }

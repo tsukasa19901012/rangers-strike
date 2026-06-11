@@ -7,7 +7,13 @@ import { execSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseSp, SIZE_MAP } from "../src/pipeline/metaMaps";
+import {
+  inferRushAdditionalCondition,
+  parsePowerCost,
+  parseSp,
+  SIZE_MAP,
+} from "../src/pipeline/metaMaps";
+import type { RushAdditionalCondition } from "../src/effectTaxonomy";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const cardsRoot = join(__dirname, "..");
@@ -20,6 +26,8 @@ type WikiMeta = {
   sp?: string;
   kind?: string;
   features?: string;
+  powerCostRaw?: string;
+  addCond?: string;
 };
 
 function parseWikiPage(content: string): WikiMeta | null {
@@ -28,7 +36,9 @@ function parseWikiPage(content: string): WikiMeta | null {
   const sp = content.match(/SP[：:]\s*([^\n]+)/)?.[1]?.trim();
   const kind = content.match(/種類[：:]\s*([^\n]+)/)?.[1]?.trim();
   const features = content.match(/特徴[：:]\s*([^\n]+)/)?.[1]?.trim();
-  return { cardId, sp, kind, features };
+  const powerCostRaw = content.match(/必要パワー[：:]\s*([^\n]+)/)?.[1]?.trim();
+  const addCond = content.match(/追加条件[：:]\s*([^\n]+)/)?.[1]?.trim();
+  return { cardId, sp, kind, features, powerCostRaw, addCond };
 }
 
 function loadWikiMeta(): Map<string, WikiMeta> {
@@ -41,9 +51,16 @@ function loadWikiMeta(): Map<string, WikiMeta> {
   return map;
 }
 
-function repairDslStubs(wiki: Map<string, WikiMeta>): { spFixed: number; vehicleSized: number } {
+function repairDslStubs(wiki: Map<string, WikiMeta>): {
+  spFixed: number;
+  vehicleSized: number;
+  powerCostFixed: number;
+  rushCondFixed: number;
+} {
   let spFixed = 0;
   let vehicleSized = 0;
+  let powerCostFixed = 0;
+  let rushCondFixed = 0;
 
   for (const file of readdirSync(dslDir)) {
     if (!file.endsWith(".dsl.json")) continue;
@@ -77,12 +94,56 @@ function repairDslStubs(wiki: Map<string, WikiMeta>): { spFixed: number; vehicle
       }
     }
 
+    if (meta.powerCostRaw) {
+      const nextPowerCost = parsePowerCost(meta.powerCostRaw);
+      if (card.powerCost !== nextPowerCost) {
+        card.powerCost = nextPowerCost;
+        powerCostFixed += 1;
+        changed = true;
+      }
+    }
+
+    const powerCostStr = String(card.powerCost);
+    if (
+      meta.addCond &&
+      meta.addCond !== "なし" &&
+      (powerCostStr.endsWith("+") || powerCostStr.endsWith("-"))
+    ) {
+      const nextRush = inferRushAdditionalCondition(
+        meta.addCond,
+        card.powerCost as number | string,
+      );
+      if (nextRush) {
+        const prev = card.rushAdditionalCondition as RushAdditionalCondition | undefined;
+        if (!prev) {
+          card.rushAdditionalCondition = nextRush;
+          rushCondFixed += 1;
+          changed = true;
+        } else if (powerCostStr.endsWith("-")) {
+          const prevJson = JSON.stringify(prev);
+          const nextJson = JSON.stringify(nextRush);
+          if (prevJson !== nextJson) {
+            card.rushAdditionalCondition = nextRush;
+            rushCondFixed += 1;
+            changed = true;
+          }
+        }
+      } else if (powerCostStr.endsWith("-") && !card.rushAdditionalCondition) {
+        card.rushAdditionalCondition = {
+          conditionId: "state_gate",
+          text: meta.addCond,
+        };
+        rushCondFixed += 1;
+        changed = true;
+      }
+    }
+
     if (changed) {
       writeFileSync(path, `${JSON.stringify(card, null, 2)}\n`);
     }
   }
 
-  return { spFixed, vehicleSized };
+  return { spFixed, vehicleSized, powerCostFixed, rushCondFixed };
 }
 
 const wiki = loadWikiMeta();

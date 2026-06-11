@@ -40,5 +40,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「三の槍マンマルバ幼体」1体を捨札にする",
+    "partnerName": "三の槍マンマルバ幼体",
+    "unitCount": 1
   }
 }

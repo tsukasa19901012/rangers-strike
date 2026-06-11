@@ -54,5 +54,10 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_command_card",
+    "text": "自軍コマンドを１つ捨札にする",
+    "unitCount": 1
   }
 }

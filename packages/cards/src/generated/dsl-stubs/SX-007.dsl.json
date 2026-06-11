@@ -135,5 +135,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「ゴセイレッド」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ゴセイレッド",
+    "unitCount": 1
   }
 }

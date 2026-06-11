@@ -51,5 +51,10 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニット4体を捨て札にする",
+    "unitCount": 4
   }
 }

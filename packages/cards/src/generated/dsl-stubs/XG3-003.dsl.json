@@ -53,5 +53,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ラジエッカー」1体を捨札にする",
+    "partnerName": "ラジエッカー",
+    "unitCount": 1
   }
 }

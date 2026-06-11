@@ -76,5 +76,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「天空聖者ブレイジェル」1体を捨札にする",
+    "partnerName": "天空聖者ブレイジェル",
+    "unitCount": 1
   }
 }

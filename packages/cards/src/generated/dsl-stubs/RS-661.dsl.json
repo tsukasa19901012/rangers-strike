@@ -90,5 +90,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍｢黒獅子リオ｣1体を捨札にすれば必要パワー0になる",
+    "partnerName": "黒獅子リオ",
+    "unitCount": 1
   }
 }

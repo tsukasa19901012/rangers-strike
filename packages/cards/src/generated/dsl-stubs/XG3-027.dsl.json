@@ -57,5 +57,9 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「スティライザー」を持つ、自軍ユニットまたは自軍コマンドがある"
   }
 }

@@ -1,9 +1,11 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import {
   getZordCondition,
+  isExtendedZordMaterialCondition,
   isSendSUnitZordCondition,
   isValidZordFusionMaterial,
   isZordUpCost,
+  resolveRushAdditionalCondition,
 } from "@rangers-strike/cards";
 import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
 import type { ZordMaterialDestination } from "../types/actions";
@@ -17,13 +19,24 @@ export type ZordMaterialZone = "rush" | "battle";
 
 const ZORD_MATERIAL_ZONES: ZordMaterialZone[] = ["rush", "battle"];
 
+const NON_FIELD_ZORD_UP_CONDITIONS = new Set([
+  "state_gate",
+  "hold_extra_command",
+  "opponent_draw",
+]);
+
 export function needsZordMaterial(
   definitions: Record<string, CardDefinition>,
   cardId: string,
 ): boolean {
   const def = getDefinition(definitions, cardId);
   if (!def || !isZordUpCost(def.powerCost)) return false;
-  return getZordCondition(cardId) !== undefined;
+  const resolved = resolveRushAdditionalCondition(cardId, def);
+  const conditionId = resolved?.conditionId ?? getZordCondition(cardId);
+  if (!conditionId || conditionId.startsWith("zord_down_")) return false;
+  if (NON_FIELD_ZORD_UP_CONDITIONS.has(conditionId)) return false;
+  if (isExtendedZordMaterialCondition(conditionId)) return false;
+  return true;
 }
 
 /** 合体―行があるゾードは、列挙された全パートナーがフィールド上に必要。 */
@@ -120,6 +133,82 @@ export function isValidFusionMaterial(
   return isValidZordFusionMaterial(rushingCardId, card.cardId);
 }
 
+function normalizeName(value: string): string {
+  return value.replace(/\s/g, "");
+}
+
+function matchesPartnerName(def: CardDefinition | undefined, partnerName: string): boolean {
+  if (!def) return false;
+  return normalizeName(def.name).includes(normalizeName(partnerName));
+}
+
+function resolveZordUpCondition(
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+) {
+  const def = getDefinition(definitions, rushingCardId);
+  return resolveRushAdditionalCondition(rushingCardId, def);
+}
+
+export function isValidZordUpMaterial(
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+  rushingInstanceId: string,
+  card: CardInstance,
+): boolean {
+  if (card.instanceId === rushingInstanceId) return false;
+  const condition = resolveZordUpCondition(definitions, rushingCardId);
+  if (!condition || condition.conditionId.startsWith("zord_down_")) {
+    const legacy = getZordCondition(rushingCardId);
+    if (legacy === "discard_fusion_unit") {
+      return isValidFusionMaterial(definitions, rushingCardId, card, rushingInstanceId);
+    }
+    if (legacy && isSendSUnitZordCondition(legacy)) {
+      return isValidPowerMaterial(definitions, card, rushingInstanceId);
+    }
+    return false;
+  }
+
+  const def = getDefinition(definitions, card.cardId);
+  if (!def) return false;
+
+  switch (condition.conditionId) {
+    case "discard_fusion_unit":
+      return isValidFusionMaterial(definitions, rushingCardId, card, rushingInstanceId);
+    case "discard_fusion_vehicle":
+      return def.type === "vehicle" && isValidZordFusionMaterial(rushingCardId, card.cardId);
+    case "discard_vehicle_unit":
+      return def.type === "vehicle";
+    case "discard_named_unit":
+      return (
+        def.type === "unit" &&
+        !!condition.partnerName &&
+        matchesPartnerName(def, condition.partnerName)
+      );
+    case "discard_feature_unit":
+      return (
+        def.type === "unit" &&
+        !!condition.requiredFeature &&
+        (def.features ?? []).includes(condition.requiredFeature)
+      );
+    case "discard_name_contains_unit":
+      return (
+        def.type === "unit" &&
+        !!condition.nameContains &&
+        normalizeName(def.name).includes(normalizeName(condition.nameContains))
+      );
+    case "discard_generic_unit":
+      return def.type === "unit";
+    case "send_s_units_to_zones":
+      return isValidPowerMaterial(definitions, card, rushingInstanceId);
+    default:
+      if (isSendSUnitZordCondition(condition.conditionId)) {
+        return isValidPowerMaterial(definitions, card, rushingInstanceId);
+      }
+      return false;
+  }
+}
+
 export function isValidPowerMaterial(
   definitions: Record<string, CardDefinition>,
   card: CardInstance,
@@ -135,21 +224,16 @@ export function collectZordMaterials(
   rushingCardId: string,
   rushingInstanceId: string,
 ): CardInstance[] {
-  const condition = getZordCondition(rushingCardId);
-  if (!condition) return [];
+  const resolved = resolveZordUpCondition(definitions, rushingCardId);
+  const legacy = getZordCondition(rushingCardId);
+  if (!resolved && !legacy) return [];
 
   const candidates: CardInstance[] = [];
 
   for (const zone of ZORD_MATERIAL_ZONES) {
     for (const card of player[zone]) {
-      if (condition === "discard_fusion_unit") {
-        if (isValidFusionMaterial(definitions, rushingCardId, card, rushingInstanceId)) {
-          candidates.push(card);
-        }
-      } else if (isSendSUnitZordCondition(condition)) {
-        if (isValidPowerMaterial(definitions, card, rushingInstanceId)) {
-          candidates.push(card);
-        }
+      if (isValidZordUpMaterial(definitions, rushingCardId, rushingInstanceId, card)) {
+        candidates.push(card);
       }
     }
   }
@@ -164,21 +248,23 @@ export function findZordMaterial(
   rushingInstanceId: string,
   materialInstanceId: string,
 ): { zone: ZordMaterialZone; index: number; card: CardInstance } | null {
-  const condition = getZordCondition(rushingCardId);
-  if (!condition) return null;
+  if (!resolveZordUpCondition(definitions, rushingCardId) && !getZordCondition(rushingCardId)) {
+    return null;
+  }
 
   for (const zone of ZORD_MATERIAL_ZONES) {
     const found = findInZone(player, zone, materialInstanceId);
     if (!found) continue;
-
-    if (condition === "discard_fusion_unit") {
-      if (!isValidFusionMaterial(definitions, rushingCardId, found.card, rushingInstanceId)) {
-        continue;
-      }
-    } else if (!isValidPowerMaterial(definitions, found.card, rushingInstanceId)) {
+    if (
+      !isValidZordUpMaterial(
+        definitions,
+        rushingCardId,
+        rushingInstanceId,
+        found.card,
+      )
+    ) {
       continue;
     }
-
     return { zone, index: found.index, card: found.card };
   }
 
@@ -202,26 +288,34 @@ export function applyZordMaterial(
   );
   if (!material) return null;
 
-  const condition = getZordCondition(rushingCardId);
-  if (!condition) return null;
+  const resolved = resolveZordUpCondition(definitions, rushingCardId);
+  const conditionId = resolved?.conditionId ?? getZordCondition(rushingCardId);
+  if (!conditionId) return null;
 
   const [, zoneCards] = removeAt(player[material.zone], material.index);
   let nextPlayer: PlayerState = { ...player, [material.zone]: zoneCards };
 
-  if (condition === "discard_fusion_unit") {
-    nextPlayer = {
-      ...nextPlayer,
-      discard: [...nextPlayer.discard, material.card],
-    };
-  } else if (
-    condition === "send_s_unit_to_discard" ||
-    (condition === "send_s_unit_to_command_or_discard" && destination === "discard")
+  if (
+    conditionId === "discard_fusion_unit" ||
+    conditionId === "discard_named_unit" ||
+    conditionId === "discard_feature_unit" ||
+    conditionId === "discard_vehicle_unit" ||
+    conditionId === "discard_fusion_vehicle" ||
+    conditionId === "discard_name_contains_unit"
   ) {
     nextPlayer = {
       ...nextPlayer,
       discard: [...nextPlayer.discard, material.card],
     };
-  } else if (condition === "send_s_unit_to_command_or_discard") {
+  } else if (
+    conditionId === "send_s_unit_to_discard" ||
+    (conditionId === "send_s_unit_to_command_or_discard" && destination === "discard")
+  ) {
+    nextPlayer = {
+      ...nextPlayer,
+      discard: [...nextPlayer.discard, material.card],
+    };
+  } else if (conditionId === "send_s_unit_to_command_or_discard") {
     if (destination === "command") {
       if (nextPlayer.command.length >= COMMAND_ZONE_MAX) return null;
       nextPlayer = {

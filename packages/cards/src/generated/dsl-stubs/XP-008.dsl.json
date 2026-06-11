@@ -75,5 +75,9 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_fusion",
+    "text": "自軍合体ユニットを捨札にすれば必要パワー0になる"
   }
 }

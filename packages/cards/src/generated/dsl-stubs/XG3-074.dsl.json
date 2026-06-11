@@ -60,5 +60,9 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_all_face_up_power",
+    "text": "オモテ向きの自軍パワー全てを捨札にする"
   }
 }

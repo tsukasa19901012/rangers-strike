@@ -73,5 +73,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍｢大剣人ズバーン｣を1体捨札にする",
+    "partnerName": "大剣人ズバーン",
+    "unitCount": 1
   }
 }

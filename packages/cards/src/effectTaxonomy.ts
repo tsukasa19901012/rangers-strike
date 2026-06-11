@@ -34,12 +34,35 @@ export type NamedEffectTrigger =
   /** オペレーションカードの発動タイミング。 */
   | { type: "operation"; timing: "rush" | "battle" | "counter" | "resident" };
 
-/** ゾードアップ Rush 追加条件（powerCost 末尾「+」）。zord.ts を参照。 */
+/** Rush 追加条件 ID（+ = ゾードアップ、zord_down_* = ゾードダウン）。 */
 export type ZordConditionId =
   | "discard_fusion_unit"
   | "send_s_unit_to_power"
   | "send_s_unit_to_discard"
-  | "send_s_unit_to_command_or_discard";
+  | "send_s_unit_to_command_or_discard"
+  | "discard_named_unit"
+  | "discard_feature_unit"
+  | "discard_vehicle_unit"
+  | "discard_fusion_vehicle"
+  | "discard_operation_cards"
+  | "discard_name_contains_unit"
+  | "discard_category_l_unit"
+  | "return_named_to_hand"
+  | "hold_extra_command"
+  | "send_s_units_to_zones"
+  | "state_gate"
+  | "discard_command_card"
+  | "discard_all_hand"
+  | "discard_hand_card"
+  | "discard_generic_unit"
+  | "discard_all_face_up_power"
+  | "opponent_draw"
+  | "zord_down_discard_fusion"
+  | "zord_down_discard_named"
+  | "zord_down_discard_feature"
+  | "zord_down_send_to_power"
+  | "zord_down_send_to_command_or_discard"
+  | "zord_down_discard_power_cards";
 
 /** Rush 追加条件（atwiki 追加条件：…）。 */
 export type RushAdditionalCondition = {
@@ -48,6 +71,16 @@ export type RushAdditionalCondition = {
   text: string;
   /** S ユニット送付条件の体数（既定 1）。 */
   unitCount?: number;
+  /** ゾードダウン: カード名に含まれる指定名（例: アバレッド）。 */
+  partnerName?: string;
+  /** ゾードダウン: 捨てるユニットが持つ特徴。 */
+  requiredFeature?: string;
+  /** ゾードダウン: 捨てるパワーの最低必要パワー数字。 */
+  minPrintedPowerCost?: number;
+  /** カード名部分一致（discard_name_contains_unit 等）。 */
+  nameContains?: string;
+  /** L ユニット追加条件のカテゴリ名（日本語またはコード）。 */
+  requiredCategory?: string;
 };
 
 /** 効果名を持つ効果 — 実装時は engine effectId に対応。 */

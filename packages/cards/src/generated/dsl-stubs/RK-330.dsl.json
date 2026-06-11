@@ -83,5 +83,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_feature",
+    "text": "特徴「アマダム」を持つ自軍ユニット1体を捨札にすれば必要パワー0になる",
+    "requiredFeature": "アマダム",
+    "unitCount": 1
   }
 }

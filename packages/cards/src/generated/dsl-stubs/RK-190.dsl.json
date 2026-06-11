@@ -39,5 +39,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "return_named_to_hand",
+    "text": "自軍「ガライ」「アギト」「ズー」をそれぞれ1体ずつ自分の手札に戻す",
+    "partnerName": "ガライ",
+    "unitCount": 1
   }
 }

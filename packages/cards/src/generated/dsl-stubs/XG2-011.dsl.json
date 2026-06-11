@@ -38,5 +38,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「キバレンジャー」か「気伝獣ウォンタイガー」1体を捨札にする",
+    "partnerName": "キバレンジャー",
+    "unitCount": 1
   }
 }

@@ -53,5 +53,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "特徴「レッド」または「宇宙海賊」を持つ自軍ユニット1体を捨札にする",
+    "partnerName": "レッド",
+    "unitCount": 1
   }
 }

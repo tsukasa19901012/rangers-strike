@@ -37,5 +37,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍捨札に「魔導騎士ウルザード」がある",
+    "partnerName": "魔導騎士ウルザード",
+    "unitCount": 1
   }
 }

@@ -39,5 +39,10 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_operation_cards",
+    "text": "自軍常駐置き場のカードを（ウラ向きのカードはウラ向きのまま）4枚選び捨札にする",
+    "unitCount": 4
   }
 }

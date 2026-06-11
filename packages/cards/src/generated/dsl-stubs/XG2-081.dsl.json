@@ -38,5 +38,9 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "カード名に「ディケイド」または「ディエンド」を含む自軍ユニットがある"
   }
 }

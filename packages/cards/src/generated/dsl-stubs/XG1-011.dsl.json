@@ -59,5 +59,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「皇帝バッカスフンド」1体を捨札にする",
+    "partnerName": "皇帝バッカスフンド",
+    "unitCount": 1
   }
 }

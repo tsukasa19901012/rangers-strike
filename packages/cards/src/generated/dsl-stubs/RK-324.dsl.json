@@ -51,5 +51,10 @@
     "メカ",
     "車両",
     "魔皇力"
-  ]
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_vehicle_unit",
+    "text": "自軍ビークル1体を捨札にする",
+    "unitCount": 1
+  }
 }

@@ -60,5 +60,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_send_to_power",
+    "text": "自軍「仮面ライダーサソードMF」1体をパワーゾーンに送れば必要パワー0になる",
+    "partnerName": "仮面ライダーサソードMF",
+    "unitCount": 1
   }
 }

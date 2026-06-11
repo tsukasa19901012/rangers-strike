@@ -52,5 +52,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ターボマシン」1体を捨札にする",
+    "partnerName": "ターボマシン",
+    "unitCount": 1
   }
 }

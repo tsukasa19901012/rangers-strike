@@ -58,5 +58,9 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "opponent_draw",
+    "text": "相手に1枚ドローさせる"
   }
 }

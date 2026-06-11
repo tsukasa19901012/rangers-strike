@@ -56,5 +56,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_name_contains_unit",
+    "text": "カード名に「グランナスカ」を含む自軍ユニット1体を捨札にする",
+    "nameContains": "グランナスカ",
+    "unitCount": 1
   }
 }

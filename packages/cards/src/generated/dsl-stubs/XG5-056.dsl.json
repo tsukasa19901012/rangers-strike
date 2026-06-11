@@ -79,5 +79,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「仮面ライダーギャレン」1体を捨札にする",
+    "partnerName": "仮面ライダーギャレン",
+    "unitCount": 1
   }
 }

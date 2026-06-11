@@ -3,6 +3,7 @@ import {
   cardCategories,
   getCardById,
   hasUnnamedRule,
+  printedPowerCostNumber,
   type Category,
 } from "@rangers-strike/cards";
 import { getCardEffect } from "@rangers-strike/cards";
@@ -14,7 +15,24 @@ import { promotedKeywordBpBonus } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
 import { legend3EnemySComboDelta } from "../rules/legend3/fieldEffects";
 import { validateZordAdditionalPayment } from "../rules/mothership";
+import {
+  collectZordDownMaterials,
+  needsZordDownPayment,
+  usesZordDownZeroCost,
+  validateZordDownPayment,
+} from "../rules/zordDown";
 import { collectZordMaterials, hasAllRequiredFusionMaterials, needsZordMaterial, requiresAllFusionPartners } from "../rules/zord";
+import {
+  evaluateStateGate,
+  needsHoldExtraCommand,
+  needsOpponentDrawCost,
+  needsZordExtendedMaterial,
+  needsZordStateGate,
+  validateExtendedZordPayment,
+  validateFieldZordMaterials,
+  validateHoldExtraCommandPayment,
+} from "../rules/zordExtended";
+import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { isShironLightRushTarget } from "../rules/shironLight";
 import { getAuraPowerInstanceId, getComboNumberDelta } from "../rules/turnModifierBridge";
 import { opponentInfiniteChainBlocks } from "../rules/turnModifiers";
@@ -33,10 +51,35 @@ export function buildDefinitionMap(
   return map;
 }
 
-export function parsePowerCost(cost: number | string): number {
-  if (typeof cost === "number") return cost;
-  const parsed = Number.parseInt(cost.replace("+", ""), 10);
-  return Number.isNaN(parsed) ? 0 : parsed;
+/** カード印刷の必要パワー数字（+/- サフィックス除去）。 */
+export function parsePowerCost(cost: number | string | undefined): number {
+  return printedPowerCostNumber(cost);
+}
+
+export function rushPowerCost(
+  state: Pick<GameState, "players" | "definitions" | "activePlayer">,
+  playerId: PlayerId,
+  definition: CardDefinition,
+  options?: {
+    zordMaterialInstanceId?: string;
+    zordMaterialInstanceIds?: string[];
+  },
+): number {
+  if (
+    usesZordDownZeroCost(
+      state.definitions,
+      definition.id,
+      options?.zordMaterialInstanceId,
+      options?.zordMaterialInstanceIds,
+    )
+  ) {
+    return 0;
+  }
+  return effectivePowerCost(
+    state,
+    playerId,
+    parsePowerCost(definition.powerCost),
+  );
 }
 
 export function isSpFraction(sp: SpValue | undefined): sp is SpFraction {
@@ -293,18 +336,9 @@ export function canRushUnit(
   powerContext?: Pick<GameState, "players" | "definitions" | "activePlayer"> & {
     playerId: PlayerId;
   },
+  zordMaterialInstanceIds?: string[],
+  zordExtraCommandHoldInstanceIds?: string[],
 ): boolean {
-  const rawCost = parsePowerCost(unitDefinition.powerCost);
-  const cost = powerContext
-    ? effectivePowerCost(powerContext, powerContext.playerId, rawCost)
-    : rawCost;
-  const budget =
-    powerBudget ??
-    (powerContext
-      ? countAvailablePower(powerContext, powerContext.playerId)
-      : player.power.length);
-  if (budget < cost) return false;
-
   const unitCats = cardCategories(unitDefinition);
   if (
     unitCats.length > 0 &&
@@ -314,6 +348,120 @@ export function canRushUnit(
     return false;
   }
 
+  return evaluateRushPowerAndZord(
+    player,
+    definitions,
+    unitDefinition,
+    rushingInstanceId,
+    zordMaterialInstanceId,
+    zordMothershipHoldInstanceIds,
+    zordMaterialDestination,
+    powerBudget,
+    powerContext,
+    zordMaterialInstanceIds,
+    zordExtraCommandHoldInstanceIds,
+  );
+}
+
+function evaluateRushPowerAndZord(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  unitDefinition: CardDefinition,
+  rushingInstanceId: string,
+  zordMaterialInstanceId?: string,
+  zordMothershipHoldInstanceIds?: string[],
+  zordMaterialDestination?: ZordMaterialDestination,
+  powerBudget?: number,
+  powerContext?: Pick<GameState, "players" | "definitions" | "activePlayer"> & {
+    playerId: PlayerId;
+  },
+  zordMaterialInstanceIds?: string[],
+  zordExtraCommandHoldInstanceIds?: string[],
+): boolean {
+  const isZordDown = needsZordDownPayment(
+    unitDefinition.id,
+    unitDefinition.powerCost,
+    unitDefinition,
+  );
+  const usedZordDown =
+    isZordDown &&
+    Boolean(
+      zordMaterialInstanceId ||
+        (zordMaterialInstanceIds?.length ?? 0) > 0 ||
+        (zordMothershipHoldInstanceIds?.length ?? 0) > 0,
+    );
+  const rawCost = parsePowerCost(unitDefinition.powerCost);
+  const cost = usedZordDown
+    ? 0
+    : powerContext
+      ? effectivePowerCost(powerContext, powerContext.playerId, rawCost)
+      : rawCost;
+  const budget =
+    powerBudget ??
+    (powerContext
+      ? countAvailablePower(powerContext, powerContext.playerId)
+      : player.power.length);
+
+  if (!usedZordDown && budget < cost) {
+    return false;
+  }
+
+  if (
+    isZordDown &&
+    usedZordDown &&
+    !validateZordDownPayment(
+      player,
+      definitions,
+      unitDefinition.id,
+      rushingInstanceId,
+      zordMaterialInstanceId,
+      zordMaterialDestination,
+      zordMaterialInstanceIds,
+    )
+  ) {
+    return false;
+  }
+
+  if (isZordDown) {
+    return true;
+  }
+
+  const resolved = resolveRushAdditionalCondition(unitDefinition.id, unitDefinition);
+
+  if (needsZordStateGate(definitions, unitDefinition.id)) {
+    if (!powerContext || !resolved) return false;
+    return evaluateStateGate(powerContext as GameState, powerContext.playerId, resolved);
+  }
+
+  if (needsOpponentDrawCost(definitions, unitDefinition.id)) {
+    return true;
+  }
+
+  if (needsHoldExtraCommand(definitions, unitDefinition.id)) {
+    const holdIds = zordExtraCommandHoldInstanceIds ?? [];
+    if (holdIds.length === 0) return false;
+    return validateHoldExtraCommandPayment(
+      player,
+      definitions,
+      unitDefinition.id,
+      holdIds,
+    );
+  }
+
+  if (needsZordExtendedMaterial(definitions, unitDefinition.id)) {
+    const ids =
+      zordMaterialInstanceIds ??
+      (zordMaterialInstanceId ? [zordMaterialInstanceId] : []);
+    if (ids.length === 0) return false;
+    return validateExtendedZordPayment(
+      player,
+      definitions,
+      unitDefinition.id,
+      rushingInstanceId,
+      ids,
+    );
+  }
+
   if (!needsZordMaterial(definitions, unitDefinition.id)) return true;
 
   if (requiresAllFusionPartners(unitDefinition.id)) {
@@ -321,6 +469,33 @@ export function canRushUnit(
       player,
       unitDefinition.id,
       rushingInstanceId,
+    );
+  }
+
+  const fieldIds =
+    zordMaterialInstanceIds ??
+    (zordMaterialInstanceId ? [zordMaterialInstanceId] : []);
+  if (fieldIds.length > 0) {
+    if (
+      !validateFieldZordMaterials(
+        player,
+        definitions,
+        unitDefinition.id,
+        rushingInstanceId,
+        fieldIds,
+        zordMaterialDestination,
+      )
+    ) {
+      return false;
+    }
+    return validateZordAdditionalPayment(
+      player,
+      definitions,
+      unitDefinition.id,
+      rushingInstanceId,
+      fieldIds[0],
+      zordMaterialDestination,
+      zordMothershipHoldInstanceIds,
     );
   }
 
@@ -348,36 +523,21 @@ export function canRushUnitExceptCommandHold(
   powerContext?: Pick<GameState, "players" | "definitions" | "activePlayer"> & {
     playerId: PlayerId;
   },
+  zordMaterialInstanceIds?: string[],
+  zordExtraCommandHoldInstanceIds?: string[],
 ): boolean {
-  const rawCost = parsePowerCost(unitDefinition.powerCost);
-  const cost = powerContext
-    ? effectivePowerCost(powerContext, powerContext.playerId, rawCost)
-    : rawCost;
-  const budget =
-    powerBudget ??
-    (powerContext
-      ? countAvailablePower(powerContext, powerContext.playerId)
-      : player.power.length);
-  if (budget < cost) return false;
-
-  if (!needsZordMaterial(definitions, unitDefinition.id)) return true;
-
-  if (requiresAllFusionPartners(unitDefinition.id)) {
-    return hasAllRequiredFusionMaterials(
-      player,
-      unitDefinition.id,
-      rushingInstanceId,
-    );
-  }
-
-  return validateZordAdditionalPayment(
+  return evaluateRushPowerAndZord(
     player,
     definitions,
-    unitDefinition.id,
+    unitDefinition,
     rushingInstanceId,
     zordMaterialInstanceId,
-    zordMaterialDestination,
     zordMothershipHoldInstanceIds,
+    zordMaterialDestination,
+    powerBudget,
+    powerContext,
+    zordMaterialInstanceIds,
+    zordExtraCommandHoldInstanceIds,
   );
 }
 

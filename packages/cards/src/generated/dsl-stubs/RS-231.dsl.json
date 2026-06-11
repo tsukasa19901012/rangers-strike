@@ -76,5 +76,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「アバレブルー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "アバレブルー",
+    "unitCount": 1
   }
 }

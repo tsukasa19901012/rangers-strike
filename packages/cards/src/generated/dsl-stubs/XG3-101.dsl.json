@@ -75,5 +75,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「サナギマン」1体を捨札する",
+    "partnerName": "サナギマン",
+    "unitCount": 1
   }
 }

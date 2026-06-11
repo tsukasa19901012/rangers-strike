@@ -60,5 +60,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「獣拳神サイダイン」1体を捨札にする",
+    "partnerName": "獣拳神サイダイン",
+    "unitCount": 1
   }
 }

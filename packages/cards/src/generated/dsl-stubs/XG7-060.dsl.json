@@ -37,5 +37,9 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "カード名に「スター」または「SM」を含む自軍パワーがある"
   }
 }

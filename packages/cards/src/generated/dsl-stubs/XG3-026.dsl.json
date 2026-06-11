@@ -37,5 +37,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「スティラコサウルス」1体を捨札にする",
+    "partnerName": "スティラコサウルス",
+    "unitCount": 1
   }
 }

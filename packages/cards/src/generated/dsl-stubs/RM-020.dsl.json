@@ -52,5 +52,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍｢超次元高速機ドルギラン｣1体を捨札にする",
+    "partnerName": "超次元高速機ドルギラン",
+    "unitCount": 1
   }
 }

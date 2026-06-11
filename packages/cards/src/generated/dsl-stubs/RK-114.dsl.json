@@ -37,5 +37,11 @@
     "ミラーモンスター",
     "車両",
     "昆虫"
-  ]
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「サイコローグ」1体を捨札にする。",
+    "partnerName": "サイコローグ",
+    "unitCount": 1
+  }
 }

@@ -39,5 +39,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_name_contains_unit",
+    "text": "カード名に「仮面ライダーサソード」を含む自軍ユニット1体を捨札にする",
+    "nameContains": "仮面ライダーサソード",
+    "unitCount": 1
   }
 }

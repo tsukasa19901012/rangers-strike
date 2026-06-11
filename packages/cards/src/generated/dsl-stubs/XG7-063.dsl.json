@@ -54,5 +54,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_send_to_command_or_discard",
+    "text": "自軍「シャークラー」1体をコマンドゾーンに送るか捨札にすれば必要パワー0になる",
+    "partnerName": "シャークラー",
+    "unitCount": 1
   }
 }

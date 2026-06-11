@@ -59,5 +59,9 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_vehicle",
+    "text": "自軍合体ビークルを捨札にする"
   }
 }

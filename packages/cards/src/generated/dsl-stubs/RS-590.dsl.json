@@ -39,5 +39,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「大いなる獣　レイ」1体を捨札にする",
+    "partnerName": "大いなる獣　レイ",
+    "unitCount": 1
   }
 }

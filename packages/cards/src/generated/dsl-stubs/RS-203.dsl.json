@@ -58,5 +58,10 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_generic_unit",
+    "text": "自軍ユニットを1体捨札にする。",
+    "unitCount": 1
   }
 }

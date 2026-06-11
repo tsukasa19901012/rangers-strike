@@ -52,5 +52,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "return_named_to_hand",
+    "text": "自軍「超次元戦闘母艦グランドバース」１体を手札に戻す",
+    "partnerName": "超次元戦闘母艦グランドバース",
+    "unitCount": 1
   }
 }

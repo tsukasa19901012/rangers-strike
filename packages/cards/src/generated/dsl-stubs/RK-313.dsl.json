@@ -125,5 +125,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「仮面ライダーキバ」を1体捨札にすれば必要パワー0になる",
+    "partnerName": "仮面ライダーキバ",
+    "unitCount": 1
   }
 }

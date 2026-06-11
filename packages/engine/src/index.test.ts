@@ -30,8 +30,9 @@ describe("phase helpers", () => {
     expect(nextPhase("end")).toBe("start");
   });
 
-  it("parses zord-up power costs", () => {
+  it("parses zord power cost suffixes to printed numbers", () => {
     expect(parsePowerCost("7+")).toBe(7);
+    expect(parsePowerCost("7-")).toBe(7);
     expect(parsePowerCost(4)).toBe(4);
   });
 

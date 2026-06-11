@@ -1,5 +1,9 @@
 import { allCardsCatalog } from "./catalog";
 import type { RushAdditionalCondition, ZordConditionId } from "./effectTaxonomy";
+import { isZordDownCost, isZordUpCost } from "./powerCost";
+
+export { isZordDownCost, isZordUpCost } from "./powerCost";
+export { hasPowerCostMinusSuffix, printedPowerCostNumber } from "./powerCost";
 import {
   buildFusionPartnerIdSet,
   getUnitEffectBlock,
@@ -89,7 +93,36 @@ export function isSendSUnitZordCondition(conditionId: ZordConditionId): boolean 
   return (
     conditionId === "send_s_unit_to_power" ||
     conditionId === "send_s_unit_to_discard" ||
-    conditionId === "send_s_unit_to_command_or_discard"
+    conditionId === "send_s_unit_to_command_or_discard" ||
+    conditionId === "send_s_units_to_zones"
+  );
+}
+
+export const EXTENDED_ZORD_MATERIAL_CONDITIONS: ReadonlySet<ZordConditionId> = new Set([
+  "return_named_to_hand",
+  "discard_operation_cards",
+  "discard_category_l_unit",
+  "discard_command_card",
+  "discard_all_hand",
+  "discard_hand_card",
+  "discard_generic_unit",
+  "discard_all_face_up_power",
+]);
+
+export function isExtendedZordMaterialCondition(conditionId: ZordConditionId): boolean {
+  return EXTENDED_ZORD_MATERIAL_CONDITIONS.has(conditionId);
+}
+
+export function isZordUpMaterialCondition(conditionId: ZordConditionId): boolean {
+  return (
+    conditionId === "discard_fusion_unit" ||
+    conditionId === "discard_named_unit" ||
+    conditionId === "discard_feature_unit" ||
+    conditionId === "discard_vehicle_unit" ||
+    conditionId === "discard_fusion_vehicle" ||
+    conditionId === "discard_name_contains_unit" ||
+    isSendSUnitZordCondition(conditionId) ||
+    isExtendedZordMaterialCondition(conditionId)
   );
 }
 
@@ -112,15 +145,33 @@ export function resolveRushAdditionalCondition(
   return getRushAdditionalCondition(cardId);
 }
 
-export function isZordUpCost(powerCost: number | string): boolean {
-  return typeof powerCost === "string" && powerCost.endsWith("+");
+export function getZordCondition(cardId: string): ZordConditionId | undefined {
+  const legacy = ZORD_CONDITIONS[cardId];
+  if (legacy) return legacy;
+  const resolved = resolveRushAdditionalCondition(cardId);
+  if (!resolved || resolved.conditionId.startsWith("zord_down_")) return undefined;
+  return resolved.conditionId;
 }
 
-export function getZordCondition(cardId: string): ZordConditionId | undefined {
-  return (
-    ZORD_CONDITIONS[cardId] ??
-    resolveRushAdditionalCondition(cardId)?.conditionId
-  );
+export function getZordDownCondition(
+  cardId: string,
+  card?: { rushAdditionalCondition?: RushAdditionalCondition },
+): RushAdditionalCondition | undefined {
+  const fromBlock = getUnitEffectBlock(cardId)?.rushAdditionalCondition;
+  const candidate = fromBlock ?? card?.rushAdditionalCondition;
+  if (!candidate || !candidate.conditionId.startsWith("zord_down_")) {
+    return undefined;
+  }
+  return candidate;
+}
+
+export function needsZordDownPayment(
+  cardId: string,
+  powerCost: number | string,
+  card?: { rushAdditionalCondition?: RushAdditionalCondition },
+): boolean {
+  if (!isZordDownCost(powerCost)) return false;
+  return getZordDownCondition(cardId, card) !== undefined;
 }
 
 /** 追加条件が解決された zord-up ユニット一覧（全拡張）。 */

@@ -4,6 +4,7 @@ import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { addTurnRuleModifier } from "../core/scopedModifiers";
 import { ENEMY_POWER_COST_MINUS_RULE } from "../core/power";
 import { grantSp1ToBattleUnit, markBattleNcEffect } from "./namedUnitEffects";
+import { tryStartDestroyPowerCostMinusChoice } from "./powerCostMinusEffects";
 import { buildLogEntry } from "../log/formatLog";
 import type { ComboOutcome } from "./comboTypes";
 
@@ -15,6 +16,8 @@ const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "XG4-058": "last_battle_protect_other_s",
   "XG5-003": "enemy_power_cost_minus",
   "XG5-032": "end_turn_battle_to_rush",
+  "RK-159": "v3_kick",
+  "RS-278": "bison_rod",
 };
 
 export function getPromotedNcEffectId(cardId: string): string | null {
@@ -96,6 +99,31 @@ export function applyPromotedNcEffect(
       nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
       logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));
       break;
+    case "v3_kick": {
+      const withChoice = tryStartDestroyPowerCostMinusChoice(
+        nextState,
+        playerId,
+        card.cardId,
+        playerId,
+        { effectId: "v3_kick", enemyOnly: true, size: "S", optional: true },
+      );
+      if (withChoice) nextState = withChoice;
+      logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, "v3_kick"));
+      break;
+    }
+    case "bison_rod": {
+      nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
+      const withChoice = tryStartDestroyPowerCostMinusChoice(
+        nextState,
+        playerId,
+        card.cardId,
+        playerId,
+        { effectId: "bison_rod", enemyOnly: true },
+      );
+      if (withChoice) nextState = withChoice;
+      logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, "bison_rod"));
+      break;
+    }
     default:
       break;
   }

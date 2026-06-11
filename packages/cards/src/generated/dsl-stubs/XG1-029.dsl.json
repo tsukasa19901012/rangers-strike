@@ -22,5 +22,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「アバレブラック」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "アバレブラック",
+    "unitCount": 1
   }
 }

@@ -74,5 +74,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_feature_unit",
+    "text": "特徴「メカ」を持つ自軍ユニットを1体捨札にする",
+    "requiredFeature": "メカ",
+    "unitCount": 1
   }
 }

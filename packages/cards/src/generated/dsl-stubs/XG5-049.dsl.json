@@ -59,5 +59,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "ホールド状態の自軍「アポロガイスト」1体を捨札にする",
+    "partnerName": "アポロガイスト",
+    "unitCount": 1
   }
 }

@@ -18,8 +18,9 @@
     "ダブルドライバー"
   ],
   "rushAdditionalCondition": {
-    "conditionId": "send_s_unit_to_command_or_discard",
+    "conditionId": "discard_feature_unit",
     "text": "特徴「ダブルドライバー」を持つ自軍ユニットを１体コマンドゾーンに送るか捨札にする",
+    "requiredFeature": "ダブルドライバー",
     "unitCount": 1
   },
   "effects": [

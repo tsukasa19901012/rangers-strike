@@ -60,5 +60,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ゴセイグレート」または「ゴセイマシン」1体を捨札にする",
+    "partnerName": "ゴセイグレート",
+    "unitCount": 1
   }
 }
