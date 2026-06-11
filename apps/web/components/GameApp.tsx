@@ -689,11 +689,7 @@ export function GameApp() {
           const opDef = resolvePlayableCard(card.cardId) ?? state.definitions[card.cardId];
           if (
             !opDef ||
-            !canPlayOperationExceptCommandHold(
-              state.players[HUMAN_PLAYER],
-              state.definitions,
-              opDef,
-            )
+            !canPlayOperationExceptCommandHold(state, HUMAN_PLAYER, opDef)
           ) {
             setBlockedRushAlert(
               `「${opDef?.name ?? card.cardId}」を使うにはパワーが足りません。`,
@@ -1070,11 +1066,10 @@ export function GameApp() {
     }
     if (ids.size > 0) return ids;
 
-    const player = state.players[HUMAN_PLAYER];
     const opDef = resolvePlayableCard(pendingOp.cardId) ?? state.definitions[pendingOp.cardId];
     if (
       opDef &&
-      canPlayOperationExceptCommandHold(player, state.definitions, opDef)
+      canPlayOperationExceptCommandHold(state, HUMAN_PLAYER, opDef)
     ) {
       for (const targetId of collectOperationTargets(
         state,
