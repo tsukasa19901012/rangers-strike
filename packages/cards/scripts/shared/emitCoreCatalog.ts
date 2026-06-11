@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { loadCorePlayableCards } from "../../src/catalog/coreCatalogSources";
 import type { CardDefinition } from "../../src/schema";
+import { enrichFromDsl } from "./emitDslEnrich";
 
 export type EmitCoreCatalogOptions = {
   root: string;
@@ -36,10 +37,12 @@ export function emitCoreCatalog(options: EmitCoreCatalogOptions): {
   const existingImages = loadExistingImageFields(outputPath);
 
   const cards = loadCorePlayableCards()
-    .map((card) => ({
-      ...card,
-      ...(existingImages.get(card.id) ?? {}),
-    }))
+    .map((card) =>
+      enrichFromDsl(options.root, {
+        ...card,
+        ...(existingImages.get(card.id) ?? {}),
+      }),
+    )
     .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
 
   const byExpansion = cards.reduce<Record<string, number>>((acc, card) => {

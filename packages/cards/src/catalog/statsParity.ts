@@ -23,7 +23,7 @@ export const STATS_PARITY_FIELDS = [
 
 export type StatsParityField = (typeof STATS_PARITY_FIELDS)[number];
 
-/** emitPromotedCatalog.enrichFromDsl が DSL から上書きするフィールド。 */
+/** emitCoreCatalog / emitPromotedCatalog の enrichFromDsl が DSL から上書きするフィールド。 */
 export const EMIT_DSL_ENRICH_FIELDS: readonly StatsParityField[] = [
   "powerCost",
   "rushAdditionalCondition",

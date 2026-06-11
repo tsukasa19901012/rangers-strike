@@ -1601,7 +1601,12 @@
         "男"
       ],
       "imageUrl": "/cards/legend2/RS-092.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-092.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-092.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "send_s_unit_to_discard",
+        "text": "自軍Sユニットを3体捨札にする",
+        "unitCount": 3
+      }
     },
     {
       "id": "RS-093",
@@ -1630,8 +1635,9 @@
       "expansion": "legend2",
       "powerCost": "4+",
       "rushAdditionalCondition": {
-        "conditionId": "send_s_unit_to_power",
-        "text": "自軍Sユニットを1体パワーゾーンに送る",
+        "conditionId": "discard_named_unit",
+        "text": "自軍「童鬼ドロップ」1体を捨札にする",
+        "partnerName": "童鬼ドロップ",
         "unitCount": 1
       },
       "bp": 6000,

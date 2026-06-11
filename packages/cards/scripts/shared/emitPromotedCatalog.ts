@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { listCoreCardIds } from "../../src/catalog/unifiedCatalog";
 import type { CardDefinition } from "../../src/schema";
+import { enrichFromDsl } from "./emitDslEnrich";
 
 type StubsFile = {
   stubs: Array<{
@@ -37,24 +38,6 @@ function loadExistingImageFields(
         { imageUrl: card.imageUrl, imageSourceUrl: card.imageSourceUrl },
       ]),
   );
-}
-
-function enrichFromDsl(root: string, base: CardDefinition): CardDefinition {
-  const dslPath = join(root, "src/generated/dsl-stubs", `${base.id}.dsl.json`);
-  if (!existsSync(dslPath)) return base;
-  const dsl = JSON.parse(readFileSync(dslPath, "utf8")) as CardDefinition;
-  return {
-    ...base,
-    powerCost: dsl.powerCost ?? base.powerCost,
-    rushAdditionalCondition:
-      dsl.rushAdditionalCondition ?? base.rushAdditionalCondition,
-    bp: dsl.bp ?? base.bp,
-    size: dsl.size ?? base.size,
-    sp: dsl.sp ?? base.sp,
-    comboNumber: dsl.comboNumber ?? base.comboNumber,
-    text: dsl.text ?? base.text,
-    features: dsl.features ?? base.features,
-  };
 }
 
 export function emitPromotedCatalog(options: EmitPromotedOptions): {

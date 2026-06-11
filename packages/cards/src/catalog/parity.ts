@@ -55,6 +55,7 @@ export type CatalogParityReport = {
   };
   samples: {
     coreStatsDiffs: Array<{ id: string; diffs: ReturnType<typeof diffCardStats> }>;
+    coreDslStatsDiffs: Array<{ id: string; diffs: ReturnType<typeof diffCardStats> }>;
     promotedDslStatsDiffs: Array<{ id: string; diffs: ReturnType<typeof diffCardStats> }>;
     tierOverlaps: Array<{ tier: CatalogTier; overlapWithCore: string[] }>;
   };
@@ -205,17 +206,12 @@ function evaluateTierOverlaps(): {
   };
 }
 
-function evaluatePromotedDslStatsParity(): {
-  gate: ParityGate;
-  diffs: Array<{ id: string; diffs: ReturnType<typeof diffCardStats> }>;
-} {
-  const promoted = [
-    ...vanillaPromotedCatalog.cards,
-    ...complexityPromotedCatalog.cards,
-  ];
+function diffCatalogAgainstDsl(
+  cards: CardDefinition[],
+): Array<{ id: string; diffs: ReturnType<typeof diffCardStats> }> {
   const diffs: Array<{ id: string; diffs: ReturnType<typeof diffCardStats> }> = [];
 
-  for (const card of promoted) {
+  for (const card of cards) {
     const dsl = loadDslStubCard(card.id);
     if (!dsl) continue;
     const cardDiffs = diffCardStats(card, dsl, { only: EMIT_DSL_ENRICH_FIELDS }).filter(
@@ -226,6 +222,18 @@ function evaluatePromotedDslStatsParity(): {
     }
   }
 
+  return diffs;
+}
+
+function evaluatePromotedDslStatsParity(): {
+  gate: ParityGate;
+  diffs: Array<{ id: string; diffs: ReturnType<typeof diffCardStats> }>;
+} {
+  const promoted = [
+    ...vanillaPromotedCatalog.cards,
+    ...complexityPromotedCatalog.cards,
+  ];
+  const diffs = diffCatalogAgainstDsl(promoted);
   const status: ParityGateStatus = diffs.length === 0 ? "pass" : "fail";
 
   return {
@@ -234,7 +242,27 @@ function evaluatePromotedDslStatsParity(): {
       "U0-a3",
       "promoted catalog vs DSL stub stats",
       status,
-      "emit enrich フィールド（bp/sp/size/comboNumber/text/features）の矛盾 = 0",
+      "emit enrich フィールドの矛盾 = 0",
+      `mismatches=${diffs.length}`,
+      diffs.length > 0 ? diffs.slice(0, 5).map((d) => d.id) : undefined,
+    ),
+  };
+}
+
+function evaluateCoreDslStatsParity(): {
+  gate: ParityGate;
+  diffs: Array<{ id: string; diffs: ReturnType<typeof diffCardStats> }>;
+} {
+  const diffs = diffCatalogAgainstDsl(loadCorePlayableCards());
+  const status: ParityGateStatus = diffs.length === 0 ? "pass" : "fail";
+
+  return {
+    diffs: diffs.slice(0, 20),
+    gate: gate(
+      "U2-d",
+      "core catalog vs DSL stub stats",
+      status,
+      "emit enrich フィールドの矛盾 = 0",
       `mismatches=${diffs.length}`,
       diffs.length > 0 ? diffs.slice(0, 5).map((d) => d.id) : undefined,
     ),
@@ -415,6 +443,7 @@ function evaluateWikiStubExclusion(): ParityGate {
 
 export function runCatalogParityAudit(): CatalogParityReport {
   const coreIntegrity = evaluateCoreCatalogIntegrity();
+  const coreDsl = evaluateCoreDslStatsParity();
   const tierOverlaps = evaluateTierOverlaps();
   const promotedDsl = evaluatePromotedDslStatsParity();
   const loader = evaluateLoaderFingerprint();
@@ -423,6 +452,7 @@ export function runCatalogParityAudit(): CatalogParityReport {
     evaluateGeneratedCoreCount(),
     coreIntegrity.gate,
     evaluateCoreDslStubs(),
+    coreDsl.gate,
     tierOverlaps.gate,
     evaluateWikiStubExclusion(),
     promotedDsl.gate,
@@ -454,6 +484,7 @@ export function runCatalogParityAudit(): CatalogParityReport {
     },
     samples: {
       coreStatsDiffs: coreIntegrity.diffs,
+      coreDslStatsDiffs: coreDsl.diffs,
       promotedDslStatsDiffs: promotedDsl.diffs,
       tierOverlaps: tierOverlaps.overlaps,
     },
