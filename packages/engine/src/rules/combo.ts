@@ -607,5 +607,6 @@ export function strikeDamageFor(
   const modifier = instance.spModifier ?? 0;
   if (typeof sp === "number") return sp + modifier;
   if (sp === "special") return modifier;
+  if (typeof sp === "string" && sp.includes("/")) return modifier;
   return modifier;
 }

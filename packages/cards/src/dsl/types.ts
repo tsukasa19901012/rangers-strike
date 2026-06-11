@@ -192,7 +192,7 @@ export type CardDocument = {
   expansion: string;
   powerCost: number | string;
   bp?: number;
-  sp?: number | "special" | null;
+  sp?: number | "special" | `${number}/${number}` | null;
   size?: UnitSize;
   comboNumber?: number | "L" | "R" | "RC" | null;
   text?: string;

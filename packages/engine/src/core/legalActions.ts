@@ -22,6 +22,7 @@ import {
   getDefinition,
   hasOperationEffect,
   isSmallUnit,
+  isRushable,
   isUnit,
   needsZordMaterial,
   parsePowerCost,
@@ -616,12 +617,12 @@ function appendRushCategoryPaymentActions(
 
   for (const card of player.hand) {
     const definition = getDefinition(state.definitions, card.cardId);
-    if (!definition || !isUnit(definition)) continue;
+    if (!definition || !isRushable(definition)) continue;
 
     const categories = cardCategories(definition);
     if (categories.length === 0) continue;
 
-    if (needsZordMaterial(state.definitions, card.cardId)) {
+    if (isUnit(definition) && needsZordMaterial(state.definitions, card.cardId)) {
       if (requiresAllFusionPartners(card.cardId)) {
         if (canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId)) {
           continue;
@@ -1050,9 +1051,9 @@ export function getLegalActions(state: GameState): GameAction[] {
     case "rush":
       for (const card of player.hand) {
         const definition = getDefinition(state.definitions, card.cardId);
-        if (!isUnit(definition)) continue;
+        if (!isRushable(definition)) continue;
 
-        if (needsZordMaterial(state.definitions, card.cardId)) {
+        if (isUnit(definition) && needsZordMaterial(state.definitions, card.cardId)) {
           if (requiresAllFusionPartners(card.cardId)) {
             if (canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId)) {
               actions.push({
@@ -1312,7 +1313,7 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
       const definition = getDefinition(state.definitions, handCard.cardId);
       if (
         definition &&
-        isUnit(definition) &&
+        isRushable(definition) &&
         canDeclareRush(state, action.playerId, player, state.definitions, definition, action.instanceId, {
           zordMaterialInstanceId: action.zordMaterialInstanceId,
           zordMothershipHoldInstanceIds: action.zordMothershipHoldInstanceIds,

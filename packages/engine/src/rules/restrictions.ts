@@ -17,6 +17,7 @@ import type { CardDefinition, Category } from "@rangers-strike/cards";
 import { anyPlayerHasActiveFieldKeyword, findFieldCardByKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import {
+  canEnterBattleFromRush,
   effectiveBp,
   getDefinition,
   hasHeldCommandForCategories,
@@ -160,7 +161,7 @@ export function canMoveUnitToBattle(
   fromZone: "rush" | "hand" = "rush",
 ): boolean {
   const def = getDefinition(state.definitions, unit.cardId);
-  if (!def || def.type !== "unit") return false;
+  if (!def || !canEnterBattleFromRush(def)) return false;
   const player = state.players[playerId];
 
   if (unit.registerHeld) return false;
@@ -169,7 +170,7 @@ export function canMoveUnitToBattle(
     return false;
   }
 
-  if (patSignerBlocksMove(state, playerId, unit)) return false;
+  if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
 
   if (cannotEnterBattle(unit.cardId)) return false;
 
@@ -243,14 +244,14 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   fromZone: "rush" | "hand" = "rush",
 ): boolean {
   const def = getDefinition(state.definitions, unit.cardId);
-  if (!def || def.type !== "unit") return false;
+  if (!def || !canEnterBattleFromRush(def)) return false;
   const player = state.players[playerId];
 
   if (fromZone === "hand") return false;
-  if (patSignerBlocksMove(state, playerId, unit)) return false;
+  if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
   if (cannotEnterBattle(unit.cardId)) return false;
 
-  if (needsAllySInBattle(unit.cardId)) {
+  if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {
     const hasAllyS = state.players[playerId].battle.some((c) =>
       isSmallUnit(state.definitions, c.cardId),
     );

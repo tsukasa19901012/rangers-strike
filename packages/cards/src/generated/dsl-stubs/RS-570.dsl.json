@@ -67,5 +67,10 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "size": "L",
+  "features": [
+    "メカ",
+    "車両"
+  ]
 }

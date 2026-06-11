@@ -15,6 +15,7 @@ import {
   getDefinition,
   hasOperationEffect,
   isSmallUnit,
+  isRushable,
   isUnit,
   needsZordMaterial,
   parsePowerCost,
@@ -833,7 +834,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (!found) return fail("card_not_in_hand");
 
       const definition = getDefinition(state.definitions, found.card.cardId);
-      if (!isUnit(definition)) return fail("not_a_unit");
+      if (!isRushable(definition)) return fail("not_a_unit");
 
       const cost = parsePowerCost(definition!.powerCost);
       let nextPlayer = player;

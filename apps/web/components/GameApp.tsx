@@ -134,6 +134,7 @@ function formatBattleUnitSp(
 ): string {
   if (effectiveSp > 0) return `SP${effectiveSp}`;
   if (sp === "special") return "SP！";
+  if (typeof sp === "string" && sp.includes("/")) return `SP${sp}`;
   if (typeof sp === "number") return `SP${sp}`;
   return "SP0";
 }

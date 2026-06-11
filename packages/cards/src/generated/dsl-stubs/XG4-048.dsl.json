@@ -51,5 +51,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両",
+    "戦闘員"
+  ]
 }

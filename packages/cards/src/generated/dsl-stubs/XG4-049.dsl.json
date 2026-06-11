@@ -67,5 +67,10 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "size": "S",
+  "features": [
+    "車両",
+    "昆虫"
+  ]
 }

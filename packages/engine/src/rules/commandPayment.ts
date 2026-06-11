@@ -30,6 +30,7 @@ import {
   hasHeldCommandForCategories,
   hasOperationEffect,
   hasReleasedCommandForCategories,
+  isRushable,
   isUnit,
   parsePowerCost,
 } from "../core/catalog";
@@ -536,7 +537,7 @@ export function continueAfterMothershipPayment(
   if (pending.continuation.type !== "rush") return null;
   const playerId = pending.playerId;
   const def = getDefinition(state.definitions, pending.sourceCardId);
-  if (!def || !isUnit(def)) return null;
+  if (!def || !isRushable(def)) return null;
 
   const cont = pending.continuation;
   const player = state.players[playerId];
@@ -606,7 +607,7 @@ export function buildPaymentFromInitiateAction(
   if (!def) return null;
 
   const categories = cardCategories(def);
-  if (isUnit(def)) {
+  if (isRushable(def)) {
     if (
       !canRushUnitExceptCommandHold(
         player,
@@ -766,7 +767,7 @@ export function isResolveCommandPaymentLegal(
 
   const player = resolved.state.players[pending.playerId];
   const def = getDefinition(resolved.state.definitions, pending.sourceCardId);
-  if (!def || !isUnit(def)) return false;
+  if (!def || !isRushable(def)) return false;
 
   const holdIds =
     pending.kind === "mothership_hold"
@@ -801,7 +802,7 @@ export function explainCannotRush(
   if (!found) return null;
 
   const def = getDefinition(state.definitions, found.cardId);
-  if (!def || !isUnit(def)) {
+  if (!def || !isRushable(def)) {
     return "このカードはラッシュできません。";
   }
 

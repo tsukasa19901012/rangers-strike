@@ -163,6 +163,16 @@ export function generateCardDocument(
     if (rush) card.rushAdditionalCondition = rush;
   }
 
+  if (cardType === "vehicle") {
+    card.size = catalog?.size ?? SIZE_MAP[parse.status.種類 ?? ""] ?? "S";
+    const featuresRaw = parse.status.特徴 ?? parse.featuresLabel;
+    if (catalog?.features) {
+      card.features = catalog.features;
+    } else if (featuresRaw && featuresRaw !== "なし") {
+      card.features = featuresRaw.split(/[／/]/).map((s) => s.trim()).filter(Boolean);
+    }
+  }
+
   if (cardType === "operation" && extractedEffects.length === 1) {
     const only = extractedEffects[0];
     if (only && !only.needsFallback && only.matchedPattern === "place_in_power") {

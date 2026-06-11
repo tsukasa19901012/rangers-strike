@@ -101,7 +101,7 @@ export function CardModal({ card, onClose }: CardModalProps) {
               {card.sp !== undefined && card.sp !== null && (
                 <div>
                   <dt>SP</dt>
-                  <dd>{card.sp === "special" ? "！" : card.sp}</dd>
+                  <dd>{card.sp === "special" ? "！" : String(card.sp)}</dd>
                 </div>
               )}
               {card.size && (

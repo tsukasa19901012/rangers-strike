@@ -39,8 +39,13 @@ export function parsePowerCost(cost: number | string): number {
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
+export function isSpFraction(sp: SpValue | undefined): boolean {
+  return typeof sp === "string" && sp.includes("/");
+}
+
 export function strikeDamage(sp: SpValue | undefined): number {
   if (typeof sp === "number") return sp;
+  if (isSpFraction(sp)) return 0;
   return 1;
 }
 
@@ -79,6 +84,22 @@ export function isMediumUnit(
 
 export function isUnit(definition: CardDefinition | undefined): boolean {
   return definition?.type === "unit";
+}
+
+export function isVehicle(definition: CardDefinition | undefined): boolean {
+  return definition?.type === "vehicle";
+}
+
+/** 手札からラッシュエリアへ出せるカード（ユニット / ビークル）。 */
+export function isRushable(definition: CardDefinition | undefined): boolean {
+  return definition?.type === "unit" || definition?.type === "vehicle";
+}
+
+/** ラッシュエリアからバトルエリアへ進入できるカード。 */
+export function canEnterBattleFromRush(
+  definition: CardDefinition | undefined,
+): boolean {
+  return definition?.type === "unit" || definition?.type === "vehicle";
 }
 
 export function isOperation(definition: CardDefinition | undefined): boolean {

@@ -6,8 +6,32 @@ export type CardType = "unit" | "operation" | "vehicle" | "commander";
 
 export type Rarity = "N" | "R" | "SR" | "NR" | "SC" | "PR";
 
-/** SP値: 数値、「special」（!）、またはなし */
-export type SpValue = number | "special" | null;
+/** SP分数（例: SP1/4） */
+export type SpFraction = `${number}/${number}`;
+
+/** SP値: 数値、「special」（!）、分数、またはなし */
+export type SpValue = number | "special" | SpFraction | null;
+
+export function isSpFraction(sp: SpValue | undefined): sp is SpFraction {
+  return typeof sp === "string" && sp.includes("/");
+}
+
+export function formatSpValue(sp: SpValue | undefined): string | null {
+  if (sp === null || sp === undefined) return null;
+  if (sp === "special") return "！";
+  return String(sp);
+}
+
+export function formatSpLabel(
+  sp: SpValue | undefined,
+  effectiveSp?: number,
+): string {
+  if (effectiveSp !== undefined && effectiveSp > 0) return `SP${effectiveSp}`;
+  if (sp === "special") return "SP！";
+  if (isSpFraction(sp)) return `SP${sp}`;
+  if (typeof sp === "number") return `SP${sp}`;
+  return "SP0";
+}
 
 export type ComboNumber = number | "L" | "R" | "RC" | null;
 

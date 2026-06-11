@@ -37,6 +37,11 @@ export const SIZE_MAP: Record<string, NonNullable<CardDocument["size"]>> = {
   Lユニット: "L",
   XLユニット: "XL",
   SCユニット: "SC",
+  Sビークル: "S",
+  Mビークル: "M",
+  Lビークル: "L",
+  XLビークル: "XL",
+  SCビークル: "SC",
 };
 
 export const EXPANSION_FROM_SET: Record<string, CardDocument["expansion"]> = {
@@ -48,7 +53,12 @@ export const EXPANSION_FROM_SET: Record<string, CardDocument["expansion"]> = {
 export function parseSp(raw?: string): CardDocument["sp"] {
   if (!raw || raw === "なし" || raw === "－" || raw === "-") return null;
   if (raw === "！" || raw === "!") return "special";
-  const n = Number(raw.replace(/[^\d]/g, ""));
+  const normalized = raw.trim().replace(/^SP/i, "");
+  const fraction = normalized.match(/^(\d+)\s*[\/／]\s*(\d+)$/);
+  if (fraction) {
+    return `${fraction[1]}/${fraction[2]}` as CardDocument["sp"];
+  }
+  const n = Number(normalized.replace(/[^\d]/g, ""));
   return Number.isFinite(n) ? n : null;
 }
 

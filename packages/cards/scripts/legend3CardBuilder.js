@@ -12,12 +12,20 @@ const SIZE_MAP = {
   Lユニット: "L",
   XLユニット: "XL",
   SCユニット: "SC",
+  Sビークル: "S",
+  Mビークル: "M",
+  Lビークル: "L",
+  XLビークル: "XL",
+  SCビークル: "SC",
 };
 
 function parseSp(raw) {
   if (!raw || raw === "なし" || raw === "－" || raw === "-") return null;
   if (raw === "！" || raw === "!") return "special";
-  const n = Number(raw.replace(/[^\d]/g, ""));
+  const normalized = raw.trim().replace(/^SP/i, "");
+  const fraction = normalized.match(/^(\d+)\s*[\/／]\s*(\d+)$/);
+  if (fraction) return `${fraction[1]}/${fraction[2]}`;
+  const n = Number(normalized.replace(/[^\d]/g, ""));
   return Number.isFinite(n) ? n : null;
 }
 

@@ -66,5 +66,9 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "size": "M",
+  "features": [
+    "獣"
+  ]
 }

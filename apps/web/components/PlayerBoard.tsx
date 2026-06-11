@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, PlayerId } from "@rangers-strike/engine";
-import { COMMAND_ZONE_MAX, isUnit } from "@rangers-strike/engine";
+import { COMMAND_ZONE_MAX, isRushable, isUnit } from "@rangers-strike/engine";
 import { type DragCardPayload, type DropTarget } from "@/lib/dnd";
 import { useDropTarget } from "@/lib/PointerDragContext";
 import { CardImage } from "./CardImage";
@@ -411,7 +411,7 @@ export function PlayerBoard({
 
   const draggingDefinition = dragging ? definitions[dragging.cardId] : undefined;
   const draggingOperation = draggingDefinition?.type === "operation";
-  const draggingUnit = isUnit(draggingDefinition);
+  const draggingUnit = isRushable(draggingDefinition);
 
   const canDropPower =
     interactive && phase === "charge" && !!onZoneDrop && !player.hasChargedThisTurn;
@@ -457,7 +457,7 @@ export function PlayerBoard({
       return !player.hasChargedThisTurn;
     }
     if (phase === "rush") {
-      return definition.type === "operation" || isUnit(definition);
+      return definition.type === "operation" || isRushable(definition);
     }
     return false;
   };
@@ -468,7 +468,7 @@ export function PlayerBoard({
       return player.hasChargedThisTurn ?? false;
     }
     if (phase === "rush") {
-      return definition.type !== "operation" && !isUnit(definition);
+      return definition.type !== "operation" && !isRushable(definition);
     }
     return true;
   };

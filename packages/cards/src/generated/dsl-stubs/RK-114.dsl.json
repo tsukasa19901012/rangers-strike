@@ -31,5 +31,11 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "車両",
+    "昆虫"
+  ]
 }

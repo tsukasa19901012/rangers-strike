@@ -31,5 +31,12 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "獣",
+    "車両",
+    "航空機"
+  ]
 }

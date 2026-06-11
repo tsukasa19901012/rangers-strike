@@ -45,5 +45,10 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "size": "M",
+  "features": [
+    "メカ",
+    "航空機"
+  ]
 }
