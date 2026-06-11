@@ -40,6 +40,7 @@ import {
   continueMorphAfterReplacement,
   resolveMorphReplacementChoice,
 } from "../keywords/morphReaction";
+import { prepareWingUnitReturnedToRush } from "../keywords/battleKeywords";
 
 export type RequestDrawResult =
   | { state: GameState; pending: false; drawn: boolean }
@@ -969,8 +970,19 @@ export function applyEffectChoiceSelect(
         const found = findInZone(owner, "battle", instanceId);
         if (!found) return { error: "invalid_target" };
         const [, battle] = removeAt(owner.battle, found.index);
+        const returning =
+          state.phase === "battle"
+            ? prepareWingUnitReturnedToRush(found.card)
+            : found.card;
         return finishChoice(
-          { ...state, ...updatePlayer(state, located.playerId, { ...owner, battle, rush: [...owner.rush, found.card] }) },
+          {
+            ...state,
+            ...updatePlayer(state, located.playerId, {
+              ...owner,
+              battle,
+              rush: [...owner.rush, returning],
+            }),
+          },
           pending,
           cardName(state.definitions, found.card.cardId),
         );

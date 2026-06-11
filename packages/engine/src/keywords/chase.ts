@@ -7,6 +7,7 @@ import {
   type LeaveIntent,
 } from "../rules/operationCounters";
 import { cardHasKeyword, playerHasChaseUnitInField } from "./cardKeywords";
+import { prepareWingUnitReturnedToRush } from "./battleKeywords";
 import { canRiderMountVehicle } from "./ride";
 
 export function listValidChaseVehicleIds(
@@ -49,10 +50,10 @@ export function applyResolveChase(
   );
   const chaserSource =
     chaserZone === "rush" ? rushAfterVehicleRemoval : player[chaserZone];
-  const remountedChaser = {
+  const remountedChaser = prepareWingUnitReturnedToRush({
     ...chaserFound.card,
     mountedOnInstanceId: newVehicleInstanceId,
-  };
+  });
 
   let nextPlayer: typeof player;
   if (chaserZone === "battle") {

@@ -37,12 +37,19 @@ export {
   resolveMorphReplacementChoice,
 } from "./morphReaction";
 export {
+  applyActiveFeatureMorphSwap,
+  applyKamenRideMorphSwap,
+  listActiveMorphCandidatesByEffectName,
+} from "./activeMorph";
+export {
   blastBypassesRushAdditionalCondition,
   breakerBlocksEffectTarget,
   breakerBlocksSameNameRush,
   canWingAttackFromRush,
   canHoldForWing,
   applyHoldForWing,
+  prepareWingUnitReturnedToRush,
+  resetWingUnitForReuse,
   wingTurnBlocksStrike,
   rideOffBlocksStrike,
   applyNoStrikeAfterRideOff,

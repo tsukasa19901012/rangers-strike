@@ -126,3 +126,21 @@ export function clearTurnScopedModifiers(player: PlayerState): PlayerState {
 export function clearRushPhaseScopedModifiers(player: PlayerState): PlayerState {
   return clearScopedModifiersByScope(player, "rush_phase");
 }
+
+/** 指定インスタンスのターン制限 modifier を除去（ウイング再発動等）。 */
+export function clearTurnRestrictionModifiersForInstance(
+  player: PlayerState,
+  instanceId: string,
+  restrictions?: string[],
+): PlayerState {
+  const remaining = getPlayerModifiers(player).filter((m) => {
+    if (m.kind !== "restriction" || m.scope !== "turn") return true;
+    if (m.instanceId !== instanceId) return true;
+    if (restrictions && !restrictions.includes(m.restriction)) return true;
+    return false;
+  });
+  return {
+    ...player,
+    modifiers: remaining.length > 0 ? remaining : undefined,
+  };
+}

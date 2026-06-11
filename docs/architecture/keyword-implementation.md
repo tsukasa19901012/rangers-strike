@@ -34,7 +34,7 @@
 | **レジスト** | バトル BP 比較で撃破されたときのみ、任意でホールド留場。効果撃破不可 | `resist.ts`, `registerEligible` on battle destroy | **高** | 「勝っても撃破」FAQ の残パターン |
 | **スクラム** | 右隣ユニットの CN が「自 CN + 1」の間、アタック不可 | `scrumBlocksAttack` | **高** | — |
 | **ライドオフ / RC** | ライドオフ時 RC。`no_strike_after_rideoff` はストライク不可 | `combo.ts`, `ridingComboEffects.ts`, `applyNoStrikeAfterRideOff` | **高** | NC レガシー/DSl 個別効果の網羅 |
-| **ウイング** | BF 中ラッシュでホールド→ラッシュからアタック。当ターン BA/ストライク不可 | `hold_for_wing`, `canWingAttackFromRush`, wing turn restrictions | **中** | 同一ターン複数ウイング — P2 |
+| **ウイング** | BF 中ラッシュでホールド→ラッシュからアタック。当ターン BA/ストライク不可 | `hold_for_wing`, `resetWingUnitForReuse` | **高** | — |
 | **クロス** | クロス N = 以降ユニットの CN・分数 SP が N 繰り上げ。重複は合算。タクス順は不変 | `battleKeywords.ts` (`crossValueForCard`, `crossAdjustedBattlePosition`) | **高** | NC/SP 解決への配線は済。追加条件のクロス分ホールドはカード別 |
 | **ブラスト** | 敗北直前（実質ダメージ6）のみ、追加条件無視でラッシュ可。必要パワーは要充足 | `blastBypassesRushAdditionalCondition` → `rushAdditionalCondition.ts` | **高** | 代理条件: 表パワー≤1枚。ダメージ数明示チェックは未 |
 | **ブレイカー** | 敵ユニット/ビークル**効果**の対象にならない（ブレイカー同士は可）。同名2体目ラッシュ不可 | `effectTargetability.ts`, `breakerBlocksEffectTarget` | **高** | `not_selectable_except_attack`（カブト系）との共存 |
@@ -204,15 +204,15 @@
 | **KW-P1-04** | ライド巻き戻し | ✅ `attachRideForBattleEntry` |
 | **KW-P1-05** | モーフ敵ターン順序 | ✅ `select_morph_unit` + 複数モーフテスト |
 
-### P2 — 拡張・品質
+### P2 — 拡張・品質 ✅ 2026-06-11 完了
 
-| ID | 項目 | 作業 |
+| ID | 項目 | 状態 |
 |----|------|------|
-| **KW-P2-01** | ウイング複数回 / BA→rush→wing | リリース連携・`battleActed` 部分リセット |
-| **KW-P2-02** | ブラスト条件 | ダメージ 6 点明示 vs 表パワー代理の ADR |
-| **KW-P2-03** | 能動モーフパターン | カメンライド等を reusable primitive 化 |
-| **KW-P2-04** | キーワード回帰テスト | 各キーワード代表カード 1 枚ずつ integration |
-| **KW-P2-05** | glossary `実装仕様` 自動同期 | 監査スクリプトから maturity 更新 |
+| **KW-P2-01** | ウイング複数回 / BA→rush→wing | ✅ `prepareWingUnitReturnedToRush`, `resetWingUnitForReuse` |
+| **KW-P2-02** | ブラスト条件 | ✅ ADR + `damage >= WIN-1` OR 表パワー≤1 |
+| **KW-P2-03** | 能動モーフパターン | ✅ `activeMorph.ts`（カメンライド primitive） |
+| **KW-P2-04** | キーワード回帰テスト | ✅ `keyword.integration.test.ts` |
+| **KW-P2-05** | glossary 自動同期 | ✅ `sync-glossary-keyword-maturity.ts` |
 
 ---
 
@@ -254,5 +254,6 @@ packages/engine/src/
 
 | 日付 | 内容 |
 |------|------|
+| 2026-06-11 | P2 完了 — ウイング再利用、ブラスト ADR、能動モーフ、回帰テスト、glossary 同期 |
 | 2026-06-11 | P1 完了 — RC 汎用、ブレイカー統一、チェイス/ライド/モーフ |
 | 2026-06-11 | 初版 — atwiki 用語集再読込 + エンジン突合 + P0–P2 TODO |

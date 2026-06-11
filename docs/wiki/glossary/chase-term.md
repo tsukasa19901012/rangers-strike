@@ -13,7 +13,7 @@ atwiki: page 1292
 
 関連: UNKNOWN
 
-実装仕様: **部分** — `chase.ts`, `PendingChase`
+実装仕様: **高** — `chase.ts`, `canRiderMountVehicle`, battle→rush remount
 
 
 ## atwiki 取得（atwiki）

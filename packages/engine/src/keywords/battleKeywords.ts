@@ -2,9 +2,13 @@ import type { Category } from "@rangers-strike/cards";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
+import { WIN_DAMAGE } from "../types/game";
 import { cardHasKeyword } from "./cardKeywords";
 import { getDefinition, isLargeUnit } from "../core/catalog";
-import { addTurnRestrictionModifier } from "../core/scopedModifiers";
+import {
+  addTurnRestrictionModifier,
+  clearTurnRestrictionModifiersForInstance,
+} from "../core/scopedModifiers";
 import { cardHasGrantKeyword, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
 import { battlePositionOneBased } from "../rules/fractionalSp";
 import { isBattleBlocked, markBattleBlocked } from "../rules/turnModifiers";
@@ -177,14 +181,16 @@ export function breakerBlocksSameNameRush(
   return false;
 }
 
-/** ブラスト: パワー残り1枚で追加条件を無視してラッシュ可能。 */
+/** ブラスト: 敗北直前（ダメージ WIN-1）または表パワー≤1 で追加条件スキップ。 */
 export function blastBypassesRushAdditionalCondition(
   state: Pick<GameState, "players" | "definitions">,
   playerId: PlayerId,
   rushingCardId: string,
 ): boolean {
   if (!cardHasBattleKeyword(state.definitions, rushingCardId, "blast")) return false;
-  const faceUp = state.players[playerId].power.filter((c) => !c.faceDown).length;
+  const player = state.players[playerId];
+  if (player.damage >= WIN_DAMAGE - 1) return true;
+  const faceUp = player.power.filter((c) => !c.faceDown).length;
   return faceUp <= 1;
 }
 
@@ -319,6 +325,34 @@ export function applyNoStrikeAfterRideOff(
     instanceId,
     RESTRICTION_IDS.NO_STRIKE_AFTER_RIDEOFF,
   );
+}
+
+/** BF 中に battle→rush したユニット — ウイング再使用のため battleActed を消す。 */
+export function prepareWingUnitReturnedToRush(card: CardInstance): CardInstance {
+  if (!card.battleActed) return card;
+  const next = { ...card };
+  delete next.battleActed;
+  return next;
+}
+
+/** ホールド解除後に同一 BF 内でウイングを再発動できるよう制限を消す。 */
+export function resetWingUnitForReuse(
+  player: PlayerState,
+  instanceId: string,
+): PlayerState {
+  let next = clearTurnRestrictionModifiersForInstance(player, instanceId, [
+    RESTRICTION_IDS.WING_TURN_NO_STRIKE,
+    RESTRICTION_IDS.CANNOT_ENTER_BATTLE,
+  ]);
+  next = {
+    ...next,
+    rush: next.rush.map((c) =>
+      c.instanceId === instanceId
+        ? prepareWingUnitReturnedToRush({ ...c, commandHeld: false })
+        : c,
+    ),
+  };
+  return next;
 }
 
 export function battlePositionForInstance(

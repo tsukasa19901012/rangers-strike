@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { buildDefinitionMap } from "../core/catalog";
 import { createTestState, inst } from "../testing/fixtures";
+import { WIN_DAMAGE } from "../types/game";
 import {
   applyHoldForWing,
   blastBypassesRushAdditionalCondition,
@@ -10,6 +11,8 @@ import {
   canWingAttackFromRush,
   crossAdjustedBattlePosition,
   crossValueForCard,
+  prepareWingUnitReturnedToRush,
+  resetWingUnitForReuse,
   scrumBlocksAttack,
   taxisSpFloor,
   wingTurnBlocksStrike,
@@ -243,6 +246,37 @@ describe("wing keyword", () => {
     expect(wingTurnBlocksStrike(state.players.player1, wingUnit.instanceId)).toBe(true);
     expect(canStrikeUnit(state.definitions, wingUnit, state, "player1")).toBe(false);
   });
+
+  it("clears battleActed when unit returns to rush during battle", () => {
+    const wingUnit = { ...inst("TST-WING", "w1"), battleActed: true };
+    const prepared = prepareWingUnitReturnedToRush(wingUnit);
+    expect(prepared.battleActed).toBeUndefined();
+  });
+
+  it("allows second wing hold after resetWingUnitForReuse", () => {
+    const wingUnit = {
+      ...inst("TST-WING", "w1"),
+      commandHeld: true,
+      battleActed: true,
+    };
+    let player = createTestState({
+      phase: "battle",
+      player1: { rush: [wingUnit] },
+    }).players.player1;
+    player = addTurnRestrictionModifier(
+      player,
+      wingUnit.instanceId,
+      RESTRICTION_IDS.WING_TURN_NO_STRIKE,
+    );
+    player = resetWingUnitForReuse(player, wingUnit.instanceId);
+
+    const state = createTestState({
+      phase: "battle",
+      player1: player,
+    });
+    state.definitions["TST-WING"] = WING_DEF;
+    expect(canHoldForWing(state, "player1", player.rush[0]!)).toBe(true);
+  });
 });
 
 describe("blast keyword", () => {
@@ -278,6 +312,45 @@ describe("blast keyword", () => {
             { ...inst("TST-P4", "p4"), faceDown: true },
             { ...inst("TST-P5", "p5"), faceDown: true },
             inst("TST-P6", "p6"),
+          ],
+        },
+      },
+    };
+
+    expect(blastBypassesRushAdditionalCondition(state, "player1", "TST-BLAST")).toBe(true);
+  });
+
+  it("bypasses additional conditions at WIN_DAMAGE-1", () => {
+    const defs = buildDefinitionMap([
+      [
+        {
+          id: "TST-BLAST",
+          name: "Blast Zord",
+          type: "unit",
+          category: "WB",
+          rarity: "SR",
+          expansion: "test",
+          powerCost: "7+",
+          bp: 12000,
+          size: "L",
+          text: "※ブラスト",
+        },
+      ],
+    ]);
+
+    const state = {
+      ...createTestState(defs),
+      definitions: defs,
+      players: {
+        ...createTestState(defs).players,
+        player1: {
+          ...createTestState(defs).players.player1,
+          damage: WIN_DAMAGE - 1,
+          power: [
+            { ...inst("TST-P1", "p1"), faceDown: true },
+            { ...inst("TST-P2", "p2"), faceDown: true },
+            inst("TST-P3", "p3"),
+            inst("TST-P4", "p4"),
           ],
         },
       },
