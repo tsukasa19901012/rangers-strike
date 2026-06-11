@@ -18,12 +18,13 @@ const FRAME_PRIORITY: Record<EffectStackFrameKind, number> = {
   register_choice: 1,
   strike_reaction: 2,
   battle_reaction: 3,
-  rush_reaction: 4,
-  damage_payment: 5,
-  effect_choice: 6,
-  battle_entry: 7,
-  command_payment: 8,
-  zord_setup: 9,
+  morph_reaction: 4,
+  rush_reaction: 5,
+  damage_payment: 6,
+  effect_choice: 7,
+  battle_entry: 8,
+  command_payment: 9,
+  zord_setup: 10,
 };
 
 function frame(
@@ -93,6 +94,16 @@ export function buildEffectStack(state: GameState): EffectStack {
       ),
     );
   }
+  if (state.pendingMorph) {
+    frames.push(
+      reactionFrame(
+        state,
+        "pendingMorph",
+        "morph_reaction",
+        state.pendingMorph.defenderPlayerId,
+      ),
+    );
+  }
   if (state.pendingRush) {
     frames.push(
       reactionFrame(
@@ -112,7 +123,7 @@ export function buildEffectStack(state: GameState): EffectStack {
       ),
     );
   }
-  if (state.pendingEffectChoice) {
+  if (state.pendingEffectChoice && state.pendingEffectChoice.effectId !== "morph_replacement") {
     frames.push(
       frame(
         "pendingEffectChoice",
@@ -213,6 +224,7 @@ export function hasOpenReactionWindow(state: GameState): boolean {
     top.kind === "register_choice" ||
     top.kind === "strike_reaction" ||
     top.kind === "battle_reaction" ||
+    top.kind === "morph_reaction" ||
     top.kind === "rush_reaction"
   );
 }

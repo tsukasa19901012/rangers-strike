@@ -37,6 +37,7 @@ import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { findInZone, opponent } from "../core/helpers";
 import { TURN_RULE_IDS } from "../types/scopedModifiers";
 import { earthForceActive } from "./strikeReactions";
+import { effectiveBattleEntryHoldCount } from "./rushAdditionalCondition";
 import {
   isBattleBlocked,
   opponentInfiniteChainBlocks,
@@ -94,6 +95,14 @@ export type LightningGravityHoldNotice = {
   unitHoldCount: number;
 };
 
+function unitBattleEntryHoldCount(
+  state: GameState,
+  playerId: PlayerId,
+  cardId: string,
+): number {
+  return effectiveBattleEntryHoldCount(state, playerId, cardId, getBattleEntryHoldCount(cardId));
+}
+
 export function getLightningGravityHoldNotice(
   state: GameState,
   playerId: PlayerId,
@@ -117,7 +126,7 @@ export function getLightningGravityHoldNotice(
     requiredHolds,
     heldHolds,
     lightningGravityCount: lgCount,
-    unitHoldCount: getBattleEntryHoldCount(unit.cardId),
+    unitHoldCount: unitBattleEntryHoldCount(state, playerId, unit.cardId),
   };
 }
 
@@ -127,7 +136,7 @@ export function requiredBattleEntryHolds(
   playerId: PlayerId,
   unit: CardInstance,
 ): number {
-  let unitHold = getBattleEntryHoldCount(unit.cardId);
+  let unitHold = unitBattleEntryHoldCount(state, playerId, unit.cardId);
   if (unitHold > 0 && scorchingRoarBypassesHold(unit.cardId, state, playerId)) {
     unitHold = 0;
   }
@@ -364,7 +373,7 @@ function passesBattleEntryHoldRequirements(
   player: PlayerState,
   unit: CardInstance,
 ): boolean {
-  let unitHold = getBattleEntryHoldCount(unit.cardId);
+  let unitHold = unitBattleEntryHoldCount(state, playerId, unit.cardId);
   if (unitHold > 0 && scorchingRoarBypassesHold(unit.cardId, state, playerId)) {
     unitHold = 0;
   }
@@ -509,7 +518,7 @@ export function explainCannotEnterBattle(
     return "【バトルダンス】でラッシュエリアに戻したユニットは、このターンはバトルエリアに出せません。";
   }
 
-  const unitHolds = getBattleEntryHoldCount(unit.cardId);
+  const unitHolds = unitBattleEntryHoldCount(state, playerId, unit.cardId);
   const lgCount = countActiveLightningGravity(state);
   const requiredTotal = unitHolds + lgCount;
   const held = countHeldCommands(player);

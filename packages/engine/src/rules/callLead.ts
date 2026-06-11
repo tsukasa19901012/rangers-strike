@@ -1,6 +1,6 @@
 import type { Category } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { CardInstance, PlayerState } from "../types/game";
+import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { effectiveCommandCategories, getDefinition, isUnit } from "../core/catalog";
 
@@ -100,6 +100,24 @@ export function playerHasHeldLead(
 ): boolean {
   const cats = categories ?? (["MA", "ET", "DA", "WB", "OT"] as Category[]);
   return heldCallLeadMatchesCategories(player, definitions, "lead", cats);
+}
+
+/** 自軍 rush/battle にリード持ちユニットがいるか（※…リードXX…無効 判定用）。 */
+export function playerHasAllyWithLeadOnField(
+  state: { players: Record<PlayerId, PlayerState>; definitions: Record<string, CardDefinition> },
+  playerId: PlayerId,
+  categories?: Category[],
+): boolean {
+  const player = state.players[playerId];
+  const cats = categories ?? (["MA", "ET", "DA", "WB", "OT"] as Category[]);
+  for (const zone of ["rush", "battle"] as const) {
+    for (const card of player[zone]) {
+      if (cats.some((cat) => unitHasCallLeadKeyword(card.cardId, "lead", cat))) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 export function paymentSourceMatchesCategories(

@@ -151,6 +151,10 @@ import {
 import { isHidoraEggUsed, markBattleBlocked, markRushedThisTurn } from "../rules/turnModifiers";
 import { applyPassChase, applyResolveChase, listValidChaseVehicleIds } from "../keywords/chase";
 import { attachRideIfEligible } from "../keywords/ride";
+import {
+  beginMorphUnitSelection,
+  passMorphReaction,
+} from "../keywords/morphReaction";
 import { canWingAttackFromRush } from "../keywords/battleKeywords";
 import {
   attachOperationCardToDslResume,
@@ -1664,6 +1668,22 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (playerId !== opponent(pending.rusherPlayerId)) return fail("wrong_player");
       const nextState = finalizeRushPending(state, pending);
       return ok(nextState, buildSimpleLogEntry(playerId, "pass_rush_reaction"));
+    }
+
+    case "pass_morph_reaction": {
+      const nextState = passMorphReaction(state, playerId);
+      if (!nextState) return fail("no_pending_morph");
+      return ok(nextState, buildSimpleLogEntry(playerId, "pass_morph_reaction"));
+    }
+
+    case "select_morph_unit": {
+      const nextState = beginMorphUnitSelection(
+        state,
+        playerId,
+        action.morphUnitInstanceId,
+      );
+      if (!nextState) return fail("invalid_morph_unit");
+      return ok(nextState, buildSimpleLogEntry(playerId, "select_morph_unit"));
     }
 
     case "use_super_shield": {

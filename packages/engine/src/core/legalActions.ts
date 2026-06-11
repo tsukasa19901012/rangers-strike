@@ -156,6 +156,8 @@ function isReactionWindowAction(action: GameAction): boolean {
     case "pass_strike_reaction":
     case "pass_battle_reaction":
     case "pass_rush_reaction":
+    case "pass_morph_reaction":
+    case "select_morph_unit":
     case "pass_leave_reaction":
     case "use_register":
     case "pass_register":
@@ -237,6 +239,29 @@ function appendBattleReactionActions(
   }
 
   actions.push({ type: "pass_battle_reaction", playerId });
+}
+
+function appendMorphReactionActions(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): void {
+  const pending = state.pendingMorph;
+  if (!pending || playerId !== pending.defenderPlayerId) return;
+
+  if (state.pendingEffectChoice?.effectId === "morph_replacement") {
+    appendEffectChoiceActions(state, playerId, actions);
+    return;
+  }
+
+  for (const morphUnitInstanceId of pending.morphUnitInstanceIds) {
+    actions.push({
+      type: "select_morph_unit",
+      playerId,
+      morphUnitInstanceId,
+    });
+  }
+  actions.push({ type: "pass_morph_reaction", playerId });
 }
 
 function appendRushReactionActions(
@@ -1107,6 +1132,11 @@ export function getLegalActions(state: GameState): GameAction[] {
     return actions;
   }
 
+  if (state.pendingMorph) {
+    appendMorphReactionActions(state, state.pendingMorph.defenderPlayerId, actions);
+    return actions;
+  }
+
   if (state.pendingRush) {
     appendRushReactionActions(
       state,
@@ -1619,6 +1649,10 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
 
   if (a.type === "confirm_effect_choice" && b.type === "confirm_effect_choice") {
     return a.playerId === b.playerId;
+  }
+
+  if (a.type === "select_morph_unit" && b.type === "select_morph_unit") {
+    return a.morphUnitInstanceId === b.morphUnitInstanceId;
   }
 
   if (a.type === "resolve_effect_choice" && b.type === "resolve_effect_choice") {

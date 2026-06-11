@@ -41,6 +41,7 @@ import {
   blastBypassesRushAdditionalCondition,
   breakerBlocksSameNameRush,
 } from "../keywords/battleKeywords";
+import { effectiveRushAdditionalCondition } from "../rules/rushAdditionalCondition";
 import { countHeldCommands } from "../rules/restrictions";
 import { countAvailablePower, effectivePowerCost } from "./power";
 
@@ -476,7 +477,14 @@ function evaluateRushPowerAndZord(
     return true;
   }
 
-  const resolved = resolveRushAdditionalCondition(unitDefinition.id, unitDefinition);
+  const resolved = powerContext
+    ? effectiveRushAdditionalCondition(
+        powerContext,
+        powerContext.playerId,
+        unitDefinition.id,
+        unitDefinition,
+      )
+    : resolveRushAdditionalCondition(unitDefinition.id, unitDefinition);
 
   if (needsZordStateGate(definitions, unitDefinition.id)) {
     if (!powerContext || !resolved) return false;

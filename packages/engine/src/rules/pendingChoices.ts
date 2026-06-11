@@ -36,6 +36,10 @@ import {
   canMoveUnitToBattle,
   markBattleEntryHoldReadyIfNoteSatisfied,
 } from "./restrictions";
+import {
+  continueMorphAfterReplacement,
+  resolveMorphReplacementChoice,
+} from "../keywords/morphReaction";
 
 export type RequestDrawResult =
   | { state: GameState; pending: false; drawn: boolean }
@@ -824,6 +828,23 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (pending.kind === "optional_deck_draw") {
     return finishChoice(state, pending, "skipped");
   }
+  if (pending.effectId === "morph_replacement" && pending.morphMeta?.activeMorphUnitInstanceId) {
+    const next = continueMorphAfterReplacement(
+      { ...state, pendingEffectChoice: undefined },
+      pending.morphMeta,
+      pending.morphMeta.activeMorphUnitInstanceId,
+    );
+    return {
+      state: next,
+      log: buildLogEntry(
+        playerId,
+        "skip_effect_choice",
+        pending.sourceCardId,
+        state.definitions,
+        "morph_replacement:skipped",
+      ),
+    };
+  }
   return finishChoice(state, pending, "skipped");
 }
 
@@ -865,6 +886,12 @@ export function applyEffectChoiceSelect(
   const pending = state.pendingEffectChoice;
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
+
+  if (pending.effectId === "morph_replacement") {
+    const result = resolveMorphReplacementChoice(state, playerId, instanceId);
+    if ("error" in result) return { error: result.error };
+    return { state: result.state, log: result.log };
+  }
 
   const dslResumeSimpleKinds = new Set([
     "select_unit",

@@ -149,6 +149,16 @@ export type PendingRush = {
   phasePlayerId: PlayerId;
 };
 
+/** 敵ラッシュへのモーフ反応窓。 */
+export type PendingMorph = {
+  defenderPlayerId: PlayerId;
+  rusherPlayerId: PlayerId;
+  rushedInstanceId: string;
+  phasePlayerId: PlayerId;
+  morphUnitInstanceIds: string[];
+  activeMorphUnitInstanceId?: string;
+};
+
 export type PendingLeave = {
   ownerPlayerId: PlayerId;
   instanceId: string;
@@ -279,6 +289,8 @@ export type PendingEffectChoice = {
   /** 破邪百獣剣: 撃破上限（敵コマンドゾーンのカテゴリ数）。 */
   zoneCategoryDestroyLimit?: number;
   zoneCategoryDestroyCount?: number;
+  /** モーフ置換反応の再開用。 */
+  morphMeta?: PendingMorph;
 };
 
 /** @deprecated pendingEffectChoice を使用すること（ruin_survey）。 */
@@ -375,6 +387,7 @@ export type EffectStackFrameKind =
   | "register_choice"
   | "strike_reaction"
   | "battle_reaction"
+  | "morph_reaction"
   | "rush_reaction"
   | "damage_payment"
   | "effect_choice"
@@ -418,6 +431,8 @@ export type GameState = {
   pendingBattle?: PendingBattle;
   /** 相手がラッシュした後の守り側応答ウィンドウ。 */
   pendingRush?: PendingRush;
+  /** 敵ラッシュへのモーフ反応窓。 */
+  pendingMorph?: PendingMorph;
   /** ユニットがフィールドを離れる際の所有者応答。 */
   pendingLeave?: PendingLeave;
   /** チェイス: ライド中ユニット離場時のビークル乗り換え選択。 */

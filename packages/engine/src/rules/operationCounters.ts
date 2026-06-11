@@ -118,7 +118,7 @@ export function applySuperShieldSubstitute(
 }
 
 export function isCounterReactionActive(state: GameState): boolean {
-  return !!(state.pendingBattle || state.pendingRush || state.pendingLeave);
+  return !!(state.pendingBattle || state.pendingRush || state.pendingLeave || state.pendingMorph);
 }
 
 export function isHandCounterCard(

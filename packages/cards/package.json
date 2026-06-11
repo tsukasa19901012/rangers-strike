@@ -77,6 +77,7 @@
     "audit:enqueue-coverage": "tsx scripts/audit-enqueue-coverage.ts",
     "remigrate-enqueue-effects": "tsx scripts/remigrate-enqueue-effects.ts",
     "remigrate-stub-effects": "tsx scripts/remigrate-stub-effects.ts",
+    "repair-dsl-hash-keywords": "tsx scripts/repair-dsl-hash-keywords.ts",
     "promote-dsl-ready": "tsx scripts/promote-dsl-ready.ts",
     "finalize-effect-primitives": "tsx scripts/finalize-effect-primitives.ts",
     "audit:effect-keywords": "tsx scripts/audit-effect-keywords.ts",

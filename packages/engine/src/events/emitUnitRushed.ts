@@ -1,6 +1,7 @@
 import type { GameState, PlayerId } from "../types/game";
 import { findInZone } from "../core/helpers";
 import type { RushEffectOutcome } from "../rules/rushEffects";
+import { openMorphReactionWindow } from "../keywords/morphReaction";
 import { openRushCounterWindow } from "../rules/rushEffects";
 import { buildUnitRushedEvent } from "./builders";
 import { EventQueue } from "./EventQueue";
@@ -36,8 +37,25 @@ export function emitUnitRushedAndFinalize(
 
   const resolved = resolveUntilBlocked(state, queue, getEngineEventDispatcher());
   const beforePending = resolved.state.pendingRush;
-  const withCounter = openRushCounterWindow(
+  const withMorph = openMorphReactionWindow(
     resolved.state,
+    rusherPlayerId,
+    rushedInstanceId,
+    phasePlayerId,
+  );
+  if (
+    withMorph.pendingMorph ||
+    withMorph.pendingEffectChoice?.effectId === "morph_replacement"
+  ) {
+    return {
+      state: withMorph,
+      logs: resolved.logs,
+      counterPending: false,
+    };
+  }
+
+  const withCounter = openRushCounterWindow(
+    withMorph,
     rusherPlayerId,
     rushedInstanceId,
     phasePlayerId,

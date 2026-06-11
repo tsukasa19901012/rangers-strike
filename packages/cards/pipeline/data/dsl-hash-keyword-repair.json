@@ -1,0 +1,8 @@
+{
+  "generatedAt": "2026-06-11T21:16:45.179Z",
+  "scanned": 288,
+  "repaired": 0,
+  "remainingHashStubs": 288,
+  "samples": [],
+  "note": "Re-match grant_keyword hash stubs via extractEffects PATTERNS."
+}

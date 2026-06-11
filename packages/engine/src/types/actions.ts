@@ -213,6 +213,17 @@ export type SkipEffectChoiceAction = {
   playerId: PlayerId;
 };
 
+export type PassMorphReactionAction = {
+  type: "pass_morph_reaction";
+  playerId: PlayerId;
+};
+
+export type SelectMorphUnitAction = {
+  type: "select_morph_unit";
+  playerId: PlayerId;
+  morphUnitInstanceId: string;
+};
+
 export type PassBattleEntryAction = {
   type: "pass_battle_entry";
   playerId: PlayerId;
@@ -308,6 +319,8 @@ export type GameAction =
   | ConfirmEffectChoiceAction
   | ResolveEffectChoiceAction
   | SkipEffectChoiceAction
+  | PassMorphReactionAction
+  | SelectMorphUnitAction
   | PassBattleEntryAction
   | InitiateCommandPaymentAction
   | ResolveCommandPaymentAction

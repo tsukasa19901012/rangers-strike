@@ -30,6 +30,7 @@ export function hasEndPhaseBlockingPending(state: GameState): boolean {
     state.pendingStrike ||
     state.pendingBattle ||
     state.pendingRush ||
+    state.pendingMorph ||
     state.pendingLeave ||
     state.pendingScry ||
     state.pendingZordSetup

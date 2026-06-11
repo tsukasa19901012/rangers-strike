@@ -23,6 +23,18 @@ export {
   findRideVehicleForRider,
 } from "./ride";
 export {
+  applyMorphSwap,
+  defenderCanMorphAgainstRush,
+  featuresExactlyMatch,
+  listMorphReplacementCandidates,
+} from "./morph";
+export {
+  listMorphReactors,
+  openMorphReactionWindow,
+  passMorphReaction,
+  resolveMorphReplacementChoice,
+} from "./morphReaction";
+export {
   blastBypassesRushAdditionalCondition,
   breakerBlocksEffectTarget,
   breakerBlocksSameNameRush,
