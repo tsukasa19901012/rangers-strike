@@ -603,10 +603,10 @@ export function strikeDamageFor(
   }
 
   const def = getDefinition(definitions, instance.cardId);
-  const sp = def?.sp;
   const modifier = instance.spModifier ?? 0;
-  if (typeof sp === "number") return sp + modifier;
-  if (sp === "special") return modifier;
-  if (typeof sp === "string" && sp.includes("/")) return modifier;
+  const printed = instance.spOverride ?? def?.sp;
+  if (printed === "special") return modifier;
+  if (typeof printed === "number") return printed + modifier;
+  if (typeof printed === "string" && printed.includes("/")) return modifier;
   return modifier;
 }

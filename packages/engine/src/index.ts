@@ -20,6 +20,11 @@ export * from "./rules/turnModifierBridge";
 export * from "./rules/staticRestrictions";
 export * from "./rules/battleEntry";
 export { strikeDamageFor } from "./rules/combo";
+export {
+  alignedFractionSp,
+  battlePrintedSpBase,
+  printedSpBase,
+} from "./rules/fractionalSp";
 export * from "./rules/commandPayment";
 export * from "./rules/zordSetup";
 export * from "./rules/damagePayment";

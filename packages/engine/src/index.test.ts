@@ -39,6 +39,12 @@ describe("phase helpers", () => {
     expect(strikeDamage("special")).toBe(1);
     expect(strikeDamage(2)).toBe(2);
   });
+
+  it("maps fractional SP using battle position when provided", () => {
+    expect(strikeDamage("1/4", 4)).toBe(1);
+    expect(strikeDamage("1/4", 3)).toBe(0);
+    expect(strikeDamage("1/4")).toBe(0);
+  });
 });
 
 describe("createGame", () => {

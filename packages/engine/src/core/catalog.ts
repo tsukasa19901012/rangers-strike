@@ -43,9 +43,12 @@ export function isSpFraction(sp: SpValue | undefined): boolean {
   return typeof sp === "string" && sp.includes("/");
 }
 
-export function strikeDamage(sp: SpValue | undefined): number {
+export function strikeDamage(sp: SpValue | undefined, battlePosition?: number): number {
   if (typeof sp === "number") return sp;
-  if (isSpFraction(sp)) return 0;
+  if (isSpFraction(sp)) {
+    if (battlePosition === undefined) return 0;
+    return battlePosition === Number(sp.split("/")[1]) ? 1 : 0;
+  }
   return 1;
 }
 

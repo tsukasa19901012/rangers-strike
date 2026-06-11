@@ -43,6 +43,8 @@ export type CardInstance = {
   faceDown?: boolean;
   /** 一時的なSP変更（ターン終了時にクリア）。 */
   spModifier?: number;
+  /** ターン中の SP 上書き（例: オペで「SP1/4」になる）。 */
+  spOverride?: import("@rangers-strike/cards").SpValue;
   /** バトル進入時に発動したNC効果ID（ターン終了時にクリア）。 */
   activatedNcEffects?: string[];
   /** バトルフェイズ: このターンにこのユニットがバトルまたはストライク済みなら true。 */

@@ -5,6 +5,11 @@ import {
 import type { Category } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit, unitBp } from "../../core/catalog";
+import {
+  battlePositionOneBased,
+  printedSpBase,
+  resolveInstanceSpValue,
+} from "../fractionalSp";
 
 function categoriesInclude(
   categories: Category | Category[],
@@ -69,14 +74,12 @@ export function legend2EffectiveSp(
 ): number {
   const def = getDefinition(state.definitions, instance.cardId);
   const modifier = instance.spModifier ?? 0;
-  let sp =
-    def?.sp === "special"
-      ? modifier
-      : typeof def?.sp === "number"
-        ? def.sp + modifier
-        : typeof def?.sp === "string" && def.sp.includes("/")
-          ? modifier
-          : modifier;
+  const battlePosition = battlePositionOneBased(
+    state.players[playerId].battle,
+    instance.instanceId,
+  );
+  const printed = resolveInstanceSpValue(def, instance);
+  let sp = printedSpBase(printed, battlePosition) + modifier;
 
   /** RS-073 バルシールド: 自軍ダメージ6点で SP2。 */
   if (instance.cardId === "RS-073" && state.players[playerId].damage >= 6) {
@@ -150,10 +153,8 @@ export function karakuriLionChainBlocksEntry(
   if (!controller || controller.playerId === defenderId) return false;
 
   const def = getDefinition(state.definitions, unit.cardId);
-  const sp = def?.sp;
-  const hasBang = def?.features?.includes("!");
-  const mod = unit.spModifier ?? 0;
-  const effectiveSp = typeof sp === "number" ? sp + mod : mod;
+  const hasBang = def?.sp === "special" || def?.features?.includes("!");
+  const effectiveSp = legend2EffectiveSp(state, defenderId, unit);
   if (effectiveSp >= 1 || hasBang) {
     return heldCount < 1;
   }

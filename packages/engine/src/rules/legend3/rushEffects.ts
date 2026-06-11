@@ -1,6 +1,7 @@
 import { getUnitEffectBlock, hasUnnamedRule } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../../types/game";
-import { getDefinition, isSmallUnit, strikeDamage } from "../../core/catalog";
+import { getDefinition, isSmallUnit } from "../../core/catalog";
+import { printedSpBase, resolveInstanceSpValue } from "../fractionalSp";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { buildLogEntry } from "../../log/formatLog";
 import {
@@ -192,9 +193,10 @@ export function resolveLegend3OnRushEffects(
       const enemy = nextState.players[enemyId];
       const toReturn = enemy.rush.filter((c) => {
         if (!isSmallUnit(nextState.definitions, c.cardId)) return false;
+        const def = getDefinition(nextState.definitions, c.cardId);
         const sp =
           (c.spModifier ?? 0) +
-          strikeDamage(getDefinition(nextState.definitions, c.cardId)?.sp);
+          printedSpBase(resolveInstanceSpValue(def, c), null);
         return sp >= 1;
       });
       if (toReturn.length > 0) {

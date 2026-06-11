@@ -1,3 +1,4 @@
+import type { SpValue } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { updatePlayer } from "../core/helpers";
 
@@ -9,6 +10,19 @@ export function patchPlayer(
 ): GameState {
   const player = state.players[playerId];
   return { ...state, ...updatePlayer(state, playerId, patch(player)) };
+}
+
+export function grantSpOverrideOnPlayer(
+  player: PlayerState,
+  instanceId: string,
+  sp: SpValue,
+  zone: "hand" | "rush" | "battle" = "battle",
+): PlayerState {
+  const cards = [...player[zone]];
+  const index = cards.findIndex((c) => c.instanceId === instanceId);
+  if (index < 0) return player;
+  cards[index] = { ...cards[index]!, spOverride: sp };
+  return { ...player, [zone]: cards };
 }
 
 export function grantSp1OnPlayer(
