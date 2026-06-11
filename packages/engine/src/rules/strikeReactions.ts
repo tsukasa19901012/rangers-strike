@@ -10,6 +10,7 @@ import {
 import { playerHasOperationGrantKeyword } from "../dsl/operationKeywords";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
+import { isBloodVesselStrikeActive } from "../keywords/battleKeywords";
 import { buildLogEntry } from "../log/formatLog";
 import { tryDestroyStrikerForStrike } from "./operationCounters";
 
@@ -297,6 +298,12 @@ export function finalizeStrike(
         pending,
       },
       sideKnuckleChoosingPlayer(state, pending),
+      {
+        bloodVesselPreferMorph: isBloodVesselStrikeActive(
+          state,
+          pending.strikerPlayerId,
+        ),
+      },
     );
     if (withDamage.pendingDamagePayment) {
       return { ...withDamage, pendingStrike: pending };

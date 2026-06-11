@@ -14,6 +14,10 @@ export const ENGINE_NATIVE_KEYWORDS = new Set([
   "register",
   "commander",
   "mothership",
+  "cross1",
+  "blast",
+  "breaker",
+  "scrum",
   "ride_bp_boost_500",
   "ride_bp_boost_1000",
 ]);
@@ -25,7 +29,8 @@ const ENGINE_NATIVE_PREFIXES = [
 
 export function isEngineNativeGrantKeyword(keyword: string): boolean {
   if (ENGINE_NATIVE_KEYWORDS.has(keyword)) return true;
-  if (/^(call|lead)_(MA|ET|DA|WB|OT)$/.test(keyword)) return true;
+  if (/^(call|lead|taxis)_(MA|ET|DA|WB|OT)$/.test(keyword)) return true;
+  if (/^cross\d+$/.test(keyword)) return true;
   if (keyword.startsWith("attacked_bp_boost_")) return true;
   return ENGINE_NATIVE_PREFIXES.some((prefix) => keyword.startsWith(prefix));
 }

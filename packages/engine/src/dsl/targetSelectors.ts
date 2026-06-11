@@ -5,6 +5,7 @@ import { cardCategories, getDefinition, isSmallUnit } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { cardHasGrantKeyword } from "./promotedKeywordBridge";
+import { breakerBlocksEffectTarget } from "../keywords/battleKeywords";
 
 type FieldZone = keyof Pick<PlayerState, "hand" | "discard" | "power" | "command" | "rush" | "battle">;
 
@@ -80,7 +81,12 @@ export function collectTargetInstanceIds(
               .filter((c) => matchesFilter(state, c, selector.filter))
               .filter((c) => {
                 if (ownerId === playerId) return true;
-                return !cardHasGrantKeyword(c.cardId, "not_selectable");
+                if (cardHasGrantKeyword(c.cardId, "not_selectable")) return false;
+                if (cardHasGrantKeyword(c.cardId, "not_selectable_except_attack")) {
+                  return false;
+                }
+                if (breakerBlocksEffectTarget(state.definitions, c.cardId)) return false;
+                return true;
               })
               .map((c) => c.instanceId),
           );

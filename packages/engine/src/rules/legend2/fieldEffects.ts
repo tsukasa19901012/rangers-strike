@@ -10,6 +10,10 @@ import {
   printedSpBase,
   resolveInstanceSpValue,
 } from "../fractionalSp";
+import {
+  crossAdjustedBattlePosition,
+  taxisSpFloor,
+} from "../../keywords/battleKeywords";
 
 function categoriesInclude(
   categories: Category | Category[],
@@ -74,12 +78,12 @@ export function legend2EffectiveSp(
 ): number {
   const def = getDefinition(state.definitions, instance.cardId);
   const modifier = instance.spModifier ?? 0;
-  const battlePosition = battlePositionOneBased(
-    state.players[playerId].battle,
-    instance.instanceId,
-  );
+  const battle = state.players[playerId].battle;
+  const battlePosition = crossAdjustedBattlePosition(battle, instance.instanceId)
+    ?? battlePositionOneBased(battle, instance.instanceId);
   const printed = resolveInstanceSpValue(def, instance);
   let sp = printedSpBase(printed, battlePosition) + modifier;
+  sp = Math.max(sp, taxisSpFloor(state, playerId, instance));
 
   /** RS-073 バルシールド: 自軍ダメージ6点で SP2。 */
   if (instance.cardId === "RS-073" && state.players[playerId].damage >= 6) {

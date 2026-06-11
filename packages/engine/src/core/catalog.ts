@@ -37,6 +37,10 @@ import { isShironLightRushTarget } from "../rules/shironLight";
 import { getAuraPowerInstanceId, getComboNumberDelta } from "../rules/turnModifierBridge";
 import { opponentInfiniteChainBlocks } from "../rules/turnModifiers";
 import { heldCallLeadMatchesCategories } from "../rules/callLead";
+import {
+  blastBypassesRushAdditionalCondition,
+  breakerBlocksSameNameRush,
+} from "../keywords/battleKeywords";
 import { countHeldCommands } from "../rules/restrictions";
 import { countAvailablePower, effectivePowerCost } from "./power";
 
@@ -506,6 +510,17 @@ function evaluateRushPowerAndZord(
       rushingInstanceId,
       ids,
     );
+  }
+
+  if (
+    powerContext &&
+    blastBypassesRushAdditionalCondition(powerContext, powerContext.playerId, unitDefinition.id)
+  ) {
+    return true;
+  }
+
+  if (breakerBlocksSameNameRush(player, definitions, unitDefinition.id)) {
+    return false;
   }
 
   if (!needsZordMaterial(definitions, unitDefinition.id)) return true;

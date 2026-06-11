@@ -18,6 +18,23 @@ export {
   cardHasRegisterKeyword,
   unitHasRegister,
 } from "./registerReaction";
+export {
+  attachRideIfEligible,
+  findRideVehicleForRider,
+} from "./ride";
+export {
+  blastBypassesRushAdditionalCondition,
+  breakerBlocksEffectTarget,
+  breakerBlocksSameNameRush,
+  canWingAttackFromRush,
+  crossAdjustedBattlePosition,
+  crossShiftLeftOf,
+  crossValueForCard,
+  isBloodVesselStrikeActive,
+  parseTaxisCategory,
+  scrumBlocksAttack,
+  taxisSpFloor,
+} from "./battleKeywords";
 
 /** チェイス: ライド中ユニットが離場するとき乗り換え可能。 */
 export function canInitiateChase(

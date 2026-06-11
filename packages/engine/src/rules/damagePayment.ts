@@ -5,8 +5,13 @@ import type {
   PlayerId,
   PlayerState,
 } from "../types/game";
+import { getDefinition } from "../core/catalog";
 import { applyPlayerDamage, removeAt, updatePlayer } from "../core/helpers";
 import { emitDamageAppliedAndResolve } from "../events/emitDamageApplied";
+import {
+  cardHasMorphKeyword,
+  powerZoneHasMorphUnitCard,
+} from "../keywords/battleKeywords";
 
 export type { DamagePaymentResume };
 
@@ -28,9 +33,19 @@ export function getValidDamagePowerTargets(
   pending: PendingDamagePayment,
 ): string[] {
   const selected = new Set(pending.selectedFlipIds);
-  return state.players[pending.playerId].power
-    .filter((c) => !c.faceDown && !selected.has(c.instanceId))
-    .map((c) => c.instanceId);
+  const candidates = state.players[pending.playerId].power.filter(
+    (c) => !c.faceDown && !selected.has(c.instanceId),
+  );
+  if (pending.bloodVesselPreferMorph && powerZoneHasMorphUnitCard(state, pending.playerId)) {
+    const morphOnly = candidates.filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && cardHasMorphKeyword(state.definitions, c.cardId);
+    });
+    if (morphOnly.length > 0) {
+      return morphOnly.map((c) => c.instanceId);
+    }
+  }
+  return candidates.map((c) => c.instanceId);
 }
 
 function stillRequiresDamagePowerChoice(
@@ -89,6 +104,7 @@ export function startDamagePayment(
   amount: number,
   resume: DamagePaymentResume,
   choosingPlayerId?: PlayerId,
+  options?: { bloodVesselPreferMorph?: boolean },
 ): GameState {
   const player = state.players[playerId];
   const faceUpCount = player.power.filter((c) => !c.faceDown).length;
@@ -105,6 +121,7 @@ export function startDamagePayment(
       totalDamage: amount,
       selectedFlipIds: [],
       resume,
+      bloodVesselPreferMorph: options?.bloodVesselPreferMorph,
     },
     activePlayer: chooser,
   };
@@ -117,11 +134,12 @@ export function applyDamageToPlayer(
   amount: number,
   resume: DamagePaymentResume,
   choosingPlayerId?: PlayerId,
+  options?: { bloodVesselPreferMorph?: boolean },
 ): GameState {
   if (amount <= 0) return state;
   const player = state.players[playerId];
   if (requiresDamagePowerChoice(player, amount)) {
-    return startDamagePayment(state, playerId, amount, resume, choosingPlayerId);
+    return startDamagePayment(state, playerId, amount, resume, choosingPlayerId, options);
   }
   const nextPlayer = applyPlayerDamage(player, amount);
   const phasePlayerId =

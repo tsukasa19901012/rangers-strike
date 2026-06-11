@@ -150,6 +150,8 @@ import {
 } from "../rules/strikeReactions";
 import { isHidoraEggUsed, markBattleBlocked, markRushedThisTurn } from "../rules/turnModifiers";
 import { applyPassChase, applyResolveChase, listValidChaseVehicleIds } from "../keywords/chase";
+import { attachRideIfEligible } from "../keywords/ride";
+import { canWingAttackFromRush } from "../keywords/battleKeywords";
 import {
   attachOperationCardToDslResume,
   dslOperationOpensChoose,
@@ -1196,9 +1198,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       const position = battlePositionAfterMove(nextPlayer.battle.length);
       const battleBeforeEnter = [...nextPlayer.battle];
       let battleCard = found.card;
-
       if (action.rideOff && found.card.mountedOnInstanceId) {
         battleCard = { ...battleCard, mountedOnInstanceId: undefined };
+      } else {
+        battleCard = attachRideIfEligible(state, playerId, battleCard, action.rideOff);
       }
 
       nextPlayer = {
@@ -1782,8 +1785,17 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       const enemyId = opponent(playerId);
       const actor = state.players[playerId];
 
-      const attackerFound = findInZone(actor, "battle", action.attackerInstanceId);
+      const attackerFound =
+        findInZone(actor, "battle", action.attackerInstanceId) ??
+        findInZone(actor, "rush", action.attackerInstanceId);
       if (!attackerFound) return fail("attacker_not_in_battle");
+      const wingAttackFromRush = !!findInZone(actor, "rush", action.attackerInstanceId);
+      if (
+        wingAttackFromRush &&
+        !canWingAttackFromRush(state, playerId, attackerFound.card)
+      ) {
+        return fail("wing_attack_not_allowed");
+      }
       if (attackerFound.card.battleActed) return fail("already_acted");
       if (cannotAttackOrStrikeThisTurn(actor, attackerFound.card)) {
         return fail("cannot_attack_turn_rushed");
@@ -1846,7 +1858,24 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       }
 
       const resolved = emitBattleDeclaredAndResolve(battleState, pending);
-      return ok(resolved.state, resolved.log);
+      let finalState = resolved.state;
+      if (wingAttackFromRush) {
+        let wingPlayer = finalState.players[playerId];
+        const rushIndex = wingPlayer.rush.findIndex(
+          (c) => c.instanceId === action.attackerInstanceId,
+        );
+        if (rushIndex >= 0) {
+          const rush = [...wingPlayer.rush];
+          rush[rushIndex] = {
+            ...rush[rushIndex]!,
+            commandHeld: true,
+            battleActed: true,
+          };
+          wingPlayer = markBattleBlocked({ ...wingPlayer, rush }, action.attackerInstanceId);
+          finalState = { ...finalState, ...updatePlayer(finalState, playerId, wingPlayer) };
+        }
+      }
+      return ok(finalState, resolved.log);
     }
 
     case "battle_dance_retreat": {

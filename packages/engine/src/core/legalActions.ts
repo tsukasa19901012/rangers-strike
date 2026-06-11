@@ -4,6 +4,7 @@ import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { isCostWindowSatisfied } from "./costWindow";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { getRidingComboEffect, hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
+import { canWingAttackFromRush } from "../keywords/battleKeywords";
 import {
   canPlayOperationCard,
   collectOperationTargets,
@@ -1275,6 +1276,50 @@ export function getLegalActions(state: GameState): GameAction[] {
             playerId,
             instanceId: card.instanceId,
             rideOff: true,
+          });
+        }
+      }
+
+      for (const attacker of player.rush) {
+        if (!canWingAttackFromRush(state, playerId, attacker)) continue;
+        for (const defender of enemy.battle) {
+          if (
+            !canAttackDefender(
+              state,
+              playerId,
+              attacker.instanceId,
+              opponent(playerId),
+              defender.instanceId,
+              canAttackRushWithYellowThunder,
+            )
+          ) {
+            continue;
+          }
+          actions.push({
+            type: "battle",
+            playerId,
+            attackerInstanceId: attacker.instanceId,
+            defenderInstanceId: defender.instanceId,
+          });
+        }
+        for (const defender of enemy.rush) {
+          if (
+            !canAttackDefender(
+              state,
+              playerId,
+              attacker.instanceId,
+              opponent(playerId),
+              defender.instanceId,
+              canAttackRushWithYellowThunder,
+            )
+          ) {
+            continue;
+          }
+          actions.push({
+            type: "battle",
+            playerId,
+            attackerInstanceId: attacker.instanceId,
+            defenderInstanceId: defender.instanceId,
           });
         }
       }

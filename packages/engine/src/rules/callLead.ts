@@ -93,6 +93,15 @@ export function holdPaymentSource(
   return player;
 }
 
+export function playerHasHeldLead(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  categories?: Category[],
+): boolean {
+  const cats = categories ?? (["MA", "ET", "DA", "WB", "OT"] as Category[]);
+  return heldCallLeadMatchesCategories(player, definitions, "lead", cats);
+}
+
 export function paymentSourceMatchesCategories(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,

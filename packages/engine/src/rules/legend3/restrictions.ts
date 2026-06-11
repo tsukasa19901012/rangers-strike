@@ -17,7 +17,8 @@ import {
   promotedAttackerCannotTarget,
   promotedDefenderBlocksAttack,
 } from "../../dsl/promotedKeywordBridge";
-import { wingCanAttackEnemyRush } from "../../keywords";
+import { scrumBlocksAttack, wingCanAttackEnemyRush } from "../../keywords";
+import { canWingAttackFromRush } from "../../keywords/battleKeywords";
 import { countAvailablePower, effectivePowerCost } from "../../core/power";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { countReleasedCommands } from "../restrictions";
@@ -192,12 +193,19 @@ export function canAttackDefender(
     attackerInstanceId: string,
   ) => boolean,
 ): boolean {
-  const attacker = findInZone(
-    state.players[attackerPlayerId],
-    "battle",
-    attackerInstanceId,
-  );
+  const attackerPlayer = state.players[attackerPlayerId];
+  const attacker =
+    findInZone(attackerPlayer, "battle", attackerInstanceId) ??
+    findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (!attacker) return false;
+
+  const attackerInRush = findInZone(attackerPlayer, "rush", attackerInstanceId);
+  if (
+    attackerInRush &&
+    !canWingAttackFromRush(state, attackerPlayerId, attackerInRush.card)
+  ) {
+    return false;
+  }
 
   const enemy = state.players[defenderPlayerId];
   const inBattle = findInZone(enemy, "battle", defenderInstanceId);
@@ -232,6 +240,10 @@ export function canAttackDefender(
   }
 
   if (!inBattle) return false;
+
+  if (scrumBlocksAttack(state, defenderPlayerId, defenderInstanceId)) {
+    return false;
+  }
 
   if (
     promotedDefenderBlocksAttack(

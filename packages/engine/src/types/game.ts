@@ -122,6 +122,8 @@ export type PendingDamagePayment = {
   totalDamage: number;
   selectedFlipIds: string[];
   resume: DamagePaymentResume;
+  /** RK-294 ブラッドベセル: モーフユニットを優先してダメージ支払い。 */
+  bloodVesselPreferMorph?: boolean;
 };
 
 export type PendingBattle = {

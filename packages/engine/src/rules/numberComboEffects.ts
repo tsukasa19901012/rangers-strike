@@ -6,6 +6,7 @@ import {
   effectiveComboNumber,
   getDefinition,
 } from "../core/catalog";
+import { crossAdjustedBattlePosition } from "../keywords/battleKeywords";
 import { requestDrawFromDeck } from "./drawFromDeck";
 import { buildLogEntry } from "../log/formatLog";
 import { startRuinSurvey } from "./ruinSurvey";
@@ -43,6 +44,17 @@ function ncLog(
   return buildLogEntry(playerId, "number_combo", cardId, definitions, detail);
 }
 
+function ncBattlePosition(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+  rawBattlePosition: number,
+): number {
+  const battle = state.players[playerId].battle;
+  const adjusted = crossAdjustedBattlePosition(battle, card.instanceId);
+  return adjusted ?? rawBattlePosition;
+}
+
 export function numberComboTriggers(
   state: GameState,
   playerId: PlayerId,
@@ -58,7 +70,7 @@ export function numberComboTriggers(
 
   return !!findNcNamedEffect(
     card.cardId,
-    battlePosition,
+    ncBattlePosition(state, playerId, card, battlePosition),
     effectiveNumber,
     battleBeforeEnter,
     card.instanceId,
@@ -79,7 +91,7 @@ export function resolveNamedNcEffectId(
       : -1;
   const named = findNcNamedEffect(
     card.cardId,
-    battlePosition,
+    ncBattlePosition(state, playerId, card, battlePosition),
     effectiveNumber,
     battleBeforeEnter,
     card.instanceId,

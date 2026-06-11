@@ -61,6 +61,11 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "mothership",
   "ride_bp_boost_500",
   "ride_bp_boost_1000",
+  "cross1",
+  "blast",
+  "breaker",
+  "scrum",
+  "not_selectable_except_attack",
 ]);
 
 export const SUPPORTED_GRANT_KEYWORDS = new Set([
