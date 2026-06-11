@@ -1,6 +1,5 @@
-import { isSpFraction, type SpFraction, type SpValue } from "@rangers-strike/cards";
-import type { CardDefinition, CardInstance } from "@rangers-strike/cards";
-import type { GameState, PlayerId } from "../types/game";
+import { isSpFraction, type SpFraction, type SpValue, type CardDefinition } from "@rangers-strike/cards";
+import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
 
 export function parseSpFraction(sp: SpValue | undefined): SpFraction | null {

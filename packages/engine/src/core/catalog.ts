@@ -6,7 +6,7 @@ import {
   type Category,
 } from "@rangers-strike/cards";
 import { getCardEffect } from "@rangers-strike/cards";
-import type { SpValue } from "@rangers-strike/cards";
+import type { SpFraction, SpValue } from "@rangers-strike/cards";
 import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { hasCommandForCardUse } from "../rules/restrictions";
@@ -39,7 +39,7 @@ export function parsePowerCost(cost: number | string): number {
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
-export function isSpFraction(sp: SpValue | undefined): boolean {
+export function isSpFraction(sp: SpValue | undefined): sp is SpFraction {
   return typeof sp === "string" && sp.includes("/");
 }
 
