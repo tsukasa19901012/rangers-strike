@@ -78,7 +78,7 @@ rangers-strike/
 
 | パッケージ | 役割 |
 |-----------|------|
-| `@rangers-strike/cards` | カード JSON、効果パース、スターターデッキ、エラタ |
+| `@rangers-strike/cards` | カードカタログ（registry / 生成 JSON）、効果パース、スターターデッキ、エラタ |
 | `@rangers-strike/engine` | 状態管理、合法手判定、アクション適用、CPU AI |
 | `@rangers-strike/web` | 対戦画面・デッキビルダー・効果操作モーダル |
 
@@ -115,12 +115,15 @@ npm test
 npm test -w @rangers-strike/cards
 npm test -w @rangers-strike/engine
 npm test -w @rangers-strike/web
+
+# カタログ parity ゲート（cards）
+npm run audit:catalog-parity -w @rangers-strike/cards
 ```
 
 | パッケージ | 主なテスト |
 |-----------|-----------|
 | `engine` | ルール統合、CPU AI（`src/ai/`）、スタートフェイズ、カード効果 |
-| `cards` | デッキルール、効果カタログ、スキーマ |
+| `cards` | デッキルール、効果カタログ、カタログ parity、スキーマ |
 | `web` | Web UI 効果カバレッジ、`g5Acceptance`、Playwright E2E（AC-06） |
 
 Web E2E（初回は `npm run test:e2e:install -w @rangers-strike/web`）:
@@ -155,12 +158,19 @@ npm run build
 
 ### カードデータ（`packages/cards`）
 
-| 内容 | ファイル |
-|------|----------|
-| カード定義 L1 / L2 / L3 | `src/legend1/cards.json`、`src/legend2/cards.json`、`src/legend3/cards.json` |
-| フルプレイアブルカタログ | `src/extendedCatalog.ts`（`fullPlayableCatalog`）、`generated/catalog/*-promoted/` |
+ランタイムの正は **生成カタログ + DSL registry** です。旧 `src/legend*/cards.json` / `unitEffects.json` は削除済みです。
+
+| 内容 | ファイル / コマンド |
+|------|---------------------|
+| コア 179 枚（L1–L3） | `src/generated/catalog/core-playable/cards.json` |
+| フルプレイアブル 1,849 枚 | `src/generated/catalog/full-playable/cards.json` |
+| カタログ API | `src/catalog/unifiedCatalog.ts`（`loadCards` / `loadCardById` は `src/dsl/loader.ts`） |
+| 後方互換 re-export | `src/extendedCatalog.ts`（`fullPlayableCatalog` 等） |
+| promoted シャード | `generated/catalog/*-promoted/`（vanilla / complexity 等） |
+| DSL stub / overlay | `src/generated/dsl-stubs/`、`src/dsl/generated/overlays-bundle.json` |
+| カタログ parity 監査 | `npm run audit:catalog-parity -w @rangers-strike/cards` → `pipeline/data/catalog-parity.json` |
 | ロールアウト進捗 | `npm run audit:rollout-status -w @rangers-strike/cards` → `pipeline/data/rollout-status.json` |
-| ユニット効果 JSON L1 / L2 / L3 | `src/legend1/unitEffects.json`、`src/legend2/unitEffects.json`、`src/legend3/unitEffects.json` |
+| ユニット効果（registry） | `src/unitEffects.ts`（`CardDocument` → `UnitEffectBlock`、`src/catalog/cardDocumentToUnitBlock.ts`） |
 | 実装済み効果 ID 一覧 | `src/unitEffectCatalog.ts` |
 | NC（ナンバーコンボ） | `src/comboEffects.ts` |
 | 合体 / ライディング | `src/comboEffectCatalog.ts` |
@@ -168,9 +178,11 @@ npm run build
 | 表示ラベル | `src/effectLabels.ts` |
 | エラタ・Q&A | `src/errata.ts` |
 | デッキ構築ルール | `src/deckRules.ts` |
-| カテゴリー（ET/MA/OT 等） | `src/legend2/cards.json`（公式: grnrngr カードリスト） |
+| カテゴリー（ET/MA/OT 等） | 各カードの `category` フィールド（生成カタログ / CardDocument） |
 | wiki 参照テキスト | `src/wikiReference.ts` |
 | L3 atwiki 取り込み元 | `src/legend3/atwiki-pages.json` |
+
+カタログ生成パイプラインの詳細: [docs/architecture/card-generation-pipeline.md](docs/architecture/card-generation-pipeline.md)
 
 ### ルールエンジン（`packages/engine`）
 
@@ -214,7 +226,14 @@ Legend 3 カードデータのメンテナンス（開発者向け）:
 # atwiki からカード取り込み
 node packages/cards/scripts/import-legend3-from-atwiki.mjs
 
-# unitEffects.json 生成
+# コア / フルプレイアブルカタログ再生成（L1–L3 179 枚 → 1849 枚マージ）
+npm run emit-core-catalog -w @rangers-strike/cards
+npm run emit-full-playable-catalog -w @rangers-strike/cards
+
+# カタログ parity ゲート（14 項目）
+npm run audit:catalog-parity -w @rangers-strike/cards
+
+# L3 unit effect スナップショット（メンテ用 diff）
 node packages/cards/scripts/build-legend3-unitEffects.mjs
 
 # カード画像ダウンロード

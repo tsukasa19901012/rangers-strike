@@ -14,10 +14,14 @@ describe("resolveCardImageUrl", () => {
     expect(resolveCardImageUrl("BK-001")).toBe("/cards/promoted/BK-001.jpg");
   });
 
-  it("falls back to grnrngr URL when promoted has no local imageUrl (SX-002)", () => {
-    expect(resolveCardImageUrl("SX-002")).toBe(grnrngrCardImageUrl("SX-002"));
-    expect(resolveCardImageUrl("SX-002")).toBe(
-      `${GRNRNGR_CARD_IMAGE_BASE}/SX-002.jpg`,
+  it("returns local imageUrl for promoted cards when downloaded (SX-002)", () => {
+    expect(resolveCardImageUrl("SX-002")).toBe("/cards/promoted/SX-002.jpg");
+  });
+
+  it("falls back to grnrngr URL when promoted has no local imageUrl (XC-001)", () => {
+    expect(resolveCardImageUrl("XC-001")).toBe(grnrngrCardImageUrl("XC-001"));
+    expect(resolveCardImageUrl("XC-001")).toBe(
+      `${GRNRNGR_CARD_IMAGE_BASE}/XC-001.jpg`,
     );
   });
 

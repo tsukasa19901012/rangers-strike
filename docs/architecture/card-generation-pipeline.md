@@ -61,7 +61,7 @@ flowchart TB
 | `atwikiText.js` | Stage 1 |
 | `wikiReference.ts` | Stage 1 の優先ソース（L1-L3） |
 | `dsl/validator.ts` | Stage 4 |
-| `dsl/loader.ts` | Stage 3 逆方向（レガシー → DSL） |
+| `dsl/loader.ts` | Stage 3 ローダ（`loadCards` / `loadCardById`、tiers: core-playable / full-playable） |
 | `dsl/testGenerator.ts` | Stage 4 |
 | `validate-cards.ts` | Stage 4 CI |
 
@@ -302,12 +302,14 @@ generated/dsl/RS-004.json     # override が優先
 
 | 出力 | 内容 | 用途 |
 |------|------|------|
-| `generated/catalog/{expansion}/cards.json` | CardDefinition 配列 | アプリ・エンジン |
-| `generated/effects/{id}.json` | EffectDefinition[] | interpreter |
+| `generated/catalog/core-playable/cards.json` | コア 179 枚（L1–L3） | エンジン・スターター |
+| `generated/catalog/full-playable/cards.json` | フル 1,849 枚マージ | Web・シミュレーション |
+| `generated/catalog/*-promoted/` | promoted シャード | emit 中間物 |
+| `generated/dsl-stubs/*.dsl.json` | CardDocument stub | registry / compile |
 | `generated/index.json` | cardId → ファイルパス | ローダ |
 | `generated/manifest.json` | catalogHash, 件数, 日時 | CI / replay |
 
-**レガシー移行期:** `legend1/cards.json` は `generated` から同期コピー（diff ゼロまで）。
+**移行完了（U5）:** 旧 `src/legend*/cards.json` / `unitEffects.json` は削除済み。ランタイムの正は `generated/catalog/*` + `loadCards()` / registry。
 
 ### 3.3 Emit ルール
 
@@ -347,11 +349,10 @@ export function createCardRegistryFromGenerated(): CardRegistry;
 ### 3.5 CLI
 
 ```bash
-npm run pipeline:emit
-# extract + compile（confidence ≥ threshold）+ emit を一括
-
-npm run pipeline:sync-legacy
-# generated → legend1|2|3/cards.json + unitEffects.json（差分 PR 用）
+npm run emit-core-catalog -w @rangers-strike/cards
+npm run emit-full-playable-catalog -w @rangers-strike/cards
+npm run audit:catalog-parity -w @rangers-strike/cards
+# core-playable 179 枚 emit → full-playable 1849 枚マージ → parity 14 ゲート
 ```
 
 ---
@@ -494,8 +495,8 @@ npm run pipeline:compile -- RS-046
 
 # 3. DSL → 実行 JSON
 npm run pipeline:emit -- RS-046
-# → generated/catalog/legend1/cards.json（マージ）
-# → generated/effects/RS-046.json
+# → generated/catalog/core-playable/cards.json（マージ）
+# → generated/dsl-stubs/RS-046.dsl.json
 
 # 4. テスト生成 + 実行
 npm run pipeline:test -- RS-046
@@ -604,7 +605,7 @@ packages/engine/src/
 ### Phase 0（1 週）— Extract + Drift
 
 - [ ] `parseWikiMd.ts` — 1849 md → wiki-index.json
-- [ ] `wiki-drift.json` vs legend1-3
+- [ ] `wiki-drift.json` vs `generated/catalog/core-playable`
 - [ ] `pipeline:extract` CLI
 - [ ] CI: drift artifact
 
@@ -647,8 +648,8 @@ packages/engine/src/
 
 **Emit 出力:**
 
-- `generated/catalog/legend1/cards.json` に stats エントリ
-- `generated/effects/RS-046.json` に effects 配列
+- `generated/catalog/core-playable/cards.json` に stats エントリ
+- `generated/dsl-stubs/RS-046.dsl.json` に effects / unnamedRules
 
 **Test 出力:**
 
