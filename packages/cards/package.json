@@ -34,6 +34,10 @@
       "types": "./dist/pipeline/extractEffects.d.ts",
       "import": "./dist/pipeline/extractEffects.js"
     },
+    "./catalog/parity": {
+      "types": "./dist/catalog/parity.d.ts",
+      "import": "./dist/catalog/parity.js"
+    },
     "./schema/*": "./schema/*"
   },
   "scripts": {

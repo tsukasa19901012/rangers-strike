@@ -41,11 +41,6 @@ export {
   loadLegacyCoreCards,
   loadLegacyCoreCatalog,
 } from "./catalog/coreCatalogSources";
-export {
-  allParityGatesPassed,
-  runCatalogParityAudit,
-  type CatalogParityReport,
-} from "./catalog/parity";
 export * from "./effects";
 export * from "./errata";
 export * from "./effectTaxonomy";
