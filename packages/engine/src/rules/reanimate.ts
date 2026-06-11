@@ -2,6 +2,7 @@ import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
 import { moveFromExile } from "./exile";
+import { recordSUnitRecoveredFromDiscardToHand } from "./turnRecoveryTracking";
 
 export type ReanimateDestination = "rush" | "battle" | "hand";
 
@@ -38,7 +39,7 @@ export function applyReanimate(
   const discard = [...player.discard];
   discard.splice(index, 1);
 
-  return {
+  let nextState: GameState = {
     ...state,
     ...updatePlayer(state, request.playerId, {
       ...player,
@@ -46,4 +47,12 @@ export function applyReanimate(
       [request.to]: [...player[request.to], card as CardInstance],
     }),
   };
+  if (request.from === "discard" && request.to === "hand") {
+    nextState = recordSUnitRecoveredFromDiscardToHand(
+      nextState,
+      request.playerId,
+      card.cardId,
+    );
+  }
+  return nextState;
 }

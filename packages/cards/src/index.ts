@@ -172,4 +172,8 @@ export {
 } from "./extendedCatalog";
 export { getWikiSetLabel, getWikiSetLabels } from "./wikiSetLabels";
 export { isCardDslReady, isCardDslUnimplemented } from "./dslReady";
+export {
+  ENGINE_IMPLEMENTED_CATCHALL_CARD_IDS,
+  ENGINE_NATIVE_GRANT_KEYWORDS,
+} from "./engineImplementedCatchall";
 export { loadCardById, loadCards, inferCatalogTierForCardId } from "./dsl/loader";

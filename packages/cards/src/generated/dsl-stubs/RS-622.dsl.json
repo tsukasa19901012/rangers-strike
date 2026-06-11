@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "catchall_interpret_e38193e381ae",
+          "keyword": "attack_rush_zone",
           "duration": "turn"
         }
       ],

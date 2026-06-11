@@ -1,6 +1,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
 import { cardHasDslGrantKeyword } from "../dsl/promotedKeywordBridge";
+import { rocketBoosterMatchesCard } from "../rules/rocketBooster";
 
 export type CardKeyword = "wing" | "chase" | "commander" | "register" | "morph" | "resident";
 
@@ -9,7 +10,15 @@ export function cardHasKeyword(
   definitions: Record<string, CardDefinition>,
   cardId: string,
   keyword: CardKeyword,
+  context?: { state: GameState; playerId: PlayerId },
 ): boolean {
+  if (
+    keyword === "wing" &&
+    context &&
+    rocketBoosterMatchesCard(context.state, context.playerId, cardId)
+  ) {
+    return true;
+  }
   if (cardHasDslGrantKeyword(cardId, keyword)) return true;
   const def = definitions[cardId];
   if (!def) return false;

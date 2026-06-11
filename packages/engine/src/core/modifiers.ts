@@ -20,12 +20,14 @@ export function clearTurnModifiers(player: PlayerState): PlayerState {
       return next;
     });
 
-  return clearTurnScopedModifiers({
+  const cleared = clearTurnScopedModifiers({
     ...player,
     hand: clear(player.hand),
     rush: clear(player.rush),
     battle: clear(player.battle),
   });
+  delete cleared.sUnitsRecoveredFromDiscardThisTurn;
+  return cleared;
 }
 
 export function findCardInPlayer(

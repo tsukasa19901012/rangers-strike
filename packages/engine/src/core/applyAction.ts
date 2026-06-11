@@ -39,12 +39,14 @@ import {
 import { clearTurnModifiers } from "./modifiers";
 import { clearAllCostWindows, clearCostWindow, isCostWindowSatisfied } from "./costWindow";
 import {
+  countAvailablePower,
   findInZone,
   opponent,
   payPowerCost,
   removeAt,
   updatePlayer,
 } from "./helpers";
+import { reorderEnemyBattleAfterRush } from "../rules/promotedNcEffects";
 import { isLegalAction } from "./legalActions";
 import { resolveDamagePaymentSelect } from "../rules/damagePayment";
 import {
@@ -690,12 +692,12 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         return fail("target_required");
       }
 
-      if (!canPlayOperation(player, state.definitions, definition)) {
+      if (!canPlayOperation(state, playerId, definition)) {
         return fail("command_not_held");
       }
 
       const cost = parsePowerCost(definition.powerCost);
-      if (!payPowerCost(player, cost)) return fail("insufficient_power");
+      if (!payPowerCost(state, playerId, cost)) return fail("insufficient_power");
 
       const [, hand] = removeAt(player.hand, found.index);
       let nextPlayer = { ...player, hand };
@@ -897,8 +899,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         }
       }
 
-      if (!payPowerCost(nextPlayer, cost)) {
-        const shortage = cost - nextPlayer.power.length;
+      if (!payPowerCost(state, playerId, cost)) {
+        const shortage =
+          cost -
+          countAvailablePower({ ...state, players: { ...state.players, [playerId]: nextPlayer } }, playerId);
         const withHolds = applyDarkDealRushHolds(nextPlayer, shortage);
         if (!withHolds || darkDealRushPowerBudget(state, playerId, nextPlayer, definition!) < cost) {
           return fail("insufficient_power");
@@ -958,6 +962,10 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         ...rushFinal.state,
         log: [...rushFinal.state.log, ...rushFinal.logs],
       };
+
+      if (found.card.cardId === "RS-397") {
+        nextState = reorderEnemyBattleAfterRush(nextState, playerId);
+      }
 
       const mainLog = buildLogEntry(
         playerId,
@@ -1410,7 +1418,8 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (
         nextState.phase === "end" &&
         !nextState.pendingEffectChoice &&
-        pending?.effectId === "jet_skateboard"
+        pending?.effectId === "jet_skateboard" ||
+        pending?.effectId === "end_turn_battle_to_rush"
       ) {
         nextState = tryOpenEndTurnEffectsMenu(nextState, playerId) ?? nextState;
       }
@@ -1467,7 +1476,8 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       if (
         afterSkip.phase === "end" &&
         !afterSkip.pendingEffectChoice &&
-        pending?.effectId === "jet_skateboard"
+        pending?.effectId === "jet_skateboard" ||
+        pending?.effectId === "end_turn_battle_to_rush"
       ) {
         afterSkip = tryOpenEndTurnEffectsMenu(afterSkip, playerId) ?? afterSkip;
       }
@@ -1776,21 +1786,27 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
       }
 
       if (state.phase === "end") {
-        let nextState = finalizeTurnEnd(state);
+        let nextState = finalizeTurnEnd({ ...state, endPhaseStep: undefined });
         return ok(nextState, buildSimpleLogEntry(playerId, "end_turn"));
       }
 
-      const nextState: GameState = { ...advancePhase(state) };
+      const nextState: GameState = {
+        ...advancePhase(state),
+        endPhaseStep: advancePhase(state).phase === "end" ? "end_effects" : undefined,
+      };
       if (nextState.phase === "end") {
         const withMenu = tryOpenEndTurnEffectsMenu(nextState, playerId);
         if (withMenu) {
           return ok(
-            withMenu,
+            { ...withMenu, endPhaseStep: "end_effects" },
             buildSimpleLogEntry(playerId, "end_phase", state.phase),
           );
         }
         return withEndPhaseAutoFinalize(
-          ok(nextState, buildSimpleLogEntry(playerId, "end_phase", state.phase)),
+          ok(
+            { ...nextState, endPhaseStep: "finalize" },
+            buildSimpleLogEntry(playerId, "end_phase", state.phase),
+          ),
           playerId,
         );
       }

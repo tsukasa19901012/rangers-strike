@@ -44,7 +44,7 @@ describe("AC-01 — fullPlayableCatalog includes promoted cards", () => {
 });
 
 describe("AC-02 — promoted deck validation and UI warnings", () => {
-  it("AC-02: 40-card promoted entries pass validateDeckEntries with uiUncertainCount >= 1", () => {
+  it("AC-02: 40-card promoted entries pass validateDeckEntries without DSL-ready warnings", () => {
     const entries = abarenohEntriesWithPromoted();
     const validation = validateDeckEntries(entries);
     expect(validation.ok).toBe(true);
@@ -52,8 +52,8 @@ describe("AC-02 — promoted deck validation and UI warnings", () => {
     expect(validation.total).toBe(40);
 
     const warnings = estimateDeckWarnings(entries);
-    expect(warnings.uiUncertainCount).toBeGreaterThanOrEqual(1);
-    expect(warnings.uncertainCardIds).toContain("BK-001");
+    expect(warnings.uiUncertainCount).toBe(0);
+    expect(warnings.uncertainCardIds).not.toContain("BK-001");
   });
 });
 

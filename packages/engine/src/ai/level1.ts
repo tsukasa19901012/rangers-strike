@@ -371,6 +371,15 @@ function pickCpuActionInner(
       const mandatory = pickMandatoryBattleMove(state, playerId, actions);
       if (mandatory) return mandatory;
 
+      const lethalStrike = pickBestStrike(state, playerId, actions);
+      if (lethalStrike) return lethalStrike;
+
+      const player = state.players[playerId];
+      const moveToBattle = actionsOfType(actions, "move_to_battle");
+      if (moveToBattle.length > 0 && player.battle.length === 0) {
+        return moveToBattle[0]!;
+      }
+
       if (enableSearch) {
         let candidates = collectBattleCandidates(state, playerId, actions);
         const hasRushUnits = state.players[playerId].rush.length > 0;

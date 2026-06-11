@@ -18,6 +18,7 @@ import {
   promotedDefenderBlocksAttack,
 } from "../../dsl/promotedKeywordBridge";
 import { wingCanAttackEnemyRush } from "../../keywords";
+import { countAvailablePower, effectivePowerCost } from "../../core/power";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { countReleasedCommands } from "../restrictions";
 import {
@@ -38,8 +39,8 @@ export function darkDealRushPowerBudget(
   player: PlayerState,
   unitDefinition: CardDefinition,
 ): number {
-  let budget = player.power.length;
-  const cost = parsePowerCost(unitDefinition.powerCost);
+  let budget = countAvailablePower(state, playerId);
+  const cost = effectivePowerCost(state, playerId, parsePowerCost(unitDefinition.powerCost));
   if (budget >= cost) return budget;
   if (!hasDarkDealInRush(state, playerId)) return budget;
   const cats = cardCategories(unitDefinition);

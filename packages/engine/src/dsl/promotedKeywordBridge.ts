@@ -2,6 +2,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition, instanceBp, isSmallUnit } from "../core/catalog";
 import { findInZone } from "../core/helpers";
+import { lastBattleProtectsOtherS } from "../rules/promotedNcEffects";
 import { getCardDslDocument } from "./effectLookup";
 
 /** rematch 不可の D/E 区分キーワード（grant_keyword マーカー）。 */
@@ -221,6 +222,13 @@ export function promotedDefenderBlocksAttack(
     findInZone(state.players[defenderPlayerId], "battle", defenderInstanceId) ??
     findInZone(state.players[defenderPlayerId], "rush", defenderInstanceId);
   if (!attacker || !defender) return false;
+
+  if (
+    isSmallUnit(state.definitions, attacker.card.cardId) &&
+    lastBattleProtectsOtherS(state, defenderPlayerId, defender.card.instanceId)
+  ) {
+    return true;
+  }
 
   const attackerBp = quickBpForAttackCheck(state, attackerPlayerId, attacker.card);
   const keywords = listCardGrantKeywords(defender.card.cardId);

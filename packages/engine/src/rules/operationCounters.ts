@@ -155,7 +155,7 @@ export function canAffordCounterPower(
 ): boolean {
   const ctx = counterDefinition(state, playerId, instanceId);
   if (!ctx) return false;
-  return canPlayOperationExceptCommandHold(ctx.player, state.definitions, ctx.definition);
+  return canPlayOperationExceptCommandHold(state, playerId, ctx.definition);
 }
 
 export function canPayCounterCategoryHold(
@@ -180,7 +180,7 @@ export function canInitiateCounterCategoryPayment(
 
   const ctx = counterDefinition(state, playerId, instanceId);
   if (!ctx) return false;
-  if (!canPlayOperationExceptCommandHold(ctx.player, state.definitions, ctx.definition)) {
+  if (!canPlayOperationExceptCommandHold(state, playerId, ctx.definition)) {
     return false;
   }
 
@@ -201,7 +201,7 @@ export function canExecuteHandCounter(
 ): boolean {
   const ctx = counterDefinition(state, playerId, instanceId);
   if (!ctx) return false;
-  if (!canPlayOperationExceptCommandHold(ctx.player, state.definitions, ctx.definition)) {
+  if (!canPlayOperationExceptCommandHold(state, playerId, ctx.definition)) {
     return false;
   }
 
@@ -222,7 +222,7 @@ export function canPlayHandCounter(
 ): boolean {
   const ctx = counterDefinition(state, playerId, instanceId);
   if (!ctx) return false;
-  if (!canPlayOperationExceptCommandHold(ctx.player, state.definitions, ctx.definition)) {
+  if (!canPlayOperationExceptCommandHold(state, playerId, ctx.definition)) {
     return false;
   }
 

@@ -86,6 +86,7 @@
     "pipeline:rollout-sync": "tsx scripts/pipeline-rollout-sync.ts",
     "audit:catalog-parity": "tsx scripts/audit-catalog-parity.ts",
     "audit:rollout-status": "tsx scripts/audit-rollout-status.ts",
+    "audit:implementation-gaps": "tsx scripts/audit-implementation-gaps.ts",
     "metrics:full-playable": "tsx scripts/generate-full-playable-metrics.ts",
     "verify-wiki-effects": "tsx scripts/verify-wiki-effects.ts",
     "wiki-drift": "tsx scripts/wiki-drift.ts",

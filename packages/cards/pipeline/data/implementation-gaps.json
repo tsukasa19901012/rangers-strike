@@ -1,0 +1,1232 @@
+{
+  "generatedAt": "2026-06-11T13:39:45.222Z",
+  "summary": {
+    "catalogTotal": 1849,
+    "coreCards": 179,
+    "promotedCards": 1670,
+    "dslRegistryImplemented": 1849,
+    "dslRegistryPartial": 0,
+    "dslRegistryUnimplemented": 0,
+    "multiCategoryCards": 122,
+    "partialEffectCards": 0,
+    "implementedOperations": 38
+  },
+  "ruleGaps": [
+    {
+      "id": "RULE-01",
+      "title": "パワー計算 — 敵マルチコマンド加算",
+      "priority": "P0",
+      "status": "partial",
+      "impact": "countAvailablePower 実装済み（packages/engine/src/core/power.ts）。",
+      "refs": [
+        "packages/engine/src/core/helpers.ts",
+        "packages/engine/src/core/catalog.ts",
+        "docs/architecture/state-gap-analysis.md §1"
+      ]
+    },
+    {
+      "id": "RULE-02",
+      "title": "同時効果のプレイヤー順序選択",
+      "priority": "P1",
+      "status": "partial",
+      "impact": "基盤配線済み。複雑な同時発動シナリオの網羅は継続。",
+      "refs": [
+        "packages/engine/src/types/game.ts (simultaneousGroupId)",
+        "docs/wiki/timing.md"
+      ]
+    },
+    {
+      "id": "RULE-03",
+      "title": "ウイング（空バトルエリア例外）",
+      "priority": "P1",
+      "status": "partial",
+      "impact": "ウイング持ちユニットのアタック制限・配置例外が未対応。",
+      "refs": [
+        "docs/wiki/engine-gaps.md",
+        "docs/architecture/implementation-roadmap.md T3-04"
+      ]
+    },
+    {
+      "id": "RULE-04",
+      "title": "チェイス（追撃・連鎖カウンター）",
+      "priority": "P2",
+      "status": "partial",
+      "impact": "チェイスキーワード依存カードが動作しない。",
+      "refs": [
+        "docs/wiki/engine-gaps.md",
+        "docs/architecture/implementation-roadmap.md T3-05"
+      ]
+    },
+    {
+      "id": "RULE-05",
+      "title": "JC / RC フレームワーク",
+      "priority": "P1",
+      "status": "partial",
+      "impact": "ジョイントコンボ・ライディングコンボの一部カードが不完全。",
+      "refs": [
+        "packages/engine/src/rules/legend3/jointComboEffects.ts",
+        "implementation-roadmap.md T3-02/03"
+      ]
+    },
+    {
+      "id": "RULE-06",
+      "title": "エンドフェイズ明示ステップ",
+      "priority": "P2",
+      "status": "partial",
+      "impact": "endPhaseStep 配線済み。ターン終了時効果の段階管理は継続拡充。",
+      "refs": [
+        "docs/architecture/state-gap-analysis.md §3"
+      ]
+    },
+    {
+      "id": "RULE-07",
+      "title": "DSL インタープリタと TS ハンドラの二重経路",
+      "priority": "P1",
+      "status": "partial",
+      "impact": "スターターは TS、promoted は DSL。挙動差・検証漏れの温床。",
+      "refs": [
+        "docs/architecture/vertical-slice-gaps.md VS-01"
+      ]
+    }
+  ],
+  "partialCards": [],
+  "multiCategoryCards": [
+    {
+      "id": "SX-002",
+      "name": "仮面ライダークウガRU",
+      "categories": [
+        "MA",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "SX-004",
+      "name": "ハイパーゴーオンレッド",
+      "categories": [
+        "MA",
+        "OT"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "SX-005",
+      "name": "仮面ライダーW・CJX",
+      "categories": [
+        "ET",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "SX-008",
+      "name": "超・電王トリロジー",
+      "categories": [
+        "WB",
+        "OT",
+        "MA"
+      ],
+      "type": "operation"
+    },
+    {
+      "id": "SX-009",
+      "name": "ゴセイレッド×ゴーカイレッド",
+      "categories": [
+        "MA",
+        "OT"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "SX-010",
+      "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダーW・CJ",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-007",
+      "name": "チェンジドラゴン（XG）",
+      "categories": [
+        "MA",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-021",
+      "name": "ブルーターボ",
+      "categories": [
+        "MA",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-022",
+      "name": "ピンクターボ",
+      "categories": [
+        "MA",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-023",
+      "name": "レッドターボ",
+      "categories": [
+        "MA",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-024",
+      "name": "イエローターボ",
+      "categories": [
+        "MA",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-025",
+      "name": "ブラックターボ",
+      "categories": [
+        "MA",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-031",
+      "name": "ゴーオンレッド（XG）",
+      "categories": [
+        "WB",
+        "OT"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-032",
+      "name": "ゲキレッド（XG）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-041",
+      "name": "仮面ライダーアマゾン（XG）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-075",
+      "name": "仮面ライダーダークキバ",
+      "categories": [
+        "MA",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-080",
+      "name": "仮面ライダーアビス",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-081",
+      "name": "磁雷神",
+      "categories": [
+        "OT",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-094",
+      "name": "ビーファイターテントウ",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-095",
+      "name": "ビーファイターカブト",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-096",
+      "name": "ビーファイタークワガー",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-097",
+      "name": "ビーファイターアゲハ",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG1-098",
+      "name": "猛毒鎧将デスコーピオン",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-001",
+      "name": "ファイブレッド（XG2）",
+      "categories": [
+        "OT",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-002",
+      "name": "ファイブブルー（XG2）",
+      "categories": [
+        "OT",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-003",
+      "name": "ファイブピンク（XG2）",
+      "categories": [
+        "OT",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-004",
+      "name": "ファイブロボ",
+      "categories": [
+        "OT",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-005",
+      "name": "スカイアルファー",
+      "categories": [
+        "OT",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-006",
+      "name": "キャリアベータ",
+      "categories": [
+        "OT",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-007",
+      "name": "ランドガンマ",
+      "categories": [
+        "OT",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-014",
+      "name": "鉄面臂張遼",
+      "categories": [
+        "MA",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-018",
+      "name": "ゲキタイガー（XG2）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-025",
+      "name": "ギンガレッド（XG2）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-026",
+      "name": "ギンガブルー（XG2）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-027",
+      "name": "ギンガイエロー（XG2）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-043",
+      "name": "仮面ライダーW・CJ",
+      "categories": [
+        "ET",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-045",
+      "name": "仮面ライダーW・LT",
+      "categories": [
+        "MA",
+        "OT"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-059",
+      "name": "仮面ライダーレンゲル（XG2）",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-072",
+      "name": "トライゴウラム",
+      "categories": [
+        "ET",
+        "MA"
+      ],
+      "type": "vehicle"
+    },
+    {
+      "id": "XG2-086",
+      "name": "ハイパーショウ",
+      "categories": [
+        "OT",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-095",
+      "name": "ブラックビート",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-096",
+      "name": "ビーファイターヤンマ",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG2-097",
+      "name": "ビーファイターゲンジ",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-012",
+      "name": "獣装光ギンガレッド",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-028",
+      "name": "魔導馬バリキオン（XG3）",
+      "categories": [
+        "MA",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-029",
+      "name": "魔導騎士ウルザード（XG3）",
+      "categories": [
+        "MA",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-030",
+      "name": "ウルケンタウロス",
+      "categories": [
+        "MA",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-031",
+      "name": "ゲキブルー（XG3）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-032",
+      "name": "ゲキイエロー（XG3）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-075",
+      "name": "仮面ライダーディケイドCFジャンボフォーメーション",
+      "categories": [
+        "MA",
+        "OT"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-078",
+      "name": "マシンハードボイルダー",
+      "categories": [
+        "ET",
+        "DA"
+      ],
+      "type": "vehicle"
+    },
+    {
+      "id": "XG3-079",
+      "name": "仮面ライダーW・LJ",
+      "categories": [
+        "MA",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-080",
+      "name": "仮面ライダーW・HJ",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-081",
+      "name": "仮面ライダーW・HT",
+      "categories": [
+        "WB",
+        "OT"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-083",
+      "name": "宇宙忍デモスト",
+      "categories": [
+        "MA",
+        "OT"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-086",
+      "name": "冷血鎧将ムカデリンガー",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-087",
+      "name": "魔剣鎧将キルマンティス",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-088",
+      "name": "変幻鎧将ビーザック",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-089",
+      "name": "ブルービート（XG3）",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-090",
+      "name": "スーパーブルービート",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-091",
+      "name": "ジースタッグ（XG3）",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-092",
+      "name": "レッドル（XG3）",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG3-093",
+      "name": "ビーファイターミン",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-010",
+      "name": "獣装光ギンガブルー",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-011",
+      "name": "獣装光ギンガグリーン",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-012",
+      "name": "獣装光ギンガイエロー",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-013",
+      "name": "ギンガグリーン（XG4）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-014",
+      "name": "ギンガピンク（XG4）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-029",
+      "name": "ゲキバイオレット（XG4）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-030",
+      "name": "ゲキチョッパー（XG4）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-035",
+      "name": "シンケンゴールド（XG4）",
+      "categories": [
+        "MA",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-040",
+      "name": "ゴセイグレート",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-041",
+      "name": "ゴセイイエロー",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-042",
+      "name": "ゴセイブルー",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-043",
+      "name": "ゴセイレッド",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-044",
+      "name": "ゴセイブラック",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-045",
+      "name": "ゴセイピンク",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG4-065",
+      "name": "マシンハードタービュラー",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "vehicle"
+    },
+    {
+      "id": "XG4-066",
+      "name": "マシンハードスプラッシャー",
+      "categories": [
+        "MA",
+        "DA"
+      ],
+      "type": "vehicle"
+    },
+    {
+      "id": "XG4-068",
+      "name": "仮面ライダーW・CT",
+      "categories": [
+        "ET",
+        "OT"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-028",
+      "name": "バーニングレジェンドダイボイジャー",
+      "categories": [
+        "MA",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-029",
+      "name": "ゲキファイヤー",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-030",
+      "name": "ゲキゴリラ",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-031",
+      "name": "ゲキガゼル",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-032",
+      "name": "ゲキペンギン",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-037",
+      "name": "ゴセイレッド（XG5）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-038",
+      "name": "ゴセイピンク（XG5）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-039",
+      "name": "ゴセイブルー（XG5）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-040",
+      "name": "ゴセイブラック（XG5）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-041",
+      "name": "ゴセイイエロー（XG5）",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-042",
+      "name": "ゴセイマシン",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-043",
+      "name": "シーイックゴセイグレート",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-044",
+      "name": "ランディックゴセイグレート",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-045",
+      "name": "スカイックゴセイグレート",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-059",
+      "name": "仮面ライダーカリス（XG5）",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-060",
+      "name": "仮面ライダーワイルドカリス（XG5）",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-084",
+      "name": "仮面ライダーW・CJ（XG5）",
+      "categories": [
+        "ET",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG5-092",
+      "name": "ビジンダー",
+      "categories": [
+        "ET",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG6-007",
+      "name": "ゲキリントージャ",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG6-047",
+      "name": "仮面ライダーG4（XG6）",
+      "categories": [
+        "ET",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG6-048",
+      "name": "仮面ライダーリュウガ（XG6）",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG6-049",
+      "name": "仮面ライダーオーガ（XG6）",
+      "categories": [
+        "ET",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG6-050",
+      "name": "仮面ライダーグレイブ（XG6）",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG6-051",
+      "name": "仮面ライダー歌舞鬼（XG6）",
+      "categories": [
+        "MA",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG6-052",
+      "name": "仮面ライダーコーカサス（XG6）",
+      "categories": [
+        "OT",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG6-053",
+      "name": "仮面ライダーアーク（XG6）",
+      "categories": [
+        "MA",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG6-054",
+      "name": "仮面ライダースカル（XG6）",
+      "categories": [
+        "ET",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG6-063",
+      "name": "ワンエイト",
+      "categories": [
+        "ET",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG7-008",
+      "name": "黒騎士ヒュウガ×獣装光ギンガレッド",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG7-016",
+      "name": "黒獅子リオ×スーパーゲキレッド",
+      "categories": [
+        "WB",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG7-023",
+      "name": "獣拳巨神サイダイオー",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG7-024",
+      "name": "獣拳神サイダイン",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG7-030",
+      "name": "ゴセイヘッダー",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "operation"
+    },
+    {
+      "id": "XG7-042",
+      "name": "仮面ライダークウガ×仮面ライダーディケイド",
+      "categories": [
+        "MA",
+        "OT"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG7-050",
+      "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダーバース",
+      "categories": [
+        "WB",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG7-060",
+      "name": "ドデカブタック",
+      "categories": [
+        "OT",
+        "ET"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XG7-061",
+      "name": "トンデモジョーズ",
+      "categories": [
+        "OT",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XP-015",
+      "name": "ダブルドライバー",
+      "categories": [
+        "ET",
+        "DA"
+      ],
+      "type": "operation"
+    },
+    {
+      "id": "XP-017",
+      "name": "仮面ライダーディケイド激情態",
+      "categories": [
+        "OT",
+        "DA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XP-018",
+      "name": "ゴールド寿司",
+      "categories": [
+        "MA",
+        "ET"
+      ],
+      "type": "operation"
+    },
+    {
+      "id": "XP-022",
+      "name": "ゴセイレッド",
+      "categories": [
+        "WB",
+        "MA"
+      ],
+      "type": "unit"
+    },
+    {
+      "id": "XP-031",
+      "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダー電王SF",
+      "categories": [
+        "WB",
+        "OT"
+      ],
+      "type": "unit"
+    }
+  ],
+  "glossaryNotImplemented": [
+    {
+      "term": "タッグストライク",
+      "wikiPage": 750,
+      "reason": "2体同時ストライク未実装"
+    },
+    {
+      "term": "先攻1ターン目スタート省略の差異",
+      "wikiPage": null,
+      "reason": "簡略化のまま維持"
+    }
+  ],
+  "glossaryFrameworkOnly": [
+    {
+      "term": "コマンダーカード",
+      "module": "commander"
+    },
+    {
+      "term": "除外",
+      "module": "exile"
+    },
+    {
+      "term": "リアニメイト",
+      "module": "reanimate"
+    },
+    {
+      "term": "バウンス",
+      "module": "bounce"
+    }
+  ],
+  "powerCalculationSites": [
+    "packages/engine/src/core/helpers.ts — canAffordPower / payPowerCost",
+    "packages/engine/src/core/catalog.ts — canRushUnit / canPlayOperation",
+    "packages/engine/src/rules/commandPayment.ts — rush エラーメッセージ",
+    "packages/engine/src/rules/zordSetup.ts — ゾード必要パワー",
+    "packages/engine/src/rules/legend3/restrictions.ts — パワー予算",
+    "packages/engine/src/ai/helpers.ts — CPU ラッシュ/オペ判定"
+  ]
+}

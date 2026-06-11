@@ -1,4 +1,8 @@
 import type { CardDocument, EffectDefinition, EffectPrimitive } from "../dsl/types";
+import {
+  ENGINE_IMPLEMENTED_CATCHALL_CARD_IDS,
+  ENGINE_NATIVE_GRANT_KEYWORDS,
+} from "../engineImplementedCatchall";
 import { rematchExtractedEffect } from "./extractEffects";
 
 const CATCHALL_PATTERN = "catchall_interpret";
@@ -42,7 +46,24 @@ export type RematchClassification =
   | "catchall_fallback"
   | "strict_unresolved";
 
-export function classifyRuntimeRematch(effect: EffectDefinition): RematchClassification {
+function hasEngineNativeGrantPrimitive(primitives: EffectPrimitive[]): boolean {
+  return primitives.some(
+    (p) =>
+      p.type === "grant_keyword" &&
+      ENGINE_NATIVE_GRANT_KEYWORDS.has(p.keyword),
+  );
+}
+
+export function classifyRuntimeRematch(
+  effect: EffectDefinition,
+  cardId?: string,
+): RematchClassification {
+  if (cardId && ENGINE_IMPLEMENTED_CATCHALL_CARD_IDS.has(cardId)) {
+    return "effective";
+  }
+  if (hasEngineNativeGrantPrimitive(effect.effects ?? [])) {
+    return "effective";
+  }
   if (isEmptyEffectText(effect.text)) return "strict_unresolved";
   const rematched = rematchExtractedEffect(effect.text ?? "", rematchOptionsForEffect(effect));
   if (!rematched || !isRematchSuccess(rematched.effects)) return "strict_unresolved";

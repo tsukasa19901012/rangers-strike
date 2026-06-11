@@ -7,6 +7,10 @@ import type {
 } from "../types/game";
 import { opponent } from "../core/helpers";
 import { damagePaymentChoosingPlayer } from "./damagePayment";
+import {
+  ensureSimultaneousReactionGroup,
+  maybeOpenSimultaneousOrderAfterSync,
+} from "./simultaneousEffects";
 
 /** 反応窓の優先順位（小さいほど先に解決）。公式: 離場 → ストライク → バトル → ラッシュ。 */
 const FRAME_PRIORITY: Record<EffectStackFrameKind, number> = {
@@ -37,13 +41,27 @@ function frame(
   };
 }
 
+function reactionFrame(
+  state: GameState,
+  id: string,
+  kind: EffectStackFrameKind,
+  actorPlayerId?: PlayerId,
+): EffectStackFrame {
+  return frame(id, kind, actorPlayerId, state.activeSimultaneousGroupId);
+}
+
 /** pending* フィールドから効果スタックを構築する。 */
 export function buildEffectStack(state: GameState): EffectStack {
   const frames: EffectStackFrame[] = [];
 
   if (state.pendingLeave) {
     frames.push(
-      frame("pendingLeave", "leave_reaction", state.pendingLeave.ownerPlayerId),
+      reactionFrame(
+        state,
+        "pendingLeave",
+        "leave_reaction",
+        state.pendingLeave.ownerPlayerId,
+      ),
     );
   }
   if (state.pendingRegister) {
@@ -57,7 +75,8 @@ export function buildEffectStack(state: GameState): EffectStack {
   }
   if (state.pendingStrike) {
     frames.push(
-      frame(
+      reactionFrame(
+        state,
         "pendingStrike",
         "strike_reaction",
         opponent(state.pendingStrike.strikerPlayerId),
@@ -66,7 +85,8 @@ export function buildEffectStack(state: GameState): EffectStack {
   }
   if (state.pendingBattle) {
     frames.push(
-      frame(
+      reactionFrame(
+        state,
         "pendingBattle",
         "battle_reaction",
         state.pendingBattle.defenderPlayerId,
@@ -75,7 +95,8 @@ export function buildEffectStack(state: GameState): EffectStack {
   }
   if (state.pendingRush) {
     frames.push(
-      frame(
+      reactionFrame(
+        state,
         "pendingRush",
         "rush_reaction",
         opponent(state.pendingRush.rusherPlayerId),
@@ -118,18 +139,39 @@ export function buildEffectStack(state: GameState): EffectStack {
       ),
     );
   }
+  if (state.pendingChase) {
+    frames.push(
+      frame("pendingChase", "effect_choice", state.pendingChase.chaserPlayerId),
+    );
+  }
   if (state.pendingZordSetup) {
     frames.push(
       frame("pendingZordSetup", "zord_setup", state.pendingZordSetup.playerId),
     );
   }
 
-  frames.sort((a, b) => a.priority - b.priority || a.id.localeCompare(b.id));
+  const order = state.reactionResolutionOrder;
+  frames.sort((a, b) => {
+    if (order?.length) {
+      const aIdx = order.indexOf(a.id);
+      const bIdx = order.indexOf(b.id);
+      if (aIdx >= 0 && bIdx >= 0) return aIdx - bIdx;
+      if (aIdx >= 0) return -1;
+      if (bIdx >= 0) return 1;
+    }
+    return a.priority - b.priority || a.id.localeCompare(b.id);
+  });
   return { frames };
 }
 
 export function withSyncedEffectStack(state: GameState): GameState {
-  return { ...state, effectStack: buildEffectStack(state) };
+  let next = ensureSimultaneousReactionGroup(state);
+  next = { ...next, effectStack: buildEffectStack(next) };
+  next = maybeOpenSimultaneousOrderAfterSync(next);
+  if (next.pendingEffectChoice?.kind === "simultaneous_order") {
+    next = { ...next, effectStack: buildEffectStack(next) };
+  }
+  return next;
 }
 
 /** pending* から毎回導出する（state.effectStack キャッシュは読み取りに使わない）。 */

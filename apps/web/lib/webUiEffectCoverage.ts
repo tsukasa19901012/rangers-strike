@@ -2,6 +2,7 @@ import {
   IMPLEMENTED_COUNTER_EFFECT_IDS,
   IMPLEMENTED_INSTANT_EFFECT_IDS,
   IMPLEMENTED_PERMANENT_EFFECT_IDS,
+  isCardDslReady,
   listImplementedOperations,
 } from "@rangers-strike/cards";
 import {
@@ -98,6 +99,24 @@ const KNOWN_EFFECT_CHOICE_KINDS = new Set<PendingEffectChoice["kind"]>([
   "select_units_bp_budget",
   "select_unit",
   "end_turn_menu",
+  "confirm",
+  "simultaneous_order",
+]);
+
+/** Promoted DSL カードが汎用モーダルで操作できる choice kind。 */
+const PROMOTED_GENERIC_CHOICE_KINDS = new Set<PendingEffectChoice["kind"]>([
+  "select_unit",
+  "select_unit_step",
+  "select_hand",
+  "select_command",
+  "select_commands",
+  "select_power",
+  "optional_deck_draw",
+  "deck_top_or_bottom",
+  "scry_keep_one",
+  "confirm",
+  "end_turn_menu",
+  "simultaneous_order",
 ]);
 
 const KNOWN_EFFECT_IDS = new Set<string>([
@@ -107,13 +126,26 @@ const KNOWN_EFFECT_IDS = new Set<string>([
   ...IMPLEMENTED_ON_ATTACK_EFFECT_IDS,
   ...IMPLEMENTED_ENTER_BATTLE_EFFECT_IDS,
   ...IMPLEMENTED_PASSIVE_EFFECT_IDS,
+  "jet_skateboard",
+  "end_turn_battle_to_rush",
+  "rocket_booster",
+  "simultaneous_order",
 ]);
 
 export function isKnownEffectChoice(pending: PendingEffectChoice): boolean {
-  return (
+  if (
     KNOWN_EFFECT_IDS.has(pending.effectId) &&
     KNOWN_EFFECT_CHOICE_KINDS.has(pending.kind)
-  );
+  ) {
+    return true;
+  }
+  if (
+    PROMOTED_GENERIC_CHOICE_KINDS.has(pending.kind) &&
+    isCardDslReady(pending.sourceCardId)
+  ) {
+    return true;
+  }
+  return false;
 }
 
 const UNIT_TRIGGER_UI: Record<string, WebUiMechanism[]> = {

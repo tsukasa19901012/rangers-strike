@@ -5,13 +5,13 @@ import {
 } from "./deckWarnings";
 
 describe("estimateDeckWarnings", () => {
-  it("counts promoted-only cards by entry count", () => {
+  it("ignores DSL-ready promoted cards", () => {
     const estimate = estimateDeckWarnings([
       { cardId: "RS-050", count: 3 },
       { cardId: "BK-001", count: 2 },
     ]);
-    expect(estimate.uiUncertainCount).toBe(2);
-    expect(estimate.uncertainCardIds).toEqual(["BK-001"]);
+    expect(estimate.uiUncertainCount).toBe(0);
+    expect(estimate.uncertainCardIds).toEqual([]);
   });
 
   it("returns zero when all cards are core catalog", () => {

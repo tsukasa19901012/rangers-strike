@@ -39,7 +39,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "not_selectable",
+          "duration": "permanent"
         }
       ]
     }

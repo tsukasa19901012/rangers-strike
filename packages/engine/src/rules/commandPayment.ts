@@ -33,6 +33,7 @@ import {
   isUnit,
   parsePowerCost,
 } from "../core/catalog";
+import { countAvailablePower, effectivePowerCost } from "../core/power";
 import { findInZone } from "../core/helpers";
 import {
   canMoveUnitToBattle,
@@ -548,6 +549,8 @@ export function continueAfterMothershipPayment(
       cont.zordMaterialInstanceId,
       commandInstanceIds,
       cont.zordMaterialDestination,
+      undefined,
+      { ...state, playerId },
     )
   ) {
     return null;
@@ -613,6 +616,8 @@ export function buildPaymentFromInitiateAction(
         action.zordMaterialInstanceId,
         action.zordMothershipHoldInstanceIds,
         action.zordMaterialDestination,
+        undefined,
+        { ...state, playerId },
       )
     ) {
       return null;
@@ -636,7 +641,7 @@ export function buildPaymentFromInitiateAction(
   }
 
   if (def.type === "operation") {
-    if (!canPlayOperationExceptCommandHold(player, state.definitions, def)) {
+    if (!canPlayOperationExceptCommandHold(state, playerId, def)) {
       return null;
     }
 
@@ -776,6 +781,8 @@ export function isResolveCommandPaymentLegal(
     cont.zordMaterialInstanceId,
     holdIds,
     cont.zordMaterialDestination,
+    undefined,
+    { ...resolved.state, playerId: pending.playerId },
   );
 }
 
@@ -801,27 +808,59 @@ export function explainCannotRush(
   const categories = cardCategories(def);
   if (
     categories.length === 0 &&
-    canRushUnitExceptCommandHold(player, state.definitions, def, instanceId)
+    canRushUnitExceptCommandHold(
+      player,
+      state.definitions,
+      def,
+      instanceId,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { ...state, playerId },
+    )
   ) {
     return null;
   }
   if (
     isShironLightRushTarget(player, instanceId) &&
-    canRushUnitExceptCommandHold(player, state.definitions, def, instanceId)
+    canRushUnitExceptCommandHold(
+      player,
+      state.definitions,
+      def,
+      instanceId,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { ...state, playerId },
+    )
   ) {
     return null;
   }
   if (
     isCostWindowSatisfied(player, "rush_category") &&
-    canRushUnitExceptCommandHold(player, state.definitions, def, instanceId)
+    canRushUnitExceptCommandHold(
+      player,
+      state.definitions,
+      def,
+      instanceId,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { ...state, playerId },
+    )
   ) {
     return null;
   }
 
   const unitName = def.name;
   const cost = parsePowerCost(def.powerCost);
-  if (player.power.length < cost) {
-    return `「${unitName}」をラッシュするにはパワー${cost}枚が必要です（現在${player.power.length}枚）。`;
+  const available = countAvailablePower(state, playerId);
+  const effectiveCost = effectivePowerCost(state, playerId, cost);
+  if (available < effectiveCost) {
+    return `「${unitName}」をラッシュするにはパワー${effectiveCost}枚が必要です（現在${available}枚）。`;
   }
 
   const catLabel = formatCategories(categories);

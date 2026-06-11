@@ -39,6 +39,8 @@ import { COMMAND_ZONE_MAX } from "../types/game";
 import { applySuperBrainDraw } from "./drawEffects";
 import { startDenjiMachineChoice } from "../rules/denjiMachine";
 import { tryResolveP0OperationEffect } from "./p0EffectBridge";
+import { recordSUnitRecoveredFromDiscardToHand } from "../rules/turnRecoveryTracking";
+import { startRocketBoosterChoice } from "../rules/rocketBooster";
 
 export type EffectContext = {
   state: GameState;
@@ -128,7 +130,11 @@ function resolveLandBalkan(ctx: EffectContext): EffectOutcome {
     if (!definition || !isUnit(definition)) continue;
 
     const cost = parsePowerCost(definition.powerCost);
-    if (!payPowerCost(nextPlayer, cost)) continue;
+    const powerState = {
+      ...ctx.state,
+      players: { ...ctx.state.players, [ctx.playerId]: nextPlayer },
+    };
+    if (!payPowerCost(powerState, ctx.playerId, cost)) continue;
 
     const found = findInZone(nextPlayer, "command", card.instanceId);
     if (!found) continue;
@@ -474,8 +480,14 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
         hand: [...player.hand, found.card],
       };
       const targetName = cardName(ctx.state.definitions, found.card.cardId);
+      let nextState = { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) };
+      nextState = recordSUnitRecoveredFromDiscardToHand(
+        nextState,
+        ctx.playerId,
+        found.card.cardId,
+      );
       return {
-        state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
+        state: nextState,
         detail: `recover:${targetName}`,
         discardOperation: true,
       };
@@ -496,8 +508,14 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
         hand: [...player.hand, found.card],
       };
       const targetName = cardName(ctx.state.definitions, found.card.cardId);
+      let nextState = { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) };
+      nextState = recordSUnitRecoveredFromDiscardToHand(
+        nextState,
+        ctx.playerId,
+        found.card.cardId,
+      );
       return {
-        state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
+        state: nextState,
         detail: `recover_s:${targetName}`,
         discardOperation: true,
       };
@@ -553,6 +571,21 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
 
     case "denji_machine":
       return resolveDenjiMachine(ctx);
+
+    case "rocket_booster":
+    case "named_e383ade382b1e38383e38388": {
+      const withChoice = startRocketBoosterChoice(
+        ctx.state,
+        ctx.playerId,
+        ctx.operationCardId,
+      );
+      if (!withChoice) return fail(ctx.state, "no_name_choices");
+      return {
+        state: withChoice,
+        detail: "rocket_booster:declare",
+        discardOperation: true,
+      };
+    }
 
     case "land_balkan":
       return resolveLandBalkan(ctx);

@@ -58,19 +58,17 @@ export function performDeckDraws(
   return next;
 }
 
-/** パワーゾーン合計がコストを満たす必要あり；カードは除去しない（公式ルール）。 */
-export function canAffordPower(player: PlayerState, cost: number): boolean {
-  return player.power.length >= cost;
-}
-
-/** @deprecated canAffordPower を使用 — パワーは閾値であり消費されない。 */
-export function payPowerCost(
-  player: PlayerState,
-  cost: number,
-): PlayerState | null {
-  if (cost <= 0) return player;
-  return canAffordPower(player, cost) ? player : null;
-}
+export {
+  canAffordPower,
+  canAffordAvailablePower,
+  countAvailablePower,
+  countOpponentMultiCategoryCommands,
+  effectivePowerCost,
+  enemyPowerCostReduction,
+  ENEMY_POWER_COST_MINUS_RULE,
+  isMultiCategoryCommand,
+  payPowerCost,
+} from "./power";
 
 /** 表向きパワーを裏向きにし、必要なら山札から裏向きパワーをドロー。 */
 export function applyPlayerDamage(

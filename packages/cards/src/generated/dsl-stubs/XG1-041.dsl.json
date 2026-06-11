@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "catchall_interpret_e38193e3828c",
+          "keyword": "release_self",
           "duration": "turn"
         }
       ],

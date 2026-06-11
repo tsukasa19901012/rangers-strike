@@ -217,9 +217,11 @@ export function canAttackRushWithYellowThunder(
   if (!attacker) return false;
 
   const yellowThunderActive = hasBattleNcEffect(attacker.card, "yellow_thunder");
+  const attackRushZoneActive = hasBattleNcEffect(attacker.card, "attack_rush_zone");
 
   return (
     yellowThunderActive ||
+    attackRushZoneActive ||
     canAttackRushWithMoonlightSonic(state, attackerPlayerId, attackerInstanceId) ||
     canAttackEnemyRushS(state, attackerPlayerId, attackerInstanceId)
   );

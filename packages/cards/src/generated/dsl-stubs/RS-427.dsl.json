@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "catchall_interpret_e79bb4e5898d",
+          "keyword": "invalidate_next_opponent_turn",
           "duration": "turn"
         }
       ],

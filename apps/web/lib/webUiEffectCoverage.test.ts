@@ -34,18 +34,22 @@ describe("isKnownEffectChoice", () => {
     ).toBe(true);
   });
 
-  it("returns false for unknown promoted effect ids", () => {
+  it("returns true for DSL-ready promoted cards with generic choice kinds", () => {
     expect(
       isKnownEffectChoice(
         stubPending({ effectId: "dsl_unknown_xyz", kind: "select_unit" }),
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 
-  it("returns false for unsupported choice kinds", () => {
+  it("returns false for unknown effect ids on non-DSL cards", () => {
     expect(
       isKnownEffectChoice(
-        stubPending({ effectId: "armor_attack", kind: "confirm" }),
+        stubPending({
+          effectId: "dsl_unknown_xyz",
+          kind: "confirm",
+          sourceCardId: "UNKNOWN-999",
+        }),
       ),
     ).toBe(false);
   });

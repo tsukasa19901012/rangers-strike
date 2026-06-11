@@ -340,7 +340,7 @@ function appendOperationActions(
   for (const card of player.hand) {
     if (!canPlayOperationCard(state.definitions, card.cardId)) continue;
     const definition = getDefinition(state.definitions, card.cardId);
-    if (!definition || !canPlayOperation(player, state.definitions, definition)) continue;
+    if (!definition || !canPlayOperation(state, playerId, definition)) continue;
 
     const effect = getCardEffect(card.cardId);
 
@@ -512,6 +512,7 @@ function canDeclareRush(
       zord?.zordMothershipHoldInstanceIds,
       zord?.zordMaterialDestination,
       powerBudget,
+      { ...state, playerId },
     )
   ) {
     return false;
@@ -631,6 +632,11 @@ function appendRushCategoryPaymentActions(
             state.definitions,
             definition,
             card.instanceId,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            { ...state, playerId },
           )
         ) {
           continue;
@@ -682,6 +688,8 @@ function appendRushCategoryPaymentActions(
               zord.zordMaterialInstanceId,
               zord.zordMothershipHoldInstanceIds,
               zord.zordMaterialDestination,
+              undefined,
+              { ...state, playerId },
             )
           ) {
             continue;
@@ -706,6 +714,11 @@ function appendRushCategoryPaymentActions(
           state.definitions,
           definition,
           card.instanceId,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          { ...state, playerId },
         )
       ) {
         continue;
@@ -913,6 +926,11 @@ export function getLegalActions(state: GameState): GameAction[] {
       });
     }
     actions.push({ type: "pass_chase", playerId: pending.chaserPlayerId });
+    return actions;
+  }
+
+  if (state.pendingEffectChoice?.kind === "simultaneous_order") {
+    appendEffectChoiceActions(state, playerId, actions);
     return actions;
   }
 

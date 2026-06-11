@@ -5,6 +5,7 @@ export * from "./core/createGame";
 export * from "./verticalSlice";
 export * from "./core/catalog";
 export * from "./core/helpers";
+export * from "./core/power";
 export * from "./core/legalActions";
 export * from "./core/applyAction";
 export * from "./ai/index";

@@ -64,11 +64,12 @@ export function evaluateState(state: GameState, playerId: PlayerId): number {
 
   let score = 0;
 
-  score += enemy.damage * 900;
+  score += enemy.damage * 1_200;
   score -= self.damage * 1_000;
+  score += enemy.damage * enemy.damage * 120;
 
-  if (enemy.damage >= WIN_DAMAGE - 2) score += 3_500;
-  if (enemy.damage >= WIN_DAMAGE - 1) score += 5_000;
+  if (enemy.damage >= WIN_DAMAGE - 2) score += 5_500;
+  if (enemy.damage >= WIN_DAMAGE - 1) score += 9_000;
   if (self.damage >= WIN_DAMAGE - 1) score -= 4_000;
 
   const selfField = fieldPower(state, playerId);
@@ -94,8 +95,10 @@ export function evaluateState(state: GameState, playerId: PlayerId): number {
   const selfTotalStrike = totalStrikePotential(state, playerId);
   score += selfTotalStrike * 120;
 
-  score += self.deck.length * 6;
-  score -= enemy.deck.length * 6;
+  score += self.deck.length * 14;
+  score -= enemy.deck.length * 8;
+  if (self.deck.length <= 5) score -= 1_200;
+  if (self.deck.length <= 10) score -= 350;
 
   const selfStrike = maxSelfStrikePotential(state, playerId);
   score += selfStrike * 450;

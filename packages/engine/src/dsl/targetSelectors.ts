@@ -3,6 +3,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
+import { cardHasGrantKeyword } from "./promotedKeywordBridge";
 
 type FieldZone = keyof Pick<PlayerState, "hand" | "discard" | "power" | "command" | "rush" | "battle">;
 
@@ -65,6 +66,10 @@ export function collectTargetInstanceIds(
           ids.push(
             ...cardsInZone(state, ownerId, zone as FieldZone)
               .filter((c) => matchesFilter(state, c, selector.filter))
+              .filter((c) => {
+                if (ownerId === playerId) return true;
+                return !cardHasGrantKeyword(c.cardId, "not_selectable");
+              })
               .map((c) => c.instanceId),
           );
         }

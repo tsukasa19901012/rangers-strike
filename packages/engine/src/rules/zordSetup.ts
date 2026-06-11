@@ -16,6 +16,7 @@ import {
   parsePowerCost,
 } from "../core/catalog";
 import { isShironLightRushTarget } from "./shironLight";
+import { countAvailablePower, effectivePowerCost } from "../core/power";
 import { findInZone } from "../core/helpers";
 import { buildCategoryPayment, buildMothershipHoldPayment } from "./commandPayment";
 import type { PendingCommandPayment } from "../types/game";
@@ -59,7 +60,17 @@ export function hasLegalZordRush(
   if (!isUnit(def)) return false;
 
   if (requiresAllFusionPartners(found.card.cardId)) {
-    return canRushUnit(player, state.definitions, def!, found.card.instanceId);
+    return canRushUnit(
+      player,
+      state.definitions,
+      def!,
+      found.card.instanceId,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { ...state, playerId },
+    );
   }
 
   const materials = collectZordMaterials(
@@ -85,16 +96,19 @@ export function hasLegalZordRush(
       variant.zordMaterialInstanceId,
       variant.zordMothershipHoldInstanceIds,
       variant.zordMaterialDestination,
+      undefined,
+      { ...state, playerId },
     ),
   );
 }
 
 function canAffordZordPower(
-  player: PlayerState,
+  state: GameState,
+  playerId: PlayerId,
   def: NonNullable<ReturnType<typeof getDefinition>>,
 ): boolean {
-  const cost = parsePowerCost(def.powerCost);
-  return player.power.length >= cost;
+  const cost = effectivePowerCost(state, playerId, parsePowerCost(def.powerCost));
+  return countAvailablePower(state, playerId) >= cost;
 }
 
 /** advanceZordSetup が現在のウィザードステップで受け付ける解決。 */
@@ -205,9 +219,9 @@ export function createZordSetup(
     found.card.instanceId,
   );
   if (materials.length > 0) {
-    if (!canAffordZordPower(player, def!)) return null;
+    if (!canAffordZordPower(state, playerId, def!)) return null;
   } else if (canPayZordWithMothership(player, state.definitions, found.card.cardId)) {
-    if (!canAffordZordPower(player, def!)) return null;
+    if (!canAffordZordPower(state, playerId, def!)) return null;
   } else {
     return null;
   }
@@ -426,6 +440,8 @@ function completeZordPayment(
           materialInstanceId,
           undefined,
           materialDestination,
+          undefined,
+          { ...state, playerId },
         )
       : canRushUnit(
           player,
@@ -435,6 +451,8 @@ function completeZordPayment(
           materialInstanceId,
           undefined,
           materialDestination,
+          undefined,
+          { ...state, playerId },
         ))
   ) {
     if (isCostWindowSatisfied(player, "rush_category") || shironRush) {

@@ -198,5 +198,12 @@ export function legend3EffectiveSp(
     sp = Math.max(sp, promotedFloor);
   }
 
+  if (
+    instance.cardId === "RS-382" &&
+    instance.activatedNcEffects?.includes("victory_robo_strike")
+  ) {
+    sp += state.players[playerId].sUnitsRecoveredFromDiscardThisTurn ?? 0;
+  }
+
   return sp;
 }

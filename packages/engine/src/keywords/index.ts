@@ -69,7 +69,9 @@ export function wingAllowsEmptyBattleStrike(
   playerId: PlayerId,
   striker: CardInstance,
 ): boolean {
-  if (!cardHasKeyword(state.definitions, striker.cardId, "wing")) return false;
+  if (!cardHasKeyword(state.definitions, striker.cardId, "wing", { state, playerId })) {
+    return false;
+  }
   const battle = state.players[playerId].battle;
   if (battle.length === 0) return true;
   return battle.length === 1 && battle[0]?.instanceId === striker.instanceId;
@@ -81,7 +83,10 @@ export function wingCanAttackEnemyRush(
   attackerPlayerId: PlayerId,
   attackerCardId: string,
 ): boolean {
-  return cardHasKeyword(state.definitions, attackerCardId, "wing");
+  return cardHasKeyword(state.definitions, attackerCardId, "wing", {
+    state,
+    playerId: attackerPlayerId,
+  });
 }
 
 /** コマンダーゾーンにカードがあるか。 */

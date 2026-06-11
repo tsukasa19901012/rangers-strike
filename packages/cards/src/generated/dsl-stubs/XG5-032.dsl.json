@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "catchall_interpret_e887aae58886",
+          "keyword": "end_turn_battle_to_rush",
           "duration": "turn"
         }
       ],

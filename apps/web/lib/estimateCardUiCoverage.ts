@@ -6,7 +6,6 @@ import {
   isCardDslUnimplemented,
   resolvePlayableCard,
 } from "@rangers-strike/cards";
-import { getCardImplementationStatus } from "./cardImplementationStatus";
 
 export type CardUiCoverage = {
   tier: "core" | "promoted-dsl" | "promoted-ui" | "promoted-partial";
@@ -38,17 +37,13 @@ export function estimateCardUiCoverage(cardId: string): CardUiCoverage {
     return { tier: "core", badges };
   }
 
-  if (isCardDslReady(cardId) && hasUiWiring(cardId)) {
+  if (isCardDslReady(cardId)) {
+    return { tier: "promoted-ui", badges: ["DSL対応", "汎用UI"] };
+  }
+
+  if (hasUiWiring(cardId)) {
     return { tier: "promoted-dsl", badges: ["DSL対応"] };
   }
 
-  if (isCardDslReady(cardId) && getCardImplementationStatus(cardId) === "ui-uncertain") {
-    return { tier: "promoted-partial", badges: ["DSL対応", "UI未確認"] };
-  }
-
-  if (getCardImplementationStatus(cardId) === "ui-uncertain") {
-    return { tier: "promoted-partial", badges: ["UI未確認"] };
-  }
-
-  return { tier: "promoted-partial", badges: [] };
+  return { tier: "promoted-partial", badges: ["UI未確認"] };
 }

@@ -10,6 +10,7 @@ import {
   hasReleasedCommandForCategories,
   parsePowerCost,
 } from "../core/catalog";
+import { countAvailablePower, effectivePowerCost } from "../core/power";
 import { findInZone, opponent } from "../core/helpers";
 import { damagePaymentChoosingPlayer } from "../rules/damagePayment";
 import { getLegalActions } from "../core/legalActions";
@@ -128,7 +129,8 @@ function hasAdequatePowerForHandRushes(state: GameState, playerId: PlayerId): bo
       continue;
     }
     needsAny = true;
-    if (player.power.length < parsePowerCost(def.powerCost)) return false;
+    const cost = effectivePowerCost(state, playerId, parsePowerCost(def.powerCost));
+    if (countAvailablePower(state, playerId) < cost) return false;
   }
   return needsAny;
 }
@@ -146,8 +148,8 @@ function handNeedsPowerForRush(
     if (!hasReleasedCommandForCategories(player, state.definitions, cardCategories(def))) {
       continue;
     }
-    const cost = parsePowerCost(def.powerCost);
-    if (player.power.length < cost) return true;
+    const cost = effectivePowerCost(state, playerId, parsePowerCost(def.powerCost));
+    if (countAvailablePower(state, playerId) < cost) return true;
   }
   return false;
 }
@@ -200,7 +202,9 @@ export function scoreRushAction(
   const sp = strikeDamageFor(state.definitions, card, state, playerId);
   const enemy = state.players[opponent(playerId)];
   const lethalBonus = enemy.damage + sp >= WIN_DAMAGE ? 50_000 : 0;
-  let score = bp + sp * 3_000 + lethalBonus;
+  const deckLeft = player.deck.length;
+  const deckPenalty = deckLeft < 10 ? (10 - deckLeft) * 400 : 0;
+  let score = bp + sp * 3_000 + lethalBonus - deckPenalty;
 
   if (requiresAllFusionPartners(card.cardId)) {
     if (hasAllRequiredFusionMaterials(player, card.cardId, card.instanceId)) {
@@ -253,7 +257,8 @@ function unitCanRushNow(
   if (!hasReleasedCommandForCategories(player, state.definitions, categories)) {
     return false;
   }
-  return player.power.length >= parsePowerCost(def.powerCost);
+  const cost = effectivePowerCost(state, playerId, parsePowerCost(def.powerCost));
+  return countAvailablePower(state, playerId) >= cost;
 }
 
 function scoreChargeCard(
@@ -327,6 +332,7 @@ export function pickChargeAction(
   const needsCommand = handNeedsCommandSupport(state, playerId);
   const needsPower = handNeedsPowerForRush(state, playerId);
   const hasRushUnits = handHasRushUnits(state, playerId);
+  const thinDeck = player.deck.length < 12;
 
   if (
     emptyCommandZone &&
@@ -354,6 +360,10 @@ export function pickChargeAction(
     ) {
       return pickBestChargeAction(state, playerId, commands, "command");
     }
+    return end;
+  }
+
+  if (thinDeck && end && !needsCommand && !needsPower) {
     return end;
   }
 
@@ -703,7 +713,10 @@ export function pickBestStrike(
 
     const damage = strikeDamageFor(state.definitions, card, state, action.playerId);
     const lethal = enemy.damage + damage >= WIN_DAMAGE;
-    const priority = (lethal ? 10_000 : 0) + damage * 100;
+    const nearLethal = enemy.damage + damage >= WIN_DAMAGE - 1;
+    const closing = enemy.damage >= WIN_DAMAGE - 3;
+    const priority =
+      (lethal ? 20_000 : nearLethal ? 8_000 : closing ? 2_500 : 0) + damage * 150;
     if (priority > bestPriority) {
       bestPriority = priority;
       best = action;
@@ -1015,6 +1028,19 @@ export function pickEffectChoice(
 ): GameAction | null {
   const playerId = pending.playerId;
   const skip = actions.find((a) => a.type === "skip_effect_choice");
+
+  if (pending.kind === "simultaneous_order") {
+    const prefer =
+      pending.validInstanceIds.find((id) => id === "pendingLeave") ??
+      pending.validInstanceIds[0];
+    return (
+      actions.find(
+        (a) =>
+          a.type === "resolve_effect_choice" &&
+          a.instanceId === prefer,
+      ) ?? null
+    );
+  }
 
   if (pending.kind === "optional_deck_draw") {
     const draw = actions.find(
@@ -1373,7 +1399,11 @@ export function quickActionPriority(
   action: GameAction,
 ): number {
   if (action.type === "end_phase") {
-    return state.phase === "rush" || state.phase === "charge" ? -10_000 : -5_000;
+    const deckLeft = state.players[playerId].deck.length;
+    const deckGuard = deckLeft < 8 ? (8 - deckLeft) * 1_500 : 0;
+    const phasePenalty =
+      state.phase === "rush" || state.phase === "charge" ? -10_000 : -5_000;
+    return phasePenalty - deckGuard;
   }
 
   if (action.type === "rush") {
@@ -1397,7 +1427,8 @@ export function quickActionPriority(
     const enemy = state.players[opponent(action.playerId)];
     const damage = strikeDamageFor(state.definitions, card, state, action.playerId);
     const lethal = enemy.damage + damage >= WIN_DAMAGE;
-    return (lethal ? 50_000 : 0) + damage * 500;
+    const nearLethal = enemy.damage + damage >= WIN_DAMAGE - 1;
+    return (lethal ? 80_000 : nearLethal ? 25_000 : 0) + damage * 800;
   }
 
   if (action.type === "battle") {
@@ -1496,7 +1527,11 @@ export function affordableRushes(
   return actionsOfType(actions, "rush").filter((action) => {
     const card = player.hand.find((c) => c.instanceId === action.instanceId);
     if (!card) return false;
-    const cost = parsePowerCost(getDefinition(state.definitions, card.cardId)?.powerCost ?? 99);
-    return player.power.length >= cost;
+    const cost = effectivePowerCost(
+      state,
+      playerId,
+      parsePowerCost(getDefinition(state.definitions, card.cardId)?.powerCost ?? 99),
+    );
+    return countAvailablePower(state, playerId) >= cost;
   });
 }

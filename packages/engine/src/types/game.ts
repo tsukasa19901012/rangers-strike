@@ -89,6 +89,8 @@ export type PlayerState = {
   modifiers?: ScopedModifier[];
   /** コスト支払いウィンドウ（hold-ready 統合）。 */
   costWindows?: PlayerCostWindows;
+  /** RS-382: このターン捨札から手札に加えた S ユニット枚数。 */
+  sUnitsRecoveredFromDiscardThisTurn?: number;
 };
 
 export type PendingStrike = {
@@ -384,6 +386,12 @@ export type GameState = {
   /** 先攻プレイヤー（先攻）。 */
   firstPlayer: PlayerId;
   phase: Phase;
+  /** エンドフェイズ内ステップ: 任意効果 → 確定。 */
+  endPhaseStep?: "end_effects" | "finalize";
+  /** 同時解決中の反応窓グループ ID（RULE-02）。 */
+  activeSimultaneousGroupId?: string;
+  /** ターンプレイヤーが選んだ反応窓の解決順（フレーム ID）。 */
+  reactionResolutionOrder?: string[];
   players: Record<PlayerId, PlayerState>;
   definitions: Record<string, CardDefinition>;
   log: string[];

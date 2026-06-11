@@ -8,7 +8,12 @@ import type {
 } from "../types/game";
 import { clearCostWindow, satisfyCostWindow } from "../core/costWindow";
 import { cardName, effectiveBp, getDefinition, parsePowerCost, unitBp } from "../core/catalog";
-import { startJetSkateboardChoiceForUnit } from "./legend3/endTurnEffects";
+import {
+  startEndTurnBattleToRushChoiceForUnit,
+  startJetSkateboardChoiceForUnit,
+} from "./legend3/endTurnEffects";
+import { applyRocketBoosterDeclaredName } from "./rocketBooster";
+import { applySimultaneousOrderChoice } from "./simultaneousEffects";
 import { applyAssaultToCommandHold } from "./legend3/restrictions";
 import { findInZone, opponent, performDeckDraws, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
@@ -1534,11 +1539,34 @@ export function applyEffectChoiceSelect(
       return finishChoice(nextState, pending, cardName(state.definitions, kept.cardId));
     }
 
+    case "simultaneous_order": {
+      if (!pending.validInstanceIds.includes(instanceId)) {
+        return { error: "invalid_target" };
+      }
+      const nextState = applySimultaneousOrderChoice(state, instanceId);
+      return finishChoice(nextState, pending, instanceId);
+    }
+
     case "end_turn_menu": {
       const cleared = clearChoice(state, pending.phasePlayerId);
       const jet = startJetSkateboardChoiceForUnit(cleared, playerId, instanceId);
       if (jet) return { state: jet };
+      const geki = startEndTurnBattleToRushChoiceForUnit(cleared, playerId, instanceId);
+      if (geki) return { state: geki };
       return { error: "unsupported_end_turn_effect" };
+    }
+
+    case "confirm": {
+      if (pending.effectId === "rocket_booster") {
+        const declaredName = pending.validInstanceIds.find((name) => name === instanceId)
+          ?? instanceId;
+        if (!pending.validInstanceIds.includes(declaredName)) {
+          return { error: "invalid_target" };
+        }
+        const nextState = applyRocketBoosterDeclaredName(state, playerId, declaredName);
+        return finishChoice(nextState, pending, declaredName);
+      }
+      return { error: "unsupported_confirm" };
     }
 
     case "pit_in_dive_order": {

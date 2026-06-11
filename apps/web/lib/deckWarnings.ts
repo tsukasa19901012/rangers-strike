@@ -1,5 +1,6 @@
 import {
   getCardById,
+  isCardDslReady,
   resolvePlayableCard,
   type DeckEntry,
 } from "@rangers-strike/cards";
@@ -18,10 +19,10 @@ export function estimateDeckWarnings(entries: DeckEntry[]): DeckWarningEstimate 
     if (entry.count <= 0) continue;
     const resolved = resolvePlayableCard(entry.cardId);
     if (!resolved) continue;
-    if (!getCardById(entry.cardId)) {
-      uiUncertainCount += entry.count;
-      uncertainCardIds.push(entry.cardId);
-    }
+    if (getCardById(entry.cardId)) continue;
+    if (isCardDslReady(entry.cardId)) continue;
+    uiUncertainCount += entry.count;
+    uncertainCardIds.push(entry.cardId);
   }
 
   return { uiUncertainCount, uncertainCardIds };

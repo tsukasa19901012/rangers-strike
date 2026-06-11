@@ -3,7 +3,12 @@ import type { GameState, PlayerId } from "../../types/game";
 import { findInZone } from "../../core/helpers";
 import { openEffectChoice, startSelectUnitChoice } from "../pendingChoices";
 
-const END_TURN_EFFECT_IDS = ["jet_skateboard"] as const;
+const END_TURN_EFFECT_IDS = ["jet_skateboard", "end_turn_battle_to_rush"] as const;
+
+function hasEndTurnBattleEffect(card: { cardId: string; activatedNcEffects?: string[] }, effectId: string): boolean {
+  if (findNamedEffectByEffectId(card.cardId, effectId)) return true;
+  return card.activatedNcEffects?.includes(effectId) ?? false;
+}
 
 export function collectEndTurnEffectInstanceIds(
   state: GameState,
@@ -11,9 +16,7 @@ export function collectEndTurnEffectInstanceIds(
 ): string[] {
   return state.players[playerId].battle
     .filter((c) =>
-      END_TURN_EFFECT_IDS.some((effectId) =>
-        findNamedEffectByEffectId(c.cardId, effectId),
-      ),
+      END_TURN_EFFECT_IDS.some((effectId) => hasEndTurnBattleEffect(c, effectId)),
     )
     .map((c) => c.instanceId);
 }
@@ -68,13 +71,36 @@ export function startJetSkateboardChoiceForUnit(
 ): GameState | null {
   const player = state.players[playerId];
   const found = findInZone(player, "battle", instanceId);
-  if (!found || !findNamedEffectByEffectId(found.card.cardId, "jet_skateboard")) {
+  if (!found || !hasEndTurnBattleEffect(found.card, "jet_skateboard")) {
     return null;
   }
 
   return startSelectUnitChoice(state, {
     playerId,
     effectId: "jet_skateboard",
+    sourceCardId: found.card.cardId,
+    sourceInstanceId: instanceId,
+    phasePlayerId: playerId,
+    validInstanceIds: [instanceId],
+    unitDestination: "rush",
+    optional: true,
+  });
+}
+
+export function startEndTurnBattleToRushChoiceForUnit(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): GameState | null {
+  const player = state.players[playerId];
+  const found = findInZone(player, "battle", instanceId);
+  if (!found || !hasEndTurnBattleEffect(found.card, "end_turn_battle_to_rush")) {
+    return null;
+  }
+
+  return startSelectUnitChoice(state, {
+    playerId,
+    effectId: "end_turn_battle_to_rush",
     sourceCardId: found.card.cardId,
     sourceInstanceId: instanceId,
     phasePlayerId: playerId,

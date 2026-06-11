@@ -31,6 +31,7 @@ import { applyLegend3NcEffect, isLegend3NcEffect } from "./legend3/ncEffects";
 import { isDslInterpretableEffect } from "../dsl/dslCatalog";
 import { listDslEffectsForTrigger } from "../dsl/effectLookup";
 import { tryResolveDslNcEffects } from "../dsl/triggerResolver";
+import { applyPromotedNcEffect, getPromotedNcEffectId } from "./promotedNcEffects";
 import type { ComboOutcome } from "./comboTypes";
 
 function ncLog(
@@ -107,6 +108,10 @@ export function applyNumberComboEffect(
   effectId: ReturnType<typeof getNumberComboEffect>,
 ): ComboOutcome {
   if (!effectId) return { state, logs: [] };
+
+  if (getPromotedNcEffectId(card.cardId)) {
+    return applyPromotedNcEffect(state, playerId, card);
+  }
 
   if (ncEffectUsesDsl(card.cardId)) {
     const dslNc = tryResolveDslNcEffects({

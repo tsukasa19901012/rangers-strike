@@ -42,6 +42,7 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "fusion_material_alias",
   "battle_entry_hold_1",
   "require_command_hold_entry",
+  "last_battle_protect_other_s",
   "substitute_on_wb_destroy",
   "win_but_destroyed_vs_sp1",
   "no_battle_entry_turn_rushed",

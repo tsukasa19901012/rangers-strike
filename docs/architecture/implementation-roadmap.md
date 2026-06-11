@@ -421,6 +421,7 @@ M6: Tier5 表面化した裁定のみ対応
 
 | 文書 | 役割 |
 |------|------|
+| [implementation-inventory.md](./implementation-inventory.md) | **未実装一覧（ルール・カード・UI 3層）** — 開発バックログの入口 |
 | [spec-review.md](./spec-review.md) | 確定/未確定仕様、I-01〜14 |
 | [state-gap-analysis.md](./state-gap-analysis.md) | State ギャップ、P0–P4 改善 |
 | [event-architecture.md](./event-architecture.md) | Event 層移行 Phase 0–4 |

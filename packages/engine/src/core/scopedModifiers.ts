@@ -61,7 +61,7 @@ function addScopedRuleModifier(
   player: PlayerState,
   ruleId: string,
   scope: ModifierScope,
-  options?: { sourceCardId?: string },
+  options?: { sourceCardId?: string; payload?: unknown },
 ): PlayerState {
   if (hasScopedRuleModifier(player, ruleId, scope)) return player;
   const modifiers: ScopedModifier[] = [
@@ -71,6 +71,7 @@ function addScopedRuleModifier(
       ruleId,
       scope,
       sourceCardId: options?.sourceCardId,
+      payload: options?.payload,
     },
   ];
   return { ...player, modifiers };
@@ -79,7 +80,7 @@ function addScopedRuleModifier(
 export function addTurnRuleModifier(
   player: PlayerState,
   ruleId: TurnRuleId | string,
-  options?: { sourceCardId?: string },
+  options?: { sourceCardId?: string; payload?: unknown },
 ): PlayerState {
   return addScopedRuleModifier(player, ruleId, "turn", options);
 }

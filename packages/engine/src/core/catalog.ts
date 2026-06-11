@@ -19,6 +19,7 @@ import { isShironLightRushTarget } from "../rules/shironLight";
 import { getAuraPowerInstanceId, getComboNumberDelta } from "../rules/turnModifierBridge";
 import { opponentInfiniteChainBlocks } from "../rules/turnModifiers";
 import { countHeldCommands } from "../rules/restrictions";
+import { countAvailablePower, effectivePowerCost } from "./power";
 
 export function buildDefinitionMap(
   decks: CardDefinition[][],
@@ -265,9 +266,19 @@ export function canRushUnit(
   zordMothershipHoldInstanceIds?: string[],
   zordMaterialDestination?: ZordMaterialDestination,
   powerBudget?: number,
+  powerContext?: Pick<GameState, "players" | "definitions" | "activePlayer"> & {
+    playerId: PlayerId;
+  },
 ): boolean {
-  const cost = parsePowerCost(unitDefinition.powerCost);
-  const budget = powerBudget ?? player.power.length;
+  const rawCost = parsePowerCost(unitDefinition.powerCost);
+  const cost = powerContext
+    ? effectivePowerCost(powerContext, powerContext.playerId, rawCost)
+    : rawCost;
+  const budget =
+    powerBudget ??
+    (powerContext
+      ? countAvailablePower(powerContext, powerContext.playerId)
+      : player.power.length);
   if (budget < cost) return false;
 
   const unitCats = cardCategories(unitDefinition);
@@ -310,9 +321,19 @@ export function canRushUnitExceptCommandHold(
   zordMothershipHoldInstanceIds?: string[],
   zordMaterialDestination?: ZordMaterialDestination,
   powerBudget?: number,
+  powerContext?: Pick<GameState, "players" | "definitions" | "activePlayer"> & {
+    playerId: PlayerId;
+  },
 ): boolean {
-  const cost = parsePowerCost(unitDefinition.powerCost);
-  const budget = powerBudget ?? player.power.length;
+  const rawCost = parsePowerCost(unitDefinition.powerCost);
+  const cost = powerContext
+    ? effectivePowerCost(powerContext, powerContext.playerId, rawCost)
+    : rawCost;
+  const budget =
+    powerBudget ??
+    (powerContext
+      ? countAvailablePower(powerContext, powerContext.playerId)
+      : player.power.length);
   if (budget < cost) return false;
 
   if (!needsZordMaterial(definitions, unitDefinition.id)) return true;
@@ -337,24 +358,24 @@ export function canRushUnitExceptCommandHold(
 }
 
 export function canPlayOperationExceptCommandHold(
-  player: PlayerState,
-  definitions: Record<string, CardDefinition>,
+  state: GameState,
+  playerId: PlayerId,
   definition: CardDefinition,
 ): boolean {
-  const cost = parsePowerCost(definition.powerCost);
-  return player.power.length >= cost;
+  const cost = effectivePowerCost(state, playerId, parsePowerCost(definition.powerCost));
+  return countAvailablePower(state, playerId) >= cost;
 }
 
 export function canPlayOperation(
-  player: PlayerState,
-  definitions: Record<string, CardDefinition>,
+  state: GameState,
+  playerId: PlayerId,
   definition: CardDefinition,
 ): boolean {
-  const cost = parsePowerCost(definition.powerCost);
-  if (player.power.length < cost) return false;
+  const player = state.players[playerId];
+  if (!canPlayOperationExceptCommandHold(state, playerId, definition)) return false;
 
   const opCats = cardCategories(definition);
-  return hasCommandForCardUse(player, definitions, opCats);
+  return hasCommandForCardUse(player, state.definitions, opCats);
 }
 
 export { needsZordMaterial } from "../rules/zord";
