@@ -3,7 +3,10 @@
   "id": "XP-018",
   "name": "ゴールド寿司",
   "type": "operation",
-  "category": "ET",
+  "category": [
+    "MA",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 3,

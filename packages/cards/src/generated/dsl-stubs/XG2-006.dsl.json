@@ -3,7 +3,10 @@
   "id": "XG2-006",
   "name": "キャリアベータ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "OT",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "4+",

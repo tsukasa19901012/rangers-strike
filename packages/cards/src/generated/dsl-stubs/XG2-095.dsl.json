@@ -3,7 +3,10 @@
   "id": "XG2-095",
   "name": "ブラックビート",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

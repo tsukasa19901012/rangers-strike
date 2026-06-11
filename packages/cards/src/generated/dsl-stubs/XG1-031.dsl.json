@@ -3,7 +3,10 @@
   "id": "XG1-031",
   "name": "ゴーオンレッド（XG）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "OT"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 3,

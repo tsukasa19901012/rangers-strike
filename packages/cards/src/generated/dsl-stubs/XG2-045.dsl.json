@@ -3,7 +3,10 @@
   "id": "XG2-045",
   "name": "仮面ライダーW・LT",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "OT"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

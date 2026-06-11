@@ -3,7 +3,10 @@
   "id": "XG1-094",
   "name": "ビーファイターテントウ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 2,

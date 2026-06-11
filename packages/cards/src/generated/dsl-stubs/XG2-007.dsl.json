@@ -3,7 +3,10 @@
   "id": "XG2-007",
   "name": "ランドガンマ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "OT",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "3+",

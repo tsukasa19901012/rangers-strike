@@ -3,7 +3,10 @@
   "id": "XG7-061",
   "name": "トンデモジョーズ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "OT",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "6+",

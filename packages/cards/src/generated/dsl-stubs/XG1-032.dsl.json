@@ -3,7 +3,10 @@
   "id": "XG1-032",
   "name": "ゲキレッド（XG）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "MA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

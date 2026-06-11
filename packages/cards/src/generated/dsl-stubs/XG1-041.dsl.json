@@ -3,7 +3,10 @@
   "id": "XG1-041",
   "name": "仮面ライダーアマゾン（XG）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "MA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

@@ -3,7 +3,10 @@
   "id": "XG1-081",
   "name": "磁雷神",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "OT",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "5+",

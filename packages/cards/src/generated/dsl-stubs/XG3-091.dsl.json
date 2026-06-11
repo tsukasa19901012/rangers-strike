@@ -3,7 +3,10 @@
   "id": "XG3-091",
   "name": "ジースタッグ（XG3）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 3,

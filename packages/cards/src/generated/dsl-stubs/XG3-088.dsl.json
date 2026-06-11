@@ -3,7 +3,10 @@
   "id": "XG3-088",
   "name": "変幻鎧将ビーザック",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 1,

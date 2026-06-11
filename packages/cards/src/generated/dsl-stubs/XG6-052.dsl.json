@@ -3,7 +3,10 @@
   "id": "XG6-052",
   "name": "仮面ライダーコーカサス（XG6）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "OT",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 7,

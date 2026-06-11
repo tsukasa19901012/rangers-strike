@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { getCardEffect, type CardDefinition } from "@rangers-strike/cards";
+import { formatCardCategories } from "@/lib/labels";
 import { GameModalBackdrop } from "./GameModalBackdrop";
 
 type PermanentOperationModalProps = {
@@ -20,6 +21,7 @@ export function PermanentOperationModal({
   onClose,
 }: PermanentOperationModalProps) {
   const operationEffect = getCardEffect(card.id);
+  const categoryLabel = formatCardCategories(card.category);
 
   return (
     <GameModalBackdrop>
@@ -50,6 +52,11 @@ export function PermanentOperationModal({
           <div className="modal__info">
             <h3>{card.name}</h3>
             <p className="modal__id">{card.id}</p>
+            {categoryLabel && (
+              <p className="modal__category">
+                カテゴリ: {categoryLabel}
+              </p>
+            )}
             {(operationEffect?.text || card.text) && (
               <section className="modal__effect">
                 <h4>効果</h4>

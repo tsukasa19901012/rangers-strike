@@ -3,7 +3,10 @@
   "id": "XG5-038",
   "name": "ゴセイピンク（XG5）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "MA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 0,

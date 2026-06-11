@@ -3,7 +3,10 @@
   "id": "XG2-059",
   "name": "仮面ライダーレンゲル（XG2）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

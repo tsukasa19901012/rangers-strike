@@ -3,7 +3,10 @@
   "id": "XG1-075",
   "name": "仮面ライダーダークキバ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 6,

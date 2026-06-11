@@ -278,7 +278,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "10-"
     },
     {
       "id": "PK-013",
@@ -449,7 +449,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "PR-017",
@@ -539,7 +539,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "PR-027",
@@ -1970,7 +1970,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-159",
@@ -2231,7 +2231,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-188",
@@ -2375,7 +2375,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-204",
@@ -2402,7 +2402,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-207",
@@ -2411,7 +2411,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-208",
@@ -2420,7 +2420,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-209",
@@ -2438,7 +2438,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-211",
@@ -2447,7 +2447,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-212",
@@ -2546,7 +2546,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-223",
@@ -2771,7 +2771,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-248",
@@ -2987,7 +2987,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-272",
@@ -2996,7 +2996,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-273",
@@ -3005,7 +3005,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-274",
@@ -3059,7 +3059,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "10-"
     },
     {
       "id": "RK-280",
@@ -3365,7 +3365,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-314",
@@ -3518,7 +3518,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-331",
@@ -3527,7 +3527,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "10-"
     },
     {
       "id": "RK-332",
@@ -3545,7 +3545,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "10-"
     },
     {
       "id": "RK-334",
@@ -3554,7 +3554,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RK-335",
@@ -3914,7 +3914,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RM-040",
@@ -4589,7 +4589,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-231",
@@ -4598,7 +4598,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-232",
@@ -4607,7 +4607,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-233",
@@ -4688,7 +4688,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-242",
@@ -5390,7 +5390,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "5+"
     },
     {
       "id": "RS-320",
@@ -5426,7 +5426,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-324",
@@ -5516,7 +5516,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-334",
@@ -5525,7 +5525,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-335",
@@ -5534,7 +5534,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-336",
@@ -5543,7 +5543,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-337",
@@ -5552,7 +5552,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-338",
@@ -5624,7 +5624,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-346",
@@ -5876,7 +5876,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-374",
@@ -6353,7 +6353,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-427",
@@ -6362,7 +6362,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-428",
@@ -6371,7 +6371,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-429",
@@ -6596,7 +6596,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-454",
@@ -6875,7 +6875,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "14-"
     },
     {
       "id": "RS-485",
@@ -6938,7 +6938,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "6+"
     },
     {
       "id": "RS-492",
@@ -6983,7 +6983,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-497",
@@ -7322,7 +7322,7 @@
       "id": "RS-534",
       "name": "チェンジペガサス",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 2
@@ -7331,7 +7331,7 @@
       "id": "RS-535",
       "name": "チェンジドラゴン",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 4
@@ -7340,7 +7340,7 @@
       "id": "RS-536",
       "name": "チェンジグリフォン",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 1
@@ -7349,7 +7349,7 @@
       "id": "RS-537",
       "name": "チェンジマーメイド",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 0
@@ -7466,7 +7466,7 @@
       "id": "RS-550",
       "name": "隠大将軍",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "7+"
@@ -7475,55 +7475,55 @@
       "id": "RS-551",
       "name": "ゴッドガンマー",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-552",
       "name": "ゴッドロウガン",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-553",
       "name": "ゴッドサルダー",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-554",
       "name": "ゴッドカーク",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-555",
       "name": "ゴッドクマード",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-556",
       "name": "バトルサルダー",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-557",
@@ -7538,7 +7538,7 @@
       "id": "RS-558",
       "name": "ガンマジン",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 1
@@ -7601,7 +7601,7 @@
       "id": "RS-565",
       "name": "轟雷旋風神",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "7+"
@@ -7610,7 +7610,7 @@
       "id": "RS-566",
       "name": "天雷旋風神",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "8+"
@@ -7619,7 +7619,7 @@
       "id": "RS-567",
       "name": "トライコンドル",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 6
@@ -7628,7 +7628,7 @@
       "id": "RS-568",
       "name": "風雷丸",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 5
@@ -7667,13 +7667,13 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-573",
       "name": "ファイヤーカイザー（2nd）",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "5+"
@@ -7682,7 +7682,7 @@
       "id": "RS-574",
       "name": "セイントカイザー",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "4+"
@@ -7700,16 +7700,16 @@
       "id": "RS-576",
       "name": "マジフェニックス",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-577",
       "name": "マジレッド（2nd）",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 4
@@ -7718,16 +7718,16 @@
       "id": "RS-578",
       "name": "レジェンドマジグリーンRA",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "10-"
     },
     {
       "id": "RS-579",
       "name": "ルナジェル",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 2
@@ -7775,7 +7775,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-585",
@@ -8441,7 +8441,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-659",
@@ -8450,7 +8450,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-660",
@@ -8459,7 +8459,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-661",
@@ -8468,7 +8468,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-662",
@@ -8477,7 +8477,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "RS-663",
@@ -8801,7 +8801,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "5+"
     },
     {
       "id": "SR-004",
@@ -8828,7 +8828,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "SR-007",
@@ -8918,7 +8918,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "SX-008",
@@ -9306,7 +9306,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG1-030",
@@ -9315,7 +9315,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG1-031",
@@ -9522,7 +9522,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG1-053",
@@ -9612,7 +9612,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG1-063",
@@ -10275,7 +10275,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG2-030",
@@ -10338,7 +10338,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "14-"
     },
     {
       "id": "XG2-037",
@@ -10347,7 +10347,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG2-038",
@@ -10356,7 +10356,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG2-039",
@@ -10365,7 +10365,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG2-040",
@@ -10374,7 +10374,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG2-041",
@@ -10383,7 +10383,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG2-042",
@@ -10470,7 +10470,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG2-051",
@@ -10617,7 +10617,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG2-067",
@@ -10803,7 +10803,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "10-"
     },
     {
       "id": "XG2-087",
@@ -10929,7 +10929,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG2-100",
@@ -11076,7 +11076,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG3-013",
@@ -11388,7 +11388,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG3-046",
@@ -11541,7 +11541,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG3-063",
@@ -11559,7 +11559,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG3-065",
@@ -11577,7 +11577,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG3-067",
@@ -11826,7 +11826,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG3-091",
@@ -11880,7 +11880,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG3-096",
@@ -11916,7 +11916,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG3-100",
@@ -12045,7 +12045,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG4-011",
@@ -12057,7 +12057,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG4-012",
@@ -12069,7 +12069,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG4-013",
@@ -12174,7 +12174,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG4-024",
@@ -12687,7 +12687,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG4-077",
@@ -13146,7 +13146,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG5-026",
@@ -13155,7 +13155,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG5-027",
@@ -13164,7 +13164,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG5-028",
@@ -13698,7 +13698,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG5-082",
@@ -13773,7 +13773,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG5-090",
@@ -13830,7 +13830,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG5-096",
@@ -14049,7 +14049,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG6-024",
@@ -14076,7 +14076,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG6-027",
@@ -14130,7 +14130,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "14-"
     },
     {
       "id": "XG6-033",
@@ -14157,7 +14157,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "5+"
     },
     {
       "id": "XG6-036",
@@ -14184,7 +14184,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG6-039",
@@ -14580,7 +14580,7 @@
       "id": "XG7-014",
       "name": "マジレッド（XG7）",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
       "powerCost": 2
@@ -14943,7 +14943,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG7-053",
@@ -15048,7 +15048,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XG7-064",
@@ -15165,7 +15165,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "10-"
     },
     {
       "id": "XP-009",
@@ -15183,7 +15183,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XP-011",
@@ -15192,7 +15192,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XP-012",
@@ -15210,7 +15210,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "7-"
     },
     {
       "id": "XP-014",
@@ -15366,7 +15366,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": "5+"
     },
     {
       "id": "XP-030",

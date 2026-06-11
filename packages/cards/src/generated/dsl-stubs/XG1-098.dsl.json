@@ -3,7 +3,10 @@
   "id": "XG1-098",
   "name": "猛毒鎧将デスコーピオン",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

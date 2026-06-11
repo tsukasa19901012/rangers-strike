@@ -3,7 +3,10 @@
   "id": "XG2-014",
   "name": "鉄面臂張遼",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 3,

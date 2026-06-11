@@ -3,7 +3,10 @@
   "id": "XG2-072",
   "name": "トライゴウラム",
   "type": "vehicle",
-  "category": "ET",
+  "category": [
+    "ET",
+    "MA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "3+",

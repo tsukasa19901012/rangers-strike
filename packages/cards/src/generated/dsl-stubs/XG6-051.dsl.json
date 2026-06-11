@@ -3,7 +3,10 @@
   "id": "XG6-051",
   "name": "仮面ライダー歌舞鬼（XG6）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 2,

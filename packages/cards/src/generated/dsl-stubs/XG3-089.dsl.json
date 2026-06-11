@@ -3,7 +3,10 @@
   "id": "XG3-089",
   "name": "ブルービート（XG3）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

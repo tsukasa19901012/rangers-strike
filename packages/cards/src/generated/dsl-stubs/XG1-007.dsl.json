@@ -3,7 +3,10 @@
   "id": "XG1-007",
   "name": "チェンジドラゴン（XG）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 2,

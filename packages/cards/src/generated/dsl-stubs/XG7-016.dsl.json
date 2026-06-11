@@ -3,7 +3,10 @@
   "id": "XG7-016",
   "name": "黒獅子リオ×スーパーゲキレッド",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "5+",

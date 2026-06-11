@@ -3,7 +3,10 @@
   "id": "XG2-043",
   "name": "仮面ライダーW・CJ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "ET",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 3,

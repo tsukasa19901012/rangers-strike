@@ -3,7 +3,10 @@
   "id": "XG7-060",
   "name": "ドデカブタック",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "OT",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "5+",

@@ -36,9 +36,18 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   ET: "アーステクノロジー",
   WB: "ワイルドビースト",
   OT: "オーバーテクノロジー",
-  MA: "マジック",
-  DA: "デカレンジャー",
+  MA: "ミスティックアームズ",
+  DA: "ダークアライアンス",
 };
+
+export function formatCardCategories(
+  category: Category | Category[] | undefined,
+): string | null {
+  if (!category) return null;
+  const categories = Array.isArray(category) ? category : [category];
+  if (categories.length === 0) return null;
+  return categories.map((code) => `${code}（${CATEGORY_LABELS[code]}）`).join(" / ");
+}
 
 export const CATEGORY_OPTIONS: { id: Category; label: string }[] = (
   ["ET", "WB", "OT", "MA", "DA"] as const

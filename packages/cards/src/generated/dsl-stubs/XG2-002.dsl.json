@@ -3,7 +3,10 @@
   "id": "XG2-002",
   "name": "ファイブブルー（XG2）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "OT",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 1,

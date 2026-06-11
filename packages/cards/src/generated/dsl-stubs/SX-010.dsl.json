@@ -3,7 +3,10 @@
   "id": "SX-010",
   "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダーW・CJ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "4+",

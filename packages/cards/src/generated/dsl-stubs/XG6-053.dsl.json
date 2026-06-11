@@ -3,7 +3,10 @@
   "id": "XG6-053",
   "name": "仮面ライダーアーク（XG6）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 5,

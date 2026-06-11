@@ -3,7 +3,10 @@
   "id": "XG7-042",
   "name": "仮面ライダークウガ×仮面ライダーディケイド",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "OT"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "1+",

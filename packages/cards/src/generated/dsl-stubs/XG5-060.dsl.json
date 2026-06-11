@@ -3,7 +3,10 @@
   "id": "XG5-060",
   "name": "仮面ライダーワイルドカリス（XG5）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "5+",

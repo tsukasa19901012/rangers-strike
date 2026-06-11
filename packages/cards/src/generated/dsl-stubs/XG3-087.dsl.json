@@ -3,7 +3,10 @@
   "id": "XG3-087",
   "name": "魔剣鎧将キルマンティス",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 0,

@@ -3,7 +3,10 @@
   "id": "XG3-090",
   "name": "スーパーブルービート",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "7-",

@@ -3,7 +3,10 @@
   "id": "XG2-001",
   "name": "ファイブレッド（XG2）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "OT",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 3,

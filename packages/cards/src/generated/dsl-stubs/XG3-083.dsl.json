@@ -3,7 +3,10 @@
   "id": "XG3-083",
   "name": "宇宙忍デモスト",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "OT"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 6,

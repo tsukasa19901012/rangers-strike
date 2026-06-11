@@ -3,7 +3,10 @@
   "id": "XP-017",
   "name": "仮面ライダーディケイド激情態",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "OT",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

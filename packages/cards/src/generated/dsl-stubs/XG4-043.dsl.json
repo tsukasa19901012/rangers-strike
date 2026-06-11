@@ -3,7 +3,10 @@
   "id": "XG4-043",
   "name": "ゴセイレッド",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "MA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 1,

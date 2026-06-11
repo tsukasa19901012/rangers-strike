@@ -3,7 +3,10 @@
   "id": "XG5-084",
   "name": "仮面ライダーW・CJ（XG5）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "ET",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 2,

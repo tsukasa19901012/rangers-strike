@@ -3,7 +3,10 @@
   "id": "XG6-007",
   "name": "ゲキリントージャ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "5+",

@@ -3,7 +3,10 @@
   "id": "XP-015",
   "name": "ダブルドライバー",
   "type": "operation",
-  "category": "ET",
+  "category": [
+    "ET",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 6,

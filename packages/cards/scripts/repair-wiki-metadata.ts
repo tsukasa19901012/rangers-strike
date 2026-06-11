@@ -8,6 +8,7 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  inferCategoryFromWikiLabels,
   inferRushAdditionalCondition,
   parsePowerCost,
   parseSp,
@@ -23,6 +24,7 @@ const dslDir = join(cardsRoot, "src/generated/dsl-stubs");
 
 type WikiMeta = {
   cardId: string;
+  categoryRaw?: string;
   sp?: string;
   kind?: string;
   features?: string;
@@ -33,12 +35,20 @@ type WikiMeta = {
 function parseWikiPage(content: string): WikiMeta | null {
   const cardId = content.match(/カードID:\s*(\S+)/)?.[1];
   if (!cardId) return null;
+  const categoryRaw = content.match(/カテゴリ[：:]\s*([^\n]+)/)?.[1]?.trim();
   const sp = content.match(/SP[：:]\s*([^\n]+)/)?.[1]?.trim();
   const kind = content.match(/種類[：:]\s*([^\n]+)/)?.[1]?.trim();
   const features = content.match(/特徴[：:]\s*([^\n]+)/)?.[1]?.trim();
   const powerCostRaw = content.match(/必要パワー[：:]\s*([^\n]+)/)?.[1]?.trim();
   const addCond = content.match(/追加条件[：:]\s*([^\n]+)/)?.[1]?.trim();
-  return { cardId, sp, kind, features, powerCostRaw, addCond };
+  return { cardId, categoryRaw, sp, kind, features, powerCostRaw, addCond };
+}
+
+function categoriesEqual(
+  a: unknown,
+  b: ReturnType<typeof inferCategoryFromWikiLabels>,
+): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
 }
 
 function loadWikiMeta(): Map<string, WikiMeta> {
@@ -52,11 +62,13 @@ function loadWikiMeta(): Map<string, WikiMeta> {
 }
 
 function repairDslStubs(wiki: Map<string, WikiMeta>): {
+  categoryFixed: number;
   spFixed: number;
   vehicleSized: number;
   powerCostFixed: number;
   rushCondFixed: number;
 } {
+  let categoryFixed = 0;
   let spFixed = 0;
   let vehicleSized = 0;
   let powerCostFixed = 0;
@@ -71,6 +83,15 @@ function repairDslStubs(wiki: Map<string, WikiMeta>): {
     if (!meta) continue;
 
     let changed = false;
+
+    if (meta.categoryRaw) {
+      const nextCategory = inferCategoryFromWikiLabels(meta.categoryRaw);
+      if (!categoriesEqual(card.category, nextCategory)) {
+        card.category = nextCategory;
+        categoryFixed += 1;
+        changed = true;
+      }
+    }
 
     if (meta.sp) {
       const nextSp = parseSp(meta.sp);
@@ -143,14 +164,13 @@ function repairDslStubs(wiki: Map<string, WikiMeta>): {
     }
   }
 
-  return { spFixed, vehicleSized, powerCostFixed, rushCondFixed };
+  return { categoryFixed, spFixed, vehicleSized, powerCostFixed, rushCondFixed };
 }
 
 const wiki = loadWikiMeta();
 const result = repairDslStubs(wiki);
 console.log(JSON.stringify({ wikiPages: wiki.size, ...result }, null, 2));
 
-execSync("node scripts/bundle-dsl-overlays.mjs", { cwd: cardsRoot, stdio: "inherit" });
 execSync("npm run emit-vanilla-catalog", { cwd: cardsRoot, stdio: "inherit" });
 execSync("npm run emit-complexity-catalog", { cwd: cardsRoot, stdio: "inherit" });
 execSync("npm run emit-full-playable-catalog", { cwd: cardsRoot, stdio: "inherit" });

@@ -3,7 +3,10 @@
   "id": "XG2-005",
   "name": "スカイアルファー",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "OT",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "5+",

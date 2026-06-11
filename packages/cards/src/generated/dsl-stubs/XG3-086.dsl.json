@@ -3,7 +3,10 @@
   "id": "XG3-086",
   "name": "冷血鎧将ムカデリンガー",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 3,

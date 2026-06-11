@@ -3,7 +3,10 @@
   "id": "XG6-047",
   "name": "仮面ライダーG4（XG6）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "ET",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 6,

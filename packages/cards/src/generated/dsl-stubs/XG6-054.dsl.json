@@ -3,7 +3,10 @@
   "id": "XG6-054",
   "name": "仮面ライダースカル（XG6）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "ET",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 0,

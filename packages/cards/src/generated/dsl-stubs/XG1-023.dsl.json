@@ -3,7 +3,10 @@
   "id": "XG1-023",
   "name": "レッドターボ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 3,

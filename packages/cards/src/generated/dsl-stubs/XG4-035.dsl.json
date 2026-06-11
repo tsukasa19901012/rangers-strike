@@ -3,7 +3,10 @@
   "id": "XG4-035",
   "name": "シンケンゴールド（XG4）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

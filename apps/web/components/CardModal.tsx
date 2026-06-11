@@ -11,6 +11,7 @@ import {
   resolveRushAdditionalCondition,
 } from "@rangers-strike/cards";
 import { estimateCardUiCoverage } from "@/lib/estimateCardUiCoverage";
+import { formatCardCategories } from "@/lib/labels";
 
 type CardModalProps = {
   card: CardDefinition;
@@ -24,6 +25,7 @@ export function CardModal({ card, onClose }: CardModalProps) {
   const rushAdditionalCondition = resolveRushAdditionalCondition(card.id, card);
   const imageUrl = resolveCardImageUrl(card.id);
   const coverage = estimateCardUiCoverage(card.id);
+  const categoryLabel = formatCardCategories(card.category);
 
   useEffect(() => {
     setMounted(true);
@@ -86,6 +88,12 @@ export function CardModal({ card, onClose }: CardModalProps) {
                 <dt>種類</dt>
                 <dd>{card.type}</dd>
               </div>
+              {categoryLabel && (
+                <div>
+                  <dt>カテゴリ</dt>
+                  <dd>{categoryLabel}</dd>
+                </div>
+              )}
               {card.powerCost !== undefined && (
                 <div>
                   <dt>必要パワー</dt>

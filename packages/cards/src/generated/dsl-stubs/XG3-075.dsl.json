@@ -3,7 +3,10 @@
   "id": "XG3-075",
   "name": "仮面ライダーディケイドCFジャンボフォーメーション",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "OT"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "7+",

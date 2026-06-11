@@ -3,7 +3,10 @@
   "id": "XG3-080",
   "name": "仮面ライダーW・HJ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

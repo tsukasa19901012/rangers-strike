@@ -3,7 +3,10 @@
   "id": "XG5-092",
   "name": "ビジンダー",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "ET",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 2,

@@ -3,7 +3,10 @@
   "id": "XG5-059",
   "name": "仮面ライダーカリス（XG5）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 1,

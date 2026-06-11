@@ -3,7 +3,10 @@
   "id": "XG4-010",
   "name": "獣装光ギンガブルー",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "MA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "7-",

@@ -3,7 +3,10 @@
   "id": "XG5-028",
   "name": "バーニングレジェンドダイボイジャー",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "7+",

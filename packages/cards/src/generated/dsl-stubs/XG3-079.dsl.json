@@ -3,7 +3,10 @@
   "id": "XG3-079",
   "name": "仮面ライダーW・LJ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 2,

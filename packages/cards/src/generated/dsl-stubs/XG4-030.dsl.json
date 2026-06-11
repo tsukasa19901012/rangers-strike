@@ -3,7 +3,10 @@
   "id": "XG4-030",
   "name": "ゲキチョッパー（XG4）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "MA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 5,

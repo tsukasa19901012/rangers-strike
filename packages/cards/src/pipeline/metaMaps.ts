@@ -7,6 +7,8 @@ export const CATEGORY_MAP: Record<string, CardDocument["category"]> = {
   ワイルドビースト: "WB",
   オーバーテクノロジー: "OT",
   ミスティックアームズ: "MA",
+  /** atwiki 旧表記（L49 八神セット等） */
+  ミステックアームズ: "MA",
   ダークアライアンス: "DA",
 };
 

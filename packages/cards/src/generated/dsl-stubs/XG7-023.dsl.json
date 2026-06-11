@@ -3,7 +3,10 @@
   "id": "XG7-023",
   "name": "獣拳巨神サイダイオー",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "MA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "5+",

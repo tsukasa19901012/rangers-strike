@@ -3,7 +3,10 @@
   "id": "XG3-028",
   "name": "魔導馬バリキオン（XG3）",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 2,

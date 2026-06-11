@@ -3,7 +3,10 @@
   "id": "XG4-065",
   "name": "マシンハードタービュラー",
   "type": "vehicle",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

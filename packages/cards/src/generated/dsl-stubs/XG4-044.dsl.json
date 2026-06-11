@@ -3,7 +3,10 @@
   "id": "XG4-044",
   "name": "ゴセイブラック",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "MA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 2,

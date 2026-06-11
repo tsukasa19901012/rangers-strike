@@ -3,7 +3,10 @@
   "id": "XG4-068",
   "name": "仮面ライダーW・CT",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "ET",
+    "OT"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 4,

@@ -3,7 +3,10 @@
   "id": "XG3-093",
   "name": "ビーファイターミン",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 0,

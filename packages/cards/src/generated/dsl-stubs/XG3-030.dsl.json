@@ -3,7 +3,10 @@
   "id": "XG3-030",
   "name": "ウルケンタウロス",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "4+",

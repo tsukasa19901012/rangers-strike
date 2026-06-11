@@ -3,7 +3,10 @@
   "id": "XG1-080",
   "name": "仮面ライダーアビス",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 2,

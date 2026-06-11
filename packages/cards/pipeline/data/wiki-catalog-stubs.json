@@ -1,6 +1,6 @@
 {
   "summary": {
-    "generatedAt": "2026-06-10T08:31:38.378Z",
+    "generatedAt": "2026-06-11T22:05:47.803Z",
     "wikiTotal": 1849,
     "catalogRegistered": 179,
     "stubCount": 1670,
@@ -350,7 +350,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "10-",
       "grade": "C",
       "wikiFound": true
     },
@@ -559,7 +559,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "A",
       "wikiFound": true
     },
@@ -669,7 +669,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -2418,7 +2418,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -2737,7 +2737,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -2913,7 +2913,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -2946,7 +2946,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -2957,7 +2957,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -2968,7 +2968,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -2990,7 +2990,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -3001,7 +3001,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -3122,7 +3122,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "E",
       "wikiFound": true
     },
@@ -3397,7 +3397,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -3661,7 +3661,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -3672,7 +3672,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -3683,7 +3683,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -3749,7 +3749,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "10-",
       "grade": "C",
       "wikiFound": true
     },
@@ -4123,7 +4123,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "E",
       "wikiFound": true
     },
@@ -4310,7 +4310,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "E",
       "wikiFound": true
     },
@@ -4321,7 +4321,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "10-",
       "grade": "E",
       "wikiFound": true
     },
@@ -4343,7 +4343,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "10-",
       "grade": "D",
       "wikiFound": true
     },
@@ -4354,7 +4354,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend2",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "A",
       "wikiFound": true
     },
@@ -4794,7 +4794,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -5619,7 +5619,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "A",
       "wikiFound": true
     },
@@ -5630,7 +5630,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "B",
       "wikiFound": true
     },
@@ -5641,7 +5641,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -5740,7 +5740,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -6598,7 +6598,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "5+",
       "grade": "D",
       "wikiFound": true
     },
@@ -6642,7 +6642,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -6752,7 +6752,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "B",
       "wikiFound": true
     },
@@ -6763,7 +6763,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "B",
       "wikiFound": true
     },
@@ -6774,7 +6774,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -6785,7 +6785,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -6796,7 +6796,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -6884,7 +6884,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -7192,7 +7192,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -7775,7 +7775,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "B",
       "wikiFound": true
     },
@@ -7786,7 +7786,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -7797,7 +7797,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -8072,7 +8072,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -8413,7 +8413,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "14-",
       "grade": "C",
       "wikiFound": true
     },
@@ -8490,7 +8490,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "6+",
       "grade": "C",
       "wikiFound": true
     },
@@ -8545,7 +8545,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -8960,7 +8960,7 @@
       "id": "RS-534",
       "name": "チェンジペガサス",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 2,
@@ -8971,7 +8971,7 @@
       "id": "RS-535",
       "name": "チェンジドラゴン",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 4,
@@ -8982,7 +8982,7 @@
       "id": "RS-536",
       "name": "チェンジグリフォン",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 1,
@@ -8993,7 +8993,7 @@
       "id": "RS-537",
       "name": "チェンジマーメイド",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 0,
@@ -9136,7 +9136,7 @@
       "id": "RS-550",
       "name": "隠大将軍",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "7+",
@@ -9147,10 +9147,10 @@
       "id": "RS-551",
       "name": "ゴッドガンマー",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -9158,10 +9158,10 @@
       "id": "RS-552",
       "name": "ゴッドロウガン",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -9169,10 +9169,10 @@
       "id": "RS-553",
       "name": "ゴッドサルダー",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -9180,10 +9180,10 @@
       "id": "RS-554",
       "name": "ゴッドカーク",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -9191,10 +9191,10 @@
       "id": "RS-555",
       "name": "ゴッドクマード",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -9202,10 +9202,10 @@
       "id": "RS-556",
       "name": "バトルサルダー",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -9224,7 +9224,7 @@
       "id": "RS-558",
       "name": "ガンマジン",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 1,
@@ -9301,7 +9301,7 @@
       "id": "RS-565",
       "name": "轟雷旋風神",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "7+",
@@ -9312,7 +9312,7 @@
       "id": "RS-566",
       "name": "天雷旋風神",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "8+",
@@ -9323,7 +9323,7 @@
       "id": "RS-567",
       "name": "トライコンドル",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 6,
@@ -9334,7 +9334,7 @@
       "id": "RS-568",
       "name": "風雷丸",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 5,
@@ -9381,7 +9381,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -9389,7 +9389,7 @@
       "id": "RS-573",
       "name": "ファイヤーカイザー（2nd）",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "5+",
@@ -9400,7 +9400,7 @@
       "id": "RS-574",
       "name": "セイントカイザー",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": "4+",
@@ -9422,10 +9422,10 @@
       "id": "RS-576",
       "name": "マジフェニックス",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -9433,7 +9433,7 @@
       "id": "RS-577",
       "name": "マジレッド（2nd）",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 4,
@@ -9444,10 +9444,10 @@
       "id": "RS-578",
       "name": "レジェンドマジグリーンRA",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "10-",
       "grade": "C",
       "wikiFound": true
     },
@@ -9455,7 +9455,7 @@
       "id": "RS-579",
       "name": "ルナジェル",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "legend1",
       "powerCost": 2,
@@ -9513,7 +9513,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -10327,7 +10327,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -10338,7 +10338,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -10349,7 +10349,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -10360,7 +10360,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -10371,7 +10371,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend1",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -10767,7 +10767,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "5+",
       "grade": "C",
       "wikiFound": true
     },
@@ -10800,7 +10800,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -10908,7 +10908,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -11376,7 +11376,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "A",
       "wikiFound": true
     },
@@ -11387,7 +11387,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "A",
       "wikiFound": true
     },
@@ -11638,7 +11638,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -11748,7 +11748,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "A",
       "wikiFound": true
     },
@@ -12545,7 +12545,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -12622,7 +12622,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "14-",
       "grade": "C",
       "wikiFound": true
     },
@@ -12633,7 +12633,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -12644,7 +12644,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -12655,7 +12655,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -12666,7 +12666,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "E",
       "wikiFound": true
     },
@@ -12677,7 +12677,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -12782,7 +12782,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "E",
       "wikiFound": true
     },
@@ -12961,7 +12961,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "B",
       "wikiFound": true
     },
@@ -13187,7 +13187,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "10-",
       "grade": "C",
       "wikiFound": true
     },
@@ -13339,7 +13339,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -13518,7 +13518,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -13896,7 +13896,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -14083,7 +14083,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "E",
       "wikiFound": true
     },
@@ -14105,7 +14105,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -14127,7 +14127,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -14424,7 +14424,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "E",
       "wikiFound": true
     },
@@ -14488,7 +14488,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -14532,7 +14532,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -14689,7 +14689,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -14703,7 +14703,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -14717,7 +14717,7 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -14844,7 +14844,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -15463,7 +15463,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -16024,7 +16024,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -16035,7 +16035,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -16046,7 +16046,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "E",
       "wikiFound": true
     },
@@ -16688,7 +16688,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -16779,7 +16779,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -16848,7 +16848,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -17115,7 +17115,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -17148,7 +17148,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "E",
       "wikiFound": true
     },
@@ -17214,7 +17214,7 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "14-",
       "grade": "C",
       "wikiFound": true
     },
@@ -17247,7 +17247,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "5+",
       "grade": "D",
       "wikiFound": true
     },
@@ -17280,7 +17280,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -17758,7 +17758,7 @@
       "id": "XG7-014",
       "name": "マジレッド（XG7）",
       "type": "unit",
-      "category": "OT",
+      "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
       "powerCost": 2,
@@ -18197,7 +18197,7 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "D",
       "wikiFound": true
     },
@@ -18324,7 +18324,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -18467,7 +18467,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "10-",
       "grade": "D",
       "wikiFound": true
     },
@@ -18489,7 +18489,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -18500,7 +18500,7 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "C",
       "wikiFound": true
     },
@@ -18522,7 +18522,7 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "7-",
       "grade": "E",
       "wikiFound": true
     },
@@ -18710,7 +18710,7 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0,
+      "powerCost": "5+",
       "grade": "C",
       "wikiFound": true
     },

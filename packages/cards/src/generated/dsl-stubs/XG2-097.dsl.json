@@ -3,7 +3,10 @@
   "id": "XG2-097",
   "name": "ビーファイターゲンジ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 2,

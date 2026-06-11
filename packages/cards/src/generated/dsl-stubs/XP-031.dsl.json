@@ -3,7 +3,10 @@
   "id": "XP-031",
   "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダー電王SF",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "OT"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "3+",

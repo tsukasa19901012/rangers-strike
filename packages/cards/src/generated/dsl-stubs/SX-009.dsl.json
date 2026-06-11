@@ -3,7 +3,10 @@
   "id": "SX-009",
   "name": "ゴセイレッド×ゴーカイレッド",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "OT"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "0+",

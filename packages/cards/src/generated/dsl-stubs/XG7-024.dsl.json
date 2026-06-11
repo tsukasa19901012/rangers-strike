@@ -3,7 +3,10 @@
   "id": "XG7-024",
   "name": "獣拳神サイダイン",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "MA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "4+",

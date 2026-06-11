@@ -3,7 +3,11 @@
   "id": "SX-008",
   "name": "超・電王トリロジー",
   "type": "operation",
-  "category": "ET",
+  "category": [
+    "WB",
+    "OT",
+    "MA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 5,

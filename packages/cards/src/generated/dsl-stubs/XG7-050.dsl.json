@@ -3,7 +3,10 @@
   "id": "XG7-050",
   "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダーバース",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "4+",

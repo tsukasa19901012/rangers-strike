@@ -3,7 +3,10 @@
   "id": "SX-005",
   "name": "仮面ライダーW・CJX",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "ET",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "5+",

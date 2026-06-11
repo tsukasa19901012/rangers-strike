@@ -3,7 +3,10 @@
   "id": "XG4-066",
   "name": "マシンハードスプラッシャー",
   "type": "vehicle",
-  "category": "ET",
+  "category": [
+    "MA",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 3,

@@ -3,7 +3,10 @@
   "id": "SX-004",
   "name": "ハイパーゴーオンレッド",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "MA",
+    "OT"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "4+",

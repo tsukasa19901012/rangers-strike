@@ -3,7 +3,10 @@
   "id": "XG2-096",
   "name": "ビーファイターヤンマ",
   "type": "unit",
-  "category": "ET",
+  "category": [
+    "WB",
+    "ET"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 3,

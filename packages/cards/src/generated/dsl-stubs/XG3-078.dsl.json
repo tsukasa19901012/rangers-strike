@@ -3,7 +3,10 @@
   "id": "XG3-078",
   "name": "マシンハードボイルダー",
   "type": "vehicle",
-  "category": "ET",
+  "category": [
+    "ET",
+    "DA"
+  ],
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 1,
