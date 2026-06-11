@@ -209,7 +209,7 @@ export function generateCardDocument(
     card.effects = effects;
   }
 
-  const unnamedRules = buildUnnamedRules(meaningfulEffects, card.text);
+  const unnamedRules = buildUnnamedRules(meaningfulEffects, card.text ?? "");
   if (unnamedRules.length > 0) {
     card.unnamedRules = unnamedRules;
   }

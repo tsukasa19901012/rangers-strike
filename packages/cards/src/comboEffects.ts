@@ -378,6 +378,11 @@ export function isNumericComboNumber(
   return typeof comboNumber === "number";
 }
 
+export function cardHasComboNumber(cardId: string): boolean {
+  const card = ALL_CARDS_BY_ID.get(cardId);
+  return isNumericComboNumber(card?.comboNumber);
+}
+
 /** マルチカテゴリは双方が持つ全カテゴリを満たすときのみ同一（atwiki 1559）。 */
 export function partnerCategoryMatches(
   unitCategory: Category | Category[],
