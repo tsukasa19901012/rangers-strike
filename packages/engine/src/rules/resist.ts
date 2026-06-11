@@ -14,7 +14,10 @@ import { finalizeLeavePending } from "./operationCounters";
 
 export function canOfferRegister(
   state: GameState,
-  pending: Pick<PendingLeave, "toZone" | "fromZone" | "leavingCardId" | "skipRegister">,
+  pending: Pick<
+    PendingLeave,
+    "toZone" | "fromZone" | "leavingCardId" | "skipRegister" | "registerEligible"
+  >,
 ): boolean {
   if (pending.skipRegister) return false;
   if (pending.registerEligible !== true) return false;
