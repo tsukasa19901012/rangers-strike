@@ -24,6 +24,7 @@ import {
   beginDinoSlasherDiscard,
   beginOpponentHoldByCategoryCount,
 } from "../rules/zoneCategoryEffects";
+import { beginKamenRideMorphChoice } from "../keywords/activeMorph";
 import { isValidOwnSmallUnitTarget } from "./targetSelectors";
 import {
   applyRuntimeGrantKeyword,
@@ -98,6 +99,7 @@ export const SUPPORTED_GRANT_KEYWORDS = new Set([
   "dino_slasher_category_balance",
   "assault_vector_destroy",
   "blood_vessel_on_strike",
+  "attack_ride_replace",
   ...PASSIVE_GRANT_KEYWORDS,
 ]);
 
@@ -110,6 +112,7 @@ export type GrantKeywordContext = {
   operationInstanceId?: string;
   extraInstanceIds?: string[];
   leavingCardId?: string;
+  optional?: boolean;
 };
 
 export type GrantKeywordResult = {
@@ -353,6 +356,21 @@ export function applyGrantKeyword(
     }
     case "blood_vessel_on_strike": {
       return { state, detail: "blood_vessel_on_strike" };
+    }
+    case "attack_ride_replace": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      const withChoice = beginKamenRideMorphChoice(
+        state,
+        ctx.playerId,
+        instanceId,
+        ctx.sourceCardId,
+        ctx.effectId,
+        ctx.phasePlayerId,
+        ctx.optional ?? true,
+      );
+      if (!withChoice) return { state, detail: "attack_ride_no_candidates" };
+      return { state: withChoice, detail: "kamen_ride_morph" };
     }
     case "prevent_leave_with_power_cost": {
       if (!ctx.leavingCardId) return { state };

@@ -110,6 +110,22 @@ export function playStarterMatchUntilEnd(
     if (action.type === "battle") battles += 1;
 
     const result = applyAction(state, action);
+    if (
+      !result.ok &&
+      action.type === "resolve_command_payment" &&
+      state.pendingCommandPayment?.playerId === action.playerId
+    ) {
+      const cancelled = applyAction(state, {
+        type: "cancel_command_payment",
+        playerId: action.playerId,
+      });
+      if (cancelled.ok) {
+        state = cancelled.state;
+        actionCounts.cancel_command_payment =
+          (actionCounts.cancel_command_payment ?? 0) + 1;
+        continue;
+      }
+    }
     if (!result.ok) {
       return {
         state,

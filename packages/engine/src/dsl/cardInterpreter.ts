@@ -261,6 +261,7 @@ function applyPrimitive(
         operationInstanceId: ctx.operationInstanceId,
         extraInstanceIds: ctx.extraInstanceIds,
         leavingCardId: ctx.leavingCardId,
+        optional: ctx.optional,
       }, primitive.keyword);
       return { state: result.state, detail: result.detail };
     }

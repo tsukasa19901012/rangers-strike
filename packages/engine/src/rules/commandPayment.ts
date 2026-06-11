@@ -47,6 +47,7 @@ import {
   hasCommandForCardUse,
   requiredBattleEntryHolds,
 } from "./restrictions";
+import { canCompleteRushAfterCommandPayment } from "./rushDeclaration";
 
 /** 通常ラッシュ1回ごとに、リリース中コマンドからホールド支払いができるか。 */
 export function canPayRushCategoryHold(
@@ -622,8 +623,10 @@ export function continueAfterMothershipPayment(
     {
       type: "rush",
       zordMaterialInstanceId: cont.zordMaterialInstanceId,
+      zordMaterialInstanceIds: cont.zordMaterialInstanceIds,
       zordMaterialDestination: cont.zordMaterialDestination,
       zordMothershipHoldInstanceIds: commandInstanceIds,
+      zordExtraCommandHoldInstanceIds: cont.zordExtraCommandHoldInstanceIds,
     },
     false,
   );
@@ -681,8 +684,10 @@ export function buildPaymentFromInitiateAction(
     const continuation: CommandPaymentContinuation = {
       type: "rush",
       zordMaterialInstanceId: action.zordMaterialInstanceId,
+      zordMaterialInstanceIds: action.zordMaterialInstanceIds,
       zordMaterialDestination: action.zordMaterialDestination,
       zordMothershipHoldInstanceIds: action.zordMothershipHoldInstanceIds,
+      zordExtraCommandHoldInstanceIds: action.zordExtraCommandHoldInstanceIds,
     };
     return buildCategoryPayment(
       state,
@@ -820,7 +825,6 @@ export function isResolveCommandPaymentLegal(
   const cont = pending.continuation;
   if (cont.type !== "rush") return true;
 
-  const player = resolved.state.players[pending.playerId];
   const def = getDefinition(resolved.state.definitions, pending.sourceCardId);
   if (!def || !isRushable(def)) return false;
 
@@ -829,16 +833,17 @@ export function isResolveCommandPaymentLegal(
       ? action.commandInstanceIds
       : cont.zordMothershipHoldInstanceIds;
 
-  return canRushUnitExceptCommandHold(
-    player,
-    resolved.state.definitions,
-    def,
+  return canCompleteRushAfterCommandPayment(
+    resolved.state,
+    pending.playerId,
     pending.sourceInstanceId,
-    cont.zordMaterialInstanceId,
-    holdIds,
-    cont.zordMaterialDestination,
-    undefined,
-    { ...resolved.state, playerId: pending.playerId },
+    {
+      zordMaterialInstanceId: cont.zordMaterialInstanceId,
+      zordMaterialInstanceIds: cont.zordMaterialInstanceIds,
+      zordMothershipHoldInstanceIds: holdIds,
+      zordExtraCommandHoldInstanceIds: cont.zordExtraCommandHoldInstanceIds,
+      zordMaterialDestination: cont.zordMaterialDestination,
+    },
   );
 }
 

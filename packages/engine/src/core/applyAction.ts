@@ -335,7 +335,11 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   return needsOperationTarget(cardId);
 }
 
-export function applyAction(state: GameState, action: GameAction): ActionResult {
+export function applyAction(
+  state: GameState,
+  action: GameAction,
+  options?: { trustLegality?: boolean },
+): ActionResult {
   if (state.winner) return fail("game_already_over");
   if (
     action.type === "end_phase" &&
@@ -370,7 +374,7 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
   ) {
     return fail("pending_damage_payment");
   }
-  if (!isLegalAction(state, action)) return fail("illegal_action");
+  if (!options?.trustLegality && !isLegalAction(state, action)) return fail("illegal_action");
 
   const playerId = action.playerId;
   const player = state.players[playerId];
@@ -662,14 +666,20 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
           pending.kind === "mothership_hold"
             ? action.commandInstanceIds
             : cont.zordMothershipHoldInstanceIds;
-        return applyAction(nextState, {
-          type: "rush",
-          playerId,
-          instanceId: pending.sourceInstanceId,
-          zordMaterialInstanceId: cont.zordMaterialInstanceId,
-          zordMaterialDestination: cont.zordMaterialDestination,
-          zordMothershipHoldInstanceIds: holdIds,
-        });
+        return applyAction(
+          nextState,
+          {
+            type: "rush",
+            playerId,
+            instanceId: pending.sourceInstanceId,
+            zordMaterialInstanceId: cont.zordMaterialInstanceId,
+            zordMaterialInstanceIds: cont.zordMaterialInstanceIds,
+            zordMaterialDestination: cont.zordMaterialDestination,
+            zordMothershipHoldInstanceIds: holdIds,
+            zordExtraCommandHoldInstanceIds: cont.zordExtraCommandHoldInstanceIds,
+          },
+          { trustLegality: true },
+        );
       }
       if (cont.type === "play_counter") {
         return applyAction(nextState, {
@@ -1573,7 +1583,24 @@ export function applyAction(state: GameState, action: GameAction): ActionResult 
         return ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice"));
       }
       const result = applyEffectChoiceSelect(state, playerId, action.instanceId);
-      if ("error" in result) return fail(result.error);
+      if ("error" in result) {
+        if (
+          result.error === "invalid_target" &&
+          pending?.optional &&
+          pending.effectId !== "earth_force"
+        ) {
+          const skipped = skipEffectChoice(state, playerId);
+          if ("error" in skipped) return fail(skipped.error);
+          return withEndPhaseAutoFinalize(
+            withStartPhaseAutoAdvance(
+              ok(skipped.state, skipped.log ?? buildSimpleLogEntry(playerId, "skip_effect_choice")),
+              playerId,
+            ),
+            playerId,
+          );
+        }
+        return fail(result.error);
+      }
       let nextState = result.state;
       if (!nextState.pendingEffectChoice && pending?.effectId === "falcon_claw") {
         nextState = continueBattleToRushEffectQueue(nextState);

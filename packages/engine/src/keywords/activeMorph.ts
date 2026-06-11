@@ -3,6 +3,8 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 import { getDefinition } from "../core/catalog";
 import { findInZone, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
+import { openEffectChoice } from "../rules/pendingChoices";
+import { resolveRidingComboOnRideOff } from "../rules/ridingComboEffects";
 import {
   featuresExactlyMatch,
   listMorphReplacementCandidates,
@@ -209,4 +211,110 @@ export function applyKamenRideMorphSwap(
     replacementInstanceId,
     "kamen_ride_morph",
   );
+}
+
+/** カメンライド NC: 【アタックライド】持ちユニットへの置換選択を開く。 */
+export function beginKamenRideMorphChoice(
+  state: GameState,
+  playerId: PlayerId,
+  fieldUnitInstanceId: string,
+  sourceCardId: string,
+  effectId: string,
+  phasePlayerId: PlayerId,
+  optional = true,
+): GameState | null {
+  const player = state.players[playerId];
+  const fieldFound =
+    findInZone(player, "battle", fieldUnitInstanceId) ??
+    findInZone(player, "rush", fieldUnitInstanceId);
+  if (!fieldFound) return null;
+
+  const candidates = listActiveMorphCandidatesByEffectName(
+    player,
+    state.definitions,
+    "アタックライド",
+    fieldUnitInstanceId,
+  );
+  if (candidates.length === 0) return null;
+
+  return openEffectChoice(state, {
+    playerId,
+    effectId: "kamen_ride_morph",
+    sourceCardId,
+    sourceInstanceId: fieldUnitInstanceId,
+    kind: "select_unit",
+    phasePlayerId,
+    optional,
+    validInstanceIds: candidates.map((c) => c.instanceId),
+  });
+}
+
+function findFieldUnitAfterSwap(
+  player: PlayerState,
+  instanceId: string,
+): CardInstance | null {
+  return (
+    findInZone(player, "battle", instanceId)?.card ??
+    findInZone(player, "rush", instanceId)?.card ??
+    null
+  );
+}
+
+/** カメンライド置換を確定し、RC（ライドオフ相当）を続行する。 */
+export function resolveKamenRideMorphChoice(
+  state: GameState,
+  playerId: PlayerId,
+  replacementInstanceId: string,
+): { state: GameState; log?: string; extraLogs?: string[] } | { error: string } {
+  const pending = state.pendingEffectChoice;
+  if (
+    !pending ||
+    pending.effectId !== "kamen_ride_morph" ||
+    pending.playerId !== playerId
+  ) {
+    return { error: "no_pending_kamen_ride" };
+  }
+  const fieldUnitInstanceId = pending.sourceInstanceId;
+  if (!fieldUnitInstanceId) return { error: "invalid_target" };
+
+  const swap = applyKamenRideMorphSwap(
+    state,
+    playerId,
+    fieldUnitInstanceId,
+    replacementInstanceId,
+  );
+  if ("error" in swap) return swap;
+
+  const player = swap.state.players[playerId];
+  const entering = findFieldUnitAfterSwap(player, replacementInstanceId);
+  if (!entering) {
+    return {
+      state: { ...swap.state, pendingEffectChoice: undefined },
+      log: swap.log,
+    };
+  }
+
+  const rc = resolveRidingComboOnRideOff(swap.state, playerId, entering);
+  return {
+    state: { ...rc.state, pendingEffectChoice: undefined },
+    log: swap.log,
+    extraLogs: rc.logs,
+  };
+}
+
+/** 能動モーフ置換候補がまだ有効か（effect choice 用）。 */
+export function isKamenRideMorphTargetValid(
+  state: GameState,
+  playerId: PlayerId,
+  fieldUnitInstanceId: string,
+  replacementInstanceId: string,
+): boolean {
+  const player = state.players[playerId];
+  const candidates = listActiveMorphCandidatesByEffectName(
+    player,
+    state.definitions,
+    "アタックライド",
+    fieldUnitInstanceId,
+  );
+  return candidates.some((c) => c.instanceId === replacementInstanceId);
 }

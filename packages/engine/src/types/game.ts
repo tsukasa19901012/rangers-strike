@@ -325,8 +325,10 @@ export type CommandPaymentContinuation =
   | {
       type: "rush";
       zordMaterialInstanceId?: string;
+      zordMaterialInstanceIds?: string[];
       zordMaterialDestination?: "command" | "discard";
       zordMothershipHoldInstanceIds?: string[];
+      zordExtraCommandHoldInstanceIds?: string[];
     }
   | {
       type: "play_operation";

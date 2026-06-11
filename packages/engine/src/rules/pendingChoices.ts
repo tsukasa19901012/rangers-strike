@@ -40,6 +40,11 @@ import {
   continueMorphAfterReplacement,
   resolveMorphReplacementChoice,
 } from "../keywords/morphReaction";
+import {
+  isKamenRideMorphTargetValid,
+  resolveKamenRideMorphChoice,
+} from "../keywords/activeMorph";
+import { listMorphReplacementCandidates } from "../keywords/morph";
 import { prepareWingUnitReturnedToRush } from "../keywords/battleKeywords";
 
 export type RequestDrawResult =
@@ -188,6 +193,69 @@ function collectEnemyRushSmallIds(state: GameState, playerId: PlayerId): string[
   return state.players[enemyId].rush
     .filter((c) => getDefinition(state.definitions, c.cardId)?.size === "S")
     .map((c) => c.instanceId);
+}
+
+export function isValidEffectChoiceTarget(
+  state: GameState,
+  pending: PendingEffectChoice,
+  instanceId: string,
+): boolean {
+  if (pending.effectId === "morph_replacement" && pending.morphMeta?.activeMorphUnitInstanceId) {
+    const player = state.players[pending.playerId];
+    const morphUnit =
+      findInZone(player, "rush", pending.morphMeta.activeMorphUnitInstanceId)?.card ??
+      findInZone(player, "battle", pending.morphMeta.activeMorphUnitInstanceId)?.card;
+    if (!morphUnit) return false;
+    return listMorphReplacementCandidates(player, state.definitions, morphUnit.cardId).some(
+      (candidate) => candidate.instanceId === instanceId,
+    );
+  }
+  if (pending.effectId === "kamen_ride_morph" && pending.sourceInstanceId) {
+    return isKamenRideMorphTargetValid(
+      state,
+      pending.playerId,
+      pending.sourceInstanceId,
+      instanceId,
+    );
+  }
+  if (!pending.validInstanceIds.includes(instanceId)) return false;
+
+  if (pending.kind === "select_unit") {
+    const dest = pending.unitDestination ?? "discard";
+    if (dest === "hand_from_discard") {
+      return !!findInZone(state.players[pending.playerId], "discard", instanceId);
+    }
+    if (dest === "hand_from_power") {
+      return !!findInZone(state.players[pending.playerId], "power", instanceId);
+    }
+    if (pending.effectId === "battle_entry_discard") {
+      const found = findInZone(state.players[pending.playerId], "rush", instanceId);
+      return !!found && pending.sourceInstanceId !== instanceId;
+    }
+    if (dest === "swap_battle" && pending.sourceInstanceId) {
+      const player = state.players[pending.playerId];
+      return (
+        !!findInZone(player, "battle", instanceId) &&
+        !!findInZone(player, "rush", pending.sourceInstanceId)
+      );
+    }
+    const located = findCardOwner(state, instanceId);
+    if (!located) return false;
+    if (dest === "rush" || dest === "enemy_command") {
+      return located.zone === "battle";
+    }
+    if (dest === "enemy_battle") {
+      return located.zone === "rush";
+    }
+    return true;
+  }
+
+  if (pending.kind === "select_unit_step" && pending.effectId === "string_fist") {
+    const located = findCardOwner(state, instanceId);
+    return !!located && located.zone === "battle";
+  }
+
+  return true;
 }
 
 export function openEffectChoice(
@@ -846,6 +914,9 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
       ),
     };
   }
+  if (pending.effectId === "kamen_ride_morph") {
+    return finishChoice(state, pending, "skipped");
+  }
   return finishChoice(state, pending, "skipped");
 }
 
@@ -892,6 +963,18 @@ export function applyEffectChoiceSelect(
     const result = resolveMorphReplacementChoice(state, playerId, instanceId);
     if ("error" in result) return { error: result.error };
     return { state: result.state, log: result.log };
+  }
+
+  if (pending.effectId === "kamen_ride_morph") {
+    const result = resolveKamenRideMorphChoice(state, playerId, instanceId);
+    if ("error" in result) return { error: result.error };
+    let nextState = promoteDeferredBattleEntry(
+      clearChoice(result.state, pending.phasePlayerId),
+    );
+    if (result.extraLogs?.length) {
+      nextState = { ...nextState, log: [...nextState.log, ...result.extraLogs] };
+    }
+    return { state: nextState, log: result.log };
   }
 
   const dslResumeSimpleKinds = new Set([

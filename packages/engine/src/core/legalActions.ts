@@ -53,13 +53,14 @@ import {
   isResolveCommandPaymentLegal,
   buildEffectHoldPayment,
   needsEffectHoldPayment,
+  validatePaymentSelection,
 } from "../rules/commandPayment";
 import { hasCommandForCardUse } from "../rules/restrictions";
 import {
   canBeginZordSetup,
   listZordSetupResolveActions,
 } from "../rules/zordSetup";
-import { canToggleBpBudgetTarget } from "../rules/pendingChoices";
+import { canToggleBpBudgetTarget, isValidEffectChoiceTarget } from "../rules/pendingChoices";
 import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart } from "../rules/startPhase";
 import {
   listZordRushPaymentVariants,
@@ -87,6 +88,7 @@ import { getStackActorPlayerId, hasOpenReactionWindow } from "../rules/effectSta
 import { getCardEffect } from "@rangers-strike/cards";
 import { isHidoraEggUsed } from "../rules/turnModifiers";
 import { listValidChaseVehicleIds } from "../keywords/chase";
+import { canDeclareRush } from "../rules/rushDeclaration";
 
 function assertActive(state: GameState, playerId: PlayerId): boolean {
   return state.activePlayer === playerId && state.winner === null;
@@ -533,48 +535,6 @@ function appendBattleDanceActions(
 
 const OPERATION_PHASES = new Set<GameState["phase"]>(["rush"]);
 
-/** カテゴリ支払い済み、またはカテゴリ不要なユニットのみ直接 rush 可能。 */
-function canDeclareRush(
-  state: GameState,
-  playerId: PlayerId,
-  player: PlayerState,
-  definitions: GameState["definitions"],
-  definition: CardDefinition,
-  instanceId: string,
-  zord?: {
-    zordMaterialInstanceId?: string;
-    zordMaterialInstanceIds?: string[];
-    zordMothershipHoldInstanceIds?: string[];
-    zordExtraCommandHoldInstanceIds?: string[];
-    zordMaterialDestination?: import("../types/actions").ZordMaterialDestination;
-  },
-): boolean {
-  const powerBudget = darkDealRushPowerBudget(state, playerId, player, definition);
-  if (
-    !canRushUnitExceptCommandHold(
-      player,
-      definitions,
-      definition,
-      instanceId,
-      zord?.zordMaterialInstanceId,
-      zord?.zordMothershipHoldInstanceIds,
-      zord?.zordMaterialDestination,
-      powerBudget,
-      { ...state, playerId },
-      zord?.zordMaterialInstanceIds,
-      zord?.zordExtraCommandHoldInstanceIds,
-    )
-  ) {
-    return false;
-  }
-  const categories = cardCategories(definition);
-  if (categories.length === 0) return true;
-  if (isShironLightRushTarget(player, instanceId)) return true;
-  // カテゴリ支払い済み（resolve_command_payment 後）— ホールド済みでも rush 継続可
-  if (isCostWindowSatisfied(player, "rush_category")) return true;
-  return false;
-}
-
 /** カテゴリホールド済みで即ラッシュ可能な手札のゾード。 */
 export function findDirectZordRushAction(
   state: GameState,
@@ -970,6 +930,7 @@ function appendEffectChoiceActions(
   }
 
   for (const instanceId of pending.validInstanceIds) {
+    if (!isValidEffectChoiceTarget(state, pending, instanceId)) continue;
     actions.push({ type: "resolve_effect_choice", playerId, instanceId });
   }
 }
@@ -1097,7 +1058,23 @@ export function getLegalActions(state: GameState): GameAction[] {
   }
 
   if (state.pendingCommandPayment) {
-    if (state.pendingCommandPayment.playerId === playerId) {
+    const pending = state.pendingCommandPayment;
+    if (pending.playerId === playerId) {
+      const ids = pending.validInstanceIds.slice(0, pending.totalNeeded);
+      if (
+        ids.length >= pending.totalNeeded &&
+        validatePaymentSelection(state, pending, ids) === null &&
+        isResolveCommandPaymentLegal(state, {
+          playerId,
+          commandInstanceIds: ids,
+        })
+      ) {
+        actions.push({
+          type: "resolve_command_payment",
+          playerId,
+          commandInstanceIds: ids,
+        });
+      }
       actions.push({ type: "cancel_command_payment", playerId });
     }
     return actions;
@@ -1430,6 +1407,21 @@ export function getLegalActions(state: GameState): GameAction[] {
     case "end":
       actions.push({ type: "end_phase", playerId });
       break;
+  }
+
+  if (
+    actions.length === 0 &&
+    state.pendingEffectChoice?.optional &&
+    state.pendingEffectChoice.playerId === playerId
+  ) {
+    actions.push({ type: "skip_effect_choice", playerId });
+  }
+
+  if (
+    actions.length === 0 &&
+    state.pendingMorph?.defenderPlayerId === playerId
+  ) {
+    actions.push({ type: "pass_morph_reaction", playerId });
   }
 
   return actions;

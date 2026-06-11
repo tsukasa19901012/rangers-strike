@@ -39,7 +39,10 @@ export {
 export {
   applyActiveFeatureMorphSwap,
   applyKamenRideMorphSwap,
+  beginKamenRideMorphChoice,
+  isKamenRideMorphTargetValid,
   listActiveMorphCandidatesByEffectName,
+  resolveKamenRideMorphChoice,
 } from "./activeMorph";
 export {
   blastBypassesRushAdditionalCondition,
