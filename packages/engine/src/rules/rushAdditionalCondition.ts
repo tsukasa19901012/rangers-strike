@@ -1,7 +1,8 @@
 import type { RushAdditionalCondition } from "@rangers-strike/cards";
-import { isSmallUnit, resolveRushAdditionalCondition } from "@rangers-strike/cards";
+import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
+import { isSmallUnit } from "../core/catalog";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { playerHasAllyWithLeadOnField } from "./callLead";
