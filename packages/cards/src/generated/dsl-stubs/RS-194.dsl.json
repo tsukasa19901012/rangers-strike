@@ -42,5 +42,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ダイナマッハ＋ダイナモビル＋ダイナギャリー",
+      "partnerCardIds": [
+        "RS-195",
+        "RS-196",
+        "RS-197"
+      ]
+    }
+  ]
 }

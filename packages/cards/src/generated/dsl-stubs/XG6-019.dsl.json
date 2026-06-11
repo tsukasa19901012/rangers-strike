@@ -57,5 +57,17 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン ※このカードの追加条件は、自軍捨札が7枚以上あるとき、次のように変更される→ 特徴「イエロー」を持つ自軍Sユニット1体を捨札にする",
+      "partnerCardIds": [
+        "RS-118",
+        "RS-119",
+        "RS-120",
+        "RS-121"
+      ]
+    }
+  ]
 }

@@ -378,6 +378,7 @@ export function isNumericComboNumber(
   return typeof comboNumber === "number";
 }
 
+/** マルチカテゴリは双方が持つ全カテゴリを満たすときのみ同一（atwiki 1559）。 */
 export function partnerCategoryMatches(
   unitCategory: Category | Category[],
   partnerCategory: Category | Category[],
@@ -386,5 +387,8 @@ export function partnerCategoryMatches(
   const partnerCats = Array.isArray(partnerCategory)
     ? partnerCategory
     : [partnerCategory];
-  return unitCats.some((c) => partnerCats.includes(c));
+  return (
+    unitCats.every((c) => partnerCats.includes(c)) &&
+    partnerCats.every((c) => unitCats.includes(c))
+  );
 }

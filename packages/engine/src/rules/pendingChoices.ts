@@ -25,6 +25,12 @@ import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
 import { continueDslAfterChoice } from "../dsl/cardInterpreter";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
+import { applyCastoffDeckRush, continueCastoffAfterHold } from "./castoff";
+import {
+  beginAssaultVectorDestroy,
+  beginDinoSlasherDiscard,
+} from "./zoneCategoryEffects";
+import { countDistinctCategoriesInCommandZone } from "./zoneCategoryLimit";
 import {
   autoHoldForBattleEntry,
   canMoveUnitToBattle,
@@ -1295,6 +1301,12 @@ export function applyEffectChoiceSelect(
       }
 
       let nextState = { ...state, ...updatePlayer(state, owner, nextPlayer) };
+      if (pending.effectId === "castoff_hold_command") {
+        const continued = continueCastoffAfterHold(nextState, pending);
+        if (continued) {
+          return { state: continued };
+        }
+      }
       if (pending.effectId === "shift_up" && pending.sourceInstanceId) {
         const actor = nextState.players[pending.playerId];
         nextState = {
@@ -1308,6 +1320,30 @@ export function applyEffectChoiceSelect(
             ),
           }),
         };
+      }
+
+      if (
+        pending.effectId === "dino_slasher_category_balance" &&
+        pending.zoneCategoryBalanceOwnerId !== undefined &&
+        pending.zoneCategoryTargetCount !== undefined
+      ) {
+        const ownerId = pending.zoneCategoryBalanceOwnerId;
+        const enemyCount = countDistinctCategoriesInCommandZone(
+          nextState.players[pending.playerId],
+          nextState.definitions,
+        );
+        if (enemyCount > pending.zoneCategoryTargetCount) {
+          const continued = beginDinoSlasherDiscard(nextState, {
+            effectOwnerId: ownerId,
+            effectId: pending.effectId,
+            sourceCardId: pending.sourceCardId,
+            sourceInstanceId: pending.sourceInstanceId,
+            phasePlayerId: pending.phasePlayerId,
+          });
+          if (continued) {
+            return { state: continued };
+          }
+        }
       }
 
       return finishChoice(
@@ -1522,6 +1558,20 @@ export function applyEffectChoiceSelect(
           deck: shuffleDeck([...rest, ...deckTail]),
           hand: [...player.hand, kept],
         };
+      } else if (
+        pending.unitDestination === "rush" &&
+        pending.effectId === "castoff_deck_rush" &&
+        pending.castoffMfInstanceId
+      ) {
+        const castoff = applyCastoffDeckRush(
+          state,
+          pending.playerId,
+          instanceId,
+          pending.castoffMfInstanceId,
+          pending.phasePlayerId,
+        );
+        if (!castoff) return { error: "invalid_target" };
+        return finishChoice(castoff.state, pending, castoff.log ?? cardName(state.definitions, kept.cardId));
       } else if (pending.unitDestination === "rush") {
         nextPlayer = {
           ...player,

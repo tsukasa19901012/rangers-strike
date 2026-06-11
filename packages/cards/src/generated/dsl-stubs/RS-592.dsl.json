@@ -42,5 +42,15 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―エンジンオー＋ガンバルオー",
+      "partnerCardIds": [
+        "RS-515",
+        "RS-591"
+      ]
+    }
+  ]
 }

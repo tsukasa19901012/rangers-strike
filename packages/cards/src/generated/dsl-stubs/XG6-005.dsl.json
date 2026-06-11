@@ -56,5 +56,14 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―マジフェニックス＋一角聖馬ユニゴルオン ※これをラッシュしたとき、自分は1枚ドローする。",
+      "partnerCardIds": [
+        "XG7-014"
+      ]
+    }
+  ]
 }

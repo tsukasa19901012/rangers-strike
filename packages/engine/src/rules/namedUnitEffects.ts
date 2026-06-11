@@ -11,6 +11,7 @@ import {
   getDefinition,
   unitBp,
 } from "../core/catalog";
+import { attackedBpBoostAmount } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "./fieldAuras";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import {
@@ -157,7 +158,8 @@ export function battleDefenderBp(
 
   return (
     base +
-    passiveNamedFieldBpBonus(state, defenderOwner, defenderFound.card, "defending")
+    passiveNamedFieldBpBonus(state, defenderOwner, defenderFound.card, "defending") +
+    attackedBpBoostAmount(defenderFound.card.cardId)
   );
 }
 

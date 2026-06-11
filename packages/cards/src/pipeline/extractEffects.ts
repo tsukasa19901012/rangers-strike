@@ -814,8 +814,30 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "castoff_on_rush",
+    test: (body) =>
+      /OTを持つ自軍コマンド.*ホールド.*山札.*ラッシュエリアに出す/.test(body),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "castoff_on_rush",
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: /してもよい|発動できる/.test(body),
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "castoff_on_rush",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "castoff_on_rush",
+    }),
+  },
+  {
     pattern: "hold_self_command_on_rush",
-    test: (body) => /ラッシュしたとき.*自軍コマンドを.*ホールド/.test(body),
+    test: (body) =>
+      /ラッシュしたとき.*自軍コマンドを.*ホールド/.test(body) &&
+      !/山札.*ラッシュエリアに出す/.test(body),
     build: (body, segment) => ({
       id: segment.name ? slugifyEffectId(segment.name) : "hold_self_command_on_rush",
       name: segment.name,
@@ -5784,8 +5806,73 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "dino_slasher_category_balance",
+    test: (body) =>
+      /敵軍コマンドゾーンのカテゴリの数が、自軍コマンドゾーンのカテゴリの数より多ければ/.test(
+        body,
+      ),
+    build: (body, segment) => {
+      const sp = body.match(/「SP(\d+)」/)?.[1];
+      const effects: Array<{ type: "grant_keyword"; keyword: string; duration: "turn" }> = [];
+      if (sp) {
+        effects.push({ type: "grant_keyword", keyword: `SP${sp}`, duration: "turn" });
+      }
+      effects.push({
+        type: "grant_keyword",
+        keyword: "dino_slasher_category_balance",
+        duration: "turn",
+      });
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : "dino_slasher",
+        name: segment.name,
+        text: body,
+        trigger: { type: "nc" },
+        effects,
+        matchedPattern: "dino_slasher_category_balance",
+      };
+    },
+  },
+  {
+    pattern: "assault_vector_destroy",
+    test: (body) =>
+      /ナンバーを持たないSユニットを、敵軍コマンドゾーンのカテゴリの数まで/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "assault_vector",
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "assault_vector_destroy",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "assault_vector_destroy",
+    }),
+  },
+  {
+    pattern: "blood_vessel_on_strike",
+    test: (body) =>
+      /モーフを持つユニットカードがあれば、それを選びダメージにする/.test(body),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "blood_vessel",
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_strike" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "blood_vessel_on_strike",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "blood_vessel_on_strike",
+    }),
+  },
+  {
     pattern: "category_modify",
-    test: (body) => (/カテゴリ/.test(body)),
+    test: (body) => (/カテゴリ/.test(body) && !/コマンドゾーンのカテゴリの数/.test(body)),
     build: (body, segment, trigger) => ({
       id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
       name: segment.name,

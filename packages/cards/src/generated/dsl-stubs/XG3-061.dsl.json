@@ -37,25 +37,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_command",
-          "valid": {
-            "type": "zone",
-            "zone": "command",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "hold_command",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "castoff_on_rush",
+          "duration": "turn"
         }
       ]
     }

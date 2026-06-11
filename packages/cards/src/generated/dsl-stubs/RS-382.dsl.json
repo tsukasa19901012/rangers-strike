@@ -42,5 +42,18 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―レッドラダー＋ブルースローワー＋グリーンホバー＋イエローアーマー＋ピンクエイダー",
+      "partnerCardIds": [
+        "RS-383",
+        "RS-384",
+        "RS-385",
+        "RS-386",
+        "RS-387"
+      ]
+    }
+  ]
 }

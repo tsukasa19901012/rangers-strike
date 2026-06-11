@@ -391,6 +391,7 @@ describe("prism power", () => {
   it("allows rush with prism power holding two released commands", () => {
     const unit = inst("TST-UNIT-2", "u1");
     const op = inst("RS-010", "op1");
+    const wbCmd = inst("TST-OP", "wb");
     const cmd1 = inst("TST-OP-ET", "c1");
     const cmd2 = inst("TST-OP-ET", "c2");
 
@@ -399,7 +400,7 @@ describe("prism power", () => {
       player1: {
         hand: [unit],
         power: [inst("TST-OP", "p1"), inst("TST-OP", "p2"), inst("TST-OP", "p3")],
-        command: [cmd1, cmd2],
+        command: [wbCmd, cmd1, cmd2],
         operation: [op],
       },
     });

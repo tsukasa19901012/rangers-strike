@@ -29,6 +29,8 @@ export type NamedEffectTrigger =
   | { type: "while_in_field" }
   /** 自分がターンを終えるとき（バトルエリア等）。 */
   | { type: "on_turn_end" }
+  /** 自軍ユニットがストライクしたとき（相手ターン中の誘発等）。 */
+  | { type: "on_strike" }
   /** その他条件付き文面。未実装。 */
   | { type: "conditional" }
   /** オペレーションカードの発動タイミング。 */

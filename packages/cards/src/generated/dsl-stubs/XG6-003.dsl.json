@@ -68,6 +68,13 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―アバレンオー＋キラーオー ※ブレイカー ※ウイング",
+      "partnerCardIds": [
+        "RS-050"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※ブレイカー",
       "rule": "breaker"

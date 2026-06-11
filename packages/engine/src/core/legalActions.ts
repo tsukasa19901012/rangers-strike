@@ -17,6 +17,7 @@ import {
 import { collectTargetInstanceIds } from "../dsl/targetSelectors";
 import {
   canPlayOperation,
+  canPlayOperationExceptCommandHold,
   canRushUnitExceptCommandHold,
   cardCategories,
   getDefinition,
@@ -136,6 +137,7 @@ function appendCounterCategoryPaymentActions(
 
   const paymentOptions = getCategoryPaymentOptions(state, playerId, categories, {
     perRushPayment: true,
+    callLeadKind: "lead",
   });
   if (!paymentOptions) return;
 
@@ -621,6 +623,56 @@ export function findDirectZordRushAction(
   return null;
 }
 
+function appendOperationCategoryPaymentActions(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): void {
+  const player = state.players[playerId];
+
+  const pushPayment = (
+    instanceId: string,
+    targetInstanceId?: string,
+    extraInstanceId?: string,
+    prismSubstitute?: boolean,
+  ) => {
+    const action: GameAction = {
+      type: "initiate_command_payment",
+      playerId,
+      kind: "category_use",
+      sourceInstanceId: instanceId,
+      prismSubstitute,
+      targetInstanceId,
+      extraInstanceId,
+    };
+    if (isInitiateCommandPaymentLegal(state, action)) {
+      actions.push(action);
+    }
+  };
+
+  for (const card of player.hand) {
+    if (!canPlayOperationCard(state.definitions, card.cardId)) continue;
+    const definition = getDefinition(state.definitions, card.cardId);
+    if (!definition || definition.type !== "operation") continue;
+    if (canPlayOperation(state, playerId, definition)) continue;
+    if (!canPlayOperationExceptCommandHold(state, playerId, definition)) continue;
+
+    const categories = cardCategories(definition);
+    if (categories.length === 0) continue;
+
+    const options = getCategoryPaymentOptions(state, playerId, categories, {
+      perRushPayment: true,
+      callLeadKind: "lead",
+    });
+    if (!options) continue;
+
+    pushPayment(card.instanceId, undefined, undefined, options.prismSubstitute);
+    if (options.prismAvailable && !options.prismSubstitute) {
+      pushPayment(card.instanceId, undefined, undefined, true);
+    }
+  }
+}
+
 function appendRushCategoryPaymentActions(
   state: GameState,
   playerId: PlayerId,
@@ -690,6 +742,7 @@ function appendRushCategoryPaymentActions(
         }
         const options = getCategoryPaymentOptions(state, playerId, categories, {
           perRushPayment: true,
+          callLeadKind: "call",
         });
         if (!options) continue;
         pushPayment(card.instanceId, undefined, options.prismSubstitute);
@@ -729,6 +782,7 @@ function appendRushCategoryPaymentActions(
           }
           const options = getCategoryPaymentOptions(state, playerId, categories, {
             perRushPayment: true,
+            callLeadKind: "call",
           });
           if (!options) continue;
           pushPayment(card.instanceId, variant, options.prismSubstitute);
@@ -772,6 +826,7 @@ function appendRushCategoryPaymentActions(
         }
         const options = getCategoryPaymentOptions(state, playerId, categories, {
           perRushPayment: true,
+          callLeadKind: "call",
         });
         if (!options) continue;
         pushPayment(card.instanceId, zord, options.prismSubstitute);
@@ -800,6 +855,7 @@ function appendRushCategoryPaymentActions(
       }
       const options = getCategoryPaymentOptions(state, playerId, categories, {
         perRushPayment: true,
+        callLeadKind: "call",
       });
       if (!options) continue;
       pushPayment(card.instanceId, undefined, options.prismSubstitute);
@@ -1197,6 +1253,7 @@ export function getLegalActions(state: GameState): GameAction[] {
       appendRushCategoryPaymentActions(state, playerId, actions);
       appendZordSetupActions(state, playerId, actions);
       appendOperationActions(state, playerId, actions);
+      appendOperationCategoryPaymentActions(state, playerId, actions);
       appendHidoraEggActions(state, playerId, actions);
       appendShironLightActions(state, playerId, actions);
       actions.push({ type: "end_phase", playerId });

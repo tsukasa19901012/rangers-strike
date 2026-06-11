@@ -55,6 +55,14 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―グランディオン＋シーレオン＋スカイオン ※リードMA",
+      "partnerCardIds": [
+        "XG6-026",
+        "XG6-027"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※リードMA",
       "rule": "lead_MA"

@@ -18,6 +18,12 @@ import {
   startRadialHammerChoice,
   startSelectCommandChoice,
 } from "../rules/pendingChoices";
+import { beginCastoffOnRush } from "../rules/castoff";
+import {
+  beginAssaultVectorDestroy,
+  beginDinoSlasherDiscard,
+  beginOpponentHoldByCategoryCount,
+} from "../rules/zoneCategoryEffects";
 import { isValidOwnSmallUnitTarget } from "./targetSelectors";
 import {
   applyRuntimeGrantKeyword,
@@ -81,6 +87,11 @@ export const SUPPORTED_GRANT_KEYWORDS = new Set([
   "hold_all_enemy_commands",
   "destroy_striker_on_strike_self_discard",
   "strike_intercept_with_s_unit",
+  "castoff_on_rush",
+  "opponent_hold_commands_by_category",
+  "dino_slasher_category_balance",
+  "assault_vector_destroy",
+  "blood_vessel_on_strike",
   ...PASSIVE_GRANT_KEYWORDS,
 ]);
 
@@ -289,6 +300,53 @@ export function applyGrantKeyword(
         state: { ...state, ...updatePlayer(state, enemyId, { ...enemy, command }) },
         detail: "sky_magic_slash",
       };
+    }
+    case "castoff_on_rush": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      const withChoice = beginCastoffOnRush(state, {
+        playerId: ctx.playerId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: instanceId,
+        phasePlayerId: ctx.phasePlayerId,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: "castoff_on_rush" };
+    }
+    case "opponent_hold_commands_by_category": {
+      const withChoice = beginOpponentHoldByCategoryCount(state, {
+        effectOwnerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
+    }
+    case "dino_slasher_category_balance": {
+      const withChoice = beginDinoSlasherDiscard(state, {
+        effectOwnerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: "dino_slasher" };
+    }
+    case "assault_vector_destroy": {
+      const withChoice = beginAssaultVectorDestroy(state, {
+        effectOwnerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        phasePlayerId: ctx.phasePlayerId,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: "assault_vector" };
+    }
+    case "blood_vessel_on_strike": {
+      return { state, detail: "blood_vessel_on_strike" };
     }
     case "prevent_leave_with_power_cost": {
       if (!ctx.leavingCardId) return { state };

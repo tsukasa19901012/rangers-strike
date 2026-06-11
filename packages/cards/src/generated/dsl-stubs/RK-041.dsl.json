@@ -41,5 +41,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ベノスネーカー＋メタルゲラス＋エビルダイバー",
+      "partnerCardIds": [
+        "RK-040",
+        "RK-039",
+        "RK-037"
+      ]
+    }
+  ]
 }

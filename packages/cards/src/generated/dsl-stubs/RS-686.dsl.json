@@ -55,6 +55,14 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―トリプター＋ジェットラス＋ジャン・ボエール ※ウイング",
+      "partnerCardIds": [
+        "RS-668",
+        "RS-666"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※ウイング",
       "rule": "wing"

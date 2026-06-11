@@ -42,5 +42,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ゴーゴーファイヤー＋ゴーゴーポリス＋ゴーゴーエイダー",
+      "partnerCardIds": [
+        "RS-238",
+        "RS-239",
+        "RS-240"
+      ]
+    }
+  ]
 }

@@ -25,7 +25,12 @@
           "valid": {
             "type": "zone",
             "zone": "deck",
-            "owner": "self"
+            "owner": "self",
+            "filter": {
+              "size": "S",
+              "categoryExcept": "DA",
+              "noRushAdditionalCondition": true
+            }
           },
           "count": 1,
           "then": [

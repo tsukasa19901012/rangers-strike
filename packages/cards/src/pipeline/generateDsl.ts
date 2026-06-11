@@ -15,6 +15,7 @@ import {
   parseSp,
   sanitizeEffectId,
 } from "./metaMaps";
+import { parseZordFusionLine } from "./fusionPartners";
 
 const NOTE_RULE_BY_PATTERN: Record<string, string> = {
   wing_note: "wing",
@@ -35,8 +36,19 @@ const NOTE_RULE_BY_PATTERN: Record<string, string> = {
   require_command_hold_entry: "require_command_hold_entry",
 };
 
-function buildUnnamedRules(effects: ExtractedEffect[]): UnnamedRuleEntry[] {
+function buildUnnamedRules(
+  effects: ExtractedEffect[],
+  cardText: string,
+): UnnamedRuleEntry[] {
   const rules: UnnamedRuleEntry[] = [];
+  const fusion = parseZordFusionLine(cardText);
+  if (fusion) {
+    rules.push({
+      kind: "zord",
+      text: fusion.text,
+      partnerCardIds: fusion.partnerCardIds,
+    });
+  }
   for (const eff of effects) {
     if (!eff.text.startsWith("※")) continue;
     if (eff.matchedPattern === "destroy_self_damage") {
@@ -197,7 +209,7 @@ export function generateCardDocument(
     card.effects = effects;
   }
 
-  const unnamedRules = buildUnnamedRules(meaningfulEffects);
+  const unnamedRules = buildUnnamedRules(meaningfulEffects, card.text);
   if (unnamedRules.length > 0) {
     card.unnamedRules = unnamedRules;
   }

@@ -267,6 +267,16 @@ export type PendingEffectChoice = {
   shironLightMeta?: ShironLightMeta;
   /** DSL choose 解決後の続行データ。 */
   dslResume?: DslChoiceResume;
+  /** キャストオフ: 山札からラッシュするカード名。 */
+  castoffTargetName?: string;
+  /** キャストオフ: MF ユニット instanceId（ゾードダウン素材）。 */
+  castoffMfInstanceId?: string;
+  /** ゾーンカテゴリ数制限: 目標カテゴリ数（ダイノスラスター等）。 */
+  zoneCategoryTargetCount?: number;
+  zoneCategoryBalanceOwnerId?: PlayerId;
+  /** 破邪百獣剣: 撃破上限（敵コマンドゾーンのカテゴリ数）。 */
+  zoneCategoryDestroyLimit?: number;
+  zoneCategoryDestroyCount?: number;
 };
 
 /** @deprecated pendingEffectChoice を使用すること（ruin_survey）。 */

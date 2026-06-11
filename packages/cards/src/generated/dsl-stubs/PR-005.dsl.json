@@ -41,5 +41,18 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―パトストライカー＋パトジャイラー＋パトレーラー＋パトアーマー＋パトシグナー",
+      "partnerCardIds": [
+        "RS-043",
+        "RS-044",
+        "RS-045",
+        "RS-046",
+        "RS-047"
+      ]
+    }
+  ]
 }

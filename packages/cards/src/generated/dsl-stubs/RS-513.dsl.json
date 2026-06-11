@@ -41,5 +41,18 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―レッドサルダー＋ホワイトカーク＋ブルーロウガン＋イエロークマード＋ブラックガンマー",
+      "partnerCardIds": [
+        "RS-457",
+        "RS-458",
+        "RS-456",
+        "RS-459",
+        "RS-455"
+      ]
+    }
+  ]
 }

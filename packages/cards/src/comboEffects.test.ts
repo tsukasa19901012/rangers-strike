@@ -8,6 +8,22 @@ import {
   listWiredNumberComboCards,
   type NumberComboEffectId,
 } from "@rangers-strike/cards";
+import { partnerCategoryMatches } from "./comboEffects";
+
+describe("partnerCategoryMatches", () => {
+  it("matches identical single categories", () => {
+    expect(partnerCategoryMatches("WB", "WB")).toBe(true);
+  });
+
+  it("matches identical multi-category sets", () => {
+    expect(partnerCategoryMatches(["WB", "ET"], ["ET", "WB"])).toBe(true);
+  });
+
+  it("does not match when only one category overlaps", () => {
+    expect(partnerCategoryMatches(["WB", "ET"], "WB")).toBe(false);
+    expect(partnerCategoryMatches("WB", ["WB", "ET"])).toBe(false);
+  });
+});
 
 describe("comboEffects NC wiring", () => {
   const wired = listWiredNumberComboCards(getCardById);

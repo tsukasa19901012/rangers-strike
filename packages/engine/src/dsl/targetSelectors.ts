@@ -1,6 +1,7 @@
 import type { TargetSelector } from "@rangers-strike/cards/dsl/types";
+import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
-import { getDefinition, isSmallUnit } from "../core/catalog";
+import { cardCategories, getDefinition, isSmallUnit } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { cardHasGrantKeyword } from "./promotedKeywordBridge";
@@ -14,7 +15,16 @@ function cardsInZone(state: GameState, playerId: PlayerId, zone: FieldZone): Car
 function matchesFilter(
   state: GameState,
   card: CardInstance,
-  filter?: { size?: string; category?: string; maxBp?: number; minBp?: number; commandHeld?: boolean; faceDown?: boolean },
+  filter?: {
+    size?: string;
+    category?: string;
+    categoryExcept?: string;
+    maxBp?: number;
+    minBp?: number;
+    commandHeld?: boolean;
+    faceDown?: boolean;
+    noRushAdditionalCondition?: boolean;
+  },
 ): boolean {
   if (!filter) return true;
   const def = getDefinition(state.definitions, card.cardId);
@@ -23,10 +33,12 @@ function matchesFilter(
   if (filter.minBp !== undefined && (def?.bp ?? 0) < filter.minBp) return false;
   if (filter.commandHeld !== undefined && !!card.commandHeld !== filter.commandHeld) return false;
   if (filter.faceDown !== undefined && !!card.faceDown !== filter.faceDown) return false;
-  if (filter.category) {
-    const cats = Array.isArray(def?.category) ? def.category : def?.category ? [def.category] : [];
-    if (!cats.includes(filter.category as never)) return false;
+  if (filter.noRushAdditionalCondition && resolveRushAdditionalCondition(card.cardId, def)) {
+    return false;
   }
+  const cats = cardCategories(def);
+  if (filter.categoryExcept && cats.includes(filter.categoryExcept as never)) return false;
+  if (filter.category && !cats.includes(filter.category as never)) return false;
   return true;
 }
 

@@ -61,5 +61,15 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―気伝武人龍星王＋天空気殿",
+      "partnerCardIds": [
+        "RS-290",
+        "XG2-016"
+      ]
+    }
+  ]
 }

@@ -54,6 +54,14 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―ガオウルフ＋ガオリゲーター＋ガオハンマーヘッド ※これはバトルエリアにあるとき、カテゴリにWBが追加される。",
+      "partnerCardIds": [
+        "RS-477",
+        "RS-478"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。",
       "rule": "category_wb_in_battle"

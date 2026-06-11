@@ -42,5 +42,15 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―マジフェニックス＋一角聖馬ユニゴルオン",
+      "partnerCardIds": [
+        "XG7-014",
+        "RS-575"
+      ]
+    }
+  ]
 }

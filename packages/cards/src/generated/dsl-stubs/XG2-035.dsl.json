@@ -54,6 +54,13 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―デカレンジャーロボ＋ブラストバギー ※ブラスト",
+      "partnerCardIds": [
+        "RS-042"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※ブラスト",
       "rule": "blast"

@@ -42,5 +42,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ジェットチェンジャー1＋ヘリチェンジャー2＋ランドチェンジャー3",
+      "partnerCardIds": [
+        "RS-530",
+        "RS-531",
+        "RS-532"
+      ]
+    }
+  ]
 }

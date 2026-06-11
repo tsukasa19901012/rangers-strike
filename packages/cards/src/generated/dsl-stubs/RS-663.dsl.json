@@ -57,5 +57,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―エンジンオー＋ガンバルオー＋セイクウオー＋キョウレツオー ※このカードの追加条件は、特徴「炎神」を持つオモテ向きの自軍パワーが12枚以上あるとき、次のように変更される⇒本来の特徴に「炎神」を持つ自軍Lユニット1体を捨札にする。",
+      "partnerCardIds": [
+        "RS-515",
+        "RS-591",
+        "RS-686"
+      ]
+    }
+  ]
 }

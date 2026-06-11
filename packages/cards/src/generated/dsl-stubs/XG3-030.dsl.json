@@ -40,5 +40,14 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―魔導騎士ウルザード＋魔導馬バリキオン ※これは「SP1」以上のユニットにしかアタックできない。",
+      "partnerCardIds": [
+        "RS-115"
+      ]
+    }
+  ]
 }

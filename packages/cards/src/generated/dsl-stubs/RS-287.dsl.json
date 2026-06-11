@@ -68,5 +68,17 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―守護獣ドラゴンシーザー＋守護獣ジュウマンモス＋守護獣トリケラトプス＋守護獣サーベルタイガー",
+      "partnerCardIds": [
+        "RS-288",
+        "RS-036",
+        "RS-037",
+        "RS-038"
+      ]
+    }
+  ]
 }

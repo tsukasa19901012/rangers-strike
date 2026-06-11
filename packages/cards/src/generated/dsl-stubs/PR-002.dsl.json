@@ -44,5 +44,18 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン",
+      "partnerCardIds": [
+        "RS-118",
+        "RS-119",
+        "RS-120",
+        "RS-121",
+        "RS-122"
+      ]
+    }
+  ]
 }

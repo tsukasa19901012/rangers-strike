@@ -42,5 +42,17 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―トライコンドル＋旋風神＋轟雷神＋天空神",
+      "partnerCardIds": [
+        "RS-567",
+        "RS-095",
+        "RS-309",
+        "RS-481"
+      ]
+    }
+  ]
 }

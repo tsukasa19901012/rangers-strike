@@ -72,10 +72,12 @@ export type TargetSelector =
       filter?: {
         size?: UnitSize;
         category?: string;
+        categoryExcept?: string;
         faceDown?: boolean;
         commandHeld?: boolean;
         maxBp?: number;
         minBp?: number;
+        noRushAdditionalCondition?: boolean;
       };
     }
   | {

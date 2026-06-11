@@ -42,5 +42,15 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―デカバイクロボ＋デカレンジャーロボ",
+      "partnerCardIds": [
+        "RS-571",
+        "RS-042"
+      ]
+    }
+  ]
 }

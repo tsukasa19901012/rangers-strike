@@ -10,6 +10,7 @@ import type {
 } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import {
+  allCategoriesExistInCommandZone,
   canPlayOperationExceptCommandHold,
   cardCategories,
   cardName,
@@ -164,6 +165,7 @@ export function canPayCounterCategoryHold(
   categories: Category[],
 ): boolean {
   if (categories.length === 0) return true;
+  if (!allCategoriesExistInCommandZone(player, definitions, categories)) return false;
   if (hasReleasedCommandForCategories(player, definitions, categories)) return true;
   return (
     hasOperationEffect(player, "prism_power", definitions) &&

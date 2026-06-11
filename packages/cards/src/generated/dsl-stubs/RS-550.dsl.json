@@ -41,5 +41,18 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ゴッドガンマー＋ゴッドロウガン＋ゴッドサルダー＋ゴッドカーク＋ゴッドクマード",
+      "partnerCardIds": [
+        "RS-551",
+        "RS-552",
+        "RS-553",
+        "RS-554",
+        "RS-555"
+      ]
+    }
+  ]
 }

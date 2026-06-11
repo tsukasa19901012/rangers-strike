@@ -42,5 +42,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―風雷丸＋旋風神＋轟雷神",
+      "partnerCardIds": [
+        "RS-568",
+        "RS-095",
+        "RS-309"
+      ]
+    }
+  ]
 }

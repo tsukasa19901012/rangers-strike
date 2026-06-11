@@ -79,5 +79,14 @@
   "rushAdditionalCondition": {
     "conditionId": "zord_down_discard_fusion",
     "text": "自軍合体ユニットを捨札にすれば必要パワー0になる"
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―仮面ライダーNEW電王SF＋デネブ ※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーNEW電王SF」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "partnerCardIds": [
+        "XP-007"
+      ]
+    }
+  ]
 }

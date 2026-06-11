@@ -54,6 +54,13 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―重騎士＋重星獣・ゴウタウラス ※レジスト",
+      "partnerCardIds": [
+        "XG2-021"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※レジスト",
       "rule": "register"

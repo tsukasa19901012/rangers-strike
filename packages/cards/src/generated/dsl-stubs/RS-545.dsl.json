@@ -42,5 +42,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―獣騎神キングブラキオン＋守護獣ドラゴンシーザー＋大獣神",
+      "partnerCardIds": [
+        "RS-547",
+        "RS-288",
+        "RS-286"
+      ]
+    }
+  ]
 }

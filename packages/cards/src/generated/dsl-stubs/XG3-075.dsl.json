@@ -56,6 +56,13 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―仮面ライダーディケイド＋仮面ライダーJジャンボフォーメーション ※ブラスト",
+      "partnerCardIds": [
+        "XP-004"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※ブラスト",
       "rule": "blast"

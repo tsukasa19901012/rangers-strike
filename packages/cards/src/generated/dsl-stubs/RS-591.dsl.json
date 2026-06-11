@@ -70,5 +70,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―バルカ＋ガンパード＋キャリゲーター",
+      "partnerCardIds": [
+        "RS-593",
+        "RS-594",
+        "RS-595"
+      ]
+    }
+  ]
 }

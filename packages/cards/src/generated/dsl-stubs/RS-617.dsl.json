@@ -54,6 +54,13 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―ジェットイカロス＋ジェットガルーダ ※ブラスト",
+      "partnerCardIds": [
+        "RS-618"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※ブラスト",
       "rule": "blast"

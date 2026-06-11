@@ -41,5 +41,18 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―タイムジェット1＋タイムジェット2＋タイムジェット3＋タイムジェット4＋タイムジェット5",
+      "partnerCardIds": [
+        "RS-397",
+        "RS-398",
+        "RS-399",
+        "RS-400",
+        "RS-401"
+      ]
+    }
+  ]
 }

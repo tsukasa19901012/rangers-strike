@@ -53,6 +53,7 @@ import { hasBakiBakiExtraAttackOnly } from "./legend3/destroyEffects";
 import { tryStartDslConditionalChoice } from "../dsl/conditionalEffects";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { wingAllowsEmptyBattleStrike } from "../keywords";
+import { canStrikeWithHelloMirage } from "./helloMirage";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
 
@@ -576,6 +577,9 @@ export function canStrikeUnit(
       return false;
     }
     if (cannotAttackOrStrikeThisTurn(state.players[playerId], instance)) {
+      return false;
+    }
+    if (!canStrikeWithHelloMirage(state, playerId, instance)) {
       return false;
     }
     if (wingAllowsEmptyBattleStrike(state, playerId, instance)) {

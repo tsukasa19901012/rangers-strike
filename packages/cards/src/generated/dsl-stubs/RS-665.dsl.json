@@ -42,5 +42,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―キシャモス＋ティライン＋ケライン",
+      "partnerCardIds": [
+        "RS-669",
+        "RS-670",
+        "RS-671"
+      ]
+    }
+  ]
 }

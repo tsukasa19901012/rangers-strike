@@ -42,5 +42,15 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ゴウライビートル＋ゴウライスタッグ",
+      "partnerCardIds": [
+        "RS-310",
+        "RS-311"
+      ]
+    }
+  ]
 }

@@ -55,6 +55,13 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―シンケンオー＋恐竜折神 ※ブラスト",
+      "partnerCardIds": [
+        "RS-679"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※ブラスト",
       "rule": "blast"

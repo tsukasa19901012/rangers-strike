@@ -36,6 +36,7 @@ import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { isShironLightRushTarget } from "../rules/shironLight";
 import { getAuraPowerInstanceId, getComboNumberDelta } from "../rules/turnModifierBridge";
 import { opponentInfiniteChainBlocks } from "../rules/turnModifiers";
+import { heldCallLeadMatchesCategories } from "../rules/callLead";
 import { countHeldCommands } from "../rules/restrictions";
 import { countAvailablePower, effectivePowerCost } from "./power";
 
@@ -297,31 +298,73 @@ export function unitEffectiveCategories(
   return cats;
 }
 
+const YOGOSTEIN_CARD_ID = "XG1-033";
+
+function yogosteinGrantsDa(player: PlayerState): boolean {
+  return (
+    player.rush.some((c) => c.cardId === YOGOSTEIN_CARD_ID) ||
+    player.battle.some((c) => c.cardId === YOGOSTEIN_CARD_ID)
+  );
+}
+
+/** XG1-033: コマンドの実効カテゴリ（汚れた大地で DA 付与）。 */
+export function effectiveCommandCategories(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  cardId: string,
+): Category[] {
+  const def = getDefinition(definitions, cardId);
+  const printed = cardCategories(def);
+  if (!yogosteinGrantsDa(player)) return printed;
+  if (printed.includes("DA")) return printed;
+  if (parsePowerCost(def?.powerCost) > 3) return printed;
+  return [...printed, "DA"];
+}
+
+/** コマンドゾーンに必要カテゴリがすべて揃っているか（atwiki 1559）。 */
+export function allCategoriesExistInCommandZone(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  categories: Category[],
+): boolean {
+  if (categories.length === 0) return true;
+
+  const present = new Set<Category>();
+  for (const cmd of player.command) {
+    for (const cat of effectiveCommandCategories(player, definitions, cmd.cardId)) {
+      present.add(cat);
+    }
+  }
+  return categories.every((cat) => present.has(cat));
+}
+
 export function hasHeldCommandForCategories(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
   categories: Category[],
 ): boolean {
   if (categories.length === 0) return true;
+  if (!allCategoriesExistInCommandZone(player, definitions, categories)) return false;
 
   return player.command.some((cmd) => {
     if (!cmd.commandHeld || cmd.mothershipHold) return false;
-    const cmdCats = cardCategories(getDefinition(definitions, cmd.cardId));
+    const cmdCats = effectiveCommandCategories(player, definitions, cmd.cardId);
     return categories.some((cat) => cmdCats.includes(cat));
   });
 }
 
-/** リリース状態で、指定カテゴリのいずれかに合うコマンドがあるか。 */
+/** リリース状態で、指定カテゴリのいずれかに合うコマンドをホールド支払いできるか。 */
 export function hasReleasedCommandForCategories(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
   categories: Category[],
 ): boolean {
   if (categories.length === 0) return true;
+  if (!allCategoriesExistInCommandZone(player, definitions, categories)) return false;
 
   return player.command.some((cmd) => {
     if (cmd.commandHeld) return false;
-    const cmdCats = cardCategories(getDefinition(definitions, cmd.cardId));
+    const cmdCats = effectiveCommandCategories(player, definitions, cmd.cardId);
     return categories.some((cat) => cmdCats.includes(cat));
   });
 }
@@ -345,7 +388,8 @@ export function canRushUnit(
   if (
     unitCats.length > 0 &&
     !isShironLightRushTarget(player, rushingInstanceId) &&
-    !hasHeldCommandForCategories(player, definitions, unitCats)
+    !hasHeldCommandForCategories(player, definitions, unitCats) &&
+    !heldCallLeadMatchesCategories(player, definitions, "call", unitCats)
   ) {
     return false;
   }
@@ -561,7 +605,7 @@ export function canPlayOperation(
   if (!canPlayOperationExceptCommandHold(state, playerId, definition)) return false;
 
   const opCats = cardCategories(definition);
-  return hasCommandForCardUse(player, state.definitions, opCats);
+  return hasCommandForCardUse(player, state.definitions, opCats, "lead");
 }
 
 export { needsZordMaterial } from "../rules/zord";

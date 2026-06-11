@@ -54,6 +54,13 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―ダイボウケン＋ダイタンケン ※ウイング",
+      "partnerCardIds": [
+        "RS-117"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※ウイング",
       "rule": "wing"

@@ -41,5 +41,15 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―気伝武人ウォンタイガー＋天空気殿",
+      "partnerCardIds": [
+        "RS-292",
+        "XG2-016"
+      ]
+    }
+  ]
 }

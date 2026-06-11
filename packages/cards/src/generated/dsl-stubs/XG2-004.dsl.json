@@ -53,6 +53,14 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―スカイアルファー＋キャリアベータ＋ランドガンマ ※ブラスト",
+      "partnerCardIds": [
+        "XG2-005",
+        "XG2-006"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※ブラスト",
       "rule": "blast"

@@ -41,5 +41,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―レツタカ＋シシノシン＋ツキノワ",
+      "partnerCardIds": [
+        "RS-597",
+        "RS-598",
+        "RS-599"
+      ]
+    }
+  ]
 }

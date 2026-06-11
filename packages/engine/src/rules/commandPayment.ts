@@ -22,7 +22,9 @@ import type {
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { isShironLightRushTarget } from "./shironLight";
 import {
+  allCategoriesExistInCommandZone,
   canPlayOperationExceptCommandHold,
+  effectiveCommandCategories,
   canRushUnit,
   canRushUnitExceptCommandHold,
   cardCategories,
@@ -53,6 +55,7 @@ export function canPayRushCategoryHold(
   categories: Category[],
 ): boolean {
   if (categories.length === 0) return true;
+  if (!allCategoriesExistInCommandZone(player, definitions, categories)) return false;
   if (hasReleasedCommandForCategories(player, definitions, categories)) return true;
   return (
     hasOperationEffect(player, "prism_power", definitions) &&
@@ -75,6 +78,12 @@ import {
   canInitiateCounterCategoryPayment,
   isCounterReactionActive,
 } from "./operationCounters";
+import {
+  collectCallLeadFieldUnits,
+  holdPaymentSource,
+  paymentSourceMatchesCategories,
+  type CallLeadKind,
+} from "./callLead";
 
 function formatCategories(categories: Category[]): string {
   return categories.join("・");
@@ -148,37 +157,55 @@ export function getBattleEntryPaymentNeeds(
   return { eligibleNeeded, totalNeeded };
 }
 
-function unheldCommandsMatchingCategory(
+function callLeadKindForContinuation(
+  continuation: CommandPaymentContinuation,
+): CallLeadKind {
+  return continuation.type === "rush" ? "call" : "lead";
+}
+
+function unheldPaymentSourcesMatchingCategory(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
   categories: Category[],
+  callLeadKind: CallLeadKind,
 ): CardInstance[] {
-  return player.command.filter((cmd) => {
+  const fromCommand = player.command.filter((cmd) => {
     if (cmd.commandHeld) return false;
-    const cmdCats = cardCategories(getDefinition(definitions, cmd.cardId));
+    const cmdCats = effectiveCommandCategories(player, definitions, cmd.cardId);
     return categories.some((cat) => cmdCats.includes(cat));
   });
+  const fromField = collectCallLeadFieldUnits(player, definitions, callLeadKind, categories);
+  return [...fromCommand, ...fromField];
 }
 
 export function getCategoryPaymentOptions(
   state: GameState,
   playerId: PlayerId,
   categories: Category[],
-  options?: { perRushPayment?: boolean },
+  options?: { perRushPayment?: boolean; callLeadKind?: CallLeadKind },
 ): { selectCount: number; prismAvailable: boolean; prismSubstitute: boolean } | null {
-  if (
-    !options?.perRushPayment &&
-    hasCommandForCardUse(state.players[playerId], state.definitions, categories)
-  ) {
+  const player = state.players[playerId];
+  const callLeadKind = options?.callLeadKind ?? "call";
+  if (!allCategoriesExistInCommandZone(player, state.definitions, categories)) {
     return null;
   }
 
-  const player = state.players[playerId];
+  if (
+    !options?.perRushPayment &&
+    hasCommandForCardUse(player, state.definitions, categories, callLeadKind)
+  ) {
+    return null;
+  }
   const prismAvailable =
     hasOperationEffect(player, "prism_power", state.definitions) &&
     player.command.filter((c) => !c.commandHeld).length >= 2;
 
-  const matching = unheldCommandsMatchingCategory(player, state.definitions, categories);
+  const matching = unheldPaymentSourcesMatchingCategory(
+    player,
+    state.definitions,
+    categories,
+    callLeadKind,
+  );
   if (matching.length >= 1) {
     return { selectCount: 1, prismAvailable, prismSubstitute: false };
   }
@@ -226,12 +253,11 @@ export function buildCategoryPayment(
   prismSubstitute: boolean,
   options?: { perRushPayment?: boolean },
 ): PendingCommandPayment | null {
-  const paymentOptions = getCategoryPaymentOptions(
-    state,
-    playerId,
-    categories,
-    options,
-  );
+  const callLeadKind = callLeadKindForContinuation(continuation);
+  const paymentOptions = getCategoryPaymentOptions(state, playerId, categories, {
+    ...options,
+    callLeadKind,
+  });
   if (!paymentOptions) return null;
 
   const usePrism = prismSubstitute && paymentOptions.prismAvailable;
@@ -239,9 +265,12 @@ export function buildCategoryPayment(
   const player = state.players[playerId];
   const validInstanceIds = usePrism
     ? player.command.filter((c) => !c.commandHeld).map((c) => c.instanceId)
-    : unheldCommandsMatchingCategory(player, state.definitions, categories).map(
-        (c) => c.instanceId,
-      );
+    : unheldPaymentSourcesMatchingCategory(
+        player,
+        state.definitions,
+        categories,
+        callLeadKind,
+      ).map((c) => c.instanceId);
 
   if (validInstanceIds.length < selectCount) return null;
 
@@ -283,7 +312,9 @@ export function getCommandPaymentView(
         ?.prismAvailable === true,
     validInstanceIds: pending.validInstanceIds,
     consumeOnConfirm: pending.kind === "mothership_hold",
-    allowRushZoneCommands: pending.kind === "mothership_hold",
+    allowRushZoneCommands:
+      pending.kind === "mothership_hold" ||
+      (pending.kind === "category_use" && pending.continuation.type === "rush"),
   };
 }
 
@@ -339,6 +370,30 @@ export function validatePaymentSelection(
   if (pending.kind === "battle_entry" && pending.eligibleNeeded > 0) {
     if (commandInstanceIds.length < pending.eligibleNeeded) {
       return "insufficient_eligible";
+    }
+  }
+
+  if (pending.kind === "category_use") {
+    const player = state.players[pending.playerId];
+    const categories = pending.categories ?? [];
+    const callLeadKind = callLeadKindForContinuation(pending.continuation);
+    if (!allCategoriesExistInCommandZone(player, state.definitions, categories)) {
+      return "invalid_command";
+    }
+    if (!pending.prismSubstitute) {
+      for (const id of commandInstanceIds) {
+        if (
+          !paymentSourceMatchesCategories(
+            player,
+            state.definitions,
+            id,
+            categories,
+            callLeadKind,
+          )
+        ) {
+          return "invalid_command";
+        }
+      }
     }
   }
 
@@ -410,7 +465,7 @@ export function applyPaymentHolds(
 ): GameState {
   let player = state.players[playerId];
   for (const instanceId of commandInstanceIds) {
-    player = holdCommand(player, instanceId);
+    player = holdPaymentSource(player, instanceId);
   }
   return { ...state, players: { ...state.players, [playerId]: player } };
 }
@@ -887,14 +942,21 @@ export function explainCannotRush(
   if (
     categories.length > 0 &&
     !isCostWindowSatisfied(player, "rush_category") &&
-    getCategoryPaymentOptions(state, playerId, categories, { perRushPayment: true })
+    getCategoryPaymentOptions(state, playerId, categories, {
+      perRushPayment: true,
+      callLeadKind: "call",
+    })
   ) {
     return null;
   }
 
-  if (categories.length > 0 && !hasCommandForCardUse(player, state.definitions, categories)) {
+  if (
+    categories.length > 0 &&
+    !hasCommandForCardUse(player, state.definitions, categories, "call")
+  ) {
     const payment = getCategoryPaymentOptions(state, playerId, categories, {
       perRushPayment: true,
+      callLeadKind: "call",
     });
     if (payment?.prismAvailable) {
       return `「${unitName}」をラッシュするには、リリース中の${catLabel}コマンドを1枚ホールドするか、【プリズムパワー】でリリース2枚をホールドしてください。`;

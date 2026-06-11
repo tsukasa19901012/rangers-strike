@@ -50,6 +50,16 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―ギンガレオン＋ギンガルコン＋ギンガリラ＋ギンガベリック＋ギンガット ※ブラスト",
+      "partnerCardIds": [
+        "RS-466",
+        "RS-467",
+        "RS-468",
+        "RS-469"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※ブラスト",
       "rule": "blast"

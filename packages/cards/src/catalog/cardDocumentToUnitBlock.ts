@@ -60,8 +60,16 @@ function toNamedTrigger(
   trigger: EffectTrigger,
   text: string,
 ): NamedEffectTrigger | undefined {
-  if (trigger.type === "operation" || trigger.type === "on_strike" || trigger.type === "on_destroy" || trigger.type === "on_leave" || trigger.type === "on_damage") {
+  if (
+    trigger.type === "operation" ||
+    trigger.type === "on_destroy" ||
+    trigger.type === "on_leave" ||
+    trigger.type === "on_damage"
+  ) {
     return undefined;
+  }
+  if (trigger.type === "on_strike") {
+    return { type: "on_strike" };
   }
   return enrichNcComboFromTrigger(trigger as NamedEffectTrigger, text);
 }

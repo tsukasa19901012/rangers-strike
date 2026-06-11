@@ -58,5 +58,14 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―デカレッド＋マーフィーK9 ※これはアタックされるとき、BP＋5000される。",
+      "partnerCardIds": [
+        "RS-106"
+      ]
+    }
+  ]
 }

@@ -174,6 +174,137 @@ describe("command payment", () => {
     expect(secondPay).toBeNull();
   });
 
+  it("blocks multi-category rush when not all categories exist in command zone", () => {
+    const unit = inst("TST-UNIT-WB-ET", "unit");
+    const wbOnly = inst("TST-OP", "wb");
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [unit],
+        command: [wbOnly],
+      },
+    });
+
+    expect(
+      getLegalActions(state).some(
+        (a) =>
+          a.type === "initiate_command_payment" &&
+          a.kind === "category_use" &&
+          a.sourceInstanceId === unit.instanceId,
+      ),
+    ).toBe(false);
+    expect(explainCannotRush(state, "player1", unit.instanceId)).toMatch(/WB・ET/);
+  });
+
+  it("allows multi-category rush with one hold when all categories are present", () => {
+    const unit = inst("TST-UNIT-WB-ET", "unit");
+    const wb = inst("TST-OP", "wb");
+    const et = inst("TST-OP-ET", "et");
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [unit],
+        command: [wb, et],
+      },
+    });
+
+    const payment = buildPaymentFromInitiateAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "category_use",
+      sourceInstanceId: unit.instanceId,
+    });
+    expect(payment?.totalNeeded).toBe(1);
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "category_use",
+      sourceInstanceId: unit.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+
+    const resolved = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [wb.instanceId],
+    });
+    expect(resolved.ok).toBe(true);
+    if (!resolved.ok) return;
+    expect(resolved.state.players.player1.rush.some((c) => c.instanceId === unit.instanceId)).toBe(
+      true,
+    );
+  });
+
+  it("blocks prism substitute rush when multi-category command zone is incomplete", () => {
+    const unit = inst("TST-UNIT-WB-ET", "unit");
+    const wb1 = inst("TST-OP", "wb1");
+    const wb2 = inst("TST-OP", "wb2");
+    const prism = inst("RS-010", "prism");
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [unit],
+        command: [wb1, wb2],
+        operation: [prism],
+        power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3")],
+      },
+    });
+    state.definitions["RS-010"] = {
+      id: "RS-010",
+      name: "Prism",
+      type: "operation",
+      category: "OT",
+      rarity: "R",
+      expansion: "test",
+      powerCost: 2,
+      tags: ["常駐"],
+    };
+
+    expect(
+      buildPaymentFromInitiateAction(state, {
+        type: "initiate_command_payment",
+        playerId: "player1",
+        kind: "category_use",
+        sourceInstanceId: unit.instanceId,
+        prismSubstitute: true,
+      }),
+    ).toBeNull();
+  });
+
+  it("allows multi-category rush when a single multi-category command covers all categories", () => {
+    const unit = inst("TST-UNIT-WB-ET", "unit");
+    const multiCmd = inst("TST-OP-WB-ET", "mc");
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [unit],
+        command: [multiCmd],
+      },
+    });
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "category_use",
+      sourceInstanceId: unit.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+
+    const resolved = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [multiCmd.instanceId],
+    });
+    expect(resolved.ok).toBe(true);
+    if (!resolved.ok) return;
+    expect(resolved.state.players.player1.rush.some((c) => c.instanceId === unit.instanceId)).toBe(
+      true,
+    );
+  });
+
   it("does not blame missing OT when RS-045 can pay category and needs zord material", () => {
     const zord = inst("RS-045", "zord");
     const sUnit = inst("RS-080", "s1");

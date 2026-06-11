@@ -96,6 +96,27 @@ const TEST_DEFINITIONS: Record<string, CardDefinition> = {
     expansion: "test",
     powerCost: 0,
   },
+  "TST-UNIT-WB-ET": {
+    id: "TST-UNIT-WB-ET",
+    name: "Test Multi Unit",
+    type: "unit",
+    category: ["WB", "ET"],
+    rarity: "N",
+    expansion: "test",
+    powerCost: 0,
+    bp: 1000,
+    sp: 1,
+    size: "S",
+  },
+  "TST-OP-WB-ET": {
+    id: "TST-OP-WB-ET",
+    name: "Test Multi Command",
+    type: "operation",
+    category: ["WB", "ET"],
+    rarity: "R",
+    expansion: "test",
+    powerCost: 1,
+  },
 };
 
 function legendDef(id: string): CardDefinition | undefined {

@@ -54,6 +54,15 @@
   ],
   "unnamedRules": [
     {
+      "kind": "zord",
+      "text": "合体―-ガオファルコン＋ガオライノス＋ガオマジロ＋ガオジュラフ＋ガオディアス ※ブラスト",
+      "partnerCardIds": [
+        "RS-650",
+        "RS-651",
+        "RS-157"
+      ]
+    },
+    {
       "kind": "note",
       "text": "※ブラスト",
       "rule": "blast"

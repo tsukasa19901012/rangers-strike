@@ -42,5 +42,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ガオウルフ＋ガオリゲーター＋ガオハンマーヘッド",
+      "partnerCardIds": [
+        "RS-477",
+        "RS-478",
+        "RS-479"
+      ]
+    }
+  ]
 }

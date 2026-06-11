@@ -97,5 +97,14 @@
   "rushAdditionalCondition": {
     "conditionId": "zord_down_discard_fusion",
     "text": "自軍合体ユニットを捨札にすれば必要パワー0になる"
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―隊員コード153 ショウ＋ゴールドプラチナム ※敵軍ターン中、これとバトルしたユニットは、バトルに勝っても撃破される。 ※これが撃破されて捨札になったとき、自軍捨札から「隊員コード153 ショウ」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "partnerCardIds": [
+        "RM-048"
+      ]
+    }
+  ]
 }

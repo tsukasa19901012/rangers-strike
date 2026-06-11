@@ -25,7 +25,17 @@ const ENGINE_NATIVE_PREFIXES = [
 
 export function isEngineNativeGrantKeyword(keyword: string): boolean {
   if (ENGINE_NATIVE_KEYWORDS.has(keyword)) return true;
+  if (/^(call|lead)_(MA|ET|DA|WB|OT)$/.test(keyword)) return true;
+  if (keyword.startsWith("attacked_bp_boost_")) return true;
   return ENGINE_NATIVE_PREFIXES.some((prefix) => keyword.startsWith(prefix));
+}
+
+export function attackedBpBoostAmount(cardId: string): number {
+  for (const keyword of listCardGrantKeywords(cardId)) {
+    const match = keyword.match(/^attacked_bp_boost_(\d+)$/);
+    if (match) return Number(match[1]);
+  }
+  return 0;
 }
 
 function featureSlug(feature: string): string {

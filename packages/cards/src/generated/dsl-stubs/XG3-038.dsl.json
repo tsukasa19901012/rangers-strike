@@ -65,5 +65,15 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ダイカイオーヒガシ＋烏賊折神",
+      "partnerCardIds": [
+        "XG3-036",
+        "XG3-037"
+      ]
+    }
+  ]
 }

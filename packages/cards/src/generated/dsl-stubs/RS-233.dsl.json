@@ -30,6 +30,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "dino_slasher_category_balance",
+          "duration": "turn"
         }
       ]
     }

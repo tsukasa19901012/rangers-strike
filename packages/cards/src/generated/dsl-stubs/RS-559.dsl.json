@@ -42,5 +42,18 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ガオレオン＋ガオコンドル＋ガオソーシャーク＋ガオバッファロー＋ガオジャガー",
+      "partnerCardIds": [
+        "RS-560",
+        "RS-561",
+        "RS-562",
+        "RS-563",
+        "RS-564"
+      ]
+    }
+  ]
 }

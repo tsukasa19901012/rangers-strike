@@ -62,5 +62,16 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ゲキレッドまたはゲキタイガー＋ゲキイエローまたはゲキチーター＋ゲキブルーまたはゲキジャガー",
+      "partnerCardIds": [
+        "RS-343",
+        "RS-342",
+        "RS-341"
+      ]
+    }
+  ]
 }

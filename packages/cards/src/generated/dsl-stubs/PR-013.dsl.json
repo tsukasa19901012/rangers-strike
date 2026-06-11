@@ -41,5 +41,18 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ダイボウケン＋ゴーゴードリル＋ゴーゴーショベル＋ゴーゴーミキサー＋ゴーゴークレーン",
+      "partnerCardIds": [
+        "RS-117",
+        "RS-171",
+        "RS-172",
+        "RS-173",
+        "RS-174"
+      ]
+    }
+  ]
 }

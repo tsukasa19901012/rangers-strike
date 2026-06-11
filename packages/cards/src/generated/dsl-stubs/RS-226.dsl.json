@@ -42,5 +42,15 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―爆竜トップゲイラー＋爆竜ステゴスライドン",
+      "partnerCardIds": [
+        "RS-227",
+        "RS-228"
+      ]
+    }
+  ]
 }
