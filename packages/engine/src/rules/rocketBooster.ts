@@ -1,4 +1,4 @@
-import type { GameState, PlayerId } from "../types/game";
+import type { GameState, PlayerId, ScopedModifier } from "../types/game";
 import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
 import { addTurnRuleModifier, getPlayerModifiers } from "../core/scopedModifiers";
@@ -9,13 +9,17 @@ export const ROCKET_BOOSTER_RULE = "rocket_booster";
 
 type RocketBoosterPayload = { declaredName: string };
 
+function isRocketBoosterModifier(
+  m: ScopedModifier,
+): m is Extract<ScopedModifier, { kind: "rule" }> {
+  return m.kind === "rule" && m.ruleId === ROCKET_BOOSTER_RULE && m.scope === "turn";
+}
+
 export function getRocketBoosterDeclaredName(
   state: GameState,
   playerId: PlayerId,
 ): string | undefined {
-  const mod = getPlayerModifiers(state.players[playerId]).find(
-    (m) => m.kind === "rule" && m.ruleId === ROCKET_BOOSTER_RULE && m.scope === "turn",
-  );
+  const mod = getPlayerModifiers(state.players[playerId]).find(isRocketBoosterModifier);
   return (mod?.payload as RocketBoosterPayload | undefined)?.declaredName;
 }
 
