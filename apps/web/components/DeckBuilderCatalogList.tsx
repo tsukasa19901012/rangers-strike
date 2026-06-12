@@ -4,12 +4,14 @@ import { useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { estimateCardUiCoverage } from "@/lib/estimateCardUiCoverage";
-import { maxCopiesForCard } from "@/lib/deckBuilder";
+import { remainingCopiesForCard } from "@/lib/deckBuilder";
+import type { DeckEntry } from "@rangers-strike/cards";
 import { CardImage } from "./CardImage";
 
 type DeckBuilderCatalogListProps = {
   cards: CardDefinition[];
   counts: Map<string, number>;
+  entries: DeckEntry[];
   onAdd: (card: CardDefinition) => void;
   onPreview: (card: CardDefinition) => void;
 };
@@ -20,6 +22,7 @@ const ROW_GAP = 8;
 export function DeckBuilderCatalogList({
   cards,
   counts,
+  entries,
   onAdd,
   onPreview,
 }: DeckBuilderCatalogListProps) {
@@ -41,8 +44,8 @@ export function DeckBuilderCatalogList({
         {virtualizer.getVirtualItems().map((virtualRow) => {
           const card = cards[virtualRow.index];
           const current = counts.get(card.id) ?? 0;
-          const max = maxCopiesForCard(card);
-          const disabled = current >= max;
+          const remaining = remainingCopiesForCard(card, entries);
+          const disabled = remaining <= 0;
           const coverageBadges = estimateCardUiCoverage(card.id).badges.slice(0, 2);
 
           return (

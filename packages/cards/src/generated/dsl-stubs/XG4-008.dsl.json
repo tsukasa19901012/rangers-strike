@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG4-008",
-  "name": "メガシルバー（XG4）",
+  "name": "メガシルバー",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

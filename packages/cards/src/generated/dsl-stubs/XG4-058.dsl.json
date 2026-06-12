@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG4-058",
-  "name": "オートバジンBM（XG4）",
+  "name": "オートバジンBM",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

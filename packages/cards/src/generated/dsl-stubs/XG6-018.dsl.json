@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG6-018",
-  "name": "アバレキラー（XG6）",
+  "name": "アバレキラー",
   "type": "unit",
   "category": "WB",
   "rarity": "N",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG5-068",
-  "name": "仮面ライダーナイトサバイブ（XG5）",
+  "name": "仮面ライダーナイトサバイブ",
   "type": "unit",
   "category": "WB",
   "rarity": "N",

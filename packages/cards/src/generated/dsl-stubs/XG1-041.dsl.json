@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG1-041",
-  "name": "仮面ライダーアマゾン（XG）",
+  "name": "仮面ライダーアマゾン",
   "type": "unit",
   "category": [
     "WB",

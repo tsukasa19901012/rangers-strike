@@ -20,7 +20,7 @@ import {
   entriesToMap,
   getCustomDeck,
   mapToEntries,
-  maxCopiesForCard,
+  remainingCopiesForCard,
   saveCustomDeck,
   starterTemplateEntries,
   validateDeckEntries,
@@ -114,8 +114,7 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
 
   const addCard = (card: CardDefinition) => {
     const current = counts.get(card.id) ?? 0;
-    const max = maxCopiesForCard(card);
-    if (current >= max) return;
+    if (remainingCopiesForCard(card, entries) <= 0) return;
     setCounts((prev) => {
       const next = new Map(prev);
       next.set(card.id, current + 1);
@@ -268,7 +267,7 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
                       className="btn btn--icon"
                       aria-label={`${card.name} を増やす`}
                       onClick={() => addCard(card)}
-                      disabled={entry.count >= maxCopiesForCard(card)}
+                      disabled={remainingCopiesForCard(card, entries) <= 0}
                     >
                       +
                     </button>
@@ -358,6 +357,7 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
         <DeckBuilderCatalogList
           cards={catalogCards}
           counts={counts}
+          entries={entries}
           onAdd={addCard}
           onPreview={setPreviewCard}
         />

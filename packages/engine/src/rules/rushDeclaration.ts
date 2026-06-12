@@ -81,7 +81,12 @@ export function canCompleteRushAfterCommandPayment(
   }
 
   if (isZordUpCost(definition.powerCost) && requiresAllFusionPartners(handCard.cardId)) {
-    return hasAllRequiredFusionMaterials(player, handCard.cardId, sourceInstanceId);
+    return hasAllRequiredFusionMaterials(
+      player,
+      state.definitions,
+      handCard.cardId,
+      sourceInstanceId,
+    );
   }
 
   if (!needsZordMaterial(state.definitions, handCard.cardId)) {

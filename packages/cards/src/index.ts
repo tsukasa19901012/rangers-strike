@@ -21,6 +21,8 @@ import {
 import { resolveCardImageUrl } from "./cardImages";
 
 export * from "./schema";
+export * from "./cardName";
+export * from "./fusionMaterial";
 export * from "./bannedCards";
 export * from "./deckRules";
 export * from "./catalog";

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG5-050",
-  "name": "仮面ライダー装甲響鬼（XG5）",
+  "name": "仮面ライダー装甲響鬼",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG1-032",
-  "name": "ゲキレッド（XG）",
+  "name": "ゲキレッド",
   "type": "unit",
   "category": [
     "WB",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG3-021",
-  "name": "カブトライジャー（XG3）",
+  "name": "カブトライジャー",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

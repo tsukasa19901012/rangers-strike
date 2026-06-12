@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-573",
-  "name": "ファイヤーカイザー（2nd）",
+  "name": "ファイヤーカイザー",
   "type": "unit",
   "category": "MA",
   "rarity": "N",
@@ -55,8 +55,11 @@
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―マジフェニックス＋魔導馬バリキオン ※レジスト",
+      "text": "合体―マジフェニックス＋魔導馬バリキオン ※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
       "partnerCardIds": [
+        "RS-057",
+        "RS-576",
+        "RS-577",
         "XG7-014"
       ]
     },

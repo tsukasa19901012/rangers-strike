@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG6-048",
-  "name": "仮面ライダーリュウガ（XG6）",
+  "name": "仮面ライダーリュウガ",
   "type": "unit",
   "category": [
     "WB",

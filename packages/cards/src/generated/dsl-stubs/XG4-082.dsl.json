@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG4-082",
-  "name": "バイオライダー（XG4）",
+  "name": "バイオライダー",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

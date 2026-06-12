@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG1-051",
-  "name": "仮面ライダーZX（XG）",
+  "name": "仮面ライダーZX",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

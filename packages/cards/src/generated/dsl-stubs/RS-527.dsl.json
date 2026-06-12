@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-527",
-  "name": "バルジオン（2nd）",
+  "name": "バルジオン",
   "type": "vehicle",
   "category": "DA",
   "rarity": "N",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG1-003",
-  "name": "バルイーグル（XG）",
+  "name": "バルイーグル",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

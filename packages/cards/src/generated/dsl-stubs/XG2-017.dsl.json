@@ -65,10 +65,22 @@
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―気伝武人龍星王＋天空気殿",
+      "text": "合体―気伝武人龍星王（または気伝獣龍星王）＋天空気殿",
       "partnerCardIds": [
         "RS-290",
+        "XG2-010",
+        "RS-291",
         "XG2-016"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-290",
+          "XG2-010",
+          "RS-291"
+        ],
+        [
+          "XG2-016"
+        ]
       ]
     }
   ]

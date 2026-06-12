@@ -1010,7 +1010,7 @@
     },
     {
       "id": "PR-026",
-      "name": "デカマスター（2nd）",
+      "name": "デカマスター",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -5544,7 +5544,7 @@
     },
     {
       "id": "RK-240",
-      "name": "仮面ライダー電王CF（2nd）",
+      "name": "仮面ライダー電王CF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -5792,7 +5792,7 @@
     },
     {
       "id": "RK-255",
-      "name": "電波人間タックル（2nd）",
+      "name": "電波人間タックル",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -6061,7 +6061,7 @@
     },
     {
       "id": "RK-269",
-      "name": "シャドームーン（2nd）",
+      "name": "シャドームーン",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -6260,7 +6260,7 @@
     },
     {
       "id": "RK-278",
-      "name": "仮面ライダーナイト（2nd）",
+      "name": "仮面ライダーナイト",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -6629,7 +6629,7 @@
     },
     {
       "id": "RK-296",
-      "name": "仮面ライダーキックホッパー（2nd）",
+      "name": "仮面ライダーキックホッパー",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6651,7 +6651,7 @@
     },
     {
       "id": "RK-297",
-      "name": "仮面ライダーパンチホッパー（2nd）",
+      "name": "仮面ライダーパンチホッパー",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6795,7 +6795,7 @@
     },
     {
       "id": "RK-304",
-      "name": "仮面ライダー電王RF（2nd）",
+      "name": "仮面ライダー電王RF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6817,7 +6817,7 @@
     },
     {
       "id": "RK-305",
-      "name": "仮面ライダー電王SF（2nd）",
+      "name": "仮面ライダー電王SF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6839,7 +6839,7 @@
     },
     {
       "id": "RK-306",
-      "name": "仮面ライダー電王AF（2nd）",
+      "name": "仮面ライダー電王AF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6859,7 +6859,7 @@
     },
     {
       "id": "RK-307",
-      "name": "仮面ライダー電王GF（2nd）",
+      "name": "仮面ライダー電王GF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6881,7 +6881,7 @@
     },
     {
       "id": "RK-308",
-      "name": "リュウタロス（2nd）",
+      "name": "リュウタロス",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6901,7 +6901,7 @@
     },
     {
       "id": "RK-309",
-      "name": "ウラタロス（2nd）",
+      "name": "ウラタロス",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6921,7 +6921,7 @@
     },
     {
       "id": "RK-310",
-      "name": "モモタロス（2nd）",
+      "name": "モモタロス",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6941,7 +6941,7 @@
     },
     {
       "id": "RK-311",
-      "name": "キンタロス（2nd）",
+      "name": "キンタロス",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -7388,7 +7388,7 @@
     },
     {
       "id": "RK-332",
-      "name": "仮面ライダー龍騎（2nd）",
+      "name": "仮面ライダー龍騎",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -7436,7 +7436,7 @@
     },
     {
       "id": "RK-334",
-      "name": "仮面ライダー電王LF（2nd）",
+      "name": "仮面ライダー電王LF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -7464,7 +7464,7 @@
     },
     {
       "id": "RK-335",
-      "name": "モモタロス（2nd）",
+      "name": "モモタロス",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -15299,7 +15299,7 @@
     },
     {
       "id": "RS-351",
-      "name": "アカレンジャー（2nd）",
+      "name": "アカレンジャー",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -15502,7 +15502,7 @@
     },
     {
       "id": "RS-361",
-      "name": "バルイーグル（2nd）",
+      "name": "バルイーグル",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -15523,7 +15523,7 @@
     },
     {
       "id": "RS-362",
-      "name": "バルシャーク（2nd）",
+      "name": "バルシャーク",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -15543,7 +15543,7 @@
     },
     {
       "id": "RS-363",
-      "name": "バルパンサー（2nd）",
+      "name": "バルパンサー",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -15779,7 +15779,7 @@
     },
     {
       "id": "RS-375",
-      "name": "レッドレーサー（2nd）",
+      "name": "レッドレーサー",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -16053,7 +16053,7 @@
     },
     {
       "id": "RS-388",
-      "name": "ゴーレッド（2nd）",
+      "name": "ゴーレッド",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -16353,7 +16353,7 @@
     },
     {
       "id": "RS-402",
-      "name": "ガオレッド（2nd）",
+      "name": "ガオレッド",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -16374,7 +16374,7 @@
     },
     {
       "id": "RS-403",
-      "name": "デカレッド（2nd）",
+      "name": "デカレッド",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -17132,7 +17132,7 @@
     },
     {
       "id": "RS-440",
-      "name": "バトルフィーバーロボ（2nd）",
+      "name": "バトルフィーバーロボ",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -18790,7 +18790,7 @@
     },
     {
       "id": "RS-527",
-      "name": "バルジオン（2nd）",
+      "name": "バルジオン",
       "type": "vehicle",
       "category": "DA",
       "rarity": "N",
@@ -18808,7 +18808,7 @@
     },
     {
       "id": "RS-528",
-      "name": "バイオハンター・シルバ（2nd）",
+      "name": "バイオハンター・シルバ",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -19206,7 +19206,7 @@
     },
     {
       "id": "RS-548",
-      "name": "ティラノレンジャー（2nd）",
+      "name": "ティラノレンジャー",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -19227,7 +19227,7 @@
     },
     {
       "id": "RS-549",
-      "name": "トリケラレンジャー（2nd）",
+      "name": "トリケラレンジャー",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -19720,7 +19720,7 @@
     },
     {
       "id": "RS-572",
-      "name": "デカマスター（2nd）",
+      "name": "デカマスター",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -19745,7 +19745,7 @@
     },
     {
       "id": "RS-573",
-      "name": "ファイヤーカイザー（2nd）",
+      "name": "ファイヤーカイザー",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -19834,7 +19834,7 @@
     },
     {
       "id": "RS-577",
-      "name": "マジレッド（2nd）",
+      "name": "マジレッド",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -19926,7 +19926,7 @@
     },
     {
       "id": "RS-581",
-      "name": "魔導馬バリキオン（2nd）",
+      "name": "魔導馬バリキオン",
       "type": "vehicle",
       "category": "DA",
       "rarity": "N",
@@ -20006,7 +20006,7 @@
     },
     {
       "id": "RS-585",
-      "name": "ボウケンシルバー（2nd）",
+      "name": "ボウケンシルバー",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -21376,7 +21376,7 @@
     },
     {
       "id": "RS-653",
-      "name": "レッドファルコン（2nd）",
+      "name": "レッドファルコン",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -21396,7 +21396,7 @@
     },
     {
       "id": "RS-654",
-      "name": "ガオイエロー（2nd）",
+      "name": "ガオイエロー",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -22062,7 +22062,7 @@
     },
     {
       "id": "RS-685",
-      "name": "ブラックコンドル（2nd）",
+      "name": "ブラックコンドル",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -22156,7 +22156,7 @@
     },
     {
       "id": "RS-689",
-      "name": "レッドホーク（2nd）",
+      "name": "レッドホーク",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -22257,7 +22257,7 @@
     },
     {
       "id": "SK-003",
-      "name": "仮面ライダーファム（2nd）",
+      "name": "仮面ライダーファム",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -22377,7 +22377,7 @@
     },
     {
       "id": "SR-004",
-      "name": "ヘドリアン女王（2nd）",
+      "name": "ヘドリアン女王",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -22822,7 +22822,7 @@
     },
     {
       "id": "XG1-001",
-      "name": "バトルジャパン（XG）",
+      "name": "バトルジャパン",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -22842,7 +22842,7 @@
     },
     {
       "id": "XG1-002",
-      "name": "デンジレッド（XG）",
+      "name": "デンジレッド",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -22861,7 +22861,7 @@
     },
     {
       "id": "XG1-003",
-      "name": "バルイーグル（XG）",
+      "name": "バルイーグル",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -22900,7 +22900,7 @@
     },
     {
       "id": "XG1-005",
-      "name": "ダイナレッド（XG）",
+      "name": "ダイナレッド",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -22919,7 +22919,7 @@
     },
     {
       "id": "XG1-006",
-      "name": "レッドワン（XG）",
+      "name": "レッドワン",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -22939,7 +22939,7 @@
     },
     {
       "id": "XG1-007",
-      "name": "チェンジドラゴン（XG）",
+      "name": "チェンジドラゴン",
       "type": "unit",
       "category": [
         "MA",
@@ -22963,7 +22963,7 @@
     },
     {
       "id": "XG1-008",
-      "name": "レッドフラッシュ（XG）",
+      "name": "レッドフラッシュ",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -22983,7 +22983,7 @@
     },
     {
       "id": "XG1-009",
-      "name": "レッドマスク（XG）",
+      "name": "レッドマスク",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -23003,7 +23003,7 @@
     },
     {
       "id": "XG1-010",
-      "name": "レッドファルコン（XG）",
+      "name": "レッドファルコン",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -23461,7 +23461,7 @@
     },
     {
       "id": "XG1-031",
-      "name": "ゴーオンレッド（XG）",
+      "name": "ゴーオンレッド",
       "type": "unit",
       "category": [
         "WB",
@@ -23485,7 +23485,7 @@
     },
     {
       "id": "XG1-032",
-      "name": "ゲキレッド（XG）",
+      "name": "ゲキレッド",
       "type": "unit",
       "category": [
         "WB",
@@ -23677,7 +23677,7 @@
     },
     {
       "id": "XG1-041",
-      "name": "仮面ライダーアマゾン（XG）",
+      "name": "仮面ライダーアマゾン",
       "type": "unit",
       "category": [
         "WB",
@@ -23740,7 +23740,7 @@
     },
     {
       "id": "XG1-044",
-      "name": "仮面ライダーV3（XG）",
+      "name": "仮面ライダーV3",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -23875,7 +23875,7 @@
     },
     {
       "id": "XG1-051",
-      "name": "仮面ライダーZX（XG）",
+      "name": "仮面ライダーZX",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -24086,7 +24086,7 @@
     },
     {
       "id": "XG1-061",
-      "name": "仮面ライダーカリス（XG）",
+      "name": "仮面ライダーカリス",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -24334,7 +24334,7 @@
     },
     {
       "id": "XG1-073",
-      "name": "仮面ライダーザビーMF（XG）",
+      "name": "仮面ライダーザビーMF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -24352,7 +24352,7 @@
     },
     {
       "id": "XG1-074",
-      "name": "仮面ライダーザビーRF（XG）",
+      "name": "仮面ライダーザビーRF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -24906,7 +24906,7 @@
     },
     {
       "id": "XG2-001",
-      "name": "ファイブレッド（XG2）",
+      "name": "ファイブレッド",
       "type": "unit",
       "category": [
         "OT",
@@ -24929,7 +24929,7 @@
     },
     {
       "id": "XG2-002",
-      "name": "ファイブブルー（XG2）",
+      "name": "ファイブブルー",
       "type": "unit",
       "category": [
         "OT",
@@ -24952,7 +24952,7 @@
     },
     {
       "id": "XG2-003",
-      "name": "ファイブピンク（XG2）",
+      "name": "ファイブピンク",
       "type": "unit",
       "category": [
         "OT",
@@ -25118,7 +25118,7 @@
     },
     {
       "id": "XG2-010",
-      "name": "気伝武人龍星王（XG2）",
+      "name": "気伝武人龍星王",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -25145,7 +25145,7 @@
     },
     {
       "id": "XG2-011",
-      "name": "気伝武人ウォンタイガー（XG2）",
+      "name": "気伝武人ウォンタイガー",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -25192,7 +25192,7 @@
     },
     {
       "id": "XG2-013",
-      "name": "キバレンジャー（XG2）",
+      "name": "キバレンジャー",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -25235,7 +25235,7 @@
     },
     {
       "id": "XG2-015",
-      "name": "リュウレンジャー（XG2）",
+      "name": "リュウレンジャー",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -25300,7 +25300,7 @@
     },
     {
       "id": "XG2-018",
-      "name": "ゲキタイガー（XG2）",
+      "name": "ゲキタイガー",
       "type": "unit",
       "category": [
         "WB",
@@ -25444,7 +25444,7 @@
     },
     {
       "id": "XG2-025",
-      "name": "ギンガレッド（XG2）",
+      "name": "ギンガレッド",
       "type": "unit",
       "category": [
         "WB",
@@ -25466,7 +25466,7 @@
     },
     {
       "id": "XG2-026",
-      "name": "ギンガブルー（XG2）",
+      "name": "ギンガブルー",
       "type": "unit",
       "category": [
         "WB",
@@ -25489,7 +25489,7 @@
     },
     {
       "id": "XG2-027",
-      "name": "ギンガイエロー（XG2）",
+      "name": "ギンガイエロー",
       "type": "unit",
       "category": [
         "WB",
@@ -25600,7 +25600,7 @@
     },
     {
       "id": "XG2-032",
-      "name": "デカレンジャーロボ（XG2）",
+      "name": "デカレンジャーロボ",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -26005,7 +26005,7 @@
     },
     {
       "id": "XG2-049",
-      "name": "仮面ライダーギルス（XG2）",
+      "name": "仮面ライダーギルス",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -26080,7 +26080,7 @@
     },
     {
       "id": "XG2-053",
-      "name": "仮面ライダータイガ（XG2）",
+      "name": "仮面ライダータイガ",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -26193,7 +26193,7 @@
     },
     {
       "id": "XG2-059",
-      "name": "仮面ライダーレンゲル（XG2）",
+      "name": "仮面ライダーレンゲル",
       "type": "unit",
       "category": [
         "WB",
@@ -26273,7 +26273,7 @@
     },
     {
       "id": "XG2-063",
-      "name": "仮面ライダー響鬼（XG2）",
+      "name": "仮面ライダー響鬼",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -26292,7 +26292,7 @@
     },
     {
       "id": "XG2-064",
-      "name": "仮面ライダーカブトMF（XG2）",
+      "name": "仮面ライダーカブトMF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -26335,7 +26335,7 @@
     },
     {
       "id": "XG2-066",
-      "name": "仮面ライダーカブトRF（XG2）",
+      "name": "仮面ライダーカブトRF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -26361,7 +26361,7 @@
     },
     {
       "id": "XG2-067",
-      "name": "仮面ライダー電王GF（XG2）",
+      "name": "仮面ライダー電王GF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -26381,7 +26381,7 @@
     },
     {
       "id": "XG2-068",
-      "name": "リュウタロス（XG2）",
+      "name": "リュウタロス",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -26522,7 +26522,7 @@
     },
     {
       "id": "XG2-075",
-      "name": "仮面ライダーブレイド（XG2）",
+      "name": "仮面ライダーブレイド",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -26541,7 +26541,7 @@
     },
     {
       "id": "XG2-076",
-      "name": "仮面ライダーキバ（XG2）",
+      "name": "仮面ライダーキバ",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -26561,7 +26561,7 @@
     },
     {
       "id": "XG2-077",
-      "name": "仮面ライダーディケイド（XG2）",
+      "name": "仮面ライダーディケイド",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -26582,7 +26582,7 @@
     },
     {
       "id": "XG2-078",
-      "name": "仮面ライダーファイズ（XG2）",
+      "name": "仮面ライダーファイズ",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -26602,7 +26602,7 @@
     },
     {
       "id": "XG2-079",
-      "name": "仮面ライダー龍騎（XG2）",
+      "name": "仮面ライダー龍騎",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -26670,7 +26670,7 @@
     },
     {
       "id": "XG2-082",
-      "name": "電子星獣ドル（XG2）",
+      "name": "電子星獣ドル",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -26693,7 +26693,7 @@
     },
     {
       "id": "XG2-083",
-      "name": "宇宙刑事ギャバン（XG2）",
+      "name": "宇宙刑事ギャバン",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -26733,7 +26733,7 @@
     },
     {
       "id": "XG2-085",
-      "name": "隊員コード153 ショウ（XG2）",
+      "name": "隊員コード153 ショウ",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -27486,7 +27486,7 @@
     },
     {
       "id": "XG3-020",
-      "name": "クワガライジャー（XG3）",
+      "name": "クワガライジャー",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -27505,7 +27505,7 @@
     },
     {
       "id": "XG3-021",
-      "name": "カブトライジャー（XG3）",
+      "name": "カブトライジャー",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -27524,7 +27524,7 @@
     },
     {
       "id": "XG3-022",
-      "name": "アバレッド（XG3）",
+      "name": "アバレッド",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -27649,7 +27649,7 @@
     },
     {
       "id": "XG3-028",
-      "name": "魔導馬バリキオン（XG3）",
+      "name": "魔導馬バリキオン",
       "type": "unit",
       "category": [
         "MA",
@@ -27669,7 +27669,7 @@
     },
     {
       "id": "XG3-029",
-      "name": "魔導騎士ウルザード（XG3）",
+      "name": "魔導騎士ウルザード",
       "type": "unit",
       "category": [
         "MA",
@@ -27716,7 +27716,7 @@
     },
     {
       "id": "XG3-031",
-      "name": "ゲキブルー（XG3）",
+      "name": "ゲキブルー",
       "type": "unit",
       "category": [
         "WB",
@@ -27740,7 +27740,7 @@
     },
     {
       "id": "XG3-032",
-      "name": "ゲキイエロー（XG3）",
+      "name": "ゲキイエロー",
       "type": "unit",
       "category": [
         "WB",
@@ -27918,7 +27918,7 @@
     },
     {
       "id": "XG3-040",
-      "name": "シンケンレッド（XG3）",
+      "name": "シンケンレッド",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -27938,7 +27938,7 @@
     },
     {
       "id": "XG3-041",
-      "name": "仮面ライダーディケイドCF（XG3）",
+      "name": "仮面ライダーディケイドCF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -27974,7 +27974,7 @@
     },
     {
       "id": "XG3-043",
-      "name": "ライダーマン（XG3）",
+      "name": "ライダーマン",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -27993,7 +27993,7 @@
     },
     {
       "id": "XG3-044",
-      "name": "仮面ライダーストロンガー（XG3）",
+      "name": "仮面ライダーストロンガー",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -28042,7 +28042,7 @@
     },
     {
       "id": "XG3-046",
-      "name": "仮面ライダーBLACK（XG3）",
+      "name": "仮面ライダーBLACK",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -28063,7 +28063,7 @@
     },
     {
       "id": "XG3-047",
-      "name": "シャドームーン（XG3）",
+      "name": "シャドームーン",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -28084,7 +28084,7 @@
     },
     {
       "id": "XG3-048",
-      "name": "仮面ライダーBLACK RX（XG3）",
+      "name": "仮面ライダーBLACK RX",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -28118,7 +28118,7 @@
     },
     {
       "id": "XG3-050",
-      "name": "仮面ライダーゾルダ（XG3）",
+      "name": "仮面ライダーゾルダ",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -28138,7 +28138,7 @@
     },
     {
       "id": "XG3-051",
-      "name": "仮面ライダー王蛇（XG3）",
+      "name": "仮面ライダー王蛇",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -28233,7 +28233,7 @@
     },
     {
       "id": "XG3-056",
-      "name": "仮面ライダー響鬼（XG3）",
+      "name": "仮面ライダー響鬼",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -28276,7 +28276,7 @@
     },
     {
       "id": "XG3-058",
-      "name": "仮面ライダー斬鬼（XG3）",
+      "name": "仮面ライダー斬鬼",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -28296,7 +28296,7 @@
     },
     {
       "id": "XG3-059",
-      "name": "仮面ライダー轟鬼（XG3）",
+      "name": "仮面ライダー轟鬼",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -28337,7 +28337,7 @@
     },
     {
       "id": "XG3-061",
-      "name": "仮面ライダーガタックMF（XG3）",
+      "name": "仮面ライダーガタックMF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -28355,7 +28355,7 @@
     },
     {
       "id": "XG3-062",
-      "name": "仮面ライダーガタックRF（XG3）",
+      "name": "仮面ライダーガタックRF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -28380,7 +28380,7 @@
     },
     {
       "id": "XG3-063",
-      "name": "仮面ライダードレイクMF（XG3）",
+      "name": "仮面ライダードレイクMF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -28398,7 +28398,7 @@
     },
     {
       "id": "XG3-064",
-      "name": "仮面ライダードレイクRF（XG3）",
+      "name": "仮面ライダードレイクRF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -28424,7 +28424,7 @@
     },
     {
       "id": "XG3-065",
-      "name": "仮面ライダーサソードMF（XG3）",
+      "name": "仮面ライダーサソードMF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -28442,7 +28442,7 @@
     },
     {
       "id": "XG3-066",
-      "name": "仮面ライダーサソードRF（XG3）",
+      "name": "仮面ライダーサソードRF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -28481,7 +28481,7 @@
     },
     {
       "id": "XG3-068",
-      "name": "仮面ライダーディケイド（XG3）",
+      "name": "仮面ライダーディケイド",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -28501,7 +28501,7 @@
     },
     {
       "id": "XG3-069",
-      "name": "仮面ライダーディエンド（XG3）",
+      "name": "仮面ライダーディエンド",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -28576,7 +28576,7 @@
     },
     {
       "id": "XG3-073",
-      "name": "仮面ライダーJジャンボフォーメーション（XG3）",
+      "name": "仮面ライダーJジャンボフォーメーション",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -28931,7 +28931,7 @@
     },
     {
       "id": "XG3-089",
-      "name": "ブルービート（XG3）",
+      "name": "ブルービート",
       "type": "unit",
       "category": [
         "WB",
@@ -28986,7 +28986,7 @@
     },
     {
       "id": "XG3-091",
-      "name": "ジースタッグ（XG3）",
+      "name": "ジースタッグ",
       "type": "unit",
       "category": [
         "WB",
@@ -29010,7 +29010,7 @@
     },
     {
       "id": "XG3-092",
-      "name": "レッドル（XG3）",
+      "name": "レッドル",
       "type": "unit",
       "category": [
         "WB",
@@ -29353,7 +29353,7 @@
     },
     {
       "id": "XG4-007",
-      "name": "ドラゴンレンジャー（XG4）",
+      "name": "ドラゴンレンジャー",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -29373,7 +29373,7 @@
     },
     {
       "id": "XG4-008",
-      "name": "メガシルバー（XG4）",
+      "name": "メガシルバー",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -29499,7 +29499,7 @@
     },
     {
       "id": "XG4-013",
-      "name": "ギンガグリーン（XG4）",
+      "name": "ギンガグリーン",
       "type": "unit",
       "category": [
         "WB",
@@ -29521,7 +29521,7 @@
     },
     {
       "id": "XG4-014",
-      "name": "ギンガピンク（XG4）",
+      "name": "ギンガピンク",
       "type": "unit",
       "category": [
         "WB",
@@ -29562,7 +29562,7 @@
     },
     {
       "id": "XG4-016",
-      "name": "タイムファイヤー（XG4）",
+      "name": "タイムファイヤー",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -29582,7 +29582,7 @@
     },
     {
       "id": "XG4-017",
-      "name": "ガオシルバー（XG4）",
+      "name": "ガオシルバー",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -29668,7 +29668,7 @@
     },
     {
       "id": "XG4-022",
-      "name": "シュリケンジャー（XG4）",
+      "name": "シュリケンジャー",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -29688,7 +29688,7 @@
     },
     {
       "id": "XG4-023",
-      "name": "シュリケンジャーFM（XG4）",
+      "name": "シュリケンジャーFM",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -29715,7 +29715,7 @@
     },
     {
       "id": "XG4-024",
-      "name": "エージェント・アブレラ（XG4）",
+      "name": "エージェント・アブレラ",
       "type": "commander",
       "category": "DA",
       "rarity": "N",
@@ -29727,7 +29727,7 @@
     },
     {
       "id": "XG4-025",
-      "name": "デカブレイク（XG4）",
+      "name": "デカブレイク",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -29748,7 +29748,7 @@
     },
     {
       "id": "XG4-026",
-      "name": "天空勇者マジシャイン（XG4）",
+      "name": "天空勇者マジシャイン",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -29796,7 +29796,7 @@
     },
     {
       "id": "XG4-029",
-      "name": "ゲキバイオレット（XG4）",
+      "name": "ゲキバイオレット",
       "type": "unit",
       "category": [
         "WB",
@@ -29820,7 +29820,7 @@
     },
     {
       "id": "XG4-030",
-      "name": "ゲキチョッパー（XG4）",
+      "name": "ゲキチョッパー",
       "type": "unit",
       "category": [
         "WB",
@@ -29856,7 +29856,7 @@
     },
     {
       "id": "XG4-032",
-      "name": "ゴーオンゴールド（XG4）",
+      "name": "ゴーオンゴールド",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -29876,7 +29876,7 @@
     },
     {
       "id": "XG4-033",
-      "name": "ゴーオンシルバー（XG4）",
+      "name": "ゴーオンシルバー",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -29920,7 +29920,7 @@
     },
     {
       "id": "XG4-035",
-      "name": "シンケンゴールド（XG4）",
+      "name": "シンケンゴールド",
       "type": "unit",
       "category": [
         "MA",
@@ -30193,7 +30193,7 @@
     },
     {
       "id": "XG4-047",
-      "name": "シンケンレッド（XG4）",
+      "name": "シンケンレッド",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -30231,7 +30231,7 @@
     },
     {
       "id": "XG4-049",
-      "name": "アクロバッター（XG4）",
+      "name": "アクロバッター",
       "type": "vehicle",
       "category": "MA",
       "rarity": "N",
@@ -30282,7 +30282,7 @@
     },
     {
       "id": "XG4-052",
-      "name": "仮面ライダークウガUF（XG4）",
+      "name": "仮面ライダークウガUF",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -30303,7 +30303,7 @@
     },
     {
       "id": "XG4-053",
-      "name": "仮面ライダーアギトSHF（XG4）",
+      "name": "仮面ライダーアギトSHF",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -30323,7 +30323,7 @@
     },
     {
       "id": "XG4-054",
-      "name": "仮面ライダーブレイドKF（XG4）",
+      "name": "仮面ライダーブレイドKF",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -30343,7 +30343,7 @@
     },
     {
       "id": "XG4-055",
-      "name": "ドラグランザー（XG4）",
+      "name": "ドラグランザー",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -30387,7 +30387,7 @@
     },
     {
       "id": "XG4-057",
-      "name": "仮面ライダー龍騎サバイブ（XG4）",
+      "name": "仮面ライダー龍騎サバイブ",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -30409,7 +30409,7 @@
     },
     {
       "id": "XG4-058",
-      "name": "オートバジンBM（XG4）",
+      "name": "オートバジンBM",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -30428,7 +30428,7 @@
     },
     {
       "id": "XG4-059",
-      "name": "オートバジンVM（XG4）",
+      "name": "オートバジンVM",
       "type": "vehicle",
       "category": "ET",
       "rarity": "N",
@@ -30445,7 +30445,7 @@
     },
     {
       "id": "XG4-060",
-      "name": "仮面ライダーファイズBF（XG4）",
+      "name": "仮面ライダーファイズBF",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -30636,7 +30636,7 @@
     },
     {
       "id": "XG4-069",
-      "name": "仮面ライダーW・FJ（XG4）",
+      "name": "仮面ライダーW・FJ",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -30716,7 +30716,7 @@
     },
     {
       "id": "XG4-073",
-      "name": "仮面ライダークウガDF（XG4）",
+      "name": "仮面ライダークウガDF",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -30736,7 +30736,7 @@
     },
     {
       "id": "XG4-074",
-      "name": "仮面ライダーX（XG4）",
+      "name": "仮面ライダーX",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -30757,7 +30757,7 @@
     },
     {
       "id": "XG4-075",
-      "name": "アポロガイスト（XG4）",
+      "name": "アポロガイスト",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -30803,7 +30803,7 @@
     },
     {
       "id": "XG4-077",
-      "name": "仮面ライダーZX（XG4）",
+      "name": "仮面ライダーZX",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -30825,7 +30825,7 @@
     },
     {
       "id": "XG4-078",
-      "name": "仮面ライダー龍騎（XG4）",
+      "name": "仮面ライダー龍騎",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -30845,7 +30845,7 @@
     },
     {
       "id": "XG4-079",
-      "name": "ディケイド カブトRF（XG4）",
+      "name": "ディケイド カブトRF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -30865,7 +30865,7 @@
     },
     {
       "id": "XG4-080",
-      "name": "ロボライダー（XG4）",
+      "name": "ロボライダー",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -30887,7 +30887,7 @@
     },
     {
       "id": "XG4-081",
-      "name": "仮面ライダーブレイド（XG4）",
+      "name": "仮面ライダーブレイド",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -30907,7 +30907,7 @@
     },
     {
       "id": "XG4-082",
-      "name": "バイオライダー（XG4）",
+      "name": "バイオライダー",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -30927,7 +30927,7 @@
     },
     {
       "id": "XG4-083",
-      "name": "ディケイド ファイズ（XG4）",
+      "name": "ディケイド ファイズ",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -30984,7 +30984,7 @@
     },
     {
       "id": "XG4-086",
-      "name": "仮面ライダーイクサBM（XG4）",
+      "name": "仮面ライダーイクサBM",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -31005,7 +31005,7 @@
     },
     {
       "id": "XG4-087",
-      "name": "スカイライダー（XG4）",
+      "name": "スカイライダー",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -31084,7 +31084,7 @@
     },
     {
       "id": "XG4-091",
-      "name": "ガンギブソン（XG4）",
+      "name": "ガンギブソン",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -31104,7 +31104,7 @@
     },
     {
       "id": "XG4-092",
-      "name": "ジャンパーソン（XG4）",
+      "name": "ジャンパーソン",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -31144,7 +31144,7 @@
     },
     {
       "id": "XG4-094",
-      "name": "宇宙刑事シャイダー（XG4）",
+      "name": "宇宙刑事シャイダー",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -31232,7 +31232,7 @@
     },
     {
       "id": "XG4-098",
-      "name": "スピルバン（XG4）",
+      "name": "スピルバン",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -31324,7 +31324,7 @@
     },
     {
       "id": "XG5-001",
-      "name": "ゴーグルレッド（XG5）",
+      "name": "ゴーグルレッド",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -31677,7 +31677,7 @@
     },
     {
       "id": "XG5-020",
-      "name": "ボウケンレッド（XG5）",
+      "name": "ボウケンレッド",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -31696,7 +31696,7 @@
     },
     {
       "id": "XG5-021",
-      "name": "ボウケンブラック（XG5）",
+      "name": "ボウケンブラック",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -31716,7 +31716,7 @@
     },
     {
       "id": "XG5-022",
-      "name": "ボウケンブルー（XG5）",
+      "name": "ボウケンブルー",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -31735,7 +31735,7 @@
     },
     {
       "id": "XG5-023",
-      "name": "ボウケンイエロー（XG5）",
+      "name": "ボウケンイエロー",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -31755,7 +31755,7 @@
     },
     {
       "id": "XG5-024",
-      "name": "ボウケンピンク（XG5）",
+      "name": "ボウケンピンク",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -31998,7 +31998,7 @@
     },
     {
       "id": "XG5-034",
-      "name": "シンケンレッド（XG5）",
+      "name": "シンケンレッド",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -32043,7 +32043,7 @@
     },
     {
       "id": "XG5-037",
-      "name": "ゴセイレッド（XG5）",
+      "name": "ゴセイレッド",
       "type": "unit",
       "category": [
         "WB",
@@ -32065,7 +32065,7 @@
     },
     {
       "id": "XG5-038",
-      "name": "ゴセイピンク（XG5）",
+      "name": "ゴセイピンク",
       "type": "unit",
       "category": [
         "WB",
@@ -32087,7 +32087,7 @@
     },
     {
       "id": "XG5-039",
-      "name": "ゴセイブルー（XG5）",
+      "name": "ゴセイブルー",
       "type": "unit",
       "category": [
         "WB",
@@ -32109,7 +32109,7 @@
     },
     {
       "id": "XG5-040",
-      "name": "ゴセイブラック（XG5）",
+      "name": "ゴセイブラック",
       "type": "unit",
       "category": [
         "WB",
@@ -32132,7 +32132,7 @@
     },
     {
       "id": "XG5-041",
-      "name": "ゴセイイエロー（XG5）",
+      "name": "ゴセイイエロー",
       "type": "unit",
       "category": [
         "WB",
@@ -32334,7 +32334,7 @@
     },
     {
       "id": "XG5-050",
-      "name": "仮面ライダー装甲響鬼（XG5）",
+      "name": "仮面ライダー装甲響鬼",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -32355,7 +32355,7 @@
     },
     {
       "id": "XG5-051",
-      "name": "仮面ライダーカブトHF（XG5）",
+      "name": "仮面ライダーカブトHF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -32375,7 +32375,7 @@
     },
     {
       "id": "XG5-052",
-      "name": "仮面ライダー電王CF（XG5）",
+      "name": "仮面ライダー電王CF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -32394,7 +32394,7 @@
     },
     {
       "id": "XG5-053",
-      "name": "仮面ライダーキバEF（XG5）",
+      "name": "仮面ライダーキバEF",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -32413,7 +32413,7 @@
     },
     {
       "id": "XG5-054",
-      "name": "仮面ライダーディケイドCF（XG5）",
+      "name": "仮面ライダーディケイドCF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -32433,7 +32433,7 @@
     },
     {
       "id": "XG5-055",
-      "name": "仮面ライダーギャレン（XG5）",
+      "name": "仮面ライダーギャレン",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -32452,7 +32452,7 @@
     },
     {
       "id": "XG5-056",
-      "name": "仮面ライダーギャレンJF（XG5）",
+      "name": "仮面ライダーギャレンJF",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -32507,7 +32507,7 @@
     },
     {
       "id": "XG5-059",
-      "name": "仮面ライダーカリス（XG5）",
+      "name": "仮面ライダーカリス",
       "type": "unit",
       "category": [
         "WB",
@@ -32530,7 +32530,7 @@
     },
     {
       "id": "XG5-060",
-      "name": "仮面ライダーワイルドカリス（XG5）",
+      "name": "仮面ライダーワイルドカリス",
       "type": "unit",
       "category": [
         "WB",
@@ -32637,7 +32637,7 @@
     },
     {
       "id": "XG5-066",
-      "name": "仮面ライダーベルデ（XG5）",
+      "name": "仮面ライダーベルデ",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -32657,7 +32657,7 @@
     },
     {
       "id": "XG5-067",
-      "name": "仮面ライダーナイト（XG5）",
+      "name": "仮面ライダーナイト",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -32676,7 +32676,7 @@
     },
     {
       "id": "XG5-068",
-      "name": "仮面ライダーナイトサバイブ（XG5）",
+      "name": "仮面ライダーナイトサバイブ",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -32732,7 +32732,7 @@
     },
     {
       "id": "XG5-071",
-      "name": "仮面ライダー響鬼（XG5）",
+      "name": "仮面ライダー響鬼",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -32753,7 +32753,7 @@
     },
     {
       "id": "XG5-072",
-      "name": "仮面ライダー威吹鬼（XG5）",
+      "name": "仮面ライダー威吹鬼",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -32774,7 +32774,7 @@
     },
     {
       "id": "XG5-073",
-      "name": "仮面ライダー電王SF（XG5）",
+      "name": "仮面ライダー電王SF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -32795,7 +32795,7 @@
     },
     {
       "id": "XG5-074",
-      "name": "仮面ライダーキバ（XG5）",
+      "name": "仮面ライダーキバ",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -32814,7 +32814,7 @@
     },
     {
       "id": "XG5-075",
-      "name": "仮面ライダーイクサSM（XG5）",
+      "name": "仮面ライダーイクサSM",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -32834,7 +32834,7 @@
     },
     {
       "id": "XG5-076",
-      "name": "仮面ライダーイクサBM（XG5）",
+      "name": "仮面ライダーイクサBM",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -32854,7 +32854,7 @@
     },
     {
       "id": "XG5-077",
-      "name": "仮面ライダーキバーラ（XG5）",
+      "name": "仮面ライダーキバーラ",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -32885,7 +32885,7 @@
     },
     {
       "id": "XG5-079",
-      "name": "仮面ライダーディケイド（XG5）",
+      "name": "仮面ライダーディケイド",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -32974,7 +32974,7 @@
     },
     {
       "id": "XG5-084",
-      "name": "仮面ライダーW・CJ（XG5）",
+      "name": "仮面ライダーW・CJ",
       "type": "unit",
       "category": [
         "ET",
@@ -33290,7 +33290,7 @@
     },
     {
       "id": "XG6-005",
-      "name": "セイントカイザー（XG6）",
+      "name": "セイントカイザー",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -33313,7 +33313,7 @@
     },
     {
       "id": "XG6-006",
-      "name": "ダイタンケン（XG6）",
+      "name": "ダイタンケン",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -33561,7 +33561,7 @@
     },
     {
       "id": "XG6-018",
-      "name": "アバレキラー（XG6）",
+      "name": "アバレキラー",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -33581,7 +33581,7 @@
     },
     {
       "id": "XG6-019",
-      "name": "ダイボウケン（XG6）",
+      "name": "ダイボウケン",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -33924,7 +33924,7 @@
     },
     {
       "id": "XG6-035",
-      "name": "仮面ライダーW・CJX（XG6）",
+      "name": "仮面ライダーW・CJX",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -33950,7 +33950,7 @@
     },
     {
       "id": "XG6-036",
-      "name": "仮面ライダーW・CJ（XG6）",
+      "name": "仮面ライダーW・CJ",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -33971,7 +33971,7 @@
     },
     {
       "id": "XG6-037",
-      "name": "仮面ライダーアクセル（XG6）",
+      "name": "仮面ライダーアクセル",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -33991,7 +33991,7 @@
     },
     {
       "id": "XG6-038",
-      "name": "仮面ライダーアクセルトライアル（XG6）",
+      "name": "仮面ライダーアクセルトライアル",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -34071,7 +34071,7 @@
     },
     {
       "id": "XG6-042",
-      "name": "仮面ライダーゼロノスAF（XG6）",
+      "name": "仮面ライダーゼロノスAF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -34089,7 +34089,7 @@
     },
     {
       "id": "XG6-043",
-      "name": "仮面ライダーゼロノスZF（XG6）",
+      "name": "仮面ライダーゼロノスZF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -34112,7 +34112,7 @@
     },
     {
       "id": "XG6-044",
-      "name": "仮面ライダーNEW電王SF（XG6）",
+      "name": "仮面ライダーNEW電王SF",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -34171,7 +34171,7 @@
     },
     {
       "id": "XG6-047",
-      "name": "仮面ライダーG4（XG6）",
+      "name": "仮面ライダーG4",
       "type": "unit",
       "category": [
         "ET",
@@ -34194,7 +34194,7 @@
     },
     {
       "id": "XG6-048",
-      "name": "仮面ライダーリュウガ（XG6）",
+      "name": "仮面ライダーリュウガ",
       "type": "unit",
       "category": [
         "WB",
@@ -34217,7 +34217,7 @@
     },
     {
       "id": "XG6-049",
-      "name": "仮面ライダーオーガ（XG6）",
+      "name": "仮面ライダーオーガ",
       "type": "unit",
       "category": [
         "ET",
@@ -34240,7 +34240,7 @@
     },
     {
       "id": "XG6-050",
-      "name": "仮面ライダーグレイブ（XG6）",
+      "name": "仮面ライダーグレイブ",
       "type": "unit",
       "category": [
         "WB",
@@ -34263,7 +34263,7 @@
     },
     {
       "id": "XG6-051",
-      "name": "仮面ライダー歌舞鬼（XG6）",
+      "name": "仮面ライダー歌舞鬼",
       "type": "unit",
       "category": [
         "MA",
@@ -34285,7 +34285,7 @@
     },
     {
       "id": "XG6-052",
-      "name": "仮面ライダーコーカサス（XG6）",
+      "name": "仮面ライダーコーカサス",
       "type": "unit",
       "category": [
         "OT",
@@ -34307,7 +34307,7 @@
     },
     {
       "id": "XG6-053",
-      "name": "仮面ライダーアーク（XG6）",
+      "name": "仮面ライダーアーク",
       "type": "unit",
       "category": [
         "MA",
@@ -34329,7 +34329,7 @@
     },
     {
       "id": "XG6-054",
-      "name": "仮面ライダースカル（XG6）",
+      "name": "仮面ライダースカル",
       "type": "unit",
       "category": [
         "ET",
@@ -34668,7 +34668,7 @@
     },
     {
       "id": "XG7-006",
-      "name": "ギンガピンク（XG7）",
+      "name": "ギンガピンク",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -34743,7 +34743,7 @@
     },
     {
       "id": "XG7-009",
-      "name": "タイムレッド（XG7）",
+      "name": "タイムレッド",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -34789,7 +34789,7 @@
     },
     {
       "id": "XG7-011",
-      "name": "ハリケンレッド（XG7）",
+      "name": "ハリケンレッド",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -34859,7 +34859,7 @@
     },
     {
       "id": "XG7-014",
-      "name": "マジレッド（XG7）",
+      "name": "マジレッド",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -34880,7 +34880,7 @@
     },
     {
       "id": "XG7-015",
-      "name": "ボウケンレッド（XG7）",
+      "name": "ボウケンレッド",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -34929,7 +34929,7 @@
     },
     {
       "id": "XG7-017",
-      "name": "ゴーオンレッド（XG7）",
+      "name": "ゴーオンレッド",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -34947,7 +34947,7 @@
     },
     {
       "id": "XG7-018",
-      "name": "シンケンレッド（XG7）",
+      "name": "シンケンレッド",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -35644,7 +35644,7 @@
     },
     {
       "id": "XG7-049",
-      "name": "仮面ライダーオーズ・ガタキリバコンボ（XG7）",
+      "name": "仮面ライダーオーズ・ガタキリバコンボ",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -35690,7 +35690,7 @@
     },
     {
       "id": "XG7-051",
-      "name": "仮面ライダーオーズ・ラトラーターコンボ（XG7）",
+      "name": "仮面ライダーオーズ・ラトラーターコンボ",
       "type": "unit",
       "category": "WB",
       "rarity": "N",

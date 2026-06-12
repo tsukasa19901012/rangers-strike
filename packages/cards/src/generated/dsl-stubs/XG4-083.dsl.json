@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG4-083",
-  "name": "ディケイド ファイズ（XG4）",
+  "name": "ディケイド ファイズ",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

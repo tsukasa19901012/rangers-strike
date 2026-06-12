@@ -1,9 +1,12 @@
 import { allCardsCatalog } from "./catalog";
 import type { RushAdditionalCondition, ZordConditionId } from "./effectTaxonomy";
+import { isFusionMaterialForPartners } from "./fusionMaterial";
+import type { CardDefinition } from "./schema";
 import { isZordDownCost, isZordUpCost } from "./powerCost";
 
 export { isZordDownCost, isZordUpCost } from "./powerCost";
 export { hasPowerCostMinusSuffix, printedPowerCostNumber } from "./powerCost";
+import { countZordFusionPartnerSlots } from "./pipeline/fusionPartners";
 import {
   buildFusionPartnerIdSet,
   getUnitEffectBlock,
@@ -195,10 +198,18 @@ export function isFusionUnit(cardId: string): boolean {
 export function isValidZordFusionMaterial(
   zordCardId: string,
   materialCardId: string,
+  definitions?: Record<string, CardDefinition>,
 ): boolean {
   const partners = listZordFusionPartnerIds(zordCardId);
   if (partners.length > 0) {
-    return partners.includes(materialCardId);
+    if (partners.includes(materialCardId)) return true;
+    if (definitions) {
+      const material = definitions[materialCardId];
+      if (material) {
+        return isFusionMaterialForPartners(material, partners, definitions);
+      }
+    }
+    return false;
   }
   return isFusionUnit(materialCardId);
 }
@@ -208,8 +219,11 @@ export function requiresFusionPartnerReturn(cardId: string): boolean {
   return getZordCondition(cardId) === "discard_fusion_unit";
 }
 
-/** ゾード捨て後に戻す合体パートナーの枚数。 */
+/** ゾード捨て後に戻す合体パートナーの枚数（合体―行の枠数。同名別収録は1枠）。 */
 export function fusionPartnerReturnCount(cardId: string): number {
-  const partners = listZordFusionPartnerIds(cardId);
-  return partners.length > 0 ? partners.length : 1;
+  const block = getUnitEffectBlock(cardId);
+  const zord = block?.unnamedText.find((entry) => entry.kind === "zord");
+  if (!zord?.text) return 1;
+  const slots = countZordFusionPartnerSlots(zord.text);
+  return slots > 0 ? slots : 1;
 }

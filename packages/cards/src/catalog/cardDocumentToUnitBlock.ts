@@ -6,23 +6,26 @@ import type {
   UnnamedUnitText,
 } from "../effectTaxonomy";
 import type { CardDocument, EffectDefinition, EffectTrigger } from "../dsl/types";
+import { canonicalCardName, fusionMaterialAliasNames } from "../cardName";
 import { corePlayableCatalog, fullPlayableCatalog } from "./unifiedCatalog";
 
-const CARD_NAME_TO_ID = new Map(
-  fullPlayableCatalog.cards.map((card) => [card.name, card.id]),
-);
+const CARD_NAME_TO_ID = new Map<string, string>();
+for (const card of fullPlayableCatalog.cards) {
+  const key = canonicalCardName(card.name);
+  if (!CARD_NAME_TO_ID.has(key)) CARD_NAME_TO_ID.set(key, card.id);
+}
 
 /** コアのみ — promoted の同名エイリアスで上書きしない（例: マジフェニックス → RS-057）。 */
 const CARD_ALIAS_TO_ID = new Map<string, string>();
 for (const card of corePlayableCatalog.cards) {
-  const aliasMatch = card.text?.match(/※これは「([^」]+)」としてつかえる/);
-  if (aliasMatch?.[1]) {
-    CARD_ALIAS_TO_ID.set(aliasMatch[1], card.id);
+  for (const alias of fusionMaterialAliasNames(card.text)) {
+    CARD_ALIAS_TO_ID.set(alias, card.id);
   }
 }
 
 function resolveCardNameToId(name: string): string | undefined {
-  return CARD_ALIAS_TO_ID.get(name) ?? CARD_NAME_TO_ID.get(name);
+  const key = canonicalCardName(name);
+  return CARD_ALIAS_TO_ID.get(key) ?? CARD_NAME_TO_ID.get(key);
 }
 
 function extractComboFromPartnerIds(text: string): string[] {
@@ -100,6 +103,7 @@ export function cardDocumentToUnitEffectBlock(doc: CardDocument): UnitEffectBloc
     damage: rule.damage,
     discardCount: rule.discardCount,
     partnerCardIds: rule.partnerCardIds,
+    partnerSlotCardIds: rule.partnerSlotCardIds,
   }));
 
   return {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RK-334",
-  "name": "仮面ライダー電王LF（2nd）",
+  "name": "仮面ライダー電王LF",
   "type": "unit",
   "category": "OT",
   "rarity": "N",

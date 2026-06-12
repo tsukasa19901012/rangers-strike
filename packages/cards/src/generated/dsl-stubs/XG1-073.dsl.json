@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG1-073",
-  "name": "仮面ライダーザビーMF（XG）",
+  "name": "仮面ライダーザビーMF",
   "type": "unit",
   "category": "OT",
   "rarity": "N",

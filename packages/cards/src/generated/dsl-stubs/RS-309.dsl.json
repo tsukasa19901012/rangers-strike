@@ -50,6 +50,14 @@
       "partnerCardIds": [
         "RS-310",
         "RS-311"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-310"
+        ],
+        [
+          "RS-311"
+        ]
       ]
     }
   ]

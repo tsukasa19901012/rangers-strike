@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG3-043",
-  "name": "ライダーマン（XG3）",
+  "name": "ライダーマン",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

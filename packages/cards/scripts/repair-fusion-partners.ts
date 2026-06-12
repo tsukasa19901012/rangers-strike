@@ -36,11 +36,22 @@ for (const file of readdirSync(dslDir)) {
   const existingIds = Array.isArray(existing?.partnerCardIds)
     ? (existing.partnerCardIds as string[])
     : [];
+  const existingSlots = Array.isArray(existing?.partnerSlotCardIds)
+    ? (existing.partnerSlotCardIds as string[][])
+    : [];
 
-  if (
+  const slotsMatch =
+    existingSlots.length === fusion.partnerSlotCardIds.length &&
+    existingSlots.every(
+      (slot, i) =>
+        slot.length === fusion.partnerSlotCardIds[i]!.length &&
+        slot.every((id, j) => id === fusion.partnerSlotCardIds[i]![j]),
+    );
+  const idsMatch =
     existingIds.length === fusion.partnerCardIds.length &&
-    existingIds.every((id, i) => id === fusion.partnerCardIds[i])
-  ) {
+    existingIds.every((id, i) => id === fusion.partnerCardIds[i]);
+
+  if (slotsMatch && idsMatch) {
     skipped += 1;
     continue;
   }
@@ -49,6 +60,7 @@ for (const file of readdirSync(dslDir)) {
     kind: "zord",
     text: fusion.text,
     partnerCardIds: fusion.partnerCardIds,
+    partnerSlotCardIds: fusion.partnerSlotCardIds,
   };
 
   if (zordIndex >= 0) {
@@ -64,7 +76,7 @@ for (const file of readdirSync(dslDir)) {
 
 console.log(`repair-fusion-partners: repaired=${repaired} skipped=${skipped}`);
 
-execSync("npm run emit:catalog --workspace=@rangers-strike/cards", {
+execSync("npm run emit-full-playable-catalog -w @rangers-strike/cards", {
   cwd: repoRoot,
   stdio: "inherit",
 });

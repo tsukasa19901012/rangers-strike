@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG2-078",
-  "name": "仮面ライダーファイズ（XG2）",
+  "name": "仮面ライダーファイズ",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

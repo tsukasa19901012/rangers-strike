@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG3-062",
-  "name": "仮面ライダーガタックRF（XG3）",
+  "name": "仮面ライダーガタックRF",
   "type": "unit",
   "category": "OT",
   "rarity": "N",

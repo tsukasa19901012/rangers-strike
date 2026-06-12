@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-528",
-  "name": "バイオハンター・シルバ（2nd）",
+  "name": "バイオハンター・シルバ",
   "type": "unit",
   "category": "DA",
   "rarity": "N",

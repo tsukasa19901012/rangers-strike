@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG4-024",
-  "name": "エージェント・アブレラ（XG4）",
+  "name": "エージェント・アブレラ",
   "type": "commander",
   "category": "DA",
   "rarity": "N",

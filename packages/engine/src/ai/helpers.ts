@@ -207,7 +207,14 @@ export function scoreRushAction(
   let score = bp + sp * 3_000 + lethalBonus - deckPenalty;
 
   if (requiresAllFusionPartners(card.cardId)) {
-    if (hasAllRequiredFusionMaterials(player, card.cardId, card.instanceId)) {
+    if (
+      hasAllRequiredFusionMaterials(
+        player,
+        state.definitions,
+        card.cardId,
+        card.instanceId,
+      )
+    ) {
       return 300_000 + score;
     }
     return 40_000 + score;

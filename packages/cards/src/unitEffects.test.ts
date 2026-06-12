@@ -58,6 +58,7 @@ describe("effect taxonomy (Legend1 units)", () => {
   it("lists AbarenOh zord fusion partners", () => {
     expect(listZordFusionPartnerIds("RS-050")).toEqual([
       "RS-051",
+      "XG7-012",
       "RS-052",
       "RS-053",
     ]);
@@ -86,6 +87,9 @@ describe("effect taxonomy (Legend1 units)", () => {
     ]);
     expect(listZordFusionPartnerIds("RS-070")).toEqual([
       "RS-057",
+      "RS-576",
+      "RS-577",
+      "XG7-014",
       "RS-058",
       "RS-059",
       "RS-060",
@@ -97,8 +101,16 @@ describe("effect taxonomy (Legend1 units)", () => {
       "RS-097",
       "RS-098",
     ]);
-    expect(listZordFusionPartnerIds("RS-112")).toEqual(["RS-115", "RS-114"]);
-    expect(listZordFusionPartnerIds("RS-113")).toEqual(["RS-057", "RS-114"]);
+    expect(listZordFusionPartnerIds("RS-112")).toEqual(["RS-115", "XG3-029"]);
+    expect(listZordFusionPartnerIds("RS-113")).toEqual([
+      "RS-057",
+      "RS-576",
+      "RS-577",
+      "XG7-014",
+      "RS-114",
+      "RS-581",
+      "XG3-028",
+    ]);
   });
 
   it("detects battle entry hold via structured rule on RS-052", () => {

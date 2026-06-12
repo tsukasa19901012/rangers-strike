@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG7-011",
-  "name": "ハリケンレッド（XG7）",
+  "name": "ハリケンレッド",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

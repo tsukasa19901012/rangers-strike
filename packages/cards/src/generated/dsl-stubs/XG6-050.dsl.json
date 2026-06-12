@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG6-050",
-  "name": "仮面ライダーグレイブ（XG6）",
+  "name": "仮面ライダーグレイブ",
   "type": "unit",
   "category": [
     "WB",

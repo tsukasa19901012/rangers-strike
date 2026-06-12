@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG7-006",
-  "name": "ギンガピンク（XG7）",
+  "name": "ギンガピンク",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

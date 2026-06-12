@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "SK-003",
-  "name": "仮面ライダーファム（2nd）",
+  "name": "仮面ライダーファム",
   "type": "unit",
   "category": "WB",
   "rarity": "N",

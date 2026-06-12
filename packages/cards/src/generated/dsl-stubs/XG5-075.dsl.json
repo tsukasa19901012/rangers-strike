@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG5-075",
-  "name": "仮面ライダーイクサSM（XG5）",
+  "name": "仮面ライダーイクサSM",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

@@ -1058,7 +1058,12 @@ export function explainCannotRush(
   if (needsZordMaterial(state.definitions, def.id)) {
     if (requiresAllFusionPartners(def.id)) {
       if (
-        !hasAllRequiredFusionMaterials(player, def.id, instanceId)
+        !hasAllRequiredFusionMaterials(
+          player,
+          state.definitions,
+          def.id,
+          instanceId,
+        )
       ) {
         return `「${unitName}」をラッシュするには、必要な合体ユニットが揃っていません。`;
       }

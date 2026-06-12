@@ -1,6 +1,7 @@
 import type { Category } from "@rangers-strike/cards";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
+import { sameCanonicalCardName } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { WIN_DAMAGE } from "../types/game";
 import { cardHasKeyword } from "./cardKeywords";
@@ -172,7 +173,7 @@ export function breakerBlocksSameNameRush(
   for (const zone of ["rush", "battle"] as const) {
     for (const card of player[zone]) {
       const def = getDefinition(definitions, card.cardId);
-      if (def?.name !== rushingName) continue;
+      if (!def?.name || !sameCanonicalCardName(def.name, rushingName)) continue;
       if (cardHasBattleKeyword(definitions, card.cardId, "breaker")) {
         return true;
       }

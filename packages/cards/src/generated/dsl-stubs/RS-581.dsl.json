@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-581",
-  "name": "魔導馬バリキオン（2nd）",
+  "name": "魔導馬バリキオン",
   "type": "vehicle",
   "category": "DA",
   "rarity": "N",

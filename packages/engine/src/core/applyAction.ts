@@ -947,6 +947,7 @@ export function applyAction(
         } else if (requiresAllFusionPartners(found.card.cardId)) {
           const afterZord = applyAllZordFusionMaterials(
             nextPlayer,
+            state.definitions,
             found.card.cardId,
             found.card.instanceId,
           );

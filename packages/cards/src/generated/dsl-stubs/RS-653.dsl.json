@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-653",
-  "name": "レッドファルコン（2nd）",
+  "name": "レッドファルコン",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG5-059",
-  "name": "仮面ライダーカリス（XG5）",
+  "name": "仮面ライダーカリス",
   "type": "unit",
   "category": [
     "WB",

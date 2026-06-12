@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG1-007",
-  "name": "チェンジドラゴン（XG）",
+  "name": "チェンジドラゴン",
   "type": "unit",
   "category": [
     "MA",

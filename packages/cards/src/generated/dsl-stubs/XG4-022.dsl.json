@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG4-022",
-  "name": "シュリケンジャー（XG4）",
+  "name": "シュリケンジャー",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

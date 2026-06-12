@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG5-023",
-  "name": "ボウケンイエロー（XG5）",
+  "name": "ボウケンイエロー",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

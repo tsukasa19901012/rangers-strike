@@ -15,6 +15,7 @@ import {
   parseSp,
   sanitizeEffectId,
 } from "./metaMaps";
+import { canonicalCardName } from "../cardName";
 import { parseZordFusionLine } from "./fusionPartners";
 
 const NOTE_RULE_BY_PATTERN: Record<string, string> = {
@@ -47,6 +48,7 @@ function buildUnnamedRules(
       kind: "zord",
       text: fusion.text,
       partnerCardIds: fusion.partnerCardIds,
+      partnerSlotCardIds: fusion.partnerSlotCardIds,
     });
   }
   for (const eff of effects) {
@@ -138,7 +140,7 @@ export function generateCardDocument(
   const card: CardDocument = {
     $schema: "https://rangers-strike.dev/schema/card.schema.json",
     id: parse.cardId,
-    name: catalog?.name ?? parse.name,
+    name: canonicalCardName(catalog?.name ?? parse.name),
     type: cardType,
     category: inferCategory(parse, catalog),
     rarity: catalog?.rarity ?? "N",

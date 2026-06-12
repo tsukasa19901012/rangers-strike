@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-572",
-  "name": "デカマスター（2nd）",
+  "name": "デカマスター",
   "type": "unit",
   "category": "OT",
   "rarity": "N",

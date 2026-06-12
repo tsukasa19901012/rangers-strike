@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG2-063",
-  "name": "仮面ライダー響鬼（XG2）",
+  "name": "仮面ライダー響鬼",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

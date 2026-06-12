@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-361",
-  "name": "バルイーグル（2nd）",
+  "name": "バルイーグル",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

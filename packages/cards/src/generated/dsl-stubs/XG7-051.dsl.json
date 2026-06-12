@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG7-051",
-  "name": "仮面ライダーオーズ・ラトラーターコンボ（XG7）",
+  "name": "仮面ライダーオーズ・ラトラーターコンボ",
   "type": "unit",
   "category": "WB",
   "rarity": "N",

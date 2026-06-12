@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG5-041",
-  "name": "ゴセイイエロー（XG5）",
+  "name": "ゴセイイエロー",
   "type": "unit",
   "category": [
     "WB",

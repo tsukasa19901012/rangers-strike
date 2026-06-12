@@ -44,6 +44,33 @@ export function maxCopiesForCard(card: CardDefinition): number {
   return deckCopyUnlimited(card) ? DECK_UNLIMITED_COPY_CAP : DECK_NAME_COPY_LIMIT;
 }
 
+/** 同名（正規化名称）ごとのデッキ枚数。 */
+export function countDeckCopiesByName(
+  entries: DeckEntry[],
+  catalog: CardCatalog = allCardsCatalog,
+): Map<string, number> {
+  const byId = new Map(catalog.cards.map((card) => [card.id, card]));
+  const byName = new Map<string, number>();
+  for (const entry of entries) {
+    const card = byId.get(entry.cardId);
+    if (!card) continue;
+    byName.set(card.name, (byName.get(card.name) ?? 0) + entry.count);
+  }
+  return byName;
+}
+
+/** このカードをあと何枚デッキに入れられるか（同名の別 ID 枚数を含む）。 */
+export function remainingCopiesForCard(
+  card: CardDefinition,
+  entries: DeckEntry[],
+  catalog: CardCatalog = allCardsCatalog,
+): number {
+  const sameNameCards = catalog.cards.filter((c) => c.name === card.name);
+  const limit = nameCopyLimit(sameNameCards);
+  const totalForName = countDeckCopiesByName(entries, catalog).get(card.name) ?? 0;
+  return Math.max(0, limit - totalForName);
+}
+
 function nameCopyLimit(cards: CardDefinition[]): number {
   return cards.some(deckCopyUnlimited) ? DECK_UNLIMITED_COPY_CAP : DECK_NAME_COPY_LIMIT;
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import * as bannedCards from "./bannedCards";
 import { getCardById } from "./catalog";
-import { fullPlayableCatalog } from "./extendedCatalog";
+import { fullPlayableCatalog, getFullPlayableCardById } from "./extendedCatalog";
 import abarenohDeck from "./legend1/decks/abarenoh.json";
 import dekarangerDeck from "./legend1/decks/dekaranger.json";
 import magikingDeck from "./legend1/decks/magiking.json";
@@ -13,6 +13,7 @@ import {
   DECK_UNLIMITED_COPY_CAP,
   deckCopyUnlimited,
   maxCopiesForCard,
+  remainingCopiesForCard,
   validateDeckEntries,
 } from "./deckRules";
 
@@ -48,6 +49,28 @@ describe("deck build rules", () => {
       minSize: 0,
     });
     expect(many.errors.filter((e) => e.includes("枚まで") || e.includes("同名"))).toHaveLength(0);
+  });
+
+  it("limits copies across different ids with the same name", () => {
+    const deka2nd = getFullPlayableCardById("RS-572");
+    const dekaCore = getFullPlayableCardById("RS-319");
+    expect(deka2nd?.name).toBe("デカマスター");
+    expect(dekaCore?.name).toBe("デカマスター");
+
+    const entries = [
+      { cardId: "RS-572", count: 2 },
+      { cardId: "RS-319", count: 1 },
+    ];
+    expect(remainingCopiesForCard(deka2nd!, entries, fullPlayableCatalog)).toBe(0);
+    const over = validateDeckEntries(
+      [
+        { cardId: "RS-572", count: 2 },
+        { cardId: "RS-319", count: 2 },
+      ],
+      fullPlayableCatalog,
+      { minSize: 0 },
+    );
+    expect(over.errors.some((e) => e.includes("デカマスター"))).toBe(true);
   });
 
   it("rejects more than 3 copies of the same card name", () => {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG3-031",
-  "name": "ゲキブルー（XG3）",
+  "name": "ゲキブルー",
   "type": "unit",
   "category": [
     "WB",

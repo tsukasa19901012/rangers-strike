@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG4-032",
-  "name": "ゴーオンゴールド（XG4）",
+  "name": "ゴーオンゴールド",
   "type": "unit",
   "category": "OT",
   "rarity": "N",

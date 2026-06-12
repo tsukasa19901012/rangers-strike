@@ -6,7 +6,17 @@ describe("parseZordFusionLine", () => {
     const result = parseZordFusionLine(
       "合体―爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン【爆竜電撃ドリルスピン】これがバトルエリアに出たとき",
     );
-    expect(result?.partnerCardIds).toEqual(["RS-051", "RS-052", "RS-053"]);
+    expect(result?.partnerSlotCardIds).toEqual([
+      ["RS-051", "XG7-012"],
+      ["RS-052"],
+      ["RS-053"],
+    ]);
+    expect(result?.partnerCardIds).toEqual([
+      "RS-051",
+      "XG7-012",
+      "RS-052",
+      "RS-053",
+    ]);
   });
 
   it("strips parenthetical alternates", () => {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG5-053",
-  "name": "仮面ライダーキバEF（XG5）",
+  "name": "仮面ライダーキバEF",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

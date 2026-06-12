@@ -73,6 +73,14 @@
       "partnerCardIds": [
         "XG3-036",
         "XG3-037"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "XG3-036"
+        ],
+        [
+          "XG3-037"
+        ]
       ]
     }
   ]

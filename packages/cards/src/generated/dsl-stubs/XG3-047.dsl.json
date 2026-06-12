@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG3-047",
-  "name": "シャドームーン（XG3）",
+  "name": "シャドームーン",
   "type": "unit",
   "category": "DA",
   "rarity": "N",

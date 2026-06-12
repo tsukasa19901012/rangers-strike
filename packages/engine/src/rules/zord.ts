@@ -1,5 +1,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import {
+  canonicalCardName,
+  fusionMaterialAliasNames,
   getZordCondition,
   isExtendedZordMaterialCondition,
   isSendSUnitZordCondition,
@@ -7,7 +9,10 @@ import {
   isZordUpCost,
   resolveRushAdditionalCondition,
 } from "@rangers-strike/cards";
-import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
+import {
+  resolveZordFusionPartnerIds,
+  resolveZordFusionPartnerSlots,
+} from "../dsl/zordBridge";
 import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, PlayerState } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
@@ -44,8 +49,42 @@ export function requiresAllFusionPartners(rushingCardId: string): boolean {
   return resolveZordFusionPartnerIds(rushingCardId).length > 0;
 }
 
+function partnerNamesForId(
+  definitions: Record<string, CardDefinition>,
+  partnerCardId: string,
+): Set<string> {
+  const def = getDefinition(definitions, partnerCardId);
+  const names = new Set<string>();
+  if (!def) return names;
+  names.add(canonicalCardName(def.name));
+  for (const alias of fusionMaterialAliasNames(def.text)) {
+    names.add(alias);
+  }
+  return names;
+}
+
+function fieldCardMatchesPartner(
+  definitions: Record<string, CardDefinition>,
+  fieldCard: CardInstance,
+  partnerCardId: string,
+): boolean {
+  if (fieldCard.cardId === partnerCardId) return true;
+  const fieldDef = getDefinition(definitions, fieldCard.cardId);
+  if (!fieldDef) return false;
+  const partnerNames = partnerNamesForId(definitions, partnerCardId);
+  const fieldNames = new Set<string>([canonicalCardName(fieldDef.name)]);
+  for (const alias of fusionMaterialAliasNames(fieldDef.text)) {
+    fieldNames.add(alias);
+  }
+  for (const fieldName of fieldNames) {
+    if (partnerNames.has(fieldName)) return true;
+  }
+  return false;
+}
+
 function findPartnerInstance(
   player: PlayerState,
+  definitions: Record<string, CardDefinition>,
   partnerCardId: string,
   rushingInstanceId: string,
 ): { zone: ZordMaterialZone; index: number; card: CardInstance } | null {
@@ -53,7 +92,7 @@ function findPartnerInstance(
     for (let index = 0; index < player[zone].length; index++) {
       const card = player[zone][index]!;
       if (card.instanceId === rushingInstanceId) continue;
-      if (card.cardId === partnerCardId) {
+      if (fieldCardMatchesPartner(definitions, card, partnerCardId)) {
         return { zone, index, card };
       }
     }
@@ -64,18 +103,32 @@ function findPartnerInstance(
 /** ゾードカードに列挙された全合体パートナー（例: RS-050 → 051/052/053）。 */
 export function collectRequiredFusionMaterials(
   player: PlayerState,
+  definitions: Record<string, CardDefinition>,
   rushingCardId: string,
   rushingInstanceId: string,
 ): Array<{ zone: ZordMaterialZone; index: number; card: CardInstance }> | null {
-  const partners = resolveZordFusionPartnerIds(rushingCardId);
-  if (partners.length === 0) return null;
+  const slots = resolveZordFusionPartnerSlots(rushingCardId);
+  if (slots.length === 0) return null;
 
   const found: Array<{ zone: ZordMaterialZone; index: number; card: CardInstance }> = [];
   const usedInstanceIds = new Set<string>();
 
-  for (const partnerId of partners) {
-    const match = findPartnerInstance(player, partnerId, rushingInstanceId);
-    if (!match || usedInstanceIds.has(match.card.instanceId)) return null;
+  for (const slot of slots) {
+    let match: { zone: ZordMaterialZone; index: number; card: CardInstance } | null =
+      null;
+    for (const partnerId of slot) {
+      const candidate = findPartnerInstance(
+        player,
+        definitions,
+        partnerId,
+        rushingInstanceId,
+      );
+      if (candidate && !usedInstanceIds.has(candidate.card.instanceId)) {
+        match = candidate;
+        break;
+      }
+    }
+    if (!match) return null;
     usedInstanceIds.add(match.card.instanceId);
     found.push(match);
   }
@@ -85,19 +138,29 @@ export function collectRequiredFusionMaterials(
 
 export function hasAllRequiredFusionMaterials(
   player: PlayerState,
+  definitions: Record<string, CardDefinition>,
   rushingCardId: string,
   rushingInstanceId: string,
 ): boolean {
-  return collectRequiredFusionMaterials(player, rushingCardId, rushingInstanceId) !== null;
+  return (
+    collectRequiredFusionMaterials(
+      player,
+      definitions,
+      rushingCardId,
+      rushingInstanceId,
+    ) !== null
+  );
 }
 
 export function applyAllZordFusionMaterials(
   player: PlayerState,
+  definitions: Record<string, CardDefinition>,
   rushingCardId: string,
   rushingInstanceId: string,
 ): PlayerState | null {
   const materials = collectRequiredFusionMaterials(
     player,
+    definitions,
     rushingCardId,
     rushingInstanceId,
   );
@@ -130,7 +193,7 @@ export function isValidFusionMaterial(
   rushingInstanceId: string,
 ): boolean {
   if (card.instanceId === rushingInstanceId) return false;
-  return isValidZordFusionMaterial(rushingCardId, card.cardId);
+  return isValidZordFusionMaterial(rushingCardId, card.cardId, definitions);
 }
 
 function normalizeName(value: string): string {
@@ -176,7 +239,10 @@ export function isValidZordUpMaterial(
     case "discard_fusion_unit":
       return isValidFusionMaterial(definitions, rushingCardId, card, rushingInstanceId);
     case "discard_fusion_vehicle":
-      return def.type === "vehicle" && isValidZordFusionMaterial(rushingCardId, card.cardId);
+      return (
+        def.type === "vehicle" &&
+        isValidZordFusionMaterial(rushingCardId, card.cardId, definitions)
+      );
     case "discard_vehicle_unit":
       return def.type === "vehicle";
     case "discard_named_unit":

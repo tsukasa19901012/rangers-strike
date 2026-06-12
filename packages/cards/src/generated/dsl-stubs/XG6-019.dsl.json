@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG6-019",
-  "name": "ダイボウケン（XG6）",
+  "name": "ダイボウケン",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

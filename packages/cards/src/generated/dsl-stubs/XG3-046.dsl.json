@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG3-046",
-  "name": "仮面ライダーBLACK（XG3）",
+  "name": "仮面ライダーBLACK",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

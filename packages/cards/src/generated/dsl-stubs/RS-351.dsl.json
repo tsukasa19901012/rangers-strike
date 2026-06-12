@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-351",
-  "name": "アカレンジャー（2nd）",
+  "name": "アカレンジャー",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

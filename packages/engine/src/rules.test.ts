@@ -320,6 +320,34 @@ describe("zord-up rush", () => {
     expect(withHandMaterial).toHaveLength(0);
   });
 
+  it("accepts XG7-012 in place of RS-051 for AbarenOh zord-up", () => {
+    const zord = inst("RS-050", "z1");
+    const partners = [
+      inst("XG7-012", "f1"),
+      inst("RS-052", "f2"),
+      inst("RS-053", "f3"),
+    ];
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [zord],
+        power: Array.from({ length: 7 }, (_, i) => inst("TST-OP", `p${i}`)),
+        command: [heldWbCommand("c1")],
+        ...withCostWindow("rush_category"),
+        rush: partners,
+      },
+    });
+    state.definitions["RS-050"] = abarenohDef;
+    state.definitions["XG7-012"] = fusionDef("XG7-012", "爆竜ティラノサウルス");
+    state.definitions["RS-052"] = fusionDef("RS-052", "爆竜トリケラトプス");
+    state.definitions["RS-053"] = fusionDef("RS-053", "爆竜プテラノドン");
+
+    const actions = getLegalActions(state).filter(
+      (a) => a.type === "rush" && a.instanceId === zord.instanceId,
+    );
+    expect(actions).toHaveLength(1);
+  });
+
   it.each(["RS-051", "RS-052", "RS-053"] as const)(
     "accepts %s as part of AbarenOh zord material set",
     (materialId) => {

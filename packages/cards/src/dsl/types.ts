@@ -163,6 +163,8 @@ export type UnnamedRuleEntry = {
   damage?: number;
   discardCount?: number;
   partnerCardIds?: string[];
+  /** 合体―行の各枠ごとに使える cardId。 */
+  partnerSlotCardIds?: string[][];
 };
 
 import type { RushAdditionalCondition } from "../effectTaxonomy";

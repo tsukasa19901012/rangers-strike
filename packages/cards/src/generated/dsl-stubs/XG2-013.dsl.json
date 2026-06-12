@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG2-013",
-  "name": "キバレンジャー（XG2）",
+  "name": "キバレンジャー",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

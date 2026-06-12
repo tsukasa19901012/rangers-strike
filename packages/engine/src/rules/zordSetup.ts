@@ -215,6 +215,7 @@ export function createZordSetup(
     if (
       !hasAllRequiredFusionMaterials(
         player,
+        state.definitions,
         found.card.cardId,
         found.card.instanceId,
       )

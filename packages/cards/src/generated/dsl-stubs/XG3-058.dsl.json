@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG3-058",
-  "name": "仮面ライダー斬鬼（XG3）",
+  "name": "仮面ライダー斬鬼",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

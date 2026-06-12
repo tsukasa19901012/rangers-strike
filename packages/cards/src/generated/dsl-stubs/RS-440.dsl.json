@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-440",
-  "name": "バトルフィーバーロボ（2nd）",
+  "name": "バトルフィーバーロボ",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG2-049",
-  "name": "仮面ライダーギルス（XG2）",
+  "name": "仮面ライダーギルス",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG3-089",
-  "name": "ブルービート（XG3）",
+  "name": "ブルービート",
   "type": "unit",
   "category": [
     "WB",

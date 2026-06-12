@@ -539,6 +539,7 @@ function evaluateRushPowerAndZord(
   if (requiresAllFusionPartners(unitDefinition.id)) {
     return hasAllRequiredFusionMaterials(
       player,
+      definitions,
       unitDefinition.id,
       rushingInstanceId,
     );

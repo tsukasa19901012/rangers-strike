@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG3-092",
-  "name": "レッドル（XG3）",
+  "name": "レッドル",
   "type": "unit",
   "category": [
     "WB",

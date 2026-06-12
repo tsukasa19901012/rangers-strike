@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG7-018",
-  "name": "シンケンレッド（XG7）",
+  "name": "シンケンレッド",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

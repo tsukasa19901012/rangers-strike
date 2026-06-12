@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG2-010",
-  "name": "気伝武人龍星王（XG2）",
+  "name": "気伝武人龍星王",
   "type": "unit",
   "category": "MA",
   "rarity": "N",

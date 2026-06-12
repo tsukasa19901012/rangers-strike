@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-689",
-  "name": "レッドホーク（2nd）",
+  "name": "レッドホーク",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

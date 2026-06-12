@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG4-086",
-  "name": "仮面ライダーイクサBM（XG4）",
+  "name": "仮面ライダーイクサBM",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

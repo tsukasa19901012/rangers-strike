@@ -86,6 +86,9 @@ describe("legend2 zord fusion", () => {
   it("RS-111 accepts legend1 magiranger parts", () => {
     expect(listZordFusionPartnerIds("RS-111")).toEqual([
       "RS-057",
+      "RS-576",
+      "RS-577",
+      "XG7-014",
       "RS-058",
       "RS-059",
       "RS-060",
@@ -94,7 +97,15 @@ describe("legend2 zord fusion", () => {
   });
 
   it("RS-113 accepts magi phoenix and barikyon", () => {
-    expect(listZordFusionPartnerIds("RS-113")).toEqual(["RS-057", "RS-114"]);
+    expect(listZordFusionPartnerIds("RS-113")).toEqual([
+      "RS-057",
+      "RS-576",
+      "RS-577",
+      "XG7-014",
+      "RS-114",
+      "RS-581",
+      "XG3-028",
+    ]);
     expect(isValidZordFusionMaterial("RS-113", "RS-057")).toBe(true);
     expect(isValidZordFusionMaterial("RS-113", "RS-114")).toBe(true);
   });

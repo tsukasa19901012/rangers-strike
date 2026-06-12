@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG4-007",
-  "name": "ドラゴンレンジャー（XG4）",
+  "name": "ドラゴンレンジャー",
   "type": "unit",
   "category": "WB",
   "rarity": "N",

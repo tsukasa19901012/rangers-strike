@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG3-029",
-  "name": "魔導騎士ウルザード（XG3）",
+  "name": "魔導騎士ウルザード",
   "type": "unit",
   "category": [
     "MA",

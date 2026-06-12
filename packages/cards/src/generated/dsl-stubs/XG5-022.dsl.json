@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "XG5-022",
-  "name": "ボウケンブルー（XG5）",
+  "name": "ボウケンブルー",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

@@ -152,6 +152,8 @@ export type UnnamedUnitText = {
   discardCount?: number;
   /** `battle_entry_combo_from` またはゾードアップ合体パートナー（合体― 行）用。 */
   partnerCardIds?: string[];
+  /** ゾード合体の各枠ごとに使える cardId。 */
+  partnerSlotCardIds?: string[][];
 };
 
 export type UnitEffectBlock = {
