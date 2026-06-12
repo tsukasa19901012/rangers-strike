@@ -3,6 +3,7 @@ import {
   getBattleEntryHoldCount,
   MOTHERSHIP_CONFIG,
   mothershipHoldsRequiredForRush,
+  resolveRushAdditionalCondition,
   zordSlotsFilledByMaterial,
 } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -56,6 +57,10 @@ import {
 } from "../dsl/dslCatalog";
 import { collectTargetInstanceIds } from "../dsl/targetSelectors";
 import { canCompleteRushAfterCommandPayment } from "./rushDeclaration";
+import {
+  collectHoldExtraCommandCandidates,
+  needsHoldExtraCommand,
+} from "./zordExtended";
 
 /** 通常ラッシュ1回ごとに、リリース中コマンドからホールド支払いができるか。 */
 export function canPayRushCategoryHold(
@@ -685,6 +690,8 @@ export function buildPaymentFromInitiateAction(
         action.zordMaterialDestination,
         undefined,
         { ...state, playerId },
+        action.zordMaterialInstanceIds,
+        action.zordExtraCommandHoldInstanceIds,
       )
     ) {
       return null;
@@ -1060,6 +1067,17 @@ export function explainCannotRush(
       !hasLegalZordRush(state, playerId, instanceId)
     ) {
       return `「${unitName}」のゾード条件（素材または母艦の支払い）を満たしていません。`;
+    }
+  }
+
+  if (needsHoldExtraCommand(state.definitions, def.id)) {
+    const extraCandidates = collectHoldExtraCommandCandidates(player, state.definitions);
+    if (extraCandidates.length === 0) {
+      return `「${unitName}」をラッシュするには、追加でホールドできる自軍コマンド（オペレーション）が必要です。`;
+    }
+    const condition = resolveRushAdditionalCondition(def.id, def);
+    if (condition?.text) {
+      return `「${unitName}」をラッシュするには、${condition.text}必要があります。`;
     }
   }
 

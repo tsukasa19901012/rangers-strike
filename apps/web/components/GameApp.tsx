@@ -24,6 +24,7 @@ import {
   needsOperationTarget,
   needsEffectHoldPayment,
   needsZordMaterial,
+  needsHoldExtraCommand,
   isDenjiRevealAudience,
   canActOnDenjiChoice,
   canInitiateShironLight,
@@ -721,7 +722,8 @@ export function GameApp() {
         const needsZord =
           !!zordCard &&
           zordCard.type === "unit" &&
-          needsZordMaterial(state.definitions, payload.cardId);
+          (needsZordMaterial(state.definitions, payload.cardId) ||
+            needsHoldExtraCommand(state.definitions, payload.cardId));
 
         const rushActions = legalActions.filter(
           (a): a is Extract<typeof a, { type: "rush" }> =>

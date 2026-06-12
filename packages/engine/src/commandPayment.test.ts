@@ -500,4 +500,140 @@ describe("command payment", () => {
     if (advanced.kind !== "payment") return;
     expect(advanced.payment.kind).toBe("mothership_hold");
   });
+
+  it("offers category payment for hold_extra_command zord-up (XG7-012)", () => {
+    const zord = inst("XG7-012", "xg7");
+    const wbCategory = inst("TST-WB", "wb-cmd");
+    const extraOp = inst("TST-OP", "extra-op");
+    const state = createTestState({
+      phase: "rush",
+      activePlayer: "player1",
+      player1: {
+        hand: [zord],
+        power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3"), inst("TST-P", "p4")],
+        command: [wbCategory, extraOp],
+      },
+    });
+    state.definitions["XG7-012"] = {
+      id: "XG7-012",
+      name: "アバレッド×爆竜ティラノサウルス",
+      type: "unit",
+      category: "WB",
+      rarity: "N",
+      expansion: "test",
+      powerCost: "4+",
+      rushAdditionalCondition: {
+        conditionId: "hold_extra_command",
+        text: "追加で自軍コマンドを1つホールドする",
+        unitCount: 1,
+      },
+      bp: 5000,
+      size: "M",
+    };
+    state.definitions["TST-WB"] = {
+      id: "TST-WB",
+      name: "WB Command",
+      type: "operation",
+      category: "WB",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 1,
+    };
+    state.definitions["TST-OP"] = {
+      id: "TST-OP",
+      name: "Extra Op",
+      type: "operation",
+      category: "ET",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 1,
+    };
+
+    const payment = buildPaymentFromInitiateAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "category_use",
+      sourceInstanceId: zord.instanceId,
+      zordExtraCommandHoldInstanceIds: [extraOp.instanceId],
+    });
+    expect(payment).not.toBeNull();
+    expect(payment?.continuation.type).toBe("rush");
+    expect(payment?.continuation.zordExtraCommandHoldInstanceIds).toEqual([extraOp.instanceId]);
+
+    const actions = getLegalActions(state).filter(
+      (a) =>
+        a.type === "initiate_command_payment" &&
+        a.kind === "category_use" &&
+        a.sourceInstanceId === zord.instanceId,
+    );
+    expect(actions.length).toBeGreaterThan(0);
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "category_use",
+      sourceInstanceId: zord.instanceId,
+      zordExtraCommandHoldInstanceIds: [extraOp.instanceId],
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+
+    const resolved = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [wbCategory.instanceId],
+    });
+    expect(resolved.ok).toBe(true);
+    if (!resolved.ok) return;
+    expect(resolved.state.players.player1.rush.some((c) => c.instanceId === zord.instanceId)).toBe(
+      true,
+    );
+    expect(resolved.state.players.player1.command.find((c) => c.instanceId === wbCategory.instanceId)?.commandHeld).toBe(
+      true,
+    );
+    expect(resolved.state.players.player1.command.find((c) => c.instanceId === extraOp.instanceId)?.commandHeld).toBe(
+      true,
+    );
+  });
+
+  it("explainCannotRush mentions extra command hold for XG7-012", () => {
+    const zord = inst("XG7-012", "xg7");
+    const state = createTestState({
+      phase: "rush",
+      activePlayer: "player1",
+      player1: {
+        hand: [zord],
+        power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3"), inst("TST-P", "p4")],
+        command: [inst("TST-WB", "wb-cmd")],
+      },
+    });
+    state.definitions["XG7-012"] = {
+      id: "XG7-012",
+      name: "アバレッド×爆竜ティラノサウルス",
+      type: "unit",
+      category: "WB",
+      rarity: "N",
+      expansion: "test",
+      powerCost: "4+",
+      rushAdditionalCondition: {
+        conditionId: "hold_extra_command",
+        text: "追加で自軍コマンドを1つホールドする",
+        unitCount: 1,
+      },
+      bp: 5000,
+      size: "M",
+    };
+    state.definitions["TST-WB"] = {
+      id: "TST-WB",
+      name: "WB Command",
+      type: "operation",
+      category: "WB",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 1,
+    };
+
+    const reason = explainCannotRush(state, "player1", zord.instanceId);
+    expect(reason).toContain("追加で自軍コマンド");
+  });
 });

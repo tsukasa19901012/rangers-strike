@@ -635,3 +635,4 @@ export function canPlayOperation(
 }
 
 export { needsZordMaterial } from "../rules/zord";
+export { needsHoldExtraCommand } from "../rules/zordExtended";
