@@ -165,7 +165,7 @@ import {
   tryResolveDslLeaveCounter,
   tryResolveDslOperation,
 } from "../dsl/cardInterpreter";
-import { withSyncedEffectStack } from "../rules/effectStack";
+import { peekEffectStackTop, withSyncedEffectStack } from "../rules/effectStack";
 import { applyRegisterHold, finalizeRegisterDiscard } from "../rules/resist";
 import { hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
 import {
@@ -370,6 +370,7 @@ export function applyAction(
   }
   if (
     state.pendingDamagePayment &&
+    peekEffectStackTop(state)?.kind === "damage_payment" &&
     action.type !== "resolve_damage_payment"
   ) {
     return fail("pending_damage_payment");

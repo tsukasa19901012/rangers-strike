@@ -1498,6 +1498,13 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
     return false;
   }
 
+  if (state.pendingRegister) {
+    if (action.type === "use_register" || action.type === "pass_register") {
+      return action.playerId === state.pendingRegister.ownerPlayerId;
+    }
+    return false;
+  }
+
   if (action.type === "resolve_damage_payment") {
     const pending = state.pendingDamagePayment;
     return (
@@ -1508,13 +1515,6 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
   }
 
   if (state.pendingDamagePayment) {
-    return false;
-  }
-
-  if (state.pendingRegister) {
-    if (action.type === "use_register" || action.type === "pass_register") {
-      return action.playerId === state.pendingRegister.ownerPlayerId;
-    }
     return false;
   }
 
