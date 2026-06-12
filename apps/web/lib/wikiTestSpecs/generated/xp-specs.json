@@ -1,0 +1,594 @@
+[
+  {
+    "cardId": "XP-001",
+    "wikiRef": "docs/wiki/cards/XP-001.md",
+    "name": "五色の戦士",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident",
+      "tag"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "XP-002",
+    "wikiRef": "docs/wiki/cards/XP-002.md",
+    "name": "戦士の魂",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "ET",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident",
+      "tag"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "XP-003",
+    "wikiRef": "docs/wiki/cards/XP-003.md",
+    "name": "デカレッドバトライザー",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "OT",
+    "textSnippets": [
+      "【バトライズファイヤードライブ】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_5000",
+      "destroy_power_match_on_rush"
+    ],
+    "bp": 3000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "XP-004",
+    "wikiRef": "docs/wiki/cards/XP-004.md",
+    "name": "仮面ライダーディケイド",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【カメンライド】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "attack_ride_replace"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "XP-005",
+    "wikiRef": "docs/wiki/cards/XP-005.md",
+    "name": "仮面ライダーディケイドCF",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "OT",
+    "textSnippets": [
+      "【全てを集めた先にあるもの】"
+    ],
+    "expectedDslKeywords": [
+      "register_stay_on_power_discard_named_e4bbaee99da2e383a9e382a4",
+      "ride_action_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "XP-006",
+    "wikiRef": "docs/wiki/cards/XP-006.md",
+    "name": "侍合体",
+    "cardType": "operation",
+    "powerCost": 7,
+    "category": "MA",
+    "textSnippets": [
+      "自分の手札から、合体が必要なLユニットのカードを"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XP-007",
+    "wikiRef": "docs/wiki/cards/XP-007.md",
+    "name": "仮面ライダーNEW電王SF",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【カウント】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack",
+      "declare_number_deck_reveal_destroy"
+    ],
+    "bp": 6000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "XP-008",
+    "wikiRef": "docs/wiki/cards/XP-008.md",
+    "name": "仮面ライダーNEW電王VF",
+    "cardType": "unit",
+    "powerCost": "10-",
+    "category": "OT",
+    "textSnippets": [
+      "【最初に言っておく】"
+    ],
+    "bp": 6500,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "XP-009",
+    "wikiRef": "docs/wiki/cards/XP-009.md",
+    "name": "仮面ライダークウガ",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【笑顔の為に】"
+    ],
+    "expectedDslKeywords": [
+      "register"
+    ],
+    "bp": 3000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "XP-010",
+    "wikiRef": "docs/wiki/cards/XP-010.md",
+    "name": "デカブルーSWAT",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "OT",
+    "textSnippets": [
+      "【精密射撃】"
+    ],
+    "expectedDslKeywords": [
+      "ally_named_e382b9e383afe38383e38388_attacked_bp_3000",
+      "flip_enemy_power_damage"
+    ],
+    "bp": 4500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XP-011",
+    "wikiRef": "docs/wiki/cards/XP-011.md",
+    "name": "デカレッドSWAT",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "OT",
+    "textSnippets": [
+      "【Dリボルバー】"
+    ],
+    "bp": 3500,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "XP-012",
+    "wikiRef": "docs/wiki/cards/XP-012.md",
+    "name": "シンケンゴールド",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "【サカナマル】"
+    ],
+    "expectedDslKeywords": [
+      "rush_battle_intercept_draw"
+    ],
+    "bp": 4000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "XP-013",
+    "wikiRef": "docs/wiki/cards/XP-013.md",
+    "name": "ハイパーシンケンレッド",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "【キョウリュウマル】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 4500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XP-014",
+    "wikiRef": "docs/wiki/cards/XP-014.md",
+    "name": "仮面ライダーW・CM",
+    "cardType": "unit",
+    "powerCost": "2+",
+    "category": "ET",
+    "textSnippets": [
+      "【メタルシャフト】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "register",
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XP-015",
+    "wikiRef": "docs/wiki/cards/XP-015.md",
+    "name": "ダブルドライバー",
+    "cardType": "operation",
+    "powerCost": 6,
+    "category": [
+      "ET",
+      "DA"
+    ],
+    "textSnippets": [
+      "※これが自軍コマンドゾーンにある間、自軍ラッシュ"
+    ],
+    "expectedDslKeywords": [
+      "deck_search_e280bbe38193"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XP-016",
+    "wikiRef": "docs/wiki/cards/XP-016.md",
+    "name": "仮面ライダークウガRU・レッドアイ",
+    "cardType": "unit",
+    "powerCost": "7+",
+    "category": "MA",
+    "textSnippets": [
+      "【赤い瞳に宿るもの】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 6000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "XP-017",
+    "wikiRef": "docs/wiki/cards/XP-017.md",
+    "name": "仮面ライダーディケイド激情態",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": [
+      "OT",
+      "DA"
+    ],
+    "textSnippets": [
+      "【世界の破壊者】"
+    ],
+    "expectedDslKeywords": [
+      "rush_from_hand_only",
+      "power_zone_action_e887aae58886"
+    ],
+    "bp": 4000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "XP-018",
+    "wikiRef": "docs/wiki/cards/XP-018.md",
+    "name": "ゴールド寿司",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": [
+      "MA",
+      "ET"
+    ],
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "XP-019",
+    "wikiRef": "docs/wiki/cards/XP-019.md",
+    "name": "仮面ライダー1号",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【技の1号】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "XP-020",
+    "wikiRef": "docs/wiki/cards/XP-020.md",
+    "name": "護星天使",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "XP-021",
+    "wikiRef": "docs/wiki/cards/XP-021.md",
+    "name": "ファイナルカメンアタックフォームライド",
+    "cardType": "operation",
+    "powerCost": 25,
+    "category": "OT",
+    "textSnippets": [
+      "※これは特徴「仮面ライダー」を持つユニット1体ご"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XP-022",
+    "wikiRef": "docs/wiki/cards/XP-022.md",
+    "name": "ゴセイレッド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【レッドブレイク】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "lead_MA"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XP-023",
+    "wikiRef": "docs/wiki/cards/XP-023.md",
+    "name": "ドラゴンレンジャー",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【獣奏剣】"
+    ],
+    "expectedDslKeywords": [
+      "damage_gate_battle_entry",
+      "self_destroy_low_damage_remaining",
+      "ally_named_e68190e7ab9c_bp_boost_1000"
+    ],
+    "bp": 6000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "XP-024",
+    "wikiRef": "docs/wiki/cards/XP-024.md",
+    "name": "仮面ライダー2号",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【力の2号】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "note_other_e280bbe38193",
+      "optional_then_425034303030"
+    ],
+    "bp": 3000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "XP-025",
+    "wikiRef": "docs/wiki/cards/XP-025.md",
+    "name": "ダイカイシンケンオー",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "MA",
+    "textSnippets": [
+      "【二天一流乱れ斬り】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe59088",
+      "return_to_zone_e887aae8bb8d"
+    ],
+    "bp": 18000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "XP-026",
+    "wikiRef": "docs/wiki/cards/XP-026.md",
+    "name": "仮面ライダーアクセル",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "【アクセルグランツァー】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "ride_action_e38193e3828c"
+    ],
+    "bp": 1000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "XP-027",
+    "wikiRef": "docs/wiki/cards/XP-027.md",
+    "name": "ダイノミッション",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "WB",
+    "textSnippets": [
+      "合体が必要な自軍ユニットが１体もなければ、特徴「"
+    ],
+    "expectedDslKeywords": [
+      "stack_cards_e59088e4bd93"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XP-028",
+    "wikiRef": "docs/wiki/cards/XP-028.md",
+    "name": "ワンダーゴセイグレート",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "MA",
+    "textSnippets": [
+      "【サモン・ワンダーパワー】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "enemy_power_damage_e38193e3828c"
+    ],
+    "bp": 7000,
+    "sp": "1/3",
+    "size": "L"
+  },
+  {
+    "cardId": "XP-029",
+    "wikiRef": "docs/wiki/cards/XP-029.md",
+    "name": "仮面ライダーW・CAX",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "ET",
+    "textSnippets": [
+      "【まだよ・・・まだまだ憎しみが足りないわ・・・】"
+    ],
+    "expectedDslKeywords": [
+      "breaker",
+      "auto_battle_entry_each_turn",
+      "note_other_e280bbe38193"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XP-030",
+    "wikiRef": "docs/wiki/cards/XP-030.md",
+    "name": "仮面ライダーオーズ・サゴーゾコンボ",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "WB",
+    "textSnippets": [
+      "【打ち抜く剛腕】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "register",
+      "note_other_e280bbe38193"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XP-031",
+    "wikiRef": "docs/wiki/cards/XP-031.md",
+    "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダー電王SF",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": [
+      "WB",
+      "OT"
+    ],
+    "textSnippets": [
+      "【メダルと切符と40周年】"
+    ],
+    "expectedDslKeywords": [
+      "cross1",
+      "exclude_game_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "XP-032",
+    "wikiRef": "docs/wiki/cards/XP-032.md",
+    "name": "ゴーカイオー",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "OT",
+    "textSnippets": [
+      "【レジェンドを求めて】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "deck_search_e887aae8bb8d"
+    ],
+    "bp": 7000,
+    "sp": "1/4",
+    "size": "L"
+  }
+]

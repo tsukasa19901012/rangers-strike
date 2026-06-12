@@ -1,0 +1,21 @@
+[
+  {
+    "cardId": "SM-001",
+    "wikiRef": "docs/wiki/cards/SM-001.md",
+    "name": "3人の宇宙刑事",
+    "cardType": "operation",
+    "powerCost": 7,
+    "category": "OT",
+    "textSnippets": [
+      "特徴「宇宙刑事」を持つ自軍ユニットが1体もなけれ"
+    ],
+    "expectedDslKeywords": [
+      "deck_search_e789b9e5beb4"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  }
+]

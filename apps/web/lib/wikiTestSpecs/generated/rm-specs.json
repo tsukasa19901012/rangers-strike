@@ -1,0 +1,1100 @@
+[
+  {
+    "cardId": "RM-001",
+    "wikiRef": "docs/wiki/cards/RM-001.md",
+    "name": "蒸着",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "次の効果から１つ選び発動する⇒◎自軍山札から「宇"
+    ],
+    "expectedDslKeywords": [
+      "deploy_rush_area_e6aca1e381ae"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RM-002",
+    "wikiRef": "docs/wiki/cards/RM-002.md",
+    "name": "赤射",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒◎自軍山札から「宇"
+    ],
+    "expectedDslKeywords": [
+      "choice_one_of_e6aca1e381ae"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RM-003",
+    "wikiRef": "docs/wiki/cards/RM-003.md",
+    "name": "焼結",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒◎自軍山札から「宇"
+    ],
+    "expectedDslKeywords": [
+      "choice_one_of_e6aca1e381ae"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RM-004",
+    "wikiRef": "docs/wiki/cards/RM-004.md",
+    "name": "巨獣特捜",
+    "cardType": "operation",
+    "powerCost": 8,
+    "category": "OT",
+    "textSnippets": [
+      "敵軍山札の上から、自軍ダメージの点数と同じ数まで"
+    ],
+    "expectedDslKeywords": [
+      "deck_search_e695b5e8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RM-005",
+    "wikiRef": "docs/wiki/cards/RM-005.md",
+    "name": "ダブルスナイパー",
+    "cardType": "operation",
+    "powerCost": 6,
+    "category": "OT",
+    "textSnippets": [
+      "特徴「男」を持つ自軍ユニットを1体と、特徴「女」"
+    ],
+    "expectedDslKeywords": [
+      "power_zone_action_e789b9e5beb4"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RM-006",
+    "wikiRef": "docs/wiki/cards/RM-006.md",
+    "name": "怒（いか）る！",
+    "cardType": "operation",
+    "powerCost": 6,
+    "category": "ET",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe382ab"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "RM-007",
+    "wikiRef": "docs/wiki/cards/RM-007.md",
+    "name": "世界忍者戦",
+    "cardType": "operation",
+    "powerCost": 6,
+    "category": "MA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RM-008",
+    "wikiRef": "docs/wiki/cards/RM-008.md",
+    "name": "対バイオロン法",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "敵軍バトルエリアから「これは敵軍ターン中、「SP"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RM-009",
+    "wikiRef": "docs/wiki/cards/RM-009.md",
+    "name": "マルチパック",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "自軍Sユニットを1体選ぶ。そして、このカードを自"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_target_modal"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RM-010",
+    "wikiRef": "docs/wiki/cards/RM-010.md",
+    "name": "ソルインジケーター",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "自軍山札からビークルカードを1枚選び、相手に見せ"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RM-011",
+    "wikiRef": "docs/wiki/cards/RM-011.md",
+    "name": "ターボユニット-W",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "ナンバーに数字を持ち、ETを持つ自軍Sユニットを"
+    ],
+    "expectedDslKeywords": [
+      "stack_s_on_self_rush"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RM-012",
+    "wikiRef": "docs/wiki/cards/RM-012.md",
+    "name": "JPカード",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RM-013",
+    "wikiRef": "docs/wiki/cards/RM-013.md",
+    "name": "BSフォーメーション",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RM-014",
+    "wikiRef": "docs/wiki/cards/RM-014.md",
+    "name": "ソニックフラップ",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "WB",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RM-015",
+    "wikiRef": "docs/wiki/cards/RM-015.md",
+    "name": "インプットカードガン",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "このオペレーションカードを使用するためにホールド"
+    ],
+    "expectedDslKeywords": [
+      "discard_to_zone_e38193e381ae"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RM-016",
+    "wikiRef": "docs/wiki/cards/RM-016.md",
+    "name": "スターピース",
+    "cardType": "operation",
+    "powerCost": 13,
+    "category": "OT",
+    "textSnippets": [
+      "自軍パワーゾーンのダメージになってるカードをすべ"
+    ],
+    "expectedDslKeywords": [
+      "opponent_must_e887aae8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RM-017",
+    "wikiRef": "docs/wiki/cards/RM-017.md",
+    "name": "オメデトロフィー",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RM-018",
+    "wikiRef": "docs/wiki/cards/RM-018.md",
+    "name": "宇宙刑事ギャバン",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "OT",
+    "textSnippets": [
+      "【ギャバンダイナミック】"
+    ],
+    "expectedDslKeywords": [
+      "chase",
+      "note_other_e280bbe887aa",
+      "power_zone_action_e69cace69da5"
+    ],
+    "bp": 4000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-019",
+    "wikiRef": "docs/wiki/cards/RM-019.md",
+    "name": "超次元高速機ドルギラン",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "※これはアタックされるときBP+5000される。"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_5000",
+      "while_note_e280bbe38193"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "XL"
+  },
+  {
+    "cardId": "RM-020",
+    "wikiRef": "docs/wiki/cards/RM-020.md",
+    "name": "電子星獣ドル",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "OT",
+    "textSnippets": [
+      "【ドルファイヤー】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "L"
+  },
+  {
+    "cardId": "RM-021",
+    "wikiRef": "docs/wiki/cards/RM-021.md",
+    "name": "ギラン円盤",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "OT",
+    "textSnippets": [
+      "【ビークル射出】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_5000",
+      "deploy_rush_area_e38193e3828c"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "L"
+  },
+  {
+    "cardId": "RM-022",
+    "wikiRef": "docs/wiki/cards/RM-022.md",
+    "name": "サイバリアン",
+    "cardType": "vehicle",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【サイバリアンレーザースピード】"
+    ],
+    "expectedDslKeywords": [
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-023",
+    "wikiRef": "docs/wiki/cards/RM-023.md",
+    "name": "スクーパー",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": "OT",
+    "textSnippets": [
+      "【地中潜行】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "power_zone_action_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-024",
+    "wikiRef": "docs/wiki/cards/RM-024.md",
+    "name": "高次元戦闘車ギャビオン",
+    "cardType": "vehicle",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【搭載】"
+    ],
+    "expectedDslKeywords": [
+      "deck_search_e38193e3828c"
+    ],
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "RM-025",
+    "wikiRef": "docs/wiki/cards/RM-025.md",
+    "name": "宇宙刑事シャリバン",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【シャリバンクラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "chase",
+      "power_zone_action_e69cace69da5"
+    ],
+    "bp": 3000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RM-026",
+    "wikiRef": "docs/wiki/cards/RM-026.md",
+    "name": "超次元戦闘母艦グランドバース",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【収容】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack_s",
+      "ride_action_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "XL"
+  },
+  {
+    "cardId": "RM-027",
+    "wikiRef": "docs/wiki/cards/RM-027.md",
+    "name": "バトルバースフォーメーション",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "OT",
+    "textSnippets": [
+      "【プラズマカノン】"
+    ],
+    "expectedDslKeywords": [
+      "return_self_on_ally_rush_e280bbe887aa",
+      "SP1"
+    ],
+    "bp": 7000,
+    "sp": "special",
+    "size": "XL"
+  },
+  {
+    "cardId": "RM-028",
+    "wikiRef": "docs/wiki/cards/RM-028.md",
+    "name": "モトシャリアン",
+    "cardType": "vehicle",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "※これにライドしているユニットはBP+500され"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_500",
+      "note_other_e280bbe38193"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-029",
+    "wikiRef": "docs/wiki/cards/RM-029.md",
+    "name": "ジャスピオン",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【コズミックハーレー】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bb5350e3"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-030",
+    "wikiRef": "docs/wiki/cards/RM-030.md",
+    "name": "超惑星戦闘母艦ダイレオン",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【ダイレオンレーザー】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack_s",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "L"
+  },
+  {
+    "cardId": "RM-031",
+    "wikiRef": "docs/wiki/cards/RM-031.md",
+    "name": "戦闘巨人ダイレオン",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "OT",
+    "textSnippets": [
+      "【コズミッククラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "return_self_on_ally_rush_e280bbe887aa",
+      "power_zone_action_e887aae8bb8d"
+    ],
+    "bp": 5000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "RM-032",
+    "wikiRef": "docs/wiki/cards/RM-032.md",
+    "name": "アイアンウルフ",
+    "cardType": "vehicle",
+    "powerCost": 0,
+    "category": "OT",
+    "textSnippets": [
+      "※これにライドしているユニットはBP+500され"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_500"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-033",
+    "wikiRef": "docs/wiki/cards/RM-033.md",
+    "name": "メタルダー",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【戦闘技術の習得】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "bp": 3000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RM-034",
+    "wikiRef": "docs/wiki/cards/RM-034.md",
+    "name": "暴魂トップガンダー",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【正確な射撃】"
+    ],
+    "expectedDslKeywords": [
+      "damage_action_e887aae8bb8d"
+    ],
+    "bp": 6000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-035",
+    "wikiRef": "docs/wiki/cards/RM-035.md",
+    "name": "凱聖クールギン",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": "DA",
+    "textSnippets": [
+      "【ヨロイ軍団の統率】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_5000",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-036",
+    "wikiRef": "docs/wiki/cards/RM-036.md",
+    "name": "暴魂チューボ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【剣の使い手】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_3000"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-037",
+    "wikiRef": "docs/wiki/cards/RM-037.md",
+    "name": "凱聖ゲルドリング",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "DA",
+    "textSnippets": [
+      "【手段を選ばぬ策略】"
+    ],
+    "expectedDslKeywords": [
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-038",
+    "wikiRef": "docs/wiki/cards/RM-038.md",
+    "name": "凱聖バルスキー",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "DA",
+    "textSnippets": [
+      "【部下の修理と改造】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-039",
+    "wikiRef": "docs/wiki/cards/RM-039.md",
+    "name": "ジライヤ第二装着",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "【十文字斬り】"
+    ],
+    "expectedDslKeywords": [
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 4500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RM-040",
+    "wikiRef": "docs/wiki/cards/RM-040.md",
+    "name": "姫忍　恵美破",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "【忍法花吹雪】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 500,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RM-041",
+    "wikiRef": "docs/wiki/cards/RM-041.md",
+    "name": "城忍　フクロウ男爵",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "【アイアム偽者などノーサンキュー】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "enemy_power_damage_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-042",
+    "wikiRef": "docs/wiki/cards/RM-042.md",
+    "name": "蝶忍　紅牙",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【妖魔忍法乱れ蝶】"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-043",
+    "wikiRef": "docs/wiki/cards/RM-043.md",
+    "name": "鳥忍　カラス天狗",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【3人1組】"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited",
+      "deploy_rush_area_e38193e3828c"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-044",
+    "wikiRef": "docs/wiki/cards/RM-044.md",
+    "name": "ジャンパーソン",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【ジャンデジック】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "note_other_e280bbe38193",
+      "hold_enemy_unit_e695b5e8bb8d"
+    ],
+    "bp": 5000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RM-045",
+    "wikiRef": "docs/wiki/cards/RM-045.md",
+    "name": "ガンギブソン",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【ホーミングブリッド】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "hold_enemy_unit_e695b5e8bb8d"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-046",
+    "wikiRef": "docs/wiki/cards/RM-046.md",
+    "name": "アールジーコ",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "【ジックキャノン】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack",
+      "no_attack_from_enemy_s_bp2000"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-047",
+    "wikiRef": "docs/wiki/cards/RM-047.md",
+    "name": "ダークジェイカー",
+    "cardType": "vehicle",
+    "powerCost": 5,
+    "category": "ET",
+    "textSnippets": [
+      "【ビッグキャノン】"
+    ],
+    "expectedDslKeywords": [
+      "ride_without_rc_named_e8ada6e5af9f",
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-048",
+    "wikiRef": "docs/wiki/cards/RM-048.md",
+    "name": "隊員コード153 ショウ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【フレイムスローワー】"
+    ],
+    "expectedDslKeywords": [
+      "combo_action_e695b5e8bb8d"
+    ],
+    "bp": 3000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RM-049",
+    "wikiRef": "docs/wiki/cards/RM-049.md",
+    "name": "隊員コード011 サラ",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "【ディクテイター】"
+    ],
+    "expectedDslKeywords": [
+      "combo_action_e695b5e8bb8d"
+    ],
+    "bp": 1000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RM-050",
+    "wikiRef": "docs/wiki/cards/RM-050.md",
+    "name": "隊員コード071 シグ",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "【ミサイルランチャー】"
+    ],
+    "expectedDslKeywords": [
+      "grant_effect_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RM-051",
+    "wikiRef": "docs/wiki/cards/RM-051.md",
+    "name": "メガヘラクレス",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "WB",
+    "textSnippets": [
+      "【メガビートフォーメーション】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "SP1"
+    ],
+    "bp": 6000,
+    "sp": "special",
+    "size": "L"
+  },
+  {
+    "cardId": "RM-052",
+    "wikiRef": "docs/wiki/cards/RM-052.md",
+    "name": "ビートルーダー",
+    "cardType": "vehicle",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【マグネアタッチメント】"
+    ],
+    "expectedDslKeywords": [
+      "ride_command_without_rc_named_e69886e899ab",
+      "ride_action_e38193e3828c"
+    ],
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "RM-053",
+    "wikiRef": "docs/wiki/cards/RM-053.md",
+    "name": "スタッガータンク",
+    "cardType": "vehicle",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "【ドリルアタッチメント】"
+    ],
+    "expectedDslKeywords": [
+      "ride_command_without_rc_named_e69886e899ab",
+      "grant_effect_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "RM-054",
+    "wikiRef": "docs/wiki/cards/RM-054.md",
+    "name": "レッドジャイロ",
+    "cardType": "vehicle",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【レッドパルサー】"
+    ],
+    "expectedDslKeywords": [
+      "ride_command_without_rc_named_e69886e899ab",
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "RM-055",
+    "wikiRef": "docs/wiki/cards/RM-055.md",
+    "name": "ブルービート",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【スティンガーブレード】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "SP1"
+    ],
+    "bp": 2000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RM-056",
+    "wikiRef": "docs/wiki/cards/RM-056.md",
+    "name": "ジースタッグ",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "【スティンガークロー】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "ride_action_e383a9e382a4"
+    ],
+    "bp": 3000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RM-057",
+    "wikiRef": "docs/wiki/cards/RM-057.md",
+    "name": "レッドル",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【スティンガープラズマー】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "hold_enemy_unit_e383ace382b8"
+    ],
+    "bp": 500,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RM-058",
+    "wikiRef": "docs/wiki/cards/RM-058.md",
+    "name": "老師グル",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [
+      "【昆虫の精】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-059",
+    "wikiRef": "docs/wiki/cards/RM-059.md",
+    "name": "異次元調達屋カブト",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [
+      "【トランクの中身】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-060",
+    "wikiRef": "docs/wiki/cards/RM-060.md",
+    "name": "ジャマー",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "※このカードはデッキに好きな枚数入れてもよい。"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited"
+    ],
+    "bp": 1500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RM-061",
+    "wikiRef": "docs/wiki/cards/RM-061.md",
+    "name": "ジャマール戦闘機",
+    "cardType": "unit",
+    "powerCost": "2+",
+    "category": "DA",
+    "textSnippets": [
+      "【ミサイル射出】"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited",
+      "grant_effect_e38193e3828c"
+    ],
+    "bp": 2500,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "RM-062",
+    "wikiRef": "docs/wiki/cards/RM-062.md",
+    "name": "テントリーナ",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "【リーナステッキ】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  }
+]

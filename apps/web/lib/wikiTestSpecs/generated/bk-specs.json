@@ -1,0 +1,333 @@
+[
+  {
+    "cardId": "BK-001",
+    "wikiRef": "docs/wiki/cards/BK-001.md",
+    "name": "タイフーン（1号）",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-002",
+    "wikiRef": "docs/wiki/cards/BK-002.md",
+    "name": "ダブルタイフーン",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-003",
+    "wikiRef": "docs/wiki/cards/BK-003.md",
+    "name": "ライドル",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-004",
+    "wikiRef": "docs/wiki/cards/BK-004.md",
+    "name": "コンドラー",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "自軍Sユニットを1体選ぶ。このターン、選んだユニ"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-005",
+    "wikiRef": "docs/wiki/cards/BK-005.md",
+    "name": "エレクトラー",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-006",
+    "wikiRef": "docs/wiki/cards/BK-006.md",
+    "name": "トルネード",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-007",
+    "wikiRef": "docs/wiki/cards/BK-007.md",
+    "name": "サイクロード",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-008",
+    "wikiRef": "docs/wiki/cards/BK-008.md",
+    "name": "ゼクロスベルト",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-009",
+    "wikiRef": "docs/wiki/cards/BK-009.md",
+    "name": "キングストーン（太陽の石）",
+    "cardType": "operation",
+    "powerCost": 1,
+    "category": "MA",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自分の手札から"
+    ],
+    "expectedDslKeywords": [
+      "choice_one_of_e6aca1e381ae"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-010",
+    "wikiRef": "docs/wiki/cards/BK-010.md",
+    "name": "サンライザー",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自分の手札から"
+    ],
+    "expectedDslKeywords": [
+      "choice_one_of_e6aca1e381ae"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-011",
+    "wikiRef": "docs/wiki/cards/BK-011.md",
+    "name": "アークル",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "自分の手札か、自軍常駐置き場でオモテ向きになって"
+    ],
+    "expectedDslKeywords": [
+      "hand_resident_rush_named_e382a2e3839ee38380e383a0"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "BK-012",
+    "wikiRef": "docs/wiki/cards/BK-012.md",
+    "name": "オルタリング",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "自分の手札か、自軍常駐置き場でオモテ向きになって"
+    ],
+    "expectedDslKeywords": [
+      "hand_resident_rush_named_e8b3a2e88085e381aee79fb3"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "BK-013",
+    "wikiRef": "docs/wiki/cards/BK-013.md",
+    "name": "Vバックル（龍騎）",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "次の効果から1つ選び発動する。 ◎自分の手札から"
+    ],
+    "expectedDslKeywords": [
+      "choice_one_of_e6aca1e381ae"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-014",
+    "wikiRef": "docs/wiki/cards/BK-014.md",
+    "name": "ファイズドライバー",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-015",
+    "wikiRef": "docs/wiki/cards/BK-015.md",
+    "name": "ブレイバックル",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自分の手札から"
+    ],
+    "expectedDslKeywords": [
+      "choice_one_of_e6aca1e381ae"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-016",
+    "wikiRef": "docs/wiki/cards/BK-016.md",
+    "name": "火炎鼓装備帯",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "特徴「猛士」を持つ自軍ユニット2体につき1枚ドロ"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-017",
+    "wikiRef": "docs/wiki/cards/BK-017.md",
+    "name": "カブトゼクター",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "OT",
+    "textSnippets": [
+      "次の効果から1つ選び発動する。 ◎自軍山札から「"
+    ],
+    "expectedDslKeywords": [
+      "choice_one_of_e6aca1e381ae"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "BK-018",
+    "wikiRef": "docs/wiki/cards/BK-018.md",
+    "name": "デンオウベルト",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "自軍山札か、自軍常駐置き場でオモテ向きになってい"
+    ],
+    "expectedDslKeywords": [
+      "recruit_den_o_deck_resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "BK-019",
+    "wikiRef": "docs/wiki/cards/BK-019.md",
+    "name": "キバットベルト",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "次の効果から1つ選び発動する。 ◎自分の手札から"
+    ],
+    "expectedDslKeywords": [
+      "choice_one_of_e6aca1e381ae"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  }
+]

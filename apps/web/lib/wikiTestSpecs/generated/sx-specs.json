@@ -1,0 +1,204 @@
+[
+  {
+    "cardId": "SX-001",
+    "wikiRef": "docs/wiki/cards/SX-001.md",
+    "name": "仮面ライダー電王超CF",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "OT",
+    "textSnippets": [
+      "【超ボイスターズキック】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "SX-002",
+    "wikiRef": "docs/wiki/cards/SX-002.md",
+    "name": "仮面ライダークウガRU",
+    "cardType": "unit",
+    "powerCost": "7+",
+    "category": [
+      "MA",
+      "DA"
+    ],
+    "textSnippets": [
+      "【黒い瞳に映るもの】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 7000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "SX-003",
+    "wikiRef": "docs/wiki/cards/SX-003.md",
+    "name": "仮面ライダーW・FJ",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "DA",
+    "textSnippets": [
+      "【アーム・ファング】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "note_other_e280bbe887aa",
+      "bp_modify_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "SX-004",
+    "wikiRef": "docs/wiki/cards/SX-004.md",
+    "name": "ハイパーゴーオンレッド",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": [
+      "MA",
+      "OT"
+    ],
+    "textSnippets": [
+      "【音速の赤き侍】"
+    ],
+    "expectedDslKeywords": [
+      "can_ride_vehicle_named_e8bb8ae4b8a1",
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "SX-005",
+    "wikiRef": "docs/wiki/cards/SX-005.md",
+    "name": "仮面ライダーW・CJX",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": [
+      "ET",
+      "DA"
+    ],
+    "textSnippets": [
+      "【ビッカーファイナリュージョン】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "SX-006",
+    "wikiRef": "docs/wiki/cards/SX-006.md",
+    "name": "仮面ライダーG電王",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【時間警察の使者】"
+    ],
+    "expectedDslKeywords": [
+      "vehicle_interaction_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "SX-007",
+    "wikiRef": "docs/wiki/cards/SX-007.md",
+    "name": "スーパーゴセイレッド",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "【スーパースカイダイナミック】"
+    ],
+    "expectedDslKeywords": [
+      "breaker",
+      "wing",
+      "lead_MA",
+      "enemy_power_damage_e695b5e8bb8d"
+    ],
+    "bp": 4500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "SX-008",
+    "wikiRef": "docs/wiki/cards/SX-008.md",
+    "name": "超・電王トリロジー",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": [
+      "WB",
+      "OT",
+      "MA"
+    ],
+    "textSnippets": [
+      "これを使用するためにホールドしたコマンドのカテゴ"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "SX-009",
+    "wikiRef": "docs/wiki/cards/SX-009.md",
+    "name": "ゴセイレッド×ゴーカイレッド",
+    "cardType": "unit",
+    "powerCost": "0+",
+    "category": [
+      "MA",
+      "OT"
+    ],
+    "textSnippets": [
+      "【バトンタッチ】"
+    ],
+    "expectedDslKeywords": [
+      "cross1",
+      "taxis_OT",
+      "deck_search_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "SX-010",
+    "wikiRef": "docs/wiki/cards/SX-010.md",
+    "name": "仮面ライダーオーズ・タトバコンボ×仮面ライダーW・CJ",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": [
+      "WB",
+      "ET"
+    ],
+    "textSnippets": [
+      "【MOVIE大戦】"
+    ],
+    "expectedDslKeywords": [
+      "cross1",
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "1/5",
+    "size": "S"
+  }
+]

@@ -1,0 +1,248 @@
+[
+  {
+    "cardId": "PK-001",
+    "wikiRef": "docs/wiki/cards/PK-001.md",
+    "name": "仮面ライダー龍騎",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "WB",
+    "textSnippets": [
+      "【ドラゴクロー】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PK-002",
+    "wikiRef": "docs/wiki/cards/PK-002.md",
+    "name": "ゼクトルーパー",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "【フォーメーションα】"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited",
+      "block_enemy_number_match_entry"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "PK-003",
+    "wikiRef": "docs/wiki/cards/PK-003.md",
+    "name": "仮面ライダー龍騎",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "WB",
+    "textSnippets": [
+      "【ドラグセイバー】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PK-004",
+    "wikiRef": "docs/wiki/cards/PK-004.md",
+    "name": "仮面ライダー電王SF",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【俺の必殺技・パートⅡ】"
+    ],
+    "expectedDslKeywords": [
+      "no_strike_if_enemy_battle"
+    ],
+    "bp": 3000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "PK-005",
+    "wikiRef": "docs/wiki/cards/PK-005.md",
+    "name": "デンライナーゴウカ",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "OT",
+    "textSnippets": [
+      "【時の列車】"
+    ],
+    "bp": 6000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "PK-006",
+    "wikiRef": "docs/wiki/cards/PK-006.md",
+    "name": "シャドームーン",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【サタンサーベル】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_win_vs_sp1",
+      "destroy_vehicle_and_rider"
+    ],
+    "bp": 5000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "PK-007",
+    "wikiRef": "docs/wiki/cards/PK-007.md",
+    "name": "モモタロス",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "【最初からクライマックスだぜ】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_enter_battle",
+      "SP1"
+    ],
+    "bp": 3000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "PK-008",
+    "wikiRef": "docs/wiki/cards/PK-008.md",
+    "name": "ライダーマン",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【カギ爪アーム】"
+    ],
+    "expectedDslKeywords": [
+      "ally_named_e4bbaee99da2e383a9e382a4_protects_from_enemy_s",
+      "return_rush_deploy_enemy_s"
+    ],
+    "bp": 1000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "PK-009",
+    "wikiRef": "docs/wiki/cards/PK-009.md",
+    "name": "仮面ライダーV3",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "ET",
+    "textSnippets": [
+      "【ダブルタイフーン】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "hold_named_riders_rc_copy"
+    ],
+    "bp": 4000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "PK-010",
+    "wikiRef": "docs/wiki/cards/PK-010.md",
+    "name": "ウエイクアップ！",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident",
+      "tag"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "PK-011",
+    "wikiRef": "docs/wiki/cards/PK-011.md",
+    "name": "クライマックス刑事",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "OT",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident",
+      "tag"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "PK-012",
+    "wikiRef": "docs/wiki/cards/PK-012.md",
+    "name": "仮面ライダー龍騎サバイブ",
+    "cardType": "unit",
+    "powerCost": "10-",
+    "category": "WB",
+    "textSnippets": [
+      "【ドラグバイザーツバイ】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_advent_power_sum"
+    ],
+    "bp": 6500,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "PK-013",
+    "wikiRef": "docs/wiki/cards/PK-013.md",
+    "name": "変身音叉 音角",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自分の手札から"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "PK-014",
+    "wikiRef": "docs/wiki/cards/PK-014.md",
+    "name": "仮面ライダーキバEF",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "MA",
+    "textSnippets": [
+      "【モンスターフィーバー】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "hand_rush_named_e9ad94e79a87e58a9b_s_on_battle"
+    ],
+    "bp": 5000,
+    "sp": "1/3",
+    "size": "S"
+  }
+]

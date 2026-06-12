@@ -1,0 +1,5887 @@
+[
+  {
+    "cardId": "RK-001",
+    "wikiRef": "docs/wiki/cards/RK-001.md",
+    "name": "改造人間",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-002",
+    "wikiRef": "docs/wiki/cards/RK-002.md",
+    "name": "V3ホッパー",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "自軍山札の上から3枚を見て、そのカードを山札の上"
+    ],
+    "expectedDslKeywords": [
+      "deck_scry_three_reorder"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-003",
+    "wikiRef": "docs/wiki/cards/RK-003.md",
+    "name": "カイゾーグ",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-004",
+    "wikiRef": "docs/wiki/cards/RK-004.md",
+    "name": "ギギの腕輪",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "counter_defender_bp_2000"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "RK-005",
+    "wikiRef": "docs/wiki/cards/RK-005.md",
+    "name": "超電子ダイナモ",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "特徴「改造人間」を持つ自軍Sユニットを1体選ぶ。"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-006",
+    "wikiRef": "docs/wiki/cards/RK-006.md",
+    "name": "セイリングジャンプ",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-007",
+    "wikiRef": "docs/wiki/cards/RK-007.md",
+    "name": "メンテナンス",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "自軍コマンドゾーンからリリース状態のSユニットの"
+    ],
+    "expectedDslKeywords": [
+      "command_return_then_recruit_discard"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-008",
+    "wikiRef": "docs/wiki/cards/RK-008.md",
+    "name": "メカニック忍者",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "counter_hold_kamen_s"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "RK-009",
+    "wikiRef": "docs/wiki/cards/RK-009.md",
+    "name": "二人の世紀王",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "counter_return_all_s_on_attack"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "RK-010",
+    "wikiRef": "docs/wiki/cards/RK-010.md",
+    "name": "ハイブリッドエネルギー",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-011",
+    "wikiRef": "docs/wiki/cards/RK-011.md",
+    "name": "第三の眼",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-012",
+    "wikiRef": "docs/wiki/cards/RK-012.md",
+    "name": "宏のオルゴール時計",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "counter_skip_battle_phase"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "RK-013",
+    "wikiRef": "docs/wiki/cards/RK-013.md",
+    "name": "Jパワー",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "自軍Sユニットを1体選ぶ。そして、このカードを自"
+    ],
+    "expectedDslKeywords": [
+      "stack_s_on_self_rush"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-014",
+    "wikiRef": "docs/wiki/cards/RK-014.md",
+    "name": "共同戦線",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-015",
+    "wikiRef": "docs/wiki/cards/RK-015.md",
+    "name": "人類の進化",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "counter_recruit_on_destroy"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "RK-016",
+    "wikiRef": "docs/wiki/cards/RK-016.md",
+    "name": "ミラーワールド",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-017",
+    "wikiRef": "docs/wiki/cards/RK-017.md",
+    "name": "ミッションメモリー",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "ＲＣを持つ自軍Sユニットを1体選ぶ。選んだユニッ"
+    ],
+    "expectedDslKeywords": [
+      "rc_hold_skip_rideoff"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-018",
+    "wikiRef": "docs/wiki/cards/RK-018.md",
+    "name": "ラウズカード",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "自軍ラッシュエリアからSユニットを1体選ぶ。そし"
+    ],
+    "expectedDslKeywords": [
+      "dual_bp_rush_discard_combine"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-019",
+    "wikiRef": "docs/wiki/cards/RK-019.md",
+    "name": "音撃",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "特徴「メカ」を持たない敵軍ユニットを1体選ぶ。そ"
+    ],
+    "expectedDslKeywords": [
+      "impose_destroy_rule_on_enemy"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-020",
+    "wikiRef": "docs/wiki/cards/RK-020.md",
+    "name": "ダブルライダーキック",
+    "cardType": "operation",
+    "powerCost": 6,
+    "category": "ET",
+    "textSnippets": [
+      "自軍ラッシュエリアから特徴「仮面ライダー」を持つ"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-021",
+    "wikiRef": "docs/wiki/cards/RK-021.md",
+    "name": "クロックアップ",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-022",
+    "wikiRef": "docs/wiki/cards/RK-022.md",
+    "name": "ライダーパス",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "OT",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-023",
+    "wikiRef": "docs/wiki/cards/RK-023.md",
+    "name": "仮面ライダー1号",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【技の1号】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-024",
+    "wikiRef": "docs/wiki/cards/RK-024.md",
+    "name": "サイクロン号",
+    "cardType": "vehicle",
+    "powerCost": 5,
+    "category": "ET",
+    "textSnippets": [
+      "【サイクロンクラッシャー】"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_1000"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-025",
+    "wikiRef": "docs/wiki/cards/RK-025.md",
+    "name": "電波人間タックル",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "【電波投げ】"
+    ],
+    "expectedDslKeywords": [
+      "reveal_enemy_deck_hold_2"
+    ],
+    "bp": 1000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-026",
+    "wikiRef": "docs/wiki/cards/RK-026.md",
+    "name": "がんがんじい",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "【日本一の正義の味方】"
+    ],
+    "expectedDslKeywords": [
+      "no_attack_from_enemy_s_bp2000",
+      "return_kamen_to_rush"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-027",
+    "wikiRef": "docs/wiki/cards/RK-027.md",
+    "name": "仮面ライダーBLACK",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【ライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_1000"
+    ],
+    "bp": 3000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-028",
+    "wikiRef": "docs/wiki/cards/RK-028.md",
+    "name": "バトルホッパー",
+    "cardType": "vehicle",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "【ダイナミックスマッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "can_enter_battle_without_ride"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-029",
+    "wikiRef": "docs/wiki/cards/RK-029.md",
+    "name": "仮面ライダークウガMF",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【マイティキック】"
+    ],
+    "expectedDslKeywords": [
+      "no_attack_while_riding_enemy_s",
+      "per_ally_named_e8ada6e5af9f_bp_1000"
+    ],
+    "bp": 3000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-030",
+    "wikiRef": "docs/wiki/cards/RK-030.md",
+    "name": "トライチェイサー",
+    "cardType": "vehicle",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "【無線通信】"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_1000",
+      "deck_scry_one"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-031",
+    "wikiRef": "docs/wiki/cards/RK-031.md",
+    "name": "仮面ライダーG3MILD",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "【バッテリー交換】"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-032",
+    "wikiRef": "docs/wiki/cards/RK-032.md",
+    "name": "アナザーアギト",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【アナザーパンチ】"
+    ],
+    "expectedDslKeywords": [
+      "require_discard_kamen_rush_entry"
+    ],
+    "bp": 5000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-033",
+    "wikiRef": "docs/wiki/cards/RK-033.md",
+    "name": "仮面ライダー龍騎",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "WB",
+    "textSnippets": [
+      "【ドラゴンライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-034",
+    "wikiRef": "docs/wiki/cards/RK-034.md",
+    "name": "ドラグレッダー",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "【ドラグブレス】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "adjacent_named_e3839fe383a9e383bce383a9_bp_2000"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-035",
+    "wikiRef": "docs/wiki/cards/RK-035.md",
+    "name": "ダークウイング",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【ソニックブレイカー】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "enemy_strips_features"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-036",
+    "wikiRef": "docs/wiki/cards/RK-036.md",
+    "name": "仮面ライダーライア",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【運命への反抗】"
+    ],
+    "expectedDslKeywords": [
+      "counter_without_hold"
+    ],
+    "bp": 2000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-037",
+    "wikiRef": "docs/wiki/cards/RK-037.md",
+    "name": "エビルダイバー",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【グライディング】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "adjacent_named_e3839fe383a9e383bce383a9_no_attack"
+    ],
+    "bp": 3000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-038",
+    "wikiRef": "docs/wiki/cards/RK-038.md",
+    "name": "仮面ライダーガイ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【ヘビープレッシャー】"
+    ],
+    "expectedDslKeywords": [
+      "combo_destroy_damage_gate"
+    ],
+    "bp": 2000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-039",
+    "wikiRef": "docs/wiki/cards/RK-039.md",
+    "name": "メタルゲラス",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "WB",
+    "textSnippets": [
+      "【突進】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "rideoff_enemy_s_on_enter"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-040",
+    "wikiRef": "docs/wiki/cards/RK-040.md",
+    "name": "ベノスネーカー",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【毒液】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "destroy_on_win_male_female"
+    ],
+    "bp": 1000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-041",
+    "wikiRef": "docs/wiki/cards/RK-041.md",
+    "name": "ジェノサイダー",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "WB",
+    "textSnippets": [
+      "【ドゥームズデイ】"
+    ],
+    "expectedDslKeywords": [
+      "strike_destroy_s_on_damage"
+    ],
+    "bp": 9000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-042",
+    "wikiRef": "docs/wiki/cards/RK-042.md",
+    "name": "ブランウイング",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【閃光の翼】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "opponent_start_phase_hold_command"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-043",
+    "wikiRef": "docs/wiki/cards/RK-043.md",
+    "name": "ライドシューター",
+    "cardType": "vehicle",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [
+      "【突入】"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited",
+      "discard_vehicle_mirror_rider"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-044",
+    "wikiRef": "docs/wiki/cards/RK-044.md",
+    "name": "ライオトルーパー",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【1万人ライダー部隊】"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited",
+      "recruit_all_named_e383a9e382a4e382aae38388_10"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-045",
+    "wikiRef": "docs/wiki/cards/RK-045.md",
+    "name": "オートバジンVM",
+    "cardType": "vehicle",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "※これにライドしているユニットはBP+1000さ"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_1000"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-046",
+    "wikiRef": "docs/wiki/cards/RK-046.md",
+    "name": "オートバジンBM",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "ET",
+    "textSnippets": [
+      "【バスターホイール】"
+    ],
+    "expectedDslKeywords": [
+      "no_battle_rush_turn",
+      "enemy_all_s_bp_debuff_500"
+    ],
+    "bp": 5000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-047",
+    "wikiRef": "docs/wiki/cards/RK-047.md",
+    "name": "仮面ライダー轟鬼",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃斬・雷電激震】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_hold_commands_then"
+    ],
+    "bp": 3000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-048",
+    "wikiRef": "docs/wiki/cards/RK-048.md",
+    "name": "仮面ライダー斬鬼",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃斬・雷電斬震】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_release_commands_then"
+    ],
+    "bp": 2000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-049",
+    "wikiRef": "docs/wiki/cards/RK-049.md",
+    "name": "仮面ライダー勝鬼",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【風牙】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 3000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-050",
+    "wikiRef": "docs/wiki/cards/RK-050.md",
+    "name": "仮面ライダー裁鬼",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃斬・閻魔裁き】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 2000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-051",
+    "wikiRef": "docs/wiki/cards/RK-051.md",
+    "name": "仮面ライダー鋭鬼",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃打・必殺必中】"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-052",
+    "wikiRef": "docs/wiki/cards/RK-052.md",
+    "name": "仮面ライダー弾鬼",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃打・破砕細石】"
+    ],
+    "expectedDslKeywords": [
+      "bp_if_no_enemy_named_e383a1e382ab_5000"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-053",
+    "wikiRef": "docs/wiki/cards/RK-053.md",
+    "name": "仮面ライダーガタックMF",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【ガタックバルカン】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_3000",
+      "rush_block_discard_power"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-054",
+    "wikiRef": "docs/wiki/cards/RK-054.md",
+    "name": "仮面ライダーガタックRF",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "OT",
+    "textSnippets": [
+      "【ライダーカッティング 】"
+    ],
+    "expectedDslKeywords": [
+      "not_selectable_except_attack",
+      "destroy_adjacent_s_bp_6000"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-055",
+    "wikiRef": "docs/wiki/cards/RK-055.md",
+    "name": "仮面ライダーパンチホッパー",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【ライダーパンチ】"
+    ],
+    "expectedDslKeywords": [
+      "return_enemy_s_to_rush_any"
+    ],
+    "bp": 3000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-056",
+    "wikiRef": "docs/wiki/cards/RK-056.md",
+    "name": "仮面ライダーザビーMF",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "【ZECT隊長】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_5000",
+      "SP1"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-057",
+    "wikiRef": "docs/wiki/cards/RK-057.md",
+    "name": "仮面ライダーザビーRF",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": "OT",
+    "textSnippets": [
+      "【ライダースティング】"
+    ],
+    "expectedDslKeywords": [
+      "not_selectable_except_attack",
+      "rush_enemy_s_to_power_bp4000"
+    ],
+    "bp": 1000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-058",
+    "wikiRef": "docs/wiki/cards/RK-058.md",
+    "name": "マシンゼクトロン",
+    "cardType": "vehicle",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "※これにライドしているユニットはBP+500され"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_500",
+      "ride_without_rc_named_e4bbaee99da2e383a9e382a4"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-059",
+    "wikiRef": "docs/wiki/cards/RK-059.md",
+    "name": "ゼクトルーパー",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "【フォーメーションα】"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited",
+      "block_enemy_number_match_entry"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-060",
+    "wikiRef": "docs/wiki/cards/RK-060.md",
+    "name": "デンライナーゴウカ",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "OT",
+    "textSnippets": [
+      "【戦闘モード】"
+    ],
+    "bp": 6000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "RK-061",
+    "wikiRef": "docs/wiki/cards/RK-061.md",
+    "name": "仮面ライダー電王RF",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【一本釣り】"
+    ],
+    "expectedDslKeywords": [
+      "enemy_s_from_power_to_battle"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-062",
+    "wikiRef": "docs/wiki/cards/RK-062.md",
+    "name": "仮面ライダー電王AF",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【ダイナミックチョップ】"
+    ],
+    "expectedDslKeywords": [
+      "power_discard_bp_1000"
+    ],
+    "bp": 4000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-063",
+    "wikiRef": "docs/wiki/cards/RK-063.md",
+    "name": "仮面ライダー龍騎",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "WB",
+    "textSnippets": [
+      "【ドラゴンライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-064",
+    "wikiRef": "docs/wiki/cards/RK-064.md",
+    "name": "仮面ライダーファイズ",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【ファイズエッジ】"
+    ],
+    "bp": 3000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-065",
+    "wikiRef": "docs/wiki/cards/RK-065.md",
+    "name": "仮面ライダーカブトRF",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": "OT",
+    "textSnippets": [
+      "【ライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "not_selectable_except_attack",
+      "SP1"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-066",
+    "wikiRef": "docs/wiki/cards/RK-066.md",
+    "name": "仮面ライダー電王SF",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【俺の必殺技！】"
+    ],
+    "expectedDslKeywords": [
+      "no_strike_if_enemy_battle"
+    ],
+    "bp": 3000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-067",
+    "wikiRef": "docs/wiki/cards/RK-067.md",
+    "name": "仮面ライダーナイト",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "WB",
+    "textSnippets": [
+      "【飛翔斬】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "combo_from_partner_original_bp"
+    ],
+    "bp": 5000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-068",
+    "wikiRef": "docs/wiki/cards/RK-068.md",
+    "name": "仮面ライダー王蛇",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "WB",
+    "textSnippets": [
+      "【ベノクラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "no_strike_if_enemy_battle",
+      "combo_from_named_e3808ce38399"
+    ],
+    "bp": 3000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-069",
+    "wikiRef": "docs/wiki/cards/RK-069.md",
+    "name": "仮面ライダーファム",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "【ミスティースラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "combo_extra_attack_no_strike"
+    ],
+    "bp": 3000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-070",
+    "wikiRef": "docs/wiki/cards/RK-070.md",
+    "name": "仮面ライダーカブトMF",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【アバランチブレイク】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_4000",
+      "enemy_s_count_balance"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-071",
+    "wikiRef": "docs/wiki/cards/RK-071.md",
+    "name": "仮面ライダーキックホッパー",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【ライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "power_zone_action_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-072",
+    "wikiRef": "docs/wiki/cards/RK-072.md",
+    "name": "仮面ライダー電王GF",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "OT",
+    "textSnippets": [
+      "【ワイルドショット】"
+    ],
+    "bp": 3000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-073",
+    "wikiRef": "docs/wiki/cards/RK-073.md",
+    "name": "仮面ライダー2号",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【力の2号】"
+    ],
+    "expectedDslKeywords": [
+      "no_battle_rush_turn"
+    ],
+    "bp": 5000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-074",
+    "wikiRef": "docs/wiki/cards/RK-074.md",
+    "name": "ライダーマン",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【カギ爪アーム】"
+    ],
+    "expectedDslKeywords": [
+      "ally_named_e4bbaee99da2e383a9e382a4_protects_from_enemy_s",
+      "return_rush_deploy_enemy_s"
+    ],
+    "bp": 1000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-075",
+    "wikiRef": "docs/wiki/cards/RK-075.md",
+    "name": "ミラーワールド",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-076",
+    "wikiRef": "docs/wiki/cards/RK-076.md",
+    "name": "ミッションメモリー",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "ＲＣを持つ自軍Sユニットを1体選ぶ。選んだユニッ"
+    ],
+    "expectedDslKeywords": [
+      "rc_hold_skip_rideoff"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-077",
+    "wikiRef": "docs/wiki/cards/RK-077.md",
+    "name": "ラウズカード",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "自軍ラッシュエリアからSユニットを1体選ぶ。そし"
+    ],
+    "expectedDslKeywords": [
+      "dual_bp_rush_discard_combine"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-078",
+    "wikiRef": "docs/wiki/cards/RK-078.md",
+    "name": "クロックアップ",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-079",
+    "wikiRef": "docs/wiki/cards/RK-079.md",
+    "name": "仮面ライダーの称号",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "ET",
+    "textSnippets": [
+      "ナンバーに数字を持つ自軍Sユニットを1体選ぶ。そ"
+    ],
+    "expectedDslKeywords": [
+      "stack_s_on_self_rush"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-080",
+    "wikiRef": "docs/wiki/cards/RK-080.md",
+    "name": "超変身",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-081",
+    "wikiRef": "docs/wiki/cards/RK-081.md",
+    "name": "ゲゲル",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "DA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-082",
+    "wikiRef": "docs/wiki/cards/RK-082.md",
+    "name": "オルタフォース",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-083",
+    "wikiRef": "docs/wiki/cards/RK-083.md",
+    "name": "ストライクベント",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "特徴「ミラーライダー」を持つ自軍ユニットを1体選"
+    ],
+    "expectedDslKeywords": [
+      "destroy_choose_enemy_e789b9e5beb4"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-084",
+    "wikiRef": "docs/wiki/cards/RK-084.md",
+    "name": "トリックベント",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "自軍山札の上から3枚をオモテにする。その中から特"
+    ],
+    "expectedDslKeywords": [
+      "reveal_faceup_e887aae8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-085",
+    "wikiRef": "docs/wiki/cards/RK-085.md",
+    "name": "ガードベント",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe382ab"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "RK-086",
+    "wikiRef": "docs/wiki/cards/RK-086.md",
+    "name": "アカネタカ",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "MA",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "RK-087",
+    "wikiRef": "docs/wiki/cards/RK-087.md",
+    "name": "ゼクトマイザー",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "敵軍ラッシュエリアにあるすべてのSユニットをバト"
+    ],
+    "expectedDslKeywords": [
+      "deploy_battle_area_e695b5e8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-088",
+    "wikiRef": "docs/wiki/cards/RK-088.md",
+    "name": "イマジンとの契約",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "DA",
+    "textSnippets": [
+      "特徴「イマジン」を持たない自軍Sユニットを1体選"
+    ],
+    "expectedDslKeywords": [
+      "stack_s_on_self_rush"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-089",
+    "wikiRef": "docs/wiki/cards/RK-089.md",
+    "name": "乗車拒否",
+    "cardType": "operation",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "次の効果を、相手、自分の順に行う。 自分自身の山"
+    ],
+    "expectedDslKeywords": [
+      "opponent_self_order_e6aca1e381ae"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-090",
+    "wikiRef": "docs/wiki/cards/RK-090.md",
+    "name": "ショッカー戦闘員",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "※このカードはデッキに好きな枚数入れてもよい。"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-091",
+    "wikiRef": "docs/wiki/cards/RK-091.md",
+    "name": "ゾル大佐",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "DA",
+    "textSnippets": [
+      "【戦闘員の統率】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-092",
+    "wikiRef": "docs/wiki/cards/RK-092.md",
+    "name": "狼男",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "DA",
+    "textSnippets": [
+      "【狼作戦】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 6000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-093",
+    "wikiRef": "docs/wiki/cards/RK-093.md",
+    "name": "蜘蛛男",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【要人の暗殺】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_restrict_e3808ce38193"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-094",
+    "wikiRef": "docs/wiki/cards/RK-094.md",
+    "name": "ショッカー戦闘員バイク部隊",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "DA",
+    "textSnippets": [
+      "※このカードはデッキに好きな枚数入れてもよい。 "
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited",
+      "destroy_if_no_ride_end_turn"
+    ],
+    "bp": 1500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-095",
+    "wikiRef": "docs/wiki/cards/RK-095.md",
+    "name": "ハリケーン",
+    "cardType": "vehicle",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【ハリケーンダッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "return_rider_to_rush_end_turn"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-096",
+    "wikiRef": "docs/wiki/cards/RK-096.md",
+    "name": "ハサミジャガー",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "DA",
+    "textSnippets": [
+      "【切断溶解】"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-097",
+    "wikiRef": "docs/wiki/cards/RK-097.md",
+    "name": "仮面ライダーX",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "ET",
+    "textSnippets": [
+      "【ライドルスティック】"
+    ],
+    "expectedDslKeywords": [
+      "register"
+    ],
+    "bp": 4000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-098",
+    "wikiRef": "docs/wiki/cards/RK-098.md",
+    "name": "クルーザー",
+    "cardType": "vehicle",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【水中走行】"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_1000",
+      "deck_bottom_hold_command"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-099",
+    "wikiRef": "docs/wiki/cards/RK-099.md",
+    "name": "アポロガイスト",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【怪人の監視権限】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-100",
+    "wikiRef": "docs/wiki/cards/RK-100.md",
+    "name": "仮面ライダーZX",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【虚像投影装置】"
+    ],
+    "expectedDslKeywords": [
+      "release_command_action_e887aae8bb8d"
+    ],
+    "bp": 3000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-101",
+    "wikiRef": "docs/wiki/cards/RK-101.md",
+    "name": "タイガーロイド",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【タイガーボンバー】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-102",
+    "wikiRef": "docs/wiki/cards/RK-102.md",
+    "name": "仮面ライダークウガDF",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【スプラッシュドラゴン】"
+    ],
+    "expectedDslKeywords": [
+      "register"
+    ],
+    "bp": 2000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-103",
+    "wikiRef": "docs/wiki/cards/RK-103.md",
+    "name": "仮面ライダークウガPF",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "【ブラストペガサス】"
+    ],
+    "expectedDslKeywords": [
+      "end_turn_stack_on_resident",
+      "combo_action_e38193e3828c"
+    ],
+    "bp": 500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-104",
+    "wikiRef": "docs/wiki/cards/RK-104.md",
+    "name": "仮面ライダークウガTF",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "※レジスト（これがバトルで撃破されたとき、捨札に"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "require_command_hold_entry"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-105",
+    "wikiRef": "docs/wiki/cards/RK-105.md",
+    "name": "仮面ライダーアギトSF",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【ハルバードスピン】"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_1000",
+      "return_to_zone_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-106",
+    "wikiRef": "docs/wiki/cards/RK-106.md",
+    "name": "仮面ライダーアギトFF",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "【セイバースラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "SP1",
+      "enemy_power_damage_e695b5e8bb8d"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-107",
+    "wikiRef": "docs/wiki/cards/RK-107.md",
+    "name": "マシントルネイダー",
+    "cardType": "vehicle",
+    "powerCost": 1,
+    "category": "MA",
+    "textSnippets": [
+      "【硬化装甲】"
+    ],
+    "expectedDslKeywords": [
+      "release_command_action_e38193e3828c"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-108",
+    "wikiRef": "docs/wiki/cards/RK-108.md",
+    "name": "仮面ライダーギルス",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "【ギルスヒールクロウ】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "enemy_power_damage_e38193e381ae"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-109",
+    "wikiRef": "docs/wiki/cards/RK-109.md",
+    "name": "ギルスレイダー",
+    "cardType": "vehicle",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【自己修復能力】"
+    ],
+    "expectedDslKeywords": [
+      "can_enter_battle_without_ride",
+      "ride_action_e3839be383bc"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-110",
+    "wikiRef": "docs/wiki/cards/RK-110.md",
+    "name": "V-1システム",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "【性能の限界】"
+    ],
+    "expectedDslKeywords": [
+      "hold_enemy_unit_e695b5e8bb8d"
+    ],
+    "bp": 500,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-111",
+    "wikiRef": "docs/wiki/cards/RK-111.md",
+    "name": "ガードチェイサー",
+    "cardType": "vehicle",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【非常警戒態勢】"
+    ],
+    "expectedDslKeywords": [
+      "ride_without_rc_named_e8ada6e5af9f",
+      "ride_s_ability_e38193e3828c"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-112",
+    "wikiRef": "docs/wiki/cards/RK-112.md",
+    "name": "オルタナティブ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【スラッシュダガー】"
+    ],
+    "expectedDslKeywords": [
+      "no_strike_after_rideoff"
+    ],
+    "bp": 1000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-113",
+    "wikiRef": "docs/wiki/cards/RK-113.md",
+    "name": "サイコローグ",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "WB",
+    "textSnippets": [
+      "【散弾】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "ride_action_e38193e3828c"
+    ],
+    "bp": 500,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-114",
+    "wikiRef": "docs/wiki/cards/RK-114.md",
+    "name": "サイコローダー",
+    "cardType": "vehicle",
+    "powerCost": "3+",
+    "category": "WB",
+    "textSnippets": [
+      "【デッドエンド】"
+    ],
+    "expectedDslKeywords": [
+      "ride_action_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-115",
+    "wikiRef": "docs/wiki/cards/RK-115.md",
+    "name": "仮面ライダーゾルダ",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "WB",
+    "textSnippets": [
+      "【エンドオブワールド】"
+    ],
+    "expectedDslKeywords": [
+      "combo_action_e3808ce3839e"
+    ],
+    "bp": 3000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-116",
+    "wikiRef": "docs/wiki/cards/RK-116.md",
+    "name": "マグナギガ",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "【そびえる巨体】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack",
+      "require_command_hold_entry",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 6000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-117",
+    "wikiRef": "docs/wiki/cards/RK-117.md",
+    "name": "仮面ライダータイガ",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【クリスタルブレイク】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193"
+    ],
+    "bp": 1000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-118",
+    "wikiRef": "docs/wiki/cards/RK-118.md",
+    "name": "デストワイルダー",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【クロー】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-119",
+    "wikiRef": "docs/wiki/cards/RK-119.md",
+    "name": "ギガゼール",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [
+      "※これは自軍コマンドを1つホールドしなければバト"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "deck_unlimited"
+    ],
+    "bp": 500,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-120",
+    "wikiRef": "docs/wiki/cards/RK-120.md",
+    "name": "サイドバッシャーVM",
+    "cardType": "vehicle",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【ニーラーシャトル】"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_1000",
+      "grant_ability_e38193e3828c"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-121",
+    "wikiRef": "docs/wiki/cards/RK-121.md",
+    "name": "サイドバッシャーBM",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "ET",
+    "textSnippets": [
+      "【エクザップバスター】"
+    ],
+    "expectedDslKeywords": [
+      "bp_modify_e38193e3828c"
+    ],
+    "bp": 5000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-122",
+    "wikiRef": "docs/wiki/cards/RK-122.md",
+    "name": "ホースオルフェノク格闘態",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【使途再生】"
+    ],
+    "expectedDslKeywords": [
+      "power_min_6_entry",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-123",
+    "wikiRef": "docs/wiki/cards/RK-123.md",
+    "name": "クレインオルフェノク",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【制裁する光の翼】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-124",
+    "wikiRef": "docs/wiki/cards/RK-124.md",
+    "name": "スネークオルフェノク",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "DA",
+    "textSnippets": [
+      "【人を守る決意】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-125",
+    "wikiRef": "docs/wiki/cards/RK-125.md",
+    "name": "仮面ライダーブレイド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【ブレイラウザー】"
+    ],
+    "expectedDslKeywords": [
+      "no_strike_after_rideoff",
+      "note_other_e280bbe8b5a4"
+    ],
+    "bp": 3000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-126",
+    "wikiRef": "docs/wiki/cards/RK-126.md",
+    "name": "仮面ライダーギャレン",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【ギャレンラウザー】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "hand_pick_show_e887aae58886"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-127",
+    "wikiRef": "docs/wiki/cards/RK-127.md",
+    "name": "仮面ライダーカリス",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【カリスアロー】"
+    ],
+    "expectedDslKeywords": [
+      "no_strike_after_rideoff",
+      "note_other_e280bbe38193"
+    ],
+    "bp": 1000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-128",
+    "wikiRef": "docs/wiki/cards/RK-128.md",
+    "name": "仮面ライダーレンゲル",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "【レンゲルラウザー】"
+    ],
+    "expectedDslKeywords": [
+      "no_strike_after_rideoff",
+      "note_other_e280bbe38193",
+      "hand_pick_show_e887aae58886"
+    ],
+    "bp": 3000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-129",
+    "wikiRef": "docs/wiki/cards/RK-129.md",
+    "name": "ブルースペイダー",
+    "cardType": "vehicle",
+    "powerCost": 1,
+    "category": "WB",
+    "textSnippets": [
+      "【サンダースペイダー】"
+    ],
+    "expectedDslKeywords": [
+      "ride_discard_trigger_e38193e3828c"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-130",
+    "wikiRef": "docs/wiki/cards/RK-130.md",
+    "name": "ローカストアンデッド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【スペード5－キック】"
+    ],
+    "expectedDslKeywords": [
+      "replace_rush_kamen_rider"
+    ],
+    "bp": 1500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-131",
+    "wikiRef": "docs/wiki/cards/RK-131.md",
+    "name": "仮面ライダー剛鬼",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "【音響打・豪腕無双】"
+    ],
+    "expectedDslKeywords": [
+      "reveal_faceup_e695b5e8bb8d"
+    ],
+    "bp": 4000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-132",
+    "wikiRef": "docs/wiki/cards/RK-132.md",
+    "name": "仮面ライダー闘鬼",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【妻子のバックアップ】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-133",
+    "wikiRef": "docs/wiki/cards/RK-133.md",
+    "name": "仮面ライダー蛮鬼",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃斬・冥府魔道】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "SP1"
+    ],
+    "bp": 500,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-134",
+    "wikiRef": "docs/wiki/cards/RK-134.md",
+    "name": "仮面ライダー2号（THE FIRST）",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【ライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "register"
+    ],
+    "bp": 3000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-135",
+    "wikiRef": "docs/wiki/cards/RK-135.md",
+    "name": "仮面ライダードレイクMF",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "【潜行捜索】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_4000",
+      "reveal_faceup_e695b0e5ad97"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-136",
+    "wikiRef": "docs/wiki/cards/RK-136.md",
+    "name": "仮面ライダードレイクRF",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": "OT",
+    "textSnippets": [
+      "【ライダーシューティング】"
+    ],
+    "expectedDslKeywords": [
+      "not_selectable_except_attack",
+      "power_zone_action_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-137",
+    "wikiRef": "docs/wiki/cards/RK-137.md",
+    "name": "ワームサナギ体",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "DA",
+    "textSnippets": [
+      "※このカードはデッキに好きな枚数入れてもよい。"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-138",
+    "wikiRef": "docs/wiki/cards/RK-138.md",
+    "name": "ウカワーム",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【不安定な擬態】"
+    ],
+    "expectedDslKeywords": [
+      "no_battle_rush_turn",
+      "opponent_must_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-139",
+    "wikiRef": "docs/wiki/cards/RK-139.md",
+    "name": "仮面ライダーゼロノスAF",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": "OT",
+    "textSnippets": [
+      "【俺はかーなーり強い】"
+    ],
+    "expectedDslKeywords": [
+      "opponent_must_e79bb8e6898b"
+    ],
+    "bp": 4000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-140",
+    "wikiRef": "docs/wiki/cards/RK-140.md",
+    "name": "仮面ライダー電王LF",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "OT",
+    "textSnippets": [],
+    "bp": 6000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-141",
+    "wikiRef": "docs/wiki/cards/RK-141.md",
+    "name": "仮面ライダーゼロノスZF",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "OT",
+    "textSnippets": [
+      "【デネビックバスター】"
+    ],
+    "expectedDslKeywords": [
+      "reveal_faceup_e38193e3828c"
+    ],
+    "bp": 5000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-142",
+    "wikiRef": "docs/wiki/cards/RK-142.md",
+    "name": "モモタロス",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "【最初からクライマックスだぜ】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_enter_battle",
+      "SP1"
+    ],
+    "bp": 3000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-143",
+    "wikiRef": "docs/wiki/cards/RK-143.md",
+    "name": "ウラタロス",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "OT",
+    "textSnippets": [
+      "【女の子のことなら僕に任せてよ】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_enter_battle",
+      "power_faceup_named_e4bbaee99da2e383a9e382a4_enter_battle"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-144",
+    "wikiRef": "docs/wiki/cards/RK-144.md",
+    "name": "キンタロス",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "【俺の強さは泣けるで！】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_enter_battle",
+      "power_faceup_named_e4bbaee99da2e383a9e382a4_enter_battle"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-145",
+    "wikiRef": "docs/wiki/cards/RK-145.md",
+    "name": "リュウタロス",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【ネコ達いじめたのお前？】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_enter_battle",
+      "power_faceup_named_e4bbaee99da2e383a9e382a4_enter_battle"
+    ],
+    "bp": 4000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-146",
+    "wikiRef": "docs/wiki/cards/RK-146.md",
+    "name": "デネブ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【デネブキャンディー】"
+    ],
+    "expectedDslKeywords": [
+      "opponent_self_order_e38193e3828c"
+    ],
+    "bp": 1000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-147",
+    "wikiRef": "docs/wiki/cards/RK-147.md",
+    "name": "デンライナーイスルギ",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": "OT",
+    "textSnippets": [
+      "【レドーム分離】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack",
+      "SP1"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "RK-148",
+    "wikiRef": "docs/wiki/cards/RK-148.md",
+    "name": "デンライナーレッコウ",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "OT",
+    "textSnippets": [
+      "【フロントアックス】"
+    ],
+    "expectedDslKeywords": [
+      "power_zone_action_e887aae8bb8d"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "RK-149",
+    "wikiRef": "docs/wiki/cards/RK-149.md",
+    "name": "デンライナーイカヅチ",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "OT",
+    "textSnippets": [
+      "【巨龍形態】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 6000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "RK-150",
+    "wikiRef": "docs/wiki/cards/RK-150.md",
+    "name": "ゼロライナードリル",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": "OT",
+    "textSnippets": [
+      "【掘削】"
+    ],
+    "expectedDslKeywords": [
+      "damage_action_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "RK-151",
+    "wikiRef": "docs/wiki/cards/RK-151.md",
+    "name": "ゼロライナーナギナタ",
+    "cardType": "unit",
+    "powerCost": "7+",
+    "category": "OT",
+    "textSnippets": [],
+    "bp": 3000,
+    "sp": 1,
+    "size": "M"
+  },
+  {
+    "cardId": "RK-152",
+    "wikiRef": "docs/wiki/cards/RK-152.md",
+    "name": "仮面ライダー電王PF",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "OT",
+    "textSnippets": [
+      "※レジスト（これがバトルで撃破されたとき、捨札に"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "power_feature_bp_sp_named_e382a4e3839ee382b8e383b3_1000_3000_sp1"
+    ],
+    "bp": 500,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-153",
+    "wikiRef": "docs/wiki/cards/RK-153.md",
+    "name": "仮面ライダーガオウ",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "DA",
+    "textSnippets": [
+      "【車両強奪】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_win_only_turn_entry",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 5000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-154",
+    "wikiRef": "docs/wiki/cards/RK-154.md",
+    "name": "ジーク",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【頭が高い！】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_enter_battle",
+      "pick_remaining_e38193e3828c"
+    ],
+    "bp": 1000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-155",
+    "wikiRef": "docs/wiki/cards/RK-155.md",
+    "name": "キングライナー",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "OT",
+    "textSnippets": [
+      "【車両の収納と発車】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_4000",
+      "deploy_rush_area_e887aae8bb8d"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "L"
+  },
+  {
+    "cardId": "RK-156",
+    "wikiRef": "docs/wiki/cards/RK-156.md",
+    "name": "マシンデンバード",
+    "cardType": "vehicle",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "【デンライナー搭乗】"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-157",
+    "wikiRef": "docs/wiki/cards/RK-157.md",
+    "name": "バットイマジン",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "DA",
+    "textSnippets": [
+      "【契約者の望むもの】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_enter_battle",
+      "resident_zone_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-158",
+    "wikiRef": "docs/wiki/cards/RK-158.md",
+    "name": "ギガンデスヘブン",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "DA",
+    "textSnippets": [
+      "※これは自分の手札からカードを2枚選び、捨札にし"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193"
+    ],
+    "bp": 7500,
+    "sp": 1,
+    "size": "M"
+  },
+  {
+    "cardId": "RK-159",
+    "wikiRef": "docs/wiki/cards/RK-159.md",
+    "name": "仮面ライダーV3（THE NEXT）",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【V3キック】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "destroy_choose_enemy_e5bf85e8a681"
+    ],
+    "bp": 4000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-160",
+    "wikiRef": "docs/wiki/cards/RK-160.md",
+    "name": "シザーズジャガー",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【ナノロボット散布実験】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-161",
+    "wikiRef": "docs/wiki/cards/RK-161.md",
+    "name": "ショッカーライダー",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "DA",
+    "textSnippets": [
+      "※このカードはデッキに好きな枚数入れてもよい。 "
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited",
+      "note_other_e280bbe38193"
+    ],
+    "bp": 2500,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-162",
+    "wikiRef": "docs/wiki/cards/RK-162.md",
+    "name": "仮面ライダーアギトGF",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【ライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "register"
+    ],
+    "bp": 3000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-163",
+    "wikiRef": "docs/wiki/cards/RK-163.md",
+    "name": "オルタナティブ・ゼロ",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "WB",
+    "textSnippets": [
+      "【無意識の記憶力】"
+    ],
+    "expectedDslKeywords": [
+      "no_strike_after_rideoff",
+      "register",
+      "pick_from_discard_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-164",
+    "wikiRef": "docs/wiki/cards/RK-164.md",
+    "name": "仮面ライダー1号（THE FIRST）",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【ライダーパンチ】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "SP1"
+    ],
+    "bp": 3000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-165",
+    "wikiRef": "docs/wiki/cards/RK-165.md",
+    "name": "仮面ライダー電王WF",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【恩返し】"
+    ],
+    "expectedDslKeywords": [
+      "grant_effect_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-166",
+    "wikiRef": "docs/wiki/cards/RK-166.md",
+    "name": "仮面ライダーG3",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【GM-01】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "no_ride_while_held",
+      "hold_enemy_unit_e3839be383bc"
+    ],
+    "bp": 1000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-167",
+    "wikiRef": "docs/wiki/cards/RK-167.md",
+    "name": "仮面ライダーカイザ",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【カイザブレイガン】"
+    ],
+    "expectedDslKeywords": [
+      "require_hold_other_s_entry",
+      "combo_action_4250e381aee4"
+    ],
+    "bp": 4000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-168",
+    "wikiRef": "docs/wiki/cards/RK-168.md",
+    "name": "仮面ライダー電王CF",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "OT",
+    "textSnippets": [
+      "【てんこもりだぜ！】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "power_zone_action_e887aae8bb8d"
+    ],
+    "bp": 5000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-169",
+    "wikiRef": "docs/wiki/cards/RK-169.md",
+    "name": "仮面ライダーゼロノスVF",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "OT",
+    "textSnippets": [
+      "【グランドストライク】"
+    ],
+    "expectedDslKeywords": [
+      "register"
+    ],
+    "bp": 6000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-170",
+    "wikiRef": "docs/wiki/cards/RK-170.md",
+    "name": "プロジェクトG4",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident",
+      "tag"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-171",
+    "wikiRef": "docs/wiki/cards/RK-171.md",
+    "name": "コントラクト",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [
+      "本来の特徴に「ミラーライダー」を持つ自軍ユニット"
+    ],
+    "expectedDslKeywords": [
+      "combo_action_e69cace69da5"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-172",
+    "wikiRef": "docs/wiki/cards/RK-172.md",
+    "name": "ルリオオカミ",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe382ab"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "RK-173",
+    "wikiRef": "docs/wiki/cards/RK-173.md",
+    "name": "鬼の鎧",
+    "cardType": "operation",
+    "powerCost": 1,
+    "category": "MA",
+    "textSnippets": [
+      "自軍Sユニットを選ぶ。そして、このカードを自軍ラ"
+    ],
+    "expectedDslKeywords": [
+      "release_command_action_e887aae8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-174",
+    "wikiRef": "docs/wiki/cards/RK-174.md",
+    "name": "プットオン",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "カード名に「RF（ライダーフォーム）」を含む自軍"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-175",
+    "wikiRef": "docs/wiki/cards/RK-175.md",
+    "name": "仮面ライダー新1号",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "ET",
+    "textSnippets": [
+      "【ライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "alias_named_e4bbaee99da2e383a9e382a4",
+      "combo_bp_from_skipped_attack"
+    ],
+    "bp": 4000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-176",
+    "wikiRef": "docs/wiki/cards/RK-176.md",
+    "name": "仮面ライダー新2号",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "ET",
+    "textSnippets": [
+      "【ライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "alias_named_e4bbaee99da2e383a9e382a4",
+      "combo_action_e695b5e8bb8d"
+    ],
+    "bp": 5000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-177",
+    "wikiRef": "docs/wiki/cards/RK-177.md",
+    "name": "蜂女",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【催眠音波】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-178",
+    "wikiRef": "docs/wiki/cards/RK-178.md",
+    "name": "仮面ライダーアマゾン",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【大切断】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "no_strike_after_rideoff"
+    ],
+    "bp": 2000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-179",
+    "wikiRef": "docs/wiki/cards/RK-179.md",
+    "name": "ジャングラー",
+    "cardType": "vehicle",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "【体当たり攻撃】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_enter_battle_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-180",
+    "wikiRef": "docs/wiki/cards/RK-180.md",
+    "name": "モグラ獣人",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "DA",
+    "textSnippets": [
+      "【神出鬼没】"
+    ],
+    "expectedDslKeywords": [
+      "no_attack_from_enemy_s_bp2000",
+      "while_note_e280bbe38193",
+      "ride_action_e695b5e8bb8d"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-181",
+    "wikiRef": "docs/wiki/cards/RK-181.md",
+    "name": "仮面ライダーシン",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【ハイバイブネイル】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "grant_ability_e887aae8bb8d"
+    ],
+    "bp": 3000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-182",
+    "wikiRef": "docs/wiki/cards/RK-182.md",
+    "name": "Zブリンガー",
+    "cardType": "vehicle",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【Zブリンガーアタック】"
+    ],
+    "expectedDslKeywords": [
+      "ride_action_e38193e3828c"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-183",
+    "wikiRef": "docs/wiki/cards/RK-183.md",
+    "name": "仮面ライダーZO",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【ZOキック】"
+    ],
+    "expectedDslKeywords": [
+      "bp_modify_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-184",
+    "wikiRef": "docs/wiki/cards/RK-184.md",
+    "name": "ドラス",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "DA",
+    "textSnippets": [
+      "【生命維持プール】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "note_other_e280bbe38193",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 5000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-185",
+    "wikiRef": "docs/wiki/cards/RK-185.md",
+    "name": "レッドドラス",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "DA",
+    "textSnippets": [
+      "【合体吸収】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "reveal_faceup_e887aae8bb8d"
+    ],
+    "bp": 6000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-186",
+    "wikiRef": "docs/wiki/cards/RK-186.md",
+    "name": "仮面ライダーJ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "【Jパンチ】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "bp_modify_e38193e3828c"
+    ],
+    "bp": 1000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-187",
+    "wikiRef": "docs/wiki/cards/RK-187.md",
+    "name": "仮面ライダーJジャンボフォーメーション",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "【ジャンボライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 5500,
+    "sp": null,
+    "size": "L"
+  },
+  {
+    "cardId": "RK-188",
+    "wikiRef": "docs/wiki/cards/RK-188.md",
+    "name": "ベリー",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "MA",
+    "textSnippets": [
+      "【地空人のエージェント】"
+    ],
+    "expectedDslKeywords": [
+      "grant_effect_e38193e3828c"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-189",
+    "wikiRef": "docs/wiki/cards/RK-189.md",
+    "name": "ジェイクロッサー",
+    "cardType": "vehicle",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "【地空人の精霊パワー】"
+    ],
+    "expectedDslKeywords": [
+      "release_command_action_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-190",
+    "wikiRef": "docs/wiki/cards/RK-190.md",
+    "name": "フォッグマザー",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "DA",
+    "textSnippets": [
+      "【孵化を迎える厄災】"
+    ],
+    "expectedDslKeywords": [
+      "deck_search_e38193e3828c"
+    ],
+    "bp": 7000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "RK-191",
+    "wikiRef": "docs/wiki/cards/RK-191.md",
+    "name": "ガライ",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【ガライソード】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "optional_then_e38193e3828c"
+    ],
+    "bp": 5000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-192",
+    "wikiRef": "docs/wiki/cards/RK-192.md",
+    "name": "アギト",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【アギトファング】"
+    ],
+    "expectedDslKeywords": [
+      "register_resist_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-193",
+    "wikiRef": "docs/wiki/cards/RK-193.md",
+    "name": "ズー",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "DA",
+    "textSnippets": [
+      "【バームニードル】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_rush_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-194",
+    "wikiRef": "docs/wiki/cards/RK-194.md",
+    "name": "仮面ライダーG3-X",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【GX-05】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "while_note_e280bbe38193",
+      "hold_enemy_unit_e3839be383bc"
+    ],
+    "bp": 2000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-195",
+    "wikiRef": "docs/wiki/cards/RK-195.md",
+    "name": "仮面ライダーG4",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【再起動と暴走】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-196",
+    "wikiRef": "docs/wiki/cards/RK-196.md",
+    "name": "クイーンアントロード",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【黄泉の鐙】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "destroy_enter_battle_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-197",
+    "wikiRef": "docs/wiki/cards/RK-197.md",
+    "name": "アントロード",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "DA",
+    "textSnippets": [
+      "【女王の僕】"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited",
+      "while_note_e280bbe38193",
+      "grant_ability_e38193e3828c"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-198",
+    "wikiRef": "docs/wiki/cards/RK-198.md",
+    "name": "仮面ライダーインペラー",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【ドライブディバイダー】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "combo_action_e789b9e5beb4"
+    ],
+    "bp": 1000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-199",
+    "wikiRef": "docs/wiki/cards/RK-199.md",
+    "name": "オメガゼール",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【ゼール種の統率】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "ignore_rule_text_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-200",
+    "wikiRef": "docs/wiki/cards/RK-200.md",
+    "name": "マガゼール",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【群れの襲撃】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "deck_unlimited",
+      "ride_action_e887aae8bb8d"
+    ],
+    "bp": 500,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-201",
+    "wikiRef": "docs/wiki/cards/RK-201.md",
+    "name": "ドラグブラッカー",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【ドラグブレス】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "opponent_self_order_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-202",
+    "wikiRef": "docs/wiki/cards/RK-202.md",
+    "name": "仮面ライダー王蛇ブランク体",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-203",
+    "wikiRef": "docs/wiki/cards/RK-203.md",
+    "name": "仮面ライダーファイズAF",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "ET",
+    "textSnippets": [
+      "【アクセルモード】"
+    ],
+    "expectedDslKeywords": [
+      "stack_cards_e887aae8bb8d"
+    ],
+    "bp": 4500,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-204",
+    "wikiRef": "docs/wiki/cards/RK-204.md",
+    "name": "仮面ライダーオーガ",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【オーガ・ストラッシュ】"
+    ],
+    "bp": 4000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-205",
+    "wikiRef": "docs/wiki/cards/RK-205.md",
+    "name": "仮面ライダーサイガ",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【フライングアタッカー】"
+    ],
+    "expectedDslKeywords": [
+      "end_turn_return_hand_from_rush",
+      "hold_enemy_unit_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-206",
+    "wikiRef": "docs/wiki/cards/RK-206.md",
+    "name": "ウルフオルフェノク",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "【望まない争い】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 6500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-207",
+    "wikiRef": "docs/wiki/cards/RK-207.md",
+    "name": "ホースオルフェノク激情態",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "DA",
+    "textSnippets": [
+      "【悲哀と絶望】"
+    ],
+    "bp": 5500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-208",
+    "wikiRef": "docs/wiki/cards/RK-208.md",
+    "name": "クレインオルフェノク激情態",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "DA",
+    "textSnippets": [
+      "【迎撃の毒矢】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 4500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-209",
+    "wikiRef": "docs/wiki/cards/RK-209.md",
+    "name": "エラスモテリウムオルフェノク",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "DA",
+    "textSnippets": [
+      "【檻から放たれた脅威】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "destroy_enter_battle_e887aae8bb8d"
+    ],
+    "bp": 7500,
+    "sp": 1,
+    "size": "M"
+  },
+  {
+    "cardId": "RK-210",
+    "wikiRef": "docs/wiki/cards/RK-210.md",
+    "name": "仮面ライダーギャレンJF",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "WB",
+    "textSnippets": [
+      "【バーニングショット】"
+    ],
+    "expectedDslKeywords": [
+      "hand_pick_show_e887aae8bb8d"
+    ],
+    "bp": 4500,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-211",
+    "wikiRef": "docs/wiki/cards/RK-211.md",
+    "name": "仮面ライダーブレイドJF",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "WB",
+    "textSnippets": [
+      "【ライトニングスラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "hand_pick_show_e887aae8bb8d"
+    ],
+    "bp": 5500,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-212",
+    "wikiRef": "docs/wiki/cards/RK-212.md",
+    "name": "仮面ライダーラルク",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【レイバレット】"
+    ],
+    "expectedDslKeywords": [
+      "scrum",
+      "opponent_must_e3839be383bc"
+    ],
+    "bp": 500,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-213",
+    "wikiRef": "docs/wiki/cards/RK-213.md",
+    "name": "仮面ライダーグレイブ",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【グラビティスラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "scrum",
+      "SP1"
+    ],
+    "bp": 2000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-214",
+    "wikiRef": "docs/wiki/cards/RK-214.md",
+    "name": "仮面ライダーランス",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "WB",
+    "textSnippets": [
+      "【インパクトスタッブ】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "opponent_must_e695b5e8bb8d"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-215",
+    "wikiRef": "docs/wiki/cards/RK-215.md",
+    "name": "リザードアンデッド",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "DA",
+    "textSnippets": [
+      "【スペード2―スラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "replace_rush_kamen_rider"
+    ],
+    "bp": 3500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-216",
+    "wikiRef": "docs/wiki/cards/RK-216.md",
+    "name": "ドラゴンフライアンデッド",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【ハート4―フロート】"
+    ],
+    "expectedDslKeywords": [
+      "replace_rush_kamen_rider"
+    ],
+    "bp": 1500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-217",
+    "wikiRef": "docs/wiki/cards/RK-217.md",
+    "name": "イーグルアンデッド",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【滑空攻撃】"
+    ],
+    "expectedDslKeywords": [
+      "while_note_e280bbe38193",
+      "register_resist_e38193e3828c"
+    ],
+    "bp": 4500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-218",
+    "wikiRef": "docs/wiki/cards/RK-218.md",
+    "name": "ピーコックアンデッド",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【下級アンデッドを操る者】"
+    ],
+    "expectedDslKeywords": [
+      "while_note_e280bbe38193",
+      "SP1"
+    ],
+    "bp": 3500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-219",
+    "wikiRef": "docs/wiki/cards/RK-219.md",
+    "name": "アルビローチ",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "※このカードはデッキに好きな枚数入れてもよい。"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-220",
+    "wikiRef": "docs/wiki/cards/RK-220.md",
+    "name": "アルビノジョーカー",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "DA",
+    "textSnippets": [
+      "【アンデッドを従える者】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "grant_effect_e38193e3828c"
+    ],
+    "bp": 6500,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-221",
+    "wikiRef": "docs/wiki/cards/RK-221.md",
+    "name": "仮面ライダー響鬼",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃打・火炎連打】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "SP1"
+    ],
+    "bp": 3000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-222",
+    "wikiRef": "docs/wiki/cards/RK-222.md",
+    "name": "仮面ライダー響鬼紅",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "【音撃打・灼熱真紅の型】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "SP1"
+    ],
+    "bp": 4500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-223",
+    "wikiRef": "docs/wiki/cards/RK-223.md",
+    "name": "仮面ライダー威吹鬼",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃射・疾風一閃】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 3000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-224",
+    "wikiRef": "docs/wiki/cards/RK-224.md",
+    "name": "京介変身体",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【サポート】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-225",
+    "wikiRef": "docs/wiki/cards/RK-225.md",
+    "name": "仮面ライダー朱鬼",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "MA",
+    "textSnippets": [
+      "【陰陽術】"
+    ],
+    "expectedDslKeywords": [
+      "no_battle_rush_turn",
+      "counter_cost_reduce_3"
+    ],
+    "bp": 500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-226",
+    "wikiRef": "docs/wiki/cards/RK-226.md",
+    "name": "仮面ライダー歌舞鬼",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃打・業火絢爛】"
+    ],
+    "expectedDslKeywords": [
+      "register"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-227",
+    "wikiRef": "docs/wiki/cards/RK-227.md",
+    "name": "仮面ライダー凍鬼",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃殴・一撃怒涛】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-228",
+    "wikiRef": "docs/wiki/cards/RK-228.md",
+    "name": "仮面ライダー羽撃鬼",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃奏・旋風一閃】"
+    ],
+    "expectedDslKeywords": [
+      "scrum",
+      "pick_remaining_e887aae58886"
+    ],
+    "bp": 500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-229",
+    "wikiRef": "docs/wiki/cards/RK-229.md",
+    "name": "仮面ライダー煌鬼",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃拍・軽佻訃爆】"
+    ],
+    "expectedDslKeywords": [
+      "scrum",
+      "damage_action_e695b5e8bb8d"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-230",
+    "wikiRef": "docs/wiki/cards/RK-230.md",
+    "name": "仮面ライダー西鬼",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【音撃響・偉羅射威】"
+    ],
+    "expectedDslKeywords": [
+      "scrum",
+      "return_to_zone_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-231",
+    "wikiRef": "docs/wiki/cards/RK-231.md",
+    "name": "オロチ",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "DA",
+    "textSnippets": [
+      "【潜水】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_win_vs_sp1",
+      "hold_remaining_e887aae58886"
+    ],
+    "bp": 6000,
+    "sp": 1,
+    "size": "M"
+  },
+  {
+    "cardId": "RK-232",
+    "wikiRef": "docs/wiki/cards/RK-232.md",
+    "name": "火焔大将",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "DA",
+    "textSnippets": [
+      "※これが自軍捨札にある間、自軍スタートフェイズ中"
+    ],
+    "expectedDslKeywords": [
+      "while_note_e280bbe38193"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-233",
+    "wikiRef": "docs/wiki/cards/RK-233.md",
+    "name": "仮面ライダーコーカサス",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "OT",
+    "textSnippets": [
+      "【ハイパーライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "grant_effect_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-234",
+    "wikiRef": "docs/wiki/cards/RK-234.md",
+    "name": "仮面ライダーケタロス",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【ショルダータックル】"
+    ],
+    "expectedDslKeywords": [
+      "grant_effect_e887aae8bb8d"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-235",
+    "wikiRef": "docs/wiki/cards/RK-235.md",
+    "name": "仮面ライダーヘラクス",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【アバランチクラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "power_zone_action_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-236",
+    "wikiRef": "docs/wiki/cards/RK-236.md",
+    "name": "ネガタロス",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【ネガタロス軍団（仮）結成の野望】"
+    ],
+    "expectedDslKeywords": [
+      "grant_effect_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-237",
+    "wikiRef": "docs/wiki/cards/RK-237.md",
+    "name": "仮面ライダーキバBF",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "【バッシャー・アクアトルネード】"
+    ],
+    "expectedDslKeywords": [
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "bp": 2000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-238",
+    "wikiRef": "docs/wiki/cards/RK-238.md",
+    "name": "キャッスルドラン",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "MA",
+    "textSnippets": [
+      "【魂の捕獲】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "RK-239",
+    "wikiRef": "docs/wiki/cards/RK-239.md",
+    "name": "ウエイクアップ！",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident",
+      "tag"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-240",
+    "wikiRef": "docs/wiki/cards/RK-240.md",
+    "name": "仮面ライダー電王CF",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "OT",
+    "textSnippets": [
+      "【俺達の必殺技】"
+    ],
+    "expectedDslKeywords": [
+      "SP1",
+      "power_zone_action_e887aae8bb8d"
+    ],
+    "bp": 5000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-241",
+    "wikiRef": "docs/wiki/cards/RK-241.md",
+    "name": "仮面ライダーミニ電王SF",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【ムリヤリな変身】"
+    ],
+    "expectedDslKeywords": [
+      "no_attack_from_enemy_s_bp2000",
+      "deploy_rush_area_e38193e3828c"
+    ],
+    "bp": 500,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-242",
+    "wikiRef": "docs/wiki/cards/RK-242.md",
+    "name": "クライマックス刑事",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "OT",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident",
+      "tag"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-243",
+    "wikiRef": "docs/wiki/cards/RK-243.md",
+    "name": "仮面ライダーリュウガ",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "WB",
+    "textSnippets": [
+      "【ドラゴンライダーキック】"
+    ],
+    "bp": 4000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-244",
+    "wikiRef": "docs/wiki/cards/RK-244.md",
+    "name": "ミッシングエース",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident",
+      "tag"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-245",
+    "wikiRef": "docs/wiki/cards/RK-245.md",
+    "name": "仮面ライダーキバ",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【ダークネスムーンブレイク】"
+    ],
+    "expectedDslKeywords": [
+      "rush_prefer_hold",
+      "register"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-246",
+    "wikiRef": "docs/wiki/cards/RK-246.md",
+    "name": "仮面ライダーキバGF",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【ガルル・ハウリングスラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "power_faceup_bp_per_1000",
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-247",
+    "wikiRef": "docs/wiki/cards/RK-247.md",
+    "name": "仮面ライダーネガ電王",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "DA",
+    "textSnippets": [
+      "【不敵な挑発】"
+    ],
+    "expectedDslKeywords": [
+      "hold_turn_only_entry",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 4500,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-248",
+    "wikiRef": "docs/wiki/cards/RK-248.md",
+    "name": "パラダイス・ロスト",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident",
+      "tag"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-249",
+    "wikiRef": "docs/wiki/cards/RK-249.md",
+    "name": "アドベント",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident",
+      "call_WB"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-250",
+    "wikiRef": "docs/wiki/cards/RK-250.md",
+    "name": "サバイブ",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "WB",
+    "textSnippets": [
+      "WBを持ち、特徴「サバイブ」を持たない自軍Sユニ"
+    ],
+    "expectedDslKeywords": [
+      "stack_s_on_self_rush"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-251",
+    "wikiRef": "docs/wiki/cards/RK-251.md",
+    "name": "ゴルゴムの仕業",
+    "cardType": "operation",
+    "powerCost": 1,
+    "category": "DA",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "counter_op_interrupt"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "RK-252",
+    "wikiRef": "docs/wiki/cards/RK-252.md",
+    "name": "変身音叉 音角",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "次の効果から1つ選び発動する⇒ ◎自分の手札から"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "RK-253",
+    "wikiRef": "docs/wiki/cards/RK-253.md",
+    "name": "親子の絆",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident",
+      "tag"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "RK-254",
+    "wikiRef": "docs/wiki/cards/RK-254.md",
+    "name": "仮面ライダーストロンガー",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【ストロンガー電キック】"
+    ],
+    "expectedDslKeywords": [
+      "register"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-255",
+    "wikiRef": "docs/wiki/cards/RK-255.md",
+    "name": "電波人間タックル",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【ウルトラサイクロン】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe789b9",
+      "hold_enemy_unit_e38193e381ae"
+    ],
+    "bp": 1000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-256",
+    "wikiRef": "docs/wiki/cards/RK-256.md",
+    "name": "カブトロー",
+    "cardType": "vehicle",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【カブトローサンダー】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_enter_battle_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-257",
+    "wikiRef": "docs/wiki/cards/RK-257.md",
+    "name": "テントロー",
+    "cardType": "vehicle",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "【高性能レーダー】"
+    ],
+    "expectedDslKeywords": [
+      "ride_without_rc_named_e5a5b3",
+      "ride_bp_boost_500",
+      "grant_ability_e383a9e382a4"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-258",
+    "wikiRef": "docs/wiki/cards/RK-258.md",
+    "name": "ドクターケイト",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【猛毒腐食液】"
+    ],
+    "expectedDslKeywords": [
+      "damage_action_e38193e381ae"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-259",
+    "wikiRef": "docs/wiki/cards/RK-259.md",
+    "name": "ジェネラルシャドウ",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "DA",
+    "textSnippets": [
+      "【トランプ占い】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-260",
+    "wikiRef": "docs/wiki/cards/RK-260.md",
+    "name": "一ツ目タイタン",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "DA",
+    "textSnippets": [
+      "【体内マグマ】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-261",
+    "wikiRef": "docs/wiki/cards/RK-261.md",
+    "name": "仮面ライダーBLACK RX",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【リボルケイン】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "enemy_power_damage_e695b5e8bb8d"
+    ],
+    "bp": 3000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-262",
+    "wikiRef": "docs/wiki/cards/RK-262.md",
+    "name": "ロボライダー",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "【ボルティックシューター】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "register",
+      "wing_attack_enemy_rush"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-263",
+    "wikiRef": "docs/wiki/cards/RK-263.md",
+    "name": "バイオライダー",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【液化】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "register",
+      "hold_remaining_e38193e381ae"
+    ],
+    "bp": 500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-264",
+    "wikiRef": "docs/wiki/cards/RK-264.md",
+    "name": "アクロバッター",
+    "cardType": "vehicle",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【アクロバットバーン】"
+    ],
+    "expectedDslKeywords": [
+      "can_enter_battle_without_ride",
+      "ride_action_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-265",
+    "wikiRef": "docs/wiki/cards/RK-265.md",
+    "name": "ライドロン",
+    "cardType": "vehicle",
+    "powerCost": 1,
+    "category": "MA",
+    "textSnippets": [
+      "【ライディングアロー】"
+    ],
+    "expectedDslKeywords": [
+      "can_enter_battle_without_ride",
+      "ride_action_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-266",
+    "wikiRef": "docs/wiki/cards/RK-266.md",
+    "name": "機甲隊長ガテゾーン",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "DA",
+    "textSnippets": [
+      "【ショットガン】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_choose_enemy_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-267",
+    "wikiRef": "docs/wiki/cards/RK-267.md",
+    "name": "海兵隊長ボスガン",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【怪魔稲妻剣】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack_bp2000_or_less",
+      "register_resist_e38193e381ae"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-268",
+    "wikiRef": "docs/wiki/cards/RK-268.md",
+    "name": "デスガロン",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "DA",
+    "textSnippets": [
+      "【分析能力】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe695b5",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-269",
+    "wikiRef": "docs/wiki/cards/RK-269.md",
+    "name": "シャドームーン",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【シャドーセイバー】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_win_vs_sp1",
+      "no_strike_if_enemy_battle",
+      "extra_attack_on_battle_win"
+    ],
+    "bp": 5000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-270",
+    "wikiRef": "docs/wiki/cards/RK-270.md",
+    "name": "チャップ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【偵察】"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited",
+      "reveal_enemy_deck_1"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-271",
+    "wikiRef": "docs/wiki/cards/RK-271.md",
+    "name": "仮面ライダークウガRM",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "【ライジングマイティキック】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "destroy_all_enemy_e38193e3828c"
+    ],
+    "bp": 4500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-272",
+    "wikiRef": "docs/wiki/cards/RK-272.md",
+    "name": "仮面ライダークウガRD",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "【ライジングスプラッシュドラゴン】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 3500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-273",
+    "wikiRef": "docs/wiki/cards/RK-273.md",
+    "name": "仮面ライダークウガRP",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "【ライジングブラストペガサス】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "opponent_must_e887aae8bb8d"
+    ],
+    "bp": 2500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-274",
+    "wikiRef": "docs/wiki/cards/RK-274.md",
+    "name": "ビートチェイサー",
+    "cardType": "vehicle",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【ニューマシンの性能】"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_500",
+      "grant_effect_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-275",
+    "wikiRef": "docs/wiki/cards/RK-275.md",
+    "name": "ゴ・ガドル・バ",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【ザバギンバシグラ】"
+    ],
+    "expectedDslKeywords": [
+      "opponent_must_e887aae8bb8d"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-276",
+    "wikiRef": "docs/wiki/cards/RK-276.md",
+    "name": "ズ・バヅー・バ",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "DA",
+    "textSnippets": [
+      "【キョクギンジャンママ】"
+    ],
+    "expectedDslKeywords": [
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-277",
+    "wikiRef": "docs/wiki/cards/RK-277.md",
+    "name": "ン・ダグバ・ゼバ",
+    "cardType": "unit",
+    "powerCost": "9+",
+    "category": "DA",
+    "textSnippets": [
+      "【究極の闇をもたらす者】"
+    ],
+    "expectedDslKeywords": [
+      "stack_cards_e38193e3828c"
+    ],
+    "bp": 5000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-278",
+    "wikiRef": "docs/wiki/cards/RK-278.md",
+    "name": "仮面ライダーナイト",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "WB",
+    "textSnippets": [
+      "【飛翔斬】"
+    ],
+    "expectedDslKeywords": [
+      "grant_ability_e280bbe38193"
+    ],
+    "bp": 4000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-279",
+    "wikiRef": "docs/wiki/cards/RK-279.md",
+    "name": "仮面ライダーナイトサバイブ",
+    "cardType": "unit",
+    "powerCost": "10-",
+    "category": "WB",
+    "textSnippets": [
+      "【ダークバイザーツバイ】"
+    ],
+    "expectedDslKeywords": [
+      "pick_from_discard_e887aae8bb8d"
+    ],
+    "bp": 5500,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-280",
+    "wikiRef": "docs/wiki/cards/RK-280.md",
+    "name": "ダークレイダー",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【疾風断】"
+    ],
+    "expectedDslKeywords": [
+      "treat_as_s_vehicle_while_held",
+      "hold_entry_and_rush_hold",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-281",
+    "wikiRef": "docs/wiki/cards/RK-281.md",
+    "name": "ドラグランザー",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "WB",
+    "textSnippets": [
+      "【ドラゴンファイヤーストーム】"
+    ],
+    "expectedDslKeywords": [
+      "treat_as_s_vehicle_while_held",
+      "hold_entry_and_rush_hold",
+      "SP1"
+    ],
+    "bp": 5000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-282",
+    "wikiRef": "docs/wiki/cards/RK-282.md",
+    "name": "仮面ライダーシザース",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [
+      "【シザースアタック】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "scissors_attack"
+    ],
+    "bp": 500,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-283",
+    "wikiRef": "docs/wiki/cards/RK-283.md",
+    "name": "ボルキャンサー",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "WB",
+    "textSnippets": [
+      "【契約解除者の捕食】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-284",
+    "wikiRef": "docs/wiki/cards/RK-284.md",
+    "name": "仮面ライダーベルデ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【デスバニッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "combo_from_named_e3808ce38390"
+    ],
+    "bp": 2000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-285",
+    "wikiRef": "docs/wiki/cards/RK-285.md",
+    "name": "バイオグリーザ",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【見えない刺客】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "enemy_cannot_attack"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-286",
+    "wikiRef": "docs/wiki/cards/RK-286.md",
+    "name": "仮面ライダーオーディン",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "WB",
+    "textSnippets": [
+      "【戦いのリセット】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "destroy_on_rush_e38193e3828c"
+    ],
+    "bp": 5000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-287",
+    "wikiRef": "docs/wiki/cards/RK-287.md",
+    "name": "ゴルトフェニックス",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "WB",
+    "textSnippets": [
+      "【瞬間の悪夢】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "note_other_e280bbe38193",
+      "discard_to_zone_e38193e3828c"
+    ],
+    "bp": 8000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-288",
+    "wikiRef": "docs/wiki/cards/RK-288.md",
+    "name": "仮面ライダーデルタ",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【デルタムーバー】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "bp_modify_e38193e381ae"
+    ],
+    "bp": 2000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-289",
+    "wikiRef": "docs/wiki/cards/RK-289.md",
+    "name": "ジェットスライガー",
+    "cardType": "vehicle",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【ジェットエンジン噴射】"
+    ],
+    "expectedDslKeywords": [
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-290",
+    "wikiRef": "docs/wiki/cards/RK-290.md",
+    "name": "ロブスターオルフェノク",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【末期の酒】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_enter_battle_e887aae8bb8d"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-291",
+    "wikiRef": "docs/wiki/cards/RK-291.md",
+    "name": "ドラゴンオルフェノク魔人態",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【魔人の力】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_win_vs_sp1",
+      "no_battle_rush_turn",
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-292",
+    "wikiRef": "docs/wiki/cards/RK-292.md",
+    "name": "クロコダイルオルフェノク格闘態",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【三つの魂】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "sp_at_bp5000_sp1",
+      "deck_search_e695b5e8bb8d"
+    ],
+    "bp": 500,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-293",
+    "wikiRef": "docs/wiki/cards/RK-293.md",
+    "name": "センチピードオルフェノク",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【捕縛する鞭】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-294",
+    "wikiRef": "docs/wiki/cards/RK-294.md",
+    "name": "仮面ライダーサソードMF",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【ブラッドベセル】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_4000",
+      "blood_vessel_on_strike"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-295",
+    "wikiRef": "docs/wiki/cards/RK-295.md",
+    "name": "仮面ライダーサソードRF",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": "OT",
+    "textSnippets": [
+      "【頂点に立つ男】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "not_selectable_except_attack",
+      "SP1"
+    ],
+    "bp": 2000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-296",
+    "wikiRef": "docs/wiki/cards/RK-296.md",
+    "name": "仮面ライダーキックホッパー",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【ライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "power_zone_action_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-297",
+    "wikiRef": "docs/wiki/cards/RK-297.md",
+    "name": "仮面ライダーパンチホッパー",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【ライダーパンチ】"
+    ],
+    "expectedDslKeywords": [
+      "power_zone_action_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-298",
+    "wikiRef": "docs/wiki/cards/RK-298.md",
+    "name": "仮面ライダーダークカブトMF",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【むき出しの殺意】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_3000",
+      "power_zone_action_e887aae8bb8d"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-299",
+    "wikiRef": "docs/wiki/cards/RK-299.md",
+    "name": "仮面ライダーダークカブトRF",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "OT",
+    "textSnippets": [
+      "【ダークライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "not_selectable_except_attack",
+      "SP1"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-300",
+    "wikiRef": "docs/wiki/cards/RK-300.md",
+    "name": "カブトエクステンダー",
+    "cardType": "vehicle",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【クロックアップ】"
+    ],
+    "expectedDslKeywords": [
+      "ride_without_rc_named_e58aa0e9809f",
+      "ride_bp_boost_500",
+      "ride_action_e38193e3828c"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-301",
+    "wikiRef": "docs/wiki/cards/RK-301.md",
+    "name": "ガタックエクステンダー",
+    "cardType": "vehicle",
+    "powerCost": 5,
+    "category": "OT",
+    "textSnippets": [
+      "【エクステンドライダー落とし】"
+    ],
+    "expectedDslKeywords": [
+      "ride_without_rc_named_e58aa0e9809f",
+      "ride_bp_boost_500",
+      "grant_effect_e383a9e382a4"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-302",
+    "wikiRef": "docs/wiki/cards/RK-302.md",
+    "name": "スコルピオワーム",
+    "cardType": "unit",
+    "powerCost": "4+",
+    "category": "DA",
+    "textSnippets": [
+      "【ワームの頂点に立つ男】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-303",
+    "wikiRef": "docs/wiki/cards/RK-303.md",
+    "name": "ワームサナギ体（4弾）",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【擬態の解除】"
+    ],
+    "expectedDslKeywords": [
+      "deck_unlimited",
+      "deploy_rush_area_e38193e3828c"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-304",
+    "wikiRef": "docs/wiki/cards/RK-304.md",
+    "name": "仮面ライダー電王RF",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【ソリッドアタック】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "power_zone_action_e3839be383bc"
+    ],
+    "bp": 2000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-305",
+    "wikiRef": "docs/wiki/cards/RK-305.md",
+    "name": "仮面ライダー電王SF",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【俺の必殺技特別編】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "release_command_action_e695b5e8bb8d"
+    ],
+    "bp": 3000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-306",
+    "wikiRef": "docs/wiki/cards/RK-306.md",
+    "name": "仮面ライダー電王AF",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "OT",
+    "textSnippets": [
+      "【ダイナミックチョップ】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "power_zone_action_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-307",
+    "wikiRef": "docs/wiki/cards/RK-307.md",
+    "name": "仮面ライダー電王GF",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "OT",
+    "textSnippets": [
+      "【ワイルドショット】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "destroy_choose_enemy_e695b5e8bb8d"
+    ],
+    "bp": 3000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-308",
+    "wikiRef": "docs/wiki/cards/RK-308.md",
+    "name": "リュウタロス",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【猫はこっち、アンタは嫌い】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "auto_battle_entry_if_enemy_battle",
+      "power_zone_action_e887aae8bb8d"
+    ],
+    "bp": 3000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-309",
+    "wikiRef": "docs/wiki/cards/RK-309.md",
+    "name": "ウラタロス",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "【僕に釣られてみる？】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_restrict_e887aae8bb8d"
+    ],
+    "bp": 1000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-310",
+    "wikiRef": "docs/wiki/cards/RK-310.md",
+    "name": "モモタロス",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【最後までクライマックスだぜ！】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "destroy_on_win_vs_named_e5a5b3",
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-311",
+    "wikiRef": "docs/wiki/cards/RK-311.md",
+    "name": "キンタロス",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【俺の強さにお前が泣いた】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "deploy_battle_area_e6aca1e381ae"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-312",
+    "wikiRef": "docs/wiki/cards/RK-312.md",
+    "name": "仮面ライダーキバDF",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【ドッガ・サンダースラップ】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-313",
+    "wikiRef": "docs/wiki/cards/RK-313.md",
+    "name": "仮面ライダーキバDGBKF",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "【ダークネスムーンブレイク】"
+    ],
+    "expectedDslKeywords": [
+      "register"
+    ],
+    "bp": 4500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-314",
+    "wikiRef": "docs/wiki/cards/RK-314.md",
+    "name": "仮面ライダーキバEF",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "MA",
+    "textSnippets": [
+      "【モンスターフィーバー】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "hand_rush_named_e9ad94e79a87e58a9b_s_on_battle"
+    ],
+    "bp": 5000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-315",
+    "wikiRef": "docs/wiki/cards/RK-315.md",
+    "name": "仮面ライダーキバ飛翔態",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "MA",
+    "textSnippets": [
+      "【飛翔する翼】"
+    ],
+    "expectedDslKeywords": [
+      "wing_attack_enemy_rush"
+    ],
+    "bp": 9000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-316",
+    "wikiRef": "docs/wiki/cards/RK-316.md",
+    "name": "キバットバットⅢ世",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【フエッスル】"
+    ],
+    "expectedDslKeywords": [
+      "grant_ability_e38193e3828c",
+      "morph"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-317",
+    "wikiRef": "docs/wiki/cards/RK-317.md",
+    "name": "シュードラン",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "【ポッドバッティング】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-318",
+    "wikiRef": "docs/wiki/cards/RK-318.md",
+    "name": "仮面ライダーイクサSM",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【ブロウクン・ファング】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_enter_battle_e887aae8bb8d"
+    ],
+    "bp": 500,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-319",
+    "wikiRef": "docs/wiki/cards/RK-319.md",
+    "name": "仮面ライダーイクサBM",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【イクサ・ジャッジメント】"
+    ],
+    "expectedDslKeywords": [
+      "deck_search_e280bbe38193",
+      "hold_enemy_unit_e695b5e8bb8d"
+    ],
+    "bp": 2000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-320",
+    "wikiRef": "docs/wiki/cards/RK-320.md",
+    "name": "仮面ライダーライジングイクサ",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "ET",
+    "textSnippets": [
+      "【ファイナルライジングブラスト】"
+    ],
+    "expectedDslKeywords": [
+      "while_note_e280bbe38193",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 6000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-321",
+    "wikiRef": "docs/wiki/cards/RK-321.md",
+    "name": "仮面ライダーサガ",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "【スネーキングデスブレイク】"
+    ],
+    "expectedDslKeywords": [
+      "rush_prefer_hold",
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-322",
+    "wikiRef": "docs/wiki/cards/RK-322.md",
+    "name": "仮面ライダーレイ",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【ブリザードクロー・エクスキュージョン】"
+    ],
+    "expectedDslKeywords": [
+      "register"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-323",
+    "wikiRef": "docs/wiki/cards/RK-323.md",
+    "name": "マシンキバー",
+    "cardType": "vehicle",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【シャドウベール】"
+    ],
+    "expectedDslKeywords": [
+      "ride_without_rc_named_e9ad94e79a87e58a9b",
+      "ride_action_e887aae58886"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-324",
+    "wikiRef": "docs/wiki/cards/RK-324.md",
+    "name": "ブロンブースター",
+    "cardType": "vehicle",
+    "powerCost": "4+",
+    "category": "MA",
+    "textSnippets": [
+      "【凄いのが来るぜ！】"
+    ],
+    "expectedDslKeywords": [
+      "ride_without_rc_named_e9ad94e79a87e58a9b",
+      "enemy_power_damage_e38193e3828c"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-325",
+    "wikiRef": "docs/wiki/cards/RK-325.md",
+    "name": "パワードイクサー",
+    "cardType": "vehicle",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【イクサポッド】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-326",
+    "wikiRef": "docs/wiki/cards/RK-326.md",
+    "name": "ガルル獣人態",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【ガルルフエッスル】"
+    ],
+    "expectedDslKeywords": [
+      "rush_discard_search_e887aae8bb8d"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-327",
+    "wikiRef": "docs/wiki/cards/RK-327.md",
+    "name": "バッシャー獣人態",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "DA",
+    "textSnippets": [
+      "【バッシャーフエッスル】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "rush_discard_search_e887aae8bb8d"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-328",
+    "wikiRef": "docs/wiki/cards/RK-328.md",
+    "name": "ドッガ怪人態",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【ドッガフエッスル】"
+    ],
+    "expectedDslKeywords": [
+      "rush_discard_search_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-329",
+    "wikiRef": "docs/wiki/cards/RK-329.md",
+    "name": "仮面ライダーアーク",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "DA",
+    "textSnippets": [
+      "【巨体の威圧】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_win_vs_sp1",
+      "note_other_e280bbe695b5",
+      "destroy_enter_battle_e887aae8bb8d"
+    ],
+    "bp": 6000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-330",
+    "wikiRef": "docs/wiki/cards/RK-330.md",
+    "name": "仮面ライダークウガRT",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "※モーフ（敵軍ユニットがモーフ以外でラッシュされ"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "register",
+      "require_command_hold_entry"
+    ],
+    "bp": 5500,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "RK-331",
+    "wikiRef": "docs/wiki/cards/RK-331.md",
+    "name": "仮面ライダークウガAM",
+    "cardType": "unit",
+    "powerCost": "10-",
+    "category": "MA",
+    "textSnippets": [
+      "【アメイジングマイティキック】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 5500,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-332",
+    "wikiRef": "docs/wiki/cards/RK-332.md",
+    "name": "仮面ライダー龍騎",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "WB",
+    "textSnippets": [
+      "【叶えたい願いを胸に】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193"
+    ],
+    "bp": 3000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-333",
+    "wikiRef": "docs/wiki/cards/RK-333.md",
+    "name": "仮面ライダー龍騎サバイブ",
+    "cardType": "unit",
+    "powerCost": "10-",
+    "category": "WB",
+    "textSnippets": [
+      "【ドラグバイザーツバイ】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_advent_power_sum"
+    ],
+    "bp": 6500,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-334",
+    "wikiRef": "docs/wiki/cards/RK-334.md",
+    "name": "仮面ライダー電王LF",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "OT",
+    "textSnippets": [],
+    "bp": 4500,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "RK-335",
+    "wikiRef": "docs/wiki/cards/RK-335.md",
+    "name": "モモタロス",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【最後までクライマックスだぜ！】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "destroy_on_win_vs_named_e5a5b3",
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  }
+]

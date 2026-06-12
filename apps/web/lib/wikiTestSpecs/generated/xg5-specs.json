@@ -1,0 +1,1760 @@
+[
+  {
+    "cardId": "XG5-001",
+    "wikiRef": "docs/wiki/cards/XG5-001.md",
+    "name": "ゴーグルレッド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【レッドロープ】"
+    ],
+    "expectedDslKeywords": [
+      "while_note_e280bbe38193",
+      "SP1"
+    ],
+    "bp": 3000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-002",
+    "wikiRef": "docs/wiki/cards/XG5-002.md",
+    "name": "ゴーグルブラック",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【ブラックシャドウ】"
+    ],
+    "expectedDslKeywords": [
+      "taxis_ET",
+      "deploy_rush_area_e887aae8bb8d"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-003",
+    "wikiRef": "docs/wiki/cards/XG5-003.md",
+    "name": "ゴーグルブルー",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "【ブルージェットダッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "enemy_power_cost_minus"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-004",
+    "wikiRef": "docs/wiki/cards/XG5-004.md",
+    "name": "ゴーグルイエロー",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "【イエローボール】"
+    ],
+    "expectedDslKeywords": [
+      "hold_enemy_unit_e695b5e8bb8d"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-005",
+    "wikiRef": "docs/wiki/cards/XG5-005.md",
+    "name": "ゴーグルピンク",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "【ピンクリボン】"
+    ],
+    "expectedDslKeywords": [
+      "while_note_e280bbe38193",
+      "SP1"
+    ],
+    "bp": 1000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-006",
+    "wikiRef": "docs/wiki/cards/XG5-006.md",
+    "name": "ゴーグルロボ",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "ET",
+    "textSnippets": [
+      "【ストップ・ザ・バトル】"
+    ],
+    "expectedDslKeywords": [
+      "while_note_e280bbe38193",
+      "cannot_restrict_e38193e3828c"
+    ],
+    "bp": 9000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "XG5-007",
+    "wikiRef": "docs/wiki/cards/XG5-007.md",
+    "name": "ゴーグルジェット",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "ET",
+    "textSnippets": [
+      "【ゴーゴーチェンジ】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "release_command_action_e38193e381ae"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "XG5-008",
+    "wikiRef": "docs/wiki/cards/XG5-008.md",
+    "name": "ゴーグルタンク",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "ET",
+    "textSnippets": [
+      "【ゴーゴーチェンジ】"
+    ],
+    "expectedDslKeywords": [
+      "deck_search_e887aae8bb8d"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "XG5-009",
+    "wikiRef": "docs/wiki/cards/XG5-009.md",
+    "name": "ゴーグルダンプ",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "ET",
+    "textSnippets": [
+      "【ゴーゴーチェンジ】"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "XG5-010",
+    "wikiRef": "docs/wiki/cards/XG5-010.md",
+    "name": "恐竜剣ゴッドホーン",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "自軍ラッシュエリアから、効果に｢ラッシュしたとき"
+    ],
+    "expectedDslKeywords": [
+      "hold_on_enter_battle_e887aae8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-011",
+    "wikiRef": "docs/wiki/cards/XG5-011.md",
+    "name": "呪士ピエール",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "DA",
+    "textSnippets": [],
+    "expectedDslKeywords": [
+      "lead_DA"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-012",
+    "wikiRef": "docs/wiki/cards/XG5-012.md",
+    "name": "ゴレムカード",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "自軍捨札から、追加条件を持たないDAのSユニット"
+    ],
+    "expectedDslKeywords": [
+      "stack_cards_e887aae8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-013",
+    "wikiRef": "docs/wiki/cards/XG5-013.md",
+    "name": "再生カード",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "自軍捨札から、DAを持つカードを1枚選び手札に加"
+    ],
+    "expectedDslKeywords": [
+      "pick_from_discard_e887aae8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-014",
+    "wikiRef": "docs/wiki/cards/XG5-014.md",
+    "name": "マックスビクトリーロボBV",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "ET",
+    "textSnippets": [],
+    "bp": 8000,
+    "sp": "special",
+    "size": "L"
+  },
+  {
+    "cardId": "XG5-015",
+    "wikiRef": "docs/wiki/cards/XG5-015.md",
+    "name": "スティライザー",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "WB",
+    "textSnippets": [
+      "自軍Sユニットを1体選ぶ。そして、このカードを自"
+    ],
+    "expectedDslKeywords": [
+      "stack_s_on_self_rush"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-016",
+    "wikiRef": "docs/wiki/cards/XG5-016.md",
+    "name": "シグナルキャノン",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "BP6000以下の敵軍ユニットを1体選び持ち主の"
+    ],
+    "expectedDslKeywords": [
+      "hold_on_enter_battle_425036303030"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-017",
+    "wikiRef": "docs/wiki/cards/XG5-017.md",
+    "name": "魔法剣キングカリバー",
+    "cardType": "operation",
+    "powerCost": 1,
+    "category": "MA",
+    "textSnippets": [
+      "自分は1枚ドローする。（これが自軍コマンドゾーン"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-018",
+    "wikiRef": "docs/wiki/cards/XG5-018.md",
+    "name": "ゴーゴーボイジャー",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "ET",
+    "textSnippets": [
+      "【アンドック】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack_non_da",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 8000,
+    "sp": null,
+    "size": "XL"
+  },
+  {
+    "cardId": "XG5-019",
+    "wikiRef": "docs/wiki/cards/XG5-019.md",
+    "name": "ダイボイジャー",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "ET",
+    "textSnippets": [
+      "【アドベンチャーダブルスクリュー】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack_non_da"
+    ],
+    "bp": 18000,
+    "sp": null,
+    "size": "XL"
+  },
+  {
+    "cardId": "XG5-020",
+    "wikiRef": "docs/wiki/cards/XG5-020.md",
+    "name": "ボウケンレッド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【レッドゾーンクラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "taxis_ET",
+      "bp_modify_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-021",
+    "wikiRef": "docs/wiki/cards/XG5-021.md",
+    "name": "ボウケンブラック",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【ハンマーブレイク】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-022",
+    "wikiRef": "docs/wiki/cards/XG5-022.md",
+    "name": "ボウケンブルー",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【ナックルキャノン】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "combo_action_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-023",
+    "wikiRef": "docs/wiki/cards/XG5-023.md",
+    "name": "ボウケンイエロー",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "【スクーパーファントム】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 1000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-024",
+    "wikiRef": "docs/wiki/cards/XG5-024.md",
+    "name": "ボウケンピンク",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "【プレシャスの確保】"
+    ],
+    "expectedDslKeywords": [
+      "lead_ET",
+      "deck_bottom_hold_command"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-025",
+    "wikiRef": "docs/wiki/cards/XG5-025.md",
+    "name": "ボウケンブルーAT",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "ET",
+    "textSnippets": [
+      "【上空からの牽制】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 4500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-026",
+    "wikiRef": "docs/wiki/cards/XG5-026.md",
+    "name": "ボウケンイエローAT",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "ET",
+    "textSnippets": [
+      "【仲間の支え】"
+    ],
+    "expectedDslKeywords": [
+      "hold_enemy_unit_e3808c535031"
+    ],
+    "bp": 2500,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-027",
+    "wikiRef": "docs/wiki/cards/XG5-027.md",
+    "name": "ボウケンピンクAT",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "ET",
+    "textSnippets": [
+      "【デュアルクラッシャー・コンビネーションクラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "hold_enemy_unit_e38193e381ae"
+    ],
+    "bp": 3500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-028",
+    "wikiRef": "docs/wiki/cards/XG5-028.md",
+    "name": "バーニングレジェンドダイボイジャー",
+    "cardType": "unit",
+    "powerCost": "7+",
+    "category": [
+      "MA",
+      "ET"
+    ],
+    "textSnippets": [
+      "【スーパーサーティーセンタイソウル】"
+    ],
+    "expectedDslKeywords": [
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 20000,
+    "sp": 1,
+    "size": "XL"
+  },
+  {
+    "cardId": "XG5-029",
+    "wikiRef": "docs/wiki/cards/XG5-029.md",
+    "name": "ゲキファイヤー",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【頑頑ナックル落とし】"
+    ],
+    "expectedDslKeywords": [
+      "bp_modify_e38193e3828c"
+    ],
+    "bp": 12000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "XG5-030",
+    "wikiRef": "docs/wiki/cards/XG5-030.md",
+    "name": "ゲキゴリラ",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【ゴリゴリ波】"
+    ],
+    "expectedDslKeywords": [
+      "register"
+    ],
+    "bp": 6000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "XG5-031",
+    "wikiRef": "docs/wiki/cards/XG5-031.md",
+    "name": "ゲキガゼル",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【ガゼル脚】"
+    ],
+    "expectedDslKeywords": [
+      "combo_action_e38193e381ae"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "XG5-032",
+    "wikiRef": "docs/wiki/cards/XG5-032.md",
+    "name": "ゲキペンギン",
+    "cardType": "unit",
+    "powerCost": "2+",
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【ジェットボード】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "end_turn_battle_to_rush"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "M"
+  },
+  {
+    "cardId": "XG5-033",
+    "wikiRef": "docs/wiki/cards/XG5-033.md",
+    "name": "シンケンレッド（志葉 薫）",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【封印のモヂカラ】"
+    ],
+    "expectedDslKeywords": [
+      "no_battle_rush_turn",
+      "exclude_game_e887aae8bb8d"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-034",
+    "wikiRef": "docs/wiki/cards/XG5-034.md",
+    "name": "シンケンレッド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【二刀流烈火大斬刀】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "note_other_e280bbe38193",
+      "hold_enemy_unit_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-035",
+    "wikiRef": "docs/wiki/cards/XG5-035.md",
+    "name": "獅子ディスク",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "自軍ラッシュエリアから、MAを持つ自軍Sユニット"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-036",
+    "wikiRef": "docs/wiki/cards/XG5-036.md",
+    "name": "龍ディスク",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "自軍ラッシュエリアから、MAを持つ自軍Sユニット"
+    ],
+    "expectedDslKeywords": [
+      "return_to_zone_e887aae8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-037",
+    "wikiRef": "docs/wiki/cards/XG5-037.md",
+    "name": "ゴセイレッド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【レッドブレイク】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "lead_MA"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-038",
+    "wikiRef": "docs/wiki/cards/XG5-038.md",
+    "name": "ゴセイピンク",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【息吹のスカイックパワー】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "lead_MA",
+      "category_modify_e382abe38386"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-039",
+    "wikiRef": "docs/wiki/cards/XG5-039.md",
+    "name": "ゴセイブルー",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【ブルーチェック】"
+    ],
+    "expectedDslKeywords": [
+      "taxis_MA",
+      "lead_MA",
+      "discard_to_zone_e695b5e8bb8d"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-040",
+    "wikiRef": "docs/wiki/cards/XG5-040.md",
+    "name": "ゴセイブラック",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【スネークバレット】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "lead_MA",
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-041",
+    "wikiRef": "docs/wiki/cards/XG5-041.md",
+    "name": "ゴセイイエロー",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【兄妹の絆】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "lead_MA",
+      "grant_ability_e38193e3828c"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-042",
+    "wikiRef": "docs/wiki/cards/XG5-042.md",
+    "name": "ゴセイマシン",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【天装合体】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "deploy_rush_area_e887aae8bb8d"
+    ],
+    "bp": 6000,
+    "sp": null,
+    "size": "SC"
+  },
+  {
+    "cardId": "XG5-043",
+    "wikiRef": "docs/wiki/cards/XG5-043.md",
+    "name": "シーイックゴセイグレート",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【シーイックストライク】"
+    ],
+    "expectedDslKeywords": [
+      "taxis_MA",
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 18000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "XG5-044",
+    "wikiRef": "docs/wiki/cards/XG5-044.md",
+    "name": "ランディックゴセイグレート",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【ランディックストライク】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 20000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "XG5-045",
+    "wikiRef": "docs/wiki/cards/XG5-045.md",
+    "name": "スカイックゴセイグレート",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": [
+      "WB",
+      "MA"
+    ],
+    "textSnippets": [
+      "【スカイックストライク】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 19000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "XG5-046",
+    "wikiRef": "docs/wiki/cards/XG5-046.md",
+    "name": "データス",
+    "cardType": "unit",
+    "powerCost": 0,
+    "category": "MA",
+    "textSnippets": [
+      "【マスターヘッドの加護】"
+    ],
+    "expectedDslKeywords": [
+      "call_MA",
+      "no_enter_battle_own_turn"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-047",
+    "wikiRef": "docs/wiki/cards/XG5-047.md",
+    "name": "キューユソウル",
+    "cardType": "operation",
+    "powerCost": 7,
+    "category": "OT",
+    "textSnippets": [
+      "自軍パワーゾーンのダメージ以外のカードをすべて捨"
+    ],
+    "expectedDslKeywords": [
+      "damage_action_e887aae8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-048",
+    "wikiRef": "docs/wiki/cards/XG5-048.md",
+    "name": "パーフェクター",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "自軍コマンドゾーンから、特徴「改造人間」を持つS"
+    ],
+    "expectedDslKeywords": [
+      "deploy_rush_area_e887aae8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-049",
+    "wikiRef": "docs/wiki/cards/XG5-049.md",
+    "name": "再生アポロガイスト",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "DA",
+    "textSnippets": [
+      "【アポロマグナム】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "grant_ability_e887aae8bb8d"
+    ],
+    "bp": 5000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-050",
+    "wikiRef": "docs/wiki/cards/XG5-050.md",
+    "name": "仮面ライダー装甲響鬼",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【語る背中】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-051",
+    "wikiRef": "docs/wiki/cards/XG5-051.md",
+    "name": "仮面ライダーカブトHF",
+    "cardType": "unit",
+    "powerCost": 7,
+    "category": "OT",
+    "textSnippets": [
+      "【天の道】"
+    ],
+    "expectedDslKeywords": [
+      "not_selectable",
+      "note_other_e280bbe38193",
+      "power_zone_action_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-052",
+    "wikiRef": "docs/wiki/cards/XG5-052.md",
+    "name": "仮面ライダー電王CF",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【俺達の必殺技】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "auto_battle_entry_each_turn"
+    ],
+    "bp": 6000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-053",
+    "wikiRef": "docs/wiki/cards/XG5-053.md",
+    "name": "仮面ライダーキバEF",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "【ファイナルザンバット斬】"
+    ],
+    "expectedDslKeywords": [
+      "call_DA",
+      "enemy_power_damage_e887aae8bb8d"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-054",
+    "wikiRef": "docs/wiki/cards/XG5-054.md",
+    "name": "仮面ライダーディケイドCF",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【歩く完全ライダー図鑑】"
+    ],
+    "expectedDslKeywords": [
+      "lead_OT",
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "1/4",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-055",
+    "wikiRef": "docs/wiki/cards/XG5-055.md",
+    "name": "仮面ライダーギャレン",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "WB",
+    "textSnippets": [
+      "【ファイアアッパー】"
+    ],
+    "expectedDslKeywords": [
+      "undead_command_rush_hold",
+      "hand_pick_show_e887aae58886"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-056",
+    "wikiRef": "docs/wiki/cards/XG5-056.md",
+    "name": "仮面ライダーギャレンJF",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": "WB",
+    "textSnippets": [
+      "【捨て身の一撃】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "undead_command_rush_hold",
+      "hold_enemy_unit_e38193e3828c"
+    ],
+    "bp": 5000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-057",
+    "wikiRef": "docs/wiki/cards/XG5-057.md",
+    "name": "レッドランバス",
+    "cardType": "vehicle",
+    "powerCost": 2,
+    "category": "WB",
+    "textSnippets": [
+      "【ファイアランバス】"
+    ],
+    "expectedDslKeywords": [
+      "ride_discard_trigger_e38193e3828c"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-058",
+    "wikiRef": "docs/wiki/cards/XG5-058.md",
+    "name": "ロイヤルストレートフラッシュ",
+    "cardType": "operation",
+    "powerCost": 6,
+    "category": "WB",
+    "textSnippets": [
+      "自軍山札の上から5枚をオモテにする。そうしたとき"
+    ],
+    "expectedDslKeywords": [
+      "exclude_game_e887aae8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-059",
+    "wikiRef": "docs/wiki/cards/XG5-059.md",
+    "name": "仮面ライダーカリス",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": [
+      "WB",
+      "DA"
+    ],
+    "textSnippets": [
+      "【暴走する本能】"
+    ],
+    "expectedDslKeywords": [
+      "undead_command_rush_hold",
+      "grant_ability_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-060",
+    "wikiRef": "docs/wiki/cards/XG5-060.md",
+    "name": "仮面ライダーワイルドカリス",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": [
+      "WB",
+      "DA"
+    ],
+    "textSnippets": [
+      "【ワイルド】"
+    ],
+    "expectedDslKeywords": [
+      "undead_command_rush_hold"
+    ],
+    "bp": 6000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-061",
+    "wikiRef": "docs/wiki/cards/XG5-061.md",
+    "name": "バッファローアンデッド",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "DA",
+    "textSnippets": [
+      "【スペード8－マグネット】"
+    ],
+    "expectedDslKeywords": [
+      "rush_discard_instead_e887aae8bb8d"
+    ],
+    "bp": 3500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-062",
+    "wikiRef": "docs/wiki/cards/XG5-062.md",
+    "name": "モスアンデッド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【ハート8－リフレクト】"
+    ],
+    "expectedDslKeywords": [
+      "rush_discard_instead_e887aae8bb8d"
+    ],
+    "bp": 1500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-063",
+    "wikiRef": "docs/wiki/cards/XG5-063.md",
+    "name": "ペッカーアンデッド",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【ダイヤ4－ラピッド】"
+    ],
+    "expectedDslKeywords": [
+      "attack_and_strike_once"
+    ],
+    "bp": 2500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-064",
+    "wikiRef": "docs/wiki/cards/XG5-064.md",
+    "name": "コンファインベント",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe382ab"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "XG5-065",
+    "wikiRef": "docs/wiki/cards/XG5-065.md",
+    "name": "タイムベント",
+    "cardType": "operation",
+    "powerCost": 8,
+    "category": "WB",
+    "textSnippets": [
+      "追加条件を持たないユニットをすべて撃破する。"
+    ],
+    "expectedDslKeywords": [
+      "destroy_all_enemy_e8bfbde58aa0"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-066",
+    "wikiRef": "docs/wiki/cards/XG5-066.md",
+    "name": "仮面ライダーベルデ",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "【コピーベント】"
+    ],
+    "expectedDslKeywords": [
+      "lead_WB",
+      "grant_effect_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-067",
+    "wikiRef": "docs/wiki/cards/XG5-067.md",
+    "name": "仮面ライダーナイト",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "※ウイング ※コールWB"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "call_WB"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-068",
+    "wikiRef": "docs/wiki/cards/XG5-068.md",
+    "name": "仮面ライダーナイトサバイブ",
+    "cardType": "unit",
+    "powerCost": 7,
+    "category": "WB",
+    "textSnippets": [
+      "【戦い続ける覚悟】"
+    ],
+    "expectedDslKeywords": [
+      "wing",
+      "lead_WB",
+      "damage_action_e5b8b8e9a790"
+    ],
+    "bp": 6000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-069",
+    "wikiRef": "docs/wiki/cards/XG5-069.md",
+    "name": "キハダガニ",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "MA",
+    "textSnippets": [
+      "【待ち伏せ】"
+    ],
+    "expectedDslKeywords": [
+      "lead_ma_bp_boost_1000",
+      "discard_to_zone_e695b5e8bb8d"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-070",
+    "wikiRef": "docs/wiki/cards/XG5-070.md",
+    "name": "ニビイロヘビ",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "MA",
+    "textSnippets": [
+      "【偵察】"
+    ],
+    "expectedDslKeywords": [
+      "lead_ma_bp_boost_1000",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-071",
+    "wikiRef": "docs/wiki/cards/XG5-071.md",
+    "name": "仮面ライダー響鬼",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【鍛えてます】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "lead_MA",
+      "grant_ability_e38193e381ae"
+    ],
+    "bp": 3000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-072",
+    "wikiRef": "docs/wiki/cards/XG5-072.md",
+    "name": "仮面ライダー威吹鬼",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "【挫けぬ疾風】"
+    ],
+    "expectedDslKeywords": [
+      "lead_MA",
+      "reveal_faceup_e695b5e8bb8d"
+    ],
+    "bp": 3000,
+    "sp": "1/3",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-073",
+    "wikiRef": "docs/wiki/cards/XG5-073.md",
+    "name": "仮面ライダー電王SF",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【俺の必殺技】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "no_strike_if_enemy_battle",
+      "power_zone_action_e887aae58886"
+    ],
+    "bp": 3000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-074",
+    "wikiRef": "docs/wiki/cards/XG5-074.md",
+    "name": "仮面ライダーキバ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "MA",
+    "textSnippets": [
+      "【ファンガイアの王】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "call_DA",
+      "bp_modify_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-075",
+    "wikiRef": "docs/wiki/cards/XG5-075.md",
+    "name": "仮面ライダーイクサSM",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【母娘の絆】"
+    ],
+    "expectedDslKeywords": [
+      "pick_from_discard_e38193e381ae"
+    ],
+    "bp": 1000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-076",
+    "wikiRef": "docs/wiki/cards/XG5-076.md",
+    "name": "仮面ライダーイクサBM",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【ダブル・ブロウクン・ファング】"
+    ],
+    "expectedDslKeywords": [
+      "grant_effect_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-077",
+    "wikiRef": "docs/wiki/cards/XG5-077.md",
+    "name": "仮面ライダーキバーラ",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "MA",
+    "textSnippets": [
+      "【ソニックスタッブ】"
+    ],
+    "expectedDslKeywords": [
+      "enter_hold_enemy_e887aae8bb8d"
+    ],
+    "bp": 2000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-078",
+    "wikiRef": "docs/wiki/cards/XG5-078.md",
+    "name": "ファイナルフォームライド",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "OT",
+    "textSnippets": [
+      "自軍Sユニットを1体選び、自軍パワーゾーンのオモ"
+    ],
+    "expectedDslKeywords": [
+      "vehicle_interaction_e887aae8bb8d"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-079",
+    "wikiRef": "docs/wiki/cards/XG5-079.md",
+    "name": "仮面ライダーディケイド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【ライダーカード】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "number_combo_e695b5e8bb8d"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-080",
+    "wikiRef": "docs/wiki/cards/XG5-080.md",
+    "name": "マシンディケイダー",
+    "cardType": "vehicle",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "【アタックライド】"
+    ],
+    "expectedDslKeywords": [
+      "ride_bp_boost_500",
+      "vehicle_interaction_e38193e3828c"
+    ],
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-081",
+    "wikiRef": "docs/wiki/cards/XG5-081.md",
+    "name": "仮面ライダーアクセルトライアル",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "ET",
+    "textSnippets": [
+      "【絶望がお前のゴールだ】"
+    ],
+    "expectedDslKeywords": [
+      "power_zone_action_e38193e3828c"
+    ],
+    "bp": 4500,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-082",
+    "wikiRef": "docs/wiki/cards/XG5-082.md",
+    "name": "バットショット",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "敵軍コマンドゾーンからSユニットのカードを1枚選"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-083",
+    "wikiRef": "docs/wiki/cards/XG5-083.md",
+    "name": "スパイダーショック",
+    "cardType": "operation",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe382ab"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "XG5-084",
+    "wikiRef": "docs/wiki/cards/XG5-084.md",
+    "name": "仮面ライダーW・CJ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": [
+      "ET",
+      "DA"
+    ],
+    "textSnippets": [
+      "【『お前の罪を数えろ』】"
+    ],
+    "expectedDslKeywords": [
+      "morph",
+      "bp_modify_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-085",
+    "wikiRef": "docs/wiki/cards/XG5-085.md",
+    "name": "超時空戦闘母艦グランナスカ",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【ワープ】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "XL"
+  },
+  {
+    "cardId": "XG5-086",
+    "wikiRef": "docs/wiki/cards/XG5-086.md",
+    "name": "グランナスカ・コンバットフォーメーション",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "OT",
+    "textSnippets": [
+      "【ナックルボンバー】"
+    ],
+    "expectedDslKeywords": [
+      "power_zone_action_e887aae8bb8d"
+    ],
+    "bp": 9000,
+    "sp": null,
+    "size": "XL"
+  },
+  {
+    "cardId": "XG5-087",
+    "wikiRef": "docs/wiki/cards/XG5-087.md",
+    "name": "グランナスカ・カノンフォーメーション",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "OT",
+    "textSnippets": [
+      "【ビッグバンカノン】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_enter_battle"
+    ],
+    "bp": 13000,
+    "sp": null,
+    "size": "XL"
+  },
+  {
+    "cardId": "XG5-088",
+    "wikiRef": "docs/wiki/cards/XG5-088.md",
+    "name": "カバドス",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "ET",
+    "textSnippets": [
+      "【力まかせ】"
+    ],
+    "expectedDslKeywords": [
+      "auto_battle_e38193e3828c"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-089",
+    "wikiRef": "docs/wiki/cards/XG5-089.md",
+    "name": "カバドスSM",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "ET",
+    "textSnippets": [
+      "【マサカリホーク】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193",
+      "bp_modify_e887aae8bb8d"
+    ],
+    "bp": 4500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-090",
+    "wikiRef": "docs/wiki/cards/XG5-090.md",
+    "name": "クワジーロ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "ET",
+    "textSnippets": [
+      "【友情】"
+    ],
+    "expectedDslKeywords": [
+      "bp_modify_e887aae8bb8d"
+    ],
+    "bp": 500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-091",
+    "wikiRef": "docs/wiki/cards/XG5-091.md",
+    "name": "キカイダー01",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【ブラストエンド】"
+    ],
+    "expectedDslKeywords": [
+      "note_other_e280bbe38193"
+    ],
+    "bp": 6000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-092",
+    "wikiRef": "docs/wiki/cards/XG5-092.md",
+    "name": "ビジンダー",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": [
+      "ET",
+      "DA"
+    ],
+    "textSnippets": [
+      "【天使と悪魔】"
+    ],
+    "expectedDslKeywords": [
+      "grant_effect_e887aae8bb8d"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-093",
+    "wikiRef": "docs/wiki/cards/XG5-093.md",
+    "name": "ダブルブラザーパワー",
+    "cardType": "operation",
+    "powerCost": 6,
+    "category": "ET",
+    "textSnippets": [
+      "特徴「人型」を持つ自軍ユニットを2体選び、選んだ"
+    ],
+    "expectedDslKeywords": [
+      "hold_enemy_unit_e789b9e5beb4"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "XG5-094",
+    "wikiRef": "docs/wiki/cards/XG5-094.md",
+    "name": "ギルハカイダー",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "DA",
+    "textSnippets": [
+      "【ハカイダー部隊の決起】"
+    ],
+    "expectedDslKeywords": [
+      "deck_search_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-095",
+    "wikiRef": "docs/wiki/cards/XG5-095.md",
+    "name": "ブラックドラゴン",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "DA",
+    "textSnippets": [
+      "【サタンダークネス】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_win_vs_sp1",
+      "damage_action_e887aae8bb8d"
+    ],
+    "bp": 5500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "XG5-096",
+    "wikiRef": "docs/wiki/cards/XG5-096.md",
+    "name": "ギルの笛の音",
+    "cardType": "operation",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  }
+]

@@ -1,0 +1,84 @@
+[
+  {
+    "cardId": "SK-000",
+    "wikiRef": "docs/wiki/cards/SK-000.md",
+    "name": "仮面ライダー龍騎ブランク体",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [],
+    "bp": 0,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "SK-001",
+    "wikiRef": "docs/wiki/cards/SK-001.md",
+    "name": "シャドームーン",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【サタンサーベル】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_win_vs_sp1",
+      "ride_action_e695b5e8bb8d"
+    ],
+    "bp": 5000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "SK-002",
+    "wikiRef": "docs/wiki/cards/SK-002.md",
+    "name": "仮面ライダーV3",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "ET",
+    "textSnippets": [
+      "【ダブルタイフーン】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "hold_named_riders_rc_copy"
+    ],
+    "bp": 4000,
+    "sp": "1/5",
+    "size": "S"
+  },
+  {
+    "cardId": "SK-003",
+    "wikiRef": "docs/wiki/cards/SK-003.md",
+    "name": "仮面ライダーファム",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "WB",
+    "textSnippets": [
+      "【復讐の女詐欺師】"
+    ],
+    "expectedDslKeywords": [
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 2000,
+    "sp": "1/2",
+    "size": "S"
+  },
+  {
+    "cardId": "SK-004",
+    "wikiRef": "docs/wiki/cards/SK-004.md",
+    "name": "仮面ライダークウガUF",
+    "cardType": "unit",
+    "powerCost": "7+",
+    "category": "MA",
+    "textSnippets": [
+      "【凄まじき戦士】"
+    ],
+    "expectedDslKeywords": [
+      "stack_cards_e38193e3828c"
+    ],
+    "bp": 5000,
+    "sp": 1,
+    "size": "S"
+  }
+]

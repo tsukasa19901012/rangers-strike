@@ -1,0 +1,140 @@
+[
+  {
+    "cardId": "SR-001",
+    "wikiRef": "docs/wiki/cards/SR-001.md",
+    "name": "ガオキング",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "WB",
+    "textSnippets": [
+      "【天地轟鳴アニマルハート】"
+    ],
+    "bp": 14000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "SR-002",
+    "wikiRef": "docs/wiki/cards/SR-002.md",
+    "name": "スーパーフォーメーション",
+    "cardType": "operation",
+    "powerCost": 6,
+    "category": "ET",
+    "textSnippets": [
+      "このターン、5体以上の合体ユニットを必要とする特"
+    ],
+    "expectedDslKeywords": [
+      "mecha_fusion_command_substitute"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "SR-003",
+    "wikiRef": "docs/wiki/cards/SR-003.md",
+    "name": "アームドティラノレンジャー",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "WB",
+    "textSnippets": [
+      "【龍撃剣＆獣奏剣】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "SR-004",
+    "wikiRef": "docs/wiki/cards/SR-004.md",
+    "name": "ヘドリアン女王",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "DA",
+    "textSnippets": [
+      "【妖魔力】"
+    ],
+    "expectedDslKeywords": [
+      "destroy_on_win_vs_sp1",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "SR-005",
+    "wikiRef": "docs/wiki/cards/SR-005.md",
+    "name": "デカレッドバトライザー",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "OT",
+    "textSnippets": [
+      "【バトライズファイヤードライブ】"
+    ],
+    "expectedDslKeywords": [
+      "attacked_bp_boost_5000",
+      "destroy_power_match_on_rush"
+    ],
+    "bp": 3000,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "SR-006",
+    "wikiRef": "docs/wiki/cards/SR-006.md",
+    "name": "シュリケンジャーFM",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "MA",
+    "textSnippets": [
+      "【超忍法・分身魔球】"
+    ],
+    "expectedDslKeywords": [
+      "grant_effect_e38193e3828c"
+    ],
+    "bp": 4500,
+    "sp": 1,
+    "size": "S"
+  },
+  {
+    "cardId": "SR-007",
+    "wikiRef": "docs/wiki/cards/SR-007.md",
+    "name": "大神龍",
+    "cardType": "unit",
+    "powerCost": "5+",
+    "category": "MA",
+    "textSnippets": [
+      "【プラズマ衝撃波】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack",
+      "while_in_field_body_e38193e3828c"
+    ],
+    "bp": 30000,
+    "sp": null,
+    "size": "XL"
+  },
+  {
+    "cardId": "SR-008",
+    "wikiRef": "docs/wiki/cards/SR-008.md",
+    "name": "ビッグワン",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "ET",
+    "textSnippets": [
+      "【ビッグ・バトン】"
+    ],
+    "expectedDslKeywords": [
+      "grant_ability_e38193e3828c"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  }
+]

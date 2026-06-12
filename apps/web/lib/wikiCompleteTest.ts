@@ -7,14 +7,13 @@ import {
   resolveCardImageUrl,
   type DeckEntry,
 } from "@rangers-strike/cards";
-import {
-  OPERATION_UI_MECHANISMS,
-  type WebUiMechanism,
-} from "./webUiEffectCoverage";
 import { estimateCardUiCoverage } from "./estimateCardUiCoverage";
 import { estimateDeckWarnings } from "./deckWarnings";
 import { resolveOperationDropRoute } from "./webUiOperationRouting";
-import type { RkUiTestSpec } from "./rkUiTestSpecs/types";
+import {
+  resolvePromotedOperationUiMechanisms,
+} from "./rkUiLogic";
+import type { WikiCardCompleteSpec } from "./wikiTestSpecs/types";
 
 function listDslGrantKeywords(cardId: string): string[] {
   const doc = loadCardById(cardId, inferCatalogTierForCardId(cardId));
@@ -29,76 +28,50 @@ function listDslGrantKeywords(cardId: string): string[] {
   return [...keywords];
 }
 
-function getDslRushPrimitives(cardId: string) {
+function normalizeCategory(category: string | string[]): string {
+  return Array.isArray(category) ? category.join(",") : category;
+}
+
+function resolveCatalogText(cardId: string): string {
+  const card = getFullPlayableCardById(cardId);
+  if (card?.text) return card.text;
   const doc = loadCardById(cardId, inferCatalogTierForCardId(cardId));
-  const rush = doc.effects?.find(
-    (effect) =>
-      effect.trigger.type === "operation" && effect.trigger.timing === "rush",
-  );
-  return rush?.effects ?? [];
+  return doc.text ?? doc.rawText ?? "";
 }
 
-function dslRushOpensEffectChoice(cardId: string): boolean {
-  const primitives = getDslRushPrimitives(cardId);
-  if (primitives[0]?.type === "choose") return true;
-  return primitives.some(
-    (primitive) =>
-      primitive.type === "grant_keyword" ||
-      primitive.type === "interpret_effect",
-  );
-}
-
-/** オペレーションの UI 経路（Core 配線 → DSL 汎用の順で解決）。 */
-export function resolvePromotedOperationUiMechanisms(cardId: string): WebUiMechanism[] {
-  const effect = getCardEffect(cardId);
-  if (effect?.effectId && OPERATION_UI_MECHANISMS[effect.effectId]) {
-    return OPERATION_UI_MECHANISMS[effect.effectId]!;
-  }
-  if (!isCardDslReady(cardId)) return [];
-  if (!effect) return ["passive_engine_only"];
-
-  switch (effect.kind) {
-    case "permanent":
-      return ["operation_permanent_place", "passive_engine_only"];
-    case "counter":
-      return ["operation_counter_reaction"];
-    case "instant": {
-      if (effect.target) return ["operation_drag_target_modal"];
-      const mechanisms: WebUiMechanism[] = ["operation_drag_direct"];
-      if (dslRushOpensEffectChoice(cardId)) {
-        mechanisms.push("effect_choice_modal");
-      }
-      return mechanisms;
-    }
-    default:
-      return ["passive_engine_only"];
-  }
-}
-
-export function assertRkCardCatalog(spec: RkUiTestSpec): void {
+export function assertWikiCardCatalog(spec: WikiCardCompleteSpec): void {
   const card = getFullPlayableCardById(spec.cardId);
   if (!card) {
     throw new Error(`${spec.cardId}: not in full-playable catalog`);
   }
+  const cardText = resolveCatalogText(spec.cardId);
   if (card.name !== spec.name) {
     throw new Error(`${spec.cardId}: name ${card.name} !== ${spec.name}`);
   }
-  if (card.type !== "operation") {
-    throw new Error(`${spec.cardId}: expected operation, got ${card.type}`);
+  if (card.type !== spec.cardType) {
+    throw new Error(`${spec.cardId}: type ${card.type} !== ${spec.cardType}`);
   }
   if (card.powerCost !== spec.powerCost) {
     throw new Error(
       `${spec.cardId}: powerCost ${card.powerCost} !== ${spec.powerCost}`,
     );
   }
-  if (card.category !== spec.category) {
+  if (normalizeCategory(card.category) !== normalizeCategory(spec.category)) {
     throw new Error(
-      `${spec.cardId}: category ${card.category} !== ${spec.category}`,
+      `${spec.cardId}: category ${normalizeCategory(card.category)} !== ${normalizeCategory(spec.category)}`,
     );
   }
-  for (const snippet of spec.textSnippets) {
-    if (!card.text?.includes(snippet)) {
-      throw new Error(`${spec.cardId}: text missing snippet "${snippet}"`);
+  if (spec.bp !== undefined && card.bp !== spec.bp) {
+    throw new Error(`${spec.cardId}: bp ${card.bp} !== ${spec.bp}`);
+  }
+  if (spec.size !== undefined && card.size !== spec.size) {
+    throw new Error(`${spec.cardId}: size ${card.size} !== ${spec.size}`);
+  }
+  if (cardText.length > 0) {
+    for (const snippet of spec.textSnippets) {
+      if (!cardText.includes(snippet)) {
+        throw new Error(`${spec.cardId}: text missing snippet "${snippet}"`);
+      }
     }
   }
   const imageUrl = resolveCardImageUrl(spec.cardId);
@@ -107,10 +80,14 @@ export function assertRkCardCatalog(spec: RkUiTestSpec): void {
   }
 }
 
-export function assertRkCardUiCoverage(spec: RkUiTestSpec): void {
+export function assertWikiCardDslReady(spec: WikiCardCompleteSpec): void {
   if (!isCardDslReady(spec.cardId)) {
-    throw new Error(`${spec.cardId}: expected DSL ready`);
+    throw new Error(`${spec.cardId}: expected DSL ready (complete version)`);
   }
+}
+
+export function assertWikiCardUiCoverage(spec: WikiCardCompleteSpec): void {
+  assertWikiCardDslReady(spec);
   const coverage = estimateCardUiCoverage(spec.cardId);
   if (coverage.tier !== "promoted-ui") {
     throw new Error(
@@ -122,19 +99,21 @@ export function assertRkCardUiCoverage(spec: RkUiTestSpec): void {
   }
 }
 
-export function assertRkCardEffectMeta(spec: RkUiTestSpec): void {
+export function assertWikiOperationEffectMeta(spec: WikiCardCompleteSpec): void {
+  if (spec.cardType !== "operation" || !spec.operationKind) return;
   const effect = getCardEffect(spec.cardId);
   if (!effect) {
     throw new Error(`${spec.cardId}: getCardEffect returned undefined`);
   }
-  if (effect.kind !== spec.kind) {
+  if (effect.kind !== spec.operationKind) {
     throw new Error(
-      `${spec.cardId}: effect kind ${effect.kind} !== ${spec.kind}`,
+      `${spec.cardId}: effect kind ${effect.kind} !== ${spec.operationKind}`,
     );
   }
 }
 
-export function assertRkOperationUiRouting(spec: RkUiTestSpec): void {
+export function assertWikiOperationUiRouting(spec: WikiCardCompleteSpec): void {
+  if (spec.cardType !== "operation" || !spec.expectedMechanisms?.length) return;
   const mechanisms = resolvePromotedOperationUiMechanisms(spec.cardId);
   for (const expected of spec.expectedMechanisms) {
     if (!mechanisms.includes(expected)) {
@@ -143,7 +122,6 @@ export function assertRkOperationUiRouting(spec: RkUiTestSpec): void {
       );
     }
   }
-
   if (spec.expectedDropRoute && spec.expectedDropRoute !== "n/a") {
     const route = resolveOperationDropRoute(spec.cardId);
     if (route.kind !== spec.expectedDropRoute) {
@@ -154,7 +132,7 @@ export function assertRkOperationUiRouting(spec: RkUiTestSpec): void {
   }
 }
 
-export function assertRkDslKeywords(spec: RkUiTestSpec): void {
+export function assertWikiDslKeywords(spec: WikiCardCompleteSpec): void {
   if (!spec.expectedDslKeywords?.length) return;
   const keywords = listDslGrantKeywords(spec.cardId);
   for (const expected of spec.expectedDslKeywords) {
@@ -166,7 +144,7 @@ export function assertRkDslKeywords(spec: RkUiTestSpec): void {
   }
 }
 
-export function assertRkDeckBuilder(spec: RkUiTestSpec): void {
+export function assertWikiDeckBuilder(spec: WikiCardCompleteSpec): void {
   const entries: DeckEntry[] = [{ cardId: spec.cardId, count: 1 }];
   const warnings = estimateDeckWarnings(entries);
   if (warnings.uncertainCardIds.includes(spec.cardId)) {
@@ -174,12 +152,13 @@ export function assertRkDeckBuilder(spec: RkUiTestSpec): void {
   }
 }
 
-export function assertRkCardUiLogic(spec: RkUiTestSpec): void {
-  assertRkCardCatalog(spec);
-  assertRkCardUiCoverage(spec);
-  assertRkCardEffectMeta(spec);
-  assertRkOperationUiRouting(spec);
-  assertRkDslKeywords(spec);
-  assertRkDeckBuilder(spec);
+export function assertWikiCardComplete(spec: WikiCardCompleteSpec): void {
+  assertWikiCardCatalog(spec);
+  assertWikiCardUiCoverage(spec);
+  assertWikiDslKeywords(spec);
+  assertWikiDeckBuilder(spec);
+  if (spec.cardType === "operation") {
+    assertWikiOperationEffectMeta(spec);
+    assertWikiOperationUiRouting(spec);
+  }
 }
-

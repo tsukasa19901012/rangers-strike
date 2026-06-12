@@ -1,0 +1,93 @@
+[
+  {
+    "cardId": "XC-001",
+    "wikiRef": "docs/wiki/cards/XC-001.md",
+    "name": "ゾル大佐",
+    "cardType": "commander",
+    "powerCost": 0,
+    "category": "DA",
+    "textSnippets": [
+      "ゲーム開始前に一度だけ発動できる⇒自軍山札を見て"
+    ]
+  },
+  {
+    "cardId": "XC-002",
+    "wikiRef": "docs/wiki/cards/XC-002.md",
+    "name": "ヌマ・O長官",
+    "cardType": "commander",
+    "powerCost": 0,
+    "category": "OT",
+    "textSnippets": [
+      "ゲーム開始前に一度だけ発動できる⇒自軍山札を見て"
+    ]
+  },
+  {
+    "cardId": "XC-003",
+    "wikiRef": "docs/wiki/cards/XC-003.md",
+    "name": "マスター・シャーフー",
+    "cardType": "commander",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [
+      "ゲーム開始前に一度だけ発動できる⇒自分の手札をす"
+    ]
+  },
+  {
+    "cardId": "XC-004",
+    "wikiRef": "docs/wiki/cards/XC-004.md",
+    "name": "天空大聖者マジエル",
+    "cardType": "commander",
+    "powerCost": 0,
+    "category": "MA",
+    "textSnippets": [
+      "ゲーム開始前に一度だけ発動できる⇒自軍山札を見て"
+    ]
+  },
+  {
+    "cardId": "XC-005",
+    "wikiRef": "docs/wiki/cards/XC-005.md",
+    "name": "仮面ライダー1号・本郷猛",
+    "cardType": "commander",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "このゲーム中、次のルールを追加する⇒ 特徴「仮面"
+    ]
+  },
+  {
+    "cardId": "XC-006",
+    "wikiRef": "docs/wiki/cards/XC-006.md",
+    "name": "ボウケンレッド・明石暁",
+    "cardType": "commander",
+    "powerCost": 0,
+    "category": "ET",
+    "textSnippets": [
+      "このゲーム中、次のルールを追加する⇒ 5体以上の"
+    ]
+  },
+  {
+    "cardId": "XC-007",
+    "wikiRef": "docs/wiki/cards/XC-007.md",
+    "name": "宇宙刑事ギャバン・一条寺烈",
+    "cardType": "commander",
+    "powerCost": 0,
+    "category": "OT",
+    "textSnippets": [
+      "このゲーム中、チェイスのテキストを次のように読み"
+    ],
+    "expectedDslKeywords": [
+      "chase"
+    ]
+  },
+  {
+    "cardId": "XC-008",
+    "wikiRef": "docs/wiki/cards/XC-008.md",
+    "name": "シンケンレッド・志葉丈瑠",
+    "cardType": "commander",
+    "powerCost": 0,
+    "category": "MA",
+    "textSnippets": [
+      "ゲーム開始時、一度だけ次の効果を発動できる⇒ 自"
+    ]
+  }
+]

@@ -1,0 +1,450 @@
+[
+  {
+    "cardId": "PR-001",
+    "wikiRef": "docs/wiki/cards/PR-001.md",
+    "name": "ボウケンレッド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【アクセルラー】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PR-002",
+    "wikiRef": "docs/wiki/cards/PR-002.md",
+    "name": "ダイボウケン",
+    "cardType": "unit",
+    "powerCost": "7+",
+    "category": "ET",
+    "textSnippets": [
+      "【ゴースコッパー＆ゴービッカー】"
+    ],
+    "bp": 16000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "PR-003",
+    "wikiRef": "docs/wiki/cards/PR-003.md",
+    "name": "アドベンチャー",
+    "cardType": "operation",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "PR-004",
+    "wikiRef": "docs/wiki/cards/PR-004.md",
+    "name": "バルイーグル",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "ET",
+    "textSnippets": [
+      "【秘剣流れ十文字斬り】"
+    ],
+    "bp": 3000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PR-005",
+    "wikiRef": "docs/wiki/cards/PR-005.md",
+    "name": "デカレンジャーロボ",
+    "cardType": "unit",
+    "powerCost": "8+",
+    "category": "OT",
+    "textSnippets": [
+      "【ジャスティスフラッシャー】"
+    ],
+    "expectedDslKeywords": [
+      "SP3"
+    ],
+    "bp": 19000,
+    "sp": 2,
+    "size": "L"
+  },
+  {
+    "cardId": "PR-006",
+    "wikiRef": "docs/wiki/cards/PR-006.md",
+    "name": "デカレッド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "OT",
+    "textSnippets": [
+      "【ジュウクンドー】"
+    ],
+    "expectedDslKeywords": [
+      "no_battle_rush_turn",
+      "attack_destroy_bp_sum_3000"
+    ],
+    "bp": 3000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "PR-007",
+    "wikiRef": "docs/wiki/cards/PR-007.md",
+    "name": "アカレンジャー",
+    "cardType": "unit",
+    "powerCost": 6,
+    "category": "ET",
+    "textSnippets": [
+      "【レッドビュート】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PR-008",
+    "wikiRef": "docs/wiki/cards/PR-008.md",
+    "name": "バイオハンター・シルバ",
+    "cardType": "unit",
+    "powerCost": 2,
+    "category": "DA",
+    "textSnippets": [
+      "【バイバスター】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 3000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PR-009",
+    "wikiRef": "docs/wiki/cards/PR-009.md",
+    "name": "サンバルカンロボ",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "ET",
+    "textSnippets": [
+      "【オーロラプラズマ返し】"
+    ],
+    "expectedDslKeywords": [
+      "SP2"
+    ],
+    "bp": 9000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "PR-010",
+    "wikiRef": "docs/wiki/cards/PR-010.md",
+    "name": "ゴレンジャーストーム",
+    "cardType": "operation",
+    "powerCost": 8,
+    "category": "ET",
+    "textSnippets": [
+      "このターン、Sユニットだけでコンビネーションする"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "PR-011",
+    "wikiRef": "docs/wiki/cards/PR-011.md",
+    "name": "ボウケンレッド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【サバイバスター】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PR-012",
+    "wikiRef": "docs/wiki/cards/PR-012.md",
+    "name": "隠流忍術",
+    "cardType": "operation",
+    "powerCost": 4,
+    "category": "MA",
+    "textSnippets": [
+      "※カウンター"
+    ],
+    "expectedDslKeywords": [
+      "counter_redirect_attack"
+    ],
+    "operationKind": "counter",
+    "expectedMechanisms": [
+      "operation_counter_reaction"
+    ]
+  },
+  {
+    "cardId": "PR-013",
+    "wikiRef": "docs/wiki/cards/PR-013.md",
+    "name": "スーパーダイボウケン",
+    "cardType": "unit",
+    "powerCost": "7+",
+    "category": "ET",
+    "textSnippets": [
+      "【ダブルアームクラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "attack_and_strike_once"
+    ],
+    "bp": 23000,
+    "sp": 3,
+    "size": "L"
+  },
+  {
+    "cardId": "PR-014",
+    "wikiRef": "docs/wiki/cards/PR-014.md",
+    "name": "ダークナイト",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "DA",
+    "textSnippets": [
+      "【闇の舞】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PR-015",
+    "wikiRef": "docs/wiki/cards/PR-015.md",
+    "name": "バイオロボ",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "OT",
+    "textSnippets": [],
+    "bp": 11000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "PR-016",
+    "wikiRef": "docs/wiki/cards/PR-016.md",
+    "name": "アバレッドAM",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "WB",
+    "textSnippets": [],
+    "bp": 5500,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PR-017",
+    "wikiRef": "docs/wiki/cards/PR-017.md",
+    "name": "ゲキレッド",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "WB",
+    "textSnippets": [
+      "【咆咆弾】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 3000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PR-018",
+    "wikiRef": "docs/wiki/cards/PR-018.md",
+    "name": "ゲキトージャ",
+    "cardType": "unit",
+    "powerCost": "6+",
+    "category": "WB",
+    "textSnippets": [
+      "【大頑頑拳】"
+    ],
+    "bp": 9000,
+    "sp": 1,
+    "size": "L"
+  },
+  {
+    "cardId": "PR-019",
+    "wikiRef": "docs/wiki/cards/PR-019.md",
+    "name": "レッドファルコン",
+    "cardType": "unit",
+    "powerCost": 3,
+    "category": "ET",
+    "textSnippets": [
+      "【ファルコンブレイク】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 2000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PR-020",
+    "wikiRef": "docs/wiki/cards/PR-020.md",
+    "name": "タイムレッド",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【アサルトベクター】"
+    ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PR-021",
+    "wikiRef": "docs/wiki/cards/PR-021.md",
+    "name": "激気",
+    "cardType": "operation",
+    "powerCost": 0,
+    "category": "WB",
+    "textSnippets": [
+      "※常駐"
+    ],
+    "expectedDslKeywords": [
+      "resident"
+    ],
+    "operationKind": "permanent",
+    "expectedMechanisms": [
+      "operation_permanent_place",
+      "passive_engine_only"
+    ]
+  },
+  {
+    "cardId": "PR-022",
+    "wikiRef": "docs/wiki/cards/PR-022.md",
+    "name": "ゴーオンレッド",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "OT",
+    "textSnippets": [
+      "【ロードサーベル】"
+    ],
+    "expectedDslKeywords": [
+      "auto_battle_entry_each_turn",
+      "cannot_attack",
+      "SP1"
+    ],
+    "bp": 4000,
+    "sp": "special",
+    "size": "S"
+  },
+  {
+    "cardId": "PR-023",
+    "wikiRef": "docs/wiki/cards/PR-023.md",
+    "name": "シュリケンジャー",
+    "cardType": "unit",
+    "powerCost": "3+",
+    "category": "MA",
+    "textSnippets": [
+      "【宇宙統一忍者流】"
+    ],
+    "expectedDslKeywords": [
+      "copy_nc_from_rush_s"
+    ],
+    "bp": 5000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "PR-024",
+    "wikiRef": "docs/wiki/cards/PR-024.md",
+    "name": "デカブレイク",
+    "cardType": "unit",
+    "powerCost": 4,
+    "category": "OT",
+    "textSnippets": [
+      "【光速拳ライトニングフィスト】"
+    ],
+    "expectedDslKeywords": [
+      "cannot_attack_bp1000_or_less"
+    ],
+    "bp": 4000,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "PR-025",
+    "wikiRef": "docs/wiki/cards/PR-025.md",
+    "name": "スーパーハイウェイバスター",
+    "cardType": "operation",
+    "powerCost": 2,
+    "category": "OT",
+    "textSnippets": [
+      "自軍山札を見て、特徴「炎神」を持つMユニットのカ"
+    ],
+    "operationKind": "instant",
+    "expectedMechanisms": [
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
+  },
+  {
+    "cardId": "PR-026",
+    "wikiRef": "docs/wiki/cards/PR-026.md",
+    "name": "デカマスター",
+    "cardType": "unit",
+    "powerCost": "7-",
+    "category": "OT",
+    "textSnippets": [
+      "【ディーソードベガ】"
+    ],
+    "bp": 6500,
+    "sp": null,
+    "size": "S"
+  },
+  {
+    "cardId": "PR-027",
+    "wikiRef": "docs/wiki/cards/PR-027.md",
+    "name": "黒獅子リオ",
+    "cardType": "unit",
+    "powerCost": 1,
+    "category": "DA",
+    "textSnippets": [
+      "【剛勇吼波】"
+    ],
+    "expectedDslKeywords": [
+      "no_battle_rush_turn",
+      "no_strike_with_command",
+      "per_enemy_s_bp_boost_1000"
+    ],
+    "bp": 2000,
+    "sp": 1,
+    "size": "S"
+  }
+]

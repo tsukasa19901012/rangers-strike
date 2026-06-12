@@ -31,17 +31,23 @@ export function estimateCardUiCoverage(cardId: string): CardUiCoverage {
     return { tier: "promoted-partial", badges: ["DSL未実装"] };
   }
 
-  if (getCardById(cardId)) {
-    const badges = ["Core"];
-    if (hasUiWiring(cardId)) badges.push("UI配線");
-    return { tier: "core", badges };
-  }
+  const wired = hasUiWiring(cardId);
+  const isCore = Boolean(getCardById(cardId));
 
   if (isCardDslReady(cardId)) {
-    return { tier: "promoted-ui", badges: ["DSL対応", "汎用UI"] };
+    const badges = ["DSL対応", "汎用UI"];
+    if (isCore) badges.unshift("Core");
+    if (wired) badges.push("UI配線");
+    return { tier: "promoted-ui", badges };
   }
 
-  if (hasUiWiring(cardId)) {
+  if (isCore) {
+    const badges = ["Core"];
+    if (wired) badges.push("UI配線");
+    return { tier: wired ? "promoted-ui" : "core", badges };
+  }
+
+  if (wired) {
     return { tier: "promoted-dsl", badges: ["DSL対応"] };
   }
 

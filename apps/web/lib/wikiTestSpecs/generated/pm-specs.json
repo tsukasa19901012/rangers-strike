@@ -1,0 +1,16 @@
+[
+  {
+    "cardId": "PM-001",
+    "wikiRef": "docs/wiki/cards/PM-001.md",
+    "name": "ジライヤ",
+    "cardType": "unit",
+    "powerCost": 5,
+    "category": "MA",
+    "textSnippets": [
+      "【真っ向両断】"
+    ],
+    "bp": 4000,
+    "sp": "1/3",
+    "size": "S"
+  }
+]

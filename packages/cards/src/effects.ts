@@ -133,6 +133,7 @@ function isPassivePermanentOperationDoc(doc: {
   }[];
 }): boolean {
   if (doc.type !== "operation") return false;
+  if (doc.text?.includes("※カウンター")) return false;
   if (doc.text?.includes("※常駐")) return true;
   if (doc.unnamedRules?.some((rule) => rule.rule === "resident")) return true;
   return (doc.effects ?? []).some(
@@ -143,6 +144,16 @@ function isPassivePermanentOperationDoc(doc: {
           primitive.type === "grant_keyword" && primitive.keyword === "resident",
       ),
   );
+}
+
+function isCounterOperationDoc(doc: { type?: string; text?: string }): boolean {
+  return doc.type === "operation" && (doc.text?.includes("※カウンター") ?? false);
+}
+
+function firstEffectBlock(doc: {
+  effects?: { id: string; text?: string }[];
+}): { id: string; text?: string } | undefined {
+  return doc.effects?.[0];
 }
 
 /** U4 — CardDocument 優先。静的 ALL_EFFECTS は target / 空テキスト・kind 補完用。 */
@@ -159,12 +170,34 @@ export function getCardEffect(cardId: string): CardEffectMeta | undefined {
         target: staticMeta?.target,
       };
     }
+    if (isCounterOperationDoc(doc)) {
+      const block = firstEffectBlock(doc);
+      return {
+        effectId: block?.id ?? `counter_${cardId}`,
+        text: resolveEffectText(cardId, doc, block ?? { text: doc.text ?? "" }, staticMeta),
+        kind: "counter",
+        target: staticMeta?.target,
+      };
+    }
     if (isPassivePermanentOperationDoc(doc)) {
       const passive = doc.effects?.find((effect) => effect.trigger.type === "while_in_field");
       return {
         effectId: passive?.id ?? "unnamed_resident",
         text: resolveEffectText(cardId, doc, passive ?? { text: doc.text ?? "" }, staticMeta),
         kind: "permanent",
+        target: staticMeta?.target,
+      };
+    }
+    if (doc.type === "operation" && doc.effects?.length) {
+      const block = firstEffectBlock(doc);
+      return {
+        effectId: block?.id ?? cardId,
+        text: resolveEffectText(cardId, doc, block ?? { text: doc.text ?? "" }, staticMeta),
+        kind: resolveEffectKind(
+          doc,
+          { type: "operation", timing: "rush" },
+          staticMeta,
+        ),
         target: staticMeta?.target,
       };
     }
