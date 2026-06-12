@@ -35,7 +35,9 @@ function listDslGrantKeywords(cardId: string): string[] {
   return [...keywords];
 }
 
-function inferOperationKind(effectTexts: string[]): WikiCardCompleteSpec["operationKind"] {
+type OperationKind = NonNullable<WikiCardCompleteSpec["operationKind"]>;
+
+function inferOperationKind(effectTexts: string[]): OperationKind {
   const joined = effectTexts.join(" ");
   if (joined.includes("※常駐")) return "permanent";
   if (joined.includes("※カウンター")) return "counter";
