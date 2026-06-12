@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { estimateCardUiCoverage } from "@/lib/estimateCardUiCoverage";
-import { remainingCopiesForCard } from "@/lib/deckBuilder";
+import { maxCopiesForCard, remainingCopiesForCard } from "@/lib/deckBuilder";
 import type { DeckEntry } from "@rangers-strike/cards";
 import { CardImage } from "./CardImage";
 
@@ -44,6 +44,7 @@ export function DeckBuilderCatalogList({
         {virtualizer.getVirtualItems().map((virtualRow) => {
           const card = cards[virtualRow.index];
           const current = counts.get(card.id) ?? 0;
+          const max = maxCopiesForCard(card);
           const remaining = remainingCopiesForCard(card, entries);
           const disabled = remaining <= 0;
           const coverageBadges = estimateCardUiCoverage(card.id).badges.slice(0, 2);

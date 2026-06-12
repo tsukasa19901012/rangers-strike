@@ -5,7 +5,7 @@ import {
   fullPlayableCatalog,
   getStarterDeck,
   maxCopiesForCard,
-  remainingCopiesForCard,
+  remainingCopiesForCard as remainingCopiesForCardCore,
   validateDeckEntries as validateDeckEntriesCore,
   type CardDefinition,
   type DeckDefinition,
@@ -14,7 +14,14 @@ import {
   type StarterDeckId,
 } from "@rangers-strike/cards";
 
-export { maxCopiesForCard, remainingCopiesForCard } from "@rangers-strike/cards";
+export { maxCopiesForCard } from "@rangers-strike/cards";
+
+export function remainingCopiesForCard(
+  card: CardDefinition,
+  entries: DeckEntry[],
+): number {
+  return remainingCopiesForCardCore(card, entries, fullPlayableCatalog);
+}
 
 export const MIN_DECK_SIZE = DECK_MIN_SIZE;
 export const STORAGE_KEY = "rangers-strike/custom-decks/v1";
