@@ -1,17 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  cardHasCategory,
   fullPlayableCatalog,
-  getFullPlayableCardById,
   getWikiSetLabel,
   getWikiSetLabels,
   type CardDefinition,
   type Category,
   type StarterDeckId,
 } from "@rangers-strike/cards";
-import { CATEGORY_OPTIONS, STARTER_OPTIONS } from "@/lib/labels";
+import { CATEGORY_OPTIONS } from "@/lib/labels";
 import {
   countEntries,
   createDeckId,
@@ -26,15 +24,32 @@ import {
   validateDeckEntries,
   type CustomDeck,
 } from "@/lib/deckBuilder";
+import {
+  filterCatalogCards,
+  sortCatalogCards,
+  type CatalogFilterType,
+  type CatalogSort,
+  type CatalogViewMode,
+} from "@/lib/deckBuilderCatalog";
 import { formatDeckValidationMessage } from "@/lib/formatDeckValidation";
-import { CardImage } from "./CardImage";
 import { CardModal } from "./CardModal";
+import { CatalogToolbar } from "./CatalogToolbar";
+import { ConfirmDialog } from "./ConfirmDialog";
+import { DeckBuilderCatalogGrid } from "./DeckBuilderCatalogGrid";
 import { DeckBuilderCatalogList } from "./DeckBuilderCatalogList";
+import { DeckBuilderHeader } from "./DeckBuilderHeader";
+import { DeckPanelExpanded } from "./DeckPanelExpanded";
+import { DeckSummaryStrip } from "./DeckSummaryStrip";
 import { DeckWarningBanner } from "./DeckWarningBanner";
+import { ExpansionFilterSheet } from "./ExpansionFilterSheet";
+import { StarterChipRow } from "./StarterChipRow";
 
-type FilterType = "all" | "unit" | "operation";
 type ExpansionFilter = "all" | string;
 type CategoryFilter = "all" | Category;
+type PendingConfirm =
+  | { type: "back" }
+  | { type: "clear" }
+  | { type: "starter"; starterId: StarterDeckId };
 
 type DeckBuilderScreenProps = {
   editDeckId?: string | null;
@@ -42,31 +57,42 @@ type DeckBuilderScreenProps = {
   onSaved: () => void;
 };
 
+function mapsEqual(a: Map<string, number>, b: Map<string, number>): boolean {
+  if (a.size !== b.size) return false;
+  for (const [key, value] of a) {
+    if ((b.get(key) ?? 0) !== value) return false;
+  }
+  return true;
+}
+
 export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderScreenProps) {
   const existing = editDeckId ? getCustomDeck(editDeckId) : undefined;
 
-  const [name, setName] = useState(existing?.name ?? "マイデッキ");
+  const initialName = existing?.name ?? "マイデッキ";
+  const initialCounts = useMemo(() => entriesToMap(existing?.entries ?? []), [existing?.entries]);
+
+  const [name, setName] = useState(initialName);
   const [counts, setCounts] = useState(() => entriesToMap(existing?.entries ?? []));
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<FilterType>("all");
+  const [filter, setFilter] = useState<CatalogFilterType>("all");
   const [expansionFilter, setExpansionFilter] = useState<ExpansionFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [viewMode, setViewMode] = useState<CatalogViewMode>("list");
+  const [sort, setSort] = useState<CatalogSort>("id");
+  const [deckExpanded, setDeckExpanded] = useState(false);
+  const [expansionSheetOpen, setExpansionSheetOpen] = useState(false);
+  const [pendingConfirm, setPendingConfirm] = useState<PendingConfirm | null>(null);
   const [previewCard, setPreviewCard] = useState<CardDefinition | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const prevTotalRef = useRef(countEntries(existing?.entries ?? []));
 
   const entries = useMemo(() => mapToEntries(counts), [counts]);
   const total = useMemo(() => countEntries(entries), [entries]);
   const validation = useMemo(() => validateDeckEntries(entries), [entries]);
-
-  const deckCards = useMemo(
-    () =>
-      entries.flatMap((entry) => {
-        const card = getFullPlayableCardById(entry.cardId);
-        if (!card) return [];
-        return Array.from({ length: entry.count }, () => card);
-      }),
-    [entries],
-  );
+  const isDirty = name !== initialName || !mapsEqual(counts, initialCounts);
 
   const wikiSetOptions = useMemo(() => getWikiSetLabels(), []);
 
@@ -82,7 +108,7 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
     for (const card of catalogSource) {
       const categories = Array.isArray(card.category) ? card.category : [card.category];
       for (const category of categories) {
-        present.add(category);
+        if (category) present.add(category);
       }
     }
     return CATEGORY_OPTIONS.filter((option) => present.has(option.id));
@@ -100,30 +126,69 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
   const searchQuery = search.trim().toLowerCase();
 
   const catalogCards = useMemo(() => {
-    if (!searchQuery) return [];
-    return catalogSource.filter((card) => {
-      if (filter === "unit" && card.type !== "unit") return false;
-      if (filter === "operation" && card.type !== "operation") return false;
-      if (categoryFilter !== "all" && !cardHasCategory(card, categoryFilter)) return false;
-      return (
-        card.id.toLowerCase().includes(searchQuery) ||
-        card.name.toLowerCase().includes(searchQuery)
-      );
+    const filtered = filterCatalogCards(catalogSource, {
+      filter,
+      categoryFilter,
+      searchQuery,
     });
-  }, [catalogSource, categoryFilter, filter, searchQuery]);
+    return sortCatalogCards(filtered, sort);
+  }, [catalogSource, categoryFilter, filter, searchQuery, sort]);
 
-  const addCard = (card: CardDefinition) => {
-    const current = counts.get(card.id) ?? 0;
-    if (remainingCopiesForCard(card, entries) <= 0) return;
+  const [gridColumns, setGridColumns] = useState(2);
+
+  useEffect(() => {
+    const updateColumns = () => {
+      if (window.matchMedia("(min-width: 640px)").matches) {
+        setGridColumns(3);
+      } else {
+        setGridColumns(2);
+      }
+    };
+    updateColumns();
+    window.addEventListener("resize", updateColumns);
+    return () => window.removeEventListener("resize", updateColumns);
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "/" && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        const target = event.target as HTMLElement;
+        if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  useEffect(() => {
+    if (prevTotalRef.current < MIN_DECK_SIZE && total >= MIN_DECK_SIZE) {
+      setStatusMessage("40枚になりました。内容を確認して保存してください。");
+    }
+    prevTotalRef.current = total;
+  }, [total]);
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    if (value.trim()) {
+      setDeckExpanded(false);
+    }
+  };
+
+  const addCard = useCallback((card: CardDefinition) => {
     setCounts((prev) => {
+      const current = prev.get(card.id) ?? 0;
+      const nextEntries = mapToEntries(prev);
+      if (remainingCopiesForCard(card, nextEntries) <= 0) return prev;
       const next = new Map(prev);
       next.set(card.id, current + 1);
       return next;
     });
     setSaveError(null);
-  };
+  }, []);
 
-  const removeCard = (cardId: string) => {
+  const removeCard = useCallback((cardId: string) => {
     setCounts((prev) => {
       const next = new Map(prev);
       const current = next.get(cardId) ?? 0;
@@ -132,17 +197,34 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
       return next;
     });
     setSaveError(null);
-  };
+  }, []);
 
-  const loadStarter = (starterId: StarterDeckId) => {
+  const removeCardByDefinition = useCallback(
+    (card: CardDefinition) => removeCard(card.id),
+    [removeCard],
+  );
+
+  const applyStarter = useCallback((starterId: StarterDeckId) => {
     setCounts(entriesToMap(starterTemplateEntries(starterId)));
     setSaveError(null);
-  };
+    setDeckExpanded(true);
+  }, []);
 
-  const clearDeck = () => {
+  const requestStarter = useCallback(
+    (starterId: StarterDeckId) => {
+      if (total === 0) {
+        applyStarter(starterId);
+        return;
+      }
+      setPendingConfirm({ type: "starter", starterId });
+    },
+    [applyStarter, total],
+  );
+
+  const clearDeck = useCallback(() => {
     setCounts(new Map());
     setSaveError(null);
-  };
+  }, []);
 
   const handleSave = () => {
     if (!name.trim()) {
@@ -171,25 +253,86 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
     onSaved();
   };
 
+  const handleBack = () => {
+    if (isDirty) {
+      setPendingConfirm({ type: "back" });
+      return;
+    }
+    onBack();
+  };
+
+  const handleClearRequest = () => {
+    if (total === 0) return;
+    setPendingConfirm({ type: "clear" });
+  };
+
+  const resolveConfirm = () => {
+    if (!pendingConfirm) return;
+    if (pendingConfirm.type === "back") onBack();
+    if (pendingConfirm.type === "clear") clearDeck();
+    if (pendingConfirm.type === "starter") applyStarter(pendingConfirm.starterId);
+    setPendingConfirm(null);
+  };
+
+  const expansionLabel =
+    expansionFilter === "all"
+      ? "全件"
+      : expansionFilter.length > 18
+        ? `${expansionFilter.slice(0, 18)}…`
+        : expansionFilter;
+
   return (
     <div className="deck-builder">
       {previewCard && (
         <CardModal card={previewCard} onClose={() => setPreviewCard(null)} />
       )}
 
-      <header className="deck-builder__header">
-        <button type="button" className="btn btn--ghost" onClick={onBack}>
-          戻る
-        </button>
-        <div>
-          <h1 className="deck-builder__title">デッキ作成</h1>
-          <p className="deck-builder__count">
-            {total} 枚（最低 {MIN_DECK_SIZE} 枚）
-          </p>
-        </div>
-      </header>
+      {pendingConfirm && (
+        <ConfirmDialog
+          title={
+            pendingConfirm.type === "back"
+              ? "変更を破棄"
+              : pendingConfirm.type === "clear"
+                ? "デッキを空にする"
+                : "スターターで上書き"
+          }
+          message={
+            pendingConfirm.type === "back"
+              ? "保存していない変更があります。破棄して戻りますか？"
+              : pendingConfirm.type === "clear"
+                ? "デッキをすべて空にしますか？元に戻せません。"
+                : "スターターデッキで上書きしますか？現在の内容は失われます。"
+          }
+          confirmLabel={
+            pendingConfirm.type === "back"
+              ? "破棄して戻る"
+              : pendingConfirm.type === "clear"
+                ? "空にする"
+                : "上書きする"
+          }
+          danger={pendingConfirm.type !== "back"}
+          onConfirm={resolveConfirm}
+          onCancel={() => setPendingConfirm(null)}
+        />
+      )}
 
-      <label className="deck-builder__field">
+      {expansionSheetOpen && (
+        <ExpansionFilterSheet
+          sets={wikiSetOptions}
+          value={expansionFilter}
+          onChange={setExpansionFilter}
+          onClose={() => setExpansionSheetOpen(false)}
+        />
+      )}
+
+      <DeckBuilderHeader
+        total={total}
+        validationOk={validation.ok}
+        isDirty={isDirty}
+        onBack={handleBack}
+      />
+
+      <label className="deck-builder__field deck-builder__name-field">
         <span className="deck-builder__label">デッキ名</span>
         <input
           className="deck-builder__input"
@@ -200,169 +343,98 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
         />
       </label>
 
-      <div className="deck-builder__toolbar">
-        <label className="deck-builder__field deck-builder__field--inline">
-          <span className="deck-builder__label">スターターから読込</span>
-          <select
-            defaultValue=""
-            onChange={(event) => {
-              const value = event.target.value as StarterDeckId;
-              if (value) loadStarter(value);
-              event.target.value = "";
-            }}
-          >
-            <option value="">選択…</option>
-            {STARTER_OPTIONS.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button type="button" className="btn" onClick={clearDeck}>
-          クリア
-        </button>
-      </div>
-
-      {!validation.ok && validation.errors.length > 0 && total > 0 && (
-        <ul className="deck-builder__hint" role="alert">
-          {validation.errors.map((error) => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
-      )}
-
-      <div className="deck-builder__panels">
-      <section className="deck-builder__section" aria-label="デッキ内容">
-        <h2 className="deck-builder__section-title">デッキ内容</h2>
-        {deckCards.length === 0 ? (
-          <p className="deck-builder__empty">カードを追加してください</p>
-        ) : (
-          <div className="deck-builder__deck-list">
-            {entries.map((entry) => {
-              const card = getFullPlayableCardById(entry.cardId);
-              if (!card) return null;
-              return (
-                <div key={entry.cardId} className="deck-builder__deck-row">
-                  <div className="deck-builder__deck-card">
-                    <CardImage
-                      card={card}
-                      small
-                      onPreview={() => setPreviewCard(card)}
-                    />
-                    <span className="deck-builder__deck-name">{card.name}</span>
-                  </div>
-                  <div className="deck-builder__deck-controls">
-                    <button
-                      type="button"
-                      className="btn btn--icon"
-                      aria-label={`${card.name} を減らす`}
-                      onClick={() => removeCard(entry.cardId)}
-                    >
-                      −
-                    </button>
-                    <span>{entry.count}</span>
-                    <button
-                      type="button"
-                      className="btn btn--icon"
-                      aria-label={`${card.name} を増やす`}
-                      onClick={() => addCard(card)}
-                      disabled={remainingCopiesForCard(card, entries) <= 0}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+      <div className="deck-builder__layout">
+        <section className="deck-builder__deck-pane" aria-label="デッキ内容">
+          <DeckSummaryStrip
+            entries={entries}
+            total={total}
+            expanded={deckExpanded}
+            onToggleExpand={() => setDeckExpanded((prev) => !prev)}
+            onPreview={setPreviewCard}
+          />
+          <div className="deck-builder__deck-actions">
+            <StarterChipRow onSelect={requestStarter} />
+            <button
+              type="button"
+              className="btn deck-builder__clear-btn"
+              onClick={handleClearRequest}
+              disabled={total === 0}
+            >
+              すべて外す
+            </button>
           </div>
-        )}
-      </section>
+          {!validation.ok && validation.errors.length > 0 && total > 0 && (
+            <ul className="deck-builder__hint" role="alert">
+              {validation.errors.map((error) => (
+                <li key={error}>{error}</li>
+              ))}
+            </ul>
+          )}
+          {deckExpanded && (
+            <DeckPanelExpanded
+              entries={entries}
+              onAdd={addCard}
+              onRemove={removeCard}
+              onPreview={setPreviewCard}
+            />
+          )}
+        </section>
 
-      <section className="deck-builder__section" aria-label="カード一覧">
-        <h2 className="deck-builder__section-title">カードを追加</h2>
-        <input
-          className="deck-builder__input"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="名前または ID で検索"
-        />
-        <label className="deck-builder__field deck-builder__field--inline">
-          <span className="deck-builder__label">収録セット</span>
-          <select
-            value={expansionFilter}
-            onChange={(event) => setExpansionFilter(event.target.value)}
-          >
-            <option value="all">全件</option>
-            {wikiSetOptions.map((label) => (
-              <option key={label} value={label}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div className="deck-builder__filters">
-          {(
-            [
-              ["all", "すべて"],
-              ["unit", "ユニット"],
-              ["operation", "オペ"],
-            ] as const
-          ).map(([value, label]) => (
-            <button
-              key={value}
-              type="button"
-              className={`btn ${filter === value ? "btn--primary" : ""}`}
-              onClick={() => setFilter(value)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <div className="deck-builder__filters" aria-label="カテゴリー">
-          <button
-            type="button"
-            className={`btn ${categoryFilter === "all" ? "btn--primary" : ""}`}
-            onClick={() => setCategoryFilter("all")}
-          >
-            全カテゴリー
-          </button>
-          {availableCategories.map((option) => (
-            <button
-              key={option.id}
-              type="button"
-              className={`btn ${categoryFilter === option.id ? "btn--primary" : ""}`}
-              onClick={() => setCategoryFilter(option.id)}
-              title={option.label}
-            >
-              {option.id}
-            </button>
-          ))}
-        </div>
-        {!searchQuery && (
-          <p className="deck-builder__empty" role="status">
-            名前または ID で検索してください（全 {fullPlayableCatalog.cards.length.toLocaleString()} 枚）
-          </p>
-        )}
-        {searchQuery && catalogCards.length === 0 && (
-          <p className="deck-builder__empty" role="status">
-            「{search.trim()}」に一致するカードはありません
-          </p>
-        )}
-        {searchQuery && catalogCards.length > 0 && (
-          <p className="deck-builder__search-count" role="status">
-            {catalogCards.length.toLocaleString()} 件
-          </p>
-        )}
-        <DeckBuilderCatalogList
-          cards={catalogCards}
-          counts={counts}
-          entries={entries}
-          onAdd={addCard}
-          onPreview={setPreviewCard}
-        />
-      </section>
+        <section className="deck-builder__catalog-pane" aria-label="カード一覧">
+          <CatalogToolbar
+            total={total}
+            minDeckSize={MIN_DECK_SIZE}
+            search={search}
+            searchInputRef={searchInputRef}
+            onSearchChange={handleSearchChange}
+            filter={filter}
+            onFilterChange={setFilter}
+            categoryFilter={categoryFilter}
+            onCategoryFilterChange={setCategoryFilter}
+            availableCategories={availableCategories}
+            expansionLabel={expansionLabel}
+            onOpenExpansion={() => setExpansionSheetOpen(true)}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            sort={sort}
+            onSortChange={setSort}
+            resultCount={catalogCards.length}
+            poolCount={fullPlayableCatalog.cards.length}
+            hasSearch={!!searchQuery}
+          />
+          {searchQuery && catalogCards.length === 0 && (
+            <p className="deck-builder__empty" role="status">
+              「{search.trim()}」に一致するカードはありません
+            </p>
+          )}
+          {viewMode === "list" ? (
+            <DeckBuilderCatalogList
+              cards={catalogCards}
+              counts={counts}
+              entries={entries}
+              onAdd={addCard}
+              onRemove={removeCardByDefinition}
+              onPreview={setPreviewCard}
+            />
+          ) : (
+            <DeckBuilderCatalogGrid
+              cards={catalogCards}
+              counts={counts}
+              entries={entries}
+              columns={gridColumns}
+              onAdd={addCard}
+              onRemove={removeCardByDefinition}
+              onPreview={setPreviewCard}
+            />
+          )}
+        </section>
       </div>
+
+      {statusMessage && (
+        <p className="deck-builder__status-toast" role="status">
+          {statusMessage}
+        </p>
+      )}
 
       {saveError && (
         <div className="action-error" role="alert">
@@ -383,8 +455,11 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
           className="btn btn--primary deck-builder__save"
           onClick={handleSave}
           disabled={!validation.ok || !name.trim()}
+          title={
+            !validation.ok && validation.errors[0] ? validation.errors[0] : undefined
+          }
         >
-          保存
+          保存（{total}/{MIN_DECK_SIZE}）
         </button>
       </footer>
     </div>
