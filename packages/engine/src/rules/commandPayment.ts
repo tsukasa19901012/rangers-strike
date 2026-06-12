@@ -8,6 +8,7 @@ import {
 import type { CardDefinition } from "@rangers-strike/cards";
 import { getCardEffect } from "@rangers-strike/cards";
 import {
+  collectOperationTargets,
   isValidOperationTarget,
   needsOperationTarget,
 } from "../effects/resolveOperation";
@@ -23,6 +24,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 import { isShironLightRushTarget } from "./shironLight";
 import {
   allCategoriesExistInCommandZone,
+  canPlayOperation,
   canPlayOperationExceptCommandHold,
   effectiveCommandCategories,
   canRushUnit,
@@ -47,6 +49,12 @@ import {
   hasCommandForCardUse,
   requiredBattleEntryHolds,
 } from "./restrictions";
+import {
+  dslOperationOpensChoose,
+  getDslOperationEffect,
+  isDslInterpretableEffect,
+} from "../dsl/dslCatalog";
+import { collectTargetInstanceIds } from "../dsl/targetSelectors";
 import { canCompleteRushAfterCommandPayment } from "./rushDeclaration";
 
 /** 通常ラッシュ1回ごとに、リリース中コマンドからホールド支払いができるか。 */
@@ -762,6 +770,69 @@ export function buildPaymentFromInitiateAction(
   return null;
 }
 
+function isPlayOperationContinuationLegal(
+  state: GameState,
+  playerId: PlayerId,
+  sourceInstanceId: string,
+  targetInstanceId?: string,
+  extraInstanceId?: string,
+): boolean {
+  if (state.phase !== "rush") return false;
+  const player = state.players[playerId];
+  const found = player.hand.find((c) => c.instanceId === sourceInstanceId);
+  if (!found) return false;
+  const definition = getDefinition(state.definitions, found.cardId);
+  if (!definition || definition.type !== "operation") return false;
+  if (!canPlayOperation(state, playerId, definition)) return false;
+
+  const dslEffect = getDslOperationEffect(found.cardId, "rush");
+  const dslChoose =
+    dslEffect !== undefined &&
+    isDslInterpretableEffect(dslEffect) &&
+    dslOperationOpensChoose(dslEffect);
+
+  if (dslChoose && dslEffect.effects[0]?.type === "choose") {
+    const choose = dslEffect.effects[0];
+    const targets = collectTargetInstanceIds(
+      state,
+      playerId,
+      choose.valid,
+      sourceInstanceId,
+    );
+    if (choose.kind === "optional_deck_draw") {
+      if (player.deck.length === 0 && targets.length === 0) return false;
+    } else if (targets.length === 0) {
+      return false;
+    }
+    if (targetInstanceId) return targets.includes(targetInstanceId);
+    return true;
+  }
+
+  if (needsOperationTarget(found.cardId) && !dslChoose) {
+    if (!targetInstanceId) return false;
+    return collectOperationTargets(state, playerId, found.cardId).includes(targetInstanceId);
+  }
+
+  if (extraInstanceId && extraInstanceId !== targetInstanceId) {
+    return player.hand.some((c) => c.instanceId === extraInstanceId);
+  }
+
+  return true;
+}
+
+function previewPaymentResolve(
+  state: GameState,
+  pending: PendingCommandPayment,
+): { state: GameState } | { error: string } | { nextPending: PendingCommandPayment } {
+  const ids = pending.validInstanceIds.slice(0, pending.totalNeeded);
+  if (ids.length < pending.totalNeeded) return { error: "wrong_count" };
+  if (validatePaymentSelection(state, pending, ids) !== null) return { error: "invalid_command" };
+  const resolved = applyCommandPaymentResolve(state, pending.playerId, pending, ids);
+  if ("error" in resolved) return resolved;
+  if (resolved.nextPending) return { nextPending: resolved.nextPending };
+  return { state: resolved.state };
+}
+
 export function isInitiateCommandPaymentLegal(
   state: GameState,
   action: InitiateCommandPaymentAction,
@@ -771,7 +842,46 @@ export function isInitiateCommandPaymentLegal(
   if (action.kind === "effect_hold") {
     return state.pendingEffectChoice !== undefined && buildEffectHoldPayment(state) !== null;
   }
-  if (buildPaymentFromInitiateAction(state, action) === null) return false;
+  const pending = buildPaymentFromInitiateAction(state, action);
+  if (!pending) return false;
+
+  const preview = previewPaymentResolve(state, pending);
+  if ("error" in preview) return false;
+  const cont = pending.continuation;
+  if ("nextPending" in preview) {
+    if (cont.type !== "rush") return true;
+    return true;
+  }
+  if (cont.type === "rush") {
+    if (
+      !canCompleteRushAfterCommandPayment(
+        preview.state,
+        pending.playerId,
+        pending.sourceInstanceId,
+        {
+          zordMaterialInstanceId: cont.zordMaterialInstanceId,
+          zordMaterialInstanceIds: cont.zordMaterialInstanceIds,
+          zordMothershipHoldInstanceIds: cont.zordMothershipHoldInstanceIds,
+          zordExtraCommandHoldInstanceIds: cont.zordExtraCommandHoldInstanceIds,
+          zordMaterialDestination: cont.zordMaterialDestination,
+        },
+      )
+    ) {
+      return false;
+    }
+  } else if (cont.type === "play_operation") {
+    if (
+      !isPlayOperationContinuationLegal(
+        preview.state,
+        pending.playerId,
+        pending.sourceInstanceId,
+        cont.targetInstanceId,
+        cont.extraInstanceId,
+      )
+    ) {
+      return false;
+    }
+  }
 
   if (action.kind === "category_use" && state.phase === "rush") {
     const player = state.players[action.playerId];
@@ -823,6 +933,15 @@ export function isResolveCommandPaymentLegal(
   if (resolved.nextPending) return true;
 
   const cont = pending.continuation;
+  if (cont.type === "play_operation") {
+    return isPlayOperationContinuationLegal(
+      resolved.state,
+      pending.playerId,
+      pending.sourceInstanceId,
+      cont.targetInstanceId,
+      cont.extraInstanceId,
+    );
+  }
   if (cont.type !== "rush") return true;
 
   const def = getDefinition(resolved.state.definitions, pending.sourceCardId);

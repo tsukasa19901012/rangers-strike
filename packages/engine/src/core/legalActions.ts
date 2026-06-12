@@ -430,7 +430,11 @@ function appendOperationActions(
         choose.valid,
         card.instanceId,
       );
-      if (targets.length === 0) continue;
+      if (choose.kind === "optional_deck_draw") {
+        if (player.deck.length === 0 && targets.length === 0) continue;
+      } else if (targets.length === 0) {
+        continue;
+      }
       actions.push({
         type: "play_operation",
         playerId,
@@ -933,6 +937,20 @@ function appendEffectChoiceActions(
     if (!isValidEffectChoiceTarget(state, pending, instanceId)) continue;
     actions.push({ type: "resolve_effect_choice", playerId, instanceId });
   }
+
+  const hasChoiceAction = actions.some(
+    (action) =>
+      action.type === "resolve_effect_choice" ||
+      action.type === "confirm_effect_choice" ||
+      action.type === "confirm_shiron_reveal" ||
+      action.type === "confirm_denji_reveal" ||
+      action.type === "resolve_ruin_survey" ||
+      action.type === "resolve_seabed_draw" ||
+      action.type === "initiate_command_payment",
+  );
+  if (!hasChoiceAction && !actions.some((action) => action.type === "skip_effect_choice")) {
+    actions.push({ type: "skip_effect_choice", playerId });
+  }
 }
 
 function appendBattleEntryActions(
@@ -1023,6 +1041,9 @@ export function getLegalActions(state: GameState): GameAction[] {
       : undefined) ??
     getReactionChooserPlayerId(state) ??
     state.pendingEffectChoice?.playerId ??
+    state.pendingMorph?.defenderPlayerId ??
+    state.pendingBattleEntry?.playerId ??
+    state.pendingScry?.playerId ??
     state.activePlayer;
   const player = state.players[playerId];
   const actions: GameAction[] = [];
@@ -1048,7 +1069,11 @@ export function getLegalActions(state: GameState): GameAction[] {
   }
 
   if (state.pendingEffectChoice?.kind === "simultaneous_order") {
-    appendEffectChoiceActions(state, playerId, actions);
+    const chooserId = state.pendingEffectChoice.playerId;
+    appendEffectChoiceActions(state, chooserId, actions);
+    if (actions.length === 0 && state.pendingEffectChoice.optional) {
+      actions.push({ type: "skip_effect_choice", playerId: chooserId });
+    }
     return actions;
   }
 
@@ -1110,7 +1135,11 @@ export function getLegalActions(state: GameState): GameAction[] {
   }
 
   if (state.pendingMorph) {
-    appendMorphReactionActions(state, state.pendingMorph.defenderPlayerId, actions);
+    const defenderId = state.pendingMorph.defenderPlayerId;
+    appendMorphReactionActions(state, defenderId, actions);
+    if (actions.length === 0) {
+      actions.push({ type: "pass_morph_reaction", playerId: defenderId });
+    }
     return actions;
   }
 
@@ -1124,7 +1153,11 @@ export function getLegalActions(state: GameState): GameAction[] {
   }
 
   if (state.pendingEffectChoice) {
-    appendEffectChoiceActions(state, playerId, actions);
+    const chooserId = state.pendingEffectChoice.playerId;
+    appendEffectChoiceActions(state, chooserId, actions);
+    if (actions.length === 0 && state.pendingEffectChoice.optional) {
+      actions.push({ type: "skip_effect_choice", playerId: chooserId });
+    }
     return actions;
   }
 
@@ -1407,21 +1440,6 @@ export function getLegalActions(state: GameState): GameAction[] {
     case "end":
       actions.push({ type: "end_phase", playerId });
       break;
-  }
-
-  if (
-    actions.length === 0 &&
-    state.pendingEffectChoice?.optional &&
-    state.pendingEffectChoice.playerId === playerId
-  ) {
-    actions.push({ type: "skip_effect_choice", playerId });
-  }
-
-  if (
-    actions.length === 0 &&
-    state.pendingMorph?.defenderPlayerId === playerId
-  ) {
-    actions.push({ type: "pass_morph_reaction", playerId });
   }
 
   return actions;

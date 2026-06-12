@@ -111,9 +111,11 @@ export function isReleaseStepComplete(player: PlayerState): boolean {
 }
 
 export function hasCompletedStartPhaseSteps(player: PlayerState): boolean {
+  const returnComplete =
+    player.hasReturnedBattleThisStart === true || player.battle.length === 0;
   return (
     isReleaseStepComplete(player) &&
-    player.hasReturnedBattleThisStart === true &&
+    returnComplete &&
     player.hasDrawnThisStart === true
   );
 }

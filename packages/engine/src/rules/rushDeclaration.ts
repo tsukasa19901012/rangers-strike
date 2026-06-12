@@ -12,7 +12,7 @@ import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { validateZordAdditionalPayment } from "./mothership";
 import { isShironLightRushTarget } from "./shironLight";
 import { darkDealRushPowerBudget } from "./legend3/restrictions";
-import { requiresAllFusionPartners } from "./zord";
+import { requiresAllFusionPartners, hasAllRequiredFusionMaterials } from "./zord";
 
 /** カテゴリ支払い済み、またはカテゴリ不要なユニットのみ直接 rush 可能。 */
 export function canDeclareRush(
@@ -81,7 +81,7 @@ export function canCompleteRushAfterCommandPayment(
   }
 
   if (isZordUpCost(definition.powerCost) && requiresAllFusionPartners(handCard.cardId)) {
-    return true;
+    return hasAllRequiredFusionMaterials(player, handCard.cardId, sourceInstanceId);
   }
 
   if (!needsZordMaterial(state.definitions, handCard.cardId)) {
@@ -97,7 +97,15 @@ export function canCompleteRushAfterCommandPayment(
   }
 
   if (fieldIds.length === 0) {
-    return mothershipHolds.length > 0;
+    return validateZordAdditionalPayment(
+      player,
+      state.definitions,
+      handCard.cardId,
+      sourceInstanceId,
+      undefined,
+      zord?.zordMaterialDestination,
+      mothershipHolds,
+    );
   }
 
   return validateZordAdditionalPayment(

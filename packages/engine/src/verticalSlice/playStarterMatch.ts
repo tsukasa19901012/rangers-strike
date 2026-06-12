@@ -70,6 +70,7 @@ export function playStarterMatchUntilEnd(
   const actionCounts: Record<string, number> = {};
   let strikes = 0;
   let battles = 0;
+  let blockedRushPaymentSourceId: string | undefined;
 
   for (let steps = 0; steps < maxSteps; steps += 1) {
     phasesSeen.add(state.phase);
@@ -102,8 +103,22 @@ export function playStarterMatchUntilEnd(
 
     const actor = actions[0]!.playerId;
     const picked = pickCpuAction(state, actor, cpuLevel);
-    const action: GameAction =
+    let action: GameAction =
       picked && isLegalAction(state, picked) ? picked : actions[0]!;
+
+    if (
+      blockedRushPaymentSourceId &&
+      action.type === "initiate_command_payment" &&
+      action.sourceInstanceId === blockedRushPaymentSourceId
+    ) {
+      const fallback = actions.find(
+        (candidate) =>
+          candidate.type !== "initiate_command_payment" ||
+          candidate.sourceInstanceId !== blockedRushPaymentSourceId,
+      );
+      if (fallback) action = fallback;
+      blockedRushPaymentSourceId = undefined;
+    }
 
     actionCounts[action.type] = (actionCounts[action.type] ?? 0) + 1;
     if (action.type === "strike") strikes += 1;
@@ -120,6 +135,7 @@ export function playStarterMatchUntilEnd(
         playerId: action.playerId,
       });
       if (cancelled.ok) {
+        blockedRushPaymentSourceId = state.pendingCommandPayment?.sourceInstanceId;
         state = cancelled.state;
         actionCounts.cancel_command_payment =
           (actionCounts.cancel_command_payment ?? 0) + 1;

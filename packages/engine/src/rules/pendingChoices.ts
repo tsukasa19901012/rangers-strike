@@ -890,7 +890,15 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   const pending = state.pendingEffectChoice;
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
-  if (!pending.optional) return { error: "cannot_skip" };
+  if (!pending.optional) {
+    const hasValidTarget = pending.validInstanceIds.some((instanceId) =>
+      isValidEffectChoiceTarget(state, pending, instanceId),
+    );
+    if (!hasValidTarget) {
+      return finishChoice(state, pending, "skipped");
+    }
+    return { error: "cannot_skip" };
+  }
   if (pending.kind === "seabed_draw") {
     return applySeabedDrawSkip(state, playerId);
   }
