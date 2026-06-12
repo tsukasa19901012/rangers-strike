@@ -41,6 +41,28 @@ const manifestPath = path.join(
   packageRoot,
   "pipeline/data/promoted-image-download.json",
 );
+const sourceOverridesPath = path.join(
+  packageRoot,
+  "pipeline/data/promoted-image-source-overrides.json",
+);
+
+async function loadSourceOverrides() {
+  try {
+    const raw = JSON.parse(await readFile(sourceOverridesPath, "utf8"));
+    const overrides = {};
+    for (const [cardId, sourceId] of Object.entries(raw)) {
+      if (cardId.startsWith("_")) continue;
+      overrides[cardId] = sourceId;
+    }
+    return overrides;
+  } catch {
+    return {};
+  }
+}
+
+function resolveSourceCardId(cardId, overrides) {
+  return overrides[cardId] ?? cardId;
+}
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -76,11 +98,12 @@ async function download(url) {
   return data;
 }
 
-async function processCard(card, stats) {
+async function processCard(card, stats, sourceOverrides) {
   const filename = `${card.id}.jpg`;
   const assetPath = path.join(assetsDir, filename);
   const webPath = path.join(webPublicDir, filename);
-  const sourceUrl = `${IMAGE_BASE}/${card.id}.jpg`;
+  const sourceId = resolveSourceCardId(card.id, sourceOverrides);
+  const sourceUrl = `${IMAGE_BASE}/${sourceId}.jpg`;
 
   if (card.imageUrl?.startsWith(imageBasePath) && (await fileExists(webPath))) {
     stats.skipped++;
@@ -119,6 +142,7 @@ async function main() {
 
   const stats = { ok: 0, skipped: 0, failed: [] };
   const startedAt = new Date().toISOString();
+  const sourceOverrides = await loadSourceOverrides();
 
   for (const catalog of CATALOGS) {
     const file = JSON.parse(await readFile(catalog.cardsJson, "utf8"));
@@ -127,7 +151,9 @@ async function main() {
 
     console.log(`\n=== ${catalog.id}: ${cards.length} cards to fetch ===\n`);
 
-    await runPool(cards, concurrency, (card) => processCard(card, stats));
+    await runPool(cards, concurrency, (card) =>
+      processCard(card, stats, sourceOverrides),
+    );
 
     await writeFile(catalog.cardsJson, `${JSON.stringify(file, null, 2)}\n`);
     console.log(`Updated ${catalog.cardsJson}`);

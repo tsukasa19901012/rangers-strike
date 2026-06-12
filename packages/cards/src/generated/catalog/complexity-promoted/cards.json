@@ -3979,7 +3979,7 @@
       "expansion": "legend2",
       "powerCost": "4+",
       "imageUrl": "/cards/promoted/RK-240.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-240.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-241.jpg",
       "rushAdditionalCondition": {
         "conditionId": "send_s_unit_to_power",
         "text": "特徴「DEN-O」を持つ自軍Sユニット1体をパワーゾーンに送る",
@@ -4006,7 +4006,7 @@
       "expansion": "legend2",
       "powerCost": 2,
       "imageUrl": "/cards/promoted/RK-241.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-241.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-242.jpg",
       "bp": 500,
       "size": "S",
       "sp": "1/4",
@@ -4026,7 +4026,7 @@
       "expansion": "legend2",
       "powerCost": 0,
       "imageUrl": "/cards/promoted/RK-242.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-242.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-240.jpg",
       "text": "※常駐 ※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズごとに1度だけ、『オモテ向きの自軍パワーを1枚選び、自軍山札の上に戻す』を実行してもよい。そうしたとき、このターン、特徴「イマジン」を持つ自軍ユニットは、「これはバトルエリアに出たとき撃破される」と書かれていても、そのテキストは無効になり、特徴「警察」を追加される。"
     },
     {
