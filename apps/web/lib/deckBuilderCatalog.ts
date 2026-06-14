@@ -2,7 +2,6 @@ import { cardHasCategory, type CardDefinition, type Category } from "@rangers-st
 
 export type CatalogFilterType = "all" | "unit" | "operation";
 export type CatalogSort = "id" | "name";
-export type CatalogViewMode = "list" | "grid";
 
 export function filterCatalogCards(
   catalogSource: readonly CardDefinition[],

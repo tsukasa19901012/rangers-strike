@@ -178,7 +178,7 @@ export function CardImage({
         <div className="card__placeholder">
           {faceDown ? (
             "裏"
-          ) : (
+          ) : hideMeta ? null : (
             <>
               <span className="card__placeholder-name">{card.name}</span>
               <span className="card__placeholder-meta">

@@ -7,7 +7,6 @@ import {
   getWikiSetLabels,
   type CardDefinition,
   type Category,
-  type StarterDeckId,
 } from "@rangers-strike/cards";
 import { CATEGORY_OPTIONS } from "@/lib/labels";
 import {
@@ -20,7 +19,6 @@ import {
   mapToEntries,
   remainingCopiesForCard,
   saveCustomDeck,
-  starterTemplateEntries,
   validateDeckEntries,
   type CustomDeck,
 } from "@/lib/deckBuilder";
@@ -29,27 +27,24 @@ import {
   sortCatalogCards,
   type CatalogFilterType,
   type CatalogSort,
-  type CatalogViewMode,
 } from "@/lib/deckBuilderCatalog";
+import { useCardAdjustSelection } from "@/lib/useCardAdjustSelection";
 import { formatDeckValidationMessage } from "@/lib/formatDeckValidation";
 import { CardModal } from "./CardModal";
-import { CatalogToolbar } from "./CatalogToolbar";
+import { CatalogBar } from "./CatalogBar";
+import {
+  CatalogFilterModal,
+  countActiveCatalogFilters,
+} from "./CatalogFilterModal";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { DeckBuilderCatalogGrid } from "./DeckBuilderCatalogGrid";
-import { DeckBuilderCatalogList } from "./DeckBuilderCatalogList";
 import { DeckBuilderHeader } from "./DeckBuilderHeader";
-import { DeckPanelExpanded } from "./DeckPanelExpanded";
-import { DeckSummaryStrip } from "./DeckSummaryStrip";
+import { DeckCardGrid, type DeckDisplayLayout } from "./DeckCardGrid";
 import { DeckWarningBanner } from "./DeckWarningBanner";
-import { ExpansionFilterSheet } from "./ExpansionFilterSheet";
-import { StarterChipRow } from "./StarterChipRow";
 
 type ExpansionFilter = "all" | string;
 type CategoryFilter = "all" | Category;
-type PendingConfirm =
-  | { type: "back" }
-  | { type: "clear" }
-  | { type: "starter"; starterId: StarterDeckId };
+type PendingConfirm = { type: "back" } | { type: "clear" };
 
 type DeckBuilderScreenProps = {
   editDeckId?: string | null;
@@ -77,22 +72,24 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
   const [filter, setFilter] = useState<CatalogFilterType>("all");
   const [expansionFilter, setExpansionFilter] = useState<ExpansionFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
-  const [viewMode, setViewMode] = useState<CatalogViewMode>("list");
   const [sort, setSort] = useState<CatalogSort>("id");
-  const [deckExpanded, setDeckExpanded] = useState(false);
-  const [expansionSheetOpen, setExpansionSheetOpen] = useState(false);
+  const [deckLayout, setDeckLayout] = useState<DeckDisplayLayout>("wrap");
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [adjustCardId, setAdjustCardId] = useState<string | null>(null);
   const [pendingConfirm, setPendingConfirm] = useState<PendingConfirm | null>(null);
   const [previewCard, setPreviewCard] = useState<CardDefinition | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const prevTotalRef = useRef(countEntries(existing?.entries ?? []));
 
   const entries = useMemo(() => mapToEntries(counts), [counts]);
   const total = useMemo(() => countEntries(entries), [entries]);
   const validation = useMemo(() => validateDeckEntries(entries), [entries]);
   const isDirty = name !== initialName || !mapsEqual(counts, initialCounts);
+
+  useCardAdjustSelection(adjustCardId, setAdjustCardId);
 
   const wikiSetOptions = useMemo(() => getWikiSetLabels(), []);
 
@@ -134,19 +131,19 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
     return sortCatalogCards(filtered, sort);
   }, [catalogSource, categoryFilter, filter, searchQuery, sort]);
 
-  const [gridColumns, setGridColumns] = useState(2);
+  const activeFilterCount = countActiveCatalogFilters({
+    search,
+    filter,
+    categoryFilter,
+    expansionFilter,
+  });
 
   useEffect(() => {
-    const updateColumns = () => {
-      if (window.matchMedia("(min-width: 640px)").matches) {
-        setGridColumns(3);
-      } else {
-        setGridColumns(2);
-      }
-    };
-    updateColumns();
-    window.addEventListener("resize", updateColumns);
-    return () => window.removeEventListener("resize", updateColumns);
+    const media = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
   }, []);
 
   useEffect(() => {
@@ -155,7 +152,7 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
         const target = event.target as HTMLElement;
         if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
         event.preventDefault();
-        searchInputRef.current?.focus();
+        setFilterModalOpen(true);
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -169,12 +166,14 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
     prevTotalRef.current = total;
   }, [total]);
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    if (value.trim()) {
-      setDeckExpanded(false);
+  useEffect(() => {
+    if (!adjustCardId) return;
+    if (!catalogCards.some((card) => card.id === adjustCardId)) {
+      if (!entries.some((entry) => entry.cardId === adjustCardId)) {
+        setAdjustCardId(null);
+      }
     }
-  };
+  }, [adjustCardId, catalogCards, entries]);
 
   const addCard = useCallback((card: CardDefinition) => {
     setCounts((prev) => {
@@ -204,26 +203,10 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
     [removeCard],
   );
 
-  const applyStarter = useCallback((starterId: StarterDeckId) => {
-    setCounts(entriesToMap(starterTemplateEntries(starterId)));
-    setSaveError(null);
-    setDeckExpanded(true);
-  }, []);
-
-  const requestStarter = useCallback(
-    (starterId: StarterDeckId) => {
-      if (total === 0) {
-        applyStarter(starterId);
-        return;
-      }
-      setPendingConfirm({ type: "starter", starterId });
-    },
-    [applyStarter, total],
-  );
-
   const clearDeck = useCallback(() => {
     setCounts(new Map());
     setSaveError(null);
+    setAdjustCardId(null);
   }, []);
 
   const handleSave = () => {
@@ -270,16 +253,8 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
     if (!pendingConfirm) return;
     if (pendingConfirm.type === "back") onBack();
     if (pendingConfirm.type === "clear") clearDeck();
-    if (pendingConfirm.type === "starter") applyStarter(pendingConfirm.starterId);
     setPendingConfirm(null);
   };
-
-  const expansionLabel =
-    expansionFilter === "all"
-      ? "全件"
-      : expansionFilter.length > 18
-        ? `${expansionFilter.slice(0, 18)}…`
-        : expansionFilter;
 
   return (
     <div className="deck-builder">
@@ -289,39 +264,34 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
 
       {pendingConfirm && (
         <ConfirmDialog
-          title={
-            pendingConfirm.type === "back"
-              ? "変更を破棄"
-              : pendingConfirm.type === "clear"
-                ? "デッキを空にする"
-                : "スターターで上書き"
-          }
+          title={pendingConfirm.type === "back" ? "変更を破棄" : "デッキを空にする"}
           message={
             pendingConfirm.type === "back"
               ? "保存していない変更があります。破棄して戻りますか？"
-              : pendingConfirm.type === "clear"
-                ? "デッキをすべて空にしますか？元に戻せません。"
-                : "スターターデッキで上書きしますか？現在の内容は失われます。"
+              : "デッキをすべて空にしますか？元に戻せません。"
           }
-          confirmLabel={
-            pendingConfirm.type === "back"
-              ? "破棄して戻る"
-              : pendingConfirm.type === "clear"
-                ? "空にする"
-                : "上書きする"
-          }
+          confirmLabel={pendingConfirm.type === "back" ? "破棄して戻る" : "空にする"}
           danger={pendingConfirm.type !== "back"}
           onConfirm={resolveConfirm}
           onCancel={() => setPendingConfirm(null)}
         />
       )}
 
-      {expansionSheetOpen && (
-        <ExpansionFilterSheet
-          sets={wikiSetOptions}
-          value={expansionFilter}
-          onChange={setExpansionFilter}
-          onClose={() => setExpansionSheetOpen(false)}
+      {filterModalOpen && (
+        <CatalogFilterModal
+          search={search}
+          onSearchChange={setSearch}
+          filter={filter}
+          onFilterChange={setFilter}
+          categoryFilter={categoryFilter}
+          onCategoryFilterChange={setCategoryFilter}
+          availableCategories={availableCategories}
+          expansionFilter={expansionFilter}
+          onExpansionFilterChange={setExpansionFilter}
+          expansionSets={wikiSetOptions}
+          sort={sort}
+          onSortChange={setSort}
+          onClose={() => setFilterModalOpen(false)}
         />
       )}
 
@@ -345,24 +315,28 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
 
       <div className="deck-builder__layout">
         <section className="deck-builder__deck-pane" aria-label="デッキ内容">
-          <DeckSummaryStrip
+          <DeckCardGrid
             entries={entries}
             total={total}
-            expanded={deckExpanded}
-            onToggleExpand={() => setDeckExpanded((prev) => !prev)}
+            layout={deckLayout}
+            showLayoutToggle={isDesktop}
+            onLayoutToggle={() =>
+              setDeckLayout((prev) => (prev === "wrap" ? "row" : "wrap"))
+            }
+            selectedCardId={adjustCardId}
+            onSelectCardId={setAdjustCardId}
+            onAdd={addCard}
+            onRemove={removeCard}
             onPreview={setPreviewCard}
           />
-          <div className="deck-builder__deck-actions">
-            <StarterChipRow onSelect={requestStarter} />
-            <button
-              type="button"
-              className="btn deck-builder__clear-btn"
-              onClick={handleClearRequest}
-              disabled={total === 0}
-            >
-              すべて外す
-            </button>
-          </div>
+          <button
+            type="button"
+            className="btn deck-builder__clear-btn"
+            onClick={handleClearRequest}
+            disabled={total === 0}
+          >
+            すべて外す
+          </button>
           {!validation.ok && validation.errors.length > 0 && total > 0 && (
             <ul className="deck-builder__hint" role="alert">
               {validation.errors.map((error) => (
@@ -370,63 +344,31 @@ export function DeckBuilderScreen({ editDeckId, onBack, onSaved }: DeckBuilderSc
               ))}
             </ul>
           )}
-          {deckExpanded && (
-            <DeckPanelExpanded
-              entries={entries}
-              onAdd={addCard}
-              onRemove={removeCard}
-              onPreview={setPreviewCard}
-            />
-          )}
         </section>
 
         <section className="deck-builder__catalog-pane" aria-label="カード一覧">
-          <CatalogToolbar
-            total={total}
+          <CatalogBar
+            deckTotal={total}
             minDeckSize={MIN_DECK_SIZE}
-            search={search}
-            searchInputRef={searchInputRef}
-            onSearchChange={handleSearchChange}
-            filter={filter}
-            onFilterChange={setFilter}
-            categoryFilter={categoryFilter}
-            onCategoryFilterChange={setCategoryFilter}
-            availableCategories={availableCategories}
-            expansionLabel={expansionLabel}
-            onOpenExpansion={() => setExpansionSheetOpen(true)}
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-            sort={sort}
-            onSortChange={setSort}
             resultCount={catalogCards.length}
-            poolCount={fullPlayableCatalog.cards.length}
-            hasSearch={!!searchQuery}
+            activeFilterCount={activeFilterCount}
+            onOpenFilters={() => setFilterModalOpen(true)}
           />
           {searchQuery && catalogCards.length === 0 && (
             <p className="deck-builder__empty" role="status">
               「{search.trim()}」に一致するカードはありません
             </p>
           )}
-          {viewMode === "list" ? (
-            <DeckBuilderCatalogList
-              cards={catalogCards}
-              counts={counts}
-              entries={entries}
-              onAdd={addCard}
-              onRemove={removeCardByDefinition}
-              onPreview={setPreviewCard}
-            />
-          ) : (
-            <DeckBuilderCatalogGrid
-              cards={catalogCards}
-              counts={counts}
-              entries={entries}
-              columns={gridColumns}
-              onAdd={addCard}
-              onRemove={removeCardByDefinition}
-              onPreview={setPreviewCard}
-            />
-          )}
+          <DeckBuilderCatalogGrid
+            cards={catalogCards}
+            counts={counts}
+            entries={entries}
+            selectedCardId={adjustCardId}
+            onSelectCardId={setAdjustCardId}
+            onAdd={addCard}
+            onRemove={removeCardByDefinition}
+            onPreview={setPreviewCard}
+          />
         </section>
       </div>
 

@@ -1,24 +1,29 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { DeckEntry } from "@rangers-strike/cards";
-import { maxCopiesForCard, remainingCopiesForCard } from "@/lib/deckBuilder";
-import { CardImage } from "./CardImage";
+import { remainingCopiesForCard } from "@/lib/deckBuilder";
+import {
+  CATALOG_CARD_WIDTH,
+  CATALOG_GRID_GAP,
+  CATALOG_ROW_HEIGHT,
+  CATALOG_ROW_HEIGHT_SELECTED,
+  computeCatalogGridColumns,
+} from "@/lib/catalogGridLayout";
+import { DeckCardThumb } from "./DeckCardThumb";
 
 type DeckBuilderCatalogGridProps = {
   cards: CardDefinition[];
   counts: Map<string, number>;
   entries: DeckEntry[];
-  columns: number;
+  selectedCardId: string | null;
+  onSelectCardId: (cardId: string | null) => void;
   onAdd: (card: CardDefinition) => void;
   onRemove: (card: CardDefinition) => void;
   onPreview: (card: CardDefinition) => void;
 };
-
-const ROW_HEIGHT = 108;
-const ROW_GAP = 8;
 
 function chunkCards(cards: CardDefinition[], columns: number): CardDefinition[][] {
   const rows: CardDefinition[][] = [];
@@ -32,32 +37,48 @@ export function DeckBuilderCatalogGrid({
   cards,
   counts,
   entries,
-  columns,
+  selectedCardId,
+  onSelectCardId,
   onAdd,
   onRemove,
   onPreview,
 }: DeckBuilderCatalogGridProps) {
   const parentRef = useRef<HTMLDivElement>(null);
+  const [columns, setColumns] = useState(2);
   const rows = useMemo(() => chunkCards(cards, columns), [cards, columns]);
 
   const virtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => ROW_HEIGHT,
-    gap: ROW_GAP,
+    estimateSize: (index) => {
+      const rowCards = rows[index];
+      if (!rowCards) return CATALOG_ROW_HEIGHT;
+      return rowCards.some((card) => card.id === selectedCardId)
+        ? CATALOG_ROW_HEIGHT_SELECTED
+        : CATALOG_ROW_HEIGHT;
+    },
+    gap: CATALOG_GRID_GAP,
     overscan: 3,
   });
 
   useEffect(() => {
     const element = parentRef.current;
     if (!element) return;
-    const observer = new ResizeObserver(() => {
+
+    const updateLayout = () => {
+      setColumns(computeCatalogGridColumns(element.clientWidth));
       virtualizer.measure();
-    });
+    };
+
+    const observer = new ResizeObserver(updateLayout);
     observer.observe(element);
-    virtualizer.measure();
+    updateLayout();
     return () => observer.disconnect();
   }, [virtualizer, rows.length]);
+
+  useEffect(() => {
+    virtualizer.measure();
+  }, [selectedCardId, virtualizer, rows.length]);
 
   if (cards.length === 0) {
     return null;
@@ -79,59 +100,36 @@ export function DeckBuilderCatalogGrid({
           return (
             <div
               key={virtualRow.index}
-              className="deck-builder__grid-row"
+              className="deck-builder__catalog-grid-row"
               style={{
                 height: `${virtualRow.size}px`,
                 transform: `translateY(${virtualRow.start}px)`,
-                gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+                gridTemplateColumns: `repeat(${columns}, ${CATALOG_CARD_WIDTH}px)`,
               }}
               role="listitem"
             >
               {rowCards.map((card) => {
                 const current = counts.get(card.id) ?? 0;
-                const max = maxCopiesForCard(card);
-                const remaining = remainingCopiesForCard(card, entries);
-                const inDeck = current > 0;
+                const isSelected = selectedCardId === card.id;
+                const canAdd = remainingCopiesForCard(card, entries) > 0;
+
                 return (
                   <div
                     key={card.id}
-                    className={`deck-builder__grid-cell ${inDeck ? "deck-builder__grid-cell--in-deck" : ""}`}
+                    className={`deck-builder__deck-cell ${isSelected ? "deck-builder__deck-cell--selected" : ""}`}
                   >
-                    <button
-                      type="button"
-                      className="deck-builder__grid-preview"
-                      onClick={() => onPreview(card)}
-                      aria-label={`${card.name} の詳細`}
-                    >
-                      <CardImage card={card} small hideMeta />
-                    </button>
-                    <span className="deck-builder__grid-name">{card.name}</span>
-                    {inDeck && (
-                      <span className="deck-builder__grid-overlay">
-                        {current}/{max}
-                      </span>
-                    )}
-                    <div className="deck-builder__grid-actions">
-                      {inDeck && (
-                        <button
-                          type="button"
-                          className="btn btn--icon deck-builder__catalog-remove"
-                          aria-label={`${card.name} を減らす`}
-                          onClick={() => onRemove(card)}
-                        >
-                          −
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        className="btn btn--icon"
-                        aria-label={`${card.name} を追加`}
-                        disabled={remaining <= 0}
-                        onClick={() => onAdd(card)}
-                      >
-                        +
-                      </button>
-                    </div>
+                    <DeckCardThumb
+                      card={card}
+                      count={current}
+                      canAdd={canAdd}
+                      isSelected={isSelected}
+                      onToggleSelect={() =>
+                        onSelectCardId(isSelected ? null : card.id)
+                      }
+                      onAdd={() => onAdd(card)}
+                      onRemove={() => onRemove(card)}
+                      onPreview={() => onPreview(card)}
+                    />
                   </div>
                 );
               })}

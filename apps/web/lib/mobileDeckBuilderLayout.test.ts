@@ -36,19 +36,19 @@ describe("AC-06 — mobile deck builder layout contract", () => {
     );
   });
 
-  it("defines touch-friendly catalog row targets and virtual scroll", () => {
-    expect(globalsCss).toMatch(/\.deck-builder__catalog-item/);
+  it("defines touch-friendly catalog grid rows and virtual scroll", () => {
+    expect(globalsCss).toMatch(/\.deck-builder__catalog-grid-row/);
     expect(globalsCss).toMatch(/\.deck-builder__catalog-virtual/);
     expect(globalsCss).toMatch(/--db-touch-min:\s*44px/);
   });
 
-  it("uses sticky catalog toolbar from tablet breakpoint (avoids footer overlap on mobile)", () => {
+  it("defines sticky catalog bar from tablet breakpoint", () => {
     const tabletSection = globalsCss.slice(
       globalsCss.indexOf("@media (min-width: 640px)"),
       globalsCss.indexOf("@media (min-width: 1024px)"),
     );
     expect(tabletSection).toMatch(
-      /\.deck-builder__catalog-toolbar\s*\{[^}]*position:\s*sticky/,
+      /\.deck-builder__catalog-bar\s*\{[^}]*position:\s*sticky/,
     );
     const mobileSection = globalsCss.slice(
       globalsCss.indexOf("@media (max-width: 639px)"),
