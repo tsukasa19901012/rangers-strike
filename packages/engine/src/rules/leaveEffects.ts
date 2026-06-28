@@ -1,8 +1,12 @@
 import { hasDestroySelfDamageNote } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
+import { cardName } from "../core/catalog";
 import { applyDamageToPlayer } from "./damagePayment";
 import { resolveLegend2OnDestroy } from "./legend2/destroyEffects";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
+import { startSelectUnitChoice } from "./pendingChoices";
+import { applyReanimate } from "./reanimate";
+import { buildLogEntry } from "../log/formatLog";
 
 export type UnitLeftZoneContext = {
   ownerPlayerId: PlayerId;
@@ -41,6 +45,36 @@ export function resolveUnitLeftZoneEffectsImpl(
   const destroyFx = resolveLegend2OnDestroy(nextState, ctx.ownerPlayerId, ctx.cardId);
   nextState = destroyFx.state;
   logs.push(...destroyFx.logs);
+
+  if (ctx.cardId === "RS-427") {
+    const player = nextState.players[ctx.ownerPlayerId];
+    const gekiInDiscard = player.discard.filter(
+      (c) => cardName(nextState.definitions, c.cardId) === "ゲキイエロー",
+    );
+    if (gekiInDiscard.length === 1) {
+      nextState = applyReanimate(nextState, {
+        playerId: ctx.ownerPlayerId,
+        instanceId: gekiInDiscard[0]!.instanceId,
+        from: "discard",
+        to: "rush",
+      });
+      logs.push(buildLogEntry(ctx.ownerPlayerId, "destroy_effect", ctx.cardId, nextState.definitions, "super_geki_yellow_reanimate"));
+    } else if (gekiInDiscard.length > 1) {
+      const withChoice = startSelectUnitChoice(nextState, {
+        playerId: ctx.ownerPlayerId,
+        effectId: "super_geki_yellow_reanimate",
+        sourceCardId: ctx.cardId,
+        phasePlayerId: ctx.phasePlayerId,
+        validInstanceIds: gekiInDiscard.map((c) => c.instanceId),
+        unitDestination: "rush_from_discard",
+        optional: false,
+      });
+      if (withChoice) {
+        nextState = withChoice;
+        logs.push(buildLogEntry(ctx.ownerPlayerId, "destroy_effect", ctx.cardId, nextState.definitions, "super_geki_yellow_reanimate_choice"));
+      }
+    }
+  }
 
   if (hasDestroySelfDamageNote(ctx.cardId)) {
     const withSelfDamage = applyDamageToPlayer(nextState, ctx.ownerPlayerId, 1, {

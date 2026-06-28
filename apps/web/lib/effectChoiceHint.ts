@@ -99,6 +99,8 @@ export function effectChoiceHint(
       return pending.step === "enemy"
         ? `相手のユニットを選んでください`
         : `自分のユニットを選んでください`;
+    case "confirm":
+      return "宣言するカード名を選んでください";
     case "select_units_bp_budget": {
       const budget = pending.bpBudget ?? 3000;
       const picked = pending.selectedInstanceIds?.length ?? 0;
@@ -116,6 +118,9 @@ export function effectChoiceHint(
       }
       if (pending.effectId === "jet_skateboard") {
         return "このユニットをラッシュエリアに戻しますか？対象を選んでください";
+      }
+      if (pending.effectId === "super_geki_yellow_reanimate") {
+        return "捨札の「ゲキイエロー」を1体選んでラッシュエリアに出してください";
       }
       return "対象を選んでください";
     default:

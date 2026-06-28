@@ -205,6 +205,23 @@ export function EffectChoiceModal({
             </div>
           )}
 
+          {!isGenericFallback && pending.kind === "confirm" && !readOnly && (
+            <div className="effect-action-modal__section">
+              <div className="effect-action-modal__targets">
+                {pending.validInstanceIds.map((name) => (
+                  <button
+                    key={name}
+                    type="button"
+                    className="btn effect-action-modal__target"
+                    onClick={() => onSelect(name)}
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {!isGenericFallback && pending.kind === "seabed_draw" && (
             <div className="effect-action-modal__actions">
               <button type="button" className="btn" onClick={() => onSeabedDraw("top")}>

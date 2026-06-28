@@ -225,6 +225,9 @@ export function isValidEffectChoiceTarget(
     if (dest === "hand_from_discard") {
       return !!findInZone(state.players[pending.playerId], "discard", instanceId);
     }
+    if (dest === "rush_from_discard") {
+      return !!findInZone(state.players[pending.playerId], "discard", instanceId);
+    }
     if (dest === "hand_from_power") {
       return !!findInZone(state.players[pending.playerId], "power", instanceId);
     }
@@ -1104,6 +1107,23 @@ export function applyEffectChoiceSelect(
         );
         return finishChoice(
           { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+          pending,
+          cardName(state.definitions, found.card.cardId),
+        );
+      }
+      if (dest === "rush_from_discard") {
+        const ownerId = pending.playerId;
+        const owner = state.players[ownerId];
+        const found = findInZone(owner, "discard", instanceId);
+        if (!found) return { error: "invalid_target" };
+        const nextState = applyReanimate(state, {
+          playerId: ownerId,
+          instanceId,
+          from: "discard",
+          to: "rush",
+        });
+        return finishChoice(
+          nextState,
           pending,
           cardName(state.definitions, found.card.cardId),
         );
