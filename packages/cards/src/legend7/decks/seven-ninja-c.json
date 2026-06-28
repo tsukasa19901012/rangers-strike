@@ -1,0 +1,25 @@
+{
+  "id": "seven-ninja-c",
+  "name": "七忍の炎陣デッキ（エンジンデッキ）",
+  "starterType": "C",
+  "expansion": "legend7",
+  "source": "https://www.grnrngr.com/cards/rangers-strike/release/series-7-starter-c",
+  "entries": [
+    { "cardId": "RS-255", "count": 3 },
+    { "cardId": "RS-257", "count": 3 },
+    { "cardId": "RS-438", "count": 2 },
+    { "cardId": "RS-451", "count": 2 },
+    { "cardId": "RS-460", "count": 3 },
+    { "cardId": "RS-461", "count": 3 },
+    { "cardId": "RS-462", "count": 2 },
+    { "cardId": "RS-494", "count": 2 },
+    { "cardId": "RS-495", "count": 2 },
+    { "cardId": "RS-505", "count": 3 },
+    { "cardId": "RS-506", "count": 3 },
+    { "cardId": "RS-507", "count": 3 },
+    { "cardId": "RS-508", "count": 2 },
+    { "cardId": "RS-509", "count": 3 },
+    { "cardId": "RS-510", "count": 3 },
+    { "cardId": "RS-515", "count": 1 }
+  ]
+}

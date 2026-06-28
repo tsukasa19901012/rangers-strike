@@ -110,8 +110,15 @@ describe.each([
   ["abarenoh", "A", "RS-050", 1],
   ["dekaranger", "B", "RS-042", 1],
   ["magiking", "C", "RS-070", 1],
+  ["five-dragons-a", "A", "RS-345", 1],
+  ["five-dragons-b", "B", "RS-344", 1],
+  ["five-dragons-c", "C", "RS-346", 1],
+  ["five-dragons-d", "D", "RS-343", 1],
   ["roaring-wings", "D", "RS-176", 1],
   ["silver-adventurer", "E", "RS-178", 1],
+  ["seven-ninja-a", "A", "RS-513", 1],
+  ["seven-ninja-b", "B", "RS-514", 1],
+  ["seven-ninja-c", "C", "RS-515", 1],
 ] as const)("starter deck %s", (id, type, flagshipId, flagshipCount) => {
   const deck = starterDecks[id];
 

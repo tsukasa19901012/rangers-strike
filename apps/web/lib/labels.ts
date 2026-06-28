@@ -26,8 +26,15 @@ export const STARTER_OPTIONS = [
   { id: "abarenoh", label: "Type A: アバレンオー" },
   { id: "dekaranger", label: "Type B: デカレンジャーロボ" },
   { id: "magiking", label: "Type C: マジキング" },
+  { id: "five-dragons-a", label: "五龍の逆鱗 Type A: VRVファイター" },
+  { id: "five-dragons-b", label: "五龍の逆鱗 Type B: レジェンドマジレンジャー" },
+  { id: "five-dragons-c", label: "五龍の逆鱗 Type C: ファイブマン" },
+  { id: "five-dragons-d", label: "五龍の逆鱗 Type D: バクレンオー" },
   { id: "roaring-wings", label: "轟の翼: ダイタンケン" },
   { id: "silver-adventurer", label: "銀の冒険者: ボウケンシルバー" },
+  { id: "seven-ninja-a", label: "七忍の炎陣: 忍者デッキ" },
+  { id: "seven-ninja-b", label: "七忍の炎陣: ゲキデッキ" },
+  { id: "seven-ninja-c", label: "七忍の炎陣: エンジンデッキ" },
 ] as const;
 
 export type StarterId = (typeof STARTER_OPTIONS)[number]["id"];

@@ -1,0 +1,25 @@
+{
+  "id": "seven-ninja-b",
+  "name": "七忍の炎陣デッキ（ゲキデッキ）",
+  "starterType": "B",
+  "expansion": "legend7",
+  "source": "https://www.grnrngr.com/cards/rangers-strike/release/series-7-starter-b",
+  "entries": [
+    { "cardId": "RS-104", "count": 3 },
+    { "cardId": "RS-232", "count": 3 },
+    { "cardId": "RS-245", "count": 2 },
+    { "cardId": "RS-341", "count": 3 },
+    { "cardId": "RS-342", "count": 3 },
+    { "cardId": "RS-432", "count": 2 },
+    { "cardId": "RS-433", "count": 2 },
+    { "cardId": "RS-454", "count": 3 },
+    { "cardId": "RS-456", "count": 3 },
+    { "cardId": "RS-458", "count": 3 },
+    { "cardId": "RS-459", "count": 2 },
+    { "cardId": "RS-498", "count": 2 },
+    { "cardId": "RS-499", "count": 3 },
+    { "cardId": "RS-500", "count": 2 },
+    { "cardId": "RS-501", "count": 3 },
+    { "cardId": "RS-514", "count": 1 }
+  ]
+}

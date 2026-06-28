@@ -1,8 +1,15 @@
 import abarenohDeck from "./legend1/decks/abarenoh.json";
 import dekarangerDeck from "./legend1/decks/dekaranger.json";
 import magikingDeck from "./legend1/decks/magiking.json";
+import fiveDragonsADeck from "./legend5/decks/five-dragons-a.json";
+import fiveDragonsBDeck from "./legend5/decks/five-dragons-b.json";
+import fiveDragonsCDeck from "./legend5/decks/five-dragons-c.json";
+import fiveDragonsDDeck from "./legend5/decks/five-dragons-d.json";
 import roaringWingsDeck from "./legend3/decks/roaring-wings.json";
 import silverAdventurerDeck from "./legend3/decks/silver-adventurer.json";
+import sevenNinjaADeck from "./legend7/decks/seven-ninja-a.json";
+import sevenNinjaBDeck from "./legend7/decks/seven-ninja-b.json";
+import sevenNinjaCDeck from "./legend7/decks/seven-ninja-c.json";
 import type { DeckDefinition } from "./schema";
 import { validateDeckEntries } from "./deckRules";
 import {
@@ -85,8 +92,15 @@ export const starterDecks = {
   abarenoh: abarenohDeck as DeckDefinition,
   dekaranger: dekarangerDeck as DeckDefinition,
   magiking: magikingDeck as DeckDefinition,
+  "five-dragons-a": fiveDragonsADeck as DeckDefinition,
+  "five-dragons-b": fiveDragonsBDeck as DeckDefinition,
+  "five-dragons-c": fiveDragonsCDeck as DeckDefinition,
+  "five-dragons-d": fiveDragonsDDeck as DeckDefinition,
   "roaring-wings": roaringWingsDeck as DeckDefinition,
   "silver-adventurer": silverAdventurerDeck as DeckDefinition,
+  "seven-ninja-a": sevenNinjaADeck as DeckDefinition,
+  "seven-ninja-b": sevenNinjaBDeck as DeckDefinition,
+  "seven-ninja-c": sevenNinjaCDeck as DeckDefinition,
 } as const;
 
 export type StarterDeckId = keyof typeof starterDecks;

@@ -1,0 +1,25 @@
+{
+  "id": "seven-ninja-a",
+  "name": "七忍の炎陣デッキ（忍者デッキ）",
+  "starterType": "A",
+  "expansion": "legend7",
+  "source": "https://www.grnrngr.com/cards/rangers-strike/release/series-7-starter-a",
+  "entries": [
+    { "cardId": "RS-432", "count": 2 },
+    { "cardId": "RS-433", "count": 2 },
+    { "cardId": "RS-438", "count": 2 },
+    { "cardId": "RS-454", "count": 3 },
+    { "cardId": "RS-455", "count": 2 },
+    { "cardId": "RS-456", "count": 3 },
+    { "cardId": "RS-457", "count": 2 },
+    { "cardId": "RS-458", "count": 3 },
+    { "cardId": "RS-459", "count": 2 },
+    { "cardId": "RS-505", "count": 3 },
+    { "cardId": "RS-506", "count": 3 },
+    { "cardId": "RS-507", "count": 3 },
+    { "cardId": "RS-509", "count": 3 },
+    { "cardId": "RS-510", "count": 3 },
+    { "cardId": "RS-512", "count": 3 },
+    { "cardId": "RS-513", "count": 1 }
+  ]
+}
