@@ -19,6 +19,7 @@ import {
 } from "../../dsl/promotedKeywordBridge";
 import { scrumBlocksAttack, wingCanAttackEnemyRush } from "../../keywords";
 import { canWingAttackFromRush } from "../../keywords/battleKeywords";
+import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { countAvailablePower, effectivePowerCost } from "../../core/power";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { countReleasedCommands } from "../restrictions";
@@ -181,6 +182,121 @@ export function attackerHasAircraftFeature(
   return (getDefinition(definitions, attackerCardId)?.features ?? []).includes("航空機");
 }
 
+/** Returns true if a note_other_* nc restriction blocks this attacker→defender pairing. */
+function noteOtherNcAttackRestriction(
+  state: GameState,
+  attackerPlayerId: PlayerId,
+  attackerCard: CardInstance,
+  defenderPlayerId: PlayerId,
+  defenderCard: CardInstance,
+): boolean {
+  const atkId = attackerCard.cardId;
+  const defId = defenderCard.cardId;
+  const atkDef = getDefinition(state.definitions, atkId);
+  const defDef = getDefinition(state.definitions, defId);
+  const atkFeatures = atkDef?.features ?? [];
+  const defFeatures = defDef?.features ?? [];
+  const atkPlayer = state.players[attackerPlayerId];
+  const defPlayer = state.players[defenderPlayerId];
+
+  // RK-067: can't attack 男/女 units without own 女 in discard
+  if (atkId === "RK-067") {
+    const hasFemaleInDiscard = atkPlayer.discard.some((c) => {
+      const d = getDefinition(state.definitions, c.cardId);
+      return d?.type === "unit" && d.features?.includes("女");
+    });
+    if (!hasFemaleInDiscard && (defFeatures.includes("男") || defFeatures.includes("女"))) {
+      return true;
+    }
+  }
+
+  // RK-198: if defender is RK-198 and defender's owner has レイヨウ型 in battle, S-units can't attack
+  if (defId === "RK-198") {
+    const hasReiyo = defPlayer.battle.some((c) => {
+      const d = getDefinition(state.definitions, c.cardId);
+      return d?.features?.includes("レイヨウ型");
+    });
+    if (hasReiyo && atkDef?.type === "unit" && atkDef.size === "S") {
+      return true;
+    }
+  }
+
+  // RK-255: if defender is RK-255 and defender's owner has 仮面ライダー in battle, S-units can't attack
+  if (defId === "RK-255") {
+    const hasRider = defPlayer.battle.some((c) => {
+      const d = getDefinition(state.definitions, c.cardId);
+      return d?.features?.includes("仮面ライダー");
+    });
+    if (hasRider && atkDef?.type === "unit" && atkDef.size === "S") {
+      return true;
+    }
+  }
+
+  // RK-287: can only attack 仮面ライダー units
+  if (atkId === "RK-287") {
+    if (!defFeatures.includes("仮面ライダー")) return true;
+  }
+
+  // RK-308: can't attack 獣 units
+  if (atkId === "RK-308") {
+    if (defFeatures.includes("獣")) return true;
+  }
+
+  // RK-311: can't attack if own unit count > enemy unit count
+  if (atkId === "RK-311") {
+    const ownCount = atkPlayer.rush.length + atkPlayer.battle.length;
+    const enemyCount = defPlayer.rush.length + defPlayer.battle.length;
+    if (ownCount > enemyCount) return true;
+  }
+
+  // RM-044: can't attack 男 or 女 units
+  if (atkId === "RM-044") {
+    if (defFeatures.includes("男") || defFeatures.includes("女")) return true;
+  }
+
+  // RS-442: can't be attacked by 女 units
+  if (defId === "RS-442") {
+    if (atkFeatures.includes("女")) return true;
+  }
+
+  // RS-544: can't be attacked by units with 3+ features
+  if (defId === "RS-544") {
+    if (atkFeatures.length >= 3) return true;
+  }
+
+  // XG1-014: can't attack held units (commandHeld: true)
+  if (atkId === "XG1-014") {
+    if (defenderCard.commandHeld) return true;
+  }
+
+  // XG1-049: can't be attacked by non-wing units
+  if (defId === "XG1-049") {
+    const attackerHasWing = cardHasKeyword(state.definitions, atkId, "wing", {
+      state,
+      playerId: attackerPlayerId,
+    });
+    if (!attackerHasWing) return true;
+  }
+
+  // XG1-077: can't attack released units (commandHeld: false or undefined)
+  if (atkId === "XG1-077") {
+    if (!defenderCard.commandHeld) return true;
+  }
+
+  // XG1-094: can't be attacked by held units (commandHeld: true)
+  if (defId === "XG1-094") {
+    if (attackerCard.commandHeld) return true;
+  }
+
+  // XG3-030: can only attack SP1+ units (sp is defined and not 0)
+  if (atkId === "XG3-030") {
+    const sp = defDef?.sp;
+    if (sp === undefined || sp === 0) return true;
+  }
+
+  return false;
+}
+
 export function canAttackDefender(
   state: GameState,
   attackerPlayerId: PlayerId,
@@ -230,6 +346,9 @@ export function canAttackDefender(
     ) {
       return false;
     }
+    if (noteOtherNcAttackRestriction(state, attackerPlayerId, attacker.card, defenderPlayerId, inRush.card)) {
+      return false;
+    }
     if (
       wingCanAttackEnemyRush(state, attackerPlayerId, attacker.card.cardId) &&
       isSmallUnit(state.definitions, inRush.card.cardId)
@@ -266,6 +385,10 @@ export function canAttackDefender(
       defenderInstanceId,
     )
   ) {
+    return false;
+  }
+
+  if (noteOtherNcAttackRestriction(state, attackerPlayerId, attacker.card, defenderPlayerId, inBattle.card)) {
     return false;
   }
 

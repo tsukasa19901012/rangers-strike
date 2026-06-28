@@ -568,6 +568,14 @@ export function canStrikeUnit(
     if (!canStrikeWithHelloMirage(state, playerId, instance)) {
       return false;
     }
+    // RM-018: can't strike if other own S-units are present
+    if (instance.cardId === "RM-018") {
+      const player = state.players[playerId];
+      const otherSUnits = [...player.rush, ...player.battle].filter(
+        (c) => c.instanceId !== instance.instanceId && isSmallUnit(state.definitions, c.cardId),
+      );
+      if (otherSUnits.length > 0) return false;
+    }
     if (wingAllowsEmptyBattleStrike(state, playerId, instance)) {
       return legend3EffectiveSp(state, playerId, instance) >= 1;
     }
