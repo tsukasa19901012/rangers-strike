@@ -3,7 +3,7 @@ import { cardName, getDefinition } from "../core/catalog";
 import { opponent, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { applyDamageToPlayer } from "./damagePayment";
-import { startSelectCommandChoice, startSelectUnitChoice } from "./pendingChoices";
+import { startSelectCommandChoice, startSelectPowerChoice, startSelectUnitChoice } from "./pendingChoices";
 import type { NamedEffectOutcome } from "./namedUnitEffects";
 
 /** on_rush note_other_* カードの個別効果実装。 */
@@ -184,5 +184,59 @@ export function resolveNoteOtherOnRushEffects(
     }
   }
 
+  // RS-188 (アチャとコチャ): on rush → if power ≥ 7, discard face-up cards until 6 remain
+  if (cardId === "RS-188") {
+    const player = nextState.players[rusherPlayerId];
+    const faceUpCount = player.power.filter((c) => !c.faceDown).length;
+    const toDiscard = Math.min(faceUpCount, Math.max(0, player.power.length - 6));
+    if (toDiscard > 0) {
+      const withChoice = startSelectPowerChoice(nextState, {
+        playerId: rusherPlayerId,
+        effectId: "acha_kocha_power_discard",
+        sourceCardId: cardId,
+        sourceInstanceId: rushedInstanceId,
+        phasePlayerId,
+        selectCount: toDiscard,
+        optional: false,
+      });
+      if (withChoice) {
+        nextState = withChoice;
+        logs.push(buildLogEntry(rusherPlayerId, "rush_effect", cardId, nextState.definitions, "acha_kocha_power_discard"));
+      }
+    }
+  }
+
   return { state: nextState, logs };
+}
+
+/** RM-028 (モトシャリアン): when 宇宙刑事 unit is rushed, may bring RM-028 from power to rush. */
+export function applyMotoSharianPowerTrigger(
+  state: GameState,
+  rusherPlayerId: PlayerId,
+  rushedCardId: string,
+): { state: GameState; logs: string[] } {
+  if (rushedCardId === "RM-028") return { state, logs: [] };
+
+  const player = state.players[rusherPlayerId];
+  const def = getDefinition(state.definitions, rushedCardId);
+  if (!def?.features?.includes("宇宙刑事")) return { state, logs: [] };
+
+  const motoInPower = player.power.find(
+    (c) => c.cardId === "RM-028" && !c.faceDown,
+  );
+  if (!motoInPower) return { state, logs: [] };
+
+  const newPower = player.power.filter((c) => c.instanceId !== motoInPower.instanceId);
+  const nextState = {
+    ...state,
+    ...updatePlayer(state, rusherPlayerId, {
+      ...player,
+      power: newPower,
+      rush: [...player.rush, motoInPower],
+    }),
+  };
+  return {
+    state: nextState,
+    logs: [buildLogEntry(rusherPlayerId, "rush_effect", "RM-028", nextState.definitions, "moto_sharian_auto_rush")],
+  };
 }

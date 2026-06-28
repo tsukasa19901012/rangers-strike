@@ -9,7 +9,7 @@ import {
   resolveLegend3UnnamedRushEffects,
 } from "../../rules/legend3/rushEffects";
 import { ON_RUSH_EFFECTS } from "../../rules/rushEffects";
-import { resolveNoteOtherOnRushEffects } from "../../rules/noteOtherRushEffects";
+import { resolveNoteOtherOnRushEffects, applyMotoSharianPowerTrigger } from "../../rules/noteOtherRushEffects";
 import type { EventListener, UnitRushedEvent } from "../types";
 
 function applyDrawOnRush(
@@ -106,6 +106,14 @@ export const unitRushedListener: EventListener = (event, state) => {
   );
   nextState = noteOther.state;
   logs.push(...noteOther.logs);
+
+  const motoSharian = applyMotoSharianPowerTrigger(
+    nextState,
+    rusherPlayerId,
+    found.card.cardId,
+  );
+  nextState = motoSharian.state;
+  logs.push(...motoSharian.logs);
 
   return {
     state: nextState,
