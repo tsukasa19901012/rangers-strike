@@ -9,6 +9,7 @@ import {
   resolveLegend3UnnamedRushEffects,
 } from "../../rules/legend3/rushEffects";
 import { ON_RUSH_EFFECTS } from "../../rules/rushEffects";
+import { resolveNoteOtherOnRushEffects } from "../../rules/noteOtherRushEffects";
 import type { EventListener, UnitRushedEvent } from "../types";
 
 function applyDrawOnRush(
@@ -95,6 +96,16 @@ export const unitRushedListener: EventListener = (event, state) => {
   const radar = applySuperRadarOnRush(nextState, rusherPlayerId, rushedInstanceId);
   nextState = radar.state;
   logs.push(...radar.logs);
+
+  const noteOther = resolveNoteOtherOnRushEffects(
+    nextState,
+    rusherPlayerId,
+    rushedInstanceId,
+    phasePlayerId,
+    found.card.cardId,
+  );
+  nextState = noteOther.state;
+  logs.push(...noteOther.logs);
 
   return {
     state: nextState,
