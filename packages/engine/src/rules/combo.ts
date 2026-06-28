@@ -568,6 +568,17 @@ export function canStrikeUnit(
     if (!canStrikeWithHelloMirage(state, playerId, instance)) {
       return false;
     }
+    // XG2-101: can't strike if enemy has any メカ unit
+    if (instance.cardId === "XG2-101") {
+      const enemyId = opponent(playerId);
+      const enemyHasMecha = [...state.players[enemyId].rush, ...state.players[enemyId].battle].some(
+        (c) => {
+          const d = getDefinition(state.definitions, c.cardId);
+          return d?.features?.includes("メカ");
+        },
+      );
+      if (enemyHasMecha) return false;
+    }
     // RM-018: can't strike if other own S-units are present
     if (instance.cardId === "RM-018") {
       const player = state.players[playerId];

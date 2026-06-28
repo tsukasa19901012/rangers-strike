@@ -207,6 +207,15 @@ export function legend3EffectiveSp(
     sp += state.players[playerId].sUnitsRecoveredFromDiscardThisTurn ?? 0;
   }
 
+  // RS-281: SP1 if own rush has 2+ 女-featured units
+  if (instance.cardId === "RS-281") {
+    const femaleCount = state.players[playerId].rush.filter((c) => {
+      const d = getDefinition(state.definitions, c.cardId);
+      return d?.features?.includes("女");
+    }).length;
+    if (femaleCount >= 2) sp = Math.max(sp, 1);
+  }
+
   // RS-612: SP1 if own メカ command cards ≥ 4
   if (instance.cardId === "RS-612") {
     const mechaCommandCount = state.players[playerId].command.filter((c) => {
