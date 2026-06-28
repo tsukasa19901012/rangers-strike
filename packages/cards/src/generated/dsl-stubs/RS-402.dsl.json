@@ -28,9 +28,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "SP1",
-          "duration": "turn"
+          "type": "interpret_effect"
         }
       ]
     }

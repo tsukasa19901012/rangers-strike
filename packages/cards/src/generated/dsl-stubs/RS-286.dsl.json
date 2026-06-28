@@ -22,17 +22,15 @@
   },
   "effects": [
     {
-      "id": "named_e5ae88e8adb7e78da3e381ae",
+      "id": "guardian_god",
       "name": "守護獣の神",
       "text": "これがバトルエリアにあるとき、これ以外の「WB」のユニットすべてはBP＋2000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
-          "duration": "turn"
+          "type": "interpret_effect"
         }
       ],
       "optional": false

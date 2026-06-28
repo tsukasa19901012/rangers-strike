@@ -937,6 +937,13 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (pending.kind === "declare_number") {
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    return;
+  }
+
   if (pending.kind === "shiron_light") {
     if (pending.shironLightMeta?.step === "pick") {
       for (const instanceId of pending.validInstanceIds) {

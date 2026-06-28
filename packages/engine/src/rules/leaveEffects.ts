@@ -9,6 +9,16 @@ import { startSelectUnitChoice, startSelectCommandChoice } from "./pendingChoice
 import { applyReanimate } from "./reanimate";
 import { buildLogEntry } from "../log/formatLog";
 import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
+import { reanimateNamedFromDiscardOnDestroy } from "./legend1/coreGapEffects";
+
+const DESTROY_RECRUIT_FROM_DISCARD: Record<string, { partnerName: string; effectId: string }> = {
+  "RS-231": { partnerName: "アバレブルー", effectId: "avare_blue_reanimate" },
+  "RS-333": { partnerName: "マジレッド", effectId: "magi_red_reanimate" },
+  "RS-334": { partnerName: "マジイエロー", effectId: "magi_yellow_reanimate" },
+  "RS-335": { partnerName: "マジブルー", effectId: "magi_blue_reanimate" },
+  "RS-336": { partnerName: "マジピンク", effectId: "magi_pink_reanimate" },
+  "RS-337": { partnerName: "マジグリーン", effectId: "magi_green_reanimate" },
+};
 
 /** Finds a named unit in the player's command OR discard zone and rushes it. */
 function reanimateNamedToRush(
@@ -131,6 +141,18 @@ export function resolveUnitLeftZoneEffectsImpl(
   const destroyFx = resolveLegend2OnDestroy(nextState, ctx.ownerPlayerId, ctx.cardId);
   nextState = destroyFx.state;
   logs.push(...destroyFx.logs);
+
+  const destroyRecruit = DESTROY_RECRUIT_FROM_DISCARD[ctx.cardId];
+  if (destroyRecruit) {
+    const result = reanimateNamedFromDiscardOnDestroy(
+      nextState,
+      ctx,
+      destroyRecruit.partnerName,
+      destroyRecruit.effectId,
+    );
+    nextState = result.state;
+    if (result.log) logs.push(result.log);
+  }
 
   if (ctx.cardId === "RS-427") {
     const player = nextState.players[ctx.ownerPlayerId];

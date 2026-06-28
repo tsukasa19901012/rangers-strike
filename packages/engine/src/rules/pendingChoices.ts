@@ -26,6 +26,11 @@ import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
 import { continueDslAfterChoice } from "../dsl/cardInterpreter";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
+import {
+  applyFlowerBombDeclaredNumber,
+  continueMagiBlueAfterSelfDraw,
+  moveCommandUnitToBattleSilent,
+} from "./legend1/coreGapEffects";
 import { applyCastoffDeckRush, continueCastoffAfterHold } from "./castoff";
 import {
   beginAssaultVectorDestroy,
@@ -976,6 +981,30 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (pending.kind === "optional_deck_draw") {
     return finishChoice(state, pending, "skipped");
   }
+  if (pending.effectId === "magi_blue_self_draw_1") {
+    const chained = continueMagiBlueAfterSelfDraw(
+      state,
+      pending.playerId,
+      pending.sourceCardId,
+      pending.phasePlayerId,
+      1,
+      false,
+    );
+    if (chained.pendingEffectChoice) return { state: chained };
+    return finishChoice(state, pending, "skipped");
+  }
+  if (pending.effectId === "magi_blue_self_draw_2") {
+    const chained = continueMagiBlueAfterSelfDraw(
+      state,
+      pending.playerId,
+      pending.sourceCardId,
+      pending.phasePlayerId,
+      2,
+      pending.magiBlueMeta?.drewAny ?? false,
+    );
+    if (chained.pendingEffectChoice) return { state: chained };
+    return finishChoice(state, pending, "skipped");
+  }
   if (pending.effectId === "morph_replacement" && pending.morphMeta?.activeMorphUnitInstanceId) {
     const next = continueMorphAfterReplacement(
       { ...state, pendingEffectChoice: undefined },
@@ -1121,7 +1150,42 @@ export function applyEffectChoiceSelect(
       if (drawResult.pending) {
         return { state: drawResult.state };
       }
-      return finishChoice(drawResult.state, pending, "draw");
+      let nextState = drawResult.state;
+      if (pending.effectId === "magi_blue_self_draw_1") {
+        nextState = continueMagiBlueAfterSelfDraw(
+          nextState,
+          playerId,
+          pending.sourceCardId,
+          pending.phasePlayerId,
+          1,
+          true,
+        );
+        if (nextState.pendingEffectChoice) return { state: nextState };
+      } else if (pending.effectId === "magi_blue_self_draw_2") {
+        nextState = continueMagiBlueAfterSelfDraw(
+          nextState,
+          playerId,
+          pending.sourceCardId,
+          pending.phasePlayerId,
+          2,
+          true,
+        );
+        if (nextState.pendingEffectChoice) return { state: nextState };
+      }
+      return finishChoice(nextState, pending, "draw");
+    }
+    case "declare_number": {
+      const declared = Number(instanceId);
+      if (!Number.isInteger(declared) || declared < 0 || declared > 12) {
+        return { error: "invalid_target" };
+      }
+      const nextState = applyFlowerBombDeclaredNumber(
+        state,
+        pending.playerId,
+        pending.sourceCardId,
+        declared,
+      );
+      return finishChoice(nextState, pending, String(declared));
     }
     case "select_unit": {
       const dest = pending.unitDestination ?? "discard";
@@ -1551,6 +1615,10 @@ export function applyEffectChoiceSelect(
           command,
           rush: [...player.rush, found.card],
         };
+      } else if (pending.commandAction === "battle_silent") {
+        const moved = moveCommandUnitToBattleSilent(state, owner, instanceId);
+        if (!moved) return { error: "invalid_target" };
+        return finishChoice(moved, pending, cardName(state.definitions, found.card.cardId));
       } else if (pending.commandAction === "power") {
         const [, command] = removeAt(player.command, found.index);
         nextPlayer = {

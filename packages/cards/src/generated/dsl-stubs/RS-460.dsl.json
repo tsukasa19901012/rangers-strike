@@ -40,9 +40,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "optional_then_e695b0e5ad97",
-          "duration": "turn"
+          "type": "interpret_effect"
         }
       ],
       "optional": true

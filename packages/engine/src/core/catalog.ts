@@ -44,7 +44,7 @@ import {
 } from "../keywords/battleKeywords";
 import { effectiveRushAdditionalCondition } from "../rules/rushAdditionalCondition";
 import { countHeldCommands } from "../rules/restrictions";
-import { countAvailablePower, effectivePowerCost } from "./power";
+import { countAvailablePower, effectivePowerCost, rushEffectivePowerCost } from "./power";
 
 export function buildDefinitionMap(
   decks: CardDefinition[][],
@@ -82,10 +82,11 @@ export function rushPowerCost(
   ) {
     return 0;
   }
-  return effectivePowerCost(
+  return rushEffectivePowerCost(
     state,
     playerId,
     parsePowerCost(definition.powerCost),
+    definition.id,
   );
 }
 
@@ -464,7 +465,7 @@ function evaluateRushPowerAndZord(
   const cost = usedZordDown
     ? 0
     : powerContext
-      ? effectivePowerCost(powerContext, powerContext.playerId, rawCost)
+      ? rushEffectivePowerCost(powerContext, powerContext.playerId, rawCost, unitDefinition.id)
       : rawCost;
   const budget =
     powerBudget ??

@@ -23,41 +23,19 @@
       "id": "recruit_named_e3839ee382b8e38394e383b3_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジピンク」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      },
-      "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "discard",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "rush"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
-      "id": "named_e3839ee382b8e3839ce383ab",
+      "id": "magi_pink_bolt",
       "name": "マジボルト",
       "text": "追加条件を持たないユニットを1体選び、持ち主の山札の上に戻してもよい。",
       "trigger": {
@@ -65,9 +43,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "pick_remaining_e8bfbde58aa0",
-          "duration": "turn"
+          "type": "interpret_effect"
         }
       ],
       "optional": true

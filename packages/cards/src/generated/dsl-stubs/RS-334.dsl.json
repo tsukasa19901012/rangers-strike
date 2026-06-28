@@ -24,50 +24,33 @@
       "id": "recruit_named_e3839ee382b8e382a4e382a8_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      },
-      "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "discard",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "rush"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
-      "id": "named_e3839ee382b8e3839ce383ab",
+      "id": "magi_yellow_bolt",
       "name": "マジボルト",
       "text": "「SP1」これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
-        "type": "on_attack"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "attack_rush_zone",
           "duration": "turn"
         }
       ]

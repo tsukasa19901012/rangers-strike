@@ -1059,6 +1059,18 @@ export function pickEffectChoice(
     return skip ?? null;
   }
 
+  if (pending.kind === "declare_number") {
+    if (pending.optional && skip) return skip;
+    return (
+      actions.find(
+        (a) => a.type === "resolve_effect_choice" && a.instanceId === "0",
+      ) ??
+      actions.find((a) => a.type === "resolve_effect_choice") ??
+      skip ??
+      null
+    );
+  }
+
   if (pending.kind === "select_units_bp_budget") {
     const selected = pending.selectedInstanceIds ?? [];
     const budget = pending.bpBudget ?? 3000;

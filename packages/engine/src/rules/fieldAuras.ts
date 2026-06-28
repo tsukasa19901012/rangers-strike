@@ -143,8 +143,10 @@ export function passiveNamedFieldBpBonus(
   let bonus = 0;
 
   if (
-    playerHasInBattle(state, playerId, "RS-034") &&
+    (playerHasInBattle(state, playerId, "RS-034") ||
+      playerHasInBattle(state, playerId, "RS-286")) &&
     instance.cardId !== "RS-034" &&
+    instance.cardId !== "RS-286" &&
     categoriesInclude(def.category, "WB")
   ) {
     bonus += 2000;

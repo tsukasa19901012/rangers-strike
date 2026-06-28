@@ -25,6 +25,7 @@ import {
   isLegend3OnRushEffect,
   resolveLegend3OnRushEffects,
 } from "./legend3/rushEffects";
+import { magiRedBoltAttackBpBonus } from "./legend1/coreGapEffects";
 import {
   canAttackRushWithMoonlightSonic,
   legend3AttackerBpBonus,
@@ -115,6 +116,8 @@ export function battleAttackerBpBonus(
     ).length;
     total += released * 1000;
   }
+
+  total += magiRedBoltAttackBpBonus(state, pending.attackerPlayerId, attacker.card);
 
   // XG4-090 / XG4-066: vehicle gives rider a BP bonus when attacking
   if (attacker.card.mountedOnInstanceId) {
@@ -230,7 +233,9 @@ export function canAttackRushWithYellowThunder(
   if (!attacker) return false;
 
   const yellowThunderActive = hasBattleNcEffect(attacker.card, "yellow_thunder");
-  const attackRushZoneActive = hasBattleNcEffect(attacker.card, "attack_rush_zone");
+  const attackRushZoneActive =
+    hasBattleNcEffect(attacker.card, "attack_rush_zone") ||
+    hasBattleNcEffect(attacker.card, "magi_yellow_bolt");
 
   return (
     yellowThunderActive ||

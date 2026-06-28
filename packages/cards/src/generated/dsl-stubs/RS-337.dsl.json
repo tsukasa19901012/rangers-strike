@@ -24,41 +24,19 @@
       "id": "recruit_named_e3839ee382b8e382b0e383aa_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジグリーン」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      },
-      "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "discard",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "rush"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "note_other_e280bbe38193",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
-      "id": "named_e3839ee382b8e3839ce383ab",
+      "id": "magi_green_bolt",
       "name": "マジボルト",
       "text": "「SP1」敵軍コマンドゾーンからカードを1枚選び、持ち主の手札に戻してもよい。",
       "trigger": {
@@ -66,9 +44,7 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "SP1",
-          "duration": "turn"
+          "type": "interpret_effect"
         }
       ]
     }

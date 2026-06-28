@@ -231,7 +231,8 @@ export type EffectChoiceKind =
   | "end_turn_menu"
   | "shiron_light"
   | "simultaneous_order"
-  | "confirm";
+  | "confirm"
+  | "declare_number";
 
 export type ShironLightMeta = {
   step: "pick" | "reveal";
@@ -276,7 +277,7 @@ export type PendingEffectChoice = {
   /** 印刷BPの合計上限（例: RS-106 ジュウクンドー）。 */
   bpBudget?: number;
   unitDestination?: "power" | "discard" | "deck_top" | "hand" | "hand_from_discard" | "hand_from_power" | "rush_from_discard" | "enemy_battle" | "enemy_command" | "swap_battle" | "rush";
-  commandAction?: "discard" | "hold" | "return_hand" | "rush" | "rush_silent" | "power";
+  commandAction?: "discard" | "hold" | "return_hand" | "rush" | "rush_silent" | "battle_silent" | "power";
   commandFilter?: "held" | "released" | "any";
   seabedDrawMeta?: SeabedDrawMeta;
   denjiMachineMeta?: DenjiMachineMeta;
@@ -295,6 +296,7 @@ export type PendingEffectChoice = {
   zoneCategoryDestroyCount?: number;
   /** モーフ置換反応の再開用。 */
   morphMeta?: PendingMorph;
+  magiBlueMeta?: { drewAny: boolean };
 };
 
 /** @deprecated pendingEffectChoice を使用すること（ruin_survey）。 */

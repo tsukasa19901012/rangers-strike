@@ -24,51 +24,27 @@
       "id": "recruit_named_e3839ee382b8e383ace38383_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
-      },
-      "optional": true,
-      "effects": [
-        {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "discard",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "rush"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "named_e3839ee382b8e3839ce383ab",
-      "name": "マジボルト",
-      "text": "「SP1」これはアタックするとき、リリース状態の自軍コマンド1つにつきBP＋1000される。",
-      "trigger": {
-        "type": "on_attack"
+        "type": "on_destroy"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "note_other_e280bbe38193",
           "duration": "turn"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "magi_red_bolt",
+      "name": "マジボルト",
+      "text": "「SP1」これはアタックするとき、リリース状態の自軍コマンド1つにつきBP＋1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "interpret_effect"
         }
       ]
     }

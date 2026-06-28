@@ -6,12 +6,20 @@ import { ENEMY_POWER_COST_MINUS_RULE } from "../core/power";
 import { grantSp1ToBattleUnit, markBattleNcEffect } from "./namedUnitEffects";
 import { tryStartDestroyPowerCostMinusChoice } from "./powerCostMinusEffects";
 import { buildLogEntry } from "../log/formatLog";
+import { applyCoreGapNcEffect } from "./legend1/coreGapEffects";
 import type { ComboOutcome } from "./comboTypes";
 
 const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "RK-282": "scissors_attack",
+  "RS-333": "magi_red_bolt",
+  "RS-335": "magi_blue_bolt",
+  "RS-336": "magi_pink_bolt",
+  "RS-337": "magi_green_bolt",
+  "RS-351": "new_red_beet",
   "RS-382": "victory_robo_strike",
+  "RS-402": "scorching_lion",
   "RS-427": "invalidate_next_opponent_turn",
+  "RS-460": "flower_bomb",
   "XG1-041": "release_self",
   "XG4-058": "last_battle_protect_other_s",
   "XG5-003": "enemy_power_cost_minus",
@@ -19,6 +27,16 @@ const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "RK-159": "v3_kick",
   "RS-278": "bison_rod",
 };
+
+const CORE_GAP_NC_EFFECTS = new Set([
+  "magi_red_bolt",
+  "magi_blue_bolt",
+  "magi_pink_bolt",
+  "magi_green_bolt",
+  "new_red_beet",
+  "scorching_lion",
+  "flower_bomb",
+]);
 
 export function getPromotedNcEffectId(cardId: string): string | null {
   return PROMOTED_NC_BY_CARD[cardId] ?? null;
@@ -34,6 +52,10 @@ export function applyPromotedNcEffect(
 
   const logs: string[] = [];
   let nextState = state;
+
+  if (CORE_GAP_NC_EFFECTS.has(effectId)) {
+    return applyCoreGapNcEffect(state, playerId, card, effectId);
+  }
 
   switch (effectId) {
     case "scissors_attack": {

@@ -3,6 +3,7 @@ import { cardCategories } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "./catalog";
 import { opponent } from "./helpers";
+import { flowerBombPowerCostOverride } from "../rules/legend1/coreGapEffects";
 import { hasTurnRuleModifier } from "./scopedModifiers";
 
 /** コマンドゾーンのカードがマルチカテゴリ（2+）か。表裏・ホールド不問。 */
@@ -61,6 +62,19 @@ export function effectivePowerCost(
 ): number {
   const reduced = rawCost - enemyPowerCostReduction(state, playerId);
   return Math.max(0, reduced);
+}
+
+export function rushEffectivePowerCost(
+  state: Pick<GameState, "players" | "definitions" | "activePlayer">,
+  playerId: PlayerId,
+  rawCost: number,
+  cardId?: string,
+): number {
+  if (cardId) {
+    const flowerBomb = flowerBombPowerCostOverride(state, playerId, cardId);
+    if (flowerBomb !== null) return flowerBomb;
+  }
+  return effectivePowerCost(state, playerId, rawCost);
 }
 
 export function canAffordAvailablePower(
