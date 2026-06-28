@@ -1,7 +1,7 @@
 import type { Category } from "@rangers-strike/cards";
 import { playerHasActiveFieldKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition, cardName } from "../core/catalog";
+import { getDefinition, cardName, isLargeUnit } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
@@ -85,6 +85,30 @@ function noteOtherNcBpBonus(
       const cats = Array.isArray(def.category) ? def.category : [def.category];
       return cats.length >= 2;
     }).length * 1000;
+  }
+
+  // RS-558 (ガンマジン): BP+4000 if any L-unit on field (own or enemy)
+  if (cardId === "RS-558") {
+    const anyL = [...own.rush, ...own.battle, ...enemy.rush, ...enemy.battle].some(
+      (c) => c.instanceId !== instance.instanceId && isLargeUnit(state.definitions, c.cardId),
+    );
+    if (anyL) bonus += 4000;
+  }
+
+  // RS-672 (ゴローダーGT): BP+2000 if any L-unit on field (own or enemy)
+  if (cardId === "RS-672") {
+    const anyL = [...own.rush, ...own.battle, ...enemy.rush, ...enemy.battle].some(
+      (c) => c.instanceId !== instance.instanceId && isLargeUnit(state.definitions, c.cardId),
+    );
+    if (anyL) bonus += 2000;
+  }
+
+  // XG3-003 (ラジエッカーロボ): BP+3000 if any L-unit on field (own or enemy)
+  if (cardId === "XG3-003") {
+    const anyL = [...own.rush, ...own.battle, ...enemy.rush, ...enemy.battle].some(
+      (c) => c.instanceId !== instance.instanceId && isLargeUnit(state.definitions, c.cardId),
+    );
+    if (anyL) bonus += 3000;
   }
 
   // XG3-013 (ガオポーラー): BP+3000 if own ガオベアー in rush or battle

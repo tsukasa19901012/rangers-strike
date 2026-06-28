@@ -303,6 +303,10 @@ export function unitEffectiveCategories(
   if (zone === "battle" && hasUnnamedRule(instance.cardId, "battle_adds_ma_category")) {
     return cats.includes("MA") ? cats : [...cats, "MA"];
   }
+  // RS-315: gains WB category when in battle zone
+  if (zone === "battle" && instance.cardId === "RS-315") {
+    return cats.includes("WB") ? cats : [...cats, "WB"];
+  }
   return cats;
 }
 
