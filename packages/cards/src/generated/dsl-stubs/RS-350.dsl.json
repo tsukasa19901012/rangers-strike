@@ -11,7 +11,7 @@
   "rawText": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、カテゴリがDAになり、「SP1」以上のユニット以外にはアタックされない。重ねたユニットがユニットでなくなるとき、このカードを自軍パワーゾーンにダメージにして置く。",
   "effects": [
     {
-      "id": "grant_sp1",
+      "id": "stack_s_on_self_rush",
       "text": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、カテゴリがDAになり、「SP1」以上のユニット以外にはアタックされない。重ねたユニットがユニットでなくなるとき、このカードを自軍パワーゾーンにダメージにして置く。",
       "trigger": {
         "type": "operation",
@@ -20,10 +20,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
-          "duration": "turn"
+          "keyword": "stack_s_on_self_rush",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

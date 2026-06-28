@@ -20,19 +20,25 @@
   ],
   "effects": [
     {
-      "id": "named_e38387e382a3e382b9e382b3",
+      "id": "disco_dance",
       "name": "ディスコダンス",
       "text": "「SP1」自分がターンを終えるとき、自軍バトルエリアの特徴「女」を持つSユニットをすべてラッシュエリアに戻してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "on_turn_end"
       },
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "runtime_disco_dance",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

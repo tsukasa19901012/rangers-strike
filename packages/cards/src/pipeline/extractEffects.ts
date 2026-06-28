@@ -339,8 +339,63 @@ const PATTERNS: PatternMatch[] = [
   },
   ...KEYWORD_NOTE_PATTERNS,
   {
+    pattern: "sp1_turn_end_feature_s_to_rush",
+    test: (body) =>
+      /^「SP(\d+)」/.test(body) &&
+      /自分がターンを終えるとき.*特徴「([^」]+)」.*Sユニット.*すべて.*ラッシュエリアに戻/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const sp = body.match(/SP(\d+)/)?.[1] ?? "1";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : "disco_dance",
+        name: segment.name,
+        text: body,
+        trigger: trigger.type === "nc" ? { type: "on_turn_end" } : trigger,
+        optional: true,
+        effects: [
+          { type: "grant_keyword", keyword: `SP${sp}`, duration: "turn" },
+          {
+            type: "grant_keyword",
+            keyword: "runtime_disco_dance",
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "sp1_turn_end_feature_s_to_rush",
+      };
+    },
+  },
+  {
+    pattern: "flower_bomb_declare_power",
+    test: (body) =>
+      /数字を1つ宣言してもよい.*すべての敵軍Sユニットの必要パワーは宣言した数字になる/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "flower_bomb",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [{ type: "grant_keyword", keyword: "runtime_flower_bomb", duration: "turn" }],
+      matchedPattern: "flower_bomb_declare_power",
+    }),
+  },
+  {
     pattern: "grant_sp_in_text",
-    test: (body) => /「SP(\d+)」(?:\/\d+)?/.test(body) && !/^※/.test(body.trim()),
+    test: (body) => {
+      if (/^※/.test(body.trim())) return false;
+      const match = body.match(/^「SP(\d+)」(?:\/\d+)?([\s\S]*)/);
+      if (!match) return false;
+      const rest = (match[2] ?? "").trim();
+      if (
+        rest.length > 0 &&
+        /ターンを終える|撃破したとき|数字を1つ宣言|相手は自分自身/.test(rest)
+      ) {
+        return false;
+      }
+      return true;
+    },
     build: (body, segment, trigger) => {
       const n = body.match(/SP(\d+)/)?.[1] ?? "1";
       return {

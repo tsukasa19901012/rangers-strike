@@ -21,7 +21,7 @@
   "unnamedRules": [],
   "effects": [
     {
-      "id": "grant_sp1",
+      "id": "sp_1",
       "name": "SP+1",
       "text": "「SP1」",
       "trigger": {
@@ -51,6 +51,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

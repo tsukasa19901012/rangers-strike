@@ -276,6 +276,12 @@ export function applyCoreGapNcEffect(
       logs.push(ncLog(playerId, card.cardId, state.definitions, effectId));
       break;
     }
+    case "disco_dance": {
+      nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
+      nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
+      logs.push(ncLog(playerId, card.cardId, state.definitions, effectId));
+      break;
+    }
     default:
       break;
   }

@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e69c80e5889de3818be38289",
+      "id": "power_faceup_named_e4bbaee99da2e383a9e382a4_on_enter",
       "name": "最初からクライマックスだぜ",
       "text": "これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、このターン、そのユニットは「SP1」になる。",
       "trigger": {
@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
-          "duration": "turn"
+          "keyword": "power_faceup_named_e4bbaee99da2e383a9e382a4_enter_battle",
+          "duration": "permanent"
         }
       ]
     }

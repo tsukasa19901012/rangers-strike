@@ -1,6 +1,7 @@
 import { findNamedEffectByEffectId } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../../types/game";
-import { findInZone } from "../../core/helpers";
+import { getDefinition, isSmallUnit } from "../../core/catalog";
+import { findInZone, updatePlayer } from "../../core/helpers";
 import { openEffectChoice, startSelectUnitChoice } from "../pendingChoices";
 
 const END_TURN_EFFECT_IDS = ["jet_skateboard", "end_turn_battle_to_rush"] as const;
@@ -50,6 +51,10 @@ export function tryOpenEndTurnEffectsMenu(
 ): GameState | null {
   if (state.phase !== "end") return null;
   if (state.pendingEffectChoice) return null;
+
+  const discoChoice = tryStartDiscoDanceEndTurnChoice(state, playerId);
+  if (discoChoice) return discoChoice;
+
   const instanceIds = collectEndTurnEffectInstanceIds(state, playerId);
   if (instanceIds.length === 0) return null;
 
@@ -107,6 +112,64 @@ export function startEndTurnBattleToRushChoiceForUnit(
     phasePlayerId: playerId,
     validInstanceIds: [instanceId],
     unitDestination: "rush",
+    optional: true,
+  });
+}
+
+function battleHasDiscoDanceActive(state: GameState, playerId: PlayerId): boolean {
+  return state.players[playerId].battle.some((c) =>
+    c.activatedNcEffects?.includes("disco_dance"),
+  );
+}
+
+export function applyDiscoDanceReturnFemaleSToRush(
+  state: GameState,
+  playerId: PlayerId,
+): GameState {
+  const player = state.players[playerId];
+  const toMove = new Set(
+    player.battle
+      .filter((c) => {
+        const d = getDefinition(state.definitions, c.cardId);
+        return isSmallUnit(state.definitions, c.cardId) && d?.features?.includes("女");
+      })
+      .map((c) => c.instanceId),
+  );
+  if (toMove.size === 0) return state;
+
+  const keepBattle = player.battle.filter((c) => !toMove.has(c.instanceId));
+  const moved = player.battle.filter((c) => toMove.has(c.instanceId));
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      battle: keepBattle,
+      rush: [...player.rush, ...moved],
+    }),
+  };
+}
+
+export function tryStartDiscoDanceEndTurnChoice(
+  state: GameState,
+  playerId: PlayerId,
+): GameState | null {
+  if (!battleHasDiscoDanceActive(state, playerId)) return null;
+
+  const player = state.players[playerId];
+  const hasFemaleSInBattle = player.battle.some((c) => {
+    const d = getDefinition(state.definitions, c.cardId);
+    return isSmallUnit(state.definitions, c.cardId) && d?.features?.includes("女");
+  });
+  if (!hasFemaleSInBattle) return null;
+
+  const source = player.battle.find((c) => c.activatedNcEffects?.includes("disco_dance"));
+  return openEffectChoice(state, {
+    playerId,
+    effectId: "disco_dance",
+    sourceCardId: source?.cardId ?? "RS-445",
+    kind: "confirm",
+    phasePlayerId: playerId,
+    validInstanceIds: ["return"],
     optional: true,
   });
 }

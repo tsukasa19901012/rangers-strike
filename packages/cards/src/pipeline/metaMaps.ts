@@ -350,12 +350,12 @@ export function hashEffectText(text: string): string {
   return Buffer.from(text.normalize("NFKC"), "utf8").toString("hex").slice(0, 24);
 }
 
+import { effectIdFromName, knownEffectNameIds } from "./effectNameIds";
+
 export function slugifyEffectId(name: string): string {
-  const KNOWN: Record<string, string> = {
-    未来予知: "future_sight",
-    ティラノロッド: "grant_sp1",
-    クルマジックパワー: "place_in_power",
-  };
+  const mapped = effectIdFromName(name);
+  if (mapped) return mapped;
+  const KNOWN = knownEffectNameIds();
   if (KNOWN[name]) return KNOWN[name];
   const ascii = name
     .normalize("NFKD")

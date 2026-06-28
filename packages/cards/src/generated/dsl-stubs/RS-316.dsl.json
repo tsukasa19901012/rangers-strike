@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e8b685e38389e383aae383ab",
+      "id": "super_drill",
       "name": "超ドリル進化",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「恐竜」を持つユニットを2体選び捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる。",
       "trigger": {
@@ -40,10 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "discard_to_zone_e887aae8bb8d",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

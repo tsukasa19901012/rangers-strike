@@ -19,6 +19,7 @@ const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "RS-382": "victory_robo_strike",
   "RS-402": "scorching_lion",
   "RS-427": "invalidate_next_opponent_turn",
+  "RS-445": "disco_dance",
   "RS-460": "flower_bomb",
   "XG1-041": "release_self",
   "XG4-058": "last_battle_protect_other_s",
@@ -36,6 +37,7 @@ const CORE_GAP_NC_EFFECTS = new Set([
   "new_red_beet",
   "scorching_lion",
   "flower_bomb",
+  "disco_dance",
 ]);
 
 export function getPromotedNcEffectId(cardId: string): string | null {

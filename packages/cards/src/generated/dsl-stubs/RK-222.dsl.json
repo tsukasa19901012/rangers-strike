@@ -71,7 +71,7 @@
       ]
     },
     {
-      "id": "named_e99fb3e69283e68993e383bb",
+      "id": "sound_strike_scorching_form",
       "name": "音撃打・灼熱真紅の型",
       "text": "MAを持つコマンドを2つホールドしてもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP1」になり、このターンを終えるときホールド状態なら、リリースしてもよい。",
       "trigger": {
@@ -80,7 +80,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "grant_ability_4d41e38292e6",
           "duration": "turn"
         }
       ]

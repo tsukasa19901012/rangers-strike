@@ -9,6 +9,7 @@ import type {
 import { clearCostWindow, satisfyCostWindow } from "../core/costWindow";
 import { cardName, effectiveBp, getDefinition, parsePowerCost, unitBp } from "../core/catalog";
 import {
+  applyDiscoDanceReturnFemaleSToRush,
   startEndTurnBattleToRushChoiceForUnit,
   startJetSkateboardChoiceForUnit,
 } from "./legend3/endTurnEffects";
@@ -1954,6 +1955,11 @@ export function applyEffectChoiceSelect(
           ...updatePlayer(state, enemyId, { ...enemy, battle: reversed }),
         };
         return finishChoice(nextState, pending, "reversed");
+      }
+      if (pending.effectId === "disco_dance") {
+        if (instanceId !== "return") return { error: "invalid_target" };
+        const nextState = applyDiscoDanceReturnFemaleSToRush(state, playerId);
+        return finishChoice(nextState, pending, "return");
       }
       return { error: "unsupported_confirm" };
     }

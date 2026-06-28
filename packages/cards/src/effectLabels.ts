@@ -89,6 +89,9 @@ export const EFFECT_LABELS: Record<string, string> = {
   green_crush: "グリーンクラッシュ",
   backup_request: "応援要請",
   zenibomb: "ゼニボム",
+  disco_dance: "ディスコダンス",
+  flower_bomb: "忍法花爆弾",
+  scorching_lion: "灼熱の獅子",
   // レジェンド2 ラッシュ時
   rescue_activity: "救助活動",
   sure_win_combination: "必勝合体",

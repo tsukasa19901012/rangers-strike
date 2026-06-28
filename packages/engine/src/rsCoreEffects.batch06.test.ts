@@ -559,6 +559,41 @@ describe("RS-402 灼熱の獅子", () => {
   });
 });
 
+describe("RS-445 ディスコダンス", () => {
+  it("grants SP1 on NC and can return female S units to rush at end turn", () => {
+    const miss = inst("RS-445", "miss");
+    const pink = inst("RS-060", "pink");
+    let state = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [miss, pink, ...battleFillers(3)] },
+    });
+    const { state: afterNc } = applyPromotedNcEffect(state, "player1", miss);
+    expect(afterNc.players.player1.battle.find((c) => c.instanceId === "RS-445:miss")?.spModifier).toBe(1);
+    expect(
+      afterNc.players.player1.battle.find((c) => c.instanceId === "RS-445:miss")?.activatedNcEffects,
+    ).toContain("disco_dance");
+
+    state = { ...afterNc, phase: "battle", activePlayer: "player1" };
+    const withChoice = applyAction(state, { type: "end_phase", playerId: "player1" });
+    expect(withChoice.ok).toBe(true);
+    if (!withChoice.ok) return;
+    expect(withChoice.state.phase).toBe("end");
+    expect(withChoice.state.pendingEffectChoice?.effectId).toBe("disco_dance");
+
+    const resolved = applyAction(withChoice.state, {
+      type: "resolve_effect_choice",
+      playerId: "player1",
+      instanceId: "return",
+    });
+    expect(resolved.ok).toBe(true);
+    if (!resolved.ok) return;
+    expect(resolved.state.players.player1.battle.some((c) => c.instanceId === "RS-060:pink")).toBe(false);
+    expect(resolved.state.players.player1.rush.some((c) => c.instanceId === "RS-060:pink")).toBe(true);
+  });
+});
+
 describe("RS-460 忍法花爆弾", () => {
   it("opens declare number choice and overrides enemy S rush cost", () => {
     const ran = inst("RS-460", "ran");

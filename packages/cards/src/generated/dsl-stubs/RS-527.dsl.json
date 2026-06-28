@@ -26,7 +26,7 @@
       "optional": false
     },
     {
-      "id": "named_e58f8de38390e382a4e382aa",
+      "id": "anti_bio_cannon",
       "name": "反バイオ粒子砲",
       "text": "これにライドしているユニットは「Lユニット」になり、OTを持つ敵軍コマンド1つにつき、「BP+1000」される。また、これにライドしているユニットは、「バイオハンター・シルバ」なら「SP1」になる。",
       "trigger": {
@@ -35,10 +35,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "ride_action_e38193e3828c",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

@@ -11,7 +11,7 @@
   "rawText": "このターン、Sユニットだけでコンビネーションするとき、5番目のユニットは「SP1」「BP12000」になる。",
   "effects": [
     {
-      "id": "grant_sp1",
+      "id": "note_e38193e381aee382bfe383bc",
       "text": "このターン、Sユニットだけでコンビネーションするとき、5番目のユニットは「SP1」「BP12000」になる。",
       "trigger": {
         "type": "operation",
@@ -20,10 +20,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "combo_action_e38193e381ae",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
