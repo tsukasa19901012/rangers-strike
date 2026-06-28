@@ -722,7 +722,20 @@ export function resolveBattlePendingCore(
     winButDestroyedVsSp1(refreshedAttackerFound.card.cardId) &&
     canStrikeUnit(battleState.definitions, refreshedDefenderFound.card, battleState, defenderOwner);
 
-  const finalDestroyAttacker = destroyAttacker || winButSelfDestruct;
+  // XG2-086: during enemy turn (attacker's turn), units that win are also destroyed
+  // XG3-087: same but only for S-units
+  const defenderCausesWinnerDestruction =
+    !destroyAttacker &&
+    destroyDefender &&
+    battleState.activePlayer === attackerId &&
+    (() => {
+      const defCardId = refreshedDefenderFound.card.cardId;
+      if (defCardId === "XG2-086") return true;
+      if (defCardId === "XG3-087") return isSmallUnit(battleState.definitions, refreshedAttackerFound.card.cardId);
+      return false;
+    })();
+
+  const finalDestroyAttacker = destroyAttacker || winButSelfDestruct || defenderCausesWinnerDestruction;
   const detail = `${cardName(battleState.definitions, refreshedDefenderFound.card.cardId)}:${attackerBp}vs${defenderBp}`;
   const log = buildLogEntry(
     attackerId,

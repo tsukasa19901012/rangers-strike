@@ -307,6 +307,18 @@ export function unitEffectiveCategories(
   if (zone === "battle" && instance.cardId === "RS-315") {
     return cats.includes("WB") ? cats : [...cats, "WB"];
   }
+  // RS-535: gains ドラゴン feature when in battle (handled via features, not here)
+  // XG7-055 through XG7-059: gain category during own turn (also in command zone)
+  if (state.activePlayer === playerId) {
+    let extra: Category | null = null;
+    if (instance.cardId === "XG7-055") extra = "ET";
+    else if (instance.cardId === "XG7-056") extra = "MA";
+    else if (instance.cardId === "XG7-057") extra = "WB";
+    else if (instance.cardId === "XG7-059") extra = "OT";
+    if (extra !== null) {
+      return cats.includes(extra) ? cats : [...cats, extra];
+    }
+  }
   return cats;
 }
 

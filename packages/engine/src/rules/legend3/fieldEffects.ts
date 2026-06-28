@@ -207,6 +207,20 @@ export function legend3EffectiveSp(
     sp += state.players[playerId].sUnitsRecoveredFromDiscardThisTurn ?? 0;
   }
 
+  // XG7-008: SP1 when in battle position 2 or 3 and own MA command present
+  if (instance.cardId === "XG7-008") {
+    const player = state.players[playerId];
+    const battleIndex = player.battle.findIndex((c) => c.instanceId === instance.instanceId);
+    if (battleIndex === 1 || battleIndex === 2) {
+      const hasMACommand = player.command.some((c) => {
+        const d = getDefinition(state.definitions, c.cardId);
+        const cats = Array.isArray(d?.category) ? d.category : d?.category ? [d.category] : [];
+        return cats.includes("MA");
+      });
+      if (hasMACommand) sp = Math.max(sp, 1);
+    }
+  }
+
   // RS-281: SP1 if own rush has 2+ 女-featured units
   if (instance.cardId === "RS-281") {
     const femaleCount = state.players[playerId].rush.filter((c) => {
