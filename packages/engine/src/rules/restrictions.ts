@@ -170,6 +170,50 @@ export function patSignerBlocksMove(
   return false;
 }
 
+/** note_other_* nc battle entry restrictions — returns true if entry is blocked. */
+function noteOtherNcBattleEntryBlock(
+  state: GameState,
+  playerId: PlayerId,
+  player: PlayerState,
+  unit: CardInstance,
+): boolean {
+  const cardId = unit.cardId;
+  const enemyId = opponent(playerId);
+  const enemy = state.players[enemyId];
+
+  // RS-368: can't enter on rush turn unless own damage ≥ 4
+  if (cardId === "RS-368") {
+    if (wasRushedThisTurn(player, unit.instanceId) && player.damage < 4) {
+      return true;
+    }
+  }
+
+  // RS-414: can't enter if enemy has ピンク unit
+  if (cardId === "RS-414") {
+    const enemyHasPink = [...enemy.rush, ...enemy.battle].some((c) => {
+      const d = getDefinition(state.definitions, c.cardId);
+      return d?.features?.includes("ピンク");
+    });
+    if (enemyHasPink) return true;
+  }
+
+  // RS-586: can't enter without 7+ 戦闘員 cards in own discard
+  if (cardId === "RS-586") {
+    const senshoCount = player.discard.filter((c) => {
+      const d = getDefinition(state.definitions, c.cardId);
+      return d?.features?.includes("戦闘員");
+    }).length;
+    if (senshoCount < 7) return true;
+  }
+
+  // XG4-015: can't enter without 5+ cards in own discard
+  if (cardId === "XG4-015") {
+    if (player.discard.length < 5) return true;
+  }
+
+  return false;
+}
+
 export function canMoveUnitToBattle(
   state: GameState,
   playerId: PlayerId,
@@ -238,6 +282,8 @@ export function canMoveUnitToBattle(
   if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
 
   if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
+
+  if (noteOtherNcBattleEntryBlock(state, playerId, player, unit)) return false;
 
   return passesBattleEntryHoldRequirements(state, playerId, player, unit);
 }

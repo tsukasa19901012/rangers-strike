@@ -294,6 +294,9 @@ function noteOtherNcAttackRestriction(
     if (sp === undefined || sp === 0) return true;
   }
 
+  // RS-419 (聖剣ズバーン): cannot attack at all
+  if (atkId === "RS-419") return true;
+
   return false;
 }
 
