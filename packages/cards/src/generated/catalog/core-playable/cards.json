@@ -13633,6 +13633,158 @@
       "text": "合体―ガオライオン＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー【天地轟鳴アニマルハート】このユニットは、自軍バトルエリアにある「WB」のMユニット1体につきBP＋2000される。",
       "imageUrl": "/cards/legend3/SR-001.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-001.jpg"
+    },
+    {
+      "id": "SR-002",
+      "name": "スーパーフォーメーション",
+      "type": "operation",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend1",
+      "powerCost": 6,
+      "imageUrl": "/cards/promoted/SR-002.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-002.jpg",
+      "text": "このターン、5体以上の合体ユニットを必要とする特徴「メカ」を持つユニットのカードをラッシュするとき、追加条件を満たすために次のようにしてもよい⇒自軍コマンドゾーンのリリース状態のカードから、合体ユニットに足りない分のユニットと同じ名前のカードを捨札にする。"
+    },
+    {
+      "id": "SR-003",
+      "name": "アームドティラノレンジャー",
+      "type": "unit",
+      "category": "WB",
+      "rarity": "N",
+      "expansion": "legend1",
+      "powerCost": "5+",
+      "imageUrl": "/cards/promoted/SR-003.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-003.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_named_unit",
+        "text": "自軍捨札に「ドラゴンレンジャー」があるとき、自軍「ティラノレンジャー」1体を捨札にする",
+        "partnerName": "ティラノレンジャー",
+        "unitCount": 1
+      },
+      "bp": 4000,
+      "size": "S",
+      "sp": "special",
+      "comboNumber": 4,
+      "text": "【龍撃剣＆獣奏剣】自軍ターン中、これは自軍捨札にある特徴「恐竜」を持つカード1枚につきBP＋1000される。これはBP8000以上のとき「SP1」になる。",
+      "features": [
+        "レッド",
+        "男",
+        "獣奏剣"
+      ]
+    },
+    {
+      "id": "SR-004",
+      "name": "ヘドリアン女王",
+      "type": "unit",
+      "category": "DA",
+      "rarity": "N",
+      "expansion": "legend1",
+      "powerCost": 3,
+      "imageUrl": "/cards/promoted/SR-004.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-004.jpg",
+      "bp": 5000,
+      "size": "S",
+      "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたとき、バトルに勝っても撃破される。 【妖魔力】これが自軍エリアにある間、相手は次の制限を受ける⇒自分自身のコマンドゾーンにOTまたはETのカードをリリース状態で置いたとき、そのカードをホールドする。",
+      "features": [
+        "女王",
+        "ベーダー一族",
+        "女",
+        "メカ",
+        "2nd"
+      ]
+    },
+    {
+      "id": "SR-005",
+      "name": "デカレッドバトライザー",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "legend1",
+      "powerCost": "5+",
+      "imageUrl": "/cards/promoted/SR-005.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-005.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
+      "bp": 3000,
+      "size": "S",
+      "sp": 1,
+      "text": "合体―デカレッド＋マーフィーK9 ※これはアタックされるとき、BP+5000される。 【バトライズファイヤードライブ】これをラッシュしたとき、自軍パワーゾーンからカードを1枚選び捨札にしてもよい。そうしたとき、捨札にしたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、撃破する。",
+      "features": [
+        "レッド",
+        "男",
+        "警察",
+        "バトライザー"
+      ]
+    },
+    {
+      "id": "SR-006",
+      "name": "シュリケンジャーFM",
+      "type": "unit",
+      "category": "MA",
+      "rarity": "N",
+      "expansion": "legend1",
+      "powerCost": "7-",
+      "imageUrl": "/cards/promoted/SR-006.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-006.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「シュリケンジャー」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "シュリケンジャー",
+        "unitCount": 1
+      },
+      "bp": 4500,
+      "size": "S",
+      "sp": 1,
+      "text": "【超忍法・分身魔球】これが自軍エリアにある間、自軍山札の上のカードが1枚オモテになるたび、オモテにしたカードを効果の対象にする前に次の効果を発動できる⇒オモテにしたカードを手札に加える。そして、自分の手札からカードを1枚選び相手に見せ、オモテにしたカードのかわりに効果の対象にする。",
+      "features": [
+        "グリーン",
+        "男",
+        "忍者"
+      ]
+    },
+    {
+      "id": "SR-007",
+      "name": "大神龍",
+      "type": "unit",
+      "category": "MA",
+      "rarity": "N",
+      "expansion": "legend1",
+      "powerCost": "5+",
+      "imageUrl": "/cards/promoted/SR-007.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-007.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "state_gate",
+        "text": "ユニットが7体以上ある"
+      },
+      "bp": 30000,
+      "size": "XL",
+      "text": "※これはアタックすることができない。 【プラズマ衝撃波】これが自軍エリアにある間、自分も相手も次のようにする⇒自分自身のスタートフェイズ中、バトルエリアのユニットをラッシュエリアに戻せない。そのかわりに、自分自身のバトルエリアのユニットを好きな数選び撃破できる。このスタートフェイズを終えるとき、自分自身のバトルエリアに「大神龍」以外のユニットが1体もなければ、これを持ち主の山札に戻してシャッフルする。",
+      "features": [
+        "ドラゴン"
+      ]
+    },
+    {
+      "id": "SR-008",
+      "name": "ビッグワン",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "legend1",
+      "powerCost": 5,
+      "imageUrl": "/cards/promoted/SR-008.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-008.jpg",
+      "bp": 4000,
+      "size": "S",
+      "sp": "special",
+      "text": "【ビッグ・バトン】これは、自軍コマンドゾーンにあるカードの特徴を見て、それぞれの特徴ごとに次の能力を得る⇒特徴「レッド」があればレジストを得る。特徴「ブルー」があればタクスETを得る。特徴「グリーン」があればBP7000になる。特徴「ピンク」があればSP1になる。",
+      "features": [
+        "メカ",
+        "ホワイト",
+        "男"
+      ]
     }
   ]
 }

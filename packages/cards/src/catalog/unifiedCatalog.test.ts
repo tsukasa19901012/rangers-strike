@@ -17,7 +17,7 @@ import {
 } from "./unifiedCatalog";
 
 describe("unifiedCatalog", () => {
-  it("exposes core tier with 691 cards from generated catalog", () => {
+  it("exposes core tier with 698 cards from generated catalog", () => {
     expect(getCatalog("core").cards.length).toBe(CORE_PLAYABLE_CARD_COUNT);
     expect(listCoreCardIds().size).toBe(CORE_PLAYABLE_CARD_COUNT);
     expect(generatedCorePlayableCatalog.cards.length).toBe(CORE_PLAYABLE_CARD_COUNT);

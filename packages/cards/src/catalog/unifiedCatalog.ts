@@ -13,7 +13,7 @@ export const generatedCorePlayableCatalog = corePlayableGenerated as CardCatalog
 
 export const corePlayableCatalog = generatedCorePlayableCatalog;
 
-/** 拡張パック横断のコアプレイアブルカタログ（RS-001..690 + SR-001）。 */
+/** 拡張パック横断のコアプレイアブルカタログ（RS-001..690 + SR-001..008）。 */
 export const allCardsCatalog: CardCatalog = {
   expansion: "all",
   cards: corePlayableCatalog.cards,

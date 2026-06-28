@@ -61,5 +61,7 @@
   "rushAdditionalCondition": {
     "conditionId": "state_gate",
     "text": "ユニットが7体以上ある"
-  }
+  },
+  "imageUrl": "/cards/promoted/SR-007.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-007.jpg"
 }

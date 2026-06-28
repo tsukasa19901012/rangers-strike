@@ -3,7 +3,7 @@ import type { CardCatalog, CardDefinition } from "../schema";
 
 export const corePlayableGeneratedCatalog = generatedCorePlayable as CardCatalog;
 
-/** コア 691 枚（generated/catalog/core-playable が正）。 */
+/** コア 698 枚（generated/catalog/core-playable が正）。 */
 export function loadCorePlayableCards(): CardDefinition[] {
   return corePlayableGeneratedCatalog.cards;
 }

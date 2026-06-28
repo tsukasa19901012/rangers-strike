@@ -2309,38 +2309,6 @@
       "text": "特徴「宇宙刑事」を持つ自軍ユニットが1体もなければ、自軍山札を見て、特徴「宇宙刑事」を持つユニットカードを3枚まで選び、選んだカードを自軍ラッシュエリアに出してもよい。ただし、この効果でカードを選ぶとき、同じカード名のユニットカードを2枚以上選ぶことはできない。その後、山札をシャッフルする。"
     },
     {
-      "id": "SR-002",
-      "name": "スーパーフォーメーション",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 6,
-      "imageUrl": "/cards/promoted/SR-002.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-002.jpg",
-      "text": "このターン、5体以上の合体ユニットを必要とする特徴「メカ」を持つユニットのカードをラッシュするとき、追加条件を満たすために次のようにしてもよい⇒自軍コマンドゾーンのリリース状態のカードから、合体ユニットに足りない分のユニットと同じ名前のカードを捨札にする。"
-    },
-    {
-      "id": "SR-008",
-      "name": "ビッグワン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 5,
-      "imageUrl": "/cards/promoted/SR-008.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-008.jpg",
-      "bp": 4000,
-      "size": "S",
-      "sp": "special",
-      "text": "【ビッグ・バトン】これは、自軍コマンドゾーンにあるカードの特徴を見て、それぞれの特徴ごとに次の能力を得る⇒特徴「レッド」があればレジストを得る。特徴「ブルー」があればタクスETを得る。特徴「グリーン」があればBP7000になる。特徴「ピンク」があればSP1になる。",
-      "features": [
-        "メカ",
-        "ホワイト",
-        "男"
-      ]
-    },
-    {
       "id": "SX-002",
       "name": "仮面ライダークウガRU",
       "type": "unit",

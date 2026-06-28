@@ -2073,6 +2073,27 @@
     "SR-001": {
       "tier": "core"
     },
+    "SR-002": {
+      "tier": "core"
+    },
+    "SR-003": {
+      "tier": "core"
+    },
+    "SR-004": {
+      "tier": "core"
+    },
+    "SR-005": {
+      "tier": "core"
+    },
+    "SR-006": {
+      "tier": "core"
+    },
+    "SR-007": {
+      "tier": "core"
+    },
+    "SR-008": {
+      "tier": "core"
+    },
     "BK-001": {
       "tier": "vanilla-promoted"
     },
@@ -2470,12 +2491,6 @@
       "tier": "vanilla-promoted"
     },
     "SM-001": {
-      "tier": "vanilla-promoted"
-    },
-    "SR-002": {
-      "tier": "vanilla-promoted"
-    },
-    "SR-008": {
       "tier": "vanilla-promoted"
     },
     "SX-002": {
@@ -3922,21 +3937,6 @@
       "tier": "complexity-promoted"
     },
     "SK-004": {
-      "tier": "complexity-promoted"
-    },
-    "SR-003": {
-      "tier": "complexity-promoted"
-    },
-    "SR-004": {
-      "tier": "complexity-promoted"
-    },
-    "SR-005": {
-      "tier": "complexity-promoted"
-    },
-    "SR-006": {
-      "tier": "complexity-promoted"
-    },
-    "SR-007": {
       "tier": "complexity-promoted"
     },
     "SX-001": {

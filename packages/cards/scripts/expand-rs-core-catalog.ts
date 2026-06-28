@@ -1,5 +1,5 @@
 /**
- * RS-179〜RS-690 を core-playable に昇格し、promoted シャードから除去する。
+ * RS-179〜RS-690 および SR-* を core-playable に昇格し、promoted シャードから除去する。
  *
  * Usage:
  *   npx tsx packages/cards/scripts/expand-rs-core-catalog.ts
@@ -29,6 +29,33 @@ function isRsExtended(id: string): boolean {
   return num >= 179 && num <= 690;
 }
 
+function isSrCard(id: string): boolean {
+  return id.startsWith("SR-");
+}
+
+function shouldRemoveFromPromoted(id: string): boolean {
+  return isRsExtended(id) || isSrCard(id);
+}
+
+const LEGEND_EXPANSIONS = new Set(["legend1", "legend2", "legend3"]);
+
+function normalizeCoreExpansion(card: CardDefinition): CardDefinition {
+  if (LEGEND_EXPANSIONS.has(card.expansion)) return card;
+  if (card.id === "SR-001") return { ...card, expansion: "legend3" };
+  return { ...card, expansion: "legend1" };
+}
+
+function listCorePromotionIds(full: CardCatalog, coreIds: Set<string>): string[] {
+  const ids = new Set<string>();
+  for (let n = 179; n <= 690; n += 1) {
+    ids.add(`RS-${String(n).padStart(3, "0")}`);
+  }
+  for (const card of full.cards) {
+    if (isSrCard(card.id)) ids.add(card.id);
+  }
+  return [...ids].filter((id) => !coreIds.has(id)).sort();
+}
+
 function main(): void {
   const corePath = "src/generated/catalog/core-playable/cards.json";
   const vanillaPath = "src/generated/catalog/vanilla-promoted/cards.json";
@@ -44,22 +71,20 @@ function main(): void {
   const fullById = new Map(full.cards.map((c) => [c.id, c]));
 
   const toPromote: CardDefinition[] = [];
-  for (let n = 179; n <= 690; n += 1) {
-    const id = `RS-${String(n).padStart(3, "0")}`;
-    if (coreIds.has(id)) continue;
+  for (const id of listCorePromotionIds(full, coreIds)) {
     const card = fullById.get(id);
     if (!card) {
       throw new Error(`Missing full-playable entry: ${id}`);
     }
-    toPromote.push({ ...card, expansion: card.expansion ?? "legend1" });
+    toPromote.push(normalizeCoreExpansion({ ...card, expansion: card.expansion ?? "legend1" }));
   }
 
-  const mergedCore = [...core.cards, ...toPromote].sort((a, b) =>
-    a.id.localeCompare(b.id, undefined, { numeric: true }),
-  );
+  const mergedCore = [...core.cards, ...toPromote]
+    .map(normalizeCoreExpansion)
+    .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
 
   const filterPromoted = (cards: CardDefinition[]) =>
-    cards.filter((c) => !isRsExtended(c.id));
+    cards.filter((c) => !shouldRemoveFromPromoted(c.id));
 
   const nextVanilla = filterPromoted(vanilla.cards);
   const nextComplexity = filterPromoted(complexity.cards);
@@ -73,7 +98,7 @@ function main(): void {
 
   const wikiPath = "src/generated/catalog/wiki-stubs/cards.json";
   const wiki = readCatalog(wikiPath);
-  const nextWiki = filterPromoted(wiki.cards);
+  const nextWiki = wiki.cards.filter((c) => !shouldRemoveFromPromoted(c.id));
   writeCatalog(wikiPath, { expansion: wiki.expansion, cards: nextWiki });
 
   writeFileSync(

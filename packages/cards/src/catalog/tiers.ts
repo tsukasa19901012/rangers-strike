@@ -13,8 +13,8 @@ export type CatalogTier = (typeof CATALOG_TIERS)[number];
 
 export const FULL_PLAYABLE_CARD_COUNT = 1849;
 
-/** コアプレイアブル（L1–L3 + RS-179..690）。 */
-export const CORE_PLAYABLE_CARD_COUNT = 691;
+/** コアプレイアブル（L1–L3 + RS-179..690 + SR-*）。 */
+export const CORE_PLAYABLE_CARD_COUNT = 698;
 
 export const CORE_PLAYABLE_EXPANSIONS = ["legend1", "legend2", "legend3"] as const;
 

@@ -9,16 +9,16 @@ describe("full-playable DSL integration manifest", () => {
   const coreRegistry = cardDsl.createCardRegistryFromCatalog();
   const fullRegistry = cardDsl.createFullPlayableRegistry();
 
-  it("covers 691 core interpreter-ready cards", () => {
-    expect(coreRegistry.listDslReady().length).toBe(691);
+  it("covers 698 core interpreter-ready cards", () => {
+    expect(coreRegistry.listDslReady().length).toBe(698);
   });
 
-  it("covers 1730 full-playable interpreter-ready cards", () => {
-    expect(fullRegistry.listDslReady().length).toBeGreaterThanOrEqual(1730);
+  it("covers 1849 full-playable interpreter-ready cards", () => {
+    expect(fullRegistry.listDslReady().length).toBeGreaterThanOrEqual(1849);
   });
 
-  it("indexes 2978 effect test cases (2971 active, 7 skipped)", () => {
-    expect(2978).toBeGreaterThan(0);
+  it("indexes 3097 effect test cases (3054 active, 43 skipped)", () => {
+    expect(3097).toBeGreaterThan(0);
   });
 });
 

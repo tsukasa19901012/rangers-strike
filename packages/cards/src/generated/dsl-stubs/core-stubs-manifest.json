@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-06-28T16:47:15.010Z",
+  "generatedAt": "2026-06-28T16:53:27.449Z",
   "source": "loadCards(core)",
-  "coreCount": 691,
+  "coreCount": 698,
   "cardIds": [
     "RS-001",
     "RS-002",
@@ -693,6 +693,13 @@
     "RS-688",
     "RS-689",
     "RS-690",
-    "SR-001"
+    "SR-001",
+    "SR-002",
+    "SR-003",
+    "SR-004",
+    "SR-005",
+    "SR-006",
+    "SR-007",
+    "SR-008"
   ]
 }

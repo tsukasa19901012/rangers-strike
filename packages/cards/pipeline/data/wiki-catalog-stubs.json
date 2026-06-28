@@ -1,15 +1,15 @@
 {
   "summary": {
-    "generatedAt": "2026-06-28T16:44:27.355Z",
+    "generatedAt": "2026-06-28T16:53:28.515Z",
     "wikiTotal": 1849,
-    "catalogRegistered": 691,
-    "stubCount": 1158,
+    "catalogRegistered": 698,
+    "stubCount": 1151,
     "byGrade": {
-      "E": 195,
-      "A": 76,
+      "E": 194,
+      "A": 75,
       "B": 15,
-      "C": 594,
-      "D": 278
+      "C": 593,
+      "D": 274
     }
   },
   "stubs": [
@@ -5114,83 +5114,6 @@
       "rarity": "N",
       "expansion": "wiki_stub",
       "powerCost": 7,
-      "grade": "E",
-      "wikiFound": true
-    },
-    {
-      "id": "SR-002",
-      "name": "スーパーフォーメーション",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": 6,
-      "grade": "A",
-      "wikiFound": true
-    },
-    {
-      "id": "SR-003",
-      "name": "アームドティラノレンジャー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": "5+",
-      "grade": "C",
-      "wikiFound": true
-    },
-    {
-      "id": "SR-004",
-      "name": "ヘドリアン女王（2nd）",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": 3,
-      "grade": "D",
-      "wikiFound": true
-    },
-    {
-      "id": "SR-005",
-      "name": "デカレッドバトライザー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": "5+",
-      "grade": "D",
-      "wikiFound": true
-    },
-    {
-      "id": "SR-006",
-      "name": "シュリケンジャーFM",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": "7-",
-      "grade": "D",
-      "wikiFound": true
-    },
-    {
-      "id": "SR-007",
-      "name": "大神龍",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": "5+",
-      "grade": "D",
-      "wikiFound": true
-    },
-    {
-      "id": "SR-008",
-      "name": "ビッグワン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": 5,
       "grade": "E",
       "wikiFound": true
     },

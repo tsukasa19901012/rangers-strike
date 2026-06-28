@@ -4178,69 +4178,6 @@
       "powerCost": 7
     },
     {
-      "id": "SR-002",
-      "name": "スーパーフォーメーション",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": 6
-    },
-    {
-      "id": "SR-003",
-      "name": "アームドティラノレンジャー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": "5+"
-    },
-    {
-      "id": "SR-004",
-      "name": "ヘドリアン女王（2nd）",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": 3
-    },
-    {
-      "id": "SR-005",
-      "name": "デカレッドバトライザー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": "5+"
-    },
-    {
-      "id": "SR-006",
-      "name": "シュリケンジャーFM",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": "7-"
-    },
-    {
-      "id": "SR-007",
-      "name": "大神龍",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": "5+"
-    },
-    {
-      "id": "SR-008",
-      "name": "ビッグワン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "wiki_stub",
-      "powerCost": 5
-    },
-    {
       "id": "SX-001",
       "name": "仮面ライダー電王超CF",
       "type": "unit",

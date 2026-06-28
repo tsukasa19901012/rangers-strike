@@ -52,8 +52,8 @@ describe("extended catalog", () => {
 
 describe("full playable catalog (M11/M12)", () => {
   it("merges core, vanilla, and complexity promoted without duplicate ids", () => {
-    expect(vanillaPromotedCatalog.cards.length).toBe(286);
-    expect(complexityPromotedCatalog.cards.length).toBe(872);
+    expect(vanillaPromotedCatalog.cards.length).toBe(284);
+    expect(complexityPromotedCatalog.cards.length).toBe(867);
     expect(fullPlayableCatalog.cards).toHaveLength(1849);
     const ids = new Set(fullPlayableCatalog.cards.map((c) => c.id));
     expect(ids.size).toBe(1849);
@@ -85,8 +85,8 @@ describe("full playable CardRegistry (M11/M12)", () => {
   it("loads 1849 cards", () => {
     expect(registry.size()).toBe(1849);
     expect(metrics.core).toBe(CORE_PLAYABLE_CARD_COUNT);
-    expect(metrics.vanillaPromoted).toBe(286);
-    expect(metrics.complexityPromoted).toBe(872);
+    expect(metrics.vanillaPromoted).toBe(284);
+    expect(metrics.complexityPromoted).toBe(867);
   });
 
   it("validates every stub-promoted card document", () => {

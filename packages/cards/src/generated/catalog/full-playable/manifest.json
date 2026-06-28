@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-28T16:42:01.311Z",
+  "generatedAt": "2026-06-28T16:53:27.900Z",
   "source": [
     "src/generated/catalog/core-playable/cards.json",
     "src/generated/catalog/vanilla-promoted/cards.json",
@@ -7,8 +7,8 @@
   ],
   "total": 1849,
   "byTier": {
-    "core": 691,
-    "vanilla-promoted": 286,
-    "complexity-promoted": 872
+    "core": 698,
+    "vanilla-promoted": 284,
+    "complexity-promoted": 867
   }
 }

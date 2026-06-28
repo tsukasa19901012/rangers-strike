@@ -25,7 +25,7 @@ describe("wiki catalog stubs", () => {
     }
 
     expect(data.summary.wikiTotal).toBeGreaterThanOrEqual(1849);
-    expect(data.summary.catalogRegistered).toBe(691);
+    expect(data.summary.catalogRegistered).toBe(698);
     expect(data.summary.stubCount).toBe(data.summary.wikiTotal - data.summary.catalogRegistered);
   });
 });

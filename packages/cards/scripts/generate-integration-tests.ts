@@ -60,7 +60,7 @@ function main(): void {
     "  const fullRegistry = cardDsl.createFullPlayableRegistry();",
     "",
     `  it("covers ${coreSnap.dslReady.length} core interpreter-ready cards", () => {`,
-    "    expect(coreRegistry.listDslReady().length).toBe(179);",
+    `    expect(coreRegistry.listDslReady().length).toBe(${coreSnap.dslReady.length});`,
     "  });",
     "",
     `  it("covers ${fullSnap.dslReady.length} full-playable interpreter-ready cards", () => {`,

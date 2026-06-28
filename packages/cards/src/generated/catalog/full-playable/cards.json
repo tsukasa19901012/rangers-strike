@@ -9384,7 +9384,7 @@
       "features": [
         "恐竜"
       ],
-      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【超ドリル進化】自軍ターン中、これがバトルエリアに出たとき、自分の手札から「爆竜ティラノサウルス」のカードを1枚捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」"
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【超ドリル進化】自分の手札から「爆竜ティラノサウルス」を1枚捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP1」"
     },
     {
       "id": "RS-052",
@@ -9401,7 +9401,7 @@
       "features": [
         "恐竜"
       ],
-      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【超シールド進化】「ワイルドビースト」の自軍ユニットが撃破されるとき、このユニットをかわりに捨札にしてもよい。"
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。【超シールド進化】「ワイルドビースト」の自軍ユニットが撃破されるとき、これをかわりに捨札にしてもよい。"
     },
     {
       "id": "RS-053",
@@ -9663,7 +9663,7 @@
         "イエロー",
         "女"
       ],
-      "text": "【一点突破】これが「SP1」以上または「SP！」のあるユニットを撃破したとき、相手に1点ダメージを与える。"
+      "text": "【一点突破】ストライクできるユニット（コンビネーションによってストライク可能になるユニットも含む）を撃破したとき、相手に1点ダメージを与える。"
     },
     {
       "id": "RS-066",
@@ -10473,7 +10473,7 @@
       "bp": 3000,
       "size": "S",
       "comboNumber": 1,
-      "text": "※これはラッシュしたターンにバトルエリアに出られない。 【ジュウクンドー】これが敵軍ユニットにアタックできるとき、次の効果を発動できる。敵軍ラッシュエリアにあるユニットを、カードに表記された本来のBPの合計が3000以下になるように好きな数選んで撃破する。そうしたとき、これはアタックすることができない。",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。 【ジュウクンドー】これはアタックするかわりに次の効果を発動できる。敵軍ラッシュエリアにあるユニットを、カードに表記された本来のBPの合計が3000以下になるように好きな数選んで撃破する。",
       "features": [
         "レッド",
         "男",
@@ -22342,7 +22342,7 @@
       "type": "operation",
       "category": "ET",
       "rarity": "N",
-      "expansion": "vanilla-promoted",
+      "expansion": "legend1",
       "powerCost": 6,
       "imageUrl": "/cards/promoted/SR-002.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-002.jpg",
@@ -22354,7 +22354,7 @@
       "type": "unit",
       "category": "WB",
       "rarity": "N",
-      "expansion": "complexity-promoted",
+      "expansion": "legend1",
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/SR-003.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-003.jpg",
@@ -22381,7 +22381,7 @@
       "type": "unit",
       "category": "DA",
       "rarity": "N",
-      "expansion": "complexity-promoted",
+      "expansion": "legend1",
       "powerCost": 3,
       "imageUrl": "/cards/promoted/SR-004.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-004.jpg",
@@ -22402,7 +22402,7 @@
       "type": "unit",
       "category": "OT",
       "rarity": "N",
-      "expansion": "complexity-promoted",
+      "expansion": "legend1",
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/SR-005.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-005.jpg",
@@ -22427,7 +22427,7 @@
       "type": "unit",
       "category": "MA",
       "rarity": "N",
-      "expansion": "complexity-promoted",
+      "expansion": "legend1",
       "powerCost": "7-",
       "imageUrl": "/cards/promoted/SR-006.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-006.jpg",
@@ -22453,7 +22453,7 @@
       "type": "unit",
       "category": "MA",
       "rarity": "N",
-      "expansion": "complexity-promoted",
+      "expansion": "legend1",
       "powerCost": "5+",
       "imageUrl": "/cards/promoted/SR-007.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-007.jpg",
@@ -22474,7 +22474,7 @@
       "type": "unit",
       "category": "ET",
       "rarity": "N",
-      "expansion": "vanilla-promoted",
+      "expansion": "legend1",
       "powerCost": 5,
       "imageUrl": "/cards/promoted/SR-008.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-008.jpg",
