@@ -682,20 +682,28 @@ export function applyAction(
         );
       }
       if (cont.type === "play_counter") {
-        return applyAction(nextState, {
-          type: "play_counter",
+        return applyAction(
+          nextState,
+          {
+            type: "play_counter",
+            playerId,
+            instanceId: pending.sourceInstanceId,
+            substituteInstanceId: cont.substituteInstanceId,
+          },
+          { trustLegality: true },
+        );
+      }
+      return applyAction(
+        nextState,
+        {
+          type: "play_operation",
           playerId,
           instanceId: pending.sourceInstanceId,
-          substituteInstanceId: cont.substituteInstanceId,
-        });
-      }
-      return applyAction(nextState, {
-        type: "play_operation",
-        playerId,
-        instanceId: pending.sourceInstanceId,
-        targetInstanceId: cont.targetInstanceId,
-        extraInstanceId: cont.extraInstanceId,
-      });
+          targetInstanceId: cont.targetInstanceId,
+          extraInstanceId: cont.extraInstanceId,
+        },
+        { trustLegality: true },
+      );
     }
 
     case "cancel_command_payment": {

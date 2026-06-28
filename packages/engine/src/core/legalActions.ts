@@ -1050,6 +1050,7 @@ export function getLegalActions(state: GameState): GameAction[] {
   if (state.winner) return [];
 
   const playerId =
+    state.pendingCommandPayment?.playerId ??
     (state.pendingDamagePayment
       ? damagePaymentChoosingPlayer(state.pendingDamagePayment)
       : undefined) ??
