@@ -36,6 +36,7 @@ import {
 import { findInZone, opponent, payPowerCost } from "./helpers";
 import { canStrikeUnit } from "../rules/combo";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
+import { canUseJuuKunDo } from "../rules/juuKunDo";
 import {
   canMoveUnitToBattle,
   cannotAttackOrStrikeThisTurn,
@@ -170,6 +171,7 @@ function isReactionWindowAction(action: GameAction): boolean {
     case "five_tech_intercept":
     case "use_plasma_energy":
     case "use_super_shield":
+    case "use_juu_kun_do":
       return true;
     default:
       return false;
@@ -1057,6 +1059,13 @@ function appendBattleEntryActions(
   if (canStrikeUnit(state.definitions, unit, state, playerId)) {
     actions.push({ type: "strike", playerId, instanceId: pending.instanceId });
   }
+  if (canUseJuuKunDo(state, playerId, pending.instanceId)) {
+    actions.push({
+      type: "use_juu_kun_do",
+      playerId,
+      attackerInstanceId: pending.instanceId,
+    });
+  }
   actions.push({ type: "pass_battle_entry", playerId });
 }
 
@@ -1481,11 +1490,18 @@ export function getLegalActions(state: GameState): GameAction[] {
           ) {
             continue;
           }
+        actions.push({
+          type: "battle",
+          playerId,
+          attackerInstanceId: attacker.instanceId,
+          defenderInstanceId: defender.instanceId,
+        });
+        }
+        if (canUseJuuKunDo(state, playerId, attacker.instanceId)) {
           actions.push({
-            type: "battle",
+            type: "use_juu_kun_do",
             playerId,
             attackerInstanceId: attacker.instanceId,
-            defenderInstanceId: defender.instanceId,
           });
         }
       }

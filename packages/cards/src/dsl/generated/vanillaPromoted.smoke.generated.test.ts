@@ -11,7 +11,7 @@ describe("vanilla-promoted catalog", () => {
   const registry = createFullPlayableRegistry();
 
   it("merges legend and promoted without duplicate ids", () => {
-    expect(vanillaPromotedCatalog.cards.length).toBe(354);
+    expect(vanillaPromotedCatalog.cards.length).toBe(286);
     expect(fullPlayableCatalog.cards.length).toBe(1849);
     const ids = new Set(fullPlayableCatalog.cards.map((c) => c.id));
     expect(ids.size).toBe(fullPlayableCatalog.cards.length);

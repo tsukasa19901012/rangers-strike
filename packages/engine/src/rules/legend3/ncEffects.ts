@@ -1,10 +1,8 @@
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
-import { getDefinition } from "../../core/catalog";
-import { opponent, removeAt, updatePlayer } from "../../core/helpers";
+import { opponent, updatePlayer } from "../../core/helpers";
 import { buildLogEntry } from "../../log/formatLog";
-import { startSelectCommandChoice } from "../pendingChoices";
+import { startFireSwordOperationChoice, startSelectCommandChoice } from "../pendingChoices";
 import {
-  grantBpBoostToBattleUnit,
   grantSp1ToBattleUnit,
 } from "../namedUnitEffects";
 import type { ComboOutcome } from "../comboTypes";
@@ -30,37 +28,23 @@ export function applyLegend3NcEffect(
 
   switch (effectId) {
     case "fire_sword": {
-      for (const pid of [playerId, enemyId] as const) {
-        const ops = nextState.players[pid].operation;
-        if (ops.length === 0) continue;
-        const [op, rest] = removeAt(ops, 0);
-        const player = nextState.players[pid];
-        nextState = {
-          ...nextState,
-          ...updatePlayer(nextState, pid, {
-            ...player,
-            operation: rest,
-            power: [...player.power, { ...op!, faceDown: false }],
-          }),
-        };
-        break;
-      }
       nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
+      const withChoice = startFireSwordOperationChoice(nextState, {
+        playerId,
+        sourceCardId: card.cardId,
+        sourceInstanceId: card.instanceId,
+        phasePlayerId: playerId,
+      });
+      if (withChoice) nextState = withChoice;
       logs.push(ncLog(playerId, card.cardId, state.definitions, "fire_sword"));
       break;
     }
     case "blazing_fire": {
       nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
-      if (state.activePlayer === playerId) {
-        nextState = grantBpBoostToBattleUnit(nextState, playerId, card.instanceId, 2000);
-      }
       logs.push(ncLog(playerId, card.cardId, state.definitions, "blazing_fire"));
       break;
     }
     case "iron_broken": {
-      if (state.activePlayer === playerId) {
-        nextState = grantBpBoostToBattleUnit(nextState, playerId, card.instanceId, 3000);
-      }
       logs.push(ncLog(playerId, card.cardId, state.definitions, "iron_broken"));
       break;
     }

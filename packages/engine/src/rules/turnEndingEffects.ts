@@ -2,7 +2,6 @@ import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { bounceToHand } from "./bounce";
-import { applyAdventureEndTurn } from "./turnModifiers";
 import { applyOnTurnEndBattleEffects } from "./legend2/destroyEffects";
 import { applyResidentOperationTurnEnd } from "./residentOperation";
 import { applyRocketBoosterEndTurnRushReturn } from "./rocketBooster";
@@ -147,10 +146,7 @@ export function resolveTurnEndingEffectsImpl(
   state: GameState,
   endingPlayerId: PlayerId,
 ): { state: GameState; logs: string[] } {
-  let nextState = applyAdventureEndTurn(state, endingPlayerId);
-  if (!nextState.pendingEffectChoice) {
-    nextState = applyResidentOperationTurnEnd(nextState, endingPlayerId);
-  }
+  let nextState = applyResidentOperationTurnEnd(state, endingPlayerId);
   nextState = applyOnTurnEndBattleEffects(nextState, endingPlayerId);
   nextState = applyRocketBoosterEndTurnRushReturn(nextState, endingPlayerId);
   nextState = applyNoteOtherNcTurnEndEffects(nextState, endingPlayerId);

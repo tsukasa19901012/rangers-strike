@@ -59,5 +59,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RS-487.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-487.jpg"
 }

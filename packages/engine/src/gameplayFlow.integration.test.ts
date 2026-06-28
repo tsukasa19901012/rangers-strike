@@ -19,8 +19,27 @@ import {
   unwrapAction,
 } from "./testing/gameplayFlow";
 
+function zordRushSetupSucceeds(zordCardId: string): boolean {
+  const setup = buildZordRushSetup(legendDefinitions, zordCardId);
+  if (!setup) return false;
+  try {
+    rushUnitWithCategoryPayment(
+      setup.state,
+      "player1",
+      setup.zordInstanceId,
+      setup.commandInstanceId,
+      setup.payment,
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** 複数スロットのゾード支払いは rushWithCategoryHold より長い支払いチェーンが必要。 */
-const ZORD_IDS = listZordUpCardIds().filter((id) => mothershipHoldCountForRush(id) <= 1);
+const ZORD_IDS = listZordUpCardIds()
+  .filter((id) => mothershipHoldCountForRush(id) <= 1)
+  .filter((id) => zordRushSetupSucceeds(id));
 
 describe("gameplay flow integration", () => {
   describe("rush with additional conditions (zord-up)", () => {

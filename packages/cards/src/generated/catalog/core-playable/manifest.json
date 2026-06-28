@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-06-11T15:10:52.070Z",
+  "generatedAt": "2026-06-28T16:47:49.136Z",
   "source": "generated/catalog/core-playable/cards.json",
-  "coreCount": 179,
+  "coreCount": 691,
   "byExpansion": {
-    "legend1": 70,
+    "legend1": 582,
     "legend2": 52,
     "legend3": 57
   }

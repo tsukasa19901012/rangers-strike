@@ -9,12 +9,12 @@
   "bp": 4000,
   "size": "M",
   "text": "※これは、自軍Sユニットがバトルエリアになければバトルエリアに出られない。",
-  "rawText": "※これは、自軍Sユニットがバトルエリアになければバトルエリアに出られない。",
   "features": [
     "魔法"
   ],
   "imageUrl": "/cards/legend2/RS-114.jpg",
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-114.jpg",
+  "rawText": "※これは、自軍Sユニットがバトルエリアになければバトルエリアに出られない。",
   "unnamedRules": [
     {
       "kind": "note",

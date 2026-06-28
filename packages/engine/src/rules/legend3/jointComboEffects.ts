@@ -4,9 +4,8 @@ import { getDefinition } from "../../core/catalog";
 import { opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { buildLogEntry } from "../../log/formatLog";
 import {
-  collectFieldUnitIds,
+  startCrossThunderChoice,
   startSelectCommandChoice,
-  startSelectUnitChoice,
 } from "../pendingChoices";
 import type { ComboOutcome } from "../comboTypes";
 
@@ -53,17 +52,12 @@ export function resolveLegend3JointComboR(
       );
       break;
     case "cross_thunder": {
-      const ownTargets = collectFieldUnitIds(nextState, playerId, 5000);
-      const enemyTargets = collectFieldUnitIds(nextState, enemyId, 5000);
-      const withChoice = startSelectUnitChoice(nextState, {
+      const withChoice = startCrossThunderChoice(
+        nextState,
         playerId,
-        effectId: rEffectId,
-        sourceCardId: rCardId,
+        rCardId,
         phasePlayerId,
-        validInstanceIds: ownTargets.length > 0 ? ownTargets : enemyTargets,
-        unitDestination: "discard",
-        optional: true,
-      });
+      );
       if (withChoice) nextState = withChoice;
       logs.push(
         buildLogEntry(playerId, "joint_combo_r", rCardId, state.definitions, "cross_thunder"),

@@ -17,6 +17,7 @@ import { applySimultaneousOrderChoice } from "./simultaneousEffects";
 import { applyAssaultToCommandHold } from "./legend3/restrictions";
 import { findInZone, opponent, performDeckDraws, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
+import { markJuuKunDoAttackerActed } from "./juuKunDo";
 import { findCardOwner } from "./fieldLookup";
 import { bounceToHand } from "./bounce";
 import { applyReanimate } from "./reanimate";
@@ -219,6 +220,10 @@ export function isValidEffectChoiceTarget(
     );
   }
   if (!pending.validInstanceIds.includes(instanceId)) return false;
+
+  if (pending.effectId === "fire_sword") {
+    return !!findInZone(state.players[pending.playerId], "operation", instanceId);
+  }
 
   if (pending.kind === "select_unit") {
     const dest = pending.unitDestination ?? "discard";
@@ -556,7 +561,19 @@ export function applyConfirmEffectChoice(
     const names = selected
       .map((id) => cardName(nextState.definitions, findFieldUnitCardId(nextState, id)))
       .join(",");
-    return finishChoice(nextState, pending, names || "none");
+    const finished = finishChoice(nextState, pending, names || "none");
+    if (finished.error || !finished.state) return finished;
+    if (pending.effectId === "juu_kun_do") {
+      return {
+        ...finished,
+        state: markJuuKunDoAttackerActed(
+          finished.state,
+          pending.playerId,
+          pending.sourceInstanceId,
+        ),
+      };
+    }
+    return finished;
   }
 
   return { error: "invalid_choice_kind" };
@@ -573,6 +590,31 @@ export function startTyrannoSonicChoice(
   return openEffectChoice(state, {
     playerId: rusherId,
     effectId: "tyranno_sonic",
+    sourceCardId,
+    kind: "select_unit_step",
+    step: "own",
+    phasePlayerId,
+    validInstanceIds: ownTargets,
+    maxBp: 5000,
+    unitDestination: "discard",
+    optional: true,
+  });
+}
+
+/** RS-168 cross_thunder: destroy one own and one enemy unit with BP ≤ maxBp. */
+export function startCrossThunderChoice(
+  state: GameState,
+  playerId: PlayerId,
+  sourceCardId: string,
+  phasePlayerId: PlayerId,
+): GameState | null {
+  const enemyId = opponent(playerId);
+  const ownTargets = collectFieldUnitIds(state, playerId, 5000);
+  const enemyTargets = collectFieldUnitIds(state, enemyId, 5000);
+  if (ownTargets.length === 0 || enemyTargets.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId,
+    effectId: "cross_thunder",
     sourceCardId,
     kind: "select_unit_step",
     step: "own",
@@ -672,6 +714,32 @@ export function startSelectPowerChoice(
     validInstanceIds: valid,
     selectCount: params.selectCount,
     optional: params.optional ?? true,
+  });
+}
+
+/** RS-130 ファイヤーソード: 常駐オペレーションを任意でパワーへ。 */
+export function startFireSwordOperationChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    sourceCardId: string;
+    sourceInstanceId: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const valid = state.players[params.playerId].operation.map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: params.playerId,
+    effectId: "fire_sword",
+    sourceCardId: params.sourceCardId,
+    sourceInstanceId: params.sourceInstanceId,
+    phasePlayerId: params.phasePlayerId,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    unitDestination: "power",
+    optional: true,
+    selectCount: 1,
   });
 }
 
@@ -1057,6 +1125,22 @@ export function applyEffectChoiceSelect(
     }
     case "select_unit": {
       const dest = pending.unitDestination ?? "discard";
+      if (pending.effectId === "fire_sword") {
+        const owner = state.players[pending.playerId];
+        const found = findInZone(owner, "operation", instanceId);
+        if (!found) return { error: "invalid_target" };
+        const [, operation] = removeAt(owner.operation, found.index);
+        const nextOwner = {
+          ...owner,
+          operation,
+          power: [...owner.power, { ...found.card, faceDown: false }],
+        };
+        return finishChoice(
+          { ...state, ...updatePlayer(state, pending.playerId, nextOwner) },
+          pending,
+          cardName(state.definitions, found.card.cardId),
+        );
+      }
       if (dest === "rush") {
         const located = findCardOwner(state, instanceId);
         if (!located || located.zone !== "battle") return { error: "invalid_target" };
@@ -1313,6 +1397,32 @@ export function applyEffectChoiceSelect(
         return { error: "invalid_step" };
       }
       if (pending.effectId === "tyranno_sonic") {
+        const leave = applyUnitLeave(state, instanceId, "discard", pending.phasePlayerId);
+        if ("error" in leave) return leave;
+        let nextState = leave.state;
+
+        if (pending.step === "own") {
+          const enemyId = opponent(pending.playerId);
+          const enemyTargets = collectFieldUnitIds(nextState, enemyId, pending.maxBp ?? 5000);
+          if (enemyTargets.length === 0) {
+            return finishChoice(nextState, pending, "own_only");
+          }
+          return {
+            state: openEffectChoice(clearChoice(nextState, pending.playerId), {
+              ...pending,
+              step: "enemy",
+              validInstanceIds: enemyTargets,
+            }),
+          };
+        }
+
+        return finishChoice(
+          nextState,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(nextState, instanceId)),
+        );
+      }
+      if (pending.effectId === "cross_thunder") {
         const leave = applyUnitLeave(state, instanceId, "discard", pending.phasePlayerId);
         if ("error" in leave) return leave;
         let nextState = leave.state;

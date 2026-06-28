@@ -16,8 +16,8 @@ describe("full-playable catalog", () => {
 
   it("merges all tiers without duplicate ids", () => {
     expect(fullPlayableCatalog.cards.length).toBe(1849);
-    expect(vanillaPromotedCatalog.cards.length).toBe(354);
-    expect(complexityPromotedCatalog.cards.length).toBe(1316);
+    expect(vanillaPromotedCatalog.cards.length).toBe(286);
+    expect(complexityPromotedCatalog.cards.length).toBe(872);
     const ids = new Set(fullPlayableCatalog.cards.map((c) => c.id));
     expect(ids.size).toBe(fullPlayableCatalog.cards.length);
   });

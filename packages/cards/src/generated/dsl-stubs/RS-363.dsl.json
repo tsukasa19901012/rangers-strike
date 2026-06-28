@@ -80,5 +80,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RS-363.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-363.jpg"
 }

@@ -55,5 +55,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RS-519.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-519.jpg"
 }

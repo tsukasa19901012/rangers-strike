@@ -27,7 +27,7 @@ export * from "./bannedCards";
 export * from "./deckRules";
 export * from "./catalog";
 export type { CatalogTier, CorePlayableExpansion } from "./catalog/tiers";
-export { CATALOG_TIERS, FULL_PLAYABLE_CARD_COUNT } from "./catalog/tiers";
+export { CATALOG_TIERS, CORE_PLAYABLE_CARD_COUNT, FULL_PLAYABLE_CARD_COUNT } from "./catalog/tiers";
 export {
   getCatalog,
   getCardDefinition,

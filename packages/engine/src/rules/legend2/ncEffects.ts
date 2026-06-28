@@ -11,7 +11,6 @@ import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers
 import { buildLogEntry } from "../../log/formatLog";
 import {
   collectCommandIds,
-  startJuuKunDoChoice,
   startSelectCommandChoice,
   startSelectUnitChoice,
 } from "../pendingChoices";
@@ -314,20 +313,6 @@ export function applyLegend2NcEffect(
         logs: [ncLog(playerId, card.cardId, state.definitions, "deace_sniper")],
       };
     }
-    case "juu_kun_do": {
-      const withChoice = startJuuKunDoChoice(state, {
-        playerId,
-        effectId,
-        sourceCardId: card.cardId,
-        sourceInstanceId: card.instanceId,
-        phasePlayerId: playerId,
-        optional: true,
-      });
-      return {
-        state: withChoice ?? state,
-        logs: [ncLog(playerId, card.cardId, state.definitions, "juu_kun_do")],
-      };
-    }
     case "super_ninpo_lion_dance": {
       const deckCard = state.players[playerId].deck.find(
         (c) => getDefinition(state.definitions, c.cardId)?.name === "ハリケンイエロー",
@@ -366,7 +351,6 @@ export function isLegend2NcEffect(effectId: string): boolean {
     "super_ninpo_water_transform",
     "dark_dual_blade",
     "space_ninpo_rope_skull",
-    "juu_kun_do",
     "deace_sniper",
     "green_crush",
     "backup_request",

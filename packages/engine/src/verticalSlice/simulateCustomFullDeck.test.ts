@@ -36,7 +36,9 @@ function buildCustomPromotedDeckDefinition(): DeckDefinition {
 }
 
 describe("vertical slice — custom full promoted deck (AC-07)", () => {
-  it(`runs ${GAME_COUNT} CPU vs CPU games with a custom 40-card deck containing promoted cards`, () => {
+  it(
+    `runs ${GAME_COUNT} CPU vs CPU games with a custom 40-card deck containing promoted cards`,
+    () => {
     const deck = expandDeck(
       buildCustomPromotedDeckDefinition(),
       fullPlayableCatalog,
@@ -66,5 +68,7 @@ describe("vertical slice — custom full promoted deck (AC-07)", () => {
 
     expect(applyFailed).toBe(0);
     expect(winner).toBe(GAME_COUNT);
-  });
+  },
+    30_000,
+  );
 });

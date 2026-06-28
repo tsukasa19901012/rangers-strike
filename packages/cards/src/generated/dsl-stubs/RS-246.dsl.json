@@ -36,5 +36,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RS-246.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-246.jpg"
 }

@@ -78,5 +78,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RS-634.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-634.jpg"
 }

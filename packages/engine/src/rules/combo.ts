@@ -20,6 +20,7 @@ import { applyCourageMagicRelease } from "./strikeReactions";
 import { getSComboFinisher } from "./turnModifierBridge";
 import { isSOnlyComboLine } from "./turnModifiers";
 import {
+  canRunEnterBattleConditionalEffect,
   tryStartConditionalChoice,
   tryStartDestroyEnemyChoice,
   resolveSkyMagicSlash,
@@ -403,7 +404,11 @@ export function resolveEnterBattleEffectsImpl(
     }
 
     const conditional = getConditionalNamedEffect(card.cardId);
-    if (conditional && shouldRunConditionalOnEnter(conditional.effectId)) {
+    if (
+      conditional &&
+      shouldRunConditionalOnEnter(conditional.effectId) &&
+      canRunEnterBattleConditionalEffect(nextState, playerId, conditional.effectId)
+    ) {
       const modified = applyLegend2ConditionalModifiers(nextState, playerId, battleCard, conditional.effectId);
       if (modified !== battleCard) {
         battleCard = modified;

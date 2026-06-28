@@ -50,5 +50,7 @@
     "text": "特徴「航空機」を持つ自軍ユニット1体を捨札にする",
     "requiredFeature": "航空機",
     "unitCount": 1
-  }
+  },
+  "imageUrl": "/cards/promoted/RS-285.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-285.jpg"
 }

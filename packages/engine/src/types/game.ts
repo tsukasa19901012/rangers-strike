@@ -183,6 +183,8 @@ export type PendingLeave = {
   };
   /** RS-052: WB味方が破壊される際の任意代用。 */
   superShieldInstanceId?: string;
+  /** RS-009: Lユニットが捨札に到達したときのみ合体パーツを戻す。 */
+  fusionReturnOnDiscard?: "battle";
 };
 
 /** ゲーム続行前にプレイヤーが対象/オプションを選ぶ必要がある。 */

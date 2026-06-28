@@ -47,5 +47,7 @@
   "rushAdditionalCondition": {
     "conditionId": "state_gate",
     "text": "特徴「母艦」を持つ自軍ユニットがある"
-  }
+  },
+  "imageUrl": "/cards/promoted/RS-644.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-644.jpg"
 }

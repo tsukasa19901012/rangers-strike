@@ -1,4 +1,5 @@
 import type { CardInstance, GameState, PlayerId } from "../types/game";
+import { canRunEnterBattleConditionalEffect } from "../rules/namedUnitEffects";
 import { startSelectHandChoice, startSelectPowerChoice } from "../rules/pendingChoices";
 import { isDslInterpretableEffect } from "./dslCatalog";
 import { listDslEffectsForTrigger } from "./effectLookup";
@@ -12,6 +13,7 @@ export function tryStartDslConditionalChoice(
 ): GameState | null {
   const effects = listDslEffectsForTrigger(card.cardId, "conditional");
   for (const effect of effects) {
+    if (!canRunEnterBattleConditionalEffect(state, playerId, effect.id)) continue;
     if (!isDslInterpretableEffect(effect)) continue;
     const keyword = effect.effects.find(
       (primitive) => primitive.type === "grant_keyword",

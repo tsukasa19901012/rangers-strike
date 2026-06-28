@@ -31,6 +31,7 @@ import {
   legend3UsePrintedDefenderBp,
   tryStartLegend3ConditionalChoice,
 } from "./legend3/battleEffects";
+import { legend2EffectiveSp } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
 import { canAttackEnemyRushS } from "./legend3/restrictions";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
@@ -459,6 +460,36 @@ export function resolveSkyMagicSlash(
   };
 }
 
+const OWN_TURN_BATTLE_ENTRY_EFFECTS = new Set([
+  "super_drill",
+  "judgment_sword",
+  "justice_flasher",
+]);
+
+/** RS-051 / RS-043 / RS-042 — 自軍ターンのバトルフェイズ中にバトル進入したときのみ。 */
+export function canRunEnterBattleConditionalEffect(
+  state: GameState,
+  ownerId: PlayerId,
+  effectId: string,
+): boolean {
+  if (OWN_TURN_BATTLE_ENTRY_EFFECTS.has(effectId)) {
+    return state.phase === "battle" && state.activePlayer === ownerId;
+  }
+  return true;
+}
+
+/** 撃破対象が RS-065 一点突破の条件（SP1+ または SP!）を満たすか。 */
+export function unitQualifiesForFocusedBreakthrough(
+  state: GameState,
+  ownerId: PlayerId,
+  unit: CardInstance,
+): boolean {
+  const def = getDefinition(state.definitions, unit.cardId);
+  if (!def || def.type !== "unit") return false;
+  if (def.sp === "special") return true;
+  return legend2EffectiveSp(state, ownerId, unit) >= 1;
+}
+
 /** 戦闘進入時の任意 may 効果 — 合法な場合選択UIを開く。 */
 export function tryStartConditionalChoice(
   state: GameState,
@@ -467,6 +498,9 @@ export function tryStartConditionalChoice(
   effectId: string,
   phasePlayerId: PlayerId,
 ): GameState | null {
+  if (!canRunEnterBattleConditionalEffect(state, playerId, effectId)) {
+    return null;
+  }
   if (effectId === "judgment_sword") {
     return startSelectPowerChoice(state, {
       playerId,
@@ -528,14 +562,16 @@ export function resolveConditionalOnEnter(
 export function resolveFocusedBreakthroughDamage(
   state: GameState,
   strikerPlayerId: PlayerId,
-  destroyedCardId: string,
+  strikerInstanceId: string,
+  defenderOwner: PlayerId,
+  defender: CardInstance,
 ): NamedEffectOutcome {
   const striker = state.players[strikerPlayerId];
-  const hasEffect = striker.battle.some((c) => c.cardId === "RS-065");
-  if (!hasEffect) return { state, logs: [] };
-
-  const def = getDefinition(state.definitions, destroyedCardId);
-  if (!def || def.type !== "unit") return { state, logs: [] };
+  const strikerCard = striker.battle.find((c) => c.instanceId === strikerInstanceId);
+  if (!strikerCard || strikerCard.cardId !== "RS-065") return { state, logs: [] };
+  if (!unitQualifiesForFocusedBreakthrough(state, defenderOwner, defender)) {
+    return { state, logs: [] };
+  }
 
   const enemyId = opponent(strikerPlayerId);
   const nextState = applyDamageToPlayer(state, enemyId, 1, {

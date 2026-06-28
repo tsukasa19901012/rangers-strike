@@ -44,5 +44,7 @@
     "conditionId": "discard_command_card",
     "text": "自軍コマンドを1つ捨札にする",
     "unitCount": 1
-  }
+  },
+  "imageUrl": "/cards/promoted/RS-417.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-417.jpg"
 }

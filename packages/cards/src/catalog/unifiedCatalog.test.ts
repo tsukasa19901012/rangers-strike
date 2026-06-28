@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { getCardById } from "../catalog";
 import { allParityGatesPassed, runCatalogParityAudit } from "./parity";
-import { FULL_PLAYABLE_CARD_COUNT } from "./tiers";
+import { FULL_PLAYABLE_CARD_COUNT, CORE_PLAYABLE_CARD_COUNT } from "./tiers";
 import { loadCorePlayableCards } from "./coreCatalogSources";
 import {
   assertFullPlayableCatalogIntegrity,
@@ -17,11 +17,11 @@ import {
 } from "./unifiedCatalog";
 
 describe("unifiedCatalog", () => {
-  it("exposes core tier with 179 cards from generated catalog", () => {
-    expect(getCatalog("core").cards.length).toBe(179);
-    expect(listCoreCardIds().size).toBe(179);
-    expect(generatedCorePlayableCatalog.cards.length).toBe(179);
-    expect(loadCorePlayableCards().length).toBe(179);
+  it("exposes core tier with 691 cards from generated catalog", () => {
+    expect(getCatalog("core").cards.length).toBe(CORE_PLAYABLE_CARD_COUNT);
+    expect(listCoreCardIds().size).toBe(CORE_PLAYABLE_CARD_COUNT);
+    expect(generatedCorePlayableCatalog.cards.length).toBe(CORE_PLAYABLE_CARD_COUNT);
+    expect(loadCorePlayableCards().length).toBe(CORE_PLAYABLE_CARD_COUNT);
   });
 
   it("derives legend expansion shards from generated core", () => {

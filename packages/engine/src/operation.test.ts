@@ -536,7 +536,7 @@ describe("adventure RS-030", () => {
   it("returns held command to hand at turn end", () => {
     const adventure = inst("RS-030", "adv");
     const cmd = { ...heldWbCommand("c1"), commandHeld: true };
-    const state = createTestState({
+    let state = createTestState({
       phase: "end",
       player1: {
         operation: [adventure],
@@ -545,12 +545,22 @@ describe("adventure RS-030", () => {
     });
     state.definitions["RS-030"] = def("RS-030");
 
-    const result = applyAction(state, { type: "end_phase", playerId: "player1" });
+    let result = applyAction(state, { type: "end_phase", playerId: "player1" });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
+    state = result.state;
+    if (state.pendingEffectChoice?.effectId === "adventure") {
+      const pick = getLegalActions(state).find(
+        (a) => a.type === "resolve_effect_choice" && a.instanceId === cmd.instanceId,
+      );
+      result = applyAction(state, pick!);
+      expect(result.ok).toBe(true);
+      if (!result.ok) return;
+      state = result.state;
+    }
 
-    expect(result.state.players.player1.command).toHaveLength(0);
-    expect(result.state.players.player1.hand).toHaveLength(1);
+    expect(state.players.player1.command).toHaveLength(0);
+    expect(state.players.player1.hand).toHaveLength(1);
   });
 });
 

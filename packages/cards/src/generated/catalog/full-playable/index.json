@@ -534,6 +534,1542 @@
     "RS-178": {
       "tier": "core"
     },
+    "RS-179": {
+      "tier": "core"
+    },
+    "RS-180": {
+      "tier": "core"
+    },
+    "RS-181": {
+      "tier": "core"
+    },
+    "RS-182": {
+      "tier": "core"
+    },
+    "RS-183": {
+      "tier": "core"
+    },
+    "RS-184": {
+      "tier": "core"
+    },
+    "RS-185": {
+      "tier": "core"
+    },
+    "RS-186": {
+      "tier": "core"
+    },
+    "RS-187": {
+      "tier": "core"
+    },
+    "RS-188": {
+      "tier": "core"
+    },
+    "RS-189": {
+      "tier": "core"
+    },
+    "RS-190": {
+      "tier": "core"
+    },
+    "RS-191": {
+      "tier": "core"
+    },
+    "RS-192": {
+      "tier": "core"
+    },
+    "RS-193": {
+      "tier": "core"
+    },
+    "RS-194": {
+      "tier": "core"
+    },
+    "RS-195": {
+      "tier": "core"
+    },
+    "RS-196": {
+      "tier": "core"
+    },
+    "RS-197": {
+      "tier": "core"
+    },
+    "RS-198": {
+      "tier": "core"
+    },
+    "RS-199": {
+      "tier": "core"
+    },
+    "RS-200": {
+      "tier": "core"
+    },
+    "RS-201": {
+      "tier": "core"
+    },
+    "RS-202": {
+      "tier": "core"
+    },
+    "RS-203": {
+      "tier": "core"
+    },
+    "RS-204": {
+      "tier": "core"
+    },
+    "RS-205": {
+      "tier": "core"
+    },
+    "RS-206": {
+      "tier": "core"
+    },
+    "RS-207": {
+      "tier": "core"
+    },
+    "RS-208": {
+      "tier": "core"
+    },
+    "RS-209": {
+      "tier": "core"
+    },
+    "RS-210": {
+      "tier": "core"
+    },
+    "RS-211": {
+      "tier": "core"
+    },
+    "RS-212": {
+      "tier": "core"
+    },
+    "RS-213": {
+      "tier": "core"
+    },
+    "RS-214": {
+      "tier": "core"
+    },
+    "RS-215": {
+      "tier": "core"
+    },
+    "RS-216": {
+      "tier": "core"
+    },
+    "RS-217": {
+      "tier": "core"
+    },
+    "RS-218": {
+      "tier": "core"
+    },
+    "RS-219": {
+      "tier": "core"
+    },
+    "RS-220": {
+      "tier": "core"
+    },
+    "RS-221": {
+      "tier": "core"
+    },
+    "RS-222": {
+      "tier": "core"
+    },
+    "RS-223": {
+      "tier": "core"
+    },
+    "RS-224": {
+      "tier": "core"
+    },
+    "RS-225": {
+      "tier": "core"
+    },
+    "RS-226": {
+      "tier": "core"
+    },
+    "RS-227": {
+      "tier": "core"
+    },
+    "RS-228": {
+      "tier": "core"
+    },
+    "RS-229": {
+      "tier": "core"
+    },
+    "RS-230": {
+      "tier": "core"
+    },
+    "RS-231": {
+      "tier": "core"
+    },
+    "RS-232": {
+      "tier": "core"
+    },
+    "RS-233": {
+      "tier": "core"
+    },
+    "RS-234": {
+      "tier": "core"
+    },
+    "RS-235": {
+      "tier": "core"
+    },
+    "RS-236": {
+      "tier": "core"
+    },
+    "RS-237": {
+      "tier": "core"
+    },
+    "RS-238": {
+      "tier": "core"
+    },
+    "RS-239": {
+      "tier": "core"
+    },
+    "RS-240": {
+      "tier": "core"
+    },
+    "RS-241": {
+      "tier": "core"
+    },
+    "RS-242": {
+      "tier": "core"
+    },
+    "RS-243": {
+      "tier": "core"
+    },
+    "RS-244": {
+      "tier": "core"
+    },
+    "RS-245": {
+      "tier": "core"
+    },
+    "RS-246": {
+      "tier": "core"
+    },
+    "RS-247": {
+      "tier": "core"
+    },
+    "RS-248": {
+      "tier": "core"
+    },
+    "RS-249": {
+      "tier": "core"
+    },
+    "RS-250": {
+      "tier": "core"
+    },
+    "RS-251": {
+      "tier": "core"
+    },
+    "RS-252": {
+      "tier": "core"
+    },
+    "RS-253": {
+      "tier": "core"
+    },
+    "RS-254": {
+      "tier": "core"
+    },
+    "RS-255": {
+      "tier": "core"
+    },
+    "RS-256": {
+      "tier": "core"
+    },
+    "RS-257": {
+      "tier": "core"
+    },
+    "RS-258": {
+      "tier": "core"
+    },
+    "RS-259": {
+      "tier": "core"
+    },
+    "RS-260": {
+      "tier": "core"
+    },
+    "RS-261": {
+      "tier": "core"
+    },
+    "RS-262": {
+      "tier": "core"
+    },
+    "RS-263": {
+      "tier": "core"
+    },
+    "RS-264": {
+      "tier": "core"
+    },
+    "RS-265": {
+      "tier": "core"
+    },
+    "RS-266": {
+      "tier": "core"
+    },
+    "RS-267": {
+      "tier": "core"
+    },
+    "RS-268": {
+      "tier": "core"
+    },
+    "RS-269": {
+      "tier": "core"
+    },
+    "RS-270": {
+      "tier": "core"
+    },
+    "RS-271": {
+      "tier": "core"
+    },
+    "RS-272": {
+      "tier": "core"
+    },
+    "RS-273": {
+      "tier": "core"
+    },
+    "RS-274": {
+      "tier": "core"
+    },
+    "RS-275": {
+      "tier": "core"
+    },
+    "RS-276": {
+      "tier": "core"
+    },
+    "RS-277": {
+      "tier": "core"
+    },
+    "RS-278": {
+      "tier": "core"
+    },
+    "RS-279": {
+      "tier": "core"
+    },
+    "RS-280": {
+      "tier": "core"
+    },
+    "RS-281": {
+      "tier": "core"
+    },
+    "RS-282": {
+      "tier": "core"
+    },
+    "RS-283": {
+      "tier": "core"
+    },
+    "RS-284": {
+      "tier": "core"
+    },
+    "RS-285": {
+      "tier": "core"
+    },
+    "RS-286": {
+      "tier": "core"
+    },
+    "RS-287": {
+      "tier": "core"
+    },
+    "RS-288": {
+      "tier": "core"
+    },
+    "RS-289": {
+      "tier": "core"
+    },
+    "RS-290": {
+      "tier": "core"
+    },
+    "RS-291": {
+      "tier": "core"
+    },
+    "RS-292": {
+      "tier": "core"
+    },
+    "RS-293": {
+      "tier": "core"
+    },
+    "RS-294": {
+      "tier": "core"
+    },
+    "RS-295": {
+      "tier": "core"
+    },
+    "RS-296": {
+      "tier": "core"
+    },
+    "RS-297": {
+      "tier": "core"
+    },
+    "RS-298": {
+      "tier": "core"
+    },
+    "RS-299": {
+      "tier": "core"
+    },
+    "RS-300": {
+      "tier": "core"
+    },
+    "RS-301": {
+      "tier": "core"
+    },
+    "RS-302": {
+      "tier": "core"
+    },
+    "RS-303": {
+      "tier": "core"
+    },
+    "RS-304": {
+      "tier": "core"
+    },
+    "RS-305": {
+      "tier": "core"
+    },
+    "RS-306": {
+      "tier": "core"
+    },
+    "RS-307": {
+      "tier": "core"
+    },
+    "RS-308": {
+      "tier": "core"
+    },
+    "RS-309": {
+      "tier": "core"
+    },
+    "RS-310": {
+      "tier": "core"
+    },
+    "RS-311": {
+      "tier": "core"
+    },
+    "RS-312": {
+      "tier": "core"
+    },
+    "RS-313": {
+      "tier": "core"
+    },
+    "RS-314": {
+      "tier": "core"
+    },
+    "RS-315": {
+      "tier": "core"
+    },
+    "RS-316": {
+      "tier": "core"
+    },
+    "RS-317": {
+      "tier": "core"
+    },
+    "RS-318": {
+      "tier": "core"
+    },
+    "RS-319": {
+      "tier": "core"
+    },
+    "RS-320": {
+      "tier": "core"
+    },
+    "RS-321": {
+      "tier": "core"
+    },
+    "RS-322": {
+      "tier": "core"
+    },
+    "RS-323": {
+      "tier": "core"
+    },
+    "RS-324": {
+      "tier": "core"
+    },
+    "RS-325": {
+      "tier": "core"
+    },
+    "RS-326": {
+      "tier": "core"
+    },
+    "RS-327": {
+      "tier": "core"
+    },
+    "RS-328": {
+      "tier": "core"
+    },
+    "RS-329": {
+      "tier": "core"
+    },
+    "RS-330": {
+      "tier": "core"
+    },
+    "RS-331": {
+      "tier": "core"
+    },
+    "RS-332": {
+      "tier": "core"
+    },
+    "RS-333": {
+      "tier": "core"
+    },
+    "RS-334": {
+      "tier": "core"
+    },
+    "RS-335": {
+      "tier": "core"
+    },
+    "RS-336": {
+      "tier": "core"
+    },
+    "RS-337": {
+      "tier": "core"
+    },
+    "RS-338": {
+      "tier": "core"
+    },
+    "RS-339": {
+      "tier": "core"
+    },
+    "RS-340": {
+      "tier": "core"
+    },
+    "RS-341": {
+      "tier": "core"
+    },
+    "RS-342": {
+      "tier": "core"
+    },
+    "RS-343": {
+      "tier": "core"
+    },
+    "RS-344": {
+      "tier": "core"
+    },
+    "RS-345": {
+      "tier": "core"
+    },
+    "RS-346": {
+      "tier": "core"
+    },
+    "RS-347": {
+      "tier": "core"
+    },
+    "RS-348": {
+      "tier": "core"
+    },
+    "RS-349": {
+      "tier": "core"
+    },
+    "RS-350": {
+      "tier": "core"
+    },
+    "RS-351": {
+      "tier": "core"
+    },
+    "RS-352": {
+      "tier": "core"
+    },
+    "RS-353": {
+      "tier": "core"
+    },
+    "RS-354": {
+      "tier": "core"
+    },
+    "RS-355": {
+      "tier": "core"
+    },
+    "RS-356": {
+      "tier": "core"
+    },
+    "RS-357": {
+      "tier": "core"
+    },
+    "RS-358": {
+      "tier": "core"
+    },
+    "RS-359": {
+      "tier": "core"
+    },
+    "RS-360": {
+      "tier": "core"
+    },
+    "RS-361": {
+      "tier": "core"
+    },
+    "RS-362": {
+      "tier": "core"
+    },
+    "RS-363": {
+      "tier": "core"
+    },
+    "RS-364": {
+      "tier": "core"
+    },
+    "RS-365": {
+      "tier": "core"
+    },
+    "RS-366": {
+      "tier": "core"
+    },
+    "RS-367": {
+      "tier": "core"
+    },
+    "RS-368": {
+      "tier": "core"
+    },
+    "RS-369": {
+      "tier": "core"
+    },
+    "RS-370": {
+      "tier": "core"
+    },
+    "RS-371": {
+      "tier": "core"
+    },
+    "RS-372": {
+      "tier": "core"
+    },
+    "RS-373": {
+      "tier": "core"
+    },
+    "RS-374": {
+      "tier": "core"
+    },
+    "RS-375": {
+      "tier": "core"
+    },
+    "RS-376": {
+      "tier": "core"
+    },
+    "RS-377": {
+      "tier": "core"
+    },
+    "RS-378": {
+      "tier": "core"
+    },
+    "RS-379": {
+      "tier": "core"
+    },
+    "RS-380": {
+      "tier": "core"
+    },
+    "RS-381": {
+      "tier": "core"
+    },
+    "RS-382": {
+      "tier": "core"
+    },
+    "RS-383": {
+      "tier": "core"
+    },
+    "RS-384": {
+      "tier": "core"
+    },
+    "RS-385": {
+      "tier": "core"
+    },
+    "RS-386": {
+      "tier": "core"
+    },
+    "RS-387": {
+      "tier": "core"
+    },
+    "RS-388": {
+      "tier": "core"
+    },
+    "RS-389": {
+      "tier": "core"
+    },
+    "RS-390": {
+      "tier": "core"
+    },
+    "RS-391": {
+      "tier": "core"
+    },
+    "RS-392": {
+      "tier": "core"
+    },
+    "RS-393": {
+      "tier": "core"
+    },
+    "RS-394": {
+      "tier": "core"
+    },
+    "RS-395": {
+      "tier": "core"
+    },
+    "RS-396": {
+      "tier": "core"
+    },
+    "RS-397": {
+      "tier": "core"
+    },
+    "RS-398": {
+      "tier": "core"
+    },
+    "RS-399": {
+      "tier": "core"
+    },
+    "RS-400": {
+      "tier": "core"
+    },
+    "RS-401": {
+      "tier": "core"
+    },
+    "RS-402": {
+      "tier": "core"
+    },
+    "RS-403": {
+      "tier": "core"
+    },
+    "RS-404": {
+      "tier": "core"
+    },
+    "RS-405": {
+      "tier": "core"
+    },
+    "RS-406": {
+      "tier": "core"
+    },
+    "RS-407": {
+      "tier": "core"
+    },
+    "RS-408": {
+      "tier": "core"
+    },
+    "RS-409": {
+      "tier": "core"
+    },
+    "RS-410": {
+      "tier": "core"
+    },
+    "RS-411": {
+      "tier": "core"
+    },
+    "RS-412": {
+      "tier": "core"
+    },
+    "RS-413": {
+      "tier": "core"
+    },
+    "RS-414": {
+      "tier": "core"
+    },
+    "RS-415": {
+      "tier": "core"
+    },
+    "RS-416": {
+      "tier": "core"
+    },
+    "RS-417": {
+      "tier": "core"
+    },
+    "RS-418": {
+      "tier": "core"
+    },
+    "RS-419": {
+      "tier": "core"
+    },
+    "RS-420": {
+      "tier": "core"
+    },
+    "RS-421": {
+      "tier": "core"
+    },
+    "RS-422": {
+      "tier": "core"
+    },
+    "RS-423": {
+      "tier": "core"
+    },
+    "RS-424": {
+      "tier": "core"
+    },
+    "RS-425": {
+      "tier": "core"
+    },
+    "RS-426": {
+      "tier": "core"
+    },
+    "RS-427": {
+      "tier": "core"
+    },
+    "RS-428": {
+      "tier": "core"
+    },
+    "RS-429": {
+      "tier": "core"
+    },
+    "RS-430": {
+      "tier": "core"
+    },
+    "RS-431": {
+      "tier": "core"
+    },
+    "RS-432": {
+      "tier": "core"
+    },
+    "RS-433": {
+      "tier": "core"
+    },
+    "RS-434": {
+      "tier": "core"
+    },
+    "RS-435": {
+      "tier": "core"
+    },
+    "RS-436": {
+      "tier": "core"
+    },
+    "RS-437": {
+      "tier": "core"
+    },
+    "RS-438": {
+      "tier": "core"
+    },
+    "RS-439": {
+      "tier": "core"
+    },
+    "RS-440": {
+      "tier": "core"
+    },
+    "RS-441": {
+      "tier": "core"
+    },
+    "RS-442": {
+      "tier": "core"
+    },
+    "RS-443": {
+      "tier": "core"
+    },
+    "RS-444": {
+      "tier": "core"
+    },
+    "RS-445": {
+      "tier": "core"
+    },
+    "RS-446": {
+      "tier": "core"
+    },
+    "RS-447": {
+      "tier": "core"
+    },
+    "RS-448": {
+      "tier": "core"
+    },
+    "RS-449": {
+      "tier": "core"
+    },
+    "RS-450": {
+      "tier": "core"
+    },
+    "RS-451": {
+      "tier": "core"
+    },
+    "RS-452": {
+      "tier": "core"
+    },
+    "RS-453": {
+      "tier": "core"
+    },
+    "RS-454": {
+      "tier": "core"
+    },
+    "RS-455": {
+      "tier": "core"
+    },
+    "RS-456": {
+      "tier": "core"
+    },
+    "RS-457": {
+      "tier": "core"
+    },
+    "RS-458": {
+      "tier": "core"
+    },
+    "RS-459": {
+      "tier": "core"
+    },
+    "RS-460": {
+      "tier": "core"
+    },
+    "RS-461": {
+      "tier": "core"
+    },
+    "RS-462": {
+      "tier": "core"
+    },
+    "RS-463": {
+      "tier": "core"
+    },
+    "RS-464": {
+      "tier": "core"
+    },
+    "RS-465": {
+      "tier": "core"
+    },
+    "RS-466": {
+      "tier": "core"
+    },
+    "RS-467": {
+      "tier": "core"
+    },
+    "RS-468": {
+      "tier": "core"
+    },
+    "RS-469": {
+      "tier": "core"
+    },
+    "RS-470": {
+      "tier": "core"
+    },
+    "RS-471": {
+      "tier": "core"
+    },
+    "RS-472": {
+      "tier": "core"
+    },
+    "RS-473": {
+      "tier": "core"
+    },
+    "RS-474": {
+      "tier": "core"
+    },
+    "RS-475": {
+      "tier": "core"
+    },
+    "RS-476": {
+      "tier": "core"
+    },
+    "RS-477": {
+      "tier": "core"
+    },
+    "RS-478": {
+      "tier": "core"
+    },
+    "RS-479": {
+      "tier": "core"
+    },
+    "RS-480": {
+      "tier": "core"
+    },
+    "RS-481": {
+      "tier": "core"
+    },
+    "RS-482": {
+      "tier": "core"
+    },
+    "RS-483": {
+      "tier": "core"
+    },
+    "RS-484": {
+      "tier": "core"
+    },
+    "RS-485": {
+      "tier": "core"
+    },
+    "RS-486": {
+      "tier": "core"
+    },
+    "RS-487": {
+      "tier": "core"
+    },
+    "RS-488": {
+      "tier": "core"
+    },
+    "RS-489": {
+      "tier": "core"
+    },
+    "RS-490": {
+      "tier": "core"
+    },
+    "RS-491": {
+      "tier": "core"
+    },
+    "RS-492": {
+      "tier": "core"
+    },
+    "RS-493": {
+      "tier": "core"
+    },
+    "RS-494": {
+      "tier": "core"
+    },
+    "RS-495": {
+      "tier": "core"
+    },
+    "RS-496": {
+      "tier": "core"
+    },
+    "RS-497": {
+      "tier": "core"
+    },
+    "RS-498": {
+      "tier": "core"
+    },
+    "RS-499": {
+      "tier": "core"
+    },
+    "RS-500": {
+      "tier": "core"
+    },
+    "RS-501": {
+      "tier": "core"
+    },
+    "RS-502": {
+      "tier": "core"
+    },
+    "RS-503": {
+      "tier": "core"
+    },
+    "RS-504": {
+      "tier": "core"
+    },
+    "RS-505": {
+      "tier": "core"
+    },
+    "RS-506": {
+      "tier": "core"
+    },
+    "RS-507": {
+      "tier": "core"
+    },
+    "RS-508": {
+      "tier": "core"
+    },
+    "RS-509": {
+      "tier": "core"
+    },
+    "RS-510": {
+      "tier": "core"
+    },
+    "RS-511": {
+      "tier": "core"
+    },
+    "RS-512": {
+      "tier": "core"
+    },
+    "RS-513": {
+      "tier": "core"
+    },
+    "RS-514": {
+      "tier": "core"
+    },
+    "RS-515": {
+      "tier": "core"
+    },
+    "RS-516": {
+      "tier": "core"
+    },
+    "RS-517": {
+      "tier": "core"
+    },
+    "RS-518": {
+      "tier": "core"
+    },
+    "RS-519": {
+      "tier": "core"
+    },
+    "RS-520": {
+      "tier": "core"
+    },
+    "RS-521": {
+      "tier": "core"
+    },
+    "RS-522": {
+      "tier": "core"
+    },
+    "RS-523": {
+      "tier": "core"
+    },
+    "RS-524": {
+      "tier": "core"
+    },
+    "RS-525": {
+      "tier": "core"
+    },
+    "RS-526": {
+      "tier": "core"
+    },
+    "RS-527": {
+      "tier": "core"
+    },
+    "RS-528": {
+      "tier": "core"
+    },
+    "RS-529": {
+      "tier": "core"
+    },
+    "RS-530": {
+      "tier": "core"
+    },
+    "RS-531": {
+      "tier": "core"
+    },
+    "RS-532": {
+      "tier": "core"
+    },
+    "RS-533": {
+      "tier": "core"
+    },
+    "RS-534": {
+      "tier": "core"
+    },
+    "RS-535": {
+      "tier": "core"
+    },
+    "RS-536": {
+      "tier": "core"
+    },
+    "RS-537": {
+      "tier": "core"
+    },
+    "RS-538": {
+      "tier": "core"
+    },
+    "RS-539": {
+      "tier": "core"
+    },
+    "RS-540": {
+      "tier": "core"
+    },
+    "RS-541": {
+      "tier": "core"
+    },
+    "RS-542": {
+      "tier": "core"
+    },
+    "RS-543": {
+      "tier": "core"
+    },
+    "RS-544": {
+      "tier": "core"
+    },
+    "RS-545": {
+      "tier": "core"
+    },
+    "RS-546": {
+      "tier": "core"
+    },
+    "RS-547": {
+      "tier": "core"
+    },
+    "RS-548": {
+      "tier": "core"
+    },
+    "RS-549": {
+      "tier": "core"
+    },
+    "RS-550": {
+      "tier": "core"
+    },
+    "RS-551": {
+      "tier": "core"
+    },
+    "RS-552": {
+      "tier": "core"
+    },
+    "RS-553": {
+      "tier": "core"
+    },
+    "RS-554": {
+      "tier": "core"
+    },
+    "RS-555": {
+      "tier": "core"
+    },
+    "RS-556": {
+      "tier": "core"
+    },
+    "RS-557": {
+      "tier": "core"
+    },
+    "RS-558": {
+      "tier": "core"
+    },
+    "RS-559": {
+      "tier": "core"
+    },
+    "RS-560": {
+      "tier": "core"
+    },
+    "RS-561": {
+      "tier": "core"
+    },
+    "RS-562": {
+      "tier": "core"
+    },
+    "RS-563": {
+      "tier": "core"
+    },
+    "RS-564": {
+      "tier": "core"
+    },
+    "RS-565": {
+      "tier": "core"
+    },
+    "RS-566": {
+      "tier": "core"
+    },
+    "RS-567": {
+      "tier": "core"
+    },
+    "RS-568": {
+      "tier": "core"
+    },
+    "RS-569": {
+      "tier": "core"
+    },
+    "RS-570": {
+      "tier": "core"
+    },
+    "RS-571": {
+      "tier": "core"
+    },
+    "RS-572": {
+      "tier": "core"
+    },
+    "RS-573": {
+      "tier": "core"
+    },
+    "RS-574": {
+      "tier": "core"
+    },
+    "RS-575": {
+      "tier": "core"
+    },
+    "RS-576": {
+      "tier": "core"
+    },
+    "RS-577": {
+      "tier": "core"
+    },
+    "RS-578": {
+      "tier": "core"
+    },
+    "RS-579": {
+      "tier": "core"
+    },
+    "RS-580": {
+      "tier": "core"
+    },
+    "RS-581": {
+      "tier": "core"
+    },
+    "RS-582": {
+      "tier": "core"
+    },
+    "RS-583": {
+      "tier": "core"
+    },
+    "RS-584": {
+      "tier": "core"
+    },
+    "RS-585": {
+      "tier": "core"
+    },
+    "RS-586": {
+      "tier": "core"
+    },
+    "RS-587": {
+      "tier": "core"
+    },
+    "RS-588": {
+      "tier": "core"
+    },
+    "RS-589": {
+      "tier": "core"
+    },
+    "RS-590": {
+      "tier": "core"
+    },
+    "RS-591": {
+      "tier": "core"
+    },
+    "RS-592": {
+      "tier": "core"
+    },
+    "RS-593": {
+      "tier": "core"
+    },
+    "RS-594": {
+      "tier": "core"
+    },
+    "RS-595": {
+      "tier": "core"
+    },
+    "RS-596": {
+      "tier": "core"
+    },
+    "RS-597": {
+      "tier": "core"
+    },
+    "RS-598": {
+      "tier": "core"
+    },
+    "RS-599": {
+      "tier": "core"
+    },
+    "RS-600": {
+      "tier": "core"
+    },
+    "RS-601": {
+      "tier": "core"
+    },
+    "RS-602": {
+      "tier": "core"
+    },
+    "RS-603": {
+      "tier": "core"
+    },
+    "RS-604": {
+      "tier": "core"
+    },
+    "RS-605": {
+      "tier": "core"
+    },
+    "RS-606": {
+      "tier": "core"
+    },
+    "RS-607": {
+      "tier": "core"
+    },
+    "RS-608": {
+      "tier": "core"
+    },
+    "RS-609": {
+      "tier": "core"
+    },
+    "RS-610": {
+      "tier": "core"
+    },
+    "RS-611": {
+      "tier": "core"
+    },
+    "RS-612": {
+      "tier": "core"
+    },
+    "RS-613": {
+      "tier": "core"
+    },
+    "RS-614": {
+      "tier": "core"
+    },
+    "RS-615": {
+      "tier": "core"
+    },
+    "RS-616": {
+      "tier": "core"
+    },
+    "RS-617": {
+      "tier": "core"
+    },
+    "RS-618": {
+      "tier": "core"
+    },
+    "RS-619": {
+      "tier": "core"
+    },
+    "RS-620": {
+      "tier": "core"
+    },
+    "RS-621": {
+      "tier": "core"
+    },
+    "RS-622": {
+      "tier": "core"
+    },
+    "RS-623": {
+      "tier": "core"
+    },
+    "RS-624": {
+      "tier": "core"
+    },
+    "RS-625": {
+      "tier": "core"
+    },
+    "RS-626": {
+      "tier": "core"
+    },
+    "RS-627": {
+      "tier": "core"
+    },
+    "RS-628": {
+      "tier": "core"
+    },
+    "RS-629": {
+      "tier": "core"
+    },
+    "RS-630": {
+      "tier": "core"
+    },
+    "RS-631": {
+      "tier": "core"
+    },
+    "RS-632": {
+      "tier": "core"
+    },
+    "RS-633": {
+      "tier": "core"
+    },
+    "RS-634": {
+      "tier": "core"
+    },
+    "RS-635": {
+      "tier": "core"
+    },
+    "RS-636": {
+      "tier": "core"
+    },
+    "RS-637": {
+      "tier": "core"
+    },
+    "RS-638": {
+      "tier": "core"
+    },
+    "RS-639": {
+      "tier": "core"
+    },
+    "RS-640": {
+      "tier": "core"
+    },
+    "RS-641": {
+      "tier": "core"
+    },
+    "RS-642": {
+      "tier": "core"
+    },
+    "RS-643": {
+      "tier": "core"
+    },
+    "RS-644": {
+      "tier": "core"
+    },
+    "RS-645": {
+      "tier": "core"
+    },
+    "RS-646": {
+      "tier": "core"
+    },
+    "RS-647": {
+      "tier": "core"
+    },
+    "RS-648": {
+      "tier": "core"
+    },
+    "RS-649": {
+      "tier": "core"
+    },
+    "RS-650": {
+      "tier": "core"
+    },
+    "RS-651": {
+      "tier": "core"
+    },
+    "RS-652": {
+      "tier": "core"
+    },
+    "RS-653": {
+      "tier": "core"
+    },
+    "RS-654": {
+      "tier": "core"
+    },
+    "RS-655": {
+      "tier": "core"
+    },
+    "RS-656": {
+      "tier": "core"
+    },
+    "RS-657": {
+      "tier": "core"
+    },
+    "RS-658": {
+      "tier": "core"
+    },
+    "RS-659": {
+      "tier": "core"
+    },
+    "RS-660": {
+      "tier": "core"
+    },
+    "RS-661": {
+      "tier": "core"
+    },
+    "RS-662": {
+      "tier": "core"
+    },
+    "RS-663": {
+      "tier": "core"
+    },
+    "RS-664": {
+      "tier": "core"
+    },
+    "RS-665": {
+      "tier": "core"
+    },
+    "RS-666": {
+      "tier": "core"
+    },
+    "RS-667": {
+      "tier": "core"
+    },
+    "RS-668": {
+      "tier": "core"
+    },
+    "RS-669": {
+      "tier": "core"
+    },
+    "RS-670": {
+      "tier": "core"
+    },
+    "RS-671": {
+      "tier": "core"
+    },
+    "RS-672": {
+      "tier": "core"
+    },
+    "RS-673": {
+      "tier": "core"
+    },
+    "RS-674": {
+      "tier": "core"
+    },
+    "RS-675": {
+      "tier": "core"
+    },
+    "RS-676": {
+      "tier": "core"
+    },
+    "RS-677": {
+      "tier": "core"
+    },
+    "RS-678": {
+      "tier": "core"
+    },
+    "RS-679": {
+      "tier": "core"
+    },
+    "RS-680": {
+      "tier": "core"
+    },
+    "RS-681": {
+      "tier": "core"
+    },
+    "RS-682": {
+      "tier": "core"
+    },
+    "RS-683": {
+      "tier": "core"
+    },
+    "RS-684": {
+      "tier": "core"
+    },
+    "RS-685": {
+      "tier": "core"
+    },
+    "RS-686": {
+      "tier": "core"
+    },
+    "RS-687": {
+      "tier": "core"
+    },
+    "RS-688": {
+      "tier": "core"
+    },
+    "RS-689": {
+      "tier": "core"
+    },
+    "RS-690": {
+      "tier": "core"
+    },
     "SR-001": {
       "tier": "core"
     },
@@ -925,210 +2461,6 @@
       "tier": "vanilla-promoted"
     },
     "RM-057": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-181": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-182": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-183": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-185": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-186": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-191": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-195": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-230": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-231": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-239": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-240": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-243": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-245": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-249": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-250": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-251": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-252": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-254": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-260": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-267": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-272": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-283": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-288": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-306": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-333": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-334": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-341": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-347": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-349": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-350": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-357": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-424": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-426": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-438": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-440": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-466": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-499": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-500": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-504": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-518": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-520": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-523": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-526": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-528": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-535": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-538": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-544": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-547": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-548": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-549": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-561": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-564": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-573": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-577": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-607": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-626": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-632": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-642": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-643": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-647": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-652": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-674": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-677": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-680": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-682": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-683": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-688": {
-      "tier": "vanilla-promoted"
-    },
-    "RS-689": {
       "tier": "vanilla-promoted"
     },
     "SK-000": {
@@ -2581,1338 +3913,6 @@
       "tier": "complexity-promoted"
     },
     "RM-062": {
-      "tier": "complexity-promoted"
-    },
-    "RS-179": {
-      "tier": "complexity-promoted"
-    },
-    "RS-180": {
-      "tier": "complexity-promoted"
-    },
-    "RS-184": {
-      "tier": "complexity-promoted"
-    },
-    "RS-187": {
-      "tier": "complexity-promoted"
-    },
-    "RS-188": {
-      "tier": "complexity-promoted"
-    },
-    "RS-189": {
-      "tier": "complexity-promoted"
-    },
-    "RS-190": {
-      "tier": "complexity-promoted"
-    },
-    "RS-192": {
-      "tier": "complexity-promoted"
-    },
-    "RS-193": {
-      "tier": "complexity-promoted"
-    },
-    "RS-194": {
-      "tier": "complexity-promoted"
-    },
-    "RS-196": {
-      "tier": "complexity-promoted"
-    },
-    "RS-197": {
-      "tier": "complexity-promoted"
-    },
-    "RS-198": {
-      "tier": "complexity-promoted"
-    },
-    "RS-199": {
-      "tier": "complexity-promoted"
-    },
-    "RS-200": {
-      "tier": "complexity-promoted"
-    },
-    "RS-201": {
-      "tier": "complexity-promoted"
-    },
-    "RS-202": {
-      "tier": "complexity-promoted"
-    },
-    "RS-203": {
-      "tier": "complexity-promoted"
-    },
-    "RS-204": {
-      "tier": "complexity-promoted"
-    },
-    "RS-205": {
-      "tier": "complexity-promoted"
-    },
-    "RS-206": {
-      "tier": "complexity-promoted"
-    },
-    "RS-207": {
-      "tier": "complexity-promoted"
-    },
-    "RS-208": {
-      "tier": "complexity-promoted"
-    },
-    "RS-209": {
-      "tier": "complexity-promoted"
-    },
-    "RS-210": {
-      "tier": "complexity-promoted"
-    },
-    "RS-211": {
-      "tier": "complexity-promoted"
-    },
-    "RS-212": {
-      "tier": "complexity-promoted"
-    },
-    "RS-213": {
-      "tier": "complexity-promoted"
-    },
-    "RS-214": {
-      "tier": "complexity-promoted"
-    },
-    "RS-215": {
-      "tier": "complexity-promoted"
-    },
-    "RS-216": {
-      "tier": "complexity-promoted"
-    },
-    "RS-217": {
-      "tier": "complexity-promoted"
-    },
-    "RS-218": {
-      "tier": "complexity-promoted"
-    },
-    "RS-219": {
-      "tier": "complexity-promoted"
-    },
-    "RS-220": {
-      "tier": "complexity-promoted"
-    },
-    "RS-221": {
-      "tier": "complexity-promoted"
-    },
-    "RS-222": {
-      "tier": "complexity-promoted"
-    },
-    "RS-223": {
-      "tier": "complexity-promoted"
-    },
-    "RS-224": {
-      "tier": "complexity-promoted"
-    },
-    "RS-225": {
-      "tier": "complexity-promoted"
-    },
-    "RS-226": {
-      "tier": "complexity-promoted"
-    },
-    "RS-227": {
-      "tier": "complexity-promoted"
-    },
-    "RS-228": {
-      "tier": "complexity-promoted"
-    },
-    "RS-229": {
-      "tier": "complexity-promoted"
-    },
-    "RS-232": {
-      "tier": "complexity-promoted"
-    },
-    "RS-233": {
-      "tier": "complexity-promoted"
-    },
-    "RS-234": {
-      "tier": "complexity-promoted"
-    },
-    "RS-235": {
-      "tier": "complexity-promoted"
-    },
-    "RS-236": {
-      "tier": "complexity-promoted"
-    },
-    "RS-237": {
-      "tier": "complexity-promoted"
-    },
-    "RS-238": {
-      "tier": "complexity-promoted"
-    },
-    "RS-241": {
-      "tier": "complexity-promoted"
-    },
-    "RS-242": {
-      "tier": "complexity-promoted"
-    },
-    "RS-244": {
-      "tier": "complexity-promoted"
-    },
-    "RS-246": {
-      "tier": "complexity-promoted"
-    },
-    "RS-247": {
-      "tier": "complexity-promoted"
-    },
-    "RS-248": {
-      "tier": "complexity-promoted"
-    },
-    "RS-253": {
-      "tier": "complexity-promoted"
-    },
-    "RS-255": {
-      "tier": "complexity-promoted"
-    },
-    "RS-256": {
-      "tier": "complexity-promoted"
-    },
-    "RS-257": {
-      "tier": "complexity-promoted"
-    },
-    "RS-258": {
-      "tier": "complexity-promoted"
-    },
-    "RS-259": {
-      "tier": "complexity-promoted"
-    },
-    "RS-261": {
-      "tier": "complexity-promoted"
-    },
-    "RS-262": {
-      "tier": "complexity-promoted"
-    },
-    "RS-263": {
-      "tier": "complexity-promoted"
-    },
-    "RS-264": {
-      "tier": "complexity-promoted"
-    },
-    "RS-265": {
-      "tier": "complexity-promoted"
-    },
-    "RS-266": {
-      "tier": "complexity-promoted"
-    },
-    "RS-268": {
-      "tier": "complexity-promoted"
-    },
-    "RS-269": {
-      "tier": "complexity-promoted"
-    },
-    "RS-270": {
-      "tier": "complexity-promoted"
-    },
-    "RS-271": {
-      "tier": "complexity-promoted"
-    },
-    "RS-273": {
-      "tier": "complexity-promoted"
-    },
-    "RS-274": {
-      "tier": "complexity-promoted"
-    },
-    "RS-275": {
-      "tier": "complexity-promoted"
-    },
-    "RS-276": {
-      "tier": "complexity-promoted"
-    },
-    "RS-277": {
-      "tier": "complexity-promoted"
-    },
-    "RS-278": {
-      "tier": "complexity-promoted"
-    },
-    "RS-279": {
-      "tier": "complexity-promoted"
-    },
-    "RS-280": {
-      "tier": "complexity-promoted"
-    },
-    "RS-281": {
-      "tier": "complexity-promoted"
-    },
-    "RS-282": {
-      "tier": "complexity-promoted"
-    },
-    "RS-284": {
-      "tier": "complexity-promoted"
-    },
-    "RS-285": {
-      "tier": "complexity-promoted"
-    },
-    "RS-286": {
-      "tier": "complexity-promoted"
-    },
-    "RS-287": {
-      "tier": "complexity-promoted"
-    },
-    "RS-289": {
-      "tier": "complexity-promoted"
-    },
-    "RS-290": {
-      "tier": "complexity-promoted"
-    },
-    "RS-291": {
-      "tier": "complexity-promoted"
-    },
-    "RS-292": {
-      "tier": "complexity-promoted"
-    },
-    "RS-293": {
-      "tier": "complexity-promoted"
-    },
-    "RS-294": {
-      "tier": "complexity-promoted"
-    },
-    "RS-295": {
-      "tier": "complexity-promoted"
-    },
-    "RS-296": {
-      "tier": "complexity-promoted"
-    },
-    "RS-297": {
-      "tier": "complexity-promoted"
-    },
-    "RS-298": {
-      "tier": "complexity-promoted"
-    },
-    "RS-299": {
-      "tier": "complexity-promoted"
-    },
-    "RS-300": {
-      "tier": "complexity-promoted"
-    },
-    "RS-301": {
-      "tier": "complexity-promoted"
-    },
-    "RS-302": {
-      "tier": "complexity-promoted"
-    },
-    "RS-303": {
-      "tier": "complexity-promoted"
-    },
-    "RS-304": {
-      "tier": "complexity-promoted"
-    },
-    "RS-305": {
-      "tier": "complexity-promoted"
-    },
-    "RS-307": {
-      "tier": "complexity-promoted"
-    },
-    "RS-308": {
-      "tier": "complexity-promoted"
-    },
-    "RS-309": {
-      "tier": "complexity-promoted"
-    },
-    "RS-310": {
-      "tier": "complexity-promoted"
-    },
-    "RS-311": {
-      "tier": "complexity-promoted"
-    },
-    "RS-312": {
-      "tier": "complexity-promoted"
-    },
-    "RS-313": {
-      "tier": "complexity-promoted"
-    },
-    "RS-314": {
-      "tier": "complexity-promoted"
-    },
-    "RS-315": {
-      "tier": "complexity-promoted"
-    },
-    "RS-316": {
-      "tier": "complexity-promoted"
-    },
-    "RS-317": {
-      "tier": "complexity-promoted"
-    },
-    "RS-318": {
-      "tier": "complexity-promoted"
-    },
-    "RS-319": {
-      "tier": "complexity-promoted"
-    },
-    "RS-320": {
-      "tier": "complexity-promoted"
-    },
-    "RS-321": {
-      "tier": "complexity-promoted"
-    },
-    "RS-322": {
-      "tier": "complexity-promoted"
-    },
-    "RS-323": {
-      "tier": "complexity-promoted"
-    },
-    "RS-324": {
-      "tier": "complexity-promoted"
-    },
-    "RS-325": {
-      "tier": "complexity-promoted"
-    },
-    "RS-326": {
-      "tier": "complexity-promoted"
-    },
-    "RS-327": {
-      "tier": "complexity-promoted"
-    },
-    "RS-328": {
-      "tier": "complexity-promoted"
-    },
-    "RS-329": {
-      "tier": "complexity-promoted"
-    },
-    "RS-330": {
-      "tier": "complexity-promoted"
-    },
-    "RS-331": {
-      "tier": "complexity-promoted"
-    },
-    "RS-332": {
-      "tier": "complexity-promoted"
-    },
-    "RS-335": {
-      "tier": "complexity-promoted"
-    },
-    "RS-336": {
-      "tier": "complexity-promoted"
-    },
-    "RS-337": {
-      "tier": "complexity-promoted"
-    },
-    "RS-338": {
-      "tier": "complexity-promoted"
-    },
-    "RS-339": {
-      "tier": "complexity-promoted"
-    },
-    "RS-340": {
-      "tier": "complexity-promoted"
-    },
-    "RS-342": {
-      "tier": "complexity-promoted"
-    },
-    "RS-343": {
-      "tier": "complexity-promoted"
-    },
-    "RS-344": {
-      "tier": "complexity-promoted"
-    },
-    "RS-345": {
-      "tier": "complexity-promoted"
-    },
-    "RS-346": {
-      "tier": "complexity-promoted"
-    },
-    "RS-348": {
-      "tier": "complexity-promoted"
-    },
-    "RS-351": {
-      "tier": "complexity-promoted"
-    },
-    "RS-352": {
-      "tier": "complexity-promoted"
-    },
-    "RS-353": {
-      "tier": "complexity-promoted"
-    },
-    "RS-354": {
-      "tier": "complexity-promoted"
-    },
-    "RS-355": {
-      "tier": "complexity-promoted"
-    },
-    "RS-356": {
-      "tier": "complexity-promoted"
-    },
-    "RS-358": {
-      "tier": "complexity-promoted"
-    },
-    "RS-359": {
-      "tier": "complexity-promoted"
-    },
-    "RS-360": {
-      "tier": "complexity-promoted"
-    },
-    "RS-361": {
-      "tier": "complexity-promoted"
-    },
-    "RS-362": {
-      "tier": "complexity-promoted"
-    },
-    "RS-363": {
-      "tier": "complexity-promoted"
-    },
-    "RS-364": {
-      "tier": "complexity-promoted"
-    },
-    "RS-365": {
-      "tier": "complexity-promoted"
-    },
-    "RS-366": {
-      "tier": "complexity-promoted"
-    },
-    "RS-367": {
-      "tier": "complexity-promoted"
-    },
-    "RS-368": {
-      "tier": "complexity-promoted"
-    },
-    "RS-369": {
-      "tier": "complexity-promoted"
-    },
-    "RS-370": {
-      "tier": "complexity-promoted"
-    },
-    "RS-371": {
-      "tier": "complexity-promoted"
-    },
-    "RS-372": {
-      "tier": "complexity-promoted"
-    },
-    "RS-373": {
-      "tier": "complexity-promoted"
-    },
-    "RS-374": {
-      "tier": "complexity-promoted"
-    },
-    "RS-375": {
-      "tier": "complexity-promoted"
-    },
-    "RS-376": {
-      "tier": "complexity-promoted"
-    },
-    "RS-377": {
-      "tier": "complexity-promoted"
-    },
-    "RS-378": {
-      "tier": "complexity-promoted"
-    },
-    "RS-379": {
-      "tier": "complexity-promoted"
-    },
-    "RS-380": {
-      "tier": "complexity-promoted"
-    },
-    "RS-381": {
-      "tier": "complexity-promoted"
-    },
-    "RS-382": {
-      "tier": "complexity-promoted"
-    },
-    "RS-383": {
-      "tier": "complexity-promoted"
-    },
-    "RS-384": {
-      "tier": "complexity-promoted"
-    },
-    "RS-385": {
-      "tier": "complexity-promoted"
-    },
-    "RS-386": {
-      "tier": "complexity-promoted"
-    },
-    "RS-387": {
-      "tier": "complexity-promoted"
-    },
-    "RS-388": {
-      "tier": "complexity-promoted"
-    },
-    "RS-389": {
-      "tier": "complexity-promoted"
-    },
-    "RS-390": {
-      "tier": "complexity-promoted"
-    },
-    "RS-391": {
-      "tier": "complexity-promoted"
-    },
-    "RS-392": {
-      "tier": "complexity-promoted"
-    },
-    "RS-393": {
-      "tier": "complexity-promoted"
-    },
-    "RS-394": {
-      "tier": "complexity-promoted"
-    },
-    "RS-395": {
-      "tier": "complexity-promoted"
-    },
-    "RS-396": {
-      "tier": "complexity-promoted"
-    },
-    "RS-397": {
-      "tier": "complexity-promoted"
-    },
-    "RS-398": {
-      "tier": "complexity-promoted"
-    },
-    "RS-399": {
-      "tier": "complexity-promoted"
-    },
-    "RS-400": {
-      "tier": "complexity-promoted"
-    },
-    "RS-401": {
-      "tier": "complexity-promoted"
-    },
-    "RS-402": {
-      "tier": "complexity-promoted"
-    },
-    "RS-403": {
-      "tier": "complexity-promoted"
-    },
-    "RS-404": {
-      "tier": "complexity-promoted"
-    },
-    "RS-405": {
-      "tier": "complexity-promoted"
-    },
-    "RS-406": {
-      "tier": "complexity-promoted"
-    },
-    "RS-407": {
-      "tier": "complexity-promoted"
-    },
-    "RS-408": {
-      "tier": "complexity-promoted"
-    },
-    "RS-409": {
-      "tier": "complexity-promoted"
-    },
-    "RS-410": {
-      "tier": "complexity-promoted"
-    },
-    "RS-411": {
-      "tier": "complexity-promoted"
-    },
-    "RS-412": {
-      "tier": "complexity-promoted"
-    },
-    "RS-413": {
-      "tier": "complexity-promoted"
-    },
-    "RS-414": {
-      "tier": "complexity-promoted"
-    },
-    "RS-415": {
-      "tier": "complexity-promoted"
-    },
-    "RS-416": {
-      "tier": "complexity-promoted"
-    },
-    "RS-417": {
-      "tier": "complexity-promoted"
-    },
-    "RS-418": {
-      "tier": "complexity-promoted"
-    },
-    "RS-419": {
-      "tier": "complexity-promoted"
-    },
-    "RS-420": {
-      "tier": "complexity-promoted"
-    },
-    "RS-421": {
-      "tier": "complexity-promoted"
-    },
-    "RS-422": {
-      "tier": "complexity-promoted"
-    },
-    "RS-423": {
-      "tier": "complexity-promoted"
-    },
-    "RS-425": {
-      "tier": "complexity-promoted"
-    },
-    "RS-427": {
-      "tier": "complexity-promoted"
-    },
-    "RS-428": {
-      "tier": "complexity-promoted"
-    },
-    "RS-429": {
-      "tier": "complexity-promoted"
-    },
-    "RS-430": {
-      "tier": "complexity-promoted"
-    },
-    "RS-431": {
-      "tier": "complexity-promoted"
-    },
-    "RS-432": {
-      "tier": "complexity-promoted"
-    },
-    "RS-433": {
-      "tier": "complexity-promoted"
-    },
-    "RS-434": {
-      "tier": "complexity-promoted"
-    },
-    "RS-435": {
-      "tier": "complexity-promoted"
-    },
-    "RS-436": {
-      "tier": "complexity-promoted"
-    },
-    "RS-437": {
-      "tier": "complexity-promoted"
-    },
-    "RS-439": {
-      "tier": "complexity-promoted"
-    },
-    "RS-441": {
-      "tier": "complexity-promoted"
-    },
-    "RS-442": {
-      "tier": "complexity-promoted"
-    },
-    "RS-443": {
-      "tier": "complexity-promoted"
-    },
-    "RS-444": {
-      "tier": "complexity-promoted"
-    },
-    "RS-445": {
-      "tier": "complexity-promoted"
-    },
-    "RS-446": {
-      "tier": "complexity-promoted"
-    },
-    "RS-447": {
-      "tier": "complexity-promoted"
-    },
-    "RS-448": {
-      "tier": "complexity-promoted"
-    },
-    "RS-449": {
-      "tier": "complexity-promoted"
-    },
-    "RS-450": {
-      "tier": "complexity-promoted"
-    },
-    "RS-451": {
-      "tier": "complexity-promoted"
-    },
-    "RS-452": {
-      "tier": "complexity-promoted"
-    },
-    "RS-453": {
-      "tier": "complexity-promoted"
-    },
-    "RS-454": {
-      "tier": "complexity-promoted"
-    },
-    "RS-455": {
-      "tier": "complexity-promoted"
-    },
-    "RS-456": {
-      "tier": "complexity-promoted"
-    },
-    "RS-457": {
-      "tier": "complexity-promoted"
-    },
-    "RS-458": {
-      "tier": "complexity-promoted"
-    },
-    "RS-459": {
-      "tier": "complexity-promoted"
-    },
-    "RS-460": {
-      "tier": "complexity-promoted"
-    },
-    "RS-461": {
-      "tier": "complexity-promoted"
-    },
-    "RS-462": {
-      "tier": "complexity-promoted"
-    },
-    "RS-463": {
-      "tier": "complexity-promoted"
-    },
-    "RS-464": {
-      "tier": "complexity-promoted"
-    },
-    "RS-465": {
-      "tier": "complexity-promoted"
-    },
-    "RS-467": {
-      "tier": "complexity-promoted"
-    },
-    "RS-468": {
-      "tier": "complexity-promoted"
-    },
-    "RS-469": {
-      "tier": "complexity-promoted"
-    },
-    "RS-470": {
-      "tier": "complexity-promoted"
-    },
-    "RS-471": {
-      "tier": "complexity-promoted"
-    },
-    "RS-472": {
-      "tier": "complexity-promoted"
-    },
-    "RS-473": {
-      "tier": "complexity-promoted"
-    },
-    "RS-474": {
-      "tier": "complexity-promoted"
-    },
-    "RS-475": {
-      "tier": "complexity-promoted"
-    },
-    "RS-476": {
-      "tier": "complexity-promoted"
-    },
-    "RS-477": {
-      "tier": "complexity-promoted"
-    },
-    "RS-478": {
-      "tier": "complexity-promoted"
-    },
-    "RS-479": {
-      "tier": "complexity-promoted"
-    },
-    "RS-480": {
-      "tier": "complexity-promoted"
-    },
-    "RS-481": {
-      "tier": "complexity-promoted"
-    },
-    "RS-482": {
-      "tier": "complexity-promoted"
-    },
-    "RS-483": {
-      "tier": "complexity-promoted"
-    },
-    "RS-484": {
-      "tier": "complexity-promoted"
-    },
-    "RS-485": {
-      "tier": "complexity-promoted"
-    },
-    "RS-486": {
-      "tier": "complexity-promoted"
-    },
-    "RS-487": {
-      "tier": "complexity-promoted"
-    },
-    "RS-488": {
-      "tier": "complexity-promoted"
-    },
-    "RS-489": {
-      "tier": "complexity-promoted"
-    },
-    "RS-490": {
-      "tier": "complexity-promoted"
-    },
-    "RS-491": {
-      "tier": "complexity-promoted"
-    },
-    "RS-492": {
-      "tier": "complexity-promoted"
-    },
-    "RS-493": {
-      "tier": "complexity-promoted"
-    },
-    "RS-494": {
-      "tier": "complexity-promoted"
-    },
-    "RS-495": {
-      "tier": "complexity-promoted"
-    },
-    "RS-496": {
-      "tier": "complexity-promoted"
-    },
-    "RS-497": {
-      "tier": "complexity-promoted"
-    },
-    "RS-498": {
-      "tier": "complexity-promoted"
-    },
-    "RS-501": {
-      "tier": "complexity-promoted"
-    },
-    "RS-502": {
-      "tier": "complexity-promoted"
-    },
-    "RS-503": {
-      "tier": "complexity-promoted"
-    },
-    "RS-505": {
-      "tier": "complexity-promoted"
-    },
-    "RS-506": {
-      "tier": "complexity-promoted"
-    },
-    "RS-507": {
-      "tier": "complexity-promoted"
-    },
-    "RS-508": {
-      "tier": "complexity-promoted"
-    },
-    "RS-509": {
-      "tier": "complexity-promoted"
-    },
-    "RS-510": {
-      "tier": "complexity-promoted"
-    },
-    "RS-511": {
-      "tier": "complexity-promoted"
-    },
-    "RS-512": {
-      "tier": "complexity-promoted"
-    },
-    "RS-513": {
-      "tier": "complexity-promoted"
-    },
-    "RS-514": {
-      "tier": "complexity-promoted"
-    },
-    "RS-515": {
-      "tier": "complexity-promoted"
-    },
-    "RS-516": {
-      "tier": "complexity-promoted"
-    },
-    "RS-517": {
-      "tier": "complexity-promoted"
-    },
-    "RS-519": {
-      "tier": "complexity-promoted"
-    },
-    "RS-521": {
-      "tier": "complexity-promoted"
-    },
-    "RS-522": {
-      "tier": "complexity-promoted"
-    },
-    "RS-524": {
-      "tier": "complexity-promoted"
-    },
-    "RS-525": {
-      "tier": "complexity-promoted"
-    },
-    "RS-527": {
-      "tier": "complexity-promoted"
-    },
-    "RS-529": {
-      "tier": "complexity-promoted"
-    },
-    "RS-530": {
-      "tier": "complexity-promoted"
-    },
-    "RS-531": {
-      "tier": "complexity-promoted"
-    },
-    "RS-532": {
-      "tier": "complexity-promoted"
-    },
-    "RS-533": {
-      "tier": "complexity-promoted"
-    },
-    "RS-534": {
-      "tier": "complexity-promoted"
-    },
-    "RS-536": {
-      "tier": "complexity-promoted"
-    },
-    "RS-537": {
-      "tier": "complexity-promoted"
-    },
-    "RS-539": {
-      "tier": "complexity-promoted"
-    },
-    "RS-540": {
-      "tier": "complexity-promoted"
-    },
-    "RS-541": {
-      "tier": "complexity-promoted"
-    },
-    "RS-542": {
-      "tier": "complexity-promoted"
-    },
-    "RS-543": {
-      "tier": "complexity-promoted"
-    },
-    "RS-545": {
-      "tier": "complexity-promoted"
-    },
-    "RS-546": {
-      "tier": "complexity-promoted"
-    },
-    "RS-550": {
-      "tier": "complexity-promoted"
-    },
-    "RS-551": {
-      "tier": "complexity-promoted"
-    },
-    "RS-552": {
-      "tier": "complexity-promoted"
-    },
-    "RS-553": {
-      "tier": "complexity-promoted"
-    },
-    "RS-554": {
-      "tier": "complexity-promoted"
-    },
-    "RS-555": {
-      "tier": "complexity-promoted"
-    },
-    "RS-556": {
-      "tier": "complexity-promoted"
-    },
-    "RS-557": {
-      "tier": "complexity-promoted"
-    },
-    "RS-558": {
-      "tier": "complexity-promoted"
-    },
-    "RS-559": {
-      "tier": "complexity-promoted"
-    },
-    "RS-560": {
-      "tier": "complexity-promoted"
-    },
-    "RS-562": {
-      "tier": "complexity-promoted"
-    },
-    "RS-563": {
-      "tier": "complexity-promoted"
-    },
-    "RS-565": {
-      "tier": "complexity-promoted"
-    },
-    "RS-566": {
-      "tier": "complexity-promoted"
-    },
-    "RS-567": {
-      "tier": "complexity-promoted"
-    },
-    "RS-568": {
-      "tier": "complexity-promoted"
-    },
-    "RS-569": {
-      "tier": "complexity-promoted"
-    },
-    "RS-570": {
-      "tier": "complexity-promoted"
-    },
-    "RS-571": {
-      "tier": "complexity-promoted"
-    },
-    "RS-572": {
-      "tier": "complexity-promoted"
-    },
-    "RS-574": {
-      "tier": "complexity-promoted"
-    },
-    "RS-575": {
-      "tier": "complexity-promoted"
-    },
-    "RS-576": {
-      "tier": "complexity-promoted"
-    },
-    "RS-578": {
-      "tier": "complexity-promoted"
-    },
-    "RS-579": {
-      "tier": "complexity-promoted"
-    },
-    "RS-580": {
-      "tier": "complexity-promoted"
-    },
-    "RS-581": {
-      "tier": "complexity-promoted"
-    },
-    "RS-582": {
-      "tier": "complexity-promoted"
-    },
-    "RS-583": {
-      "tier": "complexity-promoted"
-    },
-    "RS-584": {
-      "tier": "complexity-promoted"
-    },
-    "RS-585": {
-      "tier": "complexity-promoted"
-    },
-    "RS-586": {
-      "tier": "complexity-promoted"
-    },
-    "RS-587": {
-      "tier": "complexity-promoted"
-    },
-    "RS-588": {
-      "tier": "complexity-promoted"
-    },
-    "RS-589": {
-      "tier": "complexity-promoted"
-    },
-    "RS-590": {
-      "tier": "complexity-promoted"
-    },
-    "RS-591": {
-      "tier": "complexity-promoted"
-    },
-    "RS-592": {
-      "tier": "complexity-promoted"
-    },
-    "RS-593": {
-      "tier": "complexity-promoted"
-    },
-    "RS-594": {
-      "tier": "complexity-promoted"
-    },
-    "RS-595": {
-      "tier": "complexity-promoted"
-    },
-    "RS-596": {
-      "tier": "complexity-promoted"
-    },
-    "RS-597": {
-      "tier": "complexity-promoted"
-    },
-    "RS-598": {
-      "tier": "complexity-promoted"
-    },
-    "RS-599": {
-      "tier": "complexity-promoted"
-    },
-    "RS-600": {
-      "tier": "complexity-promoted"
-    },
-    "RS-601": {
-      "tier": "complexity-promoted"
-    },
-    "RS-602": {
-      "tier": "complexity-promoted"
-    },
-    "RS-603": {
-      "tier": "complexity-promoted"
-    },
-    "RS-604": {
-      "tier": "complexity-promoted"
-    },
-    "RS-605": {
-      "tier": "complexity-promoted"
-    },
-    "RS-606": {
-      "tier": "complexity-promoted"
-    },
-    "RS-608": {
-      "tier": "complexity-promoted"
-    },
-    "RS-609": {
-      "tier": "complexity-promoted"
-    },
-    "RS-610": {
-      "tier": "complexity-promoted"
-    },
-    "RS-611": {
-      "tier": "complexity-promoted"
-    },
-    "RS-612": {
-      "tier": "complexity-promoted"
-    },
-    "RS-613": {
-      "tier": "complexity-promoted"
-    },
-    "RS-614": {
-      "tier": "complexity-promoted"
-    },
-    "RS-615": {
-      "tier": "complexity-promoted"
-    },
-    "RS-616": {
-      "tier": "complexity-promoted"
-    },
-    "RS-617": {
-      "tier": "complexity-promoted"
-    },
-    "RS-618": {
-      "tier": "complexity-promoted"
-    },
-    "RS-619": {
-      "tier": "complexity-promoted"
-    },
-    "RS-620": {
-      "tier": "complexity-promoted"
-    },
-    "RS-621": {
-      "tier": "complexity-promoted"
-    },
-    "RS-622": {
-      "tier": "complexity-promoted"
-    },
-    "RS-623": {
-      "tier": "complexity-promoted"
-    },
-    "RS-624": {
-      "tier": "complexity-promoted"
-    },
-    "RS-625": {
-      "tier": "complexity-promoted"
-    },
-    "RS-627": {
-      "tier": "complexity-promoted"
-    },
-    "RS-628": {
-      "tier": "complexity-promoted"
-    },
-    "RS-629": {
-      "tier": "complexity-promoted"
-    },
-    "RS-630": {
-      "tier": "complexity-promoted"
-    },
-    "RS-631": {
-      "tier": "complexity-promoted"
-    },
-    "RS-633": {
-      "tier": "complexity-promoted"
-    },
-    "RS-634": {
-      "tier": "complexity-promoted"
-    },
-    "RS-635": {
-      "tier": "complexity-promoted"
-    },
-    "RS-636": {
-      "tier": "complexity-promoted"
-    },
-    "RS-637": {
-      "tier": "complexity-promoted"
-    },
-    "RS-638": {
-      "tier": "complexity-promoted"
-    },
-    "RS-639": {
-      "tier": "complexity-promoted"
-    },
-    "RS-640": {
-      "tier": "complexity-promoted"
-    },
-    "RS-641": {
-      "tier": "complexity-promoted"
-    },
-    "RS-644": {
-      "tier": "complexity-promoted"
-    },
-    "RS-645": {
-      "tier": "complexity-promoted"
-    },
-    "RS-646": {
-      "tier": "complexity-promoted"
-    },
-    "RS-648": {
-      "tier": "complexity-promoted"
-    },
-    "RS-649": {
-      "tier": "complexity-promoted"
-    },
-    "RS-650": {
-      "tier": "complexity-promoted"
-    },
-    "RS-651": {
-      "tier": "complexity-promoted"
-    },
-    "RS-653": {
-      "tier": "complexity-promoted"
-    },
-    "RS-654": {
-      "tier": "complexity-promoted"
-    },
-    "RS-655": {
-      "tier": "complexity-promoted"
-    },
-    "RS-656": {
-      "tier": "complexity-promoted"
-    },
-    "RS-657": {
-      "tier": "complexity-promoted"
-    },
-    "RS-658": {
-      "tier": "complexity-promoted"
-    },
-    "RS-659": {
-      "tier": "complexity-promoted"
-    },
-    "RS-660": {
-      "tier": "complexity-promoted"
-    },
-    "RS-661": {
-      "tier": "complexity-promoted"
-    },
-    "RS-662": {
-      "tier": "complexity-promoted"
-    },
-    "RS-663": {
-      "tier": "complexity-promoted"
-    },
-    "RS-664": {
-      "tier": "complexity-promoted"
-    },
-    "RS-665": {
-      "tier": "complexity-promoted"
-    },
-    "RS-666": {
-      "tier": "complexity-promoted"
-    },
-    "RS-667": {
-      "tier": "complexity-promoted"
-    },
-    "RS-668": {
-      "tier": "complexity-promoted"
-    },
-    "RS-669": {
-      "tier": "complexity-promoted"
-    },
-    "RS-670": {
-      "tier": "complexity-promoted"
-    },
-    "RS-671": {
-      "tier": "complexity-promoted"
-    },
-    "RS-672": {
-      "tier": "complexity-promoted"
-    },
-    "RS-673": {
-      "tier": "complexity-promoted"
-    },
-    "RS-675": {
-      "tier": "complexity-promoted"
-    },
-    "RS-676": {
-      "tier": "complexity-promoted"
-    },
-    "RS-678": {
-      "tier": "complexity-promoted"
-    },
-    "RS-679": {
-      "tier": "complexity-promoted"
-    },
-    "RS-681": {
-      "tier": "complexity-promoted"
-    },
-    "RS-684": {
-      "tier": "complexity-promoted"
-    },
-    "RS-685": {
-      "tier": "complexity-promoted"
-    },
-    "RS-686": {
-      "tier": "complexity-promoted"
-    },
-    "RS-687": {
-      "tier": "complexity-promoted"
-    },
-    "RS-690": {
       "tier": "complexity-promoted"
     },
     "SK-001": {

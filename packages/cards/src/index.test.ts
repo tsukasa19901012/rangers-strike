@@ -32,12 +32,19 @@ const legend3AssetsDir = path.join(
 );
 
 describe("legend1 catalog", () => {
-  it("contains 70 cards", () => {
-    expect(legend1Catalog.cards).toHaveLength(70);
+  it("contains legend1 expansion cards from core playable", () => {
+    expect(legend1Catalog.cards.length).toBeGreaterThan(70);
+    expect(legend1Catalog.cards.every((card) => card.expansion === "legend1")).toBe(
+      true,
+    );
   });
 
-  it("each card has imageUrl and a downloaded asset", () => {
-    for (const card of legend1Catalog.cards) {
+  it("each card with legend1 asset path has imageUrl and a downloaded asset", () => {
+    const withLegend1Assets = legend1Catalog.cards.filter((card) =>
+      card.imageUrl?.startsWith("/cards/legend1/"),
+    );
+    expect(withLegend1Assets.length).toBe(70);
+    for (const card of withLegend1Assets) {
       expect(card.imageUrl).toBe(`/cards/legend1/${card.id}.jpg`);
       expect(card.imageSourceUrl).toContain("grnrngr.com");
       expect(getCardImageUrl(card.id)).toBe(card.imageUrl);
@@ -64,9 +71,8 @@ describe("legend2 catalog", () => {
 
   it("merges legend1 and legend2 without duplicate ids", () => {
     const merged = [...legend1Catalog.cards, ...legend2Catalog.cards];
-    expect(merged).toHaveLength(122);
     const ids = new Set(merged.map((card) => card.id));
-    expect(ids.size).toBe(122);
+    expect(ids.size).toBe(merged.length);
     expect(getCardById("RS-071")?.name).toBe("ヒドラー兵の卵");
     expect(getCardById("RS-122")?.name).toBe("ゴーゴーマリン");
   });

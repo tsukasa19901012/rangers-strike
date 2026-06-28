@@ -1,4 +1,4 @@
-import { getCardEffect, requiresFusionPartnerReturn } from "@rangers-strike/cards";
+import { getCardEffect } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import {
   cardName,
@@ -34,7 +34,6 @@ import {
   resolveSuperDynamite,
 } from "../rules/legend3/operations";
 import { isStealthUnit } from "../rules/legend3/fieldEffects";
-import { returnFusionPartnersFromDiscard } from "../rules/fusionReturn";
 import { tryLeaveField } from "../rules/operationCounters";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { applySuperBrainDraw } from "./drawEffects";
@@ -289,29 +288,31 @@ function resolvePowerBazooka(ctx: EffectContext): EffectOutcome {
     return fail(ctx.state, "invalid_target");
   }
 
-  const [, battle] = removeAt(enemy.battle, found.index);
-  let nextState: GameState = {
-    ...ctx.state,
-    ...updatePlayer(ctx.state, enemyId, {
-      ...enemy,
-      battle,
-      discard: [...enemy.discard, found.card],
-    }),
-  };
+  const battleBefore = enemy.battle.length;
+  const targetName = cardName(ctx.state.definitions, found.card.cardId);
+  const leaveResult = tryLeaveField(ctx.state, {
+    ownerPlayerId: enemyId,
+    instanceId: ctx.targetInstanceId,
+    fromZone: "battle",
+    toZone: "discard",
+    leavingCardId: found.card.cardId,
+    phasePlayerId: ctx.playerId,
+    fusionReturnOnDiscard: "battle",
+  });
 
-  if (requiresFusionPartnerReturn(found.card.cardId)) {
-    nextState = returnFusionPartnersFromDiscard(
-      nextState,
-      enemyId,
-      found.card.cardId,
-      "battle",
-    );
+  if (leaveResult.deferred) {
+    return {
+      state: leaveResult.state,
+      detail: `bazooka_pending:${targetName}`,
+      discardOperation: true,
+    };
   }
 
-  const targetName = cardName(ctx.state.definitions, found.card.cardId);
-  const returned = nextState.players[enemyId].battle.length - battle.length;
+  const enemyAfter = leaveResult.state.players[enemyId];
+  const inDiscard = enemyAfter.discard.some((c) => c.instanceId === ctx.targetInstanceId);
+  const returned = inDiscard ? Math.max(0, enemyAfter.battle.length - (battleBefore - 1)) : 0;
   return {
-    state: nextState,
+    state: leaveResult.state,
     detail: returned > 0 ? `bazooka:${targetName}:return${returned}` : `bazooka:${targetName}`,
     discardOperation: true,
   };

@@ -183,6 +183,7 @@ import {
   finalizeRushPending,
   tryLeaveField,
 } from "../rules/operationCounters";
+import { applyUseJuuKunDo } from "../rules/juuKunDo";
 import { applyResolveRuinSurvey } from "../rules/ruinSurvey";
 import { applySeabedDrawPlacement, openEffectChoice } from "../rules/pendingChoices";
 import {
@@ -1752,6 +1753,20 @@ export function applyAction(
       );
       if (!nextState) return fail("invalid_morph_unit");
       return ok(nextState, buildSimpleLogEntry(playerId, "select_morph_unit"));
+    }
+
+    case "use_juu_kun_do": {
+      if (state.phase !== "battle") return fail("wrong_phase");
+      const nextState = applyUseJuuKunDo(
+        state,
+        playerId,
+        action.attackerInstanceId,
+      );
+      if (!nextState) return fail("illegal_action");
+      return ok(
+        nextState,
+        buildSimpleLogEntry(playerId, "use_juu_kun_do", action.attackerInstanceId),
+      );
     }
 
     case "use_super_shield": {

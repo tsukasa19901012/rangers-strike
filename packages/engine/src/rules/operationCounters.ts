@@ -40,6 +40,7 @@ import { findCardOwner } from "./fieldLookup";
 import { canOfferRegister, toPendingRegister } from "./resist";
 import { canStrikeUnit } from "./combo";
 import { opponentInfiniteChainBlocks } from "./turnModifiers";
+import { returnFusionPartnersFromDiscard } from "./fusionReturn";
 import { resolveLegend3OnBattleWin } from "./legend3/destroyEffects";
 import { shouldMedicalRescueToPower } from "./legend2/fieldEffects";
 import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
@@ -904,11 +905,13 @@ export function resolveBattlePendingCore(
     }
     nextState = leaveResult.state;
 
-    if (canStrikeUnit(battleState.definitions, refreshedDefenderFound.card, battleState, defenderOwner)) {
+    if (refreshedAttackerFound.card.cardId === "RS-065") {
       const fb = resolveFocusedBreakthroughDamage(
         nextState,
         attackerId,
-        refreshedDefenderFound.card.cardId,
+        pending.attackerInstanceId,
+        defenderOwner,
+        refreshedDefenderFound.card,
       );
       nextState = fb.state;
       extraLogs = fb.logs;
@@ -1075,9 +1078,23 @@ export function finalizeLeavePending(
     phasePlayerId: pending.phasePlayerId,
   });
 
+  let resolvedState = leaveFx.state;
+  if (
+    pending.fusionReturnOnDiscard === "battle" &&
+    effectiveToZone === "discard" &&
+    nextOwner.discard.some((c) => c.instanceId === pending.instanceId)
+  ) {
+    resolvedState = returnFusionPartnersFromDiscard(
+      resolvedState,
+      pending.ownerPlayerId,
+      found.card.cardId,
+      "battle",
+    );
+  }
+
   return {
-    ...leaveFx.state,
-    log: [...leaveFx.state.log, ...leaveFx.logs],
+    ...resolvedState,
+    log: [...resolvedState.log, ...leaveFx.logs],
   };
 }
 

@@ -58,5 +58,7 @@
     "text": "ダークアライアンスを持つ自軍Lユニット1体を捨札にする",
     "requiredCategory": "ダークアライアンス",
     "unitCount": 1
-  }
+  },
+  "imageUrl": "/cards/promoted/RS-580.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-580.jpg"
 }

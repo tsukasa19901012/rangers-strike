@@ -8,6 +8,7 @@ import {
   isFullyDslEffect,
 } from "./loader";
 import { getCardById } from "../catalog";
+import { CORE_PLAYABLE_CARD_COUNT } from "../catalog/tiers";
 import exampleDsl from "./examples/RS-046.dsl.json";
 
 describe("dsl/loader", () => {
@@ -35,7 +36,7 @@ describe("dsl/loader", () => {
 
   it("loadAllCardDocuments returns full catalog", () => {
     const docs = loadAllCardDocuments();
-    expect(docs.length).toBe(179);
+    expect(docs.length).toBe(CORE_PLAYABLE_CARD_COUNT);
     expect(docs.every((d) => d.id && d.name)).toBe(true);
   });
 

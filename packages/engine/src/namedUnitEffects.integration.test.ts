@@ -127,16 +127,15 @@ describe("super shield RS-052", () => {
 });
 
 describe("focused breakthrough RS-065", () => {
-  it("deals 1 damage when destroying strike-capable unit", () => {
+  it("deals 1 damage when RS-065 destroys SP1+ unit", () => {
     const focused = inst("RS-065", "fb");
-    const striker = inst("TST-UNIT-0", "striker");
     const target = inst("TST-UNIT-0", "target");
     const state = createTestState({
       phase: "battle",
       activePlayer: "player1",
       definitions: defs,
       player1: {
-        battle: [focused, striker],
+        battle: [focused],
         command: [heldWbCommand("c1"), heldWbCommand("c2")],
       },
       player2: {
@@ -148,7 +147,7 @@ describe("focused breakthrough RS-065", () => {
     const battle = getLegalActions(state).find(
       (a) =>
         a.type === "battle" &&
-        a.attackerInstanceId === striker.instanceId &&
+        a.attackerInstanceId === focused.instanceId &&
         a.defenderInstanceId === target.instanceId,
     );
     expect(battle).toBeDefined();

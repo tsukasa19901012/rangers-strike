@@ -176,6 +176,13 @@ export type UseSuperShieldAction = {
   playerId: PlayerId;
 };
 
+/** RS-106 ジュウクンドー — アタックの代わりに発動。 */
+export type UseJuuKunDoAction = {
+  type: "use_juu_kun_do";
+  playerId: PlayerId;
+  attackerInstanceId: string;
+};
+
 export type UsePlasmaEnergyAction = {
   type: "use_plasma_energy";
   playerId: PlayerId;
@@ -316,6 +323,7 @@ export type GameAction =
   | ResolveChaseAction
   | PassChaseAction
   | UseSuperShieldAction
+  | UseJuuKunDoAction
   | ShironLightAction
   | HidoraEggAction
   | BattleDanceRetreatAction

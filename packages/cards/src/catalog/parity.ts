@@ -14,6 +14,7 @@ import {
   fingerprintCardDocuments,
 } from "./statsParity";
 import {
+  CORE_PLAYABLE_CARD_COUNT,
   FULL_PLAYABLE_CARD_COUNT,
   type CatalogTier,
 } from "./tiers";
@@ -82,13 +83,13 @@ function gate(
 
 function evaluateGeneratedCoreCount(): ParityGate {
   const count = generatedCorePlayableCatalog.cards.length;
-  const status: ParityGateStatus = count === 179 ? "pass" : "fail";
+  const status: ParityGateStatus = count === CORE_PLAYABLE_CARD_COUNT ? "pass" : "fail";
 
   return gate(
     "U2-a",
     "core-playable emit",
     status,
-    "generated core-playable = 179",
+    `generated core-playable = ${CORE_PLAYABLE_CARD_COUNT}`,
     `generated=${count}`,
   );
 }
@@ -109,14 +110,15 @@ function evaluateCoreCatalogIntegrity(): {
     }
   }
 
-  const status: ParityGateStatus = diffs.length === 0 && cards.length === 179 ? "pass" : "fail";
+  const status: ParityGateStatus =
+    diffs.length === 0 && cards.length === CORE_PLAYABLE_CARD_COUNT ? "pass" : "fail";
   return {
     diffs: diffs.slice(0, 20),
     gate: gate(
       "U2-b",
       "core catalog integrity",
       status,
-      "generated core 179 枚すべて必須 stats あり",
+      `generated core ${CORE_PLAYABLE_CARD_COUNT} 枚すべて必須 stats あり`,
       `cards=${cards.length}, invalid=${diffs.length}`,
       diffs.length > 0 ? diffs.slice(0, 5).map((d) => d.id) : undefined,
     ),
@@ -138,7 +140,7 @@ function evaluateCoreDslStubs(): ParityGate {
     "U2-c",
     "core DSL stubs",
     missing.length === 0 ? "pass" : "fail",
-    "core 179 枚すべて dsl-stubs/{id}.dsl.json あり",
+    `core ${CORE_PLAYABLE_CARD_COUNT} 枚すべて dsl-stubs/{id}.dsl.json あり`,
     `missing=${missing.length}`,
     missing.length > 0 ? missing.slice(0, 10) : undefined,
   );

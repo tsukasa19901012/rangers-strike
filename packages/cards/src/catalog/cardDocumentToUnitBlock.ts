@@ -15,11 +15,18 @@ for (const card of fullPlayableCatalog.cards) {
   if (!CARD_NAME_TO_ID.has(key)) CARD_NAME_TO_ID.set(key, card.id);
 }
 
-/** コアのみ — promoted の同名エイリアスで上書きしない（例: マジフェニックス → RS-057）。 */
+/** コアのみ — 同名エイリアスは低い id を優先（例: マジフェニックス → RS-057）。 */
 const CARD_ALIAS_TO_ID = new Map<string, string>();
+function registerAlias(alias: string, cardId: string): void {
+  const existing = CARD_ALIAS_TO_ID.get(alias);
+  if (!existing || cardId < existing) {
+    CARD_ALIAS_TO_ID.set(alias, cardId);
+  }
+}
 for (const card of corePlayableCatalog.cards) {
+  registerAlias(canonicalCardName(card.name), card.id);
   for (const alias of fusionMaterialAliasNames(card.text)) {
-    CARD_ALIAS_TO_ID.set(alias, card.id);
+    registerAlias(alias, card.id);
   }
 }
 

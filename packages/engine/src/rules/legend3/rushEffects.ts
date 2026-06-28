@@ -1,7 +1,11 @@
 import { getUnitEffectBlock, hasUnnamedRule } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
-import { printedSpBase, resolveInstanceSpValue } from "../fractionalSp";
+import {
+  battlePositionOneBased,
+  printedSpBase,
+  resolveInstanceSpValue,
+} from "../fractionalSp";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { buildLogEntry } from "../../log/formatLog";
 import {
@@ -191,18 +195,22 @@ export function resolveLegend3OnRushEffects(
     }
     case "taurus_dive": {
       const enemy = nextState.players[enemyId];
-      const toReturn = enemy.rush.filter((c) => {
+      const toReturn = [...enemy.battle, ...enemy.rush].filter((c) => {
         if (!isSmallUnit(nextState.definitions, c.cardId)) return false;
         const def = getDefinition(nextState.definitions, c.cardId);
-        const sp =
-          (c.spModifier ?? 0) +
-          printedSpBase(resolveInstanceSpValue(def, c), null);
+        const spValue = resolveInstanceSpValue(def, c);
+        const inBattle = enemy.battle.some((u) => u.instanceId === c.instanceId);
+        if (spValue === "special") return inBattle;
+        if (!inBattle) return false;
+        const position = battlePositionOneBased(enemy.battle, c.instanceId);
+        const sp = (c.spModifier ?? 0) + printedSpBase(spValue, position);
         return sp >= 1;
       });
       if (toReturn.length > 0) {
         const returnIds = new Set(toReturn.map((c) => c.instanceId));
         const nextEnemy = {
           ...enemy,
+          battle: enemy.battle.filter((c) => !returnIds.has(c.instanceId)),
           rush: enemy.rush.filter((c) => !returnIds.has(c.instanceId)),
           hand: [...enemy.hand, ...toReturn],
         };

@@ -534,7 +534,7 @@
     },
     {
       "id": "PR-026",
-      "name": "デカマスター",
+      "name": "デカマスター（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -2703,7 +2703,7 @@
     },
     {
       "id": "RK-240",
-      "name": "仮面ライダー電王CF",
+      "name": "仮面ライダー電王CF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -2838,7 +2838,7 @@
     },
     {
       "id": "RK-255",
-      "name": "電波人間タックル",
+      "name": "電波人間タックル（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -2964,7 +2964,7 @@
     },
     {
       "id": "RK-269",
-      "name": "シャドームーン",
+      "name": "シャドームーン（2nd）",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -3045,7 +3045,7 @@
     },
     {
       "id": "RK-278",
-      "name": "仮面ライダーナイト",
+      "name": "仮面ライダーナイト（2nd）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -3207,7 +3207,7 @@
     },
     {
       "id": "RK-296",
-      "name": "仮面ライダーキックホッパー",
+      "name": "仮面ライダーキックホッパー（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -3216,7 +3216,7 @@
     },
     {
       "id": "RK-297",
-      "name": "仮面ライダーパンチホッパー",
+      "name": "仮面ライダーパンチホッパー（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -3279,7 +3279,7 @@
     },
     {
       "id": "RK-304",
-      "name": "仮面ライダー電王RF",
+      "name": "仮面ライダー電王RF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -3288,7 +3288,7 @@
     },
     {
       "id": "RK-305",
-      "name": "仮面ライダー電王SF",
+      "name": "仮面ライダー電王SF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -3297,7 +3297,7 @@
     },
     {
       "id": "RK-306",
-      "name": "仮面ライダー電王AF",
+      "name": "仮面ライダー電王AF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -3306,7 +3306,7 @@
     },
     {
       "id": "RK-307",
-      "name": "仮面ライダー電王GF",
+      "name": "仮面ライダー電王GF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -3315,7 +3315,7 @@
     },
     {
       "id": "RK-308",
-      "name": "リュウタロス",
+      "name": "リュウタロス（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -3324,7 +3324,7 @@
     },
     {
       "id": "RK-309",
-      "name": "ウラタロス",
+      "name": "ウラタロス（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -3333,7 +3333,7 @@
     },
     {
       "id": "RK-310",
-      "name": "モモタロス",
+      "name": "モモタロス（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -3342,7 +3342,7 @@
     },
     {
       "id": "RK-311",
-      "name": "キンタロス",
+      "name": "キンタロス（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -3531,7 +3531,7 @@
     },
     {
       "id": "RK-332",
-      "name": "仮面ライダー龍騎",
+      "name": "仮面ライダー龍騎（2nd）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -3549,7 +3549,7 @@
     },
     {
       "id": "RK-334",
-      "name": "仮面ライダー電王LF",
+      "name": "仮面ライダー電王LF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -3558,7 +3558,7 @@
     },
     {
       "id": "RK-335",
-      "name": "モモタロス",
+      "name": "モモタロス（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -4124,4614 +4124,6 @@
       "powerCost": 1
     },
     {
-      "id": "RS-179",
-      "name": "恐竜やのカレー",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-180",
-      "name": "ライドラプター",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-181",
-      "name": "破邪百獣剣",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-182",
-      "name": "ジャイアントローラー",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 6
-    },
-    {
-      "id": "RS-183",
-      "name": "黒子ロボの記憶操作",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-184",
-      "name": "マジパンチ",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-185",
-      "name": "カーナビック",
-      "type": "operation",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-186",
-      "name": "プロバイダーベース",
-      "type": "operation",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-187",
-      "name": "ゴーマ宮",
-      "type": "operation",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-188",
-      "name": "アチャとコチャ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-189",
-      "name": "キレンジャー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-190",
-      "name": "ミドレンジャー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-191",
-      "name": "ダイナレッド",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-192",
-      "name": "ダイナブルー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-193",
-      "name": "ダイナピンク",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-194",
-      "name": "ダイナロボ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-195",
-      "name": "ダイナマッハ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-196",
-      "name": "ダイナモビル",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-197",
-      "name": "ダイナギャリー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-198",
-      "name": "帝王アトン",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 8
-    },
-    {
-      "id": "RS-199",
-      "name": "グリーンツー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-200",
-      "name": "ブルースリー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-201",
-      "name": "イエローフォー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-202",
-      "name": "ピンクファイブ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-203",
-      "name": "大帝ラー・デウス",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-204",
-      "name": "レッドファルコン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-205",
-      "name": "リュウレンジャー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-206",
-      "name": "シシレンジャー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-207",
-      "name": "テンマレンジャー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-208",
-      "name": "キリンレンジャー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-209",
-      "name": "ホウオウレンジャー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-210",
-      "name": "ゴーマ16世",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-211",
-      "name": "オーブルー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-212",
-      "name": "オーグリーン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-213",
-      "name": "オーイエロー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-214",
-      "name": "オーピンク",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-215",
-      "name": "皇帝バッカスフンド",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-216",
-      "name": "暴走皇帝エグゾス",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 6
-    },
-    {
-      "id": "RS-217",
-      "name": "SSスタタンゾ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-218",
-      "name": "タイムレッド",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-219",
-      "name": "タイムブルー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-220",
-      "name": "タイムグリーン",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-221",
-      "name": "タイムイエロー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-222",
-      "name": "タイムピンク",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-223",
-      "name": "タック",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-224",
-      "name": "トータスハンマー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-225",
-      "name": "ガトリングレオ",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-226",
-      "name": "キラーオー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-227",
-      "name": "爆竜トップゲイラー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-228",
-      "name": "爆竜ステゴスライドン",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-229",
-      "name": "爆竜ブラキオサウルス",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-230",
-      "name": "アバレッドAM",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-231",
-      "name": "アバレブルーAM",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-232",
-      "name": "アバレイエローAM",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-233",
-      "name": "アバレブラック",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-234",
-      "name": "アバレキラー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-235",
-      "name": "デカベースロボ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-236",
-      "name": "スーパーダイボウケン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-237",
-      "name": "サイレンビルダー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-238",
-      "name": "ゴーゴーファイヤー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-239",
-      "name": "ゴーゴーポリス",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-240",
-      "name": "ゴーゴーエイダー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-241",
-      "name": "ボウケンレッドAT",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-242",
-      "name": "創造王リュウオーン",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-243",
-      "name": "獣奏剣",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-244",
-      "name": "命の泉",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-245",
-      "name": "ガオメインバスター",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-246",
-      "name": "気力",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-247",
-      "name": "疾風流超忍法",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-248",
-      "name": "プリズムパワー",
-      "type": "operation",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-249",
-      "name": "Vコマンダー",
-      "type": "operation",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-250",
-      "name": "ジャッジメント",
-      "type": "operation",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-251",
-      "name": "ブン・ターの特訓",
-      "type": "operation",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-252",
-      "name": "バイモーションバスター",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-253",
-      "name": "ファイブテクター",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-254",
-      "name": "バードニックウェーブ",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-255",
-      "name": "巨大化爆弾",
-      "type": "operation",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-256",
-      "name": "闇の戒律",
-      "type": "operation",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-257",
-      "name": "野球仮面",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-258",
-      "name": "アオレンジャー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-259",
-      "name": "モモレンジャー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-260",
-      "name": "バイオドラゴン",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-261",
-      "name": "メラージュ戦闘機",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "2+"
-    },
-    {
-      "id": "RS-262",
-      "name": "フラッシュキング",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-263",
-      "name": "タンクコマンド",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-264",
-      "name": "ジェットデルタ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-265",
-      "name": "ジェットシーカー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-266",
-      "name": "レッドフラッシュ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-267",
-      "name": "ブルーフラッシュ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-268",
-      "name": "グリーンフラッシュ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-269",
-      "name": "イエローフラッシュ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-270",
-      "name": "ピンクフラッシュ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-271",
-      "name": "マグ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-272",
-      "name": "ファイブレッド",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-273",
-      "name": "ファイブブルー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-274",
-      "name": "ファイブブラック",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-275",
-      "name": "ファイブピンク",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-276",
-      "name": "ファイブイエロー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-277",
-      "name": "ガロア艦長",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-278",
-      "name": "ブラックバイソン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-279",
-      "name": "グリーンサイ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-280",
-      "name": "レッドホーク",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-281",
-      "name": "ブラックコンドル",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-282",
-      "name": "イエローオウル",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-283",
-      "name": "ブルースワロー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-284",
-      "name": "ホワイトスワン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-285",
-      "name": "ファイタージゲン",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-286",
-      "name": "大獣神",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "8+"
-    },
-    {
-      "id": "RS-287",
-      "name": "剛龍神",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "8+"
-    },
-    {
-      "id": "RS-288",
-      "name": "守護獣ドラゴンシーザー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-289",
-      "name": "ドラゴンレンジャー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-290",
-      "name": "気伝武人龍星王",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-291",
-      "name": "気伝獣龍星王",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-292",
-      "name": "気伝武人ウォンタイガー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-293",
-      "name": "気伝獣ウォンタイガー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-294",
-      "name": "キバレンジャー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-295",
-      "name": "磁石神父",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-296",
-      "name": "バラクティカ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-297",
-      "name": "タコンパス",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-298",
-      "name": "バーロ兵",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-299",
-      "name": "VRVマスター",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-300",
-      "name": "ワンパー",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-301",
-      "name": "Vレックスロボ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-302",
-      "name": "Vレックス",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-303",
-      "name": "タイムファイヤー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-304",
-      "name": "シティガーディアンズ隊員",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-305",
-      "name": "ガオパンダ",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-306",
-      "name": "ハリケンレッド",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-307",
-      "name": "ハリケンイエロー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-308",
-      "name": "ハリケンブルー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-309",
-      "name": "轟雷神",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-310",
-      "name": "ゴウライビートル",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-311",
-      "name": "ゴウライスタッグ",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-312",
-      "name": "カブトライジャー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-313",
-      "name": "クワガライジャー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-314",
-      "name": "マゲラッパ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-315",
-      "name": "バクレンオー",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-316",
-      "name": "爆竜カルノリュータス",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-317",
-      "name": "爆竜カスモシールドン",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-318",
-      "name": "ドギー・クルーガー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-319",
-      "name": "デカマスター",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-320",
-      "name": "デカスワン",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-321",
-      "name": "アーナロイド",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-322",
-      "name": "ベン・G",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-323",
-      "name": "マジグリーン・マッスル",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-324",
-      "name": "マジマザー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-325",
-      "name": "天空勇者マジシャイン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-326",
-      "name": "魔法猫スモーキー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-327",
-      "name": "天空聖者ブレイジェル",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-328",
-      "name": "魔法鉄神トラベリオン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-329",
-      "name": "トラベリオンエクスプレス",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-330",
-      "name": "マジレジェンド",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-331",
-      "name": "マジファイヤーバード",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-332",
-      "name": "マジライオン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-333",
-      "name": "レジェンドマジレッド",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-334",
-      "name": "レジェンドマジイエロー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-335",
-      "name": "レジェンドマジブルー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-336",
-      "name": "レジェンドマジピンク",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-337",
-      "name": "レジェンドマジグリーン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-338",
-      "name": "ジャリュウ兵",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-339",
-      "name": "闇のヤイバ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-340",
-      "name": "ゲキレッド",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-341",
-      "name": "ゲキブルー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-342",
-      "name": "ゲキイエロー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-343",
-      "name": "ゲキレッド",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-344",
-      "name": "天空勇者ウルザードファイヤー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-345",
-      "name": "デカレッドSWAT",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-346",
-      "name": "バトルフィーバーロボ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-347",
-      "name": "スーパーフォーメーション",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 6
-    },
-    {
-      "id": "RS-348",
-      "name": "メディテーション",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-349",
-      "name": "スーパー戦隊アドレスブック",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-350",
-      "name": "暗黒の鎧",
-      "type": "operation",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-351",
-      "name": "アカレンジャー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-352",
-      "name": "ダイデンジン",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-353",
-      "name": "デンジファイター",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-354",
-      "name": "デンジレッド",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-355",
-      "name": "デンジブルー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-356",
-      "name": "デンジイエロー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-357",
-      "name": "デンジグリーン",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-358",
-      "name": "デンジピンク",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-359",
-      "name": "デンジ犬アイシー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-360",
-      "name": "ヘドリアン女王",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-361",
-      "name": "バルイーグル",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-362",
-      "name": "バルシャーク",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-363",
-      "name": "バルパンサー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-364",
-      "name": "ヘルサターン総統",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 6
-    },
-    {
-      "id": "RS-365",
-      "name": "イナズマギンガー",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "0+"
-    },
-    {
-      "id": "RS-366",
-      "name": "グランギズモ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-367",
-      "name": "ゾロー兵",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-368",
-      "name": "レッドマスク",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-369",
-      "name": "ブルーマスク",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-370",
-      "name": "ブラックマスク",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-371",
-      "name": "ピンクマスク",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-372",
-      "name": "X1マスク",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-373",
-      "name": "ファイブレッドFT",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-374",
-      "name": "魔女バンドーラ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-375",
-      "name": "レッドレーサー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-376",
-      "name": "ギンガレッド",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-377",
-      "name": "ギンガグリーン",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-378",
-      "name": "ギンガブルー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-379",
-      "name": "ギンガイエロー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-380",
-      "name": "ギンガピンク",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-381",
-      "name": "ガレオパルサー",
-      "type": "vehicle",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-382",
-      "name": "ビクトリーロボ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-383",
-      "name": "レッドラダー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-384",
-      "name": "ブルースローワー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-385",
-      "name": "グリーンホバー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-386",
-      "name": "イエローアーマー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-387",
-      "name": "ピンクエイダー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-388",
-      "name": "ゴーレッド",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-389",
-      "name": "ゴーブルー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-390",
-      "name": "ゴーグリーン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-391",
-      "name": "ゴーイエロー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-392",
-      "name": "ゴーピンク",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-393",
-      "name": "コマンドアタッカー",
-      "type": "vehicle",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-394",
-      "name": "タイムロボα",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-395",
-      "name": "タイムロボβ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-396",
-      "name": "タイムジェットγ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "8+"
-    },
-    {
-      "id": "RS-397",
-      "name": "タイムジェット1",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-398",
-      "name": "タイムジェット2",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-399",
-      "name": "タイムジェット3",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-400",
-      "name": "タイムジェット4",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-401",
-      "name": "タイムジェット5",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-402",
-      "name": "ガオレッド",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-403",
-      "name": "デカレッド",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-404",
-      "name": "マーフィーK9",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-405",
-      "name": "デカブレイク",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-406",
-      "name": "マシンボクサー",
-      "type": "vehicle",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-407",
-      "name": "天空大聖者マジエル",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-408",
-      "name": "天空聖者サンジェル",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-409",
-      "name": "冥府神スレイプニル",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-410",
-      "name": "冥府神ドレイク",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "2+"
-    },
-    {
-      "id": "RS-411",
-      "name": "冥府神ダゴン",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-412",
-      "name": "冥府神スフィンクス",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-413",
-      "name": "冥府神ゴーゴン",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-414",
-      "name": "冥府神ティターン",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-415",
-      "name": "冥府神ワイバーン",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-416",
-      "name": "冥府神トード",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "2+"
-    },
-    {
-      "id": "RS-417",
-      "name": "冥府神サイクロプス",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-418",
-      "name": "冥府神イフリート",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "2+"
-    },
-    {
-      "id": "RS-419",
-      "name": "聖剣ズバーン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-420",
-      "name": "大剣人ズバーン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-421",
-      "name": "アカレッド",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-422",
-      "name": "ゲキトージャ",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-423",
-      "name": "ゲキタイガー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-424",
-      "name": "ゲキチーター",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "0+"
-    },
-    {
-      "id": "RS-425",
-      "name": "ゲキジャガー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "2+"
-    },
-    {
-      "id": "RS-426",
-      "name": "スーパーゲキレッド",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-427",
-      "name": "スーパーゲキイエロー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-428",
-      "name": "スーパーゲキブルー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-429",
-      "name": "マスター・シャーフー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-430",
-      "name": "ロボタフ",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-431",
-      "name": "黒獅子リオ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-432",
-      "name": "隠流マキビシ",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-433",
-      "name": "ネコマル",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-434",
-      "name": "ライフバード",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-435",
-      "name": "アレ",
-      "type": "operation",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-436",
-      "name": "激気",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-437",
-      "name": "白熱する実況",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-438",
-      "name": "炎神ソウル",
-      "type": "operation",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-439",
-      "name": "バトルシャーク",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-440",
-      "name": "バトルフィーバーロボ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-441",
-      "name": "バトルコサック",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-442",
-      "name": "バトルフランス",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-443",
-      "name": "バトルジャパン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-444",
-      "name": "バトルケニア",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-445",
-      "name": "ミスアメリカ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-446",
-      "name": "ダイジュピター",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 6
-    },
-    {
-      "id": "RS-447",
-      "name": "ダイナブラック",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-448",
-      "name": "ダイナイエロー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-449",
-      "name": "イエローマスク",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-450",
-      "name": "地帝忍オヨブー",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-451",
-      "name": "シノビドグラー",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-452",
-      "name": "テトラボーイ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-453",
-      "name": "サムライマン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-454",
-      "name": "ニンジャマン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-455",
-      "name": "ニンジャブラック",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-456",
-      "name": "ニンジャブルー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-457",
-      "name": "ニンジャレッド",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-458",
-      "name": "ニンジャホワイト",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-459",
-      "name": "ニンジャイエロー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-460",
-      "name": "花忍者ラン",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-461",
-      "name": "花忍者スイレン",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-462",
-      "name": "花忍者サクラ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-463",
-      "name": "花忍者アヤメ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-464",
-      "name": "花忍者ユリ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-465",
-      "name": "ドロドロ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-466",
-      "name": "ギンガレオン",
-      "type": "vehicle",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-467",
-      "name": "ギンガルコン",
-      "type": "vehicle",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-468",
-      "name": "ギンガリラ",
-      "type": "vehicle",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-469",
-      "name": "ギンガベリック",
-      "type": "vehicle",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-470",
-      "name": "ギンガット",
-      "type": "vehicle",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-471",
-      "name": "グランドライナー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-472",
-      "name": "ゴーライナー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-473",
-      "name": "タイムシャドウ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-474",
-      "name": "タイムシャドウSM",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-475",
-      "name": "ガオハンタージャスティス",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-476",
-      "name": "ガオハンターイビル",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-477",
-      "name": "ガオウルフ",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-478",
-      "name": "ガオリゲーター",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-479",
-      "name": "ガオハンマーヘッド",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-480",
-      "name": "ガオシルバー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-481",
-      "name": "天空神",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-482",
-      "name": "天空神・飛行モード",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-483",
-      "name": "シュリケンジャー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-484",
-      "name": "旋風神ハリアー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "14-"
-    },
-    {
-      "id": "RS-485",
-      "name": "ハムスター館長",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-486",
-      "name": "ソードスラッシャー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-487",
-      "name": "ゴートクラッシャー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 6
-    },
-    {
-      "id": "RS-488",
-      "name": "ハリケンウィンガー",
-      "type": "vehicle",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-489",
-      "name": "二の槍チュウズーボ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-490",
-      "name": "三の槍マンマルバ幼体",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-491",
-      "name": "三の槍マンマルバ成体",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-492",
-      "name": "炎の騎馬",
-      "type": "vehicle",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-493",
-      "name": "六の槍サタラクラ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 6
-    },
-    {
-      "id": "RS-494",
-      "name": "縁切り忍者シラーンス",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-495",
-      "name": "重力忍者オモ・カル",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-496",
-      "name": "デカブルーSWAT",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-497",
-      "name": "冥獣人ニンジャキリカゲ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-498",
-      "name": "ゲキウルフ",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-499",
-      "name": "ゲキバイオレット",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-500",
-      "name": "ゲキチョッパー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-501",
-      "name": "エレハン・キンポー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-502",
-      "name": "バット・リー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-503",
-      "name": "シャッキー・チェン",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-504",
-      "name": "獣人メレ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-505",
-      "name": "スピードル",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-506",
-      "name": "バスオン",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-507",
-      "name": "ベアールV",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-508",
-      "name": "ゴーオンレッド",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-509",
-      "name": "ゴーオンブルー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-510",
-      "name": "ゴーオンイエロー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-511",
-      "name": "ゴーオングリーン",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-512",
-      "name": "ゴーオンブラック",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-513",
-      "name": "無敵将軍",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-514",
-      "name": "ゲキトージャウルフ",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-515",
-      "name": "エンジンオー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-516",
-      "name": "アースフォース",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-517",
-      "name": "バードニック反応炉",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-518",
-      "name": "獣撃棒",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-519",
-      "name": "インフェルシアの花嫁",
-      "type": "operation",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-520",
-      "name": "スコープショット",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-521",
-      "name": "スーパー戦隊魂",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-522",
-      "name": "ボウケンスピリッツ",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 6
-    },
-    {
-      "id": "RS-523",
-      "name": "臨気",
-      "type": "operation",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-524",
-      "name": "呉越同舟",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-525",
-      "name": "頼もしい相棒",
-      "type": "operation",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-526",
-      "name": "スーパーハイウェイバスター",
-      "type": "operation",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-527",
-      "name": "バルジオン",
-      "type": "vehicle",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-528",
-      "name": "バイオハンター・シルバ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-529",
-      "name": "チェンジロボ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-530",
-      "name": "ジェットチェンジャー1",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-531",
-      "name": "ヘリチェンジャー2",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-532",
-      "name": "ランドチェンジャー3",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-533",
-      "name": "チェンジフェニックス",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-534",
-      "name": "チェンジペガサス",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-535",
-      "name": "チェンジドラゴン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-536",
-      "name": "チェンジグリフォン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-537",
-      "name": "チェンジマーメイド",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-538",
-      "name": "ユイ・イブキ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-539",
-      "name": "ギョダーイ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-540",
-      "name": "J1",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-541",
-      "name": "J2",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-542",
-      "name": "J3",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-543",
-      "name": "J4",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-544",
-      "name": "J5",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-545",
-      "name": "究極大獣神",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "8+"
-    },
-    {
-      "id": "RS-546",
-      "name": "獣帝大獣神",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "8+"
-    },
-    {
-      "id": "RS-547",
-      "name": "獣騎神キングブラキオン",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-548",
-      "name": "ティラノレンジャー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-549",
-      "name": "トリケラレンジャー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-550",
-      "name": "隠大将軍",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-551",
-      "name": "ゴッドガンマー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-552",
-      "name": "ゴッドロウガン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-553",
-      "name": "ゴッドサルダー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-554",
-      "name": "ゴッドカーク",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-555",
-      "name": "ゴッドクマード",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-556",
-      "name": "バトルサルダー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-557",
-      "name": "ビンボーガミ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-558",
-      "name": "ガンマジン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-559",
-      "name": "ガオゴッド",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-560",
-      "name": "ガオレオン",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-561",
-      "name": "ガオコンドル",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-562",
-      "name": "ガオソーシャーク",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-563",
-      "name": "ガオバッファロー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-564",
-      "name": "ガオジャガー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-565",
-      "name": "轟雷旋風神",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-566",
-      "name": "天雷旋風神",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "8+"
-    },
-    {
-      "id": "RS-567",
-      "name": "トライコンドル",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 6
-    },
-    {
-      "id": "RS-568",
-      "name": "風雷丸",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-569",
-      "name": "スーパーデカレンジャーロボ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "8+"
-    },
-    {
-      "id": "RS-570",
-      "name": "デカバイク",
-      "type": "vehicle",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-571",
-      "name": "デカバイクロボ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-572",
-      "name": "デカマスター",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-573",
-      "name": "ファイヤーカイザー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-574",
-      "name": "セイントカイザー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-575",
-      "name": "一角聖馬ユニゴルオン",
-      "type": "vehicle",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-576",
-      "name": "マジフェニックス",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-577",
-      "name": "マジレッド",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-578",
-      "name": "レジェンドマジグリーンRA",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "10-"
-    },
-    {
-      "id": "RS-579",
-      "name": "ルナジェル",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-580",
-      "name": "絶対神ン・マ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "9+"
-    },
-    {
-      "id": "RS-581",
-      "name": "魔導馬バリキオン",
-      "type": "vehicle",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-582",
-      "name": "魔導神官メーミィ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-583",
-      "name": "ボウケンレッドHM",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-584",
-      "name": "ボウケンブラックAT",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-585",
-      "name": "ボウケンシルバー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-586",
-      "name": "巨神ゴードム",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-587",
-      "name": "怒りの鬼神　ガイ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-588",
-      "name": "大いなる獣　レイ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-589",
-      "name": "クエスター・ガイ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-590",
-      "name": "クエスター・レイ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-591",
-      "name": "ガンバルオー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-592",
-      "name": "エンジンオーG6",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-593",
-      "name": "バルカ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-594",
-      "name": "ガンパード",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-595",
-      "name": "キャリゲーター",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-596",
-      "name": "炎神大将軍",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-597",
-      "name": "レツタカ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-598",
-      "name": "シシノシン",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-599",
-      "name": "ツキノワ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-600",
-      "name": "ゴーオンシルバー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-601",
-      "name": "ゴーオンゴールド",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-602",
-      "name": "害水大臣ケガレシア",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-603",
-      "name": "蛮機獣ボンベバンキ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-604",
-      "name": "蛮機兵ウガッツ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-605",
-      "name": "異次元からの翼",
-      "type": "operation",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-606",
-      "name": "雷鳴剣ヒカリマル",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-607",
-      "name": "ファルコンサモナー",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-608",
-      "name": "五色の戦士",
-      "type": "operation",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-609",
-      "name": "戦士の魂",
-      "type": "operation",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-610",
-      "name": "秘伝ディスク",
-      "type": "operation",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-611",
-      "name": "バリブルーン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-612",
-      "name": "スカイエース",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-613",
-      "name": "ダイヤジャック",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-614",
-      "name": "クローバーキング",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-615",
-      "name": "ハートクイン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-616",
-      "name": "クライマー",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-617",
-      "name": "グレートイカロス",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-618",
-      "name": "ジェットイカロス",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-619",
-      "name": "ジェットマシン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-620",
-      "name": "ジェットガルーダ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-621",
-      "name": "バードガルーダ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-622",
-      "name": "グリフォーザー",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-623",
-      "name": "ツバサマル",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-624",
-      "name": "メガウインガー・ファイターモード",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-625",
-      "name": "メガウインガー・フライヤーモード",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-626",
-      "name": "ギャラクシーメガ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-627",
-      "name": "メガシップ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-628",
-      "name": "メガピンク",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-629",
-      "name": "メガイエロー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-630",
-      "name": "メガブルー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-631",
-      "name": "メガブラック",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-632",
-      "name": "メガレッド",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-633",
-      "name": "メガシルバー",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-634",
-      "name": "ユガンデ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-635",
-      "name": "ネジピンク",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-636",
-      "name": "ネジブラック",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-637",
-      "name": "ネジレッド",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-638",
-      "name": "ネジブルー",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-639",
-      "name": "ネジイエロー",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-640",
-      "name": "ギガバイタスCM",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-641",
-      "name": "ギガバイタスSM",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-642",
-      "name": "ギガライノス",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-643",
-      "name": "分身獣ギガホイール",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "3+"
-    },
-    {
-      "id": "RS-644",
-      "name": "分身獣ギガウイング",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-645",
-      "name": "ビクトリーマーズ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-646",
-      "name": "マーズマシン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-647",
-      "name": "ピヨちゃん",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-648",
-      "name": "ガオイカロス",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-649",
-      "name": "ガオファルコン",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-650",
-      "name": "ガオライノス",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-651",
-      "name": "ガオマジロ",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-652",
-      "name": "ガオディアス",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-653",
-      "name": "レッドファルコン",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-654",
-      "name": "ガオイエロー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-655",
-      "name": "デカウイングロボ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-656",
-      "name": "デカウイングキャノン",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-657",
-      "name": "パトウイング",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "4+"
-    },
-    {
-      "id": "RS-658",
-      "name": "デカグリーンSWAT",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-659",
-      "name": "デカイエローSWAT",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-660",
-      "name": "デカピンクSWAT",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-661",
-      "name": "幻獣王リオ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-662",
-      "name": "鳳凰メレ",
-      "type": "unit",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7-"
-    },
-    {
-      "id": "RS-663",
-      "name": "エンジンオーG12",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "12+"
-    },
-    {
-      "id": "RS-664",
-      "name": "エンジンオーG9",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "9+"
-    },
-    {
-      "id": "RS-665",
-      "name": "キョウレツオー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "7+"
-    },
-    {
-      "id": "RS-666",
-      "name": "ジェットラス",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-667",
-      "name": "ジャン・ボエール",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-668",
-      "name": "トリプター",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-669",
-      "name": "キシャモス",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 5
-    },
-    {
-      "id": "RS-670",
-      "name": "ティライン",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-671",
-      "name": "ケライン",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 1
-    },
-    {
-      "id": "RS-672",
-      "name": "ゴローダーGT",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-673",
-      "name": "ボンパー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-674",
-      "name": "シンケンレッド",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-675",
-      "name": "シンケンブルー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-676",
-      "name": "シンケンピンク",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-677",
-      "name": "シンケングリーン",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-678",
-      "name": "シンケンイエロー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 0
-    },
-    {
-      "id": "RS-679",
-      "name": "シンケンオー",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-680",
-      "name": "獅子折神",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-681",
-      "name": "龍折神",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-682",
-      "name": "亀折神",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-683",
-      "name": "熊折神",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-684",
-      "name": "猿折神",
-      "type": "unit",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 2
-    },
-    {
-      "id": "RS-685",
-      "name": "ブラックコンドル",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
-      "id": "RS-686",
-      "name": "セイクウオー",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "6+"
-    },
-    {
-      "id": "RS-687",
-      "name": "ギンガイオー",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-688",
-      "name": "ギガフェニックス",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": "5+"
-    },
-    {
-      "id": "RS-689",
-      "name": "レッドホーク",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 3
-    },
-    {
-      "id": "RS-690",
-      "name": "スペードエース",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "legend1",
-      "powerCost": 4
-    },
-    {
       "id": "SK-000",
       "name": "仮面ライダー龍騎ブランク体",
       "type": "unit",
@@ -8760,7 +4152,7 @@
     },
     {
       "id": "SK-003",
-      "name": "仮面ライダーファム",
+      "name": "仮面ライダーファム（2nd）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -8805,7 +4197,7 @@
     },
     {
       "id": "SR-004",
-      "name": "ヘドリアン女王",
+      "name": "ヘドリアン女王（2nd）",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -9031,7 +4423,7 @@
     },
     {
       "id": "XG1-001",
-      "name": "バトルジャパン",
+      "name": "バトルジャパン（XG）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -9040,7 +4432,7 @@
     },
     {
       "id": "XG1-002",
-      "name": "デンジレッド",
+      "name": "デンジレッド（XG）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -9049,7 +4441,7 @@
     },
     {
       "id": "XG1-003",
-      "name": "バルイーグル",
+      "name": "バルイーグル（XG）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -9067,7 +4459,7 @@
     },
     {
       "id": "XG1-005",
-      "name": "ダイナレッド",
+      "name": "ダイナレッド（XG）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -9076,7 +4468,7 @@
     },
     {
       "id": "XG1-006",
-      "name": "レッドワン",
+      "name": "レッドワン（XG）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -9085,7 +4477,7 @@
     },
     {
       "id": "XG1-007",
-      "name": "チェンジドラゴン",
+      "name": "チェンジドラゴン（XG）",
       "type": "unit",
       "category": [
         "MA",
@@ -9097,7 +4489,7 @@
     },
     {
       "id": "XG1-008",
-      "name": "レッドフラッシュ",
+      "name": "レッドフラッシュ（XG）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -9106,7 +4498,7 @@
     },
     {
       "id": "XG1-009",
-      "name": "レッドマスク",
+      "name": "レッドマスク（XG）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -9115,7 +4507,7 @@
     },
     {
       "id": "XG1-010",
-      "name": "レッドファルコン",
+      "name": "レッドファルコン（XG）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -9319,7 +4711,7 @@
     },
     {
       "id": "XG1-031",
-      "name": "ゴーオンレッド",
+      "name": "ゴーオンレッド（XG）",
       "type": "unit",
       "category": [
         "WB",
@@ -9331,7 +4723,7 @@
     },
     {
       "id": "XG1-032",
-      "name": "ゲキレッド",
+      "name": "ゲキレッド（XG）",
       "type": "unit",
       "category": [
         "WB",
@@ -9415,7 +4807,7 @@
     },
     {
       "id": "XG1-041",
-      "name": "仮面ライダーアマゾン",
+      "name": "仮面ライダーアマゾン（XG）",
       "type": "unit",
       "category": [
         "WB",
@@ -9445,7 +4837,7 @@
     },
     {
       "id": "XG1-044",
-      "name": "仮面ライダーV3",
+      "name": "仮面ライダーV3（XG）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -9508,7 +4900,7 @@
     },
     {
       "id": "XG1-051",
-      "name": "仮面ライダーZX",
+      "name": "仮面ライダーZX（XG）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -9598,7 +4990,7 @@
     },
     {
       "id": "XG1-061",
-      "name": "仮面ライダーカリス",
+      "name": "仮面ライダーカリス（XG）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -9706,7 +5098,7 @@
     },
     {
       "id": "XG1-073",
-      "name": "仮面ライダーザビーMF",
+      "name": "仮面ライダーザビーMF（XG）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -9715,7 +5107,7 @@
     },
     {
       "id": "XG1-074",
-      "name": "仮面ライダーザビーRF",
+      "name": "仮面ライダーザビーRF（XG）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -9982,7 +5374,7 @@
     },
     {
       "id": "XG2-001",
-      "name": "ファイブレッド",
+      "name": "ファイブレッド（XG2）",
       "type": "unit",
       "category": [
         "OT",
@@ -9994,7 +5386,7 @@
     },
     {
       "id": "XG2-002",
-      "name": "ファイブブルー",
+      "name": "ファイブブルー（XG2）",
       "type": "unit",
       "category": [
         "OT",
@@ -10006,7 +5398,7 @@
     },
     {
       "id": "XG2-003",
-      "name": "ファイブピンク",
+      "name": "ファイブピンク（XG2）",
       "type": "unit",
       "category": [
         "OT",
@@ -10084,7 +5476,7 @@
     },
     {
       "id": "XG2-010",
-      "name": "気伝武人龍星王",
+      "name": "気伝武人龍星王（XG2）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -10093,7 +5485,7 @@
     },
     {
       "id": "XG2-011",
-      "name": "気伝武人ウォンタイガー",
+      "name": "気伝武人ウォンタイガー（XG2）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -10111,7 +5503,7 @@
     },
     {
       "id": "XG2-013",
-      "name": "キバレンジャー",
+      "name": "キバレンジャー（XG2）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -10132,7 +5524,7 @@
     },
     {
       "id": "XG2-015",
-      "name": "リュウレンジャー",
+      "name": "リュウレンジャー（XG2）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -10159,7 +5551,7 @@
     },
     {
       "id": "XG2-018",
-      "name": "ゲキタイガー",
+      "name": "ゲキタイガー（XG2）",
       "type": "unit",
       "category": [
         "WB",
@@ -10225,7 +5617,7 @@
     },
     {
       "id": "XG2-025",
-      "name": "ギンガレッド",
+      "name": "ギンガレッド（XG2）",
       "type": "unit",
       "category": [
         "WB",
@@ -10237,7 +5629,7 @@
     },
     {
       "id": "XG2-026",
-      "name": "ギンガブルー",
+      "name": "ギンガブルー（XG2）",
       "type": "unit",
       "category": [
         "WB",
@@ -10249,7 +5641,7 @@
     },
     {
       "id": "XG2-027",
-      "name": "ギンガイエロー",
+      "name": "ギンガイエロー（XG2）",
       "type": "unit",
       "category": [
         "WB",
@@ -10297,7 +5689,7 @@
     },
     {
       "id": "XG2-032",
-      "name": "デカレンジャーロボ",
+      "name": "デカレンジャーロボ（XG2）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -10456,7 +5848,7 @@
     },
     {
       "id": "XG2-049",
-      "name": "仮面ライダーギルス",
+      "name": "仮面ライダーギルス（XG2）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -10492,7 +5884,7 @@
     },
     {
       "id": "XG2-053",
-      "name": "仮面ライダータイガ",
+      "name": "仮面ライダータイガ（XG2）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -10546,7 +5938,7 @@
     },
     {
       "id": "XG2-059",
-      "name": "仮面ライダーレンゲル",
+      "name": "仮面ライダーレンゲル（XG2）",
       "type": "unit",
       "category": [
         "WB",
@@ -10585,7 +5977,7 @@
     },
     {
       "id": "XG2-063",
-      "name": "仮面ライダー響鬼",
+      "name": "仮面ライダー響鬼（XG2）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -10594,7 +5986,7 @@
     },
     {
       "id": "XG2-064",
-      "name": "仮面ライダーカブトMF",
+      "name": "仮面ライダーカブトMF（XG2）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -10612,7 +6004,7 @@
     },
     {
       "id": "XG2-066",
-      "name": "仮面ライダーカブトRF",
+      "name": "仮面ライダーカブトRF（XG2）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -10621,7 +6013,7 @@
     },
     {
       "id": "XG2-067",
-      "name": "仮面ライダー電王GF",
+      "name": "仮面ライダー電王GF（XG2）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -10630,7 +6022,7 @@
     },
     {
       "id": "XG2-068",
-      "name": "リュウタロス",
+      "name": "リュウタロス（XG2）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -10696,7 +6088,7 @@
     },
     {
       "id": "XG2-075",
-      "name": "仮面ライダーブレイド",
+      "name": "仮面ライダーブレイド（XG2）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -10705,7 +6097,7 @@
     },
     {
       "id": "XG2-076",
-      "name": "仮面ライダーキバ",
+      "name": "仮面ライダーキバ（XG2）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -10714,7 +6106,7 @@
     },
     {
       "id": "XG2-077",
-      "name": "仮面ライダーディケイド",
+      "name": "仮面ライダーディケイド（XG2）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -10723,7 +6115,7 @@
     },
     {
       "id": "XG2-078",
-      "name": "仮面ライダーファイズ",
+      "name": "仮面ライダーファイズ（XG2）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -10732,7 +6124,7 @@
     },
     {
       "id": "XG2-079",
-      "name": "仮面ライダー龍騎",
+      "name": "仮面ライダー龍騎（XG2）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -10759,7 +6151,7 @@
     },
     {
       "id": "XG2-082",
-      "name": "電子星獣ドル",
+      "name": "電子星獣ドル（XG2）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -10768,7 +6160,7 @@
     },
     {
       "id": "XG2-083",
-      "name": "宇宙刑事ギャバン",
+      "name": "宇宙刑事ギャバン（XG2）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -10786,7 +6178,7 @@
     },
     {
       "id": "XG2-085",
-      "name": "隊員コード153 ショウ",
+      "name": "隊員コード153 ショウ（XG2）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -11143,7 +6535,7 @@
     },
     {
       "id": "XG3-020",
-      "name": "クワガライジャー",
+      "name": "クワガライジャー（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -11152,7 +6544,7 @@
     },
     {
       "id": "XG3-021",
-      "name": "カブトライジャー",
+      "name": "カブトライジャー（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -11161,7 +6553,7 @@
     },
     {
       "id": "XG3-022",
-      "name": "アバレッド",
+      "name": "アバレッド（XG3）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -11215,7 +6607,7 @@
     },
     {
       "id": "XG3-028",
-      "name": "魔導馬バリキオン",
+      "name": "魔導馬バリキオン（XG3）",
       "type": "unit",
       "category": [
         "MA",
@@ -11227,7 +6619,7 @@
     },
     {
       "id": "XG3-029",
-      "name": "魔導騎士ウルザード",
+      "name": "魔導騎士ウルザード（XG3）",
       "type": "unit",
       "category": [
         "MA",
@@ -11251,7 +6643,7 @@
     },
     {
       "id": "XG3-031",
-      "name": "ゲキブルー",
+      "name": "ゲキブルー（XG3）",
       "type": "unit",
       "category": [
         "WB",
@@ -11263,7 +6655,7 @@
     },
     {
       "id": "XG3-032",
-      "name": "ゲキイエロー",
+      "name": "ゲキイエロー（XG3）",
       "type": "unit",
       "category": [
         "WB",
@@ -11338,7 +6730,7 @@
     },
     {
       "id": "XG3-040",
-      "name": "シンケンレッド",
+      "name": "シンケンレッド（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -11347,7 +6739,7 @@
     },
     {
       "id": "XG3-041",
-      "name": "仮面ライダーディケイドCF",
+      "name": "仮面ライダーディケイドCF（XG3）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -11365,7 +6757,7 @@
     },
     {
       "id": "XG3-043",
-      "name": "ライダーマン",
+      "name": "ライダーマン（XG3）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -11374,7 +6766,7 @@
     },
     {
       "id": "XG3-044",
-      "name": "仮面ライダーストロンガー",
+      "name": "仮面ライダーストロンガー（XG3）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -11392,7 +6784,7 @@
     },
     {
       "id": "XG3-046",
-      "name": "仮面ライダーBLACK",
+      "name": "仮面ライダーBLACK（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -11401,7 +6793,7 @@
     },
     {
       "id": "XG3-047",
-      "name": "シャドームーン",
+      "name": "シャドームーン（XG3）",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -11410,7 +6802,7 @@
     },
     {
       "id": "XG3-048",
-      "name": "仮面ライダーBLACK RX",
+      "name": "仮面ライダーBLACK RX（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -11428,7 +6820,7 @@
     },
     {
       "id": "XG3-050",
-      "name": "仮面ライダーゾルダ",
+      "name": "仮面ライダーゾルダ（XG3）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -11437,7 +6829,7 @@
     },
     {
       "id": "XG3-051",
-      "name": "仮面ライダー王蛇",
+      "name": "仮面ライダー王蛇（XG3）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -11482,7 +6874,7 @@
     },
     {
       "id": "XG3-056",
-      "name": "仮面ライダー響鬼",
+      "name": "仮面ライダー響鬼（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -11500,7 +6892,7 @@
     },
     {
       "id": "XG3-058",
-      "name": "仮面ライダー斬鬼",
+      "name": "仮面ライダー斬鬼（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -11509,7 +6901,7 @@
     },
     {
       "id": "XG3-059",
-      "name": "仮面ライダー轟鬼",
+      "name": "仮面ライダー轟鬼（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -11527,7 +6919,7 @@
     },
     {
       "id": "XG3-061",
-      "name": "仮面ライダーガタックMF",
+      "name": "仮面ライダーガタックMF（XG3）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -11536,7 +6928,7 @@
     },
     {
       "id": "XG3-062",
-      "name": "仮面ライダーガタックRF",
+      "name": "仮面ライダーガタックRF（XG3）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -11545,7 +6937,7 @@
     },
     {
       "id": "XG3-063",
-      "name": "仮面ライダードレイクMF",
+      "name": "仮面ライダードレイクMF（XG3）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -11554,7 +6946,7 @@
     },
     {
       "id": "XG3-064",
-      "name": "仮面ライダードレイクRF",
+      "name": "仮面ライダードレイクRF（XG3）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -11563,7 +6955,7 @@
     },
     {
       "id": "XG3-065",
-      "name": "仮面ライダーサソードMF",
+      "name": "仮面ライダーサソードMF（XG3）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -11572,7 +6964,7 @@
     },
     {
       "id": "XG3-066",
-      "name": "仮面ライダーサソードRF",
+      "name": "仮面ライダーサソードRF（XG3）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -11590,7 +6982,7 @@
     },
     {
       "id": "XG3-068",
-      "name": "仮面ライダーディケイド",
+      "name": "仮面ライダーディケイド（XG3）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -11599,7 +6991,7 @@
     },
     {
       "id": "XG3-069",
-      "name": "仮面ライダーディエンド",
+      "name": "仮面ライダーディエンド（XG3）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -11635,7 +7027,7 @@
     },
     {
       "id": "XG3-073",
-      "name": "仮面ライダーJジャンボフォーメーション",
+      "name": "仮面ライダーJジャンボフォーメーション（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -11806,7 +7198,7 @@
     },
     {
       "id": "XG3-089",
-      "name": "ブルービート",
+      "name": "ブルービート（XG3）",
       "type": "unit",
       "category": [
         "WB",
@@ -11830,7 +7222,7 @@
     },
     {
       "id": "XG3-091",
-      "name": "ジースタッグ",
+      "name": "ジースタッグ（XG3）",
       "type": "unit",
       "category": [
         "WB",
@@ -11842,7 +7234,7 @@
     },
     {
       "id": "XG3-092",
-      "name": "レッドル",
+      "name": "レッドル（XG3）",
       "type": "unit",
       "category": [
         "WB",
@@ -12010,7 +7402,7 @@
     },
     {
       "id": "XG4-007",
-      "name": "ドラゴンレンジャー",
+      "name": "ドラゴンレンジャー（XG4）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -12019,7 +7411,7 @@
     },
     {
       "id": "XG4-008",
-      "name": "メガシルバー",
+      "name": "メガシルバー（XG4）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -12073,7 +7465,7 @@
     },
     {
       "id": "XG4-013",
-      "name": "ギンガグリーン",
+      "name": "ギンガグリーン（XG4）",
       "type": "unit",
       "category": [
         "WB",
@@ -12085,7 +7477,7 @@
     },
     {
       "id": "XG4-014",
-      "name": "ギンガピンク",
+      "name": "ギンガピンク（XG4）",
       "type": "unit",
       "category": [
         "WB",
@@ -12106,7 +7498,7 @@
     },
     {
       "id": "XG4-016",
-      "name": "タイムファイヤー",
+      "name": "タイムファイヤー（XG4）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -12115,7 +7507,7 @@
     },
     {
       "id": "XG4-017",
-      "name": "ガオシルバー",
+      "name": "ガオシルバー（XG4）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -12160,7 +7552,7 @@
     },
     {
       "id": "XG4-022",
-      "name": "シュリケンジャー",
+      "name": "シュリケンジャー（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -12169,7 +7561,7 @@
     },
     {
       "id": "XG4-023",
-      "name": "シュリケンジャーFM",
+      "name": "シュリケンジャーFM（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -12178,7 +7570,7 @@
     },
     {
       "id": "XG4-024",
-      "name": "エージェント・アブレラ",
+      "name": "エージェント・アブレラ（XG4）",
       "type": "commander",
       "category": "DA",
       "rarity": "N",
@@ -12187,7 +7579,7 @@
     },
     {
       "id": "XG4-025",
-      "name": "デカブレイク",
+      "name": "デカブレイク（XG4）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -12196,7 +7588,7 @@
     },
     {
       "id": "XG4-026",
-      "name": "天空勇者マジシャイン",
+      "name": "天空勇者マジシャイン（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -12223,7 +7615,7 @@
     },
     {
       "id": "XG4-029",
-      "name": "ゲキバイオレット",
+      "name": "ゲキバイオレット（XG4）",
       "type": "unit",
       "category": [
         "WB",
@@ -12235,7 +7627,7 @@
     },
     {
       "id": "XG4-030",
-      "name": "ゲキチョッパー",
+      "name": "ゲキチョッパー（XG4）",
       "type": "unit",
       "category": [
         "WB",
@@ -12256,7 +7648,7 @@
     },
     {
       "id": "XG4-032",
-      "name": "ゴーオンゴールド",
+      "name": "ゴーオンゴールド（XG4）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -12265,7 +7657,7 @@
     },
     {
       "id": "XG4-033",
-      "name": "ゴーオンシルバー",
+      "name": "ゴーオンシルバー（XG4）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -12283,7 +7675,7 @@
     },
     {
       "id": "XG4-035",
-      "name": "シンケンゴールド",
+      "name": "シンケンゴールド（XG4）",
       "type": "unit",
       "category": [
         "MA",
@@ -12412,7 +7804,7 @@
     },
     {
       "id": "XG4-047",
-      "name": "シンケンレッド",
+      "name": "シンケンレッド（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -12430,7 +7822,7 @@
     },
     {
       "id": "XG4-049",
-      "name": "アクロバッター",
+      "name": "アクロバッター（XG4）",
       "type": "vehicle",
       "category": "MA",
       "rarity": "N",
@@ -12457,7 +7849,7 @@
     },
     {
       "id": "XG4-052",
-      "name": "仮面ライダークウガUF",
+      "name": "仮面ライダークウガUF（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -12466,7 +7858,7 @@
     },
     {
       "id": "XG4-053",
-      "name": "仮面ライダーアギトSHF",
+      "name": "仮面ライダーアギトSHF（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -12475,7 +7867,7 @@
     },
     {
       "id": "XG4-054",
-      "name": "仮面ライダーブレイドKF",
+      "name": "仮面ライダーブレイドKF（XG4）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -12484,7 +7876,7 @@
     },
     {
       "id": "XG4-055",
-      "name": "ドラグランザー",
+      "name": "ドラグランザー（XG4）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -12502,7 +7894,7 @@
     },
     {
       "id": "XG4-057",
-      "name": "仮面ライダー龍騎サバイブ",
+      "name": "仮面ライダー龍騎サバイブ（XG4）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -12511,7 +7903,7 @@
     },
     {
       "id": "XG4-058",
-      "name": "オートバジンBM",
+      "name": "オートバジンBM（XG4）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -12520,7 +7912,7 @@
     },
     {
       "id": "XG4-059",
-      "name": "オートバジンVM",
+      "name": "オートバジンVM（XG4）",
       "type": "vehicle",
       "category": "ET",
       "rarity": "N",
@@ -12529,7 +7921,7 @@
     },
     {
       "id": "XG4-060",
-      "name": "仮面ライダーファイズBF",
+      "name": "仮面ライダーファイズBF（XG4）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -12619,7 +8011,7 @@
     },
     {
       "id": "XG4-069",
-      "name": "仮面ライダーW・FJ",
+      "name": "仮面ライダーW・FJ（XG4）",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -12655,7 +8047,7 @@
     },
     {
       "id": "XG4-073",
-      "name": "仮面ライダークウガDF",
+      "name": "仮面ライダークウガDF（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -12664,7 +8056,7 @@
     },
     {
       "id": "XG4-074",
-      "name": "仮面ライダーX",
+      "name": "仮面ライダーX（XG4）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -12673,7 +8065,7 @@
     },
     {
       "id": "XG4-075",
-      "name": "アポロガイスト",
+      "name": "アポロガイスト（XG4）",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -12691,7 +8083,7 @@
     },
     {
       "id": "XG4-077",
-      "name": "仮面ライダーZX",
+      "name": "仮面ライダーZX（XG4）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -12700,7 +8092,7 @@
     },
     {
       "id": "XG4-078",
-      "name": "仮面ライダー龍騎",
+      "name": "仮面ライダー龍騎（XG4）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -12709,7 +8101,7 @@
     },
     {
       "id": "XG4-079",
-      "name": "ディケイド カブトRF",
+      "name": "ディケイド カブトRF（XG4）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -12718,7 +8110,7 @@
     },
     {
       "id": "XG4-080",
-      "name": "ロボライダー",
+      "name": "ロボライダー（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -12727,7 +8119,7 @@
     },
     {
       "id": "XG4-081",
-      "name": "仮面ライダーブレイド",
+      "name": "仮面ライダーブレイド（XG4）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -12736,7 +8128,7 @@
     },
     {
       "id": "XG4-082",
-      "name": "バイオライダー",
+      "name": "バイオライダー（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -12745,7 +8137,7 @@
     },
     {
       "id": "XG4-083",
-      "name": "ディケイド ファイズ",
+      "name": "ディケイド ファイズ（XG4）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -12772,7 +8164,7 @@
     },
     {
       "id": "XG4-086",
-      "name": "仮面ライダーイクサBM",
+      "name": "仮面ライダーイクサBM（XG4）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -12781,7 +8173,7 @@
     },
     {
       "id": "XG4-087",
-      "name": "スカイライダー",
+      "name": "スカイライダー（XG4）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -12817,7 +8209,7 @@
     },
     {
       "id": "XG4-091",
-      "name": "ガンギブソン",
+      "name": "ガンギブソン（XG4）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -12826,7 +8218,7 @@
     },
     {
       "id": "XG4-092",
-      "name": "ジャンパーソン",
+      "name": "ジャンパーソン（XG4）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -12844,7 +8236,7 @@
     },
     {
       "id": "XG4-094",
-      "name": "宇宙刑事シャイダー",
+      "name": "宇宙刑事シャイダー（XG4）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -12880,7 +8272,7 @@
     },
     {
       "id": "XG4-098",
-      "name": "スピルバン",
+      "name": "スピルバン（XG4）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -12925,7 +8317,7 @@
     },
     {
       "id": "XG5-001",
-      "name": "ゴーグルレッド",
+      "name": "ゴーグルレッド（XG5）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13096,7 +8488,7 @@
     },
     {
       "id": "XG5-020",
-      "name": "ボウケンレッド",
+      "name": "ボウケンレッド（XG5）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13105,7 +8497,7 @@
     },
     {
       "id": "XG5-021",
-      "name": "ボウケンブラック",
+      "name": "ボウケンブラック（XG5）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13114,7 +8506,7 @@
     },
     {
       "id": "XG5-022",
-      "name": "ボウケンブルー",
+      "name": "ボウケンブルー（XG5）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13123,7 +8515,7 @@
     },
     {
       "id": "XG5-023",
-      "name": "ボウケンイエロー",
+      "name": "ボウケンイエロー（XG5）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13132,7 +8524,7 @@
     },
     {
       "id": "XG5-024",
-      "name": "ボウケンピンク",
+      "name": "ボウケンピンク（XG5）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13237,7 +8629,7 @@
     },
     {
       "id": "XG5-034",
-      "name": "シンケンレッド",
+      "name": "シンケンレッド（XG5）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -13264,7 +8656,7 @@
     },
     {
       "id": "XG5-037",
-      "name": "ゴセイレッド",
+      "name": "ゴセイレッド（XG5）",
       "type": "unit",
       "category": [
         "WB",
@@ -13276,7 +8668,7 @@
     },
     {
       "id": "XG5-038",
-      "name": "ゴセイピンク",
+      "name": "ゴセイピンク（XG5）",
       "type": "unit",
       "category": [
         "WB",
@@ -13288,7 +8680,7 @@
     },
     {
       "id": "XG5-039",
-      "name": "ゴセイブルー",
+      "name": "ゴセイブルー（XG5）",
       "type": "unit",
       "category": [
         "WB",
@@ -13300,7 +8692,7 @@
     },
     {
       "id": "XG5-040",
-      "name": "ゴセイブラック",
+      "name": "ゴセイブラック（XG5）",
       "type": "unit",
       "category": [
         "WB",
@@ -13312,7 +8704,7 @@
     },
     {
       "id": "XG5-041",
-      "name": "ゴセイイエロー",
+      "name": "ゴセイイエロー（XG5）",
       "type": "unit",
       "category": [
         "WB",
@@ -13408,7 +8800,7 @@
     },
     {
       "id": "XG5-050",
-      "name": "仮面ライダー装甲響鬼",
+      "name": "仮面ライダー装甲響鬼（XG5）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -13417,7 +8809,7 @@
     },
     {
       "id": "XG5-051",
-      "name": "仮面ライダーカブトHF",
+      "name": "仮面ライダーカブトHF（XG5）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -13426,7 +8818,7 @@
     },
     {
       "id": "XG5-052",
-      "name": "仮面ライダー電王CF",
+      "name": "仮面ライダー電王CF（XG5）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -13435,7 +8827,7 @@
     },
     {
       "id": "XG5-053",
-      "name": "仮面ライダーキバEF",
+      "name": "仮面ライダーキバEF（XG5）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -13444,7 +8836,7 @@
     },
     {
       "id": "XG5-054",
-      "name": "仮面ライダーディケイドCF",
+      "name": "仮面ライダーディケイドCF（XG5）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -13453,7 +8845,7 @@
     },
     {
       "id": "XG5-055",
-      "name": "仮面ライダーギャレン",
+      "name": "仮面ライダーギャレン（XG5）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -13462,7 +8854,7 @@
     },
     {
       "id": "XG5-056",
-      "name": "仮面ライダーギャレンJF",
+      "name": "仮面ライダーギャレンJF（XG5）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -13489,7 +8881,7 @@
     },
     {
       "id": "XG5-059",
-      "name": "仮面ライダーカリス",
+      "name": "仮面ライダーカリス（XG5）",
       "type": "unit",
       "category": [
         "WB",
@@ -13501,7 +8893,7 @@
     },
     {
       "id": "XG5-060",
-      "name": "仮面ライダーワイルドカリス",
+      "name": "仮面ライダーワイルドカリス（XG5）",
       "type": "unit",
       "category": [
         "WB",
@@ -13558,7 +8950,7 @@
     },
     {
       "id": "XG5-066",
-      "name": "仮面ライダーベルデ",
+      "name": "仮面ライダーベルデ（XG5）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -13567,7 +8959,7 @@
     },
     {
       "id": "XG5-067",
-      "name": "仮面ライダーナイト",
+      "name": "仮面ライダーナイト（XG5）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -13576,7 +8968,7 @@
     },
     {
       "id": "XG5-068",
-      "name": "仮面ライダーナイトサバイブ",
+      "name": "仮面ライダーナイトサバイブ（XG5）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -13603,7 +8995,7 @@
     },
     {
       "id": "XG5-071",
-      "name": "仮面ライダー響鬼",
+      "name": "仮面ライダー響鬼（XG5）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -13612,7 +9004,7 @@
     },
     {
       "id": "XG5-072",
-      "name": "仮面ライダー威吹鬼",
+      "name": "仮面ライダー威吹鬼（XG5）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -13621,7 +9013,7 @@
     },
     {
       "id": "XG5-073",
-      "name": "仮面ライダー電王SF",
+      "name": "仮面ライダー電王SF（XG5）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -13630,7 +9022,7 @@
     },
     {
       "id": "XG5-074",
-      "name": "仮面ライダーキバ",
+      "name": "仮面ライダーキバ（XG5）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -13639,7 +9031,7 @@
     },
     {
       "id": "XG5-075",
-      "name": "仮面ライダーイクサSM",
+      "name": "仮面ライダーイクサSM（XG5）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13648,7 +9040,7 @@
     },
     {
       "id": "XG5-076",
-      "name": "仮面ライダーイクサBM",
+      "name": "仮面ライダーイクサBM（XG5）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13657,7 +9049,7 @@
     },
     {
       "id": "XG5-077",
-      "name": "仮面ライダーキバーラ",
+      "name": "仮面ライダーキバーラ（XG5）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -13675,7 +9067,7 @@
     },
     {
       "id": "XG5-079",
-      "name": "仮面ライダーディケイド",
+      "name": "仮面ライダーディケイド（XG5）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -13720,7 +9112,7 @@
     },
     {
       "id": "XG5-084",
-      "name": "仮面ライダーW・CJ",
+      "name": "仮面ライダーW・CJ（XG5）",
       "type": "unit",
       "category": [
         "ET",
@@ -13879,7 +9271,7 @@
     },
     {
       "id": "XG6-005",
-      "name": "セイントカイザー",
+      "name": "セイントカイザー（XG6）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -13888,7 +9280,7 @@
     },
     {
       "id": "XG6-006",
-      "name": "ダイタンケン",
+      "name": "ダイタンケン（XG6）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13999,7 +9391,7 @@
     },
     {
       "id": "XG6-018",
-      "name": "アバレキラー",
+      "name": "アバレキラー（XG6）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -14008,7 +9400,7 @@
     },
     {
       "id": "XG6-019",
-      "name": "ダイボウケン",
+      "name": "ダイボウケン（XG6）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -14152,7 +9544,7 @@
     },
     {
       "id": "XG6-035",
-      "name": "仮面ライダーW・CJX",
+      "name": "仮面ライダーW・CJX（XG6）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -14161,7 +9553,7 @@
     },
     {
       "id": "XG6-036",
-      "name": "仮面ライダーW・CJ",
+      "name": "仮面ライダーW・CJ（XG6）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -14170,7 +9562,7 @@
     },
     {
       "id": "XG6-037",
-      "name": "仮面ライダーアクセル",
+      "name": "仮面ライダーアクセル（XG6）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -14179,7 +9571,7 @@
     },
     {
       "id": "XG6-038",
-      "name": "仮面ライダーアクセルトライアル",
+      "name": "仮面ライダーアクセルトライアル（XG6）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -14215,7 +9607,7 @@
     },
     {
       "id": "XG6-042",
-      "name": "仮面ライダーゼロノスAF",
+      "name": "仮面ライダーゼロノスAF（XG6）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -14224,7 +9616,7 @@
     },
     {
       "id": "XG6-043",
-      "name": "仮面ライダーゼロノスZF",
+      "name": "仮面ライダーゼロノスZF（XG6）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -14233,7 +9625,7 @@
     },
     {
       "id": "XG6-044",
-      "name": "仮面ライダーNEW電王SF",
+      "name": "仮面ライダーNEW電王SF（XG6）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -14260,7 +9652,7 @@
     },
     {
       "id": "XG6-047",
-      "name": "仮面ライダーG4",
+      "name": "仮面ライダーG4（XG6）",
       "type": "unit",
       "category": [
         "ET",
@@ -14272,7 +9664,7 @@
     },
     {
       "id": "XG6-048",
-      "name": "仮面ライダーリュウガ",
+      "name": "仮面ライダーリュウガ（XG6）",
       "type": "unit",
       "category": [
         "WB",
@@ -14284,7 +9676,7 @@
     },
     {
       "id": "XG6-049",
-      "name": "仮面ライダーオーガ",
+      "name": "仮面ライダーオーガ（XG6）",
       "type": "unit",
       "category": [
         "ET",
@@ -14296,7 +9688,7 @@
     },
     {
       "id": "XG6-050",
-      "name": "仮面ライダーグレイブ",
+      "name": "仮面ライダーグレイブ（XG6）",
       "type": "unit",
       "category": [
         "WB",
@@ -14308,7 +9700,7 @@
     },
     {
       "id": "XG6-051",
-      "name": "仮面ライダー歌舞鬼",
+      "name": "仮面ライダー歌舞鬼（XG6）",
       "type": "unit",
       "category": [
         "MA",
@@ -14320,7 +9712,7 @@
     },
     {
       "id": "XG6-052",
-      "name": "仮面ライダーコーカサス",
+      "name": "仮面ライダーコーカサス（XG6）",
       "type": "unit",
       "category": [
         "OT",
@@ -14332,7 +9724,7 @@
     },
     {
       "id": "XG6-053",
-      "name": "仮面ライダーアーク",
+      "name": "仮面ライダーアーク（XG6）",
       "type": "unit",
       "category": [
         "MA",
@@ -14344,7 +9736,7 @@
     },
     {
       "id": "XG6-054",
-      "name": "仮面ライダースカル",
+      "name": "仮面ライダースカル（XG6）",
       "type": "unit",
       "category": [
         "ET",
@@ -14503,7 +9895,7 @@
     },
     {
       "id": "XG7-006",
-      "name": "ギンガピンク",
+      "name": "ギンガピンク（XG7）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -14533,7 +9925,7 @@
     },
     {
       "id": "XG7-009",
-      "name": "タイムレッド",
+      "name": "タイムレッド（XG7）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -14551,7 +9943,7 @@
     },
     {
       "id": "XG7-011",
-      "name": "ハリケンレッド",
+      "name": "ハリケンレッド（XG7）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -14578,7 +9970,7 @@
     },
     {
       "id": "XG7-014",
-      "name": "マジレッド",
+      "name": "マジレッド（XG7）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -14587,7 +9979,7 @@
     },
     {
       "id": "XG7-015",
-      "name": "ボウケンレッド",
+      "name": "ボウケンレッド（XG7）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -14608,7 +10000,7 @@
     },
     {
       "id": "XG7-017",
-      "name": "ゴーオンレッド",
+      "name": "ゴーオンレッド（XG7）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -14617,7 +10009,7 @@
     },
     {
       "id": "XG7-018",
-      "name": "シンケンレッド",
+      "name": "シンケンレッド（XG7）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -14908,7 +10300,7 @@
     },
     {
       "id": "XG7-049",
-      "name": "仮面ライダーオーズ・ガタキリバコンボ",
+      "name": "仮面ライダーオーズ・ガタキリバコンボ（XG7）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -14929,7 +10321,7 @@
     },
     {
       "id": "XG7-051",
-      "name": "仮面ライダーオーズ・ラトラーターコンボ",
+      "name": "仮面ライダーオーズ・ラトラーターコンボ（XG7）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",

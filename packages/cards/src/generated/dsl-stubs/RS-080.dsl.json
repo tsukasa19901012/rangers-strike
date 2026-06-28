@@ -9,12 +9,12 @@
   "bp": 500,
   "size": "S",
   "text": "※このカードはデッキに3枚以上入れてもよい。",
-  "rawText": "※このカードはデッキに3枚以上入れてもよい。",
   "features": [
     "戦闘員"
   ],
   "imageUrl": "/cards/legend2/RS-080.jpg",
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-080.jpg",
+  "rawText": "※このカードはデッキに3枚以上入れてもよい。",
   "unnamedRules": [
     {
       "kind": "note",

@@ -30,6 +30,120 @@ function unitDef(id: string, name: string, bp: number) {
   };
 }
 
+describe("RS-106 juu_kun_do attack replacement", () => {
+  it("offers use_juu_kun_do when RS-106 can attack an enemy", () => {
+    const attacker = inst("RS-106", "att");
+    const defender = inst("TST-UNIT-0", "def");
+    const state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [attacker] },
+      player2: { battle: [defender] },
+    });
+    state.definitions["RS-106"] = rs106Def;
+
+    const actions = getLegalActions(state);
+    expect(actions.some((a) => a.type === "use_juu_kun_do")).toBe(true);
+    expect(actions.some((a) => a.type === "battle")).toBe(true);
+  });
+
+  it("does not offer use_juu_kun_do when no legal attack target exists", () => {
+    const attacker = inst("RS-106", "att");
+    const jetFalcon = inst("RS-135", "jf");
+    const state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [attacker] },
+      player2: { battle: [jetFalcon] },
+    });
+    state.definitions["RS-106"] = rs106Def;
+    state.definitions["RS-135"] = {
+      id: "RS-135",
+      name: "ジェットファルコン",
+      type: "unit",
+      category: "WB",
+      rarity: "N",
+      expansion: "legend2",
+      powerCost: 2,
+      bp: 2000,
+      size: "S",
+      features: ["航空機"],
+    };
+
+    const actions = getLegalActions(state);
+    expect(actions.some((a) => a.type === "use_juu_kun_do")).toBe(false);
+    expect(actions.some((a) => a.type === "battle")).toBe(false);
+  });
+
+  it("marks RS-106 battleActed after confirming juu_kun_do", () => {
+    const attacker = inst("RS-106", "att");
+    const e1 = inst("E1", "e1");
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [attacker] },
+      player2: { battle: [e1], rush: [] },
+    });
+    state.definitions["RS-106"] = rs106Def;
+    state.definitions["E1"] = unitDef("E1", "2000", 2000);
+
+    const use = applyAction(state, {
+      type: "use_juu_kun_do",
+      playerId: "player1",
+      attackerInstanceId: attacker.instanceId,
+    });
+    expect(use.ok).toBe(true);
+    if (!use.ok) return;
+    state = use.state;
+
+    const confirmed = applyAction(state, {
+      type: "confirm_effect_choice",
+      playerId: "player1",
+    });
+    expect(confirmed.ok).toBe(true);
+    if (!confirmed.ok) return;
+    expect(
+      confirmed.state.players.player1.battle.find((c) => c.instanceId === attacker.instanceId)
+        ?.battleActed,
+    ).toBe(true);
+    expect(
+      getLegalActions(confirmed.state).some((a) => a.type === "battle" && a.attackerInstanceId === attacker.instanceId),
+    ).toBe(false);
+  });
+
+  it("allows attack after skipping juu_kun_do", () => {
+    const attacker = inst("RS-106", "att");
+    const defender = inst("TST-UNIT-0", "def");
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [attacker] },
+      player2: { battle: [defender] },
+    });
+    state.definitions["RS-106"] = rs106Def;
+
+    const use = applyAction(state, {
+      type: "use_juu_kun_do",
+      playerId: "player1",
+      attackerInstanceId: attacker.instanceId,
+    });
+    expect(use.ok).toBe(true);
+    if (!use.ok) return;
+
+    const skipped = applyAction(use.state, {
+      type: "skip_effect_choice",
+      playerId: "player1",
+    });
+    expect(skipped.ok).toBe(true);
+    if (!skipped.ok) return;
+    expect(
+      skipped.state.players.player1.battle.find((c) => c.instanceId === attacker.instanceId)
+        ?.battleActed,
+    ).toBeFalsy();
+    expect(getLegalActions(skipped.state).some((a) => a.type === "battle")).toBe(true);
+  });
+});
+
 describe("RS-106 juu_kun_do", () => {
   it("opens multi-select with all enemy rush units", () => {
     const attacker = inst("RS-106", "att");

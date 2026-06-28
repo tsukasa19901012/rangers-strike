@@ -9,8 +9,8 @@ describe("full-playable DSL integration manifest", () => {
   const coreRegistry = cardDsl.createCardRegistryFromCatalog();
   const fullRegistry = cardDsl.createFullPlayableRegistry();
 
-  it("covers 179 core interpreter-ready cards", () => {
-    expect(coreRegistry.listDslReady().length).toBe(179);
+  it("covers 691 core interpreter-ready cards", () => {
+    expect(coreRegistry.listDslReady().length).toBe(691);
   });
 
   it("covers 1730 full-playable interpreter-ready cards", () => {

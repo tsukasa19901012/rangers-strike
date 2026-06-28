@@ -55,5 +55,7 @@
     "text": "特徴「男」を持つ自軍ユニット1体を捨札にする",
     "requiredFeature": "男",
     "unitCount": 1
-  }
+  },
+  "imageUrl": "/cards/promoted/RS-483.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-483.jpg"
 }

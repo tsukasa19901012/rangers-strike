@@ -1,5 +1,4 @@
 {
-  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-230",
   "name": "アバレッドAM",
   "type": "unit",
@@ -7,26 +6,29 @@
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "7-",
-  "text": "",
-  "rawText": "",
   "bp": 5500,
-  "size": "S",
   "sp": "special",
+  "size": "S",
   "comboNumber": 2,
+  "text": "",
   "features": [
     "レッド",
     "男",
     "アバレモード"
   ],
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
+  "imageUrl": "/cards/promoted/RS-230.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-230.jpg",
   "rushAdditionalCondition": {
     "conditionId": "zord_down_discard_named",
     "text": "自軍「アバレッド」1体を捨札にすれば必要パワー0になる",
     "partnerName": "アバレッド",
     "unitCount": 1
+  },
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "rawText": "",
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

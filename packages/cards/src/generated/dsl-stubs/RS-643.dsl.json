@@ -1,5 +1,4 @@
 {
-  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-643",
   "name": "分身獣ギガホイール",
   "type": "unit",
@@ -7,22 +6,25 @@
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "3+",
-  "text": "なし",
-  "rawText": "なし",
   "bp": 5000,
   "size": "SC",
+  "text": "なし",
   "features": [
     "メカ",
     "獣",
     "車両"
   ],
+  "imageUrl": "/cards/promoted/RS-643.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-643.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「母艦」を持つ自軍ユニットがある"
+  },
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "rawText": "なし",
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「母艦」を持つ自軍ユニットがある"
   }
 }

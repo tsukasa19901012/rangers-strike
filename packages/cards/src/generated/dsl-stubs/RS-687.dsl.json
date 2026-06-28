@@ -73,5 +73,7 @@
   "rushAdditionalCondition": {
     "conditionId": "discard_fusion_vehicle",
     "text": "自軍合体ビークルを捨札にする"
-  }
+  },
+  "imageUrl": "/cards/promoted/RS-687.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-687.jpg"
 }
