@@ -8,9 +8,11 @@ import {
   effectiveBp,
   getDefinition,
   isMediumUnit,
+  isSmallUnit,
   unitEffectiveCategories,
 } from "../../core/catalog";
 import { countReleasedCommands } from "../restrictions";
+import { opponent } from "../../core/helpers";
 import { promotedKeywordSpFloor } from "../../dsl/promotedKeywordBridge";
 import { legend2EffectiveSp } from "../legend2/fieldEffects";
 
@@ -203,6 +205,35 @@ export function legend3EffectiveSp(
     instance.activatedNcEffects?.includes("victory_robo_strike")
   ) {
     sp += state.players[playerId].sUnitsRecoveredFromDiscardThisTurn ?? 0;
+  }
+
+  // RS-612: SP1 if own メカ command cards ≥ 4
+  if (instance.cardId === "RS-612") {
+    const mechaCommandCount = state.players[playerId].command.filter((c) => {
+      const d = getDefinition(state.definitions, c.cardId);
+      return d?.features?.includes("メカ");
+    }).length;
+    if (mechaCommandCount >= 4) sp = Math.max(sp, 1);
+  }
+
+  // RK-184: SP1 when in held state (commandHeld=true in battle zone)
+  if (instance.cardId === "RK-184" && instance.commandHeld) {
+    sp = Math.max(sp, 1);
+  }
+
+  // RK-329: SP1 if all enemy units are S-units (no M or L)
+  if (instance.cardId === "RK-329") {
+    const enemyId = opponent(playerId);
+    const enemyUnits = [...state.players[enemyId].rush, ...state.players[enemyId].battle];
+    const allEnemyAreS = enemyUnits.length > 0 && enemyUnits.every((c) =>
+      isSmallUnit(state.definitions, c.cardId),
+    );
+    if (allEnemyAreS) sp = Math.max(sp, 1);
+  }
+
+  // XG4-008: SP1 while riding (mountedOnInstanceId is set)
+  if (instance.cardId === "XG4-008" && instance.mountedOnInstanceId) {
+    sp = Math.max(sp, 1);
   }
 
   return sp;
