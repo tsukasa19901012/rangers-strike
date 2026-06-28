@@ -35,6 +35,9 @@ export const STARTER_OPTIONS = [
   { id: "seven-ninja-a", label: "七忍の炎陣: 忍者デッキ" },
   { id: "seven-ninja-b", label: "七忍の炎陣: ゲキデッキ" },
   { id: "seven-ninja-c", label: "七忍の炎陣: エンジンデッキ" },
+  { id: "blue-nine-a", label: "青の九の翼: ウイングデッキ" },
+  { id: "blue-nine-b", label: "青の九の翼: 合体ロボデッキ" },
+  { id: "blue-nine-c", label: "青の九の翼: 十二大紅ヒーローズデッキ" },
 ] as const;
 
 export type StarterId = (typeof STARTER_OPTIONS)[number]["id"];

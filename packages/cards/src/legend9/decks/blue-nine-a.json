@@ -1,0 +1,28 @@
+{
+  "id": "blue-nine-a",
+  "name": "青の九の翼デッキ（ウイングデッキ）",
+  "starterType": "A",
+  "expansion": "legend9",
+  "source": "https://www.grnrngr.com/cards/rangers-strike/release/series-9-starter-1",
+  "entries": [
+    { "cardId": "RS-624", "count": 1 },
+    { "cardId": "RS-625", "count": 3 },
+    { "cardId": "RS-629", "count": 3 },
+    { "cardId": "RS-630", "count": 3 },
+    { "cardId": "RS-666", "count": 3 },
+    { "cardId": "RS-667", "count": 3 },
+    { "cardId": "RS-668", "count": 3 },
+    { "cardId": "RS-685", "count": 1 },
+    { "cardId": "RS-686", "count": 2 },
+    { "cardId": "RS-108", "count": 2 },
+    { "cardId": "RS-109", "count": 2 },
+    { "cardId": "RS-110", "count": 2 },
+    { "cardId": "RS-249", "count": 1 },
+    { "cardId": "RS-278", "count": 2 },
+    { "cardId": "RS-279", "count": 2 },
+    { "cardId": "RS-320", "count": 1 },
+    { "cardId": "RS-404", "count": 2 },
+    { "cardId": "RS-585", "count": 2 },
+    { "cardId": "RS-600", "count": 2 }
+  ]
+}

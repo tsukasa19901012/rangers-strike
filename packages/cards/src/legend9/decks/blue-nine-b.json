@@ -1,0 +1,28 @@
+{
+  "id": "blue-nine-b",
+  "name": "青の九の翼デッキ（合体ロボデッキ）",
+  "starterType": "B",
+  "expansion": "legend9",
+  "source": "https://www.grnrngr.com/cards/rangers-strike/release/series-9-starter-2",
+  "entries": [
+    { "cardId": "RS-607", "count": 2 },
+    { "cardId": "RS-608", "count": 2 },
+    { "cardId": "RS-644", "count": 3 },
+    { "cardId": "RS-649", "count": 2 },
+    { "cardId": "RS-687", "count": 1 },
+    { "cardId": "RS-688", "count": 2 },
+    { "cardId": "RS-059", "count": 3 },
+    { "cardId": "RS-157", "count": 1 },
+    { "cardId": "RS-211", "count": 3 },
+    { "cardId": "RS-212", "count": 3 },
+    { "cardId": "RS-324", "count": 2 },
+    { "cardId": "RS-402", "count": 2 },
+    { "cardId": "RS-459", "count": 3 },
+    { "cardId": "RS-466", "count": 2 },
+    { "cardId": "RS-467", "count": 2 },
+    { "cardId": "RS-468", "count": 1 },
+    { "cardId": "RS-469", "count": 1 },
+    { "cardId": "RS-470", "count": 2 },
+    { "cardId": "RS-533", "count": 3 }
+  ]
+}

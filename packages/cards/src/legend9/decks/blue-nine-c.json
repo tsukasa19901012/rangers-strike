@@ -1,0 +1,28 @@
+{
+  "id": "blue-nine-c",
+  "name": "青の九の翼デッキ（十二大紅ヒーローズデッキ）",
+  "starterType": "C",
+  "expansion": "legend9",
+  "source": "https://www.grnrngr.com/cards/rangers-strike/release/series-9-starter-3",
+  "entries": [
+    { "cardId": "RS-610", "count": 1 },
+    { "cardId": "RS-612", "count": 2 },
+    { "cardId": "RS-628", "count": 3 },
+    { "cardId": "RS-631", "count": 3 },
+    { "cardId": "RS-680", "count": 3 },
+    { "cardId": "RS-689", "count": 1 },
+    { "cardId": "RS-690", "count": 2 },
+    { "cardId": "RS-057", "count": 3 },
+    { "cardId": "RS-091", "count": 1 },
+    { "cardId": "RS-148", "count": 2 },
+    { "cardId": "RS-191", "count": 2 },
+    { "cardId": "RS-204", "count": 3 },
+    { "cardId": "RS-205", "count": 1 },
+    { "cardId": "RS-272", "count": 3 },
+    { "cardId": "RS-291", "count": 2 },
+    { "cardId": "RS-306", "count": 3 },
+    { "cardId": "RS-421", "count": 3 },
+    { "cardId": "RS-457", "count": 1 },
+    { "cardId": "RS-521", "count": 1 }
+  ]
+}

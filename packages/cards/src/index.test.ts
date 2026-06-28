@@ -119,6 +119,9 @@ describe.each([
   ["seven-ninja-a", "A", "RS-513", 1],
   ["seven-ninja-b", "B", "RS-514", 1],
   ["seven-ninja-c", "C", "RS-515", 1],
+  ["blue-nine-a", "A", "RS-685", 1],
+  ["blue-nine-b", "B", "RS-687", 1],
+  ["blue-nine-c", "C", "RS-689", 1],
 ] as const)("starter deck %s", (id, type, flagshipId, flagshipCount) => {
   const deck = starterDecks[id];
 

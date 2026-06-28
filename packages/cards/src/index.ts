@@ -10,6 +10,9 @@ import silverAdventurerDeck from "./legend3/decks/silver-adventurer.json";
 import sevenNinjaADeck from "./legend7/decks/seven-ninja-a.json";
 import sevenNinjaBDeck from "./legend7/decks/seven-ninja-b.json";
 import sevenNinjaCDeck from "./legend7/decks/seven-ninja-c.json";
+import blueNineADeck from "./legend9/decks/blue-nine-a.json";
+import blueNineBDeck from "./legend9/decks/blue-nine-b.json";
+import blueNineCDeck from "./legend9/decks/blue-nine-c.json";
 import type { DeckDefinition } from "./schema";
 import { validateDeckEntries } from "./deckRules";
 import {
@@ -101,6 +104,9 @@ export const starterDecks = {
   "seven-ninja-a": sevenNinjaADeck as DeckDefinition,
   "seven-ninja-b": sevenNinjaBDeck as DeckDefinition,
   "seven-ninja-c": sevenNinjaCDeck as DeckDefinition,
+  "blue-nine-a": blueNineADeck as DeckDefinition,
+  "blue-nine-b": blueNineBDeck as DeckDefinition,
+  "blue-nine-c": blueNineCDeck as DeckDefinition,
 } as const;
 
 export type StarterDeckId = keyof typeof starterDecks;
