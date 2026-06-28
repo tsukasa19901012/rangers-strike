@@ -44,6 +44,7 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "no_ride_while_held",
   "not_selectable",
   "cannot_attack_enemy_battle",
+  "cannot_attack",
   "counter_redirect_attack",
   "m_battle_entry_requires_hold",
   "fusion_material_alias",

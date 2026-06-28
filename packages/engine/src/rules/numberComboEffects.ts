@@ -67,14 +67,26 @@ export function numberComboTriggers(
     typeof definition.comboNumber === "number"
       ? effectiveComboNumber(state, playerId, definition.comboNumber, card.cardId)
       : -1;
+  const position = ncBattlePosition(state, playerId, card, battlePosition);
 
-  return !!findNcNamedEffect(
-    card.cardId,
-    ncBattlePosition(state, playerId, card, battlePosition),
-    effectiveNumber,
-    battleBeforeEnter,
-    card.instanceId,
-  );
+  if (
+    findNcNamedEffect(
+      card.cardId,
+      position,
+      effectiveNumber,
+      battleBeforeEnter,
+      card.instanceId,
+    )
+  ) {
+    return true;
+  }
+
+  if (typeof definition.comboNumber === "number" && effectiveNumber === position) {
+    if (getPromotedNcEffectId(card.cardId)) return true;
+    if (ncEffectUsesDsl(card.cardId)) return true;
+  }
+
+  return false;
 }
 
 export function resolveNamedNcEffectId(
@@ -119,8 +131,6 @@ export function applyNumberComboEffect(
   card: CardInstance,
   effectId: ReturnType<typeof getNumberComboEffect>,
 ): ComboOutcome {
-  if (!effectId) return { state, logs: [] };
-
   if (getPromotedNcEffectId(card.cardId)) {
     return applyPromotedNcEffect(state, playerId, card);
   }
@@ -137,6 +147,8 @@ export function applyNumberComboEffect(
       return { state: dslNc.state, logs: dslNc.logs };
     }
   }
+
+  if (!effectId) return { state, logs: [] };
 
   return applyLegacyNumberComboEffect(state, playerId, card, effectId);
 }

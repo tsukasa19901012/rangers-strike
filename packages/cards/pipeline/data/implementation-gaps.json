@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-06-11T13:39:45.222Z",
+  "generatedAt": "2026-06-28T23:20:34.978Z",
   "summary": {
     "catalogTotal": 1849,
-    "coreCards": 179,
-    "promotedCards": 1670,
+    "coreCards": 698,
+    "promotedCards": 1151,
     "dslRegistryImplemented": 1849,
     "dslRegistryPartial": 0,
     "dslRegistryUnimplemented": 0,
@@ -148,7 +148,7 @@
     },
     {
       "id": "XG1-007",
-      "name": "チェンジドラゴン（XG）",
+      "name": "チェンジドラゴン",
       "categories": [
         "MA",
         "ET"
@@ -202,7 +202,7 @@
     },
     {
       "id": "XG1-031",
-      "name": "ゴーオンレッド（XG）",
+      "name": "ゴーオンレッド",
       "categories": [
         "WB",
         "OT"
@@ -211,7 +211,7 @@
     },
     {
       "id": "XG1-032",
-      "name": "ゲキレッド（XG）",
+      "name": "ゲキレッド",
       "categories": [
         "WB",
         "MA"
@@ -220,7 +220,7 @@
     },
     {
       "id": "XG1-041",
-      "name": "仮面ライダーアマゾン（XG）",
+      "name": "仮面ライダーアマゾン",
       "categories": [
         "WB",
         "MA"
@@ -301,7 +301,7 @@
     },
     {
       "id": "XG2-001",
-      "name": "ファイブレッド（XG2）",
+      "name": "ファイブレッド",
       "categories": [
         "OT",
         "ET"
@@ -310,7 +310,7 @@
     },
     {
       "id": "XG2-002",
-      "name": "ファイブブルー（XG2）",
+      "name": "ファイブブルー",
       "categories": [
         "OT",
         "ET"
@@ -319,7 +319,7 @@
     },
     {
       "id": "XG2-003",
-      "name": "ファイブピンク（XG2）",
+      "name": "ファイブピンク",
       "categories": [
         "OT",
         "ET"
@@ -373,7 +373,7 @@
     },
     {
       "id": "XG2-018",
-      "name": "ゲキタイガー（XG2）",
+      "name": "ゲキタイガー",
       "categories": [
         "WB",
         "MA"
@@ -382,7 +382,7 @@
     },
     {
       "id": "XG2-025",
-      "name": "ギンガレッド（XG2）",
+      "name": "ギンガレッド",
       "categories": [
         "WB",
         "MA"
@@ -391,7 +391,7 @@
     },
     {
       "id": "XG2-026",
-      "name": "ギンガブルー（XG2）",
+      "name": "ギンガブルー",
       "categories": [
         "WB",
         "MA"
@@ -400,7 +400,7 @@
     },
     {
       "id": "XG2-027",
-      "name": "ギンガイエロー（XG2）",
+      "name": "ギンガイエロー",
       "categories": [
         "WB",
         "MA"
@@ -427,7 +427,7 @@
     },
     {
       "id": "XG2-059",
-      "name": "仮面ライダーレンゲル（XG2）",
+      "name": "仮面ライダーレンゲル",
       "categories": [
         "WB",
         "DA"
@@ -490,7 +490,7 @@
     },
     {
       "id": "XG3-028",
-      "name": "魔導馬バリキオン（XG3）",
+      "name": "魔導馬バリキオン",
       "categories": [
         "MA",
         "DA"
@@ -499,7 +499,7 @@
     },
     {
       "id": "XG3-029",
-      "name": "魔導騎士ウルザード（XG3）",
+      "name": "魔導騎士ウルザード",
       "categories": [
         "MA",
         "DA"
@@ -517,7 +517,7 @@
     },
     {
       "id": "XG3-031",
-      "name": "ゲキブルー（XG3）",
+      "name": "ゲキブルー",
       "categories": [
         "WB",
         "MA"
@@ -526,7 +526,7 @@
     },
     {
       "id": "XG3-032",
-      "name": "ゲキイエロー（XG3）",
+      "name": "ゲキイエロー",
       "categories": [
         "WB",
         "MA"
@@ -616,7 +616,7 @@
     },
     {
       "id": "XG3-089",
-      "name": "ブルービート（XG3）",
+      "name": "ブルービート",
       "categories": [
         "WB",
         "ET"
@@ -634,7 +634,7 @@
     },
     {
       "id": "XG3-091",
-      "name": "ジースタッグ（XG3）",
+      "name": "ジースタッグ",
       "categories": [
         "WB",
         "ET"
@@ -643,7 +643,7 @@
     },
     {
       "id": "XG3-092",
-      "name": "レッドル（XG3）",
+      "name": "レッドル",
       "categories": [
         "WB",
         "ET"
@@ -688,7 +688,7 @@
     },
     {
       "id": "XG4-013",
-      "name": "ギンガグリーン（XG4）",
+      "name": "ギンガグリーン",
       "categories": [
         "WB",
         "MA"
@@ -697,7 +697,7 @@
     },
     {
       "id": "XG4-014",
-      "name": "ギンガピンク（XG4）",
+      "name": "ギンガピンク",
       "categories": [
         "WB",
         "MA"
@@ -706,7 +706,7 @@
     },
     {
       "id": "XG4-029",
-      "name": "ゲキバイオレット（XG4）",
+      "name": "ゲキバイオレット",
       "categories": [
         "WB",
         "MA"
@@ -715,7 +715,7 @@
     },
     {
       "id": "XG4-030",
-      "name": "ゲキチョッパー（XG4）",
+      "name": "ゲキチョッパー",
       "categories": [
         "WB",
         "MA"
@@ -724,7 +724,7 @@
     },
     {
       "id": "XG4-035",
-      "name": "シンケンゴールド（XG4）",
+      "name": "シンケンゴールド",
       "categories": [
         "MA",
         "ET"
@@ -859,7 +859,7 @@
     },
     {
       "id": "XG5-037",
-      "name": "ゴセイレッド（XG5）",
+      "name": "ゴセイレッド",
       "categories": [
         "WB",
         "MA"
@@ -868,7 +868,7 @@
     },
     {
       "id": "XG5-038",
-      "name": "ゴセイピンク（XG5）",
+      "name": "ゴセイピンク",
       "categories": [
         "WB",
         "MA"
@@ -877,7 +877,7 @@
     },
     {
       "id": "XG5-039",
-      "name": "ゴセイブルー（XG5）",
+      "name": "ゴセイブルー",
       "categories": [
         "WB",
         "MA"
@@ -886,7 +886,7 @@
     },
     {
       "id": "XG5-040",
-      "name": "ゴセイブラック（XG5）",
+      "name": "ゴセイブラック",
       "categories": [
         "WB",
         "MA"
@@ -895,7 +895,7 @@
     },
     {
       "id": "XG5-041",
-      "name": "ゴセイイエロー（XG5）",
+      "name": "ゴセイイエロー",
       "categories": [
         "WB",
         "MA"
@@ -940,7 +940,7 @@
     },
     {
       "id": "XG5-059",
-      "name": "仮面ライダーカリス（XG5）",
+      "name": "仮面ライダーカリス",
       "categories": [
         "WB",
         "DA"
@@ -949,7 +949,7 @@
     },
     {
       "id": "XG5-060",
-      "name": "仮面ライダーワイルドカリス（XG5）",
+      "name": "仮面ライダーワイルドカリス",
       "categories": [
         "WB",
         "DA"
@@ -958,7 +958,7 @@
     },
     {
       "id": "XG5-084",
-      "name": "仮面ライダーW・CJ（XG5）",
+      "name": "仮面ライダーW・CJ",
       "categories": [
         "ET",
         "DA"
@@ -985,7 +985,7 @@
     },
     {
       "id": "XG6-047",
-      "name": "仮面ライダーG4（XG6）",
+      "name": "仮面ライダーG4",
       "categories": [
         "ET",
         "DA"
@@ -994,7 +994,7 @@
     },
     {
       "id": "XG6-048",
-      "name": "仮面ライダーリュウガ（XG6）",
+      "name": "仮面ライダーリュウガ",
       "categories": [
         "WB",
         "DA"
@@ -1003,7 +1003,7 @@
     },
     {
       "id": "XG6-049",
-      "name": "仮面ライダーオーガ（XG6）",
+      "name": "仮面ライダーオーガ",
       "categories": [
         "ET",
         "DA"
@@ -1012,7 +1012,7 @@
     },
     {
       "id": "XG6-050",
-      "name": "仮面ライダーグレイブ（XG6）",
+      "name": "仮面ライダーグレイブ",
       "categories": [
         "WB",
         "DA"
@@ -1021,7 +1021,7 @@
     },
     {
       "id": "XG6-051",
-      "name": "仮面ライダー歌舞鬼（XG6）",
+      "name": "仮面ライダー歌舞鬼",
       "categories": [
         "MA",
         "DA"
@@ -1030,7 +1030,7 @@
     },
     {
       "id": "XG6-052",
-      "name": "仮面ライダーコーカサス（XG6）",
+      "name": "仮面ライダーコーカサス",
       "categories": [
         "OT",
         "DA"
@@ -1039,7 +1039,7 @@
     },
     {
       "id": "XG6-053",
-      "name": "仮面ライダーアーク（XG6）",
+      "name": "仮面ライダーアーク",
       "categories": [
         "MA",
         "DA"
@@ -1048,7 +1048,7 @@
     },
     {
       "id": "XG6-054",
-      "name": "仮面ライダースカル（XG6）",
+      "name": "仮面ライダースカル",
       "categories": [
         "ET",
         "DA"

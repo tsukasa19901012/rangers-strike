@@ -46,22 +46,9 @@
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_command",
-          "valid": {
-            "type": "zone",
-            "zone": "command",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "hold_command",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "hold_all_enemy_commands",
+          "duration": "turn"
         }
       ]
     }

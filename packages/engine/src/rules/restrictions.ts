@@ -53,6 +53,7 @@ import {
   cannotEnterBattleOwnTurn,
   scorchingRoarBypassesHold,
 } from "./legend3/fieldEffects";
+import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import {
   battleEntryHandDiscardSatisfied,
   battleEntryRushDiscardSatisfied,
@@ -296,6 +297,11 @@ export function cannotAttackOrStrikeThisTurn(
     noAttackOrStrikeTurnRushed(unit.cardId) &&
     wasRushedThisTurn(player, unit.instanceId)
   );
+}
+
+/** DSL grant_keyword `cannot_attack` — バトル（アタック）を開始できない。 */
+export function unitCannotInitiateAttack(cardId: string): boolean {
+  return cardHasGrantKeyword(cardId, "cannot_attack");
 }
 
 /** フィールド / 効果チェックのみ（※ または稲妻重力のホールド数は含まない）。 */

@@ -126,6 +126,7 @@ import {
 import {
   canMoveUnitToBattle,
   cannotAttackOrStrikeThisTurn,
+  unitCannotInitiateAttack,
   mustEnterBattleBeforePhaseEnd,
   countHeldCommands,
   requiredBattleEntryHolds,
@@ -1909,6 +1910,9 @@ export function applyAction(
       if (attackerFound.card.battleActed) return fail("already_acted");
       if (cannotAttackOrStrikeThisTurn(actor, attackerFound.card)) {
         return fail("cannot_attack_turn_rushed");
+      }
+      if (unitCannotInitiateAttack(attackerFound.card.cardId)) {
+        return fail("cannot_attack");
       }
 
       const enemy = state.players[enemyId];

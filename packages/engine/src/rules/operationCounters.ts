@@ -839,6 +839,20 @@ export function resolveBattlePendingCore(
     winButDestroyedVsSp1(refreshedAttackerFound.card.cardId) &&
     canStrikeUnit(battleState.definitions, refreshedDefenderFound.card, battleState, defenderOwner);
 
+  const winButDefenderSelfDestruct =
+    destroyAttacker &&
+    !destroyDefender &&
+    battleState.activePlayer !== defenderOwner &&
+    winButDestroyedVsSp1(refreshedDefenderFound.card.cardId) &&
+    canStrikeUnit(
+      battleState.definitions,
+      refreshedAttackerFound.card,
+      battleState,
+      attackerId,
+    );
+
+  const finalDestroyDefender = destroyDefender || winButDefenderSelfDestruct;
+
   // XG2-086: during enemy turn (attacker's turn), units that win are also destroyed
   // XG3-087: same but only for S-units
   const defenderCausesWinnerDestruction =
@@ -888,7 +902,7 @@ export function resolveBattlePendingCore(
   let nextState = battleState;
   let extraLogs: string[] = [];
 
-  if (destroyDefender) {
+  if (finalDestroyDefender) {
     const leaveResult = tryLeaveField(nextState, {
       ownerPlayerId: defenderOwner,
       instanceId: defenderInstanceId,

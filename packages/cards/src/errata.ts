@@ -73,9 +73,12 @@ export function needsAllySInBattle(cardId: string): boolean {
   return hasUnnamedRule(cardId, "needs_ally_s_in_battle");
 }
 
-/** RS-092, RS-094, RS-102, RS-103, RS-115: 敵ターンに SP1 以上相手へ勝利するが自身は破壊される。 */
+/** RS-092, RS-094, RS-102, RS-103, RS-115, SR-004 等: 敵ターンに SP1 以上相手へ勝利するが自身は破壊される。 */
 export function winButDestroyedVsSp1(cardId: string): boolean {
-  return hasUnnamedRule(cardId, "win_but_destroyed_vs_sp1");
+  return (
+    hasUnnamedRule(cardId, "win_but_destroyed_vs_sp1") ||
+    hasUnnamedRule(cardId, "destroy_on_win_vs_sp1")
+  );
 }
 
 /** RS-112: 敵ダメージが6に達したら手札に戻る。 */

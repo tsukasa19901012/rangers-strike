@@ -1,8 +1,11 @@
 export {
   createStarterGame,
   buildLegend1StarterDeck,
+  buildAnyStarterDeck,
   LEGEND1_STARTER_IDS,
+  ALL_STARTER_DECK_IDS,
   type Legend1StarterId,
+  type AllStarterDeckId,
   type CreateStarterGameOptions,
 } from "./createStarterGame";
 export {

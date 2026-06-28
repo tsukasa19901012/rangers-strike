@@ -160,7 +160,10 @@ export function cannotEnterBattleOwnTurn(
   cardId: string,
 ): boolean {
   if (state.activePlayer !== playerId) return false;
-  return hasUnnamedRule(cardId, "cannot_enter_battle_own_turn");
+  return (
+    hasUnnamedRule(cardId, "cannot_enter_battle_own_turn") ||
+    hasUnnamedRule(cardId, "no_enter_battle_own_turn")
+  );
 }
 
 function jointLEffectIdForUnit(

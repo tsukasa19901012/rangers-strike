@@ -1,21 +1,14 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildAbarenohDeck,
-  buildDekarangerDeck,
-  buildMagikingDeck,
-  buildStarterDeck,
-} from "@rangers-strike/cards";
+import { buildStarterDeck, type StarterDeckId } from "@rangers-strike/cards";
 import { applyAction, createGame, getLegalActions } from "./index";
+import { ALL_STARTER_DECK_IDS } from "./verticalSlice/starterDeckIds";
+
 const DEFAULT_GAMES = Number(process.env.MONKEY_GAMES ?? 80);
 const MAX_STEPS = Number(process.env.MONKEY_MAX_STEPS ?? 12_000);
 
-const DECK_BUILDERS = [
-  buildAbarenohDeck,
-  buildDekarangerDeck,
-  buildMagikingDeck,
-  () => buildStarterDeck("roaring-wings"),
-  () => buildStarterDeck("silver-adventurer"),
-] as const;
+const DECK_BUILDERS = ALL_STARTER_DECK_IDS.map(
+  (id) => () => buildStarterDeck(id as StarterDeckId),
+);
 
 /** 再現可能な失敗のための決定論的 RNG。 */
 function mulberry32(seed: number): () => number {

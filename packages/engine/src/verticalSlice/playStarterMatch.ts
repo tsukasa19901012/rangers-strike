@@ -143,6 +143,22 @@ export function playStarterMatchUntilEnd(
       }
     }
     if (!result.ok) {
+      const fallback = actions.find(
+        (candidate) =>
+          candidate !== action &&
+          isLegalAction(state, candidate) &&
+          applyAction(state, candidate).ok,
+      );
+      if (fallback) {
+        const recovered = applyAction(state, fallback);
+        if (recovered.ok) {
+          state = recovered.state;
+          actionCounts[fallback.type] = (actionCounts[fallback.type] ?? 0) + 1;
+          if (fallback.type === "strike") strikes += 1;
+          if (fallback.type === "battle") battles += 1;
+          continue;
+        }
+      }
       return {
         state,
         steps,

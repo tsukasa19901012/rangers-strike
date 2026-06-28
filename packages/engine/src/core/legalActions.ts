@@ -40,6 +40,7 @@ import { canUseJuuKunDo } from "../rules/juuKunDo";
 import {
   canMoveUnitToBattle,
   cannotAttackOrStrikeThisTurn,
+  unitCannotInitiateAttack,
   countReleasedCommands,
   mustEnterBattleBeforePhaseEnd,
 } from "../rules/restrictions";
@@ -1022,6 +1023,10 @@ function appendBattleEntryActions(
     actions.push({ type: "pass_battle_entry", playerId });
     return;
   }
+  if (unitCannotInitiateAttack(unit.cardId)) {
+    actions.push({ type: "pass_battle_entry", playerId });
+    return;
+  }
 
   for (const defender of enemy.battle) {
     if (
@@ -1419,6 +1424,7 @@ export function getLegalActions(state: GameState): GameAction[] {
 
       for (const attacker of player.rush) {
         if (!canWingAttackFromRush(state, playerId, attacker)) continue;
+        if (unitCannotInitiateAttack(attacker.cardId)) continue;
         for (const defender of enemy.battle) {
           if (
             !canAttackDefender(
@@ -1464,6 +1470,7 @@ export function getLegalActions(state: GameState): GameAction[] {
       for (const attacker of player.battle) {
         if (attacker.battleActed) continue;
         if (cannotAttackOrStrikeThisTurn(player, attacker)) continue;
+        if (unitCannotInitiateAttack(attacker.cardId)) continue;
         for (const defender of enemy.battle) {
           if (
             !canAttackDefender(
