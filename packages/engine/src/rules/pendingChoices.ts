@@ -562,7 +562,7 @@ export function applyConfirmEffectChoice(
       .map((id) => cardName(nextState.definitions, findFieldUnitCardId(nextState, id)))
       .join(",");
     const finished = finishChoice(nextState, pending, names || "none");
-    if (finished.error || !finished.state) return finished;
+    if ("error" in finished) return finished;
     if (pending.effectId === "juu_kun_do") {
       return {
         ...finished,
