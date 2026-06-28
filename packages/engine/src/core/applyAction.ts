@@ -48,7 +48,6 @@ import {
   removeAt,
   updatePlayer,
 } from "./helpers";
-import { reorderEnemyBattleAfterRush } from "../rules/promotedNcEffects";
 import { isLegalAction } from "./legalActions";
 import { resolveDamagePaymentSelect } from "../rules/damagePayment";
 import {
@@ -183,7 +182,7 @@ import {
   tryLeaveField,
 } from "../rules/operationCounters";
 import { applyResolveRuinSurvey } from "../rules/ruinSurvey";
-import { applySeabedDrawPlacement } from "../rules/pendingChoices";
+import { applySeabedDrawPlacement, openEffectChoice } from "../rules/pendingChoices";
 import {
   applyConfirmDenjiReveal,
   applyDenjiBottomOrderSelect,
@@ -1132,7 +1131,20 @@ export function applyAction(
       };
 
       if (found.card.cardId === "RS-397") {
-        nextState = reorderEnemyBattleAfterRush(nextState, playerId);
+        const enemyId = opponent(playerId);
+        const enemyBattle = nextState.players[enemyId].battle;
+        if (enemyBattle.length >= 2) {
+          nextState = openEffectChoice(nextState, {
+            playerId,
+            effectId: "reorder_enemy_battle",
+            sourceCardId: "RS-397",
+            sourceInstanceId: found.card.instanceId,
+            kind: "confirm",
+            phasePlayerId: playerId,
+            validInstanceIds: ["逆順に並び替える"],
+            optional: true,
+          });
+        }
       }
 
       const mainLog = buildLogEntry(

@@ -91,6 +91,7 @@ const KNOWN_EFFECT_IDS = new Set<string>([
   "rocket_booster",
   "simultaneous_order",
   "super_geki_yellow_reanimate",
+  "reorder_enemy_battle",
 ]);
 
 export function isKnownEffectChoice(pending: PendingEffectChoice): boolean {

@@ -1766,6 +1766,17 @@ export function applyEffectChoiceSelect(
         const nextState = applyRocketBoosterDeclaredName(state, playerId, declaredName);
         return finishChoice(nextState, pending, declaredName);
       }
+      if (pending.effectId === "reorder_enemy_battle") {
+        if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+        const enemyId = opponent(playerId);
+        const enemy = state.players[enemyId];
+        const reversed = [...enemy.battle].reverse();
+        const nextState = {
+          ...state,
+          ...updatePlayer(state, enemyId, { ...enemy, battle: reversed }),
+        };
+        return finishChoice(nextState, pending, "reversed");
+      }
       return { error: "unsupported_confirm" };
     }
 

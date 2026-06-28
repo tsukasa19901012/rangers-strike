@@ -100,6 +100,9 @@ export function effectChoiceHint(
         ? `相手のユニットを選んでください`
         : `自分のユニットを選んでください`;
     case "confirm":
+      if (pending.effectId === "reorder_enemy_battle") {
+        return "敵軍バトルエリアのユニットを逆順に並び替えますか？";
+      }
       return "宣言するカード名を選んでください";
     case "select_units_bp_budget": {
       const budget = pending.bpBudget ?? 3000;
