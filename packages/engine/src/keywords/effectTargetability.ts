@@ -1,6 +1,5 @@
 import type { GameState, PlayerId } from "../types/game";
-import { findInZone } from "../core/helpers";
-import { findCardOwner } from "../rules/fieldLookup";
+import { findCardInField } from "../rules/fieldLookup";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import {
   breakerBlocksEffectTarget,
@@ -14,13 +13,11 @@ export function isSelectableByOpponentEffect(
   targetInstanceId: string,
   sourceCardId?: string,
 ): boolean {
-  const located = findCardOwner(state, targetInstanceId);
+  const located = findCardInField(state, targetInstanceId);
   if (!located) return false;
   if (located.playerId === selectorPlayerId) return true;
 
-  const owner = state.players[located.playerId];
-  const found = findInZone(owner, located.zone, targetInstanceId);
-  if (!found) return false;
+  const found = located;
 
   if (cardHasGrantKeyword(found.card.cardId, "not_selectable")) return false;
   if (cardHasNotSelectableExceptAttack(found.card.cardId)) return false;

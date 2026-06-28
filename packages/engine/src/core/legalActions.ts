@@ -61,7 +61,7 @@ import {
   listZordSetupResolveActions,
 } from "../rules/zordSetup";
 import { canToggleBpBudgetTarget, isValidEffectChoiceTarget } from "../rules/pendingChoices";
-import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart } from "../rules/startPhase";
+import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart, isReleaseStepComplete } from "../rules/startPhase";
 import {
   listZordRushPaymentVariants,
   listZordUpRushPaymentVariants,
@@ -656,6 +656,20 @@ function appendOperationCategoryPaymentActions(
     });
     if (!options) continue;
 
+    const effect = getCardEffect(card.cardId);
+    if (effect?.effectId === "cyber_s_rider") {
+      const others = player.hand.filter((c) => c.instanceId !== card.instanceId);
+      if (others.length === 0) continue;
+      for (let i = 0; i < others.length; i += 1) {
+        pushPayment(card.instanceId, others[i]!.instanceId, undefined, options.prismSubstitute);
+        for (let j = i + 1; j < others.length; j += 1) {
+          if (player.command.length + 2 > COMMAND_ZONE_MAX) continue;
+          pushPayment(card.instanceId, others[i]!.instanceId, others[j]!.instanceId, options.prismSubstitute);
+        }
+      }
+      continue;
+    }
+
     pushPayment(card.instanceId, undefined, undefined, options.prismSubstitute);
     if (options.prismAvailable && !options.prismSubstitute) {
       pushPayment(card.instanceId, undefined, undefined, true);
@@ -1077,11 +1091,6 @@ export function getLegalActions(state: GameState): GameAction[] {
     return actions;
   }
 
-  if (state.pendingLeave) {
-    appendLeaveReactionActions(state, state.pendingLeave.ownerPlayerId, actions);
-    return actions;
-  }
-
   if (state.pendingCommandPayment) {
     const pending = state.pendingCommandPayment;
     if (pending.playerId === playerId) {
@@ -1102,6 +1111,11 @@ export function getLegalActions(state: GameState): GameAction[] {
       }
       actions.push({ type: "cancel_command_payment", playerId });
     }
+    return actions;
+  }
+
+  if (state.pendingLeave) {
+    appendLeaveReactionActions(state, state.pendingLeave.ownerPlayerId, actions);
     return actions;
   }
 
@@ -1195,7 +1209,11 @@ export function getLegalActions(state: GameState): GameAction[] {
       }
       if (canBonusDraw(state, playerId)) {
         actions.push({ type: "bonus_draw", playerId });
-        actions.push({ type: "skip_bonus_draw", playerId });
+        const releaseOk = isReleaseStepComplete(player);
+        const returnOk = player.hasReturnedBattleThisStart === true || player.battle.length === 0;
+        if (releaseOk && returnOk) {
+          actions.push({ type: "skip_bonus_draw", playerId });
+        }
       }
       break;
 

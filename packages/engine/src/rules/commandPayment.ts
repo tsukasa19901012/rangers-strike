@@ -791,6 +791,7 @@ function isPlayOperationContinuationLegal(
   const definition = getDefinition(state.definitions, found.cardId);
   if (!definition || definition.type !== "operation") return false;
   if (!canPlayOperation(state, playerId, definition)) return false;
+  if (getCardEffect(found.cardId)?.effectId === "denji_machine" && player.deck.length < 3) return false;
 
   const dslEffect = getDslOperationEffect(found.cardId, "rush");
   const dslChoose =
