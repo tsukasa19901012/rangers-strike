@@ -115,6 +115,16 @@ export function battleAttackerBpBonus(
     total += released * 1000;
   }
 
+  // XG4-090 / XG4-066: vehicle gives rider a BP bonus when attacking
+  if (attacker.card.mountedOnInstanceId) {
+    const rusher = state.players[pending.attackerPlayerId];
+    const vehicle = rusher.rush.find(
+      (c) => c.instanceId === attacker.card.mountedOnInstanceId,
+    );
+    if (vehicle?.cardId === "XG4-090") total += 2000;
+    else if (vehicle?.cardId === "XG4-066") total += 1500;
+  }
+
   return total;
 }
 
