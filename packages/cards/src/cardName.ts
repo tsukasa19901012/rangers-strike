@@ -21,12 +21,17 @@ export function sameCanonicalCardName(a: string, b: string): boolean {
   return canonicalCardName(a) === canonicalCardName(b);
 }
 
-const FUSION_ALIAS_PATTERN = /※これは「([^」]+)」としてつかえる/;
+const FUSION_ALIAS_SEGMENT = /※これは(.+?)としてつかえる/;
+const QUOTED_NAME_PATTERN = /「([^」]+)」/g;
 
-/** カード文面の「○○としてつかえる」別名（正規化済み）。 */
+/** カード文面の「○○としてつかえる」別名（正規化済み）。複数名「A」または「B」にも対応。 */
 export function fusionMaterialAliasNames(text: string | undefined): string[] {
   if (!text) return [];
-  const match = text.match(FUSION_ALIAS_PATTERN);
-  if (!match?.[1]) return [];
-  return [canonicalCardName(match[1])];
+  const segMatch = text.match(FUSION_ALIAS_SEGMENT);
+  if (!segMatch?.[1]) return [];
+  const names: string[] = [];
+  for (const nameMatch of segMatch[1].matchAll(QUOTED_NAME_PATTERN)) {
+    names.push(canonicalCardName(nameMatch[1]!));
+  }
+  return names;
 }

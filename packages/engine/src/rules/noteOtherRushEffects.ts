@@ -5,6 +5,7 @@ import { buildLogEntry } from "../log/formatLog";
 import { applyDamageToPlayer } from "./damagePayment";
 import { startSelectCommandChoice, startSelectPowerChoice, startSelectUnitChoice } from "./pendingChoices";
 import type { NamedEffectOutcome } from "./namedUnitEffects";
+import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 
 /** on_rush note_other_* カードの個別効果実装。 */
 export function resolveNoteOtherOnRushEffects(
@@ -202,6 +203,49 @@ export function resolveNoteOtherOnRushEffects(
       if (withChoice) {
         nextState = withChoice;
         logs.push(buildLogEntry(rusherPlayerId, "rush_effect", cardId, nextState.definitions, "acha_kocha_power_discard"));
+      }
+    }
+  }
+
+  // Gokai series: on rush → may swap with a matching face-up power S-unit (no rushAdditionalCondition)
+  const gokaiFeatureMap: Record<string, string[]> = {
+    "XG7-001": ["ピンク", "ホワイト"],
+    "XG7-002": ["グリーン", "ブラック"],
+    "XG7-003": ["レッド"],
+    "XG7-004": ["ブルー"],
+    "XG7-005": ["イエロー"],
+  };
+  if (gokaiFeatureMap[cardId]) {
+    const features = gokaiFeatureMap[cardId]!;
+    const selfName = cardName(nextState.definitions, cardId);
+    const player = nextState.players[rusherPlayerId];
+    const candidates = player.power.filter((c) => {
+      if (c.faceDown) return false;
+      if (cardName(nextState.definitions, c.cardId) === selfName) return false;
+      const def = getDefinition(nextState.definitions, c.cardId);
+      if (!def || def.type !== "unit" || def.size !== "S") return false;
+      if (resolveRushAdditionalCondition(c.cardId, def)) return false;
+      return features.some((f) => def.features?.includes(f));
+    });
+    if (candidates.length > 0) {
+      const target = candidates[0]!;
+      const gokaiInstance = player.rush.find((c) => c.instanceId === rushedInstanceId);
+      if (gokaiInstance) {
+        const newPower = player.power
+          .filter((c) => c.instanceId !== target.instanceId)
+          .concat({ ...gokaiInstance, faceDown: false });
+        const newRush = player.rush
+          .filter((c) => c.instanceId !== rushedInstanceId)
+          .concat(target);
+        nextState = {
+          ...nextState,
+          ...updatePlayer(nextState, rusherPlayerId, {
+            ...player,
+            power: newPower,
+            rush: newRush,
+          }),
+        };
+        logs.push(buildLogEntry(rusherPlayerId, "rush_effect", cardId, nextState.definitions, "gokai_swap"));
       }
     }
   }
