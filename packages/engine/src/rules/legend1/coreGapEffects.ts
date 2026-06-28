@@ -1,4 +1,4 @@
-import type { CardInstance, GameState, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PlayerId, ScopedModifier } from "../../types/game";
 import {
   cardName,
   getDefinition,
@@ -24,14 +24,18 @@ export const FLOWER_BOMB_RULE = "flower_bomb_power_cost";
 
 export type FlowerBombPayload = { declaredCost: number };
 
+function isFlowerBombModifier(
+  m: ScopedModifier,
+): m is Extract<ScopedModifier, { kind: "rule" }> {
+  return m.kind === "rule" && m.ruleId === FLOWER_BOMB_RULE && m.scope === "turn";
+}
+
 export function getFlowerBombDeclaredCost(
   state: Pick<GameState, "players">,
   effectOwnerId: PlayerId,
 ): number | null {
   const player = state.players[effectOwnerId];
-  const mod = player.modifiers?.find(
-    (m) => m.kind === "rule" && m.ruleId === FLOWER_BOMB_RULE && m.scope === "turn",
-  );
+  const mod = player.modifiers?.find(isFlowerBombModifier);
   const payload = mod?.payload as FlowerBombPayload | undefined;
   return typeof payload?.declaredCost === "number" ? payload.declaredCost : null;
 }
