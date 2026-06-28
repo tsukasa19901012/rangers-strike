@@ -29,3 +29,6 @@ atwiki 定義:
 > クロスギャザーからは同名カードでも特徴に2ndは付かず、この区分は事実上消滅している。
 
 confidence: HIGH
+
+
+confidence: HIGH

@@ -28,3 +28,6 @@ atwiki 定義:
 > MA関連
 
 confidence: HIGH
+
+
+confidence: HIGH

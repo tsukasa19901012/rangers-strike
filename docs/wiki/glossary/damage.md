@@ -29,3 +29,6 @@ atwiki 定義:
 > ダメージの枚数が手札を上回るプレイヤーは自分のスタートフェイズに１枚追加でドローすることが出来る。
 
 confidence: HIGH
+
+
+confidence: HIGH

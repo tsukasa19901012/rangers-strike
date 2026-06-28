@@ -1,6 +1,6 @@
 # Wiki 調査レポート
 
-更新日: 2026-06-09（XG1〜7・プロモ・用語集・メタルエディション追記）
+更新日: 2026-06-29（Firecrawl+direct 全件再取得・同期）
 
 ## 調査完了
 
@@ -9,7 +9,7 @@
 | 出典収集 | **atwiki 2022ページ** | カード1849 + 用語167 + ルール等 |
 | ルール抽出 | 完了 | |
 | 仕様化 | 更新 | カード md 1849件（atwiki セクション付き） |
-| カード同期 | 完了 | sync-cards-from-atwiki.mjs |
+| カード同期 | 完了 | sync-cards-from-atwiki.mjs（2026-06-29 再同期 1849件） |
 | 必要要素整理 | 完了 | state/action/event/timing 各 md |
 | 既存実装差分 | 更新 | 敵マルチ→パワー gap 追加 |
 | ファイル保存 | 完了 | sources/atwiki/ + scripts |

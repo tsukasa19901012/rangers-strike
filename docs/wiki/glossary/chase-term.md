@@ -38,3 +38,6 @@ atwiki 定義:
 > ビークル
 
 confidence: HIGH
+
+
+confidence: HIGH

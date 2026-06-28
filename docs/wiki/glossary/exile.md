@@ -29,3 +29,6 @@ atwiki 定義:
 > 主にWBのカードに除外関係の効果を持つものが多い。
 
 confidence: HIGH
+
+
+confidence: HIGH

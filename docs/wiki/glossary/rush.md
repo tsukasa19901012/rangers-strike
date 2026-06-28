@@ -40,3 +40,6 @@ atwiki 定義:
 > これはタイミングの問題で起きる現象である。詳しくは当該ページを参照。
 
 confidence: HIGH
+
+
+confidence: HIGH

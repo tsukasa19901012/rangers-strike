@@ -28,3 +28,6 @@ atwiki 定義:
 > Mユニットとは異なるサイズなので、当然Mユニットを対象にした効果は受けないがMユニットのカードとしてサーチもできない。
 
 confidence: HIGH
+
+
+confidence: HIGH

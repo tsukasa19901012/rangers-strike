@@ -1,6 +1,6 @@
 # atwiki 取得ソース
 
-更新日: 2026-06-09
+更新日: 2026-06-29
 
 ## アクセス規約（必須）
 
@@ -14,7 +14,16 @@
 ## 実行方法
 
 ```bash
-# 単一バッチ
+# 推奨: Firecrawl + direct fetch ハイブリッド（全マニフェスト一括）
+WORKERS=6 node docs/wiki/scripts/refresh-wiki-from-atwiki.mjs
+
+# Firecrawl のみ並列（API キー必須、レート制限時は上記を使用）
+WORKERS=4 docs/wiki/scripts/fetch-all-firecrawl-parallel.sh
+
+# 単一バッチ（Firecrawl）
+node docs/wiki/scripts/fetch-atwiki-firecrawl-batch.mjs manifest-batch{N}-....json
+
+# 単一バッチ（従来: direct fetch、レート制限あり）
 node docs/wiki/scripts/fetch-atwiki-batch.mjs manifest-batch{N}-....json
 
 # セット別一括（discover → stubs → manifest → fetch → sync）
@@ -36,7 +45,8 @@ docs/wiki/scripts/fetch-promo-batches.sh       # PR/PK
 | 方式 | 結果 |
 |------|------|
 | r.jina.ai 経由 | 451 SecurityCompromiseError — **使用禁止** |
-| Node direct fetch | **成功** — `User-Agent: rangers-strike-wiki-agent/1.0` |
+| Node direct fetch | 成功 — `User-Agent: rangers-strike-wiki-agent/1.0`（逐次・遅い） |
+| **Firecrawl scrape** | **推奨** — `.env` に `FIRECRAWL_API_KEY` を設定して `refresh-wiki-from-atwiki.mjs` |
 
 ## 収集状況（完了）
 

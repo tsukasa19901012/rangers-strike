@@ -37,3 +37,6 @@ atwiki 定義:
 > マルチカテゴリのカードをJPカードで捨てた場合、両方のカテゴリの効果を発動しなければならない。
 
 confidence: HIGH
+
+
+confidence: HIGH

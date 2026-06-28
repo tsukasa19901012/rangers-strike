@@ -1,0 +1,425 @@
+# 仮面ライダーディケイドCF (XP-005-RK) (page 1557)
+
+出典: https://w.atwiki.jp/renst/pages/1557.html
+カードID: XP-005-RK
+取得: 2026-06-28T15:46:48.025Z
+方式: direct fetch (firecrawl fallback)
+バッチ: manifest-batch106-pr-PM-001-XP-011-RS.json
+
+---
+
+wikibody" class="box">
+                仮面ライダーディケイドCF（コンプリートフォーム）（プロモーション）
+
+種類：Sユニット
+
+カテゴリ：オーバーテクノロジー
+
+BP：4000
+
+SP：1/4
+
+必要パワー：6+
+
+追加条件：特徴「ディケイドライバー」を持つ自軍ユニット1体をパワーゾーンに送る
+
+CN：なし
+
+特徴：仮面ライダー／男／ディケイドライバー
+
+テキスト：
+
+※これがユニットでなくなるとき、オモテ向きの自軍パワーから特徴「仮面ライダー」を持つカードを1枚選び捨札にすれば、その場に留まる。
+
+【全てを集めた先にあるもの】自軍ターン中、これがバトルエリアに出たとき、オモテ向きの自軍パワーから効果名「アタックライド」を持つカードを1枚選んでもよい。そうしたとき、選んだカードの「アタックライド」の効果を、このユニットの効果としてナンバーに関係なく発動する。
+
+フレーバーテキスト
+
+全てを破壊する者が、全てを繋ぎ身に宿す。その矛盾こそ世界の姿。
+
+イラストレーター：EGC WORKS
+
+レアリティ：プロモーションカード
+
+作品：仮面ライダーディケイド
+
+収録：2009年6月～8月 ストライク！で必ずゲット！！
+
+　　　　スペシャルプロモーションカードプレゼントキャンペーン　ストライク！コース
+
+カード評価
+
+- XG2に収録される仮面ライダーディケイドCFとは性能が異なる。こちらと同じ内容のディケイドCFがこれから先収録されるかどうかは不明。
+
+- XG2版がそのBPとテキストによりボードコントロールに優れるユニットであるのに対し、こちらはコントロール力のあるストライカーと言った側面が強い。ディケイド 電王SFのテキストでSP1でストライクしつつ、状況に応じてディケイド キバ等を使用する形が良く見受けられる。
+
+- 反面、BPはパワーに対してそこまで高くはなくDAやゾードアップユニットにはバトルで勝てないことが多い。除去耐性があるとは言え過信は禁物である。特にBPで勝り【全てを集めた先にあるもの】を封じる冥獣人ニンジャキリカゲが居ると除去耐性がある只の1/4ストライカーとなってしまいジリ貧になることも。
+
+関連カード
+
+- 仮面ライダーディケイドCF
+
+- 仮面ライダーディケイドCF（XG3）
+
+- 特徴「仮面ライダー」関連
+
+- 特徴「男」関連
+
+- 特徴「ディケイドライバー」関連
+
+（効果名「アタックライド」を持つユニット）
+
+- ディケイド クウガMF
+
+- ディケイド アギトGF
+
+- ディケイド 龍騎
+
+- ディケイド ファイズ
+
+- ディケイド ブレイド
+
+- ディケイド 響鬼
+
+- ディケイド カブトRF
+
+- ディケイド 電王SF
+
+- ディケイド キバ
+
+- ディケイド ファイズ（XG4）
+
+- ディケイド カブトRF（XG4）
+
+コメント
+
+        
+            
+
+        
+        
+            名前:        
+            
+        
+        
+
+        
+            コメント:        
+                            
+                    
+
+            
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+
+    
+        タグ：
+
+            
+
+        + タグ編集
+
+    
+        
+            
+                
+                    
+                        
+                            
+- タグ：
+                                                    
+                    
+
+                    
+                        
+                            
+                            
+                            
+                            
+                        
+                    
+
+                
+
+                
+                    キャンセル
+                    保存
+                
+
+                                
+
+                            
+
+        
+
+                
+            
+                タグの更新に失敗しました
+
+                
+                                        エラーが発生しました。ページを更新してください。
+                
+
+                
+                    ページを更新
+                
+
+            
+
+        
+
+    
+
+    
+
+    いいね！
+            
+
+    
+
+    「XP-005[RK] 仮面ライダーディケイドCF」をウィキ内検索
+
+最終更新：2018年06月25日 20:14
+
+            
+
+            
+                
+                
+            
+            
+                googletag.cmd.push(function() { googletag.display('div-gpt-ad-atwiki_300_250_left_bottom_ad'); });
+            
+            
+
+                
+
+                
+                
+            
+            
+                googletag.cmd.push(function() { googletag.display('div-gpt-ad-atwiki_300_250_right_bottom_ad'); });
+            
+            
+
+                
+
+            
+
+            
+                
+
+ツイート
+
+            
+
+              
+
+              
+
+        
+
+        
+            
+	
+	
+	 検索 : 
+	
+	
+	    
+    	
+
+メニュー
+
+- トップページ
+
+- レンストとは
+
+- 初心者指南
+
+- レンスト用語集
+
+- 作品別カード一覧
+
+- 能力別カード一覧
+
+- 対象別カード一覧
+
+- 特徴別カード一覧
+
+カードリスト
+
+- XG1 1stエンカウント
+
+- XG2 ドラゴンタイガー
+
+- XG3 Wインパクト
+
+- XG4 ジェットアクセル
+
+- XG5 チケットブレイカー
+
+- XG6 ギガンティックタイタン
+
+- XG7 ベストパートナー
+
+- 英雄の再誕
+
+- 二人の黒騎士
+
+- 三界の獅子
+
+- 四雄の覚醒
+
+- 五龍の激鱗
+
+- 紅き六戦士の帰還
+
+- 七忍の炎陣
+
+- 究極の八神
+
+- 蒼九の翼
+
+- ライダーEXP vol.1
+
+- ライダーEXP vol.2
+
+- ライダーEXP vol.3
+
+- ライダーEXP vol.4
+
+- メタルエディション
+
+- リバイヴァ
+
+- ベルトコレクション
+
+- プロモーションカード
+
+デッキ
+
+- デッキサンプル
+
+- スターター一覧
+
+運営・その他
+
+- イラストレーター一覧
+
+- 禁止カード一覧
+
+- 執筆・編集の案内
+
+- 修正依頼
+
+- 意見交換所
+
+- ルール質問所
+
+- リンク集
+
+本日： - 人
+
+昨日： - 人
+
+累計： - 人
+
+- プラグイン
+
+- @ウィキ ガイド
+
+- @wiki 便利ツール 
+
+- @wiki
+
+更新履歴
+
+取得中です。
+
+            
+            
+            
+                googletag.cmd.push(function() { googletag.display('div-gpt-ad-atwiki_160_600_side_bottom_ad'); });
+            
+            
+
+        
+
+    
+
+    
+        
+        | 新しいページ
+| 編集
+| 差分
+| 編集履歴
+| ページ名変更
+| アップロード
+| 検索
+| ページ一覧
+| タグ
+| RSS
+| ご利用ガイド
+| 管理者に問合せ
+|
+
+            |ログイン|
+
+    
+
+    
+            
+            
+                googletag.cmd.push(function() { googletag.display('div-gpt-ad-pc_overlay'); });
+            
+            
+
+    
+        
+    
+
+    
+        
+            
+                
+                    
+                    
+                
+                
+            
+
+            
+                
+
+            
+
+        
+
+    
+
+    
+        
+- このWikiのTOPへ
+        
+- 全ページ一覧
+        
+- アットウィキTOP
+        
+- 利用規約
+        
+- プライバシーポリシー
+    
+        2019 AtWiki, Inc.
+
+(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a12dd3a56ac9260d',t:'MTc4MjY2MTYxMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();

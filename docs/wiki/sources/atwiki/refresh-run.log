@@ -1,0 +1,218 @@
+=== refresh 106 manifests, workers=8 ===
+[start] manifest-batch2.json
+[start] manifest-batch3.json
+[start] manifest-batch4.json
+[start] manifest-batch5.json
+[start] manifest-batch6-l12-RS-001-RS-020.json
+[start] manifest-batch7-l12-RS-021-RS-040.json
+[start] manifest-batch8-l12-RS-041-RS-060.json
+[start] manifest-batch9-l12-RS-061-RS-080.json
+batch manifest-batch4.json done ok=17 fail=0
+[start] manifest-batch10-l12-RS-081-RS-100.json
+batch manifest-batch2.json done ok=20 fail=0
+[start] manifest-batch11-l12-RS-101-RS-120.json
+batch manifest-batch9-l12-RS-061-RS-080.json done ok=20 fail=0
+[start] manifest-batch12-l12-RS-121-RS-122.json
+batch manifest-batch5.json done ok=20 fail=0
+[start] manifest-batch13-l49-RS-179-RS-198.json
+batch manifest-batch3.json done ok=20 fail=0
+[start] manifest-batch14-l49-RS-199-RS-218.json
+batch manifest-batch8-l12-RS-041-RS-060.json done ok=20 fail=0
+batch manifest-batch6-l12-RS-001-RS-020.json done ok=20 fail=0
+[start] manifest-batch15-l49-RS-219-RS-238.json
+[start] manifest-batch16-l49-RS-239-RS-258.json
+batch manifest-batch7-l12-RS-021-RS-040.json done ok=20 fail=0
+[start] manifest-batch17-l49-RS-259-RS-278.json
+batch manifest-batch12-l12-RS-121-RS-122.json done ok=2 fail=0
+[start] manifest-batch18-l49-RS-279-RS-298.json
+batch manifest-batch10-l12-RS-081-RS-100.json done ok=20 fail=0
+[start] manifest-batch19-l49-RS-299-RS-318.json
+batch manifest-batch11-l12-RS-101-RS-120.json done ok=20 fail=0
+[start] manifest-batch20-l49-RS-319-RS-338.json
+batch manifest-batch16-l49-RS-239-RS-258.json done ok=20 fail=0
+[start] manifest-batch21-l49-RS-339-RS-358.json
+batch manifest-batch15-l49-RS-219-RS-238.json done ok=20 fail=0
+[start] manifest-batch22-l49-RS-359-RS-378.json
+batch manifest-batch13-l49-RS-179-RS-198.json done ok=20 fail=0
+[start] manifest-batch23-l49-RS-379-RS-398.json
+batch manifest-batch14-l49-RS-199-RS-218.json done ok=20 fail=0
+[start] manifest-batch24-l49-RS-399-RS-418.json
+batch manifest-batch17-l49-RS-259-RS-278.json done ok=20 fail=0
+[start] manifest-batch25-l49-RS-419-RS-438.json
+batch manifest-batch18-l49-RS-279-RS-298.json done ok=20 fail=0
+[start] manifest-batch26-l49-RS-439-RS-458.json
+batch manifest-batch19-l49-RS-299-RS-318.json done ok=20 fail=0
+[start] manifest-batch27-l49-RS-459-RS-478.json
+batch manifest-batch20-l49-RS-319-RS-338.json done ok=20 fail=0
+[start] manifest-batch28-l49-RS-479-RS-498.json
+batch manifest-batch22-l49-RS-359-RS-378.json done ok=20 fail=0
+[start] manifest-batch29-l49-RS-499-RS-518.json
+batch manifest-batch23-l49-RS-379-RS-398.json done ok=20 fail=0
+[start] manifest-batch30-l49-RS-519-RS-538.json
+batch manifest-batch25-l49-RS-419-RS-438.json done ok=20 fail=0
+[start] manifest-batch31-l49-RS-539-RS-558.json
+batch manifest-batch24-l49-RS-399-RS-418.json done ok=20 fail=0
+[start] manifest-batch32-l49-RS-559-RS-578.json
+batch manifest-batch21-l49-RS-339-RS-358.json done ok=20 fail=0
+[start] manifest-batch33-l49-RS-579-RS-598.json
+batch manifest-batch26-l49-RS-439-RS-458.json done ok=20 fail=0
+[start] manifest-batch34-l49-RS-599-RS-618.json
+batch manifest-batch27-l49-RS-459-RS-478.json done ok=20 fail=0
+[start] manifest-batch35-l49-RS-619-RS-638.json
+batch manifest-batch28-l49-RS-479-RS-498.json done ok=20 fail=0
+[start] manifest-batch36-l49-RS-639-RS-658.json
+batch manifest-batch31-l49-RS-539-RS-558.json done ok=20 fail=0
+[start] manifest-batch37-l49-RS-659-RS-678.json
+batch manifest-batch29-l49-RS-499-RS-518.json done ok=20 fail=0
+[start] manifest-batch38-l49-RS-679-RS-690.json
+batch manifest-batch30-l49-RS-519-RS-538.json done ok=20 fail=0
+[start] manifest-batch39-rb-BK-001-RK-002.json
+batch manifest-batch32-l49-RS-559-RS-578.json done ok=20 fail=0
+[start] manifest-batch40-rb-RK-003-RK-022.json
+batch manifest-batch33-l49-RS-579-RS-598.json done ok=20 fail=0
+[start] manifest-batch41-rb-RK-023-RK-042.json
+batch manifest-batch34-l49-RS-599-RS-618.json done ok=20 fail=0
+[start] manifest-batch42-rb-RK-043-RK-062.json
+batch manifest-batch38-l49-RS-679-RS-690.json done ok=12 fail=0
+[start] manifest-batch43-rb-RK-063-RK-081.json
+batch manifest-batch35-l49-RS-619-RS-638.json done ok=20 fail=0
+[start] manifest-batch44-rb-RK-082-RK-101.json
+batch manifest-batch36-l49-RS-639-RS-658.json done ok=20 fail=0
+[start] manifest-batch45-rb-RK-102-RK-121.json
+batch manifest-batch37-l49-RS-659-RS-678.json done ok=20 fail=0
+[start] manifest-batch46-rb-RK-122-RK-141.json
+batch manifest-batch39-rb-BK-001-RK-002.json done ok=20 fail=0
+[start] manifest-batch47-rb-RK-142-RK-161.json
+batch manifest-batch40-rb-RK-003-RK-022.json done ok=20 fail=0
+[start] manifest-batch48-rb-RK-162-RK-179.json
+batch manifest-batch41-rb-RK-023-RK-042.json done ok=20 fail=0
+[start] manifest-batch49-rb-RK-180-RK-199.json
+batch manifest-batch42-rb-RK-043-RK-062.json done ok=20 fail=0
+[start] manifest-batch50-rb-RK-200-RK-219.json
+batch manifest-batch43-rb-RK-063-RK-081.json done ok=20 fail=0
+[start] manifest-batch51-rb-RK-220-RK-239.json
+batch manifest-batch44-rb-RK-082-RK-101.json done ok=20 fail=0
+[start] manifest-batch52-rb-RK-240-RK-258.json
+batch manifest-batch45-rb-RK-102-RK-121.json done ok=20 fail=0
+[start] manifest-batch53-rb-RK-259-RK-278.json
+batch manifest-batch46-rb-RK-122-RK-141.json done ok=20 fail=0
+[start] manifest-batch54-rb-RK-279-RK-298.json
+batch manifest-batch47-rb-RK-142-RK-161.json done ok=20 fail=0
+[start] manifest-batch55-rb-RK-299-RK-318.json
+batch manifest-batch49-rb-RK-180-RK-199.json done ok=20 fail=0
+[start] manifest-batch56-rb-RK-319-SK-004.json
+batch manifest-batch48-rb-RK-162-RK-179.json done ok=20 fail=0
+[start] manifest-batch57-sr-SR-002-SR-008.json
+batch manifest-batch50-rb-RK-200-RK-219.json done ok=20 fail=0
+[start] manifest-batch58-sk-SK-000-SK-000.json
+batch manifest-batch51-rb-RK-220-RK-239.json done ok=20 fail=0
+[start] manifest-batch59-me-RM-001-RM-020.json
+batch manifest-batch57-sr-SR-002-SR-008.json done ok=7 fail=0
+[start] manifest-batch60-me-RM-021-RM-040.json
+batch manifest-batch58-sk-SK-000-SK-000.json done ok=1 fail=0
+[start] manifest-batch61-me-RM-041-RM-060.json
+batch manifest-batch52-rb-RK-240-RK-258.json done ok=20 fail=0
+[start] manifest-batch62-me-RM-061-SM-001.json
+batch manifest-batch53-rb-RK-259-RK-278.json done ok=20 fail=0
+[start] manifest-batch63-gl-2nd-p1512.json
+batch manifest-batch55-rb-RK-299-RK-318.json done ok=20 fail=0
+[start] manifest-batch64-gl-p129-p266.json
+batch manifest-batch54-rb-RK-279-RK-298.json done ok=20 fail=0
+[start] manifest-batch65-gl-p1849-p123.json
+batch manifest-batch56-rb-RK-319-SK-004.json done ok=18 fail=0
+[start] manifest-batch66-gl-p590-p102.json
+batch manifest-batch62-me-RM-061-SM-001.json done ok=3 fail=0
+[start] manifest-batch67-gl-p733-p136.json
+batch manifest-batch59-me-RM-001-RM-020.json done ok=20 fail=0
+[start] manifest-batch68-gl-p124-p591.json
+batch manifest-batch60-me-RM-021-RM-040.json done ok=20 fail=0
+[start] manifest-batch69-gl-p2460-p1864.json
+batch manifest-batch61-me-RM-041-RM-060.json done ok=20 fail=0
+[start] manifest-batch70-xg-SX-001-XG1-019.json
+batch manifest-batch63-gl-2nd-p1512.json done ok=20 fail=0
+[start] manifest-batch71-xg-XG1-020-XG1-039.json
+batch manifest-batch64-gl-p129-p266.json done ok=20 fail=0
+[start] manifest-batch72-xg-XG1-040-XG1-059.json
+batch manifest-batch65-gl-p1849-p123.json done ok=20 fail=0
+[start] manifest-batch73-xg-XG1-060-XG1-079.json
+batch manifest-batch67-gl-p733-p136.json done ok=20 fail=0
+[start] manifest-batch74-xg-XG1-080-XG1-099.json
+batch manifest-batch66-gl-p590-p102.json done ok=20 fail=0
+[start] manifest-batch75-xg-XG1-100-XG2-018.json
+batch manifest-batch69-gl-p2460-p1864.json done ok=13 fail=0
+[start] manifest-batch76-xg-XG2-019-XG2-038.json
+batch manifest-batch68-gl-p124-p591.json done ok=20 fail=0
+[start] manifest-batch77-xg-XG2-039-XG2-058.json
+batch manifest-batch70-xg-SX-001-XG1-019.json done ok=20 fail=0
+[start] manifest-batch78-xg-XG2-059-XG2-078.json
+batch manifest-batch71-xg-XG1-020-XG1-039.json done ok=20 fail=0
+[start] manifest-batch79-xg-XG2-079-XG2-098.json
+batch manifest-batch72-xg-XG1-040-XG1-059.json done ok=20 fail=0
+[start] manifest-batch80-xg-XG2-099-XG3-014.json
+batch manifest-batch73-xg-XG1-060-XG1-079.json done ok=20 fail=0
+[start] manifest-batch81-xg-XG3-015-XG3-034.json
+batch manifest-batch74-xg-XG1-080-XG1-099.json done ok=20 fail=0
+[start] manifest-batch82-xg-XG3-035-XG3-054.json
+batch manifest-batch75-xg-XG1-100-XG2-018.json done ok=20 fail=0
+[start] manifest-batch83-xg-XG3-055-XG3-074.json
+batch manifest-batch76-xg-XG2-019-XG2-038.json done ok=20 fail=0
+[start] manifest-batch84-xg-XG3-075-XG3-094.json
+batch manifest-batch78-xg-XG2-059-XG2-078.json done ok=20 fail=0
+[start] manifest-batch85-xg-XG3-095-XG4-009.json
+batch manifest-batch77-xg-XG2-039-XG2-058.json done ok=20 fail=0
+[start] manifest-batch86-xg-XG4-010-XG4-029.json
+batch manifest-batch79-xg-XG2-079-XG2-098.json done ok=20 fail=0
+[start] manifest-batch87-xg-XG4-030-XG4-049.json
+batch manifest-batch81-xg-XG3-015-XG3-034.json done ok=20 fail=0
+[start] manifest-batch88-xg-XG4-050-XG4-069.json
+batch manifest-batch82-xg-XG3-035-XG3-054.json done ok=20 fail=0
+[start] manifest-batch89-xg-XG4-070-XG4-089.json
+batch manifest-batch80-xg-XG2-099-XG3-014.json done ok=20 fail=0
+[start] manifest-batch90-xg-XG4-090-XG5-004.json
+batch manifest-batch83-xg-XG3-055-XG3-074.json done ok=20 fail=0
+[start] manifest-batch91-xg-XG5-005-XG5-024.json
+batch manifest-batch84-xg-XG3-075-XG3-094.json done ok=20 fail=0
+[start] manifest-batch92-xg-XG5-025-XG5-044.json
+batch manifest-batch85-xg-XG3-095-XG4-009.json done ok=20 fail=0
+[start] manifest-batch93-xg-XG5-045-XG5-064.json
+batch manifest-batch87-xg-XG4-030-XG4-049.json done ok=20 fail=0
+[start] manifest-batch94-xg-XG5-065-XG5-084.json
+batch manifest-batch86-xg-XG4-010-XG4-029.json done ok=20 fail=0
+[start] manifest-batch95-xg-XG5-085-XG6-006.json
+batch manifest-batch89-xg-XG4-070-XG4-089.json done ok=20 fail=0
+[start] manifest-batch96-xg-XG6-007-XG6-026.json
+batch manifest-batch88-xg-XG4-050-XG4-069.json done ok=20 fail=0
+[start] manifest-batch97-xg-XG6-027-XG6-046.json
+batch manifest-batch90-xg-XG4-090-XG5-004.json done ok=20 fail=0
+[start] manifest-batch98-xg-XG6-047-SX-009.json
+batch manifest-batch91-xg-XG5-005-XG5-024.json done ok=20 fail=0
+[start] manifest-batch99-xg-SX-010-XG7-019.json
+batch manifest-batch92-xg-XG5-025-XG5-044.json done ok=20 fail=0
+[start] manifest-batch100-xg-XG7-020-XG7-039.json
+batch manifest-batch93-xg-XG5-045-XG5-064.json done ok=20 fail=0
+[start] manifest-batch101-xg-XG7-040-XG7-059.json
+batch manifest-batch95-xg-XG5-085-XG6-006.json done ok=20 fail=0
+[start] manifest-batch102-xg-XG7-060-XG7-068.json
+batch manifest-batch94-xg-XG5-065-XG5-084.json done ok=20 fail=0
+[start] manifest-batch103-pr-PK-001-PR-006.json
+batch manifest-batch96-xg-XG6-007-XG6-026.json done ok=20 fail=0
+[start] manifest-batch104-pr-PR-007-PR-026.json
+batch manifest-batch97-xg-XG6-027-XG6-046.json done ok=20 fail=0
+[start] manifest-batch105-pr-PR-027-PR-027.json
+batch manifest-batch102-xg-XG7-060-XG7-068.json done ok=9 fail=0
+[start] manifest-batch106-pr-PM-001-XP-011-RS.json
+batch manifest-batch98-xg-XG6-047-SX-009.json done ok=20 fail=0
+[start] manifest-batch107-pr-XP-012-RS-XP-032-RS.json
+batch manifest-batch105-pr-PR-027-PR-027.json done ok=1 fail=0
+batch manifest-batch99-xg-SX-010-XG7-019.json done ok=20 fail=0
+batch manifest-batch100-xg-XG7-020-XG7-039.json done ok=20 fail=0
+batch manifest-batch101-xg-XG7-040-XG7-059.json done ok=20 fail=0
+batch manifest-batch103-pr-PK-001-PR-006.json done ok=20 fail=0
+batch manifest-batch106-pr-PM-001-XP-011-RS.json done ok=20 fail=0
+batch manifest-batch104-pr-PR-007-PR-026.json done ok=20 fail=0
+batch manifest-batch107-pr-XP-012-RS-XP-032-RS.json done ok=19 fail=0
+=== batches done failed=0/106 ===
+=== sync cards + glossary ===
+updated 1849 card specs from atwiki sources
+updated 167 glossary entries from atwiki sources
+=== wiki refresh complete ===

@@ -25,3 +25,6 @@ atwiki 定義:
 > Combination Number の略。
 
 confidence: HIGH
+
+
+confidence: HIGH

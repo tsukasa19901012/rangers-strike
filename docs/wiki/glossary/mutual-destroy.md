@@ -28,3 +28,6 @@ atwiki 定義:
 > 無論片方がレジストを持っていた場合は、発動することで（撃破はされるが）そちらだけ生き残ることができる。
 
 confidence: HIGH
+
+
+confidence: HIGH

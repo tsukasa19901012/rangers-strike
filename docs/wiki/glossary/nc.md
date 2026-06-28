@@ -26,3 +26,6 @@ atwiki 定義:
 > 詳細「ナンバーコンビネーション」の項参照。
 
 confidence: HIGH
+
+
+confidence: HIGH

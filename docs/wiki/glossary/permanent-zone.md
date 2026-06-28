@@ -28,3 +28,6 @@ atwiki 定義:
 > どちらかがタッグを持つ場合、常駐オペレーション自体を2枚まで配置することができる。
 
 confidence: HIGH
+
+
+confidence: HIGH

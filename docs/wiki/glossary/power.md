@@ -28,3 +28,6 @@ atwiki 定義:
 > カードの裏表は関係ない。
 
 confidence: HIGH
+
+
+confidence: HIGH

@@ -30,3 +30,6 @@ atwiki 定義:
 > 作中で空を飛ぶキャラクターや飛行する動物に関する能力・モチーフを持つキャラクターのユニットが持つことが多い。
 
 confidence: HIGH
+
+
+confidence: HIGH

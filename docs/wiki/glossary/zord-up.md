@@ -26,3 +26,6 @@ atwiki 定義:
 > 僅かだがビークルにもゾードアップが必要なものがある。
 
 confidence: HIGH
+
+
+confidence: HIGH

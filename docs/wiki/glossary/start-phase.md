@@ -36,3 +36,6 @@ atwiki 定義:
 > チャージフェイズ
 
 confidence: HIGH
+
+
+confidence: HIGH

@@ -25,3 +25,6 @@ atwiki 定義:
 > パワーの低いユニットを多数組み込み序盤～中盤の展開力の速さで勝負するデッキタイプや戦術のこと。
 
 confidence: HIGH
+
+
+confidence: HIGH

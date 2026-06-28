@@ -9,6 +9,7 @@ dist/
 .DS_Store
 .vercel
 .wiki-*.html
+.firecrawl/
 
 # Accidental tsc output under packages/cards/src (outDir is dist/)
 packages/cards/src/**/*.js

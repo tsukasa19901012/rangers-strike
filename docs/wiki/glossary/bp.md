@@ -36,3 +36,6 @@ atwiki 定義:
 > 「～になる」効果が複数適用される場合はタイミングにかかわらず、より低い値になる方が適用される。
 
 confidence: HIGH
+
+
+confidence: HIGH

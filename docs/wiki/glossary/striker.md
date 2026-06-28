@@ -27,3 +27,6 @@ atwiki 定義:
 > レンジャーズストライクを行う人達のこと。
 
 confidence: HIGH
+
+
+confidence: HIGH

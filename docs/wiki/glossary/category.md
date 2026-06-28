@@ -30,3 +30,6 @@ atwiki 定義:
 > カテゴリを追加する効果関連
 
 confidence: HIGH
+
+
+confidence: HIGH

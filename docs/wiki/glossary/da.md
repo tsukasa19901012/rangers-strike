@@ -28,3 +28,6 @@ atwiki 定義:
 > DA関連
 
 confidence: HIGH
+
+
+confidence: HIGH

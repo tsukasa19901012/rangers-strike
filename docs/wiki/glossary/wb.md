@@ -32,3 +32,6 @@ atwiki 定義:
 > WBカテゴリを持つXLユニット
 
 confidence: HIGH
+
+
+confidence: HIGH
