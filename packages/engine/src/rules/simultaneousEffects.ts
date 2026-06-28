@@ -29,7 +29,8 @@ function simultaneousChoosingPlayer(state: GameState): PlayerId | undefined {
 export function ensureSimultaneousReactionGroup(state: GameState): GameState {
   const frameIds = listSimultaneousReactionFrameIds(state);
   if (frameIds.length < 2) {
-    if (!state.activeSimultaneousGroupId) return state;
+    const hasStaleState = !!state.activeSimultaneousGroupId || !!state.reactionResolutionOrder;
+    if (!hasStaleState) return state;
     return {
       ...state,
       activeSimultaneousGroupId: undefined,
@@ -37,6 +38,13 @@ export function ensureSimultaneousReactionGroup(state: GameState): GameState {
     };
   }
   if (state.activeSimultaneousGroupId) return state;
+  // Player already chose the resolution order for these frames — don't re-ask
+  if (
+    state.reactionResolutionOrder &&
+    frameIds.every((id) => state.reactionResolutionOrder!.includes(id))
+  ) {
+    return state;
+  }
   return { ...state, activeSimultaneousGroupId: newSimultaneousGroupId() };
 }
 

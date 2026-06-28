@@ -84,7 +84,7 @@ import {
   collectFiveTechInterceptors,
 } from "../rules/strikeReactions";
 import { getValidDamagePowerTargets, damagePaymentChoosingPlayer } from "../rules/damagePayment";
-import { getStackActorPlayerId, hasOpenReactionWindow } from "../rules/effectStack";
+import { getStackActorPlayerId, hasOpenReactionWindow, peekEffectStackTop } from "../rules/effectStack";
 import { getCardEffect } from "@rangers-strike/cards";
 import { isHidoraEggUsed } from "../rules/turnModifiers";
 import { listValidChaseVehicleIds } from "../keywords/chase";
@@ -1115,6 +1115,37 @@ export function getLegalActions(state: GameState): GameAction[] {
     return actions;
   }
 
+  // Damage payment takes absolute priority over pending reaction windows.
+  // When pendingDamagePayment is active alongside pendingLeave/Strike/etc.,
+  // the damage must be resolved before any reactions can proceed.
+  if (state.pendingDamagePayment) {
+    appendDamagePaymentActions(state, playerId, actions);
+    return actions;
+  }
+
+  // When pendingLeave and another simultaneous reaction frame are both open (without
+  // damage payment), consult the effect stack (which respects reactionResolutionOrder)
+  // to determine which frame to act on first.
+  if (
+    state.pendingLeave &&
+    (state.pendingStrike || state.pendingBattle || state.pendingRush)
+  ) {
+    const topFrameId = peekEffectStackTop(state)?.id;
+    if (topFrameId === "pendingStrike" && state.pendingStrike) {
+      appendStrikeReactionActions(state, opponent(state.pendingStrike.strikerPlayerId), actions);
+      return actions;
+    }
+    if (topFrameId === "pendingBattle" && state.pendingBattle) {
+      appendBattleReactionActions(state, state.pendingBattle.defenderPlayerId, actions);
+      return actions;
+    }
+    if (topFrameId === "pendingRush" && state.pendingRush) {
+      appendRushReactionActions(state, opponent(state.pendingRush.rusherPlayerId), actions);
+      return actions;
+    }
+    // topFrameId === "pendingLeave" or no order set — fall through to pendingLeave below
+  }
+
   if (state.pendingLeave) {
     appendLeaveReactionActions(state, state.pendingLeave.ownerPlayerId, actions);
     return actions;
@@ -1127,11 +1158,6 @@ export function getLegalActions(state: GameState): GameAction[] {
       );
       actions.push({ type: "cancel_zord_setup", playerId });
     }
-    return actions;
-  }
-
-  if (state.pendingDamagePayment) {
-    appendDamagePaymentActions(state, playerId, actions);
     return actions;
   }
 
