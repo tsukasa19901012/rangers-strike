@@ -53,6 +53,7 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "last_battle_protect_other_s",
   "substitute_on_wb_destroy",
   "win_but_destroyed_vs_sp1",
+  "destroy_on_win_vs_sp1",
   "no_battle_entry_turn_rushed",
   "morph",
   "resident",

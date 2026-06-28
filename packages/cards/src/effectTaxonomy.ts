@@ -108,6 +108,8 @@ export type UnnamedUnitRule =
   | "deck_copy_unlimited"
   | "needs_ally_s_in_battle"
   | "win_but_destroyed_vs_sp1"
+  /** 敵ターン中 SP1 以上相手へ勝利しても自身は破壊（pipeline 生成カード）。 */
+  | "destroy_on_win_vs_sp1"
   | "return_to_hand_at_6_damage"
   | "no_battle_entry_turn_rushed"
   | "no_attack_turn_rushed"
@@ -121,6 +123,8 @@ export type UnnamedUnitRule =
   | "rush_power_to_discard"
   /** 自分のターン中はバトル投入不可（RS-170）。 */
   | "cannot_enter_battle_own_turn"
+  /** 自軍ターン中バトルエリアに出られない（pipeline 生成カード）。 */
+  | "no_enter_battle_own_turn"
   /** バトル投入: 先に自軍ラッシュから S ユニットを捨札（RS-132）。 */
   | "battle_entry_discard_s_from_rush"
   /** 敵ラッシュゾーンの S ユニットをアタック可能（RS-154）。 */

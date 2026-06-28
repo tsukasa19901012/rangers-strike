@@ -497,6 +497,7 @@ const UNNAMED_KEYWORD_BUILDERS: Record<
   auto_battle_entry_each_turn: () => [kw("auto_battle_entry_each_turn", "permanent")],
   fusion_material_alias: () => [kw("fusion_material_alias", "permanent")],
   win_but_destroyed_vs_sp1: () => [kw("win_but_destroyed_vs_sp1", "permanent")],
+  destroy_on_win_vs_sp1: () => [kw("destroy_on_win_vs_sp1", "permanent")],
   no_battle_entry_turn_rushed: () => [kw("no_battle_entry_turn_rushed", "permanent")],
 };
 

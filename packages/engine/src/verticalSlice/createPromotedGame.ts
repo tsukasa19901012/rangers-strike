@@ -155,8 +155,13 @@ export type CreateHybridPromotedGameOptions = Omit<
   CreateGameOptions,
   "player1Deck" | "player2Deck"
 > &
-  Omit<CreateStarterGameOptions, "player1Deck" | "player2Deck"> & {
+  Omit<
+    CreateStarterGameOptions,
+    "player1Deck" | "player2Deck" | "player1Starter" | "player2Starter"
+  > & {
     swapCount?: number;
+    player1Starter?: Legend1StarterId;
+    player2Starter?: Legend1StarterId;
     player1Deck?: CardDefinition[];
     player2Deck?: CardDefinition[];
   };
