@@ -73,6 +73,8 @@ import {
   canInitiateCounterCategoryPayment,
   canPlayDinoGutsLeaveCounter,
   canPlayHandCounter,
+  canPlayMagLoadLeaveCounter,
+  canPlaySageAelLeaveCounter,
   collectHiddenNinjaSubstitutes,
   getCounterEffectId,
   hasPlayableDinoChronicleCounter,
@@ -315,6 +317,30 @@ function appendLeaveReactionActions(
           pending.leavingCardId,
           card.instanceId,
           { requireEnemyTurn: false },
+        )
+      ) {
+        continue;
+      }
+    } else if (effectId === "sage_ael") {
+      if (
+        !canPlaySageAelLeaveCounter(
+          state,
+          pending.ownerPlayerId,
+          pending.leavingCardId,
+          pending.fromZone,
+          card.instanceId,
+        )
+      ) {
+        continue;
+      }
+    } else if (effectId === "mag_load") {
+      if (
+        !canPlayMagLoadLeaveCounter(
+          state,
+          pending.ownerPlayerId,
+          pending.leavingCardId,
+          pending.fromZone,
+          card.instanceId,
         )
       ) {
         continue;

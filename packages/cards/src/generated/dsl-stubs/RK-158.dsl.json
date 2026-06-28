@@ -15,23 +15,15 @@
   "features": [
     "イマジン"
   ],
-  "effects": [
+  "unnamedRules": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "kind": "note",
       "text": "※これは自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない。",
-      "trigger": {
-        "type": "nc"
-      },
-      "effects": [
-        {
-          "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
-          "duration": "turn"
-        }
-      ],
-      "optional": false
+      "rule": "battle_entry_discard_from_hand",
+      "discardCount": 2
     }
   ],
+  "effects": [],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

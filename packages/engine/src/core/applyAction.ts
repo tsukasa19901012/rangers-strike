@@ -171,7 +171,9 @@ import {
   applyDinoChronicleCounter,
   applyDinoGutsCounter,
   applyHiddenNinjaCounter,
+  applyMagLoadCounter,
   applyNewGymnasticsCounter,
+  applySageAelCounter,
   applyShippuNinjaCounter,
   applySuperShieldSubstitute,
   canExecuteHandCounter,
@@ -1449,6 +1451,16 @@ export function applyAction(
               resumedStrike,
             );
           }
+          return ok(clearCounterHoldReady(nextState, playerId), result.log);
+        }
+        if (effectId === "sage_ael") {
+          const result = applySageAelCounter(state, playerId, action.instanceId, pending);
+          const nextState = finalizeLeaveReaction(result.state, pending, result.prevented);
+          return ok(clearCounterHoldReady(nextState, playerId), result.log);
+        }
+        if (effectId === "mag_load") {
+          const result = applyMagLoadCounter(state, playerId, action.instanceId, pending);
+          const nextState = finalizeLeaveReaction(result.state, pending, result.prevented);
           return ok(clearCounterHoldReady(nextState, playerId), result.log);
         }
         return fail("invalid_counter");

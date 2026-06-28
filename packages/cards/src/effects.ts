@@ -87,10 +87,17 @@ export const LEGEND3_EFFECTS: Record<string, CardEffectMeta> = {
   "RS-125": op("animal_heart", "instant", "RS-125", "enemy_field_unit"),
 };
 
+/** XG エクスパンション オペレーションカード効果。 */
+export const XG_EFFECTS: Record<string, CardEffectMeta> = {
+  "XG3-055": { effectId: "sage_ael", text: "", kind: "counter" },
+  "XG5-083": { effectId: "mag_load", text: "", kind: "counter" },
+};
+
 const ALL_EFFECTS: Record<string, CardEffectMeta> = {
   ...LEGEND1_EFFECTS,
   ...LEGEND2_EFFECTS,
   ...LEGEND3_EFFECTS,
+  ...XG_EFFECTS,
 };
 
 function operationKindFromTiming(timing: OperationTiming): EffectKind {

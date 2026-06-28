@@ -412,6 +412,122 @@ export function hasLeaveCounterReactions(
   return hasDinoChronicleLeaveReaction(state, ownerId, leavingCardId);
 }
 
+/** XG3-055 (セイガエル): own S-unit with BP≤3000 destroyed in battle → return to hand. */
+export function canPlaySageAelLeaveCounter(
+  state: GameState,
+  ownerId: PlayerId,
+  leavingCardId: string,
+  fromZone: "rush" | "battle",
+  counterInstanceId: string,
+): boolean {
+  if (fromZone !== "battle") return false;
+  if (!isSmallUnit(state.definitions, leavingCardId)) return false;
+  const found = findInZone(state.players[ownerId], "hand", counterInstanceId);
+  if (!found || found.card.cardId !== "XG3-055") return false;
+  if (!canPlayHandCounter(state, ownerId, counterInstanceId)) return false;
+  const leavingDef = getDefinition(state.definitions, leavingCardId);
+  const rawBp = typeof leavingDef?.bp === "number" ? leavingDef.bp : 0;
+  return rawBp <= 3000;
+}
+
+export function hasSageAelLeaveReaction(
+  state: GameState,
+  ownerId: PlayerId,
+  leavingCardId: string,
+  fromZone: "rush" | "battle",
+): boolean {
+  const owner = state.players[ownerId];
+  for (const card of owner.hand) {
+    if (card.cardId !== "XG3-055") continue;
+    if (canPlaySageAelLeaveCounter(state, ownerId, leavingCardId, fromZone, card.instanceId)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function applySageAelCounter(
+  state: GameState,
+  playerId: PlayerId,
+  counterInstanceId: string,
+  pending: PendingLeave,
+): { state: GameState; log: string; prevented: boolean } {
+  const discarded = discardHandCounter(state, playerId, counterInstanceId);
+  if (!discarded) {
+    return { state, log: buildLogEntry(playerId, "play_counter", "XG3-055", state.definitions, "failed"), prevented: false };
+  }
+  let nextState = discarded.state;
+  const player = nextState.players[pending.ownerPlayerId];
+  const found = findInZone(player, pending.fromZone, pending.instanceId);
+  if (!found) {
+    return { state: nextState, log: buildLogEntry(playerId, "play_counter", "XG3-055", nextState.definitions, "failed"), prevented: false };
+  }
+  const [, zone] = removeAt(player[pending.fromZone], found.index);
+  const nextPlayer = {
+    ...player,
+    [pending.fromZone]: zone,
+    hand: [...player.hand, found.card],
+  };
+  nextState = { ...nextState, ...updatePlayer(nextState, pending.ownerPlayerId, nextPlayer) };
+  return { state: nextState, log: buildLogEntry(playerId, "play_counter", "XG3-055", nextState.definitions, "sage_ael"), prevented: true };
+}
+
+/** XG5-083 (マグロード): own S-unit destroyed in battle → put in command held (or hand). */
+export function canPlayMagLoadLeaveCounter(
+  state: GameState,
+  ownerId: PlayerId,
+  leavingCardId: string,
+  fromZone: "rush" | "battle",
+  counterInstanceId: string,
+): boolean {
+  if (fromZone !== "battle") return false;
+  if (!isSmallUnit(state.definitions, leavingCardId)) return false;
+  const found = findInZone(state.players[ownerId], "hand", counterInstanceId);
+  if (!found || found.card.cardId !== "XG5-083") return false;
+  return canPlayHandCounter(state, ownerId, counterInstanceId);
+}
+
+export function hasMagLoadLeaveReaction(
+  state: GameState,
+  ownerId: PlayerId,
+  leavingCardId: string,
+  fromZone: "rush" | "battle",
+): boolean {
+  const owner = state.players[ownerId];
+  for (const card of owner.hand) {
+    if (card.cardId !== "XG5-083") continue;
+    if (canPlayMagLoadLeaveCounter(state, ownerId, leavingCardId, fromZone, card.instanceId)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function applyMagLoadCounter(
+  state: GameState,
+  playerId: PlayerId,
+  counterInstanceId: string,
+  pending: PendingLeave,
+): { state: GameState; log: string; prevented: boolean } {
+  const discarded = discardHandCounter(state, playerId, counterInstanceId);
+  if (!discarded) {
+    return { state, log: buildLogEntry(playerId, "play_counter", "XG5-083", state.definitions, "failed"), prevented: false };
+  }
+  let nextState = discarded.state;
+  const player = nextState.players[pending.ownerPlayerId];
+  const found = findInZone(player, pending.fromZone, pending.instanceId);
+  if (!found) {
+    return { state: nextState, log: buildLogEntry(playerId, "play_counter", "XG5-083", nextState.definitions, "failed"), prevented: false };
+  }
+  const [, zone] = removeAt(player[pending.fromZone], found.index);
+  const canAddToCommand = player.command.length < COMMAND_ZONE_MAX;
+  const nextPlayer = canAddToCommand
+    ? { ...player, [pending.fromZone]: zone, command: [...player.command, { ...found.card, commandHeld: true }] }
+    : { ...player, [pending.fromZone]: zone, hand: [...player.hand, found.card] };
+  nextState = { ...nextState, ...updatePlayer(nextState, pending.ownerPlayerId, nextPlayer) };
+  return { state: nextState, log: buildLogEntry(playerId, "play_counter", "XG5-083", nextState.definitions, "mag_load"), prevented: true };
+}
+
 export function collectHiddenNinjaSubstitutes(
   state: GameState,
   excludeInstanceIds: string[],
@@ -1018,8 +1134,20 @@ export function tryLeaveField(
     intent.ownerPlayerId,
     intent.leavingCardId,
   );
+  const sageAel = intent.toZone === "discard" && hasSageAelLeaveReaction(
+    state,
+    intent.ownerPlayerId,
+    intent.leavingCardId,
+    intent.fromZone,
+  );
+  const magLoad = intent.toZone === "discard" && hasMagLoadLeaveReaction(
+    state,
+    intent.ownerPlayerId,
+    intent.leavingCardId,
+    intent.fromZone,
+  );
 
-  if (!dinoChronicle && !dinoGuts && !superShieldInstanceId) {
+  if (!dinoChronicle && !dinoGuts && !superShieldInstanceId && !sageAel && !magLoad) {
     const owner = state.players[intent.ownerPlayerId];
     const found = findInZone(owner, intent.fromZone, intent.instanceId);
 
