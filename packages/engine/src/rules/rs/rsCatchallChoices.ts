@@ -114,7 +114,7 @@ export function startGenericEnemyUnitChoice(
   state: GameState,
   params: BaseChoiceParams & {
     filter?: EnemyUnitFilter;
-    destination: "power" | "discard" | "hand" | "rush";
+    destination: "power" | "discard" | "hand" | "rush" | "enemy_command";
     selectCount?: number;
   },
 ): GameState | null {

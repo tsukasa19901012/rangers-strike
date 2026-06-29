@@ -313,10 +313,10 @@ export function applyShurikenRevealToHand(
   revealedInstanceId: string,
 ): GameState | null {
   const player = state.players[playerId];
-  const found = findInZone(player, "deck", revealedInstanceId);
-  if (!found) return null;
-  const [, deck] = removeAt(player.deck, found.index);
-  const revealed = { ...found.card, faceDown: false };
+  const deckIndex = player.deck.findIndex((c) => c.instanceId === revealedInstanceId);
+  if (deckIndex < 0) return null;
+  const [removed, deck] = removeAt(player.deck, deckIndex);
+  const revealed = { ...removed, faceDown: false };
   return {
     ...state,
     ...updatePlayer(state, playerId, {

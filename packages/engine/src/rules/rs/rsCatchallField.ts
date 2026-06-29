@@ -20,7 +20,7 @@ export function rs210BpInvertDelta(
   const card = [...player.rush, ...player.battle].find((c) => c.instanceId === instanceId);
   if (!card || !isSmallUnit(state.definitions, card.cardId)) return delta;
   const def = getDefinition(state.definitions, card.cardId);
-  if (!def?.number) return delta;
+  if (def?.comboNumber == null) return delta;
   return -delta;
 }
 
@@ -95,7 +95,7 @@ export function rs560BeastMBpBonus(
   if (!playerHasFieldCard(state, playerId, "RS-560")) return 0;
   const def = getDefinition(state.definitions, cardId);
   if (!isMediumUnit(state.definitions, cardId)) return 0;
-  if (!(def?.features ?? []).includes("獣")) return 0;
+  if (!def || !(def.features ?? []).includes("獣")) return 0;
   const name = def.name;
   const hasCopy = state.players[playerId].discard.some(
     (c) => getDefinition(state.definitions, c.cardId)?.name === name,
@@ -112,9 +112,7 @@ export function rs619WingProtectedFromNonAircraft(
 ): boolean {
   if (!playerHasFieldCard(state, defenderId, "RS-619")) return false;
   const def = getDefinition(state.definitions, defenderCardId);
-  if (!def?.keywords?.includes("wing") && !def?.keywords?.includes("ウイング")) {
-    if (!def?.features?.includes("ウイング")) return false;
-  }
+  if (!(def?.features ?? []).includes("ウイング")) return false;
   const attackerDef = getDefinition(state.definitions, attackerCardId);
   return !(attackerDef?.features ?? []).includes("航空機");
 }

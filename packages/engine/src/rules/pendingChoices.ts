@@ -3119,8 +3119,18 @@ export function applyEffectChoiceSelect(
 
       if (pending.effectId === "destroy_power_match_on_rush") {
         const discarded = toDiscard[0];
+        if (!discarded) {
+          return finishChoice(
+            clearChoice(
+              { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+              pending.playerId,
+            ),
+            pending,
+            "no_discard",
+          );
+        }
         const powerCost = parsePowerCost(
-          getDefinition(state.definitions, discarded?.cardId)?.powerCost ?? 99,
+          getDefinition(state.definitions, discarded.cardId)?.powerCost ?? 99,
         );
         const enemyId = opponent(pending.playerId);
         const targets = findEnemySWithPowerCost(state, enemyId, powerCost).map(

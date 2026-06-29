@@ -205,7 +205,7 @@ export function buildCatchallStructuredPrimitives(
     case "hold_on_enter_battle": {
       if (/ホールド/.test(body)) {
         return [
-          selectEnemyUnit([{ type: "hold", target: { type: "trigger_source" } }]),
+          selectEnemyUnit([{ type: "hold_command", target: { type: "trigger_source" } }]),
         ];
       }
       return null;
