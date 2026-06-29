@@ -155,6 +155,15 @@ export function buildEffectStack(state: GameState): EffectStack {
       frame("pendingChase", "effect_choice", state.pendingChase.chaserPlayerId),
     );
   }
+  if (state.pendingRideOffChoice) {
+    frames.push(
+      frame(
+        "pendingRideOffChoice",
+        "effect_choice",
+        state.pendingRideOffChoice.playerId,
+      ),
+    );
+  }
   if (state.pendingZordSetup) {
     frames.push(
       frame("pendingZordSetup", "zord_setup", state.pendingZordSetup.playerId),

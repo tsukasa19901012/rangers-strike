@@ -2,6 +2,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition, isUnit } from "../core/catalog";
 import { findInZone } from "../core/helpers";
+import { updatePlayer } from "../core/helpers";
 import { canMoveUnitToBattle } from "../rules/restrictions";
 import {
   listRideWithoutRcFeatures,
@@ -138,4 +139,96 @@ export function attachRideForBattleEntry(
     return rider;
   }
   return attached;
+}
+
+/** 指定ビークルにライドしてバトル進入できるか（ride.md: 進入不可ならライド無効）。 */
+export function canMountRideIntoBattle(
+  state: GameState,
+  playerId: PlayerId,
+  riderInstanceId: string,
+  vehicleInstanceId: string,
+): boolean {
+  const player = state.players[playerId];
+  const riderFound = findInZone(player, "rush", riderInstanceId);
+  if (!riderFound) return false;
+  if (!canRiderMountVehicle(state, playerId, riderFound.card, vehicleInstanceId)) {
+    return false;
+  }
+  const mounted = { ...riderFound.card, mountedOnInstanceId: vehicleInstanceId };
+  return canMoveUnitToBattle(state, playerId, mounted, "rush");
+}
+
+/** ラッシュ上でユニットをビークルにライド（チェイス等の内部用。通常のライドはバトル進入時）。 */
+export function applyMountRide(
+  state: GameState,
+  playerId: PlayerId,
+  riderInstanceId: string,
+  vehicleInstanceId: string,
+): GameState | null {
+  const player = state.players[playerId];
+  const riderFound = findInZone(player, "rush", riderInstanceId);
+  const vehicleFound = findInZone(player, "rush", vehicleInstanceId);
+  if (!riderFound || !vehicleFound) return null;
+  if (!canRiderMountVehicle(state, playerId, riderFound.card, vehicleInstanceId)) {
+    return null;
+  }
+
+  const rush = [...player.rush];
+  rush[riderFound.index] = {
+    ...riderFound.card,
+    mountedOnInstanceId: vehicleInstanceId,
+  };
+
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, { ...player, rush }),
+  };
+}
+
+/** ライド中ビークルの instanceId（ラッシュまたはバトル）。 */
+export function findMountedVehicle(
+  state: GameState,
+  playerId: PlayerId,
+  rider: CardInstance,
+): CardInstance | null {
+  if (!rider.mountedOnInstanceId) return null;
+  const player = state.players[playerId];
+  return (
+    findInZone(player, "rush", rider.mountedOnInstanceId)?.card ??
+    findInZone(player, "battle", rider.mountedOnInstanceId)?.card ??
+    null
+  );
+}
+
+function riddenVehicleIds(cards: CardInstance[]): Set<string> {
+  return new Set(
+    cards
+      .filter((c) => c.mountedOnInstanceId)
+      .map((c) => c.mountedOnInstanceId!),
+  );
+}
+
+/** 表示用: ライド先ビークルとして重ね表示するカードを rush 一覧から除外。 */
+export function rushCardsForDisplay(cards: CardInstance[]): CardInstance[] {
+  const ridden = riddenVehicleIds(cards);
+  return cards.filter((c) => !ridden.has(c.instanceId));
+}
+
+/** 表示用: バトルエリアでもライド先ビークルを一覧から除外。 */
+export function battleCardsForDisplay(cards: CardInstance[]): CardInstance[] {
+  const ridden = riddenVehicleIds(cards);
+  return cards.filter((c) => !ridden.has(c.instanceId));
+}
+
+/** ライド中ビークルをラッシュから取り除く（バトル進入時）。 */
+export function extractMountedVehicleFromRush(
+  rush: CardInstance[],
+  vehicleInstanceId: string,
+): { rush: CardInstance[]; vehicle: CardInstance | null } {
+  const index = rush.findIndex((c) => c.instanceId === vehicleInstanceId);
+  if (index < 0) return { rush, vehicle: null };
+  const vehicle = rush[index]!;
+  const next = [...rush];
+  next.splice(index, 1);
+  return { rush: next, vehicle };
 }

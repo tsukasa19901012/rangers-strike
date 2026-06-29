@@ -34,8 +34,25 @@ export type MoveToBattleAction = {
   type: "move_to_battle";
   playerId: PlayerId;
   instanceId: string;
-  /** RC: 戦闘進入時に乗り物から降りる。 */
+  /** ライドしてバトル進入: このビークルに乗る（省略時は進入時に自動ライド）。 */
+  vehicleInstanceId?: string;
+  /** RC: 戦闘進入時に乗り物から降りる（レガシー/CPU）。UI は resolve_ride_off_choice を優先。 */
   rideOff?: boolean;
+};
+
+/** バトルフェイズ: 指定ビークルにライドしてバトルエリアへ出る（move_to_battle の糖衣）。 */
+export type MountRideAction = {
+  type: "mount_ride";
+  playerId: PlayerId;
+  riderInstanceId: string;
+  vehicleInstanceId: string;
+};
+
+/** バトル進入後: ライドオフして RC を発動するか選択。 */
+export type ResolveRideOffChoiceAction = {
+  type: "resolve_ride_off_choice";
+  playerId: PlayerId;
+  rideOff: boolean;
 };
 
 export type StrikeAction = {
@@ -53,6 +70,12 @@ export type BattleAction = {
 
 export type HoldForWingAction = {
   type: "hold_for_wing";
+  playerId: PlayerId;
+  instanceId: string;
+};
+
+export type CancelWingHoldAction = {
+  type: "cancel_wing_hold";
   playerId: PlayerId;
   instanceId: string;
 };
@@ -301,9 +324,12 @@ export type GameAction =
   | ChargeCommandAction
   | RushAction
   | MoveToBattleAction
+  | MountRideAction
+  | ResolveRideOffChoiceAction
   | StrikeAction
   | BattleAction
   | HoldForWingAction
+  | CancelWingHoldAction
   | DrawAction
   | EndPhaseAction
   | PlayOperationAction

@@ -173,17 +173,29 @@ describe("joint and riding combo integration", () => {
         type: "move_to_battle",
         playerId: "player1",
         instanceId: rider.instanceId,
+      }),
+    );
+
+    expect(next.pendingRideOffChoice?.instanceId).toBe(rider.instanceId);
+
+    const resolved = unwrap(
+      applyAction(next, {
+        type: "resolve_ride_off_choice",
+        playerId: "player1",
         rideOff: true,
       }),
     );
 
-    const self = next.players.player1.battle.find((c) => c.cardId === "TST-RC-RIDER");
+    const self = resolved.players.player1.battle.find((c) => c.cardId === "TST-RC-RIDER");
     expect(self?.spModifier).toBe(1);
     expect(self?.mountedOnInstanceId).toBeUndefined();
-    expect(next.log.some((entry) => entry.includes("riding_combo"))).toBe(true);
-    const ridingLog = next.log.find((entry) => entry.includes("riding_combo"));
+    expect(resolved.log.some((entry) => entry.includes("riding_combo"))).toBe(true);
+    const ridingLog = resolved.log.find((entry) => entry.includes("riding_combo"));
     expect(ridingLog).toBeDefined();
-    expect(formatGameLog(ridingLog!, next.definitions)).toContain("ライディングコンボ");
+    expect(formatGameLog(ridingLog!, resolved.definitions)).toContain("ライディングコンボ");
+    expect(
+      resolved.players.player1.battle.some((c) => c.cardId === "TST-VEHICLE"),
+    ).toBe(true);
 
     delete RIDING_COMBO_EFFECTS["TST-RC-RIDER"];
   });

@@ -296,6 +296,37 @@ export function applyHoldForWing(
   return { ...state, ...updatePlayer(state, playerId, nextPlayer) };
 }
 
+/** アタック前のウイングホールドを取り消し（リリース相当）。 */
+export function canCancelWingHold(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): boolean {
+  if (state.phase !== "battle") return false;
+  const player = state.players[playerId];
+  const found = findInZone(player, "rush", instanceId);
+  if (!found) return false;
+  if (!found.card.commandHeld || found.card.battleActed) return false;
+  if (!wingTurnBlocksStrike(player, instanceId)) return false;
+  return cardHasKeyword(state.definitions, found.card.cardId, "wing", {
+    state,
+    playerId,
+  });
+}
+
+export function applyCancelWingHold(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): GameState | null {
+  if (!canCancelWingHold(state, playerId, instanceId)) return null;
+  const player = state.players[playerId];
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, resetWingUnitForReuse(player, instanceId)),
+  };
+}
+
 export function wingTurnBlocksStrike(player: PlayerState, instanceId: string): boolean {
   return (
     player.modifiers?.some(

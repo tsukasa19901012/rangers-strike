@@ -1,3 +1,4 @@
+import { getRidingComboEffect } from "@rangers-strike/cards";
 import type { GameState, PendingBattleEntry, PlayerId } from "../types/game";
 import { continueEnterBattleEffects } from "./combo";
 
@@ -26,6 +27,45 @@ export function afterEnterBattle(state: GameState, entry: PendingBattleEntry): G
   };
 }
 
+/** ライド中かつ RC ありなら、バトルアクション前にライドオフ選択を挟む。 */
+export function shouldPromptRideOffChoice(
+  state: GameState,
+  entry: PendingBattleEntry,
+): boolean {
+  const unit = state.players[entry.playerId].battle.find(
+    (c) => c.instanceId === entry.instanceId,
+  );
+  if (!unit?.mountedOnInstanceId) return false;
+  return !!getRidingComboEffect(unit.cardId);
+}
+
+/** 進入効果完了後: ライドオフ選択またはバトルアクションプロンプトへ。 */
+export function openBattleEntryOrRideOffChoice(
+  state: GameState,
+  entry: PendingBattleEntry,
+): GameState {
+  if (state.pendingEffectChoice) {
+    return { ...state, deferredBattleEntry: entry };
+  }
+  if (shouldPromptRideOffChoice(state, entry)) {
+    const unit = state.players[entry.playerId].battle.find(
+      (c) => c.instanceId === entry.instanceId,
+    )!;
+    return {
+      ...state,
+      pendingRideOffChoice: {
+        playerId: entry.playerId,
+        instanceId: entry.instanceId,
+        phasePlayerId: entry.phasePlayerId,
+        vehicleInstanceId: unit.mountedOnInstanceId!,
+        battleEntry: entry,
+      },
+      activePlayer: entry.playerId,
+    };
+  }
+  return afterEnterBattle(state, entry);
+}
+
 export function promoteDeferredBattleEntry(state: GameState): GameState {
   if (!state.deferredBattleEntry || state.pendingEffectChoice) return state;
 
@@ -51,15 +91,13 @@ export function promoteDeferredBattleEntry(state: GameState): GameState {
     }
   }
 
-  return {
-    ...nextState,
-    pendingBattleEntry: {
-      playerId: entry.playerId,
-      instanceId: entry.instanceId,
-      phasePlayerId: entry.phasePlayerId,
-    },
-    activePlayer: entry.playerId,
-  };
+  return openBattleEntryOrRideOffChoice(nextState, {
+    playerId: entry.playerId,
+    instanceId: entry.instanceId,
+    phasePlayerId: entry.phasePlayerId,
+    resumeEnterBattle: entry.resumeEnterBattle,
+    requiredDefenderInstanceId: entry.requiredDefenderInstanceId,
+  });
 }
 
 export function hasBlockingPendingInteraction(state: GameState): boolean {
@@ -68,7 +106,9 @@ export function hasBlockingPendingInteraction(state: GameState): boolean {
     state.pendingLeave ||
     state.pendingEffectChoice ||
     state.pendingCommandPayment ||
-    state.pendingZordSetup
+    state.pendingZordSetup ||
+    state.pendingRideOffChoice ||
+    state.pendingChase
   );
 }
 

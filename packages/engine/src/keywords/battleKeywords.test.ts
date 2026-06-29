@@ -5,6 +5,8 @@ import { createTestState, inst } from "../testing/fixtures";
 import { WIN_DAMAGE } from "../types/game";
 import {
   applyHoldForWing,
+  applyCancelWingHold,
+  canCancelWingHold,
   blastBypassesRushAdditionalCondition,
   breakerBlocksSameNameRush,
   canHoldForWing,
@@ -280,6 +282,24 @@ describe("wing keyword", () => {
     });
     state.definitions["TST-WING"] = WING_DEF;
     expect(canHoldForWing(state, "player1", player.rush[0]!)).toBe(true);
+  });
+
+  it("cancels wing hold before attack and clears commandHeld", () => {
+    const wingUnit = inst("TST-WING", "w1");
+    let state = createTestState({
+      phase: "battle",
+      player1: { rush: [wingUnit] },
+    });
+    state.definitions["TST-WING"] = WING_DEF;
+
+    state = applyHoldForWing(state, "player1", wingUnit.instanceId)!;
+    expect(canCancelWingHold(state, "player1", wingUnit.instanceId)).toBe(true);
+
+    state = applyCancelWingHold(state, "player1", wingUnit.instanceId)!;
+    const unit = state.players.player1.rush[0]!;
+    expect(unit.commandHeld).toBe(false);
+    expect(canHoldForWing(state, "player1", unit)).toBe(true);
+    expect(canCancelWingHold(state, "player1", wingUnit.instanceId)).toBe(false);
   });
 
   it("blocks battle entry for the turn after wing hold", () => {

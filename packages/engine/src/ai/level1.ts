@@ -240,6 +240,16 @@ function pickCpuActionInner(
     return actions.find((a) => a.type === "pass_chase") ?? null;
   }
 
+  if (state.pendingRideOffChoice) {
+    if (playerId !== state.pendingRideOffChoice.playerId) return null;
+    const actions = getLegalActions(state);
+    return (
+      actions.find((a) => a.type === "resolve_ride_off_choice" && a.rideOff) ??
+      actions.find((a) => a.type === "resolve_ride_off_choice" && !a.rideOff) ??
+      null
+    );
+  }
+
   if (state.pendingEffectChoice) {
     if (playerId !== state.pendingEffectChoice.playerId) return null;
     const actions = getLegalActions(state);
@@ -430,6 +440,9 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
   }
   if (state.pendingChase) {
     return state.pendingChase.chaserPlayerId === cpuPlayer;
+  }
+  if (state.pendingRideOffChoice) {
+    return state.pendingRideOffChoice.playerId === cpuPlayer;
   }
   if (state.pendingRush) {
     const defenderId = opponent(state.pendingRush.rusherPlayerId);

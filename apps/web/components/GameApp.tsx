@@ -62,6 +62,8 @@ import { resolveCardTargets } from "@/lib/cardTargets";
 import type { DragCardPayload, DropTarget, PendingOperation } from "@/lib/dnd";
 import { CardModal } from "./CardModal";
 import { BattleEntryModal } from "./BattleEntryModal";
+import { RideOffModal } from "./RideOffModal";
+import { ChaseModal } from "./ChaseModal";
 import { AlertModal } from "./AlertModal";
 import { EffectChoiceModal } from "./EffectChoiceModal";
 import { DamagePaymentModal } from "./DamagePaymentModal";
@@ -825,6 +827,22 @@ export function GameApp() {
     [apply, humanCanAct, legalActions, state],
   );
 
+  const handleRushCardDrop = useCallback(
+    (vehicleInstanceId: string, payload: DragCardPayload) => {
+      if (!state || !humanCanAct || state.phase !== "battle") return;
+      if (payload.playerId !== HUMAN_PLAYER || payload.fromZone !== "rush") return;
+
+      const action = legalActions.find(
+        (a) =>
+          a.type === "mount_ride" &&
+          a.riderInstanceId === payload.instanceId &&
+          a.vehicleInstanceId === vehicleInstanceId,
+      );
+      if (action) apply(action);
+    },
+    [apply, humanCanAct, legalActions, state],
+  );
+
   const handleStrikeDrop = useCallback(
     (payload: DragCardPayload) => {
       if (!state || !humanCanAct || state.phase !== "battle" || state.pendingStrike) return;
@@ -1291,8 +1309,19 @@ export function GameApp() {
   );
 
   const handleWingPromptPass = useCallback(() => {
+    if (wingPromptAttackerId) {
+      const cancelAction = legalActions.find(
+        (action) =>
+          action.type === "cancel_wing_hold" &&
+          action.playerId === HUMAN_PLAYER &&
+          action.instanceId === wingPromptAttackerId,
+      );
+      if (cancelAction) {
+        apply(cancelAction);
+      }
+    }
     setWingPromptAttackerId(null);
-  }, []);
+  }, [apply, legalActions, wingPromptAttackerId]);
 
   const handleWingPromptAttack = useCallback(
     (defenderInstanceId: string) => {
@@ -1424,6 +1453,96 @@ export function GameApp() {
 
   const handleBattleEntryPass = useCallback(() => {
     apply({ type: "pass_battle_entry", playerId: HUMAN_PLAYER });
+  }, [apply]);
+
+  const isHumanRideOffChoice =
+    !!humanCanAct && state?.pendingRideOffChoice?.playerId === HUMAN_PLAYER;
+
+  const rideOffModal = useMemo(() => {
+    if (!isHumanRideOffChoice || !state?.pendingRideOffChoice) return null;
+    const pending = state.pendingRideOffChoice;
+    const rider = state.players[HUMAN_PLAYER].battle.find(
+      (c) => c.instanceId === pending.instanceId,
+    );
+    if (!rider) return null;
+    const riderCard = resolvePlayableCard(rider.cardId);
+    if (!riderCard) return null;
+
+    const vehicle =
+      state.players[HUMAN_PLAYER].battle.find(
+        (c) => c.instanceId === pending.vehicleInstanceId,
+      ) ??
+      state.players[HUMAN_PLAYER].rush.find(
+        (c) => c.instanceId === pending.vehicleInstanceId,
+      );
+    const vehicleCard = vehicle ? resolvePlayableCard(vehicle.cardId) : undefined;
+    return { riderCard, vehicleCard };
+  }, [isHumanRideOffChoice, state]);
+
+  const handleRideOffConfirm = useCallback(() => {
+    apply({
+      type: "resolve_ride_off_choice",
+      playerId: HUMAN_PLAYER,
+      rideOff: true,
+    });
+  }, [apply]);
+
+  const handleRideOffStay = useCallback(() => {
+    apply({
+      type: "resolve_ride_off_choice",
+      playerId: HUMAN_PLAYER,
+      rideOff: false,
+    });
+  }, [apply]);
+
+  const isHumanChase =
+    !!humanCanAct && state?.pendingChase?.chaserPlayerId === HUMAN_PLAYER;
+
+  const chaseModal = useMemo(() => {
+    if (!isHumanChase || !state?.pendingChase) return null;
+    const pending = state.pendingChase;
+    const chaserZone = pending.leaveIntent.fromZone;
+    const chaserList =
+      chaserZone === "rush" || chaserZone === "battle"
+        ? state.players[HUMAN_PLAYER][chaserZone]
+        : [];
+    const chaser = chaserList.find((c) => c.instanceId === pending.chaserInstanceId);
+    if (!chaser) return null;
+    const chaserCard = resolvePlayableCard(chaser.cardId);
+    if (!chaserCard) return null;
+
+    const vehicles: Array<{ instanceId: string; card: CardDefinition }> = [];
+    for (const action of legalActions) {
+      if (action.type !== "resolve_chase") continue;
+      const vehicle = state.players[HUMAN_PLAYER].rush.find(
+        (c) => c.instanceId === action.newVehicleInstanceId,
+      );
+      if (!vehicle) continue;
+      const card = resolvePlayableCard(vehicle.cardId);
+      if (!card) continue;
+      vehicles.push({ instanceId: vehicle.instanceId, card });
+    }
+
+    return {
+      chaserCard,
+      mode: pending.mode,
+      vehicles,
+    };
+  }, [isHumanChase, legalActions, state]);
+
+  const handleChaseSelect = useCallback(
+    (vehicleInstanceId: string) => {
+      apply({
+        type: "resolve_chase",
+        playerId: HUMAN_PLAYER,
+        newVehicleInstanceId: vehicleInstanceId,
+      });
+    },
+    [apply],
+  );
+
+  const handleChasePass = useCallback(() => {
+    apply({ type: "pass_chase", playerId: HUMAN_PLAYER });
   }, [apply]);
 
   const canPassBattleEntry =
@@ -1781,7 +1900,23 @@ export function GameApp() {
     !showEffectNotice &&
     !state.pendingStrike &&
     !state.pendingDamagePayment &&
+    !state.pendingLeave &&
+    !state.pendingRideOffChoice;
+
+  const showRideOffModal =
+    !!rideOffModal &&
+    !showEffectNotice &&
+    !state.pendingStrike &&
+    !state.pendingDamagePayment &&
     !state.pendingLeave;
+
+  const showChaseModal =
+    !!chaseModal &&
+    !showEffectNotice &&
+    !state.pendingStrike &&
+    !state.pendingDamagePayment &&
+    !state.pendingLeave &&
+    !showRideOffModal;
 
   const showWingModal =
     !!wingBattleModal &&
@@ -1789,7 +1924,8 @@ export function GameApp() {
     !state.pendingStrike &&
     !state.pendingDamagePayment &&
     !state.pendingLeave &&
-    !showBattleEntryModal;
+    !showBattleEntryModal &&
+    !showRideOffModal;
 
   const isHumanCommandPayment = isHumanCommandPaymentActive(state, HUMAN_PLAYER);
 
@@ -1981,6 +2117,24 @@ export function GameApp() {
           entries={[...effectDebugLog, ...state.log]}
           definitions={state.definitions}
           onClose={() => setLogOpen(false)}
+        />
+      )}
+      {showRideOffModal && rideOffModal && (
+        <RideOffModal
+          riderCard={rideOffModal.riderCard}
+          vehicleCard={rideOffModal.vehicleCard}
+          onRideOff={handleRideOffConfirm}
+          onStayMounted={handleRideOffStay}
+        />
+      )}
+      {showChaseModal && chaseModal && (
+        <ChaseModal
+          chaserCard={chaseModal.chaserCard}
+          mode={chaseModal.mode}
+          vehicles={chaseModal.vehicles}
+          onSelectVehicle={handleChaseSelect}
+          onPass={handleChasePass}
+          onPreviewCard={setPreviewCard}
         />
       )}
       {showBattleEntryModal && battleEntryModal && (
@@ -2428,6 +2582,7 @@ export function GameApp() {
             phase={state.phase}
             onPreview={setPreviewCard}
             onZoneDrop={handleZoneDrop}
+            onRushCardDrop={handleRushCardDrop}
             pendingOperationTargets={boardOperationTargets}
             pendingZordTargets={boardZordTargets}
             onOperationTarget={handleOperationTarget}

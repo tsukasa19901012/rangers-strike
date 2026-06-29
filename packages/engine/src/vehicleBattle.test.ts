@@ -85,7 +85,7 @@ describe("vehicle battle rules (wiki page 141)", () => {
 
     expect(canMoveUnitToBattle(state, "player1", vehicle, "rush")).toBe(false);
     const actions = getLegalActions(state);
-    expect(actions.some((a) => a.type === "move_to_battle" && a.instanceId === "v1")).toBe(
+    expect(actions.some((a) => a.type === "move_to_battle" && a.instanceId === vehicle.instanceId)).toBe(
       false,
     );
   });
@@ -130,10 +130,10 @@ describe("vehicle battle rules (wiki page 141)", () => {
         (a) =>
           a.type === "battle" &&
           "defenderInstanceId" in a &&
-          a.defenderInstanceId === "v1",
+          a.defenderInstanceId === vehicle.instanceId,
       ),
     ).toBe(false);
-    expect(actions.some((a) => a.type === "strike" && a.instanceId === "v1")).toBe(false);
+    expect(actions.some((a) => a.type === "strike" && a.instanceId === vehicle.instanceId)).toBe(false);
   });
 
   it("vehicle with BK turn rule may enter battle without ride", () => {
@@ -146,7 +146,7 @@ describe("vehicle battle rules (wiki page 141)", () => {
         rush: [vehicle],
         command: [{ instanceId: "cmd", cardId: "TST-RIDER", commandHeld: true }],
       },
-      "v1",
+      vehicle.instanceId,
     );
     const state = {
       ...base,
@@ -155,7 +155,7 @@ describe("vehicle battle rules (wiki page 141)", () => {
       players: { ...base.players, player1 },
     };
 
-    expect(vehicleMayBattleWithoutRide(player1, "v1")).toBe(true);
+    expect(vehicleMayBattleWithoutRide(player1, vehicle.instanceId)).toBe(true);
     expect(canVehicleEnterBattleFromRush(state, "player1", vehicle)).toBe(true);
     expect(canMoveUnitToBattle(state, "player1", vehicle, "rush")).toBe(true);
   });
@@ -182,6 +182,108 @@ describe("vehicle battle rules (wiki page 141)", () => {
 
     expect(canMoveUnitToBattle(state, "player1", vehicle, "rush")).toBe(false);
     expect(canMoveUnitToBattle(state, "player1", rider, "rush")).toBe(true);
+  });
+
+  it("ridden unit moves vehicle into battle together", () => {
+    const defs = defsWithVehicle();
+    const vehicle = inst("TST-VEHICLE", "v1");
+    const rider = inst("TST-RIDER", "r1");
+    rider.mountedOnInstanceId = vehicle.instanceId;
+    const base = createTestState(defs);
+    const state = {
+      ...base,
+      phase: "battle" as const,
+      definitions: defs,
+      players: {
+        ...base.players,
+        player1: {
+          ...base.players.player1,
+          rush: [vehicle, rider],
+          command: [{ instanceId: "cmd", cardId: "TST-RIDER", commandHeld: true }],
+        },
+      },
+    };
+
+    const result = applyAction(state, {
+      type: "move_to_battle",
+      playerId: "player1",
+      instanceId: rider.instanceId,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const p1 = result.state.players.player1;
+    expect(p1.rush.some((c) => c.instanceId === vehicle.instanceId)).toBe(false);
+    expect(p1.battle.some((c) => c.instanceId === vehicle.instanceId)).toBe(true);
+    expect(
+      p1.battle.find((c) => c.instanceId === rider.instanceId)?.mountedOnInstanceId,
+    ).toBe(vehicle.instanceId);
+  });
+
+  it("mount_ride rides the unit into battle with the vehicle", () => {
+    const defs = defsWithVehicle();
+    const vehicle = inst("TST-VEHICLE", "v1");
+    const rider = inst("TST-RIDER", "r1");
+    const base = createTestState(defs);
+    const state = {
+      ...base,
+      phase: "battle" as const,
+      definitions: defs,
+      players: {
+        ...base.players,
+        player1: {
+          ...base.players.player1,
+          rush: [vehicle, rider],
+          command: [{ instanceId: "cmd", cardId: "TST-RIDER", commandHeld: true }],
+        },
+      },
+    };
+
+    const result = applyAction(state, {
+      type: "mount_ride",
+      playerId: "player1",
+      riderInstanceId: rider.instanceId,
+      vehicleInstanceId: vehicle.instanceId,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const p1 = result.state.players.player1;
+    expect(p1.battle.some((c) => c.instanceId === rider.instanceId)).toBe(true);
+    expect(p1.battle.some((c) => c.instanceId === vehicle.instanceId)).toBe(true);
+    expect(
+      p1.battle.find((c) => c.instanceId === rider.instanceId)?.mountedOnInstanceId,
+    ).toBe(vehicle.instanceId);
+  });
+
+  it("move_to_battle without vehicle does not auto-ride", () => {
+    const defs = defsWithVehicle();
+    const vehicle = inst("TST-VEHICLE", "v1");
+    const rider = inst("TST-RIDER", "r1");
+    const base = createTestState(defs);
+    const state = {
+      ...base,
+      phase: "battle" as const,
+      definitions: defs,
+      players: {
+        ...base.players,
+        player1: {
+          ...base.players.player1,
+          rush: [vehicle, rider],
+          command: [{ instanceId: "cmd", cardId: "TST-RIDER", commandHeld: true }],
+        },
+      },
+    };
+
+    const result = applyAction(state, {
+      type: "move_to_battle",
+      playerId: "player1",
+      instanceId: rider.instanceId,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const p1 = result.state.players.player1;
+    const entered = p1.battle.find((c) => c.instanceId === rider.instanceId);
+    expect(entered?.mountedOnInstanceId).toBeUndefined();
+    expect(p1.rush.some((c) => c.instanceId === vehicle.instanceId)).toBe(true);
   });
 });
 

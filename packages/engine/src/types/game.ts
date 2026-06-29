@@ -364,6 +364,15 @@ export type PendingBattleEntry = {
   requiredDefenderInstanceId?: string;
 };
 
+/** ライドしたままバトル進入後、RC 発動のためのライドオフ選択。 */
+export type PendingRideOffChoice = {
+  playerId: PlayerId;
+  instanceId: string;
+  phasePlayerId: PlayerId;
+  vehicleInstanceId: string;
+  battleEntry: PendingBattleEntry;
+};
+
 export type CommandPaymentContinuation =
   | { type: "move_to_battle"; rideOff?: boolean }
   | {
@@ -485,6 +494,8 @@ export type GameState = {
   pendingLeave?: PendingLeave;
   /** チェイス: ライド中ユニット離場時のビークル乗り換え選択。 */
   pendingChase?: PendingChase;
+  /** バトル進入後・アタック/ストライク前のライドオフ選択（RC）。 */
+  pendingRideOffChoice?: PendingRideOffChoice;
   /** レジスト（バトル撃破時ホールド留場）の選択待ち。 */
   pendingRegister?: PendingRegister;
   /** 効果解決スタック（pending* から導出。優先順位の単一ソース）。 */

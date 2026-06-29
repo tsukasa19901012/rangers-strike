@@ -1,5 +1,5 @@
 import type { GameAction } from "../types/actions";
-import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState } from "../types/game";
+import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, CardInstance } from "../types/game";
 import {
   getBattleEntryHoldCount,
   getCardEffect,
@@ -155,12 +155,15 @@ import {
 } from "../rules/strikeReactions";
 import { isHidoraEggUsed, markBattleBlocked, markRushedThisTurn } from "../rules/turnModifiers";
 import { applyPassChase, applyResolveChase, listValidChaseVehicleIds } from "../keywords/chase";
-import { attachRideForBattleEntry } from "../keywords/ride";
+import {
+  canRiderMountVehicle,
+  extractMountedVehicleFromRush,
+} from "../keywords/ride";
 import {
   beginMorphUnitSelection,
   passMorphReaction,
 } from "../keywords/morphReaction";
-import { canWingAttackFromRush, applyHoldForWing, applyNoStrikeAfterRideOff } from "../keywords/battleKeywords";
+import { canWingAttackFromRush, applyHoldForWing, applyCancelWingHold, applyNoStrikeAfterRideOff } from "../keywords/battleKeywords";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import {
   attachOperationCardToDslResume,
@@ -213,7 +216,9 @@ import {
   afterEnterBattle,
   createBattleEntryPrompt,
   finishBattleEntryIf,
+  openBattleEntryOrRideOffChoice,
 } from "../rules/battleEntry";
+import { resolveRidingComboOnRideOff } from "../rules/ridingComboEffects";
 import { applyShinobiBallRequiredDefender } from "../rules/batch06FieldEffects";
 import { applySuperBrainDraw } from "../effects/drawEffects";
 
@@ -362,6 +367,12 @@ export function applyAction(
   }
   if (action.type === "move_to_battle" && state.pendingBattleEntry) {
     return fail("pending_battle_entry");
+  }
+  if (
+    state.pendingRideOffChoice &&
+    action.type !== "resolve_ride_off_choice"
+  ) {
+    return fail("pending_ride_off_choice");
   }
   if (
     state.pendingCommandPayment &&
@@ -1287,13 +1298,48 @@ export function applyAction(
       let battleCard = found.card;
       if (action.rideOff && found.card.mountedOnInstanceId) {
         battleCard = { ...battleCard, mountedOnInstanceId: undefined };
-      } else {
-        battleCard = attachRideForBattleEntry(state, playerId, battleCard, action.rideOff);
+      } else if (
+        !found.card.mountedOnInstanceId &&
+        action.vehicleInstanceId
+      ) {
+        if (
+          !canRiderMountVehicle(
+            state,
+            playerId,
+            found.card,
+            action.vehicleInstanceId,
+          )
+        ) {
+          return fail("illegal_action");
+        }
+        battleCard = {
+          ...found.card,
+          mountedOnInstanceId: action.vehicleInstanceId,
+        };
+        if (!canMoveUnitToBattle(state, playerId, battleCard, "rush")) {
+          return fail("cannot_enter_battle");
+        }
       }
 
+      let vehicleForBattle: CardInstance | null = null;
+      if (battleCard.mountedOnInstanceId && !action.rideOff) {
+        const extracted = extractMountedVehicleFromRush(
+          nextPlayer.rush,
+          battleCard.mountedOnInstanceId,
+        );
+        nextPlayer = { ...nextPlayer, rush: extracted.rush };
+        vehicleForBattle = extracted.vehicle;
+      }
+
+      const nextBattle = [...nextPlayer.battle];
+      if (vehicleForBattle) {
+        nextBattle.push(vehicleForBattle, battleCard);
+      } else {
+        nextBattle.push(battleCard);
+      }
       nextPlayer = {
         ...nextPlayer,
-        battle: [...nextPlayer.battle, battleCard],
+        battle: nextBattle,
       };
       if (
         action.rideOff &&
@@ -1346,7 +1392,7 @@ export function applyAction(
           "battle_entry_rush_discard",
         )),
       };
-      const finalState: GameState = afterEnterBattle(
+      const finalState: GameState = openBattleEntryOrRideOffChoice(
         {
           ...withClearedDiscard,
           log: [...withClearedDiscard.log, ...combo.logs, mainLog],
@@ -1925,11 +1971,64 @@ export function applyAction(
       return ok(nextState, buildSimpleLogEntry(playerId, "pass_chase"));
     }
 
+    case "mount_ride": {
+      if (state.phase !== "battle") return fail("wrong_phase");
+      return applyAction(
+        state,
+        {
+          type: "move_to_battle",
+          playerId,
+          instanceId: action.riderInstanceId,
+          vehicleInstanceId: action.vehicleInstanceId,
+        },
+        { ...options, trustLegality: true },
+      );
+    }
+
+    case "resolve_ride_off_choice": {
+      const pending = state.pendingRideOffChoice;
+      if (!pending || playerId !== pending.playerId) return fail("no_pending_ride_off");
+      let nextState: GameState = { ...state, pendingRideOffChoice: undefined };
+      let nextPlayer = { ...player };
+
+      if (action.rideOff) {
+        const idx = nextPlayer.battle.findIndex(
+          (c) => c.instanceId === pending.instanceId,
+        );
+        if (idx < 0) return fail("card_not_in_battle");
+        const rider = nextPlayer.battle[idx]!;
+        const battle = [...nextPlayer.battle];
+        const unmounted = { ...rider, mountedOnInstanceId: undefined };
+        battle[idx] = unmounted;
+        nextPlayer = { ...nextPlayer, battle };
+        if (cardHasGrantKeyword(rider.cardId, "no_strike_after_rideoff")) {
+          nextPlayer = applyNoStrikeAfterRideOff(nextPlayer, rider.instanceId);
+        }
+        nextState = { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) };
+        const rc = resolveRidingComboOnRideOff(nextState, playerId, unmounted);
+        nextState = {
+          ...rc.state,
+          log: [...nextState.log, ...rc.logs],
+        };
+      }
+
+      const opened = openBattleEntryOrRideOffChoice(nextState, pending.battleEntry);
+      const detail = action.rideOff ? "ride_off" : "stay_mounted";
+      return ok(opened, buildSimpleLogEntry(playerId, "resolve_ride_off_choice", detail));
+    }
+
     case "hold_for_wing": {
       if (state.phase !== "battle") return fail("wrong_phase");
       const held = applyHoldForWing(state, playerId, action.instanceId);
       if (!held) return fail("illegal_action");
       return ok(held, buildSimpleLogEntry(playerId, "hold_for_wing", action.instanceId));
+    }
+
+    case "cancel_wing_hold": {
+      if (state.phase !== "battle") return fail("wrong_phase");
+      const released = applyCancelWingHold(state, playerId, action.instanceId);
+      if (!released) return fail("illegal_action");
+      return ok(released, buildSimpleLogEntry(playerId, "cancel_wing_hold", action.instanceId));
     }
 
     case "battle": {

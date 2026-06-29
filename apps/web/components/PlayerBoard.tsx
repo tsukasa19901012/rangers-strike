@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, PlayerId } from "@rangers-strike/engine";
-import { COMMAND_ZONE_MAX, isRushable, isUnit } from "@rangers-strike/engine";
+import { COMMAND_ZONE_MAX, isRushable, isUnit, rushCardsForDisplay, battleCardsForDisplay } from "@rangers-strike/engine";
 import { type DragCardPayload, type DropTarget } from "@/lib/dnd";
 import { useDropTarget } from "@/lib/PointerDragContext";
 import { CardImage } from "./CardImage";
@@ -88,6 +88,8 @@ type ZoneCardsProps = {
   title: string;
   zoneId: DropTarget;
   cards: CardInstance[];
+  /** ライド重ね表示用のゾーン全カード（表示リストと別の場合）。 */
+  zoneCards?: CardInstance[];
   definitions: Record<string, CardDefinition>;
   playerId: PlayerId;
   fromZone: DragCardPayload["fromZone"];
@@ -153,6 +155,7 @@ function ZoneCards({
   title,
   zoneId,
   cards,
+  zoneCards,
   definitions,
   playerId,
   fromZone,
@@ -188,6 +191,7 @@ function ZoneCards({
 }: ZoneCardsProps) {
   const cardsRef = useRef<HTMLDivElement>(null);
   const selectableKey = selectableIds ? [...selectableIds].sort().join(",") : "";
+  const mountLookup = zoneCards ?? cards;
 
   useEffect(() => {
     if (!selectableKey || !cardsRef.current) return;
@@ -212,6 +216,12 @@ function ZoneCards({
     >
       {cards.map((card) => {
         const definition = definitions[card.cardId];
+        const mountCard = card.mountedOnInstanceId
+          ? mountLookup.find((c) => c.instanceId === card.mountedOnInstanceId)
+          : undefined;
+        const mountDefinition = mountCard
+          ? definitions[mountCard.cardId]
+          : undefined;
         const isSelectable = selectableIds?.has(card.instanceId);
         const isSelected =
           selectedIds?.has(card.instanceId) || card.instanceId === selectedId;
@@ -268,33 +278,53 @@ function ZoneCards({
             }
           }}
         >
-          <CardImage
-            card={definition}
-            instanceId={card.instanceId}
-            fromZone={fromZone}
-            playerId={playerId}
-            small
-            draggable={cardDraggable}
-            disabled={cardDisabled}
-            onDragStartExtra={
-              onCardDragStart && cardDraggable
-                ? () =>
-                    onCardDragStart({
-                      instanceId: card.instanceId,
-                      cardId: card.cardId,
-                      fromZone,
-                      playerId,
-                    })
-                : undefined
-            }
-            onDragEnd={onCardDragEnd}
-            selected={isSelected}
-            onPreview={preview}
-            onSelect={select}
-            commandHeld={getCommandHeld?.(card)}
-            hideMeta={imageOnly}
-            faceDown={fromZone === "power" ? card.faceDown : undefined}
-          />
+          <div
+            className={[
+              mountCard ? "card-stack card-stack--riding" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            {mountCard && mountDefinition && (
+              <div className="card-stack__mount" aria-hidden>
+                <CardImage
+                  card={mountDefinition}
+                  instanceId={mountCard.instanceId}
+                  fromZone={fromZone}
+                  playerId={playerId}
+                  small
+                  hideMeta={imageOnly}
+                />
+              </div>
+            )}
+            <CardImage
+              card={definition}
+              instanceId={card.instanceId}
+              fromZone={fromZone}
+              playerId={playerId}
+              small
+              draggable={cardDraggable}
+              disabled={cardDisabled}
+              onDragStartExtra={
+                onCardDragStart && cardDraggable
+                  ? () =>
+                      onCardDragStart({
+                        instanceId: card.instanceId,
+                        cardId: card.cardId,
+                        fromZone,
+                        playerId,
+                      })
+                  : undefined
+              }
+              onDragEnd={onCardDragEnd}
+              selected={isSelected}
+              onPreview={preview}
+              onSelect={select}
+              commandHeld={getCommandHeld?.(card)}
+              hideMeta={imageOnly}
+              faceDown={fromZone === "power" ? card.faceDown : undefined}
+            />
+          </div>
         </CardDropWrap>
         );
       })}
@@ -315,6 +345,7 @@ export type PlayerBoardProps = {
   onPreview?: (card: CardDefinition) => void;
   onZoneDrop?: (target: DropTarget, payload: DragCardPayload) => void;
   onBattleCardDrop?: (defenderId: string, payload: DragCardPayload) => void;
+  onRushCardDrop?: (vehicleInstanceId: string, payload: DragCardPayload) => void;
   pendingOperationTargets?: Set<string>;
   onOperationTarget?: (instanceId: string) => void;
   pendingZordTargets?: Set<string>;
@@ -370,6 +401,7 @@ export function PlayerBoard({
   onPreview,
   onZoneDrop,
   onBattleCardDrop,
+  onRushCardDrop,
   pendingOperationTargets,
   onOperationTarget,
   pendingZordTargets,
@@ -547,7 +579,8 @@ export function PlayerBoard({
       className="playsheet__battle"
       cardsScrollX
       imageOnly
-      cards={player.battle}
+      cards={battleCardsForDisplay(player.battle)}
+      zoneCards={player.battle}
       definitions={definitions}
       playerId={playerId}
       fromZone="battle"
@@ -601,7 +634,8 @@ export function PlayerBoard({
       className="playsheet__rush"
       cardsScrollX
       imageOnly
-      cards={player.rush}
+      cards={rushCardsForDisplay(player.rush)}
+      zoneCards={player.rush}
       definitions={definitions}
       playerId={playerId}
       fromZone="rush"
@@ -623,6 +657,9 @@ export function PlayerBoard({
           phase === "battle" &&
           (wingAttackDragIds?.has(card.instanceId) || !card.commandHeld)
         )
+      }
+      onCardDrop={
+        !isOpponent && interactive && phase === "battle" ? onRushCardDrop : undefined
       }
       emptyLabel="—"
     />

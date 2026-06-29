@@ -23,8 +23,13 @@ export {
 export {
   attachRideForBattleEntry,
   attachRideIfEligible,
+  applyMountRide,
+  canMountRideIntoBattle,
   canRiderMountVehicle,
+  findMountedVehicle,
   findRideVehicleForRider,
+  rushCardsForDisplay,
+  battleCardsForDisplay,
 } from "./ride";
 export {
   defenderCanMorphAgainstRush,
@@ -53,6 +58,8 @@ export {
   canWingAttackFromRush,
   canHoldForWing,
   applyHoldForWing,
+  canCancelWingHold,
+  applyCancelWingHold,
   prepareWingUnitReturnedToRush,
   resetWingUnitForReuse,
   wingTurnBlocksStrike,

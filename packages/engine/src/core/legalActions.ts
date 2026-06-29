@@ -3,8 +3,9 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { isCostWindowSatisfied } from "./costWindow";
 import { COMMAND_ZONE_MAX } from "../types/game";
-import { getRidingComboEffect, hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
-import { canWingAttackFromRush, canHoldForWing } from "../keywords/battleKeywords";
+import { hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
+import { canWingAttackFromRush, canHoldForWing, canCancelWingHold } from "../keywords/battleKeywords";
+import { canRiderMountVehicle, canMountRideIntoBattle } from "../keywords/ride";
 import {
   canPlayOperationCard,
   collectOperationTargets,
@@ -1120,6 +1121,8 @@ export function getActionPlayerId(state: GameState): PlayerId {
     getReactionChooserPlayerId(state) ??
     state.pendingEffectChoice?.playerId ??
     state.pendingMorph?.defenderPlayerId ??
+    state.pendingChase?.chaserPlayerId ??
+    state.pendingRideOffChoice?.playerId ??
     state.pendingBattleEntry?.playerId ??
     state.pendingZordSetup?.playerId ??
     state.pendingScry?.playerId ??
@@ -1151,6 +1154,21 @@ export function getLegalActions(state: GameState): GameAction[] {
       });
     }
     actions.push({ type: "pass_chase", playerId: pending.chaserPlayerId });
+    return actions;
+  }
+
+  if (state.pendingRideOffChoice) {
+    const pending = state.pendingRideOffChoice;
+    actions.push({
+      type: "resolve_ride_off_choice",
+      playerId: pending.playerId,
+      rideOff: true,
+    });
+    actions.push({
+      type: "resolve_ride_off_choice",
+      playerId: pending.playerId,
+      rideOff: false,
+    });
     return actions;
   }
 
@@ -1426,13 +1444,30 @@ export function getLegalActions(state: GameState): GameAction[] {
           playerId,
           instanceId: card.instanceId,
         });
-        if (card.mountedOnInstanceId && getRidingComboEffect(card.cardId)) {
-          actions.push({
-            type: "move_to_battle",
-            playerId,
-            instanceId: card.instanceId,
-            rideOff: true,
-          });
+      }
+
+      for (const rider of player.rush) {
+        const riderDef = getDefinition(state.definitions, rider.cardId);
+        if (!riderDef || !isUnit(riderDef)) continue;
+        for (const vehicle of player.rush) {
+          if (vehicle.instanceId === rider.instanceId) continue;
+          const vehicleDef = getDefinition(state.definitions, vehicle.cardId);
+          if (vehicleDef?.type !== "vehicle") continue;
+          if (
+            canMountRideIntoBattle(
+              state,
+              playerId,
+              rider.instanceId,
+              vehicle.instanceId,
+            )
+          ) {
+            actions.push({
+              type: "mount_ride",
+              playerId,
+              riderInstanceId: rider.instanceId,
+              vehicleInstanceId: vehicle.instanceId,
+            });
+          }
         }
       }
 
@@ -1440,6 +1475,13 @@ export function getLegalActions(state: GameState): GameAction[] {
         if (canHoldForWing(state, playerId, card)) {
           actions.push({
             type: "hold_for_wing",
+            playerId,
+            instanceId: card.instanceId,
+          });
+        }
+        if (canCancelWingHold(state, playerId, card.instanceId)) {
+          actions.push({
+            type: "cancel_wing_hold",
             playerId,
             instanceId: card.instanceId,
           });
@@ -1656,6 +1698,13 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
     return false;
   }
 
+  if (state.pendingRideOffChoice) {
+    return (
+      action.type === "resolve_ride_off_choice" &&
+      action.playerId === state.pendingRideOffChoice.playerId
+    );
+  }
+
   const reactionActor = getReactionChooserPlayerId(state);
   if (reactionActor && isReactionWindowAction(action)) {
     if (action.playerId !== reactionActor) return false;
@@ -1739,6 +1788,17 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
 
   if (a.type === "resolve_chase" && b.type === "resolve_chase") {
     return a.newVehicleInstanceId === b.newVehicleInstanceId;
+  }
+
+  if (a.type === "mount_ride" && b.type === "mount_ride") {
+    return (
+      a.riderInstanceId === b.riderInstanceId &&
+      a.vehicleInstanceId === b.vehicleInstanceId
+    );
+  }
+
+  if (a.type === "resolve_ride_off_choice" && b.type === "resolve_ride_off_choice") {
+    return a.rideOff === b.rideOff;
   }
 
   if (a.type === "play_operation" && b.type === "play_operation") {
@@ -1838,7 +1898,8 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
   if (a.type === "move_to_battle" && b.type === "move_to_battle") {
     return (
       a.instanceId === b.instanceId &&
-      (a.rideOff ?? false) === (b.rideOff ?? false)
+      (a.rideOff ?? false) === (b.rideOff ?? false) &&
+      (a.vehicleInstanceId ?? "") === (b.vehicleInstanceId ?? "")
     );
   }
 
