@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_koreworashushitatokikomandozonnokadowokinabinishitemoy",
+          "keyword": "on_rush_command_discard_deck_feature_m_hold",
           "duration": "turn"
         }
       ],

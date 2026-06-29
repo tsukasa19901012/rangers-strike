@@ -570,6 +570,145 @@ export function startSphinxPowerQuizChoice(
   });
 }
 
+function parseFeatureFromEffectText(text: string): string {
+  return text.match(/特徴「([^」]+)」/)?.[1] ?? "メカ";
+}
+
+/** RS-316 超ドリル進化: ラッシュの恐竜2体捨て→SP1。 */
+export function startSuperDrillRushChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+    feature?: string;
+  },
+): GameState | null {
+  const feature = params.feature ?? "恐竜";
+  const player = state.players[params.playerId];
+  const valid = player.rush
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && (def.features ?? []).includes(feature);
+    })
+    .map((c) => c.instanceId);
+  if (valid.length < 2) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    unitDestination: "discard",
+    selectCount: 2,
+    optional: true,
+  });
+}
+
+/** RS-472 現場への搬送: コマンド任意枚数捨て→山札M配置。 */
+export function startSiteTransportChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+    feature: string;
+  },
+): GameState | null {
+  const player = state.players[params.playerId];
+  const valid = player.command.map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_commands",
+    validInstanceIds: valid,
+    selectCount: valid.length,
+    commandFilter: "any",
+    commandAction: "discard",
+    optional: true,
+    siteTransportMeta: { step: "discard", feature: params.feature, discardCount: 0 },
+  });
+}
+
+function openSiteTransportDeckStep(
+  state: GameState,
+  pending: PendingEffectChoice,
+  discardCount: number,
+): GameState {
+  const player = state.players[pending.playerId];
+  const feature = pending.siteTransportMeta?.feature ?? "メカ";
+  const valid = player.deck
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return (
+        def?.type === "unit" &&
+        def.size === "M" &&
+        (def.features ?? []).includes(feature)
+      );
+    })
+    .map((c) => c.instanceId);
+  const pickCount = Math.min(discardCount, valid.length);
+  if (pickCount <= 0) {
+    const shuffled = shuffleDeck(player.deck);
+    return clearChoice(
+      {
+        ...state,
+        ...updatePlayer(state, pending.playerId, { ...player, deck: shuffled }),
+      },
+      pending.phasePlayerId,
+    );
+  }
+  return openEffectChoice(clearChoice(state, pending.phasePlayerId), {
+    playerId: pending.playerId,
+    effectId: pending.effectId,
+    sourceCardId: pending.sourceCardId,
+    sourceInstanceId: pending.sourceInstanceId,
+    phasePlayerId: pending.phasePlayerId,
+    kind: "scry_keep_one",
+    validInstanceIds: valid,
+    viewedInstanceIds: valid,
+    selectCount: pickCount,
+    optional: true,
+    siteTransportMeta: { step: "deck", feature, discardCount },
+  });
+}
+
+/** RS-411: 山札からDA常駐OPを常駐置き場へ。 */
+export function startOnRushDeckResidentChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const player = state.players[params.playerId];
+  const valid = player.deck
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return (
+        def?.type === "operation" &&
+        def.category === "DA" &&
+        (def.tags?.includes("常駐") || def.text?.includes("※常駐"))
+      );
+    })
+    .map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "scry_keep_one",
+    validInstanceIds: valid,
+    viewedInstanceIds: valid,
+    unitDestination: "rush",
+    selectCount: 1,
+    optional: true,
+  });
+}
+
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
   const copy = [...deck];
   for (let i = copy.length - 1; i > 0; i -= 1) {
@@ -775,6 +914,25 @@ export function applyConfirmEffectChoice(
       };
     }
     return finished;
+  }
+
+  if (pending.kind === "select_commands" && pending.siteTransportMeta?.step === "discard") {
+    const selected = pending.selectedInstanceIds ?? [];
+    let nextState = state;
+    const player = nextState.players[pending.playerId];
+    let command = [...player.command];
+    const discard = [...player.discard];
+    for (const cmdId of selected) {
+      const found = findInZone({ ...player, command }, "command", cmdId);
+      if (!found) continue;
+      const removed = command.splice(found.index, 1)[0];
+      if (removed) discard.push(removed);
+    }
+    nextState = {
+      ...nextState,
+      ...updatePlayer(nextState, pending.playerId, { ...player, command, discard }),
+    };
+    return { state: openSiteTransportDeckStep(nextState, pending, selected.length) };
   }
 
   return { error: "invalid_choice_kind" };
@@ -1466,6 +1624,46 @@ export function applyEffectChoiceSelect(
     }
     case "select_unit": {
       const dest = pending.unitDestination ?? "discard";
+      const requiredCount = pending.selectCount ?? 1;
+      if (requiredCount > 1) {
+        const prev = pending.selectedInstanceIds ?? [];
+        if (prev.includes(instanceId)) return { error: "already_selected" };
+        const selected = [...prev, instanceId];
+        if (selected.length < requiredCount) {
+          const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+          return {
+            state: {
+              ...state,
+              pendingEffectChoice: {
+                ...pending,
+                selectedInstanceIds: selected,
+                validInstanceIds: remaining,
+              },
+            },
+          };
+        }
+        let nextState = state;
+        for (const id of selected) {
+          const leave = applyUnitLeave(nextState, id, dest, pending.phasePlayerId);
+          if ("error" in leave) return leave;
+          nextState = leave.state;
+        }
+        if (pending.sourceInstanceId) {
+          const player = nextState.players[pending.playerId];
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, pending.playerId, {
+              ...player,
+              battle: player.battle.map((c) =>
+                c.instanceId === pending.sourceInstanceId
+                  ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
+                  : c,
+              ),
+            }),
+          };
+        }
+        return finishChoice(nextState, pending, formatInstanceIdsAsNames(nextState, selected));
+      }
       if (pending.effectId === "fire_sword") {
         const owner = state.players[pending.playerId];
         const found = findInZone(owner, "operation", instanceId);
@@ -1997,7 +2195,22 @@ export function applyEffectChoiceSelect(
               power: [...player.power, { ...found.card, faceDown: false }],
             }),
           };
+        } else if (pending.commandAction === "discard") {
+          const [, command] = removeAt(player.command, found.index);
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, pending.playerId, {
+              ...player,
+              command,
+              discard: [...player.discard, found.card],
+            }),
+          };
         }
+      }
+      if (pending.siteTransportMeta?.step === "discard") {
+        return {
+          state: openSiteTransportDeckStep(nextState, pending, selected.length),
+        };
       }
       if (pending.effectId === "bio_particle_slash" && pending.sourceCardId) {
         const player = nextState.players[pending.playerId];
@@ -2138,6 +2351,13 @@ export function applyEffectChoiceSelect(
           ),
         };
       }
+      if (pending.effectId === "geki_e7b7a8") {
+        nextPlayer = {
+          ...nextPlayer,
+          hand: nextPlayer.hand.filter((c) => c.instanceId !== instanceId),
+          rush: [...nextPlayer.rush, found.card],
+        };
+      }
       return finishChoice(
         { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
         pending,
@@ -2182,6 +2402,20 @@ export function applyEffectChoiceSelect(
           ...player,
           deck: shuffleDeck([...rest, ...deckTail]),
           rush: [...player.rush, kept],
+        };
+      } else if (pending.siteTransportMeta?.step === "deck") {
+        nextPlayer = {
+          ...player,
+          deck: shuffleDeck(deckTail),
+          command: [...player.command, { ...kept, commandHeld: true }],
+          discard: [...player.discard, ...rest],
+        };
+      } else if (pending.effectId === "hagada") {
+        nextPlayer = {
+          ...player,
+          deck: shuffleDeck(deckTail),
+          operation: [{ ...kept, commandHeld: false }],
+          discard: [...player.discard, ...player.operation, ...rest],
         };
       } else {
         nextPlayer = {

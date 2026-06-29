@@ -10,6 +10,7 @@ import {
 } from "../../rules/legend3/rushEffects";
 import { ON_RUSH_EFFECTS } from "../../rules/rushEffects";
 import { resolveNoteOtherOnRushEffects, applyMotoSharianPowerTrigger } from "../../rules/noteOtherRushEffects";
+import { tryFormationDeployOnRush } from "../../rules/formationDeploy";
 import type { EventListener, UnitRushedEvent } from "../types";
 
 function applyDrawOnRush(
@@ -91,6 +92,17 @@ export const unitRushedListener: EventListener = (event, state) => {
     );
     nextState = namedRush.state;
     logs.push(...namedRush.logs);
+  }
+
+  if (!nextState.pendingEffectChoice) {
+    const formation = tryFormationDeployOnRush(
+      nextState,
+      rusherPlayerId,
+      rushedInstanceId,
+      phasePlayerId,
+    );
+    nextState = formation.state;
+    logs.push(...formation.logs);
   }
 
   const radar = applySuperRadarOnRush(nextState, rusherPlayerId, rushedInstanceId);

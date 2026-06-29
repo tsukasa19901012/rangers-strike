@@ -322,4 +322,72 @@ describe("RS monkey-test high-frequency fixes", () => {
     ).toBe(true);
     expect(isCatchallGrantKeyword("sphinx_power_quiz")).toBe(false);
   });
+
+  it("RS-472 rematches to on_rush_command_discard_deck_feature_m_hold", () => {
+    const text =
+      "これをラッシュしたとき、自軍コマンドゾーンのカードを好きな枚数選び捨札にしてもよい。そうしたとき、自軍山札から特徴「メカ」を持つMユニットのカードを、捨札にした枚数と同じ枚数まで好きな数選び、自軍コマンドゾーンにホールド状態で置く。その後、山札をシャッフルする。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "現場への搬送",
+      kind: "named",
+      trigger: { type: "on_rush" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_rush_command_discard_deck_feature_m_hold",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-316 rematches to enter_battle_discard_rush_feature_sp1", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「恐竜」を持つユニットを2体選び捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "超ドリル進化",
+      kind: "named",
+      trigger: { type: "enter_battle" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "enter_battle_discard_rush_feature_sp1",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-296 rematches to while_in_field_formation_deploy", () => {
+    const text =
+      "これが自軍ラッシュエリアにある間、次の効果を発動できる⇒自軍コマンドをホールドして特徴「航空機」を持つユニットをラッシュしたとき、ラッシュしたユニットと同じカード名のユニットカードを自分の手札から1枚選びラッシュエリアに出す。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "編隊出撃",
+      kind: "named",
+      trigger: { type: "while_in_field" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "while_in_field_formation_deploy",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-411 rematches to on_rush_deck_resident_operation", () => {
+    const text =
+      "これをラッシュしたとき、自軍山札からDAの常駐オペレーションのカードを1枚選び、自軍常駐置き場に配置してもよい。（すでに配置されている自軍常駐オペレーションは捨札にしてから配置する）その後、山札をシャッフルする。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "今は俺が戒律だ",
+      kind: "named",
+      trigger: { type: "on_rush" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_rush_deck_resident_operation",
+      ),
+    ).toBe(true);
+  });
 });

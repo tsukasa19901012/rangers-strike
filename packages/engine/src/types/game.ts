@@ -304,6 +304,12 @@ export type PendingEffectChoice = {
     powerInstanceId: string;
     actualPowerCost: number;
   };
+  /** RS-472 現場への搬送: コマンド捨て→山札サーチ。 */
+  siteTransportMeta?: {
+    step: "discard" | "deck";
+    feature: string;
+    discardCount: number;
+  };
 };
 
 /** @deprecated pendingEffectChoice を使用すること（ruin_survey）。 */

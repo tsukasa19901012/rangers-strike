@@ -945,6 +945,14 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (pending.kind === "select_commands" && pending.siteTransportMeta?.step === "discard") {
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
   if (pending.kind === "shiron_light") {
     if (pending.shironLightMeta?.step === "pick") {
       for (const instanceId of pending.validInstanceIds) {

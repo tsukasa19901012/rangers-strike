@@ -1565,6 +1565,116 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "while_in_field_mothership",
+    test: (body) =>
+      /これが自軍ラッシュエリアにある間.*追加条件を満たすために次のようにしてもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "mothership",
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "mothership",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_in_field_mothership",
+    }),
+  },
+  {
+    pattern: "on_rush_command_discard_deck_feature_m_hold",
+    test: (body) =>
+      /これをラッシュしたとき、自軍コマンドゾーンのカードを好きな枚数選び捨札にしてもよい。そうしたとき、自軍山札から特徴「([^」]+)」を持つMユニット/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "on_rush_site_transport",
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_command_discard_deck_feature_m_hold",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_command_discard_deck_feature_m_hold",
+    }),
+  },
+  {
+    pattern: "enter_battle_discard_rush_feature_sp1",
+    test: (body) =>
+      /これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「([^」]+)」を持つユニットを2体選び捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enter_discard_rush_sp1",
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_battle_discard_rush_feature_sp1",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_discard_rush_feature_sp1",
+    }),
+  },
+  {
+    pattern: "on_rush_deck_resident_operation",
+    test: (body) =>
+      /これをラッシュしたとき、自軍山札からDAの常駐オペレーションのカードを1枚選び、自軍常駐置き場に配置してもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "on_rush_deck_resident",
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_deck_resident_operation",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_deck_resident_operation",
+    }),
+  },
+  {
+    pattern: "while_in_field_formation_deploy",
+    test: (body) =>
+      /これが自軍ラッシュエリアにある間、次の効果を発動できる⇒自軍コマンドをホールドして特徴「航空機」を持つユニットをラッシュしたとき、ラッシュしたユニットと同じカード名のユニットカードを自分の手札から1枚選びラッシュエリアに出す/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "formation_deploy",
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "while_in_field_formation_deploy",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_in_field_formation_deploy",
+    }),
+  },
+  {
     pattern: "enter_battle_hold_send_enemy_s_to_power",
     test: (body) =>
       /これがバトルエリアに出たとき.*ホールドしてもよい.*敵軍Sユニットを1体選び.*パワーゾーンにダメージにして置く/.test(

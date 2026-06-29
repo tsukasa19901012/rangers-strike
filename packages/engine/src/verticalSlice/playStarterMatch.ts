@@ -91,6 +91,26 @@ function forceStallRecovery(state: GameState, actor: PlayerId): GameAction | nul
   return null;
 }
 
+function pickNonBattleEntryStallAction(
+  state: GameState,
+  actions: GameAction[],
+): GameAction | undefined {
+  const productive = actions.filter(
+    (a) =>
+      a.type !== "move_to_battle" &&
+      a.type !== "pass_battle_entry" &&
+      isLegalAction(state, a) &&
+      applyAction(state, a).ok,
+  );
+  const strike = productive.find((a) => a.type === "strike");
+  if (strike) return strike;
+  const battle = productive.find((a) => a.type === "battle");
+  if (battle) return battle;
+  const endPhase = productive.find((a) => a.type === "end_phase");
+  if (endPhase) return endPhase;
+  return productive[0];
+}
+
 /**
  * CPU ヒューリスティックで双方を進め、勝敗または停止条件まで進める。
  */
@@ -110,6 +130,9 @@ export function playStarterMatchUntilEnd(
   const blockedZordInstances = new Set<string>();
   let rushPaymentLoopCount = 0;
   let zordSetupLoopCount = 0;
+  let battleStallCount = 0;
+  let endPhaseLoopCount = 0;
+  let moveToBattleLoopCount = 0;
   let lastRushPaymentSource: string | null = null;
   let lastZordVehicleId: string | null = null;
   let lastFingerprint = "";
@@ -153,6 +176,15 @@ export function playStarterMatchUntilEnd(
       lastFingerprint = fingerprint;
     }
 
+    const stallBattleEntry =
+      moveToBattleLoopCount >= 3 &&
+      state.phase === "battle" &&
+      !state.pendingEffectChoice;
+    const selectableActions = stallBattleEntry
+      ? actions.filter((a) => a.type !== "move_to_battle")
+      : actions;
+    const actionPool = selectableActions.length > 0 ? selectableActions : actions;
+
     let action: GameAction;
     if (
       rushPaymentLoopCount >= 8 &&
@@ -181,16 +213,102 @@ export function playStarterMatchUntilEnd(
       );
       action = cancel ?? actions[0]!;
       zordSetupLoopCount = 0;
+    } else if (
+      moveToBattleLoopCount >= 6 &&
+      state.phase === "battle" &&
+      !state.pendingEffectChoice
+    ) {
+      action =
+        pickNonBattleEntryStallAction(state, actionPool) ??
+        actionPool.find(
+          (a) =>
+            a.type === "end_phase" &&
+            isLegalAction(state, a) &&
+            applyAction(state, a).ok,
+        ) ??
+        actionPool.find(
+          (a) =>
+            a.type === "pass_battle_entry" &&
+            isLegalAction(state, a) &&
+            applyAction(state, a).ok,
+        ) ??
+        actionPool[0]!;
+      moveToBattleLoopCount = 0;
+    } else if (
+      endPhaseLoopCount >= 4 &&
+      (state.phase === "rush" || state.phase === "battle" || state.phase === "charge")
+    ) {
+      const strike = actionPool.find(
+        (a) => a.type === "strike" && isLegalAction(state, a) && applyAction(state, a).ok,
+      );
+      const battle = actionPool.find(
+        (a) => a.type === "battle" && isLegalAction(state, a) && applyAction(state, a).ok,
+      );
+      const rush = actionPool.find(
+        (a) => a.type === "rush" && isLegalAction(state, a) && applyAction(state, a).ok,
+      );
+      const playOp = actionPool.find(
+        (a) => a.type === "play_operation" && isLegalAction(state, a) && applyAction(state, a).ok,
+      );
+      const draw = actionPool.find(
+        (a) => a.type === "draw" && isLegalAction(state, a) && applyAction(state, a).ok,
+      );
+      const endPhase = actionPool.find((a) => a.type === "end_phase");
+      action = strike ?? battle ?? rush ?? playOp ?? draw ?? endPhase ?? actionPool[0]!;
+      endPhaseLoopCount = 0;
     } else if (sameFingerprintCount > 40) {
       const forced = forceStallRecovery(state, actor);
       action =
         forced && isLegalAction(state, forced) && applyAction(state, forced).ok
           ? forced
-          : actions[0]!;
+          : actionPool[0]!;
       sameFingerprintCount = 0;
     } else {
       const picked = pickCpuAction(state, actor, cpuLevel);
-      action = picked && isLegalAction(state, picked) ? picked : actions[0]!;
+      if (
+        stallBattleEntry &&
+        picked?.type === "move_to_battle"
+      ) {
+        action =
+          pickNonBattleEntryStallAction(state, actionPool) ??
+          actionPool.find(
+            (a) =>
+              a.type === "end_phase" &&
+              isLegalAction(state, a) &&
+              applyAction(state, a).ok,
+          ) ??
+          actionPool.find(
+            (a) =>
+              a.type === "pass_battle_entry" &&
+              isLegalAction(state, a) &&
+              applyAction(state, a).ok,
+          ) ??
+          actionPool[0]!;
+      } else if (
+        battleStallCount >= 3 &&
+        state.phase === "battle" &&
+        !state.pendingEffectChoice &&
+        picked &&
+        (picked.type === "move_to_battle" || picked.type === "pass_battle_entry")
+      ) {
+        action =
+          pickNonBattleEntryStallAction(state, actionPool) ??
+          actionPool.find(
+            (a) =>
+              a.type === "end_phase" &&
+              isLegalAction(state, a) &&
+              applyAction(state, a).ok,
+          ) ??
+          (picked.type === "pass_battle_entry" ? picked : actionPool.find(
+            (a) =>
+              a.type === "pass_battle_entry" &&
+              isLegalAction(state, a) &&
+              applyAction(state, a).ok,
+          )) ??
+          picked;
+      } else {
+        action = picked && isLegalAction(state, picked) ? picked : actionPool[0]!;
+      }
     }
 
     if (
@@ -259,6 +377,31 @@ export function playStarterMatchUntilEnd(
     }
     if (!result.ok) {
       if (result.error === "cannot_enter_battle" && action.type === "move_to_battle") {
+        moveToBattleLoopCount += 1;
+        if (moveToBattleLoopCount >= 3) {
+          const recovery =
+            actions.find(
+              (candidate) =>
+                candidate.type === "pass_battle_entry" &&
+                isLegalAction(state, candidate) &&
+                applyAction(state, candidate).ok,
+            ) ??
+            actions.find(
+              (candidate) =>
+                candidate.type === "end_phase" &&
+                isLegalAction(state, candidate) &&
+                applyAction(state, candidate).ok,
+            );
+          if (recovery) {
+            const recovered = applyAction(state, recovery);
+            if (recovered.ok) {
+              state = recovered.state;
+              actionCounts[recovery.type] = (actionCounts[recovery.type] ?? 0) + 1;
+              moveToBattleLoopCount = 0;
+              continue;
+            }
+          }
+        }
         continue;
       }
       if (result.error === "cannot_enter_battle") {
@@ -337,6 +480,34 @@ export function playStarterMatchUntilEnd(
       }
     } else if (action.type === "cancel_zord_setup" || action.type === "resolve_zord_setup") {
       zordSetupLoopCount += 1;
+    }
+    if (action.type === "move_to_battle") {
+      moveToBattleLoopCount += 1;
+    } else if (
+      action.type === "end_phase" ||
+      action.type === "strike" ||
+      state.phase !== "battle"
+    ) {
+      moveToBattleLoopCount = 0;
+    }
+    if (
+      state.phase === "battle" &&
+      !state.pendingEffectChoice &&
+      (action.type === "pass_battle_entry" ||
+        action.type === "move_to_battle" ||
+        action.type === "end_phase")
+    ) {
+      battleStallCount += 1;
+    } else if (state.phase !== "battle" || action.type === "strike" || action.type === "battle") {
+      battleStallCount = 0;
+    }
+    if (
+      action.type === "end_phase" &&
+      (state.phase === "rush" || state.phase === "battle" || state.phase === "charge")
+    ) {
+      endPhaseLoopCount += 1;
+    } else if (action.type === "strike" || action.type === "battle" || action.type === "rush") {
+      endPhaseLoopCount = 0;
     }
   }
 

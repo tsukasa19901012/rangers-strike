@@ -21,6 +21,9 @@ import {
   startHangaEvolutionChoice,
   startEnterRushFromDiscardFeatureChoice,
   startSphinxPowerQuizChoice,
+  startSuperDrillRushChoice,
+  startSiteTransportChoice,
+  startOnRushDeckResidentChoice,
 } from "../rules/pendingChoices";
 import { getDslEffectById } from "./effectLookup";
 import { beginCastoffOnRush } from "../rules/castoff";
@@ -70,6 +73,7 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "register",
   "commander",
   "mothership",
+  "while_in_field_formation_deploy",
   "ride_bp_boost_500",
   "ride_bp_boost_1000",
   "cross1",
@@ -213,6 +217,10 @@ function grantSpLevel(
     next = grantSp1ToBattleUnit(next, playerId, instanceId);
   }
   return next;
+}
+
+function parseFeatureFromEffectText(text: string): string {
+  return text.match(/特徴「([^」]+)」/)?.[1] ?? "メカ";
 }
 
 export function applyGrantKeyword(
@@ -392,6 +400,50 @@ export function applyGrantKeyword(
       });
       if (!withChoice) return { state };
       return { state: withChoice, detail: ctx.effectId };
+    }
+    case "enter_battle_discard_rush_feature_sp1": {
+      const effect = getDslEffectById(ctx.sourceCardId, ctx.effectId);
+      const feature =
+        effect?.text?.match(/特徴「([^」]+)」/)?.[1] ?? "恐竜";
+      const withChoice = startSuperDrillRushChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+        feature,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
+    }
+    case "on_rush_command_discard_deck_feature_m_hold": {
+      const effect = getDslEffectById(ctx.sourceCardId, ctx.effectId);
+      const feature = parseFeatureFromEffectText(effect?.text ?? "");
+      const withChoice = startSiteTransportChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+        feature,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
+    }
+    case "on_rush_deck_resident_operation": {
+      const withChoice = startOnRushDeckResidentChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
+    }
+    case "while_in_field_formation_deploy":
+    case "mothership": {
+      return { state, detail: keyword };
     }
     case "force_opponent_hold_command": {
       const enemyId = opponent(ctx.playerId);

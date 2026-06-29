@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "resident_zone_koreworashushitatokikaradanoopereshonnokadowo1bi",
+          "keyword": "on_rush_deck_resident_operation",
           "duration": "turn"
         }
       ],

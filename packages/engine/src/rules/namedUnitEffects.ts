@@ -12,6 +12,7 @@ import {
   unitBp,
 } from "../core/catalog";
 import { attackedBpBoostAmount, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
+import { getDslEffectById } from "../dsl/effectLookup";
 import { passiveNamedFieldBpBonus } from "./fieldAuras";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import {
@@ -50,6 +51,7 @@ import {
   startSelectHandChoice,
   startSelectPowerChoice,
   startSelectUnitChoice,
+  startSuperDrillRushChoice,
   startTyrannoSonicChoice,
 } from "./pendingChoices";
 import { tryLeaveField } from "./operationCounters";
@@ -537,13 +539,26 @@ export function tryStartConditionalChoice(
     });
   }
   if (effectId === "super_drill") {
+    const effect = getDslEffectById(card.cardId, effectId);
+    const text = effect?.text ?? "";
+    if (/ラッシュエリアから特徴「/.test(text)) {
+      const feature = text.match(/特徴「([^」]+)」/)?.[1] ?? "恐竜";
+      return startSuperDrillRushChoice(state, {
+        playerId,
+        effectId,
+        sourceCardId: card.cardId,
+        sourceInstanceId: card.instanceId,
+        phasePlayerId,
+        feature,
+      });
+    }
     return startSelectHandChoice(state, {
       playerId,
       effectId,
       sourceCardId: card.cardId,
       sourceInstanceId: card.instanceId,
       phasePlayerId,
-      cardId: "RS-051",
+      cardId: card.cardId,
       optional: true,
     });
   }
