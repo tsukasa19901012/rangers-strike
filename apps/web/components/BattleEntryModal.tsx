@@ -18,6 +18,7 @@ type BattleEntryModalProps = {
   strikeDamage: number;
   canStrike: boolean;
   targets: BattleEntryTarget[];
+  variant?: "battle_entry" | "wing";
   onStrike: () => void;
   onAttack: (defenderInstanceId: string) => void;
   onPass: () => void;
@@ -31,11 +32,20 @@ export function BattleEntryModal({
   strikeDamage,
   canStrike,
   targets,
+  variant = "battle_entry",
   onStrike,
   onAttack,
   onPass,
   onPreviewCard,
 }: BattleEntryModalProps) {
+  const isWing = variant === "wing";
+  const title = isWing ? "ウイング" : "バトルアクション";
+  const unitLead = isWing
+    ? `「${unitCard.name}」をホールドしてラッシュからアタック`
+    : `「${unitCard.name}」の行動を選んでください`;
+  const passLabel = isWing ? "やめる" : "何もしない";
+  const showStrike = canStrike && !isWing;
+
   return (
     <GameModalBackdrop>
       <div
@@ -48,18 +58,16 @@ export function BattleEntryModal({
       >
         <div className="modal__content modal__content--battle-entry">
           <h3 id="battle-entry-title" className="battle-entry-modal__title">
-            バトルアクション
+            {title}
           </h3>
-          <p className="battle-entry-modal__unit">
-            「{unitCard.name}」の行動を選んでください
-          </p>
+          <p className="battle-entry-modal__unit">{unitLead}</p>
           <p className="battle-entry-modal__stats">
             <span>{unitSpLabel}</span>
             <span>BP {unitBp.toLocaleString()}</span>
           </p>
 
           <div className="battle-entry-modal__actions">
-            {canStrike && (
+            {showStrike && (
               <button
                 type="button"
                 className="btn btn--primary battle-entry-modal__action"
@@ -107,7 +115,7 @@ export function BattleEntryModal({
               className="btn battle-entry-modal__action battle-entry-modal__action--pass"
               onClick={onPass}
             >
-              何もしない
+              {passLabel}
             </button>
           </div>
         </div>

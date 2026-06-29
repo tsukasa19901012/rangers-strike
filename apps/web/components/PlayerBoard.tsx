@@ -332,6 +332,10 @@ export type PlayerBoardProps = {
   substituteIds?: Set<string>;
   onSubstituteSelect?: (instanceId: string) => void;
   entryAttackerIds?: Set<string>;
+  wingRushSelectableIds?: Set<string>;
+  wingRushSelectedIds?: Set<string>;
+  onWingRushSelect?: (instanceId: string) => void;
+  wingAttackDragIds?: Set<string>;
   attackTargetIds?: Set<string>;
   onAttackTargetSelect?: (defenderInstanceId: string) => void;
   pendingEffectChoiceTargets?: Set<string>;
@@ -383,6 +387,10 @@ export function PlayerBoard({
   substituteIds,
   onSubstituteSelect,
   entryAttackerIds,
+  wingRushSelectableIds,
+  wingRushSelectedIds,
+  onWingRushSelect,
+  wingAttackDragIds,
   attackTargetIds,
   onAttackTargetSelect,
   pendingEffectChoiceTargets,
@@ -487,6 +495,10 @@ export function PlayerBoard({
   })();
 
   const handleSelectTarget = (instanceId: string) => {
+    if (wingRushSelectableIds?.has(instanceId)) {
+      onWingRushSelect?.(instanceId);
+      return;
+    }
     if (attackTargetIds?.has(instanceId)) {
       onAttackTargetSelect?.(instanceId);
       return;
@@ -568,6 +580,20 @@ export function PlayerBoard({
     />
   );
 
+  const rushSelectableIds = (() => {
+    if (!wingRushSelectableIds?.size) return selectableIds;
+    const ids = new Set(selectableIds ?? []);
+    wingRushSelectableIds.forEach((id) => ids.add(id));
+    return ids;
+  })();
+
+  const rushSelectedIds = (() => {
+    const ids = new Set<string>();
+    commandPaymentSelectedIds?.forEach((id) => ids.add(id));
+    wingRushSelectedIds?.forEach((id) => ids.add(id));
+    return ids.size > 0 ? ids : undefined;
+  })();
+
   const rushZone = (
     <ZoneCards
       title="ラッシュエリア"
@@ -583,15 +609,21 @@ export function PlayerBoard({
       highlighted={highlightRush}
       onDrop={(payload) => onZoneDrop?.("rush", payload)}
       onPreview={onPreview}
-      selectableIds={selectableIds}
-      selectedIds={commandPaymentSelectedIds}
+      selectableIds={rushSelectableIds}
+      selectedIds={rushSelectedIds}
       substituteIds={substituteIds}
       interceptableIds={isHuman ? interceptableIds : undefined}
       onSelectTarget={handleSelectTarget}
       onInterceptSelect={onInterceptSelect}
       onSubstituteSelect={onSubstituteSelect}
       getCommandHeld={(card) => card.commandHeld}
-      getDraggable={() => !!(interactive && phase === "battle")}
+      getDraggable={(card) =>
+        !!(
+          interactive &&
+          phase === "battle" &&
+          (wingAttackDragIds?.has(card.instanceId) || !card.commandHeld)
+        )
+      }
       emptyLabel="—"
     />
   );
@@ -777,12 +809,15 @@ export function PlayerBoard({
             substituteIds?.size ||
             pendingEffectChoiceTargets?.size ||
             pendingCommandPaymentTargets?.size ||
+            wingRushSelectableIds?.size ||
             attackTargetIds?.size) ? (
             <p className="target-hint">
               {pendingCommandPaymentTargets?.size
                 ? "ホールドするコマンドをタップ · 長押しで詳細"
                 : substituteIds?.size
                 ? "身代わりにするユニットをタップ"
+                : wingRushSelectableIds?.size
+                  ? "ウイングするユニットをタップ · 長押しで詳細"
                 : attackTargetIds?.size
                   ? "アタック対象をタップ"
                   : pendingZordTargets?.size

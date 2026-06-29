@@ -124,6 +124,13 @@ import {
   listCyberSRiderHandCandidates,
 } from "@/lib/cyberSRiderUi";
 import { findBattleDanceAction } from "@/lib/battleDanceUi";
+import {
+  buildWingBattleModal,
+  collectWingAttackerInstanceIds,
+  collectWingAttackTargetIds,
+  collectWingHoldInstanceIds,
+  findWingBattleAction,
+} from "@/lib/wingUi";
 import { usePointerDrag } from "@/lib/PointerDragContext";
 
 const CPU_PLAYER = "player2" as const;
@@ -192,6 +199,7 @@ export function GameApp() {
     instanceId: string;
     cardId: string;
   } | null>(null);
+  const [wingPromptAttackerId, setWingPromptAttackerId] = useState<string | null>(null);
   const [pendingHiddenNinja, setPendingHiddenNinja] = useState<{
     counterInstanceId: string;
   } | null>(null);
@@ -453,6 +461,7 @@ export function GameApp() {
       setPhaseNotice(state.phase);
     }
     prevPhaseRef.current = state.phase;
+    setWingPromptAttackerId(null);
   }, [state, state?.phase, state?.winner]);
 
   const apply = useCallback((action: GameAction): boolean => {
@@ -470,6 +479,9 @@ export function GameApp() {
         setPendingBattleDance(null);
       }
       setPendingHiddenNinja(null);
+      if (action.type === "battle" || action.type === "pass_battle_entry") {
+        setWingPromptAttackerId(null);
+      }
       setActionError(null);
       return true;
     }
@@ -796,7 +808,8 @@ export function GameApp() {
   const handleBattleCardDrop = useCallback(
     (defenderId: string, payload: DragCardPayload) => {
       if (!state || !humanCanAct || state.phase !== "battle") return;
-      if (payload.fromZone !== "battle" || payload.playerId !== HUMAN_PLAYER) return;
+      if (payload.playerId !== HUMAN_PLAYER) return;
+      if (payload.fromZone !== "battle" && payload.fromZone !== "rush") return;
 
       const action = legalActions.find(
         (a) =>
@@ -804,7 +817,10 @@ export function GameApp() {
           a.attackerInstanceId === payload.instanceId &&
           a.defenderInstanceId === defenderId,
       );
-      if (action) apply(action);
+      if (action) {
+        apply(action);
+        setWingPromptAttackerId(null);
+      }
     },
     [apply, humanCanAct, legalActions, state],
   );
@@ -1182,35 +1198,150 @@ export function GameApp() {
     [apply, legalActions],
   );
 
+  const activeBattleAttackerId = useMemo(() => {
+    if (state?.pendingBattleEntry?.playerId === HUMAN_PLAYER) {
+      return state.pendingBattleEntry.instanceId;
+    }
+    return wingPromptAttackerId;
+  }, [state?.pendingBattleEntry, wingPromptAttackerId]);
+
   const handleAttackTargetSelect = useCallback(
     (defenderInstanceId: string) => {
-      const entry = state?.pendingBattleEntry;
-      if (!entry || entry.playerId !== HUMAN_PLAYER) return;
-      const action = legalActions.find(
-        (a) =>
-          a.type === "battle" &&
-          a.attackerInstanceId === entry.instanceId &&
-          a.defenderInstanceId === defenderInstanceId,
+      if (!activeBattleAttackerId) return;
+      const action = findWingBattleAction(
+        legalActions,
+        activeBattleAttackerId,
+        defenderInstanceId,
       );
-      if (action) apply(action);
+      if (action) {
+        apply(action);
+        setWingPromptAttackerId(null);
+      }
     },
-    [apply, legalActions, state?.pendingBattleEntry],
+    [activeBattleAttackerId, apply, legalActions],
   );
 
   const attackTargetIds = useMemo(() => {
-    const entry = state?.pendingBattleEntry;
-    if (!entry || entry.playerId !== HUMAN_PLAYER) return undefined;
-    const ids = new Set<string>();
-    for (const action of legalActions) {
-      if (
-        action.type === "battle" &&
-        action.attackerInstanceId === entry.instanceId
-      ) {
-        ids.add(action.defenderInstanceId);
-      }
+    if (!activeBattleAttackerId) return undefined;
+    const ids = collectWingAttackTargetIds(legalActions, activeBattleAttackerId);
+    return ids.size > 0 ? ids : undefined;
+  }, [activeBattleAttackerId, legalActions]);
+
+  const wingHoldableIds = useMemo(() => {
+    if (!state || !humanCanAct || state.phase !== "battle" || wingPromptAttackerId) {
+      return undefined;
+    }
+    const ids = collectWingHoldInstanceIds(legalActions, HUMAN_PLAYER);
+    return ids.size > 0 ? ids : undefined;
+  }, [humanCanAct, legalActions, state, wingPromptAttackerId]);
+
+  const wingAttackReadyIds = useMemo(() => {
+    if (!state || !humanCanAct || state.phase !== "battle" || wingPromptAttackerId) {
+      return undefined;
+    }
+    const rushIds = state.players[HUMAN_PLAYER].rush.map((card) => card.instanceId);
+    const ids = collectWingAttackerInstanceIds(legalActions, HUMAN_PLAYER, rushIds);
+    const holdable = collectWingHoldInstanceIds(legalActions, HUMAN_PLAYER);
+    for (const id of holdable) {
+      ids.delete(id);
     }
     return ids.size > 0 ? ids : undefined;
-  }, [legalActions, state?.pendingBattleEntry]);
+  }, [humanCanAct, legalActions, state, wingPromptAttackerId]);
+
+  const wingRushSelectableIds = useMemo(() => {
+    if (!wingHoldableIds && !wingAttackReadyIds) return undefined;
+    const ids = new Set<string>();
+    wingHoldableIds?.forEach((id) => ids.add(id));
+    wingAttackReadyIds?.forEach((id) => ids.add(id));
+    return ids.size > 0 ? ids : undefined;
+  }, [wingAttackReadyIds, wingHoldableIds]);
+
+  const wingAttackDragIds = useMemo(() => {
+    if (!state || state.phase !== "battle") return undefined;
+    const rushIds = state.players[HUMAN_PLAYER].rush.map((card) => card.instanceId);
+    const ids = collectWingAttackerInstanceIds(legalActions, HUMAN_PLAYER, rushIds);
+    return ids.size > 0 ? ids : undefined;
+  }, [legalActions, state]);
+
+  const handleWingRushSelect = useCallback(
+    (instanceId: string) => {
+      const holdAction = legalActions.find(
+        (action) =>
+          action.type === "hold_for_wing" &&
+          action.playerId === HUMAN_PLAYER &&
+          action.instanceId === instanceId,
+      );
+      if (holdAction) {
+        if (apply(holdAction)) {
+          setWingPromptAttackerId(instanceId);
+        }
+        return;
+      }
+      const canAttack = legalActions.some(
+        (action) =>
+          action.type === "battle" &&
+          action.playerId === HUMAN_PLAYER &&
+          action.attackerInstanceId === instanceId,
+      );
+      if (canAttack) {
+        setWingPromptAttackerId(instanceId);
+      }
+    },
+    [apply, legalActions],
+  );
+
+  const handleWingPromptPass = useCallback(() => {
+    setWingPromptAttackerId(null);
+  }, []);
+
+  const handleWingPromptAttack = useCallback(
+    (defenderInstanceId: string) => {
+      if (!wingPromptAttackerId) return;
+      const action = findWingBattleAction(
+        legalActions,
+        wingPromptAttackerId,
+        defenderInstanceId,
+      );
+      if (action) {
+        apply(action);
+        setWingPromptAttackerId(null);
+      }
+    },
+    [apply, legalActions, wingPromptAttackerId],
+  );
+
+  const wingBattleModal = useMemo(() => {
+    if (!state || !wingPromptAttackerId || state.pendingBattleEntry) return null;
+    if (!humanCanAct || state.phase !== "battle") return null;
+    const built = buildWingBattleModal(
+      state,
+      legalActions,
+      wingPromptAttackerId,
+      HUMAN_PLAYER,
+      CPU_PLAYER,
+      formatBattleUnitSp,
+    );
+    if (!built) return null;
+    return {
+      ...built,
+      strikeDamage: 0,
+      canStrike: false,
+    };
+  }, [humanCanAct, legalActions, state, wingPromptAttackerId]);
+
+  useEffect(() => {
+    if (!wingPromptAttackerId || !state) return;
+    const inRush = state.players[HUMAN_PLAYER].rush.some(
+      (card) => card.instanceId === wingPromptAttackerId,
+    );
+    if (!inRush) {
+      setWingPromptAttackerId(null);
+      return;
+    }
+    if (collectWingAttackTargetIds(legalActions, wingPromptAttackerId).size === 0) {
+      setWingPromptAttackerId(null);
+    }
+  }, [legalActions, state, wingPromptAttackerId]);
 
   const entryAttackerIds = useMemo(() => {
     const entry = state?.pendingBattleEntry;
@@ -1652,6 +1783,14 @@ export function GameApp() {
     !state.pendingDamagePayment &&
     !state.pendingLeave;
 
+  const showWingModal =
+    !!wingBattleModal &&
+    !showEffectNotice &&
+    !state.pendingStrike &&
+    !state.pendingDamagePayment &&
+    !state.pendingLeave &&
+    !showBattleEntryModal;
+
   const isHumanCommandPayment = isHumanCommandPaymentActive(state, HUMAN_PLAYER);
 
   const showCommandPaymentModal = isHumanCommandPayment;
@@ -1760,8 +1899,12 @@ export function GameApp() {
             ? effectChoiceHint(pendingChoice)
             : isHumanEffectChoice && pendingChoice
               ? effectChoiceHint(pendingChoice)
-            : isHumanBattleEntry
+            : isHumanBattleEntry || showWingModal
               ? undefined
+              : state.phase === "battle" &&
+                humanCanAct &&
+                wingRushSelectableIds?.size
+              ? "ウイングするユニットをタップ"
               : state.phase === "battle" &&
                 humanCanAct &&
                 findMandatoryBattleEntries(state, HUMAN_PLAYER).length > 0
@@ -1792,6 +1935,8 @@ export function GameApp() {
                   ? "（コマンド支払い）"
                   : state.pendingBattleEntry
                     ? "（バトルアクション）"
+                    : showWingModal
+                      ? "（ウイング）"
                     : "のターン";
 
   return (
@@ -1849,6 +1994,21 @@ export function GameApp() {
           onStrike={handleBattleEntryStrike}
           onAttack={handleAttackTargetSelect}
           onPass={handleBattleEntryPass}
+          onPreviewCard={setPreviewCard}
+        />
+      )}
+      {showWingModal && wingBattleModal && (
+        <BattleEntryModal
+          variant="wing"
+          unitCard={wingBattleModal.unitCard}
+          unitSpLabel={wingBattleModal.unitSpLabel}
+          unitBp={wingBattleModal.unitBp}
+          strikeDamage={wingBattleModal.strikeDamage}
+          canStrike={wingBattleModal.canStrike}
+          targets={wingBattleModal.targets}
+          onStrike={() => {}}
+          onAttack={handleWingPromptAttack}
+          onPass={handleWingPromptPass}
           onPreviewCard={setPreviewCard}
         />
       )}
@@ -2292,6 +2452,12 @@ export function GameApp() {
             onViewPile={(pile) => handleViewPile(HUMAN_PLAYER, pile)}
             onOperationCardClick={handleOperationCardClick}
             entryAttackerIds={entryAttackerIds}
+            wingRushSelectableIds={wingRushSelectableIds}
+            wingRushSelectedIds={
+              wingPromptAttackerId ? new Set([wingPromptAttackerId]) : undefined
+            }
+            onWingRushSelect={handleWingRushSelect}
+            wingAttackDragIds={wingAttackDragIds}
             pendingEffectChoiceTargets={
               damagePaymentOnHumanBoard
                 ? boardDamagePaymentTargets
@@ -2358,7 +2524,8 @@ export function GameApp() {
           !showZordSetupBanner &&
           !showEffectChoiceBanner &&
           !showStartPhaseModal &&
-          !canPassBattleEntry && (
+          !canPassBattleEntry &&
+          !showWingModal && (
           <button
             type="button"
             className="btn btn--primary"
