@@ -421,6 +421,7 @@ export function resolveNamedOnRushEffects(
         playerId: rusherPlayerId,
         phasePlayerId,
         sourceCardId: found.card.cardId,
+        effectId: MURPHY_CHASE_EFFECT_ID,
         triggerSourceInstanceId: rushedInstanceId,
         optional: true,
       });
