@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382b3e382b5e38383e382af",
+      "id": "kosakudansu",
       "name": "コサックダンス",
       "text": "このターン、自軍ユニットがバトルエリアからラッシュエリアに戻るたび、そのユニットを自分の手札に戻してもよい。そうしたとき、自軍コマンドを1つホールドして、手札に戻したユニットカードと同じカード名のユニットカードを自分の手札から1枚選び、自軍ラッシュエリアに出してもよい。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e38193e381ae",
+          "keyword": "deploy_rush_area_konotanyunitogabatorueriakararashuerianirutabisonoyunit",
           "duration": "turn"
         }
       ],

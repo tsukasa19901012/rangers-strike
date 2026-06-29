@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e6aabbe3818be38289e694be",
+      "id": "karatareta",
       "name": "檻から放たれた脅威",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアのSユニットをすべてホールドしてもよい。そうしたとき、ホールドしたユニットの数以下の必要パワーの数字を持つ敵軍ユニットをすべて撃破する。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibatoruerianosyunitowosub",
           "duration": "turn"
         }
       ],

@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e382a4e382abe383ade382b9",
+      "id": "ikarosubaindo",
       "name": "イカロスバインド",
       "text": "これがバトルエリアに出たとき、敵軍ユニットを1体選びホールドしてもよい。また、これが自軍バトルエリアにある間、相手は次の制限を受ける⇒ホールド状態のユニットをラッシュエリアに戻すとき、それを撃破するか戻さないかを選ぶ。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e38193e3828c",
+          "keyword": "hold_on_enter_battle_koregabatoruerianitatokiyunitowo1bihorudoshitemoyoi",
           "duration": "permanent"
         }
       ],

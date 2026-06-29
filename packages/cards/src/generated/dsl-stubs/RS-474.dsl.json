@@ -40,14 +40,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe887aa",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b9e38386e383abe382b9",
+      "id": "suterusumodo",
       "name": "ステルスモード",
       "text": "これは敵軍ユニットにアタックされない。",
       "trigger": {

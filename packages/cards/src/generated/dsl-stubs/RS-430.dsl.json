@@ -31,17 +31,17 @@
       ]
     },
     {
-      "id": "named_e78da3e68bb3e38388e383ac",
+      "id": "ken_torena",
       "name": "獣拳トレーナー",
       "text": "これが自軍ラッシュエリアにある間、追加条件を持たない「WB」のすべてのSユニットは、次の能力を得る⇒必要パワーの数字2ごとにBP＋1000され、バトルエリアで2番目に並んだとき「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
-          "duration": "turn"
+          "keyword": "battle_position_sp_any_pos2_sp1",
+          "duration": "permanent"
         }
       ]
     }

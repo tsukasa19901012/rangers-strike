@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e5ae87e5ae99e5bf8de6b395",
+      "id": "ninpo_ri",
       "name": "宇宙忍法・縁切り",
       "text": "敵軍バトルエリアから、ＣＮの数字が昇順（例:1、2や3、4など）で隣り合っている2体のSユニットを選んでもよい。そうしたとき、選んだ2体でバトルさせる。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "adjacent_units_e695b5e8bb8d",
+          "keyword": "adjacent_units_batorueriakaranoga12ya34nadoderiteiru2nosyunito",
           "duration": "turn"
         }
       ],

@@ -57,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e38387e383a5e382a2e383ab",
+      "id": "deyuarukurashadoriruhedo",
       "name": "デュアルクラッシャー・ドリルヘッド",
       "text": "これは特徴「メカ」を持つユニットにアタックするときBP＋4000される。",
       "trigger": {
@@ -66,7 +66,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "attack_bp_plus_vs_meka_4000",
           "duration": "turn"
         }
       ],

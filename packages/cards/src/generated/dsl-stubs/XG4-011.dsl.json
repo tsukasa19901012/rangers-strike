@@ -60,7 +60,7 @@
       ]
     },
     {
-      "id": "named_e98a80e6b2b3e381aee688a6",
+      "id": "no_hikari",
       "name": "銀河の戦光",
       "text": "本来の特徴に「ギンガの光」を持つユニットが5体以上あれば、敵軍バトルエリアのユニットをすべてゲームから除外する。",
       "trigger": {
@@ -69,7 +69,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e69cace69da5",
+          "keyword": "exclude_game_nonigingano_hikari_wotsuyunitoga5arebabatoruerianoyunitowo",
           "duration": "turn"
         }
       ],

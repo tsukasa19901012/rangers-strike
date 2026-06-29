@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e38395e382a1e383bce382b9",
+      "id": "fuasutokurasuna",
       "name": "ファーストクラスな教官",
       "text": "これをラッシュしたとき、自軍山札を見て「ジャン・ボエール」以外の特徴「炎神」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_e38193e3828c",
+          "keyword": "deck_search_koreworashushitatokiwotejanboeruno_honoo_shin_wotsumyuni",
           "duration": "turn"
         }
       ],

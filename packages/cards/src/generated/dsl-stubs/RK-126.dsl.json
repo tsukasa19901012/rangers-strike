@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382aee383a3e383ace383b3",
+      "id": "gyarenrauza",
       "name": "ギャレンラウザー",
       "text": "自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの必要パワーの数字が番号順（例：0、1、2や3、4、5など）に揃うなら、敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_pick_show_e887aae58886",
+          "keyword": "hand_pick_show_nowo3binisetemoyoisoushitatokisyunitowo1bihoru",
           "duration": "turn"
         }
       ],

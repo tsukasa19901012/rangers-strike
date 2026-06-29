@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b6e38390e382aee383b3",
+      "id": "zabaginbashigura",
       "name": "ザバギンバシグラ",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンのダメージ以外のカードから、Sユニットのカードを1枚選び、敵軍ラッシュエリアに出してもよい。そうしたとき、相手は自分自身の山札の上から1枚ひいて、自分自身のパワーゾーンに置いてもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e887aae8bb8d",
+          "keyword": "opponent_must_tankoregabatoruerianitatokipawazonnodamejinokadoka",
           "duration": "turn"
         }
       ],

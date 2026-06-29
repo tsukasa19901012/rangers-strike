@@ -42,14 +42,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382abe383aae382b9e382a2",
+      "id": "karisuaro",
       "name": "カリスアロー",
       "text": "自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字がすべて同じなら、敵軍コマンドゾーンからホールド状態のカードを1枚選び捨札にする。",
       "trigger": {

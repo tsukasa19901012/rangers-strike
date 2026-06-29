@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e7b5b6e5afbee7a9b6e6a5b5",
+      "id": "aruteimasutomu",
       "name": "絶対究極奥義アルティマストーム",
       "text": "これをラッシュしたとき、これ以外のすべてのユニットと、すべてのコマンドゾーンのカードを持ち主の山札に戻してシャッフルする。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_e38193e3828c",
+          "keyword": "return_to_zone_koreworashushitatokikorenosubetenoyunitotosubetenokomando",
           "duration": "turn"
         }
       ],

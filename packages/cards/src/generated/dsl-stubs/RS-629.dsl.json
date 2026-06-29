@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e383a1e382ace382b9e383aa",
+      "id": "megasuringu",
       "name": "メガスリング",
       "text": "リリース状態の自軍コマンドを1つ選び、山札の上に戻してもよい。そうしたとき、このターン、敵軍ラッシュエリアのSユニットはBP-1500される。（BP0以下になったユニットは撃破される）",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e383aae383aa",
+          "keyword": "release_command_action_ririsunokomandowo1tsubinonishitemoyoisoushitatoki",
           "duration": "turn"
         }
       ],

@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e69cabe69c9fe381aee98592",
+      "id": "no_e69cab",
       "name": "末期の酒",
       "text": "自軍ターン中、これがバトルエリアに出たとき、相手に1枚ドローさせる。その後、相手は追加条件を持たない自分自身のSユニットを1体選び撃破する。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokini1dorosaserusonoha",
           "duration": "turn"
         }
       ],

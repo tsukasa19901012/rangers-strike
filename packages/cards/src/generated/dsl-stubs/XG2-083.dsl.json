@@ -43,13 +43,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e98a80e6b2b3e38391e38388",
+      "id": "patororu",
       "name": "銀河パトロール隊隊長",
       "text": "自軍ラッシュエリアから、RCを持つユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる。",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e887aae8bb8d",
+          "keyword": "ride_action_rashueriakararcwotsuyunitowo1ndemoyoisoushitatokikonotan",
           "duration": "turn"
         }
       ],

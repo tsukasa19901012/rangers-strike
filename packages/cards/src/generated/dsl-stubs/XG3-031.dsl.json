@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "named_e5ae99e5ae99e696ac",
+      "id": "zan_e5ae99",
       "name": "宙宙斬",
       "text": "このターン、自軍バトルエリアの2番目に並ぶ、特徴「激気」を持つMユニットは次の能力を得る⇒「SP1」",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "grant_ability_konotanbatorueriano2nibuwotsumyunitohano_chikara_woru",
           "duration": "turn"
         }
       ]

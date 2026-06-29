@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": "named_e38395e383aae383bce382b8",
+      "id": "furijingudaga",
       "name": "フリージングダガー",
       "text": "これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい。（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e38193e3828c",
+          "keyword": "power_zone_action_koregasyunitoniatakusurutokibatorunonibatorunoyunitowo",
           "duration": "turn"
         }
       ],

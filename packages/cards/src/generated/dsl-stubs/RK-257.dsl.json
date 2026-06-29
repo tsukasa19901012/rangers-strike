@@ -11,7 +11,7 @@
   "rawText": "※特徴「女」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+500される。 【高性能レーダー】 ライドされている「カブトロー」からこのビークルがコンビネーションしている間、これにライドしているユニットは次の能力を得る⇒敵軍ユニットにアタックされない。",
   "effects": [
     {
-      "id": "ride_without_rc_named_e5a5b3",
+      "id": "ride_without_rc_fx_unknown",
       "text": "※特徴「女」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,7 +19,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_named_e5a5b3",
+          "keyword": "ride_without_rc_fx_unknown",
           "duration": "permanent"
         }
       ]
@@ -39,7 +39,7 @@
       ]
     },
     {
-      "id": "named_e9ab98e680a7e883bde383ac",
+      "id": "reda",
       "name": "高性能レーダー",
       "text": "ライドされている「カブトロー」からこのビークルがコンビネーションしている間、これにライドしているユニットは次の能力を得る⇒敵軍ユニットにアタックされない。",
       "trigger": {
@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e383a9e382a4",
+          "keyword": "grant_ability_raidosareteirukabutorokarakonobikurugakonbineshonshiteiruk",
           "duration": "turn"
         }
       ]

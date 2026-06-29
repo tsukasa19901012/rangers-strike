@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e6978be9a2a8e381aee58fb3",
+      "id": "kaze_no",
       "name": "旋風の右半身",
       "text": "このユニットからコンビネーションするSユニットは、次の能力を得る⇒自軍ターン中、BP+3000され、BP8000以上のとき「SP1」になる。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "grant_ability_konoyunitokarakonbineshonsurusyunitohano_chikara_worutanbp",
           "duration": "turn"
         }
       ]

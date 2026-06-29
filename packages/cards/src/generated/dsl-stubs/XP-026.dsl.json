@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": true
     },
     {
-      "id": "named_e382a2e382afe382bbe383ab",
+      "id": "akuserugurantsua",
       "name": "アクセルグランツァー",
       "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、自軍コマンドを1つ選び手札に戻してもよい。そうしたとき、戻したコマンドと同じカテゴリを持たない、敵軍Sユニットまたはライドされていない敵軍Sビークルがあれば1体選び捨札にする。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e38193e3828c",
+          "keyword": "ride_action_koregabatorueriakararashuerianirutokikomandowo1tsubini",
           "duration": "turn"
         }
       ],

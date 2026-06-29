@@ -25,14 +25,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_ally_on_rush_e280bbe887aa",
+          "keyword": "return_ally_on_rush_fx_unknown",
           "duration": "permanent"
         }
       ],
       "optional": true
     },
     {
-      "id": "named_e38390e38393e383ade382b9",
+      "id": "babirosufuaiya",
       "name": "バビロスファイヤー",
       "text": "これをラッシュしたとき、敵軍パワーゾーンからカードを1枚選び捨札にしてもよい。そうしたとき、敵軍捨札からカードを1枚選び敵軍パワーゾーンにオモテ向きで置く。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e38193e3828c",
+          "keyword": "power_zone_action_koreworashushitatokipawazonkarakadowo1binishitemoyoiso",
           "duration": "turn"
         }
       ],

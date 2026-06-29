@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_wotsuyunitowo1nisuru",
           "duration": "turn"
         }
       ],
@@ -47,14 +47,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e6ada6e599a8e68f9be8a385",
+      "id": "fx_unknown_e6ada6",
       "name": "武器換装",
       "text": "これが自軍バトルエリアにある間、自軍バトルフェイズ中、自軍コマンドを3つホールドしてもよい。そうしたとき、これをラッシュエリアに戻す。",
       "trigger": {
@@ -63,7 +63,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiarubatorufueizukomandowo3tsuhorudo",
           "duration": "permanent"
         }
       ],

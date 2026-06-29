@@ -27,14 +27,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "note_e280bbe38193e3828ce381af_e280bbe3",
+      "id": "note_e280bbe38193e3828ce381af_korehapawazo",
       "text": "※これは自軍パワーゾーンにオモテ向きのカードが1枚もなければBP-5000される。",
       "trigger": {
         "type": "nc"
@@ -42,14 +42,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e38396e383a9e382b9e38388",
+      "id": "burasutoendo",
       "name": "ブラストエンド",
       "text": "SP1特徴「メカ」を持つかカテゴリにDAを持つ敵軍Sユニットを1体選び撃破してもよい。そうしたとき、このターン、これはストライクすることができない。",
       "trigger": {

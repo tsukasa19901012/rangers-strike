@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e3838fe383bce38389e38383",
+      "id": "hadokushoka",
       "name": "ハードックショッカー",
       "text": "これが自軍の手札にある間、レジストまたはウイングを持つ敵軍Sユニットがラッシュされたとき、DAを持つ自軍コマンドを1つホールドしてから、これを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットをホールドする。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koreganoniarurejisutomatahauinguwotsusyunitogarashus",
           "duration": "permanent"
         }
       ],

@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383a9e383b3e38389e382b9",
+      "id": "randosuraisa",
       "name": "ランドスライサー",
       "text": "このターン、次に自軍Sユニットが撃破されて捨札になったとき、そのカードを手札に戻してもよい。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_e38193e381ae",
+          "keyword": "discard_to_zone_konotannisyunitoga_geki_ha_sareteninatatokisonokadowonis",
           "duration": "turn"
         }
       ],

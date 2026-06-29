@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e4babae381aee591bde381af",
+      "id": "nohano",
       "name": "人の命は地球の未来",
       "text": "これはストライクするとき、このターン中に自軍捨札から手札に加えたSユニットのカード1枚につきSP+1される。",
       "trigger": {

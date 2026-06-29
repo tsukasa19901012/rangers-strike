@@ -43,14 +43,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b4e383bce383bbe38388",
+      "id": "gotouheru",
       "name": "ゴー・トゥー・ヘル！",
       "text": "自軍ターン中、これがバトルエリアに出たとき、これがLユニットなら、次の効果を発動する→敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -59,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokikoregalyunitonaranowosuru",
           "duration": "turn"
         }
       ],

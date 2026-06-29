@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e5a1b5e381afe5a1b5e381ab",
+      "id": "hani",
       "name": "塵は塵に",
       "text": "これをラッシュしたとき、敵軍捨札からSユニットのカードを1枚選んでもよい。そうしたとき、選んだカードと同じカード名の敵軍ユニットがあれば、すべて撃破する。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e38193e3828c",
+          "keyword": "destroy_on_rush_koreworashushitatokikarasyunitonokadowo1ndemoyoisoushita",
           "duration": "turn"
         }
       ],

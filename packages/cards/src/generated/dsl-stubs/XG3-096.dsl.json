@@ -25,14 +25,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e4bfaee79086e382b5e383bc",
+      "id": "sabisu",
       "name": "修理サービス",
       "text": "これをラッシュしたとき、自軍捨札から特徴「メカ」を持つSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く。置けなければこの効果は発動しない。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_e38193e3828c",
+          "keyword": "pick_from_discard_koreworashushitatokikaramekawotsusyunitonokadowo1bi",
           "duration": "turn"
         }
       ],

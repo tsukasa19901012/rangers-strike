@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e5be8ce8bca9e688a6e5a3ab",
+      "id": "heno_e5be8c",
       "name": "後輩戦士への叱咤",
       "text": "このユニットからコンビネーションする特徴「イエロー」を持つSユニットは、このターン、次の能力を得る⇒BP+3000、「SP1」",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "grant_ability_konoyunitokarakonbineshonsuruierowotsusyunitohakonotanno",
           "duration": "turn"
         }
       ]

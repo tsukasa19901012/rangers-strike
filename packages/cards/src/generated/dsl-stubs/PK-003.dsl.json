@@ -19,13 +19,18 @@
   ],
   "effects": [
     {
-      "id": "named_e38389e383a9e382b0e382bb",
+      "id": "doraguseiba",
       "name": "ドラグセイバー",
       "text": "特徴「ドラゴン」を持つユニットからコンビネーションするとき、このターン、これは次の能力を得る⇒「SP1」",
       "trigger": {
         "type": "nc"
       },
       "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "feature_combo_sp_doragon_sp1",
+          "duration": "turn"
+        },
         {
           "type": "grant_keyword",
           "keyword": "SP1",

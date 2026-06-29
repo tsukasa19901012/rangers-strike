@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "i_n_e_t",
+      "id": "inetchifu",
       "name": "I.N.E.T.特別開発班チーフ",
       "text": "これが自軍エリアにある間、特徴「メカ」をもつETのLユニットをラッシュするとき、自軍Lユニットが1体もなければ次の効果を発動できる⇒ETの自軍コマンドを1つホールドしてから、自分の手札からそのLユニットの追加条件を満たすために必要なユニットのカードを1枚選び捨札にすれば、必要なユニットの1体を捨札にしたことにできる。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koregaerianiarumekawomotsuetnolyunitoworashusurutokilyu",
           "duration": "turn"
         }
       ],

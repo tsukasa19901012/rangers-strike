@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e9a88ee78da3e6bf80e7aa81",
+      "id": "fx_unknown_14",
       "name": "騎獣激突",
       "text": "自軍コマンドを1つ選びホールドしてもよい。そうしたとき、ホールド状態の敵軍コマンドを1つ選び捨札にする。（この効果は、特徴「人型」を持つMユニットからコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e887aae8bb8d",
+          "keyword": "combo_action_komandowo1tsubihorudoshitemoyoisoushitatokihorudonokomandow",
           "duration": "turn"
         }
       ],

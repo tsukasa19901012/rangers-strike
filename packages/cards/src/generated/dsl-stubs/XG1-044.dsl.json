@@ -42,13 +42,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "v3",
+      "id": "v3kiku_5633e5",
       "name": "V3反転キック",
       "text": "敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンに置いてもよい。置けなければ捨札にする。このとき選んだユニットのSPが1以上だったなら、これはSP1になる。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_e695b5e8bb8d",
+          "keyword": "discard_to_zone_batorueriakarasyunitowo1bichinokomandozonniitemoyoike",
           "duration": "turn"
         }
       ],

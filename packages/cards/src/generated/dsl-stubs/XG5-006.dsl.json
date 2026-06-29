@@ -30,13 +30,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382b9e38388e38383e38397",
+      "id": "sutopuzabatoru",
       "name": "ストップ・ザ・バトル",
       "text": "これをラッシュしたとき、次の効果を発動する⇒次の相手ターン、BP9000以下のユニットはアタックすることができない。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_e38193e3828c",
+          "keyword": "cannot_restrict_koreworashushitatokinowosurunotanbp9000noyunito",
           "duration": "turn"
         }
       ],

@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e382b0e383a9e383b3e38390",
+      "id": "guranbanisha",
       "name": "グランバニッシャー",
       "text": "これをラッシュしたとき、敵軍ユニットをBPの合計が20000以下になるように選び撃破してもよい。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e38193e3828c",
+          "keyword": "destroy_on_rush_koreworashushitatokiyunitowobpnoga20000ninaruyounibi_gek",
           "duration": "turn"
         }
       ],

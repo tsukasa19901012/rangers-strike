@@ -11,7 +11,7 @@
   "rawText": "【カブトローサンダー】 自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSPが空欄でないSユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットはBP－1000される。（BP0以下になったユニットは撃破される）",
   "effects": [
     {
-      "id": "named_e382abe38396e38388e383ad",
+      "id": "kabutorosanda",
       "name": "カブトローサンダー",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSPが空欄でないSユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットはBP－1000される。（BP0以下になったユニットは撃破される）",
       "trigger": {
@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibatorueriakaraspgadenais",
           "duration": "turn"
         }
       ],

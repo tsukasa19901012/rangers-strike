@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3838fe383b3e3839ee383bc",
+      "id": "hanmapanchi",
       "name": "ハンマーパンチ",
       "text": "次の相手ターン、必要パワーの数字が3以下の敵軍ユニットは、ターンが終わるまでバトルエリアに出られない。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_e6aca1e381ae",
+          "keyword": "cannot_restrict_notanpawanoga3noyunitohatangawarumadebatorue",
           "duration": "turn"
         }
       ],

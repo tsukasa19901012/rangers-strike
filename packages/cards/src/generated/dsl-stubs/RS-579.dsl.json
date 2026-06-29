@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e383abe382b8e383a5e3838a",
+      "id": "rujuna",
       "name": "ルジュナ",
       "text": "これが自軍エリアにある間、BP8000以下のユニットは次の制限を受ける⇒ラッシュしたターンにストライクもアタックもできない。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarubp8000noyunitohanowokerurashushita",
           "duration": "permanent"
         }
       ],

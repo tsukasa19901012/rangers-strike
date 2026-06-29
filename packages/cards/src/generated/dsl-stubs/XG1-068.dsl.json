@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "named_e382a2e382bfe38383e382af",
+      "id": "atakuraido",
       "name": "アタックライド",
       "text": "このターン、これは特徴「警察」を持つ自軍ユニット1体につきBP+1000される。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e381ae",
+          "keyword": "bp_modify_konotankorehawotsuyunito1nitsukibp1000sareru",
           "duration": "turn"
         }
       ],

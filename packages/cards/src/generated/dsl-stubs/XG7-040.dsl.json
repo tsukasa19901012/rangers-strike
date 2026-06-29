@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e38380e38396e383abe382a2",
+      "id": "daburuakushon",
       "name": "ダブルアクション",
       "text": "これが自分の手札にある間、敵軍ユニットがバトルエリアに出たとき、自軍ユニットが1体もなければ、OTの自軍コマンドを2つホールドしてから、これを自軍バトルエリアに出してもよい。そうしたとき、敵軍バトルエリアのSユニットをすべて持ち主のパワーゾーンに送る。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e38193e3828c",
+          "keyword": "hold_on_enter_battle_koreganoniaruyunitogabatoruerianitatokiyunitoga1mo",
           "duration": "permanent"
         }
       ],

@@ -11,7 +11,7 @@
   "rawText": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。 【シャドウベール】自分がターンを終えるとき、これにライドしているユニットがホールド状態ならば、そのユニットをリリースしてもよい。",
   "effects": [
     {
-      "id": "ride_without_rc_named_e9ad94e79a87e58a9b",
+      "id": "ride_without_rc_ma_chikara",
       "text": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,13 +19,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_named_e9ad94e79a87e58a9b",
+          "keyword": "ride_without_rc_ma_chikara",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382b7e383a3e38389e382a6",
+      "id": "shadouberu",
       "name": "シャドウベール",
       "text": "自分がターンを終えるとき、これにライドしているユニットがホールド状態ならば、そのユニットをリリースしてもよい。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e887aae58886",
+          "keyword": "ride_action_gatanwoerutokikoreniraidoshiteiruyunitogahorudonarabasonoyun",
           "duration": "turn"
         }
       ],

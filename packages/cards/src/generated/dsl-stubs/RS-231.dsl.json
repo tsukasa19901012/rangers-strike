@@ -27,15 +27,37 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
         }
       ],
-      "optional": false
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
     },
     {
-      "id": "named_e382a2e38390e383ace382bf",
+      "id": "abaretakuru",
       "name": "アバレタックル",
       "text": "「SP1」",
       "trigger": {

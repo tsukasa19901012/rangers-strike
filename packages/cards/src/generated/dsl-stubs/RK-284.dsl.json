@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38387e382b9e38390e3838b",
+      "id": "desubanishu",
       "name": "デスバニッシュ",
       "text": "「バイオグリーザ」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、BP4000以下のSユニットを1体選び撃破する。そうしたとき、撃破したユニットのBPがこのユニットのBPよりも低ければ、相手は自分自身のコマンドゾーンからカードを1枚選び捨札にする。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_from_named_e3808ce38390",
+          "keyword": "combo_from_named_baiogurizakarakonbineshonshitatokidekirubatorueriakarab",
           "duration": "turn"
         }
       ],

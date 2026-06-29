@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e38388e383aae382ace383bc",
+      "id": "torigamagunamu",
       "name": "トリガーマグナム",
       "text": "自軍ターン中、これがバトルエリアに出たとき、必要パワーの数字が3以下の常駐しているオペレーションを1つ選び、持ち主のゾーンに送ってもよい。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "resident_zone_e887aae8bb8d",
+          "keyword": "resident_zone_tankoregabatoruerianitatokipawanoga3noshiteiruo",
           "duration": "turn"
         }
       ],

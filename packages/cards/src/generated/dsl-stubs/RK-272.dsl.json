@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4e382b8e383b3",
+      "id": "raijingusupurashudoragon",
       "name": "ライジングスプラッシュドラゴン",
       "text": "これが自軍エリアにある間、敵軍ユニットがＮＣまたはＲＣの効果を発動させたとき、その効果を実行する前に、自分の手札からカードを1枚選び自軍山札の上に戻してもよい。そうしたとき、そのNCまたはRCの効果を無効にする。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruyunitogamatahanowosasetatokisonowo",
           "duration": "permanent"
         }
       ],

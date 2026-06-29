@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": "named_e382ace383b3e38391e383bc",
+      "id": "ganpadogan",
       "name": "ガンパードガン",
       "text": "相手の手札を見ないで3枚まで選んでもよい。そうしたとき、選んだカードをお互いで見る。選んだカードの中からSユニットのカードを1枚選び、持ち主のパワーゾーンに置く。次の相手ターン、相手はターンを終えるとき、自分自身のパワーゾーンからオモテ向きのカードを1枚選び、手札に戻してもよい。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e79bb8e6898b",
+          "keyword": "opponent_must_nowonaide3madendemoyoisoushitatokindakadowooideru",
           "duration": "turn"
         }
       ],

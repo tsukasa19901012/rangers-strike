@@ -27,7 +27,12 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_per_enemy_command_ot_1000",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "sp_at_bp5000_sp1",
           "duration": "turn"
         }
       ],

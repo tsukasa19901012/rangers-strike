@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "named_e58a9be381bee3818be3819b",
+      "id": "chikara_makase",
       "name": "力まかせ",
       "text": "これがバトルするとき、そのバトルは本来のBPで行う。",
       "trigger": {
@@ -25,7 +25,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "auto_battle_e38193e3828c",
+          "keyword": "auto_battle_koregabatorusurutokisonobatoruhanobpdeu",
           "duration": "turn"
         }
       ],

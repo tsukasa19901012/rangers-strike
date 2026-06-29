@@ -39,13 +39,13 @@
       "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはバトルエリアにあるとき、カテゴリに「WB」が追加される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
-          "duration": "turn"
+          "keyword": "category_wb_while_in_battle",
+          "duration": "permanent"
         }
       ],
       "optional": false

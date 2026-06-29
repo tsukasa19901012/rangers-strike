@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382aee383abe382b9e38392",
+      "id": "girusuhirukurou",
       "name": "ギルスヒールクロウ",
       "text": "このユニットをホールドしてもよい。そうしたとき、敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e38193e381ae",
+          "keyword": "enemy_power_damage_konoyunitowohorudoshitemoyoisoushitatokibatorueriakar",
           "duration": "turn"
         }
       ],

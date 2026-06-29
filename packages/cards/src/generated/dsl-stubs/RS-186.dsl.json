@@ -11,7 +11,7 @@
   "rawText": "自軍山札を見て、Sユニット以外の特徴「メカ」を持つユニットのカードを5枚まで選び、相手に見せる。その後、山札をシャッフルし、選んだカードを好きな順で山札の上に戻す。",
   "effects": [
     {
-      "id": "named_e38397e383ade38390e382a4",
+      "id": "purobaidabesu",
       "name": "プロバイダーベース",
       "text": "自軍山札を見て、Sユニット以外の特徴「メカ」を持つユニットのカードを5枚まで選び、相手に見せる。その後、山札をシャッフルし、選んだカードを好きな順で山札の上に戻す。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_e887aae8bb8d",
+          "keyword": "deck_search_feature_top_meka_5_non_s",
           "duration": "turn"
         }
       ],

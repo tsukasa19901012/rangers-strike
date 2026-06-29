@@ -49,7 +49,7 @@
       ]
     },
     {
-      "id": "named_e3838fe383bce38389e382b7",
+      "id": "hadoshoto",
       "name": "ハードショット",
       "text": "これがストライクしてダメージを与えるとき、かわりに敵軍ラッシュエリアからSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e38193e3828c",
+          "keyword": "enemy_power_damage_koregasutoraikushitedamejiwoerutokikawarinirashueriak",
           "duration": "turn"
         }
       ],

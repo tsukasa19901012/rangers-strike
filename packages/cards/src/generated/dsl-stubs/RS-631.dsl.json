@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382b5e38386e383a9e382a4",
+      "id": "sateraitosachi",
       "name": "サテライトサーチ",
       "text": "自軍コマンドが3つ以下なら、自軍山札の上から1枚ひいて自軍コマンドゾーンにホールド状態で置いてもよい。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "scry_self_deck_top_e887aae8bb8d",
+          "keyword": "scry_self_deck_top_komandoga3tsunaranokara1hiitekomandozonnihorudo",
           "duration": "turn"
         }
       ],

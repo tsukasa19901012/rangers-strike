@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_alias_named_e4bbaee99da2e383a9e382a4",
+      "id": "unnamed_alias_raida2_go",
       "text": "※これは「仮面ライダー2号」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -28,13 +28,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e4bbaee99da2e383a9e382a4",
+          "keyword": "alias_raida2_go",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e383a9e382a4e38380e383bc",
+      "id": "raidakiku",
       "name": "ライダーキック",
       "text": "敵軍バトルエリアから、BP4000以上の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。（この効果は「仮面ライダー1号」からコンビネーションするときは、ナンバーに関係なく発動する）",
       "trigger": {
@@ -42,12 +42,39 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "combo_action_e695b5e8bb8d",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
       ],
-      "optional": false
+      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
     }
   ],
   "unnamedRules": [

@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e68abce38197e5af84e3819b",
+      "id": "shiseru_mizu",
       "name": "押し寄せる水流",
       "text": "敵軍ラッシュエリアのホールド状態のユニットをすべて持ち主の山札に戻してシャッフルしてもよい。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_e695b5e8bb8d",
+          "keyword": "return_to_zone_rashuerianohorudonoyunitowosubetechinonishiteshafuru",
           "duration": "turn"
         }
       ],

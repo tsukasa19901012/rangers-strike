@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e383afe383bce382a6e383ab",
+      "id": "waurufu",
       "name": "ワーウルフ化",
       "text": "ホールド状態のSユニットを2体選んでもよい。そうしたとき、選んだ2体でバトルさせる。ただし、特徴「男」を持つユニットを必ず1体選ぶこと。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "feature_match_e3839be383bc",
+          "keyword": "feature_match_horudonosyunitowo2ndemoyoisoushitatokinda2debatorusaseruta",
           "duration": "turn"
         }
       ],

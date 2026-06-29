@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38387e382a3e382afe38386",
+      "id": "deikuteita",
       "name": "ディクテイター",
       "text": "敵軍コマンドゾーンから、DAまたはOTを持つカードを1枚選び、持ち主のパワーゾーンに送る。（この効果は、特徴「スワット」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e695b5e8bb8d",
+          "keyword": "combo_action_komandozonkaradamatahaotwotsukadowo1bichinopawazonni",
           "duration": "turn"
         }
       ],

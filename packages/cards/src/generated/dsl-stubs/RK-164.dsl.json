@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4e38380e383bc",
+      "id": "raidapanchi",
       "name": "ライダーパンチ",
       "text": "このターン、これはBP+2000される。さらに、このユニットがホールド状態なら、このターン、これは「SP1」になる。",
       "trigger": {
@@ -42,8 +42,11 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "SP1",
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 2000,
           "duration": "turn"
         }
       ]

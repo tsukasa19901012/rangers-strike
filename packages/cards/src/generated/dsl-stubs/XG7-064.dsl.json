@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "g_3",
+      "id": "riborubakug3",
       "name": "リボルバックG-3",
       "text": "特徴「警察」を持つ自軍ユニットの数を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e789b9e5beb4",
+          "keyword": "hold_enemy_unit_wotsuyunitonowoesononopawanowotsuyuni",
           "duration": "turn"
         }
       ],

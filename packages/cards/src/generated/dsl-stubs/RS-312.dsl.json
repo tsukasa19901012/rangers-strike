@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e8bf85e99bb7e6b581e589a3",
+      "id": "kami_ken_kami_geki_zan",
       "name": "迅雷流剣技・雷撃斬",
       "text": "これがユニットを撃破したとき、これが撃破したユニットと同じ特徴を1つ以上持つユニットが敵軍ラッシュエリアにあれば1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e38193e3828c",
+          "keyword": "enemy_power_damage_koregayunitowo_geki_ha_shitatokikorega_geki_ha_shitay",
           "duration": "turn"
         }
       ],

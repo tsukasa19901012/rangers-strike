@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e7aa81e3818de4b88ae38192",
+      "id": "kigeru_tsuno",
       "name": "突き上げる角",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ユニットを1体選びホールドしてもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない。",
       "trigger": {
@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokiyunitowo1bihorudoshitemo",
           "duration": "turn"
         }
       ],

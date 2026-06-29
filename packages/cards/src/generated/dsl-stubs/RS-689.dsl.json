@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "named_e38390e383bce38389e38396",
+      "id": "badoburasuta",
       "name": "バードブラスター",
       "text": "このターン、ホールド状態の敵軍SユニットはBP-2500される。（BP0以下になったユニットは撃破される）",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e381ae",
+          "keyword": "bp_modify_konotanhorudonosyunitohabp2500sarerubp0ninatayuni",
           "duration": "turn"
         }
       ],

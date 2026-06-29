@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3839de382a4e382bae383b3",
+      "id": "poizunanka",
       "name": "ポイズンアンカー",
       "text": "これが自軍エリアにある間、自分も相手も次のようにする⇒自分自身のターンを終えるとき、特徴「男」または「女」または「獣」または「恐竜」を持つホールド状態のユニットを1体選び撃破する。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarumomonoyounisurunotanwoerutoki",
           "duration": "permanent"
         }
       ],

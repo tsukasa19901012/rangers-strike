@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e38380e382a4e383a4e382bd",
+      "id": "daiyasodo",
       "name": "ダイヤソード",
       "text": "このターン、次に自軍バトルエリアのユニットがホールド状態になったとき、ホールドしたユニットのBP以下のBPを持つ敵軍ユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_e38193e381ae",
+          "keyword": "destroy_choose_enemy_konotannibatoruerianoyunitogahorudoninatatokihorudo",
           "duration": "turn"
         }
       ],

@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e382b7e383a3e38389e383bc",
+      "id": "shadofurashu",
       "name": "シャドーフラッシュ",
       "text": "自分の手札からユニットカードを1枚選び、捨札にしてもよい。そうしたとき、捨札にしたカードのBP以下の本来のBPを持つ敵軍ユニットを1体選び撃破する。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_hand_e887aae58886",
+          "keyword": "pick_from_hand_nokarayunitokadowo1binishitemoyoisoushitatokinishitaka",
           "duration": "turn"
         }
       ],

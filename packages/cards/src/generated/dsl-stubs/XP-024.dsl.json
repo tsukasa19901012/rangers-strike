@@ -42,14 +42,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "bp_plus_on_battle_own_turn_2000",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e58a9be381ae32e58fb7",
+      "id": "chikara_no_2_go",
       "name": "力の2号",
       "text": "BP4000以上の敵軍Sユニットを1体選び、このユニットと選んだユニットでバトルしてもよい。そうしたとき、このターン、これはアタックする事ができない。",
       "trigger": {
@@ -57,12 +57,40 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "optional_then_425034303030",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S",
+              "minBp": 4000
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "grant_keyword",
+              "keyword": "optional_enemy_battle_min_bp_4000_no_attack",
+              "duration": "turn"
+            }
+          ]
         }
       ],
-      "optional": true
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S",
+            "minBp": 4000
+          }
+        }
+      }
     }
   ],
   "unnamedRules": [

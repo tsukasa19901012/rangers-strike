@@ -41,14 +41,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e383a9e382a4e38389e38396",
+      "id": "raidobuka",
       "name": "ライドブッカー",
       "text": "自軍山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中から、特徴「仮面ライダー」を持つユニットカードを1枚選び、自軍パワーゾーンに置く。その後、それ以外のカードは好きな順で山札の下に戻す。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e887aae8bb8d",
+          "keyword": "reveal_faceup_nokara3woomotenishitemoyoisoushitatokiomotenishitakadonoka",
           "duration": "turn"
         }
       ],

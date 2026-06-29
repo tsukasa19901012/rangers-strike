@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e9878ee7899be98bade696ad",
+      "id": "dan_e9878e",
       "name": "野牛鋭断",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアのSユニットを好きな数選び撃破してもよい。ただし選べるユニットの数は、敵軍ダメージの点数と同じ数までとする。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibatoruerianosyunitowokin",
           "duration": "turn"
         }
       ],

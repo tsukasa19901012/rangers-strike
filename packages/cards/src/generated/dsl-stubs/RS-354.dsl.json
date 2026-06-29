@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38387e383b3e382b8e38391",
+      "id": "denjipanchi",
       "name": "デンジパンチ",
       "text": "敵軍バトルエリアから、BPの下三桁が500の敵軍ユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e695b5e8bb8d",
+          "keyword": "power_zone_action_batorueriakarabpnoga500noyunitowo1bichinopawazo",
           "duration": "turn"
         }
       ],

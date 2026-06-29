@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e69ab4e8b5b0e38199e3828b",
+      "id": "suru_e69ab4",
       "name": "暴走する本能",
       "text": "これは、自分の手札が1枚以下のとき、BP+3000され、次の能力を得る⇒これは毎ターン可能ならバトルエリアに出る。また、これはアタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_korehanoga1notokibp3000sareno_chikara_worukorehatan",
           "duration": "turn"
         }
       ]

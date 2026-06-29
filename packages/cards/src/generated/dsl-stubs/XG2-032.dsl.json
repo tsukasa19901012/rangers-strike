@@ -23,7 +23,7 @@
   },
   "effects": [
     {
-      "id": "named_e382b8e383a3e382a4e383ad",
+      "id": "jairowapa",
       "name": "ジャイロワッパー",
       "text": "これが敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e38193e3828c",
+          "keyword": "power_zone_action_koregayunitoniatakusurutokibatorunonibatorunoyunitowoc",
           "duration": "turn"
         }
       ],

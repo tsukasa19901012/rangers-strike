@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383a9e382a4e38380e383bc",
+      "id": "raidakiku",
       "name": "ライダーキック",
       "text": "敵軍ラッシュエリアのSユニットの数を数えて、その数と同じ必要パワーの数字を持つ敵軍Sユニットがあれば1体選び、持ち主のパワーゾーンに送る。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e695b5e8bb8d",
+          "keyword": "power_zone_action_rashuerianosyunitonowoetesonotojipawanowotsu",
           "duration": "turn"
         }
       ],

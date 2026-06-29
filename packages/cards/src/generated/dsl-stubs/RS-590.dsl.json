@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b0e383ace382a4e3839c",
+      "id": "gureibonba",
       "name": "グレイボンバー",
       "text": "相手の手札を見てもよい。そうしたとき、ＮＣかＲＣを持つSユニットのカードを1枚選び、そのNCまたはRCの効果を、このユニットの効果として発動する。（この効果は「クエスター・ガイ」からコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e79bb8e6898b",
+          "keyword": "combo_action_nowotemoyoisoushitatokikawotsusyunitonokadowo1bisononcma",
           "duration": "turn"
         }
       ],

@@ -27,13 +27,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_sukuramu",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e383ace38383e38389e383ad",
+      "id": "redoropu",
       "name": "レッドロープ",
       "text": "「SP1」これがストライクしたとき、その処理をすべて終えてから、このバトルフェイズを終える。",
       "trigger": {

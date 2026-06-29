@@ -10,6 +10,8 @@ import { fileURLToPath } from "node:url";
 import type { CardDocument, EffectPrimitive } from "../src/dsl/types";
 import { validateCardDocument } from "../src/dsl/validator";
 import { rematchExtractedEffect } from "../src/pipeline/extractEffects";
+import { isHashGrantKeywordStub } from "../src/pipeline/hashGrantKeywords";
+import { slugifyEffectId } from "../src/pipeline/metaMaps";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
@@ -17,12 +19,9 @@ const repoRoot = join(root, "../..");
 const dslDir = join(root, "src/generated/dsl-stubs");
 const reportPath = join(root, "pipeline/data/dsl-hash-keyword-repair.json");
 
-const HASH_KEYWORD =
-  /^(opponent_must_|category_modify_|bp_modify_|note_other_)/;
-
 function isHashKeywordStub(primitives: EffectPrimitive[]): boolean {
   return primitives.some(
-    (p) => p.type === "grant_keyword" && HASH_KEYWORD.test(p.keyword),
+    (p) => p.type === "grant_keyword" && isHashGrantKeywordStub(p.keyword),
   );
 }
 
@@ -40,7 +39,7 @@ function remigrateEffect(
   if (
     rematched &&
     !rematched.effects.some(
-      (p) => p.type === "grant_keyword" && HASH_KEYWORD.test(p.keyword),
+      (p) => p.type === "grant_keyword" && isHashGrantKeywordStub(p.keyword),
     )
   ) {
     effect.id = rematched.id;
@@ -53,6 +52,27 @@ function remigrateEffect(
   }
 
   return { changed: false };
+}
+
+function dedupeEffectIds(doc: CardDocument): void {
+  const seen = new Set<string>();
+  for (const effect of doc.effects ?? []) {
+    let id = effect.id;
+    if (!seen.has(id)) {
+      seen.add(id);
+      continue;
+    }
+    const base = id.replace(/_[a-f0-9]{6,8}$/, "");
+    const textSlug = slugifyEffectId(effect.text ?? "").slice(0, 12) || "alt";
+    let suffix = 2;
+    let candidate = `${base}_${textSlug}`.slice(0, 48);
+    while (seen.has(candidate)) {
+      suffix += 1;
+      candidate = `${base}_v${suffix}`.slice(0, 48);
+    }
+    effect.id = candidate;
+    seen.add(candidate);
+  }
 }
 
 function main(): void {
@@ -87,6 +107,7 @@ function main(): void {
     }
 
     if (!changed) continue;
+    dedupeEffectIds(doc);
     doc.implementation = { source: "dsl", handler: "interpreter", testGenerated: true };
     const validation = validateCardDocument(doc);
     if (!validation.ok) continue;
@@ -108,7 +129,7 @@ function main(): void {
   console.log(`→ ${reportPath}`);
 
   if (repaired > 0) {
-    execSync("npm run emit:catalog --workspace=@rangers-strike/cards", {
+    execSync("npm run emit-full-playable-catalog --workspace=@rangers-strike/cards", {
       cwd: repoRoot,
       stdio: "inherit",
     });

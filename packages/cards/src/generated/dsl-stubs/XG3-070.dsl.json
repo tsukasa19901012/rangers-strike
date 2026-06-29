@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e8bb8ae4b8a1e381b8e381ae",
+      "id": "ryo_heno",
       "name": "車両への憎悪",
       "text": "これは、敵軍バトルエリアに特徴「車両」を持つユニットか、特徴「車両」を持つビークルにライドしているユニットがあれば、可能ならそのユニットにアタックする。そうしたとき、これは、このターン、BP+2000される。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e38193e3828c",
+          "keyword": "ride_action_korehabatorueriani_ryo_wotsuyunitoka_ryo_wotsubikuruniraidos",
           "duration": "turn"
         }
       ],

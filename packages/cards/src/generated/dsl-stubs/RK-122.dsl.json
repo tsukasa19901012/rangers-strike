@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e4bdbfe98094e5868de7949f",
+      "id": "fx_unknown_e4bdbf",
       "name": "使途再生",
       "text": "これが自軍エリアにある間、ホールド状態の自軍Sユニットは特徴「オルフェノク」が追加される。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruhorudonosyunitohaorufuenokugasare",
           "duration": "permanent"
         }
       ],

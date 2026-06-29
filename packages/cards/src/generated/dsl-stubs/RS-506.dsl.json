@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": "named_e38390e382b9e382aae383b3",
+      "id": "basuonmisairu",
       "name": "バスオンミサイル",
       "text": "次の相手ターン、敵軍ユニットはライドオフできない。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e6aca1e381ae",
+          "keyword": "ride_action_notanyunitoharaidoofudekinai",
           "duration": "turn"
         }
       ],

@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38193e38193e3818ce7a5ad",
+      "id": "kokogarinoka",
       "name": "ここが祭りの場所か",
       "text": "このユニットは、特徴「仮面ライダー」を持つオモテ向きの敵軍パワー1枚につきBP+1000される。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e381ae",
+          "keyword": "bp_modify_konoyunitoharaidawotsuomote_ko_kinopawa1nitsukibp1000",
           "duration": "turn"
         }
       ],

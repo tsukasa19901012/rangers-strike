@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382afe383a9e38396e383a1",
+      "id": "kurabumegaton",
       "name": "クラブメガトン",
       "text": "BP4000の敵軍Sユニットをすべて持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_425034303030",
+          "keyword": "hold_enemy_unit_bp4000nosyunitowosubetechinokomandozonnihorudodeite",
           "duration": "turn"
         }
       ],

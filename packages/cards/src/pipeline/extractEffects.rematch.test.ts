@@ -106,12 +106,13 @@ describe("rematchExtractedEffect (M20)", () => {
     expect(built?.matchedPattern).toBe("reveal_enemy_deck_hold");
   });
 
-  it("matches ignore rule text override (RS-243)", () => {
+  it("matches ignore rule hold command entry (RS-243)", () => {
     const built = rematchExtractedEffect(
       "このターン、すべての自軍ユニットは、「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。",
       { kind: "body", trigger: { type: "nc" } },
     );
-    expect(built?.matchedPattern).toBe("ignore_rule_text_override");
+    expect(built?.matchedPattern).toBe("ignore_rule_hold_command_entry");
+    expect(built?.effects[0]?.keyword).toBe("ignore_rule_hold_command_entry");
   });
 
   it("matches enemy S to power by feature (RK-032)", () => {

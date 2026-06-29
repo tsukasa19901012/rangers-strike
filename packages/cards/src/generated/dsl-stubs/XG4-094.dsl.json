@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e38393e38387e382aae38393",
+      "id": "bideobimugan",
       "name": "ビデオビームガン",
       "text": "敵軍コマンドを1つ選びリリースしてもよい。そうしたとき、リリースしたカードと同じカテゴリを持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e695b5e8bb8d",
+          "keyword": "release_command_action_komandowo1tsubiririsushitemoyoisoushitatokiririsu",
           "duration": "turn"
         }
       ],

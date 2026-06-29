@@ -56,7 +56,7 @@
       ]
     },
     {
-      "id": "named_e38390e383bce3838be383b3",
+      "id": "baningushoto",
       "name": "バーニングショット",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字が番号順（例：0、1、2や3、4、5など）に揃うなら、敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -65,7 +65,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_pick_show_e887aae8bb8d",
+          "keyword": "hand_pick_show_tankoregabatoruerianitatokinowo3binisetemoyoiso",
           "duration": "turn"
         }
       ],

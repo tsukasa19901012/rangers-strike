@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e6b688e6bb85e381aee7b78b",
+      "id": "no_e6b688",
       "name": "消滅の緋色",
       "text": "これが自軍ラッシュエリアにある間、敵軍Sユニットがバトルエリアからラッシュエリアに戻るたび、自軍常駐置き場からカードを1枚選び捨札にしてもよい。そうしたとき、そのユニットを撃破する。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiarusyunitogabatorueriakararashueria",
           "duration": "permanent"
         }
       ],

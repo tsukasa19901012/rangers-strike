@@ -20,12 +20,32 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "reveal_faceup_e695b5e8bb8d",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "grant_keyword",
+              "keyword": "reveal_top_destroy_if_same_size",
+              "duration": "turn"
+            }
+          ]
         }
       ],
-      "optional": false
+      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
     }
   ],
   "implementation": {

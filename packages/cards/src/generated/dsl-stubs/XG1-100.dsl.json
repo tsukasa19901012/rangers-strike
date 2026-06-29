@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e3818ae6898be4bc9de38184",
+      "id": "oiroboto",
       "name": "お手伝いロボット",
       "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、自軍山札の上から1枚引いて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい。置けなければこの効果は発動できない。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "scry_self_deck_top_e38193e3828c",
+          "keyword": "scry_self_deck_top_koregabatorueriakararashuerianirutokinokara1itesono",
           "duration": "turn"
         }
       ],

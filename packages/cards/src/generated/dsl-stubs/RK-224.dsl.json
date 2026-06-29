@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b5e3839de383bce38388",
+      "id": "sapoto",
       "name": "サポート",
       "text": "これが自軍エリアにある間、敵軍バトルエリアのSユニットは、「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱う。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarubatoruerianosyunitohakorehatansp1",
           "duration": "permanent"
         }
       ],

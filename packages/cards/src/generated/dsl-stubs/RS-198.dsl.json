@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e5b89de78e8be589a3e381ae",
+      "id": "ou_ken_noi",
       "name": "帝王剣の呪い",
       "text": "これが自軍エリアにある間、すべての敵軍Sユニットは、毎ターン、可能ならバトルエリアに出る。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "all_enemy_s_auto_battle_entry",
           "duration": "permanent"
         }
       ],

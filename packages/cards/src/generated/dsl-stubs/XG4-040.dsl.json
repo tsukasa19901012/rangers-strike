@@ -54,7 +54,7 @@
       ]
     },
     {
-      "id": "named_e5a4a9e8a385e59088e4bd93",
+      "id": "fx_unknown_6",
       "name": "天装合体",
       "text": "これをラッシュしたとき、ウイングを持たない敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -63,7 +63,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e38193e3828c",
+          "keyword": "enemy_power_damage_koreworashushitatokiuinguwotanaiyunitowo1bichinopawaz",
           "duration": "turn"
         }
       ],

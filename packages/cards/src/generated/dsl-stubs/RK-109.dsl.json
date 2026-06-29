@@ -25,7 +25,7 @@
       ]
     },
     {
-      "id": "named_e887aae5b7b1e4bfaee5bea9",
+      "id": "chikara_e887aa",
       "name": "自己修復能力",
       "text": "ホールド状態のユニットがこれにライドするとき、そのユニットをリリースしてもよい。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e3839be383bc",
+          "keyword": "ride_action_horudonoyunitogakoreniraidosurutokisonoyunitoworirisushitemo",
           "duration": "turn"
         }
       ],

@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382ade38390e382a2e383ad",
+      "id": "kibaaro",
       "name": "キバアロー",
       "text": "自軍バトルフェイズ中、このユニットからSユニットがコンビネーションするとき、これをホールドして次の効果を発動できる⇒相手は自分自身のSユニットを1体選び捨札にする。（コンビネーションしたSユニットが「仮面ライダーディケイド」または「仮面ライダーディエンド」なら、捨札にするかわりにダメージにする）",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_hold_s_e887aae8bb8d",
+          "keyword": "combo_hold_s_batorufueizukonoyunitokarasyunitogakonbineshonsurutokikorew",
           "duration": "turn"
         }
       ],

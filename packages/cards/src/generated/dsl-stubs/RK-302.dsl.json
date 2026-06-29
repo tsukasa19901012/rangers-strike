@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383afe383bce383a0e381ae",
+      "id": "wamunonitsu",
       "name": "ワームの頂点に立つ男",
       "text": "これが自軍エリアにある間、特徴「ワーム」または特徴「怪人」を持つ敵軍ユニットはアタックもストライクも出来ない。また、敵軍ターン中、これが撃破されたとき、特徴「ワーム」または特徴「怪人」を持つすべてのユニットを撃破する。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruwamumatahawotsuyunitohaatakumosu",
           "duration": "permanent"
         }
       ],

@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b8e382a7e38383e38388",
+      "id": "jietoransa",
       "name": "ジェットランサー",
       "text": "これは、自軍捨札にあるウイングを持つユニットカード1体につきBP+1000される。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_korehaniaruuinguwotsuyunitokado1nitsukibp1000sareru",
           "duration": "turn"
         }
       ],

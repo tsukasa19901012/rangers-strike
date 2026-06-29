@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_named_e382ace382aae383a9e382a4",
+      "id": "unnamed_alias_gaoraion",
       "text": "※これは「ガオライオン」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -41,13 +41,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e382ace382aae383a9e382a4",
+          "keyword": "alias_gaoraion",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e78d85e5ad90e38081e590bc",
+      "id": "shi_eru",
       "name": "獅子、吼える！！",
       "text": "このターン、これはBP+5000される。",
       "trigger": {

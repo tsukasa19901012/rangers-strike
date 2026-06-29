@@ -22,7 +22,7 @@
   ],
   "effects": [
     {
-      "id": "named_e981bfe99ba3e7b58ce8b7af",
+      "id": "no_e981bf",
       "name": "避難経路の確保",
       "text": "自軍コマンドを1つ選び、自分の手札に戻してもよい。そうしたとき、自軍山札の上から1枚引いて、自軍コマンドゾーンにホールド状態で置く。（この効果は「ファイヤー」または「ウォルター」からコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e887aae8bb8d",
+          "keyword": "combo_action_komandowo1tsubinonishitemoyoisoushitatokinokara1",
           "duration": "turn"
         }
       ],

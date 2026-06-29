@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e5a4a7e781abe7828e",
+      "id": "hi_honoo",
       "name": "大火炎",
       "text": "これが特徴「レッド」を持つユニットからコンビネーションするとき、敵軍バトルエリアから特徴「メカ」を持たないBP5000以下のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e38193e3828c",
+          "keyword": "enemy_power_damage_koregaredowotsuyunitokarakonbineshonsurutokibatorueri",
           "duration": "turn"
         }
       ],

@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e6bd9ce6b0b4",
+      "id": "mizu_e6bd9c",
       "name": "潜水",
       "text": "自分がターンを終えるとき、これをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。 ・このテキストはクロスギャザーコンプリートブックでエラッタが示されています。修正後は以下。",
       "trigger": {
@@ -40,14 +40,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_e887aae58886",
+          "keyword": "hold_remaining_gatanwoerutokikoreworirisusurukahorudoshitemoyoikorehahor",
           "duration": "turn"
         }
       ],
       "optional": true
     },
     {
-      "id": "named_e6bd9ce6b0b4_e887aae5",
+      "id": "mizu_gatanwoeruto",
       "name": "潜水",
       "text": "自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_e887aae58886",
+          "keyword": "hold_remaining_gatanwoerutokikonoyunitoworirisusurukahorudoshitemoyoikor",
           "duration": "turn"
         }
       ],

@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383a9e382a4e38380e383bc",
+      "id": "raidakiku",
       "name": "ライダーキック",
       "text": "敵軍バトルエリアのユニットを、必要パワーの数字の合計が2になるまで好きな数選んでもよい（自軍Sユニットが「仮面ライダーキックホッパー」と「仮面ライダーパンチホッパー」だけなら、4になるまで好きな数選んでもよい）。そうしたとき、選んだユニットを持ち主のパワーゾーンに送る。",
       "trigger": {
@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e695b5e8bb8d",
+          "keyword": "power_zone_action_batoruerianoyunitowopawanonoga2ninarumadekinandemo",
           "duration": "turn"
         }
       ],

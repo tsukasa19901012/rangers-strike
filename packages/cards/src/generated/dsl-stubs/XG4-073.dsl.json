@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e6b0b4e381aee5bf83e381ae",
+      "id": "mizu_nono",
       "name": "水の心の戦士",
       "text": "これが敵軍ユニットにアタックされたとき、自軍コマンドを2つ選びホールドしてもよい。そうしたとき、そのバトルは行われない。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e38193e3828c",
+          "keyword": "hold_enemy_unit_koregayunitoniatakusaretatokikomandowo2tsubihorudoshitem",
           "duration": "turn"
         }
       ],

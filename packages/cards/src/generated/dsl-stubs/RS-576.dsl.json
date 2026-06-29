@@ -64,14 +64,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": true
     },
     {
-      "id": "named_e38395e382a7e3838be38383",
+      "id": "fuenikususupinkiku",
       "name": "フェニックススピンキック",
       "text": "「SP1」これがストライクしたとき、自分は1枚ドローする。",
       "trigger": {

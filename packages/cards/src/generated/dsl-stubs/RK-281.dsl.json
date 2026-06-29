@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "named_e38389e383a9e382b4e383b3",
+      "id": "doragonfuaiyasutomu",
       "name": "ドラゴンファイヤーストーム",
       "text": "これにライドしている特徴「サバイブ」を持つユニットは「SP1」になる。",
       "trigger": {
@@ -56,10 +56,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "ride_action_koreniraidoshiteirusabaibuwotsuyunitohasp1ninaru",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

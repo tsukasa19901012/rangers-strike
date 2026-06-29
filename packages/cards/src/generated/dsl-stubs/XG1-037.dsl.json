@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e8999ae7a9bae3818be38289",
+      "id": "karano_geki",
       "name": "虚空からの一撃",
       "text": "これがウイングでアタックした敵軍ユニットが、撃破されて捨札になったとき、そのユニットカードを持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e38193e3828c",
+          "keyword": "enemy_power_damage_koregauingudeatakushitayunitoga_geki_ha_sareteninatat",
           "duration": "turn"
         }
       ],

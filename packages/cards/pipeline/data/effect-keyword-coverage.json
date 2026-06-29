@@ -1,66 +1,106 @@
 {
-  "generatedAt": "2026-06-10T05:08:42.220Z",
-  "uniqueKeywords": 490,
+  "generatedAt": "2026-06-29T00:38:58.292Z",
+  "uniqueKeywords": 429,
   "interpretEffectCount": 0,
   "byCategory": {
-    "passive_native": 1881,
-    "engine": 710
+    "passive_native": 1374,
+    "engine": 467
   },
   "topEffectDelegate": [],
   "topPassiveNative": [
     {
-      "keyword": "while_in_field_body_e38193e3828c",
-      "cardCount": 149,
+      "keyword": "note_other_e280bbe38193",
+      "cardCount": 111,
       "sampleCardIds": [
-        "RK-132",
-        "RK-184",
-        "RK-195"
+        "RK-067",
+        "RK-117",
+        "RK-127"
       ],
       "category": "passive_native"
     },
     {
-      "keyword": "note_other_e280bbe38193",
-      "cardCount": 144,
+      "keyword": "while_in_field_body_e38193e3828c",
+      "cardCount": 89,
       "sampleCardIds": [
-        "RK-184",
-        "RK-198",
-        "RM-044"
+        "RK-091",
+        "RK-092",
+        "RK-099"
       ],
       "category": "passive_native"
     },
     {
       "keyword": "require_command_hold_entry",
-      "cardCount": 61,
+      "cardCount": 40,
       "sampleCardIds": [
-        "RK-104",
+        "RK-034",
+        "RK-035",
+        "RK-037"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "while_note_e280bbe38193",
+      "cardCount": 26,
+      "sampleCardIds": [
+        "RK-180",
+        "RK-194",
+        "RK-197"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "hold_on_enter_battle_e887aae8bb8d",
+      "cardCount": 25,
+      "sampleCardIds": [
         "RK-118",
-        "RK-330"
+        "RK-237",
+        "RK-276"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "grant_effect_e38193e3828c",
+      "cardCount": 23,
+      "sampleCardIds": [
+        "RK-188",
+        "RK-220",
+        "RK-236"
       ],
       "category": "passive_native"
     },
     {
       "keyword": "deck_unlimited",
-      "cardCount": 34,
+      "cardCount": 22,
       "sampleCardIds": [
-        "RK-197",
         "PK-002",
-        "RK-043"
+        "RK-043",
+        "RK-044"
       ],
       "category": "passive_native"
     },
     {
       "keyword": "destroy_enter_battle_e887aae8bb8d",
-      "cardCount": 30,
+      "cardCount": 21,
       "sampleCardIds": [
+        "RK-179",
         "RK-196",
-        "RS-642",
-        "XG1-075"
+        "RK-209"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "enemy_power_damage_e887aae8bb8d",
+      "cardCount": 20,
+      "sampleCardIds": [
+        "RK-187",
+        "RK-227",
+        "RK-246"
       ],
       "category": "passive_native"
     },
     {
       "keyword": "destroy_on_win_vs_sp1",
-      "cardCount": 30,
+      "cardCount": 17,
       "sampleCardIds": [
         "PK-006",
         "RK-231",
@@ -69,88 +109,78 @@
       "category": "passive_native"
     },
     {
-      "keyword": "hold_on_enter_battle_e887aae8bb8d",
-      "cardCount": 29,
+      "keyword": "bp_modify_e38193e3828c",
+      "cardCount": 17,
       "sampleCardIds": [
-        "RK-118",
-        "XG2-044",
-        "XG2-062"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "while_note_e280bbe38193",
-      "cardCount": 29,
-      "sampleCardIds": [
-        "RK-194",
-        "RK-197",
-        "RK-217"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "grant_effect_e38193e3828c",
-      "cardCount": 28,
-      "sampleCardIds": [
-        "XG3-090",
-        "RK-188",
-        "RK-220"
+        "RK-121",
+        "RK-183",
+        "RK-186"
       ],
       "category": "passive_native"
     },
     {
       "keyword": "note_other_e280bbe887aa",
-      "cardCount": 26,
+      "cardCount": 16,
       "sampleCardIds": [
-        "XG7-016",
         "RM-018",
-        "RS-216"
+        "SX-003",
+        "XG2-082"
       ],
       "category": "passive_native"
     },
     {
       "keyword": "grant_ability_e38193e3828c",
-      "cardCount": 24,
+      "cardCount": 15,
       "sampleCardIds": [
+        "RK-120",
         "RK-197",
-        "SR-008",
-        "XG4-099"
+        "RK-316"
       ],
       "category": "passive_native"
     },
     {
-      "keyword": "scrum",
-      "cardCount": 23,
+      "keyword": "not_selectable_except_attack",
+      "cardCount": 14,
       "sampleCardIds": [
-        "XG3-031",
-        "RK-212",
-        "RK-213"
+        "RK-054",
+        "RK-057",
+        "RK-065"
       ],
       "category": "passive_native"
     },
     {
-      "keyword": "enemy_power_damage_e887aae8bb8d",
-      "cardCount": 22,
+      "keyword": "power_zone_action_e887aae8bb8d",
+      "cardCount": 14,
       "sampleCardIds": [
-        "RK-227",
-        "RK-331",
-        "RS-182"
+        "RK-148",
+        "RK-168",
+        "RK-240"
       ],
       "category": "passive_native"
     },
     {
-      "keyword": "bp_modify_e38193e3828c",
-      "cardCount": 21,
+      "keyword": "lead_MA",
+      "cardCount": 13,
       "sampleCardIds": [
-        "RK-186",
-        "RK-121",
-        "RK-183"
+        "SX-007",
+        "XG5-037",
+        "XG5-038"
+      ],
+      "category": "passive_native"
+    },
+    {
+      "keyword": "ride_action_e38193e3828c",
+      "cardCount": 12,
+      "sampleCardIds": [
+        "RK-113",
+        "RK-182",
+        "RK-281"
       ],
       "category": "passive_native"
     },
     {
       "keyword": "tag",
-      "cardCount": 18,
+      "cardCount": 11,
       "sampleCardIds": [
         "PK-010",
         "PK-011",
@@ -159,52 +189,22 @@
       "category": "passive_native"
     },
     {
-      "keyword": "auto_battle_entry_each_turn",
-      "cardCount": 17,
+      "keyword": "grant_ability_e38193e381ae",
+      "cardCount": 11,
       "sampleCardIds": [
-        "PR-022",
-        "RS-410",
-        "RS-505"
+        "RK-147",
+        "XG1-085",
+        "XG2-016"
       ],
       "category": "passive_native"
     },
     {
-      "keyword": "destroy_on_rush_e38193e3828c",
-      "cardCount": 17,
+      "keyword": "breaker",
+      "cardCount": 11,
       "sampleCardIds": [
-        "RK-193",
-        "RK-286",
-        "RS-420"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "grant_effect_e887aae8bb8d",
-      "cardCount": 16,
-      "sampleCardIds": [
-        "RK-233",
-        "RK-234",
-        "RK-274"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "power_zone_action_e887aae8bb8d",
-      "cardCount": 15,
-      "sampleCardIds": [
-        "RK-168",
-        "RM-031",
-        "XG3-062"
-      ],
-      "category": "passive_native"
-    },
-    {
-      "keyword": "cannot_attack",
-      "cardCount": 15,
-      "sampleCardIds": [
-        "RS-682",
-        "PR-022",
-        "RK-116"
+        "SX-007",
+        "XG6-003",
+        "XG6-010"
       ],
       "category": "passive_native"
     }

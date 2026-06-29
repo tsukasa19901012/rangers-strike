@@ -23,7 +23,7 @@
   },
   "effects": [
     {
-      "id": "named_e5ae87e5ae99e8ada6e5af9f",
+      "id": "nobakuapu_e5ae87",
       "name": "宇宙警察のバックアップ",
       "text": "これが自軍エリアにある間、特徴「警察」を持つユニットはBP+1000される。",
       "trigger": {
@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruwotsuyunitohabp1000sareru",
           "duration": "permanent"
         }
       ],

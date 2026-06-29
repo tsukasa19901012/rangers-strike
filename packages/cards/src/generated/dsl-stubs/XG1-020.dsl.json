@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e9ab98e9809fe589a3e382bf",
+      "id": "ken_tabokurashu",
       "name": "高速剣ターボクラッシュ",
       "text": "これはBP10000以上の時、次の能力を得る⇒SP1",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_korehabp10000nono_chikara_worusp1",
           "duration": "turn"
         }
       ]

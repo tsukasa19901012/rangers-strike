@@ -70,7 +70,7 @@
       ]
     },
     {
-      "id": "named_e69c9be381bee381aae38184",
+      "id": "manaii",
       "name": "望まない争い",
       "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒アタックを1度でも行った場合、そのターン中はアタックすることができない。また、ストライクを1度でも行った場合、そのターン中はストライクすることができない。",
       "trigger": {
@@ -79,7 +79,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarumomonowokeruatakuwo1demota",
           "duration": "permanent"
         }
       ],

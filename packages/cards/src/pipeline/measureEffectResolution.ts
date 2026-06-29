@@ -3,6 +3,7 @@ import {
   ENGINE_IMPLEMENTED_CATCHALL_CARD_IDS,
   ENGINE_NATIVE_GRANT_KEYWORDS,
 } from "../engineImplementedCatchall";
+import { isOperationImplemented } from "../operationCatalog";
 import { rematchExtractedEffect } from "./extractEffects";
 
 const CATCHALL_PATTERN = "catchall_interpret";
@@ -54,6 +55,23 @@ function hasEngineNativeGrantPrimitive(primitives: EffectPrimitive[]): boolean {
   );
 }
 
+function hasInterpretEffectOperation(effect: EffectDefinition): boolean {
+  const primitives = effect.effects ?? [];
+  if (!primitives.some((p) => p.type === "interpret_effect")) return false;
+  return isOperationImplemented(effect.id);
+}
+
+function hasResidentOperationKeyword(primitives: EffectPrimitive[]): boolean {
+  return primitives.some(
+    (p) =>
+      p.type === "grant_keyword" &&
+      (p.keyword === "category_substitute_via_hold" ||
+        p.keyword === "strike_intercept_with_s_unit" ||
+        p.keyword === "destroy_striker_on_strike_self_discard" ||
+        p.keyword === "m_must_hold_command_for_battle"),
+  );
+}
+
 export function classifyRuntimeRematch(
   effect: EffectDefinition,
   cardId?: string,
@@ -62,6 +80,15 @@ export function classifyRuntimeRematch(
     return "effective";
   }
   if (hasEngineNativeGrantPrimitive(effect.effects ?? [])) {
+    return "effective";
+  }
+  if (hasInterpretEffectOperation(effect)) {
+    return "effective";
+  }
+  if (isOperationImplemented(effect.id)) {
+    return "effective";
+  }
+  if (hasResidentOperationKeyword(effect.effects ?? [])) {
     return "effective";
   }
   if (isEmptyEffectText(effect.text)) return "strict_unresolved";

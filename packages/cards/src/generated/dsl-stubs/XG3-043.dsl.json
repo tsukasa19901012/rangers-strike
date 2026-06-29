@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38397e383abe38388e383b3",
+      "id": "purutonroketo",
       "name": "プルトンロケット阻止",
       "text": "これが自軍エリアにある間、自軍ラッシュフェイズ中、これを捨札にして次の効果を発動できる⇒敵軍山札の上から5枚をオモテにする。そうしたとき、その中から常駐オペレーション以外のオペレーションカードを1枚選び捨札にする。その後、残りのカードを山札に戻してシャッフルする。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koregaerianiarurashufueizukorewonishitenowodeki",
           "duration": "turn"
         }
       ],

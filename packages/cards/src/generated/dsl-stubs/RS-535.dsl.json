@@ -40,14 +40,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "permanent"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e38389e383a9e382b4e383b3",
+      "id": "doragonataku",
       "name": "ドラゴンアタック",
       "text": "特徴「ドラゴン」を持つ自軍ユニットが1体以上あれば、その数と同じ必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e789b9e5beb4",
+          "keyword": "enemy_power_damage_doragonwotsuyunitoga1arebasonotojipawanowotsu",
           "duration": "turn"
         }
       ],

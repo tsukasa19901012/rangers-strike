@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "named_e784a1e6848fe8ad98e381ae",
+      "id": "no_chikara_e784a1",
       "name": "無意識の記憶力",
       "text": "敵軍捨札からユニットカードを1枚選んでもよい。そうしたとき、選んだカードと同じカード名の敵軍ユニットを1体選び、撃破する。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_e695b5e8bb8d",
+          "keyword": "pick_from_discard_karayunitokadowo1ndemoyoisoushitatokindakadotojikado",
           "duration": "turn"
         }
       ],

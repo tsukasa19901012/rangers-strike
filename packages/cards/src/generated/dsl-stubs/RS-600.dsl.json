@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e3839fe38383e382b7e383a7",
+      "id": "mishon1_baningu",
       "name": "ミッション1 バーニング",
       "text": "このターン、このユニットの次にコンビネーションするCN4を持つ自軍Sユニットは、そのＮＣの効果を発動する。ただし、ストライクはできない。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e38193e381ae",
+          "keyword": "combo_action_konotankonoyunitononikonbineshonsurucn4wotsusyunitohasono",
           "duration": "turn"
         }
       ],

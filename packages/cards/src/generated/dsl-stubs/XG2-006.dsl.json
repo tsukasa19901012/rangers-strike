@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38399e383bce382bfe383a9",
+      "id": "betarancha",
       "name": "ベータランチャー",
       "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のバトルエリアのユニットは、自分自身のスタートフェイズ中と対戦相手のターン中以外はラッシュエリアに戻せない。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarumomonowokerunobatoruerianoyuni",
           "duration": "permanent"
         }
       ],

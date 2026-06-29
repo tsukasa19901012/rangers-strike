@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "named_e5afbee59cb0e3839fe382b5",
+      "id": "misairu_e5afbe",
       "name": "対地ミサイル",
       "text": "敵軍捨札からカードを1枚選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければこの効果は発動できない。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e695b5e8bb8d",
+          "keyword": "hold_enemy_unit_karakadowo1bichinokomandozonnihorudodeitemoyoi",
           "duration": "turn"
         }
       ],

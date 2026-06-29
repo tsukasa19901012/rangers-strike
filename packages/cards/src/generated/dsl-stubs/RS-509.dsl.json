@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382ace383ace383bce382b8",
+      "id": "garejirancha",
       "name": "ガレージランチャー",
       "text": "自軍パワーゾーンのオモテ向きのカードからオペレーションカードを1枚選び、自分の手札に加えても良い。そうしたとき、このターン、これは「SP1」になる。",
       "trigger": {
@@ -28,10 +28,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "power_zone_action_pawazonnoomote_ko_kinokadokaraopereshonkadowo1bino",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

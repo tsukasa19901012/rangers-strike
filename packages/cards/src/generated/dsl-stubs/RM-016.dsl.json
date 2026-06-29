@@ -11,7 +11,7 @@
   "rawText": "自軍パワーゾーンのダメージになってるカードをすべてオモテにする。そして、相手は自分自身の山札を見て、ユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。その後、相手は自分自身の山札をシャッフルする。",
   "effects": [
     {
-      "id": "named_e382b9e382bfe383bce38394",
+      "id": "sutapisu",
       "name": "スターピース",
       "text": "自軍パワーゾーンのダメージになってるカードをすべてオモテにする。そして、相手は自分自身の山札を見て、ユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。その後、相手は自分自身の山札をシャッフルする。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e887aae8bb8d",
+          "keyword": "opponent_must_pawazonnodamejininaterukadowosubeteomotenisurusoshiteha",
           "duration": "turn"
         }
       ],

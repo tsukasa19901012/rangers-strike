@@ -11,7 +11,7 @@
   "rawText": "自軍捨札から、追加条件を持たないDAのSユニットのカードを1枚選び、このカードに重ねて自軍ラッシュエリアに出す。このとき出したユニットの効果は発動しない。このカードに重ねたユニットはLユニットになる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
   "effects": [
     {
-      "id": "named_e382b4e383ace383a0e382ab",
+      "id": "goremukado",
       "name": "ゴレムカード",
       "text": "自軍捨札から、追加条件を持たないDAのSユニットのカードを1枚選び、このカードに重ねて自軍ラッシュエリアに出す。このとき出したユニットの効果は発動しない。このカードに重ねたユニットはLユニットになる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_cards_e887aae8bb8d",
+          "keyword": "stack_cards_karawotanaidanosyunitonokadowo1bikonokadonine",
           "duration": "turn"
         }
       ],

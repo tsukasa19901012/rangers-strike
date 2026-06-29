@@ -41,14 +41,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e5a4a9e381aee98193",
+      "id": "no_e5a4a9",
       "name": "天の道",
       "text": "これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、OTを持つ常駐オペレーションのカードを1枚選び自軍常駐置き場に配置してもよい。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e38193e3828c",
+          "keyword": "power_zone_action_koreworashushitatokipawazonnoomote_ko_kinokadokaraotwo",
           "duration": "turn"
         }
       ],

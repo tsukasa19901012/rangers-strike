@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e99bb7e381aee99b84e58fab",
+      "id": "kami_nobi",
       "name": "雷の雄叫び",
       "text": "「MA」の自軍コマンドを１つホールドして次の効果を発動できる⇒このターン、特徴「メカ」を持つ敵軍ユニットの、効果名を持つテキストは無効になり、発動もできない。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e3808c4d41e3",
+          "keyword": "grant_effect_manokomandowotsuhorudoshitenowodekirukonotanmekawotsu",
           "duration": "turn"
         }
       ],

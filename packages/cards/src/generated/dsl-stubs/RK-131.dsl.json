@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e99fb3e99fbfe68993e383bb",
+      "id": "fx_unknown_e99fb3",
       "name": "音響打・豪腕無双",
       "text": "敵軍Lユニットを1体選び、自軍山札の上から7枚までオモテにしてもよい。そうしたとき、オモテにしたユニットカードのBPの合計が、選んだLユニットのBP以上なら、選んだLユニットを撃破する。その後、オモテにしたカードはすべて捨札になる。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e695b5e8bb8d",
+          "keyword": "reveal_faceup_lyunitowo1binokara7madeomotenishitemoyoisoushitatokio",
           "duration": "turn"
         }
       ],

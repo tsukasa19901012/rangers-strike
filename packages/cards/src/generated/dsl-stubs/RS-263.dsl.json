@@ -23,7 +23,7 @@
   },
   "effects": [
     {
-      "id": "named_e5bcbee5b995e382bfe383b3",
+      "id": "dan_tankukomandomisairu",
       "name": "弾幕タンクコマンドミサイル",
       "text": "これが自軍ラッシュエリアにある間、リリース状態の自軍コマンドに、ナンバーを持つユニットカードがあれば、カードに表記された本来のナンバーがそのユニットカードと同じSユニットは、ＮＣの効果を発動できない。",
       "trigger": {
@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiaruririsunokomandoninanbawotsuyuni",
           "duration": "permanent"
         }
       ],

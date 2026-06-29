@@ -57,7 +57,7 @@
       ]
     },
     {
-      "id": "sp",
+      "id": "spinkamu",
       "name": "SPインカム",
       "text": "次の相手ターン、新しくラッシュエリアに出たユニットと、ホールド状態のユニットは、ターンが終わるまでバトルエリアに出られない",
       "trigger": {
@@ -66,7 +66,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_e6aca1e381ae",
+          "keyword": "cannot_restrict_notanshikurashuerianitayunitotohorudonoyunitohatan",
           "duration": "turn"
         }
       ],

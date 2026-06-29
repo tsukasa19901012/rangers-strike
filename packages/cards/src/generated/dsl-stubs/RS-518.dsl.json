@@ -11,7 +11,7 @@
   "rawText": "敵軍Sユニットを1体選ぶ。選んだユニットがホールド状態なら撃破し、リリース状態ならホールドする。",
   "effects": [
     {
-      "id": "named_e78da3e69283e6a392",
+      "id": "geki_e78da3",
       "name": "獣撃棒",
       "text": "敵軍Sユニットを1体選ぶ。選んだユニットがホールド状態なら撃破し、リリース状態ならホールドする。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e695b5e8bb8d",
+          "keyword": "hold_enemy_unit_syunitowo1bundayunitogahorudonara_geki_ha_shiririsunarah",
           "duration": "turn"
         }
       ],

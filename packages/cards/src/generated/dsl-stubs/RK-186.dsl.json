@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_4ae38391e383b3e38381",
+      "id": "jpanchi",
       "name": "Jパンチ",
       "text": "これがアタックするとき、自軍コマンドを好きな数ホールドしてもよい。そうしたとき、このターン、これはホールドしたコマンド1つにつきBP+1000される。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_koregaatakusurutokikomandowokinahorudoshitemoyoisoushitatokiko",
           "duration": "turn"
         }
       ],

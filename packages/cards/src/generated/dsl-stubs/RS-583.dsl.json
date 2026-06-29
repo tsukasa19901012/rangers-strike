@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e781bde38184e38292e58f97",
+      "id": "iwokemeru",
       "name": "災いを受け止める覚悟",
       "text": "これが自軍エリアにある間、相手によってこれ以外の自軍ユニットが選ばれたとき、このユニットが選ぶ対象として適切なら、このターン中に一度だけ、選ばれたユニットの代わりに、このユニットが選ばれたことにしてもよい。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruniyotekorenoyunitogabaretatokikonoyun",
           "duration": "permanent"
         }
       ],

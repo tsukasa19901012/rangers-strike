@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "ally_named_e68190e7ab9c_bp_1000",
+      "id": "ally_fx_unknown_bp_1000",
       "text": "これが自軍エリアにある間、特徴「恐竜」を持つすべての自軍ユニットはBP＋1000される。",
       "trigger": {
         "type": "nc"
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ally_named_e68190e7ab9c_bp_boost_1000",
+          "keyword": "ally_fx_unknown_bp_boost_1000",
           "duration": "permanent"
         }
       ]

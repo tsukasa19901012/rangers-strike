@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e688a6e38184e381aee8a898",
+      "id": "ino",
       "name": "戦いの記録",
       "text": "自軍スタートフェイズ開始時、このユニットを捨札にして次の効果を発動できる⇒自軍ラッシュエリアから、効果名を持つテキストに「これをラッシュしたとき」と書かれたユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。",
       "trigger": {
@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e887aae8bb8d",
+          "keyword": "grant_effect_sutatofueizukonoyunitowonishitenowodekirurashi",
           "duration": "turn"
         }
       ],

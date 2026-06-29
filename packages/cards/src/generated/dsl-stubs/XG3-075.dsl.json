@@ -41,7 +41,7 @@
       ]
     },
     {
-      "id": "named_e38395e382a1e382a4e3838a",
+      "id": "fuainarukamenatakufuomuraido",
       "name": "ファイナルカメンアタックフォームライド",
       "text": "自軍ターン中、これがバトルエリアに出たとき、オモテ向きの自軍パワーから、RCを持ち特徴「仮面ライダー」を持つカードを1枚選び捨札にしてもよい。そうしたとき、捨札にしたカードのRCの効果を、このユニットの効果として発動する。",
       "trigger": {
@@ -50,7 +50,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_e887aae8bb8d",
+          "keyword": "discard_to_zone_tankoregabatoruerianitatokiomote_ko_kinopawakararcwochi",
           "duration": "turn"
         }
       ],

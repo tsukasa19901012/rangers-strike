@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe789b9",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e5bcb7e3818de5bf83e381a8",
+      "id": "kitokii",
       "name": "強き心と強き願い",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンからオモテ向きのカードを1枚選びゲームから除外してよい。そうしたとき、これはBP+3000され、自分がゲームに負けるまで残り1点なら「SP2」になる。",
       "trigger": {

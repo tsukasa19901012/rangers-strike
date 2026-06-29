@@ -27,13 +27,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e38393e383aae38383e38388",
+      "id": "biritoshoku",
       "name": "ビリットショック",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、本来のBPが8000以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ敵軍コマンドを1つ選び、捨札にしてから置く。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakaranobpga8000",
           "duration": "turn"
         }
       ],

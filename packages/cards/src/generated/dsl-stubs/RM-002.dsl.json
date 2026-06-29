@@ -11,7 +11,7 @@
   "rawText": "次の効果から1つ選び発動する⇒◎自軍山札から「宇宙刑事シャリバン」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。◎自軍Sユニットを1体選ぶ。このターン、選んだユニットの特徴に「レッド」を追加する。",
   "effects": [
     {
-      "id": "named_e8b5a4e5b084",
+      "id": "fx_unknown_e8b5a4",
       "name": "赤射",
       "text": "次の効果から1つ選び発動する⇒◎自軍山札から「宇宙刑事シャリバン」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。◎自軍Sユニットを1体選ぶ。このターン、選んだユニットの特徴に「レッド」を追加する。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "choice_one_of_e6aca1e381ae",
+          "keyword": "choice_one_of_nokara1tsubisurukarasharibannokadowo1bi",
           "duration": "turn"
         }
       ],

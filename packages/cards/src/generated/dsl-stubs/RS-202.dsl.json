@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38394e383b3e382afe38390",
+      "id": "pinkubariya",
       "name": "ピンクバリヤー",
       "text": "次の相手ターン、自軍パワーゾーンのカードをウラ返してダメージにするとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットをすべて撃破する。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e6aca1e381ae",
+          "keyword": "damage_action_notanpawazonnokadowourashitedamejinisurutokiurasuka",
           "duration": "turn"
         }
       ],

@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": "named_e382b0e383a9e383b3e38387",
+      "id": "gurandeionireiza",
       "name": "グランディオンイレイザー",
       "text": "自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、敵軍コマンドを1つ選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
+          "keyword": "enemy_power_damage_komandowo1tsubinishitemoyoisoushitatokikomandowo1tsub",
           "duration": "turn"
         }
       ],

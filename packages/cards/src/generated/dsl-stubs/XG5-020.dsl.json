@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e383ace38383e38389e382be",
+      "id": "redozonkurashu",
       "name": "レッドゾーンクラッシュ",
       "text": "自軍コマンドを1つ選び手札に戻してもよい。そうしたとき、このターン、これはBP+2000され、戻したカードが特徴「メカ」を持つMユニットだったなら、さらにBP+2000される。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e887aae8bb8d",
+          "keyword": "bp_modify_komandowo1tsubinishitemoyoisoushitatokikonotankorehabp2000",
           "duration": "turn"
         }
       ],

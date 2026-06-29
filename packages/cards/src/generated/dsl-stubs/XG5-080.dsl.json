@@ -25,7 +25,7 @@
       ]
     },
     {
-      "id": "named_e382a2e382bfe38383e382af",
+      "id": "atakuraido",
       "name": "アタックライド",
       "text": "これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしているSビークルのカードを1枚選び、これと置き換えてもよい。ただし、追加条件は満たすこと。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "vehicle_interaction_e38193e3828c",
+          "keyword": "vehicle_interaction_koreworashushitatokipawazonnoomote_ko_kinokadokarapa",
           "duration": "turn"
         }
       ],

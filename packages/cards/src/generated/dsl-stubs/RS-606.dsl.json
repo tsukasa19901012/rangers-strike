@@ -11,7 +11,7 @@
   "rawText": "ウイングを持つ自軍ユニットを1枚選びリリースしてもよい。そうしたとき、リリースしたユニットのBPを見て、そのBP以下のBPを持つユニットを敵軍バトルエリアから1体選び、持ち主のパワーゾーンにダメージにして置く。",
   "effects": [
     {
-      "id": "named_e99bb7e9b3b4e589a3e38392",
+      "id": "kami_ken_hikarimaru",
       "name": "雷鳴剣ヒカリマル",
       "text": "ウイングを持つ自軍ユニットを1枚選びリリースしてもよい。そうしたとき、リリースしたユニットのBPを見て、そのBP以下のBPを持つユニットを敵軍バトルエリアから1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e382a6e382a4",
+          "keyword": "enemy_power_damage_uinguwotsuyunitowo1biririsushitemoyoisoushitatokiriri",
           "duration": "turn"
         }
       ],

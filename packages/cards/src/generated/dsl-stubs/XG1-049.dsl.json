@@ -42,14 +42,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382bbe382a4e383aae383b3",
+      "id": "seiringujanpu",
       "name": "セイリングジャンプ",
       "text": "敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードがSユニットのカードなら持ち主の山札の下に、それ以外なら上に戻す。",
       "trigger": {

@@ -39,14 +39,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e4b889e98094e381aee5b79d",
+      "id": "nono",
       "name": "三途の川の御大将",
       "text": "自軍ターン中、これがバトルエリアに出たとき、お互いの捨札にあるSユニットのカードをすべてゲームから除外する。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e887aae8bb8d",
+          "keyword": "exclude_game_tankoregabatoruerianitatokioinoniarusyunitonokadowosu",
           "duration": "turn"
         }
       ],

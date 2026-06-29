@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e9a0bce3828ce3828be68c87",
+      "id": "reru",
       "name": "頼れる指揮官",
       "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、「ユイ・イブキ」以外のホールド状態の自軍ユニットが撃破されて捨札になったとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
       "trigger": {
@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiarutanyuiibukinohorudono",
           "duration": "permanent"
         }
       ],

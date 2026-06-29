@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "rk",
+      "id": "rkba",
       "name": "RKバー",
       "text": "敵軍バトルエリアからSユニットを1体選んでもよい。そうしたとき、選んだユニットは、次の相手ターン、アタックもストライクもできない。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_e695b5e8bb8d",
+          "keyword": "pick_remaining_batorueriakarasyunitowo1ndemoyoisoushitatokindayunitohano",
           "duration": "turn"
         }
       ],

@@ -11,7 +11,7 @@
   "rawText": "【バキバキビックサンダー】これをラッシュしたとき、必要パワーの数字が3以下の敵軍ユニットを1体選びホールドしてもよい。",
   "effects": [
     {
-      "id": "named_e38390e382ade38390e382ad",
+      "id": "bakibakibikusanda",
       "name": "バキバキビックサンダー",
       "text": "これをラッシュしたとき、必要パワーの数字が3以下の敵軍ユニットを1体選びホールドしてもよい。",
       "trigger": {
@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e38193e3828c",
+          "keyword": "hold_enemy_unit_koreworashushitatokipawanoga3noyunitowo1bihorudoshi",
           "duration": "turn"
         }
       ],

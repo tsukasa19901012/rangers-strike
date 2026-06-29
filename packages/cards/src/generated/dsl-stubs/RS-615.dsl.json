@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b8e383a3e38383e382ab",
+      "id": "jakakobaku",
       "name": "ジャッカーコバック",
       "text": "自軍バトルエリアから、特徴「ブルー」「レッド」「グリーン」を持つSユニットをそれぞれ1体ずつ好きな順にホールドして、次の効果を発動できる⇒このターン、これはSP1になり、ホールド状態の敵軍コマンドをすべて捨札にする。",
       "trigger": {
@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e887aae8bb8d",
+          "keyword": "grant_effect_batorueriakarabururedogurinwotsusyunitowosorezore1zutsu",
           "duration": "turn"
         }
       ],

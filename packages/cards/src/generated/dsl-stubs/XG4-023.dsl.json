@@ -57,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e8b685e5bf8de6b395e383bb",
+      "id": "choninpo_noku",
       "name": "超忍法・秘打千本ノック",
       "text": "自軍コマンドを好きな数選び、自分の手札に戻してもよい。そうしたとき、相手は、戻した数と同じ数まで自分自身のラッシュエリアのSユニットを選び、持ち主の山札の下に好きな順番で戻す。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。",
       "trigger": {
@@ -66,14 +66,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e887aae8bb8d",
+          "keyword": "opponent_must_komandowokinabinonishitemoyoisoushitatokihashitato",
           "duration": "turn"
         }
       ],
       "optional": true
     },
     {
-      "id": "named_e8b685e5bf8de6b395e383bb_e887aae8",
+      "id": "choninpo_noku_komandowokin",
       "name": "超忍法・秘打千本ノック",
       "text": "自軍コマンドを好きな数選び、自分の手札に戻してもよい。そうしたとき、相手は、戻した数と同じ数まで可能な限り自分自身のラッシュエリアのSユニットを選び、持ち主の山札の下に好きな順番で戻す。",
       "trigger": {
@@ -82,7 +82,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e887aae8bb8d",
+          "keyword": "opponent_must_komandowokinabinonishitemoyoisoushitatokihashitato",
           "duration": "turn"
         }
       ],

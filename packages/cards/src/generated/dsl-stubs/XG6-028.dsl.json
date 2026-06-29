@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e8b5a4e3818de7a9bae381ae",
+      "id": "kino_shi",
       "name": "赤き空の獅子",
       "text": "これをラッシュしたとき、自軍山札の上から1枚をオモテにする。オモテにしたカードが「スカイオン」以外の特徴「獣」を持つユニットカードなら、手札に加える。それ以外なら、オモテにしたカードを山札に戻してシャッフルする。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e38193e3828c",
+          "keyword": "reveal_faceup_koreworashushitatokinokara1woomotenisuruomotenishitakadoga",
           "duration": "turn"
         }
       ],

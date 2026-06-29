@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e38395e382a1e382a4e383a4",
+      "id": "fuaiyatorunedo",
       "name": "ファイヤートルネード",
       "text": "これをラッシュしたとき、敵軍ユニットと敵軍コマンドゾーンのカードを、すべて持ち主の山札に戻してシャッフルする。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_e38193e3828c",
+          "keyword": "return_to_zone_koreworashushitatokiyunitotokomandozonnokadowosubetechino",
           "duration": "turn"
         }
       ],

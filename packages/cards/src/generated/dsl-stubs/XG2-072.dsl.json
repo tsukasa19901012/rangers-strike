@@ -28,7 +28,7 @@
       ]
     },
     {
-      "id": "named_e38388e383a9e382a4e382b4",
+      "id": "toraigouramuataku",
       "name": "トライゴウラムアタック",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -37,7 +37,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokibatorueriakarasyunitowo1bi",
           "duration": "turn"
         }
       ],

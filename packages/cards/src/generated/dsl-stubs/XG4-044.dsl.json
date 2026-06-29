@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e383a9e383b3e38387e382a3",
+      "id": "randeikuakusu",
       "name": "ランディックアックス",
       "text": "このターン、これは、リリース状態の自軍コマンド1つにつきBP+1000される。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e38193e381ae",
+          "keyword": "release_command_action_konotankoreharirisunokomando1tsunitsukibp1000sare",
           "duration": "turn"
         }
       ],

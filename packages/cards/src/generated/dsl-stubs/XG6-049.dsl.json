@@ -30,14 +30,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382aae383abe38395e382a7",
+      "id": "orufuenokuno_ou",
       "name": "オルフェノクの帝王",
       "text": "自分の手札を1枚選び自軍コマンドゾーンにホールド状態で置いてもよい。そうしたとき、そのカードの必要パワーの数字以下の必要パワーを持つ敵軍バトルエリアのSユニットを好きな数選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e887aae58886",
+          "keyword": "hold_enemy_unit_nowo1bikomandozonnihorudodeitemoyoisoushitatokiso",
           "duration": "turn"
         }
       ],

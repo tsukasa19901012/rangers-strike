@@ -31,14 +31,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e3839ce382afe382b7e383b3",
+      "id": "bokushingusutairu",
       "name": "ボクシングスタイル",
       "text": "自軍バトルフェイズ中、これが自軍バトルエリアにある間、ETを持つ自軍コマンドを3つホールドしてもよい。そうしたとき、これをラッシュエリアに戻す。",
       "trigger": {
@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e887aae8bb8d",
+          "keyword": "while_in_field_body_batorufueizukoregabatoruerianiaruetwotsukomandowo3ts",
           "duration": "permanent"
         }
       ],

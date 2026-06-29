@@ -42,14 +42,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe887aa",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382aee383a3e38390e383b3",
+      "id": "gyabandainamiku",
       "name": "ギャバンダイナミック",
       "text": "本来のBPが4000以上の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e69cace69da5",
+          "keyword": "power_zone_action_nobpga4000nosyunitowo1bichinopawazonnitemo",
           "duration": "turn"
         }
       ],

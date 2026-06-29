@@ -25,7 +25,7 @@
       ]
     },
     {
-      "id": "ride_without_rc_named_e8ada6e5af9f",
+      "id": "ride_without_rc_fx_unknown",
       "text": "※特徴「警察」を持つ自軍Sユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_named_e8ada6e5af9f",
+          "keyword": "ride_without_rc_fx_unknown",
           "duration": "permanent"
         }
       ]

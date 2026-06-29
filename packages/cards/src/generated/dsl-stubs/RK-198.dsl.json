@@ -42,14 +42,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e38389e383a9e382a4e38396",
+      "id": "doraibudeibaida",
       "name": "ドライブディバイダー",
       "text": "特徴「レイヨウ型」を持つユニットからコンビネーションしたとき発動できる⇒レジストを持たない敵軍Sユニットを、特徴「レイヨウ型」を持つユニットの数まで選びホールドする。",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e789b9e5beb4",
+          "keyword": "combo_action_reiyouwotsuyunitokarakonbineshonshitatokidekirurejisutowota",
           "duration": "turn"
         }
       ],

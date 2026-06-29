@@ -23,7 +23,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38391e383abe382bbe382a4",
+      "id": "paruseiba",
       "name": "パルセイバー",
       "text": "これが敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットのBPを-2000してもよい。（BP0以下になったユニットは撃破される）（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e38193e3828c",
+          "keyword": "combo_action_koregayunitoniatakusurutokibatorunonibatorunoyunitonobpwo20",
           "duration": "turn"
         }
       ],

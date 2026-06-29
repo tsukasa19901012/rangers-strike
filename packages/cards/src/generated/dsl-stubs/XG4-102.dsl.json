@@ -11,7 +11,7 @@
   "rawText": "【ギンクロン発進】自軍ラッシュフェイズ中、これを捨札にして次の効果を発動できる⇒自軍山札を見て「ケンローダー」以外のOTを持つSビークルのカードを1枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。その後、山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【ギンクロン発進】自軍ラッシュフェイズ中、このビークルを捨札にして次の効果を発動できる⇒自軍山札を見て「ケンローダー」以外のＯＴを持つＳビークルのカードを１枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。その後、山札をシャッフルする。",
   "effects": [
     {
-      "id": "named_e382aee383b3e382afe383ad",
+      "id": "ginkuron",
       "name": "ギンクロン発進",
       "text": "自軍ラッシュフェイズ中、これを捨札にして次の効果を発動できる⇒自軍山札を見て「ケンローダー」以外のOTを持つSビークルのカードを1枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。その後、山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。",
       "trigger": {
@@ -20,14 +20,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_search_e887aae8bb8d",
+          "keyword": "rush_discard_search_rashufueizukorewonishitenowodekiruwotekenro",
           "duration": "turn"
         }
       ],
       "optional": true
     },
     {
-      "id": "named_e382aee383b3e382afe383ad_e887aae8",
+      "id": "ginkuron_rashufueizuk",
       "name": "ギンクロン発進",
       "text": "自軍ラッシュフェイズ中、このビークルを捨札にして次の効果を発動できる⇒自軍山札を見て「ケンローダー」以外のＯＴを持つＳビークルのカードを１枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。その後、山札をシャッフルする。",
       "trigger": {
@@ -36,7 +36,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_search_e887aae8bb8d",
+          "keyword": "rush_discard_search_rashufueizukonobikuruwonishitenowodekiruwote",
           "duration": "turn"
         }
       ],

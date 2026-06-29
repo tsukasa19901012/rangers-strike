@@ -56,13 +56,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e9be8de69283e589a326e78d",
+      "id": "ryu_geki_ken_ken",
       "name": "龍撃剣＆獣奏剣",
       "text": "これは自軍ターン中、特徴「恐竜」を持つユニット1体につきBP+1000され、BP8000以上のときSP1になる。",
       "trigger": {
@@ -71,7 +71,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_korehatanwotsuyunito1nitsukibp1000sarebp8000",
           "duration": "turn"
         }
       ],

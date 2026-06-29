@@ -11,7 +11,7 @@
   "rawText": "【サイバリアンレーザースピード】自軍ターン中、これがバトルエリアに出たとき、OTを持つ自軍コマンドを2つホールドしてもよい。そうしたとき、これにライドしているユニットは、このターン、ライドオフしなくてもＲＣの効果を発動できる。",
   "effects": [
     {
-      "id": "named_e382b5e382a4e38390e383aa",
+      "id": "saibarianrezasupido",
       "name": "サイバリアンレーザースピード",
       "text": "自軍ターン中、これがバトルエリアに出たとき、OTを持つ自軍コマンドを2つホールドしてもよい。そうしたとき、これにライドしているユニットは、このターン、ライドオフしなくてもＲＣの効果を発動できる。",
       "trigger": {
@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokiotwotsukomandowo2tsuhoru",
           "duration": "turn"
         }
       ],

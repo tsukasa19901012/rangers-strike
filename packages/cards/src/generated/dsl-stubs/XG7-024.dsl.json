@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e78da3e58a9be9968be88ab1",
+      "id": "chikara_hana",
       "name": "獣力開花",
       "text": "これが自軍エリアにある間、カード名に「サイダイ」を含まない、特徴「激気」を持つユニットは次の能力を得る⇒これがバトルエリアに出たとき、自分自身の手札から、これの必要パワーの数字よりも必要パワーの数字が小さいWBのMユニットのカードを1枚選び、自分自身のラッシュエリアに出してもよい。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_koregaerianiarukadonisaidaiwomanaiwotsuyunitohano",
           "duration": "permanent"
         }
       ]

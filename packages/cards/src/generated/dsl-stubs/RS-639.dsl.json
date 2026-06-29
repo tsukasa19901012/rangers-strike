@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3838de382b8e382b9e383aa",
+      "id": "nejisuringu",
       "name": "ネジスリング",
       "text": "特徴「イエロー」を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e789b9e5beb4",
+          "keyword": "enemy_power_damage_ierowotsusyunitowo1bichinopawazonnidamejinishite",
           "duration": "turn"
         }
       ],

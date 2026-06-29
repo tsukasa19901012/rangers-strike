@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3838de382b8e382a2e383ad",
+      "id": "nejiaro",
       "name": "ネジアロー",
       "text": "特徴「ピンク」を持つ敵軍Sユニットを1体選び、撃破してもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_e789b9e5beb4",
+          "keyword": "destroy_choose_enemy_pinkuwotsusyunitowo1bi_geki_ha_shitemoyoi",
           "duration": "turn"
         }
       ],

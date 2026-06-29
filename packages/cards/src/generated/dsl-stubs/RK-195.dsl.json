@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e5868de8b5b7e58b95e381a8",
+      "id": "to_e5868d",
       "name": "再起動と暴走",
       "text": "これが自軍エリアにある間、これがホールド状態からリリース状態になったとき、これ以外の自軍Sユニットを1体選びホールドしても良い。そうしたとき、敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarukoregahorudokararirisuninatatokikoren",
           "duration": "permanent"
         }
       ],

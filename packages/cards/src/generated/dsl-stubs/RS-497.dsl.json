@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e5a489e8baabe381aee5a6a8",
+      "id": "no_e5a489",
       "name": "変身の妨害",
       "text": "これが自軍バトルエリアにある間、カテゴリにDAを持たず、本来の特徴に｢男｣または「女」を持つSユニットは、次の制限を受ける⇒効果名を持つテキストは無効になり、発動もできない。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiarukategorinidawotazunonimatahawot",
           "duration": "permanent"
         }
       ],

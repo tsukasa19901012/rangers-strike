@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "ally_named_e4bbaee99da2e383a9e382a4_protects_from_enemy_s",
+      "id": "ally_raida_protects_from_enemy_s",
       "text": "※これ以外の特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -26,13 +26,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ally_named_e4bbaee99da2e383a9e382a4_protects_from_enemy_s",
+          "keyword": "ally_raida_protects_from_enemy_s",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382abe382aee788aae382a2",
+      "id": "kagi_tsume_amu",
       "name": "カギ爪アーム",
       "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出してもよい。",
       "trigger": {

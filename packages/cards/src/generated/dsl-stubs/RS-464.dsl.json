@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e696ace69283e381aee59b9e",
+      "id": "zan_geki_no",
       "name": "斬撃の回避",
       "text": "次の相手ターン、相手はこのユニットを選べない。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e6aca1e381ae",
+          "keyword": "opponent_must_notanhakonoyunitowobenai",
           "duration": "turn"
         }
       ],

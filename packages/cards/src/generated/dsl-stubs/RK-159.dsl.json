@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "v3",
+      "id": "v3kiku",
       "name": "V3キック",
       "text": "必要パワーの数字に「－」のある敵軍Sユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_e5bf85e8a681",
+          "keyword": "destroy_choose_enemy_pawanoninoarusyunitowo1bi_geki_ha_shitemoyoi",
           "duration": "turn"
         }
       ],

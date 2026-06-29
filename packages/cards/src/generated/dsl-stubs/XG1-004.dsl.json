@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383ace38383e38389e383ab",
+      "id": "redorubimuchi",
       "name": "レッドルビームチ",
       "text": "敵軍コマンドゾーンからSユニットのカードを1枚選んでもよい。そうしたとき、相手は選ばれたカードをラッシュエリアかバトルエリアに出す。このときバトルエリアに出したなら、相手は自分自身の山札の上から1枚引いて、自分自身のコマンドゾーンに置く。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e695b5e8bb8d",
+          "keyword": "opponent_must_komandozonkarasyunitonokadowo1ndemoyoisoushitatokihaba",
           "duration": "turn"
         }
       ],

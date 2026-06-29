@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38395e382a1e382a4e382ba",
+      "id": "fuaizuburasuta",
       "name": "ファイズブラスター",
       "text": "自軍バトルフェイズ中、このユニットからSユニットがコンビネーションするとき、これをホールドして次の効果を発動できる⇒敵軍バトルエリアからBPの下三桁が500のユニットを1体選び撃破する。（コンビネーションしたSユニットが「仮面ライダーディケイド」または「仮面ライダーディエンド」なら、ユニットを選ぶとき敵軍ラッシュエリアから選んでもよい）",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_hold_s_e887aae8bb8d",
+          "keyword": "combo_hold_s_batorufueizukonoyunitokarasyunitogakonbineshonsurutokikorew",
           "duration": "turn"
         }
       ],

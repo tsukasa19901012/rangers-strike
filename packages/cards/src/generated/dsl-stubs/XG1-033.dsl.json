@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e6b19ae3828ce3819fe5a4a7",
+      "id": "reta",
       "name": "汚れた大地",
       "text": "これが自軍エリアにある間、コマンドゾーンにある本来のカテゴリにDAを持たないカードのうち、必要パワーの数字が3以下のカードは、カテゴリにDAが追加される（この効果は重複しない）。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarukomandozonniarunokategorinidawotanaik",
           "duration": "permanent"
         }
       ],

@@ -44,13 +44,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e38398e38393e383bce382b5",
+      "id": "hebisaikuron",
       "name": "ヘビーサイクロン",
       "text": "SP1 （この効果は「ドラフトブルース」または「ドラフトキース」からコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -59,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_5350312028e3",
+          "keyword": "combo_action_sp1konohadorafutoburusumatahadorafutokisukarakonbineshonsur",
           "duration": "turn"
         }
       ],

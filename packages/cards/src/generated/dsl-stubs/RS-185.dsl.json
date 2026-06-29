@@ -11,7 +11,7 @@
   "rawText": "相手の手札を見て、カウンターのオペレーションカードがあれば1枚選び、持ち主のパワーゾーンにダメージにして置く。",
   "effects": [
     {
-      "id": "named_e382abe383bce3838ae38393",
+      "id": "kanabiku",
       "name": "カーナビック",
       "text": "相手の手札を見て、カウンターのオペレーションカードがあれば1枚選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e79bb8e6898b",
+          "keyword": "opponent_hand_counter_to_power",
           "duration": "turn"
         }
       ],

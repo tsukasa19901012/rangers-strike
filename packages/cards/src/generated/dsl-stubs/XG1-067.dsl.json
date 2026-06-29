@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_named_e4bbaee99da2e383a9e382a4",
+      "id": "unnamed_alias_raidabureido",
       "text": "※これは「仮面ライダーブレイド」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -41,13 +41,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e4bbaee99da2e383a9e382a4",
+          "keyword": "alias_raidabureido",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382a2e382bfe38383e382af",
+      "id": "atakuraido",
       "name": "アタックライド",
       "text": "自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら、敵軍バトルエリアからSユニットを1体選び撃破する。",
       "trigger": {

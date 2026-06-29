@@ -24,14 +24,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe887aa",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e98db5e381aee68c81e381a1",
+      "id": "nochinoi",
       "name": "鍵の持ち主の願い",
       "text": "これが自軍エリアにある間、自分も相手も次のようにする⇒必要パワーに「＋」を持つユニットカードの追加条件を実行して満たしたとき、そのカードの持ち主は1枚ドローしてもよい。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarumomonoyounisurupawaniwotsuyunitoka",
           "duration": "permanent"
         }
       ],

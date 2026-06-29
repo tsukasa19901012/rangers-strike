@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e3838ae38383e382afe383ab",
+      "id": "nakurukyanon",
       "name": "ナックルキャノン",
       "text": "これがアタックしたとき、自軍コマンドが3つ以下なら、自軍捨札から必要パワーの数字が2以下のオペレーションカードを1枚選び自軍コマンドゾーンにホールド状態で置いてもよい。（この効果は「ボウケンレッド」からコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e38193e3828c",
+          "keyword": "combo_action_koregaatakushitatokikomandoga3tsunarakarapawanoga2",
           "duration": "turn"
         }
       ],

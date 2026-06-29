@@ -40,13 +40,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e7949fe591bde381aee5bcb7",
+      "id": "no_e7949f",
       "name": "生命の強奪",
       "text": "自軍ターン中、ホールド状態のこのユニットがバトルエリアに出たとき、次の効果を発動する⇒相手は自分自身のSユニットを1体選び撃破するか、このユニットをリリースするかを選ぶ。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tanhorudonokonoyunitogabatoruerianitatokinowosuru",
           "duration": "turn"
         }
       ],

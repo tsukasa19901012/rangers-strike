@@ -39,14 +39,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e586b7e5878de58589e7b79a",
+      "id": "hikari_e586b7",
       "name": "冷凍光線",
       "text": "「ガオベアー」か特徴「人型」を持つLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットのBP以下のBPを持つ敵軍ユニットを1体選びホールドする。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e3808ce382ac",
+          "keyword": "grant_effect_gaobeakawotsulyunitogakonoyunitokarakonbineshonsurutoki",
           "duration": "turn"
         }
       ],

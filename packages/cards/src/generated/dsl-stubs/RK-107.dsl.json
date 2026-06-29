@@ -11,7 +11,7 @@
   "rawText": "【硬化装甲】これにライドしているユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。",
   "effects": [
     {
-      "id": "named_e7a1ace58c96e8a385e794b2",
+      "id": "ko",
       "name": "硬化装甲",
       "text": "これにライドしているユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。",
       "trigger": {
@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e38193e3828c",
+          "keyword": "release_command_action_koreniraidoshiteiruyunitohatanririsunokomando1tsu",
           "duration": "turn"
         }
       ],

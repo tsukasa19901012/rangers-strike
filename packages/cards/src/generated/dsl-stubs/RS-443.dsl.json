@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382abe383b3e38395e383bc",
+      "id": "kanfudansu",
       "name": "カンフーダンス",
       "text": "自軍ラッシュエリアのSユニットを2体まで選び、自軍コマンドゾーンにリリース状態で置いてもよい。(コマンドゾーンに置けるカードは通常5枚まで)",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e887aae8bb8d",
+          "keyword": "release_command_action_rashuerianosyunitowo2madebikomandozonniririsude",
           "duration": "turn"
         }
       ],

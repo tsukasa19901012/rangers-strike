@@ -56,7 +56,7 @@
       ]
     },
     {
-      "id": "named_e38396e383ace382a4e382b8",
+      "id": "bureijingusutomusurashu",
       "name": "ブレイジングストームスラッシュ",
       "text": "これはアタックするときリリース状態の自軍コマンド1つにつきBP＋1000される。",
       "trigger": {
@@ -65,7 +65,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e38193e3828c",
+          "keyword": "release_command_action_korehaatakusurutokiririsunokomando1tsunitsukibp10",
           "duration": "turn"
         }
       ],

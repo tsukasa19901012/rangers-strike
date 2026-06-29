@@ -11,7 +11,7 @@
   "rawText": "【ドリル攻撃】自軍ターン中、これがバトルエリアに出たとき、特徴を4つ以上持つ敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
   "effects": [
     {
-      "id": "named_e38389e383aae383abe694bb",
+      "id": "doriru_geki",
       "name": "ドリル攻撃",
       "text": "自軍ターン中、これがバトルエリアに出たとき、特徴を4つ以上持つ敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
@@ -19,12 +19,39 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
       ],
-      "optional": false
+      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
     }
   ],
   "implementation": {

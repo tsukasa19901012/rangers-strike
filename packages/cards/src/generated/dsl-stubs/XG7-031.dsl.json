@@ -33,14 +33,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b5e382a4e382afe383ad",
+      "id": "saikuronataku",
       "name": "サイクロンアタック",
       "text": "これにライドしているユニットはBP+1000され、敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない。",
       "trigger": {
@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e38193e3828c",
+          "keyword": "ride_action_koreniraidoshiteiruyunitohabp1000saresyunitomatahasbikuru",
           "duration": "turn"
         }
       ],

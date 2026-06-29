@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e38389e383a9e382b0e38396",
+      "id": "doraguburesu",
       "name": "ドラグブレス",
       "text": "これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身のユニットを1体選ぶ。そして、自分自身の選んだユニットの持っていないカテゴリを持つ自分自身のSユニットを1体選び撃破する。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_self_order_e38193e3828c",
+          "keyword": "opponent_self_order_koreworashushitatokinowononiunoyunitowo1buso",
           "duration": "turn"
         }
       ]

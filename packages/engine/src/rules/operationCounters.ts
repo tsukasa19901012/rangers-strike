@@ -40,6 +40,7 @@ import { findCardOwner } from "./fieldLookup";
 import { canOfferRegister, toPendingRegister } from "./resist";
 import { canStrikeUnit } from "./combo";
 import { opponentInfiniteChainBlocks } from "./turnModifiers";
+import { shouldBattleDestroyToPower } from "./turnModifierBridge";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
 import { resolveLegend3OnBattleWin } from "./legend3/destroyEffects";
 import { shouldMedicalRescueToPower } from "./legend2/fieldEffects";
@@ -888,11 +889,25 @@ export function resolveBattlePendingCore(
   };
 
   const attackerZone = refreshedAttackerFound.zone;
+  const defenderLeaveZone = shouldBattleDestroyToPower(
+    battleState,
+    pending,
+    defenderInstanceId,
+  )
+    ? "power"
+    : "discard";
+  const attackerLeaveZone = shouldBattleDestroyToPower(
+    battleState,
+    pending,
+    pending.attackerInstanceId,
+  )
+    ? "power"
+    : "discard";
   const attackerLeaveIntent: LeaveIntent = {
     ownerPlayerId: attackerId,
     instanceId: pending.attackerInstanceId,
     fromZone: attackerZone,
-    toZone: "discard",
+    toZone: attackerLeaveZone,
     leavingCardId: refreshedAttackerFound.card.cardId,
     phasePlayerId: pending.phasePlayerId,
     registerEligible:
@@ -907,7 +922,7 @@ export function resolveBattlePendingCore(
       ownerPlayerId: defenderOwner,
       instanceId: defenderInstanceId,
       fromZone: defenderZone,
-      toZone: "discard",
+      toZone: defenderLeaveZone,
       leavingCardId: refreshedDefenderFound.card.cardId,
       phasePlayerId: pending.phasePlayerId,
       registerEligible: defenderZone === "battle",

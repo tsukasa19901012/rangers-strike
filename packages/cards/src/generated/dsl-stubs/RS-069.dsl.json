@@ -16,7 +16,7 @@
     {
       "id": "lightning_gravity",
       "name": "RS-069",
-      "text": "",
+      "text": "すべてのMユニットはコマンドを1つホールドしないとバトルエリアに出られない（常駐）。",
       "trigger": {
         "type": "operation",
         "timing": "resident"
@@ -34,5 +34,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "text": "すべてのMユニットはコマンドを1つホールドしないとバトルエリアに出られない（常駐）。",
+  "rawText": "すべてのMユニットはコマンドを1つホールドしないとバトルエリアに出られない（常駐）。"
 }

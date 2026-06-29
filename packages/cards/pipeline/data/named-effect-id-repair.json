@@ -1,9 +1,190 @@
 {
-  "generatedAt": "2026-06-28T23:31:48.203Z",
+  "generatedAt": "2026-06-28T23:57:14.378Z",
   "scanned": 1399,
-  "repairedCards": 0,
-  "renamedEffects": 0,
-  "rematchedEffects": 0,
-  "remainingNamedIds": 2798,
-  "samples": []
+  "repairedCards": 1381,
+  "renamedEffects": 1399,
+  "rematchedEffects": 1399,
+  "remainingNamedIds": 0,
+  "samples": [
+    {
+      "cardId": "BK-009",
+      "from": "named_e382ade383b3e382b0e382b9",
+      "to": "kingusuton",
+      "reason": "rename"
+    },
+    {
+      "cardId": "BK-010",
+      "from": "named_e382b5e383b3e383a9e382a4",
+      "to": "sanraiza",
+      "reason": "rename"
+    },
+    {
+      "cardId": "BK-011",
+      "from": "named_e382a2e383bce382afe383ab",
+      "to": "akuru",
+      "reason": "rename"
+    },
+    {
+      "cardId": "BK-012",
+      "from": "named_e382aae383abe382bfe383aa",
+      "to": "orutaringu",
+      "reason": "rename"
+    },
+    {
+      "cardId": "BK-013",
+      "from": "named_56e38390e38383e382afe383",
+      "to": "vbakuru",
+      "reason": "rename"
+    },
+    {
+      "cardId": "BK-015",
+      "from": "named_e38396e383ace382a4e38390",
+      "to": "bureibakuru",
+      "reason": "rename"
+    },
+    {
+      "cardId": "BK-016",
+      "from": "named_e781abe7828ee9bc93e8a385",
+      "to": "hi_honoo_e781ab",
+      "reason": "rename"
+    },
+    {
+      "cardId": "BK-017",
+      "from": "named_e382abe38396e38388e382bc",
+      "to": "kabutozekuta",
+      "reason": "rename"
+    },
+    {
+      "cardId": "BK-018",
+      "from": "named_e38387e383b3e382aae382a6",
+      "to": "denouberuto",
+      "reason": "rename"
+    },
+    {
+      "cardId": "BK-019",
+      "from": "named_e382ade38390e38383e38388",
+      "to": "kibatoberuto",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PK-001",
+      "from": "named_e38389e383a9e382b4e382af",
+      "to": "doragokuro",
+      "reason": "rename+rematch:grant_ability_generic"
+    },
+    {
+      "cardId": "PK-002",
+      "from": "named_e38395e382a9e383bce383a1",
+      "to": "fuomeshon",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PK-003",
+      "from": "named_e38389e383a9e382b0e382bb",
+      "to": "doraguseiba",
+      "reason": "rename+rematch:grant_ability_generic"
+    },
+    {
+      "cardId": "PK-005",
+      "from": "named_e69982e381aee58897e8bb8a",
+      "to": "no_e69982",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PK-006",
+      "from": "named_e382b5e382bfe383b3e382b5",
+      "to": "satansaberu",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PK-008",
+      "from": "named_e382abe382aee788aae382a2",
+      "to": "kagi_tsume_amu",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PK-009",
+      "from": "named_e38380e38396e383abe382bf",
+      "to": "daburutaifun",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PK-012",
+      "from": "named_e38389e383a9e382b0e38390",
+      "to": "doragubaizatsubai",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PK-014",
+      "from": "named_e383a2e383b3e382b9e382bf",
+      "to": "monsutafuiba",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PM-001",
+      "from": "named_e79c9fe381a3e59091e4b8a1",
+      "to": "shin_ko_ryo_dan",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PR-001",
+      "from": "named_e382a2e382afe382bbe383ab",
+      "to": "akuserura",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PR-002",
+      "from": "named_e382b4e383bce382b9e382b3",
+      "to": "gosukopagobika",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PR-004",
+      "from": "named_e7a798e589a3e6b581e3828c",
+      "to": "ken_re_zan_ri",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PR-009",
+      "from": "named_e382aae383bce383ade383a9",
+      "to": "ororapurazumashi",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PR-011",
+      "from": "named_e382b5e38390e382a4e38390",
+      "to": "sabaibasuta",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PR-013",
+      "from": "named_e38380e38396e383abe382a2",
+      "to": "daburuamukurashu",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PR-017",
+      "from": "named_e59286e59286e5bcbe",
+      "to": "dan_e59286",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PR-018",
+      "from": "named_e5a4a7e9a091e9a091e68bb3",
+      "to": "ken_e5a4a7",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PR-019",
+      "from": "named_e38395e382a1e383abe382b3",
+      "to": "fuarukonbureiku",
+      "reason": "rename"
+    },
+    {
+      "cardId": "PR-020",
+      "from": "named_e382a2e382b5e383abe38388",
+      "to": "asarutobekuta",
+      "reason": "rename"
+    }
+  ]
 }

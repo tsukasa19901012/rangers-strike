@@ -13,7 +13,7 @@
     {
       "id": "discard_to_hand",
       "name": "RS-068",
-      "text": "",
+      "text": "自軍捨札からカード1枚を選び、手札に加える。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
@@ -53,5 +53,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "text": "自軍捨札からカード1枚を選び、手札に加える。",
+  "rawText": "自軍捨札からカード1枚を選び、手札に加える。"
 }

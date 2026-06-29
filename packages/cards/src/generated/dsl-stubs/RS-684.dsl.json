@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e8bbbde6a5ad",
+      "id": "fx_unknown_e8bbbd",
       "name": "軽業",
       "text": "敵軍Sユニットが6体以上あれば、BPの一番低い敵軍ユニットを1体選び、持ち主の山札の上に戻してもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_e695b5e8bb8d",
+          "keyword": "pick_remaining_syunitoga6arebabpnoiyunitowo1bichinono",
           "duration": "turn"
         }
       ],

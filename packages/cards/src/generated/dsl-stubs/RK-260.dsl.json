@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e4bd93e58685e3839ee382b0",
+      "id": "maguma",
       "name": "体内マグマ",
       "text": "これが自軍エリアにある間、自分がターンを終えるとき、自軍捨札からカードを1枚選び、これの下にウラ向きで重ねてもよい。これがユニットでなくなるとき、この下に重ねたウラ向きのカードをすべて捨札にする。そうして捨札にするとき、それが敵軍ターン中なら、捨札にするカード1枚につき、そのカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarugatanwoerutokikarakadowo1bikore",
           "duration": "permanent"
         }
       ],

@@ -54,7 +54,7 @@
       ]
     },
     {
-      "id": "named_e3838fe382a4e38391e383bc",
+      "id": "haipapanchi",
       "name": "ハイパーパンチ",
       "text": "敵軍Lユニットがあれば、これはBP+5000される。",
       "trigger": {
@@ -63,7 +63,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e695b5e8bb8d",
+          "keyword": "bp_modify_lyunitogaarebakorehabp5000sareru",
           "duration": "turn"
         }
       ],

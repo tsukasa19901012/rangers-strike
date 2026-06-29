@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e8b5a4e3818de383ace382b8",
+      "id": "kirejiendo",
       "name": "赤きレジェンド",
       "text": "オモテ向きの自軍パワーから、特徴「レッド」を持つカードを1枚選び捨札にしてもよい。そうしたとき、相手に1点ダメージを与える。",
       "trigger": {

@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
@@ -68,7 +68,7 @@
       ]
     },
     {
-      "id": "named_e38393e38383e382abe383bc",
+      "id": "bikachajibureiku",
       "name": "ビッカーチャージブレイク",
       "text": "このユニットは、これが持っているカテゴリ１つにつきBP＋2000される。また、これがアタックして敵軍ユニットを撃破したとき、これのBPが11000以上なら相手に1点ダメージを与える。",
       "trigger": {

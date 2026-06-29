@@ -45,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e382a2e383abe38386e382a3",
+      "id": "aruteimetoguretosutoraiku",
       "name": "アルティメットグレートストライク",
       "text": "カテゴリを2つ以上持つLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒ウイングを持たない敵軍ユニットを1体選び撃破する。",
       "trigger": {
@@ -54,7 +54,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e382abe38386",
+          "keyword": "grant_effect_kategoriwo2tsutsulyunitogakonoyunitokarakonbineshonsurutoki",
           "duration": "turn"
         }
       ],

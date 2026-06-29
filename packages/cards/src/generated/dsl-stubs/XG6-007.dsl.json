@@ -34,14 +34,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_gekiredo_shi_rio",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e6bf80e6bf80e887a8e887a8",
+      "id": "zan_e6bf80",
       "name": "激激臨臨斬",
       "text": "自軍ターン中、これがバトルエリアに出たとき、WBのみを持つ自軍捨札とDAのみを持つ自軍捨札を1枚ずつ選びゲームから除外するか、WBとDAの両方を持つ自軍捨札を1枚選んでもよい。そうしたとき、このユニットのBP以下のBPを持つ敵軍ユニットを1体選びゲームから除外する。",
       "trigger": {
@@ -50,7 +50,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e887aae8bb8d",
+          "keyword": "exclude_game_tankoregabatoruerianitatokiwbnomiwotsutodanomiwotsu",
           "duration": "turn"
         }
       ],

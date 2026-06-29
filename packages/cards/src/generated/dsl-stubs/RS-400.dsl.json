@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e5af86e78c9fe88085e3818b",
+      "id": "karano_go",
       "name": "密猟者からの保護",
       "text": "これをラッシュしたとき、敵軍バトルエリアから特徴「恐竜」を持つMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e38193e3828c",
+          "keyword": "power_zone_action_koreworashushitatokibatorueriakarawotsumyunitowo1bichi",
           "duration": "turn"
         }
       ],

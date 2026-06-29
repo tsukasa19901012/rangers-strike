@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e69591e587bae4bd9ce6a5ad",
+      "id": "fx_unknown_e69591",
       "name": "救出作業",
       "text": "これをラッシュしたとき、自軍捨札から、Sユニットのカードを2枚まで選び手札に加えてもよい。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_e38193e3828c",
+          "keyword": "pick_from_discard_koreworashushitatokikarasyunitonokadowo2madebinietemo",
           "duration": "turn"
         }
       ],

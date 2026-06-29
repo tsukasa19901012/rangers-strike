@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_alias_named_e3839ee382b8e38395e382a7",
+      "id": "unnamed_alias_majifuenikusu",
       "text": "※これは「マジフェニックス」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e3839ee382b8e38395e382a7",
+          "keyword": "alias_majifuenikusu",
           "duration": "permanent"
         }
       ]
@@ -49,7 +49,7 @@
       ]
     },
     {
-      "id": "named_e38395e382a7e382a4e382bf",
+      "id": "fueitarubureido",
       "name": "フェイタル・ブレイド",
       "text": "「SP1」これがストライクしたとき、自分は1枚ドローする。",
       "trigger": {

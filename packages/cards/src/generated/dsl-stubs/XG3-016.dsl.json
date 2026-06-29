@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e38390e3838ae3838ae3839c",
+      "id": "bananabomu",
       "name": "バナナボム",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからホールド状態の敵軍ユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokirashueriakarahorudono",
           "duration": "turn"
         }
       ],

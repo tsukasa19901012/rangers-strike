@@ -49,7 +49,7 @@
       ]
     },
     {
-      "id": "named_e382b9e382abe382a4e382b3",
+      "id": "sukaikonbibureiku",
       "name": "スカイコンビブレイク",
       "text": "このターン、自軍ユニットは、ウイングでアタックしたとき、そのバトル中、BP+2000される。（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e381ae",
+          "keyword": "bp_modify_konotanyunitohauingudeatakushitatokisonobatorubp2000sareru",
           "duration": "turn"
         }
       ],

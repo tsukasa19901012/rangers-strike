@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e382b7e383a3e382a4e38380",
+      "id": "shaidaburufurashu",
       "name": "シャイダーブルーフラッシュ",
       "text": "敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が3以下のカードを1枚選び、ダメージにしてもよい。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e695b5e8bb8d",
+          "keyword": "damage_action_pawazonnoomote_ko_kinokadokarapawanoga3nokadowo1",
           "duration": "turn"
         }
       ],

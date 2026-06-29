@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4e382b8e383b3",
+      "id": "raijinguburasutopegasasu",
       "name": "ライジングブラストペガサス",
       "text": "自軍ラッシュエリアのSユニットを1体以上選び手札に戻してもよい。そうしたとき、相手は次のどちらかを選び行う⇒◎手札に戻したユニットの数まで自分自身のユニットを可能な限り選び撃破する。◎自分自身のユニットを1体選びダメージにする。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e887aae8bb8d",
+          "keyword": "opponent_must_rashuerianosyunitowo1binishitemoyoisoushitatokiha",
           "duration": "turn"
         }
       ],

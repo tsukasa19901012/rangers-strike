@@ -11,7 +11,7 @@
   "rawText": "【Zブリンガーアタック】これにライドしているユニットがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
   "effects": [
     {
-      "id": "named_5ae38396e383aae383b3e382",
+      "id": "zburingaataku",
       "name": "Zブリンガーアタック",
       "text": "これにライドしているユニットがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
       "trigger": {
@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e38193e3828c",
+          "keyword": "ride_action_koreniraidoshiteiruyunitogaatakusurutokiyunitonobpwokadonisa",
           "duration": "turn"
         }
       ],

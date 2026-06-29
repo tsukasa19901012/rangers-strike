@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "named_e5bea9e8ae90e381aee69e9c",
+      "id": "notenitamono",
       "name": "復讐の果てに得たもの",
       "text": "これが自軍バトルエリアからラッシュエリアに戻ったとき、これをホールドしてもよい。そうしたとき、敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出す。",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_e38193e3828c",
+          "keyword": "deploy_battle_area_koregabatorueriakararashuerianitatokikorewohorudoshit",
           "duration": "turn"
         }
       ],

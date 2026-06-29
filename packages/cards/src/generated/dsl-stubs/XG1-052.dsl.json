@@ -56,7 +56,7 @@
       ]
     },
     {
-      "id": "named_e38395e382a1e382a4e383a4",
+      "id": "fuaiyasutomuataku",
       "name": "ファイヤーストームアタック",
       "text": "これが自軍エリアにある間、相手がターンを終えるとき、次の効果を発動できる⇒そのターン中にホールド状態になった敵軍ユニットを、すべて持ち主の山札に戻してシャッフルする。",
       "trigger": {
@@ -65,7 +65,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koregaerianiarugatanwoerutokinowodekirusonotan",
           "duration": "turn"
         }
       ],

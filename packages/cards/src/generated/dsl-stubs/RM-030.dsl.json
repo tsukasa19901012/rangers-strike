@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e38380e382a4e383ace382aa",
+      "id": "daireonreza",
       "name": "ダイレオンレーザー",
       "text": "これが自軍ラッシュエリアにある間、OTを持つ自軍Lユニットは、アタックされるときBP+2000される。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiaruotwotsulyunitohaatakusarerutokib",
           "duration": "permanent"
         }
       ],

@@ -25,13 +25,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e7a8aee381aee3819fe38281",
+      "id": "notamenoi",
       "name": "種のための戦い",
       "text": "これは、これと同じ特徴を1つ以上持つ、これ以外の自軍バトルエリアのユニット1体につき、BP+1000される。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_korehakoretojiwo1tsutsukorenobatoruerianoyunito1nitsuki",
           "duration": "turn"
         }
       ],

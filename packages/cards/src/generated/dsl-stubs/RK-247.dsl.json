@@ -69,7 +69,7 @@
       ]
     },
     {
-      "id": "named_e4b88de695b5e381aae68c91",
+      "id": "na_e4b88d",
       "name": "不敵な挑発",
       "text": "これが自軍エリアにある間、次の効果を発動する⇒特徴「警察」を持つユニットは、可能なら毎ターンバトルエリアに出る。",
       "trigger": {
@@ -78,7 +78,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarunowosuruwotsuyunitohanarata",
           "duration": "permanent"
         }
       ],

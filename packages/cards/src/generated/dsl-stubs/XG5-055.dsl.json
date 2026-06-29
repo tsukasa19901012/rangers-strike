@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e38395e382a1e382a4e382a2",
+      "id": "fuaiaapa",
       "name": "ファイアアッパー",
       "text": "自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの必要パワーの数字が「3」と「6」なら、敵軍捨札からSユニットのカードを１枚選びゲームから除外する。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_pick_show_e887aae58886",
+          "keyword": "hand_pick_show_nowo2binisetemoyoisoushitatokisyunitowo1bihoru",
           "duration": "turn"
         }
       ],

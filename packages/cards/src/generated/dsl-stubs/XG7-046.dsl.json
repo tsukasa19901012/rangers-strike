@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": "named_e382b4e383aae38390e382b4",
+      "id": "goribagon",
       "name": "ゴリバゴーン",
       "text": "自軍ターン中、これをラッシュしたとき、ライドしている敵軍Sユニットを1体選び、撃破してもよい。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e887aae8bb8d",
+          "keyword": "destroy_on_rush_tankoreworashushitatokiraidoshiteirusyunitowo1bi_geki_ha",
           "duration": "turn"
         }
       ],

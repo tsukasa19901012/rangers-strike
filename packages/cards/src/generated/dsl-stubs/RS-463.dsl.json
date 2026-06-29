@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e7b5a1e38281e58f96e3828b",
+      "id": "meru",
       "name": "絡め取る縄",
       "text": "自分の手札からカードを1枚選び、相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍ユニットがあれば、相手はその中から1体選び撃破するか、自分自身の手札を1枚選び捨札にするかを選ぶ。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e887aae58886",
+          "keyword": "opponent_must_nokarakadowo1binisetemoyoisoushitatokisetakadonopa",
           "duration": "turn"
         }
       ],

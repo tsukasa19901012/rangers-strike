@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_named_e3839ee382b8e3839ee383bc",
+      "id": "unnamed_alias_majimameidomajifueari",
       "text": "※これは「マジマーメイド＋マジフェアリー」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -43,13 +43,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e3839ee382b8e3839ee383bc",
+          "keyword": "alias_majimameidomajifueari",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e38388e382a5e382a4e383b3",
+      "id": "touinkuruiryujon",
       "name": "トゥインクルイリュージョン",
       "text": "SP1 自軍山札の上から1枚をオモテにしてから手札に加える。そうしたとき、そのカードと同じ必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の上に戻してもよい。",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_53503120e887",
+          "keyword": "reveal_faceup_sp1nokara1woomotenishitekaranierusoushitatokisonokadoto",
           "duration": "turn"
         }
       ],

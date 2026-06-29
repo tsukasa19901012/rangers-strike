@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382a4e382a8e383ade383bc",
+      "id": "ieroboru",
       "name": "イエローボール",
       "text": "敵軍ラッシュエリアから、必要パワーの数字が2以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e695b5e8bb8d",
+          "keyword": "hold_enemy_unit_rashueriakarapawanoga2noyunitowo1bichinokoman",
           "duration": "turn"
         }
       ],

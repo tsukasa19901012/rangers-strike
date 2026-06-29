@@ -1,0 +1,122 @@
+{
+  "generatedAt": "2026-06-29T00:52:08.805Z",
+  "rsCards": 690,
+  "totalEffects": 1020,
+  "byTier": {
+    "ready": 722,
+    "runtime_catchall": 298,
+    "blocked": 0
+  },
+  "blockedCardCount": 0,
+  "releaseReady": true,
+  "wikiTextMismatches": 1,
+  "blockedSamples": [],
+  "catchallSamples": [
+    {
+      "cardId": "RS-196",
+      "effectId": "geki_mobirumisairu",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これが自軍ラッシュエリアにある間、相手にストライクされたとき次の効果を発動できる⇒ストライクしてきたユニットのサイズを見て、Lユニットなら4つ、Mユニットなら3"
+    },
+    {
+      "cardId": "RS-202",
+      "effectId": "pinkubariya",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "次の相手ターン、自軍パワーゾーンのカードをウラ返してダメージにするとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットをすべて撃破する。"
+    },
+    {
+      "cardId": "RS-203",
+      "effectId": "deusu",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これをラッシュしたターン、このユニットの追加条件で捨札にしたユニットのカードの特徴を、すべてのユニットの特徴に追加する。"
+    },
+    {
+      "cardId": "RS-210",
+      "effectId": "no_e5a4a7",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これが自軍エリアにある間、ナンバーを持つすべてのSユニットは、BPが「＋」されるかわりにBPが「－」される。（BP0以下になったユニットは撃破される）"
+    },
+    {
+      "cardId": "RS-211",
+      "effectId": "chikara_tonfua",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "自軍ターン中、これがバトルでユニットを撃破したとき、相手は自分自身のコマンドゾーンからカードを1枚選び、自分自身のパワーゾーンにダメージにして置く。"
+    },
+    {
+      "cardId": "RS-212",
+      "effectId": "baku_mirajunakuru",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "自軍ターン中、これがバトルでユニットを撃破したとき、敵軍捨札からカードを1枚選び、敵軍パワーゾーンにダメージにして置く。（カードを選ぶとき、これが撃破したユニッ"
+    },
+    {
+      "cardId": "RS-213",
+      "effectId": "chikara_baton",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "相手は自分自身のラッシュエリアからユニットを1体選ぶ。このターン、このユニットは、相手の選んだユニットにアタックできる。"
+    },
+    {
+      "cardId": "RS-214",
+      "effectId": "hikari_mirakuru_dan",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "このターン、自軍Sユニットがバトルでユニットを撃破するたび、自軍コマンドを2つまで選び、リリースしてもよい。"
+    },
+    {
+      "cardId": "RS-215",
+      "effectId": "nomashin",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これが自軍エリアにある間、特徴「メカ」を持つ自軍ユニットがアタックされたとき、自分の手札からカードを2枚選び、捨札にしてもよい。そうしたとき、バトルは行われない"
+    },
+    {
+      "cardId": "RS-220",
+      "effectId": "baria_e58f8d",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "次の相手ターン、自軍Sユニットとバトルした敵軍Sユニットは、バトルに勝っても撃破される。"
+    },
+    {
+      "cardId": "RS-229",
+      "effectId": "hanga",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが「WB」のMユニットのカードならラッシュエリアに出し、"
+    },
+    {
+      "cardId": "RS-255",
+      "effectId": "note_e280bbe382abe382a6e383b3",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "※カウンター（これは敵軍ターン中にのみ使用できる） 敵軍ターン中、特徴「怪人」を持つ自軍ユニットが撃破されて捨札になったとき発動できる⇒そのユニットカードを、こ"
+    },
+    {
+      "cardId": "RS-260",
+      "effectId": "jaguar_mothership",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これが自軍ラッシュエリアにある間、自分が特徴「航空機」を持つ「OT」のMユニットをラッシュするとき、追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを"
+    },
+    {
+      "cardId": "RS-263",
+      "effectId": "dan_tankukomandomisairu",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これが自軍ラッシュエリアにある間、リリース状態の自軍コマンドに、ナンバーを持つユニットカードがあれば、カードに表記された本来のナンバーがそのユニットカードと同じ"
+    },
+    {
+      "cardId": "RS-266",
+      "effectId": "purizumu_ken",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "自軍ラッシュエリアから、「WB」のユニットを1体選び自軍パワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP1」になる。"
+    }
+  ],
+  "note": "runtime_catchall = semantic grant_keyword; 発動時に effectDelegate 経由で rematch→interpret。"
+}

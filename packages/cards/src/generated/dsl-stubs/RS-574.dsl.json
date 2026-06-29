@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e382bbe382a4e383b3e38388",
+      "id": "seintohonfuinishu",
       "name": "セイントホーンフィニッシュ",
       "text": "自軍ターン中、これがバトルエリアに出たとき、DAを持つ敵軍ユニットを1体選び撃破する。ただし、必要パワーの数字が自軍ダメージの点数以下のユニットしか選べない。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokidawotsuyunitowo1bi_geki_",
           "duration": "turn"
         }
       ],

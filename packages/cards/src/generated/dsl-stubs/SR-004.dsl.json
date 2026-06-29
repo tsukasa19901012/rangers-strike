@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e5a696e9ad94e58a9b",
+      "id": "ma_chikara",
       "name": "妖魔力",
       "text": "これが自軍エリアにある間、相手は次の制限を受ける⇒自分自身のコマンドゾーンにOTまたはETのカードをリリース状態で置いたとき、そのカードをホールドする。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruhanowokerunokomandozonniotmata",
           "duration": "permanent"
         }
       ],

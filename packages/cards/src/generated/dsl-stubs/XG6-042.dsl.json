@@ -25,14 +25,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe887aa",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382bce383ade381aee382b9",
+      "id": "zeronosutato",
       "name": "ゼロのスタート",
       "text": "これがストライクしてダメージを与えたとき、相手に1枚ドローさせてもよい。そうしたとき、次の相手ターンのスタートフェイズ中、相手は山札からカードをドローできない。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e38193e3828c",
+          "keyword": "opponent_must_koregasutoraikushitedamejiwoetatokini1dorosasetemoyoisoush",
           "duration": "turn"
         }
       ],

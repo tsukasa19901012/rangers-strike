@@ -11,7 +11,7 @@
   "rawText": "【噛みつき】自軍バトルフェイズ中、このビークルが自軍ラッシュエリアでライドされていなければ、自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは本来のテキストを持たないSユニットとして扱い、次の情報とテキストが追加される⇒「BP2000」「SP空欄」「ウイング」",
   "effects": [
     {
-      "id": "named_e5999be381bfe381a4e3818d",
+      "id": "mitsuki",
       "name": "噛みつき",
       "text": "自軍バトルフェイズ中、このビークルが自軍ラッシュエリアでライドされていなければ、自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは本来のテキストを持たないSユニットとして扱い、次の情報とテキストが追加される⇒「BP2000」「SP空欄」「ウイング」",
       "trigger": {
@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e887aae8bb8d",
+          "keyword": "ride_action_batorufueizukonobikurugarashueriaderaidosareteinakereba",
           "duration": "turn"
         }
       ],

@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b8e383abe3839ee383bb",
+      "id": "jirumamajuna",
       "name": "ジルマ・マジュナ",
       "text": "これが自軍ラッシュエリアにある間、次の効果を発動できる⇒敵軍ターン中、自軍ユニットが撃破されたとき、これをかわりに捨札にしてもよい。そうしたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koregarashuerianiarunowodekirutanyunitoga_geki",
           "duration": "turn"
         }
       ],

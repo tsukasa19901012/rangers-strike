@@ -29,13 +29,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e8b685e99bbbe7a8b2e5a6bb",
+      "id": "kiku",
       "name": "超電稲妻キック",
       "text": "このターン、これがSPが空欄ではないユニットをバトルで撃破したとき、相手に1点ダメージを与える。",
       "trigger": {

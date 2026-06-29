@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e382a8e383ace382ade58589",
+      "id": "ereki_hikari",
       "name": "エレキ光線",
       "text": "敵軍Sユニットを1体選んでもよい。そうしたとき、次の相手ターン、選んだユニットと隣り合ったユニットは、そのターンを終えるとき撃破される。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。",
       "trigger": {
@@ -44,14 +44,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "adjacent_units_e695b5e8bb8d",
+          "keyword": "adjacent_units_syunitowo1ndemoyoisoushitatokinotanndayunitotori",
           "duration": "turn"
         }
       ],
       "optional": true
     },
     {
-      "id": "named_e382a8e383ace382ade58589_e695b5e8",
+      "id": "ereki_hikari_yunitowondem",
       "name": "エレキ光線",
       "text": "敵軍Ｓユニットを１体選んでもよい。次の相手のターン、選んだユニットがバトルエリアにあるとき、選んだユニットと隣り合っているユニットは、そのターンを終えるとき撃破される。",
       "trigger": {
@@ -60,7 +60,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "adjacent_units_e695b5e8bb8d",
+          "keyword": "adjacent_units_yunitowondemoyoinonotanndayunitogabatoruerianiaruto",
           "duration": "turn"
         }
       ],

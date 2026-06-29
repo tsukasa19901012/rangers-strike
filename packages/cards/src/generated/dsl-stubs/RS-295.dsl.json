@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e7a381e58a9be68bb3",
+      "id": "chikara_ken",
       "name": "磁力拳",
       "text": "特徴に「男」または「女」の性別を持つ敵軍ユニットを2体選んでもよい。そうしたとき、選んだ2体の性別が同じならそれぞれ持ち主の手札に戻し、違うなら選んだ2体でバトルする。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_e789b9e5beb4",
+          "keyword": "return_to_zone_nimatahanowotsuyunitowo2ndemoyoisoushitatokinda2",
           "duration": "turn"
         }
       ],

@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e382aee382ace383b3e38386",
+      "id": "giganteisubasuta",
       "name": "ギガンティスバスター",
       "text": "自軍ターン中、これがバトルエリアに出たとき、ホールド状態の敵軍ユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokihorudonoyunitowo1bi_geki",
           "duration": "turn"
         }
       ],

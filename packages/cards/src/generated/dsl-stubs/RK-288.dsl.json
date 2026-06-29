@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e38387e383abe382bfe383a0",
+      "id": "derutamuba",
       "name": "デルタムーバー",
       "text": "このターン、敵軍バトルエリアのすべてのSユニットはBP-500される。（BP0以下になったユニットは撃破される）",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e381ae",
+          "keyword": "bp_modify_konotanbatoruerianosubetenosyunitohabp500sarerubp0nina",
           "duration": "turn"
         }
       ],

@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382a2e382aee38388e381ae",
+      "id": "agitono",
       "name": "アギトの殲滅",
       "text": "これをラッシュしたとき、カテゴリにMAを持つ敵軍Sユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e38193e3828c",
+          "keyword": "destroy_on_rush_koreworashushitatokikategorinimawotsusyunitowo1bi_geki_h",
           "duration": "turn"
         }
       ],

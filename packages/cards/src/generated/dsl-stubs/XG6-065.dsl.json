@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e58f8be68385e381aee8a8bc",
+      "id": "no_e58f8b",
       "name": "友情の証",
       "text": "これは自軍Lユニットがあれば、敵軍ユニットにアタックされない。また、このユニットと隣り合うETを持つLユニットはBP+1000される。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_korehalyunitogaarebayunitoniatakusarenaimatakonoyunitotori",
           "duration": "turn"
         }
       ],

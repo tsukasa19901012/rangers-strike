@@ -55,7 +55,7 @@
       ]
     },
     {
-      "id": "named_e38395e383a9e382a4e383b3",
+      "id": "furaingubimu",
       "name": "フライングビーム",
       "text": "敵軍パワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e695b5e8bb8d",
+          "keyword": "enemy_power_damage_pawazonnokadowotesonoyorimopawanogakiiyuni",
           "duration": "turn"
         }
       ],

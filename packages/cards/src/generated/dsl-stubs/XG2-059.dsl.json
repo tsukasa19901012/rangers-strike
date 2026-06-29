@@ -22,7 +22,7 @@
   ],
   "effects": [
     {
-      "id": "named_e58a9be381aee8aa87e7a4ba",
+      "id": "chikara_no",
       "name": "力の誇示",
       "text": "自分の手札をすべて相手に見せてもよい。そうしたとき、見せた枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_all_enemy_e887aae58886",
+          "keyword": "destroy_all_enemy_nowosubetenisetemoyoisoushitatokisetanopawano",
           "duration": "turn"
         }
       ],

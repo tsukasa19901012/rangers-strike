@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e8bb8ae4b8a1e381aee58f8e",
+      "id": "ryo_noto",
       "name": "車両の収納と発車",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアから特徴「車両」を持つMユニットを1体選び、自軍パワーゾーンに送ってもよい。また、これがラッシュエリアに戻るとき、自軍パワーゾーンのオモテ向きのカードから、特徴「車両」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e887aae8bb8d",
+          "keyword": "deploy_rush_area_tankoregabatoruerianitatokibatorueriakara_ryo_wotsumyun",
           "duration": "turn"
         }
       ],

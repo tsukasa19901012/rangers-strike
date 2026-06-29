@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e78886e78388e3839fe383a9",
+      "id": "baku_mirajunakuru",
       "name": "爆烈ミラージュナックル",
       "text": "自軍ターン中、これがバトルでユニットを撃破したとき、敵軍捨札からカードを1枚選び、敵軍パワーゾーンにダメージにして置く。（カードを選ぶとき、これが撃破したユニットが捨札になるなら捨札にしたあとで選ぶ）",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e887aae8bb8d",
+          "keyword": "damage_action_tankoregabatorudeyunitowo_geki_ha_shitatokikarakadowo1bi",
           "duration": "turn"
         }
       ],

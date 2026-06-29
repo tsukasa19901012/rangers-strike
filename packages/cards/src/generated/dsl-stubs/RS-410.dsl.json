@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "named_e7ab9ce99798e6b097e78886",
+      "id": "baku",
       "name": "竜闘気爆炸球",
       "text": "これは敵軍ユニットが1体もなければ「SP1」になる。",
       "trigger": {
@@ -57,10 +57,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "nc_sp1_if_no_enemy_units",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

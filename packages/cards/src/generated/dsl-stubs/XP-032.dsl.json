@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e383ace382b8e382a7e383b3",
+      "id": "rejiendowomete",
       "name": "レジェンドを求めて",
       "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札を見て、Sユニット以外のユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。その後、山札をシャッフルする。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_e887aae8bb8d",
+          "keyword": "deck_search_tankoregabatoruerianitatokinowodekiruwotesyuni",
           "duration": "turn"
         }
       ],

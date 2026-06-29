@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e688a6e38184e381aee383aa",
+      "id": "inoriseto",
       "name": "戦いのリセット",
       "text": "これをラッシュしたとき、次の効果を自分、相手の順に行う⇒自分自身のパワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい自分自身のユニットをすべて撃破する。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e38193e3828c",
+          "keyword": "destroy_on_rush_koreworashushitatokinowononiunopawazonnokado",
           "duration": "turn"
         }
       ],

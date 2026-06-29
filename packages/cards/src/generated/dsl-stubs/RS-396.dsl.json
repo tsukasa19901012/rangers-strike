@@ -21,7 +21,7 @@
   },
   "effects": [
     {
-      "id": "named_e382ace383b3e3839ee38388",
+      "id": "ganmatorunedo",
       "name": "ガンマトルネード",
       "text": "これをラッシュしたとき、本来のBPが5000以下の敵軍Sユニットをすべて持ち主のパワーゾーンに送る。その後、ダメージ以外の自軍パワーから ｢タイムロボα｣または｢タイムロボβ｣のカードを1枚選び、これと置き換えてもよい。",
       "trigger": {
@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e38193e3828c",
+          "keyword": "damage_action_koreworashushitatokinobpga5000nosyunitowosubetechinopa",
           "duration": "turn"
         }
       ],

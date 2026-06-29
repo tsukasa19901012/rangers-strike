@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e9a39be7ab9ce589a3e6b395",
+      "id": "ken_dan_tsuki",
       "name": "飛竜剣法・散弾月",
       "text": "自軍ダメージが5点以上なら、これはBP+4000され「SP1」になる。",
       "trigger": {
@@ -43,10 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "bp_modify_damejiga5narakorehabp4000saresp1ninaru",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

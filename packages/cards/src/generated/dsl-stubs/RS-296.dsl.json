@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e7b7a8e99a8ae587bae69283",
+      "id": "geki_e7b7a8",
       "name": "編隊出撃",
       "text": "これが自軍ラッシュエリアにある間、次の効果を発動できる⇒自軍コマンドをホールドして特徴「航空機」を持つユニットをラッシュしたとき、ラッシュしたユニットと同じカード名のユニットカードを自分の手札から1枚選びラッシュエリアに出す。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koregarashuerianiarunowodekirukomandowohorudoshite",
           "duration": "turn"
         }
       ],

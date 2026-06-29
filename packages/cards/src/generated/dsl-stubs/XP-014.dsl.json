@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": "named_e383a1e382bfe383abe382b7",
+      "id": "metarushafuto",
       "name": "メタルシャフト",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからホールド状態のＳユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakarahorudonoyu",
           "duration": "turn"
         }
       ],

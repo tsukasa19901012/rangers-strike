@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e383ace383bce38380e383bc",
+      "id": "redaai",
       "name": "レーダーアイ",
       "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、お互いの山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードを、それぞれ持ち主の山札の上に戻すか下に戻すか選択する。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e38193e3828c",
+          "keyword": "reveal_faceup_koregabatorueriakararashuerianirutokioinonokara1woomo",
           "duration": "turn"
         }
       ],

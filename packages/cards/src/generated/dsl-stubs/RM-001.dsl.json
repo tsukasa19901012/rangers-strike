@@ -11,7 +11,7 @@
   "rawText": "次の効果から１つ選び発動する⇒◎自軍山札から「宇宙刑事ギャバン」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。◎自軍Sユニットを1体選ぶ。このターン、選んだユニットはSP1/4になる。",
   "effects": [
     {
-      "id": "named_e892b8e79d80",
+      "id": "fx_unknown_e892b8",
       "name": "蒸着",
       "text": "次の効果から１つ選び発動する⇒◎自軍山札から「宇宙刑事ギャバン」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。◎自軍Sユニットを1体選ぶ。このターン、選んだユニットはSP1/4になる。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e6aca1e381ae",
+          "keyword": "deploy_rush_area_nokaratsubisurukaragyabannokadowo1bira",
           "duration": "turn"
         }
       ],

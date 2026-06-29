@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e680aae9ad94e7a8b2e5a6bb",
+      "id": "ma_ken",
       "name": "怪魔稲妻剣",
       "text": "このユニットとバトルして撃破された敵軍ユニットは、レジストを発動する事ができない。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "register_resist_e38193e381ae",
+          "keyword": "register_resist_konoyunitotobatorushite_geki_ha_saretayunitoharejisutowo",
           "duration": "turn"
         }
       ],

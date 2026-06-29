@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "named_e98d9be38188e381a6e381be",
+      "id": "etemasu",
       "name": "鍛えてます",
       "text": "このユニットよりBPの低い自軍ユニットがあれば、このターン、これは次の能力を得る⇒BP+1000され、このターンを終えるときホールド状態ならリリースしてもよい。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e381ae",
+          "keyword": "grant_ability_konoyunitoyoribpnoiyunitogaarebakonotankorehano_chikara_wo",
           "duration": "turn"
         }
       ]

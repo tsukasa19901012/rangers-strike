@@ -23,7 +23,7 @@
   },
   "effects": [
     {
-      "id": "named_e8bf8ee69283e383a2e38393",
+      "id": "geki_mobirumisairu",
       "name": "迎撃モビルミサイル",
       "text": "これが自軍ラッシュエリアにある間、相手にストライクされたとき次の効果を発動できる⇒ストライクしてきたユニットのサイズを見て、Lユニットなら4つ、Mユニットなら3つ、Sユニットなら2つ、ETの自軍コマンドをホールドする。そうしたとき、敵軍のストライクは無効になる。",
       "trigger": {
@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koregarashuerianiarunisutoraikusaretatokinowodekirusu",
           "duration": "turn"
         }
       ],

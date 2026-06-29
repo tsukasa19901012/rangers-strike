@@ -27,13 +27,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_self_on_ally_rush_e280bbe887aa",
+          "keyword": "return_self_on_ally_rush_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382b3e382bae3839fe38383",
+      "id": "kozumikukurashu",
       "name": "コズミッククラッシュ",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、特徴「獣」または「恐竜」を持つBP8000以下のユニットを1体選び、持ち主のパワーゾーンに送ってもよい",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e887aae8bb8d",
+          "keyword": "power_zone_action_tankoregabatoruerianitatokibatorueriakaramatahawo",
           "duration": "turn"
         }
       ],

@@ -1,4 +1,4 @@
-import type { PlayerState, ScopedModifier } from "../types/game";
+import type { GameState, PendingBattle, PlayerId, PlayerState, ScopedModifier } from "../types/game";
 import {
   addTurnRestrictionModifier,
   getPlayerModifiers,
@@ -8,6 +8,12 @@ import {
 import { RESTRICTION_IDS, TURN_RULE_IDS } from "../types/scopedModifiers";
 
 export type SComboFinisher = "goren_storm" | "jacker_hurricane";
+
+export type GenericSComboFinisher = {
+  position: number;
+  sp: number;
+  bp: number;
+};
 
 function isTurnRuleModifier(
   m: ScopedModifier,
@@ -78,6 +84,38 @@ export function setSComboFinisher(
   };
 }
 
+export function getGenericSComboFinisher(
+  player: PlayerState,
+): GenericSComboFinisher | undefined {
+  return firstRulePayload<GenericSComboFinisher>(
+    player,
+    TURN_RULE_IDS.GENERIC_S_COMBO_FINISHER,
+  );
+}
+
+export function setGenericSComboFinisher(
+  player: PlayerState,
+  config: GenericSComboFinisher,
+  sourceCardId?: string,
+): PlayerState {
+  const withoutOld = getPlayerModifiers(player).filter(
+    (m) => !(m.kind === "rule" && m.ruleId === TURN_RULE_IDS.GENERIC_S_COMBO_FINISHER),
+  );
+  return {
+    ...player,
+    modifiers: [
+      ...withoutOld,
+      {
+        kind: "rule",
+        ruleId: TURN_RULE_IDS.GENERIC_S_COMBO_FINISHER,
+        scope: "turn",
+        payload: config,
+        sourceCardId,
+      },
+    ],
+  };
+}
+
 export function getAuraPowerInstanceId(player: PlayerState): string | undefined {
   return firstRulePayload<string>(player, TURN_RULE_IDS.AURA_POWER);
 }
@@ -138,4 +176,50 @@ export function hasBakiBakiExtraAttack(player: PlayerState, instanceId: string):
 
 export function hasAuraPowerRule(player: PlayerState): boolean {
   return hasTurnRuleModifier(player, TURN_RULE_IDS.AURA_POWER);
+}
+
+export function getBattleDestroyToPowerInstanceIds(player: PlayerState): string[] {
+  return getPlayerModifiers(player)
+    .filter((m) => isTurnRuleModifier(m, TURN_RULE_IDS.BATTLE_DESTROY_TO_POWER))
+    .map((m) => (typeof m.payload === "string" ? m.payload : undefined))
+    .filter((id): id is string => !!id);
+}
+
+export function setBattleDestroyToPower(
+  player: PlayerState,
+  instanceId: string,
+  sourceCardId?: string,
+): PlayerState {
+  return {
+    ...player,
+    modifiers: [
+      ...getPlayerModifiers(player),
+      {
+        kind: "rule",
+        ruleId: TURN_RULE_IDS.BATTLE_DESTROY_TO_POWER,
+        scope: "turn",
+        payload: instanceId,
+        sourceCardId,
+      },
+    ],
+  };
+}
+
+export function shouldBattleDestroyToPower(
+  state: GameState,
+  pending: PendingBattle | undefined,
+  instanceId: string,
+): boolean {
+  const marked = [
+    ...getBattleDestroyToPowerInstanceIds(state.players.player1),
+    ...getBattleDestroyToPowerInstanceIds(state.players.player2),
+  ];
+  if (marked.includes(instanceId)) return true;
+  if (!pending) return false;
+  const participants = [
+    pending.attackerInstanceId,
+    pending.substituteInstanceId ?? pending.defenderInstanceId,
+  ];
+  if (!participants.includes(instanceId)) return false;
+  return marked.some((m) => participants.includes(m));
 }

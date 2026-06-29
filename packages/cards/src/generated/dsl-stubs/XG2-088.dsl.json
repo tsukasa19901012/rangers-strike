@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e382b8e38390e383b3e382ad",
+      "id": "jibankira",
       "name": "ジバンキラー",
       "text": "これは、本来の特徴に「メカ」または「警察」を持つ敵軍Sユニットがあるとき、次の能力を得る⇒BP+2000、SP1",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_korehanonimekamatahawotsusyunitogaarutokino_chikara_worubp",
           "duration": "turn"
         }
       ]

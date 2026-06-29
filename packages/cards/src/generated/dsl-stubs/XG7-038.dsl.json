@@ -45,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4e38388e3838b",
+      "id": "raitoninguburasutobaningusumashu",
       "name": "ライトニングブラスト&バーニングスマッシュ",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードのカテゴリが同じなら、敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -54,7 +54,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_pick_show_e887aae8bb8d",
+          "keyword": "hand_pick_show_tankoregabatoruerianitatokinowo2binisetemoyoiso",
           "duration": "turn"
         }
       ],

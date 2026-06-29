@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e58887e696ade6bab6e8a7a3",
+      "id": "dan_e58887",
       "name": "切断溶解",
       "text": "レジストを持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {

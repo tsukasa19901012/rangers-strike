@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e782b8e8a382e8b685e58a9b",
+      "id": "chikara_baton",
       "name": "炸裂超力バトン",
       "text": "相手は自分自身のラッシュエリアからユニットを1体選ぶ。このターン、このユニットは、相手の選んだユニットにアタックできる。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e79bb8e6898b",
+          "keyword": "opponent_must_hanorashueriakarayunitowo1bukonotankonoyunitoha",
           "duration": "turn"
         }
       ],

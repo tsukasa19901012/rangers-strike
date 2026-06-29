@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38390e383bce383a0e3838b",
+      "id": "bamunidoru",
       "name": "バームニードル",
       "text": "これをラッシュしたとき、カード1枚につきBP1000として、相手の手札の枚数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e38193e3828c",
+          "keyword": "destroy_on_rush_koreworashushitatokikado1nitsukibp1000toshitenononobp",
           "duration": "turn"
         }
       ],

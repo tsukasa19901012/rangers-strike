@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": "named_e382bfe382a4e382bfe3838b",
+      "id": "taitanikufurea",
       "name": "タイタニックフレア",
       "text": "自軍ターン中、このユニットは、WBを持つ自軍コマンド1つにつきBP+1000される。",
       "trigger": {
@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e887aae8bb8d",
+          "keyword": "bp_modify_tankonoyunitohawbwotsukomando1tsunitsukibp1000sareru",
           "duration": "turn"
         }
       ],

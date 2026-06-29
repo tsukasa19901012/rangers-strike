@@ -19,14 +19,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe789b9",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e9ad94e6b395e381aee7b5a8",
+      "id": "ma_no",
       "name": "魔法の絨毯",
       "text": "これがバトルエリアからラッシュエリアに戻るとき、このビークルにライドしているユニットを手札に戻してもよい。",
       "trigger": {
@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e38193e3828c",
+          "keyword": "ride_action_koregabatorueriakararashuerianirutokikonobikuruniraidoshitei",
           "duration": "turn"
         }
       ],

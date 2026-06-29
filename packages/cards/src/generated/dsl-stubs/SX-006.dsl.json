@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e69982e99693e8ada6e5af9f",
+      "id": "no_8",
       "name": "時間警察の使者",
       "text": "これをラッシュしたとき、必要パワーを満たしていないSユニットとSビークルを可能な限りすべて選び、捨札にする。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "vehicle_interaction_e38193e3828c",
+          "keyword": "vehicle_interaction_koreworashushitatokipawawotashiteinaisyunitotosbikur",
           "duration": "turn"
         }
       ],

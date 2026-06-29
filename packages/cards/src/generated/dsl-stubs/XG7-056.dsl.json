@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "permanent"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e5ab8ce38184e38198e38283",
+      "id": "ijinaiwa",
       "name": "嫌いじゃないわ！",
       "text": "これが自分の手札にある間、特徴「男」を持つ敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、そのターン、そのユニットはバトルエリアに出られない。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_e38193e3828c",
+          "keyword": "cannot_restrict_koreganoniaruwotsusyunitogarashusaretatokikorewo",
           "duration": "permanent"
         }
       ],

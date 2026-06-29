@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e382b0e383ace382a4e38396",
+      "id": "gureiburasuta",
       "name": "グレイブラスター",
       "text": "これ以外の自軍Sユニットを1体選びホールドしてもよい。そうしたとき、相手は自分自身のユニットを1体選び撃破する。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e38193e3828c",
+          "keyword": "opponent_must_korenosyunitowo1bihorudoshitemoyoisoushitatokihano",
           "duration": "turn"
         }
       ],

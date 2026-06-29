@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e8a193e9ad82",
+      "id": "fx_unknown_e8a193",
       "name": "術魂",
       "text": "相手の手札を見てもよい。そうしたとき、ＮＣを持つSユニットのカードがあれば1枚選び、そのNCの効果をこのユニットの効果として発動する。（この効果は「怒りの鬼神 ガイ」からコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e79bb8e6898b",
+          "keyword": "combo_action_nowotemoyoisoushitatokiwotsusyunitonokadogaareba1bisonon",
           "duration": "turn"
         }
       ],

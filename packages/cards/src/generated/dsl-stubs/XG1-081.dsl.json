@@ -27,7 +27,7 @@
   },
   "effects": [
     {
-      "id": "named_e38391e382b3e381aee5ae88",
+      "id": "pakono_mamoru_go_shin",
       "name": "パコの守護神",
       "text": "これが自軍エリアにある間、自軍常駐置き場にあるカードは相手に選ばれない。",
       "trigger": {
@@ -36,7 +36,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarukiniarukadohanibarenai",
           "duration": "permanent"
         }
       ],

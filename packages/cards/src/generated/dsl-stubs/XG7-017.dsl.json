@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_can_ride_vehicle_named_e8bb8ae4b8a1",
+      "id": "unnamed_can_ride_vehicle_ryo",
       "text": "※これは特徴「車両」を持つビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -25,13 +25,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "can_ride_vehicle_named_e8bb8ae4b8a1",
+          "keyword": "can_ride_vehicle_ryo",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e3839ee38383e3838fe585a8",
+      "id": "maha",
       "name": "マッハ全開！",
       "text": "自軍ターン中、これがバトルエリアに出るとき、これがライドしていなければ、次の効果を発動できる⇒自分の手札から特徴「車両」を持ち追加条件を持たないビークルカードを1枚選び自軍ラッシュエリアに出してから、これをライドさせる。そうしたとき、このターン、これはライドオフできない。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e887aae8bb8d",
+          "keyword": "grant_effect_tankoregabatoruerianirutokikoregaraidoshiteinakerebanowo",
           "duration": "turn"
         }
       ],

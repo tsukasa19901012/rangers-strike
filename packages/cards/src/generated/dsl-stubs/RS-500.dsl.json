@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e382b5e382a4e38396e383ac",
+      "id": "saiburedokata",
       "name": "サイブレードカッター",
       "text": "自分の手札から特徴「激気」を持つユニットカードを1枚選び、相手に見せてもよい。そうしたとき、このターン、このユニットのBPは、見せたカードのBPを「＋」した値になり、BP5000以上のとき「SP1」になる。",
       "trigger": {
@@ -43,10 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "pick_from_hand_nokarawotsuyunitokadowo1binisetemoyoisoushitato",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

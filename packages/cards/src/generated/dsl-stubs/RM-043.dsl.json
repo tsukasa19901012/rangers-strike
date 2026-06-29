@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "fx_3_1",
+      "id": "fx_31",
       "name": "3人1組",
       "text": "これをラッシュしたとき、自軍エリアの「鳥忍 カラス天狗」が3体以下なら、3体になるまで、自軍パワーゾーンのオモテ向きのカードか自軍コマンドゾーンのカードから「鳥忍 カラス天狗」のカードを選び、自軍ラッシュエリアに出してもよい。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e38193e3828c",
+          "keyword": "deploy_rush_area_koreworashushitatokierianokarasuga3nara3ninarumade",
           "duration": "turn"
         }
       ],

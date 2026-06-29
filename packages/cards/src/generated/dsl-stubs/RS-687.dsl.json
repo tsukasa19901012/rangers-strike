@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382ace383abe382b3e383b3",
+      "id": "garukonbogan",
       "name": "ガルコンボーガン",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokirashueriakarabp4000no",
           "duration": "turn"
         }
       ],

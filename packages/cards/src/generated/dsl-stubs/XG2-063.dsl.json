@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e9acbce5b9bbe8a193e383bb",
+      "id": "hi_e9acbc",
       "name": "鬼幻術・鬼火",
       "text": "これが自軍エリアにある間、自軍バトルフェイズ中、敵軍ユニットがラッシュされたとき、これをホールドしてもよい。そうしたとき、ラッシュされたユニットを持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e38193e3828c",
+          "keyword": "enemy_power_damage_koregaerianiarubatorufueizuyunitogarashusaretatokikor",
           "duration": "turn"
         }
       ],

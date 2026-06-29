@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e79eace99693e7a7bbe58b95",
+      "id": "fx_unknown_e79eac",
       "name": "瞬間移動",
       "text": "敵軍ターン中、これがアタックされたとき、これのバトルエリアでの並び順が自分から見て左から1番目以外なら、これを自分から見て左隣のユニットと置き替えてもよい。そうしたとき、バトルは行われない。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_turn_action_e695b5e8bb8d",
+          "keyword": "enemy_turn_action_tankoregaatakusaretatokikorenobatorueriadenobigakarate",
           "duration": "turn"
         }
       ],

@@ -11,7 +11,7 @@
   "rawText": "自軍Sユニットを1体選ぶ。このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。",
   "effects": [
     {
-      "id": "named_e382b8e383a3e382a4e382a2",
+      "id": "jaiantorora",
       "name": "ジャイアントローラー",
       "text": "自軍Sユニットを1体選ぶ。このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -20,12 +20,38 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "self",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "grant_keyword",
+              "keyword": "battle_destroy_to_power",
+              "duration": "turn"
+            }
+          ]
         }
       ],
-      "optional": false
+      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "self",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
     }
   ],
   "implementation": {

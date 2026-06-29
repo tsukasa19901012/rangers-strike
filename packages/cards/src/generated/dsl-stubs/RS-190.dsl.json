@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3839fe38389e383a1e383a9",
+      "id": "midomeran",
       "name": "ミドメラン",
       "text": "これがアタックするとき、相手はカウンターを発動できない。（この効果は特徴「イエロー」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_counter_combo_named_e382a4e382a8e383ade383bc",
+          "keyword": "cannot_counter_combo_iero",
           "duration": "turn"
         }
       ]

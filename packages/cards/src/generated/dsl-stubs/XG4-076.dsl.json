@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e4b896e7958ce381aee89e8d",
+      "id": "no",
       "name": "世界の融合",
       "text": "これをラッシュしたとき、すべての捨札を持ち主の山札に戻してシャッフルする。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_e38193e3828c",
+          "keyword": "return_to_zone_koreworashushitatokisubetenowochinonishiteshafurusuru",
           "duration": "turn"
         }
       ],

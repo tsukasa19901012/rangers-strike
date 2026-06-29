@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "named_4ae382ace383b3",
+      "id": "jgan",
       "name": "Jガン",
       "text": "これは敵軍ラッシュエリアのホールド状態のユニットにアタックできる。",
       "trigger": {

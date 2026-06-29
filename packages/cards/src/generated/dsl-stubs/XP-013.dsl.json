@@ -69,7 +69,7 @@
       ]
     },
     {
-      "id": "named_e382ade383a7e382a6e383aa",
+      "id": "kyouryuumaru",
       "name": "キョウリュウマル",
       "text": "これが自軍エリアにある間、自軍ターン中、自軍Sユニットがホールド状態になったとき、敵軍ゾーンのオモテ向きのカードから、追加条件を持つSユニットのカードを1枚選び、持ち主の山札の下に戻してもよい。",
       "trigger": {
@@ -78,7 +78,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarutansyunitogahorudoninatatoki",
           "duration": "permanent"
         }
       ],

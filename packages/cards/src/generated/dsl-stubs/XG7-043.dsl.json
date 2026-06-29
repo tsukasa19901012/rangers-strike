@@ -55,14 +55,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e59cb0e78d84e381aee58584",
+      "id": "no_e59cb0",
       "name": "地獄の兄弟",
       "text": "これが自軍パワーゾーンにある間、敵軍ターン中、特徴「加速」を持つ自軍ユニットが撃破されて捨札になったとき、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
@@ -71,7 +71,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregapawazonniarutanwotsuyunitoga_geki_ha_sarete",
           "duration": "permanent"
         }
       ],

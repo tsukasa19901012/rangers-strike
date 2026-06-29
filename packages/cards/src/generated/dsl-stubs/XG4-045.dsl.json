@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e382b9e382abe382a4e38383",
+      "id": "sukaikushoto",
       "name": "スカイックショット",
       "text": "Sユニットを1体選び、持ち主の山札の上に戻す。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_53e383a6e383",
+          "keyword": "pick_remaining_syunitowo1bichinononisu",
           "duration": "turn"
         }
       ],

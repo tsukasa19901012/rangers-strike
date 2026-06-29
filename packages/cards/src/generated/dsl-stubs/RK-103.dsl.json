@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e38396e383a9e382b9e38388",
+      "id": "burasutopegasasu",
       "name": "ブラストペガサス",
       "text": "これは、特徴「警察」を持つ自軍ユニットからコンビネーションするときBP+3000され、敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e38193e3828c",
+          "keyword": "combo_action_korehawotsuyunitokarakonbineshonsurutokibp3000sare",
           "duration": "turn"
         }
       ],

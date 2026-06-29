@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "named_e9ad94e4babae381aee58a9b",
+      "id": "ma_no_chikara",
       "name": "魔人の力",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokibatorueriakarasyunitowo1bi",
           "duration": "turn"
         }
       ],

@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "destroy_on_win_vs_named_e5a5b3",
+      "id": "destroy_on_win_vs_fx_unknown",
       "text": "※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される。",
       "trigger": {
         "type": "while_in_field"
@@ -41,13 +41,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_win_vs_named_e5a5b3",
+          "keyword": "destroy_on_win_vs_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e69c80e5be8ce381bee381a7",
+      "id": "madekuraimakusudaze",
       "name": "最後までクライマックスだぜ！",
       "text": "「SP1」",
       "trigger": {

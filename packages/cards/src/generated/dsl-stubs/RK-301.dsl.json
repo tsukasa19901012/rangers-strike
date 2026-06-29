@@ -11,7 +11,7 @@
   "rawText": "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+500される。 【エクステンドライダー落とし】ライドされている「カブトエクステンダー」からこのビークルがコンビネーションしたとき、次の効果を発動できる⇒本来のBPが8000以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
   "effects": [
     {
-      "id": "ride_without_rc_named_e58aa0e9809f",
+      "id": "ride_without_rc_fx_unknown",
       "text": "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,7 +19,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_named_e58aa0e9809f",
+          "keyword": "ride_without_rc_fx_unknown",
           "duration": "permanent"
         }
       ]
@@ -39,7 +39,7 @@
       ]
     },
     {
-      "id": "named_e382a8e382afe382b9e38386",
+      "id": "ekusutendoraidatoshi",
       "name": "エクステンドライダー落とし",
       "text": "ライドされている「カブトエクステンダー」からこのビークルがコンビネーションしたとき、次の効果を発動できる⇒本来のBPが8000以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
       "trigger": {
@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e383a9e382a4",
+          "keyword": "grant_effect_raidosareteirukabutoekusutendakarakonobikurugakonbineshonsh",
           "duration": "turn"
         }
       ],

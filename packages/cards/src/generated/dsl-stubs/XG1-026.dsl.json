@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e383a4e3839fe382aae3838e",
+      "id": "yamiono",
       "name": "ヤミオノ",
       "text": "自軍ダメージが3点以下なら、これは次の能力を得る⇒「SP1」",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "grant_ability_damejiga3narakorehano_chikara_worusp1",
           "duration": "turn"
         }
       ]

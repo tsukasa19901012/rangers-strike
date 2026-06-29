@@ -56,7 +56,7 @@
       ]
     },
     {
-      "id": "named_e382a2e38390e383ace382a6",
+      "id": "abareuingu",
       "name": "アバレウィング",
       "text": "これがアタックするとき、これはBP+1000され、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
       "trigger": {
@@ -64,8 +64,16 @@
       },
       "effects": [
         {
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 1000,
+          "duration": "turn"
+        },
+        {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "use_printed_bp_in_battle",
           "duration": "turn"
         }
       ],

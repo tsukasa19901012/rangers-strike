@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e382bbe382a4e38390e383bc",
+      "id": "seibasurashu",
       "name": "セイバースラッシュ",
       "text": "敵軍バトルエリアから、ホールド状態のSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e695b5e8bb8d",
+          "keyword": "enemy_power_damage_batorueriakarahorudonosyunitowo1bichinopawazonnidame",
           "duration": "turn"
         }
       ],

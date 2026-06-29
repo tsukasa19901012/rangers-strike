@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e38395e383ade383b3e38388",
+      "id": "furontoakusu",
       "name": "フロントアックス",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからMユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、戻したユニットが特徴「メカ」を持っていなければ、持ち主のパワーゾーンへ送る。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e887aae8bb8d",
+          "keyword": "power_zone_action_tankoregabatoruerianitatokibatorueriakaramyunitowo1bi",
           "duration": "turn"
         }
       ],

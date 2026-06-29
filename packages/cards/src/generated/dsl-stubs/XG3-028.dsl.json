@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e88d92e381b6e3828be9a7bf",
+      "id": "buru",
       "name": "荒ぶる駿馬",
       "text": "これが自分の手札にある間、自軍ラッシュフェイズ中、「魔導馬バリキオン」以外の特徴「魔法」を持つ自軍ユニットがあれば、これをラッシュエリアに出してもよい。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e38193e3828c",
+          "keyword": "deploy_rush_area_koreganoniarurashufueizu_ma_barikionno_ma_wo",
           "duration": "permanent"
         }
       ],

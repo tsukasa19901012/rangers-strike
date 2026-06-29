@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3838ae38383e382afe383ab",
+      "id": "nakurubonba",
       "name": "ナックルボンバー",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e887aae8bb8d",
+          "keyword": "power_zone_action_tankoregabatoruerianitatokibatorueriakaramyunitowo1bi",
           "duration": "turn"
         }
       ],

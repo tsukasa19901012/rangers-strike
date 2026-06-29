@@ -34,6 +34,10 @@
       "types": "./dist/pipeline/extractEffects.d.ts",
       "import": "./dist/pipeline/extractEffects.js"
     },
+    "./pipeline/hashGrantKeywords": {
+      "types": "./dist/pipeline/hashGrantKeywords.d.ts",
+      "import": "./dist/pipeline/hashGrantKeywords.js"
+    },
     "./catalog/parity": {
       "types": "./dist/catalog/parity.d.ts",
       "import": "./dist/catalog/parity.js"
@@ -91,6 +95,8 @@
     "audit:catalog-parity": "tsx scripts/audit-catalog-parity.ts",
     "audit:rollout-status": "tsx scripts/audit-rollout-status.ts",
     "audit:implementation-gaps": "tsx scripts/audit-implementation-gaps.ts",
+    "audit:rs-release": "tsx scripts/audit-rs-release-readiness.ts",
+    "enrich-rs-operation-dsl": "tsx scripts/enrich-rs-operation-dsl.ts",
     "metrics:full-playable": "tsx scripts/generate-full-playable-metrics.ts",
     "verify-wiki-effects": "tsx scripts/verify-wiki-effects.ts",
     "wiki-drift": "tsx scripts/wiki-drift.ts",

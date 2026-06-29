@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e7a9b6e6a5b5e5a5a5e7bea9",
+      "id": "damashi",
       "name": "究極奥義・猫だまし",
       "text": "自分の手札からBP16000以下のLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。この効果で出したユニットは、アタックもストライクもできず、自分がターンを終えるとき捨札になる。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e887aae58886",
+          "keyword": "deploy_rush_area_nokarabp16000nolyunitonokadowo1birashueria",
           "duration": "turn"
         }
       ],

@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3839ee382b8e38381e382b1",
+      "id": "majichiketo",
       "name": "マジチケット",
       "text": "これが自軍ラッシュエリアにある間、自軍コマンドゾーンにあるオペレーションカードの効果を、そのコマンドをホールドして手札から使用するかのように発動できる（必要パワーとタイミングは満たすこと）。発動したカードは、捨札になるときリリース状態の自軍コマンドをかわりに1つ捨札にすればコマンドゾーンに留まる。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiarukomandozonniaruopereshonkadono",
           "duration": "permanent"
         }
       ],

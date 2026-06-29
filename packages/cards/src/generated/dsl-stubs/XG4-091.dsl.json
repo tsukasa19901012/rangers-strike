@@ -27,14 +27,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b9e38394e383b3e38389",
+      "id": "supindorukyanon",
       "name": "スピンドルキャノン",
       "text": "これをホールドすれば、次の効果を発動できる⇒相手は自分自身のユニットを1体選び、可能なら自軍コマンドゾーンにホールド状態で置く。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_korewohorudosurebanowodekiruhanoyunitowo1bina",
           "duration": "turn"
         }
       ],

@@ -43,13 +43,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "gx_05",
+      "id": "gx05",
       "name": "GX-05",
       "text": "ホールド状態の自軍ユニットの数を数えて、その数以下の必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e3839be383bc",
+          "keyword": "hold_enemy_unit_horudonoyunitonowoetesononopawanowotsusyuni",
           "duration": "turn"
         }
       ],

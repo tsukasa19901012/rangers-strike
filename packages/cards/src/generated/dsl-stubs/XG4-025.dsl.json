@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e5bf85e6aebae68bb3e382bd",
+      "id": "ken_sonikuhanma",
       "name": "必殺拳ソニックハンマー",
       "text": "オモテ向きの自軍パワーの枚数を数えてもよい。そうしたき、敵軍バトルエリアから、その数以下の必要パワーの数字を持つ敵軍ユニットを１体選び持ち主のパワーゾーンに送る。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e382aae383a2",
+          "keyword": "ride_action_omote_ko_kinopawanowoetemoyoisoushitakibatorueriakarasono",
           "duration": "turn"
         }
       ],

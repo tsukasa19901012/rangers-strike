@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e78c9be78da3e4bdbfe38184",
+      "id": "ino_e78c9b",
       "name": "猛獣使いの鞭",
       "text": "自軍ターン中、これがバトルエリアに出たとき、特徴「獣」を持つユニットを2体選んでもよい。そうしたとき、選んだ2体でバトルする。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_e887aae8bb8d",
+          "keyword": "deploy_battle_area_tankoregabatoruerianitatokiwotsuyunitowo2ndemoyoiso",
           "duration": "turn"
         }
       ],

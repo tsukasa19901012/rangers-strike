@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_alias_named_e38396e383abe383bce383ad",
+      "id": "unnamed_alias_bururougan",
       "text": "※これは「ブルーロウガン」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -27,13 +27,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e38396e383abe383bce383ad",
+          "keyword": "alias_bururougan",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e5bf8de6b395e6b0b4e8b5b0",
+      "id": "ninpo_mizu_ri",
       "name": "忍法水走り",
       "text": "敵軍ラッシュエリアのユニットの数が、敵軍バトルエリアのユニットの数より多ければ、これは敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {

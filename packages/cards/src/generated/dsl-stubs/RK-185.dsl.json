@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e59088e4bd93e590b8e58f8e",
+      "id": "fx_unknown_e59088",
       "name": "合体吸収",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍山札の下から1枚ひいてオモテにしてもよい。オモテにしたカードがＲＣを持つユニットカードなら、このターン、これはSP1になり、オモテにしたカードのRCの効果をこのユニットの効果として発動する。その後、オモテにしたカードは持ち主の山札の下に戻す。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e887aae8bb8d",
+          "keyword": "reveal_faceup_tankoregabatoruerianitatokinokara1hiiteomotenishitemo",
           "duration": "turn"
         }
       ],

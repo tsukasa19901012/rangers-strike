@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e98193e8b7afe5b081e98e96",
+      "id": "fx_unknown_e98193",
       "name": "道路封鎖",
       "text": "これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは相手に選ばれない。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiarukomandozonnokadohanibarenai",
           "duration": "permanent"
         }
       ],

@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "named_e7b5b6e69c9be3818ce3818a",
+      "id": "gaonogoruda",
       "name": "絶望がお前のゴールだ",
       "text": "これがストライクして敵軍パワーゾーンのカードがウラ向きになったとき、そのカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e38193e3828c",
+          "keyword": "power_zone_action_koregasutoraikushitepawazonnokadogaura_ko_kininatatoki",
           "duration": "turn"
         }
       ],

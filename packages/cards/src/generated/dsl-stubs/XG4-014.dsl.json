@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "named_e382ade38390e382a2e383ad",
+      "id": "kibaaro",
       "name": "キバアロー",
       "text": "BP4000以下の敵軍ユニットを1体選んでもよい。そうしたとき、相手はそのユニットをホールドするか自分自身の山札の上に戻すかを選ぶ。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_425034303030",
+          "keyword": "opponent_must_bp4000noyunitowo1ndemoyoisoushitatokihasonoyunitowo",
           "duration": "turn"
         }
       ],

@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e5a4a7e59cb0e58b95e8bba2",
+      "id": "no_e5a4a7",
       "name": "大地動転の玉",
       "text": "これが自軍エリアにある間、ナンバーを持つすべてのSユニットは、BPが「＋」されるかわりにBPが「－」される。（BP0以下になったユニットは撃破される）",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarunanbawotsusubetenosyunitohabpgasareru",
           "duration": "permanent"
         }
       ],

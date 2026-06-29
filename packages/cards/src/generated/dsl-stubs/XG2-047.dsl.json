@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e8b685e9ab98e781abe7828e",
+      "id": "hi_honoo_gasu",
       "name": "超高火炎＆冷凍ガス",
       "text": "WBかOTを持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき、ホールドしたコマンドの持つカテゴリごとに、次の効果を発動する⇒WBなら追加条件を持たないSユニットを1体選び撃破してもよい。OTなら追加条件を持つSユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_5742e3818b4f",
+          "keyword": "power_zone_action_wbkaotwotsukomandowo1tsubihorudoshitemoyoisoushitatoki",
           "duration": "turn"
         }
       ],

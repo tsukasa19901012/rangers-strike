@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e6ada3e7a2bae381aae5b084",
+      "id": "na_geki",
       "name": "正確な射撃",
       "text": "自軍コマンドゾーンからカードを1枚選びホールドしてもよい。そうしたとき、ホールドしたカードの必要パワーの数字を見て、その数字と同じパワーの数字を持つカードを、敵軍パワーゾーンのオモテ向きのカードの中から1枚選び、ウラ返してダメージにする。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e887aae8bb8d",
+          "keyword": "damage_action_komandozonkarakadowo1bihorudoshitemoyoisoushitatokihorudos",
           "duration": "turn"
         }
       ],

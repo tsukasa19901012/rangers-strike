@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382ade383bce382b9e38386",
+      "id": "kisuteka",
       "name": "キーステッカー",
       "text": "これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。（この効果は特徴「ピンク」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "battle_original_bp_combo_named_e38394e383b3e382af",
+          "keyword": "battle_original_bp_combo_pinku",
           "duration": "turn"
         }
       ]

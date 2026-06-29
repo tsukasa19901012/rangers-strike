@@ -9,7 +9,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { CardDocument, EffectPrimitive } from "../src/dsl/types";
 import { validateCardDocument } from "../src/dsl/validator";
-import { effectIdFromName } from "../src/pipeline/effectNameIds";
+import { effectSlugFromName } from "../src/pipeline/effectNameIds";
 import { hashEffectText } from "../src/pipeline/metaMaps";
 import { rematchExtractedEffect } from "../src/pipeline/extractEffects";
 
@@ -38,8 +38,8 @@ function remigrateEffect(
   const reasons: string[] = [];
 
   if (effect.name && isNamedHashId(effect.id)) {
-    const semantic = effectIdFromName(effect.name);
-    if (semantic && semantic !== effect.id) {
+    const semantic = effectSlugFromName(effect.name);
+    if (semantic && semantic !== effect.id && !semantic.startsWith("named_")) {
       effect.id = semantic;
       changed = true;
       reasons.push("rename");
@@ -74,8 +74,8 @@ function remigrateEffect(
   }
 
   if (effect.name && isNamedHashId(effect.id)) {
-    const semantic = effectIdFromName(effect.name);
-    if (semantic) {
+    const semantic = effectSlugFromName(effect.name);
+    if (semantic && !semantic.startsWith("named_")) {
       effect.id = semantic;
       changed = true;
       reasons.push("rename_fallback");

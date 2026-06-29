@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e38280e3818de587bae38197",
+      "id": "mukishino",
       "name": "むき出しの殺意",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアのユニットがSユニット1体だけなら、そのユニットを持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e887aae8bb8d",
+          "keyword": "power_zone_action_tankoregabatoruerianitatokibatoruerianoyunitogasyunito",
           "duration": "turn"
         }
       ],

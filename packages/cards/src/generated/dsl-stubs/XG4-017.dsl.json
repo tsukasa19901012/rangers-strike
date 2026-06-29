@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382ace382aae3838fe382b9",
+      "id": "gaohasurarodosunaipamodo",
       "name": "ガオハスラーロッド・スナイパーモード",
       "text": "これがバトルで敵軍ユニットを撃破したとき、これが撃破したユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍コマンドを1つ選び捨札にしてもよい。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e38193e3828c",
+          "keyword": "ride_action_koregabatorudeyunitowo_geki_ha_shitatokikorega_geki_ha_shita",
           "duration": "turn"
         }
       ],

@@ -27,14 +27,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e383ace383b3e382b8e383a3",
+      "id": "renjaki",
       "name": "レンジャーキー",
       "text": "自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードが特徴に色を持つなら自軍パワーゾーンに置き、それ以外なら山札の下に戻す。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e887aae8bb8d",
+          "keyword": "reveal_faceup_nokara1woomotenishitemoyoisoushitatokiomotenishitakadogani",
           "duration": "turn"
         }
       ],

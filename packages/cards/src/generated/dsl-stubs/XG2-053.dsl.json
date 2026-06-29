@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e99693e98195e381a3e3819f",
+      "id": "ta",
       "name": "間違った英雄",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを1体選び捨札にしてもよい。そうしたとき、このターン、このユニットのBPは、捨札にしたユニットの本来のBPを「+」した値になる。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_e887aae8bb8d",
+          "keyword": "discard_to_zone_tankoregabatoruerianitatokirashueriakararaidawo",
           "duration": "turn"
         }
       ],

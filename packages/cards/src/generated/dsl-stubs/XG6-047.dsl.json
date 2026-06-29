@@ -30,14 +30,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e280bbe38193",
+          "keyword": "exclude_game_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": true
     },
     {
-      "id": "named_e382aee382ace383b3e38388",
+      "id": "giganto",
       "name": "ギガント",
       "text": "これをラッシュしたとき、特徴「仮面ライダー」を持つ敵軍ユニットを1体選び撃破する。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e38193e3828c",
+          "keyword": "destroy_on_rush_koreworashushitatokiraidawotsuyunitowo1bi_geki_ha_suru",
           "duration": "turn"
         }
       ],

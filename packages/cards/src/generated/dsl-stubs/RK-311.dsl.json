@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e4bfbae381aee5bcb7e38195",
+      "id": "nosaniogaita",
       "name": "俺の強さにお前が泣いた",
       "text": "次の相手ターン、バトルエリアに出た敵軍Sユニットは、可能ならこれにアタックする。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_e6aca1e381ae",
+          "keyword": "deploy_battle_area_notanbatoruerianitasyunitohanarakoreniatakusuru",
           "duration": "turn"
         }
       ],

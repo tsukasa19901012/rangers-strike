@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e38388e383a9e382a4e382ad",
+      "id": "toraikyanon",
       "name": "トライキャノン",
       "text": "自軍ラッシュエリアから、特徴「メカ」を持つビークルを1体選んでもよい。そうしたとき、このターン、これは選んだビークルの必要パワーの数字1ごとにBP+1000される。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e887aae8bb8d",
+          "keyword": "bp_modify_rashueriakaramekawotsubikuruwo1ndemoyoisoushitatokikonota",
           "duration": "turn"
         }
       ],

@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e382a2e3839de383ade3839e",
+      "id": "aporomagunamu",
       "name": "アポロマグナム",
       "text": "自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、これは次の相手ターン終了時まで次の能力を得る⇒BP+4000",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e887aae8bb8d",
+          "keyword": "grant_ability_tankoregabatoruerianitatokikonoyunitowohorudoshitemoyoisou",
           "duration": "turn"
         }
       ]

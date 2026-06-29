@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e9ab98e59ca7e381aee6b0b4",
+      "id": "no_mizu",
       "name": "高圧の水流",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP3000以下のSユニットを好きな数選びホールドしてもよい。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakarabp3000nos",
           "duration": "turn"
         }
       ],

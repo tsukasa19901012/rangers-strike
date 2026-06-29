@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e382ade383b3e382b0e382b9",
+      "id": "kingusubasutoendo",
       "name": "キングスバーストエンド",
       "text": "自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍パワーゾーンのオモテ向きのカードを1枚選び、選んだカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットがあればすべて撃破する。このとき、1体以上撃破したなら、選んだカードをダメージにする。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokikorewohorudoshitemoyoiso",
           "duration": "turn"
         }
       ],

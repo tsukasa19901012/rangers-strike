@@ -11,7 +11,7 @@
   "rawText": "敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。その後、敵軍バトルエリアのユニットを、好きな順に並べ替える。",
   "effects": [
     {
-      "id": "named_e382bce382afe38388e3839e",
+      "id": "zekutomaiza",
       "name": "ゼクトマイザー",
       "text": "敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。その後、敵軍バトルエリアのユニットを、好きな順に並べ替える。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_e695b5e8bb8d",
+          "keyword": "deploy_battle_area_rashuerianiarusubetenosyunitowobatoruerianishitemoyoi",
           "duration": "turn"
         }
       ],

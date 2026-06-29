@@ -31,13 +31,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e38389e383abe38389e383ab",
+      "id": "dorudoru_dan",
       "name": "ドルドル弾",
       "text": "自軍ラッシュエリアから、特徴「炎神」を持ち、ナンバーに数字を持つMユニットを1体選び手札に戻してもよい。そうしたとき、戻したユニットのナンバーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e887aae8bb8d",
+          "keyword": "power_zone_action_rashueriakara_honoo_shin_wochinanbaniwotsumyunitowo1bi",
           "duration": "turn"
         }
       ],

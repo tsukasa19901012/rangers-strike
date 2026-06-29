@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e4babae591bde6a49ce7b4a2",
+      "id": "fx_unknown_e4baba",
       "name": "人命検索",
       "text": "自軍捨札をすべてウラ向きにしてシャッフルしてもよい。そうしたとき、その中から相手にウラ向きのまま1枚選ばせてから、すべてオモテにする。相手の選んだカードがSユニットのカードだったなら、そのユニットカードを自分の手札に加える。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e887aae8bb8d",
+          "keyword": "reveal_faceup_wosubeteura_ko_kinishiteshafurushitemoyoisoushitatokisonok",
           "duration": "turn"
         }
       ],

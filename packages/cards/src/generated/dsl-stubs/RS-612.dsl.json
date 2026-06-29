@@ -31,14 +31,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b9e382abe382a4e382b3",
+      "id": "sukaikontena",
       "name": "スカイコンテナ",
       "text": "これをラッシュしたとき、自軍コマンドを好きな数選び捨札にしてもよい。そうしたとき、自軍山札を見て、特徴「メカ」を持つSユニットのカードを、捨札にしたコマンドの数まで好きな枚数選び、自軍コマンドゾーンにホールド状態で置く。その後、山札をシャッフルする。",
       "trigger": {

@@ -45,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e796bee9a2a8e696ad",
+      "id": "kaze_dan",
       "name": "疾風断",
       "text": "これがライドされているか、これが自軍バトルエリアにある間、敵軍バトルエリアのSユニットは特徴を持たないユニットとして扱い、特徴を追加されない。",
       "trigger": {
@@ -54,7 +54,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaraidosareteirukakoregabatoruerianiarubatorueri",
           "duration": "permanent"
         }
       ],

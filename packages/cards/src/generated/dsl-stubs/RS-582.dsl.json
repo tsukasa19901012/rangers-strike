@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383a1e383bce383bbe383a1",
+      "id": "memegaro",
       "name": "メー・メガロ",
       "text": "これが自軍エリアにある間、自分がカウンターを持つオペレーションの効果を発動して、そのカードが捨札になったとき、そのカードと同じカード名のカードを、自軍山札を見て1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_e38193e3828c",
+          "keyword": "deck_search_koregaerianiarugakauntawotsuopereshonnowoshitesono",
           "duration": "turn"
         }
       ],

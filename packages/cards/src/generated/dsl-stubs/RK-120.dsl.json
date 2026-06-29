@@ -25,7 +25,7 @@
       ]
     },
     {
-      "id": "named_e3838be383bce383a9e383bc",
+      "id": "nirashatoru",
       "name": "ニーラーシャトル",
       "text": "これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_koregaraidosaretamamanarakonobikurukarakonbineshonsurusyun",
           "duration": "turn"
         }
       ]

@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e99fb3e69283e99fbfe383bb",
+      "id": "geki_3",
       "name": "音撃響・偉羅射威",
       "text": "敵軍ユニットの下にオモテ向きで重ねたオペレーションカードを1体選んでもよい。そうしたとき、選んだカードを持ち主の山札に戻してシャッフルする。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_e695b5e8bb8d",
+          "keyword": "return_to_zone_yunitononiomote_ko_kidenetaopereshonkadowo1ndemoyoisoushi",
           "duration": "turn"
         }
       ],

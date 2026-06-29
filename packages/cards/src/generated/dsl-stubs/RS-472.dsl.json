@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e78fbee5a0b4e381b8e381ae",
+      "id": "heno_e78fbe",
       "name": "現場への搬送",
       "text": "これをラッシュしたとき、自軍コマンドゾーンのカードを好きな枚数選び捨札にしてもよい。そうしたとき、自軍山札から特徴「メカ」を持つMユニットのカードを、捨札にした枚数と同じ枚数まで好きな数選び、自軍コマンドゾーンにホールド状態で置く。その後、山札をシャッフルする。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_e38193e3828c",
+          "keyword": "pick_from_discard_koreworashushitatokikomandozonnokadowokinabinishitemoy",
           "duration": "turn"
         }
       ],

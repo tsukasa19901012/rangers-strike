@@ -27,13 +27,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e38394e383b3e382afe383aa",
+      "id": "pinkuribon",
       "name": "ピンクリボン",
       "text": "「SP1」",
       "trigger": {

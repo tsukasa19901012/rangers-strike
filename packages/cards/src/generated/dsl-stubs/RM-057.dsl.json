@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e382b9e38386e382a3e383b3",
+      "id": "suteingapurazuma",
       "name": "スティンガープラズマー",
       "text": "レジストを持たない敵軍Sユニットを1体選びホールドしてもよい。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e383ace382b8",
+          "keyword": "hold_enemy_unit_rejisutowotanaisyunitowo1bihorudoshitemoyoi",
           "duration": "turn"
         }
       ],

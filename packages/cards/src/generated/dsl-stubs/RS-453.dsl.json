@@ -55,7 +55,7 @@
       ]
     },
     {
-      "id": "named_e6bf80e68092e696ace3828a",
+      "id": "zan_ri_e6bf80",
       "name": "激怒斬り",
       "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、「サムライマン」以外の自軍ユニットがユニットサイズの違うユニットとバトルして撃破された時、敵軍ユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiarutansamuraimannoyunitogayuni",
           "duration": "permanent"
         }
       ],

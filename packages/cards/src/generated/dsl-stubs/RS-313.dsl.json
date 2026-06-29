@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382a4e382abe38385e38381",
+      "id": "ikazuchibureika",
       "name": "イカヅチブレイカー",
       "text": "敵軍バトルエリアにあるSユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアに、戻したユニット以外のユニットがあれば1体選び、戻したユニットとバトルさせる。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "optional_then_e695b5e8bb8d",
+          "keyword": "optional_then_batoruerianiarusyunitowo1birashuerianishitemoyoisoushi",
           "duration": "turn"
         }
       ],

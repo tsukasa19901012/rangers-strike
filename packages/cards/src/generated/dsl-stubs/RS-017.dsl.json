@@ -16,7 +16,7 @@
     {
       "id": "ki_power",
       "name": "RS-017",
-      "text": "",
+      "text": "すべての自軍Sユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP＋1000される（常駐）。",
       "trigger": {
         "type": "operation",
         "timing": "resident"
@@ -34,5 +34,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "text": "すべての自軍Sユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP＋1000される（常駐）。",
+  "rawText": "すべての自軍Sユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP＋1000される（常駐）。"
 }

@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "no_attack_without_named_e888aae7a9bae6a99f",
+      "id": "no_attack_without_fx_unknown",
       "text": "※これは、特徴「航空機」を持たないユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -30,13 +30,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "no_attack_without_named_e888aae7a9bae6a99f",
+          "keyword": "no_attack_without_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382abe383a9e382afe383aa",
+      "id": "karakuri_ninpo_ha",
       "name": "カラクリ忍法・天空裂破",
       "text": "これが自軍エリアにある間、特徴「航空機」を持たないMユニットは次の制限を受ける⇒アタックもストライクもできない。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruwotanaimyunitohanowokeruataku",
           "duration": "permanent"
         }
       ],

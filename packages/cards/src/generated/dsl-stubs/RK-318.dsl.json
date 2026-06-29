@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38396e383ade382a6e382af",
+      "id": "buroukunfuangu",
       "name": "ブロウクン・ファング",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから敵軍ダメージの点数以下の必要パワーの数字を持つSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。そうしたとき、このユニットがリリース状態ならホールドし、ホールド状態なら撃破する。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibatorueriakaradamejino",
           "duration": "turn"
         }
       ],

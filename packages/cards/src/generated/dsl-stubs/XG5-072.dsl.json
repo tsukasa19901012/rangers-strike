@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e68cabe38191e381ace796be",
+      "id": "kenu_kaze",
       "name": "挫けぬ疾風",
       "text": "敵軍山札をシャッフルしてもよい。そうしたとき、敵軍山札の上から3枚をオモテにし、その中にDAを持つカードがあれば、このユニットをリリースする。その後、オモテにしたカードを山札の上に好きな順で戻す。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e695b5e8bb8d",
+          "keyword": "reveal_faceup_woshafurushitemoyoisoushitatokinokara3woomotenishisono",
           "duration": "turn"
         }
       ],

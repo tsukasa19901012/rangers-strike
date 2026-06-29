@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e58589e5bcbe",
+      "id": "hikari_dan",
       "name": "光弾",
       "text": "これが自軍エリアにある間、すべてのオペレーションカードは、必要パワーの数字が2増える。（この効果は重複しない）",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarusubetenoopereshonkadohapawanoga2eru",
           "duration": "permanent"
         }
       ],

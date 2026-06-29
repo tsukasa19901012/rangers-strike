@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e383a0e383aae383a4e383aa",
+      "id": "muriyarina",
       "name": "ムリヤリな変身",
       "text": "これが撃破されて捨札になったとき、自軍捨札から「モモタロス」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e38193e3828c",
+          "keyword": "deploy_rush_area_korega_geki_ha_sareteninatatokikaramomotarosunokadowo1b",
           "duration": "turn"
         }
       ],

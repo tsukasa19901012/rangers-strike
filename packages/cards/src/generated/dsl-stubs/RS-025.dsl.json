@@ -13,7 +13,7 @@
     {
       "id": "bp_boost_4000",
       "name": "RS-025",
-      "text": "",
+      "text": "自軍ユニットを1体選ぶ。このターン、選んだユニットはBP＋4000される。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
@@ -56,5 +56,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "text": "自軍ユニットを1体選ぶ。このターン、選んだユニットはBP＋4000される。",
+  "rawText": "自軍ユニットを1体選ぶ。このターン、選んだユニットはBP＋4000される。"
 }

@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e3839ee383bce382bae38395",
+      "id": "mazufurea",
       "name": "マーズフレア",
       "text": "自軍ターン中、これがバトルエリアに出たとき、相手は自分自身の常駐置き場からカードを1枚選び（ウラ向きのカードはウラ向きのまま選ぶ）、自分自身のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokihanokikarakadowo1",
           "duration": "turn"
         }
       ],

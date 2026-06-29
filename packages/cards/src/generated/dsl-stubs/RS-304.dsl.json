@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e6b2bbe5ae89e7b6ade68c81",
+      "id": "fx_unknown_e6b2bb",
       "name": "治安維持",
       "text": "これが自軍バトルエリアにある間、相手が手札からDAのSユニットのカードをラッシュするとき、そのカードの必要パワーの数字は1増える。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiarugakaradanosyunitonokadoworashus",
           "duration": "permanent"
         }
       ],

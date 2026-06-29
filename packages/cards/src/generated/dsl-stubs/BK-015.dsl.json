@@ -11,7 +11,7 @@
   "rawText": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーブレイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sユニットを1体選ぶ。このターン、選んだユニットは「SP1/2」になる。",
   "effects": [
     {
-      "id": "named_e38396e383ace382a4e38390",
+      "id": "bureibakuru",
       "name": "ブレイバックル",
       "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーブレイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sユニットを1体選ぶ。このターン、選んだユニットは「SP1/2」になる。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "choice_one_of_e6aca1e381ae",
+          "keyword": "choice_one_of_nokara1tsubisurunokararaidabureidonokadowo1bi",
           "duration": "turn"
         }
       ],

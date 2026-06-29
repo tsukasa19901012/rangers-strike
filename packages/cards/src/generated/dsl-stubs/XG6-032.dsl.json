@@ -25,14 +25,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e7b5b6e5afbee79a84e381aa",
+      "id": "nano_chikara",
       "name": "絶対的な最強の力",
       "text": "このユニットの下にウラ向きで重ねたカードがあれば、これは次の能力を得る⇒敵軍ユニット1体につきBP+1000され、BP12000以上のときSP2になる。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e381ae",
+          "keyword": "grant_ability_konoyunitononiura_ko_kidenetakadogaarebakorehano_chikara_w",
           "duration": "turn"
         }
       ]

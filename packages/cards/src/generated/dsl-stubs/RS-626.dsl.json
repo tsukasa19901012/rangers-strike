@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383a1e382ace382b7e383bc",
+      "id": "megashirudo",
       "name": "メガシールド",
       "text": "敵軍ターン中、これが撃破されたとき、次の効果から1つ選び発動できる⇒ ◎敵軍ユニットを1体選び撃破する。 ◎自軍捨札からウイングを持つSユニットのカードを5枚まで選び、自軍ラッシュエリアに出す。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e695b5e8bb8d",
+          "keyword": "deploy_rush_area_tankorega_geki_ha_saretatokinokara1tsubidekiruyunitowo1",
           "duration": "turn"
         }
       ],

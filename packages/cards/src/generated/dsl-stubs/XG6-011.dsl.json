@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383a9e382b8e382a2e383ab",
+      "id": "rajiarubonba",
       "name": "ラジアルボンバー",
       "text": "これが自軍バトルエリアにある間、自分がターンを終えるとき、これを自軍パワーゾーンに送ってもよい。そうしたとき、BP4000以下の敵軍ユニットを1体選び持ち主のパワーゾーンに送る。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiarugatanwoerutokikorewopawazonni",
           "duration": "permanent"
         }
       ],

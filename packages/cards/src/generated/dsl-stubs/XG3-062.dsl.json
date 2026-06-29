@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4e38380e383bc",
+      "id": "raidakiku",
       "name": "ライダーキック",
       "text": "自軍ターン中、これがバトルエリアに出たとき、必要パワーの数字が「1」「2」「3」のオモテ向きの自軍パワーがそれぞれあれば、敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e887aae8bb8d",
+          "keyword": "power_zone_action_tankoregabatoruerianitatokipawanoga123noomote_ko_kino",
           "duration": "turn"
         }
       ],

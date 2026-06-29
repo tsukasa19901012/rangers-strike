@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "named_e58f8be68385",
+      "id": "fx_unknown_e58f8b",
       "name": "友情",
       "text": "自軍ターン中、このユニットは、これ以外の自軍バトルエリアのSユニット1体につきBP+2000される。",
       "trigger": {
@@ -25,7 +25,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e887aae8bb8d",
+          "keyword": "bp_modify_tankonoyunitohakorenobatoruerianosyunito1nitsukibp2",
           "duration": "turn"
         }
       ],

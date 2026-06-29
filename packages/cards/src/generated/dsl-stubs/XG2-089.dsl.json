@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e382b8e38390e383b3e382a8",
+      "id": "jibanendo",
       "name": "ジバンエンド",
       "text": "DAを持つ敵軍Sユニットを1体選び、持ち主のコマンドゾーンに置く。置けなければ捨札にする。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_4441e38292e6",
+          "keyword": "discard_to_zone_dawotsusyunitowo1bichinokomandozonnikukenakerebani",
           "duration": "turn"
         }
       ],

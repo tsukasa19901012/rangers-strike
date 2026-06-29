@@ -27,14 +27,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b4e383bce382abe382a4",
+      "id": "gokaigan",
       "name": "ゴーカイガン",
       "text": "オモテ向きの自軍パワーから、特徴に色を持つカードを好きな枚数選び手札に戻してもよい。そうしたとき、このターン、これは戻したカード1枚につきBP+1000される。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e382aae383a2",
+          "keyword": "bp_modify_omote_ko_kinopawakaraniwotsukadowokinabinishitemoyoi",
           "duration": "turn"
         }
       ],

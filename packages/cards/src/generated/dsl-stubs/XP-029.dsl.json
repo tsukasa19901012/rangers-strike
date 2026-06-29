@@ -55,14 +55,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e381bee381a0e38288e383bb",
+      "id": "madayomadamadashimigarinaiwa",
       "name": "まだよ・・・まだまだ憎しみが足りないわ・・・",
       "text": "これがバトルエリアにある間、相手がターンを終えるとき、これのBPが9000以上なら、相手に1点ダメージを与える。8500以下なら、自分は1点ダメージを受けるか、自軍ユニットを1体選び撃破するかを選ぶ。",
       "trigger": {

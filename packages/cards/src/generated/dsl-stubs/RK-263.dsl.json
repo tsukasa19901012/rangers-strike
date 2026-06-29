@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "named_e6b6b2e58c96",
+      "id": "fx_unknown_e6b6b2",
       "name": "液化",
       "text": "このユニットは、ホールド状態のとき敵軍ユニットにアタックされない。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_e38193e381ae",
+          "keyword": "hold_remaining_konoyunitohahorudonotokiyunitoniatakusarenai",
           "duration": "turn"
         }
       ],

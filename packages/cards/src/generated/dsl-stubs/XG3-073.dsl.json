@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e381a8e381a3e381a6e3818a",
+      "id": "toteokinoo",
       "name": "とっておきのお宝",
       "text": "これは、自軍「仮面ライダーディエンド」があれば「SP1/3」になる。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "kamen_rider_e38193e3828c",
+          "keyword": "kamen_rider_koreharaidadeiendogaarebasp13ninaru",
           "duration": "turn"
         }
       ],

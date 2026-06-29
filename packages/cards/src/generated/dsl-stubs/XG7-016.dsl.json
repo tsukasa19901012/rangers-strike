@@ -60,14 +60,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe887aa",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e4bfbae98194e381aee98193",
+      "id": "no_5",
       "name": "俺達の道",
       "text": "自分の手札から、必要パワーの数字が5以下のWBのMユニットのカードを2枚まで選び、自軍ラッシュエリアに出してもよい。（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）",
       "trigger": {
@@ -76,7 +76,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e887aae58886",
+          "keyword": "combo_action_nokarapawanoga5nowbnomyunitonokadowo2madebi",
           "duration": "turn"
         }
       ],

@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_named_e382b9e382abe382a4e383a9",
+      "id": "unnamed_alias_sukairaida",
       "text": "※これは「スカイライダー」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e382b9e382abe382a4e383a9",
+          "keyword": "alias_sukairaida",
           "duration": "permanent"
         }
       ]
@@ -56,14 +56,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e5a4a7e58f8de8bba2e382b9",
+      "id": "sukaikiku_e5a4a7",
       "name": "大反転スカイキック",
       "text": "これをラッシュエリアに戻してもよい。そうしたとき、敵軍バトルエリアからユニットを1体選び、これとバトルさせてもよい。その後、このターン、これはバトルエリアに出られない。",
       "trigger": {
@@ -72,7 +72,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_e38193e3828c",
+          "keyword": "cannot_restrict_koreworashuerianishitemoyoisoushitatokibatorueriakarayun",
           "duration": "turn"
         }
       ],

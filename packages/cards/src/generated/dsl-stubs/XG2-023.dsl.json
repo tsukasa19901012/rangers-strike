@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e9bb92e381aee4b880e69283",
+      "id": "no_geki_e9bb92",
       "name": "黒の一撃",
       "text": "敵軍バトルエリアからナンバーを持たないSユニットを1体選び、撃破してもよい。また、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは「SP1」になる。",
       "trigger": {
@@ -42,10 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "hold_enemy_unit_batorueriakarananbawotanaisyunitowo1bi_geki_ha_shitemoyo",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

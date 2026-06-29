@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e38397e383aae382bae383a0",
+      "id": "purizumubutsu",
       "name": "プリズムブーツ",
       "text": "このターン、自分と相手のコマンドゾーンにあるホールド状態のコマンドのカテゴリは、すべて「OT」になる（ただし、「オーバーテクノロジー」をホールドしたことにはならない）。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "category_modify_e38193e381ae",
+          "keyword": "category_modify_konotantonokomandozonniaruhorudonokomandonokategorihasub",
           "duration": "turn"
         }
       ],

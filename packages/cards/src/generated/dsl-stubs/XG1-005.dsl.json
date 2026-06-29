@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38389e383aae383bce383a0",
+      "id": "dorimugyarakushi",
       "name": "ドリームギャラクシー",
       "text": "自軍コマンドのカテゴリの数を数えて、その数以下の必要パワーの数字を持つ敵軍Sユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e887aae8bb8d",
+          "keyword": "hold_enemy_unit_komandonokategorinowoetesononopawanowotsusyuni",
           "duration": "turn"
         }
       ],

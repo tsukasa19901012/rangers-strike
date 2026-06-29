@@ -21,7 +21,7 @@
   "unnamedRules": [],
   "effects": [
     {
-      "id": "sp_1",
+      "id": "grant_sp1",
       "name": "SP+1",
       "text": "「SP1」",
       "trigger": {

@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e6898be6aeb5e38292e981b8",
+      "id": "wobanu",
       "name": "手段を選ばぬ策略",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「怪人」を持つユニットを1体選び、捨札にしてもよい。そうしたとき、相手の手札を見ないで1枚選ぶ。相手は選ばれたカードを自分自身の山札の上に戻すか、自分自身のパワーゾーンに置くか、自分自身のコマンドゾーンにホールド状態で置くかを選ぶ。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokirashueriakarawotsuyuni",
           "duration": "turn"
         }
       ],

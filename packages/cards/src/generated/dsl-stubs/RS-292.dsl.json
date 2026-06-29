@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e8998ee381aee5ad90e5a4a7",
+      "id": "tora_no",
       "name": "虎の子大秘術",
       "text": "これが自軍ラッシュエリアにある間、自分が手札からオペレーションカードを使用するためにホールドするコマンドは、使用するカードと同じカテゴリのコマンドでなくてもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiarugakaraopereshonkadowosurutame",
           "duration": "permanent"
         }
       ],

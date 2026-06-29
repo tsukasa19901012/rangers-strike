@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "named_e383a1e382bfe383abe382b7",
+      "id": "metarushafuto",
       "name": "メタルシャフト",
       "text": "自軍ターン中、これがバトルエリアに出たとき、BP5000以下の敵軍ユニットを1体選びホールドしてもよい。",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibp5000noyunitowo1bi",
           "duration": "turn"
         }
       ],

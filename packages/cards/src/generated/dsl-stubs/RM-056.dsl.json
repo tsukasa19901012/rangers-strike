@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e382b9e38386e382a3e383b3",
+      "id": "suteingakuro",
       "name": "スティンガークロー",
       "text": "ライド中の敵軍Sユニットを1体選んでもよい。そうしたとき、相手はそのSユニットか、そのSユニットがライドしているビークルのうち、どちらか1体を選び捨札にする。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e383a9e382a4",
+          "keyword": "ride_action_raidonosyunitowo1ndemoyoisoushitatokihasonosyunitokasono",
           "duration": "turn"
         }
       ],

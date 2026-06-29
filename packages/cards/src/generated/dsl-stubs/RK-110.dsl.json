@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e680a7e883bde381aee99990",
+      "id": "no_e680a7",
       "name": "性能の限界",
       "text": "敵軍ターン中、これが撃破されて捨札になったとき、このユニットカードを自軍コマンドゾーンにホールド状態で置いてもよい。（置けなければこの効果は発動できない）",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e695b5e8bb8d",
+          "keyword": "hold_enemy_unit_tankorega_geki_ha_sareteninatatokikonoyunitokadowokomand",
           "duration": "turn"
         }
       ],

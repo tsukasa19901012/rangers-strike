@@ -11,7 +11,7 @@
   "rawText": "自軍山札を見て、ウイングを持つユニットカードを1枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。その後、山札をシャッフルする。",
   "effects": [
     {
-      "id": "named_e795b0e6aca1e58583e3818b",
+      "id": "karano_tsubasa",
       "name": "異次元からの翼",
       "text": "自軍山札を見て、ウイングを持つユニットカードを1枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。その後、山札をシャッフルする。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_e887aae8bb8d",
+          "keyword": "deck_search_woteuinguwotsuyunitokadowo1birashuerianisutada",
           "duration": "turn"
         }
       ],

@@ -69,7 +69,7 @@
       ]
     },
     {
-      "id": "named_e382ace383b3e3839ee383bc",
+      "id": "ganmadainamaito",
       "name": "ガンマーダイナマイト",
       "text": "相手は、特徴「怪人」を持つ自分自身のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -78,7 +78,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e79bb8e6898b",
+          "keyword": "enemy_power_damage_hawotsunoyunitowo1bichinopawazonnidamejini",
           "duration": "turn"
         }
       ],

@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382ade383a7e382afe382ae",
+      "id": "kyokuginjanmama",
       "name": "キョクギンジャンママ",
       "text": "自軍ターン中、これがバトルエリアに出たとき、相手の手札を見ないで1枚選んでもよい。そうしたとき、選んだカードをお互いに見て、それがSユニットのカードだったなら、敵軍ラッシュエリアに出す。このとき、可能ならそのユニットをホールドする。その後、相手は1枚ドローする。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokinowonaide1ndemoyoisou",
           "duration": "turn"
         }
       ],

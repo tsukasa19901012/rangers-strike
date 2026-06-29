@@ -34,19 +34,20 @@
       ]
     },
     {
-      "id": "named_e8aa9ee3828be8838ce4b8ad",
+      "id": "ru",
       "name": "語る背中",
       "text": "これが自軍エリアにある間、自分か相手がラッシュフェイズを終えるとき、「SP1」以上の敵軍ユニットがあれば、そのターン中、これは次の能力を得る。⇒BP+3000され、このターンを終えるときホールド状態なら、リリースしてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
-          "duration": "turn"
+          "keyword": "while_in_field_body_koregaerianiarukagarashufueizuwoerutokisp1no",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

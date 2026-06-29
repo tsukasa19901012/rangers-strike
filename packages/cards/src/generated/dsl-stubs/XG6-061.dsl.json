@@ -25,7 +25,7 @@
       ]
     },
     {
-      "id": "named_e38399e383b3e38380e383bc",
+      "id": "bendamodo",
       "name": "ベンダーモード",
       "text": "自軍ラッシュフェイズ中、このビークルを捨札にして次の効果を発動できる→自軍山札を見てオペレーションカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（置けなければ自軍コマンドを1つ選び、捨札にしてから置く）。その後、山札をシャッフルする。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_e887aae8bb8d",
+          "keyword": "deck_search_rashufueizukonobikuruwonishitenowodekiruwote",
           "duration": "turn"
         }
       ],

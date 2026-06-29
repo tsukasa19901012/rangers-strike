@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382a2e38390e383a9e383b3",
+      "id": "abaranchikurashu",
       "name": "アバランチクラッシュ",
       "text": "敵軍Sユニットの数が自軍Sユニットの数より3体以上多いとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e695b5e8bb8d",
+          "keyword": "power_zone_action_syunitonogasyunitonoyori3itokisyunitowo1",
           "duration": "turn"
         }
       ],

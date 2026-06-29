@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e38391e383bce38384e382ad",
+      "id": "patsukyaria",
       "name": "パーツキャリアー",
       "text": "これが自軍バトルエリアに出たとき、自軍コマンドゾーンからリリース状態のMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e38193e3828c",
+          "keyword": "release_m_command_to_rush",
           "duration": "turn"
         }
       ],

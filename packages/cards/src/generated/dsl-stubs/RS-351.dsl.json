@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e3838be383a5e383bce383ac",
+      "id": "nyuredobyuto",
       "name": "ニューレッドビュート",
       "text": "「SP1」敵軍コマンドゾーンからSユニットのカードを1枚選び、敵軍バトルエリアに出してもよい。このとき、出したユニットの効果は発動しない。",
       "trigger": {
@@ -42,7 +42,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
         }
       ]
     }

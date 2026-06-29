@@ -28,13 +28,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e280bbe38193",
+          "keyword": "grant_ability_rejisutokoregabatorude_geki_ha_saretatokinisurukawarinikor",
           "duration": "turn"
         }
       ]
     },
     {
-      "id": "named_e9a39be7bf94e696ac",
+      "id": "zan_e9a39b",
       "name": "飛翔斬",
       "text": "「ダークウイング」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、特徴の数が1番少ないSユニットを1体選び撃破する。",
       "trigger": {

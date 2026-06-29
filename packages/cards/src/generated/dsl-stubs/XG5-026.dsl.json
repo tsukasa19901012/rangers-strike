@@ -57,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e4bbb2e99693e381aee694af",
+      "id": "noe",
       "name": "仲間の支え",
       "text": "｢SP1｣ 自軍バトルエリアに、特徴に「レッド」「ブラック」「ブルー」「ピンク」を持つSユニットがそれぞれあれば、本来のBPが6000以下の敵軍ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
@@ -66,7 +66,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e3808c535031",
+          "keyword": "hold_enemy_unit_sp1batoruerianiniredoburakuburupinkuwotsusyunitogasorezo",
           "duration": "turn"
         }
       ],

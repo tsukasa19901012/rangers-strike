@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e59c9fe4b8ade3818be38289",
+      "id": "tsuchi_karano",
       "name": "土中からの奇襲",
       "text": "これが自軍捨札にある間、自軍ラッシュフェイズ中、自軍ダメージの数がこれの必要パワーの数字以上あれば、WBを持つ自軍コマンドを2つホールドしてから、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koreganiarurashufueizudamejinogakorenopawano",
           "duration": "permanent"
         }
       ],

@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e7a798e4bc9de38387e382a3",
+      "id": "deisukure_geki_chi",
       "name": "秘伝ディスク乱れ撃ち",
       "text": "これをラッシュしたとき、自分の手札からオペレーションカードを1枚選び捨札にしてもよい。そうしたとき、相手は自分自身の手札を1枚選び山札に戻してシャッフルする。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e38193e3828c",
+          "keyword": "opponent_must_koreworashushitatokinokaraopereshonkadowo1binishitemoyo",
           "duration": "turn"
         }
       ],

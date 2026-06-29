@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e69a97e9bb92e589a3",
+      "id": "ken_e69a97",
       "name": "暗黒剣",
       "text": "これをラッシュしたとき、自軍捨札の枚数を数えてもよい。そうしたとき、その数以下の必要パワーの数字を持つ追加条件を持たない敵軍ユニットを1体選び、撃破する。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e38193e3828c",
+          "keyword": "destroy_on_rush_koreworashushitatokinowoetemoyoisoushitatokisononopa",
           "duration": "turn"
         }
       ],

@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e382ace383bce383abe382ba",
+      "id": "garuzuintoraburu",
       "name": "ガールズ・イン・トラブル！",
       "text": "SP1 自軍パワーゾーンからSユニットのカードを1枚選び、手札に加えてもよい。そうしたとき、相手は、自分自身のパワーゾーンから、そのカードと同じ必要パワーの数字を持つSユニットのカードを1枚選び、手札に加える。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_53503120e887",
+          "keyword": "opponent_must_sp1pawazonkarasyunitonokadowo1binietemoyoisoushita",
           "duration": "turn"
         }
       ],

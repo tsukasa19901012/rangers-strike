@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e382b7e383a7e38399e383ab",
+      "id": "shoberuamu",
       "name": "ショベルアーム",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍捨札から特徴「車両」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e887aae8bb8d",
+          "keyword": "deploy_rush_area_tankoregabatoruerianitatokikara_ryo_wotsumyunitonoka",
           "duration": "turn"
         }
       ],

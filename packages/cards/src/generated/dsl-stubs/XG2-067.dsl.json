@@ -41,14 +41,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e982aae9ad94e38199e3828b",
+      "id": "ma_surunara_geki_tsuyo",
       "name": "邪魔するなら撃つよ",
       "text": "これがバトルエリアに出たとき、BP3000のユニットを1体選び撃破する。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_e38193e3828c",
+          "keyword": "deploy_battle_area_koregabatoruerianitatokibp3000noyunitowo1bi_geki_ha_s",
           "duration": "turn"
         }
       ],

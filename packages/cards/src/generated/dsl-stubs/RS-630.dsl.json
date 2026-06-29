@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e383a1e382ace38388e3839e",
+      "id": "megatomahoku",
       "name": "メガトマホーク",
       "text": "自軍コマンドが3つ以下なら、自分の手札からカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。そうしたとき、このターン、これは次の能力を得る⇒SP1",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e887aae8bb8d",
+          "keyword": "grant_ability_komandoga3tsunaranokarakadowo1bikomandozonniho",
           "duration": "turn"
         }
       ]

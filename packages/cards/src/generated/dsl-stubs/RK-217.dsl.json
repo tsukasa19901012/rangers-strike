@@ -25,13 +25,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e6bb91e7a9bae694bbe69283",
+      "id": "geki_e6bb91",
       "name": "滑空攻撃",
       "text": "これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "register_resist_e38193e3828c",
+          "keyword": "register_resist_koreharashuerianorejisutowotsuyunitoniatakudekiru",
           "duration": "turn"
         }
       ],

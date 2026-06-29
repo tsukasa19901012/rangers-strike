@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_named_e4bbaee99da2e383a9e382a4",
+      "id": "unnamed_alias_raida",
       "text": "※これは「仮面ライダー響鬼」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -56,13 +56,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e4bbaee99da2e383a9e382a4",
+          "keyword": "alias_raida",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382a2e382bfe38383e382af",
+      "id": "atakuraido",
       "name": "アタックライド",
       "text": "自分の手札からオペレーションカードを1枚選び、捨札にしてもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP1」になり、このターンを終えるときホールド状態なら、リリースしてもよい。",
       "trigger": {
@@ -71,7 +71,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "grant_ability_nokaraopereshonkadowo1binishitemoyoisoushitatokikonota",
           "duration": "turn"
         }
       ]

@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e38397e383ade382b8e382a7",
+      "id": "purojietokanon",
       "name": "プロジェットカノン",
       "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、自軍コマンドゾーンのカードがコマンドゾーンを離れたとき、自軍捨札からカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。",
       "trigger": {
@@ -31,11 +31,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_command_leave_hold_from_discard",
           "duration": "permanent"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

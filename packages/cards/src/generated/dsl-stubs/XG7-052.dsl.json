@@ -55,14 +55,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382bfe382b8e383a3e382b9",
+      "id": "tajasupina",
       "name": "タジャスピナー",
       "text": "これが自軍エリアにある間、WBを持つ自軍コマンドが3つ以上あれば、自軍バトルフェイズごとに1度だけ、敵軍Sユニットを1体選び、これとバトルさせてもよい。（敵軍捨札が7枚以上あれば、敵軍Sユニットを1体選ぶかわりに、敵軍ユニットを1体選んでもよい）",
       "trigger": {
@@ -71,7 +71,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruwbwotsukomandoga3tsuarebabatorufueizu",
           "duration": "permanent"
         }
       ],

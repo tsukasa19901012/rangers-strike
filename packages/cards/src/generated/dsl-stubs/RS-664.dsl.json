@@ -30,14 +30,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_noni_honoo_shin_wotsulyunito1wonisuru",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "g9",
+      "id": "g9guranpuri",
       "name": "G9グランプリ",
       "text": "これをラッシュしたとき、本来のBPが9000以下の敵軍ユニットを1体選び、撃破してもよい。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e38193e3828c",
+          "keyword": "destroy_on_rush_koreworashushitatokinobpga9000noyunitowo1bi_geki_ha_shit",
           "duration": "turn"
         }
       ],

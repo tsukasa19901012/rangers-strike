@@ -25,14 +25,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_dekomandowo2tsuhorudosuru",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e5a4a9e7a9bae5a4a7e9a2a8",
+      "id": "kaze",
       "name": "天空大風車",
       "text": "このユニットからコンビネーションする、特徴「人型」を持つMユニットは、次の能力を得る⇒これがストライクしてダメージを与えたとき、DAを持つ敵軍ユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e381ae",
+          "keyword": "grant_ability_konoyunitokarakonbineshonsuruwotsumyunitohano_chikara_woru",
           "duration": "turn"
         }
       ]

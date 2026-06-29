@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b7e38386e382a3e382ac",
+      "id": "shiteigadeianzu",
       "name": "シティガーディアンズ隊長",
       "text": "これは自軍バトルエリアの特徴「戦闘員」を持つユニット1体につきBP＋1000され、BP5000以上のとき「SP1」になる。これが撃破されたとき、特徴「戦闘員」を持つ自軍ユニットを2体選び、かわりに捨札にしてもよい。",
       "trigger": {
@@ -28,10 +28,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "bp_modify_korehabatoruerianowotsuyunito1nitsukibp1000sarebp5",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

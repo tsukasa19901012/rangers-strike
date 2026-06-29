@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e3838fe383abe38390e383bc",
+      "id": "harubadosupin",
       "name": "ハルバードスピン",
       "text": "敵軍ユニットを、必要パワーの数字の合計が3になるまで好きな数選び、持ち主の山札に戻してシャッフルしてもよい。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_e695b5e8bb8d",
+          "keyword": "return_to_zone_yunitowopawanonoga3ninarumadekinabichinonishi",
           "duration": "turn"
         }
       ],

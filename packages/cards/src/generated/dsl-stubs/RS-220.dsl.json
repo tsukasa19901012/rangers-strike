@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e58f8de5b084e38390e383aa",
+      "id": "baria_e58f8d",
       "name": "反射バリア",
       "text": "次の相手ターン、自軍Sユニットとバトルした敵軍Sユニットは、バトルに勝っても撃破される。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "battle_win_e6aca1e381ae",
+          "keyword": "battle_win_notansyunitotobatorushitasyunitohabatorunitemo_geki_ha_sare",
           "duration": "turn"
         }
       ],

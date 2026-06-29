@@ -24,7 +24,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_ally_on_rush_e280bbe887aa",
+          "keyword": "return_ally_on_rush_fx_unknown",
           "duration": "permanent"
         }
       ],
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e38393e38383e382b0e3839e",
+      "id": "bigumagunamu",
       "name": "ビッグマグナム",
       "text": "これが自軍エリアにある間、特徴「宇宙刑事」を持つ自軍ユニットがバトルエリアに出たとき、これをホールドして次の効果を発動できる⇒敵軍バトルエリアから、BP8000以下のユニットを1体選び、持ち主のパワーゾーンに送る。",
       "trigger": {
@@ -54,7 +54,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koregaerianiaruwotsuyunitogabatoruerianitatokiko",
           "duration": "turn"
         }
       ],

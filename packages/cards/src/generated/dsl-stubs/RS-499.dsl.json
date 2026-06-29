@@ -42,14 +42,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e78bbce78bbce8b9b4",
+      "id": "fx_unknown_9",
       "name": "狼狼蹴",
       "text": "「SP1」このユニットをホールドしてもよい。そうしたとき、敵軍バトルエリアのユニットを必要パワーの数字の合計が2になるまで好きな数選び、撃破する。",
       "trigger": {

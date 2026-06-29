@@ -62,7 +62,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_named_e382b0e383a9e383b3e38387",
+      "id": "unnamed_alias_gurandeion",
       "text": "※これは「グランディオン」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -70,13 +70,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e382b0e383a9e383b3e38387",
+          "keyword": "alias_gurandeion",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e3838ae382a4e38388e38380",
+      "id": "naitodainamiku",
       "name": "ナイトダイナミック",
       "text": "「SP1」OTまたはETまたはDAを持つ敵軍Sユニットを1体選び撃破する。その後、自分の手札が1枚以下なら、これをリリースする。",
       "trigger": {

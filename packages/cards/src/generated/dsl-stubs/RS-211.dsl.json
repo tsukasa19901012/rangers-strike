@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e7a8b2e5a6bbe8b685e58a9b",
+      "id": "chikara_tonfua",
       "name": "稲妻超力トンファ",
       "text": "自軍ターン中、これがバトルでユニットを撃破したとき、相手は自分自身のコマンドゾーンからカードを1枚選び、自分自身のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e887aae8bb8d",
+          "keyword": "opponent_must_tankoregabatorudeyunitowo_geki_ha_shitatokihanokomandozonk",
           "duration": "turn"
         }
       ],

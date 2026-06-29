@@ -27,14 +27,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe789b9",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e38387e382a3e382aae3838d",
+      "id": "deionewo_mamoru_ru",
       "name": "ディオネを守る壁",
       "text": "これが自軍バトルエリアにある間、特徴「冥府神」を持つ自軍ユニットがアタックされたとき、自軍常駐置き場からカードを1枚選び、捨札にしてもよい。そうしたとき、バトルは行われない。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiaru_shin_wotsuyunitogaatakusaretat",
           "duration": "permanent"
         }
       ],

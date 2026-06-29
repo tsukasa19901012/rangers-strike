@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b9e383bce38391e383bc",
+      "id": "supataigakuro",
       "name": "スーパータイガークロー",
       "text": "「SP1」",
       "trigger": {

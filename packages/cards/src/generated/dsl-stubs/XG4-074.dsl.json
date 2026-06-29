@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383a9e382a4e38389e383ab",
+      "id": "raidorusuteiku",
       "name": "ライドルスティック",
       "text": "これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のコマンドゾーンに送ってもよい。置けなければ捨札にする。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_e38193e3828c",
+          "keyword": "discard_to_zone_koregasyunitoniatakusurutokibatorunonibatorunoyunitowoch",
           "duration": "turn"
         }
       ],

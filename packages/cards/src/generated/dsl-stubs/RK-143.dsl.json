@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "power_faceup_named_e4bbaee99da2e383a9e382a4_on_enter",
+      "id": "power_faceup_raida_on_enter",
       "name": "女の子のことなら僕に任せてよ",
       "text": "これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、特徴「女」を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_faceup_named_e4bbaee99da2e383a9e382a4_enter_battle",
+          "keyword": "power_faceup_raida_enter_battle",
           "duration": "permanent"
         }
       ]

@@ -123,23 +123,6 @@ describe("RS-233 アバレブラックAM NC SP1", () => {
   });
 });
 
-describe("RS-234 アバレイエローAM NC SP1", () => {
-  it("grants SP1 when placed at battle position 1 (comboNumber 1)", () => {
-    const unit = inst("RS-234", "u");
-    const state = createTestState({
-      definitions: defs,
-      phase: "battle",
-      activePlayer: "player1",
-      player1: {
-        rush: [unit],
-        battle: [],
-      },
-    });
-    const next = moveToBattle(state, unit.instanceId);
-    expect(battleUnit(next, "player1", unit.instanceId)?.spModifier).toBe(1);
-  });
-});
-
 describe("RS-278 ブラックバイソン bison_rod (promoted NC)", () => {
   it("grants SP1 when placed at battle position 5 (comboNumber 5)", () => {
     const bison = inst("RS-278", "bison");

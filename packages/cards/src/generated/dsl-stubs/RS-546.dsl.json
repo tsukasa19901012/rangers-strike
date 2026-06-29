@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e382a8e383b3e38391e382a4",
+      "id": "enpaiaataku",
       "name": "エンパイアアタック",
       "text": "自軍ターン中、これがバトルエリアに出たとき、バトルエリアにあるWBを持たないユニットをすべて撃破する。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibatoruerianiaruwbwotanai",
           "duration": "turn"
         }
       ],

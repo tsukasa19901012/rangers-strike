@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e382a2e383bce382afe382a4",
+      "id": "akuinparusu",
       "name": "アークインパルス",
       "text": "このユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e38193e381ae",
+          "keyword": "power_zone_action_konoyunitonobpnobpwotsusyunitowo1bichinopawazonni",
           "duration": "turn"
         }
       ],

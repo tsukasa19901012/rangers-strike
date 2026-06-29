@@ -25,14 +25,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e585a8e381a6e38292e9a3b2",
+      "id": "tewomimu",
       "name": "全てを飲み込む飢餓",
       "text": "これをラッシュしたとき、次の効果を、自分、相手の順に行う⇒自分自身の山札の枚数が2枚以上あれば、自分自身の山札の上から1枚ずつひいて、ウラ向きのまま2つの束に交互に振り分ける。その後、2つの束をそれぞれ見て、どちらか1つの束を選び、シャッフルする。これが自軍エリアにある間、選んだ束を自分自身の山札として扱い、もう1つの束は捨札にする。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koreworashushitatokinowononiunonoga2",
           "duration": "permanent"
         }
       ],

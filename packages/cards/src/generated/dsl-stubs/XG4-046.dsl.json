@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "note_e280bbe38193e3828ce381af_e280bbe3",
+      "id": "note_e280bbe38193e3828ce381af_korehahorudo",
       "text": "※これはホールド状態のときBP-3000される。",
       "trigger": {
         "type": "nc"
@@ -41,14 +41,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e5a696e58880e383bbe8a38f",
+      "id": "to_e5a696",
       "name": "妖刀・裏正",
       "text": "これが敵軍ユニットをバトルで撃破した時、撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
       "trigger": {

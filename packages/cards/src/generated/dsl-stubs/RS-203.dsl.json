@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e38387e382a6e382b9e981ba",
+      "id": "deusu",
       "name": "デウス遺伝子",
       "text": "これをラッシュしたターン、このユニットの追加条件で捨札にしたユニットのカードの特徴を、すべてのユニットの特徴に追加する。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_e38193e3828c",
+          "keyword": "discard_to_zone_koreworashushitatankonoyunitonodenishitayunitonokadono",
           "duration": "turn"
         }
       ],

@@ -11,7 +11,7 @@
   "rawText": "自軍Sユニットを選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
   "effects": [
     {
-      "id": "named_e9acbce381aee98ea7",
+      "id": "no_e9acbc",
       "name": "鬼の鎧",
       "text": "自軍Sユニットを選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
       "trigger": {
@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e887aae8bb8d",
+          "keyword": "release_command_action_syunitowobusoshitekonokadoworashuerianikindayunit",
           "duration": "turn"
         }
       ],

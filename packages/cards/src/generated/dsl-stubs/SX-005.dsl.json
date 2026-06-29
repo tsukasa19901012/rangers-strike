@@ -28,7 +28,7 @@
   },
   "effects": [
     {
-      "id": "named_e38393e38383e382abe383bc",
+      "id": "bikafuainaryujon",
       "name": "ビッカーファイナリュージョン",
       "text": "このユニットは自軍コマンドゾーンにあるカードのカテゴリごとに次の能力を得る⇒WBがあればレジストを得る。MAがあれば、これが敵軍ユニットをバトルで撃破したとき、撃破したユニットを捨札にするかわりに持ち主のパワーゾーンにダメージにして置いてもよい。ETがあればBP+3000される。DAがあれば「SP1」になる。",
       "trigger": {
@@ -37,10 +37,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "enemy_power_damage_konoyunitohakomandozonniarukadonokategorigotonino_chi",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

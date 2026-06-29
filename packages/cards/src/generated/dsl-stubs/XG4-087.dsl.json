@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382b9e382abe382a4e382ad",
+      "id": "sukaikiku",
       "name": "スカイキック",
       "text": "これが自軍エリアにある間、ウイングを持たないSユニットはBP-500される。（BP0以下になったユニットは撃破される）",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruuinguwotanaisyunitohabp500sarerubp0",
           "duration": "permanent"
         }
       ],

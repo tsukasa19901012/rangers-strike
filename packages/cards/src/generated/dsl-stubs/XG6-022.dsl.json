@@ -45,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e383aae383b3e382aee383bb",
+      "id": "ringiganjigatame",
       "name": "リンギ・がんじがため",
       "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒敵軍ユニットを1体選ぶ。そうしたとき、選んだユニットがリリース状態ならホールドし、ホールド状態なら撃破する。ただし、必要パワーの数字が、自軍捨札にあるカテゴリを2つ以上持つカードの枚数以下のユニットしか選べない。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_l_effect_e38193e3828c",
+          "keyword": "combo_l_effect_koregakategorinolyunitokarakonbineshonsurutokinowodekiru",
           "duration": "permanent"
         }
       ]

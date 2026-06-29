@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4e38380e383bc",
+      "id": "raidakiku",
       "name": "ライダーキック",
       "text": "自軍ターン中、これがバトルエリアに出たとき、OTの自軍コマンドを3つホールドしてもよい。そうしたとき、このターン、これは「SP1」になる。",
       "trigger": {
@@ -47,10 +47,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "hold_3_ot_commands_then_sp1",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

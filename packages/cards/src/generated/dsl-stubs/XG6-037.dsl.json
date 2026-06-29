@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e68cafe3828ae58887e3828b",
+      "id": "riruze",
       "name": "振り切るぜ",
       "text": "自軍バトルフェイズ中、これが自軍ラッシュエリアでライドしていなければ、Sビークルを1体選んでもよい。そうしたとき、このターン、これは本来のテキストをもたないSビークルとして扱い、選んだビークルの効果名を持つテキストと、次のテキストが追加される。→「これは、ライドされていなくてもバトルエリアに出ることができる」「自軍バトルフェイズ終了時、これにライドしているユニットをライドオフさせて自軍ラッシュエリアに置く」",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e887aae8bb8d",
+          "keyword": "ride_action_batorufueizukoregarashueriaderaidoshiteinakerebasbikuruwo1",
           "duration": "turn"
         }
       ],

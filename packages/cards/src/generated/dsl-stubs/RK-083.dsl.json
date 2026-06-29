@@ -11,7 +11,7 @@
   "rawText": "特徴「ミラーライダー」を持つ自軍ユニットを1体選び、必要パワーの数字を見る。その後、敵軍バトルエリアから、その数字以下の必要パワーの数字を持つSユニットを1体選び、撃破する。",
   "effects": [
     {
-      "id": "named_e382b9e38388e383a9e382a4",
+      "id": "sutoraikubento",
       "name": "ストライクベント",
       "text": "特徴「ミラーライダー」を持つ自軍ユニットを1体選び、必要パワーの数字を見る。その後、敵軍バトルエリアから、その数字以下の必要パワーの数字を持つSユニットを1体選び、撃破する。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_e789b9e5beb4",
+          "keyword": "destroy_choose_enemy_miraraidawotsuyunitowo1bipawanoworusonoba",
           "duration": "turn"
         }
       ],

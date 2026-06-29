@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e79a87e5b89de381b8e381ae",
+      "id": "heno_e79a87",
       "name": "皇帝への忠義",
       "text": "これが敵軍ユニットとバトルして、お互いに撃破されて捨札になったとき、自軍エリアに特徴「皇帝」を持つユニットがあれば、これとバトルした敵軍ユニットのカードを、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e38193e3828c",
+          "keyword": "enemy_power_damage_koregayunitotobatorushiteoini_geki_ha_sareteninatatok",
           "duration": "turn"
         }
       ],

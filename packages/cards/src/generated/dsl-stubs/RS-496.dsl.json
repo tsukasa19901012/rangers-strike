@@ -57,7 +57,7 @@
       ]
     },
     {
-      "id": "ally_named_e382b9e383afe38383e38388_attacked_bp_3000",
+      "id": "ally_suwato_attacked_bp_3000",
       "text": "※これが自軍エリアにある間、特徴「スワット」を持つ自軍ユニットは、アタックされるときBP+3000される。",
       "trigger": {
         "type": "while_in_field"
@@ -65,13 +65,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ally_named_e382b9e383afe38383e38388_attacked_bp_3000",
+          "keyword": "ally_suwato_attacked_bp_3000",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e7b2bee5af86e5b084e69283",
+      "id": "geki_e7b2be",
       "name": "精密射撃",
       "text": "敵軍パワーゾーンのダメージになっているカードを1枚選び、オモテにしてもよい。そうしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、ダメージにする。",
       "trigger": {

@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4e38380e383bc",
+      "id": "raidakado",
       "name": "ライダーカード",
       "text": "敵軍捨札から、ナンバーにＲＣを持つユニットカードを1枚選んでもよい。そうしたとき、選んだカードのRCの効果をこのユニットの効果として発動する。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "number_combo_e695b5e8bb8d",
+          "keyword": "number_combo_karananbaniwotsuyunitokadowo1ndemoyoisoushitatokindaka",
           "duration": "turn"
         }
       ],

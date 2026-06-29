@@ -19,14 +19,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe887aa",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e5be8ce983a8e38390e383ab",
+      "id": "barukan",
       "name": "後部バルカン砲",
       "text": "ライドされているこのビークルが自軍バトルエリアからラッシュエリアに戻るとき、敵軍バトルエリアからBP3000のSユニットを1体選び、撃破してもよい。",
       "trigger": {
@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e383a9e382a4",
+          "keyword": "ride_action_raidosareteirukonobikurugabatorueriakararashuerianirutokiba",
           "duration": "turn"
         }
       ],

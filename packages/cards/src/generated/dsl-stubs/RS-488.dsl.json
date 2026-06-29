@@ -11,7 +11,7 @@
   "rawText": "※特徴「忍者」を持つ自軍SユニットはＲＣを持っていなくてもこのビークルにライドできる。 【滑空】これにライドしているSユニットは次の能力を得る⇒これはSユニットにアタックされない。",
   "effects": [
     {
-      "id": "ride_without_rc_named_e5bf8de88085",
+      "id": "ride_without_rc_fx_unknown",
       "text": "※特徴「忍者」を持つ自軍SユニットはＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,13 +19,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_named_e5bf8de88085",
+          "keyword": "ride_without_rc_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e6bb91e7a9ba",
+      "id": "fx_unknown_e6bb91",
       "name": "滑空",
       "text": "これにライドしているSユニットは次の能力を得る⇒これはSユニットにアタックされない。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_s_ability_e38193e3828c",
+          "keyword": "ride_s_ability_koreniraidoshiteirusyunitohano_chikara_worukorehasyuniton",
           "duration": "permanent"
         }
       ]

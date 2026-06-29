@@ -42,14 +42,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe695b5",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382ade383b3e382b0e382b9",
+      "id": "kingusutonfurashu",
       "name": "キングストーンフラッシュ",
       "text": "自分は1枚ドローしてから、自分の手札を1枚選び捨札にする。そうしたとき、捨札にしたカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す。",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_hand_e887aae58886",
+          "keyword": "pick_from_hand_ha1doroshitekaranowo1binisurusoushitatokinishitaka",
           "duration": "turn"
         }
       ],

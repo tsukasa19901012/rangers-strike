@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e79bb8e6898b",
+          "keyword": "opponent_rush_s_to_hand",
           "duration": "turn"
         }
       ],

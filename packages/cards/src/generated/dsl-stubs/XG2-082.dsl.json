@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
@@ -41,14 +41,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe887aa",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": true
     },
     {
-      "id": "note_e280bbe887aae8bb8de383a9_e280bbe8",
+      "id": "note_e280bbe887aae8bb8de383a9_rashufueizuk",
       "text": "※自軍ラッシュフェイズ中、このビークルがライドされていないなら、リリースしてもよい。",
       "trigger": {
         "type": "nc"
@@ -56,14 +56,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe887aa",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": true
     },
     {
-      "id": "named_e38389e383abe38395e382a1",
+      "id": "dorufuaiya",
       "name": "ドルファイヤー",
       "text": "このビークルがチェイスの効果でライドされたとき、敵軍バトルエリアから本来のBPが5000以下のユニットを1体選び撃破してもよい。",
       "trigger": {

@@ -25,7 +25,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4e38387e382a3",
+      "id": "raideinguaro",
       "name": "ライディングアロー",
       "text": "自軍ターン中、これがバトルエリアに出たとき、これがライドされていれば、敵軍常駐の上に重ねたカードの上から1枚選び、持ち主の山札の下に戻してもよい。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e887aae8bb8d",
+          "keyword": "ride_action_tankoregabatoruerianitatokikoregaraidosareteirebanoni",
           "duration": "turn"
         }
       ],

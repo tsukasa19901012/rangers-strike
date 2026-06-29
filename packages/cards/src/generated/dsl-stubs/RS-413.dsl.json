@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38282e381aee8a880e3828f",
+      "id": "monowanu_seki_tose",
       "name": "もの言わぬ石と化せ",
       "text": "これが自軍バトルエリアにある間、相手は次の制限を受ける⇒自分自身のコマンドゾーンにあるSユニットのカードは、リリースできない。ただし、自分自身のターンを終えるとき、自分自身のコマンドを1つ選び捨札にしてもよい。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiaruhanowokerunokomandozonnia",
           "duration": "permanent"
         }
       ],

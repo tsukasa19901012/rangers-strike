@@ -58,7 +58,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a6e383b3e38389",
+      "id": "raundoreda",
       "name": "ラウンドレーダー",
       "text": "これが自軍ラッシュエリアにある間、相手が手札からオペレーションカードを使用したとき、敵軍パワーゾーンからカードを2枚まで選び捨札にしてもよい。",
       "trigger": {
@@ -67,7 +67,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_opponent_operation_discard_power",
           "duration": "permanent"
         }
       ],

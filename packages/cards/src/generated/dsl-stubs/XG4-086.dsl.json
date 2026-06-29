@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382a4e382afe382b5e382ab",
+      "id": "ikusakaribaganmodo",
       "name": "イクサカリバー・ガンモード",
       "text": "ウイングを持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_e382a6e382a4",
+          "keyword": "destroy_choose_enemy_uinguwotsusyunitowo1bi_geki_ha_suru",
           "duration": "turn"
         }
       ],

@@ -27,14 +27,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382aae3838de382b9e38388",
+      "id": "onesutohato",
       "name": "オネスト・ハート",
       "text": "直前のターンに敵軍ユニットが発動した「次の相手ターン」とある効果を無効にする。",
       "trigger": {

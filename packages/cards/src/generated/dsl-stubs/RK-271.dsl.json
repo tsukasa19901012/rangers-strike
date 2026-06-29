@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4e382b8e383b3",
+      "id": "raijingumaiteikiku",
       "name": "ライジングマイティキック",
       "text": "これがバトルで敵軍ユニットを撃破したとき、これが撃破した敵軍ユニットのBP以下のBPを持つ、自分と相手のバトルエリアのSユニットをすべて撃破する。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_all_enemy_e38193e3828c",
+          "keyword": "destroy_all_enemy_koregabatorudeyunitowo_geki_ha_shitatokikorega_geki_ha",
           "duration": "turn"
         }
       ],

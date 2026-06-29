@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e68691e4be9d",
+      "id": "fx_unknown_e68691",
       "name": "憑依",
       "text": "自軍ラッシュフェイズ中、ライドしていない自軍Sユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒これが自軍バトルエリアにある間、すべての敵軍Sユニットは、可能ならバトルエリアに出る。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e887aae8bb8d",
+          "keyword": "grant_ability_rashufueizuraidoshiteinaisyunitowo1bikonoyunitonine",
           "duration": "permanent"
         }
       ]

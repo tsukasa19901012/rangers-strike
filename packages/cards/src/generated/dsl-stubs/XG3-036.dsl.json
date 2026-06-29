@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e6b5b7e88081e381b0e38195",
+      "id": "basamishi",
       "name": "海老ばさみ本手返し",
       "text": "これをラッシュしたとき、そのターン中、これは、BP+3000される。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_koreworashushitatokisonotankorehabp3000sareru",
           "duration": "turn"
         }
       ],

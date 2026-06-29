@@ -26,13 +26,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e38386e38388e383a9e38390",
+      "id": "tetorabasuta",
       "name": "テトラバスター",
       "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒追加条件に「自軍合体ユニットを捨札にする」と表記されていない敵軍Lユニットを1体選び、撃破する。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_l_effect_e38193e3828c",
+          "keyword": "combo_l_effect_koregakategorinolyunitokarakonbineshonsurutokinowodekiru",
           "duration": "permanent"
         }
       ]

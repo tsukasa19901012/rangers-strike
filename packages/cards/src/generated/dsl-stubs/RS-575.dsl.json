@@ -19,7 +19,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bb4441e3",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "id": "named_e4b896e7958ce38292e9a786",
+      "id": "wokeru_chikara",
       "name": "世界を駆ける力",
       "text": "これにライドしているユニットは、次の能力を得る⇒ラッシュエリアのユニットにアタックできる。 ・このテキストは公式HPで読み替えが推奨されています。修正後は以下。",
       "trigger": {
@@ -49,13 +49,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_koreniraidoshiteiruyunitohano_chikara_worurashuerianoyunit",
           "duration": "turn"
         }
       ]
     },
     {
-      "id": "named_e4b896e7958ce38292e9a786_e38193e3",
+      "id": "wokeru_chikara_koreniraidos",
       "name": "世界を駆ける力",
       "text": "これにライドしているユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_koreniraidoshiteiruyunitohano_chikara_worurashuerianoyunit",
           "duration": "turn"
         }
       ]

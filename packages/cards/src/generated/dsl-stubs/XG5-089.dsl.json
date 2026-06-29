@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e3839ee382b5e382abe383aa",
+      "id": "masakarihoku",
       "name": "マサカリホーク",
       "text": "自軍ターン中、このユニットはBP+3000される。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e887aae8bb8d",
+          "keyword": "bp_modify_tankonoyunitohabp3000sareru",
           "duration": "turn"
         }
       ],

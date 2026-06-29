@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "zo",
+      "id": "zokiku",
       "name": "ZOキック",
       "text": "これは、アタックしてバトルに勝つたび、追加でアタックできる。ただし、これはバトルを終えるたび、このターン、BP-1000される。（BP0以下になったユニットは撃破される）",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_korehaatakushitebatorunitsutabideatakudekirutadashikorehabator",
           "duration": "turn"
         }
       ],

@@ -11,7 +11,7 @@
   "rawText": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。 【凄いのが来るぜ！】これにライドしているユニットがBP4000以上の敵軍Sユニットを撃破して捨札にしたとき、捨札にしたそのユニットカードを持ち主のパワーゾーンにダメージにして置いてもよい。",
   "effects": [
     {
-      "id": "ride_without_rc_named_e9ad94e79a87e58a9b",
+      "id": "ride_without_rc_ma_chikara",
       "text": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,13 +19,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_named_e9ad94e79a87e58a9b",
+          "keyword": "ride_without_rc_ma_chikara",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e58784e38184e381aee3818c",
+      "id": "inogaruze",
       "name": "凄いのが来るぜ！",
       "text": "これにライドしているユニットがBP4000以上の敵軍Sユニットを撃破して捨札にしたとき、捨札にしたそのユニットカードを持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e38193e3828c",
+          "keyword": "enemy_power_damage_koreniraidoshiteiruyunitogabp4000nosyunitowo_geki_ha_",
           "duration": "turn"
         }
       ],

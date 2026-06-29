@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e58886e8a382",
+      "id": "fx_unknown_e58886",
       "name": "分裂",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から2枚をオモテにしてもよい。オモテにしたカードが「港区のウワン」なら自軍ラッシュエリアに出し、それ以外なら捨札にする。この効果で出したユニットは、このターン、バトルエリアに出られない。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_e887aae8bb8d",
+          "keyword": "cannot_restrict_tankoregabatoruerianitatokinokara2woomotenishitemoyoi",
           "duration": "turn"
         }
       ],

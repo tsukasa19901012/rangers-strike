@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e38395e382a1e382a4e3838a",
+      "id": "fuainaruzanbato_zan",
       "name": "ファイナルザンバット斬",
       "text": "自軍ターン中、これがバトルエリアに出たとき、特徴「怪人」を持つ自軍ユニットを1体選びホールドするか、特徴「怪人」を持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき、BP5000以下の敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokiwotsuyunitowo1biho",
           "duration": "turn"
         }
       ],

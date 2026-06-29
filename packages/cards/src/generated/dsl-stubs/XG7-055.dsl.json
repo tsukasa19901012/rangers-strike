@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "permanent"
         }
       ],
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "named_e7a59ee587bae9acbce6b2a1",
+      "id": "shin_no_kaze",
       "name": "神出鬼没の疾風",
       "text": "これが自軍コマンドゾーンにある間、敵軍ターン中、自軍Sユニットがアタックされたとき、アタックされたユニットとこれを置き換えてもよい。そうしたとき、アタックされたユニットのかわりにこのユニットがバトルする。",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregakomandozonniarutansyunitogaatakusaretatokia",
           "duration": "permanent"
         }
       ],

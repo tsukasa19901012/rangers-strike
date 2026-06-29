@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "no_attack_without_named_e888aae7a9bae6a99f",
+      "id": "no_attack_without_fx_unknown",
       "text": "※これは、特徴「航空機」を持たないユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -27,13 +27,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "no_attack_without_named_e888aae7a9bae6a99f",
+          "keyword": "no_attack_without_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e3839be38390e383aae383b3",
+      "id": "hobaringu",
       "name": "ホバリング",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからSユニットを1体選び、持ち主の手札に戻してもよい。",
       "trigger": {

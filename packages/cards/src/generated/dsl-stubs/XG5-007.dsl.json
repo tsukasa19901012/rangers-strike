@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "named_e382b4e383bce382b4e383bc",
+      "id": "gogochienji",
       "name": "ゴーゴーチェンジ",
       "text": "このターン、自軍コマンドゾーンにホールド状態でカードを置くとき、かわりにリリース状態で置くか捨札にしてもよい。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e38193e381ae",
+          "keyword": "release_command_action_konotankomandozonnihorudodekadowokutokikawariniri",
           "duration": "turn"
         }
       ],

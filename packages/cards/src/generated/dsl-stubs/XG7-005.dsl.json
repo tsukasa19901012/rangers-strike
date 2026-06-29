@@ -27,14 +27,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e383a2e38390e382a4e383ac",
+      "id": "mobairetsu",
       "name": "モバイレーツ",
       "text": "次の相手ターン、カード名に「ゴーカイ」を含む自軍ユニットが撃破されて捨札になるとき、そのユニットと同じ特徴を2つ以上持つ、オモテ向きの自軍パワーを1枚捨札にして、その場に留めてもよい。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_e6aca1e381ae",
+          "keyword": "discard_to_zone_notankadonigokaiwomuyunitoga_geki_ha_sareteninarutokison",
           "duration": "turn"
         }
       ],

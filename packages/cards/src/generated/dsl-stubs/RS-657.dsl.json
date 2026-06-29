@@ -30,14 +30,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_dekomandowo2tsuhorudosuru",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e888aae7a9bae688a6e58a9b",
+      "id": "chikara_tono",
       "name": "航空戦力との連携",
       "text": "これが自軍エリアにある間、特徴「航空機」を持つユニットは次の能力を得る⇒",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_koregaerianiaruwotsuyunitohano_chikara_woru",
           "duration": "permanent"
         }
       ]

@@ -11,7 +11,7 @@
   "rawText": "【自律変形】敵軍バトルフェイズ開始時、このビークルを自軍コマンドゾーンに送ってもよい。そうしたとき、自軍コマンドゾーンから「オートバジンBM」のカードを1枚選び、自軍バトルエリアの最後に出す。",
   "effects": [
     {
-      "id": "named_e887aae5be8be5a489e5bda2",
+      "id": "fx_unknown_e887aa",
       "name": "自律変形",
       "text": "敵軍バトルフェイズ開始時、このビークルを自軍コマンドゾーンに送ってもよい。そうしたとき、自軍コマンドゾーンから「オートバジンBM」のカードを1枚選び、自軍バトルエリアの最後に出す。",
       "trigger": {
@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "vehicle_interaction_e695b5e8bb8d",
+          "keyword": "vehicle_interaction_batorufueizukonobikuruwokomandozonnitemoyoisoushitat",
           "duration": "turn"
         }
       ],

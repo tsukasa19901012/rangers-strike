@@ -56,14 +56,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e383a9e382a4e38380e383bc",
+      "id": "raidadaburukiku",
       "name": "ライダーダブルキック",
       "text": "SP1 このターン、これはBP+2000される。また、これがアタックするとき、バトル相手のユニットのBPをカードに表記された本来の値としてバトルし、自分が次の行動を宣言するまで、すべての敵軍ユニットはホールドすることができない。",
       "trigger": {

@@ -98,7 +98,7 @@
       ]
     },
     {
-      "id": "named_e382b9e383bce38391e383bc",
+      "id": "supasukaidainamiku",
       "name": "スーパースカイダイナミック",
       "text": "敵軍Sユニットを1体選び持ち主のパワーゾーンにダメージにして置く。そうしたとき、これをリリースしてもよい。",
       "trigger": {
@@ -107,7 +107,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e695b5e8bb8d",
+          "keyword": "enemy_power_damage_syunitowo1bichinopawazonnidamejinishitekusoushitatoki",
           "duration": "turn"
         }
       ],

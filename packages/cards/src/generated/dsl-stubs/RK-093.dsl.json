@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e8a681e4babae381aee69a97",
+      "id": "no_e8a681",
       "name": "要人の暗殺",
       "text": "「これはバトルエリアに出られない」または「これは自軍ターン中、バトルエリアに出られない」と書かれた敵軍ユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_e3808ce38193",
+          "keyword": "cannot_restrict_korehabatoruerianirarenaimatahakorehatanbatoruerianirare",
           "duration": "turn"
         }
       ],

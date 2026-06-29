@@ -24,7 +24,7 @@
   },
   "effects": [
     {
-      "id": "named_e382a8e382afe382b6e38383",
+      "id": "ekuzapubasuta",
       "name": "エクザップバスター",
       "text": "これをラッシュしたターン、敵軍SユニットはBP-500される。（BP0以下になったユニットは撃破される）",
       "trigger": {
@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_koreworashushitatansyunitohabp500sarerubp0ninatayuni",
           "duration": "turn"
         }
       ],

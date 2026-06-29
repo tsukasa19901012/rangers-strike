@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e78c9be6af92e88590e9a39f",
+      "id": "fx_unknown_e78c9b",
       "name": "猛毒腐食液",
       "text": "このターン、特徴「女」を持つ敵軍ユニットを1体以上撃破して捨札にしたなら、自分がターンを終えるとき、相手に1点ダメージを与えてもよい。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e38193e381ae",
+          "keyword": "damage_action_konotanwotsuyunitowo1_geki_ha_shitenishitanaragatanwo",
           "duration": "turn"
         }
       ],

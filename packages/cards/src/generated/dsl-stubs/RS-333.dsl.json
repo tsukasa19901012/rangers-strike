@@ -21,19 +21,41 @@
   ],
   "effects": [
     {
-      "id": "recruit_named_e3839ee382b8e383ace38383_on_destroy",
+      "id": "recruit_majiredo_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "on_destroy"
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
         }
       ],
-      "optional": false
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
     },
     {
       "id": "magi_red_bolt",

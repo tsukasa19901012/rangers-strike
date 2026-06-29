@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e383ace38383e382afe382b9",
+      "id": "rekusureza",
       "name": "レックスレーザー",
       "text": "これをラッシュしたとき、カードに表記された本来のBPが3000のユニットをすべて持ち主のパワーゾーンに送る。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e38193e3828c",
+          "keyword": "power_zone_action_koreworashushitatokikadonisaretanobpga3000noyunitowosu",
           "duration": "turn"
         }
       ],

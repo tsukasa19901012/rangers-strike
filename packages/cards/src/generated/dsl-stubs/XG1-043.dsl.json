@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e7a0b2e69283",
+      "id": "geki_e7a0b2",
       "name": "砲撃",
       "text": "このユニットは、ホールド状態のとき敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_e38193e381ae",
+          "keyword": "hold_remaining_konoyunitohahorudonotokirashuerianoyunitoniatakudekiru",
           "duration": "turn"
         }
       ],

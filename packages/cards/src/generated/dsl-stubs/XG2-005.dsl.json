@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e382a2e383abe38395e382a1",
+      "id": "arufuareza",
       "name": "アルファーレーザー",
       "text": "自軍ターン中、これがバトルエリアに出たとき、ホールド状態の敵軍コマンドをすべてリリースしてもよい。そうしたとき、リリースした枚数を数えて、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のゾーンに置く。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokihorudonokomandowosubeter",
           "duration": "turn"
         }
       ],

@@ -2,6 +2,7 @@ import type { GameState } from "../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "./grantKeyword";
 import { setEffectDelegateResolver } from "./effectDelegateSlot";
 import { tryInterpretEffectDefinition, type InterpretFn } from "./interpretEffectRuntime";
+import { isHashGrantKeywordStub, isCatchallGrantKeyword } from "./hashGrantKeywordStub";
 
 function tryResolveEffectDelegate(
   state: GameState,
@@ -9,9 +10,15 @@ function tryResolveEffectDelegate(
   keyword: string,
   interpret: InterpretFn,
 ): GrantKeywordResult | null {
-  if (!keyword.startsWith("effect_")) return null;
+  let effectId: string | null = null;
+  if (keyword.startsWith("effect_")) {
+    effectId = keyword.slice("effect_".length);
+  } else if (isCatchallGrantKeyword(keyword)) {
+    effectId = ctx.effectId;
+  } else {
+    return null;
+  }
 
-  const effectId = keyword.slice("effect_".length);
   const outcome = tryInterpretEffectDefinition(
     state,
     {
@@ -24,6 +31,7 @@ function tryResolveEffectDelegate(
       extraInstanceIds: ctx.extraInstanceIds,
       leavingCardId: ctx.leavingCardId,
       discardOperation: false,
+      optional: ctx.optional,
     },
     interpret,
   );

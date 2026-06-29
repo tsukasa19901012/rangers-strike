@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e382abe382a4e382b6e38396",
+      "id": "kaizabureigan",
       "name": "カイザブレイガン",
       "text": "BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「サイドバッシャーBM」からコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_4250e381aee4",
+          "keyword": "combo_action_bpnoga500nosyunitowo1bi_geki_ha_surukonohasaidobasha",
           "duration": "turn"
         }
       ],

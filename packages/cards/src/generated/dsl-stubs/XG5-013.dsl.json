@@ -11,7 +11,7 @@
   "rawText": "自軍捨札から、DAを持つカードを1枚選び手札に加える。",
   "effects": [
     {
-      "id": "named_e5868de7949fe382abe383bc",
+      "id": "kado_e5868d",
       "name": "再生カード",
       "text": "自軍捨札から、DAを持つカードを1枚選び手札に加える。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_e887aae8bb8d",
+          "keyword": "pick_from_discard_karadawotsukadowo1binieru",
           "duration": "turn"
         }
       ],

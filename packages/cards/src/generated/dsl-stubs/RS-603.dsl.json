@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e8b685e69c89e6af92e6b6b2",
+      "id": "gasu",
       "name": "超有毒液化ガス",
       "text": "これが自軍エリアにある間、特徴「車両」を持つユニットはアタックもストライクもできず、効果名を持つテキストは無効になり、発動もできない。 ・このテキストは公式HPで読み替えが推奨されています。修正後は以下。",
       "trigger": {
@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaru_ryo_wotsuyunitohaatakumosutoraikumod",
           "duration": "permanent"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e8b685e69c89e6af92e6b6b2_e38193e3",
+      "id": "gasu_koregaeriani",
       "name": "超有毒液化ガス",
       "text": "これが自軍エリアにある間、本来の特徴に「車両」を持つユニットはアタックもストライクもできず、効果名を持つテキストは無効になり、発動もできない。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarunoni_ryo_wotsuyunitohaatakumosutoraik",
           "duration": "permanent"
         }
       ],

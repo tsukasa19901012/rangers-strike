@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e8998ee38389e383aae383ab",
+      "id": "tora_doriru_geki",
       "name": "虎ドリル突撃",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP8000以下のユニットを1体選び持ち主のパワーゾーンにダメージにして置いてもよい。そうしたとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokibatorueriakarabp8000noyu",
           "duration": "turn"
         }
       ],

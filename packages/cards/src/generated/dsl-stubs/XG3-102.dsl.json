@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e38381e383a7e383bce383aa",
+      "id": "chorikishorai",
       "name": "チョーリキショーライ！",
       "text": "敵軍ターン中、このユニットがホールド状態になったとき、MAを持つ自軍コマンドを1つホールドして次の効果を発動できる⇒これをリリースするか、自分の手札から「イナズマン」のユニットカードを1枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e695b5e8bb8d",
+          "keyword": "grant_effect_tankonoyunitogahorudoninatatokimawotsukomandowo1tsuho",
           "duration": "turn"
         }
       ],

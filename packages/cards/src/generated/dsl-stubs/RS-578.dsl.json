@@ -57,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e5b2a9e381aee8a385e794b2",
+      "id": "no_ko",
       "name": "岩の装甲",
       "text": "これが自軍バトルエリアにある間、敵軍ターン中、「レジェンドマジグリーンRA」以外の特徴「魔法」を持つ自軍Sユニットはアタックされない。",
       "trigger": {
@@ -66,7 +66,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiarutanrejiendomajigurinrano_ma",
           "duration": "permanent"
         }
       ],

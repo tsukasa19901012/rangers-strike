@@ -11,7 +11,7 @@
   "rawText": "※特徴「ブルー」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【水の星獣】これにライドしたユニットがある間、次の効果を発動する⇒特徴「車両」を持つユニットは「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれているかのように扱う。",
   "effects": [
     {
-      "id": "ride_command_without_rc_named_e38396e383abe383bc",
+      "id": "ride_command_without_rc_buru",
       "text": "※特徴「ブルー」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,13 +19,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_command_without_rc_named_e38396e383abe383bc",
+          "keyword": "ride_command_without_rc_buru",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e6b0b4e381aee6989fe78da3",
+      "id": "mizu_no",
       "name": "水の星獣",
       "text": "これにライドしたユニットがある間、次の効果を発動する⇒特徴「車両」を持つユニットは「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれているかのように扱う。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_discard_trigger_e38193e3828c",
+          "keyword": "ride_discard_trigger_koreniraidoshitayunitogaarunowosuru_ryo_wotsuyunito",
           "duration": "permanent"
         }
       ]

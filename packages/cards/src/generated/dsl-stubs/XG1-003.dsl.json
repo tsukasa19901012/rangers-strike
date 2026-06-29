@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e696b0e9a39be7bebde8bf94",
+      "id": "shi_e696b0",
       "name": "新飛羽返し",
       "text": "SP1これがバトルで敵軍ユニットを撃破したとき、これが撃破したユニットと同じカード名の敵軍ユニットをすべて撃破する。（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_all_enemy_535031e38193",
+          "keyword": "destroy_all_enemy_sp1koregabatorudeyunitowo_geki_ha_shitatokikorega_geki",
           "duration": "turn"
         }
       ],

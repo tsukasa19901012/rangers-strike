@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe789b9",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382a6e383abe38388e383a9",
+      "id": "urutorasaikuron",
       "name": "ウルトラサイクロン",
       "text": "このユニットを捨札にして、次の効果を発動してもよい⇒敵軍バトルエリアから必要パワーの数字が3以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ敵軍コマンドを1つ選び、捨札にしてから置く。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e38193e381ae",
+          "keyword": "hold_enemy_unit_konoyunitowonishitenowoshitemoyoibatorueriakarapawano",
           "duration": "turn"
         }
       ],

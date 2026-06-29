@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e78bbce4bd9ce688a6",
+      "id": "fx_unknown_e78bbc",
       "name": "狼作戦",
       "text": "これが自軍エリアにある間、特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruwotsusyunitohakategoriniwbgasareru",
           "duration": "permanent"
         }
       ],

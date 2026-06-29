@@ -293,6 +293,7 @@ export function cannotAttackOrStrikeThisTurn(
   player: PlayerState,
   unit: CardInstance,
 ): boolean {
+  if (unit.activatedNcEffects?.includes("optional_battle_no_attack")) return true;
   return (
     noAttackOrStrikeTurnRushed(unit.cardId) &&
     wasRushedThisTurn(player, unit.instanceId)

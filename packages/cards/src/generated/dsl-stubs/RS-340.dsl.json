@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b2e382ade3838ce383b3",
+      "id": "gekinunchaku",
       "name": "ゲキヌンチャク",
       "text": "「SP1」特徴「獣」を持つユニットからコンビネーションするとき、このターン、これはBP＋2000される。",
       "trigger": {

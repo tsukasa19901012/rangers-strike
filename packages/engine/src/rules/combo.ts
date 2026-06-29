@@ -17,7 +17,7 @@ import {
 import { opponent, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { applyCourageMagicRelease } from "./strikeReactions";
-import { getSComboFinisher } from "./turnModifierBridge";
+import { getSComboFinisher, getGenericSComboFinisher } from "./turnModifierBridge";
 import { isSOnlyComboLine } from "./turnModifiers";
 import {
   canRunEnterBattleConditionalEffect,
@@ -190,6 +190,16 @@ function applySComboFinisher(
       ...card,
       bpModifier: 8000 - baseBp,
       spModifier: (card.spModifier ?? 0) + 1,
+    };
+  }
+
+  const generic = getGenericSComboFinisher(player);
+  if (generic && battlePosition === generic.position && isSmallUnit(state.definitions, card.cardId)) {
+    const baseBp = unitBp(definition);
+    return {
+      ...card,
+      bpModifier: generic.bp - baseBp,
+      spModifier: (card.spModifier ?? 0) + generic.sp,
     };
   }
 

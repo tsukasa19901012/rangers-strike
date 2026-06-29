@@ -25,7 +25,7 @@
   },
   "effects": [
     {
-      "id": "named_e9a091e9a091e3838ae38383",
+      "id": "nakurutoshi",
       "name": "頑頑ナックル落とし",
       "text": "これがアタックして敵軍ユニットをバトルで撃破するたび、自分コマンドを1つ選びホールドしてもよい。そうしたとき、このターン、これはBP+2000され、追加でアタックかストライクを行ってもよい。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_koregaatakushiteyunitowobatorude_geki_ha_surutabikomandowo1tsu",
           "duration": "turn"
         }
       ],

@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe695b5",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e38395e382a7e383aae383b3",
+      "id": "fueringasunaipu",
       "name": "フェリンガースナイプ",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから特徴「メカ」または「昆虫」を持つSユニットを1体選びホールドしてもよい。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakaramekamataha",
           "duration": "turn"
         }
       ],

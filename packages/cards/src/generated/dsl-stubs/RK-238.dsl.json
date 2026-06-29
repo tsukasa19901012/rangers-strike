@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e9ad82e381aee68d95e78db2",
+      "id": "no_e9ad82",
       "name": "魂の捕獲",
       "text": "これが自軍エリアにある間、特徴「仮面ライダー」を持つユニットがユニットを撃破して捨札にしたとき、その特徴「仮面ライダー」を持つユニットの持ち主は1枚ドローしてもよい。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruraidawotsuyunitogayunitowo_geki_ha_sh",
           "duration": "permanent"
         }
       ],

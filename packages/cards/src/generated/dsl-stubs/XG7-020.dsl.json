@@ -45,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e5bdb1e381abe59091e3818b",
+      "id": "ni_ko_kaitewo_zan_ri_hikari_ni_ko_kaite_hikari_wo_zan_ru",
       "name": "影に向かいて影を斬り、光に向かいて光を斬る",
       "text": "これが自分の手札にある間、クロスを持たない特徴「忍者」を持つ敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい。そうしたとき、そのユニットを持ち主の山札に戻してシャッフルする。",
       "trigger": {
@@ -54,7 +54,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_e38193e3828c",
+          "keyword": "return_to_zone_koreganoniarukurosuwotanaiwotsusyunitogarashusa",
           "duration": "permanent"
         }
       ],

@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e9acbce7a59ee8a69ae5a3b0",
+      "id": "shin_e9acbc",
       "name": "鬼神覚声",
       "text": "自軍ターン中、これがバトルエリアに出たとき、これをホールドするかリリースしてもよい。そうしたとき、必要パワーの数字が4以下の敵軍ユニットを１体選び、持ち主のパワーゾーンへダメージにして置く。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokikorewohorudosurukaririsu",
           "duration": "turn"
         }
       ],

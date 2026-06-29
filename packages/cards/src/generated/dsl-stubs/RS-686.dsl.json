@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "named_e382bbe382a4e382afe382a6",
+      "id": "seikuuinparusu",
       "name": "セイクウインパルス",
       "text": "これがストライクしてダメージを与えたとき、敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が3以下のユニットカードを1枚選び捨札にしてもよい。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e38193e3828c",
+          "keyword": "damage_action_koregasutoraikushitedamejiwoetatokipawazonnoomote_ko_kinok",
           "duration": "turn"
         }
       ],

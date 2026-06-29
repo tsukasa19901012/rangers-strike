@@ -41,14 +41,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b2e382ade382b8e383a7",
+      "id": "gekijouban",
       "name": "ゲキジョウバン",
       "text": "これを手札からラッシュした時、自軍山札の上から8枚までオモテにして､その中から特徴｢仮面ライダー｣を持つDAのユニットカードを自軍ラッシュエリアに出してもよい。ただし、同名のカードは2枚以上出せない。その後、残りのカードを山札に戻してシャッフルする。この効果で出したユニットは、このターン、ストライクできず、このターンを終えるとき、自軍エリアにあれば捨札になる。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e38193e3828c",
+          "keyword": "reveal_faceup_korewokararashushitanokara8madeomotenishitesonokara",
           "duration": "turn"
         }
       ],

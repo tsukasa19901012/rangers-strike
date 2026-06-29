@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38387e382b9e38388e383a9",
+      "id": "desutorakushonfuaiya",
       "name": "デストラクションファイヤー",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドの数よりも敵軍ユニットの数が多ければ、次の効果を発動できる⇒相手は自分自身のユニットを1体選び、自分自身の山札に戻してシャッフルする。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e887aae8bb8d",
+          "keyword": "grant_effect_tankoregabatoruerianitatokikomandonoyorimoyunitonoga",
           "duration": "turn"
         }
       ],

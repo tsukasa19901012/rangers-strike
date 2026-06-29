@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e7a9b6e6a5b5e381aee5a4a7",
+      "id": "no_e7a9b6",
       "name": "究極の大冒険",
       "text": "これが自軍エリアにある間、自分はダメージが10点になるまでゲームに負けない。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruhadamejiga10ninarumadegemunikenai",
           "duration": "permanent"
         }
       ],

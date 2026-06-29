@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382abe38397e38383",
+      "id": "kapu",
       "name": "カプッ",
       "text": "これをラッシュしたとき、自軍山札の上から1枚をオモテにする。そうしたとき、オモテにしたカードがユニットカードだったなら捨札にする。それ以外だったなら自分の手札に加える。",
       "trigger": {
@@ -25,7 +25,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e38193e3828c",
+          "keyword": "reveal_faceup_koreworashushitatokinokara1woomotenisurusoushitatokiomoten",
           "duration": "turn"
         }
       ],

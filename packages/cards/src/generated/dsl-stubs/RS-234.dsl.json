@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382a6e382a4e383b3e382b0",
+      "id": "uingupentakuto",
       "name": "ウイングペンタクト",
       "text": "自軍ターン中、このユニットからコンビネーションする「WB」のMユニットは、BP+3000され、BP8000以上のとき「SP1」になる。自分がターンを終えるとき、このユニットからコンビネーションした「WB」のMユニットは撃破される。",
       "trigger": {
@@ -27,10 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "combo_wb_m_bp3000_sp1_destroy_end",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

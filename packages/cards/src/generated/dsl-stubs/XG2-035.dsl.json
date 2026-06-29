@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e38395e383abe38396e383a9",
+      "id": "furuburasutorancha",
       "name": "フルブラストランチャー",
       "text": "自分がゲームに負けるまで残りダメージ1点なら、自軍ターン中、これがバトルエリアに出たとき、オモテ向きの自軍パワーを好きな枚数選び捨札にしてもよい。そうしたとき、捨札にしたカード1枚につき、敵軍ユニット1体か敵軍パワーゾーンのカードを1枚選び捨札にする。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e887aae58886",
+          "keyword": "damage_action_gagemunikerumaderidameji1naratankoregabatoruerianita",
           "duration": "turn"
         }
       ],

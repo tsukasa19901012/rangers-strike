@@ -19,14 +19,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe789b9",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e88ab1e381aee6989fe78da3",
+      "id": "hana_no",
       "name": "花の星獣",
       "text": "これにライドしたユニットがある間、次の効果を発動する⇒自分がバトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい。",
       "trigger": {
@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_discard_trigger_e38193e3828c",
+          "keyword": "ride_discard_trigger_koreniraidoshitayunitogaarunowosurugabatorufueizuwo",
           "duration": "permanent"
         }
       ]

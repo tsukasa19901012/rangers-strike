@@ -57,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e382a2e382afe382bbe383ab",
+      "id": "akuserumodo",
       "name": "アクセルモード",
       "text": "自軍ターン中、これがアタックしてバトルに勝ったとき、常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、山札の下に戻してもよい（ウラ向きのカードはウラ向きのまま選ぶ）。そうしたとき、これをラッシュエリアに戻す。",
       "trigger": {
@@ -66,7 +66,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_cards_e887aae8bb8d",
+          "keyword": "stack_cards_tankoregaatakushitebatorunitatokishiteiruopereshonni",
           "duration": "turn"
         }
       ],

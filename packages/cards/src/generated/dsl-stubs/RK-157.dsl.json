@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e5a591e7b484e88085e381ae",
+      "id": "nomumono",
       "name": "契約者の望むもの",
       "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、自軍常駐置き場からカードを1枚選び、自分の手札に加えてもよい。ただし、ウラ向きのカードはウラ向きのまま選ぶ。",
       "trigger": {
@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "resident_zone_e38193e3828c",
+          "keyword": "resident_zone_koregabatorueriakararashuerianirutokikikarakadowo1",
           "duration": "turn"
         }
       ],

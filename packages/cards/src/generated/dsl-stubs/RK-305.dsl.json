@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e4bfbae381aee5bf85e6aeba",
+      "id": "no_2",
       "name": "俺の必殺技特別編",
       "text": "敵軍コマンドを2つ、1つずつ順番に選びリリースしてもよい。そうしたとき、本来のカテゴリが1つ目にリリースしたコマンドと同じで、本来の必要パワーが2つ目にリリースしたコマンドと同じ敵軍Sユニットをすべて撃破する。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e695b5e8bb8d",
+          "keyword": "release_command_action_komandowo2tsu1tsuzutsunibiririsushitemoyoisoushit",
           "duration": "turn"
         }
       ],

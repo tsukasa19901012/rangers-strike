@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_alias_named_e3839be383afe382a4e38388",
+      "id": "unnamed_alias_howaitokaku",
       "text": "※これは「ホワイトカーク」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e3839be383afe382a4e38388",
+          "keyword": "alias_howaitokaku",
           "duration": "permanent"
         }
       ]
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "named_e5bf8de6b395e68a98e9b6b4",
+      "id": "ninpo_e5bf8d",
       "name": "忍法折鶴之舞",
       "text": "敵軍パワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい敵軍ユニットを1枚選び、持ち主の手札に戻してもよい。",
       "trigger": {

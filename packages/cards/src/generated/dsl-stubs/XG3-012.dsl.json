@@ -59,7 +59,7 @@
       ]
     },
     {
-      "id": "named_e99683e58589e6989fe78da3",
+      "id": "hikari_ken",
       "name": "閃光星獣剣",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからナンバーを持たないSユニットを1体選びゲームから除外する。",
       "trigger": {
@@ -68,7 +68,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e887aae8bb8d",
+          "keyword": "exclude_game_tankoregabatoruerianitatokibatorueriakarananbawotanais",
           "duration": "turn"
         }
       ],

@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e38380e382a4e383a4e38396",
+      "id": "daiyaburizado",
       "name": "ダイヤブリザード",
       "text": "これをラッシュしたとき、敵軍ユニットを本来のBPが8000以下になるように好きな数選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e38193e3828c",
+          "keyword": "power_zone_action_koreworashushitatokiyunitowonobpga8000ninaruyounikina",
           "duration": "turn"
         }
       ],

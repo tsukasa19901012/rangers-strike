@@ -42,14 +42,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e4ba8ce58880e6b581e78388",
+      "id": "to_hi_zan_to",
       "name": "二刀流烈火大斬刀",
       "text": "これがアタックして敵軍ユニットをバトルで撃破するたび、特徴「侍」を持つ自軍Sユニットを1体選びホールドしてもよい。そうしたとき、これは追加でアタックを行ってもよい。",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e38193e3828c",
+          "keyword": "hold_enemy_unit_koregaatakushiteyunitowobatorude_geki_ha_surutabiwotsusy",
           "duration": "turn"
         }
       ],

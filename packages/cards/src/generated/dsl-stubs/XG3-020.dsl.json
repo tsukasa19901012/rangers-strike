@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e8bf85e99bb7e6b581e589a3",
+      "id": "kami_ken_kami_kiba",
       "name": "迅雷流剣技・雷牙一閃",
       "text": "敵軍Sユニットを1体選び、カテゴリを1つ宣言する。このターン、宣言したカテゴリを選んだユニットに追加する。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "category_modify_e695b5e8bb8d",
+          "keyword": "category_modify_syunitowo1bikategoriwo1tsusurukonotanshitakategoriwonda",
           "duration": "turn"
         }
       ],

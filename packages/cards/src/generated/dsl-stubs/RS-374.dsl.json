@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e38389e383bce383a9e9ad94",
+      "id": "dora_ma",
       "name": "ドーラ魔法",
       "text": "これが自軍ラッシュエリアにある間、相手は次の制限を受ける⇒コマンドをホールドして、特徴「魔法」、または｢恐竜｣を持つユニットをラッシュしたとき、そのホールドしたコマンドを捨札にする。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiaruhanowokerukomandowohorudoshite",
           "duration": "permanent"
         }
       ],

@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382a4e383b3e38391e382af",
+      "id": "inpakutosutabu",
       "name": "インパクトスタッブ",
       "text": "敵軍バトルエリアのSユニットを2体選んでもよい。そうしたとき、相手は次のようにする⇒選ばれたユニットのうち1体を撃破する。その後、もう1体をホールドする。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e695b5e8bb8d",
+          "keyword": "opponent_must_batoruerianosyunitowo2ndemoyoisoushitatokihanoyounisuru",
           "duration": "turn"
         }
       ],

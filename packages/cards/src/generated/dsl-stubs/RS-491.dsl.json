@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e79baee8a69ae38281e3819f",
+      "id": "meta",
       "name": "目覚めた凶暴性",
       "text": "自軍Sユニットの数が敵軍Sユニットの数より少なければ、相手は自分自身のSユニットを1体選び撃破する。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e887aae8bb8d",
+          "keyword": "ride_action_syunitonogasyunitonoyorinakerebahanosyunitowo",
           "duration": "turn"
         }
       ],

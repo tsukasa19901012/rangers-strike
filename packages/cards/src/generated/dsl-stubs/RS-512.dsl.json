@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3839ee383b3e382bfe383b3",
+      "id": "mantangan",
       "name": "マンタンガン",
       "text": "敵軍パワーゾーンのオモテ向きのカードから1枚選んでもよい。そうしたとき、選んだカードをウラ返してダメージにする。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e695b5e8bb8d",
+          "keyword": "damage_action_pawazonnoomote_ko_kinokadokara1ndemoyoisoushitatokindakado",
           "duration": "turn"
         }
       ],

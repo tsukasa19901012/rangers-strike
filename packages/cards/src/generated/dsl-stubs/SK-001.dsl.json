@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e382b5e382bfe383b3e382b5",
+      "id": "satansaberu",
       "name": "サタンサーベル",
       "text": "敵軍バトルエリアからSビークルを1体選ぶ。選んだビークルにライドしているユニットがあれば、それを撃破する。その後、選んだビークルを捨札にする。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e695b5e8bb8d",
+          "keyword": "ride_action_batorueriakarasbikuruwo1bundabikuruniraidoshiteiruyunitoga",
           "duration": "turn"
         }
       ],

@@ -11,7 +11,7 @@
   "rawText": "【サンダースペイダー】これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒ホールド状態の敵軍ユニットを1体選び撃破する。",
   "effects": [
     {
-      "id": "named_e382b5e383b3e38380e383bc",
+      "id": "sandasupeida",
       "name": "サンダースペイダー",
       "text": "これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒ホールド状態の敵軍ユニットを1体選び撃破する。",
       "trigger": {
@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_discard_trigger_e38193e3828c",
+          "keyword": "ride_discard_trigger_koreniraidoshitayunitogaarunokarakadoga1nikarerutab",
           "duration": "permanent"
         }
       ]

@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382b7e383a7e383abe38380",
+      "id": "shorudafuangu",
       "name": "ショルダー・ファング",
       "text": "これがバトルエリアに出たとき、特徴「獣」または「恐竜」を持つ自軍コマンドを1つ選び、ホールドしてもよい。そうしたとき、必要パワーの数字が同じ敵軍Sユニットを3体まで選びホールドする。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e38193e3828c",
+          "keyword": "hold_on_enter_battle_koregabatoruerianitatokimatahawotsukomandowo1tsubih",
           "duration": "turn"
         }
       ],

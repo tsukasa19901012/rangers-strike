@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e38395e382a7e3838be38383",
+      "id": "fuenikusufuaiya",
       "name": "フェニックスファイヤー",
       "text": "このターン、敵軍ユニットを持ち主のパワーゾーンにダメージにして置くたび、自分は1枚ドローしてもよい。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e38193e381ae",
+          "keyword": "enemy_power_damage_konotanyunitowochinopawazonnidamejinishitekutabiha1do",
           "duration": "turn"
         }
       ],

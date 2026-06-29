@@ -39,14 +39,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e79eace99693e381aee682aa",
+      "id": "no_e79eac",
       "name": "瞬間の悪夢",
       "text": "これをラッシュしたとき、敵軍コマンドゾーンから、モーフを持つユニットカードを1枚選び捨札にしてもよい。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_e38193e3828c",
+          "keyword": "discard_to_zone_koreworashushitatokikomandozonkaramofuwotsuyunitokadowo1",
           "duration": "turn"
         }
       ],

@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e58fa4e582b7e381aee59ba0",
+      "id": "no_e58fa4",
       "name": "古傷の因縁",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドゾーンか、敵軍パワーゾーンのダメージ以外のカードに特徴「レッド」を持つユニットカードがあれば1枚選び、敵軍ラッシュエリアに出してもよい。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e887aae8bb8d",
+          "keyword": "damage_action_tankoregabatoruerianitatokikomandozonkapawazonnoda",
           "duration": "turn"
         }
       ],

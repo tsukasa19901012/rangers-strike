@@ -57,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e58d81e69687e5ad97e696ac",
+      "id": "zan_ri_e58d81",
       "name": "十文字斬り",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍捨札からユニットカードを1枚選んでもよい。そうしたとき、選んだユニットカードと同じカード名の敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -66,7 +66,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokikarayunitokadowo1ndemo",
           "duration": "turn"
         }
       ],

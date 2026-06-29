@@ -23,7 +23,7 @@
   },
   "effects": [
     {
-      "id": "named_e382abe383a9e382afe383aa",
+      "id": "karakuri_ninpo_tsuno",
       "name": "カラクリ忍法・角変化",
       "text": "これは、自分と相手のダメージ1点につきBP＋1000され、BP8000以上のとき「SP1」になる。これは、自分か相手がターンを終えるときBP8000以上なら撃破される。",
       "trigger": {
@@ -32,10 +32,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "bp_modify_korehatonodameji1nitsukibp1000sarebp8000notokisp1",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

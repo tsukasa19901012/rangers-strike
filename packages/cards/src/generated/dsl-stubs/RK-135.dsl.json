@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e6bd9ce8a18ce68d9ce7b4a2",
+      "id": "fx_unknown_e6bd9c",
       "name": "潜行捜索",
       "text": "数字を1つ宣言してもよい。そうしたとき、自軍山札の下から1枚ひいてオモテにする。オモテにしたカードの必要パワーの数字が、宣言した数字と同じなら、自分の手札に加え、それ以外なら山札の下に戻す。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e695b0e5ad97",
+          "keyword": "reveal_faceup_wo1tsushitemoyoisoushitatokinokara1hiiteomotenisuruomote",
           "duration": "turn"
         }
       ],

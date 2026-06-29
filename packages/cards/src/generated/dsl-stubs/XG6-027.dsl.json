@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e99d92e3818de6b5b7e381ae",
+      "id": "kino_shi_e99d92",
       "name": "青き海の獅子",
       "text": "これをラッシュしたとき、自軍山札の下から1枚をオモテにする。オモテにしたカードが「シーレオン」以外の特徴「獣」を持つユニットカードなら、手札に加える。それ以外なら、オモテにしたカードを山札に戻してシャッフルする。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e38193e3828c",
+          "keyword": "reveal_faceup_koreworashushitatokinokara1woomotenisuruomotenishitakadoga",
           "duration": "turn"
         }
       ],

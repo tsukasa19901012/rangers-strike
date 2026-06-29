@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e382b9e3839ae383bce38389",
+      "id": "supedoatsu",
       "name": "スペードアーツ",
       "text": "敵軍バトルエリアと敵軍ラッシュエリアから、同じBPを持つSユニットを1体ずつ選んでもよい。そうしたとき、選んだユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e695b5e8bb8d",
+          "keyword": "hold_enemy_unit_batorueriatorashueriakarajibpwotsusyunitowo1zutsunde",
           "duration": "turn"
         }
       ],

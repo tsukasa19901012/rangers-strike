@@ -54,14 +54,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e6b0b4e4b8ade3818be38289",
+      "id": "mizu_karano",
       "name": "水中からの強襲",
       "text": "自軍ターン中、これをラッシュしたとき、自軍捨札からナンバーにRCを持つカードを1枚選び、ゲームから除外してもよい。そうしたとき、そのカードのRCの効果を、このユニットの効果として発動する。",
       "trigger": {
@@ -70,7 +70,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e887aae8bb8d",
+          "keyword": "exclude_game_tankoreworashushitatokikarananbanircwotsukadowo1",
           "duration": "turn"
         }
       ],

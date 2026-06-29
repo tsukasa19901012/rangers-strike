@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b1e383abe38399e383ad",
+      "id": "keruberosu",
       "name": "ケルベロスΔ（デルタ）",
       "text": "自軍ターン中、これがバトルエリアに出たとき、このターン、これは次の能力を得る⇒このターン中に自軍捨札から手札に加えたSユニットのカード1枚につきBP+2000される。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e887aae8bb8d",
+          "keyword": "grant_ability_tankoregabatoruerianitatokikonotankorehano_chikara_worukon",
           "duration": "turn"
         }
       ]

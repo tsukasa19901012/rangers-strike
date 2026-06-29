@@ -32,16 +32,16 @@
       ]
     },
     {
-      "id": "named_e382b8e383a3e383aae383a5",
+      "id": "jaryuuno",
       "name": "ジャリュウ一族の侵攻",
       "text": "これが自軍ラッシュエリアにある間、自分が特徴「戦闘員」を持つユニットのカードをラッシュするとき、コマンドをホールドせずにラッシュしてもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
       "trigger": {
-        "type": "on_rush"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "rush_skip_command_hold_fx_unknown",
           "duration": "permanent"
         }
       ],

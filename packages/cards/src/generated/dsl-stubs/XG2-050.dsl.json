@@ -68,7 +68,7 @@
       ]
     },
     {
-      "id": "named_e382aee383abe382b9e382b9",
+      "id": "girususuteinga",
       "name": "ギルススティンガー",
       "text": "自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍バトルエリアのユニットを必要パワーの数字の合計が3以下になるように2体まで選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -77,7 +77,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enter_hold_enemy_e887aae8bb8d",
+          "keyword": "enter_hold_enemy_tankoregabatoruerianitatokikorewohorudoshitemoyoisoushi",
           "duration": "turn"
         }
       ],

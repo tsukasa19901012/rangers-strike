@@ -31,7 +31,9 @@ export const TURN_RULE_IDS = {
   SUPER_DYNAMITE: "super_dynamite",
   COMBO_NUMBER_DELTA: "combo_number_delta",
   S_COMBO_FINISHER: "s_combo_finisher",
+  GENERIC_S_COMBO_FINISHER: "generic_s_combo_finisher",
   AURA_POWER: "aura_power",
+  BATTLE_DESTROY_TO_POWER: "battle_destroy_to_power",
 } as const;
 
 export type TurnRuleId = (typeof TURN_RULE_IDS)[keyof typeof TURN_RULE_IDS];

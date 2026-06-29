@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3839ee383b3e382bfe383b3",
+      "id": "mantanganrodomodo",
       "name": "マンタンガン・ロッドモード",
       "text": "自軍パワーゾーンのカード枚数が、敵軍パワーゾ－ンのカード枚数より少なければ、自軍山札の上から1枚ひいて、自軍パワーゾーンに置いてもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e887aae8bb8d",
+          "keyword": "power_zone_action_pawazonnokadogapawazonnokadoyorinakerebano",
           "duration": "turn"
         }
       ],

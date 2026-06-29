@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e9bb92e3818de5a4aae999bd",
+      "id": "ki_taiyo_shin_heno",
       "name": "黒き太陽神への忠誠",
       "text": "これが自軍エリアにある間、自軍ユニットがすべてDAなら、「ヘルサターン総統」以外の自軍Sユニットは次の効果を得る⇒「これは自軍コマンドを1つホールドしなければバトルエリアに出られない。」と書かれているかのように扱い、BP＋3000され、BP8000以上のとき「SP1」になる。",
       "trigger": {
@@ -27,10 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
-          "duration": "turn"
+          "keyword": "while_in_field_body_koregaerianiaruyunitogasubetedanaraherusatannos",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

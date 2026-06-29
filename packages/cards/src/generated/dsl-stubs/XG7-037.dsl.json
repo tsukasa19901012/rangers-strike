@@ -45,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e7b485e381a8e98791",
+      "id": "to_e7b485",
       "name": "紅と金",
       "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を2回まで発動できる⇒自分の手札を1枚選び、自軍コマンドゾーンにホールド状態で置く。そうしたとき、敵軍ユニットを1体選び、このターン、BP-1500する。",
       "trigger": {
@@ -54,7 +54,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokinowo2madedekirunowo",
           "duration": "turn"
         }
       ],

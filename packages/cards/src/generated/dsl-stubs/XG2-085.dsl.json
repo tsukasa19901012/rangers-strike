@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e697a5e69cace58880",
+      "id": "to_e697a5",
       "name": "日本刀",
       "text": "このターン、OTまたはDAを持つすべての敵軍SユニットはBP-1000される。（BP0以下になったユニットは撃破される）",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e381ae",
+          "keyword": "bp_modify_konotanotmatahadawotsusubetenosyunitohabp1000sarerubp0",
           "duration": "turn"
         }
       ],

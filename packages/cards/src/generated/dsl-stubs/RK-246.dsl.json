@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e382ace383abe383abe383bb",
+      "id": "garuruhauringusurashu",
       "name": "ガルル・ハウリングスラッシュ",
       "text": "自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍バトルエリアから相手の手札の枚数以下の必要パワーの数字を持つSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokikonoyunitowohorudoshitemoy",
           "duration": "turn"
         }
       ],

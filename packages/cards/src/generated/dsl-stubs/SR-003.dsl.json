@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e9be8de69283e589a326e78d",
+      "id": "ryu_geki_ken_ken",
       "name": "龍撃剣＆獣奏剣",
       "text": "自軍ターン中、これは自軍捨札にある特徴「恐竜」を持つカード1枚につきBP＋1000される。これはBP8000以上のとき「SP1」になる。",
       "trigger": {
@@ -29,10 +29,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "bp_modify_tankorehaniaruwotsukado1nitsukibp1000sareru",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

@@ -30,14 +30,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_gekibaioreto1wonisuru",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e5a4a7e78bbce78bbce8b9b4",
+      "id": "fx_unknown_e5a4a7",
       "name": "大狼狼蹴",
       "text": "これがストライクして、相手が山札の上からひいたカードをダメージにしたとき、相手は自分自身のユニットを1体選び撃破する。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e38193e3828c",
+          "keyword": "opponent_must_koregasutoraikushiteganokarahiitakadowodamejinishitatokiha",
           "duration": "turn"
         }
       ],

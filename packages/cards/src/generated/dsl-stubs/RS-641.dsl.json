@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382b9e382afe383a9e383b3",
+      "id": "sukuranburu",
       "name": "スクランブル",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードがSCユニットのカードだったなら、それを自軍ラッシュエリアに出す。ただし追加条件は満たすこと。出せなかったなら、オモテにしたカードは山札の下に戻す。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e887aae8bb8d",
+          "keyword": "reveal_faceup_tankoregabatoruerianitatokinokara1woomotenishitemoyoi",
           "duration": "turn"
         }
       ],

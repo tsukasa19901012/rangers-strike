@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38381e382a7e383b3e382b8",
+      "id": "chienjipawa",
       "name": "チェンジパワー",
       "text": "これは自軍ダメージ1点につきBP＋1000され、自分がターンを終えるときBP8000以上なら撃破される。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_korehadameji1nitsukibp1000saregatanwoerutokibp8000",
           "duration": "turn"
         }
       ],

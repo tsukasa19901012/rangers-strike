@@ -27,13 +27,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e381a9e38193e381abe381a7",
+      "id": "dokonidemogaru",
       "name": "どこにでも繋がる電話",
       "text": "自軍ゾーンのオモテ向きのカードから1枚選び、手札に加えてもよい。そうしたとき、このユニットをそのカードがあった場所に置く。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_e887aae8bb8d",
+          "keyword": "pick_remaining_zonnoomote_ko_kinokadokara1binietemoyoisoushitatokikonoyu",
           "duration": "turn"
         }
       ],

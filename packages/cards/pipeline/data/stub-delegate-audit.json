@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-06-10T02:07:28.844Z",
-  "dslFiles": 1670,
+  "generatedAt": "2026-06-29T00:39:00.461Z",
+  "dslFiles": 1849,
   "primitives": {
-    "enqueueTrigger": 1536,
+    "enqueueTrigger": 0,
     "fallbackHandler": 0,
-    "grantKeyword": 1111,
-    "nativeOther": 113
+    "grantKeyword": 2671,
+    "nativeOther": 401
   },
-  "cardsWithEnqueue": 1188,
+  "cardsWithEnqueue": 0,
   "cardsFallbackOnly": 0
 }

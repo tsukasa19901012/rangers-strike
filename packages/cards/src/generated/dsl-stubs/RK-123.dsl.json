@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e588b6e8a381e38199e3828b",
+      "id": "suru_hikari_no_tsubasa",
       "name": "制裁する光の翼",
       "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、「クレインオルフェノク」以外の特徴「オルフェノク」を持つ自軍ユニットが撃破されて捨札になるたび、敵軍Sユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiarutankureinorufuenokunoorufu",
           "duration": "permanent"
         }
       ],

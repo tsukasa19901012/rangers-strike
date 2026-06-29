@@ -25,14 +25,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e3839be383bce3839fe383b3",
+      "id": "hominguburido",
       "name": "ホーミングブリッド",
       "text": "敵軍Sユニットの中から1体を、相手に選ばせてもよい（相手が選ぶたび、まだ相手に選ばれてない敵軍Sユニットがあれば、その中から選びなおさせてもよい。ただし、自軍コマンドを1つホールドすること）。その後、相手が最終的に選んだ1体を撃破する。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e695b5e8bb8d",
+          "keyword": "hold_enemy_unit_syunitonokara1wonibasetemoyoigabutabimadanibarete",
           "duration": "turn"
         }
       ],

@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_e280bbe38193",
+          "keyword": "deck_search_wotevkomandanokadowo1binisetekaranierusono",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e58f97e38191e7b699e38184",
+      "id": "keidamono",
       "name": "受け継いだもの",
       "text": "これは自軍Lユニットがあれば、敵軍ユニットにアタックされない。また、このユニットと隣り合うOTを持つLユニットはアタックされる以外では相手に選ばれない。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ot_category_e38193e3828c",
+          "keyword": "ot_category_korehalyunitogaarebayunitoniatakusarenaimatakonoyunitotori",
           "duration": "turn"
         }
       ],

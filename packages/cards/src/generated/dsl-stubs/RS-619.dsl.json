@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e888aae7a9bae688a6e58a9b",
+      "id": "chikara_no_e888aa",
       "name": "航空戦力の奇襲",
       "text": "これが自軍エリアにある間、ウイングを持つユニットは、特徴「航空機」を持たないユニットにアタックされない。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruuinguwotsuyunitohawotanaiyunitonia",
           "duration": "permanent"
         }
       ],

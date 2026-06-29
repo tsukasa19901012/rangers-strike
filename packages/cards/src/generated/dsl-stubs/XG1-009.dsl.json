@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e3839ee382b9e382ade383bc",
+      "id": "masukikurashu",
       "name": "マスキークラッシュ",
       "text": "SP1 これがストライクしてダメージを与えるとき、かわりに敵軍捨札を1枚選び持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_53503120e381",
+          "keyword": "enemy_power_damage_sp1koregasutoraikushitedamejiwoerutokikawariniwo1bich",
           "duration": "turn"
         }
       ],

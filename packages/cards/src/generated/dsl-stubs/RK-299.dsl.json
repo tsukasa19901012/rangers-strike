@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": "named_e38380e383bce382afe383a9",
+      "id": "dakuraidakiku",
       "name": "ダークライダーキック",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドを3つリリースしてもよい。そうしたとき、このターン、これは「SP1」になる。",
       "trigger": {
@@ -47,10 +47,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "release_command_action_tankoregabatoruerianitatokikomandowo3tsuririsushi",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

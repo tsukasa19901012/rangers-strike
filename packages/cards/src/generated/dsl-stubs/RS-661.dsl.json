@@ -64,14 +64,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e7a0b4e5a4a9e694bb",
+      "id": "ha",
       "name": "破天攻",
       "text": "これは敵軍Sユニット1体につきBP+1000される。",
       "trigger": {

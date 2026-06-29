@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e5a489e5bda2",
+      "id": "fx_unknown_e5a489",
       "name": "変形",
       "text": "自軍コマンドがすべてリリース状態なら、これは特徴「航空機」を持たないユニットにアタックされない。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e887aae8bb8d",
+          "keyword": "release_command_action_komandogasubeteririsunarakorehawotanaiyunitoniata",
           "duration": "turn"
         }
       ],

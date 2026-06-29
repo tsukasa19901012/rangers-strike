@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e383a8e383ade382a4e8bb8d",
+      "id": "yoroino",
       "name": "ヨロイ軍団の統率",
       "text": "これが自軍バトルエリアにある間、敵軍バトルフェイズ中、バトルエリアに出た特徴「メカ」を持つ敵軍Sユニットは、可能なら特徴「ヨロイ軍団」を持つユニットにアタックする。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiarubatorufueizubatoruerianitamekaw",
           "duration": "permanent"
         }
       ],

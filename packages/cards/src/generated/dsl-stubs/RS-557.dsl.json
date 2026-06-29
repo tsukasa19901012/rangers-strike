@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e69cade69d9fe381aee8aa98",
+      "id": "no_e69cad",
       "name": "札束の誘惑",
       "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒相手の手札が1枚以上あれば、その枚数と同じＣＮの数字を持つ自分自身のSユニットは、毎ターン、可能ならバトルエリアに出る。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarumomonowokerunoga1arebaso",
           "duration": "permanent"
         }
       ],

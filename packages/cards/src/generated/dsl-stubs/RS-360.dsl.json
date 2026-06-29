@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e5ae87e5ae99e381a7e4b880",
+      "id": "deshiinoha",
       "name": "宇宙で一番美しいのは誰？",
       "text": "これが自軍ラッシュエリアにある間、相手は次の制限を受ける⇒自分自身のターンを終えるとき、特徴「女」を持つ自分自身のユニットを1体選び撃破する。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiaruhanowokerunotanwoeruto",
           "duration": "permanent"
         }
       ],

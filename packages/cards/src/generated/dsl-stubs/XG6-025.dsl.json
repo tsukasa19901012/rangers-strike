@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "named_e38193e38193e3818be38289",
+      "id": "kokokarahanotanda",
       "name": "ここからは私のターンだ",
       "text": "これが自軍バトルエリアにある間、敵軍バトルフェイズ中、自分がダメージを受けたとき、自分の手札が1枚以上あればすべて捨札にしてもよい。そうしたとき、そのバトルフェイズを終了する。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiarubatorufueizugadamejiwoketatoki",
           "duration": "permanent"
         }
       ],

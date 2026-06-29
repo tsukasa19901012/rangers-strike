@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e5a4a9e4bdbfe381a8e682aa",
+      "id": "to_ma",
       "name": "天使と悪魔",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドゾーンにあるカテゴリが1つだけなら、そのカテゴリごとに次の効果を発動できる⇒DAなら、敵軍Sユニットを1体選び、このユニットと選んだユニットを撃破する。DA以外なら、敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く（置けなければ捨札にする）。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e887aae8bb8d",
+          "keyword": "grant_effect_tankoregabatoruerianitatokikomandozonniarukategoriga1tsuda",
           "duration": "turn"
         }
       ],

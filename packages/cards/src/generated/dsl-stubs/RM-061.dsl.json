@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e3839fe382b5e382a4e383ab",
+      "id": "misairu",
       "name": "ミサイル射出",
       "text": "これをラッシュしたとき、次の効果を発動できる⇒敵軍バトルエリアから、スクラムを持つユニットを1体選び、ラッシュエリアに戻す。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koreworashushitatokinowodekirubatorueriakarasukuramuwotsuyu",
           "duration": "turn"
         }
       ],

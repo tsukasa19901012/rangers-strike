@@ -44,14 +44,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e796bee9a2a8e4b880e999a3",
+      "id": "kaze_e796be",
       "name": "疾風一陣",
       "text": "相手は自分自身の山札の上から1枚を捨札にするか、自分自身のコマンドを2つ選び手札に戻すかを選ぶ。",
       "trigger": {
@@ -60,7 +60,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e79bb8e6898b",
+          "keyword": "opponent_must_hanonokara1wonisurukanokomandowo2tsubini",
           "duration": "turn"
         }
       ],

@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382b7e383a3e38383e382ad",
+      "id": "shakinnoniari",
       "name": "シャッキーン！の中に修行あり",
       "text": "これが自軍ラッシュエリアにある間、特徴「レッド」を持つすべてのSユニットは次の能力を得る⇒これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_koregarashuerianiaruredowotsusubetenosyunitohano_chikara_w",
           "duration": "permanent"
         }
       ]

@@ -28,13 +28,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e38384e382a4e383b3e382bd",
+      "id": "tsuinsodotsuinkamukurashu",
       "name": "ツインソード・ツインカムクラッシュ",
       "text": "「SP1」 敵軍バトルエリアから、本来のBPが2000か、必要パワーの数字が2か、ナンバーが2のユニットを1体選び、撃破してもよい。",
       "trigger": {

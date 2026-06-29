@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e38381e382a7e383b3e382b8",
+      "id": "chienjifuomeshon",
       "name": "チェンジフォーメーション",
       "text": "これがバトルエリアからラッシュエリアに戻るとき、ダメージ以外の自軍パワーから｢タイムロボα｣のカードを1枚選び、これと置き換えてもよい。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e38193e3828c",
+          "keyword": "damage_action_koregabatorueriakararashuerianirutokidamejinopawakarataimu",
           "duration": "turn"
         }
       ],

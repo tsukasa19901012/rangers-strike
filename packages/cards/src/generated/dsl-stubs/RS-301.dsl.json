@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e383aae3839ce383abe38390",
+      "id": "riborubamisairu",
       "name": "リボルバーミサイル",
       "text": "これがバトルエリアに出たとき、敵軍ユニットを1体選び、敵軍パワーゾーンからカードを1枚選ぶ。そうしたとき、相手はどちらかを選び捨札にする。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e38193e3828c",
+          "keyword": "opponent_must_koregabatoruerianitatokiyunitowo1bipawazonkarakadowo1",
           "duration": "turn"
         }
       ],

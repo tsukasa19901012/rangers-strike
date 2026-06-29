@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e382bfe382a4e382bfe383b3",
+      "id": "taitannoba",
       "name": "タイタンノバ",
       "text": "自軍ターン中、これがバトルエリアに出たとき、カード名に「タイタン」を含む自軍コマンドか追加条件を持つオモテ向きの自軍パワーを、2枚まで選び捨札にしてもよい。そうしたとき、捨札にした枚数と同じ数だけ、相手にダメージを与える。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e887aae8bb8d",
+          "keyword": "damage_action_tankoregabatoruerianitatokikadonitaitanwomukomandoka",
           "duration": "turn"
         }
       ],

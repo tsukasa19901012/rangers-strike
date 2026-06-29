@@ -3,6 +3,11 @@ import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
 import type { GameState } from "../types/game";
 import { getCardDslDocument } from "./effectLookup";
 import type { DslCardContext } from "./cardInterpreter";
+import {
+  buildRematchContext,
+  isUnresolvedEffectPrimitive,
+  tryResolveHashGrantKeyword,
+} from "./hashGrantKeywordBridge";
 
 export type InterpretFn = (
   state: GameState,
@@ -11,13 +16,7 @@ export type InterpretFn = (
 ) => { state: GameState; detail?: string };
 
 function isUnresolvedStub(primitives: EffectPrimitive[]): boolean {
-  if (primitives.length !== 1) return false;
-  const only = primitives[0];
-  if (!only) return false;
-  if (only.type === "interpret_effect") return false;
-  if (only.type === "grant_keyword" && only.keyword.startsWith("effect_")) return true;
-  if (only.type === "enqueue_trigger") return true;
-  return false;
+  return isUnresolvedEffectPrimitive(primitives);
 }
 
 export function tryInterpretEffectDefinition(
@@ -36,15 +35,12 @@ export function tryInterpretEffectDefinition(
   });
 
   if (!rematched || isUnresolvedStub(rematched)) {
+    const hashResolved = tryResolveHashGrantKeyword(state, ctx, `stub:${ctx.effectId}`, interpret);
+    if (hashResolved && hashResolved.detail !== "interpret_effect_unresolved") {
+      return hashResolved;
+    }
     return { state, detail: "interpret_effect_unresolved" };
   }
 
-  return interpret(
-    state,
-    {
-      ...ctx,
-      optional: effect.optional ?? ctx.optional,
-    },
-    rematched,
-  );
+  return interpret(state, buildRematchContext(effect, ctx), rematched);
 }

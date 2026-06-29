@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e5a6bbe5ad90e381aee38390",
+      "id": "nobakuapu",
       "name": "妻子のバックアップ",
       "text": "これが自軍エリアにある間、敵軍山札がシャッフルされたとき、これがホールド状態ならリリースしてもよい。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarugashafurusaretatokikoregahorudonarari",
           "duration": "permanent"
         }
       ],

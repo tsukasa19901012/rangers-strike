@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e581b5e5af9f",
+      "id": "fx_unknown_e581b5",
       "name": "偵察",
       "text": "これが自軍エリアにある間、敵軍SユニットがＮＣまたはＲＣまたはＪＣの効果を発動させたとき、その効果を実行する前に、これをホールドしてもよい。そうしたとき、そのNCまたはRCまたはJCの効果を無効にする。",
       "trigger": {
@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarusyunitogamatahamatahanowosasetatokiso",
           "duration": "permanent"
         }
       ],

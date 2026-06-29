@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e382aae383bce38391e383bc",
+      "id": "opatsuno",
       "name": "オーパーツの返還",
       "text": "これをラッシュしたとき、敵軍バトルエリアからMAのMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e38193e3828c",
+          "keyword": "power_zone_action_koreworashushitatokibatorueriakaramanomyunitowo1bichin",
           "duration": "turn"
         }
       ],

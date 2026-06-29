@@ -21,7 +21,7 @@
   },
   "effects": [
     {
-      "id": "named_e9a39be7bf94e589a3e383bb",
+      "id": "ken_e9a39b",
       "name": "飛翔剣・木端微塵",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアから、DAを持つ敵軍ユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがLユニットだったなら、捨札にするかわりに持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokirashueriakaradawotsuyuni",
           "duration": "turn"
         }
       ],

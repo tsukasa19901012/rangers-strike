@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "named_e8999ae7a9bae38288e3828a",
+      "id": "yoriu",
       "name": "虚空より狙う鎌",
       "text": "自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、捨札にしたコマンドと同じカテゴリを持つ敵軍コマンドを1つ選びゲームから除外する。",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e887aae8bb8d",
+          "keyword": "exclude_game_komandowo1tsubinishitemoyoisoushitatokinishitakomandotojika",
           "duration": "turn"
         }
       ],

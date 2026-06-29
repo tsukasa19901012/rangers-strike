@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382bce383bce383abe7a8ae",
+      "id": "zeruno",
       "name": "ゼール種の統率",
       "text": "これが自軍エリアにある間、次の効果を発動する⇒「オメガゼール」以外の特徴「レイヨウ型」を持つ自軍ユニットは「これはコマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効になる。また相手は特徴「レイヨウ型」を持つユニットを撃破したとき、1枚ドローしてもよい。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ignore_rule_text_e38193e3828c",
+          "keyword": "ignore_rule_text_koregaerianiarunowosuruomegazerunoreiyouwotsu",
           "duration": "turn"
         }
       ]

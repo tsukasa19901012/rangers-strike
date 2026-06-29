@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e383a9e382a4e38380e383bc",
+      "id": "raidasurashu",
       "name": "ライダースラッシュ",
       "text": "必要パワーの数字が1か、ナンバーの数字が1か、「SP1」を持つ敵軍Sユニットを1体選び、撃破してもよい。",
       "trigger": {
@@ -43,10 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "number_combo_pawanoga1kananbanoga1kasp1wotsusyunitowo1bi_geki",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

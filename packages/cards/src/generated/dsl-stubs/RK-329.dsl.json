@@ -41,14 +41,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe695b5",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e5b7a8e4bd93e381aee5a881",
+      "id": "no_e5b7a8",
       "name": "巨体の威圧",
       "text": "自軍ターン中、これがバトルエリアに出たとき、BPの一番低いユニットを１体選び撃破する。ただし、BPの一番低いユニットが自軍と敵軍にある場合は、自軍ユニットの中から選ぶこと。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibpnoiyunitowobi_geki_ha_",
           "duration": "turn"
         }
       ],

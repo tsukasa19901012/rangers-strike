@@ -25,13 +25,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e4b88be7b49ae382a2e383b3",
+      "id": "andedoworu",
       "name": "下級アンデッドを操る者",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから、特徴｢アンデッド｣を持つ自軍ユニットを1体選んでも良い。そうしたとき、選んだユニットは、このターン「SP1」になり、ターンを終えるとき撃破される。",
       "trigger": {
@@ -40,10 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokirashueriakaraandedowo",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

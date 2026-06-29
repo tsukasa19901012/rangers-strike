@@ -63,7 +63,7 @@
       ]
     },
     {
-      "id": "named_e4babae99693e381b8e381ae",
+      "id": "heno",
       "name": "人間への絶望",
       "text": "これが特徴「男」または「女」を持つ敵軍ユニットとバトルするとき、これをリリースする。",
       "trigger": {
@@ -72,7 +72,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "feature_match_e38193e3828c",
+          "keyword": "feature_match_koregamatahawotsuyunitotobatorusurutokikoreworirisusuru",
           "duration": "turn"
         }
       ],

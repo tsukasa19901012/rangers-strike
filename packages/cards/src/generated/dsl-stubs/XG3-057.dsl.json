@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_self_on_ally_rush_e280bbe887aa",
+          "keyword": "return_self_on_ally_rush_fx_unknown",
           "duration": "permanent"
         }
       ]
@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": "named_e38392e38393e382ade382aa",
+      "id": "hibikiongekiko",
       "name": "ヒビキオンゲキコ",
       "text": "ホールド状態のこのユニットから、「仮面ライダーディケイド」または「仮面ライダーディエンド」または特徴「猛士」を持つユニットがコンビネーションしたとき、次の効果を発動できる⇒敵軍バトルエリアから特徴「男」または「女」または「人型」を持たないユニットを1体選び撃破する。",
       "trigger": {

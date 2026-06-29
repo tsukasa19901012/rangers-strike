@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "named_e68da8e381a6e8baabe381ae",
+      "id": "teno_geki",
       "name": "捨て身の一撃",
       "text": "これが敵軍Sユニットにアタックされたとき、このユニットをホールドするか撃破してもよい。そうしたとき、アタックしてきた敵軍Sユニットを撃破する。（このとき、バトルは行われない）",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e38193e3828c",
+          "keyword": "hold_enemy_unit_koregasyunitoniatakusaretatokikonoyunitowohorudosuruka_g",
           "duration": "turn"
         }
       ],

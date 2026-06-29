@@ -49,7 +49,7 @@
       ]
     },
     {
-      "id": "gm_01",
+      "id": "gm01",
       "name": "GM-01",
       "text": "ホールド状態の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く（置けなければこの効果は発動できない)。",
       "trigger": {
@@ -57,12 +57,39 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e3839be383bc",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
       ],
-      "optional": false
+      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
     }
   ],
   "unnamedRules": [

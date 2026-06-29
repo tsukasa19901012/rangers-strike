@@ -11,7 +11,7 @@
   "rawText": "自軍Sユニットを1体選び、自軍パワーゾーンのオモテ向きのカードからSユニットまたはSビークルのカードを1枚選ぶ。そうしたとき、選んだユニットとカードを置き換える。ただし、必要パワーは満たすこと（追加条件は満たさなくてもよい）。このとき、出したユニットの効果は発動しない。",
   "effects": [
     {
-      "id": "named_e38395e382a1e382a4e3838a",
+      "id": "fuainarufuomuraido",
       "name": "ファイナルフォームライド",
       "text": "自軍Sユニットを1体選び、自軍パワーゾーンのオモテ向きのカードからSユニットまたはSビークルのカードを1枚選ぶ。そうしたとき、選んだユニットとカードを置き換える。ただし、必要パワーは満たすこと（追加条件は満たさなくてもよい）。このとき、出したユニットの効果は発動しない。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "vehicle_interaction_e887aae8bb8d",
+          "keyword": "vehicle_interaction_syunitowo1bipawazonnoomote_ko_kinokadokarasyunitomat",
           "duration": "turn"
         }
       ],

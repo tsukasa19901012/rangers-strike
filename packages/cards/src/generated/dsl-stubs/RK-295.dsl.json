@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
@@ -54,7 +54,7 @@
       ]
     },
     {
-      "id": "named_e9a082e782b9e381abe7ab8b",
+      "id": "nitsu",
       "name": "頂点に立つ男",
       "text": "このターン、これは自軍パワーゾーンのカード枚数が敵軍パワーゾーンのカード枚数よりも1枚多いごとにBP+1000され、BP5000以上のとき「SP1」になる。",
       "trigger": {
@@ -63,10 +63,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "bp_modify_konotankorehapawazonnokadogapawazonnokadoyorimo",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38398e383ace383b3e382ab",
+      "id": "herenkata",
       "name": "ヘレンカッター",
       "text": "これは、BP5000以上の、OTを持ち特徴「男」を持つSユニットと隣り合っている間、次の能力を得る⇒SP1",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_korehabp5000nootwochiwotsusyunitotoriteiruno",
           "duration": "turn"
         }
       ]

@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e4bfbae381afe3818be383bc",
+      "id": "hakanarii",
       "name": "俺はかーなーり強い",
       "text": "相手は自分自身のラッシュエリアからユニットを1体選び、可能ならバトルエリアに出す。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e79bb8e6898b",
+          "keyword": "opponent_must_hanorashueriakarayunitowo1binarabatoruerianisu",
           "duration": "turn"
         }
       ],

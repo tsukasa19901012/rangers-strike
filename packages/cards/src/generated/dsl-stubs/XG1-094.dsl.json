@@ -31,14 +31,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e38386e383b3e38388e382a6",
+      "id": "tentousupia",
       "name": "テントウスピアー",
       "text": "敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードを持ち主の山札の上に戻すか、持ち主のコマンドゾーンにホールド状態で置く。（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e695b5e8bb8d",
+          "keyword": "combo_action_nokara1woomotenishitemoyoisoushitatokiomotenishitakadowochi",
           "duration": "turn"
         }
       ],

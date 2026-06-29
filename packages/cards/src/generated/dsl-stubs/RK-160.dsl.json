@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3838ae3838ee383ade3839c",
+      "id": "nanoroboto",
       "name": "ナノロボット散布実験",
       "text": "これが自軍エリアにある間、追加条件を持たない敵軍Sユニットがラッシュされたとき、そのユニットの必要パワーの数字と同じ必要パワーの数字を持つDAのユニットカードを自分の手札から1枚選び、ラッシュエリアに出してもよい。ただし、DAの自軍コマンドを1つホールドすること。そうしたとき、ラッシュされた敵軍ユニットを撃破する。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruwotanaisyunitogarashusaretatokisono",
           "duration": "permanent"
         }
       ],

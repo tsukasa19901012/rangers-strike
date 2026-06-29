@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "permanent"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e586b7e3819fe38184e38395",
+      "id": "taifuaiyagaru",
       "name": "冷たいファイヤーガール",
       "text": "「SP1/2」 これがアタックしたとき、相手は自分自身の捨札を1枚選び、ゲームから除外する。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e3808c535031",
+          "keyword": "exclude_game_sp12koregaatakushitatokihanowo1bigemukarasuru",
           "duration": "turn"
         }
       ],

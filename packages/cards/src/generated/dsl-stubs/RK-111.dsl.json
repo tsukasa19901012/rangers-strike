@@ -11,7 +11,7 @@
   "rawText": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【非常警戒態勢】これにライドしているSユニットは次の能力を得る⇒ これが自軍ラッシュエリアにある間、相手にストライクされたとき、これをバトルエリアに出し、ストライクしてきた敵軍ユニットとバトルしてもよい。そうしたとき、そのストライクは無効になる。",
   "effects": [
     {
-      "id": "ride_without_rc_named_e8ada6e5af9f",
+      "id": "ride_without_rc_fx_unknown",
       "text": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,13 +19,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_named_e8ada6e5af9f",
+          "keyword": "ride_without_rc_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e99d9ee5b8b8e8ada6e68892",
+      "id": "fx_unknown_e99d9e",
       "name": "非常警戒態勢",
       "text": "これにライドしているSユニットは次の能力を得る⇒ これが自軍ラッシュエリアにある間、相手にストライクされたとき、これをバトルエリアに出し、ストライクしてきた敵軍ユニットとバトルしてもよい。そうしたとき、そのストライクは無効になる。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_s_ability_e38193e3828c",
+          "keyword": "ride_s_ability_koreniraidoshiteirusyunitohano_chikara_worukoregarashueri",
           "duration": "permanent"
         }
       ]

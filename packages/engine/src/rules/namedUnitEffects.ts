@@ -11,7 +11,7 @@ import {
   getDefinition,
   unitBp,
 } from "../core/catalog";
-import { attackedBpBoostAmount } from "../dsl/promotedKeywordBridge";
+import { attackedBpBoostAmount, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "./fieldAuras";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import {
@@ -76,6 +76,14 @@ export function battleAttackerBpBonus(
       ? mirageOverride + (attacker.card.bpModifier ?? 0)
       : effectiveBp(state, pending.attackerPlayerId, attacker.card)) +
     (pending.attackerBpBonus ?? 0);
+
+  if (pending.attackerPlayerId === state.activePlayer) {
+    for (const kw of listCardGrantKeywords(attacker.card.cardId)) {
+      const m = kw.match(/^bp_plus_on_battle_own_turn_(\d+)$/);
+      if (m) total += Number(m[1]);
+    }
+  }
+
   total += passiveNamedFieldBpBonus(
     state,
     pending.attackerPlayerId,

@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e38395e382a1e382a4e383a4",
+      "id": "fuaiyaborukurashu",
       "name": "ファイヤーボールクラッシュ",
       "text": "これをラッシュしたとき、敵軍バトルエリアからBP3000以下のユニットを3体まで選び撃破してもよい。",
       "trigger": {
@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e38193e3828c",
+          "keyword": "destroy_on_rush_koreworashushitatokibatorueriakarabp3000noyunitowo3made",
           "duration": "turn"
         }
       ],

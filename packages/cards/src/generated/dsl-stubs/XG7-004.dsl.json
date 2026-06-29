@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b4e383bce382abe382a4",
+      "id": "gokaisaberu",
       "name": "ゴーカイサーベル",
       "text": "SP1 特徴に色を持つオモテ向きの自軍パワーを1枚選び、自軍山札の上に戻してもよい。そうしたとき、戻したカードと同じ特徴を2つ以上持つ、敵軍バトルエリアのSユニットを1体選び撃破する。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_deck_53503120e789",
+          "keyword": "pick_from_deck_sp1niwotsuomote_ko_kinopawawo1binonishitemoyoiso",
           "duration": "turn"
         }
       ],

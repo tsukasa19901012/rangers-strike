@@ -11,7 +11,7 @@
   "rawText": "自軍山札から1枚ひいて、そのカードを自軍コマンドゾーンに置く。置けなければ手札に加える。",
   "effects": [
     {
-      "id": "named_e382b9e382b3e383bce38397",
+      "id": "sukopushoto",
       "name": "スコープショット",
       "text": "自軍山札から1枚ひいて、そのカードを自軍コマンドゾーンに置く。置けなければ手札に加える。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "draw_cards_e887aae8bb8d",
+          "keyword": "draw_deck_to_command_or_hand",
           "duration": "turn"
         }
       ],

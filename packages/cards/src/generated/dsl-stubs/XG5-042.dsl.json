@@ -33,14 +33,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_dekomandowo2tsuhorudosuru",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e5a4a9e8a385e59088e4bd93",
+      "id": "fx_unknown_6",
       "name": "天装合体",
       "text": "自軍ラッシュフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自分の手札から「ゴセイグレート」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
       "trigger": {
@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e887aae8bb8d",
+          "keyword": "deploy_rush_area_rashufueizukonoyunitowonishitemoyoisoushitatokinokarago",
           "duration": "turn"
         }
       ],

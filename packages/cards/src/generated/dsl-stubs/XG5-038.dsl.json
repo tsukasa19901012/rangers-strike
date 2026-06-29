@@ -49,7 +49,7 @@
       ]
     },
     {
-      "id": "named_e681afe590b9e381aee382b9",
+      "id": "nosukaikupawa",
       "name": "息吹のスカイックパワー",
       "text": "カテゴリを2つ以上持つ自軍Sユニットを1体選びリリースしてもよい。（自分の手札が1枚以下なら、カテゴリを2つ以上持つ自軍Sユニットを2体選んでもよい）",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "category_modify_e382abe38386",
+          "keyword": "category_modify_kategoriwo2tsutsusyunitowo1biririsushitemoyoinoga1",
           "duration": "turn"
         }
       ],

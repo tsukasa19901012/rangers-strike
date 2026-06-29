@@ -18,19 +18,20 @@
   ],
   "effects": [
     {
-      "id": "named_e38397e383ade3839fe3838d",
+      "id": "purominensushawa",
       "name": "プロミネンス・シャワー",
       "text": "これが自軍バトルエリアにある間、敵軍ユニットが「これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される」の効果で撃破されたとき、その持ち主は1点ダメージを受ける。",
       "trigger": {
-        "type": "on_destroy"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
-          "duration": "turn"
+          "keyword": "while_in_field_body_koregabatoruerianiaruyunitogakorehatansp1noyuni",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

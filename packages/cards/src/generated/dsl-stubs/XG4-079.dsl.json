@@ -61,7 +61,7 @@
       ]
     },
     {
-      "id": "named_e382a2e382bfe38383e382af",
+      "id": "atakuraido",
       "name": "アタックライド",
       "text": "自軍ターン中、これがバトルエリアに出たとき、必要パワーの数字が「1」「2」「3」のオモテ向きの自軍パワーがそれぞれあるなら、その中から1枚選び捨札にしてもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP1」",
       "trigger": {
@@ -70,7 +70,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "grant_ability_tankoregabatoruerianitatokipawanoga123noomote_ko_kino",
           "duration": "turn"
         }
       ]

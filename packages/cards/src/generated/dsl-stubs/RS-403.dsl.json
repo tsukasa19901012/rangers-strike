@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3838fe382a4e38396e383aa",
+      "id": "haiburidomagunamu",
       "name": "ハイブリッドマグナム",
       "text": "敵軍ラッシュエリアから、BPの下三桁が500の敵軍Sユニットを1体選び、撃破してもよい。",
       "trigger": {
@@ -28,12 +28,39 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_e695b5e8bb8d",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "rush",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
       ],
-      "optional": true
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "rush",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
     }
   ],
   "implementation": {

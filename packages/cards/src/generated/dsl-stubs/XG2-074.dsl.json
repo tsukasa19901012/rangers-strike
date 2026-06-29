@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_self_on_ally_rush_e280bbe887aa",
+          "keyword": "return_self_on_ally_rush_fx_unknown",
           "duration": "permanent"
         }
       ]
@@ -34,14 +34,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e38395e382a1e382a4e3838a",
+      "id": "fuainaruatakuraido",
       "name": "ファイナルアタックライド",
       "text": "自軍ターン中、これがバトルエリアに出たとき、BP4000以上の敵軍Sユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -50,7 +50,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibp4000nosyunitowo1",
           "duration": "turn"
         }
       ],

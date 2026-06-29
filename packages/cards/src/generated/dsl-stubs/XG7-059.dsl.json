@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "permanent"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b2e383bce383a0e382b9",
+      "id": "gemusutato",
       "name": "ゲームスタート……",
       "text": "これが自軍パワーゾーンでオモテ向きになっている間、効果に「ラッシュしたとき」とある敵軍ユニットがその効果を発動するとき、それを実行する前に、これを自軍ラッシュエリアに出してもよい。そうしたとき、その効果は無効になる。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e38193e3828c",
+          "keyword": "deploy_rush_area_koregapawazondeomote_ko_kininateirunirashushitatokitoar",
           "duration": "turn"
         }
       ],

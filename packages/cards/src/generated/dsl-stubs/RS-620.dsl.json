@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382ace383abe383bce38380",
+      "id": "garudakuro",
       "name": "ガルーダクロー",
       "text": "これをラッシュしたとき、敵軍パワーゾーンからダメージ以外のカードを1枚選び、持ち主の山札の上に戻してもよい。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e38193e3828c",
+          "keyword": "damage_action_koreworashushitatokipawazonkaradamejinokadowo1bichino",
           "duration": "turn"
         }
       ],

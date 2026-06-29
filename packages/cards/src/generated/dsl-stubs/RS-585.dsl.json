@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b5e382ace382b9e38394",
+      "id": "sagasupia",
       "name": "サガスピアー",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍か敵軍の山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中にSPが空欄でないユニットカードがあれば、このターン、これは「SP1」になる。その後、オモテにしたカードは、その持ち主が相手に見せずに好きな順で山札の上に戻す。",
       "trigger": {
@@ -28,10 +28,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "reveal_faceup_tankoregabatoruerianitatokikanonokara3woomotenishi",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e5a587e8a5b2",
+      "id": "fx_unknown_e5a587",
       "name": "奇襲",
       "text": "これが自軍エリアにある間、ブラストの効果は次のルールに変更される⇒自分がゲームに負けるまで残りダメージ1点または2点で、自軍Lユニットが1体もなければ、これの追加条件は満たさなくてもよい。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruburasutonohanorurunisarerugagemunike",
           "duration": "permanent"
         }
       ],

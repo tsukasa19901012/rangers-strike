@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382ace383a9e382a4e382bd",
+      "id": "garaisodo",
       "name": "ガライソード",
       "text": "これをラッシュしたとき、これをホールドしてもよい。そうしたとき、このターン、これはSP1になる。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "optional_then_e38193e3828c",
+          "keyword": "optional_then_koreworashushitatokikorewohorudoshitemoyoisoushitatokikono",
           "duration": "turn"
         }
       ],

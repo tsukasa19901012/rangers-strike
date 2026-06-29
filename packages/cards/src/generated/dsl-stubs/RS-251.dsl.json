@@ -11,7 +11,7 @@
   "rawText": "自軍山札を見て、必要パワーの数字に「－」のあるユニットカードを1枚選び、ラッシュエリアに出す。ただし、必要パワーと追加条件は満たすこと。その後、山札をシャッフルする。",
   "effects": [
     {
-      "id": "named_e38396e383b3e383bbe382bf",
+      "id": "buntano",
       "name": "ブン・ターの特訓",
       "text": "自軍山札を見て、必要パワーの数字に「－」のあるユニットカードを1枚選び、ラッシュエリアに出す。ただし、必要パワーと追加条件は満たすこと。その後、山札をシャッフルする。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_e887aae8bb8d",
+          "keyword": "deck_search_minus_power_rush",
           "duration": "turn"
         }
       ],

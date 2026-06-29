@@ -11,7 +11,7 @@
   "rawText": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【ビッグキャノン】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、ライドされていないSビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
   "effects": [
     {
-      "id": "ride_without_rc_named_e8ada6e5af9f",
+      "id": "ride_without_rc_fx_unknown",
       "text": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,13 +19,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_named_e8ada6e5af9f",
+          "keyword": "ride_without_rc_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e38393e38383e382b0e382ad",
+      "id": "bigukyanon",
       "name": "ビッグキャノン",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、ライドされていないSビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakararaidosaret",
           "duration": "turn"
         }
       ],

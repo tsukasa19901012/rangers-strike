@@ -24,14 +24,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e69caae69da5e381aee688a6",
+      "id": "nohe",
       "name": "未来の戦士達へ",
       "text": "これが自軍コマンドゾーンにある間、このカードはカテゴリにWB、MA、ETが追加され、敵軍パワーは追加で2増える。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregakomandozonniarukonokadohakategoriniwbmaetgasar",
           "duration": "permanent"
         }
       ],

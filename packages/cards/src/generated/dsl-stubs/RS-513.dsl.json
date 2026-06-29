@@ -21,7 +21,7 @@
   },
   "effects": [
     {
-      "id": "named_e5b086e8bb8de88ab1e590b9",
+      "id": "hana",
       "name": "将軍花吹雪",
       "text": "これをラッシュしたとき、敵軍ユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む）をすべて持ち主の山札に戻してシャッフルする。",
       "trigger": {
@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_e38193e3828c",
+          "keyword": "return_to_zone_koreworashushitatokiyunitononinetakadoyunitoyabikurutoshi",
           "duration": "turn"
         }
       ],

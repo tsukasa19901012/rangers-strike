@@ -22,7 +22,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382bde3838be38383e382af",
+      "id": "sonikupuresha",
       "name": "ソニックプレッシャー",
       "text": "このターン、これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットをホールドしてもよい。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e38193e381ae",
+          "keyword": "hold_enemy_unit_konotankoregasyunitoniatakusurutokibatorunonibatorunoyun",
           "duration": "turn"
         }
       ],

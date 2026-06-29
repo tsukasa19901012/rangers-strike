@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": "named_e3839fe382b5e382a4e383ab",
+      "id": "misairu_e3839f",
       "name": "ミサイル発射",
       "text": "合体の必要な敵軍ユニットを1体選び撃破する。ただし、選んだユニットの合体に必要なユニットカードのうち、どれか1枚でも敵軍捨札にあれば、そのユニットは撃破できない。",
       "trigger": {
@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_e59088e4bd93",
+          "keyword": "discard_to_zone_nonayunitowo1bi_geki_ha_surutadashindayunitononinayuni",
           "duration": "turn"
         }
       ],

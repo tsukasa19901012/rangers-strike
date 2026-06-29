@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e5be85e381a1e4bc8fe3819b",
+      "id": "chise",
       "name": "待ち伏せ",
       "text": "敵軍ターン中、これがSユニットとのバトルで撃破されて捨札になったとき、これとバトルしたユニットを、持ち主の山札の下に戻してもよい。",
       "trigger": {
@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_e695b5e8bb8d",
+          "keyword": "discard_to_zone_tankoregasyunitotonobatorude_geki_ha_sareteninatatokikor",
           "duration": "turn"
         }
       ],

@@ -25,14 +25,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e280bbe38193",
+          "keyword": "destroy_on_rush_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e4be8de6ada6e8a385",
+      "id": "fx_unknown_e4be8d",
       "name": "侍武装",
       "text": "自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {

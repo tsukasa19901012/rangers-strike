@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38388e383a9e383b3e382af",
+      "id": "torankuno",
       "name": "トランクの中身",
       "text": "これが自軍ラッシュエリアにある間、WBを持つ自軍Sユニットがバトルエリアに出たとき、常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、自分の手札に加えてもよい（ウラ向きのカードはウラ向きのまま選ぶ）。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiaruwbwotsusyunitogabatoruerianitato",
           "duration": "permanent"
         }
       ],

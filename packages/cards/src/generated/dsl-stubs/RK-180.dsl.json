@@ -41,13 +41,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e7a59ee587bae9acbce6b2a1",
+      "id": "shin",
       "name": "神出鬼没",
       "text": "敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい。そうしたとき、ライドしていない敵軍Sユニットを1体選び、選んだビークルにライドさせる。",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e695b5e8bb8d",
+          "keyword": "ride_action_rashueriakararaidosareteinaisbikuruwo1ndemoyoisoushitatoki",
           "duration": "turn"
         }
       ],

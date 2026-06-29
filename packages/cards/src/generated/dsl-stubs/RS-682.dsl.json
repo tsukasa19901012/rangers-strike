@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": "named_e5a085e789a2e381aae3828b",
+      "id": "naru_ko",
       "name": "堅牢なる甲羅",
       "text": "レジストを持つ自軍Mユニットを1体選び、リリースしてもよい。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "register_resist_e383ace382b8",
+          "keyword": "register_resist_rejisutowotsumyunitowo1biririsushitemoyoi",
           "duration": "turn"
         }
       ],

@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e69591e58aa9e381a8e5ae89",
+      "id": "to_e69591",
       "name": "救助と安全確保",
       "text": "自軍捨札からSユニットのカードを1枚選び、自軍山札の上に置いてもよい。（この効果は「ファイヤー」または「バイクル」からコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e887aae8bb8d",
+          "keyword": "combo_action_karasyunitonokadowo1binoniitemoyoikonohafua",
           "duration": "turn"
         }
       ],

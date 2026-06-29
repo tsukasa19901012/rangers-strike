@@ -41,14 +41,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": true
     },
     {
-      "id": "named_e383ace383b3e382b2e383ab",
+      "id": "rengerurauza",
       "name": "レンゲルラウザー",
       "text": "自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードがすべて、BPの下三桁が500の追加条件を持たないユニットカードなら、そのカードをすべて自軍ラッシュエリアに出す。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_pick_show_e887aae58886",
+          "keyword": "hand_pick_show_nowo3binisetemoyoisoushitatokisetakadogasubetebpno",
           "duration": "turn"
         }
       ],

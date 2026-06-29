@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e5b2a9e79fb3e890bde381a8",
+      "id": "seki_toshi",
       "name": "岩石落とし",
       "text": "BP2000以下の敵軍ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_425032303030",
+          "keyword": "hold_all_enemy_bp2000_to_command",
           "duration": "turn"
         }
       ],

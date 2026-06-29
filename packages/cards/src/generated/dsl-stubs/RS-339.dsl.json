@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e99787e381b8e381aee8aa98",
+      "id": "yami_henoi",
       "name": "闇への誘い",
       "text": "これが自軍エリアにある間、特徴「男」を持つすべてのユニットは、カテゴリに「DA」が追加される。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiaruwotsusubetenoyunitohakategorinidagasa",
           "duration": "permanent"
         }
       ],

@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383ace38387e382a3e382b9",
+      "id": "redeisunaipa",
       "name": "レディスナイパー",
       "text": "このユニットからコンビネーションするOTを持ち特徴「男」を持つSユニットは、このターン、次の能力を得る⇒BP+2000され、ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e381ae",
+          "keyword": "grant_ability_konoyunitokarakonbineshonsuruotwochiwotsusyunitohakonotan",
           "duration": "turn"
         }
       ]

@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3839ee382a4e3838ae382b9",
+      "id": "mainasuenerugi",
       "name": "マイナスエネルギー吸収",
       "text": "これが自軍ラッシュエリアにある間、自軍バトルフェイズを終えるときに1度だけ、自軍捨札から必要パワーに「－」を持つカードを1枚選び、これの下にウラ向きで重ねてもよい。これは下に重なっているウラ向きのカード1枚につき「SP+1」される。これがユニットでなくなるとき、この下に重ねたウラ向きのカードをすべて捨札にする。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiarubatorufueizuwoerutokini1dake",
           "duration": "permanent"
         }
       ],

@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b9e383afe383b3e382a4",
+      "id": "suwaniryujon",
       "name": "スワンイリュージョン",
       "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、敵軍Sユニットにストライクされてダメージを受けたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregarashuerianiarutansyunitonisutoraikusaretedame",
           "duration": "permanent"
         }
       ],

@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e383ade38383e382afe38389",
+      "id": "rokudobasuta",
       "name": "ロックドバスター",
       "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒「SP+1」",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_l_ability_e38193e381ae",
+          "keyword": "combo_l_category_sp1",
           "duration": "permanent"
         }
       ]

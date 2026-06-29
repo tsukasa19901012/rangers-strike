@@ -49,7 +49,7 @@
       ]
     },
     {
-      "id": "named_e58584e5a6b9e381aee7b586",
+      "id": "no_e58584",
       "name": "兄妹の絆",
       "text": "これは次の相手ターン終了時まで、次の能力を得る⇒「BP+3000｣「スクラム」（自分の手札が1枚以下なら、追加で次の能力を得る⇒これはアタックされる以外では相手に選ばれない）",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_korehanotanmadeno_chikara_worubp3000sukuramunoga1",
           "duration": "turn"
         }
       ]

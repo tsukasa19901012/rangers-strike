@@ -1,4 +1,4 @@
-import type { GameState, PlayerId } from "../types/game";
+import type { GameState, PendingBattle, PlayerId } from "../types/game";
 import {
   cardName,
   getDefinition,
@@ -33,6 +33,9 @@ import {
 } from "./runtimeEffectDispatch";
 import { effectDelegateSlot } from "./effectDelegateSlot";
 import { isEngineNativeGrantKeyword } from "./promotedKeywordBridge";
+import { isCatchallGrantKeyword } from "./hashGrantKeywordStub";
+import { setGenericSComboFinisher, setBattleDestroyToPower, addComboNumberDelta } from "../rules/turnModifierBridge";
+import { superPowerAttackBonus } from "../core/catalog";
 
 export const PASSIVE_GRANT_KEYWORDS = new Set([
   "over_technology_m_bp_plus_on_attacked",
@@ -70,6 +73,15 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "scrum",
   "not_selectable_except_attack",
   "no_strike_after_rideoff",
+  "all_enemy_s_auto_battle_entry",
+  "combo_l_category_sp1",
+  "combo_l_category_attack_rush",
+  "opponent_destroy_lower_bp_on_battle_win",
+  "while_command_leave_hold_from_discard",
+  "while_opponent_operation_discard_power",
+  "while_da_s_cannot_battle_entry",
+  "bp_debuff_per_non_ot_command",
+  "category_wb_while_in_battle",
 ]);
 
 export const SUPPORTED_GRANT_KEYWORDS = new Set([
@@ -102,6 +114,8 @@ export const SUPPORTED_GRANT_KEYWORDS = new Set([
   "assault_vector_destroy",
   "blood_vessel_on_strike",
   "attack_ride_replace",
+  "battle_destroy_to_power",
+  "combo_number_delta_minus_1",
   ...PASSIVE_GRANT_KEYWORDS,
 ]);
 
@@ -217,6 +231,44 @@ export function applyGrantKeyword(
     }
     case "reveal_top_destroy_if_same_size":
       return resolveJudgmentKeyword(state, ctx);
+    case "combo_number_delta_minus_1": {
+      const player = state.players[ctx.playerId];
+      return {
+        state: {
+          ...state,
+          ...updatePlayer(state, ctx.playerId, addComboNumberDelta(player, -1)),
+        },
+        detail: "combo_number_delta_minus_1",
+      };
+    }
+    case "nc_sp1_if_no_enemy_units": {
+      const instanceId = ctx.triggerSourceInstanceId ?? ctx.operationInstanceId;
+      if (!instanceId) return { state, detail: keyword };
+      const enemy = state.players[opponent(ctx.playerId)];
+      const enemyUnitCount =
+        enemy.battle.length + enemy.rush.length + enemy.command.length;
+      if (enemyUnitCount > 0) return { state, detail: keyword };
+      return {
+        state: grantSp1ToBattleUnit(state, ctx.playerId, instanceId),
+        detail: keyword,
+      };
+    }
+    case "battle_destroy_to_power": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      const player = state.players[ctx.playerId];
+      return {
+        state: {
+          ...state,
+          ...updatePlayer(
+            state,
+            ctx.playerId,
+            setBattleDestroyToPower(player, instanceId, ctx.sourceCardId),
+          ),
+        },
+        detail: "battle_destroy_to_power",
+      };
+    }
     case "SP1": {
       const instanceId = ctx.triggerSourceInstanceId;
       if (!instanceId) return { state };
@@ -391,7 +443,114 @@ export function applyGrantKeyword(
         detail: `dino_guts:${drawCost}`,
       };
     }
-    default:
+    default: {
+      const sCombo = keyword.match(/^s_combo_finisher_(\d+)_sp(\d+)_bp(\d+)$/);
+      if (sCombo) {
+        const player = state.players[ctx.playerId];
+        const nextPlayer = setGenericSComboFinisher(
+          player,
+          {
+            position: Number(sCombo[1]),
+            sp: Number(sCombo[2]),
+            bp: Number(sCombo[3]),
+          },
+          ctx.sourceCardId,
+        );
+        return {
+          state: { ...state, ...updatePlayer(state, ctx.playerId, nextPlayer) },
+          detail: keyword,
+        };
+      }
+
+      const optionalBattle = keyword.match(
+        /^optional_enemy_battle_min_bp_(\d+)(_no_attack)?$/,
+      );
+      if (optionalBattle) {
+        const defenderInstanceId = ctx.triggerSourceInstanceId;
+        if (!defenderInstanceId) return { state };
+        const player = state.players[ctx.playerId];
+        const attacker = player.battle.find((c) => c.cardId === ctx.sourceCardId);
+        if (!attacker) return { state };
+        const enemyId = opponent(ctx.playerId);
+        let nextState = state;
+        if (optionalBattle[2]) {
+          nextState = markBattleNcEffect(
+            nextState,
+            ctx.playerId,
+            attacker.instanceId,
+            "optional_battle_no_attack",
+          );
+        }
+        const pending: PendingBattle = {
+          attackerPlayerId: ctx.playerId,
+          attackerInstanceId: attacker.instanceId,
+          defenderPlayerId: enemyId,
+          defenderInstanceId,
+          phasePlayerId: ctx.phasePlayerId,
+          attackerBpBonus: superPowerAttackBonus(nextState, ctx.playerId, attacker),
+        };
+        return {
+          state: { ...nextState, pendingBattle: pending },
+          detail: "optional_enemy_battle",
+        };
+      }
+
+      if (keyword.startsWith("bp_plus_on_battle_own_turn_")) {
+        return { state, detail: keyword };
+      }
+
+      if (keyword.startsWith("battle_destroy_to_power_self")) {
+        const instanceId = ctx.operationInstanceId ?? ctx.triggerSourceInstanceId;
+        if (!instanceId) return { state };
+        const player = state.players[ctx.playerId];
+        return {
+          state: {
+            ...state,
+            ...updatePlayer(
+              state,
+              ctx.playerId,
+              setBattleDestroyToPower(player, instanceId, ctx.sourceCardId),
+            ),
+          },
+          detail: keyword,
+        };
+      }
+
+      if (
+        keyword.startsWith("power_zone_min_") ||
+        (keyword.startsWith("all_") && keyword.endsWith("_auto_battle_entry")) ||
+        keyword.startsWith("end_turn_return_if_no_") ||
+        keyword.startsWith("rush_trim_power_") ||
+        keyword.startsWith("rush_skip_command_hold_") ||
+        keyword.startsWith("end_turn_return_hand_if_no_") ||
+        keyword.startsWith("require_power_discard_") ||
+        keyword.startsWith("attack_bp_plus_vs_") ||
+        keyword === "ignore_rule_hold_command_entry" ||
+        keyword === "combo_wb_m_bp3000_sp1_destroy_end" ||
+        keyword === "deck_search_minus_power_rush" ||
+        keyword === "opponent_rush_s_to_hand" ||
+        keyword === "opponent_rush_s_to_battle" ||
+        keyword === "combo_number_delta_minus_1" ||
+        keyword === "nc_sp1_if_no_enemy_units" ||
+        keyword.startsWith("deck_search_") ||
+        keyword.startsWith("hold_all_enemy_bp") ||
+        keyword === "opponent_hand_counter_to_power" ||
+        keyword === "deck_search_operation_to_power" ||
+        keyword === "alternating_draw_3_mill" ||
+        keyword === "deploy_enemy_command_silent" ||
+        keyword === "release_m_command_to_rush" ||
+        keyword === "draw_deck_to_command_or_hand" ||
+        (keyword.startsWith("return_") && keyword.endsWith("_battle_to_deck_bottom"))
+      ) {
+        return { state, detail: keyword };
+      }
+
+      if (isCatchallGrantKeyword(keyword)) {
+        const resolved = effectDelegateSlot.resolver?.(state, ctx, keyword);
+        if (resolved && resolved.detail !== keyword) return resolved;
+        return { state, detail: keyword };
+      }
+
       if (isRuntimeGrantKeyword(keyword)) {
         return applyRuntimeGrantKeyword(
           state,
@@ -408,5 +567,6 @@ export function applyGrantKeyword(
         return { state, detail: keyword };
       }
       return { state };
+    }
   }
 }

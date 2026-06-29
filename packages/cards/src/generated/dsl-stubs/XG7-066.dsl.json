@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e3838fe382a4e38389e383a9",
+      "id": "haidoranda",
       "name": "ハイドランダー",
       "text": "自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにリリース状態で置く。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e887aae8bb8d",
+          "keyword": "release_command_action_komandowo1tsubinishitemoyoisoushitatokinokara1hii",
           "duration": "turn"
         }
       ],

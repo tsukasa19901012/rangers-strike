@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e68ea1e782b9",
+      "id": "fx_unknown_e68ea1",
       "name": "採点",
       "text": "これが自軍エリアにある間、自軍バトルフェイズ中、次の効果を発動できる⇒Sユニットを1体選んでから、自軍コマンドを1つホールドする。このターン、選んだユニットの必要パワーの数字は、ホールドした自軍コマンドの必要パワーの数字になる。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koregaerianiarubatorufueizunowodekirusyunitowo1",
           "duration": "turn"
         }
       ],

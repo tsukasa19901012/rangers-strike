@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "named_e68e98e5898a",
+      "id": "fx_unknown_e68e98",
       "name": "掘削",
       "text": "これをラッシュしたとき、敵軍パワーゾーンのダメージ以外のカードの枚数を数えてから、そのカードをすべて捨札にしてもよい。そうしたとき、数えた枚数と同じ枚数になるまで敵軍捨札からカードを選び、敵軍パワーゾーンにオモテ向きで置く。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e38193e3828c",
+          "keyword": "damage_action_koreworashushitatokipawazonnodamejinokadonowoetekaraso",
           "duration": "turn"
         }
       ],

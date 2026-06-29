@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_e280bbe38193",
+          "keyword": "deck_search_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": true
     },
     {
-      "id": "named_e382a4e382afe382b5e383bb",
+      "id": "ikusajajimento",
       "name": "イクサ・ジャッジメント",
       "text": "敵軍バトルエリアから、BPが本来のBPでないユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e695b5e8bb8d",
+          "keyword": "hold_enemy_unit_batorueriakarabpganobpdenaiyunitowobichinokomandozon",
           "duration": "turn"
         }
       ],

@@ -6,6 +6,7 @@ export * from "./extractEffects";
 export * from "./generateDsl";
 export * from "./catalogLookup";
 export * from "./metaMaps";
+export * from "./hashGrantKeywords";
 export * from "./effectPatternCatalog";
 export * from "./triggerCatalog";
 export * from "./rulingCatalog";

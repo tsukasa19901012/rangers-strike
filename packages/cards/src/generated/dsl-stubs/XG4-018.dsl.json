@@ -19,14 +19,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bb5742e3",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e799bde98a80e381aee796be",
+      "id": "no_kaze",
       "name": "白銀の疾風",
       "text": "自軍ターン中、これがバトルエリアに出たとき、特徴「獣」を持つ自軍ユニットの数を数え、その数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破してもよい。",
       "trigger": {
@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokiwotsuyunitonowoesono",
           "duration": "turn"
         }
       ],

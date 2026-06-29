@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-06-29T00:38:58.906Z",
+  "summary": {
+    "totalHashGrantKeywords": 0,
+    "engineNativeOrPassive": 0,
+    "interpretEffectDelegate": 0,
+    "rematchWouldResolve": 0,
+    "stubOnlyNoRuntime": 0,
+    "stubOnlyRate": 0
+  },
+  "note": "stubOnly = grant_keyword ハッシュのみで、エンジン grantKeyword の default 分岐（no-op）に落ちる。note_other_* 等は一部カード ID 別途 TS 実装あり。",
+  "byPrefix": {},
+  "stubSamples": []
+}

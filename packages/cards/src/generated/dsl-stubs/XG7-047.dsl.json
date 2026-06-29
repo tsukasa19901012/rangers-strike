@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382abe3839ee382ade383aa",
+      "id": "kamakirisodo",
       "name": "カマキリソード",
       "text": "これは敵軍Sユニットにアタックするとき、BP+5000される。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_korehasyunitoniatakusurutokibp5000sareru",
           "duration": "turn"
         }
       ],

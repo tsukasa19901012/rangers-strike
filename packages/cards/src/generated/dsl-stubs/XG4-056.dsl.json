@@ -19,7 +19,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_ally_on_rush_e280bbe887aa",
+          "keyword": "return_ally_on_rush_fx_unknown",
           "duration": "permanent"
         }
       ],
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe789b9",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],

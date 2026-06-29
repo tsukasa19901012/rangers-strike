@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e5a881e59ca7e38199e3828b",
+      "id": "suru",
       "name": "威圧する咆哮",
       "text": "これが自軍エリアにある間、敵軍ターン中、敵軍ユニットがＮＣの効果を発動するとき、そのユニットと同じカード名のユニットカードが敵軍捨札にあれば、そのNCの効果を発動する前に、次の効果を発動できる⇒そのユニットが持つカテゴリと同じカテゴリを持つ敵軍コマンドをすべて捨札にする。",
       "trigger": {
@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koregaerianiarutanyunitoganowosurutokisonoyuni",
           "duration": "turn"
         }
       ],

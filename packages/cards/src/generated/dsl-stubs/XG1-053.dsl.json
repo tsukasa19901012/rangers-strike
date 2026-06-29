@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38390e383bce3838be383b3",
+      "id": "baninguraidapanchi",
       "name": "バーニングライダーパンチ",
       "text": "これは、アタックしてバトルに勝つたび、可能なら追加でアタックする。ただし、これはバトルを終えるたび、このターン、BP+500され、自分がターンを終えるときBP6000以上なら撃破される。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_korehaatakushitebatorunitsutabinaradeatakusurutadashikorehabat",
           "duration": "turn"
         }
       ],

@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e38380e382a4e382b7e383b3",
+      "id": "daishinken",
       "name": "ダイシンケン",
       "text": "自軍ターン中、これがバトルエリアに出たとき、相手は自分自身のバトルエリアからユニットを1体選び、自分自身のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e887aae8bb8d",
+          "keyword": "opponent_must_tankoregabatoruerianitatokihanobatorueriakarayunito",
           "duration": "turn"
         }
       ],

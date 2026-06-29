@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e695a3e5bcbe",
+      "id": "dan_e695a3",
       "name": "散弾",
       "text": "これをラッシュしたとき、ライド中の敵軍Sユニットを1体選び、ライドオフさせてもよい。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e38193e3828c",
+          "keyword": "ride_action_koreworashushitatokiraidonosyunitowo1biraidoofusasetemoyoi",
           "duration": "turn"
         }
       ],

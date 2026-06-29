@@ -18,19 +18,20 @@
   ],
   "effects": [
     {
-      "id": "named_e382bde383bce38389e38388",
+      "id": "sodotorunedo",
       "name": "ソードトルネード",
       "text": "これが自軍エリアにある間、自分か相手の山札がシャッフルされたとき、そのターン中、これは「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
-          "duration": "turn"
+          "keyword": "while_in_field_body_koregaerianiarukanogashafurusaretatokisonotankoreha",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

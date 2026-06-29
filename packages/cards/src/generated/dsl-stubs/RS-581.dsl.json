@@ -19,7 +19,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe789b9",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "id": "fx_1500",
+      "id": "fx_1500_chikara",
       "name": "1500万馬力",
       "text": "これにライドしているユニットは、敵軍ターン中、BP+1500される。",
       "trigger": {
@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e38193e3828c",
+          "keyword": "ride_action_koreniraidoshiteiruyunitohatanbp1500sareru",
           "duration": "turn"
         }
       ],

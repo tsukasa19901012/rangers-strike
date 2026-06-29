@@ -57,7 +57,7 @@
       ]
     },
     {
-      "id": "named_e38380e383bce382afe38390",
+      "id": "dakubaizatsubai",
       "name": "ダークバイザーツバイ",
       "text": "自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい。そうしたとき、敵軍バトルエリアからSユニットを好きな数選び撃破してもよい。ただし、選んだユニットの特徴の数の合計が、捨札から選んだカードの必要パワーの数字の合計以下になるように選ぶこと。",
       "trigger": {
@@ -66,7 +66,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_e887aae8bb8d",
+          "keyword": "pick_from_discard_karaadobentokadowotsukadowo2madendemoyoisoushitatoki",
           "duration": "turn"
         }
       ],

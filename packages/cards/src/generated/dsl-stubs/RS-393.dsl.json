@@ -19,14 +19,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bb4554e3",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382a2e382bfe38383e382ab",
+      "id": "atakapodo",
       "name": "アタッカーポッド",
       "text": "これがライドされたままなら、このビークルからコンビネーションするSユニットは、次の能力を得る⇒自軍ターン中、ナンバーは3少なくなる。 ただし、2より少なくならない。",
       "trigger": {
@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e3828c",
+          "keyword": "grant_ability_koregaraidosaretamamanarakonobikurukarakonbineshonsurusyun",
           "duration": "turn"
         }
       ]

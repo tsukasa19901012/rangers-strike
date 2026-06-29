@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e38397e383aae382bae383a0",
+      "id": "purizumubaton",
       "name": "プリズムバトン",
       "text": "自軍ラッシュエリアから、「MA」のユニットを1体選び自軍パワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP1」になる。",
       "trigger": {
@@ -42,10 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "power_zone_action_rashueriakaramanoyunitowo1bipawazonnitemoyoisou",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

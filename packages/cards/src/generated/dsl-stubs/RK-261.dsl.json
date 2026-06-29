@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "named_e383aae3839ce383abe382b1",
+      "id": "riborukein",
       "name": "リボルケイン",
       "text": "敵軍捨て札からオペレーションカードを1枚選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e695b5e8bb8d",
+          "keyword": "enemy_power_damage_tekaraopereshonkadowo1bichinopawazonnidamejinishite",
           "duration": "turn"
         }
       ],

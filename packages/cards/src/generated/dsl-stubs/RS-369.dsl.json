@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e58f8ce6898be589a3",
+      "id": "ken",
       "name": "双手剣",
       "text": "SP1 相手は自分自身のラッシュエリアからユニットを1体選ぶ（自軍ダメージが4点以上あれば自分が選ぶ）。このターン、このユニットは、選んだユニットにアタックできる。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_53503120e79b",
+          "keyword": "opponent_must_sp1hanorashueriakarayunitowo1budamejiga4",
           "duration": "turn"
         }
       ],

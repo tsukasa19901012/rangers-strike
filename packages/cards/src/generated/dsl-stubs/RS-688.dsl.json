@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e382aee382ace3838be38383",
+      "id": "giganikubumeran",
       "name": "ギガニックブーメラン",
       "text": "これをラッシュしたとき、レジストまたはウイングを持つ敵軍ユニットをすべてホールドしてもよい。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e38193e3828c",
+          "keyword": "hold_enemy_unit_koreworashushitatokirejisutomatahauinguwotsuyunitowosube",
           "duration": "turn"
         }
       ],

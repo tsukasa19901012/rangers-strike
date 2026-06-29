@@ -22,14 +22,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e6b0b4e4b8ade9ad9ae99bb7",
+      "id": "mizu_kami",
       "name": "水中魚雷",
       "text": "これをラッシュしたとき、敵軍山札の上から3枚をオモテにしてよい。そうしたとき、オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す。",
       "trigger": {
@@ -38,7 +38,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e38193e3828c",
+          "keyword": "reveal_faceup_koreworashushitatokinokara3woomotenishiteyoisoushitatokiom",
           "duration": "turn"
         }
       ],

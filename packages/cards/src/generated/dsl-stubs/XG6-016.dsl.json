@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e78886e7ab9ce5bf85e6aeba",
+      "id": "baku_daburutorunedo",
       "name": "爆竜必殺ダブルトルネード",
       "text": "これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる→コンビネーションしたユニットが持つ、効果名を持つテキスト中の「これがバトルエリアに出たとき」以降の効果を発動する。（この効果は1ターンにつき1回しか発動できない）",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e38193e3828c",
+          "keyword": "combo_action_koretokategorinolyunitogakonoyunitokarakonbineshonsurutokin",
           "duration": "turn"
         }
       ],

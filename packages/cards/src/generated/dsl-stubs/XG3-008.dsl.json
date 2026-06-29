@@ -28,13 +28,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_self_on_ally_rush_e280bbe887aa",
+          "keyword": "return_self_on_ally_rush_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e383a9e382a4e3838ae383bc",
+      "id": "rainakonbo",
       "name": "ライナーコンボ",
       "text": "これが特徴「人型」を持つLユニットまたはXLユニットからコンビネーションするとき、次の効果を発動できる⇒これは「SP1」になる。",
       "trigger": {
@@ -43,10 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "grant_effect_koregawotsulyunitomatahaxlyunitokarakonbineshonsurutokino",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

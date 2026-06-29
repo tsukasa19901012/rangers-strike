@@ -22,7 +22,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382a2e38393e382b9e38380",
+      "id": "abisudaibu",
       "name": "アビスダイブ",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから、特徴「ミラーモンスター」を持つ自軍ユニットを2体選んでもよい。そうしたとき、選んだ2体のBPの合計以下のBPを持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokirashueriakaramiramonsuta",
           "duration": "turn"
         }
       ],

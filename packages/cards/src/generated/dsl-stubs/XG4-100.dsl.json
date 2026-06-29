@@ -46,7 +46,7 @@
       ]
     },
     {
-      "id": "named_e99aa0e78388e5899b",
+      "id": "fx_unknown_e99aa0",
       "name": "隠烈剛",
       "text": "これが自軍エリアにある間、次の敵軍ターン中、ライドしている自軍Sユニットは敵軍ユニットにアタックされない。",
       "trigger": {
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarunotanraidoshiteirusyunitohayuni",
           "duration": "permanent"
         }
       ],

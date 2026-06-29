@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e382b9e382abe382a4e38383",
+      "id": "sukaikusutoraiku",
       "name": "スカイックストライク",
       "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動する⇒自軍捨札にあるウイングを持つカードの枚数を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokinowosuruniaruuingu",
           "duration": "turn"
         }
       ],

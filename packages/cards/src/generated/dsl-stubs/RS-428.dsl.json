@@ -27,14 +27,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e38395e382a1e383b3e382bf",
+      "id": "fuantasuteikutekuniku",
       "name": "ファンタスティック・テクニック",
       "text": "自軍ラッシュエリアから、効果に「ラッシュしたとき」とある「WB」のMユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "wb_category_e887aae8bb8d",
+          "keyword": "wb_category_rashueriakaranirashushitatokitoaruwbnomyunitowo1ndemo",
           "duration": "turn"
         }
       ],

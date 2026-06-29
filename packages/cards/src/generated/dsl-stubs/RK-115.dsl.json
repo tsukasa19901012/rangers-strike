@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382a8e383b3e38389e382aa",
+      "id": "endoobuwarudo",
       "name": "エンドオブワールド",
       "text": "｢マグナギガ｣からコンビネーションしたとき発動できる⇒ホールド状態のSユニットをすべて撃破する。その後、Sユニットをすべてホールドする。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e3808ce3839e",
+          "keyword": "combo_action_magunagigakarakonbineshonshitatokidekiruhorudonosyunitowosu",
           "duration": "turn"
         }
       ],

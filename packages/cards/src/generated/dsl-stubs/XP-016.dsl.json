@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e8b5a4e38184e79eb3e381ab",
+      "id": "inirumono",
       "name": "赤い瞳に宿るもの",
       "text": "これが自軍エリアにある間、このユニットよりBPの低い自軍ユニットがアタックされたとき、アタックされたユニットをホールドしてもよい。そうしたとき、アタックしてきたユニットは、ホールドしたユニットのかわりに、このユニットとバトルする。このバトル中、自軍エリアに「仮面ライダーディケイド」があれば、これはBP+2000される。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarukonoyunitoyoribpnoiyunitogaatakusaret",
           "duration": "permanent"
         }
       ],

@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": "named_e382b5e383a2e383b3e383bb",
+      "id": "samonwandapawa",
       "name": "サモン・ワンダーパワー",
       "text": "これが自分の手札にある間、相手が常駐以外のオペレーションカードを使用して、その処理をすべて終えたとき、MAとMA以外の自軍コマンドを1つずつホールドして、これを自軍ラッシュエリアに出してもよい。そうしたとき、敵軍捨札からオペレーションカードを1枚選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e38193e3828c",
+          "keyword": "enemy_power_damage_koreganoniaruganoopereshonkadowoshitesonowo",
           "duration": "turn"
         }
       ],

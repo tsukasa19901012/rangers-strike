@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "named_e4b896e7958ce381aee7a0b4",
+      "id": "no_ha_kai",
       "name": "世界の破壊者",
       "text": "自分と相手のパワーゾーンのカードの枚数をくらべ、枚数が多いパワーゾーンの持ち主は次のようにする⇒自分自身のパワーゾーンのカードの枚数が対戦相手と同じになるまで、自分自身のオモテ向きのパワーを可能な限り選び捨札にする。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e887aae58886",
+          "keyword": "power_zone_action_tonopawazonnokadonowokurabegaipawazonnochiha",
           "duration": "turn"
         }
       ],

@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "named_e383a9e383b3e38389e382b3",
+      "id": "randokonbiataku",
       "name": "ランドコンビアタック",
       "text": "レジストを持つ敵軍Sユニットを1体選ぶか、レジストを持つ敵軍コマンドを1つ選び、持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e383ace382b8",
+          "keyword": "enemy_power_damage_rejisutowotsusyunitowo1bukarejisutowotsukomandowo1tsu",
           "duration": "turn"
         }
       ],

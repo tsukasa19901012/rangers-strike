@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": "named_e381a6e38293e38193e38282",
+      "id": "tenkomoridaze",
       "name": "てんこもりだぜ！",
       "text": "自軍ターン中、これがバトルエリアに出たとき、パワーゾーンでオモテ向きになっている「モモタロス」「ウラタロス」「キンタロス」「リュウタロス」のカードを捨札にしたときに発動する効果は、捨札にせずに発動できる。",
       "trigger": {
@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e887aae8bb8d",
+          "keyword": "power_zone_action_tankoregabatoruerianitatokipawazondeomote_ko_kininatei",
           "duration": "turn"
         }
       ],

@@ -65,14 +65,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe887aa",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b5e383abe38380e383bc",
+      "id": "sarudadaburusodo",
       "name": "サルダーダブルソード",
       "text": "「SP1」",
       "trigger": {

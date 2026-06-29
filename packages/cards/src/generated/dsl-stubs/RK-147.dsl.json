@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "named_e383ace38389e383bce383a0",
+      "id": "redomu",
       "name": "レドーム分離",
       "text": "このユニットからコンビネーションするSP1/4のSユニットは、次の能力を得る⇒自軍ターン中、「SP1」になる。",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "grant_ability_konoyunitokarakonbineshonsurusp14nosyunitohano_chikara_wor",
           "duration": "turn"
         }
       ]

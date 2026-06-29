@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e8b685e99bbbe5ad90e3839b",
+      "id": "horogurafui",
       "name": "超電子ホログラフィー",
       "text": "自軍山札を見る。そして、オペレーションのカードがあれば1枚選び、自軍パワーゾーンに置く。その後、山札をシャッフルする。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e887aae8bb8d",
+          "keyword": "deck_search_operation_to_power",
           "duration": "turn"
         }
       ],

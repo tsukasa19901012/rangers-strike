@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-28T23:20:34.978Z",
+  "generatedAt": "2026-06-29T00:43:37.607Z",
   "summary": {
     "catalogTotal": 1849,
     "coreCards": 698,
     "promotedCards": 1151,
-    "dslRegistryImplemented": 1849,
-    "dslRegistryPartial": 0,
+    "dslRegistryImplemented": 1847,
+    "dslRegistryPartial": 2,
     "dslRegistryUnimplemented": 0,
     "multiCategoryCards": 122,
-    "partialEffectCards": 0,
+    "partialEffectCards": 2,
     "implementedOperations": 38
   },
   "ruleGaps": [
@@ -89,7 +89,20 @@
       ]
     }
   ],
-  "partialCards": [],
+  "partialCards": [
+    {
+      "id": "RS-410",
+      "name": "冥府神ドレイク",
+      "reason": "catchall_interpret fallback（効果文はあるが専用実装なし）",
+      "effectPreview": "これは敵軍ユニットが1体もなければ「SP1」になる。"
+    },
+    {
+      "id": "XG7-048",
+      "name": "仮面ライダーオーズ・ガタトラバ",
+      "reason": "catchall_interpret fallback（効果文はあるが専用実装なし）",
+      "effectPreview": "敵軍バトルエリアのユニットがSユニットだけなら、このターン、これは「SP1」になる。"
+    }
+  ],
   "multiCategoryCards": [
     {
       "id": "SX-002",

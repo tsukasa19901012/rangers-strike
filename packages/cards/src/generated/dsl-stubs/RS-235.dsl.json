@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_self_on_ally_rush_e280bbe887aa",
+          "keyword": "return_self_on_ally_rush_fx_unknown",
           "duration": "permanent"
         }
       ]
@@ -36,13 +36,13 @@
       "id": "note_e280bbe887aae8bb8de38391",
       "text": "※自軍パワーゾーンからダメージ以外のカードを2枚選んで捨札にしなければバトルエリアに出られない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe887aa",
-          "duration": "turn"
+          "keyword": "require_power_discard_2_to_battle",
+          "duration": "permanent"
         }
       ],
       "optional": false

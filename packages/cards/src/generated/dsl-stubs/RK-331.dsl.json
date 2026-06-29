@@ -71,7 +71,7 @@
       ]
     },
     {
-      "id": "named_e382a2e383a1e382a4e382b8",
+      "id": "ameijingumaiteikiku",
       "name": "アメイジングマイティキック",
       "text": "自軍ターン中、これがバトルエリアに出たとき、本来の特徴に「怪人」を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -80,7 +80,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e887aae8bb8d",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokinoniwotsuyunitowo1",
           "duration": "turn"
         }
       ],

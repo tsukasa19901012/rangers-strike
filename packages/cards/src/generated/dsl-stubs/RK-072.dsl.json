@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383afe382a4e383abe38389",
+      "id": "wairudoshoto",
       "name": "ワイルドショット",
       "text": "敵軍ラッシュエリアから、カードに表記された本来のBPが3000以下のユニットを1体選び撃破する。",
       "trigger": {

@@ -39,14 +39,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e280bbe38193",
+          "keyword": "exclude_game_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "note_e280bbe38193e3828ce3818c_e280bbe3",
+      "id": "note_e280bbe38193e3828ce3818c_koregaeriani",
       "text": "※これが自軍エリアにある間、本来のBPの下三桁が500でない自軍ユニットはラッシュできない。",
       "trigger": {
         "type": "while_in_field"
@@ -54,13 +54,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e7a8aee381aee6a0b9e7b5b6",
+      "id": "no_e7a8ae",
       "name": "種の根絶",
       "text": "これをラッシュしたとき、これ以外の自軍ユニットをすべて捨札にする。また、ユニットがこれ1体だけなら、これは「SP3」になる。",
       "trigger": {

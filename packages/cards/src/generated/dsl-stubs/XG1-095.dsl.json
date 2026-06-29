@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "named_e382abe38396e38388e383a9",
+      "id": "kabutoransa",
       "name": "カブトランサー",
       "text": "これがバトルで敵軍ユニットを撃破したとき、これが撃破したユニットと同じ特徴を1つ以上持つ敵軍コマンドを1つ選び捨札にしてもよい。（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e38193e3828c",
+          "keyword": "combo_action_koregabatorudeyunitowo_geki_ha_shitatokikorega_geki_ha_shit",
           "duration": "turn"
         }
       ],

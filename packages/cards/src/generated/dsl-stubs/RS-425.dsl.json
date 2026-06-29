@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "named_e8bba2e8bba2e5bcbe",
+      "id": "dan_e8bba2",
       "name": "転転弾",
       "text": "これをラッシュしたとき、敵軍ユニットを1体選んで撃破してもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない。",
       "trigger": {
@@ -25,7 +25,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e38193e3828c",
+          "keyword": "destroy_on_rush_koreworashushitatokiyunitowo1nde_geki_ha_shitemoyoitadas",
           "duration": "turn"
         }
       ],

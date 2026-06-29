@@ -24,7 +24,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382bbe382a4e38390e383bc",
+      "id": "seibamagunamu",
       "name": "セイバーマグナム",
       "text": "自軍コマンドを1つ選びホールドしてもよい。そうしたとき、ホールドしたコマンドの必要パワーの数字を見て、その数字と同じ必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び撃破する。（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e887aae8bb8d",
+          "keyword": "combo_action_komandowo1tsubihorudoshitemoyoisoushitatokihorudoshitakoman",
           "duration": "turn"
         }
       ],

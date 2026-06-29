@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "named_e5a4a9e3818ce591bce381b6",
+      "id": "gabugabugabu",
       "name": "天が呼ぶ、地が呼ぶ、人が呼ぶ",
       "text": "これは、DAを持つかSPが空欄ではないユニットにアタックするとき、BP+2000される。",
       "trigger": {
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_e38193e3828c",
+          "keyword": "bp_modify_korehadawotsukaspgadehanaiyunitoniatakusurutokibp2000sareru",
           "duration": "turn"
         }
       ],

@@ -27,14 +27,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e3839ee382b9e382ade383bc",
+      "id": "masukirodo",
       "name": "マスキーロッド",
       "text": "SP1",
       "trigger": {

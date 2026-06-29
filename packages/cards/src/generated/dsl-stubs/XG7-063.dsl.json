@@ -27,14 +27,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382b3e38396e383b3e382b6",
+      "id": "kobunzame",
       "name": "コブンザメ",
       "text": "自軍ラッシュフェイズ中、このユニットをホールドしてもよい。そうしたとき、BP2000以下の敵軍ユニットを1体選び撃破する。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_e887aae8bb8d",
+          "keyword": "destroy_choose_enemy_rashufueizukonoyunitowohorudoshitemoyoisoushitatoki",
           "duration": "turn"
         }
       ],

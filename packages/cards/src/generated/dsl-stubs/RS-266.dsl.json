@@ -22,19 +22,19 @@
       "id": "note_e280bbe38193e381aee383a6",
       "text": "※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつきBP-1000され、BP0以下のとき撃破される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
-          "duration": "turn"
+          "keyword": "bp_debuff_per_non_ot_command",
+          "duration": "permanent"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e38397e383aae382bae383a0",
+      "id": "purizumu_ken",
       "name": "プリズム聖剣",
       "text": "自軍ラッシュエリアから、「WB」のユニットを1体選び自軍パワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP1」になる。",
       "trigger": {
@@ -43,10 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "power_zone_action_rashueriakarawbnoyunitowo1bipawazonnitemoyoisou",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

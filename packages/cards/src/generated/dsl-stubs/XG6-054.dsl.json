@@ -50,7 +50,7 @@
       ]
     },
     {
-      "id": "named_e5b8bde5ad90e3818ce4bcbc",
+      "id": "gauninare",
       "name": "帽子が似合う男になれ",
       "text": "自軍バトルエリアのSユニットを1体選び、ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。そうしたとき、このターン、このユニットのBPに戻したユニットのBPを「+」する。",
       "trigger": {
@@ -59,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_e887aae8bb8d",
+          "keyword": "deploy_battle_area_batoruerianosyunitowo1birashuerianishitemoyoitadashis",
           "duration": "turn"
         }
       ],

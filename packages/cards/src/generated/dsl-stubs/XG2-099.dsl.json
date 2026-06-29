@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382abe383a1e383a9e382ba",
+      "id": "kamerazuka",
       "name": "カメラズーカ",
       "text": "「SP1」敵軍コマンドゾーンから、Sユニットのカードを1枚選んでもよい。そうしたとき、次の相手のターン、選んだカードはリリースできない。",
       "trigger": {

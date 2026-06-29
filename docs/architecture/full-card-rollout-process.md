@@ -206,12 +206,46 @@ interpret_effect 実行
 | 解釈 | `packages/engine/src/dsl/cardInterpreter.ts` | primitive 実行 + runtime 優先 |
 | レガシー | `packages/engine/src/dsl/runtimeEffectDispatch.ts` | core 179 の named effect |
 | キーワード | `packages/engine/src/dsl/promotedKeywordBridge.ts` | BP/SP, 攻撃制限 |
+| catchall 橋渡し | `packages/engine/src/dsl/hashGrantKeywordBridge.ts` | semantic catchall → rematch |
+| スタブ検出 | `packages/cards/src/pipeline/hashGrantKeywords.ts` | hex ハッシュ / semantic slug 判定 |
 
 **設計原則**
 
 - DSL は宣言的（`interpret_effect` のみ）— 1,400+ 枚を手書き primitive 化しない
 - core 179 は runtime bridge で後方互換を維持
 - promoted は PATTERNS 追加で rematch 成功率を上げる（G3.5 の主作業）
+- 汎用 catchall は `semanticCatchallKeyword(prefix, body)` で **semantic slug** を付与（旧 `hashEffectText` 12桁 hex は廃止）
+
+### 4.6 grant_keyword catchall（RS リリース対応）
+
+promoted カードの複雑効果は、extractEffects の catchall パターンが `grant_keyword` を生成する。2026-06 以降、キーワードは次の 2 段階に分類される。
+
+| 種別 | 例 | 判定 | 実行時 |
+|------|-----|------|--------|
+| **hex ハッシュスタブ（廃止）** | `while_in_field_body_e887aae8bb8d` | `isHashGrantKeywordStub()` | repair 対象 |
+| **semantic catchall** | `while_in_field_body_koregaerianiarubp8000...` | `isCatchallGrantKeyword()` | `effectDelegateRuntime` → rematch → interpret |
+| **構造化キーワード** | `auto_battle_entry_each_turn`, `SP1` | PASSIVE / engine 分岐 | `grantKeyword.ts` 直接 |
+
+**修復・監査コマンド**
+
+```bash
+# PATTERNS 変更後: hex スタブを semantic slug に一括修復
+npm run repair-dsl-hash-keywords -w @rangers-strike/cards
+
+# RS 690 枚のリリースゲート（hash 0 / blocked 0）
+npm run audit:rs-release -w @rangers-strike/cards
+
+# 全 DSL の hex grant_keyword 残数
+npm run audit-hash-grant-keywords -w @rangers-strike/cards
+
+# 常駐オペ DSL に wiki 公式テキストを補完
+npx tsx packages/cards/scripts/enrich-rs-operation-dsl.ts
+```
+
+**RS リリース合格基準**（`rs-release-readiness.json`）:
+
+- `releaseReady: true` — hash スタブ 0、未配線効果 0
+- `runtime_catchall` — 発動時 rematch 経由（298 効果）。DSL 上は semantic キーワードを保持
 
 ### 4.5 G3.5 効果解決率 — 数値基準
 
@@ -444,6 +478,9 @@ npm run test -w @rangers-strike/engine -- src/verticalSlice/simulateCustomFullDe
 ```bash
 npm run audit:rollout-status -w @rangers-strike/cards
 # → packages/cards/pipeline/data/rollout-status.json
+
+npm run audit:rs-release -w @rangers-strike/cards
+# → packages/cards/pipeline/data/rs-release-readiness.json（RS 690 枚）
 ```
 
 ### 週次一括（推奨）
@@ -501,6 +538,9 @@ npm run pipeline:rollout-sync -w @rangers-strike/cards
 | `implementation-feasibility.json` | A/B/C 区分 | `audit:implementation-feasibility` |
 | `card-classification.json` | ABCDE 区分 | `audit:card-classification` |
 | `sim-metrics.json` | G4 対戦 sim 結果 | `simulateFullPromoted.test.ts` |
+| `rs-release-readiness.json` | **RS 690 枚リリースゲート** | `audit:rs-release` |
+| `hash-grant-keyword-audit.json` | hex grant_keyword 残数 | `audit-hash-grant-keywords` |
+| `dsl-hash-keyword-repair.json` | 直近 hash 修復結果 | `repair-dsl-hash-keywords` |
 | `promoted-image-download.json` | 画像一括 DL 結果 | `download-promoted-images` |
 
 ### ベースライン（G1–G3 完了時点）

@@ -23,7 +23,7 @@
   },
   "effects": [
     {
-      "id": "named_e38387e3838de38393e38383",
+      "id": "denebikubasuta",
       "name": "デネビックバスター",
       "text": "これがストライクしたとき、次の効果を、自分が三回まで好きな回数行った後で、相手も同じ回数行う。 自分自身の山札の上から1枚をオモテにする。そして、オモテにしたカードの必要パワーの数値を見て、その数字と同じ必要パワーの数字を持つ自分自身のユニットがあれば、その中から1体選び撃破する。そうして撃破したなら、オモテにしたカードは捨札になり、撃破しなかったら手札に加える。",
       "trigger": {
@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e38193e3828c",
+          "keyword": "reveal_faceup_koregasutoraikushitatokinowogamadekinatademoji",
           "duration": "turn"
         }
       ],

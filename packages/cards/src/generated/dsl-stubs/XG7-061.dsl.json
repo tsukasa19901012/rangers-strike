@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e8a08de5baa7e381aee382b9",
+      "id": "nosutapisu_e8a08d",
       "name": "蠍座のスターピース",
       "text": "これをラッシュしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、捨札にしてもよい。そうしたとき、捨札にしたカードがオペレーションカードなら、敵軍パワーゾーンにダメージにして置き直してもよい。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_e38193e3828c",
+          "keyword": "damage_action_koreworashushitatokipawazonkaraomote_ko_kinokadowo1binishi",
           "duration": "turn"
         }
       ],

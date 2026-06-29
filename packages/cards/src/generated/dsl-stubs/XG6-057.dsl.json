@@ -61,7 +61,7 @@
       ]
     },
     {
-      "id": "named_e38388e383a9e382afe383ad",
+      "id": "torakuro",
       "name": "トラクロー",
       "text": "これをラッシュしたとき、必要パワーを満たしていない敵軍ユニットまたは敵軍ビークルを1体選びゲームから除外する。",
       "trigger": {
@@ -70,7 +70,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e38193e3828c",
+          "keyword": "exclude_game_koreworashushitatokipawawotashiteinaiyunitomatahabikuruwo",
           "duration": "turn"
         }
       ],

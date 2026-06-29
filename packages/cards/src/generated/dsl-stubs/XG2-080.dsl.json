@@ -27,13 +27,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_self_on_ally_rush_e280bbe887aa",
+          "keyword": "return_self_on_ally_rush_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e38395e382a1e382a4e3838a",
+      "id": "fuainaruatakuraido",
       "name": "ファイナルアタックライド",
       "text": "このユニットからコンビネーションする、「仮面ライダーディケイド」または「仮面ライダーディエンド」は、次の能力を得る⇒BP+3000",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e381ae",
+          "keyword": "grant_ability_konoyunitokarakonbineshonsururaidadeikeidomataharaidadei",
           "duration": "turn"
         }
       ]

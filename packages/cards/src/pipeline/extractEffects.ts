@@ -19,7 +19,7 @@ type ZoneTarget = Extract<EffectPrimitive, { type: "move" }>["target"];
 function zone(
   z: "deck" | "hand" | "discard" | "power" | "command" | "rush" | "battle",
   owner: "self" | "opponent" | "any",
-  filter?: { size?: "S"; maxBp?: number },
+  filter?: { size?: "S"; maxBp?: number; minBp?: number },
 ): ZoneTarget {
   const t: ZoneTarget = { type: "zone", zone: z, owner };
   if (filter) t.filter = filter;
@@ -28,6 +28,20 @@ function zone(
 
 function chooseUnit(valid: ZoneTarget, count: number, then: EffectPrimitive[]) {
   return { type: "choose" as const, kind: "select_unit" as const, valid, count, then };
+}
+
+/** catchall 用: hash の代わりに effect 本文から安定 semantic slug を生成する。 */
+function semanticCatchallSlug(body: string): string {
+  const core = body
+    .replace(/^※[^⇒]*(?:⇒|$)/, "")
+    .replace(/・このテキストは公式.*$/s, "")
+    .replace(/[^\u3040-\u9fff\w]/g, "")
+    .slice(0, 40);
+  return slugifyEffectId(core) || "fx";
+}
+
+function semanticCatchallKeyword(prefix: string, body: string): string {
+  return `${prefix}_${semanticCatchallSlug(body)}`.slice(0, 72);
 }
 
 type PatternMatch = {
@@ -1713,7 +1727,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `return_self_on_ally_rush_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("return_self_on_ally_rush", body),
           duration: "permanent",
         },
       ],
@@ -2242,6 +2256,48 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "combo_l_category_sp1",
+    test: (body) =>
+      /このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒「SP\+1」/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "combo_l_category_sp1",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "combo_l_category_sp1",
+    }),
+  },
+  {
+    pattern: "combo_l_category_attack_rush",
+    test: (body) =>
+      /このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "combo_l_category_attack_rush",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "combo_l_category_attack_rush",
+    }),
+  },
+  {
     pattern: "combo_l_grant_ability",
     test: (body) =>
       /このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒/.test(body),
@@ -2253,7 +2309,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `combo_l_ability_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("combo_l_ability", body),
           duration: "permanent",
         },
       ],
@@ -2273,7 +2329,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `combo_l_effect_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("combo_l_effect", body),
           duration: "permanent",
         },
       ],
@@ -3020,7 +3076,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `return_ally_on_rush_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("return_ally_on_rush", body),
           duration: "permanent",
         },
       ],
@@ -3138,7 +3194,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `combo_l_attack_strike_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("combo_l_attack_strike", body),
           duration: "permanent",
         },
       ],
@@ -3157,7 +3213,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `choice_one_of_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("choice_one_of", body),
           duration: "turn",
         },
       ],
@@ -3591,7 +3647,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `combo_l_process_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("combo_l_process", body),
           duration: "permanent",
         },
       ],
@@ -3744,6 +3800,27 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "ignore_rule_hold_command_entry",
+    test: (body) =>
+      /すべての自軍ユニットは、「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれていても、そのテキストは無効/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "ignore_rule_hold_command_entry",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "ignore_rule_hold_command_entry",
+    }),
+  },
+  {
     pattern: "ignore_rule_text_override",
     test: (body) => /書かれていても、そのテキストは無効/.test(body),
     build: (body, segment, trigger) => ({
@@ -3754,7 +3831,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `ignore_rule_text_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("ignore_rule_text", body),
           duration: "turn",
         },
       ],
@@ -4346,7 +4423,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `hand_pick_show_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("hand_pick_show", body),
           duration: "turn",
         },
       ],
@@ -4368,7 +4445,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `enter_hold_enemy_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("enter_hold_enemy", body),
           duration: "turn",
         },
       ],
@@ -4456,7 +4533,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `combo_hold_s_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("combo_hold_s", body),
           duration: "turn",
         },
       ],
@@ -4476,7 +4553,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `rush_discard_instead_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("rush_discard_instead", body),
           duration: "turn",
         },
       ],
@@ -4499,7 +4576,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `ride_discard_trigger_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("ride_discard_trigger", body),
           duration: "permanent",
         },
       ],
@@ -4519,7 +4596,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `rush_discard_search_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("rush_discard_search", body),
           duration: "turn",
         },
       ],
@@ -4584,7 +4661,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `combo_from_named_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("combo_from_named", body),
           duration: "turn",
         },
       ],
@@ -4623,12 +4700,829 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `opponent_self_order_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("opponent_self_order", body),
           duration: "turn",
         },
       ],
       matchedPattern: "opponent_self_turn_order",
     }),
+  },
+  {
+    pattern: "choose_ally_battle_destroy_to_power",
+    test: (body) =>
+      /自軍Sユニットを1体選ぶ。このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      condition: { type: "has_target", target: zone("battle", "self", { size: "S" }) },
+      effects: [
+        chooseUnit(zone("battle", "self", { size: "S" }), 1, [
+          { type: "grant_keyword", keyword: "battle_destroy_to_power", duration: "turn" },
+        ]),
+      ],
+      matchedPattern: "choose_ally_battle_destroy_to_power",
+    }),
+  },
+  {
+    pattern: "optional_return_then_battle_destroy_to_power",
+    test: (body) =>
+      /選んでもよい。そうしたとき、このターン、これとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const fromRush = /自軍ラッシュエリアから/.test(body);
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const valid = fromRush
+        ? zone("rush", "self", { size: "S" })
+        : zone("battle", "self", { size: "S" });
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger,
+        optional: true,
+        condition: { type: "has_target", target: valid },
+        effects: [
+          chooseUnit(valid, 1, [
+            { type: "move", target: { type: "trigger_source" }, to: "hand" },
+            {
+              type: "grant_keyword",
+              keyword: `battle_destroy_to_power_self_${feature}`,
+              duration: "turn",
+            },
+          ]),
+        ],
+        matchedPattern: "optional_return_then_battle_destroy_to_power",
+      };
+    },
+  },
+  {
+    pattern: "destroy_enemy_s_immediate",
+    test: (body) =>
+      /^敵軍Sユニットを1体選び撃破する/.test(body) &&
+      !/してもよい|ラッシュエリア|バトルエリアから/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      condition: { type: "has_target", target: zone("battle", "opponent", { size: "S" }) },
+      effects: [
+        chooseUnit(zone("battle", "opponent", { size: "S" }), 1, [
+          { type: "discard", target: { type: "trigger_source" } },
+        ]),
+      ],
+      matchedPattern: "destroy_enemy_s_immediate",
+    }),
+  },
+  {
+    pattern: "opponent_hand_counter_to_power",
+    test: (body) =>
+      /相手の手札を見て、カウンターのオペレーションカードがあれば1枚選び、持ち主のパワーゾーンにダメージにして置く/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "opponent_hand_counter_to_power",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "opponent_hand_counter_to_power",
+    }),
+  },
+  {
+    pattern: "deck_search_feature_reorder_top",
+    test: (body) =>
+      /自軍山札を見て、.*を(\d+)枚まで選び、相手に見せる。その後、山札をシャッフルし、選んだカードを好きな順で山札の上に戻す/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const count = Number(body.match(/(\d+)枚まで選び/)?.[1] ?? 5);
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const nonS = /Sユニット以外/.test(body);
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `deck_search_feature_top_${feature}_${count}${nonS ? "_non_s" : ""}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "deck_search_feature_reorder_top",
+      };
+    },
+  },
+  {
+    pattern: "while_power_min_feature_grants_sp",
+    test: (body) =>
+      /これが自軍.*にある間、自軍パワーゾーンのカードが(\d+)枚以上あれば、特徴「([^」]+)」を持つすべての自軍Sユニットは「SP(\d+)」/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const minCards = body.match(/パワーゾーンのカードが(\d+)枚以上/)?.[1] ?? "12";
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const sp = body.match(/「SP(\d+)」/)?.[1] ?? "1";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `power_zone_min_${minCards}_${feature}_sp${sp}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "while_power_min_feature_grants_sp",
+      };
+    },
+  },
+  {
+    pattern: "note_rush_trim_power_zone",
+    test: (body) =>
+      /^※これをラッシュしたとき、自軍パワーゾーンのカードが(\d+)枚以上なら、(\d+)枚になるまでダメージ以外のカードを捨札にする/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const minCards = body.match(/カードが(\d+)枚以上/)?.[1] ?? "7";
+      const target = body.match(/(\d+)枚になるまで/)?.[1] ?? "6";
+      return {
+        id: noteEffectIdFromBody(body),
+        text: body,
+        trigger: trigger.type === "nc" ? { type: "on_rush" } : trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `rush_trim_power_${minCards}_to_${target}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "note_rush_trim_power_zone",
+      };
+    },
+  },
+  {
+    pattern: "enter_deploy_enemy_command_silent",
+    test: (body) =>
+      /これがバトルエリアに出たとき、敵軍コマンドゾーンからユニットのカードを1枚選び、敵軍バトルエリアに出す。このとき出したユニットの効果は発動しない/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "deploy_enemy_command_silent",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_deploy_enemy_command_silent",
+    }),
+  },
+  {
+    pattern: "enter_release_m_command_to_rush",
+    test: (body) =>
+      /これが自軍バトルエリアに出たとき、自軍コマンドゾーンからリリース状態のMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "release_m_command_to_rush",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_release_m_command_to_rush",
+    }),
+  },
+  {
+    pattern: "while_all_enemy_s_auto_battle",
+    test: (body) =>
+      /これが自軍.*にある間、すべての敵軍Sユニットは、毎ターン、可能ならバトルエリアに出る/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "all_enemy_s_auto_battle_entry",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_all_enemy_s_auto_battle",
+    }),
+  },
+  {
+    pattern: "while_all_feature_auto_battle",
+    test: (body) =>
+      /これが自軍.*にある間、特徴「([^」]+)」を持つすべてのユニットは、毎ターン、可能ならバトルエリアに出る/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `all_${feature}_auto_battle_entry`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "while_all_feature_auto_battle",
+      };
+    },
+  },
+  {
+    pattern: "deck_search_operation_to_power",
+    test: (body) =>
+      /自軍山札を見る。そして、オペレーションのカードがあれば1枚選び、自軍パワーゾーンに置く。その後、山札をシャッフルする/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "deck_search_operation_to_power",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "deck_search_operation_to_power",
+    }),
+  },
+  {
+    pattern: "hold_enemy_s_to_command",
+    test: (body) =>
+      /敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く/.test(body) &&
+      !/バトルエリアに出たとき.*ホールドしてもよい.*パワーゾーン/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: /してもよい/.test(body),
+      condition: { type: "has_target", target: zone("battle", "opponent", { size: "S" }) },
+      effects: [
+        chooseUnit(zone("battle", "opponent", { size: "S" }), 1, [
+          { type: "hold_command", target: { type: "trigger_source" } },
+        ]),
+      ],
+      matchedPattern: "hold_enemy_s_to_command",
+    }),
+  },
+  {
+    pattern: "hold_all_enemy_max_bp_to_command",
+    test: (body) =>
+      /BP(\d+)以下の敵軍ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く/.test(body),
+    build: (body, segment, trigger) => {
+      const maxBp = Number(body.match(/BP(\d+)以下/)?.[1] ?? 2000);
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `hold_all_enemy_bp${maxBp}_to_command`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "hold_all_enemy_max_bp_to_command",
+      };
+    },
+  },
+  {
+    pattern: "alternating_draw_3_mill",
+    test: (body) =>
+      /この効果は、自分が行ったあとで相手も行う⇒3枚までドローする。そして、以下の手順を3回行う/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "alternating_draw_3_mill",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "alternating_draw_3_mill",
+    }),
+  },
+  {
+    pattern: "feature_battle_return_deck_bottom",
+    test: (body) =>
+      /バトルエリアにある特徴「([^」]+)」を持つユニットを1体選び、持ち主の山札の下に戻してもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger,
+        optional: true,
+        condition: { type: "has_target", target: zone("battle", "any") },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `return_${feature}_battle_to_deck_bottom`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "feature_battle_return_deck_bottom",
+      };
+    },
+  },
+  {
+    pattern: "draw_deck_to_command_or_hand",
+    test: (body) =>
+      /自軍山札から1枚ひいて、そのカードを自軍コマンドゾーンに置く。置けなければ手札に加える/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "draw_deck_to_command_or_hand",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "draw_deck_to_command_or_hand",
+    }),
+  },
+  {
+    pattern: "deck_search_rush_feature",
+    test: (body) =>
+      /自軍山札を見て、特徴「([^」]+)」を持つユニットカードを1枚選び、ラッシュエリアに出す/.test(body),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `deck_search_rush_${feature}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "deck_search_rush_feature",
+      };
+    },
+  },
+  {
+    pattern: "destroy_enemy_s_rush_bp_suffix",
+    test: (body) =>
+      /敵軍ラッシュエリアから、BPの下三桁が500の敵軍Sユニットを1体選び、?撃破してもよい/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      condition: { type: "has_target", target: zone("rush", "opponent", { size: "S" }) },
+      effects: [
+        chooseUnit(zone("rush", "opponent", { size: "S" }), 1, [
+          { type: "discard", target: { type: "trigger_source" } },
+        ]),
+      ],
+      matchedPattern: "destroy_enemy_s_rush_bp_suffix",
+    }),
+  },
+  {
+    pattern: "combo_number_all_minus1",
+    test: (body) =>
+      /このターン、すべての自軍ユニットのコンビネーションナンバーは1少なくなる。ただし、2より少なくならない/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "combo_number_delta_minus_1",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "combo_number_all_minus1",
+    }),
+  },
+  {
+    pattern: "attack_bp1000_use_printed_defender",
+    test: (body) =>
+      /これがアタックするとき、これはBP\+1000され、敵軍ユニットのBPをカードに表記された本来の値としてバトルする/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: trigger.type === "nc" ? { type: "on_attack" } : trigger,
+      effects: [
+        {
+          type: "modify_bp",
+          target: { type: "trigger_source" },
+          amount: 1000,
+          duration: "turn",
+        },
+        {
+          type: "grant_keyword",
+          keyword: "use_printed_bp_in_battle",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "attack_bp1000_use_printed_defender",
+    }),
+  },
+  {
+    pattern: "attack_bp_vs_feature",
+    test: (body) =>
+      /これは特徴「([^」]+)」を持つユニットにアタックするときBP[＋+](\d+)される/.test(body),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const amount = Number(body.match(/BP[＋+](\d+)される/)?.[1] ?? 4000);
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger: trigger.type === "nc" ? { type: "on_attack" } : trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `attack_bp_plus_vs_${feature}_${amount}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "attack_bp_vs_feature",
+      };
+    },
+  },
+  {
+    pattern: "opponent_destroy_lower_bp_on_battle_win",
+    test: (body) =>
+      /自軍ターン中、これがバトルでユニットを撃破したとき、これがバトルで撃破したユニットよりBPの低いユニットを、相手は自分自身のユニットの中から1体選び撃破する/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: trigger.type === "nc" ? { type: "on_destroy" } : trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "opponent_destroy_lower_bp_on_battle_win",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "opponent_destroy_lower_bp_on_battle_win",
+    }),
+  },
+  {
+    pattern: "opponent_rush_s_to_hand",
+    test: (body) =>
+      /相手は自分自身のラッシュエリアからSユニットを1体選んで手札に戻す/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "opponent_rush_s_to_hand",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "opponent_rush_s_to_hand",
+    }),
+  },
+  {
+    pattern: "opponent_rush_s_to_battle",
+    test: (body) =>
+      /相手は自分自身のラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出す/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "opponent_rush_s_to_battle",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "opponent_rush_s_to_battle",
+    }),
+  },
+  {
+    pattern: "note_require_power_discard_to_battle",
+    test: (body) =>
+      /^※自軍パワーゾーンからダメージ以外のカードを(\d+)枚選んで捨札にしなければバトルエリアに出られない/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const count = body.match(/(\d+)枚選んで/)?.[1] ?? "2";
+      return {
+        id: noteEffectIdFromBody(body),
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `require_power_discard_${count}_to_battle`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "note_require_power_discard_to_battle",
+      };
+    },
+  },
+  {
+    pattern: "reveal_top_judgment_destroy",
+    test: (body) =>
+      /敵軍ユニットを1体選んでターゲットとする。そして 自軍山札の上から1枚をオモテにし、それがターゲットと同じサイズのユニットなら、ターゲットを撃破する/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      condition: { type: "has_target", target: zone("battle", "opponent") },
+      effects: [
+        chooseUnit(zone("battle", "opponent"), 1, [
+          {
+            type: "grant_keyword",
+            keyword: "reveal_top_destroy_if_same_size",
+            duration: "turn",
+          },
+        ]),
+      ],
+      matchedPattern: "reveal_top_judgment_destroy",
+    }),
+  },
+  {
+    pattern: "deck_search_minus_power_rush",
+    test: (body) =>
+      /自軍山札を見て、必要パワーの数字に「－」のあるユニットカードを1枚選び、ラッシュエリアに出す/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "deck_search_minus_power_rush",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "deck_search_minus_power_rush",
+    }),
+  },
+  {
+    pattern: "while_command_leave_hold_from_discard",
+    test: (body) =>
+      /これが自軍ラッシュエリアにある間、敵軍ターン中、自軍コマンドゾーンのカードがコマンドゾーンを離れたとき、自軍捨札からカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "while_command_leave_hold_from_discard",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_command_leave_hold_from_discard",
+    }),
+  },
+  {
+    pattern: "while_rush_feature_skip_command_hold",
+    test: (body) =>
+      /これが自軍ラッシュエリアにある間、自分が特徴「([^」]+)」を持つユニットのカードをラッシュするとき、コマンドをホールドせずにラッシュしてもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger: { type: "while_in_field" },
+        optional: true,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `rush_skip_command_hold_${feature}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "while_rush_feature_skip_command_hold",
+      };
+    },
+  },
+  {
+    pattern: "while_opponent_operation_discard_power",
+    test: (body) =>
+      /これが自軍ラッシュエリアにある間、相手が手札からオペレーションカードを使用したとき、敵軍パワーゾーンからカードを2枚まで選び捨札にしてもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "while_opponent_operation_discard_power",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_opponent_operation_discard_power",
+    }),
+  },
+  {
+    pattern: "while_da_s_cannot_battle_entry",
+    test: (body) =>
+      /これが自軍バトルエリアにある間、「DA」の敵軍Sユニットはバトルエリアに出られない/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "while_da_s_cannot_battle_entry",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_da_s_cannot_battle_entry",
+    }),
+  },
+  {
+    pattern: "note_end_turn_no_feature_return_hand",
+    test: (body) =>
+      /^※自分がターンを終えるとき、特徴「([^」]+)」を持つユニットが1体もなければ、このユニットを手札に戻す/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: noteEffectIdFromBody(body),
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `end_turn_return_hand_if_no_${feature}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "note_end_turn_no_feature_return_hand",
+      };
+    },
+  },
+  {
+    pattern: "note_category_wb_in_battle",
+    test: (body) => /^※これはバトルエリアにあるとき、カテゴリに「WB」が追加される/.test(body),
+    build: (body, segment, trigger) => ({
+      id: noteEffectIdFromBody(body),
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "category_wb_while_in_battle",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "note_category_wb_in_battle",
+    }),
+  },
+  {
+    pattern: "note_bp_per_non_ot_command",
+    test: (body) =>
+      /^※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつきBP-1000され、BP0以下のとき撃破される/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: noteEffectIdFromBody(body),
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "bp_debuff_per_non_ot_command",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "note_bp_per_non_ot_command",
+    }),
+  },
+  {
+    pattern: "combo_wb_m_bp_sp_destroy_end",
+    test: (body) =>
+      /自軍ターン中、このユニットからコンビネーションする「WB」のMユニットは、BP\+3000され、BP8000以上のとき「SP1」になる。自分がターンを終えるとき、このユニットからコンビネーションした「WB」のMユニットは撃破される/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "combo_wb_m_bp3000_sp1_destroy_end",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "combo_wb_m_bp_sp_destroy_end",
+    }),
+  },
+  {
+    pattern: "note_end_turn_return_if_no_feature",
+    test: (body) =>
+      /^※自分がターンを終えるとき、特徴「([^」]+)」を持つ自軍ユニットがなければ、このユニットを自軍山札に戻してシャッフルする/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: noteEffectIdFromBody(body),
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `end_turn_return_if_no_${feature}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "note_end_turn_return_if_no_feature",
+      };
+    },
   },
   {
     pattern: "deck_bottom_hold_command",
@@ -4663,7 +5557,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `ride_s_ability_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("ride_s_ability", body),
           duration: "permanent",
         },
       ],
@@ -4686,7 +5580,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `enemy_power_damage_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("enemy_power_damage", body),
           duration: "turn",
         },
       ],
@@ -4711,7 +5605,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `exclude_game_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("exclude_game", body),
           duration: "turn",
         },
       ],
@@ -4734,7 +5628,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `deck_search_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("deck_search", body),
           duration: "turn",
         },
       ],
@@ -4752,7 +5646,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `while_note_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("while_note", body),
           duration: "permanent",
         },
       ],
@@ -4760,8 +5654,218 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "note_own_turn_battle_bp",
+    test: (body) => /^※これは自軍ターン中、バトルするとき、BP[＋+](\d+)される/.test(body),
+    build: (body, segment, trigger) => {
+      const amount = Number(body.match(/BP[＋+](\d+)される/)?.[1] ?? 2000);
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger: trigger.type === "nc" ? trigger : { type: "nc" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `bp_plus_on_battle_own_turn_${amount}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "note_own_turn_battle_bp",
+      };
+    },
+  },
+  {
+    pattern: "chikara_no_2_bp_only",
+    test: (body) =>
+      /【力の2号】このターン、これはBP[＋+](\d+)される/.test(body) &&
+      !/バトルしてもよい/.test(body),
+    build: (body, segment, trigger) => {
+      const amount = Number(body.match(/BP[＋+](\d+)される/)?.[1] ?? 2000);
+      return {
+        id: "chikara_no_2_go",
+        name: segment.name ?? "力の2号",
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "modify_bp",
+            target: { type: "trigger_source" },
+            amount,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "chikara_no_2_bp_only",
+      };
+    },
+  },
+  {
+    pattern: "optional_battle_enemy_s_min_bp",
+    test: (body) =>
+      /BP(\d+)以上の敵軍Sユニットを1体選び、このユニットと選んだユニットでバトルしてもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const minBp = Number(body.match(/BP(\d+)以上/)?.[1] ?? 4000);
+      const noAttack = /アタックする事ができない|アタックすることができない/.test(body);
+      const kw = `optional_enemy_battle_min_bp_${minBp}${noAttack ? "_no_attack" : ""}`;
+      const target = zone("battle", "opponent", { size: "S", minBp });
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger,
+        optional: true,
+        condition: { type: "has_target", target },
+        effects: [
+          chooseUnit(target, 1, [
+            { type: "grant_keyword", keyword: kw, duration: "turn" },
+          ]),
+        ],
+        matchedPattern: "optional_battle_enemy_s_min_bp",
+      };
+    },
+  },
+  {
+    pattern: "s_combo_nth_sp_bp",
+    test: (body) =>
+      /このターン、Sユニットだけでコンビネーションするとき、(\d+)番目のユニットは「SP(\d+)」「BP(\d+)」/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const m = body.match(/(\d+)番目のユニットは「SP(\d+)」「BP(\d+)」/);
+      const n = m?.[1] ?? "5";
+      const sp = m?.[2] ?? "1";
+      const bp = m?.[3] ?? "12000";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `s_combo_finisher_${n}_sp${sp}_bp${bp}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "s_combo_nth_sp_bp",
+      };
+    },
+  },
+  {
+    pattern: "feature_combo_grant_sp",
+    test: (body) =>
+      /特徴「([^」]+)」.*コンビネーション.*次の能力を得る⇒「SP(\d+)」/.test(body),
+    build: (body, segment, trigger) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const sp = body.match(/「SP(\d+)」/)?.[1] ?? "1";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `feature_combo_sp_${feature}_sp${sp}`,
+            duration: "turn",
+          },
+          { type: "grant_keyword", keyword: `SP${sp}`, duration: "turn" },
+        ],
+        matchedPattern: "feature_combo_grant_sp",
+      };
+    },
+  },
+  {
+    pattern: "bp_per_enemy_command_category_sp_threshold",
+    test: (body) =>
+      /敵軍コマンドゾーンにある「([^」]+)」のコマンド1つにつきBP[＋+](\d+)される.*BP(\d+)以上.*「SP(\d+)」/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const cat = body.match(/「([^」]+)」のコマンド/)?.[1] ?? "OT";
+      const per = body.match(/BP[＋+](\d+)される/)?.[1] ?? "1000";
+      const threshold = body.match(/BP(\d+)以上/)?.[1] ?? "5000";
+      const sp = body.match(/「SP(\d+)」/)?.[1] ?? "1";
+      const slug = slugifyEffectId(cat);
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `bp_per_enemy_command_${slug}_${per}`,
+            duration: "turn",
+          },
+          {
+            type: "grant_keyword",
+            keyword: `sp_at_bp${threshold}_sp${sp}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "bp_per_enemy_command_category_sp_threshold",
+      };
+    },
+  },
+  {
+    pattern: "while_field_battle_position_sp",
+    test: (body) =>
+      /これが自軍.*にある間.*バトルエリアで(\d+)番目に並んだとき「SP(\d+)」/.test(body),
+    build: (body, segment, trigger) => {
+      const pos = body.match(/(\d+)番目に並んだ/)?.[1] ?? "4";
+      const sp = body.match(/「SP(\d+)」/)?.[1] ?? "1";
+      const feature = body.match(/特徴「([^」]+)」/)?.[1];
+      const featureSlug = feature ? slugifyEffectId(feature) : "any";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `battle_position_sp_${featureSlug}_pos${pos}_sp${sp}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "while_field_battle_position_sp",
+      };
+    },
+  },
+  {
+    pattern: "hold_commands_then_sp",
+    test: (body) =>
+      /自軍ターン中、これがバトルエリアに出たとき、([^。]+)を(\d+)つホールドしてもよい。そうしたとき、このターン、これは「SP(\d+)」/.test(
+        body,
+      ),
+    build: (body, segment) => {
+      const cat = body.match(/([A-Z]{2,})の自軍コマンド/)?.[1] ?? "OT";
+      const count = body.match(/を(\d+)つホールド/)?.[1] ?? "3";
+      const sp = body.match(/「SP(\d+)」/)?.[1] ?? "1";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger: { type: "enter_battle" },
+        optional: true,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `hold_${count}_${cat.toLowerCase()}_commands_then_sp${sp}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "hold_commands_then_sp",
+      };
+    },
+  },
+  {
     pattern: "grant_ability_generic",
-    test: (body) => /次の能力を得る⇒/.test(body),
+    test: (body) =>
+      /次の能力を得る⇒/.test(body) &&
+      !/特徴「[^」]+」.*コンビネーション.*「SP\d+」/.test(body),
     build: (body, segment, trigger) => ({
       id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
       name: segment.name,
@@ -4774,7 +5878,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `grant_ability_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("grant_ability", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -4798,7 +5902,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `grant_effect_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("grant_effect", body),
           duration: "turn",
         },
       ],
@@ -4830,7 +5934,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `destroy_enter_battle_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("destroy_enter_battle", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -4863,7 +5967,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `destroy_on_rush_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("destroy_on_rush", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -4896,7 +6000,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `hold_on_enter_battle_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("hold_on_enter_battle", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -4929,7 +6033,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `note_other_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("note_other", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -4962,7 +6066,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `while_in_field_body_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("while_in_field_body", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -4995,7 +6099,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `return_to_zone_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("return_to_zone", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5028,7 +6132,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `release_command_action_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("release_command_action", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5061,7 +6165,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `combo_action_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("combo_action", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5094,7 +6198,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `ride_action_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("ride_action", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5127,7 +6231,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `opponent_must_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("opponent_must", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5160,7 +6264,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `bp_modify_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("bp_modify", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5193,7 +6297,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `damage_action_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("damage_action", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5226,7 +6330,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `counter_note_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("counter_note", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5259,7 +6363,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `cannot_restrict_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("cannot_restrict", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5292,7 +6396,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `reveal_faceup_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("reveal_faceup", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5325,7 +6429,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `stack_cards_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("stack_cards", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5358,7 +6462,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `destroy_all_enemy_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("destroy_all_enemy", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5391,7 +6495,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `hold_enemy_unit_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("hold_enemy_unit", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5424,7 +6528,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `deploy_rush_area_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("deploy_rush_area", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5457,7 +6561,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `vehicle_interaction_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("vehicle_interaction", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5490,7 +6594,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `power_zone_action_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("power_zone_action", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5523,7 +6627,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `resident_zone_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("resident_zone", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5556,7 +6660,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `pick_from_hand_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("pick_from_hand", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5589,7 +6693,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `pick_from_discard_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("pick_from_discard", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5622,7 +6726,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `pick_from_deck_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("pick_from_deck", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5655,7 +6759,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `scry_self_deck_top_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("scry_self_deck_top", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5688,7 +6792,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `discard_to_zone_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("discard_to_zone", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5721,7 +6825,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `enemy_turn_action_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("enemy_turn_action", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5754,7 +6858,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `on_attack_action_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("on_attack_action", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5787,7 +6891,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `on_strike_action_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("on_strike_action", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5820,7 +6924,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `fusion_unit_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("fusion_unit", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5853,7 +6957,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `register_resist_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("register_resist", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5951,7 +7055,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `category_modify_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("category_modify", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -5984,7 +7088,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `number_combo_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("number_combo", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6017,7 +7121,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `destroy_choose_enemy_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("destroy_choose_enemy", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6050,7 +7154,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `deploy_battle_area_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("deploy_battle_area", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6083,7 +7187,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `draw_cards_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("draw_cards", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6116,7 +7220,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `feature_match_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("feature_match", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6149,7 +7253,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `da_category_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("da_category", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6182,7 +7286,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `wb_category_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("wb_category", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6215,7 +7319,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `ot_category_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("ot_category", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6248,7 +7352,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `ma_category_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("ma_category", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6281,7 +7385,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `rc_copy_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("rc_copy", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6314,7 +7418,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `mirror_rider_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("mirror_rider", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6347,7 +7451,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `kamen_rider_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("kamen_rider", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6380,7 +7484,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `mecha_feature_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("mecha_feature", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6413,7 +7517,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `battle_win_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("battle_win", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6446,7 +7550,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `auto_battle_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("auto_battle", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6479,7 +7583,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `adjacent_units_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("adjacent_units", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6512,7 +7616,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `shuffle_deck_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("shuffle_deck", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6545,7 +7649,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `scry_enemy_deck_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("scry_enemy_deck", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6578,7 +7682,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `move_to_power_zone_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("move_to_power_zone", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6611,7 +7715,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `self_turn_action_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("self_turn_action", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6644,7 +7748,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `optional_then_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("optional_then", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6677,7 +7781,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `gender_match_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("gender_match", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6710,7 +7814,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `destroy_remaining_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("destroy_remaining", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6743,7 +7847,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `hold_remaining_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("hold_remaining", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6776,7 +7880,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `deploy_enemy_area_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("deploy_enemy_area", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6809,7 +7913,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `pick_remaining_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("pick_remaining", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6842,7 +7946,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `copy_as_effect_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("copy_as_effect", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
@@ -6875,11 +7979,29 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `wing_keyword_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("wing_keyword", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],
       matchedPattern: "wing_keyword",
+    }),
+  },
+  {
+    pattern: "nc_sp1_if_no_enemy_units",
+    test: (body) => /敵軍ユニットが1体もなければ「SP1」/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "nc_sp1_if_no_enemy_units",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "nc_sp1_if_no_enemy_units",
     }),
   },
   {
@@ -6908,7 +8030,7 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: `catchall_interpret_${hashEffectText(body).slice(0, 12)}`,
+          keyword: semanticCatchallKeyword("catchall_interpret", body),
           duration: /にある間/.test(body) ? "permanent" : "turn",
         },
       ],

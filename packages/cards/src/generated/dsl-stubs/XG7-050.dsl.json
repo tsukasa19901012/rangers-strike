@@ -49,7 +49,7 @@
       ]
     },
     {
-      "id": "named_e8a18ce38191e381bee38199",
+      "id": "kemasutega_chikara_wowasereba",
       "name": "行けますって、俺達が力を合わせれば",
       "text": "自軍ターン中、これとコンビネーションする、ナンバーに「L」または「R」を持つETのユニットのJCの効果は、これがJCの対象外でも発動できる。",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e887aae8bb8d",
+          "keyword": "combo_action_tankoretokonbineshonsurunanbanilmataharwotsuetnoyunitono",
           "duration": "turn"
         }
       ],

@@ -188,9 +188,26 @@ export function decodeRideWithoutRcFeature(keyword: string): string | null {
 }
 
 export function listRideWithoutRcFeatures(vehicleCardId: string): string[] {
-  return listCardGrantKeywords(vehicleCardId)
-    .map(decodeRideWithoutRcFeature)
-    .filter((feature): feature is string => feature !== null);
+  const doc = getCardDslDocument(vehicleCardId);
+  if (!doc?.effects) return [];
+
+  const features = new Set<string>();
+  for (const effect of doc.effects) {
+    for (const primitive of effect.effects) {
+      if (primitive.type !== "grant_keyword") continue;
+      const keyword = primitive.keyword;
+      if (!/^ride_(?:command_)?without_rc_/.test(keyword)) continue;
+
+      const fromText = effect.text?.match(/特徴「([^」]+)」/)?.[1];
+      if (fromText) {
+        features.add(fromText);
+        continue;
+      }
+      const decoded = decodeRideWithoutRcFeature(keyword);
+      if (decoded) features.add(decoded);
+    }
+  }
+  return [...features];
 }
 
 /** ビークルが RC 不要ライドを許可する特徴を rider が持つか。 */

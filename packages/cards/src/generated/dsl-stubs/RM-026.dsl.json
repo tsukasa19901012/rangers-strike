@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e58f8ee5aeb9",
+      "id": "fx_unknown_e58f8e",
       "name": "収容",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアからビークルを1体選んでもよい。そうしたとき、選んだビークルにライドしているユニットがあれば、そのユニットをパワーゾーンに送る。その後、選んだビークルをパワーゾーンに送る。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e887aae8bb8d",
+          "keyword": "ride_action_tankoregabatoruerianitatokibatorueriakarabikuruwo1nde",
           "duration": "turn"
         }
       ],

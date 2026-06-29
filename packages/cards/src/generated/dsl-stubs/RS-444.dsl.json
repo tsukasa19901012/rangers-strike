@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38388e383ade38394e382ab",
+      "id": "toropikarudansu",
       "name": "トロピカルダンス",
       "text": "特徴「獣」を持つ自軍ユニットを3体まで選び、ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_e789b9e5beb4",
+          "keyword": "deploy_battle_area_wotsuyunitowo3madebirashuerianishitemoyoitadashishita",
           "duration": "turn"
         }
       ],

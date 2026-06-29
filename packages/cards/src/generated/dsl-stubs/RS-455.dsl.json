@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_alias_named_e38396e383a9e38383e382af",
+      "id": "unnamed_alias_burakuganma",
       "text": "※これは「ブラックガンマー」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e38396e383a9e38383e382af",
+          "keyword": "alias_burakuganma",
           "duration": "permanent"
         }
       ]
@@ -41,13 +41,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_e280bbe38193",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e5b2a9e59cb0e78d84e381ae",
+      "id": "no_e5b2a9",
       "name": "岩地獄の術",
       "text": "SPが空欄ではない敵軍Sユニットを自分の手札の枚数と同じ数まで選び、持ち主の山札の下に好きな順で戻してもよい。",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_5350e3818ce7",
+          "keyword": "pick_remaining_spgadehanaisyunitowononotojimadebichinono",
           "duration": "turn"
         }
       ],

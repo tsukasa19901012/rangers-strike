@@ -11,7 +11,7 @@
   "rawText": "敵軍Sユニットを1体選び撃破する。",
   "effects": [
     {
-      "id": "named_e382ace382aae383a1e382a4",
+      "id": "gaomeinbasuta",
       "name": "ガオメインバスター",
       "text": "敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -20,12 +20,39 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_e695b5e8bb8d",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
       ],
-      "optional": false
+      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
     }
   ],
   "implementation": {

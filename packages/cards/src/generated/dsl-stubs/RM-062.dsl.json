@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383aae383bce3838ae382b9",
+      "id": "rinasuteki",
       "name": "リーナステッキ",
       "text": "これが自軍エリアにある間、敵軍ターン中、自軍バトルエリアにある特徴「女」を持つユニットが、特徴「男」を持つユニットにアタックされたとき、自軍コマンドを1つホールドしてもよい。 そうしたとき、アタックされた自軍ユニットをラッシュエリアに戻す。このときバトルは行われない。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarutanbatoruerianiaruwotsuyunitoga",
           "duration": "permanent"
         }
       ],

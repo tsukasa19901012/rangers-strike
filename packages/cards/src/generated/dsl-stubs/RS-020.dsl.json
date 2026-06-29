@@ -13,7 +13,7 @@
     {
       "id": "place_in_power",
       "name": "RS-020",
-      "text": "",
+      "text": "このカードを自軍パワーゾーンに置く。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
@@ -33,5 +33,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "text": "このカードを自軍パワーゾーンに置く。",
+  "rawText": "このカードを自軍パワーゾーンに置く。"
 }

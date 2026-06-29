@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382ade383a7e382a6e383aa",
+      "id": "kyouryuumaru",
       "name": "キョウリュウマル",
       "text": "このユニットからコンビネーションする特徴「侍」を持つユニットは、次の能力を得る⇒アタックするかわりに、敵軍バトルエリアのユニットを、BPの合計がこのユニットのBP以下になるように好きな数選び、撃破してもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_e38193e381ae",
+          "keyword": "grant_ability_konoyunitokarakonbineshonsuruwotsuyunitohano_chikara_worua",
           "duration": "turn"
         }
       ]

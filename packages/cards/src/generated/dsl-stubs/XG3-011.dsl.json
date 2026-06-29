@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e382b8e383bce382afe38396",
+      "id": "jikuburasuta",
       "name": "ジークブラスター",
       "text": "このユニットは、本来のカテゴリにDAを持つ敵軍ユニットがあれば「SP1」になり、本来の特徴に「獣」を持つ敵軍ユニットがあればBP+2000される。",
       "trigger": {
@@ -27,10 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "bp_modify_konoyunitohanokategorinidawotsuyunitogaarebasp1ninarino",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

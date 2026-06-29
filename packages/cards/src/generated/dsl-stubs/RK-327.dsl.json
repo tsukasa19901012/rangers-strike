@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e38390e38383e382b7e383a3",
+      "id": "bashafuesuru",
       "name": "バッシャーフエッスル",
       "text": "自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍山札を見て「仮面ライダーキバBF」のカードを1枚か、自軍捨札に「ガルル獣人態」と「ドッガ怪人態」があれば「仮面ライダーキバDGBKF」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_search_e887aae8bb8d",
+          "keyword": "rush_discard_search_rashufueizukonoyunitowonishitenowodekiruwote",
           "duration": "turn"
         }
       ],

@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e382b9e383afe383b3e382a6",
+      "id": "suwanuingu",
       "name": "スワンウィング",
       "text": "敵軍コマンドゾーンにあるSユニットのカードをすべてラッシュエリアに出してもよい。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e695b5e8bb8d",
+          "keyword": "deploy_rush_area_komandozonniarusyunitonokadowosubeterashuerianishitemoy",
           "duration": "turn"
         }
       ],

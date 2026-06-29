@@ -35,7 +35,7 @@
       "optional": true
     },
     {
-      "id": "named_e38395e383a9e382a4e383b3",
+      "id": "furainguataka",
       "name": "フライングアタッカー",
       "text": "これはラッシュしたときバトルエリアに出してもよい。そうしたとき、これをラッシュするためにホールドしたコマンドの必要パワーの数字を見て、その数字と同じ必要パワーの数字を持つ敵軍Sユニット1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。このとき、これはアタックもストライクもできない。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e38193e3828c",
+          "keyword": "hold_enemy_unit_koreharashushitatokibatoruerianishitemoyoisoushitatokiko",
           "duration": "turn"
         }
       ],

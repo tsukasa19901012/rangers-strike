@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": "named_e38393e38383e382b0e38395",
+      "id": "bigufurea",
       "name": "ビッグフレア",
       "text": "自軍ターン中、これがバトルエリアに出たとき、WBを持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき、本来のBPが5000以下の敵軍ユニットを1体選び撃破する。",
       "trigger": {
@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_e887aae8bb8d",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokiwbwotsukomandowo1tsubiho",
           "duration": "turn"
         }
       ],

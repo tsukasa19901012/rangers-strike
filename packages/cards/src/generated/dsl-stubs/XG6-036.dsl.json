@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "named_e383a1e383a2e383aae38381",
+      "id": "memorichienji",
       "name": "メモリチェンジ",
       "text": "カード名に「CJ」を含まない、モーフと特徴「ダブルドライバー」を持つユニットカードを自軍コマンドゾーンから1枚選び、これと置き換えてもよい。このとき出したユニットは、ライドオフした直後のユニットとして扱い、RCの効果を持っていれば、その効果を発動する。",
       "trigger": {
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e382abe383bc",
+          "keyword": "ride_action_kadonicjwomanaimofutodaburudoraibawotsuyunitokadowoko",
           "duration": "turn"
         }
       ],

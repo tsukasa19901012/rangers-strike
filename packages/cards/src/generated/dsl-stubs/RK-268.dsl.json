@@ -26,14 +26,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe695b5",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e58886e69e90e883bde58a9b",
+      "id": "chikara_e58886",
       "name": "分析能力",
       "text": "これが自軍バトルエリアにある間、すべてのバトルは本来のBPで行う。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiarusubetenobatoruhanobpdeu",
           "duration": "permanent"
         }
       ],

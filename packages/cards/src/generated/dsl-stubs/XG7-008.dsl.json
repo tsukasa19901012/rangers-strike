@@ -45,14 +45,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "permanent"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e382a2e383bce382b9e381ae",
+      "id": "asuno",
       "name": "アースの戦士",
       "text": "これは自軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。また、BP7000以上のとき、次の能力を得る⇒これがバトルで敵軍ユニットを撃破したとき、捨札にするかわりにゲームから除外する。",
       "trigger": {
@@ -61,7 +61,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e38193e3828c",
+          "keyword": "exclude_game_korehatanririsunokomando1tsunitsukibp1000sarerumatabp",
           "duration": "turn"
         }
       ],

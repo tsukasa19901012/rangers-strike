@@ -54,14 +54,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe38193",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e68993e381a1e68a9ce3818f",
+      "id": "chiku",
       "name": "打ち抜く剛腕",
       "text": "自軍ターン中、これをラッシュしたとき、敵軍コマンドを1つ選びホールドしてもよい。",
       "trigger": {

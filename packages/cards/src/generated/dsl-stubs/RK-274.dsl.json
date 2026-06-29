@@ -25,7 +25,7 @@
       ]
     },
     {
-      "id": "named_e3838be383a5e383bce3839e",
+      "id": "nyumashinno",
       "name": "ニューマシンの性能",
       "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札の上から2枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。",
       "trigger": {
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e887aae8bb8d",
+          "keyword": "grant_effect_tankoregabatoruerianitatokinowodekirunokara2",
           "duration": "turn"
         }
       ],

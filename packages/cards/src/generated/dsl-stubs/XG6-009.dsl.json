@@ -37,7 +37,7 @@
       ]
     },
     {
-      "id": "named_e382ade383a7e382a6e383aa",
+      "id": "kyouryuumaru_e382ad",
       "name": "キョウリュウマル天地一閃",
       "text": "これをラッシュしたとき、次の効果を発動できる→DAを持つBP8000以下の敵軍ユニットをすべて撃破する。（この効果は自軍ラッシュフェイズ中、自軍パワーが6以上あれば、自分の手札からこのカードを捨札にして発動できる）",
       "trigger": {
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_e38193e3828c",
+          "keyword": "destroy_on_rush_koreworashushitatokinowodekirudawotsubp8000noyuni",
           "duration": "turn"
         }
       ],

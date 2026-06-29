@@ -11,7 +11,7 @@
   "rawText": "追加条件を持たないユニットをすべて撃破する。",
   "effects": [
     {
-      "id": "named_e382bfe382a4e383a0e38399",
+      "id": "taimubento",
       "name": "タイムベント",
       "text": "追加条件を持たないユニットをすべて撃破する。",
       "trigger": {
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_all_enemy_e8bfbde58aa0",
+          "keyword": "destroy_all_enemy_wotanaiyunitowosubete_geki_ha_suru",
           "duration": "turn"
         }
       ],

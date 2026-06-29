@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e4ba8ce58883e4b880e99683",
+      "id": "fx_unknown_e4ba8c",
       "name": "二刃一閃",
       "text": "自分も相手も次のようにする⇒自分自身のエリアに同名ユニットが2体以上あれば、1体選びゲームから除外する",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e887aae58886",
+          "keyword": "exclude_game_momonoyounisurunoerianiyunitoga2areba1bi",
           "duration": "turn"
         }
       ],

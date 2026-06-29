@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e382b3e38394e383bce38399",
+      "id": "kopibento",
       "name": "コピーベント",
       "text": "これが自軍エリアにある間、自軍ラッシュフェイズ中、次の効果を発動できる⇒自軍ゾーンのオモテ向きのカードから、特徴「ミラーライダー」を持つユニットのカードを1枚選びこれと置き換えてもよい。ただし、必要パワーは満たすこと。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koregaerianiarurashufueizunowodekiruzonnoo",
           "duration": "turn"
         }
       ],

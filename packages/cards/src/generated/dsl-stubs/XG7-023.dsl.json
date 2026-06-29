@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "named_e5a4a7e5a4a7e7a095e5a4a7",
+      "id": "zan_e5a4a7",
       "name": "大大砕大斬",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき、選んだユニットがリリース状態ならホールドする。その後、選んだユニットとこのユニットでバトルする。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakarayunitowo1n",
           "duration": "turn"
         }
       ],

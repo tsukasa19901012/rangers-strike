@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "named_e3838de382ace382bfe383ad",
+      "id": "negatarosu",
       "name": "ネガタロス軍団（仮）結成の野望",
       "text": "これが自軍エリアにある間、敵軍ラッシュフェイズ中、特徴「警察」を持つ敵軍ユニットがラッシュされたとき、次の効果を発動できる⇒自分の手札からDAを持つBP3000以下のSユニットのカードを1枚選び、ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。",
       "trigger": {
@@ -25,7 +25,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_e38193e3828c",
+          "keyword": "grant_effect_koregaerianiarurashufueizuwotsuyunitogarashi",
           "duration": "turn"
         }
       ],

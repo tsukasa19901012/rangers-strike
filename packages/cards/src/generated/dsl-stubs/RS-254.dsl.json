@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_e38193e381ae",
+          "keyword": "combo_number_delta_minus_1",
           "duration": "turn"
         }
       ],

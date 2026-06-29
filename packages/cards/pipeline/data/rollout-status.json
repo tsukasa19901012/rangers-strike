@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T07:47:28.985Z",
+  "generatedAt": "2026-06-29T00:52:09.461Z",
   "summary": {
     "gatesPassed": 7,
     "gatesPartial": 0,
@@ -12,26 +12,26 @@
     "unimplemented": 0,
     "effectDelegate": 0,
     "enqueueOnly": 0,
-    "engineKeywords": 710,
-    "passiveNative": 1881
+    "engineKeywords": 467,
+    "passiveNative": 1374
   },
   "topDelegates": [],
   "effectResolution": {
     "scope": "promoted",
-    "totalEffectsInCorpus": 2843,
-    "promotedCards": 1634,
-    "effectsWithText": 2843,
+    "totalEffectsInCorpus": 2022,
+    "promotedCards": 1120,
+    "effectsWithText": 2022,
     "interpretEffectMarkers": 0,
     "markersRematchResolved": 0,
     "markersRematchUnresolved": 0,
     "markerUnresolvedRate": 0,
-    "rematchCoverageResolved": 2843,
+    "rematchCoverageResolved": 2022,
     "rematchCoverageUnresolved": 0,
     "rematchCoverageRate": 1,
-    "rematchEffectiveResolved": 2833,
-    "rematchCatchallFallback": 10,
-    "effectiveRematchRate": 0.9964825888146325,
-    "dslRematchedEffects": 2843,
+    "rematchEffectiveResolved": 2021,
+    "rematchCatchallFallback": 1,
+    "effectiveRematchRate": 0.9995054401582592,
+    "dslRematchedEffects": 2022,
     "topUnresolvedSamples": []
   },
   "gates": [
@@ -62,14 +62,14 @@
       "name": "エンジン解決",
       "status": "pass",
       "target": "delegate/enqueue ゼロ + interpret_effect / engine キーワード接続",
-      "current": "interpret_effect=0, engine=710, passive_native=1881"
+      "current": "interpret_effect=0, engine=467, passive_native=1374"
     },
     {
       "id": "G3.5",
       "name": "効果解決率",
       "status": "pass",
       "target": "marker_unresolved≤5.0%, effective_rematch≥95.0%",
-      "current": "markers=0, unresolved=0 (0.0%), effective_rematch=99.6%, catchall=10",
+      "current": "markers=0, unresolved=0 (0.0%), effective_rematch=100.0%, catchall=1",
       "note": "DSL rematched; runtime rematch sim on promoted corpus"
     },
     {

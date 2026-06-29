@@ -45,7 +45,7 @@
       ]
     },
     {
-      "id": "named_e8a681e5a19ee883bde58a9b",
+      "id": "chikara_e8a681",
       "name": "要塞能力",
       "text": "これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、自分の手札を1枚捨札にしてもよい。そうしたとき、捨札にしたカードの必要パワーの数字以下の必要パワーの数字を持ち、特徴「メカ」を持つカードを自軍捨札から1枚選び手札に加える。",
       "trigger": {
@@ -54,7 +54,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarurashufueizugotoni1dakenowo1ni",
           "duration": "permanent"
         }
       ],

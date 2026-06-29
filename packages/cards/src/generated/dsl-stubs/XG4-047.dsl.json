@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e8bb8ae4b88ae381aee8b5a4",
+      "id": "noki",
       "name": "車上の赤き侍",
       "text": "ライドしている敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。（この効果はライドしている自軍ユニットからコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e383a9e382a4",
+          "keyword": "enemy_power_damage_raidoshiteirusyunitowo1bichinopawazonnidamejinishitei",
           "duration": "turn"
         }
       ],

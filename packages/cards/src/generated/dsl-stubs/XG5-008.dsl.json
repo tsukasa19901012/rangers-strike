@@ -23,7 +23,7 @@
   },
   "effects": [
     {
-      "id": "named_e382b4e383bce382b4e383bc",
+      "id": "gogochienji",
       "name": "ゴーゴーチェンジ",
       "text": "自軍コマンドが4つ以下なら、次の効果を発動できる⇒自軍山札を見てLユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く。その後、山札をシャッフルする。",
       "trigger": {
@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_e887aae8bb8d",
+          "keyword": "deck_search_komandoga4tsunaranowodekiruwotelyunitonokadowo",
           "duration": "turn"
         }
       ],

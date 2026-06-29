@@ -40,7 +40,7 @@
       ]
     },
     {
-      "id": "named_e4bfbae98194e381aee5bf85",
+      "id": "no_4",
       "name": "俺達の必殺技",
       "text": "自軍ターン中、これがバトルエリアに出たとき、本来の特徴に「イマジン」を持つ自軍バトルエリアのユニットの数を数えてもよい。そうしたとき、その数以下の必要パワーを持つSユニットを、本来の特徴に「イマジン」を持つ自軍バトルエリアのユニットの数まで選び、持ち主のパワーゾーンに送る。",
       "trigger": {
@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_e887aae8bb8d",
+          "keyword": "power_zone_action_tankoregabatoruerianitatokinoniimajinwotsubatorueri",
           "duration": "turn"
         }
       ],

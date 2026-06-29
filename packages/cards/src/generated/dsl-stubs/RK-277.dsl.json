@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e7a9b6e6a5b5e381aee99787",
+      "id": "no_yami_womotarasu",
       "name": "究極の闇をもたらす者",
       "text": "これをラッシュしたとき、この追加条件で捨札にしたカードを見て、DAを持つカードをすべてこれの下に好きな順でウラ向きに重ねる。このとき、ウラ向きに4枚重ねなかったなら、「ン・ダグバ・ゼバ」以外の自軍ユニットをすべて捨札にする。また、これがユニットでなくなるとき、これにウラ向きで重ねたカードをウラ向きのまま1枚選び捨札にして、これをその場に留める。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_cards_e38193e3828c",
+          "keyword": "stack_cards_koreworashushitatokikonodenishitakadowotedawotsukadowosube",
           "duration": "turn"
         }
       ],

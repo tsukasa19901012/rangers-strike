@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e38390e38383e382b7e383a3",
+      "id": "bashaakuatorunedo",
       "name": "バッシャー・アクアトルネード",
       "text": "自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、常駐しているオペレーションを1つ選び、選んだオペレーションを持ち主の山札に戻してシャッフルする。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokikonoyunitowohorudoshitem",
           "duration": "turn"
         }
       ],

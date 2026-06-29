@@ -31,14 +31,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_e280bbe887aa",
+          "keyword": "note_other_fx_unknown",
           "duration": "turn"
         }
       ],
       "optional": false
     },
     {
-      "id": "named_e38395e383a9e38383e382b7",
+      "id": "furashutan",
       "name": "フラッシュターン",
       "text": "これをラッシュしたとき、ウラ向きの自軍パワーを1枚選び、オモテにしてもよい。このとき、オモテにしたカードが「タイタンボーイ」以外ならウラ向きに戻す。その後、オモテ向きの自軍パワーから「タイタンボーイ」のカードを1枚選び、ラッシュエリアに出してもよい。",
       "trigger": {
@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_e38193e3828c",
+          "keyword": "reveal_faceup_koreworashushitatokiura_ko_kinopawawo1biomotenishitemoyoik",
           "duration": "turn"
         }
       ],

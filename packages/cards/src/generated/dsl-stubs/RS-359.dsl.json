@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e69c80e5be8ce381aee6898b",
+      "id": "no_e69c80",
       "name": "最後の手段",
       "text": "これが自軍ラッシュエリアにある間、自分がOTのLユニットをラッシュするとき、これを捨札にして次の効果を発動できる⇒自軍山札から、そのLユニットの追加条件を満たすために必要なユニットのカードを1枚選び捨札にすれば、必要なユニットの1体を捨札にしたことにできる。その後、山札をシャッフルする。",
       "trigger": {
@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_search_e38193e3828c",
+          "keyword": "rush_discard_search_koregarashuerianiarugaotnolyunitoworashusurutokikore",
           "duration": "turn"
         }
       ],

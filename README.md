@@ -170,6 +170,8 @@ npm run build
 | DSL stub / overlay | `src/generated/dsl-stubs/`、`src/dsl/generated/overlays-bundle.json` |
 | カタログ parity 監査 | `npm run audit:catalog-parity -w @rangers-strike/cards` → `pipeline/data/catalog-parity.json` |
 | ロールアウト進捗 | `npm run audit:rollout-status -w @rangers-strike/cards` → `pipeline/data/rollout-status.json` |
+| RS リリース準備（690枚） | `npm run audit:rs-release -w @rangers-strike/cards` → `pipeline/data/rs-release-readiness.json` |
+| grant_keyword ハッシュ修復 | `npm run repair-dsl-hash-keywords -w @rangers-strike/cards` → `pipeline/data/dsl-hash-keyword-repair.json` |
 | ユニット効果（registry） | `src/unitEffects.ts`（`CardDocument` → `UnitEffectBlock`、`src/catalog/cardDocumentToUnitBlock.ts`） |
 | 実装済み効果 ID 一覧 | `src/unitEffectCatalog.ts` |
 | NC（ナンバーコンボ） | `src/comboEffects.ts` |

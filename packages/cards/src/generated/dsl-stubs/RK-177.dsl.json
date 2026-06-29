@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "named_e582ace79ca0e99fb3e6b3a2",
+      "id": "nami",
       "name": "催眠音波",
       "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のラッシュフェイズを終えるとき、そのターン中にラッシュした自分自身のSユニットをホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
       "trigger": {
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarumomonowokerunorashufueizuwo",
           "duration": "permanent"
         }
       ],

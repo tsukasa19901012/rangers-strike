@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "named_e78886e7ab9ce5bf85e6aeba",
+      "id": "baku_makusushorudaataku",
       "name": "爆竜必殺マックスショルダーアタック",
       "text": "自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、リリース状態の自軍コマンドが2つ以上あればすべて選びホールドするかを選ぶ。",
       "trigger": {
@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_e887aae8bb8d",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokiha1damejiwokerukaririsu",
           "duration": "turn"
         }
       ],

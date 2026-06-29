@@ -11,7 +11,7 @@
   "rawText": "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+500される。 【クロックアップ】これにライドしているユニットは、特徴「加速」を持たないSユニットにアタックされない。",
   "effects": [
     {
-      "id": "ride_without_rc_named_e58aa0e9809f",
+      "id": "ride_without_rc_fx_unknown",
       "text": "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,7 +19,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_named_e58aa0e9809f",
+          "keyword": "ride_without_rc_fx_unknown",
           "duration": "permanent"
         }
       ]
@@ -39,7 +39,7 @@
       ]
     },
     {
-      "id": "named_e382afe383ade38383e382af",
+      "id": "kurokuapu",
       "name": "クロックアップ",
       "text": "これにライドしているユニットは、特徴「加速」を持たないSユニットにアタックされない。",
       "trigger": {
@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_e38193e3828c",
+          "keyword": "ride_action_koreniraidoshiteiruyunitohawotanaisyunitoniatakusarenai",
           "duration": "turn"
         }
       ],

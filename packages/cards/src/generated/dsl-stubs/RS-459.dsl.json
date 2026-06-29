@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_alias_named_e382a4e382a8e383ade383bc",
+      "id": "unnamed_alias_ierokumado",
       "text": "※これは「イエロークマード」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e382a4e382a8e383ade383bc",
+          "keyword": "alias_ierokumado",
           "duration": "permanent"
         }
       ]
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "named_e99aa0e6b581e4b889e6aeb5",
+      "id": "zan_ri_e99aa0",
       "name": "隠流三段斬り",
       "text": "敵軍バトルエリアからホールド状態の敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_e695b5e8bb8d",
+          "keyword": "enemy_power_damage_batorueriakarahorudonosyunitowo1bichinopawazonni",
           "duration": "turn"
         }
       ],

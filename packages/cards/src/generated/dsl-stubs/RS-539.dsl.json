@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "named_e5868de7949fe5b7a8e5a4a7",
+      "id": "chikara",
       "name": "再生巨大化能力",
       "text": "これが自軍エリアにある間、本来の特徴に「怪人」を持つ自軍ユニットは、自軍捨札に同じカード名のユニットカードがあれば、「Lユニット」になる。",
       "trigger": {
@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarunoniwotsuyunitohanijikado",
           "duration": "permanent"
         }
       ],

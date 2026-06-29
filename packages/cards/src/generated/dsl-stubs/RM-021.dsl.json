@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e38393e383bce382afe383ab",
+      "id": "bikuru",
       "name": "ビークル射出",
       "text": "これをラッシュしたとき、自軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が4以下の、MユニットかSビークルのカードを1枚選んでもよい。そうしたとき、選んだカードを自軍ラッシュエリアに出す。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_e38193e3828c",
+          "keyword": "deploy_rush_area_koreworashushitatokipawazonnoomote_ko_kinokadokarapawan",
           "duration": "turn"
         }
       ],

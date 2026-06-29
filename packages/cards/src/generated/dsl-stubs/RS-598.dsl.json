@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "named_e6ada3e7bea9e381aee587ba",
+      "id": "no_e6ada3",
       "name": "正義の出陣",
       "text": "敵軍コマンドを1つ選びリリースしてもよい。そうしたとき、特徴「炎神」を持つMユニットのカードを、自軍パワーのオモテ向きのカードから1枚選び、ラッシュエリアに出す。",
       "trigger": {
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e695b5e8bb8d",
+          "keyword": "release_command_action_komandowo1tsubiririsushitemoyoisoushitatoki_honoo",
           "duration": "turn"
         }
       ],

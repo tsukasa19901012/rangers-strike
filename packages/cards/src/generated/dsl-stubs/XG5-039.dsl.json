@@ -49,7 +49,7 @@
       ]
     },
     {
-      "id": "named_e38396e383abe383bce38381",
+      "id": "buruchieku",
       "name": "ブルーチェック",
       "text": "敵軍コマンドゾーンから、自分の手札の枚数以上の必要パワーの数字を持つユニットカードを1枚選び捨札にする。（自分の手札が1枚以下なら、捨札にするかわりに持ち主の山札の上に戻してもよい）",
       "trigger": {
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_e695b5e8bb8d",
+          "keyword": "discard_to_zone_komandozonkaranononopawanowotsuyunitokado",
           "duration": "turn"
         }
       ],

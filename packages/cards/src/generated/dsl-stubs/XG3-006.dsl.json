@@ -21,7 +21,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_alias_named_e38396e383abe383bce382b9",
+      "id": "unnamed_alias_burusurowaieroamapinkueida",
       "text": "※これは「ブルースローワー＋イエローアーマー＋ピンクエイダー」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -29,13 +29,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_named_e38396e383abe383bce382b9",
+          "keyword": "alias_burusurowaieroamapinkueida",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "named_e382b1e3839fe382abe383ab",
+      "id": "kemikarudeisuchaja",
       "name": "ケミカルディスチャージャー",
       "text": "これが自軍エリアにある間、敵軍ターン中、オモテ向きの自軍パワーがウラ向きになるとき、ETの自軍コマンドを2つ選びホールドしてもよい。そうしたとき、そのダメージは無効になる。",
       "trigger": {
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarutanomote_ko_kinopawagaura_ko_kininaru",
           "duration": "permanent"
         }
       ],

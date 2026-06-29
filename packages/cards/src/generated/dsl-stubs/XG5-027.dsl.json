@@ -70,7 +70,7 @@
       ]
     },
     {
-      "id": "named_e38387e383a5e382a2e383ab",
+      "id": "deyuarukurashakonbineshonkurashu",
       "name": "デュアルクラッシャー・コンビネーションクラッシュ",
       "text": "このターン、次に敵軍ユニットがホールド状態になったとき、そのユニットを撃破する。",
       "trigger": {
@@ -79,7 +79,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_e38193e381ae",
+          "keyword": "hold_enemy_unit_konotanniyunitogahorudoninatatokisonoyunitowo_geki_ha_su",
           "duration": "turn"
         }
       ],

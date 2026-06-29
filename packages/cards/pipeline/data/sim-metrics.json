@@ -1,19 +1,141 @@
 {
-  "generatedAt": "2026-06-28T23:19:54.066Z",
+  "generatedAt": "2026-06-29T00:48:02.507Z",
   "suite": "simulateFullPromoted",
   "games": 50,
-  "unresolvedCount": 0,
-  "effectLogCount": 738,
-  "unresolvedRate": 0,
+  "unresolvedCount": 491,
+  "effectLogCount": 794,
+  "unresolvedRate": 0.6183879093198993,
   "warnThreshold": 0.25,
-  "topUnresolvedByEffectId": [],
-  "topUnresolvedByCardId": [],
+  "topUnresolvedByEffectId": [
+    {
+      "effectId": "interpret_effect_unresolved",
+      "count": 77
+    },
+    {
+      "effectId": "bananabomu",
+      "count": 57
+    },
+    {
+      "effectId": "karatareta",
+      "count": 33
+    },
+    {
+      "effectId": "baku_daburutorunedo",
+      "count": 30
+    },
+    {
+      "effectId": "deisukure_geki_chi",
+      "count": 18
+    },
+    {
+      "effectId": "riborubahanga",
+      "count": 17
+    },
+    {
+      "effectId": "furontoakusu",
+      "count": 16
+    },
+    {
+      "effectId": "kino_shi",
+      "count": 16
+    },
+    {
+      "effectId": "kino_shi_e99d92",
+      "count": 14
+    },
+    {
+      "effectId": "fx_unknown_e58f8e",
+      "count": 12
+    },
+    {
+      "effectId": "fx_unknown_e68e98",
+      "count": 12
+    },
+    {
+      "effectId": "arufuareza",
+      "count": 11
+    },
+    {
+      "effectId": "taitannoba",
+      "count": 11
+    },
+    {
+      "effectId": "dan",
+      "count": 10
+    },
+    {
+      "effectId": "tora_doriru_geki",
+      "count": 9
+    }
+  ],
+  "topUnresolvedByCardId": [
+    {
+      "cardId": "XG3-016",
+      "count": 57
+    },
+    {
+      "cardId": "RK-209",
+      "count": 33
+    },
+    {
+      "cardId": "XG6-016",
+      "count": 30
+    },
+    {
+      "cardId": "XG4-037",
+      "count": 18
+    },
+    {
+      "cardId": "XG3-039",
+      "count": 18
+    },
+    {
+      "cardId": "XG4-064",
+      "count": 17
+    },
+    {
+      "cardId": "RK-148",
+      "count": 16
+    },
+    {
+      "cardId": "XG6-028",
+      "count": 16
+    },
+    {
+      "cardId": "XG6-027",
+      "count": 14
+    },
+    {
+      "cardId": "RM-026",
+      "count": 12
+    },
+    {
+      "cardId": "RK-150",
+      "count": 12
+    },
+    {
+      "cardId": "XG2-005",
+      "count": 11
+    },
+    {
+      "cardId": "XG6-010",
+      "count": 11
+    },
+    {
+      "cardId": "XG6-063",
+      "count": 10
+    },
+    {
+      "cardId": "XG2-036",
+      "count": 9
+    }
+  ],
   "gameplay": {
     "winner": 50,
     "applyFailed": 0,
     "withRushPhase": 50,
     "withBattlePhase": 50,
     "withBattleAction": 49,
-    "withStrike": 35
+    "withStrike": 33
   }
 }

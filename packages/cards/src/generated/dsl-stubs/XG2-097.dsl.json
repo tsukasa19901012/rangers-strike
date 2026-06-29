@@ -22,7 +22,7 @@
   ],
   "effects": [
     {
-      "id": "named_e383a9e382a4e38388e3838b",
+      "id": "raitoningukyanon",
       "name": "ライトニングキャノン",
       "text": "自軍コマンドゾーンから、カテゴリを2つ以上持つカードを1枚選び、自分の手札に戻してもよい。そうしたとき、戻したカードの持つカテゴリと同じカテゴリを1つ以上持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "category_modify_e887aae8bb8d",
+          "keyword": "category_modify_komandozonkarakategoriwo2tsutsukadowo1binonishitemo",
           "duration": "turn"
         }
       ],

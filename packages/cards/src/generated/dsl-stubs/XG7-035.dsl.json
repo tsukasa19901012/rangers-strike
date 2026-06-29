@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "named_e7b590e69d9fe38199e3828b",
+      "id": "suruderuza_ma",
       "name": "結束するデルザー改造魔人",
       "text": "自軍捨札を1枚選び、ゲームから除外してもよい。そうしたとき、このターン、これはクロス1を得る。その後、クロス1を持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_e887aae8bb8d",
+          "keyword": "exclude_game_wo1bigemukarashitemoyoisoushitatokikonotankorehakurosu1wo",
           "duration": "turn"
         }
       ],

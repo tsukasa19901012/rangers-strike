@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e9a2a8e381aee99bbbe5ad90",
+      "id": "kaze_nomojikara",
       "name": "風の電子モヂカラ",
       "text": "これが自軍バトルエリアにある間、これ以外のLユニットとMユニットは、敵軍ユニットにアタックされない。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregabatoruerianiarukorenolyunitotomyunitohayuniton",
           "duration": "permanent"
         }
       ],

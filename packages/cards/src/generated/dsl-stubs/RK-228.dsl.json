@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "named_e99fb3e69283e5a58fe383bb",
+      "id": "geki_kaze",
       "name": "音撃奏・旋風一閃",
       "text": "自分の手札より相手の手札の枚数が多ければ、相手の手札を見ないで1枚選んでもよい。 そうしたとき、選んだカードを持ち主の山札の上に戻す。",
       "trigger": {
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_e887aae58886",
+          "keyword": "pick_remaining_noyorinonogakerebanowonaide1ndemoyoisou",
           "duration": "turn"
         }
       ],

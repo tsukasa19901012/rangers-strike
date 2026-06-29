@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "named_e99683e58589e3839fe383a9",
+      "id": "hikari_mirakuru_dan",
       "name": "閃光ミラクル気功弾",
       "text": "このターン、自軍Sユニットがバトルでユニットを撃破するたび、自軍コマンドを2つまで選び、リリースしてもよい。",
       "trigger": {
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_e38193e381ae",
+          "keyword": "release_command_action_konotansyunitogabatorudeyunitowo_geki_ha_surutabi",
           "duration": "turn"
         }
       ],

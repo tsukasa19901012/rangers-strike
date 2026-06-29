@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "named_e6bf80e38197e38184e99798",
+      "id": "shii",
       "name": "激しい闘争心",
       "text": "これ以外の自軍Sユニットを1体選び撃破してもよい。そうしたとき、相手は自分自身のユニットを1体選び撃破する。",
       "trigger": {
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_e38193e3828c",
+          "keyword": "opponent_must_korenosyunitowo1bi_geki_ha_shitemoyoisoushitatokihanoyuni",
           "duration": "turn"
         }
       ],

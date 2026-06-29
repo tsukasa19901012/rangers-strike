@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "named_e8a8b1e58fafe381aae3818d",
+      "id": "nakiiheno",
       "name": "許可なき戦いへの介入",
       "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒Sユニットは、追加条件を持つ、MユニットまたはSCユニットにアタックすることができない。",
       "trigger": {
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_e38193e3828c",
+          "keyword": "while_in_field_body_koregaerianiarumomonowokerusyunitohawotsum",
           "duration": "permanent"
         }
       ],
