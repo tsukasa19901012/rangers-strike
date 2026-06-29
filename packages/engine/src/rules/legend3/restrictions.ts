@@ -11,6 +11,7 @@ import {
   cardCategories,
   getDefinition,
   isSmallUnit,
+  isVehicle,
   parsePowerCost,
 } from "../../core/catalog";
 import {
@@ -381,6 +382,8 @@ export function canAttackDefender(
     findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (!attacker) return false;
 
+  if (isVehicle(getDefinition(state.definitions, attacker.card.cardId))) return false;
+
   const attackerInRush = findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (
     attackerInRush &&
@@ -394,6 +397,7 @@ export function canAttackDefender(
   const inRush = findInZone(enemy, "rush", defenderInstanceId);
 
   if (inRush) {
+    if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;
     if (
       promotedDefenderBlocksAttack(
         state,
@@ -428,6 +432,8 @@ export function canAttackDefender(
   }
 
   if (!inBattle) return false;
+
+  if (isVehicle(getDefinition(state.definitions, inBattle.card.cardId))) return false;
 
   if (scrumBlocksAttack(state, defenderPlayerId, defenderInstanceId)) {
     return false;

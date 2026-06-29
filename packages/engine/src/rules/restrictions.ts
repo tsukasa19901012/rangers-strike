@@ -26,6 +26,7 @@ import {
   isMediumUnit,
   isSmallUnit,
   isUnit,
+  isVehicle,
 } from "../core/catalog";
 import {
   heldCallLeadMatchesCategories,
@@ -48,6 +49,9 @@ import {
   karakuriLionChainBlocksEntry,
   trafficControlRequiresSameSize,
 } from "./legend2/fieldEffects";
+import {
+  canVehicleEnterBattleFromRush,
+} from "./vehicleRules";
 import {
   cannotEnterBattleOwnTurn,
   scorchingRoarBypassesHold,
@@ -234,6 +238,10 @@ export function canMoveUnitToBattle(
   if (!def || !canEnterBattleFromRush(def)) return false;
   const player = state.players[playerId];
 
+  if (isVehicle(def)) {
+    if (!canVehicleEnterBattleFromRush(state, playerId, unit)) return false;
+  }
+
   if (unit.registerHeld) return false;
 
   if (fromZone === "hand") {
@@ -331,6 +339,10 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   const def = getDefinition(state.definitions, unit.cardId);
   if (!def || !canEnterBattleFromRush(def)) return false;
   const player = state.players[playerId];
+
+  if (isVehicle(def)) {
+    if (!canVehicleEnterBattleFromRush(state, playerId, unit)) return false;
+  }
 
   if (fromZone === "hand") return false;
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;

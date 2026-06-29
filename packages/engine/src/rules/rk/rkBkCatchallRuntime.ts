@@ -29,7 +29,7 @@ import { buildRkBkStructuredPrimitives } from "./rkBkTextPrimitives";
 import { RK_BK_CATCHALL_PATTERNS } from "./rkBkCatchallSpecs.generated";
 import { interpretEffectPrimitives } from "../../dsl/cardInterpreter";
 
-const PASSIVE_PATTERNS = new Set(
+const PASSIVE_PATTERNS: ReadonlySet<string> = new Set(
   RK_BK_CATCHALL_PATTERNS.filter(
     (p) =>
       p.endsWith("_note") ||
@@ -40,24 +40,20 @@ const PASSIVE_PATTERNS = new Set(
       p === "call_category_note" ||
       p === "tag_note" ||
       p === "require_command_hold_entry" ||
-      p === "no_battle_rush_turn" ||
+      p === "no_battle_rush_turn_note" ||
       p === "destroy_on_enter_note" ||
       p === "enter_without_ride_note" ||
-      p === "not_selectable_except_attack" ||
-      p === "no_strike_after_rideoff" ||
-      p === "can_enter_battle_without_ride" ||
-      p === "scrum" ||
-      p === "wing_keyword" ||
-      p === "chase_keyword" ||
-      p === "register" ||
-      p === "deck_unlimited" ||
+      p === "not_selectable_except_attack_note" ||
+      p === "no_strike_after_rideoff_note" ||
+      p === "scrum_note" ||
+      p === "register_if_discard_has_feature_note" ||
       /^(cannot_attack|no_attack|no_strike|no_battle|no_enter|not_selectable|while_|per_ally|per_enemy|bp_plus|bp_debuff|enemy_all_s|enemy_cannot|strike_destroy|destroy_on_win|win_but)/.test(
         p,
       ),
   ),
 );
 
-const COUNTER_PATTERNS = new Set(
+const COUNTER_PATTERNS: ReadonlySet<string> = new Set(
   RK_BK_CATCHALL_PATTERNS.filter((p) => p.startsWith("counter_")),
 );
 
@@ -392,7 +388,7 @@ function tryRkBkGrantKeywordFromEffectWithInterpret(
     triggerSourceInstanceId: ctx.triggerSourceInstanceId,
     extraInstanceIds: ctx.extraInstanceIds,
     leavingCardId: ctx.leavingCardId,
-    discardOperation: ctx.discardOperation ?? false,
+    discardOperation: false,
     optional: ctx.optional,
   };
   const rematched = rematchEffect(dslCtx);

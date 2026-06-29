@@ -163,6 +163,8 @@ export type UnnamedUnitRule =
   | "no_strike_with_held_command"
   /** 手札からしかラッシュできない（XP-017 等）。 */
   | "rush_from_hand_only"
+  /** ライドなしでバトル投入可能（味方S在戦が条件のビークル等）。 */
+  | "can_enter_battle_without_ride"
   /** アンデッドユニットのラッシュ支払いとしてホールド可能（XG5-055 等）。 */
   | "undead_command_rush_hold";
 

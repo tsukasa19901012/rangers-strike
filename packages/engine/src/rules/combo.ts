@@ -12,6 +12,7 @@ import {
   effectiveBp,
   getDefinition,
   isSmallUnit,
+  isVehicle,
   unitBp,
 } from "../core/catalog";
 import { opponent, removeAt, updatePlayer } from "../core/helpers";
@@ -578,6 +579,7 @@ export function canStrikeUnit(
   state?: GameState,
   playerId?: PlayerId,
 ): boolean {
+  if (isVehicle(getDefinition(definitions, instance.cardId))) return false;
   if (instance.registerHeld) return false;
   if (state && playerId) {
     if (hasBakiBakiExtraAttackOnly(state, playerId, instance.instanceId)) {

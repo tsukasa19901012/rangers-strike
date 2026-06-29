@@ -705,12 +705,16 @@ export function isValidOperationTarget(
   switch (effect.target) {
     case "own_unit": {
       const found = findOwnUnit(player, targetInstanceId);
-      return found !== null;
+      return (
+        found !== null &&
+        isUnit(getDefinition(state.definitions, found.card.cardId))
+      );
     }
     case "own_s_unit": {
       const found = findOwnUnit(player, targetInstanceId);
       return (
         found !== null &&
+        isUnit(getDefinition(state.definitions, found.card.cardId)) &&
         isSmallUnit(state.definitions, found.card.cardId)
       );
     }

@@ -37,7 +37,7 @@ export function applyReanimate(
   const card = player.discard[index]!;
   const def = getDefinition(state.definitions, card.cardId);
   if (!def || def.type !== "unit") return state;
-  const fromZone = request.from === "exile" ? "discard" : "discard";
+  const fromZone = "discard";
   if (request.to === "rush" && !canMoveCardToRushFromZone(card.cardId, fromZone)) {
     return state;
   }
