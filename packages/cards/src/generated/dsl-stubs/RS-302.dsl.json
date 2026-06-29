@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_koreworashushitatokikadonisaretanobpga3000noyunitowosu",
+          "keyword": "on_rush_send_printed_bp3000_to_power",
           "duration": "turn"
         }
       ],

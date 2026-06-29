@@ -24,8 +24,11 @@ import {
   startSuperDrillRushChoice,
   startSiteTransportChoice,
   startOnRushDeckResidentChoice,
+  startGaoriJawDestroyChoice,
 } from "../rules/pendingChoices";
 import { getDslEffectById } from "./effectLookup";
+import { applyEmpireDominionEnterBattle } from "../rules/empireDominion";
+import { applyRexLaserOnRush } from "../rules/rexLaser";
 import { beginCastoffOnRush } from "../rules/castoff";
 import {
   beginAssaultVectorDestroy,
@@ -74,6 +77,9 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "commander",
   "mothership",
   "while_in_field_formation_deploy",
+  "v_commander_hold_entry",
+  "battle_entry_discard_sensho_7",
+  "while_in_field_da_rush_discard_sensho_power",
   "ride_bp_boost_500",
   "ride_bp_boost_1000",
   "cross1",
@@ -441,7 +447,40 @@ export function applyGrantKeyword(
       if (!withChoice) return { state };
       return { state: withChoice, detail: ctx.effectId };
     }
+    case "on_rush_send_printed_bp3000_to_power": {
+      return {
+        state: applyRexLaserOnRush(state, ctx.phasePlayerId),
+        detail: ctx.effectId,
+      };
+    }
+    case "on_rush_destroy_enemy_multicat_bp9000": {
+      const withChoice = startGaoriJawDestroyChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
+    }
+    case "enter_battle_hand_match_destroy_sp": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applyEmpireDominionEnterBattle(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
     case "while_in_field_formation_deploy":
+    case "while_in_field_da_rush_discard_sensho_power":
+    case "v_commander_hold_entry":
+    case "battle_entry_discard_sensho_7":
     case "mothership": {
       return { state, detail: keyword };
     }

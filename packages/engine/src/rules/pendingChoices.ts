@@ -605,6 +605,43 @@ export function startSuperDrillRushChoice(
   });
 }
 
+function collectGaoriJawTargets(state: GameState, enemyId: PlayerId): string[] {
+  const player = state.players[enemyId];
+  const ids: string[] = [];
+  for (const card of player.battle) {
+    const def = getDefinition(state.definitions, card.cardId);
+    if (def?.type !== "unit") continue;
+    if (cardCategories(def).length < 2) continue;
+    if (effectiveBp(state, enemyId, card) > 9000) continue;
+    ids.push(card.instanceId);
+  }
+  return ids;
+}
+
+/** RS-478 粉砕する大顎: 敵バトルから多カテゴリBP9000以下を任意撃破。 */
+export function startGaoriJawDestroyChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const enemyId = opponent(params.playerId);
+  const valid = collectGaoriJawTargets(state, enemyId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    unitDestination: "discard",
+    selectCount: 1,
+    optional: true,
+  });
+}
+
 /** RS-472 現場への搬送: コマンド任意枚数捨て→山札M配置。 */
 export function startSiteTransportChoice(
   state: GameState,

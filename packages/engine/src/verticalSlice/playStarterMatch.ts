@@ -133,6 +133,7 @@ export function playStarterMatchUntilEnd(
   let battleStallCount = 0;
   let endPhaseLoopCount = 0;
   let moveToBattleLoopCount = 0;
+  let passBattleEntryLoopCount = 0;
   let lastRushPaymentSource: string | null = null;
   let lastZordVehicleId: string | null = null;
   let lastFingerprint = "";
@@ -213,6 +214,26 @@ export function playStarterMatchUntilEnd(
       );
       action = cancel ?? actions[0]!;
       zordSetupLoopCount = 0;
+    } else if (
+      passBattleEntryLoopCount >= 5 &&
+      state.phase === "battle" &&
+      !state.pendingEffectChoice
+    ) {
+      action =
+        actionPool.find(
+          (a) =>
+            a.type === "strike" &&
+            isLegalAction(state, a) &&
+            applyAction(state, a).ok,
+        ) ??
+        actionPool.find(
+          (a) =>
+            a.type === "end_phase" &&
+            isLegalAction(state, a) &&
+            applyAction(state, a).ok,
+        ) ??
+        actionPool[0]!;
+      passBattleEntryLoopCount = 0;
     } else if (
       moveToBattleLoopCount >= 6 &&
       state.phase === "battle" &&
@@ -482,13 +503,25 @@ export function playStarterMatchUntilEnd(
       zordSetupLoopCount += 1;
     }
     if (action.type === "move_to_battle") {
-      moveToBattleLoopCount += 1;
+      if (result.ok) moveToBattleLoopCount = 0;
+      else moveToBattleLoopCount += 1;
+    } else if (action.type === "end_phase" || action.type === "strike") {
+      moveToBattleLoopCount = 0;
+      passBattleEntryLoopCount = 0;
+    }
+    if (
+      state.phase === "battle" &&
+      !state.pendingEffectChoice &&
+      action.type === "pass_battle_entry"
+    ) {
+      passBattleEntryLoopCount += 1;
     } else if (
-      action.type === "end_phase" ||
+      action.type === "move_to_battle" ||
       action.type === "strike" ||
+      action.type === "battle" ||
       state.phase !== "battle"
     ) {
-      moveToBattleLoopCount = 0;
+      passBattleEntryLoopCount = 0;
     }
     if (
       state.phase === "battle" &&

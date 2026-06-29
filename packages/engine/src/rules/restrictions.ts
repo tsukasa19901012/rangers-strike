@@ -441,7 +441,13 @@ function passesBattleEntryHoldRequirements(
     : 0;
   const requiredTotal = unitHold + lgHold;
 
-  if (requiredTotal === 0) return true;
+  if (requiredTotal === 0 && !needsVCommanderHold(state, playerId, unit)) {
+    return true;
+  }
+
+  if (needsVCommanderHold(state, playerId, unit)) {
+    if (!hasHeldVCommanderCommand(player, state.definitions)) return false;
+  }
 
   if (unitHold > 0) {
     if (countBattleEntryEligibleHolds(player) < unitHold) return false;
@@ -449,6 +455,38 @@ function passesBattleEntryHoldRequirements(
   }
 
   return countHeldCommands(player) >= requiredTotal;
+}
+
+function allyHasVCommanderFeature(
+  state: GameState,
+  playerId: PlayerId,
+  excludeInstanceId?: string,
+): boolean {
+  const player = state.players[playerId];
+  return [...player.rush, ...player.battle].some((c) => {
+    if (excludeInstanceId && c.instanceId === excludeInstanceId) return false;
+    const def = getDefinition(state.definitions, c.cardId);
+    return def?.type === "unit" && (def.features ?? []).includes("Vコマンダー");
+  });
+}
+
+function hasHeldVCommanderCommand(
+  player: PlayerState,
+  definitions: GameState["definitions"],
+): boolean {
+  return player.command.some((c) => {
+    if (!c.commandHeld) return false;
+    return getDefinition(definitions, c.cardId)?.name === "Vコマンダー";
+  });
+}
+
+function needsVCommanderHold(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+): boolean {
+  if (!cardHasGrantKeyword(unit.cardId, "v_commander_hold_entry")) return false;
+  return !allyHasVCommanderFeature(state, playerId, unit.instanceId);
 }
 
 function cardName(

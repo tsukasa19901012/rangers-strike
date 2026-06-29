@@ -390,4 +390,72 @@ describe("RS monkey-test high-frequency fixes", () => {
       ),
     ).toBe(true);
   });
+
+  it("RS-302 rematches to on_rush_send_printed_bp3000_to_power", () => {
+    const text =
+      "これをラッシュしたとき、カードに表記された本来のBPが3000のユニットをすべて持ち主のパワーゾーンに送る。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "レックスレーザー",
+      kind: "named",
+      trigger: { type: "on_rush" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_rush_send_printed_bp3000_to_power",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-478 rematches to on_rush_destroy_enemy_multicat_bp9000", () => {
+    const text =
+      "これをラッシュしたとき、敵軍バトルエリアから、カテゴリを2つ以上持つBP9000以下のユニットを1体選び、撃破してもよい。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "粉砕する大顎",
+      kind: "named",
+      trigger: { type: "on_rush" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_rush_destroy_enemy_multicat_bp9000",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-365 rematches to enter_battle_hand_match_destroy_sp", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、自分の手札をすべて相手に見せる。そして、見せた手札と同じカード名の敵軍ユニットを全て撃破する。その後、自分の手札をすべて捨札にし、この効果で撃破した敵軍ユニット1体につき、 このターン、これはSP+1される。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "帝国の掌握",
+      kind: "named",
+      trigger: { type: "enter_battle" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "enter_battle_hand_match_destroy_sp",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-586 rematches to while_in_field_da_rush_discard_sensho_power", () => {
+    const text =
+      "これが自軍エリアにある間、自軍ラッシュフェイズ中、自分の手札からDAを持つユニットカードをラッシュするとき、そのパワーを満たすために次のようにしてもよい⇒必要パワーに足りない数だけ、特徴「戦闘員」を持つユニットを捨札にする。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "魔神に不足する物",
+      kind: "named",
+      trigger: { type: "while_in_field" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "while_in_field_da_rush_discard_sensho_power",
+      ),
+    ).toBe(true);
+  });
 });

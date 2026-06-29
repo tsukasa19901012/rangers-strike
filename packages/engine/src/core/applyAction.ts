@@ -42,6 +42,7 @@ import { clearTurnModifiers } from "./modifiers";
 import { clearAllCostWindows, clearCostWindow, isCostWindowSatisfied } from "./costWindow";
 import {
   countAvailablePower,
+  effectivePowerCost,
   findInZone,
   opponent,
   payPowerCost,
@@ -74,6 +75,7 @@ import {
   tryStartBattleEntryHandDiscard,
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
+import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
   shouldAutoFinalizeEndPhase,
@@ -1065,14 +1067,39 @@ export function applyAction(
       }
 
       if (!payPowerCost(state, playerId, cost)) {
-        const shortage =
-          cost -
-          countAvailablePower({ ...state, players: { ...state.players, [playerId]: nextPlayer } }, playerId);
-        const withHolds = applyDarkDealRushHolds(nextPlayer, shortage);
-        if (!withHolds || darkDealRushPowerBudget(state, playerId, nextPlayer, definition!) < cost) {
-          return fail("insufficient_power");
+        const powerState = {
+          ...state,
+          players: { ...state.players, [playerId]: nextPlayer },
+        };
+        const effectiveCost = effectivePowerCost(state, playerId, cost);
+        let candidate = nextPlayer;
+        let available = countAvailablePower(
+          { ...powerState, players: { ...powerState.players, [playerId]: candidate } },
+          playerId,
+        );
+        let shortage = effectiveCost - available;
+
+        if (shortage > 0) {
+          const withGodom = applyGodomSenshoDiscardPay(powerState, candidate, shortage);
+          if (withGodom) {
+            candidate = withGodom;
+            available = countAvailablePower(
+              { ...powerState, players: { ...powerState.players, [playerId]: candidate } },
+              playerId,
+            );
+            shortage = effectiveCost - available;
+          }
         }
-        nextPlayer = withHolds;
+
+        if (shortage > 0) {
+          if (darkDealRushPowerBudget(state, playerId, candidate, definition!) < effectiveCost) {
+            return fail("insufficient_power");
+          }
+          const withHolds = applyDarkDealRushHolds(candidate, shortage);
+          if (!withHolds) return fail("insufficient_power");
+          candidate = withHolds;
+        }
+        nextPlayer = candidate;
       }
 
       const handFound = findInZone(nextPlayer, "hand", action.instanceId);

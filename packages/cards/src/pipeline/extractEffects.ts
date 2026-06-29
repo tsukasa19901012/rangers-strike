@@ -1675,6 +1675,114 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "battle_entry_discard_sensho_7",
+    test: (body) =>
+      /^※これは自軍捨札に特徴「戦闘員」を持つカードが7枚以上無ければバトルエリアに出られない/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: "note_discard_sensho_7_entry",
+      text: body,
+      trigger: { type: "while_in_field" },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "battle_entry_discard_sensho_7",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "battle_entry_discard_sensho_7",
+    }),
+  },
+  {
+    pattern: "on_rush_send_printed_bp3000_to_power",
+    test: (body) =>
+      /これをラッシュしたとき、カードに表記された本来のBPが3000のユニットをすべて持ち主のパワーゾーンに送る/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "on_rush_bp3000_to_power",
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: false,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_send_printed_bp3000_to_power",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_send_printed_bp3000_to_power",
+    }),
+  },
+  {
+    pattern: "on_rush_destroy_enemy_multicat_bp9000",
+    test: (body) =>
+      /これをラッシュしたとき、敵軍バトルエリアから、カテゴリを2つ以上持つBP9000以下のユニットを1体選び、撃破してもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "on_rush_destroy_multicat",
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_destroy_enemy_multicat_bp9000",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_destroy_enemy_multicat_bp9000",
+    }),
+  },
+  {
+    pattern: "enter_battle_hand_match_destroy_sp",
+    test: (body) =>
+      /これがバトルエリアに出たとき、自分の手札をすべて相手に見せる。そして、見せた手札と同じカード名の敵軍ユニットを全て撃破する。その後、自分の手札をすべて捨札にし、この効果で撃破した敵軍ユニット1体につき、\s*このターン、これはSP\+1される/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enter_hand_match_destroy",
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: false,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_battle_hand_match_destroy_sp",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_hand_match_destroy_sp",
+    }),
+  },
+  {
+    pattern: "while_in_field_da_rush_discard_sensho_power",
+    test: (body) =>
+      /これが自軍エリアにある間、自軍ラッシュフェイズ中、自分の手札からDAを持つユニットカードをラッシュするとき、そのパワーを満たすために次のようにしてもよい⇒必要パワーに足りない数だけ、特徴「戦闘員」を持つユニットを捨札にする/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "godom_sensho_power",
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "while_in_field_da_rush_discard_sensho_power",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_in_field_da_rush_discard_sensho_power",
+    }),
+  },
+  {
     pattern: "enter_battle_hold_send_enemy_s_to_power",
     test: (body) =>
       /これがバトルエリアに出たとき.*ホールドしてもよい.*敵軍Sユニットを1体選び.*パワーゾーンにダメージにして置く/.test(

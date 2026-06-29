@@ -12,6 +12,7 @@ import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { validateZordAdditionalPayment } from "./mothership";
 import { isShironLightRushTarget } from "./shironLight";
 import { darkDealRushPowerBudget } from "./legend3/restrictions";
+import { godomRushPowerBudget } from "./godomRushPay";
 import { requiresAllFusionPartners, hasAllRequiredFusionMaterials } from "./zord";
 
 /** カテゴリ支払い済み、またはカテゴリ不要なユニットのみ直接 rush 可能。 */
@@ -30,7 +31,10 @@ export function canDeclareRush(
     zordMaterialDestination?: import("../types/actions").ZordMaterialDestination;
   },
 ): boolean {
-  const powerBudget = darkDealRushPowerBudget(state, playerId, player, definition);
+  const powerBudget = Math.max(
+    darkDealRushPowerBudget(state, playerId, player, definition),
+    godomRushPowerBudget(state, playerId, player, definition),
+  );
   if (
     !canRushUnitExceptCommandHold(
       player,

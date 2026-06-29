@@ -3,6 +3,7 @@ import { cardCategories } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "./catalog";
 import { opponent } from "./helpers";
+import { godomDiscardPowerBonus } from "../rules/godomRushPay";
 import { flowerBombPowerCostOverride } from "../rules/legend1/coreGapEffects";
 import { hasTurnRuleModifier } from "./scopedModifiers";
 
@@ -30,13 +31,14 @@ export function countOpponentMultiCategoryCommands(
 
 /** 利用可能パワー = 自軍パワーゾーン + 相手コマンドのマルチカテゴリ枚数。 */
 export function countAvailablePower(
-  state: Pick<GameState, "players" | "definitions">,
+  state: Pick<GameState, "players" | "definitions" | "phase" | "activePlayer">,
   playerId: PlayerId,
 ): number {
-  return (
+  const base =
     state.players[playerId].power.length +
-    countOpponentMultiCategoryCommands(state, playerId)
-  );
+    countOpponentMultiCategoryCommands(state, playerId);
+  if (!state.phase || !state.activePlayer) return base;
+  return base + godomDiscardPowerBonus(state as GameState, playerId);
 }
 
 const ENEMY_POWER_COST_MINUS_RULE = "enemy_power_cost_minus";

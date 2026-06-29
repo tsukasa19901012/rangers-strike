@@ -17,16 +17,16 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "note_discard_sensho_7_entry",
       "text": "※これは自軍捨札に特徴「戦闘員」を持つカードが7枚以上無ければバトルエリアに出られない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "battle_entry_discard_sensho_7",
+          "duration": "permanent"
         }
       ],
       "optional": false
@@ -36,12 +36,12 @@
       "name": "魔神に不足する物",
       "text": "これが自軍エリアにある間、自軍ラッシュフェイズ中、自分の手札からDAを持つユニットカードをラッシュするとき、そのパワーを満たすために次のようにしてもよい⇒必要パワーに足りない数だけ、特徴「戦闘員」を持つユニットを捨札にする。",
       "trigger": {
-        "type": "on_rush"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregaerianiarurashufueizunokaradawotsuyunitoka",
+          "keyword": "while_in_field_da_rush_discard_sensho_power",
           "duration": "permanent"
         }
       ],
