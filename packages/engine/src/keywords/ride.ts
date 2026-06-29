@@ -4,6 +4,7 @@ import { getDefinition, isUnit } from "../core/catalog";
 import { findInZone } from "../core/helpers";
 import { updatePlayer } from "../core/helpers";
 import { canMoveUnitToBattle } from "../rules/restrictions";
+import { getCardDslDocument } from "../dsl/effectLookup";
 import {
   listRideWithoutRcFeatures,
   riderMatchesVehicleRideWithoutRc,
@@ -14,7 +15,18 @@ function isVehicle(definitions: Record<string, CardDefinition>, cardId: string):
 }
 
 function riderHasRc(definition: CardDefinition | undefined): boolean {
-  return definition?.comboNumber === "RC";
+  if (!definition) return false;
+  if (definition.comboNumber === "RC") return true;
+  const doc = getCardDslDocument(definition.id);
+  if (doc?.comboNumber === "RC") return true;
+  return (
+    doc?.effects?.some(
+      (effect) =>
+        effect.trigger &&
+        "type" in effect.trigger &&
+        effect.trigger.type === "riding_combo",
+    ) ?? false
+  );
 }
 
 function vehicleAlreadyRidden(

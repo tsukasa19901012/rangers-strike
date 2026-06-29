@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { applyRecommendedReplacementText } from "../../src/cardText";
 import type { CardDefinition } from "../../src/schema";
 
 /** DSL スタブから catalog emit 時に上書きする stats フィールド。 */
@@ -17,7 +18,7 @@ export function enrichFromDsl(root: string, base: CardDefinition): CardDefinitio
     size: dsl.size ?? base.size,
     sp: dsl.sp ?? base.sp,
     comboNumber: dsl.comboNumber ?? base.comboNumber,
-    text: dsl.text ?? base.text,
+    text: applyRecommendedReplacementText(dsl.text ?? base.text),
     features: dsl.features ?? base.features,
   };
 }

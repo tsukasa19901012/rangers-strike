@@ -1,8 +1,7 @@
 {
-  "generatedAt": "2026-06-29T06:08:08.995Z",
-  "source": "expand-rs-core-catalog.ts",
+  "generatedAt": "2026-06-29T23:50:29.800Z",
+  "source": "generated/catalog/core-playable/cards.json",
   "coreCount": 1052,
-  "rsPromoted": 354,
   "byExpansion": {
     "legend1": 608,
     "legend2": 387,

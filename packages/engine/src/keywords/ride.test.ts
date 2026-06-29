@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { buildDefinitionMap } from "../core/catalog";
 import { createTestState, inst } from "../testing/fixtures";
-import { attachRideForBattleEntry, attachRideIfEligible, findRideVehicleForRider } from "./ride";
+import { legendDefinitions } from "../testing/battleEntry";
+import {
+  attachRideForBattleEntry,
+  attachRideIfEligible,
+  canRiderMountVehicle,
+  findRideVehicleForRider,
+} from "./ride";
 import { markBattleBlocked } from "../rules/turnModifiers";
 
 describe("ride on battle entry", () => {
@@ -94,5 +100,23 @@ describe("ride on battle entry", () => {
       vehicle.instanceId,
     );
     expect(attachRideForBattleEntry(state, "player1", rider).mountedOnInstanceId).toBeUndefined();
+  });
+});
+
+describe("ride with promoted cards", () => {
+  it("lets RK-061 (RC via DSL) mount RK-043 without catalog comboNumber", () => {
+    const vehicle = inst("RK-043", "ride-shooter");
+    const rider = inst("RK-061", "den-o-rf");
+    const state = createTestState({
+      definitions: legendDefinitions,
+      player1: { rush: [vehicle, rider] },
+    });
+
+    expect(legendDefinitions["RK-061"]?.comboNumber).toBe("RC");
+    expect(canRiderMountVehicle(state, "player1", rider, vehicle.instanceId)).toBe(true);
+    expect(findRideVehicleForRider(state, "player1", rider)?.instanceId).toBe(vehicle.instanceId);
+    expect(attachRideIfEligible(state, "player1", rider).mountedOnInstanceId).toBe(
+      vehicle.instanceId,
+    );
   });
 });

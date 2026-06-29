@@ -1334,7 +1334,8 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-024",
@@ -1370,7 +1371,8 @@
       "features": [
         "女",
         "改造人間"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-026",
@@ -1408,7 +1410,8 @@
         "男",
         "改造人間",
         "世紀王"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-028",
@@ -1445,7 +1448,8 @@
         "仮面ライダー",
         "男",
         "アマダム"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-030",
@@ -1482,7 +1486,8 @@
         "メカ",
         "男",
         "警察"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-032",
@@ -1501,7 +1506,8 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-033",
@@ -1708,7 +1714,7 @@
       "imageUrl": "/cards/promoted/RK-043.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-043.jpg",
       "size": "S",
-      "text": "※このカードはデッキに好きな枚数入れてもよい。 【突入】自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、次にラッシュする特徴「ミラーライダー」を持つユニットの必要パワーの数字は3少なくなり、コマンドをホールドせずにラッシュできる（この効果は重複しない）。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 ※このカードはデッキに好きな枚数入れてもよい。 【突入】自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、次にラッシュする特徴「ミラーライダー」を持つユニットカードの必要パワーの数字は3少なくなり、コマンドをホールドせずにラッシュできる（この効果は重複しない）。",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。 【突入】自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、次にラッシュする特徴「ミラーライダー」を持つユニットカードの必要パワーの数字は3少なくなり、コマンドをホールドせずにラッシュできる（この効果は重複しない）。",
       "features": [
         "メカ",
         "車両"
@@ -2080,7 +2086,8 @@
         "仮面ライダー",
         "男",
         "DEN-O"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-062",
@@ -2139,7 +2146,8 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-065",
@@ -2184,7 +2192,8 @@
         "仮面ライダー",
         "男",
         "DEN-O"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-067",
@@ -2262,7 +2271,8 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-071",
@@ -2303,7 +2313,8 @@
         "仮面ライダー",
         "男",
         "DEN-O"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-073",
@@ -2323,7 +2334,8 @@
         "仮面ライダー",
         "男",
         "改造人間"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-074",
@@ -2486,7 +2498,7 @@
       "powerCost": 0,
       "imageUrl": "/cards/promoted/RK-086.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-086.jpg",
-      "text": "※カウンター 敵軍ユニットにストライクされて、自軍パワーゾーンのオモテ向きのカードか自軍山札の上からひいたカードをダメージにするとき発動できる⇒ダメージにするカードのかわりに、このカードを相手に見せてから自軍パワーゾーンにダメージにして置く。その後、自分は1枚ドローする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 ※カウンター 敵軍ユニットにストライクされて、自軍パワーゾーンのオモテ向きのカードか自軍山札の上からひいたカードをダメージにするとき発動できる（ただし1つのタイミングに発動できる「アカネタカ」は1枚だけとする）⇒ダメージにするカードのかわりに、このカードを相手に見せてから自軍パワーゾーンにダメージにして置く。その後、自分は1枚ドローする。"
+      "text": "※カウンター 敵軍ユニットにストライクされて、自軍パワーゾーンのオモテ向きのカードか自軍山札の上からひいたカードをダメージにするとき発動できる（ただし1つのタイミングに発動できる「アカネタカ」は1枚だけとする）⇒ダメージにするカードのかわりに、このカードを相手に見せてから自軍パワーゾーンにダメージにして置く。その後、自分は1枚ドローする。"
     },
     {
       "id": "RK-087",
@@ -2627,7 +2639,8 @@
         "ショッカー",
         "男",
         "戦闘員"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-095",
@@ -3659,7 +3672,7 @@
       "bp": 1000,
       "size": "S",
       "sp": "1/4",
-      "text": "【デネブキャンディー】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札からオペレーションカードを1枚選び、相手に見せてから手札に加えてもよい。そうしたとき、自分自身の山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【デネブキャンディー】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札を見てもよい。そうしたとき、その中からオペレーションカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
+      "text": "【デネブキャンディー】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札を見てもよい。そうしたとき、その中からオペレーションカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
       "features": [
         "イマジン"
       ]
@@ -4297,7 +4310,8 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-179",
@@ -5392,7 +5406,7 @@
       "bp": 6000,
       "size": "M",
       "sp": 1,
-      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 【潜水】自分がターンを終えるとき、これをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。 ・このテキストはクロスギャザーコンプリートブックでエラッタが示されています。修正後は以下。 【潜水】自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。",
+      "text": "【潜水】自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。",
       "features": [
         "魔化魍"
       ]
@@ -6176,7 +6190,8 @@
         "男",
         "アマダム",
         "ライジング"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-274",
@@ -6304,7 +6319,8 @@
         "男",
         "ミラーライダー",
         "サバイブ"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-280",
@@ -6481,7 +6497,8 @@
       "features": [
         "仮面ライダー",
         "男"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-289",
@@ -7432,7 +7449,8 @@
         "男",
         "ミラーライダー",
         "サバイブ"
-      ]
+      ],
+      "comboNumber": "RC"
     },
     {
       "id": "RK-334",
@@ -8704,7 +8722,8 @@
         "常駐"
       ],
       "imageUrl": "/cards/legend1/RS-010.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-010.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-010.jpg",
+      "text": "常駐（場に配置して、離れるまで効果が有効になる）自分がカードを使用するとき発動できる。自軍コマンドを2つホールドすることで、使用するカードに必要なカテゴリのコマンドを1つホールドしたことにできる。"
     },
     {
       "id": "RS-011",
@@ -8715,7 +8734,8 @@
       "expansion": "legend1",
       "powerCost": 2,
       "imageUrl": "/cards/legend1/RS-011.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-011.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-011.jpg",
+      "text": "自軍Sユニットを1体選ぶ。このターン、選んだユニットは自軍ダメージ1点につきBP＋2000される。"
     },
     {
       "id": "RS-012",
@@ -8754,7 +8774,8 @@
         "常駐"
       ],
       "imageUrl": "/cards/legend1/RS-014.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-014.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-014.jpg",
+      "text": "ストライクされるとき、自軍ラッシュエリアのSユニットを1体選んでバトルエリアに出し、ストライクしてきた敵軍ユニットとバトルしてもよい。そのとき、敵軍のストライクは無効になる。"
     },
     {
       "id": "RS-015",
@@ -8793,7 +8814,8 @@
         "常駐"
       ],
       "imageUrl": "/cards/legend1/RS-017.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-017.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-017.jpg",
+      "text": "すべての自軍Sユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP＋1000される（常駐）。"
     },
     {
       "id": "RS-018",
@@ -8832,7 +8854,8 @@
       "expansion": "legend1",
       "powerCost": 0,
       "imageUrl": "/cards/legend1/RS-020.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-020.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-020.jpg",
+      "text": "このカードを自軍パワーゾーンに置く。"
     },
     {
       "id": "RS-021",
@@ -8857,7 +8880,8 @@
         "常駐"
       ],
       "imageUrl": "/cards/legend1/RS-022.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-022.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-022.jpg",
+      "text": "ラッシュエリアにある全てのユニットは、可能であればバトルエリアに出る（常駐）。ただし、自分のスタートフェイズに自軍パワーゾーンからダメージ以外のカードを3枚捨札にしなければ、これを捨札にする。"
     },
     {
       "id": "RS-023",
@@ -8868,7 +8892,8 @@
       "expansion": "legend1",
       "powerCost": 3,
       "imageUrl": "/cards/legend1/RS-023.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-023.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-023.jpg",
+      "text": "自軍捨札からSユニット1枚を選び、手札に加える。"
     },
     {
       "id": "RS-024",
@@ -8890,7 +8915,8 @@
       "expansion": "legend1",
       "powerCost": 2,
       "imageUrl": "/cards/legend1/RS-025.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-025.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-025.jpg",
+      "text": "自軍ユニットを1体選ぶ。このターン、選んだユニットはBP＋4000される。"
     },
     {
       "id": "RS-026",
@@ -8918,7 +8944,8 @@
         "カウンター"
       ],
       "imageUrl": "/cards/legend1/RS-027.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-027.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-027.jpg",
+      "text": "自軍ユニットが場を離れるとき発動できる。場を離れるユニットはその場に留まる。ただし、場を離れるユニットの必要パワーを見て、その数字と同じ枚数を自軍山札からひいて捨札にする。"
     },
     {
       "id": "RS-028",
@@ -8929,7 +8956,8 @@
       "expansion": "legend1",
       "powerCost": 5,
       "imageUrl": "/cards/legend1/RS-028.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-028.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-028.jpg",
+      "text": "敵軍ユニットを1体選んでターゲットとする。そして自軍山札の上から1枚をオモテにし、それがターゲットと同じサイズのユニットなら、ターゲットを撃破する。その後、オモテにしたカードは山札の下に戻す。"
     },
     {
       "id": "RS-029",
@@ -8943,7 +8971,8 @@
         "常駐"
       ],
       "imageUrl": "/cards/legend1/RS-029.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-029.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-029.jpg",
+      "text": "自軍Sユニットがバトルエリアに出るたび、コマンドを1つリリースできる（常駐）。"
     },
     {
       "id": "RS-030",
@@ -8957,7 +8986,8 @@
         "常駐"
       ],
       "imageUrl": "/cards/legend1/RS-030.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-030.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-030.jpg",
+      "text": "自分自身のターンを終えるとき、自分自身のコマンドゾーンからホールド状態のコマンドを1つ選んで手札に戻す（常駐）。"
     },
     {
       "id": "RS-031",
@@ -9696,7 +9726,8 @@
         "常駐"
       ],
       "imageUrl": "/cards/legend1/RS-067.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-067.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-067.jpg",
+      "text": "ストライクされたとき発動できる。ストライクしてきたユニットを撃破する（ダメージは受ける）。そうしたとき、これを捨札にする。"
     },
     {
       "id": "RS-068",
@@ -9707,7 +9738,8 @@
       "expansion": "legend1",
       "powerCost": 6,
       "imageUrl": "/cards/legend1/RS-068.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-068.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-068.jpg",
+      "text": "自軍捨札からカード1枚を選び、手札に加える。"
     },
     {
       "id": "RS-069",
@@ -9721,7 +9753,8 @@
         "常駐"
       ],
       "imageUrl": "/cards/legend1/RS-069.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-069.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-069.jpg",
+      "text": "すべてのMユニットはコマンドを1つホールドしないとバトルエリアに出られない（常駐）。"
     },
     {
       "id": "RS-070",
@@ -12854,7 +12887,7 @@
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-227.jpg",
       "bp": 4000,
       "size": "M",
-      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【トップウインド】自軍ターン中、これがバトルエリアに出たとき、相手は次のようにする⇒自分自身のコマンドを、自分自身のコマンドゾーンのカテゴリの数まで選びホールドする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【トップウインド】自軍ターン中、これがバトルエリアに出たとき、相手は次のようにする⇒自分自身のコマンドを、自分自身のコマンドゾーンのカテゴリの数まで可能な限り選びホールドする。",
+      "text": "【トップウインド】自軍ターン中、これがバトルエリアに出たとき、相手は次のようにする⇒自分自身のコマンドを、自分自身のコマンドゾーンのカテゴリの数まで可能な限り選びホールドする。",
       "features": [
         "恐竜"
       ]
@@ -15283,7 +15316,7 @@
       "powerCost": 3,
       "imageUrl": "/cards/promoted/RS-349.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-349.jpg",
-      "text": "自軍山札から、追加条件を持たないDA以外のSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。"
+      "text": "自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。"
     },
     {
       "id": "RS-350",
@@ -17264,7 +17297,7 @@
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-446.jpg",
       "bp": 3000,
       "size": "XL",
-      "text": "【スクランブル】自軍ラッシュフェイズ中、これを捨札にして次の効果を発動できる⇒自軍コマンドゾーンから、必要パワーを満たしているETのMユニットのカードを3枚まで選び、選んだカードを自軍ラッシュエリアに出す。ただし、この効果でカードを選ぶとき、同じカード名のユニットカードを2枚以上選ぶことはできない。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【スクランブル】自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍コマンドゾーンから、必要パワーを満たしているETを持つMユニットのカードを3枚まで選び、選んだカードを自軍ラッシュエリアに出す。ただし、この効果でカードを選ぶとき、同じカード名のユニットカードを2枚以上選ぶことはできない。",
+      "text": "【スクランブル】自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍コマンドゾーンから、必要パワーを満たしているETを持つMユニットのカードを3枚まで選び、選んだカードを自軍ラッシュエリアに出す。ただし、この効果でカードを選ぶとき、同じカード名のユニットカードを2枚以上選ぶことはできない。",
       "features": [
         "メカ",
         "母艦"
@@ -18061,7 +18094,7 @@
       "bp": 3000,
       "size": "M",
       "comboNumber": "L",
-      "text": "※これはSユニットにアタックされない。 【分身幻斬り】これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたLユニットがアタックまたはストライクしたとき、その処理をすべて終えてから、そのLユニットと同じカード名のユニットカードを、その合体に必要なユニットの数まで好きな枚数選び、自軍ラッシュエリアに出してもよい。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 ※これはSユニットにアタックされない。 【分身幻斬り】これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたLユニットがアタックまたはストライクしたとき、その処理をすべて終えてから、そのLユニットと同じカード名のユニットカードを、その合体に必要なユニットの数まで、自分の手札から好きな枚数選び、自軍ラッシュエリアに出してもよい。",
+      "text": "※これはSユニットにアタックされない。 【分身幻斬り】これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたLユニットがアタックまたはストライクしたとき、その処理をすべて終えてから、そのLユニットと同じカード名のユニットカードを、その合体に必要なユニットの数まで、自分の手札から好きな枚数選び、自軍ラッシュエリアに出してもよい。",
       "features": [
         "メカ",
         "カラクリボール"
@@ -19801,7 +19834,7 @@
       "imageUrl": "/cards/promoted/RS-575.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-575.jpg",
       "size": "M",
-      "text": "※DAを持たない特徴「人型」を持つMユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。 ※このビークルは合体ユニットとしてつかえる。 【世界を駆ける力】これにライドしているユニットは、次の能力を得る⇒ラッシュエリアのユニットにアタックできる。 ・このテキストは公式HPで読み替えが推奨されています。修正後は以下。 【世界を駆ける力】これにライドしているユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる。",
+      "text": "【世界を駆ける力】これにライドしているユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる。",
       "features": [
         "魔法"
       ]
@@ -20389,7 +20422,7 @@
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-603.jpg",
       "bp": 2000,
       "size": "S",
-      "text": "【超有毒液化ガス】これが自軍エリアにある間、特徴「車両」を持つユニットはアタックもストライクもできず、効果名を持つテキストは無効になり、発動もできない。 ・このテキストは公式HPで読み替えが推奨されています。修正後は以下。 【超有毒液化ガス】これが自軍エリアにある間、本来の特徴に「車両」を持つユニットはアタックもストライクもできず、効果名を持つテキストは無効になり、発動もできない。",
+      "text": "【超有毒液化ガス】これが自軍エリアにある間、本来の特徴に「車両」を持つユニットはアタックもストライクもできず、効果名を持つテキストは無効になり、発動もできない。",
       "features": [
         "メカ",
         "怪人"
