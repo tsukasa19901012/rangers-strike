@@ -30,6 +30,7 @@ const EFFECT_TARGET_SUFFIX: Record<string, string> = {
   v3_kick: "を撃破",
   bison_rod: "を撃破",
   buringasodo: "を撃破",
+  megatomahoku: "をコマンドにホールド",
   ghost_absorption: "を手札へ回収",
   super_drill: "を捨札",
   precious_guardian: "とバトル交代",

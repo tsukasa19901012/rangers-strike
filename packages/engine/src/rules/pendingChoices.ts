@@ -1730,7 +1730,7 @@ export function startSelectHandChoice(
     ? collectHandIdsByCardId(state, params.playerId, params.cardId)
     : params.cardName
       ? collectHandIdsByName(state, params.playerId, params.cardName)
-      : [];
+      : state.players[params.playerId].hand.map((c) => c.instanceId);
   if (valid.length === 0) return null;
   return openEffectChoice(state, {
     playerId: params.playerId,
@@ -1742,6 +1742,26 @@ export function startSelectHandChoice(
     validInstanceIds: valid,
     selectCount: 1,
     optional: params.optional ?? true,
+  });
+}
+
+/** RS-630 メガトマホーク: コマンド3枚以下なら手札1枚をコマンドホールド。 */
+export function tryStartMegatomahokuChoice(
+  state: GameState,
+  playerId: PlayerId,
+  sourceCardId: string,
+  sourceInstanceId: string,
+  phasePlayerId: PlayerId,
+): GameState | null {
+  const player = state.players[playerId];
+  if (player.command.length > 3 || player.hand.length === 0) return null;
+  return startSelectHandChoice(state, {
+    playerId,
+    effectId: "megatomahoku",
+    sourceCardId,
+    sourceInstanceId,
+    phasePlayerId,
+    optional: true,
   });
 }
 
@@ -3237,6 +3257,28 @@ export function applyEffectChoiceSelect(
       const found = findInZone(player, "hand", instanceId);
       if (!found) return { error: "invalid_target" };
       const [, hand] = removeAt(player.hand, found.index);
+      if (pending.effectId === "megatomahoku") {
+        let nextPlayer: PlayerState = {
+          ...player,
+          hand,
+          command: [...player.command, { ...found.card, commandHeld: true }],
+        };
+        if (pending.sourceInstanceId) {
+          nextPlayer = {
+            ...nextPlayer,
+            battle: nextPlayer.battle.map((c) =>
+              c.instanceId === pending.sourceInstanceId
+                ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
+                : c,
+            ),
+          };
+        }
+        return finishChoice(
+          { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+          pending,
+          cardName(state.definitions, found.card.cardId),
+        );
+      }
       let nextPlayer = {
         ...player,
         hand,

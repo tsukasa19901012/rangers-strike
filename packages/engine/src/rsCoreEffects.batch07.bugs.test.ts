@@ -16,6 +16,7 @@ import {
 } from "./testing/battleEntry";
 import {
   createTestState,
+  heldEtCommand,
   heldWbCommand,
   inst,
   TEST_DEFINITIONS,
@@ -217,5 +218,81 @@ describe("RS-685 ブラックコンドル", () => {
     const next = unwrap(applyAction(state, battle!));
     expect(next.players.player2.damage).toBe(1);
     expect(next.log.some((entry) => entry.includes("black_condor_destroy_damage"))).toBe(true);
+  });
+});
+
+describe("RS-630 メガトマホーク", () => {
+  it("opens hand choice at NC position 3 when command zone has 3 or fewer cards", () => {
+    const mega = inst("RS-630", "mega");
+    const handCard = inst("RS-007", "hand1");
+    const state = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: {
+        rush: [mega],
+        battle: battleFillers(2),
+        hand: [handCard],
+        command: [heldEtCommand("c1")],
+      },
+    });
+    const next = moveToBattle(state, mega.instanceId);
+    expect(next.pendingEffectChoice?.effectId).toBe("megatomahoku");
+    expect(next.pendingEffectChoice?.validInstanceIds).toContain(handCard.instanceId);
+  });
+
+  it("holds selected hand card in command and grants SP1 when resolved", () => {
+    const mega = inst("RS-630", "mega");
+    const handCard = inst("RS-007", "hand1");
+    const state = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: {
+        rush: [mega],
+        battle: battleFillers(2),
+        hand: [handCard],
+        command: [heldEtCommand("c1")],
+      },
+    });
+    const afterEnter = moveToBattle(state, mega.instanceId);
+    const resolve = getLegalActions(afterEnter).find(
+      (a) =>
+        a.type === "resolve_effect_choice" &&
+        a.instanceId === handCard.instanceId,
+    );
+    expect(resolve).toBeDefined();
+    const next = unwrap(applyAction(afterEnter, resolve!));
+    expect(
+      next.players.player1.command.some(
+        (c) => c.instanceId === handCard.instanceId && c.commandHeld,
+      ),
+    ).toBe(true);
+    expect(
+      next.players.player1.battle.find((c) => c.instanceId === mega.instanceId)?.spModifier,
+    ).toBe(1);
+  });
+
+  it("does not open choice when command zone already has 4 cards", () => {
+    const mega = inst("RS-630", "mega");
+    const handCard = inst("RS-007", "hand1");
+    const state = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: {
+        rush: [mega],
+        battle: battleFillers(2),
+        hand: [handCard],
+        command: [
+          heldEtCommand("c1"),
+          heldEtCommand("c2"),
+          heldEtCommand("c3"),
+          heldEtCommand("c4"),
+        ],
+      },
+    });
+    const next = moveToBattle(state, mega.instanceId);
+    expect(next.pendingEffectChoice?.effectId).not.toBe("megatomahoku");
   });
 });

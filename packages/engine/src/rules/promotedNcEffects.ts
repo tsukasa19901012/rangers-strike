@@ -5,6 +5,7 @@ import { addTurnRuleModifier } from "../core/scopedModifiers";
 import { ENEMY_POWER_COST_MINUS_RULE } from "../core/power";
 import { grantSp1ToBattleUnit, markBattleNcEffect, tryStartBringerSwordChoice } from "./namedUnitEffects";
 import { tryStartDestroyPowerCostMinusChoice } from "./powerCostMinusEffects";
+import { tryStartMegatomahokuChoice } from "./pendingChoices";
 import { buildLogEntry } from "../log/formatLog";
 import { applyCoreGapNcEffect } from "./legend1/coreGapEffects";
 import type { ComboOutcome } from "./comboTypes";
@@ -28,6 +29,7 @@ const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "RK-159": "v3_kick",
   "RS-278": "bison_rod",
   "RS-685": "buringasodo",
+  "RS-630": "megatomahoku",
 };
 
 const CORE_GAP_NC_EFFECTS = new Set([
@@ -159,6 +161,18 @@ export function applyPromotedNcEffect(
       );
       if (withChoice) nextState = withChoice;
       logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, "buringasodo"));
+      break;
+    }
+    case "megatomahoku": {
+      const withChoice = tryStartMegatomahokuChoice(
+        nextState,
+        playerId,
+        card.cardId,
+        card.instanceId,
+        playerId,
+      );
+      if (withChoice) nextState = withChoice;
+      logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, "megatomahoku"));
       break;
     }
     default:
