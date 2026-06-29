@@ -34,7 +34,6 @@ const NOTE_RULE_BY_PATTERN: Record<string, string> = {
   tag_note: "tag",
   resist_note: "register",
   morph_note: "morph",
-  require_command_hold_entry: "require_command_hold_entry",
 };
 
 function buildUnnamedRules(
@@ -66,6 +65,16 @@ function buildUnnamedRules(
         kind: "note",
         text: eff.text,
         rule: "auto_battle_entry_each_turn",
+      });
+    } else if (eff.matchedPattern === "require_command_hold_entry") {
+      const holdCount = Number(
+        eff.text.match(/自軍コマンドを(\d+)つホールド/)?.[1] ?? 1,
+      );
+      rules.push({
+        kind: "note",
+        text: eff.text,
+        rule: "battle_entry_hold",
+        holdCount,
       });
     } else if (eff.matchedPattern === "alias_keyword") {
       const alias = eff.text.match(/「([^」]+)」/)?.[1];

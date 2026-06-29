@@ -292,6 +292,61 @@ describe("battle entry hold requirements", () => {
     },
   );
 
+  it("requires 1 command hold for RS-563 (DSL require_command_hold_entry)", () => {
+    const unit = inst("RS-563", "buffalo");
+    const cmd = inst("RS-007", "c1");
+    const state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      player1: {
+        rush: [unit],
+        command: [cmd],
+      },
+    });
+
+    expect(getBattleEntryHoldCount("RS-563")).toBe(1);
+    expect(canMoveUnitToBattle(state, "player1", unit, "rush")).toBe(false);
+
+    const initiated = applyAction(state, {
+      type: "initiate_command_payment",
+      playerId: "player1",
+      kind: "battle_entry",
+      sourceInstanceId: unit.instanceId,
+    });
+    expect(initiated.ok).toBe(true);
+    if (!initiated.ok) return;
+    expect(initiated.state.pendingCommandPayment?.totalNeeded).toBe(1);
+
+    const resolved = applyAction(initiated.state, {
+      type: "resolve_command_payment",
+      playerId: "player1",
+      commandInstanceIds: [cmd.instanceId],
+    });
+    expect(resolved.ok).toBe(true);
+    if (!resolved.ok) return;
+    expect(resolved.state.players.player1.battle.some((c) => c.instanceId === unit.instanceId)).toBe(
+      true,
+    );
+  });
+
+  it("requires 2 command holds for RS-547", () => {
+    const unit = inst("RS-547", "brachio");
+    const cmd1 = inst("RS-007", "c1");
+    const cmd2 = inst("RS-008", "c2");
+    const state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      player1: {
+        rush: [unit],
+        command: [cmd1, cmd2],
+      },
+    });
+
+    expect(getBattleEntryHoldCount("RS-547")).toBe(2);
+    expect(canMoveUnitToBattle(state, "player1", unit, "rush")).toBe(false);
+    expect(requiredBattleEntryHolds(state, "player1", unit)).toBe(2);
+  });
+
   it("requires 2 command holds for RS-053 when one RS-069 is on field", () => {
     const unit = inst("RS-053", "ptera");
     const gravity = inst("RS-069", "lg");

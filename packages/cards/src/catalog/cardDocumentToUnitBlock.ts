@@ -90,6 +90,38 @@ function toNamedTrigger(
   return normalizeNamedComboTrigger(enriched, comboNumber);
 }
 
+const BATTLE_ENTRY_HOLD_TEXT =
+  /^※これは自軍コマンドを(\d+)つホールドしなければバトルエリアに出られない/;
+
+function parseBattleEntryHoldCount(text: string): number | undefined {
+  const match = text.match(BATTLE_ENTRY_HOLD_TEXT);
+  return match ? Number(match[1]) : undefined;
+}
+
+function normalizeUnnamedRuleEntry(entry: {
+  kind: UnnamedUnitText["kind"];
+  text: string;
+  rule?: string;
+  holdCount?: number;
+  damage?: number;
+  discardCount?: number;
+  partnerCardIds?: string[];
+  partnerSlotCardIds?: string[];
+}): UnnamedUnitText {
+  const holdFromText = parseBattleEntryHoldCount(entry.text);
+  if (entry.rule === "require_command_hold_entry" || holdFromText !== undefined) {
+    return {
+      ...entry,
+      rule: "battle_entry_hold",
+      holdCount: entry.holdCount ?? holdFromText ?? 1,
+    };
+  }
+  return {
+    ...entry,
+    rule: entry.rule as UnnamedUnitRule | undefined,
+  };
+}
+
 function toNamedUnitEffect(
   effect: EffectDefinition,
   comboNumber: CardDocument["comboNumber"],
@@ -111,16 +143,18 @@ export function cardDocumentToUnitEffectBlock(doc: CardDocument): UnitEffectBloc
     .map((effect) => toNamedUnitEffect(effect, doc.comboNumber))
     .filter((entry): entry is NamedUnitEffect => entry !== undefined);
 
-  const unnamedText: UnnamedUnitText[] = (doc.unnamedRules ?? []).map((rule) => ({
-    kind: rule.kind as UnnamedUnitText["kind"],
-    text: rule.text,
-    rule: rule.rule as UnnamedUnitRule | undefined,
-    holdCount: rule.holdCount,
-    damage: rule.damage,
-    discardCount: rule.discardCount,
-    partnerCardIds: rule.partnerCardIds,
-    partnerSlotCardIds: rule.partnerSlotCardIds,
-  }));
+  const unnamedText: UnnamedUnitText[] = (doc.unnamedRules ?? []).map((rule) =>
+    normalizeUnnamedRuleEntry({
+      kind: rule.kind as UnnamedUnitText["kind"],
+      text: rule.text,
+      rule: rule.rule,
+      holdCount: rule.holdCount,
+      damage: rule.damage,
+      discardCount: rule.discardCount,
+      partnerCardIds: rule.partnerCardIds,
+      partnerSlotCardIds: rule.partnerSlotCardIds,
+    }),
+  );
 
   return {
     rushAdditionalCondition: doc.rushAdditionalCondition,

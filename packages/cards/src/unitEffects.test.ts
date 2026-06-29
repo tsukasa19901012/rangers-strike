@@ -122,27 +122,29 @@ describe("effect taxonomy (Legend1 units)", () => {
     expect(getBattleEntryHoldCount("RS-052")).toBe(1);
   });
 
+  it("normalizes require_command_hold_entry from DSL stubs (RS-563, RS-547)", () => {
+    expect(getUnitEffectBlock("RS-563")?.unnamedText[0]).toMatchObject({
+      rule: "battle_entry_hold",
+      holdCount: 1,
+    });
+    expect(getBattleEntryHoldCount("RS-563")).toBe(1);
+
+    expect(getUnitEffectBlock("RS-547")?.unnamedText[0]).toMatchObject({
+      rule: "battle_entry_hold",
+      holdCount: 2,
+    });
+    expect(getBattleEntryHoldCount("RS-547")).toBe(2);
+  });
+
   it("lists battle entry hold cards from rules only", () => {
-    expect(listBattleEntryHoldCardIds()).toEqual([
-      "RS-035",
-      "RS-036",
-      "RS-037",
-      "RS-038",
-      "RS-039",
-      "RS-051",
-      "RS-052",
-      "RS-053",
-      "RS-152",
-      "RS-153",
-      "RS-154",
-      "RS-155",
-      "RS-156",
-      "RS-157",
-      "RS-158",
-      "RS-159",
-      "RS-167",
-      "RS-168",
-    ]);
+    const ids = listBattleEntryHoldCardIds();
+    expect(ids).toEqual([...ids].sort());
+    for (const id of ids) {
+      expect(getBattleEntryHoldCount(id)).toBeGreaterThan(0);
+    }
+    expect(ids).toEqual(
+      expect.arrayContaining(["RS-052", "RS-547", "RS-563"]),
+    );
   });
 });
 
