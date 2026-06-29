@@ -108,6 +108,10 @@ export function playStarterMatchUntilEnd(
   let blockedRushPaymentSourceId: string | undefined;
   const blockedPaymentSources = new Set<string>();
   const blockedZordInstances = new Set<string>();
+  let rushPaymentLoopCount = 0;
+  let zordSetupLoopCount = 0;
+  let lastRushPaymentSource: string | null = null;
+  let lastZordVehicleId: string | null = null;
   let lastFingerprint = "";
   let sameFingerprintCount = 0;
 
@@ -150,7 +154,34 @@ export function playStarterMatchUntilEnd(
     }
 
     let action: GameAction;
-    if (sameFingerprintCount > 40) {
+    if (
+      rushPaymentLoopCount >= 8 &&
+      state.phase === "rush" &&
+      state.pendingCommandPayment
+    ) {
+      const cancel = actions.find(
+        (a) =>
+          a.type === "cancel_command_payment" &&
+          isLegalAction(state, a) &&
+          applyAction(state, a).ok,
+      );
+      const endPhase = actions.find((a) => a.type === "end_phase");
+      action = cancel ?? endPhase ?? actions[0]!;
+      rushPaymentLoopCount = 0;
+    } else if (
+      zordSetupLoopCount >= 8 &&
+      state.pendingZordSetup &&
+      state.pendingZordSetup.playerId === actor
+    ) {
+      const cancel = actions.find(
+        (a) =>
+          a.type === "cancel_zord_setup" &&
+          isLegalAction(state, a) &&
+          applyAction(state, a).ok,
+      );
+      action = cancel ?? actions[0]!;
+      zordSetupLoopCount = 0;
+    } else if (sameFingerprintCount > 40) {
       const forced = forceStallRecovery(state, actor);
       action =
         forced && isLegalAction(state, forced) && applyAction(state, forced).ok
@@ -227,6 +258,9 @@ export function playStarterMatchUntilEnd(
       }
     }
     if (!result.ok) {
+      if (result.error === "cannot_enter_battle" && action.type === "move_to_battle") {
+        continue;
+      }
       if (result.error === "cannot_enter_battle") {
         const recovery =
           actions.find(
@@ -276,6 +310,34 @@ export function playStarterMatchUntilEnd(
       };
     }
     state = result.state;
+    if (state.pendingCommandPayment) {
+      const source = state.pendingCommandPayment.sourceInstanceId;
+      if (source === lastRushPaymentSource) rushPaymentLoopCount += 1;
+      else {
+        lastRushPaymentSource = source;
+        rushPaymentLoopCount = 1;
+      }
+    } else if (
+      action.type === "cancel_command_payment" ||
+      action.type === "resolve_command_payment"
+    ) {
+      rushPaymentLoopCount += 1;
+    } else if (action.type === "end_phase") {
+      rushPaymentLoopCount = 0;
+      lastRushPaymentSource = null;
+      zordSetupLoopCount = 0;
+      lastZordVehicleId = null;
+    }
+    if (state.pendingZordSetup) {
+      const zordId = state.pendingZordSetup.zordInstanceId;
+      if (zordId === lastZordVehicleId) zordSetupLoopCount += 1;
+      else {
+        lastZordVehicleId = zordId;
+        zordSetupLoopCount = 1;
+      }
+    } else if (action.type === "cancel_zord_setup" || action.type === "resolve_zord_setup") {
+      zordSetupLoopCount += 1;
+    }
   }
 
   return {

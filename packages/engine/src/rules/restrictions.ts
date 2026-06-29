@@ -59,6 +59,7 @@ import {
   battleEntryRushDiscardSatisfied,
   canPayBattleEntryHandDiscard,
   canPayBattleEntryRushDiscard,
+  hasBattleEntryRushDiscardTarget,
   needsBattleEntryRushDiscard,
 } from "./legend3/restrictions";
 
@@ -371,7 +372,11 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (needsBattleEntryRushDiscard(unit.cardId)) {
     if (!canPayBattleEntryRushDiscard(player, state.definitions)) return false;
-    if (!battleEntryRushDiscardSatisfied(player, unit.cardId)) return false;
+    if (!battleEntryRushDiscardSatisfied(player, unit.cardId)) {
+      if (!hasBattleEntryRushDiscardTarget(player, state.definitions, unit.instanceId)) {
+        return false;
+      }
+    }
   }
 
   if (!canPayBattleEntryHandDiscard(player, unit.cardId)) return false;

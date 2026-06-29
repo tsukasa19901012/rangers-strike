@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokinowodekirupawanodameji",
+          "keyword": "sphinx_power_quiz",
           "duration": "turn"
         }
       ],

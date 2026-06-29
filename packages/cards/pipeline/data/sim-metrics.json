@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-06-29T00:48:02.507Z",
+  "generatedAt": "2026-06-29T02:02:06.280Z",
   "suite": "simulateFullPromoted",
   "games": 50,
   "unresolvedCount": 491,
-  "effectLogCount": 794,
-  "unresolvedRate": 0.6183879093198993,
+  "effectLogCount": 797,
+  "unresolvedRate": 0.616060225846926,
   "warnThreshold": 0.25,
   "topUnresolvedByEffectId": [
     {
       "effectId": "interpret_effect_unresolved",
-      "count": 77
+      "count": 78
     },
     {
       "effectId": "bananabomu",
@@ -44,10 +44,6 @@
       "count": 14
     },
     {
-      "effectId": "fx_unknown_e58f8e",
-      "count": 12
-    },
-    {
       "effectId": "fx_unknown_e68e98",
       "count": 12
     },
@@ -58,6 +54,10 @@
     {
       "effectId": "taitannoba",
       "count": 11
+    },
+    {
+      "effectId": "fx_unknown_e58f8e",
+      "count": 10
     },
     {
       "effectId": "dan",
@@ -106,10 +106,6 @@
       "count": 14
     },
     {
-      "cardId": "RM-026",
-      "count": 12
-    },
-    {
       "cardId": "RK-150",
       "count": 12
     },
@@ -120,6 +116,10 @@
     {
       "cardId": "XG6-010",
       "count": 11
+    },
+    {
+      "cardId": "RM-026",
+      "count": 10
     },
     {
       "cardId": "XG6-063",

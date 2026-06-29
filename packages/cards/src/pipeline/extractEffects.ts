@@ -1491,6 +1491,80 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "enter_battle_return_s_deck_bottom_draw",
+    test: (body) =>
+      /これがバトルエリアに出たとき、自軍バトルエリアからSユニットを1体選び、自軍山札の下に戻してから1枚ドローする/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enter_return_s_deck_bottom_draw",
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: false,
+      condition: {
+        type: "has_target",
+        target: zone("battle", "self", { size: "S" }),
+      },
+      effects: [
+        chooseUnit(zone("battle", "self", { size: "S" }), 1, [
+          {
+            type: "move",
+            target: { type: "trigger_source" },
+            to: "deck",
+            position: "right",
+          },
+          { type: "draw", amount: 1 },
+        ]),
+      ],
+      matchedPattern: "enter_battle_return_s_deck_bottom_draw",
+    }),
+  },
+  {
+    pattern: "enter_battle_rush_from_discard_feature_m_silent",
+    test: (body) =>
+      /これがバトルエリアに出たとき、自軍捨札から特徴「([^」]+)」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enter_rush_discard_feature_m",
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_rush_discard_feature_m_silent",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_rush_from_discard_feature_m_silent",
+    }),
+  },
+  {
+    pattern: "enter_battle_sphinx_power_quiz",
+    test: (body) =>
+      /敵軍パワーのダメージのカードを1枚選び.*必要パワーの数字を相手に解答させて.*不正解なら相手は自分自身のユニットを1体選び撃破/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "sphinx_power_quiz",
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "sphinx_power_quiz",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_sphinx_power_quiz",
+    }),
+  },
+  {
     pattern: "enter_battle_hold_send_enemy_s_to_power",
     test: (body) =>
       /これがバトルエリアに出たとき.*ホールドしてもよい.*敵軍Sユニットを1体選び.*パワーゾーンにダメージにして置く/.test(

@@ -297,6 +297,13 @@ export type PendingEffectChoice = {
   /** モーフ置換反応の再開用。 */
   morphMeta?: PendingMorph;
   magiBlueMeta?: { drewAny: boolean };
+  /** RS-412 冥府神スフィンクス: パワー数字クイズ。 */
+  sphinxQuizMeta?: {
+    step: "pick_power" | "declare" | "destroy";
+    controllerId: PlayerId;
+    powerInstanceId: string;
+    actualPowerCost: number;
+  };
 };
 
 /** @deprecated pendingEffectChoice を使用すること（ruin_survey）。 */

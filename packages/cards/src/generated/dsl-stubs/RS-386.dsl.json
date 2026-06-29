@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_tankoregabatoruerianitatokikara_ryo_wotsumyunitonoka",
+          "keyword": "enter_rush_discard_feature_m_silent",
           "duration": "turn"
         }
       ],

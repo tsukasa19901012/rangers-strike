@@ -45,12 +45,45 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "deploy_battle_area_tankoregabatoruerianitatokibatorueriakarasyunitowo1bi",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "self",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "deck",
+              "position": "right"
+            },
+            {
+              "type": "draw",
+              "amount": 1
+            }
+          ]
         }
       ],
-      "optional": false
+      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "self",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
     }
   ],
   "unnamedRules": [

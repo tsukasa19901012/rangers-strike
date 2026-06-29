@@ -75,6 +75,17 @@ export function canPayBattleEntryRushDiscard(player: PlayerState, definitions: G
   return player.rush.some((c) => isSmallUnit(definitions, c.cardId));
 }
 
+/** 戦闘進入時に捨てる別の自軍S（進入ユニット自身は不可）。 */
+export function hasBattleEntryRushDiscardTarget(
+  player: PlayerState,
+  definitions: GameState["definitions"],
+  enteringInstanceId: string,
+): boolean {
+  return player.rush.some(
+    (c) => isSmallUnit(definitions, c.cardId) && c.instanceId !== enteringInstanceId,
+  );
+}
+
 export function battleEntryRushDiscardSatisfied(player: PlayerState, cardId: string): boolean {
   if (!needsBattleEntryRushDiscard(cardId)) return true;
   return isCostWindowSatisfied(player, "battle_entry_rush_discard");

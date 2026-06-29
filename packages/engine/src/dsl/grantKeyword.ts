@@ -19,7 +19,10 @@ import {
   startSelectCommandChoice,
   startEnterHoldEnemyPowerLeDamageChoice,
   startHangaEvolutionChoice,
+  startEnterRushFromDiscardFeatureChoice,
+  startSphinxPowerQuizChoice,
 } from "../rules/pendingChoices";
+import { getDslEffectById } from "./effectLookup";
 import { beginCastoffOnRush } from "../rules/castoff";
 import {
   beginAssaultVectorDestroy,
@@ -363,6 +366,32 @@ export function applyGrantKeyword(
       });
       if (!withChoice) return { state };
       return { state: withChoice, detail: "hanga" };
+    }
+    case "enter_rush_discard_feature_m_silent": {
+      const effect = getDslEffectById(ctx.sourceCardId, ctx.effectId);
+      const feature =
+        effect?.text?.match(/特徴「([^」]+)」/)?.[1] ?? "車両";
+      const withChoice = startEnterRushFromDiscardFeatureChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+        feature,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
+    }
+    case "sphinx_power_quiz": {
+      const withChoice = startSphinxPowerQuizChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
     }
     case "force_opponent_hold_command": {
       const enemyId = opponent(ctx.playerId);

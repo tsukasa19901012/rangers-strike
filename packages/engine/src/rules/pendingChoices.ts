@@ -227,6 +227,15 @@ export function isValidEffectChoiceTarget(
       instanceId,
     );
   }
+  if (
+    pending.effectId === "nihawo" &&
+    pending.sphinxQuizMeta?.step === "pick_power"
+  ) {
+    const enemyId = opponent(pending.playerId);
+    return state.players[enemyId].power.some(
+      (c) => c.instanceId === instanceId && c.faceDown,
+    );
+  }
   if (!pending.validInstanceIds.includes(instanceId)) return false;
 
   if (pending.effectId === "fire_sword") {
@@ -467,6 +476,98 @@ export function applyHangaEvolutionReveal(
     );
   }
   return nextState;
+}
+
+function setPlayerPowerFace(
+  state: GameState,
+  ownerId: PlayerId,
+  instanceId: string,
+  faceDown: boolean,
+): GameState {
+  const owner = state.players[ownerId];
+  return {
+    ...state,
+    ...updatePlayer(state, ownerId, {
+      ...owner,
+      power: owner.power.map((c) =>
+        c.instanceId === instanceId ? { ...c, faceDown } : c,
+      ),
+    }),
+  };
+}
+
+function finishSphinxQuiz(
+  state: GameState,
+  pending: PendingEffectChoice,
+  powerInstanceId: string,
+  label: string,
+): ChoiceOutcome {
+  const enemyId = opponent(pending.sphinxQuizMeta!.controllerId);
+  const flipped = setPlayerPowerFace(state, enemyId, powerInstanceId, true);
+  return finishChoice(clearChoice(flipped, pending.phasePlayerId), pending, label);
+}
+
+/** RS-386: 捨札の特徴Mをサイレントラッシュ。 */
+export function startEnterRushFromDiscardFeatureChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+    feature: string;
+  },
+): GameState | null {
+  const player = state.players[params.playerId];
+  const valid = player.discard
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return (
+        def?.type === "unit" &&
+        def.size === "M" &&
+        (def.features ?? []).includes(params.feature)
+      );
+    })
+    .map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return startSelectUnitChoice(state, {
+    ...params,
+    validInstanceIds: valid,
+    unitDestination: "rush_from_discard",
+    optional: true,
+  });
+}
+
+/** RS-412: 敵パワーダメージを選び数字クイズ。 */
+export function startSphinxPowerQuizChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const enemyId = opponent(params.playerId);
+  const valid = state.players[enemyId].power
+    .filter((c) => c.faceDown)
+    .map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_power",
+    validInstanceIds: valid,
+    selectCount: 1,
+    optional: true,
+    sphinxQuizMeta: {
+      step: "pick_power",
+      controllerId: params.playerId,
+      powerInstanceId: "",
+      actualPowerCost: 0,
+    },
+  });
 }
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
@@ -1180,6 +1281,46 @@ export function applyEffectChoiceSelect(
     return { state: nextState, log: result.log };
   }
 
+  if (pending.effectId === "nihawo" && pending.sphinxQuizMeta?.step === "pick_power") {
+    const enemyId = opponent(pending.playerId);
+    const enemy = state.players[enemyId];
+    const found = enemy.power.find((c) => c.instanceId === instanceId && c.faceDown);
+    if (!found) return { error: "invalid_target" };
+    const def = getDefinition(state.definitions, found.cardId);
+    const actualCost = parsePowerCost(def?.powerCost ?? 0);
+    const meta = pending.sphinxQuizMeta!;
+    let nextState = setPlayerPowerFace(state, enemyId, instanceId, false);
+    nextState = openEffectChoice(clearChoice(nextState, pending.phasePlayerId), {
+      playerId: enemyId,
+      effectId: "nihawo",
+      sourceCardId: pending.sourceCardId,
+      sourceInstanceId: pending.sourceInstanceId,
+      phasePlayerId: pending.phasePlayerId,
+      kind: "declare_number",
+      validInstanceIds: Array.from({ length: 13 }, (_, n) => String(n)),
+      optional: false,
+      sphinxQuizMeta: {
+        step: "declare",
+        controllerId: meta.controllerId,
+        powerInstanceId: instanceId,
+        actualPowerCost: actualCost,
+      },
+    });
+    return { state: nextState };
+  }
+
+  if (pending.effectId === "nihawo" && pending.sphinxQuizMeta?.step === "destroy") {
+    const meta = pending.sphinxQuizMeta;
+    const leave = applyUnitLeave(state, instanceId, "discard", pending.phasePlayerId);
+    if ("error" in leave) return leave;
+    return finishSphinxQuiz(
+      leave.state,
+      pending,
+      meta.powerInstanceId,
+      cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+    );
+  }
+
   const dslResumeSimpleKinds = new Set([
     "select_unit",
     "select_command",
@@ -1286,6 +1427,34 @@ export function applyEffectChoiceSelect(
       const declared = Number(instanceId);
       if (!Number.isInteger(declared) || declared < 0 || declared > 12) {
         return { error: "invalid_target" };
+      }
+      if (pending.effectId === "nihawo" && pending.sphinxQuizMeta?.step === "declare") {
+        const meta = pending.sphinxQuizMeta;
+        if (declared === meta.actualPowerCost) {
+          return finishSphinxQuiz(state, pending, meta.powerInstanceId, String(declared));
+        }
+        const opponentId = playerId;
+        const valid: string[] = [];
+        for (const zone of ["battle", "rush"] as const) {
+          valid.push(...state.players[opponentId][zone].map((c) => c.instanceId));
+        }
+        if (valid.length === 0) {
+          return finishSphinxQuiz(state, pending, meta.powerInstanceId, String(declared));
+        }
+        return {
+          state: openEffectChoice(clearChoice(state, pending.phasePlayerId), {
+            playerId: opponentId,
+            effectId: "nihawo",
+            sourceCardId: pending.sourceCardId,
+            sourceInstanceId: pending.sourceInstanceId,
+            phasePlayerId: pending.phasePlayerId,
+            kind: "select_unit",
+            validInstanceIds: valid,
+            unitDestination: "discard",
+            optional: false,
+            sphinxQuizMeta: { ...meta, step: "destroy" },
+          }),
+        };
       }
       const nextState = applyFlowerBombDeclaredNumber(
         state,

@@ -270,4 +270,56 @@ describe("RS monkey-test high-frequency fixes", () => {
       ),
     ).toBe(false);
   });
+
+  it("RS-329 rematches to enter_battle_return_s_deck_bottom_draw choose", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアからSユニットを1体選び、自軍山札の下に戻してから1枚ドローする。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "マルデヨーナ世界往復切符",
+      kind: "named",
+      trigger: { type: "enter_battle" },
+    });
+    expect(rematched!.some((p) => p.type === "choose")).toBe(true);
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword.startsWith("deploy_battle_area_"),
+      ),
+    ).toBe(false);
+  });
+
+  it("RS-386 rematches to enter_rush_discard_feature_m_silent", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、自軍捨札から特徴「車両」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "ショベルアーム",
+      kind: "named",
+      trigger: { type: "enter_battle" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "enter_rush_discard_feature_m_silent",
+      ),
+    ).toBe(true);
+    expect(isCatchallGrantKeyword("enter_rush_discard_feature_m_silent")).toBe(false);
+  });
+
+  it("RS-412 rematches to sphinx_power_quiz", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき次の効果を発動できる⇒敵軍パワーのダメージのカードを1枚選び、そのカードの必要パワーの数字を相手に解答させてからオモテにする。相手の解答が不正解なら相手は自分自身のユニットを1体選び撃破する。その後、オモテにしたカードはウラ向きに戻す。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "質問には回答を",
+      kind: "named",
+      trigger: { type: "enter_battle" },
+    });
+    expect(
+      rematched!.some(
+        (p) => p.type === "grant_keyword" && p.keyword === "sphinx_power_quiz",
+      ),
+    ).toBe(true);
+    expect(isCatchallGrantKeyword("sphinx_power_quiz")).toBe(false);
+  });
 });
