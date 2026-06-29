@@ -1783,6 +1783,71 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "on_rush_send_enemy_battle_feature_m_to_power",
+    test: (body) =>
+      /これをラッシュしたとき、敵軍バトルエリアから特徴「([^」]+)」を持つMユニットを1体選び、持ち主のパワーゾーンに送ってもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "on_rush_enemy_m_to_power",
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_send_enemy_battle_feature_m_to_power",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_send_enemy_battle_feature_m_to_power",
+    }),
+  },
+  {
+    pattern: "on_rush_return_unridden_s_vehicles_deck_bottom",
+    test: (body) =>
+      /これをラッシュしたとき、ライドされていないSビークルがあれば、すべて持ち主の山札の下に好きな順で戻してもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "on_rush_s_vehicle_deck_bottom",
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_return_unridden_s_vehicles_deck_bottom",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_return_unridden_s_vehicles_deck_bottom",
+    }),
+  },
+  {
+    pattern: "on_rush_release_held_s_units",
+    test: (body) =>
+      /^※これをラッシュしたとき、ホールド状態の自軍Sユニットをすべてリリースしてもよい/.test(
+        body,
+      ),
+    build: (body) => ({
+      id: "on_rush_release_held_s_units",
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_release_held_s_units",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_release_held_s_units",
+    }),
+  },
+  {
     pattern: "enter_battle_hold_send_enemy_s_to_power",
     test: (body) =>
       /これがバトルエリアに出たとき.*ホールドしてもよい.*敵軍Sユニットを1体選び.*パワーゾーンにダメージにして置く/.test(
@@ -6630,6 +6695,28 @@ const PATTERNS: PatternMatch[] = [
         },
       ],
       matchedPattern: "bp_modify",
+    }),
+  },
+  {
+    pattern: "operation_enemy_damage_reveal_beast_rush",
+    test: (body) =>
+      /次の効果を、敵軍ダメージの点数と同じ数まで好きな回数実行する⇒自軍山札の上からカードを1枚オモテにする。オモテにしたカードが特徴「獣」を持つユニットカードかビークルカードだったなら、それを自軍ラッシュエリアに出す/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "operation_enemy_damage_beast",
+      name: segment.name,
+      text: body,
+      trigger: trigger ?? { type: "operation", timing: "rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "operation_enemy_damage_reveal_beast_rush",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "operation_enemy_damage_reveal_beast_rush",
     }),
   },
   {

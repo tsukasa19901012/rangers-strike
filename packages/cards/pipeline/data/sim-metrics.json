@@ -1,132 +1,132 @@
 {
-  "generatedAt": "2026-06-29T03:32:57.576Z",
+  "generatedAt": "2026-06-29T04:16:53.427Z",
   "suite": "simulateFullPromoted",
   "games": 50,
-  "unresolvedCount": 412,
-  "effectLogCount": 694,
-  "unresolvedRate": 0.5936599423631124,
+  "unresolvedCount": 370,
+  "effectLogCount": 620,
+  "unresolvedRate": 0.5967741935483871,
   "warnThreshold": 0.25,
   "topUnresolvedByEffectId": [
     {
       "effectId": "interpret_effect_unresolved",
-      "count": 79
-    },
-    {
-      "effectId": "bananabomu",
-      "count": 34
-    },
-    {
-      "effectId": "deisukure_geki_chi",
-      "count": 18
+      "count": 43
     },
     {
       "effectId": "baku_daburutorunedo",
-      "count": 17
+      "count": 34
     },
     {
-      "effectId": "kino_shi_e99d92",
-      "count": 15
+      "effectId": "karatareta",
+      "count": 27
     },
     {
-      "effectId": "furontoakusu",
+      "effectId": "taitannoba",
+      "count": 27
+    },
+    {
+      "effectId": "bananabomu",
+      "count": 23
+    },
+    {
+      "effectId": "riborubahanga",
+      "count": 20
+    },
+    {
+      "effectId": "deisukure_geki_chi",
       "count": 15
     },
     {
       "effectId": "kino_shi",
-      "count": 15
-    },
-    {
-      "effectId": "fx_unknown_e68e98",
       "count": 13
     },
     {
-      "effectId": "note_e280bbe38193e3828ce381af",
-      "count": 12
-    },
-    {
-      "effectId": "buru_shin",
-      "count": 12
-    },
-    {
-      "effectId": "fx_unknown_e58f8e",
-      "count": 12
-    },
-    {
-      "effectId": "karatareta",
+      "effectId": "kino_shi_e99d92",
       "count": 11
     },
     {
+      "effectId": "tora_doriru_geki",
+      "count": 8
+    },
+    {
+      "effectId": "janboraidakiku",
+      "count": 7
+    },
+    {
       "effectId": "note_e280bbe38193e3828ce38292",
-      "count": 10
+      "count": 7
     },
     {
-      "effectId": "misairu",
-      "count": 9
+      "effectId": "fx_unknown_e58f8e",
+      "count": 7
     },
     {
-      "effectId": "arufuareza",
-      "count": 9
+      "effectId": "doriruatachimento",
+      "count": 7
+    },
+    {
+      "effectId": "note_e280bbe38193e3828ce381af",
+      "count": 7
     }
   ],
   "topUnresolvedByCardId": [
     {
-      "cardId": "XG3-016",
+      "cardId": "XG6-016",
       "count": 34
     },
     {
-      "cardId": "XG4-037",
-      "count": 24
-    },
-    {
-      "cardId": "XG3-039",
-      "count": 18
-    },
-    {
-      "cardId": "XG6-016",
-      "count": 17
-    },
-    {
-      "cardId": "XG6-027",
-      "count": 15
-    },
-    {
-      "cardId": "RK-148",
-      "count": 15
-    },
-    {
-      "cardId": "XG6-028",
-      "count": 15
-    },
-    {
-      "cardId": "RK-150",
-      "count": 13
-    },
-    {
-      "cardId": "RM-026",
-      "count": 12
-    },
-    {
       "cardId": "RK-209",
-      "count": 11
+      "count": 27
     },
     {
-      "cardId": "RM-061",
-      "count": 9
+      "cardId": "XG6-010",
+      "count": 27
     },
     {
-      "cardId": "XG2-005",
-      "count": 9
+      "cardId": "XG3-016",
+      "count": 23
     },
     {
       "cardId": "XG4-064",
-      "count": 9
+      "count": 20
     },
     {
-      "cardId": "XP-027",
+      "cardId": "XG3-039",
+      "count": 15
+    },
+    {
+      "cardId": "XG4-037",
+      "count": 14
+    },
+    {
+      "cardId": "XG6-028",
+      "count": 13
+    },
+    {
+      "cardId": "XG6-027",
+      "count": 11
+    },
+    {
+      "cardId": "XG2-036",
+      "count": 8
+    },
+    {
+      "cardId": "RK-187",
+      "count": 7
+    },
+    {
+      "cardId": "RM-026",
+      "count": 7
+    },
+    {
+      "cardId": "RM-053",
+      "count": 7
+    },
+    {
+      "cardId": "RK-150",
       "count": 6
     },
     {
-      "cardId": "XG6-012",
+      "cardId": "RK-289",
       "count": 6
     }
   ],
@@ -135,7 +135,7 @@
     "applyFailed": 0,
     "withRushPhase": 50,
     "withBattlePhase": 50,
-    "withBattleAction": 48,
+    "withBattleAction": 42,
     "withStrike": 24
   }
 }

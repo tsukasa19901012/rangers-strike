@@ -642,6 +642,52 @@ export function startGaoriJawDestroyChoice(
   });
 }
 
+function collectEnemyBattleFeatureM(
+  state: GameState,
+  enemyId: PlayerId,
+  feature: string,
+): string[] {
+  const player = state.players[enemyId];
+  const ids: string[] = [];
+  for (const card of player.battle) {
+    const def = getDefinition(state.definitions, card.cardId);
+    if (
+      def?.type === "unit" &&
+      def.size === "M" &&
+      (def.features ?? []).includes(feature)
+    ) {
+      ids.push(card.instanceId);
+    }
+  }
+  return ids;
+}
+
+/** RS-400 密猟者からの保護: 敵バトル恐竜Mをパワーへ。 */
+export function startTimeJetProtectChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+    feature?: string;
+  },
+): GameState | null {
+  const feature = params.feature ?? "恐竜";
+  const enemyId = opponent(params.playerId);
+  const valid = collectEnemyBattleFeatureM(state, enemyId, feature);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    unitDestination: "power",
+    selectCount: 1,
+    optional: true,
+  });
+}
+
 /** RS-472 現場への搬送: コマンド任意枚数捨て→山札M配置。 */
 export function startSiteTransportChoice(
   state: GameState,

@@ -458,4 +458,71 @@ describe("RS monkey-test high-frequency fixes", () => {
       ),
     ).toBe(true);
   });
+
+  it("RS-400 rematches to on_rush_send_enemy_battle_feature_m_to_power", () => {
+    const text =
+      "これをラッシュしたとき、敵軍バトルエリアから特徴「恐竜」を持つMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "密猟者からの保護",
+      kind: "named",
+      trigger: { type: "on_rush" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_rush_send_enemy_battle_feature_m_to_power",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-387 rematches to on_rush_return_unridden_s_vehicles_deck_bottom", () => {
+    const text =
+      "これをラッシュしたとき、ライドされていないSビークルがあれば、すべて持ち主の山札の下に好きな順で戻してもよい。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "緊急車両誘導",
+      kind: "named",
+      trigger: { type: "on_rush" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_rush_return_unridden_s_vehicles_deck_bottom",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-576 note rematches to on_rush_release_held_s_units", () => {
+    const text =
+      "※これをラッシュしたとき、ホールド状態の自軍Sユニットをすべてリリースしてもよい。";
+    const rematched = rematchEffectPrimitives(text, {
+      kind: "note",
+      trigger: { type: "on_rush" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_rush_release_held_s_units",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-607 rematches to operation_enemy_damage_reveal_beast_rush", () => {
+    const text =
+      "次の効果を、敵軍ダメージの点数と同じ数まで好きな回数実行する⇒自軍山札の上からカードを1枚オモテにする。オモテにしたカードが特徴「獣」を持つユニットカードかビークルカードだったなら、それを自軍ラッシュエリアに出す。ただし、追加条件は満たすこと。出せなかったなら、オモテにしたカードを手札に加えた後、自分の手札からカードを1枚選び捨札にする。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "ファルコンサモナー",
+      kind: "named",
+      trigger: { type: "operation", timing: "rush" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "operation_enemy_damage_reveal_beast_rush",
+      ),
+    ).toBe(true);
+  });
 });

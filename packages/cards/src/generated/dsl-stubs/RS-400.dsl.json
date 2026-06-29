@@ -31,11 +31,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_koreworashushitatokibatorueriakarawotsumyunitowo1bichi",
+          "keyword": "on_rush_send_enemy_battle_feature_m_to_power",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

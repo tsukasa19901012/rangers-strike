@@ -25,7 +25,13 @@ import {
   startSiteTransportChoice,
   startOnRushDeckResidentChoice,
   startGaoriJawDestroyChoice,
+  startTimeJetProtectChoice,
 } from "../rules/pendingChoices";
+import { applyFalconSummonerOperation } from "../rules/falconSummoner";
+import {
+  applyPinkRaiderVehicleReturn,
+  releaseHeldSUnitCommands,
+} from "../rules/batch03RushEffects";
 import { getDslEffectById } from "./effectLookup";
 import { applyEmpireDominionEnterBattle } from "../rules/empireDominion";
 import { applyRexLaserOnRush } from "../rules/rexLaser";
@@ -463,6 +469,35 @@ export function applyGrantKeyword(
       });
       if (!withChoice) return { state };
       return { state: withChoice, detail: ctx.effectId };
+    }
+    case "on_rush_send_enemy_battle_feature_m_to_power": {
+      const withChoice = startTimeJetProtectChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
+    }
+    case "on_rush_return_unridden_s_vehicles_deck_bottom": {
+      return {
+        state: applyPinkRaiderVehicleReturn(state, ctx.phasePlayerId),
+        detail: ctx.effectId,
+      };
+    }
+    case "on_rush_release_held_s_units": {
+      return {
+        state: releaseHeldSUnitCommands(state, ctx.playerId),
+        detail: ctx.effectId,
+      };
+    }
+    case "operation_enemy_damage_reveal_beast_rush": {
+      return {
+        state: applyFalconSummonerOperation(state, ctx.playerId),
+        detail: ctx.effectId,
+      };
     }
     case "enter_battle_hand_match_destroy_sp": {
       const instanceId = ctx.triggerSourceInstanceId;

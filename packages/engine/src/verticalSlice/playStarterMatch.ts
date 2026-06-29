@@ -83,6 +83,14 @@ function forceStallRecovery(state: GameState, actor: PlayerId): GameAction | nul
   if (state.pendingEffectChoice?.playerId === actor && state.pendingEffectChoice.optional) {
     return { type: "skip_effect_choice", playerId: actor };
   }
+  if (state.pendingEffectChoice?.playerId === actor) {
+    const resolve = getLegalActions(state).find(
+      (a) => a.type === "resolve_effect_choice",
+    );
+    if (resolve) return resolve;
+    const skip = getLegalActions(state).find((a) => a.type === "skip_effect_choice");
+    if (skip) return skip;
+  }
   if (state.pendingBattleEntry?.playerId === actor) {
     return { type: "pass_battle_entry", playerId: actor };
   }
@@ -134,6 +142,8 @@ export function playStarterMatchUntilEnd(
   let endPhaseLoopCount = 0;
   let moveToBattleLoopCount = 0;
   let passBattleEntryLoopCount = 0;
+  let effectChoiceLoopCount = 0;
+  let lastEffectChoiceKey: string | null = null;
   let lastRushPaymentSource: string | null = null;
   let lastZordVehicleId: string | null = null;
   let lastFingerprint = "";
@@ -181,9 +191,15 @@ export function playStarterMatchUntilEnd(
       moveToBattleLoopCount >= 3 &&
       state.phase === "battle" &&
       !state.pendingEffectChoice;
+    const stallPassBattleEntry =
+      passBattleEntryLoopCount >= 2 &&
+      state.phase === "battle" &&
+      !state.pendingEffectChoice;
     const selectableActions = stallBattleEntry
       ? actions.filter((a) => a.type !== "move_to_battle")
-      : actions;
+      : stallPassBattleEntry
+        ? actions.filter((a) => a.type !== "pass_battle_entry")
+        : actions;
     const actionPool = selectableActions.length > 0 ? selectableActions : actions;
 
     let action: GameAction;
@@ -215,11 +231,32 @@ export function playStarterMatchUntilEnd(
       action = cancel ?? actions[0]!;
       zordSetupLoopCount = 0;
     } else if (
-      passBattleEntryLoopCount >= 5 &&
+      endPhaseLoopCount >= 2 &&
+      state.phase === "rush"
+    ) {
+      action =
+        actionPool.find(
+          (a) => a.type === "rush" && isLegalAction(state, a) && applyAction(state, a).ok,
+        ) ??
+        actionPool.find(
+          (a) =>
+            a.type === "play_operation" &&
+            isLegalAction(state, a) &&
+            applyAction(state, a).ok,
+        ) ??
+        actionPool.find(
+          (a) => a.type === "battle" && isLegalAction(state, a) && applyAction(state, a).ok,
+        ) ??
+        actionPool.find((a) => a.type === "end_phase") ??
+        actionPool[0]!;
+      endPhaseLoopCount = 0;
+    } else if (
+      passBattleEntryLoopCount >= 2 &&
       state.phase === "battle" &&
       !state.pendingEffectChoice
     ) {
       action =
+        pickNonBattleEntryStallAction(state, actionPool) ??
         actionPool.find(
           (a) =>
             a.type === "strike" &&
@@ -234,6 +271,25 @@ export function playStarterMatchUntilEnd(
         ) ??
         actionPool[0]!;
       passBattleEntryLoopCount = 0;
+    } else if (
+      effectChoiceLoopCount >= 5 &&
+      state.pendingEffectChoice?.playerId === actor
+    ) {
+      action =
+        actionPool.find(
+          (a) =>
+            a.type === "skip_effect_choice" &&
+            isLegalAction(state, a) &&
+            applyAction(state, a).ok,
+        ) ??
+        actionPool.find(
+          (a) =>
+            a.type === "resolve_effect_choice" &&
+            isLegalAction(state, a) &&
+            applyAction(state, a).ok,
+        ) ??
+        actionPool[0]!;
+      effectChoiceLoopCount = 0;
     } else if (
       moveToBattleLoopCount >= 6 &&
       state.phase === "battle" &&
@@ -256,7 +312,7 @@ export function playStarterMatchUntilEnd(
         actionPool[0]!;
       moveToBattleLoopCount = 0;
     } else if (
-      endPhaseLoopCount >= 4 &&
+      endPhaseLoopCount >= 3 &&
       (state.phase === "rush" || state.phase === "battle" || state.phase === "charge")
     ) {
       const strike = actionPool.find(
@@ -277,7 +333,7 @@ export function playStarterMatchUntilEnd(
       const endPhase = actionPool.find((a) => a.type === "end_phase");
       action = strike ?? battle ?? rush ?? playOp ?? draw ?? endPhase ?? actionPool[0]!;
       endPhaseLoopCount = 0;
-    } else if (sameFingerprintCount > 40) {
+    } else if (sameFingerprintCount > 25) {
       const forced = forceStallRecovery(state, actor);
       action =
         forced && isLegalAction(state, forced) && applyAction(state, forced).ok
@@ -306,7 +362,7 @@ export function playStarterMatchUntilEnd(
           ) ??
           actionPool[0]!;
       } else if (
-        battleStallCount >= 3 &&
+        battleStallCount >= 2 &&
         state.phase === "battle" &&
         !state.pendingEffectChoice &&
         picked &&
@@ -522,6 +578,17 @@ export function playStarterMatchUntilEnd(
       state.phase !== "battle"
     ) {
       passBattleEntryLoopCount = 0;
+    }
+    if (state.pendingEffectChoice) {
+      const key = `${state.pendingEffectChoice.effectId}:${state.pendingEffectChoice.kind}`;
+      if (key === lastEffectChoiceKey) effectChoiceLoopCount += 1;
+      else {
+        lastEffectChoiceKey = key;
+        effectChoiceLoopCount = 1;
+      }
+    } else {
+      effectChoiceLoopCount = 0;
+      lastEffectChoiceKey = null;
     }
     if (
       state.phase === "battle" &&

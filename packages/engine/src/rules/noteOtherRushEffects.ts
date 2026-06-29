@@ -4,6 +4,7 @@ import { opponent, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { applyDamageToPlayer } from "./damagePayment";
 import { startSelectCommandChoice, startSelectPowerChoice, startSelectUnitChoice } from "./pendingChoices";
+import { releaseHeldSUnitCommands } from "./batch03RushEffects";
 import type { NamedEffectOutcome } from "./namedUnitEffects";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 
@@ -68,21 +69,8 @@ export function resolveNoteOtherOnRushEffects(
 
   // RS-576 (マジフェニックス): on rush → may release all held S-unit commands (auto-yes)
   if (cardId === "RS-576") {
-    const player = nextState.players[rusherPlayerId];
-    let changed = false;
-    const newCommand = player.command.map((c) => {
-      const def = getDefinition(nextState.definitions, c.cardId);
-      if (def?.type === "unit" && def.size === "S" && c.commandHeld) {
-        changed = true;
-        return { ...c, commandHeld: false };
-      }
-      return c;
-    });
-    if (changed) {
-      nextState = {
-        ...nextState,
-        ...updatePlayer(nextState, rusherPlayerId, { ...player, command: newCommand }),
-      };
+    nextState = releaseHeldSUnitCommands(nextState, rusherPlayerId);
+    if (nextState !== state) {
       logs.push(buildLogEntry(rusherPlayerId, "rush_effect", cardId, nextState.definitions, "release_held_s_units"));
     }
   }

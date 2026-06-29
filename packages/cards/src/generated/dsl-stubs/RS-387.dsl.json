@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_koreworashushitatokiraidosareteinaisbikurugaarebasubetechino",
+          "keyword": "on_rush_return_unridden_s_vehicles_deck_bottom",
           "duration": "turn"
         }
       ],

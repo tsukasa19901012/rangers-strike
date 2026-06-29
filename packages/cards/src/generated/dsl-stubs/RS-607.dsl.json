@@ -21,11 +21,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_nowodamejinotojimadekinasurunokarakado",
+          "keyword": "operation_enemy_damage_reveal_beast_rush",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

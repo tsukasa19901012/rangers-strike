@@ -56,7 +56,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce38292",
+      "id": "on_rush_release_held_s_units",
       "text": "※これをラッシュしたとき、ホールド状態の自軍Sユニットをすべてリリースしてもよい。",
       "trigger": {
         "type": "on_rush"
@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
+          "keyword": "on_rush_release_held_s_units",
           "duration": "turn"
         }
       ],
