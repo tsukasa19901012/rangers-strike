@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。 【シャドウベール】自分がターンを終えるとき、これにライドしているユニットがホールド状態ならば、そのユニットをリリースしてもよい。",
   "rawText": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。 【シャドウベール】自分がターンを終えるとき、これにライドしているユニットがホールド状態ならば、そのユニットをリリースしてもよい。",
@@ -51,5 +51,7 @@
     "メカ",
     "車両",
     "魔皇力"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-323.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-323.jpg"
 }

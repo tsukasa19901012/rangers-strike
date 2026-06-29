@@ -28,7 +28,6 @@ import {
   isUnit,
 } from "../core/catalog";
 import {
-  collectCallLeadFieldUnits,
   heldCallLeadMatchesCategories,
   type CallLeadKind,
 } from "./callLead";
@@ -729,18 +728,6 @@ export function releaseHeldCommands(
   return { ...player, command };
 }
 
-function hasReleasedOrCallLeadForCategories(
-  player: PlayerState,
-  definitions: Record<string, CardDefinition>,
-  categories: Category[],
-  callLeadKind: CallLeadKind,
-): boolean {
-  if (heldCallLeadMatchesCategories(player, definitions, callLeadKind, categories)) {
-    return true;
-  }
-  return collectCallLeadFieldUnits(player, definitions, callLeadKind, categories).length > 0;
-}
-
 /** RS-010: カード使用時、ホールド中コマンド2枚で必要カテゴリホールド1枚分を代替。 */
 export function hasCommandForCardUse(
   player: PlayerState,
@@ -753,7 +740,7 @@ export function hasCommandForCardUse(
   if (hasHeldCommandForCategories(player, definitions, categories)) return true;
   if (
     callLeadKind &&
-    hasReleasedOrCallLeadForCategories(player, definitions, categories, callLeadKind)
+    heldCallLeadMatchesCategories(player, definitions, callLeadKind, categories)
   ) {
     return true;
   }

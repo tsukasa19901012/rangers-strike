@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍Sユニットが敵軍Sユニットにアタックされたとき発動できる⇒そのバトルの間、アタックされたユニットはBP+2000される。",
   "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍Sユニットが敵軍Sユニットにアタックされたとき発動できる⇒そのバトルの間、アタックされたユニットはBP+2000される。",
@@ -30,5 +30,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-004.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-004.jpg"
 }

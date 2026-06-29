@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "ナンバーに数字を持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットのナンバーはＲＣになり、特徴「仮面ライダー」が追加される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
   "rawText": "ナンバーに数字を持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットのナンバーはＲＣになり、特徴「仮面ライダー」が追加される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
@@ -32,5 +32,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-079.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-079.jpg"
 }

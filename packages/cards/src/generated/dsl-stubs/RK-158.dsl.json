@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "7-",
   "text": "※これは自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない。",
   "rawText": "※これは自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない。",
@@ -34,5 +34,7 @@
     "text": "特徴「イマジン」を持つ自軍ユニット1体を捨札にすれば必要パワー0になる",
     "requiredFeature": "イマジン",
     "unitCount": 1
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-158.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-158.jpg"
 }

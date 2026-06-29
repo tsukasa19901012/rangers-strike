@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※これ以外の特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。 【カギ爪アーム】これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出してもよい。",
   "rawText": "※これ以外の特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。 【カギ爪アーム】これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出してもよい。",
@@ -52,5 +52,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-074.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-074.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "※常駐 自軍ラッシュフェイズごとに1度だけ、特徴「ミラーライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒※コールWB（このユニットはWBのユニットをラッシュするためのコマンドとしてホールドできる）",
   "rawText": "※常駐 自軍ラッシュフェイズごとに1度だけ、特徴「ミラーライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒※コールWB（このユニットはWBのユニットをラッシュするためのコマンドとしてホールドできる）",
@@ -55,5 +55,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-249.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-249.jpg"
 }

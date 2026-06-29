@@ -1,21 +1,23 @@
 {
-  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RK-202",
   "name": "仮面ライダー王蛇ブランク体",
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 0,
-  "text": "なし",
-  "rawText": "なし",
   "bp": 500,
   "size": "S",
+  "text": "なし",
   "features": [
     "仮面ライダー",
     "男",
     "ミラーライダー"
   ],
+  "imageUrl": "/cards/promoted/RK-202.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-202.jpg",
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "rawText": "なし",
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

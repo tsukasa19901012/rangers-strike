@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "【恩返し】敵軍ターン中、これが撃破されて捨札になったとき次の効果を発動できる⇒自軍パワーゾーンからダメージになっているカードを1枚選び、オモテにする。このとき、オモテにしたカードが「ジーク」なら、そのカードを捨札にしてこの効果をもう一度発動できる。",
   "rawText": "【恩返し】敵軍ターン中、これが撃破されて捨札になったとき次の効果を発動できる⇒自軍パワーゾーンからダメージになっているカードを1枚選び、オモテにする。このとき、オモテにしたカードが「ジーク」なら、そのカードを捨札にしてこの効果をもう一度発動できる。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-165.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-165.jpg"
 }

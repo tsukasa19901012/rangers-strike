@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "【ライダーキック】敵軍ラッシュエリアのSユニットの数を数えて、その数と同じ必要パワーの数字を持つ敵軍Sユニットがあれば1体選び、持ち主のパワーゾーンに送る。",
   "rawText": "【ライダーキック】敵軍ラッシュエリアのSユニットの数を数えて、その数と同じ必要パワーの数字を持つ敵軍Sユニットがあれば1体選び、持ち主のパワーゾーンに送る。",
@@ -40,5 +40,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-071.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-071.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 0,
   "text": "特徴「改造人間」を持つ自軍Sユニットを1体選ぶ。そうしたとき、このターン、選んだユニットは次の能力を得る⇒SPが空欄ではないユニットを撃破したとき、相手に1点ダメージを与える。",
   "rawText": "特徴「改造人間」を持つ自軍Sユニットを1体選ぶ。そうしたとき、このターン、選んだユニットは次の能力を得る⇒SPが空欄ではないユニットを撃破したとき、相手に1点ダメージを与える。",
@@ -30,5 +30,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-005.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-005.jpg"
 }

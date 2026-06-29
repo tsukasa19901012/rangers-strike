@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 ※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【シャドーセイバー】 自軍ターン中、これがアタックしてバトルに勝ったとき、追加でアタックかストライクを行ってもよい。ただし、このユニットの追加のアタックまたはストライクは、1ターンに1度だけとする。",
   "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 ※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【シャドーセイバー】 自軍ターン中、これがアタックしてバトルに勝ったとき、追加でアタックかストライクを行ってもよい。ただし、このユニットの追加のアタックまたはストライクは、1ターンに1度だけとする。",
@@ -79,5 +79,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-269.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-269.jpg"
 }

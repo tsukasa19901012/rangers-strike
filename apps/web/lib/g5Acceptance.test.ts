@@ -30,8 +30,8 @@ function abarenohEntriesWithPromoted(): DeckEntry[] {
   );
 }
 
-describe("AC-01 — fullPlayableCatalog includes promoted cards", () => {
-  it("AC-01: fullPlayableCatalog contains BK-001 and getFullPlayableCardById succeeds", () => {
+describe("AC-01 — fullPlayableCatalog includes BK core cards", () => {
+  it("AC-01: fullPlayableCatalog contains BK-001 as core legend1", () => {
     const ids = new Set(fullPlayableCatalog.cards.map((card) => card.id));
     expect(ids.has("BK-001")).toBe(true);
     expect(fullPlayableCatalog.cards.length).toBe(1849);
@@ -39,7 +39,8 @@ describe("AC-01 — fullPlayableCatalog includes promoted cards", () => {
     const card = getFullPlayableCardById("BK-001");
     expect(card).toBeDefined();
     expect(card?.name).toBeTruthy();
-    expect(card?.expansion).toBe("vanilla-promoted");
+    expect(card?.expansion).toBe("legend1");
+    expect(getCardById("BK-001")).toEqual(card);
   });
 });
 
@@ -90,13 +91,19 @@ describe("AC-03 — game start from promoted custom vs starter", () => {
 });
 
 describe("AC-04 — resolvePlayableCard vs core getCardById", () => {
-  it("AC-04: resolvePlayableCard returns name/text for BK-001; getCardById is undefined", () => {
-    expect(getCardById("BK-001")).toBeUndefined();
+  it("AC-04: BK-001 is core via getCardById and resolvePlayableCard", () => {
+    const fromCore = getCardById("BK-001");
+    expect(fromCore).toBeDefined();
+    expect(fromCore?.name.length).toBeGreaterThan(0);
+    expect(fromCore?.text?.length).toBeGreaterThan(0);
 
     const card = resolvePlayableCard("BK-001");
-    expect(card).toBeDefined();
-    expect(card?.name.length).toBeGreaterThan(0);
-    expect(card?.text?.length).toBeGreaterThan(0);
+    expect(card).toEqual(fromCore);
+  });
+
+  it("AC-04: PK-001 remains promoted-only outside core catalog", () => {
+    expect(getCardById("PK-001")).toBeUndefined();
+    expect(resolvePlayableCard("PK-001")).toBeDefined();
   });
 });
 

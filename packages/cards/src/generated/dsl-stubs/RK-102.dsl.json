@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【スプラッシュドラゴン】敵軍常駐置き場のカード枚数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主の手札に戻してもよい（敵軍常駐置き場にカードが1枚も無ければ0と数える）。",
   "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【スプラッシュドラゴン】敵軍常駐置き場のカード枚数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主の手札に戻してもよい（敵軍常駐置き場にカードが1枚も無ければ0と数える）。",
@@ -83,5 +83,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-102.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-102.jpg"
 }

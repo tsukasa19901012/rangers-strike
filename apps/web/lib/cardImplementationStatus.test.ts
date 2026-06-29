@@ -7,7 +7,12 @@ describe("getCardImplementationStatus", () => {
   });
 
   it("returns promoted for DSL-ready promoted cards", () => {
-    expect(getCardImplementationStatus("BK-001")).toBe("promoted");
+    expect(getCardImplementationStatus("PK-001")).toBe("promoted");
+  });
+
+  it("returns core for BK and RK cards", () => {
+    expect(getCardImplementationStatus("BK-001")).toBe("core");
+    expect(getCardImplementationStatus("RK-001")).toBe("core");
   });
 
   it("returns null for unknown card ids", () => {

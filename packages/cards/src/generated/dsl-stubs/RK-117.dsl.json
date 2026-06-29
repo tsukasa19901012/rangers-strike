@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※これはホールド状態の敵軍ユニット1体につきBP+1000される。 【クリスタルブレイク】｢デストワイルダー｣からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、ホールド状態のSユニットを1体選び撃破してもよい。",
   "rawText": "※これはホールド状態の敵軍ユニット1体につきBP+1000される。 【クリスタルブレイク】｢デストワイルダー｣からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、ホールド状態のSユニットを1体選び撃破してもよい。",
@@ -74,5 +74,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-117.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-117.jpg"
 }

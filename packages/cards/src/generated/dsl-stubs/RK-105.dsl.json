@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "※これはライド中、BP+1000される。 【ハルバードスピン】敵軍ユニットを、必要パワーの数字の合計が3になるまで好きな数選び、持ち主の山札に戻してシャッフルしてもよい。",
   "rawText": "※これはライド中、BP+1000される。 【ハルバードスピン】敵軍ユニットを、必要パワーの数字の合計が3になるまで好きな数選び、持ち主の山札に戻してシャッフルしてもよい。",
@@ -61,5 +61,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-105.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-105.jpg"
 }

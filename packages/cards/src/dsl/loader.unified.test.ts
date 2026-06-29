@@ -19,15 +19,22 @@ describe("loadCardById (U3)", () => {
     expect(doc.implementation?.handler).toBe("interpreter");
   });
 
-  it("loads promoted-only card", () => {
-    const doc = loadCardById("BK-001", "vanilla-promoted");
+  it("loads core BK card", () => {
+    const doc = loadCardById("BK-001", "core");
     expect(doc.name).toBe("タイフーン（1号）");
+    expect(doc.expansion).toBe("legend1");
+  });
+
+  it("loads promoted-only card", () => {
+    const doc = loadCardById("PK-001", "vanilla-promoted");
     expect(doc.expansion).toBe("vanilla-promoted");
   });
 
   it("infers catalog tier from card id", () => {
     expect(inferCatalogTierForCardId("RS-006")).toBe("core");
-    expect(inferCatalogTierForCardId("BK-001")).toBe("vanilla-promoted");
+    expect(inferCatalogTierForCardId("BK-001")).toBe("core");
+    expect(inferCatalogTierForCardId("RK-001")).toBe("core");
+    expect(inferCatalogTierForCardId("PK-001")).toBe("vanilla-promoted");
   });
 
   it("loadCards(full-playable) matches deprecated loader fingerprint", () => {

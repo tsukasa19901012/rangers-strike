@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "自軍ラッシュエリアからSユニットを1体選ぶ。そして自軍捨札からSユニットのカードを1枚選ぶ。そうしたとき、このターン、ラッシュエリアから選んだSユニットのBPに、捨札から選んだユニットカードのBPを「＋」する。",
   "rawText": "自軍ラッシュエリアからSユニットを1体選ぶ。そして自軍捨札からSユニットのカードを1枚選ぶ。そうしたとき、このターン、ラッシュエリアから選んだSユニットのBPに、捨札から選んだユニットカードのBPを「＋」する。",
@@ -31,5 +31,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-077.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-077.jpg"
 }

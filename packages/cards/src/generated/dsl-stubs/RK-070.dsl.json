@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※これはアタックされるときBP+4000される。 【アバランチブレイク】敵軍Sユニットの数が自軍Sユニットの数より5体以上多いとき、自軍Sユニットと同じ数になるまで敵軍Sユニットを選び、選んだユニットを持ち主のパワーゾーンに送る",
   "rawText": "※これはアタックされるときBP+4000される。 【アバランチブレイク】敵軍Sユニットの数が自軍Sユニットの数より5体以上多いとき、自軍Sユニットと同じ数になるまで敵軍Sユニットを選び、選んだユニットを持ち主のパワーゾーンに送る",
@@ -57,5 +57,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-070.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-070.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 6,
   "text": "※これは「仮面ライダー2号」としてつかえる。 【ライダーキック】敵軍バトルエリアから、BP4000以上の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。（この効果は「仮面ライダー1号」からコンビネーションするときは、ナンバーに関係なく発動する）",
   "rawText": "※これは「仮面ライダー2号」としてつかえる。 【ライダーキック】敵軍バトルエリアから、BP4000以上の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。（この効果は「仮面ライダー1号」からコンビネーションするときは、ナンバーに関係なく発動する）",
@@ -89,5 +89,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-176.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-176.jpg"
 }

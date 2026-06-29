@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "【戦闘員の統率】これが自軍エリアにある間、自軍バトルエリアにある特徴「戦闘員」を持つ自軍SユニットのBPは、自軍バトルエリアにある特徴「戦闘員」を持つ自軍Sユニットの本来のBPをすべて「＋」した値になる。また、特徴「戦闘員」を持つ自軍Sユニットは、BP3000のとき「SP1」になる。",
   "rawText": "【戦闘員の統率】これが自軍エリアにある間、自軍バトルエリアにある特徴「戦闘員」を持つ自軍SユニットのBPは、自軍バトルエリアにある特徴「戦闘員」を持つ自軍Sユニットの本来のBPをすべて「＋」した値になる。また、特徴「戦闘員」を持つ自軍Sユニットは、BP3000のとき「SP1」になる。",
@@ -38,5 +38,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-091.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-091.jpg"
 }

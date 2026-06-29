@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。 ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍「仮面ライダーアマゾン」があれば、これを自軍ラッシュエリアに出してもよい。 【神出鬼没】敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい。そうしたとき、ライドしていない敵軍Sユニットを1体選び、選んだビークルにライドさせる。",
   "rawText": "※これはBP2000以上の敵軍Sユニットにアタックされない。 ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍「仮面ライダーアマゾン」があれば、これを自軍ラッシュエリアに出してもよい。 【神出鬼没】敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい。そうしたとき、ライドしていない敵軍Sユニットを1体選び、選んだビークルにライドさせる。",
@@ -67,5 +67,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-180.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-180.jpg"
 }

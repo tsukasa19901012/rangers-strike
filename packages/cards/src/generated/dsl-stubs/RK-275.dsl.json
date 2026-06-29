@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "【ザバギンバシグラ】自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンのダメージ以外のカードから、Sユニットのカードを1枚選び、敵軍ラッシュエリアに出してもよい。そうしたとき、相手は自分自身の山札の上から1枚ひいて、自分自身のパワーゾーンに置いてもよい。",
   "rawText": "【ザバギンバシグラ】自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンのダメージ以外のカードから、Sユニットのカードを1枚選び、敵軍ラッシュエリアに出してもよい。そうしたとき、相手は自分自身の山札の上から1枚ひいて、自分自身のパワーゾーンに置いてもよい。",
@@ -38,5 +38,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-275.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-275.jpg"
 }

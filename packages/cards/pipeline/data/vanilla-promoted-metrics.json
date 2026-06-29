@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-06-10T02:09:42.828Z",
-  "vanillaPromoted": 354,
+  "generatedAt": "2026-06-29T06:11:19.906Z",
+  "vanillaPromoted": 184,
   "fullPlayable": 1849,
   "registrySize": 1849,
-  "promotedInRegistry": 354,
-  "dslReady": 235,
+  "promotedInRegistry": 184,
+  "dslReady": 184,
   "legacyHandler": 0,
-  "unimplemented": 119,
+  "unimplemented": 0,
   "validationFailed": 0,
   "failedIds": []
 }

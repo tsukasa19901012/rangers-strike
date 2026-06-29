@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。 【アクロバットバーン】 自軍ターン中、これがバトルエリアに出たとき、これにライドしているユニットのBP以下のBPを持つユニットを、相手は自分自身のSユニットの中から1体選び、自分自身の山札の下に戻す。",
   "rawText": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。 【アクロバットバーン】 自軍ターン中、これがバトルエリアに出たとき、これにライドしているユニットのBP以下のBPを持つユニットを、相手は自分自身のSユニットの中から1体選び、自分自身の山札の下に戻す。",
@@ -57,5 +57,7 @@
   "features": [
     "車両",
     "昆虫"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-264.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-264.jpg"
 }

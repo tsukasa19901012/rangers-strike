@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "【ダイナミックチョップ】自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンのダメージ以外のカードを好きな枚数捨札にしてもよい。そうしたとき、このターン、これは捨札にしたカード1枚につきBP+1000される",
   "rawText": "【ダイナミックチョップ】自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンのダメージ以外のカードを好きな枚数捨札にしてもよい。そうしたとき、このターン、これは捨札にしたカード1枚につきBP+1000される",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-062.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-062.jpg"
 }

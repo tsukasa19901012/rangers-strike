@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "※これは「仮面ライダー1号」としてつかえる。 【ライダーキック】このターン、敵軍ユニットのレジストとスクラムとチェイスの効果は無効になる。また、これがアタックしなかったとき、このユニットの次にコンビネーションするSユニットのBPは、このユニットのBPを「＋」した値になる。",
   "rawText": "※これは「仮面ライダー1号」としてつかえる。 【ライダーキック】このターン、敵軍ユニットのレジストとスクラムとチェイスの効果は無効になる。また、これがアタックしなかったとき、このユニットの次にコンビネーションするSユニットのBPは、このユニットのBPを「＋」した値になる。",
@@ -61,5 +61,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-175.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-175.jpg"
 }

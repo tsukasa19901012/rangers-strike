@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 0,
   "text": "※これはバトルエリアに出たとき撃破される。 【女の子のことなら僕に任せてよ】これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、特徴「女」を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
   "rawText": "※これはバトルエリアに出たとき撃破される。 【女の子のことなら僕に任せてよ】これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、特徴「女」を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
@@ -57,5 +57,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-143.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-143.jpg"
 }

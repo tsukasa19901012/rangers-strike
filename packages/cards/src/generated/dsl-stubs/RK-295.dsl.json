@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "3+",
   "text": "※これはバトルエリアの1番目に並んでいないときアタックもストライクもできない。 ※これはアタックされる以外では相手に選ばれない。 【頂点に立つ男】このターン、これは自軍パワーゾーンのカード枚数が敵軍パワーゾーンのカード枚数よりも1枚多いごとにBP+1000され、BP5000以上のとき「SP1」になる。",
   "rawText": "※これはバトルエリアの1番目に並んでいないときアタックもストライクもできない。 ※これはアタックされる以外では相手に選ばれない。 【頂点に立つ男】このターン、これは自軍パワーゾーンのカード枚数が敵軍パワーゾーンのカード枚数よりも1枚多いごとにBP+1000され、BP5000以上のとき「SP1」になる。",
@@ -81,5 +81,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-295.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-295.jpg"
 }

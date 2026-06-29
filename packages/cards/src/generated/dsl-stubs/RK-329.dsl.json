@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 6,
   "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 ※敵軍ユニットがSユニットだけなら、これは「SP1」になる。 【巨体の威圧】自軍ターン中、これがバトルエリアに出たとき、BPの一番低いユニットを１体選び撃破する。ただし、BPの一番低いユニットが自軍と敵軍にある場合は、自軍ユニットの中から選ぶこと。",
   "rawText": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 ※敵軍ユニットがSユニットだけなら、これは「SP1」になる。 【巨体の威圧】自軍ターン中、これがバトルエリアに出たとき、BPの一番低いユニットを１体選び撃破する。ただし、BPの一番低いユニットが自軍と敵軍にある場合は、自軍ユニットの中から選ぶこと。",
@@ -75,5 +75,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-329.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-329.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "4+",
   "text": "合体―仮面ライダーゼロノスAF＋デネブ ※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【グランドストライク】これが自軍エリアにある間、自軍パワーゾーンのカードが8枚になったとき、次の効果を発動できる⇒相手に1点ダメージを与える。",
   "rawText": "合体―仮面ライダーゼロノスAF＋デネブ ※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【グランドストライク】これが自軍エリアにある間、自軍パワーゾーンのカードが8枚になったとき、次の効果を発動できる⇒相手に1点ダメージを与える。",
@@ -70,5 +70,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-169.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-169.jpg"
 }

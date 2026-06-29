@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【見えない刺客】これは敵軍ユニットにアタックされない。",
   "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【見えない刺客】これは敵軍ユニットにアタックされない。",
@@ -57,5 +57,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-285.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-285.jpg"
 }

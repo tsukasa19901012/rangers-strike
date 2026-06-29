@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "5+",
   "text": "合体―ベノスネーカー＋メタルゲラス＋エビルダイバー 【ドゥームズデイ】これが自軍バトルエリアにある間、敵軍Sユニットはストライクしてダメージを与えたとき撃破される。",
   "rawText": "合体―ベノスネーカー＋メタルゲラス＋エビルダイバー 【ドゥームズデイ】これが自軍バトルエリアにある間、敵軍Sユニットはストライクしてダメージを与えたとき撃破される。",
@@ -63,5 +63,7 @@
         ]
       ]
     }
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-041.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-041.jpg"
 }

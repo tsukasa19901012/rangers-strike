@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "【タイガーボンバー】これが自軍バトルエリアにある間、敵軍ターン中、敵軍バトルエリアの特徴「忍者」を持たないユニットは、アタックするとき、バトルの前にBP-3000される。（BP0以下になったユニットは撃破される）この効果は重複しない。",
   "rawText": "【タイガーボンバー】これが自軍バトルエリアにある間、敵軍ターン中、敵軍バトルエリアの特徴「忍者」を持たないユニットは、アタックするとき、バトルの前にBP-3000される。（BP0以下になったユニットは撃破される）この効果は重複しない。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-101.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-101.jpg"
 }

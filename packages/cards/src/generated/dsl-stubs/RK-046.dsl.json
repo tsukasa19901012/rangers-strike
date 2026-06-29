@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "4+",
   "text": "※これはラッシュしたターンにバトルエリアに出られない。 【バスターホイール】これが自軍バトルエリアにある間、敵軍バトルエリアのすべてのSユニットはBP-500される。（BP0以下になったユニットは撃破される）",
   "rawText": "※これはラッシュしたターンにバトルエリアに出られない。 【バスターホイール】これが自軍バトルエリアにある間、敵軍バトルエリアのすべてのSユニットはBP-500される。（BP0以下になったユニットは撃破される）",
@@ -64,5 +64,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-046.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-046.jpg"
 }

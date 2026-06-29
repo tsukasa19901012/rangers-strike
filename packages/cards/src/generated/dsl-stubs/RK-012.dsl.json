@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "※カウンター（これは敵軍ターン中にのみ使用できる） BP4000以上のSユニットがラッシュされたとき発動できる⇒このターン、相手はバトルフェイズを飛ばす。",
   "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） BP4000以上のSユニットがラッシュされたとき発動できる⇒このターン、相手はバトルフェイズを飛ばす。",
@@ -30,5 +30,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-012.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-012.jpg"
 }

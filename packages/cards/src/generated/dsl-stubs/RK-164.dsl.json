@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【ライダーパンチ】このターン、これはBP+2000される。さらに、このユニットがホールド状態なら、このターン、これは「SP1」になる。",
   "rawText": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【ライダーパンチ】このターン、これはBP+2000される。さらに、このユニットがホールド状態なら、このターン、これは「SP1」になる。",
@@ -63,5 +63,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-164.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-164.jpg"
 }

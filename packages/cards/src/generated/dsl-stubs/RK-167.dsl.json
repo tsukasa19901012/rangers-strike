@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※これは、これ以外の自軍Sユニットを１体ホールドしなければバトルエリアに出られない。 【カイザブレイガン】BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「サイドバッシャーBM」からコンビネーションするときはナンバーに関係なく発動する）",
   "rawText": "※これは、これ以外の自軍Sユニットを１体ホールドしなければバトルエリアに出られない。 【カイザブレイガン】BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「サイドバッシャーBM」からコンビネーションするときはナンバーに関係なく発動する）",
@@ -53,5 +53,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-167.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-167.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 6,
   "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【ベノクラッシュ】「ベノスネーカー」からコンビネーションしたとき発動できる⇒敵軍コマンドゾーンから、ユニットカードを1枚選び捨札にしてもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のカードしか選べない。",
   "rawText": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【ベノクラッシュ】「ベノスネーカー」からコンビネーションしたとき発動できる⇒敵軍コマンドゾーンから、ユニットカードを1枚選び捨札にしてもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のカードしか選べない。",
@@ -60,5 +60,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-068.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-068.jpg"
 }

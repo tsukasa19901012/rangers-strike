@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 6,
   "text": "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい） 【ダイナミックチョップ】自軍ターン中、これがバトルエリアに出たとき、本来のBPがこのユニットのBP以下のユニットを、自軍と敵軍のユニットからそれぞれ1体ずつ選び、持ち主のパワーゾーンに送る。",
   "rawText": "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい） 【ダイナミックチョップ】自軍ターン中、これがバトルエリアに出たとき、本来のBPがこのユニットのBP以下のユニットを、自軍と敵軍のユニットからそれぞれ1体ずつ選び、持ち主のパワーゾーンに送る。",
@@ -60,5 +60,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-306.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-306.jpg"
 }

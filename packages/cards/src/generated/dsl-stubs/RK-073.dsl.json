@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※これはラッシュしたターンにバトルエリアに出られない。 【力の2号】このターン、これはBP+2000される。",
   "rawText": "※これはラッシュしたターンにバトルエリアに出られない。 【力の2号】このターン、これはBP+2000される。",
@@ -62,5 +62,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-073.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-073.jpg"
 }

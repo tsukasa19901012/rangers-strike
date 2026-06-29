@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "※これが自軍捨札にある間、自軍スタートフェイズ中、本来のカテゴリにMAを持ち、ナンバーを持たない自軍Sユニットがバトルエリアからラッシュエリアに戻るとき、自軍エリアに｢火焔大将｣がなければ、これをラッシュエリアに出してもよい。",
   "rawText": "※これが自軍捨札にある間、自軍スタートフェイズ中、本来のカテゴリにMAを持ち、ナンバーを持たない自軍Sユニットがバトルエリアからラッシュエリアに戻るとき、自軍エリアに｢火焔大将｣がなければ、これをラッシュエリアに出してもよい。",
@@ -34,5 +34,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-232.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-232.jpg"
 }

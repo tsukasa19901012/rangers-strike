@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "4+",
   "text": "【ワームの頂点に立つ男】これが自軍エリアにある間、特徴「ワーム」または特徴「怪人」を持つ敵軍ユニットはアタックもストライクも出来ない。また、敵軍ターン中、これが撃破されたとき、特徴「ワーム」または特徴「怪人」を持つすべてのユニットを撃破する。",
   "rawText": "【ワームの頂点に立つ男】これが自軍エリアにある間、特徴「ワーム」または特徴「怪人」を持つ敵軍ユニットはアタックもストライクも出来ない。また、敵軍ターン中、これが撃破されたとき、特徴「ワーム」または特徴「怪人」を持つすべてのユニットを撃破する。",
@@ -45,5 +45,7 @@
     "text": "カード名に「仮面ライダーサソード」を含む自軍ユニット1体を捨札にする",
     "nameContains": "仮面ライダーサソード",
     "unitCount": 1
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-302.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-302.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "【要人の暗殺】「これはバトルエリアに出られない」または「これは自軍ターン中、バトルエリアに出られない」と書かれた敵軍ユニットを1体選び撃破してもよい。",
   "rawText": "【要人の暗殺】「これはバトルエリアに出られない」または「これは自軍ターン中、バトルエリアに出られない」と書かれた敵軍ユニットを1体選び撃破してもよい。",
@@ -40,5 +40,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-093.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-093.jpg"
 }

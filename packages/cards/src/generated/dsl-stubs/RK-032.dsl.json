@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※これは自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットを1体捨札にしなければバトルエリアに出られない。 【アナザーパンチ】敵軍バトルエリアから、特徴「仮面ライダー」を持つSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
   "rawText": "※これは自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットを1体捨札にしなければバトルエリアに出られない。 【アナザーパンチ】敵軍バトルエリアから、特徴「仮面ライダー」を持つSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
@@ -80,5 +80,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-032.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-032.jpg"
 }

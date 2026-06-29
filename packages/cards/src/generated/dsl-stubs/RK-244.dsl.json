@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※常駐 ※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズごとに1度だけ、『自分の手札から1枚選び捨札にする』を実行してもよい。そうしたとき、相手は自分自身の捨札にあるユニットカードと同じカード名の自分自身のユニットを1体選び、撃破する。",
   "rawText": "※常駐 ※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズごとに1度だけ、『自分の手札から1枚選び捨札にする』を実行してもよい。そうしたとき、相手は自分自身の捨札にあるユニットカードと同じカード名の自分自身のユニットを1体選び、撃破する。",
@@ -55,5 +55,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-244.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-244.jpg"
 }

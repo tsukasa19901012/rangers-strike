@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it, expect } from "vitest";
+import { CORE_PLAYABLE_CARD_COUNT } from "../catalog/tiers";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const stubsPath = join(__dirname, "../../pipeline/data/wiki-catalog-stubs.json");
@@ -25,7 +26,7 @@ describe("wiki catalog stubs", () => {
     }
 
     expect(data.summary.wikiTotal).toBeGreaterThanOrEqual(1849);
-    expect(data.summary.catalogRegistered).toBe(698);
+    expect(data.summary.catalogRegistered).toBe(CORE_PLAYABLE_CARD_COUNT);
     expect(data.summary.stubCount).toBe(data.summary.wikiTotal - data.summary.catalogRegistered);
   });
 });

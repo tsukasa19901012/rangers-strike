@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "※これにライドしているユニットはBP+1000される。 【無線通信】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚を見てもよい。そうしたとき、それを元に戻すか、山札の下に戻すかを選択する。",
   "rawText": "※これにライドしているユニットはBP+1000される。 【無線通信】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚を見てもよい。そうしたとき、それを元に戻すか、山札の下に戻すかを選択する。",
@@ -57,5 +57,7 @@
   "features": [
     "メカ",
     "車両"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-030.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-030.jpg"
 }

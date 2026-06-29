@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※これは自軍パワーゾーンのオモテ向きのカード1枚につきBP+1000される。 【ガルル・ハウリングスラッシュ】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍バトルエリアから相手の手札の枚数以下の必要パワーの数字を持つSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
   "rawText": "※これは自軍パワーゾーンのオモテ向きのカード1枚につきBP+1000される。 【ガルル・ハウリングスラッシュ】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍バトルエリアから相手の手札の枚数以下の必要パワーの数字を持つSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
@@ -53,5 +53,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-246.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-246.jpg"
 }

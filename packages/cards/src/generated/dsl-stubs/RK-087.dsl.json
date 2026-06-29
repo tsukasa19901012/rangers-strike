@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。その後、敵軍バトルエリアのユニットを、好きな順に並べ替える。",
   "rawText": "敵軍ラッシュエリアにあるすべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）。その後、敵軍バトルエリアのユニットを、好きな順に並べ替える。",
@@ -32,5 +32,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-087.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-087.jpg"
 }

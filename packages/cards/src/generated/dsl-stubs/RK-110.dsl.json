@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "【性能の限界】敵軍ターン中、これが撃破されて捨札になったとき、このユニットカードを自軍コマンドゾーンにホールド状態で置いてもよい。（置けなければこの効果は発動できない）",
   "rawText": "【性能の限界】敵軍ターン中、これが撃破されて捨札になったとき、このユニットカードを自軍コマンドゾーンにホールド状態で置いてもよい。（置けなければこの効果は発動できない）",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-110.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-110.jpg"
 }

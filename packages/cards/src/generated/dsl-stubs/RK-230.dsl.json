@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない） 【音撃響・偉羅射威】敵軍ユニットの下にオモテ向きで重ねたオペレーションカードを1体選んでもよい。そうしたとき、選んだカードを持ち主の山札に戻してシャッフルする。",
   "rawText": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない） 【音撃響・偉羅射威】敵軍ユニットの下にオモテ向きで重ねたオペレーションカードを1体選んでもよい。そうしたとき、選んだカードを持ち主の山札に戻してシャッフルする。",
@@ -60,5 +60,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-230.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-230.jpg"
 }

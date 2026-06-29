@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 0,
   "text": "※これはバトルエリアに出たとき撃破される。 【契約者の望むもの】これが自軍バトルエリアからラッシュエリアに戻るとき、自軍常駐置き場からカードを1枚選び、自分の手札に加えてもよい。ただし、ウラ向きのカードはウラ向きのまま選ぶ。",
   "rawText": "※これはバトルエリアに出たとき撃破される。 【契約者の望むもの】これが自軍バトルエリアからラッシュエリアに戻るとき、自軍常駐置き場からカードを1枚選び、自分の手札に加えてもよい。ただし、ウラ向きのカードはウラ向きのまま選ぶ。",
@@ -57,5 +57,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-157.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-157.jpg"
 }

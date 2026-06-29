@@ -1,27 +1,29 @@
 {
-  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RK-151",
   "name": "ゼロライナーナギナタ",
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "7+",
-  "text": "なし",
-  "rawText": "なし",
   "bp": 3000,
-  "size": "M",
   "sp": 1,
+  "size": "M",
+  "text": "なし",
   "features": [
     "メカ",
     "車両",
     "航空機"
   ],
+  "imageUrl": "/cards/promoted/RK-151.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-151.jpg",
   "rushAdditionalCondition": {
     "conditionId": "send_s_unit_to_power",
     "text": "自軍Sユニットを1体パワーゾーンに送る。",
     "unitCount": 1
   },
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "rawText": "なし",
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

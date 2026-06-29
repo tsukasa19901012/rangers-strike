@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "【アバランチクラッシュ】敵軍Sユニットの数が自軍Sユニットの数より3体以上多いとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
   "rawText": "【アバランチクラッシュ】敵軍Sユニットの数が自軍Sユニットの数より3体以上多いとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
@@ -40,5 +40,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-235.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-235.jpg"
 }

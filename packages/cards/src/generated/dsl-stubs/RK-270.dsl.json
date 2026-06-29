@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※このカードはデッキに好きな枚数入れてもよい。 【偵察】 自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアの「チャップ」が3体なら、敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、そのカードを山札の上に戻すか、下に戻すか選択する。",
   "rawText": "※このカードはデッキに好きな枚数入れてもよい。 【偵察】 自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアの「チャップ」が3体なら、敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、そのカードを山札の上に戻すか、下に戻すか選択する。",
@@ -58,5 +58,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-270.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-270.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "5+",
   "text": "【巨龍形態】これが自軍バトルエリアにある間、このユニットから「デンライナーゴウカ、デンライナーイスルギ、デンライナーレッコウ」の順にコンビネーションしたとき、本来のBPが3000以下の敵軍ユニットをすべて撃破する。",
   "rawText": "【巨龍形態】これが自軍バトルエリアにある間、このユニットから「デンライナーゴウカ、デンライナーイスルギ、デンライナーレッコウ」の順にコンビネーションしたとき、本来のBPが3000以下の敵軍ユニットをすべて撃破する。",
@@ -43,5 +43,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-149.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-149.jpg"
 }

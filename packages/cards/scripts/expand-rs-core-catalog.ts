@@ -1,5 +1,5 @@
 /**
- * RS-179〜RS-690 および SR-* を core-playable に昇格し、promoted シャードから除去する。
+ * RS-179〜RS-690、SR-*、BK-*、RK-* を core-playable に昇格し、promoted シャードから除去する。
  *
  * Usage:
  *   npx tsx packages/cards/scripts/expand-rs-core-catalog.ts
@@ -33,8 +33,16 @@ function isSrCard(id: string): boolean {
   return id.startsWith("SR-");
 }
 
+function isBkCard(id: string): boolean {
+  return id.startsWith("BK-");
+}
+
+function isRkCard(id: string): boolean {
+  return id.startsWith("RK-");
+}
+
 function shouldRemoveFromPromoted(id: string): boolean {
-  return isRsExtended(id) || isSrCard(id);
+  return isRsExtended(id) || isSrCard(id) || isBkCard(id) || isRkCard(id);
 }
 
 const LEGEND_EXPANSIONS = new Set(["legend1", "legend2", "legend3"]);
@@ -51,7 +59,9 @@ function listCorePromotionIds(full: CardCatalog, coreIds: Set<string>): string[]
     ids.add(`RS-${String(n).padStart(3, "0")}`);
   }
   for (const card of full.cards) {
-    if (isSrCard(card.id)) ids.add(card.id);
+    if (isSrCard(card.id) || isBkCard(card.id) || isRkCard(card.id)) {
+      ids.add(card.id);
+    }
   }
   return [...ids].filter((id) => !coreIds.has(id)).sort();
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "4+",
   "text": "【フロントアックス】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからMユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、戻したユニットが特徴「メカ」を持っていなければ、持ち主のパワーゾーンへ送る。",
   "rawText": "【フロントアックス】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからMユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、戻したユニットが特徴「メカ」を持っていなければ、持ち主のパワーゾーンへ送る。",
@@ -42,5 +42,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-148.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-148.jpg"
 }

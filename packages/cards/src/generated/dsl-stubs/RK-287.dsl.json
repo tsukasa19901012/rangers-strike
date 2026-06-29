@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 6,
   "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは特徴「仮面ライダー」を持つユニット以外にアタックする事ができない。 【瞬間の悪夢】 これをラッシュしたとき、敵軍コマンドゾーンから、モーフを持つユニットカードを1枚選び捨札にしてもよい。",
   "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは特徴「仮面ライダー」を持つユニット以外にアタックする事ができない。 【瞬間の悪夢】 これをラッシュしたとき、敵軍コマンドゾーンから、モーフを持つユニットカードを1枚選び捨札にしてもよい。",
@@ -73,5 +73,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-287.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-287.jpg"
 }

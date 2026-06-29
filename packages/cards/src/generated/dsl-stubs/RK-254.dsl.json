@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【ストロンガー電キック】このターン、これはBP+2000される。さらに、このユニットのBPがすべてのユニットのBPとくらべて一番高ければ、このターン、これはSP1になる。",
   "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【ストロンガー電キック】このターン、これはBP+2000される。さらに、このユニットのBPがすべてのユニットのBPとくらべて一番高ければ、このターン、これはSP1になる。",
@@ -63,5 +63,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-254.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-254.jpg"
 }

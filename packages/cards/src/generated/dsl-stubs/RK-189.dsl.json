@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "【地空人の精霊パワー】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを2つまで選び、リリースしてもよい。",
   "rawText": "【地空人の精霊パワー】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを2つまで選び、リリースしてもよい。",
@@ -36,5 +36,7 @@
   "features": [
     "メカ",
     "車両"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-189.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-189.jpg"
 }

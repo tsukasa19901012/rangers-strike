@@ -9,10 +9,16 @@ describe("resolvePlayableCard", () => {
     expect(card?.expansion).toBe("legend1");
   });
 
-  it("returns full playable definition for promoted-only ids", () => {
+  it("returns core definition for BK rider belt cards", () => {
     const card = resolvePlayableCard("BK-001");
     expect(card).toBeDefined();
     expect(card?.name).toBe("タイフーン（1号）");
+    expect(card?.expansion).toBe("legend1");
+  });
+
+  it("returns full playable definition for promoted-only ids", () => {
+    const card = resolvePlayableCard("PK-001");
+    expect(card).toBeDefined();
     expect(card?.expansion).toBe("vanilla-promoted");
   });
 

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "5+",
   "text": "【狼作戦】これが自軍エリアにある間、特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される。",
   "rawText": "【狼作戦】これが自軍エリアにある間、特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される。",
@@ -46,5 +46,7 @@
     "text": "自軍「ゾル大佐」1体を捨札にする",
     "partnerName": "ゾル大佐",
     "unitCount": 1
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-092.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-092.jpg"
 }

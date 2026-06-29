@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【音撃奏・旋風一閃】自分の手札より相手の手札の枚数が多ければ、相手の手札を見ないで1枚選んでもよい。 そうしたとき、選んだカードを持ち主の山札の上に戻す。",
   "rawText": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【音撃奏・旋風一閃】自分の手札より相手の手札の枚数が多ければ、相手の手札を見ないで1枚選んでもよい。 そうしたとき、選んだカードを持ち主の山札の上に戻す。",
@@ -60,5 +60,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-228.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-228.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "3+",
   "text": "【掘削】これをラッシュしたとき、敵軍パワーゾーンのダメージ以外のカードの枚数を数えてから、そのカードをすべて捨札にしてもよい。そうしたとき、数えた枚数と同じ枚数になるまで敵軍捨札からカードを選び、敵軍パワーゾーンにオモテ向きで置く。",
   "rawText": "【掘削】これをラッシュしたとき、敵軍パワーゾーンのダメージ以外のカードの枚数を数えてから、そのカードをすべて捨札にしてもよい。そうしたとき、数えた枚数と同じ枚数になるまで敵軍捨札からカードを選び、敵軍パワーゾーンにオモテ向きで置く。",
@@ -42,5 +42,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-150.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-150.jpg"
 }

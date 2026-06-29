@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※レジスト ※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される。 【最後までクライマックスだぜ！】「SP1」",
   "rawText": "※レジスト ※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される。 【最後までクライマックスだぜ！】「SP1」",
@@ -73,5 +73,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-310.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-310.jpg"
 }

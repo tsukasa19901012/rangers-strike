@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "【硬化装甲】これにライドしているユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。",
   "rawText": "【硬化装甲】これにライドしているユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。",
@@ -36,5 +36,7 @@
   "features": [
     "メカ",
     "車両"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-107.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-107.jpg"
 }

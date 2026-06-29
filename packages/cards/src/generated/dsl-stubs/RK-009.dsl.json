@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍Sユニットが敵軍Sユニットにアタックされたとき発動できる⇒自分も相手も、バトルを行うユニット以外のSユニットをすべて手札に戻す。このときバトルを行うお互いのユニットは、このバトルの間、戻した自分自身のユニット1体につきそれぞれBP+1000される。",
   "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍Sユニットが敵軍Sユニットにアタックされたとき発動できる⇒自分も相手も、バトルを行うユニット以外のSユニットをすべて手札に戻す。このときバトルを行うお互いのユニットは、このバトルの間、戻した自分自身のユニット1体につきそれぞれBP+1000される。",
@@ -30,5 +30,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-009.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-009.jpg"
 }

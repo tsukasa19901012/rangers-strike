@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【再起動と暴走】これが自軍エリアにある間、これがホールド状態からリリース状態になったとき、これ以外の自軍Sユニットを1体選びホールドしても良い。そうしたとき、敵軍Sユニットを1体選び撃破する。",
   "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【再起動と暴走】これが自軍エリアにある間、これがホールド状態からリリース状態になったとき、これ以外の自軍Sユニットを1体選びホールドしても良い。そうしたとき、敵軍Sユニットを1体選び撃破する。",
@@ -60,5 +60,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-195.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-195.jpg"
 }

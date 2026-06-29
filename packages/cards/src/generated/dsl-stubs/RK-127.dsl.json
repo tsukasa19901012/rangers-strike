@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※これはライドオフしたときストライクできない。 ※これは相手の手札1枚につきBP+2000される。 【カリスアロー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字がすべて同じなら、敵軍コマンドゾーンからホールド状態のカードを1枚選び捨札にする。",
   "rawText": "※これはライドオフしたときストライクできない。 ※これは相手の手札1枚につきBP+2000される。 【カリスアロー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字がすべて同じなら、敵軍コマンドゾーンからホールド状態のカードを1枚選び捨札にする。",
@@ -96,5 +96,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-127.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-127.jpg"
 }

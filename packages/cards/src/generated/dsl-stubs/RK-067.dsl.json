@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "※これは自軍捨札に特徴「女」を持つユニットカードがなければ、特徴「男」または「女」を持つユニットにアタックすることができない。 【飛翔斬】「ダークウイング」からコンビネーションしたとき発動できる⇒これは敵軍ユニットのBPをカードに表記された本来の値としてバトルする",
   "rawText": "※これは自軍捨札に特徴「女」を持つユニットカードがなければ、特徴「男」または「女」を持つユニットにアタックすることができない。 【飛翔斬】「ダークウイング」からコンビネーションしたとき発動できる⇒これは敵軍ユニットのBPをカードに表記された本来の値としてバトルする",
@@ -54,5 +54,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-067.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-067.jpg"
 }

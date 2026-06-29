@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "※これが自分の手札にある間、自分が「仮面ライダーブレイドJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーブレイド」を1体捨札にしたことにできる。 【滑空攻撃】これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる。",
   "rawText": "※これが自分の手札にある間、自分が「仮面ライダーブレイドJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーブレイド」を1体捨札にしたことにできる。 【滑空攻撃】これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる。",
@@ -51,5 +51,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-217.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-217.jpg"
 }

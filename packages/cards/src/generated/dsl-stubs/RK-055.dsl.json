@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "【ライダーパンチ】敵軍バトルエリアからSユニットを好きな数選び、ラッシュエリアに戻してもよい。",
   "rawText": "【ライダーパンチ】敵軍バトルエリアからSユニットを好きな数選び、ラッシュエリアに戻してもよい。",
@@ -40,5 +40,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-055.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-055.jpg"
 }

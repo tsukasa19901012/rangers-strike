@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "自軍Sユニットを選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
   "rawText": "自軍Sユニットを選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
@@ -31,5 +31,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-173.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-173.jpg"
 }

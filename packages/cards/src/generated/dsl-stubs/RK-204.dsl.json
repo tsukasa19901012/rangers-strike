@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "【オーガ・ストラッシュ】これが自軍エリアにある間、敵軍ターン中、ストライク以外の方法でダメージを受けたなら、ダメージを受けた後、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、相手に1点ダメージを与える。",
   "rawText": "【オーガ・ストラッシュ】これが自軍エリアにある間、敵軍ターン中、ストライク以外の方法でダメージを受けたなら、ダメージを受けた後、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、相手に1点ダメージを与える。",
@@ -38,5 +38,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-204.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-204.jpg"
 }

@@ -17,7 +17,7 @@ import {
 } from "./unifiedCatalog";
 
 describe("unifiedCatalog", () => {
-  it("exposes core tier with 698 cards from generated catalog", () => {
+  it("exposes core tier with 1052 cards from generated catalog", () => {
     expect(getCatalog("core").cards.length).toBe(CORE_PLAYABLE_CARD_COUNT);
     expect(listCoreCardIds().size).toBe(CORE_PLAYABLE_CARD_COUNT);
     expect(generatedCorePlayableCatalog.cards.length).toBe(CORE_PLAYABLE_CARD_COUNT);
@@ -44,7 +44,9 @@ describe("unifiedCatalog", () => {
 
   it("resolvePlayableCard returns core and promoted cards", () => {
     expect(resolvePlayableCard("RS-006")?.expansion).toBe("legend1");
-    expect(resolvePlayableCard("BK-001")?.expansion).toBe("vanilla-promoted");
+    expect(resolvePlayableCard("BK-001")?.expansion).toBe("legend1");
+    expect(resolvePlayableCard("RK-001")?.expansion).toBe("legend2");
+    expect(resolvePlayableCard("PK-001")?.expansion).toBe("vanilla-promoted");
     expect(resolvePlayableCard("UNKNOWN-999")).toBeUndefined();
   });
 });

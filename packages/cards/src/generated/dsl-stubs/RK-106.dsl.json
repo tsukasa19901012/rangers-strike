@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "※これはライド中、「SP1/3」になる。 【セイバースラッシュ】敵軍バトルエリアから、ホールド状態のSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
   "rawText": "※これはライド中、「SP1/3」になる。 【セイバースラッシュ】敵軍バトルエリアから、ホールド状態のSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
@@ -54,5 +54,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-106.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-106.jpg"
 }

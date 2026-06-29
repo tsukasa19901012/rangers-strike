@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。 【ライディングアロー】 自軍ターン中、これがバトルエリアに出たとき、これがライドされていれば、敵軍常駐の上に重ねたカードの上から1枚選び、持ち主の山札の下に戻してもよい。",
   "rawText": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。 【ライディングアロー】 自軍ターン中、これがバトルエリアに出たとき、これがライドされていれば、敵軍常駐の上に重ねたカードの上から1枚選び、持ち主の山札の下に戻してもよい。",
@@ -57,5 +57,7 @@
   "features": [
     "メカ",
     "車両"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-265.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-265.jpg"
 }

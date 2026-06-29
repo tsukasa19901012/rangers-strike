@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "※これはライド中、BP+1000される。 【ライダーキック】自軍も敵軍もSユニットが1体しかいなければ、敵軍Sユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
   "rawText": "※これはライド中、BP+1000される。 【ライダーキック】自軍も敵軍もSユニットが1体しかいなければ、敵軍Sユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
@@ -89,5 +89,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-027.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-027.jpg"
 }

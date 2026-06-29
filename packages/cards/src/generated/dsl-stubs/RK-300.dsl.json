@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+500される。 【クロックアップ】これにライドしているユニットは、特徴「加速」を持たないSユニットにアタックされない。",
   "rawText": "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+500される。 【クロックアップ】これにライドしているユニットは、特徴「加速」を持たないSユニットにアタックされない。",
@@ -72,5 +72,7 @@
     "メカ",
     "車両",
     "加速"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-300.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-300.jpg"
 }

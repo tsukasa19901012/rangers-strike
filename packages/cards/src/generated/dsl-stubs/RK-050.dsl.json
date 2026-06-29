@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "【音撃斬・閻魔裁き】「SP1」これがアタックするとき、「BP」「必要パワーの数字」「ナンバーの数字」のうちどれか1つを選び、お互いにその数字でバトルする。ただし、ナンバーの数字は相手のユニットがナンバーに数字を持っていなければ選べない。",
   "rawText": "【音撃斬・閻魔裁き】「SP1」これがアタックするとき、「BP」「必要パワーの数字」「ナンバーの数字」のうちどれか1つを選び、お互いにその数字でバトルする。ただし、ナンバーの数字は相手のユニットがナンバーに数字を持っていなければ選べない。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-050.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-050.jpg"
 }

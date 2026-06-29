@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※これはBP2000以下のユニットにアタックできない。 【怪魔稲妻剣】このユニットとバトルして撃破された敵軍ユニットは、レジストを発動する事ができない。",
   "rawText": "※これはBP2000以下のユニットにアタックできない。 【怪魔稲妻剣】このユニットとバトルして撃破された敵軍ユニットは、レジストを発動する事ができない。",
@@ -51,5 +51,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-267.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-267.jpg"
 }

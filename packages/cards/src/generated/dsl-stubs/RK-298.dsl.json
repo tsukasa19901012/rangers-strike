@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※これはアタックされるときBP+3000される。 【むき出しの殺意】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアのユニットがSユニット1体だけなら、そのユニットを持ち主のパワーゾーンに送ってもよい。",
   "rawText": "※これはアタックされるときBP+3000される。 【むき出しの殺意】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアのユニットがSユニット1体だけなら、そのユニットを持ち主のパワーゾーンに送ってもよい。",
@@ -58,5 +58,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-298.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-298.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。 【ウルトラサイクロン】このユニットを捨札にして、次の効果を発動してもよい⇒敵軍バトルエリアから必要パワーの数字が3以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ敵軍コマンドを1つ選び、捨札にしてから置く。",
   "rawText": "※特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。 【ウルトラサイクロン】このユニットを捨札にして、次の効果を発動してもよい⇒敵軍バトルエリアから必要パワーの数字が3以下のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ敵軍コマンドを1つ選び、捨札にしてから置く。",
@@ -55,5 +55,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-255.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-255.jpg"
 }

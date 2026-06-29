@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "4+",
   "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【てんこもりだぜ！】自軍ターン中、これがバトルエリアに出たとき、パワーゾーンでオモテ向きになっている「モモタロス」「ウラタロス」「キンタロス」「リュウタロス」のカードを捨札にしたときに発動する効果は、捨札にせずに発動できる。",
   "rawText": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【てんこもりだぜ！】自軍ターン中、これがバトルエリアに出たとき、パワーゾーンでオモテ向きになっている「モモタロス」「ウラタロス」「キンタロス」「リュウタロス」のカードを捨札にしたときに発動する効果は、捨札にせずに発動できる。",
@@ -65,5 +65,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-168.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-168.jpg"
 }

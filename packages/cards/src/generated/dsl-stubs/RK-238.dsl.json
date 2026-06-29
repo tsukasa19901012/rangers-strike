@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。 【魂の捕獲】これが自軍エリアにある間、特徴「仮面ライダー」を持つユニットがユニットを撃破して捨札にしたとき、その特徴「仮面ライダー」を持つユニットの持ち主は1枚ドローしてもよい。",
   "rawText": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。 【魂の捕獲】これが自軍エリアにある間、特徴「仮面ライダー」を持つユニットがユニットを撃破して捨札にしたとき、その特徴「仮面ライダー」を持つユニットの持ち主は1枚ドローしてもよい。",
@@ -58,5 +58,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-238.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-238.jpg"
 }

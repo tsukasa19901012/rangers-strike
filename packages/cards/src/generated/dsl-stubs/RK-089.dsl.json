@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "次の効果を、相手、自分の順に行う。 自分自身の山札の上から3枚をオモテにして相手に見せる。その中から特徴「車両」を持つMユニットのカードをすべて自分自身のパワーゾーンに置き、それ以外は好きな順で自分自身の山札の下に戻す。",
   "rawText": "次の効果を、相手、自分の順に行う。 自分自身の山札の上から3枚をオモテにして相手に見せる。その中から特徴「車両」を持つMユニットのカードをすべて自分自身のパワーゾーンに置き、それ以外は好きな順で自分自身の山札の下に戻す。",
@@ -31,5 +31,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-089.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-089.jpg"
 }

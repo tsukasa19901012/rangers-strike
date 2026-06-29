@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "【バッシャー・アクアトルネード】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、常駐しているオペレーションを1つ選び、選んだオペレーションを持ち主の山札に戻してシャッフルする。",
   "rawText": "【バッシャー・アクアトルネード】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、常駐しているオペレーションを1つ選び、選んだオペレーションを持ち主の山札に戻してシャッフルする。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-237.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-237.jpg"
 }

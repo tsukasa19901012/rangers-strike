@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "6+",
   "text": "【エクザップバスター】これをラッシュしたターン、敵軍SユニットはBP-500される。（BP0以下になったユニットは撃破される）",
   "rawText": "【エクザップバスター】これをラッシュしたターン、敵軍SユニットはBP-500される。（BP0以下になったユニットは撃破される）",
@@ -44,5 +44,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-121.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-121.jpg"
 }

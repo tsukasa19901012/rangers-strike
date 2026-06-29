@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 0,
   "text": "※これにライドしているユニットはBP+1000される。",
   "rawText": "※これにライドしているユニットはBP+1000される。",
@@ -41,5 +41,7 @@
   "features": [
     "メカ",
     "車両"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-045.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-045.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※これは自軍パワーゾーンに6枚以上カードが無ければバトルエリアに出られない。 【使途再生】これが自軍エリアにある間、ホールド状態の自軍Sユニットは特徴「オルフェノク」が追加される。",
   "rawText": "※これは自軍パワーゾーンに6枚以上カードが無ければバトルエリアに出られない。 【使途再生】これが自軍エリアにある間、ホールド状態の自軍Sユニットは特徴「オルフェノク」が追加される。",
@@ -53,5 +53,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-122.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-122.jpg"
 }

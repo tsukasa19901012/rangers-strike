@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "【ショットガン】敵軍ラッシュエリアのユニットを、BPの合計が3000以下になるように選び撃破してもよい。ただし、選べるユニットの数は、特徴「メカ」を持つ自軍ユニットの数までとする。",
   "rawText": "【ショットガン】敵軍ラッシュエリアのユニットを、BPの合計が3000以下になるように選び撃破してもよい。ただし、選べるユニットの数は、特徴「メカ」を持つ自軍ユニットの数までとする。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-266.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-266.jpg"
 }

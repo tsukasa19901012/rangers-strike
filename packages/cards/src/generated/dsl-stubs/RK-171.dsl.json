@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 0,
   "text": "本来の特徴に「ミラーライダー」を持つ自軍ユニットを1体選ぶ。このターン、選んだユニットは、指定されたユニットからコンビネーションしたときに発動できる効果名を持つ効果を、指定されたユニットのかわりに、本来の特徴に「ミラーモンスター」を持つユニットからコンビネーションすれば、その効果を発動できる。",
   "rawText": "本来の特徴に「ミラーライダー」を持つ自軍ユニットを1体選ぶ。このターン、選んだユニットは、指定されたユニットからコンビネーションしたときに発動できる効果名を持つ効果を、指定されたユニットのかわりに、本来の特徴に「ミラーモンスター」を持つユニットからコンビネーションすれば、その効果を発動できる。",
@@ -32,5 +32,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-171.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-171.jpg"
 }

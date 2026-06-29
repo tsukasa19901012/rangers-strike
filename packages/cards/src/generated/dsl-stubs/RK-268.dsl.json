@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "※敵軍ターン中、これがバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置いてもよい。（コマンドゾーンに置けるカードは通常5枚まで） 【分析能力】 これが自軍バトルエリアにある間、すべてのバトルは本来のBPで行う。",
   "rawText": "※敵軍ターン中、これがバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置いてもよい。（コマンドゾーンに置けるカードは通常5枚まで） 【分析能力】 これが自軍バトルエリアにある間、すべてのバトルは本来のBPで行う。",
@@ -53,5 +53,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-268.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-268.jpg"
 }

@@ -1,5 +1,1067 @@
 {
   "byId": {
+    "BK-001": {
+      "tier": "core"
+    },
+    "BK-002": {
+      "tier": "core"
+    },
+    "BK-003": {
+      "tier": "core"
+    },
+    "BK-004": {
+      "tier": "core"
+    },
+    "BK-005": {
+      "tier": "core"
+    },
+    "BK-006": {
+      "tier": "core"
+    },
+    "BK-007": {
+      "tier": "core"
+    },
+    "BK-008": {
+      "tier": "core"
+    },
+    "BK-009": {
+      "tier": "core"
+    },
+    "BK-010": {
+      "tier": "core"
+    },
+    "BK-011": {
+      "tier": "core"
+    },
+    "BK-012": {
+      "tier": "core"
+    },
+    "BK-013": {
+      "tier": "core"
+    },
+    "BK-014": {
+      "tier": "core"
+    },
+    "BK-015": {
+      "tier": "core"
+    },
+    "BK-016": {
+      "tier": "core"
+    },
+    "BK-017": {
+      "tier": "core"
+    },
+    "BK-018": {
+      "tier": "core"
+    },
+    "BK-019": {
+      "tier": "core"
+    },
+    "RK-001": {
+      "tier": "core"
+    },
+    "RK-002": {
+      "tier": "core"
+    },
+    "RK-003": {
+      "tier": "core"
+    },
+    "RK-004": {
+      "tier": "core"
+    },
+    "RK-005": {
+      "tier": "core"
+    },
+    "RK-006": {
+      "tier": "core"
+    },
+    "RK-007": {
+      "tier": "core"
+    },
+    "RK-008": {
+      "tier": "core"
+    },
+    "RK-009": {
+      "tier": "core"
+    },
+    "RK-010": {
+      "tier": "core"
+    },
+    "RK-011": {
+      "tier": "core"
+    },
+    "RK-012": {
+      "tier": "core"
+    },
+    "RK-013": {
+      "tier": "core"
+    },
+    "RK-014": {
+      "tier": "core"
+    },
+    "RK-015": {
+      "tier": "core"
+    },
+    "RK-016": {
+      "tier": "core"
+    },
+    "RK-017": {
+      "tier": "core"
+    },
+    "RK-018": {
+      "tier": "core"
+    },
+    "RK-019": {
+      "tier": "core"
+    },
+    "RK-020": {
+      "tier": "core"
+    },
+    "RK-021": {
+      "tier": "core"
+    },
+    "RK-022": {
+      "tier": "core"
+    },
+    "RK-023": {
+      "tier": "core"
+    },
+    "RK-024": {
+      "tier": "core"
+    },
+    "RK-025": {
+      "tier": "core"
+    },
+    "RK-026": {
+      "tier": "core"
+    },
+    "RK-027": {
+      "tier": "core"
+    },
+    "RK-028": {
+      "tier": "core"
+    },
+    "RK-029": {
+      "tier": "core"
+    },
+    "RK-030": {
+      "tier": "core"
+    },
+    "RK-031": {
+      "tier": "core"
+    },
+    "RK-032": {
+      "tier": "core"
+    },
+    "RK-033": {
+      "tier": "core"
+    },
+    "RK-034": {
+      "tier": "core"
+    },
+    "RK-035": {
+      "tier": "core"
+    },
+    "RK-036": {
+      "tier": "core"
+    },
+    "RK-037": {
+      "tier": "core"
+    },
+    "RK-038": {
+      "tier": "core"
+    },
+    "RK-039": {
+      "tier": "core"
+    },
+    "RK-040": {
+      "tier": "core"
+    },
+    "RK-041": {
+      "tier": "core"
+    },
+    "RK-042": {
+      "tier": "core"
+    },
+    "RK-043": {
+      "tier": "core"
+    },
+    "RK-044": {
+      "tier": "core"
+    },
+    "RK-045": {
+      "tier": "core"
+    },
+    "RK-046": {
+      "tier": "core"
+    },
+    "RK-047": {
+      "tier": "core"
+    },
+    "RK-048": {
+      "tier": "core"
+    },
+    "RK-049": {
+      "tier": "core"
+    },
+    "RK-050": {
+      "tier": "core"
+    },
+    "RK-051": {
+      "tier": "core"
+    },
+    "RK-052": {
+      "tier": "core"
+    },
+    "RK-053": {
+      "tier": "core"
+    },
+    "RK-054": {
+      "tier": "core"
+    },
+    "RK-055": {
+      "tier": "core"
+    },
+    "RK-056": {
+      "tier": "core"
+    },
+    "RK-057": {
+      "tier": "core"
+    },
+    "RK-058": {
+      "tier": "core"
+    },
+    "RK-059": {
+      "tier": "core"
+    },
+    "RK-060": {
+      "tier": "core"
+    },
+    "RK-061": {
+      "tier": "core"
+    },
+    "RK-062": {
+      "tier": "core"
+    },
+    "RK-063": {
+      "tier": "core"
+    },
+    "RK-064": {
+      "tier": "core"
+    },
+    "RK-065": {
+      "tier": "core"
+    },
+    "RK-066": {
+      "tier": "core"
+    },
+    "RK-067": {
+      "tier": "core"
+    },
+    "RK-068": {
+      "tier": "core"
+    },
+    "RK-069": {
+      "tier": "core"
+    },
+    "RK-070": {
+      "tier": "core"
+    },
+    "RK-071": {
+      "tier": "core"
+    },
+    "RK-072": {
+      "tier": "core"
+    },
+    "RK-073": {
+      "tier": "core"
+    },
+    "RK-074": {
+      "tier": "core"
+    },
+    "RK-075": {
+      "tier": "core"
+    },
+    "RK-076": {
+      "tier": "core"
+    },
+    "RK-077": {
+      "tier": "core"
+    },
+    "RK-078": {
+      "tier": "core"
+    },
+    "RK-079": {
+      "tier": "core"
+    },
+    "RK-080": {
+      "tier": "core"
+    },
+    "RK-081": {
+      "tier": "core"
+    },
+    "RK-082": {
+      "tier": "core"
+    },
+    "RK-083": {
+      "tier": "core"
+    },
+    "RK-084": {
+      "tier": "core"
+    },
+    "RK-085": {
+      "tier": "core"
+    },
+    "RK-086": {
+      "tier": "core"
+    },
+    "RK-087": {
+      "tier": "core"
+    },
+    "RK-088": {
+      "tier": "core"
+    },
+    "RK-089": {
+      "tier": "core"
+    },
+    "RK-090": {
+      "tier": "core"
+    },
+    "RK-091": {
+      "tier": "core"
+    },
+    "RK-092": {
+      "tier": "core"
+    },
+    "RK-093": {
+      "tier": "core"
+    },
+    "RK-094": {
+      "tier": "core"
+    },
+    "RK-095": {
+      "tier": "core"
+    },
+    "RK-096": {
+      "tier": "core"
+    },
+    "RK-097": {
+      "tier": "core"
+    },
+    "RK-098": {
+      "tier": "core"
+    },
+    "RK-099": {
+      "tier": "core"
+    },
+    "RK-100": {
+      "tier": "core"
+    },
+    "RK-101": {
+      "tier": "core"
+    },
+    "RK-102": {
+      "tier": "core"
+    },
+    "RK-103": {
+      "tier": "core"
+    },
+    "RK-104": {
+      "tier": "core"
+    },
+    "RK-105": {
+      "tier": "core"
+    },
+    "RK-106": {
+      "tier": "core"
+    },
+    "RK-107": {
+      "tier": "core"
+    },
+    "RK-108": {
+      "tier": "core"
+    },
+    "RK-109": {
+      "tier": "core"
+    },
+    "RK-110": {
+      "tier": "core"
+    },
+    "RK-111": {
+      "tier": "core"
+    },
+    "RK-112": {
+      "tier": "core"
+    },
+    "RK-113": {
+      "tier": "core"
+    },
+    "RK-114": {
+      "tier": "core"
+    },
+    "RK-115": {
+      "tier": "core"
+    },
+    "RK-116": {
+      "tier": "core"
+    },
+    "RK-117": {
+      "tier": "core"
+    },
+    "RK-118": {
+      "tier": "core"
+    },
+    "RK-119": {
+      "tier": "core"
+    },
+    "RK-120": {
+      "tier": "core"
+    },
+    "RK-121": {
+      "tier": "core"
+    },
+    "RK-122": {
+      "tier": "core"
+    },
+    "RK-123": {
+      "tier": "core"
+    },
+    "RK-124": {
+      "tier": "core"
+    },
+    "RK-125": {
+      "tier": "core"
+    },
+    "RK-126": {
+      "tier": "core"
+    },
+    "RK-127": {
+      "tier": "core"
+    },
+    "RK-128": {
+      "tier": "core"
+    },
+    "RK-129": {
+      "tier": "core"
+    },
+    "RK-130": {
+      "tier": "core"
+    },
+    "RK-131": {
+      "tier": "core"
+    },
+    "RK-132": {
+      "tier": "core"
+    },
+    "RK-133": {
+      "tier": "core"
+    },
+    "RK-134": {
+      "tier": "core"
+    },
+    "RK-135": {
+      "tier": "core"
+    },
+    "RK-136": {
+      "tier": "core"
+    },
+    "RK-137": {
+      "tier": "core"
+    },
+    "RK-138": {
+      "tier": "core"
+    },
+    "RK-139": {
+      "tier": "core"
+    },
+    "RK-140": {
+      "tier": "core"
+    },
+    "RK-141": {
+      "tier": "core"
+    },
+    "RK-142": {
+      "tier": "core"
+    },
+    "RK-143": {
+      "tier": "core"
+    },
+    "RK-144": {
+      "tier": "core"
+    },
+    "RK-145": {
+      "tier": "core"
+    },
+    "RK-146": {
+      "tier": "core"
+    },
+    "RK-147": {
+      "tier": "core"
+    },
+    "RK-148": {
+      "tier": "core"
+    },
+    "RK-149": {
+      "tier": "core"
+    },
+    "RK-150": {
+      "tier": "core"
+    },
+    "RK-151": {
+      "tier": "core"
+    },
+    "RK-152": {
+      "tier": "core"
+    },
+    "RK-153": {
+      "tier": "core"
+    },
+    "RK-154": {
+      "tier": "core"
+    },
+    "RK-155": {
+      "tier": "core"
+    },
+    "RK-156": {
+      "tier": "core"
+    },
+    "RK-157": {
+      "tier": "core"
+    },
+    "RK-158": {
+      "tier": "core"
+    },
+    "RK-159": {
+      "tier": "core"
+    },
+    "RK-160": {
+      "tier": "core"
+    },
+    "RK-161": {
+      "tier": "core"
+    },
+    "RK-162": {
+      "tier": "core"
+    },
+    "RK-163": {
+      "tier": "core"
+    },
+    "RK-164": {
+      "tier": "core"
+    },
+    "RK-165": {
+      "tier": "core"
+    },
+    "RK-166": {
+      "tier": "core"
+    },
+    "RK-167": {
+      "tier": "core"
+    },
+    "RK-168": {
+      "tier": "core"
+    },
+    "RK-169": {
+      "tier": "core"
+    },
+    "RK-170": {
+      "tier": "core"
+    },
+    "RK-171": {
+      "tier": "core"
+    },
+    "RK-172": {
+      "tier": "core"
+    },
+    "RK-173": {
+      "tier": "core"
+    },
+    "RK-174": {
+      "tier": "core"
+    },
+    "RK-175": {
+      "tier": "core"
+    },
+    "RK-176": {
+      "tier": "core"
+    },
+    "RK-177": {
+      "tier": "core"
+    },
+    "RK-178": {
+      "tier": "core"
+    },
+    "RK-179": {
+      "tier": "core"
+    },
+    "RK-180": {
+      "tier": "core"
+    },
+    "RK-181": {
+      "tier": "core"
+    },
+    "RK-182": {
+      "tier": "core"
+    },
+    "RK-183": {
+      "tier": "core"
+    },
+    "RK-184": {
+      "tier": "core"
+    },
+    "RK-185": {
+      "tier": "core"
+    },
+    "RK-186": {
+      "tier": "core"
+    },
+    "RK-187": {
+      "tier": "core"
+    },
+    "RK-188": {
+      "tier": "core"
+    },
+    "RK-189": {
+      "tier": "core"
+    },
+    "RK-190": {
+      "tier": "core"
+    },
+    "RK-191": {
+      "tier": "core"
+    },
+    "RK-192": {
+      "tier": "core"
+    },
+    "RK-193": {
+      "tier": "core"
+    },
+    "RK-194": {
+      "tier": "core"
+    },
+    "RK-195": {
+      "tier": "core"
+    },
+    "RK-196": {
+      "tier": "core"
+    },
+    "RK-197": {
+      "tier": "core"
+    },
+    "RK-198": {
+      "tier": "core"
+    },
+    "RK-199": {
+      "tier": "core"
+    },
+    "RK-200": {
+      "tier": "core"
+    },
+    "RK-201": {
+      "tier": "core"
+    },
+    "RK-202": {
+      "tier": "core"
+    },
+    "RK-203": {
+      "tier": "core"
+    },
+    "RK-204": {
+      "tier": "core"
+    },
+    "RK-205": {
+      "tier": "core"
+    },
+    "RK-206": {
+      "tier": "core"
+    },
+    "RK-207": {
+      "tier": "core"
+    },
+    "RK-208": {
+      "tier": "core"
+    },
+    "RK-209": {
+      "tier": "core"
+    },
+    "RK-210": {
+      "tier": "core"
+    },
+    "RK-211": {
+      "tier": "core"
+    },
+    "RK-212": {
+      "tier": "core"
+    },
+    "RK-213": {
+      "tier": "core"
+    },
+    "RK-214": {
+      "tier": "core"
+    },
+    "RK-215": {
+      "tier": "core"
+    },
+    "RK-216": {
+      "tier": "core"
+    },
+    "RK-217": {
+      "tier": "core"
+    },
+    "RK-218": {
+      "tier": "core"
+    },
+    "RK-219": {
+      "tier": "core"
+    },
+    "RK-220": {
+      "tier": "core"
+    },
+    "RK-221": {
+      "tier": "core"
+    },
+    "RK-222": {
+      "tier": "core"
+    },
+    "RK-223": {
+      "tier": "core"
+    },
+    "RK-224": {
+      "tier": "core"
+    },
+    "RK-225": {
+      "tier": "core"
+    },
+    "RK-226": {
+      "tier": "core"
+    },
+    "RK-227": {
+      "tier": "core"
+    },
+    "RK-228": {
+      "tier": "core"
+    },
+    "RK-229": {
+      "tier": "core"
+    },
+    "RK-230": {
+      "tier": "core"
+    },
+    "RK-231": {
+      "tier": "core"
+    },
+    "RK-232": {
+      "tier": "core"
+    },
+    "RK-233": {
+      "tier": "core"
+    },
+    "RK-234": {
+      "tier": "core"
+    },
+    "RK-235": {
+      "tier": "core"
+    },
+    "RK-236": {
+      "tier": "core"
+    },
+    "RK-237": {
+      "tier": "core"
+    },
+    "RK-238": {
+      "tier": "core"
+    },
+    "RK-239": {
+      "tier": "core"
+    },
+    "RK-240": {
+      "tier": "core"
+    },
+    "RK-241": {
+      "tier": "core"
+    },
+    "RK-242": {
+      "tier": "core"
+    },
+    "RK-243": {
+      "tier": "core"
+    },
+    "RK-244": {
+      "tier": "core"
+    },
+    "RK-245": {
+      "tier": "core"
+    },
+    "RK-246": {
+      "tier": "core"
+    },
+    "RK-247": {
+      "tier": "core"
+    },
+    "RK-248": {
+      "tier": "core"
+    },
+    "RK-249": {
+      "tier": "core"
+    },
+    "RK-250": {
+      "tier": "core"
+    },
+    "RK-251": {
+      "tier": "core"
+    },
+    "RK-252": {
+      "tier": "core"
+    },
+    "RK-253": {
+      "tier": "core"
+    },
+    "RK-254": {
+      "tier": "core"
+    },
+    "RK-255": {
+      "tier": "core"
+    },
+    "RK-256": {
+      "tier": "core"
+    },
+    "RK-257": {
+      "tier": "core"
+    },
+    "RK-258": {
+      "tier": "core"
+    },
+    "RK-259": {
+      "tier": "core"
+    },
+    "RK-260": {
+      "tier": "core"
+    },
+    "RK-261": {
+      "tier": "core"
+    },
+    "RK-262": {
+      "tier": "core"
+    },
+    "RK-263": {
+      "tier": "core"
+    },
+    "RK-264": {
+      "tier": "core"
+    },
+    "RK-265": {
+      "tier": "core"
+    },
+    "RK-266": {
+      "tier": "core"
+    },
+    "RK-267": {
+      "tier": "core"
+    },
+    "RK-268": {
+      "tier": "core"
+    },
+    "RK-269": {
+      "tier": "core"
+    },
+    "RK-270": {
+      "tier": "core"
+    },
+    "RK-271": {
+      "tier": "core"
+    },
+    "RK-272": {
+      "tier": "core"
+    },
+    "RK-273": {
+      "tier": "core"
+    },
+    "RK-274": {
+      "tier": "core"
+    },
+    "RK-275": {
+      "tier": "core"
+    },
+    "RK-276": {
+      "tier": "core"
+    },
+    "RK-277": {
+      "tier": "core"
+    },
+    "RK-278": {
+      "tier": "core"
+    },
+    "RK-279": {
+      "tier": "core"
+    },
+    "RK-280": {
+      "tier": "core"
+    },
+    "RK-281": {
+      "tier": "core"
+    },
+    "RK-282": {
+      "tier": "core"
+    },
+    "RK-283": {
+      "tier": "core"
+    },
+    "RK-284": {
+      "tier": "core"
+    },
+    "RK-285": {
+      "tier": "core"
+    },
+    "RK-286": {
+      "tier": "core"
+    },
+    "RK-287": {
+      "tier": "core"
+    },
+    "RK-288": {
+      "tier": "core"
+    },
+    "RK-289": {
+      "tier": "core"
+    },
+    "RK-290": {
+      "tier": "core"
+    },
+    "RK-291": {
+      "tier": "core"
+    },
+    "RK-292": {
+      "tier": "core"
+    },
+    "RK-293": {
+      "tier": "core"
+    },
+    "RK-294": {
+      "tier": "core"
+    },
+    "RK-295": {
+      "tier": "core"
+    },
+    "RK-296": {
+      "tier": "core"
+    },
+    "RK-297": {
+      "tier": "core"
+    },
+    "RK-298": {
+      "tier": "core"
+    },
+    "RK-299": {
+      "tier": "core"
+    },
+    "RK-300": {
+      "tier": "core"
+    },
+    "RK-301": {
+      "tier": "core"
+    },
+    "RK-302": {
+      "tier": "core"
+    },
+    "RK-303": {
+      "tier": "core"
+    },
+    "RK-304": {
+      "tier": "core"
+    },
+    "RK-305": {
+      "tier": "core"
+    },
+    "RK-306": {
+      "tier": "core"
+    },
+    "RK-307": {
+      "tier": "core"
+    },
+    "RK-308": {
+      "tier": "core"
+    },
+    "RK-309": {
+      "tier": "core"
+    },
+    "RK-310": {
+      "tier": "core"
+    },
+    "RK-311": {
+      "tier": "core"
+    },
+    "RK-312": {
+      "tier": "core"
+    },
+    "RK-313": {
+      "tier": "core"
+    },
+    "RK-314": {
+      "tier": "core"
+    },
+    "RK-315": {
+      "tier": "core"
+    },
+    "RK-316": {
+      "tier": "core"
+    },
+    "RK-317": {
+      "tier": "core"
+    },
+    "RK-318": {
+      "tier": "core"
+    },
+    "RK-319": {
+      "tier": "core"
+    },
+    "RK-320": {
+      "tier": "core"
+    },
+    "RK-321": {
+      "tier": "core"
+    },
+    "RK-322": {
+      "tier": "core"
+    },
+    "RK-323": {
+      "tier": "core"
+    },
+    "RK-324": {
+      "tier": "core"
+    },
+    "RK-325": {
+      "tier": "core"
+    },
+    "RK-326": {
+      "tier": "core"
+    },
+    "RK-327": {
+      "tier": "core"
+    },
+    "RK-328": {
+      "tier": "core"
+    },
+    "RK-329": {
+      "tier": "core"
+    },
+    "RK-330": {
+      "tier": "core"
+    },
+    "RK-331": {
+      "tier": "core"
+    },
+    "RK-332": {
+      "tier": "core"
+    },
+    "RK-333": {
+      "tier": "core"
+    },
+    "RK-334": {
+      "tier": "core"
+    },
+    "RK-335": {
+      "tier": "core"
+    },
     "RS-001": {
       "tier": "core"
     },
@@ -2094,63 +3156,6 @@
     "SR-008": {
       "tier": "core"
     },
-    "BK-001": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-002": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-003": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-004": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-005": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-006": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-007": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-008": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-009": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-010": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-011": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-012": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-013": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-014": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-015": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-016": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-017": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-018": {
-      "tier": "vanilla-promoted"
-    },
-    "BK-019": {
-      "tier": "vanilla-promoted"
-    },
     "PK-001": {
       "tier": "vanilla-promoted"
     },
@@ -2182,249 +3187,6 @@
       "tier": "vanilla-promoted"
     },
     "PR-025": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-002": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-005": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-007": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-013": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-017": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-018": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-019": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-020": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-030": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-033": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-063": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-076": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-077": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-079": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-083": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-084": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-087": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-088": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-089": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-096": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-097": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-099": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-102": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-104": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-108": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-118": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-126": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-130": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-132": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-133": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-134": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-140": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-151": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-152": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-159": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-162": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-163": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-164": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-166": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-168": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-169": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-171": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-173": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-174": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-175": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-178": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-181": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-184": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-186": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-191": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-192": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-194": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-195": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-196": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-197": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-198": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-202": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-214": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-217": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-221": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-222": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-226": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-227": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-245": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-250": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-252": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-254": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-262": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-263": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-267": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-278": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-282": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-288": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-310": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-313": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-314": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-322": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-330": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-331": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-334": {
-      "tier": "vanilla-promoted"
-    },
-    "RK-335": {
       "tier": "vanilla-promoted"
     },
     "RM-001": {
@@ -3037,768 +3799,6 @@
       "tier": "complexity-promoted"
     },
     "PR-027": {
-      "tier": "complexity-promoted"
-    },
-    "RK-001": {
-      "tier": "complexity-promoted"
-    },
-    "RK-003": {
-      "tier": "complexity-promoted"
-    },
-    "RK-004": {
-      "tier": "complexity-promoted"
-    },
-    "RK-006": {
-      "tier": "complexity-promoted"
-    },
-    "RK-008": {
-      "tier": "complexity-promoted"
-    },
-    "RK-009": {
-      "tier": "complexity-promoted"
-    },
-    "RK-010": {
-      "tier": "complexity-promoted"
-    },
-    "RK-011": {
-      "tier": "complexity-promoted"
-    },
-    "RK-012": {
-      "tier": "complexity-promoted"
-    },
-    "RK-014": {
-      "tier": "complexity-promoted"
-    },
-    "RK-015": {
-      "tier": "complexity-promoted"
-    },
-    "RK-016": {
-      "tier": "complexity-promoted"
-    },
-    "RK-021": {
-      "tier": "complexity-promoted"
-    },
-    "RK-022": {
-      "tier": "complexity-promoted"
-    },
-    "RK-023": {
-      "tier": "complexity-promoted"
-    },
-    "RK-024": {
-      "tier": "complexity-promoted"
-    },
-    "RK-025": {
-      "tier": "complexity-promoted"
-    },
-    "RK-026": {
-      "tier": "complexity-promoted"
-    },
-    "RK-027": {
-      "tier": "complexity-promoted"
-    },
-    "RK-028": {
-      "tier": "complexity-promoted"
-    },
-    "RK-029": {
-      "tier": "complexity-promoted"
-    },
-    "RK-031": {
-      "tier": "complexity-promoted"
-    },
-    "RK-032": {
-      "tier": "complexity-promoted"
-    },
-    "RK-034": {
-      "tier": "complexity-promoted"
-    },
-    "RK-035": {
-      "tier": "complexity-promoted"
-    },
-    "RK-036": {
-      "tier": "complexity-promoted"
-    },
-    "RK-037": {
-      "tier": "complexity-promoted"
-    },
-    "RK-038": {
-      "tier": "complexity-promoted"
-    },
-    "RK-039": {
-      "tier": "complexity-promoted"
-    },
-    "RK-040": {
-      "tier": "complexity-promoted"
-    },
-    "RK-041": {
-      "tier": "complexity-promoted"
-    },
-    "RK-042": {
-      "tier": "complexity-promoted"
-    },
-    "RK-043": {
-      "tier": "complexity-promoted"
-    },
-    "RK-044": {
-      "tier": "complexity-promoted"
-    },
-    "RK-045": {
-      "tier": "complexity-promoted"
-    },
-    "RK-046": {
-      "tier": "complexity-promoted"
-    },
-    "RK-047": {
-      "tier": "complexity-promoted"
-    },
-    "RK-048": {
-      "tier": "complexity-promoted"
-    },
-    "RK-049": {
-      "tier": "complexity-promoted"
-    },
-    "RK-050": {
-      "tier": "complexity-promoted"
-    },
-    "RK-051": {
-      "tier": "complexity-promoted"
-    },
-    "RK-052": {
-      "tier": "complexity-promoted"
-    },
-    "RK-053": {
-      "tier": "complexity-promoted"
-    },
-    "RK-054": {
-      "tier": "complexity-promoted"
-    },
-    "RK-055": {
-      "tier": "complexity-promoted"
-    },
-    "RK-056": {
-      "tier": "complexity-promoted"
-    },
-    "RK-057": {
-      "tier": "complexity-promoted"
-    },
-    "RK-058": {
-      "tier": "complexity-promoted"
-    },
-    "RK-059": {
-      "tier": "complexity-promoted"
-    },
-    "RK-060": {
-      "tier": "complexity-promoted"
-    },
-    "RK-061": {
-      "tier": "complexity-promoted"
-    },
-    "RK-062": {
-      "tier": "complexity-promoted"
-    },
-    "RK-064": {
-      "tier": "complexity-promoted"
-    },
-    "RK-065": {
-      "tier": "complexity-promoted"
-    },
-    "RK-066": {
-      "tier": "complexity-promoted"
-    },
-    "RK-067": {
-      "tier": "complexity-promoted"
-    },
-    "RK-068": {
-      "tier": "complexity-promoted"
-    },
-    "RK-069": {
-      "tier": "complexity-promoted"
-    },
-    "RK-070": {
-      "tier": "complexity-promoted"
-    },
-    "RK-071": {
-      "tier": "complexity-promoted"
-    },
-    "RK-072": {
-      "tier": "complexity-promoted"
-    },
-    "RK-073": {
-      "tier": "complexity-promoted"
-    },
-    "RK-074": {
-      "tier": "complexity-promoted"
-    },
-    "RK-075": {
-      "tier": "complexity-promoted"
-    },
-    "RK-078": {
-      "tier": "complexity-promoted"
-    },
-    "RK-080": {
-      "tier": "complexity-promoted"
-    },
-    "RK-081": {
-      "tier": "complexity-promoted"
-    },
-    "RK-082": {
-      "tier": "complexity-promoted"
-    },
-    "RK-085": {
-      "tier": "complexity-promoted"
-    },
-    "RK-086": {
-      "tier": "complexity-promoted"
-    },
-    "RK-090": {
-      "tier": "complexity-promoted"
-    },
-    "RK-091": {
-      "tier": "complexity-promoted"
-    },
-    "RK-092": {
-      "tier": "complexity-promoted"
-    },
-    "RK-093": {
-      "tier": "complexity-promoted"
-    },
-    "RK-094": {
-      "tier": "complexity-promoted"
-    },
-    "RK-095": {
-      "tier": "complexity-promoted"
-    },
-    "RK-098": {
-      "tier": "complexity-promoted"
-    },
-    "RK-100": {
-      "tier": "complexity-promoted"
-    },
-    "RK-101": {
-      "tier": "complexity-promoted"
-    },
-    "RK-103": {
-      "tier": "complexity-promoted"
-    },
-    "RK-105": {
-      "tier": "complexity-promoted"
-    },
-    "RK-106": {
-      "tier": "complexity-promoted"
-    },
-    "RK-107": {
-      "tier": "complexity-promoted"
-    },
-    "RK-109": {
-      "tier": "complexity-promoted"
-    },
-    "RK-110": {
-      "tier": "complexity-promoted"
-    },
-    "RK-111": {
-      "tier": "complexity-promoted"
-    },
-    "RK-112": {
-      "tier": "complexity-promoted"
-    },
-    "RK-113": {
-      "tier": "complexity-promoted"
-    },
-    "RK-114": {
-      "tier": "complexity-promoted"
-    },
-    "RK-115": {
-      "tier": "complexity-promoted"
-    },
-    "RK-116": {
-      "tier": "complexity-promoted"
-    },
-    "RK-117": {
-      "tier": "complexity-promoted"
-    },
-    "RK-119": {
-      "tier": "complexity-promoted"
-    },
-    "RK-120": {
-      "tier": "complexity-promoted"
-    },
-    "RK-121": {
-      "tier": "complexity-promoted"
-    },
-    "RK-122": {
-      "tier": "complexity-promoted"
-    },
-    "RK-123": {
-      "tier": "complexity-promoted"
-    },
-    "RK-124": {
-      "tier": "complexity-promoted"
-    },
-    "RK-125": {
-      "tier": "complexity-promoted"
-    },
-    "RK-127": {
-      "tier": "complexity-promoted"
-    },
-    "RK-128": {
-      "tier": "complexity-promoted"
-    },
-    "RK-129": {
-      "tier": "complexity-promoted"
-    },
-    "RK-131": {
-      "tier": "complexity-promoted"
-    },
-    "RK-135": {
-      "tier": "complexity-promoted"
-    },
-    "RK-136": {
-      "tier": "complexity-promoted"
-    },
-    "RK-137": {
-      "tier": "complexity-promoted"
-    },
-    "RK-138": {
-      "tier": "complexity-promoted"
-    },
-    "RK-139": {
-      "tier": "complexity-promoted"
-    },
-    "RK-141": {
-      "tier": "complexity-promoted"
-    },
-    "RK-142": {
-      "tier": "complexity-promoted"
-    },
-    "RK-143": {
-      "tier": "complexity-promoted"
-    },
-    "RK-144": {
-      "tier": "complexity-promoted"
-    },
-    "RK-145": {
-      "tier": "complexity-promoted"
-    },
-    "RK-146": {
-      "tier": "complexity-promoted"
-    },
-    "RK-147": {
-      "tier": "complexity-promoted"
-    },
-    "RK-148": {
-      "tier": "complexity-promoted"
-    },
-    "RK-149": {
-      "tier": "complexity-promoted"
-    },
-    "RK-150": {
-      "tier": "complexity-promoted"
-    },
-    "RK-153": {
-      "tier": "complexity-promoted"
-    },
-    "RK-154": {
-      "tier": "complexity-promoted"
-    },
-    "RK-155": {
-      "tier": "complexity-promoted"
-    },
-    "RK-156": {
-      "tier": "complexity-promoted"
-    },
-    "RK-157": {
-      "tier": "complexity-promoted"
-    },
-    "RK-158": {
-      "tier": "complexity-promoted"
-    },
-    "RK-160": {
-      "tier": "complexity-promoted"
-    },
-    "RK-161": {
-      "tier": "complexity-promoted"
-    },
-    "RK-165": {
-      "tier": "complexity-promoted"
-    },
-    "RK-167": {
-      "tier": "complexity-promoted"
-    },
-    "RK-170": {
-      "tier": "complexity-promoted"
-    },
-    "RK-172": {
-      "tier": "complexity-promoted"
-    },
-    "RK-176": {
-      "tier": "complexity-promoted"
-    },
-    "RK-177": {
-      "tier": "complexity-promoted"
-    },
-    "RK-179": {
-      "tier": "complexity-promoted"
-    },
-    "RK-180": {
-      "tier": "complexity-promoted"
-    },
-    "RK-182": {
-      "tier": "complexity-promoted"
-    },
-    "RK-183": {
-      "tier": "complexity-promoted"
-    },
-    "RK-185": {
-      "tier": "complexity-promoted"
-    },
-    "RK-187": {
-      "tier": "complexity-promoted"
-    },
-    "RK-188": {
-      "tier": "complexity-promoted"
-    },
-    "RK-189": {
-      "tier": "complexity-promoted"
-    },
-    "RK-190": {
-      "tier": "complexity-promoted"
-    },
-    "RK-193": {
-      "tier": "complexity-promoted"
-    },
-    "RK-199": {
-      "tier": "complexity-promoted"
-    },
-    "RK-200": {
-      "tier": "complexity-promoted"
-    },
-    "RK-201": {
-      "tier": "complexity-promoted"
-    },
-    "RK-203": {
-      "tier": "complexity-promoted"
-    },
-    "RK-204": {
-      "tier": "complexity-promoted"
-    },
-    "RK-205": {
-      "tier": "complexity-promoted"
-    },
-    "RK-206": {
-      "tier": "complexity-promoted"
-    },
-    "RK-207": {
-      "tier": "complexity-promoted"
-    },
-    "RK-208": {
-      "tier": "complexity-promoted"
-    },
-    "RK-209": {
-      "tier": "complexity-promoted"
-    },
-    "RK-210": {
-      "tier": "complexity-promoted"
-    },
-    "RK-211": {
-      "tier": "complexity-promoted"
-    },
-    "RK-212": {
-      "tier": "complexity-promoted"
-    },
-    "RK-213": {
-      "tier": "complexity-promoted"
-    },
-    "RK-215": {
-      "tier": "complexity-promoted"
-    },
-    "RK-216": {
-      "tier": "complexity-promoted"
-    },
-    "RK-218": {
-      "tier": "complexity-promoted"
-    },
-    "RK-219": {
-      "tier": "complexity-promoted"
-    },
-    "RK-220": {
-      "tier": "complexity-promoted"
-    },
-    "RK-223": {
-      "tier": "complexity-promoted"
-    },
-    "RK-224": {
-      "tier": "complexity-promoted"
-    },
-    "RK-225": {
-      "tier": "complexity-promoted"
-    },
-    "RK-228": {
-      "tier": "complexity-promoted"
-    },
-    "RK-229": {
-      "tier": "complexity-promoted"
-    },
-    "RK-230": {
-      "tier": "complexity-promoted"
-    },
-    "RK-231": {
-      "tier": "complexity-promoted"
-    },
-    "RK-232": {
-      "tier": "complexity-promoted"
-    },
-    "RK-233": {
-      "tier": "complexity-promoted"
-    },
-    "RK-234": {
-      "tier": "complexity-promoted"
-    },
-    "RK-235": {
-      "tier": "complexity-promoted"
-    },
-    "RK-236": {
-      "tier": "complexity-promoted"
-    },
-    "RK-237": {
-      "tier": "complexity-promoted"
-    },
-    "RK-238": {
-      "tier": "complexity-promoted"
-    },
-    "RK-239": {
-      "tier": "complexity-promoted"
-    },
-    "RK-240": {
-      "tier": "complexity-promoted"
-    },
-    "RK-241": {
-      "tier": "complexity-promoted"
-    },
-    "RK-242": {
-      "tier": "complexity-promoted"
-    },
-    "RK-243": {
-      "tier": "complexity-promoted"
-    },
-    "RK-244": {
-      "tier": "complexity-promoted"
-    },
-    "RK-246": {
-      "tier": "complexity-promoted"
-    },
-    "RK-247": {
-      "tier": "complexity-promoted"
-    },
-    "RK-248": {
-      "tier": "complexity-promoted"
-    },
-    "RK-249": {
-      "tier": "complexity-promoted"
-    },
-    "RK-251": {
-      "tier": "complexity-promoted"
-    },
-    "RK-253": {
-      "tier": "complexity-promoted"
-    },
-    "RK-255": {
-      "tier": "complexity-promoted"
-    },
-    "RK-256": {
-      "tier": "complexity-promoted"
-    },
-    "RK-257": {
-      "tier": "complexity-promoted"
-    },
-    "RK-258": {
-      "tier": "complexity-promoted"
-    },
-    "RK-259": {
-      "tier": "complexity-promoted"
-    },
-    "RK-260": {
-      "tier": "complexity-promoted"
-    },
-    "RK-261": {
-      "tier": "complexity-promoted"
-    },
-    "RK-264": {
-      "tier": "complexity-promoted"
-    },
-    "RK-265": {
-      "tier": "complexity-promoted"
-    },
-    "RK-266": {
-      "tier": "complexity-promoted"
-    },
-    "RK-268": {
-      "tier": "complexity-promoted"
-    },
-    "RK-269": {
-      "tier": "complexity-promoted"
-    },
-    "RK-270": {
-      "tier": "complexity-promoted"
-    },
-    "RK-271": {
-      "tier": "complexity-promoted"
-    },
-    "RK-272": {
-      "tier": "complexity-promoted"
-    },
-    "RK-273": {
-      "tier": "complexity-promoted"
-    },
-    "RK-274": {
-      "tier": "complexity-promoted"
-    },
-    "RK-275": {
-      "tier": "complexity-promoted"
-    },
-    "RK-276": {
-      "tier": "complexity-promoted"
-    },
-    "RK-277": {
-      "tier": "complexity-promoted"
-    },
-    "RK-279": {
-      "tier": "complexity-promoted"
-    },
-    "RK-280": {
-      "tier": "complexity-promoted"
-    },
-    "RK-281": {
-      "tier": "complexity-promoted"
-    },
-    "RK-283": {
-      "tier": "complexity-promoted"
-    },
-    "RK-284": {
-      "tier": "complexity-promoted"
-    },
-    "RK-285": {
-      "tier": "complexity-promoted"
-    },
-    "RK-286": {
-      "tier": "complexity-promoted"
-    },
-    "RK-287": {
-      "tier": "complexity-promoted"
-    },
-    "RK-289": {
-      "tier": "complexity-promoted"
-    },
-    "RK-290": {
-      "tier": "complexity-promoted"
-    },
-    "RK-291": {
-      "tier": "complexity-promoted"
-    },
-    "RK-292": {
-      "tier": "complexity-promoted"
-    },
-    "RK-293": {
-      "tier": "complexity-promoted"
-    },
-    "RK-294": {
-      "tier": "complexity-promoted"
-    },
-    "RK-295": {
-      "tier": "complexity-promoted"
-    },
-    "RK-296": {
-      "tier": "complexity-promoted"
-    },
-    "RK-297": {
-      "tier": "complexity-promoted"
-    },
-    "RK-298": {
-      "tier": "complexity-promoted"
-    },
-    "RK-299": {
-      "tier": "complexity-promoted"
-    },
-    "RK-300": {
-      "tier": "complexity-promoted"
-    },
-    "RK-301": {
-      "tier": "complexity-promoted"
-    },
-    "RK-302": {
-      "tier": "complexity-promoted"
-    },
-    "RK-303": {
-      "tier": "complexity-promoted"
-    },
-    "RK-304": {
-      "tier": "complexity-promoted"
-    },
-    "RK-305": {
-      "tier": "complexity-promoted"
-    },
-    "RK-306": {
-      "tier": "complexity-promoted"
-    },
-    "RK-307": {
-      "tier": "complexity-promoted"
-    },
-    "RK-308": {
-      "tier": "complexity-promoted"
-    },
-    "RK-309": {
-      "tier": "complexity-promoted"
-    },
-    "RK-311": {
-      "tier": "complexity-promoted"
-    },
-    "RK-312": {
-      "tier": "complexity-promoted"
-    },
-    "RK-315": {
-      "tier": "complexity-promoted"
-    },
-    "RK-316": {
-      "tier": "complexity-promoted"
-    },
-    "RK-317": {
-      "tier": "complexity-promoted"
-    },
-    "RK-318": {
-      "tier": "complexity-promoted"
-    },
-    "RK-319": {
-      "tier": "complexity-promoted"
-    },
-    "RK-320": {
-      "tier": "complexity-promoted"
-    },
-    "RK-321": {
-      "tier": "complexity-promoted"
-    },
-    "RK-323": {
-      "tier": "complexity-promoted"
-    },
-    "RK-324": {
-      "tier": "complexity-promoted"
-    },
-    "RK-325": {
-      "tier": "complexity-promoted"
-    },
-    "RK-326": {
-      "tier": "complexity-promoted"
-    },
-    "RK-327": {
-      "tier": "complexity-promoted"
-    },
-    "RK-328": {
-      "tier": "complexity-promoted"
-    },
-    "RK-329": {
-      "tier": "complexity-promoted"
-    },
-    "RK-332": {
-      "tier": "complexity-promoted"
-    },
-    "RK-333": {
       "tier": "complexity-promoted"
     },
     "RM-006": {

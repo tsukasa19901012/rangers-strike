@@ -14,7 +14,11 @@ import {
   isVanillaPromotedCardId,
   isWikiStubCardId,
 } from "../extendedCatalog";
-import { CORE_PLAYABLE_CARD_COUNT } from "../catalog/tiers";
+import {
+  COMPLEXITY_PROMOTED_CARD_COUNT,
+  CORE_PLAYABLE_CARD_COUNT,
+  VANILLA_PROMOTED_CARD_COUNT,
+} from "../catalog/tiers";
 import {
   createCardRegistryFromCatalog,
   createExtendedCardRegistry,
@@ -27,7 +31,7 @@ import { validateCardDocument } from "./validator";
 describe("extended catalog", () => {
   it("merges playable and wiki stubs without duplicate ids", () => {
     expect(playableCardsCatalog.cards).toHaveLength(CORE_PLAYABLE_CARD_COUNT);
-    expect(wikiStubsCatalog.cards.length).toBeGreaterThan(1100);
+    expect(wikiStubsCatalog.cards.length).toBeGreaterThan(700);
     expect(extendedCardsCatalog.cards).toHaveLength(
       playableCardsCatalog.cards.length + wikiStubsCatalog.cards.length,
     );
@@ -52,8 +56,8 @@ describe("extended catalog", () => {
 
 describe("full playable catalog (M11/M12)", () => {
   it("merges core, vanilla, and complexity promoted without duplicate ids", () => {
-    expect(vanillaPromotedCatalog.cards.length).toBe(284);
-    expect(complexityPromotedCatalog.cards.length).toBe(867);
+    expect(vanillaPromotedCatalog.cards.length).toBe(VANILLA_PROMOTED_CARD_COUNT);
+    expect(complexityPromotedCatalog.cards.length).toBe(COMPLEXITY_PROMOTED_CARD_COUNT);
     expect(fullPlayableCatalog.cards).toHaveLength(1849);
     const ids = new Set(fullPlayableCatalog.cards.map((c) => c.id));
     expect(ids.size).toBe(1849);
@@ -85,8 +89,8 @@ describe("full playable CardRegistry (M11/M12)", () => {
   it("loads 1849 cards", () => {
     expect(registry.size()).toBe(1849);
     expect(metrics.core).toBe(CORE_PLAYABLE_CARD_COUNT);
-    expect(metrics.vanillaPromoted).toBe(284);
-    expect(metrics.complexityPromoted).toBe(867);
+    expect(metrics.vanillaPromoted).toBe(VANILLA_PROMOTED_CARD_COUNT);
+    expect(metrics.complexityPromoted).toBe(COMPLEXITY_PROMOTED_CARD_COUNT);
   });
 
   it("validates every stub-promoted card document", () => {
@@ -123,7 +127,7 @@ describe("full playable CardRegistry (M11/M12)", () => {
     const interpreter = complexityDocs.filter(
       (c) => c.implementation?.handler === "interpreter",
     ).length;
-    expect(interpreter).toBeGreaterThan(800);
+    expect(interpreter).toBeGreaterThan(600);
     expect(metrics.fallbackOnly).toBe(0);
     expect(metrics.dslReady).toBe(1849);
   });
@@ -147,7 +151,7 @@ describe("extended CardRegistry", () => {
   });
 
   it("tracks stub DSL compile progress", () => {
-    expect(metrics.stubCompiled).toBeGreaterThan(1100);
+    expect(metrics.stubCompiled).toBeGreaterThan(700);
     expect(metrics.stubs).toBe(wikiStubsCatalog.cards.length);
   });
 

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。 【ムリヤリな変身】これが撃破されて捨札になったとき、自軍捨札から「モモタロス」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
   "rawText": "※これはBP2000以上の敵軍Sユニットにアタックされない。 【ムリヤリな変身】これが撃破されて捨札になったとき、自軍捨札から「モモタロス」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
@@ -53,5 +53,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-241.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-242.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 0,
   "text": "※常駐（場に配置して、離れるまで効果が有効になる） すべての自軍ユニットと、自軍山札、自軍手札、自軍パワーゾーン、自軍コマンドゾーン、自軍捨札にあるユニットカードは、特徴「男」または「女」を持っていれば、その特徴に「改造人間」を追加する。",
   "rawText": "※常駐（場に配置して、離れるまで効果が有効になる） すべての自軍ユニットと、自軍山札、自軍手札、自軍パワーゾーン、自軍コマンドゾーン、自軍捨札にあるユニットカードは、特徴「男」または「女」を持っていれば、その特徴に「改造人間」を追加する。",
@@ -36,5 +36,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-001.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-001.jpg"
 }

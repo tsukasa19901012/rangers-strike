@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "【ジェットエンジン噴射】自軍ターン中、これがバトルエリアに出たとき、敵軍ビークルが2体以上あれば、ライドされていない敵軍Sビークルか、ライドされていない敵軍Mビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
   "rawText": "【ジェットエンジン噴射】自軍ターン中、これがバトルエリアに出たとき、敵軍ビークルが2体以上あれば、ライドされていない敵軍Sビークルか、ライドされていない敵軍Mビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
@@ -36,5 +36,7 @@
   "features": [
     "メカ",
     "車両"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-289.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-289.jpg"
 }

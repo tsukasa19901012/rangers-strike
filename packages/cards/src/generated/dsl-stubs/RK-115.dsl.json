@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 6,
   "text": "【エンドオブワールド】｢マグナギガ｣からコンビネーションしたとき発動できる⇒ホールド状態のSユニットをすべて撃破する。その後、Sユニットをすべてホールドする。",
   "rawText": "【エンドオブワールド】｢マグナギガ｣からコンビネーションしたとき発動できる⇒ホールド状態のSユニットをすべて撃破する。その後、Sユニットをすべてホールドする。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-115.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-115.jpg"
 }

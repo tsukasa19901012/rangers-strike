@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。 【ダイナミックスマッシュ】自軍ターン中、これがバトルエリアに出たとき、これにライドしているユニットの本来のBP以下のBPを持つSユニットを敵軍バトルエリアから1体選び、持ち主の手札に戻す。",
   "rawText": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。 【ダイナミックスマッシュ】自軍ターン中、これがバトルエリアに出たとき、これにライドしているユニットの本来のBP以下のBPを持つSユニットを敵軍バトルエリアから1体選び、持ち主の手札に戻す。",
@@ -73,5 +73,7 @@
   "features": [
     "車両",
     "昆虫"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-028.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-028.jpg"
 }

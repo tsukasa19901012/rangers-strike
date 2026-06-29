@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "4+",
   "text": "※これはアタックされる以外では相手に選ばれない。 【ダークライダーキック】自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドを3つリリースしてもよい。そうしたとき、このターン、これは「SP1」になる。",
   "rawText": "※これはアタックされる以外では相手に選ばれない。 【ダークライダーキック】自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドを3つリリースしてもよい。そうしたとき、このターン、これは「SP1」になる。",
@@ -65,5 +65,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-299.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-299.jpg"
 }

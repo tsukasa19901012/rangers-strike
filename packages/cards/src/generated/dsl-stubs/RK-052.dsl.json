@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 0,
   "text": "【音撃打・破砕細石】敵軍バトルエリアに特徴「メカ」を持つユニットがなければ、これはBP4000以上のSユニットとバトルするとき、BP+5000される フレーバテキスト 相手が強いほど弾け甲斐があるもんだ。…もっとも、ハジかれるのは貴様の方だがな！",
   "rawText": "【音撃打・破砕細石】敵軍バトルエリアに特徴「メカ」を持つユニットがなければ、これはBP4000以上のSユニットとバトルするとき、BP+5000される フレーバテキスト 相手が強いほど弾け甲斐があるもんだ。…もっとも、ハジかれるのは貴様の方だがな！",
@@ -37,5 +37,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-052.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-052.jpg"
 }

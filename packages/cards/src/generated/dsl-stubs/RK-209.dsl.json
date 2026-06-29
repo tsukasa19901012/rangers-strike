@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 6,
   "text": "※これは自軍コマンドを5つホールドしなければバトルエリアに出られない。ただし、ホールドする数は相手の手札1枚につき1少なくなる。 【檻から放たれた脅威】自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアのSユニットをすべてホールドしてもよい。そうしたとき、ホールドしたユニットの数以下の必要パワーの数字を持つ敵軍ユニットをすべて撃破する。",
   "rawText": "※これは自軍コマンドを5つホールドしなければバトルエリアに出られない。ただし、ホールドする数は相手の手札1枚につき1少なくなる。 【檻から放たれた脅威】自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアのSユニットをすべてホールドしてもよい。そうしたとき、ホールドしたユニットの数以下の必要パワーの数字を持つ敵軍ユニットをすべて撃破する。",
@@ -59,5 +59,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-209.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-209.jpg"
 }

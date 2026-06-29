@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "※このカードはデッキに好きな枚数入れてもよい。 【フォーメーションα】これが自軍バトルエリアにある間、敵軍ターン中、カードに表記された本来のナンバーが自軍バトルエリアの「ゼクトルーパー」の数と同じ敵軍Sユニットは、バトルエリアに出られない。",
   "rawText": "※このカードはデッキに好きな枚数入れてもよい。 【フォーメーションα】これが自軍バトルエリアにある間、敵軍ターン中、カードに表記された本来のナンバーが自軍バトルエリアの「ゼクトルーパー」の数と同じ敵軍Sユニットは、バトルエリアに出られない。",
@@ -57,5 +57,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-059.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-059.jpg"
 }

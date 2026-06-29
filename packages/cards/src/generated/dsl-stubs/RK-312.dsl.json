@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。 【ドッガ・サンダースラップ】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍バトルエリアから、自分の手札の枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
   "rawText": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。 【ドッガ・サンダースラップ】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍バトルエリアから、自分の手札の枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
@@ -79,5 +79,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-312.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-312.jpg"
 }

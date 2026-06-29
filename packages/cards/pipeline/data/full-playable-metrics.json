@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-06-10T03:40:32.416Z",
-  "catalog": {
-    "vanillaPromoted": 354,
-    "complexityPromoted": 1316,
-    "fullPlayable": 1849
-  },
+  "generatedAt": "2026-06-29T06:11:20.423Z",
+  "fullPlayable": 1849,
+  "vanillaPromoted": 184,
+  "complexityPromoted": 613,
   "registry": {
     "total": 1849,
-    "core": 179,
-    "vanillaPromoted": 354,
-    "complexityPromoted": 1316,
-    "dslReady": 1845,
+    "core": 1052,
+    "vanillaPromoted": 184,
+    "complexityPromoted": 613,
+    "dslReady": 1849,
     "legacyHandler": 0,
-    "unimplemented": 4,
+    "unimplemented": 0,
     "fallbackOnly": 0
-  }
+  },
+  "validationFailed": 0,
+  "failedIds": []
 }

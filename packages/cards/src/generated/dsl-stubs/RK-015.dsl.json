@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 特徴「男」または「女」を持つ自軍ユニットが撃破されて捨札になったとき発動できる⇒自軍山札の上からカードを1枚ひく。そのカードが特徴「仮面ライダー」を持つユニットカードなら自軍ラッシュエリアに出してもよい。ただし必要パワーと追加条件は満たすこと。そうしないとき、ひいたカードは手札に加える。",
   "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） 特徴「男」または「女」を持つ自軍ユニットが撃破されて捨札になったとき発動できる⇒自軍山札の上からカードを1枚ひく。そのカードが特徴「仮面ライダー」を持つユニットカードなら自軍ラッシュエリアに出してもよい。ただし必要パワーと追加条件は満たすこと。そうしないとき、ひいたカードは手札に加える。",
@@ -30,5 +30,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-015.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-015.jpg"
 }

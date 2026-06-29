@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "4+",
   "text": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。 【凄いのが来るぜ！】これにライドしているユニットがBP4000以上の敵軍Sユニットを撃破して捨札にしたとき、捨札にしたそのユニットカードを持ち主のパワーゾーンにダメージにして置いてもよい。",
   "rawText": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。 【凄いのが来るぜ！】これにライドしているユニットがBP4000以上の敵軍Sユニットを撃破して捨札にしたとき、捨札にしたそのユニットカードを持ち主のパワーゾーンにダメージにして置いてもよい。",
@@ -56,5 +56,7 @@
     "conditionId": "discard_vehicle_unit",
     "text": "自軍ビークル1体を捨札にする",
     "unitCount": 1
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-324.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-324.jpg"
 }

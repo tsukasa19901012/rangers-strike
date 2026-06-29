@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "【運命への反抗】これが自軍バトルエリアにある間、自分は自軍コマンドをホールドせずにカウンターのオペレーションを使用できる。ただし、使用するオペレーションと同じカテゴリのカードを自軍コマンドゾーンから1枚選び、捨札にしなければ使用できない。",
   "rawText": "【運命への反抗】これが自軍バトルエリアにある間、自分は自軍コマンドをホールドせずにカウンターのオペレーションを使用できる。ただし、使用するオペレーションと同じカテゴリのカードを自軍コマンドゾーンから1枚選び、捨札にしなければ使用できない。",
@@ -38,5 +38,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-036.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-036.jpg"
 }

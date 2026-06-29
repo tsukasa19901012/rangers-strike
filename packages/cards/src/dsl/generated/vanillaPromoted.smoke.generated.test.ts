@@ -1,6 +1,6 @@
 /**
  * Auto-generated vanilla-promoted smoke test (M11)
- * Promoted: 354 | Full playable: 1849
+ * Promoted: 184 | Full playable: 1849
  */
 import { describe, it, expect } from "vitest";
 import { createFullPlayableRegistry } from "../registry";
@@ -11,7 +11,7 @@ describe("vanilla-promoted catalog", () => {
   const registry = createFullPlayableRegistry();
 
   it("merges legend and promoted without duplicate ids", () => {
-    expect(vanillaPromotedCatalog.cards.length).toBe(284);
+    expect(vanillaPromotedCatalog.cards.length).toBe(184);
     expect(fullPlayableCatalog.cards.length).toBe(1849);
     const ids = new Set(fullPlayableCatalog.cards.map((c) => c.id));
     expect(ids.size).toBe(fullPlayableCatalog.cards.length);

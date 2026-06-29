@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは特徴「人型」を追加されて「Lユニット」になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
   "rawText": "自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは特徴「人型」を追加されて「Lユニット」になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
@@ -32,5 +32,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-013.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-013.jpg"
 }

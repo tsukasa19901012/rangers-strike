@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "【ワイルドショット】敵軍ラッシュエリアから、カードに表記された本来のBPが3000以下のユニットを1体選び撃破する。",
   "rawText": "【ワイルドショット】敵軍ラッシュエリアから、カードに表記された本来のBPが3000以下のユニットを1体選び撃破する。",
@@ -65,5 +65,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-072.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-072.jpg"
 }

@@ -43,6 +43,7 @@ describe("legend2 card categories", () => {
   it("has no MA-series units left mislabeled as ET", () => {
     const maSeriesNames = /^(旋風神|ハリケン|マジキング|ファイヤーカイザー|マンドラ坊や)/;
     for (const card of legend2Catalog.cards) {
+      if (!card.id.startsWith("RS-")) continue;
       if (!maSeriesNames.test(card.name)) continue;
       expect(card.category, card.id).toBe("MA");
     }

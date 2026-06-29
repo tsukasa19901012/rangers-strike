@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 0,
   "text": "【キョクギンジャンママ】自軍ターン中、これがバトルエリアに出たとき、相手の手札を見ないで1枚選んでもよい。そうしたとき、選んだカードをお互いに見て、それがSユニットのカードだったなら、敵軍ラッシュエリアに出す。このとき、可能ならそのユニットをホールドする。その後、相手は1枚ドローする。",
   "rawText": "【キョクギンジャンママ】自軍ターン中、これがバトルエリアに出たとき、相手の手札を見ないで1枚選んでもよい。そうしたとき、選んだカードをお互いに見て、それがSユニットのカードだったなら、敵軍ラッシュエリアに出す。このとき、可能ならそのユニットをホールドする。その後、相手は1枚ドローする。",
@@ -38,5 +38,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-276.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-276.jpg"
 }

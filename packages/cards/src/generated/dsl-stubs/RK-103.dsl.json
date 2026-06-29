@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※自分がターンを終えるとき、自軍常駐置き場に配置されている「超変身」の上に、このユニットを重ねて置いてもよい。 【ブラストペガサス】これは、特徴「警察」を持つ自軍ユニットからコンビネーションするときBP+3000され、敵軍ラッシュエリアのユニットにアタックできる。",
   "rawText": "※自分がターンを終えるとき、自軍常駐置き場に配置されている「超変身」の上に、このユニットを重ねて置いてもよい。 【ブラストペガサス】これは、特徴「警察」を持つ自軍ユニットからコンビネーションするときBP+3000され、敵軍ラッシュエリアのユニットにアタックできる。",
@@ -54,5 +54,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-103.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-103.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【音撃打・業火絢爛】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアからDAを持つ自軍ユニットを1体選び捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
   "rawText": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【音撃打・業火絢爛】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアからDAを持つ自軍ユニットを1体選び捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
@@ -57,5 +57,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-226.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-226.jpg"
 }

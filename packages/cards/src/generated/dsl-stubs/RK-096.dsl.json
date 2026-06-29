@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "【切断溶解】レジストを持つ敵軍Sユニットを1体選び撃破する。",
   "rawText": "【切断溶解】レジストを持つ敵軍Sユニットを1体選び撃破する。",
@@ -66,5 +66,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-096.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-096.jpg"
 }

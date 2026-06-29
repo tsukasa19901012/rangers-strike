@@ -1,33 +1,35 @@
 {
-  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RK-334",
   "name": "仮面ライダー電王LF",
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "7-",
-  "text": "",
-  "rawText": "",
   "bp": 4500,
-  "size": "S",
   "sp": "special",
+  "size": "S",
   "comboNumber": 1,
+  "text": "",
   "features": [
     "仮面ライダー",
     "男",
     "DEN-O",
     "2nd"
   ],
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
+  "imageUrl": "/cards/promoted/RK-334.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-334.jpg",
   "rushAdditionalCondition": {
     "conditionId": "zord_down_discard_feature",
     "text": "特徴「DEN-O」を持つ自軍ユニット1体を捨札にすれば必要パワー0になる",
     "requiredFeature": "DEN-O",
     "unitCount": 1
+  },
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "rawText": "",
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

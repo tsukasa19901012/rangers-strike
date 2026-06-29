@@ -1,10 +1,11 @@
 {
-  "generatedAt": "2026-06-28T16:53:26.892Z",
-  "source": "generated/catalog/core-playable/cards.json",
-  "coreCount": 698,
+  "generatedAt": "2026-06-29T06:08:08.995Z",
+  "source": "expand-rs-core-catalog.ts",
+  "coreCount": 1052,
+  "rsPromoted": 354,
   "byExpansion": {
-    "legend1": 589,
-    "legend2": 52,
+    "legend1": 608,
+    "legend2": 387,
     "legend3": 57
   }
 }

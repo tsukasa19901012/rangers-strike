@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "【アギトファング】これをラッシュしたとき、レジストを持つ敵軍Sユニットを1体選んでもよい。そうしたとき、そのユニットとこのユニットでバトルする。",
   "rawText": "【アギトファング】これをラッシュしたとき、レジストを持つ敵軍Sユニットを1体選んでもよい。そうしたとき、そのユニットとこのユニットでバトルする。",
@@ -37,5 +37,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-192.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-192.jpg"
 }

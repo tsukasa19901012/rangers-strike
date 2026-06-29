@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。 【日本一の正義の味方】自軍ターン中、これがバトルエリアに出たとき、特徴「仮面ライダー」を持つ自軍ユニットを1体選び、ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。",
   "rawText": "※これはBP2000以上の敵軍Sユニットにアタックされない。 【日本一の正義の味方】自軍ターン中、これがバトルエリアに出たとき、特徴「仮面ライダー」を持つ自軍ユニットを1体選び、ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。",
@@ -50,5 +50,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-026.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-026.jpg"
 }

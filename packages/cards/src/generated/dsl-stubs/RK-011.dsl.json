@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "※常駐（場に配置して、離れるまで効果が有効になる） 相手がカウンターを発動したとき、そのカウンターの必要パワーの数字を見て、それ以上の必要パワーの数字を持つカードを自分の手札から１枚選び捨札にしてもよい。そうしたとき、そのカウンターの効果は無効になる。",
   "rawText": "※常駐（場に配置して、離れるまで効果が有効になる） 相手がカウンターを発動したとき、そのカウンターの必要パワーの数字を見て、それ以上の必要パワーの数字を持つカードを自分の手札から１枚選び捨札にしてもよい。そうしたとき、そのカウンターの効果は無効になる。",
@@ -36,5 +36,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-011.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-011.jpg"
 }

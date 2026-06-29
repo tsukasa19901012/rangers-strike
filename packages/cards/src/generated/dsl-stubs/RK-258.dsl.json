@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "【猛毒腐食液】このターン、特徴「女」を持つ敵軍ユニットを1体以上撃破して捨札にしたなら、自分がターンを終えるとき、相手に1点ダメージを与えてもよい。",
   "rawText": "【猛毒腐食液】このターン、特徴「女」を持つ敵軍ユニットを1体以上撃破して捨札にしたなら、自分がターンを終えるとき、相手に1点ダメージを与えてもよい。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-258.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-258.jpg"
 }

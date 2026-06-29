@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "【ショルダータックル】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒敵軍バトルエリアからSユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアに、戻したユニットの持つカテゴリを持たないユニットがあれば1体選び、戻したユニットとバトルさせる。",
   "rawText": "【ショルダータックル】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒敵軍バトルエリアからSユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアに、戻したユニットの持つカテゴリを持たないユニットがあれば1体選び、戻したユニットとバトルさせる。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-234.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-234.jpg"
 }

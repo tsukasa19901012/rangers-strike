@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "5+",
   "text": "【戦闘モード】これは必要パワーの数字に「－」のあるユニットにアタックするときBP+5000される。",
   "rawText": "【戦闘モード】これは必要パワーの数字に「－」のあるユニットにアタックするときBP+5000される。",
@@ -44,5 +44,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-060.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-060.jpg"
 }

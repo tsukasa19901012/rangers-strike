@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※常駐（場に配置して、離れるまで効果が有効になる） ライドしていない自軍Sユニットは、ライド中のユニットにアタックされない。",
   "rawText": "※常駐（場に配置して、離れるまで効果が有効になる） ライドしていない自軍Sユニットは、ライド中のユニットにアタックされない。",
@@ -36,5 +36,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-006.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-006.jpg"
 }

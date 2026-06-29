@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "【音撃斬・雷電斬震】敵軍バトルエリアからユニットを1体選ぶ。そして、選んだユニットの必要パワーの数字より1つ多い数だけ自軍コマンドをリリースしてもよい。そうしたとき、選んだユニットを撃破する。このとき、これはアタックすることができない。",
   "rawText": "【音撃斬・雷電斬震】敵軍バトルエリアからユニットを1体選ぶ。そして、選んだユニットの必要パワーの数字より1つ多い数だけ自軍コマンドをリリースしてもよい。そうしたとき、選んだユニットを撃破する。このとき、これはアタックすることができない。",
@@ -48,5 +48,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-048.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-048.jpg"
 }

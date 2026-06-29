@@ -11,6 +11,7 @@ import {
   legend2Catalog,
   legend3Catalog,
   listImplementedOperations,
+  listImplementedOperations,
   resolvePlayableCard,
 } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -205,7 +206,12 @@ const HOLD_ENTRY_UNITS = ALL_CARDS.filter(
   (card) => card.type === "unit" && getBattleEntryHoldCount(card.id) > 0,
 );
 const OPERATION_CARDS = ALL_CARDS.filter((card) => card.type === "operation");
-const EFFECT_OPERATIONS = OPERATION_CARDS.filter((card) => cardHasOperationEffect(card.id));
+const WIRED_OPERATION_CARD_IDS = new Set(
+  listImplementedOperations().map((operation) => operation.cardId),
+);
+const EFFECT_OPERATIONS = OPERATION_CARDS.filter((card) =>
+  WIRED_OPERATION_CARD_IDS.has(card.id),
+);
 
 describe("Web UI integration — full-playable deck selection (G5)", () => {
   it("exposes full-playable pool from catalog", () => {
@@ -326,7 +332,9 @@ describe("Web UI integration — all catalog cards", () => {
     (cardId, card) => {
       expect(getCardById(cardId)).toEqual(card);
       expect(card.name.length).toBeGreaterThan(0);
-      expect(["unit", "operation", "power", "command"].includes(card.type)).toBe(true);
+      expect(["unit", "operation", "power", "command", "vehicle"].includes(card.type)).toBe(
+        true,
+      );
       if (card.imageUrl) {
         expect(card.imageUrl.startsWith("/cards/")).toBe(true);
       }
@@ -338,7 +346,7 @@ describe("Web UI integration — all catalog cards", () => {
       (card) => [card.id, card.imageUrl] as const,
     ),
   )("%s has imageUrl for web display", (cardId, imageUrl) => {
-    expect(imageUrl).toMatch(/^\/cards\/legend[123]\/.+\.jpg$/);
+    expect(imageUrl).toMatch(/^\/cards\/(legend[123]|promoted)\/.+\.jpg$/);
     expect(getCardById(cardId)?.imageUrl).toBe(imageUrl);
   });
 });

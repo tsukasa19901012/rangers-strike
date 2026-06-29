@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "【Zブリンガーアタック】これにライドしているユニットがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
   "rawText": "【Zブリンガーアタック】これにライドしているユニットがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
@@ -36,5 +36,7 @@
   "features": [
     "メカ",
     "車両"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-182.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-182.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 0,
   "text": "自軍山札の上から3枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。",
   "rawText": "自軍山札の上から3枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。",
@@ -31,5 +31,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-002.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-002.jpg"
 }

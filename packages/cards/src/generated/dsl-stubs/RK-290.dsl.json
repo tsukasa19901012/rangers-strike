@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "【末期の酒】自軍ターン中、これがバトルエリアに出たとき、相手に1枚ドローさせる。その後、相手は追加条件を持たない自分自身のSユニットを1体選び撃破する。",
   "rawText": "【末期の酒】自軍ターン中、これがバトルエリアに出たとき、相手に1枚ドローさせる。その後、相手は追加条件を持たない自分自身のSユニットを1体選び撃破する。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-290.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-290.jpg"
 }

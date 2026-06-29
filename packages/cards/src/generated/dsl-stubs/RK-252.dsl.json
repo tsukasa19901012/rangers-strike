@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から、「仮面ライダー響鬼」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎敵軍山札の上から1枚をオモテにする。このカードを使用するためにホールドしたコマンドが特徴「ディスクアニマル」を持つなら、自分は1枚ドローする。その後、オモテにしたカードは持ち主の山札の上に戻す。",
   "rawText": "次の効果から1つ選び発動する⇒ ◎自分の手札から、「仮面ライダー響鬼」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎敵軍山札の上から1枚をオモテにする。このカードを使用するためにホールドしたコマンドが特徴「ディスクアニマル」を持つなら、自分は1枚ドローする。その後、オモテにしたカードは持ち主の山札の上に戻す。",
@@ -30,5 +30,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-252.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-252.jpg"
 }

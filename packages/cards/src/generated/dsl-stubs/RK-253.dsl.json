@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※常駐 ※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズごとに1度だけ、『相手は1枚ドローしてから自分自身の手札を1枚選び、自分自身の山札の下に戻す』を実行してもよい。そうしたとき、自分は1枚ドローしてから自分自身の手札を1枚選び、自分自身の山札の下に戻す。",
   "rawText": "※常駐 ※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズごとに1度だけ、『相手は1枚ドローしてから自分自身の手札を1枚選び、自分自身の山札の下に戻す』を実行してもよい。そうしたとき、自分は1枚ドローしてから自分自身の手札を1枚選び、自分自身の山札の下に戻す。",
@@ -55,5 +55,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-253.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-253.jpg"
 }

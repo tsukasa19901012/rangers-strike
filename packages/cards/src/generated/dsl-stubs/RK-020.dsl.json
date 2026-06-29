@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "ET",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 6,
   "text": "自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを2体選ぶ。このターン、選んだ2体のユニットが自軍バトルエリアで隣り合ったとき、敵軍バトルエリアからBP8000以下の敵軍ユニットを1体選び撃破する。",
   "rawText": "自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを2体選ぶ。このターン、選んだ2体のユニットが自軍バトルエリアで隣り合ったとき、敵軍バトルエリアからBP8000以下の敵軍ユニットを1体選び撃破する。",
@@ -58,5 +58,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-020.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-020.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "3+",
   "text": "※これはアタックすることができない。 【レドーム分離】このユニットからコンビネーションするSP1/4のSユニットは、次の能力を得る⇒自軍ターン中、「SP1」になる。",
   "rawText": "※これはアタックすることができない。 【レドーム分離】このユニットからコンビネーションするSP1/4のSユニットは、次の能力を得る⇒自軍ターン中、「SP1」になる。",
@@ -63,5 +63,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-147.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-147.jpg"
 }

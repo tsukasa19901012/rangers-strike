@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "【ナノロボット散布実験】これが自軍エリアにある間、追加条件を持たない敵軍Sユニットがラッシュされたとき、そのユニットの必要パワーの数字と同じ必要パワーの数字を持つDAのユニットカードを自分の手札から1枚選び、ラッシュエリアに出してもよい。ただし、DAの自軍コマンドを1つホールドすること。そうしたとき、ラッシュされた敵軍ユニットを撃破する。",
   "rawText": "【ナノロボット散布実験】これが自軍エリアにある間、追加条件を持たない敵軍Sユニットがラッシュされたとき、そのユニットの必要パワーの数字と同じ必要パワーの数字を持つDAのユニットカードを自分の手札から1枚選び、ラッシュエリアに出してもよい。ただし、DAの自軍コマンドを1つホールドすること。そうしたとき、ラッシュされた敵軍ユニットを撃破する。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-160.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-160.jpg"
 }

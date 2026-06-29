@@ -5,7 +5,7 @@
   "type": "operation",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "カード名に「RF（ライダーフォーム）」を含む自軍ユニットを1体選び、手札に戻してもよい。そうしたとき、自軍パワーゾーンのオモテ向きのカードから、カード名に「MF（マスクドフォーム）」を含むユニットカードを1枚選び、自軍ラッシュエリアに出す。その後、このカードを自軍パワーゾーンに置く。",
   "rawText": "カード名に「RF（ライダーフォーム）」を含む自軍ユニットを1体選び、手札に戻してもよい。そうしたとき、自軍パワーゾーンのオモテ向きのカードから、カード名に「MF（マスクドフォーム）」を含むユニットカードを1枚選び、自軍ラッシュエリアに出す。その後、このカードを自軍パワーゾーンに置く。",
@@ -34,5 +34,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-174.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-174.jpg"
 }

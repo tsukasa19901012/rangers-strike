@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": "4+",
   "text": "※これはアタックされる以外では相手に選ばれない。 【ライダーカッティング 】これをラッシュしたとき、敵軍バトルエリアから、BPの合計が6000になるように隣り合う2体のSユニットを選び撃破する。",
   "rawText": "※これはアタックされる以外では相手に選ばれない。 【ライダーカッティング 】これをラッシュしたとき、敵軍バトルエリアから、BPの合計が6000になるように隣り合う2体のSユニットを選び撃破する。",
@@ -64,5 +64,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-054.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-054.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "※これはラッシュしたターンにバトルエリアに出られない。 【陰陽術】これが自軍エリアにある間（これをラッシュしたときも含む）、自分も相手もカウンターを持つオペレーションカードを使用するとき、その必要パワーの数字は3少なくなる（この効果は重複しない）。",
   "rawText": "※これはラッシュしたターンにバトルエリアに出られない。 【陰陽術】これが自軍エリアにある間（これをラッシュしたときも含む）、自分も相手もカウンターを持つオペレーションカードを使用するとき、その必要パワーの数字は3少なくなる（この効果は重複しない）。",
@@ -59,5 +59,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-225.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-225.jpg"
 }

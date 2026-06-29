@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "※これにライドしているユニットはBP+500される。 ※特徴「仮面ライダー」を持つ自軍Sユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
   "rawText": "※これにライドしているユニットはBP+500される。 ※特徴「仮面ライダー」を持つ自軍Sユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
@@ -55,5 +55,7 @@
   "features": [
     "メカ",
     "車両"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-058.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-058.jpg"
 }

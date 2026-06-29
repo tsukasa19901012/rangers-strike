@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "【僕に釣られてみる？】自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしている特徴「女」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい（ただし追加条件は満たすこと）。この効果でラッシュしたユニットは、このターン、バトルエリアに出られない。",
   "rawText": "【僕に釣られてみる？】自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしている特徴「女」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい（ただし追加条件は満たすこと）。この効果でラッシュしたユニットは、このターン、バトルエリアに出られない。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-309.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-309.jpg"
 }

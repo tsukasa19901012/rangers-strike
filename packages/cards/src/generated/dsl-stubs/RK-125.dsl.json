@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 3,
   "text": "※これはライドオフしたときストライクできない。 【ブレイラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら、敵軍バトルエリアからSユニットを1体選び撃破する。 ※赤文字は公式発表のエラッタ修正の部分",
   "rawText": "※これはライドオフしたときストライクできない。 【ブレイラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら、敵軍バトルエリアからSユニットを1体選び撃破する。 ※赤文字は公式発表のエラッタ修正の部分",
@@ -95,5 +95,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-125.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-125.jpg"
 }

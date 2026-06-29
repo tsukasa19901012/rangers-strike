@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "※これはラッシュするとき、可能ならホールド状態で置く。 【スネーキングデスブレイク】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍Sユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む。ウラ向きのカードはウラ向きのまま選ぶ）を1枚選び、持ち主のパワーゾーンにダメージにして置く。",
   "rawText": "※これはラッシュするとき、可能ならホールド状態で置く。 【スネーキングデスブレイク】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍Sユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む。ウラ向きのカードはウラ向きのまま選ぶ）を1枚選び、持ち主のパワーゾーンにダメージにして置く。",
@@ -53,5 +53,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-321.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-321.jpg"
 }

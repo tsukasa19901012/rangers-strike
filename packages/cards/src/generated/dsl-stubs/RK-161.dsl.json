@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "※このカードはデッキに好きな枚数入れてもよい。 ※これは「ショッカーライダー」だけでコンビネーションしてバトルエリアの6番目に並んだとき「SP1」になる。",
   "rawText": "※このカードはデッキに好きな枚数入れてもよい。 ※これは「ショッカーライダー」だけでコンビネーションしてバトルエリアの6番目に並んだとき「SP1」になる。",
@@ -61,5 +61,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-161.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-161.jpg"
 }

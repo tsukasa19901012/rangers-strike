@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "OT",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 1,
   "text": "【デンライナー搭乗】これがバトルエリアからラッシュエリアに戻るとき、これがライドされていれば次の効果を発動できる⇒自軍山札から特徴「車両」を持つMユニットのカードを1枚選び、相手に見せてから自分の手札に加えてもよい。その後、山札をシャッフルする。",
   "rawText": "【デンライナー搭乗】これがバトルエリアからラッシュエリアに戻るとき、これがライドされていれば次の効果を発動できる⇒自軍山札から特徴「車両」を持つMユニットのカードを1枚選び、相手に見せてから自分の手札に加えてもよい。その後、山札をシャッフルする。",
@@ -50,5 +50,7 @@
   "features": [
     "メカ",
     "車両"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-156.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-156.jpg"
 }

@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "DA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 5,
   "text": "【制裁する光の翼】これが自軍ラッシュエリアにある間、敵軍ターン中、「クレインオルフェノク」以外の特徴「オルフェノク」を持つ自軍ユニットが撃破されて捨札になるたび、敵軍Sユニットを1体選び撃破してもよい。",
   "rawText": "【制裁する光の翼】これが自軍ラッシュエリアにある間、敵軍ターン中、「クレインオルフェノク」以外の特徴「オルフェノク」を持つ自軍ユニットが撃破されて捨札になるたび、敵軍Sユニットを1体選び撃破してもよい。",
@@ -38,5 +38,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-123.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-123.jpg"
 }

@@ -56,12 +56,17 @@ describe("legend1 catalog", () => {
 });
 
 describe("legend2 catalog", () => {
-  it("contains 52 cards", () => {
-    expect(legend2Catalog.cards).toHaveLength(52);
+  it("contains 52 RS legend2 cards plus RK core cards", () => {
+    const rs = legend2Catalog.cards.filter((card) => card.id.startsWith("RS-"));
+    const rk = legend2Catalog.cards.filter((card) => card.id.startsWith("RK-"));
+    expect(rs).toHaveLength(52);
+    expect(rk).toHaveLength(335);
+    expect(legend2Catalog.cards.every((card) => card.expansion === "legend2")).toBe(true);
   });
 
-  it("each card has imageUrl and a downloaded asset", () => {
-    for (const card of legend2Catalog.cards) {
+  it("each RS card has legend2 imageUrl and a downloaded asset", () => {
+    const rsCards = legend2Catalog.cards.filter((card) => card.id.startsWith("RS-"));
+    for (const card of rsCards) {
       expect(card.imageUrl).toBe(`/cards/legend2/${card.id}.jpg`);
       expect(card.imageSourceUrl).toContain("grnrngr.com");
       expect(getCardImageUrl(card.id)).toBe(card.imageUrl);

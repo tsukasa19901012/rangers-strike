@@ -5,7 +5,7 @@
   "type": "vehicle",
   "category": "MA",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 4,
   "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出る事ができる。 【自己修復能力】ホールド状態のユニットがこれにライドするとき、そのユニットをリリースしてもよい。",
   "rawText": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出る事ができる。 【自己修復能力】ホールド状態のユニットがこれにライドするとき、そのユニットをリリースしてもよい。",
@@ -50,5 +50,7 @@
   "features": [
     "車両",
     "昆虫"
-  ]
+  ],
+  "imageUrl": "/cards/promoted/RK-109.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-109.jpg"
 }

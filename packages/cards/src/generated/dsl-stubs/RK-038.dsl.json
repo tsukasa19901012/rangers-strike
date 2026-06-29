@@ -5,7 +5,7 @@
   "type": "unit",
   "category": "WB",
   "rarity": "N",
-  "expansion": "legend1",
+  "expansion": "legend2",
   "powerCost": 2,
   "text": "【ヘビープレッシャー】「メタルゲラス」からコンビネーションしたとき発動できる⇒敵軍ユニットを1体選び撃破してもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない。",
   "rawText": "【ヘビープレッシャー】「メタルゲラス」からコンビネーションしたとき発動できる⇒敵軍ユニットを1体選び撃破してもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない。",
@@ -39,5 +39,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/RK-038.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-038.jpg"
 }

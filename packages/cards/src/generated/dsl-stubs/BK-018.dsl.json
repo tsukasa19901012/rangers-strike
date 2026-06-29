@@ -31,5 +31,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "imageUrl": "/cards/promoted/BK-018.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-018.jpg"
 }
