@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibikuruga2arebaraidosaret",
+          "keyword": "effect_card::RK-289::jietoenjin",
           "duration": "turn"
         }
       ],

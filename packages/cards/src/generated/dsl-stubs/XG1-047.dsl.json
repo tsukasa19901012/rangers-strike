@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_bp1000matahabp3000matahabp5000nosyunitowo1bi_geki_ha_shi",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-047::kene8b5a4",
+          "duration": "permanent"
         }
       ],
       "optional": true

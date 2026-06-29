@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarunonokadoga1omoteninarutabiomotenishitaka",
+          "keyword": "on_deck_reveal_swap_effect_target",
           "duration": "turn"
         }
       ],

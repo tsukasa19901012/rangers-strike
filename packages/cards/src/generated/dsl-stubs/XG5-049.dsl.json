@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_tankoregabatoruerianitatokikonoyunitowohorudoshitemoyoisou",
+          "keyword": "effect_card::XG5-049::aporomagunamu",
           "duration": "turn"
         }
       ]

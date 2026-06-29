@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_pawazonnodamejinokadowosubetenisurusoushitatokinishitaka",
+          "keyword": "effect_card::XG5-047::kyuyusouru",
           "duration": "turn"
         }
       ],

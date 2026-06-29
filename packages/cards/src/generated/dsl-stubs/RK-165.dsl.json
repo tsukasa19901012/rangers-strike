@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankorega_geki_ha_sareteninatatokinowodekirupawazon",
-          "duration": "turn"
+          "keyword": "effect_card::RK-165::shie681a9",
+          "duration": "permanent"
         }
       ],
       "optional": true

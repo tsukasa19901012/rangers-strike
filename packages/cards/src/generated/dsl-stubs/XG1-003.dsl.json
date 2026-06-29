@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_all_enemy_sp1koregabatorudeyunitowo_geki_ha_shitatokikorega_geki",
+          "keyword": "effect_card::XG1-003::shie696b0",
           "duration": "turn"
         }
       ],

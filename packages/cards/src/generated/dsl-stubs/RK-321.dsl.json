@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokikonoyunitowohorudoshitemoy",
+          "keyword": "effect_card::RK-321::sunekingudesubureiku",
           "duration": "turn"
         }
       ],

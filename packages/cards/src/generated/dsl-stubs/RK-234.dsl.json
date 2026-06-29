@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokinowodekirubatorueriakara",
+          "keyword": "effect_card::RK-234::shorudatakuru",
           "duration": "turn"
         }
       ],

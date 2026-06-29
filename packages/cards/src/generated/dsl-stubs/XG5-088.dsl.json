@@ -25,8 +25,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "auto_battle_koregabatorusurutokisonobatoruhanobpdeu",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-088::chikaramakase",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_cards_koreworashushitatokikonodenishitakadowotedawotsukadowosube",
+          "keyword": "effect_card::RK-277::noyamiwomotarasu",
           "duration": "turn"
         }
       ],

@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_konoyunitokarakonbineshonsurusp14nosyunitohano_chikara_wor",
-          "duration": "turn"
+          "keyword": "effect_card::RK-147::redomu",
+          "duration": "permanent"
         }
       ]
     }

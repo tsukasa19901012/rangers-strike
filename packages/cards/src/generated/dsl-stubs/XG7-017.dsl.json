@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianirutokikoregaraidoshiteinakerebanowo",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-017::maha",
+          "duration": "permanent"
         }
       ],
       "optional": true

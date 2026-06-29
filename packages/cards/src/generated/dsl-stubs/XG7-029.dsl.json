@@ -54,8 +54,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_kategoriwo2tsutsulyunitogakonoyunitokarakonbineshonsurutoki",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-029::aruteimetoguretosutoraik",
+          "duration": "permanent"
         }
       ],
       "optional": true

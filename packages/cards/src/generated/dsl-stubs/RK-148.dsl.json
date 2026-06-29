@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_tankoregabatoruerianitatokibatorueriakaramyunitowo1bi",
+          "keyword": "effect_card::RK-148::furontoakusu",
           "duration": "turn"
         }
       ],

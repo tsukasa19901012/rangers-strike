@@ -3,6 +3,7 @@ import { winButDestroyedVsSp1 } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
 import { attackedBpBoostAmount } from "./dsl/promotedKeywordBridge";
 import { legend3FieldBpBonus } from "./rules/legend3/fieldEffects";
+import { legend3EffectiveSp } from "./rules/legend3/fieldEffects";
 import {
   battleFillers,
   battleUnit,
@@ -174,6 +175,35 @@ describe("SR-003 アームドティラノレンジャー", () => {
   it("has 獣奏剣 feature", () => {
     const def = defs["SR-003"];
     expect(def?.features).toContain("獣奏剣");
+  });
+
+  it("gains +1000 BP per 恐竜 card in own discard during own turn", () => {
+    const tyranno = inst("SR-003", "tyranno");
+    const dino1 = inst("RS-547", "dino1");
+    const dino2 = inst("RS-547", "dino2");
+    const state = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: {
+        battle: [tyranno],
+        discard: [dino1, dino2],
+      },
+    });
+    const bonus = legend3FieldBpBonus(state, "player1", tyranno, "general");
+    expect(bonus).toBe(2000);
+  });
+
+  it("gains SP1 when effective BP reaches 8000", () => {
+    const tyranno = { ...inst("SR-003", "tyranno"), bpModifier: 4000 };
+    const state = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [tyranno] },
+    });
+    const sp = legend3EffectiveSp(state, "player1", tyranno);
+    expect(sp).toBeGreaterThanOrEqual(1);
   });
 });
 

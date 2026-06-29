@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_konotankonoyunitononikonbineshonsurucn4wotsusyunitohasono",
-          "duration": "turn"
+          "keyword": "effect_card::RS-600::mishon1baningu",
+          "duration": "permanent"
         }
       ],
       "optional": false

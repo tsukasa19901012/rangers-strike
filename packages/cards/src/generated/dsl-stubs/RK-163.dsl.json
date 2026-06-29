@@ -57,8 +57,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_karayunitokadowo1ndemoyoisoushitatokindakadotojikado",
-          "duration": "turn"
+          "keyword": "effect_card::RK-163::nochikarae784a1",
+          "duration": "permanent"
         }
       ],
       "optional": true

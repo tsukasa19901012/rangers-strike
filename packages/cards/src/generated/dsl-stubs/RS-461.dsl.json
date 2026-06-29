@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "optional_then_syunitowo1biwo1tsushitemoyoisoushitatokikonotanshita",
-          "duration": "turn"
+          "keyword": "effect_card::RS-461::ninpohanae5bf8d",
+          "duration": "permanent"
         }
       ],
       "optional": true

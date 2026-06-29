@@ -34,8 +34,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_s_ability_koreniraidoshiteirusyunitohano_chikara_worukoregarashueri",
-          "duration": "permanent"
+          "keyword": "effect_card::RK-111::fxunknowne99d9e",
+          "duration": "turn"
         }
       ]
     }

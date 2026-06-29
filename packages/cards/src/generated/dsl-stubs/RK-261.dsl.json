@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tekaraopereshonkadowo1bichinopawazonnidamejinishite",
-          "duration": "turn"
+          "keyword": "effect_card::RK-261::riborukein",
+          "duration": "permanent"
         }
       ],
       "optional": false

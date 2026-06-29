@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregarashuerianiarunisutoraikusaretatokinowodekirusu",
+          "keyword": "effect_card::RS-196::gekimobirumisairu",
           "duration": "turn"
         }
       ],

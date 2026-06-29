@@ -14,6 +14,7 @@ import { hasCommandForCardUse } from "../rules/restrictions";
 import { isDslPermanentOperation } from "../dsl/dslCatalog";
 import { promotedKeywordBpBonus } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
+import { srBigBatonBpFloor } from "../rules/srEffects";
 import { legend3EnemySComboDelta } from "../rules/legend3/fieldEffects";
 import { validateZordAdditionalPayment } from "../rules/mothership";
 import {
@@ -282,12 +283,13 @@ export function effectiveBp(
   playerId: PlayerId,
   instance: CardInstance,
 ): number {
-  return (
+  const base =
     instanceBp(state.definitions, instance) +
     passiveBpBonus(state, playerId, instance) +
     passiveNamedFieldBpBonus(state, playerId, instance, "general") +
-    promotedKeywordBpBonus(state, playerId, instance)
-  );
+    promotedKeywordBpBonus(state, playerId, instance);
+  const floor = srBigBatonBpFloor(state, playerId, instance);
+  return floor > 0 ? Math.max(base, floor) : base;
 }
 
 export { cardCategories };

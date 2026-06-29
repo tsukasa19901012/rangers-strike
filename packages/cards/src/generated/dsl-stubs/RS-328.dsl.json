@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokikomandonoyorimoyunitonoga",
+          "keyword": "effect_card::RS-328::desutorakushonfuaiya",
           "duration": "turn"
         }
       ],

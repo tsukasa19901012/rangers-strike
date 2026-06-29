@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "category_modify_konotantonokomandozonniaruhorudonokomandonokategorihasub",
-          "duration": "turn"
+          "keyword": "effect_card::RS-270::purizumubutsu",
+          "duration": "permanent"
         }
       ],
       "optional": false

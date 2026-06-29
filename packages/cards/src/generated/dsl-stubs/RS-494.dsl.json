@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "adjacent_units_batorueriakaranoga12ya34nadoderiteiru2nosyunito",
-          "duration": "turn"
+          "keyword": "effect_card::RS-494::ninpori",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_koreworashushitatokinowononiunopawazonnokado",
+          "keyword": "effect_card::RK-286::inoriseto",
           "duration": "turn"
         }
       ],

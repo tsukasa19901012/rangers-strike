@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_bpnoga500nosyunitowo1bi_geki_ha_surukonohasaidobasha",
-          "duration": "turn"
+          "keyword": "effect_card::RK-167::kaizabureigan",
+          "duration": "permanent"
         }
       ],
       "optional": false

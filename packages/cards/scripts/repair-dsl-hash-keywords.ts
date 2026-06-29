@@ -12,6 +12,7 @@ import { validateCardDocument } from "../src/dsl/validator";
 import { rematchExtractedEffect } from "../src/pipeline/extractEffects";
 import { isUnresolvedCatchallGrantKeyword } from "../src/pipeline/hashGrantKeywords";
 import { buildNoteCardKeyword } from "../src/pipeline/noteCardKeywords";
+import { buildEffectCardKeyword } from "../src/pipeline/effectCardKeywords";
 import { slugifyEffectId, noteEffectIdFromBody } from "../src/pipeline/metaMaps";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -28,11 +29,17 @@ function isCatchallStub(primitives: EffectPrimitive[]): boolean {
   );
 }
 
-function needsNoteRepair(primitives: EffectPrimitive[]): boolean {
+function needsHashRepair(primitives: EffectPrimitive[]): boolean {
   return (
     isCatchallStub(primitives) ||
     primitives.some((p) => p.type === "grant_keyword" && STALE_NOTE_KEYWORD.test(p.keyword))
   );
+}
+
+function effectDuration(
+  trigger: NonNullable<CardDocument["effects"]>[number]["trigger"],
+): "permanent" | "turn" {
+  return trigger?.type === "while_in_field" || trigger?.type === "nc" ? "permanent" : "turn";
 }
 
 function isUnnamedEffect(
@@ -50,7 +57,7 @@ function remigrateEffect(
   cardId: string,
   effect: NonNullable<CardDocument["effects"]>[number],
 ): { changed: boolean; to?: string } {
-  if (!needsNoteRepair(effect.effects)) return { changed: false };
+  if (!needsHashRepair(effect.effects)) return { changed: false };
 
   const rematched = rematchExtractedEffect(effect.text ?? "", {
     name: effect.name,
@@ -74,6 +81,14 @@ function remigrateEffect(
     effect.id = noteEffectIdFromBody(effect.text ?? "").replace(/^note_/, "unnamed_");
     effect.effects = [{ type: "grant_keyword", keyword, duration: "permanent" }];
     return { changed: true, to: "note_card" };
+  }
+
+  if (effect.name) {
+    const keyword = buildEffectCardKeyword(cardId, effect.id);
+    effect.effects = [
+      { type: "grant_keyword", keyword, duration: effectDuration(effect.trigger) },
+    ];
+    return { changed: true, to: "effect_card" };
   }
 
   return { changed: false };
@@ -115,7 +130,7 @@ function main(): void {
     let changed = false;
 
     for (const effect of doc.effects ?? []) {
-      if (!needsNoteRepair(effect.effects)) continue;
+      if (!needsHashRepair(effect.effects)) continue;
       scanned += 1;
       if (isUnnamedEffect(effect)) scannedUnnamed += 1;
       const result = remigrateEffect(doc.id, effect);

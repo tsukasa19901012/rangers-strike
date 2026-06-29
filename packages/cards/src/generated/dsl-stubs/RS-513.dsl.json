@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_koreworashushitatokiyunitononinetakadoyunitoyabikurutoshi",
+          "keyword": "effect_card::RS-513::hana",
           "duration": "turn"
         }
       ],

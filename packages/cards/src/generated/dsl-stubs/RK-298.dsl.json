@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_tankoregabatoruerianitatokibatoruerianoyunitogasyunito",
+          "keyword": "effect_card::RK-298::mukishino",
           "duration": "turn"
         }
       ],

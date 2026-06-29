@@ -12,6 +12,7 @@ import {
 } from "../core/scopedModifiers";
 import { cardHasGrantKeyword, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
 import { battlePositionOneBased } from "../rules/fractionalSp";
+import { srBigBatonTaxisCategory } from "../rules/srEffects";
 import { isBattleBlocked, markBattleBlocked } from "../rules/turnModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
 import { findInZone, updatePlayer } from "../core/helpers";
@@ -96,7 +97,9 @@ export function taxisSpFloor(
   if (index <= 0) return 0;
 
   const left = player.battle[index - 1]!;
-  const taxisCategory = parseTaxisCategory(left.cardId);
+  const taxisCategory =
+    parseTaxisCategory(left.cardId) ??
+    srBigBatonTaxisCategory(state, playerId, left.cardId);
   if (!taxisCategory) return 0;
 
   const holderPosition = index;

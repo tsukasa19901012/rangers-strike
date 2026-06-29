@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_tankoregabatoruerianitatokibatorueriakara_ryo_wotsumyun",
+          "keyword": "effect_card::RK-155::ryonoto",
           "duration": "turn"
         }
       ],

@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_s_ability_koreniraidoshiteirusyunitohano_chikara_woru",
+          "keyword": "effect_card::RS-466::honoono",
           "duration": "permanent"
         }
       ]

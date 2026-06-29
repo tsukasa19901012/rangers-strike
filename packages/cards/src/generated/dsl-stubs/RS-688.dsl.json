@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_koreworashushitatokirejisutomatahauinguwotsuyunitowosube",
+          "keyword": "effect_card::RS-688::giganikubumeran",
           "duration": "turn"
         }
       ],

@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_minus_power_rush",
+          "keyword": "effect_card::RS-251::buntano",
           "duration": "turn"
         }
       ],

@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_remaining_konotanbp4000noyunitogashikurashusaretatokisorewo_geki",
-          "duration": "turn"
+          "keyword": "effect_card::RS-279::saikata",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_koregasutoraikushitatokinowogamadekinatademoji",
+          "keyword": "effect_card::RK-141::denebikubasuta",
           "duration": "turn"
         }
       ],

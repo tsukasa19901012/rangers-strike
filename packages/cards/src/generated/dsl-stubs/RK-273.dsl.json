@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_rashuerianosyunitowo1binishitemoyoisoushitatokiha",
-          "duration": "turn"
+          "keyword": "effect_card::RK-273::raijinguburasutopegasasu",
+          "duration": "permanent"
         }
       ],
       "optional": true

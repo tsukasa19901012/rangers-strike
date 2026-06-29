@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_korehaatakushitebatorunitsutabideatakudekirutadashikorehabator",
-          "duration": "turn"
+          "keyword": "effect_card::RK-183::zokiku",
+          "duration": "permanent"
         }
       ],
       "optional": false

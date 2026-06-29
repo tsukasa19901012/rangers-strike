@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_self_order_koreworashushitatokinowononiunoyunitowo1buso",
+          "keyword": "effect_card::RK-201::doraguburesu",
           "duration": "turn"
         }
       ]

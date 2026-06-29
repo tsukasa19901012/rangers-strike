@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_tankoregabatoruerianitatokinowodekiruwotesyuni",
+          "keyword": "effect_card::XP-032::rejiendowomete",
           "duration": "turn"
         }
       ],

@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokinowodekiruha1doroshite",
+          "keyword": "effect_card::RK-233::haiparaidakiku",
           "duration": "turn"
         }
       ],

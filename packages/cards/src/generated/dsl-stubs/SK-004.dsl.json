@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_cards_koreworashushitatokikonodenishitakadowotedawotanaikadowo",
+          "keyword": "effect_card::SK-004::majiki",
           "duration": "turn"
         }
       ],

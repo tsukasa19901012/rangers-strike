@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakaramekamataha",
+          "keyword": "effect_card::XG3-087::fueringasunaipu",
           "duration": "turn"
         }
       ],

@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_sp1pawazonkarasyunitonokadowo1binietemoyoisoushita",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-021::garuzuintoraburu",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokierianibitorudagaarebano",
+          "keyword": "effect_card::RM-053::doriruatachimento",
           "duration": "turn"
         }
       ],

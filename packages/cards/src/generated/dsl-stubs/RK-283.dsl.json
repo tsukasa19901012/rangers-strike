@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregaerianiarutanmiraraidawotsuyunitoga_geki_ha_sa",
-          "duration": "permanent"
+          "keyword": "effect_card::RK-283::noe5a591",
+          "duration": "turn"
         }
       ],
       "optional": false

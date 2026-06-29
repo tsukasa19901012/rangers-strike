@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enter_hold_enemy_power_le_opponent_damage",
+          "keyword": "effect_card::RS-563::kigerutsuno",
           "duration": "turn"
         }
       ],

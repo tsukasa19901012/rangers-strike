@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_batorueriakarasyunitowo1bichinokomandozonniitemoyoike",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-044::v3kiku5633e5",
+          "duration": "permanent"
         }
       ],
       "optional": false

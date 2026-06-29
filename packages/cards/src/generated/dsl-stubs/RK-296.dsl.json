@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_batoruerianoyunitowopawanonoga2ninarumadekinandemo",
-          "duration": "turn"
+          "keyword": "effect_card::RK-296::raidakiku",
+          "duration": "permanent"
         }
       ],
       "optional": true

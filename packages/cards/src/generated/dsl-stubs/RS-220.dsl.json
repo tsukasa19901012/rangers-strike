@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "battle_win_notansyunitotobatorushitasyunitohabatorunitemo_geki_ha_sare",
-          "duration": "turn"
+          "keyword": "effect_card::RS-220::bariae58f8d",
+          "duration": "permanent"
         }
       ],
       "optional": false

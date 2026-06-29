@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_tankorega_geki_ha_sareteninatatokinowodekiruwoteku",
+          "keyword": "effect_card::RK-292::tsuno",
           "duration": "turn"
         }
       ],

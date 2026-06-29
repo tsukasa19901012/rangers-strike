@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_koreworashushitatokisyunitokamyunitowo1ndemoyoisoushitato",
+          "keyword": "effect_card::RK-154::gai",
           "duration": "turn"
         }
       ],

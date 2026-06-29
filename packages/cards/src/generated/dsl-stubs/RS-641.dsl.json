@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_tankoregabatoruerianitatokinokara1woomotenishitemoyoi",
+          "keyword": "effect_card::RS-641::sukuranburu",
           "duration": "turn"
         }
       ],

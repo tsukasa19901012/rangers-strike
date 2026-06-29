@@ -66,8 +66,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_karaadobentokadowotsukadowo2madendemoyoisoushitatoki",
-          "duration": "turn"
+          "keyword": "effect_card::RK-279::dakubaizatsubai",
+          "duration": "permanent"
         }
       ],
       "optional": true

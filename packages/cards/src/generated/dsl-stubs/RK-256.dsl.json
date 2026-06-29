@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibatorueriakaraspgadenais",
+          "keyword": "effect_card::RK-256::kabutorosanda",
           "duration": "turn"
         }
       ],

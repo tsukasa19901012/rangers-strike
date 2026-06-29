@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_koreniraidoshiteirusabaibuwotsuyunitohasp1ninaru",
-          "duration": "turn"
+          "keyword": "effect_card::RK-281::doragonfuaiyasutomu",
+          "duration": "permanent"
         }
       ],
       "optional": false

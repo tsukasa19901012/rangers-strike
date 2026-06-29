@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "optional_then_koreworashushitatokikorewohorudoshitemoyoisoushitatokikono",
+          "keyword": "effect_card::RK-191::garaisodo",
           "duration": "turn"
         }
       ],

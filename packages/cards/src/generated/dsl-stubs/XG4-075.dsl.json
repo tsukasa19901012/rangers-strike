@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tanhorudonokonoyunitogabatoruerianitatokinowosuru",
+          "keyword": "effect_card::XG4-075::noe7949f",
           "duration": "turn"
         }
       ],

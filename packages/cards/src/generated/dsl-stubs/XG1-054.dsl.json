@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokinokara2woomotenishitemoyoi",
+          "keyword": "effect_card::XG1-054::shainingukariba",
           "duration": "turn"
         }
       ],

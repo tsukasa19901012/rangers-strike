@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_wotsuyunitonowoesononopawanowotsuyuni",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-064::riborubakug3",
+          "duration": "permanent"
         }
       ],
       "optional": false

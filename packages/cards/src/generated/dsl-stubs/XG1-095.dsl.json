@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_koregabatorudeyunitowo_geki_ha_shitatokikorega_geki_ha_shit",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-095::kabutoransa",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_konotannisyunitoga_geki_ha_sareteninatatokisonokadowonis",
+          "keyword": "effect_card::RS-678::randosuraisa",
           "duration": "turn"
         }
       ],

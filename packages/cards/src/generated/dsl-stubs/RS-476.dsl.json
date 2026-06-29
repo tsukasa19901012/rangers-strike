@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokinokarawotsuyunitokado",
+          "keyword": "effect_card::RS-476::bisutohariken",
           "duration": "turn"
         }
       ],

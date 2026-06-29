@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_konotankomandozonnihorudodekadowokutokikawariniri",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-007::gogochienji",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -7,6 +7,11 @@ import { buildLogEntry, buildSimpleLogEntry } from "../log/formatLog";
 import { applyMegaSilverStartEndToggle } from "./batch04FieldEffects";
 import { startSelectPowerChoice } from "./pendingChoices";
 import { tryLegend3BattleToRush } from "./legend3/restrictions";
+import {
+  applyOpponentHoldOtEtOnCommandRelease,
+  applyPlasmaShockwaveShuffleBack,
+  plasmaShockwaveActive,
+} from "./srEffects";
 
 /** スタートフェイズ: ホールド中のコマンドをすべてリリース。 */
 export function releaseAllCommands(state: GameState, playerId: PlayerId): GameState {
@@ -14,7 +19,12 @@ export function releaseAllCommands(state: GameState, playerId: PlayerId): GameSt
   const command = player.command.map((c) =>
     c.commandHeld ? { ...c, commandHeld: false, mothershipHold: false } : c,
   );
-  return { ...state, ...updatePlayer(state, playerId, { ...player, command }) };
+  let nextState: GameState = {
+    ...state,
+    ...updatePlayer(state, playerId, { ...player, command }),
+  };
+  nextState = applyOpponentHoldOtEtOnCommandRelease(nextState, playerId);
+  return nextState;
 }
 
 function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
@@ -111,9 +121,14 @@ export function isReleaseStepComplete(player: PlayerState): boolean {
   return !hasHeldCommands(player);
 }
 
-export function hasCompletedStartPhaseSteps(player: PlayerState): boolean {
+export function hasCompletedStartPhaseSteps(
+  state: GameState,
+  player: PlayerState,
+): boolean {
   const returnComplete =
-    player.hasReturnedBattleThisStart === true || player.battle.length === 0;
+    player.hasReturnedBattleThisStart === true ||
+    player.battle.length === 0 ||
+    plasmaShockwaveActive(state);
   return (
     isReleaseStepComplete(player) &&
     returnComplete &&
@@ -131,6 +146,7 @@ export function canReleaseStartCommands(state: GameState, playerId: PlayerId): b
 
 export function canReturnBattleAtStart(state: GameState, playerId: PlayerId): boolean {
   if (state.phase !== "start") return false;
+  if (plasmaShockwaveActive(state)) return false;
   if (state.pendingEffectChoice?.playerId === playerId) return false;
   const player = state.players[playerId];
   if (player.hasReturnedBattleThisStart) return false;
@@ -150,7 +166,7 @@ export function canAdvanceFromStartPhase(state: GameState, playerId: PlayerId): 
   const player = state.players[playerId];
   if (state.phase !== "start") return false;
   if (state.pendingEffectChoice?.playerId === playerId) return false;
-  if (!hasCompletedStartPhaseSteps(player)) return false;
+  if (!hasCompletedStartPhaseSteps(state, player)) return false;
   if (
     mustResolveEarthForceUpkeepBeforeStartEnd(state, playerId) &&
     canPayEarthForceUpkeep(state, playerId)
@@ -196,6 +212,9 @@ export function transitionStartToChargePhase(
   }
 
   nextState = applyMegaSilverStartEndToggle(nextState, playerId);
+  for (const pid of ["player1", "player2"] as const) {
+    nextState = applyPlasmaShockwaveShuffleBack(nextState, pid);
+  }
 
   const resetPlayer = {
     ...nextState.players[playerId],

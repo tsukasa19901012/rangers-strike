@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_rashueriakaranirashushitatokitoaruwbnomyunitowo1nde",
-          "duration": "permanent"
+          "keyword": "effect_card::XG5-010::kengodohon",
+          "duration": "turn"
         }
       ],
       "optional": true

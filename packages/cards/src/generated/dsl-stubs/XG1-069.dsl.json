@@ -71,8 +71,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_nokaraopereshonkadowo1binishitemoyoisoushitatokikonota",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-069::atakuraido",
+          "duration": "permanent"
         }
       ]
     }

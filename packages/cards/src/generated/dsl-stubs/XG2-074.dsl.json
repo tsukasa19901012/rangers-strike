@@ -50,7 +50,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibp4000nosyunitowo1",
+          "keyword": "effect_card::XG2-074::fuainaruatakuraido",
           "duration": "turn"
         }
       ],

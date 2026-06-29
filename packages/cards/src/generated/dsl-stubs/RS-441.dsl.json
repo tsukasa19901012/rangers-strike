@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_konotanyunitogabatorueriakararashuerianirutabisonoyunit",
-          "duration": "turn"
+          "keyword": "effect_card::RS-441::kosakudansu",
+          "duration": "permanent"
         }
       ],
       "optional": true

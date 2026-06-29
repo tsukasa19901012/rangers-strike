@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_reiyouwotsuyunitokarakonbineshonshitatokidekirurejisutowota",
-          "duration": "turn"
+          "keyword": "effect_card::RK-198::doraibudeibaida",
+          "duration": "permanent"
         }
       ],
       "optional": false

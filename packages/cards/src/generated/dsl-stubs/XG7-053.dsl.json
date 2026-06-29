@@ -70,7 +70,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_tankoreworashushitatokikarananbanircwotsukadowo1",
+          "keyword": "effect_card::XG7-053::mizukarano",
           "duration": "turn"
         }
       ],

@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_wo1tsushitemoyoisoushitatokinokara1hiiteomotenisuruomote",
-          "duration": "turn"
+          "keyword": "effect_card::RK-135::fxunknowne6bd9c",
+          "duration": "permanent"
         }
       ],
       "optional": true

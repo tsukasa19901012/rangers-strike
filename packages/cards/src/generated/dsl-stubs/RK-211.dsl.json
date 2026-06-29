@@ -65,7 +65,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_pick_show_tankoregabatoruerianitatokinowo2binisetemoyoiso",
+          "keyword": "effect_card::RK-211::raitoningusurashu",
           "duration": "turn"
         }
       ],

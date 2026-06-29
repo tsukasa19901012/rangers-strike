@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokinowonaide1ndemoyoisou",
+          "keyword": "effect_card::RK-276::kyokuginjanmama",
           "duration": "turn"
         }
       ],

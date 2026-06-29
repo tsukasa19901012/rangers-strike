@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregarashuerianiaruwbwotsusyunitogabatoruerianitato",
-          "duration": "permanent"
+          "keyword": "effect_card::RM-059::torankuno",
+          "duration": "turn"
         }
       ],
       "optional": false

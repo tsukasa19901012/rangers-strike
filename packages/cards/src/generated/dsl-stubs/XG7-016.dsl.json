@@ -76,8 +76,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_nokarapawanoga5nowbnomyunitonokadowo2madebi",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-016::no5",
+          "duration": "permanent"
         }
       ],
       "optional": true

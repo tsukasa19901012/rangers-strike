@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_hand_nokarayunitokadowo1binishitemoyoisoushitatokinishitaka",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-047::shadofurashu",
+          "duration": "permanent"
         }
       ],
       "optional": true

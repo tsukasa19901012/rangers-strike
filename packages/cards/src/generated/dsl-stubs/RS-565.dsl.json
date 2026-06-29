@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_tankoregabatoruerianitatokirashuerianosyunitowosubete",
+          "keyword": "effect_card::RS-565::roringusandahariken",
           "duration": "turn"
         }
       ],

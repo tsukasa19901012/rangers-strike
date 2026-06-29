@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_koregaerianiarugakauntawotsuopereshonnowoshitesono",
-          "duration": "turn"
+          "keyword": "effect_card::RS-582::memegaro",
+          "duration": "permanent"
         }
       ],
       "optional": false

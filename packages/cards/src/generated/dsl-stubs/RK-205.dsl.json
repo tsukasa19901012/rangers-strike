@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_koreharashushitatokibatoruerianishitemoyoisoushitatokiko",
+          "keyword": "effect_card::RK-205::furainguataka",
           "duration": "turn"
         }
       ],

@@ -66,8 +66,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_komandowokinabinonishitemoyoisoushitatokihashitato",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-023::choninponoku",
+          "duration": "permanent"
         }
       ],
       "optional": true
@@ -82,8 +82,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_komandowokinabinonishitemoyoisoushitatokihashitato",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-023::choninponokukomandowokin",
+          "duration": "permanent"
         }
       ],
       "optional": true

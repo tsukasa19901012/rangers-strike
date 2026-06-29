@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_tankoregabatoruerianitatokinoniimajinwotsubatorueri",
+          "keyword": "effect_card::RK-240::no4",
           "duration": "turn"
         }
       ],

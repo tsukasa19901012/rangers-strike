@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_syunitowobusoshitekonokadoworashuerianikindayunit",
-          "duration": "turn"
+          "keyword": "effect_card::RK-173::noe9acbc",
+          "duration": "permanent"
         }
       ],
       "optional": false

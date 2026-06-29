@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_horudonosyunitowo2ndemoyoisoushitatokinda2notsukatego",
-          "duration": "turn"
+          "keyword": "effect_card::RK-212::reibareto",
+          "duration": "permanent"
         }
       ],
       "optional": true

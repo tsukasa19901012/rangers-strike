@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokibatorueriakarasyunitowo1bi",
+          "keyword": "effect_card::RK-291::manochikara",
           "duration": "turn"
         }
       ],

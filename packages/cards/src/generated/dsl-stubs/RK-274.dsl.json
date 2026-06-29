@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokinowodekirunokara2",
+          "keyword": "effect_card::RK-274::nyumashinno",
           "duration": "turn"
         }
       ],

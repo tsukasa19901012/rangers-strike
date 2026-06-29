@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_nimatahanowotsuyunitowo2ndemoyoisoushitatokinda2",
-          "duration": "turn"
+          "keyword": "effect_card::RS-295::chikaraken",
+          "duration": "permanent"
         }
       ],
       "optional": true

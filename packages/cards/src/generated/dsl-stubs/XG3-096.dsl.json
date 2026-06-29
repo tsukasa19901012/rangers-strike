@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_koreworashushitatokikaramekawotsusyunitonokadowo1bi",
+          "keyword": "effect_card::XG3-096::sabisu",
           "duration": "turn"
         }
       ],

@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregaerianiaru_ryo_wotsuyunitohaatakumosutoraikumod",
+          "keyword": "effect_card::RS-603::gasu",
           "duration": "permanent"
         }
       ],
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregaerianiarunoni_ryo_wotsuyunitohaatakumosutoraik",
+          "keyword": "effect_card::RS-603::gasukoregaeriani",
           "duration": "permanent"
         }
       ],

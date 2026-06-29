@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokikomandozonniarukategoriga1tsuda",
+          "keyword": "effect_card::XG5-092::toma",
           "duration": "turn"
         }
       ],

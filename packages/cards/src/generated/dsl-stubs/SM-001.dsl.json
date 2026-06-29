@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_wotsuyunitoga1monakerebawotewotsuyu",
+          "keyword": "effect_card::SM-001::fx3no",
           "duration": "turn"
         }
       ],

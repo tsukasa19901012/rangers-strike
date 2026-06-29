@@ -63,8 +63,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konotankorehapawazonnokadogapawazonnokadoyorimo",
-          "duration": "turn"
+          "keyword": "effect_card::RK-295::nitsu",
+          "duration": "permanent"
         }
       ],
       "optional": false

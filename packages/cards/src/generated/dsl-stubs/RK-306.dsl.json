@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_tankoregabatoruerianitatokinobpgakonoyunitonobpnoyuni",
+          "keyword": "effect_card::RK-306::dainamikuchopu",
           "duration": "turn"
         }
       ],

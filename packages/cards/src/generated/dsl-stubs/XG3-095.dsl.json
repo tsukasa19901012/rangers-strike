@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakaranobpga8000",
+          "keyword": "effect_card::XG3-095::biritoshoku",
           "duration": "turn"
         }
       ],

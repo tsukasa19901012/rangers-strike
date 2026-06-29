@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_self_order_koreworashushitatokinowononiunokaraoperesho",
+          "keyword": "effect_card::RK-146::denebukyandei",
           "duration": "turn"
         }
       ]
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_self_order_koreworashushitatokinowononiunowotemoyoisou",
+          "keyword": "effect_card::RK-146::denebukyandeikoreworashu",
           "duration": "turn"
         }
       ]

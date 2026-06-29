@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "scry_self_deck_top_komandoga3tsunaranokara1hiitekomandozonnihorudo",
-          "duration": "turn"
+          "keyword": "effect_card::RS-631::sateraitosachi",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_batorueriakarabp4000nosyunitowo1bichinopawazonni",
-          "duration": "turn"
+          "keyword": "effect_card::RS-368::godohando",
+          "duration": "permanent"
         }
       ],
       "optional": false

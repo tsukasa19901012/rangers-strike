@@ -929,6 +929,80 @@ describe("unnamed note catchall clearance", () => {
   });
 });
 
+describe("RS/SR named catchall clearance", () => {
+  it("has no unresolved catchall grant_keyword on RS/SR named effects", async () => {
+    const { readFileSync, readdirSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const { isUnresolvedCatchallGrantKeyword } = await import(
+      "@rangers-strike/cards/pipeline/hashGrantKeywords"
+    );
+    const dir = join(import.meta.dirname, "../../cards/src/generated/dsl-stubs");
+    let remaining = 0;
+    const samples: string[] = [];
+    for (const file of readdirSync(dir).filter((f) => /^RS-|SR-/.test(f) && f.endsWith(".dsl.json"))) {
+      const doc = JSON.parse(readFileSync(join(dir, file), "utf8")) as {
+        id: string;
+        effects?: Array<{
+          id?: string;
+          name?: string;
+          text?: string;
+          effects?: Array<{ type: string; keyword?: string }>;
+        }>;
+      };
+      for (const effect of doc.effects ?? []) {
+        if (!effect.name && !effect.text?.startsWith("※")) continue;
+        if (effect.text?.startsWith("※")) continue;
+        if (
+          effect.effects?.some(
+            (p) =>
+              p.type === "grant_keyword" &&
+              p.keyword &&
+              isUnresolvedCatchallGrantKeyword(p.keyword),
+          )
+        ) {
+          remaining += 1;
+          if (samples.length < 10) samples.push(`${doc.id}/${effect.id}`);
+        }
+      }
+    }
+    expect({ remaining, samples }).toEqual({ remaining: 0, samples: [] });
+  });
+});
+
+describe("SR semantic grant_keyword rematch", () => {
+  it("SR-003 rematches to bp_plus_per_discard_feature", () => {
+    const text =
+      "自軍ターン中、これは自軍捨札にある特徴「恐竜」を持つカード1枚につきBP＋1000される。これはBP8000以上のとき「SP1」になる。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "龍撃剣＆獣奏剣",
+      trigger: { type: "nc" },
+      cardId: "SR-003",
+    });
+    expect(
+      rematched?.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000",
+      ),
+    ).toBe(true);
+  });
+
+  it("SR-008 rematches to big_baton_command_zone_features", () => {
+    const text =
+      "これは、自軍コマンドゾーンにあるカードの特徴を見て、それぞれの特徴ごとに次の能力を得る⇒特徴「レッド」があればレジストを得る。特徴「ブルー」があればタクスETを得る。特徴「グリーン」があればBP7000になる。特徴「ピンク」があればSP1になる。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "ビッグ・バトン",
+      trigger: { type: "nc" },
+      cardId: "SR-008",
+    });
+    expect(
+      rematched?.some(
+        (p) => p.type === "grant_keyword" && p.keyword === "big_baton_command_zone_features",
+      ),
+    ).toBe(true);
+  });
+});
+
 describe("unnamed note grant_keyword rematch", () => {
   const noteCases: Array<{ text: string; keyword: string }> = [
     {

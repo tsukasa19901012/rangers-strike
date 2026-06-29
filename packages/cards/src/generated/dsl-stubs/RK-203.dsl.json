@@ -66,8 +66,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_cards_tankoregaatakushitebatorunitatokishiteiruopereshonni",
-          "duration": "turn"
+          "keyword": "effect_card::RK-203::akuserumodo",
+          "duration": "permanent"
         }
       ],
       "optional": true

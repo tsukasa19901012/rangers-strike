@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "number_combo_pawanoga1kananbanoga1kasp1wotsusyunitowo1bi_geki",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-066::raidasurashu",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -64,8 +64,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_pawazonnokadowotesonoyorimopawanogakiiyuni",
-          "duration": "turn"
+          "keyword": "effect_card::RS-554::furaingubimu",
+          "duration": "permanent"
         }
       ],
       "optional": false

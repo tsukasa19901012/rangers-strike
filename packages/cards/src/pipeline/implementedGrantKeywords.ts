@@ -114,6 +114,12 @@ const STABLE_GRANT_KEYWORD_EXACT = new Set([
   "becomes_l_bp_if_any_l_on_field_3000",
   "becomes_l_bp_if_any_l_on_field_2000",
   "ride_attack_bp_boost_1000",
+  "destroy_power_match_on_rush",
+  "big_baton_command_zone_features",
+  "opponent_must_hold_ot_et_on_command_release",
+  "on_deck_reveal_swap_effect_target",
+  "combo_l_repeat_attack_strike_after_combo",
+  "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000",
 ]);
 
 const STABLE_GRANT_KEYWORD_PATTERNS: RegExp[] = [
@@ -150,6 +156,10 @@ const STABLE_GRANT_KEYWORD_PATTERNS: RegExp[] = [
   /^note_substitute_on_destroy_rush_feature::/,
   /^on_rush_return_enemy_feature_s_to_deck_bottom::/,
   /^note_card::[A-Z0-9]+-[0-9]+(?:::[a-z0-9_]+)?$/,
+  /^effect_card::[A-Z0-9]+-[0-9]+(?:::[a-z0-9_]+)?$/,
+  /^bp_plus_per_discard_feature_[a-z0-9_]+_\d+_sp_at_\d+$/,
+  /^plasma_shockwave_start_phase::/,
+  /^on_rush_send_rush_(wb|ot|ma|et|da)_to_power_sp1$/,
   /^note_slug::[a-z0-9_]+$/,
   /^while_field_note::[a-z0-9_]+$/,
   /^note_on_rush::[a-z0-9_]+$/,

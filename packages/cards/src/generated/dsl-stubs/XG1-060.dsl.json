@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_koregabatorueriakararashuerianirutokinowonaide1ndemoyo",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-060::kado",
+          "duration": "permanent"
         }
       ],
       "optional": true

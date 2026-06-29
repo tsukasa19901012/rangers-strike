@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_koreworashushitatokiwotekategoriwo2tsutsusyunitonokadowo1",
+          "keyword": "effect_card::XG2-087::enerugi",
           "duration": "turn"
         }
       ],

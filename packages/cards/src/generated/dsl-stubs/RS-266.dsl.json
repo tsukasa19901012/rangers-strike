@@ -43,11 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_rashueriakarawbnoyunitowo1bipawazonnitemoyoisou",
+          "keyword": "on_rush_send_rush_wb_to_power_sp1",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

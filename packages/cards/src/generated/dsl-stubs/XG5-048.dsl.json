@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_komandozonkarawotsusyunitonokadowo1birashu",
+          "keyword": "effect_card::XG5-048::pafuekuta",
           "duration": "turn"
         }
       ],

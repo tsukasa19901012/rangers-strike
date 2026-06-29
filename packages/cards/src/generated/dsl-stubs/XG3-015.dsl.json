@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregagaoporakawotsulyunitokarakonbineshonsurutokino",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-015::kibahonoobeasutoraiku",
+          "duration": "permanent"
         }
       ],
       "optional": true

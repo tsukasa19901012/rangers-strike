@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_komandozonnokadowo1binierusoushitatokikonokadowokoma",
+          "keyword": "effect_card::XG6-039::sutagufuon",
           "duration": "turn"
         }
       ],

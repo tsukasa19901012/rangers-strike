@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_noga1arebasonotojinopawanowotsubatorueri",
-          "duration": "turn"
+          "keyword": "effect_card::RS-536::gurifuonmagumagyarakushi",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -34,8 +34,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_koreniraidoshiteiruyunitogabp4000nosyunitowo_geki_ha_",
-          "duration": "turn"
+          "keyword": "effect_card::RK-324::inogaruze",
+          "duration": "permanent"
         }
       ],
       "optional": false

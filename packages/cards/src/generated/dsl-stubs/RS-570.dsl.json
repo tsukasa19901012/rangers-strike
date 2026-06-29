@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_koreniraidoshiteirulyunitohapawaniwotanaiyunitoniatakusarena",
-          "duration": "turn"
+          "keyword": "effect_card::RS-570::uiri",
+          "duration": "permanent"
         }
       ],
       "optional": false

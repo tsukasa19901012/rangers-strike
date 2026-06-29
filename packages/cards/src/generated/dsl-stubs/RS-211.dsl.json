@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_tankoregabatorudeyunitowo_geki_ha_shitatokihanokomandozonk",
-          "duration": "turn"
+          "keyword": "effect_card::RS-211::chikaratonfua",
+          "duration": "permanent"
         }
       ],
       "optional": false

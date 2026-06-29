@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_konoyunitogarashuerianiarutangadamejiwoketatokiko",
+          "keyword": "effect_card::XG2-033::kenbariafuisuto",
           "duration": "permanent"
         }
       ],

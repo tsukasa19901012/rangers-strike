@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_tankoregabatoruerianitatokibatorueriakaramatahawo",
+          "keyword": "effect_card::RM-031::kozumikukurashu",
           "duration": "turn"
         }
       ],

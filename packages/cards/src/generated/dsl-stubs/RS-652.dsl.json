@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_l_effect_koregakategorinolyunitokarakonbineshonsurutokinowodekiruk",
+          "keyword": "effect_card::RS-652::baburukyapucha",
           "duration": "permanent"
         }
       ]

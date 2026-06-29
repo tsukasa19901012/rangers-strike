@@ -48,8 +48,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_koreniraidoshiteiruyunitohawotanaisyunitoniatakusarenai",
-          "duration": "turn"
+          "keyword": "effect_card::RK-300::kurokuapu",
+          "duration": "permanent"
         }
       ],
       "optional": false

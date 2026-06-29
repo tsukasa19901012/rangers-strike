@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_tankoregabatoruerianitatokipawazonnodamejinokadoka",
+          "keyword": "effect_card::RK-275::zabaginbashigura",
           "duration": "turn"
         }
       ],

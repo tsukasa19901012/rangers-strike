@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_notanpawazonnokadowourashitedamejinisurutokiurasuka",
-          "duration": "turn"
+          "keyword": "effect_card::RS-202::pinkubariya",
+          "duration": "permanent"
         }
       ],
       "optional": false

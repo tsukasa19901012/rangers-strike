@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_kadonicjwomanaimofutodaburudoraibawotsuyunitokadowoko",
-          "duration": "turn"
+          "keyword": "effect_card::XG6-036::memorichienji",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -16,9 +16,12 @@ import {
 } from "./metaMaps";
 import { tryBuildPickEffectBranch } from "./choiceBranches";
 import { NOTE_BULK_PATTERNS } from "./noteBulkPatterns";
+import { buildEffectCardKeyword } from "./effectCardKeywords";
 import { buildNoteCardKeyword } from "./noteCardKeywords";
 import { isUnresolvedCatchallGrantKeyword } from "./hashGrantKeywords";
 import { RK_ACTION_PATTERNS, RK_NOTE_PATTERNS, RK_WHILE_PATTERNS } from "./rkPatterns";
+import { RS_NAMED_PATTERNS } from "./rsPatterns";
+import { SR_NAMED_PATTERNS } from "./srPatterns";
 
 type ZoneTarget = Extract<EffectPrimitive, { type: "move" }>["target"];
 
@@ -5504,6 +5507,8 @@ const PATTERNS: PatternMatch[] = [
       matchedPattern: "opponent_hold_commands_by_category",
     }),
   },
+  ...SR_NAMED_PATTERNS,
+  ...RS_NAMED_PATTERNS,
   ...RK_NOTE_PATTERNS,
   ...RK_WHILE_PATTERNS,
   ...RK_ACTION_PATTERNS,
@@ -9624,7 +9629,42 @@ function rematchBuiltEffect(
   if (options.cardId && body.startsWith("※")) {
     return buildNoteCardRematchEffect(body, options);
   }
+  if (options.cardId && options.name) {
+    return buildEffectCardRematchEffect(body, options);
+  }
   return null;
+}
+
+function effectCardDuration(
+  trigger: EffectDefinition["trigger"],
+): "permanent" | "turn" {
+  return trigger.type === "while_in_field" || trigger.type === "nc" ? "permanent" : "turn";
+}
+
+function buildEffectCardRematchEffect(
+  body: string,
+  options: {
+    name?: string;
+    trigger: EffectDefinition["trigger"];
+    cardId?: string;
+  },
+  built?: Omit<ExtractedEffect, "segmentIndex" | "needsFallback">,
+): Omit<ExtractedEffect, "segmentIndex" | "needsFallback"> {
+  const keyword = buildEffectCardKeyword(
+    options.cardId!,
+    built?.id ?? slugifyEffectId(options.name!),
+  );
+  return {
+    id: built?.id ?? slugifyEffectId(options.name!),
+    name: options.name ?? built?.name,
+    text: body,
+    trigger: built?.trigger ?? options.trigger,
+    optional: built?.optional,
+    effects: [
+      { type: "grant_keyword", keyword, duration: effectCardDuration(options.trigger) },
+    ],
+    matchedPattern: "effect_card_fallback",
+  };
 }
 
 function buildNoteCardRematchEffect(

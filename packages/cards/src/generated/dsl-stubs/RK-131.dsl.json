@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_lyunitowo1binokara7madeomotenishitemoyoisoushitatokio",
-          "duration": "turn"
+          "keyword": "effect_card::RK-131::fxunknowne99fb3",
+          "duration": "permanent"
         }
       ],
       "optional": true

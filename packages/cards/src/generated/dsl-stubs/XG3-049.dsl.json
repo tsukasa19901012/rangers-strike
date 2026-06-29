@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_niarusutorenjibentonokadowosubeteura_ko_kinishiteshafurusuruso",
+          "keyword": "effect_card::XG3-049::sutorenjibento",
           "duration": "turn"
         }
       ],

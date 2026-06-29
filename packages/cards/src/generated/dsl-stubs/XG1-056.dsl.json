@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_koreworashushitatokikategorinimawotsusyunitowo1bi_geki_h",
+          "keyword": "effect_card::XG1-056::agitono",
           "duration": "turn"
         }
       ],

@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarurashufueizuarubirochiworashushitatoki",
+          "keyword": "effect_card::RK-220::andedowoeru",
           "duration": "turn"
         }
       ],

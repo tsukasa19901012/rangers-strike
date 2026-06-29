@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_koreworashushitatokinowodekiruwoshafurushitasonokara2",
+          "keyword": "effect_card::RK-190::woeru",
           "duration": "turn"
         }
       ],

@@ -61,7 +61,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregaerianiarukorenorashuerianoyunitohaatakusarenai",
+          "keyword": "effect_card::XG1-074::hamotonamonowotsuketa",
           "duration": "permanent"
         }
       ],

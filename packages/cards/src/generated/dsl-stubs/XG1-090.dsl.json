@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_karasyunitonokadowo1binoniitemoyoikonohafua",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-090::toe69591",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_korehabatorueriani_ryo_wotsuyunitoka_ryo_wotsubikuruniraidos",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-070::ryoheno",
+          "duration": "permanent"
         }
       ],
       "optional": false

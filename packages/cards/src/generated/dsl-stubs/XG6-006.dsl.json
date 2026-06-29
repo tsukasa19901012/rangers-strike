@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokikomandozonkarananbanilma",
+          "keyword": "effect_card::XG6-006::boukenfurashu",
           "duration": "turn"
         }
       ],

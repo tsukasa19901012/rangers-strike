@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregabatoruerianiaru1tangotoni1dakenowodekiruyuni",
+          "keyword": "effect_card::XG7-012::burudainogatsu",
           "duration": "turn"
         }
       ],

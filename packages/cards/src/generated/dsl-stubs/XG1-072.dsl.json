@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enter_hold_enemy_tankoregabatoruerianitatokikorewohorudoshitemoyoisoushi",
+          "keyword": "effect_card::XG1-072::atakuraido",
           "duration": "turn"
         }
       ],

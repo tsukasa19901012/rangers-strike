@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_komandowo1tsubinishitemoyoisoushitatokinishitakomandotojika",
-          "duration": "turn"
+          "keyword": "effect_card::XG6-058::yoriu",
+          "duration": "permanent"
         }
       ],
       "optional": true

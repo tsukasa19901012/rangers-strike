@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_koreharaidosareteinakutemobatoruerianirukotogadekiru",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-049::hikari",
+          "duration": "permanent"
         }
       ],
       "optional": false

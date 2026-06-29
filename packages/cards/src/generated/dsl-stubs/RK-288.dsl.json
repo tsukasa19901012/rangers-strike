@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konotanbatoruerianosubetenosyunitohabp500sarerubp0nina",
-          "duration": "turn"
+          "keyword": "effect_card::RK-288::derutamuba",
+          "duration": "permanent"
         }
       ],
       "optional": false

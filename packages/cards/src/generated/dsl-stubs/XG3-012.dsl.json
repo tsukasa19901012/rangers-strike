@@ -68,7 +68,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_tankoregabatoruerianitatokibatorueriakarananbawotanais",
+          "keyword": "effect_card::XG3-012::hikariken",
           "duration": "turn"
         }
       ],

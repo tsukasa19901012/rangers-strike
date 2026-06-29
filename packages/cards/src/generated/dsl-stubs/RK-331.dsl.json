@@ -80,7 +80,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokinoniwotsuyunitowo1",
+          "keyword": "effect_card::RK-331::ameijingumaiteikiku",
           "duration": "turn"
         }
       ],

@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_rashueriakaramekawotsubikuruwo1ndemoyoisoushitatokikonota",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-065::toraikyanon",
+          "duration": "permanent"
         }
       ],
       "optional": true

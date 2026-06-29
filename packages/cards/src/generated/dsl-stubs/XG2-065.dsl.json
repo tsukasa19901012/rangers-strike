@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_korehakinikadoga5arutokino_chikara_woruwotanaiyu",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-065::haipakurokuapu",
+          "duration": "permanent"
         }
       ]
     }

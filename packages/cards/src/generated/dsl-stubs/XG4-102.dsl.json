@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_search_rashufueizukorewonishitenowodekiruwotekenro",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-102::ginkuron",
+          "duration": "permanent"
         }
       ],
       "optional": true
@@ -36,8 +36,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_search_rashufueizukonobikuruwonishitenowodekiruwote",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-102::ginkuronrashufueizuk",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_batoruerianoyunitoga1dakenarabatoruerianoyunitowochin",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-052::fxunknowne7a9ba",
+          "duration": "permanent"
         }
       ],
       "optional": false

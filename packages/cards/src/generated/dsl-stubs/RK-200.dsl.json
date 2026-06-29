@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_tankoregabatoruerianitatokiraidonosyunitoworeiyou",
+          "keyword": "effect_card::RK-200::renogeki",
           "duration": "turn"
         }
       ],

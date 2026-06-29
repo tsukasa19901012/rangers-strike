@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "register_resist_koreharashuerianorejisutowotsuyunitoniatakudekiru",
-          "duration": "turn"
+          "keyword": "effect_card::RK-217::gekie6bb91",
+          "duration": "permanent"
         }
       ],
       "optional": false

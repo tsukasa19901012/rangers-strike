@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tonokiniarukadonowoetesononopawanowo",
-          "duration": "turn"
+          "keyword": "effect_card::RK-227::gekigeki",
+          "duration": "permanent"
         }
       ],
       "optional": false

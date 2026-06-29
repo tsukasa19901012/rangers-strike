@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_l_attack_strike_koretokategorinolyunitogakonoyunitokarakonbineshon",
-          "duration": "permanent"
+          "keyword": "effect_card::RS-486::zanri",
+          "duration": "turn"
         }
       ],
       "optional": true
@@ -57,8 +57,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_l_attack_strike_koretokategorinolyunitogakonoyunitokarakonbineshon",
-          "duration": "permanent"
+          "keyword": "effect_card::RS-486::zanrikoretokatego",
+          "duration": "turn"
         }
       ],
       "optional": true

@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregaerianiaruwotsusubetenoyunitohaatakusurutokibp",
-          "duration": "permanent"
+          "keyword": "effect_card::XG4-007::kene78da3",
+          "duration": "turn"
         }
       ],
       "optional": false

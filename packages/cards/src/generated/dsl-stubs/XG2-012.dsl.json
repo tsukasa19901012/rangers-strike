@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokirashueriakaradawotsuyuni",
+          "keyword": "effect_card::XG2-012::kene9a39b",
           "duration": "turn"
         }
       ],

@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konotanhorudonosyunitohabp2500sarerubp0ninatayuni",
-          "duration": "turn"
+          "keyword": "effect_card::RS-689::badoburasuta",
+          "duration": "permanent"
         }
       ],
       "optional": false

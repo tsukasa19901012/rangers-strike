@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_koretokategorinolyunitogakonoyunitokarakonbineshonsurutokin",
+          "keyword": "effect_card::XG6-016::bakudaburutorunedo",
           "duration": "turn"
         }
       ],

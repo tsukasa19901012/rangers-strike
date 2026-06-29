@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_sp12koregaatakushitatokihanowo1bigemukarasuru",
+          "keyword": "effect_card::XG7-057::taifuaiyagaru",
           "duration": "turn"
         }
       ],

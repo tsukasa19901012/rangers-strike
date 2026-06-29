@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_horudonosyunitowosubetechinonishitemoyoi",
-          "duration": "turn"
+          "keyword": "effect_card::RS-537::mameidotaifunuebu",
+          "duration": "permanent"
         }
       ],
       "optional": true

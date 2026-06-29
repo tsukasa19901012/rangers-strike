@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_koreworashushitatokipawazonnoomote_ko_kinokadowotesono",
+          "keyword": "effect_card::RK-136::raidashuteingu",
           "duration": "turn"
         }
       ],

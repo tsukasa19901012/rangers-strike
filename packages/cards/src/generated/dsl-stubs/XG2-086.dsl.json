@@ -85,8 +85,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "da_category_batorueriakaraotmatahadawotsuyunitowo1bichinozonniite",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-086::doramuganfuaiya",
+          "duration": "permanent"
         }
       ],
       "optional": false

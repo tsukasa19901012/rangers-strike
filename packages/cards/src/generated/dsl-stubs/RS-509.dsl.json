@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_pawazonnoomote_ko_kinokadokaraopereshonkadowo1bino",
-          "duration": "turn"
+          "keyword": "effect_card::RS-509::garejirancha",
+          "duration": "permanent"
         }
       ],
       "optional": false

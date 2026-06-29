@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_korehabatoruerianowotsuyunito1nitsukibp1000sarebp5",
+          "keyword": "effect_card::RS-303::shiteigadeianzu",
           "duration": "turn"
         }
       ],

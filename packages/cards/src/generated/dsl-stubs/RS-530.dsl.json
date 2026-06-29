@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_batorueriakarapawaniwotanaiyunitowo1bichinokomandozo",
-          "duration": "turn"
+          "keyword": "effect_card::RS-530::rezabimu",
+          "duration": "permanent"
         }
       ],
       "optional": false

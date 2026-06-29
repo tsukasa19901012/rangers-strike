@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_koreworashushitatokikomandozonkaramofuwotsuyunitokadowo1",
+          "keyword": "effect_card::RK-287::noe79eac",
           "duration": "turn"
         }
       ],

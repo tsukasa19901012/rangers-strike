@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_sp1hanorashueriakarayunitowo1budamejiga4",
-          "duration": "turn"
+          "keyword": "effect_card::RS-369::ken",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_tankoregabatoruerianitatokikoregaraidosareteirebanoni",
+          "keyword": "effect_card::RK-265::raideinguaro",
           "duration": "turn"
         }
       ],

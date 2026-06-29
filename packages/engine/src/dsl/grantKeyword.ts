@@ -154,6 +154,12 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "bp_debuff_per_non_ot_command",
   "category_wb_while_in_battle",
   "while_command_hold_immune",
+  "destroy_power_match_on_rush",
+  "big_baton_command_zone_features",
+  "opponent_must_hold_ot_et_on_command_release",
+  "on_deck_reveal_swap_effect_target",
+  "combo_l_repeat_attack_strike_after_combo",
+  "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000",
 ]);
 
 export const SUPPORTED_GRANT_KEYWORDS = new Set([
@@ -212,6 +218,7 @@ export const SUPPORTED_GRANT_KEYWORDS = new Set([
   "on_rush_enemy_s_ride_off",
   "ride_release_on_mount",
   "counter_mirror_rider_cancel_battle",
+  "destroy_power_match_on_rush",
   ...PASSIVE_GRANT_KEYWORDS,
 ]);
 

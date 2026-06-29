@@ -1,135 +1,135 @@
 {
-  "generatedAt": "2026-06-29T08:07:35.226Z",
-  "scanned": 1051,
-  "scannedUnnamed": 159,
-  "repaired": 159,
-  "repairedUnnamed": 159,
-  "remainingCatchallStubs": 892,
+  "generatedAt": "2026-06-29T08:27:08.584Z",
+  "scanned": 892,
+  "scannedUnnamed": 0,
+  "repaired": 892,
+  "repairedUnnamed": 0,
+  "remainingCatchallStubs": 0,
   "samples": [
     {
-      "cardId": "RK-125",
-      "effectId": "unnamed_e280bbe8b5a4e69687e5ad97",
-      "to": "grant_keyword"
+      "cardId": "RK-089",
+      "effectId": "fx_unknown_e4b997",
+      "to": "effect_card"
     },
     {
-      "cardId": "RK-161",
-      "effectId": "unnamed_e280bbe38193e3828ce381af",
-      "to": "grant_keyword"
+      "cardId": "RK-091",
+      "effectId": "no_e688a6",
+      "to": "effect_card"
     },
     {
-      "cardId": "RK-232",
-      "effectId": "unnamed_e280bbe38193e3828ce3818c",
-      "to": "grant_keyword"
+      "cardId": "RK-101",
+      "effectId": "taigabonba",
+      "to": "effect_card"
     },
     {
-      "cardId": "RK-268",
-      "effectId": "unnamed_e280bbe695b5e8bb8de382bf",
-      "to": "grant_keyword"
+      "cardId": "RK-107",
+      "effectId": "ko",
+      "to": "effect_card"
     },
     {
-      "cardId": "RK-319",
-      "effectId": "unnamed_e280bbe38193e3828ce38292",
-      "to": "grant_keyword"
+      "cardId": "RK-110",
+      "effectId": "no_e680a7",
+      "to": "effect_card"
     },
     {
-      "cardId": "RM-019",
-      "effectId": "unnamed_e280bbe38193e3828ce3818c",
-      "to": "grant_keyword"
+      "cardId": "RK-111",
+      "effectId": "fx_unknown_e99d9e",
+      "to": "effect_card"
     },
     {
-      "cardId": "RM-028",
-      "effectId": "unnamed_e280bbe38193e3828ce3818c",
-      "to": "grant_keyword"
+      "cardId": "RK-115",
+      "effectId": "endoobuwarudo",
+      "to": "effect_card"
     },
     {
-      "cardId": "RM-029",
-      "effectId": "unnamed_e280bb5350e3818ce7a9bae6",
-      "to": "grant_keyword"
+      "cardId": "RK-120",
+      "effectId": "nirashatoru",
+      "to": "effect_card"
     },
     {
-      "cardId": "RM-033",
-      "effectId": "unnamed_e280bbe38193e3828ce381af",
-      "to": "grant_keyword"
+      "cardId": "RK-123",
+      "effectId": "suru_hikari_no_tsubasa",
+      "to": "effect_card"
     },
     {
-      "cardId": "RM-045",
-      "effectId": "unnamed_e280bbe38193e381aee383a6",
-      "to": "grant_keyword"
+      "cardId": "RK-124",
+      "effectId": "wo_mamoru_ru",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-319",
-      "effectId": "unnamed_e280bbe887aae8bb8de383a9",
-      "to": "grant_keyword"
+      "cardId": "RK-126",
+      "effectId": "gyarenrauza",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-332",
-      "effectId": "unnamed_e280bbe38193e3828ce3818c",
-      "to": "grant_keyword"
+      "cardId": "RK-128",
+      "effectId": "rengerurauza",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-368",
-      "effectId": "unnamed_e280bbe38193e3828ce381af",
-      "to": "grant_keyword"
+      "cardId": "RK-129",
+      "effectId": "sandasupeida",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-370",
-      "effectId": "unnamed_e280bbe38193e3828ce381af",
-      "to": "grant_keyword"
+      "cardId": "RK-131",
+      "effectId": "fx_unknown_e99fb3",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-375",
-      "effectId": "unnamed_e280bbe38193e3828ce3818c",
-      "to": "grant_keyword"
+      "cardId": "RK-132",
+      "effectId": "nobakuapu",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-393",
-      "effectId": "unnamed_e280bb4554e381ae53e383a6",
-      "to": "grant_keyword"
+      "cardId": "RK-135",
+      "effectId": "fx_unknown_e6bd9c",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-414",
-      "effectId": "unnamed_e280bbe789b9e5beb4e3808c",
-      "to": "grant_keyword"
+      "cardId": "RK-136",
+      "effectId": "raidashuteingu",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-419",
-      "effectId": "unnamed_e280bbe38193e3828ce381af",
-      "to": "grant_keyword"
+      "cardId": "RK-138",
+      "effectId": "na",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-426",
-      "effectId": "unnamed_e280bbe38193e3828ce3818c",
-      "to": "grant_keyword"
+      "cardId": "RK-139",
+      "effectId": "hakanarii",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-427",
-      "effectId": "unnamed_e280bbe38193e3828ce3818c",
-      "to": "grant_keyword"
+      "cardId": "RK-141",
+      "effectId": "denebikubasuta",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-440",
-      "effectId": "unnamed_e280bbe38193e381aee382ab",
-      "to": "grant_keyword"
+      "cardId": "RK-146",
+      "effectId": "denebukyandei",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-440",
-      "effectId": "unnamed_e280bbe38193e3828ce381af",
-      "to": "grant_keyword"
+      "cardId": "RK-146",
+      "effectId": "denebukyandei_koreworashus",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-442",
-      "effectId": "unnamed_e280bbe38193e3828ce381af",
-      "to": "grant_keyword"
+      "cardId": "RK-147",
+      "effectId": "redomu",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-452",
-      "effectId": "unnamed_e280bbe38193e3828ce3818c",
-      "to": "grant_keyword"
+      "cardId": "RK-148",
+      "effectId": "furontoakusu",
+      "to": "effect_card"
     },
     {
-      "cardId": "RS-469",
-      "effectId": "unnamed_e280bbe789b9e5beb4e3808c",
-      "to": "grant_keyword"
+      "cardId": "RK-149",
+      "effectId": "ryu",
+      "to": "effect_card"
     }
   ],
   "note": "Re-match catchall grant_keyword stubs via extractEffects PATTERNS."

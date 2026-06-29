@@ -15,6 +15,11 @@ import { countReleasedCommands } from "../restrictions";
 import { opponent } from "../../core/helpers";
 import { promotedKeywordSpFloor } from "../../dsl/promotedKeywordBridge";
 import { legend2EffectiveSp } from "../legend2/fieldEffects";
+import {
+  sr003DiscardDinoBpBonus,
+  sr003SpFloor,
+  srBigBatonSpFloor,
+} from "../srEffects";
 
 export function legend3FieldBpBonus(
   state: GameState,
@@ -38,6 +43,13 @@ export function legend3FieldBpBonus(
   if (role === "attacking" || role === "general") {
     if (findNamedEffectByEffectId(instance.cardId, "star_raiser") && state.activePlayer === playerId) {
       bonus += countReleasedCommands(state.players[playerId]) * 2000;
+    }
+    if (
+      (instance.cardId === "SR-003" ||
+        findNamedEffectByEffectId(instance.cardId, "ryu_geki_ken_ken")) &&
+      state.activePlayer === playerId
+    ) {
+      bonus += sr003DiscardDinoBpBonus(state, playerId);
     }
     if (findNamedEffectByEffectId(instance.cardId, "iron_broken") && state.activePlayer === playerId) {
       bonus += 3000;
@@ -202,6 +214,9 @@ export function legend3EffectiveSp(
   if (promotedFloor > 0) {
     sp = Math.max(sp, promotedFloor);
   }
+
+  sp = Math.max(sp, sr003SpFloor(state, playerId, instance));
+  sp = Math.max(sp, srBigBatonSpFloor(state, playerId, instance));
 
   if (
     instance.cardId === "RS-382" &&

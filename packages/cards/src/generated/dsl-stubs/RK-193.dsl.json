@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_koreworashushitatokikado1nitsukibp1000toshitenononobp",
+          "keyword": "effect_card::RK-193::bamunidoru",
           "duration": "turn"
         }
       ],

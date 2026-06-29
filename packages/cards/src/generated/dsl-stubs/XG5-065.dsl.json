@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_all_enemy_wotanaiyunitowosubete_geki_ha_suru",
+          "keyword": "effect_card::XG5-065::taimubento",
           "duration": "turn"
         }
       ],
