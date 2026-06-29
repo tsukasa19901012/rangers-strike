@@ -1,9 +1,11 @@
 import type { EffectDefinition } from "../dsl/types";
+import { normalizeComboNumberLabel } from "./metaMaps";
 import type { CardAnalysis, ExtractedTrigger, WikiEffectSegment, WikiParseResult } from "./types";
 
 function wikiComboNumberIsRc(parse: WikiParseResult): boolean {
   const raw = parse.status.CN?.trim();
-  return raw === "RC" || raw === "ＲＣ" || raw === "Ｒｃ";
+  if (!raw) return false;
+  return normalizeComboNumberLabel(raw) === "RC";
 }
 
 function inferTriggerFromText(

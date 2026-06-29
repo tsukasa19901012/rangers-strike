@@ -57,10 +57,39 @@ function tacticalSearchOptions(
     state.phase === "battle" ||
     state.pendingBattleEntry !== undefined ||
     state.pendingStrike !== undefined ||
-    state.pendingBattle !== undefined ||
-    state.pendingRush !== undefined;
+    state.pendingBattle !== undefined;
 
   if (!tactical && (base.searchPly ?? 1) > 1) {
+    return { ...base, searchPly: 1 };
+  }
+  return base;
+}
+
+function battleHasCombatOptions(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): boolean {
+  return (
+    actionsOfType(actions, "strike").length > 0 ||
+    actionsOfType(actions, "battle").length > 0 ||
+    actionsOfType(actions, "move_to_battle").length > 0 ||
+    actionsOfType(actions, "mount_ride").length > 0 ||
+    state.pendingBattleEntry !== undefined ||
+    state.pendingStrike !== undefined ||
+    state.pendingBattle !== undefined
+  );
+}
+
+function deepSearchOptions(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+  options: PickCpuActionOptions,
+): SearchOptions | undefined {
+  const base = tacticalSearchOptions(state, options);
+  if (!base || (base.searchPly ?? 1) <= 1) return base;
+  if (state.phase === "battle" && !battleHasCombatOptions(state, playerId, actions)) {
     return { ...base, searchPly: 1 };
   }
   return base;
@@ -96,7 +125,7 @@ function pickReactionAction(
   }
 
   const pass = actions.find((a) => a.type === passType);
-  const sim = tacticalSearchOptions(state, options);
+  const sim = deepSearchOptions(state, playerId, actions, options);
 
   if (passType === "pass_strike_reaction") {
     const strikeCandidates = dedupeActions([
@@ -239,7 +268,9 @@ function pickCpuActionInner(
   options: PickCpuActionOptions = {},
 ): GameAction | null {
   const enableSearch = options.enableSearch ?? true;
-  const sim = tacticalSearchOptions(state, options);
+  const simShallow = (): SearchOptions | undefined => tacticalSearchOptions(state, options);
+  const simTactical = (actions: GameAction[]): SearchOptions | undefined =>
+    deepSearchOptions(state, playerId, actions, options) ?? tacticalSearchOptions(state, options);
 
   if (state.winner) return null;
 
@@ -281,7 +312,7 @@ function pickCpuActionInner(
     const actions = getLegalActions(state);
     if (enableSearch) {
       const choices = actions.filter((a) => a.type === "resolve_ride_off_choice");
-      const searched = pickBestBySearch(state, playerId, choices, sim);
+      const searched = pickBestBySearch(state, playerId, choices, simShallow());
       if (searched) return searched;
     }
     return pickRideOffChoice(state, playerId, actions);
@@ -295,7 +326,7 @@ function pickCpuActionInner(
     if (enableSearch && pending.kind === "deck_top_or_bottom") {
       const placements = actionsOfType(actions, "resolve_ruin_survey");
       if (placements.length > 0) {
-        return pickBestBySearch(state, playerId, placements, sim) ?? pickEffectChoice(state, pending, actions);
+        return pickBestBySearch(state, playerId, placements, simShallow()) ?? pickEffectChoice(state, pending, actions);
       }
     }
 
@@ -306,7 +337,7 @@ function pickCpuActionInner(
     if (pending.kind === "seabed_draw") {
       const placements = actionsOfType(actions, "resolve_seabed_draw");
       if (placements.length > 0) {
-        return pickBestBySearch(state, playerId, placements, sim) ?? placements[0] ?? null;
+        return pickBestBySearch(state, playerId, placements, simShallow()) ?? placements[0] ?? null;
       }
     }
 
@@ -314,7 +345,7 @@ function pickCpuActionInner(
       const pay = actions.find((a) => a.type === "resolve_effect_choice");
       const skip = actions.find((a) => a.type === "skip_effect_choice");
       if (pay && skip) {
-        return pickBestBySearch(state, playerId, [pay, skip], sim);
+        return pickBestBySearch(state, playerId, [pay, skip], simShallow());
       }
     }
 
@@ -322,7 +353,7 @@ function pickCpuActionInner(
       const pay = actions.filter((a) => a.type === "resolve_effect_choice");
       const skip = actions.find((a) => a.type === "skip_effect_choice");
       if (pay.length > 0 && skip) {
-        const searched = pickBestBySearch(state, playerId, [...pay, skip], sim);
+        const searched = pickBestBySearch(state, playerId, [...pay, skip], simShallow());
         if (searched) return searched;
       }
     }
@@ -360,7 +391,7 @@ function pickCpuActionInner(
         ...actionsOfType(actions, "battle"),
         ...actions.filter((a) => a.type === "pass_battle_entry"),
       ];
-      const searched = pickBestBySearch(state, playerId, candidates, sim);
+      const searched = pickBestBySearch(state, playerId, candidates, simTactical(actions));
       if (searched) return searched;
     }
 
@@ -412,7 +443,7 @@ function pickCpuActionInner(
           candidates = candidates.filter((a) => a.type !== "end_phase");
         }
         candidates = dedupeActions(candidates);
-        const best = pickBestBySearch(state, playerId, candidates, sim);
+        const best = pickBestBySearch(state, playerId, candidates, simShallow());
         if (best) return best;
       }
 
@@ -458,7 +489,7 @@ function pickCpuActionInner(
         if (hasRushUnits || hasCombat) {
           candidates = candidates.filter((a) => a.type !== "end_phase");
         }
-        const best = pickBestBySearch(state, playerId, candidates, sim);
+        const best = pickBestBySearch(state, playerId, candidates, simTactical(actions));
         if (best) return best;
       }
 

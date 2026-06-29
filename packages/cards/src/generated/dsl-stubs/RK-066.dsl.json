@@ -9,9 +9,12 @@
   "powerCost": 3,
   "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【俺の必殺技！】これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
   "rawText": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【俺の必殺技！】これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
+  "imageUrl": "/cards/promoted/RK-066.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-066.jpg",
   "bp": 3000,
   "size": "S",
   "sp": 1,
+  "comboNumber": "RC",
   "features": [
     "仮面ライダー",
     "男",
@@ -19,7 +22,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_no_strike_if_enemy_battle",
+      "id": "unnamed_e280bbe695b5e8bb8de38390",
       "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
       "trigger": {
         "type": "while_in_field"
@@ -37,7 +40,7 @@
       "name": "俺の必殺技！",
       "text": "これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "on_strike"
+        "type": "riding_combo"
       },
       "condition": {
         "type": "has_target",
@@ -80,7 +83,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "imageUrl": "/cards/promoted/RK-066.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-066.jpg"
+  }
 }

@@ -9,8 +9,11 @@
   "powerCost": 0,
   "text": "※このカードはデッキに好きな枚数入れてもよい。 ※これは、自分がターンを終えるとき、ビークルにライドしていなければ撃破される。",
   "rawText": "※このカードはデッキに好きな枚数入れてもよい。 ※これは、自分がターンを終えるとき、ビークルにライドしていなければ撃破される。",
+  "imageUrl": "/cards/promoted/RK-094.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-094.jpg",
   "bp": 1500,
   "size": "S",
+  "comboNumber": "RC",
   "features": [
     "ショッカー",
     "男",
@@ -18,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_deck_unlimited",
+      "id": "unnamed_e280bbe38193e381aee382ab",
       "text": "※このカードはデッキに好きな枚数入れてもよい。",
       "trigger": {
         "type": "while_in_field"
@@ -57,7 +60,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "imageUrl": "/cards/promoted/RK-094.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-094.jpg"
+  }
 }

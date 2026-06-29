@@ -9,9 +9,12 @@
   "powerCost": 3,
   "text": "【ファイズエッジ】敵軍バトルエリアから、BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「オートバジンBM」からコンビネーションするときはナンバーに関係なく発動する）",
   "rawText": "【ファイズエッジ】敵軍バトルエリアから、BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「オートバジンBM」からコンビネーションするときはナンバーに関係なく発動する）",
+  "imageUrl": "/cards/promoted/RK-064.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-064.jpg",
   "bp": 3000,
   "size": "S",
   "sp": "1/5",
+  "comboNumber": "RC",
   "features": [
     "仮面ライダー",
     "男"
@@ -22,7 +25,7 @@
       "name": "ファイズエッジ",
       "text": "敵軍バトルエリアから、BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「オートバジンBM」からコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "condition": {
         "type": "has_target",
@@ -64,7 +67,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "imageUrl": "/cards/promoted/RK-064.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-064.jpg"
+  }
 }

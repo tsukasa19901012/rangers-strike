@@ -66,10 +66,22 @@ export function parseSp(raw?: string): CardDocument["sp"] {
   return Number.isFinite(n) ? n : null;
 }
 
+export function normalizeComboNumberLabel(raw: string): string {
+  return raw
+    .trim()
+    .replace(/[ＲR]/g, "R")
+    .replace(/[ＣCｃc]/g, "C")
+    .replace(/Ｌ/g, "L")
+    .replace(/[０-９]/g, (ch) =>
+      String.fromCharCode(ch.charCodeAt(0) - 0xff10 + 0x30),
+    );
+}
+
 export function parseComboNumber(raw?: string): CardDocument["comboNumber"] {
   if (!raw || raw === "なし") return null;
-  if (raw === "L" || raw === "R" || raw === "RC") return raw;
-  const n = Number(raw);
+  const normalized = normalizeComboNumberLabel(raw);
+  if (normalized === "L" || normalized === "R" || normalized === "RC") return normalized;
+  const n = Number(normalized);
   return Number.isFinite(n) ? n : null;
 }
 

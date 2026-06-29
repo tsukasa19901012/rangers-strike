@@ -9,50 +9,37 @@
   "powerCost": "10-",
   "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーナイト」を1体選び、自軍ラッシュエリアに出す。 【ダークバイザーツバイ】 自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい。そうしたとき、敵軍バトルエリアからSユニットを好きな数選び撃破してもよい。ただし、選んだユニットの特徴の数の合計が、捨札から選んだカードの必要パワーの数字の合計以下になるように選ぶこと。",
   "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーナイト」を1体選び、自軍ラッシュエリアに出す。 【ダークバイザーツバイ】 自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい。そうしたとき、敵軍バトルエリアからSユニットを好きな数選び撃破してもよい。ただし、選んだユニットの特徴の数の合計が、捨札から選んだカードの必要パワーの数字の合計以下になるように選ぶこと。",
+  "imageUrl": "/cards/promoted/RK-279.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-279.jpg",
   "bp": 5500,
   "size": "S",
   "sp": "1/2",
+  "comboNumber": "RC",
   "features": [
     "仮面ライダー",
     "男",
     "ミラーライダー",
     "サバイブ"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「仮面ライダーナイト」を1体捨札にすれば必要パワー0になる",
+    "partnerName": "仮面ライダーナイト",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーナイト」を1体選び、自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
+        "type": "on_destroy"
       },
       "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "discard",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "rush"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "on_destroy_reanimate_named_from_discard",
+          "duration": "turn"
         }
       ]
     },
@@ -61,29 +48,21 @@
       "name": "ダークバイザーツバイ",
       "text": "自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい。そうしたとき、敵軍バトルエリアからSユニットを好きな数選び撃破してもよい。ただし、選んだユニットの特徴の数の合計が、捨札から選んだカードの必要パワーの数字の合計以下になるように選ぶこと。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "rk_fx::RK-279::dakubaizatsubai",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_discard_named",
-    "text": "自軍「仮面ライダーナイト」を1体捨札にすれば必要パワー0になる",
-    "partnerName": "仮面ライダーナイト",
-    "unitCount": 1
-  },
-  "imageUrl": "/cards/promoted/RK-279.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-279.jpg"
+  }
 }

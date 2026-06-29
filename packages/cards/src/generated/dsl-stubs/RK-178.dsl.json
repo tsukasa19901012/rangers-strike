@@ -9,9 +9,12 @@
   "powerCost": 3,
   "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） ※これはライドオフしたときストライクできない。 【大切断】敵軍バトルエリアから、このユニットのBP以下のBPを持つユニットを1体選び撃破してもよい。",
   "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） ※これはライドオフしたときストライクできない。 【大切断】敵軍バトルエリアから、このユニットのBP以下のBPを持つユニットを1体選び撃破してもよい。",
+  "imageUrl": "/cards/promoted/RK-178.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-178.jpg",
   "bp": 2000,
   "size": "S",
   "sp": "1/2",
+  "comboNumber": "RC",
   "features": [
     "仮面ライダー",
     "男"
@@ -32,7 +35,7 @@
       ]
     },
     {
-      "id": "unnamed_no_strike_after_rideoff",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはライドオフしたときストライクできない。",
       "trigger": {
         "type": "while_in_field"
@@ -50,7 +53,7 @@
       "name": "大切断",
       "text": "敵軍バトルエリアから、このユニットのBP以下のBPを持つユニットを1体選び撃破してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "condition": {
         "type": "has_target",
@@ -98,7 +101,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "imageUrl": "/cards/promoted/RK-178.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-178.jpg"
+  }
 }

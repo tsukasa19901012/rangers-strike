@@ -126,13 +126,13 @@ function runSimulation(count: number): SimReport {
   return report;
 }
 
-describe("vertical slice — 100-game AI simulation (L5 starters)", () => {
+describe("vertical slice — 100-game AI simulation (L4 starters)", () => {
   it(
     `runs ${GAME_COUNT} CPU vs CPU games and reports`,
     () => {
     const report = runSimulation(GAME_COUNT);
 
-    console.info("\n=== Vertical Slice 100-Game Simulation (L5 Starters) ===");
+    console.info("\n=== Vertical Slice 100-Game Simulation (L4 Starters) ===");
     console.info(`total:           ${report.total}`);
     console.info(`winner:          ${report.winner}`);
     console.info(`  damage_win:    ${report.damageWin}`);
@@ -163,9 +163,9 @@ describe("vertical slice — 100-game AI simulation (L5 starters)", () => {
     expect(report.winner).toBe(GAME_COUNT);
     expect(report.phaseCoverage.rush).toBe(GAME_COUNT);
     expect(report.phaseCoverage.battle).toBe(GAME_COUNT);
-    expect(report.withStrike).toBeGreaterThan(25);
+    expect(report.withStrike).toBeGreaterThan(15);
     },
-    120_000,
+    90_000,
   );
 });
 

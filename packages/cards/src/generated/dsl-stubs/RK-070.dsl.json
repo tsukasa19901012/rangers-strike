@@ -9,8 +9,11 @@
   "powerCost": 2,
   "text": "※これはアタックされるときBP+4000される。 【アバランチブレイク】敵軍Sユニットの数が自軍Sユニットの数より5体以上多いとき、自軍Sユニットと同じ数になるまで敵軍Sユニットを選び、選んだユニットを持ち主のパワーゾーンに送る",
   "rawText": "※これはアタックされるときBP+4000される。 【アバランチブレイク】敵軍Sユニットの数が自軍Sユニットの数より5体以上多いとき、自軍Sユニットと同じ数になるまで敵軍Sユニットを選び、選んだユニットを持ち主のパワーゾーンに送る",
+  "imageUrl": "/cards/promoted/RK-070.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-070.jpg",
   "bp": 1000,
   "size": "S",
+  "comboNumber": "RC",
   "features": [
     "仮面ライダー",
     "男"
@@ -35,7 +38,7 @@
       "name": "アバランチブレイク",
       "text": "敵軍Sユニットの数が自軍Sユニットの数より5体以上多いとき、自軍Sユニットと同じ数になるまで敵軍Sユニットを選び、選んだユニットを持ち主のパワーゾーンに送る",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {
@@ -57,7 +60,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "imageUrl": "/cards/promoted/RK-070.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-070.jpg"
+  }
 }

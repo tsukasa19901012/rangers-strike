@@ -9,9 +9,12 @@
   "powerCost": 3,
   "text": "【一本釣り】敵軍パワーゾーンのダメージ以外のカードから、Sユニットのカードを1枚選び、敵軍バトルエリアに出してもよい。このとき出したユニットの効果は発動しない。",
   "rawText": "【一本釣り】敵軍パワーゾーンのダメージ以外のカードから、Sユニットのカードを1枚選び、敵軍バトルエリアに出してもよい。このとき出したユニットの効果は発動しない。",
+  "imageUrl": "/cards/promoted/RK-061.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-061.jpg",
   "bp": 2000,
   "size": "S",
   "sp": "1/4",
+  "comboNumber": "RC",
   "features": [
     "仮面ライダー",
     "男",
@@ -23,23 +26,21 @@
       "name": "一本釣り",
       "text": "敵軍パワーゾーンのダメージ以外のカードから、Sユニットのカードを1枚選び、敵軍バトルエリアに出してもよい。このとき出したユニットの効果は発動しない。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "enemy_s_from_power_to_battle",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "imageUrl": "/cards/promoted/RK-061.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-061.jpg"
+  }
 }

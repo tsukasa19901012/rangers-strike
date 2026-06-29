@@ -9,9 +9,12 @@
   "powerCost": 4,
   "text": "※これはライド中、ライドしていない敵軍Sユニットにアタックされない。 【マイティキック】自軍ターン中、これは自軍バトルエリアにある特徴「警察」を持つユニット1体につきBP+1000される。",
   "rawText": "※これはライド中、ライドしていない敵軍Sユニットにアタックされない。 【マイティキック】自軍ターン中、これは自軍バトルエリアにある特徴「警察」を持つユニット1体につきBP+1000される。",
+  "imageUrl": "/cards/promoted/RK-029.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-029.jpg",
   "bp": 3000,
   "size": "S",
   "sp": "1/3",
+  "comboNumber": "RC",
   "features": [
     "仮面ライダー",
     "男",
@@ -37,7 +40,7 @@
       "name": "マイティキック",
       "text": "自軍ターン中、これは自軍バトルエリアにある特徴「警察」を持つユニット1体につきBP+1000される。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {
@@ -52,7 +55,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "imageUrl": "/cards/promoted/RK-029.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-029.jpg"
+  }
 }

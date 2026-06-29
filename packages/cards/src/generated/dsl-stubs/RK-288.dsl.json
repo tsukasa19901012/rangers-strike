@@ -9,9 +9,12 @@
   "powerCost": 3,
   "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【デルタムーバー】このターン、敵軍バトルエリアのすべてのSユニットはBP-500される。（BP0以下になったユニットは撃破される）",
   "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【デルタムーバー】このターン、敵軍バトルエリアのすべてのSユニットはBP-500される。（BP0以下になったユニットは撃破される）",
+  "imageUrl": "/cards/promoted/RK-288.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-288.jpg",
   "bp": 2000,
   "size": "S",
   "sp": "1/5",
+  "comboNumber": "RC",
   "features": [
     "仮面ライダー",
     "男"
@@ -36,16 +39,16 @@
       "name": "デルタムーバー",
       "text": "このターン、敵軍バトルエリアのすべてのSユニットはBP-500される。（BP0以下になったユニットは撃破される）",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "rk_fx::RK-288::derutamuba",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -59,7 +62,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "imageUrl": "/cards/promoted/RK-288.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-288.jpg"
+  }
 }

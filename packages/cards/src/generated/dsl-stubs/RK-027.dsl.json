@@ -9,9 +9,12 @@
   "powerCost": 4,
   "text": "※これはライド中、BP+1000される。 【ライダーキック】自軍も敵軍もSユニットが1体しかいなければ、敵軍Sユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
   "rawText": "※これはライド中、BP+1000される。 【ライダーキック】自軍も敵軍もSユニットが1体しかいなければ、敵軍Sユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
+  "imageUrl": "/cards/promoted/RK-027.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-027.jpg",
   "bp": 3000,
   "size": "S",
   "sp": "1/3",
+  "comboNumber": "RC",
   "features": [
     "仮面ライダー",
     "男",
@@ -20,7 +23,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_ride_bp_boost_1000",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはライド中、BP+1000される。",
       "trigger": {
         "type": "while_in_field"
@@ -38,7 +41,7 @@
       "name": "ライダーキック",
       "text": "自軍も敵軍もSユニットが1体しかいなければ、敵軍Sユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "condition": {
         "type": "has_target",
@@ -89,7 +92,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "imageUrl": "/cards/promoted/RK-027.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-027.jpg"
+  }
 }

@@ -120,14 +120,14 @@ function pickNonBattleEntryStallAction(
 }
 
 /**
- * CPU 探索（デフォルト Lv5）で双方を進め、勝敗または停止条件まで進める。
+ * CPU 探索（デフォルト Lv4）で双方を進め、勝敗または停止条件まで進める。
  */
 export function playStarterMatchUntilEnd(
   initial: GameState,
   options: { maxSteps?: number; cpuLevel?: CpuLevel } = {},
 ): StarterMatchResult {
   const maxSteps = options.maxSteps ?? 12_000;
-  const cpuLevel = options.cpuLevel ?? 5;
+  const cpuLevel = options.cpuLevel ?? 4;
   let state = initial;
   const phasesSeen = new Set<Phase>();
   const actionCounts: Record<string, number> = {};

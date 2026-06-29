@@ -9,9 +9,12 @@
   "powerCost": 0,
   "text": "【電波投げ】敵軍山札の上から2枚をオモテにする。オモテにしたカードの中から、特徴「男」を持つユニットカードを持ち主のコマンドゾーンにホールド状態で置く。置けなかったカードと、それ以外のカードは、相手が好きな順で山札の上に戻す。",
   "rawText": "【電波投げ】敵軍山札の上から2枚をオモテにする。オモテにしたカードの中から、特徴「男」を持つユニットカードを持ち主のコマンドゾーンにホールド状態で置く。置けなかったカードと、それ以外のカードは、相手が好きな順で山札の上に戻す。",
+  "imageUrl": "/cards/promoted/RK-025.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-025.jpg",
   "bp": 1000,
   "size": "S",
   "sp": "1/5",
+  "comboNumber": "RC",
   "features": [
     "女",
     "改造人間"
@@ -22,7 +25,7 @@
       "name": "電波投げ",
       "text": "敵軍山札の上から2枚をオモテにする。オモテにしたカードの中から、特徴「男」を持つユニットカードを持ち主のコマンドゾーンにホールド状態で置く。置けなかったカードと、それ以外のカードは、相手が好きな順で山札の上に戻す。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {
@@ -37,7 +40,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "imageUrl": "/cards/promoted/RK-025.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-025.jpg"
+  }
 }

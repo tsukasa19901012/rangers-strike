@@ -9,9 +9,12 @@
   "powerCost": 3,
   "text": "※これはラッシュしたターンにバトルエリアに出られない。 【力の2号】このターン、これはBP+2000される。",
   "rawText": "※これはラッシュしたターンにバトルエリアに出られない。 【力の2号】このターン、これはBP+2000される。",
+  "imageUrl": "/cards/promoted/RK-073.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-073.jpg",
   "bp": 5000,
   "size": "S",
   "sp": "1/5",
+  "comboNumber": "RC",
   "features": [
     "仮面ライダー",
     "男",
@@ -19,7 +22,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_no_battle_rush_turn",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはラッシュしたターンにバトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"
@@ -37,7 +40,7 @@
       "name": "力の2号",
       "text": "このターン、これはBP+2000される。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {
@@ -62,7 +65,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "imageUrl": "/cards/promoted/RK-073.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-073.jpg"
+  }
 }
