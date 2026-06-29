@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-284::desubanishu",
-          "duration": "permanent"
+          "keyword": "combo_from_named_baiogurizakarakonbineshonshitatokidekirubatorueriakarab",
+          "duration": "turn"
         }
       ],
       "optional": true

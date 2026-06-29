@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-639::nejisuringu",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_ierowotsusyunitowo1bichinopawazonnidamejinishite",
+          "duration": "turn"
         }
       ],
       "optional": false

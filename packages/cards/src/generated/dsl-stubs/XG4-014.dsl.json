@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-014::kibaaro",
-          "duration": "permanent"
+          "keyword": "opponent_must_bp4000noyunitowo1ndemoyoisoushitatokihasonoyunitowo",
+          "duration": "turn"
         }
       ],
       "optional": true

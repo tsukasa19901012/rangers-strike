@@ -34,8 +34,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-323::shadouberu",
-          "duration": "permanent"
+          "keyword": "ride_action_gatanwoerutokikoreniraidoshiteiruyunitogahorudonarabasonoyun",
+          "duration": "turn"
         }
       ],
       "optional": true

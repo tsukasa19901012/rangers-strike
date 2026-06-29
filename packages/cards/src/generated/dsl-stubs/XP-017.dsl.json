@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-017::nohakai",
-          "duration": "permanent"
+          "keyword": "power_zone_action_tonopawazonnokadonowokurabegaipawazonnochiha",
+          "duration": "turn"
         }
       ],
       "optional": false

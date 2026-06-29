@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-231::mizue6bd9c",
-          "duration": "permanent"
+          "keyword": "hold_remaining_gatanwoerutokikoreworirisusurukahorudoshitemoyoikorehahor",
+          "duration": "turn"
         }
       ],
       "optional": true
@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-231::mizugatanwoeruto",
-          "duration": "permanent"
+          "keyword": "hold_remaining_gatanwoerutokikonoyunitoworirisusurukahorudoshitemoyoikor",
+          "duration": "turn"
         }
       ],
       "optional": true

@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-29T00:43:37.607Z",
+  "generatedAt": "2026-06-29T08:44:10.588Z",
   "summary": {
     "catalogTotal": 1849,
-    "coreCards": 698,
-    "promotedCards": 1151,
-    "dslRegistryImplemented": 1847,
-    "dslRegistryPartial": 2,
+    "coreCards": 1052,
+    "promotedCards": 797,
+    "dslRegistryImplemented": 1848,
+    "dslRegistryPartial": 1,
     "dslRegistryUnimplemented": 0,
     "multiCategoryCards": 122,
-    "partialEffectCards": 2,
+    "partialEffectCards": 1,
     "implementedOperations": 38
   },
   "ruleGaps": [
@@ -90,12 +90,6 @@
     }
   ],
   "partialCards": [
-    {
-      "id": "RS-410",
-      "name": "冥府神ドレイク",
-      "reason": "catchall_interpret fallback（効果文はあるが専用実装なし）",
-      "effectPreview": "これは敵軍ユニットが1体もなければ「SP1」になる。"
-    },
     {
       "id": "XG7-048",
       "name": "仮面ライダーオーズ・ガタトラバ",

@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-007::makusushatoru",
-          "duration": "permanent"
+          "keyword": "grant_ability_konoyunitohahorudonono_chikara_worukorehauinguwotanaiyunit",
+          "duration": "turn"
         }
       ]
     }

@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-229::gekibaku",
-          "duration": "permanent"
+          "keyword": "damage_action_batorueriakarayunitowo1ndemoyoisoushitatokipawazonnoomo",
+          "duration": "turn"
         }
       ],
       "optional": true

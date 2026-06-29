@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-214::hikarimirakurudan",
-          "duration": "permanent"
+          "keyword": "release_command_action_konotansyunitogabatorudeyunitowo_geki_ha_surutabi",
+          "duration": "turn"
         }
       ],
       "optional": true

@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-615::jakakobaku",
-          "duration": "permanent"
+          "keyword": "grant_effect_batorueriakarabururedogurinwotsusyunitowosorezore1zutsu",
+          "duration": "turn"
         }
       ],
       "optional": true

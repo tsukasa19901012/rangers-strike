@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-303::noe693ac",
-          "duration": "turn"
+          "keyword": "deploy_rush_area_koreganoniarutanmatahawotsuyunitoga_geki_ha_sarete",
+          "duration": "permanent"
         }
       ],
       "optional": true

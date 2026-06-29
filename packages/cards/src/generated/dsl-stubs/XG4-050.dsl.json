@@ -35,8 +35,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-050::barukan",
-          "duration": "permanent"
+          "keyword": "ride_action_raidosareteirukonobikurugabatorueriakararashuerianirutokiba",
+          "duration": "turn"
         }
       ],
       "optional": true

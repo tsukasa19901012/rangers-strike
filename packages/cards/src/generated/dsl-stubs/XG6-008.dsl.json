@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-008::honooshinken",
-          "duration": "turn"
+          "keyword": "hold_on_enter_battle_oininokarawoomotenishipawanowoberuworisuno",
+          "duration": "permanent"
         }
       ],
       "optional": true

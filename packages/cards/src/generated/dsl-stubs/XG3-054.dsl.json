@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-054::kemeru",
-          "duration": "permanent"
+          "keyword": "ma_category_korehamawotanaisyunitoniatakusarenai",
+          "duration": "turn"
         }
       ],
       "optional": false

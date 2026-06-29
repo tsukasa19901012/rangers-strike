@@ -55,8 +55,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-506::basuonmisairu",
-          "duration": "permanent"
+          "keyword": "ride_action_notanyunitoharaidoofudekinai",
+          "duration": "turn"
         }
       ],
       "optional": false

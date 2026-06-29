@@ -69,8 +69,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-011::nohikari",
-          "duration": "permanent"
+          "keyword": "exclude_game_nonigingano_hikari_wotsuyunitoga5arebabatoruerianoyunitowo",
+          "duration": "turn"
         }
       ],
       "optional": false

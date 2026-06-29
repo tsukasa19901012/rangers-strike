@@ -37,8 +37,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-065::fxunknowne9a39b",
-          "duration": "permanent"
+          "keyword": "grant_ability_koreniraidoshiteiruyunitohano_chikara_woruuingu",
+          "duration": "turn"
         }
       ]
     }

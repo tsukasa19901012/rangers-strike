@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-046::kingusutonfurashu",
-          "duration": "permanent"
+          "keyword": "pick_from_hand_ha1doroshitekaranowo1binisurusoushitatokinishitaka",
+          "duration": "turn"
         }
       ],
       "optional": false

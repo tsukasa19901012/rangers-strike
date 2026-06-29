@@ -71,8 +71,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-055::konbochienji",
-          "duration": "permanent"
+          "keyword": "ride_action_kadonitatobawomanaimofutoozudoraibawotsuyunitokadowo",
+          "duration": "turn"
         }
       ],
       "optional": false

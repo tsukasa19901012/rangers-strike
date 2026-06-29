@@ -57,8 +57,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SX-009::batontachi",
-          "duration": "permanent"
+          "keyword": "deck_search_koregaerianiarurashufueizugotoni1dakekorenosyuni",
+          "duration": "turn"
         }
       ],
       "optional": true

@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-228::gekikaze",
-          "duration": "permanent"
+          "keyword": "pick_remaining_noyorinonogakerebanowonaide1ndemoyoisou",
+          "duration": "turn"
         }
       ],
       "optional": true

@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-487::kazetoshi",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_koretokategorinolyunitogakonoyunitokarakonbineshonsur",
+          "duration": "turn"
         }
       ],
       "optional": false

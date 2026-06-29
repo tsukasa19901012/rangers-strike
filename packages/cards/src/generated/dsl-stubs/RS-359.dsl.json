@@ -39,8 +39,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-359::noe69c80",
-          "duration": "permanent"
+          "keyword": "rush_discard_search_koregarashuerianiarugaotnolyunitoworashusurutokikore",
+          "duration": "turn"
         }
       ],
       "optional": true

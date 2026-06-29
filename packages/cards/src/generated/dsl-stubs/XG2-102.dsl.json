@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-102::denjiendo",
-          "duration": "permanent"
+          "keyword": "destroy_choose_enemy_mekamatahawotsusyunitowo1bi_geki_ha_shitemoyoi",
+          "duration": "turn"
         }
       ],
       "optional": true

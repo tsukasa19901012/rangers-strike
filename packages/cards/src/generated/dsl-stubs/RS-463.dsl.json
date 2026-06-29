@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-463::meru",
-          "duration": "permanent"
+          "keyword": "opponent_must_nokarakadowo1binisetemoyoisoushitatokisetakadonopa",
+          "duration": "turn"
         }
       ],
       "optional": false

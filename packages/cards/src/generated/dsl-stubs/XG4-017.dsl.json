@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-017::gaohasurarodosunaipamodo",
-          "duration": "permanent"
+          "keyword": "ride_action_koregabatorudeyunitowo_geki_ha_shitatokikorega_geki_ha_shita",
+          "duration": "turn"
         }
       ],
       "optional": true

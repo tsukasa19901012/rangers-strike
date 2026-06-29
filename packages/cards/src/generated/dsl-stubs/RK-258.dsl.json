@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-258::fxunknowne78c9b",
-          "duration": "permanent"
+          "keyword": "damage_action_konotanwotsuyunitowo1_geki_ha_shitenishitanaragatanwo",
+          "duration": "turn"
         }
       ],
       "optional": false

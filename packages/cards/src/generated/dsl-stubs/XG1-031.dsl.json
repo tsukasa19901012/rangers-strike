@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-031::dorudorudan",
-          "duration": "permanent"
+          "keyword": "power_zone_action_rashueriakara_honoo_shin_wochinanbaniwotsumyunitowo1bi",
+          "duration": "turn"
         }
       ],
       "optional": true

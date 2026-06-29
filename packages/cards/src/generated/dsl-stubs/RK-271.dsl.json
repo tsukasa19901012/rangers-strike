@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-271::raijingumaiteikiku",
-          "duration": "permanent"
+          "keyword": "destroy_all_enemy_koregabatorudeyunitowo_geki_ha_shitatokikorega_geki_ha",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-039::mojikaradan",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_koregaerianiarugatanwoerutokiyunitowo1bichinopa",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-002::woru",
-          "duration": "permanent"
+          "keyword": "grant_effect_koregapawazondeomote_ko_kininateirurashufueizunowo",
+          "duration": "turn"
         }
       ],
       "optional": true

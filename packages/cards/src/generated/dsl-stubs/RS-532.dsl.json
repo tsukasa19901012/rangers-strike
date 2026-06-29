@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-532::misairue3839f",
-          "duration": "permanent"
+          "keyword": "discard_to_zone_nonayunitowo1bi_geki_ha_surutadashindayunitononinayuni",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-379::kaminobi",
-          "duration": "permanent"
+          "keyword": "grant_effect_manokomandowotsuhorudoshitenowodekirukonotanmekawotsu",
+          "duration": "turn"
         }
       ],
       "optional": true

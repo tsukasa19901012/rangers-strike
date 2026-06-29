@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-040::daburuakushon",
-          "duration": "turn"
+          "keyword": "hold_on_enter_battle_koreganoniaruyunitogabatoruerianitatokiyunitoga1mo",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-074::raidorusuteiku",
+          "keyword": "discard_to_zone_koregasyunitoniatakusurutokibatorunonibatorunoyunitowoch",
           "duration": "turn"
         }
       ],

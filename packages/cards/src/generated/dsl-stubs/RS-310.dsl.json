@@ -32,8 +32,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-310::karakurininpotsuno",
-          "duration": "permanent"
+          "keyword": "bp_modify_korehatonodameji1nitsukibp1000sarebp8000notokisp1",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-372::chienjipawa",
-          "duration": "permanent"
+          "keyword": "bp_modify_korehadameji1nitsukibp1000saregatanwoerutokibp8000",
+          "duration": "turn"
         }
       ],
       "optional": false

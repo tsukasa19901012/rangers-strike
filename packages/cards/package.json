@@ -42,6 +42,14 @@
       "types": "./dist/pipeline/implementedGrantKeywords.d.ts",
       "import": "./dist/pipeline/implementedGrantKeywords.js"
     },
+    "./pipeline/effectCardKeywords": {
+      "types": "./dist/pipeline/effectCardKeywords.d.ts",
+      "import": "./dist/pipeline/effectCardKeywords.js"
+    },
+    "./pipeline/noteCardKeywords": {
+      "types": "./dist/pipeline/noteCardKeywords.d.ts",
+      "import": "./dist/pipeline/noteCardKeywords.js"
+    },
     "./catalog/parity": {
       "types": "./dist/catalog/parity.d.ts",
       "import": "./dist/catalog/parity.js"

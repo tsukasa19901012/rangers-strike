@@ -55,8 +55,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-026::gurandeionireiza",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_komandowo1tsubinishitemoyoisoushitatokikomandowo1tsub",
+          "duration": "turn"
         }
       ],
       "optional": true

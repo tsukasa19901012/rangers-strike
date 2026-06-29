@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-050::raidashindoromu",
+          "keyword": "destroy_all_enemy_noniraidawotsuyunitoga10arebasubetenoyunito",
           "duration": "turn"
         }
       ],

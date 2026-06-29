@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-011::jairoken",
-          "duration": "permanent"
+          "keyword": "combo_action_korenobatorueriadenobiwoesononopawanowotsuyunito",
+          "duration": "turn"
         }
       ],
       "optional": true

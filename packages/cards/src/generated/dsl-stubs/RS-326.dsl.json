@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-326::damashi",
-          "duration": "permanent"
+          "keyword": "deploy_rush_area_nokarabp16000nolyunitonokadowo1birashueria",
+          "duration": "turn"
         }
       ],
       "optional": true

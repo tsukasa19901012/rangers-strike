@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-511::mantanganrodomodo",
-          "duration": "permanent"
+          "keyword": "power_zone_action_pawazonnokadogapawazonnokadoyorinakerebano",
+          "duration": "turn"
         }
       ],
       "optional": false

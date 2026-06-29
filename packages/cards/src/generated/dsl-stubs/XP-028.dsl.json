@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-028::samonwandapawa",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_koreganoniaruganoopereshonkadowoshitesonowo",
+          "duration": "turn"
         }
       ],
       "optional": true

@@ -66,8 +66,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-658::fxunknowne7aa81",
-          "duration": "permanent"
+          "keyword": "deploy_battle_area_rashueriakarasyunitowo2madebibatoruerianishitemoyoisu",
+          "duration": "turn"
         }
       ],
       "optional": true

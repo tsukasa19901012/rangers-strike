@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-026::yamiono",
-          "duration": "permanent"
+          "keyword": "grant_ability_damejiga3narakorehano_chikara_worusp1",
+          "duration": "turn"
         }
       ]
     }

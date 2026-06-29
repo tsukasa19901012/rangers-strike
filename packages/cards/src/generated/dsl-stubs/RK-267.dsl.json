@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-267::maken",
-          "duration": "permanent"
+          "keyword": "register_resist_konoyunitotobatorushite_geki_ha_saretayunitoharejisutowo",
+          "duration": "turn"
         }
       ],
       "optional": false

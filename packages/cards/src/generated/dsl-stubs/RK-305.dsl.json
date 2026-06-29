@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-305::no2",
-          "duration": "permanent"
+          "keyword": "release_command_action_komandowo2tsu1tsuzutsunibiririsushitemoyoisoushit",
+          "duration": "turn"
         }
       ],
       "optional": true

@@ -11,6 +11,7 @@ import type { CardDocument, EffectPrimitive } from "../src/dsl/types";
 import { validateCardDocument } from "../src/dsl/validator";
 import { rematchExtractedEffect } from "../src/pipeline/extractEffects";
 import { isUnresolvedCatchallGrantKeyword } from "../src/pipeline/hashGrantKeywords";
+import { isEffectCardKeyword } from "../src/pipeline/effectCardKeywords";
 import { buildNoteCardKeyword } from "../src/pipeline/noteCardKeywords";
 import { buildEffectCardKeyword } from "../src/pipeline/effectCardKeywords";
 import { slugifyEffectId, noteEffectIdFromBody } from "../src/pipeline/metaMaps";
@@ -51,6 +52,38 @@ function isUnnamedEffect(
     (effect.text?.startsWith("※") ?? false) ||
     !effect.name
   );
+}
+
+function needsEffectCardRepair(primitives: EffectPrimitive[]): boolean {
+  return primitives.some(
+    (p) => p.type === "grant_keyword" && p.keyword && isEffectCardKeyword(p.keyword),
+  );
+}
+
+function remigrateEffectCard(
+  cardId: string,
+  effect: NonNullable<CardDocument["effects"]>[number],
+): { changed: boolean; to?: string } {
+  const rematched = rematchExtractedEffect(effect.text ?? "", {
+    name: effect.name,
+    kind: effect.text?.startsWith("※") ? "note" : effect.name ? "named" : "body",
+    trigger: effect.trigger,
+    cardId,
+  });
+  if (!rematched) return { changed: false };
+  const stillEffectCard = rematched.effects.some(
+    (p) => p.type === "grant_keyword" && p.keyword && isEffectCardKeyword(p.keyword),
+  );
+  if (stillEffectCard) return { changed: false };
+
+  effect.id = rematched.id;
+  effect.effects = rematched.effects;
+  if (rematched.name !== undefined) effect.name = rematched.name;
+  if (rematched.trigger !== undefined) effect.trigger = rematched.trigger;
+  if (rematched.optional !== undefined) effect.optional = rematched.optional;
+  if (rematched.condition !== undefined) effect.condition = rematched.condition;
+  const kw = rematched.effects.find((p) => p.type === "grant_keyword")?.keyword;
+  return { changed: true, to: kw ?? rematched.matchedPattern ?? "rematched" };
 }
 
 function remigrateEffect(
@@ -121,6 +154,8 @@ function main(): void {
   let repaired = 0;
   let repairedUnnamed = 0;
   let remaining = 0;
+  let scannedEffectCard = 0;
+  let repairedEffectCard = 0;
   const samples: Array<{ cardId: string; effectId: string; to: string }> = [];
 
   for (const file of readdirSync(dslDir)) {
@@ -130,6 +165,23 @@ function main(): void {
     let changed = false;
 
     for (const effect of doc.effects ?? []) {
+      if (needsEffectCardRepair(effect.effects)) {
+        scannedEffectCard += 1;
+        const result = remigrateEffectCard(doc.id, effect);
+        if (result.changed) {
+          repairedEffectCard += 1;
+          changed = true;
+          if (samples.length < 25) {
+            samples.push({
+              cardId: doc.id,
+              effectId: effect.id,
+              to: result.to ?? "rematched",
+            });
+          }
+        }
+        continue;
+      }
+
       if (!needsHashRepair(effect.effects)) continue;
       scanned += 1;
       if (isUnnamedEffect(effect)) scannedUnnamed += 1;
@@ -162,19 +214,27 @@ function main(): void {
     generatedAt: new Date().toISOString(),
     scanned,
     scannedUnnamed,
+    scannedEffectCard,
     repaired,
     repairedUnnamed,
+    repairedEffectCard,
     remainingCatchallStubs: remaining,
     samples,
-    note: "Re-match catchall grant_keyword stubs via extractEffects PATTERNS.",
+    note: "Re-match catchall grant_keyword stubs and effect_card delegates via extractEffects PATTERNS.",
   };
 
   mkdirSync(dirname(reportPath), { recursive: true });
   writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`);
-  console.log(JSON.stringify({ scanned, scannedUnnamed, repaired, repairedUnnamed, remaining }, null, 2));
+  console.log(
+    JSON.stringify(
+      { scanned, scannedUnnamed, scannedEffectCard, repaired, repairedUnnamed, repairedEffectCard, remaining },
+      null,
+      2,
+    ),
+  );
   console.log(`→ ${reportPath}`);
 
-  if (repaired > 0) {
+  if (repaired > 0 || repairedEffectCard > 0) {
     execSync("npm run emit-full-playable-catalog --workspace=@rangers-strike/cards", {
       cwd: repoRoot,
       stdio: "inherit",

@@ -65,8 +65,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-052::fuaiyasutomuataku",
-          "duration": "permanent"
+          "keyword": "grant_effect_koregaerianiarugatanwoerutokinowodekirusonotan",
+          "duration": "turn"
         }
       ],
       "optional": true

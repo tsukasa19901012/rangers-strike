@@ -31,8 +31,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-088::noe981bf",
-          "duration": "permanent"
+          "keyword": "combo_action_komandowo1tsubinonishitemoyoisoushitatokinokara1",
+          "duration": "turn"
         }
       ],
       "optional": true

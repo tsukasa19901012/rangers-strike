@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-313::ikazuchibureika",
-          "duration": "permanent"
+          "keyword": "optional_then_batoruerianiarusyunitowo1birashuerianishitemoyoisoushi",
+          "duration": "turn"
         }
       ],
       "optional": true

@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-630::megatomahoku",
-          "duration": "permanent"
+          "keyword": "grant_ability_komandoga3tsunaranokarakadowo1bikomandozonniho",
+          "duration": "turn"
         }
       ]
     }

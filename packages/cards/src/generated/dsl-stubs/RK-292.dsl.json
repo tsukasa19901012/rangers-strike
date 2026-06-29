@@ -58,11 +58,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-292::tsuno",
+          "keyword": "grant_effect_tankorega_geki_ha_sareteninatatokinowodekiruwoteku",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

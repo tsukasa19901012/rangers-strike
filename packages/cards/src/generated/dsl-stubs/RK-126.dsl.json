@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-126::gyarenrauza",
-          "duration": "permanent"
+          "keyword": "hand_pick_show_nowo3binisetemoyoisoushitatokisyunitowo1bihoru",
+          "duration": "turn"
         }
       ],
       "optional": true

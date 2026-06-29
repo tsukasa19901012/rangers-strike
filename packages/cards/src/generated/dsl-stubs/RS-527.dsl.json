@@ -35,8 +35,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-527::antibiocannon",
-          "duration": "permanent"
+          "keyword": "ride_action_koreniraidoshiteiruyunitohalyunitoninariotwotsukomando1tsuni",
+          "duration": "turn"
         }
       ],
       "optional": false

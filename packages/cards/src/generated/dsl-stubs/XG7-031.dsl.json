@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-031::saikuronataku",
-          "duration": "permanent"
+          "keyword": "ride_action_koreniraidoshiteiruyunitohabp1000saresyunitomatahasbikuru",
+          "duration": "turn"
         }
       ],
       "optional": false

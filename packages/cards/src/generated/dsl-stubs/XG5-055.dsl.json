@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-055::fuaiaapa",
-          "duration": "permanent"
+          "keyword": "hand_pick_show_nowo2binisetemoyoisoushitatokisyunitowo1bihoru",
+          "duration": "turn"
         }
       ],
       "optional": true

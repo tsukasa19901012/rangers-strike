@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-018::gyabandainamiku",
-          "duration": "permanent"
+          "keyword": "power_zone_action_nobpga4000nosyunitowo1bichinopawazonnitemo",
+          "duration": "turn"
         }
       ],
       "optional": false

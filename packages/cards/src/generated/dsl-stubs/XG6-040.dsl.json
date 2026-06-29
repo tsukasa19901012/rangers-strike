@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-040::raidakiku",
-          "duration": "permanent"
+          "keyword": "opponent_must_korenosyunitogamonakerebahanosyunitowobi_geki_ha_suru",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-096::kuwagachopa",
-          "duration": "permanent"
+          "keyword": "combo_action_batorueriakararirisunosyunitowo2ndemoyoisoushitatokiha",
+          "duration": "turn"
         }
       ],
       "optional": true

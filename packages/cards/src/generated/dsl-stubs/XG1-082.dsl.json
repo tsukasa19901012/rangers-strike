@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-082::shaidano",
-          "duration": "permanent"
+          "keyword": "vehicle_interaction_konobikuruganinatatokipawazonnoomote_ko_kinokadokara",
+          "duration": "turn"
         }
       ],
       "optional": false

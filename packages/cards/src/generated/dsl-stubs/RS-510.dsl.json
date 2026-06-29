@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-510::reshingubareto",
-          "duration": "permanent"
+          "keyword": "opponent_must_nokara_ryo_wotsuyunitokadowo1bipawazonniitemoyo",
+          "duration": "turn"
         }
       ],
       "optional": false

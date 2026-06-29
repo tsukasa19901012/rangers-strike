@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-002::gokaigan",
-          "duration": "permanent"
+          "keyword": "bp_modify_omote_ko_kinopawakaraniwotsukadowokinabinishitemoyoi",
+          "duration": "turn"
         }
       ],
       "optional": true

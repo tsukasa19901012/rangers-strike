@@ -37,8 +37,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SX-005::bikafuainaryujon",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_konoyunitohakomandozonniarukadonokategorigotonino_chi",
+          "duration": "turn"
         }
       ],
       "optional": false

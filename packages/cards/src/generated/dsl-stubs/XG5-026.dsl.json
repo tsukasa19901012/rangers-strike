@@ -66,8 +66,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-026::noe",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_sp1batoruerianiniredoburakuburupinkuwotsusyunitogasorezo",
+          "duration": "turn"
         }
       ],
       "optional": false

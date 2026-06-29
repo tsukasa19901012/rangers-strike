@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-212::bakumirajunakuru",
-          "duration": "permanent"
+          "keyword": "damage_action_tankoregabatorudeyunitowo_geki_ha_shitatokikarakadowo1bi",
+          "duration": "turn"
         }
       ],
       "optional": false

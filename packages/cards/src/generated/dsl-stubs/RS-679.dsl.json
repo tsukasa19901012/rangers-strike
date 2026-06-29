@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-679::daishinken",
+          "keyword": "opponent_must_tankoregabatoruerianitatokihanobatorueriakarayunito",
           "duration": "turn"
         }
       ],

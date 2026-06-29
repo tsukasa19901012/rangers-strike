@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-319::ikusajajimento",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_batorueriakarabpganobpdenaiyunitowobichinokomandozon",
+          "duration": "turn"
         }
       ],
       "optional": false

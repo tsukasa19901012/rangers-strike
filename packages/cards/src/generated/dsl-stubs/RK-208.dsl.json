@@ -64,8 +64,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-208::gekino",
-          "duration": "turn"
+          "keyword": "while_in_field_body_koregarashuerianiarunirashushitatokitoaruyunitogaka",
+          "duration": "permanent"
         }
       ],
       "optional": true

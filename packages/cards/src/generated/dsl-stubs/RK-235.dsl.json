@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-235::abaranchikurashu",
-          "duration": "permanent"
+          "keyword": "power_zone_action_syunitonogasyunitonoyori3itokisyunitowo1",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-101::taigabonba",
-          "duration": "turn"
+          "keyword": "while_in_field_body_koregabatoruerianiarutanbatoruerianowotanaiyu",
+          "duration": "permanent"
         }
       ],
       "optional": false

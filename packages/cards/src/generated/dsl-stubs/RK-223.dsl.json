@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-223::gekikazee99fb3",
-          "duration": "permanent"
+          "keyword": "return_to_zone_nokara3woomotenishitemoyoisoushitatokinokara3woomote",
+          "duration": "turn"
         }
       ],
       "optional": true

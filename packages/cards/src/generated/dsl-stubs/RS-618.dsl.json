@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-618::jietoransa",
-          "duration": "permanent"
+          "keyword": "bp_modify_korehaniaruuinguwotsuyunitokado1nitsukibp1000sareru",
+          "duration": "turn"
         }
       ],
       "optional": false

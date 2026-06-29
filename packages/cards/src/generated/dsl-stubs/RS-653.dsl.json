@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-653::henoe5be8c",
-          "duration": "permanent"
+          "keyword": "grant_ability_konoyunitokarakonbineshonsuruierowotsusyunitohakonotanno",
+          "duration": "turn"
         }
       ]
     }

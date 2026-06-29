@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-063::kobunzame",
-          "duration": "permanent"
+          "keyword": "destroy_choose_enemy_rashufueizukonoyunitowohorudoshitemoyoisoushitatoki",
+          "duration": "turn"
         }
       ],
       "optional": true

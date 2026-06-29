@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-281::nirero",
-          "duration": "permanent"
+          "keyword": "feature_match_rashuerianiwotsuyunitoga2arebakonotankorehasp1ni",
+          "duration": "turn"
         }
       ],
       "optional": false

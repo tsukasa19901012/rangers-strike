@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-041::aiamunadonosankyu",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_yunitowo1ndemoyoisoushitatokindayunitotojikadonoyuni",
+          "duration": "turn"
         }
       ],
       "optional": false

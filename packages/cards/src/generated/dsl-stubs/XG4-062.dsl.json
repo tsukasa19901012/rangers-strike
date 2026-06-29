@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-062::akuserumemori",
+          "keyword": "ride_action_raidosareteirukonobikurugabatoruerianiaruwotanaisyuni",
           "duration": "permanent"
         }
       ],
@@ -51,7 +51,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-062::akuserumemoriraidosarete",
+          "keyword": "ride_action_raidosareteirukonobikurugabatoruerianiaruwotanaisyuni",
           "duration": "permanent"
         }
       ],

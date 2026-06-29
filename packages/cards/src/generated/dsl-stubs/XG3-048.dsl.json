@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-048::riborukurashu",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_batoruerianoyunitogasyunito1dakenarasonoyunitowochino",
+          "duration": "turn"
         }
       ],
       "optional": false

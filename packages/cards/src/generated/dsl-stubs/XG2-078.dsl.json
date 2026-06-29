@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-078::fuaizuburasuta",
-          "duration": "permanent"
+          "keyword": "combo_hold_s_batorufueizukonoyunitokarasyunitogakonbineshonsurutokikorew",
+          "duration": "turn"
         }
       ],
       "optional": true

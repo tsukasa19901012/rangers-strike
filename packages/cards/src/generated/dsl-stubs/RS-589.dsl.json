@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-589::gureiburasuta",
-          "duration": "permanent"
+          "keyword": "opponent_must_korenosyunitowo1bihorudoshitemoyoisoushitatokihano",
+          "duration": "turn"
         }
       ],
       "optional": true

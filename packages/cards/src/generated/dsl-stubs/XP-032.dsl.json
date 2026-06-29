@@ -42,11 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-032::rejiendowomete",
+          "keyword": "grant_effect_tankoregabatoruerianitatokinowodekiruwotesyuni",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

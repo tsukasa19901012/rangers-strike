@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-581::fx1500chikara",
-          "duration": "permanent"
+          "keyword": "ride_action_koreniraidoshiteiruyunitohatanbp1500sareru",
+          "duration": "turn"
         }
       ],
       "optional": false

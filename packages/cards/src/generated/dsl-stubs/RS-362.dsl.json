@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-362::sharkjaws",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_batorueriakarapawanoga3demekawotanaiyunitowo1",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-059::fxunknowne887aa",
-          "duration": "permanent"
+          "keyword": "vehicle_interaction_batorufueizukonobikuruwokomandozonnitemoyoisoushitat",
+          "duration": "turn"
         }
       ],
       "optional": false

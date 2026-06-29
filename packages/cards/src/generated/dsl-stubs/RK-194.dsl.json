@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-194::gx05",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_horudonoyunitonowoetesononopawanowotsusyuni",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-533::fuenikusufuaiya",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_konotanyunitowochinopawazonnidamejinishitekutabiha1do",
+          "duration": "turn"
         }
       ],
       "optional": true

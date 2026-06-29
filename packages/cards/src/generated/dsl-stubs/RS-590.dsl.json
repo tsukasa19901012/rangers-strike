@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-590::gureibonba",
-          "duration": "permanent"
+          "keyword": "combo_action_nowotemoyoisoushitatokikawotsusyunitonokadowo1bisononcma",
+          "duration": "turn"
         }
       ],
       "optional": false

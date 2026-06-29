@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-415::kendantsuki",
-          "duration": "permanent"
+          "keyword": "bp_modify_damejiga5narakorehabp4000saresp1ninaru",
+          "duration": "turn"
         }
       ],
       "optional": false

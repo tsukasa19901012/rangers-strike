@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-535::doragonataku",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_doragonwotsuyunitoga1arebasonotojipawanowotsu",
+          "duration": "turn"
         }
       ],
       "optional": false

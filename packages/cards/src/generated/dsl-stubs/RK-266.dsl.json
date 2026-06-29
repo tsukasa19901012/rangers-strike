@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-266::shotogan",
-          "duration": "permanent"
+          "keyword": "destroy_choose_enemy_rashuerianoyunitowobpnoga3000ninaruyounibi_geki_ha_",
+          "duration": "turn"
         }
       ],
       "optional": true

@@ -72,8 +72,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-029::sukaikikue5a4a7",
-          "duration": "permanent"
+          "keyword": "cannot_restrict_koreworashuerianishitemoyoisoushitatokibatorueriakarayun",
+          "duration": "turn"
         }
       ],
       "optional": true

@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-459::zanrie99aa0",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_batorueriakarahorudonosyunitowo1bichinopawazonni",
+          "duration": "turn"
         }
       ],
       "optional": false

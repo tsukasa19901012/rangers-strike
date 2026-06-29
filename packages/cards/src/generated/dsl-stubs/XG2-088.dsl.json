@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-088::jibankira",
-          "duration": "permanent"
+          "keyword": "grant_ability_korehanonimekamatahawotsusyunitogaarutokino_chikara_worubp",
+          "duration": "turn"
         }
       ]
     }

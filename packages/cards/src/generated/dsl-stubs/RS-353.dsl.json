@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-353::fuaitachienji",
+          "keyword": "reveal_faceup_koreworashushitatokinokarapawazonnokadonomadeomoteni",
           "duration": "turn"
         }
       ],

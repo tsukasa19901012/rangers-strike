@@ -34,8 +34,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-061::bendamodo",
-          "duration": "permanent"
+          "keyword": "deck_search_rashufueizukonobikuruwonishitenowodekiruwote",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-342::gekirodo",
-          "duration": "permanent"
+          "keyword": "bp_modify_tansyunitotobatorusurutokikonoyunitohabp4000sareru",
+          "duration": "turn"
         }
       ],
       "optional": false

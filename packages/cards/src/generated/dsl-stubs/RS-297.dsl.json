@@ -45,8 +45,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-297::fxunknowne5a489",
-          "duration": "permanent"
+          "keyword": "release_command_action_komandogasubeteririsunarakorehawotanaiyunitoniata",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-389::fxunknowne4baba",
-          "duration": "permanent"
+          "keyword": "reveal_faceup_wosubeteura_ko_kinishiteshafurushitemoyoisoushitatokisonok",
+          "duration": "turn"
         }
       ],
       "optional": true

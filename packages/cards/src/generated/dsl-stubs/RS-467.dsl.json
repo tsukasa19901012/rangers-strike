@@ -34,8 +34,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-467::kazenoe9a2a8",
-          "duration": "permanent"
+          "keyword": "grant_ability_koreniraidoshitayunitogaaruwbnosyunitohano_chikara_worusuk",
+          "duration": "turn"
         }
       ]
     }

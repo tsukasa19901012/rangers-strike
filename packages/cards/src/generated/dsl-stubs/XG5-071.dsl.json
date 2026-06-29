@@ -57,8 +57,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-071::etemasu",
-          "duration": "permanent"
+          "keyword": "grant_ability_konoyunitoyoribpnoiyunitogaarebakonotankorehano_chikara_wo",
+          "duration": "turn"
         }
       ]
     }

@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-304::soridoataku",
-          "duration": "permanent"
+          "keyword": "power_zone_action_horudonoyunitowo1bichinopawazonnitemoi",
+          "duration": "turn"
         }
       ],
       "optional": false

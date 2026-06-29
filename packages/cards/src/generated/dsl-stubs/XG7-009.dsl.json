@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-009::keidamono",
-          "duration": "permanent"
+          "keyword": "ot_category_korehalyunitogaarebayunitoniatakusarenaimatakonoyunitotori",
+          "duration": "turn"
         }
       ],
       "optional": false

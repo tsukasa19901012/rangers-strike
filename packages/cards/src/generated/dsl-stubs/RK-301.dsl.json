@@ -48,8 +48,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-301::ekusutendoraidatoshi",
-          "duration": "permanent"
+          "keyword": "grant_effect_raidosareteirukabutoekusutendakarakonobikurugakonbineshonsh",
+          "duration": "turn"
         }
       ],
       "optional": true

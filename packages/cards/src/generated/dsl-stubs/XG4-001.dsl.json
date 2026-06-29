@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-001::hariken",
-          "duration": "permanent"
+          "keyword": "bp_modify_konotankonoyunitohawotsuyunito1nitsukibp1000sareb",
+          "duration": "turn"
         }
       ],
       "optional": false

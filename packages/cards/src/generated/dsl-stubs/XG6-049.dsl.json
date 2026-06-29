@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-049::orufuenokunoou",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_nowo1bikomandozonnihorudodeitemoyoisoushitatokiso",
+          "duration": "turn"
         }
       ],
       "optional": false

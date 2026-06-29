@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-626::megashirudo",
-          "duration": "permanent"
+          "keyword": "deploy_rush_area_tankorega_geki_ha_saretatokinokara1tsubidekiruyunitowo1",
+          "duration": "turn"
         }
       ],
       "optional": false

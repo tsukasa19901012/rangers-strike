@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-042::fxunknown6",
-          "duration": "permanent"
+          "keyword": "deploy_rush_area_rashufueizukonoyunitowonishitemoyoisoushitatokinokarago",
+          "duration": "turn"
         }
       ],
       "optional": true

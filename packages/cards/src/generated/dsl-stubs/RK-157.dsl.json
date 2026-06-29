@@ -39,8 +39,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-157::nomumono",
-          "duration": "permanent"
+          "keyword": "resident_zone_koregabatorueriakararashuerianirutokikikarakadowo1",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -179,7 +179,11 @@ describe("rematchExtractedEffect (M20)", () => {
       "敵軍バトルエリアから、ホールド状態のSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       { kind: "body", trigger: { type: "nc" } },
     );
-    expect(built?.matchedPattern).toBe("enemy_to_power_damage_generic");
+    expect(built?.matchedPattern).toBe("rk_enemy_battle_held_s_to_power");
+    expect(built?.effects[0]).toMatchObject({
+      type: "grant_keyword",
+      keyword: "enemy_battle_held_s_to_power",
+    });
   });
 
   it("matches grant ability generic", () => {

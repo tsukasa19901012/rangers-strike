@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-103::mitsuki",
-          "duration": "permanent"
+          "keyword": "ride_action_batorufueizukonobikurugarashueriaderaidosareteinakereba",
+          "duration": "turn"
         }
       ],
       "optional": true

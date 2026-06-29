@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-045::geki",
-          "duration": "turn"
+          "keyword": "while_in_field_body_koregabatoruerianiarubatoruerianoyunitohaburakuwosar",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -57,8 +57,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-180::shin",
-          "duration": "permanent"
+          "keyword": "ride_action_rashueriakararaidosareteinaisbikuruwo1ndemoyoisoushitatoki",
+          "duration": "turn"
         }
       ],
       "optional": true

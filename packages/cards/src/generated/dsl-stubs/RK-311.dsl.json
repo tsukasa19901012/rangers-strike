@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-311::nosaniogaita",
-          "duration": "permanent"
+          "keyword": "deploy_battle_area_notanbatoruerianitasyunitohanarakoreniatakusuru",
+          "duration": "turn"
         }
       ],
       "optional": false

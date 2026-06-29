@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SK-001::satansaberu",
-          "duration": "permanent"
+          "keyword": "ride_action_batorueriakarasbikuruwo1bundabikuruniraidoshiteiruyunitoga",
+          "duration": "turn"
         }
       ],
       "optional": false

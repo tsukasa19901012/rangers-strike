@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-031::gazerukyaku",
-          "duration": "permanent"
+          "keyword": "combo_action_konoyunitokarakonbineshonsurumekawotanaimyunitohabp3000sa",
+          "duration": "turn"
         }
       ],
       "optional": false

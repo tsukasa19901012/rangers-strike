@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-201::horogurafui",
-          "duration": "permanent"
+          "keyword": "deck_search_operation_to_power",
+          "duration": "turn"
         }
       ],
       "optional": false

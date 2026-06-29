@@ -107,8 +107,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SX-007::supasukaidainamiku",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_syunitowo1bichinopawazonnidamejinishitekusoushitatoki",
+          "duration": "turn"
         }
       ],
       "optional": true

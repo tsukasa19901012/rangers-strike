@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-039::buruchieku",
-          "duration": "permanent"
+          "keyword": "discard_to_zone_komandozonkaranononopawanowotsuyunitokado",
+          "duration": "turn"
         }
       ],
       "optional": true

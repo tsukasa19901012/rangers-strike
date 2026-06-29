@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-327::bashafuesuru",
-          "duration": "permanent"
+          "keyword": "rush_discard_search_rashufueizukonoyunitowonishitenowodekiruwote",
+          "duration": "turn"
         }
       ],
       "optional": true

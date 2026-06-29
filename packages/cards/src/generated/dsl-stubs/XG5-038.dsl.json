@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-038::nosukaikupawa",
-          "duration": "permanent"
+          "keyword": "category_modify_kategoriwo2tsutsusyunitowo1biririsushitemoyoinoga1",
+          "duration": "turn"
         }
       ],
       "optional": true

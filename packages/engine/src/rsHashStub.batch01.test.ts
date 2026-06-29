@@ -929,13 +929,11 @@ describe("unnamed note catchall clearance", () => {
   });
 });
 
-describe("RS/SR named catchall clearance", () => {
-  it("has no unresolved catchall grant_keyword on RS/SR named effects", async () => {
+describe("RS/SR named effect_card clearance", () => {
+  it("has no effect_card grant_keyword on RS/SR named effects", async () => {
     const { readFileSync, readdirSync } = await import("node:fs");
     const { join } = await import("node:path");
-    const { isUnresolvedCatchallGrantKeyword } = await import(
-      "@rangers-strike/cards/pipeline/hashGrantKeywords"
-    );
+    const EFFECT_CARD_RE = /^effect_card::[A-Z0-9]+-[0-9]+(?:::[a-z0-9_]+)?$/;
     const dir = join(import.meta.dirname, "../../cards/src/generated/dsl-stubs");
     let remaining = 0;
     const samples: string[] = [];
@@ -954,10 +952,7 @@ describe("RS/SR named catchall clearance", () => {
         if (effect.text?.startsWith("※")) continue;
         if (
           effect.effects?.some(
-            (p) =>
-              p.type === "grant_keyword" &&
-              p.keyword &&
-              isUnresolvedCatchallGrantKeyword(p.keyword),
+            (p) => p.type === "grant_keyword" && p.keyword && EFFECT_CARD_RE.test(p.keyword),
           )
         ) {
           remaining += 1;
@@ -966,6 +961,31 @@ describe("RS/SR named catchall clearance", () => {
       }
     }
     expect({ remaining, samples }).toEqual({ remaining: 0, samples: [] });
+  });
+});
+
+describe("effect_card DSL clearance", () => {
+  it("has no effect_card grant_keyword stubs in DSL", async () => {
+    const { readFileSync, readdirSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const EFFECT_CARD_RE = /^effect_card::[A-Z0-9]+-[0-9]+(?:::[a-z0-9_]+)?$/;
+    const dir = join(import.meta.dirname, "../../cards/src/generated/dsl-stubs");
+    let remaining = 0;
+    for (const file of readdirSync(dir).filter((f) => f.endsWith(".dsl.json"))) {
+      const doc = JSON.parse(readFileSync(join(dir, file), "utf8")) as {
+        effects?: Array<{ effects?: Array<{ type: string; keyword?: string }> }>;
+      };
+      for (const effect of doc.effects ?? []) {
+        if (
+          effect.effects?.some(
+            (p) => p.type === "grant_keyword" && p.keyword && EFFECT_CARD_RE.test(p.keyword),
+          )
+        ) {
+          remaining += 1;
+        }
+      }
+    }
+    expect(remaining).toBe(0);
   });
 });
 

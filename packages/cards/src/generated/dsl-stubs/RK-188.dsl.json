@@ -25,8 +25,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-188::noejiento",
-          "duration": "permanent"
+          "keyword": "grant_effect_koregaerianiarutansyunitogaatakusaretatokinowo",
+          "duration": "turn"
         }
       ],
       "optional": true

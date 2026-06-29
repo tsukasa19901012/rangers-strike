@@ -34,8 +34,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-120::nirashatoru",
-          "duration": "permanent"
+          "keyword": "grant_ability_koregaraidosaretamamanarakonobikurukarakonbineshonsurusyun",
+          "duration": "turn"
         }
       ]
     }

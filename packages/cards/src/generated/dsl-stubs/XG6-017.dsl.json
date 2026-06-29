@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-017::dokonidemogaru",
-          "duration": "permanent"
+          "keyword": "pick_remaining_zonnoomote_ko_kinokadokara1binietemoyoisoushitatokikonoyu",
+          "duration": "turn"
         }
       ],
       "optional": false

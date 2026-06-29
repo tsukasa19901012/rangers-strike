@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-187::janboraidakiku",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokibatorueriakaraniyu",
           "duration": "turn"
         }
       ],

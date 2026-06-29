@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-094::bideobimugan",
-          "duration": "permanent"
+          "keyword": "release_command_action_komandowo1tsubiririsushitemoyoisoushitatokiririsu",
+          "duration": "turn"
         }
       ],
       "optional": true

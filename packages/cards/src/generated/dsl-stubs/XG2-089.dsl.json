@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-089::jibanendo",
-          "duration": "permanent"
+          "keyword": "discard_to_zone_dawotsusyunitowo1bichinokomandozonnikukenakerebani",
+          "duration": "turn"
         }
       ],
       "optional": false

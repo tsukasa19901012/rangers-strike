@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-450::henoe79a87",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_koregayunitotobatorushiteoini_geki_ha_sareteninatatok",
+          "duration": "turn"
         }
       ],
       "optional": false

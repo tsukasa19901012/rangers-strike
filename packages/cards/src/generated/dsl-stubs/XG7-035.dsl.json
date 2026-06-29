@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-035::suruderuzama",
-          "duration": "permanent"
+          "keyword": "exclude_game_wo1bigemukarashitemoyoisoushitatokikonotankorehakurosu1wo",
+          "duration": "turn"
         }
       ],
       "optional": true

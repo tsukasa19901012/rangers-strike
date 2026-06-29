@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-002::burakushadou",
-          "duration": "permanent"
+          "keyword": "deploy_rush_area_komandozonkaragoguruburakunoburakuwotsuyunitokadowo1",
+          "duration": "turn"
         }
       ],
       "optional": true

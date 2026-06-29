@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-044::randeikuakusu",
-          "duration": "permanent"
+          "keyword": "release_command_action_konotankoreharirisunokomando1tsunitsukibp1000sare",
+          "duration": "turn"
         }
       ],
       "optional": false

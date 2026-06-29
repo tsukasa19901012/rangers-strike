@@ -65,8 +65,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-323::majimaji",
-          "duration": "permanent"
+          "keyword": "combo_action_konoyunitokarakonbineshonsurusyunitoharashuerianoyunitonia",
+          "duration": "turn"
         }
       ],
       "optional": false

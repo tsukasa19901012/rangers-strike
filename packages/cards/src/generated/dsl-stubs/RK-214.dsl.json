@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-214::inpakutosutabu",
-          "duration": "permanent"
+          "keyword": "opponent_must_batoruerianosyunitowo2ndemoyoisoushitatokihanoyounisuru",
+          "duration": "turn"
         }
       ],
       "optional": true

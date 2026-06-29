@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-041::soutenda",
-          "duration": "permanent"
+          "keyword": "pick_from_hand_ha1doroshitekaranowo1binisuru",
+          "duration": "turn"
         }
       ],
       "optional": false

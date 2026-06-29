@@ -34,8 +34,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-381::shinohikari",
-          "duration": "permanent"
+          "keyword": "grant_effect_tankoreniraidoshitayunitoworaidoofusaserukawarininowodeki",
+          "duration": "turn"
         }
       ],
       "optional": true

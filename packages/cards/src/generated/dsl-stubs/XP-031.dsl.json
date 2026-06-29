@@ -45,8 +45,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-031::medarutoto40",
-          "duration": "permanent"
+          "keyword": "exclude_game_koregaerianiarurashufueizugotoni1dakeraidakaimajinkashi",
+          "duration": "turn"
         }
       ],
       "optional": true

@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-159::v3kiku",
-          "duration": "permanent"
+          "keyword": "destroy_choose_enemy_pawanoninoarusyunitowo1bi_geki_ha_shitemoyoi",
+          "duration": "turn"
         }
       ],
       "optional": true

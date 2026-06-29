@@ -65,8 +65,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-584::yamiworiu",
-          "duration": "permanent"
+          "keyword": "bp_modify_pawanoomote_ko_kinokadotokomandozonnokadonidatsukadoga1",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-045::hominguburido",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_syunitonokara1wonibasetemoyoigabutabimadanibarete",
+          "duration": "turn"
         }
       ],
       "optional": false

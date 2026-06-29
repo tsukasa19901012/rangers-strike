@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-614::kurabumegaton",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_bp4000nosyunitowosubetechinokomandozonnihorudodeite",
+          "duration": "turn"
         }
       ],
       "optional": false

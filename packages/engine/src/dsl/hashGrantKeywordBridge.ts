@@ -7,6 +7,7 @@ import { getDslEffectById } from "./effectLookup";
 import type { DslCardContext } from "./cardInterpreter";
 import type { InterpretFn } from "./interpretEffectRuntime";
 import { SUPPORTED_GRANT_KEYWORDS } from "./grantKeyword";
+import { isEffectCardKeyword, isNoteCardKeyword } from "./hashGrantKeywordStub";
 
 function isCatchallStubKeyword(keyword: string): boolean {
   if (!isCatchallGrantKeyword(keyword)) return false;
@@ -21,17 +22,26 @@ export function isRematchedHashStub(primitives: EffectPrimitive[]): boolean {
   );
 }
 
+export function rematchForRuntime(
+  effect: NonNullable<ReturnType<typeof getDslEffectById>>,
+  sourceCardId: string,
+  includeCardId: boolean,
+) {
+  return rematchEffectPrimitives(effect.text ?? "", {
+    name: effect.name,
+    kind: effect.text?.startsWith("※") ? "note" : effect.name ? "named" : "body",
+    trigger: effect.trigger,
+    ...(includeCardId ? { cardId: sourceCardId } : {}),
+  });
+}
+
 export function rematchEffectFromDsl(
   sourceCardId: string,
   effectId: string,
 ): EffectPrimitive[] | null {
   const effect = getDslEffectById(sourceCardId, effectId);
   if (!effect?.text) return null;
-  return rematchEffectPrimitives(effect.text, {
-    name: effect.name,
-    kind: effect.text.startsWith("※") ? "note" : effect.name ? "named" : "body",
-    trigger: effect.trigger,
-  });
+  return rematchForRuntime(effect, sourceCardId, false);
 }
 
 /** catchall grant_keyword を rematch → interpret で解決する。 */
@@ -67,6 +77,7 @@ export function isUnresolvedEffectPrimitive(primitives: EffectPrimitive[]): bool
   if (!only) return false;
   if (only.type === "interpret_effect") return false;
   if (only.type === "grant_keyword") {
+    if (isEffectCardKeyword(only.keyword) || isNoteCardKeyword(only.keyword)) return true;
     if (only.keyword.startsWith("effect_")) return true;
     if (isCatchallStubKeyword(only.keyword)) return true;
   }

@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-471::gurandosutomu",
-          "duration": "permanent"
+          "keyword": "feature_match_korehakomandozonnimekawotsumyunitonokadoga5arebasp1nina",
+          "duration": "turn"
         }
       ],
       "optional": false

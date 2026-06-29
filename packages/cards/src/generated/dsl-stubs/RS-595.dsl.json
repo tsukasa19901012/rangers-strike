@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-595::moshii",
-          "duration": "permanent"
+          "keyword": "ignore_rule_text_koregaerianiaru_honoo_shin_wotsuyunitohakorehatannaraba",
+          "duration": "turn"
         }
       ]
     }

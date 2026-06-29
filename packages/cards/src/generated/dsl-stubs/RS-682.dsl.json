@@ -55,8 +55,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-682::naruko",
-          "duration": "permanent"
+          "keyword": "register_resist_rejisutowotsumyunitowo1biririsushitemoyoi",
+          "duration": "turn"
         }
       ],
       "optional": true

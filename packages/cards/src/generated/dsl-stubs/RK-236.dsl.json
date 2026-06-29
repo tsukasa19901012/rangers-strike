@@ -25,8 +25,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-236::negatarosu",
-          "duration": "permanent"
+          "keyword": "grant_effect_koregaerianiarurashufueizuwotsuyunitogarashi",
+          "duration": "turn"
         }
       ],
       "optional": true

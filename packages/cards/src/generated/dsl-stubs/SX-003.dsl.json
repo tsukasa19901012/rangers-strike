@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SX-003::amufuangu",
-          "duration": "permanent"
+          "keyword": "bp_modify_korehabatorusurutokibp3000sareru",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-100::oiroboto",
-          "duration": "permanent"
+          "keyword": "scry_self_deck_top_koregabatorueriakararashuerianirutokinokara1itesono",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-409::furenjisupiakurashu",
-          "duration": "permanent"
+          "keyword": "bp_modify_korehatonokiniarukado1nitsukibp1000sarebp6000",
+          "duration": "turn"
         }
       ],
       "optional": false

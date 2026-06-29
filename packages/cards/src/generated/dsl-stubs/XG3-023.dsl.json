@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-023::bakumakusufuirudo",
-          "duration": "permanent"
+          "keyword": "bp_modify_batoruerianoyunitogakonoyunito1dakenaranoganinarubato",
+          "duration": "turn"
         }
       ],
       "optional": false

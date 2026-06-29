@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-080::fuainaruatakuraido",
-          "duration": "permanent"
+          "keyword": "grant_ability_konoyunitokarakonbineshonsururaidadeikeidomataharaidadei",
+          "duration": "turn"
         }
       ]
     }

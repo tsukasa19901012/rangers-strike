@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-309::niraretemiru",
-          "duration": "permanent"
+          "keyword": "cannot_restrict_pawazonnoomote_ko_kinokadokarapawawotashiteiruwotsusyu",
+          "duration": "turn"
         }
       ],
       "optional": true

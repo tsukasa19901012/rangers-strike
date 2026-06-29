@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-587::shii",
-          "duration": "permanent"
+          "keyword": "opponent_must_korenosyunitowo1bi_geki_ha_shitemoyoisoushitatokihanoyuni",
+          "duration": "turn"
         }
       ],
       "optional": true

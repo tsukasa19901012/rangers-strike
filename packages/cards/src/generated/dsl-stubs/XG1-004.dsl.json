@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-004::redorubimuchi",
-          "duration": "permanent"
+          "keyword": "opponent_must_komandozonkarasyunitonokadowo1ndemoyoisoushitatokihaba",
+          "duration": "turn"
         }
       ],
       "optional": true

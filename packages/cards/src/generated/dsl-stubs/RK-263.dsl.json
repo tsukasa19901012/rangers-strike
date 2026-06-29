@@ -57,8 +57,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-263::fxunknowne6b6b2",
-          "duration": "permanent"
+          "keyword": "hold_remaining_konoyunitohahorudonotokiyunitoniatakusarenai",
+          "duration": "turn"
         }
       ],
       "optional": false

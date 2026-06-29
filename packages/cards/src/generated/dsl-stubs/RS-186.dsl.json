@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-186::purobaidabesu",
+          "keyword": "deck_search_feature_top_meka_5_non_s",
           "duration": "turn"
         }
       ],

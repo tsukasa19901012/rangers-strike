@@ -88,6 +88,7 @@ import {
 import { effectDelegateSlot } from "./effectDelegateSlot";
 import { isEngineNativeGrantKeyword } from "./promotedKeywordBridge";
 import { isCatchallGrantKeyword } from "./hashGrantKeywordStub";
+import { isStableCardDelegateKeyword } from "./effectCardGrantKeywordBridge";
 import { setGenericSComboFinisher, setBattleDestroyToPower, addComboNumberDelta } from "../rules/turnModifierBridge";
 import { superPowerAttackBonus } from "../core/catalog";
 import { matchRkGrantKeyword } from "../rules/rkEffects";
@@ -336,6 +337,12 @@ export function applyGrantKeyword(
 
   const sr = matchSrGrantKeyword(state, ctx, keyword);
   if (sr) return sr;
+
+  if (isStableCardDelegateKeyword(keyword)) {
+    const resolved = effectDelegateSlot.resolver?.(state, ctx, keyword);
+    if (resolved) return resolved;
+    return { state, detail: keyword };
+  }
 
   switch (keyword) {
     case "bp_plus_per_own_damage": {

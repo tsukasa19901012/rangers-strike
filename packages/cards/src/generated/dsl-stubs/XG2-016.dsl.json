@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-016::kaze",
-          "duration": "permanent"
+          "keyword": "grant_ability_konoyunitokarakonbineshonsuruwotsumyunitohano_chikara_woru",
+          "duration": "turn"
         }
       ]
     }
