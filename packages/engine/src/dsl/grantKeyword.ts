@@ -1,3 +1,4 @@
+import type { Category } from "@rangers-strike/cards";
 import type { GameState, PendingBattle, PlayerId } from "../types/game";
 import {
   cardName,
@@ -592,7 +593,7 @@ export function applyGrantKeyword(
     }
     case "on_rush_send_enemy_battle_category_m_to_power": {
       const effect = getDslEffectById(ctx.sourceCardId, ctx.effectId);
-      const category = effect?.text?.match(/から([A-Z]{2,})のMユニット/)?.[1] ?? "MA";
+      const category = (effect?.text?.match(/から([A-Z]{2,})のMユニット/)?.[1] ?? "MA") as Category;
       const withChoice = startTimeJetCategoryProtectChoice(state, {
         playerId: ctx.playerId,
         effectId: ctx.effectId,

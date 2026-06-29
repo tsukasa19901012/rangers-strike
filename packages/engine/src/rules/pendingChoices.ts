@@ -1,3 +1,4 @@
+import type { Category } from "@rangers-strike/cards";
 import type {
   CardInstance,
   GameState,
@@ -821,7 +822,7 @@ export function startTimeJetCategoryProtectChoice(
     sourceCardId: string;
     sourceInstanceId?: string;
     phasePlayerId: PlayerId;
-    category: string;
+    category: Category;
   },
 ): GameState | null {
   const enemyId = opponent(params.playerId);

@@ -86,7 +86,10 @@ export function playerHasRs374OnRush(state: GameState, playerId: PlayerId): bool
   return state.players[playerId].rush.some((c) => c.cardId === "RS-374");
 }
 
-export function playerHasRs304OnBattle(state: GameState, playerId: PlayerId): boolean {
+export function playerHasRs304OnBattle(
+  state: Pick<GameState, "players">,
+  playerId: PlayerId,
+): boolean {
   return state.players[playerId].battle.some((c) => c.cardId === "RS-304");
 }
 
@@ -231,7 +234,7 @@ export function releaseWingCommand(
 
 function unitHasSp(def: ReturnType<typeof getDefinition>): boolean {
   if (!def || def.type !== "unit") return false;
-  return def.sp !== undefined && def.sp !== null && def.sp !== "";
+  return def.sp != null;
 }
 
 export function scryTop3ForSagasSpear(
@@ -346,7 +349,7 @@ export function applyBandoraHeldCommandDiscard(
 }
 
 export function cityGuardRushPowerSurcharge(
-  state: GameState,
+  state: Pick<GameState, "players" | "definitions">,
   rusherPlayerId: PlayerId,
   cardId: string,
 ): number {

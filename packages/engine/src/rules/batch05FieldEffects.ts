@@ -1,3 +1,4 @@
+import type { Category } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
 import { cardCategories, cardName, getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
@@ -203,7 +204,7 @@ export function collectEnemyCommandSmallUnits(state: GameState, enemyId: PlayerI
 export function collectEnemyBattleCategoryM(
   state: GameState,
   enemyId: PlayerId,
-  category: string,
+  category: Category,
 ): string[] {
   const player = state.players[enemyId];
   const ids: string[] = [];
