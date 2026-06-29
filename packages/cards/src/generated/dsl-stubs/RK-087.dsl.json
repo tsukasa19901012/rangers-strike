@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_rashuerianiarusubetenosyunitowobatoruerianishitemoyoi",
+          "keyword": "force_enemy_s_rush_to_battle_reorder",
           "duration": "turn"
         }
       ],

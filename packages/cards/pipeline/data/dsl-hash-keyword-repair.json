@@ -1,8 +1,26 @@
 {
-  "generatedAt": "2026-06-29T05:22:39.526Z",
-  "scanned": 0,
-  "repaired": 0,
-  "remainingHashStubs": 0,
-  "samples": [],
-  "note": "Re-match grant_keyword hash stubs via extractEffects PATTERNS."
+  "generatedAt": "2026-06-29T07:23:15.462Z",
+  "scanned": 1117,
+  "scannedUnnamed": 224,
+  "repaired": 3,
+  "repairedUnnamed": 2,
+  "remainingCatchallStubs": 1114,
+  "samples": [
+    {
+      "cardId": "RK-083",
+      "effectId": "sutoraikubento",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-287",
+      "effectId": "unnamed_cannot_attack_except_feature_仮面ライダー",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-308",
+      "effectId": "unnamed_cannot_attack_feature_獣",
+      "to": "grant_keyword"
+    }
+  ],
+  "note": "Re-match catchall grant_keyword stubs via extractEffects PATTERNS."
 }

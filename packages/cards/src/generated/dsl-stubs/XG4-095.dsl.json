@@ -19,12 +19,12 @@
       "id": "note_e280bbe887aae58886e3818c",
       "text": "※自分が「バビロス」をラッシュしたとき、自軍エリアに「バビロスBF」または「バビロスSF」があれば1体選び手札に戻す。",
       "trigger": {
-        "type": "on_rush"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_ally_on_rush_fx_unknown",
+          "keyword": "on_ally_rush_named_return_self_to_hand",
           "duration": "permanent"
         }
       ],

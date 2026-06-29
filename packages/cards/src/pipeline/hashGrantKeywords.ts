@@ -1,5 +1,7 @@
 /** grant_keyword ハッシュスタブ（extractEffects catchall 由来）の検出。 */
 
+import { isStableGrantKeyword } from "./implementedGrantKeywords";
+
 /** catchall が付与する末尾ハッシュ（hashEffectText の先頭12文字）。 */
 const HASH_STUB_SUFFIX = /_[a-f0-9]{6,}$/;
 
@@ -16,6 +18,13 @@ export function isHashGrantKeywordStub(keyword: string): boolean {
 
 /** semantic slug 化された catchall grant_keyword（runtime rematch 対象）。 */
 export function isCatchallGrantKeyword(keyword: string): boolean {
+  if (isStableGrantKeyword(keyword)) return false;
   if (isHashGrantKeywordStub(keyword)) return true;
   return CATCHALL_GRANT_KEYWORD_PREFIXES.test(keyword);
+}
+
+/** 未実装の catchall スタブ（安定キーワードは除外）。 */
+export function isUnresolvedCatchallGrantKeyword(keyword: string): boolean {
+  if (!isCatchallGrantKeyword(keyword)) return false;
+  return !isStableGrantKeyword(keyword);
 }

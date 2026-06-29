@@ -34,16 +34,16 @@
       ]
     },
     {
-      "id": "note_e280bbe887aae8bb8d53e383",
+      "id": "unnamed_no_strike_if_other_own_s_in_field",
       "text": "※自軍Sユニットがこれ以外にあれば、これはストライクできない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "no_strike_if_other_own_s_in_field",
+          "duration": "permanent"
         }
       ],
       "optional": false

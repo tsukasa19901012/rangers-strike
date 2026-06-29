@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_konoyunitowohorudoshitemoyoisoushitatokibatorueriakar",
+          "keyword": "hold_self_enemy_battle_s_to_power",
           "duration": "turn"
         }
       ],

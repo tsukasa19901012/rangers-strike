@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_from_named_benosunekakarakonbineshonshitatokidekirukomandozonkaray",
+          "keyword": "combo_named_discard_enemy_command::ベノスネーカー",
           "duration": "turn"
         }
       ],

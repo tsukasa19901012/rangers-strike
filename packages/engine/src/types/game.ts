@@ -232,7 +232,8 @@ export type EffectChoiceKind =
   | "shiron_light"
   | "simultaneous_order"
   | "confirm"
-  | "declare_number";
+  | "declare_number"
+  | "pick_effect_branch";
 
 export type ShironLightMeta = {
   step: "pick" | "reveal";
@@ -276,8 +277,8 @@ export type PendingEffectChoice = {
   maxPowerCost?: number;
   /** 印刷BPの合計上限（例: RS-106 ジュウクンドー）。 */
   bpBudget?: number;
-  unitDestination?: "power" | "discard" | "deck_top" | "hand" | "hand_from_discard" | "hand_from_power" | "rush_from_discard" | "enemy_battle" | "enemy_command" | "swap_battle" | "rush";
-  commandAction?: "discard" | "hold" | "return_hand" | "return_deck_top" | "rush" | "rush_silent" | "battle_silent" | "power";
+  unitDestination?: "power" | "discard" | "deck_top" | "hand" | "hand_from_discard" | "hand_from_power" | "rush_from_discard" | "enemy_battle" | "enemy_command" | "swap_battle" | "rush" | "vehicle_battle_without_ride";
+  commandAction?: "discard" | "hold" | "return_hand" | "return_deck_top" | "rush" | "rush_silent" | "battle_silent" | "power" | "release" | "sp_half";
   commandFilter?: "held" | "released" | "any";
   seabedDrawMeta?: SeabedDrawMeta;
   denjiMachineMeta?: DenjiMachineMeta;
@@ -309,6 +310,10 @@ export type PendingEffectChoice = {
     step: "discard" | "deck";
     feature: string;
     discardCount: number;
+  };
+  /** BK 等: 効果分岐の primitive 列。 */
+  choiceBranchMeta?: {
+    branchPrimitives: import("@rangers-strike/cards/dsl/types").EffectPrimitive[][];
   };
 };
 

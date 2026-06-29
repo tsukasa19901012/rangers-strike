@@ -72,6 +72,12 @@ import {
   collectOwnRushByName,
 } from "./batch05FieldEffects";
 import {
+  continuePickEffectBranch,
+  applyVehicleBattleWithoutRideChoice,
+  applyCommandSpHalfChoice,
+  applyCommandReleaseChoice,
+} from "./bkOperationEffects";
+import {
   applySagasSpearScryReturn,
   applyZorobTopDeckReveal,
   collectDiscardSmallUnits,
@@ -444,6 +450,54 @@ export function startEnterHoldEnemyPowerLeDamageChoice(
     ...params,
     validInstanceIds: valid,
     unitDestination: "enemy_command",
+    optional: true,
+  });
+}
+
+function raidapanchiMaxPowerCost(state: GameState, playerId: PlayerId): number {
+  const battle = state.players[playerId].battle;
+  if (battle.length === 0) return 2;
+  const sUnits = battle.filter((c) => isSmallUnit(state.definitions, c.cardId));
+  if (sUnits.length !== battle.length) return 2;
+  const names = new Set(
+    sUnits.map((c) => canonicalCardName(cardName(state.definitions, c.cardId))),
+  );
+  if (
+    names.size === 2 &&
+    names.has("仮面ライダーキックホッパー") &&
+    names.has("仮面ライダーパンチホッパー")
+  ) {
+    return 4;
+  }
+  return 2;
+}
+
+/** RK-297 ライダーパンチ: 敵パワーオモテから必要パワー上限以下を1枚捨札。 */
+export function startRaidapanchiDiscardChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const enemyId = opponent(params.playerId);
+  const maxPowerCost = raidapanchiMaxPowerCost(state, params.playerId);
+  const valid: string[] = [];
+  for (const card of state.players[enemyId].power) {
+    if (card.faceDown) continue;
+    if (!isSelectableByOpponentEffect(state, params.playerId, card.instanceId)) continue;
+    const def = getDefinition(state.definitions, card.cardId);
+    if (parsePowerCost(def?.powerCost ?? 99) > maxPowerCost) continue;
+    valid.push(card.instanceId);
+  }
+  if (valid.length === 0) return null;
+  return startSelectUnitChoice(state, {
+    ...params,
+    validInstanceIds: valid,
+    unitDestination: "discard",
     optional: true,
   });
 }
@@ -2183,6 +2237,16 @@ export function applyEffectChoiceSelect(
       return finishChoice(nextState, pending, String(declared));
     }
     case "select_unit": {
+      if (pending.unitDestination === "vehicle_battle_without_ride") {
+        const located = findCardOwner(state, instanceId);
+        if (!located || located.zone !== "rush") return { error: "invalid_target" };
+        const next = applyVehicleBattleWithoutRideChoice(state, located.playerId, instanceId);
+        return finishChoice(
+          next,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(next, instanceId)),
+        );
+      }
       if (pending.effectId === "kami_ken_hikarimaru" && pending.step === "enemy") {
         const leave = applyUnitLeave(state, instanceId, "power", pending.phasePlayerId);
         if ("error" in leave) return leave;
@@ -2609,6 +2673,42 @@ export function applyEffectChoiceSelect(
           cardName(state.definitions, findFieldUnitCardId(nextState, instanceId)),
         );
       }
+      if (pending.effectId === "mirror_rider_destroy_enemy_s") {
+        if (pending.step === "own") {
+          const located = findCardOwner(state, instanceId);
+          if (!located) return { error: "invalid_target" };
+          const owner = state.players[located.playerId];
+          const card =
+            findInZone(owner, "battle", instanceId)?.card ??
+            findInZone(owner, "rush", instanceId)?.card;
+          if (!card) return { error: "invalid_target" };
+          const def = getDefinition(state.definitions, card.cardId);
+          const maxPowerCost = parsePowerCost(def?.powerCost ?? 99);
+          const enemyId = opponent(pending.playerId);
+          const enemyTargets = state.players[enemyId].battle
+            .filter((c) => isSmallUnit(state.definitions, c.cardId))
+            .filter((c) => parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost ?? 99) <= maxPowerCost)
+            .map((c) => c.instanceId);
+          if (enemyTargets.length === 0) {
+            return finishChoice(state, pending, "mirror_rider:no_enemy");
+          }
+          return {
+            state: openEffectChoice(clearChoice(state, pending.playerId), {
+              ...pending,
+              step: "enemy",
+              validInstanceIds: enemyTargets,
+              maxPowerCost,
+            }),
+          };
+        }
+        const leave = applyUnitLeave(state, instanceId, "discard", pending.phasePlayerId);
+        if ("error" in leave) return leave;
+        return finishChoice(
+          leave.state,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+        );
+      }
       return { error: "invalid_step" };
     }
 
@@ -2802,6 +2902,12 @@ export function applyEffectChoiceSelect(
         const moved = moveCommandUnitToBattleSilent(state, owner, instanceId);
         if (!moved) return { error: "invalid_target" };
         return finishChoice(moved, pending, cardName(state.definitions, found.card.cardId));
+      } else if (pending.commandAction === "release") {
+        const released = applyCommandReleaseChoice(state, owner, instanceId);
+        return finishChoice(released, pending, cardName(state.definitions, found.card.cardId));
+      } else if (pending.commandAction === "sp_half") {
+        const spHalf = applyCommandSpHalfChoice(state, owner, instanceId);
+        return finishChoice(spHalf, pending, cardName(state.definitions, found.card.cardId));
       } else if (pending.commandAction === "power") {
         const [, command] = removeAt(player.command, found.index);
         nextPlayer = {
@@ -3073,6 +3179,18 @@ export function applyEffectChoiceSelect(
           hand: nextPlayer.hand.filter((c) => c.instanceId !== instanceId),
           rush: [...nextPlayer.rush, found.card],
         };
+      } else if (pending.unitDestination === "rush") {
+        nextPlayer = {
+          ...nextPlayer,
+          hand,
+          rush: [...nextPlayer.rush, found.card],
+        };
+      } else if (pending.unitDestination === "deck_top") {
+        nextPlayer = {
+          ...nextPlayer,
+          hand,
+          deck: [found.card, ...nextPlayer.deck],
+        };
       }
       return finishChoice(
         { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
@@ -3159,6 +3277,22 @@ export function applyEffectChoiceSelect(
       const geki = startEndTurnBattleToRushChoiceForUnit(cleared, playerId, instanceId);
       if (geki) return { state: geki };
       return { error: "unsupported_end_turn_effect" };
+    }
+
+    case "pick_effect_branch": {
+      const continued = continuePickEffectBranch(state, pending, instanceId);
+      if (continued.pending) {
+        return { state: continued.state };
+      }
+      const cleared = clearChoice(continued.state, pending.phasePlayerId);
+      const log = buildLogEntry(
+        pending.playerId,
+        "resolve_effect_choice",
+        pending.sourceCardId,
+        state.definitions,
+        `${pending.effectId}:branch_${instanceId}`,
+      );
+      return { state: cleared, log };
     }
 
     case "confirm": {

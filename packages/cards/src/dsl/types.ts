@@ -71,12 +71,14 @@ export type TargetSelector =
       owner: "self" | "opponent" | "any";
       filter?: {
         size?: UnitSize;
+        cardType?: "unit" | "operation";
         category?: string;
         categoryExcept?: string;
         faceDown?: boolean;
         commandHeld?: boolean;
         maxBp?: number;
         minBp?: number;
+        maxPowerCost?: number;
         noRushAdditionalCondition?: boolean;
       };
     }
@@ -87,11 +89,13 @@ export type TargetSelector =
         owner: "self" | "opponent" | "any";
         filter?: {
           size?: UnitSize;
+          cardType?: "unit" | "operation";
           category?: string;
           faceDown?: boolean;
           commandHeld?: boolean;
           maxBp?: number;
           minBp?: number;
+          maxPowerCost?: number;
         };
       }>;
     };

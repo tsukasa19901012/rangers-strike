@@ -41,11 +41,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_koreworashushitatokiraidonosyunitowo1biraidoofusasetemoyoi",
+          "keyword": "on_rush_enemy_s_ride_off",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "unnamedRules": [

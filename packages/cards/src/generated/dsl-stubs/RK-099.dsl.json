@@ -42,11 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregaerianiaruwotsuyunitohabp1000sarerumatata",
+          "keyword": "while_feature_bp_plus::怪人::1000",
           "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

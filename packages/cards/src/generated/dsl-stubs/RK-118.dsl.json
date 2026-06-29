@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokirejisutowotanaisyunitowo",
+          "keyword": "hold_on_enter_enemy_s_no_resist",
           "duration": "turn"
         }
       ],

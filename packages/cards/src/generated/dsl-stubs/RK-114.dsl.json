@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_tankoregabatoruerianitatokiraidosareteinaisbikuruwo1",
+          "keyword": "enter_battle_destroy_enemy_unridden_s_vehicle",
           "duration": "turn"
         }
       ],

@@ -38,6 +38,10 @@
       "types": "./dist/pipeline/hashGrantKeywords.d.ts",
       "import": "./dist/pipeline/hashGrantKeywords.js"
     },
+    "./pipeline/implementedGrantKeywords": {
+      "types": "./dist/pipeline/implementedGrantKeywords.d.ts",
+      "import": "./dist/pipeline/implementedGrantKeywords.js"
+    },
     "./catalog/parity": {
       "types": "./dist/catalog/parity.d.ts",
       "import": "./dist/catalog/parity.js"

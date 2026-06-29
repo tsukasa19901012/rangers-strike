@@ -19,16 +19,16 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_bp_plus_per_held_enemy_1000",
       "text": "※これはホールド状態の敵軍ユニット1体につきBP+1000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "bp_plus_per_held_enemy_unit_1000",
+          "duration": "permanent"
         }
       ],
       "optional": false

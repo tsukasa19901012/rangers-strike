@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_korehabatoruerianirarenaimatahakorehatanbatoruerianirare",
+          "keyword": "destroy_enemy_cannot_enter_battle_text",
           "duration": "turn"
         }
       ],

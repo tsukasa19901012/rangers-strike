@@ -1,4 +1,5 @@
 import type { EffectDefinition, EffectPrimitive } from "../dsl/types";
+import { canonicalCardName } from "../cardName";
 import type {
   CardAnalysis,
   ExtractedEffect,
@@ -13,13 +14,22 @@ import {
   sanitizeEffectId,
   slugifyEffectId,
 } from "./metaMaps";
+import { tryBuildPickEffectBranch } from "./choiceBranches";
+import { RK_ACTION_PATTERNS, RK_NOTE_PATTERNS, RK_WHILE_PATTERNS } from "./rkPatterns";
 
 type ZoneTarget = Extract<EffectPrimitive, { type: "move" }>["target"];
 
 function zone(
   z: "deck" | "hand" | "discard" | "power" | "command" | "rush" | "battle",
   owner: "self" | "opponent" | "any",
-  filter?: { size?: "S"; maxBp?: number; minBp?: number; faceDown?: boolean },
+  filter?: {
+    size?: "S";
+    cardType?: "unit" | "operation";
+    maxBp?: number;
+    minBp?: number;
+    maxPowerCost?: number;
+    faceDown?: boolean;
+  },
 ): ZoneTarget {
   const t: ZoneTarget = { type: "zone", zone: z, owner };
   if (filter) t.filter = filter;
@@ -278,6 +288,94 @@ const KEYWORD_NOTE_PATTERNS: PatternMatch[] = [
       matchedPattern: "on_skip_attack_combo_bp",
     }),
   },
+  {
+    pattern: "ally_feature_protects_enemy_s_note",
+    test: (body) =>
+      /^※(?:特徴「([^」]+)」を持つユニットが|これは特徴「([^」]+)」を持つユニットが)自軍バトルエリアにあれば、?これは敵軍Sユニットにアタックされない/.test(
+        body,
+      ),
+    build: (body) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      return {
+        id: `unnamed_ally_${feature}_protects_s`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `ally_${feature}_protects_from_enemy_s`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "ally_feature_protects_enemy_s_note",
+      };
+    },
+  },
+  {
+    pattern: "per_enemy_hand_bp_note",
+    test: (body) => /^※これは相手の手札1枚につきBP[＋+](\d+)される/.test(body),
+    build: (body) => {
+      const amount = Number(body.match(/BP[＋+](\d+)される/)?.[1] ?? 2000);
+      return {
+        id: `unnamed_bp_plus_per_enemy_hand_${amount}`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `bp_plus_per_enemy_hand_card_${amount}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "per_enemy_hand_bp_note",
+      };
+    },
+  },
+  {
+    pattern: "per_held_enemy_bp_note",
+    test: (body) => /^※これはホールド状態の敵軍ユニット1体につきBP[＋+](\d+)される/.test(body),
+    build: (body) => {
+      const amount = Number(body.match(/BP[＋+](\d+)される/)?.[1] ?? 1000);
+      return {
+        id: `unnamed_bp_plus_per_held_enemy_${amount}`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `bp_plus_per_held_enemy_unit_${amount}`,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "per_held_enemy_bp_note",
+      };
+    },
+  },
+  keywordNoteMatch(
+    "cannot_attack_gender_note",
+    "cannot_attack_gender_male_female",
+    /^※これは特徴「男」または「女」を持つユニットにアタックできない/,
+  ),
+  keywordNoteMatch(
+    "cannot_attack_beast_note",
+    "cannot_attack_feature_獣",
+    /^※これは特徴「獣」を持つユニットにアタックできない/,
+  ),
+  keywordNoteMatch(
+    "cannot_attack_kamen_only_note",
+    "cannot_attack_except_feature_仮面ライダー",
+    /^※これは特徴「仮面ライダー」を持つユニット以外にアタックする事ができない/,
+  ),
+  keywordNoteMatch(
+    "no_attack_if_own_units_exceed_enemy_note",
+    "cannot_attack_if_own_unit_count_exceeds_enemy",
+    /^※これは自軍ユニットの数が敵軍ユニットの数より多いときアタックできない/,
+  ),
+  keywordNoteMatch(
+    "no_strike_if_other_own_s_note",
+    "no_strike_if_other_own_s_in_field",
+    /^※自軍Sユニットがこれ以外にあれば、これはストライクできない/,
+  ),
   ...(["taxis", "lead", "call"] as const).flatMap((prefix) => {
     const regex = new RegExp(`^※${prefix === "taxis" ? "タクス" : prefix === "lead" ? "リード" : "コール"}(MA|ET|DA|WB|OT)`);
     return [
@@ -3542,12 +3640,12 @@ const PATTERNS: PatternMatch[] = [
     build: (body) => ({
       id: noteEffectIdFromBody(body),
       text: body,
-      trigger: { type: "on_rush" },
+      trigger: { type: "while_in_field" },
       optional: true,
       effects: [
         {
           type: "grant_keyword",
-          keyword: semanticCatchallKeyword("return_ally_on_rush", body),
+          keyword: "on_ally_rush_named_return_self_to_hand",
           duration: "permanent",
         },
       ],
@@ -3673,10 +3771,61 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
-    pattern: "choice_one_of_effects",
-    test: (body) => /次の効果から1つ選び発動する/.test(body),
+    pattern: "operation_hand_named_to_rush",
+    test: (body) =>
+      /^自分の手札から「[^」]+」のカードを1枚選び、自軍ラッシュエリアに出してもよい/.test(body),
+    build: (body, segment, trigger) => {
+      const name = body.match(/「([^」]+)」/)?.[1] ?? "named";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : "hand_named_to_rush",
+        name: segment.name,
+        text: body,
+        trigger,
+        optional: true,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `hand_named_to_rush::${canonicalCardName(name)}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "operation_hand_named_to_rush",
+      };
+    },
+  },
+  {
+    pattern: "operation_deck_named_rush_shuffle",
+    test: (body) =>
+      /^自軍山札から「[^」]+」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const name = body.match(/「([^」]+)」/)?.[1] ?? "named";
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : "deck_named_rush_shuffle",
+        name: segment.name,
+        text: body,
+        trigger,
+        optional: true,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: `deck_named_rush_shuffle::${canonicalCardName(name)}`,
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "operation_deck_named_rush_shuffle",
+      };
+    },
+  },
+  {
+    pattern: "operation_s_vehicle_battle_without_ride_turn",
+    test: (body) =>
+      /^自軍Sビークルを1体選ぶ。このターン、選んだビークルは、ライドされていなくてもバトルエリアに出すことができる/.test(
+        body,
+      ),
     build: (body, segment, trigger) => ({
-      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      id: segment.name ? slugifyEffectId(segment.name) : "s_vehicle_battle_no_ride",
       name: segment.name,
       text: body,
       trigger,
@@ -3684,12 +3833,148 @@ const PATTERNS: PatternMatch[] = [
       effects: [
         {
           type: "grant_keyword",
-          keyword: semanticCatchallKeyword("choice_one_of", body),
+          keyword: "turn_s_vehicle_battle_without_ride",
           duration: "turn",
         },
       ],
-      matchedPattern: "choice_one_of_effects",
+      matchedPattern: "operation_s_vehicle_battle_without_ride_turn",
     }),
+  },
+  {
+    pattern: "operation_draw_then_hand_to_deck_top",
+    test: (body) =>
+      /^1枚ドローする。その後、自分の手札からカードを1枚選び、自軍山札の上に戻す/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "draw_mill_hand_top",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "draw_then_hand_to_deck_top",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "operation_draw_then_hand_to_deck_top",
+    }),
+  },
+  {
+    pattern: "operation_s_unit_sp_half",
+    test: (body) =>
+      /^自軍Sユニットを1体選ぶ。このターン、選んだユニットは「SP1\/2」になる/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "s_unit_sp_half",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [{ type: "grant_keyword", keyword: "turn_s_unit_sp_half", duration: "turn" }],
+      matchedPattern: "operation_s_unit_sp_half",
+    }),
+  },
+  {
+    pattern: "operation_release_own_s_unit",
+    test: (body) => /^自軍Sユニットを1体選び、リリースする/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "release_s_unit",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [{ type: "grant_keyword", keyword: "release_own_s_unit", duration: "turn" }],
+      matchedPattern: "operation_release_own_s_unit",
+    }),
+  },
+  {
+    pattern: "operation_turn_mirror_rider_power_minus",
+    test: (body) =>
+      /^このターン、特徴「ミラーライダー」を持つユニットカードの必要パワーの数字は、自軍エリアにある特徴「ミラーモンスター」を持つユニット1体につき1少なくなる/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "mirror_rider_power_minus",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "turn_mirror_rider_power_minus_per_monster",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "operation_turn_mirror_rider_power_minus",
+    }),
+  },
+  {
+    pattern: "operation_turn_accelerate_rush_waive",
+    test: (body) =>
+      /^このターン、特徴「加速」を持つBP2000以下のSユニットのカードは、追加条件を満たさなくてもラッシュできる/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "accelerate_rush_waive",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "turn_accelerate_s_rush_waive_addcond",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "operation_turn_accelerate_rush_waive",
+    }),
+  },
+  {
+    pattern: "operation_hand_original_feature_to_rush",
+    test: (body) =>
+      /^自分の手札から本来の特徴に｢魔皇力｣を持つカードを1枚選び、自軍ラッシュエリアに出してもよい/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "hand_maou_to_rush",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "hand_original_feature_maou_to_rush",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "operation_hand_original_feature_to_rush",
+    }),
+  },
+  {
+    pattern: "pick_one_effect_branch",
+    test: (body) => /次の効果から1つ選び発動する/.test(body),
+    build: (body, segment, trigger) => {
+      const picked = tryBuildPickEffectBranch(body, segment, trigger, rematchBuiltEffect);
+      if (picked) return picked;
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger,
+        optional: true,
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword: semanticCatchallKeyword("choice_one_of", body),
+            duration: "turn",
+          },
+        ],
+        matchedPattern: "choice_one_of_effects",
+      };
+    },
   },
   {
     pattern: "hold_entry_and_rush_hold",
@@ -5120,6 +5405,9 @@ const PATTERNS: PatternMatch[] = [
       matchedPattern: "opponent_hold_commands_by_category",
     }),
   },
+  ...RK_NOTE_PATTERNS,
+  ...RK_WHILE_PATTERNS,
+  ...RK_ACTION_PATTERNS,
   {
     pattern: "combo_from_named_card",
     test: (body) => /「[^」]+」からコンビネーションしたとき発動できる⇒/.test(body),
@@ -6916,6 +7204,82 @@ const PATTERNS: PatternMatch[] = [
         },
       ],
       matchedPattern: "on_cease_shuffle_all_discard_to_deck",
+    }),
+  },
+  {
+    pattern: "on_strike_discard_enemy_power_faceup_unit_le",
+    test: (body) =>
+      /これがストライクしてダメージを与えたとき、敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が(\d+)以下のユニットカードを1枚選び捨札にしてもよい/.test(
+        body,
+      ),
+    build: (body, segment) => {
+      const maxPowerCost = Number(
+        body.match(/必要パワーの数字が(\d+)以下のユニットカード/)?.[1] ?? 99,
+      );
+      const target = zone("power", "opponent", {
+        faceDown: false,
+        cardType: "unit",
+        maxPowerCost,
+      });
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger: { type: "on_strike" },
+        optional: true,
+        condition: { type: "has_target", target },
+        effects: [
+          chooseUnit(target, 1, [{ type: "discard", target: { type: "trigger_source" } }]),
+        ],
+        matchedPattern: "on_strike_discard_enemy_power_faceup_unit_le",
+      };
+    },
+  },
+  {
+    pattern: "discard_enemy_power_faceup_le",
+    test: (body) =>
+      /敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が(\d+)以下のカードを1枚選んでもよい/.test(
+        body,
+      ) && !/仮面ライダーキックホッパー/.test(body),
+    build: (body, segment, trigger) => {
+      const maxPowerCost = Number(
+        body.match(/必要パワーの数字が(\d+)以下のカード/)?.[1] ?? 99,
+      );
+      const target = zone("power", "opponent", { faceDown: false, maxPowerCost });
+      return {
+        id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+        name: segment.name,
+        text: body,
+        trigger,
+        optional: true,
+        condition: { type: "has_target", target },
+        effects: [
+          chooseUnit(target, 1, [{ type: "discard", target: { type: "trigger_source" } }]),
+        ],
+        matchedPattern: "discard_enemy_power_faceup_le",
+      };
+    },
+  },
+  {
+    pattern: "raidapanchi_discard_enemy_power_faceup",
+    test: (body) =>
+      /敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が2以下のカードを1枚選んでもよい（自軍Sユニットが｢仮面ライダーキックホッパー｣と｢仮面ライダーパンチホッパー｣だけなら、必要パワーの数字が4以下のカードを1枚選んでもよい\)/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "raidapanchi",
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "raidapanchi_discard_enemy_power_faceup",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "raidapanchi_discard_enemy_power_faceup",
     }),
   },
   {
@@ -9017,6 +9381,103 @@ const PATTERNS: PatternMatch[] = [
 
 ];
 
+/** semanticCatchallKeyword を返す汎用パターン — 固有パターンより後で試す。 */
+const CATCHALL_PATTERN_IDS = new Set<string>([
+  "combo_l_ability",
+  "combo_l_effect",
+  "return_ally_on_rush",
+  "combo_l_attack_strike",
+  "combo_l_process",
+  "ignore_rule_text",
+  "hand_pick_show",
+  "enter_hold_enemy",
+  "combo_hold_s",
+  "rush_discard_instead",
+  "ride_discard_trigger",
+  "rush_discard_search",
+  "combo_from_named",
+  "opponent_self_order",
+  "ride_s_ability",
+  "enemy_power_damage",
+  "exclude_game",
+  "deck_search_generic",
+  "while_note",
+  "grant_ability",
+  "grant_effect",
+  "destroy_enter_battle",
+  "destroy_on_rush",
+  "hold_on_enter_battle",
+  "note_other",
+  "while_in_field_body",
+  "return_to_zone",
+  "release_command_action",
+  "combo_action",
+  "ride_action",
+  "opponent_must",
+  "bp_modify",
+  "damage_action",
+  "counter_note",
+  "cannot_restrict",
+  "reveal_faceup",
+  "stack_cards",
+  "destroy_all_enemy",
+  "hold_enemy_unit",
+  "deploy_rush_area",
+  "vehicle_interaction",
+  "power_zone_action",
+  "resident_zone",
+  "pick_from_hand",
+  "pick_from_discard",
+  "pick_from_deck",
+  "scry_self_deck_top",
+  "discard_to_zone",
+  "enemy_turn_action",
+  "on_attack_action",
+  "on_strike_action",
+  "fusion_unit",
+  "register_resist",
+  "category_modify",
+  "number_combo",
+  "destroy_choose_enemy",
+  "deploy_battle_area",
+  "draw_cards",
+  "feature_match",
+  "da_category",
+  "wb_category",
+  "ot_category",
+  "ma_category",
+  "rc_copy",
+  "mirror_rider",
+  "kamen_rider",
+  "mecha_feature",
+  "battle_win",
+  "auto_battle",
+  "adjacent_units",
+  "shuffle_deck",
+  "scry_enemy_deck",
+  "move_to_power_zone",
+  "self_turn_action",
+  "optional_then",
+  "gender_match",
+  "destroy_remaining",
+  "hold_remaining",
+  "deploy_enemy_area",
+  "pick_remaining",
+  "copy_as_effect",
+  "wing_keyword",
+  "catchall_interpret",
+]);
+
+function patternsInMatchOrder(): PatternMatch[] {
+  const specific: PatternMatch[] = [];
+  const catchall: PatternMatch[] = [];
+  for (const pattern of PATTERNS) {
+    if (CATCHALL_PATTERN_IDS.has(pattern.pattern)) catchall.push(pattern);
+    else specific.push(pattern);
+  }
+  return [...specific, ...catchall];
+}
+
 function delegateEffectKeyword(effectId: string): EffectPrimitive {
   return {
     type: "grant_keyword",
@@ -9038,7 +9499,7 @@ function rematchBuiltEffect(
     body,
     name: options.name,
   };
-  for (const pattern of PATTERNS) {
+  for (const pattern of patternsInMatchOrder()) {
     if (!pattern.test(body, segment)) continue;
     const built = pattern.build(body, segment, options.trigger);
     if (
@@ -9107,7 +9568,7 @@ export function extractEffects(
     const body = segment.body;
     const trigger = triggers[segmentIndex]?.trigger ?? { type: "nc" as const };
 
-    for (const pattern of PATTERNS) {
+    for (const pattern of patternsInMatchOrder()) {
       if (!pattern.test(body, segment)) continue;
       const built = pattern.build(body, segment, trigger);
       if (built) {
@@ -9163,3 +9624,5 @@ export function extractEffects(
     return { ...fallbackEffect(segment, trigger, body), segmentIndex };
   });
 }
+
+export { splitChoiceBranches } from "./choiceBranches";

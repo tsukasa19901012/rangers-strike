@@ -19,12 +19,20 @@ function cardHasAllyRushReturnKeyword(cardId: string): boolean {
 
 function parseAllyRushReturnNames(
   text: string,
-): { rushedName: string; selfName: string } | null {
-  const match = text.match(
+): { rushedName: string; selfNames: string[] } | null {
+  const orMatch = text.match(
+    /自分が「([^」]+)」をラッシュしたとき、自軍エリアに「([^」]+)」(?:または「([^」]+)」)?があれば/,
+  );
+  if (orMatch) {
+    const selfNames = [orMatch[2]!];
+    if (orMatch[3]) selfNames.push(orMatch[3]);
+    return { rushedName: orMatch[1]!, selfNames };
+  }
+  const single = text.match(
     /自分が「([^」]+)」をラッシュしたとき、自軍エリアに「([^」]+)」があれば/,
   );
-  if (!match) return null;
-  return { rushedName: match[1]!, selfName: match[2]! };
+  if (!single) return null;
+  return { rushedName: single[1]!, selfNames: [single[2]!] };
 }
 
 /** RS-235 等: 味方が指定名をラッシュしたとき、場の自分を手札に戻す。 */
@@ -51,7 +59,8 @@ export function tryOnAllyRushNamedReturnSelfToHand(
       );
       const names = parseAllyRushReturnNames(effect?.text ?? "");
       if (!names || names.rushedName !== rushedName) continue;
-      if (cardName(state.definitions, card.cardId) !== names.selfName) continue;
+      const selfName = cardName(state.definitions, card.cardId);
+      if (!names.selfNames.includes(selfName)) continue;
 
       const withChoice = startSelectUnitChoice(state, {
         playerId: rusherPlayerId,

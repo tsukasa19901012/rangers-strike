@@ -1,5 +1,5 @@
 /**
- * grant_keyword のハッシュスタブ（opponent_must_* 等）を extractEffects で再マッチする。
+ * grant_keyword の catchall スタブを extractEffects で再マッチする。
  *
  * Usage: npx tsx packages/cards/scripts/repair-dsl-hash-keywords.ts
  */
@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 import type { CardDocument, EffectPrimitive } from "../src/dsl/types";
 import { validateCardDocument } from "../src/dsl/validator";
 import { rematchExtractedEffect } from "../src/pipeline/extractEffects";
-import { isHashGrantKeywordStub } from "../src/pipeline/hashGrantKeywords";
+import { isUnresolvedCatchallGrantKeyword } from "../src/pipeline/hashGrantKeywords";
 import { slugifyEffectId } from "../src/pipeline/metaMaps";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -19,16 +19,27 @@ const repoRoot = join(root, "../..");
 const dslDir = join(root, "src/generated/dsl-stubs");
 const reportPath = join(root, "pipeline/data/dsl-hash-keyword-repair.json");
 
-function isHashKeywordStub(primitives: EffectPrimitive[]): boolean {
+function isCatchallStub(primitives: EffectPrimitive[]): boolean {
   return primitives.some(
-    (p) => p.type === "grant_keyword" && isHashGrantKeywordStub(p.keyword),
+    (p) => p.type === "grant_keyword" && isUnresolvedCatchallGrantKeyword(p.keyword),
+  );
+}
+
+function isUnnamedEffect(
+  effect: NonNullable<CardDocument["effects"]>[number],
+): boolean {
+  return (
+    effect.id?.startsWith("unnamed_") === true ||
+    effect.id?.startsWith("note_") === true ||
+    (effect.text?.startsWith("※") ?? false) ||
+    !effect.name
   );
 }
 
 function remigrateEffect(
   effect: NonNullable<CardDocument["effects"]>[number],
 ): { changed: boolean; to?: string } {
-  if (!isHashKeywordStub(effect.effects)) return { changed: false };
+  if (!isCatchallStub(effect.effects)) return { changed: false };
 
   const rematched = rematchExtractedEffect(effect.text ?? "", {
     name: effect.name,
@@ -36,12 +47,7 @@ function remigrateEffect(
     trigger: effect.trigger,
   });
 
-  if (
-    rematched &&
-    !rematched.effects.some(
-      (p) => p.type === "grant_keyword" && isHashGrantKeywordStub(p.keyword),
-    )
-  ) {
+  if (rematched && !isCatchallStub(rematched.effects)) {
     effect.id = rematched.id;
     effect.effects = rematched.effects;
     if (rematched.name !== undefined) effect.name = rematched.name;
@@ -77,7 +83,9 @@ function dedupeEffectIds(doc: CardDocument): void {
 
 function main(): void {
   let scanned = 0;
+  let scannedUnnamed = 0;
   let repaired = 0;
+  let repairedUnnamed = 0;
   let remaining = 0;
   const samples: Array<{ cardId: string; effectId: string; to: string }> = [];
 
@@ -88,14 +96,16 @@ function main(): void {
     let changed = false;
 
     for (const effect of doc.effects ?? []) {
-      if (!isHashKeywordStub(effect.effects)) continue;
+      if (!isCatchallStub(effect.effects)) continue;
       scanned += 1;
+      if (isUnnamedEffect(effect)) scannedUnnamed += 1;
       const result = remigrateEffect(effect);
       if (!result.changed) {
         remaining += 1;
         continue;
       }
       repaired += 1;
+      if (isUnnamedEffect(effect)) repairedUnnamed += 1;
       changed = true;
       if (samples.length < 25) {
         samples.push({
@@ -117,15 +127,17 @@ function main(): void {
   const report = {
     generatedAt: new Date().toISOString(),
     scanned,
+    scannedUnnamed,
     repaired,
-    remainingHashStubs: remaining,
+    repairedUnnamed,
+    remainingCatchallStubs: remaining,
     samples,
-    note: "Re-match grant_keyword hash stubs via extractEffects PATTERNS.",
+    note: "Re-match catchall grant_keyword stubs via extractEffects PATTERNS.",
   };
 
   mkdirSync(dirname(reportPath), { recursive: true });
   writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`);
-  console.log(JSON.stringify({ scanned, repaired, remaining }, null, 2));
+  console.log(JSON.stringify({ scanned, scannedUnnamed, repaired, repairedUnnamed, remaining }, null, 2));
   console.log(`→ ${reportPath}`);
 
   if (repaired > 0) {

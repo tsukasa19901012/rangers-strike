@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_yunitowopawanonoga3ninarumadekinabichinonishi",
+          "keyword": "return_enemy_power_sum_shuffle::3",
           "duration": "turn"
         }
       ],

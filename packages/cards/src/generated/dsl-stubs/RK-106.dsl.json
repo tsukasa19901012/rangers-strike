@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_batorueriakarahorudonosyunitowo1bichinopawazonnidame",
+          "keyword": "enemy_battle_held_s_to_power",
           "duration": "turn"
         }
       ],

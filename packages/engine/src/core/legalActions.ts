@@ -70,6 +70,7 @@ import {
 } from "../rules/mothership";
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
 import { isZordUpCost, resolveRushAdditionalCondition } from "@rangers-strike/cards";
+import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import {
   canExecuteHandCounter,
   canInitiateCounterCategoryPayment,
@@ -610,7 +611,7 @@ export function findDirectZordRushAction(
 
   if (
     !isZordUpCost(definition.powerCost) ||
-    (!resolveRushAdditionalCondition(card.cardId, definition) &&
+    (!rushAdditionalConditionApplies(state, playerId, card.cardId) &&
       !requiresAllFusionPartners(card.cardId))
   ) {
     return null;
@@ -751,7 +752,7 @@ function appendRushCategoryPaymentActions(
     if (
       isUnit(definition) &&
       isZordUpCost(definition.powerCost) &&
-      (resolveRushAdditionalCondition(card.cardId, definition) ||
+      (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
         requiresAllFusionPartners(card.cardId))
     ) {
       if (requiresAllFusionPartners(card.cardId)) {
@@ -1373,7 +1374,7 @@ export function getLegalActions(state: GameState): GameAction[] {
         } else if (
           isUnit(definition) &&
           isZordUpCost(definition!.powerCost) &&
-          (resolveRushAdditionalCondition(card.cardId, definition!) ||
+          (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
             requiresAllFusionPartners(card.cardId))
         ) {
           for (const variant of listZordUpRushPaymentVariants(

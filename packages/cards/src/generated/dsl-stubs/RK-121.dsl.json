@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_koreworashushitatansyunitohabp500sarerubp0ninatayuni",
+          "keyword": "rush_turn_enemy_s_bp_minus::500",
           "duration": "turn"
         }
       ],

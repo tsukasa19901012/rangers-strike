@@ -19,11 +19,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_sonobatoruhawarenaisoshiteatakusaretayunitonopawanowotesono",
+          "keyword": "counter_mirror_rider_cancel_battle",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

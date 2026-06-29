@@ -45,12 +45,43 @@
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "damage_action_koregasutoraikushitedamejiwoetatokipawazonnoomote_ko_kinok",
-          "duration": "turn"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "power",
+            "owner": "opponent",
+            "filter": {
+              "faceDown": false,
+              "cardType": "unit",
+              "maxPowerCost": 3
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
       ],
-      "optional": true
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "power",
+          "owner": "opponent",
+          "filter": {
+            "faceDown": false,
+            "cardType": "unit",
+            "maxPowerCost": 3
+          }
+        }
+      }
     }
   ],
   "unnamedRules": [

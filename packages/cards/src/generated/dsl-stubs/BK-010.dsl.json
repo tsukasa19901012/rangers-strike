@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "choice_one_of_nokara1tsubisurunokararaidablackrxnokadowo1",
+          "keyword": "pick_effect_branch",
           "duration": "turn"
         }
       ],

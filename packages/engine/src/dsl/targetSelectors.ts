@@ -1,7 +1,7 @@
 import type { TargetSelector } from "@rangers-strike/cards/dsl/types";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
-import { cardCategories, getDefinition, isSmallUnit } from "../core/catalog";
+import { cardCategories, getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
@@ -17,10 +17,12 @@ function matchesFilter(
   card: CardInstance,
   filter?: {
     size?: string;
+    cardType?: "unit" | "operation";
     category?: string;
     categoryExcept?: string;
     maxBp?: number;
     minBp?: number;
+    maxPowerCost?: number;
     commandHeld?: boolean;
     faceDown?: boolean;
     noRushAdditionalCondition?: boolean;
@@ -28,7 +30,11 @@ function matchesFilter(
 ): boolean {
   if (!filter) return true;
   const def = getDefinition(state.definitions, card.cardId);
+  if (filter.cardType && def?.type !== filter.cardType) return false;
   if (filter.size && def?.size !== filter.size) return false;
+  if (filter.maxPowerCost !== undefined && parsePowerCost(def?.powerCost ?? 99) > filter.maxPowerCost) {
+    return false;
+  }
   if (filter.maxBp !== undefined && (def?.bp ?? 0) > filter.maxBp) return false;
   if (filter.minBp !== undefined && (def?.bp ?? 0) < filter.minBp) return false;
   if (filter.commandHeld !== undefined && !!card.commandHeld !== filter.commandHeld) return false;

@@ -16,6 +16,14 @@ export default defineConfig({
         __dirname,
         "../cards/src/pipeline/extractEffects.ts",
       ),
+      "@rangers-strike/cards/pipeline/hashGrantKeywords": path.resolve(
+        __dirname,
+        "../cards/src/pipeline/hashGrantKeywords.ts",
+      ),
+      "@rangers-strike/cards/pipeline/implementedGrantKeywords": path.resolve(
+        __dirname,
+        "../cards/src/pipeline/implementedGrantKeywords.ts",
+      ),
       "@rangers-strike/cards/dsl": path.resolve(
         __dirname,
         "../cards/src/dsl/index.ts",

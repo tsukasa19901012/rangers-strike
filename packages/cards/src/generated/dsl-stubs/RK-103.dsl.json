@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_korehawotsuyunitokarakonbineshonsurutokibp3000sare",
+          "keyword": "combo_feature_bp_attack_rush::警察::3000",
           "duration": "turn"
         }
       ],

@@ -7,6 +7,10 @@ import { godomDiscardPowerBonus } from "../rules/godomRushPay";
 import { flowerBombPowerCostOverride } from "../rules/legend1/coreGapEffects";
 import { cityGuardRushPowerSurcharge } from "../rules/batch06FieldEffects";
 import { hasTurnRuleModifier } from "./scopedModifiers";
+import {
+  countMirrorMonstersOnField,
+  hasMirrorRiderPowerMinusRule,
+} from "../rules/bkOperationTurnRules";
 
 /** コマンドゾーンのカードがマルチカテゴリ（2+）か。表裏・ホールド不問。 */
 export function isMultiCategoryCommand(
@@ -76,6 +80,14 @@ export function rushEffectivePowerCost(
   cardId?: string,
 ): number {
   if (cardId) {
+    const def = getDefinition(state.definitions, cardId);
+    if (
+      (def?.features ?? []).includes("ミラーライダー") &&
+      hasMirrorRiderPowerMinusRule(state.players[playerId])
+    ) {
+      const reduction = countMirrorMonstersOnField(state as GameState, state.players[playerId]);
+      return Math.max(0, effectivePowerCost(state, playerId, rawCost) - reduction);
+    }
     const flowerBomb = flowerBombPowerCostOverride(state, playerId, cardId);
     if (flowerBomb !== null) return flowerBomb;
     const surcharge = cityGuardRushPowerSurcharge(state, playerId, cardId);

@@ -20,6 +20,7 @@ import {
   startSelectCommandChoice,
   collectCommandIds,
   startEnterHoldEnemyPowerLeDamageChoice,
+  startRaidapanchiDiscardChoice,
   startHangaEvolutionChoice,
   startEnterRushFromDiscardFeatureChoice,
   startSphinxPowerQuizChoice,
@@ -32,6 +33,18 @@ import {
   startPhoenixMereDestroyChoice,
 } from "../rules/pendingChoices";
 import { applyFalconSummonerOperation } from "../rules/falconSummoner";
+import {
+  applyHandNamedToRush,
+  applyDeckNamedRushShuffle,
+  applyTurnVehicleBattleWithoutRide,
+  applyDrawThenHandToDeckTop,
+  applyTurnSUnitSpHalf,
+  applyReleaseOwnSUnit,
+  applyHandOriginalFeatureMaouToRush,
+  applyTurnMirrorRiderPowerMinus,
+  applyTurnAccelerateRushWaive,
+  applyPickEffectBranch,
+} from "../rules/bkOperationEffects";
 import {
   applyPinkRaiderVehicleReturn,
   releaseHeldSUnitCommands,
@@ -77,6 +90,7 @@ import { isEngineNativeGrantKeyword } from "./promotedKeywordBridge";
 import { isCatchallGrantKeyword } from "./hashGrantKeywordStub";
 import { setGenericSComboFinisher, setBattleDestroyToPower, addComboNumberDelta } from "../rules/turnModifierBridge";
 import { superPowerAttackBonus } from "../core/catalog";
+import { matchRkGrantKeyword } from "../rules/rkEffects";
 
 export const PASSIVE_GRANT_KEYWORDS = new Set([
   "over_technology_m_bp_plus_on_attacked",
@@ -139,6 +153,7 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "while_da_s_cannot_battle_entry",
   "bp_debuff_per_non_ot_command",
   "category_wb_while_in_battle",
+  "while_command_hold_immune",
 ]);
 
 export const SUPPORTED_GRANT_KEYWORDS = new Set([
@@ -175,6 +190,28 @@ export const SUPPORTED_GRANT_KEYWORDS = new Set([
   "combo_number_delta_minus_1",
   "megasuringu",
   "on_rush_scry_exclude_named_feature_m_to_rush",
+  "raidapanchi_discard_enemy_power_faceup",
+  "pick_effect_branch",
+  "hand_named_to_rush",
+  "deck_named_rush_shuffle",
+  "turn_s_vehicle_battle_without_ride",
+  "draw_then_hand_to_deck_top",
+  "turn_s_unit_sp_half",
+  "release_own_s_unit",
+  "turn_mirror_rider_power_minus_per_monster",
+  "turn_accelerate_s_rush_waive_addcond",
+  "hand_original_feature_maou_to_rush",
+  "enemy_battle_held_s_to_power",
+  "hold_self_enemy_battle_s_to_power",
+  "mirror_rider_destroy_enemy_s_by_power",
+  "enemy_rush_s_count_power_match_to_power",
+  "force_enemy_s_rush_to_battle_reorder",
+  "destroy_enemy_cannot_enter_battle_text",
+  "hold_on_enter_enemy_s_no_resist",
+  "enter_battle_destroy_enemy_unridden_s_vehicle",
+  "on_rush_enemy_s_ride_off",
+  "ride_release_on_mount",
+  "counter_mirror_rider_cancel_battle",
   ...PASSIVE_GRANT_KEYWORDS,
 ]);
 
@@ -278,6 +315,20 @@ export function applyGrantKeyword(
   ctx: GrantKeywordContext,
   keyword: string,
 ): GrantKeywordResult {
+  if (keyword.startsWith("hand_named_to_rush::")) {
+    const withChoice = applyHandNamedToRush(state, ctx, keyword);
+    if (!withChoice) return { state, detail: "hand_named_to_rush:no_targets" };
+    return { state: withChoice, detail: "hand_named_to_rush" };
+  }
+  if (keyword.startsWith("deck_named_rush_shuffle::")) {
+    const withChoice = applyDeckNamedRushShuffle(state, ctx, keyword);
+    if (!withChoice) return { state, detail: "deck_named_rush_shuffle:no_targets" };
+    return { state: withChoice, detail: "deck_named_rush_shuffle" };
+  }
+
+  const rk = matchRkGrantKeyword(state, ctx, keyword);
+  if (rk) return rk;
+
   switch (keyword) {
     case "bp_plus_per_own_damage": {
       const instanceId = ctx.triggerSourceInstanceId;
@@ -755,6 +806,48 @@ export function applyGrantKeyword(
         detail: ctx.effectId,
       };
     }
+    case "pick_effect_branch": {
+      const withChoice = applyPickEffectBranch(state, ctx);
+      if (!withChoice) return { state, detail: "pick_effect_branch:no_targets" };
+      return { state: withChoice, detail: "pick_effect_branch" };
+    }
+    case "turn_s_vehicle_battle_without_ride": {
+      const withChoice = applyTurnVehicleBattleWithoutRide(state, ctx);
+      if (!withChoice) return { state, detail: "turn_s_vehicle_battle_without_ride:no_targets" };
+      return { state: withChoice, detail: "turn_s_vehicle_battle_without_ride" };
+    }
+    case "draw_then_hand_to_deck_top": {
+      const withChoice = applyDrawThenHandToDeckTop(state, ctx);
+      if (!withChoice) return { state, detail: "draw_then_hand_to_deck_top:no_targets" };
+      return { state: withChoice, detail: "draw_then_hand_to_deck_top" };
+    }
+    case "turn_s_unit_sp_half": {
+      const withChoice = applyTurnSUnitSpHalf(state, ctx);
+      if (!withChoice) return { state, detail: "turn_s_unit_sp_half:no_targets" };
+      return { state: withChoice, detail: "turn_s_unit_sp_half" };
+    }
+    case "release_own_s_unit": {
+      const withChoice = applyReleaseOwnSUnit(state, ctx);
+      if (!withChoice) return { state, detail: "release_own_s_unit:no_targets" };
+      return { state: withChoice, detail: "release_own_s_unit" };
+    }
+    case "hand_original_feature_maou_to_rush": {
+      const withChoice = applyHandOriginalFeatureMaouToRush(state, ctx);
+      if (!withChoice) return { state, detail: "hand_original_feature_maou_to_rush:no_targets" };
+      return { state: withChoice, detail: "hand_original_feature_maou_to_rush" };
+    }
+    case "turn_mirror_rider_power_minus_per_monster": {
+      return {
+        state: applyTurnMirrorRiderPowerMinus(state, ctx),
+        detail: "turn_mirror_rider_power_minus_per_monster",
+      };
+    }
+    case "turn_accelerate_s_rush_waive_addcond": {
+      return {
+        state: applyTurnAccelerateRushWaive(state, ctx),
+        detail: "turn_accelerate_s_rush_waive_addcond",
+      };
+    }
     case "megasuringu": {
       const targets = collectCommandIds(state, ctx.playerId, "released");
       const withChoice = startSelectCommandChoice(state, {
@@ -767,6 +860,17 @@ export function applyGrantKeyword(
         commandAction: "return_deck_top",
         validInstanceIds: targets,
         optional: ctx.optional ?? true,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
+    }
+    case "raidapanchi_discard_enemy_power_faceup": {
+      const withChoice = startRaidapanchiDiscardChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
       });
       if (!withChoice) return { state };
       return { state: withChoice, detail: ctx.effectId };
@@ -968,7 +1072,6 @@ export function applyGrantKeyword(
         keyword === "opponent_rush_s_to_battle" ||
         keyword === "combo_number_delta_minus_1" ||
         keyword === "nc_sp1_if_no_enemy_units" ||
-        keyword.startsWith("deck_search_") ||
         keyword.startsWith("hold_all_enemy_bp") ||
         keyword === "opponent_hand_counter_to_power" ||
         keyword === "deck_search_operation_to_power" ||

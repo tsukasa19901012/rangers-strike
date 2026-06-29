@@ -862,4 +862,69 @@ describe("RS monkey-test high-frequency fixes", () => {
       false,
     );
   });
+
+  it("RS-686 rematches to on_strike_discard_enemy_power_faceup choose", () => {
+    const text =
+      "これがストライクしてダメージを与えたとき、敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が3以下のユニットカードを1枚選び捨札にしてもよい。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "セイクウインパルス",
+      kind: "named",
+      trigger: { type: "on_strike" },
+    });
+    expect(rematched?.some((p) => p.type === "choose")).toBe(true);
+    expect(
+      rematched?.some(
+        (p) => p.type === "grant_keyword" && isCatchallGrantKeyword(p.keyword),
+      ),
+    ).toBe(false);
+  });
+
+  it("RK-297 rematches to raidapanchi_discard_enemy_power_faceup", () => {
+    const text =
+      "敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が2以下のカードを1枚選んでもよい（自軍Sユニットが｢仮面ライダーキックホッパー｣と｢仮面ライダーパンチホッパー｣だけなら、必要パワーの数字が4以下のカードを1枚選んでもよい)。そうしたとき、選んだカードを捨札にする。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "ライダーパンチ",
+      kind: "named",
+      trigger: { type: "nc" },
+    });
+    expect(
+      rematched?.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "raidapanchi_discard_enemy_power_faceup",
+      ),
+    ).toBe(true);
+    expect(isCatchallGrantKeyword("raidapanchi_discard_enemy_power_faceup")).toBe(false);
+  });
+});
+
+describe("unnamed note grant_keyword rematch", () => {
+  const noteCases: Array<{ text: string; keyword: string }> = [
+    {
+      text: "※これはホールド状態の敵軍ユニット1体につきBP+1000される",
+      keyword: "bp_plus_per_held_enemy_unit_1000",
+    },
+    {
+      text: "※これは相手の手札1枚につきBP+2000される",
+      keyword: "bp_plus_per_enemy_hand_card_2000",
+    },
+    {
+      text: "※これは特徴「男」または「女」を持つユニットにアタックできない",
+      keyword: "cannot_attack_gender_male_female",
+    },
+    {
+      text: "※特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない",
+      keyword: "ally_raida_protects_from_enemy_s",
+    },
+  ];
+
+  for (const { text, keyword } of noteCases) {
+    it(`rematches ※ note to ${keyword}`, () => {
+      const rematched = rematchEffectPrimitives(text, { kind: "note" });
+      expect(
+        rematched?.some((p) => p.type === "grant_keyword" && p.keyword === keyword),
+      ).toBe(true);
+      expect(isCatchallGrantKeyword(keyword)).toBe(false);
+    });
+  }
 });

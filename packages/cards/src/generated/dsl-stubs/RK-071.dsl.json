@@ -29,11 +29,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_rashuerianosyunitonowoetesonotojipawanowotsu",
+          "keyword": "enemy_rush_s_count_power_match_to_power",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

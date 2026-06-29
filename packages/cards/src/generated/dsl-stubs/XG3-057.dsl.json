@@ -20,13 +20,13 @@
       "id": "note_e280bbe887aae58886e3818c",
       "text": "※自分が「仮面ライダー響鬼」をラッシュしたとき、自軍エリアに「ヒビキアカネタカ」があれば1体選んで手札に戻す。",
       "trigger": {
-        "type": "on_rush"
+        "type": "while_in_field"
       },
       "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_self_on_ally_rush_fx_unknown",
+          "keyword": "on_ally_rush_named_return_self_to_hand",
           "duration": "permanent"
         }
       ]

@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_pawazonnoomote_ko_kinokadokarapawanoga2nokadowo1",
+          "keyword": "raidapanchi_discard_enemy_power_faceup",
           "duration": "turn"
         }
       ],

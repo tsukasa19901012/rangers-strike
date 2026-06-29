@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_horudonoyunitogakoreniraidosurutokisonoyunitoworirisushitemo",
+          "keyword": "ride_release_on_mount",
           "duration": "turn"
         }
       ],
