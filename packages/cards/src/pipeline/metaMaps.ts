@@ -1,4 +1,6 @@
 import type { CardDocument, Category, RushAdditionalCondition } from "../dsl/types";
+import { effectIdFromName } from "./effectNameIds";
+import { slugifyJapaneseEffectName } from "./japaneseEffectSlug";
 
 const CATEGORY_CODES = new Set(["ET", "WB", "OT", "MA", "DA"]);
 
@@ -350,20 +352,10 @@ export function hashEffectText(text: string): string {
   return Buffer.from(text.normalize("NFKC"), "utf8").toString("hex").slice(0, 24);
 }
 
-import { effectIdFromName, knownEffectNameIds } from "./effectNameIds";
-
 export function slugifyEffectId(name: string): string {
   const mapped = effectIdFromName(name);
   if (mapped) return mapped;
-  const KNOWN = knownEffectNameIds();
-  if (KNOWN[name]) return KNOWN[name];
-  const ascii = name
-    .normalize("NFKD")
-    .replace(/[^\w]+/g, "_")
-    .replace(/^_+|_+$/g, "")
-    .toLowerCase();
-  if (ascii.length >= 2) return sanitizeEffectId(ascii);
-  return `named_${hashEffectText(name)}`;
+  return slugifyJapaneseEffectName(name);
 }
 
 export function noteEffectIdFromBody(body: string): string {
