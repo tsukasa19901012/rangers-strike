@@ -48,6 +48,14 @@ import {
   applyFireGeneralEnterBattle,
   applyAkaRedSoulEnterBattle,
 } from "../rules/batch05FieldEffects";
+import {
+  applyBenGEnterBattle,
+  applyBoukenSilverEnterBattle,
+  applyHikarimaruOperation,
+  applyRedLadderOnRush,
+  applySuperGekiFantasticOnRush,
+  applyZorobAntGeneOnRush,
+} from "../rules/batch06FieldEffects";
 import { beginCastoffOnRush } from "../rules/castoff";
 import {
   beginAssaultVectorDestroy,
@@ -104,6 +112,11 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "on_cease_shuffle_all_discard_to_deck",
   "deck_unlimited",
   "note_bp_per_own_command_feature_red",
+  "becomes_l_if_l_present",
+  "while_in_battle_enemy_s_must_attack_self",
+  "while_in_battle_opponent_da_s_rush_power_plus_1",
+  "while_in_rush_mecha_l_rush_destroy_enemy_s",
+  "while_in_rush_opponent_magic_dino_rush_discard_held_command",
   "ride_bp_boost_500",
   "ride_bp_boost_1000",
   "cross1",
@@ -634,6 +647,84 @@ export function applyGrantKeyword(
       if (!instanceId) return { state };
       return {
         state: applyFireGeneralEnterBattle(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "operation_release_wing_then_enemy_battle_bp_le_to_power": {
+      const operationInstanceId = ctx.operationInstanceId;
+      if (!operationInstanceId) return { state };
+      return {
+        state: applyHikarimaruOperation(
+          state,
+          ctx.playerId,
+          operationInstanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "on_rush_discard_s_to_hand_up_to_2": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applyRedLadderOnRush(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "enter_battle_scry_deck_top3_sp1_if_unit_has_sp": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applyBoukenSilverEnterBattle(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "enter_battle_discard_hand_m_opponent_pays_additional": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applyBenGEnterBattle(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "on_rush_trigger_wb_m_rush_effect_from_rush": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applySuperGekiFantasticOnRush(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "on_rush_scry_top_if_s_count_le5_named_to_rush_else_discard": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applyZorobAntGeneOnRush(
           state,
           ctx.playerId,
           instanceId,

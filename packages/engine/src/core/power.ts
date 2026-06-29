@@ -5,6 +5,7 @@ import { getDefinition } from "./catalog";
 import { opponent } from "./helpers";
 import { godomDiscardPowerBonus } from "../rules/godomRushPay";
 import { flowerBombPowerCostOverride } from "../rules/legend1/coreGapEffects";
+import { cityGuardRushPowerSurcharge } from "../rules/batch06FieldEffects";
 import { hasTurnRuleModifier } from "./scopedModifiers";
 
 /** コマンドゾーンのカードがマルチカテゴリ（2+）か。表裏・ホールド不問。 */
@@ -77,6 +78,10 @@ export function rushEffectivePowerCost(
   if (cardId) {
     const flowerBomb = flowerBombPowerCostOverride(state, playerId, cardId);
     if (flowerBomb !== null) return flowerBomb;
+    const surcharge = cityGuardRushPowerSurcharge(state, playerId, cardId);
+    if (surcharge > 0) {
+      return effectivePowerCost(state, playerId, rawCost + surcharge);
+    }
   }
   return effectivePowerCost(state, playerId, rawCost);
 }

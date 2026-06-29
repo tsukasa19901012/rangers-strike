@@ -22,12 +22,12 @@
       "name": "シノビボールの争奪戦",
       "text": "これが自軍バトルエリアにある間、敵軍ターン中、敵軍Sユニットは、バトルエリアに出たとき、可能ならこのユニットにアタックする。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregabatoruerianiarutansyunitohabatoruerianitatoki",
+          "keyword": "while_in_battle_enemy_s_must_attack_self",
           "duration": "permanent"
         }
       ],

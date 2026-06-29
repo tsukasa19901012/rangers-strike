@@ -335,6 +335,8 @@ export type PendingBattleEntry = {
   phasePlayerId: PlayerId;
   /** コンボ選択解決後の残りバトル進入ステップ。 */
   resumeEnterBattle?: EnterBattleResume;
+  /** RS-451: 可能ならこのユニットへアタックする。 */
+  requiredDefenderInstanceId?: string;
 };
 
 export type CommandPaymentContinuation =

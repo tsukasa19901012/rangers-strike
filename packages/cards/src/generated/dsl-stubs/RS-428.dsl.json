@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札に｢ゲキブルー｣のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "on_destroy"
@@ -27,11 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
+          "keyword": "on_destroy_reanimate_named_from_discard",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     },
     {
       "id": "fuantasuteikutekuniku",
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "wb_category_rashueriakaranirashushitatokitoaruwbnomyunitowo1ndemo",
+          "keyword": "on_rush_trigger_wb_m_rush_effect_from_rush",
           "duration": "turn"
         }
       ],

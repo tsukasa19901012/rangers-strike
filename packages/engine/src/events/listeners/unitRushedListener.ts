@@ -11,6 +11,10 @@ import {
 import { ON_RUSH_EFFECTS } from "../../rules/rushEffects";
 import { resolveNoteOtherOnRushEffects, applyMotoSharianPowerTrigger } from "../../rules/noteOtherRushEffects";
 import { tryFormationDeployOnRush } from "../../rules/formationDeploy";
+import {
+  applyBandoraHeldCommandDiscard,
+  tryZubazubanOnAllyRush,
+} from "../../rules/batch06FieldEffects";
 import type { EventListener, UnitRushedEvent } from "../types";
 
 function applyDrawOnRush(
@@ -126,6 +130,22 @@ export const unitRushedListener: EventListener = (event, state) => {
   );
   nextState = motoSharian.state;
   logs.push(...motoSharian.logs);
+
+  if (!nextState.pendingEffectChoice) {
+    nextState = applyBandoraHeldCommandDiscard(
+      nextState,
+      rusherPlayerId,
+      found.card.cardId,
+    );
+  }
+  if (!nextState.pendingEffectChoice) {
+    nextState = tryZubazubanOnAllyRush(
+      nextState,
+      rusherPlayerId,
+      rushedInstanceId,
+      phasePlayerId,
+    );
+  }
 
   return {
     state: nextState,

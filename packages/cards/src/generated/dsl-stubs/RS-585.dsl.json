@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_tankoregabatoruerianitatokikanonokara3woomotenishi",
+          "keyword": "enter_battle_scry_deck_top3_sp1_if_unit_has_sp",
           "duration": "turn"
         }
       ],

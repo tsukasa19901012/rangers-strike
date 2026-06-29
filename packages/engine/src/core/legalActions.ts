@@ -1036,7 +1036,13 @@ function appendBattleEntryActions(
     return;
   }
 
-  for (const defender of enemy.battle) {
+  const requiredDefenderId = pending.requiredDefenderInstanceId;
+  const battleDefenders = requiredDefenderId
+    ? enemy.battle.filter((c) => c.instanceId === requiredDefenderId)
+    : enemy.battle;
+  const rushDefenders = requiredDefenderId ? [] : enemy.rush;
+
+  for (const defender of battleDefenders) {
     if (
       !canAttackDefender(
         state,
@@ -1056,7 +1062,7 @@ function appendBattleEntryActions(
       defenderInstanceId: defender.instanceId,
     });
   }
-  for (const defender of enemy.rush) {
+  for (const defender of rushDefenders) {
     if (
       !canAttackDefender(
         state,
@@ -1076,17 +1082,19 @@ function appendBattleEntryActions(
       defenderInstanceId: defender.instanceId,
     });
   }
-  if (canStrikeUnit(state.definitions, unit, state, playerId)) {
+  if (canStrikeUnit(state.definitions, unit, state, playerId) && !requiredDefenderId) {
     actions.push({ type: "strike", playerId, instanceId: pending.instanceId });
   }
-  if (canUseJuuKunDo(state, playerId, pending.instanceId)) {
+  if (canUseJuuKunDo(state, playerId, pending.instanceId) && !requiredDefenderId) {
     actions.push({
       type: "use_juu_kun_do",
       playerId,
       attackerInstanceId: pending.instanceId,
     });
   }
-  actions.push({ type: "pass_battle_entry", playerId });
+  if (!requiredDefenderId || actions.every((a) => a.type !== "battle")) {
+    actions.push({ type: "pass_battle_entry", playerId });
+  }
 }
 
 function appendDamagePaymentActions(

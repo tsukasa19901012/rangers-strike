@@ -31,11 +31,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_koreworashushitatokikarasyunitonokadowo2madebinietemo",
+          "keyword": "on_rush_discard_s_to_hand_up_to_2",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

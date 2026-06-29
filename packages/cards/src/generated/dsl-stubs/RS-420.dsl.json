@@ -35,12 +35,12 @@
       "name": "ズバズバンキック",
       "text": "これが自軍ラッシュエリアにある間、自分が特徴「メカ」を持つLユニットをラッシュしたとき、その追加条件を満たすために捨札にした合体ユニット1体につき、敵軍Sユニットを1体選び撃破してもよい。",
       "trigger": {
-        "type": "on_rush"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_koregarashuerianiarugamekawotsulyunitoworashushitatoki",
+          "keyword": "while_in_rush_mecha_l_rush_destroy_enemy_s",
           "duration": "permanent"
         }
       ],

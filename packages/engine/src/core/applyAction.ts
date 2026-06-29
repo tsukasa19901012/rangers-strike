@@ -211,6 +211,7 @@ import {
   createBattleEntryPrompt,
   finishBattleEntryIf,
 } from "../rules/battleEntry";
+import { applyShinobiBallRequiredDefender } from "../rules/batch06FieldEffects";
 import { applySuperBrainDraw } from "../effects/drawEffects";
 
 export type ActionResult =
@@ -1304,17 +1305,21 @@ export function applyAction(
         battleCard.cardId,
         state.definitions,
       );
-      const entry = createBattleEntryPrompt(
+      const entry = applyShinobiBallRequiredDefender(
+        combo.state,
         playerId,
-        battleCard.instanceId,
-        combo.state.pendingEffectChoice && combo.enterResumeFrom
-          ? {
-              battlePosition: position,
-              rideOff: action.rideOff,
-              battleBeforeEnterInstanceIds: battleBeforeEnter.map((c) => c.instanceId),
-              from: combo.enterResumeFrom,
-            }
-          : undefined,
+        createBattleEntryPrompt(
+          playerId,
+          battleCard.instanceId,
+          combo.state.pendingEffectChoice && combo.enterResumeFrom
+            ? {
+                battlePosition: position,
+                rideOff: action.rideOff,
+                battleBeforeEnterInstanceIds: battleBeforeEnter.map((c) => c.instanceId),
+                from: combo.enterResumeFrom,
+              }
+            : undefined,
+        ),
       );
       const withClearedDiscard = {
         ...combo.state,

@@ -7,7 +7,7 @@ import type {
   SeabedDrawMeta,
 } from "../types/game";
 import { clearCostWindow, satisfyCostWindow } from "../core/costWindow";
-import { cardName, cardCategories, effectiveBp, getDefinition, parsePowerCost, unitBp } from "../core/catalog";
+import { cardName, cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp } from "../core/catalog";
 import {
   applyDiscoDanceReturnFemaleSToRush,
   startEndTurnBattleToRushChoiceForUnit,
@@ -69,6 +69,18 @@ import {
   collectOwnRedNcCommands,
   collectOwnRushByName,
 } from "./batch05FieldEffects";
+import {
+  applySagasSpearScryReturn,
+  applyZorobTopDeckReveal,
+  collectDiscardSmallUnits,
+  collectEnemyBattleAtMostBp,
+  collectHandMediumWithAdditional,
+  collectOwnWingCommands,
+  collectRushWbMWithOnRush,
+  releaseWingCommand,
+  scryTop3ForSagasSpear,
+  triggerCopiedOnRushFromRush,
+} from "./batch06FieldEffects";
 
 export type RequestDrawResult =
   | { state: GameState; pending: false; drawn: boolean }
@@ -889,6 +901,171 @@ export function startClimberBallChoice(
     validInstanceIds: valid,
     unitDestination: "discard",
     selectCount: 2,
+    optional: true,
+  });
+}
+
+/** RS-606 雷鳴剣ヒカリマル: ウイングコマンド任意リリース→敵バトルBP以下をパワーへ。 */
+export function startHikarimaruWingChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const valid = collectOwnWingCommands(state, params.playerId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_command",
+    validInstanceIds: valid,
+    optional: true,
+  });
+}
+
+/** RS-383 レッドラダー: 捨札S最大2枚を手札へ。 */
+export function startRedLadderDiscardChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const valid = collectDiscardSmallUnits(state, params.playerId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    unitDestination: "hand_from_discard",
+    selectCount: Math.min(2, valid.length),
+    optional: true,
+  });
+}
+
+/** RS-585 ボウケンシルバー: 自軍/敵軍山札上3枚見てSP1。 */
+export function startBoukenSilverEnterChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const enemyId = opponent(params.playerId);
+  if (
+    state.players[params.playerId].deck.length === 0 &&
+    state.players[enemyId].deck.length === 0
+  ) {
+    return null;
+  }
+  const valid = [
+    ...(state.players[params.playerId].deck.length > 0 ? ["deck_own"] : []),
+    ...(state.players[enemyId].deck.length > 0 ? ["deck_enemy"] : []),
+  ];
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "confirm",
+    validInstanceIds: valid,
+    optional: true,
+  });
+}
+
+/** RS-322 ベン・G: 手札追加条件Mを捨札。 */
+export function startBenGHandChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const valid = collectHandMediumWithAdditional(state, params.playerId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_hand",
+    validInstanceIds: valid,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+/** RS-428 ファンタスティック・テクニック: WB Mのラッシュ効果をコピー。 */
+export function startSuperGekiFantasticChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const valid = collectRushWbMWithOnRush(state, params.playerId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    unitDestination: "discard",
+    optional: true,
+  });
+}
+
+/** RS-367 軍隊アリの遺伝子: 山札上1枚公開。 */
+export function startZorobAntGeneChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  if (state.players[params.playerId].deck.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "confirm",
+    validInstanceIds: ["reveal_top"],
+    optional: true,
+  });
+}
+
+/** RS-420 ズバズバンキック: 敵S撃破。 */
+export function startZubazubanDestroyChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const enemyId = opponent(params.playerId);
+  const valid = state.players[enemyId].rush
+    .concat(state.players[enemyId].battle)
+    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    unitDestination: "discard",
     optional: true,
   });
 }
@@ -1966,6 +2143,37 @@ export function applyEffectChoiceSelect(
       return finishChoice(nextState, pending, String(declared));
     }
     case "select_unit": {
+      if (pending.effectId === "kami_ken_hikarimaru" && pending.step === "enemy") {
+        const leave = applyUnitLeave(state, instanceId, "power", pending.phasePlayerId);
+        if ("error" in leave) return leave;
+        return finishChoice(
+          leave.state,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+        );
+      }
+      if (pending.effectId === "fuantasuteikutekuniku") {
+        const nextState = triggerCopiedOnRushFromRush(
+          state,
+          pending.playerId,
+          instanceId,
+          pending.phasePlayerId,
+        );
+        return finishChoice(
+          nextState,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(nextState, instanceId)),
+        );
+      }
+      if (pending.effectId === "zubazubankiku") {
+        const leave = applyUnitLeave(state, instanceId, "discard", pending.phasePlayerId);
+        if ("error" in leave) return leave;
+        return finishChoice(
+          leave.state,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+        );
+      }
       const dest = pending.unitDestination ?? "discard";
       const requiredCount = pending.selectCount ?? 1;
       if (requiredCount > 1) {
@@ -2422,6 +2630,27 @@ export function applyEffectChoiceSelect(
           pending,
           cardName(state.definitions, findFieldUnitCardId(moved, instanceId) ?? instanceId),
         );
+      }
+
+      if (pending.effectId === "kami_ken_hikarimaru") {
+        const released = releaseWingCommand(state, pending.playerId, instanceId);
+        if (!released) return { error: "invalid_target" };
+        const maxBp = released.releasedBp;
+        const enemyId = opponent(pending.playerId);
+        const enemyTargets = collectEnemyBattleAtMostBp(released.state, enemyId, maxBp);
+        if (enemyTargets.length === 0) {
+          return finishChoice(released.state, pending, "released_only");
+        }
+        return {
+          state: openEffectChoice(clearChoice(released.state, pending.playerId), {
+            ...pending,
+            kind: "select_unit",
+            step: "enemy",
+            maxBp,
+            validInstanceIds: enemyTargets,
+            unitDestination: "power",
+          }),
+        };
       }
 
       const located = findCommandCard(state, instanceId);
@@ -2902,6 +3131,37 @@ export function applyEffectChoiceSelect(
         if (instanceId !== "return") return { error: "invalid_target" };
         const nextState = applyDiscoDanceReturnFemaleSToRush(state, playerId);
         return finishChoice(nextState, pending, "return");
+      }
+      if (pending.effectId === "sagasupia") {
+        const deckOwnerId =
+          instanceId === "deck_enemy" ? opponent(pending.playerId) : pending.playerId;
+        const deckOwner = state.players[deckOwnerId];
+        if (deckOwner.deck.length === 0) {
+          return finishChoice(state, pending, "empty_deck");
+        }
+        const { hasSpUnit, top3 } = scryTop3ForSagasSpear(state, deckOwnerId);
+        let nextState = applySagasSpearScryReturn(state, deckOwnerId, top3, top3);
+        if (hasSpUnit && pending.sourceInstanceId) {
+          const owner = nextState.players[pending.playerId];
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, pending.playerId, {
+              ...owner,
+              battle: owner.battle.map((c) =>
+                c.instanceId === pending.sourceInstanceId
+                  ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
+                  : c,
+              ),
+            }),
+          };
+        }
+        return finishChoice(nextState, pending, deckOwnerId);
+      }
+      if (pending.effectId === "arino" && instanceId === "reveal_top") {
+        const top = state.players[pending.playerId].deck[0];
+        if (!top) return finishChoice(state, pending, "empty_deck");
+        const nextState = applyZorobTopDeckReveal(state, pending.playerId, top.instanceId);
+        return finishChoice(nextState, pending, cardName(state.definitions, top.cardId));
       }
       return { error: "unsupported_confirm" };
     }

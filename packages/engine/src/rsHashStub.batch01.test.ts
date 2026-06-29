@@ -720,4 +720,84 @@ describe("RS monkey-test high-frequency fixes", () => {
       ),
     ).toBe(true);
   });
+
+  it("RS-606 rematches to operation_release_wing_then_enemy_battle_bp_le_to_power", () => {
+    const text =
+      "ウイングを持つ自軍ユニットを1枚選びリリースしてもよい。そうしたとき、リリースしたユニットのBPを見て、そのBP以下のBPを持つユニットを敵軍バトルエリアから1体選び、持ち主のパワーゾーンにダメージにして置く。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "operation", timing: "rush" },
+      name: "雷鳴剣ヒカリマル",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "operation_release_wing_then_enemy_battle_bp_le_to_power",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-451 rematches to while_in_battle_enemy_s_must_attack_self", () => {
+    const text =
+      "これが自軍バトルエリアにある間、敵軍ターン中、敵軍Sユニットは、バトルエリアに出たとき、可能ならこのユニットにアタックする。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "while_in_field" },
+      name: "シノビボールの争奪戦",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "while_in_battle_enemy_s_must_attack_self",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-383 rematches to on_rush_discard_s_to_hand_up_to_2", () => {
+    const text =
+      "これをラッシュしたとき、自軍捨札から、Sユニットのカードを2枚まで選び手札に加えてもよい。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "on_rush" },
+      name: "救出作業",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_rush_discard_s_to_hand_up_to_2",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-585 rematches to enter_battle_scry_deck_top3_sp1_if_unit_has_sp", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、自軍か敵軍の山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中にSPが空欄でないユニットカードがあれば、このターン、これは「SP1」になる。その後、オモテにしたカードは、その持ち主が相手に見せずに好きな順で山札の上に戻す。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "enter_battle" },
+      name: "サガスピアー",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "enter_battle_scry_deck_top3_sp1_if_unit_has_sp",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-304 rematches to while_in_battle_opponent_da_s_rush_power_plus_1", () => {
+    const text =
+      "これが自軍バトルエリアにある間、相手が手札からDAのSユニットのカードをラッシュするとき、そのカードの必要パワーの数字は1増える。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "while_in_field" },
+      name: "治安維持",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "while_in_battle_opponent_da_s_rush_power_plus_1",
+      ),
+    ).toBe(true);
+  });
 });

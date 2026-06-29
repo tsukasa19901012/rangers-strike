@@ -6037,7 +6037,9 @@ const PATTERNS: PatternMatch[] = [
   },
   {
     pattern: "enemy_to_power_damage_generic",
-    test: (body) => /持ち主のパワーゾーンにダメージにして置(いてもよい|く)/.test(body),
+    test: (body) =>
+      /持ち主のパワーゾーンにダメージにして置(いてもよい|く)/.test(body) &&
+      !/ウイングを持つ自軍ユニットを1枚選びリリース/.test(body),
     build: (body, segment, trigger) => ({
       id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
       name: segment.name,
@@ -6460,6 +6462,224 @@ const PATTERNS: PatternMatch[] = [
         },
       ],
       matchedPattern: "enter_battle_hold_red_nc_command_soul",
+    }),
+  },
+  {
+    pattern: "operation_release_wing_then_enemy_battle_bp_le_to_power",
+    test: (body) =>
+      /ウイングを持つ自軍ユニットを1枚選びリリースしてもよい。そうしたとき、リリースしたユニットのBPを見て、そのBP以下のBPを持つユニットを敵軍バトルエリアから1体選び、持ち主のパワーゾーンにダメージにして置く/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "operation", timing: "rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "operation_release_wing_then_enemy_battle_bp_le_to_power",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "operation_release_wing_then_enemy_battle_bp_le_to_power",
+    }),
+  },
+  {
+    pattern: "while_in_battle_enemy_s_must_attack_self",
+    test: (body) =>
+      /これが自軍バトルエリアにある間、敵軍ターン中、敵軍Sユニットは、バトルエリアに出たとき、可能ならこのユニットにアタックする/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: false,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "while_in_battle_enemy_s_must_attack_self",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_in_battle_enemy_s_must_attack_self",
+    }),
+  },
+  {
+    pattern: "on_rush_discard_s_to_hand_up_to_2",
+    test: (body) =>
+      /これをラッシュしたとき、自軍捨札から、Sユニットのカードを2枚まで選び手札に加えてもよい/.test(body),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_discard_s_to_hand_up_to_2",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_discard_s_to_hand_up_to_2",
+    }),
+  },
+  {
+    pattern: "enter_battle_scry_deck_top3_sp1_if_unit_has_sp",
+    test: (body) =>
+      /自軍ターン中、これがバトルエリアに出たとき、自軍か敵軍の山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中にSPが空欄でないユニットカードがあれば、このターン、これは「SP1」になる/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_battle_scry_deck_top3_sp1_if_unit_has_sp",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_scry_deck_top3_sp1_if_unit_has_sp",
+    }),
+  },
+  {
+    pattern: "while_in_battle_opponent_da_s_rush_power_plus_1",
+    test: (body) =>
+      /これが自軍バトルエリアにある間、相手が手札からDAのSユニットのカードをラッシュするとき、そのカードの必要パワーの数字は1増える/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: false,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "while_in_battle_opponent_da_s_rush_power_plus_1",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_in_battle_opponent_da_s_rush_power_plus_1",
+    }),
+  },
+  {
+    pattern: "while_in_rush_mecha_l_rush_destroy_enemy_s",
+    test: (body) =>
+      /これが自軍ラッシュエリアにある間、自分が特徴「メカ」を持つLユニットをラッシュしたとき.*敵軍Sユニットを1体選び撃破してもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "while_in_rush_mecha_l_rush_destroy_enemy_s",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_in_rush_mecha_l_rush_destroy_enemy_s",
+    }),
+  },
+  {
+    pattern: "while_in_rush_opponent_magic_dino_rush_discard_held_command",
+    test: (body) =>
+      /これが自軍ラッシュエリアにある間、相手は次の制限を受ける⇒コマンドをホールドして、特徴「魔法」、または｢恐竜｣を持つユニットをラッシュしたとき、そのホールドしたコマンドを捨札にする/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: false,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "while_in_rush_opponent_magic_dino_rush_discard_held_command",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_in_rush_opponent_magic_dino_rush_discard_held_command",
+    }),
+  },
+  {
+    pattern: "enter_battle_discard_hand_m_opponent_pays_additional",
+    test: (body) =>
+      /自軍ターン中、これがバトルエリアに出たとき、自分の手札から追加条件を持つMユニットのカードを1枚選び捨札にしてもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_battle_discard_hand_m_opponent_pays_additional",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_discard_hand_m_opponent_pays_additional",
+    }),
+  },
+  {
+    pattern: "on_rush_trigger_wb_m_rush_effect_from_rush",
+    test: (body) =>
+      /自軍ラッシュエリアから、効果に「ラッシュしたとき」とある「WB」のMユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_trigger_wb_m_rush_effect_from_rush",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_trigger_wb_m_rush_effect_from_rush",
+    }),
+  },
+  {
+    pattern: "on_rush_scry_top_if_s_count_le5_named_to_rush_else_discard",
+    test: (body) =>
+      /このユニットをラッシュしたとき、自軍Sユニットの数が5体以下なら、自軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが「ゾロー兵」なら自軍ラッシュエリアに出し、それ以外なら捨札にする/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_scry_top_if_s_count_le5_named_to_rush_else_discard",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_scry_top_if_s_count_le5_named_to_rush_else_discard",
     }),
   },
   {

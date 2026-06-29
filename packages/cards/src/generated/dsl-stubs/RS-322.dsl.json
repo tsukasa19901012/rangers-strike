@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_tankoregabatoruerianitatokinokarawotsumyunitono",
+          "keyword": "enter_battle_discard_hand_m_opponent_pays_additional",
           "duration": "turn"
         }
       ],

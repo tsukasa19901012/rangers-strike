@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_konoyunitoworashushitatokisyunitonoga5naranokara1",
+          "keyword": "on_rush_scry_top_if_s_count_le5_named_to_rush_else_discard",
           "duration": "turn"
         }
       ],
