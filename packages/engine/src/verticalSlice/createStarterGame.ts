@@ -40,7 +40,7 @@ export type CreateStarterGameOptions = Omit<
 };
 
 /**
- * スターターデッキ（Type A/B/C ほか全15種）でゲームを開始する。
+ * スターターデッキ（Type A/B/C ほか全28種）でゲームを開始する。
  * フルカタログ definitions（カード効果 TS ハンドラ含む）。
  */
 export function createStarterGame(options: CreateStarterGameOptions = {}): GameState {

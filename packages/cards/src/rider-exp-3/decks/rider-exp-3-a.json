@@ -1,0 +1,30 @@
+{
+  "id": "rider-exp-3-a",
+  "name": "ライダーEXP vol.3デッキ（Kiva Set A: キバデッキ）",
+  "starterType": "A",
+  "expansion": "rider-exp-3",
+  "source": "https://www.grnrngr.com/cards/rangers-strike/release/masked-rider-series-3-kiva-starter",
+  "entries": [
+    { "cardId": "RK-172", "count": 2 },
+    { "cardId": "RK-177", "count": 2 },
+    { "cardId": "RK-193", "count": 2 },
+    { "cardId": "RK-209", "count": 1 },
+    { "cardId": "RK-225", "count": 2 },
+    { "cardId": "RK-226", "count": 2 },
+    { "cardId": "RK-232", "count": 2 },
+    { "cardId": "RK-237", "count": 2 },
+    { "cardId": "RK-238", "count": 2 },
+    { "cardId": "RK-239", "count": 2 },
+    { "cardId": "RK-245", "count": 1 },
+    { "cardId": "RK-246", "count": 2 },
+    { "cardId": "RK-247", "count": 2 },
+    { "cardId": "RK-248", "count": 2 },
+    { "cardId": "RK-028", "count": 2 },
+    { "cardId": "RK-047", "count": 2 },
+    { "cardId": "RK-052", "count": 2 },
+    { "cardId": "RK-101", "count": 2 },
+    { "cardId": "RK-105", "count": 2 },
+    { "cardId": "RK-133", "count": 2 },
+    { "cardId": "RK-138", "count": 2 }
+  ]
+}

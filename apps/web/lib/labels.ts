@@ -38,6 +38,19 @@ export const STARTER_OPTIONS = [
   { id: "blue-nine-a", label: "青の九の翼: ウイングデッキ" },
   { id: "blue-nine-b", label: "青の九の翼: 合体ロボデッキ" },
   { id: "blue-nine-c", label: "青の九の翼: 十二大紅ヒーローズデッキ" },
+  { id: "rider-exp-1-a", label: "ライダーEXP vol.1: ファイズデッキ" },
+  { id: "rider-exp-1-b", label: "ライダーEXP vol.1: 龍騎デッキ" },
+  { id: "rider-exp-1-c", label: "ライダーEXP vol.1: カブトデッキ" },
+  { id: "rider-exp-1-d", label: "ライダーEXP vol.1: 電王デッキ" },
+  { id: "rider-exp-2-a", label: "ライダーEXP vol.2: 1号(THE FIRST)デッキ" },
+  { id: "rider-exp-2-b", label: "ライダーEXP vol.2: オルタナティブ・ゼロデッキ" },
+  { id: "rider-exp-2-c", label: "ライダーEXP vol.2: 電王ウィングフォームデッキ" },
+  { id: "rider-exp-2-d", label: "ライダーEXP vol.2: アギトグランドフォームデッキ" },
+  { id: "rider-exp-3-a", label: "ライダーEXP vol.3: キバデッキ" },
+  { id: "rider-exp-3-b", label: "ライダーEXP vol.3: 電王デッキ" },
+  { id: "rider-exp-4-1", label: "ライダーEXP vol.4: 龍騎デッキ" },
+  { id: "rider-exp-4-2", label: "ライダーEXP vol.4: クウガデッキ" },
+  { id: "rider-exp-4-3", label: "ライダーEXP vol.4: 電王デッキ" },
 ] as const;
 
 export type StarterId = (typeof STARTER_OPTIONS)[number]["id"];

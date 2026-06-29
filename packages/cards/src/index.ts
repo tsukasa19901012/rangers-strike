@@ -13,6 +13,19 @@ import sevenNinjaCDeck from "./legend7/decks/seven-ninja-c.json";
 import blueNineADeck from "./legend9/decks/blue-nine-a.json";
 import blueNineBDeck from "./legend9/decks/blue-nine-b.json";
 import blueNineCDeck from "./legend9/decks/blue-nine-c.json";
+import riderExp1ADeck from "./rider-exp-1/decks/rider-exp-1-a.json";
+import riderExp1BDeck from "./rider-exp-1/decks/rider-exp-1-b.json";
+import riderExp1CDeck from "./rider-exp-1/decks/rider-exp-1-c.json";
+import riderExp1DDeck from "./rider-exp-1/decks/rider-exp-1-d.json";
+import riderExp2ADeck from "./rider-exp-2/decks/rider-exp-2-a.json";
+import riderExp2BDeck from "./rider-exp-2/decks/rider-exp-2-b.json";
+import riderExp2CDeck from "./rider-exp-2/decks/rider-exp-2-c.json";
+import riderExp2DDeck from "./rider-exp-2/decks/rider-exp-2-d.json";
+import riderExp3ADeck from "./rider-exp-3/decks/rider-exp-3-a.json";
+import riderExp3BDeck from "./rider-exp-3/decks/rider-exp-3-b.json";
+import riderExp41Deck from "./rider-exp-4/decks/rider-exp-4-1.json";
+import riderExp42Deck from "./rider-exp-4/decks/rider-exp-4-2.json";
+import riderExp43Deck from "./rider-exp-4/decks/rider-exp-4-3.json";
 import type { DeckDefinition } from "./schema";
 import { validateDeckEntries } from "./deckRules";
 import {
@@ -107,6 +120,19 @@ export const starterDecks = {
   "blue-nine-a": blueNineADeck as DeckDefinition,
   "blue-nine-b": blueNineBDeck as DeckDefinition,
   "blue-nine-c": blueNineCDeck as DeckDefinition,
+  "rider-exp-1-a": riderExp1ADeck as DeckDefinition,
+  "rider-exp-1-b": riderExp1BDeck as DeckDefinition,
+  "rider-exp-1-c": riderExp1CDeck as DeckDefinition,
+  "rider-exp-1-d": riderExp1DDeck as DeckDefinition,
+  "rider-exp-2-a": riderExp2ADeck as DeckDefinition,
+  "rider-exp-2-b": riderExp2BDeck as DeckDefinition,
+  "rider-exp-2-c": riderExp2CDeck as DeckDefinition,
+  "rider-exp-2-d": riderExp2DDeck as DeckDefinition,
+  "rider-exp-3-a": riderExp3ADeck as DeckDefinition,
+  "rider-exp-3-b": riderExp3BDeck as DeckDefinition,
+  "rider-exp-4-1": riderExp41Deck as DeckDefinition,
+  "rider-exp-4-2": riderExp42Deck as DeckDefinition,
+  "rider-exp-4-3": riderExp43Deck as DeckDefinition,
 } as const;
 
 export type StarterDeckId = keyof typeof starterDecks;

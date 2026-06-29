@@ -1,0 +1,30 @@
+{
+  "id": "rider-exp-3-b",
+  "name": "ライダーEXP vol.3デッキ（Den-O Set B: 電王デッキ）",
+  "starterType": "B",
+  "expansion": "rider-exp-3",
+  "source": "https://www.grnrngr.com/cards/rangers-strike/release/masked-rider-series-3-deno-starter",
+  "entries": [
+    { "cardId": "RK-198", "count": 2 },
+    { "cardId": "RK-199", "count": 2 },
+    { "cardId": "RK-201", "count": 2 },
+    { "cardId": "RK-212", "count": 2 },
+    { "cardId": "RK-214", "count": 2 },
+    { "cardId": "RK-234", "count": 2 },
+    { "cardId": "RK-235", "count": 2 },
+    { "cardId": "RK-240", "count": 2 },
+    { "cardId": "RK-241", "count": 1 },
+    { "cardId": "RK-242", "count": 2 },
+    { "cardId": "RK-243", "count": 2 },
+    { "cardId": "RK-244", "count": 2 },
+    { "cardId": "RK-038", "count": 2 },
+    { "cardId": "RK-039", "count": 2 },
+    { "cardId": "RK-058", "count": 2 },
+    { "cardId": "RK-061", "count": 2 },
+    { "cardId": "RK-062", "count": 2 },
+    { "cardId": "RK-112", "count": 2 },
+    { "cardId": "RK-119", "count": 2 },
+    { "cardId": "RK-146", "count": 2 },
+    { "cardId": "RK-147", "count": 1 }
+  ]
+}

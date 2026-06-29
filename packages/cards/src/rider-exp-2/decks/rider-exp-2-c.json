@@ -1,0 +1,26 @@
+{
+  "id": "rider-exp-2-c",
+  "name": "ライダーEXP vol.2デッキ（Type C: 電王ウィングフォームデッキ）",
+  "starterType": "C",
+  "expansion": "rider-exp-2",
+  "source": "https://www.grnrngr.com/cards/rangers-strike/release/masked-rider-series-2-starter-c",
+  "entries": [
+    { "cardId": "RK-087", "count": 2 },
+    { "cardId": "RK-088", "count": 3 },
+    { "cardId": "RK-093", "count": 3 },
+    { "cardId": "RK-135", "count": 3 },
+    { "cardId": "RK-139", "count": 3 },
+    { "cardId": "RK-142", "count": 2 },
+    { "cardId": "RK-143", "count": 2 },
+    { "cardId": "RK-144", "count": 2 },
+    { "cardId": "RK-146", "count": 3 },
+    { "cardId": "RK-147", "count": 2 },
+    { "cardId": "RK-152", "count": 3 },
+    { "cardId": "RK-154", "count": 2 },
+    { "cardId": "RK-156", "count": 3 },
+    { "cardId": "RK-157", "count": 2 },
+    { "cardId": "RK-158", "count": 2 },
+    { "cardId": "RK-165", "count": 1 },
+    { "cardId": "RK-168", "count": 2 }
+  ]
+}

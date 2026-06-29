@@ -127,6 +127,19 @@ describe.each([
   ["blue-nine-a", "A", "RS-685", 1],
   ["blue-nine-b", "B", "RS-687", 1],
   ["blue-nine-c", "C", "RS-689", 1],
+  ["rider-exp-1-a", "A", "RK-064", 1],
+  ["rider-exp-1-b", "B", "RK-063", 1],
+  ["rider-exp-1-c", "C", "RK-065", 1],
+  ["rider-exp-1-d", "D", "RK-066", 1],
+  ["rider-exp-2-a", "A", "RK-164", 1],
+  ["rider-exp-2-b", "B", "RK-163", 1],
+  ["rider-exp-2-c", "C", "RK-165", 1],
+  ["rider-exp-2-d", "D", "RK-162", 1],
+  ["rider-exp-3-a", "A", "RK-245", 1],
+  ["rider-exp-3-b", "B", "RK-241", 1],
+  ["rider-exp-4-1", "1", "RK-333", 1],
+  ["rider-exp-4-2", "2", "RK-331", 1],
+  ["rider-exp-4-3", "3", "RK-334", 1],
 ] as const)("starter deck %s", (id, type, flagshipId, flagshipCount) => {
   const deck = starterDecks[id];
 

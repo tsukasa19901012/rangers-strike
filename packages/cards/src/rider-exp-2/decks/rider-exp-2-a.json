@@ -1,0 +1,26 @@
+{
+  "id": "rider-exp-2-a",
+  "name": "ライダーEXP vol.2デッキ（Type A: 1号(THE FIRST)デッキ）",
+  "starterType": "A",
+  "expansion": "rider-exp-2",
+  "source": "https://www.grnrngr.com/cards/rangers-strike/release/masked-rider-series-2-starter-a",
+  "entries": [
+    { "cardId": "RK-079", "count": 2 },
+    { "cardId": "RK-081", "count": 2 },
+    { "cardId": "RK-090", "count": 3 },
+    { "cardId": "RK-091", "count": 3 },
+    { "cardId": "RK-093", "count": 3 },
+    { "cardId": "RK-094", "count": 3 },
+    { "cardId": "RK-098", "count": 2 },
+    { "cardId": "RK-099", "count": 2 },
+    { "cardId": "RK-110", "count": 3 },
+    { "cardId": "RK-120", "count": 2 },
+    { "cardId": "RK-121", "count": 2 },
+    { "cardId": "RK-123", "count": 2 },
+    { "cardId": "RK-124", "count": 2 },
+    { "cardId": "RK-130", "count": 3 },
+    { "cardId": "RK-161", "count": 3 },
+    { "cardId": "RK-164", "count": 1 },
+    { "cardId": "RK-167", "count": 2 }
+  ]
+}

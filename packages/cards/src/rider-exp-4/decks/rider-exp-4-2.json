@@ -1,0 +1,26 @@
+{
+  "id": "rider-exp-4-2",
+  "name": "ライダーEXP vol.4デッキ（Type 2: クウガデッキ）",
+  "starterType": "2",
+  "expansion": "rider-exp-4",
+  "source": "https://www.grnrngr.com/cards/rangers-strike/release/masked-rider-series-4-starter-2",
+  "entries": [
+    { "cardId": "RK-273", "count": 2 },
+    { "cardId": "RK-282", "count": 3 },
+    { "cardId": "RK-283", "count": 3 },
+    { "cardId": "RK-312", "count": 2 },
+    { "cardId": "RK-330", "count": 2 },
+    { "cardId": "RK-331", "count": 1 },
+    { "cardId": "RK-014", "count": 2 },
+    { "cardId": "RK-036", "count": 3 },
+    { "cardId": "RK-038", "count": 3 },
+    { "cardId": "RK-039", "count": 3 },
+    { "cardId": "RK-050", "count": 3 },
+    { "cardId": "RK-068", "count": 2 },
+    { "cardId": "RK-102", "count": 2 },
+    { "cardId": "RK-103", "count": 2 },
+    { "cardId": "RK-104", "count": 2 },
+    { "cardId": "RK-117", "count": 2 },
+    { "cardId": "RK-133", "count": 3 }
+  ]
+}
