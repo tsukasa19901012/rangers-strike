@@ -9,6 +9,7 @@ import { startSelectUnitChoice, startSelectCommandChoice } from "./pendingChoice
 import { applyReanimate } from "./reanimate";
 import { buildLogEntry } from "../log/formatLog";
 import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
+import { applyHungerGodCeaseShuffle } from "./batch04FieldEffects";
 import { reanimateNamedFromDiscardOnDestroy } from "./legend1/coreGapEffects";
 
 const DESTROY_RECRUIT_FROM_DISCARD: Record<string, { partnerName: string; effectId: string }> = {
@@ -118,13 +119,21 @@ export function resolveUnitLeftZoneEffectsImpl(
   state: GameState,
   ctx: UnitLeftZoneContext,
 ): { state: GameState; logs: string[] } {
-  const wentToDiscard = ctx.toZone === "discard";
-  if (!wentToDiscard) {
-    return { state, logs: [] };
-  }
-
   let nextState = state;
   const logs: string[] = [];
+
+  if (
+    (ctx.fromZone === "rush" || ctx.fromZone === "battle") &&
+    (ctx.toZone === "discard" || ctx.toZone === "power") &&
+    ctx.cardId === "RS-580"
+  ) {
+    nextState = applyHungerGodCeaseShuffle(nextState);
+  }
+
+  const wentToDiscard = ctx.toZone === "discard";
+  if (!wentToDiscard) {
+    return { state: nextState, logs };
+  }
 
   const destroyDsl = tryResolveDslTriggeredEffects({
     state: nextState,

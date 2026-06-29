@@ -1739,6 +1739,28 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "enter_battle_enemy_red_feature_to_rush",
+    test: (body) =>
+      /これがバトルエリアに出たとき.*敵軍コマンドゾーン.*敵軍パワーゾーン.*特徴「レッド」.*敵軍ラッシュエリア/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_battle_enemy_red_feature_to_rush",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_enemy_red_feature_to_rush",
+    }),
+  },
+  {
     pattern: "enter_battle_hand_match_destroy_sp",
     test: (body) =>
       /これがバトルエリアに出たとき、自分の手札をすべて相手に見せる。そして、見せた手札と同じカード名の敵軍ユニットを全て撃破する。その後、自分の手札をすべて捨札にし、この効果で撃破した敵軍ユニット1体につき、\s*このターン、これはSP\+1される/.test(
@@ -1824,6 +1846,28 @@ const PATTERNS: PatternMatch[] = [
         },
       ],
       matchedPattern: "on_rush_return_unridden_s_vehicles_deck_bottom",
+    }),
+  },
+  {
+    pattern: "on_rush_deck_split_hunger_god",
+    test: (body) =>
+      /これをラッシュしたとき.*山札の枚数が2枚以上.*2つの束に交互に振り分け.*どちらか1つの束を選び.*シャッフル/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: false,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_deck_split_hunger_god",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_deck_split_hunger_god",
     }),
   },
   {
@@ -6288,6 +6332,26 @@ const PATTERNS: PatternMatch[] = [
     },
   },
   {
+    pattern: "enter_battle_command_return_hand_bp2000_sp1",
+    test: (body) =>
+      /これがバトルエリアに出たとき.*コマンド.*手札に戻.*BP[＋+]2000.*SP1/.test(body),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_battle_command_return_hand_bp2000_sp1",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_command_return_hand_bp2000_sp1",
+    }),
+  },
+  {
     pattern: "grant_ability_generic",
     test: (body) =>
       /次の能力を得る⇒/.test(body) &&
@@ -6434,6 +6498,48 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "start_end_command_toggle_hold_discard",
+    test: (body) =>
+      (/スタートフェイズを終えるとき.*リリース状態ならホールド.*ホールド状態なら捨札/.test(body) ||
+        /スタートフェイズ中.*リリース状態ならホールド.*ホールド状態なら捨札/.test(body)) &&
+      !/バトルエリアに出た/.test(body),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "nc" },
+      optional: false,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "start_end_command_toggle_hold_discard",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "start_end_command_toggle_hold_discard",
+    }),
+  },
+  {
+    pattern: "on_cease_shuffle_all_discard_to_deck",
+    test: (body) =>
+      /ユニットでなくなるとき.*捨札をすべて山札に戻してシャッフル/.test(body),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "nc" },
+      optional: false,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_cease_shuffle_all_discard_to_deck",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "on_cease_shuffle_all_discard_to_deck",
+    }),
+  },
+  {
     pattern: "note_other",
     test: (body) => (/^※/.test(body) && !/^※これが.*にある間/.test(body) && !/^※これが自分の手札にある間/.test(body)),
     build: (body, segment, trigger) => ({
@@ -6464,6 +6570,28 @@ const PATTERNS: PatternMatch[] = [
         },
       ],
       matchedPattern: "note_other",
+    }),
+  },
+  {
+    pattern: "while_in_field_ally_enter_mere_chameleon",
+    test: (body) =>
+      /これが自軍エリアにある間.*(?:「獣人メレ」|「メレ」)以外.*ユニットがバトルエリアに出た/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "while_in_field" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "while_in_field_ally_enter_mere_chameleon",
+          duration: "permanent",
+        },
+      ],
+      matchedPattern: "while_in_field_ally_enter_mere_chameleon",
     }),
   },
   {

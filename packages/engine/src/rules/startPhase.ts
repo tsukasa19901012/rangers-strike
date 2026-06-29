@@ -4,6 +4,7 @@ import { checkWinner } from "../core/createGame";
 import { hasOperationEffect } from "../core/catalog";
 import { findInZone, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry, buildSimpleLogEntry } from "../log/formatLog";
+import { applyMegaSilverStartEndToggle } from "./batch04FieldEffects";
 import { startSelectPowerChoice } from "./pendingChoices";
 import { tryLegend3BattleToRush } from "./legend3/restrictions";
 
@@ -193,6 +194,8 @@ export function transitionStartToChargePhase(
       ),
     );
   }
+
+  nextState = applyMegaSilverStartEndToggle(nextState, playerId);
 
   const resetPlayer = {
     ...nextState.players[playerId],

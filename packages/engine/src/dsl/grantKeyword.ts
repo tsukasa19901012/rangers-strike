@@ -35,6 +35,11 @@ import {
 import { getDslEffectById } from "./effectLookup";
 import { applyEmpireDominionEnterBattle } from "../rules/empireDominion";
 import { applyRexLaserOnRush } from "../rules/rexLaser";
+import {
+  applyGaroaGrudgeEnterBattle,
+  applyHungerGodOnRush,
+  applySilverBlazerEnterBattle,
+} from "../rules/batch04FieldEffects";
 import { beginCastoffOnRush } from "../rules/castoff";
 import {
   beginAssaultVectorDestroy,
@@ -86,6 +91,9 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "v_commander_hold_entry",
   "battle_entry_discard_sensho_7",
   "while_in_field_da_rush_discard_sensho_power",
+  "while_in_field_ally_enter_mere_chameleon",
+  "start_end_command_toggle_hold_discard",
+  "on_cease_shuffle_all_discard_to_deck",
   "ride_bp_boost_500",
   "ride_bp_boost_1000",
   "cross1",
@@ -509,6 +517,38 @@ export function applyGrantKeyword(
           instanceId,
           ctx.phasePlayerId,
         ),
+        detail: ctx.effectId,
+      };
+    }
+    case "enter_battle_enemy_red_feature_to_rush": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applyGaroaGrudgeEnterBattle(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "enter_battle_command_return_hand_bp2000_sp1": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applySilverBlazerEnterBattle(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "on_rush_deck_split_hunger_god": {
+      return {
+        state: applyHungerGodOnRush(state, ctx.playerId),
         detail: ctx.effectId,
       };
     }

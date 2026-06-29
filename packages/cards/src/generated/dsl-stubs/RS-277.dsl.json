@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_tankoregabatoruerianitatokikomandozonkapawazonnoda",
+          "keyword": "enter_battle_enemy_red_feature_to_rush",
           "duration": "turn"
         }
       ],

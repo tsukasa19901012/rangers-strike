@@ -39,6 +39,7 @@ import {
 } from "./legend3/jointComboEffects";
 import { getEnterBattleNamedEffect } from "@rangers-strike/cards";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
+import { tryMereChameleonOnAllyEnterBattle } from "./batch04FieldEffects";
 import { applyBaseAttackOnEnter } from "./legend3/enterBattleEffects";
 import { cannotAttackOrStrikeThisTurn } from "./restrictions";
 import {
@@ -317,6 +318,16 @@ export function resolveEnterBattleEffectsImpl(
     });
     nextState = dslEnter.state;
     logs.push(...dslEnter.logs);
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+
+    nextState = tryMereChameleonOnAllyEnterBattle(
+      nextState,
+      playerId,
+      battleCard,
+      playerId,
+    );
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }

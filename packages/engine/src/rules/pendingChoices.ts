@@ -55,6 +55,10 @@ import {
 } from "../keywords/activeMorph";
 import { listMorphReplacementCandidates } from "../keywords/morph";
 import { prepareWingUnitReturnedToRush } from "../keywords/battleKeywords";
+import {
+  applyGaroaRedToEnemyRush,
+  applyMereChameleonDiscardToCommand,
+} from "./batch04FieldEffects";
 
 export type RequestDrawResult =
   | { state: GameState; pending: false; drawn: boolean }
@@ -642,26 +646,6 @@ export function startGaoriJawDestroyChoice(
   });
 }
 
-function collectEnemyBattleFeatureM(
-  state: GameState,
-  enemyId: PlayerId,
-  feature: string,
-): string[] {
-  const player = state.players[enemyId];
-  const ids: string[] = [];
-  for (const card of player.battle) {
-    const def = getDefinition(state.definitions, card.cardId);
-    if (
-      def?.type === "unit" &&
-      def.size === "M" &&
-      (def.features ?? []).includes(feature)
-    ) {
-      ids.push(card.instanceId);
-    }
-  }
-  return ids;
-}
-
 /** RS-400 密猟者からの保護: 敵バトル恐竜Mをパワーへ。 */
 export function startTimeJetProtectChoice(
   state: GameState,
@@ -683,6 +667,124 @@ export function startTimeJetProtectChoice(
     kind: "select_unit",
     validInstanceIds: valid,
     unitDestination: "power",
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+function collectEnemyBattleFeatureM(
+  state: GameState,
+  enemyId: PlayerId,
+  feature: string,
+): string[] {
+  const player = state.players[enemyId];
+  const ids: string[] = [];
+  for (const card of player.battle) {
+    const def = getDefinition(state.definitions, card.cardId);
+    if (
+      def?.type === "unit" &&
+      def.size === "M" &&
+      (def.features ?? []).includes(feature)
+    ) {
+      ids.push(card.instanceId);
+    }
+  }
+  return ids;
+}
+
+function collectGaroaRedTargets(state: GameState, enemyId: PlayerId): string[] {
+  const enemy = state.players[enemyId];
+  const ids: string[] = [];
+  for (const card of enemy.command) {
+    const def = getDefinition(state.definitions, card.cardId);
+    if (def?.type === "unit" && (def.features ?? []).includes("レッド")) {
+      ids.push(card.instanceId);
+    }
+  }
+  for (const card of enemy.power) {
+    if (card.faceDown) continue;
+    const def = getDefinition(state.definitions, card.cardId);
+    if (def?.type === "unit" && (def.features ?? []).includes("レッド")) {
+      ids.push(card.instanceId);
+    }
+  }
+  return ids;
+}
+
+/** RS-277 古傷の因縁: 敵レッドユニットを敵ラッシュへ。 */
+export function startGaroaGrudgeChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const enemyId = opponent(params.playerId);
+  const valid = collectGaroaRedTargets(state, enemyId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    selectCount: 1,
+    optional: true,
+    unitDestination: "rush",
+  });
+}
+
+/** RS-633 シルバーブレイザー: コマンド1枚を手札へ。 */
+export function startSilverBlazerChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const player = state.players[params.playerId];
+  const valid = player.command.map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_command",
+    validInstanceIds: valid,
+    commandAction: "return_hand",
+    optional: true,
+  });
+}
+
+/** RS-504 臨獣カメレオン拳。 */
+export function startMereChameleonChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const player = state.players[params.playerId];
+  if (player.command.length > 0) {
+    return openEffectChoice(state, {
+      ...params,
+      kind: "select_command",
+      validInstanceIds: player.command.map((c) => c.instanceId),
+      commandAction: "discard",
+      optional: true,
+    });
+  }
+  if (player.discard.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    effectId: "kamereon_discard_to_command",
+    kind: "select_unit",
+    validInstanceIds: player.discard.map((c) => c.instanceId),
     selectCount: 1,
     optional: true,
   });
@@ -1774,6 +1876,25 @@ export function applyEffectChoiceSelect(
           cardName(state.definitions, found.card.cardId),
         );
       }
+      if (pending.effectId === "no_e58fa4") {
+        const enemyId = opponent(pending.playerId);
+        const moved = applyGaroaRedToEnemyRush(state, enemyId, instanceId);
+        if (!moved) return { error: "invalid_target" };
+        return finishChoice(
+          moved,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(moved, instanceId) ?? instanceId),
+        );
+      }
+      if (pending.effectId === "kamereon_discard_to_command") {
+        const moved = applyMereChameleonDiscardToCommand(state, pending.playerId, instanceId);
+        if (!moved) return { error: "invalid_target" };
+        return finishChoice(
+          moved,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(moved, instanceId) ?? instanceId),
+        );
+      }
       if (dest === "rush") {
         const located = findCardOwner(state, instanceId);
         if (!located || located.zone !== "battle") return { error: "invalid_target" };
@@ -2175,6 +2296,38 @@ export function applyEffectChoiceSelect(
         command[found.index] = { ...found.card, commandHeld: true };
         nextPlayer = { ...player, command };
       } else if (pending.commandAction === "return_hand") {
+        if (pending.effectId === "shirubabureiza" && pending.sourceInstanceId) {
+          const actor = state.players[pending.playerId];
+          const unit = actor.battle.find((c) => c.instanceId === pending.sourceInstanceId);
+          const wasHeld = !!(unit?.commandHeld || unit?.mothershipHold);
+          const bounced = bounceToHand(state, {
+            playerId: owner,
+            instanceId,
+            fromZone: "command",
+          });
+          if (!bounced.bounced) return { error: "invalid_target" };
+          const actorAfter = bounced.state.players[pending.playerId];
+          const nextState = {
+            ...bounced.state,
+            ...updatePlayer(bounced.state, pending.playerId, {
+              ...actorAfter,
+              battle: actorAfter.battle.map((c) =>
+                c.instanceId === pending.sourceInstanceId
+                  ? {
+                      ...c,
+                      bpModifier: (c.bpModifier ?? 0) + 2000,
+                      spModifier: wasHeld ? (c.spModifier ?? 0) + 1 : c.spModifier,
+                    }
+                  : c,
+              ),
+            }),
+          };
+          return finishChoice(
+            nextState,
+            pending,
+            cardName(state.definitions, found.card.cardId),
+          );
+        }
         const bounced = bounceToHand(state, {
           playerId: owner,
           instanceId,

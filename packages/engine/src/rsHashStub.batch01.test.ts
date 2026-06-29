@@ -525,4 +525,94 @@ describe("RS monkey-test high-frequency fixes", () => {
       ),
     ).toBe(true);
   });
+
+  it("RS-277 rematches to enter_battle_enemy_red_feature_to_rush", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドゾーンか、敵軍パワーゾーンのダメージ以外のカードに特徴「レッド」を持つユニットカードがあれば1枚選び、敵軍ラッシュエリアに出してもよい。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "enter_battle" },
+      name: "古傷の因縁",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "enter_battle_enemy_red_feature_to_rush",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-633 note rematches to start_end_command_toggle_hold_discard", () => {
+    const text =
+      "※自軍スタートフェイズを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら捨札にする。";
+    const rematched = rematchEffectPrimitives(text, { trigger: { type: "nc" } });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "start_end_command_toggle_hold_discard",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-633 rematches to enter_battle_command_return_hand_bp2000_sp1", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを1つ選び手札に戻してもよい。そうしたとき、このターン、これは次の能力を得る⇒BP+2000 され、これがホールド状態なら「SP1」 になる。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "enter_battle" },
+      name: "シルバーブレイザー",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "enter_battle_command_return_hand_bp2000_sp1",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-580 note rematches to on_cease_shuffle_all_discard_to_deck", () => {
+    const text =
+      "※これがユニットでなくなるとき、自分も相手も自分自身の捨札をすべて山札に戻してシャッフルする。";
+    const rematched = rematchEffectPrimitives(text, { trigger: { type: "nc" } });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_cease_shuffle_all_discard_to_deck",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-580 rematches to on_rush_deck_split_hunger_god", () => {
+    const text =
+      "これをラッシュしたとき、次の効果を、自分、相手の順に行う⇒自分自身の山札の枚数が2枚以上あれば、自分自身の山札の上から1枚ずつひいて、ウラ向きのまま2つの束に交互に振り分ける。その後、2つの束をそれぞれ見て、どちらか1つの束を選び、シャッフルする。これが自軍エリアにある間、選んだ束を自分自身の山札として扱い、もう1つの束は捨札にする。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "on_rush" },
+      name: "全てを飲み込む飢餓",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_rush_deck_split_hunger_god",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-504 rematches to while_in_field_ally_enter_mere_chameleon", () => {
+    const text =
+      "これが自軍エリアにある間、「獣人メレ」以外の自軍ユニットがバトルエリアに出たとき、次の効果から1つ選び発動できる⇒ ◎自軍コマンドゾーンからカードを1枚選び捨札にする。 ◎自軍コマンドゾーンにカードが1枚も無ければ、自軍捨札からカードを1枚選び、自軍コマンドゾーンにリリース状態で置く。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "while_in_field" },
+      name: "臨獣カメレオン拳",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "while_in_field_ally_enter_mere_chameleon",
+      ),
+    ).toBe(true);
+  });
 });
