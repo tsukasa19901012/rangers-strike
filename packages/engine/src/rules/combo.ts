@@ -591,6 +591,9 @@ export function canStrikeUnit(
     if (rideOffBlocksStrike(state.players[playerId], instance.instanceId)) {
       return false;
     }
+    if (instance.activatedNcEffects?.includes("souru_no_strike")) {
+      return false;
+    }
     if (!canStrikeWithHelloMirage(state, playerId, instance)) {
       return false;
     }

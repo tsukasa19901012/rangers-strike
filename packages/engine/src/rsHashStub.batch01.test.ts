@@ -615,4 +615,109 @@ describe("RS monkey-test high-frequency fixes", () => {
       ),
     ).toBe(true);
   });
+
+  it("RS-518 rematches to operation_enemy_s_command_hold_or_destroy", () => {
+    const text =
+      "敵軍Sユニットを1体選ぶ。選んだユニットがホールド状態なら撃破し、リリース状態ならホールドする。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "operation", timing: "rush" },
+      name: "獣撃棒",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "operation_enemy_s_command_hold_or_destroy",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-399 rematches to on_rush_send_enemy_battle_category_m_to_power", () => {
+    const text =
+      "これをラッシュしたとき、敵軍バトルエリアからMAのMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "on_rush" },
+      name: "オーパーツの返還",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_rush_send_enemy_battle_category_m_to_power",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-421 note rematches to note_bp_per_own_command_feature_red", () => {
+    const text = "※これは特徴「レッド」を持つ自軍コマンド1つにつきBP+1000される。";
+    const rematched = rematchEffectPrimitives(text, { trigger: { type: "nc" } });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "note_bp_per_own_command_feature_red",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-421 rematches to enter_battle_hold_red_nc_command_soul", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドゾーンから、特徴「レッド」とＮＣの効果を持つユニットカードを1枚選びホールドしてもよい。そうしたとき、ホールドしたユニットカードのNCの効果を、このユニットの効果として発動する。ただしストライクはできない。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "enter_battle" },
+      name: "ソウル降臨",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "enter_battle_hold_red_nc_command_soul",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-616 rematches to enter_battle_discard_rush_name_bp4000", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから「クライマー」を2体選び捨札にしてもよい。そうしたとき、このターン、これは次の能力を得る⇒BP+4000";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "enter_battle" },
+      name: "巨大ボール化",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "enter_battle_discard_rush_name_bp4000",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-662 destroy note rematches to on_destroy_reanimate_named_from_discard", () => {
+    const text =
+      "※これが撃破されて捨札になったとき、自軍捨札から｢獣人メレ｣のカードを1枚選び、自軍ラッシュエリアに出す。";
+    const rematched = rematchEffectPrimitives(text, { trigger: { type: "on_destroy" } });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_destroy_reanimate_named_from_discard",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-662 rematches to enter_battle_enemy_command_match_own_count_power_discard", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドゾーンのカードの枚数を数えて、その数と同じ必要パワーの数字を持つカードを敵軍コマンドゾーンから1枚選び捨札にしてもよい。";
+    const rematched = rematchEffectPrimitives(text, {
+      trigger: { type: "enter_battle" },
+      name: "火将危願",
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "enter_battle_enemy_command_match_own_count_power_discard",
+      ),
+    ).toBe(true);
+  });
 });

@@ -26,20 +26,28 @@ import {
   startOnRushDeckResidentChoice,
   startGaoriJawDestroyChoice,
   startTimeJetProtectChoice,
+  startTimeJetCategoryProtectChoice,
+  startPhoenixMereDestroyChoice,
 } from "../rules/pendingChoices";
 import { applyFalconSummonerOperation } from "../rules/falconSummoner";
 import {
   applyPinkRaiderVehicleReturn,
   releaseHeldSUnitCommands,
 } from "../rules/batch03RushEffects";
-import { getDslEffectById } from "./effectLookup";
-import { applyEmpireDominionEnterBattle } from "../rules/empireDominion";
-import { applyRexLaserOnRush } from "../rules/rexLaser";
 import {
   applyGaroaGrudgeEnterBattle,
   applyHungerGodOnRush,
   applySilverBlazerEnterBattle,
 } from "../rules/batch04FieldEffects";
+import { getDslEffectById } from "./effectLookup";
+import { applyEmpireDominionEnterBattle } from "../rules/empireDominion";
+import { applyRexLaserOnRush } from "../rules/rexLaser";
+import {
+  applyBeastRodOperation,
+  applyClimberBallEnterBattle,
+  applyFireGeneralEnterBattle,
+  applyAkaRedSoulEnterBattle,
+} from "../rules/batch05FieldEffects";
 import { beginCastoffOnRush } from "../rules/castoff";
 import {
   beginAssaultVectorDestroy,
@@ -94,6 +102,8 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "while_in_field_ally_enter_mere_chameleon",
   "start_end_command_toggle_hold_discard",
   "on_cease_shuffle_all_discard_to_deck",
+  "deck_unlimited",
+  "note_bp_per_own_command_feature_red",
   "ride_bp_boost_500",
   "ride_bp_boost_1000",
   "cross1",
@@ -549,6 +559,86 @@ export function applyGrantKeyword(
     case "on_rush_deck_split_hunger_god": {
       return {
         state: applyHungerGodOnRush(state, ctx.playerId),
+        detail: ctx.effectId,
+      };
+    }
+    case "operation_enemy_s_command_hold_or_destroy": {
+      const operationInstanceId = ctx.operationInstanceId;
+      if (!operationInstanceId) return { state };
+      return {
+        state: applyBeastRodOperation(
+          state,
+          ctx.playerId,
+          operationInstanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "on_rush_send_enemy_battle_category_m_to_power": {
+      const effect = getDslEffectById(ctx.sourceCardId, ctx.effectId);
+      const category = effect?.text?.match(/から([A-Z]{2,})のMユニット/)?.[1] ?? "MA";
+      const withChoice = startTimeJetCategoryProtectChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+        category,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
+    }
+    case "enter_battle_hold_red_nc_command_soul": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applyAkaRedSoulEnterBattle(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "enter_battle_discard_rush_name_bp4000": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applyClimberBallEnterBattle(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "on_destroy_reanimate_named_from_discard": {
+      const effect = getDslEffectById(ctx.sourceCardId, ctx.effectId);
+      const partnerName =
+        effect?.text?.match(/[「｢]([^」｣]+)[」｣]/)?.[1] ?? "獣人メレ";
+      const withChoice = startPhoenixMereDestroyChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        phasePlayerId: ctx.phasePlayerId,
+        partnerName,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
+    }
+    case "enter_battle_enemy_command_match_own_count_power_discard": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applyFireGeneralEnterBattle(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+        ),
         detail: ctx.effectId,
       };
     }

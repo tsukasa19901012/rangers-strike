@@ -25,8 +25,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_bp_per_own_command_feature_red",
+          "duration": "permanent"
         }
       ],
       "optional": false
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokikomandozonkararedotono",
+          "keyword": "enter_battle_hold_red_nc_command_soul",
           "duration": "turn"
         }
       ],

@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_syunitowo1bundayunitogahorudonara_geki_ha_shiririsunarah",
+          "keyword": "operation_enemy_s_command_hold_or_destroy",
           "duration": "turn"
         }
       ],

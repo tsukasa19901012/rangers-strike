@@ -59,6 +59,16 @@ import {
   applyGaroaRedToEnemyRush,
   applyMereChameleonDiscardToCommand,
 } from "./batch04FieldEffects";
+import {
+  applyAkaRedSoulHold,
+  applyBeastRodToEnemyCommand,
+  collectEnemyBattleCategoryM,
+  collectEnemyCommandSmallUnits,
+  collectEnemyCommandsMatchingPower,
+  collectNamedUnitsInDiscard,
+  collectOwnRedNcCommands,
+  collectOwnRushByName,
+} from "./batch05FieldEffects";
 
 export type RequestDrawResult =
   | { state: GameState; pending: false; drawn: boolean }
@@ -785,6 +795,148 @@ export function startMereChameleonChoice(
     effectId: "kamereon_discard_to_command",
     kind: "select_unit",
     validInstanceIds: player.discard.map((c) => c.instanceId),
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+/** RS-399 オーパーツの返還: 敵バトルMA M→パワー。 */
+export function startTimeJetCategoryProtectChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+    category: string;
+  },
+): GameState | null {
+  const enemyId = opponent(params.playerId);
+  const valid = collectEnemyBattleCategoryM(state, enemyId, params.category);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    unitDestination: "power",
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+/** RS-518 獣撃棒: 敵コマンドS。 */
+export function startBeastRodChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const enemyId = opponent(params.playerId);
+  const valid = collectEnemyCommandSmallUnits(state, enemyId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    playerId: enemyId,
+    kind: "select_command",
+    validInstanceIds: valid,
+    optional: false,
+  });
+}
+
+/** RS-421 ソウル降臨。 */
+export function startAkaRedSoulChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const valid = collectOwnRedNcCommands(state, params.playerId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_command",
+    validInstanceIds: valid,
+    commandAction: "hold",
+    optional: true,
+  });
+}
+
+/** RS-616 巨大ボール化。 */
+export function startClimberBallChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const valid = collectOwnRushByName(state, params.playerId, "クライマー", 2);
+  if (valid.length < 2) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    unitDestination: "discard",
+    selectCount: 2,
+    optional: true,
+  });
+}
+
+/** RS-662 火将危願。 */
+export function startFireGeneralChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const ownCount = state.players[params.playerId].command.length;
+  if (ownCount === 0) return null;
+  const enemyId = opponent(params.playerId);
+  const valid = collectEnemyCommandsMatchingPower(state, enemyId, ownCount);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    playerId: enemyId,
+    kind: "select_command",
+    validInstanceIds: valid,
+    commandAction: "discard",
+    optional: true,
+  });
+}
+
+/** RS-662 撃破時メレ蘇生。 */
+export function startPhoenixMereDestroyChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    phasePlayerId: PlayerId;
+    partnerName: string;
+  },
+): GameState | null {
+  const valid = collectNamedUnitsInDiscard(state, params.playerId, params.partnerName);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    ...params,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    unitDestination: "rush_from_discard",
     selectCount: 1,
     optional: true,
   });
@@ -1852,7 +2004,9 @@ export function applyEffectChoiceSelect(
               ...player,
               battle: player.battle.map((c) =>
                 c.instanceId === pending.sourceInstanceId
-                  ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
+                  ? pending.effectId === "boru"
+                    ? { ...c, bpModifier: (c.bpModifier ?? 0) + 4000 }
+                    : { ...c, spModifier: (c.spModifier ?? 0) + 1 }
                   : c,
               ),
             }),
@@ -2258,6 +2412,18 @@ export function applyEffectChoiceSelect(
         );
       }
 
+      if (pending.effectId === "geki_e78da3") {
+        const located = findCommandCard(state, instanceId);
+        if (!located) return { error: "invalid_target" };
+        const moved = applyBeastRodToEnemyCommand(state, located.playerId, instanceId);
+        if (!moved) return { error: "invalid_target" };
+        return finishChoice(
+          moved,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(moved, instanceId) ?? instanceId),
+        );
+      }
+
       const located = findCommandCard(state, instanceId);
       if (!located) {
         for (const playerId of ["player1", "player2"] as const) {
@@ -2292,6 +2458,20 @@ export function applyEffectChoiceSelect(
           discard: [...player.discard, found.card],
         };
       } else if (pending.commandAction === "hold") {
+        if (pending.effectId === "souru" && pending.sourceInstanceId) {
+          const moved = applyAkaRedSoulHold(
+            state,
+            owner,
+            instanceId,
+            pending.sourceInstanceId,
+          );
+          if (!moved) return { error: "invalid_target" };
+          return finishChoice(
+            moved,
+            pending,
+            cardName(state.definitions, found.card.cardId),
+          );
+        }
         const command = [...player.command];
         command[found.index] = { ...found.card, commandHeld: true };
         nextPlayer = { ...player, command };

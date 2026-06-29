@@ -40,10 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_tankoregabatoruerianitatokirashueriakarakuraimawo2",
+          "keyword": "enter_battle_discard_rush_name_bp4000",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

@@ -1970,17 +1970,18 @@ const PATTERNS: PatternMatch[] = [
     pattern: "recruit_from_discard_on_destroy",
     test: (body) =>
       /^※これが撃破されて捨札になったとき、自軍捨札から.*ラッシュエリアに出す/.test(body),
-    build: (body, segment, trigger) => ({
-      id: segment.name ? slugifyEffectId(segment.name) : "recruit_from_discard_on_destroy",
+    build: (body, segment) => ({
+      id: "recruit_from_discard_on_destroy",
       name: segment.name,
       text: body,
-      trigger: trigger.type === "while_in_field" ? { type: "on_destroy" } : trigger,
+      trigger: { type: "on_destroy" },
       optional: true,
-      condition: { type: "has_target", target: zone("discard", "self") },
       effects: [
-        chooseUnit(zone("discard", "self"), 1, [
-          { type: "move", target: { type: "trigger_source" }, to: "rush" },
-        ]),
+        {
+          type: "grant_keyword",
+          keyword: "on_destroy_reanimate_named_from_discard",
+          duration: "turn",
+        },
       ],
       matchedPattern: "recruit_from_discard_on_destroy",
     }),
@@ -6352,6 +6353,116 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "operation_enemy_s_command_hold_or_destroy",
+    test: (body) =>
+      /敵軍Sユニットを1体選ぶ。選んだユニットがホールド状態なら撃破し、リリース状態ならホールドする/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "operation", timing: "rush" },
+      optional: false,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "operation_enemy_s_command_hold_or_destroy",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "operation_enemy_s_command_hold_or_destroy",
+    }),
+  },
+  {
+    pattern: "on_rush_send_enemy_battle_category_m_to_power",
+    test: (body) =>
+      /これをラッシュしたとき、敵軍バトルエリアから([A-Z]{2,})のMユニットを1体選び、持ち主のパワーゾーンに送ってもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "on_rush_enemy_cat_m_to_power",
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_send_enemy_battle_category_m_to_power",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_send_enemy_battle_category_m_to_power",
+    }),
+  },
+  {
+    pattern: "enter_battle_discard_rush_name_bp4000",
+    test: (body) =>
+      /これがバトルエリアに出たとき、自軍ラッシュエリアから「([^」]+)」を2体選び捨札にしてもよい。そうしたとき、このターン、これは次の能力を得る⇒BP\+4000/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_battle_discard_rush_name_bp4000",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_discard_rush_name_bp4000",
+    }),
+  },
+  {
+    pattern: "enter_battle_enemy_command_match_own_count_power_discard",
+    test: (body) =>
+      /これがバトルエリアに出たとき、自軍コマンドゾーンのカードの枚数を数えて、その数と同じ必要パワーの数字を持つカードを敵軍コマンドゾーンから1枚選び捨札にしてもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_battle_enemy_command_match_own_count_power_discard",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_enemy_command_match_own_count_power_discard",
+    }),
+  },
+  {
+    pattern: "enter_battle_hold_red_nc_command_soul",
+    test: (body) =>
+      /これがバトルエリアに出たとき、自軍コマンドゾーンから、特徴「レッド」.*ＮＣ.*ホールドしてもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_battle_hold_red_nc_command_soul",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_hold_red_nc_command_soul",
+    }),
+  },
+  {
     pattern: "grant_ability_generic",
     test: (body) =>
       /次の能力を得る⇒/.test(body) &&
@@ -6496,6 +6607,32 @@ const PATTERNS: PatternMatch[] = [
       ],
       matchedPattern: "hold_on_enter_battle",
     }),
+  },
+  {
+    pattern: "note_bp_per_own_command_feature",
+    test: (body) =>
+      /^※これは特徴「([^」]+)」を持つ自軍コマンド1つにつきBP[＋+]1000される/.test(body),
+    build: (body, segment) => {
+      const feature = body.match(/特徴「([^」]+)」/)?.[1] ?? "レッド";
+      const slug = slugifyEffectId(feature);
+      const keyword =
+        feature === "レッド"
+          ? "note_bp_per_own_command_feature_red"
+          : `note_bp_per_own_command_feature_${slug}`;
+      return {
+        id: noteEffectIdFromBody(body),
+        text: body,
+        trigger: { type: "nc" },
+        effects: [
+          {
+            type: "grant_keyword",
+            keyword,
+            duration: "permanent",
+          },
+        ],
+        matchedPattern: "note_bp_per_own_command_feature",
+      };
+    },
   },
   {
     pattern: "start_end_command_toggle_hold_discard",
