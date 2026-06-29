@@ -15,6 +15,7 @@ import { isDslPermanentOperation } from "../dsl/dslCatalog";
 import { promotedKeywordBpBonus } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
 import { srBigBatonBpFloor } from "../rules/srEffects";
+import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
 import { legend3EnemySComboDelta } from "../rules/legend3/fieldEffects";
 import { validateZordAdditionalPayment } from "../rules/mothership";
 import {
@@ -321,6 +322,9 @@ export function unitEffectiveCategories(
     if (extra !== null) {
       return cats.includes(extra) ? cats : [...cats, extra];
     }
+  }
+  if (rs339AddsDaCategory(state, playerId, instance.cardId)) {
+    return cats.includes("DA") ? cats : [...cats, "DA"];
   }
   return cats;
 }

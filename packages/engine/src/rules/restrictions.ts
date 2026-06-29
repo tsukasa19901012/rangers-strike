@@ -65,6 +65,11 @@ import {
   needsBattleEntryRushDiscard,
 } from "./legend3/restrictions";
 import { getBattleEntryPowerDiscardCount } from "./batch07FieldEffects";
+import {
+  rs482BlocksAttackStrike,
+  rs579BlocksAttackStrikeOnRushTurn,
+  rs603BlocksVehicle,
+} from "./rs/rsCatchallField";
 
 export function countLightningGravityOperations(state: GameState): number {
   return countLightningGravityPermanents(
@@ -296,7 +301,14 @@ export function canMoveUnitToBattle(
 export function cannotAttackOrStrikeThisTurn(
   player: PlayerState,
   unit: CardInstance,
+  state?: GameState,
+  playerId?: PlayerId,
 ): boolean {
+  if (state && playerId) {
+    if (rs482BlocksAttackStrike(state, playerId, unit.cardId)) return true;
+    if (rs579BlocksAttackStrikeOnRushTurn(state, playerId, unit.instanceId)) return true;
+    if (rs603BlocksVehicle(state, playerId, unit.cardId)) return true;
+  }
   if (unit.activatedNcEffects?.includes("optional_battle_no_attack")) return true;
   return (
     noAttackOrStrikeTurnRushed(unit.cardId) &&

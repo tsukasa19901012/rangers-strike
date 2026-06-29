@@ -1057,11 +1057,56 @@ describe("unnamed note grant_keyword rematch", () => {
 
   for (const { text, keyword } of noteCases) {
     it(`rematches ※ note to ${keyword}`, () => {
-      const rematched = rematchEffectPrimitives(text, { kind: "note" });
+      const rematched = rematchEffectPrimitives(text, {
+        kind: "note",
+      });
       expect(
         rematched?.some((p) => p.type === "grant_keyword" && p.keyword === keyword),
       ).toBe(true);
       expect(isCatchallGrantKeyword(keyword)).toBe(false);
     });
   }
+});
+
+describe("RS catchall full implementation", () => {
+  it("RS-279 destroy_remaining registers turn rule on NC", () => {
+    const state = createTestState({
+      phase: "rush",
+      activePlayer: "player1",
+      definitions: legendDefinitions,
+    });
+    const result = applyGrantKeyword(state, {
+      playerId: "player1",
+      phasePlayerId: "player1",
+      sourceCardId: "RS-279",
+      effectId: "saikata",
+      triggerSourceInstanceId: "RS-279:u1",
+    }, "destroy_remaining_konotanbp4000noyunitogashikurashusaretatokisorewo_geki");
+    expect(result.detail).toBe("saikata");
+    const mods = result.state.players.player1.modifiers ?? [];
+    expect(mods.some((m) => m.kind === "rule" && m.ruleId.startsWith("rs_destroy_on_enemy_rush"))).toBe(
+      true,
+    );
+  });
+
+  it("RS-281 feature_match returns unmet without 2 female units", () => {
+    const state = createTestState({
+      phase: "rush",
+      activePlayer: "player1",
+      definitions: legendDefinitions,
+      players: {
+        player1: {
+          rush: [inst("RS-281", "self")],
+        },
+      },
+    });
+    const result = applyGrantKeyword(state, {
+      playerId: "player1",
+      phasePlayerId: "player1",
+      sourceCardId: "RS-281",
+      effectId: "nirero",
+      triggerSourceInstanceId: "RS-281:u1",
+    }, "feature_match_rashuerianiwotsuyunitoga2arebakonotankorehasp1ni");
+    expect(result.detail).toBe("nirero:unmet");
+  });
 });

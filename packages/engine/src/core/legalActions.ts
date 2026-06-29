@@ -1028,7 +1028,7 @@ function appendBattleEntryActions(
     return;
   }
 
-  if (cannotAttackOrStrikeThisTurn(player, unit)) {
+  if (cannotAttackOrStrikeThisTurn(player, unit, state, playerId)) {
     actions.push({ type: "pass_battle_entry", playerId });
     return;
   }
@@ -1493,7 +1493,7 @@ export function getLegalActions(state: GameState): GameAction[] {
 
       for (const attacker of player.battle) {
         if (attacker.battleActed) continue;
-        if (cannotAttackOrStrikeThisTurn(player, attacker)) continue;
+        if (cannotAttackOrStrikeThisTurn(player, attacker, state, playerId)) continue;
         if (unitCannotInitiateAttack(attacker.cardId)) continue;
         for (const defender of enemy.battle) {
           if (
@@ -1546,7 +1546,7 @@ export function getLegalActions(state: GameState): GameAction[] {
 
       for (const card of player.battle) {
         if (card.battleActed) continue;
-        if (cannotAttackOrStrikeThisTurn(player, card)) continue;
+        if (cannotAttackOrStrikeThisTurn(player, card, state, playerId)) continue;
         if (!canStrikeUnit(state.definitions, card, state, playerId)) continue;
         actions.push({
           type: "strike",

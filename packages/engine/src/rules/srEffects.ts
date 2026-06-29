@@ -390,5 +390,18 @@ export function matchSrGrantKeyword(
     return { state, detail: keyword };
   }
 
+  if (
+    keyword === "mecha_fusion_command_substitute" ||
+    keyword === "opponent_must_hold_ot_et_on_command_release" ||
+    keyword.startsWith("plasma_shockwave_start_phase") ||
+    keyword === "big_baton_command_zone_features" ||
+    keyword === "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000" ||
+    keyword === "destroy_on_win_vs_sp1" ||
+    keyword === "attacked_bp_boost_5000" ||
+    keyword === "cannot_attack"
+  ) {
+    return { state, detail: keyword };
+  }
+
   return null;
 }

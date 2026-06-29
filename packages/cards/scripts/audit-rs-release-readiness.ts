@@ -20,6 +20,10 @@ import {
 import { isOperationImplemented } from "../src/operationCatalog";
 import { WIKI_OPERATION_TEXT } from "../src/wikiReference";
 import { rematchExtractedEffect } from "../src/pipeline/extractEffects";
+import {
+  RS_CATCHALL_EFFECT_KEYS,
+  RS_CATCHALL_KEYWORDS,
+} from "../src/rsCatchallImplemented";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
@@ -122,6 +126,7 @@ function isKnownGrantKeyword(keyword: string): boolean {
   return (
     PASSIVE_GRANT_KEYWORDS.has(keyword) ||
     ENGINE_NATIVE_GRANT_KEYWORDS.has(keyword) ||
+    RS_CATCHALL_KEYWORDS.has(keyword) ||
     keyword.startsWith("deck_search_") ||
     keyword.startsWith("rush_trim_power_") ||
     keyword.startsWith("power_zone_min_") ||
@@ -187,6 +192,10 @@ function classifyEffect(doc: CardDocument, effect: EffectDefinition): EffectAudi
   }
 
   if (grantKeywords.some(isCatchallGrantKeyword)) {
+    const key = `${cardId}:${effectId}`;
+    if (RS_CATCHALL_EFFECT_KEYS.has(key)) {
+      return { cardId, effectId, tier: "ready", reason: "rs_catchall_implemented", textPreview };
+    }
     const rematched = rematchExtractedEffect(effect.text ?? "", {
       name: effect.name,
       kind: (effect.text ?? "").startsWith("※") ? "note" : effect.name ? "named" : "body",

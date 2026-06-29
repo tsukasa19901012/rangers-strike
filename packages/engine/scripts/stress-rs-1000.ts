@@ -102,6 +102,24 @@ function buildRsDeck(rng: () => number): CardDefinition[] {
 const GAME_COUNT = 1000;
 const MAX_STEPS = 20_000;
 
+function parseSeedRange(): { from: number; to: number } {
+  const fromIdx = process.argv.indexOf("--from");
+  const toIdx = process.argv.indexOf("--to");
+  const countIdx = process.argv.indexOf("--count");
+  if (fromIdx >= 0 && countIdx >= 0) {
+    const from = Number(process.argv[fromIdx + 1]);
+    const count = Number(process.argv[countIdx + 1]);
+    return { from, to: from + count - 1 };
+  }
+  if (fromIdx >= 0 && toIdx >= 0) {
+    return { from: Number(process.argv[fromIdx + 1]), to: Number(process.argv[toIdx + 1]) };
+  }
+  return { from: 1, to: GAME_COUNT };
+}
+
+const { from: SEED_FROM, to: SEED_TO } = parseSeedRange();
+const RUN_COUNT = SEED_TO - SEED_FROM + 1;
+
 type Failure = {
   seed: number;
   reason: string;
@@ -121,9 +139,9 @@ let strikes = 0;
 let battles = 0;
 
 console.log(`RS pool: ${RS_POOL.length} cards`);
-console.log(`Running ${GAME_COUNT} monkey games...\n`);
+console.log(`Running ${RUN_COUNT} monkey games (seeds ${SEED_FROM}-${SEED_TO})...\n`);
 
-for (let seed = 1; seed <= GAME_COUNT; seed += 1) {
+for (let seed = SEED_FROM; seed <= SEED_TO; seed += 1) {
   const rng = mulberry32(seed);
   const deckRng = mulberry32(seed * 9973 + 42);
   const p1Deck = buildRsDeck(deckRng);
@@ -184,14 +202,14 @@ for (let seed = 1; seed <= GAME_COUNT; seed += 1) {
       break;
   }
 
-  if (seed % 100 === 0) {
-    process.stdout.write(`  ${seed}/${GAME_COUNT}...\n`);
+  if ((seed - SEED_FROM + 1) % 100 === 0 || seed === SEED_TO) {
+    process.stdout.write(`  ${seed - SEED_FROM + 1}/${RUN_COUNT} (seed ${seed})...\n`);
   }
 }
 
 const merged = mergeEffectResolutionTraces(traces);
 
-console.log("\n=== RS Monkey Test (1000 games) ===");
+console.log(`\n=== RS Monkey Test (${RUN_COUNT} games, seeds ${SEED_FROM}-${SEED_TO}) ===`);
 console.log(`winner:           ${winner}`);
 console.log(`apply_failed:     ${applyFailed}`);
 console.log(`step_limit:       ${stepLimit}`);

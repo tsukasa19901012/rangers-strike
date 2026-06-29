@@ -7,6 +7,7 @@ import { applyPickEffectBranch } from "../rules/bkOperationEffects";
 import type { GrantKeywordContext } from "./grantKeyword";
 import { buildRematchContext } from "./hashGrantKeywordBridge";
 import type { InterpretFn } from "./interpretEffectRuntime";
+import { tryRsCatchallRuntime } from "../rules/rs/rsCatchallRuntime";
 
 /** フィールド常駐・能力付与系 — detail マーカーで解決済み扱い。 */
 const PASSIVE_CATCHALL_PATTERNS = new Set([
@@ -73,6 +74,9 @@ export function tryCatchallPatternRuntime(
   const rematched = rematchWithCard(ctx);
   const pattern = rematched?.matchedPattern;
   if (!pattern) return null;
+
+  const rsResolved = tryRsCatchallRuntime(state, ctx, pattern, interpret);
+  if (rsResolved) return rsResolved;
 
   if (pattern === "choice_one_of_effects") {
     const grantCtx: GrantKeywordContext = {

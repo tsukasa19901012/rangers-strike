@@ -16,6 +16,7 @@ import {
   tryZubazubanOnAllyRush,
 } from "../../rules/batch06FieldEffects";
 import { tryOnAllyRushNamedReturnSelfToHand } from "../../rules/batch07FieldEffects";
+import { tryRsCatchallOnEnemyRush } from "../../rules/rs/rsCatchallRuntime";
 import type { EventListener, UnitRushedEvent } from "../types";
 
 function applyDrawOnRush(
@@ -159,6 +160,15 @@ export const unitRushedListener: EventListener = (event, state) => {
       phasePlayerId,
     );
   }
+
+  const rsEnemyRush = tryRsCatchallOnEnemyRush(
+    nextState,
+    rusherPlayerId,
+    rushedInstanceId,
+    phasePlayerId,
+  );
+  nextState = rsEnemyRush.state;
+  if (rsEnemyRush.logs.length > 0) logs.push(...rsEnemyRush.logs);
 
   return {
     state: nextState,

@@ -5,6 +5,7 @@ import {
   breakerBlocksEffectTarget,
   cardHasNotSelectableExceptAttack,
 } from "./battleKeywords";
+import { rs627NotSelectable } from "../rules/rs/rsCatchallField";
 
 /** 敵効果の対象にできるユニットか（ブレイカー / not_selectable 等）。 */
 export function isSelectableByOpponentEffect(
@@ -21,6 +22,7 @@ export function isSelectableByOpponentEffect(
 
   if (cardHasGrantKeyword(found.card.cardId, "not_selectable")) return false;
   if (cardHasNotSelectableExceptAttack(found.card.cardId)) return false;
+  if (rs627NotSelectable(state, found.playerId, targetInstanceId)) return false;
   if (breakerBlocksEffectTarget(state.definitions, found.card.cardId, sourceCardId)) {
     return false;
   }
