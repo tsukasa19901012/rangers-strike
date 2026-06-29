@@ -1186,6 +1186,12 @@ function clearChoice(state: GameState, phasePlayerId: PlayerId): GameState {
   };
 }
 
+function unitLeaveDestination(
+  dest: NonNullable<PendingEffectChoice["unitDestination"]> | "discard",
+): "power" | "discard" | "deck_top" {
+  return dest === "power" ? "power" : dest === "deck_top" ? "deck_top" : "discard";
+}
+
 function applyUnitLeave(
   state: GameState,
   instanceId: string,
@@ -1644,7 +1650,12 @@ export function applyEffectChoiceSelect(
         }
         let nextState = state;
         for (const id of selected) {
-          const leave = applyUnitLeave(nextState, id, dest, pending.phasePlayerId);
+          const leave = applyUnitLeave(
+            nextState,
+            id,
+            unitLeaveDestination(dest),
+            pending.phasePlayerId,
+          );
           if ("error" in leave) return leave;
           nextState = leave.state;
         }
@@ -1878,7 +1889,12 @@ export function applyEffectChoiceSelect(
       const destroyedCardId = located
         ? findInZone(state.players[located.playerId], located.zone, instanceId)?.card.cardId
         : undefined;
-      const leave = applyUnitLeave(state, instanceId, dest === "power" ? "power" : dest === "deck_top" ? "deck_top" : "discard", pending.phasePlayerId);
+      const leave = applyUnitLeave(
+        state,
+        instanceId,
+        unitLeaveDestination(dest),
+        pending.phasePlayerId,
+      );
       if ("error" in leave) return leave;
       let nextState = leave.state;
       if (
