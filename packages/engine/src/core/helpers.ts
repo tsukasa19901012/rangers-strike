@@ -1,4 +1,4 @@
-import type { PlayerId, PlayerState } from "../types/game";
+import type { CardInstance, PlayerId, PlayerState } from "../types/game";
 
 export function opponent(playerId: PlayerId): PlayerId {
   return playerId === "player1" ? "player2" : "player1";
@@ -25,6 +25,17 @@ export function findInZone(
   const index = player[zone].findIndex((c) => c.instanceId === instanceId);
   if (index < 0) return null;
   return { index, card: player[zone][index]! };
+}
+
+/** Wing attacks from rush; normal attacks from battle. */
+export function findBattleAttacker(
+  player: PlayerState,
+  attackerInstanceId: string,
+): CardInstance | null {
+  const found =
+    findInZone(player, "battle", attackerInstanceId) ??
+    findInZone(player, "rush", attackerInstanceId);
+  return found?.card ?? null;
 }
 
 export function removeAt<T>(items: T[], index: number): [T, T[]] {

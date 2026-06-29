@@ -36,7 +36,7 @@ import {
 import { legend2EffectiveSp } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
 import { canAttackEnemyRushS } from "./legend3/restrictions";
-import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { findBattleAttacker, findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
 import { patchPlayer } from "./playerPatches";
@@ -66,12 +66,12 @@ export function battleAttackerBpBonus(
   state: GameState,
   pending: PendingBattle,
 ): number {
-  const attacker = findInZone(
+  const attackerCard = findBattleAttacker(
     state.players[pending.attackerPlayerId],
-    "battle",
     pending.attackerInstanceId,
   );
-  if (!attacker) return 0;
+  if (!attackerCard) return 0;
+  const attacker = { card: attackerCard };
 
   const mirageOverride = pending.mirageBeamBpOverride;
   let total =
@@ -163,17 +163,16 @@ export function battleDefenderBp(
   );
   if (!defenderFound) return 0;
 
-  const attacker = findInZone(
+  const attackerCard = findBattleAttacker(
     state.players[pending.attackerPlayerId],
-    "battle",
     pending.attackerInstanceId,
   );
   const usePrintedBp =
-    attacker &&
-    (hasBattleNcEffect(attacker.card, "shark_jaws") ||
-      hasBattleNcEffect(attacker.card, "super_cutter") ||
-      getOnAttackNamedEffect(attacker.card.cardId)?.effectId === "shark_jaws" ||
-      getOnAttackNamedEffect(attacker.card.cardId)?.effectId === "super_cutter" ||
+    attackerCard &&
+    (hasBattleNcEffect(attackerCard, "shark_jaws") ||
+      hasBattleNcEffect(attackerCard, "super_cutter") ||
+      getOnAttackNamedEffect(attackerCard.cardId)?.effectId === "shark_jaws" ||
+      getOnAttackNamedEffect(attackerCard.cardId)?.effectId === "super_cutter" ||
       legend2UsePrintedDefenderBp(state, pending) ||
       legend3UsePrintedDefenderBp(state, pending));
 

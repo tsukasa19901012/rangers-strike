@@ -5,7 +5,7 @@ import {
   isSmallUnit,
   unitBp,
 } from "../../core/catalog";
-import { findInZone, opponent } from "../../core/helpers";
+import { findBattleAttacker, findInZone, opponent } from "../../core/helpers";
 import { bounceAllFromZone } from "../bounce";
 import { buildLogEntry } from "../../log/formatLog";
 import {
@@ -111,12 +111,12 @@ export function legend2AttackerBpBonus(
   state: GameState,
   pending: PendingBattle,
 ): number {
-  const attacker = findInZone(
+  const attackerCard = findBattleAttacker(
     state.players[pending.attackerPlayerId],
-    "battle",
     pending.attackerInstanceId,
   );
-  if (!attacker) return 0;
+  if (!attackerCard) return 0;
+  const attacker = { card: attackerCard };
 
   let bonus = 0;
   const atkEffect = getOnAttackNamedEffect(attacker.card.cardId);

@@ -26,6 +26,7 @@ import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import { wingCanAttackEnemyRush } from "./index";
 import { addTurnRestrictionModifier } from "../core/scopedModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
+import { applyAction, getLegalActions } from "../index";
 
 describe("cross1 keyword", () => {
   it("shifts battle position for units to the right of cross holder", () => {
@@ -373,6 +374,42 @@ describe("wing keyword", () => {
         canAttackRushWithYellowThunder,
       ),
     ).toBe(true);
+  });
+
+  it("destroys the defender when wing attacks from rush with higher BP", () => {
+    const wingUnit = inst("TST-WING", "w1");
+    const enemyBattle = inst("TST-ALLY", "battle");
+    let state = createTestState({
+      phase: "battle",
+      player1: { rush: [wingUnit] },
+      player2: { battle: [enemyBattle] },
+    });
+    state.definitions["TST-WING"] = WING_DEF;
+    state.definitions["TST-ALLY"] = {
+      ...WING_DEF,
+      id: "TST-ALLY",
+      name: "Enemy Battle",
+      tags: [],
+      bp: 1000,
+    };
+    state = applyHoldForWing(state, "player1", wingUnit.instanceId)!;
+
+    const battleAction = getLegalActions(state).find(
+      (a) =>
+        a.type === "battle" &&
+        a.attackerInstanceId === wingUnit.instanceId &&
+        a.defenderInstanceId === enemyBattle.instanceId,
+    );
+    expect(battleAction).toBeDefined();
+
+    const next = applyAction(state, battleAction!);
+    expect(next.ok).toBe(true);
+    if (!next.ok) return;
+
+    expect(next.state.players.player1.rush).toHaveLength(1);
+    expect(next.state.players.player2.battle).toHaveLength(0);
+    expect(next.state.players.player2.discard).toHaveLength(1);
+    expect(next.state.players.player1.discard).toHaveLength(0);
   });
 });
 

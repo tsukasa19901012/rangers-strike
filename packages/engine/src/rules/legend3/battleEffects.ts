@@ -3,7 +3,7 @@ import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../typ
 import { getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
 import { getCostWindowMetadata } from "../../core/costWindow";
 import { hasTurnRuleModifier } from "../../core/scopedModifiers";
-import { findInZone, opponent, updatePlayer } from "../../core/helpers";
+import { findBattleAttacker, findInZone, opponent, updatePlayer } from "../../core/helpers";
 import { TURN_RULE_IDS } from "../../types/scopedModifiers";
 import { buildLogEntry } from "../../log/formatLog";
 import {
@@ -18,12 +18,12 @@ export function legend3AttackerBpBonus(
   state: GameState,
   pending: PendingBattle,
 ): number {
-  const attacker = findInZone(
+  const attackerCard = findBattleAttacker(
     state.players[pending.attackerPlayerId],
-    "battle",
     pending.attackerInstanceId,
   );
-  if (!attacker) return 0;
+  if (!attackerCard) return 0;
+  const attacker = { card: attackerCard };
 
   const effect = getOnAttackNamedEffect(attacker.card.cardId);
   let bonus = 0;
