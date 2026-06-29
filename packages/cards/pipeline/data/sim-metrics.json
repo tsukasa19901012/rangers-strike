@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-06-29T06:12:37.716Z",
+  "generatedAt": "2026-06-29T08:08:04.877Z",
   "suite": "simulateFullPromoted",
   "games": 50,
-  "unresolvedCount": 380,
-  "effectLogCount": 587,
-  "unresolvedRate": 0.6473594548551959,
+  "unresolvedCount": 347,
+  "effectLogCount": 589,
+  "unresolvedRate": 0.5891341256366723,
   "warnThreshold": 0.25,
   "topUnresolvedByEffectId": [
     {
       "effectId": "interpret_effect_unresolved",
-      "count": 63
+      "count": 58
     },
     {
       "effectId": "riborubahanga",
@@ -30,14 +30,6 @@
     {
       "effectId": "baku_daburutorunedo",
       "count": 17
-    },
-    {
-      "effectId": "note_e280bbe38193e3828ce38292",
-      "count": 15
-    },
-    {
-      "effectId": "note_e280bbe38193e3828ce381af",
-      "count": 13
     },
     {
       "effectId": "buru_shin",
@@ -66,6 +58,14 @@
     {
       "effectId": "misairu",
       "count": 7
+    },
+    {
+      "effectId": "wo_shin_tsunishitai",
+      "count": 7
+    },
+    {
+      "effectId": "doriruatachimento",
+      "count": 6
     }
   ],
   "topUnresolvedByCardId": [
@@ -86,12 +86,12 @@
       "count": 26
     },
     {
-      "cardId": "XG4-037",
-      "count": 26
-    },
-    {
       "cardId": "XG6-016",
       "count": 17
+    },
+    {
+      "cardId": "XG4-037",
+      "count": 13
     },
     {
       "cardId": "XG6-028",
