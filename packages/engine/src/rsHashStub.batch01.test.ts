@@ -916,6 +916,18 @@ describe("unnamed note grant_keyword rematch", () => {
       text: "※特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない",
       keyword: "ally_raida_protects_from_enemy_s",
     },
+    {
+      text: "※これはホールド状態の時SP1になる。",
+      keyword: "sp1_while_held",
+    },
+    {
+      text: "※敵軍ユニットがSユニットだけなら、これは「SP1」になる。",
+      keyword: "sp1_if_enemy_units_all_s",
+    },
+    {
+      text: "※これは特徴「獣」を持つユニットにアタックできない。",
+      keyword: "cannot_attack_feature_獣",
+    },
   ];
 
   for (const { text, keyword } of noteCases) {

@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_not_selectable_ally_rush_sp_blank",
       "text": "※これが自軍エリアにある間、自軍ラッシュエリアのSPが空欄のユニットは相手に選ばれない。",
       "trigger": {
         "type": "while_in_field"
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_fx_unknown",
+          "keyword": "not_selectable_ally_rush_sp_blank",
           "duration": "permanent"
         }
       ]

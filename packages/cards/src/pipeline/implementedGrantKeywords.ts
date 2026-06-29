@@ -104,7 +104,14 @@ const STABLE_GRANT_KEYWORD_EXACT = new Set([
   "on_rush_enemy_s_ride_off",
   "ride_release_on_mount",
   "counter_mirror_rider_cancel_battle",
-  "while_command_hold_immune",
+  "sp1_while_held",
+  "sp1_if_enemy_units_all_s",
+  "not_selectable_ally_rush_sp_blank",
+  "require_discard_rush_feature_to_battle",
+  "no_attack_strike_unless_battle_slot_1",
+  "not_attacked_while_held",
+  "chase_or_ridden_l_vehicle_alias",
+  "chase_or_ridden_s_vehicle_alias",
 ]);
 
 const STABLE_GRANT_KEYWORD_PATTERNS: RegExp[] = [
@@ -135,6 +142,11 @@ const STABLE_GRANT_KEYWORD_PATTERNS: RegExp[] = [
   /^rush_turn_enemy_s_bp_minus::\d+$/,
   /^return_enemy_power_sum_shuffle::\d+$/,
   /^combo_named_discard_enemy_command::/,
+  /^bp_plus_per_discard_named_[a-z0-9_]+_\d+$/,
+  /^bp_plus_per_ally_feature_[a-z0-9_]+_\d+$/,
+  /^register_if_discard_has_feature_[a-z0-9_]+$/,
+  /^note_substitute_on_destroy_rush_feature::/,
+  /^on_rush_return_enemy_feature_s_to_deck_bottom::/,
 ];
 
 export function isStableGrantKeyword(keyword: string): boolean {

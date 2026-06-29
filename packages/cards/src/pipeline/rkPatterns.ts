@@ -92,7 +92,10 @@ export const RK_NOTE_PATTERNS: PatternMatch[] = [
     test: (body) =>
       /^※これが撃破されて捨札になるとき、かわりに.*を持つ自軍Sユニットを1体選び捨札にしてもよい/.test(body),
     build: (body, segment, trigger) => {
-      const feature = body.match(/特徴「([^」]+)」|「([^」]+)」を持つ/)?.[1] ?? body.match(/「([^」]+)」を持つ/)?.[1] ?? "feature";
+      const feature =
+        body.match(/特徴「([^」]+)」/)?.[1] ??
+        body.match(/「([^」]+)」を持つ/)?.[1] ??
+        "feature";
       return grantKw(
         `note_substitute_on_destroy_feature_s::${feature}`,
         body,
@@ -100,6 +103,40 @@ export const RK_NOTE_PATTERNS: PatternMatch[] = [
         trigger,
         "rk_note_substitute_on_destroy_feature_s",
         true,
+      );
+    },
+  },
+  {
+    pattern: "rk_note_substitute_on_destroy_rush_feature",
+    test: (body) =>
+      /^※これが撃破されて捨札になるとき、かわりに自軍ラッシュエリアにある特徴「([^」]+)」を持つユニット1体を捨札にすれば、これはその場に留まる/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const feature = body.match(/特徴「([^」]+)」/)?.[1] ?? "feature";
+      return grantKw(
+        `note_substitute_on_destroy_rush_feature::${feature}`,
+        body,
+        segment,
+        trigger,
+        "rk_note_substitute_on_destroy_rush_feature",
+        true,
+      );
+    },
+  },
+  {
+    pattern: "rk_note_on_rush_return_enemy_kamen_s_to_deck",
+    test: (body) =>
+      /^※これをラッシュしたとき、特徴「([^」]+)」を持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す/.test(body),
+    build: (body, segment, trigger) => {
+      const feature = body.match(/特徴「([^」]+)」/)?.[1] ?? "feature";
+      return grantKw(
+        `on_rush_return_enemy_feature_s_to_deck_bottom::${feature}`,
+        body,
+        segment,
+        trigger,
+        "rk_note_on_rush_return_enemy_kamen_s_to_deck",
+        false,
       );
     },
   },

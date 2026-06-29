@@ -1,16 +1,11 @@
 {
-  "generatedAt": "2026-06-29T07:23:15.462Z",
-  "scanned": 1117,
-  "scannedUnnamed": 224,
-  "repaired": 3,
+  "generatedAt": "2026-06-29T07:33:36.150Z",
+  "scanned": 1102,
+  "scannedUnnamed": 210,
+  "repaired": 2,
   "repairedUnnamed": 2,
-  "remainingCatchallStubs": 1114,
+  "remainingCatchallStubs": 1100,
   "samples": [
-    {
-      "cardId": "RK-083",
-      "effectId": "sutoraikubento",
-      "to": "grant_keyword"
-    },
     {
       "cardId": "RK-287",
       "effectId": "unnamed_cannot_attack_except_feature_仮面ライダー",

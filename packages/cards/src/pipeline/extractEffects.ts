@@ -291,7 +291,7 @@ const KEYWORD_NOTE_PATTERNS: PatternMatch[] = [
   {
     pattern: "ally_feature_protects_enemy_s_note",
     test: (body) =>
-      /^※(?:特徴「([^」]+)」を持つユニットが|これは特徴「([^」]+)」を持つユニットが)自軍バトルエリアにあれば、?これは敵軍Sユニットにアタックされない/.test(
+      /^※(?:特徴「([^」]+)」を持つユニットが|これは特徴「([^」]+)」を持つユニットが)自軍バトルエリアにあれば、?(?:これは)?敵軍Sユニットにアタックされない/.test(
         body,
       ),
     build: (body) => {
@@ -359,12 +359,12 @@ const KEYWORD_NOTE_PATTERNS: PatternMatch[] = [
   keywordNoteMatch(
     "cannot_attack_beast_note",
     "cannot_attack_feature_獣",
-    /^※これは特徴「獣」を持つユニットにアタックできない/,
+    /^※これは特徴「獣」を持つユニットにアタックできない[。.]?$/,
   ),
   keywordNoteMatch(
     "cannot_attack_kamen_only_note",
     "cannot_attack_except_feature_仮面ライダー",
-    /^※これは特徴「仮面ライダー」を持つユニット以外にアタックする事ができない/,
+    /^※これは特徴「仮面ライダー」を持つユニット以外にアタックする(こと|事)ができない[。.]?$/,
   ),
   keywordNoteMatch(
     "no_attack_if_own_units_exceed_enemy_note",
@@ -376,6 +376,102 @@ const KEYWORD_NOTE_PATTERNS: PatternMatch[] = [
     "no_strike_if_other_own_s_in_field",
     /^※自軍Sユニットがこれ以外にあれば、これはストライクできない/,
   ),
+  keywordNoteMatch("sp1_while_held_note", "sp1_while_held", /^※これはホールド状態の時SP1になる/),
+  keywordNoteMatch(
+    "sp1_enemy_all_s_note",
+    "sp1_if_enemy_units_all_s",
+    /^※敵軍ユニットがSユニットだけなら、これは「SP1」になる/,
+  ),
+  keywordNoteMatch(
+    "not_selectable_rush_sp_blank_note",
+    "not_selectable_ally_rush_sp_blank",
+    /^※これが自軍エリアにある間、自軍ラッシュエリアのSPが空欄のユニットは相手に選ばれない/,
+  ),
+  keywordNoteMatch(
+    "require_discard_rush_feature_battle_note",
+    "require_discard_rush_feature_to_battle",
+    /^※これは自軍ラッシュエリアの特徴「([^」]+)」を持つユニットを1体捨札にしなければバトルエリアに出られない/,
+  ),
+  keywordNoteMatch(
+    "no_attack_strike_unless_first_battle_note",
+    "no_attack_strike_unless_battle_slot_1",
+    /^※これはバトルエリアの1番目に並んでいないときアタックもストライクもできない/,
+  ),
+  keywordNoteMatch(
+    "not_attacked_while_held_note",
+    "not_attacked_while_held",
+    /^※このユニットはホールド状態のとき、敵軍ユニットにアタックされない/,
+  ),
+  {
+    pattern: "bp_per_discard_named_card_note",
+    test: (body) =>
+      /^※これは自軍捨札にある「([^」]+)」のカード1枚につきBP[＋+](\d+)される/.test(body),
+    build: (body) => {
+      const name = slugifyEffectId(body.match(/「([^」]+)」/)?.[1] ?? "named");
+      const amount = body.match(/BP[＋+](\d+)/)?.[1] ?? "1000";
+      const keyword = `bp_plus_per_discard_named_${name}_${amount}`;
+      return {
+        id: `unnamed_${keyword}`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [{ type: "grant_keyword", keyword, duration: "permanent" }],
+        matchedPattern: "bp_per_discard_named_card_note",
+      };
+    },
+  },
+  {
+    pattern: "bp_per_ally_feature_unit_note",
+    test: (body) =>
+      /^※これは特徴「([^」]+)」を持つ自軍ユニット1体につきBP[＋+](\d+)される/.test(body),
+    build: (body) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const amount = body.match(/BP[＋+](\d+)/)?.[1] ?? "1000";
+      const keyword = `bp_plus_per_ally_feature_${feature}_${amount}`;
+      return {
+        id: `unnamed_${keyword}`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [{ type: "grant_keyword", keyword, duration: "permanent" }],
+        matchedPattern: "bp_per_ally_feature_unit_note",
+      };
+    },
+  },
+  {
+    pattern: "register_if_discard_has_feature_note",
+    test: (body) =>
+      /^※これは自軍捨札に特徴「([^」]+)」を持つユニットカードがあれば次の能力を得る⇒レジスト/.test(
+        body,
+      ),
+    build: (body) => {
+      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const keyword = `register_if_discard_has_feature_${feature}`;
+      return {
+        id: `unnamed_${keyword}`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [{ type: "grant_keyword", keyword, duration: "permanent" }],
+        matchedPattern: "register_if_discard_has_feature_note",
+      };
+    },
+  },
+  {
+    pattern: "chase_or_ridden_vehicle_alias_note",
+    test: (body) =>
+      /^※これは、チェイスを持つ自軍ユニットがあるか、ライドされ(てる|ている)間、(S|L)ビークルとして扱う/.test(
+        body,
+      ),
+    build: (body) => {
+      const size = body.match(/(S|L)ビークル/)?.[1] ?? "L";
+      const keyword = `chase_or_ridden_${size.toLowerCase()}_vehicle_alias`;
+      return {
+        id: `unnamed_${keyword}`,
+        text: body,
+        trigger: { type: "while_in_field" },
+        effects: [{ type: "grant_keyword", keyword, duration: "permanent" }],
+        matchedPattern: "chase_or_ridden_vehicle_alias_note",
+      };
+    },
+  },
   ...(["taxis", "lead", "call"] as const).flatMap((prefix) => {
     const regex = new RegExp(`^※${prefix === "taxis" ? "タクス" : prefix === "lead" ? "リード" : "コール"}(MA|ET|DA|WB|OT)`);
     return [
