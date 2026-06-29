@@ -22,7 +22,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_while_in_discard_rush_deploy_koreganiaru",
       "text": "※これが自軍捨札にある間、自軍ラッシュフェイズ中、自軍コマンドを1つゲームから除外してから、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
         "type": "while_in_field"
@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_fx_unknown",
-          "duration": "turn"
+          "keyword": "while_in_discard_rush_deploy::koreganiarurashufuei",
+          "duration": "permanent"
         }
       ],
       "optional": true

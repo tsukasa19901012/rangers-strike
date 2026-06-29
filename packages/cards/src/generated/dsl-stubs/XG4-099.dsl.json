@@ -11,16 +11,16 @@
   "rawText": "※特徴「メカ」を持つ自軍Sユニットは、自軍コマンドを1つホールドすればＲＣを持っていなくてもこのビークルにライドできる。 【バリア】これにライドしている特徴「メカ」を持つユニットは、次の能力を得る⇒「レジスト」",
   "effects": [
     {
-      "id": "note_e280bbe789b9e5beb4e3808c",
+      "id": "unnamed_feature_s_ride_vehicle_hold_1_commands_m",
       "text": "※特徴「メカ」を持つ自軍Sユニットは、自軍コマンドを1つホールドすればＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "feature_s_ride_vehicle_hold_1_commands::meka",
+          "duration": "permanent"
         }
       ],
       "optional": false

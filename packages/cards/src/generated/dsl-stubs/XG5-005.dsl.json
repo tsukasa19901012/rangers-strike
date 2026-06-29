@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自軍バトルエリアにある間、敵軍Sユニットがバトルエリアに出たとき、これを自軍コマンドゾーンにホールド状態で置いてもよい。置けなければ手札に加える。",
       "trigger": {
         "type": "while_in_field"
@@ -27,10 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_fx_unknown",
+          "keyword": "note_card::XG5-005::koregabatorueria",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "pinkuribon",

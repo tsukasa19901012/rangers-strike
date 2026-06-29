@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e381aee383a6",
+      "id": "unnamed_e280bbe38193e381aee383a6",
       "text": "※このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える。",
       "trigger": {
         "type": "nc"
@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-548::konoyunitononanb",
+          "duration": "permanent"
         }
       ],
       "optional": false

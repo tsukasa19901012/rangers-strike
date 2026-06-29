@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自軍捨札にある間、特徴「恐竜」を持つ自軍Mユニットは、アタックするとき、BP+1000される。",
       "trigger": {
         "type": "while_in_field"
@@ -56,10 +56,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_fx_unknown",
+          "keyword": "note_card::XG7-007::koreganiaruwotsu",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "ryu_geki_ken_ken",

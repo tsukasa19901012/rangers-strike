@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e381aee383a6",
+      "id": "unnamed_e280bbe38193e381aee383a6",
       "text": "※このユニットは、自軍ラッシュフェイズ中、特徴に「レッド」「ブルー」「イエロー」を追加される。",
       "trigger": {
         "type": "nc"
@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-499::konoyunitoharash",
+          "duration": "permanent"
         }
       ],
       "optional": false

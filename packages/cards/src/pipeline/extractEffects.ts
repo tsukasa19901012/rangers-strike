@@ -15,6 +15,9 @@ import {
   slugifyEffectId,
 } from "./metaMaps";
 import { tryBuildPickEffectBranch } from "./choiceBranches";
+import { NOTE_BULK_PATTERNS } from "./noteBulkPatterns";
+import { buildNoteCardKeyword } from "./noteCardKeywords";
+import { isUnresolvedCatchallGrantKeyword } from "./hashGrantKeywords";
 import { RK_ACTION_PATTERNS, RK_NOTE_PATTERNS, RK_WHILE_PATTERNS } from "./rkPatterns";
 
 type ZoneTarget = Extract<EffectPrimitive, { type: "move" }>["target"];
@@ -73,7 +76,7 @@ function keywordNoteMatch(
     pattern,
     test: (body) => test.test(body),
     build: (body) => ({
-      id: `unnamed_${keyword}`,
+      id: noteEffectIdFromBody(body).replace(/^note_/, "unnamed_"),
       text: body,
       trigger: { type: "while_in_field" },
       effects: [{ type: "grant_keyword", keyword, duration: "permanent" }],
@@ -6514,6 +6517,7 @@ const PATTERNS: PatternMatch[] = [
       matchedPattern: "deck_search_generic",
     }),
   },
+  ...NOTE_BULK_PATTERNS,
   {
     pattern: "while_in_field_note_generic",
     test: (body) =>
@@ -9588,6 +9592,7 @@ function rematchBuiltEffect(
     name?: string;
     kind?: WikiEffectSegment["kind"];
     trigger: EffectDefinition["trigger"];
+    cardId?: string;
   },
 ): Omit<ExtractedEffect, "segmentIndex" | "needsFallback"> | null {
   const segment: WikiEffectSegment = {
@@ -9603,10 +9608,44 @@ function rematchBuiltEffect(
       built.effects.length > 0 &&
       !built.effects.every((p) => p.type === "fallback_handler")
     ) {
+      if (
+        options.cardId &&
+        body.startsWith("※") &&
+        built.effects.some(
+          (p) =>
+            p.type === "grant_keyword" && isUnresolvedCatchallGrantKeyword(p.keyword),
+        )
+      ) {
+        return buildNoteCardRematchEffect(body, options, built);
+      }
       return built;
     }
   }
+  if (options.cardId && body.startsWith("※")) {
+    return buildNoteCardRematchEffect(body, options);
+  }
   return null;
+}
+
+function buildNoteCardRematchEffect(
+  body: string,
+  options: {
+    name?: string;
+    trigger: EffectDefinition["trigger"];
+    cardId?: string;
+  },
+  built?: Omit<ExtractedEffect, "segmentIndex" | "needsFallback">,
+): Omit<ExtractedEffect, "segmentIndex" | "needsFallback"> {
+  const keyword = buildNoteCardKeyword(options.cardId!, body, built?.id);
+  return {
+    id: noteEffectIdFromBody(body).replace(/^note_/, "unnamed_"),
+    name: options.name ?? built?.name,
+    text: body,
+    trigger: built?.trigger ?? options.trigger,
+    optional: built?.optional,
+    effects: [{ type: "grant_keyword", keyword, duration: "permanent" }],
+    matchedPattern: "note_card_fallback",
+  };
 }
 
 /** 既存 DSL スタブの enqueue-only / effect_* delegate を PATTERNS で再マッチ（M17/M20）。 */
@@ -9616,6 +9655,7 @@ export function rematchExtractedEffect(
     name?: string;
     kind?: WikiEffectSegment["kind"];
     trigger: EffectDefinition["trigger"];
+    cardId?: string;
   },
 ): Omit<ExtractedEffect, "segmentIndex" | "needsFallback"> | null {
   return rematchBuiltEffect(body, options);
@@ -9628,6 +9668,7 @@ export function rematchEffectPrimitives(
     name?: string;
     kind?: WikiEffectSegment["kind"];
     trigger: EffectDefinition["trigger"];
+    cardId?: string;
   },
 ): EffectPrimitive[] | null {
   const built = rematchBuiltEffect(body, options);

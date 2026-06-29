@@ -69,7 +69,7 @@
       ]
     },
     {
-      "id": "note_e280bbe8b5a4e69687e5ad97",
+      "id": "unnamed_e280bbe8b5a4e69687e5ad97",
       "text": "※赤文字は公式発表のエラッタ修正の部分",
       "trigger": {
         "type": "nc"
@@ -77,8 +77,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RK-125::hanoeratano",
+          "duration": "permanent"
         }
       ],
       "optional": false

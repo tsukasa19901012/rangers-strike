@@ -11,20 +11,19 @@
   "rawText": "※カウンター 敵軍バトルフェイズ開始時に発動できる⇒敵軍ユニットまたは敵軍ビークルを1体選ぶ。このターン、そのユニットまたはビークルの効果名を持つテキストは無効になり、発動もできない。",
   "effects": [
     {
-      "id": "note_e280bbe382abe382a6e383b3",
+      "id": "unnamed_counter_note_kaunta_batorufueizun",
       "text": "※カウンター 敵軍バトルフェイズ開始時に発動できる⇒敵軍ユニットまたは敵軍ビークルを1体選ぶ。このターン、そのユニットまたはビークルの効果名を持つテキストは無効になり、発動もできない。",
       "trigger": {
-        "type": "operation",
-        "timing": "counter"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_yunitomatahabikuruwo1bukonotansonoyunitomatahabikuruno",
-          "duration": "turn"
+          "keyword": "counter_note::kaunta_batorufueizun",
+          "duration": "permanent"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

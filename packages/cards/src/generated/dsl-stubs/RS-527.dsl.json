@@ -11,7 +11,7 @@
   "rawText": "※本来のカテゴリにDAを持つSユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。 【反バイオ粒子砲】これにライドしているユニットは「Lユニット」になり、OTを持つ敵軍コマンド1つにつき、「BP+1000」される。また、これにライドしているユニットは、「バイオハンター・シルバ」なら「SP1」になる。",
   "effects": [
     {
-      "id": "note_e280bbe69cace69da5e381ae",
+      "id": "unnamed_e280bbe69cace69da5e381ae",
       "text": "※本来のカテゴリにDAを持つSユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。",
       "trigger": {
         "type": "nc"
@@ -19,8 +19,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-527::nokategorinidawo",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -11,7 +11,8 @@ import type { CardDocument, EffectPrimitive } from "../src/dsl/types";
 import { validateCardDocument } from "../src/dsl/validator";
 import { rematchExtractedEffect } from "../src/pipeline/extractEffects";
 import { isUnresolvedCatchallGrantKeyword } from "../src/pipeline/hashGrantKeywords";
-import { slugifyEffectId } from "../src/pipeline/metaMaps";
+import { buildNoteCardKeyword } from "../src/pipeline/noteCardKeywords";
+import { slugifyEffectId, noteEffectIdFromBody } from "../src/pipeline/metaMaps";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
@@ -19,9 +20,18 @@ const repoRoot = join(root, "../..");
 const dslDir = join(root, "src/generated/dsl-stubs");
 const reportPath = join(root, "pipeline/data/dsl-hash-keyword-repair.json");
 
+const STALE_NOTE_KEYWORD = /^(note_slug|while_field_note|note_on_rush)::/;
+
 function isCatchallStub(primitives: EffectPrimitive[]): boolean {
   return primitives.some(
     (p) => p.type === "grant_keyword" && isUnresolvedCatchallGrantKeyword(p.keyword),
+  );
+}
+
+function needsNoteRepair(primitives: EffectPrimitive[]): boolean {
+  return (
+    isCatchallStub(primitives) ||
+    primitives.some((p) => p.type === "grant_keyword" && STALE_NOTE_KEYWORD.test(p.keyword))
   );
 }
 
@@ -37,14 +47,16 @@ function isUnnamedEffect(
 }
 
 function remigrateEffect(
+  cardId: string,
   effect: NonNullable<CardDocument["effects"]>[number],
 ): { changed: boolean; to?: string } {
-  if (!isCatchallStub(effect.effects)) return { changed: false };
+  if (!needsNoteRepair(effect.effects)) return { changed: false };
 
   const rematched = rematchExtractedEffect(effect.text ?? "", {
     name: effect.name,
     kind: effect.text?.startsWith("※") ? "note" : effect.name ? "named" : "body",
     trigger: effect.trigger,
+    cardId,
   });
 
   if (rematched && !isCatchallStub(rematched.effects)) {
@@ -55,6 +67,13 @@ function remigrateEffect(
     if (rematched.optional !== undefined) effect.optional = rematched.optional;
     if (rematched.condition !== undefined) effect.condition = rematched.condition;
     return { changed: true, to: rematched.effects.map((p) => p.type).join("+") };
+  }
+
+  if (isUnnamedEffect(effect)) {
+    const keyword = buildNoteCardKeyword(cardId, effect.text ?? "", effect.id);
+    effect.id = noteEffectIdFromBody(effect.text ?? "").replace(/^note_/, "unnamed_");
+    effect.effects = [{ type: "grant_keyword", keyword, duration: "permanent" }];
+    return { changed: true, to: "note_card" };
   }
 
   return { changed: false };
@@ -96,12 +115,12 @@ function main(): void {
     let changed = false;
 
     for (const effect of doc.effects ?? []) {
-      if (!isCatchallStub(effect.effects)) continue;
+      if (!needsNoteRepair(effect.effects)) continue;
       scanned += 1;
       if (isUnnamedEffect(effect)) scannedUnnamed += 1;
-      const result = remigrateEffect(effect);
+      const result = remigrateEffect(doc.id, effect);
       if (!result.changed) {
-        remaining += 1;
+        if (isCatchallStub(effect.effects)) remaining += 1;
         continue;
       }
       repaired += 1;

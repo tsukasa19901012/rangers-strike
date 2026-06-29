@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce38292",
+      "id": "unnamed_e280bbe38193e3828ce38292",
       "text": "※これをラッシュしたとき、「ゴーカイピンク」以外のオモテ向きの自軍パワーから、追加条件を持たない、特徴「ピンク」またはホワイトを持つSユニットのカードを1枚選び、これと置き換えてもよい。",
       "trigger": {
         "type": "on_rush"
@@ -27,11 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "on_rush_swap_from_power_except_named::ゴーカイピンク",
+          "duration": "permanent"
         }
       ],
-      "optional": false
+      "optional": true
     },
     {
       "id": "renjaki",

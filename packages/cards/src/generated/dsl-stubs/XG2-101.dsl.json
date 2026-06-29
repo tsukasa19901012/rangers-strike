@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe789b9e5beb4e3808c",
+      "id": "unnamed_e280bbe789b9e5beb4e3808c",
       "text": "※特徴「メカ」を持つ敵軍ユニットがあるとき、これはストライクできない。",
       "trigger": {
         "type": "nc"
@@ -28,14 +28,14 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG2-101::mekawotsuyunitog",
+          "duration": "permanent"
         }
       ],
       "optional": false
     },
     {
-      "id": "note_e280bbe887aae58886e3818c",
+      "id": "unnamed_e280bbe887aae58886e3818c",
       "text": "※自分がターンを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら山札に戻してシャッフルする。",
       "trigger": {
         "type": "nc"
@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG2-101::gatanwoerutokiko",
+          "duration": "permanent"
         }
       ],
       "optional": false

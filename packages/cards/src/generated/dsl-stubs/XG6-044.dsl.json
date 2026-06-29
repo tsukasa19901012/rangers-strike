@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce38292",
+      "id": "unnamed_e280bbe38193e3828ce38292",
       "text": "※これをラッシュしたとき、自軍パワーゾーンから「テディ」のカードを1枚選び自軍ラッシュエリアに出してもよい。",
       "trigger": {
         "type": "on_rush"
@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG6-044::koreworashushita",
+          "duration": "permanent"
         }
       ],
       "optional": true

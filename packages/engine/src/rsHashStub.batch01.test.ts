@@ -898,6 +898,37 @@ describe("RS monkey-test high-frequency fixes", () => {
   });
 });
 
+describe("unnamed note catchall clearance", () => {
+  it("has no unresolved catchall grant_keyword on ※ note effects", async () => {
+    const { readFileSync, readdirSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const { isUnresolvedCatchallGrantKeyword } = await import(
+      "@rangers-strike/cards/pipeline/hashGrantKeywords"
+    );
+    const dir = join(import.meta.dirname, "../../cards/src/generated/dsl-stubs");
+    let remaining = 0;
+    for (const file of readdirSync(dir).filter((f) => f.endsWith(".dsl.json"))) {
+      const doc = JSON.parse(readFileSync(join(dir, file), "utf8")) as {
+        effects?: Array<{ text?: string; effects?: Array<{ type: string; keyword?: string }> }>;
+      };
+      for (const effect of doc.effects ?? []) {
+        if (!effect.text?.startsWith("※")) continue;
+        if (
+          effect.effects?.some(
+            (p) =>
+              p.type === "grant_keyword" &&
+              p.keyword &&
+              isUnresolvedCatchallGrantKeyword(p.keyword),
+          )
+        ) {
+          remaining += 1;
+        }
+      }
+    }
+    expect(remaining).toBe(0);
+  });
+});
+
 describe("unnamed note grant_keyword rematch", () => {
   const noteCases: Array<{ text: string; keyword: string }> = [
     {

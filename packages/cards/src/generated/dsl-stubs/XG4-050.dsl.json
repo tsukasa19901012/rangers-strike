@@ -11,19 +11,19 @@
   "rawText": "※自軍ターン開始時、自分の手札から「アクロバッター」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。 【後部バルカン砲】ライドされているこのビークルが自軍バトルエリアからラッシュエリアに戻るとき、敵軍バトルエリアからBP3000のSユニットを1体選び、撃破してもよい。",
   "effects": [
     {
-      "id": "note_e280bbe887aae8bb8de382bf",
+      "id": "unnamed_e280bbe887aae8bb8de382bf",
       "text": "※自軍ターン開始時、自分の手札から「アクロバッター」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "turn_start_swap_hand_named::アクロバッター_マックジャバー",
+          "duration": "permanent"
         }
       ],
-      "optional": false
+      "optional": true
     },
     {
       "id": "barukan",

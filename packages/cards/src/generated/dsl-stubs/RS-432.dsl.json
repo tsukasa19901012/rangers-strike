@@ -11,19 +11,19 @@
   "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） ストライクされたとき発動できる⇒相手がバトルフェイズを終えるとき、そのバトルフェイズ中に自分の受けたダメージが2点以上なら、敵軍バトルエリアのSユニットをすべて撃破する。",
   "effects": [
     {
-      "id": "note_e280bbe382abe382a6e383b3",
+      "id": "unnamed_counter_note_kaunta",
       "text": "※カウンター（これは敵軍ターン中にのみ使用できる） ストライクされたとき発動できる⇒相手がバトルフェイズを終えるとき、そのバトルフェイズ中に自分の受けたダメージが2点以上なら、敵軍バトルエリアのSユニットをすべて撃破する。",
       "trigger": {
-        "type": "while_in_field"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_gabatorufueizuwoerutokisonobatorufueizuninoketadamejiga2",
-          "duration": "turn"
+          "keyword": "counter_note::kaunta",
+          "duration": "permanent"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

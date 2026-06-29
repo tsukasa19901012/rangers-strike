@@ -11,20 +11,19 @@
   "rawText": "※カウンター これは自軍ユニットがアタックされたとき発動できる⇒自軍山札の上から3枚オモテにする。そして、オモテにしたカードの中から、アタックしてきたユニットの必要パワーの数字以上の必要パワーの数字を持つカードをすべて自分の手札に加え、それ以外は山札に戻してシャッフルする。この効果で1枚以上のカードを手札に加えたなら、そのバトルは行われない。",
   "effects": [
     {
-      "id": "note_e280bbe382abe382a6e383b3",
+      "id": "unnamed_counter_note_kaunta_korehayunitog",
       "text": "※カウンター これは自軍ユニットがアタックされたとき発動できる⇒自軍山札の上から3枚オモテにする。そして、オモテにしたカードの中から、アタックしてきたユニットの必要パワーの数字以上の必要パワーの数字を持つカードをすべて自分の手札に加え、それ以外は山札に戻してシャッフルする。この効果で1枚以上のカードを手札に加えたなら、そのバトルは行われない。",
       "trigger": {
-        "type": "operation",
-        "timing": "counter"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_nokara3omotenisurusoshiteomotenishitakadonokaraatakushitekita",
-          "duration": "turn"
+          "keyword": "counter_note::kaunta_korehayunitog",
+          "duration": "permanent"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

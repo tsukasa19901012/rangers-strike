@@ -44,7 +44,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは自軍捨札にあるユニットカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
         "type": "nc"
@@ -52,8 +52,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-562::korehaniaruyunit",
+          "duration": "permanent"
         }
       ],
       "optional": false

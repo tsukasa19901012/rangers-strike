@@ -1,19 +1,134 @@
 {
-  "generatedAt": "2026-06-29T07:33:36.150Z",
-  "scanned": 1102,
-  "scannedUnnamed": 210,
-  "repaired": 2,
-  "repairedUnnamed": 2,
-  "remainingCatchallStubs": 1100,
+  "generatedAt": "2026-06-29T08:07:35.226Z",
+  "scanned": 1051,
+  "scannedUnnamed": 159,
+  "repaired": 159,
+  "repairedUnnamed": 159,
+  "remainingCatchallStubs": 892,
   "samples": [
     {
-      "cardId": "RK-287",
-      "effectId": "unnamed_cannot_attack_except_feature_仮面ライダー",
+      "cardId": "RK-125",
+      "effectId": "unnamed_e280bbe8b5a4e69687e5ad97",
       "to": "grant_keyword"
     },
     {
-      "cardId": "RK-308",
-      "effectId": "unnamed_cannot_attack_feature_獣",
+      "cardId": "RK-161",
+      "effectId": "unnamed_e280bbe38193e3828ce381af",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-232",
+      "effectId": "unnamed_e280bbe38193e3828ce3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-268",
+      "effectId": "unnamed_e280bbe695b5e8bb8de382bf",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RK-319",
+      "effectId": "unnamed_e280bbe38193e3828ce38292",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RM-019",
+      "effectId": "unnamed_e280bbe38193e3828ce3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RM-028",
+      "effectId": "unnamed_e280bbe38193e3828ce3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RM-029",
+      "effectId": "unnamed_e280bb5350e3818ce7a9bae6",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RM-033",
+      "effectId": "unnamed_e280bbe38193e3828ce381af",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RM-045",
+      "effectId": "unnamed_e280bbe38193e381aee383a6",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-319",
+      "effectId": "unnamed_e280bbe887aae8bb8de383a9",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-332",
+      "effectId": "unnamed_e280bbe38193e3828ce3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-368",
+      "effectId": "unnamed_e280bbe38193e3828ce381af",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-370",
+      "effectId": "unnamed_e280bbe38193e3828ce381af",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-375",
+      "effectId": "unnamed_e280bbe38193e3828ce3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-393",
+      "effectId": "unnamed_e280bb4554e381ae53e383a6",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-414",
+      "effectId": "unnamed_e280bbe789b9e5beb4e3808c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-419",
+      "effectId": "unnamed_e280bbe38193e3828ce381af",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-426",
+      "effectId": "unnamed_e280bbe38193e3828ce3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-427",
+      "effectId": "unnamed_e280bbe38193e3828ce3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-440",
+      "effectId": "unnamed_e280bbe38193e381aee382ab",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-440",
+      "effectId": "unnamed_e280bbe38193e3828ce381af",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-442",
+      "effectId": "unnamed_e280bbe38193e3828ce381af",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-452",
+      "effectId": "unnamed_e280bbe38193e3828ce3818c",
+      "to": "grant_keyword"
+    },
+    {
+      "cardId": "RS-469",
+      "effectId": "unnamed_e280bbe789b9e5beb4e3808c",
       "to": "grant_keyword"
     }
   ],

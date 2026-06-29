@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自軍エリアにある間、特徴「宇宙刑事」を持つ自軍ユニットは、アタックされるとき、BP+1000される",
       "trigger": {
         "type": "while_in_field"
@@ -43,10 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_fx_unknown",
+          "keyword": "note_card::XG2-083::koregaerianiaruw",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "patororu",

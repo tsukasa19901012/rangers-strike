@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bb5350e3818ce7a9bae6",
+      "id": "unnamed_e280bb5350e3818ce7a9bae6",
       "text": "※SPが空欄ではない自軍Sユニットがあれば、これはバトルエリアに出られない。",
       "trigger": {
         "type": "nc"
@@ -25,8 +25,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RM-029::spgadehanaisyuni",
+          "duration": "permanent"
         }
       ],
       "optional": false

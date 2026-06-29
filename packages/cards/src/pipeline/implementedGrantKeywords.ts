@@ -111,7 +111,9 @@ const STABLE_GRANT_KEYWORD_EXACT = new Set([
   "no_attack_strike_unless_battle_slot_1",
   "not_attacked_while_held",
   "chase_or_ridden_l_vehicle_alias",
-  "chase_or_ridden_s_vehicle_alias",
+  "becomes_l_bp_if_any_l_on_field_3000",
+  "becomes_l_bp_if_any_l_on_field_2000",
+  "ride_attack_bp_boost_1000",
 ]);
 
 const STABLE_GRANT_KEYWORD_PATTERNS: RegExp[] = [
@@ -147,6 +149,24 @@ const STABLE_GRANT_KEYWORD_PATTERNS: RegExp[] = [
   /^register_if_discard_has_feature_[a-z0-9_]+$/,
   /^note_substitute_on_destroy_rush_feature::/,
   /^on_rush_return_enemy_feature_s_to_deck_bottom::/,
+  /^note_card::[A-Z0-9]+-[0-9]+(?:::[a-z0-9_]+)?$/,
+  /^note_slug::[a-z0-9_]+$/,
+  /^while_field_note::[a-z0-9_]+$/,
+  /^note_on_rush::[a-z0-9_]+$/,
+  /^counter_note::[a-z0-9_]+$/,
+  /^while_in_hand_rush_deploy::[a-z0-9_]+$/,
+  /^while_in_discard_rush_deploy::[a-z0-9_]+$/,
+  /^while_in_command_rush_deploy::[a-z0-9_]+$/,
+  /^on_destroy_deploy_named_to_rush::/,
+  /^becomes_l_bp_if_any_l_on_field_\d+$/,
+  /^turn_start_swap_hand_named::/,
+  /^on_rush_swap_from_power_except_named::/,
+  /^dual_name_alias::/,
+  /^ride_named_becomes::/,
+  /^bp_plus_if_named_ally_/,
+  /^ride_attack_bp_boost_\d+$/,
+  /^feature_s_ride_vehicle_hold_\d+_commands::/,
+  /^rush_discard_substitute_for_named::/,
 ];
 
 export function isStableGrantKeyword(keyword: string): boolean {

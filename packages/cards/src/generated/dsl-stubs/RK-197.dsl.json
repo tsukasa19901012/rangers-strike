@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_while_in_hand_rush_deploy_mawotsusyunito",
       "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、MAを持つ敵軍Sユニットがあれば、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
         "type": "while_in_field"
@@ -39,10 +39,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_fx_unknown",
+          "keyword": "while_in_hand_rush_deploy::mawotsusyunitogaareba",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     },
     {
       "id": "ou_no",

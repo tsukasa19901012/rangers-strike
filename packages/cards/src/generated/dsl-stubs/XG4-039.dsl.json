@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381ae",
+      "id": "unnamed_e280bbe38193e3828ce381ae",
       "text": "※これの追加条件を満たすとき、自軍捨札に合体ユニットと同名のカードがあれば、そのユニットは捨札にしなくてもよい。",
       "trigger": {
         "type": "nc"
@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG4-039::korenowotasutoki",
+          "duration": "permanent"
         }
       ],
       "optional": false

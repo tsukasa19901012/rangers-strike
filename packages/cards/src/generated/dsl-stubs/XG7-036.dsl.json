@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは「仮面ライダー龍騎」または「仮面ライダーナイト」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "dual_name_alias::仮面ライダー龍騎_or_仮面ライダーナイト",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -17,16 +17,16 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe887aae58886e3818b",
+      "id": "unnamed_becomes_l_bp_if_any_l_on_field_2000",
       "text": "※自分か相手のLユニットがあれば、これはLユニットになり、BP+2000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "becomes_l_bp_if_any_l_on_field_2000",
+          "duration": "permanent"
         }
       ],
       "optional": false

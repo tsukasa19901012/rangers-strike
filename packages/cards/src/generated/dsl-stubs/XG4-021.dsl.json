@@ -11,20 +11,19 @@
   "rawText": "※カウンター 自軍Lユニットがアタックされたとき発動できる⇒アタックしてきたユニットを持ち主のパワーゾーンにダメージにして置く。このとき、バトルは行われない。",
   "effects": [
     {
-      "id": "note_e280bbe382abe382a6e383b3",
+      "id": "unnamed_counter_note_kaunta_lyunitogaatak",
       "text": "※カウンター 自軍Lユニットがアタックされたとき発動できる⇒アタックしてきたユニットを持ち主のパワーゾーンにダメージにして置く。このとき、バトルは行われない。",
       "trigger": {
-        "type": "operation",
-        "timing": "counter"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_atakushitekitayunitowochinopawazonnidamejinishitekuko",
-          "duration": "turn"
+          "keyword": "counter_note::kaunta_lyunitogaatak",
+          "duration": "permanent"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

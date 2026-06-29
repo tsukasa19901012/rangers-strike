@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe887aae8bb8de383a9",
+      "id": "unnamed_e280bbe887aae8bb8de383a9",
       "text": "※自軍ラッシュフェイズ中、敵軍ダメージが自軍ダメージ以上なら、このユニットを持ち主の手札に戻す。",
       "trigger": {
         "type": "nc"
@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-319::rashufueizudamej",
+          "duration": "permanent"
         }
       ],
       "optional": false

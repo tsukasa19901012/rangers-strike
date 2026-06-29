@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "note_e280bbe59088e4bd93e29480",
+      "id": "unnamed_e280bbe59088e4bd93e29480",
       "text": "※合体─獅子折神（またはシンケンレッド）+龍折神（またはシンケンブルー）+亀折神（またはシンケンピンク）+熊折神（またはシンケングリーン）+猿折神（またはシンケンイエロー）+海老折神（またはシンケンゴールド）",
       "trigger": {
         "type": "nc"
@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XP-025::shi_shin",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -15,7 +15,7 @@
   "rawText": "これを使用するためにホールドしたコマンドのカテゴリごとに、次の効果を発動できる→ ◎WBなら、敵軍Sユニットを１体選び、ゲームから除外する。 ◎OTなら、自軍Sユニットを１体選ぶ。このターン、選んだユニットは「SP1」になる。 ◎MAなら、自分は３枚ドローする。",
   "effects": [
     {
-      "id": "note_e38193e3828ce38292e4bdbf",
+      "id": "unnamed_e38193e3828ce38292e4bdbf",
       "text": "これを使用するためにホールドしたコマンドのカテゴリごとに、次の効果を発動できる→ ◎WBなら、敵軍Sユニットを１体選び、ゲームから除外する。 ◎OTなら、自軍Sユニットを１体選ぶ。このターン、選んだユニットは「SP1」になる。 ◎MAなら、自分は３枚ドローする。",
       "trigger": {
         "type": "operation",
@@ -24,8 +24,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_korewosurutamenihorudoshitakomandonokategorigotoninowodekir",
-          "duration": "turn"
+          "keyword": "note_card::SX-008::korewosurutameni",
+          "duration": "permanent"
         }
       ],
       "optional": false

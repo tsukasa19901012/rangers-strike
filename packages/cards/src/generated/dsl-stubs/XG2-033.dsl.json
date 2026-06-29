@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自軍パワーゾーンにある間、「デカブライト」以外の自軍パワーゾーンのカードは相手に選ばれない。",
       "trigger": {
         "type": "while_in_field"
@@ -26,10 +26,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_fx_unknown",
+          "keyword": "note_card::XG2-033::koregapawazonnia",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "ken_bariafuisuto",

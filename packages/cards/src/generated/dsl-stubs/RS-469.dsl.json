@@ -11,7 +11,7 @@
   "rawText": "※特徴「イエロー」を持つSユニットは、自軍コマンドを１つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【雷の星獣】これにライドしたユニットがある間、次の効果を発動する⇒自軍バトルフェイズ中、MAの自軍コマンドを1つホールドするかわりに、敵軍コマンドを1つ選びホールドしてもよい。",
   "effects": [
     {
-      "id": "note_e280bbe789b9e5beb4e3808c",
+      "id": "unnamed_e280bbe789b9e5beb4e3808c",
       "text": "※特徴「イエロー」を持つSユニットは、自軍コマンドを１つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,8 +19,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-469::ierowotsusyunito",
+          "duration": "permanent"
         }
       ],
       "optional": false

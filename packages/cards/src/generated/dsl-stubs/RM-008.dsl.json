@@ -11,7 +11,7 @@
   "rawText": "敵軍バトルエリアから「これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれた敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
   "effects": [
     {
-      "id": "note_e695b5e8bb8de38390e38388",
+      "id": "unnamed_e695b5e8bb8de38390e38388",
       "text": "敵軍バトルエリアから「これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれた敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
         "type": "while_in_field"
@@ -19,8 +19,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_batorueriakarakorehatansp1noyunitotobatorushitatokibator",
-          "duration": "turn"
+          "keyword": "note_card::RM-008::batorueriakarako",
+          "duration": "permanent"
         }
       ],
       "optional": false

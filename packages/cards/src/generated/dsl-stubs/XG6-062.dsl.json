@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これがユニットでなくなったとき、自軍捨札から「要塞ワンセブン」のカードを１枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG6-062::koregayunitodena",
+          "duration": "permanent"
         }
       ],
       "optional": false

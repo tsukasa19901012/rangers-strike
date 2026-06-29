@@ -11,7 +11,7 @@
   "rawText": "※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【アタッカーポッド】これがライドされたままなら、このビークルからコンビネーションするSユニットは、次の能力を得る⇒自軍ターン中、ナンバーは3少なくなる。 ただし、2より少なくならない。",
   "effects": [
     {
-      "id": "note_e280bb4554e381ae53e383a6",
+      "id": "unnamed_e280bb4554e381ae53e383a6",
       "text": "※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,8 +19,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-393::etnosyunitohawot",
+          "duration": "permanent"
         }
       ],
       "optional": false

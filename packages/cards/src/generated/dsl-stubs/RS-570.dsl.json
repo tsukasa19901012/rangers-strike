@@ -11,7 +11,7 @@
   "rawText": "※DAを持たない特徴「人型」を持つLユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。 ※このビークルは合体ユニットとしてつかえる。 【ウィリー走行】これにライドしているLユニットは、必要パワーに「＋」を持たないユニットにアタックされない。",
   "effects": [
     {
-      "id": "note_e280bb4441e38292e68c81e3",
+      "id": "unnamed_e280bb4441e38292e68c81e3",
       "text": "※DAを持たない特徴「人型」を持つLユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。",
       "trigger": {
         "type": "nc"
@@ -19,8 +19,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-570::dawotanaiwotsuly",
+          "duration": "permanent"
         }
       ],
       "optional": false

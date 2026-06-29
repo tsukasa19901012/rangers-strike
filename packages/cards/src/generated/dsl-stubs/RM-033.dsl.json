@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはバトルするとき、これとバトルするユニットの必要パワーの数字と同じ必要パワーの数字を持つ自軍コマンド1つにつきBP+2000される。",
       "trigger": {
         "type": "nc"
@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RM-033::korehabatorusuru",
+          "duration": "permanent"
         }
       ],
       "optional": false

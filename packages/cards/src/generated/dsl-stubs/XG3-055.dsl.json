@@ -11,20 +11,19 @@
   "rawText": "※カウンター BP3000以下の自軍Sユニットがバトルで撃破されて捨札になるとき発動できる⇒そのユニットを捨札にするかわりに、自分の手札に戻す。",
   "effects": [
     {
-      "id": "note_e280bbe382abe382a6e383b3",
+      "id": "unnamed_counter_note_kaunta_bp3000nosyuni",
       "text": "※カウンター BP3000以下の自軍Sユニットがバトルで撃破されて捨札になるとき発動できる⇒そのユニットを捨札にするかわりに、自分の手札に戻す。",
       "trigger": {
-        "type": "operation",
-        "timing": "counter"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_sonoyunitowonisurukawarininonisu",
-          "duration": "turn"
+          "keyword": "counter_note::kaunta_bp3000nosyuni",
+          "duration": "permanent"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

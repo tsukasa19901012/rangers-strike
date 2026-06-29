@@ -11,19 +11,19 @@
   "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） 特徴「男」または「女」を持つ自軍ユニットが撃破されて捨札になったとき発動できる⇒特徴「メカ」と「人型」を持つ自軍ユニットの数と同じ数まで敵軍Sユニットを選び、選んだユニットを好きな順で持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
   "effects": [
     {
-      "id": "note_e280bbe382abe382a6e383b3",
+      "id": "unnamed_counter_note_kaunta",
       "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 特徴「男」または「女」を持つ自軍ユニットが撃破されて捨札になったとき発動できる⇒特徴「メカ」と「人型」を持つ自軍ユニットの数と同じ数まで敵軍Sユニットを選び、選んだユニットを好きな順で持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
-        "type": "on_destroy"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_mekatowotsuyunitonotojimadesyunitowobindayuni",
-          "duration": "turn"
+          "keyword": "counter_note::kaunta",
+          "duration": "permanent"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

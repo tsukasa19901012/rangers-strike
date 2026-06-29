@@ -57,7 +57,7 @@
       ]
     },
     {
-      "id": "note_e280bbe887aae8bb8de38390",
+      "id": "unnamed_e280bbe887aae8bb8de38390",
       "text": "※自軍バトルエリアにこれ以外の「ゴッドサルダー」があれば、これはアタックされない。",
       "trigger": {
         "type": "nc"
@@ -65,8 +65,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-553::batoruerianikore",
+          "duration": "permanent"
         }
       ],
       "optional": false

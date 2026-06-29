@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce38292",
+      "id": "unnamed_e280bbe38193e3828ce38292",
       "text": "※これをラッシュしたとき、DAを持つSユニットを1体選び撃破する。",
       "trigger": {
         "type": "on_rush"
@@ -25,8 +25,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG1-035::koreworashushita",
+          "duration": "permanent"
         }
       ],
       "optional": false

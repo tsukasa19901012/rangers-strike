@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが撃破されて捨札になったとき、自分の手札の｢スーパーゲキレッド｣か、自軍捨札の｢ゲキレッド｣か、どちらか1枚を選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "on_destroy"
@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-426::korega_geki_ha_s",
+          "duration": "permanent"
         }
       ],
       "optional": false

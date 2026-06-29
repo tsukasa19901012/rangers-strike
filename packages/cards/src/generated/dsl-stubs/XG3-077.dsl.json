@@ -26,16 +26,16 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce381ab",
+      "id": "unnamed_e280bbe38193e3828ce381ab",
       "text": "※これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "ride_named_becomes::仮面ライダーディケイド::SP1",
+          "duration": "permanent"
         }
       ],
       "optional": false

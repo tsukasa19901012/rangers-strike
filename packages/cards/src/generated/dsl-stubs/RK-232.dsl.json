@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自軍捨札にある間、自軍スタートフェイズ中、本来のカテゴリにMAを持ち、ナンバーを持たない自軍Sユニットがバトルエリアからラッシュエリアに戻るとき、自軍エリアに｢火焔大将｣がなければ、これをラッシュエリアに出してもよい。",
       "trigger": {
         "type": "while_in_field"
@@ -24,10 +24,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_fx_unknown",
+          "keyword": "note_card::RK-232::koreganiarusutat",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

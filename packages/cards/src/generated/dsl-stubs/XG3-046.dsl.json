@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "note_e280bbe695b5e8bb8de382bf",
+      "id": "unnamed_e280bbe695b5e8bb8de382bf",
       "text": "※敵軍ターン中、これが撃破されて捨札になったとき、これを自軍パワーゾーンにダメージにして置いてもよい。そうしたとき、自分の手札から「仮面ライダーBLACK RX」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "on_destroy"
@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG3-046::tankorega_geki_h",
+          "duration": "permanent"
         }
       ],
       "optional": false

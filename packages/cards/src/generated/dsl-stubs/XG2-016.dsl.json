@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e381aee382ab",
+      "id": "unnamed_e280bbe38193e381aee382ab",
       "text": "※このカードの追加条件は、カード名に「気伝武人」を含む自軍ユニットがあるとき、次のように変更される⇒追加で自軍コマンドを2つホールドする",
       "trigger": {
         "type": "nc"
@@ -25,8 +25,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_dekomandowo2tsuhorudosuru",
-          "duration": "turn"
+          "keyword": "note_card::XG2-016::konokadonohakado",
+          "duration": "permanent"
         }
       ],
       "optional": false

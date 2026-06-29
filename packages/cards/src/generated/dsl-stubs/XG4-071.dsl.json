@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自軍エリアにある間、これ以外の特徴「怪人」を持つ自軍ユニットが撃破されたとき、これを持ち主の手札に戻す。",
       "trigger": {
         "type": "while_in_field"
@@ -40,10 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_fx_unknown",
+          "keyword": "note_card::XG4-071::koregaerianiaruk",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "wo_shin_tsunishitai",

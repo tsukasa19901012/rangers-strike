@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe695b5e8bb8de382bf",
+      "id": "unnamed_e280bbe695b5e8bb8de382bf",
       "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍コマンドゾーンに特徴「メカ」を持つMユニットのカードがあれば、その中から好きな枚数選び、自軍ラッシュエリアに出してもよい。",
       "trigger": {
         "type": "on_destroy"
@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-471::tankorega_geki_h",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは、特徴「女」を持つ敵軍ユニットがあるときストライクできない（この制限は自軍ダメージが4点以上あれば無効になる）。",
       "trigger": {
         "type": "nc"
@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-370::korehawotsuyunit",
+          "duration": "permanent"
         }
       ],
       "optional": false

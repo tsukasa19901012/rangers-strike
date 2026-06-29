@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe695b5e8bb8de382bf",
+      "id": "unnamed_e280bbe695b5e8bb8de382bf",
       "text": "※敵軍ターン中、これがバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置いてもよい。（コマンドゾーンに置けるカードは通常5枚まで）",
       "trigger": {
         "type": "on_destroy"
@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RK-268::tankoregabatorud",
+          "duration": "permanent"
         }
       ],
       "optional": false

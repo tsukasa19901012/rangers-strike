@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "note_e280bbe382afe383ade382b9",
+      "id": "unnamed_e280bbe382afe383ade382b9",
       "text": "※クロス2",
       "trigger": {
         "type": "nc"
@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG7-068::kurosu2",
+          "duration": "permanent"
         }
       ],
       "optional": false

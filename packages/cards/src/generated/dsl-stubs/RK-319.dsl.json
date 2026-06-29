@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce38292",
+      "id": "unnamed_e280bbe38193e3828ce38292",
       "text": "※これをラッシュしたとき、自軍コマンドゾーンのカードを１枚選び捨札にしてもよい。そうしたとき、自軍山札を見て、必要パワーの数字が「1」か「9」か「3」のカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。その後、山札をシャッフルする。",
       "trigger": {
         "type": "on_rush"
@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RK-319::koreworashushita",
+          "duration": "permanent"
         }
       ],
       "optional": true

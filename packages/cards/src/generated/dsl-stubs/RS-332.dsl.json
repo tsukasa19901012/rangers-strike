@@ -21,7 +21,7 @@
   },
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが撃破されて捨札になったとき、このユニットの合体に必要なユニットのカードが自軍捨札にあれば、それぞれ1枚ずつ選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "on_destroy"
@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::RS-332::korega_geki_ha_s",
+          "duration": "permanent"
         }
       ],
       "optional": false
