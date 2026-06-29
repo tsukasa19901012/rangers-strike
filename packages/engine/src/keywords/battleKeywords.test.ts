@@ -18,6 +18,10 @@ import {
   wingTurnBlocksStrike,
 } from "./battleKeywords";
 import { canStrikeUnit } from "../rules/combo";
+import { canMoveUnitToBattle } from "../rules/restrictions";
+import { canAttackDefender } from "../rules/legend3/restrictions";
+import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
+import { wingCanAttackEnemyRush } from "./index";
 import { addTurnRestrictionModifier } from "../core/scopedModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
 
@@ -276,6 +280,79 @@ describe("wing keyword", () => {
     });
     state.definitions["TST-WING"] = WING_DEF;
     expect(canHoldForWing(state, "player1", player.rush[0]!)).toBe(true);
+  });
+
+  it("blocks battle entry for the turn after wing hold", () => {
+    const wingUnit = inst("TST-WING", "w1");
+    const state = createTestState({
+      phase: "battle",
+      player1: { rush: [wingUnit] },
+    });
+    state.definitions["TST-WING"] = WING_DEF;
+
+    const held = applyHoldForWing(state, "player1", wingUnit.instanceId)!;
+    expect(canMoveUnitToBattle(held, "player1", held.players.player1.rush[0]!, "rush")).toBe(
+      false,
+    );
+  });
+
+  it("does not grant enemy-rush targeting to base wing units", () => {
+    const wingUnit = { ...inst("TST-WING", "w1"), commandHeld: true };
+    const enemyRush = inst("TST-ALLY", "rush");
+    const state = createTestState({
+      phase: "battle",
+      player1: { rush: [wingUnit] },
+      player2: { rush: [enemyRush] },
+    });
+    state.definitions["TST-WING"] = WING_DEF;
+    state.definitions["TST-ALLY"] = {
+      ...WING_DEF,
+      id: "TST-ALLY",
+      name: "Enemy Rush",
+      tags: [],
+      size: "S",
+    };
+
+    expect(wingCanAttackEnemyRush(state, "player1", wingUnit.cardId)).toBe(false);
+    expect(
+      canAttackDefender(
+        state,
+        "player1",
+        wingUnit.instanceId,
+        "player2",
+        enemyRush.instanceId,
+        canAttackRushWithYellowThunder,
+      ),
+    ).toBe(false);
+  });
+
+  it("attacks enemy battle from rush after wing hold", () => {
+    const wingUnit = inst("TST-WING", "w1");
+    const enemyBattle = inst("TST-ALLY", "battle");
+    let state = createTestState({
+      phase: "battle",
+      player1: { rush: [wingUnit] },
+      player2: { battle: [enemyBattle] },
+    });
+    state.definitions["TST-WING"] = WING_DEF;
+    state.definitions["TST-ALLY"] = {
+      ...WING_DEF,
+      id: "TST-ALLY",
+      name: "Enemy Battle",
+      tags: [],
+    };
+    state = applyHoldForWing(state, "player1", wingUnit.instanceId)!;
+    const held = state.players.player1.rush[0]!;
+    expect(
+      canAttackDefender(
+        state,
+        "player1",
+        held.instanceId,
+        "player2",
+        enemyBattle.instanceId,
+        canAttackRushWithYellowThunder,
+      ),
+    ).toBe(true);
   });
 });
 

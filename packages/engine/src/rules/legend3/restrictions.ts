@@ -14,10 +14,11 @@ import {
   parsePowerCost,
 } from "../../core/catalog";
 import {
+  cardHasGrantKeyword,
   promotedAttackerCannotTarget,
   promotedDefenderBlocksAttack,
 } from "../../dsl/promotedKeywordBridge";
-import { scrumBlocksAttack, wingCanAttackEnemyRush } from "../../keywords";
+import { scrumBlocksAttack } from "../../keywords";
 import { canWingAttackFromRush } from "../../keywords/battleKeywords";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { countAvailablePower, effectivePowerCost } from "../../core/power";
@@ -414,8 +415,11 @@ export function canAttackDefender(
     if (noteOtherNcAttackRestriction(state, attackerPlayerId, attacker.card, defenderPlayerId, inRush.card)) {
       return false;
     }
+    if (cardHasGrantKeyword(attacker.card.cardId, "wing_attack_enemy_rush")) {
+      return true;
+    }
     if (
-      wingCanAttackEnemyRush(state, attackerPlayerId, attacker.card.cardId) &&
+      hasUnnamedRule(attacker.card.cardId, "can_attack_enemy_rush_s") &&
       isSmallUnit(state.definitions, inRush.card.cardId)
     ) {
       return true;
