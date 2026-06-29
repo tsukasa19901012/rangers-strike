@@ -157,6 +157,7 @@ export function applyPromotedNcEffect(
         nextState,
         playerId,
         card.cardId,
+        card.instanceId,
         playerId,
       );
       if (withChoice) nextState = withChoice;

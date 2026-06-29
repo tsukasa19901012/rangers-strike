@@ -231,6 +231,47 @@ describe("RS-685 ブラックコンドル", () => {
     expect(next.players.player1.battle.find((c) => c.instanceId === condor.instanceId)?.spModifier).toBe(1);
   });
 
+  it("deals 1 damage when buringasodo destroys enemy S with BP last three digits 500", () => {
+    const condor = inst("RS-685", "condor");
+    const targetDef: CardDefinition = {
+      ...TEST_DEFINITIONS["TST-UNIT-0"]!,
+      id: "TST-BP-1500",
+      bp: 1500,
+      size: "S",
+    };
+    const target = inst("TST-BP-1500", "target");
+    const state = createTestState({
+      definitions: { ...defs, "TST-BP-1500": targetDef },
+      phase: "battle",
+      activePlayer: "player1",
+      player1: {
+        rush: [condor],
+        battle: battleFillers(4),
+        command: [heldWbCommand("c1"), heldWbCommand("c2")],
+      },
+      player2: {
+        battle: [target],
+        command: [heldWbCommand("c2")],
+      },
+    });
+
+    const withChoice = moveToBattle(state, condor.instanceId);
+    expect(withChoice.pendingEffectChoice?.effectId).toBe("buringasodo");
+
+    const resolved = unwrap(
+      applyAction(withChoice, {
+        type: "resolve_effect_choice",
+        playerId: "player1",
+        instanceId: target.instanceId,
+      }),
+    );
+    expect(resolved.players.player2.damage).toBe(1);
+    expect(resolved.players.player2.discard.some((c) => c.instanceId === target.instanceId)).toBe(
+      true,
+    );
+    expect(resolved.log.some((entry) => entry.includes("black_condor_destroy_damage"))).toBe(true);
+  });
+
   it("deals 1 damage when destroying enemy with BP last three digits 500 on own turn", () => {
     const condor = inst("RS-685", "condor");
     const targetDef: CardDefinition = {

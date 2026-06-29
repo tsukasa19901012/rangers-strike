@@ -27,6 +27,7 @@ import {
   resolveLegend3OnRushEffects,
 } from "./legend3/rushEffects";
 import { magiRedBoltAttackBpBonus } from "./legend1/coreGapEffects";
+import { MURPHY_CHASE_EFFECT_ID, startMurphyChaseChoice } from "./murphyChase";
 import {
   canAttackRushWithMoonlightSonic,
   legend3AttackerBpBonus,
@@ -415,6 +416,17 @@ export function resolveNamedOnRushEffects(
       if (withChoice) nextState = withChoice;
       break;
     }
+    case MURPHY_CHASE_EFFECT_ID: {
+      const withChoice = startMurphyChaseChoice(nextState, {
+        playerId: rusherPlayerId,
+        phasePlayerId,
+        sourceCardId: found.card.cardId,
+        triggerSourceInstanceId: rushedInstanceId,
+        optional: true,
+      });
+      if (withChoice) nextState = withChoice;
+      break;
+    }
     default: {
       if (isLegend3OnRushEffect(named.effectId)) {
         const legend3 = resolveLegend3OnRushEffects(
@@ -696,6 +708,7 @@ export function tryStartBringerSwordChoice(
   state: GameState,
   playerId: PlayerId,
   sourceCardId: string,
+  sourceInstanceId: string,
   phasePlayerId: PlayerId,
 ): GameState | null {
   const enemyId = opponent(playerId);
@@ -706,6 +719,7 @@ export function tryStartBringerSwordChoice(
     playerId,
     effectId: "buringasodo",
     sourceCardId,
+    sourceInstanceId,
     phasePlayerId,
     validInstanceIds: targets,
     unitDestination: "discard",

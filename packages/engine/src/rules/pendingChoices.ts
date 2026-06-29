@@ -28,9 +28,16 @@ import { tryLeaveField } from "./operationCounters";
 import { completeToPowerOnDestroyChoice } from "./toPowerOnDestroy";
 import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
+import {
+  MURPHY_CHASE_EFFECT_ID,
+  openMurphyChaseDeckChoice,
+} from "./murphyChase";
 import { continueDslAfterChoice } from "../dsl/cardInterpreter";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
-import { markBattleNcEffect } from "./namedUnitEffects";
+import {
+  markBattleNcEffect,
+  resolveBlackCondorDestroyDamage,
+} from "./namedUnitEffects";
 import { maybeInterceptDeckRevealForShuriken, grantSp1ToRushUnit, completeShurikenDeckRevealSwap, applyShurikenRevealToHand, findEnemySWithPowerCost } from "./srEffects";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
 import {
@@ -2273,6 +2280,22 @@ export function applyEffectChoiceSelect(
       return finishChoice(nextState, pending, String(declared));
     }
     case "select_unit": {
+      if (pending.effectId === MURPHY_CHASE_EFFECT_ID) {
+        const located = findCardOwner(state, instanceId);
+        const selectedName = located
+          ? cardName(
+              state.definitions,
+              findInZone(state.players[located.playerId], located.zone, instanceId)?.card
+                .cardId ?? instanceId,
+            )
+          : instanceId;
+        const cleared = clearChoice(state, pending.playerId);
+        const deckChoice = openMurphyChaseDeckChoice(cleared, pending, instanceId);
+        if (deckChoice) {
+          return { state: deckChoice };
+        }
+        return finishChoice(cleared, pending, selectedName);
+      }
       if (pending.unitDestination === "vehicle_battle_without_ride") {
         const located = findCardOwner(state, instanceId);
         if (!located || located.zone !== "rush") return { error: "invalid_target" };
@@ -2644,6 +2667,29 @@ export function applyEffectChoiceSelect(
           destroyedCardId,
           "hand",
         );
+      }
+      if (pending.effectId === "buringasodo" && pending.sourceInstanceId && located) {
+        const defenderOwner = state.players[located.playerId];
+        const defenderFound = findInZone(defenderOwner, located.zone, instanceId);
+        if (defenderFound) {
+          const damage = resolveBlackCondorDestroyDamage(
+            nextState,
+            pending.playerId,
+            pending.sourceInstanceId,
+            located.playerId,
+            defenderFound.card,
+          );
+          nextState = damage.state;
+          const finished = finishChoice(
+            nextState,
+            pending,
+            cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+          );
+          if (damage.logs.length > 0) {
+            return { ...finished, logs: damage.logs };
+          }
+          return finished;
+        }
       }
       return finishChoice(
         nextState,
@@ -3402,6 +3448,12 @@ export function applyEffectChoiceSelect(
       );
       let nextPlayer: PlayerState;
       if (pending.effectId === "sagas_sniper") {
+        nextPlayer = {
+          ...player,
+          deck: shuffleDeck([...rest, ...deckTail]),
+          hand: [...player.hand, kept],
+        };
+      } else if (pending.effectId === MURPHY_CHASE_EFFECT_ID && pending.unitDestination === "hand") {
         nextPlayer = {
           ...player,
           deck: shuffleDeck([...rest, ...deckTail]),

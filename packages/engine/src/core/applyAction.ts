@@ -1734,6 +1734,9 @@ export function applyAction(
         return fail(result.error);
       }
       let nextState = result.state;
+      if (result.logs?.length) {
+        nextState = { ...nextState, log: [...nextState.log, ...result.logs] };
+      }
       if (!nextState.pendingEffectChoice && pending?.effectId === "falcon_claw") {
         nextState = continueBattleToRushEffectQueue(nextState);
       }
