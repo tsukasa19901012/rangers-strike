@@ -15,7 +15,7 @@ const LEVEL_CONFIG: Record<CpuLevel, CpuLevelConfig> = {
   2: { enableSearch: true, maxCandidates: 28, maxResponseDepth: 10, searchPly: 1 },
   3: { enableSearch: true, maxCandidates: 44, maxResponseDepth: 14, searchPly: 1 },
   4: { enableSearch: true, maxCandidates: 56, maxResponseDepth: 20, searchPly: 2 },
-  5: { enableSearch: true, maxCandidates: 72, maxResponseDepth: 32, searchPly: 2 },
+  5: { enableSearch: true, maxCandidates: 64, maxResponseDepth: 28, searchPly: 2 },
 };
 
 export function getCpuLevelConfig(level: CpuLevel): CpuLevelConfig {

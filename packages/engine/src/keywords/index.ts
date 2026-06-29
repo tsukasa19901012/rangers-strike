@@ -5,6 +5,7 @@ import { getDefinition } from "../core/catalog";
 import { findInZone, opponent } from "../core/helpers";
 import { cardHasKeyword, playerHasChaseUnitInField } from "./cardKeywords";
 import { buildPendingChaseFromIntent } from "./chase";
+import { findRiddenVehicleInField } from "./ride";
 
 export type { PendingChase, WingBattleRule, CommanderZoneRule } from "../types/keywords";
 export {
@@ -27,7 +28,10 @@ export {
   canMountRideIntoBattle,
   canRiderMountVehicle,
   findMountedVehicle,
+  findRiddenVehicleInField,
   findRideVehicleForRider,
+  restoreMountedVehicleIfMistakenlyDiscarded,
+  sanitizeUnitLeavingField,
   rushCardsForDisplay,
   battleCardsForDisplay,
 } from "./ride";
@@ -88,7 +92,11 @@ export function canInitiateChase(
     ?? findInZone(state.players[ownerPlayerId], "battle", leavingCard.instanceId);
   if (!rider) return false;
 
-  const vehicle = findInZone(state.players[ownerPlayerId], "rush", leavingCard.mountedOnInstanceId);
+  const vehicle = findRiddenVehicleInField(
+    state,
+    ownerPlayerId,
+    leavingCard.mountedOnInstanceId,
+  );
   if (!vehicle) return false;
 
   const unmounted = state.players[ownerPlayerId].rush.filter(

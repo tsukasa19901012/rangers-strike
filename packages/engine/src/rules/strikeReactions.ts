@@ -11,6 +11,10 @@ import { playerHasOperationGrantKeyword } from "../dsl/operationKeywords";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { isBloodVesselStrikeActive } from "../keywords/battleKeywords";
+import {
+  restoreMountedVehicleIfMistakenlyDiscarded,
+  sanitizeUnitLeavingField,
+} from "../keywords/ride";
 import { buildLogEntry } from "../log/formatLog";
 import { tryDestroyStrikerForStrike } from "./operationCounters";
 
@@ -175,11 +179,17 @@ function destroyStriker(
   if (!found) return state;
 
   const [, battle] = removeAt(strikerPlayer.battle, found.index);
-  const nextStrikerPlayer = {
+  const leavingCard = sanitizeUnitLeavingField(found.card, "battle", "discard");
+  let nextStrikerPlayer = {
     ...strikerPlayer,
     battle,
-    discard: [...strikerPlayer.discard, found.card],
+    discard: [...strikerPlayer.discard, leavingCard],
   };
+  nextStrikerPlayer = restoreMountedVehicleIfMistakenlyDiscarded(
+    nextStrikerPlayer,
+    found.card,
+    "battle",
+  );
 
   return { ...state, ...updatePlayer(state, strikerPlayerId, nextStrikerPlayer) };
 }

@@ -8,7 +8,7 @@ import {
 } from "../rules/operationCounters";
 import { cardHasKeyword, playerHasChaseUnitInField } from "./cardKeywords";
 import { prepareWingUnitReturnedToRush } from "./battleKeywords";
-import { canRiderMountVehicle } from "./ride";
+import { canRiderMountVehicle, findRiddenVehicleInField } from "./ride";
 
 export function listValidChaseVehicleIds(
   state: GameState,
@@ -38,10 +38,14 @@ export function applyResolveChase(
   const chaserZone = pending.leaveIntent.fromZone;
 
   const chaserFound = findInZone(player, chaserZone, pending.chaserInstanceId);
-  const oldVehicle = findInZone(player, "rush", pending.targetInstanceId);
+  const oldVehicleLocated = findRiddenVehicleInField(
+    state,
+    playerId,
+    pending.targetInstanceId,
+  );
   const newVehicle = findInZone(player, "rush", newVehicleInstanceId);
 
-  if (!chaserFound || !oldVehicle || !newVehicle) {
+  if (!chaserFound || !oldVehicleLocated || !newVehicle) {
     return { state, log: "" };
   }
 
@@ -59,9 +63,13 @@ export function applyResolveChase(
   if (chaserZone === "battle") {
     nextPlayer = {
       ...player,
-      battle: player.battle.filter((c) => c.instanceId !== pending.chaserInstanceId),
+      battle: player.battle.filter(
+        (c) =>
+          c.instanceId !== pending.chaserInstanceId &&
+          c.instanceId !== pending.targetInstanceId,
+      ),
       rush: [...rushAfterVehicleRemoval, remountedChaser],
-      discard: [...player.discard, oldVehicle.card],
+      discard: [...player.discard, oldVehicleLocated.card],
     };
   } else if (chaserZone === "rush") {
     const updatedRush = chaserSource.map((c) =>
@@ -70,17 +78,21 @@ export function applyResolveChase(
     nextPlayer = {
       ...player,
       rush: updatedRush,
-      discard: [...player.discard, oldVehicle.card],
+      discard: [...player.discard, oldVehicleLocated.card],
     };
   } else {
     const updatedChaserZone = chaserSource.map((c) =>
       c.instanceId === pending.chaserInstanceId ? remountedChaser : c,
     );
+    const zoneWithoutVehicle =
+      oldVehicleLocated.zone === chaserZone
+        ? updatedChaserZone.filter((c) => c.instanceId !== pending.targetInstanceId)
+        : updatedChaserZone;
     nextPlayer = {
       ...player,
       rush: rushAfterVehicleRemoval,
-      [chaserZone]: updatedChaserZone,
-      discard: [...player.discard, oldVehicle.card],
+      [chaserZone]: zoneWithoutVehicle,
+      discard: [...player.discard, oldVehicleLocated.card],
     };
   }
 

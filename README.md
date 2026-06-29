@@ -47,7 +47,7 @@
 | Lv2 | 探索あり | 28 | 10 |
 | Lv3 | 探索あり | 44 | 14 |
 | Lv4 | 探索あり（2手読み） | 56 | 20 |
-| Lv5 | 探索あり（2手読み・最上級） | 72 | 32 |
+| Lv5 | 探索あり（2手読み・最上級） | 64 | 28 |
 
 - エントリポイント: `packages/engine/src/ai/index.ts` の `pickCpuAction(state, playerId, level)`
 - 探索ロジック: `packages/engine/src/ai/simulation.ts`（相手のリアクション窓をヒューリスティックで解決）

@@ -15,8 +15,8 @@ describe("CPU levels", () => {
     expect(getCpuLevelConfig(2).maxCandidates).toBe(28);
     expect(getCpuLevelConfig(2).maxCandidates).toBeLessThan(getCpuLevelConfig(5).maxCandidates);
     expect(getCpuLevelConfig(4).maxResponseDepth).toBeLessThan(getCpuLevelConfig(5).maxResponseDepth);
-    expect(getCpuLevelConfig(5).maxCandidates).toBe(72);
-    expect(getCpuLevelConfig(5).maxResponseDepth).toBe(32);
+    expect(getCpuLevelConfig(5).maxCandidates).toBe(64);
+    expect(getCpuLevelConfig(5).maxResponseDepth).toBe(28);
     expect(getCpuLevelConfig(5).searchPly).toBe(2);
   });
 

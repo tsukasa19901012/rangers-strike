@@ -50,7 +50,13 @@ import {
   startToPowerOnDestroyChoice,
 } from "./toPowerOnDestroy";
 import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
-import { buildPendingChaseFromIntent, buildPendingChaseOnVehicleDestroyed, canInitiateChase } from "../keywords";
+import {
+  buildPendingChaseFromIntent,
+  buildPendingChaseOnVehicleDestroyed,
+  canInitiateChase,
+  restoreMountedVehicleIfMistakenlyDiscarded,
+  sanitizeUnitLeavingField,
+} from "../keywords";
 import { findFieldInstanceByKeyword } from "../dsl/fieldKeywords";
 
 function findUnitInRushOrBattle(
@@ -1065,6 +1071,11 @@ export function finalizeLeavePending(
   }
 
   const [, fromCards] = removeAt(owner[pending.fromZone], found.index);
+  const leavingCard = sanitizeUnitLeavingField(
+    found.card,
+    pending.fromZone,
+    pending.toZone,
+  );
   let nextOwner: typeof owner;
 
   if (pending.toZone === "command") {
@@ -1072,13 +1083,13 @@ export function finalizeLeavePending(
       nextOwner = {
         ...owner,
         [pending.fromZone]: fromCards,
-        command: [...owner.command, { ...found.card, commandHeld: true }],
+        command: [...owner.command, { ...leavingCard, commandHeld: true }],
       };
     } else {
       nextOwner = {
         ...owner,
         [pending.fromZone]: fromCards,
-        discard: [...owner.discard, found.card],
+        discard: [...owner.discard, leavingCard],
       };
     }
   } else if (
@@ -1088,25 +1099,33 @@ export function finalizeLeavePending(
     nextOwner = {
       ...owner,
       [pending.fromZone]: fromCards,
-      power: [...owner.power, { ...found.card, faceDown: false }],
+      power: [...owner.power, { ...leavingCard, faceDown: false }],
     };
   } else if (
     pending.toZone === "discard" &&
     shouldOfferToPowerOnDestroy(pending)
   ) {
-    return startToPowerOnDestroyChoice(state, pending, found.card, fromCards);
+    return startToPowerOnDestroyChoice(state, pending, leavingCard, fromCards);
   } else if (pending.toZone === "discard") {
     nextOwner = {
       ...owner,
       [pending.fromZone]: fromCards,
-      discard: [...owner.discard, found.card],
+      discard: [...owner.discard, leavingCard],
     };
   } else {
     nextOwner = {
       ...owner,
       [pending.fromZone]: fromCards,
-      power: [...owner.power, { ...found.card, faceDown: false }],
+      power: [...owner.power, { ...leavingCard, faceDown: false }],
     };
+  }
+
+  if (pending.fromZone === "rush" || pending.fromZone === "battle") {
+    nextOwner = restoreMountedVehicleIfMistakenlyDiscarded(
+      nextOwner,
+      found.card,
+      pending.fromZone,
+    );
   }
 
   let nextStateBase = {

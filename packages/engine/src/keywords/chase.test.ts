@@ -211,6 +211,72 @@ describe("chase keyword", () => {
     ).toBe(vehicle2.instanceId);
   });
 
+  it("resolve_chase from battle discards ridden vehicle in battle", () => {
+    const state = chaseState();
+    state.players.player1.battle = [vehicle1, rider];
+    state.players.player1.rush = [vehicle2];
+    state.definitions["TST-V1"] = {
+      id: "TST-V1",
+      name: "Vehicle 1",
+      type: "vehicle",
+      category: "OT",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 3,
+      bp: 4000,
+      size: "M",
+    };
+    state.definitions["TST-V2"] = {
+      id: "TST-V2",
+      name: "Vehicle 2",
+      type: "vehicle",
+      category: "OT",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 3,
+      bp: 4000,
+      size: "M",
+    };
+    state.definitions["TST-RIDER"] = {
+      id: "TST-RIDER",
+      name: "Chase Rider",
+      type: "unit",
+      category: "OT",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 2,
+      bp: 2000,
+      size: "S",
+      comboNumber: "RC",
+      tags: ["chase"],
+    };
+
+    const opened = tryLeaveField(state, {
+      ownerPlayerId: "player1",
+      instanceId: rider.instanceId,
+      fromZone: "battle",
+      toZone: "discard",
+      leavingCardId: rider.cardId,
+      phasePlayerId: "player1",
+    }).state;
+
+    const resolved = unwrap(
+      applyAction(opened, {
+        type: "resolve_chase",
+        playerId: "player1",
+        newVehicleInstanceId: vehicle2.instanceId,
+      }),
+    );
+
+    const p1 = resolved.players.player1;
+    expect(p1.battle.some((c) => c.instanceId === vehicle1.instanceId)).toBe(false);
+    expect(p1.discard.some((c) => c.instanceId === vehicle1.instanceId)).toBe(true);
+    expect(p1.rush.some((c) => c.instanceId === rider.instanceId)).toBe(true);
+    expect(
+      p1.rush.find((c) => c.instanceId === rider.instanceId)?.mountedOnInstanceId,
+    ).toBe(vehicle2.instanceId);
+  });
+
   it("pass_chase proceeds with normal leave", () => {
     const state = chaseState();
     state.definitions["TST-V1"] = {

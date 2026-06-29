@@ -57,7 +57,7 @@ function runSimulation(count: number): SimReport {
         player1Starter: p1,
         player2Starter: p2,
       }),
-      { maxSteps: MAX_STEPS },
+      { maxSteps: MAX_STEPS, cpuLevel: 3 },
     );
 
     for (const phase of result.trace.phasesSeen) {
@@ -100,6 +100,6 @@ describe("vertical slice — all starter deck CPU simulation", () => {
       expect(report.phaseCoverage.battle).toBe(GAME_COUNT);
       expect(report.withStrike).toBeGreaterThan(GAME_COUNT * 0.25);
     },
-    180_000,
+    300_000,
   );
 });

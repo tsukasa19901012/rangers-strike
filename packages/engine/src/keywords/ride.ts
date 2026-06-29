@@ -1,5 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PlayerId } from "../types/game";
+import type { CardInstance, GameState, PlayerId, PlayerState, ZoneName } from "../types/game";
 import { getDefinition, isUnit } from "../core/catalog";
 import { findInZone } from "../core/helpers";
 import { updatePlayer } from "../core/helpers";
@@ -192,12 +192,72 @@ export function findMountedVehicle(
   rider: CardInstance,
 ): CardInstance | null {
   if (!rider.mountedOnInstanceId) return null;
-  const player = state.players[playerId];
   return (
-    findInZone(player, "rush", rider.mountedOnInstanceId)?.card ??
-    findInZone(player, "battle", rider.mountedOnInstanceId)?.card ??
-    null
+    findRiddenVehicleInField(state, playerId, rider.mountedOnInstanceId)?.card ?? null
   );
+}
+
+/** ライド先ビークルがいるゾーン（ラッシュまたはバトル）。 */
+export function findRiddenVehicleInField(
+  state: GameState,
+  playerId: PlayerId,
+  vehicleInstanceId: string,
+): { card: CardInstance; zone: "rush" | "battle" } | null {
+  const player = state.players[playerId];
+  const rush = findInZone(player, "rush", vehicleInstanceId);
+  if (rush) return { card: rush.card, zone: "rush" };
+  const battle = findInZone(player, "battle", vehicleInstanceId);
+  if (battle) return { card: battle.card, zone: "battle" };
+  return null;
+}
+
+/** ユニット離場時: ライド参照を外し、捨札に載せない。 */
+export function sanitizeUnitLeavingField(
+  card: CardInstance,
+  fromZone: "rush" | "battle",
+  toZone: ZoneName,
+): CardInstance {
+  const next: CardInstance = { ...card };
+  if (fromZone === "rush" || fromZone === "battle") {
+    if (toZone === "discard" || toZone === "power") {
+      delete next.registerHeld;
+      delete next.battleActed;
+      delete next.mountedOnInstanceId;
+      delete next.activatedNcEffects;
+    }
+  }
+  return next;
+}
+
+/**
+ * ライダーだけが捨札に行ったとき、誤って一緒に捨てられたビークルを元ゾーンへ戻す。
+ * atwiki p141 Q7: ライド中ユニットが撃破されてもビークルはその場に残る。
+ */
+export function restoreMountedVehicleIfMistakenlyDiscarded(
+  owner: PlayerState,
+  riderBeforeLeave: CardInstance,
+  fromZone: "rush" | "battle",
+): PlayerState {
+  const vehicleId = riderBeforeLeave.mountedOnInstanceId;
+  if (!vehicleId) return owner;
+
+  const discardIndex = owner.discard.findIndex((c) => c.instanceId === vehicleId);
+  if (discardIndex < 0) return owner;
+
+  const alreadyInField =
+    owner[fromZone].some((c) => c.instanceId === vehicleId);
+  if (alreadyInField) {
+    const discard = owner.discard.filter((c) => c.instanceId !== vehicleId);
+    return { ...owner, discard };
+  }
+
+  const vehicle = owner.discard[discardIndex]!;
+  const discard = owner.discard.filter((c) => c.instanceId !== vehicleId);
+  return {
+    ...owner,
+    discard,
+    [fromZone]: [...owner[fromZone], vehicle],
+  };
 }
 
 function riddenVehicleIds(cards: CardInstance[]): Set<string> {

@@ -267,7 +267,7 @@ function pickCpuActionInner(
   playerId: PlayerId = state.activePlayer,
   options: PickCpuActionOptions = {},
 ): GameAction | null {
-  const enableSearch = options.enableSearch ?? true;
+  const enableSearch = options.enableSearch ?? (options.maxCandidates ?? 0) > 0;
   const simShallow = (): SearchOptions | undefined => tacticalSearchOptions(state, options);
   const simTactical = (actions: GameAction[]): SearchOptions | undefined =>
     deepSearchOptions(state, playerId, actions, options) ?? tacticalSearchOptions(state, options);
@@ -457,6 +457,9 @@ function pickCpuActionInner(
 
       const categoryPay = pickRushCategoryPayment(state, playerId, actions);
       if (categoryPay) return categoryPay;
+
+      const bestOp = pickBestOperation(state, actions);
+      if (bestOp) return bestOp;
 
       return endPhase(actions);
     }
