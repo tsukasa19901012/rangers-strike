@@ -1,5 +1,5 @@
 import { findNamedEffectByEffectId, getCardEffect } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
+import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { checkWinner } from "../core/createGame";
 import { hasOperationEffect } from "../core/catalog";
 import { findInZone, removeAt, updatePlayer } from "../core/helpers";

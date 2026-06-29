@@ -2309,6 +2309,9 @@ export function GameApp() {
             commandPaymentHighlightRush={
               showCommandPaymentModal && !!commandPaymentView?.allowRushZoneCommands
             }
+            commandPaymentHighlightBattle={
+              showCommandPaymentModal && !!commandPaymentView?.allowRushZoneCommands
+            }
             effectChoiceHighlightCommand={boardTapEffectChoice?.self.command}
             effectChoiceHighlightPower={boardTapEffectChoice?.self.power}
             effectChoiceHighlightRush={boardTapEffectChoice?.self.rush}

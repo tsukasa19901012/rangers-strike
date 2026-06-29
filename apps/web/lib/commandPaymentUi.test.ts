@@ -515,7 +515,7 @@ describe("commandPaymentZoneHint", () => {
         kind: "mothership_hold",
         allowRushZoneCommands: true,
       }),
-    ).toBe("コマンドゾーンまたはラッシュの常駐をタップして選んでください。");
+    ).toBe("コマンドゾーン、またはラッシュ/バトルエリアのコール常駐をタップして選んでください。");
   });
 
   it("describes command zone only by default", () => {

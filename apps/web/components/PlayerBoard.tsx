@@ -341,6 +341,7 @@ export type PlayerBoardProps = {
   onCommandPaymentToggle?: (instanceId: string) => void;
   commandPaymentHighlightCommand?: boolean;
   commandPaymentHighlightRush?: boolean;
+  commandPaymentHighlightBattle?: boolean;
   zordSetupHighlightRush?: boolean;
   zordSetupHighlightBattle?: boolean;
   effectChoiceHighlightCommand?: boolean;
@@ -391,6 +392,7 @@ export function PlayerBoard({
   onCommandPaymentToggle,
   commandPaymentHighlightCommand,
   commandPaymentHighlightRush,
+  commandPaymentHighlightBattle,
   zordSetupHighlightRush,
   zordSetupHighlightBattle,
   effectChoiceHighlightCommand,
@@ -445,6 +447,7 @@ export function PlayerBoard({
     effectChoiceHighlightRush ||
     (canDropRush && (!dragging || (draggingUnit && dragging.fromZone === "hand")));
   const highlightBattle =
+    commandPaymentHighlightBattle ||
     zordSetupHighlightBattle ||
     effectChoiceHighlightBattle ||
     (canDropBattle && (!dragging || dragging.fromZone === "rush"));
@@ -545,6 +548,7 @@ export function PlayerBoard({
       strikeableIds={!isOpponent ? strikeableIds : undefined}
       onSelectTarget={handleSelectTarget}
       onSubstituteSelect={onSubstituteSelect}
+      getCommandHeld={(card) => card.commandHeld}
       getDraggable={(card) =>
         !!(
           interactive &&
@@ -586,6 +590,7 @@ export function PlayerBoard({
       onSelectTarget={handleSelectTarget}
       onInterceptSelect={onInterceptSelect}
       onSubstituteSelect={onSubstituteSelect}
+      getCommandHeld={(card) => card.commandHeld}
       getDraggable={() => !!(interactive && phase === "battle")}
       emptyLabel="—"
     />

@@ -114,7 +114,7 @@ export function commandPaymentHint(
 
 export function commandPaymentZoneHint(view: CommandPaymentView): string {
   if (view.allowRushZoneCommands) {
-    return "コマンドゾーンまたはラッシュの常駐をタップして選んでください。";
+    return "コマンドゾーン、またはラッシュ/バトルエリアのコール常駐をタップして選んでください。";
   }
   return "コマンドゾーンのカードをタップして選んでください。";
 }
@@ -157,7 +157,7 @@ export function resolveCommandPaymentSelectedCards(
   selectedInstanceIds: readonly string[],
 ): CommandPaymentSelectedCard[] {
   const player = state.players[playerId];
-  const pool = [...player.command, ...player.rush];
+  const pool = [...player.command, ...player.rush, ...player.battle];
 
   return selectedInstanceIds.flatMap((instanceId) => {
     const instance = pool.find((card) => card.instanceId === instanceId);

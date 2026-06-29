@@ -71,6 +71,9 @@ export function canPayRushCategoryHold(
   if (categories.length === 0) return true;
   if (!allCategoriesExistInCommandZone(player, definitions, categories)) return false;
   if (hasReleasedCommandForCategories(player, definitions, categories)) return true;
+  if (collectCallLeadFieldUnits(player, definitions, "call", categories).length > 0) {
+    return true;
+  }
   return (
     hasOperationEffect(player, "prism_power", definitions) &&
     countReleasedCommands(player) >= 2
