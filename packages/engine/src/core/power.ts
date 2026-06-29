@@ -31,7 +31,9 @@ export function countOpponentMultiCategoryCommands(
 
 /** 利用可能パワー = 自軍パワーゾーン + 相手コマンドのマルチカテゴリ枚数。 */
 export function countAvailablePower(
-  state: Pick<GameState, "players" | "definitions" | "phase" | "activePlayer">,
+  state: Pick<GameState, "players" | "definitions" | "activePlayer"> & {
+    phase?: GameState["phase"];
+  },
   playerId: PlayerId,
 ): number {
   const base =
