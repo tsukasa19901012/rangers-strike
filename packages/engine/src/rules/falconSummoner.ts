@@ -31,6 +31,7 @@ export function applyFalconSummonerOperation(
     if (player.deck.length === 0) break;
 
     const [top, ...restDeck] = player.deck;
+    if (!top) break;
     const def = getDefinition(next.definitions, top.cardId);
     if (!def) break;
 
