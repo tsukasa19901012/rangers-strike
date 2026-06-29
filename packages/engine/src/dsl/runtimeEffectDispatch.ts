@@ -13,6 +13,10 @@ import {
 } from "../rules/legend3/battleEffects";
 import { applyLegacyNumberComboEffect } from "../rules/numberComboEffects";
 import { resolveNamedOnRushEffects, applyShirubaOnRush } from "../rules/namedUnitEffects";
+import {
+  MURPHY_CHASE_EFFECT_ID,
+  startMurphyChaseChoice,
+} from "../rules/murphyChase";
 import { listDslEffectsForTrigger } from "./effectLookup";
 import type { GrantKeywordContext, GrantKeywordResult } from "./grantKeyword";
 
@@ -84,6 +88,12 @@ export function applyRuntimeGrantKeyword(
   if (effectId === "shiruba" && instanceId) {
     const result = applyShirubaOnRush(state, ctx.playerId, instanceId);
     return { state: result.state, detail: "shiruba" };
+  }
+
+  if (effectId === MURPHY_CHASE_EFFECT_ID && instanceId) {
+    const withChoice = startMurphyChaseChoice(state, ctx);
+    if (!withChoice) return { state, detail: `${effectId}:no_targets` };
+    return { state: withChoice, detail: effectId };
   }
 
   return { state, detail: `runtime:${effectId}` };
