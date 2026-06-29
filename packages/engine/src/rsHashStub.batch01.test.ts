@@ -800,4 +800,30 @@ describe("RS monkey-test high-frequency fixes", () => {
       ),
     ).toBe(true);
   });
+
+  it("RS-235 ally rush note rematches to on_ally_rush_named_return_self_to_hand", () => {
+    const text =
+      "※自分が「デカベースクローラー」をラッシュしたとき、自軍エリアに「デカベースロボ」があれば1体選んで手札に戻す。";
+    const rematched = rematchEffectPrimitives(text, { trigger: { type: "nc" } });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_ally_rush_named_return_self_to_hand",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-235 battle entry note rematches to require_power_discard_2_to_battle", () => {
+    const text =
+      "※自軍パワーゾーンからダメージ以外のカードを2枚選んで捨札にしなければバトルエリアに出られない。";
+    const rematched = rematchEffectPrimitives(text, { trigger: { type: "nc" } });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "require_power_discard_2_to_battle",
+      ),
+    ).toBe(true);
+  });
 });

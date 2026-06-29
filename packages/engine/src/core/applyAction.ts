@@ -67,12 +67,15 @@ import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import {
   applyDarkDealRushHolds,
   battleEntryHandDiscardSatisfied,
+  battleEntryPowerDiscardSatisfied,
   battleEntryRushDiscardSatisfied,
   canAttackDefender,
   darkDealRushPowerBudget,
   needsBattleEntryRushDiscard,
+  needsBattleEntryPowerDiscard,
   tryLegend3BattleToRush,
   tryStartBattleEntryHandDiscard,
+  tryStartBattleEntryPowerDiscard,
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
 import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
@@ -1246,6 +1249,18 @@ export function applyAction(
         );
       }
 
+      if (
+        needsBattleEntryPowerDiscard(found.card.cardId) &&
+        !battleEntryPowerDiscardSatisfied(player, found.card.cardId)
+      ) {
+        const discardChoice = tryStartBattleEntryPowerDiscard(state, playerId, found.card);
+        if (!discardChoice) return fail("cannot_enter_battle");
+        return ok(
+          discardChoice,
+          buildSimpleLogEntry(playerId, "battle_entry_power_discard_pending"),
+        );
+      }
+
       if (!canMoveUnitToBattle(state, playerId, found.card, "rush")) {
         return fail("cannot_enter_battle");
       }
@@ -1258,8 +1273,11 @@ export function applyAction(
         return fail("cannot_enter_battle");
       }
       let nextPlayer: PlayerState = clearCostWindow(
-        clearCostWindow(player, "battle_entry_hold"),
-        "battle_entry_hand_discard",
+        clearCostWindow(
+          clearCostWindow(player, "battle_entry_hold"),
+          "battle_entry_hand_discard",
+        ),
+        "battle_entry_power_discard",
       );
       const [, rush] = removeAt(nextPlayer.rush, found.index);
       nextPlayer = { ...nextPlayer, rush };

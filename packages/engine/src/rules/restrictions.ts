@@ -56,12 +56,16 @@ import {
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import {
   battleEntryHandDiscardSatisfied,
+  battleEntryPowerDiscardSatisfied,
   battleEntryRushDiscardSatisfied,
   canPayBattleEntryHandDiscard,
+  canPayBattleEntryPowerDiscard,
   canPayBattleEntryRushDiscard,
   hasBattleEntryRushDiscardTarget,
+  needsBattleEntryPowerDiscard,
   needsBattleEntryRushDiscard,
 } from "./legend3/restrictions";
+import { getBattleEntryPowerDiscardCount } from "./batch07FieldEffects";
 
 export function countLightningGravityOperations(state: GameState): number {
   return countLightningGravityPermanents(
@@ -382,6 +386,11 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (!canPayBattleEntryHandDiscard(player, unit.cardId)) return false;
   if (!battleEntryHandDiscardSatisfied(player, unit.cardId)) return false;
 
+  if (needsBattleEntryPowerDiscard(unit.cardId)) {
+    if (!canPayBattleEntryPowerDiscard(player, unit.cardId)) return false;
+    if (!battleEntryPowerDiscardSatisfied(player, unit.cardId)) return false;
+  }
+
   return true;
 }
 
@@ -576,6 +585,14 @@ export function explainCannotEnterBattle(
   }
   if (!battleEntryHandDiscardSatisfied(player, unit.cardId)) {
     return `「${unitName}」をバトルエリアに出すには、手札から2枚選んで捨札してください。`;
+  }
+  if (!canPayBattleEntryPowerDiscard(player, unit.cardId)) {
+    const need = getBattleEntryPowerDiscardCount(unit.cardId);
+    const have = player.power.filter((c) => !c.faceDown).length;
+    return `「${unitName}」をバトルエリアに出すには、パワーからダメージ以外を${need}枚捨札する必要があります（対象${have}枚）。`;
+  }
+  if (!battleEntryPowerDiscardSatisfied(player, unit.cardId)) {
+    return `「${unitName}」をバトルエリアに出すには、パワーからダメージ以外を選んで捨札してください。`;
   }
 
   if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {

@@ -4,7 +4,8 @@ export type CostWindowKind =
   | "rush_category"
   | "counter_category"
   | "battle_entry_rush_discard"
-  | "battle_entry_hand_discard";
+  | "battle_entry_hand_discard"
+  | "battle_entry_power_discard";
 
 export type CostWindowMetadata = {
   /** RS-132: 捨札した S ユニット cardId（反バイオ粒子砲判定用）。 */

@@ -23,6 +23,7 @@ import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { countAvailablePower, effectivePowerCost } from "../../core/power";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { countReleasedCommands } from "../restrictions";
+import { getBattleEntryPowerDiscardCount } from "../batch07FieldEffects";
 import {
   collectFieldUnitIds,
   startSelectUnitChoice,
@@ -105,6 +106,56 @@ export function battleEntryHandDiscardSatisfied(
 ): boolean {
   if (!needsBattleEntryHandDiscard(cardId)) return true;
   return isCostWindowSatisfied(player, "battle_entry_hand_discard");
+}
+
+export function needsBattleEntryPowerDiscard(cardId: string): boolean {
+  return getBattleEntryPowerDiscardCount(cardId) > 0;
+}
+
+export function canPayBattleEntryPowerDiscard(
+  player: PlayerState,
+  cardId: string,
+): boolean {
+  const count = getBattleEntryPowerDiscardCount(cardId);
+  if (count <= 0) return true;
+  const nonDamage = player.power.filter((c) => !c.faceDown).length;
+  return nonDamage >= count;
+}
+
+export function battleEntryPowerDiscardSatisfied(
+  player: PlayerState,
+  cardId: string,
+): boolean {
+  if (!needsBattleEntryPowerDiscard(cardId)) return true;
+  return isCostWindowSatisfied(player, "battle_entry_power_discard");
+}
+
+export function tryStartBattleEntryPowerDiscard(
+  state: GameState,
+  playerId: PlayerId,
+  entering: CardInstance,
+): GameState | null {
+  const count = getBattleEntryPowerDiscardCount(entering.cardId);
+  if (count <= 0) return null;
+  const player = state.players[playerId];
+  const valid = player.power.filter((c) => !c.faceDown).map((c) => c.instanceId);
+  if (valid.length < count) return null;
+
+  return {
+    ...state,
+    pendingEffectChoice: {
+      playerId,
+      effectId: "battle_entry_power_discard",
+      sourceCardId: entering.cardId,
+      sourceInstanceId: entering.instanceId,
+      kind: "select_power",
+      phasePlayerId: playerId,
+      validInstanceIds: valid,
+      selectCount: count,
+      optional: false,
+    },
+    activePlayer: playerId,
+  };
 }
 
 export function tryStartBattleEntryHandDiscard(

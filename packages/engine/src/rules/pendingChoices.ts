@@ -2920,6 +2920,10 @@ export function applyEffectChoiceSelect(
         discard: [...player.discard, ...toDiscard],
       };
 
+      if (pending.effectId === "battle_entry_power_discard") {
+        nextPlayer = satisfyCostWindow(nextPlayer, "battle_entry_power_discard");
+      }
+
       if (pending.effectId === "earth_force") {
         nextPlayer = { ...nextPlayer, hasPaidEarthForceUpkeep: true };
       }

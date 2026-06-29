@@ -15,6 +15,7 @@ import {
   applyBandoraHeldCommandDiscard,
   tryZubazubanOnAllyRush,
 } from "../../rules/batch06FieldEffects";
+import { tryOnAllyRushNamedReturnSelfToHand } from "../../rules/batch07FieldEffects";
 import type { EventListener, UnitRushedEvent } from "../types";
 
 function applyDrawOnRush(
@@ -96,6 +97,18 @@ export const unitRushedListener: EventListener = (event, state) => {
     );
     nextState = namedRush.state;
     logs.push(...namedRush.logs);
+  }
+
+  if (!nextState.pendingEffectChoice) {
+    const allyReturn = tryOnAllyRushNamedReturnSelfToHand(
+      nextState,
+      rusherPlayerId,
+      found.card.cardId,
+      rushedInstanceId,
+      phasePlayerId,
+    );
+    nextState = allyReturn.state;
+    logs.push(...allyReturn.logs);
   }
 
   if (!nextState.pendingEffectChoice) {

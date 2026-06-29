@@ -117,6 +117,8 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "while_in_battle_opponent_da_s_rush_power_plus_1",
   "while_in_rush_mecha_l_rush_destroy_enemy_s",
   "while_in_rush_opponent_magic_dino_rush_discard_held_command",
+  "on_ally_rush_named_return_self_to_hand",
+  "require_power_discard_2_to_battle",
   "ride_bp_boost_500",
   "ride_bp_boost_1000",
   "cross1",
@@ -922,7 +924,6 @@ export function applyGrantKeyword(
         keyword.startsWith("rush_trim_power_") ||
         keyword.startsWith("rush_skip_command_hold_") ||
         keyword.startsWith("end_turn_return_hand_if_no_") ||
-        keyword.startsWith("require_power_discard_") ||
         keyword.startsWith("attack_bp_plus_vs_") ||
         keyword === "ignore_rule_hold_command_entry" ||
         keyword === "combo_wb_m_bp3000_sp1_destroy_end" ||

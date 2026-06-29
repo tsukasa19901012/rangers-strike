@@ -2193,12 +2193,12 @@ const PATTERNS: PatternMatch[] = [
     build: (body, segment, trigger) => ({
       id: noteEffectIdFromBody(body),
       text: body,
-      trigger: trigger.type === "nc" ? { type: "on_rush" } : trigger,
+      trigger: { type: "while_in_field" },
       optional: true,
       effects: [
         {
           type: "grant_keyword",
-          keyword: semanticCatchallKeyword("return_self_on_ally_rush", body),
+          keyword: "on_ally_rush_named_return_self_to_hand",
           duration: "permanent",
         },
       ],
