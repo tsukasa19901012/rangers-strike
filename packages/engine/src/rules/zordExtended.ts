@@ -52,6 +52,17 @@ function resolveCondition(
   return resolveRushAdditionalCondition(rushingCardId, def);
 }
 
+function isFieldDiscardZordCondition(conditionId: ZordConditionId): boolean {
+  return (
+    conditionId === "discard_fusion_unit" ||
+    conditionId === "discard_named_unit" ||
+    conditionId === "discard_feature_unit" ||
+    conditionId === "discard_vehicle_unit" ||
+    conditionId === "discard_fusion_vehicle" ||
+    conditionId === "discard_name_contains_unit"
+  );
+}
+
 export function isStateGateCondition(conditionId: ZordConditionId): boolean {
   return conditionId === "state_gate";
 }
@@ -771,9 +782,20 @@ export function listFieldZordRushVariants(
       continue;
     }
     if (set.length === 1) {
-      variants.push({ zordMaterialInstanceId: set[0]!.instanceId });
+      const materialRef = { zordMaterialInstanceId: set[0]!.instanceId };
+      if (isFieldDiscardZordCondition(condition.conditionId)) {
+        variants.push({ ...materialRef, zordMaterialDestination: "discard" });
+      } else {
+        variants.push(materialRef);
+      }
     } else {
-      variants.push({ zordMaterialInstanceIds: set.map((c) => c.instanceId) });
+      const ids = set.map((c) => c.instanceId);
+      const materialRef = { zordMaterialInstanceIds: ids };
+      if (isFieldDiscardZordCondition(condition.conditionId)) {
+        variants.push({ ...materialRef, zordMaterialDestination: "discard" });
+      } else {
+        variants.push(materialRef);
+      }
     }
   }
 

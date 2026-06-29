@@ -34,4 +34,9 @@ describe("mothership", () => {
     expect(zordSlotsFilledByMaterial("RK-169", true, "discard")).toBe(1);
     expect(mothershipHoldsRequiredForRush("RK-169", 1)).toBe(0);
   });
+
+  it("feature discard material fills zord slot (RS-625)", () => {
+    expect(zordSlotsFilledByMaterial("RS-625", true, "discard")).toBe(1);
+    expect(mothershipHoldsRequiredForRush("RS-625", 1)).toBe(0);
+  });
 });

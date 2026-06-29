@@ -1,7 +1,11 @@
 import type { Category } from "./schema";
 import type { ZordConditionId } from "./effectTaxonomy";
 import { findNamedEffectByEffectId } from "./unitEffects";
-import { getZordCondition, resolveRushAdditionalCondition } from "./zord";
+import {
+  getZordCondition,
+  isFieldDiscardZordMaterialCondition,
+  resolveRushAdditionalCondition,
+} from "./zord";
 
 export type MothershipKind = "jaguar" | "dekabase";
 
@@ -53,7 +57,7 @@ export function zordSlotsFilledByMaterial(
   }
   if (condition === "send_s_unit_to_power") return 1;
   if (condition === "send_s_unit_to_discard") return 1;
-  if (condition === "discard_fusion_unit") return 1;
+  if (condition && isFieldDiscardZordMaterialCondition(condition)) return 1;
   return 0;
 }
 

@@ -116,14 +116,22 @@ export function isExtendedZordMaterialCondition(conditionId: ZordConditionId): b
   return EXTENDED_ZORD_MATERIAL_CONDITIONS.has(conditionId);
 }
 
-export function isZordUpMaterialCondition(conditionId: ZordConditionId): boolean {
+export function isFieldDiscardZordMaterialCondition(
+  conditionId: ZordConditionId,
+): boolean {
   return (
     conditionId === "discard_fusion_unit" ||
     conditionId === "discard_named_unit" ||
     conditionId === "discard_feature_unit" ||
     conditionId === "discard_vehicle_unit" ||
     conditionId === "discard_fusion_vehicle" ||
-    conditionId === "discard_name_contains_unit" ||
+    conditionId === "discard_name_contains_unit"
+  );
+}
+
+export function isZordUpMaterialCondition(conditionId: ZordConditionId): boolean {
+  return (
+    isFieldDiscardZordMaterialCondition(conditionId) ||
     isSendSUnitZordCondition(conditionId) ||
     isExtendedZordMaterialCondition(conditionId)
   );

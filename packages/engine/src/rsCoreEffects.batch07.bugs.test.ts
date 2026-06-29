@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { CardDefinition, CardInstance } from "@rangers-strike/cards";
 import { generatedCorePlayableCatalog as corePlayableCatalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
+import { satisfyCostWindow } from "./core/costWindow";
 import {
   applyShirubaOnRush,
   bpLastThreeDigits,
@@ -126,6 +127,51 @@ describe("RS-625 シルバー専用機 rush additional condition", () => {
     const rushed = result.state.players.player1.rush[0]!;
     expect(rushed.bpModifier ?? 0).toBe(0);
     expect(rushed.spModifier ?? 0).toBe(0);
+  });
+
+  it("completes zord setup and rushes when silver material is selected", () => {
+    const mega = inst("RS-625", "mega");
+    const silver = inst("RS-585", "silver");
+    const state = createTestState({
+      definitions: defs,
+      phase: "rush",
+      activePlayer: "player1",
+      player1: satisfyCostWindow(
+        {
+          hand: [mega],
+          rush: [silver],
+          power: Array.from({ length: 8 }, (_, i) => inst("TST-P", `p${i}`)),
+          command: [{ ...heldEtCommand("cmd"), commandHeld: true }],
+        },
+        "rush_category",
+      ),
+    });
+
+    const begun = unwrap(
+      applyAction(state, {
+        type: "begin_zord_setup",
+        playerId: "player1",
+        zordInstanceId: mega.instanceId,
+      }),
+    );
+    expect(begun.pendingZordSetup?.step).toBe("material");
+
+    const rushed = unwrap(
+      applyAction(begun, {
+        type: "resolve_zord_setup",
+        playerId: "player1",
+        materialInstanceId: silver.instanceId,
+      }),
+    );
+    expect(rushed.players.player1.rush.some((c) => c.instanceId === mega.instanceId)).toBe(
+      true,
+    );
+    expect(rushed.players.player1.rush.some((c) => c.instanceId === silver.instanceId)).toBe(
+      false,
+    );
+    expect(rushed.players.player1.discard.some((c) => c.instanceId === silver.instanceId)).toBe(
+      true,
+    );
   });
 });
 
