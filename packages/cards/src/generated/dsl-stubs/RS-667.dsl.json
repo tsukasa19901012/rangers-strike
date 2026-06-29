@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_koreworashushitatokiwotejanboeruno_honoo_shin_wotsumyuni",
+          "keyword": "on_rush_scry_exclude_named_feature_m_to_rush",
           "duration": "turn"
         }
       ],

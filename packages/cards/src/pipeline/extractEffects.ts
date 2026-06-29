@@ -6086,6 +6086,28 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "on_rush_scry_exclude_named_feature_m_to_rush",
+    test: (body) =>
+      /自軍山札を見て「([^」]+)」以外の特徴「([^」]+)」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger: { type: "on_rush" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "on_rush_scry_exclude_named_feature_m_to_rush",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "on_rush_scry_exclude_named_feature_m_to_rush",
+    }),
+  },
+  {
     pattern: "deck_search_generic",
     test: (body) => /自軍山札を見て/.test(body),
     build: (body, segment, trigger) => ({
@@ -7015,6 +7037,28 @@ const PATTERNS: PatternMatch[] = [
         },
       ],
       matchedPattern: "return_to_zone",
+    }),
+  },
+  {
+    pattern: "megasuringu",
+    test: (body) =>
+      /リリース状態の自軍コマンドを1つ選び、山札の上に戻してもよい。そうしたとき、このターン、敵軍ラッシュエリアのSユニットはBP-1500される/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "megasuringu",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "megasuringu",
     }),
   },
   {

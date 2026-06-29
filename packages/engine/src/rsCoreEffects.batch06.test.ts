@@ -4,6 +4,9 @@ import { rushPowerCost } from "./core/catalog";
 import { passiveNamedFieldBpBonus } from "./rules/fieldAuras";
 import { canStrikeWithHelloMirage } from "./rules/helloMirage";
 import { finalizeLeaveReaction } from "./rules/operationCounters";
+import { applyNumberComboEffect } from "./rules/numberComboEffects";
+import { applyGrantKeyword } from "./dsl/grantKeyword";
+import { collectRequiredFusionMaterials, applyAllZordFusionMaterials } from "./rules/zord";
 import { applyPromotedNcEffect, reorderEnemyBattleAfterRush } from "./rules/promotedNcEffects";
 import { canMoveUnitToBattle } from "./rules/restrictions";
 import { markRushedThisTurn } from "./rules/turnModifiers";
@@ -618,6 +621,98 @@ describe("RS-460 忍法花爆弾", () => {
     state = declared.state;
     const cost = rushPowerCost(state, "player2", defs[enemyS.cardId]!);
     expect(cost).toBe(5);
+  });
+});
+
+describe("RS-686 seikuuoh fusion partners", () => {
+  it("requires all three fusion materials including RS-667", () => {
+    const trip = inst("RS-668", "trip");
+    const jet = inst("RS-666", "jet");
+    const jean = inst("RS-667", "jean");
+    const zord = inst("RS-686", "zord");
+    const player = {
+      ...createTestState({ definitions: defs }).players.player1,
+      rush: [trip, jet, jean, zord],
+    };
+    const materials = collectRequiredFusionMaterials(
+      player,
+      defs,
+      "RS-686",
+      zord.instanceId,
+    );
+    expect(materials?.map((m) => m.card.cardId).sort()).toEqual([
+      "RS-666",
+      "RS-667",
+      "RS-668",
+    ]);
+    const after = applyAllZordFusionMaterials(player, defs, "RS-686", zord.instanceId);
+    expect(after?.rush.map((c) => c.cardId)).toEqual(["RS-686"]);
+    expect(after?.discard.map((c) => c.cardId).sort()).toEqual([
+      "RS-666",
+      "RS-667",
+      "RS-668",
+    ]);
+  });
+});
+
+describe("RS-629 megasuringu", () => {
+  it("returns released command to deck top and debuffs enemy rush S by 1500", () => {
+    const mega = inst("RS-629", "mega");
+    const cmd = inst("TST-OP-DA", "cmd");
+    const enemyS = inst("RS-351", "enemy");
+    let state = createTestState({
+      definitions: defs,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: {
+        battle: [mega, ...battleFillers(1)],
+        command: [{ ...cmd, commandHeld: false }],
+        deck: [inst("TST-P", "deck")],
+      },
+      player2: { rush: [enemyS] },
+    });
+    const { state: afterNc } = applyNumberComboEffect(state, "player1", mega, null);
+    expect(afterNc.pendingEffectChoice?.effectId).toBe("megasuringu");
+
+    const chosen = applyAction(afterNc, {
+      type: "resolve_effect_choice",
+      playerId: "player1",
+      instanceId: cmd.instanceId,
+    });
+    expect(chosen.ok).toBe(true);
+    if (!chosen.ok) return;
+    state = chosen.state;
+    expect(state.players.player1.command).toHaveLength(0);
+    expect(state.players.player1.deck[0]?.instanceId).toBe(cmd.instanceId);
+    const enemyUnit = state.players.player2.rush[0];
+    expect(enemyUnit?.bpModifier).toBe(-1500);
+  });
+});
+
+describe("RS-667 fuasutokurasuna", () => {
+  it("opens deck scry to deploy honoo M unit to rush on rush", () => {
+    const jean = inst("RS-667", "jean");
+    const honooM = inst("RS-668", "honoo");
+    const other = inst("TST-P", "other");
+    const state = createTestState({
+      definitions: defs,
+      phase: "rush",
+      player1: {
+        rush: [jean],
+        deck: [honooM, other],
+      },
+    });
+    const result = applyGrantKeyword(state, {
+      playerId: "player1",
+      phasePlayerId: "player1",
+      sourceCardId: "RS-667",
+      effectId: "fuasutokurasuna",
+      triggerSourceInstanceId: jean.instanceId,
+      optional: true,
+    }, "on_rush_scry_exclude_named_feature_m_to_rush");
+    expect(result.state.pendingEffectChoice?.kind).toBe("scry_keep_one");
+    expect(result.state.pendingEffectChoice?.validInstanceIds).toContain(honooM.instanceId);
+    expect(result.state.pendingEffectChoice?.validInstanceIds).not.toContain(other.instanceId);
   });
 });
 

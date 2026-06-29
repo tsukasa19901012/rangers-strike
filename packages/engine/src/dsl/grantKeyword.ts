@@ -18,6 +18,7 @@ import {
   startPitInDiveOrderChoice,
   startRadialHammerChoice,
   startSelectCommandChoice,
+  collectCommandIds,
   startEnterHoldEnemyPowerLeDamageChoice,
   startHangaEvolutionChoice,
   startEnterRushFromDiscardFeatureChoice,
@@ -56,6 +57,7 @@ import {
   applyRedLadderOnRush,
   applySuperGekiFantasticOnRush,
   applyZorobAntGeneOnRush,
+  applyFuasutokurasunaOnRush,
 } from "../rules/batch06FieldEffects";
 import { beginCastoffOnRush } from "../rules/castoff";
 import {
@@ -171,6 +173,8 @@ export const SUPPORTED_GRANT_KEYWORDS = new Set([
   "attack_ride_replace",
   "battle_destroy_to_power",
   "combo_number_delta_minus_1",
+  "megasuringu",
+  "on_rush_scry_exclude_named_feature_m_to_rush",
   ...PASSIVE_GRANT_KEYWORDS,
 ]);
 
@@ -735,6 +739,37 @@ export function applyGrantKeyword(
         ),
         detail: ctx.effectId,
       };
+    }
+    case "on_rush_scry_exclude_named_feature_m_to_rush": {
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state };
+      return {
+        state: applyFuasutokurasunaOnRush(
+          state,
+          ctx.playerId,
+          instanceId,
+          ctx.phasePlayerId,
+          ctx.effectId,
+          ctx.sourceCardId,
+        ),
+        detail: ctx.effectId,
+      };
+    }
+    case "megasuringu": {
+      const targets = collectCommandIds(state, ctx.playerId, "released");
+      const withChoice = startSelectCommandChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+        commandFilter: "released",
+        commandAction: "return_deck_top",
+        validInstanceIds: targets,
+        optional: ctx.optional ?? true,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
     }
     case "while_in_field_formation_deploy":
     case "while_in_field_da_rush_discard_sensho_power":

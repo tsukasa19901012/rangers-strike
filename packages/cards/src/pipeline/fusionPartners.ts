@@ -84,12 +84,19 @@ function resolvePartnerSegment(rawName: string): string[] {
   return [...ids];
 }
 
+/** 合体―行の末尾に続く ※無名ルール（ウイング等）を除く。 */
+function stripTrailingUnnamedRules(segment: string): string {
+  const noteIndex = segment.search(/ ※/);
+  if (noteIndex >= 0) return segment.slice(0, noteIndex).trim();
+  return segment.trim();
+}
+
 /** 合体―行からパートナー名を抽出し cardId に解決（atwiki / カード文面）。 */
 export function parseZordFusionLine(text: string): ZordFusionRule | null {
   const match = text.match(/※?合体[―－\-ー─]([^【]+)/);
   if (!match) return null;
 
-  const segment = match[1]!.trim();
+  const segment = stripTrailingUnnamedRules(match[1]!);
 
   const names = splitFusionPartnerNames(segment);
 
@@ -119,5 +126,5 @@ export function resolveCardNameToIds(name: string): string[] {
 export function countZordFusionPartnerSlots(text: string): number {
   const match = text.match(/※?合体[―－\-ー─]([^【]+)/);
   if (!match) return 0;
-  return splitFusionPartnerNames(match[1]!.trim()).length;
+  return splitFusionPartnerNames(stripTrailingUnnamedRules(match[1]!)).length;
 }

@@ -277,7 +277,7 @@ export type PendingEffectChoice = {
   /** 印刷BPの合計上限（例: RS-106 ジュウクンドー）。 */
   bpBudget?: number;
   unitDestination?: "power" | "discard" | "deck_top" | "hand" | "hand_from_discard" | "hand_from_power" | "rush_from_discard" | "enemy_battle" | "enemy_command" | "swap_battle" | "rush";
-  commandAction?: "discard" | "hold" | "return_hand" | "rush" | "rush_silent" | "battle_silent" | "power";
+  commandAction?: "discard" | "hold" | "return_hand" | "return_deck_top" | "rush" | "rush_silent" | "battle_silent" | "power";
   commandFilter?: "held" | "released" | "any";
   seabedDrawMeta?: SeabedDrawMeta;
   denjiMachineMeta?: DenjiMachineMeta;

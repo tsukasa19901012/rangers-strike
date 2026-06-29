@@ -20,6 +20,7 @@ import {
   startHikarimaruWingChoice,
   startRedLadderDiscardChoice,
   startSuperGekiFantasticChoice,
+  startFuasutokurasunaChoice,
   startZorobAntGeneChoice,
   startZubazubanDestroyChoice,
 } from "./pendingChoices";
@@ -421,4 +422,60 @@ export function applyShinobiBallRequiredDefender(
     return entry;
   }
   return { ...entry, requiredDefenderInstanceId: shinobiId };
+}
+
+/** RS-629 メガスリング: 敵ラッシュSのBP-1500（0以下は撃破）。 */
+export function applyMegasuringuEnemyRushSBpDebuff(
+  state: GameState,
+  actorPlayerId: PlayerId,
+): GameState {
+  const enemyId = opponent(actorPlayerId);
+  const enemy = state.players[enemyId];
+  const kept: typeof enemy.rush = [];
+  const destroyed: typeof enemy.rush = [];
+  let changed = false;
+
+  for (const unit of enemy.rush) {
+    if (!isSmallUnit(state.definitions, unit.cardId)) {
+      kept.push(unit);
+      continue;
+    }
+    changed = true;
+    const debuffed = { ...unit, bpModifier: (unit.bpModifier ?? 0) - 1500 };
+    if (effectiveBp(state, enemyId, debuffed) <= 0) {
+      destroyed.push(unit);
+    } else {
+      kept.push(debuffed);
+    }
+  }
+
+  if (!changed) return state;
+
+  return {
+    ...state,
+    ...updatePlayer(state, enemyId, {
+      ...enemy,
+      rush: kept,
+      discard: [...enemy.discard, ...destroyed],
+    }),
+  };
+}
+
+/** RS-667 ファーストクラスな教官: 山札サーチ→ラッシュ。 */
+export function applyFuasutokurasunaOnRush(
+  state: GameState,
+  playerId: PlayerId,
+  sourceInstanceId: string,
+  phasePlayerId: PlayerId,
+  effectId: string,
+  sourceCardId: string,
+): GameState {
+  const withChoice = startFuasutokurasunaChoice(state, {
+    playerId,
+    effectId,
+    sourceCardId,
+    sourceInstanceId,
+    phasePlayerId,
+  });
+  return withChoice ?? state;
 }

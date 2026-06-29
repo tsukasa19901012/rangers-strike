@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { canonicalCardName } from "@rangers-strike/cards";
 import type {
   CardInstance,
   GameState,
@@ -81,6 +82,7 @@ import {
   releaseWingCommand,
   scryTop3ForSagasSpear,
   triggerCopiedOnRushFromRush,
+  applyMegasuringuEnemyRushSBpDebuff,
 } from "./batch06FieldEffects";
 
 export type RequestDrawResult =
@@ -1021,6 +1023,43 @@ export function startSuperGekiFantasticChoice(
     kind: "select_unit",
     validInstanceIds: valid,
     unitDestination: "discard",
+    optional: true,
+  });
+}
+
+/** RS-667 ファーストクラスな教官: 山札から炎神M（ジャン・ボエール除く）をラッシュ。 */
+export function startFuasutokurasunaChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const player = state.players[params.playerId];
+  if (player.deck.length === 0) return null;
+
+  const excludeName = canonicalCardName("ジャン・ボエール");
+  const viewedInstanceIds = player.deck.map((c) => c.instanceId);
+  const validInstanceIds = player.deck
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      if (def?.type !== "unit" || def.size !== "M") return false;
+      if (!(def.features ?? []).includes("炎神")) return false;
+      if (canonicalCardName(def.name) === excludeName) return false;
+      return true;
+    })
+    .map((c) => c.instanceId);
+
+  return openEffectChoice(state, {
+    ...params,
+    kind: "scry_keep_one",
+    viewedInstanceIds,
+    validInstanceIds,
+    unitDestination: "rush",
+    selectCount: 1,
     optional: true,
   });
 }
@@ -2745,6 +2784,13 @@ export function applyEffectChoiceSelect(
         });
         if (!bounced.bounced) return { error: "invalid_target" };
         return finishChoice(bounced.state, pending, cardName(state.definitions, found.card.cardId));
+      } else if (pending.commandAction === "return_deck_top") {
+        const [, command] = removeAt(player.command, found.index);
+        nextPlayer = {
+          ...player,
+          command,
+          deck: [found.card, ...player.deck],
+        };
       } else if (pending.commandAction === "rush" || pending.commandAction === "rush_silent") {
         const [, command] = removeAt(player.command, found.index);
         nextPlayer = {
@@ -2809,6 +2855,10 @@ export function applyEffectChoiceSelect(
             return { state: continued };
           }
         }
+      }
+
+      if (pending.effectId === "megasuringu") {
+        nextState = applyMegasuringuEnemyRushSBpDebuff(nextState, pending.playerId);
       }
 
       return finishChoice(

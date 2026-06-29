@@ -826,4 +826,40 @@ describe("RS monkey-test high-frequency fixes", () => {
       ),
     ).toBe(true);
   });
+
+  it("RS-629 rematches to megasuringu", () => {
+    const text =
+      "リリース状態の自軍コマンドを1つ選び、山札の上に戻してもよい。そうしたとき、このターン、敵軍ラッシュエリアのSユニットはBP-1500される。（BP0以下になったユニットは撃破される）";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "メガスリング",
+      kind: "named",
+      trigger: { type: "nc" },
+    });
+    expect(
+      rematched?.some(
+        (p) => p.type === "grant_keyword" && p.keyword === "megasuringu",
+      ),
+    ).toBe(true);
+    expect(isCatchallGrantKeyword("megasuringu")).toBe(false);
+  });
+
+  it("RS-667 rematches to on_rush_scry_exclude_named_feature_m_to_rush", () => {
+    const text =
+      "これをラッシュしたとき、自軍山札を見て「ジャン・ボエール」以外の特徴「炎神」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "ファーストクラスな教官",
+      kind: "named",
+      trigger: { type: "on_rush" },
+    });
+    expect(
+      rematched?.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "on_rush_scry_exclude_named_feature_m_to_rush",
+      ),
+    ).toBe(true);
+    expect(isCatchallGrantKeyword("on_rush_scry_exclude_named_feature_m_to_rush")).toBe(
+      false,
+    );
+  });
 });

@@ -33,4 +33,16 @@ describe("parseZordFusionLine", () => {
     );
     expect(result?.partnerCardIds.length).toBe(5);
   });
+
+  it("ignores trailing wing note after fusion partners (RS-686)", () => {
+    const result = parseZordFusionLine(
+      "合体―トリプター＋ジェットラス＋ジャン・ボエール ※ウイング 【セイクウインパルス】",
+    );
+    expect(result?.partnerSlotCardIds).toEqual([
+      ["RS-668"],
+      ["RS-666"],
+      ["RS-667"],
+    ]);
+    expect(result?.partnerCardIds).toEqual(["RS-668", "RS-666", "RS-667"]);
+  });
 });
