@@ -21,10 +21,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_self_order_nowononiunonokara3woomotenishiteniseru",
+          "keyword": "rk_fx::RK-089::fx_unknown_e4b997",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

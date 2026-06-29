@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_koregarashuerianiaruredowotsusubetenosyunitohano_chikara_w",
+          "keyword": "effect_card::RS-503::shakinnoniari",
           "duration": "permanent"
         }
       ]

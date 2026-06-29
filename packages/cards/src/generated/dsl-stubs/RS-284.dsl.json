@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_komandozonniarusyunitonokadowosubeterashuerianishitemoy",
-          "duration": "turn"
+          "keyword": "effect_card::RS-284::suwanuingu",
+          "duration": "permanent"
         }
       ],
       "optional": true

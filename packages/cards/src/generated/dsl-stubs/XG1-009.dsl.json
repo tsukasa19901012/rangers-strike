@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_sp1koregasutoraikushitedamejiwoerutokikawariniwo1bich",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-009::masukikurashu",
+          "duration": "permanent"
         }
       ],
       "optional": false

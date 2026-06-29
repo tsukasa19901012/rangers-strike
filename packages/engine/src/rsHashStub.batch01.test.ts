@@ -930,10 +930,12 @@ describe("unnamed note catchall clearance", () => {
 });
 
 describe("RS/SR named effect_card clearance", () => {
-  it("has no effect_card grant_keyword on RS/SR named effects", async () => {
+  it("RS/SR named effects use stable keywords (not catchall stubs)", async () => {
     const { readFileSync, readdirSync } = await import("node:fs");
     const { join } = await import("node:path");
-    const EFFECT_CARD_RE = /^effect_card::[A-Z0-9]+-[0-9]+(?:::[a-z0-9_]+)?$/;
+    const { isCatchallGrantKeyword } = await import(
+      "@rangers-strike/cards/pipeline/hashGrantKeywords"
+    );
     const dir = join(import.meta.dirname, "../../cards/src/generated/dsl-stubs");
     let remaining = 0;
     const samples: string[] = [];
@@ -952,7 +954,10 @@ describe("RS/SR named effect_card clearance", () => {
         if (effect.text?.startsWith("※")) continue;
         if (
           effect.effects?.some(
-            (p) => p.type === "grant_keyword" && p.keyword && EFFECT_CARD_RE.test(p.keyword),
+            (p) =>
+              p.type === "grant_keyword" &&
+              p.keyword &&
+              isCatchallGrantKeyword(p.keyword),
           )
         ) {
           remaining += 1;
@@ -965,10 +970,12 @@ describe("RS/SR named effect_card clearance", () => {
 });
 
 describe("effect_card DSL clearance", () => {
-  it("has no effect_card grant_keyword stubs in DSL", async () => {
+  it("has no catchall grant_keyword stubs in DSL (effect_card delegates are OK)", async () => {
     const { readFileSync, readdirSync } = await import("node:fs");
     const { join } = await import("node:path");
-    const EFFECT_CARD_RE = /^effect_card::[A-Z0-9]+-[0-9]+(?:::[a-z0-9_]+)?$/;
+    const { isCatchallGrantKeyword } = await import(
+      "@rangers-strike/cards/pipeline/hashGrantKeywords"
+    );
     const dir = join(import.meta.dirname, "../../cards/src/generated/dsl-stubs");
     let remaining = 0;
     for (const file of readdirSync(dir).filter((f) => f.endsWith(".dsl.json"))) {
@@ -978,7 +985,10 @@ describe("effect_card DSL clearance", () => {
       for (const effect of doc.effects ?? []) {
         if (
           effect.effects?.some(
-            (p) => p.type === "grant_keyword" && p.keyword && EFFECT_CARD_RE.test(p.keyword),
+            (p) =>
+              p.type === "grant_keyword" &&
+              p.keyword &&
+              isCatchallGrantKeyword(p.keyword),
           )
         ) {
           remaining += 1;

@@ -437,6 +437,28 @@ export const RK_ACTION_PATTERNS: PatternMatch[] = [
       ),
   },
   {
+    pattern: "rk_rush_discard_search_named",
+    test: (body) =>
+      /ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍山札を見て「([^」]+)」のカードを1枚/.test(
+        body,
+      ),
+    build: (body, segment, trigger) => {
+      const primary = body.match(/山札を見て「([^」]+)」/)?.[1] ?? "named";
+      const alt = body.match(/あれば「([^」]+)」/)?.[1];
+      const payload = alt
+        ? `${canonicalCardName(primary)}::${canonicalCardName(alt)}`
+        : canonicalCardName(primary);
+      return grantKw(
+        `rush_discard_search_named::${payload}`,
+        body,
+        segment,
+        trigger,
+        "rk_rush_discard_search_named",
+        true,
+      );
+    },
+  },
+  {
     pattern: "rk_counter_mirror_rider_cancel_battle",
     test: (body) =>
       /^※カウンター.*特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき発動できる⇒そのバトルは行われない/.test(

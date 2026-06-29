@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_koreniraidoshiteiruyunitohawotanaisyunitoniatakusarenai",
+          "keyword": "rk_fx::RK-300::kurokuapu",
           "duration": "turn"
         }
       ],

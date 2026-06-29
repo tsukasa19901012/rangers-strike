@@ -78,8 +78,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_hawotsunoyunitowo1bichinopawazonnidamejini",
-          "duration": "turn"
+          "keyword": "effect_card::RS-551::ganmadainamaito",
+          "duration": "permanent"
         }
       ],
       "optional": false

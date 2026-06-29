@@ -321,7 +321,20 @@ export type PendingEffectChoice = {
     revealedInstanceId: string;
     resume: PendingEffectChoice;
   };
+  /** BK/RK: 手札・常駐・山札からラッシュ配置。 */
+  handResidentRushMeta?: {
+    feature: string;
+    drawIfFromHand?: boolean;
+    shuffleIfFromDeck?: boolean;
+    residentIds?: string[];
+  };
   skipShurikenIntercept?: boolean;
+  /** 敵ターン撃破時の任意パワー送り（to_power_on_destroy）。 */
+  toPowerOnDestroyMeta?: {
+    card: CardInstance;
+    fromZone: "rush" | "battle";
+    pendingLeave: PendingLeave;
+  };
 };
 
 /** @deprecated pendingEffectChoice を使用すること（ruin_survey）。 */

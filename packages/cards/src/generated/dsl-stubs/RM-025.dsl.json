@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_nobpga3000noyunitowo1bichinopawazonnitemoyoi",
-          "duration": "turn"
+          "keyword": "effect_card::RM-025::sharibankurashu",
+          "duration": "permanent"
         }
       ],
       "optional": false

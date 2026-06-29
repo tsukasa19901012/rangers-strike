@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_tankorega_geki_ha_sareteninatatokikonoyunitokadowokomand",
+          "keyword": "rk_fx::RK-110::no_e680a7",
           "duration": "turn"
         }
       ],

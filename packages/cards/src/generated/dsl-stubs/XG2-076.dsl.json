@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_hold_s_batorufueizukonoyunitokarasyunitogakonbineshonsurutokikorew",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-076::kibaaro",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -7,6 +7,7 @@ import { applyDamageToPlayer } from "../rules/damagePayment";
 import { requestDrawFromDeck } from "../rules/drawFromDeck";
 import { openEffectChoice } from "../rules/pendingChoices";
 import { findCardInField } from "../rules/fieldLookup";
+import { canMoveCardToRushFromZone } from "../rules/rushFromHandOnly";
 import { applyGrantKeyword } from "./grantKeyword";
 import {
   applyRuntimeGrantKeyword,
@@ -77,6 +78,9 @@ function moveCardToZone(
 
   const [, fromCards] = removeAt(owner[found.zone], found.index);
   const card = { ...found.card, ...cardPatch };
+  if (toZone === "rush" && !canMoveCardToRushFromZone(card.cardId, found.zone)) {
+    return null;
+  }
   let nextOwner = { ...owner, [found.zone]: fromCards };
 
   if (toZone === "power") {

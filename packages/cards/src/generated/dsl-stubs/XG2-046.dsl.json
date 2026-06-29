@@ -70,8 +70,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_tankorehabp5000sareru",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-046::chikarae680aa",
+          "duration": "permanent"
         }
       ],
       "optional": false

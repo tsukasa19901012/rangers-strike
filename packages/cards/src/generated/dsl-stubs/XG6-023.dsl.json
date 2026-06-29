@@ -63,8 +63,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_lyunitogaarebakorehabp5000sareru",
-          "duration": "turn"
+          "keyword": "effect_card::XG6-023::haipapanchi",
+          "duration": "permanent"
         }
       ],
       "optional": false

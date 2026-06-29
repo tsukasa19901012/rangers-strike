@@ -72,8 +72,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_korehatanwotsuyunito1nitsukibp1000sarebp8000",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-007::ryugekikenken",
+          "duration": "permanent"
         }
       ],
       "optional": false

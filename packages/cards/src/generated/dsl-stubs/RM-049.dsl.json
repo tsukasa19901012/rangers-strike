@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_komandozonkaradamatahaotwotsukadowo1bichinopawazonni",
-          "duration": "turn"
+          "keyword": "effect_card::RM-049::deikuteita",
+          "duration": "permanent"
         }
       ],
       "optional": false

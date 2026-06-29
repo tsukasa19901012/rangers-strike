@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokikonoyunitowohorudoshitem",
+          "keyword": "rk_fx::RK-237::bashaakuatorunedo",
           "duration": "turn"
         }
       ],

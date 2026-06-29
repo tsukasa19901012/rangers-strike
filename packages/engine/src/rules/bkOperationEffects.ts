@@ -329,6 +329,135 @@ export function applyPickEffectBranch(
   });
 }
 
+function decodeFeatureSlug(slug: string): string | null {
+  if (slug === "amadamu") return "アマダム";
+  if (slug === "no_seki") return "賢者の石";
+  if (slug === "den_o") return "DEN-O";
+  try {
+    const decoded = Buffer.from(slug, "hex").toString("utf8");
+    if (decoded.length >= 1 && /[\u3040-\u9fff]/.test(decoded)) return decoded;
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+function parseHandResidentFeature(keyword: string): string | null {
+  const m = keyword.match(/^hand_resident_rush_(.+)$/);
+  if (!m) return null;
+  return decodeFeatureSlug(m[1]!) ?? m[1]!;
+}
+
+function parseRecruitFeature(keyword: string): string | null {
+  const m = keyword.match(/^recruit_(.+)_deck_resident$/);
+  if (!m) return null;
+  return decodeFeatureSlug(m[1]!) ?? m[1]!;
+}
+
+function unitHasOriginalFeature(
+  definitions: GameState["definitions"],
+  cardId: string,
+  feature: string,
+): boolean {
+  const def = getDefinition(definitions, cardId);
+  return def?.type === "unit" && (def.features ?? []).includes(feature);
+}
+
+function collectHandOrResidentFeatureUnits(
+  state: GameState,
+  playerId: PlayerId,
+  feature: string,
+): string[] {
+  const player = state.players[playerId];
+  const ids: string[] = [];
+  for (const card of player.hand) {
+    if (unitHasOriginalFeature(state.definitions, card.cardId, feature)) {
+      ids.push(card.instanceId);
+    }
+  }
+  for (const card of player.operation) {
+    if (card.faceDown) continue;
+    if (unitHasOriginalFeature(state.definitions, card.cardId, feature)) {
+      ids.push(card.instanceId);
+    }
+  }
+  return ids;
+}
+
+function collectDeckOrResidentFeatureUnits(
+  state: GameState,
+  playerId: PlayerId,
+  feature: string,
+): { deckIds: string[]; residentIds: string[] } {
+  const player = state.players[playerId];
+  const deckIds = player.deck
+    .filter((c) => unitHasOriginalFeature(state.definitions, c.cardId, feature))
+    .map((c) => c.instanceId);
+  const residentIds = player.operation
+    .filter((c) => !c.faceDown && unitHasOriginalFeature(state.definitions, c.cardId, feature))
+    .map((c) => c.instanceId);
+  return { deckIds, residentIds };
+}
+
+/** BK-011/012: 手札または常駐から特徴ユニットをラッシュへ。 */
+export function applyHandOrResidentFeatureToRush(
+  state: GameState,
+  ctx: GrantKeywordContext,
+  keyword: string,
+): GameState | null {
+  const feature = parseHandResidentFeature(keyword);
+  if (!feature) return null;
+  const valid = collectHandOrResidentFeatureUnits(state, ctx.playerId, feature);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: ctx.effectId,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId ?? ctx.operationInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "select_hand",
+    validInstanceIds: valid,
+    selectCount: 1,
+    unitDestination: "rush",
+    optional: ctx.optional ?? true,
+    handResidentRushMeta: { feature, drawIfFromHand: true },
+  });
+}
+
+/** BK-018: 山札または常駐から特徴ユニットをラッシュへ。 */
+export function applyDeckOrResidentFeatureToRush(
+  state: GameState,
+  ctx: GrantKeywordContext,
+  keyword: string,
+): GameState | null {
+  const feature = parseRecruitFeature(keyword);
+  if (!feature) return null;
+  const { deckIds, residentIds } = collectDeckOrResidentFeatureUnits(
+    state,
+    ctx.playerId,
+    feature,
+  );
+  const valid = [...deckIds, ...residentIds];
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: ctx.effectId,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId ?? ctx.operationInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "select_hand",
+    validInstanceIds: valid,
+    selectCount: 1,
+    unitDestination: "rush",
+    optional: ctx.optional ?? true,
+    handResidentRushMeta: {
+      feature,
+      shuffleIfFromDeck: deckIds.length > 0,
+      residentIds,
+    },
+  });
+}
+
 export function continuePickEffectBranch(
   state: GameState,
   pending: PendingEffectChoice,

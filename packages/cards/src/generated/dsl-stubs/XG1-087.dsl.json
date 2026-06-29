@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_turn_action_tankoregaatakusaretatokikorenobatorueriadenobigakarate",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-087::fxunknowne79eac",
+          "duration": "permanent"
         }
       ],
       "optional": false

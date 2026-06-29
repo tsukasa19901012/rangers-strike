@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_konoyunitohahorudonotokiyunitoniatakusarenai",
+          "keyword": "rk_fx::RK-263::fx_unknown_e6b6b2",
           "duration": "turn"
         }
       ],

@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokikomandowo2tsuhorudoshite",
+          "keyword": "effect_card::XG6-063::dan",
           "duration": "turn"
         }
       ],

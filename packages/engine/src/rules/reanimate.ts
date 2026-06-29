@@ -2,6 +2,7 @@ import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
 import { moveFromExile } from "./exile";
+import { canMoveCardToRushFromZone } from "./rushFromHandOnly";
 import { recordSUnitRecoveredFromDiscardToHand } from "./turnRecoveryTracking";
 
 export type ReanimateDestination = "rush" | "battle" | "hand";
@@ -36,6 +37,10 @@ export function applyReanimate(
   const card = player.discard[index]!;
   const def = getDefinition(state.definitions, card.cardId);
   if (!def || def.type !== "unit") return state;
+  const fromZone = request.from === "exile" ? "discard" : "discard";
+  if (request.to === "rush" && !canMoveCardToRushFromZone(card.cardId, fromZone)) {
+    return state;
+  }
   const discard = [...player.discard];
   discard.splice(index, 1);
 

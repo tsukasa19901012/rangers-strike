@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_koreworashushitatokipawazonkaradamejinokadowo1bichino",
+          "keyword": "effect_card::RS-620::garudakuro",
           "duration": "turn"
         }
       ],

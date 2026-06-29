@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_korehaatakushitebatorunitsutabideatakudekirutadashikorehabator",
+          "keyword": "rk_fx::RK-183::zokiku",
           "duration": "turn"
         }
       ],

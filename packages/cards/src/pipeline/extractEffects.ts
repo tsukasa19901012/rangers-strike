@@ -20,6 +20,7 @@ import { buildEffectCardKeyword } from "./effectCardKeywords";
 import { buildNoteCardKeyword } from "./noteCardKeywords";
 import { isUnresolvedCatchallGrantKeyword } from "./hashGrantKeywords";
 import { RK_ACTION_PATTERNS, RK_NOTE_PATTERNS, RK_WHILE_PATTERNS } from "./rkPatterns";
+import { RK_EXACT_PATTERNS } from "./rkExactPatterns.generated";
 import { RS_NAMED_PATTERNS } from "./rsPatterns";
 import { SR_NAMED_PATTERNS } from "./srPatterns";
 
@@ -5512,6 +5513,7 @@ const PATTERNS: PatternMatch[] = [
   ...RK_NOTE_PATTERNS,
   ...RK_WHILE_PATTERNS,
   ...RK_ACTION_PATTERNS,
+  ...RK_EXACT_PATTERNS,
   {
     pattern: "combo_from_named_card",
     test: (body) => /「[^」]+」からコンビネーションしたとき発動できる⇒/.test(body),

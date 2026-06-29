@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_korehanisyunitonokadoga5arutokinoworuatakusuruto",
+          "keyword": "effect_card::XG4-063::onowoeroe3818a",
           "duration": "turn"
         }
       ],

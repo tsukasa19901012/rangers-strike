@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_syunitonogasyunitonoyorinakerebahanosyunitowo",
-          "duration": "turn"
+          "keyword": "effect_card::RS-491::meta",
+          "duration": "permanent"
         }
       ],
       "optional": false

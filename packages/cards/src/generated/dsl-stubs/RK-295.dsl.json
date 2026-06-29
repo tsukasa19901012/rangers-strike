@@ -63,7 +63,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konotankorehapawazonnokadogapawazonnokadoyorimo",
+          "keyword": "rk_fx::RK-295::nitsu",
           "duration": "turn"
         }
       ],

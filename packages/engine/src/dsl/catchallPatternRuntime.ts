@@ -8,6 +8,7 @@ import type { GrantKeywordContext } from "./grantKeyword";
 import { buildRematchContext } from "./hashGrantKeywordBridge";
 import type { InterpretFn } from "./interpretEffectRuntime";
 import { tryRsCatchallRuntime } from "../rules/rs/rsCatchallRuntime";
+import { tryRkBkCatchallRuntime, isRkBkCardId } from "../rules/rk/rkBkCatchallRuntime";
 
 /** フィールド常駐・能力付与系 — detail マーカーで解決済み扱い。 */
 const PASSIVE_CATCHALL_PATTERNS = new Set([
@@ -77,6 +78,13 @@ export function tryCatchallPatternRuntime(
 
   const rsResolved = tryRsCatchallRuntime(state, ctx, pattern, interpret);
   if (rsResolved) return rsResolved;
+
+  if (isRkBkCardId(ctx.sourceCardId)) {
+    const keyword =
+      rematched.effects.find((p) => p.type === "grant_keyword")?.keyword ?? pattern;
+    const rkBkResolved = tryRkBkCatchallRuntime(state, ctx, pattern, keyword, interpret);
+    if (rkBkResolved) return rkBkResolved;
+  }
 
   if (pattern === "choice_one_of_effects") {
     const grantCtx: GrantKeywordContext = {

@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarugatanwoerutokinowodekiruno",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-042::raidano",
+          "duration": "permanent"
         }
       ],
       "optional": true

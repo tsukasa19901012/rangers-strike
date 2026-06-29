@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_koregayunitowo_geki_ha_shitatokikorega_geki_ha_shitay",
-          "duration": "turn"
+          "keyword": "effect_card::RS-312::kamikenkamigekizan",
+          "duration": "permanent"
         }
       ],
       "optional": false

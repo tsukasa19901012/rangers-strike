@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_tankoregabatoruerianitatokirashueriakararaidawo",
+          "keyword": "effect_card::XG2-053::ta",
           "duration": "turn"
         }
       ],

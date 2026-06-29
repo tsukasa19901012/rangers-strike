@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_batorueriakaradamatahaotwotsusyunitowo1bichinokomandozo",
-          "duration": "turn"
+          "keyword": "effect_card::RM-048::fureimusurowa",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -63,7 +63,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_koreworashushitatokiuinguwotanaiyunitowo1bichinopawaz",
+          "keyword": "effect_card::XG4-040::fxunknown6",
           "duration": "turn"
         }
       ],

@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_tankoregabatoruerianitatokikomandowo3tsuririsushi",
+          "keyword": "rk_fx::RK-299::dakuraidakiku",
           "duration": "turn"
         }
       ],

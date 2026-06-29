@@ -7,6 +7,7 @@ import {
   bpLastThreeDigits,
   collectBpLastThree500UnitIds,
 } from "./rules/namedUnitEffects";
+import { finalizeLeavePending } from "./rules/operationCounters";
 import { isValidEffectChoiceTarget, openEffectChoice } from "./rules/pendingChoices";
 import { isValidZordUpMaterial } from "./rules/zord";
 import {
@@ -294,5 +295,97 @@ describe("RS-630 メガトマホーク", () => {
     });
     const next = moveToBattle(state, mega.instanceId);
     expect(next.pendingEffectChoice?.effectId).not.toBe("megatomahoku");
+  });
+});
+
+describe("to_power_on_destroy (RS-668 トリプター)", () => {
+  it("opens optional power placement when destroyed during enemy turn", () => {
+    const unit = inst("RS-668", "tripter");
+    const pendingLeave = {
+      ownerPlayerId: "player1" as const,
+      instanceId: unit.instanceId,
+      fromZone: "battle" as const,
+      toZone: "discard" as const,
+      leavingCardId: unit.cardId,
+      phasePlayerId: "player2" as const,
+    };
+    const state = createTestState({
+      definitions: defs,
+      pendingLeave,
+      player1: { battle: [unit] },
+    });
+    const after = finalizeLeavePending(state, pendingLeave, false);
+    expect(after.pendingEffectChoice?.effectId).toBe("to_power_on_destroy");
+    expect(after.players.player1.battle).toHaveLength(0);
+    expect(after.players.player1.discard).toHaveLength(0);
+    expect(after.players.player1.power).toHaveLength(0);
+  });
+
+  it("places in power when accepted, discard when skipped", () => {
+    const unit = inst("RS-668", "tripter");
+    const pendingLeave = {
+      ownerPlayerId: "player1" as const,
+      instanceId: unit.instanceId,
+      fromZone: "battle" as const,
+      toZone: "discard" as const,
+      leavingCardId: unit.cardId,
+      phasePlayerId: "player2" as const,
+    };
+    const base = createTestState({
+      definitions: defs,
+      player1: { battle: [unit] },
+    });
+    const withChoice = finalizeLeavePending(base, pendingLeave, false);
+
+    const powered = unwrap(
+      applyAction(withChoice, {
+        type: "resolve_effect_choice",
+        playerId: "player1",
+        instanceId: "place_in_power",
+      }),
+    );
+    expect(powered.players.player1.power.some((c) => c.instanceId === unit.instanceId)).toBe(
+      true,
+    );
+
+    const unit2 = inst("RS-668", "tripter-2");
+    const withChoice2 = finalizeLeavePending(
+      createTestState({
+        definitions: defs,
+        player1: { battle: [unit2] },
+      }),
+      { ...pendingLeave, instanceId: unit2.instanceId, leavingCardId: unit2.cardId },
+      false,
+    );
+    const discarded = unwrap(
+      applyAction(withChoice2, {
+        type: "skip_effect_choice",
+        playerId: "player1",
+      }),
+    );
+    expect(discarded.players.player1.discard.some((c) => c.instanceId === unit2.instanceId)).toBe(
+      true,
+    );
+  });
+
+  it("goes to discard on own turn without offering choice", () => {
+    const unit = inst("RS-668", "tripter");
+    const pendingLeave = {
+      ownerPlayerId: "player1" as const,
+      instanceId: unit.instanceId,
+      fromZone: "battle" as const,
+      toZone: "discard" as const,
+      leavingCardId: unit.cardId,
+      phasePlayerId: "player1" as const,
+    };
+    const state = createTestState({
+      definitions: defs,
+      player1: { battle: [unit] },
+    });
+    const after = finalizeLeavePending(state, pendingLeave, false);
+    expect(after.pendingEffectChoice).toBeUndefined();
+    expect(after.players.player1.discard.some((c) => c.instanceId === unit.instanceId)).toBe(
+      true,
+    );
   });
 });

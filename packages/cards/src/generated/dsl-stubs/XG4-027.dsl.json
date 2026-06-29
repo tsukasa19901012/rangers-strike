@@ -35,8 +35,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_koregabatorueriakararashuerianirutokikonobikuruniraidoshitei",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-027::mano",
+          "duration": "permanent"
         }
       ],
       "optional": true

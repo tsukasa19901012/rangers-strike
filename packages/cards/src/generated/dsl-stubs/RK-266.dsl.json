@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_rashuerianoyunitowobpnoga3000ninaruyounibi_geki_ha_",
+          "keyword": "rk_fx::RK-266::shotogan",
           "duration": "turn"
         }
       ],

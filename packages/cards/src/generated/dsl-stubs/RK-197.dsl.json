@@ -55,10 +55,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_koregabatoruerianiaruwotsuyunitohano_chikara_worurejisutok",
+          "keyword": "rk_fx::RK-197::ou_no",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

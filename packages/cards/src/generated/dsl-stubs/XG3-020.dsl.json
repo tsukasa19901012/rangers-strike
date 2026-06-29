@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "category_modify_syunitowo1bikategoriwo1tsusurukonotanshitakategoriwonda",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-020::kamikenkamikiba",
+          "duration": "permanent"
         }
       ],
       "optional": false

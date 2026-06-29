@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokibatorueriakarasyunitowo1bi",
+          "keyword": "rk_fx::RK-291::ma_no_chikara",
           "duration": "turn"
         }
       ],

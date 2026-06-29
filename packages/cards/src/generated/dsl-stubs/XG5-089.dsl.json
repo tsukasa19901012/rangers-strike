@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_tankonoyunitohabp3000sareru",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-089::masakarihoku",
+          "duration": "permanent"
         }
       ],
       "optional": false

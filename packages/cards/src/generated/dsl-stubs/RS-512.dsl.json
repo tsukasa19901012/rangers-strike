@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_pawazonnoomote_ko_kinokadokara1ndemoyoisoushitatokindakado",
-          "duration": "turn"
+          "keyword": "effect_card::RS-512::mantangan",
+          "duration": "permanent"
         }
       ],
       "optional": true

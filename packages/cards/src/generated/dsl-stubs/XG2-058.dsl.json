@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_korehakoretojiwo1tsutsukorenobatoruerianoyunito1nitsuki",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-058::notamenoi",
+          "duration": "permanent"
         }
       ],
       "optional": false

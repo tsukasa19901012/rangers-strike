@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_koreniraidoshiteiruyunitohano_chikara_worurashuerianoyunit",
-          "duration": "turn"
+          "keyword": "effect_card::RS-575::wokeruchikara",
+          "duration": "permanent"
         }
       ]
     },
@@ -64,8 +64,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_koreniraidoshiteiruyunitohano_chikara_worurashuerianoyunit",
-          "duration": "turn"
+          "keyword": "effect_card::RS-575::wokeruchikarakoreniraido",
+          "duration": "permanent"
         }
       ]
     }

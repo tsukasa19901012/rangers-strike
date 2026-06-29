@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokirashueriakarawotsuyuni",
+          "keyword": "effect_card::RM-037::wobanu",
           "duration": "turn"
         }
       ],

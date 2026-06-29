@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_pawazonnoomote_ko_kinokadowokinabiura_ko_kinishitemoyo",
+          "keyword": "effect_card::XG6-004::furuburasutoakushon",
           "duration": "turn"
         }
       ],

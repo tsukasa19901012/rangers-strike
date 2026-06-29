@@ -25,7 +25,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_koreworashushitatokibpnoga5000ninaruyouniyunitowobi_geki",
+          "keyword": "effect_card::RS-498::dane78bbc",
           "duration": "turn"
         }
       ],

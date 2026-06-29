@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_korewokararashushitatokikomandowosubetenisurusoushitatok",
+          "keyword": "effect_card::XG7-041::no9",
           "duration": "turn"
         }
       ],

@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "vehicle_interaction_syunitowo1bipawazonnoomote_ko_kinokadokarasyunitomat",
+          "keyword": "effect_card::XG5-078::fuainarufuomuraido",
           "duration": "turn"
         }
       ],

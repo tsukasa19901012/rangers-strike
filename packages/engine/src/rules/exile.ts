@@ -1,5 +1,6 @@
 import type { CardInstance, GameState, PlayerId, PlayerState, ZoneName } from "../types/game";
 import { findInZone, removeAt, updatePlayer } from "../core/helpers";
+import { canMoveCardToRushFromZone } from "./rushFromHandOnly";
 
 type FieldZone = "hand" | "rush" | "battle" | "command" | "power" | "discard" | "operation";
 
@@ -48,6 +49,9 @@ export function moveFromExile(
   if (index < 0) return state;
 
   const [card, rest] = removeAt(exile, index);
+  if (toZone === "rush" && !canMoveCardToRushFromZone(card.cardId, "discard")) {
+    return state;
+  }
   return {
     ...state,
     ...updatePlayer(state, playerId, {

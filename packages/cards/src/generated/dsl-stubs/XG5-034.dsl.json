@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_koregaatakushiteyunitowobatorude_geki_ha_surutabiwotsusy",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-034::tohizanto",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_koregapawazondeomote_ko_kininateirunirashushitatokitoar",
+          "keyword": "effect_card::XG7-059::gemusutato",
           "duration": "turn"
         }
       ],

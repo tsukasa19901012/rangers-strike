@@ -61,8 +61,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_korehatanririsunokomando1tsunitsukibp1000sarerumatabp",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-008::asuno",
+          "duration": "permanent"
         }
       ],
       "optional": false

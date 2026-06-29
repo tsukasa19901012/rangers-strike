@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_search_rashufueizukonoyunitowonishitenowodekiruwote",
-          "duration": "turn"
+          "keyword": "effect_card::RK-326::garurufuesuru",
+          "duration": "permanent"
         }
       ],
       "optional": true

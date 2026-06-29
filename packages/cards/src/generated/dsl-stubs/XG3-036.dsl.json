@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_koreworashushitatokisonotankorehabp3000sareru",
+          "keyword": "effect_card::XG3-036::basamishi",
           "duration": "turn"
         }
       ],

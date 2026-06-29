@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_noyorinonogakerebanowonaide1ndemoyoisou",
+          "keyword": "rk_fx::RK-228::geki_kaze",
           "duration": "turn"
         }
       ],

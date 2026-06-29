@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_tankoregabatoruerianitatokikoreniraidoshiteiruyunitonobpno",
+          "keyword": "rk_fx::RK-264::akurobatoban",
           "duration": "turn"
         }
       ],

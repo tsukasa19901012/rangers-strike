@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_yunitowonogakonoyunitononinaruyounimadende_geki_ha_shite",
-          "duration": "turn"
+          "keyword": "effect_card::XG6-056::baseta",
+          "duration": "permanent"
         }
       ],
       "optional": true

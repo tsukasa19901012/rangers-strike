@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_tankoregabatoruerianitatokipawazondeomote_ko_kininatei",
+          "keyword": "rk_fx::RK-168::tenkomoridaze",
           "duration": "turn"
         }
       ],

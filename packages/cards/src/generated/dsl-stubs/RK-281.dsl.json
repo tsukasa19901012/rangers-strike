@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_koreniraidoshiteirusabaibuwotsuyunitohasp1ninaru",
+          "keyword": "rk_fx::RK-281::doragonfuaiyasutomu",
           "duration": "turn"
         }
       ],

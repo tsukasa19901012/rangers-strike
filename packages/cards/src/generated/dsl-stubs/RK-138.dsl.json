@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_korega_geki_ha_sareteninatatokihanokarawotsuyunitoka",
+          "keyword": "rk_fx::RK-138::na",
           "duration": "turn"
         }
       ],

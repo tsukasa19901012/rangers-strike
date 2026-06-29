@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibatoruerianosyunitowosub",
+          "keyword": "rk_fx::RK-209::karatareta",
           "duration": "turn"
         }
       ],

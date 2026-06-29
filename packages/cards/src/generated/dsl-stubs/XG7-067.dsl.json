@@ -60,8 +60,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_sp1konohadorafutoburusumatahadorafutokisukarakonbineshonsur",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-067::hebisaikuron",
+          "duration": "permanent"
         }
       ],
       "optional": false

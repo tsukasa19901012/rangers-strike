@@ -5,6 +5,7 @@ import { getDefinition, cardName, isLargeUnit } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
+import { rkPassiveBpBonus } from "./rkFieldPassives";
 import { rs560BeastMBpBonus } from "./rs/rsCatchallField";
 
 function categoriesInclude(
@@ -174,6 +175,7 @@ export function passiveNamedFieldBpBonus(
   // nc note_other_* BP bonuses — counted only once via effectiveBp's "general" call
   if (role === "general") {
     bonus += noteOtherNcBpBonus(state, playerId, instance);
+    bonus += rkPassiveBpBonus(state, playerId, instance);
     bonus += rs560BeastMBpBonus(state, playerId, instance.cardId);
   }
 

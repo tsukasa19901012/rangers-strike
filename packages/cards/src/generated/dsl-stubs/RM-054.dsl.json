@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakarabp3000no",
+          "keyword": "effect_card::RM-054::redoparusa",
           "duration": "turn"
         }
       ],

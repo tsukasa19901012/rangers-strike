@@ -54,7 +54,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokinowo2madedekirunowo",
+          "keyword": "effect_card::XG7-037::toe7b485",
           "duration": "turn"
         }
       ],

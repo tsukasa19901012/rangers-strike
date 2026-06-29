@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_raidoshiteirusyunitowo1bichinopawazonnidamejinishitei",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-047::noki",
+          "duration": "permanent"
         }
       ],
       "optional": false

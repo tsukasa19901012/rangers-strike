@@ -25,8 +25,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_pawazonnoomote_ko_kinokadogakoredakenararashufueizuno",
-          "duration": "turn"
+          "keyword": "effect_card::XG6-014::noe88bb1",
+          "duration": "permanent"
         }
       ],
       "optional": true

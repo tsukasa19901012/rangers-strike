@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_korewohorudoshitedawotsuyunitoworashushitatokikonotansonoyunit",
+          "keyword": "effect_card::XG5-074::fuangaianoou",
           "duration": "turn"
         }
       ],

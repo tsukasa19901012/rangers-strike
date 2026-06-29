@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "number_combo_karananbaniwotsuyunitokadowo1ndemoyoisoushitatokindaka",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-079::raidakado",
+          "duration": "permanent"
         }
       ],
       "optional": true

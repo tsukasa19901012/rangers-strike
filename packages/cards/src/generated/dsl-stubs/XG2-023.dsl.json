@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_batorueriakarananbawotanaisyunitowo1bi_geki_ha_shitemoyo",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-023::nogekie9bb92",
+          "duration": "permanent"
         }
       ],
       "optional": true

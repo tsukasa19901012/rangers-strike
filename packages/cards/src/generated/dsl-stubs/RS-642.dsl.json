@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokihorudonoyunitowo1bi_geki",
+          "keyword": "effect_card::RS-642::giganteisubasuta",
           "duration": "turn"
         }
       ],

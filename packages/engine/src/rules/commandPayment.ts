@@ -101,6 +101,11 @@ import {
   paymentSourceMatchesCategories,
   type CallLeadKind,
 } from "./callLead";
+import {
+  collectUndeadCommandRushHoldUnits,
+  paymentSourceIsUndeadCommandRushHold,
+  unitHasUndeadFeature,
+} from "./undeadCommandRushHold";
 
 function formatCategories(categories: Category[]): string {
   return categories.join("・");
@@ -185,6 +190,7 @@ function unheldPaymentSourcesMatchingCategory(
   definitions: Record<string, CardDefinition>,
   categories: Category[],
   callLeadKind: CallLeadKind,
+  rushingCardId?: string,
 ): CardInstance[] {
   const fromCommand = player.command.filter((cmd) => {
     if (cmd.commandHeld) return false;
@@ -192,14 +198,18 @@ function unheldPaymentSourcesMatchingCategory(
     return categories.some((cat) => cmdCats.includes(cat));
   });
   const fromField = collectCallLeadFieldUnits(player, definitions, callLeadKind, categories);
-  return [...fromCommand, ...fromField];
+  const undeadHold =
+    rushingCardId !== undefined && unitHasUndeadFeature(definitions, rushingCardId)
+      ? collectUndeadCommandRushHoldUnits(player)
+      : [];
+  return [...fromCommand, ...fromField, ...undeadHold];
 }
 
 export function getCategoryPaymentOptions(
   state: GameState,
   playerId: PlayerId,
   categories: Category[],
-  options?: { perRushPayment?: boolean; callLeadKind?: CallLeadKind },
+  options?: { perRushPayment?: boolean; callLeadKind?: CallLeadKind; rushingCardId?: string },
 ): { selectCount: number; prismAvailable: boolean; prismSubstitute: boolean } | null {
   const player = state.players[playerId];
   const callLeadKind = options?.callLeadKind ?? "call";
@@ -222,6 +232,7 @@ export function getCategoryPaymentOptions(
     state.definitions,
     categories,
     callLeadKind,
+    options?.rushingCardId,
   );
   if (matching.length >= 1) {
     return { selectCount: 1, prismAvailable, prismSubstitute: false };
@@ -274,6 +285,7 @@ export function buildCategoryPayment(
   const paymentOptions = getCategoryPaymentOptions(state, playerId, categories, {
     ...options,
     callLeadKind,
+    rushingCardId: continuation.type === "rush" ? sourceCardId : undefined,
   });
   if (!paymentOptions) return null;
 
@@ -287,6 +299,7 @@ export function buildCategoryPayment(
         state.definitions,
         categories,
         callLeadKind,
+        continuation.type === "rush" ? sourceCardId : undefined,
       ).map((c) => c.instanceId);
 
   if (validInstanceIds.length < selectCount) return null;
@@ -398,18 +411,28 @@ export function validatePaymentSelection(
       return "invalid_command";
     }
     if (!pending.prismSubstitute) {
+      const rushingCardId =
+        pending.continuation.type === "rush" ? pending.sourceCardId : undefined;
       for (const id of commandInstanceIds) {
         if (
-          !paymentSourceMatchesCategories(
+          paymentSourceMatchesCategories(
             player,
             state.definitions,
             id,
             categories,
             callLeadKind,
-          )
+          ) ||
+          (rushingCardId !== undefined &&
+            paymentSourceIsUndeadCommandRushHold(
+              player,
+              id,
+              rushingCardId,
+              state.definitions,
+            ))
         ) {
-          return "invalid_command";
+          continue;
         }
+        return "invalid_command";
       }
     }
   }

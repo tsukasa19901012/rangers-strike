@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_koreworashushitatokipawazonnodamejinokadonowoetekaraso",
+          "keyword": "rk_fx::RK-150::fx_unknown_e68e98",
           "duration": "turn"
         }
       ],

@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_koreworashushitatokipawanoga3noyunitowo1bihorudoshi",
+          "keyword": "effect_card::XG4-005::bakibakibikusanda",
           "duration": "turn"
         }
       ],

@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koreworashushitatokinowodekiruwote_ryo_wotsusyunito",
+          "keyword": "effect_card::RM-024::fxunknowne690ad",
           "duration": "turn"
         }
       ],

@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_pawazonnoomote_ko_kinokadokarapawawotashiteiruwotsusyu",
+          "keyword": "rk_fx::RK-309::niraretemiru",
           "duration": "turn"
         }
       ],

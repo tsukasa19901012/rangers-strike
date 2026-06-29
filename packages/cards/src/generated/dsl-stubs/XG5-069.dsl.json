@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_tankoregasyunitotonobatorude_geki_ha_sareteninatatokikor",
+          "keyword": "effect_card::XG5-069::chise",
           "duration": "turn"
         }
       ],

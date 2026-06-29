@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_korehaerianibitorudagaarebasp1ninarisutagatankugaarebabp",
-          "duration": "turn"
+          "keyword": "effect_card::RM-051::megabitofuomeshon",
+          "duration": "permanent"
         }
       ],
       "optional": false

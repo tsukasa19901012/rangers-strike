@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_deck_sp1niwotsuomote_ko_kinopawawo1binonishitemoyoiso",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-004::gokaisaberu",
+          "duration": "permanent"
         }
       ],
       "optional": true

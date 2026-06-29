@@ -41,10 +41,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_self_order_koreworashushitatokinowononiunoyunitowo1buso",
+          "keyword": "rk_fx::RK-201::doraguburesu",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

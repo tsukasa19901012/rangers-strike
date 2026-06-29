@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_koregaerianiarusubetenoyunitohano_chikara_worujisaizunoyun",
+          "keyword": "effect_card::XG3-097::kyaputenrureto",
           "duration": "permanent"
         }
       ]

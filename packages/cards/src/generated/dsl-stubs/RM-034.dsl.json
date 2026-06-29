@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_komandozonkarakadowo1bihorudoshitemoyoisoushitatokihorudos",
-          "duration": "turn"
+          "keyword": "effect_card::RM-034::nageki",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -34,11 +34,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokinowodekirunokara2",
+          "keyword": "rk_fx::RK-274::nyumashinno",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

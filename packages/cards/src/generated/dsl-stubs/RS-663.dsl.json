@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokiyunitowonobpnoga1200",
+          "keyword": "effect_card::RS-663::g12guranpuri",
           "duration": "turn"
         }
       ],

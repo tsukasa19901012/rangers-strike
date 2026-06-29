@@ -45,6 +45,10 @@ import { shouldBattleDestroyToPower } from "./turnModifierBridge";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
 import { resolveLegend3OnBattleWin } from "./legend3/destroyEffects";
 import { shouldMedicalRescueToPower } from "./legend2/fieldEffects";
+import {
+  shouldOfferToPowerOnDestroy,
+  startToPowerOnDestroyChoice,
+} from "./toPowerOnDestroy";
 import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
 import { buildPendingChaseFromIntent, buildPendingChaseOnVehicleDestroyed, canInitiateChase } from "../keywords";
 import { findFieldInstanceByKeyword } from "../dsl/fieldKeywords";
@@ -731,16 +735,29 @@ export function resolveBattlePendingCore(
   state: GameState,
   pending: PendingBattle,
 ): { state: GameState; log: string } {
-  const finish = (nextState: GameState, log: string) => ({
-    state: finishBattleEntryIf(
-      restorePhaseActivePlayerUnlessBlocked(
-        { ...nextState, pendingBattle: undefined },
-        pending.phasePlayerId,
+  const finish = (nextState: GameState, log: string) => {
+    let resolved = nextState;
+    if (pending.mirageBeamDiscard) {
+      const player = resolved.players[pending.attackerPlayerId];
+      resolved = {
+        ...resolved,
+        ...updatePlayer(resolved, pending.attackerPlayerId, {
+          ...player,
+          discard: [...player.discard, pending.mirageBeamDiscard],
+        }),
+      };
+    }
+    return {
+      state: finishBattleEntryIf(
+        restorePhaseActivePlayerUnlessBlocked(
+          { ...resolved, pendingBattle: undefined },
+          pending.phasePlayerId,
+        ),
+        pending.attackerInstanceId,
       ),
-      pending.attackerInstanceId,
-    ),
-    log,
-  });
+      log,
+    };
+  };
 
   if (pending.battleCancelled) {
     const attacker = state.players[pending.attackerPlayerId];
@@ -988,17 +1005,6 @@ export function resolveBattlePendingCore(
     ...nextState,
     log: [...nextState.log, ...extraLogs],
   };
-  if (pending.mirageBeamDiscard) {
-    const player = finishedState.players[pending.attackerPlayerId];
-    finishedState = {
-      ...finishedState,
-      ...updatePlayer(finishedState, pending.attackerPlayerId, {
-        ...player,
-        discard: [...player.discard, pending.mirageBeamDiscard],
-      }),
-    };
-  }
-
   return finish(finishedState, log);
 }
 
@@ -1084,6 +1090,11 @@ export function finalizeLeavePending(
       [pending.fromZone]: fromCards,
       power: [...owner.power, { ...found.card, faceDown: false }],
     };
+  } else if (
+    pending.toZone === "discard" &&
+    shouldOfferToPowerOnDestroy(pending)
+  ) {
+    return startToPowerOnDestroyChoice(state, pending, found.card, fromCards);
   } else if (pending.toZone === "discard") {
     nextOwner = {
       ...owner,
@@ -1237,6 +1248,9 @@ export function tryLeaveField(
 
     const next = finalizeLeavePending(state, intent, false);
     if (next.pendingRegister) {
+      return { state: next, deferred: true };
+    }
+    if (next.pendingEffectChoice) {
       return { state: next, deferred: true };
     }
     return { state: next, deferred: false };

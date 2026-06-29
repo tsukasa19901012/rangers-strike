@@ -279,6 +279,10 @@ export function hasDestroySelfDamageNote(cardId: string): boolean {
   return hasUnnamedRule(cardId, "destroy_self_damage");
 }
 
+export function hasToPowerOnDestroyNote(cardId: string): boolean {
+  return hasUnnamedRule(cardId, "to_power_on_destroy");
+}
+
 export function getBattleEntryComboFromPartnerIds(cardId: string): string[] {
   const block = loadBlockForCard(cardId);
   if (!block) return [];

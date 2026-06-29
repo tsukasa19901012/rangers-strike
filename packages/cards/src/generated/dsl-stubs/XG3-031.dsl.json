@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_konotanbatorueriano2nibuwotsumyunitohano_chikara_woru",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-031::zane5ae99",
+          "duration": "permanent"
         }
       ]
     }

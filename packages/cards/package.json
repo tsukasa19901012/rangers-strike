@@ -42,6 +42,10 @@
       "types": "./dist/pipeline/implementedGrantKeywords.d.ts",
       "import": "./dist/pipeline/implementedGrantKeywords.js"
     },
+    "./pipeline/rkClassify": {
+      "types": "./dist/pipeline/rkClassify.d.ts",
+      "import": "./dist/pipeline/rkClassify.js"
+    },
     "./pipeline/effectCardKeywords": {
       "types": "./dist/pipeline/effectCardKeywords.d.ts",
       "import": "./dist/pipeline/effectCardKeywords.js"

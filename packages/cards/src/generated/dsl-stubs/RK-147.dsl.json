@@ -46,10 +46,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_konoyunitokarakonbineshonsurusp14nosyunitohano_chikara_wor",
+          "keyword": "rk_fx::RK-147::redomu",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

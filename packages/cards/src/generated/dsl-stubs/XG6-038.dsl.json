@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokinokara3madetenishitemoyo",
+          "keyword": "effect_card::XG6-038::mashingansupaiku",
           "duration": "turn"
         }
       ],

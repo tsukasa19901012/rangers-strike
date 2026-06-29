@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_rush_fx_unknown",
+          "keyword": "effect_card::RS-249::vkomanda",
           "duration": "turn"
         }
       ],

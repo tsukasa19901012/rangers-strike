@@ -1,4 +1,5 @@
 import type { CardInstance, GameState, PendingChase, PlayerId } from "../types/game";
+import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { getDefinition } from "../core/catalog";
 import { findInZone, opponent } from "../core/helpers";
 import { cardHasKeyword, playerHasChaseUnitInField } from "./cardKeywords";
@@ -123,12 +124,13 @@ export function wingAllowsEmptyBattleStrike(
   return battle.length === 1 && battle[0]?.instanceId === striker.instanceId;
 }
 
-/** ウイング: 敵ラッシュの S ユニットへアタック可能（RS-622 系）。 */
+/** ウイング: 敵ラッシュの S ユニットへアタック可能（RS-622 / wing_attack_enemy_rush 系）。 */
 export function wingCanAttackEnemyRush(
   state: GameState,
   attackerPlayerId: PlayerId,
   attackerCardId: string,
 ): boolean {
+  if (cardHasGrantKeyword(attackerCardId, "wing_attack_enemy_rush")) return true;
   return cardHasKeyword(state.definitions, attackerCardId, "wing", {
     state,
     playerId: attackerPlayerId,

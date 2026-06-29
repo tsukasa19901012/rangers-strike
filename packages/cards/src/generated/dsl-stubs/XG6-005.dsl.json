@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_koreganoniarutan_ma_wotsuyunitogaatakusaretato",
+          "keyword": "effect_card::XG6-005::majikarushotaimu",
           "duration": "permanent"
         }
       ],

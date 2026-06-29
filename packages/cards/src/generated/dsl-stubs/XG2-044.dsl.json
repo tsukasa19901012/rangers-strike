@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibp5000noyunitowo1bi",
+          "keyword": "effect_card::XG2-044::metarushafuto",
           "duration": "turn"
         }
       ],

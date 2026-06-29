@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_koreworashushitatokibatorueriakarabp3000noyunitowo3made",
+          "keyword": "effect_card::XG3-027::fuaiyaborukurashu",
           "duration": "turn"
         }
       ],

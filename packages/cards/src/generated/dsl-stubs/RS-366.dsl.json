@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_search_koregarashuerianiarurashufueizuwotsuyuni",
-          "duration": "turn"
+          "keyword": "effect_card::RS-366::fxunknowne7b78f",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_cards_ganayunitogamonakerebamekawotanainogana",
+          "keyword": "effect_card::XP-027::dainomishon",
           "duration": "turn"
         }
       ],

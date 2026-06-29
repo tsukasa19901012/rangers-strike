@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakararaidosaret",
+          "keyword": "effect_card::RM-047::bigukyanon",
           "duration": "turn"
         }
       ],

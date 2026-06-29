@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_gatanwoerutokikoreworirisusurukahorudoshitemoyoikorehahor",
+          "keyword": "rk_fx::RK-231::mizu_e6bd9c",
           "duration": "turn"
         }
       ],
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_gatanwoerutokikonoyunitoworirisusurukahorudoshitemoyoikor",
+          "keyword": "rk_fx::RK-231::mizu_gatanwoeruto",
           "duration": "turn"
         }
       ],

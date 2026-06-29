@@ -25,8 +25,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_tankonoyunitohakorenobatoruerianosyunito1nitsukibp2",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-090::fxunknowne58f8b",
+          "duration": "permanent"
         }
       ],
       "optional": false

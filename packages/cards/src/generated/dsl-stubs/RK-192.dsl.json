@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "register_resist_koreworashushitatokirejisutowotsusyunitowo1ndemoyoisoush",
+          "keyword": "rk_fx::RK-192::agitofuangu",
           "duration": "turn"
         }
       ],

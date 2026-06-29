@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konotanotmatahadawotsusubetenosyunitohabp1000sarerubp0",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-085::toe697a5",
+          "duration": "permanent"
         }
       ],
       "optional": false

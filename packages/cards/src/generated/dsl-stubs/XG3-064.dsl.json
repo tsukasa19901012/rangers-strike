@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_tankoregabatoruerianitatokiwotsuyunitonowoetemoyoiso",
+          "keyword": "effect_card::XG3-064::raidashuteingu",
           "duration": "turn"
         }
       ],

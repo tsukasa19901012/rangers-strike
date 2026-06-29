@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokibatoruerianoyunitoga4narano",
+          "keyword": "effect_card::RS-624::uingakyanon",
           "duration": "turn"
         }
       ],

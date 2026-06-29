@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_pawazonnodamejininaterukadowosubeteomotenisurusoshiteha",
+          "keyword": "effect_card::RM-016::sutapisu",
           "duration": "turn"
         }
       ],

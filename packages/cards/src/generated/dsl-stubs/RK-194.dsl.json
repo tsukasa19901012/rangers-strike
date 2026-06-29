@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_horudonoyunitonowoetesononopawanowotsusyuni",
+          "keyword": "rk_fx::RK-194::gx05",
           "duration": "turn"
         }
       ],

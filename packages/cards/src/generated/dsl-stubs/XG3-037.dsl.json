@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_koreworashushitatokitekisutoniatakusarenaitokaretayunitow",
+          "keyword": "effect_card::XG3-037::fxunknowne7838f",
           "duration": "turn"
         }
       ],

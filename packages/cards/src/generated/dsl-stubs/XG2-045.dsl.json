@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokirashueriakarahorudonosyu",
+          "keyword": "effect_card::XG2-045::torigamagunamu",
           "duration": "turn"
         }
       ],

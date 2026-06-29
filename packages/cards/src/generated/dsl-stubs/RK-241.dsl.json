@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_korega_geki_ha_sareteninatatokikaramomotarosunokadowo1b",
+          "keyword": "rk_fx::RK-241::muriyarina",
           "duration": "turn"
         }
       ],

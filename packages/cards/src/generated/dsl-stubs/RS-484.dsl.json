@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregaerianiarugatanwoerutokinokara_kaze_shin_harian",
+          "keyword": "effect_card::RS-484::hariapu",
           "duration": "permanent"
         }
       ],

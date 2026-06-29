@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_batorueriakarayunitowo1ndemoyoisoushitatokipawazonnoomo",
+          "keyword": "rk_fx::RK-229::geki_baku",
           "duration": "turn"
         }
       ],

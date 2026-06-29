@@ -41,11 +41,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarurashufueizuarubirochiworashushitatoki",
-          "duration": "turn"
+          "keyword": "rk_fx::RK-220::andedowoeru",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

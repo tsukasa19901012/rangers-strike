@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankonoyunitogahorudoninatatokimawotsukomandowo1tsuho",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-102::chorikishorai",
+          "duration": "permanent"
         }
       ],
       "optional": true

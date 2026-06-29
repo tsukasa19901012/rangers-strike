@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_tankoregabatoruerianitatokibatorueriakara_ryo_wotsumyun",
+          "keyword": "rk_fx::RK-155::ryo_noto",
           "duration": "turn"
         }
       ],

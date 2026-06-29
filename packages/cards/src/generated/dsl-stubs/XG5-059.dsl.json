@@ -45,8 +45,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_korehanoga1notokibp3000sareno_chikara_worukorehatan",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-059::surue69ab4",
+          "duration": "permanent"
         }
       ]
     }

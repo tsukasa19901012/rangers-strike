@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_koreganoniarurashufueizu_ma_barikionno_ma_wo",
+          "keyword": "effect_card::XG3-028::buru",
           "duration": "permanent"
         }
       ],

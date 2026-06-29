@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_koreniraidoshiteiruyunitogaatakusurutokiyunitonobpwokadonisa",
+          "keyword": "rk_fx::RK-182::zburingaataku",
           "duration": "turn"
         }
       ],

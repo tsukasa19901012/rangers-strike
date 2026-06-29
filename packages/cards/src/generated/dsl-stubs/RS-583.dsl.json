@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregaerianiaruniyotekorenoyunitogabaretatokikonoyun",
+          "keyword": "effect_card::RS-583::iwokemeru",
           "duration": "permanent"
         }
       ],

@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_tankoregabatoruerianitatokinowo1binisetemoyoiso",
+          "keyword": "effect_card::XG5-033::nomojikara",
           "duration": "turn"
         }
       ],

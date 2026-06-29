@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_nokaradeisukuanimaruwotsuopereshonkadowo1birashi",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-060::keru",
+          "duration": "permanent"
         }
       ],
       "optional": true

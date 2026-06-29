@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokini1dorosaserusonoha",
+          "keyword": "rk_fx::RK-290::no_e69cab",
           "duration": "turn"
         }
       ],

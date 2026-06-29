@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "kamen_rider_koreharaidadeiendogaarebasp13ninaru",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-073::toteokinoo",
+          "duration": "permanent"
         }
       ],
       "optional": false

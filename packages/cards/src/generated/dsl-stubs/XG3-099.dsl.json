@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_batorueriakarasyunitowo1ndemoyoisoushitatokindayunitohano",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-099::rkba",
+          "duration": "permanent"
         }
       ],
       "optional": true

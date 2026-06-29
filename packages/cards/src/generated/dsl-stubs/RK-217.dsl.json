@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "register_resist_koreharashuerianorejisutowotsuyunitoniatakudekiru",
+          "keyword": "rk_fx::RK-217::geki_e6bb91",
           "duration": "turn"
         }
       ],

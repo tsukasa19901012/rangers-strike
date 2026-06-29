@@ -25,6 +25,7 @@ import { findCardInField, findCardOwner } from "./fieldLookup";
 import { bounceToHand } from "./bounce";
 import { applyReanimate } from "./reanimate";
 import { tryLeaveField } from "./operationCounters";
+import { completeToPowerOnDestroyChoice } from "./toPowerOnDestroy";
 import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
 import { continueDslAfterChoice } from "../dsl/cardInterpreter";
@@ -2016,6 +2017,18 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (pending.effectId === "kamen_ride_morph") {
     return finishChoice(state, pending, "skipped");
   }
+  if (pending.effectId === "to_power_on_destroy") {
+    const { state: discarded, log } = completeToPowerOnDestroyChoice(state, pending, false);
+    const followUp = pending.toPowerOnDestroyMeta?.pendingLeave.followUpAttackerLeave;
+    if (followUp) {
+      const next = tryLeaveField(discarded, {
+        ...followUp,
+        phasePlayerId: followUp.phasePlayerId,
+      });
+      return { state: next.state, log };
+    }
+    return { state: discarded, log };
+  }
   return finishChoice(state, pending, "skipped");
 }
 
@@ -3254,8 +3267,64 @@ export function applyEffectChoiceSelect(
       }
 
       const player = state.players[pending.playerId];
-      const found = findInZone(player, "hand", instanceId);
+      const rushMeta = pending.handResidentRushMeta;
+      let found = findInZone(player, "hand", instanceId);
+      let fromOperation = false;
+      let fromDeck = false;
+      if (!found && rushMeta) {
+        const opFound = findInZone(player, "operation", instanceId);
+        if (opFound) {
+          found = opFound;
+          fromOperation = true;
+        } else {
+          const deckIdx = player.deck.findIndex((c) => c.instanceId === instanceId);
+          if (deckIdx >= 0) {
+            found = { index: deckIdx, card: player.deck[deckIdx]! };
+            fromDeck = true;
+          }
+        }
+      }
       if (!found) return { error: "invalid_target" };
+
+      if (rushMeta && pending.unitDestination === "rush") {
+        let nextPlayer: PlayerState;
+        if (fromOperation) {
+          const [, operation] = removeAt(player.operation, found.index);
+          nextPlayer = {
+            ...player,
+            operation,
+            rush: [...player.rush, found.card],
+          };
+        } else if (fromDeck) {
+          const [, deckRest] = removeAt(player.deck, found.index);
+          nextPlayer = {
+            ...player,
+            deck: rushMeta.shuffleIfFromDeck ? shuffleDeck(deckRest) : deckRest,
+            rush: [...player.rush, found.card],
+          };
+        } else {
+          const [, hand] = removeAt(player.hand, found.index);
+          nextPlayer = {
+            ...player,
+            hand,
+            rush: [...player.rush, found.card],
+          };
+        }
+        let nextState = { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) };
+        if (!fromOperation && !fromDeck && rushMeta.drawIfFromHand) {
+          const drawn = requestDrawFromDeck(nextState, pending.playerId, pending.phasePlayerId, {
+            count: 1,
+            sourceCardId: pending.sourceCardId,
+          });
+          nextState = drawn.state;
+        }
+        return finishChoice(
+          nextState,
+          pending,
+          cardName(state.definitions, found.card.cardId),
+        );
+      }
+
       const [, hand] = removeAt(player.hand, found.index);
       if (pending.effectId === "megatomahoku") {
         let nextPlayer: PlayerState = {
@@ -3506,6 +3575,19 @@ export function applyEffectChoiceSelect(
         if (!top) return finishChoice(state, pending, "empty_deck");
         const nextState = applyZorobTopDeckReveal(state, pending.playerId, top.instanceId);
         return finishChoice(nextState, pending, cardName(state.definitions, top.cardId));
+      }
+      if (pending.effectId === "to_power_on_destroy") {
+        if (instanceId !== "place_in_power") return { error: "invalid_target" };
+        const { state: placed, log } = completeToPowerOnDestroyChoice(state, pending, true);
+        const followUp = pending.toPowerOnDestroyMeta?.pendingLeave.followUpAttackerLeave;
+        if (followUp) {
+          const next = tryLeaveField(placed, {
+            ...followUp,
+            phasePlayerId: followUp.phasePlayerId,
+          });
+          return { state: next.state, log };
+        }
+        return { state: placed, log };
       }
       return { error: "unsupported_confirm" };
     }

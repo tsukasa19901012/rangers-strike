@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koreworashushitatokinowodekirubatorueriakarasukuramuwotsuyu",
+          "keyword": "effect_card::RM-061::misairu",
           "duration": "turn"
         }
       ],

@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_pawanoninoarusyunitowo1bi_geki_ha_shitemoyoi",
+          "keyword": "rk_fx::RK-159::v3kiku",
           "duration": "turn"
         }
       ],

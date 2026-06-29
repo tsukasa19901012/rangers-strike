@@ -65,7 +65,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_konotannisyunitoga_geki_ha_sareteninatatokisonokadowoni",
+          "keyword": "effect_card::XG2-041::shintsuchinoi",
           "duration": "turn"
         }
       ],

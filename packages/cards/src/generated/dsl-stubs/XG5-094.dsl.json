@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarurashufueizugotoni1dakenowodekiru",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-094::hakaidano",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_rashuerianohorudonoyunitowosubetechinonishiteshafuru",
-          "duration": "turn"
+          "keyword": "effect_card::RS-681::shiserumizu",
+          "duration": "permanent"
         }
       ],
       "optional": true

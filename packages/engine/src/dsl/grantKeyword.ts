@@ -44,6 +44,8 @@ import {
   applyTurnMirrorRiderPowerMinus,
   applyTurnAccelerateRushWaive,
   applyPickEffectBranch,
+  applyHandOrResidentFeatureToRush,
+  applyDeckOrResidentFeatureToRush,
 } from "../rules/bkOperationEffects";
 import {
   applyPinkRaiderVehicleReturn,
@@ -93,6 +95,7 @@ import { setGenericSComboFinisher, setBattleDestroyToPower, addComboNumberDelta 
 import { superPowerAttackBonus } from "../core/catalog";
 import { matchRkGrantKeyword } from "../rules/rkEffects";
 import { matchSrGrantKeyword } from "../rules/srEffects";
+import { tryRkBkGrantKeywordFromEffect } from "../rules/rk/rkBkCatchallRuntime";
 
 export const PASSIVE_GRANT_KEYWORDS = new Set([
   "over_technology_m_bp_plus_on_attacked",
@@ -330,6 +333,17 @@ export function applyGrantKeyword(
     const withChoice = applyDeckNamedRushShuffle(state, ctx, keyword);
     if (!withChoice) return { state, detail: "deck_named_rush_shuffle:no_targets" };
     return { state: withChoice, detail: "deck_named_rush_shuffle" };
+  }
+
+  if (keyword.startsWith("hand_resident_rush_")) {
+    const withChoice = applyHandOrResidentFeatureToRush(state, ctx, keyword);
+    if (!withChoice) return { state, detail: `${keyword}:no_targets` };
+    return { state: withChoice, detail: keyword };
+  }
+  if (keyword.startsWith("recruit_") && keyword.endsWith("_deck_resident")) {
+    const withChoice = applyDeckOrResidentFeatureToRush(state, ctx, keyword);
+    if (!withChoice) return { state, detail: `${keyword}:no_targets` };
+    return { state: withChoice, detail: keyword };
   }
 
   const rk = matchRkGrantKeyword(state, ctx, keyword);
@@ -887,7 +901,7 @@ export function applyGrantKeyword(
         sourceInstanceId: ctx.triggerSourceInstanceId,
         phasePlayerId: ctx.phasePlayerId,
       });
-      if (!withChoice) return { state };
+      if (!withChoice) return { state, detail: `${keyword}:no_targets` };
       return { state: withChoice, detail: ctx.effectId };
     }
     case "while_in_field_formation_deploy":
@@ -1120,6 +1134,8 @@ export function applyGrantKeyword(
       if (PASSIVE_GRANT_KEYWORDS.has(keyword) || isEngineNativeGrantKeyword(keyword)) {
         return { state, detail: keyword };
       }
+      const rkBkResolved = tryRkBkGrantKeywordFromEffect(state, ctx, keyword);
+      if (rkBkResolved) return rkBkResolved;
       return { state };
     }
   }

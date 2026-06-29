@@ -20,13 +20,13 @@
       "name": "地空人のエージェント",
       "text": "これが自軍エリアにある間、敵軍ターン中、自軍Sユニットがアタックされたとき、次の効果を発動できる⇒自分の手札の必要パワーに「－」を持つユニットカードから、アタックされたSユニットが追加条件で指定されているカードを1枚選び、自軍バトルエリアに出してもよい（このとき出したユニットの効果は発動しない）。そうしたとき、アタックされたユニットを捨札にして、かわりにバトルエリアに出したユニットでバトルする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarutansyunitogaatakusaretatokinowo",
-          "duration": "turn"
+          "keyword": "rk_fx::RK-188::noejiento",
+          "duration": "permanent"
         }
       ],
       "optional": true

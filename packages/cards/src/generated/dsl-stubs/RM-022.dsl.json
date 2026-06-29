@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokiotwotsukomandowo2tsuhoru",
+          "keyword": "effect_card::RM-022::saibarianrezasupido",
           "duration": "turn"
         }
       ],

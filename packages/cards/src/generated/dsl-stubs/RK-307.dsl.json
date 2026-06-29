@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_rashueriakarapawanoga3noyunitowo1bi_geki_ha_suru",
+          "keyword": "rk_fx::RK-307::wairudoshoto",
           "duration": "turn"
         }
       ],

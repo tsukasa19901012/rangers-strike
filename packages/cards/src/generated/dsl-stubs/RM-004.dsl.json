@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_nokaradamejinotojimadeomotenisurusoshiteomotenishitaka",
+          "keyword": "effect_card::RM-004::fxunknown7",
           "duration": "turn"
         }
       ],

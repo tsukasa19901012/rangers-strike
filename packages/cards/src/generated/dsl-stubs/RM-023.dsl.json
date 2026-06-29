@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_koreworashushitatokipawazonnoomote_ko_kinokadokara1bin",
+          "keyword": "effect_card::RM-023::fxunknowne59cb0",
           "duration": "turn"
         }
       ],

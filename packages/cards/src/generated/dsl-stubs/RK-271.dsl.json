@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_all_enemy_koregabatorudeyunitowo_geki_ha_shitatokikorega_geki_ha",
+          "keyword": "rk_fx::RK-271::raijingumaiteikiku",
           "duration": "turn"
         }
       ],

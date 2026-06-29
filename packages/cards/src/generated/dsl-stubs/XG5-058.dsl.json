@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_nokara5woomotenisurusoushitatokiomotenishitayunitokadonobpn",
+          "keyword": "effect_card::XG5-058::roiyarusutoretofurashu",
           "duration": "turn"
         }
       ],

@@ -23,16 +23,16 @@
       "name": "恩返し",
       "text": "敵軍ターン中、これが撃破されて捨札になったとき次の効果を発動できる⇒自軍パワーゾーンからダメージになっているカードを1枚選び、オモテにする。このとき、オモテにしたカードが「ジーク」なら、そのカードを捨札にしてこの効果をもう一度発動できる。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankorega_geki_ha_sareteninatatokinowodekirupawazon",
+          "keyword": "rk_fx::RK-165::shi_e681a9",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

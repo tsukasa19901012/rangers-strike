@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "catchall_interpret_batoruerianoyunitogasyunitodakenarakonotankorehasp1ni",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-048::kuwagatahon",
+          "duration": "permanent"
         }
       ],
       "optional": false

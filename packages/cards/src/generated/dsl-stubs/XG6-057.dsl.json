@@ -70,7 +70,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_koreworashushitatokipawawotashiteinaiyunitomatahabikuruwo",
+          "keyword": "effect_card::XG6-057::torakuro",
           "duration": "turn"
         }
       ],

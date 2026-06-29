@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_batorueriakarabpganobpdenaiyunitowobichinokomandozon",
+          "keyword": "rk_fx::RK-319::ikusajajimento",
           "duration": "turn"
         }
       ],

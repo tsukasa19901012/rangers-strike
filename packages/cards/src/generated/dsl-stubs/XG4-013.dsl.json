@@ -60,8 +60,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_hanonokara1wonisurukanokomandowo2tsubini",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-013::kazee796be",
+          "duration": "permanent"
         }
       ],
       "optional": false

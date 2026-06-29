@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokibatorueriakaraniyu",
+          "keyword": "rk_fx::RK-187::janboraidakiku",
           "duration": "turn"
         }
       ],

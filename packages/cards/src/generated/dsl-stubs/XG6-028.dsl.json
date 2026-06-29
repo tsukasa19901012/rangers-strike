@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_koreworashushitatokinokara1woomotenisuruomotenishitakadoga",
+          "keyword": "effect_card::XG6-028::kinoshi",
           "duration": "turn"
         }
       ],

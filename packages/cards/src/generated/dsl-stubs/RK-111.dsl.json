@@ -34,10 +34,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_s_ability_koreniraidoshiteirusyunitohano_chikara_worukoregarashueri",
+          "keyword": "rk_fx::RK-111::fx_unknown_e99d9e",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

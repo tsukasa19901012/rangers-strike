@@ -107,6 +107,8 @@ export type UnnamedUnitRule =
   | "auto_battle_entry_each_turn"
   | "auto_battle_entry_on_rush"
   | "destroy_self_damage"
+  /** 敵ターン中、撃破して捨札になる際に自軍パワーへ置いてもよい（RS-668 等）。 */
+  | "to_power_on_destroy"
   | "deck_copy_unlimited"
   | "needs_ally_s_in_battle"
   | "win_but_destroyed_vs_sp1"
@@ -142,7 +144,27 @@ export type UnnamedUnitRule =
   /** バトル投入: 先に手札から捨札（RS-165）。 */
   | "battle_entry_discard_from_hand"
   /** バトル中、このユニットは MA カテゴリも持つ（RS-166）。 */
-  | "battle_adds_ma_category";
+  | "battle_adds_ma_category"
+  /** バトル中、WB カテゴリを追加（RS-361 等）。 */
+  | "category_wb_in_battle"
+  /** S ユニットからアタックされない（RS-486 等）。 */
+  | "no_attack_from_s"
+  /** 敵軍 S ユニットからアタックされない（XG1-070 等）。 */
+  | "no_attack_from_enemy_s"
+  /** DA を持たないユニットにアタックできない（RS-640 等）。 */
+  | "cannot_attack_non_da"
+  /** S ユニットにアタックできない（RM-026 等）。 */
+  | "cannot_attack_s"
+  /** 敵バトルエリアのユニットにアタックできない（RS-479 等）。 */
+  | "cannot_attack_enemy_battle"
+  /** 敵ラッシュのユニットにアタックできる（RS-479 等）。 */
+  | "wing_attack_enemy_rush"
+  /** ホールド中コマンドがあるときストライク不可（RS-636 等）。 */
+  | "no_strike_with_held_command"
+  /** 手札からしかラッシュできない（XP-017 等）。 */
+  | "rush_from_hand_only"
+  /** アンデッドユニットのラッシュ支払いとしてホールド可能（XG5-055 等）。 */
+  | "undead_command_rush_hold";
 
 /** 効果名を持たないテキスト — 静的ルール、※ 制限、ゾード素材行。 */
 export type UnnamedUnitText = {

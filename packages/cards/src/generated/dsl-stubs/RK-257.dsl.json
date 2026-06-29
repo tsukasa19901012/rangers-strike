@@ -48,10 +48,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_raidosareteirukabutorokarakonobikurugakonbineshonshiteiruk",
+          "keyword": "rk_fx::RK-257::reda",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

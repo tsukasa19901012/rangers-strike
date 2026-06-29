@@ -80,10 +80,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_mawotsukomandowo2tsuhorudoshitemoyoisoushitatokikonotankor",
+          "keyword": "rk_fx::RK-222::sound_strike_scorching_form",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

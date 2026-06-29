@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_raidonosyunitowo1ndemoyoisoushitatokihasonosyunitokasono",
-          "duration": "turn"
+          "keyword": "effect_card::RM-056::suteingakuro",
+          "duration": "permanent"
         }
       ],
       "optional": true

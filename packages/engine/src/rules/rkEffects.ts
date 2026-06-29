@@ -5,6 +5,7 @@ import { getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
 import { findInZone, opponent, updatePlayer } from "../core/helpers";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { openEffectChoice, startSelectCommandChoice } from "./pendingChoices";
+import { applyRkFxKeyword } from "./rkResolvedEffects";
 
 function parsePayload(keyword: string, prefix: string): string | null {
   const marker = `${prefix}::`;
@@ -215,6 +216,7 @@ const RK_ACTIVE_KEYWORDS = new Set([
   "enemy_rush_s_count_power_match_to_power",
   "force_enemy_s_rush_to_battle_reorder",
   "counter_mirror_rider_cancel_battle",
+  "rush_discard_search_named",
 ]);
 
 export function matchRkGrantKeyword(
@@ -253,6 +255,10 @@ export function matchRkGrantKeyword(
   }
   if (keyword.startsWith("combo_named_discard_enemy_command::")) {
     return { state, detail: keyword };
+  }
+  if (keyword.startsWith("rk_fx::")) {
+    const resolved = applyRkFxKeyword(state, ctx, keyword);
+    if (resolved) return resolved;
   }
   return null;
 }

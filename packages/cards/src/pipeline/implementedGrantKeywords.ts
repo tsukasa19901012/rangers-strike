@@ -163,6 +163,8 @@ const STABLE_GRANT_KEYWORD_PATTERNS: RegExp[] = [
   /^note_slug::[a-z0-9_]+$/,
   /^while_field_note::[a-z0-9_]+$/,
   /^note_on_rush::[a-z0-9_]+$/,
+  /^rk_fx::RK-\d+::/,
+  /^rush_discard_search_named::/,
   /^counter_note::[a-z0-9_]+$/,
   /^while_in_hand_rush_deploy::[a-z0-9_]+$/,
   /^while_in_discard_rush_deploy::[a-z0-9_]+$/,

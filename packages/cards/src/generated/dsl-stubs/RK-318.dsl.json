@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibatorueriakaradamejino",
+          "keyword": "rk_fx::RK-318::buroukunfuangu",
           "duration": "turn"
         }
       ],

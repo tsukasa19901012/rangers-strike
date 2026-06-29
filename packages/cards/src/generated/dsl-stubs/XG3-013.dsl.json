@@ -55,8 +55,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_gaobeakawotsulyunitogakonoyunitokarakonbineshonsurutoki",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-013::hikarie586b7",
+          "duration": "permanent"
         }
       ],
       "optional": true

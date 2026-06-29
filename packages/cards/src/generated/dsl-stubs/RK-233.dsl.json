@@ -28,11 +28,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokinowodekiruha1doroshite",
+          "keyword": "rk_fx::RK-233::haiparaidakiku",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

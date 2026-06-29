@@ -45,8 +45,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_koregabatoruerianitatokiyunitowo1bihorudoshitemoyoi",
-          "duration": "permanent"
+          "keyword": "effect_card::RS-648::ikarosubaindo",
+          "duration": "turn"
         }
       ],
       "optional": true

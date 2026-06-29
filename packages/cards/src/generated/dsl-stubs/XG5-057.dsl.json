@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_discard_trigger_koreniraidoshitayunitogaarunokarakadoga1nikarerutab",
+          "keyword": "effect_card::XG5-057::fuaiaranbasu",
           "duration": "permanent"
         }
       ]

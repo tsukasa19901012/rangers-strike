@@ -3,12 +3,13 @@ import { legend1Catalog, legend2Catalog, legend3Catalog } from "@rangers-strike/
 import { applyAction, canMoveUnitToBattle, getLegalActions, unitEffectiveCategories } from "./index";
 import { resolveNamedOnRushEffects } from "./rules/namedUnitEffects";
 import { startSagasSniperChoice } from "./rules/pendingChoices";
-import { createTestState, inst, withCostWindow } from "./testing/fixtures";
+import { createTestState, inst, TEST_DEFINITIONS, withCostWindow } from "./testing/fixtures";
 import { isCostWindowSatisfied, getCostWindowMetadata } from "./core/costWindow";
 import { legendDefinitions, moveToBattle } from "./testing/battleEntry";
 import { buildZordRushSetup } from "./testing/gameplayFlow";
 
 const defs = {
+  ...TEST_DEFINITIONS,
   ...Object.fromEntries(
     [...legend1Catalog.cards, ...legend2Catalog.cards, ...legend3Catalog.cards].map(
       (card) => [card.id, card],

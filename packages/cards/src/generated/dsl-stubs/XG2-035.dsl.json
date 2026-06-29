@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_gagemunikerumaderidameji1naratankoregabatoruerianita",
+          "keyword": "effect_card::XG2-035::furuburasutorancha",
           "duration": "turn"
         }
       ],

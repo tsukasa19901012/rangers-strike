@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_koreganoniaruwotsusyunitogarashusaretatokikorewo",
+          "keyword": "effect_card::XG7-056::ijinaiwa",
           "duration": "permanent"
         }
       ],

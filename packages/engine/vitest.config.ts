@@ -24,6 +24,10 @@ export default defineConfig({
         __dirname,
         "../cards/src/pipeline/implementedGrantKeywords.ts",
       ),
+      "@rangers-strike/cards/pipeline/rkClassify": path.resolve(
+        __dirname,
+        "../cards/src/pipeline/rkClassify.ts",
+      ),
       "@rangers-strike/cards/dsl": path.resolve(
         __dirname,
         "../cards/src/dsl/index.ts",

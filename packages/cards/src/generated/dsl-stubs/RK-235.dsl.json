@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_syunitonogasyunitonoyori3itokisyunitowo1",
+          "keyword": "rk_fx::RK-235::abaranchikurashu",
           "duration": "turn"
         }
       ],

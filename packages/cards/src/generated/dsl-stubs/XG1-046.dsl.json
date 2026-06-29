@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_konobikuruniraidoshiteiruyunitogamofudekieraretatokikonobiku",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-046::vjieto",
+          "duration": "permanent"
         }
       ],
       "optional": true

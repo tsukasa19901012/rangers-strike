@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregawotsulyunitomatahaxlyunitokarakonbineshonsurutokino",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-008::rainakonbo",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_magunagigakarakonbineshonshitatokidekiruhorudonosyunitowosu",
+          "keyword": "rk_fx::RK-115::endoobuwarudo",
           "duration": "turn"
         }
       ],

@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_konoyunitonobpnobpwotsusyunitowo1bichinopawazonni",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-086::akuinparusu",
+          "duration": "permanent"
         }
       ],
       "optional": false

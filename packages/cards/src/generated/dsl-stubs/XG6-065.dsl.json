@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_korehalyunitogaarebayunitoniatakusarenaimatakonoyunitotori",
-          "duration": "turn"
+          "keyword": "effect_card::XG6-065::noe58f8b",
+          "duration": "permanent"
         }
       ],
       "optional": false

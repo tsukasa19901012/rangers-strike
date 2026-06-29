@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ot_category_zonkazonniotwotsukadogaomote_ko_kidearebakorehasp1ninaru",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-011::supesumetarunomaken",
+          "duration": "permanent"
         }
       ],
       "optional": false

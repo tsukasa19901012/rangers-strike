@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_korewohorudosurebanowodekiruhanoyunitowo1bina",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-091::supindorukyanon",
+          "duration": "permanent"
         }
       ],
       "optional": true

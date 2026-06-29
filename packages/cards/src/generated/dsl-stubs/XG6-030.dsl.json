@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_korehakomandogasubetehorudonarasyunitoniatakusarenai",
-          "duration": "turn"
+          "keyword": "effect_card::XG6-030::noe594af",
+          "duration": "permanent"
         }
       ],
       "optional": false

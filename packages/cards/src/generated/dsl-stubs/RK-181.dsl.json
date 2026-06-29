@@ -42,10 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_tankoregabatoruerianitatokiwbwotsukomandowo1tsuhorudoshite",
+          "keyword": "rk_fx::RK-181::haibaibuneiru",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

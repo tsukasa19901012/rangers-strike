@@ -66,7 +66,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokikarayunitokadowo1ndemo",
+          "keyword": "effect_card::RM-039::zanrie58d81",
           "duration": "turn"
         }
       ],

@@ -1,7 +1,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition, instanceBp, isSmallUnit } from "../core/catalog";
-import { findInZone } from "../core/helpers";
+import { getDefinition, instanceBp, isSmallUnit, unitEffectiveCategories } from "../core/catalog";
+import { findInZone, opponent } from "../core/helpers";
 import { lastBattleProtectsOtherS } from "../rules/promotedNcEffects";
 import { getCardDslDocument } from "./effectLookup";
 
@@ -268,6 +268,18 @@ export function promotedDefenderBlocksAttack(
   for (const keyword of keywords) {
     if (keyword === "enemy_cannot_attack") return true;
 
+    if (keyword === "no_attack_from_s" && isSmallUnit(state.definitions, attacker.card.cardId)) {
+      return true;
+    }
+
+    if (
+      keyword === "no_attack_from_enemy_s" &&
+      attackerPlayerId !== defenderPlayerId &&
+      isSmallUnit(state.definitions, attacker.card.cardId)
+    ) {
+      return true;
+    }
+
     const enemySBp = keyword.match(/^no_attack_from_enemy_s_bp(\d+)$/);
     if (
       enemySBp &&
@@ -312,9 +324,27 @@ export function promotedAttackerCannotTarget(
   const defenderBp = quickBpForAttackCheck(state, defenderPlayerId, defender.card);
   const keywords = listCardGrantKeywords(attacker.card.cardId);
 
+  const defenderZone = findInZone(state.players[defenderPlayerId], "battle", defenderInstanceId)
+    ? "battle"
+    : "rush";
+  const defenderCats = unitEffectiveCategories(
+    state,
+    defenderPlayerId,
+    defender.card,
+    defenderZone,
+  );
+
   for (const keyword of keywords) {
     const lowBp = keyword.match(/^cannot_attack_bp(\d+)_or_less$/);
     if (lowBp && defenderBp <= Number(lowBp[1])) return true;
+
+    if (keyword === "cannot_attack_non_da" && !defenderCats.includes("DA")) return true;
+
+    if (keyword === "cannot_attack_s" && isSmallUnit(state.definitions, defender.card.cardId)) {
+      return true;
+    }
+
+    if (keyword === "cannot_attack_enemy_battle" && defenderZone === "battle") return true;
 
     const noFeature = keyword.match(/^no_attack_without_(.+)$/);
     if (noFeature) {

@@ -26,10 +26,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_self_order_koreworashushitatokinowononiunokaraoperesho",
+          "keyword": "rk_fx::RK-146::denebukyandei",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "denebukyandei_koreworashus",
@@ -41,10 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_self_order_koreworashushitatokinowononiunowotemoyoisou",
+          "keyword": "rk_fx::RK-146::denebukyandei_koreworashus",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

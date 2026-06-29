@@ -28,11 +28,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_from_named_baiogurizakarakonbineshonshitatokidekirubatorueriakarab",
+          "keyword": "rk_fx::RK-284::desubanishu",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

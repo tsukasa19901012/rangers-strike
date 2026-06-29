@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_tankoregabatoruerianitatokipawazonkaraomote_ko_kinokad",
+          "keyword": "effect_card::SX-001::boisutazukiku",
           "duration": "turn"
         }
       ],

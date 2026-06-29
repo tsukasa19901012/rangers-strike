@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_raidoshiteinaiwotsuyunitowo1bitagetotosurusoshitekonoka",
+          "keyword": "effect_card::XG2-052::yunaitobento",
           "duration": "turn"
         }
       ],

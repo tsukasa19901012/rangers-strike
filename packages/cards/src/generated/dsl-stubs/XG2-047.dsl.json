@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_wbkaotwotsukomandowo1tsubihorudoshitemoyoisoushitatoki",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-047::hihonoogasu",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_bp6000noyunitowo1bichinopawazonnirukoregakoma",
-          "duration": "permanent"
+          "keyword": "effect_card::XG5-016::signalcannon",
+          "duration": "turn"
         }
       ],
       "optional": true

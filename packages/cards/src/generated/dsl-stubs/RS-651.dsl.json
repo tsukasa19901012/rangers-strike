@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregagaorainosukawotsulyunitokarakonbineshonsurutokino",
-          "duration": "turn"
+          "keyword": "effect_card::RS-651::tari",
+          "duration": "permanent"
         }
       ],
       "optional": true

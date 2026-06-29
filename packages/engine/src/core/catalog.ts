@@ -12,7 +12,7 @@ import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { hasCommandForCardUse } from "../rules/restrictions";
 import { isDslPermanentOperation } from "../dsl/dslCatalog";
-import { promotedKeywordBpBonus } from "../dsl/promotedKeywordBridge";
+import { cardHasGrantKeyword, promotedKeywordBpBonus } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
@@ -40,6 +40,7 @@ import { isShironLightRushTarget } from "../rules/shironLight";
 import { getAuraPowerInstanceId, getComboNumberDelta } from "../rules/turnModifierBridge";
 import { opponentInfiniteChainBlocks } from "../rules/turnModifiers";
 import { heldCallLeadMatchesCategories } from "../rules/callLead";
+import { heldUndeadCommandRushHoldMatches } from "../rules/undeadCommandRushHold";
 import {
   blastBypassesRushAdditionalCondition,
   breakerBlocksSameNameRush,
@@ -307,6 +308,13 @@ export function unitEffectiveCategories(
   if (zone === "battle" && hasUnnamedRule(instance.cardId, "battle_adds_ma_category")) {
     return cats.includes("MA") ? cats : [...cats, "MA"];
   }
+  if (
+    zone === "battle" &&
+    (hasUnnamedRule(instance.cardId, "category_wb_in_battle") ||
+      cardHasGrantKeyword(instance.cardId, "category_wb_in_battle"))
+  ) {
+    return cats.includes("WB") ? cats : [...cats, "WB"];
+  }
   // RS-315: gains WB category when in battle zone
   if (zone === "battle" && instance.cardId === "RS-315") {
     return cats.includes("WB") ? cats : [...cats, "WB"];
@@ -420,7 +428,8 @@ export function canRushUnit(
     unitCats.length > 0 &&
     !isShironLightRushTarget(player, rushingInstanceId) &&
     !hasHeldCommandForCategories(player, definitions, unitCats) &&
-    !heldCallLeadMatchesCategories(player, definitions, "call", unitCats)
+    !heldCallLeadMatchesCategories(player, definitions, "call", unitCats) &&
+    !heldUndeadCommandRushHoldMatches(player, unitDefinition.id, definitions)
   ) {
     return false;
   }

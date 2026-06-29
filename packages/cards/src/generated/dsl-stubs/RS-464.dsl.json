@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_notanhakonoyunitowobenai",
-          "duration": "turn"
+          "keyword": "effect_card::RS-464::zangekino",
+          "duration": "permanent"
         }
       ],
       "optional": false

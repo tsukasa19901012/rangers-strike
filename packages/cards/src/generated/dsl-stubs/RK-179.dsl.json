@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokiraidonosyunitowo1ndemoyo",
+          "keyword": "rk_fx::RK-179::tari_geki",
           "duration": "turn"
         }
       ],

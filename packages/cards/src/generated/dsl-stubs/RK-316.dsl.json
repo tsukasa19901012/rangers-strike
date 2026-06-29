@@ -25,10 +25,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_koregaerianiaru_ma_chikara_wotsusyunitohano_chikara_woru",
+          "keyword": "rk_fx::RK-316::fuesuru",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "unnamed_morph",

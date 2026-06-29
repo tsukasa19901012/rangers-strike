@@ -6,6 +6,7 @@ import {
   getUnitEffectBlock,
   hasBattleEntryHoldNote,
   hasDestroySelfDamageNote,
+  hasToPowerOnDestroyNote,
   hasUnnamedRule,
   listBattleEntryHoldCardIds,
   listNcNamedEffects,
@@ -159,5 +160,10 @@ describe("unnamedText rule coverage", () => {
       }
     }
     expect(missing).toEqual([]);
+  });
+
+  it("parses RS-668 to_power_on_destroy unnamed rule", () => {
+    expect(hasToPowerOnDestroyNote("RS-668")).toBe(true);
+    expect(hasUnnamedRule("RS-668", "to_power_on_destroy")).toBe(true);
   });
 });

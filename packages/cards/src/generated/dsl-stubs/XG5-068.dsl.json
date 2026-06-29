@@ -58,8 +58,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_shiteiruopereshonkadowo1binishitemoyoisoushitatokisonokado",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-068::ikeru",
+          "duration": "permanent"
         }
       ],
       "optional": true

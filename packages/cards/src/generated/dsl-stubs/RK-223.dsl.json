@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_nokara3woomotenishitemoyoisoushitatokinokara3woomote",
+          "keyword": "rk_fx::RK-223::geki_kaze_e99fb3",
           "duration": "turn"
         }
       ],

@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_konoyunitokarakonbineshonsuruwotsuyunitohano_chikara_worua",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-034::kyouryuumaru",
+          "duration": "permanent"
         }
       ]
     }

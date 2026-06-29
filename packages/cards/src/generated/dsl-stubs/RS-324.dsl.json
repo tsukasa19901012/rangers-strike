@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregarashuerianiarunowodekirutanyunitoga_geki",
+          "keyword": "effect_card::RS-324::jirumamajuna",
           "duration": "turn"
         }
       ],

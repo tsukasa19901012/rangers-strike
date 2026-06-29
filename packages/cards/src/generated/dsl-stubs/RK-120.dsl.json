@@ -34,10 +34,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_koregaraidosaretamamanarakonobikurukarakonbineshonsurusyun",
+          "keyword": "rk_fx::RK-120::nirashatoru",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

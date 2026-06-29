@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_koregaatakusurutokikomandowokinahorudoshitemoyoisoushitatokiko",
+          "keyword": "rk_fx::RK-186::jpanchi",
           "duration": "turn"
         }
       ],

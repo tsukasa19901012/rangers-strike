@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_hand_nokarawotsuyunitokadowo1binisetemoyoisoushitato",
-          "duration": "turn"
+          "keyword": "effect_card::RS-500::saiburedokata",
+          "duration": "permanent"
         }
       ],
       "optional": false

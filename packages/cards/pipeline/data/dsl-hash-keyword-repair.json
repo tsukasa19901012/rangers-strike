@@ -1,137 +1,137 @@
 {
-  "generatedAt": "2026-06-29T08:57:20.734Z",
-  "scanned": 0,
+  "generatedAt": "2026-06-29T12:48:17.601Z",
+  "scanned": 884,
   "scannedUnnamed": 0,
-  "scannedEffectCard": 884,
-  "repaired": 0,
+  "scannedEffectCard": 0,
+  "repaired": 884,
   "repairedUnnamed": 0,
-  "repairedEffectCard": 884,
+  "repairedEffectCard": 0,
   "remainingCatchallStubs": 0,
   "samples": [
     {
       "cardId": "RK-089",
       "effectId": "fx_unknown_e4b997",
-      "to": "opponent_self_order_nowononiunonokara3woomotenishiteniseru"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-091",
       "effectId": "no_e688a6",
-      "to": "while_in_field_body_koregaerianiarubatoruerianiaruwotsusyunitonob"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-101",
       "effectId": "taigabonba",
-      "to": "while_in_field_body_koregabatoruerianiarutanbatoruerianowotanaiyu"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-107",
       "effectId": "ko",
-      "to": "release_command_action_koreniraidoshiteiruyunitohatanririsunokomando1tsu"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-110",
       "effectId": "no_e680a7",
-      "to": "hold_enemy_unit_tankorega_geki_ha_sareteninatatokikonoyunitokadowokomand"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-111",
       "effectId": "fx_unknown_e99d9e",
-      "to": "ride_s_ability_koreniraidoshiteirusyunitohano_chikara_worukoregarashueri"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-115",
       "effectId": "endoobuwarudo",
-      "to": "combo_action_magunagigakarakonbineshonshitatokidekiruhorudonosyunitowosu"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-120",
       "effectId": "nirashatoru",
-      "to": "grant_ability_koregaraidosaretamamanarakonobikurukarakonbineshonsurusyun"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-123",
       "effectId": "suru_hikari_no_tsubasa",
-      "to": "while_in_field_body_koregarashuerianiarutankureinorufuenokunoorufu"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-124",
       "effectId": "wo_mamoru_ru",
-      "to": "while_in_field_body_koregabatoruerianiaruhanowokerunotanatakuya"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-126",
       "effectId": "gyarenrauza",
-      "to": "hand_pick_show_nowo3binisetemoyoisoushitatokisyunitowo1bihoru"
+      "to": "effect_card"
     },
     {
       "cardId": "RK-128",
       "effectId": "rengerurauza",
-      "to": "hand_pick_show_nowo3binisetemoyoisoushitatokisetakadogasubetebpno"
+      "to": "effect_card"
     },
     {
       "cardId": "RK-129",
       "effectId": "sandasupeida",
-      "to": "ride_discard_trigger_koreniraidoshitayunitogaarunokarakadoga1nikarerutab"
+      "to": "effect_card"
     },
     {
       "cardId": "RK-131",
       "effectId": "fx_unknown_e99fb3",
-      "to": "reveal_faceup_lyunitowo1binokara7madeomotenishitemoyoisoushitatokio"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-132",
       "effectId": "nobakuapu",
-      "to": "while_in_field_body_koregaerianiarugashafurusaretatokikoregahorudonarari"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-135",
       "effectId": "fx_unknown_e6bd9c",
-      "to": "reveal_faceup_wo1tsushitemoyoisoushitatokinokara1hiiteomotenisuruomote"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-136",
       "effectId": "raidashuteingu",
-      "to": "power_zone_action_koreworashushitatokipawazonnoomote_ko_kinokadowotesono"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-138",
       "effectId": "na",
-      "to": "opponent_must_korega_geki_ha_sareteninatatokihanokarawotsuyunitoka"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-139",
       "effectId": "hakanarii",
-      "to": "opponent_must_hanorashueriakarayunitowo1binarabatoruerianisu"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-141",
       "effectId": "denebikubasuta",
-      "to": "reveal_faceup_koregasutoraikushitatokinowogamadekinatademoji"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-146",
       "effectId": "denebukyandei",
-      "to": "opponent_self_order_koreworashushitatokinowononiunokaraoperesho"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-146",
       "effectId": "denebukyandei",
-      "to": "opponent_self_order_koreworashushitatokinowononiunowotemoyoisou"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-147",
       "effectId": "redomu",
-      "to": "grant_ability_konoyunitokarakonbineshonsurusp14nosyunitohano_chikara_wor"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-148",
       "effectId": "furontoakusu",
-      "to": "power_zone_action_tankoregabatoruerianitatokibatorueriakaramyunitowo1bi"
+      "to": "grant_keyword"
     },
     {
       "cardId": "RK-149",
       "effectId": "ryu",
-      "to": "while_in_field_body_koregabatoruerianiarukonoyunitokaradenrainagoukadenr"
+      "to": "grant_keyword"
     }
   ],
   "note": "Re-match catchall grant_keyword stubs and effect_card delegates via extractEffects PATTERNS."

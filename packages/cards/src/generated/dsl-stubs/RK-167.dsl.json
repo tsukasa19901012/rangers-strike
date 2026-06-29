@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_bpnoga500nosyunitowo1bi_geki_ha_surukonohasaidobasha",
+          "keyword": "rk_fx::RK-167::kaizabureigan",
           "duration": "turn"
         }
       ],

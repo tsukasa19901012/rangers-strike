@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konotankorehawotsuyunito1nitsukibp1000sarerumatakoregabp5",
-          "duration": "turn"
+          "keyword": "effect_card::RS-442::supanishudansu",
+          "duration": "permanent"
         }
       ],
       "optional": false

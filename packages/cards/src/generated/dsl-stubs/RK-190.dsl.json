@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koreworashushitatokinowodekiruwoshafurushitasonokara2",
+          "keyword": "rk_fx::RK-190::woeru",
           "duration": "turn"
         }
       ],

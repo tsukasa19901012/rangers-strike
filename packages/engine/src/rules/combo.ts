@@ -41,7 +41,8 @@ import { getEnterBattleNamedEffect } from "@rangers-strike/cards";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
 import { tryMereChameleonOnAllyEnterBattle } from "./batch04FieldEffects";
 import { applyBaseAttackOnEnter } from "./legend3/enterBattleEffects";
-import { cannotAttackOrStrikeThisTurn } from "./restrictions";
+import { cannotAttackOrStrikeThisTurn, countHeldCommands } from "./restrictions";
+import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import {
   rideOffBlocksStrike,
   wingTurnBlocksStrike,
@@ -583,6 +584,12 @@ export function canStrikeUnit(
       return false;
     }
     if (cannotAttackOrStrikeThisTurn(state.players[playerId], instance)) {
+      return false;
+    }
+    if (
+      cardHasGrantKeyword(instance.cardId, "no_strike_with_held_command") &&
+      countHeldCommands(state.players[playerId]) > 0
+    ) {
       return false;
     }
     if (wingTurnBlocksStrike(state.players[playerId], instance.instanceId)) {
