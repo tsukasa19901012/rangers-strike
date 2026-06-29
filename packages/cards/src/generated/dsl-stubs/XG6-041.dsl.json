@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_breaker",
+      "id": "unnamed_e280bbe38396e383ace382a4",
       "text": "※ブレイカー",
       "trigger": {
         "type": "while_in_field"
@@ -52,14 +52,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-041::shinnopateitaimuda",
+          "keyword": "while_in_field_body_koregaerianiarunokadoniarufuabetowomuyunitohabp100",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

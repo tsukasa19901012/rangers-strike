@@ -26,14 +26,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SK-003::noe5bea9",
+          "keyword": "while_in_field_body_koregabatoruerianiarubatorufueizuhorudonokomandoga1",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

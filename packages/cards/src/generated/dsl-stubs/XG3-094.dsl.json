@@ -22,14 +22,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-094::fxunknowne58f8b",
-          "duration": "permanent"
+          "keyword": "bp_modify_konoyunitohakorenobatoruerianosyunito1nitsukibp1000sareru",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

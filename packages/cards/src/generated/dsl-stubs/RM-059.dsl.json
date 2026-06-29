@@ -23,14 +23,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-059::torankuno",
-          "duration": "turn"
+          "keyword": "while_in_field_body_koregarashuerianiaruwbwotsusyunitogabatoruerianitato",
+          "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

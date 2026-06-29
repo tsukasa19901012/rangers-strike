@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-596",
+  "name": "炎神大将軍",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―レツタカ＋シシノシン＋ツキノワ 【炎神剣】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードが特徴「炎神」を持つユニットカードなら、このターン、これは「SP2」になる。その後、オモテにしたカードは山札の下に戻す。",
+  "rawText": "合体―レツタカ＋シシノシン＋ツキノワ 【炎神剣】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードが特徴「炎神」を持つユニットカードなら、このターン、これは「SP2」になる。その後、オモテにしたカードは山札の下に戻す。",
+  "bp": 13000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "人型",
+    "炎神"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "honoo_shin_ken",
+      "name": "炎神剣",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードが特徴「炎神」を持つユニットカードなら、このターン、これは「SP2」になる。その後、オモテにしたカードは山札の下に戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP2",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―レツタカ＋シシノシン＋ツキノワ",
+      "partnerCardIds": [
+        "RS-597",
+        "RS-598",
+        "RS-599"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-597"
+        ],
+        [
+          "RS-598"
+        ],
+        [
+          "RS-599"
+        ]
+      ]
+    }
+  ],
+  "imageUrl": "/cards/promoted/RS-596.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-596.jpg"
+}

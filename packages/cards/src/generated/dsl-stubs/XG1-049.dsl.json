@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -34,35 +34,35 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはウイングを持たないユニットにアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG1-049::korehauinguwotan",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "seiringujanpu",
       "name": "セイリングジャンプ",
       "text": "敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードがSユニットのカードなら持ち主の山札の下に、それ以外なら上に戻す。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "reveal_enemy_deck_1",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

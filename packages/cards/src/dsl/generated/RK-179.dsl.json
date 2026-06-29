@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-179",
+  "name": "ジャングラー",
+  "type": "vehicle",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "【体当たり攻撃】自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍Sユニットを1体選んでもよい。そうしたとき、選んだユニットの持つカテゴリと、選んだユニットがライドしているビークルの持つカテゴリが違うなら、そのビークルを捨札にした後で、選んだユニットを撃破する。",
+  "rawText": "【体当たり攻撃】自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍Sユニットを1体選んでもよい。そうしたとき、選んだユニットの持つカテゴリと、選んだユニットがライドしているビークルの持つカテゴリが違うなら、そのビークルを捨札にした後で、選んだユニットを撃破する。",
+  "effects": [
+    {
+      "id": "tari_geki",
+      "name": "体当たり攻撃",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍Sユニットを1体選んでもよい。そうしたとき、選んだユニットの持つカテゴリと、選んだユニットがライドしているビークルの持つカテゴリが違うなら、そのビークルを捨札にした後で、選んだユニットを撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-179::tari_geki",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/promoted/RK-179.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-179.jpg"
+}

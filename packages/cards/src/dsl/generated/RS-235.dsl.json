@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-235",
+  "name": "デカベースロボ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※自分が「デカベースクローラー」をラッシュしたとき、自軍エリアに「デカベースロボ」があれば1体選んで手札に戻す。 ※自軍パワーゾーンからダメージ以外のカードを2枚選んで捨札にしなければバトルエリアに出られない。",
+  "rawText": "※自分が「デカベースクローラー」をラッシュしたとき、自軍エリアに「デカベースロボ」があれば1体選んで手札に戻す。 ※自軍パワーゾーンからダメージ以外のカードを2枚選んで捨札にしなければバトルエリアに出られない。",
+  "bp": 8000,
+  "size": "XL",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_e280bbe887aae58886e3818c",
+      "text": "※自分が「デカベースクローラー」をラッシュしたとき、自軍エリアに「デカベースロボ」があれば1体選んで手札に戻す。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_ally_rush_named_return_self_to_hand",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_e280bbe887aae8bb8de38391",
+      "text": "※自軍パワーゾーンからダメージ以外のカードを2枚選んで捨札にしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_power_discard_2_to_battle",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "return_named_to_hand",
+    "text": "自軍「デカベースクローラー」1体を手札に戻す",
+    "partnerName": "デカベースクローラー",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-235.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-235.jpg"
+}

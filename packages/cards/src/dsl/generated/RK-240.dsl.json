@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-240",
+  "name": "仮面ライダー電王CF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "4+",
+  "text": "※これは特徴「仮面ライダー」を持つ自軍ユニットがホールドされたターン「SP1」になる。 【俺達の必殺技】自軍ターン中、これがバトルエリアに出たとき、本来の特徴に「イマジン」を持つ自軍バトルエリアのユニットの数を数えてもよい。そうしたとき、その数以下の必要パワーを持つSユニットを、本来の特徴に「イマジン」を持つ自軍バトルエリアのユニットの数まで選び、持ち主のパワーゾーンに送る。",
+  "rawText": "※これは特徴「仮面ライダー」を持つ自軍ユニットがホールドされたターン「SP1」になる。 【俺達の必殺技】自軍ターン中、これがバトルエリアに出たとき、本来の特徴に「イマジン」を持つ自軍バトルエリアのユニットの数を数えてもよい。そうしたとき、その数以下の必要パワーを持つSユニットを、本来の特徴に「イマジン」を持つ自軍バトルエリアのユニットの数まで選び、持ち主のパワーゾーンに送る。",
+  "bp": 5000,
+  "size": "S",
+  "sp": "1/4",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "DEN-O",
+    "警察",
+    "2nd"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "特徴「DEN-O」を持つ自軍Sユニット1体をパワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "grant_sp_hold_turn_1",
+      "text": "※これは特徴「仮面ライダー」を持つ自軍ユニットがホールドされたターン「SP1」になる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    },
+    {
+      "id": "no_4",
+      "name": "俺達の必殺技",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、本来の特徴に「イマジン」を持つ自軍バトルエリアのユニットの数を数えてもよい。そうしたとき、その数以下の必要パワーを持つSユニットを、本来の特徴に「イマジン」を持つ自軍バトルエリアのユニットの数まで選び、持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-240::no_4",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-240.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-241.jpg"
+}

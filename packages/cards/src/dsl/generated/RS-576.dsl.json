@@ -1,0 +1,102 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-576",
+  "name": "マジフェニックス",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「マジレッド」のカードを1枚選び、自軍ラッシュエリアに出す。 ※これをラッシュしたとき、ホールド状態の自軍Sユニットをすべてリリースしてもよい。 【フェニックススピンキック】「SP1」これがストライクしたとき、自分は1枚ドローする。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「マジレッド」のカードを1枚選び、自軍ラッシュエリアに出す。 ※これをラッシュしたとき、ホールド状態の自軍Sユニットをすべてリリースしてもよい。 【フェニックススピンキック】「SP1」これがストライクしたとき、自分は1枚ドローする。",
+  "bp": 4500,
+  "size": "M",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "魔法",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「マジレッド」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "on_rush_release_held_s_units",
+      "text": "※これをラッシュしたとき、ホールド状態の自軍Sユニットをすべてリリースしてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_rush_release_held_s_units",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "fuenikususupinkiku",
+      "name": "フェニックススピンキック",
+      "text": "「SP1」これがストライクしたとき、自分は1枚ドローする。",
+      "trigger": {
+        "type": "on_strike"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「マジレッド」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "マジレッド",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-576.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-576.jpg"
+}

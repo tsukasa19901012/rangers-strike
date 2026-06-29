@@ -13,7 +13,7 @@
 | 項目 | 内容 |
 |------|------|
 | ゲーム生成 | `createStarterGame()` / `createFullPromotedGame()` / `createGameForDecks()` — `definitionScope: "full"` |
-| 対戦ループ | `playStarterMatchUntilEnd()` — CPU Lv1 双方 |
+| 対戦ループ | `playStarterMatchUntilEnd()` — CPU Lv5 双方（デフォルト） |
 | エクスポート | `packages/engine/src/index.ts` から公開 |
 | テスト | `starterMatch.test.ts`、`simulate100.test.ts`、`simulatePromoted.test.ts`、`simulateFullPromoted.test.ts`、`simulateCustomFullDeck.test.ts` |
 | G4 ゲート | `sim-metrics.json` — `apply_failed=0`（50 games full-promoted） |

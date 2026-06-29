@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-388",
+  "name": "ゴーレッド",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【ブイランサー】「SP1」（この効果は、このターン、自軍捨札からSユニットのカードを1枚以上手札に加えていればナンバーに関係なく発動する）",
+  "rawText": "【ブイランサー】「SP1」（この効果は、このターン、自軍捨札からSユニットのカードを1枚以上手札に加えていればナンバーに関係なく発動する）",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "レッド",
+    "男",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "buiransa",
+      "name": "ブイランサー",
+      "text": "「SP1」（この効果は、このターン、自軍捨札からSユニットのカードを1枚以上手札に加えていればナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-388.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-388.jpg"
+}

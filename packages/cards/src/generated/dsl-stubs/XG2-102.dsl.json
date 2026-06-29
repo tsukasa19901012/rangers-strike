@@ -19,35 +19,35 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、DAを持つ自軍コマンドがないとき、特徴「男」または「女」を持つユニットにアタックできない。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-102::korehadawotsukom",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "denjiendo",
       "name": "デンジエンド",
       "text": "特徴「メカ」または「人型」を持つ敵軍Sユニットを1体選び撃破してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-102::denjiendo",
-          "duration": "permanent"
+          "keyword": "destroy_choose_enemy_mekamatahawotsusyunitowo1bi_geki_ha_shitemoyoi",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

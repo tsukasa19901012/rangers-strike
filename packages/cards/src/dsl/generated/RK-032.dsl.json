@@ -1,0 +1,86 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-032",
+  "name": "アナザーアギト",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "※これは自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットを1体捨札にしなければバトルエリアに出られない。 【アナザーパンチ】敵軍バトルエリアから、特徴「仮面ライダー」を持つSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※これは自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットを1体捨札にしなければバトルエリアに出られない。 【アナザーパンチ】敵軍バトルエリアから、特徴「仮面ライダー」を持つSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 5000,
+  "size": "S",
+  "sp": "1/3",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_require_discard_kamen_rush_entry",
+      "text": "※これは自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットを1体捨札にしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_discard_kamen_rush_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "anazapanchi",
+      "name": "アナザーパンチ",
+      "text": "敵軍バトルエリアから、特徴「仮面ライダー」を持つSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "power"
+            }
+          ]
+        }
+      ],
+      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-032.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-032.jpg"
+}

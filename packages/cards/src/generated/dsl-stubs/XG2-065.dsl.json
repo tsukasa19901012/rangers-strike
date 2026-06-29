@@ -24,7 +24,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_not_selectable_except_attack",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはアタックされる以外では相手に選ばれない。",
       "trigger": {
         "type": "while_in_field"
@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-065::haipakurokuapu",
-          "duration": "permanent"
+          "keyword": "grant_ability_korehakinikadoga5arutokino_chikara_woruwotanaiyu",
+          "duration": "turn"
         }
       ]
     }

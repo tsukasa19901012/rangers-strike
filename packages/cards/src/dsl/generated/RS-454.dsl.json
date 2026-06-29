@@ -1,0 +1,72 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-454",
+  "name": "ニンジャマン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※自分か相手のLユニットがあれば、これはLユニットになる。 ※これは自軍パワーゾーンのオモテ向きのカード1枚につきBP+1000される。 【ニンジャソード】「SP1」",
+  "rawText": "※自分か相手のLユニットがあれば、これはLユニットになる。 ※これは自軍パワーゾーンのオモテ向きのカード1枚につきBP+1000される。 【ニンジャソード】「SP1」",
+  "bp": 500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_becomes_l_if_l_present",
+      "text": "※自分か相手のLユニットがあれば、これはLユニットになる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "becomes_l_if_l_present",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "power_faceup_bp_per_1000",
+      "text": "※これは自軍パワーゾーンのオモテ向きのカード1枚につきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "power_faceup_bp_per_1000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "ninjasodo",
+      "name": "ニンジャソード",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-454.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-454.jpg"
+}

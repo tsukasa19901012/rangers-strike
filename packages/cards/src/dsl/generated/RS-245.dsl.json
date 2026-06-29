@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-245",
+  "name": "ガオメインバスター",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "敵軍Sユニットを1体選び撃破する。",
+  "rawText": "敵軍Sユニットを1体選び撃破する。",
+  "effects": [
+    {
+      "id": "gaomeinbasuta",
+      "name": "ガオメインバスター",
+      "text": "敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-245.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-245.jpg"
+}

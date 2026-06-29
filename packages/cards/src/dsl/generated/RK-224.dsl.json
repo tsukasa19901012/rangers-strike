@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-224",
+  "name": "京介変身体",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "【サポート】これが自軍エリアにある間、敵軍バトルエリアのSユニットは、「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱う。",
+  "rawText": "【サポート】これが自軍エリアにある間、敵軍バトルエリアのSユニットは、「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱う。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "猛士"
+  ],
+  "effects": [
+    {
+      "id": "sapoto",
+      "name": "サポート",
+      "text": "これが自軍エリアにある間、敵軍バトルエリアのSユニットは、「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱う。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-224::sapoto",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-224.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-224.jpg"
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-225",
+  "name": "ガトリングレオ",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これはSユニットにアタックされない。 【大回転獅子爆裂弾】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※これはSユニットにアタックされない。 【大回転獅子爆裂弾】このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 3000,
+  "size": "M",
+  "comboNumber": "L",
+  "features": [
+    "メカ",
+    "カラクリボール"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_attack_from_s",
+      "text": "※これはSユニットにアタックされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "shi_baku_dan",
+      "name": "大回転獅子爆裂弾",
+      "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "combo_l_category_attack_rush",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはSユニットにアタックされない。",
+      "rule": "no_attack_from_s"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-225.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-225.jpg"
+}

@@ -37,14 +37,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-054::tsuchikarano",
+          "keyword": "while_in_field_body_koreganiarurashufueizudamejinogakorenopawano",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

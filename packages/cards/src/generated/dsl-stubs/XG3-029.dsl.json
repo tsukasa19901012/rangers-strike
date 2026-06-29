@@ -21,19 +21,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe887aae8bb8d4de383",
+      "id": "note_e280bbe887aae8bb8d4de383",
       "text": "※自軍Mビークルがあれば、これはMユニットになり、特徴「人型」が追加される。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG3-029::mbikurugaarebako",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "urusaberu",
@@ -42,14 +42,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-029::urusaberu",
+          "keyword": "bp_modify_tankoregabatoruerianitatokinowo1binishitemoyoisou",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

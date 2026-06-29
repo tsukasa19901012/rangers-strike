@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-204",
+  "name": "仮面ライダーオーガ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "【オーガ・ストラッシュ】これが自軍エリアにある間、敵軍ターン中、ストライク以外の方法でダメージを受けたなら、ダメージを受けた後、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、相手に1点ダメージを与える。",
+  "rawText": "【オーガ・ストラッシュ】これが自軍エリアにある間、敵軍ターン中、ストライク以外の方法でダメージを受けたなら、ダメージを受けた後、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、相手に1点ダメージを与える。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "1/5",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "皇帝"
+  ],
+  "effects": [
+    {
+      "id": "ogasutorashu",
+      "name": "オーガ・ストラッシュ",
+      "text": "これが自軍エリアにある間、敵軍ターン中、ストライク以外の方法でダメージを受けたなら、ダメージを受けた後、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-204.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-204.jpg"
+}

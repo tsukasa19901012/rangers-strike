@@ -43,24 +43,37 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-025::kokokarahanotanda",
+          "keyword": "while_in_field_body_koregabatoruerianiarubatorufueizugadamejiwoketatoki",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―グランディオン＋シーレオン＋スカイオン ※リードMA",
+      "text": "合体―グランディオン＋シーレオン＋スカイオン",
       "partnerCardIds": [
         "XG6-024",
         "XG6-026",
-        "XG6-027"
+        "XG6-027",
+        "XG6-028"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "XG6-024",
+          "XG6-026"
+        ],
+        [
+          "XG6-027"
+        ],
+        [
+          "XG6-028"
+        ]
       ]
     },
     {

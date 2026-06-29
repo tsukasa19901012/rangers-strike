@@ -1,0 +1,58 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-242",
+  "name": "創造王リュウオーン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これは自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。 【ジャリュウ一族の侵攻】これが自軍ラッシュエリアにある間、自分が特徴「戦闘員」を持つユニットのカードをラッシュするとき、コマンドをホールドせずにラッシュしてもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
+  "rawText": "※これは自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。 【ジャリュウ一族の侵攻】これが自軍ラッシュエリアにある間、自分が特徴「戦闘員」を持つユニットのカードをラッシュするとき、コマンドをホールドせずにラッシュしてもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "ジャリュウ一族",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "require_discard_rush_s_entry",
+      "text": "※これは自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_discard_rush_s_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "jaryuuno",
+      "name": "ジャリュウ一族の侵攻",
+      "text": "これが自軍ラッシュエリアにある間、自分が特徴「戦闘員」を持つユニットのカードをラッシュするとき、コマンドをホールドせずにラッシュしてもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rush_skip_command_hold_fx_unknown",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-242.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-242.jpg"
+}

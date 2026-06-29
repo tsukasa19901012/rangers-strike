@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-051",
+  "name": "仮面ライダー鋭鬼",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "【音撃打・必殺必中】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれた敵軍ユニットを1体選び撃破する。",
+  "rawText": "【音撃打・必殺必中】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれた敵軍ユニットを1体選び撃破する。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "猛士"
+  ],
+  "effects": [
+    {
+      "id": "ongekida",
+      "name": "音撃打・必殺必中",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれた敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-051.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-051.jpg"
+}

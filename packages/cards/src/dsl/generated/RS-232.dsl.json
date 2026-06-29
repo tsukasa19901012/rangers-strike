@@ -1,0 +1,96 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-232",
+  "name": "アバレイエローAM",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「アバレイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【アバレウィング】これがアタックするとき、これはBP+1000され、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「アバレイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【アバレウィング】これがアタックするとき、これはBP+1000され、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "bp": 4500,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "イエロー",
+    "女",
+    "アバレモード"
+  ],
+  "effects": [
+    {
+      "id": "recruit_named_e382a2e38390e383ace382a4_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「アバレイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "abareuingu",
+      "name": "アバレウィング",
+      "text": "これがアタックするとき、これはBP+1000され、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 1000,
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "use_printed_bp_in_battle",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「アバレイエロー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "アバレイエロー",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-232.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-232.jpg"
+}

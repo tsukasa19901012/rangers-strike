@@ -12,21 +12,23 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-124.jpg",
   "effects": [
     {
-      "id": "super_electron_radar",
+      "id": "unnamed_e280bbe5b8b8e9a79028e5a0",
       "text": "※常駐（場に配置して、離れるまで効果が有効になる）自分も相手も次の制限を受ける。Sユニットをラッシュしたとき、そのユニットの持ち主は、パワーゾーンにダメージ以外のカードがあれば1枚選んで手札に戻す。",
       "trigger": {
-        "type": "operation",
-        "timing": "resident"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
         }
       ]
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

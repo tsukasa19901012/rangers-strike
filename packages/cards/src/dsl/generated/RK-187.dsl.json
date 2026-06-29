@@ -1,0 +1,87 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-187",
+  "name": "仮面ライダーJジャンボフォーメーション",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーJ」のカードを1枚選び、自軍ラッシュエリアに出す。 【ジャンボライダーキック】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、追加条件に「自軍合体ユニットを捨札にする」と表記されていないDAを持つ敵軍Lユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーJ」のカードを1枚選び、自軍ラッシュエリアに出す。 【ジャンボライダーキック】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、追加条件に「自軍合体ユニットを捨札にする」と表記されていないDAを持つ敵軍Lユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 5500,
+  "size": "L",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーJ」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "janboraidakiku",
+      "name": "ジャンボライダーキック",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、追加条件に「自軍合体ユニットを捨札にする」と表記されていないDAを持つ敵軍Lユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-187::janboraidakiku",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「仮面ライダーJ」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "仮面ライダーJ",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-187.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-187.jpg"
+}

@@ -39,9 +39,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "damage_action_koreworashushitatokipawazonkaradamejininateirukadowoura_ko",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
       "id": "unnamed_fusion_material_alias",
@@ -60,6 +63,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

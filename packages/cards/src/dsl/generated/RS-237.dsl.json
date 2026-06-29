@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-237",
+  "name": "サイレンビルダー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―ゴーゴーファイヤー＋ゴーゴーポリス＋ゴーゴーエイダー 【トリプルリキッドボンバー】自軍ターン中、これがバトルエリアに出たとき、敵軍山札の上から3枚をオモテにしてもよい。そうしたとき、相手はオモテにしたカードの中から好きな数選び手札に加える。このとき相手が手札に加えたカード1枚につき、これは「SP+1」される。その後、残りのカードは捨札にする。",
+  "rawText": "合体―ゴーゴーファイヤー＋ゴーゴーポリス＋ゴーゴーエイダー 【トリプルリキッドボンバー】自軍ターン中、これがバトルエリアに出たとき、敵軍山札の上から3枚をオモテにしてもよい。そうしたとき、相手はオモテにしたカードの中から好きな数選び手札に加える。このとき相手が手札に加えたカード1枚につき、これは「SP+1」される。その後、残りのカードは捨札にする。",
+  "bp": 9000,
+  "size": "L",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "toripururikidobonba",
+      "name": "トリプルリキッドボンバー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍山札の上から3枚をオモテにしてもよい。そうしたとき、相手はオモテにしたカードの中から好きな数選び手札に加える。このとき相手が手札に加えたカード1枚につき、これは「SP+1」される。その後、残りのカードは捨札にする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "reveal_enemy_deck_3",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ゴーゴーファイヤー＋ゴーゴーポリス＋ゴーゴーエイダー",
+      "partnerCardIds": [
+        "RS-238",
+        "RS-239",
+        "RS-240"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-238"
+        ],
+        [
+          "RS-239"
+        ],
+        [
+          "RS-240"
+        ]
+      ]
+    }
+  ],
+  "imageUrl": "/cards/promoted/RS-237.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-237.jpg"
+}

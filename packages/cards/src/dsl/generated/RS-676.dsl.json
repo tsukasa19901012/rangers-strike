@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-676",
+  "name": "シンケンピンク",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【ヘブンファン】「SP1」自分も相手も1枚ドローする。",
+  "rawText": "【ヘブンファン】「SP1」自分も相手も1枚ドローする。",
+  "bp": 500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "ピンク",
+    "女",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "hebunfuan",
+      "name": "ヘブンファン",
+      "text": "「SP1」自分も相手も1枚ドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-676.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-676.jpg"
+}

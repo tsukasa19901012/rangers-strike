@@ -11,7 +11,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-002.jpg",
   "effects": [
     {
-      "id": "jacker_hurricane",
+      "id": "note_e38193e381aee382bfe383bc",
       "text": "このターン、Sユニットだけでコンビネーションするとき、4番目のユニットは「SP1」「BP8000」になる。",
       "trigger": {
         "type": "operation",
@@ -19,13 +19,16 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "s_combo_finisher_4_sp1_bp8000",
+          "duration": "turn"
         }
       ]
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-386",
+  "name": "イエローアーマー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "※これはアタックすることができない。 【ショベルアーム】自軍ターン中、これがバトルエリアに出たとき、自軍捨札から特徴「車両」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない。",
+  "rawText": "※これはアタックすることができない。 【ショベルアーム】自軍ターン中、これがバトルエリアに出たとき、自軍捨札から特徴「車両」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない。",
+  "bp": 9000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack",
+      "text": "※これはアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "shoberuamu",
+      "name": "ショベルアーム",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍捨札から特徴「車両」を持つMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。このとき出したユニットの効果は発動しない。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enter_rush_discard_feature_m_silent",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックすることができない。",
+      "rule": "cannot_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-386.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-386.jpg"
+}

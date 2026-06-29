@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-517",
+  "name": "バードニック反応炉",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※常駐 自軍コマンドゾーンにスクラムを持つユニットカードがあれば、そのカードと同じＣＮを持つBP2000以下の自軍Sユニットは次の能力を得る⇒これはアタックされない。",
+  "rawText": "※常駐 自軍コマンドゾーンにスクラムを持つユニットカードがあれば、そのカードと同じＣＮを持つBP2000以下の自軍Sユニットは次の能力を得る⇒これはアタックされない。",
+  "effects": [
+    {
+      "id": "unnamed_resident",
+      "text": "※常駐 自軍コマンドゾーンにスクラムを持つユニットカードがあれば、そのカードと同じＣＮを持つBP2000以下の自軍Sユニットは次の能力を得る⇒これはアタックされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※常駐 自軍コマンドゾーンにスクラムを持つユニットカードがあれば、そのカードと同じＣＮを持つBP2000以下の自軍Sユニットは次の能力を得る⇒これはアタックされない。",
+      "rule": "resident"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-517.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-517.jpg"
+}

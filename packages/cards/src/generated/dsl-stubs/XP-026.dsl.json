@@ -20,19 +20,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、自分がターンを終えるときバトルエリアにあれば、特徴「加速」を持つ自軍コマンドをホールドしてラッシュエリアに戻してよい。",
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XP-026::korehagatanwoeru",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "akuserugurantsua",
@@ -41,14 +41,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-026::akuserugurantsua",
-          "duration": "permanent"
+          "keyword": "ride_action_koregabatorueriakararashuerianirutokikomandowo1tsubini",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

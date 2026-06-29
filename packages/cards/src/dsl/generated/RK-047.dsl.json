@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-047",
+  "name": "仮面ライダー轟鬼",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "【音撃斬・雷電激震】敵軍バトルエリアからユニットを1体選ぶ。そして、選んだユニットの必要パワーの数字より1つ多い数だけ自軍コマンドをホールドしてもよい。そうしたとき、選んだユニットを撃破する。このとき、これはアタックすることができない。",
+  "rawText": "【音撃斬・雷電激震】敵軍バトルエリアからユニットを1体選ぶ。そして、選んだユニットの必要パワーの数字より1つ多い数だけ自軍コマンドをホールドしてもよい。そうしたとき、選んだユニットを撃破する。このとき、これはアタックすることができない。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/3",
+  "comboNumber": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "猛士"
+  ],
+  "effects": [
+    {
+      "id": "geki_zan_kami",
+      "name": "音撃斬・雷電激震",
+      "text": "敵軍バトルエリアからユニットを1体選ぶ。そして、選んだユニットの必要パワーの数字より1つ多い数だけ自軍コマンドをホールドしてもよい。そうしたとき、選んだユニットを撃破する。このとき、これはアタックすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_hold_commands_then",
+          "duration": "turn"
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-047.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-047.jpg"
+}

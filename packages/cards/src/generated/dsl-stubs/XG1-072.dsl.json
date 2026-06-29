@@ -52,14 +52,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-072::atakuraido",
+          "keyword": "enter_hold_enemy_tankoregabatoruerianitatokikorewohorudoshitemoyoisoushi",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

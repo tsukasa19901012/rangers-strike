@@ -36,14 +36,21 @@
       "trigger": {
         "type": "on_destroy"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-069::chise",
+          "keyword": "discard_to_zone_tankoregasyunitotonobatorude_geki_ha_sareteninatatokikor",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。",
+      "rule": "lead_ma_bp_boost_1000"
     }
   ],
   "implementation": {

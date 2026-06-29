@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-283",
+  "name": "ボルキャンサー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【契約解除者の捕食】これが自軍エリアにある間、敵軍ターン中、特徴「ミラーライダー」を持つ自軍ユニットが撃破されて捨札になったとき、自分も相手も次のようにする⇒撃破されたユニットの必要パワーの数字と同じ必要パワーの数字を持つSユニットのカードを、自分自身のコマンドゾーンから1枚選び捨札にする。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【契約解除者の捕食】これが自軍エリアにある間、敵軍ターン中、特徴「ミラーライダー」を持つ自軍ユニットが撃破されて捨札になったとき、自分も相手も次のようにする⇒撃破されたユニットの必要パワーの数字と同じ必要パワーの数字を持つSユニットのカードを、自分自身のコマンドゾーンから1枚選び捨札にする。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "no_e5a591",
+      "name": "契約解除者の捕食",
+      "text": "これが自軍エリアにある間、敵軍ターン中、特徴「ミラーライダー」を持つ自軍ユニットが撃破されて捨札になったとき、自分も相手も次のようにする⇒撃破されたユニットの必要パワーの数字と同じ必要パワーの数字を持つSユニットのカードを、自分自身のコマンドゾーンから1枚選び捨札にする。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-283::no_e5a591",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-283.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-283.jpg"
+}

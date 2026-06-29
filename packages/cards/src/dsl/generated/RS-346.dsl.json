@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-346",
+  "name": "バトルフィーバーロボ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "【雷光剣唐竹割り】これはアタックするときBP＋2000される。これがLユニットを撃破したとき、相手に2点ダメージを与える。",
+  "rawText": "【雷光剣唐竹割り】これはアタックするときBP＋2000される。これがLユニットを撃破したとき、相手に2点ダメージを与える。",
+  "bp": 7000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニットを5体捨札にする",
+    "unitCount": 5
+  },
+  "effects": [
+    {
+      "id": "kami_hikari_ken_ri",
+      "name": "雷光剣唐竹割り",
+      "text": "これはアタックするときBP＋2000される。これがLユニットを撃破したとき、相手に2点ダメージを与える。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 2,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-346.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-346.jpg"
+}

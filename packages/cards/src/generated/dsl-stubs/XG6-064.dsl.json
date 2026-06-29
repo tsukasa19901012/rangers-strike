@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -31,7 +31,7 @@
       ]
     },
     {
-      "id": "unnamed_cannot_enter_battle",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはバトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"
@@ -51,14 +51,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-064::chikarae8a681",
+          "keyword": "while_in_field_body_koregaerianiarurashufueizugotoni1dakenowo1ni",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

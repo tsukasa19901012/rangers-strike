@@ -34,9 +34,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "combo_l_effect_koregakategorinolyunitokarakonbineshonsurutokinowodekirub",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     },
     {
       "id": "unnamed_battle_entry_hold",
@@ -55,6 +58,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

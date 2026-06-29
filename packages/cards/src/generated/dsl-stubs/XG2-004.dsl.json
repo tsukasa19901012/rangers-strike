@@ -25,7 +25,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_blast",
+      "id": "unnamed_e280bbe38396e383a9e382b9",
       "text": "※ブラスト",
       "trigger": {
         "type": "while_in_field"
@@ -45,10 +45,11 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP2",
+          "keyword": "category_modify_konoyunitohakategoriwo2tsutsukomandoga2tsuarebasp2ninaru",
           "duration": "turn"
         }
       ]
@@ -57,10 +58,22 @@
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―スカイアルファー＋キャリアベータ＋ランドガンマ ※ブラスト",
+      "text": "合体―スカイアルファー＋キャリアベータ＋ランドガンマ",
       "partnerCardIds": [
         "XG2-005",
-        "XG2-006"
+        "XG2-006",
+        "XG2-007"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "XG2-005"
+        ],
+        [
+          "XG2-006"
+        ],
+        [
+          "XG2-007"
+        ]
       ]
     },
     {

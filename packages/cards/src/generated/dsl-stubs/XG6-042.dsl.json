@@ -17,19 +17,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe887aae58886e381ae",
+      "id": "note_e280bbe887aae58886e381ae",
       "text": "※自分の手札が0枚のとき、これを撃破する。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-042::noga0notokikorew",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "zeronosutato",
@@ -38,14 +38,14 @@
       "trigger": {
         "type": "on_strike"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-042::zeronosutato",
+          "keyword": "opponent_must_koregasutoraikushitedamejiwoetatokini1dorosasetemoyoisoush",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

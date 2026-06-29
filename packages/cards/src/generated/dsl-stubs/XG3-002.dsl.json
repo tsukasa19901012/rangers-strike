@@ -9,6 +9,11 @@
   "powerCost": 1,
   "text": "【宇宙を走る車】 これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、次の効果を発動できる⇒自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしているOTのSユニットのカードを1枚選び、これの上に重ねて自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。",
   "rawText": "【宇宙を走る車】 これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、次の効果を発動できる⇒自軍パワーゾーンのオモテ向きのカードから、必要パワーを満たしているOTのSユニットのカードを1枚選び、これの上に重ねて自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
       "id": "woru",
@@ -17,24 +22,19 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-002::woru",
-          "duration": "permanent"
+          "keyword": "grant_effect_koregapawazondeomote_ko_kininateirurashufueizunowo",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

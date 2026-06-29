@@ -11,21 +11,20 @@
   "rawText": "このオペレーションカードを使用するためにホールドしたコマンドの必要パワーの数字を見て、その数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。そうして撃破したユニットが捨札になる前に敵軍捨札を見て、撃破したユニットと同じカード名のユニットカードがあれば、このカードが捨札になるとき、かわりに手札に戻してもよい。",
   "effects": [
     {
-      "id": "inputokadogan",
-      "name": "インプットカードガン",
+      "id": "note_e38193e381aee382aae3839a",
       "text": "このオペレーションカードを使用するためにホールドしたコマンドの必要パワーの数字を見て、その数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。そうして撃破したユニットが捨札になる前に敵軍捨札を見て、撃破したユニットと同じカード名のユニットカードがあれば、このカードが捨札になるとき、かわりに手札に戻してもよい。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-015::inputokadogan",
+          "keyword": "discard_to_zone_konoopereshonkadowosurutamenihorudoshitakomandonopawanow",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

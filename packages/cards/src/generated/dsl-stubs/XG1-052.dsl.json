@@ -17,41 +17,25 @@
     "男",
     "賢者の石"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「仮面ライダーアギトGF」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "仮面ライダーアギトGF",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーアギトGF」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
+        "type": "on_destroy"
       },
       "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "discard",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "rush"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "on_destroy_reanimate_named_from_discard",
+          "duration": "turn"
         }
       ]
     },
@@ -62,25 +46,19 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-052::fuaiyasutomuataku",
-          "duration": "permanent"
+          "keyword": "grant_effect_koregaerianiarugatanwoerutokinowodekirusonotan",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_discard_named",
-    "text": "自軍「仮面ライダーアギトGF」1体を捨札にすれば必要パワー0になる",
-    "partnerName": "仮面ライダーアギトGF",
-    "unitCount": 1
   }
 }

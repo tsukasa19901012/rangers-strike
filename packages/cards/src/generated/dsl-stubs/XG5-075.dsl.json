@@ -25,14 +25,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-075::noe6af8d",
-          "duration": "permanent"
+          "keyword": "pick_from_discard_konotanniwotsuyunitogayunitowo_geki_ha_shitatokikara",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

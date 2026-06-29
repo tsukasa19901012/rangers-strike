@@ -1,0 +1,49 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-327",
+  "name": "天空聖者ブレイジェル",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【フェイタルブレイドの伝授】これが自軍ラッシュエリアにある間、特徴「レッド」を持つ自軍ユニットが敵軍ユニットを撃破するたび、自分は1枚ドローする。",
+  "rawText": "【フェイタルブレイドの伝授】これが自軍ラッシュエリアにある間、特徴「レッド」を持つ自軍ユニットが敵軍ユニットを撃破するたび、自分は1枚ドローする。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "男",
+    "魔法",
+    "天空聖者"
+  ],
+  "effects": [
+    {
+      "id": "fueitarubureidono",
+      "name": "フェイタルブレイドの伝授",
+      "text": "これが自軍ラッシュエリアにある間、特徴「レッド」を持つ自軍ユニットが敵軍ユニットを撃破するたび、自分は1枚ドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "controller"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍捨札に「魔導騎士ウルザード」がある",
+    "partnerName": "魔導騎士ウルザード",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-327.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-327.jpg"
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-277",
+  "name": "ン・ダグバ・ゼバ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "9+",
+  "text": "【究極の闇をもたらす者】これをラッシュしたとき、この追加条件で捨札にしたカードを見て、DAを持つカードをすべてこれの下に好きな順でウラ向きに重ねる。このとき、ウラ向きに4枚重ねなかったなら、「ン・ダグバ・ゼバ」以外の自軍ユニットをすべて捨札にする。また、これがユニットでなくなるとき、これにウラ向きで重ねたカードをウラ向きのまま1枚選び捨札にして、これをその場に留める。",
+  "rawText": "【究極の闇をもたらす者】これをラッシュしたとき、この追加条件で捨札にしたカードを見て、DAを持つカードをすべてこれの下に好きな順でウラ向きに重ねる。このとき、ウラ向きに4枚重ねなかったなら、「ン・ダグバ・ゼバ」以外の自軍ユニットをすべて捨札にする。また、これがユニットでなくなるとき、これにウラ向きで重ねたカードをウラ向きのまま1枚選び捨札にして、これをその場に留める。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "グロンギ",
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "no_yami_womotarasu",
+      "name": "究極の闇をもたらす者",
+      "text": "これをラッシュしたとき、この追加条件で捨札にしたカードを見て、DAを持つカードをすべてこれの下に好きな順でウラ向きに重ねる。このとき、ウラ向きに4枚重ねなかったなら、「ン・ダグバ・ゼバ」以外の自軍ユニットをすべて捨札にする。また、これがユニットでなくなるとき、これにウラ向きで重ねたカードをウラ向きのまま1枚選び捨札にして、これをその場に留める。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-277::no_yami_womotarasu",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_operation_cards",
+    "text": "自軍常駐置き場のカードを（ウラ向きのカードはウラ向きのまま）4枚選び捨札にする",
+    "unitCount": 4
+  },
+  "imageUrl": "/cards/promoted/RK-277.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-277.jpg"
+}

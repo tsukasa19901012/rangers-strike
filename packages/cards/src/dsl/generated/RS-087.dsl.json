@@ -38,7 +38,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 2000,
+          "duration": "turn"
         }
       ]
     },
@@ -59,6 +64,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

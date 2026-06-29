@@ -1,0 +1,88 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-556",
+  "name": "バトルサルダー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャレッド」のカードを1枚選び、自軍ラッシュエリアに出す。 【サルダークロー】「SP1」敵軍ユニットの数と同じ枚数、敵軍山札の上からオモテにしてもよい。そうしたとき、オモテにしたカードと同じカード名の敵軍ユニットを全て撃破する。そして相手はオモテにしたカードを山札の下に好きな順で戻す。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャレッド」のカードを1枚選び、自軍ラッシュエリアに出す。 【サルダークロー】「SP1」敵軍ユニットの数と同じ枚数、敵軍山札の上からオモテにしてもよい。そうしたとき、オモテにしたカードと同じカード名の敵軍ユニットを全て撃破する。そして相手はオモテにしたカードを山札の下に好きな順で戻す。",
+  "bp": 4500,
+  "size": "M",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "忍者",
+    "獣",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「ニンジャレッド」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sarudakuro",
+      "name": "サルダークロー",
+      "text": "「SP1」敵軍ユニットの数と同じ枚数、敵軍山札の上からオモテにしてもよい。そうしたとき、オモテにしたカードと同じカード名の敵軍ユニットを全て撃破する。そして相手はオモテにしたカードを山札の下に好きな順で戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「ニンジャレッド」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ニンジャレッド",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-556.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-556.jpg"
+}

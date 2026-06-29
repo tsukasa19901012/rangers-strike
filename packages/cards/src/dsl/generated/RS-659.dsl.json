@@ -1,0 +1,89 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-659",
+  "name": "デカイエローSWAT",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「デカイエロー」のカードを1枚選び、自軍ラッシュエリアに出す。 【感知システム】「SP1」自軍パワーゾーンのオモテ向きのカードの中から、Sユニットのカードを1枚選び手札に加えてもよい。そうしたとき、自軍山札の上から1枚引いて自軍パワーゾーンに置いてもよい。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「デカイエロー」のカードを1枚選び、自軍ラッシュエリアに出す。 【感知システム】「SP1」自軍パワーゾーンのオモテ向きのカードの中から、Sユニットのカードを1枚選び手札に加えてもよい。そうしたとき、自軍山札の上から1枚引いて自軍パワーゾーンに置いてもよい。",
+  "bp": 3500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "イエロー",
+    "女",
+    "警察",
+    "スワット"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「デカイエロー」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shisutemu",
+      "name": "感知システム",
+      "text": "「SP1」自軍パワーゾーンのオモテ向きのカードの中から、Sユニットのカードを1枚選び手札に加えてもよい。そうしたとき、自軍山札の上から1枚引いて自軍パワーゾーンに置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「デカイエロー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "デカイエロー",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-659.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-659.jpg"
+}

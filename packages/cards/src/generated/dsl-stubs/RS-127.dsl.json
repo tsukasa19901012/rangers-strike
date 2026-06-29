@@ -49,13 +49,16 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "grant_ability_tankoregabatoruerianirutokiotnokomandowo2tsundepawazo",
+          "duration": "turn"
         }
       ]
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_blast",
+      "id": "unnamed_e280bbe38396e383a9e382b9",
       "text": "※ブラスト",
       "trigger": {
         "type": "while_in_field"
@@ -42,25 +42,37 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-035::furuburasutorancha",
+          "keyword": "damage_action_gagemunikerumaderidameji1naratankoregabatoruerianita",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―デカレンジャーロボ（またはデカマシン）＋ブラストバギー ※ブラスト",
+      "text": "合体―デカレンジャーロボ（またはデカマシン）＋ブラストバギー",
       "partnerCardIds": [
         "PR-005",
         "RS-042",
         "XG2-032",
-        "XG2-031"
+        "XG2-031",
+        "XG2-034"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "PR-005",
+          "RS-042",
+          "XG2-032",
+          "XG2-031"
+        ],
+        [
+          "XG2-034"
+        ]
       ]
     },
     {

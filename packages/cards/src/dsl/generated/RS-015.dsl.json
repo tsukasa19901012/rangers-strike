@@ -11,7 +11,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-015.jpg",
   "effects": [
     {
-      "id": "bird_nick_wave",
+      "id": "note_e38193e381aee382bfe383bc",
       "text": "このターン、すべての自軍ユニットのコンビネーションナンバーは1少なくなる。ただし、2より少なくならない。",
       "trigger": {
         "type": "operation",
@@ -19,13 +19,16 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "combo_number_delta_minus_1",
+          "duration": "turn"
         }
       ]
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

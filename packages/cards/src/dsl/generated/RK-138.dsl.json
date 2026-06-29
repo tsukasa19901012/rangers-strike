@@ -1,0 +1,67 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-138",
+  "name": "ウカワーム",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "※これはラッシュしたターンにバトルエリアに出られない。 【不安定な擬態】これが撃破されて捨札になったとき、相手は自分自身の捨札から特徴「女」を持つユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。相手がそうしなかったとき、自軍捨札から「ウカワーム」以外の特徴「女」を持つユニットカードを1枚選び、自分の手札に戻してもよい。",
+  "rawText": "※これはラッシュしたターンにバトルエリアに出られない。 【不安定な擬態】これが撃破されて捨札になったとき、相手は自分自身の捨札から特徴「女」を持つユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。相手がそうしなかったとき、自軍捨札から「ウカワーム」以外の特徴「女」を持つユニットカードを1枚選び、自分の手札に戻してもよい。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "ワーム",
+    "怪人",
+    "女",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_battle_rush_turn",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_battle_rush_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "na",
+      "name": "不安定な擬態",
+      "text": "これが撃破されて捨札になったとき、相手は自分自身の捨札から特徴「女」を持つユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい。相手がそうしなかったとき、自軍捨札から「ウカワーム」以外の特徴「女」を持つユニットカードを1枚選び、自分の手札に戻してもよい。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-138::na",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "rule": "no_battle_rush_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-138.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-138.jpg"
+}

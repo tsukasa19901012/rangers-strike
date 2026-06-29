@@ -18,9 +18,14 @@
     "仮面ライダー",
     "男"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "hold_extra_command",
+    "text": "追加で自軍コマンドを1つホールドする",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_cross1",
+      "id": "unnamed_e280bbe382afe383ade382b9",
       "text": "※クロス1",
       "trigger": {
         "type": "while_in_field"
@@ -45,8 +50,7 @@
           "keyword": "dual_name_alias::仮面ライダーディケイド_or_仮面ライダークウガ",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "raidano",
@@ -55,14 +59,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-042::raidano",
-          "duration": "permanent"
+          "keyword": "grant_effect_koregaerianiarugatanwoerutokinowodekiruno",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -70,16 +74,16 @@
       "kind": "note",
       "text": "※クロス1",
       "rule": "cross1"
+    },
+    {
+      "kind": "note",
+      "text": "※これは「仮面ライダーディケイド」または「仮面ライダークウガ」としてつかえる。",
+      "rule": "dual_name_alias::仮面ライダーディケイド_or_仮面ライダークウガ"
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "hold_extra_command",
-    "text": "追加で自軍コマンドを1つホールドする",
-    "unitCount": 1
   }
 }

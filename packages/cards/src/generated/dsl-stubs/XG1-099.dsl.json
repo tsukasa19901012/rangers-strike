@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_no_enter_battle_own_turn",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは自軍ターン中、バトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"
@@ -37,14 +37,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-099::fxunknowne68ea1",
-          "duration": "permanent"
+          "keyword": "grant_effect_koregaerianiarubatorufueizunowodekirusyunitowo1",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

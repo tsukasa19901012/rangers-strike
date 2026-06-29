@@ -11,7 +11,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-024.jpg",
   "effects": [
     {
-      "id": "compression_freeze",
+      "id": "note_425038303030e4bba5e4b88b",
       "text": "BP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。",
       "trigger": {
         "type": "operation",
@@ -19,13 +19,17 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "power_zone_action_bp8000noyunitowo1bundayunitowochinopawazonniru",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

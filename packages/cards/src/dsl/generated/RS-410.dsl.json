@@ -1,0 +1,91 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-410",
+  "name": "冥府神ドレイク",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "2+",
+  "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 ※これは毎ターン可能ならバトルエリアに出る。 【竜闘気爆炸球】これは敵軍ユニットが1体もなければ「SP1」になる。",
+  "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 ※これは毎ターン可能ならバトルエリアに出る。 【竜闘気爆炸球】これは敵軍ユニットが1体もなければ「SP1」になる。",
+  "bp": 7000,
+  "size": "L",
+  "sp": "special",
+  "features": [
+    "冥府神",
+    "二極神",
+    "男",
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_win_vs_sp1",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_auto_battle_entry_each_turn",
+      "text": "※これは毎ターン可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_each_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "baku",
+      "name": "竜闘気爆炸球",
+      "text": "これは敵軍ユニットが1体もなければ「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "nc_sp1_if_no_enemy_units",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "destroy_on_win_vs_sp1"
+    },
+    {
+      "kind": "note",
+      "text": "※これは毎ターン可能ならバトルエリアに出る。",
+      "rule": "auto_battle_entry_each_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_command_card",
+    "text": "自軍コマンドを1つ捨札にする",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-410.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-410.jpg"
+}

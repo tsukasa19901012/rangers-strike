@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_breaker",
+      "id": "unnamed_e280bbe38396e383ace382a4",
       "text": "※ブレイカー",
       "trigger": {
         "type": "while_in_field"
@@ -42,14 +42,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-010::taitannoba",
+          "keyword": "damage_action_tankoregabatoruerianitatokikadonitaitanwomukomandoka",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

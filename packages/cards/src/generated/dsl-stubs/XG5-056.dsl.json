@@ -17,9 +17,15 @@
     "男",
     "ジャックフォーム"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「仮面ライダーギャレン」1体を捨札にする",
+    "partnerName": "仮面ライダーギャレン",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -33,7 +39,7 @@
       ]
     },
     {
-      "id": "unnamed_undead_command_rush_hold",
+      "id": "unnamed_e280bbe38193e381aee383a6",
       "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
       "trigger": {
         "type": "while_in_field"
@@ -53,14 +59,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-056::tenogeki",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_koregasyunitoniatakusaretatokikonoyunitowohorudosuruka_g",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -79,11 +85,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「仮面ライダーギャレン」1体を捨札にする",
-    "partnerName": "仮面ライダーギャレン",
-    "unitCount": 1
   }
 }

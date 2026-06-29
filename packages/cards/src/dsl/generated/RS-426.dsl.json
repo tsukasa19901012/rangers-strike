@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-426",
+  "name": "スーパーゲキレッド",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自分の手札の｢スーパーゲキレッド｣か、自軍捨札の｢ゲキレッド｣か、どちらか1枚を選び、自軍ラッシュエリアに出す。 【スーパータイガークロー】「SP1」",
+  "rawText": "※これが撃破されて捨札になったとき、自分の手札の｢スーパーゲキレッド｣か、自軍捨札の｢ゲキレッド｣か、どちらか1枚を選び、自軍ラッシュエリアに出す。 【スーパータイガークロー】「SP1」",
+  "bp": 5500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "レッド",
+    "男",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "text": "※これが撃破されて捨札になったとき、自分の手札の｢スーパーゲキレッド｣か、自軍捨札の｢ゲキレッド｣か、どちらか1枚を選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RS-426::korega_geki_ha_s",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "supataigakuro",
+      "name": "スーパータイガークロー",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍｢ゲキレッド｣1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ゲキレッド",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-426.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-426.jpg"
+}

@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "unnamed_cannot_attack_gender_male_female",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは特徴「男」または「女」を持つユニットにアタックできない。",
       "trigger": {
         "type": "while_in_field"
@@ -44,24 +44,23 @@
           "keyword": "cannot_attack_gender_male_female",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "jandejiku",
       "name": "ジャンデジック",
       "text": "敵軍バトルエリアにある、特徴「男」または「女」を持たないSユニットを、すべて持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-044::jandejiku",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_batoruerianiarumatahawotanaisyunitowosubetechinokomando",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -69,6 +68,11 @@
       "kind": "note",
       "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
       "rule": "register"
+    },
+    {
+      "kind": "note",
+      "text": "※これは特徴「男」または「女」を持つユニットにアタックできない。",
+      "rule": "cannot_attack_gender_male_female"
     }
   ],
   "implementation": {

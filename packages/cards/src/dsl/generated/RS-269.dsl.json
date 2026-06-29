@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-269",
+  "name": "イエローフラッシュ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつき「BP-1000」され、BP0以下のとき撃破される。 【プリズムバトン】自軍ラッシュエリアから、「MA」のユニットを1体選び自軍パワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "rawText": "※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつき「BP-1000」され、BP0以下のとき撃破される。 【プリズムバトン】自軍ラッシュエリアから、「MA」のユニットを1体選び自軍パワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "bp": 6000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "イエロー",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_bp_debuff_per_non_ot_command",
+      "text": "※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつき「BP-1000」され、BP0以下のとき撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "bp_debuff_per_non_ot_command",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "purizumubaton",
+      "name": "プリズムバトン",
+      "text": "自軍ラッシュエリアから、「MA」のユニットを1体選び自軍パワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_rush_send_rush_ma_to_power_sp1",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-269.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-269.jpg"
+}

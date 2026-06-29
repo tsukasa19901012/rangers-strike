@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "red_boot",
+      "id": "red_beet",
       "name": "レッドビュート",
       "text": "自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、敵軍ラッシュエリアからBP2000以下のユニットを1体選んで撃破する。",
       "trigger": {
@@ -44,13 +44,17 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "self_turn_action_tankoregabatorudeyunitowo_geki_ha_shitatokirashueriakar",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

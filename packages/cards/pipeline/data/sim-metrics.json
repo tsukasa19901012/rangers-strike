@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-06-29T13:49:57.819Z",
+  "generatedAt": "2026-06-29T15:27:54.113Z",
   "suite": "simulateFullPromoted",
   "games": 50,
   "unresolvedCount": 0,
-  "effectLogCount": 572,
+  "effectLogCount": 567,
   "unresolvedRate": 0,
   "warnThreshold": 0.25,
   "topUnresolvedByEffectId": [],
@@ -13,7 +13,7 @@
     "applyFailed": 0,
     "withRushPhase": 50,
     "withBattlePhase": 50,
-    "withBattleAction": 42,
-    "withStrike": 29
+    "withBattleAction": 40,
+    "withStrike": 34
   }
 }

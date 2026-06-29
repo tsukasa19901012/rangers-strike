@@ -19,9 +19,15 @@
     "改造人間",
     "超電子ダイナモ"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「仮面ライダーストロンガー」1枚を捨札にすれば必要パワー0になる",
+    "partnerName": "仮面ライダーストロンガー",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍エリアにある間、自分がターンを終えるとき、自軍捨札の「仮面ライダーストロンガー」のカードとこれを置き換える。置き換えられなければこれを捨札にする。",
       "trigger": {
         "type": "while_in_field"
@@ -29,18 +35,17 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG3-045::koregaerianiarug",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "kiku",
       "name": "超電稲妻キック",
       "text": "このターン、これがSPが空欄ではないユニットをバトルで撃破したとき、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {
@@ -55,11 +60,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_discard_named",
-    "text": "自軍「仮面ライダーストロンガー」1枚を捨札にすれば必要パワー0になる",
-    "partnerName": "仮面ライダーストロンガー",
-    "unitCount": 1
   }
 }

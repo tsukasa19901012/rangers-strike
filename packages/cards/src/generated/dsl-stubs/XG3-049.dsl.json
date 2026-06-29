@@ -11,21 +11,20 @@
   "rawText": "自軍捨札にある「ストレンジベント」以外のカードを、すべてウラ向きにしてシャッフルする。その後、その中から相手にウラ向きのまま1枚選ばせてから、すべてオモテにする。選ばれたカードが通常のオペレーションカードなら、その効果を発動してもよい。発動しなかったか、それ以外のカードだったなら、特徴「ミラーライダー」を持つユニットを1体選び、このターン、BP+2000する。",
   "effects": [
     {
-      "id": "sutorenjibento",
-      "name": "ストレンジベント",
+      "id": "note_e887aae8bb8de68da8e69cad",
       "text": "自軍捨札にある「ストレンジベント」以外のカードを、すべてウラ向きにしてシャッフルする。その後、その中から相手にウラ向きのまま1枚選ばせてから、すべてオモテにする。選ばれたカードが通常のオペレーションカードなら、その効果を発動してもよい。発動しなかったか、それ以外のカードだったなら、特徴「ミラーライダー」を持つユニットを1体選び、このターン、BP+2000する。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-049::sutorenjibento",
+          "keyword": "bp_modify_niarusutorenjibentonokadowosubeteura_ko_kinishiteshafurusuruso",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

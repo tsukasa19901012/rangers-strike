@@ -39,32 +39,32 @@
       "name": "エレキ光線",
       "text": "敵軍Sユニットを1体選んでもよい。そうしたとき、次の相手ターン、選んだユニットと隣り合ったユニットは、そのターンを終えるとき撃破される。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-048::erekihikari",
-          "duration": "permanent"
+          "keyword": "adjacent_units_syunitowo1ndemoyoisoushitatokinotanndayunitotori",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     },
     {
-      "id": "ereki_hikari_yunitowondem",
+      "id": "ereki_hikari_2",
       "name": "エレキ光線",
       "text": "敵軍Ｓユニットを１体選んでもよい。次の相手のターン、選んだユニットがバトルエリアにあるとき、選んだユニットと隣り合っているユニットは、そのターンを終えるとき撃破される。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-048::erekihikariyunitowondem",
-          "duration": "permanent"
+          "keyword": "adjacent_units_yunitowondemoyoinonotanndayunitogabatoruerianiaruto",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

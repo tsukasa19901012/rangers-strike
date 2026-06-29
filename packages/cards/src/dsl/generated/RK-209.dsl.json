@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-209",
+  "name": "エラスモテリウムオルフェノク",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 6,
+  "text": "※これは自軍コマンドを5つホールドしなければバトルエリアに出られない。ただし、ホールドする数は相手の手札1枚につき1少なくなる。 【檻から放たれた脅威】自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアのSユニットをすべてホールドしてもよい。そうしたとき、ホールドしたユニットの数以下の必要パワーの数字を持つ敵軍ユニットをすべて撃破する。",
+  "rawText": "※これは自軍コマンドを5つホールドしなければバトルエリアに出られない。ただし、ホールドする数は相手の手札1枚につき1少なくなる。 【檻から放たれた脅威】自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアのSユニットをすべてホールドしてもよい。そうしたとき、ホールドしたユニットの数以下の必要パワーの数字を持つ敵軍ユニットをすべて撃破する。",
+  "bp": 7500,
+  "size": "M",
+  "sp": 1,
+  "features": [
+    "オルフェノク",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを5つホールドしなければバトルエリアに出られない。ただし、ホールドする数は相手の手札1枚につき1少なくなる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "karatareta",
+      "name": "檻から放たれた脅威",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍バトルエリアのSユニットをすべてホールドしてもよい。そうしたとき、ホールドしたユニットの数以下の必要パワーの数字を持つ敵軍ユニットをすべて撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-209::karatareta",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを5つホールドしなければバトルエリアに出られない。ただし、ホールドする数は相手の手札1枚につき1少なくなる。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-209.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-209.jpg"
+}

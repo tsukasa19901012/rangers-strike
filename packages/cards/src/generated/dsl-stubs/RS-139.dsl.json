@@ -28,13 +28,37 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
         }
-      ]
+      ],
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      }
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

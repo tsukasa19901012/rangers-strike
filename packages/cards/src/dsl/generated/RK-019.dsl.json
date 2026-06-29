@@ -1,0 +1,37 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-019",
+  "name": "音撃",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "特徴「メカ」を持たない敵軍ユニットを1体選ぶ。そうしたとき、このターン、選んだユニットは「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱う。",
+  "rawText": "特徴「メカ」を持たない敵軍ユニットを1体選ぶ。そうしたとき、このターン、選んだユニットは「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱う。",
+  "effects": [
+    {
+      "id": "geki_e99fb3",
+      "name": "音撃",
+      "text": "特徴「メカ」を持たない敵軍ユニットを1体選ぶ。そうしたとき、このターン、選んだユニットは「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱う。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "impose_destroy_rule_on_enemy",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-019.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-019.jpg"
+}

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-285",
+  "name": "バイオグリーザ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【見えない刺客】これは敵軍ユニットにアタックされない。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【見えない刺客】これは敵軍ユニットにアタックされない。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "enai",
+      "name": "見えない刺客",
+      "text": "これは敵軍ユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enemy_cannot_attack",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-285.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-285.jpg"
+}

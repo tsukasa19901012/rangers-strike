@@ -31,21 +31,16 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-029::nakurutoshi",
-          "duration": "permanent"
+          "keyword": "bp_modify_koregaatakushiteyunitowobatorude_geki_ha_surutabikomandowo1tsu",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "unnamedRules": [
     {
       "kind": "zord",
@@ -83,5 +78,10 @@
         ]
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

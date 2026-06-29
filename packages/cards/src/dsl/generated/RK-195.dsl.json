@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-195",
+  "name": "仮面ライダーG4",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【再起動と暴走】これが自軍エリアにある間、これがホールド状態からリリース状態になったとき、これ以外の自軍Sユニットを1体選びホールドしても良い。そうしたとき、敵軍Sユニットを1体選び撃破する。",
+  "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【再起動と暴走】これが自軍エリアにある間、これがホールド状態からリリース状態になったとき、これ以外の自軍Sユニットを1体選びホールドしても良い。そうしたとき、敵軍Sユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/5",
+  "features": [
+    "仮面ライダー",
+    "メカ",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "to_e5868d",
+      "name": "再起動と暴走",
+      "text": "これが自軍エリアにある間、これがホールド状態からリリース状態になったとき、これ以外の自軍Sユニットを1体選びホールドしても良い。そうしたとき、敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-195::to_e5868d",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-195.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-195.jpg"
+}

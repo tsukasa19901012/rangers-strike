@@ -25,14 +25,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-076::daburuburoukunfuangu",
-          "duration": "permanent"
+          "keyword": "grant_effect_koregawotsuyunitokarakonbineshonsurutokinowodekiru",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

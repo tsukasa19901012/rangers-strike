@@ -22,14 +22,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-071::kapu",
+          "keyword": "reveal_faceup_koreworashushitatokinokara1woomotenisurusoushitatokiomoten",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

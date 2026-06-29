@@ -11,20 +11,19 @@
   "rawText": "自軍ラッシュエリアから、効果に｢ラッシュしたとき｣とあるWBのMユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。（これが自軍コマンドゾーンにある間、WBを持つ自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する）",
   "effects": [
     {
-      "id": "ken_godohon",
-      "name": "恐竜剣ゴッドホーン",
+      "id": "note_e887aae8bb8de383a9e38383",
       "text": "自軍ラッシュエリアから、効果に｢ラッシュしたとき｣とあるWBのMユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。（これが自軍コマンドゾーンにある間、WBを持つ自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する）",
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-010::kengodohon",
-          "duration": "turn"
+          "keyword": "hold_on_enter_battle_rashueriakaranirashushitatokitoaruwbnomyunitowo1nde",
+          "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

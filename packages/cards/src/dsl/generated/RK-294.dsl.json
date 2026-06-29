@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-294",
+  "name": "仮面ライダーサソードMF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これはアタックされるときBP+4000される。 【ブラッドベセル】このターン、自軍ユニットがストライクして、相手が自分自身のパワーゾーンのカードをウラ向きにしてダメージにするとき、相手は自分自身のパワーゾーンにモーフを持つユニットカードがあれば、それを選びダメージにする。",
+  "rawText": "※これはアタックされるときBP+4000される。 【ブラッドベセル】このターン、自軍ユニットがストライクして、相手が自分自身のパワーゾーンのカードをウラ向きにしてダメージにするとき、相手は自分自身のパワーゾーンにモーフを持つユニットカードがあれば、それを選びダメージにする。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_attacked_bp_boost_4000",
+      "text": "※これはアタックされるときBP+4000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "attacked_bp_boost_4000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "buradobeseru",
+      "name": "ブラッドベセル",
+      "text": "このターン、自軍ユニットがストライクして、相手が自分自身のパワーゾーンのカードをウラ向きにしてダメージにするとき、相手は自分自身のパワーゾーンにモーフを持つユニットカードがあれば、それを選びダメージにする。",
+      "trigger": {
+        "type": "on_strike"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "blood_vessel_on_strike",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされるときBP+4000される。",
+      "rule": "attacked_bp_boost_4000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-294.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-294.jpg"
+}

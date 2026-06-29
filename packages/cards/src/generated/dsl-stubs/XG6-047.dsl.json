@@ -22,19 +22,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_while_in_discard_rush_deploy_koreganiaru",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍捨札にある間、自軍ラッシュフェイズ中、自軍コマンドを1つゲームから除外してから、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_discard_rush_deploy::koreganiarurashufuei",
-          "duration": "permanent"
+          "keyword": "exclude_game_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "giganto",
@@ -43,14 +43,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-047::giganto",
+          "keyword": "destroy_on_rush_koreworashushitatokiraidawotsuyunitowo1bi_geki_ha_suru",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

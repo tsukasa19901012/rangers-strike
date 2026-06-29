@@ -1,0 +1,36 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-255",
+  "name": "巨大化爆弾",
+  "type": "operation",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 敵軍ターン中、特徴「怪人」を持つ自軍ユニットが撃破されて捨札になったとき発動できる⇒そのユニットカードを、このカードに重ねてラッシュエリアに出す。このカードに重ねたユニットはBP＋3000され、「SP1」「Lユニット」になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+  "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） 敵軍ターン中、特徴「怪人」を持つ自軍ユニットが撃破されて捨札になったとき発動できる⇒そのユニットカードを、このカードに重ねてラッシュエリアに出す。このカードに重ねたユニットはBP＋3000され、「SP1」「Lユニット」になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+  "effects": [
+    {
+      "id": "unnamed_counter_note_kaunta",
+      "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 敵軍ターン中、特徴「怪人」を持つ自軍ユニットが撃破されて捨札になったとき発動できる⇒そのユニットカードを、このカードに重ねてラッシュエリアに出す。このカードに重ねたユニットはBP＋3000され、「SP1」「Lユニット」になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "counter_note::kaunta",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-255.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-255.jpg"
+}

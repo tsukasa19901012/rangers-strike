@@ -18,6 +18,12 @@
     "獣",
     "ドラゴン"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_name_contains_unit",
+    "text": "カード名に「サラマンデス」を含む自軍ユニット1体を捨札にする",
+    "nameContains": "サラマンデス",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "mainasuenerugi",
@@ -26,25 +32,19 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-028::mainasuenerugi",
+          "keyword": "while_in_field_body_koregarashuerianiarubatorufueizuwoerutokini1dake",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_name_contains_unit",
-    "text": "カード名に「サラマンデス」を含む自軍ユニット1体を捨札にする",
-    "nameContains": "サラマンデス",
-    "unitCount": 1
   }
 }

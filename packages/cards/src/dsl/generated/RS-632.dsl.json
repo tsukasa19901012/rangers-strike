@@ -1,0 +1,84 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-632",
+  "name": "メガレッド",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※レジスト ※ウイング 【ドリルセイバー】「SP1」",
+  "rawText": "※レジスト ※ウイング 【ドリルセイバー】「SP1」",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "doriruseiba",
+      "name": "ドリルセイバー",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    },
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-632.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-632.jpg"
+}

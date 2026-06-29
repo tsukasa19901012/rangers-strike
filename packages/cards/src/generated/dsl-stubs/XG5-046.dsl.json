@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "unnamed_no_enter_battle_own_turn",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは自軍ターン中バトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"

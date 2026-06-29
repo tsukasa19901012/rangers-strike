@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-191",
+  "name": "ガライ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【ガライソード】これをラッシュしたとき、これをホールドしてもよい。そうしたとき、このターン、これはSP1になる。",
+  "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【ガライソード】これをラッシュしたとき、これをホールドしてもよい。そうしたとき、このターン、これはSP1になる。",
+  "bp": 5000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "男",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "garaisodo",
+      "name": "ガライソード",
+      "text": "これをラッシュしたとき、これをホールドしてもよい。そうしたとき、このターン、これはSP1になる。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-191::garaisodo",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-191.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-191.jpg"
+}

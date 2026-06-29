@@ -1,0 +1,69 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-119",
+  "name": "ギガゼール",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 0,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※このカードはデッキに好きな枚数入れてもよい。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※このカードはデッキに好きな枚数入れてもよい。",
+  "bp": 500,
+  "size": "S",
+  "sp": "1/2",
+  "features": [
+    "ミラーモンスター",
+    "獣",
+    "レイヨウ型"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    },
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-119.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-119.jpg"
+}

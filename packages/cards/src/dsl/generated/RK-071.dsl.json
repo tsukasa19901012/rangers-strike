@@ -1,0 +1,46 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-071",
+  "name": "仮面ライダーキックホッパー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "【ライダーキック】敵軍ラッシュエリアのSユニットの数を数えて、その数と同じ必要パワーの数字を持つ敵軍Sユニットがあれば1体選び、持ち主のパワーゾーンに送る。",
+  "rawText": "【ライダーキック】敵軍ラッシュエリアのSユニットの数を数えて、その数と同じ必要パワーの数字を持つ敵軍Sユニットがあれば1体選び、持ち主のパワーゾーンに送る。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "1/4",
+  "comboNumber": 2,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "raidakiku",
+      "name": "ライダーキック",
+      "text": "敵軍ラッシュエリアのSユニットの数を数えて、その数と同じ必要パワーの数字を持つ敵軍Sユニットがあれば1体選び、持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enemy_rush_s_count_power_match_to_power",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-071.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-071.jpg"
+}

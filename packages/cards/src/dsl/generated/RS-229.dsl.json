@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-229",
+  "name": "爆竜ブラキオサウルス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。 【超ハンガー進化】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが「WB」のMユニットのカードならラッシュエリアに出し、それ以外なら捨札にする。そうしたとき、これはアタックすることができない。",
+  "rawText": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。 【超ハンガー進化】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが「WB」のMユニットのカードならラッシュエリアに出し、それ以外なら捨札にする。そうしたとき、これはアタックすることができない。",
+  "bp": 6000,
+  "size": "XL",
+  "features": [
+    "恐竜",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "hanga",
+      "name": "超ハンガー進化",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが「WB」のMユニットのカードならラッシュエリアに出し、それ以外なら捨札にする。そうしたとき、これはアタックすることができない。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enter_scry_top_wb_m_rush",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-229.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-229.jpg"
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-374",
+  "name": "魔女バンドーラ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これはアタックすることができない。 【ドーラ魔法】これが自軍ラッシュエリアにある間、相手は次の制限を受ける⇒コマンドをホールドして、特徴「魔法」、または｢恐竜｣を持つユニットをラッシュしたとき、そのホールドしたコマンドを捨札にする。",
+  "rawText": "※これはアタックすることができない。 【ドーラ魔法】これが自軍ラッシュエリアにある間、相手は次の制限を受ける⇒コマンドをホールドして、特徴「魔法」、または｢恐竜｣を持つユニットをラッシュしたとき、そのホールドしたコマンドを捨札にする。",
+  "bp": 6000,
+  "size": "S",
+  "features": [
+    "女",
+    "魔法"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack",
+      "text": "※これはアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "dora_ma",
+      "name": "ドーラ魔法",
+      "text": "これが自軍ラッシュエリアにある間、相手は次の制限を受ける⇒コマンドをホールドして、特徴「魔法」、または｢恐竜｣を持つユニットをラッシュしたとき、そのホールドしたコマンドを捨札にする。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "while_in_rush_opponent_magic_dino_rush_discard_held_command",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックすることができない。",
+      "rule": "cannot_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-374.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-374.jpg"
+}

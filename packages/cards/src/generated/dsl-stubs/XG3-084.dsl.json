@@ -17,10 +17,11 @@
     "人型"
   ],
   "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
+    "conditionId": "discard_feature_unit",
     "text": "特徴「昆虫」を持つ自軍Sユニット1体を捨札にする",
-    "partnerName": "昆虫",
-    "unitCount": 1
+    "requiredFeature": "昆虫",
+    "unitCount": 1,
+    "requiredSize": "S"
   },
   "effects": [
     {
@@ -44,14 +45,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-084::bigufurea",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokiwbwotsukomandowo1tsubiho",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

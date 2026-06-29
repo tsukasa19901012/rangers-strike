@@ -38,14 +38,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-020::redozonkurashu",
-          "duration": "permanent"
+          "keyword": "bp_modify_komandowo1tsubinishitemoyoisoushitatokikonotankorehabp2000",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

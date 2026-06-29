@@ -1,0 +1,47 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-278",
+  "name": "ブラックバイソン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【バイソンロッド】「SP1」必要パワーの数字に「－」のあるユニットを1体選び撃破する。（この効果は「グリーンサイ」からコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "【バイソンロッド】「SP1」必要パワーの数字に「－」のあるユニットを1体選び撃破する。（この効果は「グリーンサイ」からコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "baisonrodo",
+      "name": "バイソンロッド",
+      "text": "「SP1」必要パワーの数字に「－」のあるユニットを1体選び撃破する。（この効果は「グリーンサイ」からコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc_or_combo_from",
+        "partnerCardIds": [
+          "RS-279"
+        ]
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-278.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-278.jpg"
+}

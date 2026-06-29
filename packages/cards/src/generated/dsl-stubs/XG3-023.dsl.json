@@ -17,6 +17,12 @@
     "男",
     "スティライザー"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「アバレッド」1体を捨札にする",
+    "partnerName": "アバレッド",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_register",
@@ -39,14 +45,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-023::bakumakusufuirudo",
-          "duration": "permanent"
+          "keyword": "bp_modify_batoruerianoyunitogakonoyunito1dakenaranoganinarubato",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -60,11 +66,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「アバレッド」1体を捨札にする",
-    "partnerName": "アバレッド",
-    "unitCount": 1
   }
 }

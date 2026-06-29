@@ -11,21 +11,20 @@
   "rawText": "敵軍山札の上から、自軍ダメージの点数と同じ数までオモテにする。そして、オモテにしたカードの中から、特徴「獣」または「恐竜」を持つユニットカードを好きな順で持ち主のラッシュエリアに出し、それ以外は山札に戻してシャッフルする。そうして出したユニットが1体以上あれば、自軍山札を見て、OTのLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
   "effects": [
     {
-      "id": "fx_unknown_7",
-      "name": "巨獣特捜",
+      "id": "note_e695b5e8bb8de5b1b1e69cad",
       "text": "敵軍山札の上から、自軍ダメージの点数と同じ数までオモテにする。そして、オモテにしたカードの中から、特徴「獣」または「恐竜」を持つユニットカードを好きな順で持ち主のラッシュエリアに出し、それ以外は山札に戻してシャッフルする。そうして出したユニットが1体以上あれば、自軍山札を見て、OTのLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-004::fxunknown7",
+          "keyword": "deck_search_nokaradamejinotojimadeomotenisurusoshiteomotenishitaka",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

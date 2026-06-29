@@ -18,6 +18,10 @@
   "features": [
     "激気"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「ブルー」を持つ自軍ユニットがある"
+  },
   "effects": [
     {
       "id": "gazeru_kyaku",
@@ -26,23 +30,19 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-031::gazerukyaku",
-          "duration": "permanent"
+          "keyword": "combo_action_konoyunitokarakonbineshonsurumekawotanaimyunitohabp3000sa",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「ブルー」を持つ自軍ユニットがある"
   }
 }

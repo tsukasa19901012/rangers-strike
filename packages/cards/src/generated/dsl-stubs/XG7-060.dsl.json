@@ -18,6 +18,10 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "カード名に「スター」または「SM」を含む自軍パワーがある"
+  },
   "effects": [
     {
       "id": "nosutapisu",
@@ -26,23 +30,19 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-060::nosutapisu",
+          "keyword": "power_zone_action_koreworashushitatokipawazonkaraura_ko_kinokadowo1binis",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "カード名に「スター」または「SM」を含む自軍パワーがある"
   }
 }

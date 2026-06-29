@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_deck_unlimited",
+      "id": "unnamed_e280bbe38193e381aee382ab",
       "text": "※このカードはデッキに好きな枚数入れてもよい。",
       "trigger": {
         "type": "while_in_field"

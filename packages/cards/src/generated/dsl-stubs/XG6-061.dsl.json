@@ -9,6 +9,11 @@
   "powerCost": 2,
   "text": "※これにライドしているユニットはBP+1000される。 【ベンダーモード】自軍ラッシュフェイズ中、このビークルを捨札にして次の効果を発動できる→自軍山札を見てオペレーションカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（置けなければ自軍コマンドを1つ選び、捨札にしてから置く）。その後、山札をシャッフルする。",
   "rawText": "※これにライドしているユニットはBP+1000される。 【ベンダーモード】自軍ラッシュフェイズ中、このビークルを捨札にして次の効果を発動できる→自軍山札を見てオペレーションカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（置けなければ自軍コマンドを1つ選び、捨札にしてから置く）。その後、山札をシャッフルする。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
       "id": "unnamed_ride_bp_boost_1000",
@@ -31,14 +36,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-061::bendamodo",
-          "duration": "permanent"
+          "keyword": "deck_search_rashufueizukonobikuruwonishitenowodekiruwote",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -52,10 +57,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

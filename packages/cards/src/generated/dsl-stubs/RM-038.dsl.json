@@ -16,6 +16,10 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "opponent_draw",
+    "text": "相手に1枚ドローさせる"
+  },
   "effects": [
     {
       "id": "noto",
@@ -24,23 +28,19 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-038::noto",
+          "keyword": "while_in_field_body_koregaerianiarurashufueizudawotsukomandowo3tsuhoru",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "opponent_draw",
-    "text": "相手に1枚ドローさせる"
   }
 }

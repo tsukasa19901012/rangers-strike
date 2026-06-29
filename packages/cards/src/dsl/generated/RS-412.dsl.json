@@ -1,0 +1,50 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-412",
+  "name": "冥府神スフィンクス",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "【質問には回答を】自軍ターン中、これがバトルエリアに出たとき次の効果を発動できる⇒敵軍パワーのダメージのカードを1枚選び、そのカードの必要パワーの数字を相手に解答させてからオモテにする。相手の解答が不正解なら相手は自分自身のユニットを1体選び撃破する。その後、オモテにしたカードはウラ向きに戻す。",
+  "rawText": "【質問には回答を】自軍ターン中、これがバトルエリアに出たとき次の効果を発動できる⇒敵軍パワーのダメージのカードを1枚選び、そのカードの必要パワーの数字を相手に解答させてからオモテにする。相手の解答が不正解なら相手は自分自身のユニットを1体選び撃破する。その後、オモテにしたカードはウラ向きに戻す。",
+  "bp": 5000,
+  "size": "L",
+  "features": [
+    "冥府神",
+    "三賢神",
+    "女",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "nihawo",
+      "name": "質問には回答を",
+      "text": "自軍ターン中、これがバトルエリアに出たとき次の効果を発動できる⇒敵軍パワーのダメージのカードを1枚選び、そのカードの必要パワーの数字を相手に解答させてからオモテにする。相手の解答が不正解なら相手は自分自身のユニットを1体選び撃破する。その後、オモテにしたカードはウラ向きに戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "sphinx_power_quiz",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_command_card",
+    "text": "自軍コマンドを1つ捨札にする",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-412.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-412.jpg"
+}

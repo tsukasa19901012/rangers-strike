@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-318",
+  "name": "仮面ライダーイクサSM",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "【ブロウクン・ファング】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから敵軍ダメージの点数以下の必要パワーの数字を持つSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。そうしたとき、このユニットがリリース状態ならホールドし、ホールド状態なら撃破する。",
+  "rawText": "【ブロウクン・ファング】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから敵軍ダメージの点数以下の必要パワーの数字を持つSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。そうしたとき、このユニットがリリース状態ならホールドし、ホールド状態なら撃破する。",
+  "bp": 500,
+  "size": "S",
+  "sp": "1/5",
+  "features": [
+    "仮面ライダー",
+    "メカ",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "buroukunfuangu",
+      "name": "ブロウクン・ファング",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから敵軍ダメージの点数以下の必要パワーの数字を持つSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。そうしたとき、このユニットがリリース状態ならホールドし、ホールド状態なら撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-318::buroukunfuangu",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-318.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-318.jpg"
+}

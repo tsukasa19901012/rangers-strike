@@ -26,14 +26,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-050::misairurancha",
-          "duration": "permanent"
+          "keyword": "grant_effect_pawazonnoomote_ko_kinokadonisyunitonokadogakerebanowo",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

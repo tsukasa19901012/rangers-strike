@@ -9,6 +9,11 @@
   "powerCost": 2,
   "text": "※これにライドしているユニットはBP+500される。 ※これが自軍パワーゾーンでオモテ向きになっている間、特徴「宇宙刑事」を持つ自軍ユニットをラッシュしたとき、これを自軍ラッシュエリアに出してもよい。",
   "rawText": "※これにライドしているユニットはBP+500される。 ※これが自軍パワーゾーンでオモテ向きになっている間、特徴「宇宙刑事」を持つ自軍ユニットをラッシュしたとき、これを自軍ラッシュエリアに出してもよい。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
       "id": "unnamed_ride_bp_boost_500",
@@ -25,19 +30,19 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍パワーゾーンでオモテ向きになっている間、特徴「宇宙刑事」を持つ自軍ユニットをラッシュしたとき、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::RM-028::koregapawazondeo",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -51,10 +56,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

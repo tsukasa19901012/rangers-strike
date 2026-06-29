@@ -38,14 +38,14 @@
       "trigger": {
         "type": "on_attack"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-047::kamakirisodo",
+          "keyword": "bp_modify_korehasyunitoniatakusurutokibp5000sareru",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

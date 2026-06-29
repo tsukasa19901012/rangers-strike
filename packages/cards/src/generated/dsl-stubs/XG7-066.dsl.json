@@ -40,14 +40,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-066::haidoranda",
-          "duration": "permanent"
+          "keyword": "release_command_action_komandowo1tsubinishitemoyoisoushitatokinokara1hii",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

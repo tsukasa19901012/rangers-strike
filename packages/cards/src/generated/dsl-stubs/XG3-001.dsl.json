@@ -9,6 +9,23 @@
   "powerCost": 0,
   "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を相手に見せずに1枚選ばせ、自軍パワーゾーンにオモテ向きで置く。",
   "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を相手に見せずに1枚選ばせ、自軍パワーゾーンにオモテ向きで置く。",
+  "effects": [
+    {
+      "id": "note_e382b2e383bce383a0e9968b",
+      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を相手に見せずに1枚選ばせ、自軍パワーゾーンにオモテ向きで置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "grant_effect_gemudakenowodekirunowonisezuni1base",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

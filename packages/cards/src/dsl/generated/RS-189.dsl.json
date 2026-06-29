@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-189",
+  "name": "キレンジャー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【キーステッカー】これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。（この効果は特徴「ピンク」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "【キーステッカー】これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。（この効果は特徴「ピンク」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "イエロー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "kisuteka",
+      "name": "キーステッカー",
+      "text": "これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。（この効果は特徴「ピンク」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "battle_original_bp_combo_pinku",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-189.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-189.jpg"
+}

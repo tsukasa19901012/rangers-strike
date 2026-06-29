@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-290",
+  "name": "ロブスターオルフェノク",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "【末期の酒】自軍ターン中、これがバトルエリアに出たとき、相手に1枚ドローさせる。その後、相手は追加条件を持たない自分自身のSユニットを1体選び撃破する。",
+  "rawText": "【末期の酒】自軍ターン中、これがバトルエリアに出たとき、相手に1枚ドローさせる。その後、相手は追加条件を持たない自分自身のSユニットを1体選び撃破する。",
+  "bp": 1000,
+  "size": "S",
+  "features": [
+    "ラッキークローバー",
+    "オルフェノク",
+    "怪人",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "no_e69cab",
+      "name": "末期の酒",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、相手に1枚ドローさせる。その後、相手は追加条件を持たない自分自身のSユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-290::no_e69cab",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-290.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-290.jpg"
+}

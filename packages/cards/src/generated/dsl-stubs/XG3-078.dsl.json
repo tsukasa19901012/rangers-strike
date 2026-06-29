@@ -12,21 +12,26 @@
   "powerCost": 1,
   "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「ダブルドライバー」を持つ自軍コマンドをホールドしてから、これを自軍ラッシュエリアに出してもよい。 【リモコン操作】特徴「ダブルドライバー」を持つ自軍ユニットがあれば、このビークルはライドされていなくてもバトルエリアに出ることができる。",
   "rawText": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「ダブルドライバー」を持つ自軍コマンドをホールドしてから、これを自軍ラッシュエリアに出してもよい。 【リモコン操作】特徴「ダブルドライバー」を持つ自軍ユニットがあれば、このビークルはライドされていなくてもバトルエリアに出ることができる。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
-      "id": "unnamed_while_in_hand_rush_deploy_daburudoraibaw",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「ダブルドライバー」を持つ自軍コマンドをホールドしてから、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "while_in_hand_rush_deploy::daburudoraibawotsukomand",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "rimokon",
@@ -35,24 +40,19 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-078::rimokon",
-          "duration": "permanent"
+          "keyword": "ride_action_daburudoraibawotsuyunitogaarebakonobikuruharaidosareteinakut",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

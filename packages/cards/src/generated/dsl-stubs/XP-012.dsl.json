@@ -25,14 +25,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "rush_battle_intercept_draw",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

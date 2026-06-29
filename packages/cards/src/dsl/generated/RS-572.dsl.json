@@ -1,0 +1,86 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-572",
+  "name": "デカマスター",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「ドギー・クルーガー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【ディーソードベガ】自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、自分自身のユニットを1体選び撃破するかを選ぶ。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「ドギー・クルーガー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【ディーソードベガ】自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、自分自身のユニットを1体選び撃破するかを選ぶ。",
+  "bp": 6500,
+  "size": "S",
+  "features": [
+    "男",
+    "警察",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "recruit_named_e38389e382aee383bce383bb_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「ドギー・クルーガー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deisodobega",
+      "name": "ディーソードベガ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、自分自身のユニットを1体選び撃破するかを選ぶ。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "controller"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「ドギー・クルーガー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ドギー・クルーガー",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-572.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-572.jpg"
+}

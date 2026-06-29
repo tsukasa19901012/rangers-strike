@@ -20,9 +20,15 @@
     "激気",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「獣拳神サイダイン」1体を捨札にする",
+    "partnerName": "獣拳神サイダイン",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_breaker",
+      "id": "unnamed_e280bbe38396e383ace382a4",
       "text": "※ブレイカー",
       "trigger": {
         "type": "while_in_field"
@@ -42,14 +48,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-023::zane5a4a7",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakarayunitowo1n",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -63,11 +69,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「獣拳神サイダイン」1体を捨札にする",
-    "partnerName": "獣拳神サイダイン",
-    "unitCount": 1
   }
 }

@@ -22,9 +22,14 @@
     "激気",
     "臨気"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "hold_extra_command",
+    "text": "追加で自軍コマンドを1つホールドする",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_cross1",
+      "id": "unnamed_e280bbe382afe383ade382b9",
       "text": "※クロス1",
       "trigger": {
         "type": "while_in_field"
@@ -52,19 +57,19 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe887aae8bb8d4ce383",
+      "id": "note_e280bbe887aae8bb8d4ce383",
       "text": "※自軍Lユニットが無ければ、これは「ゲキレッド+黒獅子リオ」として使える。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-016::lyunitogakerebak",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "no_5",
@@ -73,14 +78,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-016::no5",
-          "duration": "permanent"
+          "keyword": "combo_action_nokarapawanoga5nowbnomyunitonokadowo2madebi",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -99,10 +104,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "hold_extra_command",
-    "text": "追加で自軍コマンドを1つホールドする",
-    "unitCount": 1
   }
 }

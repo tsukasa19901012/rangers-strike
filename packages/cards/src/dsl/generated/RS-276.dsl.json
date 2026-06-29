@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-276",
+  "name": "ファイブイエロー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【メロディータクト】これがアタックしなかったとき、このユニットの次にコンビネーションするSユニットのBPは、このユニットのBPを「＋」した値になる。",
+  "rawText": "【メロディータクト】これがアタックしなかったとき、このユニットの次にコンビネーションするSユニットのBPは、このユニットのBPを「＋」した値になる。",
+  "bp": 1000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "イエロー",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "merodeitakuto",
+      "name": "メロディータクト",
+      "text": "これがアタックしなかったとき、このユニットの次にコンビネーションするSユニットのBPは、このユニットのBPを「＋」した値になる。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "combo_bp_from_skipped_attack",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-276.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-276.jpg"
+}

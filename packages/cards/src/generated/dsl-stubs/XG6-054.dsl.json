@@ -56,14 +56,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-054::gauninare",
-          "duration": "permanent"
+          "keyword": "deploy_battle_area_batoruerianosyunitowo1birashuerianishitemoyoitadashis",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

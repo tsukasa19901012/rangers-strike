@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-109",
+  "name": "ギルスレイダー",
+  "type": "vehicle",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出る事ができる。 【自己修復能力】ホールド状態のユニットがこれにライドするとき、そのユニットをリリースしてもよい。",
+  "rawText": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出る事ができる。 【自己修復能力】ホールド状態のユニットがこれにライドするとき、そのユニットをリリースしてもよい。",
+  "effects": [
+    {
+      "id": "unnamed_can_enter_battle_without_ride",
+      "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出る事ができる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "can_enter_battle_without_ride",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "chikara_e887aa",
+      "name": "自己修復能力",
+      "text": "ホールド状態のユニットがこれにライドするとき、そのユニットをリリースしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_release_on_mount",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "車両",
+    "昆虫"
+  ],
+  "imageUrl": "/cards/promoted/RK-109.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-109.jpg"
+}

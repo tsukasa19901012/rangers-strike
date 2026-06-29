@@ -39,14 +39,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-073::mizunono",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_koregayunitoniatakusaretatokikomandowo2tsubihorudoshitem",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

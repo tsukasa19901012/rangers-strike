@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-050",
+  "name": "仮面ライダー裁鬼",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "【音撃斬・閻魔裁き】「SP1」これがアタックするとき、「BP」「必要パワーの数字」「ナンバーの数字」のうちどれか1つを選び、お互いにその数字でバトルする。ただし、ナンバーの数字は相手のユニットがナンバーに数字を持っていなければ選べない。",
+  "rawText": "【音撃斬・閻魔裁き】「SP1」これがアタックするとき、「BP」「必要パワーの数字」「ナンバーの数字」のうちどれか1つを選び、お互いにその数字でバトルする。ただし、ナンバーの数字は相手のユニットがナンバーに数字を持っていなければ選べない。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "猛士"
+  ],
+  "effects": [
+    {
+      "id": "geki_zan_ma_ki",
+      "name": "音撃斬・閻魔裁き",
+      "text": "「SP1」これがアタックするとき、「BP」「必要パワーの数字」「ナンバーの数字」のうちどれか1つを選び、お互いにその数字でバトルする。ただし、ナンバーの数字は相手のユニットがナンバーに数字を持っていなければ選べない。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-050.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-050.jpg"
+}

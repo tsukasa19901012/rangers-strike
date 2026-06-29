@@ -27,7 +27,7 @@
   ],
   "effects": [
     {
-      "id": "grant_sp1",
+      "id": "sharp_claw",
       "name": "鋭い爪",
       "text": "「SP1」",
       "trigger": {
@@ -58,6 +58,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

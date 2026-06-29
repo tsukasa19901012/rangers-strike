@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-284",
+  "name": "仮面ライダーベルデ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "【デスバニッシュ】「バイオグリーザ」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、BP4000以下のSユニットを1体選び撃破する。そうしたとき、撃破したユニットのBPがこのユニットのBPよりも低ければ、相手は自分自身のコマンドゾーンからカードを1枚選び捨札にする。",
+  "rawText": "【デスバニッシュ】「バイオグリーザ」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、BP4000以下のSユニットを1体選び撃破する。そうしたとき、撃破したユニットのBPがこのユニットのBPよりも低ければ、相手は自分自身のコマンドゾーンからカードを1枚選び捨札にする。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "1/2",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "desubanishu",
+      "name": "デスバニッシュ",
+      "text": "「バイオグリーザ」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、BP4000以下のSユニットを1体選び撃破する。そうしたとき、撃破したユニットのBPがこのユニットのBPよりも低ければ、相手は自分自身のコマンドゾーンからカードを1枚選び捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-284::desubanishu",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-284.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-284.jpg"
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-123",
+  "name": "クレインオルフェノク",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "【制裁する光の翼】これが自軍ラッシュエリアにある間、敵軍ターン中、「クレインオルフェノク」以外の特徴「オルフェノク」を持つ自軍ユニットが撃破されて捨札になるたび、敵軍Sユニットを1体選び撃破してもよい。",
+  "rawText": "【制裁する光の翼】これが自軍ラッシュエリアにある間、敵軍ターン中、「クレインオルフェノク」以外の特徴「オルフェノク」を持つ自軍ユニットが撃破されて捨札になるたび、敵軍Sユニットを1体選び撃破してもよい。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "オルフェノク",
+    "怪人",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "suru_hikari_no_tsubasa",
+      "name": "制裁する光の翼",
+      "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、「クレインオルフェノク」以外の特徴「オルフェノク」を持つ自軍ユニットが撃破されて捨札になるたび、敵軍Sユニットを1体選び撃破してもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-123::suru_hikari_no_tsubasa",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-123.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-123.jpg"
+}

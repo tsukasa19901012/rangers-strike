@@ -1,0 +1,49 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-424",
+  "name": "ゲキチーター",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "0+",
+  "text": "【瞬瞬弾】「SP1」",
+  "rawText": "【瞬瞬弾】「SP1」",
+  "bp": 5500,
+  "size": "M",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "dan_e79eac",
+      "name": "瞬瞬弾",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "特徴「激気」と「イエロー」を持つ自軍ユニット1体を捨札にする",
+    "partnerName": "激気",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-424.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-424.jpg"
+}

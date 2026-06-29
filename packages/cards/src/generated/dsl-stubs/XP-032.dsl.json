@@ -16,21 +16,27 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "特徴「レッド」または「宇宙海賊」を持つ自軍ユニット1体を捨札にする",
+    "partnerName": "レッド",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、自軍パワーの数5につきBP+2000される。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XP-032::korehapawano5nit",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "rejiendowomete",
@@ -39,25 +45,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-032::rejiendowomete",
+          "keyword": "grant_effect_tankoregabatoruerianitatokinowodekiruwotesyuni",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "特徴「レッド」または「宇宙海賊」を持つ自軍ユニット1体を捨札にする",
-    "partnerName": "レッド",
-    "unitCount": 1
   }
 }

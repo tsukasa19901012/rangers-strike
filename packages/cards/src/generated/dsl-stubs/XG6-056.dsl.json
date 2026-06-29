@@ -51,16 +51,16 @@
       "name": "忍ばせた大鎌",
       "text": "敵軍Ｓユニットを、ＢＰの合計がこのユニットのＢＰ以下になるように２体まで選んで撃破してもよい。そうしたとき、このターン、これはアタックすることができない。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-056::baseta",
-          "duration": "permanent"
+          "keyword": "cannot_restrict_yunitowonogakonoyunitononinaruyounimadende_geki_ha_shite",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

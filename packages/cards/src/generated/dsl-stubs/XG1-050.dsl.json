@@ -11,21 +11,20 @@
   "rawText": "本来の特徴に「仮面ライダー」を持つ自軍ユニットが10体以上あれば、すべての敵軍ユニットを撃破する。9体以下なら、本来の特徴に「仮面ライダー」を持つ自軍ユニットのBPを合計して、その合計以下のBPを持つ敵軍ユニットを1体選び撃破する。",
   "effects": [
     {
-      "id": "raidashindoromu",
-      "name": "ライダーシンドローム",
+      "id": "note_e69cace69da5e381aee789b9",
       "text": "本来の特徴に「仮面ライダー」を持つ自軍ユニットが10体以上あれば、すべての敵軍ユニットを撃破する。9体以下なら、本来の特徴に「仮面ライダー」を持つ自軍ユニットのBPを合計して、その合計以下のBPを持つ敵軍ユニットを1体選び撃破する。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-050::raidashindoromu",
+          "keyword": "destroy_all_enemy_noniraidawotsuyunitoga10arebasubetenoyunito",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

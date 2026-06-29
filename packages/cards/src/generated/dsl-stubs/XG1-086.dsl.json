@@ -22,7 +22,7 @@
       "id": "sp_at_bp5000",
       "text": "※これはBP5000以上のとき「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {
@@ -37,16 +37,16 @@
       "name": "アークインパルス",
       "text": "このユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-086::akuinparusu",
-          "duration": "permanent"
+          "keyword": "power_zone_action_konoyunitonobpnobpwotsusyunitowo1bichinopawazonni",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

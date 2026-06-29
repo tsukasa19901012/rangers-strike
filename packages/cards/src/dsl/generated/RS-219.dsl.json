@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-219",
+  "name": "タイムブルー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【スピニングスラッシュ】「SP1」敵軍Sユニットの数が自軍Sユニットの数より4体以上多いとき、次の効果を発動できる⇒自軍Sユニットと同じ数になるまで、敵軍Sユニットを選び撃破する。",
+  "rawText": "【スピニングスラッシュ】「SP1」敵軍Sユニットの数が自軍Sユニットの数より4体以上多いとき、次の効果を発動できる⇒自軍Sユニットと同じ数になるまで、敵軍Sユニットを選び撃破する。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "ブルー",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "supiningusurashu",
+      "name": "スピニングスラッシュ",
+      "text": "「SP1」敵軍Sユニットの数が自軍Sユニットの数より4体以上多いとき、次の効果を発動できる⇒自軍Sユニットと同じ数になるまで、敵軍Sユニットを選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-219.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-219.jpg"
+}

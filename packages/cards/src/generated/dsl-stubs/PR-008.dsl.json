@@ -35,8 +35,7 @@
           "keyword": "sp_at_bp5000_sp1",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

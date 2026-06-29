@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_scrum",
+      "id": "unnamed_e280bbe382b9e382afe383a9",
       "text": "※スクラム",
       "trigger": {
         "type": "while_in_field"
@@ -40,14 +40,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-065::toraikyanon",
-          "duration": "permanent"
+          "keyword": "bp_modify_rashueriakaramekawotsubikuruwo1ndemoyoisoushitatokikonota",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-481",
+  "name": "天空神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※これは、特徴「航空機」を持たないユニットにアタックされない。 【ホバリング】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからSユニットを1体選び、持ち主の手札に戻してもよい。",
+  "rawText": "※これは、特徴「航空機」を持たないユニットにアタックされない。 【ホバリング】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからSユニットを1体選び、持ち主の手札に戻してもよい。",
+  "bp": 4000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型",
+    "航空機"
+  ],
+  "effects": [
+    {
+      "id": "no_attack_without_fx_unknown",
+      "text": "※これは、特徴「航空機」を持たないユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_without_fx_unknown",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "hobaringu",
+      "name": "ホバリング",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからSユニットを1体選び、持ち主の手札に戻してもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「天空神・飛行モード」1体を捨札にする",
+    "partnerName": "天空神・飛行モード",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-481.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-481.jpg"
+}

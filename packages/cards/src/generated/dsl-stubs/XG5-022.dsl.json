@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -38,14 +38,14 @@
       "trigger": {
         "type": "on_attack"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-022::nakurukyanon",
+          "keyword": "combo_action_koregaatakushitatokikomandoga3tsunarakarapawanoga2",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

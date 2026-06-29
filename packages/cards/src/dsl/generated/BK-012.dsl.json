@@ -1,0 +1,37 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "BK-012",
+  "name": "オルタリング",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「賢者の石」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。",
+  "rawText": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「賢者の石」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。",
+  "effects": [
+    {
+      "id": "orutaringu",
+      "name": "オルタリング",
+      "text": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「賢者の石」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "hand_resident_rush_no_seki",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/BK-012.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-012.jpg"
+}

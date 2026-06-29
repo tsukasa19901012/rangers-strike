@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_chase",
+      "id": "unnamed_e280bbe38381e382a7e382a4",
       "text": "※チェイス",
       "trigger": {
         "type": "while_in_field"
@@ -39,16 +39,16 @@
       "name": "シャイダーブルーフラッシュ",
       "text": "敵軍パワーゾーンのオモテ向きのカードから、必要パワーの数字が3以下のカードを1枚選び、ダメージにしてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-083::shaidaburufurashu",
-          "duration": "permanent"
+          "keyword": "damage_action_pawazonnoomote_ko_kinokadokarapawanoga3nokadowo1",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

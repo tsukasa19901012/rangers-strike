@@ -99,6 +99,7 @@
     "remigrate-stub-effects": "tsx scripts/remigrate-stub-effects.ts",
     "repair-dsl-hash-keywords": "tsx scripts/repair-dsl-hash-keywords.ts",
     "repair-named-effect-ids": "tsx scripts/repair-named-effect-ids.ts",
+    "sync-rc-dsl-triggers": "tsx scripts/sync-rc-dsl-triggers.ts",
     "build-effect-name-registry": "tsx scripts/build-effect-name-registry.ts",
     "audit-hash-grant-keywords": "tsx scripts/audit-hash-grant-keywords.ts",
     "promote-dsl-ready": "tsx scripts/promote-dsl-ready.ts",

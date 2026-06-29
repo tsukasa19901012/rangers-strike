@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-120",
+  "name": "サイドバッシャーVM",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これにライドしているユニットはBP+1000される。 【ニーラーシャトル】これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる。",
+  "rawText": "※これにライドしているユニットはBP+1000される。 【ニーラーシャトル】これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる。",
+  "effects": [
+    {
+      "id": "unnamed_ride_bp_boost_1000",
+      "text": "※これにライドしているユニットはBP+1000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_1000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "nirashatoru",
+      "name": "ニーラーシャトル",
+      "text": "これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-120::nirashatoru",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットはBP+1000される。",
+      "rule": "ride_bp_boost_1000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/promoted/RK-120.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-120.jpg"
+}

@@ -16,21 +16,27 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ターボマシン」1体を捨札にする",
+    "partnerName": "ターボマシン",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG1-020::korehakategoriwo",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "ken_tabokurashu",
@@ -42,8 +48,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-020::kentabokurashu",
-          "duration": "permanent"
+          "keyword": "grant_ability_korehabp10000nono_chikara_worusp1",
+          "duration": "turn"
         }
       ]
     }
@@ -52,11 +58,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「ターボマシン」1体を捨札にする",
-    "partnerName": "ターボマシン",
-    "unitCount": 1
   }
 }

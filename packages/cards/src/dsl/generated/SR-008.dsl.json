@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SR-008",
+  "name": "ビッグワン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "【ビッグ・バトン】これは、自軍コマンドゾーンにあるカードの特徴を見て、それぞれの特徴ごとに次の能力を得る⇒特徴「レッド」があればレジストを得る。特徴「ブルー」があればタクスETを得る。特徴「グリーン」があればBP7000になる。特徴「ピンク」があればSP1になる。",
+  "rawText": "【ビッグ・バトン】これは、自軍コマンドゾーンにあるカードの特徴を見て、それぞれの特徴ごとに次の能力を得る⇒特徴「レッド」があればレジストを得る。特徴「ブルー」があればタクスETを得る。特徴「グリーン」があればBP7000になる。特徴「ピンク」があればSP1になる。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "ホワイト",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "bigubaton",
+      "name": "ビッグ・バトン",
+      "text": "これは、自軍コマンドゾーンにあるカードの特徴を見て、それぞれの特徴ごとに次の能力を得る⇒特徴「レッド」があればレジストを得る。特徴「ブルー」があればタクスETを得る。特徴「グリーン」があればBP7000になる。特徴「ピンク」があればSP1になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "big_baton_command_zone_features",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/SR-008.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-008.jpg"
+}

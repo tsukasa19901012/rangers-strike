@@ -1,0 +1,94 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-334",
+  "name": "レジェンドマジイエロー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【マジボルト】「SP1」これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に「マジイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【マジボルト】「SP1」これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 3500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "イエロー",
+    "男",
+    "魔法",
+    "レジェンドフォーム"
+  ],
+  "effects": [
+    {
+      "id": "recruit_majiiero_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「マジイエロー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
+    },
+    {
+      "id": "magi_yellow_bolt",
+      "name": "マジボルト",
+      "text": "「SP1」これはアタックするとき、敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "attack_rush_zone",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「マジイエロー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "マジイエロー",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-334.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-334.jpg"
+}

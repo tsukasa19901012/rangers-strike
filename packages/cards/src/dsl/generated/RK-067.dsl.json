@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-067",
+  "name": "仮面ライダーナイト",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "※これは自軍捨札に特徴「女」を持つユニットカードがなければ、特徴「男」または「女」を持つユニットにアタックすることができない。 【飛翔斬】「ダークウイング」からコンビネーションしたとき発動できる⇒これは敵軍ユニットのBPをカードに表記された本来の値としてバトルする",
+  "rawText": "※これは自軍捨札に特徴「女」を持つユニットカードがなければ、特徴「男」または「女」を持つユニットにアタックすることができない。 【飛翔斬】「ダークウイング」からコンビネーションしたとき発動できる⇒これは敵軍ユニットのBPをカードに表記された本来の値としてバトルする",
+  "bp": 5000,
+  "size": "S",
+  "sp": "1/2",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "note_e280bbe38193e3828ce381af",
+      "text": "※これは自軍捨札に特徴「女」を持つユニットカードがなければ、特徴「男」または「女」を持つユニットにアタックすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_attack_require_discard_feature::女",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "zan_e9a39b",
+      "name": "飛翔斬",
+      "text": "「ダークウイング」からコンビネーションしたとき発動できる⇒これは敵軍ユニットのBPをカードに表記された本来の値としてバトルする",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "combo_from_partner_original_bp",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-067.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-067.jpg"
+}

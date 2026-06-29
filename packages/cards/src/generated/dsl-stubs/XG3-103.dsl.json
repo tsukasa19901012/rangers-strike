@@ -9,6 +9,13 @@
   "powerCost": 2,
   "text": "【噛みつき】自軍バトルフェイズ中、このビークルが自軍ラッシュエリアでライドされていなければ、自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは本来のテキストを持たないSユニットとして扱い、次の情報とテキストが追加される⇒「BP2000」「SP空欄」「ウイング」",
   "rawText": "【噛みつき】自軍バトルフェイズ中、このビークルが自軍ラッシュエリアでライドされていなければ、自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは本来のテキストを持たないSユニットとして扱い、次の情報とテキストが追加される⇒「BP2000」「SP空欄」「ウイング」",
+  "size": "S",
+  "features": [
+    "メカ",
+    "獣",
+    "車両",
+    "航空機"
+  ],
   "effects": [
     {
       "id": "mitsuki",
@@ -17,26 +24,19 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-103::mitsuki",
-          "duration": "permanent"
+          "keyword": "ride_action_batorufueizukonobikurugarashueriaderaidosareteinakereba",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "獣",
-    "車両",
-    "航空機"
-  ]
+  }
 }

@@ -20,9 +20,14 @@
     "DEN-O",
     "男"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "hold_extra_command",
+    "text": "追加で自軍コマンドを1つホールドする",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_cross1",
+      "id": "unnamed_e280bbe382afe383ade382b9",
       "text": "※クロス1",
       "trigger": {
         "type": "while_in_field"
@@ -42,14 +47,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-031::medarutoto40",
-          "duration": "permanent"
+          "keyword": "exclude_game_koregaerianiarurashufueizugotoni1dakeraidakaimajinkashi",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -63,10 +68,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "hold_extra_command",
-    "text": "追加で自軍コマンドを1つホールドする",
-    "unitCount": 1
   }
 }

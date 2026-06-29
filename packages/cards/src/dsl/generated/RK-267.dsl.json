@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-267",
+  "name": "海兵隊長ボスガン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これはBP2000以下のユニットにアタックできない。 【怪魔稲妻剣】このユニットとバトルして撃破された敵軍ユニットは、レジストを発動する事ができない。",
+  "rawText": "※これはBP2000以下のユニットにアタックできない。 【怪魔稲妻剣】このユニットとバトルして撃破された敵軍ユニットは、レジストを発動する事ができない。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "クライシス帝国",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "cannot_attack_bp2000_or_less",
+      "text": "※これはBP2000以下のユニットにアタックできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_bp2000_or_less",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "ma_ken",
+      "name": "怪魔稲妻剣",
+      "text": "このユニットとバトルして撃破された敵軍ユニットは、レジストを発動する事ができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-267::ma_ken",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-267.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-267.jpg"
+}

@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_not_selectable",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは相手に選ばれない。",
       "trigger": {
         "type": "while_in_field"
@@ -41,14 +41,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-052::haipakurokuapu",
+          "keyword": "while_in_field_body_tankoregabatoruerianiarubatoruerianiarusyunitono",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

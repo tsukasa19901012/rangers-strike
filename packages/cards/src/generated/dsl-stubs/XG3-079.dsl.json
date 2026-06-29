@@ -41,7 +41,7 @@
       "name": "幻想と切札",
       "text": "これは敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {

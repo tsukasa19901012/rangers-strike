@@ -18,6 +18,12 @@
     "ドラゴン",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「リュウレンジャー」か「気伝獣龍星王」1体を捨札にする",
+    "partnerName": "リュウレンジャー",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "ryu_kiku",
@@ -39,11 +45,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「リュウレンジャー」か「気伝獣龍星王」1体を捨札にする",
-    "partnerName": "リュウレンジャー",
-    "unitCount": 1
   }
 }

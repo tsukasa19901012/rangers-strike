@@ -1,0 +1,74 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-646",
+  "name": "マーズマシン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札からSユニットのカードを5枚まで選び手札に加えてもよい。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札からSユニットのカードを5枚まで選び手札に加えてもよい。",
+  "bp": 4000,
+  "size": "SC",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニット5体をそれぞれコマンドゾーンに送るか捨札にする",
+    "unitCount": 5
+  },
+  "effects": [
+    {
+      "id": "discard_s_unit_to_hand",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札からSユニットのカードを5枚まで選び手札に加えてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-646.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-646.jpg"
+}

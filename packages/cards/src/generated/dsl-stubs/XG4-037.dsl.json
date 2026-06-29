@@ -17,19 +17,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはラッシュするとき可能ならバトルエリアに置く。",
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-037::koreharashusurut",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "buru_shin",
@@ -38,14 +38,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-037::burushin",
+          "keyword": "enemy_power_damage_koreworashushitatokioinodamejinogaunaranaihanoyuni",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

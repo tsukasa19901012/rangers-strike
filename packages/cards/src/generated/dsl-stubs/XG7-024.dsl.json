@@ -18,6 +18,10 @@
     "拳聖",
     "激気"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「激気」を持つ自軍Sユニットがある"
+  },
   "effects": [
     {
       "id": "draw_cards",
@@ -43,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-024::chikarahana",
-          "duration": "turn"
+          "keyword": "grant_ability_koregaerianiarukadonisaidaiwomanaiwotsuyunitohano",
+          "duration": "permanent"
         }
       ]
     }
@@ -53,9 +57,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「激気」を持つ自軍Sユニットがある"
   }
 }

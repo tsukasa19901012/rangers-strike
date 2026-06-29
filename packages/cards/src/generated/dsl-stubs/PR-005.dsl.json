@@ -31,17 +31,12 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP3",
+          "keyword": "grant_ability_pawazonkaradamejinokadowo5binishitemoyoisoushitatokiko",
           "duration": "turn"
         }
       ]
     }
   ],
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "unnamedRules": [
     {
       "kind": "zord",
@@ -71,5 +66,10 @@
         ]
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

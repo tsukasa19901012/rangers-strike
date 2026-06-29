@@ -9,6 +9,12 @@
   "powerCost": "5+",
   "text": "※自分が「仮面ライダークウガ」をラッシュしたとき、自軍エリアに「クウガゴウラム」があれば1体選んで手札に戻す。 ※これは、自軍「仮面ライダーディケイド」があれば、ライドされていなくてもバトルエリアに出ることができる。 【ファイナルアタックライド 】自軍ターン中、これがバトルエリアに出たとき、BP4000以上の敵軍Sユニットを1体選び撃破してもよい。",
   "rawText": "※自分が「仮面ライダークウガ」をラッシュしたとき、自軍エリアに「クウガゴウラム」があれば1体選んで手札に戻す。 ※これは、自軍「仮面ライダーディケイド」があれば、ライドされていなくてもバトルエリアに出ることができる。 【ファイナルアタックライド 】自軍ターン中、これがバトルエリアに出たとき、BP4000以上の敵軍Sユニットを1体選び撃破してもよい。",
+  "size": "S",
+  "features": [
+    "昆虫",
+    "アマダム",
+    "FFR"
+  ],
   "effects": [
     {
       "id": "note_e280bbe887aae58886e3818c",
@@ -26,19 +32,19 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、自軍「仮面ライダーディケイド」があれば、ライドされていなくてもバトルエリアに出ることができる。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-074::koreharaidadeike",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "fuainaruatakuraido",
@@ -47,31 +53,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-074::fuainaruatakuraido",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibp4000nosyunitowo1",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "昆虫",
-    "アマダム",
-    "FFR"
-  ],
-  "rushAdditionalCondition": {
-    "conditionId": "return_named_to_hand",
-    "text": "自軍「仮面ライダークウガ」1体を手札に戻す",
-    "partnerName": "仮面ライダークウガ",
-    "unitCount": 1
   }
 }

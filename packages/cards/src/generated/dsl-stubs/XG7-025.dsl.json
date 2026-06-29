@@ -18,9 +18,14 @@
     "男",
     "女"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "hold_extra_command",
+    "text": "追加で自軍コマンドを1つホールドする",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_cross1",
+      "id": "unnamed_e280bbe382afe383ade382b9",
       "text": "※クロス1",
       "trigger": {
         "type": "while_in_field"
@@ -34,7 +39,7 @@
       ]
     },
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -48,19 +53,19 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e381aee383a6",
+      "id": "note_e280bbe38193e381aee383a6",
       "text": "※このユニットのナンバーの数字は、リリース状態の自軍コマンド1つにつき1少なくなる。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-025::konoyunitononanb",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "notsubasa",
@@ -69,14 +74,14 @@
       "trigger": {
         "type": "on_attack"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-025::notsubasa",
+          "keyword": "on_attack_action_koregaatakushiteyunitowo_geki_ha_shitatokisonoyunitotor",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -95,10 +100,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "hold_extra_command",
-    "text": "追加で自軍コマンドを1つホールドする",
-    "unitCount": 1
   }
 }

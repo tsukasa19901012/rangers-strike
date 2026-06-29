@@ -16,21 +16,27 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ラジエッカー」1体を捨札にする",
+    "partnerName": "ラジエッカー",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_becomes_l_bp_if_any_l_on_field_3000",
+      "id": "unnamed_e280bbe887aae58886e3818b",
       "text": "※自分か相手のLユニットがあれば、これはLユニットになり、BP+3000される。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "becomes_l_bp_if_any_l_on_field_3000",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "chikyudeha1shikamotanai",
@@ -39,25 +45,19 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-003::chikyudeha1shikamotanai",
+          "keyword": "while_in_field_body_koregaerianiarugatanwoerutokinorajiekanokadoto",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「ラジエッカー」1体を捨札にする",
-    "partnerName": "ラジエッカー",
-    "unitCount": 1
   }
 }

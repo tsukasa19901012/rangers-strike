@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-218",
+  "name": "タイムレッド",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【アサルトベクター】「SP1」相手は自分自身のパワーゾーンのダメージ以外のカードを見て、カテゴリの数が2つ以上あれば、1つになるまでダメージ以外のカードを捨札にする。",
+  "rawText": "【アサルトベクター】「SP1」相手は自分自身のパワーゾーンのダメージ以外のカードを見て、カテゴリの数が2つ以上あれば、1つになるまでダメージ以外のカードを捨札にする。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "レッド",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "asarutobekuta",
+      "name": "アサルトベクター",
+      "text": "「SP1」相手は自分自身のパワーゾーンのダメージ以外のカードを見て、カテゴリの数が2つ以上あれば、1つになるまでダメージ以外のカードを捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-218.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-218.jpg"
+}

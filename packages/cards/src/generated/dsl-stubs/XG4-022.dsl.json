@@ -25,14 +25,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-022::ninjamisen",
-          "duration": "turn"
+          "keyword": "while_in_field_body_koregarashuerianiarumekawotsuyunitogabatoruerianitat",
+          "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-399",
+  "name": "タイムジェット3",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【オーパーツの返還】これをラッシュしたとき、敵軍バトルエリアからMAのMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "【オーパーツの返還】これをラッシュしたとき、敵軍バトルエリアからMAのMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "bp": 3000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "opatsuno",
+      "name": "オーパーツの返還",
+      "text": "これをラッシュしたとき、敵軍バトルエリアからMAのMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_rush_send_enemy_battle_category_m_to_power",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-399.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-399.jpg"
+}

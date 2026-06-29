@@ -11,21 +11,20 @@
   "rawText": "追加条件を持たないユニットをすべて撃破する。",
   "effects": [
     {
-      "id": "taimubento",
-      "name": "タイムベント",
+      "id": "note_e8bfbde58aa0e69da1e4bbb6",
       "text": "追加条件を持たないユニットをすべて撃破する。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-065::taimubento",
+          "keyword": "destroy_all_enemy_wotanaiyunitowosubete_geki_ha_suru",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

@@ -22,7 +22,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_destroy_on_win_vs_sp1",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたとき、バトルに勝っても撃破される。",
       "trigger": {
         "type": "while_in_field"
@@ -51,7 +51,7 @@
       ]
     },
     {
-      "id": "chikara_chikara_e3808c53",
+      "id": "chikara_chikara_2",
       "name": "気力妖力合体",
       "text": "「SP1」 MAとDAの両方を持つ自軍コマンドを1つ選びホールドするか、MAのみを持つ自軍コマンドとDAのみを持つ自軍コマンドを1つずつ選びホールドしてもよい。そうしたとき、敵軍Sユニットを1体選び撃破する。",
       "trigger": {

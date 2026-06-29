@@ -1,6 +1,8 @@
 import type { GameAction } from "../types/actions";
 import type { GameState, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
+import { getLegalActions } from "../core/legalActions";
+import { opponent } from "../core/helpers";
 import { quickActionPriority } from "./helpers";
 import { isCpuTurn, pickCpuAction, type PickCpuActionOptions } from "./level1";
 import { evaluateState } from "./scoring";
@@ -8,22 +10,28 @@ import { evaluateState } from "./scoring";
 export type SearchOptions = {
   maxCandidates?: number;
   maxResponseDepth?: number;
-  /** 探索の入れ子深さ。1以上で相手応答はヒューリスティックのみ（再帰防止）。 */
+  /** 探索の入れ子深さ。1以上で相手応答は浅い探索に切り替え（再帰防止）。 */
   simulationDepth?: number;
+  /** 2以上で相手の次手まで読む（ルートのみ）。 */
+  searchPly?: number;
 };
 
-const DEFAULT_MAX_CANDIDATES = 50;
-const DEFAULT_MAX_RESPONSE_DEPTH = 100;
-const OPPONENT_SEARCH_MAX_CANDIDATES = 10;
-const OPPONENT_SEARCH_MAX_RESPONSE_DEPTH = 3;
+const DEFAULT_MAX_CANDIDATES = 72;
+const DEFAULT_MAX_RESPONSE_DEPTH = 32;
+const OPPONENT_SEARCH_MAX_CANDIDATES = 16;
+const OPPONENT_SEARCH_MAX_RESPONSE_DEPTH = 6;
+const INNER_PLY_CANDIDATE_RATIO = 0.38;
 
 function actionKey(action: GameAction): string {
   switch (action.type) {
     case "battle":
       return `${action.type}:${action.attackerInstanceId}:${action.defenderInstanceId}`;
-    case "rush":
+    case "rush": {
       const holds = [...(action.zordMothershipHoldInstanceIds ?? [])].sort().join(",");
       return `${action.type}:${action.instanceId}:${action.zordMaterialInstanceId ?? ""}:${action.zordMaterialDestination ?? ""}:${holds}`;
+    }
+    case "mount_ride":
+      return `${action.type}:${action.riderInstanceId}:${action.vehicleInstanceId}`;
     case "play_operation":
       return `${action.type}:${action.instanceId}:${action.targetInstanceId ?? ""}:${action.extraInstanceId ?? ""}`;
     case "move_to_battle":
@@ -56,11 +64,19 @@ export function dedupeActions(actions: GameAction[]): GameAction[] {
   return unique;
 }
 
+function innerCandidateLimit(options: SearchOptions | undefined): number {
+  const maxCandidates = options?.maxCandidates ?? DEFAULT_MAX_CANDIDATES;
+  return Math.max(
+    8,
+    Math.min(OPPONENT_SEARCH_MAX_CANDIDATES, Math.floor(maxCandidates * INNER_PLY_CANDIDATE_RATIO)),
+  );
+}
+
 function opponentSearchOptions(
   options: SearchOptions | undefined,
   simulationDepth: number,
 ): PickCpuActionOptions {
-  if (simulationDepth >= 1) {
+  if (simulationDepth >= 2) {
     return { enableSearch: false };
   }
 
@@ -70,10 +86,17 @@ function opponentSearchOptions(
     return { enableSearch: false };
   }
 
+  const innerCandidates = innerCandidateLimit(options);
+  const innerDepth = Math.min(
+    OPPONENT_SEARCH_MAX_RESPONSE_DEPTH,
+    Math.max(4, Math.floor(maxResponseDepth * 0.45)),
+  );
+
   return {
     enableSearch: true,
-    maxCandidates: Math.min(OPPONENT_SEARCH_MAX_CANDIDATES, maxCandidates),
-    maxResponseDepth: Math.min(OPPONENT_SEARCH_MAX_RESPONSE_DEPTH, maxResponseDepth),
+    maxCandidates: innerCandidates,
+    maxResponseDepth: innerDepth,
+    searchPly: 1,
     simulationDepth: simulationDepth + 1,
   };
 }
@@ -105,34 +128,102 @@ export function resolveOpponentResponses(
   return current;
 }
 
+export function rankCandidatesForSearch(
+  state: GameState,
+  playerId: PlayerId,
+  candidates: GameAction[],
+  options?: SearchOptions,
+  candidateCap?: number,
+): GameAction[] {
+  const maxCandidates = candidateCap ?? options?.maxCandidates ?? DEFAULT_MAX_CANDIDATES;
+  return dedupeActions(candidates)
+    .filter((action) => action.playerId === playerId)
+    .sort(
+      (a, b) =>
+        quickActionPriority(state, playerId, b) - quickActionPriority(state, playerId, a),
+    )
+    .slice(0, maxCandidates);
+}
+
+function scoreAfterAction(
+  state: GameState,
+  playerId: PlayerId,
+  action: GameAction,
+  options?: SearchOptions,
+): { ok: true; state: GameState } | { ok: false } {
+  const result = applyAction(state, action);
+  if (!result.ok) return { ok: false };
+  const resolved = resolveOpponentResponses(result.state, playerId, {
+    ...options,
+    simulationDepth: options?.simulationDepth ?? 0,
+  });
+  return { ok: true, state: resolved };
+}
+
+/** 相手の応手を読む 2-ply 評価（非再帰・ルート専用）。 */
+function scoreActionWithOpponentReply(
+  state: GameState,
+  playerId: PlayerId,
+  action: GameAction,
+  options: SearchOptions,
+): number {
+  const after = scoreAfterAction(state, playerId, action, options);
+  if (!after.ok) return Number.NEGATIVE_INFINITY;
+  if (after.state.winner) return evaluateState(after.state, playerId);
+
+  const enemyId = opponent(playerId);
+  const enemyLegal = getLegalActions(after.state).filter((a) => a.playerId === enemyId);
+  const enemyCandidates = rankCandidatesForSearch(
+    after.state,
+    enemyId,
+    enemyLegal,
+    options,
+    innerCandidateLimit(options),
+  );
+
+  if (enemyCandidates.length === 0) {
+    return evaluateState(after.state, playerId);
+  }
+
+  let worst = Number.POSITIVE_INFINITY;
+  for (const reply of enemyCandidates) {
+    const afterReply = scoreAfterAction(after.state, enemyId, reply, {
+      ...options,
+      simulationDepth: 1,
+      searchPly: 1,
+    });
+    const score = afterReply.ok
+      ? evaluateState(afterReply.state, playerId)
+      : evaluateState(after.state, playerId);
+    worst = Math.min(worst, score);
+  }
+
+  return worst;
+}
+
+function scoreActionShallow(
+  state: GameState,
+  playerId: PlayerId,
+  action: GameAction,
+  options?: SearchOptions,
+): number {
+  const after = scoreAfterAction(state, playerId, action, options);
+  if (!after.ok) return Number.NEGATIVE_INFINITY;
+  return evaluateState(after.state, playerId);
+}
+
 export function scoreAction(
   state: GameState,
   playerId: PlayerId,
   action: GameAction,
   options?: SearchOptions,
 ): number {
-  const result = applyAction(state, action);
-  if (!result.ok) return Number.NEGATIVE_INFINITY;
-  const resolved = resolveOpponentResponses(result.state, playerId, {
-    ...options,
-    simulationDepth: options?.simulationDepth ?? 0,
-  });
-  return evaluateState(resolved, playerId);
-}
-
-export function rankCandidatesForSearch(
-  state: GameState,
-  playerId: PlayerId,
-  candidates: GameAction[],
-  options?: SearchOptions,
-): GameAction[] {
-  const maxCandidates = options?.maxCandidates ?? DEFAULT_MAX_CANDIDATES;
-  return dedupeActions(candidates)
-    .sort(
-      (a, b) =>
-        quickActionPriority(state, playerId, b) - quickActionPriority(state, playerId, a),
-    )
-    .slice(0, maxCandidates);
+  const ply = options?.searchPly ?? 1;
+  const simDepth = options?.simulationDepth ?? 0;
+  if (ply > 1 && simDepth === 0) {
+    return scoreActionWithOpponentReply(state, playerId, action, options ?? { searchPly: ply });
+  }
+  return scoreActionShallow(state, playerId, action, options);
 }
 
 export function pickBestBySearch(

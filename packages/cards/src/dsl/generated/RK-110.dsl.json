@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-110",
+  "name": "V-1システム",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "【性能の限界】敵軍ターン中、これが撃破されて捨札になったとき、このユニットカードを自軍コマンドゾーンにホールド状態で置いてもよい。（置けなければこの効果は発動できない）",
+  "rawText": "【性能の限界】敵軍ターン中、これが撃破されて捨札になったとき、このユニットカードを自軍コマンドゾーンにホールド状態で置いてもよい。（置けなければこの効果は発動できない）",
+  "bp": 500,
+  "size": "S",
+  "sp": "1/5",
+  "features": [
+    "メカ",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "no_e680a7",
+      "name": "性能の限界",
+      "text": "敵軍ターン中、これが撃破されて捨札になったとき、このユニットカードを自軍コマンドゾーンにホールド状態で置いてもよい。（置けなければこの効果は発動できない）",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-110::no_e680a7",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-110.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-110.jpg"
+}

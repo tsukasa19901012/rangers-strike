@@ -1,0 +1,101 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-247",
+  "name": "仮面ライダーネガ電王",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から｢ネガタロス｣のカードを1枚選びラッシュエリアに出す。 ※これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない。 【不敵な挑発】これが自軍エリアにある間、次の効果を発動する⇒特徴「警察」を持つユニットは、可能なら毎ターンバトルエリアに出る。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から｢ネガタロス｣のカードを1枚選びラッシュエリアに出す。 ※これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない。 【不敵な挑発】これが自軍エリアにある間、次の効果を発動する⇒特徴「警察」を持つユニットは、可能なら毎ターンバトルエリアに出る。",
+  "bp": 4500,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "イマジン"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から｢ネガタロス｣のカードを1枚選びラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unnamed_hold_turn_only_entry",
+      "text": "※これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "hold_turn_only_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "na_e4b88d",
+      "name": "不敵な挑発",
+      "text": "これが自軍エリアにある間、次の効果を発動する⇒特徴「警察」を持つユニットは、可能なら毎ターンバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-247::na_e4b88d",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍｢ネガタロス｣1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ネガタロス",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-247.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-247.jpg"
+}

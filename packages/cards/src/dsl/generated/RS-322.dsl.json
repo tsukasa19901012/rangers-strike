@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-322",
+  "name": "ベン・G",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【人身略取】自軍ターン中、これがバトルエリアに出たとき、自分の手札から追加条件を持つMユニットのカードを1枚選び捨札にしてもよい。そうしたとき、相手は自分自身がそのカードの持ち主であるかのように、そのカードの追加条件を可能なら満たす。",
+  "rawText": "【人身略取】自軍ターン中、これがバトルエリアに出たとき、自分の手札から追加条件を持つMユニットのカードを1枚選び捨札にしてもよい。そうしたとき、相手は自分自身がそのカードの持ち主であるかのように、そのカードの追加条件を可能なら満たす。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "fx_unknown_2",
+      "name": "人身略取",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自分の手札から追加条件を持つMユニットのカードを1枚選び捨札にしてもよい。そうしたとき、相手は自分自身がそのカードの持ち主であるかのように、そのカードの追加条件を可能なら満たす。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enter_battle_discard_hand_m_opponent_pays_additional",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-322.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-322.jpg"
+}

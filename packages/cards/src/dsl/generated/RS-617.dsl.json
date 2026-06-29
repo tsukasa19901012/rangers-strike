@@ -1,0 +1,77 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-617",
+  "name": "グレートイカロス",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―ジェットイカロス（またはジェットマシン）＋ジェットガルーダ（またはバードガルーダ） ※ブラスト 【バードメーザー】 これは、自軍捨札にウイングを持つユニットカードが5枚以上あれば「SP2」になる。",
+  "rawText": "合体―ジェットイカロス（またはジェットマシン）＋ジェットガルーダ（またはバードガルーダ） ※ブラスト 【バードメーザー】 これは、自軍捨札にウイングを持つユニットカードが5枚以上あれば「SP2」になる。",
+  "bp": 15000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "人型",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_blast",
+      "text": "※ブラスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "blast",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "badomeza",
+      "name": "バードメーザー",
+      "text": "これは、自軍捨札にウイングを持つユニットカードが5枚以上あれば「SP2」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP2",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ジェットイカロス（またはジェットマシン）＋ジェットガルーダ（またはバードガルーダ） ※ブラスト",
+      "partnerCardIds": [
+        "RS-618",
+        "RS-619"
+      ]
+    },
+    {
+      "kind": "note",
+      "text": "※ブラスト",
+      "rule": "blast"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-617.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-617.jpg"
+}

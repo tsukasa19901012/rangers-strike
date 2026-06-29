@@ -24,14 +24,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "on_rush_swap_from_power_except_named::ゴーカイピンク",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "renjaki",
@@ -40,14 +40,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-001::renjaki",
-          "duration": "permanent"
+          "keyword": "reveal_faceup_nokara1woomotenishitemoyoisoushitatokiomotenishitakadogani",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-007",
+  "name": "メンテナンス",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び手札に戻す。その後、自軍捨札に特徴「改造人間」を持つSユニットのカードがあれば1枚選び、自軍コマンドゾーンにホールド状態で置く。",
+  "rawText": "自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び手札に戻す。その後、自軍捨札に特徴「改造人間」を持つSユニットのカードがあれば1枚選び、自軍コマンドゾーンにホールド状態で置く。",
+  "effects": [
+    {
+      "id": "mentenansu",
+      "name": "メンテナンス",
+      "text": "自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び手札に戻す。その後、自軍捨札に特徴「改造人間」を持つSユニットのカードがあれば1枚選び、自軍コマンドゾーンにホールド状態で置く。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "command_return_then_recruit_discard",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-007.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-007.jpg"
+}

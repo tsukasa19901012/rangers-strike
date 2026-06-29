@@ -24,14 +24,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-051::hani",
+          "keyword": "destroy_on_rush_koreworashushitatokikarasyunitonokadowo1ndemoyoisoushita",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

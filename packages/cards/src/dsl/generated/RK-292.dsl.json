@@ -1,0 +1,75 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-292",
+  "name": "クロコダイルオルフェノク格闘態",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これは自軍捨札にある「クロコダイルオルフェノク格闘態」のカード1枚につきBP+3000される。 ※これはBP5000以上のとき「SP1」になる。 【三つの魂】敵軍ターン中、これが撃破されて捨札になったとき、次の効果を発動できる⇒自軍山札を見て「クロコダイルオルフェノク格闘態」のカードを1枚選び、相手に見せてから自分の手札に加えてもよい。その後、自軍山札をシャッフルする。",
+  "rawText": "※これは自軍捨札にある「クロコダイルオルフェノク格闘態」のカード1枚につきBP+3000される。 ※これはBP5000以上のとき「SP1」になる。 【三つの魂】敵軍ターン中、これが撃破されて捨札になったとき、次の効果を発動できる⇒自軍山札を見て「クロコダイルオルフェノク格闘態」のカードを1枚選び、相手に見せてから自分の手札に加えてもよい。その後、自軍山札をシャッフルする。",
+  "bp": 500,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "ラッキークローバー",
+    "オルフェノク",
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_bp_plus_per_discard_named_kurokodairuorufuenoku_3000",
+      "text": "※これは自軍捨札にある「クロコダイルオルフェノク格闘態」のカード1枚につきBP+3000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "bp_plus_per_discard_named_kurokodairuorufuenoku_3000",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "sp_at_bp5000",
+      "text": "※これはBP5000以上のとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "sp_at_bp5000_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "tsuno",
+      "name": "三つの魂",
+      "text": "敵軍ターン中、これが撃破されて捨札になったとき、次の効果を発動できる⇒自軍山札を見て「クロコダイルオルフェノク格闘態」のカードを1枚選び、相手に見せてから自分の手札に加えてもよい。その後、自軍山札をシャッフルする。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-292::tsuno",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-292.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-292.jpg"
+}

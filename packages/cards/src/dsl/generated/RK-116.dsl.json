@@ -1,0 +1,83 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-116",
+  "name": "マグナギガ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "※これはアタックすることができない。 ※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【そびえる巨体】これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは敵軍ユニットの効果によってホールドされない。",
+  "rawText": "※これはアタックすることができない。 ※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【そびえる巨体】これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは敵軍ユニットの効果によってホールドされない。",
+  "bp": 6000,
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack",
+      "text": "※これはアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "sobieru",
+      "name": "そびえる巨体",
+      "text": "これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは敵軍ユニットの効果によってホールドされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "while_command_hold_immune",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックすることができない。",
+      "rule": "cannot_attack"
+    },
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-116.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-116.jpg"
+}

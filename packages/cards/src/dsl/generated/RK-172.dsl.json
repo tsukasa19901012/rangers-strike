@@ -1,0 +1,36 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-172",
+  "name": "ルリオオカミ",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "※カウンター これは自軍ユニットがアタックされたとき発動できる⇒自軍山札の上から3枚オモテにする。そして、オモテにしたカードの中から、アタックしてきたユニットの必要パワーの数字以上の必要パワーの数字を持つカードをすべて自分の手札に加え、それ以外は山札に戻してシャッフルする。この効果で1枚以上のカードを手札に加えたなら、そのバトルは行われない。",
+  "rawText": "※カウンター これは自軍ユニットがアタックされたとき発動できる⇒自軍山札の上から3枚オモテにする。そして、オモテにしたカードの中から、アタックしてきたユニットの必要パワーの数字以上の必要パワーの数字を持つカードをすべて自分の手札に加え、それ以外は山札に戻してシャッフルする。この効果で1枚以上のカードを手札に加えたなら、そのバトルは行われない。",
+  "effects": [
+    {
+      "id": "unnamed_counter_note_kaunta_korehayunitog",
+      "text": "※カウンター これは自軍ユニットがアタックされたとき発動できる⇒自軍山札の上から3枚オモテにする。そして、オモテにしたカードの中から、アタックしてきたユニットの必要パワーの数字以上の必要パワーの数字を持つカードをすべて自分の手札に加え、それ以外は山札に戻してシャッフルする。この効果で1枚以上のカードを手札に加えたなら、そのバトルは行われない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "counter_note::kaunta_korehayunitog",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-172.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-172.jpg"
+}

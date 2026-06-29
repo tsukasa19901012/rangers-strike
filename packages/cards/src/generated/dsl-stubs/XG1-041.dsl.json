@@ -40,16 +40,16 @@
       "name": "ガガの腕輪",
       "text": "これをリリースする。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_self",
+          "keyword": "catchall_interpret_koreworirisusuru",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

@@ -9,6 +9,12 @@
   "powerCost": "4+",
   "text": "※自分が「仮面ライダーアギト」をラッシュしたとき、自軍エリアに「アギトトルネイダー」があれば1体選んで手札に戻す。 ※これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる。 【ファイナルアタックライド】これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
   "rawText": "※自分が「仮面ライダーアギト」をラッシュしたとき、自軍エリアに「アギトトルネイダー」があれば1体選んで手札に戻す。 ※これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる。 【ファイナルアタックライド】これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "size": "S",
+  "features": [
+    "車両",
+    "賢者の石",
+    "FFR"
+  ],
   "effects": [
     {
       "id": "note_e280bbe887aae58886e3818c",
@@ -37,8 +43,7 @@
           "keyword": "ride_named_becomes::仮面ライダーディケイド::SP1",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "fuainaruatakuraido",
@@ -50,8 +55,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-077::fuainaruatakuraido",
-          "duration": "permanent"
+          "keyword": "grant_ability_koregaraidosaretamamanarakonobikurukarakonbineshonsurusyun",
+          "duration": "turn"
         }
       ]
     }
@@ -60,17 +65,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "車両",
-    "賢者の石",
-    "FFR"
-  ],
-  "rushAdditionalCondition": {
-    "conditionId": "return_named_to_hand",
-    "text": "自軍「仮面ライダーアギト」1体を手札に戻す",
-    "partnerName": "仮面ライダーアギト",
-    "unitCount": 1
   }
 }

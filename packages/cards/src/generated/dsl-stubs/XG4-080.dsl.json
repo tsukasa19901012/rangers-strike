@@ -53,16 +53,16 @@
       "name": "ハードショット",
       "text": "これがストライクしてダメージを与えるとき、かわりに敵軍ラッシュエリアからSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-080::hadoshoto",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_koregasutoraikushitedamejiwoerutokikawarinirashueriak",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

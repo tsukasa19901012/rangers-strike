@@ -11,21 +11,20 @@
   "rawText": "特徴「怪人」を持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、BP+3000され、Lユニットになる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
   "effects": [
     {
-      "id": "noyokan",
-      "name": "芋長の芋ヨーカン",
+      "id": "stack_s_on_self_rush",
       "text": "特徴「怪人」を持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、BP+3000され、Lユニットになる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "stack_s_on_self_rush",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

@@ -45,14 +45,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-042::fuainaruatakuraido",
-          "duration": "permanent"
+          "keyword": "deploy_rush_area_omote_ko_kinopawakararaidawotsuyunitokadowo1bira",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

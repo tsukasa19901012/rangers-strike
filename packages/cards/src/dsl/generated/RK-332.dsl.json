@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-332",
+  "name": "仮面ライダー龍騎",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "※これは特徴「ドラゴン」を持つ自軍ユニット1体につきBP+1000される。 【叶えたい願いを胸に】特徴「ドラゴン」を持つユニットからコンビネーションしたとき発動できる⇒敵軍バトルエリアから、これがコンビネーションしているユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+  "rawText": "※これは特徴「ドラゴン」を持つ自軍ユニット1体につきBP+1000される。 【叶えたい願いを胸に】特徴「ドラゴン」を持つユニットからコンビネーションしたとき発動できる⇒敵軍バトルエリアから、これがコンビネーションしているユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/2",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_bp_plus_per_ally_feature_doragon_1000",
+      "text": "※これは特徴「ドラゴン」を持つ自軍ユニット1体につきBP+1000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "bp_plus_per_ally_feature_doragon_1000",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "etaiiwoni",
+      "name": "叶えたい願いを胸に",
+      "text": "特徴「ドラゴン」を持つユニットからコンビネーションしたとき発動できる⇒敵軍バトルエリアから、これがコンビネーションしているユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-332.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-332.jpg"
+}

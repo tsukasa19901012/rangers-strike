@@ -11,21 +11,20 @@
   "rawText": "カード名を１つ宣言する。このターン、宣言したカード名と同じカード名を持つSユニットとSユニットのカードは次のテキストを得る⇒「ウイング」、「このユニットの持ち主は、自分自身のターンを終えるとき、このユニットがラッシュエリアにあれば手札に戻してもよい。」",
   "effects": [
     {
-      "id": "roketobusuta",
-      "name": "ロケットブースター",
+      "id": "note_e382abe383bce38389e5908d",
       "text": "カード名を１つ宣言する。このターン、宣言したカード名と同じカード名を持つSユニットとSユニットのカードは次のテキストを得る⇒「ウイング」、「このユニットの持ち主は、自分自身のターンを終えるとき、このユニットがラッシュエリアにあれば手札に戻してもよい。」",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rocket_booster",
+          "keyword": "catchall_interpret_kadowotsusurukonotanshitakadotojikadowotsusyunitotos",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

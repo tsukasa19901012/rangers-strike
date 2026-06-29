@@ -24,14 +24,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-094::hakaidano",
-          "duration": "permanent"
+          "keyword": "grant_effect_koregaerianiarurashufueizugotoni1dakenowodekiru",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

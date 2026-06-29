@@ -41,14 +41,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-057::suteingapurazuma",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_rejisutowotanaisyunitowo1bihorudoshitemoyoi",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-233",
+  "name": "アバレブラック",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ダイノスラスター】「SP1」敵軍コマンドゾーンのカテゴリの数が、自軍コマンドゾーンのカテゴリの数より多ければ、相手は同じ数になるまで自分自身のコマンドゾーンからカードを選び、捨札にする。",
+  "rawText": "【ダイノスラスター】「SP1」敵軍コマンドゾーンのカテゴリの数が、自軍コマンドゾーンのカテゴリの数より多ければ、相手は同じ数になるまで自分自身のコマンドゾーンからカードを選び、捨札にする。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "dainosurasuta",
+      "name": "ダイノスラスター",
+      "text": "「SP1」敵軍コマンドゾーンのカテゴリの数が、自軍コマンドゾーンのカテゴリの数より多ければ、相手は同じ数になるまで自分自身のコマンドゾーンからカードを選び、捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "dino_slasher_category_balance",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-233.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-233.jpg"
+}

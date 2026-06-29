@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-349",
+  "name": "スーパー戦隊アドレスブック",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "自軍山札から、追加条件を持たないDA以外のSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+  "rawText": "自軍山札から、追加条件を持たないDA以外のSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+  "effects": [
+    {
+      "id": "deck_to_hand",
+      "text": "自軍山札から、追加条件を持たないDA以外のSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "optional_deck_draw",
+          "valid": {
+            "type": "zone",
+            "zone": "deck",
+            "owner": "self",
+            "filter": {
+              "size": "S",
+              "categoryExcept": "DA",
+              "noRushAdditionalCondition": true
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-349.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-349.jpg"
+}

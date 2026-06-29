@@ -1,0 +1,53 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-644",
+  "name": "分身獣ギガウイング",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※ウイング",
+  "rawText": "※ウイング",
+  "bp": 4000,
+  "size": "SC",
+  "features": [
+    "メカ",
+    "獣",
+    "航空機"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「母艦」を持つ自軍ユニットがある"
+  },
+  "imageUrl": "/cards/promoted/RS-644.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-644.jpg"
+}

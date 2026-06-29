@@ -25,14 +25,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-069::kamenraido",
+          "keyword": "while_in_field_body_koregaerianiarurashufueizugotoni1dakepawazonnoomo",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

@@ -20,6 +20,12 @@
     "獣",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ゴセイグレート」または「ゴセイマシン」1体を捨札にする",
+    "partnerName": "ゴセイグレート",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_taxis_ma",
@@ -42,14 +48,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-043::shiikusutoraiku",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokinowosuruniarutakusuwo",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -63,11 +69,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「ゴセイグレート」または「ゴセイマシン」1体を捨札にする",
-    "partnerName": "ゴセイグレート",
-    "unitCount": 1
   }
 }

@@ -31,13 +31,16 @@
       "name": "ジュウクンドー",
       "text": "これはアタックするかわりに次の効果を発動できる。敵軍ラッシュエリアにあるユニットを、カードに表記された本来のBPの合計が3000以下になるように好きな数選んで撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "on_attack"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "attack_destroy_bp_sum_3000",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     },
     {
       "id": "unnamed_no_battle_entry_turn_rushed",
@@ -56,6 +59,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

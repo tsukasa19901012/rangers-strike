@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_mf",
+      "id": "unnamed_alias_raidakuugamf",
       "text": "※これは「仮面ライダークウガMF」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_mf",
+          "keyword": "alias_raidakuugamf",
           "duration": "permanent"
         }
       ]
@@ -52,16 +52,16 @@
       "name": "アタックライド",
       "text": "このターン、これは特徴「警察」を持つ自軍ユニット1体につきBP+1000される。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-068::atakuraido",
-          "duration": "permanent"
+          "keyword": "bp_modify_konotankorehawotsuyunito1nitsukibp1000sareru",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

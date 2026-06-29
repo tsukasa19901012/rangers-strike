@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-675",
+  "name": "シンケンブルー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【ウォーターアロー】これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "【ウォーターアロー】これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "ブルー",
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "uotaaro",
+      "name": "ウォーターアロー",
+      "text": "これは敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing_attack_enemy_rush",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-675.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-675.jpg"
+}

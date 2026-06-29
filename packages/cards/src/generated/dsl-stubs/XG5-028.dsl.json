@@ -19,6 +19,12 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ダイボイジャー」1体を捨札にする",
+    "partnerName": "ダイボイジャー",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "supasateisentaisouru",
@@ -27,25 +33,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-028::supasateisentaisouru",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokinowodekiruniwomud",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「ダイボイジャー」1体を捨札にする",
-    "partnerName": "ダイボイジャー",
-    "unitCount": 1
   }
 }

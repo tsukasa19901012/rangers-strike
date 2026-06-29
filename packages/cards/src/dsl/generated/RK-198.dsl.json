@@ -1,0 +1,75 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-198",
+  "name": "仮面ライダーインペラー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これをラッシュしたとき、相手は1枚ドローしてもよい。 ※これは特徴「レイヨウ型」を持つユニットが自軍バトルエリアにあれば敵軍Sユニットにアタックされない。 【ドライブディバイダー】特徴「レイヨウ型」を持つユニットからコンビネーションしたとき発動できる⇒レジストを持たない敵軍Sユニットを、特徴「レイヨウ型」を持つユニットの数まで選びホールドする。",
+  "rawText": "※これをラッシュしたとき、相手は1枚ドローしてもよい。 ※これは特徴「レイヨウ型」を持つユニットが自軍バトルエリアにあれば敵軍Sユニットにアタックされない。 【ドライブディバイダー】特徴「レイヨウ型」を持つユニットからコンビネーションしたとき発動できる⇒レジストを持たない敵軍Sユニットを、特徴「レイヨウ型」を持つユニットの数まで選びホールドする。",
+  "bp": 1000,
+  "size": "S",
+  "sp": "1/2",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "opponent_draw",
+      "text": "※これをラッシュしたとき、相手は1枚ドローしてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "opponent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_ally_reiyou_protects_s",
+      "text": "※これは特徴「レイヨウ型」を持つユニットが自軍バトルエリアにあれば敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ally_reiyou_protects_from_enemy_s",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "doraibudeibaida",
+      "name": "ドライブディバイダー",
+      "text": "特徴「レイヨウ型」を持つユニットからコンビネーションしたとき発動できる⇒レジストを持たない敵軍Sユニットを、特徴「レイヨウ型」を持つユニットの数まで選びホールドする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-198::doraibudeibaida",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-198.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-198.jpg"
+}

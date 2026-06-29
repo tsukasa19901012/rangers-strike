@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-519",
+  "name": "インフェルシアの花嫁",
+  "type": "operation",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※常駐 ※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズ中に1度だけ、『特徴「男」を持つ自軍Sユニットと特徴「女」を持つ自軍Sユニットをそれぞれ1体ずつ選び捨札にする』を実行してもよい。そうしたとき、自軍山札を見て、特徴「戦闘員」を持つユニットカードを3枚まで選び、自軍ラッシュエリアに出す。その後、山札をシャッフルする。",
+  "rawText": "※常駐 ※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズ中に1度だけ、『特徴「男」を持つ自軍Sユニットと特徴「女」を持つ自軍Sユニットをそれぞれ1体ずつ選び捨札にする』を実行してもよい。そうしたとき、自軍山札を見て、特徴「戦闘員」を持つユニットカードを3枚まで選び、自軍ラッシュエリアに出す。その後、山札をシャッフルする。",
+  "effects": [
+    {
+      "id": "unnamed_resident",
+      "text": "※常駐",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_tag",
+      "text": "※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズ中に1度だけ、『特徴「男」を持つ自軍Sユニットと特徴「女」を持つ自軍Sユニットをそれぞれ1体ずつ選び捨札にする』を実行してもよい。そうしたとき、自軍山札を見て、特徴「戦闘員」を持つユニットカードを3枚まで選び、自軍ラッシュエリアに出す。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "tag",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※常駐",
+      "rule": "resident"
+    },
+    {
+      "kind": "note",
+      "text": "※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズ中に1度だけ、『特徴「男」を持つ自軍Sユニットと特徴「女」を持つ自軍Sユニットをそれぞれ1体ずつ選び捨札にする』を実行してもよい。そうしたとき、自軍山札を見て、特徴「戦闘員」を持つユニットカードを3枚まで選び、自軍ラッシュエリアに出す。その後、山札をシャッフルする。",
+      "rule": "tag"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-519.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-519.jpg"
+}

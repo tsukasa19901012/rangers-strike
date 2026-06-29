@@ -1,0 +1,36 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-012",
+  "name": "宏のオルゴール時計",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "※カウンター（これは敵軍ターン中にのみ使用できる） BP4000以上のSユニットがラッシュされたとき発動できる⇒このターン、相手はバトルフェイズを飛ばす。",
+  "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） BP4000以上のSユニットがラッシュされたとき発動できる⇒このターン、相手はバトルフェイズを飛ばす。",
+  "effects": [
+    {
+      "id": "note_e280bbe382abe382a6e383b3",
+      "text": "※カウンター（これは敵軍ターン中にのみ使用できる） BP4000以上のSユニットがラッシュされたとき発動できる⇒このターン、相手はバトルフェイズを飛ばす。",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "counter_skip_battle_phase",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-012.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-012.jpg"
+}

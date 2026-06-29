@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-348",
+  "name": "メディテーション",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※常駐 自分はダメージが14点になるまでゲームに負けない。ただし、自分の山札からカードを引くべきときに引けなければゲームに負ける。また、自分はダメージを1点受けるたび、追加で1点ダメージを受ける（このダメージには追加ダメージは無い）。",
+  "rawText": "※常駐 自分はダメージが14点になるまでゲームに負けない。ただし、自分の山札からカードを引くべきときに引けなければゲームに負ける。また、自分はダメージを1点受けるたび、追加で1点ダメージを受ける（このダメージには追加ダメージは無い）。",
+  "effects": [
+    {
+      "id": "unnamed_resident",
+      "text": "※常駐 自分はダメージが14点になるまでゲームに負けない。ただし、自分の山札からカードを引くべきときに引けなければゲームに負ける。また、自分はダメージを1点受けるたび、追加で1点ダメージを受ける（このダメージには追加ダメージは無い）。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※常駐 自分はダメージが14点になるまでゲームに負けない。ただし、自分の山札からカードを引くべきときに引けなければゲームに負ける。また、自分はダメージを1点受けるたび、追加で1点ダメージを受ける（このダメージには追加ダメージは無い）。",
+      "rule": "resident"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-348.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-348.jpg"
+}

@@ -38,14 +38,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-053::fuainaruzanbatozan",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokiwotsuyunitowo1biho",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

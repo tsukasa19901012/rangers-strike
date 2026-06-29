@@ -41,14 +41,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-075::kingusubasutoendo",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokikorewohorudoshitemoyoiso",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

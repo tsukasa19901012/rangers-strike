@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-680",
+  "name": "獅子折神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※レジスト 【燃え盛る咆哮】「SP1」",
+  "rawText": "※レジスト 【燃え盛る咆哮】「SP1」",
+  "bp": 3000,
+  "size": "M",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "獣",
+    "折神獣"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "eru",
+      "name": "燃え盛る咆哮",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-680.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-680.jpg"
+}

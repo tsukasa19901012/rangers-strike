@@ -9,6 +9,11 @@
   "powerCost": 0,
   "text": "※これにライドしているユニットはBP+500される。",
   "rawText": "※これにライドしているユニットはBP+500される。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
       "id": "unnamed_ride_bp_boost_500",
@@ -36,10 +41,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

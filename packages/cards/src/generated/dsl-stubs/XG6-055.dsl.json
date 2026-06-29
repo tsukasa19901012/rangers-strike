@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -66,16 +66,16 @@
       "name": "コンボチェンジ",
       "text": "カード名に「タトバ」を含まない、モーフと特徴「オーズドライバー」を持つユニットカードを自分の手札から1枚選び、これと置き換えてもよい。このとき出したユニットは、BP+2000され、ライドオフした直後のユニットとして扱い、RCの効果を持っていれば、その効果を発動する。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-055::konbochienji",
-          "duration": "permanent"
+          "keyword": "ride_action_kadonitatobawomanaimofutoozudoraibawotsuyunitokadowo",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

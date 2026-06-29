@@ -9,6 +9,23 @@
   "powerCost": 0,
   "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札の上から3枚を捨札にする。",
   "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札の上から3枚を捨札にする。",
+  "effects": [
+    {
+      "id": "note_e382b2e383bce383a0e9968b",
+      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札の上から3枚を捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "grant_effect_gemudakenowodekirunokara3wonisuru",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

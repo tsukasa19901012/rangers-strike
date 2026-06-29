@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-259",
+  "name": "ジェネラルシャドウ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "【トランプ占い】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにする。そして、オモテにしたカードの必要パワーの数字を見て、その数字が「1」「3」「5」のどれかなら、このターン、これはBP+4000され、「2」「4」「6」のどれかなら、相手は1枚ドローしてもよい。「7」以上なら、このターン、これは「SP1」になる。その後、オモテにしたカードは山札の下に戻す。",
+  "rawText": "【トランプ占い】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにする。そして、オモテにしたカードの必要パワーの数字を見て、その数字が「1」「3」「5」のどれかなら、このターン、これはBP+4000され、「2」「4」「6」のどれかなら、相手は1枚ドローしてもよい。「7」以上なら、このターン、これは「SP1」になる。その後、オモテにしたカードは山札の下に戻す。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "デルザー軍団",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "toranpui",
+      "name": "トランプ占い",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにする。そして、オモテにしたカードの必要パワーの数字を見て、その数字が「1」「3」「5」のどれかなら、このターン、これはBP+4000され、「2」「4」「6」のどれかなら、相手は1枚ドローしてもよい。「7」以上なら、このターン、これは「SP1」になる。その後、オモテにしたカードは山札の下に戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "draw",
+          "amount": 1,
+          "player": "opponent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-259.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-259.jpg"
+}

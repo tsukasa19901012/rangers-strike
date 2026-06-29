@@ -1,0 +1,87 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-295",
+  "name": "仮面ライダーサソードRF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "3+",
+  "text": "※これはバトルエリアの1番目に並んでいないときアタックもストライクもできない。 ※これはアタックされる以外では相手に選ばれない。 【頂点に立つ男】このターン、これは自軍パワーゾーンのカード枚数が敵軍パワーゾーンのカード枚数よりも1枚多いごとにBP+1000され、BP5000以上のとき「SP1」になる。",
+  "rawText": "※これはバトルエリアの1番目に並んでいないときアタックもストライクもできない。 ※これはアタックされる以外では相手に選ばれない。 【頂点に立つ男】このターン、これは自軍パワーゾーンのカード枚数が敵軍パワーゾーンのカード枚数よりも1枚多いごとにBP+1000され、BP5000以上のとき「SP1」になる。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍「仮面ライダーサソードMF」1体をパワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_no_attack_strike_unless_battle_slot_1",
+      "text": "※これはバトルエリアの1番目に並んでいないときアタックもストライクもできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_strike_unless_battle_slot_1",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "unnamed_not_selectable_except_attack",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "not_selectable_except_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "nitsu",
+      "name": "頂点に立つ男",
+      "text": "このターン、これは自軍パワーゾーンのカード枚数が敵軍パワーゾーンのカード枚数よりも1枚多いごとにBP+1000され、BP5000以上のとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-295::nitsu",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされる以外では相手に選ばれない。",
+      "rule": "not_selectable_except_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-295.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-295.jpg"
+}

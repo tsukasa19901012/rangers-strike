@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-026",
+  "name": "がんがんじい",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。 【日本一の正義の味方】自軍ターン中、これがバトルエリアに出たとき、特徴「仮面ライダー」を持つ自軍ユニットを1体選び、ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。",
+  "rawText": "※これはBP2000以上の敵軍Sユニットにアタックされない。 【日本一の正義の味方】自軍ターン中、これがバトルエリアに出たとき、特徴「仮面ライダー」を持つ自軍ユニットを1体選び、ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "no_attack_enemy_s_bp2000",
+      "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_enemy_s_bp2000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "nono_e697a5",
+      "name": "日本一の正義の味方",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、特徴「仮面ライダー」を持つ自軍ユニットを1体選び、ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "return_kamen_to_rush",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-026.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-026.jpg"
+}

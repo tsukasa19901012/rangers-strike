@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -51,16 +51,16 @@
       "name": "虚空より狙う鎌",
       "text": "自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、捨札にしたコマンドと同じカテゴリを持つ敵軍コマンドを1つ選びゲームから除外する。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-058::yoriu",
-          "duration": "permanent"
+          "keyword": "exclude_game_komandowo1tsubinishitemoyoisoushitatokinishitakomandotojika",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

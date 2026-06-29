@@ -24,14 +24,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "on_rush_swap_from_power_except_named::ゴーカイイエロー",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "mobairetsu",
@@ -40,14 +40,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-005::mobairetsu",
-          "duration": "permanent"
+          "keyword": "discard_to_zone_notankadonigokaiwomuyunitoga_geki_ha_sareteninarutokison",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

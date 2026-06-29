@@ -16,6 +16,12 @@
     "男",
     "加速"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_send_to_power",
+    "text": "自軍「仮面ライダーガタックMF」1体をパワーゾーンに送れば必要パワー0になる",
+    "partnerName": "仮面ライダーガタックMF",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_register",
@@ -32,7 +38,7 @@
       ]
     },
     {
-      "id": "unnamed_not_selectable_except_attack",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはアタックされる以外では相手に選ばれない。",
       "trigger": {
         "type": "while_in_field"
@@ -52,14 +58,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-062::raidakiku",
+          "keyword": "power_zone_action_tankoregabatoruerianitatokipawanoga123noomote_ko_kino",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -78,11 +84,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_send_to_power",
-    "text": "自軍「仮面ライダーガタックMF」1体をパワーゾーンに送れば必要パワー0になる",
-    "partnerName": "仮面ライダーガタックMF",
-    "unitCount": 1
   }
 }

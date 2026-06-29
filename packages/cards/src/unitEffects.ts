@@ -9,6 +9,7 @@ import {
   cardDocumentToUnitEffectBlock,
   unitEffectBlockHasData,
 } from "./catalog/cardDocumentToUnitBlock";
+import { isRideOffUnconditionalEffectText } from "./ridingComboTrigger";
 import { inferCatalogTierForCardId, loadCardById, loadCards } from "./dsl/loader";
 
 export type {
@@ -217,8 +218,16 @@ export function getJointRNamedEffect(cardId: string): NamedUnitEffect | undefine
 }
 
 export function getRidingComboNamedEffect(cardId: string): NamedUnitEffect | undefined {
-  return loadBlockForCard(cardId)?.namedEffects.find(
+  const block = loadBlockForCard(cardId);
+  if (!block) return undefined;
+  const riding = block.namedEffects.find(
     (named) => named.trigger.type === "riding_combo",
+  );
+  if (riding) return riding;
+  return block.namedEffects.find(
+    (named) =>
+      (named.trigger.type === "nc" || named.trigger.type === "nc_or_combo_from") &&
+      isRideOffUnconditionalEffectText(named.text),
   );
 }
 
@@ -245,7 +254,23 @@ export function listJointRNamedEffects(): Array<{ cardId: string; effectId: stri
 }
 
 export function listRidingComboNamedEffects(): Array<{ cardId: string; effectId: string }> {
-  return listNamedEffectsByTrigger("riding_combo");
+  const results = listNamedEffectsByTrigger("riding_combo");
+  const seen = new Set(results.map((entry) => `${entry.cardId}:${entry.effectId}`));
+  forEachUnitEffectBlock((cardId, block) => {
+    for (const named of block.namedEffects) {
+      if (
+        (named.trigger.type === "nc" || named.trigger.type === "nc_or_combo_from") &&
+        isRideOffUnconditionalEffectText(named.text)
+      ) {
+        const key = `${cardId}:${named.effectId}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          results.push({ cardId, effectId: named.effectId });
+        }
+      }
+    }
+  });
+  return results;
 }
 
 export function getBattleEntryHoldCount(cardId: string): number {

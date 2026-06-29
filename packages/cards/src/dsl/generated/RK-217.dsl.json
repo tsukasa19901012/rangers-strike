@@ -1,0 +1,58 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-217",
+  "name": "イーグルアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "※これが自分の手札にある間、自分が「仮面ライダーブレイドJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーブレイド」を1体捨札にしたことにできる。 【滑空攻撃】これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる。",
+  "rawText": "※これが自分の手札にある間、自分が「仮面ライダーブレイドJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーブレイド」を1体捨札にしたことにできる。 【滑空攻撃】これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる。",
+  "bp": 4500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "text": "※これが自分の手札にある間、自分が「仮面ライダーブレイドJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーブレイド」を1体捨札にしたことにできる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rush_discard_substitute_for_named::仮面ライダーブレイドJF",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "geki_e6bb91",
+      "name": "滑空攻撃",
+      "text": "これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-217::geki_e6bb91",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-217.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-217.jpg"
+}

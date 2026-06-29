@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-427",
+  "name": "スーパーゲキイエロー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に｢ゲキイエロー｣のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【オネスト・ハート】直前のターンに敵軍ユニットが発動した「次の相手ターン」とある効果を無効にする。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に｢ゲキイエロー｣のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【オネスト・ハート】直前のターンに敵軍ユニットが発動した「次の相手ターン」とある効果を無効にする。",
+  "bp": 4500,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "イエロー",
+    "女",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に｢ゲキイエロー｣のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RS-427::korega_geki_ha_s",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "onesutohato",
+      "name": "オネスト・ハート",
+      "text": "直前のターンに敵軍ユニットが発動した「次の相手ターン」とある効果を無効にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "invalidate_next_opponent_turn",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍｢ゲキイエロー｣1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ゲキイエロー",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-427.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-427.jpg"
+}

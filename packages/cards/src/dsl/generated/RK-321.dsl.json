@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-321",
+  "name": "仮面ライダーサガ",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "※これはラッシュするとき、可能ならホールド状態で置く。 【スネーキングデスブレイク】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍Sユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む。ウラ向きのカードはウラ向きのまま選ぶ）を1枚選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※これはラッシュするとき、可能ならホールド状態で置く。 【スネーキングデスブレイク】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍Sユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む。ウラ向きのカードはウラ向きのまま選ぶ）を1枚選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "1/3",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ファンガイア"
+  ],
+  "effects": [
+    {
+      "id": "rush_prefer_hold",
+      "text": "※これはラッシュするとき、可能ならホールド状態で置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rush_prefer_hold",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "sunekingudesubureiku",
+      "name": "スネーキングデスブレイク",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍Sユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む。ウラ向きのカードはウラ向きのまま選ぶ）を1枚選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-321::sunekingudesubureiku",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-321.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-321.jpg"
+}

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-142",
+  "name": "モモタロス",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "※これはバトルエリアに出たとき撃破される。 【最初からクライマックスだぜ】これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、このターン、そのユニットは「SP1」になる。",
+  "rawText": "※これはバトルエリアに出たとき撃破される。 【最初からクライマックスだぜ】これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、このターン、そのユニットは「SP1」になる。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/4",
+  "features": [
+    "イマジン"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_enter_battle",
+      "text": "※これはバトルエリアに出たとき撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "power_faceup_raida_on_enter",
+      "name": "最初からクライマックスだぜ",
+      "text": "これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、このターン、そのユニットは「SP1」になる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "power_faceup_raida_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出たとき撃破される。",
+      "rule": "destroy_on_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-142.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-142.jpg"
+}

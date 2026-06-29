@@ -23,8 +23,7 @@
           "keyword": "s_combo_finisher_5_sp1_bp12000",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

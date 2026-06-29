@@ -25,14 +25,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-051::kokogarinoka",
-          "duration": "permanent"
+          "keyword": "bp_modify_konoyunitoharaidawotsuomote_ko_kinopawa1nitsukibp1000",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

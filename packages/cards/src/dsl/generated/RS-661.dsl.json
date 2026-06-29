@@ -1,0 +1,102 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-661",
+  "name": "幻獣王リオ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から｢黒獅子リオ｣のカードを1枚選び、自軍ラッシュエリアに出す。 ※これはラッシュしたターン、ストライクできない。 【破天攻】これは敵軍Sユニット1体につきBP+1000される。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から｢黒獅子リオ｣のカードを1枚選び、自軍ラッシュエリアに出す。 ※これはラッシュしたターン、ストライクできない。 【破天攻】これは敵軍Sユニット1体につきBP+1000される。",
+  "bp": 3500,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "男",
+    "幻気",
+    "幻獣王"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から｢黒獅子リオ｣のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unnamed_e280bbe38193e3828ce381af",
+      "text": "※これはラッシュしたターン、ストライクできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RS-661::koreharashushita",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "ha",
+      "name": "破天攻",
+      "text": "これは敵軍Sユニット1体につきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "per_enemy_s_bp_boost_1000",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍｢黒獅子リオ｣1体を捨札にすれば必要パワー0になる",
+    "partnerName": "黒獅子リオ",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-661.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-661.jpg"
+}

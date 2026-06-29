@@ -19,6 +19,12 @@
     "アクセルドライバー",
     "加速"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_send_to_command_or_discard",
+    "text": "自軍「仮面ライダーアクセル」1体をコマンドゾーンに送るか捨札にすれば必要パワー0になる",
+    "partnerName": "仮面ライダーアクセル",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "gaonogoruda",
@@ -27,25 +33,19 @@
       "trigger": {
         "type": "on_strike"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-081::gaonogoruda",
+          "keyword": "power_zone_action_koregasutoraikushitepawazonnokadogaura_ko_kininatatoki",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_send_to_command_or_discard",
-    "text": "自軍「仮面ライダーアクセル」1体をコマンドゾーンに送るか捨札にすれば必要パワー0になる",
-    "partnerName": "仮面ライダーアクセル",
-    "unitCount": 1
   }
 }

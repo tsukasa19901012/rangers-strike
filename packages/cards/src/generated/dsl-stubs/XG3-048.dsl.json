@@ -53,16 +53,16 @@
       "name": "リボルクラッシュ",
       "text": "敵軍バトルエリアのユニットがSユニット1体だけなら、そのユニットを持ち主のパワーゾーンにダメージにして置いてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-048::riborukurashu",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_batoruerianoyunitogasyunito1dakenarasonoyunitowochino",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

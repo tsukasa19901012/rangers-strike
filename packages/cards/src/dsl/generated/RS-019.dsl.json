@@ -14,21 +14,24 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-019.jpg",
   "effects": [
     {
-      "id": "super_power",
+      "id": "note_e887aae8bb8d53e383a6e383",
       "text": "自軍Sユニットがアタックするとき発動できる。アタックするユニットは、自軍コマンドを1つホールドするごとにBP＋1000される。",
       "trigger": {
-        "type": "operation",
-        "timing": "resident"
+        "type": "on_attack"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "bp_modify_syunitogaatakusurutokidekiruatakusuruyunitohakomandowo1",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

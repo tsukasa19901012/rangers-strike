@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_destroy_on_win_vs_sp1",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは敵軍ターン中「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。",
       "trigger": {
         "type": "while_in_field"
@@ -35,19 +35,19 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce4bba5",
+      "id": "note_e280bbe38193e3828ce4bba5",
       "text": "※これ以外のユニットがSユニットだけなら、これはLユニットになり、BP+2000される。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-053::korenoyunitogasy",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "gotouheru",
@@ -56,14 +56,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-053::gotouheru",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokikoregalyunitonaranowosuru",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

@@ -17,6 +17,12 @@
     "男",
     "妖怪"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_name_contains_unit",
+    "text": "カード名に「鬼」を含む自軍ユニット1体を捨札にする",
+    "nameContains": "鬼",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_auto_battle_entry_each_turn",
@@ -33,7 +39,7 @@
       ]
     },
     {
-      "id": "unnamed_destroy_on_win_vs_sp1",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。",
       "trigger": {
         "type": "while_in_field"
@@ -53,14 +59,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-054::kemeru",
-          "duration": "permanent"
+          "keyword": "ma_category_korehamawotanaisyunitoniatakusarenai",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -79,11 +85,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_name_contains_unit",
-    "text": "カード名に「鬼」を含む自軍ユニット1体を捨札にする",
-    "nameContains": "鬼",
-    "unitCount": 1
   }
 }

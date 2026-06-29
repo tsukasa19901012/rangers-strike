@@ -17,6 +17,11 @@
     "男",
     "アマダム"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_operation_cards",
+    "text": "自軍常駐置き場のカードを（ウラ向きのカードはウラ向きのまま）4枚選び捨札にする",
+    "unitCount": 4
+  },
   "effects": [
     {
       "id": "majiki",
@@ -25,24 +30,19 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SK-004::majiki",
+          "keyword": "stack_cards_koreworashushitatokikonodenishitakadowotedawotanaikadowo",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_operation_cards",
-    "text": "自軍常駐置き場のカードを（ウラ向きのカードはウラ向きのまま）4枚選び捨札にする",
-    "unitCount": 4
   }
 }

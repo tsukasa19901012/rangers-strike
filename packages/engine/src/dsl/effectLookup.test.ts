@@ -30,4 +30,9 @@ describe("effectLookup full-playable fallback", () => {
       true,
     );
   });
+
+  it("lists riding_combo effects for RC cards whose stubs still use nc trigger", () => {
+    const effects = listDslEffectsForTrigger("PK-006", "riding_combo");
+    expect(effects.some((entry) => entry.id === "satansaberu")).toBe(true);
+  });
 });

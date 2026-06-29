@@ -14,7 +14,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-006.jpg",
   "effects": [
     {
-      "id": "new_gymnastics",
+      "id": "note_e887aae8bb8d53e383a6e383",
       "text": "自軍Sユニットがアタックされたとき発動できる。アタックされたユニットをラッシュエリアに戻す。このときバトルは行われない。",
       "trigger": {
         "type": "operation",
@@ -22,13 +22,17 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "catchall_interpret_syunitogaatakusaretatokidekiruatakusaretayunitoworash",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

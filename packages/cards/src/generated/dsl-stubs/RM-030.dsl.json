@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_cannot_attack_s",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはSユニットにアタックすることができない。",
       "trigger": {
         "type": "while_in_field"
@@ -37,14 +37,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-030::daireonreza",
+          "keyword": "while_in_field_body_koregarashuerianiaruotwotsulyunitohaatakusarerutokib",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

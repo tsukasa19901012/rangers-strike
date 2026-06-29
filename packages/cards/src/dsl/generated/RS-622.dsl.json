@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-622",
+  "name": "グリフォーザー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※ウイング 【グリフォカリバー4世】このユニットは、敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※ウイング 【グリフォカリバー4世】このユニットは、敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "gurifuokariba4",
+      "name": "グリフォカリバー4世",
+      "text": "このユニットは、敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "attack_rush_zone",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-622.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-622.jpg"
+}

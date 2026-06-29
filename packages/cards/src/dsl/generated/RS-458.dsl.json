@@ -1,0 +1,108 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-458",
+  "name": "ニンジャホワイト",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これは「ホワイトカーク」としてつかえる。 ※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」になる） 【忍法折鶴之舞】敵軍パワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい敵軍ユニットを1枚選び、持ち主の手札に戻してもよい。",
+  "rawText": "※これは「ホワイトカーク」としてつかえる。 ※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」になる） 【忍法折鶴之舞】敵軍パワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい敵軍ユニットを1枚選び、持ち主の手札に戻してもよい。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 4,
+  "features": [
+    "ホワイト",
+    "女",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_alias_howaitokaku",
+      "text": "※これは「ホワイトカーク」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_howaitokaku",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_taxis_ma",
+      "text": "※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」になる）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "taxis_MA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "ninpo_e5bf8d",
+      "name": "忍法折鶴之舞",
+      "text": "敵軍パワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい敵軍ユニットを1枚選び、持ち主の手札に戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "fusion",
+      "text": "※これは「ホワイトカーク」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    },
+    {
+      "kind": "note",
+      "text": "※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」になる）",
+      "rule": "taxis_MA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-458.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-458.jpg"
+}

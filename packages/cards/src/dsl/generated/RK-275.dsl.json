@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-275",
+  "name": "ゴ・ガドル・バ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "【ザバギンバシグラ】自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンのダメージ以外のカードから、Sユニットのカードを1枚選び、敵軍ラッシュエリアに出してもよい。そうしたとき、相手は自分自身の山札の上から1枚ひいて、自分自身のパワーゾーンに置いてもよい。",
+  "rawText": "【ザバギンバシグラ】自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンのダメージ以外のカードから、Sユニットのカードを1枚選び、敵軍ラッシュエリアに出してもよい。そうしたとき、相手は自分自身の山札の上から1枚ひいて、自分自身のパワーゾーンに置いてもよい。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "グロンギ",
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "zabaginbashigura",
+      "name": "ザバギンバシグラ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンのダメージ以外のカードから、Sユニットのカードを1枚選び、敵軍ラッシュエリアに出してもよい。そうしたとき、相手は自分自身の山札の上から1枚ひいて、自分自身のパワーゾーンに置いてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-275::zabaginbashigura",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-275.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-275.jpg"
+}

@@ -9,9 +9,14 @@
   "powerCost": 3,
   "text": "※これにライドしているユニットは、アタックするときBP+2000される。",
   "rawText": "※これにライドしているユニットは、アタックするときBP+2000される。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
-      "id": "unnamed_ride_attack_bp_boost_2000",
+      "id": "unnamed_e280bbe38193e3828ce381ab",
       "text": "※これにライドしているユニットは、アタックするときBP+2000される。",
       "trigger": {
         "type": "while_in_field"
@@ -22,18 +27,19 @@
           "keyword": "ride_attack_bp_boost_2000",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットは、アタックするときBP+2000される。",
+      "rule": "ride_attack_bp_boost_2000"
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

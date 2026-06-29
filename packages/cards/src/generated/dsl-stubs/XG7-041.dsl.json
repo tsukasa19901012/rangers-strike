@@ -18,21 +18,27 @@
     "男",
     "ダブルドライバー"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_feature_unit",
+    "text": "特徴「ダブルドライバー」を持つ自軍ユニット1体を捨札にする",
+    "requiredFeature": "ダブルドライバー",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍エリアにある間、自分がターンを終えるとき、これをゲームから除外する。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-041::koregaerianiarug",
-          "duration": "permanent"
+          "keyword": "exclude_game_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "no_9",
@@ -41,25 +47,19 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-041::no9",
+          "keyword": "destroy_on_rush_korewokararashushitatokikomandowosubetenisurusoushitatok",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_feature_unit",
-    "text": "特徴「ダブルドライバー」を持つ自軍ユニット1体を捨札にする",
-    "requiredFeature": "ダブルドライバー",
-    "unitCount": 1
   }
 }

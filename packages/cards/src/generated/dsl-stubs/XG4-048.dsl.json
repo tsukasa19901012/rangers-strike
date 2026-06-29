@@ -9,9 +9,15 @@
   "powerCost": 0,
   "text": "※このカードはデッキに好きな枚数入れてもよい。 ※特徴「戦闘員」を持つユニットはＲＣがなくてもこのビークルにライドでき、これにライドしている間BP+500される。",
   "rawText": "※このカードはデッキに好きな枚数入れてもよい。 ※特徴「戦闘員」を持つユニットはＲＣがなくてもこのビークルにライドでき、これにライドしている間BP+500される。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両",
+    "戦闘員"
+  ],
   "effects": [
     {
-      "id": "unnamed_deck_unlimited",
+      "id": "unnamed_e280bbe38193e381aee382ab",
       "text": "※このカードはデッキに好きな枚数入れてもよい。",
       "trigger": {
         "type": "while_in_field"
@@ -25,19 +31,19 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe789b9e5beb4e3808c",
+      "id": "note_e280bbe789b9e5beb4e3808c",
       "text": "※特徴「戦闘員」を持つユニットはＲＣがなくてもこのビークルにライドでき、これにライドしている間BP+500される。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-048::wotsuyunitohagan",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -51,11 +57,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両",
-    "戦闘員"
-  ]
+  }
 }

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-391",
+  "name": "ゴーイエロー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【番田流牛乳竜巻落とし】「SP1」敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "【番田流牛乳竜巻落とし】「SP1」敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "イエロー",
+    "男",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "toshi",
+      "name": "番田流牛乳竜巻落とし",
+      "text": "「SP1」敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-391.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-391.jpg"
+}

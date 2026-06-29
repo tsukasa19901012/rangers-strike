@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_chase",
+      "id": "unnamed_e280bbe38381e382a7e382a4",
       "text": "※チェイス",
       "trigger": {
         "type": "while_in_field"
@@ -39,16 +39,16 @@
       "name": "ビデオビームガン",
       "text": "敵軍コマンドを1つ選びリリースしてもよい。そうしたとき、リリースしたカードと同じカテゴリを持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-094::bideobimugan",
-          "duration": "permanent"
+          "keyword": "release_command_action_komandowo1tsubiririsushitemoyoisoushitatokiririsu",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

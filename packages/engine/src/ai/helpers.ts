@@ -418,6 +418,133 @@ export function pickMandatoryBattleMove(
   return best;
 }
 
+function battleEntryUnitBp(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): number {
+  const player = state.players[playerId];
+  const card =
+    player.rush.find((c) => c.instanceId === instanceId) ??
+    player.hand.find((c) => c.instanceId === instanceId);
+  return card ? effectiveBp(state, playerId, card) : 0;
+}
+
+/** バトル進入候補のうち BP が最も高い move_to_battle。 */
+export function pickBestMoveToBattle(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): Extract<GameAction, { type: "move_to_battle" }> | null {
+  const moves = actionsOfType(actions, "move_to_battle");
+  if (moves.length === 0) return null;
+
+  let best = moves[0]!;
+  let bestBp = battleEntryUnitBp(state, playerId, best.instanceId);
+  for (const move of moves.slice(1)) {
+    const bp = battleEntryUnitBp(state, playerId, move.instanceId);
+    if (bp > bestBp) {
+      bestBp = bp;
+      best = move;
+    }
+  }
+  return best;
+}
+
+/** ライドしてバトル進入する mount_ride のうち、進入後評価が最も高い手。 */
+export function pickBestMountRide(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): Extract<GameAction, { type: "mount_ride" }> | null {
+  const mounts = actionsOfType(actions, "mount_ride");
+  if (mounts.length === 0) return null;
+
+  let best: Extract<GameAction, { type: "mount_ride" }> | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+  for (const action of mounts) {
+    const result = applyAction(state, action);
+    if (!result.ok) continue;
+    const score = evaluateState(result.state, playerId);
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+  return best;
+}
+
+/** バトル進入（通常 or ライド）の最善手。 */
+export function pickBestBattleEntry(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): GameAction | null {
+  const move = pickBestMoveToBattle(state, playerId, actions);
+  const mount = pickBestMountRide(state, playerId, actions);
+  if (!move && !mount) return null;
+  if (!mount) return move;
+  if (!move) return mount;
+
+  const moveResult = applyAction(state, move);
+  const mountResult = applyAction(state, mount);
+  if (moveResult.ok && mountResult.ok) {
+    const moveScore = evaluateState(moveResult.state, playerId);
+    const mountScore = evaluateState(mountResult.state, playerId);
+    return mountScore >= moveScore ? mount : move;
+  }
+  return mountResult.ok ? mount : move;
+}
+
+/** チェイス先ビークルのうち、進入後評価が最も高い手。 */
+export function pickBestChase(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): Extract<GameAction, { type: "resolve_chase" }> | null {
+  const chases = actionsOfType(actions, "resolve_chase");
+  if (chases.length === 0) return null;
+
+  let best: Extract<GameAction, { type: "resolve_chase" }> | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+  for (const action of chases) {
+    const result = applyAction(state, action);
+    if (!result.ok) continue;
+    const score = evaluateState(result.state, playerId);
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+  return best ?? chases[0] ?? null;
+}
+
+/** ライドオフ選択: 乗ったまま vs 降りて RC 発動。 */
+export function pickRideOffChoice(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): Extract<GameAction, { type: "resolve_ride_off_choice" }> | null {
+  const choices = actions.filter(
+    (a): a is Extract<GameAction, { type: "resolve_ride_off_choice" }> =>
+      a.type === "resolve_ride_off_choice",
+  );
+  if (choices.length === 0) return null;
+
+  let best: Extract<GameAction, { type: "resolve_ride_off_choice" }> | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+  for (const action of choices) {
+    const result = applyAction(state, action);
+    if (!result.ok) continue;
+    const score = evaluateState(result.state, playerId);
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+  return best ?? choices.find((c) => !c.rideOff) ?? choices[0] ?? null;
+}
+
 /** ユニットをバトルへ移動する前にバトル登場ホールドを支払う。 */
 export function pickHoldBeforeBattle(
   state: GameState,
@@ -1435,10 +1562,17 @@ export function quickActionPriority(
   action: GameAction,
 ): number {
   if (action.type === "end_phase") {
-    const deckLeft = state.players[playerId].deck.length;
+    const player = state.players[playerId];
+    const deckLeft = player.deck.length;
     const deckGuard = deckLeft < 8 ? (8 - deckLeft) * 1_500 : 0;
-    const phasePenalty =
+    let phasePenalty =
       state.phase === "rush" || state.phase === "charge" ? -10_000 : -5_000;
+    if (state.phase === "battle") {
+      const hasRush = player.rush.length > 0;
+      const hasBattleUnits = player.battle.length > 0;
+      if (hasRush) phasePenalty -= 28_000;
+      if (hasBattleUnits) phasePenalty -= 8_000;
+    }
     return phasePenalty - deckGuard;
   }
 
@@ -1495,7 +1629,19 @@ export function quickActionPriority(
       player.rush.find((c) => c.instanceId === action.instanceId) ??
       player.hand.find((c) => c.instanceId === action.instanceId);
     if (!card) return 0;
-    return effectiveBp(state, action.playerId, card);
+    return effectiveBp(state, action.playerId, card) + 500;
+  }
+
+  if (action.type === "mount_ride") {
+    const player = state.players[action.playerId];
+    const rider = player.rush.find((c) => c.instanceId === action.riderInstanceId);
+    const vehicle = player.rush.find((c) => c.instanceId === action.vehicleInstanceId);
+    if (!rider || !vehicle) return 0;
+    return (
+      effectiveBp(state, action.playerId, rider) +
+      effectiveBp(state, action.playerId, vehicle) +
+      1_200
+    );
   }
 
   if (action.type === "play_operation") {

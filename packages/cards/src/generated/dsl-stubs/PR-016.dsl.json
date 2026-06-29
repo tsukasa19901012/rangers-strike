@@ -18,15 +18,15 @@
     "男",
     "アバレモード"
   ],
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "rushAdditionalCondition": {
     "conditionId": "zord_down_discard_named",
     "text": "自軍「アバレッド」1体を捨札にすれば必要パワー0になる",
     "partnerName": "アバレッド",
     "unitCount": 1
+  },
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-272",
+  "name": "仮面ライダークウガRD",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "7-",
+  "text": "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選び、これと置き換えてもよい） 【ライジングスプラッシュドラゴン】これが自軍エリアにある間、敵軍ユニットがＮＣまたはＲＣの効果を発動させたとき、その効果を実行する前に、自分の手札からカードを1枚選び自軍山札の上に戻してもよい。そうしたとき、そのNCまたはRCの効果を無効にする。",
+  "rawText": "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選び、これと置き換えてもよい） 【ライジングスプラッシュドラゴン】これが自軍エリアにある間、敵軍ユニットがＮＣまたはＲＣの効果を発動させたとき、その効果を実行する前に、自分の手札からカードを1枚選び自軍山札の上に戻してもよい。そうしたとき、そのNCまたはRCの効果を無効にする。",
+  "bp": 3500,
+  "size": "S",
+  "sp": "1/3",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "アマダム",
+    "ライジング"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選び、これと置き換えてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "raijingusupurashudoragon",
+      "name": "ライジングスプラッシュドラゴン",
+      "text": "これが自軍エリアにある間、敵軍ユニットがＮＣまたはＲＣの効果を発動させたとき、その効果を実行する前に、自分の手札からカードを1枚選び自軍山札の上に戻してもよい。そうしたとき、そのNCまたはRCの効果を無効にする。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-272::raijingusupurashudoragon",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選び、これと置き換えてもよい）",
+      "rule": "morph"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_feature",
+    "text": "特徴「アマダム」を持つ自軍ユニット1体を捨札にすれば必要パワー0になる",
+    "requiredFeature": "アマダム",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-272.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-272.jpg"
+}

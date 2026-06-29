@@ -15,21 +15,26 @@
   "features": [
     "獣"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_discard",
+    "text": "自軍Sユニット4体を捨て札にする",
+    "unitCount": 4
+  },
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e381aee382ab",
+      "id": "note_e280bbe38193e381aee382ab",
       "text": "※このカードの追加条件は、カード名に「気伝武人」を含む自軍ユニットがあるとき、次のように変更される⇒追加で自軍コマンドを2つホールドする",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-016::konokadonohakado",
-          "duration": "permanent"
+          "keyword": "note_other_dekomandowo2tsuhorudosuru",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "kaze",
@@ -41,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-016::kaze",
-          "duration": "permanent"
+          "keyword": "grant_ability_konoyunitokarakonbineshonsuruwotsumyunitohano_chikara_woru",
+          "duration": "turn"
         }
       ]
     }
@@ -51,10 +56,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "send_s_unit_to_discard",
-    "text": "自軍Sユニット4体を捨て札にする",
-    "unitCount": 4
   }
 }

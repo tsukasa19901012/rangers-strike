@@ -1,0 +1,49 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-640",
+  "name": "ギガバイタスCM",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これはDAを持たないユニットにアタックすることができない。",
+  "rawText": "※これはDAを持たないユニットにアタックすることができない。",
+  "bp": 6000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "獣",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack_non_da",
+      "text": "※これはDAを持たないユニットにアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_non_da",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはDAを持たないユニットにアタックすることができない。",
+      "rule": "cannot_attack_non_da"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-640.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-640.jpg"
+}

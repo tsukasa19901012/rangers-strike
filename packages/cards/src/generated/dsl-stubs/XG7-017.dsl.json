@@ -37,14 +37,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-017::maha",
-          "duration": "permanent"
+          "keyword": "grant_effect_tankoregabatoruerianirutokikoregaraidoshiteinakerebanowo",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

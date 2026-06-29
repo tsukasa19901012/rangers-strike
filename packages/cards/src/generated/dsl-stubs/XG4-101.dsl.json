@@ -22,7 +22,7 @@
       "name": "ブレーザーカノン",
       "text": "これがライドしていれば、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {

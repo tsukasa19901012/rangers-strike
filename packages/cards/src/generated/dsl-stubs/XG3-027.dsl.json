@@ -14,6 +14,10 @@
   "features": [
     "恐竜"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「スティライザー」を持つ、自軍ユニットまたは自軍コマンドがある"
+  },
   "effects": [
     {
       "id": "require_command_hold_entry",
@@ -36,14 +40,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-027::fuaiyaborukurashu",
+          "keyword": "destroy_on_rush_koreworashushitatokibatorueriakarabp3000noyunitowo3made",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -57,9 +61,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「スティライザー」を持つ、自軍ユニットまたは自軍コマンドがある"
   }
 }

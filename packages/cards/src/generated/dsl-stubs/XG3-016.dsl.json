@@ -36,14 +36,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-016::bananabomu",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokirashueriakarahorudono",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

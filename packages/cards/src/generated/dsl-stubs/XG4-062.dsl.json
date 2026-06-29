@@ -9,21 +9,28 @@
   "powerCost": "4+",
   "text": "※これは、ライドされていなくてもバトルエリアに出ることができる。 【アクセルメモリ】ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない敵軍Sユニットは、自軍コマンドを1つホールドしなければバトルエリアに出られない。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 ※これは、ライドされていなくてもバトルエリアに出ることができる。 【アクセルメモリ】ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない敵軍Sユニットは次の制限を受ける⇒自分自身のコマンドを1つホールドしなければバトルエリアに出られない。",
   "rawText": "※これは、ライドされていなくてもバトルエリアに出ることができる。 【アクセルメモリ】ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない敵軍Sユニットは、自軍コマンドを1つホールドしなければバトルエリアに出られない。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 ※これは、ライドされていなくてもバトルエリアに出ることができる。 【アクセルメモリ】ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない敵軍Sユニットは次の制限を受ける⇒自分自身のコマンドを1つホールドしなければバトルエリアに出られない。",
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "車両",
+    "アクセルドライバー"
+  ],
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、ライドされていなくてもバトルエリアに出ることができる。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-062::koreharaidosaret",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "akuserumemori",
@@ -32,48 +39,35 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-062::akuserumemori",
+          "keyword": "ride_action_raidosareteirukonobikurugabatoruerianiaruwotanaisyuni",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
-      "id": "akuserumemori_raidosaretei",
+      "id": "akuserumemori_2",
       "name": "アクセルメモリ",
       "text": "ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない敵軍Sユニットは次の制限を受ける⇒自分自身のコマンドを1つホールドしなければバトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-062::akuserumemoriraidosarete",
+          "keyword": "ride_action_raidosareteirukonobikurugabatoruerianiaruwotanaisyuni",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "仮面ライダー",
-    "男",
-    "車両",
-    "アクセルドライバー"
-  ],
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「仮面ライダーアクセル」1体をコマンドゾーンに送るか捨札にする",
-    "partnerName": "仮面ライダーアクセル",
-    "unitCount": 1
   }
 }

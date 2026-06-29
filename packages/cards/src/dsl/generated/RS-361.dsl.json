@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-361",
+  "name": "バルイーグル",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。 【飛羽返し】「SP1」（この効果は、WBのユニットからコンビネーションするときは、ナンバーに関係なく発動する）",
+  "rawText": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。 【飛羽返し】「SP1」（この効果は、WBのユニットからコンビネーションするときは、ナンバーに関係なく発動する）",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "レッド",
+    "男",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_category_wb_in_battle",
+      "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "category_wb_in_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "shi_e9a39b",
+      "name": "飛羽返し",
+      "text": "「SP1」（この効果は、WBのユニットからコンビネーションするときは、ナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。",
+      "rule": "category_wb_in_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-361.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-361.jpg"
+}

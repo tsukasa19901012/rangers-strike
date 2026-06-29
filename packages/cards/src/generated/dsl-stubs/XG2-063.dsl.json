@@ -38,14 +38,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-063::hie9acbc",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_koregaerianiarubatorufueizuyunitogarashusaretatokikor",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

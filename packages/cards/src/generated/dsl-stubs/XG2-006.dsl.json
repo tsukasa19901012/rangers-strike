@@ -18,6 +18,11 @@
     "メカ",
     "車両"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_units_to_zones",
+    "text": "自軍Sユニット2体をそれぞれ自軍ゾーンに送る",
+    "unitCount": 2
+  },
   "effects": [
     {
       "id": "betarancha",
@@ -26,24 +31,19 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-006::betarancha",
+          "keyword": "while_in_field_body_koregaerianiarumomonowokerunobatoruerianoyuni",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "send_s_units_to_zones",
-    "text": "自軍Sユニット2体をそれぞれ自軍ゾーンに送る",
-    "unitCount": 2
   }
 }

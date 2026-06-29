@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-044",
+  "name": "ライオトルーパー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 【1万人ライダー部隊】敵軍ターン中、これが撃破されて捨札になったとき、自軍捨札に「ライオトルーパー」のユニットカードが10枚以上あれば、それをすべて手札に加える。",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 【1万人ライダー部隊】敵軍ターン中、これが撃破されて捨札になったとき、自軍捨札に「ライオトルーパー」のユニットカードが10枚以上あれば、それをすべて手札に加える。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "戦闘員"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "fx_1raida",
+      "name": "1万人ライダー部隊",
+      "text": "敵軍ターン中、これが撃破されて捨札になったとき、自軍捨札に「ライオトルーパー」のユニットカードが10枚以上あれば、それをすべて手札に加える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "recruit_all_named_e383a9e382a4e382aae38388_10",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-044.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-044.jpg"
+}

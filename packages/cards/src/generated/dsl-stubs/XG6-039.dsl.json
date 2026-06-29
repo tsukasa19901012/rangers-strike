@@ -11,21 +11,20 @@
   "rawText": "自軍コマンドゾーンのカードを1枚選び手札に加える。そうしたとき、このカードを自軍コマンドゾーンにホールド状態で置く。",
   "effects": [
     {
-      "id": "sutagufuon",
-      "name": "スタッグフォン",
+      "id": "note_e887aae8bb8de382b3e3839e",
       "text": "自軍コマンドゾーンのカードを1枚選び手札に加える。そうしたとき、このカードを自軍コマンドゾーンにホールド状態で置く。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-039::sutagufuon",
+          "keyword": "hold_remaining_komandozonnokadowo1binierusoushitatokikonokadowokoma",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

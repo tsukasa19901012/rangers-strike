@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-216",
+  "name": "暴走皇帝エグゾス",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 6,
+  "text": "※自分がターンを終えるとき、特徴「車両」を持つ自軍ユニットがなければ、このユニットを自軍山札に戻してシャッフルする。 【大宇宙ハイウェイ計画】これが自軍エリアにある間、特徴「車両」を持つすべてのユニットは、毎ターン、可能ならバトルエリアに出る。",
+  "rawText": "※自分がターンを終えるとき、特徴「車両」を持つ自軍ユニットがなければ、このユニットを自軍山札に戻してシャッフルする。 【大宇宙ハイウェイ計画】これが自軍エリアにある間、特徴「車両」を持つすべてのユニットは、毎ターン、可能ならバトルエリアに出る。",
+  "bp": 8000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "皇帝",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_e280bbe887aae58886e3818c",
+      "text": "※自分がターンを終えるとき、特徴「車両」を持つ自軍ユニットがなければ、このユニットを自軍山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "end_turn_return_if_no_ryo",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "haiuei",
+      "name": "大宇宙ハイウェイ計画",
+      "text": "これが自軍エリアにある間、特徴「車両」を持つすべてのユニットは、毎ターン、可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "all_ryo_auto_battle_entry",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-216.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-216.jpg"
+}

@@ -1,0 +1,98 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-591",
+  "name": "ガンバルオー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "合体―バルカ＋ガンパード＋キャリゲーター 【ガンバルグランプリ】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP4000以下のユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "合体―バルカ＋ガンパード＋キャリゲーター 【ガンバルグランプリ】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP4000以下のユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "bp": 14000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "人型",
+    "炎神"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "ganbaruguranpuri",
+      "name": "ガンバルグランプリ",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP4000以下のユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "maxBp": 4000
+          }
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "maxBp": 4000
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "power"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―バルカ＋ガンパード＋キャリゲーター",
+      "partnerCardIds": [
+        "RS-593",
+        "RS-594",
+        "RS-595"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-593"
+        ],
+        [
+          "RS-594"
+        ],
+        [
+          "RS-595"
+        ]
+      ]
+    }
+  ],
+  "imageUrl": "/cards/promoted/RS-591.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-591.jpg"
+}

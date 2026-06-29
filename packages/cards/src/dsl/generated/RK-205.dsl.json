@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-205",
+  "name": "仮面ライダーサイガ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "※これは、自分がターンを終えるときラッシュエリアにあれば手札に戻してもよい。 【フライングアタッカー】これはラッシュしたときバトルエリアに出してもよい。そうしたとき、これをラッシュするためにホールドしたコマンドの必要パワーの数字を見て、その数字と同じ必要パワーの数字を持つ敵軍Sユニット1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。このとき、これはアタックもストライクもできない。",
+  "rawText": "※これは、自分がターンを終えるときラッシュエリアにあれば手札に戻してもよい。 【フライングアタッカー】これはラッシュしたときバトルエリアに出してもよい。そうしたとき、これをラッシュするためにホールドしたコマンドの必要パワーの数字を見て、その数字と同じ必要パワーの数字を持つ敵軍Sユニット1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。このとき、これはアタックもストライクもできない。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/5",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "メカ",
+    "皇帝"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_end_turn_return_hand_from_rush",
+      "text": "※これは、自分がターンを終えるときラッシュエリアにあれば手札に戻してもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "end_turn_return_hand_from_rush",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "furainguataka",
+      "name": "フライングアタッカー",
+      "text": "これはラッシュしたときバトルエリアに出してもよい。そうしたとき、これをラッシュするためにホールドしたコマンドの必要パワーの数字を見て、その数字と同じ必要パワーの数字を持つ敵軍Sユニット1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。このとき、これはアタックもストライクもできない。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-205::furainguataka",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-205.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-205.jpg"
+}

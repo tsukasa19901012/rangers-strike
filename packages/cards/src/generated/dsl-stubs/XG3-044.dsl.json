@@ -24,7 +24,7 @@
       "name": "エレクトロファイヤー",
       "text": "敵軍コマンドゾーンから、SPが空欄ではないユニットカードを1枚選び、敵軍ラッシュエリアにホールド状態で出してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "condition": {
         "type": "has_target",

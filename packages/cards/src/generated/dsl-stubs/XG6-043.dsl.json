@@ -16,21 +16,25 @@
     "仮面ライダー",
     "男"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "自軍捨札が7枚以上ある"
+  },
   "effects": [
     {
-      "id": "unnamed_e280bbe789b9e5beb4e3808c",
+      "id": "note_e280bbe789b9e5beb4e3808c",
       "text": "※特徴「女」を持つ自軍ユニットがあれば、これはレジストを得る。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-043::wotsuyunitogaare",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "kitokii",
@@ -39,10 +43,11 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP2",
+          "keyword": "exclude_game_tankoregabatoruerianitatokipawazonkaraomote_ko_kinokadowo",
           "duration": "turn"
         }
       ]
@@ -52,9 +57,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "自軍捨札が7枚以上ある"
   }
 }

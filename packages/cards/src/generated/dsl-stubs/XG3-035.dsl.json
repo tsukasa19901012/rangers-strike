@@ -16,6 +16,10 @@
     "折神獣",
     "電子モヂカラ"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「ゴールド」を持つ自軍ユニットがある"
+  },
   "effects": [
     {
       "id": "ki_hikari",
@@ -24,23 +28,19 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-035::kihikari",
+          "keyword": "grant_effect_koreworashushitatokinoga1arebanowodekirukomando",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「ゴールド」を持つ自軍ユニットがある"
   }
 }

@@ -11,21 +11,20 @@
   "rawText": "Sユニットを2体選ぶ。このターン、1体目に選んだユニットの効果名を持つ効果は、2体目に選んだユニットの効果名を持つ効果になる。ただし、1体目がナンバーを持たないなら2体目もナンバーを持たないユニットしか選べず、1体目がナンバーを持つなら、2体目もナンバーを持つユニットしか選べない。",
   "effects": [
     {
-      "id": "kopibento",
-      "name": "コピーベント",
+      "id": "note_53e383a6e3838be38383e383",
       "text": "Sユニットを2体選ぶ。このターン、1体目に選んだユニットの効果名を持つ効果は、2体目に選んだユニットの効果名を持つ効果になる。ただし、1体目がナンバーを持たないなら2体目もナンバーを持たないユニットしか選べず、1体目がナンバーを持つなら、2体目もナンバーを持つユニットしか選べない。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-078::kopibento",
+          "keyword": "number_combo_syunitowo2bukonotan1nindayunitonowotsuha2ni",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

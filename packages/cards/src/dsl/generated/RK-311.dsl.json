@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-311",
+  "name": "キンタロス",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これは自軍ユニットの数が敵軍ユニットの数より多いときアタックできない。 【俺の強さにお前が泣いた】次の相手ターン、バトルエリアに出た敵軍Sユニットは、可能ならこれにアタックする。",
+  "rawText": "※これは自軍ユニットの数が敵軍ユニットの数より多いときアタックできない。 【俺の強さにお前が泣いた】次の相手ターン、バトルエリアに出た敵軍Sユニットは、可能ならこれにアタックする。",
+  "bp": 5000,
+  "size": "S",
+  "comboNumber": 5,
+  "features": [
+    "イマジン",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack_if_own_unit_count_exceeds_enemy",
+      "text": "※これは自軍ユニットの数が敵軍ユニットの数より多いときアタックできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_if_own_unit_count_exceeds_enemy",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "nosaniogaita",
+      "name": "俺の強さにお前が泣いた",
+      "text": "次の相手ターン、バトルエリアに出た敵軍Sユニットは、可能ならこれにアタックする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-311::nosaniogaita",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-311.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-311.jpg"
+}

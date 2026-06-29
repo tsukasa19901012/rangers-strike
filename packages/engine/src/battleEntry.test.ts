@@ -171,6 +171,116 @@ describe("battle entry action prompt", () => {
   });
 });
 
+describe("ride-off choice on battle entry", () => {
+  it("prompts ride-off for mounted unit without RC (atwiki p594 Q3)", () => {
+    const vehicle = inst("TST-VEHICLE", "v1");
+    const rider = inst("TST-RIDER", "r1");
+    rider.mountedOnInstanceId = vehicle.instanceId;
+
+    const state = createTestState({
+      phase: "battle",
+      player1: { rush: [vehicle, rider], battle: [] },
+    });
+    state.definitions["TST-VEHICLE"] = {
+      id: "TST-VEHICLE",
+      name: "Pat Trailer",
+      type: "vehicle",
+      category: "OT",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 4,
+      bp: 5000,
+      size: "M",
+    };
+    state.definitions["TST-RIDER"] = {
+      id: "TST-RIDER",
+      name: "Pat Rider",
+      type: "unit",
+      category: "OT",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 2,
+      bp: 2000,
+      size: "S",
+      comboNumber: 2,
+    };
+
+    const moved = applyAction(state, {
+      type: "move_to_battle",
+      playerId: "player1",
+      instanceId: rider.instanceId,
+    });
+    expect(moved.ok).toBe(true);
+    if (!moved.ok) return;
+
+    expect(moved.state.pendingRideOffChoice?.instanceId).toBe(rider.instanceId);
+    expect(moved.state.pendingBattleEntry).toBeUndefined();
+    expect(
+      getLegalActions(moved.state).some(
+        (a) => a.type === "resolve_ride_off_choice" && a.playerId === "player1",
+      ),
+    ).toBe(true);
+  });
+
+  it("opens battle entry after declining ride-off", () => {
+    const vehicle = inst("TST-VEHICLE", "v1");
+    const rider = inst("TST-RIDER", "r1");
+    rider.mountedOnInstanceId = vehicle.instanceId;
+
+    let state = createTestState({
+      phase: "battle",
+      player1: { rush: [vehicle, rider], battle: [] },
+    });
+    state.definitions["TST-VEHICLE"] = {
+      id: "TST-VEHICLE",
+      name: "Pat Trailer",
+      type: "vehicle",
+      category: "OT",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 4,
+      bp: 5000,
+      size: "M",
+    };
+    state.definitions["TST-RIDER"] = {
+      id: "TST-RIDER",
+      name: "Pat Rider",
+      type: "unit",
+      category: "OT",
+      rarity: "N",
+      expansion: "test",
+      powerCost: 2,
+      bp: 2000,
+      size: "S",
+      comboNumber: 2,
+    };
+
+    const moved = applyAction(state, {
+      type: "move_to_battle",
+      playerId: "player1",
+      instanceId: rider.instanceId,
+    });
+    expect(moved.ok).toBe(true);
+    if (!moved.ok) return;
+    state = moved.state;
+
+    const stayed = applyAction(state, {
+      type: "resolve_ride_off_choice",
+      playerId: "player1",
+      rideOff: false,
+    });
+    expect(stayed.ok).toBe(true);
+    if (!stayed.ok) return;
+
+    expect(stayed.state.pendingRideOffChoice).toBeUndefined();
+    expect(stayed.state.pendingBattleEntry?.instanceId).toBe(rider.instanceId);
+    expect(
+      stayed.state.players.player1.battle.find((c) => c.instanceId === rider.instanceId)
+        ?.mountedOnInstanceId,
+    ).toBe(vehicle.instanceId);
+  });
+});
+
 describe("special SP strike eligibility", () => {
   it("RS-043 cannot strike after skipping judgment sword", () => {
     const patStriker = inst("RS-043", "pat");

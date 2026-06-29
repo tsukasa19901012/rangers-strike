@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-221",
+  "name": "タイムイエロー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【グラップファイター】敵軍バトルエリアにあるSユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアに、戻したユニット以外のユニットがあれば1体選び、戻したユニットとバトルさせる。戻したユニット以外にユニットが無ければ、相手に1点ダメージを与える。",
+  "rawText": "【グラップファイター】敵軍バトルエリアにあるSユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアに、戻したユニット以外のユニットがあれば1体選び、戻したユニットとバトルさせる。戻したユニット以外にユニットが無ければ、相手に1点ダメージを与える。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "イエロー",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "gurapufuaita",
+      "name": "グラップファイター",
+      "text": "敵軍バトルエリアにあるSユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアに、戻したユニット以外のユニットがあれば1体選び、戻したユニットとバトルさせる。戻したユニット以外にユニットが無ければ、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-221.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-221.jpg"
+}

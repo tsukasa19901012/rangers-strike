@@ -16,6 +16,10 @@
     "男",
     "ダブルドライバー"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「メカ」を持つ自軍コマンドがある"
+  },
   "effects": [
     {
       "id": "unnamed_morph",
@@ -52,14 +56,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-014::metarushafuto",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakarahorudonoyu",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -78,9 +82,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「メカ」を持つ自軍コマンドがある"
   }
 }

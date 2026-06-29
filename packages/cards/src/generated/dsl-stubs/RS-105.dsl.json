@@ -19,7 +19,7 @@
   "unnamedRules": [],
   "effects": [
     {
-      "id": "dekabase_mothership",
+      "id": "jaguar_mothership",
       "name": "母艦",
       "text": "これが自軍ラッシュエリアにあるとき、自分がラッシュするMユニットの追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを1体パワーゾーンに送るかわりに、「オーバーテクノロジー」の自軍コマンドを1つホールドする。",
       "trigger": {
@@ -27,13 +27,17 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "power_zone_action_koregarashuerianiarutokigarashusurumyunitonowotasu",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

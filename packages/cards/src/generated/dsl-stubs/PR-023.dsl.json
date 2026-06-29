@@ -16,6 +16,12 @@
     "男",
     "忍者"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_feature_unit",
+    "text": "特徴「男」を持つ自軍ユニット1体を捨札にする",
+    "requiredFeature": "男",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "fx_unknown_e5ae87",
@@ -49,11 +55,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_feature_unit",
-    "text": "特徴「男」を持つ自軍ユニット1体を捨札にする",
-    "requiredFeature": "男",
-    "unitCount": 1
   }
 }

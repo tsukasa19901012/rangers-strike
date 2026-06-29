@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-194",
+  "name": "ダイナロボ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―ダイナマッハ＋ダイナモビル＋ダイナギャリー 【ビートハンマー】自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドゾーンからユニットのカードを1枚選び、敵軍バトルエリアに出す。このとき出したユニットの効果は発動しない。",
+  "rawText": "合体―ダイナマッハ＋ダイナモビル＋ダイナギャリー 【ビートハンマー】自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドゾーンからユニットのカードを1枚選び、敵軍バトルエリアに出す。このとき出したユニットの効果は発動しない。",
+  "bp": 8000,
+  "size": "L",
+  "sp": 2,
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "bitohanma",
+      "name": "ビートハンマー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドゾーンからユニットのカードを1枚選び、敵軍バトルエリアに出す。このとき出したユニットの効果は発動しない。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deploy_enemy_command_silent",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ダイナマッハ＋ダイナモビル＋ダイナギャリー",
+      "partnerCardIds": [
+        "RS-195",
+        "RS-196",
+        "RS-197"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-195"
+        ],
+        [
+          "RS-196"
+        ],
+        [
+          "RS-197"
+        ]
+      ]
+    }
+  ],
+  "imageUrl": "/cards/promoted/RS-194.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-194.jpg"
+}

@@ -69,14 +69,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-051::heno",
-          "duration": "permanent"
+          "keyword": "feature_match_koregamatahawotsuyunitotobatorusurutokikoreworirisusuru",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

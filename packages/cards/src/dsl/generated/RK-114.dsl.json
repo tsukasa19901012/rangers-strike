@@ -1,0 +1,49 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-114",
+  "name": "サイコローダー",
+  "type": "vehicle",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "3+",
+  "text": "【デッドエンド】自軍ターン中、これがバトルエリアに出たとき、ライドされていない敵軍Sビークルを1体選び、捨札にしてもよい。",
+  "rawText": "【デッドエンド】自軍ターン中、これがバトルエリアに出たとき、ライドされていない敵軍Sビークルを1体選び、捨札にしてもよい。",
+  "effects": [
+    {
+      "id": "dedoendo",
+      "name": "デッドエンド",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、ライドされていない敵軍Sビークルを1体選び、捨札にしてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enter_battle_destroy_enemy_unridden_s_vehicle",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "車両",
+    "昆虫"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「サイコローグ」1体を捨札にする。",
+    "partnerName": "サイコローグ",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-114.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-114.jpg"
+}

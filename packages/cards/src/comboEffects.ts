@@ -271,8 +271,6 @@ const IMPLEMENTED_RIDING_IDS = new Set<string>(IMPLEMENTED_RIDING_COMBO_EFFECT_I
 function buildRidingComboMap(): Record<string, RidingComboEffectId> {
   const map: Record<string, RidingComboEffectId> = {};
   for (const { cardId, effectId } of listRidingComboNamedEffects()) {
-    const card = ALL_CARDS_BY_ID.get(cardId);
-    if (!card || card.comboNumber !== "RC") continue;
     if (IMPLEMENTED_RIDING_IDS.has(effectId)) {
       map[cardId] = effectId as RidingComboEffectId;
     }

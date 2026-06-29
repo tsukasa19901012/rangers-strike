@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -53,16 +53,16 @@
       "name": "戦い続ける覚悟",
       "text": "常駐しているオペレーションカードを1枚選び捨札にしてもよい。そうしたとき、そのカードの持ち主は次のようにする⇒ウラ向きのパワーを1枚選び捨札にするか、オモテ向きのパワーを1枚選びダメージにするかを選ぶ。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-068::ikeru",
-          "duration": "permanent"
+          "keyword": "damage_action_shiteiruopereshonkadowo1binishitemoyoisoushitatokisonokado",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

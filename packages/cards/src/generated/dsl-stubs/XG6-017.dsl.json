@@ -19,19 +19,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_while_in_hand_rush_deploy_ieromatahahowa",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「イエロー」または「ホワイト」を持つ自軍ユニットがあれば、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "while_in_hand_rush_deploy::ieromatahahowaitowotsuyu",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "dokonidemogaru",
@@ -40,14 +40,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-017::dokonidemogaru",
-          "duration": "permanent"
+          "keyword": "pick_remaining_zonnoomote_ko_kinokadokara1binietemoyoisoushitatokikonoyu",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

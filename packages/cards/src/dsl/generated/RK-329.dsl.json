@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-329",
+  "name": "仮面ライダーアーク",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 6,
+  "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 ※敵軍ユニットがSユニットだけなら、これは「SP1」になる。 【巨体の威圧】自軍ターン中、これがバトルエリアに出たとき、BPの一番低いユニットを１体選び撃破する。ただし、BPの一番低いユニットが自軍と敵軍にある場合は、自軍ユニットの中から選ぶこと。",
+  "rawText": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 ※敵軍ユニットがSユニットだけなら、これは「SP1」になる。 【巨体の威圧】自軍ターン中、これがバトルエリアに出たとき、BPの一番低いユニットを１体選び撃破する。ただし、BPの一番低いユニットが自軍と敵軍にある場合は、自軍ユニットの中から選ぶこと。",
+  "bp": 6000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "レジェンドルガ"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_win_vs_sp1",
+      "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_sp1_if_enemy_units_all_s",
+      "text": "※敵軍ユニットがSユニットだけなら、これは「SP1」になる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "sp1_if_enemy_units_all_s",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "no_e5b7a8",
+      "name": "巨体の威圧",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、BPの一番低いユニットを１体選び撃破する。ただし、BPの一番低いユニットが自軍と敵軍にある場合は、自軍ユニットの中から選ぶこと。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-329::no_e5b7a8",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "destroy_on_win_vs_sp1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-329.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-329.jpg"
+}

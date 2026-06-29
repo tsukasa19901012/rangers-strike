@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-456",
+  "name": "ニンジャブルー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これは「ブルーロウガン」としてつかえる。 【忍法水走り】敵軍ラッシュエリアのユニットの数が、敵軍バトルエリアのユニットの数より多ければ、これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※これは「ブルーロウガン」としてつかえる。 【忍法水走り】敵軍ラッシュエリアのユニットの数が、敵軍バトルエリアのユニットの数より多ければ、これは敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_alias_bururougan",
+      "text": "※これは「ブルーロウガン」としてつかえる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "alias_bururougan",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "ninpo_mizu_ri",
+      "name": "忍法水走り",
+      "text": "敵軍ラッシュエリアのユニットの数が、敵軍バトルエリアのユニットの数より多ければ、これは敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "attack_rush_if_more_units",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "fusion",
+      "text": "※これは「ブルーロウガン」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-456.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-456.jpg"
+}

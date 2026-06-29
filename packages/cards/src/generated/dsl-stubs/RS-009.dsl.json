@@ -11,7 +11,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-009.jpg",
   "effects": [
     {
-      "id": "power_bazooka",
+      "id": "note_e695b5e8bb8d4ce383a6e383",
       "text": "敵軍Lユニットを1体選んで撃破する。そうして撃破したLユニットが捨札になったとき、相手はそのLユニットの合体に必要なユニットのカードを捨札から探してバトルエリアに戻す。このとき、戻したユニットの効果は発動しない。",
       "trigger": {
         "type": "operation",
@@ -19,13 +19,17 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "opponent_must_lyunitowo1nde_geki_ha_surusoushite_geki_ha_shitalyunitogan",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

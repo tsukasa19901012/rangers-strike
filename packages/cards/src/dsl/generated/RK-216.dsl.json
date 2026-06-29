@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-216",
+  "name": "ドラゴンフライアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "【ハート4―フロート】自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒このターンを終えるとき、これが自軍バトルエリアにあれば、これを手札に戻す。",
+  "rawText": "【ハート4―フロート】自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒このターンを終えるとき、これが自軍バトルエリアにあれば、これを手札に戻す。",
+  "bp": 1500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "昆虫"
+  ],
+  "effects": [
+    {
+      "id": "hato4furoto",
+      "name": "ハート4―フロート",
+      "text": "自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒このターンを終えるとき、これが自軍バトルエリアにあれば、これを手札に戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "replace_rush_kamen_rider",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-216.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-216.jpg"
+}

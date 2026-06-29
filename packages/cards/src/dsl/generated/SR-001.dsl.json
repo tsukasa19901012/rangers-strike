@@ -27,10 +27,29 @@
       "text": "合体―ガオライオン＋ガオイーグル＋ガオシャーク＋ガオバイソン＋ガオタイガー",
       "partnerCardIds": [
         "RS-152",
+        "XG7-010",
         "RS-153",
         "RS-154",
         "RS-155",
         "RS-156"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-152",
+          "XG7-010"
+        ],
+        [
+          "RS-153"
+        ],
+        [
+          "RS-154"
+        ],
+        [
+          "RS-155"
+        ],
+        [
+          "RS-156"
+        ]
       ]
     }
   ],
@@ -44,13 +63,17 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "bp_modify_konoyunitohabatoruerianiaruwbnomyunito1nitsukibp2000sareru",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-332",
+  "name": "マジライオン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "合体―レジェンドマジイエロー＋レジェンドマジブルー＋レジェンドマジピンク＋レジェンドマジグリーン ※これが撃破されて捨札になったとき、このユニットの合体に必要なユニットのカードが自軍捨札にあれば、それぞれ1枚ずつ選び、自軍ラッシュエリアに出す。",
+  "rawText": "合体―レジェンドマジイエロー＋レジェンドマジブルー＋レジェンドマジピンク＋レジェンドマジグリーン ※これが撃破されて捨札になったとき、このユニットの合体に必要なユニットのカードが自軍捨札にあれば、それぞれ1枚ずつ選び、自軍ラッシュエリアに出す。",
+  "bp": 9000,
+  "size": "M",
+  "sp": 1,
+  "features": [
+    "魔法"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "text": "※これが撃破されて捨札になったとき、このユニットの合体に必要なユニットのカードが自軍捨札にあれば、それぞれ1枚ずつ選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RS-332::korega_geki_ha_s",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―レジェンドマジイエロー＋レジェンドマジブルー＋レジェンドマジピンク＋レジェンドマジグリーン ※これが撃破されて捨札になったとき、このユニットの合体に必要なユニットのカードが自軍捨札にあれば、それぞれ1枚ずつ選び、自軍ラッシュエリアに出す。",
+      "partnerCardIds": [
+        "RS-334",
+        "RS-335",
+        "RS-336"
+      ]
+    }
+  ],
+  "imageUrl": "/cards/promoted/RS-332.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-332.jpg"
+}

@@ -42,14 +42,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-083::kene69a97",
+          "keyword": "destroy_on_rush_koreworashushitatokinowoetemoyoisoushitatokisononopa",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

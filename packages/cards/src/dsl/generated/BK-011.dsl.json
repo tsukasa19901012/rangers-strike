@@ -1,0 +1,37 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "BK-011",
+  "name": "アークル",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「アマダム」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。",
+  "rawText": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「アマダム」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。",
+  "effects": [
+    {
+      "id": "akuru",
+      "name": "アークル",
+      "text": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「アマダム」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "resident"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "hand_resident_rush_amadamu",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/BK-011.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-011.jpg"
+}

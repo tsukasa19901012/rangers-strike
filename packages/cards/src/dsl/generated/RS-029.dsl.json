@@ -34,5 +34,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "text": "自軍Sユニットがバトルエリアに出るたび、コマンドを1つリリースできる（常駐）。",
+  "rawText": "自軍Sユニットがバトルエリアに出るたび、コマンドを1つリリースできる（常駐）。"
 }

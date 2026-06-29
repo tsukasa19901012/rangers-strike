@@ -1,5 +1,6 @@
 import type { GameAction } from "../types/actions";
 import type { GameState, PlayerId } from "../types/game";
+import { WIN_DAMAGE } from "../types/game";
 import { effectiveBp } from "../core/catalog";
 import { getLegalActions } from "../core/legalActions";
 import { opponent } from "../core/helpers";
@@ -26,6 +27,9 @@ import {
   handHasRushUnits,
   pickRushCategoryPayment,
   pickMandatoryBattleMove,
+  pickBestBattleEntry,
+  pickBestChase,
+  pickRideOffChoice,
   pickCpuFallbackAction,
   pickSimpleReaction,
   pickStrikeReaction,
@@ -39,13 +43,35 @@ export type PickCpuActionOptions = {
   maxCandidates?: number;
   maxResponseDepth?: number;
   simulationDepth?: number;
+  searchPly?: number;
 };
+
+function tacticalSearchOptions(
+  state: GameState,
+  options: PickCpuActionOptions,
+): SearchOptions | undefined {
+  const base = searchOptions(options);
+  if (!base) return undefined;
+
+  const tactical =
+    state.phase === "battle" ||
+    state.pendingBattleEntry !== undefined ||
+    state.pendingStrike !== undefined ||
+    state.pendingBattle !== undefined ||
+    state.pendingRush !== undefined;
+
+  if (!tactical && (base.searchPly ?? 1) > 1) {
+    return { ...base, searchPly: 1 };
+  }
+  return base;
+}
 
 function searchOptions(options: PickCpuActionOptions): SearchOptions | undefined {
   if (
     options.maxCandidates === undefined &&
     options.maxResponseDepth === undefined &&
-    options.simulationDepth === undefined
+    options.simulationDepth === undefined &&
+    options.searchPly === undefined
   ) {
     return undefined;
   }
@@ -53,6 +79,7 @@ function searchOptions(options: PickCpuActionOptions): SearchOptions | undefined
     maxCandidates: options.maxCandidates,
     maxResponseDepth: options.maxResponseDepth,
     simulationDepth: options.simulationDepth,
+    searchPly: options.searchPly,
   };
 }
 
@@ -69,7 +96,7 @@ function pickReactionAction(
   }
 
   const pass = actions.find((a) => a.type === passType);
-  const sim = searchOptions(options);
+  const sim = tacticalSearchOptions(state, options);
 
   if (passType === "pass_strike_reaction") {
     const strikeCandidates = dedupeActions([
@@ -122,10 +149,14 @@ function collectRushCandidates(
       if (bestOp) {
         candidates.push(bestOp);
       } else {
-        candidates.push(...actionsOfType(actions, "play_operation").slice(0, 2));
+        candidates.push(...actionsOfType(actions, "play_operation").slice(0, 4));
       }
     }
   }
+
+  candidates.push(...actionsOfType(actions, "begin_zord_setup"));
+  candidates.push(...actionsOfType(actions, "play_operation").slice(0, 3));
+  candidates.push(...actionsOfType(actions, "initiate_command_payment").slice(0, 4));
 
   const end = endPhase(actions);
   if (end) candidates.push(end);
@@ -162,7 +193,7 @@ function collectBattleCandidates(
     ...actionsOfType(actions, "strike"),
     ...actionsOfType(actions, "battle")
       .sort((a, b) => battleActionDelta(state, b) - battleActionDelta(state, a))
-      .slice(0, 14),
+      .slice(0, 20),
     ...actionsOfType(actions, "move_to_battle")
       .sort((a, b) => {
         const player = state.players[playerId];
@@ -176,7 +207,10 @@ function collectBattleCandidates(
         const bpB = cardB ? effectiveBp(state, playerId, cardB) : 0;
         return bpB - bpA;
       })
-      .slice(0, 8),
+      .slice(0, 12),
+    ...actionsOfType(actions, "mount_ride").slice(0, 12),
+    ...actionsOfType(actions, "play_operation").slice(0, 4),
+    ...actionsOfType(actions, "hold_for_wing").slice(0, 3),
   ];
 
   const end = endPhase(actions);
@@ -205,7 +239,7 @@ function pickCpuActionInner(
   options: PickCpuActionOptions = {},
 ): GameAction | null {
   const enableSearch = options.enableSearch ?? true;
-  const sim = searchOptions(options);
+  const sim = tacticalSearchOptions(state, options);
 
   if (state.winner) return null;
 
@@ -235,19 +269,22 @@ function pickCpuActionInner(
   if (state.pendingChase) {
     if (playerId !== state.pendingChase.chaserPlayerId) return null;
     const actions = getLegalActions(state);
-    const vehicles = actionsOfType(actions, "resolve_chase");
-    if (vehicles.length > 0) return vehicles[0]!;
-    return actions.find((a) => a.type === "pass_chase") ?? null;
+    return (
+      pickBestChase(state, playerId, actions) ??
+      actions.find((a) => a.type === "pass_chase") ??
+      null
+    );
   }
 
   if (state.pendingRideOffChoice) {
     if (playerId !== state.pendingRideOffChoice.playerId) return null;
     const actions = getLegalActions(state);
-    return (
-      actions.find((a) => a.type === "resolve_ride_off_choice" && a.rideOff) ??
-      actions.find((a) => a.type === "resolve_ride_off_choice" && !a.rideOff) ??
-      null
-    );
+    if (enableSearch) {
+      const choices = actions.filter((a) => a.type === "resolve_ride_off_choice");
+      const searched = pickBestBySearch(state, playerId, choices, sim);
+      if (searched) return searched;
+    }
+    return pickRideOffChoice(state, playerId, actions);
   }
 
   if (state.pendingEffectChoice) {
@@ -278,6 +315,15 @@ function pickCpuActionInner(
       const skip = actions.find((a) => a.type === "skip_effect_choice");
       if (pay && skip) {
         return pickBestBySearch(state, playerId, [pay, skip], sim);
+      }
+    }
+
+    if (enableSearch && pending.optional && pending.kind !== "scry_keep_one") {
+      const pay = actions.filter((a) => a.type === "resolve_effect_choice");
+      const skip = actions.find((a) => a.type === "skip_effect_choice");
+      if (pay.length > 0 && skip) {
+        const searched = pickBestBySearch(state, playerId, [...pay, skip], sim);
+        if (searched) return searched;
       }
     }
 
@@ -353,9 +399,25 @@ function pickCpuActionInner(
 
     case "rush": {
       const beginZord = pickBeginZordSetup(state, playerId, actions);
-      if (beginZord) return beginZord;
+      if (beginZord && !enableSearch) return beginZord;
 
       const affordable = affordableRushes(state, playerId, actions);
+      if (enableSearch) {
+        let candidates = collectRushCandidates(state, playerId, actions);
+        if (beginZord) candidates.unshift(beginZord);
+        if (
+          affordable.length > 0 ||
+          handHasRushUnits(state, playerId)
+        ) {
+          candidates = candidates.filter((a) => a.type !== "end_phase");
+        }
+        candidates = dedupeActions(candidates);
+        const best = pickBestBySearch(state, playerId, candidates, sim);
+        if (best) return best;
+      }
+
+      if (beginZord) return beginZord;
+
       const rush = pickBestRushByScore(state, affordable);
       if (rush) {
         const hold = pickHoldBeforeRush(state, playerId, actions, rush);
@@ -364,12 +426,6 @@ function pickCpuActionInner(
 
       const categoryPay = pickRushCategoryPayment(state, playerId, actions);
       if (categoryPay) return categoryPay;
-
-      if (enableSearch) {
-        const candidates = collectRushCandidates(state, playerId, actions);
-        const best = pickBestBySearch(state, playerId, candidates, sim);
-        if (best) return best;
-      }
 
       return endPhase(actions);
     }
@@ -382,12 +438,15 @@ function pickCpuActionInner(
       if (mandatory) return mandatory;
 
       const lethalStrike = pickBestStrike(state, playerId, actions);
-      if (lethalStrike) return lethalStrike;
-
-      const player = state.players[playerId];
-      const moveToBattle = actionsOfType(actions, "move_to_battle");
-      if (moveToBattle.length > 0 && player.battle.length === 0) {
-        return moveToBattle[0]!;
+      if (lethalStrike?.type === "strike") {
+        const enemy = state.players[opponent(playerId)];
+        const card = state.players[playerId].battle.find(
+          (c) => c.instanceId === lethalStrike.instanceId,
+        );
+        if (card) {
+          const damage = strikeDamageFor(state.definitions, card, state, playerId);
+          if (enemy.damage + damage >= WIN_DAMAGE) return lethalStrike;
+        }
       }
 
       if (enableSearch) {
@@ -401,6 +460,12 @@ function pickCpuActionInner(
         }
         const best = pickBestBySearch(state, playerId, candidates, sim);
         if (best) return best;
+      }
+
+      const player = state.players[playerId];
+      const moveToBattle = actionsOfType(actions, "move_to_battle");
+      if (moveToBattle.length > 0 && player.battle.length === 0) {
+        return pickBestBattleEntry(state, playerId, actions);
       }
 
       const battle =

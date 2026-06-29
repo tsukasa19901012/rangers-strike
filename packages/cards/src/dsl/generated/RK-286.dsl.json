@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-286",
+  "name": "仮面ライダーオーディン",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "6+",
+  "text": "※これが撃破されて捨札になるとき、かわりに自軍ラッシュエリアにある特徴「男」を持つユニット1体を捨札にすれば、これはその場に留まる。 【戦いのリセット】これをラッシュしたとき、次の効果を自分、相手の順に行う⇒自分自身のパワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい自分自身のユニットをすべて撃破する。",
+  "rawText": "※これが撃破されて捨札になるとき、かわりに自軍ラッシュエリアにある特徴「男」を持つユニット1体を捨札にすれば、これはその場に留まる。 【戦いのリセット】これをラッシュしたとき、次の効果を自分、相手の順に行う⇒自分自身のパワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい自分自身のユニットをすべて撃破する。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー",
+    "サバイブ"
+  ],
+  "effects": [
+    {
+      "id": "note_e280bbe38193e3828ce3818c",
+      "text": "※これが撃破されて捨札になるとき、かわりに自軍ラッシュエリアにある特徴「男」を持つユニット1体を捨札にすれば、これはその場に留まる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_substitute_on_destroy_rush_feature::男",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "inoriseto",
+      "name": "戦いのリセット",
+      "text": "これをラッシュしたとき、次の効果を自分、相手の順に行う⇒自分自身のパワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい自分自身のユニットをすべて撃破する。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-286::inoriseto",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "自分と相手の捨札の合計が11枚以上ある"
+  },
+  "imageUrl": "/cards/promoted/RK-286.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-286.jpg"
+}

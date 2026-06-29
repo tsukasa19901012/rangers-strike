@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_no_attack_from_enemy_s",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは敵軍Sユニットにアタックされない。",
       "trigger": {
         "type": "while_in_field"
@@ -40,14 +40,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-088::hadokushoka",
+          "keyword": "while_in_field_body_koreganoniarurejisutomatahauinguwotsusyunitogarashus",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

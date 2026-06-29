@@ -33,35 +33,35 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはリリース状態のユニットにアタックすることができない。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG1-077::koreharirisunoyu",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "raidobuka",
       "name": "ライドブッカー",
       "text": "自軍山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中から、特徴「仮面ライダー」を持つユニットカードを1枚選び、自軍パワーゾーンに置く。その後、それ以外のカードは好きな順で山札の下に戻す。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-077::raidobuka",
-          "duration": "permanent"
+          "keyword": "reveal_faceup_nokara3woomotenishitemoyoisoushitatokiomotenishitakadonoka",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

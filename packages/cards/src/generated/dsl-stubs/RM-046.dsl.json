@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_cannot_attack",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはアタックすることができない。",
       "trigger": {
         "type": "while_in_field"

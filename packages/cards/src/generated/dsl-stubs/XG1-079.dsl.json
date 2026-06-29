@@ -38,14 +38,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-079::nomizu",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakarabp3000nos",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-208",
+  "name": "クレインオルフェノク激情態",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「クレインオルフェノク」のカードを1枚選び、自軍ラッシュエリアに出す。 【迎撃の毒矢】これが自軍ラッシュエリアにある間、効果に「ラッシュしたとき」とある敵軍ユニットが手札からラッシュされたとき、その効果を実行する前に、これをバトルエリアに出してもよい。そうしたとき、その効果は無効になる。その後、そのユニットとこのユニットでバトルする。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「クレインオルフェノク」のカードを1枚選び、自軍ラッシュエリアに出す。 【迎撃の毒矢】これが自軍ラッシュエリアにある間、効果に「ラッシュしたとき」とある敵軍ユニットが手札からラッシュされたとき、その効果を実行する前に、これをバトルエリアに出してもよい。そうしたとき、その効果は無効になる。その後、そのユニットとこのユニットでバトルする。",
+  "bp": 4500,
+  "size": "S",
+  "features": [
+    "オルフェノク",
+    "怪人",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「クレインオルフェノク」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "geki_no",
+      "name": "迎撃の毒矢",
+      "text": "これが自軍ラッシュエリアにある間、効果に「ラッシュしたとき」とある敵軍ユニットが手札からラッシュされたとき、その効果を実行する前に、これをバトルエリアに出してもよい。そうしたとき、その効果は無効になる。その後、そのユニットとこのユニットでバトルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-208::geki_no",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「クレインオルフェノク」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "クレインオルフェノク",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-208.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-208.jpg"
+}

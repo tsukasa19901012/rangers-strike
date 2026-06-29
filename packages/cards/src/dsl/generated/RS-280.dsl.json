@@ -1,0 +1,58 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-280",
+  "name": "レッドホーク",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これは、自軍バトルフェイズを終えるときのバトルエリアでの並び順が、カードに表記された本来のナンバーと違うなら、自分がターンを終えるとき、手札に戻す。 【ウィングガントレット】「SP1」自軍ターン中、これはBP＋2000される。",
+  "rawText": "※これは、自軍バトルフェイズを終えるときのバトルエリアでの並び順が、カードに表記された本来のナンバーと違うなら、自分がターンを終えるとき、手札に戻す。 【ウィングガントレット】「SP1」自軍ターン中、これはBP＋2000される。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_end_turn_return_hand_wrong_number",
+      "text": "※これは、自軍バトルフェイズを終えるときのバトルエリアでの並び順が、カードに表記された本来のナンバーと違うなら、自分がターンを終えるとき、手札に戻す。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "end_turn_return_hand_wrong_number",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "uingugantoreto",
+      "name": "ウィングガントレット",
+      "text": "「SP1」自軍ターン中、これはBP＋2000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-280.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-280.jpg"
+}

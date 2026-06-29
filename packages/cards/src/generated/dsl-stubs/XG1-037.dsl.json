@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -42,24 +42,17 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-037::karanogeki",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_koregauingudeatakushitayunitoga_geki_ha_sareteninatat",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
-    {
-      "kind": "zord",
-      "text": "合体―-兜折神＋舵木折神＋虎折神 ※ウイング",
-      "partnerCardIds": [
-        "XG1-036"
-      ]
-    },
     {
       "kind": "note",
       "text": "※ウイング",

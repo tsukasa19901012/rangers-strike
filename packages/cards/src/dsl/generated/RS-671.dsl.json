@@ -1,0 +1,49 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-671",
+  "name": "ケライン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンに置いてもよい。",
+  "rawText": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンに置いてもよい。",
+  "bp": 2000,
+  "size": "M",
+  "features": [
+    "車両",
+    "恐竜",
+    "炎神"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_to_power_on_destroy",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンに置いてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "to_power_on_destroy",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンに置いてもよい。",
+      "rule": "to_power_on_destroy"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-671.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-671.jpg"
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-317",
+  "name": "シュードラン",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ポッドバッティング】これが自軍エリアにある間、モーフの効果で自軍コマンドゾーンか自軍パワーゾーンのオモテ向きのカードからユニットカードを選ぶとき、DAを持つ自軍コマンドを2つ（自軍エリアに｢キャッスルドラン｣があれば1つ）ホールドしてもよい。そうしたとき、かわりに自軍捨札から選んでもよい。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ポッドバッティング】これが自軍エリアにある間、モーフの効果で自軍コマンドゾーンか自軍パワーゾーンのオモテ向きのカードからユニットカードを選ぶとき、DAを持つ自軍コマンドを2つ（自軍エリアに｢キャッスルドラン｣があれば1つ）ホールドしてもよい。そうしたとき、かわりに自軍捨札から選んでもよい。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "獣",
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "podobateingu",
+      "name": "ポッドバッティング",
+      "text": "これが自軍エリアにある間、モーフの効果で自軍コマンドゾーンか自軍パワーゾーンのオモテ向きのカードからユニットカードを選ぶとき、DAを持つ自軍コマンドを2つ（自軍エリアに｢キャッスルドラン｣があれば1つ）ホールドしてもよい。そうしたとき、かわりに自軍捨札から選んでもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-317::podobateingu",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-317.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-317.jpg"
+}

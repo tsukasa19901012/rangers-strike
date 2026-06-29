@@ -1,0 +1,60 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-266",
+  "name": "レッドフラッシュ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつきBP-1000され、BP0以下のとき撃破される。 【プリズム聖剣】自軍ラッシュエリアから、「WB」のユニットを1体選び自軍パワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "rawText": "※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつきBP-1000され、BP0以下のとき撃破される。 【プリズム聖剣】自軍ラッシュエリアから、「WB」のユニットを1体選び自軍パワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "bp": 7000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_e280bbe38193e381aee383a6",
+      "text": "※このユニットは、自分と相手のコマンドゾーンにある「OT」以外のコマンド1つにつきBP-1000され、BP0以下のとき撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "bp_debuff_per_non_ot_command",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "purizumu_ken",
+      "name": "プリズム聖剣",
+      "text": "自軍ラッシュエリアから、「WB」のユニットを1体選び自軍パワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_rush_send_rush_wb_to_power_sp1",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-266.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-266.jpg"
+}

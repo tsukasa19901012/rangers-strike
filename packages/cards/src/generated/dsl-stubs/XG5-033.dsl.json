@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_no_battle_rush_turn",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはラッシュしたターンにバトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"
@@ -38,14 +38,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-033::nomojikara",
+          "keyword": "exclude_game_tankoregabatoruerianitatokinowo1binisetemoyoiso",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

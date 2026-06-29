@@ -1,0 +1,36 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-432",
+  "name": "隠流マキビシ",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※カウンター（これは敵軍ターン中にのみ使用できる） ストライクされたとき発動できる⇒相手がバトルフェイズを終えるとき、そのバトルフェイズ中に自分の受けたダメージが2点以上なら、敵軍バトルエリアのSユニットをすべて撃破する。",
+  "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） ストライクされたとき発動できる⇒相手がバトルフェイズを終えるとき、そのバトルフェイズ中に自分の受けたダメージが2点以上なら、敵軍バトルエリアのSユニットをすべて撃破する。",
+  "effects": [
+    {
+      "id": "unnamed_counter_note_kaunta",
+      "text": "※カウンター（これは敵軍ターン中にのみ使用できる） ストライクされたとき発動できる⇒相手がバトルフェイズを終えるとき、そのバトルフェイズ中に自分の受けたダメージが2点以上なら、敵軍バトルエリアのSユニットをすべて撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "counter_note::kaunta",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-432.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-432.jpg"
+}

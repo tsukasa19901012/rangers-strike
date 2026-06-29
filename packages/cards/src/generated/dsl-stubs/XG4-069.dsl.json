@@ -16,6 +16,10 @@
     "男",
     "ダブルドライバー"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「獣」または「恐竜」を持つ自軍コマンドがある"
+  },
   "effects": [
     {
       "id": "unnamed_morph",
@@ -38,14 +42,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-069::shorudafuangu",
+          "keyword": "hold_on_enter_battle_koregabatoruerianitatokimatahawotsukomandowo1tsubih",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -59,9 +63,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「獣」または「恐竜」を持つ自軍コマンドがある"
   }
 }

@@ -38,14 +38,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "last_battle_protect_other_s",
+          "keyword": "catchall_interpret_koregabatoruerianonindeirukorenosyunitohaatakusare",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

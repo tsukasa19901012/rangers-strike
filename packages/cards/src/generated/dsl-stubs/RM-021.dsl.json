@@ -15,6 +15,12 @@
     "メカ",
     "航空機"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍｢超次元高速機ドルギラン｣1体を捨札にする",
+    "partnerName": "超次元高速機ドルギラン",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_attacked_bp_boost_5000",
@@ -37,14 +43,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-021::bikuru",
+          "keyword": "deploy_rush_area_koreworashushitatokipawazonnoomote_ko_kinokadokarapawan",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -58,11 +64,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍｢超次元高速機ドルギラン｣1体を捨札にする",
-    "partnerName": "超次元高速機ドルギラン",
-    "unitCount": 1
   }
 }

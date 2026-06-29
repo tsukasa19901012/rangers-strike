@@ -1,0 +1,71 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-072",
+  "name": "仮面ライダー電王GF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "【ワイルドショット】敵軍ラッシュエリアから、カードに表記された本来のBPが3000以下のユニットを1体選び撃破する。",
+  "rawText": "【ワイルドショット】敵軍ラッシュエリアから、カードに表記された本来のBPが3000以下のユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/4",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "DEN-O"
+  ],
+  "effects": [
+    {
+      "id": "wairudoshoto",
+      "name": "ワイルドショット",
+      "text": "敵軍ラッシュエリアから、カードに表記された本来のBPが3000以下のユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "rush",
+          "owner": "opponent",
+          "filter": {
+            "maxBp": 3000
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "rush",
+            "owner": "opponent",
+            "filter": {
+              "maxBp": 3000
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-072.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-072.jpg"
+}

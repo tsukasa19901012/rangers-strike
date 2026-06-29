@@ -23,14 +23,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-017::inoe78c9b",
+          "keyword": "deploy_battle_area_tankoregabatoruerianitatokiwotsuyunitowo2ndemoyoiso",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

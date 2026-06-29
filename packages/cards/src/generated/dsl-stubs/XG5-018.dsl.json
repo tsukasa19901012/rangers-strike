@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_cannot_attack_non_da",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはDAを持たないユニットにアタックすることができない",
       "trigger": {
         "type": "while_in_field"
@@ -42,14 +42,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-018::andoku",
+          "keyword": "while_in_field_body_koregakomandozonniarutanyunitogayunitodenakunari",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

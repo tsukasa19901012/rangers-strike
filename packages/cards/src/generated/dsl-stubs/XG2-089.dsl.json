@@ -38,16 +38,16 @@
       "name": "ジバンエンド",
       "text": "DAを持つ敵軍Sユニットを1体選び、持ち主のコマンドゾーンに置く。置けなければ捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-089::jibanendo",
-          "duration": "permanent"
+          "keyword": "discard_to_zone_dawotsusyunitowo1bichinokomandozonnikukenakerebani",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

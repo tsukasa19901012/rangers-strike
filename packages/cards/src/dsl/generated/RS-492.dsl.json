@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-492",
+  "name": "炎の騎馬",
+  "type": "vehicle",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※DAのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+1500される。",
+  "rawText": "※DAのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+1500される。",
+  "effects": [
+    {
+      "id": "unnamed_e280bb4441e381ae53e383a6",
+      "text": "※DAのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RS-492::danosyunitohawot",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "unnamed_ride_bp_boost_1500",
+      "text": "※これにライドしているユニットはBP+1500される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_1500",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットはBP+1500される。",
+      "rule": "ride_bp_boost_1500"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/promoted/RS-492.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-492.jpg"
+}

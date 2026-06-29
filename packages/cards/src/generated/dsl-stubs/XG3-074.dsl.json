@@ -17,9 +17,13 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_all_face_up_power",
+    "text": "オモテ向きの自軍パワー全てを捨札にする"
+  },
   "effects": [
     {
-      "id": "unnamed_blast",
+      "id": "unnamed_e280bbe38396e383a9e382b9",
       "text": "※ブラスト",
       "trigger": {
         "type": "while_in_field"
@@ -39,14 +43,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-074::shokano",
-          "duration": "permanent"
+          "keyword": "grant_effect_koreganoniarurashufueizulyunitoga1monakerebano",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -60,9 +64,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_all_face_up_power",
-    "text": "オモテ向きの自軍パワー全てを捨札にする"
   }
 }

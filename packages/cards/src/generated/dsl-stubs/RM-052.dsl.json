@@ -9,6 +9,11 @@
   "powerCost": 3,
   "text": "※特徴「昆虫」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【マグネアタッチメント】これがライドされている間、自軍エリアに「スタッガータンク」があれば、相手はスタートフェイズ中に自分自身のバトルエリアのユニットをラッシュエリアに戻すとき、特徴「メカ」を持つホールド状態のユニットは戻せない。",
   "rawText": "※特徴「昆虫」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。 【マグネアタッチメント】これがライドされている間、自軍エリアに「スタッガータンク」があれば、相手はスタートフェイズ中に自分自身のバトルエリアのユニットをラッシュエリアに戻すとき、特徴「メカ」を持つホールド状態のユニットは戻せない。",
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
       "id": "ride_command_without_rc_fx_unknown",
@@ -31,24 +36,19 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-052::maguneatachimento",
-          "duration": "permanent"
+          "keyword": "ride_action_koregaraidosareteiruerianisutagatankugaarebahasutatofuei",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "M",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

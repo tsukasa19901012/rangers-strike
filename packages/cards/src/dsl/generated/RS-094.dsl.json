@@ -17,11 +17,6 @@
   ],
   "imageUrl": "/cards/legend2/RS-094.jpg",
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-094.jpg",
-  "rushAdditionalCondition": {
-    "conditionId": "send_s_unit_to_power",
-    "text": "自軍Sユニットを1体パワーゾーンに送る",
-    "unitCount": 1
-  },
   "unnamedRules": [
     {
       "kind": "note",
@@ -39,9 +34,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "return_to_zone_batorufueizuninowodekirukarasyunitonokadowo1n",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "unnamed_win_but_destroyed_vs_sp1",
@@ -60,6 +58,13 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「童鬼ドロップ」1体を捨札にする",
+    "partnerName": "童鬼ドロップ",
+    "unitCount": 1
   }
 }

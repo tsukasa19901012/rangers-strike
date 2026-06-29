@@ -58,11 +58,6 @@
       ]
     }
   ],
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "unnamedRules": [
     {
       "kind": "zord",
@@ -102,5 +97,10 @@
         ]
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

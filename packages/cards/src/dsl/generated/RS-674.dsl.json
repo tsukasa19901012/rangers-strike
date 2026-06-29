@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-674",
+  "name": "シンケンレッド",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト 【烈火大斬刀】「SP1」 DAを持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "※レジスト 【烈火大斬刀】「SP1」 DAを持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "レッド",
+    "男",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "hi_zan_to",
+      "name": "烈火大斬刀",
+      "text": "「SP1」 DAを持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-674.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-674.jpg"
+}

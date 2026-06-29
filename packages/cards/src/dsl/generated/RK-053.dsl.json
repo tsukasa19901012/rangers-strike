@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-053",
+  "name": "仮面ライダーガタックMF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これはアタックされるときBP+3000される。 【ガタックバルカン】これが自軍バトルエリアにある間、敵軍Sユニットがラッシュされたとき、自軍パワーゾーンのダメージ以外のカードを1枚選び捨札にしてもよい。そうしたとき、そのユニットは、ターンが終わるまでバトルエリアに出られない。",
+  "rawText": "※これはアタックされるときBP+3000される。 【ガタックバルカン】これが自軍バトルエリアにある間、敵軍Sユニットがラッシュされたとき、自軍パワーゾーンのダメージ以外のカードを1枚選び捨札にしてもよい。そうしたとき、そのユニットは、ターンが終わるまでバトルエリアに出られない。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_attacked_bp_boost_3000",
+      "text": "※これはアタックされるときBP+3000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "attacked_bp_boost_3000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "gatakubarukan",
+      "name": "ガタックバルカン",
+      "text": "これが自軍バトルエリアにある間、敵軍Sユニットがラッシュされたとき、自軍パワーゾーンのダメージ以外のカードを1枚選び捨札にしてもよい。そうしたとき、そのユニットは、ターンが終わるまでバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rush_block_discard_power",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックされるときBP+3000される。",
+      "rule": "attacked_bp_boost_3000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-053.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-053.jpg"
+}

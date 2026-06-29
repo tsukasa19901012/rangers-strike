@@ -33,5 +33,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "text": "このカードを自軍パワーゾーンに置く。",
+  "rawText": "このカードを自軍パワーゾーンに置く。"
 }

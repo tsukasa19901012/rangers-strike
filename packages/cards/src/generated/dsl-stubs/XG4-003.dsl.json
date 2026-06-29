@@ -9,6 +9,23 @@
   "powerCost": 0,
   "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札を見て、特徴「車両」を持つユニットかビークルのカードを1枚選び、相手に見せてから自分の手札に加える。その後、自分の手札からカードを2枚選び、山札に戻してシャッフルする。",
   "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札を見て、特徴「車両」を持つユニットかビークルのカードを1枚選び、相手に見せてから自分の手札に加える。その後、自分の手札からカードを2枚選び、山札に戻してシャッフルする。",
+  "effects": [
+    {
+      "id": "note_e382b2e383bce383a0e9968b",
+      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札を見て、特徴「車両」を持つユニットかビークルのカードを1枚選び、相手に見せてから自分の手札に加える。その後、自分の手札からカードを2枚選び、山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "grant_effect_gemudakenowodekiruwote_ryo_wotsuyunitokabi",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

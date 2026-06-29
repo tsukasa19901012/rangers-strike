@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_destroy_on_win_vs_sp1",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
       "trigger": {
         "type": "while_in_field"
@@ -38,16 +38,16 @@
       "name": "シャドーフラッシュ",
       "text": "自分の手札からユニットカードを1枚選び、捨札にしてもよい。そうしたとき、捨札にしたカードのBP以下の本来のBPを持つ敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-047::shadofurashu",
-          "duration": "permanent"
+          "keyword": "pick_from_hand_nokarayunitokadowo1binishitemoyoisoushitatokinishitaka",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

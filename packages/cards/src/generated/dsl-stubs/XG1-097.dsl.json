@@ -28,14 +28,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-097::burumukyanon",
-          "duration": "permanent"
+          "keyword": "destroy_choose_enemy_yunitowobpnoga5000ninaruyounibi_geki_ha_shitemoyoit",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

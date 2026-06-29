@@ -9,6 +9,23 @@
   "powerCost": 0,
   "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分は1枚ドローしてもよい。そうしたとき、相手の山札の上から1枚を敵軍ゾーンにオモテ向きで置く。",
   "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分は1枚ドローしてもよい。そうしたとき、相手の山札の上から1枚を敵軍ゾーンにオモテ向きで置く。",
+  "effects": [
+    {
+      "id": "note_e382b2e383bce383a0e9968b",
+      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分は1枚ドローしてもよい。そうしたとき、相手の山札の上から1枚を敵軍ゾーンにオモテ向きで置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "grant_effect_gemudakenowodekiruha1doroshitemoyoisoushitatoki",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

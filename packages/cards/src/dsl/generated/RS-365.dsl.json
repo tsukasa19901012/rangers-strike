@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-365",
+  "name": "イナズマギンガー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "0+",
+  "text": "【帝国の掌握】自軍ターン中、これがバトルエリアに出たとき、自分の手札をすべて相手に見せる。そして、見せた手札と同じカード名の敵軍ユニットを全て撃破する。その後、自分の手札をすべて捨札にし、この効果で撃破した敵軍ユニット1体につき、 このターン、これはSP+1される。",
+  "rawText": "【帝国の掌握】自軍ターン中、これがバトルエリアに出たとき、自分の手札をすべて相手に見せる。そして、見せた手札と同じカード名の敵軍ユニットを全て撃破する。その後、自分の手札をすべて捨札にし、この効果で撃破した敵軍ユニット1体につき、 このターン、これはSP+1される。",
+  "bp": 7000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "宇宙海賊",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "no_e5b89d",
+      "name": "帝国の掌握",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自分の手札をすべて相手に見せる。そして、見せた手札と同じカード名の敵軍ユニットを全て撃破する。その後、自分の手札をすべて捨札にし、この効果で撃破した敵軍ユニット1体につき、 このターン、これはSP+1される。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enter_battle_hand_match_destroy_sp",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_all_hand",
+    "text": "自分の手札を全て捨札にする"
+  },
+  "imageUrl": "/cards/promoted/RS-365.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-365.jpg"
+}

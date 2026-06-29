@@ -19,19 +19,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe887aae8bb8de383a9",
+      "id": "note_e280bbe887aae8bb8de383a9",
       "text": "※自軍ラッシュフェイズ中、このユニットをホールドしてもよい。そうしたとき、このユニット以外の自軍Sユニットを1体選びリリースする。",
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG3-058::rashufueizukonoy",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "ru_kami",
@@ -40,14 +40,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-058::rukami",
+          "keyword": "while_in_field_body_koreganiarurashufueizunokaradeisukuanimaruwo",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

@@ -18,6 +18,10 @@
   "features": [
     "激気"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「レッド」を持つ自軍ユニットがある"
+  },
   "effects": [
     {
       "id": "fx_unknown_e69da5",
@@ -42,9 +46,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「レッド」を持つ自軍ユニットがある"
   }
 }

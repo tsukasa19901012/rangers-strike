@@ -24,16 +24,16 @@
       "name": "イクサカリバー・ガンモード",
       "text": "ウイングを持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-086::ikusakaribaganmodo",
-          "duration": "permanent"
+          "keyword": "destroy_choose_enemy_uinguwotsusyunitowo1bi_geki_ha_suru",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

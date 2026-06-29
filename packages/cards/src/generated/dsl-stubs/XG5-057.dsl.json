@@ -9,6 +9,11 @@
   "powerCost": 2,
   "text": "【ファイアランバス】これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒捨札に置かれたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍捨札を1枚選びゲームから除外する。",
   "rawText": "【ファイアランバス】これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒捨札に置かれたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍捨札を1枚選びゲームから除外する。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
       "id": "fuaiaranbasu",
@@ -20,7 +25,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-057::fuaiaranbasu",
+          "keyword": "ride_discard_trigger_koreniraidoshitayunitogaarunokarakadoga1nikarerutab",
           "duration": "permanent"
         }
       ]
@@ -30,10 +35,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

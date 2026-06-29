@@ -16,9 +16,15 @@
     "警察",
     "2nd"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「ドギー・クルーガー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ドギー・クルーガー",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "recruit_named_e38389e382aee383bce383bb_on_destroy",
+      "id": "recruit_dogikuruga_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札に「ドギー・クルーガー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
@@ -74,11 +80,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_discard_named",
-    "text": "自軍「ドギー・クルーガー」1体を捨札にすれば必要パワー0になる",
-    "partnerName": "ドギー・クルーガー",
-    "unitCount": 1
   }
 }

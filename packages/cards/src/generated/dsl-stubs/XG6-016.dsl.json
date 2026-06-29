@@ -38,14 +38,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-016::bakudaburutorunedo",
+          "keyword": "combo_action_koretokategorinolyunitogakonoyunitokarakonbineshonsurutokin",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-287",
+  "name": "ゴルトフェニックス",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 6,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは特徴「仮面ライダー」を持つユニット以外にアタックする事ができない。 【瞬間の悪夢】 これをラッシュしたとき、敵軍コマンドゾーンから、モーフを持つユニットカードを1枚選び捨札にしてもよい。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは特徴「仮面ライダー」を持つユニット以外にアタックする事ができない。 【瞬間の悪夢】 これをラッシュしたとき、敵軍コマンドゾーンから、モーフを持つユニットカードを1枚選び捨札にしてもよい。",
+  "bp": 8000,
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_e280bbe38193e3828ce381af",
+      "text": "※これは特徴「仮面ライダー」を持つユニット以外にアタックする事ができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_except_feature_仮面ライダー",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "no_e79eac",
+      "name": "瞬間の悪夢",
+      "text": "これをラッシュしたとき、敵軍コマンドゾーンから、モーフを持つユニットカードを1枚選び捨札にしてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-287::no_e79eac",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-287.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-287.jpg"
+}

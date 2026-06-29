@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_cannot_enter_battle",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはバトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"
@@ -36,14 +36,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-009::ino",
+          "keyword": "grant_effect_sutatofueizukonoyunitowonishitenowodekirurashi",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

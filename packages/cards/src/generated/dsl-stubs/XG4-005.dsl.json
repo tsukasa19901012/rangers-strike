@@ -9,6 +9,11 @@
   "powerCost": 3,
   "text": "【バキバキビックサンダー】これをラッシュしたとき、必要パワーの数字が3以下の敵軍ユニットを1体選びホールドしてもよい。",
   "rawText": "【バキバキビックサンダー】これをラッシュしたとき、必要パワーの数字が3以下の敵軍ユニットを1体選びホールドしてもよい。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
       "id": "bakibakibikusanda",
@@ -17,24 +22,19 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-005::bakibakibikusanda",
+          "keyword": "hold_enemy_unit_koreworashushitatokipawanoga3noyunitowo1bihorudoshi",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

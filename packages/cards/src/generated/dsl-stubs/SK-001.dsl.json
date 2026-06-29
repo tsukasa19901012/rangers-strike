@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_destroy_on_win_vs_sp1",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。",
       "trigger": {
         "type": "while_in_field"
@@ -38,16 +38,16 @@
       "name": "サタンサーベル",
       "text": "敵軍バトルエリアからSビークルを1体選ぶ。選んだビークルにライドしているユニットがあれば、それを撃破する。その後、選んだビークルを捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SK-001::satansaberu",
-          "duration": "permanent"
+          "keyword": "ride_action_batorueriakarasbikuruwo1bundabikuruniraidoshiteiruyunitoga",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

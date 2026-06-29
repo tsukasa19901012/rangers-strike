@@ -24,14 +24,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-004::ieroboru",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_rashueriakarapawanoga2noyunitowo1bichinokoman",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

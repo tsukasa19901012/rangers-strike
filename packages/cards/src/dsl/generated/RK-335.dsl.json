@@ -1,0 +1,79 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-335",
+  "name": "モモタロス",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "※レジスト ※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される。 【最後までクライマックスだぜ！】「SP1」",
+  "rawText": "※レジスト ※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される。 【最後までクライマックスだぜ！】「SP1」",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "イマジン",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "destroy_on_win_vs_fx_unknown",
+      "text": "※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_fx_unknown",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "madekuraimakusudaze",
+      "name": "最後までクライマックスだぜ！",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-335.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-335.jpg"
+}

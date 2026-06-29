@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-305",
+  "name": "ガオパンダ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【バンブーハリケーン】これをラッシュしたとき、敵軍コマンドをすべてホールドする。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【バンブーハリケーン】これをラッシュしたとき、敵軍コマンドをすべてホールドする。",
+  "bp": 1000,
+  "size": "M",
+  "features": [
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "banbuhariken",
+      "name": "バンブーハリケーン",
+      "text": "これをラッシュしたとき、敵軍コマンドをすべてホールドする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "hold_all_enemy_commands",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-305.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-305.jpg"
+}

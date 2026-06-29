@@ -34,35 +34,35 @@
       ]
     },
     {
-      "id": "unnamed_while_in_command_rush_deploy_koregakoman",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、自軍捨札に「仮面ライダー1号」のカードと「仮面ライダー2号」のカードがあれば、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "while_in_command_rush_deploy::koregakomandozonniar",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "v3kiku_5633e5",
       "name": "V3反転キック",
       "text": "敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンに置いてもよい。置けなければ捨札にする。このとき選んだユニットのSPが1以上だったなら、これはSP1になる。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-044::v3kiku5633e5",
-          "duration": "permanent"
+          "keyword": "discard_to_zone_batorueriakarasyunitowo1bichinokomandozonniitemoyoike",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

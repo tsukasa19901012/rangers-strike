@@ -1,10 +1,16 @@
 import type { EffectDefinition } from "../dsl/types";
 import type { CardAnalysis, ExtractedTrigger, WikiEffectSegment, WikiParseResult } from "./types";
 
+function wikiComboNumberIsRc(parse: WikiParseResult): boolean {
+  const raw = parse.status.CN?.trim();
+  return raw === "RC" || raw === "ＲＣ" || raw === "Ｒｃ";
+}
+
 function inferTriggerFromText(
   body: string,
   segment: WikiEffectSegment,
   cardType: CardAnalysis["cardType"],
+  comboIsRc: boolean,
 ): { trigger: EffectDefinition["trigger"]; confidence: ExtractedTrigger["confidence"]; reason: string } {
   if (cardType === "operation") {
     if (/カウンター/.test(body) || segment.kind === "note" && /アタックされた/.test(body)) {
@@ -38,6 +44,9 @@ function inferTriggerFromText(
     return { trigger: { type: "while_in_field" }, confidence: "high", reason: "static_rule_note" };
   }
   if (segment.kind === "named" || /^「SP\d+」/.test(body)) {
+    if (comboIsRc) {
+      return { trigger: { type: "riding_combo" }, confidence: "high", reason: "named_rc_combo" };
+    }
     return { trigger: { type: "nc" }, confidence: "high", reason: "named_or_sp_keyword" };
   }
 
@@ -52,7 +61,13 @@ export function extractTriggers(
 
   return parse.segments.map((segment, segmentIndex) => {
     const body = segment.body;
-    const { trigger, confidence, reason } = inferTriggerFromText(body, segment, analysis.cardType);
+    const comboIsRc = wikiComboNumberIsRc(parse);
+    const { trigger, confidence, reason } = inferTriggerFromText(
+      body,
+      segment,
+      analysis.cardType,
+      comboIsRc,
+    );
     return { segmentIndex, trigger, confidence, reason };
   });
 }

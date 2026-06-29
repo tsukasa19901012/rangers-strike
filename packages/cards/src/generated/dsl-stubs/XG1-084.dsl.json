@@ -22,14 +22,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-084::to",
+          "keyword": "while_in_field_body_koregabatoruerianiaruhanowokerunobatoruerianiaru",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

@@ -10,11 +10,14 @@ describe("CPU levels", () => {
 
   it("increases search depth by level", () => {
     expect(getCpuLevelConfig(1).enableSearch).toBe(false);
-    expect(getCpuLevelConfig(2).maxCandidates).toBe(16);
+    expect(getCpuLevelConfig(2).searchPly).toBe(1);
+    expect(getCpuLevelConfig(4).searchPly).toBe(2);
+    expect(getCpuLevelConfig(2).maxCandidates).toBe(28);
     expect(getCpuLevelConfig(2).maxCandidates).toBeLessThan(getCpuLevelConfig(5).maxCandidates);
     expect(getCpuLevelConfig(4).maxResponseDepth).toBeLessThan(getCpuLevelConfig(5).maxResponseDepth);
-    expect(getCpuLevelConfig(5).maxCandidates).toBe(50);
-    expect(getCpuLevelConfig(5).maxResponseDepth).toBe(100);
+    expect(getCpuLevelConfig(5).maxCandidates).toBe(72);
+    expect(getCpuLevelConfig(5).maxResponseDepth).toBe(32);
+    expect(getCpuLevelConfig(5).searchPly).toBe(2);
   });
 
   it("level 1 passes weak battle entry without search", () => {

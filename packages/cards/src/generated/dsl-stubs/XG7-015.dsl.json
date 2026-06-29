@@ -38,14 +38,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-015::boukenjaninare",
-          "duration": "permanent"
+          "keyword": "da_category_karadawotanaisyunitonokadowo1ndemoyoisoushitatokikonota",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

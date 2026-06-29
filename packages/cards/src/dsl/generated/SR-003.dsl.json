@@ -1,0 +1,52 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SR-003",
+  "name": "アームドティラノレンジャー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【龍撃剣＆獣奏剣】自軍ターン中、これは自軍捨札にある特徴「恐竜」を持つカード1枚につきBP＋1000される。これはBP8000以上のとき「SP1」になる。",
+  "rawText": "【龍撃剣＆獣奏剣】自軍ターン中、これは自軍捨札にある特徴「恐竜」を持つカード1枚につきBP＋1000される。これはBP8000以上のとき「SP1」になる。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "レッド",
+    "男",
+    "獣奏剣"
+  ],
+  "effects": [
+    {
+      "id": "ryu_geki_ken_ken",
+      "name": "龍撃剣＆獣奏剣",
+      "text": "自軍ターン中、これは自軍捨札にある特徴「恐竜」を持つカード1枚につきBP＋1000される。これはBP8000以上のとき「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍捨札に「ドラゴンレンジャー」があるとき、自軍「ティラノレンジャー」1体を捨札にする",
+    "partnerName": "ティラノレンジャー",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/SR-003.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-003.jpg"
+}

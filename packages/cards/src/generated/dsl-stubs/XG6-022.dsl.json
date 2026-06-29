@@ -15,6 +15,10 @@
   "features": [
     "臨気"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「臨気」と「女」を持つ自軍ユニットがある"
+  },
   "effects": [
     {
       "id": "unnamed_category_wb_battle_phase",
@@ -55,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-022::ringiganjigatame",
+          "keyword": "combo_l_effect_koregakategorinolyunitokarakonbineshonsurutokinowodekiru",
           "duration": "permanent"
         }
       ]
@@ -65,9 +69,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「臨気」と「女」を持つ自軍ユニットがある"
   }
 }

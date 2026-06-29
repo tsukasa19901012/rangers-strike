@@ -1,0 +1,71 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-280",
+  "name": "ダークレイダー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "※これは、自軍エリアでホールド状態かライドされている間、Sビークルとして扱う。 ※これはユニットの間、次のテキストを得る⇒これは自軍コマンドを1つホールドしなければバトルエリアに出られない。また、自軍ラッシュフェイズ中、これをホールドしてもよい。 【疾風断】これがライドされているか、これが自軍バトルエリアにある間、敵軍バトルエリアのSユニットは特徴を持たないユニットとして扱い、特徴を追加されない。",
+  "rawText": "※これは、自軍エリアでホールド状態かライドされている間、Sビークルとして扱う。 ※これはユニットの間、次のテキストを得る⇒これは自軍コマンドを1つホールドしなければバトルエリアに出られない。また、自軍ラッシュフェイズ中、これをホールドしてもよい。 【疾風断】これがライドされているか、これが自軍バトルエリアにある間、敵軍バトルエリアのSユニットは特徴を持たないユニットとして扱い、特徴を追加されない。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_treat_as_s_vehicle_while_held",
+      "text": "※これは、自軍エリアでホールド状態かライドされている間、Sビークルとして扱う。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "treat_as_s_vehicle_while_held",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_e280bbe38193e3828ce381af",
+      "text": "※これはユニットの間、次のテキストを得る⇒これは自軍コマンドを1つホールドしなければバトルエリアに出られない。また、自軍ラッシュフェイズ中、これをホールドしてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "hold_entry_and_rush_hold",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "kaze_dan",
+      "name": "疾風断",
+      "text": "これがライドされているか、これが自軍バトルエリアにある間、敵軍バトルエリアのSユニットは特徴を持たないユニットとして扱い、特徴を追加されない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-280::kaze_dan",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-280.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-280.jpg"
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-149",
+  "name": "デンライナーイカヅチ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "5+",
+  "text": "【巨龍形態】これが自軍バトルエリアにある間、このユニットから「デンライナーゴウカ、デンライナーイスルギ、デンライナーレッコウ」の順にコンビネーションしたとき、本来のBPが3000以下の敵軍ユニットをすべて撃破する。",
+  "rawText": "【巨龍形態】これが自軍バトルエリアにある間、このユニットから「デンライナーゴウカ、デンライナーイスルギ、デンライナーレッコウ」の順にコンビネーションしたとき、本来のBPが3000以下の敵軍ユニットをすべて撃破する。",
+  "bp": 6000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両",
+    "ドラゴン"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る。",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "ryu",
+      "name": "巨龍形態",
+      "text": "これが自軍バトルエリアにある間、このユニットから「デンライナーゴウカ、デンライナーイスルギ、デンライナーレッコウ」の順にコンビネーションしたとき、本来のBPが3000以下の敵軍ユニットをすべて撃破する。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-149::ryu",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-149.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-149.jpg"
+}

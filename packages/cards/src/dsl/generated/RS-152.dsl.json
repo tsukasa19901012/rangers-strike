@@ -33,7 +33,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "ignore_rule_text_konoyunitoganiaruwbnomyunitohanijinokadogaareba",
+          "duration": "turn"
         }
       ]
     },
@@ -54,6 +56,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

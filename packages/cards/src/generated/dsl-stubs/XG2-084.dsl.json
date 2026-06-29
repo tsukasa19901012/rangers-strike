@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_cannot_attack_s",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはSユニットにアタックすることができない。",
       "trigger": {
         "type": "while_in_field"
@@ -37,14 +37,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "reveal_enemy_deck_1",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

@@ -28,13 +28,21 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "bp_per_enemy_command_obatekunoroji_1000",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "sp_at_bp5000_sp1",
+          "duration": "turn"
         }
       ]
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

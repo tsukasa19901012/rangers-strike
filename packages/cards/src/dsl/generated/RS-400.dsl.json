@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-400",
+  "name": "タイムジェット4",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【密猟者からの保護】これをラッシュしたとき、敵軍バトルエリアから特徴「恐竜」を持つMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "rawText": "【密猟者からの保護】これをラッシュしたとき、敵軍バトルエリアから特徴「恐竜」を持つMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "karano_go",
+      "name": "密猟者からの保護",
+      "text": "これをラッシュしたとき、敵軍バトルエリアから特徴「恐竜」を持つMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_rush_send_enemy_battle_feature_m_to_power",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-400.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-400.jpg"
+}

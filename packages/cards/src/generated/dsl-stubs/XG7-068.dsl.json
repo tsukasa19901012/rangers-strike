@@ -18,9 +18,14 @@
     "男",
     "警察"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "hold_extra_command",
+    "text": "追加で自軍コマンドを2つホールドする",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_breaker",
+      "id": "unnamed_e280bbe38396e383ace382a4",
       "text": "※ブレイカー",
       "trigger": {
         "type": "while_in_field"
@@ -34,22 +39,22 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe382afe383ade382b9",
+      "id": "note_e280bbe382afe383ade382b9",
       "text": "※クロス2",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-068::kurosu2",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
-      "id": "unnamed_chase",
+      "id": "unnamed_e280bbe38381e382a7e382a4",
       "text": "※チェイス",
       "trigger": {
         "type": "while_in_field"
@@ -83,14 +88,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-068::fxunknown13",
-          "duration": "permanent"
+          "keyword": "deploy_rush_area_koregapawazondeomote_ko_kininateirurashufueizu",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -109,10 +114,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "hold_extra_command",
-    "text": "追加で自軍コマンドを2つホールドする",
-    "unitCount": 1
   }
 }

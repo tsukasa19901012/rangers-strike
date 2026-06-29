@@ -36,14 +36,21 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-070::fxunknowne581b5",
+          "keyword": "while_in_field_body_koregaerianiarusyunitogamatahamatahanowosasetatokiso",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。",
+      "rule": "lead_ma_bp_boost_1000"
     }
   ],
   "implementation": {

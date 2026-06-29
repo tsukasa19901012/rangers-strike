@@ -15,6 +15,10 @@
     "メカ",
     "車両"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "自軍エリアに「高次元戦闘車ギャビオン」がある"
+  },
   "effects": [
     {
       "id": "unnamed_chase_or_ridden_s_vehicle_alias",
@@ -28,8 +32,7 @@
           "keyword": "chase_or_ridden_s_vehicle_alias",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "fx_unknown_e59cb0",
@@ -38,23 +41,26 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-023::fxunknowne59cb0",
+          "keyword": "power_zone_action_koreworashushitatokipawazonnoomote_ko_kinokadokara1bin",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは、チェイスを持つ自軍ユニットがあるか、ライドされている間、Sビークルとして扱う。",
+      "rule": "chase_or_ridden_s_vehicle_alias"
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "自軍エリアに「高次元戦闘車ギャビオン」がある"
   }
 }

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-585",
+  "name": "ボウケンシルバー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【サガスピアー】自軍ターン中、これがバトルエリアに出たとき、自軍か敵軍の山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中にSPが空欄でないユニットカードがあれば、このターン、これは「SP1」になる。その後、オモテにしたカードは、その持ち主が相手に見せずに好きな順で山札の上に戻す。",
+  "rawText": "【サガスピアー】自軍ターン中、これがバトルエリアに出たとき、自軍か敵軍の山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中にSPが空欄でないユニットカードがあれば、このターン、これは「SP1」になる。その後、オモテにしたカードは、その持ち主が相手に見せずに好きな順で山札の上に戻す。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "シルバー",
+    "男",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "sagasupia",
+      "name": "サガスピアー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍か敵軍の山札の上から3枚をオモテにしてもよい。そうしたとき、オモテにしたカードの中にSPが空欄でないユニットカードがあれば、このターン、これは「SP1」になる。その後、オモテにしたカードは、その持ち主が相手に見せずに好きな順で山札の上に戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enter_battle_scry_deck_top3_sp1_if_unit_has_sp",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-585.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-585.jpg"
+}

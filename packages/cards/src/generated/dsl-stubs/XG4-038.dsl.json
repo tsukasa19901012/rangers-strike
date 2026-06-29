@@ -16,6 +16,12 @@
     "侍",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「牛折神」1体を捨札にする",
+    "partnerName": "牛折神",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "fx_unknown_10",
@@ -24,25 +30,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-038::fxunknown10",
+          "keyword": "grant_effect_tankoregabatoruerianitatokinowodekirupawanoga2",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「牛折神」1体を捨札にする",
-    "partnerName": "牛折神",
-    "unitCount": 1
   }
 }

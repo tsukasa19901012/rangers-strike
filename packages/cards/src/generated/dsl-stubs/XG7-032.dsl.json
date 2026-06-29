@@ -18,9 +18,14 @@
     "男",
     "改造人間"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "hold_extra_command",
+    "text": "追加で自軍コマンドを1つホールドする",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_cross1",
+      "id": "unnamed_e280bbe382afe383ade382b9",
       "text": "※クロス1",
       "trigger": {
         "type": "while_in_field"
@@ -34,7 +39,7 @@
       ]
     },
     {
-      "id": "unnamed_breaker",
+      "id": "unnamed_e280bbe38396e383ace382a4",
       "text": "※ブレイカー",
       "trigger": {
         "type": "while_in_field"
@@ -59,8 +64,7 @@
           "keyword": "dual_name_alias::仮面ライダー1号_or_仮面ライダー2号",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "raidadaburukiku",
@@ -91,16 +95,16 @@
       "kind": "note",
       "text": "※ブレイカー",
       "rule": "breaker"
+    },
+    {
+      "kind": "note",
+      "text": "※これは「仮面ライダー1号」または「仮面ライダー2号」としてつかえる。",
+      "rule": "dual_name_alias::仮面ライダー1号_or_仮面ライダー2号"
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "hold_extra_command",
-    "text": "追加で自軍コマンドを1つホールドする",
-    "unitCount": 1
   }
 }

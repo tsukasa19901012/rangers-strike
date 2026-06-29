@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_chase",
+      "id": "unnamed_e280bbe38381e382a7e382a4",
       "text": "※チェイス （これがライド中にユニットでなくなる時、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）",
       "trigger": {
         "type": "while_in_field"
@@ -38,16 +38,16 @@
       "name": "シャリバンクラッシュ",
       "text": "本来のBPが3000の敵軍ユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-025::sharibankurashu",
-          "duration": "permanent"
+          "keyword": "power_zone_action_nobpga3000noyunitowo1bichinopawazonnitemoyoi",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

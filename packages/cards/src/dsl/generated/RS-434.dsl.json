@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-434",
+  "name": "ライフバード",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※常駐 カテゴリにETを持つ自軍ユニットがストライクしてダメージを与えたとき、自軍捨札からSユニットのカードを相手に1枚選ばせてもよい。そうしたとき、相手の選んだユニットカードを自分の手札に加える。",
+  "rawText": "※常駐 カテゴリにETを持つ自軍ユニットがストライクしてダメージを与えたとき、自軍捨札からSユニットのカードを相手に1枚選ばせてもよい。そうしたとき、相手の選んだユニットカードを自分の手札に加える。",
+  "effects": [
+    {
+      "id": "unnamed_resident",
+      "text": "※常駐 カテゴリにETを持つ自軍ユニットがストライクしてダメージを与えたとき、自軍捨札からSユニットのカードを相手に1枚選ばせてもよい。そうしたとき、相手の選んだユニットカードを自分の手札に加える。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※常駐 カテゴリにETを持つ自軍ユニットがストライクしてダメージを与えたとき、自軍捨札からSユニットのカードを相手に1枚選ばせてもよい。そうしたとき、相手の選んだユニットカードを自分の手札に加える。",
+      "rule": "resident"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-434.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-434.jpg"
+}

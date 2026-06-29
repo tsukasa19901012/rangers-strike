@@ -16,9 +16,15 @@
     "男",
     "アクセルテクター"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「ボウケンブルー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ボウケンブルー",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -32,7 +38,7 @@
       ]
     },
     {
-      "id": "recruit_named_e3839ce382a6e382b1e383b3_on_destroy",
+      "id": "recruit_boukenburu_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札に「ボウケンブルー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
@@ -75,14 +81,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-025::karano",
+          "keyword": "while_in_field_body_koregaerianiaruririsunoyunitohanowokerukoreha",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -96,11 +102,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_discard_named",
-    "text": "自軍「ボウケンブルー」1体を捨札にすれば必要パワー0になる",
-    "partnerName": "ボウケンブルー",
-    "unitCount": 1
   }
 }

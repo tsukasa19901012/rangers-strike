@@ -25,14 +25,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "on_rush_swap_from_power_except_named::ゴーカイブルー",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "gokaisaberu",
@@ -41,14 +41,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-004::gokaisaberu",
-          "duration": "permanent"
+          "keyword": "pick_from_deck_sp1niwotsuomote_ko_kinopawawo1binonishitemoyoiso",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

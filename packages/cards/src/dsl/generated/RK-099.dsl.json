@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-099",
+  "name": "アポロガイスト",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【怪人の監視権限】これが自軍エリアにある間、特徴「怪人」を持つ自軍ユニットはBP+1000される。また、自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「怪人」を持つユニットを1体選び、捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "rawText": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【怪人の監視権限】これが自軍エリアにある間、特徴「怪人」を持つ自軍ユニットはBP+1000される。また、自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「怪人」を持つユニットを1体選び、捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "GOD",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "no_e680aa",
+      "name": "怪人の監視権限",
+      "text": "これが自軍エリアにある間、特徴「怪人」を持つ自軍ユニットはBP+1000される。また、自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「怪人」を持つユニットを1体選び、捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "while_feature_bp_plus::怪人::1000",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-099.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-099.jpg"
+}

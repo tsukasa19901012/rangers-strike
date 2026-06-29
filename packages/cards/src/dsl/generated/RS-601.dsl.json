@@ -1,0 +1,58 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-601",
+  "name": "ゴーオンゴールド",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※これはBP2000以下のユニットにアタックできない。 【ミッション6 フルパワー】「SP1」敵軍コマンドを3つまで選びリリースしてもよい。そうしたとき、リリースしたコマンドの数以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+  "rawText": "※これはBP2000以下のユニットにアタックできない。 【ミッション6 フルパワー】「SP1」敵軍コマンドを3つまで選びリリースしてもよい。そうしたとき、リリースしたコマンドの数以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "ゴールド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "cannot_attack_bp2000_or_less",
+      "text": "※これはBP2000以下のユニットにアタックできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_bp2000_or_less",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "mishon6_furupawa",
+      "name": "ミッション6 フルパワー",
+      "text": "「SP1」敵軍コマンドを3つまで選びリリースしてもよい。そうしたとき、リリースしたコマンドの数以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-601.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-601.jpg"
+}

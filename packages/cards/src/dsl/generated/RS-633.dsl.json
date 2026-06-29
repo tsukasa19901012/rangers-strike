@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-633",
+  "name": "メガシルバー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※自軍スタートフェイズを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら捨札にする。 【シルバーブレイザー】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを1つ選び手札に戻してもよい。そうしたとき、このターン、これは次の能力を得る⇒BP+2000 され、これがホールド状態なら「SP1」 になる。",
+  "rawText": "※自軍スタートフェイズを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら捨札にする。 【シルバーブレイザー】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを1つ選び手札に戻してもよい。そうしたとき、このターン、これは次の能力を得る⇒BP+2000 され、これがホールド状態なら「SP1」 になる。",
+  "bp": 5000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "シルバー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "note_e280bbe887aae8bb8de382b9_sutatofueizu",
+      "text": "※自軍スタートフェイズを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "start_end_command_toggle_hold_discard",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "shirubabureiza",
+      "name": "シルバーブレイザー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドを1つ選び手札に戻してもよい。そうしたとき、このターン、これは次の能力を得る⇒BP+2000 され、これがホールド状態なら「SP1」 になる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enter_battle_command_return_hand_bp2000_sp1",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-633.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-633.jpg"
+}

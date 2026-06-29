@@ -1,0 +1,51 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-290",
+  "name": "気伝武人龍星王",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【飛竜棍・大風車】これが自軍バトルエリアにある間、「DA」の敵軍Sユニットはバトルエリアに出られない。",
+  "rawText": "【飛竜棍・大風車】これが自軍バトルエリアにある間、「DA」の敵軍Sユニットはバトルエリアに出られない。",
+  "bp": 7000,
+  "size": "M",
+  "sp": 1,
+  "features": [
+    "獣",
+    "ドラゴン",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "kaze_e9a39b",
+      "name": "飛竜棍・大風車",
+      "text": "これが自軍バトルエリアにある間、「DA」の敵軍Sユニットはバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "while_da_s_cannot_battle_entry",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「気伝獣龍星王」1体を捨札にする",
+    "partnerName": "気伝獣龍星王",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-290.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-290.jpg"
+}

@@ -1,0 +1,85 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-597",
+  "name": "レツタカ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは毎ターン、可能ならバトルエリアに出る。 ※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。 【心の力】「SP1」",
+  "rawText": "※これは毎ターン、可能ならバトルエリアに出る。 ※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。 【心の力】「SP1」",
+  "bp": 1000,
+  "size": "M",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "車両",
+    "炎神",
+    "侍"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_auto_battle_entry_each_turn",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_each_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_to_power_on_destroy",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "to_power_on_destroy",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "no_chikara",
+      "name": "心の力",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "rule": "auto_battle_entry_each_turn"
+    },
+    {
+      "kind": "note",
+      "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンにおいてもよい。",
+      "rule": "to_power_on_destroy"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-597.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-597.jpg"
+}

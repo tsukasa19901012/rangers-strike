@@ -41,14 +41,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-006::kemikarudeisuchaja",
+          "keyword": "while_in_field_body_koregaerianiarutanomote_ko_kinopawagaura_ko_kininaru",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

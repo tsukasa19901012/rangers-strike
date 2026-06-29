@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction } from "../core/applyAction";
 import { isCpuTurn, pickCpuAction } from "./level1";
+import { pickBestMoveToBattle } from "./helpers";
 import { dedupeActions } from "./simulation";
 import {
   createTestState,
@@ -26,7 +27,7 @@ describe("CPU level 1", () => {
       },
     });
 
-    expect(pickCpuAction(state, "player2")?.type).toBe("charge_command");
+    expect(pickCpuAction(state, "player2", { enableSearch: false })?.type).toBe("charge_command");
   });
 
   it("prioritizes start phase release before draw", () => {
@@ -68,7 +69,7 @@ describe("CPU level 1", () => {
       sp: 1,
     };
 
-    expect(pickCpuAction(state, "player2")?.type).toBe("end_phase");
+    expect(pickCpuAction(state, "player2", { enableSearch: false })?.type).toBe("end_phase");
   });
 
   it("charges power when a rush unit lacks power but command support exists", () => {
@@ -581,6 +582,25 @@ describe("CPU level 1", () => {
     if (action?.type === "play_operation") {
       expect(action.targetInstanceId).toBe(weak.instanceId);
     }
+  });
+});
+
+describe("CPU battle entry helpers", () => {
+  it("pickBestMoveToBattle prefers higher BP unit", () => {
+    const weak = inst("TST-UNIT-0", "weak");
+    const strong = inst("TST-UNIT-2", "strong");
+    const state = createTestState({
+      phase: "battle",
+      activePlayer: "player2",
+      player2: { rush: [weak, strong] },
+    });
+    const actions = [
+      { type: "move_to_battle", playerId: "player2", instanceId: weak.instanceId },
+      { type: "move_to_battle", playerId: "player2", instanceId: strong.instanceId },
+    ] as const;
+
+    const picked = pickBestMoveToBattle(state, "player2", [...actions]);
+    expect(picked?.instanceId).toBe(strong.instanceId);
   });
 });
 

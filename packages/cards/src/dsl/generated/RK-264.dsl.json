@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-264",
+  "name": "アクロバッター",
+  "type": "vehicle",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。 【アクロバットバーン】 自軍ターン中、これがバトルエリアに出たとき、これにライドしているユニットのBP以下のBPを持つユニットを、相手は自分自身のSユニットの中から1体選び、自分自身の山札の下に戻す。",
+  "rawText": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。 【アクロバットバーン】 自軍ターン中、これがバトルエリアに出たとき、これにライドしているユニットのBP以下のBPを持つユニットを、相手は自分自身のSユニットの中から1体選び、自分自身の山札の下に戻す。",
+  "effects": [
+    {
+      "id": "unnamed_can_enter_battle_without_ride",
+      "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "can_enter_battle_without_ride",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "akurobatoban",
+      "name": "アクロバットバーン",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、これにライドしているユニットのBP以下のBPを持つユニットを、相手は自分自身のSユニットの中から1体選び、自分自身の山札の下に戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-264::akurobatoban",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。",
+      "rule": "can_enter_battle_without_ride"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "車両",
+    "昆虫"
+  ],
+  "imageUrl": "/cards/promoted/RK-264.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-264.jpg"
+}

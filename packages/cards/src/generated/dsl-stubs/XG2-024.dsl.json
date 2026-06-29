@@ -25,14 +25,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-024::chi",
-          "duration": "permanent"
+          "keyword": "optional_then_batoruerianoyunitoga1dakenarakorenobpwo4000shitemoyoisoush",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

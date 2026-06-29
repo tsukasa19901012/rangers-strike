@@ -16,6 +16,12 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "return_named_to_hand",
+    "text": "自軍「超惑星戦闘母艦ダイレオン」1体を手札に戻す",
+    "partnerName": "超惑星戦闘母艦ダイレオン",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "note_e280bbe887aae58886e3818c",
@@ -39,25 +45,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-031::kozumikukurashu",
+          "keyword": "power_zone_action_tankoregabatoruerianitatokibatorueriakaramatahawo",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "return_named_to_hand",
-    "text": "自軍「超惑星戦闘母艦ダイレオン」1体を手札に戻す",
-    "partnerName": "超惑星戦闘母艦ダイレオン",
-    "unitCount": 1
   }
 }

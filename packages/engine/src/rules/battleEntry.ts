@@ -2,6 +2,21 @@ import { getRidingComboEffect } from "@rangers-strike/cards";
 import type { GameState, PendingBattleEntry, PlayerId } from "../types/game";
 import { continueEnterBattleEffects } from "./combo";
 
+export function riderHasRidingComboOnRideOff(cardId: string): boolean {
+  return !!getRidingComboEffect(cardId);
+}
+
+/** ライド中ならバトル進入後にライドオフ選択を挟む（RC なしでも可 — atwiki p594 Q3）。 */
+export function shouldPromptRideOffChoice(
+  state: GameState,
+  entry: PendingBattleEntry,
+): boolean {
+  const unit = state.players[entry.playerId].battle.find(
+    (c) => c.instanceId === entry.instanceId,
+  );
+  return !!unit?.mountedOnInstanceId;
+}
+
 export function createBattleEntryPrompt(
   playerId: PlayerId,
   instanceId: string,
@@ -25,18 +40,6 @@ export function afterEnterBattle(state: GameState, entry: PendingBattleEntry): G
     pendingBattleEntry: entry,
     activePlayer: entry.playerId,
   };
-}
-
-/** ライド中かつ RC ありなら、バトルアクション前にライドオフ選択を挟む。 */
-export function shouldPromptRideOffChoice(
-  state: GameState,
-  entry: PendingBattleEntry,
-): boolean {
-  const unit = state.players[entry.playerId].battle.find(
-    (c) => c.instanceId === entry.instanceId,
-  );
-  if (!unit?.mountedOnInstanceId) return false;
-  return !!getRidingComboEffect(unit.cardId);
 }
 
 /** 進入効果完了後: ライドオフ選択またはバトルアクションプロンプトへ。 */

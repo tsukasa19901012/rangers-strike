@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-069",
+  "name": "仮面ライダーファム",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "【ミスティースラッシュ】「ブランウイング」からコンビネーションしたとき発動できる⇒特徴「ミラーモンスター」を持つユニットにアタックしてバトルに勝つたび、追加でアタックできる（ストライクはできない）。",
+  "rawText": "【ミスティースラッシュ】「ブランウイング」からコンビネーションしたとき発動できる⇒特徴「ミラーモンスター」を持つユニットにアタックしてバトルに勝つたび、追加でアタックできる（ストライクはできない）。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/2",
+  "features": [
+    "仮面ライダー",
+    "女",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "misuteisurashu",
+      "name": "ミスティースラッシュ",
+      "text": "「ブランウイング」からコンビネーションしたとき発動できる⇒特徴「ミラーモンスター」を持つユニットにアタックしてバトルに勝つたび、追加でアタックできる（ストライクはできない）。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "combo_extra_attack_no_strike",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-069.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-069.jpg"
+}

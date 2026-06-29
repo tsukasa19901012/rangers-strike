@@ -1,0 +1,38 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-181",
+  "name": "破邪百獣剣",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "ナンバーを持たないSユニットを、敵軍コマンドゾーンのカテゴリの数まで好きな数選び撃破する。",
+  "rawText": "ナンバーを持たないSユニットを、敵軍コマンドゾーンのカテゴリの数まで好きな数選び撃破する。",
+  "effects": [
+    {
+      "id": "ha_ken",
+      "name": "破邪百獣剣",
+      "text": "ナンバーを持たないSユニットを、敵軍コマンドゾーンのカテゴリの数まで好きな数選び撃破する。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "assault_vector_destroy",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-181.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-181.jpg"
+}

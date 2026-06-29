@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-296",
+  "name": "バラクティカ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【編隊出撃】これが自軍ラッシュエリアにある間、次の効果を発動できる⇒自軍コマンドをホールドして特徴「航空機」を持つユニットをラッシュしたとき、ラッシュしたユニットと同じカード名のユニットカードを自分の手札から1枚選びラッシュエリアに出す。",
+  "rawText": "【編隊出撃】これが自軍ラッシュエリアにある間、次の効果を発動できる⇒自軍コマンドをホールドして特徴「航空機」を持つユニットをラッシュしたとき、ラッシュしたユニットと同じカード名のユニットカードを自分の手札から1枚選びラッシュエリアに出す。",
+  "bp": 4000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "geki_e7b7a8",
+      "name": "編隊出撃",
+      "text": "これが自軍ラッシュエリアにある間、次の効果を発動できる⇒自軍コマンドをホールドして特徴「航空機」を持つユニットをラッシュしたとき、ラッシュしたユニットと同じカード名のユニットカードを自分の手札から1枚選びラッシュエリアに出す。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "while_in_field_formation_deploy",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-296.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-296.jpg"
+}

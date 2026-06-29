@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-177",
+  "name": "蜂女",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "【催眠音波】これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のラッシュフェイズを終えるとき、そのターン中にラッシュした自分自身のSユニットをホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
+  "rawText": "【催眠音波】これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のラッシュフェイズを終えるとき、そのターン中にラッシュした自分自身のSユニットをホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "ショッカー",
+    "怪人",
+    "女",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "nami",
+      "name": "催眠音波",
+      "text": "これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のラッシュフェイズを終えるとき、そのターン中にラッシュした自分自身のSユニットをホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-177::nami",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-177.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-177.jpg"
+}

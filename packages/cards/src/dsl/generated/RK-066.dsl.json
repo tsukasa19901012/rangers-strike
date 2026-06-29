@@ -1,0 +1,86 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-066",
+  "name": "仮面ライダー電王SF",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【俺の必殺技！】これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
+  "rawText": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【俺の必殺技！】これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "DEN-O"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_strike_if_enemy_battle",
+      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_if_enemy_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "no_3",
+      "name": "俺の必殺技！",
+      "text": "これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "on_strike"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
+      "rule": "no_strike_if_enemy_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-066.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-066.jpg"
+}

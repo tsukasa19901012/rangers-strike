@@ -1,0 +1,52 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-092",
+  "name": "狼男",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "5+",
+  "text": "【狼作戦】これが自軍エリアにある間、特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される。",
+  "rawText": "【狼作戦】これが自軍エリアにある間、特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "ショッカー",
+    "怪人",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "fx_unknown_e78bbc",
+      "name": "狼作戦",
+      "text": "これが自軍エリアにある間、特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "while_feature_s_add_category::男::WB",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ゾル大佐」1体を捨札にする",
+    "partnerName": "ゾル大佐",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-092.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-092.jpg"
+}

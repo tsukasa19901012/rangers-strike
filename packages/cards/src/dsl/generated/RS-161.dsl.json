@@ -21,7 +21,7 @@
   "unnamedRules": [],
   "effects": [
     {
-      "id": "grant_sp1",
+      "id": "noble_slash",
       "name": "ノーブルスラッシュ",
       "text": "「SP1」",
       "trigger": {
@@ -38,6 +38,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

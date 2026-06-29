@@ -52,14 +52,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-074::fuangaianoou",
+          "keyword": "bp_modify_korewohorudoshitedawotsuyunitoworashushitatokikonotansonoyunit",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

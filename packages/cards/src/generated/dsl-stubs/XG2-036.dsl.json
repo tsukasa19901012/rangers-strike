@@ -15,6 +15,12 @@
     "侍",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「シンケンオー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "シンケンオー",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "tora_doriru_geki",
@@ -23,25 +29,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-036::toradorirugeki",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokibatorueriakarabp8000noyu",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_discard_named",
-    "text": "自軍「シンケンオー」1体を捨札にすれば必要パワー0になる",
-    "partnerName": "シンケンオー",
-    "unitCount": 1
   }
 }

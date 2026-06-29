@@ -1,0 +1,51 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-190",
+  "name": "フォッグマザー",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "5+",
+  "text": "【孵化を迎える厄災】これをラッシュしたとき、次の効果を発動できる⇒自軍山札をシャッフルした後、その上から2枚をオモテにする。そして自軍山札を見て、ユニットカードを1枚選びラッシュエリアに出してもよい。ただし選べるカードは、カテゴリがオモテにした1枚目と同じで、必要パワーの数字がオモテにした2枚目と同じカードとする。その後、オモテにしたカードは山札に戻してシャッフルする。",
+  "rawText": "【孵化を迎える厄災】これをラッシュしたとき、次の効果を発動できる⇒自軍山札をシャッフルした後、その上から2枚をオモテにする。そして自軍山札を見て、ユニットカードを1枚選びラッシュエリアに出してもよい。ただし選べるカードは、カテゴリがオモテにした1枚目と同じで、必要パワーの数字がオモテにした2枚目と同じカードとする。その後、オモテにしたカードは山札に戻してシャッフルする。",
+  "bp": 7000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "メカ",
+    "獣",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "woeru",
+      "name": "孵化を迎える厄災",
+      "text": "これをラッシュしたとき、次の効果を発動できる⇒自軍山札をシャッフルした後、その上から2枚をオモテにする。そして自軍山札を見て、ユニットカードを1枚選びラッシュエリアに出してもよい。ただし選べるカードは、カテゴリがオモテにした1枚目と同じで、必要パワーの数字がオモテにした2枚目と同じカードとする。その後、オモテにしたカードは山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-190::woeru",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "return_named_to_hand",
+    "text": "自軍「ガライ」「アギト」「ズー」をそれぞれ1体ずつ自分の手札に戻す",
+    "partnerName": "ガライ",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-190.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-190.jpg"
+}

@@ -17,6 +17,11 @@
     "男",
     "ミラーライダー"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "hold_extra_command",
+    "text": "追加で自軍コマンドを1つホールドする",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_e280bbe38193e3828ce381af",
@@ -30,8 +35,7 @@
           "keyword": "dual_name_alias::仮面ライダー龍騎_or_仮面ライダーナイト",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "wanakerebakirenai",
@@ -40,24 +44,26 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-036::wanakerebakirenai",
+          "keyword": "while_in_field_body_koregaerianiarurashufueizugotoni1dakesp12koruwbri",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは「仮面ライダー龍騎」または「仮面ライダーナイト」としてつかえる。",
+      "rule": "dual_name_alias::仮面ライダー龍騎_or_仮面ライダーナイト"
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "hold_extra_command",
-    "text": "追加で自軍コマンドを1つホールドする",
-    "unitCount": 1
   }
 }

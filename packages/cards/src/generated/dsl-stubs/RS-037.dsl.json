@@ -25,7 +25,7 @@
   ],
   "effects": [
     {
-      "id": "tricera_cannon",
+      "id": "torikerakanon",
       "name": "トリケラカノン",
       "text": "これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、アタックするときBP＋1000される。",
       "trigger": {
@@ -33,9 +33,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "bp_modify_koregarashuerianiarutokiwairudobisutonomyunitohaatakusuru",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "unnamed_battle_entry_hold",
@@ -54,6 +57,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

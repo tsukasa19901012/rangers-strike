@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-196",
+  "name": "クイーンアントロード",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "※レジストを持つ敵軍ユニットがなければ、これはバトルエリアに出られない。 【黄泉の鐙】自軍ターン中、これがバトルエリアに出たとき、レジストを持つユニットを1体選んでもよい。そうしたとき、相手は選ばれたユニットを撃破するか、1点ダメージを受けるか選ぶ。",
+  "rawText": "※レジストを持つ敵軍ユニットがなければ、これはバトルエリアに出られない。 【黄泉の鐙】自軍ターン中、これがバトルエリアに出たとき、レジストを持つユニットを1体選んでもよい。そうしたとき、相手は選ばれたユニットを撃破するか、1点ダメージを受けるか選ぶ。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "アンノウン",
+    "女王",
+    "女",
+    "昆虫"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジストを持つ敵軍ユニットがなければ、これはバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "no_e9bb84",
+      "name": "黄泉の鐙",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、レジストを持つユニットを1体選んでもよい。そうしたとき、相手は選ばれたユニットを撃破するか、1点ダメージを受けるか選ぶ。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-196::no_e9bb84",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジストを持つ敵軍ユニットがなければ、これはバトルエリアに出られない。",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-196.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-196.jpg"
+}

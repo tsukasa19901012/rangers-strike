@@ -11,21 +11,20 @@
   "rawText": "ライドしていない特徴「獣」を持つ自軍ユニットを1体選びターゲットとする。そして、このカードを自軍ラッシュエリアに置き、ターゲットをこのカードに重ねる。さらにターゲット以外のライドしていない特徴「獣」を持つ自軍ユニットを好きな数選び、このカードより下にウラ向きにして重ねる。ターゲットは、ウラ向きに重ねたカード1枚につきBP+2000され、BP10000ごとにSP+1される。ターゲットがユニットでなくなるとき、ターゲットの下に重ねていたカードはすべて捨札になる。",
   "effects": [
     {
-      "id": "yunaitobento",
-      "name": "ユナイトベント",
+      "id": "note_e383a9e382a4e38389e38197",
       "text": "ライドしていない特徴「獣」を持つ自軍ユニットを1体選びターゲットとする。そして、このカードを自軍ラッシュエリアに置き、ターゲットをこのカードに重ねる。さらにターゲット以外のライドしていない特徴「獣」を持つ自軍ユニットを好きな数選び、このカードより下にウラ向きにして重ねる。ターゲットは、ウラ向きに重ねたカード1枚につきBP+2000され、BP10000ごとにSP+1される。ターゲットがユニットでなくなるとき、ターゲットの下に重ねていたカードはすべて捨札になる。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-052::yunaitobento",
+          "keyword": "ride_action_raidoshiteinaiwotsuyunitowo1bitagetotosurusoshitekonoka",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

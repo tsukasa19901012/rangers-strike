@@ -27,21 +27,16 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-012::kene9a39b",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokirashueriakaradawotsuyuni",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "unnamedRules": [
     {
       "kind": "zord",
@@ -63,5 +58,10 @@
         ]
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

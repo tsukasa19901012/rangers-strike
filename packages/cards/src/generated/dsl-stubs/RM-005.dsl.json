@@ -11,21 +11,20 @@
   "rawText": "特徴「男」を持つ自軍ユニットを1体と、特徴「女」を持つ自軍ユニットを1体選び、選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
   "effects": [
     {
-      "id": "daburusunaipa",
-      "name": "ダブルスナイパー",
+      "id": "note_e789b9e5beb4e3808ce794b7",
       "text": "特徴「男」を持つ自軍ユニットを1体と、特徴「女」を持つ自軍ユニットを1体選び、選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-005::daburusunaipa",
+          "keyword": "power_zone_action_wotsuyunitowo1towotsuyunitowo1binda2no",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

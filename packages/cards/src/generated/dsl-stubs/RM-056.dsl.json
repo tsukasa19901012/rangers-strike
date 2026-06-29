@@ -41,14 +41,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-056::suteingakuro",
-          "duration": "permanent"
+          "keyword": "ride_action_raidonosyunitowo1ndemoyoisoushitatokihasonosyunitokasono",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

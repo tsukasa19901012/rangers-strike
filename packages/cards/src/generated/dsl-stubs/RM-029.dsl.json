@@ -17,26 +17,26 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bb5350e3818ce7a9bae6",
+      "id": "note_e280bb5350e3818ce7a9bae6",
       "text": "※SPが空欄ではない自軍Sユニットがあれば、これはバトルエリアに出られない。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::RM-029::spgadehanaisyuni",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "kozumikuhare",
       "name": "コズミックハーレー",
       "text": "敵軍山札の上から1枚をオモテにする。オモテにしたカードがWBを持つユニットカードなら、それを持ち主のラッシュエリアに出す。違うなら、そのカードを持ち主のパワーゾーンに送ってから、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {

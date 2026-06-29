@@ -31,6 +31,23 @@
         "RS-173",
         "RS-174",
         "RS-177"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-171"
+        ],
+        [
+          "RS-172"
+        ],
+        [
+          "RS-173"
+        ],
+        [
+          "RS-174"
+        ],
+        [
+          "RS-177"
+        ]
       ]
     }
   ],
@@ -44,13 +61,17 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "destroy_on_rush_koreworashushitatokilyunitowo1nde_geki_ha_shitemoyoisous",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

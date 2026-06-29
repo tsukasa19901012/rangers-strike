@@ -22,19 +22,19 @@
   },
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce381ae",
+      "id": "note_e280bbe38193e3828ce381ae",
       "text": "※これの追加条件を満たすとき、自軍捨札に合体ユニットと同名のカードがあれば、そのユニットは捨札にしなくてもよい。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-039::korenowotasutoki",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "mojikara_dan",
@@ -43,25 +43,20 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-039::mojikaradan",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_koregaerianiarugatanwoerutokiyunitowo1bichinopa",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―獅子折神＋龍折神＋亀折神＋熊折神＋猿折神＋兜折神＋舵木折神＋虎折神＋海老折神＋烏賊折神＋牛折神 ※これの追加条件を満たすとき、自軍捨札に合体ユニットと同名のカードがあれば、そのユニットは捨札にしなくてもよい。",
+      "text": "合体―獅子折神＋龍折神＋亀折神＋熊折神＋猿折神＋兜折神＋舵木折神＋虎折神＋海老折神＋烏賊折神＋牛折神",
       "partnerCardIds": [
         "RS-680",
         "RS-681",
@@ -72,8 +67,49 @@
         "XG1-036",
         "XG1-040",
         "XG3-035",
-        "XG3-037"
+        "XG3-037",
+        "XG4-037"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-680"
+        ],
+        [
+          "RS-681"
+        ],
+        [
+          "RS-682"
+        ],
+        [
+          "RS-683"
+        ],
+        [
+          "RS-684"
+        ],
+        [
+          "XG1-035"
+        ],
+        [
+          "XG1-036"
+        ],
+        [
+          "XG1-040"
+        ],
+        [
+          "XG3-035"
+        ],
+        [
+          "XG3-037"
+        ],
+        [
+          "XG4-037"
+        ]
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

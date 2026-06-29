@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-219",
+  "name": "アルビローチ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "昆虫"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-219.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-219.jpg"
+}

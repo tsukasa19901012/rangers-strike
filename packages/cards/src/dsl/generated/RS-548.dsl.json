@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-548",
+  "name": "ティラノレンジャー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※レジスト ※このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える。 【龍撃剣】「SP1」",
+  "rawText": "※レジスト ※このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える。 【龍撃剣】「SP1」",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "レッド",
+    "男",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_e280bbe38193e381aee383a6",
+      "text": "※このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RS-548::konoyunitononanb",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "ryuu_geki_ken",
+      "name": "龍撃剣",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-548.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-548.jpg"
+}

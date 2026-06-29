@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-402",
+  "name": "ガオレッド",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "【灼熱の獅子】「SP1」敵軍コマンドの数が自軍コマンドの数より多ければ、相手は自分自身のコマンドを1つ選び、捨札にする。",
+  "rawText": "【灼熱の獅子】「SP1」敵軍コマンドの数が自軍コマンドの数より多ければ、相手は自分自身のコマンドを1つ選び、捨札にする。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "レッド",
+    "男",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "scorching_lion",
+      "name": "灼熱の獅子",
+      "text": "「SP1」敵軍コマンドの数が自軍コマンドの数より多ければ、相手は自分自身のコマンドを1つ選び、捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-402.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-402.jpg"
+}

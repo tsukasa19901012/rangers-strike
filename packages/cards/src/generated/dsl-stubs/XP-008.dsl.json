@@ -17,41 +17,23 @@
     "男",
     "NEWDEN-O"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_fusion",
+    "text": "自軍合体ユニットを捨札にすれば必要パワー0になる"
+  },
   "effects": [
     {
       "id": "recruit_from_discard_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーNEW電王SF」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self"
-        }
+        "type": "on_destroy"
       },
       "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "discard",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "rush"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "on_destroy_reanimate_named_from_discard",
+          "duration": "turn"
         }
       ]
     },
@@ -71,24 +53,31 @@
       ]
     }
   ],
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―仮面ライダーNEW電王SF＋デネブ",
+      "partnerCardIds": [
+        "XG2-069",
+        "XG6-044",
+        "XP-007",
+        "RK-146"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "XG2-069",
+          "XG6-044",
+          "XP-007"
+        ],
+        [
+          "RK-146"
+        ]
+      ]
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_discard_fusion",
-    "text": "自軍合体ユニットを捨札にすれば必要パワー0になる"
-  },
-  "unnamedRules": [
-    {
-      "kind": "zord",
-      "text": "合体―仮面ライダーNEW電王SF＋デネブ ※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーNEW電王SF」のカードを1枚選び、自軍ラッシュエリアに出す。",
-      "partnerCardIds": [
-        "XG2-069",
-        "XG6-044",
-        "XP-007"
-      ]
-    }
-  ]
+  }
 }

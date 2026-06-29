@@ -1,0 +1,38 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-088",
+  "name": "イマジンとの契約",
+  "type": "operation",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 0,
+  "text": "特徴「イマジン」を持たない自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットが自軍エリアにある間、特徴「イマジン」を持つ自軍ユニットは、「これはバトルエリアに出たとき撃破される」と書かれていても、そのテキストは無効になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+  "rawText": "特徴「イマジン」を持たない自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットが自軍エリアにある間、特徴「イマジン」を持つ自軍ユニットは、「これはバトルエリアに出たとき撃破される」と書かれていても、そのテキストは無効になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+  "effects": [
+    {
+      "id": "imajintono",
+      "name": "イマジンとの契約",
+      "text": "特徴「イマジン」を持たない自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットが自軍エリアにある間、特徴「イマジン」を持つ自軍ユニットは、「これはバトルエリアに出たとき撃破される」と書かれていても、そのテキストは無効になる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "stack_s_on_self_rush",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-088.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-088.jpg"
+}

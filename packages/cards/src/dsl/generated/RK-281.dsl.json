@@ -1,0 +1,73 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-281",
+  "name": "ドラグランザー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 6,
+  "text": "※これは、自軍エリアでホールド状態かライドされている間、Sビークルとして扱う。 ※これはユニットの間、次のテキストを得る⇒これは自軍コマンドを1つホールドしなければバトルエリアに出られない。また、自軍ラッシュフェイズ中、これをホールドしてもよい。 【ドラゴンファイヤーストーム】これにライドしている特徴「サバイブ」を持つユニットは「SP1」になる。",
+  "rawText": "※これは、自軍エリアでホールド状態かライドされている間、Sビークルとして扱う。 ※これはユニットの間、次のテキストを得る⇒これは自軍コマンドを1つホールドしなければバトルエリアに出られない。また、自軍ラッシュフェイズ中、これをホールドしてもよい。 【ドラゴンファイヤーストーム】これにライドしている特徴「サバイブ」を持つユニットは「SP1」になる。",
+  "bp": 5000,
+  "size": "S",
+  "sp": "1/2",
+  "features": [
+    "ミラーモンスター",
+    "獣",
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_treat_as_s_vehicle_while_held",
+      "text": "※これは、自軍エリアでホールド状態かライドされている間、Sビークルとして扱う。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "treat_as_s_vehicle_while_held",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_e280bbe38193e3828ce381af",
+      "text": "※これはユニットの間、次のテキストを得る⇒これは自軍コマンドを1つホールドしなければバトルエリアに出られない。また、自軍ラッシュフェイズ中、これをホールドしてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "hold_entry_and_rush_hold",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "doragonfuaiyasutomu",
+      "name": "ドラゴンファイヤーストーム",
+      "text": "これにライドしている特徴「サバイブ」を持つユニットは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-281::doragonfuaiyasutomu",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-281.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-281.jpg"
+}

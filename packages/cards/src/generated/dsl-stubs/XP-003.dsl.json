@@ -44,30 +44,46 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "destroy_power_match_on_rush",
           "duration": "turn"
         }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―デカレッド＋マーフィーK9",
+      "partnerCardIds": [
+        "PR-006",
+        "RS-106",
+        "RS-403",
+        "RS-404"
       ],
-      "optional": true
+      "partnerSlotCardIds": [
+        [
+          "PR-006",
+          "RS-106",
+          "RS-403"
+        ],
+        [
+          "RS-404"
+        ]
+      ]
+    },
+    {
+      "kind": "note",
+      "text": "※これはアタックされるとき、BP+5000される。",
+      "rule": "attacked_bp_boost_5000"
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "unnamedRules": [
-    {
-      "kind": "zord",
-      "text": "合体―デカレッド＋マーフィーK9 ※これはアタックされるとき、BP＋5000される。",
-      "partnerCardIds": [
-        "PR-006",
-        "RS-106",
-        "RS-403"
-      ]
-    }
-  ]
+  }
 }

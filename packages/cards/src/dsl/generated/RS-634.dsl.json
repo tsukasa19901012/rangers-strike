@@ -1,0 +1,84 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-634",
+  "name": "ユガンデ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※コールDA 【ダークサンダー】自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドを1つ選びリリースしてもよい。そうしたとき、ホールド状態の敵軍Sユニットを1体選び撃破する。",
+  "rawText": "※コールDA 【ダークサンダー】自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドを1つ選びリリースしてもよい。そうしたとき、ホールド状態の敵軍Sユニットを1体選び撃破する。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_call_da",
+      "text": "※コールDA",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "call_DA",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "dakusanda",
+      "name": "ダークサンダー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドを1つ選びリリースしてもよい。そうしたとき、ホールド状態の敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※コールDA",
+      "rule": "call_DA"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-634.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-634.jpg"
+}

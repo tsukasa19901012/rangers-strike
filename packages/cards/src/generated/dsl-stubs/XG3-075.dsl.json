@@ -27,7 +27,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_blast",
+      "id": "unnamed_e280bbe38396e383a9e382b9",
       "text": "※ブラスト",
       "trigger": {
         "type": "while_in_field"
@@ -47,26 +47,43 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-075::fuainarukamenatakufuomur",
+          "keyword": "discard_to_zone_tankoregabatoruerianitatokiomote_ko_kinopawakararcwochi",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―仮面ライダーディケイド＋仮面ライダーJジャンボフォーメーション ※ブラスト",
+      "text": "合体―仮面ライダーディケイド＋仮面ライダーJジャンボフォーメーション",
       "partnerCardIds": [
         "XG1-077",
         "XG2-077",
         "XG3-068",
         "XG5-079",
-        "XP-004"
+        "XG7-042",
+        "XP-004",
+        "RK-187",
+        "XG3-073"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "XG1-077",
+          "XG2-077",
+          "XG3-068",
+          "XG5-079",
+          "XG7-042",
+          "XP-004"
+        ],
+        [
+          "RK-187",
+          "XG3-073"
+        ]
       ]
     },
     {

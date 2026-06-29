@@ -1,0 +1,46 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-055",
+  "name": "仮面ライダーパンチホッパー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "【ライダーパンチ】敵軍バトルエリアからSユニットを好きな数選び、ラッシュエリアに戻してもよい。",
+  "rawText": "【ライダーパンチ】敵軍バトルエリアからSユニットを好きな数選び、ラッシュエリアに戻してもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/4",
+  "comboNumber": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "raidapanchi",
+      "name": "ライダーパンチ",
+      "text": "敵軍バトルエリアからSユニットを好きな数選び、ラッシュエリアに戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "return_enemy_s_to_rush_any",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-055.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-055.jpg"
+}

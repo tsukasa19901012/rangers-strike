@@ -15,6 +15,10 @@
     "ヨロイ軍団",
     "男"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "opponent_draw",
+    "text": "相手に1枚ドローさせる"
+  },
   "effects": [
     {
       "id": "unnamed_attacked_bp_boost_5000",
@@ -37,14 +41,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-035::yoroino",
+          "keyword": "while_in_field_body_koregabatoruerianiarubatorufueizubatoruerianitamekaw",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -58,9 +62,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "opponent_draw",
-    "text": "相手に1枚ドローさせる"
   }
 }

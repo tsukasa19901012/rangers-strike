@@ -1,0 +1,38 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-083",
+  "name": "ストライクベント",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "特徴「ミラーライダー」を持つ自軍ユニットを1体選び、必要パワーの数字を見る。その後、敵軍バトルエリアから、その数字以下の必要パワーの数字を持つSユニットを1体選び、撃破する。",
+  "rawText": "特徴「ミラーライダー」を持つ自軍ユニットを1体選び、必要パワーの数字を見る。その後、敵軍バトルエリアから、その数字以下の必要パワーの数字を持つSユニットを1体選び、撃破する。",
+  "effects": [
+    {
+      "id": "sutoraikubento",
+      "name": "ストライクベント",
+      "text": "特徴「ミラーライダー」を持つ自軍ユニットを1体選び、必要パワーの数字を見る。その後、敵軍バトルエリアから、その数字以下の必要パワーの数字を持つSユニットを1体選び、撃破する。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "mirror_rider_destroy_enemy_s_by_power",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-083.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-083.jpg"
+}

@@ -11,21 +11,20 @@
   "rawText": "自分の手札から、Sビークルのカードと、MAを持ちRCを持つSユニットのカードをそれぞれ1枚ずつ選び、相手に見せてもよい。そうしたとき、見せた2枚のカードを好きな順番で自軍ラッシュエリアに出す。ただし、追加条件はそれぞれ満たすこと。",
   "effects": [
     {
-      "id": "fx_unknown_e5b091",
-      "name": "少年同盟",
+      "id": "note_e887aae58886e381aee6898b",
       "text": "自分の手札から、Sビークルのカードと、MAを持ちRCを持つSユニットのカードをそれぞれ1枚ずつ選び、相手に見せてもよい。そうしたとき、見せた2枚のカードを好きな順番で自軍ラッシュエリアに出す。ただし、追加条件はそれぞれ満たすこと。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-100::fxunknowne5b091",
+          "keyword": "deploy_rush_area_nokarasbikurunokadotomawochircwotsusyunitonokadowosorez",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

@@ -18,19 +18,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce38292",
+      "id": "note_e280bbe38193e3828ce38292",
       "text": "※これをラッシュしたとき、自軍ダメージが3点以下なら、1点ダメージを受ける。",
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG1-026::koreworashushita",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "yamiono",
@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-026::yamiono",
-          "duration": "permanent"
+          "keyword": "grant_ability_damejiga3narakorehano_chikara_worusp1",
+          "duration": "turn"
         }
       ]
     }

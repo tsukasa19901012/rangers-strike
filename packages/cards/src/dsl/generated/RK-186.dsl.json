@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-186",
+  "name": "仮面ライダーJ",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【Jパンチ】これがアタックするとき、自軍コマンドを好きな数ホールドしてもよい。そうしたとき、このターン、これはホールドしたコマンド1つにつきBP+1000される。",
+  "rawText": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【Jパンチ】これがアタックするとき、自軍コマンドを好きな数ホールドしてもよい。そうしたとき、このターン、これはホールドしたコマンド1つにつきBP+1000される。",
+  "bp": 1000,
+  "size": "S",
+  "sp": "1/3",
+  "comboNumber": "RC",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "jpanchi",
+      "name": "Jパンチ",
+      "text": "これがアタックするとき、自軍コマンドを好きな数ホールドしてもよい。そうしたとき、このターン、これはホールドしたコマンド1つにつきBP+1000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-186::jpanchi",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-186.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-186.jpg"
+}

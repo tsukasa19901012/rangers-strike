@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍捨札にある間、自軍「仮面ライダーレンゲル」はBP+1000される。（この効果は重複しない）",
       "trigger": {
         "type": "while_in_field"
@@ -25,11 +25,10 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-058::koreganiaruraida",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "notamenoi",
@@ -38,14 +37,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-058::notamenoi",
-          "duration": "permanent"
+          "keyword": "bp_modify_korehakoretojiwo1tsutsukorenobatoruerianoyunito1nitsuki",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

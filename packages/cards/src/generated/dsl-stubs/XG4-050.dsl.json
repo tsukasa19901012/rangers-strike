@@ -9,6 +9,11 @@
   "powerCost": 3,
   "text": "※自軍ターン開始時、自分の手札から「アクロバッター」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。 【後部バルカン砲】ライドされているこのビークルが自軍バトルエリアからラッシュエリアに戻るとき、敵軍バトルエリアからBP3000のSユニットを1体選び、撃破してもよい。",
   "rawText": "※自軍ターン開始時、自分の手札から「アクロバッター」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。 【後部バルカン砲】ライドされているこのビークルが自軍バトルエリアからラッシュエリアに戻るとき、敵軍バトルエリアからBP3000のSユニットを1体選び、撃破してもよい。",
+  "size": "S",
+  "features": [
+    "車両",
+    "昆虫"
+  ],
   "effects": [
     {
       "id": "unnamed_e280bbe887aae8bb8de382bf",
@@ -16,14 +21,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "turn_start_swap_hand_named::アクロバッター_マックジャバー",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "barukan",
@@ -32,24 +37,19 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-050::barukan",
-          "duration": "permanent"
+          "keyword": "ride_action_raidosareteirukonobikurugabatorueriakararashuerianirutokiba",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "車両",
-    "昆虫"
-  ]
+  }
 }

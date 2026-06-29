@@ -26,19 +26,19 @@
   },
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e381aee382ab",
+      "id": "note_e280bbe38193e381aee382ab",
       "text": "※このカードの合体ユニットは、自軍捨札が7枚以上のとき、次のように変更される⇒合体―ゲキレッド＋黒獅子リオ",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-007::konokadonoyunito",
-          "duration": "permanent"
+          "keyword": "note_other_gekiredo_shi_rio",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "zan_e6bf80",
@@ -47,25 +47,20 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-007::zane6bf80",
+          "keyword": "exclude_game_tankoregabatoruerianitatokiwbnomiwotsutodanomiwotsu",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―ゲキレッドまたはゲキタイガー＋ゲキブルーまたはゲキジャガー＋ゲキイエローまたはゲキチーター＋黒獅子リオまたはリンライオン＋獣人メレまたはリンカメレオン ※このカードの合体ユニットは、自軍捨札が7枚以上のとき、次のように変更される⇒合体―ゲキレッド＋黒獅子リオ",
+      "text": "合体―ゲキレッドまたはゲキタイガー＋ゲキブルーまたはゲキジャガー＋ゲキイエローまたはゲキチーター＋黒獅子リオまたはリンライオン＋獣人メレまたはリンカメレオン",
       "partnerCardIds": [
         "PR-017",
         "RS-340",
@@ -82,7 +77,8 @@
         "PR-027",
         "RS-431",
         "XG6-021",
-        "RS-504"
+        "RS-504",
+        "XG6-022"
       ],
       "partnerSlotCardIds": [
         [
@@ -109,13 +105,15 @@
           "XG6-021"
         ],
         [
-          "RS-504"
-        ],
-        [
-          "PR-027",
-          "RS-431"
+          "RS-504",
+          "XG6-022"
         ]
       ]
     }
-  ]
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
 }

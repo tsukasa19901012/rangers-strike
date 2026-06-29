@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-088::kazeno",
-          "duration": "permanent"
+          "keyword": "grant_ability_konoyunitokarakonbineshonsurusyunitohano_chikara_worutanbp",
+          "duration": "turn"
         }
       ]
     }

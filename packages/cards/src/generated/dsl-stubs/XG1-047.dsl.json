@@ -39,16 +39,16 @@
       "name": "赤心少林拳",
       "text": "BP1000またはBP3000またはBP5000の敵軍Sユニットを1体選び、撃破してもよい。また、MAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これはSP1になる。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-047::kene8b5a4",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_bp1000matahabp3000matahabp5000nosyunitowo1bi_geki_ha_shi",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

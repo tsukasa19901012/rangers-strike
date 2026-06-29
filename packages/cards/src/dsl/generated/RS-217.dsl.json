@@ -1,0 +1,52 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-217",
+  "name": "SSスタタンゾ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【家出したくなるガソリン】バトルエリアにある特徴「車両」を持つユニットを1体選び、持ち主の山札の下に戻してもよい。",
+  "rawText": "【家出したくなるガソリン】バトルエリアにある特徴「車両」を持つユニットを1体選び、持ち主の山札の下に戻してもよい。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "shitakunarugasorin",
+      "name": "家出したくなるガソリン",
+      "text": "バトルエリアにある特徴「車両」を持つユニットを1体選び、持ち主の山札の下に戻してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "return_ryo_battle_to_deck_bottom",
+          "duration": "turn"
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "any"
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-217.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-217.jpg"
+}

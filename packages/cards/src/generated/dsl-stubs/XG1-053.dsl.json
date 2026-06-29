@@ -24,14 +24,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-053::baninguraidapanchi",
-          "duration": "permanent"
+          "keyword": "bp_modify_korehaatakushitebatorunitsutabinaradeatakusurutadashikorehabat",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

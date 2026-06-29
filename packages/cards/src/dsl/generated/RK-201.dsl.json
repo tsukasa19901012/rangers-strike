@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-201",
+  "name": "ドラグブラッカー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ドラグブレス】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身のユニットを1体選ぶ。そして、自分自身の選んだユニットの持っていないカテゴリを持つ自分自身のSユニットを1体選び撃破する。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ドラグブレス】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身のユニットを1体選ぶ。そして、自分自身の選んだユニットの持っていないカテゴリを持つ自分自身のSユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "獣",
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "doraguburesu",
+      "name": "ドラグブレス",
+      "text": "これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身のユニットを1体選ぶ。そして、自分自身の選んだユニットの持っていないカテゴリを持つ自分自身のSユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-201::doraguburesu",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-201.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-201.jpg"
+}

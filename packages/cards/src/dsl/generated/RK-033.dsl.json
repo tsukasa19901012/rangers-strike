@@ -1,0 +1,49 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-033",
+  "name": "仮面ライダー龍騎",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 6,
+  "text": "【ドラゴンライダーキック】特徴「ドラゴン」を持つユニットからコンビネーションするとき、このターン、これは次の能力を得る⇒「SP1」",
+  "rawText": "【ドラゴンライダーキック】特徴「ドラゴン」を持つユニットからコンビネーションするとき、このターン、これは次の能力を得る⇒「SP1」",
+  "bp": 4000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "doragonraidakiku",
+      "name": "ドラゴンライダーキック",
+      "text": "特徴「ドラゴン」を持つユニットからコンビネーションするとき、このターン、これは次の能力を得る⇒「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "feature_combo_sp_doragon_sp1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-033.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-033.jpg"
+}

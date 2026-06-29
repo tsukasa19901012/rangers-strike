@@ -1,0 +1,26 @@
+{
+  "id": "RS-239",
+  "name": "ゴーゴーポリス",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "bp": 3000,
+  "size": "M",
+  "comboNumber": "L",
+  "text": "なし",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/promoted/RS-239.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-239.jpg",
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "rawText": "なし",
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

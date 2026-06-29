@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_undead_command_rush_hold",
+      "id": "unnamed_e280bbe38193e381aee383a6",
       "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
       "trigger": {
         "type": "while_in_field"
@@ -36,16 +36,16 @@
       "name": "ファイアアッパー",
       "text": "自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの必要パワーの数字が「3」と「6」なら、敵軍捨札からSユニットのカードを１枚選びゲームから除外する。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-055::fuaiaapa",
-          "duration": "permanent"
+          "keyword": "hand_pick_show_nowo2binisetemoyoisoushitatokisyunitowo1bihoru",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

@@ -11,21 +11,20 @@
   "rawText": "自軍山札の上から5枚をオモテにする。そうしたとき、オモテにしたユニットカードのBPの合計以下のBPを持つ敵軍ユニットを1体選び、ゲームから除外する（この効果で選ばれたユニットがゲームから除外されるまで、選ばれたユニットが持つ効果名を持たないテキストは無効になり、発動もできない）。その後、オモテにしたカードはすべて捨札になる。",
   "effects": [
     {
-      "id": "roiyarusutoretofurashu",
-      "name": "ロイヤルストレートフラッシュ",
+      "id": "note_e887aae8bb8de5b1b1e69cad",
       "text": "自軍山札の上から5枚をオモテにする。そうしたとき、オモテにしたユニットカードのBPの合計以下のBPを持つ敵軍ユニットを1体選び、ゲームから除外する（この効果で選ばれたユニットがゲームから除外されるまで、選ばれたユニットが持つ効果名を持たないテキストは無効になり、発動もできない）。その後、オモテにしたカードはすべて捨札になる。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-058::roiyarusutoretofurashu",
+          "keyword": "exclude_game_nokara5woomotenisurusoushitatokiomotenishitayunitokadonobpn",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

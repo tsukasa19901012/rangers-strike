@@ -2015,7 +2015,9 @@ export function applyAction(
         };
       }
 
-      const opened = openBattleEntryOrRideOffChoice(nextState, pending.battleEntry);
+      const opened = action.rideOff
+        ? openBattleEntryOrRideOffChoice(nextState, pending.battleEntry)
+        : afterEnterBattle(nextState, pending.battleEntry);
       const detail = action.rideOff ? "ride_off" : "stay_mounted";
       return ok(opened, buildSimpleLogEntry(playerId, "resolve_ride_off_choice", detail));
     }

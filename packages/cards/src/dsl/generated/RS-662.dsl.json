@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-662",
+  "name": "鳳凰メレ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から｢獣人メレ｣のカードを1枚選び、自軍ラッシュエリアに出す。 【火将危願】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドゾーンのカードの枚数を数えて、その数と同じ必要パワーの数字を持つカードを敵軍コマンドゾーンから1枚選び捨札にしてもよい。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から｢獣人メレ｣のカードを1枚選び、自軍ラッシュエリアに出す。 【火将危願】自軍ターン中、これがバトルエリアに出たとき、自軍コマンドゾーンのカードの枚数を数えて、その数と同じ必要パワーの数字を持つカードを敵軍コマンドゾーンから1枚選び捨札にしてもよい。",
+  "bp": 4500,
+  "size": "S",
+  "features": [
+    "女",
+    "幻気",
+    "四幻将"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から｢獣人メレ｣のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_destroy_reanimate_named_from_discard",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "hi",
+      "name": "火将危願",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍コマンドゾーンのカードの枚数を数えて、その数と同じ必要パワーの数字を持つカードを敵軍コマンドゾーンから1枚選び捨札にしてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enter_battle_enemy_command_match_own_count_power_discard",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍｢獣人メレ｣1体を捨札にすれば必要パワー0になる",
+    "partnerName": "獣人メレ",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-662.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-662.jpg"
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-074",
+  "name": "ライダーマン",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これ以外の特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。 【カギ爪アーム】これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出してもよい。",
+  "rawText": "※これ以外の特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。 【カギ爪アーム】これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出してもよい。",
+  "bp": 1000,
+  "size": "S",
+  "sp": "1/5",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "ally_raida_protects_from_enemy_s",
+      "text": "※これ以外の特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ally_raida_protects_from_enemy_s",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "kagi_tsume_amu",
+      "name": "カギ爪アーム",
+      "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアからSユニットを1体選び、可能ならバトルエリアに出してもよい。",
+      "trigger": {
+        "type": "on_leave"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "return_rush_deploy_enemy_s",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-074.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-074.jpg"
+}

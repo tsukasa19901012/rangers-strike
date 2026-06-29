@@ -1,0 +1,36 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-247",
+  "name": "疾風流超忍法",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※カウンター（これは敵軍ターン中にのみ使用できる） BP8000以下のユニットがラッシュされたとき発動できる⇒そのユニットを持ち主の山札の上に戻す。",
+  "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） BP8000以下のユニットがラッシュされたとき発動できる⇒そのユニットを持ち主の山札の上に戻す。",
+  "effects": [
+    {
+      "id": "note_e280bbe382abe382a6e383b3",
+      "text": "※カウンター（これは敵軍ターン中にのみ使用できる） BP8000以下のユニットがラッシュされたとき発動できる⇒そのユニットを持ち主の山札の上に戻す。",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "counter_return_rush_to_deck",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-247.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-247.jpg"
+}

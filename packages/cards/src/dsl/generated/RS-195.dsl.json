@@ -1,0 +1,31 @@
+{
+  "id": "RS-195",
+  "name": "ダイナマッハ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "bp": 2000,
+  "sp": 1,
+  "size": "M",
+  "text": "なし",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "imageUrl": "/cards/promoted/RS-195.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-195.jpg",
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "rawText": "なし",
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

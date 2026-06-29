@@ -1,0 +1,61 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-248",
+  "name": "パラダイス・ロスト",
+  "type": "operation",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "※常駐 ※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズごとに1度だけ、『敵軍捨札から1枚選び、持ち主の手札に加える』を実行してもよい。そうしたとき、このターン、相手の常駐オペレーションは無効になる。",
+  "rawText": "※常駐 ※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズごとに1度だけ、『敵軍捨札から1枚選び、持ち主の手札に加える』を実行してもよい。そうしたとき、このターン、相手の常駐オペレーションは無効になる。",
+  "effects": [
+    {
+      "id": "unnamed_resident",
+      "text": "※常駐",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_tag",
+      "text": "※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズごとに1度だけ、『敵軍捨札から1枚選び、持ち主の手札に加える』を実行してもよい。そうしたとき、このターン、相手の常駐オペレーションは無効になる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "tag",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※常駐",
+      "rule": "resident"
+    },
+    {
+      "kind": "note",
+      "text": "※タッグ（これは他の自軍常駐と合わせて2枚まで配置でき、太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる） 自軍ラッシュフェイズごとに1度だけ、『敵軍捨札から1枚選び、持ち主の手札に加える』を実行してもよい。そうしたとき、このターン、相手の常駐オペレーションは無効になる。",
+      "rule": "tag"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-248.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-248.jpg"
+}

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-265",
+  "name": "ライドロン",
+  "type": "vehicle",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。 【ライディングアロー】 自軍ターン中、これがバトルエリアに出たとき、これがライドされていれば、敵軍常駐の上に重ねたカードの上から1枚選び、持ち主の山札の下に戻してもよい。",
+  "rawText": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。 【ライディングアロー】 自軍ターン中、これがバトルエリアに出たとき、これがライドされていれば、敵軍常駐の上に重ねたカードの上から1枚選び、持ち主の山札の下に戻してもよい。",
+  "effects": [
+    {
+      "id": "unnamed_can_enter_battle_without_ride",
+      "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "can_enter_battle_without_ride",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "raideinguaro",
+      "name": "ライディングアロー",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、これがライドされていれば、敵軍常駐の上に重ねたカードの上から1枚選び、持ち主の山札の下に戻してもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-265::raideinguaro",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。",
+      "rule": "can_enter_battle_without_ride"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/promoted/RK-265.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-265.jpg"
+}

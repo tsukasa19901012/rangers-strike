@@ -40,14 +40,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-048::redaai",
-          "duration": "permanent"
+          "keyword": "reveal_faceup_koregabatorueriakararashuerianirutokioinonokara1woomo",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

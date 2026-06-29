@@ -29,14 +29,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-008::gogochienji",
-          "duration": "permanent"
+          "keyword": "grant_effect_komandoga4tsunaranowodekiruwotelyunitonokadowo",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

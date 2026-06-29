@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-257",
+  "name": "野球仮面",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【予告ホームラン】敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードと同じ必要パワーの数字を持つ自軍コマンドを1つホールドできれば、そのカードを持ち主のパワーゾーンにダメージにして置く。できなければ、そのカードを持ち主の手札に加える。",
+  "rawText": "【予告ホームラン】敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードと同じ必要パワーの数字を持つ自軍コマンドを1つホールドできれば、そのカードを持ち主のパワーゾーンにダメージにして置く。できなければ、そのカードを持ち主の手札に加える。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "homuran",
+      "name": "予告ホームラン",
+      "text": "敵軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードと同じ必要パワーの数字を持つ自軍コマンドを1つホールドできれば、そのカードを持ち主のパワーゾーンにダメージにして置く。できなければ、そのカードを持ち主の手札に加える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "reveal_enemy_deck_1",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-257.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-257.jpg"
+}

@@ -17,6 +17,12 @@
     "仮面ライダー",
     "男"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「仮面ライダーブレイド」1体を捨札にする",
+    "partnerName": "仮面ライダーブレイド",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "roiyarusutoretofurashu",
@@ -25,25 +31,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-059::roiyarusutoretofurashu",
+          "keyword": "hand_pick_show_tankoregabatoruerianitatokinowo5binisetemoyoiso",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「仮面ライダーブレイド」1体を捨札にする",
-    "partnerName": "仮面ライダーブレイド",
-    "unitCount": 1
   }
 }

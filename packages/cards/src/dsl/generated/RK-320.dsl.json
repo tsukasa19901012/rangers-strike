@@ -1,0 +1,93 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-320",
+  "name": "仮面ライダーライジングイクサ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "5+",
+  "text": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、必要パワーの数字が「1」「9」「3」の自軍コマンドがそれぞれあれば、これを自軍ラッシュエリアに出してもよい。 【ファイナルライジングブラスト】これが自軍バトルエリアにある間、敵軍ターン中、ストライクを2回以上されてダメージを受けたとき、これをラッシュエリアに戻してもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "rawText": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、必要パワーの数字が「1」「9」「3」の自軍コマンドがそれぞれあれば、これを自軍ラッシュエリアに出してもよい。 【ファイナルライジングブラスト】これが自軍バトルエリアにある間、敵軍ターン中、ストライクを2回以上されてダメージを受けたとき、これをラッシュエリアに戻してもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "bp": 6000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "メカ",
+    "男"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「仮面ライダーイクサBM」1体をコマンドゾーンに送るか捨札にする",
+    "partnerName": "仮面ライダーイクサBM",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_while_in_command_rush_deploy_koregakoman",
+      "text": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、必要パワーの数字が「1」「9」「3」の自軍コマンドがそれぞれあれば、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "while_in_command_rush_deploy::koregakomandozonniar",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "fuainaruraijinguburasuto",
+      "name": "ファイナルライジングブラスト",
+      "text": "これが自軍バトルエリアにある間、敵軍ターン中、ストライクを2回以上されてダメージを受けたとき、これをラッシュエリアに戻してもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-320.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-320.jpg"
+}

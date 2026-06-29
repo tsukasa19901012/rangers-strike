@@ -25,7 +25,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_breaker",
+      "id": "unnamed_e280bbe38396e383ace382a4",
       "text": "※ブレイカー",
       "trigger": {
         "type": "while_in_field"
@@ -39,22 +39,22 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは自軍コマンドゾーンにあるカテゴリが追加される。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-035::korehakomandozon",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
-      "id": "unnamed_rush_from_hand_only",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは手札からしかラッシュできない。",
       "trigger": {
         "type": "while_in_field"

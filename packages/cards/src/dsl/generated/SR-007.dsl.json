@@ -1,0 +1,67 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SR-007",
+  "name": "大神龍",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※これはアタックすることができない。 【プラズマ衝撃波】これが自軍エリアにある間、自分も相手も次のようにする⇒自分自身のスタートフェイズ中、バトルエリアのユニットをラッシュエリアに戻せない。そのかわりに、自分自身のバトルエリアのユニットを好きな数選び撃破できる。このスタートフェイズを終えるとき、自分自身のバトルエリアに「大神龍」以外のユニットが1体もなければ、これを持ち主の山札に戻してシャッフルする。",
+  "rawText": "※これはアタックすることができない。 【プラズマ衝撃波】これが自軍エリアにある間、自分も相手も次のようにする⇒自分自身のスタートフェイズ中、バトルエリアのユニットをラッシュエリアに戻せない。そのかわりに、自分自身のバトルエリアのユニットを好きな数選び撃破できる。このスタートフェイズを終えるとき、自分自身のバトルエリアに「大神龍」以外のユニットが1体もなければ、これを持ち主の山札に戻してシャッフルする。",
+  "bp": 30000,
+  "size": "XL",
+  "features": [
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_attack",
+      "text": "※これはアタックすることができない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "purazuma_geki_nami",
+      "name": "プラズマ衝撃波",
+      "text": "これが自軍エリアにある間、自分も相手も次のようにする⇒自分自身のスタートフェイズ中、バトルエリアのユニットをラッシュエリアに戻せない。そのかわりに、自分自身のバトルエリアのユニットを好きな数選び撃破できる。このスタートフェイズを終えるとき、自分自身のバトルエリアに「大神龍」以外のユニットが1体もなければ、これを持ち主の山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "plasma_shockwave_start_phase::大神龍",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはアタックすることができない。",
+      "rule": "cannot_attack"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "ユニットが7体以上ある"
+  },
+  "imageUrl": "/cards/promoted/SR-007.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-007.jpg"
+}

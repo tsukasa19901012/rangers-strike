@@ -11,21 +11,20 @@
   "rawText": "自分の手札から合体を必要とするユニットカードを1枚選び相手に見せる。その後、自分の手札から特徴「人型」を持つユニットカードを3枚選び捨札にする。ただし、見せたカードの合体に必要なユニットのカードを1枚以上含むように捨札にすること。そうしたとき、見せたカードを自軍ラッシュエリアに出す。",
   "effects": [
     {
-      "id": "shin_e98a80",
-      "name": "銀河超越・三神合体",
+      "id": "note_e887aae58886e381aee6898b",
       "text": "自分の手札から合体を必要とするユニットカードを1枚選び相手に見せる。その後、自分の手札から特徴「人型」を持つユニットカードを3枚選び捨札にする。ただし、見せたカードの合体に必要なユニットのカードを1枚以上含むように捨札にすること。そうしたとき、見せたカードを自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-002::shine98a80",
+          "keyword": "deploy_rush_area_nokarawotosuruyunitokadowo1biniserusonono",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

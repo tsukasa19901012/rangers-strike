@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-007::makusushatoru",
-          "duration": "permanent"
+          "keyword": "grant_ability_konoyunitohahorudonono_chikara_worukorehauinguwotanaiyunit",
+          "duration": "turn"
         }
       ]
     }

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-612",
+  "name": "スカイエース",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "※これは特徴「メカ」を持つ自軍コマンドが4つ以上あればSP1になる。 【スカイコンテナ】これをラッシュしたとき、自軍コマンドを好きな数選び捨札にしてもよい。そうしたとき、自軍山札を見て、特徴「メカ」を持つSユニットのカードを、捨札にしたコマンドの数まで好きな枚数選び、自軍コマンドゾーンにホールド状態で置く。その後、山札をシャッフルする。",
+  "rawText": "※これは特徴「メカ」を持つ自軍コマンドが4つ以上あればSP1になる。 【スカイコンテナ】これをラッシュしたとき、自軍コマンドを好きな数選び捨札にしてもよい。そうしたとき、自軍山札を見て、特徴「メカ」を持つSユニットのカードを、捨札にしたコマンドの数まで好きな枚数選び、自軍コマンドゾーンにホールド状態で置く。その後、山札をシャッフルする。",
+  "bp": 4000,
+  "size": "M",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce381af",
+      "text": "※これは特徴「メカ」を持つ自軍コマンドが4つ以上あればSP1になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RS-612::korehamekawotsuk",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "sukaikontena",
+      "name": "スカイコンテナ",
+      "text": "これをラッシュしたとき、自軍コマンドを好きな数選び捨札にしてもよい。そうしたとき、自軍山札を見て、特徴「メカ」を持つSユニットのカードを、捨札にしたコマンドの数まで好きな枚数選び、自軍コマンドゾーンにホールド状態で置く。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-612.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-612.jpg"
+}

@@ -35,16 +35,16 @@
       "name": "アイアム偽者などノーサンキュー",
       "text": "敵軍ユニットを1体選んでもよい。そうしたとき、選んだユニットと同じカード名の敵軍ユニットが、選んだユニット以外にあれば、選んだユニットを持ち主のパワーゾーンにダメージにして置く。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-041::aiamunadonosankyu",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_yunitowo1ndemoyoisoushitatokindayunitotojikadonoyuni",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

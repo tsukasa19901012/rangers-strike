@@ -39,14 +39,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-043::gekie7a0b2",
-          "duration": "permanent"
+          "keyword": "hold_remaining_konoyunitohahorudonotokirashuerianoyunitoniatakudekiru",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-052",
+  "name": "仮面ライダー弾鬼",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 0,
+  "text": "【音撃打・破砕細石】敵軍バトルエリアに特徴「メカ」を持つユニットがなければ、これはBP4000以上のSユニットとバトルするとき、BP+5000される フレーバテキスト 相手が強いほど弾け甲斐があるもんだ。…もっとも、ハジかれるのは貴様の方だがな！",
+  "rawText": "【音撃打・破砕細石】敵軍バトルエリアに特徴「メカ」を持つユニットがなければ、これはBP4000以上のSユニットとバトルするとき、BP+5000される フレーバテキスト 相手が強いほど弾け甲斐があるもんだ。…もっとも、ハジかれるのは貴様の方だがな！",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "猛士"
+  ],
+  "effects": [
+    {
+      "id": "bp_if_no_named_e383a1e382ab_5000",
+      "name": "音撃打・破砕細石",
+      "text": "敵軍バトルエリアに特徴「メカ」を持つユニットがなければ、これはBP4000以上のSユニットとバトルするとき、BP+5000される フレーバテキスト 相手が強いほど弾け甲斐があるもんだ。…もっとも、ハジかれるのは貴様の方だがな！",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "bp_if_no_enemy_named_e383a1e382ab_5000",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-052.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-052.jpg"
+}

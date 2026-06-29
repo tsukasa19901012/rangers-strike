@@ -1,0 +1,83 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-623",
+  "name": "ツバサマル",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※ウイング 【翼合体】 自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒※ウイング、BP+2000",
+  "rawText": "※ウイング 【翼合体】 自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒※ウイング、BP+2000",
+  "bp": 3000,
+  "size": "M",
+  "features": [
+    "忍者",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "tsubasa",
+      "name": "翼合体",
+      "text": "自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "stack_da_less_l_on_rush",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_wing_2",
+      "text": "※ウイング、BP+2000",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    },
+    {
+      "kind": "note",
+      "text": "※ウイング、BP+2000",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-623.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-623.jpg"
+}

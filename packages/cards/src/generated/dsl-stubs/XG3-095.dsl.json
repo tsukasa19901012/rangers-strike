@@ -17,9 +17,15 @@
     "人型",
     "スーパーモード"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_send_to_command_or_discard",
+    "text": "自軍「カブタック」1体をコマンドゾーンに送るか捨札にすれば必要パワー0になる",
+    "partnerName": "カブタック",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍エリアにある間、自分がターンを終えるとき、自軍コマンドゾーンか自軍捨札の「カブタック」のカードとこれを置き換える。置き換えられなければこれを捨札にする。",
       "trigger": {
         "type": "while_in_field"
@@ -27,11 +33,10 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG3-095::koregaerianiarug",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "biritoshoku",
@@ -40,25 +45,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-095::biritoshoku",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakaranobpga8000",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_send_to_command_or_discard",
-    "text": "自軍「カブタック」1体をコマンドゾーンに送るか捨札にすれば必要パワー0になる",
-    "partnerName": "カブタック",
-    "unitCount": 1
   }
 }

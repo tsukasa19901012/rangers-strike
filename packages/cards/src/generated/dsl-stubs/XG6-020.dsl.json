@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -42,27 +42,37 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-020::noe7a9b6",
+          "keyword": "while_in_field_body_koregaerianiaruhadamejiga10ninarumadegemunikenai",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―ダイボウケン（または、ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン）＋ダイタンケン（または、ゴーゴードリル＋ゴーゴーショベル＋ゴーゴーミキサー＋ゴーゴークレーン＋ゴーゴージェット） ※ウイング",
+      "text": "合体―ダイボウケン（または、ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン）＋ダイタンケン（または、ゴーゴードリル＋ゴーゴーショベル＋ゴーゴーミキサー＋ゴーゴークレーン＋ゴーゴージェット）",
       "partnerCardIds": [
-        "RS-119",
-        "RS-120",
-        "RS-121",
-        "RS-172",
-        "RS-173",
-        "RS-174"
+        "PR-002",
+        "RS-117",
+        "XG6-019",
+        "RS-176",
+        "XG6-006"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "PR-002",
+          "RS-117",
+          "XG6-019"
+        ],
+        [
+          "RS-176",
+          "XG6-006"
+        ]
       ]
     },
     {

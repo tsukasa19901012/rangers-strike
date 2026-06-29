@@ -20,19 +20,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、WBが追加される。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-057::korehaeriamataha",
+          "keyword": "note_other_fx_unknown",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "taifuaiyagaru",
@@ -41,14 +41,14 @@
       "trigger": {
         "type": "on_attack"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-057::taifuaiyagaru",
+          "keyword": "exclude_game_sp12koregaatakushitatokihanowo1bigemukarasuru",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

@@ -37,7 +37,7 @@
       "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは自軍ターン中、バトルするとき、BP+2000される。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {
@@ -45,16 +45,28 @@
           "keyword": "bp_plus_on_battle_own_turn_2000",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "chikara_no_2_go",
       "name": "力の2号",
       "text": "BP4000以上の敵軍Sユニットを1体選び、このユニットと選んだユニットでバトルしてもよい。そうしたとき、このターン、これはアタックする事ができない。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S",
+            "minBp": 4000
+          }
+        }
+      },
+      "optional": true,
       "effects": [
         {
           "type": "choose",
@@ -77,20 +89,7 @@
             }
           ]
         }
-      ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S",
-            "minBp": 4000
-          }
-        }
-      }
+      ]
     }
   ],
   "unnamedRules": [

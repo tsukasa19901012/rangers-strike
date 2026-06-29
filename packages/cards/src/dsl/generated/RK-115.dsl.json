@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-115",
+  "name": "仮面ライダーゾルダ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 6,
+  "text": "【エンドオブワールド】｢マグナギガ｣からコンビネーションしたとき発動できる⇒ホールド状態のSユニットをすべて撃破する。その後、Sユニットをすべてホールドする。",
+  "rawText": "【エンドオブワールド】｢マグナギガ｣からコンビネーションしたとき発動できる⇒ホールド状態のSユニットをすべて撃破する。その後、Sユニットをすべてホールドする。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/2",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "ミラーライダー"
+  ],
+  "effects": [
+    {
+      "id": "endoobuwarudo",
+      "name": "エンドオブワールド",
+      "text": "｢マグナギガ｣からコンビネーションしたとき発動できる⇒ホールド状態のSユニットをすべて撃破する。その後、Sユニットをすべてホールドする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-115::endoobuwarudo",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-115.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-115.jpg"
+}

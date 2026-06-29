@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-130",
+  "name": "ローカストアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "【スペード5－キック】自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒ストライクしたとき、レジストを持つ敵軍Sユニットを1体選び、撃破する。",
+  "rawText": "【スペード5－キック】自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒ストライクしたとき、レジストを持つ敵軍Sユニットを1体選び、撃破する。",
+  "bp": 1500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "昆虫"
+  ],
+  "effects": [
+    {
+      "id": "supedo5kiku",
+      "name": "スペード5－キック",
+      "text": "自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒ストライクしたとき、レジストを持つ敵軍Sユニットを1体選び、撃破する。",
+      "trigger": {
+        "type": "on_strike"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "replace_rush_kamen_rider",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-130.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-130.jpg"
+}

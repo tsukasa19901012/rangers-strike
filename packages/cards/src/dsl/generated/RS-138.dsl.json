@@ -44,13 +44,19 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "move",
+          "target": {
+            "type": "trigger_source"
+          },
+          "to": "rush"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

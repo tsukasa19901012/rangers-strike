@@ -16,6 +16,12 @@
     "獣",
     "ドラゴン"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍｢超次元高速機ドルギラン｣1体を捨札にする",
+    "partnerName": "超次元高速機ドルギラン",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_chase_or_ridden_l_vehicle_alias",
@@ -29,8 +35,7 @@
           "keyword": "chase_or_ridden_l_vehicle_alias",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "dorufuaiya",
@@ -48,15 +53,16 @@
       ]
     }
   ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは、チェイスを持つ自軍ユニットがあるか、ライドされてる間、Lビークルとして扱う。",
+      "rule": "chase_or_ridden_l_vehicle_alias"
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍｢超次元高速機ドルギラン｣1体を捨札にする",
-    "partnerName": "超次元高速機ドルギラン",
-    "unitCount": 1
   }
 }

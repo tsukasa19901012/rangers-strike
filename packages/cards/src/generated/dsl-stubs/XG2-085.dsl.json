@@ -26,14 +26,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-085::toe697a5",
-          "duration": "permanent"
+          "keyword": "bp_modify_konotanotmatahadawotsusubetenosyunitohabp1000sarerubp0",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

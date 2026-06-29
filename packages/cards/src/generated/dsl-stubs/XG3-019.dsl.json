@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_no_attack_from_s",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはSユニットにアタックされない。",
       "trigger": {
         "type": "while_in_field"

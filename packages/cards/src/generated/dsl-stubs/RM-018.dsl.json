@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_chase",
+      "id": "unnamed_e280bbe38381e382a7e382a4",
       "text": "※チェイス （これがライド中にユニットでなくなるとき、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）",
       "trigger": {
         "type": "while_in_field"
@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "unnamed_no_strike_if_other_own_s_in_field",
+      "id": "unnamed_e280bbe887aae8bb8d53e383",
       "text": "※自軍Sユニットがこれ以外にあれば、これはストライクできない。",
       "trigger": {
         "type": "while_in_field"
@@ -45,24 +45,23 @@
           "keyword": "no_strike_if_other_own_s_in_field",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "gyabandainamiku",
       "name": "ギャバンダイナミック",
       "text": "本来のBPが4000以上の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RM-018::gyabandainamiku",
-          "duration": "permanent"
+          "keyword": "power_zone_action_nobpga4000nosyunitowo1bichinopawazonnitemo",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -70,6 +69,11 @@
       "kind": "note",
       "text": "※チェイス （これがライド中にユニットでなくなるとき、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）",
       "rule": "chase"
+    },
+    {
+      "kind": "note",
+      "text": "※自軍Sユニットがこれ以外にあれば、これはストライクできない。",
+      "rule": "no_strike_if_other_own_s_in_field"
     }
   ],
   "implementation": {

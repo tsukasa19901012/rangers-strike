@@ -8,6 +8,10 @@ import type {
 import type { CardDocument, EffectDefinition, EffectTrigger } from "../dsl/types";
 import { canonicalCardName, fusionMaterialAliasNames } from "../cardName";
 import { corePlayableCatalog, fullPlayableCatalog } from "./unifiedCatalog";
+import {
+  isRideOffUnconditionalEffectText,
+  normalizeNamedComboTrigger,
+} from "../ridingComboTrigger";
 
 const CARD_NAME_TO_ID = new Map<string, string>();
 for (const card of fullPlayableCatalog.cards) {
@@ -69,6 +73,7 @@ function enrichNcComboFromTrigger(
 function toNamedTrigger(
   trigger: EffectTrigger,
   text: string,
+  comboNumber: CardDocument["comboNumber"],
 ): NamedEffectTrigger | undefined {
   if (
     trigger.type === "operation" ||
@@ -81,12 +86,16 @@ function toNamedTrigger(
   if (trigger.type === "on_strike") {
     return { type: "on_strike" };
   }
-  return enrichNcComboFromTrigger(trigger as NamedEffectTrigger, text);
+  const enriched = enrichNcComboFromTrigger(trigger as NamedEffectTrigger, text);
+  return normalizeNamedComboTrigger(enriched, comboNumber);
 }
 
-function toNamedUnitEffect(effect: EffectDefinition): NamedUnitEffect | undefined {
+function toNamedUnitEffect(
+  effect: EffectDefinition,
+  comboNumber: CardDocument["comboNumber"],
+): NamedUnitEffect | undefined {
   const text = effect.text ?? "";
-  const trigger = toNamedTrigger(effect.trigger, text);
+  const trigger = toNamedTrigger(effect.trigger, text, comboNumber);
   if (!trigger) return undefined;
   return {
     name: effect.name ?? effect.id,
@@ -99,7 +108,7 @@ function toNamedUnitEffect(effect: EffectDefinition): NamedUnitEffect | undefine
 /** CardDocument → unitEffects 互換ブロック（U4 レジストリ参照用）。 */
 export function cardDocumentToUnitEffectBlock(doc: CardDocument): UnitEffectBlock {
   const namedEffects = (doc.effects ?? [])
-    .map(toNamedUnitEffect)
+    .map((effect) => toNamedUnitEffect(effect, doc.comboNumber))
     .filter((entry): entry is NamedUnitEffect => entry !== undefined);
 
   const unnamedText: UnnamedUnitText[] = (doc.unnamedRules ?? []).map((rule) => ({

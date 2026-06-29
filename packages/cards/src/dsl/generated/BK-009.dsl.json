@@ -1,0 +1,38 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "BK-009",
+  "name": "キングストーン（太陽の石）",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーBLACK」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sビークルを1体選ぶ。このターン、選んだビークルは、ライドされていなくてもバトルエリアに出すことができる。",
+  "rawText": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーBLACK」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sビークルを1体選ぶ。このターン、選んだビークルは、ライドされていなくてもバトルエリアに出すことができる。",
+  "effects": [
+    {
+      "id": "kingusuton",
+      "name": "キングストーン（太陽の石）",
+      "text": "次の効果から1つ選び発動する⇒ ◎自分の手札から「仮面ライダーBLACK」のカードを1枚選び、自軍ラッシュエリアに出してもよい。 ◎自軍Sビークルを1体選ぶ。このターン、選んだビークルは、ライドされていなくてもバトルエリアに出すことができる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "pick_effect_branch",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/BK-009.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-009.jpg"
+}

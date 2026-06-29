@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-095",
+  "name": "ハリケーン",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "【ハリケーンダッシュ】自分がターンを終えるとき、このビークルがバトルエリアでライドされていれば、このビークルにライドしているユニットをラッシュエリアに戻してもよい。（ライドオフしない限り、ユニットとビークルは重ねたまま扱う）",
+  "rawText": "【ハリケーンダッシュ】自分がターンを終えるとき、このビークルがバトルエリアでライドされていれば、このビークルにライドしているユニットをラッシュエリアに戻してもよい。（ライドオフしない限り、ユニットとビークルは重ねたまま扱う）",
+  "effects": [
+    {
+      "id": "harikendashu",
+      "name": "ハリケーンダッシュ",
+      "text": "自分がターンを終えるとき、このビークルがバトルエリアでライドされていれば、このビークルにライドしているユニットをラッシュエリアに戻してもよい。（ライドオフしない限り、ユニットとビークルは重ねたまま扱う）",
+      "trigger": {
+        "type": "on_turn_end"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "return_rider_to_rush_end_turn",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/promoted/RK-095.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-095.jpg"
+}

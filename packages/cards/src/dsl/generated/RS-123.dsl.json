@@ -12,21 +12,24 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-123.jpg",
   "effects": [
     {
-      "id": "super_dynamite",
+      "id": "note_e38193e381aee382bfe383bc",
       "text": "このターン、すべての自軍Sユニットは次の能力を得る。⇒アタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
       "trigger": {
-        "type": "operation",
-        "timing": "rush"
+        "type": "on_attack"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "on_attack_action_konotansubetenosyunitohano_chikara_woruatakusurutokiyun",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

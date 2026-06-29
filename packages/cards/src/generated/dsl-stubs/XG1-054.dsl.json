@@ -17,6 +17,12 @@
     "男",
     "賢者の石"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「仮面ライダーアギトBF」1体を捨札にする",
+    "partnerName": "仮面ライダーアギトBF",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "shainingukariba",
@@ -25,25 +31,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-054::shainingukariba",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokinokara2woomotenishitemoyoi",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「仮面ライダーアギトBF」1体を捨札にする",
-    "partnerName": "仮面ライダーアギトBF",
-    "unitCount": 1
   }
 }

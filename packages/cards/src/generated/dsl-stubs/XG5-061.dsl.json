@@ -23,14 +23,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-061::supedo8maguneto",
+          "keyword": "rush_discard_instead_rashufueizukoreworashusurutokirashuerianisukawarini",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

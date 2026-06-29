@@ -1,0 +1,85 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-269",
+  "name": "シャドームーン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 ※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【シャドーセイバー】 自軍ターン中、これがアタックしてバトルに勝ったとき、追加でアタックかストライクを行ってもよい。ただし、このユニットの追加のアタックまたはストライクは、1ターンに1度だけとする。",
+  "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 ※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【シャドーセイバー】 自軍ターン中、これがアタックしてバトルに勝ったとき、追加でアタックかストライクを行ってもよい。ただし、このユニットの追加のアタックまたはストライクは、1ターンに1度だけとする。",
+  "bp": 5000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "男",
+    "改造人間",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_win_vs_sp1",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_no_strike_if_enemy_battle",
+      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_if_enemy_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "shadoseiba",
+      "name": "シャドーセイバー",
+      "text": "自軍ターン中、これがアタックしてバトルに勝ったとき、追加でアタックかストライクを行ってもよい。ただし、このユニットの追加のアタックまたはストライクは、1ターンに1度だけとする。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "extra_attack_on_battle_win",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "destroy_on_win_vs_sp1"
+    },
+    {
+      "kind": "note",
+      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
+      "rule": "no_strike_if_enemy_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-269.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-269.jpg"
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-016",
+  "name": "ミラーワールド",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 0,
+  "text": "※常駐 自軍ラッシュフェイズに自軍Sユニットをこれにオモテ向きに重ねてもよい。これが常駐置き場を離れるとき、重ねたカードはすべて手札に加える。これに重ねたカードと同じカード名の自軍ユニットは、次の能力を得る⇒相手は自分自身のコマンドを1つホールドしなければ、このユニットを選べない。アタックするには、さらに2つホールドしなければならない。",
+  "rawText": "※常駐 自軍ラッシュフェイズに自軍Sユニットをこれにオモテ向きに重ねてもよい。これが常駐置き場を離れるとき、重ねたカードはすべて手札に加える。これに重ねたカードと同じカード名の自軍ユニットは、次の能力を得る⇒相手は自分自身のコマンドを1つホールドしなければ、このユニットを選べない。アタックするには、さらに2つホールドしなければならない。",
+  "effects": [
+    {
+      "id": "unnamed_resident",
+      "text": "※常駐 自軍ラッシュフェイズに自軍Sユニットをこれにオモテ向きに重ねてもよい。これが常駐置き場を離れるとき、重ねたカードはすべて手札に加える。これに重ねたカードと同じカード名の自軍ユニットは、次の能力を得る⇒相手は自分自身のコマンドを1つホールドしなければ、このユニットを選べない。アタックするには、さらに2つホールドしなければならない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "resident",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※常駐 自軍ラッシュフェイズに自軍Sユニットをこれにオモテ向きに重ねてもよい。これが常駐置き場を離れるとき、重ねたカードはすべて手札に加える。これに重ねたカードと同じカード名の自軍ユニットは、次の能力を得る⇒相手は自分自身のコマンドを1つホールドしなければ、このユニットを選べない。アタックするには、さらに2つホールドしなければならない。",
+      "rule": "resident"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-016.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-016.jpg"
+}

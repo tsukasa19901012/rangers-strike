@@ -1,0 +1,92 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-416",
+  "name": "冥府神トード",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "2+",
+  "text": "※これは自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。 【魂のコレクション】自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンにダメージになっているカードがあれば1枚選び捨札にしてもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "※これは自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。 【魂のコレクション】自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンにダメージになっているカードがあれば1枚選び捨札にしてもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+  "bp": 5000,
+  "size": "L",
+  "features": [
+    "冥府神",
+    "五武神",
+    "男",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "require_discard_rush_s_entry",
+      "text": "※これは自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_discard_rush_s_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "nokorekushon",
+      "name": "魂のコレクション",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンにダメージになっているカードがあれば1枚選び捨札にしてもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "power"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_command_card",
+    "text": "自軍コマンドを1つ捨札にする",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-416.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-416.jpg"
+}

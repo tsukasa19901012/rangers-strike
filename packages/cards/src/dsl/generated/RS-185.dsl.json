@@ -1,0 +1,38 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-185",
+  "name": "カーナビック",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "相手の手札を見て、カウンターのオペレーションカードがあれば1枚選び、持ち主のパワーゾーンにダメージにして置く。",
+  "rawText": "相手の手札を見て、カウンターのオペレーションカードがあれば1枚選び、持ち主のパワーゾーンにダメージにして置く。",
+  "effects": [
+    {
+      "id": "kanabiku",
+      "name": "カーナビック",
+      "text": "相手の手札を見て、カウンターのオペレーションカードがあれば1枚選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "opponent_hand_counter_to_power",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-185.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-185.jpg"
+}

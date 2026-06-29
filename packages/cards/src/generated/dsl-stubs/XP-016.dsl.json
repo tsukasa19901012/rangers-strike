@@ -18,6 +18,12 @@
     "アマダム",
     "ライジング"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある",
+    "partnerName": "仮面ライダー",
+    "unitCount": 8
+  },
   "effects": [
     {
       "id": "unnamed_register",
@@ -40,14 +46,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-016::inirumono",
+          "keyword": "while_in_field_body_koregaerianiarukonoyunitoyoribpnoiyunitogaatakusaret",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -61,11 +67,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある",
-    "partnerName": "仮面ライダー",
-    "unitCount": 8
   }
 }

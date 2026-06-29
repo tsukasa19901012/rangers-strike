@@ -1,0 +1,89 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-203",
+  "name": "仮面ライダーファイズAF",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーファイズ」のカードを1枚選び、自軍ラッシュエリアに出す。 【アクセルモード】自軍ターン中、これがアタックしてバトルに勝ったとき、常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、山札の下に戻してもよい（ウラ向きのカードはウラ向きのまま選ぶ）。そうしたとき、これをラッシュエリアに戻す。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーファイズ」のカードを1枚選び、自軍ラッシュエリアに出す。 【アクセルモード】自軍ターン中、これがアタックしてバトルに勝ったとき、常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、山札の下に戻してもよい（ウラ向きのカードはウラ向きのまま選ぶ）。そうしたとき、これをラッシュエリアに戻す。",
+  "bp": 4500,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速",
+    "アクセルフォーム"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーファイズ」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "akuserumodo",
+      "name": "アクセルモード",
+      "text": "自軍ターン中、これがアタックしてバトルに勝ったとき、常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、山札の下に戻してもよい（ウラ向きのカードはウラ向きのまま選ぶ）。そうしたとき、これをラッシュエリアに戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-203::akuserumodo",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「仮面ライダーファイズ」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "仮面ライダーファイズ",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-203.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-203.jpg"
+}

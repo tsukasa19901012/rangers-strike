@@ -19,6 +19,7 @@
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
-    "testGenerated": true
-  }
+    "note": "SC blank template — stats-only vanilla"
+  },
+  "effects": []
 }

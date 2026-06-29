@@ -20,19 +20,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce38292",
+      "id": "note_e280bbe38193e3828ce38292",
       "text": "※これをラッシュしたとき、次の効果を発動できる⇒自軍山札を見て「Vコマンダー」のカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-009::koreworashushita",
-          "duration": "permanent"
+          "keyword": "grant_effect_wotevkomandanokadowo1binisetekaranierusono",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "keidamono",
@@ -41,14 +41,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-009::keidamono",
-          "duration": "permanent"
+          "keyword": "ot_category_korehalyunitogaarebayunitoniatakusarenaimatakonoyunitotori",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

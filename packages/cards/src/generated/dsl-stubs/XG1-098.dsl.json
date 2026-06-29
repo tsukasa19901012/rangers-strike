@@ -26,14 +26,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-098::poizunanka",
+          "keyword": "while_in_field_body_koregaerianiarumomonoyounisurunotanwoerutoki",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

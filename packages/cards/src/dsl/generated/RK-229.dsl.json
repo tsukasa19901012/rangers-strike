@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-229",
+  "name": "仮面ライダー煌鬼",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【音撃拍・軽佻訃爆】敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき、敵軍パワーゾーンのオモテ向きのカードから、選んだユニットの持つ特徴をすべて持つユニットカードを1枚選び、ウラ向きにしてダメージにする。",
+  "rawText": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【音撃拍・軽佻訃爆】敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき、敵軍パワーゾーンのオモテ向きのカードから、選んだユニットの持つ特徴をすべて持つユニットカードを1枚選び、ウラ向きにしてダメージにする。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 6,
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_scrum",
+      "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "scrum",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "geki_baku",
+      "name": "音撃拍・軽佻訃爆",
+      "text": "敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき、敵軍パワーゾーンのオモテ向きのカードから、選んだユニットの持つ特徴をすべて持つユニットカードを1枚選び、ウラ向きにしてダメージにする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-229::geki_baku",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "rule": "scrum"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-229.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-229.jpg"
+}

@@ -19,9 +19,15 @@
     "アクセルドライバー",
     "加速"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "「仮面ライダーアクセル」を１体コマンドゾーンに送るか捨て札にすれば必要パワー0になる",
+    "partnerName": "仮面ライダーアクセル",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_not_selectable_except_attack",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはアタックされる以外では相手に選ばれない",
       "trigger": {
         "type": "while_in_field"
@@ -41,14 +47,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-038::mashingansupaiku",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokinokara3madetenishitemoyo",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -62,11 +68,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_discard_named",
-    "text": "「仮面ライダーアクセル」を１体コマンドゾーンに送るか捨て札にすれば必要パワー0になる",
-    "partnerName": "仮面ライダーアクセル",
-    "unitCount": 1
   }
 }

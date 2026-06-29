@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-438",
+  "name": "炎神ソウル",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "このカードを自軍パワーゾーンに置く。その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、手札に加えてもよい。",
+  "rawText": "このカードを自軍パワーゾーンに置く。その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、手札に加えてもよい。",
+  "effectId": "place_in_power",
+  "effects": [
+    {
+      "id": "place_in_power",
+      "text": "このカードを自軍パワーゾーンに置く。その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、手札に加えてもよい。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "move",
+          "target": {
+            "type": "self"
+          },
+          "to": "power"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-438.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-438.jpg"
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-188",
+  "name": "アチャとコチャ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "※これをラッシュしたとき、自軍パワーゾーンのカードが7枚以上なら、6枚になるまでダメージ以外のカードを捨札にする。 【地球征服宣告書】これが自軍エリアにある間、自軍パワーゾーンのカードが12枚以上あれば、特徴「メカ」を持つすべての自軍Sユニットは「SP1」になる。",
+  "rawText": "※これをラッシュしたとき、自軍パワーゾーンのカードが7枚以上なら、6枚になるまでダメージ以外のカードを捨札にする。 【地球征服宣告書】これが自軍エリアにある間、自軍パワーゾーンのカードが12枚以上あれば、特徴「メカ」を持つすべての自軍Sユニットは「SP1」になる。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "note_e280bbe38193e3828ce38292",
+      "text": "※これをラッシュしたとき、自軍パワーゾーンのカードが7枚以上なら、6枚になるまでダメージ以外のカードを捨札にする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rush_trim_power_7_to_6",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "fx_unknown_4",
+      "name": "地球征服宣告書",
+      "text": "これが自軍エリアにある間、自軍パワーゾーンのカードが12枚以上あれば、特徴「メカ」を持つすべての自軍Sユニットは「SP1」になる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "power_zone_min_12_meka_sp1",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-188.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-188.jpg"
+}

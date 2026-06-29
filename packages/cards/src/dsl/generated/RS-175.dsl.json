@@ -32,6 +32,26 @@
         "RS-155",
         "RS-156",
         "RS-158"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-159"
+        ],
+        [
+          "RS-153"
+        ],
+        [
+          "RS-154"
+        ],
+        [
+          "RS-155"
+        ],
+        [
+          "RS-156"
+        ],
+        [
+          "RS-158"
+        ]
       ]
     }
   ],
@@ -45,13 +65,17 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "destroy_on_rush_koreworashushitatokibp20000noyunitowo1nde_geki_ha_suru",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

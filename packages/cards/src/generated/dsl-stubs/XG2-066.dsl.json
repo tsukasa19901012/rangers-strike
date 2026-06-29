@@ -17,9 +17,15 @@
     "男",
     "加速"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_send_to_power",
+    "text": "自軍「仮面ライダーカブトMF」1枚をパワーゾーンに送れば必要パワー0になる",
+    "partnerName": "仮面ライダーカブトMF",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_not_selectable_except_attack",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはアタックされる以外では相手に選ばれない。",
       "trigger": {
         "type": "while_in_field"
@@ -42,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-066::raidakiku",
+          "keyword": "grant_ability_tankoregabatoruerianitatokipawanoga123noomote_ko_kino",
           "duration": "turn"
         }
       ]
@@ -59,11 +65,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_send_to_power",
-    "text": "自軍「仮面ライダーカブトMF」1枚をパワーゾーンに送れば必要パワー0になる",
-    "partnerName": "仮面ライダーカブトMF",
-    "unitCount": 1
   }
 }

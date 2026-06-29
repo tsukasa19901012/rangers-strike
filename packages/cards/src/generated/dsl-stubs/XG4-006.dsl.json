@@ -11,21 +11,20 @@
   "rawText": "カテゴリにWBを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットはBP+1000され、特徴「獣奏剣」が追加される。重ねたユニットがユニットでなくなるとき、このカードを持ち主の手札に戻す。",
   "effects": [
     {
-      "id": "doragonama",
-      "name": "ドラゴンアーマー",
+      "id": "stack_s_on_self_rush",
       "text": "カテゴリにWBを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットはBP+1000され、特徴「獣奏剣」が追加される。重ねたユニットがユニットでなくなるとき、このカードを持ち主の手札に戻す。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "stack_s_on_self_rush",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

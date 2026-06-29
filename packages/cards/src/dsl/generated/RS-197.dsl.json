@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-197",
+  "name": "ダイナギャリー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "【パーツキャリアー】これが自軍バトルエリアに出たとき、自軍コマンドゾーンからリリース状態のMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
+  "rawText": "【パーツキャリアー】これが自軍バトルエリアに出たとき、自軍コマンドゾーンからリリース状態のMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
+  "bp": 6000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする",
+    "unitCount": 2
+  },
+  "effects": [
+    {
+      "id": "patsukyaria",
+      "name": "パーツキャリアー",
+      "text": "これが自軍バトルエリアに出たとき、自軍コマンドゾーンからリリース状態のMユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "release_m_command_to_rush",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-197.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-197.jpg"
+}

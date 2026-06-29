@@ -15,9 +15,13 @@
   "features": [
     "アンデッド"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "自軍捨札が5枚以上ある"
+  },
   "effects": [
     {
-      "id": "unnamed_rush_from_hand_only",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは手札からしかラッシュできない。",
       "trigger": {
         "type": "while_in_field"
@@ -31,22 +35,22 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これがユニットでなくなるとき、自軍捨札を3枚選びゲームから除外すれば、その場に留まる。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-031::koregayunitodena",
-          "duration": "permanent"
+          "keyword": "exclude_game_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c_koregaeriani",
+      "id": "note_e280bbe38193e3828ce3818c_2",
       "text": "※これが自軍エリアにある間、本来のBPの下三桁が500でない自軍ユニットはラッシュできない。",
       "trigger": {
         "type": "while_in_field"
@@ -54,11 +58,10 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-031::koregaerianiarun",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "no_e7a8ae",
@@ -87,9 +90,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "自軍捨札が5枚以上ある"
   }
 }

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-316",
+  "name": "爆竜カルノリュータス",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【超ドリル進化】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「恐竜」を持つユニットを2体選び捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【超ドリル進化】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「恐竜」を持つユニットを2体選び捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+  "bp": 5000,
+  "size": "M",
+  "sp": "special",
+  "features": [
+    "恐竜"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "super_drill",
+      "name": "超ドリル進化",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから特徴「恐竜」を持つユニットを2体選び捨札にしてもよい。そうしたとき、このターン、これは「SP1」になる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enter_battle_discard_rush_feature_sp1",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-316.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-316.jpg"
+}

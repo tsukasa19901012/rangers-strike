@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-238",
+  "name": "ゴーゴーファイヤー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【プロジェットカノン】これが自軍ラッシュエリアにある間、敵軍ターン中、自軍コマンドゾーンのカードがコマンドゾーンを離れたとき、自軍捨札からカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。",
+  "rawText": "【プロジェットカノン】これが自軍ラッシュエリアにある間、敵軍ターン中、自軍コマンドゾーンのカードがコマンドゾーンを離れたとき、自軍捨札からカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "purojietokanon",
+      "name": "プロジェットカノン",
+      "text": "これが自軍ラッシュエリアにある間、敵軍ターン中、自軍コマンドゾーンのカードがコマンドゾーンを離れたとき、自軍捨札からカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "while_command_leave_hold_from_discard",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-238.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-238.jpg"
+}

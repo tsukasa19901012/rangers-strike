@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これがリリース状態で自軍コマンドゾーンにある間、相手にストライクされたとき、これを捨札にしてそのストライクを無効にしてもよい。",
       "trigger": {
         "type": "while_in_field"
@@ -44,11 +44,10 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-067::koregaririsudeko",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "hebisaikuron",
@@ -57,14 +56,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-067::hebisaikuron",
-          "duration": "permanent"
+          "keyword": "combo_action_sp1konohadorafutoburusumatahadorafutokisukarakonbineshonsur",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

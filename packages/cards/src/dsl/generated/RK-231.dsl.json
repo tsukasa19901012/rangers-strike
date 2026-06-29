@@ -1,0 +1,86 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-231",
+  "name": "オロチ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "4+",
+  "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 【潜水】自分がターンを終えるとき、これをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。 ・このテキストはクロスギャザーコンプリートブックでエラッタが示されています。修正後は以下。 【潜水】自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。",
+  "rawText": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 【潜水】自分がターンを終えるとき、これをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。 ・このテキストはクロスギャザーコンプリートブックでエラッタが示されています。修正後は以下。 【潜水】自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。",
+  "bp": 6000,
+  "size": "M",
+  "sp": 1,
+  "features": [
+    "魔化魍"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_win_vs_sp1",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "mizu_e6bd9c",
+      "name": "潜水",
+      "text": "自分がターンを終えるとき、これをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。 ・このテキストはクロスギャザーコンプリートブックでエラッタが示されています。修正後は以下。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-231::mizu_e6bd9c",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "mizu_gatanwoeruto",
+      "name": "潜水",
+      "text": "自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-231::mizu_gatanwoeruto",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "destroy_on_win_vs_sp1"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_feature_unit",
+    "text": "特徴「女」を持つ自軍ユニットを1体を捨札にする",
+    "requiredFeature": "女",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-231.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-231.jpg"
+}

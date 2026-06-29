@@ -1,0 +1,86 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-207",
+  "name": "ホースオルフェノク激情態",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「ホースオルフェノク格闘態」のカードを1枚選びラッシュエリアに出す。 【悲哀と絶望】これをラッシュしたとき、ホールド状態のユニットをすべて撃破する。そうして3体撃破するたび、相手に1点ダメージを与える。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「ホースオルフェノク格闘態」のカードを1枚選びラッシュエリアに出す。 【悲哀と絶望】これをラッシュしたとき、ホールド状態のユニットをすべて撃破する。そうして3体撃破するたび、相手に1点ダメージを与える。",
+  "bp": 5500,
+  "size": "S",
+  "features": [
+    "オルフェノク",
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「ホースオルフェノク格闘態」のカードを1枚選びラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "to_e682b2",
+      "name": "悲哀と絶望",
+      "text": "これをラッシュしたとき、ホールド状態のユニットをすべて撃破する。そうして3体撃破するたび、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「ホースオルフェノク格闘態」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ホースオルフェノク格闘態",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-207.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-207.jpg"
+}

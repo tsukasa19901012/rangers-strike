@@ -15,9 +15,15 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ゴーゴーボイジャー」1体を捨札にする",
+    "partnerName": "ゴーゴーボイジャー",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_cannot_attack_non_da",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはDAを持たないユニットにアタックすることができない。",
       "trigger": {
         "type": "while_in_field"
@@ -57,11 +63,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「ゴーゴーボイジャー」1体を捨札にする",
-    "partnerName": "ゴーゴーボイジャー",
-    "unitCount": 1
   }
 }

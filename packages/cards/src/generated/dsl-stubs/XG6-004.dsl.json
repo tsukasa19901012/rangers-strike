@@ -11,21 +11,20 @@
   "rawText": "自軍パワーゾーンのオモテ向きのカードを好きな枚数選びウラ向きにしてもよい。 ただし、自分がゲームに負ける点数以上ウラ向きにすることはできない。その後、自分の手札にあるBP16000以下のLユニットのカードは、このターン、ブラストを得る。",
   "effects": [
     {
-      "id": "furuburasutoakushon",
-      "name": "フルブラスト・アクション",
+      "id": "note_e887aae8bb8de38391e383af",
       "text": "自軍パワーゾーンのオモテ向きのカードを好きな枚数選びウラ向きにしてもよい。 ただし、自分がゲームに負ける点数以上ウラ向きにすることはできない。その後、自分の手札にあるBP16000以下のLユニットのカードは、このターン、ブラストを得る。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-004::furuburasutoakushon",
+          "keyword": "power_zone_action_pawazonnoomote_ko_kinokadowokinabiura_ko_kinishitemoyo",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

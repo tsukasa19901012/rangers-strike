@@ -62,17 +62,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "unnamedRules": [
-    {
-      "kind": "zord",
-      "text": "合体―-ガオゴリラ＋ガオイーグル＋ガオバイソン＋ガオベアー＋ガオポーラー",
-      "partnerCardIds": [
-        "RS-153",
-        "RS-155",
-        "XG3-015",
-        "XG3-013"
-      ]
-    }
-  ]
+  }
 }

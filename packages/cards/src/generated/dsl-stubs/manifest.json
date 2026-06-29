@@ -1,15 +1,18 @@
 {
-  "generatedAt": "2026-06-10T03:40:26.928Z",
+  "generatedAt": "2026-06-29T15:45:54.036Z",
   "grades": [
+    "A",
+    "B",
     "C",
-    "D"
+    "D",
+    "E"
   ],
   "prefix": null,
-  "batchTargets": 1316,
-  "batchCompiled": 1316,
-  "batchValidationOk": 1314,
+  "batchTargets": 797,
+  "batchCompiled": 797,
+  "batchValidationOk": 797,
   "totalEntries": 1670,
-  "totalDslFiles": 1670,
+  "totalDslFiles": 1849,
   "validationOk": 1668,
   "validationFailed": 2,
   "wikiMissing": 0,

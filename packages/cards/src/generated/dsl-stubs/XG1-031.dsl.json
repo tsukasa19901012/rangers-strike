@@ -23,7 +23,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍エリアにある間、自軍バトルフェイズ中、自分の手札にある特徴「炎神」を持つユニットカードはカテゴリにWBが追加される。",
       "trigger": {
         "type": "while_in_field"
@@ -31,11 +31,10 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG1-031::koregaerianiarub",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "dorudoru_dan",
@@ -44,14 +43,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-031::dorudorudan",
-          "duration": "permanent"
+          "keyword": "power_zone_action_rashueriakara_honoo_shin_wochinanbaniwotsumyunitowo1bi",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

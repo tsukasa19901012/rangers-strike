@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-215",
+  "name": "リザードアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "【スペード2―スラッシュ】自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "rawText": "【スペード2―スラッシュ】自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "bp": 3500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "supedo2surashu",
+      "name": "スペード2―スラッシュ",
+      "text": "自軍ラッシュフェイズ中、これをラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "replace_rush_kamen_rider",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-215.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-215.jpg"
+}

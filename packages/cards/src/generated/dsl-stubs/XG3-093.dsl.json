@@ -28,14 +28,14 @@
       "trigger": {
         "type": "on_attack"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-093::sonikupuresha",
+          "keyword": "hold_enemy_unit_konotankoregasyunitoniatakusurutokibatorunonibatorunoyun",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

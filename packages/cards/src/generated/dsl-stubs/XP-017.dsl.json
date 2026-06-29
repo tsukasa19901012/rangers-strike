@@ -23,7 +23,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_rush_from_hand_only",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは手札からしかラッシュできない。",
       "trigger": {
         "type": "while_in_field"
@@ -41,16 +41,16 @@
       "name": "世界の破壊者",
       "text": "自分と相手のパワーゾーンのカードの枚数をくらべ、枚数が多いパワーゾーンの持ち主は次のようにする⇒自分自身のパワーゾーンのカードの枚数が対戦相手と同じになるまで、自分自身のオモテ向きのパワーを可能な限り選び捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-017::nohakai",
-          "duration": "permanent"
+          "keyword": "power_zone_action_tonopawazonnokadonowokurabegaipawazonnochiha",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

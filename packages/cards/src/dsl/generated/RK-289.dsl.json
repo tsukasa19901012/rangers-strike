@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-289",
+  "name": "ジェットスライガー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "【ジェットエンジン噴射】自軍ターン中、これがバトルエリアに出たとき、敵軍ビークルが2体以上あれば、ライドされていない敵軍Sビークルか、ライドされていない敵軍Mビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
+  "rawText": "【ジェットエンジン噴射】自軍ターン中、これがバトルエリアに出たとき、敵軍ビークルが2体以上あれば、ライドされていない敵軍Sビークルか、ライドされていない敵軍Mビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
+  "effects": [
+    {
+      "id": "jietoenjin",
+      "name": "ジェットエンジン噴射",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍ビークルが2体以上あれば、ライドされていない敵軍Sビークルか、ライドされていない敵軍Mビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-289::jietoenjin",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/promoted/RK-289.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-289.jpg"
+}

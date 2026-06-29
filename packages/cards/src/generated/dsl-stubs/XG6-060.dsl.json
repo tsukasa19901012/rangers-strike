@@ -11,20 +11,20 @@
   "rawText": "※これが自軍コマンドゾーンに置かれたとき、これを手札に加えてもよい。 ◎コマンドを１つ選び、カテゴリを１つ宣言する。そうしたとき、このターン、宣言したカテゴリを選んだコマンドに追加する。",
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍コマンドゾーンに置かれたとき、これを手札に加えてもよい。 ◎コマンドを１つ選び、カテゴリを１つ宣言する。そうしたとき、このターン、宣言したカテゴリを選んだコマンドに追加する。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-060::koregakomandozon",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

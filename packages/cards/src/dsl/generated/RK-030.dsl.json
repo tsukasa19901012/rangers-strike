@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-030",
+  "name": "トライチェイサー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "※これにライドしているユニットはBP+1000される。 【無線通信】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚を見てもよい。そうしたとき、それを元に戻すか、山札の下に戻すかを選択する。",
+  "rawText": "※これにライドしているユニットはBP+1000される。 【無線通信】自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚を見てもよい。そうしたとき、それを元に戻すか、山札の下に戻すかを選択する。",
+  "effects": [
+    {
+      "id": "unnamed_ride_bp_boost_1000",
+      "text": "※これにライドしているユニットはBP+1000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_1000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "fx_unknown_e784a1",
+      "name": "無線通信",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚を見てもよい。そうしたとき、それを元に戻すか、山札の下に戻すかを選択する。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_scry_one",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットはBP+1000される。",
+      "rule": "ride_bp_boost_1000"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/promoted/RK-030.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-030.jpg"
+}

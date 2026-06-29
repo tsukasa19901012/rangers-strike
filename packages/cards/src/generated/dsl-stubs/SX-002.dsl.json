@@ -21,6 +21,12 @@
     "アマダム",
     "ライジング"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_name_contains_unit",
+    "text": "カード名に「クウガ」を含む自軍ユニット1体を捨札にする",
+    "nameContains": "クウガ",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_register",
@@ -43,14 +49,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SX-002::inirumonoe9bb92",
+          "keyword": "while_in_field_body_koregabatoruerianiaruraidawotsuyunitohaatakukasutora",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -64,11 +70,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_name_contains_unit",
-    "text": "カード名に「クウガ」を含む自軍ユニット1体を捨札にする",
-    "nameContains": "クウガ",
-    "unitCount": 1
   }
 }

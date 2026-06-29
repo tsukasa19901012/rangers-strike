@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_destroy_on_enter_battle",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはバトルエリアに出たとき撃破される。",
       "trigger": {
         "type": "while_in_field"

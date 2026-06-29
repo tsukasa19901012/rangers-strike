@@ -20,7 +20,7 @@
   "unnamedRules": [],
   "effects": [
     {
-      "id": "surging_chopper",
+      "id": "sajinguchopa",
       "name": "サージングチョッパー",
       "text": "自軍ターン中、Sユニットとバトルするとき、このユニットはBP+5000される。",
       "trigger": {
@@ -28,13 +28,17 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "bp_modify_tansyunitotobatorusurutokikonoyunitohabp5000sareru",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

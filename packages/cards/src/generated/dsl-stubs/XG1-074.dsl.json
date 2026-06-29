@@ -38,7 +38,7 @@
       ]
     },
     {
-      "id": "unnamed_not_selectable_except_attack",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはアタックされる以外では相手に選ばれない。",
       "trigger": {
         "type": "while_in_field"
@@ -58,14 +58,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-074::hamotonamonowotsuketa",
+          "keyword": "while_in_field_body_koregaerianiarukorenorashuerianoyunitohaatakusarenai",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

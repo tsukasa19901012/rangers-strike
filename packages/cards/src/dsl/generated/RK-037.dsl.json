@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-037",
+  "name": "エビルダイバー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【グライディング】このユニットと隣り合う特徴「ミラーライダー」を持つSユニットは、敵軍ユニットにアタックされない。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【グライディング】このユニットと隣り合う特徴「ミラーライダー」を持つSユニットは、敵軍ユニットにアタックされない。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/2",
+  "features": [
+    "ミラーモンスター",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "adjacent_miraraida_no_attack",
+      "name": "グライディング",
+      "text": "このユニットと隣り合う特徴「ミラーライダー」を持つSユニットは、敵軍ユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "adjacent_miraraida_no_attack",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-037.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-037.jpg"
+}

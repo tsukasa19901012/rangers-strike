@@ -38,14 +38,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-020::kamikenkamikiba",
-          "duration": "permanent"
+          "keyword": "category_modify_syunitowo1bikategoriwo1tsusurukonotanshitakategoriwonda",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

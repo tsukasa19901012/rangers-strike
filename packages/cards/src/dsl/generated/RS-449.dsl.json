@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-449",
+  "name": "イエローマスク",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【マスキーローター】「SP1」常駐しているオペレーションを1枚選んでもよい。そうしたとき、選んだオペレーションの上に重ねたカードがあれば、重ねたカードをすべて持ち主の山札に戻してシャッフルする。",
+  "rawText": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない） 【マスキーローター】「SP1」常駐しているオペレーションを1枚選んでもよい。そうしたとき、選んだオペレーションの上に重ねたカードがあれば、重ねたカードをすべて持ち主の山札に戻してシャッフルする。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "イエロー",
+    "女",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_scrum",
+      "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "scrum",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "masukirota",
+      "name": "マスキーローター",
+      "text": "「SP1」常駐しているオペレーションを1枚選んでもよい。そうしたとき、選んだオペレーションの上に重ねたカードがあれば、重ねたカードをすべて持ち主の山札に戻してシャッフルする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
+      "rule": "scrum"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-449.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-449.jpg"
+}

@@ -37,14 +37,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-060::kado",
-          "duration": "permanent"
+          "keyword": "return_to_zone_koregabatorueriakararashuerianirutokinowonaide1ndemoyo",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

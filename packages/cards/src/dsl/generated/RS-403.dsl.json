@@ -1,0 +1,73 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-403",
+  "name": "デカレッド",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ハイブリッドマグナム】敵軍ラッシュエリアから、BPの下三桁が500の敵軍Sユニットを1体選び、撃破してもよい。",
+  "rawText": "【ハイブリッドマグナム】敵軍ラッシュエリアから、BPの下三桁が500の敵軍Sユニットを1体選び、撃破してもよい。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "レッド",
+    "男",
+    "警察",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "haiburidomagunamu",
+      "name": "ハイブリッドマグナム",
+      "text": "敵軍ラッシュエリアから、BPの下三桁が500の敵軍Sユニットを1体選び、撃破してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "rush",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "rush",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-403.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-403.jpg"
+}

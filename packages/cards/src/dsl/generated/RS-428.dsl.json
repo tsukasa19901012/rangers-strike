@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-428",
+  "name": "スーパーゲキブルー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札に｢ゲキブルー｣のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【ファンタスティック・テクニック】自軍ラッシュエリアから、効果に「ラッシュしたとき」とある「WB」のMユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札に｢ゲキブルー｣のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【ファンタスティック・テクニック】自軍ラッシュエリアから、効果に「ラッシュしたとき」とある「WB」のMユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。",
+  "bp": 4500,
+  "size": "S",
+  "comboNumber": 3,
+  "features": [
+    "ブルー",
+    "男",
+    "激気"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に｢ゲキブルー｣のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_destroy_reanimate_named_from_discard",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "fuantasuteikutekuniku",
+      "name": "ファンタスティック・テクニック",
+      "text": "自軍ラッシュエリアから、効果に「ラッシュしたとき」とある「WB」のMユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_rush_trigger_wb_m_rush_effect_from_rush",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍｢ゲキブルー｣1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ゲキブルー",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-428.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-428.jpg"
+}

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-308",
+  "name": "リュウタロス",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これは特徴「獣」を持つユニットにアタックできない。 ※自軍ターン中、これは、敵軍バトルエリアにユニットがあれば、可能ならバトルエリアに出る。 【猫はこっち、アンタは嫌い】自軍パワーゾーンのオモテ向きのカードから、特徴「獣」を持つユニットカードを1枚選び自分の手札に戻してもよい。そうしたとき、敵軍ラッシュエリアから本来のBPが3000以下のユニットを1体選び撃破する。",
+  "rawText": "※これは特徴「獣」を持つユニットにアタックできない。 ※自軍ターン中、これは、敵軍バトルエリアにユニットがあれば、可能ならバトルエリアに出る。 【猫はこっち、アンタは嫌い】自軍パワーゾーンのオモテ向きのカードから、特徴「獣」を持つユニットカードを1枚選び自分の手札に戻してもよい。そうしたとき、敵軍ラッシュエリアから本来のBPが3000以下のユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/4",
+  "comboNumber": 2,
+  "features": [
+    "イマジン",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce381af",
+      "text": "※これは特徴「獣」を持つユニットにアタックできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_feature_獣",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "unnamed_auto_battle_if_enemy_battle",
+      "text": "※自軍ターン中、これは、敵軍バトルエリアにユニットがあれば、可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_if_enemy_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "hakochiantahai",
+      "name": "猫はこっち、アンタは嫌い",
+      "text": "自軍パワーゾーンのオモテ向きのカードから、特徴「獣」を持つユニットカードを1枚選び自分の手札に戻してもよい。そうしたとき、敵軍ラッシュエリアから本来のBPが3000以下のユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-308::hakochiantahai",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-308.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-308.jpg"
+}

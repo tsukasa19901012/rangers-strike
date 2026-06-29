@@ -17,6 +17,12 @@
     "人型",
     "電子モヂカラ"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「海老折神」1体を捨札にする",
+    "partnerName": "海老折神",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_morph",
@@ -39,14 +45,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-036::basamishi",
+          "keyword": "bp_modify_koreworashushitatokisonotankorehabp3000sareru",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -60,11 +66,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「海老折神」1体を捨札にする",
-    "partnerName": "海老折神",
-    "unitCount": 1
   }
 }

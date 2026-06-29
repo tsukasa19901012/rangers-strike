@@ -28,13 +28,16 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
         }
       ]
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

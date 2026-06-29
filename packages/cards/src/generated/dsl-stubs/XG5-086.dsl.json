@@ -15,6 +15,12 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_name_contains_unit",
+    "text": "カード名に「グランナスカ」を含む自軍ユニット1体を捨札にする",
+    "nameContains": "グランナスカ",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "nakurubonba",
@@ -23,25 +29,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-086::nakurubonba",
+          "keyword": "power_zone_action_tankoregabatoruerianitatokibatorueriakaramyunitowo1bi",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_name_contains_unit",
-    "text": "カード名に「グランナスカ」を含む自軍ユニット1体を捨札にする",
-    "nameContains": "グランナスカ",
-    "unitCount": 1
   }
 }

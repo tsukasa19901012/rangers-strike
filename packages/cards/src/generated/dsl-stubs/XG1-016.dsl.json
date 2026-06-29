@@ -16,6 +16,12 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「サイレンダーPM」1体を捨札にする",
+    "partnerName": "サイレンダーPM",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "wapagan",
@@ -66,11 +72,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「サイレンダーPM」1体を捨札にする",
-    "partnerName": "サイレンダーPM",
-    "unitCount": 1
   }
 }

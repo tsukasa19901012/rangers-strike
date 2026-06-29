@@ -1,0 +1,51 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-445",
+  "name": "ミスアメリカ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【ディスコダンス】「SP1」自分がターンを終えるとき、自軍バトルエリアの特徴「女」を持つSユニットをすべてラッシュエリアに戻してもよい。",
+  "rawText": "【ディスコダンス】「SP1」自分がターンを終えるとき、自軍バトルエリアの特徴「女」を持つSユニットをすべてラッシュエリアに戻してもよい。",
+  "bp": 1000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "ピンク",
+    "女",
+    "警察"
+  ],
+  "effects": [
+    {
+      "id": "disco_dance",
+      "name": "ディスコダンス",
+      "text": "「SP1」自分がターンを終えるとき、自軍バトルエリアの特徴「女」を持つSユニットをすべてラッシュエリアに戻してもよい。",
+      "trigger": {
+        "type": "on_turn_end"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "runtime_disco_dance",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-445.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-445.jpg"
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-107",
+  "name": "マシントルネイダー",
+  "type": "vehicle",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "【硬化装甲】これにライドしているユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。",
+  "rawText": "【硬化装甲】これにライドしているユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。",
+  "effects": [
+    {
+      "id": "ko",
+      "name": "硬化装甲",
+      "text": "これにライドしているユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-107::ko",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/promoted/RK-107.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-107.jpg"
+}

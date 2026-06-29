@@ -98,7 +98,8 @@ describe("vertical slice — all starter deck CPU simulation", () => {
       expect(report.winner).toBeGreaterThan(GAME_COUNT * 0.9);
       expect(report.phaseCoverage.rush).toBe(GAME_COUNT);
       expect(report.phaseCoverage.battle).toBe(GAME_COUNT);
+      expect(report.withStrike).toBeGreaterThan(GAME_COUNT * 0.35);
     },
-    120_000,
+    300_000,
   );
 });

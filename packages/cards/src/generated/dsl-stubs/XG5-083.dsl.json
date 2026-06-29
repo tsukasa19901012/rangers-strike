@@ -11,19 +11,19 @@
   "rawText": "※カウンター 自軍Sユニットがバトルで撃破されて捨札になったとき発動できる⇒そのユニットのカードを自軍コマンドゾーンにホールド状態で置く。置けなければ手札に加える。",
   "effects": [
     {
-      "id": "unnamed_counter_note_kaunta_syunitogabato",
+      "id": "unnamed_e280bbe382abe382a6e383b3",
       "text": "※カウンター 自軍Sユニットがバトルで撃破されて捨札になったとき発動できる⇒そのユニットのカードを自軍コマンドゾーンにホールド状態で置く。置けなければ手札に加える。",
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "counter_note::kaunta_syunitogabato",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

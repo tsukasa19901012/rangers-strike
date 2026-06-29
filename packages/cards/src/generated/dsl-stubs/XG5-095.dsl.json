@@ -17,9 +17,15 @@
     "ブラック",
     "ドラゴン"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「ギルハカイダー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "ギルハカイダー",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_destroy_on_win_vs_sp1",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。",
       "trigger": {
         "type": "while_in_field"
@@ -39,14 +45,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-095::satandakunesu",
+          "keyword": "damage_action_tankoregabatoruerianitatokinowononiunopa",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -60,11 +66,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_discard_named",
-    "text": "自軍「ギルハカイダー」1体を捨札にすれば必要パワー0になる",
-    "partnerName": "ギルハカイダー",
-    "unitCount": 1
   }
 }

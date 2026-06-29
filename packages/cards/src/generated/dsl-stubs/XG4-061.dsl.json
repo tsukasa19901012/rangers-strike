@@ -25,6 +25,18 @@
       "trigger": {
         "type": "on_rush"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "optional": false,
       "effects": [
         {
           "type": "choose",
@@ -47,19 +59,7 @@
             }
           ]
         }
-      ],
-      "optional": false,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      }
+      ]
     }
   ],
   "implementation": {

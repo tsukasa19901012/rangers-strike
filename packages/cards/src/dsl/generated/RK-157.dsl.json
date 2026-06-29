@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-157",
+  "name": "バットイマジン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 0,
+  "text": "※これはバトルエリアに出たとき撃破される。 【契約者の望むもの】これが自軍バトルエリアからラッシュエリアに戻るとき、自軍常駐置き場からカードを1枚選び、自分の手札に加えてもよい。ただし、ウラ向きのカードはウラ向きのまま選ぶ。",
+  "rawText": "※これはバトルエリアに出たとき撃破される。 【契約者の望むもの】これが自軍バトルエリアからラッシュエリアに戻るとき、自軍常駐置き場からカードを1枚選び、自分の手札に加えてもよい。ただし、ウラ向きのカードはウラ向きのまま選ぶ。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "イマジン"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_enter_battle",
+      "text": "※これはバトルエリアに出たとき撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "nomumono",
+      "name": "契約者の望むもの",
+      "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、自軍常駐置き場からカードを1枚選び、自分の手札に加えてもよい。ただし、ウラ向きのカードはウラ向きのまま選ぶ。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-157::nomumono",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出たとき撃破される。",
+      "rule": "destroy_on_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-157.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-157.jpg"
+}

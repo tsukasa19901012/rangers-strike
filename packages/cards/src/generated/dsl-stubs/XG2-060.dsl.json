@@ -23,14 +23,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-060::supedo10taimu",
+          "keyword": "exclude_game_rashufueizukoreworashusurutokirashuerianisukawarinigemuka",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

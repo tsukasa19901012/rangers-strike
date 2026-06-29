@@ -1,0 +1,50 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-060",
+  "name": "デンライナーゴウカ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "5+",
+  "text": "【戦闘モード】これは必要パワーの数字に「－」のあるユニットにアタックするときBP+5000される。",
+  "rawText": "【戦闘モード】これは必要パワーの数字に「－」のあるユニットにアタックするときBP+5000される。",
+  "bp": 6000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "modo",
+      "name": "戦闘モード",
+      "text": "これは必要パワーの数字に「－」のあるユニットにアタックするときBP+5000される。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "modify_bp",
+          "target": {
+            "type": "trigger_source"
+          },
+          "amount": 5000,
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-060.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-060.jpg"
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-144",
+  "name": "キンタロス",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "※これはバトルエリアに出たとき撃破される。 【俺の強さは泣けるで！】これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、そのユニットはBP+3000される。",
+  "rawText": "※これはバトルエリアに出たとき撃破される。 【俺の強さは泣けるで！】これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、そのユニットはBP+3000される。",
+  "bp": 5000,
+  "size": "S",
+  "features": [
+    "イマジン"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_enter_battle",
+      "text": "※これはバトルエリアに出たとき撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "power_faceup_raida_on_enter",
+      "name": "俺の強さは泣けるで！",
+      "text": "これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、そのユニットはBP+3000される。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "power_faceup_raida_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出たとき撃破される。",
+      "rule": "destroy_on_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-144.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-144.jpg"
+}

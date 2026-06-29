@@ -11,21 +11,20 @@
   "rawText": "自軍パワーゾーンのダメージ以外のカードをすべて捨札にする。そうしたとき、捨札にしたカードと同じ枚数まで、自軍パワーゾーンからダメージになっているカードを選び、自軍山札の上に好きな順で戻す。",
   "effects": [
     {
-      "id": "kyuyusouru",
-      "name": "キューユソウル",
+      "id": "note_e887aae8bb8de38391e383af",
       "text": "自軍パワーゾーンのダメージ以外のカードをすべて捨札にする。そうしたとき、捨札にしたカードと同じ枚数まで、自軍パワーゾーンからダメージになっているカードを選び、自軍山札の上に好きな順で戻す。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-047::kyuyusouru",
+          "keyword": "damage_action_pawazonnodamejinokadowosubetenisurusoushitatokinishitaka",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

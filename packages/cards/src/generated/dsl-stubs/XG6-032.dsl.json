@@ -15,21 +15,27 @@
   "features": [
     "ドラゴン"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_power_cards",
+    "text": "必要パワーの数字が5以上の自軍パワーを4枚捨札にすれば必要パワー0になる",
+    "minPrintedPowerCost": 5,
+    "unitCount": 4
+  },
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce38292",
+      "id": "note_e280bbe38193e3828ce38292",
       "text": "※これをラッシュしたとき、自軍Sユニットを1体選び、これの下にウラ向きで重ねる。 これがユニットでなくなるとき、これにウラ向きで重ねたカードは捨札になる。",
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-032::koreworashushita",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "nano_chikara",
@@ -41,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-032::nanochikara",
-          "duration": "permanent"
+          "keyword": "grant_ability_konoyunitononiura_ko_kidenetakadogaarebakorehano_chikara_w",
+          "duration": "turn"
         }
       ]
     }
@@ -51,11 +57,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_discard_power_cards",
-    "text": "必要パワーの数字が5以上の自軍パワーを4枚捨札にすれば必要パワー0になる",
-    "minPrintedPowerCost": 5,
-    "unitCount": 4
   }
 }

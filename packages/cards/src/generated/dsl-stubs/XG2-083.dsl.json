@@ -21,7 +21,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_chase",
+      "id": "unnamed_e280bbe38381e382a7e382a4",
       "text": "※チェイス",
       "trigger": {
         "type": "while_in_field"
@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍エリアにある間、特徴「宇宙刑事」を持つ自軍ユニットは、アタックされるとき、BP+1000される",
       "trigger": {
         "type": "while_in_field"
@@ -43,11 +43,10 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-083::koregaerianiaruw",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "patororu",
@@ -56,14 +55,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-083::patororu",
+          "keyword": "ride_action_rashueriakararcwotsuyunitowo1ndemoyoisoushitatokikonotan",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

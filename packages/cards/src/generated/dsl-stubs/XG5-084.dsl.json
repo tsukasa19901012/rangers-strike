@@ -40,16 +40,16 @@
       "name": "『お前の罪を数えろ』",
       "text": "これは自軍捨札にSユニットのカードが5枚以上あれば、次の相手ターン中、次の効果を得る⇒これ以外のSユニットがアタックされたとき、アタックされたユニットのかわりにこのユニットがバトルしてもよい。そうしたとき、そのバトル中、これはBP+3000される。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-084::onowoero",
-          "duration": "permanent"
+          "keyword": "bp_modify_korehanisyunitonokadoga5arebanotannoworu",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

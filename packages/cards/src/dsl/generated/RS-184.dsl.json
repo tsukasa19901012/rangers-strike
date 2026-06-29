@@ -1,0 +1,36 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-184",
+  "name": "マジパンチ",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "text": "※カウンター（これは敵軍ターン中にのみ使用できる） BP8000以下の敵軍ユニットにストライクされたとき発動できる⇒ストライクしてきた敵軍ユニットを持ち主の手札に戻す。そのとき、敵軍のストライクは無効になる。",
+  "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） BP8000以下の敵軍ユニットにストライクされたとき発動できる⇒ストライクしてきた敵軍ユニットを持ち主の手札に戻す。そのとき、敵軍のストライクは無効になる。",
+  "effects": [
+    {
+      "id": "note_e280bbe382abe382a6e383b3",
+      "text": "※カウンター（これは敵軍ターン中にのみ使用できる） BP8000以下の敵軍ユニットにストライクされたとき発動できる⇒ストライクしてきた敵軍ユニットを持ち主の手札に戻す。そのとき、敵軍のストライクは無効になる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "counter"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "counter_strike_return_attacker",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-184.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-184.jpg"
+}

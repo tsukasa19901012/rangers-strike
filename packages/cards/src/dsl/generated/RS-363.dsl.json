@@ -1,0 +1,86 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-363",
+  "name": "バルパンサー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。 【パンサークロー】このターン、敵軍コマンドゾーンにホールド状態でユニットカードが置かれたとき、それを捨札にしてもよい。",
+  "rawText": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。 【パンサークロー】このターン、敵軍コマンドゾーンにホールド状態でユニットカードが置かれたとき、それを捨札にしてもよい。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "イエロー",
+    "男",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_category_wb_in_battle",
+      "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "category_wb_in_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "panther_claw",
+      "name": "パンサークロー",
+      "text": "このターン、敵軍コマンドゾーンにホールド状態でユニットカードが置かれたとき、それを捨札にしてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。",
+      "rule": "category_wb_in_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-363.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-363.jpg"
+}

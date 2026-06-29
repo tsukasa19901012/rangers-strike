@@ -14,9 +14,15 @@
   "features": [
     "メカ"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_name_contains_unit",
+    "text": "カード名に「グランナスカ」を含む自軍ユニット1体を捨札にする",
+    "nameContains": "グランナスカ",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_cannot_enter_battle",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはバトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"
@@ -56,11 +62,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_name_contains_unit",
-    "text": "カード名に「グランナスカ」を含む自軍ユニット1体を捨札にする",
-    "nameContains": "グランナスカ",
-    "unitCount": 1
   }
 }

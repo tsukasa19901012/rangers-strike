@@ -17,6 +17,12 @@
     "男",
     "魔皇力"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_feature_unit",
+    "text": "特徴「魔皇力」を持つ自軍ユニット1体を捨札にする",
+    "requiredFeature": "魔皇力",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_register",
@@ -60,11 +66,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_feature_unit",
-    "text": "特徴「魔皇力」を持つ自軍ユニット1体を捨札にする",
-    "requiredFeature": "魔皇力",
-    "unitCount": 1
   }
 }

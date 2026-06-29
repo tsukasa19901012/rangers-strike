@@ -20,10 +20,11 @@
     "人型"
   ],
   "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
+    "conditionId": "discard_feature_unit",
     "text": "特徴「忍者」を持つ自軍Sユニット1体を捨札にする",
-    "partnerName": "忍者",
-    "unitCount": 1
+    "requiredFeature": "忍者",
+    "unitCount": 1,
+    "requiredSize": "S"
   },
   "effects": [
     {
@@ -33,14 +34,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-081::pakonomamorugoshin",
+          "keyword": "while_in_field_body_koregaerianiarukiniarukadohanibarenai",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

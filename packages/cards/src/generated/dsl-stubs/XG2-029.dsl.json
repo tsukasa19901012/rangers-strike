@@ -16,9 +16,15 @@
     "災魔一族",
     "男"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「龍冥王サラマンデス」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "龍冥王サラマンデス",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_destroy_on_win_vs_sp1",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
       "trigger": {
         "type": "while_in_field"
@@ -38,14 +44,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-029::matsuri",
+          "keyword": "while_in_field_body_koregaerianiaruyunitoga_geki_ha_saretatokinokara1hii",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -59,11 +65,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_discard_named",
-    "text": "自軍「龍冥王サラマンデス」1体を捨札にすれば必要パワー0になる",
-    "partnerName": "龍冥王サラマンデス",
-    "unitCount": 1
   }
 }

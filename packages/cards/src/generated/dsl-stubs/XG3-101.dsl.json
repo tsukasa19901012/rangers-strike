@@ -17,6 +17,12 @@
     "昆虫",
     "男"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「サナギマン」1体を捨札する",
+    "partnerName": "サナギマン",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_register",
@@ -33,35 +39,35 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe695b5e8bb8de382bf",
+      "id": "note_e280bbe695b5e8bb8de382bf",
       "text": "※敵軍ターン中、これをラッシュしたとき、そのターンのバトルフェイズを飛ばす。",
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG3-101::tankoreworashush",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "chiesuto",
       "name": "逆転チェスト",
       "text": "次の相手ターン中、1度だけ次の効果を発動できる⇒これがユニットでなくなるとき、これをホールドしてその場に留めてもよい。そうしたとき、これのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-101::chiesuto",
-          "duration": "permanent"
+          "keyword": "grant_effect_notan1dakenowodekirukoregayunitodenakunarutokikorewoho",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -75,11 +81,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「サナギマン」1体を捨札する",
-    "partnerName": "サナギマン",
-    "unitCount": 1
   }
 }

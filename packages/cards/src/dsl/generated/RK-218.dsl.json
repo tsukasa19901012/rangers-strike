@@ -1,0 +1,58 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-218",
+  "name": "ピーコックアンデッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "※これが自分の手札にある間、自分が「仮面ライダーギャレンJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーギャレン」1体を捨札にしたことにできる。 【下級アンデッドを操る者】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから、特徴｢アンデッド｣を持つ自軍ユニットを1体選んでも良い。そうしたとき、選んだユニットは、このターン「SP1」になり、ターンを終えるとき撃破される。",
+  "rawText": "※これが自分の手札にある間、自分が「仮面ライダーギャレンJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーギャレン」1体を捨札にしたことにできる。 【下級アンデッドを操る者】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから、特徴｢アンデッド｣を持つ自軍ユニットを1体選んでも良い。そうしたとき、選んだユニットは、このターン「SP1」になり、ターンを終えるとき撃破される。",
+  "bp": 3500,
+  "size": "S",
+  "features": [
+    "アンデッド",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "text": "※これが自分の手札にある間、自分が「仮面ライダーギャレンJF」をラッシュするとき、これを捨札にすれば、自軍「仮面ライダーギャレン」1体を捨札にしたことにできる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rush_discard_substitute_for_named::仮面ライダーギャレンJF",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "andedoworu",
+      "name": "下級アンデッドを操る者",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアから、特徴｢アンデッド｣を持つ自軍ユニットを1体選んでも良い。そうしたとき、選んだユニットは、このターン「SP1」になり、ターンを終えるとき撃破される。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-218::andedoworu",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-218.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-218.jpg"
+}

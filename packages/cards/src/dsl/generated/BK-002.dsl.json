@@ -1,0 +1,51 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "BK-002",
+  "name": "ダブルタイフーン",
+  "type": "operation",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーV3」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍山札の上から1枚を見て、そのカードを山札の上か下かに戻す。",
+  "rawText": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーV3」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍山札の上から1枚を見て、そのカードを山札の上か下かに戻す。",
+  "effects": [
+    {
+      "id": "deck_to_hand",
+      "text": "次の効果から1つ選び発動する⇒ ◎自軍山札から「仮面ライダーV3」のカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ◎自軍山札の上から1枚を見て、そのカードを山札の上か下かに戻す。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "optional_deck_draw",
+          "valid": {
+            "type": "zone",
+            "zone": "deck",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/BK-002.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-002.jpg"
+}

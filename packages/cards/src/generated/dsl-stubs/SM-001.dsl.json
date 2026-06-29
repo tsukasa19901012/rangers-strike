@@ -11,21 +11,20 @@
   "rawText": "特徴「宇宙刑事」を持つ自軍ユニットが1体もなければ、自軍山札を見て、特徴「宇宙刑事」を持つユニットカードを3枚まで選び、選んだカードを自軍ラッシュエリアに出してもよい。ただし、この効果でカードを選ぶとき、同じカード名のユニットカードを2枚以上選ぶことはできない。その後、山札をシャッフルする。",
   "effects": [
     {
-      "id": "fx_3no",
-      "name": "3人の宇宙刑事",
+      "id": "note_e789b9e5beb4e3808ce5ae87",
       "text": "特徴「宇宙刑事」を持つ自軍ユニットが1体もなければ、自軍山札を見て、特徴「宇宙刑事」を持つユニットカードを3枚まで選び、選んだカードを自軍ラッシュエリアに出してもよい。ただし、この効果でカードを選ぶとき、同じカード名のユニットカードを2枚以上選ぶことはできない。その後、山札をシャッフルする。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SM-001::fx3no",
+          "keyword": "deck_search_wotsuyunitoga1monakerebawotewotsuyu",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

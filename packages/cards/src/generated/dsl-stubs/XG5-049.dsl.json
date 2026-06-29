@@ -17,6 +17,12 @@
     "男",
     "改造人間"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "ホールド状態の自軍「アポロガイスト」1体を捨札にする",
+    "partnerName": "アポロガイスト",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_register",
@@ -42,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-049::aporomagunamu",
+          "keyword": "grant_ability_tankoregabatoruerianitatokikonoyunitowohorudoshitemoyoisou",
           "duration": "turn"
         }
       ]
@@ -59,11 +65,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "ホールド状態の自軍「アポロガイスト」1体を捨札にする",
-    "partnerName": "アポロガイスト",
-    "unitCount": 1
   }
 }

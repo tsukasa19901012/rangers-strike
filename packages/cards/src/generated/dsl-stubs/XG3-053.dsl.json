@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_deck_unlimited",
+      "id": "unnamed_e280bbe38193e381aee382ab",
       "text": "※このカードはデッキに好きな枚数入れてもよい。",
       "trigger": {
         "type": "while_in_field"
@@ -37,14 +37,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-053::fxunknowne58886",
+          "keyword": "cannot_restrict_tankoregabatoruerianitatokinokara2woomotenishitemoyoi",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

@@ -16,6 +16,10 @@
     "男",
     "ダブルドライバー"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「獣」または「恐竜」を持つ自軍コマンドがある"
+  },
   "effects": [
     {
       "id": "unnamed_morph",
@@ -32,19 +36,19 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe887aae8bb8de382bf",
+      "id": "note_e280bbe887aae8bb8de382bf",
       "text": "※自軍ターン中、これが自軍バトルエリアにある間、敵軍バトルエリアにあるユニットの効果名を持たないテキストは無効になり、発動もできない。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::SX-003::tankoregabatorue",
+          "keyword": "note_other_fx_unknown",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "amufuangu",
@@ -53,14 +57,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SX-003::amufuangu",
-          "duration": "permanent"
+          "keyword": "bp_modify_korehabatorusurutokibp3000sareru",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -74,9 +78,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「獣」または「恐竜」を持つ自軍コマンドがある"
   }
 }

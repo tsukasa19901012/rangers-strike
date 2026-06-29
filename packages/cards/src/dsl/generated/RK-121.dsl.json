@@ -1,0 +1,50 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-121",
+  "name": "サイドバッシャーBM",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "6+",
+  "text": "【エクザップバスター】これをラッシュしたターン、敵軍SユニットはBP-500される。（BP0以下になったユニットは撃破される）",
+  "rawText": "【エクザップバスター】これをラッシュしたターン、敵軍SユニットはBP-500される。（BP0以下になったユニットは撃破される）",
+  "bp": 5000,
+  "size": "S",
+  "sp": "1/5",
+  "features": [
+    "メカ",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「サイドバッシャーVM」1体をコマンドゾーンに送るか捨札にする",
+    "partnerName": "サイドバッシャーVM",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "ekuzapubasuta",
+      "name": "エクザップバスター",
+      "text": "これをラッシュしたターン、敵軍SユニットはBP-500される。（BP0以下になったユニットは撃破される）",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rush_turn_enemy_s_bp_minus::500",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-121.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-121.jpg"
+}

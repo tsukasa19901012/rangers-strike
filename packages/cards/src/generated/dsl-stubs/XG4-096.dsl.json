@@ -15,6 +15,12 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "return_named_to_hand",
+    "text": "自軍「バビロス」または「バビロスSF」1体を手札に戻す",
+    "partnerName": "バビロス",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "note_e280bbe887aae58886e3818c",
@@ -22,14 +28,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "on_ally_rush_named_return_self_to_hand",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "babirosufuaiya",
@@ -38,25 +44,19 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-096::babirosufuaiya",
+          "keyword": "power_zone_action_koreworashushitatokipawazonkarakadowo1binishitemoyoiso",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "return_named_to_hand",
-    "text": "自軍「バビロス」または「バビロスSF」1体を手札に戻す",
-    "partnerName": "バビロス",
-    "unitCount": 1
   }
 }

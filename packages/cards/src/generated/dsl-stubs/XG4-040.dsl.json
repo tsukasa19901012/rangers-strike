@@ -26,7 +26,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "id": "unnamed_blast",
+      "id": "unnamed_e280bbe38396e383a9e382b9",
       "text": "※ブラスト",
       "trigger": {
         "type": "while_in_field"
@@ -60,20 +60,20 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-040::fxunknown6",
+          "keyword": "enemy_power_damage_koreworashushitatokiuinguwotanaiyunitowo1bichinopawaz",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―ゴセイドラゴン（またはゴセイレッド）＋ゴセイフェニックス（またはゴセイピンク）＋ゴセイスネーク（またはゴセイブラック）＋ゴセイタイガー（またはゴセイイエロー）＋ゴセイシャーク（またはゴセイブルー） ※ウイング ※ブラスト",
+      "text": "合体―ゴセイドラゴン（またはゴセイレッド）＋ゴセイフェニックス（またはゴセイピンク）＋ゴセイスネーク（またはゴセイブラック）＋ゴセイタイガー（またはゴセイイエロー）＋ゴセイシャーク（またはゴセイブルー）",
       "partnerCardIds": [
         "XG4-043",
         "XG5-037",
@@ -83,7 +83,32 @@
         "XG4-044",
         "XG5-040",
         "XG4-041",
-        "XG5-041"
+        "XG5-041",
+        "XG4-042",
+        "XG5-039"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "XG4-043",
+          "XG5-037",
+          "XP-022"
+        ],
+        [
+          "XG4-045",
+          "XG5-038"
+        ],
+        [
+          "XG4-044",
+          "XG5-040"
+        ],
+        [
+          "XG4-041",
+          "XG5-041"
+        ],
+        [
+          "XG4-042",
+          "XG5-039"
+        ]
       ]
     },
     {

@@ -20,9 +20,15 @@
     "仮面ライダー",
     "男"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「仮面ライダーカリス」1体を捨札にする",
+    "partnerName": "仮面ライダーカリス",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_undead_command_rush_hold",
+      "id": "unnamed_e280bbe38193e381aee383a6",
       "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
       "trigger": {
         "type": "while_in_field"
@@ -62,11 +68,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「仮面ライダーカリス」1体を捨札にする",
-    "partnerName": "仮面ライダーカリス",
-    "unitCount": 1
   }
 }

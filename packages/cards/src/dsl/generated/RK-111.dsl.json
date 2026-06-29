@@ -1,0 +1,56 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-111",
+  "name": "ガードチェイサー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【非常警戒態勢】これにライドしているSユニットは次の能力を得る⇒ これが自軍ラッシュエリアにある間、相手にストライクされたとき、これをバトルエリアに出し、ストライクしてきた敵軍ユニットとバトルしてもよい。そうしたとき、そのストライクは無効になる。",
+  "rawText": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【非常警戒態勢】これにライドしているSユニットは次の能力を得る⇒ これが自軍ラッシュエリアにある間、相手にストライクされたとき、これをバトルエリアに出し、ストライクしてきた敵軍ユニットとバトルしてもよい。そうしたとき、そのストライクは無効になる。",
+  "effects": [
+    {
+      "id": "ride_without_rc_fx_unknown",
+      "text": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_without_rc_fx_unknown",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "fx_unknown_e99d9e",
+      "name": "非常警戒態勢",
+      "text": "これにライドしているSユニットは次の能力を得る⇒ これが自軍ラッシュエリアにある間、相手にストライクされたとき、これをバトルエリアに出し、ストライクしてきた敵軍ユニットとバトルしてもよい。そうしたとき、そのストライクは無効になる。",
+      "trigger": {
+        "type": "on_strike"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-111::fx_unknown_e99d9e",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/promoted/RK-111.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-111.jpg"
+}

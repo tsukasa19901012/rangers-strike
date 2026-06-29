@@ -34,9 +34,12 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "return_to_zone_batorufueizuninowodekirukarasyunitonokadowo1n",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "unnamed_win_but_destroyed_vs_sp1",
@@ -55,7 +58,8 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   },
   "rushAdditionalCondition": {
     "conditionId": "discard_named_unit",

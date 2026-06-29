@@ -16,51 +16,55 @@
     "獣",
     "ドラゴン"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「宇宙刑事」を持つ自軍ユニットがある"
+  },
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは、自軍エリアでホールド状態かライドされている間、Lビークルとして扱う。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-082::korehaeriadehoru",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
-      "id": "unnamed_e280bbe887aae8bb8de383a9",
+      "id": "note_e280bbe887aae8bb8de383a9",
       "text": "※自軍ラッシュフェイズ中、このユニットをホールドしてもよい。",
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-082::rashufueizukonoy",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     },
     {
-      "id": "unnamed_e280bbe887aae8bb8de383a9_rashufueizuk",
+      "id": "note_e280bbe887aae8bb8de383a9_2",
       "text": "※自軍ラッシュフェイズ中、このビークルがライドされていないなら、リリースしてもよい。",
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-082::rashufueizukonob",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "dorufuaiya",
@@ -103,9 +107,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「宇宙刑事」を持つ自軍ユニットがある"
   }
 }

@@ -28,14 +28,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-097::raitoningukyanon",
-          "duration": "permanent"
+          "keyword": "category_modify_komandozonkarakategoriwo2tsutsukadowo1binonishitemo",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

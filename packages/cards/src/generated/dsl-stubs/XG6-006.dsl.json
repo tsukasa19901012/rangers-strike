@@ -15,9 +15,15 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_feature_unit",
+    "text": "特徴「レッド」を持つ自軍ユニット1体を捨札にする",
+    "requiredFeature": "レッド",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -37,14 +43,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-006::boukenfurashu",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokikomandozonkarananbanilma",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -58,11 +64,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_feature_unit",
-    "text": "特徴「レッド」を持つ自軍ユニット1体を捨札にする",
-    "requiredFeature": "レッド",
-    "unitCount": 1
   }
 }

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-656",
+  "name": "デカウイングキャノン",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7+",
+  "text": "※これはバトルエリアに出られない。 【オールスターアルティメットバスター】これが自軍エリアにある間、自軍ラッシュフェイズ中、特徴「人型」を持つBP6000以上の自軍ユニットをラッシュしたとき、そのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。さらに、このときラッシュしたユニットがXLユニットだったなら、相手に1点ダメージを与える。",
+  "rawText": "※これはバトルエリアに出られない。 【オールスターアルティメットバスター】これが自軍エリアにある間、自軍ラッシュフェイズ中、特徴「人型」を持つBP6000以上の自軍ユニットをラッシュしたとき、そのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。さらに、このときラッシュしたユニットがXLユニットだったなら、相手に1点ダメージを与える。",
+  "bp": 17000,
+  "size": "L",
+  "features": [
+    "メカ"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_cannot_enter_battle",
+      "text": "※これはバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_enter_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "orusutaaruteimetobasuta",
+      "name": "オールスターアルティメットバスター",
+      "text": "これが自軍エリアにある間、自軍ラッシュフェイズ中、特徴「人型」を持つBP6000以上の自軍ユニットをラッシュしたとき、そのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。さらに、このときラッシュしたユニットがXLユニットだったなら、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはバトルエリアに出られない。",
+      "rule": "cannot_enter_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「パトウイング」、または自軍「デカウイングロボ」1体を捨札にする",
+    "partnerName": "デカウイングロボ",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-656.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-656.jpg"
+}

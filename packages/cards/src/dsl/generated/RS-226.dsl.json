@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-226",
+  "name": "キラーオー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "6+",
+  "text": "合体―爆竜トップゲイラー＋爆竜ステゴスライドン 【爆竜必殺デススティンガー】自軍ターン中、これがバトルでユニットを撃破したとき、これがバトルで撃破したユニットよりBPの低いユニットを、相手は自分自身のユニットの中から1体選び撃破する。",
+  "rawText": "合体―爆竜トップゲイラー＋爆竜ステゴスライドン 【爆竜必殺デススティンガー】自軍ターン中、これがバトルでユニットを撃破したとき、これがバトルで撃破したユニットよりBPの低いユニットを、相手は自分自身のユニットの中から1体選び撃破する。",
+  "bp": 8000,
+  "size": "L",
+  "sp": 1,
+  "features": [
+    "恐竜",
+    "人型"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_fusion_unit",
+    "text": "自軍合体ユニットを捨札にする"
+  },
+  "effects": [
+    {
+      "id": "baku_desusuteinga",
+      "name": "爆竜必殺デススティンガー",
+      "text": "自軍ターン中、これがバトルでユニットを撃破したとき、これがバトルで撃破したユニットよりBPの低いユニットを、相手は自分自身のユニットの中から1体選び撃破する。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "opponent_destroy_lower_bp_on_battle_win",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―爆竜トップゲイラー＋爆竜ステゴスライドン",
+      "partnerCardIds": [
+        "RS-227",
+        "RS-228"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-227"
+        ],
+        [
+          "RS-228"
+        ]
+      ]
+    }
+  ],
+  "imageUrl": "/cards/promoted/RS-226.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-226.jpg"
+}

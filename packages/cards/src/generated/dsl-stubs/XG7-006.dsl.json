@@ -19,19 +19,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_while_in_hand_rush_deploy_wotsubikurukab",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、特徴「獣」を持つ自軍ビークルか、特徴「ブラック」を持つ自軍ユニットがあれば、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "while_in_hand_rush_deploy::wotsubikurukaburakuwotsu",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "hana_e88ab1",

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-089",
+  "name": "乗車拒否",
+  "type": "operation",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "次の効果を、相手、自分の順に行う。 自分自身の山札の上から3枚をオモテにして相手に見せる。その中から特徴「車両」を持つMユニットのカードをすべて自分自身のパワーゾーンに置き、それ以外は好きな順で自分自身の山札の下に戻す。",
+  "rawText": "次の効果を、相手、自分の順に行う。 自分自身の山札の上から3枚をオモテにして相手に見せる。その中から特徴「車両」を持つMユニットのカードをすべて自分自身のパワーゾーンに置き、それ以外は好きな順で自分自身の山札の下に戻す。",
+  "effects": [
+    {
+      "id": "fx_unknown_e4b997",
+      "name": "乗車拒否",
+      "text": "次の効果を、相手、自分の順に行う。 自分自身の山札の上から3枚をオモテにして相手に見せる。その中から特徴「車両」を持つMユニットのカードをすべて自分自身のパワーゾーンに置き、それ以外は好きな順で自分自身の山札の下に戻す。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-089::fx_unknown_e4b997",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-089.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-089.jpg"
+}

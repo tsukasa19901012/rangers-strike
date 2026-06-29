@@ -37,14 +37,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-022::fxunknown14",
-          "duration": "permanent"
+          "keyword": "combo_action_komandowo1tsubihorudoshitemoyoisoushitatokihorudonokomandow",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

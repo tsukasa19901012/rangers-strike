@@ -26,14 +26,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SX-006::no8",
+          "keyword": "vehicle_interaction_koreworashushitatokipawawotashiteinaisyunitotosbikur",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

@@ -28,14 +28,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-018::fxunknowne6b2bb",
+          "keyword": "while_in_field_body_koregabatoruerianiaruhanowokerusyunitohamyunitomatah",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

@@ -15,6 +15,10 @@
     "獣",
     "折神獣"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「侍」を持つ自軍ユニットがある"
+  },
   "effects": [
     {
       "id": "fx_unknown_e7838f",
@@ -23,23 +27,19 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-037::fxunknowne7838f",
+          "keyword": "pick_remaining_koreworashushitatokitekisutoniatakusarenaitokaretayunitow",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「侍」を持つ自軍ユニットがある"
   }
 }

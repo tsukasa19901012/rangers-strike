@@ -1,0 +1,51 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "SR-006",
+  "name": "シュリケンジャーFM",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "【超忍法・分身魔球】これが自軍エリアにある間、自軍山札の上のカードが1枚オモテになるたび、オモテにしたカードを効果の対象にする前に次の効果を発動できる⇒オモテにしたカードを手札に加える。そして、自分の手札からカードを1枚選び相手に見せ、オモテにしたカードのかわりに効果の対象にする。",
+  "rawText": "【超忍法・分身魔球】これが自軍エリアにある間、自軍山札の上のカードが1枚オモテになるたび、オモテにしたカードを効果の対象にする前に次の効果を発動できる⇒オモテにしたカードを手札に加える。そして、自分の手札からカードを1枚選び相手に見せ、オモテにしたカードのかわりに効果の対象にする。",
+  "bp": 4500,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "グリーン",
+    "男",
+    "忍者"
+  ],
+  "effects": [
+    {
+      "id": "choninpo_ma",
+      "name": "超忍法・分身魔球",
+      "text": "これが自軍エリアにある間、自軍山札の上のカードが1枚オモテになるたび、オモテにしたカードを効果の対象にする前に次の効果を発動できる⇒オモテにしたカードを手札に加える。そして、自分の手札からカードを1枚選び相手に見せ、オモテにしたカードのかわりに効果の対象にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_deck_reveal_swap_effect_target",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「シュリケンジャー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "シュリケンジャー",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/SR-006.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/SR-006.jpg"
+}

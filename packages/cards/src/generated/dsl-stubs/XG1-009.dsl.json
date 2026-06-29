@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_scrum",
+      "id": "unnamed_e280bbe382b9e382afe383a9",
       "text": "※スクラム",
       "trigger": {
         "type": "while_in_field"
@@ -39,14 +39,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-009::masukikurashu",
-          "duration": "permanent"
+          "keyword": "enemy_power_damage_sp1koregasutoraikushitedamejiwoerutokikawariniwo1bich",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

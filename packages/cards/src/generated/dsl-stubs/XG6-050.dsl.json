@@ -22,7 +22,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_undead_command_rush_hold",
+      "id": "unnamed_e280bbe38193e381aee383a6",
       "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
       "trigger": {
         "type": "while_in_field"

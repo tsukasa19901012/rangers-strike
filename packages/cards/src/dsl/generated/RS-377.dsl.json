@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-377",
+  "name": "ギンガグリーン",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "【キバショット】「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒このターン、リリース状態の敵軍コマンドがホールドされたとき、 ホールドされたコマンドの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
+  "rawText": "【キバショット】「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒このターン、リリース状態の敵軍コマンドがホールドされたとき、 ホールドされたコマンドの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
+  "bp": 3000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "グリーン",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "kibashoto",
+      "name": "キバショット",
+      "text": "「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒このターン、リリース状態の敵軍コマンドがホールドされたとき、 ホールドされたコマンドの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-377.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-377.jpg"
+}

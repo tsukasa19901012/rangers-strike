@@ -1,0 +1,40 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-158",
+  "name": "ギガンデスヘブン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "7-",
+  "text": "※これは自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない。",
+  "rawText": "※これは自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない。",
+  "bp": 7500,
+  "size": "M",
+  "sp": 1,
+  "features": [
+    "イマジン"
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない。",
+      "rule": "battle_entry_discard_from_hand",
+      "discardCount": 2
+    }
+  ],
+  "effects": [],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_feature",
+    "text": "特徴「イマジン」を持つ自軍ユニット1体を捨札にすれば必要パワー0になる",
+    "requiredFeature": "イマジン",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-158.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-158.jpg"
+}

@@ -28,14 +28,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-080::abisudaibu",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokirashueriakaramiramonsuta",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

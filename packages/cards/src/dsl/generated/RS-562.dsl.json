@@ -1,0 +1,81 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-562",
+  "name": "ガオソーシャーク",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは敵軍バトルエリアのユニットにアタックできない。 ※これは自軍捨札にあるユニットカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍ラッシュエリアのユニットにアタックできる。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは敵軍バトルエリアのユニットにアタックできない。 ※これは自軍捨札にあるユニットカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍ラッシュエリアのユニットにアタックできる。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_cannot_attack_enemy_battle",
+      "text": "※これは敵軍バトルエリアのユニットにアタックできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "cannot_attack_enemy_battle",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_e280bbe38193e3828ce381af",
+      "text": "※これは自軍捨札にあるユニットカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍ラッシュエリアのユニットにアタックできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RS-562::korehaniaruyunit",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    },
+    {
+      "kind": "note",
+      "text": "※これは敵軍バトルエリアのユニットにアタックできない。",
+      "rule": "cannot_attack_enemy_battle"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-562.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-562.jpg"
+}

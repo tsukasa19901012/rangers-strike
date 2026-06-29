@@ -23,35 +23,35 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはＮＣもＲＣも発動していないSユニットにアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG1-096::korehamomoshitei",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "kuwagachopa",
       "name": "クワガーチョッパー",
       "text": "敵軍バトルエリアからリリース状態のSユニットを2体選んでもよい。そうしたとき、相手は次のようにする⇒その2体をホールドするか、どちらか1体選び撃破する。（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-096::kuwagachopa",
-          "duration": "permanent"
+          "keyword": "combo_action_batorueriakararirisunosyunitowo2ndemoyoisoushitatokiha",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

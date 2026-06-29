@@ -9,6 +9,11 @@
   "powerCost": 1,
   "text": "※自軍ターン開始時、自分の手札から「アクロバッター」か「ロボイザー」のカードを1枚選び、これと置き換えてもよい。 【液化】自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
   "rawText": "※自軍ターン開始時、自分の手札から「アクロバッター」か「ロボイザー」のカードを1枚選び、これと置き換えてもよい。 【液化】自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
+  "size": "S",
+  "features": [
+    "車両",
+    "昆虫"
+  ],
   "effects": [
     {
       "id": "unnamed_e280bbe887aae8bb8de382bf",
@@ -16,14 +21,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "turn_start_swap_hand_named::アクロバッター_ロボイザー",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "fx_unknown_e6b6b2",
@@ -45,10 +50,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "車両",
-    "昆虫"
-  ]
+  }
 }

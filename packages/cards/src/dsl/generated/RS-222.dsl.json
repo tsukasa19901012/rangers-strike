@@ -1,0 +1,46 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-222",
+  "name": "タイムピンク",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【戦闘指揮】「SP1」自軍ターン中、Sユニットがこのユニットからコンビネーションするとき、そのユニットのＮＣの効果は、ナンバーに関係なく発動できる。ただし、そのユニットのナンバーと同じ数だけ敵軍コマンドをリリースしなければならない。",
+  "rawText": "【戦闘指揮】「SP1」自軍ターン中、Sユニットがこのユニットからコンビネーションするとき、そのユニットのＮＣの効果は、ナンバーに関係なく発動できる。ただし、そのユニットのナンバーと同じ数だけ敵軍コマンドをリリースしなければならない。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "ピンク",
+    "女",
+    "警察",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "fx_unknown_e688a6",
+      "name": "戦闘指揮",
+      "text": "「SP1」自軍ターン中、Sユニットがこのユニットからコンビネーションするとき、そのユニットのＮＣの効果は、ナンバーに関係なく発動できる。ただし、そのユニットのナンバーと同じ数だけ敵軍コマンドをリリースしなければならない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-222.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-222.jpg"
+}

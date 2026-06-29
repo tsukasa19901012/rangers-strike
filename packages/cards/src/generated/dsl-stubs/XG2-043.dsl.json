@@ -41,7 +41,7 @@
       "name": "ジョーカーエクストリーム",
       "text": "「SP1」",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {

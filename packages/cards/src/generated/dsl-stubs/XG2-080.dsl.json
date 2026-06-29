@@ -16,6 +16,12 @@
     "ドラゴン",
     "FFR"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "return_named_to_hand",
+    "text": "自軍「仮面ライダー龍騎」1体を手札に戻す",
+    "partnerName": "仮面ライダー龍騎",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "note_e280bbe887aae58886e3818c",
@@ -42,8 +48,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-080::fuainaruatakuraido",
-          "duration": "permanent"
+          "keyword": "grant_ability_konoyunitokarakonbineshonsururaidadeikeidomataharaidadei",
+          "duration": "turn"
         }
       ]
     }
@@ -52,11 +58,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "return_named_to_hand",
-    "text": "自軍「仮面ライダー龍騎」1体を手札に戻す",
-    "partnerName": "仮面ライダー龍騎",
-    "unitCount": 1
   }
 }

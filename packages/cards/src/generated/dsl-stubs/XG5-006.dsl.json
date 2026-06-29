@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍パワーが5以上あればこれを捨札にしてから、必要パワーの数字が4以下の自軍捨札を1枚選び手札に加えてもよい。",
       "trigger": {
         "type": "while_in_field"
@@ -30,11 +30,10 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-006::koreganoniaruras",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "sutopuzabatoru",
@@ -43,29 +42,41 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-006::sutopuzabatoru",
+          "keyword": "cannot_restrict_koreworashushitatokinowosurunotanbp9000noyunito",
           "duration": "turn"
         }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "合体―ゴーグルジェット＋ゴーグルタンク＋ゴーグルダンプ",
+      "partnerCardIds": [
+        "XG5-007",
+        "XG5-008",
+        "XG5-009"
       ],
-      "optional": false
+      "partnerSlotCardIds": [
+        [
+          "XG5-007"
+        ],
+        [
+          "XG5-008"
+        ],
+        [
+          "XG5-009"
+        ]
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "unnamedRules": [
-    {
-      "kind": "zord",
-      "text": "合体―ゴーグルジェット＋ゴーグルタンク＋ゴーグルダンプ ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍パワーが5以上あればこれを捨札にしてから、必要パワーの数字が4以下の自軍捨札を1枚選び手札に加えてもよい。",
-      "partnerCardIds": [
-        "XG5-007",
-        "XG5-008"
-      ]
-    }
-  ]
+  }
 }

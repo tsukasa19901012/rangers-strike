@@ -24,14 +24,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-087::fxunknowne79eac",
-          "duration": "permanent"
+          "keyword": "enemy_turn_action_tankoregaatakusaretatokikorenobatorueriadenobigakarate",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

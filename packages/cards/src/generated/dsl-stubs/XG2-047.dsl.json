@@ -39,16 +39,16 @@
       "name": "超高火炎＆冷凍ガス",
       "text": "WBかOTを持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき、ホールドしたコマンドの持つカテゴリごとに、次の効果を発動する⇒WBなら追加条件を持たないSユニットを1体選び撃破してもよい。OTなら追加条件を持つSユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-047::hihonoogasu",
-          "duration": "permanent"
+          "keyword": "power_zone_action_wbkaotwotsukomandowo1tsubihorudoshitemoyoisoushitatoki",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

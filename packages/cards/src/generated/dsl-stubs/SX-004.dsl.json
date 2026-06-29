@@ -21,6 +21,10 @@
     "男",
     "侍"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「侍」を持つ自軍ユニットがある"
+  },
   "effects": [
     {
       "id": "unnamed_can_ride_vehicle_ryo",
@@ -56,9 +60,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「侍」を持つ自軍ユニットがある"
   }
 }

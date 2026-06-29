@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_no_strike_if_enemy_battle",
+      "id": "unnamed_e280bbe695b5e8bb8de38390",
       "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
       "trigger": {
         "type": "while_in_field"
@@ -33,11 +33,11 @@
       ]
     },
     {
-      "id": "ii",
+      "id": "nopato",
       "name": "俺の必殺技・パートⅡ",
       "text": "これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "on_strike"
+        "type": "riding_combo"
       },
       "condition": {
         "type": "has_target",

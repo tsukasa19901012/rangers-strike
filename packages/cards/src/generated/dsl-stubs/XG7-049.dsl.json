@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_deck_unlimited",
+      "id": "unnamed_e280bbe38193e381aee382ab",
       "text": "※このカードはデッキに好きな枚数入れてもよい。",
       "trigger": {
         "type": "while_in_field"
@@ -32,19 +32,19 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはカード名に「ガタ」を含む自軍ユニット1体につきBP+500される。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-049::korehakadonigata",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "fx_unknown_3",
@@ -53,14 +53,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-049::fxunknown3",
+          "keyword": "reveal_faceup_korewokararashushitatokinokara2woomotenishitesonokarara",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

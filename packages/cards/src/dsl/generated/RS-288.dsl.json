@@ -1,0 +1,25 @@
+{
+  "id": "RS-288",
+  "name": "守護獣ドラゴンシーザー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 5,
+  "bp": 6000,
+  "size": "M",
+  "text": "",
+  "features": [
+    "恐竜",
+    "ドラゴン"
+  ],
+  "imageUrl": "/cards/promoted/RS-288.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-288.jpg",
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "rawText": "",
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  }
+}

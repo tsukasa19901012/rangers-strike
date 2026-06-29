@@ -14,7 +14,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-008.jpg",
   "effects": [
     {
-      "id": "super_brain",
+      "id": "note_e887aae58886e381afe38389",
       "text": "自分はドローするとき2枚ひいて、そのうちの1枚を手札に加え、もう1枚を捨札にする。",
       "trigger": {
         "type": "operation",
@@ -22,13 +22,17 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "discard_to_zone_hadorosurutoki2hiitesonouchino1woniemou1wonisuru",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

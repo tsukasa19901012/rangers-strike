@@ -1,0 +1,78 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-431",
+  "name": "黒獅子リオ",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これはラッシュしたターンにバトルエリアに出られない。 ※これは自軍コマンドが１つ以上あるときストライクできない。 【剛勇吼波】これは敵軍Sユニット1体につきBP+1000される。",
+  "rawText": "※これはラッシュしたターンにバトルエリアに出られない。 ※これは自軍コマンドが１つ以上あるときストライクできない。 【剛勇吼波】これは敵軍Sユニット1体につきBP+1000される。",
+  "bp": 2000,
+  "size": "S",
+  "sp": 1,
+  "features": [
+    "男",
+    "臨気"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_battle_rush_turn",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_battle_rush_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "no_strike_with_command",
+      "text": "※これは自軍コマンドが１つ以上あるときストライクできない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_with_command",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "nami_e5899b",
+      "name": "剛勇吼波",
+      "text": "これは敵軍Sユニット1体につきBP+1000される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "per_enemy_s_bp_boost_1000",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "rule": "no_battle_rush_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-431.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-431.jpg"
+}

@@ -19,19 +19,19 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe887aae8bb8d4ce383",
+      "id": "note_e280bbe887aae8bb8d4ce383",
       "text": "※自軍Lユニットがなければ、これは「爆竜トップゲイラー＋爆竜ステゴスライドン」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-018::lyunitoganakereb",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "gemuhakokomadeda",

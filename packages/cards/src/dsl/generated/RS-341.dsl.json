@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-341",
+  "name": "ゲキブルー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【ゲキトンファー】「SP1」",
+  "rawText": "【ゲキトンファー】「SP1」",
+  "bp": 1000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "gekitonfua",
+      "name": "ゲキトンファー",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-341.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-341.jpg"
+}

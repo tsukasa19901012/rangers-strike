@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-200",
+  "name": "ブルースリー",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "【超電子イヤー】「SP1」自軍ダメージの数を数えてから、自軍パワーゾーンのダメージになっているカードをすべてオモテにしてもよい。そうしたとき、元のダメージの数と同じになるまで、自軍パワーゾーンのカードを選びダメージにする。",
+  "rawText": "【超電子イヤー】「SP1」自軍ダメージの数を数えてから、自軍パワーゾーンのダメージになっているカードをすべてオモテにしてもよい。そうしたとき、元のダメージの数と同じになるまで、自軍パワーゾーンのカードを選びダメージにする。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 4,
+  "features": [
+    "ブルー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "iya",
+      "name": "超電子イヤー",
+      "text": "「SP1」自軍ダメージの数を数えてから、自軍パワーゾーンのダメージになっているカードをすべてオモテにしてもよい。そうしたとき、元のダメージの数と同じになるまで、自軍パワーゾーンのカードを選びダメージにする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-200.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-200.jpg"
+}

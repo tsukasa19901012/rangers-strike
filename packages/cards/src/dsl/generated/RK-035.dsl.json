@@ -1,0 +1,63 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-035",
+  "name": "ダークウイング",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ソニックブレイカー】これが自軍バトルエリアにある間、すべての敵軍ユニットは特徴を持たないユニットとして扱い、特徴を追加されない。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【ソニックブレイカー】これが自軍バトルエリアにある間、すべての敵軍ユニットは特徴を持たないユニットとして扱い、特徴を追加されない。",
+  "bp": 3000,
+  "size": "S",
+  "features": [
+    "ミラーモンスター",
+    "獣"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "sonikubureika",
+      "name": "ソニックブレイカー",
+      "text": "これが自軍バトルエリアにある間、すべての敵軍ユニットは特徴を持たないユニットとして扱い、特徴を追加されない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enemy_strips_features",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-035.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-035.jpg"
+}

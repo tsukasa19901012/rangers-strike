@@ -9,6 +9,11 @@
   "powerCost": 2,
   "text": "※自軍ターン開始時、自分の手札から「ロボイザー」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。 ※これにライドしているユニットはBP+500される。 【光機動生命体】これはライドされていなくてもバトルエリアに出ることができる。",
   "rawText": "※自軍ターン開始時、自分の手札から「ロボイザー」か「マックジャバー」のカードを1枚選び、これと置き換えてもよい。 ※これにライドしているユニットはBP+500される。 【光機動生命体】これはライドされていなくてもバトルエリアに出ることができる。",
+  "size": "S",
+  "features": [
+    "車両",
+    "昆虫"
+  ],
   "effects": [
     {
       "id": "unnamed_e280bbe887aae8bb8de382bf",
@@ -16,14 +21,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "turn_start_swap_hand_named::ロボイザー_マックジャバー",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "unnamed_ride_bp_boost_500",
@@ -46,14 +51,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-049::hikari",
-          "duration": "permanent"
+          "keyword": "ride_action_koreharaidosareteinakutemobatoruerianirukotogadekiru",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -67,10 +72,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "車両",
-    "昆虫"
-  ]
+  }
 }

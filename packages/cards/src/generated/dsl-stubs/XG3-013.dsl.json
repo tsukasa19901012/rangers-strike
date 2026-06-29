@@ -42,8 +42,7 @@
           "keyword": "bp_plus_if_named_ally_ガオベアー_3000",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "hikari_e586b7",
@@ -52,14 +51,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-013::hikarie586b7",
-          "duration": "permanent"
+          "keyword": "grant_effect_gaobeakawotsulyunitogakonoyunitokarakonbineshonsurutoki",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-411",
+  "name": "冥府神ダゴン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "5+",
+  "text": "【今は俺が戒律だ】これをラッシュしたとき、自軍山札からDAの常駐オペレーションのカードを1枚選び、自軍常駐置き場に配置してもよい。（すでに配置されている自軍常駐オペレーションは捨札にしてから配置する）その後、山札をシャッフルする。",
+  "rawText": "【今は俺が戒律だ】これをラッシュしたとき、自軍山札からDAの常駐オペレーションのカードを1枚選び、自軍常駐置き場に配置してもよい。（すでに配置されている自軍常駐オペレーションは捨札にしてから配置する）その後、山札をシャッフルする。",
+  "bp": 6000,
+  "size": "L",
+  "features": [
+    "冥府神",
+    "三賢神",
+    "男",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "hagada",
+      "name": "今は俺が戒律だ",
+      "text": "これをラッシュしたとき、自軍山札からDAの常駐オペレーションのカードを1枚選び、自軍常駐置き場に配置してもよい。（すでに配置されている自軍常駐オペレーションは捨札にしてから配置する）その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_rush_deck_resident_operation",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_command_card",
+    "text": "自軍コマンドを1つ捨札にする",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-411.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-411.jpg"
+}

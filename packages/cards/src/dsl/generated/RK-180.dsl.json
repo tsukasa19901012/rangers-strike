@@ -1,0 +1,74 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-180",
+  "name": "モグラ獣人",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。 ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍「仮面ライダーアマゾン」があれば、これを自軍ラッシュエリアに出してもよい。 【神出鬼没】敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい。そうしたとき、ライドしていない敵軍Sユニットを1体選び、選んだビークルにライドさせる。",
+  "rawText": "※これはBP2000以上の敵軍Sユニットにアタックされない。 ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍「仮面ライダーアマゾン」があれば、これを自軍ラッシュエリアに出してもよい。 【神出鬼没】敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい。そうしたとき、ライドしていない敵軍Sユニットを1体選び、選んだビークルにライドさせる。",
+  "bp": 500,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "怪人",
+    "男",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "no_attack_enemy_s_bp2000",
+      "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_attack_from_enemy_s_bp2000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_while_in_hand_rush_deploy_raidaamazongaa",
+      "text": "※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍「仮面ライダーアマゾン」があれば、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "while_in_hand_rush_deploy::raidaamazongaareba",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    },
+    {
+      "id": "shin",
+      "name": "神出鬼没",
+      "text": "敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい。そうしたとき、ライドしていない敵軍Sユニットを1体選び、選んだビークルにライドさせる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-180::shin",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-180.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-180.jpg"
+}

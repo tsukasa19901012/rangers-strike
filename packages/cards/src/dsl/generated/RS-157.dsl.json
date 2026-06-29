@@ -34,7 +34,9 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "combo_l_ability_konoyunitokarakonbineshonsurukategorinolyunitohano_chika",
+          "duration": "permanent"
         }
       ]
     },
@@ -55,6 +57,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

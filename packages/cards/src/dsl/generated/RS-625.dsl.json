@@ -1,0 +1,71 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-625",
+  "name": "メガウインガー・フライヤーモード",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "※ウイング 【シルバー専用機】 これをラッシュしたとき、この追加条件で捨札にしたカードを見て、SPが空欄でなかったなら、このターン、これは次の能力を得る⇒BP+2000、「SP1」",
+  "rawText": "※ウイング 【シルバー専用機】 これをラッシュしたとき、この追加条件で捨札にしたカードを見て、SPが空欄でなかったなら、このターン、これは次の能力を得る⇒BP+2000、「SP1」",
+  "bp": 4000,
+  "size": "L",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_feature_unit",
+    "text": "特徴「シルバー」を持つ自軍Sユニット1体を捨札にする",
+    "requiredFeature": "シルバー",
+    "requiredSize": "S",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "unnamed_wing",
+      "text": "※ウイング",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "wing",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "shiruba",
+      "name": "シルバー専用機",
+      "text": "これをラッシュしたとき、この追加条件で捨札にしたカードを見て、SPが空欄でなかったなら、このターン、これは次の能力を得る⇒BP+2000、「SP1」",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "runtime_shiruba",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ウイング",
+      "rule": "wing"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-625.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-625.jpg"
+}

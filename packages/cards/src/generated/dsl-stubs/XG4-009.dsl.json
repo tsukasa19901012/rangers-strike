@@ -9,6 +9,11 @@
   "powerCost": 4,
   "text": "※特徴「シルバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+1000される。 【緊急出動】これをラッシュしたとき、次の効果を発動できる⇒ 自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び、これの上に重ねて自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。",
   "rawText": "※特徴「シルバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 ※これにライドしているユニットはBP+1000される。 【緊急出動】これをラッシュしたとき、次の効果を発動できる⇒ 自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び、これの上に重ねて自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
       "id": "ride_without_rc_shiruba",
@@ -45,14 +50,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-009::fxunknowne7b78a",
+          "keyword": "grant_effect_koreworashushitatokinowodekirukomandozonkararirisunos",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -66,10 +71,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-474",
+  "name": "タイムシャドウSM",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、自軍捨札の枚数がこれの必要パワーの数字以上あれば、これを自軍ラッシュエリアに出してもよい。 ※自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンからオモテ向きのカードを1枚選び捨札にする。 【ステルスモード】これは敵軍ユニットにアタックされない。",
+  "rawText": "※これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、自軍捨札の枚数がこれの必要パワーの数字以上あれば、これを自軍ラッシュエリアに出してもよい。 ※自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンからオモテ向きのカードを1枚選び捨札にする。 【ステルスモード】これは敵軍ユニットにアタックされない。",
+  "bp": 3000,
+  "size": "L",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "effects": [
+    {
+      "id": "rush_from_discard_count_power",
+      "text": "※これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、自軍捨札の枚数がこれの必要パワーの数字以上あれば、これを自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rush_from_discard_count_power",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_e280bbe887aae8bb8de382bf",
+      "text": "※自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンからオモテ向きのカードを1枚選び捨札にする。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "power",
+            "owner": "self",
+            "filter": {
+              "faceDown": false
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "suterusumodo",
+      "name": "ステルスモード",
+      "text": "これは敵軍ユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "enemy_cannot_attack",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-474.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-474.jpg"
+}

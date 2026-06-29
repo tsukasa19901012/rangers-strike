@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-304",
+  "name": "シティガーディアンズ隊員",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 【治安維持】これが自軍バトルエリアにある間、相手が手札からDAのSユニットのカードをラッシュするとき、そのカードの必要パワーの数字は1増える。",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 【治安維持】これが自軍バトルエリアにある間、相手が手札からDAのSユニットのカードをラッシュするとき、そのカードの必要パワーの数字は1増える。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "男",
+    "戦闘員"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "fx_unknown_e6b2bb",
+      "name": "治安維持",
+      "text": "これが自軍バトルエリアにある間、相手が手札からDAのSユニットのカードをラッシュするとき、そのカードの必要パワーの数字は1増える。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "while_in_battle_opponent_da_s_rush_power_plus_1",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-304.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-304.jpg"
+}

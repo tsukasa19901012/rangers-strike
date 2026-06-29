@@ -28,6 +28,14 @@
       "partnerCardIds": [
         "RS-074",
         "RS-075"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-074"
+        ],
+        [
+          "RS-075"
+        ]
       ]
     }
   ],
@@ -41,13 +49,16 @@
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "grant_keyword",
+          "keyword": "grant_ability_damejiga6notokikonoyunitohano_chikara_worusp2",
+          "duration": "turn"
         }
       ]
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

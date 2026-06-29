@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-258",
+  "name": "ドクターケイト",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "【猛毒腐食液】このターン、特徴「女」を持つ敵軍ユニットを1体以上撃破して捨札にしたなら、自分がターンを終えるとき、相手に1点ダメージを与えてもよい。",
+  "rawText": "【猛毒腐食液】このターン、特徴「女」を持つ敵軍ユニットを1体以上撃破して捨札にしたなら、自分がターンを終えるとき、相手に1点ダメージを与えてもよい。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 1,
+  "features": [
+    "デルザー軍団",
+    "女",
+    "改造人間"
+  ],
+  "effects": [
+    {
+      "id": "fx_unknown_e78c9b",
+      "name": "猛毒腐食液",
+      "text": "このターン、特徴「女」を持つ敵軍ユニットを1体以上撃破して捨札にしたなら、自分がターンを終えるとき、相手に1点ダメージを与えてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-258::fx_unknown_e78c9b",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-258.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-258.jpg"
+}

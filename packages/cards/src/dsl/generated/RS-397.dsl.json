@@ -1,0 +1,48 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-397",
+  "name": "タイムジェット1",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "3+",
+  "text": "【予期せぬ出現】これをラッシュしたとき、敵軍バトルエリアのユニットを好きな順に並び変えてもよい。",
+  "rawText": "【予期せぬ出現】これをラッシュしたとき、敵軍バトルエリアのユニットを好きな順に並び変えてもよい。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "航空機"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍Sユニットを1体パワーゾーンに送る",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "senu",
+      "name": "予期せぬ出現",
+      "text": "これをラッシュしたとき、敵軍バトルエリアのユニットを好きな順に並び変えてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "reorder_enemy_battle",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-397.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-397.jpg"
+}

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-549",
+  "name": "トリケラレンジャー",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 2,
+  "text": "※レジスト 【トリケランス】「SP1」敵軍バトルエリアのSユニットを、必要パワーの数字の合計が敵軍ダメージの点数と同じ数になるまで好きな数選び、ホールドする。",
+  "rawText": "※レジスト 【トリケランス】「SP1」敵軍バトルエリアのSユニットを、必要パワーの数字の合計が敵軍ダメージの点数と同じ数になるまで好きな数選び、ホールドする。",
+  "bp": 1000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "男",
+    "2nd"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "tricera_lance",
+      "name": "トリケランス",
+      "text": "「SP1」敵軍バトルエリアのSユニットを、必要パワーの数字の合計が敵軍ダメージの点数と同じ数になるまで好きな数選び、ホールドする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※レジスト",
+      "rule": "register"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-549.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-549.jpg"
+}

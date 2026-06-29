@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-293",
+  "name": "センチピードオルフェノク",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "【捕縛する鞭】これが自軍バトルエリアにある間、敵軍ターン中、次の効果を発揮できる⇒敵軍ユニットがラッシュされたとき、自軍コマンドを1つホールドしてもよい。そうしたとき、相手は自分自身のコマンドを1つホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
+  "rawText": "【捕縛する鞭】これが自軍バトルエリアにある間、敵軍ターン中、次の効果を発揮できる⇒敵軍ユニットがラッシュされたとき、自軍コマンドを1つホールドしてもよい。そうしたとき、相手は自分自身のコマンドを1つホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "ラッキークローバー",
+    "オルフェノク",
+    "怪人",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "suru_e68d95",
+      "name": "捕縛する鞭",
+      "text": "これが自軍バトルエリアにある間、敵軍ターン中、次の効果を発揮できる⇒敵軍ユニットがラッシュされたとき、自軍コマンドを1つホールドしてもよい。そうしたとき、相手は自分自身のコマンドを1つホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-293::suru_e68d95",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-293.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-293.jpg"
+}

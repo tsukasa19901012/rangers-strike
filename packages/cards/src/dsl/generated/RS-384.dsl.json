@@ -1,0 +1,68 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-384",
+  "name": "ブルースローワー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "4+",
+  "text": "【放水作業】これをラッシュしたとき、敵軍コマンドの数が自軍コマンドの数より多ければ、同じ数になるまで、以下の手順を行ってもよい⇒自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置く。",
+  "rawText": "【放水作業】これをラッシュしたとき、敵軍コマンドの数が自軍コマンドの数より多ければ、同じ数になるまで、以下の手順を行ってもよい⇒自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置く。",
+  "bp": 4000,
+  "size": "M",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
+    "unitCount": 1
+  },
+  "effects": [
+    {
+      "id": "mizu",
+      "name": "放水作業",
+      "text": "これをラッシュしたとき、敵軍コマンドの数が自軍コマンドの数より多ければ、同じ数になるまで、以下の手順を行ってもよい⇒自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置く。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "command",
+          "owner": "opponent"
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "opponent"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "hold_command",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-384.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-384.jpg"
+}

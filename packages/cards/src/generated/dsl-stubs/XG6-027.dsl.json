@@ -37,14 +37,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-027::kinoshie99d92",
+          "keyword": "reveal_faceup_koreworashushitatokinokara1woomotenisuruomotenishitakadoga",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

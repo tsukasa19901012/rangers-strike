@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_no_attack_from_enemy_s",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは敵軍Sユニットにアタックされない。",
       "trigger": {
         "type": "while_in_field"
@@ -38,14 +38,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-071::deimenshonshuto",
+          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokikorenoraidawotsuyuni",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

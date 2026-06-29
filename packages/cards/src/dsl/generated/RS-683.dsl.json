@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-683",
+  "name": "熊折神",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【猛き爪】「SP1」",
+  "rawText": "【猛き爪】「SP1」",
+  "bp": 3000,
+  "size": "M",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "獣",
+    "折神獣"
+  ],
+  "effects": [
+    {
+      "id": "ki_tsume",
+      "name": "猛き爪",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-683.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-683.jpg"
+}

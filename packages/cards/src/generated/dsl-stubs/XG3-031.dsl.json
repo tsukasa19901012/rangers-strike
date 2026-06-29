@@ -23,7 +23,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_scrum",
+      "id": "unnamed_e280bbe382b9e382afe383a9",
       "text": "※スクラム",
       "trigger": {
         "type": "while_in_field"
@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-031::zane5ae99",
-          "duration": "permanent"
+          "keyword": "grant_ability_konotanbatorueriano2nibuwotsumyunitohano_chikara_woru",
+          "duration": "turn"
         }
       ]
     }

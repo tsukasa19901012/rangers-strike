@@ -26,14 +26,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-092::toma",
+          "keyword": "grant_effect_tankoregabatoruerianitatokikomandozonniarukategoriga1tsuda",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-544",
+  "name": "J5",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは特徴を3つ以上持つユニットにアタックされない。 【フレアーバスター】「SP1」",
+  "rawText": "※これは特徴を3つ以上持つユニットにアタックされない。 【フレアーバスター】「SP1」",
+  "bp": 1000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 5,
+  "features": [
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce381af",
+      "text": "※これは特徴を3つ以上持つユニットにアタックされない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RS-544::korehawo3tsutsuy",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "fureabasuta",
+      "name": "フレアーバスター",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-544.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-544.jpg"
+}

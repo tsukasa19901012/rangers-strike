@@ -16,6 +16,10 @@
     "イマジン",
     "FFR"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "カード名に「ディケイド」または「ディエンド」を含む自軍ユニットがある"
+  },
   "effects": [
     {
       "id": "nodeikeidobajon",
@@ -24,23 +28,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-081::nodeikeidobajon",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokirashueriakarahorudonosyu",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "カード名に「ディケイド」または「ディエンド」を含む自軍ユニットがある"
   }
 }

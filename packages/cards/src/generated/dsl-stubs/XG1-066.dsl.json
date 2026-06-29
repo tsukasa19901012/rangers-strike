@@ -52,16 +52,16 @@
       "name": "アタックライド",
       "text": "BPの下三桁が500の敵軍Sユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-066::atakuraido",
-          "duration": "permanent"
+          "keyword": "destroy_choose_enemy_bpnoga500nosyunitowo1bi_geki_ha_suru",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

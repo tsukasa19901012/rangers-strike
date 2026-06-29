@@ -9,43 +9,6 @@
   "powerCost": "5+",
   "text": "※自分が「ドラグランザー」をラッシュしたとき、自軍エリアに「ドラグランザー（バイク形態）」があれば1体選び手札に戻す。 ※特徴「サバイブ」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドすることができ、ライド中BP＋1500される。",
   "rawText": "※自分が「ドラグランザー」をラッシュしたとき、自軍エリアに「ドラグランザー（バイク形態）」があれば1体選び手札に戻す。 ※特徴「サバイブ」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドすることができ、ライド中BP＋1500される。",
-  "effects": [
-    {
-      "id": "note_e280bbe887aae58886e3818c",
-      "text": "※自分が「ドラグランザー」をラッシュしたとき、自軍エリアに「ドラグランザー（バイク形態）」があれば1体選び手札に戻す。",
-      "trigger": {
-        "type": "while_in_field"
-      },
-      "effects": [
-        {
-          "type": "grant_keyword",
-          "keyword": "on_ally_rush_named_return_self_to_hand",
-          "duration": "permanent"
-        }
-      ],
-      "optional": true
-    },
-    {
-      "id": "unnamed_e280bbe789b9e5beb4e3808c",
-      "text": "※特徴「サバイブ」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドすることができ、ライド中BP＋1500される。",
-      "trigger": {
-        "type": "nc"
-      },
-      "effects": [
-        {
-          "type": "grant_keyword",
-          "keyword": "note_card::XG4-056::sabaibuwotsusyun",
-          "duration": "permanent"
-        }
-      ],
-      "optional": false
-    }
-  ],
-  "implementation": {
-    "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  },
   "size": "S",
   "features": [
     "ミラーモンスター",
@@ -53,10 +16,41 @@
     "車両",
     "ドラゴン"
   ],
-  "rushAdditionalCondition": {
-    "conditionId": "return_named_to_hand",
-    "text": "自軍「ドラグランザー」1体を手札に戻す",
-    "partnerName": "ドラグランザー",
-    "unitCount": 1
+  "effects": [
+    {
+      "id": "note_e280bbe887aae58886e3818c",
+      "text": "※自分が「ドラグランザー」をラッシュしたとき、自軍エリアに「ドラグランザー（バイク形態）」があれば1体選び手札に戻す。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_ally_rush_named_return_self_to_hand",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "note_e280bbe789b9e5beb4e3808c",
+      "text": "※特徴「サバイブ」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドすることができ、ライド中BP＋1500される。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

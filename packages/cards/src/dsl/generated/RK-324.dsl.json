@@ -1,0 +1,62 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-324",
+  "name": "ブロンブースター",
+  "type": "vehicle",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "4+",
+  "text": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。 【凄いのが来るぜ！】これにライドしているユニットがBP4000以上の敵軍Sユニットを撃破して捨札にしたとき、捨札にしたそのユニットカードを持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。 【凄いのが来るぜ！】これにライドしているユニットがBP4000以上の敵軍Sユニットを撃破して捨札にしたとき、捨札にしたそのユニットカードを持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "effects": [
+    {
+      "id": "ride_without_rc_ma_chikara",
+      "text": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_without_rc_ma_chikara",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "inogaruze",
+      "name": "凄いのが来るぜ！",
+      "text": "これにライドしているユニットがBP4000以上の敵軍Sユニットを撃破して捨札にしたとき、捨札にしたそのユニットカードを持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-324::inogaruze",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両",
+    "魔皇力"
+  ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_vehicle_unit",
+    "text": "自軍ビークル1体を捨札にする",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-324.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-324.jpg"
+}

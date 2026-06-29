@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "unnamed_breaker",
+      "id": "unnamed_e280bbe38396e383ace382a4",
       "text": "※ブレイカー",
       "trigger": {
         "type": "while_in_field"
@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -56,25 +56,31 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-003::bakumaruchikonbain",
+          "keyword": "combo_action_tankoregabatoruerianitatokinokarananbanilmataharwotsu",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―アバレンオー（または爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン）＋キラーオー（または爆竜トップゲイラー＋爆竜ステゴスライドン） ※ブレイカー ※ウイング",
+      "text": "合体―アバレンオー（または爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン）＋キラーオー（または爆竜トップゲイラー+爆竜ステゴスライドン）",
       "partnerCardIds": [
-        "RS-051",
-        "XG7-012",
-        "RS-052",
-        "RS-227"
+        "RS-050",
+        "RS-226"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-050"
+        ],
+        [
+          "RS-226"
+        ]
       ]
     },
     {

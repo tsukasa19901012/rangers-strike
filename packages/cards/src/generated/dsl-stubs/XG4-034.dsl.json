@@ -16,6 +16,12 @@
     "人型",
     "電子モヂカラ"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「海老折神」1体を捨札にする",
+    "partnerName": "海老折神",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_morph",
@@ -38,14 +44,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-034::kazenomojikara",
+          "keyword": "while_in_field_body_koregabatoruerianiarukorenolyunitotomyunitohayuniton",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -59,11 +65,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「海老折神」1体を捨札にする",
-    "partnerName": "海老折神",
-    "unitCount": 1
   }
 }

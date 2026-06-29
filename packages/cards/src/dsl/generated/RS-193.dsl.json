@@ -1,0 +1,43 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-193",
+  "name": "ダイナピンク",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 0,
+  "text": "【フラワーカーニバル】敵軍コマンドゾーンのリリース状態のカードをすべて持ち主の手札に戻す。その後、自分がターンを終えるとき、相手は自分自身の手札から好きな枚数を自分自身のコマンドゾーンに置く。",
+  "rawText": "【フラワーカーニバル】敵軍コマンドゾーンのリリース状態のカードをすべて持ち主の手札に戻す。その後、自分がターンを終えるとき、相手は自分自身の手札から好きな枚数を自分自身のコマンドゾーンに置く。",
+  "bp": 2000,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "furawakanibaru",
+      "name": "フラワーカーニバル",
+      "text": "敵軍コマンドゾーンのリリース状態のカードをすべて持ち主の手札に戻す。その後、自分がターンを終えるとき、相手は自分自身の手札から好きな枚数を自分自身のコマンドゾーンに置く。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "return_all_enemy_command_hand",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-193.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-193.jpg"
+}

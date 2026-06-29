@@ -1,0 +1,70 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-064",
+  "name": "仮面ライダーファイズ",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "【ファイズエッジ】敵軍バトルエリアから、BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「オートバジンBM」からコンビネーションするときはナンバーに関係なく発動する）",
+  "rawText": "【ファイズエッジ】敵軍バトルエリアから、BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「オートバジンBM」からコンビネーションするときはナンバーに関係なく発動する）",
+  "bp": 3000,
+  "size": "S",
+  "sp": "1/5",
+  "features": [
+    "仮面ライダー",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "fuaizueji",
+      "name": "ファイズエッジ",
+      "text": "敵軍バトルエリアから、BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「オートバジンBM」からコンビネーションするときはナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-064.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-064.jpg"
+}

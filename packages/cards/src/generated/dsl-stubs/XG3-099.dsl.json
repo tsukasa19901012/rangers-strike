@@ -18,6 +18,12 @@
     "人型",
     "スペシャルモード"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_send_to_command_or_discard",
+    "text": "自軍「ロボタック」1体をコマンドゾーンに送るか捨札にすれば必要パワー0になる",
+    "partnerName": "ロボタック",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_e280bbe38193e3828ce3818c",
@@ -25,14 +31,14 @@
       "trigger": {
         "type": "on_destroy"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "on_destroy_deploy_named_to_rush::ロボタック",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "rkba",
@@ -41,25 +47,19 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-099::rkba",
-          "duration": "permanent"
+          "keyword": "pick_remaining_batorueriakarasyunitowo1ndemoyoisoushitatokindayunitohano",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_send_to_command_or_discard",
-    "text": "自軍「ロボタック」1体をコマンドゾーンに送るか捨札にすれば必要パワー0になる",
-    "partnerName": "ロボタック",
-    "unitCount": 1
   }
 }

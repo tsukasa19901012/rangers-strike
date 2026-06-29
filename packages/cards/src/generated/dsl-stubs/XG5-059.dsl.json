@@ -22,7 +22,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_undead_command_rush_hold",
+      "id": "unnamed_e280bbe38193e381aee383a6",
       "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
       "trigger": {
         "type": "while_in_field"
@@ -45,8 +45,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-059::surue69ab4",
-          "duration": "permanent"
+          "keyword": "grant_ability_korehanoga1notokibp3000sareno_chikara_worukorehatan",
+          "duration": "turn"
         }
       ]
     }

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-146",
+  "name": "デネブ",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "【デネブキャンディー】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札からオペレーションカードを1枚選び、相手に見せてから手札に加えてもよい。そうしたとき、自分自身の山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【デネブキャンディー】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札を見てもよい。そうしたとき、その中からオペレーションカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
+  "rawText": "【デネブキャンディー】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札からオペレーションカードを1枚選び、相手に見せてから手札に加えてもよい。そうしたとき、自分自身の山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【デネブキャンディー】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札を見てもよい。そうしたとき、その中からオペレーションカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
+  "bp": 1000,
+  "size": "S",
+  "sp": "1/4",
+  "features": [
+    "イマジン"
+  ],
+  "effects": [
+    {
+      "id": "denebukyandei",
+      "name": "デネブキャンディー",
+      "text": "これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札からオペレーションカードを1枚選び、相手に見せてから手札に加えてもよい。そうしたとき、自分自身の山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-146::denebukyandei",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "denebukyandei_koreworashus",
+      "name": "デネブキャンディー",
+      "text": "これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札を見てもよい。そうしたとき、その中からオペレーションカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-146::denebukyandei_koreworashus",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-146.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-146.jpg"
+}

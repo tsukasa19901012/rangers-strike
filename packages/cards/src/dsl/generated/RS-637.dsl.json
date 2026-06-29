@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-637",
+  "name": "ネジレッド",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 4,
+  "text": "※ホールド状態のコマンドがあるとき、これはストライクできない。 【ネジセイバー】「SP1」特徴「レッド」を持つ敵軍Sユニットを1体選び、撃破してもよい。",
+  "rawText": "※ホールド状態のコマンドがあるとき、これはストライクできない。 【ネジセイバー】「SP1」特徴「レッド」を持つ敵軍Sユニットを1体選び、撃破してもよい。",
+  "bp": 3000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "レッド",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_no_strike_with_held_command",
+      "text": "※ホールド状態のコマンドがあるとき、これはストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_with_held_command",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "nejiseiba",
+      "name": "ネジセイバー",
+      "text": "「SP1」特徴「レッド」を持つ敵軍Sユニットを1体選び、撃破してもよい。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※ホールド状態のコマンドがあるとき、これはストライクできない。",
+      "rule": "no_strike_with_held_command"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-637.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-637.jpg"
+}

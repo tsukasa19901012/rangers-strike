@@ -1,0 +1,45 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-233",
+  "name": "仮面ライダーコーカサス",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "【ハイパーライダーキック】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒相手は1枚ドローしてから、自分自身の手札からカードを1枚選び、自分自身のパワーゾーンに置く。その後、相手の置いたカードの必要パワーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "rawText": "【ハイパーライダーキック】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒相手は1枚ドローしてから、自分自身の手札からカードを1枚選び、自分自身のパワーゾーンに置く。その後、相手の置いたカードの必要パワーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+  "bp": 4000,
+  "size": "S",
+  "sp": "1/4",
+  "features": [
+    "仮面ライダー",
+    "男",
+    "加速"
+  ],
+  "effects": [
+    {
+      "id": "haiparaidakiku",
+      "name": "ハイパーライダーキック",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒相手は1枚ドローしてから、自分自身の手札からカードを1枚選び、自分自身のパワーゾーンに置く。その後、相手の置いたカードの必要パワーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-233::haiparaidakiku",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-233.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-233.jpg"
+}

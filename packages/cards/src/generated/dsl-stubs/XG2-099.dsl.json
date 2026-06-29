@@ -18,6 +18,12 @@
     "人型",
     "スペシャルモード"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_send_to_command_or_discard",
+    "text": "自軍「カメロック」1体をコマンドゾーンに送るか捨札にすれば必要パワー0になる",
+    "partnerName": "カメロック",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_e280bbe38193e3828ce3818c",
@@ -25,14 +31,14 @@
       "trigger": {
         "type": "on_destroy"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "on_destroy_deploy_named_to_rush::カメロック",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "kamerazuka",
@@ -54,11 +60,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "zord_down_send_to_command_or_discard",
-    "text": "自軍「カメロック」1体をコマンドゾーンに送るか捨札にすれば必要パワー0になる",
-    "partnerName": "カメロック",
-    "unitCount": 1
   }
 }

@@ -16,6 +16,12 @@
     "獣",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「キバレンジャー」か「気伝獣ウォンタイガー」1体を捨札にする",
+    "partnerName": "キバレンジャー",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "tora_no",
@@ -24,25 +30,19 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "reveal_enemy_deck_1",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「キバレンジャー」か「気伝獣ウォンタイガー」1体を捨札にする",
-    "partnerName": "キバレンジャー",
-    "unitCount": 1
   }
 }

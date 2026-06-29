@@ -11,21 +11,20 @@
   "rawText": "ナンバーに数字を持ち、ETを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。このカードに重ねたユニットのナンバーの数字は1少なくなる。ただし、2より少なくならない。",
   "effects": [
     {
-      "id": "taboyunitow",
-      "name": "ターボユニット-W",
+      "id": "stack_s_on_self_rush",
       "text": "ナンバーに数字を持ち、ETを持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。このカードに重ねたユニットのナンバーの数字は1少なくなる。ただし、2より少なくならない。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "stack_s_on_self_rush",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

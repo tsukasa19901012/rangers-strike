@@ -16,6 +16,10 @@
     "恐竜",
     "折神獣"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "state_gate",
+    "text": "特徴「侍」を持つ自軍ユニットがある"
+  },
   "effects": [
     {
       "id": "kyouryuumaru",
@@ -27,8 +31,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-034::kyouryuumaru",
-          "duration": "permanent"
+          "keyword": "grant_ability_konoyunitokarakonbineshonsuruwotsuyunitohano_chikara_worua",
+          "duration": "turn"
         }
       ]
     }
@@ -37,9 +41,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "state_gate",
-    "text": "特徴「侍」を持つ自軍ユニットがある"
   }
 }

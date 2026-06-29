@@ -46,5 +46,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "text": "自軍Sユニットを1体選ぶ。このターン、選んだユニットは自軍ダメージ1点につきBP＋2000される。",
+  "rawText": "自軍Sユニットを1体選ぶ。このターン、選んだユニットは自軍ダメージ1点につきBP＋2000される。"
 }

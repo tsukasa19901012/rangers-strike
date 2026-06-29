@@ -9,6 +9,23 @@
   "powerCost": 0,
   "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札をすべて自軍山札に戻してからシャッフルし、戻した枚数と同じだけドローする。",
   "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札をすべて自軍山札に戻してからシャッフルし、戻した枚数と同じだけドローする。",
+  "effects": [
+    {
+      "id": "note_e382b2e383bce383a0e9968b",
+      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札をすべて自軍山札に戻してからシャッフルし、戻した枚数と同じだけドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "grant_effect_gemudakenowodekirunowosubetenishitekarashi",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -18,6 +18,12 @@
     "猛士",
     "装甲声刃"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「仮面ライダー響鬼」1体を捨札する",
+    "partnerName": "仮面ライダー響鬼",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_register",
@@ -40,14 +46,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-062::shine9acbc",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokikorewohorudosurukaririsu",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -61,11 +67,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「仮面ライダー響鬼」1体を捨札する",
-    "partnerName": "仮面ライダー響鬼",
-    "unitCount": 1
   }
 }

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-268",
+  "name": "デスガロン",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "※敵軍ターン中、これがバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置いてもよい。（コマンドゾーンに置けるカードは通常5枚まで） 【分析能力】 これが自軍バトルエリアにある間、すべてのバトルは本来のBPで行う。",
+  "rawText": "※敵軍ターン中、これがバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置いてもよい。（コマンドゾーンに置けるカードは通常5枚まで） 【分析能力】 これが自軍バトルエリアにある間、すべてのバトルは本来のBPで行う。",
+  "bp": 2000,
+  "size": "S",
+  "features": [
+    "クライシス帝国",
+    "メカ",
+    "人型"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_e280bbe695b5e8bb8de382bf",
+      "text": "※敵軍ターン中、これがバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置いてもよい。（コマンドゾーンに置けるカードは通常5枚まで）",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RK-268::tankoregabatorud",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "chikara_e58886",
+      "name": "分析能力",
+      "text": "これが自軍バトルエリアにある間、すべてのバトルは本来のBPで行う。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-268::chikara_e58886",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-268.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-268.jpg"
+}

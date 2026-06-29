@@ -32,7 +32,9 @@ export function RideOffModal({
             ライドオフ
           </h3>
           <p className="ride-off-modal__lead">
-            「{riderCard.name}」はライドしたままバトルエリアに出ました。アタックやストライクの前に、ライドオフしてライディングコンボを発動しますか？
+            「{riderCard.name}」はライドしたままバトルエリアに出ました。アタックやストライクの前に、ライドオフしますか？
+            {riderCard.comboNumber === "RC" &&
+              " ライドオフするとライディングコンボを発動できます。"}
           </p>
 
           <div className="ride-off-modal__stack">
@@ -53,7 +55,9 @@ export function RideOffModal({
               onClick={onRideOff}
             >
               ライドオフする
-              <span className="ride-off-modal__detail">ライディングコンボを発動</span>
+              {riderCard.comboNumber === "RC" && (
+                <span className="ride-off-modal__detail">ライディングコンボを発動</span>
+              )}
             </button>
             <button
               type="button"

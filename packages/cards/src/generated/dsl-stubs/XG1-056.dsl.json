@@ -24,14 +24,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-056::agitono",
+          "keyword": "destroy_on_rush_koreworashushitatokikategorinimawotsusyunitowo1bi_geki_h",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

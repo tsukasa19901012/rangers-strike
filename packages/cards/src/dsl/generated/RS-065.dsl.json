@@ -9,8 +9,8 @@
   "bp": 1000,
   "size": "S",
   "comboNumber": 3,
-  "text": "【一点突破】これが「SP1」以上または「SP！」のあるユニットを撃破したとき、相手に1点ダメージを与える。",
-  "rawText": "【一点突破】これが「SP1」以上または「SP！」のあるユニットを撃破したとき、相手に1点ダメージを与える。",
+  "text": "【一点突破】ストライクできるユニット（コンビネーションによってストライク可能になるユニットも含む）を撃破したとき、相手に1点ダメージを与える。",
+  "rawText": "【一点突破】ストライクできるユニット（コンビネーションによってストライク可能になるユニットも含む）を撃破したとき、相手に1点ダメージを与える。",
   "features": [
     "イエロー",
     "女"
@@ -22,19 +22,22 @@
     {
       "id": "focused_breakthrough",
       "name": "一点突破",
-      "text": "これが「SP1」以上または「SP！」のあるユニットを撃破したとき、相手に1点ダメージを与える。",
+      "text": "ストライクできるユニット（コンビネーションによってストライク可能になるユニットも含む）を撃破したとき、相手に1点ダメージを与える。",
       "trigger": {
         "type": "conditional"
       },
       "effects": [
         {
-          "type": "interpret_effect"
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
         }
       ]
     }
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter"
+    "handler": "interpreter",
+    "testGenerated": true
   }
 }

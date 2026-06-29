@@ -1,0 +1,59 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-370",
+  "name": "ブラックマスク",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 1,
+  "text": "※これは、特徴「女」を持つ敵軍ユニットがあるときストライクできない（この制限は自軍ダメージが4点以上あれば無効になる）。 【マスキーロッド】SP1",
+  "rawText": "※これは、特徴「女」を持つ敵軍ユニットがあるときストライクできない（この制限は自軍ダメージが4点以上あれば無効になる）。 【マスキーロッド】SP1",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "ブラック",
+    "男"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce381af",
+      "text": "※これは、特徴「女」を持つ敵軍ユニットがあるときストライクできない（この制限は自軍ダメージが4点以上あれば無効になる）。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RS-370::korehawotsuyunit",
+          "duration": "permanent"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "masukirodo",
+      "name": "マスキーロッド",
+      "text": "SP1",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-370.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-370.jpg"
+}

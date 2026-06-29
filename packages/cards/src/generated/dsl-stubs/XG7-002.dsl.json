@@ -24,14 +24,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "on_rush_swap_from_power_except_named::ゴーカイグリーン",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "gokaigan",
@@ -40,14 +40,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-002::gokaigan",
-          "duration": "permanent"
+          "keyword": "bp_modify_omote_ko_kinopawakaraniwotsukadowokinabinishitemoyoi",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

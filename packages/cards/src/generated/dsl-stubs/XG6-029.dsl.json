@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_wing",
+      "id": "unnamed_e280bbe382a6e382a4e383b3",
       "text": "※ウイング",
       "trigger": {
         "type": "while_in_field"
@@ -48,35 +48,35 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "note_e280bbe38193e3828ce381af",
       "text": "※これは特徴「仮面ライダー」を持つ自軍コマンド1つにつきBP+500される。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-029::koreharaidawotsu",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "sukaikiku_e5a4a7",
       "name": "大反転スカイキック",
       "text": "これをラッシュエリアに戻してもよい。そうしたとき、敵軍バトルエリアからユニットを1体選び、これとバトルさせてもよい。その後、このターン、これはバトルエリアに出られない。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-029::sukaikikue5a4a7",
-          "duration": "permanent"
+          "keyword": "cannot_restrict_koreworashuerianishitemoyoisoushitatokibatorueriakarayun",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

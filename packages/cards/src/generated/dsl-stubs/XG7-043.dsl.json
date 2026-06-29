@@ -17,9 +17,14 @@
     "男",
     "加速"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "hold_extra_command",
+    "text": "追加で自軍コマンドを1つホールドする",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_cross1",
+      "id": "unnamed_e280bbe382afe383ade382b9",
       "text": "※クロス1",
       "trigger": {
         "type": "while_in_field"
@@ -33,7 +38,7 @@
       ]
     },
     {
-      "id": "unnamed_not_selectable_except_attack",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはアタックされる以外では相手に選ばれない。",
       "trigger": {
         "type": "while_in_field"
@@ -47,19 +52,19 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce4bba5",
+      "id": "note_e280bbe38193e3828ce4bba5",
       "text": "※これ以外の自軍ユニットがあれば、これはBP-6000されストライクできない。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-043::korenoyunitogaar",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "no_e59cb0",
@@ -68,14 +73,14 @@
       "trigger": {
         "type": "on_destroy"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-043::noe59cb0",
-          "duration": "turn"
+          "keyword": "while_in_field_body_koregapawazonniarutanwotsuyunitoga_geki_ha_sarete",
+          "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -94,10 +99,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "hold_extra_command",
-    "text": "追加で自軍コマンドを1つホールドする",
-    "unitCount": 1
   }
 }

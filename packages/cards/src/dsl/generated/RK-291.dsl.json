@@ -1,0 +1,86 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-291",
+  "name": "ドラゴンオルフェノク魔人態",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 5,
+  "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 ※これはラッシュしたターンにバトルエリアに出られない。 【魔人の力】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "rawText": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 ※これはラッシュしたターンにバトルエリアに出られない。 【魔人の力】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+  "bp": 4000,
+  "size": "S",
+  "features": [
+    "ラッキークローバー",
+    "オルフェノク",
+    "怪人",
+    "男",
+    "ドラゴン"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_destroy_on_win_vs_sp1",
+      "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_on_win_vs_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_no_battle_rush_turn",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_battle_rush_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "ma_no_chikara",
+      "name": "魔人の力",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-291::ma_no_chikara",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。",
+      "rule": "destroy_on_win_vs_sp1"
+    },
+    {
+      "kind": "note",
+      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
+      "rule": "no_battle_rush_turn"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-291.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-291.jpg"
+}

@@ -15,6 +15,12 @@
     "恐竜",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「スティラコサウルス」1体を捨札にする",
+    "partnerName": "スティラコサウルス",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "baku_makusushorudaataku",
@@ -23,25 +29,19 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-026::bakumakusushorudaataku",
+          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokiha1damejiwokerukaririsu",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「スティラコサウルス」1体を捨札にする",
-    "partnerName": "スティラコサウルス",
-    "unitCount": 1
   }
 }

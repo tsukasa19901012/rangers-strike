@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-472",
+  "name": "ゴーライナー",
+  "type": "unit",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【現場への搬送】これをラッシュしたとき、自軍コマンドゾーンのカードを好きな枚数選び捨札にしてもよい。そうしたとき、自軍山札から特徴「メカ」を持つMユニットのカードを、捨札にした枚数と同じ枚数まで好きな数選び、自軍コマンドゾーンにホールド状態で置く。その後、山札をシャッフルする。",
+  "rawText": "【現場への搬送】これをラッシュしたとき、自軍コマンドゾーンのカードを好きな枚数選び捨札にしてもよい。そうしたとき、自軍山札から特徴「メカ」を持つMユニットのカードを、捨札にした枚数と同じ枚数まで好きな数選び、自軍コマンドゾーンにホールド状態で置く。その後、山札をシャッフルする。",
+  "bp": 3000,
+  "size": "XL",
+  "features": [
+    "メカ",
+    "車両",
+    "母艦"
+  ],
+  "effects": [
+    {
+      "id": "heno_e78fbe",
+      "name": "現場への搬送",
+      "text": "これをラッシュしたとき、自軍コマンドゾーンのカードを好きな枚数選び捨札にしてもよい。そうしたとき、自軍山札から特徴「メカ」を持つMユニットのカードを、捨札にした枚数と同じ枚数まで好きな数選び、自軍コマンドゾーンにホールド状態で置く。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_rush_command_discard_deck_feature_m_hold",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-472.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-472.jpg"
+}

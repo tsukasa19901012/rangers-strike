@@ -9,6 +9,11 @@
   "powerCost": 2,
   "text": "【ドリル攻撃】自軍ターン中、これがバトルエリアに出たとき、特徴を4つ以上持つ敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
   "rawText": "【ドリル攻撃】自軍ターン中、これがバトルエリアに出たとき、特徴を4つ以上持つ敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
       "id": "doriru_geki",
@@ -17,6 +22,18 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
+      "optional": false,
       "effects": [
         {
           "type": "choose",
@@ -39,29 +56,12 @@
             }
           ]
         }
-      ],
-      "optional": false,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      }
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

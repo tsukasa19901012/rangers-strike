@@ -18,6 +18,11 @@
     "メカ",
     "車両"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_units_to_zones",
+    "text": "自軍Sユニット2体をそれぞれ自軍ゾーンに送る",
+    "unitCount": 2
+  },
   "effects": [
     {
       "id": "ganmakanon",
@@ -29,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-007::ganmakanon",
+          "keyword": "grant_ability_koregaerianiarukategoriwo2tsutsumyunitohano_chikara_woruat",
           "duration": "permanent"
         }
       ]
@@ -39,10 +44,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "send_s_units_to_zones",
-    "text": "自軍Sユニット2体をそれぞれ自軍ゾーンに送る",
-    "unitCount": 2
   }
 }

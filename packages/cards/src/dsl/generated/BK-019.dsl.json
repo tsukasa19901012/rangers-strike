@@ -1,0 +1,38 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "BK-019",
+  "name": "キバットベルト",
+  "type": "operation",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "次の効果から1つ選び発動する。 ◎自分の手札から本来の特徴に｢魔皇力｣を持つカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。 ◎自軍Sユニットを1体選び、リリースする。",
+  "rawText": "次の効果から1つ選び発動する。 ◎自分の手札から本来の特徴に｢魔皇力｣を持つカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。 ◎自軍Sユニットを1体選び、リリースする。",
+  "effects": [
+    {
+      "id": "kibatoberuto",
+      "name": "キバットベルト",
+      "text": "次の効果から1つ選び発動する。 ◎自分の手札から本来の特徴に｢魔皇力｣を持つカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと。 ◎自軍Sユニットを1体選び、リリースする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "pick_effect_branch",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/BK-019.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/BK-019.jpg"
+}

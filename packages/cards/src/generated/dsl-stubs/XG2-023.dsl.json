@@ -39,14 +39,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-023::nogekie9bb92",
-          "duration": "permanent"
+          "keyword": "hold_enemy_unit_batorueriakarananbawotanaisyunitowo1bi_geki_ha_shitemoyo",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

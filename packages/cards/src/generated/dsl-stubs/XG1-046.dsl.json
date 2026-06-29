@@ -9,6 +9,11 @@
   "powerCost": 2,
   "text": "【Vジェット】このビークルにライドしているユニットがモーフで置き換えられたとき、このビークルにライドしているユニットをラッシュエリアに戻してもよい。（ライドオフしない限り、ユニットとビークルは重ねたまま扱う）",
   "rawText": "【Vジェット】このビークルにライドしているユニットがモーフで置き換えられたとき、このビークルにライドしているユニットをラッシュエリアに戻してもよい。（ライドオフしない限り、ユニットとビークルは重ねたまま扱う）",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
       "id": "vjieto",
@@ -17,24 +22,19 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-046::vjieto",
-          "duration": "permanent"
+          "keyword": "ride_action_konobikuruniraidoshiteiruyunitogamofudekieraretatokikonobiku",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

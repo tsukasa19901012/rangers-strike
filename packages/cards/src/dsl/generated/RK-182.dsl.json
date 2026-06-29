@@ -1,0 +1,42 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-182",
+  "name": "Zブリンガー",
+  "type": "vehicle",
+  "category": "ET",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "【Zブリンガーアタック】これにライドしているユニットがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "rawText": "【Zブリンガーアタック】これにライドしているユニットがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+  "effects": [
+    {
+      "id": "zburingaataku",
+      "name": "Zブリンガーアタック",
+      "text": "これにライドしているユニットがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-182::zburingaataku",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
+  "imageUrl": "/cards/promoted/RK-182.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-182.jpg"
+}

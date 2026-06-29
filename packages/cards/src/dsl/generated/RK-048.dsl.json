@@ -1,0 +1,54 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-048",
+  "name": "仮面ライダー斬鬼",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 3,
+  "text": "【音撃斬・雷電斬震】敵軍バトルエリアからユニットを1体選ぶ。そして、選んだユニットの必要パワーの数字より1つ多い数だけ自軍コマンドをリリースしてもよい。そうしたとき、選んだユニットを撃破する。このとき、これはアタックすることができない。",
+  "rawText": "【音撃斬・雷電斬震】敵軍バトルエリアからユニットを1体選ぶ。そして、選んだユニットの必要パワーの数字より1つ多い数だけ自軍コマンドをリリースしてもよい。そうしたとき、選んだユニットを撃破する。このとき、これはアタックすることができない。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "1/3",
+  "comboNumber": 2,
+  "features": [
+    "仮面ライダー",
+    "男",
+    "猛士"
+  ],
+  "effects": [
+    {
+      "id": "geki_zan_kami_zan",
+      "name": "音撃斬・雷電斬震",
+      "text": "敵軍バトルエリアからユニットを1体選ぶ。そして、選んだユニットの必要パワーの数字より1つ多い数だけ自軍コマンドをリリースしてもよい。そうしたとき、選んだユニットを撃破する。このとき、これはアタックすることができない。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "destroy_release_commands_then",
+          "duration": "turn"
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent"
+        }
+      }
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-048.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-048.jpg"
+}

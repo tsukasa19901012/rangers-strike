@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "unnamed_alias_rf",
+      "id": "unnamed_alias_raidakabutorf",
       "text": "※これは「仮面ライダーカブトRF」としてつかえる。",
       "trigger": {
         "type": "while_in_field"
@@ -41,13 +41,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "alias_rf",
+          "keyword": "alias_raidakabutorf",
           "duration": "permanent"
         }
       ]
     },
     {
-      "id": "unnamed_no_attack_from_enemy_s",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは敵軍Sユニットにアタックされない。",
       "trigger": {
         "type": "while_in_field"
@@ -70,7 +70,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-079::atakuraido",
+          "keyword": "grant_ability_tankoregabatoruerianitatokipawanoga123noomote_ko_kino",
           "duration": "turn"
         }
       ]

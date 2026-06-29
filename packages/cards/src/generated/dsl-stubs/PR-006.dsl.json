@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_no_battle_rush_turn",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはラッシュしたターンにバトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"
@@ -39,14 +39,14 @@
       "trigger": {
         "type": "on_attack"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "attack_destroy_bp_sum_3000",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

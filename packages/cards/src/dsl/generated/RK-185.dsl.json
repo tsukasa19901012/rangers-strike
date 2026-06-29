@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-185",
+  "name": "レッドドラス",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": "5+",
+  "text": "※これをラッシュしたとき、特徴「仮面ライダー」を持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す。 【合体吸収】自軍ターン中、これがバトルエリアに出たとき、敵軍山札の下から1枚ひいてオモテにしてもよい。オモテにしたカードがＲＣを持つユニットカードなら、このターン、これはSP1になり、オモテにしたカードのRCの効果をこのユニットの効果として発動する。その後、オモテにしたカードは持ち主の山札の下に戻す。",
+  "rawText": "※これをラッシュしたとき、特徴「仮面ライダー」を持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す。 【合体吸収】自軍ターン中、これがバトルエリアに出たとき、敵軍山札の下から1枚ひいてオモテにしてもよい。オモテにしたカードがＲＣを持つユニットカードなら、このターン、これはSP1になり、オモテにしたカードのRCの効果をこのユニットの効果として発動する。その後、オモテにしたカードは持ち主の山札の下に戻す。",
+  "bp": 6000,
+  "size": "S",
+  "sp": "special",
+  "features": [
+    "メカ",
+    "怪人"
+  ],
+  "effects": [
+    {
+      "id": "note_e280bbe38193e3828ce38292",
+      "text": "※これをラッシュしたとき、特徴「仮面ライダー」を持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_rush_return_enemy_feature_s_to_deck_bottom::仮面ライダー",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    },
+    {
+      "id": "fx_unknown_e59088",
+      "name": "合体吸収",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍山札の下から1枚ひいてオモテにしてもよい。オモテにしたカードがＲＣを持つユニットカードなら、このターン、これはSP1になり、オモテにしたカードのRCの効果をこのユニットの効果として発動する。その後、オモテにしたカードは持ち主の山札の下に戻す。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-185::fx_unknown_e59088",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ドラス」1体を捨札にする",
+    "partnerName": "ドラス",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RK-185.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-185.jpg"
+}

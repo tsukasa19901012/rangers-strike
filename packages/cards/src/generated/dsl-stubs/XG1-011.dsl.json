@@ -17,9 +17,15 @@
     "メカ",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「皇帝バッカスフンド」1体を捨札にする",
+    "partnerName": "皇帝バッカスフンド",
+    "unitCount": 1
+  },
   "effects": [
     {
-      "id": "unnamed_blast",
+      "id": "unnamed_e280bbe38396e383a9e382b9",
       "text": "※ブラスト",
       "trigger": {
         "type": "while_in_field"
@@ -39,14 +45,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-011::supesumetarunomaken",
-          "duration": "permanent"
+          "keyword": "ot_category_zonkazonniotwotsukadogaomote_ko_kidearebakorehasp1ninaru",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [
@@ -60,11 +66,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「皇帝バッカスフンド」1体を捨札にする",
-    "partnerName": "皇帝バッカスフンド",
-    "unitCount": 1
   }
 }

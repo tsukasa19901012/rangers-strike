@@ -12,9 +12,14 @@
   "powerCost": 3,
   "text": "※これにライドしているユニットは、アタックするときBP+1500される。 【水中魚雷】これをラッシュしたとき、敵軍山札の上から3枚をオモテにしてよい。そうしたとき、オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す。",
   "rawText": "※これにライドしているユニットは、アタックするときBP+1500される。 【水中魚雷】これをラッシュしたとき、敵軍山札の上から3枚をオモテにしてよい。そうしたとき、オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す。",
+  "size": "S",
+  "features": [
+    "メカ",
+    "車両"
+  ],
   "effects": [
     {
-      "id": "unnamed_ride_attack_bp_boost_1500",
+      "id": "unnamed_e280bbe38193e3828ce381ab",
       "text": "※これにライドしているユニットは、アタックするときBP+1500される。",
       "trigger": {
         "type": "while_in_field"
@@ -25,8 +30,7 @@
           "keyword": "ride_attack_bp_boost_1500",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "mizu_kami",
@@ -35,24 +39,26 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-066::mizukami",
+          "keyword": "reveal_faceup_koreworashushitatokinokara3woomotenishiteyoisoushitatokiom",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これにライドしているユニットは、アタックするときBP+1500される。",
+      "rule": "ride_attack_bp_boost_1500"
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "size": "S",
-  "features": [
-    "メカ",
-    "車両"
-  ]
+  }
 }

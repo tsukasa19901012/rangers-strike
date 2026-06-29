@@ -25,14 +25,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-053::ta",
+          "keyword": "discard_to_zone_tankoregabatoruerianitatokirashueriakararaidawo",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

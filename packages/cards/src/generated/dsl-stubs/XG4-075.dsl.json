@@ -32,7 +32,7 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍エリアにある間、自分がターンを終えるとき、これがホールド状態なら捨札にする。",
       "trigger": {
         "type": "while_in_field"
@@ -40,11 +40,10 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-075::koregaerianiarug",
+          "keyword": "while_note_fx_unknown",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "no_e7949f",
@@ -53,14 +52,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-075::noe7949f",
+          "keyword": "hold_on_enter_battle_tanhorudonokonoyunitogabatoruerianitatokinowosuru",
           "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

@@ -46,7 +46,8 @@ function runCpuUntilStable(
   let steps = 0;
   while (steps < maxSteps && !state.winner && isCpuTurn(state, cpuPlayer)) {
     const action =
-      pickCpuAction(state, cpuPlayer) ?? pickCpuFallbackAction(state, cpuPlayer);
+      pickCpuAction(state, cpuPlayer, { enableSearch: false }) ??
+      pickCpuFallbackAction(state, cpuPlayer);
     expect(action, `CPU stuck at step ${steps}`).not.toBeNull();
     const result = applyAction(state, action!);
     expect(result.ok, `CPU action failed: ${result.error}`).toBe(true);
@@ -91,7 +92,7 @@ describe("legend3 CPU", () => {
       },
     });
 
-    const first = pickCpuAction(initial, "player2");
+    const first = pickCpuAction(initial, "player2", { enableSearch: false });
     expect(first?.type).toBe("move_to_battle");
 
     const { state } = runCpuUntilStable(initial, "player2", 8);
@@ -187,7 +188,7 @@ describe("legend3 CPU", () => {
     };
 
     const actions = getLegalActions(withPending).filter((a) => a.playerId === "player2");
-    const action = pickCpuAction(withPending, "player2");
+    const action = pickCpuAction(withPending, "player2", { enableSearch: false });
     expect(action?.type).toBe("resolve_effect_choice");
     if (action?.type === "resolve_effect_choice") {
       expect(action.instanceId).toBe("RS-079:cheap");

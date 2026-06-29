@@ -1,0 +1,103 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-496",
+  "name": "デカブルーSWAT",
+  "type": "unit",
+  "category": "OT",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「デカブルー」のカードを1枚選び、自軍ラッシュエリアに出す。 ※これが自軍エリアにある間、特徴「スワット」を持つ自軍ユニットは、アタックされるときBP+3000される。 【精密射撃】敵軍パワーゾーンのダメージになっているカードを1枚選び、オモテにしてもよい。そうしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、ダメージにする。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「デカブルー」のカードを1枚選び、自軍ラッシュエリアに出す。 ※これが自軍エリアにある間、特徴「スワット」を持つ自軍ユニットは、アタックされるときBP+3000される。 【精密射撃】敵軍パワーゾーンのダメージになっているカードを1枚選び、オモテにしてもよい。そうしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、ダメージにする。",
+  "bp": 4500,
+  "size": "S",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "男",
+    "警察",
+    "スワット"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「デカブルー」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ally_suwato_attacked_bp_3000",
+      "text": "※これが自軍エリアにある間、特徴「スワット」を持つ自軍ユニットは、アタックされるときBP+3000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "ally_suwato_attacked_bp_3000",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "geki_e7b2be",
+      "name": "精密射撃",
+      "text": "敵軍パワーゾーンのダメージになっているカードを1枚選び、オモテにしてもよい。そうしたとき、敵軍パワーゾーンからオモテ向きのカードを1枚選び、ダメージにする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "flip_enemy_power_damage",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「デカブルー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "デカブルー",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-496.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-496.jpg"
+}

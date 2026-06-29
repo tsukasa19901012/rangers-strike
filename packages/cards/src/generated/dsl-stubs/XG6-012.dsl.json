@@ -23,19 +23,19 @@
   },
   "effects": [
     {
-      "id": "unnamed_e280bbe887aae8bb8de3808c",
+      "id": "note_e280bbe887aae8bb8de3808c",
       "text": "※自軍「タイタンボーイ」があるとき、これはアタックすることができない。",
       "trigger": {
         "type": "nc"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-012::taitanboigaaruto",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "furashutan",
@@ -44,14 +44,14 @@
       "trigger": {
         "type": "on_rush"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-012::furashutan",
+          "keyword": "reveal_faceup_koreworashushitatokiura_ko_kinopawawo1biomotenishitemoyoik",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

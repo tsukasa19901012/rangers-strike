@@ -15,6 +15,12 @@
     "魔法",
     "人型"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「ゴセイアルティメットMM」1体を捨札にする",
+    "partnerName": "ゴセイアルティメットMM",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_lead_ma",
@@ -37,14 +43,14 @@
       "trigger": {
         "type": "enter_battle"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-028::aruteimetosutoraiku",
+          "keyword": "enemy_power_damage_tankoregabatoruerianitatokikomandowo1tsuririsusurukay",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [
@@ -58,11 +64,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「ゴセイアルティメットMM」1体を捨札にする",
-    "partnerName": "ゴセイアルティメットMM",
-    "unitCount": 1
   }
 }

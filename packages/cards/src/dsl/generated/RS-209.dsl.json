@@ -1,0 +1,44 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-209",
+  "name": "ホウオウレンジャー",
+  "type": "unit",
+  "category": "MA",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": 3,
+  "text": "【天風星・一文字竜巻】「SP1」自軍ラッシュエリアのSユニットを、敵軍Sユニットの数まで好きな数選び、手札に戻してもよい。そうしたとき、自分が手札に戻した数と同じ数、相手は自分自身のSユニットを選び手札に戻す。",
+  "rawText": "【天風星・一文字竜巻】「SP1」自軍ラッシュエリアのSユニットを、敵軍Sユニットの数まで好きな数選び、手札に戻してもよい。そうしたとき、自分が手札に戻した数と同じ数、相手は自分自身のSユニットを選び手札に戻す。",
+  "bp": 2000,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 3,
+  "features": [
+    "ピンク",
+    "女"
+  ],
+  "effects": [
+    {
+      "id": "kaze_e5a4a9",
+      "name": "天風星・一文字竜巻",
+      "text": "「SP1」自軍ラッシュエリアのSユニットを、敵軍Sユニットの数まで好きな数選び、手札に戻してもよい。そうしたとき、自分が手札に戻した数と同じ数、相手は自分自身のSユニットを選び手札に戻す。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RS-209.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-209.jpg"
+}

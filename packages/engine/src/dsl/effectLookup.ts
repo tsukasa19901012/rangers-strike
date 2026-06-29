@@ -3,6 +3,7 @@ import {
   getDefaultCardRegistry,
   type CardRegistry,
 } from "@rangers-strike/cards/dsl/registry";
+import { dslEffectMatchesRidingComboTrigger } from "@rangers-strike/cards";
 import type {
   EffectDefinition,
   EffectTrigger,
@@ -48,6 +49,15 @@ export function listDslEffectsForTrigger(
 ): EffectDefinition[] {
   const doc = getCardDslDocument(cardId);
   if (!doc?.effects || !isDslInterpreterCard(cardId)) return [];
+  if (triggerType === "riding_combo") {
+    return doc.effects.filter((effect) =>
+      dslEffectMatchesRidingComboTrigger(
+        effect.trigger,
+        effect.text ?? "",
+        doc.comboNumber,
+      ),
+    );
+  }
   return doc.effects.filter((effect) =>
     triggerMatches(effect.trigger, triggerType, operationTiming),
   );

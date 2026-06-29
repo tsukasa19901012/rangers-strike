@@ -1,0 +1,38 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-084",
+  "name": "トリックベント",
+  "type": "operation",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 4,
+  "text": "自軍山札の上から3枚をオモテにする。その中から特徴「ミラーライダー」を持つユニットカードをすべて自軍ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、それ以外のオモテにしたカードはすべて捨札になる。",
+  "rawText": "自軍山札の上から3枚をオモテにする。その中から特徴「ミラーライダー」を持つユニットカードをすべて自軍ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、それ以外のオモテにしたカードはすべて捨札になる。",
+  "effects": [
+    {
+      "id": "torikubento",
+      "name": "トリックベント",
+      "text": "自軍山札の上から3枚をオモテにする。その中から特徴「ミラーライダー」を持つユニットカードをすべて自軍ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、それ以外のオモテにしたカードはすべて捨札になる。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "reveal_top3_all_feature_to_rush::ミラーライダー",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-084.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-084.jpg"
+}

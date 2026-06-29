@@ -17,6 +17,12 @@
     "人型",
     "電子モヂカラ"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "discard_named_unit",
+    "text": "自軍「海老折神」1体を捨札にする",
+    "partnerName": "海老折神",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "unnamed_morph",
@@ -44,11 +50,5 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  },
-  "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "自軍「海老折神」1体を捨札にする",
-    "partnerName": "海老折神",
-    "unitCount": 1
   }
 }

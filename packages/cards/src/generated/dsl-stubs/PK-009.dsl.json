@@ -38,16 +38,16 @@
       "name": "ダブルタイフーン",
       "text": "自軍コマンドゾーンから「仮面ライダー1号」か「仮面ライダー2号」のカードを1枚選びホールドしてもよい。そうしたとき、ホールドしたユニットカードのＲＣの効果を、このユニットの効果として発動する。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "hold_named_riders_rc_copy",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

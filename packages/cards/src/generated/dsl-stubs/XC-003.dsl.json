@@ -9,6 +9,23 @@
   "powerCost": 0,
   "text": "ゲーム開始前に一度だけ発動できる⇒自分の手札をすべて好きな順番で自軍山札の下に戻してから、戻した枚数と同じだけドローする。",
   "rawText": "ゲーム開始前に一度だけ発動できる⇒自分の手札をすべて好きな順番で自軍山札の下に戻してから、戻した枚数と同じだけドローする。",
+  "effects": [
+    {
+      "id": "note_e382b2e383bce383a0e9968b",
+      "text": "ゲーム開始前に一度だけ発動できる⇒自分の手札をすべて好きな順番で自軍山札の下に戻してから、戻した枚数と同じだけドローする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "draw_cards_gemunidakedekirunowosubetekinadenonishi",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_chase",
+      "id": "unnamed_e280bbe38381e382a7e382a4",
       "text": "※チェイス",
       "trigger": {
         "type": "while_in_field"
@@ -34,35 +34,35 @@
       ]
     },
     {
-      "id": "unnamed_e280bbe695b5e8bb8de382bf",
+      "id": "note_e280bbe695b5e8bb8de382bf",
       "text": "※敵軍ターン中、これが撃破されて捨札になったとき、これを自軍パワーゾーンにダメージにして置いてもよい。そうしたとき、自分の手札から「仮面ライダーBLACK RX」のカードを1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "on_destroy"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG3-046::tankorega_geki_h",
-          "duration": "permanent"
+          "keyword": "note_other_fx_unknown",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     },
     {
       "id": "kingusutonfurashu",
       "name": "キングストーンフラッシュ",
       "text": "自分は1枚ドローしてから、自分の手札を1枚選び捨札にする。そうしたとき、捨札にしたカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-046::kingusutonfurashu",
-          "duration": "permanent"
+          "keyword": "pick_from_hand_ha1doroshitekaranowo1binisurusoushitatokinishitaka",
+          "duration": "turn"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

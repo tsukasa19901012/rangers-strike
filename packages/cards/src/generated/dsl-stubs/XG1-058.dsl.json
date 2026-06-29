@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_ride_bp_boost_1000",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはライド中、BP+1000される。",
       "trigger": {
         "type": "while_in_field"
@@ -36,16 +36,16 @@
       "name": "ワーウルフ化",
       "text": "ホールド状態のSユニットを2体選んでもよい。そうしたとき、選んだ2体でバトルさせる。ただし、特徴「男」を持つユニットを必ず1体選ぶこと。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-058::waurufu",
-          "duration": "permanent"
+          "keyword": "feature_match_horudonosyunitowo2ndemoyoisoushitatokinda2debatorusaseruta",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

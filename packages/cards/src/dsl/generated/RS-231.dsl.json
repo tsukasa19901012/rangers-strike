@@ -1,0 +1,88 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RS-231",
+  "name": "アバレブルーAM",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend1",
+  "powerCost": "7-",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「アバレブルー」のカードを1枚選び、自軍ラッシュエリアに出す。 【アバレタックル】「SP1」",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「アバレブルー」のカードを1枚選び、自軍ラッシュエリアに出す。 【アバレタックル】「SP1」",
+  "bp": 4500,
+  "size": "S",
+  "sp": "special",
+  "comboNumber": 2,
+  "features": [
+    "ブルー",
+    "男",
+    "アバレモード"
+  ],
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「アバレブルー」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "discard",
+            "owner": "self"
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "rush"
+            }
+          ]
+        }
+      ],
+      "optional": true,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "discard",
+          "owner": "self"
+        }
+      }
+    },
+    {
+      "id": "abaretakuru",
+      "name": "アバレタックル",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "rushAdditionalCondition": {
+    "conditionId": "zord_down_discard_named",
+    "text": "自軍「アバレブルー」1体を捨札にすれば必要パワー0になる",
+    "partnerName": "アバレブルー",
+    "unitCount": 1
+  },
+  "imageUrl": "/cards/promoted/RS-231.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-231.jpg"
+}

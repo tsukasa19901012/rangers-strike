@@ -39,14 +39,14 @@
       "trigger": {
         "type": "nc"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-068::konodeyarubekikoto",
-          "duration": "permanent"
+          "keyword": "deck_search_koregaerianiarurashufueizugotoni1dakenowo1bi",
+          "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

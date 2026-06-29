@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_cannot_attack",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはアタックすることができない。",
       "trigger": {
         "type": "while_in_field"
@@ -38,14 +38,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-093::fxunknowne98193",
+          "keyword": "while_in_field_body_koregabatoruerianiarukomandozonnokadohanibarenai",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "unnamedRules": [

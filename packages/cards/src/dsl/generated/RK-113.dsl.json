@@ -1,0 +1,65 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-113",
+  "name": "サイコローグ",
+  "type": "unit",
+  "category": "WB",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 1,
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【散弾】これをラッシュしたとき、ライド中の敵軍Sユニットを1体選び、ライドオフさせてもよい。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【散弾】これをラッシュしたとき、ライド中の敵軍Sユニットを1体選び、ライドオフさせてもよい。",
+  "bp": 500,
+  "size": "S",
+  "sp": "1/2",
+  "features": [
+    "ミラーモンスター",
+    "昆虫"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "dan_e695a3",
+      "name": "散弾",
+      "text": "これをラッシュしたとき、ライド中の敵軍Sユニットを1体選び、ライドオフさせてもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_rush_enemy_s_ride_off",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "require_command_hold_entry"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-113.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-113.jpg"
+}

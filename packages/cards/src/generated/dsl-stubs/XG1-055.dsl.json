@@ -23,14 +23,14 @@
       "trigger": {
         "type": "while_in_field"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-055::nieta",
+          "keyword": "hold_enemy_unit_koreganoniarupawaniwotsusyunitogarashusaretatokida",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "implementation": {

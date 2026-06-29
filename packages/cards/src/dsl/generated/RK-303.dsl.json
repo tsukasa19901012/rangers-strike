@@ -1,0 +1,64 @@
+{
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
+  "id": "RK-303",
+  "name": "ワームサナギ体（4弾）",
+  "type": "unit",
+  "category": "DA",
+  "rarity": "N",
+  "expansion": "legend2",
+  "powerCost": 2,
+  "text": "※このカードはデッキに好きな枚数入れてもよい。 【擬態の解除】これが自分の手札にある間、敵軍ターン中、特徴「男」または「女」を持つ自軍ユニットが撃破されて捨札になったとき、捨札になったユニットカード1枚につき、自分の手札から「ワームサナギ体」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+  "rawText": "※このカードはデッキに好きな枚数入れてもよい。 【擬態の解除】これが自分の手札にある間、敵軍ターン中、特徴「男」または「女」を持つ自軍ユニットが撃破されて捨札になったとき、捨札になったユニットカード1枚につき、自分の手札から「ワームサナギ体」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+  "bp": 500,
+  "size": "S",
+  "features": [
+    "ワーム",
+    "怪人"
+  ],
+  "effects": [
+    {
+      "id": "unnamed_deck_unlimited",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "deck_unlimited",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "no_e693ac",
+      "name": "擬態の解除",
+      "text": "これが自分の手札にある間、敵軍ターン中、特徴「男」または「女」を持つ自軍ユニットが撃破されて捨札になったとき、捨札になったユニットカード1枚につき、自分の手札から「ワームサナギ体」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk_fx::RK-303::no_e693ac",
+          "duration": "permanent"
+        }
+      ],
+      "optional": true
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※このカードはデッキに好きな枚数入れてもよい。",
+      "rule": "deck_unlimited"
+    }
+  ],
+  "implementation": {
+    "source": "dsl",
+    "handler": "interpreter",
+    "testGenerated": true
+  },
+  "imageUrl": "/cards/promoted/RK-303.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-303.jpg"
+}
