@@ -3,7 +3,7 @@ import { cardName } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { addTurnRuleModifier } from "../core/scopedModifiers";
 import { ENEMY_POWER_COST_MINUS_RULE } from "../core/power";
-import { grantSp1ToBattleUnit, markBattleNcEffect } from "./namedUnitEffects";
+import { grantSp1ToBattleUnit, markBattleNcEffect, tryStartBringerSwordChoice } from "./namedUnitEffects";
 import { tryStartDestroyPowerCostMinusChoice } from "./powerCostMinusEffects";
 import { buildLogEntry } from "../log/formatLog";
 import { applyCoreGapNcEffect } from "./legend1/coreGapEffects";
@@ -27,6 +27,7 @@ const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "XG5-032": "end_turn_battle_to_rush",
   "RK-159": "v3_kick",
   "RS-278": "bison_rod",
+  "RS-685": "buringasodo",
 };
 
 const CORE_GAP_NC_EFFECTS = new Set([
@@ -146,6 +147,18 @@ export function applyPromotedNcEffect(
       );
       if (withChoice) nextState = withChoice;
       logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, "bison_rod"));
+      break;
+    }
+    case "buringasodo": {
+      nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
+      const withChoice = tryStartBringerSwordChoice(
+        nextState,
+        playerId,
+        card.cardId,
+        playerId,
+      );
+      if (withChoice) nextState = withChoice;
+      logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, "buringasodo"));
       break;
     }
     default:

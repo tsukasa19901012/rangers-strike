@@ -12,7 +12,7 @@ import {
   resolveLegend3EnterBattle,
 } from "../rules/legend3/battleEffects";
 import { applyLegacyNumberComboEffect } from "../rules/numberComboEffects";
-import { resolveNamedOnRushEffects } from "../rules/namedUnitEffects";
+import { resolveNamedOnRushEffects, applyShirubaOnRush } from "../rules/namedUnitEffects";
 import { listDslEffectsForTrigger } from "./effectLookup";
 import type { GrantKeywordContext, GrantKeywordResult } from "./grantKeyword";
 
@@ -79,6 +79,11 @@ export function applyRuntimeGrantKeyword(
       ctx.phasePlayerId,
     );
     return { state: result.state, detail: effectId };
+  }
+
+  if (effectId === "shiruba" && instanceId) {
+    const result = applyShirubaOnRush(state, ctx.playerId, instanceId);
+    return { state: result.state, detail: "shiruba" };
   }
 
   return { state, detail: `runtime:${effectId}` };

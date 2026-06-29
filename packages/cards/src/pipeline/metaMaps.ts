@@ -151,6 +151,16 @@ function inferZordUpAdditionalCondition(addCond: string): RushAdditionalConditio
       unitCount,
     };
   }
+  const featureSMatch = addCond.match(/特徴[「｢]([^」｣]+)[」｣]を持つ自軍Sユニット/);
+  if (featureSMatch && addCond.includes("捨")) {
+    return {
+      conditionId: "discard_feature_unit",
+      text: addCond,
+      requiredFeature: featureSMatch[1],
+      unitCount,
+      requiredSize: "S",
+    };
+  }
   const featureMatch = addCond.match(/特徴[「｢]([^」｣]+)[」｣]を持つ自軍ユニット/);
   if (featureMatch && addCond.includes("捨")) {
     return {

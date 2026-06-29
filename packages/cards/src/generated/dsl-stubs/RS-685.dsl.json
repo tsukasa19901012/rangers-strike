@@ -37,13 +37,13 @@
       "id": "deal_damage_1",
       "text": "※自軍ターン中、これがBPの下三桁が500の敵軍ユニットを撃破したとき、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "black_condor_destroy_damage",
+          "duration": "permanent"
         }
       ]
     },
@@ -52,7 +52,11 @@
       "name": "ブリンガーソード",
       "text": "「SP1」BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「レッドホーク」からコンビネーションするときはナンバーに関係なく発動する)",
       "trigger": {
-        "type": "nc"
+        "type": "nc_or_combo_from",
+        "partnerCardIds": [
+          "RS-280",
+          "RS-689"
+        ]
       },
       "effects": [
         {

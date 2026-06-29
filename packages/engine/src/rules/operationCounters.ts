@@ -35,6 +35,7 @@ import {
   battleAttackerBpBonus,
   battleDefenderBp,
   resolveFocusedBreakthroughDamage,
+  resolveBlackCondorDestroyDamage,
 } from "./namedUnitEffects";
 import { findCardOwner } from "./fieldLookup";
 import { canOfferRegister, toPendingRegister } from "./resist";
@@ -944,6 +945,17 @@ export function resolveBattlePendingCore(
       );
       nextState = fb.state;
       extraLogs = fb.logs;
+    }
+    if (refreshedAttackerFound.card.cardId === "RS-685") {
+      const bc = resolveBlackCondorDestroyDamage(
+        nextState,
+        attackerId,
+        pending.attackerInstanceId,
+        defenderOwner,
+        refreshedDefenderFound.card,
+      );
+      nextState = bc.state;
+      extraLogs = [...extraLogs, ...bc.logs];
     }
   }
 

@@ -18879,9 +18879,10 @@
       "imageUrl": "/cards/promoted/RS-625.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-625.jpg",
       "rushAdditionalCondition": {
-        "conditionId": "discard_named_unit",
+        "conditionId": "discard_feature_unit",
         "text": "特徴「シルバー」を持つ自軍Sユニット1体を捨札にする",
-        "partnerName": "シルバー",
+        "requiredFeature": "シルバー",
+        "requiredSize": "S",
         "unitCount": 1
       },
       "bp": 4000,

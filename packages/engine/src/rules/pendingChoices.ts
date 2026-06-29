@@ -21,7 +21,7 @@ import { applyAssaultToCommandHold } from "./legend3/restrictions";
 import { findInZone, opponent, performDeckDraws, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { markJuuKunDoAttackerActed } from "./juuKunDo";
-import { findCardOwner } from "./fieldLookup";
+import { findCardInField, findCardOwner } from "./fieldLookup";
 import { bounceToHand } from "./bounce";
 import { applyReanimate } from "./reanimate";
 import { tryLeaveField } from "./operationCounters";
@@ -300,7 +300,7 @@ export function isValidEffectChoiceTarget(
         !!findInZone(player, "rush", pending.sourceInstanceId)
       );
     }
-    const located = findCardOwner(state, instanceId);
+    const located = findCardInField(state, instanceId);
     if (!located) return false;
     if (dest === "rush" || dest === "enemy_command") {
       return located.zone === "battle";

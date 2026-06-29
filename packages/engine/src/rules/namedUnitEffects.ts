@@ -39,6 +39,7 @@ import { canAttackEnemyRushS } from "./legend3/restrictions";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
+import { patchPlayer } from "./playerPatches";
 import {
   collectAnyFieldUnitIds,
   collectCommandIds,
@@ -615,6 +616,134 @@ export function resolveFocusedBreakthroughDamage(
         "RS-065",
         state.definitions,
         "focused_breakthrough",
+      ),
+    ],
+  };
+}
+
+export function bpLastThreeDigits(bp: number): number {
+  const normalized = ((bp % 1000) + 1000) % 1000;
+  return normalized;
+}
+
+function unitHasPrintedSp(def: ReturnType<typeof getDefinition>): boolean {
+  if (!def || def.type !== "unit") return false;
+  return def.sp != null;
+}
+
+/** RS-625 シルバー専用機: 追加条件で捨てたカードにSPがあれば BP+2000 / SP1。 */
+export function applyShirubaOnRush(
+  state: GameState,
+  rusherPlayerId: PlayerId,
+  rushedInstanceId: string,
+): NamedEffectOutcome {
+  const rusher = state.players[rusherPlayerId];
+  const rushed = findInZone(rusher, "rush", rushedInstanceId);
+  if (!rushed || rushed.card.cardId !== "RS-625") return { state, logs: [] };
+
+  const materialCardId = rushed.card.zordMaterialCardId;
+  if (!materialCardId) return { state, logs: [] };
+  const materialDef = getDefinition(state.definitions, materialCardId);
+  if (!unitHasPrintedSp(materialDef)) return { state, logs: [] };
+
+  const nextState = patchPlayer(state, rusherPlayerId, (player) => {
+    const rush = [...player.rush];
+    const index = rush.findIndex((c) => c.instanceId === rushedInstanceId);
+    if (index < 0) return player;
+    rush[index] = {
+      ...rush[index]!,
+      spModifier: (rush[index]!.spModifier ?? 0) + 1,
+      bpModifier: (rush[index]!.bpModifier ?? 0) + 2000,
+    };
+    return { ...player, rush };
+  });
+  return {
+    state: nextState,
+    logs: [
+      buildLogEntry(
+        rusherPlayerId,
+        "named_effect",
+        "RS-625",
+        state.definitions,
+        "shiruba",
+      ),
+    ],
+  };
+}
+
+export function collectBpLastThree500UnitIds(
+  state: GameState,
+  targetPlayerId: PlayerId,
+  options: { size?: "S" | "M" | "L"; zones?: Array<"rush" | "battle"> } = {},
+): string[] {
+  const zones = options.zones ?? ["battle", "rush"];
+  const player = state.players[targetPlayerId];
+  const ids: string[] = [];
+
+  for (const zone of zones) {
+    for (const card of player[zone]) {
+      const def = getDefinition(state.definitions, card.cardId);
+      if (!def || def.type !== "unit") continue;
+      if (options.size && def.size !== options.size) continue;
+      if (bpLastThreeDigits(effectiveBp(state, targetPlayerId, card)) !== 500) continue;
+      ids.push(card.instanceId);
+    }
+  }
+
+  return ids;
+}
+
+export function tryStartBringerSwordChoice(
+  state: GameState,
+  playerId: PlayerId,
+  sourceCardId: string,
+  phasePlayerId: PlayerId,
+): GameState | null {
+  const enemyId = opponent(playerId);
+  const targets = collectBpLastThree500UnitIds(state, enemyId, { size: "S" });
+  if (targets.length === 0) return null;
+
+  return startSelectUnitChoice(state, {
+    playerId,
+    effectId: "buringasodo",
+    sourceCardId,
+    phasePlayerId,
+    validInstanceIds: targets,
+    unitDestination: "discard",
+  });
+}
+
+/** RS-685: 自軍ターン中、BP下三桁500の敵を撃破したとき相手に1ダメージ。 */
+export function resolveBlackCondorDestroyDamage(
+  state: GameState,
+  strikerPlayerId: PlayerId,
+  strikerInstanceId: string,
+  defenderOwner: PlayerId,
+  defender: CardInstance,
+): NamedEffectOutcome {
+  if (state.activePlayer !== strikerPlayerId) return { state, logs: [] };
+
+  const striker = state.players[strikerPlayerId];
+  const strikerCard = striker.battle.find((c) => c.instanceId === strikerInstanceId);
+  if (!strikerCard || strikerCard.cardId !== "RS-685") return { state, logs: [] };
+
+  const defenderBp = effectiveBp(state, defenderOwner, defender);
+  if (bpLastThreeDigits(defenderBp) !== 500) return { state, logs: [] };
+
+  const enemyId = opponent(strikerPlayerId);
+  const nextState = applyDamageToPlayer(state, enemyId, 1, {
+    kind: "none",
+    activePlayer: state.activePlayer,
+  });
+  return {
+    state: nextState,
+    logs: [
+      buildLogEntry(
+        strikerPlayerId,
+        "named_effect",
+        "RS-685",
+        state.definitions,
+        "black_condor_destroy_damage",
       ),
     ],
   };

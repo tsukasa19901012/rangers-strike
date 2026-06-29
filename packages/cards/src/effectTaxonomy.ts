@@ -83,6 +83,8 @@ export type RushAdditionalCondition = {
   nameContains?: string;
   /** L ユニット追加条件のカテゴリ名（日本語またはコード）。 */
   requiredCategory?: string;
+  /** 捨て札にするユニットのサイズ制限（例: S）。 */
+  requiredSize?: "S" | "M" | "L";
 };
 
 /** 効果名を持つ効果 — 実装時は engine effectId に対応。 */
