@@ -1,4 +1,7 @@
 import { EFFECT_LABELS } from "../effectLabels";
+import { normalizeEffectName } from "./japaneseEffectSlug";
+import { slugifyJapaneseEffectName } from "./japaneseEffectSlug";
+import generatedRegistryData from "./effect-name-registry.json";
 
 /** 日本語効果名 → 安定 effect ID（slugifyEffectId / スタブ修復用）。 */
 const EFFECT_NAME_TO_ID: Record<string, string> = {};
@@ -58,20 +61,33 @@ const ADDITIONAL_EFFECT_NAME_TO_ID: Record<string, string> = {
   空輸: "airlift",
   サガスナイパー: "sagas_sniper",
   森羅万象ビッグバンファイナル: "nature_big_bang_final",
-  音撃打・灼熱真紅の型: "sound_strike_scorching_form",
+  "音撃打・灼熱真紅の型": "sound_strike_scorching_form",
+  力の2号: "chikara_no_2_go",
+  "SP+1": "grant_sp1",
+  "SP+2": "grant_sp2",
+  "SP+3": "grant_sp3",
 };
 
-function normalizeEffectName(name: string): string {
-  return name.split("（")[0]?.trim() ?? name;
-}
+const generatedRegistry: Record<string, string> = generatedRegistryData;
 
 /** 日本語効果名から既知の semantic effect ID を返す。 */
 export function effectIdFromName(name: string): string | undefined {
   const key = normalizeEffectName(name);
-  return ADDITIONAL_EFFECT_NAME_TO_ID[key] ?? EFFECT_NAME_TO_ID[key];
+  return (
+    ADDITIONAL_EFFECT_NAME_TO_ID[key] ??
+    EFFECT_NAME_TO_ID[key] ??
+    generatedRegistry[key]
+  );
 }
 
 /** slugifyEffectId 用の KNOWN マップ（読み取り専用）。 */
 export function knownEffectNameIds(): Readonly<Record<string, string>> {
-  return { ...EFFECT_NAME_TO_ID, ...ADDITIONAL_EFFECT_NAME_TO_ID };
+  return { ...EFFECT_NAME_TO_ID, ...ADDITIONAL_EFFECT_NAME_TO_ID, ...generatedRegistry };
 }
+
+/** レジストリ未登録の効果名向け slug 生成（修復スクリプト用）。 */
+export function effectSlugFromName(name: string): string {
+  return effectIdFromName(name) ?? slugifyJapaneseEffectName(name);
+}
+
+export { normalizeEffectName };

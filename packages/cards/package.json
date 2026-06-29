@@ -41,7 +41,7 @@
     "./schema/*": "./schema/*"
   },
   "scripts": {
-    "build": "node scripts/bundle-dsl-overlays.mjs && tsc -p tsconfig.json",
+    "build": "node scripts/bundle-dsl-overlays.mjs && tsc -p tsconfig.json && cp src/pipeline/effect-name-registry.json dist/pipeline/",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "generate-card-tests": "node scripts/generate-card-tests.mjs",
@@ -79,6 +79,8 @@
     "remigrate-stub-effects": "tsx scripts/remigrate-stub-effects.ts",
     "repair-dsl-hash-keywords": "tsx scripts/repair-dsl-hash-keywords.ts",
     "repair-named-effect-ids": "tsx scripts/repair-named-effect-ids.ts",
+    "build-effect-name-registry": "tsx scripts/build-effect-name-registry.ts",
+    "audit-hash-grant-keywords": "tsx scripts/audit-hash-grant-keywords.ts",
     "promote-dsl-ready": "tsx scripts/promote-dsl-ready.ts",
     "finalize-effect-primitives": "tsx scripts/finalize-effect-primitives.ts",
     "audit:effect-keywords": "tsx scripts/audit-effect-keywords.ts",
