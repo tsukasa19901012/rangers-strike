@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { winButDestroyedVsSp1 } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
+import { applyGrantKeyword } from "./dsl/grantKeyword";
+import { applyEffectChoiceSelect } from "./rules/pendingChoices";
 import { attackedBpBoostAmount } from "./dsl/promotedKeywordBridge";
 import { legend3FieldBpBonus } from "./rules/legend3/fieldEffects";
 import { legend3EffectiveSp } from "./rules/legend3/fieldEffects";
@@ -109,6 +111,38 @@ describe("SR-005 デカレッドバトライザー", () => {
   it("has attacked_bp_boost of 5000", () => {
     expect(attackedBpBoostAmount("SR-005")).toBe(5000);
   });
+
+  it("opens destroy_power_match choice when rushing", () => {
+    const sr005 = inst("SR-005", "s");
+    const power = { ...inst("TST-OP", "pw"), faceDown: false };
+    const state = createTestState({
+      definitions: defs,
+      phase: "rush",
+      activePlayer: "player1",
+      player1: {
+        rush: [sr005],
+        power: [power],
+        command: [heldWbCommand("c1"), heldWbCommand("c2")],
+      },
+      player2: {
+        battle: [inst("TST-UNIT-0", "e1")],
+        command: [heldWbCommand("c3")],
+      },
+    });
+    const result = applyGrantKeyword(
+      state,
+      {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        sourceCardId: "SR-005",
+        effectId: "batoraizufuaiyadoraibu",
+        triggerSourceInstanceId: sr005.instanceId,
+        optional: true,
+      },
+      "destroy_power_match_on_rush",
+    );
+    expect(result.state.pendingEffectChoice?.effectId).toBe("destroy_power_match_on_rush");
+  });
 });
 
 describe("SR-007 大神龍", () => {
@@ -214,5 +248,49 @@ describe("SR-006 シュリケンジャーFM", () => {
     expect(def?.bp).toBe(4500);
     expect(def?.sp).toBe(1);
     expect(def?.category).toBe("MA");
+  });
+});
+
+describe("RS-268 プリズムカイザー on_rush_send", () => {
+  it("opens rush ET to power choice and grants SP1 to rusher", () => {
+    const rs268 = inst("RS-268", "g");
+    const etAlly = inst("TST-UNIT-WB-ET", "et");
+    const state = createTestState({
+      definitions: defs,
+      phase: "rush",
+      activePlayer: "player1",
+      player1: {
+        rush: [rs268, etAlly],
+        command: [heldWbCommand("c1"), heldWbCommand("c2")],
+      },
+      player2: { command: [heldWbCommand("c3")] },
+    });
+    const opened = applyGrantKeyword(
+      state,
+      {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        sourceCardId: "RS-268",
+        effectId: "purizumukaiza",
+        triggerSourceInstanceId: rs268.instanceId,
+        optional: true,
+      },
+      "on_rush_send_rush_et_to_power_sp1",
+    );
+    expect(opened.state.pendingEffectChoice?.effectId).toBe(
+      "on_rush_send_rush_et_to_power_sp1",
+    );
+    const picked = applyEffectChoiceSelect(
+      opened.state,
+      "player1",
+      etAlly.instanceId,
+    );
+    expect(picked.error).toBeUndefined();
+    const after = picked.state!;
+    expect(after.players.player1.power.some((c) => c.instanceId === etAlly.instanceId)).toBe(
+      true,
+    );
+    const rusher = after.players.player1.rush.find((c) => c.instanceId === rs268.instanceId);
+    expect(rusher?.spModifier).toBeGreaterThanOrEqual(1);
   });
 });

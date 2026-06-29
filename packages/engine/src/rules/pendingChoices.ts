@@ -30,6 +30,7 @@ import { promoteDeferredBattleEntry } from "./battleEntry";
 import { continueDslAfterChoice } from "../dsl/cardInterpreter";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { markBattleNcEffect } from "./namedUnitEffects";
+import { maybeInterceptDeckRevealForShuriken, grantSp1ToRushUnit, completeShurikenDeckRevealSwap, applyShurikenRevealToHand, findEnemySWithPowerCost } from "./srEffects";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
 import {
   applyFlowerBombDeclaredNumber,
@@ -322,6 +323,8 @@ export function openEffectChoice(
   state: GameState,
   choice: PendingEffectChoice,
 ): GameState {
+  const intercepted = maybeInterceptDeckRevealForShuriken(state, choice);
+  if (intercepted) return intercepted;
   return {
     ...state,
     pendingEffectChoice: {
@@ -2256,6 +2259,35 @@ export function applyEffectChoiceSelect(
           cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
         );
       }
+      if (
+        pending.effectId?.startsWith("on_rush_send_rush_") &&
+        pending.unitDestination === "power"
+      ) {
+        const leave = applyUnitLeave(state, instanceId, "power", pending.phasePlayerId);
+        if ("error" in leave) return leave;
+        let nextState = leave.state;
+        if (pending.sourceInstanceId) {
+          nextState = grantSp1ToRushUnit(
+            nextState,
+            pending.playerId,
+            pending.sourceInstanceId,
+          );
+        }
+        return finishChoice(
+          nextState,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(nextState, instanceId)),
+        );
+      }
+      if (pending.effectId === "destroy_power_match_on_rush_destroy") {
+        const leave = applyUnitLeave(state, instanceId, "discard", pending.phasePlayerId);
+        if ("error" in leave) return leave;
+        return finishChoice(
+          leave.state,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+        );
+      }
       if (pending.effectId === "fuantasuteikutekuniku") {
         const nextState = triggerCopiedOnRushFromRush(
           state,
@@ -3085,6 +3117,38 @@ export function applyEffectChoiceSelect(
         nextPlayer = { ...nextPlayer, hasPaidEarthForceUpkeep: true };
       }
 
+      if (pending.effectId === "destroy_power_match_on_rush") {
+        const discarded = toDiscard[0];
+        const powerCost = parsePowerCost(
+          getDefinition(state.definitions, discarded?.cardId)?.powerCost ?? 99,
+        );
+        const enemyId = opponent(pending.playerId);
+        const targets = findEnemySWithPowerCost(state, enemyId, powerCost).map(
+          (c) => c.instanceId,
+        );
+        const cleared = clearChoice(
+          { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+          pending.playerId,
+        );
+        if (targets.length === 0) {
+          return finishChoice(cleared, pending, "no_enemy_match");
+        }
+        return {
+          state: openEffectChoice(cleared, {
+            playerId: pending.playerId,
+            effectId: "destroy_power_match_on_rush_destroy",
+            sourceCardId: pending.sourceCardId,
+            sourceInstanceId: pending.sourceInstanceId,
+            phasePlayerId: pending.phasePlayerId,
+            kind: "select_unit",
+            validInstanceIds: targets,
+            selectCount: 1,
+            unitDestination: "discard",
+            skipShurikenIntercept: true,
+          }),
+        };
+      }
+
       if (pending.sourceInstanceId) {
         const needsFullPayment =
           pending.effectId === "judgment_sword" || pending.effectId === "justice_flasher";
@@ -3116,6 +3180,11 @@ export function applyEffectChoiceSelect(
     }
 
     case "select_hand": {
+      if (pending.effectId === "shuriken_deck_reveal_pick_hand") {
+        const result = completeShurikenDeckRevealSwap(state, pending, instanceId);
+        if ("error" in result) return result;
+        return finishChoice(result.state, pending, result.detail);
+      }
       const selectCount = pending.selectCount ?? 1;
       if (selectCount > 1) {
         const prev = pending.selectedInstanceIds ?? [];
@@ -3296,6 +3365,40 @@ export function applyEffectChoiceSelect(
     }
 
     case "confirm": {
+      if (pending.effectId === "shuriken_deck_reveal_swap") {
+        const meta = pending.shurikenMeta;
+        if (!meta) return { error: "invalid_meta" };
+        if (instanceId === "decline") {
+          return {
+            state: openEffectChoice(clearChoice(state, pending.playerId), {
+              ...meta.resume,
+              skipShurikenIntercept: true,
+            }),
+          };
+        }
+        if (instanceId !== "accept") return { error: "invalid_target" };
+        const withRevealed = applyShurikenRevealToHand(
+          state,
+          pending.playerId,
+          meta.revealedInstanceId,
+        );
+        if (!withRevealed) return { error: "invalid_target" };
+        const handIds = withRevealed.players[pending.playerId].hand.map((c) => c.instanceId);
+        return {
+          state: openEffectChoice(withRevealed, {
+            playerId: pending.playerId,
+            effectId: "shuriken_deck_reveal_pick_hand",
+            sourceCardId: pending.sourceCardId,
+            phasePlayerId: pending.phasePlayerId,
+            kind: "select_hand",
+            validInstanceIds: handIds,
+            selectCount: 1,
+            optional: false,
+            shurikenMeta: { ...meta, step: "pick_hand" },
+            skipShurikenIntercept: true,
+          }),
+        };
+      }
       if (pending.effectId === "rocket_booster") {
         const declaredName = pending.validInstanceIds.find((name) => name === instanceId)
           ?? instanceId;

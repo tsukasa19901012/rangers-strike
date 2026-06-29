@@ -315,6 +315,13 @@ export type PendingEffectChoice = {
   choiceBranchMeta?: {
     branchPrimitives: import("@rangers-strike/cards/dsl/types").EffectPrimitive[][];
   };
+  /** SR-006 超忍法・分身魔球: 山札公開差し替え。 */
+  shurikenMeta?: {
+    step: "confirm" | "pick_hand";
+    revealedInstanceId: string;
+    resume: PendingEffectChoice;
+  };
+  skipShurikenIntercept?: boolean;
 };
 
 /** @deprecated pendingEffectChoice を使用すること（ruin_survey）。 */

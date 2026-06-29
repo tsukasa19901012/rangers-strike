@@ -91,6 +91,7 @@ import { isCatchallGrantKeyword } from "./hashGrantKeywordStub";
 import { setGenericSComboFinisher, setBattleDestroyToPower, addComboNumberDelta } from "../rules/turnModifierBridge";
 import { superPowerAttackBonus } from "../core/catalog";
 import { matchRkGrantKeyword } from "../rules/rkEffects";
+import { matchSrGrantKeyword } from "../rules/srEffects";
 
 export const PASSIVE_GRANT_KEYWORDS = new Set([
   "over_technology_m_bp_plus_on_attacked",
@@ -154,9 +155,6 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "bp_debuff_per_non_ot_command",
   "category_wb_while_in_battle",
   "while_command_hold_immune",
-  "destroy_power_match_on_rush",
-  "big_baton_command_zone_features",
-  "opponent_must_hold_ot_et_on_command_release",
   "on_deck_reveal_swap_effect_target",
   "combo_l_repeat_attack_strike_after_combo",
   "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000",
@@ -335,6 +333,9 @@ export function applyGrantKeyword(
 
   const rk = matchRkGrantKeyword(state, ctx, keyword);
   if (rk) return rk;
+
+  const sr = matchSrGrantKeyword(state, ctx, keyword);
+  if (sr) return sr;
 
   switch (keyword) {
     case "bp_plus_per_own_damage": {

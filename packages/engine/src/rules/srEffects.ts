@@ -1,13 +1,16 @@
+import type { Category } from "@rangers-strike/cards";
 import { findNamedEffectByEffectId } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PlayerId } from "../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../types/game";
+import type { GrantKeywordContext } from "../dsl/grantKeyword";
 import {
   cardCategories,
   effectiveBp,
   getDefinition,
   isSmallUnit,
+  parsePowerCost,
 } from "../core/catalog";
-import { opponent, updatePlayer } from "../core/helpers";
-import { parsePowerCost } from "../core/power";
+import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { collectPowerIds, openEffectChoice } from "./pendingChoices";
 
 const BIG_BATON_FEATURES = ["レッド", "ブルー", "グリーン", "ピンク"] as const;
 
@@ -196,4 +199,196 @@ export function findEnemySWithPowerCost(
     }
   }
   return matches;
+}
+
+const RUSH_SEND_CATEGORY_RE =
+  /^on_rush_send_rush_(wb|ot|ma|et|da)_to_power_sp1$/;
+
+export function grantSp1ToRushUnit(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): GameState {
+  const player = state.players[playerId];
+  const rush = player.rush.map((c) =>
+    c.instanceId === instanceId
+      ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
+      : c,
+  );
+  return { ...state, ...updatePlayer(state, playerId, { ...player, rush }) };
+}
+
+export function playerHasShurikenFm(state: GameState, playerId: PlayerId): boolean {
+  const player = state.players[playerId];
+  return [...player.rush, ...player.battle].some((c) => c.cardId === "SR-006");
+}
+
+function collectRushUnitsByCategory(
+  state: GameState,
+  playerId: PlayerId,
+  category: Category,
+): string[] {
+  return state.players[playerId].rush
+    .filter((c) => cardCategories(getDefinition(state.definitions, c.cardId)).includes(category))
+    .map((c) => c.instanceId);
+}
+
+export function startOnRushSendToPowerSp1(
+  state: GameState,
+  ctx: GrantKeywordContext,
+  category: Category,
+): GameState | null {
+  const valid = collectRushUnitsByCategory(state, ctx.playerId, category);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: `on_rush_send_rush_${category.toLowerCase()}_to_power_sp1`,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    selectCount: 1,
+    unitDestination: "power",
+    optional: ctx.optional ?? true,
+  });
+}
+
+export function startDestroyPowerMatchOnRush(
+  state: GameState,
+  ctx: GrantKeywordContext,
+): GameState | null {
+  const valid = collectPowerIds(state, ctx.playerId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: "destroy_power_match_on_rush",
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "select_power",
+    validInstanceIds: valid,
+    selectCount: 1,
+    optional: ctx.optional ?? true,
+  });
+}
+
+/** SR-006: 山札公開前に分身魔球の任意差し替えを挟む。 */
+export function maybeInterceptDeckRevealForShuriken(
+  state: GameState,
+  choice: PendingEffectChoice,
+): GameState | null {
+  if (choice.kind !== "scry_keep_one") return null;
+  if (choice.skipShurikenIntercept) return null;
+  if (choice.effectId?.startsWith("shuriken_")) return null;
+  if (choice.shurikenMeta) return null;
+  if (!playerHasShurikenFm(state, choice.playerId)) return null;
+
+  const viewed = choice.viewedInstanceIds ?? [];
+  if (viewed.length !== 1) return null;
+  const player = state.players[choice.playerId];
+  const top = player.deck[0];
+  if (!top || top.instanceId !== viewed[0]) return null;
+  if (player.hand.length === 0) return null;
+
+  return openEffectChoice(state, {
+    playerId: choice.playerId,
+    effectId: "shuriken_deck_reveal_swap",
+    sourceCardId: "SR-006",
+    phasePlayerId: choice.phasePlayerId,
+    kind: "confirm",
+    validInstanceIds: ["accept", "decline"],
+    optional: true,
+    shurikenMeta: {
+      step: "confirm",
+      revealedInstanceId: top.instanceId,
+      resume: choice,
+    },
+  });
+}
+
+export function applyShurikenRevealToHand(
+  state: GameState,
+  playerId: PlayerId,
+  revealedInstanceId: string,
+): GameState | null {
+  const player = state.players[playerId];
+  const found = findInZone(player, "deck", revealedInstanceId);
+  if (!found) return null;
+  const [, deck] = removeAt(player.deck, found.index);
+  const revealed = { ...found.card, faceDown: false };
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      deck,
+      hand: [...player.hand, revealed],
+    }),
+  };
+}
+
+export function completeShurikenDeckRevealSwap(
+  state: GameState,
+  pending: PendingEffectChoice,
+  substituteInstanceId: string,
+): { state: GameState; detail: string } | { error: string } {
+  const meta = pending.shurikenMeta;
+  if (!meta) return { error: "invalid_meta" };
+
+  const player = state.players[pending.playerId];
+  const substituteFound = findInZone(player, "hand", substituteInstanceId);
+  if (!substituteFound) return { error: "invalid_target" };
+
+  const resume = meta.resume;
+  const substitute = substituteFound.card;
+  const [, handWithoutSub] = removeAt(player.hand, substituteFound.index);
+
+  let nextPlayer: PlayerState;
+  if (resume.unitDestination === "rush") {
+    nextPlayer = {
+      ...player,
+      hand: handWithoutSub,
+      deck: shuffleDeck([...player.deck]),
+      rush: [...player.rush, substitute],
+    };
+  } else {
+    nextPlayer = {
+      ...player,
+      hand: handWithoutSub,
+      deck: [substitute, ...player.deck],
+    };
+  }
+
+  return {
+    state: { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+    detail: substitute.cardId,
+  };
+}
+
+export function matchSrGrantKeyword(
+  state: GameState,
+  ctx: GrantKeywordContext,
+  keyword: string,
+): { state: GameState; detail?: string } | null {
+  if (keyword === "destroy_power_match_on_rush") {
+    const next = startDestroyPowerMatchOnRush(state, ctx);
+    return next
+      ? { state: next, detail: keyword }
+      : { state, detail: `${keyword}:no_targets` };
+  }
+
+  const rushSend = keyword.match(RUSH_SEND_CATEGORY_RE);
+  if (rushSend) {
+    const category = rushSend[1]!.toUpperCase() as Category;
+    const next = startOnRushSendToPowerSp1(state, ctx, category);
+    return next
+      ? { state: next, detail: keyword }
+      : { state, detail: `${keyword}:no_targets` };
+  }
+
+  if (keyword === "on_deck_reveal_swap_effect_target") {
+    return { state, detail: keyword };
+  }
+
+  return null;
 }
