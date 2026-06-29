@@ -1093,10 +1093,9 @@ function appendDamagePaymentActions(
   }
 }
 
-export function getLegalActions(state: GameState): GameAction[] {
-  if (state.winner) return [];
-
-  const playerId =
+/** 現在アクションを取るべきプレイヤー（pending 優先）。 */
+export function getActionPlayerId(state: GameState): PlayerId {
+  return (
     state.pendingCommandPayment?.playerId ??
     (state.pendingDamagePayment
       ? damagePaymentChoosingPlayer(state.pendingDamagePayment)
@@ -1105,8 +1104,16 @@ export function getLegalActions(state: GameState): GameAction[] {
     state.pendingEffectChoice?.playerId ??
     state.pendingMorph?.defenderPlayerId ??
     state.pendingBattleEntry?.playerId ??
+    state.pendingZordSetup?.playerId ??
     state.pendingScry?.playerId ??
-    state.activePlayer;
+    state.activePlayer
+  );
+}
+
+export function getLegalActions(state: GameState): GameAction[] {
+  if (state.winner) return [];
+
+  const playerId = getActionPlayerId(state);
   const player = state.players[playerId];
   const actions: GameAction[] = [];
 

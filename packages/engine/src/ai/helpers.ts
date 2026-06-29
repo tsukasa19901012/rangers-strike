@@ -41,6 +41,7 @@ import {
   getBattleEntryPaymentNeeds,
   getCategoryPaymentOptions,
   needsEffectHoldPayment,
+  validatePaymentSelection,
 } from "../rules/commandPayment";
 
 export function endPhase(actions: GameAction[]): GameAction | null {
@@ -576,15 +577,31 @@ export function pickCommandPaymentResolve(
 ): GameAction | null {
   const pending = state.pendingCommandPayment;
   if (!pending || pending.playerId !== playerId) return null;
-  const ids = pending.validInstanceIds.slice(0, pending.totalNeeded);
-  if (ids.length < pending.totalNeeded) {
+  const needed = pending.totalNeeded;
+  const valid = pending.validInstanceIds;
+  if (valid.length < needed) {
     return { type: "cancel_command_payment", playerId };
   }
-  return {
-    type: "resolve_command_payment",
-    playerId,
-    commandInstanceIds: ids,
-  };
+
+  const candidates: string[][] = [
+    valid.slice(0, needed),
+    valid.slice(-needed),
+  ];
+  for (let i = 0; i <= valid.length - needed; i += 1) {
+    candidates.push(valid.slice(i, i + needed));
+  }
+
+  for (const ids of candidates) {
+    if (validatePaymentSelection(state, pending, ids) === null) {
+      return {
+        type: "resolve_command_payment",
+        playerId,
+        commandInstanceIds: ids,
+      };
+    }
+  }
+
+  return { type: "cancel_command_payment", playerId };
 }
 
 export function pickZordSetupStep(

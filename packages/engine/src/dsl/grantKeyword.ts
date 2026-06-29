@@ -17,6 +17,8 @@ import {
   startPitInDiveOrderChoice,
   startRadialHammerChoice,
   startSelectCommandChoice,
+  startEnterHoldEnemyPowerLeDamageChoice,
+  startHangaEvolutionChoice,
 } from "../rules/pendingChoices";
 import { beginCastoffOnRush } from "../rules/castoff";
 import {
@@ -340,6 +342,27 @@ export function applyGrantKeyword(
       );
       if (!withChoice) return { state };
       return { state: withChoice, detail: "radial_hammer" };
+    }
+    case "enter_hold_enemy_power_le_opponent_damage": {
+      const withChoice = startEnterHoldEnemyPowerLeDamageChoice(state, {
+        playerId: ctx.playerId,
+        effectId: ctx.effectId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: ctx.effectId };
+    }
+    case "enter_scry_top_wb_m_rush": {
+      const withChoice = startHangaEvolutionChoice(state, {
+        playerId: ctx.playerId,
+        sourceCardId: ctx.sourceCardId,
+        sourceInstanceId: ctx.triggerSourceInstanceId,
+        phasePlayerId: ctx.phasePlayerId,
+      });
+      if (!withChoice) return { state };
+      return { state: withChoice, detail: "hanga" };
     }
     case "force_opponent_hold_command": {
       const enemyId = opponent(ctx.playerId);

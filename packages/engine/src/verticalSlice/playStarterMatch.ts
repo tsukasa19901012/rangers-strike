@@ -1,5 +1,5 @@
 import { applyAction } from "../core/applyAction";
-import { getLegalActions, isLegalAction } from "../core/legalActions";
+import { getActionPlayerId, getLegalActions, isLegalAction } from "../core/legalActions";
 import { pickCpuAction, type CpuLevel } from "../ai/index";
 import type { GameAction } from "../types/actions";
 import type { GameState, Phase, PlayerId } from "../types/game";
@@ -56,6 +56,41 @@ function classifyWin(state: GameState): "damage" | "deck_out" | "unknown" {
   return "unknown";
 }
 
+function stallFingerprint(state: GameState): string {
+  const payment = state.pendingCommandPayment;
+  return JSON.stringify({
+    phase: state.phase,
+    paymentSource: payment?.sourceInstanceId ?? null,
+    zordVehicle: state.pendingZordSetup?.zordInstanceId ?? null,
+    effect: state.pendingEffectChoice?.effectId ?? null,
+    battleEntry: state.pendingBattleEntry?.instanceId ?? null,
+  });
+}
+
+function forceStallRecovery(state: GameState, actor: PlayerId): GameAction | null {
+  if (state.phase === "rush" || state.phase === "start") {
+    const endPhase = getLegalActions(state).find((a) => a.type === "end_phase");
+    if (endPhase) return endPhase;
+    const draw = getLegalActions(state).find((a) => a.type === "draw");
+    if (draw) return draw;
+  }
+  if (state.pendingCommandPayment?.playerId === actor) {
+    return { type: "cancel_command_payment", playerId: actor };
+  }
+  if (state.pendingZordSetup?.playerId === actor) {
+    return { type: "cancel_zord_setup", playerId: actor };
+  }
+  if (state.pendingEffectChoice?.playerId === actor && state.pendingEffectChoice.optional) {
+    return { type: "skip_effect_choice", playerId: actor };
+  }
+  if (state.pendingBattleEntry?.playerId === actor) {
+    return { type: "pass_battle_entry", playerId: actor };
+  }
+  const endPhase = getLegalActions(state).find((a) => a.type === "end_phase");
+  if (endPhase) return endPhase;
+  return null;
+}
+
 /**
  * CPU ヒューリスティックで双方を進め、勝敗または停止条件まで進める。
  */
@@ -71,6 +106,10 @@ export function playStarterMatchUntilEnd(
   let strikes = 0;
   let battles = 0;
   let blockedRushPaymentSourceId: string | undefined;
+  const blockedPaymentSources = new Set<string>();
+  const blockedZordInstances = new Set<string>();
+  let lastFingerprint = "";
+  let sameFingerprintCount = 0;
 
   for (let steps = 0; steps < maxSteps; steps += 1) {
     phasesSeen.add(state.phase);
@@ -101,20 +140,54 @@ export function playStarterMatchUntilEnd(
       };
     }
 
-    const actor = actions[0]!.playerId;
-    const picked = pickCpuAction(state, actor, cpuLevel);
-    let action: GameAction =
-      picked && isLegalAction(state, picked) ? picked : actions[0]!;
+    const actor = getActionPlayerId(state);
+    const fingerprint = stallFingerprint(state);
+    if (fingerprint === lastFingerprint) {
+      sameFingerprintCount += 1;
+    } else {
+      sameFingerprintCount = 0;
+      lastFingerprint = fingerprint;
+    }
+
+    let action: GameAction;
+    if (sameFingerprintCount > 40) {
+      const forced = forceStallRecovery(state, actor);
+      action =
+        forced && isLegalAction(state, forced) && applyAction(state, forced).ok
+          ? forced
+          : actions[0]!;
+      sameFingerprintCount = 0;
+    } else {
+      const picked = pickCpuAction(state, actor, cpuLevel);
+      action = picked && isLegalAction(state, picked) ? picked : actions[0]!;
+    }
 
     if (
-      blockedRushPaymentSourceId &&
-      action.type === "initiate_command_payment" &&
-      action.sourceInstanceId === blockedRushPaymentSourceId
+      action.type === "begin_zord_setup" &&
+      blockedZordInstances.has(action.zordInstanceId)
+    ) {
+      const fallback = actions.find(
+        (candidate) =>
+          candidate.type !== "begin_zord_setup" ||
+          !blockedZordInstances.has(
+            (candidate as { zordInstanceId?: string }).zordInstanceId ?? "",
+          ),
+      );
+      if (fallback) action = fallback;
+    }
+
+    if (
+      (blockedRushPaymentSourceId &&
+        action.type === "initiate_command_payment" &&
+        action.sourceInstanceId === blockedRushPaymentSourceId) ||
+      (action.type === "initiate_command_payment" &&
+        blockedPaymentSources.has(action.sourceInstanceId))
     ) {
       const fallback = actions.find(
         (candidate) =>
           candidate.type !== "initiate_command_payment" ||
-          candidate.sourceInstanceId !== blockedRushPaymentSourceId,
+          (!blockedPaymentSources.has(candidate.sourceInstanceId) &&
+            candidate.sourceInstanceId !== blockedRushPaymentSourceId),
       );
       if (fallback) action = fallback;
       blockedRushPaymentSourceId = undefined;
@@ -126,6 +199,15 @@ export function playStarterMatchUntilEnd(
 
     const result = applyAction(state, action);
     if (
+      action.type === "cancel_command_payment" &&
+      state.pendingCommandPayment?.sourceInstanceId
+    ) {
+      blockedPaymentSources.add(state.pendingCommandPayment.sourceInstanceId);
+    }
+    if (action.type === "cancel_zord_setup" && state.pendingZordSetup) {
+      blockedZordInstances.add(state.pendingZordSetup.zordInstanceId);
+    }
+    if (
       !result.ok &&
       action.type === "resolve_command_payment" &&
       state.pendingCommandPayment?.playerId === action.playerId
@@ -135,7 +217,9 @@ export function playStarterMatchUntilEnd(
         playerId: action.playerId,
       });
       if (cancelled.ok) {
-        blockedRushPaymentSourceId = state.pendingCommandPayment?.sourceInstanceId;
+        const sourceId = state.pendingCommandPayment?.sourceInstanceId;
+        if (sourceId) blockedPaymentSources.add(sourceId);
+        blockedRushPaymentSourceId = sourceId;
         state = cancelled.state;
         actionCounts.cancel_command_payment =
           (actionCounts.cancel_command_payment ?? 0) + 1;
@@ -143,9 +227,33 @@ export function playStarterMatchUntilEnd(
       }
     }
     if (!result.ok) {
+      if (result.error === "cannot_enter_battle") {
+        const recovery =
+          actions.find(
+            (candidate) =>
+              candidate.type === "pass_battle_entry" &&
+              isLegalAction(state, candidate) &&
+              applyAction(state, candidate).ok,
+          ) ??
+          actions.find(
+            (candidate) =>
+              candidate.type === "end_phase" &&
+              isLegalAction(state, candidate) &&
+              applyAction(state, candidate).ok,
+          );
+        if (recovery) {
+          const recovered = applyAction(state, recovery);
+          if (recovered.ok) {
+            state = recovered.state;
+            actionCounts[recovery.type] = (actionCounts[recovery.type] ?? 0) + 1;
+            continue;
+          }
+        }
+      }
       const fallback = actions.find(
         (candidate) =>
           candidate !== action &&
+          candidate.type !== "move_to_battle" &&
           isLegalAction(state, candidate) &&
           applyAction(state, candidate).ok,
       );

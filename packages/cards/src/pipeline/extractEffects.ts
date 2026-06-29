@@ -19,7 +19,7 @@ type ZoneTarget = Extract<EffectPrimitive, { type: "move" }>["target"];
 function zone(
   z: "deck" | "hand" | "discard" | "power" | "command" | "rush" | "battle",
   owner: "self" | "opponent" | "any",
-  filter?: { size?: "S"; maxBp?: number; minBp?: number },
+  filter?: { size?: "S"; maxBp?: number; minBp?: number; faceDown?: boolean },
 ): ZoneTarget {
   const t: ZoneTarget = { type: "zone", zone: z, owner };
   if (filter) t.filter = filter;
@@ -1420,6 +1420,75 @@ const PATTERNS: PatternMatch[] = [
         matchedPattern: "ally_rider_protects_from_enemy_s",
       };
     },
+  },
+  {
+    pattern: "enter_battle_discard_faceup_power",
+    test: (body) =>
+      /これがバトルエリアに出たとき、自軍パワーゾーンからオモテ向きのカードを1枚選び捨札にする/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enter_discard_faceup_power",
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: false,
+      condition: {
+        type: "has_target",
+        target: zone("power", "self", { faceDown: false }),
+      },
+      effects: [
+        chooseUnit(zone("power", "self", { faceDown: false }), 1, [
+          { type: "discard", target: { type: "trigger_source" } },
+        ]),
+      ],
+      matchedPattern: "enter_battle_discard_faceup_power",
+    }),
+  },
+  {
+    pattern: "enter_battle_scry_top_wb_m_rush_cannot_attack",
+    test: (body) =>
+      /これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい.*「WB」のMユニット.*ラッシュエリアに出し.*捨札にする.*アタックすることができない/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enter_scry_top_wb_m_rush",
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      condition: { type: "has_target", target: zone("deck", "self") },
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_scry_top_wb_m_rush",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_scry_top_wb_m_rush_cannot_attack",
+    }),
+  },
+  {
+    pattern: "enter_battle_hold_enemy_power_le_opponent_damage",
+    test: (body) =>
+      /これがバトルエリアに出たとき.*敵軍ユニットを1体選びホールドしてもよい.*必要パワーの数字が敵軍ダメージの点数以下/.test(
+        body,
+      ),
+    build: (body, segment) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : "enter_hold_enemy_power_le_damage",
+      name: segment.name,
+      text: body,
+      trigger: { type: "enter_battle" },
+      optional: true,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "enter_hold_enemy_power_le_opponent_damage",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "enter_battle_hold_enemy_power_le_opponent_damage",
+    }),
   },
   {
     pattern: "enter_battle_hold_send_enemy_s_to_power",

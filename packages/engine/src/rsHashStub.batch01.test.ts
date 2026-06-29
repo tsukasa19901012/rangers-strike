@@ -221,3 +221,53 @@ describe("RS-410 竜闘気爆炸球", () => {
     expect(result.state.players.player1.battle[0]?.spModifier).toBe(1);
   });
 });
+
+describe("RS monkey-test high-frequency fixes", () => {
+  it("RS-563 rematches to enter_hold_enemy_power_le_opponent_damage", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、敵軍ユニットを1体選びホールドしてもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "突き上げる角",
+      kind: "named",
+      trigger: { type: "enter_battle" },
+    });
+    expect(
+      rematched!.some(
+        (p) =>
+          p.type === "grant_keyword" &&
+          p.keyword === "enter_hold_enemy_power_le_opponent_damage",
+      ),
+    ).toBe(true);
+  });
+
+  it("RS-229 rematches to enter_scry_top_wb_m_rush", () => {
+    const text =
+      "自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。オモテにしたカードが「WB」のMユニットのカードならラッシュエリアに出し、それ以外なら捨札にする。そうしたとき、これはアタックすることができない。";
+    const rematched = rematchEffectPrimitives(text, {
+      name: "超ハンガー進化",
+      kind: "named",
+      trigger: { type: "enter_battle" },
+    });
+    expect(
+      rematched!.some(
+        (p) => p.type === "grant_keyword" && p.keyword === "enter_scry_top_wb_m_rush",
+      ),
+    ).toBe(true);
+    expect(isCatchallGrantKeyword("enter_scry_top_wb_m_rush")).toBe(false);
+  });
+
+  it("RS-474 rematches to enter_battle_discard_faceup_power choose", () => {
+    const text =
+      "※自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンからオモテ向きのカードを1枚選び捨札にする。";
+    const rematched = rematchEffectPrimitives(text, {
+      kind: "note",
+      trigger: { type: "enter_battle" },
+    });
+    expect(rematched!.some((p) => p.type === "choose")).toBe(true);
+    expect(
+      rematched!.some(
+        (p) => p.type === "grant_keyword" && p.keyword === "note_other_fx_unknown",
+      ),
+    ).toBe(false);
+  });
+});

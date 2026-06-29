@@ -7,7 +7,7 @@ import type {
   SeabedDrawMeta,
 } from "../types/game";
 import { clearCostWindow, satisfyCostWindow } from "../core/costWindow";
-import { cardName, effectiveBp, getDefinition, parsePowerCost, unitBp } from "../core/catalog";
+import { cardName, cardCategories, effectiveBp, getDefinition, parsePowerCost, unitBp } from "../core/catalog";
 import {
   applyDiscoDanceReturnFemaleSToRush,
   startEndTurnBattleToRushChoiceForUnit,
@@ -26,6 +26,8 @@ import { tryLeaveField } from "./operationCounters";
 import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
 import { continueDslAfterChoice } from "../dsl/cardInterpreter";
+import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
+import { markBattleNcEffect } from "./namedUnitEffects";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
 import {
   applyFlowerBombDeclaredNumber,
@@ -373,6 +375,98 @@ export function startSelectUnitChoice(
     kind: "select_unit",
     selectCount: 1,
   });
+}
+
+/** RS-563: 敵ユニットをホールド（必要パワー ≤ 相手ダメージ点数）。 */
+export function startEnterHoldEnemyPowerLeDamageChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    effectId: string;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const enemyId = opponent(params.playerId);
+  const maxCost = state.players[enemyId].damage;
+  const valid: string[] = [];
+  for (const zone of ["battle", "rush"] as const) {
+    for (const card of state.players[enemyId][zone]) {
+      if (!isSelectableByOpponentEffect(state, params.playerId, card.instanceId)) continue;
+      const def = getDefinition(state.definitions, card.cardId);
+      if (def?.type !== "unit") continue;
+      if (parsePowerCost(def.powerCost ?? 99) <= maxCost) {
+        valid.push(card.instanceId);
+      }
+    }
+  }
+  if (valid.length === 0) return null;
+  return startSelectUnitChoice(state, {
+    ...params,
+    validInstanceIds: valid,
+    unitDestination: "enemy_command",
+    optional: true,
+  });
+}
+
+/** RS-229 超ハンガー進化: 山札トップ1枚を公開（任意）。 */
+export function startHangaEvolutionChoice(
+  state: GameState,
+  params: {
+    playerId: PlayerId;
+    sourceCardId: string;
+    sourceInstanceId?: string;
+    phasePlayerId: PlayerId;
+  },
+): GameState | null {
+  const player = state.players[params.playerId];
+  if (player.deck.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: params.playerId,
+    effectId: "hanga",
+    sourceCardId: params.sourceCardId,
+    sourceInstanceId: params.sourceInstanceId,
+    phasePlayerId: params.phasePlayerId,
+    kind: "optional_deck_draw",
+    validInstanceIds: ["draw"],
+    optional: true,
+  });
+}
+
+export function applyHangaEvolutionReveal(
+  state: GameState,
+  playerId: PlayerId,
+  sourceInstanceId: string | undefined,
+): GameState {
+  const player = state.players[playerId];
+  const top = player.deck[0];
+  if (!top) return state;
+
+  const def = getDefinition(state.definitions, top.cardId);
+  const isWbM =
+    def?.type === "unit" &&
+    def.size === "M" &&
+    cardCategories(def).includes("WB");
+  const revealed = { ...top, faceDown: false };
+  const restDeck = player.deck.slice(1);
+  const nextPlayer: PlayerState = isWbM
+    ? { ...player, deck: restDeck, rush: [...player.rush, revealed] }
+    : { ...player, deck: restDeck, discard: [...player.discard, revealed] };
+
+  let nextState: GameState = {
+    ...state,
+    ...updatePlayer(state, playerId, nextPlayer),
+  };
+  if (sourceInstanceId) {
+    nextState = markBattleNcEffect(
+      nextState,
+      playerId,
+      sourceInstanceId,
+      "optional_battle_no_attack",
+    );
+  }
+  return nextState;
 }
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
@@ -1141,6 +1235,19 @@ export function applyEffectChoiceSelect(
     }
     case "optional_deck_draw": {
       if (instanceId !== "draw") return { error: "invalid_target" };
+      if (pending.effectId === "hanga") {
+        const nextState = applyHangaEvolutionReveal(
+          state,
+          playerId,
+          pending.sourceInstanceId,
+        );
+        const player = nextState.players[playerId];
+        const revealedId =
+          player.rush.at(-1)?.cardId ??
+          player.discard.at(-1)?.cardId ??
+          pending.sourceCardId;
+        return finishChoice(nextState, pending, cardName(state.definitions, revealedId));
+      }
       const player = state.players[playerId];
       if (player.deck.length === 0) return { error: "empty_deck" };
       const drawResult = requestDrawFromDeck(state, playerId, pending.phasePlayerId, {

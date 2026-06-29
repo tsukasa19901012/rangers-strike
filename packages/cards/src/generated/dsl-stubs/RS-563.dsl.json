@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokiyunitowo1bihorudoshitemo",
+          "keyword": "enter_hold_enemy_power_le_opponent_damage",
           "duration": "turn"
         }
       ],
