@@ -1,5 +1,4 @@
 import type { CardDefinition, Category, SpFraction, SpValue } from "./schema";
-import { isSpFraction } from "./schema";
 import { getUnitEffectBlock } from "./unitEffects";
 import { partnerCategoryMatches } from "./comboEffects";
 
@@ -67,8 +66,9 @@ function parseJointLPartnerFromText(text: string): JointLPartnerSpec | null {
   const spS =
     text.match(/このユニットからコンビネーションするSP(1\/\d)のSユニット/) ??
     text.match(/このビークルからコンビネーションするSP(1\/\d)のSユニット/);
-  if (spS?.[1] && isSpFraction(spS[1])) {
-    return { kind: "s_sp_fraction", fraction: spS[1] };
+  const rawFraction = spS?.[1];
+  if (rawFraction && /^\d+\/\d+$/.test(rawFraction)) {
+    return { kind: "s_sp_fraction", fraction: rawFraction as SpFraction };
   }
 
   if (/このユニットからコンビネーションする同カテゴリのLユニット/.test(text)) {
