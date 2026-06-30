@@ -3,7 +3,7 @@
  * 仕様: apps/web/lib/wikiTestSpecs/ruleSpecs.ts
  */
 import { describe, expect, it } from "vitest";
-import { legend1Catalog, legend2Catalog } from "@rangers-strike/cards";
+import { legend1Catalog, legend2Catalog, JOINT_L_EFFECTS } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
 import { emitUnitRushedAndFinalize } from "./events/emitUnitRushed";
 import { placePermanentOperation } from "./rules/permanentOperation";
@@ -300,6 +300,94 @@ const RULE_CASES: RuleCase[] = [
       expect(
         chosen.state.players.player2.rush.some((c) => c.instanceId === morphHand.instanceId),
       ).toBe(true);
+    },
+  },
+  {
+    ruleId: "RULE-KW-10",
+    wikiRef: "docs/wiki/glossary/p266.md",
+    title: "L/Rナンバーはバトル進入時に隣接LサイズとJC発動",
+    run() {
+      const helper = inst("TST-JC-L", "jl");
+      const zord = inst("TST-JC-ZORD", "jz");
+      const extra = inst("TST-JC-EXTRA", "je");
+
+      let state = createTestState({
+        phase: "battle",
+        player1: { rush: [zord], battle: [helper] },
+      });
+      state.definitions["TST-JC-L"] = {
+        id: "TST-JC-L",
+        name: "JC Helper",
+        type: "unit",
+        category: "WB",
+        rarity: "N",
+        expansion: "test",
+        powerCost: 2,
+        bp: 2000,
+        size: "M",
+        comboNumber: "L",
+      };
+      state.definitions["TST-JC-ZORD"] = {
+        id: "TST-JC-ZORD",
+        name: "JC Zord",
+        type: "unit",
+        category: "WB",
+        rarity: "SR",
+        expansion: "test",
+        powerCost: 7,
+        bp: 12000,
+        size: "L",
+        sp: 1,
+      };
+      state.definitions["TST-JC-EXTRA"] = {
+        id: "TST-JC-EXTRA",
+        name: "Extra",
+        type: "unit",
+        category: "WB",
+        rarity: "N",
+        expansion: "test",
+        powerCost: 1,
+        bp: 1000,
+        size: "S",
+      };
+
+      JOINT_L_EFFECTS["TST-JC-L"] = "grant_sp1_to_partner";
+
+      const entered = applyAction(state, {
+        type: "move_to_battle",
+        playerId: "player1",
+        instanceId: zord.instanceId,
+      });
+      expect(entered.ok).toBe(true);
+      if (!entered.ok) return;
+
+      const partner = entered.state.players.player1.battle.find(
+        (c) => c.cardId === "TST-JC-ZORD",
+      );
+      expect(partner?.spModifier).toBe(1);
+
+      const withExtra = createTestState({
+        phase: "battle",
+        player1: {
+          rush: [extra],
+          battle: entered.state.players.player1.battle,
+        },
+      });
+      withExtra.definitions = entered.state.definitions;
+
+      const third = applyAction(withExtra, {
+        type: "move_to_battle",
+        playerId: "player1",
+        instanceId: extra.instanceId,
+      });
+      expect(third.ok).toBe(true);
+      if (!third.ok) return;
+      const zordAfter = third.state.players.player1.battle.find(
+        (c) => c.cardId === "TST-JC-ZORD",
+      );
+      expect(zordAfter?.spModifier).toBe(1);
+
+      delete JOINT_L_EFFECTS["TST-JC-L"];
     },
   },
 ];

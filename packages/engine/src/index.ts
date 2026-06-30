@@ -81,3 +81,10 @@ export {
   rushedCardBlocksMorphReaction,
   shouldMorphOrderChooserAct,
 } from "./rules/morphProcedure";
+export {
+  findJointComboTriggersOnEnter,
+  isJointComboNumber,
+  isJointLSizeAnchor,
+  jointPartnerCategoriesMatch,
+  resolveJointCombosOnEnter,
+} from "./rules/jointComboProcedure";

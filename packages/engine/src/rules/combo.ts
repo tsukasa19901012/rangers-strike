@@ -1,11 +1,8 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import {
   getEnterBattleEffect,
-  getJointLEffect,
-  getJointREffect,
   getEnterBattleNamedEffect,
   hasUnnamedRule,
-  partnerCategoryMatches,
 } from "@rangers-strike/cards";
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import type { CardInstance, EnterBattleResumeFrom, GameState, PendingBattleEntry, PlayerId } from "../types/game";
@@ -35,12 +32,7 @@ import {
   resolveLegend3EnterBattle,
   shouldRunConditionalOnEnter,
 } from "./legend3/battleEffects";
-import {
-  getLegend3JointLEffect,
-  getLegend3JointREffect,
-  resolveLegend3JointCombo,
-  resolveLegend3JointComboR,
-} from "./legend3/jointComboEffects";
+import { resolveJointCombosOnEnter } from "./jointComboProcedure";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
 import { tryMereChameleonOnAllyEnterBattle } from "./batch04FieldEffects";
 import { countLogicalBattleSlots } from "./battleLine";
@@ -58,7 +50,6 @@ import {
   resolveNamedNcEffectId,
 } from "./numberComboEffects";
 import { resolveRidingComboOnRideOff } from "./ridingComboEffects";
-import { grantSp1OnPlayer } from "./playerPatches";
 import { legend3EffectiveSp } from "./legend3/fieldEffects";
 import { hasBakiBakiExtraAttackOnly } from "./legend3/destroyEffects";
 import { tryStartDslConditionalChoice } from "../dsl/conditionalEffects";
@@ -69,102 +60,6 @@ import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
 
 export type { ComboOutcome } from "./comboTypes";
-
-function resolveJointCombos(
-  state: GameState,
-  playerId: PlayerId,
-): ComboOutcome {
-  const player = state.players[playerId];
-  const logs: string[] = [];
-  let nextState = state;
-  let nextPlayer = player;
-
-  for (let i = 0; i < player.battle.length; i++) {
-    const card = player.battle[i]!;
-    const definition = getDefinition(state.definitions, card.cardId);
-    if (!definition) continue;
-
-    if (definition.comboNumber === "L") {
-      const partner = player.battle[i + 1];
-      if (!partner) continue;
-      const partnerDef = getDefinition(state.definitions, partner.cardId);
-      if (!partnerDef || partnerDef.size !== "L") continue;
-      if (!partnerCategoryMatches(definition.category, partnerDef.category)) {
-        continue;
-      }
-      const jointEffect = getJointLEffect(card.cardId);
-      if (jointEffect === "grant_sp1_to_partner") {
-        nextPlayer = grantSp1OnPlayer(nextPlayer, partner.instanceId);
-        logs.push(
-          buildLogEntry(
-            playerId,
-            "joint_combo_l",
-            card.cardId,
-            state.definitions,
-            partner.cardId,
-          ),
-        );
-      }
-      const legend3L = getLegend3JointLEffect(card.cardId);
-      if (legend3L) {
-        const result = resolveLegend3JointCombo(
-          nextState,
-          playerId,
-          card.cardId,
-          legend3L,
-          partner.instanceId,
-        );
-        nextState = result.state;
-        logs.push(...result.logs);
-      }
-    }
-
-    if (definition.comboNumber === "R") {
-      const partner = player.battle[i - 1];
-      if (!partner) continue;
-      const partnerDef = getDefinition(state.definitions, partner.cardId);
-      if (!partnerDef || partnerDef.size !== "L") continue;
-      if (!partnerCategoryMatches(definition.category, partnerDef.category)) {
-        continue;
-      }
-      const jointEffect = getJointREffect(card.cardId);
-      if (jointEffect === "grant_sp1") {
-        nextPlayer = grantSp1OnPlayer(nextPlayer, card.instanceId);
-        logs.push(
-          buildLogEntry(
-            playerId,
-            "joint_combo_r",
-            card.cardId,
-            state.definitions,
-            "sp1",
-          ),
-        );
-      }
-      const legend3R = getLegend3JointREffect(card.cardId);
-      if (legend3R) {
-        if (logs.length > 0 || nextPlayer !== player) {
-          nextState = { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) };
-          nextPlayer = nextState.players[playerId];
-        }
-        const result = resolveLegend3JointComboR(
-          nextState,
-          playerId,
-          card.cardId,
-          legend3R,
-          playerId,
-        );
-        nextState = result.state;
-        logs.push(...result.logs);
-      }
-    }
-  }
-
-  if (logs.length > 0) {
-    nextState = { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) };
-  }
-
-  return { state: nextState, logs };
-}
 
 function applySComboFinisher(
   state: GameState,
@@ -506,7 +401,7 @@ export function resolveEnterBattleEffectsImpl(
   }
 
   if (shouldRunEnterStep(resumeFrom, "tail")) {
-    const jointResult = resolveJointCombos(nextState, playerId);
+    const jointResult = resolveJointCombosOnEnter(nextState, playerId, card.instanceId);
     nextState = jointResult.state;
     logs.push(...jointResult.logs);
 
