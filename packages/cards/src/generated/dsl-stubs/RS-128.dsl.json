@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_baiojieto2_go_karakonbineshonsurutokikonotankorehano_chika",
-          "duration": "turn"
+          "keyword": "effect_card::RS-128::baseattack",
+          "duration": "permanent"
         }
       ]
     }

@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "catchall_interpret_koreworirisusuru",
+          "keyword": "effect_card::XG1-041::gagano",
           "duration": "turn"
         }
       ]

@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokibpnoga500nosyunitowosu",
+          "keyword": "effect_card::RS-319::deisodobega",
           "duration": "turn"
         }
       ],

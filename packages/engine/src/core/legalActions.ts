@@ -15,6 +15,7 @@ import {
   dslOperationOpensChoose,
   getDslOperationEffect,
   isDslInterpretableEffect,
+  shouldUseDslOperation,
 } from "../dsl/dslCatalog";
 import { collectTargetInstanceIds } from "../dsl/targetSelectors";
 import {
@@ -449,8 +450,7 @@ function appendOperationActions(
 
     const dslEffect = getDslOperationEffect(card.cardId, "rush");
     const dslChoose =
-      dslEffect !== undefined &&
-      isDslInterpretableEffect(dslEffect) &&
+      shouldUseDslOperation(card.cardId, dslEffect) &&
       dslOperationOpensChoose(dslEffect);
 
     if (dslChoose && dslEffect.effects[0]?.type === "choose") {

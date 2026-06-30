@@ -60,7 +60,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakarahorudonoyu",
+          "keyword": "effect_card::XP-014::metarushafuto",
           "duration": "turn"
         }
       ]

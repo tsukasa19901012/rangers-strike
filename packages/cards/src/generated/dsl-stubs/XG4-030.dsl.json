@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "feature_match_rashueriakarawotsumyunitowo1bihorudoshitemoyoiso",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-030::zan",
+          "duration": "permanent"
         }
       ]
     }

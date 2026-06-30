@@ -73,7 +73,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_koreworashuerianishitemoyoisoushitatokibatorueriakarayun",
+          "keyword": "effect_card::XG6-029::sukaikikue5a4a7",
           "duration": "turn"
         }
       ]

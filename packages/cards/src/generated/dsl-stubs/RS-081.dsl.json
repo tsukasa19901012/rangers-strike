@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konotankorehahorudonokomando1tsunitsukibp1000sarerukorehabp",
-          "duration": "turn"
+          "keyword": "effect_card::RS-081::ryuugekiken",
+          "duration": "permanent"
         }
       ],
       "optional": false

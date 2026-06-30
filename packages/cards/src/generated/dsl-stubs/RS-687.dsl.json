@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokirashueriakarabp4000no",
+          "keyword": "effect_card::RS-687::garukonbogan",
           "duration": "turn"
         }
       ],

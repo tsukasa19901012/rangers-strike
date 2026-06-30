@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_koregaerianiarurashufueizugotoni1dakenowo1bi",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-068::konodeyarubekikoto",
+          "duration": "permanent"
         }
       ]
     }

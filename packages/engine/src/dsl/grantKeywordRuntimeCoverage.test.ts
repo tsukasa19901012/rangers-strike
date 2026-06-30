@@ -2,16 +2,17 @@ import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { generatedCorePlayableCatalog as corePlayableCatalog } from "@rangers-strike/cards";
+import { generatedCorePlayableCatalog as corePlayableCatalog, getFullPlayableCardById } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { effectiveBp } from "../core/catalog";
 import { battleAttackerBpBonus } from "../rules/namedUnitEffects";
+import { applyGrantKeyword } from "./grantKeyword";
 import {
   rideAttackBpBoostAmount,
   rideBpBoostAmount,
   rideMountedVehicleBpBonus,
 } from "./promotedKeywordBridge";
-import { createTestState, inst } from "../testing/fixtures";
+import { createTestState, inst, TEST_DEFINITIONS } from "../testing/fixtures";
 import type { PendingBattle } from "../types/game";
 
 const dslDir = join(
@@ -104,5 +105,47 @@ describe("grant keyword runtime coverage", () => {
     expect(attackerBp).toBeGreaterThanOrEqual(
       effectiveBp(state, "player1", rider) + 1500,
     );
+  });
+
+  it("XG7-048 grants SP1 when all enemy battle units are S-size", () => {
+    const self = inst("XG7-048", "self");
+    const enemyS = inst("TST-UNIT-0", "es");
+    const enemyL = inst("TST-UNIT-7", "el");
+    const xg7048 = getFullPlayableCardById("XG7-048");
+    expect(xg7048).toBeDefined();
+    const definitions: Record<string, CardDefinition> = {
+      ...TEST_DEFINITIONS,
+      "XG7-048": xg7048!,
+    };
+
+    const met = createTestState({
+      definitions,
+      player1: { battle: [self] },
+      player2: { battle: [enemyS] },
+    });
+    const granted = applyGrantKeyword(met, {
+      playerId: "player1",
+      phasePlayerId: "player1",
+      sourceCardId: "XG7-048",
+      effectId: "kuwagatahon",
+      triggerSourceInstanceId: self.instanceId,
+    }, "sp1_if_enemy_battle_all_s");
+    expect(granted.detail).toBe("sp1_if_enemy_battle_all_s");
+    expect(granted.state.players.player1.battle[0]?.spModifier).toBe(1);
+
+    const unmet = createTestState({
+      definitions,
+      player1: { battle: [self] },
+      player2: { battle: [enemyL] },
+    });
+    const skipped = applyGrantKeyword(unmet, {
+      playerId: "player1",
+      phasePlayerId: "player1",
+      sourceCardId: "XG7-048",
+      effectId: "kuwagatahon",
+      triggerSourceInstanceId: self.instanceId,
+    }, "sp1_if_enemy_battle_all_s");
+    expect(skipped.detail).toBe("sp1_if_enemy_battle_all_s:unmet");
+    expect(skipped.state.players.player1.battle[0]?.spModifier).toBeUndefined();
   });
 });

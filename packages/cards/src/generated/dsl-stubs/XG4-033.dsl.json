@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_koregasyunitoniatakusurutokibatorunonibatorunoyunitowo",
+          "keyword": "effect_card::XG4-033::furijingudaga",
           "duration": "turn"
         }
       ]

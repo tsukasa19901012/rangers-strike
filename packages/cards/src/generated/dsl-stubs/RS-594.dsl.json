@@ -55,8 +55,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_nowonaide3madendemoyoisoushitatokindakadowooideru",
-          "duration": "turn"
+          "keyword": "effect_card::RS-594::ganpadogan",
+          "duration": "permanent"
         }
       ],
       "optional": true

@@ -60,7 +60,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_koreganoniarukurosuwotanaiwotsusyunitogarashusa",
+          "keyword": "effect_card::XG7-020::nikokaitewozanrihikarini",
           "duration": "permanent"
         }
       ]

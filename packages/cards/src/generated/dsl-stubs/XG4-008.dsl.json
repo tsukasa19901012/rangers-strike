@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarumekawomotsuetnolyunitoworashusurutokilyu",
+          "keyword": "effect_card::XG4-008::inetchifu",
           "duration": "turn"
         }
       ]

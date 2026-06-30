@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_korehaatakusurukawarininowodekiruwoteharikenieronoka",
-          "duration": "turn"
+          "keyword": "effect_card::RS-100::superninpoliondance",
+          "duration": "permanent"
         }
       ],
       "optional": true

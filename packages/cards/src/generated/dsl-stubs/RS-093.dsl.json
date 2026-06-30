@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_korega_geki_ha_saretatokioini1damejiwokeru",
+          "keyword": "effect_card::RS-093::tantrum",
           "duration": "turn"
         }
       ],

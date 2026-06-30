@@ -8,6 +8,7 @@ import type {
 import type { CardDocument, EffectDefinition, EffectTrigger } from "../dsl/types";
 import { canonicalCardName, fusionMaterialAliasNames } from "../cardName";
 import { corePlayableCatalog, fullPlayableCatalog } from "./unifiedCatalog";
+import { effectIdFromName } from "../pipeline/effectNameIds";
 import {
   isRideOffUnconditionalEffectText,
   normalizeNamedComboTrigger,
@@ -122,16 +123,44 @@ function normalizeUnnamedRuleEntry(entry: {
   };
 }
 
+function isSemanticWiredEffectId(effectId: string): boolean {
+  return (
+    effectId.includes("_") &&
+    !effectId.startsWith("fx_unknown") &&
+    effectId.length < 32
+  );
+}
+
+function resolveUnitEffectId(effect: EffectDefinition, cardId: string): string {
+  if (effect.name === "母艦") {
+    if (cardId === "RS-105") return "dekabase_mothership";
+    if (cardId === "RS-076") return "jaguar_mothership";
+  }
+  const fromName = effect.name ? effectIdFromName(effect.name) : undefined;
+  if (!fromName || fromName === effect.id) return fromName ?? effect.id;
+
+  const idSemantic = isSemanticWiredEffectId(effect.id);
+  const nameSemantic = isSemanticWiredEffectId(fromName);
+  if (idSemantic && !nameSemantic) return effect.id;
+  if (nameSemantic && !idSemantic) return fromName;
+  if (idSemantic && nameSemantic) {
+    if (effect.id.startsWith("grant_")) return effect.id;
+    return fromName;
+  }
+  return fromName ?? effect.id;
+}
+
 function toNamedUnitEffect(
   effect: EffectDefinition,
   comboNumber: CardDocument["comboNumber"],
+  cardId: string,
 ): NamedUnitEffect | undefined {
   const text = effect.text ?? "";
   const trigger = toNamedTrigger(effect.trigger, text, comboNumber);
   if (!trigger) return undefined;
   return {
     name: effect.name ?? effect.id,
-    effectId: effect.id,
+    effectId: resolveUnitEffectId(effect, cardId),
     text,
     trigger,
   };
@@ -140,7 +169,7 @@ function toNamedUnitEffect(
 /** CardDocument → unitEffects 互換ブロック（U4 レジストリ参照用）。 */
 export function cardDocumentToUnitEffectBlock(doc: CardDocument): UnitEffectBlock {
   const namedEffects = (doc.effects ?? [])
-    .map((effect) => toNamedUnitEffect(effect, doc.comboNumber))
+    .map((effect) => toNamedUnitEffect(effect, doc.comboNumber, doc.id))
     .filter((entry): entry is NamedUnitEffect => entry !== undefined);
 
   const unnamedText: UnnamedUnitText[] = (doc.unnamedRules ?? []).map((rule) =>

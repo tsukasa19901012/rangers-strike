@@ -31,8 +31,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregasyunitokarakonbineshonsurutokinowodekirukonbineshon",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-089::noe58887",
+          "duration": "permanent"
         }
       ]
     }

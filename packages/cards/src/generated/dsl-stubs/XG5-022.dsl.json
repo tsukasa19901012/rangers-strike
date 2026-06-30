@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_koregaatakushitatokikomandoga3tsunarakarapawanoga2",
+          "keyword": "effect_card::XG5-022::nakurukyanon",
           "duration": "turn"
         }
       ]

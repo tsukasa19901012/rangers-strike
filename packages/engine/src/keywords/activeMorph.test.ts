@@ -8,7 +8,7 @@ import {
   listActiveMorphCandidatesByEffectName,
   resolveKamenRideMorphChoice,
 } from "./activeMorph";
-import { tryResolveDslNcEffects } from "../dsl/triggerResolver";
+import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 
 const ATTACK_RIDE = "アタックライド";
 
@@ -82,7 +82,7 @@ describe("active morph primitives", () => {
     expect(p1.hand.some((c) => c.instanceId === field.instanceId)).toBe(true);
   });
 
-  it("opens kamen ride morph choice from DSL NC grant", () => {
+  it("opens kamen ride morph choice from DSL riding_combo grant", () => {
     const decoy = inst("XG2-077", "decoy");
     const attackRide = inst("RIDE", "ride");
 
@@ -99,11 +99,12 @@ describe("active morph primitives", () => {
           bp: 2000,
           size: "S",
           text: "【カメンライド】",
+          implementation: { source: "dsl", handler: "interpreter" },
           effects: [
             {
-              id: "named_kamen",
+              id: "kamenraido",
               name: "カメンライド",
-              trigger: { type: "nc" },
+              trigger: { type: "riding_combo" },
               optional: true,
               effects: [{ type: "grant_keyword", keyword: "attack_ride_replace", duration: "turn" }],
             },
@@ -121,12 +122,13 @@ describe("active morph primitives", () => {
     });
     state.definitions = defs;
 
-    const nc = tryResolveDslNcEffects({
+    const nc = tryResolveDslTriggeredEffects({
       state,
       cardId: "XG2-077",
       instanceId: decoy.instanceId,
       playerId: "player1",
       phasePlayerId: "player1",
+      triggerType: "riding_combo",
     });
     expect(nc.handled).toBe(true);
     expect(state.pendingEffectChoice?.effectId).toBeUndefined();

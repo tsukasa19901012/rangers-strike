@@ -107,6 +107,7 @@ const STABLE_GRANT_KEYWORD_EXACT = new Set([
   "counter_mirror_rider_cancel_battle",
   "sp1_while_held",
   "sp1_if_enemy_units_all_s",
+  "sp1_if_enemy_battle_all_s",
   "not_selectable_ally_rush_sp_blank",
   "require_discard_rush_feature_to_battle",
   "no_attack_strike_unless_battle_slot_1",

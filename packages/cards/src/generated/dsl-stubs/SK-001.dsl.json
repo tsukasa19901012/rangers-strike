@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_batorueriakarasbikuruwo1bundabikuruniraidoshiteiruyunitoga",
+          "keyword": "effect_card::SK-001::satansaberu",
           "duration": "turn"
         }
       ]

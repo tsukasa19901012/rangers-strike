@@ -35,6 +35,7 @@ export const IMPLEMENTED_ON_RUSH_EFFECT_IDS = [
   "taurus_dive",
   "earth_resource_absorb",
   "nature_big_bang_final",
+  "fx_unknown_e8bfbd",
 ] as const;
 
 /** バトル投入時の任意効果（tryStartConditionalChoice）。 */

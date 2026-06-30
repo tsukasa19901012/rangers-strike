@@ -78,7 +78,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_attack_action_koregaatakushiteyunitowo_geki_ha_shitatokisonoyunitotor",
+          "keyword": "effect_card::XG7-025::notsubasa",
           "duration": "turn"
         }
       ]

@@ -24,6 +24,7 @@ export const ENGINE_NATIVE_GRANT_KEYWORDS = new Set([
   "last_battle_protect_other_s",
   "enemy_power_cost_minus",
   "end_turn_battle_to_rush",
+  "sp1_if_enemy_battle_all_s",
   "reorder_enemy_battle",
   "rocket_booster",
   "attack_rush_zone",

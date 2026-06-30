@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_rashuerianiburubarukangaarutokikonoyunitohano_chikara_woru",
+          "keyword": "effect_card::RS-074::valcannon",
           "duration": "turn"
         }
       ]

@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_tankoregabatoruerianitatokiomote_ko_kinopawakaraataku",
+          "keyword": "effect_card::XP-005::tewometaniarumono",
           "duration": "turn"
         }
       ]

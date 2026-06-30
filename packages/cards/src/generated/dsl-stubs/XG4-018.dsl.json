@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokiwotsuyunitonowoesono",
+          "keyword": "effect_card::XG4-018::nokaze",
           "duration": "turn"
         }
       ]

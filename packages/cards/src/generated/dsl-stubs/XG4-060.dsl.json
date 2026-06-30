@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_attack_action_koregabpnoga500noyunitoniatakushitebatorunitatokideata",
+          "keyword": "effect_card::XG4-060::fuotonbureika",
           "duration": "turn"
         }
       ]

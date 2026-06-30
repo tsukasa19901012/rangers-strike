@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokipawaniwotanaiyunitowo1",
+          "keyword": "effect_card::RS-550::kengodofuinishu",
           "duration": "turn"
         }
       ],

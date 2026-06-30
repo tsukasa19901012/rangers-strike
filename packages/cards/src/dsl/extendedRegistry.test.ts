@@ -17,6 +17,7 @@ import {
 import {
   COMPLEXITY_PROMOTED_CARD_COUNT,
   CORE_PLAYABLE_CARD_COUNT,
+  FULL_PLAYABLE_CARD_COUNT,
   VANILLA_PROMOTED_CARD_COUNT,
 } from "../catalog/tiers";
 import {
@@ -58,9 +59,9 @@ describe("full playable catalog (M11/M12)", () => {
   it("merges core, vanilla, and complexity promoted without duplicate ids", () => {
     expect(vanillaPromotedCatalog.cards.length).toBe(VANILLA_PROMOTED_CARD_COUNT);
     expect(complexityPromotedCatalog.cards.length).toBe(COMPLEXITY_PROMOTED_CARD_COUNT);
-    expect(fullPlayableCatalog.cards).toHaveLength(1849);
+    expect(fullPlayableCatalog.cards).toHaveLength(FULL_PLAYABLE_CARD_COUNT);
     const ids = new Set(fullPlayableCatalog.cards.map((c) => c.id));
-    expect(ids.size).toBe(1849);
+    expect(ids.size).toBe(FULL_PLAYABLE_CARD_COUNT);
   });
 
   it("keeps core playable separate from promoted lookup", () => {
@@ -86,8 +87,8 @@ describe("full playable CardRegistry (M11/M12)", () => {
   const registry = createFullPlayableRegistry();
   const metrics = snapshotFullPlayableRegistryMetrics(registry);
 
-  it("loads 1849 cards", () => {
-    expect(registry.size()).toBe(1849);
+  it(`loads ${FULL_PLAYABLE_CARD_COUNT} cards`, () => {
+    expect(registry.size()).toBe(FULL_PLAYABLE_CARD_COUNT);
     expect(metrics.core).toBe(CORE_PLAYABLE_CARD_COUNT);
     expect(metrics.vanillaPromoted).toBe(VANILLA_PROMOTED_CARD_COUNT);
     expect(metrics.complexityPromoted).toBe(COMPLEXITY_PROMOTED_CARD_COUNT);
@@ -129,7 +130,7 @@ describe("full playable CardRegistry (M11/M12)", () => {
     ).length;
     expect(interpreter).toBeGreaterThan(600);
     expect(metrics.fallbackOnly).toBe(0);
-    expect(metrics.dslReady).toBe(1849);
+    expect(metrics.dslReady).toBe(FULL_PLAYABLE_CARD_COUNT);
   });
 });
 

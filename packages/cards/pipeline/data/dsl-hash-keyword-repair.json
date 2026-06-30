@@ -1,137 +1,137 @@
 {
-  "generatedAt": "2026-06-29T23:48:42.077Z",
-  "scanned": 1,
+  "generatedAt": "2026-06-30T01:31:23.189Z",
+  "scanned": 739,
   "scannedUnnamed": 0,
-  "scannedEffectCard": 742,
-  "repaired": 1,
+  "scannedEffectCard": 0,
+  "repaired": 739,
   "repairedUnnamed": 0,
-  "repairedEffectCard": 742,
+  "repairedEffectCard": 0,
   "remainingCatchallStubs": 0,
   "samples": [
     {
-      "cardId": "RM-052",
-      "effectId": "maguneatachimento",
-      "to": "grant_keyword"
-    },
-    {
       "cardId": "RS-034",
       "effectId": "mamoru_go_no_shin",
-      "to": "bp_modify_koregabatoruerianiarutokikorenowairudobisutonoyunitosubetehabp"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-035",
       "effectId": "tyranno_sonic",
-      "to": "destroy_on_rush_koreworashushitatokibp5000noyunitowotonokara1zutsun"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-036",
       "effectId": "moss_blizzard",
-      "to": "opponent_must_koreworashushitatokihanarakomandowo2tsundehorudosuru"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-037",
       "effectId": "torikerakanon",
-      "to": "bp_modify_koregarashuerianiarutokiwairudobisutonomyunitohaatakusuru"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-073",
       "effectId": "val_shield",
-      "to": "grant_ability_damejiga6notokikonoyunitohano_chikara_worusp2"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-074",
       "effectId": "val_cannon",
-      "to": "grant_ability_rashuerianiburubarukangaarutokikonoyunitohano_chikara_woru"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-075",
       "effectId": "rescue_activity",
-      "to": "feature_match_koreworashushitatokikaramekawotsuyunitonokadowo1nde"
-    },
-    {
-      "cardId": "RS-076",
-      "effectId": "jaguar_mothership",
-      "to": "hold_remaining_koregarashuerianiarutokigarashusurumyunitonowotasu"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-077",
       "effectId": "competition",
-      "to": "reveal_faceup_oininokara1woomotenishipawanowokuraberusoshitenokii"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-081",
       "effectId": "ryuu_geki_ken",
-      "to": "bp_modify_konotankorehahorudonokomando1tsunitsukibp1000sarerukorehabp"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-085",
       "effectId": "firefighting",
-      "to": "damage_action_koreworashushitatokipawazonkaradamejininateirukadowoura_ko"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-086",
       "effectId": "traffic_control",
-      "to": "opponent_must_koregabatoruerianiarutokihanowokerubatoruerianiberuyuni"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-088",
       "effectId": "dismantling",
-      "to": "damage_action_koreworashushitatokipawazonkaradamejininateirukadowoura_ko"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-089",
       "effectId": "medical_rescue",
-      "to": "power_zone_action_koregarashuerianiarutokiwairudobisutonomyunitoha_geki_"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-092",
       "effectId": "heavenly_disaster",
-      "to": "damage_action_koreworashushitatokioininoyounisurunopawazonkaradamejide"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-093",
       "effectId": "tantrum",
-      "to": "damage_action_korega_geki_ha_saretatokioini1damejiwokeru"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-094",
       "effectId": "ghost_absorption",
-      "to": "return_to_zone_batorufueizuninowodekirukarasyunitonokadowo1n"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-095",
       "effectId": "mane_hurricane",
-      "to": "return_to_zone_koregabatoruerianitatokirashuerianiarusyunitowosubetechin"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-096",
       "effectId": "karakuri_fire_hawk",
-      "to": "return_to_zone_gatanwoerutokikonoyunitogabatoruerianiarebachinonisu"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-097",
       "effectId": "karakuri_lion_chain",
-      "to": "cannot_restrict_koregabatoruerianiarutokisp1matahanoaruyunitohakomandowo"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-098",
       "effectId": "karakuri_great_tsunami",
-      "to": "return_to_zone_koreworashushitatokibp3000noyunitowo1ndechinoni"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-100",
       "effectId": "super_ninpo_lion_dance",
-      "to": "deck_search_korehaatakusurukawarininowodekiruwoteharikenieronoka"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-102",
       "effectId": "dark_dual_blade",
-      "to": "damage_action_pawazonkaradamejininateinaikadowo1busoshitekomandozo"
+      "to": "effect_card"
     },
     {
       "cardId": "RS-103",
       "effectId": "space_ninpo_rope_skull",
-      "to": "destroy_remaining_bp3000noyunitowote_geki_ha_suru"
+      "to": "effect_card"
+    },
+    {
+      "cardId": "RS-104",
+      "effectId": "ptera_dagger",
+      "to": "effect_card"
+    },
+    {
+      "cardId": "RS-107",
+      "effectId": "deace_sniper",
+      "to": "effect_card"
     }
   ],
   "note": "Re-match catchall grant_keyword stubs and effect_card delegates via extractEffects PATTERNS."

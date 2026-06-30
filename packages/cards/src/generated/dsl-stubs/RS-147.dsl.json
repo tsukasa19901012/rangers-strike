@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_koregarashuerianiarutokimoarodanomanomyunitohata",
-          "duration": "turn"
+          "keyword": "effect_card::RS-147::supermoacannon",
+          "duration": "permanent"
         }
       ],
       "optional": false

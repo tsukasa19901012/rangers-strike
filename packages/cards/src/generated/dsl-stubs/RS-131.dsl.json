@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_konoyunitogabatorusurutokinokara1woomotenisuruomotenishita",
+          "keyword": "effect_card::RS-131::miragebeam",
           "duration": "turn"
         }
       ],

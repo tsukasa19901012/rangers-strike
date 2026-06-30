@@ -45,8 +45,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_konoyunitokarakonbineshonsurukategorinolyunitohakonotanno_",
-          "duration": "turn"
+          "keyword": "effect_card::XG6-021::kene6bf80",
+          "duration": "permanent"
         }
       ]
     }

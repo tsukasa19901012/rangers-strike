@@ -92,8 +92,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_koregapawazondeomote_ko_kininateirurashufueizu",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-068::fxunknown13",
+          "duration": "permanent"
         }
       ]
     }

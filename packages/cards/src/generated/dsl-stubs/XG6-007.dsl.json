@@ -51,7 +51,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_tankoregabatoruerianitatokiwbnomiwotsutodanomiwotsu",
+          "keyword": "effect_card::XG6-007::zane6bf80",
           "duration": "turn"
         }
       ]

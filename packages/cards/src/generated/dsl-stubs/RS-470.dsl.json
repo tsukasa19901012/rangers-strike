@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_discard_trigger_koreniraidoshitayunitogaarunowosurugabatorufueizuwo",
+          "keyword": "effect_card::RS-470::hanano",
           "duration": "permanent"
         }
       ]

@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregawotsuyunitokarakonbineshonsurutokinowodekiru",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-076::daburuburoukunfuangu",
+          "duration": "permanent"
         }
       ]
     }

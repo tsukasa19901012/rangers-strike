@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_koreworashushitatokipawazonkaradamejininateirukadowoura_ko",
+          "keyword": "effect_card::RS-085::firefighting",
           "duration": "turn"
         }
       ],

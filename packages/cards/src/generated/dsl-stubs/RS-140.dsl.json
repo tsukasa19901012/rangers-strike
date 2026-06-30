@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_konoyunitoganiarusyunitonokonbineshonnanbaha1eru",
+          "keyword": "effect_card::RS-140::dataanalysis",
           "duration": "permanent"
         }
       ],

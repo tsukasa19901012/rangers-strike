@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_koreworashushitatokihorudonosyunitowo1ndemoyoisoushitatoki",
+          "keyword": "effect_card::XG3-081::torigaekusupurojon",
           "duration": "turn"
         }
       ]

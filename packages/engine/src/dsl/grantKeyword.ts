@@ -3,6 +3,7 @@ import type { GameState, PendingBattle, PlayerId } from "../types/game";
 import {
   cardName,
   getDefinition,
+  isSmallUnit,
   isUnit,
   parsePowerCost,
 } from "../core/catalog";
@@ -397,6 +398,22 @@ export function applyGrantKeyword(
         detail: keyword,
       };
     }
+    case "sp1_if_enemy_battle_all_s": {
+      const instanceId = ctx.triggerSourceInstanceId ?? ctx.operationInstanceId;
+      if (!instanceId) return { state, detail: keyword };
+      const enemy = state.players[opponent(ctx.playerId)];
+      const enemyBattle = enemy.battle.filter((c) =>
+        isUnit(getDefinition(state.definitions, c.cardId)),
+      );
+      const allEnemyBattleAreS =
+        enemyBattle.length > 0 &&
+        enemyBattle.every((c) => isSmallUnit(state.definitions, c.cardId));
+      if (!allEnemyBattleAreS) return { state, detail: `${keyword}:unmet` };
+      return {
+        state: grantSp1ToBattleUnit(state, ctx.playerId, instanceId),
+        detail: keyword,
+      };
+    }
     case "battle_destroy_to_power": {
       const instanceId = ctx.triggerSourceInstanceId;
       if (!instanceId) return { state };
@@ -727,7 +744,7 @@ export function applyGrantKeyword(
         phasePlayerId: ctx.phasePlayerId,
         partnerName,
       });
-      if (!withChoice) return { state };
+      if (!withChoice) return { state, detail: `${ctx.effectId}:no_targets` };
       return { state: withChoice, detail: ctx.effectId };
     }
     case "enter_battle_enemy_command_match_own_count_power_discard": {

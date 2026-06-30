@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_gatanwoerutokikonoyunitogabatoruerianiarebachinonisu",
+          "keyword": "effect_card::RS-096::karakurifirehawk",
           "duration": "turn"
         }
       ],

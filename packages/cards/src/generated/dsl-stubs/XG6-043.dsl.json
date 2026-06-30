@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_tankoregabatoruerianitatokipawazonkaraomote_ko_kinokadowo",
+          "keyword": "effect_card::XG6-043::kitokii",
           "duration": "turn"
         }
       ]

@@ -36,8 +36,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_remaining_bp3000noyunitowote_geki_ha_suru",
-          "duration": "turn"
+          "keyword": "effect_card::RS-103::spaceninporopeskull",
+          "duration": "permanent"
         }
       ],
       "optional": false

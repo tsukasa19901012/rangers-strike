@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_koregasutoraikushiteganokarahiitakadowodamejinishitatokiha",
+          "keyword": "effect_card::RS-514::fxunknowne5a4a7",
           "duration": "turn"
         }
       ],

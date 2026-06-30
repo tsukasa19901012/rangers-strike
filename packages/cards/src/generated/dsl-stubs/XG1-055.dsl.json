@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_koreganoniarupawaniwotsusyunitogarashusaretatokida",
+          "keyword": "effect_card::XG1-055::nieta",
           "duration": "permanent"
         }
       ]

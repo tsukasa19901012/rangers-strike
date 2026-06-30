@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koreganoniarurashufueizulyunitoga1monakerebano",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-074::shokano",
+          "duration": "permanent"
         }
       ]
     }

@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_woshafurushitemoyoisoushitatokinokara3woomotenishisono",
+          "keyword": "effect_card::XG5-072::kenukaze",
           "duration": "turn"
         }
       ]

@@ -1,5 +1,6 @@
 import { isBannedCardId } from "./bannedCards";
 import { allCardsCatalog } from "./catalog";
+import { FULL_PLAYABLE_CARD_COUNT, PLAYABLE_EXCLUDED_CARD_TYPES } from "./catalog/tiers";
 import type { CardCatalog, CardDefinition, DeckEntry } from "./schema";
 import { hasUnnamedRule } from "./unitEffects";
 
@@ -14,7 +15,7 @@ export const DECK_UNLIMITED_COPY_CAP = 40;
 
 const UNLIMITED_DECK_NOTE = "デッキに3枚以上入れてもよい";
 
-const FULL_PLAYABLE_POOL_SIZE = 1849;
+const EXCLUDED_DECK_TYPES = new Set<string>(PLAYABLE_EXCLUDED_CARD_TYPES);
 
 function formatCardRef(card: CardDefinition): string {
   return `${card.name}（${card.id}）`;
@@ -98,8 +99,12 @@ export function validateDeckEntries(
     const card = byId.get(entry.cardId);
     if (!card) {
       errors.push(
-        `カタログにないカードです: ${entry.cardId}（${FULL_PLAYABLE_POOL_SIZE.toLocaleString()}枚プール外の可能性）`,
+        `カタログにないカードです: ${entry.cardId}（${FULL_PLAYABLE_CARD_COUNT.toLocaleString()}枚プール外の可能性）`,
       );
+      continue;
+    }
+    if (EXCLUDED_DECK_TYPES.has(card.type)) {
+      errors.push(`コマンダーカードはデッキに入れられません: ${formatCardRef(card)}`);
       continue;
     }
     if (entry.count <= 0) {

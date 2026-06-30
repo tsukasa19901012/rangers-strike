@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_pawanodamejininateirukadowoura_ko_kinomama1binietemoyoi",
-          "duration": "turn"
+          "keyword": "effect_card::RS-599::risuhonoo",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokiha1damejiwokerukaririsu",
+          "keyword": "effect_card::XG3-026::bakumakusushorudaataku",
           "duration": "turn"
         }
       ]

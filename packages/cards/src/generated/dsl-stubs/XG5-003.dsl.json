@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "catchall_interpret_konotanyunitonopawanoha1nakunaru",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-003::burujietodashu",
+          "duration": "permanent"
         }
       ]
     }

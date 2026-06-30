@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_koreworashushitatokipawazonkaraura_ko_kinokadowo1binis",
+          "keyword": "effect_card::XG7-060::nosutapisu",
           "duration": "turn"
         }
       ]

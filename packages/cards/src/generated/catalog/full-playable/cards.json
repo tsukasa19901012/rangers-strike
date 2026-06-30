@@ -8192,6 +8192,7 @@
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RM-041.jpg",
       "bp": 2000,
       "size": "S",
+      "comboNumber": "RC",
       "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【アイアム偽者などノーサンキュー】敵軍ユニットを1体選んでもよい。そうしたとき、選んだユニットと同じカード名の敵軍ユニットが、選んだユニット以外にあれば、選んだユニットを持ち主のパワーゾーンにダメージにして置く。",
       "features": [
         "男",
@@ -8249,6 +8250,7 @@
       "bp": 5000,
       "size": "S",
       "sp": "1/5",
+      "comboNumber": "RC",
       "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） ※これは特徴「男」または「女」を持つユニットにアタックできない。 【ジャンデジック】敵軍バトルエリアにある、特徴「男」または「女」を持たないSユニットを、すべて持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "features": [
         "メカ",
@@ -22775,88 +22777,8 @@
       ]
     },
     {
-      "id": "XC-001",
-      "name": "ゾル大佐",
-      "type": "commander",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "text": "ゲーム開始前に一度だけ発動できる⇒自軍山札を見て、必要パワーに「＋」または「－」を持つ、Ｓユニットのカードを３枚まで選び（同名カードは１枚まで）、相手に見せてから自分の手札に加える。その後、手札に加えた枚数と同じだけ手札からカードを選び、自軍山札に戻してシャッフルする。"
-    },
-    {
-      "id": "XC-002",
-      "name": "ヌマ・O長官",
-      "type": "commander",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "text": "ゲーム開始前に一度だけ発動できる⇒自軍山札を見て、特徴「メカ」を持つ、MユニットまたはLユニットのカードを5枚まで選び（同名カードは1枚まで）、相手に見せてから自分の手札に加える。その後、手札に加えた枚数と同じだけ手札からカードを選び、自軍山札に戻してシャッフルする。"
-    },
-    {
-      "id": "XC-003",
-      "name": "マスター・シャーフー",
-      "type": "commander",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "text": "ゲーム開始前に一度だけ発動できる⇒自分の手札をすべて好きな順番で自軍山札の下に戻してから、戻した枚数と同じだけドローする。"
-    },
-    {
-      "id": "XC-004",
-      "name": "天空大聖者マジエル",
-      "type": "commander",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "text": "ゲーム開始前に一度だけ発動できる⇒自軍山札を見て、オペレーションカードを１枚選び、相手に見せてから自分の手札に加える。その後、自分の手札からカードを１枚選び、自軍山札に戻してシャッフルする。"
-    },
-    {
-      "id": "XC-005",
-      "name": "仮面ライダー1号・本郷猛",
-      "type": "commander",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "text": "このゲーム中、次のルールを追加する⇒ 特徴「仮面ライダー」を持つ自分自身のユニットをラッシュしたとき、ライドされていない自分自身のSビークルを1体選び、ラッシュしたそのユニットの下に重ねてもよい。"
-    },
-    {
-      "id": "XC-006",
-      "name": "ボウケンレッド・明石暁",
-      "type": "commander",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "text": "このゲーム中、次のルールを追加する⇒ 5体以上の合体ユニットを必要とするLユニットの追加条件を満たすとき、合体ユニットを捨札にするかわりに、同名のカードを自分自身の手札から捨ててもよい。"
-    },
-    {
-      "id": "XC-007",
-      "name": "宇宙刑事ギャバン・一条寺烈",
-      "type": "commander",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "text": "このゲーム中、チェイスのテキストを次のように読みかえる⇒ ※チェイス（これがユニットでなくなるとき、かわりにこれがライドしているビークルか、これの左隣にあるビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）。"
-    },
-    {
-      "id": "XC-008",
-      "name": "シンケンレッド・志葉丈瑠",
-      "type": "commander",
-      "category": "MA",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒ 自分の手札を2枚選び、山札に戻してもよい。そうしたとき、自軍山札を見て常駐のオペレーションカードを1枚選び、常駐置き場に配置してもよい。その後、山札をシャッフルする。この効果で配置したオペレーションの効果の適用は、自軍ラッシュフェイズ開始時の自軍パワーが、そのカードの必要パワーの数字以上あるとき以降とし、配置したときに発動する効果は、そのときに実行する。"
-    },
-    {
       "id": "XG1-001",
-      "name": "バトルジャパン",
+      "name": "バトルジャパン（XG）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -22973,7 +22895,7 @@
     },
     {
       "id": "XG1-007",
-      "name": "チェンジドラゴン",
+      "name": "チェンジドラゴン（XG）",
       "type": "unit",
       "category": [
         "MA",
@@ -23519,7 +23441,7 @@
     },
     {
       "id": "XG1-032",
-      "name": "ゲキレッド",
+      "name": "ゲキレッド（XG）",
       "type": "unit",
       "category": [
         "WB",
@@ -23711,7 +23633,7 @@
     },
     {
       "id": "XG1-041",
-      "name": "仮面ライダーアマゾン",
+      "name": "仮面ライダーアマゾン（XG）",
       "type": "unit",
       "category": [
         "WB",
@@ -23774,7 +23696,7 @@
     },
     {
       "id": "XG1-044",
-      "name": "仮面ライダーV3",
+      "name": "仮面ライダーV3（XG）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -24386,7 +24308,7 @@
     },
     {
       "id": "XG1-074",
-      "name": "仮面ライダーザビーRF",
+      "name": "仮面ライダーザビーRF（XG）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -25597,18 +25519,6 @@
       ]
     },
     {
-      "id": "XG2-030",
-      "name": "ヌマ・O長官",
-      "type": "commander",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "imageUrl": "/cards/promoted/XG2-030.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-030-RS.jpg",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札を見て、特徴「メカ」を持つLユニットのカードを1枚選び、相手に見せてから手札に加える。そして、手札に加えたカードの合体に必要なユニットを、それぞれ1枚まで選び、自分の手札に加える。その後、手札に加えた枚数と同じだけ手札からカードを選び、自軍山札に戻してシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札を見て、特徴「メカ」を持つLユニットのカードを1枚選び、相手に見せてから自分の手札に加える。そして、手札に加えたカードの合体に必要なユニットのカードを、それぞれ1枚まで選び、相手に見せてから自分の手札に加える。その後、手札に加えた枚数と同じだけ手札からカードを選び、山札に戻してシャッフルする。"
-    },
-    {
       "id": "XG2-031",
       "name": "デカマシン",
       "type": "unit",
@@ -26039,7 +25949,7 @@
     },
     {
       "id": "XG2-049",
-      "name": "仮面ライダーギルス",
+      "name": "仮面ライダーギルス（XG2）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -26307,7 +26217,7 @@
     },
     {
       "id": "XG2-063",
-      "name": "仮面ライダー響鬼",
+      "name": "仮面ライダー響鬼（XG2）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -26369,7 +26279,7 @@
     },
     {
       "id": "XG2-066",
-      "name": "仮面ライダーカブトRF",
+      "name": "仮面ライダーカブトRF（XG2）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -26892,18 +26802,6 @@
       ]
     },
     {
-      "id": "XG2-091",
-      "name": "正木俊介本部長",
-      "type": "commander",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "imageUrl": "/cards/promoted/XG2-091.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-091-RM.jpg",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札をすべて自軍山札に戻してからシャッフルし、戻した枚数と同じだけドローする。"
-    },
-    {
       "id": "XG2-092",
       "name": "ナイトファイヤー",
       "type": "unit",
@@ -26942,18 +26840,6 @@
         "人型",
         "警察"
       ]
-    },
-    {
-      "id": "XG2-094",
-      "name": "向井健三博士",
-      "type": "commander",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "imageUrl": "/cards/promoted/XG2-094.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-094-RM.jpg",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札の上から3枚を見て、そのカードを山札の上か下にそれぞれ好きな順で戻す。"
     },
     {
       "id": "XG2-095",
@@ -27144,18 +27030,6 @@
         "メカ",
         "車両"
       ]
-    },
-    {
-      "id": "XG3-001",
-      "name": "ダップ",
-      "type": "commander",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "imageUrl": "/cards/promoted/XG3-001.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-001-RS.jpg",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を相手に見せずに1枚選ばせ、自軍パワーゾーンにオモテ向きで置く。"
     },
     {
       "id": "XG3-002",
@@ -27539,7 +27413,7 @@
     },
     {
       "id": "XG3-021",
-      "name": "カブトライジャー",
+      "name": "カブトライジャー（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -27558,7 +27432,7 @@
     },
     {
       "id": "XG3-022",
-      "name": "アバレッド",
+      "name": "アバレッド（XG3）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -27750,7 +27624,7 @@
     },
     {
       "id": "XG3-031",
-      "name": "ゲキブルー",
+      "name": "ゲキブルー（XG3）",
       "type": "unit",
       "category": [
         "WB",
@@ -27952,7 +27826,7 @@
     },
     {
       "id": "XG3-040",
-      "name": "シンケンレッド",
+      "name": "シンケンレッド（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -27972,7 +27846,7 @@
     },
     {
       "id": "XG3-041",
-      "name": "仮面ライダーディケイドCF",
+      "name": "仮面ライダーディケイドCF（XG3）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -27993,18 +27867,6 @@
         "男",
         "ディケイドライバー"
       ]
-    },
-    {
-      "id": "XG3-042",
-      "name": "立花藤兵衛",
-      "type": "commander",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "imageUrl": "/cards/promoted/XG3-042.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-042-RK.jpg",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札から、追加条件を持たないビークルカードを1枚選び、自軍ラッシュエリアに出す。そうしたとき、自分の第1ターンのラッシュフェイズを飛ばす。"
     },
     {
       "id": "XG3-043",
@@ -28118,7 +27980,7 @@
     },
     {
       "id": "XG3-048",
-      "name": "仮面ライダーBLACK RX",
+      "name": "仮面ライダーBLACK RX（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -28330,7 +28192,7 @@
     },
     {
       "id": "XG3-059",
-      "name": "仮面ライダー轟鬼",
+      "name": "仮面ライダー轟鬼（XG3）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -28389,7 +28251,7 @@
     },
     {
       "id": "XG3-062",
-      "name": "仮面ライダーガタックRF",
+      "name": "仮面ライダーガタックRF（XG3）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -28816,18 +28678,6 @@
       ]
     },
     {
-      "id": "XG3-082",
-      "name": "ドン・ホラー",
-      "type": "commander",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "imageUrl": "/cards/promoted/XG3-082.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-082-RM.jpg",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札の上から3枚を捨札にする。"
-    },
-    {
       "id": "XG3-083",
       "name": "宇宙忍デモスト",
       "type": "unit",
@@ -28860,10 +28710,11 @@
       "imageUrl": "/cards/promoted/XG3-084.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-084-RM.jpg",
       "rushAdditionalCondition": {
-        "conditionId": "discard_named_unit",
+        "conditionId": "discard_feature_unit",
         "text": "特徴「昆虫」を持つ自軍Sユニット1体を捨札にする",
-        "partnerName": "昆虫",
-        "unitCount": 1
+        "requiredFeature": "昆虫",
+        "unitCount": 1,
+        "requiredSize": "S"
       },
       "bp": 5000,
       "size": "L",
@@ -28885,10 +28736,11 @@
       "imageUrl": "/cards/promoted/XG3-085.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-085-RM.jpg",
       "rushAdditionalCondition": {
-        "conditionId": "discard_named_unit",
+        "conditionId": "discard_feature_unit",
         "text": "特徴「昆虫」を持つ自軍Sユニット1体を捨札にする",
-        "partnerName": "昆虫",
-        "unitCount": 1
+        "requiredFeature": "昆虫",
+        "unitCount": 1,
+        "requiredSize": "S"
       },
       "bp": 5000,
       "size": "L",
@@ -28965,7 +28817,7 @@
     },
     {
       "id": "XG3-089",
-      "name": "ブルービート",
+      "name": "ブルービート（XG3）",
       "type": "unit",
       "category": [
         "WB",
@@ -29326,18 +29178,6 @@
         "怪人",
         "男"
       ]
-    },
-    {
-      "id": "XG4-003",
-      "name": "総長ガイナモ",
-      "type": "commander",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "imageUrl": "/cards/promoted/XG4-003.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-003-RS.jpg",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札を見て、特徴「車両」を持つユニットかビークルのカードを1枚選び、相手に見せてから自分の手札に加える。その後、自分の手札からカードを2枚選び、山札に戻してシャッフルする。"
     },
     {
       "id": "XG4-004",
@@ -29748,18 +29588,6 @@
       ]
     },
     {
-      "id": "XG4-024",
-      "name": "エージェント・アブレラ",
-      "type": "commander",
-      "category": "DA",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "imageUrl": "/cards/promoted/XG4-024.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-024-RS.jpg",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分は1枚ドローしてもよい。そうしたとき、相手の山札の上から1枚を敵軍ゾーンにオモテ向きで置く。"
-    },
-    {
       "id": "XG4-025",
       "name": "デカブレイク",
       "type": "unit",
@@ -29817,18 +29645,6 @@
       ]
     },
     {
-      "id": "XG4-028",
-      "name": "ゴリー・イェン",
-      "type": "commander",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 0,
-      "imageUrl": "/cards/promoted/XG4-028.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-028-RS.jpg",
-      "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を好きな枚数選び、相手に見せる。そうしたとき、見せた枚数と同じ枚数だけ、相手は自分自身の手札を選び見せる。"
-    },
-    {
       "id": "XG4-029",
       "name": "ゲキバイオレット",
       "type": "unit",
@@ -29854,7 +29670,7 @@
     },
     {
       "id": "XG4-030",
-      "name": "ゲキチョッパー",
+      "name": "ゲキチョッパー（XG4）",
       "type": "unit",
       "category": [
         "WB",
@@ -30227,7 +30043,7 @@
     },
     {
       "id": "XG4-047",
-      "name": "シンケンレッド",
+      "name": "シンケンレッド（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -30316,7 +30132,7 @@
     },
     {
       "id": "XG4-052",
-      "name": "仮面ライダークウガUF",
+      "name": "仮面ライダークウガUF（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -30337,7 +30153,7 @@
     },
     {
       "id": "XG4-053",
-      "name": "仮面ライダーアギトSHF",
+      "name": "仮面ライダーアギトSHF（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -30357,7 +30173,7 @@
     },
     {
       "id": "XG4-054",
-      "name": "仮面ライダーブレイドKF",
+      "name": "仮面ライダーブレイドKF（XG4）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -30377,7 +30193,7 @@
     },
     {
       "id": "XG4-055",
-      "name": "ドラグランザー",
+      "name": "ドラグランザー（XG4）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -30899,7 +30715,7 @@
     },
     {
       "id": "XG4-080",
-      "name": "ロボライダー",
+      "name": "ロボライダー（XG4）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -30921,7 +30737,7 @@
     },
     {
       "id": "XG4-081",
-      "name": "仮面ライダーブレイド",
+      "name": "仮面ライダーブレイド（XG4）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -32032,7 +31848,7 @@
     },
     {
       "id": "XG5-034",
-      "name": "シンケンレッド",
+      "name": "シンケンレッド（XG5）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -32143,7 +31959,7 @@
     },
     {
       "id": "XG5-040",
-      "name": "ゴセイブラック",
+      "name": "ゴセイブラック（XG5）",
       "type": "unit",
       "category": [
         "WB",
@@ -32166,7 +31982,7 @@
     },
     {
       "id": "XG5-041",
-      "name": "ゴセイイエロー",
+      "name": "ゴセイイエロー（XG5）",
       "type": "unit",
       "category": [
         "WB",
@@ -32368,7 +32184,7 @@
     },
     {
       "id": "XG5-050",
-      "name": "仮面ライダー装甲響鬼",
+      "name": "仮面ライダー装甲響鬼（XG5）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -32766,7 +32582,7 @@
     },
     {
       "id": "XG5-071",
-      "name": "仮面ライダー響鬼",
+      "name": "仮面ライダー響鬼（XG5）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -34123,7 +33939,7 @@
     },
     {
       "id": "XG6-043",
-      "name": "仮面ライダーゼロノスZF",
+      "name": "仮面ライダーゼロノスZF（XG6）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -34297,7 +34113,7 @@
     },
     {
       "id": "XG6-051",
-      "name": "仮面ライダー歌舞鬼",
+      "name": "仮面ライダー歌舞鬼（XG6）",
       "type": "unit",
       "category": [
         "MA",
@@ -34363,7 +34179,7 @@
     },
     {
       "id": "XG6-054",
-      "name": "仮面ライダースカル",
+      "name": "仮面ライダースカル（XG6）",
       "type": "unit",
       "category": [
         "ET",
@@ -34702,7 +34518,7 @@
     },
     {
       "id": "XG7-006",
-      "name": "ギンガピンク",
+      "name": "ギンガピンク（XG7）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -34981,7 +34797,7 @@
     },
     {
       "id": "XG7-018",
-      "name": "シンケンレッド",
+      "name": "シンケンレッド（XG7）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",

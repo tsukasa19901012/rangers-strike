@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_korehapawazonnoomote_ko_kinokadoniraidawotsunokadoga",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-054::kuraida",
+          "duration": "permanent"
         }
       ]
     }

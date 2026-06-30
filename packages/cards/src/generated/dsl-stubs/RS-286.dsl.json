@@ -31,8 +31,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_koregabatoruerianiarutokikorenowbnoyunitosubetehabp2000sareru",
-          "duration": "turn"
+          "keyword": "effect_card::RS-286::mamorugonoshin",
+          "duration": "permanent"
         }
       ],
       "optional": false

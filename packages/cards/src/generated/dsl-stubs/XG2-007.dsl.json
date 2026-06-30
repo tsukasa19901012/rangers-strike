@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_koregaerianiarukategoriwo2tsutsumyunitohano_chikara_woruat",
+          "keyword": "effect_card::XG2-007::ganmakanon",
           "duration": "permanent"
         }
       ]

@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_dawotsusyunitowo1bichinokomandozonnikukenakerebani",
+          "keyword": "effect_card::XG2-089::jibanendo",
           "duration": "turn"
         }
       ]

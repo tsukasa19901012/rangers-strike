@@ -59,8 +59,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_komandozonkaranononopawanowotsuyunitokado",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-039::buruchieku",
+          "duration": "permanent"
         }
       ]
     }

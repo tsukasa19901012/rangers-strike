@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_koregayunitodenakunarutokikorewohorudoshitesononimetemoyoimata",
+          "keyword": "effect_card::XG7-058::nomachobodei",
           "duration": "turn"
         }
       ]

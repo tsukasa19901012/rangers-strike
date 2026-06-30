@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_nokara3woomotenishitemoyoisoushitatokiomotenishitakadonoka",
+          "keyword": "effect_card::XG1-077::raidobuka",
           "duration": "turn"
         }
       ]

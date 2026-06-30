@@ -63,8 +63,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_koregasyunitoniatakusaretatokikonoyunitowohorudosuruka_g",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-056::tenogeki",
+          "duration": "permanent"
         }
       ]
     }

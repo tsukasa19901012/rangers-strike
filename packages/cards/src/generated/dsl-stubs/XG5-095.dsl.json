@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_tankoregabatoruerianitatokinowononiunopa",
+          "keyword": "effect_card::XG5-095::satandakunesu",
           "duration": "turn"
         }
       ]

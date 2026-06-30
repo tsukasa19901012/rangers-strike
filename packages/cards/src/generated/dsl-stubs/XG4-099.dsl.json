@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_koreniraidoshiteirumekawotsuyunitohano_chikara_worurejisut",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-099::baria",
+          "duration": "permanent"
         }
       ]
     }

@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_koreworashushitatokihanarakomandowo2tsundehorudosuru",
+          "keyword": "effect_card::RS-036::mossblizzard",
           "duration": "turn"
         }
       ],

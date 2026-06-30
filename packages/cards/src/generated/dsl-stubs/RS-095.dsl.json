@@ -54,7 +54,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_koregabatoruerianitatokirashuerianiarusyunitowosubetechin",
+          "keyword": "effect_card::RS-095::manehurricane",
           "duration": "turn"
         }
       ],

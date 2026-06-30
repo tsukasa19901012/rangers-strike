@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konotankorehawotsuyunito1nitsukibp1000sareru",
+          "keyword": "effect_card::XG1-068::atakuraido",
           "duration": "turn"
         }
       ]

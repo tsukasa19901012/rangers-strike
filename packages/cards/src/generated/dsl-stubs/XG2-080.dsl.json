@@ -48,8 +48,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_konoyunitokarakonbineshonsururaidadeikeidomataharaidadei",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-080::fuainaruatakuraido",
+          "duration": "permanent"
         }
       ]
     }

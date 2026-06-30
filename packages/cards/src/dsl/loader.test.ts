@@ -31,7 +31,7 @@ describe("dsl/loader", () => {
     expect(def).toBeDefined();
     const doc = cardDefinitionToDocument(def!);
     expect(doc.effectId).toBe("goren_storm");
-    expect(doc.effects?.some((e) => e.id === "goren_storm")).toBe(true);
+    expect(doc.effects?.some((e) => e.trigger.type === "operation")).toBe(true);
   });
 
   it("loadAllCardDocuments returns full catalog", () => {

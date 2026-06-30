@@ -9,6 +9,7 @@ import {
   needsAllySInBattle,
   needsBattleEntryComboFrom,
   needsBattleEntryComboFromOwnTurn,
+  needsBattleEntryHandDiscard,
   noAttackOrStrikeTurnRushed,
   noBattleEntryTurnRushed,
 } from "@rangers-strike/cards";
@@ -303,6 +304,22 @@ export function canMoveUnitToBattle(
 
   if (noteOtherNcBattleEntryBlock(state, playerId, player, unit)) return false;
 
+  if (
+    needsBattleEntryHandDiscard(unit.cardId) &&
+    !battleEntryHandDiscardSatisfied(player, unit.cardId) &&
+    !canPayBattleEntryHandDiscard(player, unit.cardId)
+  ) {
+    return false;
+  }
+
+  if (
+    needsBattleEntryPowerDiscard(unit.cardId) &&
+    !battleEntryPowerDiscardSatisfied(player, unit.cardId) &&
+    !canPayBattleEntryPowerDiscard(player, unit.cardId)
+  ) {
+    return false;
+  }
+
   return passesBattleEntryHoldRequirements(state, playerId, player, unit);
 }
 
@@ -407,11 +424,13 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   }
 
   if (!canPayBattleEntryHandDiscard(player, unit.cardId)) return false;
-  if (!battleEntryHandDiscardSatisfied(player, unit.cardId)) return false;
 
-  if (needsBattleEntryPowerDiscard(unit.cardId)) {
-    if (!canPayBattleEntryPowerDiscard(player, unit.cardId)) return false;
-    if (!battleEntryPowerDiscardSatisfied(player, unit.cardId)) return false;
+  if (
+    needsBattleEntryPowerDiscard(unit.cardId) &&
+    !battleEntryPowerDiscardSatisfied(player, unit.cardId) &&
+    !canPayBattleEntryPowerDiscard(player, unit.cardId)
+  ) {
+    return false;
   }
 
   return true;

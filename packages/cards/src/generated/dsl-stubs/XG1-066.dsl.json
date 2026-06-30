@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_bpnoga500nosyunitowo1bi_geki_ha_suru",
+          "keyword": "effect_card::XG1-066::atakuraido",
           "duration": "turn"
         }
       ]

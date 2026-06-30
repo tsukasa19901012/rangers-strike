@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "wb_category_koreharashuerianiarunowosurusubetenosyunitononi",
+          "keyword": "effect_card::RS-429::rashinoniari",
           "duration": "permanent"
         }
       ],

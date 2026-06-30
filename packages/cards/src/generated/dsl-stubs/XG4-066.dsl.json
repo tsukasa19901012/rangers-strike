@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_koreworashushitatokinokara3woomotenishiteyoisoushitatokiom",
+          "keyword": "effect_card::XG4-066::mizukami",
           "duration": "turn"
         }
       ]

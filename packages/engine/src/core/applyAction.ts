@@ -170,6 +170,7 @@ import {
   dslOperationOpensChoose,
   getDslOperationEffect,
   isDslInterpretableEffect,
+  shouldUseDslOperation,
   tryResolveDslLeaveCounter,
   tryResolveDslOperation,
 } from "../dsl/cardInterpreter";
@@ -343,7 +344,7 @@ function completeStrike(state: GameState, pending: PendingStrike, extraLogs: str
 
 function operationNeedsUpfrontTarget(cardId: string): boolean {
   const dslEffect = getDslOperationEffect(cardId, "rush");
-  if (dslEffect && isDslInterpretableEffect(dslEffect) && dslOperationOpensChoose(dslEffect)) {
+  if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslOperationOpensChoose(dslEffect)) {
     return false;
   }
   return needsOperationTarget(cardId);
@@ -781,8 +782,7 @@ export function applyAction(
 
       const effectMeta = getCardEffect(found.card.cardId);
       const dslEffect = getDslOperationEffect(found.card.cardId, "rush");
-      const useDsl =
-        dslEffect !== undefined && isDslInterpretableEffect(dslEffect);
+      const useDsl = shouldUseDslOperation(found.card.cardId, dslEffect);
 
       if (!useDsl && effectMeta?.effectId === "place_in_power") {
         const current = nextState.players[playerId];

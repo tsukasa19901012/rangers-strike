@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "catchall_interpret_koregabatoruerianonindeirukorenosyunitohaatakusare",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-058::nae5bfa0",
+          "duration": "permanent"
         }
       ]
     }

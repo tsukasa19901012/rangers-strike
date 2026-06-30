@@ -34,8 +34,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_l_effect_koregakategorinolyunitokarakonbineshonsurutokinowodekiru",
-          "duration": "permanent"
+          "keyword": "effect_card::RS-174::liftup",
+          "duration": "turn"
         }
       ],
       "optional": true

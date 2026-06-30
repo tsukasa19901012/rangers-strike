@@ -66,8 +66,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_notanshikurashuerianitayunitotohorudonoyunitohatan",
-          "duration": "turn"
+          "keyword": "effect_card::RS-660::spinkamu",
+          "duration": "permanent"
         }
       ],
       "optional": false

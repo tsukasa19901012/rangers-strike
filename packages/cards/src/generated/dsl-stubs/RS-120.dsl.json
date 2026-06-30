@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_koreworashushitatokikomandozonkararirisunomyunito",
+          "keyword": "effect_card::RS-120::airtransport",
           "duration": "turn"
         }
       ],

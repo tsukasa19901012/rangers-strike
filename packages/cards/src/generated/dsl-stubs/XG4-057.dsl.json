@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "resident_zone_nikadoganateiruopereshonwosubetenishitemoyoisoushitatokiu",
+          "keyword": "effect_card::XG4-057::etaii",
           "duration": "turn"
         }
       ]

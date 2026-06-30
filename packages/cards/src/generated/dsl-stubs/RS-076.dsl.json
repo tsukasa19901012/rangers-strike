@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_koregarashuerianiarutokigarashusurumyunitonowotasu",
-          "duration": "turn"
+          "keyword": "mothership",
+          "duration": "permanent"
         }
       ],
       "optional": true

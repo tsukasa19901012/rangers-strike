@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_daburudoraibawotsuyunitogaarebakonobikuruharaidosareteinakut",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-078::rimokon",
+          "duration": "permanent"
         }
       ]
     }

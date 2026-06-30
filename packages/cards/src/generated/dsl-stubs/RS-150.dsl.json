@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_pawazonkaradamejinokadowo1ndechinokomandozonniho",
-          "duration": "turn"
+          "keyword": "effect_card::RS-150::bumperbow",
+          "duration": "permanent"
         }
       ],
       "optional": false

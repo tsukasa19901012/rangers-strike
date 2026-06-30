@@ -64,8 +64,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konoyunitohabatoruerianiaruwbnomyunito1nitsukibp2000sareru",
-          "duration": "turn"
+          "keyword": "effect_card::RS-151::furioussharkshot",
+          "duration": "permanent"
         }
       ],
       "optional": false

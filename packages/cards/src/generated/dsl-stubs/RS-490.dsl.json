@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarutanyunitogarashusaretatokiyunito",
-          "duration": "turn"
+          "keyword": "effect_card::RS-490::fxunknowne4ba88",
+          "duration": "permanent"
         }
       ],
       "optional": true

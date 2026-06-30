@@ -64,8 +64,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_sp1nokara1woomotenishitekaranierusoushitatokisonokadoto",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-022::touinkuruiryujon",
+          "duration": "permanent"
         }
       ]
     }

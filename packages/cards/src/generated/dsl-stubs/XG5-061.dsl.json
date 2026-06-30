@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_instead_rashufueizukoreworashusurutokirashuerianisukawarini",
+          "keyword": "effect_card::XG5-061::supedo8maguneto",
           "duration": "turn"
         }
       ]

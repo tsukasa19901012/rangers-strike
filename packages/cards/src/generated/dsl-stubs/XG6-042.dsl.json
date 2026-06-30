@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_koregasutoraikushitedamejiwoetatokini1dorosasetemoyoisoush",
+          "keyword": "effect_card::XG6-042::zeronosutato",
           "duration": "turn"
         }
       ]

@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_wotsuyunitowo3madebirashuerianishitemoyoitadashishita",
-          "duration": "turn"
+          "keyword": "effect_card::RS-444::toropikarudansu",
+          "duration": "permanent"
         }
       ],
       "optional": true

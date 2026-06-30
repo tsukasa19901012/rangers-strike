@@ -3,6 +3,7 @@ import {
   getCardById,
   getFullPlayableCardById,
   getStarterDeck,
+  FULL_PLAYABLE_CARD_COUNT,
   resolvePlayableCard,
   type DeckEntry,
 } from "@rangers-strike/cards";
@@ -34,7 +35,7 @@ describe("AC-01 — fullPlayableCatalog includes BK core cards", () => {
   it("AC-01: fullPlayableCatalog contains BK-001 as core legend1", () => {
     const ids = new Set(fullPlayableCatalog.cards.map((card) => card.id));
     expect(ids.has("BK-001")).toBe(true);
-    expect(fullPlayableCatalog.cards.length).toBe(1849);
+    expect(fullPlayableCatalog.cards.length).toBe(FULL_PLAYABLE_CARD_COUNT);
 
     const card = getFullPlayableCardById("BK-001");
     expect(card).toBeDefined();

@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokizonnoomote_ko_kinokadoga",
+          "keyword": "effect_card::XG4-093::billgoldyforevil",
           "duration": "turn"
         }
       ]

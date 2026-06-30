@@ -62,7 +62,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_koregaririsudekomandozonniarunokarasyunitoga",
+          "keyword": "effect_card::XG7-044::kazenogori",
           "duration": "permanent"
         }
       ]

@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_batorufueizukorewobatoruerianisutokikomandowo5tsuhorudoshi",
+          "keyword": "effect_card::RS-119::shiftup",
           "duration": "turn"
         }
       ]

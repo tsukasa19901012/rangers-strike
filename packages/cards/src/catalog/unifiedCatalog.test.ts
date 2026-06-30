@@ -31,7 +31,8 @@ describe("unifiedCatalog", () => {
     }
   });
 
-  it("full-playable tier has 1849 unique ids", () => {
+  it("full-playable tier has unique ids without commander cards", () => {
+    expect(fullPlayableCatalog.cards.every((c) => c.type !== "commander")).toBe(true);
     assertFullPlayableCatalogIntegrity();
     expect(fullPlayableCatalog.cards).toHaveLength(FULL_PLAYABLE_CARD_COUNT);
     expect(new Set(listCardIds("full-playable")).size).toBe(FULL_PLAYABLE_CARD_COUNT);

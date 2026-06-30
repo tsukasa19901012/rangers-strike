@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokiwotsuyunitowo1biho",
+          "keyword": "effect_card::XG5-053::fuainaruzanbatozan",
           "duration": "turn"
         }
       ]

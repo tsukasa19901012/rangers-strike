@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_koregarashuerianiarutokiwairudobisutonomyunitohaatakusuru",
+          "keyword": "effect_card::RS-037::torikerakanon",
           "duration": "turn"
         }
       ],

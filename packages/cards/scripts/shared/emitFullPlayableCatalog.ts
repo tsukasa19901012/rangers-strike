@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import type { CardCatalog, CardDefinition } from "../../src/schema";
-import { FULL_PLAYABLE_CARD_COUNT } from "../../src/catalog/tiers";
+import { FULL_PLAYABLE_CARD_COUNT, PLAYABLE_EXCLUDED_CARD_TYPES } from "../../src/catalog/tiers";
 import type { CatalogTier } from "../../src/catalog/tiers";
 
 type TierSource = {
@@ -43,19 +43,23 @@ export function emitFullPlayableCatalog(options: EmitFullPlayableCatalogOptions)
   const byTier: Record<string, number> = {};
   const index: Record<string, { tier: CatalogTier }> = {};
   const seen = new Set<string>();
+  const excludedTypes = new Set<string>(PLAYABLE_EXCLUDED_CARD_TYPES);
 
   for (const source of TIER_SOURCES) {
     const catalog = readCatalog(options.root, source.path);
-    byTier[source.tier] = catalog.cards.length;
+    let tierCount = 0;
 
     for (const card of catalog.cards) {
+      if (excludedTypes.has(card.type)) continue;
       if (seen.has(card.id)) {
         throw new Error(`Duplicate card id across tiers: ${card.id}`);
       }
       seen.add(card.id);
       merged.push(card);
       index[card.id] = { tier: source.tier };
+      tierCount += 1;
     }
+    byTier[source.tier] = tierCount;
   }
 
   merged.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));

@@ -50,7 +50,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokikorewohorudosurukaririsu",
+          "keyword": "effect_card::XG2-062::shine9acbc",
           "duration": "turn"
         }
       ]

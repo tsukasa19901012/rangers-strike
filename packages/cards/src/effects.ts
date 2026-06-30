@@ -163,6 +163,14 @@ function firstEffectBlock(doc: {
   return doc.effects?.[0];
 }
 
+function resolveWiredEffectId(
+  doc: { effectId?: string },
+  block: { id: string },
+  staticMeta?: CardEffectMeta,
+): string {
+  return doc.effectId ?? staticMeta?.effectId ?? block.id;
+}
+
 /** U4 — CardDocument 優先。静的 ALL_EFFECTS は target / 空テキスト・kind 補完用。 */
 export function getCardEffect(cardId: string): CardEffectMeta | undefined {
   const staticMeta = ALL_EFFECTS[cardId];
@@ -171,7 +179,7 @@ export function getCardEffect(cardId: string): CardEffectMeta | undefined {
     const operation = doc.effects?.find((effect) => effect.trigger.type === "operation");
     if (operation?.trigger.type === "operation") {
       return {
-        effectId: operation.id,
+        effectId: resolveWiredEffectId(doc, operation, staticMeta),
         text: resolveEffectText(cardId, doc, operation, staticMeta),
         kind: resolveEffectKind(doc, operation.trigger, staticMeta),
         target: staticMeta?.target,
@@ -180,7 +188,7 @@ export function getCardEffect(cardId: string): CardEffectMeta | undefined {
     if (isCounterOperationDoc(doc)) {
       const block = firstEffectBlock(doc);
       return {
-        effectId: block?.id ?? `counter_${cardId}`,
+        effectId: resolveWiredEffectId(doc, block ?? { id: `counter_${cardId}` }, staticMeta),
         text: resolveEffectText(cardId, doc, block ?? { text: doc.text ?? "" }, staticMeta),
         kind: "counter",
         target: staticMeta?.target,
@@ -188,18 +196,19 @@ export function getCardEffect(cardId: string): CardEffectMeta | undefined {
     }
     if (isPassivePermanentOperationDoc(doc)) {
       const passive = doc.effects?.find((effect) => effect.trigger.type === "while_in_field");
+      const block = passive ?? { id: "unnamed_resident", text: doc.text ?? "" };
       return {
-        effectId: passive?.id ?? "unnamed_resident",
-        text: resolveEffectText(cardId, doc, passive ?? { text: doc.text ?? "" }, staticMeta),
+        effectId: resolveWiredEffectId(doc, block, staticMeta),
+        text: resolveEffectText(cardId, doc, block, staticMeta),
         kind: "permanent",
         target: staticMeta?.target,
       };
     }
     if (doc.type === "operation" && doc.effects?.length) {
-      const block = firstEffectBlock(doc);
+      const block = firstEffectBlock(doc)!;
       return {
-        effectId: block?.id ?? cardId,
-        text: resolveEffectText(cardId, doc, block ?? { text: doc.text ?? "" }, staticMeta),
+        effectId: resolveWiredEffectId(doc, block, staticMeta),
+        text: resolveEffectText(cardId, doc, block, staticMeta),
         kind: resolveEffectKind(
           doc,
           { type: "operation", timing: "rush" },

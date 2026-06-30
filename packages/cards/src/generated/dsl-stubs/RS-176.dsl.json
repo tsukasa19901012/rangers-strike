@@ -62,7 +62,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_koreworashushitatokilyunitowo1nde_geki_ha_shitemoyoisous",
+          "keyword": "effect_card::RS-176::greatassault",
           "duration": "turn"
         }
       ],

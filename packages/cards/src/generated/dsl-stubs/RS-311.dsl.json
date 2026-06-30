@@ -31,8 +31,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_korehakomandozonniaruririsunokadotojikategoriwots",
-          "duration": "turn"
+          "keyword": "effect_card::RS-311::karakurininpokibagakure",
+          "duration": "permanent"
         }
       ],
       "optional": false

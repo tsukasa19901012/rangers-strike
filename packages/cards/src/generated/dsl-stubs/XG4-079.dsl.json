@@ -70,7 +70,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_tankoregabatoruerianitatokipawanoga123noomote_ko_kino",
+          "keyword": "effect_card::XG4-079::atakuraido",
           "duration": "turn"
         }
       ]

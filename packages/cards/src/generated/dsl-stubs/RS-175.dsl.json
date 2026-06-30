@@ -66,7 +66,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_koreworashushitatokibp20000noyunitowo1nde_geki_ha_suru",
+          "keyword": "effect_card::RS-175::naturebigbangfinal",
           "duration": "turn"
         }
       ],

@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_tankoregabatoruerianitatokinokara2woomotenishitemoyoi",
+          "keyword": "effect_card::XG3-053::fxunknowne58886",
           "duration": "turn"
         }
       ]

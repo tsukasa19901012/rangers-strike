@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_rashuerianosyunitowo2madebikomandozonniririsude",
-          "duration": "turn"
+          "keyword": "effect_card::RS-443::kanfudansu",
+          "duration": "permanent"
         }
       ],
       "optional": false

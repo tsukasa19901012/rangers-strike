@@ -60,7 +60,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokikoregalyunitonaranowosuru",
+          "keyword": "effect_card::XG6-053::gotouheru",
           "duration": "turn"
         }
       ]

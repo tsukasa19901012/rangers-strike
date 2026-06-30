@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_komandowo1tsubinonishitemoyoisoushitatokinokara1",
+          "keyword": "effect_card::XG1-088::noe981bf",
           "duration": "turn"
         }
       ]

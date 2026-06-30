@@ -64,8 +64,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregarashuerianiarunisutoraikusaretatokikorewobator",
-          "duration": "permanent"
+          "keyword": "effect_card::RS-373::fivetech",
+          "duration": "turn"
         }
       ],
       "optional": true

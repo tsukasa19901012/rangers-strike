@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { listCoreCardIds } from "../../src/catalog/unifiedCatalog";
+import { PLAYABLE_EXCLUDED_CARD_TYPES } from "../../src/catalog/tiers";
 import type { CardDefinition } from "../../src/schema";
 import { enrichFromDsl } from "./emitDslEnrich";
 
@@ -53,8 +54,14 @@ export function emitPromotedCatalog(options: EmitPromotedOptions): {
   const stubsFile = JSON.parse(readFileSync(stubsPath, "utf8")) as StubsFile;
   const existingImages = loadExistingImageFields(outputPath);
 
+  const excludedTypes = new Set<string>(PLAYABLE_EXCLUDED_CARD_TYPES);
   const promoted = stubsFile.stubs
-    .filter((s) => options.grades.has(s.grade) && !playableIds.has(s.id))
+    .filter(
+      (s) =>
+        options.grades.has(s.grade) &&
+        !playableIds.has(s.id) &&
+        !excludedTypes.has(s.type),
+    )
     .map((stub) =>
       enrichFromDsl(options.root, {
         id: stub.id,

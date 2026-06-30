@@ -77,8 +77,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregapawazonniarutanwotsuyunitoga_geki_ha_sarete",
-          "duration": "permanent"
+          "keyword": "effect_card::XG7-043::noe59cb0",
+          "duration": "turn"
         }
       ]
     }

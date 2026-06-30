@@ -32,8 +32,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_yunitowobpnoga5000ninaruyounibi_geki_ha_shitemoyoit",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-097::burumukyanon",
+          "duration": "permanent"
         }
       ]
     }

@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_batorueriakarayunitowo1nderashuerianishitemoyoisoushi",
+          "keyword": "effect_card::RS-141::stringfist",
           "duration": "turn"
         }
       ],

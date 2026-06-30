@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_all_enemy_nowosubetenisetemoyoisoushitatokisetanopawano",
+          "keyword": "effect_card::XG2-059::chikarano",
           "duration": "turn"
         }
       ]

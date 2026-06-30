@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_koregayunitoniatakusurutokibatorunonibatorunoyunitowoc",
+          "keyword": "effect_card::XG2-032::jairowapa",
           "duration": "turn"
         }
       ]

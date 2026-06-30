@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_batorufueizukoregarashueriaderaidoshiteinakerebasbikuruwo1",
-          "duration": "turn"
+          "keyword": "effect_card::XG6-037::riruze",
+          "duration": "permanent"
         }
       ]
     }

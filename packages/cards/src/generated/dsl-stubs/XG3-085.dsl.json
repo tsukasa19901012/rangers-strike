@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_tankonoyunitohawbwotsukomando1tsunitsukibp1000sareru",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-085::taitanikufurea",
+          "duration": "permanent"
         }
       ]
     }

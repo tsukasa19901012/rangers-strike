@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "feature_match_koreworashushitatokikaramekawotsuyunitonokadowo1nde",
+          "keyword": "effect_card::RS-075::rescueactivity",
           "duration": "turn"
         }
       ],

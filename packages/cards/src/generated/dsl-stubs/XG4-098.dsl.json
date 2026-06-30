@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_konoyunitono_ryo_niwotsuyunitogandeirukonoyunitohabp20",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-098::toripurubonba",
+          "duration": "permanent"
         }
       ]
     }

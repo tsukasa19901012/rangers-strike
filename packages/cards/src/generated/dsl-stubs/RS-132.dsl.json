@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_koregabatoruerianirutokinishitasyunitogabaiohantashirubanarako",
+          "keyword": "effect_card::RS-132::antibiocannon",
           "duration": "turn"
         }
       ],

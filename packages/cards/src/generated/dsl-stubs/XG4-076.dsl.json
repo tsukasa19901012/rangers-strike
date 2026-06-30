@@ -50,7 +50,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_koreworashushitatokisubetenowochinonishiteshafurusuru",
+          "keyword": "effect_card::XG4-076::no",
           "duration": "turn"
         }
       ]

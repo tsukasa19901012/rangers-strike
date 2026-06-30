@@ -71,7 +71,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_koreworashushitatokiwokinabigemukarashitemoyoisoushitato",
+          "keyword": "effect_card::XG7-051::raiodeiasu",
           "duration": "turn"
         }
       ]

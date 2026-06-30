@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_nowotemoyoisoushitatokiwotsusyunitonokadogaareba1bisonon",
-          "duration": "turn"
+          "keyword": "effect_card::RS-588::fxunknowne8a193",
+          "duration": "permanent"
         }
       ],
       "optional": false

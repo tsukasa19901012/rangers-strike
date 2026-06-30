@@ -2,8 +2,18 @@ import type {
   EffectCondition,
   EffectDefinition,
   EffectPrimitive,
+  EffectTrigger,
   OperationTiming,
 } from "@rangers-strike/cards/dsl/types";
+import {
+  getCardEffect,
+  getEnterBattleNamedEffect,
+  getWiredEnterBattleEffect,
+  getWiredOnAttackEffect,
+  getWiredOnRushEffect,
+  IMPLEMENTED_NC_EFFECT_IDS,
+  isOperationImplemented,
+} from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
 import { getCardDslDocument } from "./effectLookup";
 import { SUPPORTED_GRANT_KEYWORDS } from "./grantKeyword";
@@ -62,6 +72,7 @@ function isSupportedPrimitive(primitive: EffectPrimitive): boolean {
     case "cancel_damage":
       return true;
     case "grant_keyword":
+      if (primitive.keyword.startsWith("note_card::")) return false;
       return (
         SUPPORTED_GRANT_KEYWORDS.has(primitive.keyword) ||
         primitive.keyword.startsWith("effect_") ||
@@ -87,9 +98,72 @@ export function isDslInterpretableEffect(effect: EffectDefinition): boolean {
   return effect.effects.every(isSupportedPrimitive);
 }
 
+const LEGACY_NC_EFFECT_IDS = new Set<string>(IMPLEMENTED_NC_EFFECT_IDS);
+
+const LEGEND2_ENTER_BATTLE_EFFECT_IDS = new Set([
+  "mane_hurricane",
+  "ruin_excavation",
+  "phantom_illusion",
+  "sky_magic_slash",
+]);
+
 export function dslOperationOpensChoose(effect: EffectDefinition): boolean {
   const first = effect.effects[0];
   return first?.type === "choose";
+}
+
+function dslTriggeredOpensUnitChoose(effect: EffectDefinition): boolean {
+  return effect.effects.some(
+    (p) => p.type === "choose" && p.kind === "select_unit",
+  );
+}
+
+/** TS 専用ハンドラがある wired トリガーは DSL スタブよりネイティブ解決を優先する。 */
+export function shouldUseDslTriggeredEffect(
+  cardId: string,
+  effect: EffectDefinition,
+  triggerType: EffectTrigger["type"],
+): boolean {
+  if (!isDslInterpretableEffect(effect)) return false;
+  if (effect.effects.some((p) => p.type === "interpret_effect")) return true;
+  if (dslTriggeredOpensUnitChoose(effect)) return true;
+
+  if (triggerType === "on_rush") {
+    const wired = getWiredOnRushEffect(cardId);
+    if (wired && wired.effectId === effect.id) return false;
+  }
+
+  if (triggerType === "enter_battle") {
+    const wired = getWiredEnterBattleEffect(cardId);
+    if (wired && wired.effectId === effect.id) return false;
+    const named = getEnterBattleNamedEffect(cardId);
+    if (named?.effectId === effect.id && LEGEND2_ENTER_BATTLE_EFFECT_IDS.has(named.effectId)) {
+      return false;
+    }
+  }
+
+  if (triggerType === "on_attack") {
+    const wired = getWiredOnAttackEffect(cardId);
+    if (wired && wired.effectId === effect.id) return false;
+  }
+
+  if (triggerType === "nc" && LEGACY_NC_EFFECT_IDS.has(effect.id)) {
+    return false;
+  }
+
+  return true;
+}
+
+/** TS 専用ハンドラがある wired オペは DSL スタブよりネイティブ解決を優先する。 */
+export function shouldUseDslOperation(
+  cardId: string,
+  effect: EffectDefinition | undefined,
+): boolean {
+  if (!effect || !isDslInterpretableEffect(effect)) return false;
+  if (dslOperationOpensChoose(effect)) return true;
+  const wiredId = getCardEffect(cardId)?.effectId;
+  if (wiredId && isOperationImplemented(wiredId)) return false;
+  return true;
 }
 
 export function evaluateDslCondition(

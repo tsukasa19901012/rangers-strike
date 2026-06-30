@@ -1,12 +1,47 @@
 {
-  "generatedAt": "2026-06-10T03:40:31.148Z",
-  "playableCards": 1849,
-  "coreCards": 179,
-  "legacyBridgeCount": 0,
-  "byPrimitive": {},
-  "byTier": {},
-  "byTrigger": {},
-  "byMigrationTier": {},
-  "entries": [],
+  "generatedAt": "2026-06-30T00:36:11.130Z",
+  "playableCards": 1832,
+  "coreCards": 1052,
+  "legacyBridgeCount": 3,
+  "byPrimitive": {
+    "runtime_grant_keyword": 3
+  },
+  "byTier": {
+    "core": 3
+  },
+  "byTrigger": {
+    "on_turn_end": 1,
+    "nc": 1,
+    "on_rush": 1
+  },
+  "byMigrationTier": {
+    "complex": 3
+  },
+  "entries": [
+    {
+      "cardId": "RS-445",
+      "effectId": "disco_dance",
+      "trigger": "on_turn_end",
+      "primitive": "runtime_grant_keyword",
+      "migrationTier": "complex",
+      "tier": "core"
+    },
+    {
+      "cardId": "RS-460",
+      "effectId": "flower_bomb",
+      "trigger": "nc",
+      "primitive": "runtime_grant_keyword",
+      "migrationTier": "complex",
+      "tier": "core"
+    },
+    {
+      "cardId": "RS-625",
+      "effectId": "shiruba",
+      "trigger": "on_rush",
+      "primitive": "runtime_grant_keyword",
+      "migrationTier": "complex",
+      "tier": "core"
+    }
+  ],
   "note": "M17: full-playable 1849 cards; effect_* delegate replaces enqueue_trigger for unmatched patterns."
 }

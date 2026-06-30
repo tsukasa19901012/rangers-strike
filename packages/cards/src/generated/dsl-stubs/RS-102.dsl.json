@@ -36,8 +36,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_pawazonkaradamejininateinaikadowo1busoshitekomandozo",
-          "duration": "turn"
+          "keyword": "effect_card::RS-102::darkdualblade",
+          "duration": "permanent"
         }
       ],
       "optional": false

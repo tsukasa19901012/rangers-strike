@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokinowodekiruwotesyuni",
+          "keyword": "effect_card::XP-032::rejiendowomete",
           "duration": "turn"
         }
       ]

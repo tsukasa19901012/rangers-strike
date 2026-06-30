@@ -3,7 +3,7 @@ import type { GameState, PlayerId } from "../types/game";
 import { buildLogEntry } from "../log/formatLog";
 import {
   evaluateDslCondition,
-  isDslInterpretableEffect,
+  shouldUseDslTriggeredEffect,
 } from "./dslCatalog";
 import { PASSIVE_GRANT_KEYWORDS } from "./grantKeyword";
 import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
@@ -68,7 +68,7 @@ export function tryResolveDslTriggeredEffects(args: {
   let handled = false;
 
   for (const effect of effects) {
-    if (!isDslInterpretableEffect(effect)) continue;
+    if (!shouldUseDslTriggeredEffect(args.cardId, effect, args.triggerType)) continue;
     if (!evaluateDslCondition(current, args.playerId, effect.condition, args.instanceId, effect.effects)) {
       continue;
     }

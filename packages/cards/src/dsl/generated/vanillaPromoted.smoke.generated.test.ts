@@ -1,25 +1,29 @@
 /**
  * Auto-generated vanilla-promoted smoke test (M11)
- * Promoted: 184 | Full playable: 1849
+ * Promoted: 167 | Full playable: 1832
  */
 import { describe, it, expect } from "vitest";
 import { createFullPlayableRegistry } from "../registry";
 import { validateCardDocument } from "../validator";
+import {
+  FULL_PLAYABLE_CARD_COUNT,
+  VANILLA_PROMOTED_CARD_COUNT,
+} from "../../catalog/tiers";
 import { fullPlayableCatalog, vanillaPromotedCatalog } from "../../extendedCatalog";
 
 describe("vanilla-promoted catalog", () => {
   const registry = createFullPlayableRegistry();
 
   it("merges legend and promoted without duplicate ids", () => {
-    expect(vanillaPromotedCatalog.cards.length).toBe(184);
-    expect(fullPlayableCatalog.cards.length).toBe(1849);
+    expect(vanillaPromotedCatalog.cards.length).toBe(VANILLA_PROMOTED_CARD_COUNT);
+    expect(fullPlayableCatalog.cards.length).toBe(FULL_PLAYABLE_CARD_COUNT);
     const ids = new Set(fullPlayableCatalog.cards.map((c) => c.id));
     expect(ids.size).toBe(fullPlayableCatalog.cards.length);
   });
 
   it("has promoted dslReady cards", () => {
-    expect(fullPlayableCatalog.cards.length).toBe(1849);
-    expect(registry.size()).toBeGreaterThanOrEqual(1849);
+    expect(fullPlayableCatalog.cards.length).toBe(FULL_PLAYABLE_CARD_COUNT);
+    expect(registry.size()).toBeGreaterThanOrEqual(FULL_PLAYABLE_CARD_COUNT);
   });
 
   it("validates every promoted card document", () => {
@@ -32,7 +36,6 @@ describe("vanilla-promoted catalog", () => {
   });
 
   it("reports handler coverage for promoted subset", () => {
-    const snap = registry.snapshot();
     const promotedIds = new Set(vanillaPromotedCatalog.cards.map((c) => c.id));
     const promotedDocs = registry.listCards().filter((c) => promotedIds.has(c.id));
     const interpreter = promotedDocs.filter((c) => c.implementation?.handler === "interpreter").length;

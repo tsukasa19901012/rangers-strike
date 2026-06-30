@@ -35,8 +35,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_l_effect_koregakategorinolyunitokarakonbineshonsurutokinowodekirub",
-          "duration": "permanent"
+          "keyword": "effect_card::RS-168::crossthunder",
+          "duration": "turn"
         }
       ],
       "optional": true

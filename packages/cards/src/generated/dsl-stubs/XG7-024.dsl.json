@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_koregaerianiarukadonisaidaiwomanaiwotsuyunitohano",
-          "duration": "permanent"
+          "keyword": "effect_card::XG7-024::chikarahana",
+          "duration": "turn"
         }
       ]
     }

@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_konoyunitononiura_ko_kidenetakadogaarebakorehano_chikara_w",
-          "duration": "turn"
+          "keyword": "effect_card::XG6-032::nanochikara",
+          "duration": "permanent"
         }
       ]
     }

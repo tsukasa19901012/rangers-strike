@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_rashufueizukorewonishitenowodekirukomandozonkara",
-          "duration": "turn"
+          "keyword": "effect_card::RS-446::sukuranburu",
+          "duration": "permanent"
         }
       ],
       "optional": true
@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_rashufueizukonoyunitowonishitenowodekirukomandozo",
-          "duration": "turn"
+          "keyword": "effect_card::RS-446::sukuranbururashufueizuk",
+          "duration": "permanent"
         }
       ],
       "optional": true

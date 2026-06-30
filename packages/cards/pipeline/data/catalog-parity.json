@@ -1,26 +1,40 @@
 {
-  "generatedAt": "2026-06-11T00:05:37.565Z",
+  "generatedAt": "2026-06-30T00:33:37.945Z",
   "gates": [
     {
       "id": "U2-a",
       "name": "core-playable emit",
       "status": "pass",
-      "target": "generated core-playable = 179",
-      "current": "generated=179"
+      "target": "generated core-playable = 1052",
+      "current": "generated=1052"
     },
     {
       "id": "U2-b",
       "name": "core catalog integrity",
       "status": "pass",
-      "target": "generated core 179 枚すべて必須 stats あり",
-      "current": "cards=179, invalid=0"
+      "target": "generated core 1052 枚すべて必須 stats あり",
+      "current": "cards=1052, invalid=0"
     },
     {
       "id": "U2-c",
       "name": "core DSL stubs",
       "status": "pass",
-      "target": "core 179 枚すべて dsl-stubs/{id}.dsl.json あり",
+      "target": "core 1052 枚すべて dsl-stubs/{id}.dsl.json あり",
       "current": "missing=0"
+    },
+    {
+      "id": "U2-d",
+      "name": "core catalog vs DSL stub stats",
+      "status": "fail",
+      "target": "emit enrich フィールドの矛盾 = 0",
+      "current": "mismatches=9",
+      "details": [
+        "RK-086",
+        "RK-146",
+        "RK-231",
+        "RS-227",
+        "RS-349"
+      ]
     },
     {
       "id": "U0-a2",
@@ -39,30 +53,37 @@
     {
       "id": "U0-a3",
       "name": "promoted catalog vs DSL stub stats",
-      "status": "pass",
-      "target": "emit enrich フィールド（bp/sp/size/comboNumber/text/features）の矛盾 = 0",
-      "current": "mismatches=0"
+      "status": "fail",
+      "target": "emit enrich フィールドの矛盾 = 0",
+      "current": "mismatches=6",
+      "details": [
+        "XG1-081",
+        "XG2-072",
+        "XG2-074",
+        "XG3-077",
+        "XG4-056"
+      ]
     },
     {
       "id": "U0-b",
       "name": "full-playable 件数",
       "status": "pass",
-      "target": "cards=1849, unique=1849",
-      "current": "cards=1849, unique=1849"
+      "target": "cards=1832, unique=1832",
+      "current": "cards=1832, unique=1832"
     },
     {
       "id": "U0-b2",
       "name": "loader フィンガープリント",
       "status": "pass",
-      "target": "loadCards(full-playable).length=1849",
-      "current": "length=1849, fingerprint=46e1e2409efb…"
+      "target": "loadCards(full-playable).length=1832",
+      "current": "length=1832, fingerprint=db1efc38367a…"
     },
     {
       "id": "U3-a",
       "name": "unified loader parity",
       "status": "pass",
       "target": "loadCards と loadFullPlayableDocuments の fingerprint 一致",
-      "current": "unified=1849, legacy=1849, match=true"
+      "current": "unified=1832, legacy=1832, match=true"
     },
     {
       "id": "U4-a",
@@ -96,22 +117,210 @@
       "id": "U0-c",
       "name": "DSL 登録",
       "status": "pass",
-      "target": "dslReady=1849",
-      "current": "dslReady=1849, unimplemented=0, legacy=0"
+      "target": "dslReady=1832",
+      "current": "dslReady=1832, unimplemented=0, legacy=0"
     }
   ],
-  "gatesPassed": 14,
-  "gatesTotal": 14,
+  "gatesPassed": 13,
+  "gatesTotal": 15,
   "summary": {
-    "coreCount": 179,
-    "fullPlayableCount": 1849,
-    "uniqueFullPlayableIds": 1849,
-    "dslReady": 1849,
-    "loaderFingerprint": "46e1e2409efbdd3b8b0d0706673c8d6c2a9baf941cf7bd498425be5f4a54e0d2"
+    "coreCount": 1052,
+    "fullPlayableCount": 1832,
+    "uniqueFullPlayableIds": 1832,
+    "dslReady": 1832,
+    "loaderFingerprint": "db1efc38367a9b7c84d2498f2a062d55e64243a5d30358e26c63978f6ee11d2b"
   },
   "samples": {
     "coreStatsDiffs": [],
-    "promotedDslStatsDiffs": [],
+    "coreDslStatsDiffs": [
+      {
+        "id": "RK-086",
+        "diffs": [
+          {
+            "field": "text",
+            "left": "※カウンター 敵軍ユニットにストライクされて、自軍パワーゾーンのオモテ向きのカードか自軍山札の上からひいたカードをダメージにするとき発動できる（ただし1つのタイミングに発動できる「アカネタカ」は1枚だけとする）⇒ダメージにするカードのかわりに、このカードを相手に見せてから自軍パワーゾーンにダメージにして置く。その後、自分は1枚ドローする。",
+            "right": "※カウンター 敵軍ユニットにストライクされて、自軍パワーゾーンのオモテ向きのカードか自軍山札の上からひいたカードをダメージにするとき発動できる⇒ダメージにするカードのかわりに、このカードを相手に見せてから自軍パワーゾーンにダメージにして置く。その後、自分は1枚ドローする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 ※カウンター 敵軍ユニットにストライクされて、自軍パワーゾーンのオモテ向きのカードか自軍山札の上からひいたカードをダメージにするとき発動できる（ただし1つのタイミングに発動できる「アカネタカ」は1枚だけとする）⇒ダメージにするカードのかわりに、このカードを相手に見せてから自軍パワーゾーンにダメージにして置く。その後、自分は1枚ドローする。"
+          }
+        ]
+      },
+      {
+        "id": "RK-146",
+        "diffs": [
+          {
+            "field": "text",
+            "left": "【デネブキャンディー】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札を見てもよい。そうしたとき、その中からオペレーションカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
+            "right": "【デネブキャンディー】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札からオペレーションカードを1枚選び、相手に見せてから手札に加えてもよい。そうしたとき、自分自身の山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【デネブキャンディー】これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札を見てもよい。そうしたとき、その中からオペレーションカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。"
+          }
+        ]
+      },
+      {
+        "id": "RK-231",
+        "diffs": [
+          {
+            "field": "text",
+            "left": "【潜水】自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。",
+            "right": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 【潜水】自分がターンを終えるとき、これをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。 ・このテキストはクロスギャザーコンプリートブックでエラッタが示されています。修正後は以下。 【潜水】自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。 これはホールド状態のとき、アタックもストライクもすることができず、敵軍ユニットにアタックされない。"
+          }
+        ]
+      },
+      {
+        "id": "RS-227",
+        "diffs": [
+          {
+            "field": "text",
+            "left": "【トップウインド】自軍ターン中、これがバトルエリアに出たとき、相手は次のようにする⇒自分自身のコマンドを、自分自身のコマンドゾーンのカテゴリの数まで可能な限り選びホールドする。",
+            "right": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【トップウインド】自軍ターン中、これがバトルエリアに出たとき、相手は次のようにする⇒自分自身のコマンドを、自分自身のコマンドゾーンのカテゴリの数まで選びホールドする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【トップウインド】自軍ターン中、これがバトルエリアに出たとき、相手は次のようにする⇒自分自身のコマンドを、自分自身のコマンドゾーンのカテゴリの数まで可能な限り選びホールドする。"
+          }
+        ]
+      },
+      {
+        "id": "RS-349",
+        "diffs": [
+          {
+            "field": "text",
+            "left": "自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+            "right": "自軍山札から、追加条件を持たないDA以外のSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。"
+          }
+        ]
+      },
+      {
+        "id": "RS-446",
+        "diffs": [
+          {
+            "field": "text",
+            "left": "【スクランブル】自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍コマンドゾーンから、必要パワーを満たしているETを持つMユニットのカードを3枚まで選び、選んだカードを自軍ラッシュエリアに出す。ただし、この効果でカードを選ぶとき、同じカード名のユニットカードを2枚以上選ぶことはできない。",
+            "right": "【スクランブル】自軍ラッシュフェイズ中、これを捨札にして次の効果を発動できる⇒自軍コマンドゾーンから、必要パワーを満たしているETのMユニットのカードを3枚まで選び、選んだカードを自軍ラッシュエリアに出す。ただし、この効果でカードを選ぶとき、同じカード名のユニットカードを2枚以上選ぶことはできない。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【スクランブル】自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を発動できる⇒自軍コマンドゾーンから、必要パワーを満たしているETを持つMユニットのカードを3枚まで選び、選んだカードを自軍ラッシュエリアに出す。ただし、この効果でカードを選ぶとき、同じカード名のユニットカードを2枚以上選ぶことはできない。"
+          }
+        ]
+      },
+      {
+        "id": "RS-486",
+        "diffs": [
+          {
+            "field": "text",
+            "left": "※これはSユニットにアタックされない。 【分身幻斬り】これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたLユニットがアタックまたはストライクしたとき、その処理をすべて終えてから、そのLユニットと同じカード名のユニットカードを、その合体に必要なユニットの数まで、自分の手札から好きな枚数選び、自軍ラッシュエリアに出してもよい。",
+            "right": "※これはSユニットにアタックされない。 【分身幻斬り】これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたLユニットがアタックまたはストライクしたとき、その処理をすべて終えてから、そのLユニットと同じカード名のユニットカードを、その合体に必要なユニットの数まで好きな枚数選び、自軍ラッシュエリアに出してもよい。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 ※これはSユニットにアタックされない。 【分身幻斬り】これと同カテゴリのLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたLユニットがアタックまたはストライクしたとき、その処理をすべて終えてから、そのLユニットと同じカード名のユニットカードを、その合体に必要なユニットの数まで、自分の手札から好きな枚数選び、自軍ラッシュエリアに出してもよい。"
+          }
+        ]
+      },
+      {
+        "id": "RS-575",
+        "diffs": [
+          {
+            "field": "text",
+            "left": "【世界を駆ける力】これにライドしているユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる。",
+            "right": "※DAを持たない特徴「人型」を持つMユニットは、ＲＣを持っていなくてもこのビークルにライドでき、それ以外のユニットはライドできない。 ※このビークルは合体ユニットとしてつかえる。 【世界を駆ける力】これにライドしているユニットは、次の能力を得る⇒ラッシュエリアのユニットにアタックできる。 ・このテキストは公式HPで読み替えが推奨されています。修正後は以下。 【世界を駆ける力】これにライドしているユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる。"
+          }
+        ]
+      },
+      {
+        "id": "RS-603",
+        "diffs": [
+          {
+            "field": "text",
+            "left": "【超有毒液化ガス】これが自軍エリアにある間、本来の特徴に「車両」を持つユニットはアタックもストライクもできず、効果名を持つテキストは無効になり、発動もできない。",
+            "right": "【超有毒液化ガス】これが自軍エリアにある間、特徴「車両」を持つユニットはアタックもストライクもできず、効果名を持つテキストは無効になり、発動もできない。 ・このテキストは公式HPで読み替えが推奨されています。修正後は以下。 【超有毒液化ガス】これが自軍エリアにある間、本来の特徴に「車両」を持つユニットはアタックもストライクもできず、効果名を持つテキストは無効になり、発動もできない。"
+          }
+        ]
+      }
+    ],
+    "promotedDslStatsDiffs": [
+      {
+        "id": "XG1-081",
+        "diffs": [
+          {
+            "field": "rushAdditionalCondition",
+            "left": {
+              "conditionId": "discard_named_unit",
+              "text": "特徴「忍者」を持つ自軍Sユニット1体を捨札にする",
+              "partnerName": "忍者",
+              "unitCount": 1
+            },
+            "right": {
+              "conditionId": "discard_feature_unit",
+              "text": "特徴「忍者」を持つ自軍Sユニット1体を捨札にする",
+              "requiredFeature": "忍者",
+              "unitCount": 1,
+              "requiredSize": "S"
+            }
+          }
+        ]
+      },
+      {
+        "id": "XG2-072",
+        "diffs": [
+          {
+            "field": "rushAdditionalCondition",
+            "left": {
+              "conditionId": "discard_vehicle_unit",
+              "text": "自軍ビークル1体をコマンドゾーンに送るか捨札にする",
+              "unitCount": 1
+            },
+            "right": null
+          }
+        ]
+      },
+      {
+        "id": "XG2-074",
+        "diffs": [
+          {
+            "field": "rushAdditionalCondition",
+            "left": {
+              "conditionId": "return_named_to_hand",
+              "text": "自軍「仮面ライダークウガ」1体を手札に戻す",
+              "partnerName": "仮面ライダークウガ",
+              "unitCount": 1
+            },
+            "right": null
+          }
+        ]
+      },
+      {
+        "id": "XG3-077",
+        "diffs": [
+          {
+            "field": "rushAdditionalCondition",
+            "left": {
+              "conditionId": "return_named_to_hand",
+              "text": "自軍「仮面ライダーアギト」1体を手札に戻す",
+              "partnerName": "仮面ライダーアギト",
+              "unitCount": 1
+            },
+            "right": null
+          }
+        ]
+      },
+      {
+        "id": "XG4-056",
+        "diffs": [
+          {
+            "field": "rushAdditionalCondition",
+            "left": {
+              "conditionId": "return_named_to_hand",
+              "text": "自軍「ドラグランザー」1体を手札に戻す",
+              "partnerName": "ドラグランザー",
+              "unitCount": 1
+            },
+            "right": null
+          }
+        ]
+      },
+      {
+        "id": "XG4-062",
+        "diffs": [
+          {
+            "field": "rushAdditionalCondition",
+            "left": {
+              "conditionId": "discard_named_unit",
+              "text": "自軍「仮面ライダーアクセル」1体をコマンドゾーンに送るか捨札にする",
+              "partnerName": "仮面ライダーアクセル",
+              "unitCount": 1
+            },
+            "right": null
+          }
+        ]
+      }
+    ],
     "tierOverlaps": [
       {
         "tier": "vanilla-promoted",

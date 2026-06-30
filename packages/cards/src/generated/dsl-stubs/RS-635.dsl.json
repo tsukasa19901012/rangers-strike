@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_pinkuwotsusyunitowo1bi_geki_ha_shitemoyoi",
-          "duration": "turn"
+          "keyword": "effect_card::RS-635::nejiaro",
+          "duration": "permanent"
         }
       ],
       "optional": true

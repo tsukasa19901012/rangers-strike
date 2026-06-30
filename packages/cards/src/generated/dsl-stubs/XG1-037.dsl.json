@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_koregauingudeatakushitayunitoga_geki_ha_sareteninatat",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-037::karanogeki",
+          "duration": "permanent"
         }
       ]
     }

@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_tankoregabatoruerianitatokibatorueriakaramyunitowo1bi",
+          "keyword": "effect_card::XG5-086::nakurubonba",
           "duration": "turn"
         }
       ]

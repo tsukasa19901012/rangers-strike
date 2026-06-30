@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   allCardsCatalog,
   fullPlayableCatalog,
+  FULL_PLAYABLE_CARD_COUNT,
   getBattleEntryHoldCount,
   getCardById,
   getCardEffect,
@@ -215,7 +216,7 @@ const EFFECT_OPERATIONS = OPERATION_CARDS.filter((card) =>
 
 describe("Web UI integration — full-playable deck selection (G5)", () => {
   it("exposes full-playable pool from catalog", () => {
-    expect(fullPlayablePoolSize()).toBe(1849);
+    expect(fullPlayablePoolSize()).toBe(FULL_PLAYABLE_CARD_COUNT);
   });
 
   it.each(FULL_PLAYABLE_DECK_OPTIONS.map((option) => [option.key, option.label] as const))(

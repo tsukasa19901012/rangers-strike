@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_pick_show_nowo2binisetemoyoisoushitatokibatoruerianosyunitowo",
+          "keyword": "effect_card::XG4-081::raitoningusurashu",
           "duration": "turn"
         }
       ]

@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_tankoregabatoruerianitatokikadonitaitanwomukomandoka",
+          "keyword": "effect_card::XG6-010::taitannoba",
           "duration": "turn"
         }
       ]

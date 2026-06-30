@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_omote_ko_kinopawanowoetemoyoisoushitakibatorueriakarasono",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-025::kensonikuhanma",
+          "duration": "permanent"
         }
       ]
     }

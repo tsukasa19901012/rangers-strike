@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_karakadowo1bichinokomandozonnihorudodeitemoyoi",
-          "duration": "turn"
+          "keyword": "effect_card::RS-531::misairue5afbe",
+          "duration": "permanent"
         }
       ],
       "optional": false

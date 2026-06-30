@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakarabp3000nos",
+          "keyword": "effect_card::XG1-079::nomizu",
           "duration": "turn"
         }
       ]

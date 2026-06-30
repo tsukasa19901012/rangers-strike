@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_koregabatoruerianitatokihanokomandozonkarasyunitokamyuni",
+          "keyword": "effect_card::RS-121::ruinexcavation",
           "duration": "turn"
         }
       ],

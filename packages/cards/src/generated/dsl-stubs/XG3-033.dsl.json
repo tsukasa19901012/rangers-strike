@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_koregazondeomote_ko_kininateirurashufueizukoreworashi",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-033::yoriisu",
+          "duration": "permanent"
         }
       ]
     }

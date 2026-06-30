@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_koreworashushitatokinowodekiruwotekonbineshonnanba",
+          "keyword": "effect_card::RS-177::airlift",
           "duration": "turn"
         }
       ],

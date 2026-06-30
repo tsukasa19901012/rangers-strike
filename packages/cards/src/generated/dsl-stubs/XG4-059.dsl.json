@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "vehicle_interaction_batorufueizukonobikuruwokomandozonnitemoyoisoushitat",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-059::fxunknowne887aa",
+          "duration": "permanent"
         }
       ]
     }

@@ -1,5 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
-import { findNcNamedEffect, getNumberComboEffect } from "@rangers-strike/cards";
+import { findNcNamedEffect, getNumberComboEffect, IMPLEMENTED_NC_EFFECT_IDS } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import {
   cardName,
@@ -29,7 +29,7 @@ import {
 } from "./playerPatches";
 import { applyLegend2NcEffect, isLegend2NcEffect } from "./legend2/ncEffects";
 import { applyLegend3NcEffect, isLegend3NcEffect } from "./legend3/ncEffects";
-import { isDslInterpretableEffect } from "../dsl/dslCatalog";
+import { isDslInterpretableEffect, shouldUseDslTriggeredEffect } from "../dsl/dslCatalog";
 import { listDslEffectsForTrigger } from "../dsl/effectLookup";
 import { tryResolveDslNcEffects } from "../dsl/triggerResolver";
 import { applyPromotedNcEffect, getPromotedNcEffectId } from "./promotedNcEffects";
@@ -118,12 +118,11 @@ function ncEffectUsesDsl(cardId: string): boolean {
   const effects = listDslEffectsForTrigger(cardId, "nc");
   if (effects.length !== 1) return false;
   const effect = effects[0]!;
-  if (!isDslInterpretableEffect(effect)) return false;
-  return !LEGACY_NC_EFFECT_IDS.has(effect.id);
+  return shouldUseDslTriggeredEffect(cardId, effect, "nc");
 }
 
 /** NC 効果のうち DSL interpreter 未対応の選択 UX。 */
-const LEGACY_NC_EFFECT_IDS = new Set<string>();
+const LEGACY_NC_EFFECT_IDS = new Set<string>(IMPLEMENTED_NC_EFFECT_IDS);
 
 export function applyNumberComboEffect(
   state: GameState,

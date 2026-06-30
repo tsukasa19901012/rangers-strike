@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konotanyunitohauingudeatakushitatokisonobatorubp2000sareru",
+          "keyword": "effect_card::XG7-019::sukaikonbibureiku",
           "duration": "turn"
         }
       ]

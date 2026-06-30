@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_koreworashushitatokibp3000noyunitowo1ndechinoni",
+          "keyword": "effect_card::RS-098::karakurigreattsunami",
           "duration": "turn"
         }
       ],

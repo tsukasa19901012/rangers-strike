@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_nokara1woomotenisuruomotenishitakadogasyunitonokadonara",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-002::tv",
+          "duration": "permanent"
         }
       ]
     }

@@ -123,6 +123,23 @@ describe("deck build rules", () => {
     expect(result.errors).toContain("禁止カードが含まれています: アバレンオー（RS-050）");
     spy.mockRestore();
   });
+
+  it("rejects commander cards even when present in an extended catalog", () => {
+    const commander = {
+      id: "XC-001",
+      name: "ゾル大佐",
+      type: "commander" as const,
+      category: "DA" as const,
+      rarity: "N" as const,
+      expansion: "wiki_stub",
+      powerCost: 0,
+    };
+    const catalog = { expansion: "test", cards: [commander] };
+    const result = validateDeckEntries([{ cardId: "XC-001", count: 1 }], catalog, {
+      minSize: 0,
+    });
+    expect(result.errors.some((e) => e.includes("コマンダーカード"))).toBe(true);
+  });
 });
 
 describe("isBannedCardId", () => {

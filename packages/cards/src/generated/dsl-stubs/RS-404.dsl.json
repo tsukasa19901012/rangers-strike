@@ -22,26 +22,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "optional_deck_draw",
-          "valid": {
-            "type": "zone",
-            "zone": "deck",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "runtime_fx_unknown_e8bfbd",
+          "duration": "turn"
         }
       ]
     }

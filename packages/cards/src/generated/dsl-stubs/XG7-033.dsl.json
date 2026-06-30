@@ -62,8 +62,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_koregabatorueriakararashuerianitatokikorewohorudoshit",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-033::notenitamono",
+          "duration": "permanent"
         }
       ]
     }

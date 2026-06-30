@@ -53,7 +53,7 @@ import {
 import {
   dslOperationOpensChoose,
   getDslOperationEffect,
-  isDslInterpretableEffect,
+  shouldUseDslOperation,
 } from "../dsl/dslCatalog";
 import { collectTargetInstanceIds } from "../dsl/targetSelectors";
 import { canCompleteRushAfterCommandPayment } from "./rushDeclaration";
@@ -821,8 +821,7 @@ function isPlayOperationContinuationLegal(
 
   const dslEffect = getDslOperationEffect(found.cardId, "rush");
   const dslChoose =
-    dslEffect !== undefined &&
-    isDslInterpretableEffect(dslEffect) &&
+    shouldUseDslOperation(found.cardId, dslEffect) &&
     dslOperationOpensChoose(dslEffect);
 
   if (dslChoose && dslEffect.effects[0]?.type === "choose") {

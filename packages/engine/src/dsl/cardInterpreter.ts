@@ -17,6 +17,7 @@ import {
   evaluateDslCondition,
   getDslOperationEffect,
   isDslInterpretableEffect,
+  shouldUseDslOperation,
 } from "./dslCatalog";
 import {
   augmentChooseValidSelector,
@@ -554,7 +555,7 @@ export function attachOperationCardToDslResume(
   };
 }
 
-export { dslOperationOpensChoose, getDslOperationEffect, isDslInterpretableEffect };
+export { dslOperationOpensChoose, getDslOperationEffect, isDslInterpretableEffect, shouldUseDslOperation };
 
 import { wireEffectDelegateResolver } from "./effectDelegateRuntime";
 

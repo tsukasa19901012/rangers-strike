@@ -45,8 +45,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_koregabatoruerianiaruganoririsunosyunitowobatorue",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-086::handoretofuira",
+          "duration": "permanent"
         }
       ]
     }

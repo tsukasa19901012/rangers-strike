@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokibatorueriakarabp8000noyu",
+          "keyword": "effect_card::XG2-036::toradorirugeki",
           "duration": "turn"
         }
       ]

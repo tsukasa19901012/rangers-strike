@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_koreworashushitatokikarayunitonokadowo3madendenoniki",
+          "keyword": "effect_card::RS-137::submerge",
           "duration": "turn"
         }
       ],

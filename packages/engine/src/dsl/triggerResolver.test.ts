@@ -6,7 +6,7 @@ import { tryResolveDslTriggeredEffects } from "./triggerResolver";
 const defs = Object.fromEntries(legend1Catalog.cards.map((c) => [c.id, c]));
 
 describe("dsl trigger resolver — L1 unit effects", () => {
-  it("RS-046 armor_attack opens DSL choose on rush", () => {
+  it("RS-046 armor_attack uses DSL choose on rush when stub is rematched", () => {
     const unit = inst("RS-046", "rush-unit");
     const enemy = inst("RS-048", "enemy");
     const state = createTestState({
@@ -28,13 +28,12 @@ describe("dsl trigger resolver — L1 unit effects", () => {
       phasePlayerId: "player1",
       triggerType: "on_rush",
     });
-
     expect(result.handled).toBe(true);
     expect(result.state.pendingEffectChoice?.effectId).toBe("armor_attack");
     expect(result.state.pendingEffectChoice?.validInstanceIds).toContain(enemy.instanceId);
   });
 
-  it("RS-050 destroy_enemy_bp4000 opens DSL choose on enter battle", () => {
+  it("RS-050 destroy_enemy_bp4000 still uses DSL choose on enter battle", () => {
     const unit = inst("RS-050", "zord");
     const enemy = inst("RS-048", "enemy");
     const state = createTestState({
@@ -56,7 +55,6 @@ describe("dsl trigger resolver — L1 unit effects", () => {
       phasePlayerId: "player1",
       triggerType: "enter_battle",
     });
-
     expect(result.handled).toBe(true);
     expect(result.state.pendingEffectChoice?.effectId).toBe("destroy_enemy_bp4000");
     expect(result.state.pendingEffectChoice?.validInstanceIds).toContain(enemy.instanceId);

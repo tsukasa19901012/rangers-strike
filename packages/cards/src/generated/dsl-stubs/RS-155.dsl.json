@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_koregabatoruerianitatokiyunitowo1nde_geki_ha_shitemoyoitad",
+          "keyword": "effect_card::RS-155::steelhorn",
           "duration": "turn"
         }
       ],

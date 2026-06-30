@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_tankoregabatoruerianitatokikomandowosubeteririsun",
+          "keyword": "effect_card::RS-145::hypercivilizationguard",
           "duration": "turn"
         }
       ],

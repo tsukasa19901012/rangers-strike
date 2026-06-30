@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregarashuerianiaruwotsuyunitogasutoraikushitatokis",
-          "duration": "permanent"
+          "keyword": "effect_card::RS-485::kazenoe796be",
+          "duration": "turn"
         }
       ],
       "optional": true

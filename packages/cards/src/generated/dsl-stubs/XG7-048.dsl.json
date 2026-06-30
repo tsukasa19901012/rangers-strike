@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "catchall_interpret_batoruerianoyunitogasyunitodakenarakonotankorehasp1ni",
+          "keyword": "sp1_if_enemy_battle_all_s",
           "duration": "turn"
         }
       ]

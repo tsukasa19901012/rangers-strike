@@ -59,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_koregasutoraikushitedamejiwoerutokikawarinirashueriak",
+          "keyword": "effect_card::XG4-080::hadoshoto",
           "duration": "turn"
         }
       ]

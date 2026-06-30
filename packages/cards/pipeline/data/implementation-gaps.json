@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-29T13:50:33.333Z",
+  "generatedAt": "2026-06-30T00:36:10.527Z",
   "summary": {
-    "catalogTotal": 1849,
+    "catalogTotal": 1832,
     "coreCards": 1052,
-    "promotedCards": 797,
-    "dslRegistryImplemented": 1848,
-    "dslRegistryPartial": 1,
+    "promotedCards": 780,
+    "dslRegistryImplemented": 1832,
+    "dslRegistryPartial": 0,
     "dslRegistryUnimplemented": 0,
     "multiCategoryCards": 122,
-    "partialEffectCards": 1,
+    "partialEffectCards": 0,
     "implementedOperations": 38
   },
   "ruleGaps": [
@@ -89,14 +89,7 @@
       ]
     }
   ],
-  "partialCards": [
-    {
-      "id": "XG7-048",
-      "name": "仮面ライダーオーズ・ガタトラバ",
-      "reason": "catchall_interpret fallback（効果文はあるが専用実装なし）",
-      "effectPreview": "敵軍バトルエリアのユニットがSユニットだけなら、このターン、これは「SP1」になる。"
-    }
-  ],
+  "partialCards": [],
   "multiCategoryCards": [
     {
       "id": "SX-002",
@@ -155,7 +148,7 @@
     },
     {
       "id": "XG1-007",
-      "name": "チェンジドラゴン",
+      "name": "チェンジドラゴン（XG）",
       "categories": [
         "MA",
         "ET"
@@ -218,7 +211,7 @@
     },
     {
       "id": "XG1-032",
-      "name": "ゲキレッド",
+      "name": "ゲキレッド（XG）",
       "categories": [
         "WB",
         "MA"
@@ -227,7 +220,7 @@
     },
     {
       "id": "XG1-041",
-      "name": "仮面ライダーアマゾン",
+      "name": "仮面ライダーアマゾン（XG）",
       "categories": [
         "WB",
         "MA"
@@ -524,7 +517,7 @@
     },
     {
       "id": "XG3-031",
-      "name": "ゲキブルー",
+      "name": "ゲキブルー（XG3）",
       "categories": [
         "WB",
         "MA"
@@ -623,7 +616,7 @@
     },
     {
       "id": "XG3-089",
-      "name": "ブルービート",
+      "name": "ブルービート（XG3）",
       "categories": [
         "WB",
         "ET"
@@ -722,7 +715,7 @@
     },
     {
       "id": "XG4-030",
-      "name": "ゲキチョッパー",
+      "name": "ゲキチョッパー（XG4）",
       "categories": [
         "WB",
         "MA"
@@ -893,7 +886,7 @@
     },
     {
       "id": "XG5-040",
-      "name": "ゴセイブラック",
+      "name": "ゴセイブラック（XG5）",
       "categories": [
         "WB",
         "MA"
@@ -902,7 +895,7 @@
     },
     {
       "id": "XG5-041",
-      "name": "ゴセイイエロー",
+      "name": "ゴセイイエロー（XG5）",
       "categories": [
         "WB",
         "MA"
@@ -1028,7 +1021,7 @@
     },
     {
       "id": "XG6-051",
-      "name": "仮面ライダー歌舞鬼",
+      "name": "仮面ライダー歌舞鬼（XG6）",
       "categories": [
         "MA",
         "DA"
@@ -1055,7 +1048,7 @@
     },
     {
       "id": "XG6-054",
-      "name": "仮面ライダースカル",
+      "name": "仮面ライダースカル（XG6）",
       "categories": [
         "ET",
         "DA"

@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_rashueriakarapawanoga2noyunitowo1bichinokoman",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-004::ieroboru",
+          "duration": "permanent"
         }
       ]
     }

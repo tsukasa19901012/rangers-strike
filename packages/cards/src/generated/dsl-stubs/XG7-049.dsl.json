@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_korewokararashushitatokinokara2woomotenishitesonokarara",
+          "keyword": "effect_card::XG7-049::fxunknown3",
           "duration": "turn"
         }
       ]

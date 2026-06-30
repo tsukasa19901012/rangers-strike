@@ -36,7 +36,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_attack_action_korehaatakusurutokirashuerianoyunitoniatakudekiru",
+          "keyword": "effect_card::RS-165::munraitosoniku",
           "duration": "turn"
         }
       ],

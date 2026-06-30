@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "da_category_koregarashuerianiarutokigarashusurudanoyunitonopawawo",
+          "keyword": "effect_card::RS-170::darkdeal",
           "duration": "turn"
         }
       ],

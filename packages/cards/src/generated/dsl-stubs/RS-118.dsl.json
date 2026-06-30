@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_batorufueizukorewobatoruerianisutokibatoruerianosyunito",
+          "keyword": "effect_card::RS-118::preciousguardian",
           "duration": "turn"
         }
       ],

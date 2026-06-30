@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_sutatofueizukonoyunitowonishitenowodekirurashi",
+          "keyword": "effect_card::XG3-009::ino",
           "duration": "turn"
         }
       ]

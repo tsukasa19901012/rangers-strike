@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "feature_match_tankoregawotsuyunitowo_geki_ha_shitatokisonoyunitowochinon",
+          "keyword": "effect_card::RS-133::bluebadoslifesword",
           "duration": "turn"
         }
       ],

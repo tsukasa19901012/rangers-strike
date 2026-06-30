@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_korehaatakushitebatorunitsutabinaradeatakusurutadashikorehabat",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-053::baninguraidapanchi",
+          "duration": "permanent"
         }
       ]
     }

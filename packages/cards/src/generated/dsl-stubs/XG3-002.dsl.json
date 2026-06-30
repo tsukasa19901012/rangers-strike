@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregapawazondeomote_ko_kininateirurashufueizunowo",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-002::woru",
+          "duration": "permanent"
         }
       ]
     }

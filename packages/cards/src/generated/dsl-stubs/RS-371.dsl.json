@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_wotanaiyunitowodamejinomadebichinonisusono",
-          "duration": "turn"
+          "keyword": "effect_card::RS-371::masukiribon",
+          "duration": "permanent"
         }
       ],
       "optional": true

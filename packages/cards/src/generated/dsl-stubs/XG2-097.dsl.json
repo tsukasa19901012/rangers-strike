@@ -32,8 +32,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "category_modify_komandozonkarakategoriwo2tsutsukadowo1binonishitemo",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-097::raitoningukyanon",
+          "duration": "permanent"
         }
       ]
     }

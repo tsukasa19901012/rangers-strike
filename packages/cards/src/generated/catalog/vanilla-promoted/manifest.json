@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-06-11T22:04:18.673Z",
+  "generatedAt": "2026-06-30T00:32:02.024Z",
   "source": "wiki-catalog-stubs.json",
   "grades": [
     "A",
     "B",
     "E"
   ],
-  "promotedCount": 354,
+  "promotedCount": 167,
   "byGrade": {
-    "E": 221,
-    "A": 103,
-    "B": 30
+    "B": 12,
+    "E": 108,
+    "A": 47
   }
 }

@@ -37,7 +37,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_koregasutoraikushitepawazonnokadogaura_ko_kininatatoki",
+          "keyword": "effect_card::XG5-081::gaonogoruda",
           "duration": "turn"
         }
       ]

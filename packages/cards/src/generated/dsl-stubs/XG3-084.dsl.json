@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokiwbwotsukomandowo1tsubiho",
+          "keyword": "effect_card::XG3-084::bigufurea",
           "duration": "turn"
         }
       ]

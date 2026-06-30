@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_tankoregabatoruerianitatokiwotanaiyunitowo2made",
+          "keyword": "effect_card::XP-025::rezanri",
           "duration": "turn"
         }
       ]

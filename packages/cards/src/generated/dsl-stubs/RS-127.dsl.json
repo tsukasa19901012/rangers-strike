@@ -50,7 +50,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_tankoregabatoruerianirutokiotnokomandowo2tsundepawazo",
+          "keyword": "effect_card::RS-127::bioparticleslash",
           "duration": "turn"
         }
       ]

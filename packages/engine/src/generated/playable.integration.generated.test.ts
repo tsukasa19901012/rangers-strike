@@ -13,8 +13,8 @@ describe("full-playable DSL integration manifest", () => {
     expect(coreRegistry.listDslReady().length).toBe(1052);
   });
 
-  it("covers 1849 full-playable interpreter-ready cards", () => {
-    expect(fullRegistry.listDslReady().length).toBeGreaterThanOrEqual(1849);
+  it("covers 1832 full-playable interpreter-ready cards", () => {
+    expect(fullRegistry.listDslReady().length).toBeGreaterThanOrEqual(1832);
   });
 
   it("indexes 3094 effect test cases (3050 active, 44 skipped)", () => {

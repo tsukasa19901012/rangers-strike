@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarubatorufueizunowodekirusyunitowo1",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-099::fxunknowne68ea1",
+          "duration": "permanent"
         }
       ]
     }

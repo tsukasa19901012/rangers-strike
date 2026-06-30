@@ -73,8 +73,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "feature_match_koregamatahawotsuyunitotobatorusurutokikoreworirisusuru",
-          "duration": "turn"
+          "keyword": "effect_card::XG6-051::heno",
+          "duration": "permanent"
         }
       ]
     }

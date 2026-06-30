@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_notanpawanoga3noyunitohatangawarumadebatorue",
-          "duration": "turn"
+          "keyword": "effect_card::RS-356::hanmapanchi",
+          "duration": "permanent"
         }
       ],
       "optional": false

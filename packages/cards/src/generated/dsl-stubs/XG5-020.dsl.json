@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_komandowo1tsubinishitemoyoisoushitatokikonotankorehabp2000",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-020::redozonkurashu",
+          "duration": "permanent"
         }
       ]
     }

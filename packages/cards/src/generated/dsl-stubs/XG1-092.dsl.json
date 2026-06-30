@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_tankoregabatoruerianitatokikonotankorehano_chikara_worukon",
+          "keyword": "effect_card::XG1-092::keruberosu",
           "duration": "turn"
         }
       ]

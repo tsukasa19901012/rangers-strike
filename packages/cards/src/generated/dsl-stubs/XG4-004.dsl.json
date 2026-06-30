@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_koreworashushitatokiwotewotsukadowo2madebira",
+          "keyword": "effect_card::XG4-004::wanpano",
           "duration": "turn"
         }
       ]
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koreworashushitatokinowodekiruwotewotsukadowo",
+          "keyword": "effect_card::XG4-004::wanpanokoreworashus",
           "duration": "turn"
         }
       ]

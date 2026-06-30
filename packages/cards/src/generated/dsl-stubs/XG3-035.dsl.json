@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koreworashushitatokinoga1arebanowodekirukomando",
+          "keyword": "effect_card::XG3-035::kihikari",
           "duration": "turn"
         }
       ]

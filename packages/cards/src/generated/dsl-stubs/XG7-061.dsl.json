@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_koreworashushitatokipawazonkaraomote_ko_kinokadowo1binishi",
+          "keyword": "effect_card::XG7-061::nosutapisue8a08d",
           "duration": "turn"
         }
       ]

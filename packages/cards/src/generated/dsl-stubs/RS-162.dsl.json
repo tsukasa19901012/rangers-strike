@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_tansyunitotobatorusurutokikonoyunitohabp5000sareru",
+          "keyword": "effect_card::RS-162::sajinguchopa",
           "duration": "turn"
         }
       ],

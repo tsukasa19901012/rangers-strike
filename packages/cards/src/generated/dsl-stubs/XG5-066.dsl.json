@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarurashufueizunowodekiruzonnoo",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-066::kopibento",
+          "duration": "permanent"
         }
       ]
     }

@@ -64,8 +64,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_tankoretokonbineshonsurunanbanilmataharwotsuetnoyunitono",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-050::kemasutegachikarawowaser",
+          "duration": "permanent"
         }
       ]
     }

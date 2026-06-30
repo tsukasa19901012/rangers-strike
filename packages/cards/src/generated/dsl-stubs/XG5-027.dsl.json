@@ -64,8 +64,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_konotanniyunitogahorudoninatatokisonoyunitowo_geki_ha_su",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-027::deyuarukurashakonbinesho",
+          "duration": "permanent"
         }
       ]
     }

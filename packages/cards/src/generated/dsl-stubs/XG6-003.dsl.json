@@ -60,7 +60,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_tankoregabatoruerianitatokinokarananbanilmataharwotsu",
+          "keyword": "effect_card::XG6-003::bakumaruchikonbain",
           "duration": "turn"
         }
       ]

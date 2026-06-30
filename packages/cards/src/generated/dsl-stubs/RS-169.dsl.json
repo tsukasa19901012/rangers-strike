@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_koreworashushitatokiririsunokomandogaarebasubeten",
+          "keyword": "effect_card::RS-169::earthresourceabsorb",
           "duration": "turn"
         }
       ],

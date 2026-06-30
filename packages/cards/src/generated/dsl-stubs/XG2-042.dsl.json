@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_omote_ko_kinopawakararaidawotsuyunitokadowo1bira",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-042::fuainaruatakuraido",
+          "duration": "permanent"
         }
       ]
     }

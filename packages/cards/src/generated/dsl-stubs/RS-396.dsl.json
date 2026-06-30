@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_koreworashushitatokinobpga5000nosyunitowosubetechinopa",
+          "keyword": "effect_card::RS-396::ganmatorunedo",
           "duration": "turn"
         }
       ],

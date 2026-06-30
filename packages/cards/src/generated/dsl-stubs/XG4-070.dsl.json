@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_tankorega_geki_ha_sareteninarutokinisurukawarinichinonish",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-070::nodopanto",
+          "duration": "permanent"
         }
       ]
     }

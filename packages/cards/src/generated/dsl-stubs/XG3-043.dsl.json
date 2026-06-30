@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarurashufueizukorewonishitenowodeki",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-043::purutonroketo",
+          "duration": "permanent"
         }
       ]
     }

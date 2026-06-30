@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_attack_action_koregaatakusurutokiyunitonobpwokadonisaretanotoshitebat",
+          "keyword": "effect_card::RS-104::pteradagger",
           "duration": "turn"
         }
       ],

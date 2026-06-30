@@ -59,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_l_effect_koregakategorinolyunitokarakonbineshonsurutokinowodekiru",
+          "keyword": "effect_card::XG6-022::ringiganjigatame",
           "duration": "permanent"
         }
       ]

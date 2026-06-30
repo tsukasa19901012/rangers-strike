@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_koreworashushitatokibp5000noyunitowotonokara1zutsun",
+          "keyword": "effect_card::RS-035::tyrannosonic",
           "duration": "turn"
         }
       ],

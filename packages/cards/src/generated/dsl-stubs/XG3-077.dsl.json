@@ -55,8 +55,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_koregaraidosaretamamanarakonobikurukarakonbineshonsurusyun",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-077::fuainaruatakuraido",
+          "duration": "permanent"
         }
       ]
     }

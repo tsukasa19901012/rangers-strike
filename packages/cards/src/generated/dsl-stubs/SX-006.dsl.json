@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "vehicle_interaction_koreworashushitatokipawawotashiteinaisyunitotosbikur",
+          "keyword": "effect_card::SX-006::no8",
           "duration": "turn"
         }
       ]

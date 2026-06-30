@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_koreworashushitatokiraidawotsuyunitowo1bi_geki_ha_suru",
+          "keyword": "effect_card::XG6-047::giganto",
           "duration": "turn"
         }
       ]

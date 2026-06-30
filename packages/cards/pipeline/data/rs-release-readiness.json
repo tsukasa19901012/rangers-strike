@@ -1,16 +1,122 @@
 {
-  "generatedAt": "2026-06-29T09:32:04.926Z",
+  "generatedAt": "2026-06-30T00:36:24.614Z",
   "rsCards": 690,
   "totalEffects": 1017,
   "byTier": {
-    "ready": 1017,
-    "runtime_catchall": 0,
+    "ready": 957,
+    "runtime_catchall": 60,
     "blocked": 0
   },
   "blockedCardCount": 0,
   "releaseReady": true,
   "wikiTextMismatches": 1,
   "blockedSamples": [],
-  "catchallSamples": [],
+  "catchallSamples": [
+    {
+      "cardId": "RS-034",
+      "effectId": "mamoru_go_no_shin",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これがバトルエリアにあるとき、これ以外の「ワイルドビースト」のユニットすべてはBP＋2000される。"
+    },
+    {
+      "cardId": "RS-035",
+      "effectId": "tyranno_sonic",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これをラッシュしたとき、BP5000以下のユニットを自軍と敵軍の場から1体ずつ選んで撃破してもよい。"
+    },
+    {
+      "cardId": "RS-036",
+      "effectId": "moss_blizzard",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これをラッシュしたとき、相手は可能ならコマンドを2つ選んでホールドする。"
+    },
+    {
+      "cardId": "RS-037",
+      "effectId": "torikerakanon",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、アタックするときBP＋1000される。"
+    },
+    {
+      "cardId": "RS-073",
+      "effectId": "val_shield",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "自軍ダメージが6点のとき、このユニットは次の能力を得る⇒「SP2」"
+    },
+    {
+      "cardId": "RS-074",
+      "effectId": "val_cannon",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "自軍ラッシュエリアに「ブルバルカン」があるとき、このユニットは次の能力を得る⇒これがアタックするとき、相手はカウンターを発動できず、敵軍ユニットのBPをカードに"
+    },
+    {
+      "cardId": "RS-075",
+      "effectId": "rescue_activity",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これをラッシュしたとき、自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。"
+    },
+    {
+      "cardId": "RS-076",
+      "effectId": "jaguar_mothership",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これが自軍ラッシュエリアにあるとき、自分がラッシュするMユニットの追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを1体コマンドゾーンに送るかわりに、"
+    },
+    {
+      "cardId": "RS-077",
+      "effectId": "competition",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "お互いに山札の上から1枚をオモテにし、必要パワーの数字をくらべる。そして数字の大きい方を持ち主の手札に加え、小さい方を持ち主の山札の下に戻す。同じならそれぞれ山"
+    },
+    {
+      "cardId": "RS-081",
+      "effectId": "ryuu_geki_ken",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "このターン、これはホールド状態の敵軍コマンド1つにつきBP＋1000される。これはBP5000以上のとき「SP1」になる。"
+    },
+    {
+      "cardId": "RS-085",
+      "effectId": "firefighting",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これをラッシュしたとき、自軍パワーゾーンからダメージになっているカードをウラ向きのまま1枚選んでオモテにしてもよい。そうしたとき、相手も同じようにしてもよい。"
+    },
+    {
+      "cardId": "RS-086",
+      "effectId": "traffic_control",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これが自軍バトルエリアにあるとき、相手は次の制限を受ける。バトルエリアに並べるユニットはすべて同じサイズでなければならない。"
+    },
+    {
+      "cardId": "RS-088",
+      "effectId": "dismantling",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これをラッシュしたとき、自軍パワーゾーンからダメージになっているカードをウラ向きのまま1枚選んで手札に加えてもよい。そうしたとき、手札から1枚選んでパワーゾーン"
+    },
+    {
+      "cardId": "RS-089",
+      "effectId": "medical_rescue",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これが自軍ラッシュエリアにあるとき、「ワイルドビースト」の自軍Mユニットは、撃破されたとき捨札にするかわりに自軍パワーゾーンに送る。"
+    },
+    {
+      "cardId": "RS-092",
+      "effectId": "heavenly_disaster",
+      "tier": "runtime_catchall",
+      "reason": "semantic_catchall_runtime",
+      "textPreview": "これをラッシュしたとき、お互いに次のようにする。自分自身のパワーゾーンからダメージではないカードをすべて捨札にする。その後、手札をすべてパワーゾーンに置く。"
+    }
+  ],
   "note": "runtime_catchall = semantic grant_keyword; 発動時に effectDelegate 経由で rematch→interpret。"
 }

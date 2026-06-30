@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konotankonoyunitohawotsuyunito1nitsukibp1000sareb",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-001::hariken",
+          "duration": "permanent"
         }
       ]
     }

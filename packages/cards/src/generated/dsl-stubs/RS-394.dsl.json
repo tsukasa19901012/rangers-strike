@@ -31,8 +31,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_koregabatorueriakararashuerianirutokidamejinopawakarataimu",
-          "duration": "turn"
+          "keyword": "effect_card::RS-394::chienjifuomeshon",
+          "duration": "permanent"
         }
       ],
       "optional": false

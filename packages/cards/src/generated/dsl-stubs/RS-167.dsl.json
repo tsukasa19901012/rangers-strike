@@ -35,8 +35,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_l_ability_konoyunitokarakonbineshonsurukategorinolyunitohano_chika",
-          "duration": "permanent"
+          "keyword": "effect_card::RS-167::bakibakipunch",
+          "duration": "turn"
         }
       ]
     },

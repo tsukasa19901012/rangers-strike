@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_nokara1woomotenishitemoyoisoushitatokiomotenishitakadowochi",
+          "keyword": "effect_card::XG1-094::tentousupia",
           "duration": "turn"
         }
       ]

@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "category_modify_konoyunitohakategoriwo2tsutsukomandoga2tsuarebasp2ninaru",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-004::sodo",
+          "duration": "permanent"
         }
       ]
     }

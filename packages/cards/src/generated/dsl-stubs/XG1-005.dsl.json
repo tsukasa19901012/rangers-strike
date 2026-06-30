@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_komandonokategorinowoetesononopawanowotsusyuni",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-005::dorimugyarakushi",
+          "duration": "permanent"
         }
       ]
     }

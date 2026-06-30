@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "vehicle_interaction_koreworashushitatokipawazonnoomote_ko_kinokadokarapa",
+          "keyword": "effect_card::XG5-080::atakuraido",
           "duration": "turn"
         }
       ]

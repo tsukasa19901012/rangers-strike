@@ -3264,30 +3264,6 @@
     "SX-008": {
       "tier": "vanilla-promoted"
     },
-    "XC-001": {
-      "tier": "vanilla-promoted"
-    },
-    "XC-002": {
-      "tier": "vanilla-promoted"
-    },
-    "XC-003": {
-      "tier": "vanilla-promoted"
-    },
-    "XC-004": {
-      "tier": "vanilla-promoted"
-    },
-    "XC-005": {
-      "tier": "vanilla-promoted"
-    },
-    "XC-006": {
-      "tier": "vanilla-promoted"
-    },
-    "XC-007": {
-      "tier": "vanilla-promoted"
-    },
-    "XC-008": {
-      "tier": "vanilla-promoted"
-    },
     "XG1-001": {
       "tier": "vanilla-promoted"
     },
@@ -3357,9 +3333,6 @@
     "XG2-023": {
       "tier": "vanilla-promoted"
     },
-    "XG2-030": {
-      "tier": "vanilla-promoted"
-    },
     "XG2-040": {
       "tier": "vanilla-promoted"
     },
@@ -3396,22 +3369,13 @@
     "XG2-089": {
       "tier": "vanilla-promoted"
     },
-    "XG2-091": {
-      "tier": "vanilla-promoted"
-    },
     "XG2-092": {
-      "tier": "vanilla-promoted"
-    },
-    "XG2-094": {
       "tier": "vanilla-promoted"
     },
     "XG2-095": {
       "tier": "vanilla-promoted"
     },
     "XG2-098": {
-      "tier": "vanilla-promoted"
-    },
-    "XG3-001": {
       "tier": "vanilla-promoted"
     },
     "XG3-004": {
@@ -3438,9 +3402,6 @@
     "XG3-041": {
       "tier": "vanilla-promoted"
     },
-    "XG3-042": {
-      "tier": "vanilla-promoted"
-    },
     "XG3-048": {
       "tier": "vanilla-promoted"
     },
@@ -3460,9 +3421,6 @@
       "tier": "vanilla-promoted"
     },
     "XG3-076": {
-      "tier": "vanilla-promoted"
-    },
-    "XG3-082": {
       "tier": "vanilla-promoted"
     },
     "XG3-084": {
@@ -3495,16 +3453,7 @@
     "XG3-102": {
       "tier": "vanilla-promoted"
     },
-    "XG4-003": {
-      "tier": "vanilla-promoted"
-    },
     "XG4-006": {
-      "tier": "vanilla-promoted"
-    },
-    "XG4-024": {
-      "tier": "vanilla-promoted"
-    },
-    "XG4-028": {
       "tier": "vanilla-promoted"
     },
     "XG4-030": {

@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_nowo1nishitemoyoisoushitatokinishitakadonopawanoto",
+          "keyword": "effect_card::XG5-073::noe4bfba",
           "duration": "turn"
         }
       ]

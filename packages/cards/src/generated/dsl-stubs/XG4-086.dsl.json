@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_uinguwotsusyunitowo1bi_geki_ha_suru",
+          "keyword": "effect_card::XG4-086::ikusakaribaganmodo",
           "duration": "turn"
         }
       ]

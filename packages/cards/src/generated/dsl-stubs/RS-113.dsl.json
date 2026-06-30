@@ -60,8 +60,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_koreharirisunokomando1tsunitsukibp1000sarerukoreh",
-          "duration": "turn"
+          "keyword": "effect_card::RS-113::firespinblade",
+          "duration": "permanent"
         }
       ],
       "optional": false

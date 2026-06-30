@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_rush_koreworashushitatokiyunitowobpnoga20000ninaruyounibi_gek",
+          "keyword": "effect_card::RS-545::guranbanisha",
           "duration": "turn"
         }
       ],

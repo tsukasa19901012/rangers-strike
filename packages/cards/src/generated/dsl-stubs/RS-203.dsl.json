@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_koreworashushitatankonoyunitonodenishitayunitonokadono",
-          "duration": "turn"
+          "keyword": "effect_card::RS-203::deusu",
+          "duration": "permanent"
         }
       ],
       "optional": false

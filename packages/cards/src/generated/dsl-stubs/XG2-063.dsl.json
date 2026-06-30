@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_koregaerianiarubatorufueizuyunitogarashusaretatokikor",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-063::hie9acbc",
+          "duration": "permanent"
         }
       ]
     }

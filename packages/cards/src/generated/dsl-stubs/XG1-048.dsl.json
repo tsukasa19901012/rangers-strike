@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "adjacent_units_syunitowo1ndemoyoisoushitatokinotanndayunitotori",
+          "keyword": "effect_card::XG1-048::erekihikari",
           "duration": "turn"
         }
       ]
@@ -61,7 +61,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "adjacent_units_yunitowondemoyoinonotanndayunitogabatoruerianiaruto",
+          "keyword": "effect_card::XG1-048::erekihikariyunitowondem",
           "duration": "turn"
         }
       ]

@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_koregabatorueriakararashuerianirutokioinonokara1woomo",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-048::redaai",
+          "duration": "permanent"
         }
       ]
     }

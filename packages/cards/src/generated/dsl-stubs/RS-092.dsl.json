@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_koreworashushitatokioininoyounisurunopawazonkaradamejide",
+          "keyword": "effect_card::RS-092::heavenlydisaster",
           "duration": "turn"
         }
       ],

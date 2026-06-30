@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokihorudonokomandowosubeter",
+          "keyword": "effect_card::XG2-005::arufuareza",
           "duration": "turn"
         }
       ]

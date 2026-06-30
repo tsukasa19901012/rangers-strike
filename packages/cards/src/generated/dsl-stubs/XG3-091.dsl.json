@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_koregayunitoniatakusurutokibatorunonibatorunoyunitonobpwo20",
+          "keyword": "effect_card::XG3-091::paruseiba",
           "duration": "turn"
         }
       ]

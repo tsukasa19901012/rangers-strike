@@ -9459,6 +9459,26 @@ const PATTERNS: PatternMatch[] = [
     }),
   },
   {
+    pattern: "sp1_if_enemy_battle_all_s",
+    test: (body) =>
+      /敵軍バトルエリアのユニットがSユニットだけなら、このターン、これは「SP1」になる/.test(body),
+    build: (body, segment, trigger) => ({
+      id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
+      name: segment.name,
+      text: body,
+      trigger,
+      optional: false,
+      effects: [
+        {
+          type: "grant_keyword",
+          keyword: "sp1_if_enemy_battle_all_s",
+          duration: "turn",
+        },
+      ],
+      matchedPattern: "sp1_if_enemy_battle_all_s",
+    }),
+  },
+  {
     pattern: "catchall_interpret",
     test: (body) => (/./.test(body)),
     build: (body, segment, trigger) => ({

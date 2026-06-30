@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_konotangakauntawosurutamenihorudoshitakomandohaninaru",
-          "duration": "turn"
+          "keyword": "effect_card::RS-107::deacesniper",
+          "duration": "permanent"
         }
       ],
       "optional": false

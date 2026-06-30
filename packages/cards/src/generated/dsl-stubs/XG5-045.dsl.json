@@ -52,7 +52,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokinowosuruniaruuingu",
+          "keyword": "effect_card::XG5-045::sukaikusutoraiku",
           "duration": "turn"
         }
       ]

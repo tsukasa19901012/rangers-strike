@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_nokara1woomotenisuruomotenishitakadogasyunitonokadodatana",
+          "keyword": "effect_card::XG2-049::demonzufuangukurasha",
           "duration": "turn"
         }
       ]

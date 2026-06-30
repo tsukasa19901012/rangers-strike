@@ -45,8 +45,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_syunitowo1bichinononisu",
-          "duration": "turn"
+          "keyword": "effect_card::XG4-045::sukaikushoto",
+          "duration": "permanent"
         }
       ]
     }

@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_koregabatorueriakararashuerianirutokirashueriakarayun",
+          "keyword": "effect_card::RS-135::falconclaw",
           "duration": "turn"
         }
       ],

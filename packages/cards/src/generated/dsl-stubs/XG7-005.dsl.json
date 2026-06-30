@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_notankadonigokaiwomuyunitoga_geki_ha_sareteninarutokison",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-005::mobairetsu",
+          "duration": "permanent"
         }
       ]
     }

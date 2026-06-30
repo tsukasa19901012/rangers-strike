@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_notanshikurashuerianitayunitohatangawarumadebatorueria",
-          "duration": "turn"
+          "keyword": "effect_card::RS-110::zenibomb",
+          "duration": "permanent"
         }
       ],
       "optional": false

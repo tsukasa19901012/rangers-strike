@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_konotannimataharcnowoshitakategorinidawotsusyunitokarako",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-041::risugarinoraida",
+          "duration": "permanent"
         }
       ]
     }

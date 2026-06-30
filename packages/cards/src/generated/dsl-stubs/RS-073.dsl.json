@@ -50,8 +50,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_damejiga6notokikonoyunitohano_chikara_worusp2",
-          "duration": "turn"
+          "keyword": "effect_card::RS-073::valshield",
+          "duration": "permanent"
         }
       ]
     }

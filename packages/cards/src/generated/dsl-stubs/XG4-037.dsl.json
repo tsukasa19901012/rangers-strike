@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_koreworashushitatokioinodamejinogaunaranaihanoyuni",
+          "keyword": "effect_card::XG4-037::burushin",
           "duration": "turn"
         }
       ]

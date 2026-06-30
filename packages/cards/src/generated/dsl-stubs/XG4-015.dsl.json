@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_tankoregabatoruerianitatokioinoniarusyunitonokadowosu",
+          "keyword": "effect_card::XG4-015::nono",
           "duration": "turn"
         }
       ]

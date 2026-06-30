@@ -35,8 +35,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_oininokara1woomotenishipawanowokuraberusoshitenokii",
-          "duration": "turn"
+          "keyword": "effect_card::RS-077::competition",
+          "duration": "permanent"
         }
       ],
       "optional": false

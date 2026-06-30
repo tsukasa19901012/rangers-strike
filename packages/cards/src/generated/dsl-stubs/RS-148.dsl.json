@@ -35,8 +35,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_tankoreharirisunokomando1tsunitsukibp2000sareruko",
-          "duration": "turn"
+          "keyword": "effect_card::RS-148::starraiser",
+          "duration": "permanent"
         }
       ],
       "optional": false

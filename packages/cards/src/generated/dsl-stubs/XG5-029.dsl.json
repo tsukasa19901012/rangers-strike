@@ -35,8 +35,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_koregaatakushiteyunitowobatorude_geki_ha_surutabikomandowo1tsu",
-          "duration": "turn"
+          "keyword": "effect_card::XG5-029::nakurutoshi",
+          "duration": "permanent"
         }
       ]
     }

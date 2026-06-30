@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "da_category_karadawotanaisyunitonokadowo1ndemoyoisoushitatokikonota",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-015::boukenjaninare",
+          "duration": "permanent"
         }
       ]
     }

@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_rashuerianiarusyunitowo2madendebatoruerianishitemoyoi",
-          "duration": "turn"
+          "keyword": "effect_card::RS-108::greencrush",
+          "duration": "permanent"
         }
       ],
       "optional": true

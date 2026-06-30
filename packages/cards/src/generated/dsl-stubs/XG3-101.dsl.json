@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_notan1dakenowodekirukoregayunitodenakunarutokikorewoho",
+          "keyword": "effect_card::XG3-101::chiesuto",
           "duration": "turn"
         }
       ]

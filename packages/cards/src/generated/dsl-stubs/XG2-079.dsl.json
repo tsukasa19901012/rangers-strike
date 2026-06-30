@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_tankoregaerianiarukorenosyunitogabatorude_geki_ha_sareta",
-          "duration": "turn"
+          "keyword": "effect_card::XG2-079::taimubento",
+          "duration": "permanent"
         }
       ]
     }

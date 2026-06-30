@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_batorueriatorashueriakarajibpwotsusyunitowo1zutsunde",
-          "duration": "turn"
+          "keyword": "effect_card::RS-690::supedoatsu",
+          "duration": "permanent"
         }
       ],
       "optional": true

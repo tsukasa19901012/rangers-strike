@@ -32,8 +32,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "cannot_restrict_koregabatoruerianiarutokisp1matahanoaruyunitohakomandowo",
-          "duration": "turn"
+          "keyword": "effect_card::RS-097::karakurilionchain",
+          "duration": "permanent"
         }
       ],
       "optional": false

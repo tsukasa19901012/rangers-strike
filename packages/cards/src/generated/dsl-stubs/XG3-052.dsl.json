@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_tankorehabp2000sareru",
-          "duration": "turn"
+          "keyword": "effect_card::XG3-052::chikaranoe5bcb7",
+          "duration": "permanent"
         }
       ]
     }

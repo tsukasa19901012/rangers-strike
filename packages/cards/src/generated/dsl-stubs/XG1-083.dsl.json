@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_pawazonnoomote_ko_kinokadokarapawanoga3nokadowo1",
+          "keyword": "effect_card::XG1-083::shaidaburufurashu",
           "duration": "turn"
         }
       ]

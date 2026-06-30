@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_komandowo1tsubihorudoshitemoyoisoushitatokihorudoshitakoman",
+          "keyword": "effect_card::XG3-092::seibamagunamu",
           "duration": "turn"
         }
       ]

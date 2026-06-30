@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_batorufueizuninowodekirukarasyunitonokadowo1n",
+          "keyword": "effect_card::RS-094::ghostabsorption",
           "duration": "turn"
         }
       ],

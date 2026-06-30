@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_koreworashushitatokinowodekirubatorueriakarabp8000no",
+          "keyword": "effect_card::RS-136::assault",
           "duration": "turn"
         }
       ],

@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_konoyunitohahorudonotokirashuerianoyunitoniatakudekiru",
-          "duration": "turn"
+          "keyword": "effect_card::XG1-043::gekie7a0b2",
+          "duration": "permanent"
         }
       ]
     }

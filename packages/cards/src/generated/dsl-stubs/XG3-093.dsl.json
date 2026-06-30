@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_konotankoregasyunitoniatakusurutokibatorunonibatorunoyun",
+          "keyword": "effect_card::XG3-093::sonikupuresha",
           "duration": "turn"
         }
       ]

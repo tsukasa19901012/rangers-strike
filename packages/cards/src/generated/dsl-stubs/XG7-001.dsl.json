@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_nokara1woomotenishitemoyoisoushitatokiomotenishitakadogani",
-          "duration": "turn"
+          "keyword": "effect_card::XG7-001::renjaki",
+          "duration": "permanent"
         }
       ]
     }

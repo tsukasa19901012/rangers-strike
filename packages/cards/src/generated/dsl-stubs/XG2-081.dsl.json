@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokirashueriakarahorudonosyu",
+          "keyword": "effect_card::XG2-081::nodeikeidobajon",
           "duration": "turn"
         }
       ]

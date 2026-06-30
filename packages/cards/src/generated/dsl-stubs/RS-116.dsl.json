@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_korega_geki_ha_saretatoki_ma_wotanaisyunitowosubetechinon",
+          "keyword": "effect_card::RS-116::cry",
           "duration": "turn"
         }
       ],

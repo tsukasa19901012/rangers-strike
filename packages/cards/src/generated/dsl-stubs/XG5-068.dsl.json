@@ -59,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_shiteiruopereshonkadowo1binishitemoyoisoushitatokisonokado",
+          "keyword": "effect_card::XG5-068::ikeru",
           "duration": "turn"
         }
       ]

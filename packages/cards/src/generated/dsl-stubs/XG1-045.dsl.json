@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregabatoruerianiarubatoruerianoyunitohaburakuwosar",
-          "duration": "permanent"
+          "keyword": "effect_card::XG1-045::geki",
+          "duration": "turn"
         }
       ]
     }
