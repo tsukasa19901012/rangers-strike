@@ -41,7 +41,7 @@
       "name": "レドーム分離",
       "text": "このユニットからコンビネーションするSP1/4のSユニットは、次の能力を得る⇒自軍ターン中、「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "joint_combo_l"
       },
       "effects": [
         {

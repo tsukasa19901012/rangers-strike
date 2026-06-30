@@ -76,6 +76,7 @@ export * from "./zord";
 export * from "./mothership";
 export * from "./comboEffects";
 export * from "./comboEffectCatalog";
+export * from "./jointComboPartner";
 export * from "./ridingComboTrigger";
 export * from "./effectLabels";
 export * from "./operationCatalog";

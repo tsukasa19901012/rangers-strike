@@ -2,7 +2,10 @@ import type { ComboNumber } from "@rangers-strike/cards";
 import {
   getJointLEffect,
   getJointREffect,
+  matchesJointLPartnerById,
+  matchesJointRPartnerById,
   partnerCategoryMatches,
+  getUnitEffectBlock,
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
@@ -15,7 +18,7 @@ import {
   resolveLegend3JointCombo,
   resolveLegend3JointComboR,
 } from "./legend3/jointComboEffects";
-import { grantSp1OnPlayer } from "./playerPatches";
+import { grantSp1OnPlayer, grantSpOverrideOnPlayer, patchPlayer } from "./playerPatches";
 import type { ComboOutcome } from "./comboTypes";
 
 /** wiki p266 / combo-number: ナンバー L または R はジョイントコンビネーション。 */
@@ -25,7 +28,7 @@ export function isJointComboNumber(
   return comboNumber === "L" || comboNumber === "R";
 }
 
-/** wiki p266: JC の L 付与先 / R の左隣パートナーは L サイズ。 */
+/** wiki p266 既定: L サイズ。カードテキストで S 等に上書き可能（RK-147 等）。 */
 export function isJointLSizeAnchor(
   definitions: GameState["definitions"],
   card: CardInstance,
@@ -34,7 +37,29 @@ export function isJointLSizeAnchor(
   return def?.size === "L";
 }
 
-/** wiki: 双方カテゴリが完全一致（マルチカテゴリは集合一致）。 */
+function isJointLPartnerMatch(
+  definitions: GameState["definitions"],
+  anchor: CardInstance,
+  partner: CardInstance,
+): boolean {
+  const anchorDef = getDefinition(definitions, anchor.cardId);
+  const partnerDef = getDefinition(definitions, partner.cardId);
+  if (!anchorDef || !partnerDef) return false;
+  return matchesJointLPartnerById(anchor.cardId, anchorDef, partnerDef);
+}
+
+function isJointRPartnerMatch(
+  definitions: GameState["definitions"],
+  rUnit: CardInstance,
+  leftPartner: CardInstance,
+): boolean {
+  const rDef = getDefinition(definitions, rUnit.cardId);
+  const partnerDef = getDefinition(definitions, leftPartner.cardId);
+  if (!rDef || !partnerDef) return false;
+  return matchesJointRPartnerById(rUnit.cardId, rDef, partnerDef);
+}
+
+/** @deprecated カテゴリ一致は jointPartnerCategoriesMatch を使用。 */
 export function jointPartnerCategoriesMatch(
   definitions: GameState["definitions"],
   left: CardInstance,
@@ -68,42 +93,54 @@ export function findJointComboTriggersOnEnter(
 
   if (enteringDef.comboNumber === "L") {
     const partner = battle[enterIndex + 1];
-    if (
-      partner &&
-      isJointLSizeAnchor(definitions, partner) &&
-      jointPartnerCategoriesMatch(definitions, entering, partner)
-    ) {
+    if (partner && isJointLPartnerMatch(definitions, entering, partner)) {
       triggers.push({ kind: "joint_l", lIndex: enterIndex, partnerIndex: enterIndex + 1 });
     }
   }
 
   if (enteringDef.comboNumber === "R") {
     const partner = battle[enterIndex - 1];
-    if (
-      partner &&
-      isJointLSizeAnchor(definitions, partner) &&
-      jointPartnerCategoriesMatch(definitions, partner, entering)
-    ) {
+    if (partner && isJointRPartnerMatch(definitions, entering, partner)) {
       triggers.push({ kind: "joint_r", rIndex: enterIndex, partnerIndex: enterIndex - 1 });
     }
   }
 
+  const left = battle[enterIndex - 1];
+  const leftDef = left ? getDefinition(definitions, left.cardId) : undefined;
   if (
-    isJointLSizeAnchor(definitions, entering) &&
-    !isJointComboNumber(enteringDef.comboNumber)
+    left &&
+    leftDef?.comboNumber === "L" &&
+    isJointLPartnerMatch(definitions, left, entering)
   ) {
-    const left = battle[enterIndex - 1];
-    const leftDef = left ? getDefinition(definitions, left.cardId) : undefined;
-    if (
-      left &&
-      leftDef?.comboNumber === "L" &&
-      jointPartnerCategoriesMatch(definitions, left, entering)
-    ) {
-      triggers.push({ kind: "joint_l", lIndex: enterIndex - 1, partnerIndex: enterIndex });
-    }
+    triggers.push({ kind: "joint_l", lIndex: enterIndex - 1, partnerIndex: enterIndex });
   }
 
   return triggers;
+}
+
+function applyJointLPartnerGrants(
+  state: GameState,
+  playerId: PlayerId,
+  lCard: CardInstance,
+  partner: CardInstance,
+): GameState {
+  const block = getUnitEffectBlock(lCard.cardId);
+  if (!block) return state;
+
+  let nextState = state;
+  for (const named of block.namedEffects) {
+    if (
+      named.effectId === "redomu" ||
+      (/このユニットからコンビネーションする/.test(named.text) &&
+        /自軍ターン中、「SP1」になる/.test(named.text))
+    ) {
+      nextState = patchPlayer(nextState, playerId, (player) =>
+        grantSpOverrideOnPlayer(player, partner.instanceId, 1, "battle"),
+      );
+      break;
+    }
+  }
+  return nextState;
 }
 
 function applyJointLTrigger(
@@ -169,6 +206,29 @@ function applyJointLTrigger(
 
   if (logs.length > 0) {
     nextState = { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) };
+  }
+
+  const partnerBefore = nextState.players[playerId].battle.find(
+    (c) => c.instanceId === partner.instanceId,
+  );
+  nextState = applyJointLPartnerGrants(nextState, playerId, lCard, partner);
+  const partnerAfter = nextState.players[playerId].battle.find(
+    (c) => c.instanceId === partner.instanceId,
+  );
+  if (
+    partnerAfter?.spOverride === 1 &&
+    partnerBefore?.spOverride !== 1 &&
+    !logs.some((entry) => entry.includes("joint_combo_l"))
+  ) {
+    logs.push(
+      buildLogEntry(
+        playerId,
+        "joint_combo_l",
+        lCard.cardId,
+        state.definitions,
+        partner.cardId,
+      ),
+    );
   }
 
   return { state: nextState, logs };

@@ -126,6 +126,48 @@ describe("jointComboProcedure", () => {
     delete JOINT_L_EFFECTS["TST-L"];
   });
 
+  it("findJointComboTriggersOnEnter fires L when SP1/4 S enters right of L anchor", () => {
+    const rkDefs = {
+      ...defs,
+      "RK-147": {
+        id: "RK-147",
+        name: "Isurugi",
+        type: "unit" as const,
+        category: "OT" as const,
+        rarity: "N" as const,
+        expansion: "test",
+        powerCost: "3+",
+        bp: 5000,
+        size: "M" as const,
+        comboNumber: "L" as const,
+        text: "このユニットからコンビネーションするSP1/4のSユニットは、次の能力を得る⇒自軍ターン中、「SP1」になる。",
+        effects: [
+          {
+            id: "redomu",
+            text: "このユニットからコンビネーションするSP1/4のSユニットは、次の能力を得る⇒自軍ターン中、「SP1」になる。",
+            trigger: { type: "joint_combo_l" as const },
+            effects: [],
+          },
+        ],
+      },
+      "RK-142": {
+        id: "RK-142",
+        name: "Momo",
+        type: "unit" as const,
+        category: "OT" as const,
+        rarity: "N" as const,
+        expansion: "test",
+        powerCost: 1,
+        bp: 3000,
+        size: "S" as const,
+        sp: "1/4" as const,
+      },
+    };
+    const battle = [inst("RK-147", "l1"), inst("RK-142", "s1")];
+    const triggers = findJointComboTriggersOnEnter(battle, rkDefs, 1);
+    expect(triggers).toEqual([{ kind: "joint_l", lIndex: 0, partnerIndex: 1 }]);
+  });
+
   it("integration: R JC on battle enter", () => {
     JOINT_R_EFFECTS["TST-R"] = "grant_sp1";
     const zord = inst("TST-ZORD", "z1");

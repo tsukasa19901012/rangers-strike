@@ -318,9 +318,9 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
     assertions: [
       "Lは右隣Lサイズに効果付与",
       "Rは左隣Lサイズから自己発動",
+      "カードテキストでS/M等の非Lパートナー可（RK-147）",
       "並び確定後のtailでNCの次に解決",
       "無関係な進入では既存JCを再発動しない（RS-172）",
-      "撃破による詰めではJC再発動しない",
     ],
   },
 ];
