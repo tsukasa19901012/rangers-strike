@@ -55,6 +55,8 @@ export type CardInstance = {
   mountedOnInstanceId?: string;
   /** RS-013: このラッシュフェイズで使用済み（パーマネントな操作インスタンス）。 */
   shironLightUsedThisRush?: boolean;
+  /** 常駐 OP: このラッシュフェイズで太字/発動効果を使用済み。 */
+  residentActivatedThisRush?: boolean;
   /** レジスト: バトル撃破後にホールド留場。 */
   registerHeld?: boolean;
 };

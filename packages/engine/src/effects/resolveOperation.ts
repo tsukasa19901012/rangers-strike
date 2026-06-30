@@ -649,27 +649,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
   }
 }
 
-export function placePermanentOperation(
-  state: GameState,
-  playerId: PlayerId,
-  card: { instanceId: string; cardId: string },
-): GameState {
-  const player = state.players[playerId];
-  let operation = [...player.operation];
-  let discard = [...player.discard];
-
-  if (operation.length > 0) {
-    discard = [...discard, ...operation];
-    operation = [];
-  }
-
-  operation.push(card);
-
-  return {
-    ...state,
-    ...updatePlayer(state, playerId, { ...player, operation, discard }),
-  };
-}
+export { placePermanentOperation } from "../rules/permanentOperation";
 
 export function needsOperationTarget(cardId: string): boolean {
   const effect = getCardEffect(cardId);

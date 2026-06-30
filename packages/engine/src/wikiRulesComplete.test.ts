@@ -3,8 +3,15 @@
  * 仕様: apps/web/lib/wikiTestSpecs/ruleSpecs.ts
  */
 import { describe, expect, it } from "vitest";
+import { legend2Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
-import { createTestState, heldWbCommand, inst } from "./testing/fixtures";
+import { placePermanentOperation } from "./rules/permanentOperation";
+import { createTestState, heldDaCommand, heldWbCommand, inst, MERGED_DEFINITIONS } from "./testing/fixtures";
+
+const LEGEND2_DEFINITIONS = {
+  ...MERGED_DEFINITIONS,
+  ...Object.fromEntries(legend2Catalog.cards.map((card) => [card.id, card])),
+};
 
 type RuleCase = {
   ruleId: string;
@@ -128,6 +135,43 @@ const RULE_CASES: RuleCase[] = [
       });
       const rushes = getLegalActions(state).filter((a) => a.type === "rush");
       expect(rushes).toHaveLength(0);
+    },
+  },
+  {
+    ruleId: "RULE-KW-02",
+    wikiRef: "docs/wiki/keywords.md#常駐オペレーション",
+    title: "常駐は各プレイヤー1枚・上書き可",
+    run() {
+      const rk001 = inst("RK-001", "op1");
+      const rk003 = inst("RK-003", "op2");
+      const instant = inst("RS-072", "instant");
+      let state = createTestState({
+        definitions: LEGEND2_DEFINITIONS,
+        phase: "rush",
+        player1: {
+          operation: [],
+          hand: [instant],
+          command: [heldDaCommand("da")],
+          power: [inst("TST-P", "p1"), inst("TST-P", "p2"), inst("TST-P", "p3")],
+          discard: [],
+        },
+      });
+
+      state = placePermanentOperation(state, "player1", rk001);
+      expect(state.players.player1.operation[0]?.cardId).toBe("RK-001");
+
+      state = placePermanentOperation(state, "player1", rk003);
+      expect(state.players.player1.operation[0]?.cardId).toBe("RK-003");
+      expect(state.players.player1.discard.some((card) => card.cardId === "RK-001")).toBe(true);
+
+      const played = applyAction(state, {
+        type: "play_operation",
+        playerId: "player1",
+        instanceId: instant.instanceId,
+      });
+      expect(played.ok).toBe(true);
+      if (!played.ok) return;
+      expect(played.state.players.player1.operation[0]?.cardId).toBe("RK-003");
     },
   },
   {

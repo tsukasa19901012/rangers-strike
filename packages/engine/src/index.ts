@@ -46,3 +46,12 @@ export {
   isShironRevealAudience,
   canActOnShironChoice,
 } from "./rules/shironLight";
+export {
+  canActivateResidentOperation,
+  applyActivateResidentOperation,
+  hasActivatableResidentOperation,
+  listResidentActivationEffects,
+  requiresHandForResidentActivation,
+  permanentOperationSlotLimit,
+  isPermanentOperationCard,
+} from "./rules/permanentOperation";

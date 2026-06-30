@@ -226,6 +226,11 @@ export function heldWbCommand(suffix = "cmd"): CardInstance {
   return { ...inst("TST-OP", suffix), commandHeld: true };
 }
 
+/** DA カテゴリのオペレーションテスト用 DA ホールドコマンド。 */
+export function heldDaCommand(suffix = "cmd"): CardInstance {
+  return { ...inst("TST-OP-DA", suffix), commandHeld: true };
+}
+
 /** ET カテゴリのオペレーションテスト用 ET ホールドコマンド。 */
 export function heldEtCommand(suffix = "cmd"): CardInstance {
   return { ...inst("TST-OP-ET", suffix), commandHeld: true };

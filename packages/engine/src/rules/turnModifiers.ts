@@ -26,9 +26,16 @@ export function resetRushPhaseFlags(player: PlayerState): PlayerState {
     ...player,
     shironLightRushInstanceId: undefined,
     operation: player.operation.map((card) => {
-      if (!card.shironLightUsedThisRush) return card;
-      const { shironLightUsedThisRush: _used, ...rest } = card;
-      return rest;
+      let next = card;
+      if (card.shironLightUsedThisRush) {
+        const { shironLightUsedThisRush: _used, ...rest } = next;
+        next = rest;
+      }
+      if (card.residentActivatedThisRush) {
+        const { residentActivatedThisRush: _activated, ...rest } = next;
+        next = rest;
+      }
+      return next;
     }),
   });
 }

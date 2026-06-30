@@ -48,6 +48,10 @@ import {
 } from "../rules/restrictions";
 import { canInitiateShironLight, isShironLightRushTarget } from "../rules/shironLight";
 import {
+  canActivateResidentOperation,
+  listResidentActivationEffects,
+} from "../rules/permanentOperation";
+import {
   canAttackDefender,
   darkDealRushPowerBudget,
 } from "../rules/legend3/restrictions";
@@ -528,6 +532,28 @@ function appendShironLightActions(
     if (!canInitiateShironLight(state, playerId, card.instanceId)) continue;
     actions.push({
       type: "shiron_light",
+      playerId,
+      operationInstanceId: card.instanceId,
+    });
+  }
+}
+
+function appendActivateResidentOperationActions(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): void {
+  if (state.phase !== "rush") return;
+  const player = state.players[playerId];
+  for (const card of player.operation) {
+    const wired = getCardEffect(card.cardId);
+    if (wired?.effectId === "shiron_light" || wired?.effectId === "hidora_egg") {
+      continue;
+    }
+    if (listResidentActivationEffects(card.cardId).length === 0) continue;
+    if (!canActivateResidentOperation(state, playerId, card.instanceId)) continue;
+    actions.push({
+      type: "activate_resident_operation",
       playerId,
       operationInstanceId: card.instanceId,
     });
@@ -1432,6 +1458,7 @@ export function getLegalActions(state: GameState): GameAction[] {
       appendOperationCategoryPaymentActions(state, playerId, actions);
       appendHidoraEggActions(state, playerId, actions);
       appendShironLightActions(state, playerId, actions);
+      appendActivateResidentOperationActions(state, playerId, actions);
       actions.push({ type: "end_phase", playerId });
       break;
 
@@ -1832,6 +1859,12 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
   }
 
   if (a.type === "shiron_light" && b.type === "shiron_light") {
+    return (
+      a.playerId === b.playerId &&
+      a.operationInstanceId === b.operationInstanceId
+    );
+  }
+  if (a.type === "activate_resident_operation" && b.type === "activate_resident_operation") {
     return (
       a.playerId === b.playerId &&
       a.operationInstanceId === b.operationInstanceId

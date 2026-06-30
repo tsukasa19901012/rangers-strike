@@ -111,6 +111,12 @@ export type HidoraEggAction = {
   playerId: PlayerId;
 };
 
+export type ActivateResidentOperationAction = {
+  type: "activate_resident_operation";
+  playerId: PlayerId;
+  operationInstanceId: string;
+};
+
 export type BattleDanceRetreatAction = {
   type: "battle_dance_retreat";
   playerId: PlayerId;
@@ -352,6 +358,7 @@ export type GameAction =
   | UseJuuKunDoAction
   | ShironLightAction
   | HidoraEggAction
+  | ActivateResidentOperationAction
   | BattleDanceRetreatAction
   | ResolveRuinSurveyAction
   | ResolveSeabedDrawAction

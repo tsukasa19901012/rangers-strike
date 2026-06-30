@@ -206,6 +206,7 @@ import {
   clearShironLightRushTarget,
   startShironLightChoice,
 } from "../rules/shironLight";
+import { applyActivateResidentOperation } from "../rules/permanentOperation";
 import {
   applyEffectChoicePlacement,
   applyEffectChoiceSelect,
@@ -2222,6 +2223,29 @@ export function applyAction(
       return ok(
         { ...result.state, ...updatePlayer(result.state, playerId, nextPlayer) },
         hidoraEggLog(playerId, result.detail, state.definitions),
+      );
+    }
+
+    case "activate_resident_operation": {
+      if (state.phase !== "rush") return fail("wrong_phase");
+      const op = player.operation.find(
+        (card) => card.instanceId === action.operationInstanceId,
+      );
+      if (!op) return fail("illegal_action");
+      const result = applyActivateResidentOperation(
+        state,
+        playerId,
+        action.operationInstanceId,
+      );
+      if (!result.ok) return fail("illegal_action");
+      return ok(
+        result.state,
+        buildLogEntry(
+          playerId,
+          "activate_resident_operation",
+          op.cardId,
+          state.definitions,
+        ),
       );
     }
 

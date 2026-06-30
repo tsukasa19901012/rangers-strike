@@ -27,7 +27,6 @@ import {
   needsHoldExtraCommand,
   isDenjiRevealAudience,
   canActOnDenjiChoice,
-  canInitiateShironLight,
   isShironRevealAudience,
   canActOnShironChoice,
   getLightningGravityHoldNotice,
@@ -47,6 +46,12 @@ import {
   PLAYER_LABELS,
 } from "@/lib/labels";
 import { loadCustomDecks, type CustomDeck } from "@/lib/deckBuilder";
+import {
+  canActivatePermanentOperationUi,
+  findActivateResidentOperationAction,
+  permanentOperationActivateLabel,
+  shouldOpenPermanentOperationModal,
+} from "@/lib/permanentOperationUi";
 import { estimateDeckWarnings } from "@/lib/deckWarnings";
 import { formatDeckValidationMessage } from "@/lib/formatDeckValidation";
 import {
@@ -904,15 +909,14 @@ export function GameApp() {
   const handleOperationCardClick = useCallback(
     (card: CardInstance) => {
       if (!state || !humanCanAct) return;
+      if (!shouldOpenPermanentOperationModal(card, state.phase)) return;
       const effect = getCardEffect(card.cardId);
       if (state.phase === "battle" && effect?.effectId === "battle_dance") {
         setPendingBattleDance({ instanceId: card.instanceId, cardId: card.cardId });
         return;
       }
       if (state.phase !== "rush") return;
-      if (effect?.effectId === "shiron_light" || effect?.effectId === "hidora_egg") {
-        setPendingPermanentOp({ instanceId: card.instanceId, cardId: card.cardId });
-      }
+      setPendingPermanentOp({ instanceId: card.instanceId, cardId: card.cardId });
     },
     [humanCanAct, state],
   );
@@ -944,8 +948,16 @@ export function GameApp() {
       if (apply({ type: "hidora_egg", playerId: HUMAN_PLAYER })) {
         setPendingPermanentOp(null);
       }
+      return;
     }
-  }, [apply, pendingPermanentOp, state]);
+    const residentAction = findActivateResidentOperationAction(
+      legalActions,
+      pendingPermanentOp.instanceId,
+    );
+    if (residentAction && apply(residentAction)) {
+      setPendingPermanentOp(null);
+    }
+  }, [apply, legalActions, pendingPermanentOp, state]);
 
   const handleCommandPaymentConfirm = useCallback(
     (commandInstanceIds: string[]) => {
@@ -2197,19 +2209,14 @@ export function GameApp() {
               card={card}
               canActivate={
                 !!state &&
-                (getCardEffect(pendingPermanentOp.cardId)?.effectId === "hidora_egg"
-                  ? legalActions.some((a) => a.type === "hidora_egg")
-                  : canInitiateShironLight(
-                      state,
-                      HUMAN_PLAYER,
-                      pendingPermanentOp.instanceId,
-                    ))
+                canActivatePermanentOperationUi(
+                  state,
+                  HUMAN_PLAYER,
+                  pendingPermanentOp,
+                  legalActions,
+                )
               }
-              activateLabel={
-                getCardEffect(pendingPermanentOp.cardId)?.effectId === "hidora_egg"
-                  ? "発動（山札から1枚）"
-                  : "発動"
-              }
+              activateLabel={permanentOperationActivateLabel(pendingPermanentOp.cardId)}
               onActivate={handlePermanentOpActivate}
               onClose={() => setPendingPermanentOp(null)}
             />
