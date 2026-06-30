@@ -161,6 +161,8 @@ export type UnnamedUnitRule =
   | "wing_attack_enemy_rush"
   /** ホールド中コマンドがあるときストライク不可（RS-636 等）。 */
   | "no_strike_with_held_command"
+  /** 敵バトルエリアにユニットがあるときストライク不可（RK-066 等）。 */
+  | "no_strike_if_enemy_battle"
   /** 手札からしかラッシュできない（XP-017 等）。 */
   | "rush_from_hand_only"
   /** ライドなしでバトル投入可能（味方S在戦が条件のビークル等）。 */

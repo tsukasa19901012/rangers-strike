@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { generatedCorePlayableCatalog as corePlayableCatalog } from "@rangers-strike/cards";
 import { unitEffectiveCategories } from "./core/catalog";
+import { legendDefinitions } from "./testing/battleEntry";
 import { canStrikeUnit } from "./rules/combo";
 import {
   promotedAttackerCannotTarget,
   promotedDefenderBlocksAttack,
+  cardHasGrantKeyword,
 } from "./dsl/promotedKeywordBridge";
 import { canAttackDefender } from "./rules/legend3/restrictions";
 import { wingCanAttackEnemyRush } from "./keywords";
@@ -151,6 +153,29 @@ describe("unnamed field rules", () => {
       },
     });
     expect(canStrikeUnit(defs, unit, state, "player1")).toBe(false);
+  });
+
+  it("no_strike_if_enemy_battle blocks strike when enemy has a unit in battle (RK-066)", () => {
+    expect(cardHasGrantKeyword("RK-066", "no_strike_if_enemy_battle")).toBe(true);
+    const striker = inst("RK-066", "den-o-sf");
+    const enemyUnit = inst("RK-063", "enemy");
+    const state = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [striker] },
+      player2: { battle: [enemyUnit] },
+    });
+    expect(canStrikeUnit(legendDefinitions, striker, state, "player1")).toBe(false);
+
+    const emptyEnemyBattle = createTestState({
+      definitions: legendDefinitions,
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [striker] },
+      player2: { battle: [] },
+    });
+    expect(canStrikeUnit(legendDefinitions, striker, emptyEnemyBattle, "player1")).toBe(true);
   });
 
   it("needs_ally_s_in_battle requires ally S (RS-114)", () => {

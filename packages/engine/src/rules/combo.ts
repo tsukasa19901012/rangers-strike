@@ -3,6 +3,8 @@ import {
   getEnterBattleEffect,
   getJointLEffect,
   getJointREffect,
+  getEnterBattleNamedEffect,
+  hasUnnamedRule,
   partnerCategoryMatches,
 } from "@rangers-strike/cards";
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
@@ -12,6 +14,7 @@ import {
   effectiveBp,
   getDefinition,
   isSmallUnit,
+  isUnit,
   isVehicle,
   unitBp,
 } from "../core/catalog";
@@ -38,7 +41,6 @@ import {
   resolveLegend3JointCombo,
   resolveLegend3JointComboR,
 } from "./legend3/jointComboEffects";
-import { getEnterBattleNamedEffect } from "@rangers-strike/cards";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
 import { tryMereChameleonOnAllyEnterBattle } from "./batch04FieldEffects";
 import { applyBaseAttackOnEnter } from "./legend3/enterBattleEffects";
@@ -591,6 +593,15 @@ export function canStrikeUnit(
     if (
       cardHasGrantKeyword(instance.cardId, "no_strike_with_held_command") &&
       countHeldCommands(state.players[playerId]) > 0
+    ) {
+      return false;
+    }
+    if (
+      (cardHasGrantKeyword(instance.cardId, "no_strike_if_enemy_battle") ||
+        hasUnnamedRule(instance.cardId, "no_strike_if_enemy_battle")) &&
+      state.players[opponent(playerId)].battle.some((c) =>
+        isUnit(getDefinition(state.definitions, c.cardId)),
+      )
     ) {
       return false;
     }

@@ -35,4 +35,15 @@ describe("effectLookup full-playable fallback", () => {
     const effects = listDslEffectsForTrigger("PK-006", "riding_combo");
     expect(effects.some((entry) => entry.id === "satansaberu")).toBe(true);
   });
+
+  it("exposes no_strike_if_enemy_battle on RK-066", () => {
+    const doc = getCardDslDocument("RK-066");
+    expect(
+      doc?.effects?.some((effect) =>
+        effect.effects.some(
+          (p) => p.type === "grant_keyword" && p.keyword === "no_strike_if_enemy_battle",
+        ),
+      ),
+    ).toBe(true);
+  });
 });
