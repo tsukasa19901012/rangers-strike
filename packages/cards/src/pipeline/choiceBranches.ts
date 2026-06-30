@@ -5,7 +5,7 @@ import { noteEffectIdFromBody, slugifyEffectId } from "./metaMaps";
 
 /** 「次の効果から1つ選び発動する⇒ ◎A ◎B」形式の分岐本文を抽出する。 */
 export function splitChoiceBranches(body: string): string[] | null {
-  const header = body.match(/次の効果から1つ選び発動する(?:⇒|。)?\s*/);
+  const header = body.match(/次の効果から[1１]つ選び発動する(?:⇒|。)?\s*/);
   if (!header || header.index === undefined) return null;
   const rest = body.slice(header.index + header[0].length);
   const branches = rest

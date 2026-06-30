@@ -12,7 +12,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-123.jpg",
   "effects": [
     {
-      "id": "note_e38193e381aee382bfe383bc",
+      "id": "unnamed_e38193e381aee382bfe383bc",
       "text": "このターン、すべての自軍Sユニットは次の能力を得る。⇒アタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
       "trigger": {
         "type": "on_attack"
@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_attack_action_konotansubetenosyunitohano_chikara_woruatakusurutokiyun",
-          "duration": "turn"
+          "keyword": "note_card::RS-123::konotansubetenos",
+          "duration": "permanent"
         }
       ],
       "optional": false

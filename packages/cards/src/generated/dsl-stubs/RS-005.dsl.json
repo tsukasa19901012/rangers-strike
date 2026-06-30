@@ -11,7 +11,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-005.jpg",
   "effects": [
     {
-      "id": "note_e887aae8bb8de382b3e3839e",
+      "id": "unnamed_e887aae8bb8de382b3e3839e",
       "text": "自軍コマンドゾーンからリリース状態のSユニットのカードを2枚まで選び、ラッシュエリアに出してもよい。ただし、ラッシュするための必要パワーと追加条件は満たすこと。",
       "trigger": {
         "type": "operation",
@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_komandozonkararirisunosyunitonokadowo2madebirashu",
-          "duration": "turn"
+          "keyword": "note_card::RS-005::komandozonkarari",
+          "duration": "permanent"
         }
       ],
       "optional": true

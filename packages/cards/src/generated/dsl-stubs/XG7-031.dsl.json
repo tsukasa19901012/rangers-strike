@@ -30,7 +30,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce381ab",
+      "id": "unnamed_e280bbe38193e3828ce381ab",
       "text": "※これにライドしているユニットは、「仮面ライダー1号」または「仮面ライダー2号」ならクロス1を得る。",
       "trigger": {
         "type": "nc"
@@ -39,8 +39,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG7-031::koreniraidoshite",
+          "duration": "permanent"
         }
       ]
     },

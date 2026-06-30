@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_komandozonkarakadowo1bihorudoshitemoyoisoushitatokihorudos",
+          "keyword": "rm_fx::RM-034::na_geki",
           "duration": "turn"
         }
       ]

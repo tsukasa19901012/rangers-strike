@@ -256,7 +256,7 @@ export function matchRkGrantKeyword(
   if (keyword.startsWith("combo_named_discard_enemy_command::")) {
     return { state, detail: keyword };
   }
-  if (keyword.startsWith("rk_fx::")) {
+  if (keyword.startsWith("rk_fx::") || keyword.startsWith("rm_fx::") || keyword.startsWith("pr_fx::")) {
     const resolved = applyRkFxKeyword(state, ctx, keyword);
     if (resolved) return resolved;
   }

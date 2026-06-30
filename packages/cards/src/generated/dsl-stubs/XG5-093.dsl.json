@@ -11,7 +11,7 @@
   "rawText": "特徴「人型」を持つ自軍ユニットを2体選び、選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
   "effects": [
     {
-      "id": "note_e789b9e5beb4e3808ce4baba",
+      "id": "unnamed_e789b9e5beb4e3808ce4baba",
       "text": "特徴「人型」を持つ自軍ユニットを2体選び、選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
         "type": "operation",
@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_wotsuyunitowo2binda2nonobpwosurusoshiteshi",
-          "duration": "turn"
+          "keyword": "note_card::XG5-093::wotsuyunitowo2bi",
+          "duration": "permanent"
         }
       ]
     }

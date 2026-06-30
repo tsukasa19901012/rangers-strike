@@ -65,11 +65,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_pick_show_tankoregabatoruerianitatokinowo2binisetemoyoiso",
+          "keyword": "rk_fx::RK-211::raitoningusurashu",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

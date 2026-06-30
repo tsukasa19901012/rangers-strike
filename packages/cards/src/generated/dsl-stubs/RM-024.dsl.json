@@ -23,11 +23,11 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koreworashushitatokinowodekiruwote_ryo_wotsusyunito",
+          "keyword": "rm_fx::RM-024::fx_unknown_e690ad",
           "duration": "turn"
         }
       ]

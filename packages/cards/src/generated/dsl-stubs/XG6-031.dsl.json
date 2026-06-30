@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これがユニットでなくなるとき、自軍捨札を3枚選びゲームから除外すれば、その場に留まる。",
       "trigger": {
         "type": "nc"
@@ -44,13 +44,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG6-031::koregayunitodena",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce3818c_2",
+      "id": "unnamed_e280bbe38193e3828ce3818c_koregaeriani",
       "text": "※これが自軍エリアにある間、本来のBPの下三桁が500でない自軍ユニットはラッシュできない。",
       "trigger": {
         "type": "while_in_field"
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_fx_unknown",
+          "keyword": "note_card::XG6-031::koregaerianiarun",
           "duration": "permanent"
         }
       ]

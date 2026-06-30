@@ -11,7 +11,7 @@
   "rawText": "BP6000以下の敵軍ユニットを1体選び持ち主のパワーゾーンに送る。（これが自軍コマンドゾーンにある間、OTを持つ自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する）",
   "effects": [
     {
-      "id": "note_425036303030e4bba5e4b88b",
+      "id": "unnamed_425036303030e4bba5e4b88b",
       "text": "BP6000以下の敵軍ユニットを1体選び持ち主のパワーゾーンに送る。（これが自軍コマンドゾーンにある間、OTを持つ自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する）",
       "trigger": {
         "type": "enter_battle"
@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_bp6000noyunitowo1bichinopawazonnirukoregakoma",
+          "keyword": "note_card::XG5-016::bp6000noyunitowo",
           "duration": "permanent"
         }
       ]

@@ -11,7 +11,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-004.jpg",
   "effects": [
     {
-      "id": "note_e887aae8bb8de5b1b1e69cad",
+      "id": "unnamed_e887aae8bb8de5b1b1e69cad",
       "text": "自軍山札の上から3枚をオモテにして相手に見せる。その中からSユニットのカードをすべて手札に加え、それ以外は好きな順で山札の下に戻す。",
       "trigger": {
         "type": "operation",
@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_nokara3woomotenishiteniserusonokarasyunitonokadowosube",
-          "duration": "turn"
+          "keyword": "note_card::RS-004::nokara3woomoteni",
+          "duration": "permanent"
         }
       ],
       "optional": false

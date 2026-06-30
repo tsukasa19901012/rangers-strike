@@ -26,11 +26,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_pawazonnoomote_ko_kinokadonisyunitonokadogakerebanowo",
+          "keyword": "rm_fx::RM-050::misairurancha",
           "duration": "turn"
         }
       ]

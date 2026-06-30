@@ -42,11 +42,11 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koreworashushitatokinowodekirubatorueriakarasukuramuwotsuyu",
+          "keyword": "rm_fx::RM-061::misairu",
           "duration": "turn"
         }
       ]

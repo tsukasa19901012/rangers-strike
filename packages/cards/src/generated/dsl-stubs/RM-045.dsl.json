@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
+          "keyword": "rm_fx::RM-045::note_e280bbe38193e381aee383a6",
           "duration": "turn"
         }
       ]
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_syunitonokara1wonibasetemoyoigabutabimadanibarete",
+          "keyword": "rm_fx::RM-045::hominguburido",
           "duration": "turn"
         }
       ]

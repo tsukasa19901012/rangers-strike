@@ -14,7 +14,7 @@
   "unnamedRules": [],
   "effects": [
     {
-      "id": "note_e5b8b8e9a790e38082e887aa",
+      "id": "unnamed_e5b8b8e9a790e38082e887aa",
       "text": "常駐。自分のラッシュフェイズごとに1度だけ発動できる。自軍山札の上から1枚をオモテにする。オモテにしたカードが「ヒドラー兵」ならラッシュエリアに出し、それ以外なら山札の下に戻す。",
       "trigger": {
         "type": "operation",
@@ -23,8 +23,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_norashufueizugotoni1dakedekirunokara1woomoteni",
-          "duration": "turn"
+          "keyword": "note_card::RS-071::norashufueizugot",
+          "duration": "permanent"
         }
       ],
       "optional": false

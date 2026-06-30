@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokirashueriakarawotsuyuni",
+          "keyword": "rm_fx::RM-037::wobanu",
           "duration": "turn"
         }
       ]

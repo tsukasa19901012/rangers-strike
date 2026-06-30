@@ -14,7 +14,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-003.jpg",
   "effects": [
     {
-      "id": "note_e887aae58886e381aee38390",
+      "id": "unnamed_e887aae58886e381aee38390",
       "text": "自分のバトルフェイズに発動できる。自軍コマンドを2つホールドして、自軍Sユニットを1体ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。",
       "trigger": {
         "type": "operation",
@@ -23,8 +23,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_battle_area_nobatorufueizunidekirukomandowo2tsuhorudoshitesyunito",
-          "duration": "turn"
+          "keyword": "note_card::RS-003::nobatorufueizuni",
+          "duration": "permanent"
         }
       ],
       "optional": true

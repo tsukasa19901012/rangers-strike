@@ -4,7 +4,7 @@ import { setEffectDelegateResolver } from "./effectDelegateSlot";
 import { tryInterpretEffectDefinition, type InterpretFn } from "./interpretEffectRuntime";
 import { isCatchallGrantKeyword } from "./hashGrantKeywordStub";
 import { isStableCardDelegateKeyword } from "./effectCardGrantKeywordBridge";
-import { isRkCardId, applyRkCardEffect } from "../rules/rkResolvedEffects";
+import { applyRkCardEffect, isPromotedFxCardId } from "../rules/rkResolvedEffects";
 
 function tryResolveEffectDelegate(
   state: GameState,
@@ -14,7 +14,7 @@ function tryResolveEffectDelegate(
 ): GrantKeywordResult | null {
   let effectId: string | null = null;
   if (isStableCardDelegateKeyword(keyword)) {
-    if (isRkCardId(ctx.sourceCardId)) {
+    if (isPromotedFxCardId(ctx.sourceCardId)) {
       const rk = applyRkCardEffect(state, { ...ctx, effectId: ctx.effectId });
       if (rk.detail !== "interpret_effect_unresolved") return rk;
     }

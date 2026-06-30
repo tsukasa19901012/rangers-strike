@@ -26,7 +26,7 @@
   },
   "effects": [
     {
-      "id": "note_e280bbe38193e381aee382ab",
+      "id": "unnamed_e280bbe38193e381aee382ab",
       "text": "※このカードの合体ユニットは、自軍捨札が7枚以上のとき、次のように変更される⇒合体―ゲキレッド＋黒獅子リオ",
       "trigger": {
         "type": "nc"
@@ -35,8 +35,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_gekiredo_shi_rio",
-          "duration": "turn"
+          "keyword": "note_card::XG6-007::konokadonoyunito",
+          "duration": "permanent"
         }
       ]
     },

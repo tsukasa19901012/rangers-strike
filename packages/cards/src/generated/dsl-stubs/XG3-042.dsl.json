@@ -11,7 +11,7 @@
   "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札から、追加条件を持たないビークルカードを1枚選び、自軍ラッシュエリアに出す。そうしたとき、自分の第1ターンのラッシュフェイズを飛ばす。",
   "effects": [
     {
-      "id": "note_e382b2e383bce383a0e9968b",
+      "id": "unnamed_e382b2e383bce383a0e9968b",
       "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札から、追加条件を持たないビークルカードを1枚選び、自軍ラッシュエリアに出す。そうしたとき、自分の第1ターンのラッシュフェイズを飛ばす。",
       "trigger": {
         "type": "nc"
@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_gemudakenowodekirunokarawotanaibikuru",
-          "duration": "turn"
+          "keyword": "note_card::XG3-042::gemudakenowodeki",
+          "duration": "permanent"
         }
       ]
     }

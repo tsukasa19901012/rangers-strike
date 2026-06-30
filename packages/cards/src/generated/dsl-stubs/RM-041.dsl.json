@@ -38,11 +38,11 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_yunitowo1ndemoyoisoushitatokindayunitotojikadonoyuni",
+          "keyword": "rm_fx::RM-041::aiamunadonosankyu",
           "duration": "turn"
         }
       ]

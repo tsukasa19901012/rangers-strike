@@ -14,7 +14,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-018.jpg",
   "effects": [
     {
-      "id": "note_e887aae8bb8de383a6e3838b",
+      "id": "unnamed_e887aae8bb8de383a6e3838b",
       "text": "自軍ユニットがアタックされたとき発動できる。アタックしてきたユニット以外のユニットをすべての場から1体選んで、かわりにバトルさせる。",
       "trigger": {
         "type": "operation",
@@ -23,8 +23,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_yunitogaatakusaretatokidekiruatakushitekitayunitonoyunito",
-          "duration": "turn"
+          "keyword": "note_card::RS-018::yunitogaatakusar",
+          "duration": "permanent"
         }
       ],
       "optional": false

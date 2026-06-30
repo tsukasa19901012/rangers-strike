@@ -14,7 +14,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-019.jpg",
   "effects": [
     {
-      "id": "note_e887aae8bb8d53e383a6e383",
+      "id": "unnamed_e887aae8bb8d53e383a6e383",
       "text": "自軍Sユニットがアタックするとき発動できる。アタックするユニットは、自軍コマンドを1つホールドするごとにBP＋1000される。",
       "trigger": {
         "type": "on_attack"
@@ -22,8 +22,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_syunitogaatakusurutokidekiruatakusuruyunitohakomandowo1",
-          "duration": "turn"
+          "keyword": "note_card::RS-019::syunitogaatakusu",
+          "duration": "permanent"
         }
       ],
       "optional": false

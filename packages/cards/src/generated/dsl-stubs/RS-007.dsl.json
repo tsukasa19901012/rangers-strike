@@ -11,7 +11,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-007.jpg",
   "effects": [
     {
-      "id": "note_425038303030e4bba5e4b88b",
+      "id": "unnamed_425038303030e4bba5e4b88b",
       "text": "BP8000以下の敵軍ユニットを1体選ぶ。選んだユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
         "type": "operation",
@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_bp8000noyunitowo1bundayunitowochinokomandozonni",
-          "duration": "turn"
+          "keyword": "note_card::RS-007::bp8000noyunitowo",
+          "duration": "permanent"
         }
       ],
       "optional": false

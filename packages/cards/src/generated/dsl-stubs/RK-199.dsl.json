@@ -41,10 +41,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ignore_rule_text_koregaerianiarunowosuruomegazerunoreiyouwotsu",
-          "duration": "turn"
+          "keyword": "rk_fx::RK-199::zeruno",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

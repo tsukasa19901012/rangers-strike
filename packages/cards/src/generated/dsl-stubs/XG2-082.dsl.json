@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは、自軍エリアでホールド状態かライドされている間、Lビークルとして扱う。",
       "trigger": {
         "type": "nc"
@@ -31,13 +31,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG2-082::korehaeriadehoru",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "note_e280bbe887aae8bb8de383a9",
+      "id": "unnamed_e280bbe887aae8bb8de383a9",
       "text": "※自軍ラッシュフェイズ中、このユニットをホールドしてもよい。",
       "trigger": {
         "type": "nc"
@@ -46,13 +46,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG2-082::rashufueizukonoy",
+          "duration": "permanent"
         }
       ]
     },
     {
-      "id": "note_e280bbe887aae8bb8de383a9_2",
+      "id": "unnamed_e280bbe887aae8bb8de383a9_rashufueizuk",
       "text": "※自軍ラッシュフェイズ中、このビークルがライドされていないなら、リリースしてもよい。",
       "trigger": {
         "type": "nc"
@@ -61,8 +61,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG2-082::rashufueizukonob",
+          "duration": "permanent"
         }
       ]
     },

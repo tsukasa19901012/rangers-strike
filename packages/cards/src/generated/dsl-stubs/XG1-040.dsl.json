@@ -21,7 +21,7 @@
   },
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce38292",
+      "id": "unnamed_e280bbe38193e3828ce38292",
       "text": "※これをラッシュしたとき、MAを持たないコマンドをすべてリリースする。",
       "trigger": {
         "type": "on_rush"
@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG1-040::koreworashushita",
+          "duration": "permanent"
         }
       ]
     },

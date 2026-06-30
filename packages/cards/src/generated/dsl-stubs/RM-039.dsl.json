@@ -47,11 +47,11 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_power_damage_tankoregabatoruerianitatokikarayunitokadowo1ndemo",
+          "keyword": "rm_fx::RM-039::zan_ri_e58d81",
           "duration": "turn"
         }
       ]

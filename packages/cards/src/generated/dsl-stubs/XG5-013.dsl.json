@@ -11,7 +11,7 @@
   "rawText": "自軍捨札から、DAを持つカードを1枚選び手札に加える。",
   "effects": [
     {
-      "id": "note_e887aae8bb8de68da8e69cad",
+      "id": "unnamed_e887aae8bb8de68da8e69cad",
       "text": "自軍捨札から、DAを持つカードを1枚選び手札に加える。",
       "trigger": {
         "type": "operation",
@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_from_discard_karadawotsukadowo1binieru",
-          "duration": "turn"
+          "keyword": "note_card::XG5-013::karadawotsukadow",
+          "duration": "permanent"
         }
       ]
     }

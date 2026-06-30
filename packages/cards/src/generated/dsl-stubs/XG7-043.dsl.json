@@ -52,7 +52,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce4bba5",
+      "id": "unnamed_e280bbe38193e3828ce4bba5",
       "text": "※これ以外の自軍ユニットがあれば、これはBP-6000されストライクできない。",
       "trigger": {
         "type": "nc"
@@ -61,8 +61,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG7-043::korenoyunitogaar",
+          "duration": "permanent"
         }
       ]
     },

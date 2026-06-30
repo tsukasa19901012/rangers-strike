@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "note_e280bbe38193e381aee382ab",
+      "id": "unnamed_e280bbe38193e381aee382ab",
       "text": "※このカードの追加条件は、自軍捨札が7枚以上あるとき、次のように変更される→ 特徴「イエロー」を持つ自軍Sユニット1体を捨札にする",
       "trigger": {
         "type": "nc"
@@ -31,8 +31,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG6-019::konokadonohaga7a",
+          "duration": "permanent"
         }
       ]
     },

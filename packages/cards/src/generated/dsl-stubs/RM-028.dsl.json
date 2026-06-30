@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
+          "keyword": "rm_fx::RM-028::note_e280bbe38193e3828ce3818c",
           "duration": "turn"
         }
       ]

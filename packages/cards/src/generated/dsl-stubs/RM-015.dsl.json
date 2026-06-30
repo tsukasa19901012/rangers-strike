@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_konoopereshonkadowosurutamenihorudoshitakomandonopawanow",
+          "keyword": "rm_fx::RM-015::note_e38193e381aee382aae3839a",
           "duration": "turn"
         }
       ]

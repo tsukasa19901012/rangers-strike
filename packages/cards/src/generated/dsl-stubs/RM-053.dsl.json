@@ -36,11 +36,11 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokierianibitorudagaarebano",
+          "keyword": "rm_fx::RM-053::doriruatachimento",
           "duration": "turn"
         }
       ]

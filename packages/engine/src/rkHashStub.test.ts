@@ -67,11 +67,11 @@ describe("RK hash stub DSL", () => {
     });
   });
 
-  it("RK-326 uses effect_card delegate keyword", () => {
+  it("RK-326 uses rk_fx exact keyword", () => {
     const effect = docs.find((d) => d.id === "RK-326")?.effects?.[0];
     expect(effect?.effects?.[0]).toMatchObject({
       type: "grant_keyword",
-      keyword: "effect_card::RK-326::garurufuesuru",
+      keyword: "rk_fx::RK-326::garurufuesuru",
     });
   });
 });

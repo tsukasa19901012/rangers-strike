@@ -11,7 +11,7 @@
   "rawText": "次の効果から1つ選び発動する⇒ ◎自軍山札を見て、「仮面ライダーディケイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後山札をシャッフルする。 ◎自軍山札を見て、特徴「ディケイドライバー」を持つユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。その後山札をシャッフルする。",
   "effects": [
     {
-      "id": "note_e6aca1e381aee58ab9e69e9c",
+      "id": "unnamed_e6aca1e381aee58ab9e69e9c",
       "text": "次の効果から1つ選び発動する⇒ ◎自軍山札を見て、「仮面ライダーディケイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい。その後山札をシャッフルする。 ◎自軍山札を見て、特徴「ディケイドライバー」を持つユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。その後山札をシャッフルする。",
       "trigger": {
         "type": "operation",
@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "choice_one_of_nokara1tsubisuruwoteraidadeikeidonokadowo1",
-          "duration": "turn"
+          "keyword": "note_card::XG1-076::nokara1tsubisuru",
+          "duration": "permanent"
         }
       ]
     }

@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_rejisutowotanaisyunitowo1bihorudoshitemoyoi",
+          "keyword": "rm_fx::RM-057::suteingapurazuma",
           "duration": "turn"
         }
       ]

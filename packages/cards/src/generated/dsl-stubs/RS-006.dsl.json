@@ -14,7 +14,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-006.jpg",
   "effects": [
     {
-      "id": "note_e887aae8bb8d53e383a6e383",
+      "id": "unnamed_e887aae8bb8d53e383a6e383",
       "text": "自軍Sユニットがアタックされたとき発動できる。アタックされたユニットをラッシュエリアに戻す。このときバトルは行われない。",
       "trigger": {
         "type": "operation",
@@ -23,8 +23,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "catchall_interpret_syunitogaatakusaretatokidekiruatakusaretayunitoworash",
-          "duration": "turn"
+          "keyword": "note_card::RS-006::syunitogaatakusa",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_koregaraidosareteiruerianisutagatankugaarebahasutatofuei",
-          "duration": "turn"
+          "keyword": "while_riding_stagger_tank_block_return_held_mecha",
+          "duration": "permanent"
         }
       ]
     }

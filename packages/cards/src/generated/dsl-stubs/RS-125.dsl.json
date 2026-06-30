@@ -12,7 +12,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-125.jpg",
   "effects": [
     {
-      "id": "note_e695b5e8bb8de383a6e3838b",
+      "id": "unnamed_e695b5e8bb8de383a6e3838b",
       "text": "敵軍ユニットを、BPの合計が12000以下になるように選んで撃破する。ただし選べるユニットの数は、自軍WBのMユニットの数までとする。",
       "trigger": {
         "type": "operation",
@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "wb_category_yunitowobpnoga12000ninaruyouninde_geki_ha_surutadashiberuyu",
-          "duration": "turn"
+          "keyword": "note_card::RS-125::yunitowobpnoga12",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_koreworashushitatokierianokarasuga3nara3ninarumade",
+          "keyword": "rm_fx::RM-043::fx_31",
           "duration": "turn"
         }
       ]

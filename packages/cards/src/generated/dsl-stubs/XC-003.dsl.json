@@ -11,7 +11,7 @@
   "rawText": "ゲーム開始前に一度だけ発動できる⇒自分の手札をすべて好きな順番で自軍山札の下に戻してから、戻した枚数と同じだけドローする。",
   "effects": [
     {
-      "id": "note_e382b2e383bce383a0e9968b",
+      "id": "unnamed_e382b2e383bce383a0e9968b",
       "text": "ゲーム開始前に一度だけ発動できる⇒自分の手札をすべて好きな順番で自軍山札の下に戻してから、戻した枚数と同じだけドローする。",
       "trigger": {
         "type": "nc"
@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "draw_cards_gemunidakedekirunowosubetekinadenonishi",
-          "duration": "turn"
+          "keyword": "note_card::XC-003::gemunidakedekiru",
+          "duration": "permanent"
         }
       ]
     }

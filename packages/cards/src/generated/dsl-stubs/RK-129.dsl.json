@@ -20,10 +20,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_discard_trigger_koreniraidoshitayunitogaarunokarakadoga1nikarerutab",
-          "duration": "permanent"
+          "keyword": "rk_fx::RK-129::sandasupeida",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

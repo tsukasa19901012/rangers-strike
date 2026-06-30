@@ -11,7 +11,7 @@
   "rawText": "このゲーム中、次のルールを追加する⇒ 5体以上の合体ユニットを必要とするLユニットの追加条件を満たすとき、合体ユニットを捨札にするかわりに、同名のカードを自分自身の手札から捨ててもよい。",
   "effects": [
     {
-      "id": "note_e38193e381aee382b2e383bc",
+      "id": "unnamed_e38193e381aee382b2e383bc",
       "text": "このゲーム中、次のルールを追加する⇒ 5体以上の合体ユニットを必要とするLユニットの追加条件を満たすとき、合体ユニットを捨札にするかわりに、同名のカードを自分自身の手札から捨ててもよい。",
       "trigger": {
         "type": "nc"
@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_konogemunoruruwosuru5noyunitowotosurulyunitono",
-          "duration": "turn"
+          "keyword": "note_card::XC-006::konogemunoruruwo",
+          "duration": "permanent"
         }
       ]
     }

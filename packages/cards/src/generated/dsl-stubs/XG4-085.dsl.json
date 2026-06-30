@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが撃破されて捨札になるとき、かわりに特徴「男」を持つ自軍ユニット1体を捨札にすれば、これはその場にとどまる。",
       "trigger": {
         "type": "nc"
@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG4-085::korega_geki_ha_s",
+          "duration": "permanent"
         }
       ]
     },

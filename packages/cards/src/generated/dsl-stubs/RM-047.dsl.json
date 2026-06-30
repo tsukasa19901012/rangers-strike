@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokibatorueriakararaidosaret",
+          "keyword": "rm_fx::RM-047::bigukyanon",
           "duration": "turn"
         }
       ]

@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_search_rashufueizukonoyunitowonishitenowodekiruwote",
+          "keyword": "rk_fx::RK-328::dogafuesuru",
           "duration": "turn"
         }
       ],

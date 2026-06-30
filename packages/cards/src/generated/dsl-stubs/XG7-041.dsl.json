@@ -26,7 +26,7 @@
   },
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自軍エリアにある間、自分がターンを終えるとき、これをゲームから除外する。",
       "trigger": {
         "type": "while_in_field"
@@ -35,8 +35,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "exclude_game_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG7-041::koregaerianiarug",
+          "duration": "permanent"
         }
       ]
     },

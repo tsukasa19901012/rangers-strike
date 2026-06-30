@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは特徴「仮面ライダー」を持つ自軍コマンド1つにつきBP+500される。",
       "trigger": {
         "type": "riding_combo"
@@ -57,8 +57,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG6-029::koreharaidawotsu",
+          "duration": "permanent"
         }
       ]
     },

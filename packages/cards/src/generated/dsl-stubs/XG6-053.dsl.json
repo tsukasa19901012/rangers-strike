@@ -35,7 +35,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce4bba5",
+      "id": "unnamed_e280bbe38193e3828ce4bba5",
       "text": "※これ以外のユニットがSユニットだけなら、これはLユニットになり、BP+2000される。",
       "trigger": {
         "type": "nc"
@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG6-053::korenoyunitogasy",
+          "duration": "permanent"
         }
       ]
     },

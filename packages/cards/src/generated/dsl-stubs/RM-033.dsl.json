@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
+          "keyword": "rm_fx::RM-033::note_e280bbe38193e3828ce381af",
           "duration": "turn"
         }
       ]
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_battle_tankoregabatoruerianitatokirashueriakarayunitowo1bi",
+          "keyword": "rm_fx::RM-033::no_6",
           "duration": "turn"
         }
       ]

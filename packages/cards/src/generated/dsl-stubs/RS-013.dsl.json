@@ -14,7 +14,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-013.jpg",
   "effects": [
     {
-      "id": "note_e887aae58886e381aee383a9",
+      "id": "unnamed_e887aae58886e381aee383a9",
       "text": "自分のラッシュフェイズごとに1度だけ発動できる。自分の手札から相手に1枚選ばせ見せる。ユニットカードが選ばれたならラッシュエリアに出してよい。ただしラッシュのための必要パワーと追加条件は満たすこと。",
       "trigger": {
         "type": "operation",
@@ -23,8 +23,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_norashufueizugotoni1dakedekirunokarani1basese",
-          "duration": "turn"
+          "keyword": "note_card::RS-013::norashufueizugot",
+          "duration": "permanent"
         }
       ],
       "optional": true

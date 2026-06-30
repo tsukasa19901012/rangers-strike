@@ -11,7 +11,7 @@
   "rawText": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を好きな枚数選び、相手に見せる。そうしたとき、見せた枚数と同じ枚数だけ、相手は自分自身の手札を選び見せる。",
   "effects": [
     {
-      "id": "note_e382b2e383bce383a0e9968b",
+      "id": "unnamed_e382b2e383bce383a0e9968b",
       "text": "ゲーム開始時、一度だけ次の効果を発動できる⇒自分の手札を好きな枚数選び、相手に見せる。そうしたとき、見せた枚数と同じ枚数だけ、相手は自分自身の手札を選び見せる。",
       "trigger": {
         "type": "nc"
@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_gemudakenowodekirunowokinabiniseruso",
-          "duration": "turn"
+          "keyword": "note_card::XG4-028::gemudakenowodeki",
+          "duration": "permanent"
         }
       ]
     }

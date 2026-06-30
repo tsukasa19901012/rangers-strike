@@ -28,7 +28,7 @@
   },
   "effects": [
     {
-      "id": "note_e280bbe695b5e8bb8de382bf",
+      "id": "unnamed_e280bbe695b5e8bb8de382bf",
       "text": "※敵軍ターン中、これとバトルしたユニットは、バトルに勝っても撃破される。",
       "trigger": {
         "type": "while_in_field"
@@ -37,8 +37,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG2-086::tankoretobatorus",
+          "duration": "permanent"
         }
       ]
     },

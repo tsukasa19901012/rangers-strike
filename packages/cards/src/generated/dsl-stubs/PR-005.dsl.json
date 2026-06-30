@@ -31,10 +31,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_ability_pawazonkaradamejinokadowo5binishitemoyoisoushitatokiko",
+          "keyword": "pr_fx::PR-005::justice_flasher",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

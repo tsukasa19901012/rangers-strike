@@ -34,15 +34,16 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍捨札にある間、自分が「電子星獣ドル」または「ギラン円盤」をラッシュするとき、ラッシュするユニットと同じカード名のユニットが自軍エリアになければ、その追加条件を満たさなくてもよい。",
       "trigger": {
-        "type": "while_in_field"
+        "type": "on_rush"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_fx_unknown",
+          "keyword": "rm_fx::RM-019::note_e280bbe38193e3828ce3818c",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

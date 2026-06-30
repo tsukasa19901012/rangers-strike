@@ -11,7 +11,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-021.jpg",
   "effects": [
     {
-      "id": "note_e887aae58886e381aee6898b",
+      "id": "unnamed_e887aae58886e381aee6898b",
       "text": "自分の手札からカードを2枚まで選んで、自軍コマンドゾーンにホールド状態で置く。",
       "trigger": {
         "type": "operation",
@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_remaining_nokarakadowo2madendekomandozonnihorudodeku",
-          "duration": "turn"
+          "keyword": "note_card::RS-021::nokarakadowo2mad",
+          "duration": "permanent"
         }
       ],
       "optional": false

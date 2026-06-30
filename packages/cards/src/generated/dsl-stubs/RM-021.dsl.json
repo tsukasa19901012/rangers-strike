@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_koreworashushitatokipawazonnoomote_ko_kinokadokarapawan",
+          "keyword": "rm_fx::RM-021::bikuru",
           "duration": "turn"
         }
       ]

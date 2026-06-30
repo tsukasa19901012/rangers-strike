@@ -57,11 +57,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_pick_show_nowo3binisetemoyoisoushitatokisetakadogasubetebpno",
+          "keyword": "rk_fx::RK-128::rengerurauza",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

@@ -11,7 +11,7 @@
   "rawText": "このゲーム中、次のルールを追加する⇒ 特徴「仮面ライダー」を持つ自分自身のユニットをラッシュしたとき、ライドされていない自分自身のSビークルを1体選び、ラッシュしたそのユニットの下に重ねてもよい。",
   "effects": [
     {
-      "id": "note_e38193e381aee382b2e383bc",
+      "id": "unnamed_e38193e381aee382b2e383bc",
       "text": "このゲーム中、次のルールを追加する⇒ 特徴「仮面ライダー」を持つ自分自身のユニットをラッシュしたとき、ライドされていない自分自身のSビークルを1体選び、ラッシュしたそのユニットの下に重ねてもよい。",
       "trigger": {
         "type": "on_rush"
@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_konogemunoruruwosururaidawotsunoyunitoworashi",
-          "duration": "turn"
+          "keyword": "note_card::XC-005::konogemunoruruwo",
+          "duration": "permanent"
         }
       ]
     }

@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce38292",
+      "id": "unnamed_e280bbe38193e3828ce38292",
       "text": "※これをラッシュしたとき、「ミミーナ」以外のリリース状態の自軍Sユニットを1体選び、可能ならホールドする。",
       "trigger": {
         "type": "on_rush"
@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG3-096::koreworashushita",
+          "duration": "permanent"
         }
       ]
     },

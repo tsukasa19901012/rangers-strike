@@ -14,7 +14,7 @@
   "unnamedRules": [],
   "effects": [
     {
-      "id": "note_e38193e381aee382bfe383bc",
+      "id": "unnamed_e38193e381aee382bfe383bc",
       "text": "このターン、相手の常駐オペレーションは無効になり、相手はカウンターを発動できない。",
       "trigger": {
         "type": "operation",
@@ -23,8 +23,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_konotannoopereshonhaninarihakauntawodekinai",
-          "duration": "turn"
+          "keyword": "note_card::RS-072::konotannooperesh",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -11,7 +11,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-012.jpg",
   "effects": [
     {
-      "id": "note_e887aae8bb8de68da8e69cad",
+      "id": "unnamed_e887aae8bb8de68da8e69cad",
       "text": "自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。",
       "trigger": {
         "type": "operation",
@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "feature_match_karamekawotsuyunitonokadowo1ndenieru",
-          "duration": "turn"
+          "keyword": "note_card::RS-012::karamekawotsuyun",
+          "duration": "permanent"
         }
       ],
       "optional": false

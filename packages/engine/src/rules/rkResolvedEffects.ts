@@ -26,8 +26,8 @@ import {
 import { classifyRkEffectText, type RkFamily } from "@rangers-strike/cards/pipeline/rkClassify";
 import { tryRkBkGrantKeywordFromEffect } from "./rk/rkBkCatchallRuntime";
 
-function parseRkFxKeyword(keyword: string): { cardId: string; effectId: string } | null {
-  const m = keyword.match(/^rk_fx::(RK-\d+)::(.+)$/);
+function parsePromotedFxKeyword(keyword: string): { cardId: string; effectId: string } | null {
+  const m = keyword.match(/^(?:rk|rm|pr)_fx::((?:RK|RM|PR)-\d+)::(.+)$/);
   if (!m) return null;
   return { cardId: m[1]!, effectId: m[2]! };
 }
@@ -386,7 +386,7 @@ export function applyRkFxKeyword(
   ctx: GrantKeywordContext,
   keyword: string,
 ): { state: GameState; detail?: string } | null {
-  const parsed = parseRkFxKeyword(keyword);
+  const parsed = parsePromotedFxKeyword(keyword);
   if (!parsed) return null;
   const effect = getDslEffectById(parsed.cardId, parsed.effectId);
   const text = effect?.text ?? "";
@@ -419,6 +419,10 @@ export function applyRkFxKeyword(
   const family = classifyRkEffectText(text);
   const result = applyByFamily(state, ctx, family, text);
   return result ? { ...result, detail: result.detail ?? keyword } : { state, detail: keyword };
+}
+
+export function isPromotedFxCardId(cardId: string): boolean {
+  return cardId.startsWith("RK-") || cardId.startsWith("RM-") || cardId.startsWith("PR-");
 }
 
 export function isRkCardId(cardId: string): boolean {

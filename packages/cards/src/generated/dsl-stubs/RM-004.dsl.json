@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_search_nokaradamejinotojimadeomotenisurusoshiteomotenishitaka",
+          "keyword": "rm_fx::RM-004::note_e695b5e8bb8de5b1b1e69cad",
           "duration": "turn"
         }
       ]

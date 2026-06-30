@@ -265,6 +265,10 @@ export function isRkBkCardId(cardId: string): boolean {
   return cardId.startsWith("RK-") || cardId.startsWith("BK-");
 }
 
+export function isPromotedCatchallCardId(cardId: string): boolean {
+  return isRkBkCardId(cardId) || cardId.startsWith("RM-") || cardId.startsWith("PR-");
+}
+
 /** RK/BK grant_keyword のパターン別ランタイム解決。 */
 export function tryRkBkCatchallRuntime(
   state: GameState,

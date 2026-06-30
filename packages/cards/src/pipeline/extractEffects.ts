@@ -19,6 +19,9 @@ import { NOTE_BULK_PATTERNS } from "./noteBulkPatterns";
 import { buildEffectCardKeyword } from "./effectCardKeywords";
 import { buildNoteCardKeyword } from "./noteCardKeywords";
 import { isUnresolvedCatchallGrantKeyword } from "./hashGrantKeywords";
+import { RM_NAMED_PATTERNS } from "./rmPatterns";
+import { PR_EXACT_PATTERNS } from "./prExactPatterns.generated";
+import { RM_EXACT_PATTERNS } from "./rmExactPatterns.generated";
 import { RK_ACTION_PATTERNS, RK_NOTE_PATTERNS, RK_WHILE_PATTERNS } from "./rkPatterns";
 import { RK_EXACT_PATTERNS } from "./rkExactPatterns.generated";
 import { RS_NAMED_PATTERNS } from "./rsPatterns";
@@ -502,6 +505,10 @@ const KEYWORD_NOTE_PATTERNS: PatternMatch[] = [
 ];
 
 const PATTERNS: PatternMatch[] = [
+  ...RK_EXACT_PATTERNS,
+  ...RM_EXACT_PATTERNS,
+  ...PR_EXACT_PATTERNS,
+  ...RM_NAMED_PATTERNS,
   {
     pattern: "no_effect",
     test: (body) => /^なし\.?$/.test(body.trim()) || body.trim().length === 0,
@@ -4058,7 +4065,7 @@ const PATTERNS: PatternMatch[] = [
   },
   {
     pattern: "pick_one_effect_branch",
-    test: (body) => /次の効果から1つ選び発動する/.test(body),
+    test: (body) => /次の効果から[1１]つ選び発動する/.test(body),
     build: (body, segment, trigger) => {
       const picked = tryBuildPickEffectBranch(body, segment, trigger, rematchBuiltEffect);
       if (picked) return picked;
@@ -5513,7 +5520,6 @@ const PATTERNS: PatternMatch[] = [
   ...RK_NOTE_PATTERNS,
   ...RK_WHILE_PATTERNS,
   ...RK_ACTION_PATTERNS,
-  ...RK_EXACT_PATTERNS,
   {
     pattern: "combo_from_named_card",
     test: (body) => /「[^」]+」からコンビネーションしたとき発動できる⇒/.test(body),

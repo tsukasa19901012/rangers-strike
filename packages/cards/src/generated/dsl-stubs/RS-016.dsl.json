@@ -14,7 +14,7 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-016.jpg",
   "effects": [
     {
-      "id": "note_e887aae8bb8de383a6e3838b",
+      "id": "unnamed_e887aae8bb8de383a6e3838b",
       "text": "自軍ユニットが場を離れるとき発動できる。場を離れるユニットと同じ名前のユニットのカードが自軍捨札にあれば、その場に留まる。",
       "trigger": {
         "type": "operation",
@@ -23,8 +23,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "discard_to_zone_yunitogaworerutokidekiruworeruyunitotojinoyunitonoka",
-          "duration": "turn"
+          "keyword": "note_card::RS-016::yunitogaworeruto",
+          "duration": "permanent"
         }
       ],
       "optional": false

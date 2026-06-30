@@ -59,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_zone_action_nobpga4000nosyunitowo1bichinopawazonnitemo",
+          "keyword": "rm_fx::RM-018::gyabandainamiku",
           "duration": "turn"
         }
       ]

@@ -19,7 +19,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce3818c",
+      "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが自軍エリアにある間、ナンバーに数字を持つ自軍ユニットは次の能力を得る⇒スクラム",
       "trigger": {
         "type": "while_in_field"
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_note_sukuramu",
+          "keyword": "note_card::XG5-001::koregaerianiarun",
           "duration": "permanent"
         }
       ]

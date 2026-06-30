@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_action_tankoregabatoruerianitatokibatorueriakarabikuruwo1nde",
+          "keyword": "rm_fx::RM-026::fx_unknown_e58f8e",
           "duration": "turn"
         }
       ]

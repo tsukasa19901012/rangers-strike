@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe887aae58886e381ae",
+      "id": "unnamed_e280bbe887aae58886e381ae",
       "text": "※自分の手札が0枚のとき、これを撃破する。",
       "trigger": {
         "type": "nc"
@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG6-042::noga0notokikorew",
+          "duration": "permanent"
         }
       ]
     },

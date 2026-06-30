@@ -162,6 +162,7 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "on_deck_reveal_swap_effect_target",
   "combo_l_repeat_attack_strike_after_combo",
   "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000",
+  "while_riding_stagger_tank_block_return_held_mecha",
 ]);
 
 export const SUPPORTED_GRANT_KEYWORDS = new Set([

@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_e280bbe38193e3828ce381af_korehakadoni",
       "text": "※これは、カード名に「カブト」「ザビー」「ドレイク」「サソード」を含むオモテ向きの自軍パワーがそれぞれあれば、SP1になる。",
       "trigger": {
         "type": "nc"
@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
-          "duration": "turn"
+          "keyword": "note_card::XG5-051::korehakadonikabu",
+          "duration": "permanent"
         }
       ]
     },

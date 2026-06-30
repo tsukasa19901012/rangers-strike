@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_batoruerianiarumatahawotanaisyunitowosubetechinokomando",
+          "keyword": "rm_fx::RM-044::jandejiku",
           "duration": "turn"
         }
       ]

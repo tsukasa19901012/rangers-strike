@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "note_e280bbe38193e3828ce381af",
+      "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、特徴「メカ」を得る。",
       "trigger": {
         "type": "while_in_field"
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_other_fx_unknown",
+          "keyword": "note_card::XG7-058::korehaeriamataha",
           "duration": "permanent"
         }
       ]

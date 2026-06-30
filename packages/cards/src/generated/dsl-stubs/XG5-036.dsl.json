@@ -11,7 +11,7 @@
   "rawText": "自軍ラッシュエリアから、MAを持つ自軍Sユニットを1体選ぶ。そうしたとき、選んだユニットのBP以下のBPを持つ敵軍Sユニットをすべて持ち主の手札に戻す。",
   "effects": [
     {
-      "id": "note_e887aae8bb8de383a9e38383",
+      "id": "unnamed_e887aae8bb8de383a9e38383",
       "text": "自軍ラッシュエリアから、MAを持つ自軍Sユニットを1体選ぶ。そうしたとき、選んだユニットのBP以下のBPを持つ敵軍Sユニットをすべて持ち主の手札に戻す。",
       "trigger": {
         "type": "operation",
@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_rashueriakaramawotsusyunitowo1busoushitatokindayuni",
-          "duration": "turn"
+          "keyword": "note_card::XG5-036::rashueriakaramaw",
+          "duration": "permanent"
         }
       ]
     }
