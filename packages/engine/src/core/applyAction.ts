@@ -1293,7 +1293,7 @@ export function applyAction(
       const [, rush] = removeAt(nextPlayer.rush, found.index);
       nextPlayer = { ...nextPlayer, rush };
 
-      const position = battlePositionAfterMove(nextPlayer.battle.length);
+      const position = battlePositionAfterMove(nextPlayer.battle);
       const battleBeforeEnter = [...nextPlayer.battle];
       let battleCard = found.card;
       if (action.rideOff && found.card.mountedOnInstanceId) {

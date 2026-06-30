@@ -1,4 +1,4 @@
-import type { TargetSelector } from "@rangers-strike/cards/dsl/types";
+import type { EffectPrimitive, TargetSelector } from "@rangers-strike/cards/dsl/types";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardCategories, getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
@@ -46,6 +46,22 @@ function matchesFilter(
   if (filter.categoryExcept && cats.includes(filter.categoryExcept as never)) return false;
   if (filter.category && !cats.includes(filter.category as never)) return false;
   return true;
+}
+
+function withUnitTypeFilter(
+  filter?: NonNullable<Extract<TargetSelector, { type: "zone" }>["filter"]>,
+): NonNullable<Extract<TargetSelector, { type: "zone" }>["filter"]> {
+  return { ...filter, cardType: "unit" };
+}
+
+/** select_unit 等の choose kind に応じて valid セレクタへ暗黙フィルタを付与する。 */
+export function augmentChooseValidSelector(
+  valid: TargetSelector,
+  kind: EffectPrimitive extends { type: "choose" } ? EffectPrimitive["kind"] : never,
+): TargetSelector {
+  if (kind !== "select_unit") return valid;
+  if (valid.type !== "zone") return valid;
+  return { ...valid, filter: withUnitTypeFilter(valid.filter) };
 }
 
 export function collectTargetInstanceIds(

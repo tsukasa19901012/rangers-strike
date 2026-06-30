@@ -69,7 +69,7 @@ export function tryResolveDslTriggeredEffects(args: {
 
   for (const effect of effects) {
     if (!isDslInterpretableEffect(effect)) continue;
-    if (!evaluateDslCondition(current, args.playerId, effect.condition, args.instanceId)) {
+    if (!evaluateDslCondition(current, args.playerId, effect.condition, args.instanceId, effect.effects)) {
       continue;
     }
 

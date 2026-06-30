@@ -43,6 +43,7 @@ import {
 } from "./legend3/jointComboEffects";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
 import { tryMereChameleonOnAllyEnterBattle } from "./batch04FieldEffects";
+import { countLogicalBattleSlots } from "./battleLine";
 import { applyBaseAttackOnEnter } from "./legend3/enterBattleEffects";
 import { cannotAttackOrStrikeThisTurn, countHeldCommands } from "./restrictions";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
@@ -571,8 +572,8 @@ export function continueEnterBattleEffects(
   });
 }
 
-export function battlePositionAfterMove(currentBattleCount: number): number {
-  return currentBattleCount + 1;
+export function battlePositionAfterMove(currentBattle: CardInstance[]): number {
+  return countLogicalBattleSlots(currentBattle) + 1;
 }
 
 export function canStrikeUnit(

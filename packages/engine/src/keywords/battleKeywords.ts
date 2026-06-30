@@ -12,6 +12,7 @@ import {
 } from "../core/scopedModifiers";
 import { cardHasGrantKeyword, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
 import { battlePositionOneBased } from "../rules/fractionalSp";
+import { logicalBattlePosition } from "../rules/battleLine";
 import { srBigBatonTaxisCategory } from "../rules/srEffects";
 import { isBattleBlocked, markBattleBlocked } from "../rules/turnModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
@@ -73,9 +74,10 @@ export function crossAdjustedBattlePosition(
 ): number | null {
   const index = battle.findIndex((c) => c.instanceId === instanceId);
   if (index < 0) return null;
-  const raw = index + 1;
+  const logical = logicalBattlePosition(battle, instanceId);
+  if (logical === null) return null;
   const shift = crossShiftLeftOf(battle, index);
-  return Math.max(1, raw - shift);
+  return Math.max(1, logical - shift);
 }
 
 export function parseTaxisCategory(cardId: string): Category | null {

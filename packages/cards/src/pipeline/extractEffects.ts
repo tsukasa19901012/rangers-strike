@@ -2490,10 +2490,10 @@ const PATTERNS: PatternMatch[] = [
         trigger,
         condition: {
           type: "has_target",
-          target: zone("rush", "opponent", { maxBp }),
+          target: zone("rush", "opponent", { cardType: "unit", maxBp }),
         },
         effects: [
-          chooseUnit(zone("rush", "opponent", { maxBp }), 1, [
+          chooseUnit(zone("rush", "opponent", { cardType: "unit", maxBp }), 1, [
             { type: "discard", target: { type: "trigger_source" } },
           ]),
         ],

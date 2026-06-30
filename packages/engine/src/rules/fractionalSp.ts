@@ -1,6 +1,7 @@
 import { isSpFraction, type SpFraction, type SpValue, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
+import { logicalBattlePosition } from "../rules/battleLine";
 
 export function parseSpFraction(sp: SpValue | undefined): SpFraction | null {
   if (!isSpFraction(sp)) return null;
@@ -22,8 +23,7 @@ export function battlePositionOneBased(
   battle: CardInstance[],
   instanceId: string,
 ): number | null {
-  const index = battle.findIndex((card) => card.instanceId === instanceId);
-  return index >= 0 ? index + 1 : null;
+  return logicalBattlePosition(battle, instanceId);
 }
 
 export function resolveInstanceSpValue(

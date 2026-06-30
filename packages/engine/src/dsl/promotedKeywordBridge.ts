@@ -22,6 +22,12 @@ export const ENGINE_NATIVE_KEYWORDS = new Set([
   "ride_bp_boost_1000",
 ]);
 
+const ENGINE_NATIVE_KEYWORD_PATTERNS = [
+  /^ride_bp_boost_\d+$/,
+  /^ride_attack_bp_boost_\d+$/,
+  /^attacked_bp_boost_\d+$/,
+] as const;
+
 const ENGINE_NATIVE_PREFIXES = [
   "ride_without_rc_",
   "ride_command_without_rc_",
@@ -32,6 +38,7 @@ export function isEngineNativeGrantKeyword(keyword: string): boolean {
   if (/^(call|lead|taxis)_(MA|ET|DA|WB|OT)$/.test(keyword)) return true;
   if (/^cross\d+$/.test(keyword)) return true;
   if (keyword.startsWith("attacked_bp_boost_")) return true;
+  if (ENGINE_NATIVE_KEYWORD_PATTERNS.some((re) => re.test(keyword))) return true;
   return ENGINE_NATIVE_PREFIXES.some((prefix) => keyword.startsWith(prefix));
 }
 
@@ -41,6 +48,40 @@ export function attackedBpBoostAmount(cardId: string): number {
     if (match) return Number(match[1]);
   }
   return 0;
+}
+
+export function rideBpBoostAmount(vehicleCardId: string): number {
+  let total = 0;
+  for (const keyword of listCardGrantKeywords(vehicleCardId)) {
+    const match = keyword.match(/^ride_bp_boost_(\d+)$/);
+    if (match) total += Number(match[1]);
+  }
+  return total;
+}
+
+export function rideAttackBpBoostAmount(vehicleCardId: string): number {
+  let total = 0;
+  for (const keyword of listCardGrantKeywords(vehicleCardId)) {
+    const match = keyword.match(/^ride_attack_bp_boost_(\d+)$/);
+    if (match) total += Number(match[1]);
+  }
+  return total;
+}
+
+/** ライド中ユニットが乗るビークルの常時 BP ボーナス（effectiveBp）。 */
+export function rideMountedVehicleBpBonus(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number {
+  const vehicleInstanceId = instance.mountedOnInstanceId;
+  if (!vehicleInstanceId) return 0;
+  const player = state.players[playerId];
+  const vehicle =
+    player.battle.find((c) => c.instanceId === vehicleInstanceId) ??
+    player.rush.find((c) => c.instanceId === vehicleInstanceId);
+  if (!vehicle) return 0;
+  return rideBpBoostAmount(vehicle.cardId);
 }
 
 function featureSlug(feature: string): string {

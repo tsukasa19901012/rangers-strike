@@ -32,6 +32,7 @@
           "zone": "rush",
           "owner": "opponent",
           "filter": {
+            "cardType": "unit",
             "maxBp": 3000
           }
         }
@@ -45,6 +46,7 @@
             "zone": "rush",
             "owner": "opponent",
             "filter": {
+              "cardType": "unit",
               "maxBp": 3000
             }
           },

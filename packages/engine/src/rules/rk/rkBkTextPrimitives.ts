@@ -136,11 +136,18 @@ export function buildRkBkStructuredPrimitives(
     default:
       if (/敵軍.*ユニット.*選び.*撃破/.test(body)) {
         const zone = /ラッシュ/.test(body) ? "rush" : "battle";
+        const maxBp = Number(body.match(/BPが(\d+)以下/)?.[1] ?? body.match(/本来のBPが(\d+)以下/)?.[1]);
+        const maxPowerCost = Number(body.match(/必要パワーの数字が(\d+)以下/)?.[1]);
+        const filter = {
+          cardType: "unit" as const,
+          ...(Number.isFinite(maxBp) && maxBp > 0 ? { maxBp } : {}),
+          ...(Number.isFinite(maxPowerCost) && maxPowerCost > 0 ? { maxPowerCost } : {}),
+        };
         return [
           {
             type: "choose",
             kind: "select_unit",
-            valid: { type: "zone", zone, owner: "opponent" },
+            valid: { type: "zone", zone, owner: "opponent", filter },
             count: 1,
             then: [{ type: "move", target: { type: "trigger_source" }, to: "discard" }],
           },

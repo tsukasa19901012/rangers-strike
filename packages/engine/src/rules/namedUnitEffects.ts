@@ -11,7 +11,12 @@ import {
   getDefinition,
   unitBp,
 } from "../core/catalog";
-import { attackedBpBoostAmount, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
+import {
+  attackedBpBoostAmount,
+  listCardGrantKeywords,
+  rideAttackBpBoostAmount,
+} from "../dsl/promotedKeywordBridge";
+import { findMountedVehicle } from "../keywords/ride";
 import { getDslEffectById } from "../dsl/effectLookup";
 import { passiveNamedFieldBpBonus } from "./fieldAuras";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
@@ -131,14 +136,13 @@ export function battleAttackerBpBonus(
 
   total += magiRedBoltAttackBpBonus(state, pending.attackerPlayerId, attacker.card);
 
-  // XG4-090 / XG4-066: vehicle gives rider a BP bonus when attacking
-  if (attacker.card.mountedOnInstanceId) {
-    const rusher = state.players[pending.attackerPlayerId];
-    const vehicle = rusher.rush.find(
-      (c) => c.instanceId === attacker.card.mountedOnInstanceId,
-    );
-    if (vehicle?.cardId === "XG4-090") total += 2000;
-    else if (vehicle?.cardId === "XG4-066") total += 1500;
+  const mountedVehicle = findMountedVehicle(
+    state,
+    pending.attackerPlayerId,
+    attacker.card,
+  );
+  if (mountedVehicle) {
+    total += rideAttackBpBoostAmount(mountedVehicle.cardId);
   }
 
   return total;

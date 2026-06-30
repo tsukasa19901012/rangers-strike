@@ -7,7 +7,7 @@ import type {
 import type { GameState, PlayerId } from "../types/game";
 import { getCardDslDocument } from "./effectLookup";
 import { SUPPORTED_GRANT_KEYWORDS } from "./grantKeyword";
-import { collectTargetInstanceIds } from "./targetSelectors";
+import { collectTargetInstanceIds, augmentChooseValidSelector } from "./targetSelectors";
 
 export function getCardDocument(cardId: string) {
   return getCardDslDocument(cardId);
@@ -97,11 +97,20 @@ export function evaluateDslCondition(
   playerId: PlayerId,
   condition: EffectCondition | undefined,
   operationInstanceId?: string,
+  effectEffects?: EffectPrimitive[],
 ): boolean {
   if (!condition || condition.type === "always") return true;
   if (condition.type === "has_target") {
+    let target = condition.target;
+    const chooseUnit = effectEffects?.find(
+      (p): p is Extract<EffectPrimitive, { type: "choose" }> =>
+        p.type === "choose" && p.kind === "select_unit",
+    );
+    if (chooseUnit) {
+      target = augmentChooseValidSelector(target, "select_unit");
+    }
     return (
-      collectTargetInstanceIds(state, playerId, condition.target, operationInstanceId)
+      collectTargetInstanceIds(state, playerId, target, operationInstanceId)
         .length > 0
     );
   }

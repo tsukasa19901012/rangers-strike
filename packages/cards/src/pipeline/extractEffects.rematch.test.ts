@@ -80,6 +80,14 @@ describe("rematchExtractedEffect (M20)", () => {
     );
     expect(built?.matchedPattern).toBe("destroy_rush_original_bp");
     expect(built?.effects[0]?.type).toBe("choose");
+    const choose = built?.effects[0];
+    if (choose?.type === "choose" && choose.valid.type === "zone") {
+      expect(choose.valid.filter?.cardType).toBe("unit");
+      expect(choose.valid.filter?.maxBp).toBe(3000);
+    }
+    if (built?.condition?.type === "has_target" && built.condition.target.type === "zone") {
+      expect(built.condition.target.filter?.cardType).toBe("unit");
+    }
   });
 
   it("matches stack S on rush (RK-013)", () => {

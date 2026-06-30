@@ -12,7 +12,11 @@ import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { hasCommandForCardUse } from "../rules/restrictions";
 import { isDslPermanentOperation } from "../dsl/dslCatalog";
-import { cardHasGrantKeyword, promotedKeywordBpBonus } from "../dsl/promotedKeywordBridge";
+import {
+  cardHasGrantKeyword,
+  promotedKeywordBpBonus,
+  rideMountedVehicleBpBonus,
+} from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
@@ -289,7 +293,8 @@ export function effectiveBp(
     instanceBp(state.definitions, instance) +
     passiveBpBonus(state, playerId, instance) +
     passiveNamedFieldBpBonus(state, playerId, instance, "general") +
-    promotedKeywordBpBonus(state, playerId, instance);
+    promotedKeywordBpBonus(state, playerId, instance) +
+    rideMountedVehicleBpBonus(state, playerId, instance);
   const floor = srBigBatonBpFloor(state, playerId, instance);
   return floor > 0 ? Math.max(base, floor) : base;
 }

@@ -19,6 +19,7 @@ import {
   isDslInterpretableEffect,
 } from "./dslCatalog";
 import {
+  augmentChooseValidSelector,
   collectTargetInstanceIds,
   isValidOwnSmallUnitTarget,
   resolveTargetInstanceId,
@@ -305,10 +306,11 @@ function applyPrimitive(
       return { state: result.state, detail: result.detail ?? primitive.effectId };
     }
     case "choose": {
+      const validSelector = augmentChooseValidSelector(primitive.valid, primitive.kind);
       let validInstanceIds = collectTargetInstanceIds(
         state,
         ctx.playerId,
-        primitive.valid,
+        validSelector,
         ctx.operationInstanceId,
       );
       let viewedInstanceIds: string[] | undefined;
@@ -415,7 +417,7 @@ export function tryResolveDslOperation(args: {
     discardOperation: true,
   };
 
-  if (!evaluateDslCondition(args.state, args.playerId, effect.condition, ctx.operationInstanceId)) {
+  if (!evaluateDslCondition(args.state, args.playerId, effect.condition, ctx.operationInstanceId, effect.effects)) {
     return {
       state: args.state,
       detail: "no_valid_target",
