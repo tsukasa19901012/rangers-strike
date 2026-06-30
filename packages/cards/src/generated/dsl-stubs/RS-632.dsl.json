@@ -62,18 +62,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト",
-      "rule": "register"
-    },
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

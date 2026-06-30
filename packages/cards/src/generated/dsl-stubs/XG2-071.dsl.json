@@ -48,13 +48,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは敵軍Sユニットにアタックされない。",
-      "rule": "no_attack_from_enemy_s"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

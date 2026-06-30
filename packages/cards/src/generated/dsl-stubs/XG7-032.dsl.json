@@ -85,23 +85,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※クロス1",
-      "rule": "cross1"
-    },
-    {
-      "kind": "note",
-      "text": "※ブレイカー",
-      "rule": "breaker"
-    },
-    {
-      "kind": "note",
-      "text": "※これは「仮面ライダー1号」または「仮面ライダー2号」としてつかえる。",
-      "rule": "dual_name_alias::仮面ライダー1号_or_仮面ライダー2号"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

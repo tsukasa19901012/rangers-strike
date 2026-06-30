@@ -54,13 +54,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは「仮面ライダー龍騎」または「仮面ライダーナイト」としてつかえる。",
-      "rule": "dual_name_alias::仮面ライダー龍騎_or_仮面ライダーナイト"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -85,11 +85,6 @@
           "XG3-073"
         ]
       ]
-    },
-    {
-      "kind": "note",
-      "text": "※ブラスト",
-      "rule": "blast"
     }
   ],
   "implementation": {

@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐（場に配置して、離れるまで効果が有効になる） 敵軍ターン中、自軍Sユニットが撃破されて捨札になったとき、自軍コマンドを1つホールドして次の効果を発動できる⇒そのユニットカードを自軍山札の下に戻す。",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

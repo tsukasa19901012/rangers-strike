@@ -69,11 +69,6 @@
   ],
   "unnamedRules": [
     {
-      "kind": "note",
-      "text": "※クロス1",
-      "rule": "cross1"
-    },
-    {
       "kind": "fusion",
       "text": "※これは「爆竜ティラノサウルス」としてつかえる。",
       "rule": "fusion_material_alias",

@@ -69,11 +69,6 @@
   ],
   "unnamedRules": [
     {
-      "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    },
-    {
       "kind": "fusion",
       "text": "※これは「仮面ライダー龍騎」としてつかえる。",
       "rule": "fusion_material_alias",

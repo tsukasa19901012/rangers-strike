@@ -69,18 +69,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※クロス1",
-      "rule": "cross1"
-    },
-    {
-      "kind": "note",
-      "text": "※これは「仮面ライダーディケイド」または「仮面ライダークウガ」としてつかえる。",
-      "rule": "dual_name_alias::仮面ライダーディケイド_or_仮面ライダークウガ"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

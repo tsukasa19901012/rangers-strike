@@ -51,13 +51,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは相手に選ばれない。",
-      "rule": "not_selectable"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -48,13 +48,6 @@
       "optional": false
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※コールOT（このユニットはOTのユニットをラッシュするためのコマンドとしてホールドできる）",
-      "rule": "call_OT"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

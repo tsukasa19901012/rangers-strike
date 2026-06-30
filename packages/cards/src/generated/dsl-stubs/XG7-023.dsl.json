@@ -58,13 +58,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※ブレイカー",
-      "rule": "breaker"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

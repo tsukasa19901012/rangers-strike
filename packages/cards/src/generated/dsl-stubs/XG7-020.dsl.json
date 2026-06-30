@@ -66,18 +66,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※クロス1",
-      "rule": "cross1"
-    },
-    {
-      "kind": "note",
-      "text": "※タクスMA",
-      "rule": "taxis_MA"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -65,18 +65,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    },
-    {
-      "kind": "note",
-      "text": "※リードWB",
-      "rule": "lead_WB"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

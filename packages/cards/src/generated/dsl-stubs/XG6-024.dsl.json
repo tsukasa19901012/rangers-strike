@@ -93,21 +93,6 @@
   ],
   "unnamedRules": [
     {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    },
-    {
-      "kind": "note",
-      "text": "※タクスMA",
-      "rule": "taxis_MA"
-    },
-    {
-      "kind": "note",
-      "text": "※レジスト",
-      "rule": "register"
-    },
-    {
       "kind": "fusion",
       "text": "※これは「グランディオン」としてつかえる。",
       "rule": "fusion_material_alias",

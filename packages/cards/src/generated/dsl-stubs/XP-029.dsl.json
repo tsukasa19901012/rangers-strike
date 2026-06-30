@@ -86,11 +86,6 @@
   "unnamedRules": [
     {
       "kind": "note",
-      "text": "※ブレイカー",
-      "rule": "breaker"
-    },
-    {
-      "kind": "note",
       "text": "※これは毎ターン、可能ならバトルエリアに出る。",
       "rule": "auto_battle_entry_each_turn"
     }

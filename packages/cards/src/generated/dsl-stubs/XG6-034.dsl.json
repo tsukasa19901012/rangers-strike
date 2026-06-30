@@ -45,21 +45,17 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    },
-    {
-      "kind": "note",
-      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 （このテキストはリードMAを持つ自軍ユニットがあるとき無効になる）",
-      "rule": "require_command_hold_entry"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 （このテキストはリードMAを持つ自軍ユニットがあるとき無効になる）",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ]
 }

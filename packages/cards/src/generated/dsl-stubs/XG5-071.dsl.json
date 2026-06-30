@@ -63,18 +63,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト",
-      "rule": "register"
-    },
-    {
-      "kind": "note",
-      "text": "※リードMA",
-      "rule": "lead_MA"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

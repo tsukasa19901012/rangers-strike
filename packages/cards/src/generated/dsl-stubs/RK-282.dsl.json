@@ -50,13 +50,6 @@
       "optional": false
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
-      "rule": "register"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

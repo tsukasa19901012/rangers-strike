@@ -43,10 +43,7 @@ export function emitUnitRushedAndFinalize(
     rushedInstanceId,
     phasePlayerId,
   );
-  if (
-    withMorph.pendingMorph ||
-    withMorph.pendingEffectChoice?.effectId === "morph_replacement"
-  ) {
+  if (withMorph.pendingMorph || withMorph.pendingEffectChoice) {
     return {
       state: withMorph,
       logs: resolved.logs,

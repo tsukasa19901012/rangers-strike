@@ -33,13 +33,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※コールWB",
-      "rule": "call_WB"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

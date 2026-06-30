@@ -63,18 +63,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    },
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

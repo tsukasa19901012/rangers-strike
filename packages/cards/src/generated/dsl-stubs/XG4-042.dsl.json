@@ -65,18 +65,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※タクスMA",
-      "rule": "taxis_MA"
-    },
-    {
-      "kind": "note",
-      "text": "※スクラム",
-      "rule": "scrum"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

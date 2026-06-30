@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐（場に配置して、離れるまで効果が有効になる） 特徴「ブルー」または「スワット」を持つ自軍ユニットは、次の能力を得る⇒スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない）",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -48,13 +48,6 @@
       "optional": true
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これはラッシュしたターンにバトルエリアに出られない。",
-      "rule": "no_battle_rush_turn"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

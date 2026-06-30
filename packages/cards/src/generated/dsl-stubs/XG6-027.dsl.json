@@ -47,13 +47,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※タクスMA",
-      "rule": "taxis_MA"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

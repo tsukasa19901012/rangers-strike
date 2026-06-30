@@ -56,13 +56,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※クロス1",
-      "rule": "cross1"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -24,6 +24,12 @@
       "kind": "note",
       "text": "※これは「マジガルーダ」としてつかえる。",
       "rule": "fusion_material_alias"
+    },
+    {
+      "kind": "fusion",
+      "text": "※これは「マジガルーダ」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
     }
   ],
   "effects": [

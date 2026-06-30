@@ -48,13 +48,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※タクスET",
-      "rule": "taxis_ET"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -102,7 +102,13 @@ describe("effect taxonomy (Legend1 units)", () => {
       "RS-097",
       "RS-098",
     ]);
-    expect(listZordFusionPartnerIds("RS-112")).toEqual(["RS-115", "XG3-029"]);
+    expect(listZordFusionPartnerIds("RS-112")).toEqual([
+      "RS-115",
+      "XG3-029",
+      "RS-114",
+      "RS-581",
+      "XG3-028",
+    ]);
     expect(listZordFusionPartnerIds("RS-113")).toEqual([
       "RS-057",
       "RS-576",

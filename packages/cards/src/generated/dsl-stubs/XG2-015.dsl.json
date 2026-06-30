@@ -48,13 +48,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※コールMA",
-      "rule": "call_MA"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

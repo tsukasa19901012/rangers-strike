@@ -55,18 +55,31 @@
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―獅子折神＋龍折神＋亀折神＋熊折神＋猿折神 ※ブラスト",
+      "text": "合体―獅子折神＋龍折神＋亀折神＋熊折神＋猿折神",
       "partnerCardIds": [
         "RS-680",
         "RS-681",
         "RS-682",
-        "RS-683"
+        "RS-683",
+        "RS-684"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-680"
+        ],
+        [
+          "RS-681"
+        ],
+        [
+          "RS-682"
+        ],
+        [
+          "RS-683"
+        ],
+        [
+          "RS-684"
+        ]
       ]
-    },
-    {
-      "kind": "note",
-      "text": "※ブラスト",
-      "rule": "blast"
     }
   ],
   "implementation": {

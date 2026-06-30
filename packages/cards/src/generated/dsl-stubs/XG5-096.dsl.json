@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐 特徴に「メカ」と「人型」を持つすべてのユニットは、カテゴリにDAが追加され、毎ターン可能ならバトルエリアに出る。",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

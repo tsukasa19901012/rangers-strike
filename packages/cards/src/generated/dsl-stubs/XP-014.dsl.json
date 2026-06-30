@@ -66,18 +66,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    },
-    {
-      "kind": "note",
-      "text": "※レジスト",
-      "rule": "register"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

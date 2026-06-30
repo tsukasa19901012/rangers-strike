@@ -62,11 +62,22 @@
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―デカレッド＋マーフィーK9 ※これはアタックされるとき、BP＋5000される。",
+      "text": "合体―デカレッド＋マーフィーK9",
       "partnerCardIds": [
         "PR-006",
         "RS-106",
-        "RS-403"
+        "RS-403",
+        "RS-404"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "PR-006",
+          "RS-106",
+          "RS-403"
+        ],
+        [
+          "RS-404"
+        ]
       ]
     }
   ],

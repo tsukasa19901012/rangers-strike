@@ -51,18 +51,31 @@
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―ギンガレオン＋ギンガルコン＋ギンガリラ＋ギンガベリック＋ギンガット ※ブラスト",
+      "text": "合体―ギンガレオン＋ギンガルコン＋ギンガリラ＋ギンガベリック＋ギンガット",
       "partnerCardIds": [
         "RS-466",
         "RS-467",
         "RS-468",
-        "RS-469"
+        "RS-469",
+        "RS-470"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-466"
+        ],
+        [
+          "RS-467"
+        ],
+        [
+          "RS-468"
+        ],
+        [
+          "RS-469"
+        ],
+        [
+          "RS-470"
+        ]
       ]
-    },
-    {
-      "kind": "note",
-      "text": "※ブラスト",
-      "rule": "blast"
     }
   ],
   "implementation": {

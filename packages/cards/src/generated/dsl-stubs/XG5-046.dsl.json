@@ -62,11 +62,6 @@
   "unnamedRules": [
     {
       "kind": "note",
-      "text": "※コールMA",
-      "rule": "call_MA"
-    },
-    {
-      "kind": "note",
       "text": "※これは自軍ターン中バトルエリアに出られない。",
       "rule": "no_enter_battle_own_turn"
     }

@@ -52,13 +52,6 @@
       "optional": true
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これはアタックされるときBP+4000される。",
-      "rule": "attacked_bp_boost_4000"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -84,11 +84,6 @@
           "XG1-037"
         ]
       ]
-    },
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
     }
   ],
   "implementation": {

@@ -63,13 +63,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※リードET",
-      "rule": "lead_ET"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

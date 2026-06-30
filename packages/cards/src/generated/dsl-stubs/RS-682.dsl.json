@@ -62,18 +62,6 @@
       "optional": true
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト",
-      "rule": "register"
-    },
-    {
-      "kind": "note",
-      "text": "※これはアタックすることができない。",
-      "rule": "cannot_attack"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

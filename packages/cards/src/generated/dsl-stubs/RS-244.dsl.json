@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐（場に配置して、離れるまで効果が有効になる） 自分も相手も、ダメージが9点になるまでゲームに負けない。ただし、自分自身の山札からカードを引くべきときに引けなければゲームに負ける。",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

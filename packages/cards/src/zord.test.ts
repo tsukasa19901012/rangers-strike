@@ -135,4 +135,5 @@ describe("fusion partner registry", () => {
     expect(requiresFusionPartnerReturn("RS-176")).toBe(true);
     expect(fusionPartnerReturnCount("RS-117")).toBe(5);
   });
+
 });

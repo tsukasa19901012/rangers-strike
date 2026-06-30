@@ -88,18 +88,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※クロス1",
-      "rule": "cross1"
-    },
-    {
-      "kind": "note",
-      "text": "※コールWB",
-      "rule": "call_WB"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

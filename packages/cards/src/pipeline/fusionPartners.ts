@@ -44,13 +44,13 @@ function splitFusionPartnerNames(segment: string): string[] {
     if (char === "（") depth += 1;
     if (char === "）") depth -= 1;
     if ((char === "＋" || char === "+") && depth === 0) {
-      if (current.trim()) names.push(current.trim());
+      if (current.trim()) names.push(normalizePartnerName(current.trim()));
       current = "";
       continue;
     }
     current += char;
   }
-  if (current.trim()) names.push(current.trim());
+  if (current.trim()) names.push(normalizePartnerName(current.trim()));
   return names;
 }
 
@@ -86,9 +86,18 @@ function resolvePartnerSegment(rawName: string): string[] {
 
 /** 合体―行の末尾に続く ※無名ルール（ウイング等）を除く。 */
 function stripTrailingUnnamedRules(segment: string): string {
-  const noteIndex = segment.search(/ ※/);
-  if (noteIndex >= 0) return segment.slice(0, noteIndex).trim();
+  const noteIndex = segment.indexOf("※");
+  if (noteIndex >= 0) {
+    return segment
+      .slice(0, noteIndex)
+      .replace(/[＋+]\s*$/u, "")
+      .trim();
+  }
   return segment.trim();
+}
+
+function normalizePartnerName(name: string): string {
+  return name.replace(/^[-－ー─\s]+/u, "").trim();
 }
 
 /** 合体―行からパートナー名を抽出し cardId に解決（atwiki / カード文面）。 */

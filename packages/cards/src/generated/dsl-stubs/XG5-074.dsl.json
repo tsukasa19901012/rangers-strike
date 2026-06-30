@@ -62,18 +62,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    },
-    {
-      "kind": "note",
-      "text": "※コールDA",
-      "rule": "call_DA"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

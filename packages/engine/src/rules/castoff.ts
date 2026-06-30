@@ -1,11 +1,10 @@
-import type { Category } from "@rangers-strike/cards";
-import { cardCategories } from "@rangers-strike/cards";
+import type { CardDefinition, Category } from "@rangers-strike/cards";
+import { canonicalCardName, cardCategories, needsZordDownPayment } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import {
   canRushUnitExceptCommandHold,
   cardName,
   getDefinition,
-  parsePowerCost,
   rushPowerCost,
 } from "../core/catalog";
 import { removeAt, updatePlayer } from "../core/helpers";
@@ -13,7 +12,7 @@ import { listDslEffectsForTrigger } from "../dsl/effectLookup";
 import { payPowerCost } from "../core/power";
 import { emitUnitRushedAndFinalize } from "../events/emitUnitRushed";
 import { findZordDownMaterial, applyZordDownMaterial } from "./zordDown";
-import { needsZordDownPayment } from "@rangers-strike/cards";
+import { applyZordMaterial, findZordMaterial, needsZordMaterial } from "./zord";
 import { openEffectChoice } from "./pendingChoices";
 import { markRushedThisTurn } from "./turnModifiers";
 
@@ -48,9 +47,29 @@ function deckCardsMatchingName(
   targetName: string,
 ): string[] {
   const player = state.players[playerId];
+  const target = canonicalCardName(targetName);
   return player.deck
-    .filter((card) => cardName(state.definitions, card.cardId) === targetName)
+    .filter(
+      (card) =>
+        canonicalCardName(cardName(state.definitions, card.cardId)) === target,
+    )
     .map((card) => card.instanceId);
+}
+
+/** キャストオフ元 MF（ラッシュ済み）を、山札からラッシュするカードの追加条件素材に使う。 */
+function castoffZordMaterialInstanceId(
+  definitions: Record<string, CardDefinition>,
+  deckCardId: string,
+  def: CardDefinition,
+  mfInstanceId: string,
+): string | undefined {
+  if (needsZordDownPayment(deckCardId, def.powerCost, def)) {
+    return mfInstanceId;
+  }
+  if (needsZordMaterial(definitions, deckCardId)) {
+    return mfInstanceId;
+  }
+  return undefined;
 }
 
 function canCastoffRushDeckCard(
@@ -65,9 +84,12 @@ function canCastoffRushDeckCard(
   const def = getDefinition(state.definitions, deckCard.cardId);
   if (!def || def.type !== "unit") return false;
 
-  const zordMaterialInstanceId = needsZordDownPayment(deckCard.cardId, def.powerCost, def)
-    ? mfInstanceId
-    : undefined;
+  const zordMaterialInstanceId = castoffZordMaterialInstanceId(
+    state.definitions,
+    deckCard.cardId,
+    def,
+    mfInstanceId,
+  );
 
   return canRushUnitExceptCommandHold(
     player,
@@ -169,9 +191,12 @@ export function applyCastoffDeckRush(
   const def = getDefinition(state.definitions, deckCard.cardId);
   if (!def) return null;
 
-  const zordMaterialInstanceId = needsZordDownPayment(deckCard.cardId, def.powerCost, def)
-    ? mfInstanceId
-    : undefined;
+  const zordMaterialInstanceId = castoffZordMaterialInstanceId(
+    state.definitions,
+    deckCard.cardId,
+    def,
+    mfInstanceId,
+  );
 
   if (
     !canRushUnitExceptCommandHold(
@@ -198,16 +223,28 @@ export function applyCastoffDeckRush(
   );
 
   if (zordMaterialInstanceId) {
-    const applied = applyZordDownMaterial(
-      nextPlayer,
-      state.definitions,
-      deckCard.cardId,
-      deckInstanceId,
-      zordMaterialInstanceId,
-      undefined,
-    );
-    if (!applied) return null;
-    nextPlayer = applied;
+    if (needsZordDownPayment(deckCard.cardId, def.powerCost, def)) {
+      const applied = applyZordDownMaterial(
+        nextPlayer,
+        state.definitions,
+        deckCard.cardId,
+        deckInstanceId,
+        zordMaterialInstanceId,
+        undefined,
+      );
+      if (!applied) return null;
+      nextPlayer = applied;
+    } else if (needsZordMaterial(state.definitions, deckCard.cardId)) {
+      const applied = applyZordMaterial(
+        nextPlayer,
+        state.definitions,
+        deckCard.cardId,
+        deckInstanceId,
+        zordMaterialInstanceId,
+      );
+      if (!applied) return null;
+      nextPlayer = applied;
+    }
   }
 
   if (!payPowerCost({ ...state, players: { ...state.players, [playerId]: nextPlayer } }, playerId, cost)) {
@@ -217,13 +254,21 @@ export function applyCastoffDeckRush(
   const [, remainingDeck] = removeAt(nextPlayer.deck, deckIndex);
   let rushCard = deckCard;
   if (zordMaterialInstanceId) {
-    const material = findZordDownMaterial(
-      player,
-      state.definitions,
-      deckCard.cardId,
-      deckInstanceId,
-      zordMaterialInstanceId,
-    );
+    const material =
+      findZordDownMaterial(
+        player,
+        state.definitions,
+        deckCard.cardId,
+        deckInstanceId,
+        zordMaterialInstanceId,
+      ) ??
+      findZordMaterial(
+        player,
+        state.definitions,
+        deckCard.cardId,
+        deckInstanceId,
+        zordMaterialInstanceId,
+      );
     if (material) {
       rushCard = { ...rushCard, zordMaterialCardId: material.card.cardId };
     }

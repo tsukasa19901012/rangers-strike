@@ -79,13 +79,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットを1体捨札にしなければバトルエリアに出られない。",
-      "rule": "require_discard_rush_feature_to_battle"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

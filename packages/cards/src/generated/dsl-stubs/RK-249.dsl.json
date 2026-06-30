@@ -39,18 +39,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐 自軍ラッシュフェイズごとに1度だけ、特徴「ミラーライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒",
-      "rule": "resident"
-    },
-    {
-      "kind": "note",
-      "text": "※コールWB（このユニットはWBのユニットをラッシュするためのコマンドとしてホールドできる）",
-      "rule": "call_WB"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

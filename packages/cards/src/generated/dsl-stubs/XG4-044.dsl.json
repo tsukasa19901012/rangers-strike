@@ -51,13 +51,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト",
-      "rule": "register"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -55,16 +55,23 @@
   "unnamedRules": [
     {
       "kind": "zord",
-      "text": "合体―ジェットイカロス（またはジェットマシン）＋ジェットガルーダ（またはバードガルーダ） ※ブラスト",
+      "text": "合体―ジェットイカロス（またはジェットマシン）＋ジェットガルーダ（またはバードガルーダ）",
       "partnerCardIds": [
         "RS-618",
-        "RS-619"
+        "RS-619",
+        "RS-620",
+        "RS-621"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "RS-618",
+          "RS-619"
+        ],
+        [
+          "RS-620",
+          "RS-621"
+        ]
       ]
-    },
-    {
-      "kind": "note",
-      "text": "※ブラスト",
-      "rule": "blast"
     }
   ],
   "implementation": {

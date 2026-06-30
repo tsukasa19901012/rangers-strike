@@ -67,11 +67,6 @@
       "kind": "note",
       "text": "※これは毎ターン、可能ならバトルエリアに出る。",
       "rule": "auto_battle_entry_each_turn"
-    },
-    {
-      "kind": "note",
-      "text": "※これはアタックすることができない。",
-      "rule": "cannot_attack"
     }
   ],
   "implementation": {

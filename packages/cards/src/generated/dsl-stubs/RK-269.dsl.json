@@ -68,11 +68,6 @@
       "kind": "note",
       "text": "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。",
       "rule": "destroy_on_win_vs_sp1"
-    },
-    {
-      "kind": "note",
-      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
-      "rule": "no_strike_if_enemy_battle"
     }
   ],
   "implementation": {

@@ -51,13 +51,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは、チェイスを持つ自軍ユニットがあるか、ライドされている間、Sビークルとして扱う。",
-      "rule": "chase_or_ridden_s_vehicle_alias"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

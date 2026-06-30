@@ -30,13 +30,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これにライドしているユニットは、アタックするときBP+2000される。",
-      "rule": "ride_attack_bp_boost_2000"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

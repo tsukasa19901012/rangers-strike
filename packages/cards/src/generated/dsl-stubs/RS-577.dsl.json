@@ -70,11 +70,6 @@
       "text": "※これは「マジフェニックス」としてつかえる。",
       "rule": "fusion_material_alias",
       "partnerCardIds": []
-    },
-    {
-      "kind": "note",
-      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
-      "rule": "register"
     }
   ],
   "implementation": {

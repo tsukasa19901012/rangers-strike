@@ -66,11 +66,6 @@
   ],
   "unnamedRules": [
     {
-      "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    },
-    {
       "kind": "fusion",
       "text": "※これは「仮面ライダーファイズ」としてつかえる。",
       "rule": "fusion_material_alias",

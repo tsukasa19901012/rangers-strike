@@ -46,16 +46,17 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
-      "rule": "require_command_hold_entry"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ]
 }

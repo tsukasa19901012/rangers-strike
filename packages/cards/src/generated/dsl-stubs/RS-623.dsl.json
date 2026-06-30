@@ -61,18 +61,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    },
-    {
-      "kind": "note",
-      "text": "※ウイング、BP+2000",
-      "rule": "wing"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -69,11 +69,6 @@
           "XG3-034"
         ]
       ]
-    },
-    {
-      "kind": "note",
-      "text": "※ブラスト",
-      "rule": "blast"
     }
   ],
   "implementation": {

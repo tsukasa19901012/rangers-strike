@@ -52,13 +52,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これはDAを持たないユニットにアタックすることができない。",
-      "rule": "cannot_attack_non_da"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

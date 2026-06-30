@@ -66,18 +66,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト",
-      "rule": "register"
-    },
-    {
-      "kind": "note",
-      "text": "※タクスET",
-      "rule": "taxis_ET"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

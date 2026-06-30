@@ -49,13 +49,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これはバトルエリアにあるとき、カテゴリにWBが追加される。",
-      "rule": "category_wb_in_battle"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

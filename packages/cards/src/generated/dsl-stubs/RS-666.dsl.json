@@ -48,11 +48,6 @@
   "unnamedRules": [
     {
       "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    },
-    {
-      "kind": "note",
       "text": "※敵軍ターン中、これが撃破されて捨札になったとき、自軍パワーゾーンに置いてもよい。",
       "rule": "to_power_on_destroy"
     }

@@ -79,20 +79,10 @@
   ],
   "unnamedRules": [
     {
-      "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    },
-    {
       "kind": "fusion",
       "text": "※これは「仮面ライダー電王SF」としてつかえる。",
       "rule": "fusion_material_alias",
       "partnerCardIds": []
-    },
-    {
-      "kind": "note",
-      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
-      "rule": "no_strike_if_enemy_battle"
     }
   ],
   "implementation": {

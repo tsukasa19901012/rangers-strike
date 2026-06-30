@@ -60,18 +60,19 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
-      "rule": "require_command_hold_entry"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
   },
   "imageUrl": "/cards/promoted/RS-227.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-227.jpg"
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-227.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ]
 }

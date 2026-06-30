@@ -48,13 +48,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※ホールド状態のコマンドがあるとき、これはストライクできない。",
-      "rule": "no_strike_with_held_command"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

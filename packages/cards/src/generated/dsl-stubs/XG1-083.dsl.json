@@ -51,13 +51,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※チェイス",
-      "rule": "chase"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

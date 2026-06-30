@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐 自軍バトルフェイズ中、自軍ラッシュエリアから、ライドされていない特徴「獣」を持つMビークルを1体選んでもよい。そうしたとき、選んだビークルは、このターン、テキストを持たないMユニットとして扱い、次の情報が追加される⇒「BP3000」「SP空欄」",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

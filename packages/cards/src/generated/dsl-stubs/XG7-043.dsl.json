@@ -83,18 +83,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※クロス1",
-      "rule": "cross1"
-    },
-    {
-      "kind": "note",
-      "text": "※これはアタックされる以外では相手に選ばれない。",
-      "rule": "not_selectable_except_attack"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

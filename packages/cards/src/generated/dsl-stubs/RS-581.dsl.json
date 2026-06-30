@@ -56,13 +56,6 @@
       "optional": false
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※このビークルは合体ユニットとしてつかえる。",
-      "rule": "fusion_vehicle_alias"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

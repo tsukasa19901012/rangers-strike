@@ -68,18 +68,19 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。",
-      "rule": "require_command_hold_entry"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
   },
   "imageUrl": "/cards/promoted/RK-312.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-312.jpg"
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-312.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。",
+      "rule": "battle_entry_hold",
+      "holdCount": 2
+    }
+  ]
 }

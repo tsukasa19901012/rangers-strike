@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐 カテゴリにETを持つ自軍ユニットがストライクしてダメージを与えたとき、自軍捨札からSユニットのカードを相手に1枚選ばせてもよい。そうしたとき、相手の選んだユニットカードを自分の手札に加える。",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

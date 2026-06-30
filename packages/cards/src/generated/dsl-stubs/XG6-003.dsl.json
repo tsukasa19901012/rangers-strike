@@ -82,16 +82,6 @@
           "RS-226"
         ]
       ]
-    },
-    {
-      "kind": "note",
-      "text": "※ブレイカー",
-      "rule": "breaker"
-    },
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
     }
   ],
   "implementation": {

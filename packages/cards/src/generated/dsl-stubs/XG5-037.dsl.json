@@ -87,18 +87,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    },
-    {
-      "kind": "note",
-      "text": "※リードMA",
-      "rule": "lead_MA"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

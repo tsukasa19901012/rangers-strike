@@ -74,11 +74,6 @@
           "XG6-006"
         ]
       ]
-    },
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
     }
   ],
   "implementation": {

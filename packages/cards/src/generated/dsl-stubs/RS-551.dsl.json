@@ -85,13 +85,6 @@
       "optional": false
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」を得る）",
-      "rule": "taxis_MA"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

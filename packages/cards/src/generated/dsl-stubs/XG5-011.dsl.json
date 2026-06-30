@@ -31,13 +31,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※リードDA",
-      "rule": "lead_DA"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -51,13 +51,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※コールET",
-      "rule": "call_ET"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

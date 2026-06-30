@@ -55,13 +55,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※ブラスト",
-      "rule": "blast"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

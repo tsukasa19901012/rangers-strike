@@ -64,11 +64,6 @@
   "unnamedRules": [
     {
       "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    },
-    {
-      "kind": "note",
       "text": "※これは毎ターン可能ならバトルエリアに出る。",
       "rule": "auto_battle_entry_each_turn"
     }

@@ -81,11 +81,6 @@
   ],
   "unnamedRules": [
     {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    },
-    {
       "kind": "fusion",
       "text": "※これは「スカイライダー」としてつかえる。",
       "rule": "fusion_material_alias",

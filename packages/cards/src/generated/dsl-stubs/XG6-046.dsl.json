@@ -64,13 +64,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※リードOT",
-      "rule": "lead_OT"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

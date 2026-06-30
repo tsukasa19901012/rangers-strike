@@ -47,13 +47,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これはSユニットにアタックすることができない。",
-      "rule": "cannot_attack_s"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -64,18 +64,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    },
-    {
-      "kind": "note",
-      "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。",
-      "rule": "no_strike_if_enemy_battle"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

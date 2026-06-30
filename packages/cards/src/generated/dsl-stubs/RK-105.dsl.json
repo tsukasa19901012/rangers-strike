@@ -50,13 +50,6 @@
       "optional": true
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これはライド中、BP+1000される。",
-      "rule": "ride_bp_boost_1000"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

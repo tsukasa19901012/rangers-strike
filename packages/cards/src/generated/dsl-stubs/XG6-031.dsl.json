@@ -79,13 +79,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは手札からしかラッシュできない。",
-      "rule": "rush_from_hand_only"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

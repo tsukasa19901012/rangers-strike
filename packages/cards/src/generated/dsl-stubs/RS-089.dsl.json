@@ -26,6 +26,12 @@
       "kind": "note",
       "text": "※これは「Vレスキュー」としてつかえる。",
       "rule": "fusion_material_alias"
+    },
+    {
+      "kind": "fusion",
+      "text": "※これは「Vレスキュー」としてつかえる。",
+      "rule": "fusion_material_alias",
+      "partnerCardIds": []
     }
   ],
   "effects": [

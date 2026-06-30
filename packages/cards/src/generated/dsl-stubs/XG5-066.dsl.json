@@ -49,13 +49,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※リードWB",
-      "rule": "lead_WB"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

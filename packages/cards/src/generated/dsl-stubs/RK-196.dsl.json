@@ -49,13 +49,6 @@
       "optional": true
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジストを持つ敵軍ユニットがなければ、これはバトルエリアに出られない。",
-      "rule": "register"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

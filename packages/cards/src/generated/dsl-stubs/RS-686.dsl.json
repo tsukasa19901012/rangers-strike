@@ -104,11 +104,6 @@
           "RS-667"
         ]
       ]
-    },
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
     }
   ],
   "implementation": {

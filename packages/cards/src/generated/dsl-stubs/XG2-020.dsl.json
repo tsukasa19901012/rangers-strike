@@ -68,11 +68,6 @@
           "XG2-022"
         ]
       ]
-    },
-    {
-      "kind": "note",
-      "text": "※レジスト",
-      "rule": "register"
     }
   ],
   "implementation": {

@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※チェイス（これがユニットでなくなるとき、かわりにこれがライドしているビークルか、これの左隣にあるビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）。",
-      "rule": "chase"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -48,13 +48,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -84,13 +84,6 @@
       "optional": false
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これはライドオフしたときストライクできない。",
-      "rule": "no_strike_after_rideoff"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

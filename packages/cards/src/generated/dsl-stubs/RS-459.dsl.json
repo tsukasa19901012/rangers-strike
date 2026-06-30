@@ -69,11 +69,6 @@
       "text": "※これは「イエロークマード」としてつかえる。",
       "rule": "fusion_material_alias",
       "partnerCardIds": []
-    },
-    {
-      "kind": "note",
-      "text": "※タクスMA（これがバトルエリアの2番目にある間、これの次に並ぶMAを持つSユニットは「SP1」になる）",
-      "rule": "taxis_MA"
     }
   ],
   "implementation": {

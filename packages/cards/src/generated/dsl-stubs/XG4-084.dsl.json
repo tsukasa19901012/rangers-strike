@@ -82,13 +82,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※コールDA",
-      "rule": "call_DA"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

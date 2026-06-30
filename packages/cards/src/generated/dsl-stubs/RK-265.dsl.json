@@ -41,13 +41,6 @@
       "optional": true
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは、自軍Sユニットがバトルエリアにあれば、ライドされていなくてもバトルエリアに出ることができる。",
-      "rule": "can_enter_battle_without_ride"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

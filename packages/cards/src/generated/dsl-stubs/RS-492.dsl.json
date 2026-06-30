@@ -40,13 +40,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これにライドしているユニットはBP+1500される。",
-      "rule": "ride_bp_boost_1500"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

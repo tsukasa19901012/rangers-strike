@@ -31,13 +31,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない）",
-      "rule": "scrum"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

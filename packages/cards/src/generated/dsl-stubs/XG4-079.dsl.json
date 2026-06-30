@@ -78,20 +78,10 @@
   ],
   "unnamedRules": [
     {
-      "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    },
-    {
       "kind": "fusion",
       "text": "※これは「仮面ライダーカブトRF」としてつかえる。",
       "rule": "fusion_material_alias",
       "partnerCardIds": []
-    },
-    {
-      "kind": "note",
-      "text": "※これは敵軍Sユニットにアタックされない。",
-      "rule": "no_attack_from_enemy_s"
     }
   ],
   "implementation": {

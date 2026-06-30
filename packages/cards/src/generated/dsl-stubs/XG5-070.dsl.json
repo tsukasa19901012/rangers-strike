@@ -46,13 +46,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※このユニットは、リードMAを持つ自軍ユニットがあればBP+1000される。",
-      "rule": "lead_ma_bp_boost_1000"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

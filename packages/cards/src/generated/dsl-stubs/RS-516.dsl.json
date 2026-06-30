@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐 MAを持つSPが空欄のSユニットは、次の能力を得る⇒コールET（このユニットはETのユニットをラッシュするためのコマンドとしてホールドできる）",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

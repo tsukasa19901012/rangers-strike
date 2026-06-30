@@ -44,5 +44,29 @@ describe("parseZordFusionLine", () => {
       ["RS-667"],
     ]);
     expect(result?.partnerCardIds).toEqual(["RS-668", "RS-666", "RS-667"]);
+    expect(result?.text).toBe("合体―トリプター＋ジェットラス＋ジャン・ボエール");
+  });
+
+  it("strips blast note without a space before ※ (RS-679)", () => {
+    const result = parseZordFusionLine(
+      "合体―獅子折神＋龍折神＋亀折神＋熊折神＋猿折神※ブラスト 【ダイシンケン】",
+    );
+    expect(result?.partnerSlotCardIds).toHaveLength(5);
+    expect(result?.partnerCardIds).toEqual([
+      "RS-680",
+      "RS-681",
+      "RS-682",
+      "RS-683",
+      "RS-684",
+    ]);
+    expect(result?.text).not.toContain("※");
+  });
+
+  it("parses gaoranger fusion with leading dash typo (RS-648)", () => {
+    const result = parseZordFusionLine(
+      "合体―-ガオファルコン＋ガオライノス＋ガオマジロ＋ガオジュラフ＋ガオディアス ※ブラスト",
+    );
+    expect(result?.partnerSlotCardIds).toHaveLength(5);
+    expect(result?.partnerCardIds.length).toBeGreaterThanOrEqual(5);
   });
 });

@@ -31,13 +31,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※このカードはデッキに好きな枚数入れてもよい。",
-      "rule": "deck_unlimited"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

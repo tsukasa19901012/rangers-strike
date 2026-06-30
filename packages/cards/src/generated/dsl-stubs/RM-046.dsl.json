@@ -81,13 +81,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これはアタックすることができない。",
-      "rule": "cannot_attack"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

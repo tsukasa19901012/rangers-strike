@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐（場に配置して、離れるまで効果が有効になる） 自分も相手も次の制限を受ける。ターンを終えるときホールド状態のコマンドを1つ選んで手札に戻す。",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

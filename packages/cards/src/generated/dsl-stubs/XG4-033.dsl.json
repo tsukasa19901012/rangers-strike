@@ -62,18 +62,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    },
-    {
-      "kind": "note",
-      "text": "※タクスOT",
-      "rule": "taxis_OT"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -80,16 +80,6 @@
   ],
   "unnamedRules": [
     {
-      "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    },
-    {
-      "kind": "note",
-      "text": "※レジスト",
-      "rule": "register"
-    },
-    {
       "kind": "fusion",
       "text": "※これは「仮面ライダー響鬼」としてつかえる。",
       "rule": "fusion_material_alias",

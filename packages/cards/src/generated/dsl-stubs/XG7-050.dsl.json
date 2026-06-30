@@ -70,18 +70,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※クロス1",
-      "rule": "cross1"
-    },
-    {
-      "kind": "note",
-      "text": "※リードET",
-      "rule": "lead_ET"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

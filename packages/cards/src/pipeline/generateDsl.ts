@@ -36,7 +36,7 @@ const NOTE_RULE_BY_PATTERN: Record<string, string> = {
   morph_note: "morph",
 };
 
-function buildUnnamedRules(
+export function buildUnnamedRules(
   effects: ExtractedEffect[],
   cardText: string,
 ): UnnamedRuleEntry[] {
@@ -85,20 +85,32 @@ function buildUnnamedRules(
         partnerCardIds: alias ? [] : undefined,
       });
     } else if (eff.matchedPattern && NOTE_RULE_BY_PATTERN[eff.matchedPattern]) {
-      rules.push({
-        kind: "note",
-        text: eff.text,
-        rule: NOTE_RULE_BY_PATTERN[eff.matchedPattern],
-      });
+      const keyword = NOTE_RULE_BY_PATTERN[eff.matchedPattern];
+      const coveredByEffect = eff.effects?.some(
+        (p) => p.type === "grant_keyword" && p.keyword === keyword,
+      );
+      if (!coveredByEffect) {
+        rules.push({
+          kind: "note",
+          text: eff.text,
+          rule: keyword,
+        });
+      }
     } else if (
       eff.matchedPattern?.endsWith("_note") &&
       eff.effects?.[0]?.type === "grant_keyword"
     ) {
-      rules.push({
-        kind: "note",
-        text: eff.text,
-        rule: eff.effects[0].keyword,
-      });
+      const keyword = eff.effects[0].keyword;
+      const coveredByEffect = eff.effects.some(
+        (p) => p.type === "grant_keyword" && p.keyword === keyword,
+      );
+      if (!coveredByEffect) {
+        rules.push({
+          kind: "note",
+          text: eff.text,
+          rule: keyword,
+        });
+      }
     }
   }
   return rules;

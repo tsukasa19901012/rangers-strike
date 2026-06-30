@@ -48,13 +48,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。",
-      "rule": "undead_command_rush_hold"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

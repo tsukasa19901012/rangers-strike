@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐 特徴「警察」を持つSユニットはチェイスを得る。さらにそのユニットがOTを持つなら、特徴「宇宙刑事」が追加され、コールOTを得る。",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

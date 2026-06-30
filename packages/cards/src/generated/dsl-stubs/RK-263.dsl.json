@@ -64,18 +64,6 @@
       "optional": false
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい）",
-      "rule": "morph"
-    },
-    {
-      "kind": "note",
-      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
-      "rule": "register"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

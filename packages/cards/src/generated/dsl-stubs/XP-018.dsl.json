@@ -28,13 +28,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐 特徴に「シルバー」または「ゴールド」または「侍」を持つ自軍Sユニットは、自軍コマンドゾーンにあるカードのカテゴリごとに次の能力を得る⇒WBがあればレジストを得る。MAがあればタクスMAを得る。OTがあればチェイスを得る。ETがあればコールETを得る。",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

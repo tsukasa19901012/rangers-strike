@@ -92,18 +92,6 @@
       }
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
-      "rule": "register"
-    },
-    {
-      "kind": "note",
-      "text": "※これはホールド状態のときビークルにライドできない。",
-      "rule": "no_ride_while_held"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -45,13 +45,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これはバトルエリアに出たとき撃破される。",
-      "rule": "destroy_on_enter_battle"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

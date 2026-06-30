@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { applyAction, getLegalActions } from "./index";
 import { createTestState, heldEtCommand, heldMaCommand, heldOtCommand, heldWbCommand, inst, withCostWindow } from "./testing/fixtures";
+import { requiresAllFusionPartners } from "./rules/zord";
 
 describe("zord-up rush", () => {
   const abarenohDef = {
@@ -189,6 +190,69 @@ describe("zord-up rush", () => {
       expect(player.rush.some((c) => c.cardId === id)).toBe(false);
       expect(player.discard.some((c) => c.cardId === id)).toBe(true);
     }
+  });
+
+  it("RS-679 requires all five origami partners on field before rush", () => {
+    expect(requiresAllFusionPartners("RS-679")).toBe(true);
+
+    const zord = inst("RS-679", "z1");
+    const partners = ["RS-680", "RS-681", "RS-682", "RS-683", "RS-684"].map(
+      (id, index) => inst(id, `f${index}`),
+    );
+    const state = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [zord],
+        rush: partners.slice(0, 1),
+        power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [heldMaCommand("c1")],
+        ...withCostWindow("rush_category"),
+      },
+    });
+    state.definitions["RS-679"] = {
+      id: "RS-679",
+      name: "シンケンオー",
+      type: "unit",
+      category: "MA",
+      rarity: "N",
+      expansion: "test",
+      powerCost: "5+",
+      bp: 17000,
+      size: "L",
+      sp: 1,
+      rushAdditionalCondition: {
+        conditionId: "discard_fusion_unit",
+        text: "自軍合体ユニットを捨札にする",
+      },
+    };
+    for (const id of ["RS-680", "RS-681", "RS-682", "RS-683", "RS-684"] as const) {
+      state.definitions[id] = fusionDef(id, id);
+    }
+
+    const partialRush = getLegalActions(state).filter(
+      (a) => a.type === "rush" && a.instanceId === zord.instanceId,
+    );
+    expect(partialRush).toHaveLength(0);
+
+    const ready = createTestState({
+      phase: "rush",
+      player1: {
+        hand: [zord],
+        rush: partners,
+        power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
+        command: [heldMaCommand("c1")],
+        ...withCostWindow("rush_category"),
+      },
+    });
+    ready.definitions["RS-679"] = state.definitions["RS-679"]!;
+    for (const id of ["RS-680", "RS-681", "RS-682", "RS-683", "RS-684"] as const) {
+      ready.definitions[id] = state.definitions[id]!;
+    }
+
+    const rush = getLegalActions(ready).find(
+      (a) => a.type === "rush" && a.instanceId === zord.instanceId,
+    );
+    expect(rush).toBeDefined();
   });
 
   it("still accepts single S-unit material for zords without partner list", () => {

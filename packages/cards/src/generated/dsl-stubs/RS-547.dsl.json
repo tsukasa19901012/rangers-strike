@@ -60,23 +60,19 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。",
-      "rule": "require_command_hold_entry"
-    },
-    {
-      "kind": "note",
-      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）』を得る。ただし、そのユニットが持つ「ラッシュしたとき」の効果を発動したときは、そのユニットをホールドする。",
-      "rule": "register"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
   },
   "imageUrl": "/cards/promoted/RS-547.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-547.jpg"
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-547.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。",
+      "rule": "battle_entry_hold",
+      "holdCount": 2
+    }
+  ]
 }

@@ -47,13 +47,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これはSユニットにアタックされない。",
-      "rule": "no_attack_from_s"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -47,23 +47,19 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
-      "rule": "require_command_hold_entry"
-    },
-    {
-      "kind": "note",
-      "text": "※このカードはデッキに好きな枚数入れてもよい。",
-      "rule": "deck_unlimited"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
   },
   "imageUrl": "/cards/promoted/RK-119.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-119.jpg"
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-119.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
+  ]
 }

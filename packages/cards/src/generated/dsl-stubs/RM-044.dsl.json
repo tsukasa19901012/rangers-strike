@@ -64,18 +64,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
-      "rule": "register"
-    },
-    {
-      "kind": "note",
-      "text": "※これは特徴「男」または「女」を持つユニットにアタックできない。",
-      "rule": "cannot_attack_gender_male_female"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -78,16 +78,6 @@
   "unnamedRules": [
     {
       "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    },
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    },
-    {
-      "kind": "note",
       "text": "※これは毎ターン、可能ならバトルエリア に出る。",
       "rule": "auto_battle_entry_each_turn"
     }

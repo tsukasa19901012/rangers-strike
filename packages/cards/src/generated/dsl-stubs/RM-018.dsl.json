@@ -65,18 +65,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※チェイス （これがライド中にユニットでなくなるとき、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい）",
-      "rule": "chase"
-    },
-    {
-      "kind": "note",
-      "text": "※自軍Sユニットがこれ以外にあれば、これはストライクできない。",
-      "rule": "no_strike_if_other_own_s_in_field"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

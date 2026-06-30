@@ -54,9 +54,24 @@
   ],
   "unnamedRules": [
     {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
+      "kind": "zord",
+      "text": "合体―兜折神＋舵木折神＋虎折神",
+      "partnerCardIds": [
+        "XG1-035",
+        "XG1-036",
+        "XG1-040"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "XG1-035"
+        ],
+        [
+          "XG1-036"
+        ],
+        [
+          "XG1-040"
+        ]
+      ]
     }
   ],
   "implementation": {

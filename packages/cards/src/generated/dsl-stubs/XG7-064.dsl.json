@@ -51,13 +51,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※スクラム",
-      "rule": "scrum"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

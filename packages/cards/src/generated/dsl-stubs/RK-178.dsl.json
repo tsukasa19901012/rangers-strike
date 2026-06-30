@@ -85,18 +85,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）",
-      "rule": "register"
-    },
-    {
-      "kind": "note",
-      "text": "※これはライドオフしたときストライクできない。",
-      "rule": "no_strike_after_rideoff"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

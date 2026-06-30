@@ -48,13 +48,6 @@
       "optional": false
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※タクスET（これががバトルエリアの4番目にある間、これの次に並ぶETを持つSユニットは「SP1」になる）",
-      "rule": "taxis_ET"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

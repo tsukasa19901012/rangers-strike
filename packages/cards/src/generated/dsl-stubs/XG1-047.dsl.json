@@ -51,13 +51,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※モーフ",
-      "rule": "morph"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐（場に配置して、離れるまで効果が有効になる） カテゴリを2つ以上持つSユニットのうち、MAを持つSユニットは次の能力を得る⇒このユニットは敵軍ターン中BP+1000され、MAのオペレーションカードを使用するためのコマンドとしてホールドできる。",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -46,18 +46,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※ウイング",
-      "rule": "wing"
-    },
-    {
-      "kind": "note",
-      "text": "※コールWB",
-      "rule": "call_WB"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

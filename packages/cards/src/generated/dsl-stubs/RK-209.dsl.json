@@ -48,18 +48,19 @@
       "optional": true
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※これは自軍コマンドを5つホールドしなければバトルエリアに出られない。ただし、ホールドする数は相手の手札1枚につき1少なくなる。",
-      "rule": "require_command_hold_entry"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
   },
   "imageUrl": "/cards/promoted/RK-209.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-209.jpg"
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-209.jpg",
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを5つホールドしなければバトルエリアに出られない。ただし、ホールドする数は相手の手札1枚につき1少なくなる。",
+      "rule": "battle_entry_hold",
+      "holdCount": 5
+    }
+  ]
 }

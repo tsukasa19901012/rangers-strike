@@ -25,13 +25,6 @@
       ]
     }
   ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※常駐 自軍ラッシュフェイズ中、自軍ユニットをラッシュしたとき、本来の特徴に「忍者」を持つすべてのユニットの本来のカテゴリを見て、WB、MA、OT、ET、DAがそれぞれ1つ以上あれば、次の効果を発動できる⇒特徴「忍者」を持たない敵軍Sユニットをすべて持ち主のパワーゾーンにダメージにして置く。",
-      "rule": "resident"
-    }
-  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
