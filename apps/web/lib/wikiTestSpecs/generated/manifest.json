@@ -1,12 +1,11 @@
 {
-  "generatedAt": "2026-06-12T10:05:21.098Z",
-  "total": 1849,
+  "generatedAt": "2026-06-30T04:33:15.973Z",
+  "total": 1832,
   "missingWiki": [],
   "byType": {
     "operation": 242,
     "unit": 1507,
-    "vehicle": 83,
-    "commander": 17
+    "vehicle": 83
   },
   "byPrefix": {
     "BK": 19,
@@ -20,11 +19,10 @@
     "SM": 1,
     "SR": 8,
     "SX": 10,
-    "XC": 8,
     "XG1": 100,
-    "XG2": 103,
-    "XG3": 103,
-    "XG4": 102,
+    "XG2": 100,
+    "XG3": 100,
+    "XG4": 99,
     "XG5": 96,
     "XG6": 65,
     "XG7": 68,

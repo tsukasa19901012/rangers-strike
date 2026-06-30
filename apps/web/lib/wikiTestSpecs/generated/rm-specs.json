@@ -10,7 +10,7 @@
       "次の効果から１つ選び発動する⇒◎自軍山札から「宇"
     ],
     "expectedDslKeywords": [
-      "deploy_rush_area_e6aca1e381ae"
+      "rm_fx::RM-001::note_e6aca1e381aee58ab9e69e9c"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -29,7 +29,7 @@
       "次の効果から1つ選び発動する⇒◎自軍山札から「宇"
     ],
     "expectedDslKeywords": [
-      "choice_one_of_e6aca1e381ae"
+      "rm_fx::RM-002::note_e6aca1e381aee58ab9e69e9c"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -48,7 +48,7 @@
       "次の効果から1つ選び発動する⇒◎自軍山札から「宇"
     ],
     "expectedDslKeywords": [
-      "choice_one_of_e6aca1e381ae"
+      "rm_fx::RM-003::note_e6aca1e381aee58ab9e69e9c"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -67,7 +67,7 @@
       "敵軍山札の上から、自軍ダメージの点数と同じ数まで"
     ],
     "expectedDslKeywords": [
-      "deck_search_e695b5e8bb8d"
+      "rm_fx::RM-004::note_e695b5e8bb8de5b1b1e69cad"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -86,7 +86,7 @@
       "特徴「男」を持つ自軍ユニットを1体と、特徴「女」"
     ],
     "expectedDslKeywords": [
-      "power_zone_action_e789b9e5beb4"
+      "rm_fx::RM-005::note_e789b9e5beb4e3808ce794b7"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -105,7 +105,7 @@
       "※カウンター"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe382ab"
+      "counter_note::kaunta"
     ],
     "operationKind": "counter",
     "expectedMechanisms": [
@@ -142,7 +142,7 @@
       "敵軍バトルエリアから「これは敵軍ターン中、「SP"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "rm_fx::RM-008::note_e695b5e8bb8de38390e38388"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -269,7 +269,7 @@
       "このオペレーションカードを使用するためにホールド"
     ],
     "expectedDslKeywords": [
-      "discard_to_zone_e38193e381ae"
+      "rm_fx::RM-015::note_e38193e381aee382aae3839a"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -288,7 +288,7 @@
       "自軍パワーゾーンのダメージになってるカードをすべ"
     ],
     "expectedDslKeywords": [
-      "opponent_must_e887aae8bb8d"
+      "rm_fx::RM-016::note_e887aae8bb8de38391e383af"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -327,8 +327,8 @@
     ],
     "expectedDslKeywords": [
       "chase",
-      "note_other_e280bbe887aa",
-      "power_zone_action_e69cace69da5"
+      "no_strike_if_other_own_s_in_field",
+      "rm_fx::RM-018::gyabandainamiku"
     ],
     "bp": 4000,
     "sp": 1,
@@ -346,7 +346,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_5000",
-      "while_note_e280bbe38193"
+      "rm_fx::RM-019::note_e280bbe38193e3828ce3818c"
     ],
     "bp": 2000,
     "sp": null,
@@ -363,7 +363,7 @@
       "【ドルファイヤー】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193"
+      "chase_or_ridden_l_vehicle_alias"
     ],
     "bp": 5000,
     "sp": null,
@@ -381,7 +381,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_5000",
-      "deploy_rush_area_e38193e3828c"
+      "rm_fx::RM-021::bikuru"
     ],
     "bp": 1000,
     "sp": null,
@@ -398,7 +398,7 @@
       "【サイバリアンレーザースピード】"
     ],
     "expectedDslKeywords": [
-      "hold_on_enter_battle_e887aae8bb8d"
+      "rm_fx::RM-022::saibarianrezasupido"
     ],
     "sp": null,
     "size": "S"
@@ -414,8 +414,8 @@
       "【地中潜行】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "power_zone_action_e38193e3828c"
+      "chase_or_ridden_s_vehicle_alias",
+      "rm_fx::RM-023::fx_unknown_e59cb0"
     ],
     "bp": 4000,
     "sp": null,
@@ -432,7 +432,7 @@
       "【搭載】"
     ],
     "expectedDslKeywords": [
-      "deck_search_e38193e3828c"
+      "rm_fx::RM-024::fx_unknown_e690ad"
     ],
     "sp": null,
     "size": "M"
@@ -449,7 +449,7 @@
     ],
     "expectedDslKeywords": [
       "chase",
-      "power_zone_action_e69cace69da5"
+      "rm_fx::RM-025::sharibankurashu"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -467,7 +467,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack_s",
-      "ride_action_e887aae8bb8d"
+      "rm_fx::RM-026::fx_unknown_e58f8e"
     ],
     "bp": 4000,
     "sp": null,
@@ -484,7 +484,7 @@
       "【プラズマカノン】"
     ],
     "expectedDslKeywords": [
-      "return_self_on_ally_rush_e280bbe887aa",
+      "on_ally_rush_named_return_self_to_hand",
       "SP1"
     ],
     "bp": 7000,
@@ -503,7 +503,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_500",
-      "note_other_e280bbe38193"
+      "rm_fx::RM-028::note_e280bbe38193e3828ce3818c"
     ],
     "sp": null,
     "size": "S"
@@ -519,7 +519,7 @@
       "【コズミックハーレー】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bb5350e3"
+      "rm_fx::RM-029::note_e280bb5350e3818ce7a9bae6"
     ],
     "bp": 4000,
     "sp": null,
@@ -537,7 +537,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack_s",
-      "while_in_field_body_e38193e3828c"
+      "rm_fx::RM-030::daireonreza"
     ],
     "bp": 4000,
     "sp": null,
@@ -554,8 +554,8 @@
       "【コズミッククラッシュ】"
     ],
     "expectedDslKeywords": [
-      "return_self_on_ally_rush_e280bbe887aa",
-      "power_zone_action_e887aae8bb8d"
+      "on_ally_rush_named_return_self_to_hand",
+      "rm_fx::RM-031::kozumikukurashu"
     ],
     "bp": 5000,
     "sp": 1,
@@ -588,8 +588,8 @@
       "【戦闘技術の習得】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "hold_on_enter_battle_e887aae8bb8d"
+      "rm_fx::RM-033::note_e280bbe38193e3828ce381af",
+      "rm_fx::RM-033::no_6"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -606,7 +606,7 @@
       "【正確な射撃】"
     ],
     "expectedDslKeywords": [
-      "damage_action_e887aae8bb8d"
+      "rm_fx::RM-034::na_geki"
     ],
     "bp": 6000,
     "sp": null,
@@ -624,7 +624,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_5000",
-      "while_in_field_body_e38193e3828c"
+      "rm_fx::RM-035::yoroino"
     ],
     "bp": 2000,
     "sp": null,
@@ -658,7 +658,7 @@
       "【手段を選ばぬ策略】"
     ],
     "expectedDslKeywords": [
-      "hold_on_enter_battle_e887aae8bb8d"
+      "rm_fx::RM-037::wobanu"
     ],
     "bp": 3000,
     "sp": null,
@@ -675,7 +675,7 @@
       "【部下の修理と改造】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "rm_fx::RM-038::noto"
     ],
     "bp": 4000,
     "sp": null,
@@ -692,7 +692,8 @@
       "【十文字斬り】"
     ],
     "expectedDslKeywords": [
-      "enemy_power_damage_e887aae8bb8d"
+      "on_destroy_reanimate_named_from_discard",
+      "rm_fx::RM-039::zan_ri_e58d81"
     ],
     "bp": 4500,
     "sp": "1/3",
@@ -727,7 +728,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "enemy_power_damage_e695b5e8bb8d"
+      "rm_fx::RM-041::aiamunadonosankyu"
     ],
     "bp": 2000,
     "sp": null,
@@ -759,7 +760,7 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "deploy_rush_area_e38193e3828c"
+      "rm_fx::RM-043::fx_31"
     ],
     "bp": 500,
     "sp": null,
@@ -777,8 +778,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "note_other_e280bbe38193",
-      "hold_enemy_unit_e695b5e8bb8d"
+      "cannot_attack_gender_male_female",
+      "rm_fx::RM-044::jandejiku"
     ],
     "bp": 5000,
     "sp": "1/5",
@@ -795,8 +796,8 @@
       "【ホーミングブリッド】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "hold_enemy_unit_e695b5e8bb8d"
+      "rm_fx::RM-045::note_e280bbe38193e381aee383a6",
+      "rm_fx::RM-045::hominguburido"
     ],
     "bp": 4000,
     "sp": null,
@@ -831,8 +832,8 @@
       "【ビッグキャノン】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_named_e8ada6e5af9f",
-      "hold_on_enter_battle_e887aae8bb8d"
+      "ride_without_rc_fx_unknown",
+      "rm_fx::RM-047::bigukyanon"
     ],
     "sp": null,
     "size": "S"
@@ -848,7 +849,7 @@
       "【フレイムスローワー】"
     ],
     "expectedDslKeywords": [
-      "combo_action_e695b5e8bb8d"
+      "rm_fx::RM-048::fureimusurowa"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -865,7 +866,7 @@
       "【ディクテイター】"
     ],
     "expectedDslKeywords": [
-      "combo_action_e695b5e8bb8d"
+      "rm_fx::RM-049::deikuteita"
     ],
     "bp": 1000,
     "sp": "1/5",
@@ -882,7 +883,7 @@
       "【ミサイルランチャー】"
     ],
     "expectedDslKeywords": [
-      "grant_effect_e695b5e8bb8d"
+      "rm_fx::RM-050::misairurancha"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -900,7 +901,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "SP1"
+      "rm_fx::RM-051::megabitofuomeshon"
     ],
     "bp": 6000,
     "sp": "special",
@@ -917,8 +918,8 @@
       "【マグネアタッチメント】"
     ],
     "expectedDslKeywords": [
-      "ride_command_without_rc_named_e69886e899ab",
-      "ride_action_e38193e3828c"
+      "ride_command_without_rc_fx_unknown",
+      "while_riding_stagger_tank_block_return_held_mecha"
     ],
     "sp": null,
     "size": "M"
@@ -934,8 +935,8 @@
       "【ドリルアタッチメント】"
     ],
     "expectedDslKeywords": [
-      "ride_command_without_rc_named_e69886e899ab",
-      "grant_effect_e887aae8bb8d"
+      "ride_command_without_rc_fx_unknown",
+      "rm_fx::RM-053::doriruatachimento"
     ],
     "sp": null,
     "size": "M"
@@ -951,8 +952,8 @@
       "【レッドパルサー】"
     ],
     "expectedDslKeywords": [
-      "ride_command_without_rc_named_e69886e899ab",
-      "hold_on_enter_battle_e887aae8bb8d"
+      "ride_command_without_rc_fx_unknown",
+      "rm_fx::RM-054::redoparusa"
     ],
     "sp": null,
     "size": "M"
@@ -987,7 +988,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "ride_action_e383a9e382a4"
+      "rm_fx::RM-056::suteingakuro"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -1005,7 +1006,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hold_enemy_unit_e383ace382b8"
+      "rm_fx::RM-057::suteingapurazuma"
     ],
     "bp": 500,
     "sp": "1/2",
@@ -1022,7 +1023,7 @@
       "【昆虫の精】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "rm_fx::RM-058::no_e69886"
     ],
     "bp": 1000,
     "sp": null,
@@ -1039,7 +1040,7 @@
       "【トランクの中身】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "rm_fx::RM-059::torankuno"
     ],
     "bp": 2000,
     "sp": null,
@@ -1074,7 +1075,7 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "grant_effect_e38193e3828c"
+      "rm_fx::RM-061::misairu"
     ],
     "bp": 2500,
     "sp": null,
@@ -1091,7 +1092,7 @@
       "【リーナステッキ】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "rm_fx::RM-062::rinasuteki"
     ],
     "bp": 1000,
     "sp": null,

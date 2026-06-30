@@ -10,7 +10,7 @@
       "特徴「宇宙刑事」を持つ自軍ユニットが1体もなけれ"
     ],
     "expectedDslKeywords": [
-      "deck_search_e789b9e5beb4"
+      "note_card::SM-001::wotsuyunitoga1mo"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [

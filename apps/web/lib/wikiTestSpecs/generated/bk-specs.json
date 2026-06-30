@@ -138,7 +138,7 @@
       "次の効果から1つ選び発動する⇒ ◎自分の手札から"
     ],
     "expectedDslKeywords": [
-      "choice_one_of_e6aca1e381ae"
+      "pick_effect_branch"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -157,7 +157,7 @@
       "次の効果から1つ選び発動する⇒ ◎自分の手札から"
     ],
     "expectedDslKeywords": [
-      "choice_one_of_e6aca1e381ae"
+      "pick_effect_branch"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -176,7 +176,7 @@
       "自分の手札か、自軍常駐置き場でオモテ向きになって"
     ],
     "expectedDslKeywords": [
-      "hand_resident_rush_named_e382a2e3839ee38380e383a0"
+      "hand_resident_rush_amadamu"
     ],
     "operationKind": "permanent",
     "expectedMechanisms": [
@@ -195,7 +195,7 @@
       "自分の手札か、自軍常駐置き場でオモテ向きになって"
     ],
     "expectedDslKeywords": [
-      "hand_resident_rush_named_e8b3a2e88085e381aee79fb3"
+      "hand_resident_rush_no_seki"
     ],
     "operationKind": "permanent",
     "expectedMechanisms": [
@@ -214,7 +214,7 @@
       "次の効果から1つ選び発動する。 ◎自分の手札から"
     ],
     "expectedDslKeywords": [
-      "choice_one_of_e6aca1e381ae"
+      "pick_effect_branch"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -249,7 +249,7 @@
       "次の効果から1つ選び発動する⇒ ◎自分の手札から"
     ],
     "expectedDslKeywords": [
-      "choice_one_of_e6aca1e381ae"
+      "pick_effect_branch"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -284,7 +284,7 @@
       "次の効果から1つ選び発動する。 ◎自軍山札から「"
     ],
     "expectedDslKeywords": [
-      "choice_one_of_e6aca1e381ae"
+      "pick_effect_branch"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -322,7 +322,7 @@
       "次の効果から1つ選び発動する。 ◎自分の手札から"
     ],
     "expectedDslKeywords": [
-      "choice_one_of_e6aca1e381ae"
+      "pick_effect_branch"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [

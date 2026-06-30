@@ -4,6 +4,7 @@ import path from "node:path";
 export default defineConfig({
   test: {
     environment: "node",
+    exclude: ["**/node_modules/**", "**/e2e/**"],
   },
   resolve: {
     alias: {
@@ -24,6 +25,22 @@ export default defineConfig({
       "@rangers-strike/cards/pipeline/extractEffects": path.resolve(
         __dirname,
         "../../packages/cards/src/pipeline/extractEffects.ts",
+      ),
+      "@rangers-strike/cards/pipeline/hashGrantKeywords": path.resolve(
+        __dirname,
+        "../../packages/cards/src/pipeline/hashGrantKeywords.ts",
+      ),
+      "@rangers-strike/cards/pipeline/implementedGrantKeywords": path.resolve(
+        __dirname,
+        "../../packages/cards/src/pipeline/implementedGrantKeywords.ts",
+      ),
+      "@rangers-strike/cards/pipeline/rkClassify": path.resolve(
+        __dirname,
+        "../../packages/cards/src/pipeline/rkClassify.ts",
+      ),
+      "@rangers-strike/cards/pipeline": path.resolve(
+        __dirname,
+        "../../packages/cards/src/pipeline/index.ts",
       ),
       "@rangers-strike/cards/dsl": path.resolve(
         __dirname,

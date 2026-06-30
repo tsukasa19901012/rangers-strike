@@ -74,7 +74,7 @@
       "【ジャスティスフラッシャー】"
     ],
     "expectedDslKeywords": [
-      "SP3"
+      "pr_fx::PR-005::justice_flasher"
     ],
     "bp": 19000,
     "sp": 2,
@@ -126,7 +126,8 @@
       "【バイバスター】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "bp_per_enemy_command_ot_1000",
+      "sp_at_bp5000_sp1"
     ],
     "bp": 3000,
     "sp": "special",
@@ -160,7 +161,7 @@
       "このターン、Sユニットだけでコンビネーションする"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "s_combo_finisher_5_sp1_bp12000"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [

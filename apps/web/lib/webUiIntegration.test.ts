@@ -98,6 +98,10 @@ function unheldCommand(cardId = "RS-010"): CardInstance {
   return inst(cardId, "cmd");
 }
 
+function unheldCommands(count: number, cardId = "RS-010"): CardInstance[] {
+  return Array.from({ length: count }, (_, index) => inst(cardId, `cmd-${index}`));
+}
+
 function releasedCommand(cmdId: string, suffix: string): CardInstance {
   return inst(cmdId, suffix);
 }
@@ -398,11 +402,12 @@ describe("Web UI integration — battle entry hold (※) UI route", () => {
     "%s opens command payment when hold is missing (GameApp path)",
     (cardId) => {
       const unit = inst(cardId, "rush");
+      const holdCount = getBattleEntryHoldCount(cardId);
       const state = makeState({
         phase: "battle",
         player1: {
           rush: [unit],
-          command: [unheldCommand()],
+          command: unheldCommands(Math.max(holdCount, 1)),
         },
       });
 

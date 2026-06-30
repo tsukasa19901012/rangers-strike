@@ -2,7 +2,7 @@
   {
     "cardId": "XG1-001",
     "wikiRef": "docs/wiki/cards/XG1-001.md",
-    "name": "バトルジャパン",
+    "name": "バトルジャパン（XG）",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -45,7 +45,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "destroy_all_enemy_535031e38193"
+      "effect_card::XG1-003::shie696b0"
     ],
     "bp": 3000,
     "sp": "special",
@@ -62,7 +62,7 @@
       "【レッドルビームチ】"
     ],
     "expectedDslKeywords": [
-      "opponent_must_e695b5e8bb8d"
+      "effect_card::XG1-004::redorubimuchi"
     ],
     "bp": 4000,
     "sp": null,
@@ -79,7 +79,7 @@
       "【ドリームギャラクシー】"
     ],
     "expectedDslKeywords": [
-      "hold_enemy_unit_e887aae8bb8d"
+      "effect_card::XG1-005::dorimugyarakushi"
     ],
     "bp": 2000,
     "sp": null,
@@ -105,7 +105,7 @@
   {
     "cardId": "XG1-007",
     "wikiRef": "docs/wiki/cards/XG1-007.md",
-    "name": "チェンジドラゴン",
+    "name": "チェンジドラゴン（XG）",
     "cardType": "unit",
     "powerCost": 2,
     "category": [
@@ -152,7 +152,7 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "enemy_power_damage_53503120e381"
+      "effect_card::XG1-009::masukikurashu"
     ],
     "bp": 3000,
     "sp": "special",
@@ -188,7 +188,7 @@
     ],
     "expectedDslKeywords": [
       "blast",
-      "SP1"
+      "effect_card::XG1-011::supesumetarunomaken"
     ],
     "bp": 8000,
     "sp": "special",
@@ -205,8 +205,8 @@
       "【ボクシングスタイル】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "while_in_field_body_e887aae8bb8d"
+      "note_card::XG1-012::korehakomandogas",
+      "effect_card::XG1-012::bokushingusutairu"
     ],
     "bp": 4000,
     "sp": "special",
@@ -223,7 +223,7 @@
       "【巨大要塞】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "mothership"
     ],
     "bp": 5000,
     "sp": null,
@@ -240,8 +240,8 @@
       "【キングスティック】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "while_in_field_body_e38193e3828c"
+      "note_card::XG1-014::korehahorudonoyu",
+      "effect_card::XG1-014::kingusuteiku"
     ],
     "bp": 4000,
     "sp": "1/3",
@@ -292,7 +292,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_3000",
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG1-017::nakiiheno"
     ],
     "bp": 3000,
     "sp": null,
@@ -309,7 +309,7 @@
       "【治安維持】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG1-018::fxunknowne6b2bb"
     ],
     "bp": 5000,
     "sp": null,
@@ -326,7 +326,7 @@
       "※このカードの追加条件は、自軍捨札にカテゴリを2"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193"
+      "note_card::XG1-019::konokadonohanika"
     ],
     "bp": 8000,
     "sp": null,
@@ -343,8 +343,8 @@
       "【高速剣ターボクラッシュ】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "grant_ability_e38193e3828c"
+      "note_card::XG1-020::korehakategoriwo",
+      "effect_card::XG1-020::kentabokurashu"
     ],
     "bp": 8000,
     "sp": "special",
@@ -459,8 +459,8 @@
       "【ヤミオノ】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "SP1"
+      "note_card::XG1-026::koreworashushita",
+      "effect_card::XG1-026::yamiono"
     ],
     "bp": 3000,
     "sp": "special",
@@ -533,8 +533,8 @@
       "【ドルドル弾】"
     ],
     "expectedDslKeywords": [
-      "while_note_e280bbe38193",
-      "power_zone_action_e887aae8bb8d"
+      "note_card::XG1-031::koregaerianiarub",
+      "effect_card::XG1-031::dorudorudan"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -543,7 +543,7 @@
   {
     "cardId": "XG1-032",
     "wikiRef": "docs/wiki/cards/XG1-032.md",
-    "name": "ゲキレッド",
+    "name": "ゲキレッド（XG）",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -573,7 +573,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG1-033::reta"
     ],
     "bp": 6000,
     "sp": null,
@@ -590,7 +590,7 @@
       "【汚い大気】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG1-034::effecte6b19ae38184"
     ],
     "bp": 3000,
     "sp": null,
@@ -607,7 +607,7 @@
       "【侍武装】"
     ],
     "expectedDslKeywords": [
-      "destroy_on_rush_e280bbe38193",
+      "note_card::XG1-035::koreworashushita",
       "stack_da_less_l_on_rush"
     ],
     "bp": 5000,
@@ -625,7 +625,7 @@
       "【侍武装】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
+      "note_card::XG1-036::koreworashushita",
       "stack_da_less_l_on_rush"
     ],
     "bp": 3000,
@@ -644,7 +644,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "enemy_power_damage_e38193e3828c"
+      "effect_card::XG1-037::karanogeki"
     ],
     "bp": 9000,
     "sp": 1,
@@ -679,7 +679,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG1-039::shinno"
     ],
     "bp": 20000,
     "sp": 2,
@@ -696,7 +696,7 @@
       "【侍武装】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
+      "note_card::XG1-040::koreworashushita",
       "stack_da_less_l_on_rush"
     ],
     "bp": 4000,
@@ -706,7 +706,7 @@
   {
     "cardId": "XG1-041",
     "wikiRef": "docs/wiki/cards/XG1-041.md",
-    "name": "仮面ライダーアマゾン",
+    "name": "仮面ライダーアマゾン（XG）",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -718,7 +718,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "release_self"
+      "effect_card::XG1-041::gagano"
     ],
     "bp": 4000,
     "sp": "1/2",
@@ -736,7 +736,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "SP1"
+      "effect_card::XG1-042::fxunknowne590b8"
     ],
     "bp": 6000,
     "sp": "special",
@@ -754,7 +754,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hold_remaining_e38193e381ae"
+      "effect_card::XG1-043::gekie7a0b2"
     ],
     "bp": 3000,
     "sp": null,
@@ -763,7 +763,7 @@
   {
     "cardId": "XG1-044",
     "wikiRef": "docs/wiki/cards/XG1-044.md",
-    "name": "仮面ライダーV3",
+    "name": "仮面ライダーV3（XG）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -772,8 +772,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "while_note_e280bbe38193",
-      "discard_to_zone_e695b5e8bb8d"
+      "while_in_command_rush_deploy::koregakomandozonniar",
+      "effect_card::XG1-044::v3kiku5633e5"
     ],
     "bp": 4000,
     "sp": "special",
@@ -790,7 +790,7 @@
       "【墨攻撃】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG1-045::geki"
     ],
     "bp": 1000,
     "sp": null,
@@ -807,7 +807,7 @@
       "【Vジェット】"
     ],
     "expectedDslKeywords": [
-      "ride_action_e38193e381ae"
+      "effect_card::XG1-046::vjieto"
     ],
     "sp": null,
     "size": "S"
@@ -824,7 +824,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "hold_enemy_unit_425031303030"
+      "effect_card::XG1-047::kene8b5a4"
     ],
     "bp": 3000,
     "sp": "special",
@@ -842,7 +842,8 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "adjacent_units_e695b5e8bb8d"
+      "effect_card::XG1-048::erekihikari",
+      "effect_card::XG1-048::erekihikariyunitowondem"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -860,7 +861,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "note_other_e280bbe38193",
+      "note_card::XG1-049::korehauinguwotan",
       "reveal_enemy_deck_1"
     ],
     "bp": 2000,
@@ -878,7 +879,7 @@
       "本来の特徴に「仮面ライダー」を持つ自軍ユニットが"
     ],
     "expectedDslKeywords": [
-      "destroy_all_enemy_e69cace69da5"
+      "note_card::XG1-050::noniraidawotsuyu"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -914,7 +915,8 @@
       "【ファイヤーストームアタック】"
     ],
     "expectedDslKeywords": [
-      "grant_effect_e38193e3828c"
+      "on_destroy_reanimate_named_from_discard",
+      "effect_card::XG1-052::fuaiyasutomuataku"
     ],
     "bp": 3500,
     "sp": 1,
@@ -931,7 +933,7 @@
       "【バーニングライダーパンチ】"
     ],
     "expectedDslKeywords": [
-      "bp_modify_e38193e3828c"
+      "effect_card::XG1-053::baninguraidapanchi"
     ],
     "bp": 4000,
     "sp": null,
@@ -948,7 +950,7 @@
       "【シャイニングカリバー】"
     ],
     "expectedDslKeywords": [
-      "enemy_power_damage_e887aae8bb8d"
+      "effect_card::XG1-054::shainingukariba"
     ],
     "bp": 4000,
     "sp": "1/3",
@@ -965,7 +967,7 @@
       "【血に飢えた予言者】"
     ],
     "expectedDslKeywords": [
-      "hold_enemy_unit_e38193e3828c"
+      "effect_card::XG1-055::nieta"
     ],
     "bp": 2000,
     "sp": null,
@@ -982,7 +984,7 @@
       "【アギトの殲滅】"
     ],
     "expectedDslKeywords": [
-      "destroy_on_rush_e38193e3828c"
+      "effect_card::XG1-056::agitono"
     ],
     "bp": 4000,
     "sp": null,
@@ -999,7 +1001,7 @@
       "【衝撃波】"
     ],
     "expectedDslKeywords": [
-      "hold_on_enter_battle_e38193e3828c"
+      "effect_card::XG1-057::gekinami"
     ],
     "sp": null,
     "size": "S"
@@ -1016,7 +1018,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_1000",
-      "feature_match_e3839be383bc"
+      "effect_card::XG1-058::waurufu"
     ],
     "bp": 2500,
     "sp": null,
@@ -1033,7 +1035,7 @@
       "【ロイヤルストレートフラッシュ】"
     ],
     "expectedDslKeywords": [
-      "hand_pick_show_e887aae8bb8d"
+      "effect_card::XG1-059::roiyarusutoretofurashu"
     ],
     "bp": 6000,
     "sp": 1,
@@ -1051,7 +1053,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_2000",
-      "return_to_zone_e38193e3828c"
+      "effect_card::XG1-060::kado"
     ],
     "bp": 4500,
     "sp": null,
@@ -1112,7 +1114,7 @@
     "expectedDslKeywords": [
       "morph",
       "register",
-      "alias_gf"
+      "alias_raidaagitogf"
     ],
     "bp": 2000,
     "sp": "1/3",
@@ -1130,7 +1132,8 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "alias_named_e4bbaee99da2e383a9e382a4",
+      "alias_raida_ryu",
+      "feature_combo_sp_doragon_sp1",
       "SP1"
     ],
     "bp": 3000,
@@ -1149,8 +1152,8 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "alias_named_e4bbaee99da2e383a9e382a4",
-      "destroy_choose_enemy_4250e381aee4"
+      "alias_raidafuaizu",
+      "effect_card::XG1-066::atakuraido"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -1168,7 +1171,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "alias_named_e4bbaee99da2e383a9e382a4"
+      "alias_raidabureido"
     ],
     "bp": 3000,
     "sp": null,
@@ -1186,8 +1189,8 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "alias_mf",
-      "bp_modify_e38193e381ae"
+      "alias_raidakuugamf",
+      "effect_card::XG1-068::atakuraido"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -1206,8 +1209,8 @@
     "expectedDslKeywords": [
       "morph",
       "register",
-      "alias_named_e4bbaee99da2e383a9e382a4",
-      "SP1"
+      "alias_raida",
+      "rk_fx::RK-221::ongekida_hi_honoo"
     ],
     "bp": 4000,
     "sp": "special",
@@ -1225,9 +1228,9 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "alias_rf",
+      "alias_raidakabutorf",
       "no_attack_from_enemy_s",
-      "SP1"
+      "hold_3_ot_commands_then_sp1"
     ],
     "bp": 2000,
     "sp": "special",
@@ -1245,7 +1248,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "alias_sf",
+      "alias_raida_ou_sf",
       "no_strike_if_enemy_battle",
       "SP1"
     ],
@@ -1265,8 +1268,8 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "alias_named_e4bbaee99da2e383a9e382a4",
-      "enter_hold_enemy_e887aae8bb8d"
+      "alias_raidakiba",
+      "effect_card::XG1-072::atakuraido"
     ],
     "bp": 2000,
     "sp": null,
@@ -1292,7 +1295,7 @@
   {
     "cardId": "XG1-074",
     "wikiRef": "docs/wiki/cards/XG1-074.md",
-    "name": "仮面ライダーザビーRF",
+    "name": "仮面ライダーザビーRF（XG）",
     "cardType": "unit",
     "powerCost": "3+",
     "category": "OT",
@@ -1302,7 +1305,7 @@
     "expectedDslKeywords": [
       "register",
       "not_selectable_except_attack",
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG1-074::hamotonamonowotsuketa"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -1323,7 +1326,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "destroy_enter_battle_e887aae8bb8d"
+      "effect_card::XG1-075::kingusubasutoendo"
     ],
     "bp": 4000,
     "sp": null,
@@ -1340,7 +1343,7 @@
       "次の効果から1つ選び発動する⇒ ◎自軍山札を見て"
     ],
     "expectedDslKeywords": [
-      "choice_one_of_e6aca1e381ae"
+      "note_card::XG1-076::nokara1tsubisuru"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1360,8 +1363,8 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "note_other_e280bbe38193",
-      "reveal_faceup_e887aae8bb8d"
+      "note_card::XG1-077::koreharirisunoyu",
+      "effect_card::XG1-077::raidobuka"
     ],
     "bp": 5000,
     "sp": null,
@@ -1378,7 +1381,7 @@
       "Sユニットを2体選ぶ。このターン、1体目に選んだ"
     ],
     "expectedDslKeywords": [
-      "number_combo_53e383a6e383"
+      "note_card::XG1-078::syunitowo2bukono"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1398,7 +1401,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "hold_on_enter_battle_e887aae8bb8d"
+      "effect_card::XG1-079::nomizu"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -1418,7 +1421,7 @@
       "【アビスダイブ】"
     ],
     "expectedDslKeywords": [
-      "destroy_enter_battle_e887aae8bb8d"
+      "effect_card::XG1-080::abisudaibu"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -1438,7 +1441,7 @@
       "【パコの守護神】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG1-081::pakonomamorugoshin"
     ],
     "bp": 6000,
     "sp": 1,
@@ -1455,7 +1458,7 @@
       "【戦士シャイダーの遺産】"
     ],
     "expectedDslKeywords": [
-      "vehicle_interaction_e38193e381ae"
+      "effect_card::XG1-082::shaidano"
     ],
     "sp": null,
     "size": "S"
@@ -1472,7 +1475,7 @@
     ],
     "expectedDslKeywords": [
       "chase",
-      "damage_action_e695b5e8bb8d"
+      "effect_card::XG1-083::shaidaburufurashu"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -1489,7 +1492,7 @@
       "【人質と脅迫】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG1-084::to"
     ],
     "bp": 2000,
     "sp": null,
@@ -1506,7 +1509,7 @@
       "【レディスナイパー】"
     ],
     "expectedDslKeywords": [
-      "grant_ability_e38193e381ae"
+      "effect_card::XG1-085::redeisunaipa"
     ],
     "bp": 1000,
     "sp": "1/4",
@@ -1524,7 +1527,7 @@
     ],
     "expectedDslKeywords": [
       "sp_at_bp5000_sp1",
-      "power_zone_action_e38193e381ae"
+      "effect_card::XG1-086::akuinparusu"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -1541,7 +1544,7 @@
       "【瞬間移動】"
     ],
     "expectedDslKeywords": [
-      "enemy_turn_action_e695b5e8bb8d"
+      "effect_card::XG1-087::fxunknowne79eac"
     ],
     "bp": 3000,
     "sp": null,
@@ -1558,7 +1561,7 @@
       "【避難経路の確保】"
     ],
     "expectedDslKeywords": [
-      "combo_action_e887aae8bb8d"
+      "effect_card::XG1-088::noe981bf"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -1593,7 +1596,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "combo_action_e887aae8bb8d"
+      "effect_card::XG1-090::toe69591"
     ],
     "bp": 2000,
     "sp": null,
@@ -1624,7 +1627,7 @@
       "【ケルベロスΔ（デルタ）】"
     ],
     "expectedDslKeywords": [
-      "grant_ability_e887aae8bb8d"
+      "effect_card::XG1-092::keruberosu"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -1658,8 +1661,8 @@
       "【テントウスピアー】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "combo_action_e695b5e8bb8d"
+      "note_card::XG1-094::korehahorudonoyu",
+      "effect_card::XG1-094::tentousupia"
     ],
     "bp": 1000,
     "sp": "1/2",
@@ -1680,7 +1683,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "combo_action_e38193e3828c"
+      "effect_card::XG1-095::kabutoransa"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -1700,8 +1703,8 @@
       "【クワガーチョッパー】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "combo_action_e695b5e8bb8d"
+      "note_card::XG1-096::korehamomoshitei",
+      "effect_card::XG1-096::kuwagachopa"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -1721,7 +1724,7 @@
       "【ブルームキャノン】"
     ],
     "expectedDslKeywords": [
-      "destroy_choose_enemy_e695b5e8bb8d"
+      "effect_card::XG1-097::burumukyanon"
     ],
     "bp": 2000,
     "sp": null,
@@ -1741,7 +1744,7 @@
       "【ポイズンアンカー】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG1-098::poizunanka"
     ],
     "bp": 4000,
     "sp": null,
@@ -1759,7 +1762,7 @@
     ],
     "expectedDslKeywords": [
       "no_enter_battle_own_turn",
-      "grant_effect_e38193e3828c"
+      "effect_card::XG1-099::fxunknowne68ea1"
     ],
     "bp": 4000,
     "sp": null,
@@ -1777,7 +1780,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "scry_self_deck_top_e38193e3828c"
+      "effect_card::XG1-100::oiroboto"
     ],
     "bp": 1000,
     "sp": null,

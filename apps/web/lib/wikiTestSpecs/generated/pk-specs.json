@@ -10,6 +10,7 @@
       "【ドラゴクロー】"
     ],
     "expectedDslKeywords": [
+      "feature_combo_sp_doragon_sp1",
       "SP1"
     ],
     "bp": 4000,
@@ -45,6 +46,7 @@
       "【ドラグセイバー】"
     ],
     "expectedDslKeywords": [
+      "feature_combo_sp_doragon_sp1",
       "SP1"
     ],
     "bp": 4000,
@@ -112,7 +114,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "SP1"
+      "power_faceup_raida_enter_battle"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -129,7 +131,7 @@
       "【カギ爪アーム】"
     ],
     "expectedDslKeywords": [
-      "ally_named_e4bbaee99da2e383a9e382a4_protects_from_enemy_s",
+      "ally_raida_protects_from_enemy_s",
       "return_rush_deploy_enemy_s"
     ],
     "bp": 1000,
@@ -205,6 +207,7 @@
       "【ドラグバイザーツバイ】"
     ],
     "expectedDslKeywords": [
+      "on_destroy_reanimate_named_from_discard",
       "destroy_advent_power_sum"
     ],
     "bp": 6500,
@@ -239,7 +242,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hand_rush_named_e9ad94e79a87e58a9b_s_on_battle"
+      "hand_rush_ma_chikara_s_on_battle"
     ],
     "bp": 5000,
     "sp": "1/3",

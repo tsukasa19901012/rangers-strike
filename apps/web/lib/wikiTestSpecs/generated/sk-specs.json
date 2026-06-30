@@ -23,7 +23,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "ride_action_e695b5e8bb8d"
+      "effect_card::SK-001::satansaberu"
     ],
     "bp": 5000,
     "sp": 1,
@@ -58,7 +58,7 @@
       "【復讐の女詐欺師】"
     ],
     "expectedDslKeywords": [
-      "while_in_field_body_e38193e3828c"
+      "effect_card::SK-003::noe5bea9"
     ],
     "bp": 2000,
     "sp": "1/2",
@@ -75,7 +75,7 @@
       "【凄まじき戦士】"
     ],
     "expectedDslKeywords": [
-      "stack_cards_e38193e3828c"
+      "effect_card::SK-004::majiki"
     ],
     "bp": 5000,
     "sp": 1,

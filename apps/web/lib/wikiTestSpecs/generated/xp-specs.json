@@ -86,8 +86,8 @@
       "【全てを集めた先にあるもの】"
     ],
     "expectedDslKeywords": [
-      "register_stay_on_power_discard_named_e4bbaee99da2e383a9e382a4",
-      "ride_action_e887aae8bb8d"
+      "register_stay_on_power_discard_raida",
+      "effect_card::XP-005::tewometaniarumono"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -137,6 +137,9 @@
     "textSnippets": [
       "【最初に言っておく】"
     ],
+    "expectedDslKeywords": [
+      "on_destroy_reanimate_named_from_discard"
+    ],
     "bp": 6500,
     "sp": "1/4",
     "size": "S"
@@ -169,7 +172,8 @@
       "【精密射撃】"
     ],
     "expectedDslKeywords": [
-      "ally_named_e382b9e383afe38383e38388_attacked_bp_3000",
+      "on_destroy_reanimate_named_from_discard",
+      "ally_suwato_attacked_bp_3000",
       "flip_enemy_power_damage"
     ],
     "bp": 4500,
@@ -219,7 +223,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "while_in_field_body_e38193e3828c"
+      "on_destroy_reanimate_named_from_discard",
+      "effect_card::XP-013::kyouryuumaru"
     ],
     "bp": 4500,
     "sp": null,
@@ -238,7 +243,7 @@
     "expectedDslKeywords": [
       "morph",
       "register",
-      "hold_on_enter_battle_e887aae8bb8d"
+      "effect_card::XP-014::metarushafuto"
     ],
     "bp": 2000,
     "sp": null,
@@ -258,7 +263,7 @@
       "※これが自軍コマンドゾーンにある間、自軍ラッシュ"
     ],
     "expectedDslKeywords": [
-      "deck_search_e280bbe38193"
+      "note_card::XP-015::koregakomandozon"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -278,7 +283,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XP-016::inirumono"
     ],
     "bp": 6000,
     "sp": 1,
@@ -299,7 +304,7 @@
     ],
     "expectedDslKeywords": [
       "rush_from_hand_only",
-      "power_zone_action_e887aae58886"
+      "effect_card::XP-017::nohakai"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -374,7 +379,7 @@
       "※これは特徴「仮面ライダー」を持つユニット1体ご"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193"
+      "note_card::XP-021::koreharaidawotsu"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -416,7 +421,7 @@
     "expectedDslKeywords": [
       "damage_gate_battle_entry",
       "self_destroy_low_damage_remaining",
-      "ally_named_e68190e7ab9c_bp_boost_1000"
+      "ally_fx_unknown_bp_boost_1000"
     ],
     "bp": 6000,
     "sp": 1,
@@ -434,8 +439,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "note_other_e280bbe38193",
-      "optional_then_425034303030"
+      "bp_plus_on_battle_own_turn_2000"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -452,8 +456,8 @@
       "【二天一流乱れ斬り】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe59088",
-      "return_to_zone_e887aae8bb8d"
+      "note_card::XP-025::shi_shin",
+      "effect_card::XP-025::rezanri"
     ],
     "bp": 18000,
     "sp": 1,
@@ -470,8 +474,8 @@
       "【アクセルグランツァー】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "ride_action_e38193e3828c"
+      "note_card::XP-026::korehagatanwoeru",
+      "effect_card::XP-026::akuserugurantsua"
     ],
     "bp": 1000,
     "sp": "1/5",
@@ -488,7 +492,7 @@
       "合体が必要な自軍ユニットが１体もなければ、特徴「"
     ],
     "expectedDslKeywords": [
-      "stack_cards_e59088e4bd93"
+      "note_card::XP-027::ganayunitogamona"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -508,7 +512,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "enemy_power_damage_e38193e3828c"
+      "effect_card::XP-028::samonwandapawa"
     ],
     "bp": 7000,
     "sp": "1/3",
@@ -527,7 +531,7 @@
     "expectedDslKeywords": [
       "breaker",
       "auto_battle_entry_each_turn",
-      "note_other_e280bbe38193"
+      "note_card::XP-029::korehahorudonoko"
     ],
     "bp": 3000,
     "sp": null,
@@ -546,7 +550,7 @@
     "expectedDslKeywords": [
       "morph",
       "register",
-      "note_other_e280bbe38193"
+      "note_card::XP-030::korehahorudonara"
     ],
     "bp": 4000,
     "sp": null,
@@ -567,7 +571,7 @@
     ],
     "expectedDslKeywords": [
       "cross1",
-      "exclude_game_e38193e3828c"
+      "effect_card::XP-031::medarutoto40"
     ],
     "bp": 4000,
     "sp": "1/2",
@@ -584,8 +588,8 @@
       "【レジェンドを求めて】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "deck_search_e887aae8bb8d"
+      "note_card::XP-032::korehapawano5nit",
+      "effect_card::XP-032::rejiendowomete"
     ],
     "bp": 7000,
     "sp": "1/4",

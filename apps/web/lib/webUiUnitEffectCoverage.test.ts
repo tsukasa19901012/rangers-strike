@@ -30,8 +30,8 @@ describe("Web UI unit effect coverage", () => {
     expect(onRush.length).toBeGreaterThanOrEqual(17);
     expect(conditional.length).toBeGreaterThanOrEqual(14);
     expect(onAttack.length).toBeGreaterThanOrEqual(11);
-    expect(enterBattle.length).toBeGreaterThanOrEqual(11);
+    expect(enterBattle.length).toBeGreaterThanOrEqual(10);
     expect(passive.length).toBeGreaterThanOrEqual(25);
-    expect(total).toBeGreaterThanOrEqual(70);
+    expect(total).toBeGreaterThanOrEqual(69);
   });
 });

@@ -9,6 +9,9 @@
     "textSnippets": [
       "【天地轟鳴アニマルハート】"
     ],
+    "expectedDslKeywords": [
+      "effect_card::SR-001::heavenearthanimalheart"
+    ],
     "bp": 14000,
     "sp": 1,
     "size": "L"
@@ -43,7 +46,7 @@
       "【龍撃剣＆獣奏剣】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000"
     ],
     "bp": 4000,
     "sp": "special",
@@ -61,7 +64,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "while_in_field_body_e38193e3828c"
+      "opponent_must_hold_ot_et_on_command_release"
     ],
     "bp": 5000,
     "sp": null,
@@ -96,7 +99,7 @@
       "【超忍法・分身魔球】"
     ],
     "expectedDslKeywords": [
-      "grant_effect_e38193e3828c"
+      "on_deck_reveal_swap_effect_target"
     ],
     "bp": 4500,
     "sp": 1,
@@ -114,7 +117,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack",
-      "while_in_field_body_e38193e3828c"
+      "plasma_shockwave_start_phase::大神龍"
     ],
     "bp": 30000,
     "sp": null,
@@ -131,7 +134,7 @@
       "【ビッグ・バトン】"
     ],
     "expectedDslKeywords": [
-      "grant_ability_e38193e3828c"
+      "big_baton_command_zone_features"
     ],
     "bp": 4000,
     "sp": "special",

@@ -10,7 +10,7 @@
       "【レッドロープ】"
     ],
     "expectedDslKeywords": [
-      "while_note_e280bbe38193",
+      "note_card::XG5-001::koregaerianiarun",
       "SP1"
     ],
     "bp": 3000,
@@ -29,7 +29,7 @@
     ],
     "expectedDslKeywords": [
       "taxis_ET",
-      "deploy_rush_area_e887aae8bb8d"
+      "effect_card::XG5-002::burakushadou"
     ],
     "bp": 3000,
     "sp": null,
@@ -46,7 +46,7 @@
       "【ブルージェットダッシュ】"
     ],
     "expectedDslKeywords": [
-      "enemy_power_cost_minus"
+      "effect_card::XG5-003::burujietodashu"
     ],
     "bp": 2000,
     "sp": null,
@@ -63,7 +63,7 @@
       "【イエローボール】"
     ],
     "expectedDslKeywords": [
-      "hold_enemy_unit_e695b5e8bb8d"
+      "effect_card::XG5-004::ieroboru"
     ],
     "bp": 3000,
     "sp": null,
@@ -80,7 +80,7 @@
       "【ピンクリボン】"
     ],
     "expectedDslKeywords": [
-      "while_note_e280bbe38193",
+      "note_card::XG5-005::koregabatorueria",
       "SP1"
     ],
     "bp": 1000,
@@ -98,8 +98,8 @@
       "【ストップ・ザ・バトル】"
     ],
     "expectedDslKeywords": [
-      "while_note_e280bbe38193",
-      "cannot_restrict_e38193e3828c"
+      "note_card::XG5-006::koreganoniaruras",
+      "effect_card::XG5-006::sutopuzabatoru"
     ],
     "bp": 9000,
     "sp": 1,
@@ -117,7 +117,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "release_command_action_e38193e381ae"
+      "effect_card::XG5-007::gogochienji"
     ],
     "bp": 4000,
     "sp": null,
@@ -134,7 +134,7 @@
       "【ゴーゴーチェンジ】"
     ],
     "expectedDslKeywords": [
-      "deck_search_e887aae8bb8d"
+      "effect_card::XG5-008::gogochienji"
     ],
     "bp": 5000,
     "sp": null,
@@ -165,7 +165,7 @@
       "自軍ラッシュエリアから、効果に｢ラッシュしたとき"
     ],
     "expectedDslKeywords": [
-      "hold_on_enter_battle_e887aae8bb8d"
+      "note_card::XG5-010::rashueriakaranir"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -199,7 +199,7 @@
       "自軍捨札から、追加条件を持たないDAのSユニット"
     ],
     "expectedDslKeywords": [
-      "stack_cards_e887aae8bb8d"
+      "note_card::XG5-012::karawotanaidanos"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -218,7 +218,7 @@
       "自軍捨札から、DAを持つカードを1枚選び手札に加"
     ],
     "expectedDslKeywords": [
-      "pick_from_discard_e887aae8bb8d"
+      "note_card::XG5-013::karadawotsukadow"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -268,7 +268,7 @@
       "BP6000以下の敵軍ユニットを1体選び持ち主の"
     ],
     "expectedDslKeywords": [
-      "hold_on_enter_battle_425036303030"
+      "note_card::XG5-016::bp6000noyunitowo"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -304,7 +304,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack_non_da",
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG5-018::andoku"
     ],
     "bp": 8000,
     "sp": null,
@@ -339,7 +339,7 @@
     ],
     "expectedDslKeywords": [
       "taxis_ET",
-      "bp_modify_e887aae8bb8d"
+      "effect_card::XG5-020::redozonkurashu"
     ],
     "bp": 4000,
     "sp": null,
@@ -374,7 +374,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "combo_action_e38193e3828c"
+      "effect_card::XG5-022::nakurukyanon"
     ],
     "bp": 3000,
     "sp": null,
@@ -427,7 +427,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG5-025::karano"
     ],
     "bp": 4500,
     "sp": null,
@@ -444,7 +444,8 @@
       "【仲間の支え】"
     ],
     "expectedDslKeywords": [
-      "hold_enemy_unit_e3808c535031"
+      "on_destroy_reanimate_named_from_discard",
+      "effect_card::XG5-026::noe"
     ],
     "bp": 2500,
     "sp": "special",
@@ -462,7 +463,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hold_enemy_unit_e38193e381ae"
+      "on_destroy_reanimate_named_from_discard",
+      "effect_card::XG5-027::deyuarukurashakonbinesho"
     ],
     "bp": 3500,
     "sp": null,
@@ -482,7 +484,7 @@
       "【スーパーサーティーセンタイソウル】"
     ],
     "expectedDslKeywords": [
-      "enemy_power_damage_e887aae8bb8d"
+      "effect_card::XG5-028::supasateisentaisouru"
     ],
     "bp": 20000,
     "sp": 1,
@@ -502,7 +504,7 @@
       "【頑頑ナックル落とし】"
     ],
     "expectedDslKeywords": [
-      "bp_modify_e38193e3828c"
+      "effect_card::XG5-029::nakurutoshi"
     ],
     "bp": 12000,
     "sp": 1,
@@ -542,7 +544,7 @@
       "【ガゼル脚】"
     ],
     "expectedDslKeywords": [
-      "combo_action_e38193e381ae"
+      "effect_card::XG5-031::gazerukyaku"
     ],
     "bp": 4000,
     "sp": null,
@@ -563,7 +565,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "end_turn_battle_to_rush"
+      "effect_card::XG5-032::jetboard"
     ],
     "bp": 3000,
     "sp": null,
@@ -581,7 +583,7 @@
     ],
     "expectedDslKeywords": [
       "no_battle_rush_turn",
-      "exclude_game_e887aae8bb8d"
+      "effect_card::XG5-033::nomojikara"
     ],
     "bp": 2000,
     "sp": null,
@@ -590,7 +592,7 @@
   {
     "cardId": "XG5-034",
     "wikiRef": "docs/wiki/cards/XG5-034.md",
-    "name": "シンケンレッド",
+    "name": "シンケンレッド（XG5）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "MA",
@@ -599,8 +601,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "note_other_e280bbe38193",
-      "hold_enemy_unit_e38193e3828c"
+      "note_card::XG5-034::korehatankorenow",
+      "effect_card::XG5-034::tohizanto"
     ],
     "bp": 2000,
     "sp": "1/3",
@@ -633,7 +635,7 @@
       "自軍ラッシュエリアから、MAを持つ自軍Sユニット"
     ],
     "expectedDslKeywords": [
-      "return_to_zone_e887aae8bb8d"
+      "note_card::XG5-036::rashueriakaramaw"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -678,7 +680,7 @@
     "expectedDslKeywords": [
       "wing",
       "lead_MA",
-      "category_modify_e382abe38386"
+      "effect_card::XG5-038::nosukaikupawa"
     ],
     "bp": 2000,
     "sp": null,
@@ -700,7 +702,7 @@
     "expectedDslKeywords": [
       "taxis_MA",
       "lead_MA",
-      "discard_to_zone_e695b5e8bb8d"
+      "effect_card::XG5-039::buruchieku"
     ],
     "bp": 3000,
     "sp": null,
@@ -709,7 +711,7 @@
   {
     "cardId": "XG5-040",
     "wikiRef": "docs/wiki/cards/XG5-040.md",
-    "name": "ゴセイブラック",
+    "name": "ゴセイブラック（XG5）",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -731,7 +733,7 @@
   {
     "cardId": "XG5-041",
     "wikiRef": "docs/wiki/cards/XG5-041.md",
-    "name": "ゴセイイエロー",
+    "name": "ゴセイイエロー（XG5）",
     "cardType": "unit",
     "powerCost": 1,
     "category": [
@@ -744,7 +746,7 @@
     "expectedDslKeywords": [
       "register",
       "lead_MA",
-      "grant_ability_e38193e3828c"
+      "effect_card::XG5-041::noe58584"
     ],
     "bp": 1000,
     "sp": null,
@@ -764,8 +766,8 @@
       "【天装合体】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "deploy_rush_area_e887aae8bb8d"
+      "note_card::XG5-042::konokadonohaniri",
+      "effect_card::XG5-042::fxunknown6"
     ],
     "bp": 6000,
     "sp": null,
@@ -786,7 +788,7 @@
     ],
     "expectedDslKeywords": [
       "taxis_MA",
-      "enemy_power_damage_e887aae8bb8d"
+      "effect_card::XG5-043::shiikusutoraiku"
     ],
     "bp": 18000,
     "sp": 1,
@@ -807,7 +809,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "enemy_power_damage_e887aae8bb8d"
+      "effect_card::XG5-044::randeikusutoraiku"
     ],
     "bp": 20000,
     "sp": 1,
@@ -828,7 +830,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "enemy_power_damage_e887aae8bb8d"
+      "effect_card::XG5-045::sukaikusutoraiku"
     ],
     "bp": 19000,
     "sp": 1,
@@ -863,7 +865,7 @@
       "自軍パワーゾーンのダメージ以外のカードをすべて捨"
     ],
     "expectedDslKeywords": [
-      "damage_action_e887aae8bb8d"
+      "note_card::XG5-047::pawazonnodamejin"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -882,7 +884,7 @@
       "自軍コマンドゾーンから、特徴「改造人間」を持つS"
     ],
     "expectedDslKeywords": [
-      "deploy_rush_area_e887aae8bb8d"
+      "note_card::XG5-048::komandozonkarawo"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -902,7 +904,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "grant_ability_e887aae8bb8d"
+      "effect_card::XG5-049::aporomagunamu"
     ],
     "bp": 5000,
     "sp": 1,
@@ -911,7 +913,7 @@
   {
     "cardId": "XG5-050",
     "wikiRef": "docs/wiki/cards/XG5-050.md",
-    "name": "仮面ライダー装甲響鬼",
+    "name": "仮面ライダー装甲響鬼（XG5）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -920,7 +922,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "SP1"
+      "effect_card::XG5-050::ru"
     ],
     "bp": 4000,
     "sp": "1/3",
@@ -938,8 +940,8 @@
     ],
     "expectedDslKeywords": [
       "not_selectable",
-      "note_other_e280bbe38193",
-      "power_zone_action_e38193e3828c"
+      "note_card::XG5-051::korehakadonikabu",
+      "effect_card::XG5-051::noe5a4a9"
     ],
     "bp": 3000,
     "sp": "special",
@@ -975,7 +977,7 @@
     ],
     "expectedDslKeywords": [
       "call_DA",
-      "enemy_power_damage_e887aae8bb8d"
+      "effect_card::XG5-053::fuainaruzanbatozan"
     ],
     "bp": 5000,
     "sp": null,
@@ -993,7 +995,7 @@
     ],
     "expectedDslKeywords": [
       "lead_OT",
-      "SP1"
+      "effect_card::XG5-054::kuraida"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -1011,7 +1013,7 @@
     ],
     "expectedDslKeywords": [
       "undead_command_rush_hold",
-      "hand_pick_show_e887aae58886"
+      "effect_card::XG5-055::fuaiaapa"
     ],
     "bp": 3000,
     "sp": null,
@@ -1030,7 +1032,7 @@
     "expectedDslKeywords": [
       "wing",
       "undead_command_rush_hold",
-      "hold_enemy_unit_e38193e3828c"
+      "effect_card::XG5-056::tenogeki"
     ],
     "bp": 5000,
     "sp": "1/2",
@@ -1047,7 +1049,7 @@
       "【ファイアランバス】"
     ],
     "expectedDslKeywords": [
-      "ride_discard_trigger_e38193e3828c"
+      "effect_card::XG5-057::fuaiaranbasu"
     ],
     "sp": null,
     "size": "S"
@@ -1063,7 +1065,7 @@
       "自軍山札の上から5枚をオモテにする。そうしたとき"
     ],
     "expectedDslKeywords": [
-      "exclude_game_e887aae8bb8d"
+      "note_card::XG5-058::nokara5woomoteni"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1086,7 +1088,7 @@
     ],
     "expectedDslKeywords": [
       "undead_command_rush_hold",
-      "grant_ability_e38193e3828c"
+      "effect_card::XG5-059::surue69ab4"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -1123,7 +1125,7 @@
       "【スペード8－マグネット】"
     ],
     "expectedDslKeywords": [
-      "rush_discard_instead_e887aae8bb8d"
+      "effect_card::XG5-061::supedo8maguneto"
     ],
     "bp": 3500,
     "sp": null,
@@ -1140,7 +1142,7 @@
       "【ハート8－リフレクト】"
     ],
     "expectedDslKeywords": [
-      "rush_discard_instead_e887aae8bb8d"
+      "effect_card::XG5-062::hato8rifurekuto"
     ],
     "bp": 1500,
     "sp": null,
@@ -1174,7 +1176,7 @@
       "※カウンター"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe382ab"
+      "counter_note::kaunta_batorufueizun"
     ],
     "operationKind": "counter",
     "expectedMechanisms": [
@@ -1192,7 +1194,7 @@
       "追加条件を持たないユニットをすべて撃破する。"
     ],
     "expectedDslKeywords": [
-      "destroy_all_enemy_e8bfbde58aa0"
+      "note_card::XG5-065::wotanaiyunitowos"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1212,7 +1214,7 @@
     ],
     "expectedDslKeywords": [
       "lead_WB",
-      "grant_effect_e38193e3828c"
+      "effect_card::XG5-066::kopibento"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -1249,7 +1251,7 @@
     "expectedDslKeywords": [
       "wing",
       "lead_WB",
-      "damage_action_e5b8b8e9a790"
+      "effect_card::XG5-068::ikeru"
     ],
     "bp": 6000,
     "sp": "1/2",
@@ -1267,7 +1269,7 @@
     ],
     "expectedDslKeywords": [
       "lead_ma_bp_boost_1000",
-      "discard_to_zone_e695b5e8bb8d"
+      "effect_card::XG5-069::chise"
     ],
     "bp": 1000,
     "sp": null,
@@ -1285,7 +1287,7 @@
     ],
     "expectedDslKeywords": [
       "lead_ma_bp_boost_1000",
-      "while_in_field_body_e38193e3828c"
+      "effect_card::XG5-070::fxunknowne581b5"
     ],
     "bp": 500,
     "sp": null,
@@ -1294,7 +1296,7 @@
   {
     "cardId": "XG5-071",
     "wikiRef": "docs/wiki/cards/XG5-071.md",
-    "name": "仮面ライダー響鬼",
+    "name": "仮面ライダー響鬼（XG5）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "MA",
@@ -1304,7 +1306,7 @@
     "expectedDslKeywords": [
       "register",
       "lead_MA",
-      "grant_ability_e38193e381ae"
+      "effect_card::XG5-071::etemasu"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -1322,7 +1324,7 @@
     ],
     "expectedDslKeywords": [
       "lead_MA",
-      "reveal_faceup_e695b5e8bb8d"
+      "effect_card::XG5-072::kenukaze"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -1341,7 +1343,7 @@
     "expectedDslKeywords": [
       "morph",
       "no_strike_if_enemy_battle",
-      "power_zone_action_e887aae58886"
+      "effect_card::XG5-073::noe4bfba"
     ],
     "bp": 3000,
     "sp": 1,
@@ -1360,7 +1362,7 @@
     "expectedDslKeywords": [
       "morph",
       "call_DA",
-      "bp_modify_e38193e3828c"
+      "effect_card::XG5-074::fuangaianoou"
     ],
     "bp": 2000,
     "sp": null,
@@ -1377,7 +1379,7 @@
       "【母娘の絆】"
     ],
     "expectedDslKeywords": [
-      "pick_from_discard_e38193e381ae"
+      "effect_card::XG5-075::noe6af8d"
     ],
     "bp": 1000,
     "sp": null,
@@ -1394,7 +1396,7 @@
       "【ダブル・ブロウクン・ファング】"
     ],
     "expectedDslKeywords": [
-      "grant_effect_e38193e3828c"
+      "effect_card::XG5-076::daburuburoukunfuangu"
     ],
     "bp": 2000,
     "sp": null,
@@ -1411,7 +1413,7 @@
       "【ソニックスタッブ】"
     ],
     "expectedDslKeywords": [
-      "enter_hold_enemy_e887aae8bb8d"
+      "effect_card::XG5-077::sonikusutabu"
     ],
     "bp": 2000,
     "sp": null,
@@ -1428,7 +1430,7 @@
       "自軍Sユニットを1体選び、自軍パワーゾーンのオモ"
     ],
     "expectedDslKeywords": [
-      "vehicle_interaction_e887aae8bb8d"
+      "note_card::XG5-078::syunitowo1bipawa"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1448,7 +1450,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "number_combo_e695b5e8bb8d"
+      "effect_card::XG5-079::raidakado"
     ],
     "bp": 3000,
     "sp": null,
@@ -1466,7 +1468,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_500",
-      "vehicle_interaction_e38193e3828c"
+      "effect_card::XG5-080::atakuraido"
     ],
     "sp": null,
     "size": "S"
@@ -1482,7 +1484,7 @@
       "【絶望がお前のゴールだ】"
     ],
     "expectedDslKeywords": [
-      "power_zone_action_e38193e3828c"
+      "effect_card::XG5-081::gaonogoruda"
     ],
     "bp": 4500,
     "sp": 1,
@@ -1515,7 +1517,7 @@
       "※カウンター"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe382ab"
+      "counter_note::kaunta_syunitogabato"
     ],
     "operationKind": "counter",
     "expectedMechanisms": [
@@ -1537,7 +1539,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "bp_modify_e38193e3828c"
+      "effect_card::XG5-084::onowoero"
     ],
     "bp": 3000,
     "sp": null,
@@ -1554,8 +1556,8 @@
       "【ワープ】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "while_in_field_body_e38193e3828c"
+      "note_card::XG5-085::korehasyunitonia",
+      "effect_card::XG5-085::wapu"
     ],
     "bp": 5000,
     "sp": null,
@@ -1572,7 +1574,7 @@
       "【ナックルボンバー】"
     ],
     "expectedDslKeywords": [
-      "power_zone_action_e887aae8bb8d"
+      "effect_card::XG5-086::nakurubonba"
     ],
     "bp": 9000,
     "sp": null,
@@ -1606,7 +1608,7 @@
       "【力まかせ】"
     ],
     "expectedDslKeywords": [
-      "auto_battle_e38193e3828c"
+      "effect_card::XG5-088::chikaramakase"
     ],
     "bp": 3000,
     "sp": null,
@@ -1623,8 +1625,8 @@
       "【マサカリホーク】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193",
-      "bp_modify_e887aae8bb8d"
+      "on_destroy_deploy_named_to_rush::カバドス",
+      "effect_card::XG5-089::masakarihoku"
     ],
     "bp": 4500,
     "sp": null,
@@ -1641,7 +1643,7 @@
       "【友情】"
     ],
     "expectedDslKeywords": [
-      "bp_modify_e887aae8bb8d"
+      "effect_card::XG5-090::fxunknowne58f8b"
     ],
     "bp": 500,
     "sp": null,
@@ -1658,7 +1660,8 @@
       "【ブラストエンド】"
     ],
     "expectedDslKeywords": [
-      "note_other_e280bbe38193"
+      "note_card::XG5-091::korehamatahawots",
+      "note_card::XG5-091::korehapawazonnio"
     ],
     "bp": 6000,
     "sp": "special",
@@ -1678,7 +1681,7 @@
       "【天使と悪魔】"
     ],
     "expectedDslKeywords": [
-      "grant_effect_e887aae8bb8d"
+      "effect_card::XG5-092::toma"
     ],
     "bp": 4000,
     "sp": null,
@@ -1695,7 +1698,7 @@
       "特徴「人型」を持つ自軍ユニットを2体選び、選んだ"
     ],
     "expectedDslKeywords": [
-      "hold_enemy_unit_e789b9e5beb4"
+      "note_card::XG5-093::wotsuyunitowo2bi"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1714,7 +1717,7 @@
       "【ハカイダー部隊の決起】"
     ],
     "expectedDslKeywords": [
-      "deck_search_e38193e3828c"
+      "effect_card::XG5-094::hakaidano"
     ],
     "bp": 4000,
     "sp": null,
@@ -1732,7 +1735,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "damage_action_e887aae8bb8d"
+      "effect_card::XG5-095::satandakunesu"
     ],
     "bp": 5500,
     "sp": null,
