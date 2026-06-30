@@ -55,3 +55,16 @@ export {
   permanentOperationSlotLimit,
   isPermanentOperationCard,
 } from "./rules/permanentOperation";
+export {
+  canInitiateOperationCategoryPayment,
+  canPayOperationPowerCost,
+  canPlayOperationFromHand,
+  canSatisfyOperationCommandHold,
+  explainOperationPlayBlock,
+  isCounterPlayPhase,
+  isInstantOperationCard,
+  isOperationPlayPhase,
+  operationCardsToDiscardWithStack,
+  shouldDiscardOperationAfterResolve,
+  stackCardOnPermanentOperation,
+} from "./rules/operationProcedure";

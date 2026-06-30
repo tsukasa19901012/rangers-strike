@@ -3,10 +3,10 @@
  * 仕様: apps/web/lib/wikiTestSpecs/ruleSpecs.ts
  */
 import { describe, expect, it } from "vitest";
-import { legend2Catalog } from "@rangers-strike/cards";
+import { legend1Catalog, legend2Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
 import { placePermanentOperation } from "./rules/permanentOperation";
-import { createTestState, heldDaCommand, heldWbCommand, inst, MERGED_DEFINITIONS } from "./testing/fixtures";
+import { createTestState, heldDaCommand, heldEtCommand, heldWbCommand, inst, MERGED_DEFINITIONS } from "./testing/fixtures";
 
 const LEGEND2_DEFINITIONS = {
   ...MERGED_DEFINITIONS,
@@ -135,6 +135,55 @@ const RULE_CASES: RuleCase[] = [
       });
       const rushes = getLegalActions(state).filter((a) => a.type === "rush");
       expect(rushes).toHaveLength(0);
+    },
+  },
+  {
+    ruleId: "RULE-OP-01",
+    wikiRef: "docs/wiki/glossary/p581.md",
+    title: "通常オペはラッシュフェイズのみ使用",
+    run() {
+      const op = inst("RS-015", "op");
+      const defs = {
+        ...MERGED_DEFINITIONS,
+        ...Object.fromEntries(legend1Catalog.cards.map((card) => [card.id, card])),
+      };
+      const state = createTestState({
+        definitions: defs,
+        phase: "battle",
+        player1: {
+          hand: [op],
+          power: [inst("TST-P", "p1"), inst("TST-P", "p2")],
+          command: [heldEtCommand("c1")],
+        },
+      });
+      expect(getLegalActions(state).some((a) => a.type === "play_operation")).toBe(false);
+    },
+  },
+  {
+    ruleId: "RULE-OP-02",
+    wikiRef: "docs/wiki/phases.md#3-ラッシュフェイズ",
+    title: "通常オペ使用後は捨札",
+    run() {
+      const op = inst("RS-015", "op");
+      const defs = {
+        ...MERGED_DEFINITIONS,
+        ...Object.fromEntries(legend1Catalog.cards.map((card) => [card.id, card])),
+      };
+      const state = createTestState({
+        definitions: defs,
+        phase: "rush",
+        player1: {
+          hand: [op],
+          power: [inst("TST-P", "p1"), inst("TST-P", "p2")],
+          command: [heldEtCommand("c1")],
+        },
+      });
+      const action = getLegalActions(state).find((a) => a.type === "play_operation");
+      expect(action).toBeDefined();
+      const result = applyAction(state, action!);
+      expect(result.ok).toBe(true);
+      if (!result.ok) return;
+      expect(result.state.players.player1.discard.some((c) => c.cardId === "RS-015")).toBe(true);
     },
   },
   {

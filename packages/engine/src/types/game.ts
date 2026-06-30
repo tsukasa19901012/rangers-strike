@@ -57,6 +57,8 @@ export type CardInstance = {
   shironLightUsedThisRush?: boolean;
   /** 常駐 OP: このラッシュフェイズで太字/発動効果を使用済み。 */
   residentActivatedThisRush?: boolean;
+  /** 常駐 OP の上に重ねたカード（wiki: 常駐置き場の重ね）。 */
+  stackedCards?: CardInstance[];
   /** レジスト: バトル撃破後にホールド留場。 */
   registerHeld?: boolean;
 };

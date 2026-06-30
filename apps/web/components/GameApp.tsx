@@ -52,6 +52,10 @@ import {
   permanentOperationActivateLabel,
   shouldOpenPermanentOperationModal,
 } from "@/lib/permanentOperationUi";
+import {
+  findOperationCategoryPaymentAction,
+  findPlayOperationAction,
+} from "@/lib/operationProcedureUi";
 import { estimateDeckWarnings } from "@/lib/deckWarnings";
 import { formatDeckValidationMessage } from "@/lib/formatDeckValidation";
 import {
@@ -555,29 +559,25 @@ export function GameApp() {
 
   const tryPlayOperation = useCallback(
     (instanceId: string, targetInstanceId?: string, extraInstanceId?: string) => {
-      const action = legalActions.find(
-        (a) =>
-          a.type === "play_operation" &&
-          a.instanceId === instanceId &&
-          (targetInstanceId
-            ? a.targetInstanceId === targetInstanceId
-            : !a.targetInstanceId) &&
-          (extraInstanceId
-            ? a.extraInstanceId === extraInstanceId
-            : !a.extraInstanceId),
+      const action = findPlayOperationAction(
+        legalActions,
+        instanceId,
+        targetInstanceId,
+        extraInstanceId,
       );
       if (action) {
         apply(action);
         return;
       }
-      apply({
-        type: "initiate_command_payment",
-        playerId: HUMAN_PLAYER,
-        kind: "category_use",
-        sourceInstanceId: instanceId,
+      const payment = findOperationCategoryPaymentAction(
+        legalActions,
+        instanceId,
         targetInstanceId,
         extraInstanceId,
-      });
+      );
+      if (payment) {
+        apply(payment);
+      }
     },
     [apply, legalActions],
   );

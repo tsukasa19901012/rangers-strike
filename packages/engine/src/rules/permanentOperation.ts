@@ -16,6 +16,7 @@ import {
 import { evaluateDslCondition } from "../dsl/dslCatalog";
 import { canInitiateShironLight } from "./shironLight";
 import { isHidoraEggUsed } from "./turnModifiers";
+import { operationCardsToDiscardWithStack } from "./operationProcedure";
 
 const RUSH_ACTIVATION_TEXT =
   /(?:自軍|自分(?:の|自身の)?)ラッシュフェイズ(?:ごとに)?1度|自分のラッシュフェイズごとに1度/;
@@ -239,7 +240,8 @@ export function placePermanentOperation(
 
   while (operation.length >= limit) {
     const [removed, ...rest] = operation;
-    if (removed) discard.push(removed);
+    if (!removed) break;
+    discard = [...discard, ...operationCardsToDiscardWithStack(removed)];
     operation = rest;
   }
 
