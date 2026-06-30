@@ -33,6 +33,7 @@ import {
   shouldRunConditionalOnEnter,
 } from "./legend3/battleEffects";
 import { resolveJointCombosOnEnter } from "./jointComboProcedure";
+import { applyDestroyOnEnterBattle } from "./destroyOnEnterBattle";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
 import { tryMereChameleonOnAllyEnterBattle } from "./batch04FieldEffects";
 import { countLogicalBattleSlots } from "./battleLine";
@@ -423,6 +424,15 @@ export function resolveEnterBattleEffectsImpl(
     );
     nextState = baseAttack.state;
     logs.push(...baseAttack.logs);
+
+    const destroyOnEnter = applyDestroyOnEnterBattle(
+      nextState,
+      playerId,
+      battleCard.instanceId,
+      playerId,
+    );
+    nextState = destroyOnEnter.state;
+    logs.push(...destroyOnEnter.logs);
   }
 
   return { state: nextState, logs };

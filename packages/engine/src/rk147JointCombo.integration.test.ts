@@ -47,8 +47,14 @@ describe("RK-147 joint combo from S unit", () => {
       }),
     );
 
-    const partner = next.players.player1.battle.find((c) => c.cardId === "RK-142");
-    expect(partner?.spOverride).toBe(1);
+    const partnerInBattle = next.players.player1.battle.find((c) => c.cardId === "RK-142");
+    expect(partnerInBattle).toBeUndefined();
+
+    const partnerInDiscard = next.players.player1.discard.find((c) => c.cardId === "RK-142");
+    expect(partnerInDiscard?.spOverride).toBe(1);
     expect(next.log.some((entry) => entry.includes("joint_combo_l"))).toBe(true);
+    expect(next.log.some((entry) => entry.includes("destroy_on_enter_battle"))).toBe(
+      true,
+    );
   });
 });

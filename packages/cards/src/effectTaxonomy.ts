@@ -168,7 +168,9 @@ export type UnnamedUnitRule =
   /** ライドなしでバトル投入可能（味方S在戦が条件のビークル等）。 */
   | "can_enter_battle_without_ride"
   /** アンデッドユニットのラッシュ支払いとしてホールド可能（XG5-055 等）。 */
-  | "undead_command_rush_hold";
+  | "undead_command_rush_hold"
+  /** バトルエリアに出たとき撃破される（RK-142 等イマジン）。 */
+  | "destroy_on_enter_battle";
 
 /** 効果名を持たないテキスト — 静的ルール、※ 制限、ゾード素材行。 */
 export type UnnamedUnitText = {
