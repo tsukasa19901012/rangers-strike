@@ -96,8 +96,11 @@ describe("morph reaction window", () => {
 
     expect(result.state.pendingMorph?.morphUnitInstanceIds).toHaveLength(2);
     expect(result.state.pendingEffectChoice).toBeUndefined();
+    expect(result.state.activePlayer).toBe("player1");
     expect(
-      getLegalActions(result.state).some((a) => a.type === "select_morph_unit"),
+      getLegalActions(result.state).some(
+        (a) => a.type === "select_morph_unit" && a.playerId === "player1",
+      ),
     ).toBe(true);
   });
 

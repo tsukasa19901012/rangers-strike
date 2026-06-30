@@ -11,6 +11,12 @@ import {
   listMorphReplacementCandidates,
   type MorphReplacementCandidate,
 } from "./morph";
+import {
+  morphOrderChooserPlayerId,
+  morphReplacementChooserPlayerId,
+  shouldMorphOrderChooserAct,
+} from "../rules/morphProcedure";
+import { applyOnRushUnitEffects } from "../rules/onRushUnitEffects";
 
 type FieldZone = "rush" | "battle";
 type MorphZone = FieldZone | MorphReplacementCandidate["zone"];
@@ -219,18 +225,25 @@ export function openMorphReactionWindow(
   return {
     ...state,
     pendingMorph: pending,
-    activePlayer: defenderId,
+    activePlayer: pending.phasePlayerId,
   };
 }
 
 export function beginMorphUnitSelection(
   state: GameState,
-  defenderId: PlayerId,
+  actingPlayerId: PlayerId,
   morphUnitInstanceId: string,
 ): GameState | null {
   const pending = state.pendingMorph;
-  if (!pending || pending.defenderPlayerId !== defenderId) return null;
+  if (!pending) return null;
   if (!pending.morphUnitInstanceIds.includes(morphUnitInstanceId)) return null;
+
+  const orderChooser = morphOrderChooserPlayerId(pending);
+  if (orderChooser) {
+    if (actingPlayerId !== orderChooser) return null;
+  } else if (actingPlayerId !== pending.defenderPlayerId) {
+    return null;
+  }
 
   return openMorphReplacementChoice(state, pending, morphUnitInstanceId);
 }
@@ -305,7 +318,9 @@ export function continueMorphAfterReplacement(
   return {
     ...state,
     pendingMorph: nextPending,
-    activePlayer: pending.defenderPlayerId,
+    activePlayer: shouldMorphOrderChooserAct(nextPending)
+      ? pending.phasePlayerId
+      : pending.defenderPlayerId,
   };
 }
 
@@ -313,7 +328,7 @@ export function resolveMorphReplacementChoice(
   state: GameState,
   defenderId: PlayerId,
   replacementInstanceId: string,
-): { state: GameState; log?: string } | { error: string } {
+): { state: GameState; log?: string; extraLogs?: string[] } | { error: string } {
   const pending = state.pendingEffectChoice;
   const morphPending = pending?.morphMeta ?? state.pendingMorph;
   if (
@@ -333,11 +348,29 @@ export function resolveMorphReplacementChoice(
   );
   if ("error" in swap) return swap;
 
+  const morphFound = findMorphUnit(
+    swap.state.players[defenderId],
+    morphPending.activeMorphUnitInstanceId,
+  );
+  let nextState = swap.state;
+  const extraLogs: string[] = [];
+  if (morphFound) {
+    const rushEffects = applyOnRushUnitEffects(
+      nextState,
+      defenderId,
+      replacementInstanceId,
+      morphPending.phasePlayerId,
+      morphFound.zone,
+    );
+    nextState = rushEffects.state;
+    extraLogs.push(...rushEffects.logs);
+  }
+
   const next = continueMorphAfterReplacement(
-    { ...swap.state, pendingEffectChoice: undefined },
+    { ...nextState, pendingEffectChoice: undefined },
     morphPending,
     morphPending.activeMorphUnitInstanceId,
   );
 
-  return { state: next, log: swap.log };
+  return { state: next, log: swap.log, extraLogs: extraLogs.length > 0 ? extraLogs : undefined };
 }

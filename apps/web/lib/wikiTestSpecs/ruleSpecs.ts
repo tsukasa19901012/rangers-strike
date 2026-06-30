@@ -299,4 +299,16 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
     ],
     fixtureCardIds: ["RK-024", "RK-027", "RK-030"],
   },
+  {
+    ruleId: "RULE-KW-09",
+    wikiRef: "docs/wiki/glossary/p1294.md",
+    title: "敵ラッシュ時に特徴一致でモーフ置換",
+    assertions: [
+      "emitUnitRushed 後 pendingMorph / morph_replacement",
+      "置換先は hand/rush/power/command のオモテユニット",
+      "モーフキーワード持ちのラッシュには反応不可",
+      "複数モーフ時はターンプレイヤーが順序決定",
+      "pass_morph_reaction でスキップ可",
+    ],
+  },
 ];

@@ -5,6 +5,7 @@
 import { describe, expect, it } from "vitest";
 import { legend1Catalog, legend2Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
+import { emitUnitRushedAndFinalize } from "./events/emitUnitRushed";
 import { placePermanentOperation } from "./rules/permanentOperation";
 import { createTestState, heldDaCommand, heldEtCommand, heldWbCommand, inst, MERGED_DEFINITIONS } from "./testing/fixtures";
 
@@ -240,6 +241,65 @@ const RULE_CASES: RuleCase[] = [
       });
       const counters = getLegalActions(state).filter((a) => a.type === "play_counter");
       expect(counters).toHaveLength(0);
+    },
+  },
+  {
+    ruleId: "RULE-KW-09",
+    wikiRef: "docs/wiki/glossary/p1294.md",
+    title: "敵ラッシュ時に特徴一致でモーフ置換",
+    run() {
+      const FEATURE = "wiki-morph";
+      const rusher = inst("TST-RUSH", "rusher");
+      const morphField = inst("TST-MORPH-F", "mf");
+      const morphHand = inst("TST-MORPH-H", "mh");
+      const unitDef = {
+        id: "TST-RUSH",
+        name: "Rusher",
+        type: "unit" as const,
+        category: "WB" as const,
+        rarity: "N" as const,
+        expansion: "test",
+        powerCost: 1,
+        bp: 2000,
+        sp: 1,
+        size: "S" as const,
+        features: [FEATURE],
+      };
+      const morphDef = {
+        ...unitDef,
+        id: "TST-MORPH-F",
+        text: "【モーフ】",
+      };
+      const handDef = { ...unitDef, id: "TST-MORPH-H" };
+
+      let state = createTestState({
+        phase: "rush",
+        activePlayer: "player1",
+        player1: { rush: [rusher] },
+        player2: { rush: [morphField], hand: [morphHand] },
+      });
+      state.definitions["TST-RUSH"] = unitDef;
+      state.definitions["TST-MORPH-F"] = morphDef;
+      state.definitions["TST-MORPH-H"] = handDef;
+
+      const opened = emitUnitRushedAndFinalize(
+        state,
+        "player1",
+        rusher.instanceId,
+        "player1",
+      );
+      expect(opened.state.pendingEffectChoice?.effectId).toBe("morph_replacement");
+
+      const chosen = applyAction(opened.state, {
+        type: "resolve_effect_choice",
+        playerId: "player2",
+        instanceId: morphHand.instanceId,
+      });
+      expect(chosen.ok).toBe(true);
+      if (!chosen.ok) return;
+      expect(
+        chosen.state.players.player2.rush.some((c) => c.instanceId === morphHand.instanceId),
+      ).toBe(true);
     },
   },
 ];

@@ -125,6 +125,9 @@ export function effectChoiceHint(
       if (pending.effectId === "super_geki_yellow_reanimate") {
         return "捨札の「ゲキイエロー」を1体選んでラッシュエリアに出してください";
       }
+      if (pending.effectId === "morph_replacement") {
+        return "特徴が一致するユニットカードを選び、モーフで置き換えてください";
+      }
       return "対象を選んでください";
     default:
       return `対象を選んでください`;

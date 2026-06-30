@@ -100,6 +100,11 @@ import { getCardEffect } from "@rangers-strike/cards";
 import { isHidoraEggUsed } from "../rules/turnModifiers";
 import { listValidChaseVehicleIds } from "../keywords/chase";
 import { canDeclareRush } from "../rules/rushDeclaration";
+import {
+  getMorphReactionActorId,
+  morphOrderChooserPlayerId,
+  morphReplacementChooserPlayerId,
+} from "../rules/morphProcedure";
 
 function assertActive(state: GameState, playerId: PlayerId): boolean {
   return state.activePlayer === playerId && state.winner === null;
@@ -261,21 +266,29 @@ function appendMorphReactionActions(
   actions: GameAction[],
 ): void {
   const pending = state.pendingMorph;
-  if (!pending || playerId !== pending.defenderPlayerId) return;
+  if (!pending) return;
 
   if (state.pendingEffectChoice?.effectId === "morph_replacement") {
-    appendEffectChoiceActions(state, playerId, actions);
+    if (playerId === morphReplacementChooserPlayerId(pending)) {
+      appendEffectChoiceActions(state, playerId, actions);
+    }
     return;
   }
 
-  for (const morphUnitInstanceId of pending.morphUnitInstanceIds) {
-    actions.push({
-      type: "select_morph_unit",
-      playerId,
-      morphUnitInstanceId,
-    });
+  const orderChooser = morphOrderChooserPlayerId(pending);
+  if (orderChooser && playerId === orderChooser) {
+    for (const morphUnitInstanceId of pending.morphUnitInstanceIds) {
+      actions.push({
+        type: "select_morph_unit",
+        playerId: orderChooser,
+        morphUnitInstanceId,
+      });
+    }
   }
-  actions.push({ type: "pass_morph_reaction", playerId });
+
+  if (playerId === pending.defenderPlayerId) {
+    actions.push({ type: "pass_morph_reaction", playerId: pending.defenderPlayerId });
+  }
 }
 
 function appendRushReactionActions(
@@ -1147,7 +1160,9 @@ export function getActionPlayerId(state: GameState): PlayerId {
       : undefined) ??
     getReactionChooserPlayerId(state) ??
     state.pendingEffectChoice?.playerId ??
-    state.pendingMorph?.defenderPlayerId ??
+    (state.pendingMorph
+      ? getMorphReactionActorId(state, state.pendingMorph)
+      : undefined) ??
     state.pendingChase?.chaserPlayerId ??
     state.pendingRideOffChoice?.playerId ??
     state.pendingBattleEntry?.playerId ??
@@ -1292,10 +1307,14 @@ export function getLegalActions(state: GameState): GameAction[] {
   }
 
   if (state.pendingMorph) {
-    const defenderId = state.pendingMorph.defenderPlayerId;
-    appendMorphReactionActions(state, defenderId, actions);
-    if (actions.length === 0) {
-      actions.push({ type: "pass_morph_reaction", playerId: defenderId });
+    const pending = state.pendingMorph;
+    const actor = getMorphReactionActorId(state, pending);
+    appendMorphReactionActions(state, actor, actions);
+    if (
+      actor !== pending.defenderPlayerId &&
+      !actions.some((a) => a.type === "pass_morph_reaction")
+    ) {
+      actions.push({ type: "pass_morph_reaction", playerId: pending.defenderPlayerId });
     }
     return actions;
   }
@@ -1731,6 +1750,19 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
       action.type === "resolve_ride_off_choice" &&
       action.playerId === state.pendingRideOffChoice.playerId
     );
+  }
+
+  if (state.pendingMorph) {
+    if (action.type === "pass_morph_reaction") {
+      return action.playerId === state.pendingMorph.defenderPlayerId;
+    }
+    if (action.type === "select_morph_unit") {
+      const actor = getMorphReactionActorId(state, state.pendingMorph);
+      return (
+        action.playerId === actor &&
+        state.pendingMorph.morphUnitInstanceIds.includes(action.morphUnitInstanceId)
+      );
+    }
   }
 
   const reactionActor = getReactionChooserPlayerId(state);

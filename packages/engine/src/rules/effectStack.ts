@@ -11,6 +11,7 @@ import {
   ensureSimultaneousReactionGroup,
   maybeOpenSimultaneousOrderAfterSync,
 } from "./simultaneousEffects";
+import { getMorphReactionActorId } from "./morphProcedure";
 
 /** 反応窓の優先順位（小さいほど先に解決）。公式: 離場 → ストライク → バトル → ラッシュ。 */
 const FRAME_PRIORITY: Record<EffectStackFrameKind, number> = {
@@ -100,7 +101,7 @@ export function buildEffectStack(state: GameState): EffectStack {
         state,
         "pendingMorph",
         "morph_reaction",
-        state.pendingMorph.defenderPlayerId,
+        getMorphReactionActorId(state, state.pendingMorph),
       ),
     );
   }

@@ -68,3 +68,16 @@ export {
   shouldDiscardOperationAfterResolve,
   stackCardOnPermanentOperation,
 } from "./rules/operationProcedure";
+export {
+  applyOnRushUnitEffects,
+} from "./rules/onRushUnitEffects";
+export {
+  getMorphReactionActorId,
+  morphOrderChooserPlayerId,
+  morphReplacementChooserPlayerId,
+  morphUnitCanReact,
+  MORPH_FIELD_ZONES,
+  MORPH_REPLACEMENT_ZONES,
+  rushedCardBlocksMorphReaction,
+  shouldMorphOrderChooserAct,
+} from "./rules/morphProcedure";

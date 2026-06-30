@@ -2081,7 +2081,11 @@ export function applyEffectChoiceSelect(
   if (pending.effectId === "morph_replacement") {
     const result = resolveMorphReplacementChoice(state, playerId, instanceId);
     if ("error" in result) return { error: result.error };
-    return { state: result.state, log: result.log };
+    let nextState = result.state;
+    if (result.extraLogs?.length) {
+      nextState = { ...nextState, log: [...nextState.log, ...result.extraLogs] };
+    }
+    return { state: nextState, log: result.log };
   }
 
   if (pending.effectId === "kamen_ride_morph") {

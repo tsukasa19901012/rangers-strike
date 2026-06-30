@@ -56,6 +56,12 @@ import {
   findOperationCategoryPaymentAction,
   findPlayOperationAction,
 } from "@/lib/operationProcedureUi";
+import {
+  findPassMorphReactionAction,
+  findSelectMorphUnitAction,
+  morphOrderHint,
+  resolveMorphUiState,
+} from "@/lib/morphUi";
 import { estimateDeckWarnings } from "@/lib/deckWarnings";
 import { formatDeckValidationMessage } from "@/lib/formatDeckValidation";
 import {
@@ -1587,6 +1593,16 @@ export function GameApp() {
     });
   }, [state, pendingHiddenNinja]);
 
+  const morphUi = useMemo(() => {
+    if (!state) return null;
+    return resolveMorphUiState(state, HUMAN_PLAYER);
+  }, [state]);
+
+  const morphOrderSelectableIds = useMemo(() => {
+    if (!morphUi?.isOrderPhase) return undefined;
+    return new Set(morphUi.morphUnitInstanceIds);
+  }, [morphUi]);
+
   const isHumanStrikeDefender = !!state && checkHumanStrikeDefender(state, HUMAN_PLAYER);
 
   const interceptableIds = useMemo(() => {
@@ -1728,6 +1744,19 @@ export function GameApp() {
             : "pass_leave_reaction";
     apply({ type: actionType, playerId: HUMAN_PLAYER });
   }, [apply, humanReactionKind]);
+
+  const handleMorphOrderSelect = useCallback(
+    (instanceId: string) => {
+      const action = findSelectMorphUnitAction(legalActions, instanceId, HUMAN_PLAYER);
+      if (action) apply(action);
+    },
+    [apply, legalActions],
+  );
+
+  const handleMorphPass = useCallback(() => {
+    const action = findPassMorphReactionAction(legalActions, HUMAN_PLAYER);
+    if (action) apply(action);
+  }, [apply, legalActions]);
 
   /** ブロッキングモーダル表示時にフローティング通知をクリア（バトル登場 / 効果選択は除く）。 */
   const suppressFloatingNotices =
@@ -1895,6 +1924,9 @@ export function GameApp() {
       : null;
 
   const showEffectChoiceBanner = !!boardTapEffectChoice;
+  const showMorphOrderBanner = !!morphUi?.isOrderPhase;
+  const showMorphPassBanner =
+    !!morphUi?.canPass && !showMorphOrderBanner && !morphUi.isReplacementPhase;
 
   const showEffectChoiceModal =
     isHumanEffectChoice &&
@@ -2019,13 +2051,13 @@ export function GameApp() {
     ? undefined
     : showZordSetupBanner
       ? undefined
-    : showEffectChoiceBanner
+    : showEffectChoiceBanner || showMorphOrderBanner || showMorphPassBanner
       ? undefined
     : showStartPhaseModal
       ? "3つの行程を好きな順番で行ってください"
     : showDamagePaymentModal && pendingDamage
       ? damagePaymentHint(pendingDamage)
-    : showEffectChoiceModal || showReactionModal || showOperationModal || showCyberSRiderModal || showBattleDanceModal
+    : showEffectChoiceModal || showReactionModal || showOperationModal || showCyberSRiderModal || showBattleDanceModal || showMorphOrderBanner || showMorphPassBanner
     ? undefined
     : isHumanStrikeDefender
     ? interceptableIds?.size
@@ -2039,6 +2071,10 @@ export function GameApp() {
         : "アタックへのカウンターを選ぶか「応答スキップ」"
       : state.pendingRush
         ? "ラッシュへのカウンターを選ぶか「応答スキップ」"
+        : showMorphOrderBanner
+          ? morphOrderHint(false)
+          : showMorphPassBanner
+            ? "モーフを使わない場合はスキップしてください"
         : state.pendingLeave
           ? "離場へのカウンターを選ぶか「応答スキップ」"
           : showShironLightModal && pendingChoice
@@ -2562,14 +2598,17 @@ export function GameApp() {
             attackTargetIds={attackTargetIds}
             onAttackTargetSelect={handleAttackTargetSelect}
             pendingEffectChoiceTargets={
-              damagePaymentOnCpuBoard
+              morphOrderSelectableIds ??
+              (damagePaymentOnCpuBoard
                 ? boardDamagePaymentTargets
-                : boardEffectChoiceTargets
+                : boardEffectChoiceTargets)
             }
             onEffectChoiceSelect={
-              damagePaymentOnCpuBoard
-                ? handleDamagePaymentSelect
-                : handleEffectChoiceSelect
+              morphOrderSelectableIds
+                ? handleMorphOrderSelect
+                : damagePaymentOnCpuBoard
+                  ? handleDamagePaymentSelect
+                  : handleEffectChoiceSelect
             }
             effectChoiceHighlightCommand={boardTapEffectChoice?.opponent.command}
             effectChoiceHighlightPower={boardTapEffectChoice?.opponent.power}
@@ -2657,6 +2696,34 @@ export function GameApp() {
           canSkip={canSkipEffectChoice}
           skipLabel={effectChoiceSkipLabel(pendingChoice)}
           onSkip={() => apply({ type: "skip_effect_choice", playerId: HUMAN_PLAYER })}
+        />
+      )}
+      {showMorphOrderBanner && (
+        <EffectChoiceBanner
+          view={{
+            title: "モーフ",
+            hint: morphOrderHint(false),
+            zoneHint: "相手のモーフユニットをタップして解決順を決めてください",
+            self: { command: false, power: false, rush: false, battle: false },
+            opponent: { command: false, power: false, rush: true, battle: true },
+          }}
+          canSkip={false}
+          skipLabel=""
+          onSkip={() => {}}
+        />
+      )}
+      {showMorphPassBanner && (
+        <EffectChoiceBanner
+          view={{
+            title: "モーフ",
+            hint: "モーフを使わない場合はスキップできます",
+            zoneHint: "",
+            self: { command: false, power: false, rush: false, battle: false },
+            opponent: { command: false, power: false, rush: false, battle: false },
+          }}
+          canSkip
+          skipLabel="モーフをスキップ"
+          onSkip={handleMorphPass}
         />
       )}
       {showZordSetupBanner && zordSetup && (

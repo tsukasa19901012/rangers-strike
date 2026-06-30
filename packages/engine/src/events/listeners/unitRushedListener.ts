@@ -1,44 +1,7 @@
-import type { GameState, PlayerId } from "../../types/game";
+import type { GameState } from "../../types/game";
 import { findInZone } from "../../core/helpers";
-import { buildLogEntry } from "../../log/formatLog";
-import { requestDrawFromDeck } from "../../rules/drawFromDeck";
-import { resolveNamedOnRushEffects } from "../../rules/namedUnitEffects";
-import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
-import {
-  applySuperRadarOnRush,
-  resolveLegend3UnnamedRushEffects,
-} from "../../rules/legend3/rushEffects";
-import { ON_RUSH_EFFECTS } from "../../rules/rushEffects";
-import { resolveNoteOtherOnRushEffects, applyMotoSharianPowerTrigger } from "../../rules/noteOtherRushEffects";
-import { tryFormationDeployOnRush } from "../../rules/formationDeploy";
-import {
-  applyBandoraHeldCommandDiscard,
-  tryZubazubanOnAllyRush,
-} from "../../rules/batch06FieldEffects";
-import { tryOnAllyRushNamedReturnSelfToHand } from "../../rules/batch07FieldEffects";
-import { tryRsCatchallOnEnemyRush } from "../../rules/rs/rsCatchallRuntime";
+import { applyOnRushUnitEffects } from "../../rules/onRushUnitEffects";
 import type { EventListener, UnitRushedEvent } from "../types";
-
-function applyDrawOnRush(
-  state: GameState,
-  playerId: PlayerId,
-  cardId: string,
-  phasePlayerId: PlayerId,
-): { state: GameState; logs: string[] } {
-  const result = requestDrawFromDeck(state, playerId, phasePlayerId, {
-    count: 1,
-    sourceCardId: cardId,
-  });
-  if (!result.pending && !result.drawn) {
-    return { state: result.state, logs: [] };
-  }
-  return {
-    state: result.state,
-    logs: [
-      buildLogEntry(playerId, "rush_effect", cardId, state.definitions, "draw_1"),
-    ],
-  };
-}
 
 /**
  * RS-026 Q6/Q10: ラッシュ起因効果を疾風カウンターより先に解決する。
@@ -53,125 +16,16 @@ export const unitRushedListener: EventListener = (event, state) => {
   const found = findInZone(rusher, "rush", rushedInstanceId);
   if (!found) return { state };
 
-  let nextState = state;
-  const logs: string[] = [];
-  const phasePlayerId = rushEvent.phasePlayerId;
-
-  const onRush = ON_RUSH_EFFECTS[found.card.cardId];
-  if (onRush === "draw_1") {
-    const result = applyDrawOnRush(
-      nextState,
-      rusherPlayerId,
-      found.card.cardId,
-      phasePlayerId,
-    );
-    nextState = result.state;
-    logs.push(...result.logs);
-  }
-
-  const unnamedLegend3 = resolveLegend3UnnamedRushEffects(
-    nextState,
+  const result = applyOnRushUnitEffects(
+    state,
     rusherPlayerId,
     rushedInstanceId,
+    rushEvent.phasePlayerId,
+    "rush",
   );
-  nextState = unnamedLegend3.state;
-  logs.push(...unnamedLegend3.logs);
-
-  const dslRush = tryResolveDslTriggeredEffects({
-    state: nextState,
-    cardId: found.card.cardId,
-    instanceId: rushedInstanceId,
-    playerId: rusherPlayerId,
-    phasePlayerId,
-    triggerType: "on_rush",
-    logAction: "named_effect",
-  });
-  nextState = dslRush.state;
-  logs.push(...dslRush.logs);
-
-  if (!dslRush.handled) {
-    const namedRush = resolveNamedOnRushEffects(
-      nextState,
-      rusherPlayerId,
-      rushedInstanceId,
-      phasePlayerId,
-    );
-    nextState = namedRush.state;
-    logs.push(...namedRush.logs);
-  }
-
-  if (!nextState.pendingEffectChoice) {
-    const allyReturn = tryOnAllyRushNamedReturnSelfToHand(
-      nextState,
-      rusherPlayerId,
-      found.card.cardId,
-      rushedInstanceId,
-      phasePlayerId,
-    );
-    nextState = allyReturn.state;
-    logs.push(...allyReturn.logs);
-  }
-
-  if (!nextState.pendingEffectChoice) {
-    const formation = tryFormationDeployOnRush(
-      nextState,
-      rusherPlayerId,
-      rushedInstanceId,
-      phasePlayerId,
-    );
-    nextState = formation.state;
-    logs.push(...formation.logs);
-  }
-
-  const radar = applySuperRadarOnRush(nextState, rusherPlayerId, rushedInstanceId);
-  nextState = radar.state;
-  logs.push(...radar.logs);
-
-  const noteOther = resolveNoteOtherOnRushEffects(
-    nextState,
-    rusherPlayerId,
-    rushedInstanceId,
-    phasePlayerId,
-    found.card.cardId,
-  );
-  nextState = noteOther.state;
-  logs.push(...noteOther.logs);
-
-  const motoSharian = applyMotoSharianPowerTrigger(
-    nextState,
-    rusherPlayerId,
-    found.card.cardId,
-  );
-  nextState = motoSharian.state;
-  logs.push(...motoSharian.logs);
-
-  if (!nextState.pendingEffectChoice) {
-    nextState = applyBandoraHeldCommandDiscard(
-      nextState,
-      rusherPlayerId,
-      found.card.cardId,
-    );
-  }
-  if (!nextState.pendingEffectChoice) {
-    nextState = tryZubazubanOnAllyRush(
-      nextState,
-      rusherPlayerId,
-      rushedInstanceId,
-      phasePlayerId,
-    );
-  }
-
-  const rsEnemyRush = tryRsCatchallOnEnemyRush(
-    nextState,
-    rusherPlayerId,
-    rushedInstanceId,
-    phasePlayerId,
-  );
-  nextState = rsEnemyRush.state;
-  if (rsEnemyRush.logs.length > 0) logs.push(...rsEnemyRush.logs);
 
   return {
-    state: nextState,
-    logs: logs.length > 0 ? logs : undefined,
+    state: result.state,
+    logs: result.logs.length > 0 ? result.logs : undefined,
   };
 };
