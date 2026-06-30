@@ -821,6 +821,7 @@ function isPlayOperationContinuationLegal(
 
   const dslEffect = getDslOperationEffect(found.cardId, "rush");
   const dslChoose =
+    dslEffect &&
     shouldUseDslOperation(found.cardId, dslEffect) &&
     dslOperationOpensChoose(dslEffect);
 

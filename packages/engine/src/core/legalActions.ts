@@ -450,6 +450,7 @@ function appendOperationActions(
 
     const dslEffect = getDslOperationEffect(card.cardId, "rush");
     const dslChoose =
+      dslEffect &&
       shouldUseDslOperation(card.cardId, dslEffect) &&
       dslOperationOpensChoose(dslEffect);
 

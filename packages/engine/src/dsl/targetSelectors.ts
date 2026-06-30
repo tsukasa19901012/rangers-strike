@@ -1,4 +1,4 @@
-import type { EffectPrimitive, TargetSelector } from "@rangers-strike/cards/dsl/types";
+import type { EffectChoiceKind, TargetSelector } from "@rangers-strike/cards/dsl/types";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardCategories, getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
@@ -57,7 +57,7 @@ function withUnitTypeFilter(
 /** select_unit 等の choose kind に応じて valid セレクタへ暗黙フィルタを付与する。 */
 export function augmentChooseValidSelector(
   valid: TargetSelector,
-  kind: EffectPrimitive extends { type: "choose" } ? EffectPrimitive["kind"] : never,
+  kind: EffectChoiceKind,
 ): TargetSelector {
   if (kind !== "select_unit") return valid;
   if (valid.type !== "zone") return valid;
