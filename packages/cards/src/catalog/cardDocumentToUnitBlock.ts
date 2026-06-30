@@ -106,7 +106,7 @@ function normalizeUnnamedRuleEntry(entry: {
   damage?: number;
   discardCount?: number;
   partnerCardIds?: string[];
-  partnerSlotCardIds?: string[];
+  partnerSlotCardIds?: string[][];
 }): UnnamedUnitText {
   const holdFromText = parseBattleEntryHoldCount(entry.text);
   if (entry.rule === "require_command_hold_entry" || holdFromText !== undefined) {
