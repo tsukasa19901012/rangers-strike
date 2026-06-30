@@ -3,6 +3,7 @@ import { hasResist } from "@rangers-strike/cards";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { cardHasRegisterKeyword } from "../keywords/registerReaction";
 import type {
+  CardInstance,
   GameState,
   PendingLeave,
   PendingRegister,
@@ -50,7 +51,7 @@ export function applyRegisterHold(
 
   const zone = owner[pending.fromZone].map((c) =>
     c.instanceId === pending.instanceId
-      ? { ...c, registerHeld: true, battleActed: true }
+      ? { ...c, registerHeld: true, commandHeld: true, battleActed: true }
       : c,
   );
 
@@ -125,7 +126,9 @@ export function clearRegisterHeldOnRelease(
     const idx = player[zone].findIndex((c) => c.instanceId === instanceId);
     if (idx < 0) continue;
     const nextZone = player[zone].map((c) =>
-      c.instanceId === instanceId ? { ...c, registerHeld: false } : c,
+      c.instanceId === instanceId
+        ? { ...c, registerHeld: false, commandHeld: false }
+        : c,
     );
     return {
       ...state,
@@ -133,4 +136,12 @@ export function clearRegisterHeldOnRelease(
     };
   }
   return state;
+}
+
+/** スタートフェイズでレジストホールド中のバトルユニットがラッシュに戻るときの状態リセット。 */
+export function prepareRegisterUnitReturnedToRush(card: CardInstance): CardInstance {
+  if (!card.registerHeld) return card;
+  const next = { ...card, registerHeld: false, commandHeld: false };
+  delete next.battleActed;
+  return next;
 }

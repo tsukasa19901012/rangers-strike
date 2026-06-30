@@ -7,6 +7,7 @@ import { buildLogEntry, buildSimpleLogEntry } from "../log/formatLog";
 import { applyMegaSilverStartEndToggle } from "./batch04FieldEffects";
 import { startSelectPowerChoice } from "./pendingChoices";
 import { tryLegend3BattleToRush } from "./legend3/restrictions";
+import { prepareRegisterUnitReturnedToRush } from "./resist";
 import {
   applyOpponentHoldOtEtOnCommandRelease,
   applyPlasmaShockwaveShuffleBack,
@@ -77,7 +78,7 @@ export function returnAllBattleUnitsToRush(
   const player = state.players[playerId];
   if (player.battle.length === 0) return null;
 
-  const movedCards = [...player.battle];
+  const movedCards = player.battle.map(prepareRegisterUnitReturnedToRush);
   const effectQueue = collectBattleToRushEffectQueue(movedCards);
   let nextState: GameState = {
     ...state,

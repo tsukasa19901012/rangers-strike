@@ -593,7 +593,7 @@ export function PlayerBoard({
       strikeableIds={!isOpponent ? strikeableIds : undefined}
       onSelectTarget={handleSelectTarget}
       onSubstituteSelect={onSubstituteSelect}
-      getCommandHeld={(card) => card.commandHeld}
+      getCommandHeld={(card) => card.commandHeld || card.registerHeld}
       getDraggable={(card) =>
         !!(
           interactive &&
@@ -650,7 +650,7 @@ export function PlayerBoard({
       onSelectTarget={handleSelectTarget}
       onInterceptSelect={onInterceptSelect}
       onSubstituteSelect={onSubstituteSelect}
-      getCommandHeld={(card) => card.commandHeld}
+      getCommandHeld={(card) => card.commandHeld || card.registerHeld}
       getDraggable={(card) =>
         !!(
           interactive &&
@@ -683,7 +683,7 @@ export function PlayerBoard({
       selectableIds={selectableIds}
       selectedIds={commandPaymentSelectedIds}
       onSelectTarget={handleSelectTarget}
-      getCommandHeld={(card) => card.commandHeld}
+      getCommandHeld={(card) => card.commandHeld || card.registerHeld}
       emptyLabel="—"
     />
   );

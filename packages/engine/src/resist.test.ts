@@ -4,6 +4,11 @@ import { applyAction, getLegalActions } from "./index";
 import { finalizeLeavePending } from "./rules/operationCounters";
 import { createTestState, inst } from "./testing/fixtures";
 
+function unwrap(result: ReturnType<typeof applyAction>) {
+  if (!result.ok) throw new Error("expected ok");
+  return result.state;
+}
+
 const RESIST_UNIT: CardDefinition = {
   id: "TST-RESIST",
   name: "Resist Unit",
@@ -98,6 +103,7 @@ describe("register (resist)", () => {
       (c) => c.instanceId === defender.instanceId,
     );
     expect(held?.registerHeld).toBe(true);
+    expect(held?.commandHeld).toBe(true);
     expect(result.state.pendingRegister).toBeUndefined();
   });
 
@@ -139,5 +145,33 @@ describe("register (resist)", () => {
     if (!result.ok) return;
     expect(result.state.pendingRegister).toBeUndefined();
     expect(result.state.pendingDamagePayment?.remainingFlips).toBe(1);
+  });
+
+  it("clears register hold when battle units return to rush at start phase", () => {
+    const defender = {
+      ...inst("TST-RESIST", "d1"),
+      registerHeld: true,
+      commandHeld: true,
+      battleActed: true,
+    };
+    let state = createTestState({
+      phase: "start",
+      activePlayer: "player2",
+      player2: { battle: [defender] },
+    });
+    state.definitions["TST-RESIST"] = RESIST_UNIT;
+
+    state = unwrap(
+      applyAction(state, {
+        type: "return_all_battle_to_rush",
+        playerId: "player2",
+      }),
+    );
+    const returned = state.players.player2.rush.find(
+      (c) => c.instanceId === defender.instanceId,
+    );
+    expect(returned?.registerHeld).toBeFalsy();
+    expect(returned?.commandHeld).toBeFalsy();
+    expect(returned?.battleActed).toBeUndefined();
   });
 });

@@ -40,5 +40,5 @@ export function canRegisterUnit(
 }
 
 export function applyRegisterHoldToCard(card: CardInstance): CardInstance {
-  return { ...card, registerHeld: true, battleActed: true };
+  return { ...card, registerHeld: true, commandHeld: true, battleActed: true };
 }
