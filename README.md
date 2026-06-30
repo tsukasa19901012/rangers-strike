@@ -1,10 +1,11 @@
 # レンジャーズストライク（Rangers Strike）
 
-レンジャーズストライク（第1弾・第2弾・第3弾）の対戦シミュレーターです。  
+レンジャーズストライク（第1弾〜第9弾・ベルト・クロスギャザー等）の対戦シミュレーターです。  
 カードデータ・ルールエンジン・Web UI をモノレポ構成で管理しています。
 
 - **プレイ形式:** 1人 vs CPU（CPU レベル Lv1〜Lv5 を選択可能）
-- **対応カード:** コア 179 枚（L1–L3）+ promoted 1,670 枚 — **フルプレイアブル計 1,849 枚**（`fullPlayableCatalog`）
+- **対応カード:** コア 1,052 枚 + promoted 797 枚 — **フルプレイアブル計 1,849 枚**（`fullPlayableCatalog`、Wiki 収録の全対戦カード）
+- **実装状況:** ロールアウトゲート G0–G5 すべて pass（`dslReady=1849`、`effect_delegate=0`）。詳細は [full-card-rollout-process.md](docs/architecture/full-card-rollout-process.md) / `npm run audit:rollout-status -w @rangers-strike/cards`
 - **UI:** スマホ・タブレット・PC 向けレスポンシブ
 
 ## 対戦画面のレイアウト方針
@@ -32,7 +33,7 @@
 | CPU 対戦 | ターン進行・ラッシュ・バトル・ストライクなど基本ルールを実装。Lv1〜Lv5 で強さを調整 |
 | デッキ作成 | 1,849 枚プールから検索・収録セット絞り込み・自作デッキ保存（40枚固定・同名3枚まで、戦闘員等は例外） |
 | スターターデッキ | Type A/B/C（L1）＋ 轟の翼 / 銀の冒険者（L3）の計5種 |
-| フルプレイアブル | full-promoted / hybrid-promoted ランダムプリセット、promoted 混在の自作デッキ |
+| フルプレイアブル | full-playable 1,849 枚すべて DSL 解釈可能。ランダムプリセット・promoted 混在の自作デッキで CPU 対戦 |
 | カード詳細 | 画像と効果テキストをモーダルで表示 |
 | エラタ対応 | 公式 wiki のエラタ・Q&A を `packages/cards` で管理 |
 | 効果 UI | オペレーション・効果選択・ダメージ支払い・ゾード構築など、カード効果ごとの操作モーダルを配線 |
@@ -53,6 +54,17 @@
 - 探索ロジック: `packages/engine/src/ai/simulation.ts`（相手のリアクション窓をヒューリスティックで解決）
 - UI ラベル: `apps/web/lib/labels.ts` の `CPU_LEVEL_OPTIONS`
 
+## カタログ tier
+
+| Tier | 枚数 | 内容 |
+|------|------|------|
+| `core` | 1,052 | RS-001..690、BK/RK/SR、L1–L3 ベース（`corePlayableCatalog`） |
+| `vanilla-promoted` | 184 | 単純効果の昇格カード |
+| `complexity-promoted` | 613 | 複合効果の昇格カード |
+| `full-playable` | **1,849** | 上記 tier の合計（`fullPlayableCatalog`） |
+
+定数: `packages/cards/src/catalog/tiers.ts`（`CORE_PLAYABLE_CARD_COUNT` / `FULL_PLAYABLE_CARD_COUNT`）
+
 ## スターターデッキ
 
 | ID | 名称 | 弾 |
@@ -71,9 +83,10 @@
 ```
 rangers-strike/
 ├── apps/web/              # Next.js プレイ UI
-├── packages/cards/        # カード定義・効果カタログ
-├── packages/engine/       # ゲームルールエンジン
-└── scripts/               # 検証スクリプトなど
+├── packages/cards/        # カード定義・DSL パイプライン・効果カタログ
+├── packages/engine/       # ゲームルールエンジン・CPU AI
+├── docs/                  # アーキテクチャ設計・Wiki 収集物
+└── scripts/               # リポジトリ横断の検証スクリプト
 ```
 
 | パッケージ | 役割 |
@@ -162,15 +175,16 @@ npm run build
 
 | 内容 | ファイル / コマンド |
 |------|---------------------|
-| コア 179 枚（L1–L3） | `src/generated/catalog/core-playable/cards.json` |
+| コア 1,052 枚 | `src/generated/catalog/core-playable/cards.json` |
 | フルプレイアブル 1,849 枚 | `src/generated/catalog/full-playable/cards.json` |
 | カタログ API | `src/catalog/unifiedCatalog.ts`（`loadCards` / `loadCardById` は `src/dsl/loader.ts`） |
 | 後方互換 re-export | `src/extendedCatalog.ts`（`fullPlayableCatalog` 等） |
 | promoted シャード | `generated/catalog/*-promoted/`（vanilla / complexity 等） |
-| DSL stub / overlay | `src/generated/dsl-stubs/`、`src/dsl/generated/overlays-bundle.json` |
+| DSL stub / overlay | `src/generated/dsl-stubs/`（1,849 枚）、`src/dsl/generated/overlays-bundle.json`（コア 1,052 overlay） |
 | カタログ parity 監査 | `npm run audit:catalog-parity -w @rangers-strike/cards` → `pipeline/data/catalog-parity.json` |
-| ロールアウト進捗 | `npm run audit:rollout-status -w @rangers-strike/cards` → `pipeline/data/rollout-status.json` |
-| RS リリース準備（690枚） | `npm run audit:rs-release -w @rangers-strike/cards` → `pipeline/data/rs-release-readiness.json` |
+| ロールアウト進捗（G0–G5） | `npm run audit:rollout-status -w @rangers-strike/cards` → `pipeline/data/rollout-status.json` |
+| フルプレイアブル指標 | `npm run metrics:full-playable -w @rangers-strike/cards` → `pipeline/data/full-playable-metrics.json` |
+| RS 系監査（RS-001..690） | `npm run audit:rs-release -w @rangers-strike/cards` → `pipeline/data/rs-release-readiness.json` |
 | grant_keyword ハッシュ修復 | `npm run repair-dsl-hash-keywords -w @rangers-strike/cards` → `pipeline/data/dsl-hash-keyword-repair.json` |
 | ユニット効果（registry） | `src/unitEffects.ts`（`CardDocument` → `UnitEffectBlock`、`src/catalog/cardDocumentToUnitBlock.ts`） |
 | 実装済み効果 ID 一覧 | `src/unitEffectCatalog.ts` |
@@ -204,7 +218,7 @@ npm run build
 | 操作モーダル群 | `components/*Modal.tsx` |
 | 対戦メイン | `components/GameApp.tsx` |
 
-Wiki 収集状況は [docs/wiki/report.md](docs/wiki/report.md) を参照（カード md 1810件・atwiki 1983ページ）。
+Wiki 収集状況は [docs/wiki/report.md](docs/wiki/report.md) を参照（カード md 1,849 件・atwiki 2,022 ページ）。
 
 フルプレイアブル（G5）の要件・設計:
 
@@ -228,11 +242,14 @@ Legend 3 カードデータのメンテナンス（開発者向け）:
 # atwiki からカード取り込み
 node packages/cards/scripts/import-legend3-from-atwiki.mjs
 
-# コア / フルプレイアブルカタログ再生成（L1–L3 179 枚 → 1849 枚マージ）
+# コア / フルプレイアブルカタログ再生成（core 1,052 枚 + promoted 797 枚 → 1,849 枚マージ）
 npm run emit-core-catalog -w @rangers-strike/cards
 npm run emit-full-playable-catalog -w @rangers-strike/cards
 
-# カタログ parity ゲート（14 項目）
+# ロールアウト進捗（G0–G5）
+npm run audit:rollout-status -w @rangers-strike/cards
+
+# カタログ parity ゲート
 npm run audit:catalog-parity -w @rangers-strike/cards
 
 # L3 unit effect スナップショット（メンテ用 diff）
