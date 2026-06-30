@@ -178,12 +178,17 @@ export function battleDefenderBp(
       hasBattleNcEffect(attackerCard, "super_cutter") ||
       getOnAttackNamedEffect(attackerCard.cardId)?.effectId === "shark_jaws" ||
       getOnAttackNamedEffect(attackerCard.cardId)?.effectId === "super_cutter" ||
+      getOnAttackNamedEffect(attackerCard.cardId)?.effectId === "raidakiku" ||
       legend2UsePrintedDefenderBp(state, pending) ||
       legend3UsePrintedDefenderBp(state, pending));
 
   const base = usePrintedBp
     ? unitBp(getDefinition(state.definitions, defenderFound.card.cardId))
     : effectiveBp(state, defenderOwner, defenderFound.card);
+
+  if (usePrintedBp) {
+    return base;
+  }
 
   return (
     base +

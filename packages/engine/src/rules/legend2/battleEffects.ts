@@ -123,6 +123,7 @@ export function legend2AttackerBpBonus(
 
   if (atkEffect?.effectId === "dump_punch") bonus += 2000;
   if (atkEffect?.effectId === "adventure_drive_sword") bonus += 4000;
+  if (atkEffect?.effectId === "raidakiku" && attacker.card.commandHeld) bonus += 2000;
 
   if (
     atkEffect &&
@@ -162,7 +163,11 @@ export function legend2UsePrintedDefenderBp(
   if (!attacker) return false;
 
   const effect = getOnAttackNamedEffect(attacker.card.cardId);
-  return effect?.effectId === "val_cannon" || effect?.effectId === "ptera_dagger";
+  return (
+    effect?.effectId === "val_cannon" ||
+    effect?.effectId === "ptera_dagger" ||
+    effect?.effectId === "raidakiku"
+  );
 }
 
 export function legend2BlocksDefenderCounters(

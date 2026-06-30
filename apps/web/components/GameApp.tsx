@@ -78,6 +78,7 @@ import type { DragCardPayload, DropTarget, PendingOperation } from "@/lib/dnd";
 import { CardModal } from "./CardModal";
 import { BattleEntryModal } from "./BattleEntryModal";
 import { RideOffModal } from "./RideOffModal";
+import { RegisterModal } from "./RegisterModal";
 import { ChaseModal } from "./ChaseModal";
 import { AlertModal } from "./AlertModal";
 import { EffectChoiceModal } from "./EffectChoiceModal";
@@ -1476,6 +1477,30 @@ export function GameApp() {
   const isHumanRideOffChoice =
     !!humanCanAct && state?.pendingRideOffChoice?.playerId === HUMAN_PLAYER;
 
+  const isHumanRegisterChoice =
+    !!humanCanAct && state?.pendingRegister?.ownerPlayerId === HUMAN_PLAYER;
+
+  const registerModal = useMemo(() => {
+    if (!isHumanRegisterChoice || !state?.pendingRegister) return null;
+    const pending = state.pendingRegister;
+    const owner = state.players[pending.ownerPlayerId];
+    const unit =
+      owner.battle.find((c) => c.instanceId === pending.instanceId) ??
+      owner.rush.find((c) => c.instanceId === pending.instanceId);
+    if (!unit) return null;
+    const unitCard = resolvePlayableCard(unit.cardId);
+    if (!unitCard) return null;
+    return { unitCard };
+  }, [isHumanRegisterChoice, state]);
+
+  const handleRegisterHold = useCallback(() => {
+    apply({ type: "use_register", playerId: HUMAN_PLAYER });
+  }, [apply]);
+
+  const handleRegisterDiscard = useCallback(() => {
+    apply({ type: "pass_register", playerId: HUMAN_PLAYER });
+  }, [apply]);
+
   const rideOffModal = useMemo(() => {
     if (!isHumanRideOffChoice || !state?.pendingRideOffChoice) return null;
     const pending = state.pendingRideOffChoice;
@@ -1952,6 +1977,14 @@ export function GameApp() {
     !showEffectNotice &&
     !state.pendingStrike &&
     !state.pendingDamagePayment &&
+    !state.pendingLeave &&
+    !state.pendingRegister;
+
+  const showRegisterModal =
+    !!registerModal &&
+    !showEffectNotice &&
+    !state.pendingStrike &&
+    !state.pendingDamagePayment &&
     !state.pendingLeave;
 
   const showChaseModal =
@@ -2173,6 +2206,13 @@ export function GameApp() {
           vehicleCard={rideOffModal.vehicleCard}
           onRideOff={handleRideOffConfirm}
           onStayMounted={handleRideOffStay}
+        />
+      )}
+      {showRegisterModal && registerModal && (
+        <RegisterModal
+          unitCard={registerModal.unitCard}
+          onHold={handleRegisterHold}
+          onDiscard={handleRegisterDiscard}
         />
       )}
       {showChaseModal && chaseModal && (
