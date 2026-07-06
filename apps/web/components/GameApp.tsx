@@ -25,6 +25,9 @@ import {
   needsEffectHoldPayment,
   needsZordMaterial,
   needsHoldExtraCommand,
+  countAvailablePower,
+  isRushable,
+  PHASE_ORDER,
   isDenjiRevealAudience,
   canActOnDenjiChoice,
   isShironRevealAudience,
@@ -75,6 +78,7 @@ import {
 } from "@/lib/deckSelection";
 import { resolveCardTargets } from "@/lib/cardTargets";
 import type { DragCardPayload, DropTarget, PendingOperation } from "@/lib/dnd";
+import { CardActionSheet, type CardSheetAction } from "./CardActionSheet";
 import { CardModal } from "./CardModal";
 import { BattleEntryModal } from "./BattleEntryModal";
 import { RideOffModal } from "./RideOffModal";
@@ -226,6 +230,11 @@ export function GameApp() {
   const [effectDebugEnabled, setEffectDebugEnabledState] = useState(false);
   const prevPendingEffectKeyRef = useRef<string | null>(null);
   const [battleDrag, setBattleDrag] = useState<DragCardPayload | null>(null);
+  const [tapSheet, setTapSheet] = useState<{
+    card: CardInstance;
+    fromZone: "hand" | "battle" | "rush";
+  } | null>(null);
+  const [tapAttackerId, setTapAttackerId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [blockedBattleAlert, setBlockedBattleAlert] = useState<string | null>(null);
   const [blockedRushAlert, setBlockedRushAlert] = useState<string | null>(null);
@@ -427,11 +436,6 @@ export function GameApp() {
     (state?.activePlayer === HUMAN_PLAYER || !!humanMustResolveDamage);
 
   const compactViewport = useCompactGameViewport();
-  const [chromeExpanded, setChromeExpanded] = useState(true);
-
-  useEffect(() => {
-    setChromeExpanded(!compactViewport);
-  }, [compactViewport]);
 
   useViewportBoardFit(gameRef, humanBoardRef, !!state && compactViewport);
 
@@ -1611,6 +1615,239 @@ export function GameApp() {
     return ids.length > 0 ? new Set(ids) : undefined;
   }, [humanCanAct, legalActions, state]);
 
+  // --- タップ操作（カードアクションシート） ---
+
+  const canOpenTapSheet =
+    !!state &&
+    humanCanAct &&
+    !state.winner &&
+    !state.pendingStrike &&
+    !state.pendingBattle &&
+    !state.pendingRush &&
+    !state.pendingLeave &&
+    !state.pendingEffectChoice &&
+    !state.pendingDamagePayment &&
+    !state.pendingCommandPayment &&
+    !state.pendingZordSetup &&
+    !state.pendingBattleEntry &&
+    !pendingOp &&
+    !pendingCyberSRider &&
+    !pendingBattleDance &&
+    !pendingHiddenNinja &&
+    !wingPromptAttackerId &&
+    !tapAttackerId;
+
+  const handleHandCardTap = useCallback(
+    (card: CardInstance) => {
+      if (!canOpenTapSheet) return;
+      setTapSheet({ card, fromZone: "hand" });
+    },
+    [canOpenTapSheet],
+  );
+
+  const handleBattleCardTap = useCallback(
+    (card: CardInstance) => {
+      if (!canOpenTapSheet) return;
+      setTapSheet({ card, fromZone: "battle" });
+    },
+    [canOpenTapSheet],
+  );
+
+  const handleRushCardTap = useCallback(
+    (card: CardInstance) => {
+      if (!canOpenTapSheet) return;
+      setTapSheet({ card, fromZone: "rush" });
+    },
+    [canOpenTapSheet],
+  );
+
+  const tapSheetDefinition = useMemo(() => {
+    if (!tapSheet) return undefined;
+    return (
+      state?.definitions[tapSheet.card.cardId] ??
+      resolvePlayableCard(tapSheet.card.cardId) ??
+      undefined
+    );
+  }, [state?.definitions, tapSheet]);
+
+  const tapSheetActions = useMemo<CardSheetAction[]>(() => {
+    if (!tapSheet || !state) return [];
+    const { card, fromZone } = tapSheet;
+    const payload: DragCardPayload = {
+      instanceId: card.instanceId,
+      cardId: card.cardId,
+      fromZone,
+      playerId: HUMAN_PLAYER,
+    };
+    const def = state.definitions[card.cardId] ?? resolvePlayableCard(card.cardId);
+    const actions: CardSheetAction[] = [];
+
+    if (fromZone === "hand") {
+      if (state.phase === "charge") {
+        if (
+          legalActions.some(
+            (a) => a.type === "charge_power" && a.instanceId === card.instanceId,
+          )
+        ) {
+          actions.push({
+            id: "charge-power",
+            label: "パワーゾーンに置く",
+            detail: "パワー +1",
+            variant: "primary",
+            onSelect: () => handleZoneDrop("power", payload),
+          });
+        }
+        if (
+          legalActions.some(
+            (a) => a.type === "charge_command" && a.instanceId === card.instanceId,
+          )
+        ) {
+          actions.push({
+            id: "charge-command",
+            label: "コマンドゾーンに置く",
+            detail: "カテゴリ支払いに使う",
+            onSelect: () => handleZoneDrop("command", payload),
+          });
+        }
+      } else if (state.phase === "rush") {
+        if (def?.type === "operation") {
+          actions.push({
+            id: "operation",
+            label: "オペレーションを使う",
+            variant: "primary",
+            onSelect: () => handleZoneDrop("operation", payload),
+          });
+        } else if (isRushable(def)) {
+          actions.push({
+            id: "rush",
+            label: "ラッシュする",
+            variant: "primary",
+            onSelect: () => handleZoneDrop("rush", payload),
+          });
+        }
+      }
+    } else if (fromZone === "battle" && state.phase === "battle") {
+      const strikeAction = legalActions.find(
+        (a) => a.type === "strike" && a.instanceId === card.instanceId,
+      );
+      if (strikeAction && strikeableIds?.has(card.instanceId)) {
+        const unit = state.players[HUMAN_PLAYER].battle.find(
+          (c) => c.instanceId === card.instanceId,
+        );
+        const damage = unit
+          ? strikeDamageFor(state.definitions, unit, state, HUMAN_PLAYER)
+          : undefined;
+        actions.push({
+          id: "strike",
+          label: "ストライク！",
+          detail: damage !== undefined ? `相手に ${damage} ダメージ` : undefined,
+          variant: "danger",
+          onSelect: () => apply(strikeAction),
+        });
+      }
+      if (
+        legalActions.some(
+          (a) => a.type === "battle" && a.attackerInstanceId === card.instanceId,
+        )
+      ) {
+        actions.push({
+          id: "attack",
+          label: "アタックする",
+          detail: "対象の敵軍ユニットをタップ",
+          variant: "primary",
+          onSelect: () => setTapAttackerId(card.instanceId),
+        });
+      }
+    } else if (fromZone === "rush" && state.phase === "battle") {
+      if (
+        legalActions.some(
+          (a) => a.type === "move_to_battle" && a.instanceId === card.instanceId,
+        ) ||
+        legalActions.some(
+          (a) =>
+            a.type === "initiate_command_payment" &&
+            a.kind === "battle_entry" &&
+            a.sourceInstanceId === card.instanceId,
+        )
+      ) {
+        actions.push({
+          id: "enter-battle",
+          label: "バトルエリアに出す",
+          variant: "primary",
+          onSelect: () => attemptMoveToBattle(payload),
+        });
+      }
+      for (const action of legalActions) {
+        if (action.type !== "mount_ride" || action.riderInstanceId !== card.instanceId) {
+          continue;
+        }
+        const vehicle = state.players[HUMAN_PLAYER].rush.find(
+          (c) => c.instanceId === action.vehicleInstanceId,
+        );
+        const vehicleName = vehicle
+          ? state.definitions[vehicle.cardId]?.name ??
+            resolvePlayableCard(vehicle.cardId)?.name
+          : undefined;
+        actions.push({
+          id: `ride-${action.vehicleInstanceId}`,
+          label: vehicleName ? `「${vehicleName}」にライド` : "ビークルにライド",
+          onSelect: () => apply(action),
+        });
+      }
+    }
+
+    return actions;
+  }, [apply, attemptMoveToBattle, handleZoneDrop, legalActions, state, strikeableIds, tapSheet]);
+
+  // タップで選んだアタッカーの対象（敵軍側でハイライト）
+  const tapAttackTargetIds = useMemo(() => {
+    if (!tapAttackerId) return undefined;
+    const ids = new Set<string>();
+    for (const action of legalActions) {
+      if (action.type === "battle" && action.attackerInstanceId === tapAttackerId) {
+        ids.add(action.defenderInstanceId);
+      }
+    }
+    return ids.size > 0 ? ids : undefined;
+  }, [legalActions, tapAttackerId]);
+
+  const handleTapAttackTargetSelect = useCallback(
+    (defenderInstanceId: string) => {
+      if (!tapAttackerId) return;
+      const action = legalActions.find(
+        (a) =>
+          a.type === "battle" &&
+          a.attackerInstanceId === tapAttackerId &&
+          a.defenderInstanceId === defenderInstanceId,
+      );
+      if (action) apply(action);
+      setTapAttackerId(null);
+    },
+    [apply, legalActions, tapAttackerId],
+  );
+
+  useEffect(() => {
+    if (!tapAttackerId) return;
+    const stillLegal = legalActions.some(
+      (a) => a.type === "battle" && a.attackerInstanceId === tapAttackerId,
+    );
+    if (!stillLegal) setTapAttackerId(null);
+  }, [legalActions, tapAttackerId]);
+
+  useEffect(() => {
+    setTapSheet(null);
+  }, [state?.phase, state?.turn, state?.activePlayer]);
+
+  // アクションのないカードはタップでそのまま詳細を開く
+  useEffect(() => {
+    if (!tapSheet || tapSheetActions.length > 0) return;
+    const def =
+      state?.definitions[tapSheet.card.cardId] ??
+      resolvePlayableCard(tapSheet.card.cardId);
+    if (def) setPreviewCard(def);
+    setTapSheet(null);
+  }, [state?.definitions, tapSheet, tapSheetActions]);
+
   const reactionUi = useMemo(() => {
     if (!state) return null;
     return resolveReactionModalUi(state, HUMAN_PLAYER, {
@@ -2157,12 +2394,7 @@ export function GameApp() {
                     : "のターン";
 
   return (
-    <div
-      className={["game", chromeExpanded ? "" : "game--chrome-collapsed"]
-        .filter(Boolean)
-        .join(" ")}
-      ref={gameRef}
-    >
+    <div className="game" ref={gameRef}>
       {previewCard && (
         <CardModal card={previewCard} onClose={() => setPreviewCard(null)} />
       )}
@@ -2498,6 +2730,16 @@ export function GameApp() {
           onClose={() => setBlockedRushAlert(null)}
         />
       )}
+      {tapSheet && tapSheetActions.length > 0 && (
+        <CardActionSheet
+          definition={tapSheetDefinition}
+          actions={tapSheetActions}
+          onPreview={
+            tapSheetDefinition ? () => setPreviewCard(tapSheetDefinition) : undefined
+          }
+          onClose={() => setTapSheet(null)}
+        />
+      )}
       {turnNotice && (
         <TurnNoticeModal playerId={turnNotice} onDismiss={dismissTurnNotice} />
       )}
@@ -2508,113 +2750,78 @@ export function GameApp() {
         />
       )}
 
-      <div className="game__chrome">
-        {chromeExpanded ? (
-          <>
-            <header className="game__header">
-              <div>
-                <h1>レンジャーズストライク</h1>
-                <p className="game__subtitle">
-                  {humanDeckSelection ? deckSelectionLabel(humanDeckSelection) : "—"}
-                  {" vs "}
-                  {cpuDeckSelection ? deckSelectionLabel(cpuDeckSelection) : "—"}
-                </p>
-              </div>
-              <button type="button" className="btn btn--ghost" onClick={returnToStart}>
-                タイトル
-              </button>
-            </header>
-
-            <div className="status-bar">
-              <span>ターン {state.turn}</span>
-              <span className="status-bar__phase">
-                {PLAYER_LABELS[state.activePlayer]}
-                {phaseStatusSuffix}
-              </span>
-              {state.winner && (
-                <strong className="status-bar__winner">
-                  {state.winner === HUMAN_PLAYER ? "あなたの勝ち！" : "CPUの勝ち…"}
-                </strong>
-              )}
-              <button
-                type="button"
-                className="btn btn--log"
-                onClick={() => setLogOpen(true)}
-              >
-                ログ ({state.log.length + effectDebugLog.length})
-              </button>
-              {isEffectDebugToggleVisible() && (
-                <button
-                  type="button"
-                  className="btn btn--ghost btn--debug"
-                  onClick={toggleEffectDebug}
-                  aria-pressed={effectDebugEnabled}
-                >
-                  効果デバッグ{effectDebugEnabled ? " ON" : ""}
-                </button>
-              )}
-            </div>
-
-            {actionError && (
-              <div className="action-error" role="alert">
-                {actionError}
-              </div>
-            )}
-
-            <PhaseGuide
-              phase={state.phase}
-              isHumanTurn={humanCanAct}
-              pendingHint={pendingHint}
-            />
-          </>
-        ) : (
-          <div className="game__chrome-bar">
-            <span>ターン {state.turn}</span>
-            <span className="status-bar__phase">
-              {PLAYER_LABELS[state.activePlayer]}
-              {phaseStatusSuffix}
-            </span>
-            {state.winner && (
-              <strong className="status-bar__winner">
-                {state.winner === HUMAN_PLAYER ? "勝ち" : "敗北"}
-              </strong>
-            )}
-            <button
-              type="button"
-              className="btn btn--log"
-              onClick={() => setLogOpen(true)}
-            >
-              ログ ({state.log.length + effectDebugLog.length})
-            </button>
-            {isEffectDebugToggleVisible() && (
-              <button
-                type="button"
-                className="btn btn--ghost btn--debug"
-                onClick={toggleEffectDebug}
-                aria-pressed={effectDebugEnabled}
-              >
-                効果デバッグ{effectDebugEnabled ? " ON" : ""}
-              </button>
-            )}
-            <button type="button" className="btn btn--ghost" onClick={returnToStart}>
-              タイトル
-            </button>
-            {actionError && (
-              <div className="action-error" role="alert">
-                {actionError}
-              </div>
-            )}
-          </div>
-        )}
+      <header className="hud">
         <button
           type="button"
-          className="game__chrome-toggle"
-          onClick={() => setChromeExpanded((open) => !open)}
-          aria-expanded={chromeExpanded}
+          className="hud__back"
+          onClick={returnToStart}
+          aria-label="タイトルに戻る"
         >
-          {chromeExpanded ? "情報を隠す" : "情報を表示"}
+          ◀
         </button>
-      </div>
+        <div className="hud__turn">
+          <span className="hud__turn-count">ターン {state.turn}</span>
+          <span
+            className={`hud__turn-owner ${
+              state.activePlayer === HUMAN_PLAYER
+                ? "hud__turn-owner--self"
+                : "hud__turn-owner--cpu"
+            }`}
+          >
+            {PLAYER_LABELS[state.activePlayer]}
+            {phaseStatusSuffix}
+          </span>
+        </div>
+        <ol className="phase-tracker" aria-label="フェイズ">
+          {PHASE_ORDER.map((phase) => (
+            <li
+              key={phase}
+              className={`phase-tracker__step ${
+                phase === state.phase ? "phase-tracker__step--active" : ""
+              }`}
+              aria-current={phase === state.phase ? "step" : undefined}
+            >
+              {PHASE_LABELS[phase]}
+            </li>
+          ))}
+        </ol>
+        {state.winner && (
+          <strong className="hud__winner">
+            {state.winner === HUMAN_PLAYER ? "あなたの勝ち！" : "CPUの勝ち…"}
+          </strong>
+        )}
+        <div className="hud__tools">
+          <button
+            type="button"
+            className="btn btn--ghost hud__tool"
+            onClick={() => setLogOpen(true)}
+          >
+            ログ {state.log.length + effectDebugLog.length}
+          </button>
+          {isEffectDebugToggleVisible() && (
+            <button
+              type="button"
+              className="btn btn--ghost hud__tool"
+              onClick={toggleEffectDebug}
+              aria-pressed={effectDebugEnabled}
+            >
+              効果デバッグ{effectDebugEnabled ? " ON" : ""}
+            </button>
+          )}
+        </div>
+      </header>
+
+      {actionError && (
+        <div className="action-error action-error--floating" role="alert">
+          {actionError}
+        </div>
+      )}
+
+      <PhaseGuide
+        phase={state.phase}
+        isHumanTurn={humanCanAct}
+        pendingHint={pendingHint}
+      />
 
       <div className="game__playfield">
         <div className="game__boards">
@@ -2633,10 +2840,13 @@ export function GameApp() {
             strikeHighlight={!!battleDrag}
             onStrikeDrop={handleStrikeDrop}
             onViewPile={(pile) => handleViewPile(CPU_PLAYER, pile)}
+            availablePower={countAvailablePower(state, CPU_PLAYER)}
             substituteIds={pendingSubstituteTargets}
             onSubstituteSelect={handleSubstituteSelect}
-            attackTargetIds={attackTargetIds}
-            onAttackTargetSelect={handleAttackTargetSelect}
+            attackTargetIds={attackTargetIds ?? tapAttackTargetIds}
+            onAttackTargetSelect={
+              attackTargetIds ? handleAttackTargetSelect : handleTapAttackTargetSelect
+            }
             pendingEffectChoiceTargets={
               morphOrderSelectableIds ??
               (damagePaymentOnCpuBoard
@@ -2692,6 +2902,10 @@ export function GameApp() {
             onSubstituteSelect={handleSubstituteSelect}
             onViewPile={(pile) => handleViewPile(HUMAN_PLAYER, pile)}
             onOperationCardClick={handleOperationCardClick}
+            availablePower={countAvailablePower(state, HUMAN_PLAYER)}
+            onHandCardTap={handleHandCardTap}
+            onBattleCardTap={handleBattleCardTap}
+            onRushCardTap={handleRushCardTap}
             entryAttackerIds={entryAttackerIds}
             wingRushSelectableIds={wingRushSelectableIds}
             wingRushSelectedIds={
@@ -2728,8 +2942,19 @@ export function GameApp() {
 
       </div>
 
-      <div className="game__scroll-pad" aria-hidden="true" />
 
+      {tapAttackerId && (
+        <div className="tap-attack-banner" role="status">
+          <span>アタック対象の敵軍ユニットをタップ</span>
+          <button
+            type="button"
+            className="btn btn--ghost"
+            onClick={() => setTapAttackerId(null)}
+          >
+            キャンセル
+          </button>
+        </div>
+      )}
       {showEffectChoiceBanner && boardTapEffectChoice && pendingChoice && (
         <EffectChoiceBanner
           view={boardTapEffectChoice}

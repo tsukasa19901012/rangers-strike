@@ -1,28 +1,44 @@
 :root {
-  color: #e8eef7;
-  background: #0f1724;
+  color: var(--c-text);
+  background: var(--c-bg);
   font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
 
-  /* スマホ最優先のサイズ */
-  --card-width: 72px;
-  --card-height: calc(var(--card-width) * 1.417);
-  --card-power-width: calc(var(--card-width) * 0.72);
-  --power-zone-card-slot-height: calc(var(--card-power-width) + 6px);
-  --power-zone-card-gap: 6px;
-  --power-zone-max-visible-cards: 7;
-  --power-zone-cards-height: calc(
-    var(--power-zone-max-visible-cards) * var(--power-zone-card-slot-height) +
-      (var(--power-zone-max-visible-cards) - 1) * var(--power-zone-card-gap)
-  );
-  --power-zone-cards-max-height: var(--power-zone-cards-height);
-  --playsheet-sidebar-width: 92px;
-  --zone-card-min-height: 56px;
-  --app-max-width: 100%;
-  --app-padding-x: 12px;
-  --app-padding-y: 12px;
-  --app-gap: 12px;
-  --board-padding: 12px;
-  /* 固定 action-bar の下に盤面が隠れないスクロール余白 */
+  /* デザイントークン */
+  --c-bg: #0a0f1e;
+  --c-bg-deep: #060a16;
+  --c-surface: #141c30;
+  --c-surface-2: #1c2540;
+  --c-line: #26314f;
+  --c-line-strong: #3b4a73;
+  --c-text: #e8eef7;
+  --c-text-dim: #8fa0bd;
+  --c-text-faint: #56648a;
+  --c-self: #38bdf8;
+  --c-self-deep: #0b3752;
+  --c-enemy: #fb4d68;
+  --c-enemy-deep: #4c1524;
+  --c-gold: #fbbf24;
+  --c-danger: #ef4444;
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --shadow-pop: 0 12px 40px rgba(0, 0, 0, 0.55);
+
+  /* カードサイズ: 高さ起点でビューポートに 4 行 + ベース行 + 手札を収める */
+  --card-height: clamp(54px, calc((100dvh - 575px) / 4), 128px);
+  --card-width: calc(var(--card-height) / 1.417);
+  /* ベース行（パワー / コマンド / 常駐）の小型カード */
+  --card-height-sm: clamp(40px, 7dvh, 64px);
+  --card-width-sm: calc(var(--card-height-sm) / 1.417);
+  /* 手札ドックのカード */
+  --card-height-hand: clamp(76px, 13dvh, 124px);
+  --card-width-hand: calc(var(--card-height-hand) / 1.417);
+
+  --zone-card-min-height: 48px;
+  --app-max-width: 1180px;
+  --app-padding-x: 10px;
+  --app-padding-y: 6px;
+  --app-gap: 6px;
+  --board-padding: 6px;
+  /* 手札ドック + アクションドックのための下部余白 */
   --action-bar-scroll-reserve: max(56px, calc(8px + env(safe-area-inset-bottom, 0px)));
 }
 
@@ -33,7 +49,10 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(180deg, #0f1724 0%, #162033 100%);
+  background:
+    radial-gradient(1200px 500px at 50% -140px, rgba(56, 189, 248, 0.12), transparent 65%),
+    radial-gradient(1000px 480px at 50% calc(100% + 160px), rgba(14, 116, 144, 0.14), transparent 65%),
+    linear-gradient(180deg, var(--c-bg) 0%, var(--c-bg-deep) 100%);
   overflow-x: hidden;
 }
 
@@ -43,114 +62,169 @@ select {
 }
 
 /*
- * プレイ画面レイアウトの契約（明示的なプロダクト判断なしに変更しない）:
- * - CPU 盤面を上、人間盤面を下（game__boards は column のみ。横並び禁止）
- * - 人間の手札とゾーンは画面下部。ゾーン内のみ横スクロール
- * - 内容がビューポートを超える場合はページ全体を縦スクロール可
+ * プレイ画面レイアウト（Arena 型）:
+ * - 1 画面（100dvh）に HUD / CPU 盤面 / 自分盤面 / 手札ドックを収める
+ * - CPU 盤面を上、人間盤面を下（縦並びのみ。横並び禁止）
+ * - 収まらない場合のみ .game 内で縦スクロール（手札ドックは sticky で常時到達可）
  */
 .game {
+  height: 100dvh;
   max-width: var(--app-max-width);
   margin: 0 auto;
-  padding: var(--app-padding-y) var(--app-padding-x) calc(var(--app-padding-y) * 2);
-  padding-bottom: max(calc(var(--app-padding-y) * 2), env(safe-area-inset-bottom));
+  padding: 0 var(--app-padding-x);
   display: flex;
   flex-direction: column;
-  gap: var(--app-gap);
+  gap: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
-.game__chrome {
+/* --- HUD（上部バー） --- */
+
+.hud {
   flex-shrink: 0;
   display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px 2px;
+  min-height: 40px;
+}
+
+.hud__back {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  color: var(--c-text-dim);
+  cursor: pointer;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.hud__back:hover {
+  border-color: var(--c-line-strong);
+  color: var(--c-text);
+}
+
+.hud__turn {
+  display: flex;
   flex-direction: column;
-  gap: var(--app-gap);
+  line-height: 1.15;
   min-width: 0;
 }
 
-.game__chrome-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 10px;
-  padding: 6px 10px;
-  border-radius: 10px;
-  background: #1e293b;
+.hud__turn-count {
+  font-size: 0.62rem;
+  color: var(--c-text-faint);
+  letter-spacing: 0.06em;
+}
+
+.hud__turn-owner {
   font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40vw;
 }
 
-.game__chrome-bar .status-bar__phase {
-  color: #7dd3fc;
+.hud__turn-owner--self {
+  color: var(--c-self);
 }
 
-.game__chrome-bar .action-error {
-  width: 100%;
-  margin: 0;
-  padding: 6px 8px;
-  font-size: 0.75rem;
+.hud__turn-owner--cpu {
+  color: var(--c-enemy);
 }
 
-.game__chrome-toggle {
-  align-self: flex-end;
-  margin-top: -4px;
-  padding: 4px 10px;
-  font-size: 0.72rem;
-  color: #94a3b8;
-  background: transparent;
-  border: 1px solid #334155;
-  border-radius: 999px;
-  cursor: pointer;
+.hud__winner {
+  color: var(--c-gold);
+  font-size: 0.85rem;
+  white-space: nowrap;
 }
 
-.game__chrome-toggle:hover {
-  color: #e2e8f0;
-  border-color: #64748b;
-}
-
-.game--chrome-collapsed .game__chrome {
-  gap: 4px;
-}
-
-.game__chrome-bar .btn--ghost {
+.hud__tools {
   margin-left: auto;
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.hud__tool {
   padding: 4px 10px;
   font-size: 0.72rem;
+}
+
+.phase-tracker {
+  display: flex;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 3px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: 999px;
+}
+
+.phase-tracker__step {
+  font-size: 0.62rem;
+  color: var(--c-text-faint);
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.phase-tracker__step--active {
+  background: var(--c-self);
+  color: #062338;
+  font-weight: 700;
+}
+
+.action-error--floating {
+  position: fixed;
+  top: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  max-width: min(92vw, 480px);
+  box-shadow: var(--shadow-pop);
+}
+
+.tap-attack-banner {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(var(--card-height-hand) + 64px);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px 8px 16px;
+  border-radius: 999px;
+  background: rgba(20, 28, 48, 0.95);
+  border: 1px solid var(--c-enemy);
+  box-shadow: var(--shadow-pop);
+  font-size: 0.82rem;
 }
 
 .game__playfield {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--app-gap);
   min-width: 0;
-}
-
-.game__scroll-pad {
-  flex-shrink: 0;
-  height: var(--action-bar-scroll-reserve);
-  pointer-events: none;
+  min-height: 0;
 }
 
 .game__boards {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--app-gap);
-  min-width: 0;
-}
-
-.game__header {
-  display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.game__header h1 {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-.game__subtitle {
-  margin: 4px 0 0;
-  color: #94a3b8;
-  font-size: 0.85rem;
+  gap: clamp(2px, 0.6vh, 8px);
+  min-width: 0;
+  min-height: 0;
 }
 
 .deck-select {
@@ -258,38 +332,56 @@ select {
   color: #fbbf24;
 }
 
+/* --- 盤面（CPU 上 / 自分 下） --- */
+
 .board {
-  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-radius: 12px;
   padding: var(--board-padding);
-  background: #111827;
-  border: 1px solid #243044;
   min-width: 0;
-  scroll-margin-top: 12px;
+  scroll-margin-top: 8px;
+  border: 1px solid transparent;
+}
+
+.board--opponent {
+  background: linear-gradient(180deg, rgba(251, 77, 104, 0.08), rgba(15, 23, 42, 0.02) 70%);
 }
 
 .board--self {
+  background: linear-gradient(0deg, rgba(56, 189, 248, 0.08), rgba(15, 23, 42, 0.02) 70%);
   scroll-margin-bottom: var(--action-bar-scroll-reserve);
 }
 
 .board--active {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35);
+  border-color: rgba(56, 189, 248, 0.35);
 }
 
-.board--opponent {
-  background: #141c2b;
+.board--opponent.board--active {
+  border-color: rgba(251, 77, 104, 0.4);
 }
 
+/* プレイヤーストリップ（名前 / ライフ / 手札枚数） */
 .board__header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  gap: 10px;
+  padding: 2px 6px;
 }
 
 .board__header h2 {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+.board--opponent .board__header h2 {
+  color: #ffb0be;
+}
+
+.board--self .board__header h2 {
+  color: #9fdcf8;
 }
 
 .board__header--strike-target {
@@ -298,26 +390,27 @@ select {
 }
 
 .board__header--strike-highlight {
-  outline: 2px dashed #ef4444;
+  outline: 2px dashed var(--c-danger);
   outline-offset: 2px;
-  background: rgba(127, 29, 29, 0.15);
+  background: rgba(127, 29, 29, 0.25);
 }
 
 .board__header-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  margin-left: auto;
 }
 
 .board__hand-count {
-  font-size: 0.75rem;
-  color: #94a3b8;
+  font-size: 0.72rem;
+  color: var(--c-text-dim);
   white-space: nowrap;
 }
 
 .board__hand-count-value {
-  font-weight: 600;
-  color: #e2e8f0;
+  font-weight: 700;
+  color: var(--c-text);
 }
 
 .damage {
@@ -327,132 +420,63 @@ select {
 }
 
 .damage__pip {
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   border-radius: 999px;
-  background: #334155;
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-line);
 }
 
 .damage__pip--filled {
-  background: #ef4444;
+  background: var(--c-danger);
+  border-color: var(--c-danger);
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
 }
 
 .damage__label {
   margin-left: 4px;
-  font-size: 0.75rem;
-  color: #94a3b8;
+  font-size: 0.72rem;
+  color: var(--c-text-dim);
 }
 
+/* --- プレイシート（ゾーン行） --- */
 
-/* 公式プレイシート配置（grnrngr playseat）— 相手側は左右反転 */
 .playsheet {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) var(--playsheet-sidebar-width);
-  gap: 6px;
-}
-
-.playsheet--opponent {
-  grid-template-columns: var(--playsheet-sidebar-width) minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .playsheet__main {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
 }
 
 .playsheet__battle {
-  background: linear-gradient(180deg, rgba(127, 29, 29, 0.35), rgba(15, 23, 42, 0.9));
+  background: rgba(148, 35, 60, 0.1);
   min-width: 0;
   overflow: hidden;
-}
-
-.playsheet--opponent .playsheet__battle {
-  background: linear-gradient(0deg, rgba(127, 29, 29, 0.35), rgba(15, 23, 42, 0.9));
 }
 
 .playsheet__rush {
-  background: linear-gradient(180deg, rgba(30, 58, 138, 0.35), rgba(15, 23, 42, 0.9));
+  background: rgba(37, 76, 138, 0.14);
   min-width: 0;
   overflow: hidden;
 }
 
-.playsheet--opponent .playsheet__rush {
-  background: linear-gradient(0deg, rgba(30, 58, 138, 0.35), rgba(15, 23, 42, 0.9));
-}
-
-.playsheet__command {
-  background: linear-gradient(180deg, rgba(20, 83, 45, 0.3), rgba(15, 23, 42, 0.9));
-  min-width: 0;
-  overflow: hidden;
-}
-
-.playsheet--opponent .playsheet__command {
-  background: linear-gradient(0deg, rgba(20, 83, 45, 0.3), rgba(15, 23, 42, 0.9));
-}
-
-.playsheet__command .zone__cards {
-  height: var(--card-height);
-  min-height: var(--card-height);
-  align-items: flex-start;
-  padding-bottom: 2px;
-}
-
-.playsheet__command .card-wrap {
-  flex-shrink: 0;
-  width: var(--card-width);
-  height: var(--card-height);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.playsheet__operation {
-  background: linear-gradient(180deg, rgba(120, 53, 15, 0.35), rgba(15, 23, 42, 0.9));
-}
-
-.playsheet--opponent .playsheet__operation {
-  background: linear-gradient(0deg, rgba(120, 53, 15, 0.35), rgba(15, 23, 42, 0.9));
-}
-
-.playsheet__operation .zone__cards {
-  height: var(--card-height);
-  min-height: var(--card-height);
-  align-items: flex-start;
-  padding-bottom: 2px;
-}
-
-.playsheet__operation .card-wrap {
-  flex-shrink: 0;
-  width: var(--card-width);
-  height: var(--card-height);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.playsheet__power {
-  background: linear-gradient(180deg, rgba(161, 98, 7, 0.35), rgba(127, 29, 29, 0.25));
-  padding-left: 4px;
-  padding-right: 4px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-self: start;
-  min-height: calc(var(--power-zone-cards-height) + 2.25rem);
-  max-height: calc(var(--power-zone-cards-height) + 2.25rem);
-}
-
-.playsheet--opponent .playsheet__power {
-  background: linear-gradient(0deg, rgba(161, 98, 7, 0.35), rgba(127, 29, 29, 0.25));
+.zone.playsheet__battle,
+.zone.playsheet__rush {
+  padding-top: 6px;
 }
 
 .playsheet__battle .zone__cards,
 .playsheet__rush .zone__cards {
   height: var(--card-height);
   min-height: var(--card-height);
-  align-items: flex-end;
+  align-items: center;
+  justify-content: safe center;
   padding-bottom: 2px;
 }
 
@@ -462,7 +486,7 @@ select {
   width: var(--card-width);
   height: var(--card-height);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
 }
 
@@ -487,6 +511,7 @@ select {
   position: relative;
   z-index: 1;
 }
+
 
 .modal__content--ride-off,
 .modal__content--chase {
@@ -564,42 +589,62 @@ select {
   width: 100%;
 }
 
-.playsheet__command .zone__empty,
 .playsheet__battle .zone__empty,
 .playsheet__rush .zone__empty {
   align-self: center;
   margin: auto;
 }
 
+/* --- ベース行（山札 / 捨札 / パワー / コマンド / 常駐） --- */
+
 .playsheet__base {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) var(--playsheet-sidebar-width);
-  gap: 6px;
-}
-
-.playsheet--opponent .playsheet__base {
-  grid-template-columns: var(--playsheet-sidebar-width) minmax(0, 1fr);
-}
-
-.playsheet__sidebar {
   display: flex;
-  flex-direction: column;
   gap: 6px;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.board--opponent .playsheet__base {
+  order: 0;
 }
 
 .playsheet__piles {
   display: flex;
   gap: 4px;
+  flex-shrink: 0;
 }
 
 .pile {
-  flex: 1;
-  min-width: 0;
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 6px;
-  padding: 6px 4px;
+  position: relative;
+  width: 46px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: 8px;
+  padding: 4px 2px;
   text-align: center;
+}
+
+.pile__stack {
+  display: block;
+  width: 22px;
+  height: 30px;
+  border-radius: 3px;
+  background:
+    linear-gradient(135deg, #27407c 0%, #16244a 60%, #0d1730 100%);
+  border: 1px solid #3b5aa5;
+  box-shadow: 2px 2px 0 rgba(13, 23, 48, 0.9), 3px 3px 0 rgba(59, 90, 165, 0.45);
+}
+
+.pile__stack--discard {
+  background: linear-gradient(135deg, #4a3057 0%, #2a1c33 60%, #170f1d 100%);
+  border-color: #6b4d80;
+  box-shadow: 2px 2px 0 rgba(23, 15, 29, 0.9);
+  opacity: 0.85;
 }
 
 .pile--clickable {
@@ -614,88 +659,121 @@ select {
 }
 
 .pile--clickable:not(:disabled):hover {
-  border-color: #64748b;
-  background: #273449;
+  border-color: var(--c-line-strong);
+  background: var(--c-surface-2);
 }
 
 .pile__label {
   display: block;
-  font-size: 0.58rem;
-  color: #94a3b8;
+  font-size: 0.54rem;
+  color: var(--c-text-dim);
 }
 
 .pile__count {
   display: block;
-  margin-top: 2px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--c-text);
+  line-height: 1;
 }
 
-.playsheet__power .zone__title {
-  flex-shrink: 0;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.playsheet__power .zone__cards {
-  flex: 1 1 auto;
-  flex-direction: column;
-  align-items: center;
-  min-height: var(--power-zone-cards-height);
-  height: var(--power-zone-cards-height);
-  max-height: var(--power-zone-cards-height);
-  overflow-x: hidden;
-  gap: var(--power-zone-card-gap);
-  padding: 2px 0;
-}
-
-.playsheet__power .zone__empty {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 0;
-}
-
-.playsheet__power .card-wrap {
-  flex-shrink: 0;
-  width: calc(var(--card-power-width) + 22px);
-  height: var(--power-zone-card-slot-height);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: visible;
-}
-
-.playsheet__power .card {
-  width: var(--card-power-width);
-  flex-shrink: 0;
-  transform: rotate(-90deg);
-  transform-origin: center center;
-}
-
-.playsheet__power .card__meta {
-  display: none;
-}
-
-.playsheet__power .card__image {
-  width: var(--card-power-width);
-}
-
-.playsheet__hand {
-  margin-top: 8px;
+/* ベース行の各ゾーンは小型カード */
+.playsheet__power,
+.playsheet__command,
+.playsheet__operation {
+  --card-width: var(--card-width-sm);
+  --card-height: var(--card-height-sm);
   min-width: 0;
   overflow: hidden;
 }
 
+.playsheet__power {
+  flex: 1.1;
+  background: rgba(161, 98, 7, 0.14);
+}
+
+.playsheet__command {
+  flex: 1.5;
+  background: rgba(20, 83, 45, 0.16);
+}
+
+.playsheet__operation {
+  flex: 0.8;
+  background: rgba(120, 53, 15, 0.16);
+}
+
+.zone.playsheet__power,
+.zone.playsheet__command,
+.zone.playsheet__operation {
+  padding-top: 15px;
+}
+
+.playsheet__power .zone__cards,
+.playsheet__command .zone__cards,
+.playsheet__operation .zone__cards {
+  height: var(--card-height-sm);
+  min-height: var(--card-height-sm);
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+.playsheet__power .card-wrap,
+.playsheet__command .card-wrap,
+.playsheet__operation .card-wrap {
+  flex-shrink: 0;
+  width: var(--card-width-sm);
+  height: var(--card-height-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playsheet__power .zone__title {
+  color: var(--c-gold);
+  font-weight: 700;
+}
+
+.playsheet__power .card__meta,
+.playsheet__command .card__meta,
+.playsheet__operation .card__meta {
+  display: none;
+}
+
+/* --- 手札ドック --- */
+
+.playsheet__hand {
+  --card-width: var(--card-width-hand);
+  --card-height: var(--card-height-hand);
+  position: sticky;
+  bottom: 0;
+  z-index: 12;
+  margin: 4px calc(var(--app-padding-x) * -1) 0;
+  padding: 6px var(--app-padding-x) max(6px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(10, 15, 30, 0), rgba(8, 12, 24, 0.9) 26%, rgba(6, 10, 22, 0.98) 100%);
+  min-width: 0;
+  overflow: visible;
+  border-radius: 0;
+}
+
+.playsheet__hand .zone__title {
+  position: static;
+  font-size: 0.58rem;
+  margin-bottom: 2px;
+  padding: 0 4px;
+}
+
 .playsheet__hand .zone__cards {
-  height: var(--card-height);
-  min-height: var(--card-height);
+  height: calc(var(--card-height-hand) + 10px);
+  min-height: calc(var(--card-height-hand) + 10px);
   align-items: flex-end;
-  gap: 6px;
-  padding: 2px 4px;
+  gap: 0;
+  padding: 2px 8px 0;
+  overflow-y: hidden;
 }
 
 .playsheet__hand .zone__empty {
@@ -706,12 +784,35 @@ select {
 
 .playsheet__hand .card-wrap {
   flex-shrink: 0;
-  width: var(--card-width);
-  height: var(--card-height);
+  width: var(--card-width-hand);
+  height: var(--card-height-hand);
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  transition: transform 0.15s ease;
 }
+
+/* 手札のファン: 重ねて表示し、ホバー / タッチで持ち上げる */
+.playsheet__hand .card-wrap:not(:first-child) {
+  margin-left: calc(var(--card-width-hand) * -0.28);
+}
+
+.playsheet__hand .card-wrap:hover,
+.playsheet__hand .card-wrap:focus-within {
+  transform: translateY(-10px);
+  z-index: 5;
+}
+
+.playsheet__hand .card,
+.playsheet__hand .card__image {
+  width: var(--card-width-hand);
+}
+
+.playsheet__hand .card__image {
+  border: 1px solid rgba(120, 150, 200, 0.35);
+  border-radius: 8px;
+}
+
 
 .pile-modal__card--target {
   position: relative;
@@ -895,13 +996,18 @@ select {
 }
 
 .phase-guide {
+  flex-shrink: 0;
   margin: 0;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: #1a2740;
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: #cbd5e1;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: rgba(20, 28, 48, 0.7);
+  border: 1px solid var(--c-line);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--c-text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .phase-guide strong {
@@ -1736,21 +1842,30 @@ select {
 
 
 .zone {
-  background: #0b1220;
+  position: relative;
+  background: rgba(255, 255, 255, 0.025);
   border-radius: 10px;
-  padding: 8px;
+  padding: 4px 6px 4px;
+  border: 1px solid transparent;
 }
 
 .zone__title {
+  position: absolute;
+  top: 2px;
+  left: 8px;
+  z-index: 2;
   display: flex;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  color: #94a3b8;
-  margin-bottom: 6px;
+  gap: 4px;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+  color: var(--c-text-faint);
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .zone__count {
-  color: #64748b;
+  color: var(--c-text-dim);
+  font-weight: 700;
 }
 
 .zone__cards {
@@ -1781,8 +1896,8 @@ select {
 }
 
 .zone__empty {
-  color: #475569;
-  font-size: 0.8rem;
+  color: var(--c-text-faint);
+  font-size: 0.72rem;
 }
 
 .card {
@@ -1859,82 +1974,124 @@ select {
   white-space: nowrap;
 }
 
+/* アクションドック: 画面右下に浮かぶ主要アクション（Arena 風） */
 .action-bar {
+  position: fixed;
+  right: 14px;
+  bottom: calc(var(--card-height-hand) + 30px);
+  z-index: 25;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
-  align-items: center;
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
-  padding-top: 8px;
-  padding-bottom: max(8px, env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, transparent, #0f1724 30%);
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.action-bar > * {
+  pointer-events: auto;
+}
+
+.action-bar .hint {
+  font-size: 0.72rem;
+  color: var(--c-text-dim);
+  background: rgba(20, 28, 48, 0.9);
+  border: 1px solid var(--c-line);
+  border-radius: 999px;
+  padding: 6px 12px;
 }
 
 .btn {
-  border: 1px solid #334155;
-  background: #1e293b;
+  border: 1px solid var(--c-line-strong);
+  background: var(--c-surface-2);
   color: inherit;
   border-radius: 999px;
   padding: 10px 16px;
   cursor: pointer;
+  transition: filter 0.15s ease, transform 0.05s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
 }
 
 .btn--primary {
-  background: #0284c7;
-  border-color: #0284c7;
+  background: linear-gradient(180deg, #0ea5e9, #0369a1);
+  border-color: #38bdf8;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.35);
+}
+
+.btn--primary:hover {
+  filter: brightness(1.1);
+}
+
+.btn--danger {
+  background: linear-gradient(180deg, #f43f5e, #be123c);
+  border-color: #fb7185;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.35);
 }
 
 .btn--ghost {
   background: transparent;
-  border-color: #475569;
-  color: #94a3b8;
+  border-color: var(--c-line-strong);
+  color: var(--c-text-dim);
   padding: 8px 12px;
   font-size: 0.85rem;
 }
 
 .start-screen {
-  max-width: var(--app-max-width);
+  min-height: 100dvh;
+  max-width: 520px;
   margin: 0 auto;
-  padding: 20px var(--app-padding-x) max(20px, env(safe-area-inset-bottom));
+  padding: 28px var(--app-padding-x) max(20px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
 .start-screen__hero {
   text-align: center;
-  padding-top: 8px;
+  padding-top: 12px;
 }
 
 .start-screen__title {
   margin: 0;
-  font-size: 1.5rem;
-  letter-spacing: 0.02em;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: linear-gradient(180deg, #fefefe 20%, #7dd3fc 75%, #0ea5e9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 4px 18px rgba(56, 189, 248, 0.35));
 }
 
 .start-screen__subtitle {
-  margin: 8px 0 0;
-  color: #94a3b8;
-  font-size: 0.9rem;
+  margin: 10px 0 0;
+  color: var(--c-text-dim);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
 }
 
 .start-screen__panel {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 20px 16px;
-  border-radius: 16px;
-  background: #1e293b;
-  border: 1px solid #334155;
+  padding: 20px 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(28, 37, 64, 0.9), rgba(16, 22, 40, 0.9));
+  border: 1px solid var(--c-line);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 }
 
 .start-screen__section-title {
   margin: 0 0 4px;
-  font-size: 0.85rem;
-  color: #94a3b8;
-  font-weight: 600;
+  font-size: 0.72rem;
+  color: var(--c-text-faint);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .start-screen__field {
@@ -1944,17 +2101,28 @@ select {
 }
 
 .start-screen__label {
-  font-size: 0.8rem;
-  color: #cbd5e1;
+  font-size: 0.78rem;
+  color: var(--c-text-dim);
 }
 
 .start-screen__field select {
-  background: #0f172a;
+  background: var(--c-bg);
   color: inherit;
-  border: 1px solid #475569;
-  border-radius: 10px;
-  padding: 12px;
+  border: 1px solid var(--c-line-strong);
+  border-radius: 12px;
+  padding: 13px 12px;
   font-size: 0.95rem;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--c-text-dim) 50%),
+    linear-gradient(135deg, var(--c-text-dim) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.start-screen__field select:focus-visible {
+  outline: 2px solid var(--c-self);
+  outline-offset: 1px;
 }
 
 .start-screen__actions {
@@ -1965,9 +2133,10 @@ select {
 
 .start-screen__start {
   width: 100%;
-  padding: 14px 20px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 16px 20px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
 }
 
 .start-screen__secondary {
@@ -1976,9 +2145,9 @@ select {
 
 .start-screen__notice {
   margin: 0;
-  font-size: 0.78rem;
-  line-height: 1.45;
-  color: #94a3b8;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--c-text-faint);
   text-align: center;
 }
 
@@ -2782,11 +2951,6 @@ select {
   padding: 8px 10px;
 }
 
-.btn--danger {
-  background: #7f1d1d;
-  border-color: #991b1b;
-}
-
 .hint {
   font-size: 0.8rem;
   color: #94a3b8;
@@ -2845,81 +3009,35 @@ select {
   }
 }
 
-/* 短いビューポート / 横向きスマホ: CSS 優先のコンパクトサイズ（compactViewport.ts 参照） */
+/* 短いビューポート / 横向きスマホ: HUD と余白をさらに詰める */
 @media (orientation: landscape) and (max-height: 520px) {
   .game {
-    --card-width: 58px;
-    --playsheet-sidebar-width: 76px;
-    --zone-card-min-height: 48px;
-    --app-padding-y: 6px;
+    --card-height: clamp(48px, calc((100dvh - 300px) / 4), 84px);
+    --card-height-sm: clamp(32px, 6dvh, 48px);
+    --card-height-hand: clamp(60px, 13dvh, 92px);
     --app-padding-x: 8px;
-    --app-gap: 6px;
-    --board-padding: 8px;
-    padding-bottom: max(6px, env(safe-area-inset-bottom));
   }
 
-  .game__header {
-    gap: 8px;
-  }
-
-  .game__header h1 {
-    font-size: 0.95rem;
-  }
-
-  .game__subtitle {
-    display: none;
-  }
-
-  .status-bar {
-    font-size: 0.72rem;
-    padding: 6px 10px;
-    gap: 6px;
+  .hud {
+    min-height: 32px;
+    padding-top: 2px;
   }
 
   .phase-guide {
-    font-size: 0.72rem;
-    line-height: 1.35;
-    padding: 6px 10px;
-  }
-
-  .board__header {
-    margin-bottom: 4px;
-  }
-
-  .board__header h2 {
-    font-size: 0.82rem;
-  }
-
-  .zone__title {
-    font-size: 0.62rem;
-    padding: 2px 4px;
-  }
-
-  .playsheet__hand {
-    margin-top: 4px;
+    font-size: 0.66rem;
+    padding: 2px 10px;
   }
 
   .pile {
-    padding: 4px 2px;
+    width: 40px;
   }
 
-  .pile__label {
-    font-size: 0.52rem;
-  }
-
-  .pile__count {
-    font-size: 0.75rem;
-  }
-
-  /* CPU 上 / プレイヤー下の縦並びは維持（game__boards は column のまま） */
-  .board--opponent {
-    --card-width: 54px;
-    --playsheet-sidebar-width: 72px;
+  .pile__stack {
+    display: none;
   }
 
   .action-bar {
-    padding-top: 4px;
-    padding-bottom: max(4px, env(safe-area-inset-bottom));
+    bottom: calc(var(--card-height-hand) + 20px);
   }
 
   .btn {
@@ -2964,31 +3082,25 @@ select {
 /* タブレット（640px+） */
 @media (min-width: 640px) {
   :root {
-    --card-width: 80px;
-    --playsheet-sidebar-width: 100px;
-    --zone-card-min-height: 62px;
-    --app-max-width: 720px;
-    --app-padding-x: 20px;
-    --app-padding-y: 16px;
-    --app-gap: 14px;
-    --board-padding: 14px;
-  }
-
-  .game__header h1 {
-    font-size: 1.25rem;
+    --card-height: clamp(56px, calc((100dvh - 575px) / 4), 132px);
+    --card-height-sm: clamp(44px, 7dvh, 70px);
+    --card-height-hand: clamp(78px, 12.5dvh, 128px);
+    --app-max-width: 900px;
+    --app-padding-x: 16px;
+    --board-padding: 8px;
   }
 
   .board__header h2 {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .zone__title {
-    font-size: 0.8rem;
+    font-size: 0.62rem;
   }
 
   .phase-guide {
-    font-size: 0.88rem;
-    padding: 12px 14px;
+    font-size: 0.78rem;
+    padding: 5px 14px;
   }
 
   .start-screen {
@@ -3037,23 +3149,12 @@ select {
 /* PC（1024px+） */
 @media (min-width: 1024px) {
   :root {
-    --card-width: 88px;
-    --playsheet-sidebar-width: 108px;
-    --zone-card-min-height: 68px;
-    --app-max-width: 1320px;
+    --card-height: clamp(58px, calc((100dvh - 575px) / 4), 140px);
+    --card-height-sm: clamp(46px, 7.2dvh, 76px);
+    --card-height-hand: clamp(80px, 12.5dvh, 136px);
+    --app-max-width: 1180px;
     --app-padding-x: 24px;
-    --app-padding-y: 20px;
-    --app-gap: 16px;
-    --board-padding: 16px;
-  }
-
-  .game__header {
-    align-items: center;
-  }
-
-  .status-bar {
-    font-size: 0.9rem;
-    padding: 12px 16px;
+    --board-padding: 10px;
   }
 
   .modal {
@@ -3105,5 +3206,131 @@ select {
 
   .action-bar {
     gap: 10px;
+  }
+}
+
+/* --- カードアクションシート（タップ操作） --- */
+
+.card-action-sheet {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  z-index: 70;
+  width: min(94vw, 420px);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line-strong);
+  border-bottom: none;
+  border-radius: 18px 18px 0 0;
+  padding: 14px 16px max(14px, env(safe-area-inset-bottom));
+  box-shadow: var(--shadow-pop);
+  animation: sheet-up 0.18s ease-out;
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateX(-50%) translateY(24px);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.card-action-sheet__card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.card-action-sheet__card .card,
+.card-action-sheet__card .card__image {
+  width: 72px;
+}
+
+.card-action-sheet__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.card-action-sheet__name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.card-action-sheet__meta {
+  font-size: 0.75rem;
+  color: var(--c-text-dim);
+}
+
+.card-action-sheet__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-action-sheet__action {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+}
+
+.card-action-sheet__detail {
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+.card-action-sheet__cancel {
+  margin-top: 2px;
+}
+
+
+/* モバイル（〜639px）: HUD を圧縮 */
+@media (max-width: 639px) {
+  .hud {
+    gap: 6px;
+    min-height: 36px;
+  }
+
+  .hud__turn-count {
+    display: none;
+  }
+
+  .hud__turn-owner {
+    font-size: 0.68rem;
+    max-width: 64px;
+  }
+
+  .phase-tracker {
+    padding: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .phase-tracker__step {
+    padding: 3px 6px;
+    font-size: 0.56rem;
+  }
+
+  .hud__tool {
+    padding: 3px 8px;
+    font-size: 0.64rem;
+  }
+
+  .action-bar {
+    right: 8px;
+    bottom: calc(var(--card-height-hand) + 34px);
+  }
+
+  .action-bar .btn {
+    padding: 9px 14px;
+    font-size: 0.85rem;
   }
 }

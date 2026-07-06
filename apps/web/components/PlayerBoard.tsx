@@ -233,12 +233,13 @@ function ZoneCards({
           !!definition &&
           !(fromZone === "power" && card.faceDown);
         const preview = canPreview ? () => onPreview!(definition) : undefined;
-        const select =
-          isSelectable &&
-          onSelectTarget &&
-          !substituteIds?.has(card.instanceId) &&
-          !interceptableIds?.has(card.instanceId) &&
-          !counterIds?.has(card.instanceId)
+        const isSpecialSelect =
+          substituteIds?.has(card.instanceId) ||
+          interceptableIds?.has(card.instanceId) ||
+          counterIds?.has(card.instanceId);
+        const select = isSpecialSelect
+          ? undefined
+          : isSelectable && onSelectTarget
             ? () => onSelectTarget(card.instanceId)
             : onCardClick
               ? () => onCardClick(card)
@@ -386,6 +387,14 @@ export type PlayerBoardProps = {
   onViewPile?: (pile: "deck" | "discard") => void;
   onOperationCardClick?: (card: CardInstance) => void;
   boardRef?: RefObject<HTMLDivElement | null>;
+  /** 表示用の利用可能パワー（自軍パワーゾーン + 相手マルチコマンド加算）。 */
+  availablePower?: number;
+  /** タップ操作: 手札カードのアクションシートを開く。 */
+  onHandCardTap?: (card: CardInstance) => void;
+  /** タップ操作: 自軍バトルエリアカードのアクションシートを開く。 */
+  onBattleCardTap?: (card: CardInstance) => void;
+  /** タップ操作: 自軍ラッシュエリアカードのアクションシートを開く。 */
+  onRushCardTap?: (card: CardInstance) => void;
 };
 
 export function PlayerBoard({
@@ -442,6 +451,10 @@ export function PlayerBoard({
   onViewPile,
   onOperationCardClick,
   boardRef,
+  availablePower,
+  onHandCardTap,
+  onBattleCardTap,
+  onRushCardTap,
 }: PlayerBoardProps) {
   const interactive = isHuman && isHumanTurn;
   const [dragging, setDragging] = useState<DragCardPayload | null>(null);
@@ -554,10 +567,11 @@ export function PlayerBoard({
 
   const powerZone = (
     <ZoneCards
-      title="パワーゾーン"
+      title={availablePower !== undefined ? `パワー ${availablePower}` : "パワー"}
       zoneId="power"
       className="playsheet__power"
-      cardsScrollY
+      cardsScrollX
+      imageOnly
       cards={player.power}
       definitions={definitions}
       playerId={playerId}
@@ -593,6 +607,7 @@ export function PlayerBoard({
       strikeableIds={!isOpponent ? strikeableIds : undefined}
       onSelectTarget={handleSelectTarget}
       onSubstituteSelect={onSubstituteSelect}
+      onCardClick={!isOpponent && interactive ? onBattleCardTap : undefined}
       getCommandHeld={(card) => card.commandHeld || card.registerHeld}
       getDraggable={(card) =>
         !!(
@@ -650,6 +665,7 @@ export function PlayerBoard({
       onSelectTarget={handleSelectTarget}
       onInterceptSelect={onInterceptSelect}
       onSubstituteSelect={onSubstituteSelect}
+      onCardClick={!isOpponent && interactive ? onRushCardTap : undefined}
       getCommandHeld={(card) => card.commandHeld || card.registerHeld}
       getDraggable={(card) =>
         !!(
@@ -667,7 +683,7 @@ export function PlayerBoard({
 
   const commandZone = (
     <ZoneCards
-      title={`コマンドゾーン (${player.command.length}/${COMMAND_ZONE_MAX})`}
+      title={`コマンド ${player.command.length}/${COMMAND_ZONE_MAX}`}
       zoneId="command"
       className="playsheet__command"
       cardsScrollX
@@ -688,66 +704,61 @@ export function PlayerBoard({
     />
   );
 
-  const sidebar = (
-    <div className="playsheet__sidebar">
-      <div className="playsheet__piles">
-        <button
-          type="button"
-          className="pile pile--deck pile--clickable"
-          onClick={() => onViewPile?.("deck")}
-          disabled={!onViewPile || player.deck.length === 0}
-        >
-          <span className="pile__label">山札</span>
-          <span className="pile__count">{player.deck.length}</span>
-        </button>
-        <button
-          type="button"
-          className="pile pile--discard pile--clickable"
-          onClick={() => onViewPile?.("discard")}
-          disabled={!onViewPile || player.discard.length === 0}
-        >
-          <span className="pile__label">捨札</span>
-          <span className="pile__count">{player.discard.length}</span>
-        </button>
-      </div>
-
-      <ZoneCards
-        title="常駐"
-        zoneId="operation"
-        className="playsheet__operation"
-        imageOnly
-        cards={player.operation}
-        definitions={definitions}
-        playerId={playerId}
-        fromZone="operation"
-        accepts={canDropOperation}
-        highlighted={highlightOperation}
-        inactive={operationZoneInactive}
-        onDrop={(payload) => onZoneDrop?.("operation", payload)}
-        onPreview={onPreview}
-        onCardClick={
-          interactive && (phase === "rush" || phase === "battle")
-            ? onOperationCardClick
-            : undefined
-        }
-        emptyLabel={phase === "rush" ? "使用可" : "—"}
-      />
+  const piles = (
+    <div className="playsheet__piles">
+      <button
+        type="button"
+        className="pile pile--deck pile--clickable"
+        onClick={() => onViewPile?.("deck")}
+        disabled={!onViewPile || player.deck.length === 0}
+      >
+        <span className="pile__stack" aria-hidden />
+        <span className="pile__label">山札</span>
+        <span className="pile__count">{player.deck.length}</span>
+      </button>
+      <button
+        type="button"
+        className="pile pile--discard pile--clickable"
+        onClick={() => onViewPile?.("discard")}
+        disabled={!onViewPile || player.discard.length === 0}
+      >
+        <span className="pile__stack pile__stack--discard" aria-hidden />
+        <span className="pile__label">捨札</span>
+        <span className="pile__count">{player.discard.length}</span>
+      </button>
     </div>
+  );
+
+  const operationZone = (
+    <ZoneCards
+      title="常駐"
+      zoneId="operation"
+      className="playsheet__operation"
+      imageOnly
+      cards={player.operation}
+      definitions={definitions}
+      playerId={playerId}
+      fromZone="operation"
+      accepts={canDropOperation}
+      highlighted={highlightOperation}
+      inactive={operationZoneInactive}
+      onDrop={(payload) => onZoneDrop?.("operation", payload)}
+      onPreview={onPreview}
+      onCardClick={
+        interactive && (phase === "rush" || phase === "battle")
+          ? onOperationCardClick
+          : undefined
+      }
+      emptyLabel={phase === "rush" ? "使用可" : "—"}
+    />
   );
 
   const baseZone = (
     <div className="playsheet__base">
-      {isOpponent ? (
-        <>
-          {sidebar}
-          {commandZone}
-        </>
-      ) : (
-        <>
-          {commandZone}
-          {sidebar}
-        </>
-      )}
+      {piles}
+      {powerZone}
+      {commandZone}
+      {operationZone}
     </div>
   );
 
@@ -805,17 +816,7 @@ export function PlayerBoard({
       </div>
 
       <div className={`playsheet ${isOpponent ? "playsheet--opponent" : "playsheet--self"}`}>
-        {isOpponent ? (
-          <>
-            {powerZone}
-            <div className="playsheet__main">{mainZones}</div>
-          </>
-        ) : (
-          <>
-            <div className="playsheet__main">{mainZones}</div>
-            {powerZone}
-          </>
-        )}
+        <div className="playsheet__main">{mainZones}</div>
       </div>
 
       {isHuman && (
@@ -839,6 +840,7 @@ export function PlayerBoard({
             counterIds={counterIds}
             onSelectTarget={handleSelectTarget}
             onCounterSelect={onCounterSelect}
+            onCardClick={interactive ? onHandCardTap : undefined}
             emptyLabel="なし"
           />
           {(pendingOperationTargets?.size ||
