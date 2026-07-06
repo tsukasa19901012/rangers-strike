@@ -19,6 +19,7 @@ import {
 } from "../pendingChoices";
 import { buildLogEntry } from "../../log/formatLog";
 import type { ComboOutcome } from "../comboTypes";
+import { sameCardName } from "../../core/cardNames";
 
 export const FLOWER_BOMB_RULE = "flower_bomb_power_cost";
 
@@ -344,7 +345,7 @@ export function reanimateNamedFromDiscardOnDestroy(
 ): { state: GameState; log: string | null } {
   const player = state.players[ctx.ownerPlayerId];
   const inDiscard = player.discard.filter(
-    (c) => cardName(state.definitions, c.cardId) === partnerName,
+    (c) => sameCardName(cardName(state.definitions, c.cardId), partnerName),
   );
   if (inDiscard.length === 0) return { state, log: null };
 

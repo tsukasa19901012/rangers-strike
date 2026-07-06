@@ -1759,17 +1759,10 @@ export function GameApp() {
         });
       }
     } else if (fromZone === "rush" && state.phase === "battle") {
-      if (
-        legalActions.some(
-          (a) => a.type === "move_to_battle" && a.instanceId === card.instanceId,
-        ) ||
-        legalActions.some(
-          (a) =>
-            a.type === "initiate_command_payment" &&
-            a.kind === "battle_entry" &&
-            a.sourceInstanceId === card.instanceId,
-        )
-      ) {
+      // コマンドホールド支払いは legalActions に現れないため、
+      // ラッシュ可能なユニット/ビークルには常に出撃を提示し、
+      // 不可の場合は attemptMoveToBattle が理由をアラート表示する。
+      if (isRushable(def) && !card.commandHeld) {
         actions.push({
           id: "enter-battle",
           label: "バトルエリアに出す",
@@ -2773,14 +2766,17 @@ export function GameApp() {
           </span>
         </div>
         <ol className="phase-tracker" aria-label="フェイズ">
-          {PHASE_ORDER.map((phase) => (
+          {PHASE_ORDER.map((phase, index) => (
             <li
               key={phase}
-              className={`phase-tracker__step ${
+              className={`phase-tracker__step phase-tracker__step--${phase} ${
                 phase === state.phase ? "phase-tracker__step--active" : ""
               }`}
               aria-current={phase === state.phase ? "step" : undefined}
             >
+              <span className="phase-tracker__num" aria-hidden>
+                {index + 1}
+              </span>
               {PHASE_LABELS[phase]}
             </li>
           ))}

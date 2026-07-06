@@ -78,7 +78,7 @@
   {
     "cardId": "XG6-005",
     "wikiRef": "docs/wiki/cards/XG6-005.md",
-    "name": "セイントカイザー（XG6）",
+    "name": "セイントカイザー",
     "cardType": "unit",
     "powerCost": "4+",
     "category": "MA",
@@ -95,7 +95,7 @@
   {
     "cardId": "XG6-006",
     "wikiRef": "docs/wiki/cards/XG6-006.md",
-    "name": "ダイタンケン（XG6）",
+    "name": "ダイタンケン",
     "cardType": "unit",
     "powerCost": "5+",
     "category": "ET",
@@ -307,7 +307,7 @@
   {
     "cardId": "XG6-018",
     "wikiRef": "docs/wiki/cards/XG6-018.md",
-    "name": "アバレキラー（XG6）",
+    "name": "アバレキラー",
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
@@ -325,7 +325,7 @@
   {
     "cardId": "XG6-019",
     "wikiRef": "docs/wiki/cards/XG6-019.md",
-    "name": "ダイボウケン（XG6）",
+    "name": "ダイボウケン",
     "cardType": "unit",
     "powerCost": "5+",
     "category": "ET",
@@ -622,7 +622,7 @@
   {
     "cardId": "XG6-035",
     "wikiRef": "docs/wiki/cards/XG6-035.md",
-    "name": "仮面ライダーW・CJX（XG6）",
+    "name": "仮面ライダーW・CJX",
     "cardType": "unit",
     "powerCost": "5+",
     "category": "ET",
@@ -641,7 +641,7 @@
   {
     "cardId": "XG6-036",
     "wikiRef": "docs/wiki/cards/XG6-036.md",
-    "name": "仮面ライダーW・CJ（XG6）",
+    "name": "仮面ライダーW・CJ",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -659,7 +659,7 @@
   {
     "cardId": "XG6-037",
     "wikiRef": "docs/wiki/cards/XG6-037.md",
-    "name": "仮面ライダーアクセル（XG6）",
+    "name": "仮面ライダーアクセル",
     "cardType": "unit",
     "powerCost": 1,
     "category": "ET",
@@ -676,7 +676,7 @@
   {
     "cardId": "XG6-038",
     "wikiRef": "docs/wiki/cards/XG6-038.md",
-    "name": "仮面ライダーアクセルトライアル（XG6）",
+    "name": "仮面ライダーアクセルトライアル",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "ET",
@@ -750,7 +750,7 @@
   {
     "cardId": "XG6-042",
     "wikiRef": "docs/wiki/cards/XG6-042.md",
-    "name": "仮面ライダーゼロノスAF（XG6）",
+    "name": "仮面ライダーゼロノスAF",
     "cardType": "unit",
     "powerCost": 2,
     "category": "OT",
@@ -768,7 +768,7 @@
   {
     "cardId": "XG6-043",
     "wikiRef": "docs/wiki/cards/XG6-043.md",
-    "name": "仮面ライダーゼロノスZF（XG6）",
+    "name": "仮面ライダーゼロノスZF",
     "cardType": "unit",
     "powerCost": "0+",
     "category": "OT",
@@ -786,7 +786,7 @@
   {
     "cardId": "XG6-044",
     "wikiRef": "docs/wiki/cards/XG6-044.md",
-    "name": "仮面ライダーNEW電王SF（XG6）",
+    "name": "仮面ライダーNEW電王SF",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -842,7 +842,7 @@
   {
     "cardId": "XG6-047",
     "wikiRef": "docs/wiki/cards/XG6-047.md",
-    "name": "仮面ライダーG4（XG6）",
+    "name": "仮面ライダーG4",
     "cardType": "unit",
     "powerCost": 6,
     "category": [
@@ -863,7 +863,7 @@
   {
     "cardId": "XG6-048",
     "wikiRef": "docs/wiki/cards/XG6-048.md",
-    "name": "仮面ライダーリュウガ（XG6）",
+    "name": "仮面ライダーリュウガ",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -885,7 +885,7 @@
   {
     "cardId": "XG6-049",
     "wikiRef": "docs/wiki/cards/XG6-049.md",
-    "name": "仮面ライダーオーガ（XG6）",
+    "name": "仮面ライダーオーガ",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -906,7 +906,7 @@
   {
     "cardId": "XG6-050",
     "wikiRef": "docs/wiki/cards/XG6-050.md",
-    "name": "仮面ライダーグレイブ（XG6）",
+    "name": "仮面ライダーグレイブ",
     "cardType": "unit",
     "powerCost": 1,
     "category": [
@@ -927,7 +927,7 @@
   {
     "cardId": "XG6-051",
     "wikiRef": "docs/wiki/cards/XG6-051.md",
-    "name": "仮面ライダー歌舞鬼（XG6）",
+    "name": "仮面ライダー歌舞鬼",
     "cardType": "unit",
     "powerCost": 2,
     "category": [
@@ -950,7 +950,7 @@
   {
     "cardId": "XG6-052",
     "wikiRef": "docs/wiki/cards/XG6-052.md",
-    "name": "仮面ライダーコーカサス（XG6）",
+    "name": "仮面ライダーコーカサス",
     "cardType": "unit",
     "powerCost": 7,
     "category": [
@@ -971,7 +971,7 @@
   {
     "cardId": "XG6-053",
     "wikiRef": "docs/wiki/cards/XG6-053.md",
-    "name": "仮面ライダーアーク（XG6）",
+    "name": "仮面ライダーアーク",
     "cardType": "unit",
     "powerCost": 5,
     "category": [
@@ -993,7 +993,7 @@
   {
     "cardId": "XG6-054",
     "wikiRef": "docs/wiki/cards/XG6-054.md",
-    "name": "仮面ライダースカル（XG6）",
+    "name": "仮面ライダースカル",
     "cardType": "unit",
     "powerCost": 0,
     "category": [

@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RK-269",
-  "name": "シャドームーン",
+  "name": "シャドームーン（2nd）",
   "type": "unit",
   "category": "DA",
   "rarity": "N",

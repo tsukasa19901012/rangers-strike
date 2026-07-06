@@ -28,7 +28,7 @@ type SimReport = {
   phaseCoverage: Record<Phase, number>;
 };
 
-function runSimulation(count: number): SimReport {
+async function runSimulation(count: number): Promise<SimReport> {
   const report: SimReport = {
     total: count,
     winner: 0,
@@ -70,6 +70,9 @@ function runSimulation(count: number): SimReport {
     else if (result.reason === "step_limit") report.stepLimit += 1;
     else if (result.reason === "no_legal_actions") report.noLegalActions += 1;
     else if (result.reason === "apply_failed") report.applyFailed += 1;
+
+    // 長時間の同期ループで vitest ワーカー RPC が飢餓しないよう、1ゲームごとに譲る
+    await new Promise((resolve) => setImmediate(resolve));
   }
 
   return report;
@@ -78,8 +81,8 @@ function runSimulation(count: number): SimReport {
 describe("vertical slice — all starter deck CPU simulation", () => {
   it(
     `runs ${GAME_COUNT} CPU vs CPU games across all ${ALL_STARTER_DECK_IDS.length} starters`,
-    () => {
-      const report = runSimulation(GAME_COUNT);
+    async () => {
+      const report = await runSimulation(GAME_COUNT);
 
       console.info("\n=== All Starter Deck Simulation ===");
       console.info(`starters:        ${ALL_STARTER_DECK_IDS.length}`);

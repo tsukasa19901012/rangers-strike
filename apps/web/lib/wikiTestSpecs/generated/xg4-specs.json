@@ -90,7 +90,7 @@
   {
     "cardId": "XG4-007",
     "wikiRef": "docs/wiki/cards/XG4-007.md",
-    "name": "ドラゴンレンジャー（XG4）",
+    "name": "ドラゴンレンジャー",
     "cardType": "unit",
     "powerCost": 4,
     "category": "WB",
@@ -109,7 +109,7 @@
   {
     "cardId": "XG4-008",
     "wikiRef": "docs/wiki/cards/XG4-008.md",
-    "name": "メガシルバー（XG4）",
+    "name": "メガシルバー",
     "cardType": "unit",
     "powerCost": 6,
     "category": "ET",
@@ -207,7 +207,7 @@
   {
     "cardId": "XG4-013",
     "wikiRef": "docs/wiki/cards/XG4-013.md",
-    "name": "ギンガグリーン（XG4）",
+    "name": "ギンガグリーン",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -229,7 +229,7 @@
   {
     "cardId": "XG4-014",
     "wikiRef": "docs/wiki/cards/XG4-014.md",
-    "name": "ギンガピンク（XG4）",
+    "name": "ギンガピンク",
     "cardType": "unit",
     "powerCost": 0,
     "category": [
@@ -269,7 +269,7 @@
   {
     "cardId": "XG4-016",
     "wikiRef": "docs/wiki/cards/XG4-016.md",
-    "name": "タイムファイヤー（XG4）",
+    "name": "タイムファイヤー",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -286,7 +286,7 @@
   {
     "cardId": "XG4-017",
     "wikiRef": "docs/wiki/cards/XG4-017.md",
-    "name": "ガオシルバー（XG4）",
+    "name": "ガオシルバー",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -372,7 +372,7 @@
   {
     "cardId": "XG4-022",
     "wikiRef": "docs/wiki/cards/XG4-022.md",
-    "name": "シュリケンジャー（XG4）",
+    "name": "シュリケンジャー",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -389,7 +389,7 @@
   {
     "cardId": "XG4-023",
     "wikiRef": "docs/wiki/cards/XG4-023.md",
-    "name": "シュリケンジャーFM（XG4）",
+    "name": "シュリケンジャーFM",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "MA",
@@ -408,7 +408,7 @@
   {
     "cardId": "XG4-025",
     "wikiRef": "docs/wiki/cards/XG4-025.md",
-    "name": "デカブレイク（XG4）",
+    "name": "デカブレイク",
     "cardType": "unit",
     "powerCost": 5,
     "category": "OT",
@@ -425,7 +425,7 @@
   {
     "cardId": "XG4-026",
     "wikiRef": "docs/wiki/cards/XG4-026.md",
-    "name": "天空勇者マジシャイン（XG4）",
+    "name": "天空勇者マジシャイン",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -456,7 +456,7 @@
   {
     "cardId": "XG4-029",
     "wikiRef": "docs/wiki/cards/XG4-029.md",
-    "name": "ゲキバイオレット（XG4）",
+    "name": "ゲキバイオレット",
     "cardType": "unit",
     "powerCost": 5,
     "category": [
@@ -476,7 +476,7 @@
   {
     "cardId": "XG4-030",
     "wikiRef": "docs/wiki/cards/XG4-030.md",
-    "name": "ゲキチョッパー（XG4）",
+    "name": "ゲキチョッパー",
     "cardType": "unit",
     "powerCost": 5,
     "category": [
@@ -516,7 +516,7 @@
   {
     "cardId": "XG4-032",
     "wikiRef": "docs/wiki/cards/XG4-032.md",
-    "name": "ゴーオンゴールド（XG4）",
+    "name": "ゴーオンゴールド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -534,7 +534,7 @@
   {
     "cardId": "XG4-033",
     "wikiRef": "docs/wiki/cards/XG4-033.md",
-    "name": "ゴーオンシルバー（XG4）",
+    "name": "ゴーオンシルバー",
     "cardType": "unit",
     "powerCost": 2,
     "category": "OT",
@@ -571,7 +571,7 @@
   {
     "cardId": "XG4-035",
     "wikiRef": "docs/wiki/cards/XG4-035.md",
-    "name": "シンケンゴールド（XG4）",
+    "name": "シンケンゴールド",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -805,7 +805,7 @@
   {
     "cardId": "XG4-047",
     "wikiRef": "docs/wiki/cards/XG4-047.md",
-    "name": "シンケンレッド（XG4）",
+    "name": "シンケンレッド",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -840,7 +840,7 @@
   {
     "cardId": "XG4-049",
     "wikiRef": "docs/wiki/cards/XG4-049.md",
-    "name": "アクロバッター（XG4）",
+    "name": "アクロバッター",
     "cardType": "vehicle",
     "powerCost": 2,
     "category": "MA",
@@ -891,7 +891,7 @@
   {
     "cardId": "XG4-052",
     "wikiRef": "docs/wiki/cards/XG4-052.md",
-    "name": "仮面ライダークウガUF（XG4）",
+    "name": "仮面ライダークウガUF",
     "cardType": "unit",
     "powerCost": 7,
     "category": "MA",
@@ -910,7 +910,7 @@
   {
     "cardId": "XG4-053",
     "wikiRef": "docs/wiki/cards/XG4-053.md",
-    "name": "仮面ライダーアギトSHF（XG4）",
+    "name": "仮面ライダーアギトSHF",
     "cardType": "unit",
     "powerCost": 5,
     "category": "MA",
@@ -927,7 +927,7 @@
   {
     "cardId": "XG4-054",
     "wikiRef": "docs/wiki/cards/XG4-054.md",
-    "name": "仮面ライダーブレイドKF（XG4）",
+    "name": "仮面ライダーブレイドKF",
     "cardType": "unit",
     "powerCost": 6,
     "category": "WB",
@@ -945,7 +945,7 @@
   {
     "cardId": "XG4-055",
     "wikiRef": "docs/wiki/cards/XG4-055.md",
-    "name": "ドラグランザー（XG4）",
+    "name": "ドラグランザー",
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
@@ -979,7 +979,7 @@
   {
     "cardId": "XG4-057",
     "wikiRef": "docs/wiki/cards/XG4-057.md",
-    "name": "仮面ライダー龍騎サバイブ（XG4）",
+    "name": "仮面ライダー龍騎サバイブ",
     "cardType": "unit",
     "powerCost": 7,
     "category": "WB",
@@ -997,7 +997,7 @@
   {
     "cardId": "XG4-058",
     "wikiRef": "docs/wiki/cards/XG4-058.md",
-    "name": "オートバジンBM（XG4）",
+    "name": "オートバジンBM",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -1015,7 +1015,7 @@
   {
     "cardId": "XG4-059",
     "wikiRef": "docs/wiki/cards/XG4-059.md",
-    "name": "オートバジンVM（XG4）",
+    "name": "オートバジンVM",
     "cardType": "vehicle",
     "powerCost": 2,
     "category": "ET",
@@ -1031,7 +1031,7 @@
   {
     "cardId": "XG4-060",
     "wikiRef": "docs/wiki/cards/XG4-060.md",
-    "name": "仮面ライダーファイズBF（XG4）",
+    "name": "仮面ライダーファイズBF",
     "cardType": "unit",
     "powerCost": 5,
     "category": "ET",
@@ -1196,7 +1196,7 @@
   {
     "cardId": "XG4-069",
     "wikiRef": "docs/wiki/cards/XG4-069.md",
-    "name": "仮面ライダーW・FJ（XG4）",
+    "name": "仮面ライダーW・FJ",
     "cardType": "unit",
     "powerCost": "3+",
     "category": "DA",
@@ -1268,7 +1268,7 @@
   {
     "cardId": "XG4-073",
     "wikiRef": "docs/wiki/cards/XG4-073.md",
-    "name": "仮面ライダークウガDF（XG4）",
+    "name": "仮面ライダークウガDF",
     "cardType": "unit",
     "powerCost": 2,
     "category": "MA",
@@ -1286,7 +1286,7 @@
   {
     "cardId": "XG4-074",
     "wikiRef": "docs/wiki/cards/XG4-074.md",
-    "name": "仮面ライダーX（XG4）",
+    "name": "仮面ライダーX",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -1303,7 +1303,7 @@
   {
     "cardId": "XG4-075",
     "wikiRef": "docs/wiki/cards/XG4-075.md",
-    "name": "アポロガイスト（XG4）",
+    "name": "アポロガイスト",
     "cardType": "unit",
     "powerCost": 4,
     "category": "DA",
@@ -1340,7 +1340,7 @@
   {
     "cardId": "XG4-077",
     "wikiRef": "docs/wiki/cards/XG4-077.md",
-    "name": "仮面ライダーZX（XG4）",
+    "name": "仮面ライダーZX",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -1357,7 +1357,7 @@
   {
     "cardId": "XG4-078",
     "wikiRef": "docs/wiki/cards/XG4-078.md",
-    "name": "仮面ライダー龍騎（XG4）",
+    "name": "仮面ライダー龍騎",
     "cardType": "unit",
     "powerCost": 4,
     "category": "WB",
@@ -1372,7 +1372,7 @@
   {
     "cardId": "XG4-079",
     "wikiRef": "docs/wiki/cards/XG4-079.md",
-    "name": "ディケイド カブトRF（XG4）",
+    "name": "ディケイド カブトRF",
     "cardType": "unit",
     "powerCost": 5,
     "category": "OT",
@@ -1392,7 +1392,7 @@
   {
     "cardId": "XG4-080",
     "wikiRef": "docs/wiki/cards/XG4-080.md",
-    "name": "ロボライダー（XG4）",
+    "name": "ロボライダー",
     "cardType": "unit",
     "powerCost": 6,
     "category": "MA",
@@ -1411,7 +1411,7 @@
   {
     "cardId": "XG4-081",
     "wikiRef": "docs/wiki/cards/XG4-081.md",
-    "name": "仮面ライダーブレイド（XG4）",
+    "name": "仮面ライダーブレイド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -1430,7 +1430,7 @@
   {
     "cardId": "XG4-082",
     "wikiRef": "docs/wiki/cards/XG4-082.md",
-    "name": "バイオライダー（XG4）",
+    "name": "バイオライダー",
     "cardType": "unit",
     "powerCost": 3,
     "category": "MA",
@@ -1447,7 +1447,7 @@
   {
     "cardId": "XG4-083",
     "wikiRef": "docs/wiki/cards/XG4-083.md",
-    "name": "ディケイド ファイズ（XG4）",
+    "name": "ディケイド ファイズ",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -1501,7 +1501,7 @@
   {
     "cardId": "XG4-086",
     "wikiRef": "docs/wiki/cards/XG4-086.md",
-    "name": "仮面ライダーイクサBM（XG4）",
+    "name": "仮面ライダーイクサBM",
     "cardType": "unit",
     "powerCost": 1,
     "category": "ET",
@@ -1518,7 +1518,7 @@
   {
     "cardId": "XG4-087",
     "wikiRef": "docs/wiki/cards/XG4-087.md",
-    "name": "スカイライダー（XG4）",
+    "name": "スカイライダー",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -1586,7 +1586,7 @@
   {
     "cardId": "XG4-091",
     "wikiRef": "docs/wiki/cards/XG4-091.md",
-    "name": "ガンギブソン（XG4）",
+    "name": "ガンギブソン",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -1604,7 +1604,7 @@
   {
     "cardId": "XG4-092",
     "wikiRef": "docs/wiki/cards/XG4-092.md",
-    "name": "ジャンパーソン（XG4）",
+    "name": "ジャンパーソン",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -1638,7 +1638,7 @@
   {
     "cardId": "XG4-094",
     "wikiRef": "docs/wiki/cards/XG4-094.md",
-    "name": "宇宙刑事シャイダー（XG4）",
+    "name": "宇宙刑事シャイダー",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -1710,7 +1710,7 @@
   {
     "cardId": "XG4-098",
     "wikiRef": "docs/wiki/cards/XG4-098.md",
-    "name": "スピルバン（XG4）",
+    "name": "スピルバン",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",

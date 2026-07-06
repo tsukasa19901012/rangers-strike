@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RK-308",
-  "name": "リュウタロス",
+  "name": "リュウタロス（2nd）",
   "type": "unit",
   "category": "OT",
   "rarity": "N",

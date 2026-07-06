@@ -1012,7 +1012,7 @@
   {
     "cardId": "PR-026",
     "wikiRef": "docs/wiki/cards/PR-026.md",
-    "name": "デカマスター（2nd）",
+    "name": "デカマスター",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
@@ -5223,7 +5223,7 @@
   {
     "cardId": "RK-240",
     "wikiRef": "docs/wiki/cards/RK-240.md",
-    "name": "仮面ライダー電王CF",
+    "name": "仮面ライダー電王CF（2nd）",
     "cardType": "unit",
     "powerCost": "4+",
     "category": "OT",
@@ -5497,7 +5497,7 @@
   {
     "cardId": "RK-255",
     "wikiRef": "docs/wiki/cards/RK-255.md",
-    "name": "電波人間タックル",
+    "name": "電波人間タックル（2nd）",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -5740,7 +5740,7 @@
   {
     "cardId": "RK-269",
     "wikiRef": "docs/wiki/cards/RK-269.md",
-    "name": "シャドームーン",
+    "name": "シャドームーン（2nd）",
     "cardType": "unit",
     "powerCost": 5,
     "category": "DA",
@@ -5899,7 +5899,7 @@
   {
     "cardId": "RK-278",
     "wikiRef": "docs/wiki/cards/RK-278.md",
-    "name": "仮面ライダーナイト",
+    "name": "仮面ライダーナイト（2nd）",
     "cardType": "unit",
     "powerCost": 6,
     "category": "WB",
@@ -6223,7 +6223,7 @@
   {
     "cardId": "RK-296",
     "wikiRef": "docs/wiki/cards/RK-296.md",
-    "name": "仮面ライダーキックホッパー",
+    "name": "仮面ライダーキックホッパー（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -6240,7 +6240,7 @@
   {
     "cardId": "RK-297",
     "wikiRef": "docs/wiki/cards/RK-297.md",
-    "name": "仮面ライダーパンチホッパー",
+    "name": "仮面ライダーパンチホッパー（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -6364,7 +6364,7 @@
   {
     "cardId": "RK-304",
     "wikiRef": "docs/wiki/cards/RK-304.md",
-    "name": "仮面ライダー電王RF",
+    "name": "仮面ライダー電王RF（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -6382,7 +6382,7 @@
   {
     "cardId": "RK-305",
     "wikiRef": "docs/wiki/cards/RK-305.md",
-    "name": "仮面ライダー電王SF",
+    "name": "仮面ライダー電王SF（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -6400,7 +6400,7 @@
   {
     "cardId": "RK-306",
     "wikiRef": "docs/wiki/cards/RK-306.md",
-    "name": "仮面ライダー電王AF",
+    "name": "仮面ライダー電王AF（2nd）",
     "cardType": "unit",
     "powerCost": 6,
     "category": "OT",
@@ -6418,7 +6418,7 @@
   {
     "cardId": "RK-307",
     "wikiRef": "docs/wiki/cards/RK-307.md",
-    "name": "仮面ライダー電王GF",
+    "name": "仮面ライダー電王GF（2nd）",
     "cardType": "unit",
     "powerCost": 5,
     "category": "OT",
@@ -6436,7 +6436,7 @@
   {
     "cardId": "RK-308",
     "wikiRef": "docs/wiki/cards/RK-308.md",
-    "name": "リュウタロス",
+    "name": "リュウタロス（2nd）",
     "cardType": "unit",
     "powerCost": 2,
     "category": "OT",
@@ -6455,7 +6455,7 @@
   {
     "cardId": "RK-309",
     "wikiRef": "docs/wiki/cards/RK-309.md",
-    "name": "ウラタロス",
+    "name": "ウラタロス（2nd）",
     "cardType": "unit",
     "powerCost": 1,
     "category": "OT",
@@ -6472,7 +6472,7 @@
   {
     "cardId": "RK-310",
     "wikiRef": "docs/wiki/cards/RK-310.md",
-    "name": "モモタロス",
+    "name": "モモタロス（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -6491,7 +6491,7 @@
   {
     "cardId": "RK-311",
     "wikiRef": "docs/wiki/cards/RK-311.md",
-    "name": "キンタロス",
+    "name": "キンタロス（2nd）",
     "cardType": "unit",
     "powerCost": 2,
     "category": "OT",
@@ -6860,7 +6860,7 @@
   {
     "cardId": "RK-332",
     "wikiRef": "docs/wiki/cards/RK-332.md",
-    "name": "仮面ライダー龍騎",
+    "name": "仮面ライダー龍騎（2nd）",
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
@@ -6895,7 +6895,7 @@
   {
     "cardId": "RK-334",
     "wikiRef": "docs/wiki/cards/RK-334.md",
-    "name": "仮面ライダー電王LF",
+    "name": "仮面ライダー電王LF（2nd）",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
@@ -6907,7 +6907,7 @@
   {
     "cardId": "RK-335",
     "wikiRef": "docs/wiki/cards/RK-335.md",
-    "name": "モモタロス",
+    "name": "モモタロス（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -13989,7 +13989,7 @@
   {
     "cardId": "RS-351",
     "wikiRef": "docs/wiki/cards/RS-351.md",
-    "name": "アカレンジャー",
+    "name": "アカレンジャー（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -14162,7 +14162,7 @@
   {
     "cardId": "RS-361",
     "wikiRef": "docs/wiki/cards/RS-361.md",
-    "name": "バルイーグル",
+    "name": "バルイーグル（2nd）",
     "cardType": "unit",
     "powerCost": 5,
     "category": "ET",
@@ -14180,7 +14180,7 @@
   {
     "cardId": "RS-362",
     "wikiRef": "docs/wiki/cards/RS-362.md",
-    "name": "バルシャーク",
+    "name": "バルシャーク（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -14198,7 +14198,7 @@
   {
     "cardId": "RS-363",
     "wikiRef": "docs/wiki/cards/RS-363.md",
-    "name": "バルパンサー",
+    "name": "バルパンサー（2nd）",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -14406,7 +14406,7 @@
   {
     "cardId": "RS-375",
     "wikiRef": "docs/wiki/cards/RS-375.md",
-    "name": "レッドレーサー",
+    "name": "レッドレーサー（2nd）",
     "cardType": "unit",
     "powerCost": 1,
     "category": "OT",
@@ -14624,7 +14624,7 @@
   {
     "cardId": "RS-388",
     "wikiRef": "docs/wiki/cards/RS-388.md",
-    "name": "ゴーレッド",
+    "name": "ゴーレッド（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -14859,7 +14859,7 @@
   {
     "cardId": "RS-402",
     "wikiRef": "docs/wiki/cards/RS-402.md",
-    "name": "ガオレッド",
+    "name": "ガオレッド（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "WB",
@@ -14876,7 +14876,7 @@
   {
     "cardId": "RS-403",
     "wikiRef": "docs/wiki/cards/RS-403.md",
-    "name": "デカレッド",
+    "name": "デカレッド（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -15522,7 +15522,7 @@
   {
     "cardId": "RS-440",
     "wikiRef": "docs/wiki/cards/RS-440.md",
-    "name": "バトルフィーバーロボ",
+    "name": "バトルフィーバーロボ（2nd）",
     "cardType": "unit",
     "powerCost": "6+",
     "category": "ET",
@@ -17069,7 +17069,7 @@
   {
     "cardId": "RS-527",
     "wikiRef": "docs/wiki/cards/RS-527.md",
-    "name": "バルジオン",
+    "name": "バルジオン（2nd）",
     "cardType": "vehicle",
     "powerCost": 5,
     "category": "DA",
@@ -17086,7 +17086,7 @@
   {
     "cardId": "RS-528",
     "wikiRef": "docs/wiki/cards/RS-528.md",
-    "name": "バイオハンター・シルバ",
+    "name": "バイオハンター・シルバ（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "DA",
@@ -17439,7 +17439,7 @@
   {
     "cardId": "RS-548",
     "wikiRef": "docs/wiki/cards/RS-548.md",
-    "name": "ティラノレンジャー",
+    "name": "ティラノレンジャー（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -17458,7 +17458,7 @@
   {
     "cardId": "RS-549",
     "wikiRef": "docs/wiki/cards/RS-549.md",
-    "name": "トリケラレンジャー",
+    "name": "トリケラレンジャー（2nd）",
     "cardType": "unit",
     "powerCost": 2,
     "category": "WB",
@@ -17862,7 +17862,7 @@
   {
     "cardId": "RS-572",
     "wikiRef": "docs/wiki/cards/RS-572.md",
-    "name": "デカマスター",
+    "name": "デカマスター（2nd）",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
@@ -17876,7 +17876,7 @@
   {
     "cardId": "RS-573",
     "wikiRef": "docs/wiki/cards/RS-573.md",
-    "name": "ファイヤーカイザー",
+    "name": "ファイヤーカイザー（2nd）",
     "cardType": "unit",
     "powerCost": "5+",
     "category": "MA",
@@ -17948,7 +17948,7 @@
   {
     "cardId": "RS-577",
     "wikiRef": "docs/wiki/cards/RS-577.md",
-    "name": "マジレッド",
+    "name": "マジレッド（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -18020,7 +18020,7 @@
   {
     "cardId": "RS-581",
     "wikiRef": "docs/wiki/cards/RS-581.md",
-    "name": "魔導馬バリキオン",
+    "name": "魔導馬バリキオン（2nd）",
     "cardType": "vehicle",
     "powerCost": 2,
     "category": "DA",
@@ -18090,7 +18090,7 @@
   {
     "cardId": "RS-585",
     "wikiRef": "docs/wiki/cards/RS-585.md",
-    "name": "ボウケンシルバー",
+    "name": "ボウケンシルバー（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -19293,7 +19293,7 @@
   {
     "cardId": "RS-653",
     "wikiRef": "docs/wiki/cards/RS-653.md",
-    "name": "レッドファルコン",
+    "name": "レッドファルコン（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -19311,7 +19311,7 @@
   {
     "cardId": "RS-654",
     "wikiRef": "docs/wiki/cards/RS-654.md",
-    "name": "ガオイエロー",
+    "name": "ガオイエロー（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -19857,7 +19857,7 @@
   {
     "cardId": "RS-685",
     "wikiRef": "docs/wiki/cards/RS-685.md",
-    "name": "ブラックコンドル",
+    "name": "ブラックコンドル（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -19929,7 +19929,7 @@
   {
     "cardId": "RS-689",
     "wikiRef": "docs/wiki/cards/RS-689.md",
-    "name": "レッドホーク",
+    "name": "レッドホーク（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -20014,7 +20014,7 @@
   {
     "cardId": "SK-003",
     "wikiRef": "docs/wiki/cards/SK-003.md",
-    "name": "仮面ライダーファム（2nd）",
+    "name": "仮面ライダーファム",
     "cardType": "unit",
     "powerCost": 4,
     "category": "WB",
@@ -20120,7 +20120,7 @@
   {
     "cardId": "SR-004",
     "wikiRef": "docs/wiki/cards/SR-004.md",
-    "name": "ヘドリアン女王",
+    "name": "ヘドリアン女王（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "DA",
@@ -20411,7 +20411,7 @@
   {
     "cardId": "XG1-001",
     "wikiRef": "docs/wiki/cards/XG1-001.md",
-    "name": "バトルジャパン（XG）",
+    "name": "バトルジャパン",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -20428,7 +20428,7 @@
   {
     "cardId": "XG1-002",
     "wikiRef": "docs/wiki/cards/XG1-002.md",
-    "name": "デンジレッド（XG）",
+    "name": "デンジレッド",
     "cardType": "unit",
     "powerCost": 1,
     "category": "OT",
@@ -20445,7 +20445,7 @@
   {
     "cardId": "XG1-003",
     "wikiRef": "docs/wiki/cards/XG1-003.md",
-    "name": "バルイーグル（XG）",
+    "name": "バルイーグル",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -20480,7 +20480,7 @@
   {
     "cardId": "XG1-005",
     "wikiRef": "docs/wiki/cards/XG1-005.md",
-    "name": "ダイナレッド（XG）",
+    "name": "ダイナレッド",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -20497,7 +20497,7 @@
   {
     "cardId": "XG1-006",
     "wikiRef": "docs/wiki/cards/XG1-006.md",
-    "name": "レッドワン（XG）",
+    "name": "レッドワン",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -20514,7 +20514,7 @@
   {
     "cardId": "XG1-007",
     "wikiRef": "docs/wiki/cards/XG1-007.md",
-    "name": "チェンジドラゴン（XG）",
+    "name": "チェンジドラゴン",
     "cardType": "unit",
     "powerCost": 2,
     "category": [
@@ -20535,7 +20535,7 @@
   {
     "cardId": "XG1-008",
     "wikiRef": "docs/wiki/cards/XG1-008.md",
-    "name": "レッドフラッシュ（XG）",
+    "name": "レッドフラッシュ",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -20552,7 +20552,7 @@
   {
     "cardId": "XG1-009",
     "wikiRef": "docs/wiki/cards/XG1-009.md",
-    "name": "レッドマスク（XG）",
+    "name": "レッドマスク",
     "cardType": "unit",
     "powerCost": 3,
     "category": "MA",
@@ -20570,7 +20570,7 @@
   {
     "cardId": "XG1-010",
     "wikiRef": "docs/wiki/cards/XG1-010.md",
-    "name": "レッドファルコン（XG）",
+    "name": "レッドファルコン",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -20931,7 +20931,7 @@
   {
     "cardId": "XG1-031",
     "wikiRef": "docs/wiki/cards/XG1-031.md",
-    "name": "ゴーオンレッド（XG）",
+    "name": "ゴーオンレッド",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -20952,7 +20952,7 @@
   {
     "cardId": "XG1-032",
     "wikiRef": "docs/wiki/cards/XG1-032.md",
-    "name": "ゲキレッド（XG）",
+    "name": "ゲキレッド",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -21115,7 +21115,7 @@
   {
     "cardId": "XG1-041",
     "wikiRef": "docs/wiki/cards/XG1-041.md",
-    "name": "仮面ライダーアマゾン（XG）",
+    "name": "仮面ライダーアマゾン",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -21172,7 +21172,7 @@
   {
     "cardId": "XG1-044",
     "wikiRef": "docs/wiki/cards/XG1-044.md",
-    "name": "仮面ライダーV3（XG）",
+    "name": "仮面ライダーV3",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -21299,7 +21299,7 @@
   {
     "cardId": "XG1-051",
     "wikiRef": "docs/wiki/cards/XG1-051.md",
-    "name": "仮面ライダーZX（XG）",
+    "name": "仮面ライダーZX",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -21471,7 +21471,7 @@
   {
     "cardId": "XG1-061",
     "wikiRef": "docs/wiki/cards/XG1-061.md",
-    "name": "仮面ライダーカリス（XG）",
+    "name": "仮面ライダーカリス",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -21687,7 +21687,7 @@
   {
     "cardId": "XG1-073",
     "wikiRef": "docs/wiki/cards/XG1-073.md",
-    "name": "仮面ライダーザビーMF（XG）",
+    "name": "仮面ライダーザビーMF",
     "cardType": "unit",
     "powerCost": 0,
     "category": "OT",
@@ -21704,7 +21704,7 @@
   {
     "cardId": "XG1-074",
     "wikiRef": "docs/wiki/cards/XG1-074.md",
-    "name": "仮面ライダーザビーRF（XG）",
+    "name": "仮面ライダーザビーRF",
     "cardType": "unit",
     "powerCost": "3+",
     "category": "OT",
@@ -22198,7 +22198,7 @@
   {
     "cardId": "XG2-001",
     "wikiRef": "docs/wiki/cards/XG2-001.md",
-    "name": "ファイブレッド（XG2）",
+    "name": "ファイブレッド",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -22219,7 +22219,7 @@
   {
     "cardId": "XG2-002",
     "wikiRef": "docs/wiki/cards/XG2-002.md",
-    "name": "ファイブブルー（XG2）",
+    "name": "ファイブブルー",
     "cardType": "unit",
     "powerCost": 1,
     "category": [
@@ -22239,7 +22239,7 @@
   {
     "cardId": "XG2-003",
     "wikiRef": "docs/wiki/cards/XG2-003.md",
-    "name": "ファイブピンク（XG2）",
+    "name": "ファイブピンク",
     "cardType": "unit",
     "powerCost": 0,
     "category": [
@@ -22375,7 +22375,7 @@
   {
     "cardId": "XG2-010",
     "wikiRef": "docs/wiki/cards/XG2-010.md",
-    "name": "気伝武人龍星王（XG2）",
+    "name": "気伝武人龍星王",
     "cardType": "unit",
     "powerCost": "4+",
     "category": "MA",
@@ -22392,7 +22392,7 @@
   {
     "cardId": "XG2-011",
     "wikiRef": "docs/wiki/cards/XG2-011.md",
-    "name": "気伝武人ウォンタイガー（XG2）",
+    "name": "気伝武人ウォンタイガー",
     "cardType": "unit",
     "powerCost": "5+",
     "category": "MA",
@@ -22426,7 +22426,7 @@
   {
     "cardId": "XG2-013",
     "wikiRef": "docs/wiki/cards/XG2-013.md",
-    "name": "キバレンジャー（XG2）",
+    "name": "キバレンジャー",
     "cardType": "unit",
     "powerCost": 2,
     "category": "MA",
@@ -22464,7 +22464,7 @@
   {
     "cardId": "XG2-015",
     "wikiRef": "docs/wiki/cards/XG2-015.md",
-    "name": "リュウレンジャー（XG2）",
+    "name": "リュウレンジャー",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -22514,7 +22514,7 @@
   {
     "cardId": "XG2-018",
     "wikiRef": "docs/wiki/cards/XG2-018.md",
-    "name": "ゲキタイガー（XG2）",
+    "name": "ゲキタイガー",
     "cardType": "unit",
     "powerCost": "3+",
     "category": [
@@ -22639,7 +22639,7 @@
   {
     "cardId": "XG2-025",
     "wikiRef": "docs/wiki/cards/XG2-025.md",
-    "name": "ギンガレッド（XG2）",
+    "name": "ギンガレッド",
     "cardType": "unit",
     "powerCost": 2,
     "category": [
@@ -22660,7 +22660,7 @@
   {
     "cardId": "XG2-026",
     "wikiRef": "docs/wiki/cards/XG2-026.md",
-    "name": "ギンガブルー（XG2）",
+    "name": "ギンガブルー",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -22681,7 +22681,7 @@
   {
     "cardId": "XG2-027",
     "wikiRef": "docs/wiki/cards/XG2-027.md",
-    "name": "ギンガイエロー（XG2）",
+    "name": "ギンガイエロー",
     "cardType": "unit",
     "powerCost": 1,
     "category": [
@@ -22754,7 +22754,7 @@
   {
     "cardId": "XG2-032",
     "wikiRef": "docs/wiki/cards/XG2-032.md",
-    "name": "デカレンジャーロボ（XG2）",
+    "name": "デカレンジャーロボ",
     "cardType": "unit",
     "powerCost": "7+",
     "category": "OT",
@@ -23066,7 +23066,7 @@
   {
     "cardId": "XG2-049",
     "wikiRef": "docs/wiki/cards/XG2-049.md",
-    "name": "仮面ライダーギルス（XG2）",
+    "name": "仮面ライダーギルス",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -23139,7 +23139,7 @@
   {
     "cardId": "XG2-053",
     "wikiRef": "docs/wiki/cards/XG2-053.md",
-    "name": "仮面ライダータイガ（XG2）",
+    "name": "仮面ライダータイガ",
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
@@ -23246,7 +23246,7 @@
   {
     "cardId": "XG2-059",
     "wikiRef": "docs/wiki/cards/XG2-059.md",
-    "name": "仮面ライダーレンゲル（XG2）",
+    "name": "仮面ライダーレンゲル",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -23319,7 +23319,7 @@
   {
     "cardId": "XG2-063",
     "wikiRef": "docs/wiki/cards/XG2-063.md",
-    "name": "仮面ライダー響鬼（XG2）",
+    "name": "仮面ライダー響鬼",
     "cardType": "unit",
     "powerCost": 2,
     "category": "MA",
@@ -23337,7 +23337,7 @@
   {
     "cardId": "XG2-064",
     "wikiRef": "docs/wiki/cards/XG2-064.md",
-    "name": "仮面ライダーカブトMF（XG2）",
+    "name": "仮面ライダーカブトMF",
     "cardType": "unit",
     "powerCost": 1,
     "category": "OT",
@@ -23373,7 +23373,7 @@
   {
     "cardId": "XG2-066",
     "wikiRef": "docs/wiki/cards/XG2-066.md",
-    "name": "仮面ライダーカブトRF（XG2）",
+    "name": "仮面ライダーカブトRF",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
@@ -23391,7 +23391,7 @@
   {
     "cardId": "XG2-067",
     "wikiRef": "docs/wiki/cards/XG2-067.md",
-    "name": "仮面ライダー電王GF（XG2）",
+    "name": "仮面ライダー電王GF",
     "cardType": "unit",
     "powerCost": 6,
     "category": "OT",
@@ -23410,7 +23410,7 @@
   {
     "cardId": "XG2-068",
     "wikiRef": "docs/wiki/cards/XG2-068.md",
-    "name": "リュウタロス（XG2）",
+    "name": "リュウタロス",
     "cardType": "unit",
     "powerCost": 5,
     "category": "OT",
@@ -23538,7 +23538,7 @@
   {
     "cardId": "XG2-075",
     "wikiRef": "docs/wiki/cards/XG2-075.md",
-    "name": "仮面ライダーブレイド（XG2）",
+    "name": "仮面ライダーブレイド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -23552,7 +23552,7 @@
   {
     "cardId": "XG2-076",
     "wikiRef": "docs/wiki/cards/XG2-076.md",
-    "name": "仮面ライダーキバ（XG2）",
+    "name": "仮面ライダーキバ",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -23569,7 +23569,7 @@
   {
     "cardId": "XG2-077",
     "wikiRef": "docs/wiki/cards/XG2-077.md",
-    "name": "仮面ライダーディケイド（XG2）",
+    "name": "仮面ライダーディケイド",
     "cardType": "unit",
     "powerCost": 2,
     "category": "OT",
@@ -23587,7 +23587,7 @@
   {
     "cardId": "XG2-078",
     "wikiRef": "docs/wiki/cards/XG2-078.md",
-    "name": "仮面ライダーファイズ（XG2）",
+    "name": "仮面ライダーファイズ",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -23604,7 +23604,7 @@
   {
     "cardId": "XG2-079",
     "wikiRef": "docs/wiki/cards/XG2-079.md",
-    "name": "仮面ライダー龍騎（XG2）",
+    "name": "仮面ライダー龍騎",
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
@@ -23656,7 +23656,7 @@
   {
     "cardId": "XG2-082",
     "wikiRef": "docs/wiki/cards/XG2-082.md",
-    "name": "電子星獣ドル（XG2）",
+    "name": "電子星獣ドル",
     "cardType": "unit",
     "powerCost": "5+",
     "category": "OT",
@@ -23675,7 +23675,7 @@
   {
     "cardId": "XG2-083",
     "wikiRef": "docs/wiki/cards/XG2-083.md",
-    "name": "宇宙刑事ギャバン（XG2）",
+    "name": "宇宙刑事ギャバン",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -23712,7 +23712,7 @@
   {
     "cardId": "XG2-085",
     "wikiRef": "docs/wiki/cards/XG2-085.md",
-    "name": "隊員コード153 ショウ（XG2）",
+    "name": "隊員コード153 ショウ",
     "cardType": "unit",
     "powerCost": 1,
     "category": "ET",
@@ -24332,7 +24332,7 @@
   {
     "cardId": "XG3-020",
     "wikiRef": "docs/wiki/cards/XG3-020.md",
-    "name": "クワガライジャー（XG3）",
+    "name": "クワガライジャー",
     "cardType": "unit",
     "powerCost": 2,
     "category": "MA",
@@ -24350,7 +24350,7 @@
   {
     "cardId": "XG3-021",
     "wikiRef": "docs/wiki/cards/XG3-021.md",
-    "name": "カブトライジャー（XG3）",
+    "name": "カブトライジャー",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -24367,7 +24367,7 @@
   {
     "cardId": "XG3-022",
     "wikiRef": "docs/wiki/cards/XG3-022.md",
-    "name": "アバレッド（XG3）",
+    "name": "アバレッド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -24472,7 +24472,7 @@
   {
     "cardId": "XG3-028",
     "wikiRef": "docs/wiki/cards/XG3-028.md",
-    "name": "魔導馬バリキオン（XG3）",
+    "name": "魔導馬バリキオン",
     "cardType": "unit",
     "powerCost": 2,
     "category": [
@@ -24493,7 +24493,7 @@
   {
     "cardId": "XG3-029",
     "wikiRef": "docs/wiki/cards/XG3-029.md",
-    "name": "魔導騎士ウルザード（XG3）",
+    "name": "魔導騎士ウルザード",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -24534,7 +24534,7 @@
   {
     "cardId": "XG3-031",
     "wikiRef": "docs/wiki/cards/XG3-031.md",
-    "name": "ゲキブルー（XG3）",
+    "name": "ゲキブルー",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -24555,7 +24555,7 @@
   {
     "cardId": "XG3-032",
     "wikiRef": "docs/wiki/cards/XG3-032.md",
-    "name": "ゲキイエロー（XG3）",
+    "name": "ゲキイエロー",
     "cardType": "unit",
     "powerCost": 1,
     "category": [
@@ -24693,7 +24693,7 @@
   {
     "cardId": "XG3-040",
     "wikiRef": "docs/wiki/cards/XG3-040.md",
-    "name": "シンケンレッド（XG3）",
+    "name": "シンケンレッド",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -24711,7 +24711,7 @@
   {
     "cardId": "XG3-041",
     "wikiRef": "docs/wiki/cards/XG3-041.md",
-    "name": "仮面ライダーディケイドCF（XG3）",
+    "name": "仮面ライダーディケイドCF",
     "cardType": "unit",
     "powerCost": "4+",
     "category": "OT",
@@ -24729,7 +24729,7 @@
   {
     "cardId": "XG3-043",
     "wikiRef": "docs/wiki/cards/XG3-043.md",
-    "name": "ライダーマン（XG3）",
+    "name": "ライダーマン",
     "cardType": "unit",
     "powerCost": 5,
     "category": "ET",
@@ -24746,7 +24746,7 @@
   {
     "cardId": "XG3-044",
     "wikiRef": "docs/wiki/cards/XG3-044.md",
-    "name": "仮面ライダーストロンガー（XG3）",
+    "name": "仮面ライダーストロンガー",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -24777,7 +24777,7 @@
   {
     "cardId": "XG3-046",
     "wikiRef": "docs/wiki/cards/XG3-046.md",
-    "name": "仮面ライダーBLACK（XG3）",
+    "name": "仮面ライダーBLACK",
     "cardType": "unit",
     "powerCost": 3,
     "category": "MA",
@@ -24796,7 +24796,7 @@
   {
     "cardId": "XG3-047",
     "wikiRef": "docs/wiki/cards/XG3-047.md",
-    "name": "シャドームーン（XG3）",
+    "name": "シャドームーン",
     "cardType": "unit",
     "powerCost": 5,
     "category": "DA",
@@ -24814,7 +24814,7 @@
   {
     "cardId": "XG3-048",
     "wikiRef": "docs/wiki/cards/XG3-048.md",
-    "name": "仮面ライダーBLACK RX（XG3）",
+    "name": "仮面ライダーBLACK RX",
     "cardType": "unit",
     "powerCost": 5,
     "category": "MA",
@@ -24852,7 +24852,7 @@
   {
     "cardId": "XG3-050",
     "wikiRef": "docs/wiki/cards/XG3-050.md",
-    "name": "仮面ライダーゾルダ（XG3）",
+    "name": "仮面ライダーゾルダ",
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
@@ -24869,7 +24869,7 @@
   {
     "cardId": "XG3-051",
     "wikiRef": "docs/wiki/cards/XG3-051.md",
-    "name": "仮面ライダー王蛇（XG3）",
+    "name": "仮面ライダー王蛇",
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
@@ -24958,7 +24958,7 @@
   {
     "cardId": "XG3-056",
     "wikiRef": "docs/wiki/cards/XG3-056.md",
-    "name": "仮面ライダー響鬼（XG3）",
+    "name": "仮面ライダー響鬼",
     "cardType": "unit",
     "powerCost": 1,
     "category": "MA",
@@ -24990,7 +24990,7 @@
   {
     "cardId": "XG3-058",
     "wikiRef": "docs/wiki/cards/XG3-058.md",
-    "name": "仮面ライダー斬鬼（XG3）",
+    "name": "仮面ライダー斬鬼",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -25008,7 +25008,7 @@
   {
     "cardId": "XG3-059",
     "wikiRef": "docs/wiki/cards/XG3-059.md",
-    "name": "仮面ライダー轟鬼（XG3）",
+    "name": "仮面ライダー轟鬼",
     "cardType": "unit",
     "powerCost": 3,
     "category": "MA",
@@ -25043,7 +25043,7 @@
   {
     "cardId": "XG3-061",
     "wikiRef": "docs/wiki/cards/XG3-061.md",
-    "name": "仮面ライダーガタックMF（XG3）",
+    "name": "仮面ライダーガタックMF",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -25061,7 +25061,7 @@
   {
     "cardId": "XG3-062",
     "wikiRef": "docs/wiki/cards/XG3-062.md",
-    "name": "仮面ライダーガタックRF（XG3）",
+    "name": "仮面ライダーガタックRF",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
@@ -25080,7 +25080,7 @@
   {
     "cardId": "XG3-063",
     "wikiRef": "docs/wiki/cards/XG3-063.md",
-    "name": "仮面ライダードレイクMF（XG3）",
+    "name": "仮面ライダードレイクMF",
     "cardType": "unit",
     "powerCost": 0,
     "category": "OT",
@@ -25098,7 +25098,7 @@
   {
     "cardId": "XG3-064",
     "wikiRef": "docs/wiki/cards/XG3-064.md",
-    "name": "仮面ライダードレイクRF（XG3）",
+    "name": "仮面ライダードレイクRF",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
@@ -25116,7 +25116,7 @@
   {
     "cardId": "XG3-065",
     "wikiRef": "docs/wiki/cards/XG3-065.md",
-    "name": "仮面ライダーサソードMF（XG3）",
+    "name": "仮面ライダーサソードMF",
     "cardType": "unit",
     "powerCost": 2,
     "category": "OT",
@@ -25134,7 +25134,7 @@
   {
     "cardId": "XG3-066",
     "wikiRef": "docs/wiki/cards/XG3-066.md",
-    "name": "仮面ライダーサソードRF（XG3）",
+    "name": "仮面ライダーサソードRF",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
@@ -25171,7 +25171,7 @@
   {
     "cardId": "XG3-068",
     "wikiRef": "docs/wiki/cards/XG3-068.md",
-    "name": "仮面ライダーディケイド（XG3）",
+    "name": "仮面ライダーディケイド",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -25189,7 +25189,7 @@
   {
     "cardId": "XG3-069",
     "wikiRef": "docs/wiki/cards/XG3-069.md",
-    "name": "仮面ライダーディエンド（XG3）",
+    "name": "仮面ライダーディエンド",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -25259,7 +25259,7 @@
   {
     "cardId": "XG3-073",
     "wikiRef": "docs/wiki/cards/XG3-073.md",
-    "name": "仮面ライダーJジャンボフォーメーション（XG3）",
+    "name": "仮面ライダーJジャンボフォーメーション",
     "cardType": "unit",
     "powerCost": 5,
     "category": "MA",
@@ -25554,7 +25554,7 @@
   {
     "cardId": "XG3-089",
     "wikiRef": "docs/wiki/cards/XG3-089.md",
-    "name": "ブルービート（XG3）",
+    "name": "ブルービート",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -25596,7 +25596,7 @@
   {
     "cardId": "XG3-091",
     "wikiRef": "docs/wiki/cards/XG3-091.md",
-    "name": "ジースタッグ（XG3）",
+    "name": "ジースタッグ",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -25616,7 +25616,7 @@
   {
     "cardId": "XG3-092",
     "wikiRef": "docs/wiki/cards/XG3-092.md",
-    "name": "レッドル（XG3）",
+    "name": "レッドル",
     "cardType": "unit",
     "powerCost": 0,
     "category": [
@@ -25921,7 +25921,7 @@
   {
     "cardId": "XG4-007",
     "wikiRef": "docs/wiki/cards/XG4-007.md",
-    "name": "ドラゴンレンジャー（XG4）",
+    "name": "ドラゴンレンジャー",
     "cardType": "unit",
     "powerCost": 4,
     "category": "WB",
@@ -25940,7 +25940,7 @@
   {
     "cardId": "XG4-008",
     "wikiRef": "docs/wiki/cards/XG4-008.md",
-    "name": "メガシルバー（XG4）",
+    "name": "メガシルバー",
     "cardType": "unit",
     "powerCost": 6,
     "category": "ET",
@@ -26038,7 +26038,7 @@
   {
     "cardId": "XG4-013",
     "wikiRef": "docs/wiki/cards/XG4-013.md",
-    "name": "ギンガグリーン（XG4）",
+    "name": "ギンガグリーン",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -26060,7 +26060,7 @@
   {
     "cardId": "XG4-014",
     "wikiRef": "docs/wiki/cards/XG4-014.md",
-    "name": "ギンガピンク（XG4）",
+    "name": "ギンガピンク",
     "cardType": "unit",
     "powerCost": 0,
     "category": [
@@ -26100,7 +26100,7 @@
   {
     "cardId": "XG4-016",
     "wikiRef": "docs/wiki/cards/XG4-016.md",
-    "name": "タイムファイヤー（XG4）",
+    "name": "タイムファイヤー",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -26117,7 +26117,7 @@
   {
     "cardId": "XG4-017",
     "wikiRef": "docs/wiki/cards/XG4-017.md",
-    "name": "ガオシルバー（XG4）",
+    "name": "ガオシルバー",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -26203,7 +26203,7 @@
   {
     "cardId": "XG4-022",
     "wikiRef": "docs/wiki/cards/XG4-022.md",
-    "name": "シュリケンジャー（XG4）",
+    "name": "シュリケンジャー",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -26220,7 +26220,7 @@
   {
     "cardId": "XG4-023",
     "wikiRef": "docs/wiki/cards/XG4-023.md",
-    "name": "シュリケンジャーFM（XG4）",
+    "name": "シュリケンジャーFM",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "MA",
@@ -26239,7 +26239,7 @@
   {
     "cardId": "XG4-025",
     "wikiRef": "docs/wiki/cards/XG4-025.md",
-    "name": "デカブレイク（XG4）",
+    "name": "デカブレイク",
     "cardType": "unit",
     "powerCost": 5,
     "category": "OT",
@@ -26256,7 +26256,7 @@
   {
     "cardId": "XG4-026",
     "wikiRef": "docs/wiki/cards/XG4-026.md",
-    "name": "天空勇者マジシャイン（XG4）",
+    "name": "天空勇者マジシャイン",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -26287,7 +26287,7 @@
   {
     "cardId": "XG4-029",
     "wikiRef": "docs/wiki/cards/XG4-029.md",
-    "name": "ゲキバイオレット（XG4）",
+    "name": "ゲキバイオレット",
     "cardType": "unit",
     "powerCost": 5,
     "category": [
@@ -26307,7 +26307,7 @@
   {
     "cardId": "XG4-030",
     "wikiRef": "docs/wiki/cards/XG4-030.md",
-    "name": "ゲキチョッパー（XG4）",
+    "name": "ゲキチョッパー",
     "cardType": "unit",
     "powerCost": 5,
     "category": [
@@ -26347,7 +26347,7 @@
   {
     "cardId": "XG4-032",
     "wikiRef": "docs/wiki/cards/XG4-032.md",
-    "name": "ゴーオンゴールド（XG4）",
+    "name": "ゴーオンゴールド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -26365,7 +26365,7 @@
   {
     "cardId": "XG4-033",
     "wikiRef": "docs/wiki/cards/XG4-033.md",
-    "name": "ゴーオンシルバー（XG4）",
+    "name": "ゴーオンシルバー",
     "cardType": "unit",
     "powerCost": 2,
     "category": "OT",
@@ -26402,7 +26402,7 @@
   {
     "cardId": "XG4-035",
     "wikiRef": "docs/wiki/cards/XG4-035.md",
-    "name": "シンケンゴールド（XG4）",
+    "name": "シンケンゴールド",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -26636,7 +26636,7 @@
   {
     "cardId": "XG4-047",
     "wikiRef": "docs/wiki/cards/XG4-047.md",
-    "name": "シンケンレッド（XG4）",
+    "name": "シンケンレッド",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -26671,7 +26671,7 @@
   {
     "cardId": "XG4-049",
     "wikiRef": "docs/wiki/cards/XG4-049.md",
-    "name": "アクロバッター（XG4）",
+    "name": "アクロバッター",
     "cardType": "vehicle",
     "powerCost": 2,
     "category": "MA",
@@ -26722,7 +26722,7 @@
   {
     "cardId": "XG4-052",
     "wikiRef": "docs/wiki/cards/XG4-052.md",
-    "name": "仮面ライダークウガUF（XG4）",
+    "name": "仮面ライダークウガUF",
     "cardType": "unit",
     "powerCost": 7,
     "category": "MA",
@@ -26741,7 +26741,7 @@
   {
     "cardId": "XG4-053",
     "wikiRef": "docs/wiki/cards/XG4-053.md",
-    "name": "仮面ライダーアギトSHF（XG4）",
+    "name": "仮面ライダーアギトSHF",
     "cardType": "unit",
     "powerCost": 5,
     "category": "MA",
@@ -26758,7 +26758,7 @@
   {
     "cardId": "XG4-054",
     "wikiRef": "docs/wiki/cards/XG4-054.md",
-    "name": "仮面ライダーブレイドKF（XG4）",
+    "name": "仮面ライダーブレイドKF",
     "cardType": "unit",
     "powerCost": 6,
     "category": "WB",
@@ -26776,7 +26776,7 @@
   {
     "cardId": "XG4-055",
     "wikiRef": "docs/wiki/cards/XG4-055.md",
-    "name": "ドラグランザー（XG4）",
+    "name": "ドラグランザー",
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
@@ -26810,7 +26810,7 @@
   {
     "cardId": "XG4-057",
     "wikiRef": "docs/wiki/cards/XG4-057.md",
-    "name": "仮面ライダー龍騎サバイブ（XG4）",
+    "name": "仮面ライダー龍騎サバイブ",
     "cardType": "unit",
     "powerCost": 7,
     "category": "WB",
@@ -26828,7 +26828,7 @@
   {
     "cardId": "XG4-058",
     "wikiRef": "docs/wiki/cards/XG4-058.md",
-    "name": "オートバジンBM（XG4）",
+    "name": "オートバジンBM",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -26846,7 +26846,7 @@
   {
     "cardId": "XG4-059",
     "wikiRef": "docs/wiki/cards/XG4-059.md",
-    "name": "オートバジンVM（XG4）",
+    "name": "オートバジンVM",
     "cardType": "vehicle",
     "powerCost": 2,
     "category": "ET",
@@ -26862,7 +26862,7 @@
   {
     "cardId": "XG4-060",
     "wikiRef": "docs/wiki/cards/XG4-060.md",
-    "name": "仮面ライダーファイズBF（XG4）",
+    "name": "仮面ライダーファイズBF",
     "cardType": "unit",
     "powerCost": 5,
     "category": "ET",
@@ -27027,7 +27027,7 @@
   {
     "cardId": "XG4-069",
     "wikiRef": "docs/wiki/cards/XG4-069.md",
-    "name": "仮面ライダーW・FJ（XG4）",
+    "name": "仮面ライダーW・FJ",
     "cardType": "unit",
     "powerCost": "3+",
     "category": "DA",
@@ -27099,7 +27099,7 @@
   {
     "cardId": "XG4-073",
     "wikiRef": "docs/wiki/cards/XG4-073.md",
-    "name": "仮面ライダークウガDF（XG4）",
+    "name": "仮面ライダークウガDF",
     "cardType": "unit",
     "powerCost": 2,
     "category": "MA",
@@ -27117,7 +27117,7 @@
   {
     "cardId": "XG4-074",
     "wikiRef": "docs/wiki/cards/XG4-074.md",
-    "name": "仮面ライダーX（XG4）",
+    "name": "仮面ライダーX",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -27134,7 +27134,7 @@
   {
     "cardId": "XG4-075",
     "wikiRef": "docs/wiki/cards/XG4-075.md",
-    "name": "アポロガイスト（XG4）",
+    "name": "アポロガイスト",
     "cardType": "unit",
     "powerCost": 4,
     "category": "DA",
@@ -27171,7 +27171,7 @@
   {
     "cardId": "XG4-077",
     "wikiRef": "docs/wiki/cards/XG4-077.md",
-    "name": "仮面ライダーZX（XG4）",
+    "name": "仮面ライダーZX",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -27188,7 +27188,7 @@
   {
     "cardId": "XG4-078",
     "wikiRef": "docs/wiki/cards/XG4-078.md",
-    "name": "仮面ライダー龍騎（XG4）",
+    "name": "仮面ライダー龍騎",
     "cardType": "unit",
     "powerCost": 4,
     "category": "WB",
@@ -27203,7 +27203,7 @@
   {
     "cardId": "XG4-079",
     "wikiRef": "docs/wiki/cards/XG4-079.md",
-    "name": "ディケイド カブトRF（XG4）",
+    "name": "ディケイド カブトRF",
     "cardType": "unit",
     "powerCost": 5,
     "category": "OT",
@@ -27223,7 +27223,7 @@
   {
     "cardId": "XG4-080",
     "wikiRef": "docs/wiki/cards/XG4-080.md",
-    "name": "ロボライダー（XG4）",
+    "name": "ロボライダー",
     "cardType": "unit",
     "powerCost": 6,
     "category": "MA",
@@ -27242,7 +27242,7 @@
   {
     "cardId": "XG4-081",
     "wikiRef": "docs/wiki/cards/XG4-081.md",
-    "name": "仮面ライダーブレイド（XG4）",
+    "name": "仮面ライダーブレイド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -27261,7 +27261,7 @@
   {
     "cardId": "XG4-082",
     "wikiRef": "docs/wiki/cards/XG4-082.md",
-    "name": "バイオライダー（XG4）",
+    "name": "バイオライダー",
     "cardType": "unit",
     "powerCost": 3,
     "category": "MA",
@@ -27278,7 +27278,7 @@
   {
     "cardId": "XG4-083",
     "wikiRef": "docs/wiki/cards/XG4-083.md",
-    "name": "ディケイド ファイズ（XG4）",
+    "name": "ディケイド ファイズ",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -27332,7 +27332,7 @@
   {
     "cardId": "XG4-086",
     "wikiRef": "docs/wiki/cards/XG4-086.md",
-    "name": "仮面ライダーイクサBM（XG4）",
+    "name": "仮面ライダーイクサBM",
     "cardType": "unit",
     "powerCost": 1,
     "category": "ET",
@@ -27349,7 +27349,7 @@
   {
     "cardId": "XG4-087",
     "wikiRef": "docs/wiki/cards/XG4-087.md",
-    "name": "スカイライダー（XG4）",
+    "name": "スカイライダー",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -27417,7 +27417,7 @@
   {
     "cardId": "XG4-091",
     "wikiRef": "docs/wiki/cards/XG4-091.md",
-    "name": "ガンギブソン（XG4）",
+    "name": "ガンギブソン",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -27435,7 +27435,7 @@
   {
     "cardId": "XG4-092",
     "wikiRef": "docs/wiki/cards/XG4-092.md",
-    "name": "ジャンパーソン（XG4）",
+    "name": "ジャンパーソン",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -27469,7 +27469,7 @@
   {
     "cardId": "XG4-094",
     "wikiRef": "docs/wiki/cards/XG4-094.md",
-    "name": "宇宙刑事シャイダー（XG4）",
+    "name": "宇宙刑事シャイダー",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -27541,7 +27541,7 @@
   {
     "cardId": "XG4-098",
     "wikiRef": "docs/wiki/cards/XG4-098.md",
-    "name": "スピルバン（XG4）",
+    "name": "スピルバン",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -27625,7 +27625,7 @@
   {
     "cardId": "XG5-001",
     "wikiRef": "docs/wiki/cards/XG5-001.md",
-    "name": "ゴーグルレッド（XG5）",
+    "name": "ゴーグルレッド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -27953,7 +27953,7 @@
   {
     "cardId": "XG5-020",
     "wikiRef": "docs/wiki/cards/XG5-020.md",
-    "name": "ボウケンレッド（XG5）",
+    "name": "ボウケンレッド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -27971,7 +27971,7 @@
   {
     "cardId": "XG5-021",
     "wikiRef": "docs/wiki/cards/XG5-021.md",
-    "name": "ボウケンブラック（XG5）",
+    "name": "ボウケンブラック",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -27988,7 +27988,7 @@
   {
     "cardId": "XG5-022",
     "wikiRef": "docs/wiki/cards/XG5-022.md",
-    "name": "ボウケンブルー（XG5）",
+    "name": "ボウケンブルー",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -28006,7 +28006,7 @@
   {
     "cardId": "XG5-023",
     "wikiRef": "docs/wiki/cards/XG5-023.md",
-    "name": "ボウケンイエロー（XG5）",
+    "name": "ボウケンイエロー",
     "cardType": "unit",
     "powerCost": 0,
     "category": "ET",
@@ -28023,7 +28023,7 @@
   {
     "cardId": "XG5-024",
     "wikiRef": "docs/wiki/cards/XG5-024.md",
-    "name": "ボウケンピンク（XG5）",
+    "name": "ボウケンピンク",
     "cardType": "unit",
     "powerCost": 1,
     "category": "ET",
@@ -28215,7 +28215,7 @@
   {
     "cardId": "XG5-034",
     "wikiRef": "docs/wiki/cards/XG5-034.md",
-    "name": "シンケンレッド（XG5）",
+    "name": "シンケンレッド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "MA",
@@ -28269,7 +28269,7 @@
   {
     "cardId": "XG5-037",
     "wikiRef": "docs/wiki/cards/XG5-037.md",
-    "name": "ゴセイレッド（XG5）",
+    "name": "ゴセイレッド",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -28290,7 +28290,7 @@
   {
     "cardId": "XG5-038",
     "wikiRef": "docs/wiki/cards/XG5-038.md",
-    "name": "ゴセイピンク（XG5）",
+    "name": "ゴセイピンク",
     "cardType": "unit",
     "powerCost": 0,
     "category": [
@@ -28312,7 +28312,7 @@
   {
     "cardId": "XG5-039",
     "wikiRef": "docs/wiki/cards/XG5-039.md",
-    "name": "ゴセイブルー（XG5）",
+    "name": "ゴセイブルー",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -28334,7 +28334,7 @@
   {
     "cardId": "XG5-040",
     "wikiRef": "docs/wiki/cards/XG5-040.md",
-    "name": "ゴセイブラック（XG5）",
+    "name": "ゴセイブラック",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -28356,7 +28356,7 @@
   {
     "cardId": "XG5-041",
     "wikiRef": "docs/wiki/cards/XG5-041.md",
-    "name": "ゴセイイエロー（XG5）",
+    "name": "ゴセイイエロー",
     "cardType": "unit",
     "powerCost": 1,
     "category": [
@@ -28536,7 +28536,7 @@
   {
     "cardId": "XG5-050",
     "wikiRef": "docs/wiki/cards/XG5-050.md",
-    "name": "仮面ライダー装甲響鬼（XG5）",
+    "name": "仮面ライダー装甲響鬼",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -28554,7 +28554,7 @@
   {
     "cardId": "XG5-051",
     "wikiRef": "docs/wiki/cards/XG5-051.md",
-    "name": "仮面ライダーカブトHF（XG5）",
+    "name": "仮面ライダーカブトHF",
     "cardType": "unit",
     "powerCost": 7,
     "category": "OT",
@@ -28573,7 +28573,7 @@
   {
     "cardId": "XG5-052",
     "wikiRef": "docs/wiki/cards/XG5-052.md",
-    "name": "仮面ライダー電王CF（XG5）",
+    "name": "仮面ライダー電王CF",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -28591,7 +28591,7 @@
   {
     "cardId": "XG5-053",
     "wikiRef": "docs/wiki/cards/XG5-053.md",
-    "name": "仮面ライダーキバEF（XG5）",
+    "name": "仮面ライダーキバEF",
     "cardType": "unit",
     "powerCost": 5,
     "category": "MA",
@@ -28609,7 +28609,7 @@
   {
     "cardId": "XG5-054",
     "wikiRef": "docs/wiki/cards/XG5-054.md",
-    "name": "仮面ライダーディケイドCF（XG5）",
+    "name": "仮面ライダーディケイドCF",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -28627,7 +28627,7 @@
   {
     "cardId": "XG5-055",
     "wikiRef": "docs/wiki/cards/XG5-055.md",
-    "name": "仮面ライダーギャレン（XG5）",
+    "name": "仮面ライダーギャレン",
     "cardType": "unit",
     "powerCost": 1,
     "category": "WB",
@@ -28645,7 +28645,7 @@
   {
     "cardId": "XG5-056",
     "wikiRef": "docs/wiki/cards/XG5-056.md",
-    "name": "仮面ライダーギャレンJF（XG5）",
+    "name": "仮面ライダーギャレンJF",
     "cardType": "unit",
     "powerCost": "3+",
     "category": "WB",
@@ -28699,7 +28699,7 @@
   {
     "cardId": "XG5-059",
     "wikiRef": "docs/wiki/cards/XG5-059.md",
-    "name": "仮面ライダーカリス（XG5）",
+    "name": "仮面ライダーカリス",
     "cardType": "unit",
     "powerCost": 1,
     "category": [
@@ -28720,7 +28720,7 @@
   {
     "cardId": "XG5-060",
     "wikiRef": "docs/wiki/cards/XG5-060.md",
-    "name": "仮面ライダーワイルドカリス（XG5）",
+    "name": "仮面ライダーワイルドカリス",
     "cardType": "unit",
     "powerCost": "5+",
     "category": [
@@ -28828,7 +28828,7 @@
   {
     "cardId": "XG5-066",
     "wikiRef": "docs/wiki/cards/XG5-066.md",
-    "name": "仮面ライダーベルデ（XG5）",
+    "name": "仮面ライダーベルデ",
     "cardType": "unit",
     "powerCost": 4,
     "category": "WB",
@@ -28846,7 +28846,7 @@
   {
     "cardId": "XG5-067",
     "wikiRef": "docs/wiki/cards/XG5-067.md",
-    "name": "仮面ライダーナイト（XG5）",
+    "name": "仮面ライダーナイト",
     "cardType": "unit",
     "powerCost": 4,
     "category": "WB",
@@ -28864,7 +28864,7 @@
   {
     "cardId": "XG5-068",
     "wikiRef": "docs/wiki/cards/XG5-068.md",
-    "name": "仮面ライダーナイトサバイブ（XG5）",
+    "name": "仮面ライダーナイトサバイブ",
     "cardType": "unit",
     "powerCost": 7,
     "category": "WB",
@@ -28919,7 +28919,7 @@
   {
     "cardId": "XG5-071",
     "wikiRef": "docs/wiki/cards/XG5-071.md",
-    "name": "仮面ライダー響鬼（XG5）",
+    "name": "仮面ライダー響鬼",
     "cardType": "unit",
     "powerCost": 3,
     "category": "MA",
@@ -28938,7 +28938,7 @@
   {
     "cardId": "XG5-072",
     "wikiRef": "docs/wiki/cards/XG5-072.md",
-    "name": "仮面ライダー威吹鬼（XG5）",
+    "name": "仮面ライダー威吹鬼",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -28956,7 +28956,7 @@
   {
     "cardId": "XG5-073",
     "wikiRef": "docs/wiki/cards/XG5-073.md",
-    "name": "仮面ライダー電王SF（XG5）",
+    "name": "仮面ライダー電王SF",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -28975,7 +28975,7 @@
   {
     "cardId": "XG5-074",
     "wikiRef": "docs/wiki/cards/XG5-074.md",
-    "name": "仮面ライダーキバ（XG5）",
+    "name": "仮面ライダーキバ",
     "cardType": "unit",
     "powerCost": 2,
     "category": "MA",
@@ -28994,7 +28994,7 @@
   {
     "cardId": "XG5-075",
     "wikiRef": "docs/wiki/cards/XG5-075.md",
-    "name": "仮面ライダーイクサSM（XG5）",
+    "name": "仮面ライダーイクサSM",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -29011,7 +29011,7 @@
   {
     "cardId": "XG5-076",
     "wikiRef": "docs/wiki/cards/XG5-076.md",
-    "name": "仮面ライダーイクサBM（XG5）",
+    "name": "仮面ライダーイクサBM",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -29028,7 +29028,7 @@
   {
     "cardId": "XG5-077",
     "wikiRef": "docs/wiki/cards/XG5-077.md",
-    "name": "仮面ライダーキバーラ（XG5）",
+    "name": "仮面ライダーキバーラ",
     "cardType": "unit",
     "powerCost": 3,
     "category": "MA",
@@ -29064,7 +29064,7 @@
   {
     "cardId": "XG5-079",
     "wikiRef": "docs/wiki/cards/XG5-079.md",
-    "name": "仮面ライダーディケイド（XG5）",
+    "name": "仮面ライダーディケイド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -29150,7 +29150,7 @@
   {
     "cardId": "XG5-084",
     "wikiRef": "docs/wiki/cards/XG5-084.md",
-    "name": "仮面ライダーW・CJ（XG5）",
+    "name": "仮面ライダーW・CJ",
     "cardType": "unit",
     "powerCost": 2,
     "category": [
@@ -29462,7 +29462,7 @@
   {
     "cardId": "XG6-005",
     "wikiRef": "docs/wiki/cards/XG6-005.md",
-    "name": "セイントカイザー（XG6）",
+    "name": "セイントカイザー",
     "cardType": "unit",
     "powerCost": "4+",
     "category": "MA",
@@ -29479,7 +29479,7 @@
   {
     "cardId": "XG6-006",
     "wikiRef": "docs/wiki/cards/XG6-006.md",
-    "name": "ダイタンケン（XG6）",
+    "name": "ダイタンケン",
     "cardType": "unit",
     "powerCost": "5+",
     "category": "ET",
@@ -29691,7 +29691,7 @@
   {
     "cardId": "XG6-018",
     "wikiRef": "docs/wiki/cards/XG6-018.md",
-    "name": "アバレキラー（XG6）",
+    "name": "アバレキラー",
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
@@ -29709,7 +29709,7 @@
   {
     "cardId": "XG6-019",
     "wikiRef": "docs/wiki/cards/XG6-019.md",
-    "name": "ダイボウケン（XG6）",
+    "name": "ダイボウケン",
     "cardType": "unit",
     "powerCost": "5+",
     "category": "ET",
@@ -30006,7 +30006,7 @@
   {
     "cardId": "XG6-035",
     "wikiRef": "docs/wiki/cards/XG6-035.md",
-    "name": "仮面ライダーW・CJX（XG6）",
+    "name": "仮面ライダーW・CJX",
     "cardType": "unit",
     "powerCost": "5+",
     "category": "ET",
@@ -30025,7 +30025,7 @@
   {
     "cardId": "XG6-036",
     "wikiRef": "docs/wiki/cards/XG6-036.md",
-    "name": "仮面ライダーW・CJ（XG6）",
+    "name": "仮面ライダーW・CJ",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -30043,7 +30043,7 @@
   {
     "cardId": "XG6-037",
     "wikiRef": "docs/wiki/cards/XG6-037.md",
-    "name": "仮面ライダーアクセル（XG6）",
+    "name": "仮面ライダーアクセル",
     "cardType": "unit",
     "powerCost": 1,
     "category": "ET",
@@ -30060,7 +30060,7 @@
   {
     "cardId": "XG6-038",
     "wikiRef": "docs/wiki/cards/XG6-038.md",
-    "name": "仮面ライダーアクセルトライアル（XG6）",
+    "name": "仮面ライダーアクセルトライアル",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "ET",
@@ -30134,7 +30134,7 @@
   {
     "cardId": "XG6-042",
     "wikiRef": "docs/wiki/cards/XG6-042.md",
-    "name": "仮面ライダーゼロノスAF（XG6）",
+    "name": "仮面ライダーゼロノスAF",
     "cardType": "unit",
     "powerCost": 2,
     "category": "OT",
@@ -30152,7 +30152,7 @@
   {
     "cardId": "XG6-043",
     "wikiRef": "docs/wiki/cards/XG6-043.md",
-    "name": "仮面ライダーゼロノスZF（XG6）",
+    "name": "仮面ライダーゼロノスZF",
     "cardType": "unit",
     "powerCost": "0+",
     "category": "OT",
@@ -30170,7 +30170,7 @@
   {
     "cardId": "XG6-044",
     "wikiRef": "docs/wiki/cards/XG6-044.md",
-    "name": "仮面ライダーNEW電王SF（XG6）",
+    "name": "仮面ライダーNEW電王SF",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -30226,7 +30226,7 @@
   {
     "cardId": "XG6-047",
     "wikiRef": "docs/wiki/cards/XG6-047.md",
-    "name": "仮面ライダーG4（XG6）",
+    "name": "仮面ライダーG4",
     "cardType": "unit",
     "powerCost": 6,
     "category": [
@@ -30247,7 +30247,7 @@
   {
     "cardId": "XG6-048",
     "wikiRef": "docs/wiki/cards/XG6-048.md",
-    "name": "仮面ライダーリュウガ（XG6）",
+    "name": "仮面ライダーリュウガ",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -30269,7 +30269,7 @@
   {
     "cardId": "XG6-049",
     "wikiRef": "docs/wiki/cards/XG6-049.md",
-    "name": "仮面ライダーオーガ（XG6）",
+    "name": "仮面ライダーオーガ",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -30290,7 +30290,7 @@
   {
     "cardId": "XG6-050",
     "wikiRef": "docs/wiki/cards/XG6-050.md",
-    "name": "仮面ライダーグレイブ（XG6）",
+    "name": "仮面ライダーグレイブ",
     "cardType": "unit",
     "powerCost": 1,
     "category": [
@@ -30311,7 +30311,7 @@
   {
     "cardId": "XG6-051",
     "wikiRef": "docs/wiki/cards/XG6-051.md",
-    "name": "仮面ライダー歌舞鬼（XG6）",
+    "name": "仮面ライダー歌舞鬼",
     "cardType": "unit",
     "powerCost": 2,
     "category": [
@@ -30334,7 +30334,7 @@
   {
     "cardId": "XG6-052",
     "wikiRef": "docs/wiki/cards/XG6-052.md",
-    "name": "仮面ライダーコーカサス（XG6）",
+    "name": "仮面ライダーコーカサス",
     "cardType": "unit",
     "powerCost": 7,
     "category": [
@@ -30355,7 +30355,7 @@
   {
     "cardId": "XG6-053",
     "wikiRef": "docs/wiki/cards/XG6-053.md",
-    "name": "仮面ライダーアーク（XG6）",
+    "name": "仮面ライダーアーク",
     "cardType": "unit",
     "powerCost": 5,
     "category": [
@@ -30377,7 +30377,7 @@
   {
     "cardId": "XG6-054",
     "wikiRef": "docs/wiki/cards/XG6-054.md",
-    "name": "仮面ライダースカル（XG6）",
+    "name": "仮面ライダースカル",
     "cardType": "unit",
     "powerCost": 0,
     "category": [
@@ -30698,7 +30698,7 @@
   {
     "cardId": "XG7-006",
     "wikiRef": "docs/wiki/cards/XG7-006.md",
-    "name": "ギンガピンク（XG7）",
+    "name": "ギンガピンク",
     "cardType": "unit",
     "powerCost": 1,
     "category": "MA",
@@ -30758,7 +30758,7 @@
   {
     "cardId": "XG7-009",
     "wikiRef": "docs/wiki/cards/XG7-009.md",
-    "name": "タイムレッド（XG7）",
+    "name": "タイムレッド",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -30794,7 +30794,7 @@
   {
     "cardId": "XG7-011",
     "wikiRef": "docs/wiki/cards/XG7-011.md",
-    "name": "ハリケンレッド（XG7）",
+    "name": "ハリケンレッド",
     "cardType": "unit",
     "powerCost": 2,
     "category": "MA",
@@ -30849,7 +30849,7 @@
   {
     "cardId": "XG7-014",
     "wikiRef": "docs/wiki/cards/XG7-014.md",
-    "name": "マジレッド（XG7）",
+    "name": "マジレッド",
     "cardType": "unit",
     "powerCost": 2,
     "category": "MA",
@@ -30868,7 +30868,7 @@
   {
     "cardId": "XG7-015",
     "wikiRef": "docs/wiki/cards/XG7-015.md",
-    "name": "ボウケンレッド（XG7）",
+    "name": "ボウケンレッド",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -30909,7 +30909,7 @@
   {
     "cardId": "XG7-017",
     "wikiRef": "docs/wiki/cards/XG7-017.md",
-    "name": "ゴーオンレッド（XG7）",
+    "name": "ゴーオンレッド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -30927,7 +30927,7 @@
   {
     "cardId": "XG7-018",
     "wikiRef": "docs/wiki/cards/XG7-018.md",
-    "name": "シンケンレッド（XG7）",
+    "name": "シンケンレッド",
     "cardType": "unit",
     "powerCost": 1,
     "category": "MA",
@@ -31515,7 +31515,7 @@
   {
     "cardId": "XG7-049",
     "wikiRef": "docs/wiki/cards/XG7-049.md",
-    "name": "仮面ライダーオーズ・ガタキリバコンボ（XG7）",
+    "name": "仮面ライダーオーズ・ガタキリバコンボ",
     "cardType": "unit",
     "powerCost": 4,
     "category": "WB",
@@ -31556,7 +31556,7 @@
   {
     "cardId": "XG7-051",
     "wikiRef": "docs/wiki/cards/XG7-051.md",
-    "name": "仮面ライダーオーズ・ラトラーターコンボ（XG7）",
+    "name": "仮面ライダーオーズ・ラトラーターコンボ",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",

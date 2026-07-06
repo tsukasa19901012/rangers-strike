@@ -15,6 +15,7 @@ import { countReleasedCommands } from "../restrictions";
 import { opponent } from "../../core/helpers";
 import { promotedKeywordSpFloor } from "../../dsl/promotedKeywordBridge";
 import { legend2EffectiveSp } from "../legend2/fieldEffects";
+import { sameCardName } from "../../core/cardNames";
 import {
   sr003DiscardDinoBpBonus,
   sr003SpFloor,
@@ -114,7 +115,7 @@ export function scorchingRoarBypassesHold(
   if (!hasScorchingRoarOnField(state, playerId)) return false;
   const unitName = def.name;
   return state.players[playerId].discard.some(
-    (c) => getDefinition(state.definitions, c.cardId)?.name === unitName,
+    (c) => sameCardName(getDefinition(state.definitions, c.cardId)?.name, unitName),
   );
 }
 

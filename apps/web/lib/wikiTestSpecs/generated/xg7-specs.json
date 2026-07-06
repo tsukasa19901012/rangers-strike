@@ -91,7 +91,7 @@
   {
     "cardId": "XG7-006",
     "wikiRef": "docs/wiki/cards/XG7-006.md",
-    "name": "ギンガピンク（XG7）",
+    "name": "ギンガピンク",
     "cardType": "unit",
     "powerCost": 1,
     "category": "MA",
@@ -151,7 +151,7 @@
   {
     "cardId": "XG7-009",
     "wikiRef": "docs/wiki/cards/XG7-009.md",
-    "name": "タイムレッド（XG7）",
+    "name": "タイムレッド",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -187,7 +187,7 @@
   {
     "cardId": "XG7-011",
     "wikiRef": "docs/wiki/cards/XG7-011.md",
-    "name": "ハリケンレッド（XG7）",
+    "name": "ハリケンレッド",
     "cardType": "unit",
     "powerCost": 2,
     "category": "MA",
@@ -242,7 +242,7 @@
   {
     "cardId": "XG7-014",
     "wikiRef": "docs/wiki/cards/XG7-014.md",
-    "name": "マジレッド（XG7）",
+    "name": "マジレッド",
     "cardType": "unit",
     "powerCost": 2,
     "category": "MA",
@@ -261,7 +261,7 @@
   {
     "cardId": "XG7-015",
     "wikiRef": "docs/wiki/cards/XG7-015.md",
-    "name": "ボウケンレッド（XG7）",
+    "name": "ボウケンレッド",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -302,7 +302,7 @@
   {
     "cardId": "XG7-017",
     "wikiRef": "docs/wiki/cards/XG7-017.md",
-    "name": "ゴーオンレッド（XG7）",
+    "name": "ゴーオンレッド",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -320,7 +320,7 @@
   {
     "cardId": "XG7-018",
     "wikiRef": "docs/wiki/cards/XG7-018.md",
-    "name": "シンケンレッド（XG7）",
+    "name": "シンケンレッド",
     "cardType": "unit",
     "powerCost": 1,
     "category": "MA",
@@ -908,7 +908,7 @@
   {
     "cardId": "XG7-049",
     "wikiRef": "docs/wiki/cards/XG7-049.md",
-    "name": "仮面ライダーオーズ・ガタキリバコンボ（XG7）",
+    "name": "仮面ライダーオーズ・ガタキリバコンボ",
     "cardType": "unit",
     "powerCost": 4,
     "category": "WB",
@@ -949,7 +949,7 @@
   {
     "cardId": "XG7-051",
     "wikiRef": "docs/wiki/cards/XG7-051.md",
-    "name": "仮面ライダーオーズ・ラトラーターコンボ（XG7）",
+    "name": "仮面ライダーオーズ・ラトラーターコンボ",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",

@@ -2,6 +2,7 @@ import type { Category } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
 import { cardCategories, cardName, getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { sameCardName } from "../core/cardNames";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { markBattleNcEffect } from "./namedUnitEffects";
 import {
@@ -164,7 +165,7 @@ export function collectNamedUnitsInDiscard(
 ): string[] {
   const player = state.players[playerId];
   return player.discard
-    .filter((c) => cardName(state.definitions, c.cardId) === partnerName)
+    .filter((c) => sameCardName(cardName(state.definitions, c.cardId), partnerName))
     .map((c) => c.instanceId);
 }
 

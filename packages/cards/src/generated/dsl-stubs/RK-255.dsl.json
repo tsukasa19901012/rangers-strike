@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RK-255",
-  "name": "電波人間タックル",
+  "name": "電波人間タックル（2nd）",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

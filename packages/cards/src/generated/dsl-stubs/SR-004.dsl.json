@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "SR-004",
-  "name": "ヘドリアン女王",
+  "name": "ヘドリアン女王（2nd）",
   "type": "unit",
   "category": "DA",
   "rarity": "N",

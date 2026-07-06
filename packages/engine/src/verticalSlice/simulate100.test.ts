@@ -41,7 +41,7 @@ type SimReport = {
   stepStats: { min: number; max: number; avg: number };
 };
 
-function runSimulation(count: number): SimReport {
+async function runSimulation(count: number): Promise<SimReport> {
   const report: SimReport = {
     total: count,
     winner: 0,
@@ -119,6 +119,9 @@ function runSimulation(count: number): SimReport {
         strikes: result.trace.strikes,
       });
     }
+
+    // 長時間の同期ループで vitest ワーカー RPC が飢餓しないよう、1ゲームごとに譲る
+    await new Promise((resolve) => setImmediate(resolve));
   }
 
   report.stepStats.avg = report.winner > 0 ? Math.round(stepSum / report.winner) : 0;
@@ -129,8 +132,8 @@ function runSimulation(count: number): SimReport {
 describe("vertical slice — 100-game AI simulation (L4 starters)", () => {
   it(
     `runs ${GAME_COUNT} CPU vs CPU games and reports`,
-    () => {
-    const report = runSimulation(GAME_COUNT);
+    async () => {
+    const report = await runSimulation(GAME_COUNT);
 
     console.info("\n=== Vertical Slice 100-Game Simulation (L4 Starters) ===");
     console.info(`total:           ${report.total}`);

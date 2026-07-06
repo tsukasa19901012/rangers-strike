@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-363",
-  "name": "バルパンサー",
+  "name": "バルパンサー（2nd）",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

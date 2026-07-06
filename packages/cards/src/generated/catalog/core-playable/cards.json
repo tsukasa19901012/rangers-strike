@@ -4735,7 +4735,7 @@
     },
     {
       "id": "RK-240",
-      "name": "仮面ライダー電王CF",
+      "name": "仮面ライダー電王CF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -4983,7 +4983,7 @@
     },
     {
       "id": "RK-255",
-      "name": "電波人間タックル",
+      "name": "電波人間タックル（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -5252,7 +5252,7 @@
     },
     {
       "id": "RK-269",
-      "name": "シャドームーン",
+      "name": "シャドームーン（2nd）",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -5452,7 +5452,7 @@
     },
     {
       "id": "RK-278",
-      "name": "仮面ライダーナイト",
+      "name": "仮面ライダーナイト（2nd）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -5823,7 +5823,7 @@
     },
     {
       "id": "RK-296",
-      "name": "仮面ライダーキックホッパー",
+      "name": "仮面ライダーキックホッパー（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -5845,7 +5845,7 @@
     },
     {
       "id": "RK-297",
-      "name": "仮面ライダーパンチホッパー",
+      "name": "仮面ライダーパンチホッパー（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -5989,7 +5989,7 @@
     },
     {
       "id": "RK-304",
-      "name": "仮面ライダー電王RF",
+      "name": "仮面ライダー電王RF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6011,7 +6011,7 @@
     },
     {
       "id": "RK-305",
-      "name": "仮面ライダー電王SF",
+      "name": "仮面ライダー電王SF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6033,7 +6033,7 @@
     },
     {
       "id": "RK-306",
-      "name": "仮面ライダー電王AF",
+      "name": "仮面ライダー電王AF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6053,7 +6053,7 @@
     },
     {
       "id": "RK-307",
-      "name": "仮面ライダー電王GF",
+      "name": "仮面ライダー電王GF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6075,7 +6075,7 @@
     },
     {
       "id": "RK-308",
-      "name": "リュウタロス",
+      "name": "リュウタロス（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6095,7 +6095,7 @@
     },
     {
       "id": "RK-309",
-      "name": "ウラタロス",
+      "name": "ウラタロス（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6115,7 +6115,7 @@
     },
     {
       "id": "RK-310",
-      "name": "モモタロス",
+      "name": "モモタロス（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6135,7 +6135,7 @@
     },
     {
       "id": "RK-311",
-      "name": "キンタロス",
+      "name": "キンタロス（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6582,7 +6582,7 @@
     },
     {
       "id": "RK-332",
-      "name": "仮面ライダー龍騎",
+      "name": "仮面ライダー龍騎（2nd）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -6631,7 +6631,7 @@
     },
     {
       "id": "RK-334",
-      "name": "仮面ライダー電王LF",
+      "name": "仮面ライダー電王LF（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -6659,7 +6659,7 @@
     },
     {
       "id": "RK-335",
-      "name": "モモタロス",
+      "name": "モモタロス（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -13407,7 +13407,7 @@
     },
     {
       "id": "RS-351",
-      "name": "アカレンジャー",
+      "name": "アカレンジャー（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13610,7 +13610,7 @@
     },
     {
       "id": "RS-361",
-      "name": "バルイーグル",
+      "name": "バルイーグル（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13631,7 +13631,7 @@
     },
     {
       "id": "RS-362",
-      "name": "バルシャーク",
+      "name": "バルシャーク（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13651,7 +13651,7 @@
     },
     {
       "id": "RS-363",
-      "name": "バルパンサー",
+      "name": "バルパンサー（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -13887,7 +13887,7 @@
     },
     {
       "id": "RS-375",
-      "name": "レッドレーサー",
+      "name": "レッドレーサー（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -14161,7 +14161,7 @@
     },
     {
       "id": "RS-388",
-      "name": "ゴーレッド",
+      "name": "ゴーレッド（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -14461,7 +14461,7 @@
     },
     {
       "id": "RS-402",
-      "name": "ガオレッド",
+      "name": "ガオレッド（2nd）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -14482,7 +14482,7 @@
     },
     {
       "id": "RS-403",
-      "name": "デカレッド",
+      "name": "デカレッド（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -15240,7 +15240,7 @@
     },
     {
       "id": "RS-440",
-      "name": "バトルフィーバーロボ",
+      "name": "バトルフィーバーロボ（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -16898,7 +16898,7 @@
     },
     {
       "id": "RS-527",
-      "name": "バルジオン",
+      "name": "バルジオン（2nd）",
       "type": "vehicle",
       "category": "DA",
       "rarity": "N",
@@ -16916,7 +16916,7 @@
     },
     {
       "id": "RS-528",
-      "name": "バイオハンター・シルバ",
+      "name": "バイオハンター・シルバ（2nd）",
       "type": "unit",
       "category": "DA",
       "rarity": "N",
@@ -17314,7 +17314,7 @@
     },
     {
       "id": "RS-548",
-      "name": "ティラノレンジャー",
+      "name": "ティラノレンジャー（2nd）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -17335,7 +17335,7 @@
     },
     {
       "id": "RS-549",
-      "name": "トリケラレンジャー",
+      "name": "トリケラレンジャー（2nd）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -17828,7 +17828,7 @@
     },
     {
       "id": "RS-572",
-      "name": "デカマスター",
+      "name": "デカマスター（2nd）",
       "type": "unit",
       "category": "OT",
       "rarity": "N",
@@ -17853,7 +17853,7 @@
     },
     {
       "id": "RS-573",
-      "name": "ファイヤーカイザー",
+      "name": "ファイヤーカイザー（2nd）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -17942,7 +17942,7 @@
     },
     {
       "id": "RS-577",
-      "name": "マジレッド",
+      "name": "マジレッド（2nd）",
       "type": "unit",
       "category": "MA",
       "rarity": "N",
@@ -18034,7 +18034,7 @@
     },
     {
       "id": "RS-581",
-      "name": "魔導馬バリキオン",
+      "name": "魔導馬バリキオン（2nd）",
       "type": "vehicle",
       "category": "DA",
       "rarity": "N",
@@ -18114,7 +18114,7 @@
     },
     {
       "id": "RS-585",
-      "name": "ボウケンシルバー",
+      "name": "ボウケンシルバー（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -19485,7 +19485,7 @@
     },
     {
       "id": "RS-653",
-      "name": "レッドファルコン",
+      "name": "レッドファルコン（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -19505,7 +19505,7 @@
     },
     {
       "id": "RS-654",
-      "name": "ガオイエロー",
+      "name": "ガオイエロー（2nd）",
       "type": "unit",
       "category": "WB",
       "rarity": "N",
@@ -20171,7 +20171,7 @@
     },
     {
       "id": "RS-685",
-      "name": "ブラックコンドル",
+      "name": "ブラックコンドル（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -20265,7 +20265,7 @@
     },
     {
       "id": "RS-689",
-      "name": "レッドホーク",
+      "name": "レッドホーク（2nd）",
       "type": "unit",
       "category": "ET",
       "rarity": "N",
@@ -20367,7 +20367,7 @@
     },
     {
       "id": "SR-004",
-      "name": "ヘドリアン女王",
+      "name": "ヘドリアン女王（2nd）",
       "type": "unit",
       "category": "DA",
       "rarity": "N",

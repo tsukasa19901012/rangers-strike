@@ -5966,7 +5966,7 @@
   {
     "cardId": "RS-351",
     "wikiRef": "docs/wiki/cards/RS-351.md",
-    "name": "アカレンジャー",
+    "name": "アカレンジャー（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -6139,7 +6139,7 @@
   {
     "cardId": "RS-361",
     "wikiRef": "docs/wiki/cards/RS-361.md",
-    "name": "バルイーグル",
+    "name": "バルイーグル（2nd）",
     "cardType": "unit",
     "powerCost": 5,
     "category": "ET",
@@ -6157,7 +6157,7 @@
   {
     "cardId": "RS-362",
     "wikiRef": "docs/wiki/cards/RS-362.md",
-    "name": "バルシャーク",
+    "name": "バルシャーク（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -6175,7 +6175,7 @@
   {
     "cardId": "RS-363",
     "wikiRef": "docs/wiki/cards/RS-363.md",
-    "name": "バルパンサー",
+    "name": "バルパンサー（2nd）",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -6383,7 +6383,7 @@
   {
     "cardId": "RS-375",
     "wikiRef": "docs/wiki/cards/RS-375.md",
-    "name": "レッドレーサー",
+    "name": "レッドレーサー（2nd）",
     "cardType": "unit",
     "powerCost": 1,
     "category": "OT",
@@ -6601,7 +6601,7 @@
   {
     "cardId": "RS-388",
     "wikiRef": "docs/wiki/cards/RS-388.md",
-    "name": "ゴーレッド",
+    "name": "ゴーレッド（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -6836,7 +6836,7 @@
   {
     "cardId": "RS-402",
     "wikiRef": "docs/wiki/cards/RS-402.md",
-    "name": "ガオレッド",
+    "name": "ガオレッド（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "WB",
@@ -6853,7 +6853,7 @@
   {
     "cardId": "RS-403",
     "wikiRef": "docs/wiki/cards/RS-403.md",
-    "name": "デカレッド",
+    "name": "デカレッド（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -7499,7 +7499,7 @@
   {
     "cardId": "RS-440",
     "wikiRef": "docs/wiki/cards/RS-440.md",
-    "name": "バトルフィーバーロボ",
+    "name": "バトルフィーバーロボ（2nd）",
     "cardType": "unit",
     "powerCost": "6+",
     "category": "ET",
@@ -9046,7 +9046,7 @@
   {
     "cardId": "RS-527",
     "wikiRef": "docs/wiki/cards/RS-527.md",
-    "name": "バルジオン",
+    "name": "バルジオン（2nd）",
     "cardType": "vehicle",
     "powerCost": 5,
     "category": "DA",
@@ -9063,7 +9063,7 @@
   {
     "cardId": "RS-528",
     "wikiRef": "docs/wiki/cards/RS-528.md",
-    "name": "バイオハンター・シルバ",
+    "name": "バイオハンター・シルバ（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "DA",
@@ -9416,7 +9416,7 @@
   {
     "cardId": "RS-548",
     "wikiRef": "docs/wiki/cards/RS-548.md",
-    "name": "ティラノレンジャー",
+    "name": "ティラノレンジャー（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -9435,7 +9435,7 @@
   {
     "cardId": "RS-549",
     "wikiRef": "docs/wiki/cards/RS-549.md",
-    "name": "トリケラレンジャー",
+    "name": "トリケラレンジャー（2nd）",
     "cardType": "unit",
     "powerCost": 2,
     "category": "WB",
@@ -9839,7 +9839,7 @@
   {
     "cardId": "RS-572",
     "wikiRef": "docs/wiki/cards/RS-572.md",
-    "name": "デカマスター",
+    "name": "デカマスター（2nd）",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
@@ -9853,7 +9853,7 @@
   {
     "cardId": "RS-573",
     "wikiRef": "docs/wiki/cards/RS-573.md",
-    "name": "ファイヤーカイザー",
+    "name": "ファイヤーカイザー（2nd）",
     "cardType": "unit",
     "powerCost": "5+",
     "category": "MA",
@@ -9925,7 +9925,7 @@
   {
     "cardId": "RS-577",
     "wikiRef": "docs/wiki/cards/RS-577.md",
-    "name": "マジレッド",
+    "name": "マジレッド（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "MA",
@@ -9997,7 +9997,7 @@
   {
     "cardId": "RS-581",
     "wikiRef": "docs/wiki/cards/RS-581.md",
-    "name": "魔導馬バリキオン",
+    "name": "魔導馬バリキオン（2nd）",
     "cardType": "vehicle",
     "powerCost": 2,
     "category": "DA",
@@ -10067,7 +10067,7 @@
   {
     "cardId": "RS-585",
     "wikiRef": "docs/wiki/cards/RS-585.md",
-    "name": "ボウケンシルバー",
+    "name": "ボウケンシルバー（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -11270,7 +11270,7 @@
   {
     "cardId": "RS-653",
     "wikiRef": "docs/wiki/cards/RS-653.md",
-    "name": "レッドファルコン",
+    "name": "レッドファルコン（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -11288,7 +11288,7 @@
   {
     "cardId": "RS-654",
     "wikiRef": "docs/wiki/cards/RS-654.md",
-    "name": "ガオイエロー",
+    "name": "ガオイエロー（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -11834,7 +11834,7 @@
   {
     "cardId": "RS-685",
     "wikiRef": "docs/wiki/cards/RS-685.md",
-    "name": "ブラックコンドル",
+    "name": "ブラックコンドル（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -11906,7 +11906,7 @@
   {
     "cardId": "RS-689",
     "wikiRef": "docs/wiki/cards/RS-689.md",
-    "name": "レッドホーク",
+    "name": "レッドホーク（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",

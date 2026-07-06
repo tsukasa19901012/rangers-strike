@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-685",
-  "name": "ブラックコンドル",
+  "name": "ブラックコンドル（2nd）",
   "type": "unit",
   "category": "ET",
   "rarity": "N",

@@ -6,6 +6,7 @@ import {
   isMediumUnit,
 } from "../../core/catalog";
 import { playerHasFieldCard } from "./rsCatchallChoices";
+import { sameCardName } from "../../core/cardNames";
 
 /** RS-210: ナンバーSユニットのBP加算を減算に反転。 */
 export function rs210BpInvertDelta(
@@ -98,7 +99,7 @@ export function rs560BeastMBpBonus(
   if (!def || !(def.features ?? []).includes("獣")) return 0;
   const name = def.name;
   const hasCopy = state.players[playerId].discard.some(
-    (c) => getDefinition(state.definitions, c.cardId)?.name === name,
+    (c) => sameCardName(getDefinition(state.definitions, c.cardId)?.name, name),
   );
   return hasCopy ? 1000 : 0;
 }

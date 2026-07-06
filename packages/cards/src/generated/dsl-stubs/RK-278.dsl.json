@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RK-278",
-  "name": "仮面ライダーナイト",
+  "name": "仮面ライダーナイト（2nd）",
   "type": "unit",
   "category": "WB",
   "rarity": "N",

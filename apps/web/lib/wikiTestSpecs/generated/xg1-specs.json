@@ -2,7 +2,7 @@
   {
     "cardId": "XG1-001",
     "wikiRef": "docs/wiki/cards/XG1-001.md",
-    "name": "バトルジャパン（XG）",
+    "name": "バトルジャパン",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -19,7 +19,7 @@
   {
     "cardId": "XG1-002",
     "wikiRef": "docs/wiki/cards/XG1-002.md",
-    "name": "デンジレッド（XG）",
+    "name": "デンジレッド",
     "cardType": "unit",
     "powerCost": 1,
     "category": "OT",
@@ -36,7 +36,7 @@
   {
     "cardId": "XG1-003",
     "wikiRef": "docs/wiki/cards/XG1-003.md",
-    "name": "バルイーグル（XG）",
+    "name": "バルイーグル",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -71,7 +71,7 @@
   {
     "cardId": "XG1-005",
     "wikiRef": "docs/wiki/cards/XG1-005.md",
-    "name": "ダイナレッド（XG）",
+    "name": "ダイナレッド",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -88,7 +88,7 @@
   {
     "cardId": "XG1-006",
     "wikiRef": "docs/wiki/cards/XG1-006.md",
-    "name": "レッドワン（XG）",
+    "name": "レッドワン",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -105,7 +105,7 @@
   {
     "cardId": "XG1-007",
     "wikiRef": "docs/wiki/cards/XG1-007.md",
-    "name": "チェンジドラゴン（XG）",
+    "name": "チェンジドラゴン",
     "cardType": "unit",
     "powerCost": 2,
     "category": [
@@ -126,7 +126,7 @@
   {
     "cardId": "XG1-008",
     "wikiRef": "docs/wiki/cards/XG1-008.md",
-    "name": "レッドフラッシュ（XG）",
+    "name": "レッドフラッシュ",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -143,7 +143,7 @@
   {
     "cardId": "XG1-009",
     "wikiRef": "docs/wiki/cards/XG1-009.md",
-    "name": "レッドマスク（XG）",
+    "name": "レッドマスク",
     "cardType": "unit",
     "powerCost": 3,
     "category": "MA",
@@ -161,7 +161,7 @@
   {
     "cardId": "XG1-010",
     "wikiRef": "docs/wiki/cards/XG1-010.md",
-    "name": "レッドファルコン（XG）",
+    "name": "レッドファルコン",
     "cardType": "unit",
     "powerCost": 3,
     "category": "ET",
@@ -522,7 +522,7 @@
   {
     "cardId": "XG1-031",
     "wikiRef": "docs/wiki/cards/XG1-031.md",
-    "name": "ゴーオンレッド（XG）",
+    "name": "ゴーオンレッド",
     "cardType": "unit",
     "powerCost": 3,
     "category": [
@@ -543,7 +543,7 @@
   {
     "cardId": "XG1-032",
     "wikiRef": "docs/wiki/cards/XG1-032.md",
-    "name": "ゲキレッド（XG）",
+    "name": "ゲキレッド",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -706,7 +706,7 @@
   {
     "cardId": "XG1-041",
     "wikiRef": "docs/wiki/cards/XG1-041.md",
-    "name": "仮面ライダーアマゾン（XG）",
+    "name": "仮面ライダーアマゾン",
     "cardType": "unit",
     "powerCost": 4,
     "category": [
@@ -763,7 +763,7 @@
   {
     "cardId": "XG1-044",
     "wikiRef": "docs/wiki/cards/XG1-044.md",
-    "name": "仮面ライダーV3（XG）",
+    "name": "仮面ライダーV3",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -890,7 +890,7 @@
   {
     "cardId": "XG1-051",
     "wikiRef": "docs/wiki/cards/XG1-051.md",
-    "name": "仮面ライダーZX（XG）",
+    "name": "仮面ライダーZX",
     "cardType": "unit",
     "powerCost": 4,
     "category": "ET",
@@ -1062,7 +1062,7 @@
   {
     "cardId": "XG1-061",
     "wikiRef": "docs/wiki/cards/XG1-061.md",
-    "name": "仮面ライダーカリス（XG）",
+    "name": "仮面ライダーカリス",
     "cardType": "unit",
     "powerCost": 3,
     "category": "WB",
@@ -1278,7 +1278,7 @@
   {
     "cardId": "XG1-073",
     "wikiRef": "docs/wiki/cards/XG1-073.md",
-    "name": "仮面ライダーザビーMF（XG）",
+    "name": "仮面ライダーザビーMF",
     "cardType": "unit",
     "powerCost": 0,
     "category": "OT",
@@ -1295,7 +1295,7 @@
   {
     "cardId": "XG1-074",
     "wikiRef": "docs/wiki/cards/XG1-074.md",
-    "name": "仮面ライダーザビーRF（XG）",
+    "name": "仮面ライダーザビーRF",
     "cardType": "unit",
     "powerCost": "3+",
     "category": "OT",

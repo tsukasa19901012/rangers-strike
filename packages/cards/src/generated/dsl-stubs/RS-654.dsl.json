@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-654",
-  "name": "ガオイエロー",
+  "name": "ガオイエロー（2nd）",
   "type": "unit",
   "category": "WB",
   "rarity": "N",

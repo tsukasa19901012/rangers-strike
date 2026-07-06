@@ -8,6 +8,7 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { allCardsCatalog } from "../src/catalog";
+import { parsePowerCost } from "../src/pipeline/metaMaps";
 import { parseWikiMarkdown } from "../src/pipeline/parseWiki";
 import { DEFAULT_WIKI_DIR } from "../src/pipeline/runPipeline";
 
@@ -52,9 +53,11 @@ function main(): void {
       });
     }
 
-    const wikiPower = parsed.status.必要パワー ?? parsed.status.BP;
+    const wikiPowerRaw = parsed.status.必要パワー ?? parsed.status.BP;
+    // 全角＋/－などは catalog と同じ正規化（parsePowerCost）を通して比較する
+    const wikiPower = wikiPowerRaw ? String(parsePowerCost(wikiPowerRaw)) : undefined;
     const catalogPower = String(card.powerCost);
-    if (wikiPower && wikiPower !== catalogPower && wikiPower !== String(card.powerCost)) {
+    if (wikiPower && wikiPower !== catalogPower) {
       entries.push({
         id: card.id,
         field: "powerCost",

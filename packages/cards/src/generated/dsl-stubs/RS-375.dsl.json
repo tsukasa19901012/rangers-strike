@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-375",
-  "name": "レッドレーサー",
+  "name": "レッドレーサー（2nd）",
   "type": "unit",
   "category": "OT",
   "rarity": "N",

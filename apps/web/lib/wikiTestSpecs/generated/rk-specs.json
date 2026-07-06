@@ -4180,7 +4180,7 @@
   {
     "cardId": "RK-240",
     "wikiRef": "docs/wiki/cards/RK-240.md",
-    "name": "仮面ライダー電王CF",
+    "name": "仮面ライダー電王CF（2nd）",
     "cardType": "unit",
     "powerCost": "4+",
     "category": "OT",
@@ -4454,7 +4454,7 @@
   {
     "cardId": "RK-255",
     "wikiRef": "docs/wiki/cards/RK-255.md",
-    "name": "電波人間タックル",
+    "name": "電波人間タックル（2nd）",
     "cardType": "unit",
     "powerCost": 2,
     "category": "ET",
@@ -4697,7 +4697,7 @@
   {
     "cardId": "RK-269",
     "wikiRef": "docs/wiki/cards/RK-269.md",
-    "name": "シャドームーン",
+    "name": "シャドームーン（2nd）",
     "cardType": "unit",
     "powerCost": 5,
     "category": "DA",
@@ -4856,7 +4856,7 @@
   {
     "cardId": "RK-278",
     "wikiRef": "docs/wiki/cards/RK-278.md",
-    "name": "仮面ライダーナイト",
+    "name": "仮面ライダーナイト（2nd）",
     "cardType": "unit",
     "powerCost": 6,
     "category": "WB",
@@ -5180,7 +5180,7 @@
   {
     "cardId": "RK-296",
     "wikiRef": "docs/wiki/cards/RK-296.md",
-    "name": "仮面ライダーキックホッパー",
+    "name": "仮面ライダーキックホッパー（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -5197,7 +5197,7 @@
   {
     "cardId": "RK-297",
     "wikiRef": "docs/wiki/cards/RK-297.md",
-    "name": "仮面ライダーパンチホッパー",
+    "name": "仮面ライダーパンチホッパー（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -5321,7 +5321,7 @@
   {
     "cardId": "RK-304",
     "wikiRef": "docs/wiki/cards/RK-304.md",
-    "name": "仮面ライダー電王RF",
+    "name": "仮面ライダー電王RF（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -5339,7 +5339,7 @@
   {
     "cardId": "RK-305",
     "wikiRef": "docs/wiki/cards/RK-305.md",
-    "name": "仮面ライダー電王SF",
+    "name": "仮面ライダー電王SF（2nd）",
     "cardType": "unit",
     "powerCost": 4,
     "category": "OT",
@@ -5357,7 +5357,7 @@
   {
     "cardId": "RK-306",
     "wikiRef": "docs/wiki/cards/RK-306.md",
-    "name": "仮面ライダー電王AF",
+    "name": "仮面ライダー電王AF（2nd）",
     "cardType": "unit",
     "powerCost": 6,
     "category": "OT",
@@ -5375,7 +5375,7 @@
   {
     "cardId": "RK-307",
     "wikiRef": "docs/wiki/cards/RK-307.md",
-    "name": "仮面ライダー電王GF",
+    "name": "仮面ライダー電王GF（2nd）",
     "cardType": "unit",
     "powerCost": 5,
     "category": "OT",
@@ -5393,7 +5393,7 @@
   {
     "cardId": "RK-308",
     "wikiRef": "docs/wiki/cards/RK-308.md",
-    "name": "リュウタロス",
+    "name": "リュウタロス（2nd）",
     "cardType": "unit",
     "powerCost": 2,
     "category": "OT",
@@ -5412,7 +5412,7 @@
   {
     "cardId": "RK-309",
     "wikiRef": "docs/wiki/cards/RK-309.md",
-    "name": "ウラタロス",
+    "name": "ウラタロス（2nd）",
     "cardType": "unit",
     "powerCost": 1,
     "category": "OT",
@@ -5429,7 +5429,7 @@
   {
     "cardId": "RK-310",
     "wikiRef": "docs/wiki/cards/RK-310.md",
-    "name": "モモタロス",
+    "name": "モモタロス（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",
@@ -5448,7 +5448,7 @@
   {
     "cardId": "RK-311",
     "wikiRef": "docs/wiki/cards/RK-311.md",
-    "name": "キンタロス",
+    "name": "キンタロス（2nd）",
     "cardType": "unit",
     "powerCost": 2,
     "category": "OT",
@@ -5817,7 +5817,7 @@
   {
     "cardId": "RK-332",
     "wikiRef": "docs/wiki/cards/RK-332.md",
-    "name": "仮面ライダー龍騎",
+    "name": "仮面ライダー龍騎（2nd）",
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
@@ -5852,7 +5852,7 @@
   {
     "cardId": "RK-334",
     "wikiRef": "docs/wiki/cards/RK-334.md",
-    "name": "仮面ライダー電王LF",
+    "name": "仮面ライダー電王LF（2nd）",
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
@@ -5864,7 +5864,7 @@
   {
     "cardId": "RK-335",
     "wikiRef": "docs/wiki/cards/RK-335.md",
-    "name": "モモタロス",
+    "name": "モモタロス（2nd）",
     "cardType": "unit",
     "powerCost": 3,
     "category": "OT",

@@ -11,6 +11,10 @@ import { CardImage } from "./CardImage";
 type DropZoneProps = {
   zoneId: DropTarget;
   title: string;
+  /** プレイシート準拠の英字サブタイトル（例: Battle Area）。 */
+  subtitle?: string;
+  /** バンド背景のウォーターマーク文字。 */
+  watermark?: string;
   count?: number;
   accepts?: boolean;
   highlighted?: boolean;
@@ -27,6 +31,8 @@ type DropZoneProps = {
 export function DropZone({
   zoneId,
   title,
+  subtitle,
+  watermark,
   count,
   accepts,
   highlighted,
@@ -61,10 +67,20 @@ export function DropZone({
         .join(" ")}
       data-zone={zoneId}
     >
+      {watermark && (
+        <span className="zone__watermark" aria-hidden>
+          {watermark}
+        </span>
+      )}
       <header className="zone__title">
         {title}
         {count !== undefined && <span className="zone__count">{count}</span>}
       </header>
+      {subtitle && (
+        <span className="zone__subtitle" aria-hidden>
+          {subtitle}
+        </span>
+      )}
       <div
         className={[
           "zone__cards",
@@ -86,6 +102,8 @@ export function DropZone({
 
 type ZoneCardsProps = {
   title: string;
+  subtitle?: string;
+  watermark?: string;
   zoneId: DropTarget;
   cards: CardInstance[];
   /** ライド重ね表示用のゾーン全カード（表示リストと別の場合）。 */
@@ -153,6 +171,8 @@ function CardDropWrap({
 
 function ZoneCards({
   title,
+  subtitle,
+  watermark,
   zoneId,
   cards,
   zoneCards,
@@ -203,6 +223,8 @@ function ZoneCards({
     <DropZone
       zoneId={zoneId}
       title={title}
+      subtitle={subtitle}
+      watermark={watermark}
       count={cards.length}
       accepts={accepts}
       highlighted={highlighted}
@@ -567,10 +589,11 @@ export function PlayerBoard({
 
   const powerZone = (
     <ZoneCards
-      title={availablePower !== undefined ? `パワー ${availablePower}` : "パワー"}
+      title={availablePower !== undefined ? `パワー ${availablePower}` : "パワーゾーン"}
+      subtitle="POWER ZONE"
       zoneId="power"
       className="playsheet__power"
-      cardsScrollX
+      cardsScrollY
       imageOnly
       cards={player.power}
       definitions={definitions}
@@ -589,6 +612,8 @@ export function PlayerBoard({
   const battleZone = (
     <ZoneCards
       title="バトルエリア"
+      subtitle="Battle Area"
+      watermark="BA"
       zoneId="battle"
       className="playsheet__battle"
       cardsScrollX
@@ -645,6 +670,8 @@ export function PlayerBoard({
   const rushZone = (
     <ZoneCards
       title="ラッシュエリア"
+      subtitle="Rush Area"
+      watermark="RA"
       zoneId="rush"
       className="playsheet__rush"
       cardsScrollX
@@ -683,7 +710,9 @@ export function PlayerBoard({
 
   const commandZone = (
     <ZoneCards
-      title={`コマンド ${player.command.length}/${COMMAND_ZONE_MAX}`}
+      title={`コマンドゾーン ${player.command.length}/${COMMAND_ZONE_MAX}`}
+      subtitle="Command Zone"
+      watermark="CZ"
       zoneId="command"
       className="playsheet__command"
       cardsScrollX
@@ -731,7 +760,7 @@ export function PlayerBoard({
 
   const operationZone = (
     <ZoneCards
-      title="常駐"
+      title="常駐置き場"
       zoneId="operation"
       className="playsheet__operation"
       imageOnly
@@ -753,18 +782,25 @@ export function PlayerBoard({
     />
   );
 
-  const baseZone = (
-    <div className="playsheet__base">
-      {piles}
-      {powerZone}
-      {commandZone}
-      {operationZone}
+  const sideColumn = (
+    <div className="playsheet__side">
+      {isOpponent ? (
+        <>
+          {operationZone}
+          {piles}
+        </>
+      ) : (
+        <>
+          {piles}
+          {operationZone}
+        </>
+      )}
     </div>
   );
 
   const mainZones = isOpponent ? (
     <>
-      {baseZone}
+      {commandZone}
       {rushZone}
       {battleZone}
     </>
@@ -772,7 +808,7 @@ export function PlayerBoard({
     <>
       {battleZone}
       {rushZone}
-      {baseZone}
+      {commandZone}
     </>
   );
 
@@ -817,6 +853,8 @@ export function PlayerBoard({
 
       <div className={`playsheet ${isOpponent ? "playsheet--opponent" : "playsheet--self"}`}>
         <div className="playsheet__main">{mainZones}</div>
+        {sideColumn}
+        {powerZone}
       </div>
 
       {isHuman && (

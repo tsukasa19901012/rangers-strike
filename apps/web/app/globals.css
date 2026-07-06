@@ -22,8 +22,8 @@
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.45);
   --shadow-pop: 0 12px 40px rgba(0, 0, 0, 0.55);
 
-  /* カードサイズ: 高さ起点でビューポートに 4 行 + ベース行 + 手札を収める */
-  --card-height: clamp(54px, calc((100dvh - 575px) / 4), 128px);
+  /* カードサイズ: 高さ起点でビューポートに 6 バンド + 手札を収める */
+  --card-height: clamp(48px, calc((100dvh - 436px) / 6), 112px);
   --card-width: calc(var(--card-height) / 1.417);
   /* ベース行（パワー / コマンド / 常駐）の小型カード */
   --card-height-sm: clamp(40px, 7dvh, 64px);
@@ -33,6 +33,9 @@
   --card-width-hand: calc(var(--card-height-hand) / 1.417);
 
   --zone-card-min-height: 48px;
+  /* プレイシートのサイドカラム / パワーレール幅 */
+  --side-col-w: clamp(120px, 16vw, 170px);
+  --power-rail-w: calc(var(--card-height-sm) + 10px);
   --app-max-width: 1180px;
   --app-padding-x: 10px;
   --app-padding-y: 6px;
@@ -168,18 +171,62 @@ select {
 }
 
 .phase-tracker__step {
+  --phase-color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 0.62rem;
   color: var(--c-text-faint);
-  padding: 3px 9px;
+  padding: 2px 9px 2px 3px;
   border-radius: 999px;
   white-space: nowrap;
   transition: background 0.2s ease, color 0.2s ease;
 }
 
+/* マット準拠のフェイズ色: 1紫 2橙 3青 4赤 5灰 */
+.phase-tracker__step--start {
+  --phase-color: #8b5cf6;
+}
+
+.phase-tracker__step--charge {
+  --phase-color: #f59e0b;
+}
+
+.phase-tracker__step--rush {
+  --phase-color: #3b82f6;
+}
+
+.phase-tracker__step--battle {
+  --phase-color: #ef4444;
+}
+
+.phase-tracker__step--end {
+  --phase-color: #94a3b8;
+}
+
+.phase-tracker__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  font-size: 0.58rem;
+  font-weight: 800;
+  font-style: italic;
+  background: color-mix(in srgb, var(--phase-color) 30%, transparent);
+  color: var(--phase-color);
+}
+
 .phase-tracker__step--active {
-  background: var(--c-self);
-  color: #062338;
-  font-weight: 700;
+  background: var(--phase-color);
+  color: #0b0f1e;
+  font-weight: 800;
+}
+
+.phase-tracker__step--active .phase-tracker__num {
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
 }
 
 .action-error--floating {
@@ -439,55 +486,185 @@ select {
   color: var(--c-text-dim);
 }
 
-/* --- プレイシート（ゾーン行） --- */
+/* --- プレイシート（公式プレイマット準拠） ---
+ * 各ボード: [バンド列 (バトル/ラッシュ/コマンド)] [サイドカラム (山札/捨札/常駐)] [パワーゾーン縦レール]
+ * CPU 側は上下反転（コマンド→ラッシュ→バトルの順）
+ */
 
 .playsheet {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--side-col-w) var(--power-rail-w);
+  gap: 5px;
   min-width: 0;
 }
 
 .playsheet__main {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   min-width: 0;
 }
 
-.playsheet__battle {
-  background: rgba(148, 35, 60, 0.1);
-  min-width: 0;
-  overflow: hidden;
-}
-
-.playsheet__rush {
-  background: rgba(37, 76, 138, 0.14);
-  min-width: 0;
-  overflow: hidden;
-}
+/* --- バンド共通 --- */
 
 .zone.playsheet__battle,
-.zone.playsheet__rush {
-  padding-top: 6px;
+.zone.playsheet__rush,
+.zone.playsheet__command {
+  position: relative;
+  padding: 6px 8px 4px;
+  overflow: hidden;
+  border-radius: 8px;
+  min-width: 0;
 }
 
 .playsheet__battle .zone__cards,
-.playsheet__rush .zone__cards {
+.playsheet__rush .zone__cards,
+.playsheet__command .zone__cards {
   height: var(--card-height);
   min-height: var(--card-height);
   align-items: center;
   justify-content: safe center;
   padding-bottom: 2px;
+  position: relative;
+  z-index: 1;
 }
 
 .playsheet__battle .card-wrap,
-.playsheet__rush .card-wrap {
+.playsheet__rush .card-wrap,
+.playsheet__command .card-wrap {
   flex-shrink: 0;
   width: var(--card-width);
   height: var(--card-height);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* バンドの帯色（マット準拠: バトル=赤 / ラッシュ=青 / コマンド=緑） */
+.zone.playsheet__battle {
+  background:
+    linear-gradient(100deg, rgba(153, 27, 27, 0.55) 0%, rgba(127, 29, 29, 0.28) 45%, rgba(15, 23, 42, 0.35) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.zone.playsheet__rush {
+  background:
+    linear-gradient(100deg, rgba(30, 64, 175, 0.5) 0%, rgba(30, 58, 138, 0.26) 45%, rgba(15, 23, 42, 0.35) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.zone.playsheet__command {
+  background:
+    linear-gradient(100deg, rgba(21, 128, 61, 0.45) 0%, rgba(20, 83, 45, 0.25) 45%, rgba(15, 23, 42, 0.35) 100%);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+/* バンドのゾーン名: マット風の斜めプレート */
+.playsheet__battle .zone__title,
+.playsheet__rush .zone__title,
+.playsheet__command .zone__title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  padding: 2px 14px 2px 8px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #fff;
+  background: rgba(5, 8, 16, 0.82);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  text-shadow: none;
+}
+
+.playsheet__battle .zone__title {
+  border-left: 3px solid #ef4444;
+}
+
+.playsheet__rush .zone__title {
+  border-left: 3px solid #3b82f6;
+}
+
+.playsheet__command .zone__title {
+  border-left: 3px solid #22c55e;
+}
+
+/* 英字サブタイトル（マットのピクセル風表記） */
+.zone__subtitle {
+  position: absolute;
+  right: 10px;
+  bottom: 3px;
+  z-index: 0;
+  font-family: "Courier New", monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.playsheet__battle .zone__subtitle {
+  color: rgba(252, 165, 165, 0.5);
+}
+
+.playsheet__rush .zone__subtitle {
+  color: rgba(147, 197, 253, 0.5);
+}
+
+.playsheet__command .zone__subtitle {
+  color: rgba(134, 239, 172, 0.5);
+}
+
+.playsheet__power .zone__subtitle {
+  right: auto;
+  left: 50%;
+  top: 50%;
+  bottom: auto;
+  transform: translateX(-50%);
+  writing-mode: vertical-rl;
+  letter-spacing: 0.42em;
+  color: rgba(252, 211, 77, 0.4);
+  max-height: 90%;
+  overflow: hidden;
+}
+
+/* ウォーターマーク（ゾーンの大文字イニシャル） */
+.zone__watermark {
+  position: absolute;
+  left: 6px;
+  bottom: -0.32em;
+  z-index: 0;
+  font-size: calc(var(--card-height) * 0.98);
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ホールド状態のコマンドはヨコ置き（90度回転） */
+.playsheet__command .card-wrap:has(.card--command-held) {
+  width: var(--card-height);
+}
+
+.playsheet__command .card--command-held {
+  transform: rotate(90deg);
+  transform-origin: center center;
+}
+
+.playsheet__command .card--command-held .card__image {
+  box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.7), var(--shadow-card);
+}
+
+.playsheet__battle .zone__empty,
+.playsheet__rush .zone__empty,
+.playsheet__command .zone__empty {
+  align-self: center;
+  margin: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .card-stack--riding {
@@ -512,130 +689,42 @@ select {
   z-index: 1;
 }
 
+/* --- サイドカラム（山札 / 捨札 / 常駐置き場） --- */
 
-.modal__content--ride-off,
-.modal__content--chase {
-  max-width: min(92vw, 420px);
-}
-
-.ride-off-modal__title,
-.chase-modal__title {
-  margin: 0 0 8px;
-  font-size: 1.1rem;
-}
-
-.ride-off-modal__lead,
-.chase-modal__lead {
-  margin: 0 0 12px;
-  font-size: 0.9rem;
-  line-height: 1.45;
-}
-
-.ride-off-modal__stack {
-  position: relative;
-  width: var(--card-width);
-  height: var(--card-height);
-  margin: 0 auto 16px;
-}
-
-.ride-off-modal__vehicle {
-  position: absolute;
-  right: -10px;
-  bottom: -6px;
-  z-index: 0;
-}
-
-.ride-off-modal__rider {
-  position: relative;
-  z-index: 1;
-}
-
-.ride-off-modal__actions,
-.chase-modal__group {
+.playsheet__side {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.ride-off-modal__action {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.ride-off-modal__detail,
-.chase-modal__gesture {
-  font-size: 0.75rem;
-  opacity: 0.85;
-}
-
-.chase-modal__targets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-}
-
-.chase-modal__target-btn {
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-}
-
-.chase-modal__pass {
-  margin-top: 12px;
-  width: 100%;
-}
-
-.playsheet__battle .zone__empty,
-.playsheet__rush .zone__empty {
-  align-self: center;
-  margin: auto;
-}
-
-/* --- ベース行（山札 / 捨札 / パワー / コマンド / 常駐） --- */
-
-.playsheet__base {
-  display: flex;
-  gap: 6px;
-  align-items: stretch;
+  gap: 5px;
   min-width: 0;
-}
-
-.board--opponent .playsheet__base {
-  order: 0;
 }
 
 .playsheet__piles {
   display: flex;
+  flex-direction: column;
   gap: 4px;
   flex-shrink: 0;
 }
 
 .pile {
   position: relative;
-  width: 46px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1px;
+  justify-content: flex-start;
+  gap: 6px;
   background: var(--c-surface);
   border: 1px solid var(--c-line);
   border-radius: 8px;
-  padding: 4px 2px;
-  text-align: center;
+  padding: 4px 8px;
+  text-align: left;
 }
 
 .pile__stack {
   display: block;
-  width: 22px;
-  height: 30px;
+  flex-shrink: 0;
+  width: 18px;
+  height: 25px;
   border-radius: 3px;
-  background:
-    linear-gradient(135deg, #27407c 0%, #16244a 60%, #0d1730 100%);
+  background: linear-gradient(135deg, #27407c 0%, #16244a 60%, #0d1730 100%);
   border: 1px solid #3b5aa5;
   box-shadow: 2px 2px 0 rgba(13, 23, 48, 0.9), 3px 3px 0 rgba(59, 90, 165, 0.45);
 }
@@ -665,51 +754,31 @@ select {
 
 .pile__label {
   display: block;
-  font-size: 0.54rem;
+  font-size: 0.6rem;
   color: var(--c-text-dim);
 }
 
 .pile__count {
   display: block;
-  font-size: 0.8rem;
+  margin-left: auto;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--c-text);
   line-height: 1;
 }
 
-/* ベース行の各ゾーンは小型カード */
-.playsheet__power,
-.playsheet__command,
-.playsheet__operation {
+/* 常駐置き場 */
+.zone.playsheet__operation {
   --card-width: var(--card-width-sm);
   --card-height: var(--card-height-sm);
-  min-width: 0;
+  flex: 1;
+  min-height: calc(var(--card-height-sm) + 20px);
+  padding: 15px 6px 3px;
+  background: rgba(120, 53, 15, 0.18);
+  border: 1px solid rgba(217, 119, 6, 0.25);
   overflow: hidden;
 }
 
-.playsheet__power {
-  flex: 1.1;
-  background: rgba(161, 98, 7, 0.14);
-}
-
-.playsheet__command {
-  flex: 1.5;
-  background: rgba(20, 83, 45, 0.16);
-}
-
-.playsheet__operation {
-  flex: 0.8;
-  background: rgba(120, 53, 15, 0.16);
-}
-
-.zone.playsheet__power,
-.zone.playsheet__command,
-.zone.playsheet__operation {
-  padding-top: 15px;
-}
-
-.playsheet__power .zone__cards,
-.playsheet__command .zone__cards,
 .playsheet__operation .zone__cards {
   height: var(--card-height-sm);
   min-height: var(--card-height-sm);
@@ -718,12 +787,9 @@ select {
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
   scrollbar-width: thin;
 }
 
-.playsheet__power .card-wrap,
-.playsheet__command .card-wrap,
 .playsheet__operation .card-wrap {
   flex-shrink: 0;
   width: var(--card-width-sm);
@@ -733,16 +799,76 @@ select {
   justify-content: center;
 }
 
-.playsheet__power .zone__title {
-  color: var(--c-gold);
-  font-weight: 700;
-}
-
-.playsheet__power .card__meta,
-.playsheet__command .card__meta,
 .playsheet__operation .card__meta {
   display: none;
 }
+
+/* --- パワーゾーン（縦レール / カードは横向き） --- */
+
+.zone.playsheet__power {
+  --card-width: var(--card-width-sm);
+  --card-height: var(--card-height-sm);
+  position: relative;
+  width: var(--power-rail-w);
+  padding: 15px 3px 3px;
+  background:
+    linear-gradient(180deg, rgba(161, 98, 7, 0.3), rgba(127, 29, 29, 0.22));
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.playsheet__power .zone__title {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  gap: 3px;
+  white-space: nowrap;
+  font-size: 0.56rem;
+  font-weight: 800;
+  color: var(--c-gold);
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.playsheet__power .zone__cards {
+  flex-direction: column;
+  align-items: center;
+  height: calc(100% - 12px);
+  min-height: calc(var(--card-width-sm) + 8px);
+  gap: 3px;
+  padding: 2px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.playsheet__power .card-wrap {
+  flex-shrink: 0;
+  width: var(--card-height-sm);
+  height: calc(var(--card-width-sm) + 2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playsheet__power .card {
+  transform: rotate(-90deg);
+  transform-origin: center center;
+}
+
+.playsheet__power .card__meta {
+  display: none;
+}
+
+.playsheet__power .zone__empty {
+  margin: auto;
+  position: relative;
+  z-index: 1;
+}
+
 
 /* --- 手札ドック --- */
 
@@ -3012,7 +3138,7 @@ select {
 /* 短いビューポート / 横向きスマホ: HUD と余白をさらに詰める */
 @media (orientation: landscape) and (max-height: 520px) {
   .game {
-    --card-height: clamp(48px, calc((100dvh - 300px) / 4), 84px);
+    --card-height: clamp(40px, calc((100dvh - 260px) / 6), 72px);
     --card-height-sm: clamp(32px, 6dvh, 48px);
     --card-height-hand: clamp(60px, 13dvh, 92px);
     --app-padding-x: 8px;
@@ -3082,7 +3208,7 @@ select {
 /* タブレット（640px+） */
 @media (min-width: 640px) {
   :root {
-    --card-height: clamp(56px, calc((100dvh - 575px) / 4), 132px);
+    --card-height: clamp(50px, calc((100dvh - 436px) / 6), 116px);
     --card-height-sm: clamp(44px, 7dvh, 70px);
     --card-height-hand: clamp(78px, 12.5dvh, 128px);
     --app-max-width: 900px;
@@ -3149,7 +3275,7 @@ select {
 /* PC（1024px+） */
 @media (min-width: 1024px) {
   :root {
-    --card-height: clamp(58px, calc((100dvh - 575px) / 4), 140px);
+    --card-height: clamp(52px, calc((100dvh - 436px) / 6), 120px);
     --card-height-sm: clamp(46px, 7.2dvh, 76px);
     --card-height-hand: clamp(80px, 12.5dvh, 136px);
     --app-max-width: 1180px;
@@ -3332,5 +3458,70 @@ select {
   .action-bar .btn {
     padding: 9px 14px;
     font-size: 0.85rem;
+  }
+}
+
+/* モバイル: プレイシートを 1 カラム積みに（バンド全幅 / サイド行 / パワー横帯） */
+@media (max-width: 639px) {
+  .playsheet {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .playsheet__side {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .playsheet__piles {
+    flex-direction: row;
+  }
+
+  .pile {
+    min-width: 86px;
+  }
+
+  .zone.playsheet__operation {
+    min-height: 0;
+  }
+
+  .zone.playsheet__power {
+    width: auto;
+    padding: 15px 6px 3px;
+  }
+
+  .playsheet__power .zone__title {
+    left: 8px;
+    transform: none;
+  }
+
+  .playsheet__power .zone__subtitle {
+    display: none;
+  }
+
+  .playsheet__power .zone__cards {
+    flex-direction: row;
+    height: calc(var(--card-width-sm) + 8px);
+    min-height: calc(var(--card-width-sm) + 8px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: flex-start;
+  }
+
+  /* CPU 半面は上下反転順（パワー→サイド→バンド） */
+  .board--opponent .playsheet {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .board--opponent .playsheet .playsheet__main {
+    order: 3;
+  }
+
+  .board--opponent .playsheet .playsheet__side {
+    order: 2;
+  }
+
+  .board--opponent .playsheet .playsheet__power {
+    order: 1;
   }
 }

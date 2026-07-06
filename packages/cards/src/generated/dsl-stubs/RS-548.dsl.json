@@ -1,7 +1,7 @@
 {
   "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-548",
-  "name": "ティラノレンジャー",
+  "name": "ティラノレンジャー（2nd）",
   "type": "unit",
   "category": "WB",
   "rarity": "N",
