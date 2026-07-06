@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { applyRecommendedReplacementText } from "./cardText";
 import { legend1Catalog, legend2Catalog } from "./catalog/unifiedCatalog";
 import { getCardEffect } from "./effects";
 import { getUnitEffectBlock } from "./unitEffects";
@@ -35,7 +36,10 @@ describe("wikiReference", () => {
       const block = getUnitEffectBlock(card.id);
       if (!block) continue;
       const cardText = card.text ?? "";
-      expect(cardText, card.id).toBe(block.rawText ?? "");
+      // カタログはエラッタ読み替え適用済みテキストを持つ（emit 時に適用）
+      expect(cardText, card.id).toBe(
+        applyRecommendedReplacementText(block.rawText ?? "") ?? "",
+      );
     }
   });
 });

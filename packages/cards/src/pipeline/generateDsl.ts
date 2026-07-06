@@ -206,6 +206,9 @@ export function generateCardDocument(
     } else if (featuresRaw && featuresRaw !== "なし") {
       card.features = featuresRaw.split(/[／/]/).map((s) => s.trim()).filter(Boolean);
     }
+    const rush = catalog?.rushAdditionalCondition ??
+      inferRushAdditionalCondition(parse.status.追加条件, powerCost);
+    if (rush) card.rushAdditionalCondition = rush;
   }
 
   if (cardType === "operation" && extractedEffects.length === 1) {

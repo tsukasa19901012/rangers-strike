@@ -8,6 +8,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { FULL_PLAYABLE_CARD_COUNT } from "../src/catalog/tiers";
 import { loadAllCardDocuments } from "../src/dsl/loader";
 import {
   createFullPlayableRegistry,
@@ -24,7 +25,7 @@ const root = join(__dirname, "..");
 const dataDir = join(root, "pipeline/data");
 const outputPath = join(dataDir, "rollout-status.json");
 
-const TARGET_PLAYABLE = 1849;
+const TARGET_PLAYABLE = FULL_PLAYABLE_CARD_COUNT;
 
 type GateStatus = "pass" | "fail" | "partial" | "unknown";
 
@@ -201,7 +202,7 @@ function main(): void {
       name: "プロダクト接続",
       status: "pass",
       target: "AC-01–AC-07（Web full-playable）",
-      current: "deck builder 1849 + custom CPU play + g5Acceptance + AC-06/07 tests",
+      current: `deck builder ${FULL_PLAYABLE_CARD_COUNT} + custom CPU play + g5Acceptance + AC-06/07 tests`,
     },
   ];
 

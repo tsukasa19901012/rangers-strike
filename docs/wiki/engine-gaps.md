@@ -1,6 +1,6 @@
 # エンジンギャップ
 
-**更新:** 2026-06-11  
+**更新:** 2026-07-06  
 **キーワード詳細:** [keyword-implementation.md](../architecture/keyword-implementation.md)
 
 ## 意図的未実装（glossaryImplementation.ts）
@@ -59,7 +59,10 @@ P0–P2 完了。詳細は [keyword-implementation.md](../architecture/keyword-i
 |--------|----------|------|
 | スタート戻し | 一括 return_all | FAQ上個別順も可 — 等価 |
 | 同時効果順 | 配線済 | UI 不足は解消済（RULE-02） |
-| 敵マルチコマンド→自パワー | なし | atwiki 110 — **HIGH** |
+| 敵マルチコマンド→自パワー | ✅ countAvailablePower（core/power.ts） | atwiki 110 — 解消（2026-07-06 確認） |
+| エラッタ読み替え | ✅ applyRecommendedReplacementText がブロック単位置換 | ※注記保持（RS-227/RK-231 等）— 2026-07-06 |
+| 2nd/XG 同名3枚制限 | ✅ normalizeSameCardName（deckRules） | glossary 2nd — 2026-07-06 |
+| ビークル追加条件 | ✅ generateDsl vehicle 分岐で推論 | XG2-072/074 等 — 2026-07-06 |
 | スクラム | 右隣 CN+1 のみ | ✅ P0（2026-06-11） |
 | ウイング | P0 骨格済 | 複数回ウイング — P2 |
 | チェイス | 骨格あり | 全経路 E2E — P1 |

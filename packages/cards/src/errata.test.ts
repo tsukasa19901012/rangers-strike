@@ -34,7 +34,9 @@ describe("errata", () => {
   });
 
   it("lists all battle entry hold cards from unit effect notes", () => {
-    expect(listBattleEntryHoldCardIds()).toEqual([
+    const ids = listBattleEntryHoldCardIds();
+    // レジェンド1のゾード合体パートナー
+    for (const id of [
       "RS-035",
       "RS-036",
       "RS-037",
@@ -53,7 +55,17 @@ describe("errata", () => {
       "RS-159",
       "RS-167",
       "RS-168",
-    ]);
+    ]) {
+      expect(ids, id).toContain(id);
+    }
+    // core 昇格した RK / 4弾以降 / エラッタで注記が復元されたカード
+    for (const id of ["RK-034", "RS-227", "RM-051"]) {
+      expect(ids, id).toContain(id);
+    }
+    // 全件が hold 注記を持つ
+    for (const id of ids) {
+      expect(getBattleEntryHoldCount(id), id).toBeGreaterThan(0);
+    }
   });
 
   it.each([

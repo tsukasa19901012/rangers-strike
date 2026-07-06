@@ -1,10 +1,319 @@
 {
   "summary": {
-    "generatedAt": "2026-06-10T01:08:56.698Z",
-    "catalogTotal": 179,
-    "driftCount": 0,
-    "p0": 0,
-    "p1": 0
+    "generatedAt": "2026-07-06T05:57:13.380Z",
+    "catalogTotal": 1052,
+    "driftCount": 44,
+    "p0": 4,
+    "p1": 40
   },
-  "entries": []
+  "entries": [
+    {
+      "id": "RK-240",
+      "field": "name",
+      "catalog": "仮面ライダー電王CF",
+      "wiki": "仮面ライダー電王CF（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-255",
+      "field": "name",
+      "catalog": "電波人間タックル",
+      "wiki": "電波人間タックル（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-269",
+      "field": "name",
+      "catalog": "シャドームーン",
+      "wiki": "シャドームーン（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-278",
+      "field": "name",
+      "catalog": "仮面ライダーナイト",
+      "wiki": "仮面ライダーナイト（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-296",
+      "field": "name",
+      "catalog": "仮面ライダーキックホッパー",
+      "wiki": "仮面ライダーキックホッパー（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-297",
+      "field": "name",
+      "catalog": "仮面ライダーパンチホッパー",
+      "wiki": "仮面ライダーパンチホッパー（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-304",
+      "field": "name",
+      "catalog": "仮面ライダー電王RF",
+      "wiki": "仮面ライダー電王RF（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-305",
+      "field": "name",
+      "catalog": "仮面ライダー電王SF",
+      "wiki": "仮面ライダー電王SF（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-306",
+      "field": "name",
+      "catalog": "仮面ライダー電王AF",
+      "wiki": "仮面ライダー電王AF（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-307",
+      "field": "name",
+      "catalog": "仮面ライダー電王GF",
+      "wiki": "仮面ライダー電王GF（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-308",
+      "field": "name",
+      "catalog": "リュウタロス",
+      "wiki": "リュウタロス（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-309",
+      "field": "name",
+      "catalog": "ウラタロス",
+      "wiki": "ウラタロス（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-310",
+      "field": "name",
+      "catalog": "モモタロス",
+      "wiki": "モモタロス（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-311",
+      "field": "name",
+      "catalog": "キンタロス",
+      "wiki": "キンタロス（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-332",
+      "field": "name",
+      "catalog": "仮面ライダー龍騎",
+      "wiki": "仮面ライダー龍騎（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-334",
+      "field": "name",
+      "catalog": "仮面ライダー電王LF",
+      "wiki": "仮面ライダー電王LF（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RK-335",
+      "field": "name",
+      "catalog": "モモタロス",
+      "wiki": "モモタロス（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-319",
+      "field": "powerCost",
+      "catalog": "5+",
+      "wiki": "5＋",
+      "severity": "P0"
+    },
+    {
+      "id": "RS-351",
+      "field": "name",
+      "catalog": "アカレンジャー",
+      "wiki": "アカレンジャー（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-361",
+      "field": "name",
+      "catalog": "バルイーグル",
+      "wiki": "バルイーグル（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-362",
+      "field": "name",
+      "catalog": "バルシャーク",
+      "wiki": "バルシャーク（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-363",
+      "field": "name",
+      "catalog": "バルパンサー",
+      "wiki": "バルパンサー（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-375",
+      "field": "name",
+      "catalog": "レッドレーサー",
+      "wiki": "レッドレーサー（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-388",
+      "field": "name",
+      "catalog": "ゴーレッド",
+      "wiki": "ゴーレッド（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-402",
+      "field": "name",
+      "catalog": "ガオレッド",
+      "wiki": "ガオレッド（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-403",
+      "field": "name",
+      "catalog": "デカレッド",
+      "wiki": "デカレッド（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-440",
+      "field": "name",
+      "catalog": "バトルフィーバーロボ",
+      "wiki": "バトルフィーバーロボ（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-484",
+      "field": "powerCost",
+      "catalog": "14-",
+      "wiki": "14－",
+      "severity": "P0"
+    },
+    {
+      "id": "RS-491",
+      "field": "powerCost",
+      "catalog": "6+",
+      "wiki": "6＋",
+      "severity": "P0"
+    },
+    {
+      "id": "RS-527",
+      "field": "name",
+      "catalog": "バルジオン",
+      "wiki": "バルジオン（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-528",
+      "field": "name",
+      "catalog": "バイオハンター・シルバ",
+      "wiki": "バイオハンター・シルバ（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-548",
+      "field": "name",
+      "catalog": "ティラノレンジャー",
+      "wiki": "ティラノレンジャー（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-549",
+      "field": "name",
+      "catalog": "トリケラレンジャー",
+      "wiki": "トリケラレンジャー（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-572",
+      "field": "name",
+      "catalog": "デカマスター",
+      "wiki": "デカマスター（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-573",
+      "field": "name",
+      "catalog": "ファイヤーカイザー",
+      "wiki": "ファイヤーカイザー（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-577",
+      "field": "name",
+      "catalog": "マジレッド",
+      "wiki": "マジレッド（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-581",
+      "field": "name",
+      "catalog": "魔導馬バリキオン",
+      "wiki": "魔導馬バリキオン（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-585",
+      "field": "name",
+      "catalog": "ボウケンシルバー",
+      "wiki": "ボウケンシルバー（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-653",
+      "field": "name",
+      "catalog": "レッドファルコン",
+      "wiki": "レッドファルコン（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-654",
+      "field": "name",
+      "catalog": "ガオイエロー",
+      "wiki": "ガオイエロー（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-685",
+      "field": "name",
+      "catalog": "ブラックコンドル",
+      "wiki": "ブラックコンドル（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "RS-689",
+      "field": "name",
+      "catalog": "レッドホーク",
+      "wiki": "レッドホーク（2nd）",
+      "severity": "P1"
+    },
+    {
+      "id": "SR-003",
+      "field": "powerCost",
+      "catalog": "5+",
+      "wiki": "5＋",
+      "severity": "P0"
+    },
+    {
+      "id": "SR-004",
+      "field": "name",
+      "catalog": "ヘドリアン女王",
+      "wiki": "ヘドリアン女王（2nd）",
+      "severity": "P1"
+    }
+  ]
 }

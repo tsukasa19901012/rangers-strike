@@ -1,5 +1,6 @@
 import {
   isFullPlayableCardId,
+  isWikiStubCardId,
   resolvePlayableCard,
 } from "./extendedCatalog";
 import type { CardDefinition } from "./schema";
@@ -11,7 +12,7 @@ export function grnrngrCardImageUrl(cardId: string): string {
   return `${GRNRNGR_CARD_IMAGE_BASE}/${cardId}.jpg`;
 }
 
-/** core catalog imageUrl → grnrngr 慣例 URL（full-playable のみ） */
+/** core catalog imageUrl → grnrngr 慣例 URL（full-playable / wiki-stub） */
 export function resolveCardImageUrl(
   idOrCard: string | CardDefinition,
 ): string | undefined {
@@ -23,7 +24,7 @@ export function resolveCardImageUrl(
   }
 
   const id = typeof idOrCard === "string" ? idOrCard : card?.id;
-  if (id && isFullPlayableCardId(id)) {
+  if (id && (isFullPlayableCardId(id) || isWikiStubCardId(id))) {
     return grnrngrCardImageUrl(id);
   }
 

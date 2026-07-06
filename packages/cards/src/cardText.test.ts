@@ -13,4 +13,20 @@ describe("applyRecommendedReplacementText", () => {
   it("returns original text when no marker is present", () => {
     expect(applyRecommendedReplacementText("【一本釣り】テスト")).toBe("【一本釣り】テスト");
   });
+
+  it("keeps leading notes outside the corrected block (RS-227)", () => {
+    const raw =
+      "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【トップウインド】…の数まで選びホールドする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 【トップウインド】…の数まで可能な限り選びホールドする。";
+    expect(applyRecommendedReplacementText(raw)).toBe(
+      "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【トップウインド】…の数まで可能な限り選びホールドする。",
+    );
+  });
+
+  it("keeps leading notes for errata from complete book (RK-231)", () => {
+    const raw =
+      "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 【潜水】自分がターンを終えるとき、これをリリースするか、ホールドしてもよい。 ・このテキストはクロスギャザーコンプリートブックでエラッタが示されています。修正後は以下。 【潜水】自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。";
+    expect(applyRecommendedReplacementText(raw)).toBe(
+      "※これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される。 【潜水】自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。",
+    );
+  });
 });

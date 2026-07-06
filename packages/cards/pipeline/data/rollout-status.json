@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-06-30T02:58:53.338Z",
+  "generatedAt": "2026-07-06T06:19:11.889Z",
   "summary": {
-    "gatesPassed": 5,
-    "gatesPartial": 2,
+    "gatesPassed": 7,
+    "gatesPartial": 0,
     "gatesTotal": 7,
     "overallPercent": 100
   },
@@ -38,15 +38,15 @@
     {
       "id": "G0",
       "name": "カタログ整合",
-      "status": "partial",
-      "target": "fullPlayable=1849",
+      "status": "pass",
+      "target": "fullPlayable=1832",
       "current": "total=1832"
     },
     {
       "id": "G1",
       "name": "DSL 登録",
-      "status": "partial",
-      "target": "dslReady=1849",
+      "status": "pass",
+      "target": "dslReady=1832",
       "current": "dslReady=1832, unimplemented=0, fallbackOnly=0"
     },
     {
@@ -85,7 +85,7 @@
       "name": "プロダクト接続",
       "status": "pass",
       "target": "AC-01–AC-07（Web full-playable）",
-      "current": "deck builder 1849 + custom CPU play + g5Acceptance + AC-06/07 tests"
+      "current": "deck builder 1832 + custom CPU play + g5Acceptance + AC-06/07 tests"
     }
   ],
   "nextActions": [

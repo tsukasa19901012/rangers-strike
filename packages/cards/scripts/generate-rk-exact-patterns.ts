@@ -35,14 +35,15 @@ function collectCatchalls(): CatchallItem[] {
     for (const effect of doc.effects ?? []) {
       const stub = effect.effects?.find((p: { type: string }) => p.type === "grant_keyword");
       if (!stub || !isCatchallGrantKeyword(stub.keyword)) continue;
+      // セマンティックパターン（exact 以外）で一致する効果文は exact 化しない。
+      // エンジンは matchedPattern 単位の解釈（catchallTextPrimitives）を持つため
+      // セマンティック一致が優先される（例: RK-126 hand_pick_show_opponent）。
       const rematched = rematchExtractedEffect(effect.text ?? "", {
         trigger: effect.trigger,
         name: effect.name,
+        excludeExactPatterns: true,
       });
-      const stillCatchall = rematched?.effects.some(
-        (p) => p.type === "grant_keyword" && isCatchallGrantKeyword(p.keyword),
-      );
-      if (!stillCatchall) continue;
+      if (rematched) continue;
       items.push({
         cardId: doc.id,
         effectId: effect.id,

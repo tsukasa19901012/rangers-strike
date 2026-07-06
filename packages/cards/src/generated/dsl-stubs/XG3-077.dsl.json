@@ -15,6 +15,12 @@
     "賢者の石",
     "FFR"
   ],
+  "rushAdditionalCondition": {
+    "conditionId": "return_named_to_hand",
+    "text": "自軍「仮面ライダーアギト」1体を手札に戻す",
+    "partnerName": "仮面ライダーアギト",
+    "unitCount": 1
+  },
   "effects": [
     {
       "id": "note_e280bbe887aae58886e3818c",

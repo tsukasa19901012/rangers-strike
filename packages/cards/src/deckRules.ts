@@ -17,6 +17,15 @@ const UNLIMITED_DECK_NOTE = "デッキに3枚以上入れてもよい";
 
 const EXCLUDED_DECK_TYPES = new Set<string>(PLAYABLE_EXCLUDED_CARD_TYPES);
 
+/**
+ * 同名判定用の正規化カード名。
+ * wiki 由来の区別表記（2nd / XG〜XG7）はカードの印刷名ではないため取り除く。
+ * glossary「2nd」: カードテキストや種類が異なっても同名のカードはデッキに3枚まで。
+ */
+export function normalizeSameCardName(name: string): string {
+  return name.replace(/（(?:2nd|XG[2-7]?)）$/, "");
+}
+
 function formatCardRef(card: CardDefinition): string {
   return `${card.name}（${card.id}）`;
 }
@@ -55,7 +64,8 @@ export function countDeckCopiesByName(
   for (const entry of entries) {
     const card = byId.get(entry.cardId);
     if (!card) continue;
-    byName.set(card.name, (byName.get(card.name) ?? 0) + entry.count);
+    const name = normalizeSameCardName(card.name);
+    byName.set(name, (byName.get(name) ?? 0) + entry.count);
   }
   return byName;
 }
@@ -66,9 +76,12 @@ export function remainingCopiesForCard(
   entries: DeckEntry[],
   catalog: CardCatalog = allCardsCatalog,
 ): number {
-  const sameNameCards = catalog.cards.filter((c) => c.name === card.name);
+  const cardName = normalizeSameCardName(card.name);
+  const sameNameCards = catalog.cards.filter(
+    (c) => normalizeSameCardName(c.name) === cardName,
+  );
   const limit = nameCopyLimit(sameNameCards);
-  const totalForName = countDeckCopiesByName(entries, catalog).get(card.name) ?? 0;
+  const totalForName = countDeckCopiesByName(entries, catalog).get(cardName) ?? 0;
   return Math.max(0, limit - totalForName);
 }
 
@@ -122,12 +135,13 @@ export function validateDeckEntries(
       errors.push(`${formatCardRef(card)}は最大 ${perCardMax} 枚までです`);
     }
 
-    const bucket = byName.get(card.name) ?? { count: 0, cards: [] };
+    const name = normalizeSameCardName(card.name);
+    const bucket = byName.get(name) ?? { count: 0, cards: [] };
     bucket.count += entry.count;
     if (!bucket.cards.some((c) => c.id === card.id)) {
       bucket.cards.push(card);
     }
-    byName.set(card.name, bucket);
+    byName.set(name, bucket);
   }
 
   for (const [name, { count, cards }] of byName) {

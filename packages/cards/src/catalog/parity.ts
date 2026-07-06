@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { applyRecommendedReplacementText } from "../cardText";
 import { findNamedEffectByEffectId } from "../unitEffects";
 import { loadCards, loadFullPlayableDocuments } from "../dsl/loader";
 import {
@@ -216,7 +217,9 @@ function diffCatalogAgainstDsl(
   for (const card of cards) {
     const dsl = loadDslStubCard(card.id);
     if (!dsl) continue;
-    const cardDiffs = diffCardStats(card, dsl, { only: EMIT_DSL_ENRICH_FIELDS }).filter(
+    // emit（enrichFromDsl）と同様にエラッタ読み替えを適用してから比較する
+    const expected = { ...dsl, text: applyRecommendedReplacementText(dsl.text) };
+    const cardDiffs = diffCardStats(card, expected, { only: EMIT_DSL_ENRICH_FIELDS }).filter(
       (entry) => entry.left !== null && entry.left !== undefined,
     );
     if (cardDiffs.length > 0) {

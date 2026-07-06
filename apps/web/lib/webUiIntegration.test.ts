@@ -12,7 +12,6 @@ import {
   legend2Catalog,
   legend3Catalog,
   listImplementedOperations,
-  listImplementedOperations,
   resolvePlayableCard,
 } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -318,7 +317,7 @@ describe("Web UI integration — full playable catalog samples", () => {
 
   it("starts CPU game from hybrid-promoted preset against starter", () => {
     const game = createGameFromDeckSelections(
-      { kind: "hybrid-promoted", tier: 15 },
+      { kind: "hybrid-promoted", tier: 25 },
       { kind: "starter", id: "magiking" },
       { firstPlayer: "player1", rng: () => 0.33 },
     );

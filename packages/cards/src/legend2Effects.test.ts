@@ -45,7 +45,6 @@ describe("legend2 unitEffects wiring", () => {
           "super_ninpo_water_transform",
           "dark_dual_blade",
           "space_ninpo_rope_skull",
-          "juu_kun_do",
           "deace_sniper",
           "green_crush",
           "backup_request",

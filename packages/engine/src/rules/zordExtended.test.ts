@@ -71,3 +71,40 @@ describe("zordExtended", () => {
     ).toBe(true);
   });
 });
+
+describe("vehicle rush additional conditions (XG)", () => {
+  it("requires returning 仮面ライダークウガ to hand for XG2-074 クウガゴウラム", async () => {
+    const { getFullPlayableCardById } = await import("@rangers-strike/cards");
+    const vehicleDef = getFullPlayableCardById("XG2-074");
+    expect(vehicleDef?.rushAdditionalCondition?.conditionId).toBe("return_named_to_hand");
+
+    const vehicle = inst("XG2-074", "v1");
+    const kuuga = inst("XG2-073", "k1");
+    const state = createTestState({
+      player1: { hand: [vehicle], rush: [kuuga] },
+    });
+    state.definitions["XG2-074"] = vehicleDef!;
+    state.definitions["XG2-073"] = getFullPlayableCardById("XG2-073")!;
+
+    const variants = listExtendedZordRushVariants(
+      state.players.player1,
+      state.definitions,
+      "XG2-074",
+      vehicle.instanceId,
+    );
+    expect(variants.length).toBeGreaterThan(0);
+    expect(variants[0]?.zordMaterialInstanceIds).toEqual([kuuga.instanceId]);
+
+    // クウガ不在なら支払い不能
+    const without = createTestState({ player1: { hand: [vehicle] } });
+    without.definitions["XG2-074"] = vehicleDef!;
+    expect(
+      listExtendedZordRushVariants(
+        without.players.player1,
+        without.definitions,
+        "XG2-074",
+        vehicle.instanceId,
+      ),
+    ).toHaveLength(0);
+  });
+});

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import * as bannedCards from "./bannedCards";
 import { getCardById } from "./catalog";
+import { FULL_PLAYABLE_CARD_COUNT } from "./catalog/tiers";
 import { fullPlayableCatalog, getFullPlayableCardById } from "./extendedCatalog";
 import abarenohDeck from "./legend1/decks/abarenoh.json";
 import dekarangerDeck from "./legend1/decks/dekaranger.json";
@@ -88,6 +89,29 @@ describe("deck build rules", () => {
     );
   });
 
+  it("counts 2nd/XG variants as the same card name (glossary 2nd)", () => {
+    // RS-443 バトルジャパン + XG1-001 バトルジャパン（XG）は同名扱いで合計3枚まで
+    const over = validateDeckEntries(
+      [
+        { cardId: "RS-443", count: 2 },
+        { cardId: "XG1-001", count: 2 },
+      ],
+      fullPlayableCatalog,
+      { minSize: 0 },
+    );
+    expect(over.errors.some((e) => e.includes("同名で最大 3 枚"))).toBe(true);
+
+    const ok = validateDeckEntries(
+      [
+        { cardId: "RS-443", count: 1 },
+        { cardId: "XG1-001", count: 2 },
+      ],
+      fullPlayableCatalog,
+      { minSize: 0 },
+    );
+    expect(ok.errors).toEqual([]);
+  });
+
   it("flags unknown ids against fullPlayableCatalog with pool context", () => {
     const result = validateDeckEntries(
       [{ cardId: "RS-9999", count: 1 }],
@@ -95,7 +119,7 @@ describe("deck build rules", () => {
       { minSize: 0 },
     );
     expect(result.errors).toContain(
-      "カタログにないカードです: RS-9999（1,849枚プール外の可能性）",
+      `カタログにないカードです: RS-9999（${FULL_PLAYABLE_CARD_COUNT.toLocaleString()}枚プール外の可能性）`,
     );
   });
 

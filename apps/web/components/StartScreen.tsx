@@ -1,3 +1,4 @@
+import { FULL_PLAYABLE_CARD_COUNT } from "@rangers-strike/cards";
 import type { PlayerId, CpuLevel } from "@rangers-strike/engine";
 import { countEntries, type CustomDeck } from "@/lib/deckBuilder";
 import type { DeckWarningEstimate } from "@/lib/deckWarnings";
@@ -84,7 +85,7 @@ export function StartScreen({
     <div className="start-screen">
       <header className="start-screen__hero">
         <h1 className="start-screen__title">レンジャーズストライク</h1>
-        <p className="start-screen__subtitle">全カード（1,849枚）— CPU対戦（Lv1〜5）</p>
+        <p className="start-screen__subtitle">全カード（{FULL_PLAYABLE_CARD_COUNT.toLocaleString()}枚）— CPU対戦（Lv1〜5）</p>
       </header>
 
       <section className="start-screen__panel" aria-label="対戦設定">

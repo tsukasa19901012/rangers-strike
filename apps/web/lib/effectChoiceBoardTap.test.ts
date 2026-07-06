@@ -78,6 +78,7 @@ describe("effectChoiceBoardTap", () => {
       miniState({
         players: {
           player1: {
+            id: "player1",
             hand: [{ instanceId: "h1", cardId: "RS-007" }],
             deck: [],
             discard: [],
@@ -89,6 +90,7 @@ describe("effectChoiceBoardTap", () => {
             damage: 0,
           },
           player2: {
+            id: "player2",
             hand: [],
             deck: [],
             discard: [],

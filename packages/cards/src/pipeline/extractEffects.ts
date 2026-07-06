@@ -9601,10 +9601,13 @@ const CATCHALL_PATTERN_IDS = new Set<string>([
   "catchall_interpret",
 ]);
 
-function patternsInMatchOrder(): PatternMatch[] {
+const EXACT_PATTERN_PREFIX = /^(rk|rm|pr)_exact_/;
+
+function patternsInMatchOrder(options?: { excludeExactPatterns?: boolean }): PatternMatch[] {
   const specific: PatternMatch[] = [];
   const catchall: PatternMatch[] = [];
   for (const pattern of PATTERNS) {
+    if (options?.excludeExactPatterns && EXACT_PATTERN_PREFIX.test(pattern.pattern)) continue;
     if (CATCHALL_PATTERN_IDS.has(pattern.pattern)) catchall.push(pattern);
     else specific.push(pattern);
   }
@@ -9626,6 +9629,7 @@ function rematchBuiltEffect(
     kind?: WikiEffectSegment["kind"];
     trigger: EffectDefinition["trigger"];
     cardId?: string;
+    excludeExactPatterns?: boolean;
   },
 ): Omit<ExtractedEffect, "segmentIndex" | "needsFallback"> | null {
   const segment: WikiEffectSegment = {
@@ -9633,7 +9637,9 @@ function rematchBuiltEffect(
     body,
     name: options.name,
   };
-  for (const pattern of patternsInMatchOrder()) {
+  for (const pattern of patternsInMatchOrder({
+    excludeExactPatterns: options.excludeExactPatterns,
+  })) {
     if (!pattern.test(body, segment)) continue;
     const built = pattern.build(body, segment, options.trigger);
     if (
@@ -9724,6 +9730,8 @@ export function rematchExtractedEffect(
     kind?: WikiEffectSegment["kind"];
     trigger: EffectDefinition["trigger"];
     cardId?: string;
+    /** rk/rm/pr の exact-match パターンを除外してセマンティックパターンのみで照合する */
+    excludeExactPatterns?: boolean;
   },
 ): Omit<ExtractedEffect, "segmentIndex" | "needsFallback"> | null {
   return rematchBuiltEffect(body, options);

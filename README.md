@@ -4,8 +4,8 @@
 カードデータ・ルールエンジン・Web UI をモノレポ構成で管理しています。
 
 - **プレイ形式:** 1人 vs CPU（CPU レベル Lv1〜Lv5 を選択可能）
-- **対応カード:** コア 1,052 枚 + promoted 797 枚 — **フルプレイアブル計 1,849 枚**（`fullPlayableCatalog`、Wiki 収録の全対戦カード）
-- **実装状況:** ロールアウトゲート G0–G5 すべて pass（`dslReady=1849`、`effect_delegate=0`）。詳細は [full-card-rollout-process.md](docs/architecture/full-card-rollout-process.md) / `npm run audit:rollout-status -w @rangers-strike/cards`
+- **対応カード:** コア 1,052 枚 + promoted 780 枚 — **フルプレイアブル計 1,832 枚**（`fullPlayableCatalog`、Wiki 収録の全対戦カード。コマンダー 17 枚はプール外）
+- **実装状況:** ロールアウトゲート G0–G5 すべて pass（`dslReady=1832`、`effect_delegate=0`）。詳細は [full-card-rollout-process.md](docs/architecture/full-card-rollout-process.md) / `npm run audit:rollout-status -w @rangers-strike/cards`
 - **UI:** スマホ・タブレット・PC 向けレスポンシブ
 
 ## 対戦画面のレイアウト方針
@@ -31,9 +31,9 @@
 | 機能 | 説明 |
 |------|------|
 | CPU 対戦 | ターン進行・ラッシュ・バトル・ストライクなど基本ルールを実装。Lv1〜Lv5 で強さを調整 |
-| デッキ作成 | 1,849 枚プールから検索・収録セット絞り込み・自作デッキ保存（40枚固定・同名3枚まで、戦闘員等は例外） |
+| デッキ作成 | 1,832 枚プールから検索・収録セット絞り込み・自作デッキ保存（40枚固定・同名3枚まで、戦闘員等は例外） |
 | スターターデッキ | Type A/B/C（L1）＋ 轟の翼 / 銀の冒険者（L3）の計5種 |
-| フルプレイアブル | full-playable 1,849 枚すべて DSL 解釈可能。ランダムプリセット・promoted 混在の自作デッキで CPU 対戦 |
+| フルプレイアブル | full-playable 1,832 枚すべて DSL 解釈可能。ランダムプリセット・promoted 混在の自作デッキで CPU 対戦 |
 | カード詳細 | 画像と効果テキストをモーダルで表示 |
 | エラタ対応 | 公式 wiki のエラタ・Q&A を `packages/cards` で管理 |
 | 効果 UI | オペレーション・効果選択・ダメージ支払い・ゾード構築など、カード効果ごとの操作モーダルを配線 |
@@ -61,7 +61,7 @@
 | `core` | 1,052 | RS-001..690、BK/RK/SR、L1–L3 ベース（`corePlayableCatalog`） |
 | `vanilla-promoted` | 184 | 単純効果の昇格カード |
 | `complexity-promoted` | 613 | 複合効果の昇格カード |
-| `full-playable` | **1,849** | 上記 tier の合計（`fullPlayableCatalog`） |
+| `full-playable` | **1,832** | 上記 tier の合計（`fullPlayableCatalog`） |
 
 定数: `packages/cards/src/catalog/tiers.ts`（`CORE_PLAYABLE_CARD_COUNT` / `FULL_PLAYABLE_CARD_COUNT`）
 
@@ -176,7 +176,7 @@ npm run build
 | 内容 | ファイル / コマンド |
 |------|---------------------|
 | コア 1,052 枚 | `src/generated/catalog/core-playable/cards.json` |
-| フルプレイアブル 1,849 枚 | `src/generated/catalog/full-playable/cards.json` |
+| フルプレイアブル 1,832 枚 | `src/generated/catalog/full-playable/cards.json` |
 | カタログ API | `src/catalog/unifiedCatalog.ts`（`loadCards` / `loadCardById` は `src/dsl/loader.ts`） |
 | 後方互換 re-export | `src/extendedCatalog.ts`（`fullPlayableCatalog` 等） |
 | promoted シャード | `generated/catalog/*-promoted/`（vanilla / complexity 等） |
@@ -242,7 +242,7 @@ Legend 3 カードデータのメンテナンス（開発者向け）:
 # atwiki からカード取り込み
 node packages/cards/scripts/import-legend3-from-atwiki.mjs
 
-# コア / フルプレイアブルカタログ再生成（core 1,052 枚 + promoted 797 枚 → 1,849 枚マージ）
+# コア / フルプレイアブルカタログ再生成（core 1,052 枚 + promoted 780 枚 → 1,832 枚マージ）
 npm run emit-core-catalog -w @rangers-strike/cards
 npm run emit-full-playable-catalog -w @rangers-strike/cards
 
