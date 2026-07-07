@@ -50,6 +50,14 @@ export function openBattleEntryOrRideOffChoice(
   if (state.pendingEffectChoice) {
     return { ...state, deferredBattleEntry: entry };
   }
+  // 進入ユニットが進入効果（※バトルエリアに出たとき撃破される 等）で
+  // 既に場を離れている場合は、幽霊のバトル進入プロンプトを出さない。
+  const stillInBattle = state.players[entry.playerId].battle.some(
+    (c) => c.instanceId === entry.instanceId,
+  );
+  if (!stillInBattle) {
+    return restorePhaseActivePlayerUnlessBlocked(state, entry.phasePlayerId);
+  }
   if (shouldPromptRideOffChoice(state, entry)) {
     const unit = state.players[entry.playerId].battle.find(
       (c) => c.instanceId === entry.instanceId,
