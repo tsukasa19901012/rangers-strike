@@ -3,7 +3,7 @@ import { fullPlayableCatalog } from "@rangers-strike/cards";
 import { applyAction } from "../core/applyAction";
 import { getLegalActions } from "../core/legalActions";
 import { applyGrantKeyword } from "../dsl/grantKeyword";
-import { createTestState, inst } from "../testing/fixtures";
+import { createTestState, inst, withCostWindow } from "../testing/fixtures";
 
 const defs = Object.fromEntries(fullPlayableCatalog.cards.map((c) => [c.id, c]));
 
@@ -186,44 +186,82 @@ describe("報告カードの能動効果ランタイム", () => {
     expect(r.state.players.player1.deck[0]?.instanceId).toBe(bottom.instanceId);
   });
 
-  it("RK-301 エクステンドライダー落とし: カブトエクステンダーがあると本来BP8000以下の敵をパワー送り", () => {
-    const self = inst("RK-301", "self");
-    const partner = inst("RK-300", "partner"); // カブトエクステンダー
+  it("RK-301 エクステンドライダー落とし: ライドされたカブトエクステンダーからのラッシュ配置で発動", () => {
+    // カブトエクステンダー(RK-300)がライドされている（加速Sユニットが乗っている）状態で
+    // ガタックエクステンダー(RK-301)をラッシュ配置すると、コンビネーション効果が発動。
+    const kabuto = inst("RK-300", "kabuto");
+    const rider = { ...inst("XG3-066", "rider"), mountedOnInstanceId: kabuto.instanceId }; // 加速S
+    const gatack = inst("RK-301", "gatack");
     const weakEnemy = inst("RK-135", "weak"); // bp 1000
-    const state = baseState({ battle: [self, partner] });
+    const state = createTestState({
+      phase: "rush",
+      definitions: { ...createTestState().definitions, ...defs },
+      player1: {
+        hand: [gatack],
+        rush: [kabuto, rider],
+        power: [
+          inst("TST-P1", "p1"),
+          inst("TST-P2", "p2"),
+          inst("TST-P3", "p3"),
+          inst("TST-P4", "p4"),
+          inst("TST-P5", "p5"),
+        ],
+        ...withCostWindow("rush_category"),
+      },
+    });
     state.players.player2 = { ...state.players.player2, battle: [weakEnemy] };
 
-    const { state: opened } = applyGrantKeyword(
-      state,
-      ctx("RK-301", "ekusutendoraidatoshi", self.instanceId),
-      "rk_fx::RK-301::ekusutendoraidatoshi",
-    );
-    expect(opened.pendingEffectChoice?.effectId).toBe("extend_rider_drop");
-    expect(opened.pendingEffectChoice?.validInstanceIds).toContain(weakEnemy.instanceId);
+    const r = applyAction(state, {
+      type: "rush",
+      playerId: "player1",
+      instanceId: gatack.instanceId,
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.state.pendingEffectChoice?.effectId).toBe("extend_rider_drop");
+    expect(r.state.pendingEffectChoice?.validInstanceIds).toContain(weakEnemy.instanceId);
 
-    const r = applyAction(opened, {
+    const r2 = applyAction(r.state, {
       type: "resolve_effect_choice",
       playerId: "player1",
       instanceId: weakEnemy.instanceId,
     });
-    expect(r.ok).toBe(true);
-    if (!r.ok) return;
-    expect(r.state.players.player2.power.some((c) => c.instanceId === weakEnemy.instanceId)).toBe(
+    expect(r2.ok).toBe(true);
+    if (!r2.ok) return;
+    expect(r2.state.players.player2.power.some((c) => c.instanceId === weakEnemy.instanceId)).toBe(
       true,
     );
   });
 
-  it("RK-301: カブトエクステンダーが無ければ発動しない", () => {
-    const self = inst("RK-301", "self");
+  it("RK-301: ライドされていないカブトエクステンダーからは発動しない", () => {
+    const kabuto = inst("RK-300", "kabuto"); // ライドされていない
+    const gatack = inst("RK-301", "gatack");
     const weakEnemy = inst("RK-135", "weak");
-    const state = baseState({ battle: [self] });
+    const state = createTestState({
+      phase: "rush",
+      definitions: { ...createTestState().definitions, ...defs },
+      player1: {
+        hand: [gatack],
+        rush: [kabuto],
+        power: [
+          inst("TST-P1", "p1"),
+          inst("TST-P2", "p2"),
+          inst("TST-P3", "p3"),
+          inst("TST-P4", "p4"),
+          inst("TST-P5", "p5"),
+        ],
+        ...withCostWindow("rush_category"),
+      },
+    });
     state.players.player2 = { ...state.players.player2, battle: [weakEnemy] };
-    const { state: opened } = applyGrantKeyword(
-      state,
-      ctx("RK-301", "ekusutendoraidatoshi", self.instanceId),
-      "rk_fx::RK-301::ekusutendoraidatoshi",
-    );
-    expect(opened.pendingEffectChoice).toBeUndefined();
+    const r = applyAction(state, {
+      type: "rush",
+      playerId: "player1",
+      instanceId: gatack.instanceId,
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.state.pendingEffectChoice?.effectId).not.toBe("extend_rider_drop");
   });
 
   it("RK-065 ライダーキック: OTコマンド3ホールドで自身が SP1（effect_hold 経路）", () => {
@@ -306,13 +344,15 @@ describe("報告カードの能動効果ランタイム", () => {
 
   it("XG3-069 カメンライド: ラッシュフェイズに起動でき、パワーの仮面ライダーをラッシュ展開", () => {
     const diend = inst("XG3-069", "diend");
-    // powerCost/追加条件なしの仮面ライダーユニットをパワーに用意
+    // 追加条件なしの仮面ライダー(RK-135)は対象、追加条件あり(PK-014 = pc"6+")は対象外。
+    const noCond = { ...inst("RK-135", "pw1"), faceDown: false };
+    const withCond = { ...inst("PK-014", "pw2"), faceDown: false };
     const state = createTestState({
       phase: "rush",
       definitions: { ...createTestState().definitions, ...defs },
       player1: {
         rush: [diend],
-        power: [{ ...inst("RK-135", "pw1"), faceDown: false }],
+        power: [noCond, withCond],
       },
     });
 
@@ -326,6 +366,9 @@ describe("報告カードの能動効果ランタイム", () => {
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.state.pendingEffectChoice?.effectId).toBe("kamen_ride_deploy");
+    // 追加条件を持つ PK-014 は選択肢に含まれない
+    expect(r.state.pendingEffectChoice?.validInstanceIds).toContain(noCond.instanceId);
+    expect(r.state.pendingEffectChoice?.validInstanceIds).not.toContain(withCond.instanceId);
 
     // 1枚選んでスキップ → 1枚だけ展開
     const pick = r.state.pendingEffectChoice!.validInstanceIds[0]!;

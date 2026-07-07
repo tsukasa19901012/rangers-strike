@@ -134,9 +134,28 @@ export function effectChoiceHint(
   }
 }
 
+/**
+ * riderKickEffects ランタイム由来の effectId → 日本語効果名（UI 表示専用）。
+ * EFFECT_LABELS には入れない（cards の effectIdFromName 逆引きを汚染し、
+ * 同名の実カード効果名の解決を壊すため）。
+ */
+const RIDER_EFFECT_UI_LABELS: Record<string, string> = {
+  rider_slash_destroy: "ライダースラッシュ",
+  rider_kick_send_power: "ライダーキック",
+  rider_kick_discard_power_sp1: "ライダーキック",
+  hold_ot_commands_then_sp: "ライダーキック",
+  senko_sosa_declare: "潜行捜索",
+  extend_rider_drop: "エクステンドライダー落とし",
+  kamen_ride_deploy: "カメンライド",
+  power_faceup_sp1_grant: "最初からクライマックスだぜ",
+};
+
 export function effectChoiceTitle(
   pending: NonNullable<GameState["pendingEffectChoice"]>,
 ): string {
-  const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
+  const label =
+    RIDER_EFFECT_UI_LABELS[pending.effectId] ??
+    EFFECT_LABELS[pending.effectId] ??
+    pending.effectId;
   return `【${label}】`;
 }

@@ -10,6 +10,7 @@ import {
   summarizeOperationCoverage,
 } from "./webUiEffectCoverage";
 import { resolveOperationDropRoute } from "./webUiOperationRouting";
+import { effectChoiceTitle } from "./effectChoiceHint";
 
 function stubPending(
   overrides: Partial<PendingEffectChoice>,
@@ -52,6 +53,46 @@ describe("isKnownEffectChoice", () => {
         }),
       ),
     ).toBe(false);
+  });
+
+  it("仮面ライダー系 能動効果は既知（汎用フォールバック=物理名表示にしない）", () => {
+    const cases: Array<[string, PendingEffectChoice["kind"]]> = [
+      ["rider_slash_destroy", "select_unit"],
+      ["rider_kick_send_power", "select_unit"],
+      ["rider_kick_discard_power_sp1", "select_power"],
+      ["hold_ot_commands_then_sp", "select_command"],
+      ["senko_sosa_declare", "declare_number"],
+      ["extend_rider_drop", "select_unit"],
+      ["kamen_ride_deploy", "select_unit"],
+      ["power_faceup_sp1_grant", "select_power"],
+    ];
+    for (const [effectId, kind] of cases) {
+      expect(
+        isKnownEffectChoice(stubPending({ effectId, kind, sourceCardId: "UNKNOWN-999" })),
+        `${effectId} は既知の choice であるべき`,
+      ).toBe(true);
+    }
+  });
+});
+
+describe("バナーの効果名（日本語）表示", () => {
+  it("仮面ライダー系 effectId は日本語の効果名を表示（物理名を出さない）", () => {
+    const expected: Record<string, string> = {
+      rider_slash_destroy: "ライダースラッシュ",
+      rider_kick_send_power: "ライダーキック",
+      rider_kick_discard_power_sp1: "ライダーキック",
+      hold_ot_commands_then_sp: "ライダーキック",
+      senko_sosa_declare: "潜行捜索",
+      extend_rider_drop: "エクステンドライダー落とし",
+      kamen_ride_deploy: "カメンライド",
+      power_faceup_sp1_grant: "最初からクライマックスだぜ",
+    };
+    for (const [effectId, label] of Object.entries(expected)) {
+      const title = effectChoiceTitle(stubPending({ effectId }));
+      expect(title, `${effectId} のタイトル`).toBe(`【${label}】`);
+      // 物理名（effectId）がそのまま出ていないこと
+      expect(title).not.toContain(effectId);
+    }
   });
 });
 

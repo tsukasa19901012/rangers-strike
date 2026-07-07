@@ -224,7 +224,7 @@ import {
   openBattleEntryOrRideOffChoice,
 } from "../rules/battleEntry";
 import { resolveRidingComboOnRideOff } from "../rules/ridingComboEffects";
-import { beginKamenRideDeploy } from "../rules/riderKickEffects";
+import { beginKamenRideDeploy, tryExtendRiderComboOnRush } from "../rules/riderKickEffects";
 import { applyShinobiBallRequiredDefender } from "../rules/batch06FieldEffects";
 import { applySuperBrainDraw } from "../effects/drawEffects";
 
@@ -1223,6 +1223,18 @@ export function applyAction(
             optional: true,
           });
         }
+      }
+
+      // RK-301 等: ライドされている指定ビークルからのコンビネーション（配置時）。
+      if (!nextState.pendingEffectChoice && !rushFinal.counterPending) {
+        const extendCombo = tryExtendRiderComboOnRush(
+          nextState,
+          playerId,
+          found.card.cardId,
+          handFound.card.instanceId,
+          playerId,
+        );
+        if (extendCombo) nextState = extendCombo;
       }
 
       const mainLog = buildLogEntry(

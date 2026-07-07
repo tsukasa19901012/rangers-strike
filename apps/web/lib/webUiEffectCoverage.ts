@@ -94,6 +94,15 @@ const KNOWN_EFFECT_IDS = new Set<string>([
   "simultaneous_order",
   "super_geki_yellow_reanimate",
   "reorder_enemy_battle",
+  // 仮面ライダー系 能動効果（riderKickEffects ランタイム）
+  "rider_slash_destroy",
+  "rider_kick_send_power",
+  "rider_kick_discard_power_sp1",
+  "hold_ot_commands_then_sp",
+  "senko_sosa_declare",
+  "extend_rider_drop",
+  "kamen_ride_deploy",
+  "power_faceup_sp1_grant",
 ]);
 
 export function isKnownEffectChoice(pending: PendingEffectChoice): boolean {

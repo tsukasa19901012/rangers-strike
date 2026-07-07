@@ -195,44 +195,79 @@ export function resolveSenkoSosa(
   };
 }
 
-// ---- RK-301 系: 指定ビークルからのコンビで本来 BP 8000 以下の敵をパワー送り ----
+// ---- RK-301 系: ライドされている指定ビークルからのコンビで本来 BP 8000 以下の敵をパワー送り ----
+//
+// これはビークルの「コンビネーション」効果。ビークルは自身でバトル進入 nc を
+// 起こさないため、ラッシュ（配置）時に「ライドされている指定ビークルが自軍に
+// 存在する」ことを検出して発動する。
 
 const EXTEND_DROP_PARTNER: Record<string, string> = {
   "RK-301": "カブトエクステンダー",
 };
 
-function beginExtendRiderDrop(state: GameState, ctx: GrantKeywordContext): GameState | null {
-  const partnerName = EXTEND_DROP_PARTNER[ctx.sourceCardId];
-  if (partnerName) {
-    // ライドされている指定ビークルが自軍フィールドに存在するときのみ。
-    const player = state.players[ctx.playerId];
-    const hasPartner = [...player.battle, ...player.rush].some(
-      (c) =>
-        cardName(state.definitions, c.cardId) === partnerName ||
-        (c.stackedCards ?? []).some(
-          (s) => cardName(state.definitions, s.cardId) === partnerName,
-        ),
-    );
-    if (!hasPartner) return null;
+/** 指定名のビークルが自軍フィールドで「ライドされている」か（乗っているユニットがいる）。 */
+function hasRiddenPartnerVehicle(
+  state: GameState,
+  playerId: PlayerId,
+  partnerName: string,
+): boolean {
+  const player = state.players[playerId];
+  const partnerVehicleIds = new Set(
+    [...player.battle, ...player.rush]
+      .filter((c) => cardName(state.definitions, c.cardId) === partnerName)
+      .map((c) => c.instanceId),
+  );
+  if (partnerVehicleIds.size === 0) return false;
+  // そのビークルにユニットが乗っている（mountedOnInstanceId が一致）か。
+  return [...player.battle, ...player.rush].some(
+    (c) => c.mountedOnInstanceId && partnerVehicleIds.has(c.mountedOnInstanceId),
+  );
+}
+
+function beginExtendRiderDrop(
+  state: GameState,
+  playerId: PlayerId,
+  sourceCardId: string,
+  sourceInstanceId: string | undefined,
+  phasePlayerId: PlayerId,
+): GameState | null {
+  const partnerName = EXTEND_DROP_PARTNER[sourceCardId];
+  if (partnerName && !hasRiddenPartnerVehicle(state, playerId, partnerName)) {
+    return null;
   }
-  const enemy = state.players[opponent(ctx.playerId)];
+  const enemy = state.players[opponent(playerId)];
   const targets = [...enemy.battle, ...enemy.rush].filter((c) => {
     const d = getDefinition(state.definitions, c.cardId);
     return d?.type === "unit" && typeof d.bp === "number" && d.bp <= 8000;
   });
   if (targets.length === 0) return null;
   return openEffectChoice(state, {
-    playerId: ctx.playerId,
+    playerId,
     effectId: "extend_rider_drop",
-    sourceCardId: ctx.sourceCardId,
-    sourceInstanceId: ctx.triggerSourceInstanceId,
-    phasePlayerId: ctx.phasePlayerId,
+    sourceCardId,
+    sourceInstanceId,
+    phasePlayerId,
     kind: "select_unit",
     validInstanceIds: targets.map((c) => c.instanceId),
     unitDestination: "power",
     selectCount: 1,
     optional: false,
   });
+}
+
+/**
+ * ラッシュ配置時のエクステンダー・コンビネーション判定。
+ * applyAction の rush 経路から呼ぶ。対象外なら null。
+ */
+export function tryExtendRiderComboOnRush(
+  state: GameState,
+  playerId: PlayerId,
+  rushedCardId: string,
+  rushedInstanceId: string,
+  phasePlayerId: PlayerId,
+): GameState | null {
+  if (!(rushedCardId in EXTEND_DROP_PARTNER)) return null;
+  return beginExtendRiderDrop(state, playerId, rushedCardId, rushedInstanceId, phasePlayerId);
 }
 
 /**
@@ -283,13 +318,8 @@ export function tryReportedRiderEffect(
         ? { state: withChoice, detail: "senko_sosa" }
         : { state, detail: "senko_sosa:no_deck" };
     }
-    // RK-301 エクステンドライダー落とし
-    case "RK-301::ekusutendoraidatoshi": {
-      const withChoice = beginExtendRiderDrop(state, ctx);
-      return withChoice
-        ? { state: withChoice, detail: "extend_rider_drop" }
-        : { state, detail: "extend_rider_drop:unmet" };
-    }
+    // RK-301 エクステンドライダー落とし はビークルのコンビネーション効果のため、
+    // nc トリガーではなくラッシュ配置時に tryExtendRiderComboOnRush で発動する。
     default:
       return null;
   }
@@ -376,9 +406,10 @@ function kamenRideDeployTargets(state: GameState, playerId: PlayerId): string[] 
       const d = getDefinition(state.definitions, c.cardId);
       if (!d || d.type !== "unit") return false;
       if (!(d.features ?? []).includes("仮面ライダー")) return false;
-      // 追加条件（ライド等）を持つユニットは対象外。
-      const text = d.text ?? "";
-      if (/追加条件|ライド|RC|RM/.test(text) && /追加/.test(text)) return false;
+      // 「追加条件を持たない」= rushAdditionalCondition なし かつ
+      // 必要パワーが「+」（追加条件マーク）で終わらないこと。
+      if (d.rushAdditionalCondition) return false;
+      if (typeof d.powerCost === "string" && d.powerCost.endsWith("+")) return false;
       return true;
     })
     .map((c) => c.instanceId);
