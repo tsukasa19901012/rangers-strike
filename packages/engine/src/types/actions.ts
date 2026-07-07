@@ -14,6 +14,13 @@ export type ChargeCommandAction = {
 
 export type ZordMaterialDestination = "command" | "discard";
 
+export type SelfRushFromZoneAction = {
+  type: "self_rush_from_zone";
+  playerId: PlayerId;
+  zone: "command" | "power";
+  instanceId: string;
+};
+
 export type RushAction = {
   type: "rush";
   playerId: PlayerId;
@@ -326,6 +333,7 @@ export type ResolveDamagePaymentAction = {
 };
 
 export type GameAction =
+  | SelfRushFromZoneAction
   | ChargePowerAction
   | ChargeCommandAction
   | RushAction

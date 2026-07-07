@@ -86,6 +86,13 @@ export function legend2EffectiveSp(
   let sp = printedSpBase(printed, battlePosition) + modifier;
   sp = Math.max(sp, taxisSpFloor(state, playerId, instance));
   sp = Math.max(sp, fieldPositionSpFloor(state, playerId, instance));
+  // RK-081 ゲゲル: 発動ターン中は自軍 S ユニットすべて SP1
+  if (
+    instance.activatedNcEffects?.includes("gegeru_sp1") &&
+    isSmallUnit(state.definitions, instance.cardId)
+  ) {
+    sp = Math.max(sp, 1);
+  }
 
   /** RS-073 バルシールド: 自軍ダメージ6点で SP2。 */
   if (instance.cardId === "RS-073" && state.players[playerId].damage >= 6) {

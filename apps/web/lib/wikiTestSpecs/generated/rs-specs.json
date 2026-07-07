@@ -4213,7 +4213,7 @@
     "operationKind": "permanent",
     "expectedMechanisms": [
       "operation_permanent_place",
-      "passive_engine_only"
+      "command_payment_modal"
     ]
   },
   {

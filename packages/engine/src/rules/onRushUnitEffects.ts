@@ -20,6 +20,7 @@ import {
 } from "./batch06FieldEffects";
 import { tryOnAllyRushNamedReturnSelfToHand } from "./batch07FieldEffects";
 import { tryRsCatchallOnEnemyRush } from "./rs/rsCatchallRuntime";
+import { applyRadarOnRush } from "./residentOps";
 
 function applyDrawOnRush(
   state: GameState,
@@ -79,6 +80,11 @@ export function applyOnRushUnitEffects(
   );
   nextState = unnamedLegend3.state;
   logs.push(...unnamedLegend3.logs);
+
+  {
+    const radar = applyRadarOnRush(nextState, ownerPlayerId, found.card.cardId);
+    nextState = radar;
+  }
 
   const dslRush = tryResolveDslTriggeredEffects({
     state: nextState,

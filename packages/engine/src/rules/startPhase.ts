@@ -105,6 +105,7 @@ export function initializeStartPhasePlayer(player: PlayerState): PlayerState {
   const hasBattle = player.battle.length > 0;
   return {
     ...player,
+    unitActionsThisTurn: undefined,
     hasDrawnThisStart: false,
     hasPaidEarthForceUpkeep: false,
     hasReleasedCommandsThisStart: !hasHeld,

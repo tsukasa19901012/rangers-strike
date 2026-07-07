@@ -6,6 +6,7 @@ import { applyOnTurnEndBattleEffects } from "./legend2/destroyEffects";
 import { applyResidentOperationTurnEnd } from "./residentOperation";
 import { applyRocketBoosterEndTurnRushReturn } from "./rocketBooster";
 import { applyKeywordTurnEndEffects, clearEnemyTurnDamageFlag } from "./keywordGapRuntime";
+import { applyGegeruTurnEnd } from "./residentOps";
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
   const copy = [...deck];
@@ -151,6 +152,7 @@ export function resolveTurnEndingEffectsImpl(
   nextState = applyOnTurnEndBattleEffects(nextState, endingPlayerId);
   nextState = applyRocketBoosterEndTurnRushReturn(nextState, endingPlayerId);
   nextState = applyNoteOtherNcTurnEndEffects(nextState, endingPlayerId);
+  nextState = applyGegeruTurnEnd(nextState, endingPlayerId);
   const keywordEnd = applyKeywordTurnEndEffects(nextState, endingPlayerId);
   nextState = clearEnemyTurnDamageFlag(keywordEnd.state, endingPlayerId);
   return { state: nextState, logs: keywordEnd.logs };

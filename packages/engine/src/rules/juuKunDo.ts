@@ -5,6 +5,8 @@ import { canAttackDefender } from "./legend3/restrictions";
 import { canAttackRushWithYellowThunder } from "./namedUnitEffects";
 import { startJuuKunDoChoice } from "./pendingChoices";
 
+/** ジュウクンドー同型（アタックの代わりに本来BP合計3000以下を撃破）: RS-106 / PR-006。 */
+const JUU_KUN_DO_CARD_IDS = new Set(["RS-106", "PR-006"]);
 const JUU_KUN_DO_CARD_ID = "RS-106";
 
 /** RS-106 がアタック可能な敵ユニットが1体以上いるか（ジュウクンドー発動条件）。 */
@@ -21,7 +23,7 @@ export function canUseJuuKunDo(
     findInZone(player, "battle", attackerInstanceId) ??
     findInZone(player, "rush", attackerInstanceId);
   if (!attackerFound) return false;
-  if (attackerFound.card.cardId !== JUU_KUN_DO_CARD_ID) return false;
+  if (!JUU_KUN_DO_CARD_IDS.has(attackerFound.card.cardId)) return false;
   if (attackerFound.card.battleActed) return false;
   if (cannotAttackOrStrikeThisTurn(player, attackerFound.card)) return false;
 
@@ -50,10 +52,14 @@ export function applyUseJuuKunDo(
   attackerInstanceId: string,
 ): GameState | null {
   if (!canUseJuuKunDo(state, playerId, attackerInstanceId)) return null;
+  const player = state.players[playerId];
+  const attackerCardId =
+    (findInZone(player, "battle", attackerInstanceId) ??
+      findInZone(player, "rush", attackerInstanceId))?.card.cardId ?? JUU_KUN_DO_CARD_ID;
   return startJuuKunDoChoice(state, {
     playerId,
     effectId: "juu_kun_do",
-    sourceCardId: JUU_KUN_DO_CARD_ID,
+    sourceCardId: attackerCardId,
     sourceInstanceId: attackerInstanceId,
     phasePlayerId: playerId,
     optional: true,

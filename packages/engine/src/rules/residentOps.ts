@@ -103,7 +103,103 @@ const CLOCK_UP: ResidentOpRuntime = {
   },
 };
 
-const RESIDENT_OP_RUNTIMES: readonly ResidentOpRuntime[] = [CLOCK_UP];
+/* --- ゲゲル（RK-081）: 敵撃破のたび山札トップを重ねる / スタートで10枚あれば全S SP1 --- */
+
+const GEGERU: ResidentOpRuntime = {
+  cardIds: ["RK-081"],
+};
+
+const RESIDENT_OP_RUNTIMES: readonly ResidentOpRuntime[] = [CLOCK_UP, GEGERU];
+
+/** RK-081 ゲゲル: 自軍バトルフェイズに敵軍ユニットを撃破したとき山札の上を1枚重ねる。 */
+export function applyGegeruOnEnemyDestroyed(
+  state: GameState,
+  destroyerPlayerId: PlayerId,
+): GameState {
+  if (state.phase !== "battle" || state.activePlayer !== destroyerPlayerId) return state;
+  const player = state.players[destroyerPlayerId];
+  const op = player.operation.find((c) => c.cardId === "RK-081");
+  if (!op || player.deck.length === 0) return state;
+  const [top, ...deck] = player.deck;
+  const withDeck = {
+    ...state,
+    ...updatePlayer(state, destroyerPlayerId, { ...player, deck }),
+  };
+  return updateOperationCard(withDeck, destroyerPlayerId, op.instanceId, (card) => ({
+    ...card,
+    stackedCards: [...(card.stackedCards ?? []), { ...top!, faceDown: true }],
+  }));
+}
+
+/** RK-081 ゲゲル: スタート時に重ね10枚以上→このターン自軍S全員SP1、ターン終了時に捨札。 */
+export function applyGegeruStartPhase(
+  state: GameState,
+  playerId: PlayerId,
+): GameState {
+  const player = state.players[playerId];
+  const op = player.operation.find((c) => c.cardId === "RK-081");
+  if (!op || (op.stackedCards ?? []).length < 10) return state;
+  const mark = (cards: typeof player.rush) =>
+    cards.map((c) => ({
+      ...c,
+      activatedNcEffects: [...(c.activatedNcEffects ?? []), "gegeru_sp1"],
+    }));
+  const operation = player.operation.map((c) =>
+    c.instanceId === op.instanceId ? { ...c, residentActivatedThisRush: true, gegeruDiscardAtEnd: true } : c,
+  );
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      rush: mark(player.rush),
+      battle: mark(player.battle),
+      operation,
+    }),
+  };
+}
+
+/** ゲゲル: ターン終了時、発動済みなら捨札にする（重ねは operationCardsToDiscardWithStack）。 */
+export function applyGegeruTurnEnd(state: GameState, playerId: PlayerId): GameState {
+  const player = state.players[playerId];
+  const op = player.operation.find((c) => c.cardId === "RK-081" && c.gegeruDiscardAtEnd);
+  if (!op) return state;
+  const stacked = (op.stackedCards ?? []).map(({ faceDown: _fd, ...c }) => c);
+  const { stackedCards: _sc, gegeruDiscardAtEnd: _g, ...clean } = op;
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      operation: player.operation.filter((c) => c.instanceId !== op.instanceId),
+      discard: [...player.discard, clean, ...stacked],
+    }),
+  };
+}
+
+/** RS-124 超電子レーダー: 両者、Sユニットをラッシュしたときパワーの非ダメージ1枚を手札へ。 */
+export function applyRadarOnRush(
+  state: GameState,
+  rusherPlayerId: PlayerId,
+  rushedCardId: string,
+): GameState {
+  const anyRadar = (["player1", "player2"] as const).some((pid) =>
+    state.players[pid].operation.some((c) => c.cardId === "RS-124"),
+  );
+  if (!anyRadar) return state;
+  const def = getDefinition(state.definitions, rushedCardId);
+  if (!def || def.type !== "unit" || def.size !== "S") return state;
+  const player = state.players[rusherPlayerId];
+  const idx = player.power.findIndex((c) => !c.faceDown);
+  if (idx < 0) return state;
+  const card = player.power[idx]!;
+  return {
+    ...state,
+    ...updatePlayer(state, rusherPlayerId, {
+      ...player,
+      power: player.power.filter((_, i) => i !== idx),
+      hand: [...player.hand, card],
+    }),
+  };
+}
 
 function runtimeForCard(cardId: string): ResidentOpRuntime | undefined {
   return RESIDENT_OP_RUNTIMES.find((r) => r.cardIds.includes(cardId));

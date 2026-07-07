@@ -232,7 +232,7 @@ export function GameApp() {
   const [battleDrag, setBattleDrag] = useState<DragCardPayload | null>(null);
   const [tapSheet, setTapSheet] = useState<{
     card: CardInstance;
-    fromZone: "hand" | "battle" | "rush";
+    fromZone: "hand" | "battle" | "rush" | "command" | "power";
   } | null>(null);
   const [tapAttackerId, setTapAttackerId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -1661,6 +1661,22 @@ export function GameApp() {
     [canOpenTapSheet],
   );
 
+  const handleCommandCardTap = useCallback(
+    (card: CardInstance) => {
+      if (!canOpenTapSheet) return;
+      setTapSheet({ card, fromZone: "command" });
+    },
+    [canOpenTapSheet],
+  );
+
+  const handlePowerCardTap = useCallback(
+    (card: CardInstance) => {
+      if (!canOpenTapSheet) return;
+      setTapSheet({ card, fromZone: "power" });
+    },
+    [canOpenTapSheet],
+  );
+
   const tapSheetDefinition = useMemo(() => {
     if (!tapSheet) return undefined;
     return (
@@ -1785,6 +1801,24 @@ export function GameApp() {
           id: `ride-${action.vehicleInstanceId}`,
           label: vehicleName ? `「${vehicleName}」にライド` : "ビークルにライド",
           onSelect: () => apply(action),
+        });
+      }
+    }
+
+    if (fromZone === "command" || fromZone === "power") {
+      const selfRush = legalActions.find(
+        (a) =>
+          a.type === "self_rush_from_zone" &&
+          a.zone === fromZone &&
+          a.instanceId === card.instanceId,
+      );
+      if (selfRush) {
+        actions.push({
+          id: "self-rush",
+          label: "ラッシュエリアに出す",
+          detail: "捨札条件を満たしています",
+          variant: "primary",
+          onSelect: () => apply(selfRush),
         });
       }
     }
@@ -2902,6 +2936,8 @@ export function GameApp() {
             onHandCardTap={handleHandCardTap}
             onBattleCardTap={handleBattleCardTap}
             onRushCardTap={handleRushCardTap}
+            onCommandCardTap={handleCommandCardTap}
+            onPowerCardTap={handlePowerCardTap}
             entryAttackerIds={entryAttackerIds}
             wingRushSelectableIds={wingRushSelectableIds}
             wingRushSelectedIds={

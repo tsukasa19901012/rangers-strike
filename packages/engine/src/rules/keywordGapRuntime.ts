@@ -6,8 +6,8 @@
 import type { GameState, PlayerId } from "../types/game";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
-import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
-import { applyUnitLeave } from "./pendingChoices";
+import { cardHasGrantKeyword, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
+import { applyUnitLeave, openEffectChoice } from "./pendingChoices";
 import { countLogicalBattleSlots } from "./battleLine";
 import { buildLogEntry } from "../log/formatLog";
 import { bounceToHand } from "./bounce";
@@ -192,3 +192,120 @@ export function applySelfRushFromZone(
   };
   return { ...state, ...updatePlayer(state, playerId, nextPlayer) };
 }
+
+
+/* --- attack_and_strike_once（PR-013 / RS-236 / XG5-063） --- */
+
+import type { PlayerState } from "../types/game";
+
+/**
+ * battleActed 済みでも「アタックとストライクを1度ずつ」持ちなら
+ * まだ行っていない側の行動を許可する。
+ */
+export function battleActBlocked(
+  player: PlayerState,
+  card: { cardId: string; instanceId: string; battleActed?: boolean },
+  action: "attack" | "strike",
+): boolean {
+  if (!card.battleActed) return false;
+  if (!cardHasGrantKeyword(card.cardId, "attack_and_strike_once")) return true;
+  const rec = player.unitActionsThisTurn?.[card.instanceId];
+  return action === "attack" ? !!rec?.attacked : !!rec?.struck;
+}
+
+export function markUnitBattleAction(
+  player: PlayerState,
+  instanceId: string,
+  action: "attack" | "strike",
+): PlayerState {
+  const prev = player.unitActionsThisTurn ?? {};
+  return {
+    ...player,
+    unitActionsThisTurn: {
+      ...prev,
+      [instanceId]: { ...prev[instanceId], [action === "attack" ? "attacked" : "struck"]: true },
+    },
+  };
+}
+
+/**
+ * alias_* / chase_or_ridden_*_alias キーワードは「〜としてつかえる」テキストを
+ * fusionMaterialAliasNames / 各名寄せ経路（ゾード素材・キャストオフ）で解釈済み。
+ * ここでの認識は監査（audit-hollow-keywords）用のマーカー。
+ */
+export function isAliasKeyword(keyword: string): boolean {
+  return (
+    /^alias_/.test(keyword) ||
+    /^dual_name_alias::/.test(keyword) ||
+    /^chase_or_ridden_[sl]_vehicle_alias$/.test(keyword)
+  );
+}
+
+/* --- turn_start_swap_hand_named（XG4-049/050/051） --- */
+
+/**
+ * 自軍ターン開始時: 手札の指定名カードとフィールドのこれを置き換えてもよい。
+ * release_start_commands 適用時に選択を開く。
+ */
+export function beginTurnStartSwaps(
+  state: GameState,
+  playerId: PlayerId,
+): GameState {
+  const player = state.players[playerId];
+  for (const zone of ["rush", "battle"] as const) {
+    for (const card of player[zone]) {
+      const keyword = listCardGrantKeywords(card.cardId).find((k) =>
+        k.startsWith("turn_start_swap_hand_named::"),
+      );
+      if (!keyword) continue;
+      const names = keyword.split("::")[1]?.split("_") ?? [];
+      const handTargets = player.hand.filter((h) => {
+        const def = getDefinition(state.definitions, h.cardId);
+        return names.some((n) => (def?.name ?? "").includes(n));
+      });
+      if (handTargets.length === 0) continue;
+      const opened = openEffectChoice(state, {
+        playerId,
+        effectId: "turn_start_swap_hand_named",
+        sourceCardId: card.cardId,
+        sourceInstanceId: card.instanceId,
+        phasePlayerId: playerId,
+        kind: "select_hand",
+        validInstanceIds: handTargets.map((h) => h.instanceId),
+        selectCount: 1,
+        optional: true,
+      });
+      if (opened) return opened;
+    }
+  }
+  return state;
+}
+
+export function resolveTurnStartSwap(
+  state: GameState,
+  pending: NonNullable<GameState["pendingEffectChoice"]>,
+  handInstanceId: string,
+): GameState | null {
+  const player = state.players[pending.playerId];
+  const handCard = player.hand.find((c) => c.instanceId === handInstanceId);
+  const fieldId = pending.sourceInstanceId;
+  if (!handCard || !fieldId) return null;
+  const zone = player.rush.some((c) => c.instanceId === fieldId)
+    ? "rush"
+    : player.battle.some((c) => c.instanceId === fieldId)
+      ? "battle"
+      : null;
+  if (!zone) return null;
+  const fieldCard = player[zone].find((c) => c.instanceId === fieldId)!;
+  const { commandHeld: _ch, battleActed: _ba, mountedOnInstanceId: _m, stackedCards: stacked, ...fieldClean } = fieldCard;
+  const nextPlayer = {
+    ...player,
+    hand: [...player.hand.filter((c) => c.instanceId !== handInstanceId), fieldClean],
+    [zone]: [
+      ...player[zone].filter((c) => c.instanceId !== fieldId),
+      { ...handCard, ...(stacked ? { stackedCards: stacked } : {}) },
+    ],
+  };
+  return { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) };
+}
+

@@ -1,5 +1,10 @@
 import type { CardDefinition, Category } from "@rangers-strike/cards";
-import { canonicalCardName, cardCategories, needsZordDownPayment } from "@rangers-strike/cards";
+import {
+  canonicalCardName,
+  cardCategories,
+  fusionMaterialAliasNames,
+  needsZordDownPayment,
+} from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import {
   canRushUnitExceptCommandHold,
@@ -49,10 +54,14 @@ function deckCardsMatchingName(
   const player = state.players[playerId];
   const target = canonicalCardName(targetName);
   return player.deck
-    .filter(
-      (card) =>
-        canonicalCardName(cardName(state.definitions, card.cardId)) === target,
-    )
+    .filter((card) => {
+      if (canonicalCardName(cardName(state.definitions, card.cardId)) === target) {
+        return true;
+      }
+      // 「〜としてつかえる」別名（XG1-070 ディケイド カブトRF 等）も対象にする
+      const def = getDefinition(state.definitions, card.cardId);
+      return fusionMaterialAliasNames(def?.text).includes(target);
+    })
     .map((card) => card.instanceId);
 }
 

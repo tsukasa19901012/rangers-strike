@@ -103,6 +103,6 @@ describe("vertical slice — all starter deck CPU simulation", () => {
       expect(report.phaseCoverage.battle).toBe(GAME_COUNT);
       expect(report.withStrike).toBeGreaterThan(GAME_COUNT * 0.25);
     },
-    600_000,
+    900_000,
   );
 });

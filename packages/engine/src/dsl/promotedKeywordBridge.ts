@@ -200,8 +200,27 @@ export function promotedKeywordBpBonus(
   }
 
   bonus += fieldAuraBpBonus(state, playerId, instance);
+  bonus += stackedEquipmentBpBonus(instance);
 
   return bonus;
+}
+
+/** 翼合体（RS-623 等）: 重ねられた装備カードによる BP ボーナス。 */
+export function stackedEquipmentBpBonus(instance: CardInstance): number {
+  let bonus = 0;
+  for (const stacked of instance.stackedCards ?? []) {
+    if (listCardGrantKeywords(stacked.cardId).includes("stack_da_less_l_on_rush")) {
+      bonus += 2000;
+    }
+  }
+  return bonus;
+}
+
+/** 翼合体: 重ねられた装備がウイングを付与しているか。 */
+export function stackedEquipmentGrantsWing(instance: CardInstance): boolean {
+  return (instance.stackedCards ?? []).some((stacked) =>
+    listCardGrantKeywords(stacked.cardId).includes("stack_da_less_l_on_rush"),
+  );
 }
 
 /** 自軍エリアのカードが放つ BP オーラ（RS-289/XP-023 恐竜 +1000 / RS-430 WB S 等）。 */

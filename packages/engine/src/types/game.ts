@@ -59,6 +59,8 @@ export type CardInstance = {
   residentActivatedThisRush?: boolean;
   /** 常駐 OP の上に重ねたカード（wiki: 常駐置き場の重ね）。 */
   stackedCards?: CardInstance[];
+  /** RK-081 ゲゲル: このターン終了時に捨札にする。 */
+  gegeruDiscardAtEnd?: boolean;
   /** レジスト: バトル撃破後にホールド留場。 */
   registerHeld?: boolean;
 };
@@ -83,6 +85,8 @@ export type PlayerState = {
   hasChargedThisTurn?: boolean;
   /** damage_gate_battle_entry: 敵軍ターン中にダメージを受けた（自軍ターン終了で消える）。 */
   damagedOnEnemyTurn?: boolean;
+  /** attack_and_strike_once: ユニットごとの今ターンの行動履歴。 */
+  unitActionsThisTurn?: Record<string, { attacked?: boolean; struck?: boolean }>;
   /** スタートフェイズ: このターンの必須ドロー後 true。 */
   hasDrawnThisStart?: boolean;
   /** スタートフェイズ: このターンにホールド中コマンドをリリースした後 true。 */

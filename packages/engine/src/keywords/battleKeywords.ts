@@ -10,7 +10,7 @@ import {
   addTurnRestrictionModifier,
   clearTurnRestrictionModifiersForInstance,
 } from "../core/scopedModifiers";
-import { cardHasGrantKeyword, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
+import { cardHasGrantKeyword, listCardGrantKeywords, stackedEquipmentGrantsWing } from "../dsl/promotedKeywordBridge";
 import { battlePositionOneBased } from "../rules/fractionalSp";
 import { logicalBattlePosition } from "../rules/battleLine";
 import { srBigBatonTaxisCategory } from "../rules/srEffects";
@@ -278,7 +278,10 @@ export function canWingAttackFromRush(
   unit: CardInstance,
 ): boolean {
   if (state.phase !== "battle") return false;
-  if (!cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId })) {
+  if (
+    !cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId }) &&
+    !stackedEquipmentGrantsWing(unit)
+  ) {
     return false;
   }
   if (unit.battleActed) return false;
@@ -293,7 +296,10 @@ export function canHoldForWing(
   unit: CardInstance,
 ): boolean {
   if (state.phase !== "battle") return false;
-  if (!cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId })) {
+  if (
+    !cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId }) &&
+    !stackedEquipmentGrantsWing(unit)
+  ) {
     return false;
   }
   if (unit.battleActed) return false;
@@ -336,10 +342,12 @@ export function canCancelWingHold(
   if (!found) return false;
   if (!found.card.commandHeld || found.card.battleActed) return false;
   if (!wingTurnBlocksStrike(player, instanceId)) return false;
-  return cardHasKeyword(state.definitions, found.card.cardId, "wing", {
-    state,
-    playerId,
-  });
+  return (
+    cardHasKeyword(state.definitions, found.card.cardId, "wing", {
+      state,
+      playerId,
+    }) || stackedEquipmentGrantsWing(found.card)
+  );
 }
 
 export function applyCancelWingHold(

@@ -46,6 +46,18 @@ import {
   moveCommandUnitToBattleSilent,
 } from "./legend1/coreGapEffects";
 import { applyCastoffDeckRush, continueCastoffAfterHold } from "./castoff";
+import { resolveTurnStartSwap } from "./keywordGapRuntime";
+import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
+import {
+  resolveDeclareNumberDeckReveal,
+  resolveDestroyVehicleAndRider,
+  resolveEnemyResidentPick,
+  resolveFlipEnemyPowerDamageDamage,
+  resolveFlipEnemyPowerDamagePick,
+  resolveHoldEntryDestroy,
+  resolveStackSelfOntoL,
+  resolveStackVehicleUnderSelf,
+} from "./keywordChoiceRuntime";
 import {
   beginAssaultVectorDestroy,
   beginDinoSlasherDiscard,
@@ -1831,12 +1843,47 @@ function unitLeaveDestination(
   return dest === "power" ? "power" : dest === "deck_top" ? "deck_top" : "discard";
 }
 
+/** XG2-042 / XP-005: ユニットでなくなるとき、オモテ向き自軍パワーの「仮面ライダー」を1枚捨札にして留まる（自動適用）。 */
+function tryRegisterStayOnLeave(
+  state: GameState,
+  instanceId: string,
+): GameState | null {
+  for (const pid of ["player1", "player2"] as const) {
+    const player = state.players[pid];
+    for (const zone of ["battle", "rush"] as const) {
+      const card = player[zone].find((c) => c.instanceId === instanceId);
+      if (!card) continue;
+      if (!cardHasGrantKeyword(card.cardId, "register_stay_on_power_discard_raida")) return null;
+      const idx = player.power.findIndex((c) => {
+        if (c.faceDown) return false;
+        const def = getDefinition(state.definitions, c.cardId);
+        return (def?.features ?? []).includes("仮面ライダー");
+      });
+      if (idx < 0) return null;
+      const paid = player.power[idx]!;
+      return {
+        ...state,
+        ...updatePlayer(state, pid, {
+          ...player,
+          power: player.power.filter((_, i) => i !== idx),
+          discard: [...player.discard, paid],
+        }),
+      };
+    }
+  }
+  return null;
+}
+
 export function applyUnitLeave(
   state: GameState,
   instanceId: string,
   destination: "power" | "discard" | "deck_top",
   phasePlayerId: PlayerId,
 ): ChoiceOutcome {
+  {
+    const stayed = tryRegisterStayOnLeave(state, instanceId);
+    if (stayed) return { state: stayed };
+  }
   const located = findCardOwner(state, instanceId);
   if (!located || (located.zone !== "rush" && located.zone !== "battle")) {
     return { error: "invalid_target" };
@@ -2275,6 +2322,15 @@ export function applyEffectChoiceSelect(
           }),
         };
       }
+      if (pending.effectId === "declare_number_deck_reveal_destroy") {
+        const revealed = resolveDeclareNumberDeckReveal(
+          clearChoice(state, pending.phasePlayerId),
+          pending,
+          declared,
+        );
+        if (revealed.pendingEffectChoice) return { state: revealed };
+        return { state: revealed };
+      }
       const nextState = applyFlowerBombDeclaredNumber(
         state,
         pending.playerId,
@@ -2284,6 +2340,34 @@ export function applyEffectChoiceSelect(
       return finishChoice(nextState, pending, String(declared));
     }
     case "select_unit": {
+      if (
+        pending.effectId === "enemy_resident_pick_to_power" ||
+        pending.effectId === "enemy_resident_pick_hold"
+      ) {
+        const next = resolveEnemyResidentPick(state, pending, instanceId);
+        if (!next) return { error: "invalid_target" };
+        return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
+      if (pending.effectId === "destroy_vehicle_and_rider") {
+        const next = resolveDestroyVehicleAndRider(state, pending, instanceId);
+        if (!next) return { error: "invalid_target" };
+        return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
+      if (pending.effectId === "hold_entry_destroy_male") {
+        const next = resolveHoldEntryDestroy(state, pending, instanceId);
+        if (!next) return { error: "invalid_target" };
+        return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
+      if (pending.effectId === "stack_self_onto_l") {
+        const next = resolveStackSelfOntoL(state, pending, instanceId);
+        if (!next) return { error: "invalid_target" };
+        return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
+      if (pending.effectId === "stack_vehicle_under_self") {
+        const next = resolveStackVehicleUnderSelf(state, pending, instanceId);
+        if (!next) return { error: "invalid_target" };
+        return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
       if (pending.effectId === MURPHY_CHASE_EFFECT_ID) {
         const located = findCardOwner(state, instanceId);
         const selectedName = located
@@ -3165,6 +3249,18 @@ export function applyEffectChoiceSelect(
     }
 
     case "select_power": {
+      if (pending.effectId === "flip_enemy_power_damage_pick") {
+        const next = resolveFlipEnemyPowerDamagePick(state, pending, instanceId);
+        if (!next) return { error: "invalid_target" };
+        return next.pendingEffectChoice && next.pendingEffectChoice !== pending
+          ? { state: next }
+          : finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
+      if (pending.effectId === "flip_enemy_power_damage_damage") {
+        const next = resolveFlipEnemyPowerDamageDamage(state, pending, instanceId);
+        if (!next) return { error: "invalid_target" };
+        return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
       const prev = pending.selectedInstanceIds ?? [];
       if (prev.includes(instanceId)) return { error: "already_selected" };
       const selected = [...prev, instanceId];
@@ -3273,6 +3369,11 @@ export function applyEffectChoiceSelect(
     }
 
     case "select_hand": {
+      if (pending.effectId === "turn_start_swap_hand_named") {
+        const next = resolveTurnStartSwap(state, pending, instanceId);
+        if (!next) return { error: "invalid_target" };
+        return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
       if (pending.effectId === "shuriken_deck_reveal_pick_hand") {
         const result = completeShurikenDeckRevealSwap(state, pending, instanceId);
         if ("error" in result) return result;

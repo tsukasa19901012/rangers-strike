@@ -12,6 +12,27 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  * 新たな未消費キーワード（実装漏れ）が増えたら fail する。
  * 実装したら allowlist から削除して前進を固定する。
  */
+describe("hollow resident ratchet", () => {
+  it("does not add new hollow resident operations", () => {
+    const allow = new Set(
+      readFileSync(join(__dirname, "testing/hollowResidentAllowlist.txt"), "utf8")
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean),
+    );
+    const out = execFileSync("node", [join(__dirname, "../scripts/audit-hollow-residents.mjs")], {
+      encoding: "utf8",
+    });
+    const current = out
+      .split("\n")
+      .slice(1)
+      .map((l) => l.trim().split(/\s+/)[0])
+      .filter((k): k is string => !!k);
+    const newOnes = current.filter((k) => !allow.has(k));
+    expect(newOnes, `未実装の常駐オペが増えています: ${newOnes.join(", ")}`).toEqual([]);
+  });
+});
+
 describe("hollow keyword ratchet", () => {
   it("does not add new unconsumed keywords", () => {
     const allow = new Set(

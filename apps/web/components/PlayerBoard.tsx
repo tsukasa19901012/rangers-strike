@@ -417,6 +417,9 @@ export type PlayerBoardProps = {
   onBattleCardTap?: (card: CardInstance) => void;
   /** タップ操作: 自軍ラッシュエリアカードのアクションシートを開く。 */
   onRushCardTap?: (card: CardInstance) => void;
+  /** タップ操作: 自軍コマンド/パワーのカード（自己ラッシュ等）。 */
+  onCommandCardTap?: (card: CardInstance) => void;
+  onPowerCardTap?: (card: CardInstance) => void;
 };
 
 export function PlayerBoard({
@@ -477,6 +480,8 @@ export function PlayerBoard({
   onHandCardTap,
   onBattleCardTap,
   onRushCardTap,
+  onCommandCardTap,
+  onPowerCardTap,
 }: PlayerBoardProps) {
   const interactive = isHuman && isHumanTurn;
   const [dragging, setDragging] = useState<DragCardPayload | null>(null);
@@ -605,6 +610,7 @@ export function PlayerBoard({
       onPreview={onPreview}
       selectableIds={selectableIds}
       onSelectTarget={handleSelectTarget}
+      onCardClick={interactive ? onPowerCardTap : undefined}
       emptyLabel="—"
     />
   );
@@ -728,6 +734,7 @@ export function PlayerBoard({
       selectableIds={selectableIds}
       selectedIds={commandPaymentSelectedIds}
       onSelectTarget={handleSelectTarget}
+      onCardClick={interactive ? onCommandCardTap : undefined}
       getCommandHeld={(card) => card.commandHeld || card.registerHeld}
       emptyLabel="—"
     />

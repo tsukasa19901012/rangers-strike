@@ -18,9 +18,18 @@ collectSrc(join(root, "engine/src"), files);
 const engineSrc = files.map((f) => readFileSync(f, "utf8")).join("\n");
 
 // キーワード収集
+// アクティブトリガー（nc / on_rush / enter_battle / riding_combo / on_attack 等）の
+// 未知キーワードは grantKeyword の汎用テキスト解釈フォールバックで発火するため、
+// while_in_field（常在）由来のもののみ「不発の可能性」として数える。
+const ACTIVE_TRIGGERS = new Set([
+  "nc", "on_rush", "enter_battle", "riding_combo", "on_attack", "operation",
+  "on_strike", "on_destroy", "joint_combo_l",
+]);
 const keywordCards = new Map(); // keyword -> Set(cardId)
 for (const [cardId, doc] of Object.entries(bundle)) {
   for (const effect of doc.effects ?? []) {
+    const trigger = effect.trigger?.type ?? "";
+    if (ACTIVE_TRIGGERS.has(trigger)) continue;
     for (const p of effect.effects ?? []) {
       if (p.type !== "grant_keyword") continue;
       const kw = p.keyword;

@@ -100,6 +100,7 @@ import { getCardEffect } from "@rangers-strike/cards";
 import { isHidoraEggUsed } from "../rules/turnModifiers";
 import { listValidChaseVehicleIds } from "../keywords/chase";
 import { canDeclareRush } from "../rules/rushDeclaration";
+import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
 import {
   getMorphReactionActorId,
   morphOrderChooserPlayerId,
@@ -782,6 +783,20 @@ function appendRushCategoryPaymentActions(
       actions.push(action);
     }
   };
+
+  // rush_from_discard_count_*: コマンド/パワーからの自己ラッシュ
+  for (const zone of ["command", "power"] as const) {
+    for (const card of player[zone]) {
+      if (canSelfRushFromZone(state, playerId, zone, card.instanceId)) {
+        actions.push({
+          type: "self_rush_from_zone",
+          playerId,
+          zone,
+          instanceId: card.instanceId,
+        });
+      }
+    }
+  }
 
   for (const card of player.hand) {
     const definition = getDefinition(state.definitions, card.cardId);
@@ -1581,7 +1596,7 @@ export function getLegalActions(state: GameState): GameAction[] {
       }
 
       for (const attacker of player.battle) {
-        if (attacker.battleActed) continue;
+        if (battleActBlocked(player, attacker, "attack")) continue;
         if (cannotAttackOrStrikeThisTurn(player, attacker, state, playerId)) continue;
         if (unitCannotInitiateAttack(attacker.cardId)) continue;
         for (const defender of enemy.battle) {
@@ -1634,7 +1649,7 @@ export function getLegalActions(state: GameState): GameAction[] {
       }
 
       for (const card of player.battle) {
-        if (card.battleActed) continue;
+        if (battleActBlocked(player, card, "strike")) continue;
         if (cannotAttackOrStrikeThisTurn(player, card, state, playerId)) continue;
         if (!canStrikeUnit(state.definitions, card, state, playerId)) continue;
         actions.push({

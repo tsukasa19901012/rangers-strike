@@ -5,6 +5,7 @@ import { initializeStartPhasePlayer } from "../rules/startPhase";
 import {
   INITIAL_HAND_SIZE,
   hasWonByDamage,
+  WIN_DAMAGE,
   hasWonByDeckOut,
 } from "../types/game";
 import { buildDefinitionMap } from "./catalog";
@@ -119,12 +120,29 @@ export function createGame(options: CreateGameOptions): GameState {
   };
 }
 
+/**
+ * 敗北ダメージ閾値。
+ * RS-244 命の泉: どちらかの場にあれば両者 9 点まで負けない。
+ * RS-348 メディテーション: 配置者は 14 点まで負けない。
+ */
+export function loseDamageThreshold(state: GameState, playerId: PlayerId): number {
+  let threshold = WIN_DAMAGE;
+  const anyLifeSpring = (["player1", "player2"] as const).some((pid) =>
+    state.players[pid].operation.some((c) => c.cardId === "RS-244"),
+  );
+  if (anyLifeSpring) threshold = Math.max(threshold, 9);
+  if (state.players[playerId].operation.some((c) => c.cardId === "RS-348")) {
+    threshold = Math.max(threshold, 14);
+  }
+  return threshold;
+}
+
 export function checkWinner(state: GameState): PlayerId | null {
   const p1 = state.players.player1;
   const p2 = state.players.player2;
 
-  if (hasWonByDamage(p1)) return "player2";
-  if (hasWonByDamage(p2)) return "player1";
+  if (p1.damage >= loseDamageThreshold(state, "player1")) return "player2";
+  if (p2.damage >= loseDamageThreshold(state, "player2")) return "player1";
   if (hasWonByDeckOut(p1)) return "player2";
   if (hasWonByDeckOut(p2)) return "player1";
   return null;

@@ -76,6 +76,16 @@ import {
   applyFuasutokurasunaOnRush,
 } from "../rules/batch06FieldEffects";
 import { beginCastoffOnRush } from "../rules/castoff";
+import { tryGenericTextFallback } from "./genericTextFallback";
+import {
+  beginDeclareNumberDeckReveal,
+  beginDestroyVehicleAndRider,
+  beginEnemyResidentPick,
+  beginFlipEnemyPowerDamage,
+  beginHoldEntryDestroy,
+  beginStackSelfOntoL,
+  beginStackVehicleUnderSelf,
+} from "../rules/keywordChoiceRuntime";
 import {
   beginAssaultVectorDestroy,
   beginDinoSlasherDiscard,
@@ -191,6 +201,16 @@ export const SUPPORTED_GRANT_KEYWORDS = new Set([
   "destroy_striker_on_strike_self_discard",
   "strike_intercept_with_s_unit",
   "castoff_on_rush",
+  "flip_enemy_power_damage",
+  "enemy_resident_pick_to_power",
+  "enemy_resident_pick_hold",
+  "declare_number_deck_reveal_destroy",
+  "destroy_vehicle_and_rider",
+  "hold_entry_destroy_fx_unknown",
+  "stack_da_less_l_on_rush",
+  "stack_vehicle_on_rush",
+  "battle_original_bp_combo_pinku",
+  "cannot_counter_combo_iero",
   "opponent_hold_commands_by_category",
   "dino_slasher_category_balance",
   "assault_vector_destroy",
@@ -319,6 +339,29 @@ function grantSpLevel(
 
 function parseFeatureFromEffectText(text: string): string {
   return text.match(/特徴「([^」]+)」/)?.[1] ?? "メカ";
+}
+
+function markActivatedNc(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+  effectId: string,
+): GameState {
+  const player = state.players[playerId];
+  const mark = (cards: typeof player.battle) =>
+    cards.map((c) =>
+      c.instanceId === instanceId
+        ? { ...c, activatedNcEffects: [...(c.activatedNcEffects ?? []), effectId] }
+        : c,
+    );
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      battle: mark(player.battle),
+      rush: mark(player.rush),
+    }),
+  };
 }
 
 export function applyGrantKeyword(
@@ -964,6 +1007,64 @@ export function applyGrantKeyword(
       if (!withChoice) return { state };
       return { state: withChoice, detail: "castoff_on_rush" };
     }
+    case "flip_enemy_power_damage": {
+      const withChoice = beginFlipEnemyPowerDamage(state, ctx);
+      if (!withChoice) return { state, detail: `${keyword}:no_targets` };
+      return { state: withChoice, detail: keyword };
+    }
+    case "enemy_resident_pick_to_power":
+    case "enemy_resident_pick_hold": {
+      const withChoice = beginEnemyResidentPick(
+        state,
+        ctx,
+        keyword === "enemy_resident_pick_to_power" ? "power" : "command_hold",
+      );
+      if (!withChoice) return { state, detail: `${keyword}:no_targets` };
+      return { state: withChoice, detail: keyword };
+    }
+    case "declare_number_deck_reveal_destroy": {
+      const withChoice = beginDeclareNumberDeckReveal(state, ctx);
+      if (!withChoice) return { state, detail: `${keyword}:no_targets` };
+      return { state: withChoice, detail: keyword };
+    }
+    case "destroy_vehicle_and_rider": {
+      const withChoice = beginDestroyVehicleAndRider(state, ctx);
+      if (!withChoice) return { state, detail: `${keyword}:no_targets` };
+      return { state: withChoice, detail: keyword };
+    }
+    case "hold_entry_destroy_fx_unknown": {
+      const withChoice = beginHoldEntryDestroy(state, ctx);
+      if (!withChoice) return { state, detail: `${keyword}:no_targets` };
+      return { state: withChoice, detail: keyword };
+    }
+    case "stack_da_less_l_on_rush": {
+      const withChoice = beginStackSelfOntoL(state, ctx);
+      if (!withChoice) return { state, detail: `${keyword}:no_targets` };
+      return { state: withChoice, detail: keyword };
+    }
+    case "stack_vehicle_on_rush": {
+      const withChoice = beginStackVehicleUnderSelf(state, ctx);
+      if (!withChoice) return { state, detail: `${keyword}:no_targets` };
+      return { state: withChoice, detail: keyword };
+    }
+    case "battle_original_bp_combo_pinku": {
+      // RS-189: このバトル中、敵ユニットの BP を本来の値として扱う
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state, detail: keyword };
+      return {
+        state: markActivatedNc(state, ctx.playerId, instanceId, "use_printed_bp_in_battle"),
+        detail: keyword,
+      };
+    }
+    case "cannot_counter_combo_iero": {
+      // RS-190: このアタック中、相手はカウンターを発動できない
+      const instanceId = ctx.triggerSourceInstanceId;
+      if (!instanceId) return { state, detail: keyword };
+      return {
+        state: markActivatedNc(state, ctx.playerId, instanceId, "cannot_counter_on_attack"),
+        detail: keyword,
+      };
+    }
     case "opponent_hold_commands_by_category": {
       const withChoice = beginOpponentHoldByCategoryCount(state, {
         effectOwnerId: ctx.playerId,
@@ -1154,6 +1255,10 @@ export function applyGrantKeyword(
       }
       const rkBkResolved = tryRkBkGrantKeywordFromEffect(state, ctx, keyword);
       if (rkBkResolved) return rkBkResolved;
+      // 最終フォールバック: 付与元効果のテキストを構造化解釈して解決を試みる
+      // （grant_keyword 原文の再実行はしないため再帰しない）
+      const genericResolved = tryGenericTextFallback(state, ctx, keyword);
+      if (genericResolved) return genericResolved;
       return { state };
     }
   }

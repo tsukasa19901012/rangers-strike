@@ -72,7 +72,11 @@ export function applyDarkDealRushHolds(
 }
 
 export function needsBattleEntryRushDiscard(cardId: string): boolean {
-  return hasUnnamedRule(cardId, "battle_entry_discard_s_from_rush");
+  return (
+    hasUnnamedRule(cardId, "battle_entry_discard_s_from_rush") ||
+    // RS-242 / RS-416: ※自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない
+    cardHasGrantKeyword(cardId, "require_discard_rush_s_entry")
+  );
 }
 
 export function canPayBattleEntryRushDiscard(player: PlayerState, definitions: GameState["definitions"]): boolean {

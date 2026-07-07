@@ -59,6 +59,8 @@ import {
 import { addRushPhaseRuleModifier } from "./scopedModifiers";
 import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
 import { applyResidentOpOnPlace } from "../rules/residentOps";
+import { applySelfRushFromZone, battleActBlocked, beginTurnStartSwaps, markUnitBattleAction } from "../rules/keywordGapRuntime";
+import { applyGegeruStartPhase } from "../rules/residentOps";
 import { emitStrikeDeclared } from "../events/emitStrikeDeclared";
 import { emitTurnEndingAndResolve } from "../events/emitTurnEnding";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
@@ -475,6 +477,8 @@ export function applyAction(
     }
 
     case "release_start_commands": {
+      state = applyGegeruStartPhase(state, playerId);
+      state = beginTurnStartSwaps(state, playerId);
       if (state.phase !== "start") return fail("wrong_phase");
       if (player.hasReleasedCommandsThisStart) return fail("already_released");
       if (!player.command.some((c) => c.commandHeld)) {
@@ -1423,6 +1427,19 @@ export function applyAction(
       return ok(nextState, buildSimpleLogEntry(playerId, "pass_battle_entry"));
     }
 
+    case "self_rush_from_zone": {
+      const applied = applySelfRushFromZone(state, playerId, action.zone, action.instanceId);
+      if (!applied) return fail("illegal_action");
+      return ok(
+        applied,
+        buildLogEntry(playerId, "rush", 
+          state.players[playerId][action.zone].find((c) => c.instanceId === action.instanceId)?.cardId ?? action.instanceId,
+          state.definitions,
+          "self_rush_from_zone",
+        ),
+      );
+    }
+
     case "strike": {
       if (state.phase !== "battle") return fail("wrong_phase");
       if (state.pendingStrike) return fail("pending_strike");
@@ -1435,11 +1452,15 @@ export function applyAction(
 
       const found = findInZone(player, "battle", action.instanceId);
       if (!found) return fail("card_not_in_battle");
-      if (found.card.battleActed) return fail("already_acted");
+      if (battleActBlocked(player, found.card, "strike")) return fail("already_acted");
       if (!canStrikeUnit(state.definitions, found.card, state, playerId)) return fail("insufficient_sp");
 
       const damage = strikeDamageFor(state.definitions, found.card, state, playerId);
-      let nextPlayer = markBattleActed(player, action.instanceId);
+      let nextPlayer = markUnitBattleAction(
+        markBattleActed(player, action.instanceId),
+        action.instanceId,
+        "strike",
+      );
       let nextState: GameState = {
         ...state,
         ...updatePlayer(state, playerId, nextPlayer),
@@ -2069,7 +2090,7 @@ export function applyAction(
       ) {
         return fail("wing_attack_not_allowed");
       }
-      if (attackerFound.card.battleActed) return fail("already_acted");
+      if (battleActBlocked(actor, attackerFound.card, "attack")) return fail("already_acted");
       if (cannotAttackOrStrikeThisTurn(actor, attackerFound.card)) {
         return fail("cannot_attack_turn_rushed");
       }
@@ -2100,7 +2121,15 @@ export function applyAction(
         playerId,
         attackerFound.card.cardId,
       );
-      const battleState = miragePrep.state;
+      let battleState = miragePrep.state;
+      battleState = {
+        ...battleState,
+        ...updatePlayer(
+          battleState,
+          playerId,
+          markUnitBattleAction(battleState.players[playerId], action.attackerInstanceId, "attack"),
+        ),
+      };
 
       const pending: PendingBattle = {
         attackerPlayerId: playerId,

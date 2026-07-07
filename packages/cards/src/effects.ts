@@ -70,6 +70,9 @@ export const LEGEND1_EFFECTS: Record<string, CardEffectMeta> = {
   "RS-029": op("courage_magic", "permanent", "RS-029"),
   "RS-030": op("adventure", "permanent", "RS-030"),
   "RS-067": op("plasma_energy", "permanent", "RS-067"),
+  // プロモ/再録の同文カードを実装済み効果へマッピング
+  "PR-003": op("adventure", "permanent", "PR-003"),
+  "RS-248": op("prism_power", "permanent", "RS-248"),
   "RS-068": op("discard_to_hand", "instant", "RS-068", "discard_any"),
   "RS-069": op("lightning_gravity", "permanent", "RS-069"),
 };

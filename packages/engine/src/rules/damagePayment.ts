@@ -139,6 +139,10 @@ export function applyDamageToPlayer(
   options?: { bloodVesselPreferMorph?: boolean },
 ): GameState {
   if (amount <= 0) return state;
+  // RS-348 メディテーション: 1点受けるたび追加1点（追加分に追加はない）
+  if (state.players[playerId].operation.some((c) => c.cardId === "RS-348")) {
+    amount = amount * 2;
+  }
   const player = state.players[playerId];
   if (requiresDamagePowerChoice(player, amount)) {
     return startDamagePayment(state, playerId, amount, resume, choosingPlayerId, options);
