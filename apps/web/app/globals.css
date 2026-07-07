@@ -656,6 +656,8 @@ select {
 
 .playsheet__command .card--command-held .card__image {
   box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.7), var(--shadow-card);
+  /* カード枠ごと 90° 回転させるため、画像側の逆回転（下記グローバル規則）を打ち消す */
+  transform: none;
 }
 
 .playsheet__battle .zone__empty,

@@ -46,6 +46,11 @@ import {
   moveCommandUnitToBattleSilent,
 } from "./legend1/coreGapEffects";
 import { applyCastoffDeckRush, continueCastoffAfterHold } from "./castoff";
+import {
+  resolveSenkoSosa,
+  applyKamenRideDeploy,
+  RIDER_EFFECT_SELECT_UNIT_IDS,
+} from "./riderKickEffects";
 import { resolveTurnStartSwap } from "./keywordGapRuntime";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import {
@@ -300,6 +305,12 @@ export function isValidEffectChoiceTarget(
 
   if (pending.kind === "select_unit") {
     const dest = pending.unitDestination ?? "discard";
+    if (pending.effectId === "kamen_ride_deploy") {
+      // XG3-069: 対象は自軍パワーゾーンのオモテ向きカード。
+      return !!state.players[pending.playerId].power.find(
+        (c) => c.instanceId === instanceId && !c.faceDown,
+      );
+    }
     if (dest === "hand_from_discard") {
       return !!findInZone(state.players[pending.playerId], "discard", instanceId);
     }
@@ -2043,6 +2054,19 @@ function applyPostHoldContinuation(
   if (pending.effectId === "megasuringu") {
     nextState = applyMegasuringuEnemyRushSBpDebuff(nextState, pending.playerId);
   }
+  // RK-065 等: OT コマンドをホールドしたら自身が「SP1」になる。
+  if (pending.effectId === "hold_ot_commands_then_sp" && pending.sourceInstanceId) {
+    const actor = nextState.players[pending.playerId];
+    nextState = {
+      ...nextState,
+      ...updatePlayer(nextState, pending.playerId, {
+        ...actor,
+        battle: actor.battle.map((c) =>
+          c.instanceId === pending.sourceInstanceId ? { ...c, spOverride: 1 } : c,
+        ),
+      }),
+    };
+  }
   return { state: nextState, done: false };
 }
 
@@ -2131,6 +2155,17 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   }
   if (pending.effectId === "kamen_ride_morph") {
     return finishChoice(state, pending, "skipped");
+  }
+  if (pending.effectId === "kamen_ride_deploy") {
+    // 「2枚まで」— スキップ時、選択済みがあればその分だけ展開して確定。
+    const selected = pending.selectedInstanceIds ?? [];
+    if (selected.length === 0) return finishChoice(state, pending, "skipped");
+    const deployed = applyKamenRideDeploy(
+      clearChoice(state, pending.phasePlayerId),
+      pending,
+      selected,
+    );
+    return finishChoice(deployed, pending, formatInstanceIdsAsNames(state, selected));
   }
   if (pending.effectId === "to_power_on_destroy") {
     const { state: discarded, log } = completeToPowerOnDestroyChoice(state, pending, false);
@@ -2392,6 +2427,14 @@ export function applyEffectChoiceSelect(
         if (revealed.pendingEffectChoice) return { state: revealed };
         return { state: revealed };
       }
+      if (pending.effectId === "senko_sosa_declare") {
+        const revealed = resolveSenkoSosa(
+          clearChoice(state, pending.phasePlayerId),
+          pending,
+          declared,
+        );
+        return { state: revealed };
+      }
       const nextState = applyFlowerBombDeclaredNumber(
         state,
         pending.playerId,
@@ -2413,6 +2456,41 @@ export function applyEffectChoiceSelect(
         const next = resolveDestroyVehicleAndRider(state, pending, instanceId);
         if (!next) return { error: "invalid_target" };
         return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
+      if (RIDER_EFFECT_SELECT_UNIT_IDS.has(pending.effectId)) {
+        const destination = pending.unitDestination === "power" ? "power" : "discard";
+        const leave = applyUnitLeave(state, instanceId, destination, pending.phasePlayerId);
+        if ("error" in leave) return leave;
+        return finishChoice(
+          leave.state,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+        );
+      }
+      if (pending.effectId === "kamen_ride_deploy") {
+        const prev = pending.selectedInstanceIds ?? [];
+        if (prev.includes(instanceId)) return { error: "already_selected" };
+        const selected = [...prev, instanceId];
+        const selectCount = pending.selectCount ?? 1;
+        if (selected.length < selectCount) {
+          const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+          return {
+            state: {
+              ...state,
+              pendingEffectChoice: {
+                ...pending,
+                selectedInstanceIds: selected,
+                validInstanceIds: remaining,
+              },
+            },
+          };
+        }
+        const deployed = applyKamenRideDeploy(
+          clearChoice(state, pending.phasePlayerId),
+          pending,
+          selected,
+        );
+        return finishChoice(deployed, pending, formatInstanceIdsAsNames(state, selected));
       }
       if (pending.effectId === "hold_entry_destroy_male") {
         const next = resolveHoldEntryDestroy(state, pending, instanceId);
@@ -3371,6 +3449,19 @@ export function applyEffectChoiceSelect(
               c.instanceId === pending.sourceInstanceId
                 ? { ...c, spModifier: (c.spModifier ?? 0) + spGain }
                 : c,
+            ),
+          };
+        }
+        // XG2-066 / RK-142 等: パワーを捨てたら対象ユニットが「SP1」になる。
+        if (
+          (pending.effectId === "rider_kick_discard_power_sp1" ||
+            pending.effectId === "power_faceup_sp1_grant") &&
+          toDiscard.length > 0
+        ) {
+          nextPlayer = {
+            ...nextPlayer,
+            battle: nextPlayer.battle.map((c) =>
+              c.instanceId === pending.sourceInstanceId ? { ...c, spOverride: 1 } : c,
             ),
           };
         }

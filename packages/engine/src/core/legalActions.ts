@@ -100,6 +100,7 @@ import { getCardEffect } from "@rangers-strike/cards";
 import { isHidoraEggUsed } from "../rules/turnModifiers";
 import { listValidChaseVehicleIds } from "../keywords/chase";
 import { canDeclareRush } from "../rules/rushDeclaration";
+import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
 import {
   getMorphReactionActorId,
@@ -570,6 +571,20 @@ function appendActivateResidentOperationActions(
       type: "activate_resident_operation",
       playerId,
       operationInstanceId: card.instanceId,
+    });
+  }
+}
+
+function appendActivateFieldUnitAbilityActions(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+): void {
+  for (const unitInstanceId of listKamenRideAbilityUnits(state, playerId)) {
+    actions.push({
+      type: "activate_field_unit_ability",
+      playerId,
+      unitInstanceId,
     });
   }
 }
@@ -1493,6 +1508,7 @@ export function getLegalActions(state: GameState): GameAction[] {
       appendHidoraEggActions(state, playerId, actions);
       appendShironLightActions(state, playerId, actions);
       appendActivateResidentOperationActions(state, playerId, actions);
+      appendActivateFieldUnitAbilityActions(state, playerId, actions);
       actions.push({ type: "end_phase", playerId });
       break;
 

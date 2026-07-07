@@ -106,6 +106,7 @@ export function initializeStartPhasePlayer(player: PlayerState): PlayerState {
   return {
     ...player,
     unitActionsThisTurn: undefined,
+    fieldAbilityUsedThisRush: undefined,
     hasDrawnThisStart: false,
     hasPaidEarthForceUpkeep: false,
     hasReleasedCommandsThisStart: !hasHeld,

@@ -224,6 +224,7 @@ import {
   openBattleEntryOrRideOffChoice,
 } from "../rules/battleEntry";
 import { resolveRidingComboOnRideOff } from "../rules/ridingComboEffects";
+import { beginKamenRideDeploy } from "../rules/riderKickEffects";
 import { applyShinobiBallRequiredDefender } from "../rules/batch06FieldEffects";
 import { applySuperBrainDraw } from "../effects/drawEffects";
 
@@ -2293,6 +2294,20 @@ export function applyAction(
           op.cardId,
           state.definitions,
         ),
+      );
+    }
+
+    case "activate_field_unit_ability": {
+      if (state.phase !== "rush") return fail("wrong_phase");
+      const unit =
+        player.rush.find((c) => c.instanceId === action.unitInstanceId) ??
+        player.battle.find((c) => c.instanceId === action.unitInstanceId);
+      if (!unit) return fail("illegal_action");
+      const withChoice = beginKamenRideDeploy(state, playerId, action.unitInstanceId);
+      if (!withChoice) return fail("illegal_action");
+      return ok(
+        withChoice,
+        buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions),
       );
     }
 

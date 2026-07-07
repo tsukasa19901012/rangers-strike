@@ -7,6 +7,7 @@ import { applyResidentOperationTurnEnd } from "./residentOperation";
 import { applyRocketBoosterEndTurnRushReturn } from "./rocketBooster";
 import { applyKeywordTurnEndEffects, clearEnemyTurnDamageFlag } from "./keywordGapRuntime";
 import { applyGegeruTurnEnd } from "./residentOps";
+import { applyTempDiscardAtTurnEnd } from "./riderKickEffects";
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
   const copy = [...deck];
@@ -153,6 +154,7 @@ export function resolveTurnEndingEffectsImpl(
   nextState = applyRocketBoosterEndTurnRushReturn(nextState, endingPlayerId);
   nextState = applyNoteOtherNcTurnEndEffects(nextState, endingPlayerId);
   nextState = applyGegeruTurnEnd(nextState, endingPlayerId);
+  nextState = applyTempDiscardAtTurnEnd(nextState, endingPlayerId);
   const keywordEnd = applyKeywordTurnEndEffects(nextState, endingPlayerId);
   nextState = clearEnemyTurnDamageFlag(keywordEnd.state, endingPlayerId);
   return { state: nextState, logs: keywordEnd.logs };

@@ -1805,6 +1805,23 @@ export function GameApp() {
       }
     }
 
+    if ((fromZone === "rush" || fromZone === "battle") && state.phase === "rush") {
+      const fieldAbility = legalActions.find(
+        (a) =>
+          a.type === "activate_field_unit_ability" &&
+          a.unitInstanceId === card.instanceId,
+      );
+      if (fieldAbility) {
+        actions.push({
+          id: "field-ability",
+          label: "効果を発動する",
+          detail: "ラッシュフェイズに1度",
+          variant: "primary",
+          onSelect: () => apply(fieldAbility),
+        });
+      }
+    }
+
     if (fromZone === "command" || fromZone === "power") {
       const selfRush = legalActions.find(
         (a) =>

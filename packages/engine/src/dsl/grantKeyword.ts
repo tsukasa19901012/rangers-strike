@@ -76,6 +76,7 @@ import {
   applyFuasutokurasunaOnRush,
 } from "../rules/batch06FieldEffects";
 import { beginCastoffOnRush } from "../rules/castoff";
+import { tryReportedRiderEffect } from "../rules/riderKickEffects";
 import { tryGenericTextFallback } from "./genericTextFallback";
 import {
   beginDeclareNumberDeckReveal,
@@ -369,6 +370,11 @@ export function applyGrantKeyword(
   ctx: GrantKeywordContext,
   keyword: string,
 ): GrantKeywordResult {
+  // 「選択を伴う能動効果」で従来はパターン照合で受動扱い（不発）だったカードを
+  // cardId::effectId で正確に解決する。effect_card 委譲より前に置く。
+  const reported = tryReportedRiderEffect(state, ctx, keyword);
+  if (reported) return reported;
+
   if (keyword.startsWith("hand_named_to_rush::")) {
     const withChoice = applyHandNamedToRush(state, ctx, keyword);
     if (!withChoice) return { state, detail: "hand_named_to_rush:no_targets" };

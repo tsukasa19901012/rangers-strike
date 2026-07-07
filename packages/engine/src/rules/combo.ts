@@ -36,6 +36,7 @@ import { resolveJointCombosOnEnter } from "./jointComboProcedure";
 import { applyDestroyOnEnterBattle } from "./destroyOnEnterBattle";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
 import { tryMereChameleonOnAllyEnterBattle } from "./batch04FieldEffects";
+import { tryPowerFaceupRaidaOnAllyEnter } from "./riderKickEffects";
 import { countLogicalBattleSlots } from "./battleLine";
 import { applyBaseAttackOnEnter } from "./legend3/enterBattleEffects";
 import { cannotAttackOrStrikeThisTurn, countHeldCommands } from "./restrictions";
@@ -224,6 +225,16 @@ export function resolveEnterBattleEffectsImpl(
     }
 
     nextState = tryMereChameleonOnAllyEnterBattle(
+      nextState,
+      playerId,
+      battleCard,
+      playerId,
+    );
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+
+    nextState = tryPowerFaceupRaidaOnAllyEnter(
       nextState,
       playerId,
       battleCard,

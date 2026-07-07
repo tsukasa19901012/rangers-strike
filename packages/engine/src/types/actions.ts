@@ -124,6 +124,12 @@ export type ActivateResidentOperationAction = {
   operationInstanceId: string;
 };
 
+export type ActivateFieldUnitAbilityAction = {
+  type: "activate_field_unit_ability";
+  playerId: PlayerId;
+  unitInstanceId: string;
+};
+
 export type BattleDanceRetreatAction = {
   type: "battle_dance_retreat";
   playerId: PlayerId;
@@ -367,6 +373,7 @@ export type GameAction =
   | ShironLightAction
   | HidoraEggAction
   | ActivateResidentOperationAction
+  | ActivateFieldUnitAbilityAction
   | BattleDanceRetreatAction
   | ResolveRuinSurveyAction
   | ResolveSeabedDrawAction

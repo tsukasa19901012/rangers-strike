@@ -61,6 +61,8 @@ export type CardInstance = {
   stackedCards?: CardInstance[];
   /** RK-081 ゲゲル: このターン終了時に捨札にする。 */
   gegeruDiscardAtEnd?: boolean;
+  /** XG3-069 カメンライド等: このターン終了時、自軍エリアにあれば捨札にする一時ユニット。 */
+  tempDiscardAtTurnEnd?: boolean;
   /** レジスト: バトル撃破後にホールド留場。 */
   registerHeld?: boolean;
 };
@@ -87,6 +89,8 @@ export type PlayerState = {
   damagedOnEnemyTurn?: boolean;
   /** attack_and_strike_once: ユニットごとの今ターンの行動履歴。 */
   unitActionsThisTurn?: Record<string, { attacked?: boolean; struck?: boolean }>;
+  /** ラッシュフェイズごとに1度だけの起動効果を、このラッシュフェイズで使用済みのユニット instanceId。 */
+  fieldAbilityUsedThisRush?: string[];
   /** スタートフェイズ: このターンの必須ドロー後 true。 */
   hasDrawnThisStart?: boolean;
   /** スタートフェイズ: このターンにホールド中コマンドをリリースした後 true。 */
