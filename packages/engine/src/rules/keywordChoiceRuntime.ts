@@ -136,7 +136,8 @@ export function beginDeclareNumberDeckReveal(
     sourceInstanceId: ctx.triggerSourceInstanceId,
     phasePlayerId: ctx.phasePlayerId,
     kind: "declare_number",
-    validInstanceIds: [],
+    // declare_number は validInstanceIds の各値が宣言可能な数字になる
+    validInstanceIds: Array.from({ length: 13 }, (_, i) => String(i)),
     selectCount: 1,
     optional: true,
   });

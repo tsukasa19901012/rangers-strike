@@ -72,4 +72,37 @@ describe("castoff full chain", () => {
       expect(s.players.player1.rush.some((c) => c.instanceId === rf.instanceId)).toBe(true);
     });
   }
+
+  it("declines the optional castoff when the effect_hold payment is cancelled", () => {
+    const { mf, ot2, state } = setup("XG2-066", 8);
+    const legal = getLegalActions(state);
+    const pay = legal.find(
+      (a) => a.type === "initiate_command_payment" && a.kind === "category_use" && a.sourceInstanceId === mf.instanceId,
+    );
+    expect(pay).toBeDefined();
+    let r = applyAction(state, pay!);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    let s = r.state;
+    r = applyAction(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP-OT:cmd1"] });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    s = r.state;
+    expect(s.pendingEffectChoice?.effectId).toBe("castoff_hold_command");
+
+    r = applyAction(s, { type: "initiate_command_payment", playerId: "player1", kind: "effect_hold", sourceInstanceId: s.pendingEffectChoice!.sourceInstanceId ?? ot2.instanceId });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    s = r.state;
+
+    // キャンセル = 任意効果の辞退。支払いも効果選択も残らないこと
+    r = applyAction(s, { type: "cancel_command_payment", playerId: "player1" });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    s = r.state;
+    expect(s.pendingCommandPayment).toBeUndefined();
+    expect(s.pendingEffectChoice).toBeUndefined();
+    // ラッシュ自体は成立している（本体はラッシュエリアに出ている）
+    expect(s.players.player1.rush.some((c) => c.instanceId === mf.instanceId)).toBe(true);
+  });
 });

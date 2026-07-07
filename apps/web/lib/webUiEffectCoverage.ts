@@ -56,11 +56,13 @@ const KNOWN_EFFECT_CHOICE_KINDS = new Set<PendingEffectChoice["kind"]>([
   "select_command",
   "pit_in_dive_order",
   "select_unit_step",
+  "declare_number",
   "select_units_bp_budget",
   "select_unit",
   "end_turn_menu",
   "confirm",
   "simultaneous_order",
+  "declare_number",
 ]);
 
 /** Promoted DSL カードが汎用モーダルで操作できる choice kind。 */

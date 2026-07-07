@@ -740,15 +740,26 @@ export function applyAction(
         return fail("no_pending_payment");
       }
       const payer = state.players[playerId];
-      return ok(
-        {
-          ...state,
-          pendingCommandPayment: undefined,
-          players: {
-            ...state.players,
-            [playerId]: clearAllCostWindows(payer),
-          },
+      let cancelled: GameState = {
+        ...state,
+        pendingCommandPayment: undefined,
+        players: {
+          ...state.players,
+          [playerId]: clearAllCostWindows(payer),
         },
+      };
+      // effect_hold のキャンセル = 任意効果の辞退（そうしないと UI が支払いを
+      // 自動再初期化し続け、キャストオフ等の任意効果を断れなくなる）
+      if (
+        state.pendingCommandPayment.kind === "effect_hold" &&
+        cancelled.pendingEffectChoice?.playerId === playerId &&
+        cancelled.pendingEffectChoice.optional
+      ) {
+        const skipped = skipEffectChoice(cancelled, playerId);
+        if (!("error" in skipped)) cancelled = skipped.state;
+      }
+      return ok(
+        cancelled,
         buildSimpleLogEntry(playerId, "command_payment_cancel"),
       );
     }

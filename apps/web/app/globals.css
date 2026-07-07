@@ -3525,3 +3525,16 @@ select {
     order: 1;
   }
 }
+
+/* 数字宣言（declare_number）の数字ボタン */
+.effect-action-modal__targets--numbers {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.effect-action-modal__target--number {
+  padding: 10px 0;
+  text-align: center;
+  font-weight: 700;
+}

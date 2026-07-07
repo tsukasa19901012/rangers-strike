@@ -205,6 +205,23 @@ export function EffectChoiceModal({
             </div>
           )}
 
+          {!isGenericFallback && pending.kind === "declare_number" && !readOnly && (
+            <div className="effect-action-modal__section">
+              <div className="effect-action-modal__targets effect-action-modal__targets--numbers">
+                {pending.validInstanceIds.map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className="btn effect-action-modal__target effect-action-modal__target--number"
+                    onClick={() => onSelect(value)}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {!isGenericFallback && pending.kind === "confirm" && !readOnly && (
             <div className="effect-action-modal__section">
               <div className="effect-action-modal__targets">
