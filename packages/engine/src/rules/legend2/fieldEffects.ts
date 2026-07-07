@@ -13,6 +13,7 @@ import {
 import {
   crossAdjustedBattlePosition,
   taxisSpFloor,
+  fieldPositionSpFloor,
 } from "../../keywords/battleKeywords";
 
 function categoriesInclude(
@@ -84,6 +85,7 @@ export function legend2EffectiveSp(
   const printed = resolveInstanceSpValue(def, instance);
   let sp = printedSpBase(printed, battlePosition) + modifier;
   sp = Math.max(sp, taxisSpFloor(state, playerId, instance));
+  sp = Math.max(sp, fieldPositionSpFloor(state, playerId, instance));
 
   /** RS-073 バルシールド: 自軍ダメージ6点で SP2。 */
   if (instance.cardId === "RS-073" && state.players[playerId].damage >= 6) {

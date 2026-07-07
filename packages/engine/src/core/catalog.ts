@@ -320,6 +320,14 @@ export function unitEffectiveCategories(
   ) {
     return cats.includes("WB") ? cats : [...cats, "WB"];
   }
+  // XG6-021/022: 自軍バトルフェイズ中はカテゴリに WB が追加される
+  if (
+    state.phase === "battle" &&
+    state.activePlayer === playerId &&
+    cardHasGrantKeyword(instance.cardId, "category_wb_battle_phase")
+  ) {
+    return cats.includes("WB") ? cats : [...cats, "WB"];
+  }
   // RS-315: gains WB category when in battle zone
   if (zone === "battle" && instance.cardId === "RS-315") {
     return cats.includes("WB") ? cats : [...cats, "WB"];

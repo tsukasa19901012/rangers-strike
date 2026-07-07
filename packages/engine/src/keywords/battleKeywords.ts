@@ -113,6 +113,32 @@ export function taxisSpFloor(
   return 1;
 }
 
+/**
+ * RS-430（ラッシュエリアにある間）: 追加条件を持たない WB の S ユニットは
+ * バトルエリアで2番目に並んだとき SP1 になる。
+ */
+export function fieldPositionSpFloor(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number {
+  const player = state.players[playerId];
+  const hasSource = player.rush.some((c) =>
+    cardHasGrantKeyword(c.cardId, "battle_position_sp_any_pos2_sp1"),
+  );
+  if (!hasSource) return 0;
+
+  const index = player.battle.findIndex((c) => c.instanceId === instance.instanceId);
+  if (index < 0) return 0;
+  if (index + 1 !== 2) return 0;
+
+  const def = getDefinition(state.definitions, instance.cardId);
+  if (!def || def.type !== "unit" || def.size !== "S") return 0;
+  if (!cardCategories(def).includes("WB")) return 0;
+  if (def.rushAdditionalCondition) return 0;
+  return 1;
+}
+
 function numericComboNumber(
   definitions: Record<string, CardDefinition>,
   cardId: string,

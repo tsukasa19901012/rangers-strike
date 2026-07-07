@@ -58,6 +58,7 @@ import {
 } from "../rules/combo";
 import { addRushPhaseRuleModifier } from "./scopedModifiers";
 import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
+import { applyResidentOpOnPlace } from "../rules/residentOps";
 import { emitStrikeDeclared } from "../events/emitStrikeDeclared";
 import { emitTurnEndingAndResolve } from "../events/emitTurnEnding";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
@@ -809,6 +810,12 @@ export function applyAction(
       const isPermanent = isPermanentCard(state.definitions, found.card.cardId);
       if (isPermanent) {
         nextState = placePermanentOperation(nextState, playerId, found.card);
+        nextState = applyResidentOpOnPlace(
+          nextState,
+          playerId,
+          found.card.instanceId,
+          found.card.cardId,
+        );
       }
 
       let outcomeDetail: string | undefined;

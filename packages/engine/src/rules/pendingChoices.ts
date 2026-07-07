@@ -1831,7 +1831,7 @@ function unitLeaveDestination(
   return dest === "power" ? "power" : dest === "deck_top" ? "deck_top" : "discard";
 }
 
-function applyUnitLeave(
+export function applyUnitLeave(
   state: GameState,
   instanceId: string,
   destination: "power" | "discard" | "deck_top",

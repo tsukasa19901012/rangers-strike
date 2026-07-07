@@ -60,6 +60,7 @@ function applyResolvedDamage(
   flipInstanceIds: string[],
   deckDraws: number,
   totalDamage: number,
+  damagedOnEnemyTurn?: boolean,
 ): PlayerState {
   const flipSet = new Set(flipInstanceIds);
   const power = player.power.map((c) =>
@@ -77,6 +78,7 @@ function applyResolvedDamage(
     power,
     deck,
     damage: player.damage + totalDamage,
+    ...(damagedOnEnemyTurn ? { damagedOnEnemyTurn: true } : {}),
   };
 }
 
@@ -141,7 +143,10 @@ export function applyDamageToPlayer(
   if (requiresDamagePowerChoice(player, amount)) {
     return startDamagePayment(state, playerId, amount, resume, choosingPlayerId, options);
   }
-  const nextPlayer = applyPlayerDamage(player, amount);
+  const damaged = applyPlayerDamage(player, amount);
+  // damage_gate_battle_entry: 敵軍ターン中の被ダメージを記録
+  const nextPlayer =
+    state.activePlayer !== playerId ? { ...damaged, damagedOnEnemyTurn: true } : damaged;
   const phasePlayerId =
     resume.kind === "none" ? resume.activePlayer : resume.pending.battlePhasePlayer;
   let nextState = emitDamageAppliedAndResolve(
@@ -199,6 +204,7 @@ export function resolveDamagePaymentSelect(
     allFlipIds,
     pending.deckDraws,
     pending.totalDamage,
+    state.activePlayer !== defenderId,
   );
 
   const resume = pending.resume;

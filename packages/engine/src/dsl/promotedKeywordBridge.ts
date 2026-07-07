@@ -1,3 +1,4 @@
+import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition, instanceBp, isSmallUnit, unitEffectiveCategories } from "../core/catalog";
@@ -158,6 +159,30 @@ export function promotedKeywordBpBonus(
   const faceUpPower = countFaceUpPowerCards(state, playerId);
 
   for (const keyword of keywords) {
+    // PR-008: 敵軍コマンドゾーンの OT コマンド1つにつき BP+1000
+    if (
+      keyword === "bp_per_enemy_command_ot_1000" ||
+      keyword === "bp_per_enemy_command_obatekunoroji_1000"
+    ) {
+      const enemyId = playerId === "player1" ? "player2" : "player1";
+      const count = state.players[enemyId].command.filter((cmd) => {
+        const def = state.definitions[cmd.cardId];
+        return def ? cardCategories(def).includes("OT") : false;
+      }).length;
+      bonus += count * 1000;
+      continue;
+    }
+
+    // XG5-069/070: リードMA を持つ自軍ユニットがあれば BP+1000
+    if (keyword === "lead_ma_bp_boost_1000") {
+      const own = state.players[playerId];
+      const hasLeadMa = [...own.rush, ...own.battle].some((c) =>
+        listCardGrantKeywords(c.cardId).includes("lead_MA"),
+      );
+      if (hasLeadMa) bonus += 1000;
+      continue;
+    }
+
     const perCard = keyword.match(/^power_faceup_bp_per_(\d+)$/);
     if (perCard) {
       bonus += faceUpPower * Number(perCard[1]);
@@ -174,6 +199,75 @@ export function promotedKeywordBpBonus(
     }
   }
 
+  bonus += fieldAuraBpBonus(state, playerId, instance);
+
+  return bonus;
+}
+
+/** 自軍エリアのカードが放つ BP オーラ（RS-289/XP-023 恐竜 +1000 / RS-430 WB S 等）。 */
+function fieldAuraBpBonus(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number {
+  const def = state.definitions[instance.cardId];
+  if (!def) return 0;
+  const own = state.players[playerId];
+  let bonus = 0;
+  const sources = [...own.rush, ...own.battle];
+  for (const source of sources) {
+    if (source.instanceId === instance.instanceId) {
+      // 自分自身にもかかるオーラ（「すべての自軍ユニット」）は除外しない
+    }
+    for (const keyword of listCardGrantKeywords(source.cardId)) {
+      // RS-289 / XP-023: 特徴「恐竜」を持つすべての自軍ユニットは BP+1000
+      if (keyword === "ally_fx_unknown_bp_boost_1000") {
+        if ((def.features ?? []).includes("恐竜")) bonus += 1000;
+      }
+      // RS-430（ラッシュエリアにある間）: 追加条件を持たない WB の S ユニットは
+      // 必要パワーの数字2ごとに BP+1000
+      if (
+        keyword === "battle_position_sp_any_pos2_sp1" &&
+        own.rush.some((c) => c.instanceId === source.instanceId)
+      ) {
+        const cost =
+          typeof def.powerCost === "number"
+            ? def.powerCost
+            : parseInt(String(def.powerCost), 10);
+        if (
+          def.size === "S" &&
+          cardCategories(def).includes("WB") &&
+          !def.rushAdditionalCondition &&
+          Number.isFinite(cost)
+        ) {
+          bonus += Math.floor(cost / 2) * 1000;
+        }
+      }
+    }
+  }
+  return bonus;
+}
+
+/** 被アタック時オーラ: RS-496/XP-010 スワット +3000。 */
+export function allyAttackedAuraBpBonus(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number {
+  const def = state.definitions[instance.cardId];
+  if (!def) return 0;
+  const own = state.players[playerId];
+  let bonus = 0;
+  for (const source of [...own.rush, ...own.battle]) {
+    for (const keyword of listCardGrantKeywords(source.cardId)) {
+      if (
+        keyword === "ally_suwato_attacked_bp_3000" &&
+        (def.features ?? []).includes("スワット")
+      ) {
+        bonus += 3000;
+      }
+    }
+  }
   return bonus;
 }
 

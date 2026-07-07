@@ -62,6 +62,8 @@ import {
   startTyrannoSonicChoice,
 } from "./pendingChoices";
 import { tryLeaveField } from "./operationCounters";
+import { attackerSuppressesAttackedCounters } from "./keywordGapRuntime";
+import { allyAttackedAuraBpBonus } from "../dsl/promotedKeywordBridge";
 
 export type NamedEffectOutcome = {
   state: GameState;
@@ -193,7 +195,8 @@ export function battleDefenderBp(
   return (
     base +
     passiveNamedFieldBpBonus(state, defenderOwner, defenderFound.card, "defending") +
-    attackedBpBoostAmount(defenderFound.card.cardId)
+    attackedBpBoostAmount(defenderFound.card.cardId) +
+    allyAttackedAuraBpBonus(state, defenderOwner, defenderFound.card)
   );
 }
 
@@ -236,6 +239,7 @@ export function attackerBlocksDefenderCounters(
   return (
     hasBattleNcEffect(attacker.card, "panther_claw") ||
     getOnAttackNamedEffect(attacker.card.cardId)?.effectId === "panther_claw" ||
+    attackerSuppressesAttackedCounters(attacker.card.cardId) ||
     legend2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId)
   );
 }

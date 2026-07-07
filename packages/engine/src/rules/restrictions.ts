@@ -70,6 +70,7 @@ import {
   needsBattleEntryRushDiscard,
 } from "./legend3/restrictions";
 import { getBattleEntryPowerDiscardCount } from "./batch07FieldEffects";
+import { damageGateBlocksEntry } from "./keywordGapRuntime";
 import {
   rs482BlocksAttackStrike,
   rs579BlocksAttackStrikeOnRushTurn,
@@ -364,6 +365,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (fromZone === "hand") return false;
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
   if (cannotEnterBattle(unit.cardId)) return false;
+  if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {
     const hasAllyS = state.players[playerId].battle.some((c) =>

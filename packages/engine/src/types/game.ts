@@ -81,6 +81,8 @@ export type PlayerState = {
   damage: number;
   /** チャージフェイズ: このターンに1枚をパワーまたはコマンドに置いた後 true。 */
   hasChargedThisTurn?: boolean;
+  /** damage_gate_battle_entry: 敵軍ターン中にダメージを受けた（自軍ターン終了で消える）。 */
+  damagedOnEnemyTurn?: boolean;
   /** スタートフェイズ: このターンの必須ドロー後 true。 */
   hasDrawnThisStart?: boolean;
   /** スタートフェイズ: このターンにホールド中コマンドをリリースした後 true。 */

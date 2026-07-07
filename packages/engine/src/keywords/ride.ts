@@ -6,12 +6,42 @@ import { updatePlayer } from "../core/helpers";
 import { canMoveUnitToBattle } from "../rules/restrictions";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import {
+  cardHasGrantKeyword,
+  listCardGrantKeywords,
   listRideWithoutRcFeatures,
   riderMatchesVehicleRideWithoutRc,
 } from "../dsl/promotedKeywordBridge";
 
 function isVehicle(definitions: Record<string, CardDefinition>, cardId: string): boolean {
   return getDefinition(definitions, cardId)?.type === "vehicle";
+}
+
+/** ライダー側キーワード: RC がなくてもライドできる（XG7-034 等 / SX-004 は「車両」ビークル限定）。 */
+function riderKeywordAllowsRide(
+  riderCardId: string,
+  vehicleDef: CardDefinition | undefined,
+): boolean {
+  if (cardHasGrantKeyword(riderCardId, "can_ride_vehicle")) return true;
+  if (
+    cardHasGrantKeyword(riderCardId, "can_ride_vehicle_ryo") &&
+    (vehicleDef?.features ?? []).includes("車両")
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/** ビークル側キーワード: 特徴 X の S ユニットはコマンド1ホールドでライド可（XG4-027/099）。 */
+function vehicleFeatureHoldRideFeature(vehicleCardId: string): string | null {
+  for (const keyword of listCardGrantKeywords(vehicleCardId)) {
+    const match = keyword.match(/^feature_s_ride_vehicle_hold_1_commands::(.+)$/);
+    if (match) {
+      if (match[1] === "ma") return "マシン";
+      if (match[1] === "meka") return "メカ";
+      return match[1]!;
+    }
+  }
+  return null;
 }
 
 function riderHasRc(definition: CardDefinition | undefined): boolean {
@@ -69,6 +99,23 @@ export function findRideVehicleForRider(
     ) {
       return vehicle;
     }
+    if (
+      riderKeywordAllowsRide(
+        rider.cardId,
+        getDefinition(state.definitions, vehicle.cardId),
+      )
+    ) {
+      return vehicle;
+    }
+    const holdFeature = vehicleFeatureHoldRideFeature(vehicle.cardId);
+    if (
+      holdFeature &&
+      riderDef.size === "S" &&
+      (riderDef.features ?? []).includes(holdFeature) &&
+      player.command.some((cmd) => !cmd.commandHeld)
+    ) {
+      return vehicle;
+    }
     const allowed = listRideWithoutRcFeatures(vehicle.cardId);
     if (allowed.length > 0) continue;
   }
@@ -111,6 +158,25 @@ export function canRiderMountVehicle(
       vehicle.card.cardId,
       rider.cardId,
     )
+  ) {
+    return true;
+  }
+
+  if (
+    riderKeywordAllowsRide(
+      rider.cardId,
+      getDefinition(state.definitions, vehicle.card.cardId),
+    )
+  ) {
+    return true;
+  }
+
+  const holdFeature = vehicleFeatureHoldRideFeature(vehicle.card.cardId);
+  if (
+    holdFeature &&
+    riderDef.size === "S" &&
+    (riderDef.features ?? []).includes(holdFeature) &&
+    player.command.some((cmd) => !cmd.commandHeld)
   ) {
     return true;
   }

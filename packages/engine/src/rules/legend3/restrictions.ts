@@ -31,6 +31,7 @@ import {
   startSelectUnitChoice,
 } from "../pendingChoices";
 import { findNamedEffectByEffectId } from "@rangers-strike/cards";
+import { keywordAllowsAttackIntoRush } from "../keywordGapRuntime";
 
 export function hasDarkDealInRush(state: GameState, playerId: PlayerId): boolean {
   return state.players[playerId].rush.some(
@@ -420,6 +421,16 @@ export function canAttackDefender(
       return false;
     }
     if (cardHasGrantKeyword(attacker.card.cardId, "wing_attack_enemy_rush")) {
+      return true;
+    }
+    if (
+      keywordAllowsAttackIntoRush(
+        state,
+        attacker.card.cardId,
+        defenderPlayerId,
+        defenderInstanceId,
+      )
+    ) {
       return true;
     }
     if (

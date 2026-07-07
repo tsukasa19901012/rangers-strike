@@ -1,6 +1,7 @@
 import type { GameState, PendingBattle } from "../types/game";
 import { withSyncedEffectStack } from "../rules/effectStack";
-import { findInZone } from "../core/helpers";
+import { applyResidentOpsOnAllyAttacked } from "../rules/residentOps";
+import { findInZone, updatePlayer } from "../core/helpers";
 import { buildBattleDeclaredEvent } from "./builders";
 import { getEngineEventDispatcher } from "./globalDispatcher";
 
@@ -8,6 +9,30 @@ export function emitBattleDeclaredAndResolve(
   state: GameState,
   pending: PendingBattle,
 ): { state: GameState; log: string } {
+  // 常駐オペによる「バトルは行われない」（クロックアップ等）。
+  // カウンター解決後・バトル解決の直前に適用される（wiki Q&A: 否定文優先）。
+  const prevented = applyResidentOpsOnAllyAttacked(state, pending);
+  if (prevented?.preventBattle) {
+    let next = prevented.state;
+    const attackerOwner = next.players[pending.attackerPlayerId];
+    const markActed = (cards: typeof attackerOwner.battle) =>
+      cards.map((c) =>
+        c.instanceId === pending.attackerInstanceId ? { ...c, battleActed: true } : c,
+      );
+    next = {
+      ...next,
+      ...updatePlayer(next, pending.attackerPlayerId, {
+        ...attackerOwner,
+        battle: markActed(attackerOwner.battle),
+        rush: markActed(attackerOwner.rush),
+      }),
+    };
+    return {
+      state: withSyncedEffectStack(next),
+      log: prevented.log ?? "バトルは行われない",
+    };
+  }
+
   const attacker = findInZone(
     state.players[pending.attackerPlayerId],
     "battle",
