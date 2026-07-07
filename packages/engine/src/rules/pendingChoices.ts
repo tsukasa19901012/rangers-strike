@@ -1991,6 +1991,61 @@ function finishChoice(
   };
 }
 
+
+/**
+ * select_command（hold）解決後の効果別の継続処理。
+ * 直接解決（resolve_effect_choice）と effect_hold 支払い完了の両経路から呼ぶ。
+ */
+function applyPostHoldContinuation(
+  state: GameState,
+  pending: PendingEffectChoice,
+): { state: GameState; done: boolean } {
+  if (pending.effectId === "castoff_hold_command") {
+    const continued = continueCastoffAfterHold(state, pending);
+    if (continued) return { state: continued, done: true };
+  }
+  let nextState = state;
+  if (pending.effectId === "shift_up" && pending.sourceInstanceId) {
+    const actor = nextState.players[pending.playerId];
+    nextState = {
+      ...nextState,
+      ...updatePlayer(nextState, pending.playerId, {
+        ...actor,
+        battle: actor.battle.map((c) =>
+          c.instanceId === pending.sourceInstanceId
+            ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
+            : c,
+        ),
+      }),
+    };
+  }
+  if (
+    pending.effectId === "dino_slasher_category_balance" &&
+    pending.zoneCategoryBalanceOwnerId !== undefined &&
+    pending.zoneCategoryTargetCount !== undefined
+  ) {
+    const ownerId = pending.zoneCategoryBalanceOwnerId;
+    const enemyCount = countDistinctCategoriesInCommandZone(
+      nextState.players[pending.playerId],
+      nextState.definitions,
+    );
+    if (enemyCount > pending.zoneCategoryTargetCount) {
+      const continued = beginDinoSlasherDiscard(nextState, {
+        effectOwnerId: ownerId,
+        effectId: pending.effectId,
+        sourceCardId: pending.sourceCardId,
+        sourceInstanceId: pending.sourceInstanceId,
+        phasePlayerId: pending.phasePlayerId,
+      });
+      if (continued) return { state: continued, done: true };
+    }
+  }
+  if (pending.effectId === "megasuringu") {
+    nextState = applyMegasuringuEnemyRushSBpDebuff(nextState, pending.playerId);
+  }
+  return { state: nextState, done: false };
+}
+
 export function completeEffectHoldChoice(
   state: GameState,
   playerId: PlayerId,
@@ -2005,7 +2060,13 @@ export function completeEffectHoldChoice(
   for (const id of commandInstanceIds) {
     if (!pending.validInstanceIds.includes(id)) return { error: "invalid_target" };
   }
-  return finishChoice(state, pending, formatInstanceIdsAsNames(state, commandInstanceIds));
+  const continued = applyPostHoldContinuation(state, pending);
+  if (continued.done) return { state: continued.state };
+  return finishChoice(
+    continued.state,
+    pending,
+    formatInstanceIdsAsNames(state, commandInstanceIds),
+  );
 }
 
 export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOutcome {
@@ -3116,58 +3177,12 @@ export function applyEffectChoiceSelect(
         };
       }
 
-      let nextState = { ...state, ...updatePlayer(state, owner, nextPlayer) };
-      if (pending.effectId === "castoff_hold_command") {
-        const continued = continueCastoffAfterHold(nextState, pending);
-        if (continued) {
-          return { state: continued };
-        }
-      }
-      if (pending.effectId === "shift_up" && pending.sourceInstanceId) {
-        const actor = nextState.players[pending.playerId];
-        nextState = {
-          ...nextState,
-          ...updatePlayer(nextState, pending.playerId, {
-            ...actor,
-            battle: actor.battle.map((c) =>
-              c.instanceId === pending.sourceInstanceId
-                ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-                : c,
-            ),
-          }),
-        };
-      }
-
-      if (
-        pending.effectId === "dino_slasher_category_balance" &&
-        pending.zoneCategoryBalanceOwnerId !== undefined &&
-        pending.zoneCategoryTargetCount !== undefined
-      ) {
-        const ownerId = pending.zoneCategoryBalanceOwnerId;
-        const enemyCount = countDistinctCategoriesInCommandZone(
-          nextState.players[pending.playerId],
-          nextState.definitions,
-        );
-        if (enemyCount > pending.zoneCategoryTargetCount) {
-          const continued = beginDinoSlasherDiscard(nextState, {
-            effectOwnerId: ownerId,
-            effectId: pending.effectId,
-            sourceCardId: pending.sourceCardId,
-            sourceInstanceId: pending.sourceInstanceId,
-            phasePlayerId: pending.phasePlayerId,
-          });
-          if (continued) {
-            return { state: continued };
-          }
-        }
-      }
-
-      if (pending.effectId === "megasuringu") {
-        nextState = applyMegasuringuEnemyRushSBpDebuff(nextState, pending.playerId);
-      }
+      const withHold = { ...state, ...updatePlayer(state, owner, nextPlayer) };
+      const continued = applyPostHoldContinuation(withHold, pending);
+      if (continued.done) return { state: continued.state };
 
       return finishChoice(
-        nextState,
+        continued.state,
         pending,
         cardName(state.definitions, found.card.cardId),
       );

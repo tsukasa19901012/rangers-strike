@@ -2212,7 +2212,11 @@ export function GameApp() {
       ? analyzeBoardTapEffectChoice(state, pendingChoice, HUMAN_PLAYER)
       : null;
 
-  const showEffectChoiceBanner = !!boardTapEffectChoice;
+  // effect_hold 支払い中は CommandPaymentBanner に一本化（ダイアログ重複防止）
+  const showEffectChoiceBanner =
+    !!boardTapEffectChoice &&
+    !(pendingChoice && needsEffectHoldPayment(pendingChoice)) &&
+    !state.pendingCommandPayment;
   const showMorphOrderBanner = !!morphUi?.isOrderPhase;
   const showMorphPassBanner =
     !!morphUi?.canPass && !showMorphOrderBanner && !morphUi.isReplacementPhase;
