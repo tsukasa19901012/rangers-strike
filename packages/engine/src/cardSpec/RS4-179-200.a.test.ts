@@ -295,8 +295,7 @@ describe("RS-181 破邪百獣剣", () => {
   });
 
   // 「敵軍コマンドゾーンのカテゴリの数まで好きな数選び」
-  // 既知の不具合: CARD-RS-181 カテゴリ数（zoneCategoryDestroyLimit）が使われず、1体選んだ時点で効果が終わる
-  it.fails("RS-181: 敵軍コマンドゾーンのカテゴリが2つなら2体まで選んで撃破できる（出典: atwiki/page-378）", () => {
+  it("RS-181: 敵軍コマンドゾーンのカテゴリが2つなら2体まで選んで撃破できる（出典: atwiki/page-378）", () => {
     const s = blade(["TST-OP", "TST-OP-ET", "TST-OP-ET"], {}, { battle: [inst("RS-188", "e1"), inst("TST-UNIT-0", "e2")], rush: [inst("RS-188", "e3")] });
     let n = playOp(s, "player1", "RS-181:c").state;
     n = pickEffect(n, "player1", ["RS-188:e1", "TST-UNIT-0:e2"]);
@@ -324,16 +323,14 @@ describe("RS-181 破邪百獣剣", () => {
   });
 
   // 一般ルール R-TGT-04「対象に自軍・敵軍の指定がなければ、自分のユニット（自身を含む）も選べる」
-  // 既知の不具合: CARD-RS-181 候補が敵軍ユニットだけで、自軍のナンバーを持たない S ユニットを選べない
-  it.fails("RS-181: 自軍のナンバーを持たない S ユニットも選べる（出典: R-TGT-04・atwiki/page-378「Sユニット」）", () => {
+  it("RS-181: 自軍のナンバーを持たない S ユニットも選べる（出典: R-TGT-04・atwiki/page-378「Sユニット」）", () => {
     const s = blade(["TST-OP"], { battle: [inst("RS-188", "own")] }, { battle: [inst("RS-188", "e1")] });
     const r = playOp(s, "player1", "RS-181:c");
     expect(r.state.pendingEffectChoice?.validInstanceIds ?? []).toContain("RS-188:own");
   });
 
   // grnrngr/faq-card-4 RS-181 Q1「先にユニットを可能な数まで選んでから１体ずつ撃破してください。」
-  // 既知の不具合: CARD-RS-181 1体選んだ時点で撃破して終わるため「先に全部選ぶ」手順にならない
-  it.fails("RS-181: 先に可能な数まで選んでから1体ずつ撃破する（2体目を選ぶまで1体目は撃破されない）（出典: grnrngr/faq-card-4 RS-181 Q1・R-TGT-03）", () => {
+  it("RS-181: 先に可能な数まで選んでから1体ずつ撃破する（2体目を選ぶまで1体目は撃破されない）（出典: grnrngr/faq-card-4 RS-181 Q1・R-TGT-03）", () => {
     const s = blade(["TST-OP", "TST-OP-ET"], {}, { battle: [inst("RS-188", "e1"), inst("TST-UNIT-0", "e2")] });
     let n = playOp(s, "player1", "RS-181:c").state;
     n = act(n, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-188:e1" });
@@ -342,8 +339,7 @@ describe("RS-181 破邪百獣剣", () => {
   });
 
   // grnrngr/faq-card-4 RS-181 Q2「「ＲＣ」もナンバーに含まれますので、選ぶことはできません。」
-  // 既知の不具合: CARD-RS-181 ナンバー「RC」の S ユニット（仮面ライダー1号）を「ナンバーを持たない」として選べてしまう
-  it.fails("RS-181: ナンバーに「RC」を持つ S ユニットは選べない（出典: grnrngr/faq-card-4 RS-181 Q2）", () => {
+  it("RS-181: ナンバーに「RC」を持つ S ユニットは選べない（出典: grnrngr/faq-card-4 RS-181 Q2）", () => {
     const s = blade(["TST-OP"], {}, { battle: [inst("RK-023", "rc"), inst("TST-UNIT-0", "e2")] });
     const r = playOp(s, "player1", "RS-181:c");
     const valid = r.state.pendingEffectChoice?.validInstanceIds ?? [];

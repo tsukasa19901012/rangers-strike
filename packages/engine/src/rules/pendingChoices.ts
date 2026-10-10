@@ -1825,6 +1825,32 @@ export function startAnimalHeartChoice(
   });
 }
 
+export const ASSAULT_VECTOR_EFFECT_ID = "assault_vector_destroy";
+
+/** RS-181 破邪百獣剣: 選んだユニットを1体ずつ撃破する（離場反応で中断したら再開する）。 */
+function finishAssaultVectorDestroy(state: GameState, pending: PendingEffectChoice): ChoiceOutcome {
+  const selected = pending.selectedInstanceIds ?? [];
+  const processed = [...(pending.processedInstanceIds ?? [])];
+  let nextState = state;
+  for (const instanceId of selected) {
+    if (processed.includes(instanceId)) continue;
+    processed.push(instanceId);
+    const located = findCardOwner(nextState, instanceId);
+    if (!located || (located.zone !== "rush" && located.zone !== "battle")) continue;
+    const leave = applyUnitLeave(nextState, instanceId, "discard", pending.phasePlayerId);
+    if ("error" in leave) return leave;
+    nextState = leave.state;
+    if (nextState.pendingLeave && processed.length < selected.length) {
+      const resumed: PendingEffectChoice = { ...pending, validInstanceIds: [], processedInstanceIds: processed };
+      return { state: { ...nextState, pendingEffectChoice: resumed } };
+    }
+  }
+  const names = selected
+    .map((id) => cardName(nextState.definitions, findFieldUnitCardId(nextState, id)))
+    .join(",");
+  return finishChoice(nextState, pending, names || "none");
+}
+
 export function applyConfirmEffectChoice(
   state: GameState,
   playerId: PlayerId,
@@ -1846,6 +1872,10 @@ export function applyConfirmEffectChoice(
     );
     const next = acceptOptionalEffect(state, pending);
     return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next), log };
+  }
+
+  if (pending.effectId === ASSAULT_VECTOR_EFFECT_ID) {
+    return finishAssaultVectorDestroy(state, pending);
   }
 
   if (pending.effectId === FIRE_DANCE_EFFECT_ID) {
@@ -2640,6 +2670,10 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
     const next = result.state.pendingEffectChoice ? result.state : promoteDeferredBattleEntry(result.state);
     return { state: next, log: result.log };
   }
+  if (pending.effectId === ASSAULT_VECTOR_EFFECT_ID && (pending.selectedInstanceIds?.length ?? 0) > 0) {
+    // RS-181: 選び終えた — 選んだユニットを撃破する。
+    return finishAssaultVectorDestroy(state, pending);
+  }
   if (pending.effectId === HOUOU_TORNADO_EFFECT_ID && (pending.processedInstanceIds?.length ?? 0) > 0) {
     // 選び終えた — 戻した数だけ相手が自分の S ユニットを戻す。
     const next = finishHououOwnStep(state, pending);
@@ -3120,6 +3154,18 @@ export function applyEffectChoiceSelect(
       return finishChoice(nextState, pending, String(declared));
     }
     case "select_unit": {
+      if (pending.effectId === ASSAULT_VECTOR_EFFECT_ID) {
+        // RS-181 破邪百獣剣: 先に可能な数まで選んでから1体ずつ撃破する（grnrngr/faq-card-4 RS-181 Q1・R-TGT-03）。
+        const prev = pending.selectedInstanceIds ?? [];
+        if (prev.includes(instanceId)) return { error: "already_selected" };
+        const selected = [...prev, instanceId];
+        const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+        const next: PendingEffectChoice = { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining };
+        if (selected.length < (pending.zoneCategoryDestroyLimit ?? 1) && remaining.length > 0) {
+          return { state: { ...state, pendingEffectChoice: next } };
+        }
+        return finishAssaultVectorDestroy(state, next);
+      }
       if (pending.effectId === "rk154_head_held_high") {
         // RK-154【頭が高い！】: このターン BP500 になる（R-BP-01）。
         const located = findCardOwner(state, instanceId);
