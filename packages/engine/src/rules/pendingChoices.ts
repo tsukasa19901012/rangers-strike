@@ -85,6 +85,7 @@ import {
 import { completeToPowerOnDestroyChoice } from "./toPowerOnDestroy";
 import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
+import { getChoiceRefresher } from "./choiceRefreshers";
 import { acceptOptionalEffect } from "./optionalEffects";
 import {
   afterCommandCardsLeft,
@@ -649,6 +650,16 @@ export function openEffectChoice(
   state: GameState,
   choice: PendingEffectChoice,
 ): GameState {
+  const refresher = choice.refreshOnOpen ? getChoiceRefresher(choice.refreshOnOpen.key) : undefined;
+  if (refresher) {
+    const refreshed = refresher(state, choice);
+    if (!refreshed) {
+      // 候補がなくなった選択は開かない（続きの選択があればそれを開く）。
+      if (choice.resumeChoice) return openEffectChoice(state, choice.resumeChoice);
+      return promoteDeferredBattleEntry({ ...state, pendingEffectChoice: undefined, activePlayer: choice.phasePlayerId });
+    }
+    choice = { ...refreshed, refreshOnOpen: undefined };
+  }
   const intercepted = maybeInterceptDeckRevealForShuriken(state, choice);
   if (intercepted) return intercepted;
   return {
@@ -4710,6 +4721,24 @@ export function applyEffectChoiceSelect(
           `${pending.effectId}:${instanceId}`,
         );
         return { state: { ...resolved.state, log: [...resolved.state.log, ...resolved.logs] }, log };
+      }
+      if (pending.battleDestroyOrderMeta) {
+        // ルール: R-SIM-01 — バトルで撃破したときの自軍の効果（RS-212 / RS-226）と、同時に起きた別の効果
+        // （撃破されたユニットの「撃破されたとき」等）の処理順はターンプレイヤーが決める（faq-card-4 RS-212 Q1）。
+        const meta = pending.battleDestroyOrderMeta;
+        const cleared = clearChoice(state, pending.phasePlayerId);
+        const next =
+          instanceId === meta.existingId
+            ? openEffectChoice(cleared, appendResumeChoice(meta.existing, meta.own))
+            : openEffectChoice(cleared, { ...meta.own, resumeChoice: meta.existing });
+        const log = buildLogEntry(
+          pending.playerId,
+          "resolve_effect_choice",
+          pending.sourceCardId,
+          state.definitions,
+          `${pending.effectId}:${instanceId}`,
+        );
+        return { state: next, log };
       }
       if (pending.mutualDestructionMeta) {
         // ルール: R-BTL-02, R-SIM-01 — 相打ちの処理順はターンプレイヤーが決める。

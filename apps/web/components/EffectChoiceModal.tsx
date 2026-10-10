@@ -209,6 +209,21 @@ export function EffectChoiceModal({
 
           {!isGenericFallback && pending.kind === "simultaneous_order" && !readOnly && (
             <div className="effect-action-modal__targets">
+              {pending.battleDestroyOrderMeta &&
+                pending.validInstanceIds.map((id) => {
+                  const meta = pending.battleDestroyOrderMeta!;
+                  const cardId = id === meta.existingId ? meta.existing.sourceCardId : meta.own.sourceCardId;
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      className="btn effect-action-modal__target"
+                      onClick={() => onSelect(id)}
+                    >
+                      {`${state.definitions[cardId]?.name ?? cardId}の効果を先に処理`}
+                    </button>
+                  );
+                })}
               {pending.validInstanceIds
                 .filter((id) => SIMULTANEOUS_FRAME_LABELS[id])
                 .map((id) => (

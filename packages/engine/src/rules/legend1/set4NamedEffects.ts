@@ -27,6 +27,7 @@ import { hasBattleNcEffect } from "../namedUnitEffects";
 import { countJointLGrant } from "../jointComboGrants";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
+import { registerChoiceRefresher } from "../choiceRefreshers";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -59,12 +60,29 @@ function finish(state: GameState, phasePlayerId: PlayerId, before?: GameState): 
 }
 
 /**
- * 同時に誘発した相手の効果の選択（撃破されたユニットの「撃破されたとき」等）が既に開いていれば、
- * ターンプレイヤーのこの効果を先に処理し、相手の選択はその後に再開する（R-SIM-01。faq-card-4 RS-212 Q1・RS-226 Q1）。
+ * バトルで撃破したときの効果（RS-212 / RS-226）の選択を開く。撃破されたユニットの「撃破されたとき」等、
+ * 同時に起きた別の効果の選択が既に開いていれば、ターンプレイヤーがどちらを先に処理するかを選ぶ
+ * （simultaneous_order。R-SIM-01・faq-card-4 RS-212 Q1）。後に回した側は、先の処理の後で候補を作り直して開く
+ * （faq-card-4 RS-226 Q1 — キラーオーを先に処理すれば、アバレッドAM の効果で出るアバレッドは選べない）。
  */
-function openBeforeExisting(state: GameState, choice: PendingEffectChoice): GameState {
+function openWithSimultaneousOrder(state: GameState, choice: PendingEffectChoice): GameState {
   const existing = state.pendingEffectChoice;
-  return openEffectChoice(state, existing ? { ...choice, resumeChoice: existing } : choice);
+  if (!existing) return openEffectChoice(state, choice);
+  const ownId = choice.sourceInstanceId ?? choice.effectId;
+  let existingId = existing.sourceInstanceId ?? existing.effectId;
+  if (existingId === ownId) existingId = `${existing.effectId}:${existingId}`;
+  const chooser = choice.phasePlayerId;
+  return openEffectChoice(state, {
+    playerId: chooser,
+    effectId: "simultaneous_order",
+    sourceCardId: choice.sourceCardId,
+    sourceInstanceId: choice.sourceInstanceId,
+    kind: "simultaneous_order",
+    phasePlayerId: chooser,
+    validInstanceIds: [ownId, existingId],
+    optional: false,
+    battleDestroyOrderMeta: { own: choice, existing, existingId },
+  });
 }
 
 /**
@@ -104,9 +122,10 @@ export function openMirageKnuckleChoice(
   const enemyId = opponent(attackerId);
   const ids = state.players[enemyId].discard.map((c) => c.instanceId);
   if (ids.length === 0) return state;
-  return openBeforeExisting(state, {
+  return openWithSimultaneousOrder(state, {
     playerId: attackerId,
     effectId: MIRAGE_KNUCKLE_EFFECT_ID,
+    refreshOnOpen: { key: MIRAGE_KNUCKLE_EFFECT_ID },
     sourceCardId: "RS-212",
     sourceInstanceId: attackerInstanceId,
     kind: "select_unit",
@@ -117,6 +136,12 @@ export function openMirageKnuckleChoice(
     optional: false,
   });
 }
+
+// 他の効果を先に処理したあとで開くとき（simultaneous_order）、その時点の敵軍捨札から選ぶ。
+registerChoiceRefresher(MIRAGE_KNUCKLE_EFFECT_ID, (state, choice) => {
+  const ids = state.players[opponent(choice.playerId)].discard.map((c) => c.instanceId);
+  return ids.length > 0 ? { ...choice, validInstanceIds: ids } : null;
+});
 
 function resolveMirageKnuckle(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
   const pending = state.pendingEffectChoice!;
@@ -312,9 +337,10 @@ export function openDeathStingerChoice(
     .filter((c) => effectiveBp(state, enemyId, c) < destroyedBattleBp)
     .map((c) => c.instanceId);
   if (ids.length === 0) return state;
-  return openBeforeExisting(state, {
+  return openWithSimultaneousOrder(state, {
     playerId: enemyId,
     effectId: DEATH_STINGER_EFFECT_ID,
+    refreshOnOpen: { key: DEATH_STINGER_EFFECT_ID, destroyedBattleBp },
     sourceCardId: "RS-226",
     sourceInstanceId: attackerInstanceId,
     kind: "select_unit",
@@ -325,6 +351,15 @@ export function openDeathStingerChoice(
     optional: false,
   });
 }
+
+// 他の効果を先に処理したあとで開くとき（simultaneous_order）、その時点の相手のユニットから選ぶ。
+registerChoiceRefresher(DEATH_STINGER_EFFECT_ID, (state, choice) => {
+  const bp = choice.refreshOnOpen?.destroyedBattleBp ?? 0;
+  const ids = fieldUnits(state, choice.playerId)
+    .filter((c) => effectiveBp(state, choice.playerId, c) < bp)
+    .map((c) => c.instanceId);
+  return ids.length > 0 ? { ...choice, validInstanceIds: ids } : null;
+});
 
 function resolveDeathStinger(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
   const pending = state.pendingEffectChoice!;

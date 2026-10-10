@@ -553,6 +553,32 @@ describe("RS-212 オーグリーン", () => {
     expect(zoneOf(s, "player2", "RS-230:am")).toBe("discard");
     expect(s.players.player2.rush).toHaveLength(0);
   });
+
+  // R-SIM-01 / faq-card-4 RS-212 Q1 — 処理順はターンプレイヤーの選択（simultaneous_order）。AM を先にもできる。
+  it("RS-212: 公式Q&A — ターンプレイヤーは アバレッドAM の効果を先に処理させることもでき、そのあと敵軍捨札（アバレッドが出たあと）から選ぶ（出典: grnrngr/faq-card-4 RS-212 Q1、R-SIM-01）", () => {
+    let s = st({
+      player1: { battle: fillers(2), rush: [{ ...inst("RS-212", "g"), bpSetValue: 9000 }] },
+      player2: { battle: [inst("RS-230", "am")], discard: [inst("RS-054", "red")], power: powerCards(2, "e") },
+    });
+    s = enter(s, "RS-212:g");
+    s = attack(s, "RS-212:g", "RS-230:am");
+    expect(s.pendingEffectChoice?.kind).toBe("simultaneous_order");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    const [own, amFirst] = choiceIds(s);
+    expect(own).toBe("RS-212:g");
+    expect(s.pendingEffectChoice?.battleDestroyOrderMeta?.existing.sourceCardId).toBe("RS-230");
+    s = pick(s, "player1", amFirst!);
+    // 相手の「撃破されたとき」を先に解決する。
+    for (let i = 0; i < 6 && s.pendingEffectChoice && s.pendingEffectChoice.playerId === "player2"; i++) {
+      s = settle(pick(s, "player2", choiceIds(s).find((id) => id === "RS-054:red") ?? choiceIds(s)[0]!));
+    }
+    expect(zoneOf(s, "player2", "RS-054:red")).not.toBe("discard");
+    // ミラージュナックルはそのあとで、その時点の敵軍捨札（撃破された AM）から選ぶ。
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect(choiceIds(s)).toEqual(["RS-230:am"]);
+    s = settle(pick(s, "player1", "RS-230:am"));
+    expect(zoneOf(s, "player2", "RS-230:am")).toBe("power");
+  });
 });
 
 // ===========================================================================

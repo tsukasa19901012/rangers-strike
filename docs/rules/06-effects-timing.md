@@ -101,7 +101,7 @@
 全く同じタイミングで発動・発生した同じ優先順位の効果や処理は、発動者に関係なくターンプレイヤーが処理順・解決順・適用順を決める。「すべて撃破する」など一度に複数を処理する効果も同時に当たる。
 - 出典: `grnrngr/faq-card-1` RS-054「まったく同タイミングで発動した効果は、ターンプレイヤーが適用する順番を決めて処理します」、`grnrngr/faq-card-2` RS-092「同時タイミングで発動する効果は、発動時点でのターンプレイヤーに処理する順番を決める権利があります」、`grnrngr/faq-index` リファレンス（同文）、`atwiki/page-1827`、`atwiki/page-1869`「同じ優先順位の効果はターンプレイヤーが自由に解決の順番を決められる」
 - Web: https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html , https://www.grnrngr.com/documents/rangersstrike/faq/index.html , https://w.atwiki.jp/renst/pages/1827.html , https://w.atwiki.jp/renst/pages/1869.html
-- 実装: ? 同時に開いた反応窓（離場・ストライク・アタック・ラッシュ）と相打ちの撃破処理は、ターンプレイヤーの選択（`pendingEffectChoice` kind `simultaneous_order` → `resolve_effect_choice`）で順番を決める（`rules/simultaneousEffects.ts`、`rules/operationCounters.ts` `processMutualDestruction`）。相打ちは順番で結果が変わるときだけ選択を開く。フェイズ開始時の効果の順番（R-TIME-06）、「すべて撃破する」等の複数対象処理の順番選択は未実装（02-D15）
+- 実装: ? 同時に開いた反応窓（離場・ストライク・アタック・ラッシュ）と相打ちの撃破処理は、ターンプレイヤーの選択（`pendingEffectChoice` kind `simultaneous_order` → `resolve_effect_choice`）で順番を決める（`rules/simultaneousEffects.ts`、`rules/operationCounters.ts` `processMutualDestruction`）。相打ちは順番で結果が変わるときだけ選択を開く。バトルで撃破したときの自軍の効果（RS-212【爆烈ミラージュナックル】・RS-226【爆竜必殺デススティンガー】）と同時に開いた別の選択（撃破されたユニットの「撃破されたとき」等）も同じ選択で順番を決め、後に回した効果はその時点の候補で開く（`battleDestroyOrderMeta`、faq-card-4 RS-212 Q1）。フェイズ開始時の効果の順番（R-TIME-06）、「すべて撃破する」等の複数対象処理の順番選択は未実装（02-D15）
 
 #### R-SIM-02 例外: マルチカテゴリ等 [wiki] `web照合済(2026-10-10)`
 ゾーンのカテゴリ数を制限する効果などでは「できるだけ解決できるよう処理する」必要があり、マルチカテゴリのカードを優先して捨てるなど、ターンプレイヤーが自由に決められない場合がある。敵軍ターン中に複数のモーフを発動したときの順は相手（そのターンのターンプレイヤー）が決める。

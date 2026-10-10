@@ -157,9 +157,13 @@ export function effectChoiceHint(
       return "数字を宣言してください";
     case "simultaneous_order":
       // ルール: R-SIM-01, R-BTL-02 — 同時に起きた処理の順番はターンプレイヤーが決める。
-      return pending.mutualDestructionMeta
-        ? "相打ちで同時に撃破されました。先に処理するユニットを選んでください"
-        : "同時に起きた処理です。先に解決するものを選んでください";
+      if (pending.mutualDestructionMeta) {
+        return "相打ちで同時に撃破されました。先に処理するユニットを選んでください";
+      }
+      if (pending.battleDestroyOrderMeta) {
+        return "撃破したユニットの効果と、撃破されたユニット等の効果が同時に発動しました。先に処理する効果のユニットを選んでください";
+      }
+      return "同時に起きた処理です。先に解決するものを選んでください";
     default:
       return `対象を選んでください`;
   }

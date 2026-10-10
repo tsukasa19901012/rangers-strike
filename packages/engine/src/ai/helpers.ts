@@ -1191,7 +1191,7 @@ export function pickEffectChoice(
     return (cpuAcceptsOptionalEffect(state, pending) ? confirm : skip) ?? skip ?? confirm ?? null;
   }
 
-  if (pending.kind === "simultaneous_order" && pending.mutualDestructionMeta) {
+  if (pending.kind === "simultaneous_order" && (pending.mutualDestructionMeta || pending.battleDestroyOrderMeta)) {
     // ルール: R-BTL-02, R-SIM-01 — 相打ちの処理順: 各順で処理した結果を評価し、自分に有利な順を選ぶ。
     let best: GameAction | null = null;
     let bestScore = -Infinity;
