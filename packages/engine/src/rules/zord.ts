@@ -101,20 +101,68 @@ function findPartnerInstance(
   return null;
 }
 
+type FusionMaterialFound = { zone: ZordMaterialZone; index: number; card: CardInstance };
+
+/** 「※これは「A＋B＋C」としてつかえる」（XG3-006 ビクトリーウォーカー）の A・B・C。1枚で複数の合体ユニットとして数える。 */
+function multiFusionAliasNames(def: CardDefinition | undefined): string[] {
+  for (const alias of fusionMaterialAliasNames(def?.text)) {
+    const parts = alias.split(/[＋+]/).map((p) => canonicalCardName(p)).filter(Boolean);
+    if (parts.length >= 2) return parts;
+  }
+  return [];
+}
+
 /** ゾードカードに列挙された全合体パートナー（例: RS-050 → 051/052/053）。 */
 export function collectRequiredFusionMaterials(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
   rushingCardId: string,
   rushingInstanceId: string,
-): Array<{ zone: ZordMaterialZone; index: number; card: CardInstance }> | null {
+): FusionMaterialFound[] | null {
+  const plain = collectRequiredFusionMaterialsWith(player, definitions, rushingCardId, rushingInstanceId, null);
+  if (plain) return plain;
+  // 1枚で複数の合体ユニットとしてつかえるカード（XG3-006「ブルースローワー＋イエローアーマー＋ピンクエイダー」。
+  // atwiki/page-388 Q1）で、その名前の枠をまとめて満たす。
+  const slots = resolveZordFusionPartnerSlots(rushingCardId);
+  for (const zone of ZORD_MATERIAL_ZONES) {
+    for (let index = 0; index < player[zone].length; index++) {
+      const card = player[zone][index]!;
+      if (card.instanceId === rushingInstanceId) continue;
+      const names = multiFusionAliasNames(getDefinition(definitions, card.cardId));
+      if (names.length === 0) continue;
+      const covered = new Set<number>();
+      for (const name of names) {
+        const slotIndex = slots.findIndex(
+          (slot, i) => !covered.has(i) && slot.some((id) => partnerNamesForId(definitions, id).has(name)),
+        );
+        if (slotIndex < 0) break;
+        covered.add(slotIndex);
+      }
+      if (covered.size !== names.length) continue;
+      const rest = collectRequiredFusionMaterialsWith(player, definitions, rushingCardId, rushingInstanceId, {
+        slots: covered,
+        material: { zone, index, card },
+      });
+      if (rest) return rest;
+    }
+  }
+  return null;
+}
+
+function collectRequiredFusionMaterialsWith(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+  rushingInstanceId: string,
+  preassigned: { slots: Set<number>; material: FusionMaterialFound } | null,
+): FusionMaterialFound[] | null {
   const slots = resolveZordFusionPartnerSlots(rushingCardId);
   if (slots.length === 0) return null;
   const alternatives = resolveZordFusionSlotAlternatives(rushingCardId);
 
-  type Found = { zone: ZordMaterialZone; index: number; card: CardInstance };
-  const found: Found[] = [];
-  const usedInstanceIds = new Set<string>();
+  type Found = FusionMaterialFound;
+  const found: Found[] = preassigned ? [preassigned.material] : [];
+  const usedInstanceIds = new Set<string>(preassigned ? [preassigned.material.card.instanceId] : []);
 
   const matchSlot = (slot: string[]): Found | null => {
     for (const partnerId of slot) {
@@ -132,6 +180,7 @@ export function collectRequiredFusionMaterials(
   };
 
   for (const [slotIndex, slot] of slots.entries()) {
+    if (preassigned?.slots.has(slotIndex)) continue;
     const match = matchSlot(slot);
     if (match) {
       usedInstanceIds.add(match.card.instanceId);

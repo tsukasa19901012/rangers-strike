@@ -215,6 +215,8 @@ export function battleActBlocked(
 ): boolean {
   // RS-326【究極奥義・猫だまし】で出したユニットはアタックもストライクもできない（atwiki/page-487）。
   if (hasScopedRestriction(player, card.instanceId, "neko_damashi_no_attack_strike", "turn")) return true;
+  // RK-048【音撃斬・雷電斬震】で撃破したとき「これはアタックすることができない」。
+  if (action === "attack" && hasScopedRestriction(player, card.instanceId, "no_attack_this_turn", "turn")) return true;
   // RS-167【爆竜必殺バキバキパンチ】で得た「アタックしてバトルに勝つたび、追加でアタックできる」。
   if (action === "attack" && hasBakiBakiExtraAttack(player, card.instanceId)) return false;
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックする権利を失っている。

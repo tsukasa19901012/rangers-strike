@@ -498,8 +498,7 @@ describe("RS-339 闇のヤイバ", () => {
   });
 
   // grnrngr/faq-card-5 RS-339 Q1「カテゴリにＤＡを追加されているＳユニットも、「ＤＡのＳユニット」として扱いますので、…バトルエリアに出ることはできません。」
-  it.fails("RS-339: 公式Q&A — DA を追加された特徴「男」の S ユニットは、敵軍バトルエリアに気伝武人龍星王があるとバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-339 Q1・atwiki/page-439 Q1）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA が龍星王の制限に反映されない（加えて CARD-RS-290 本来の DA の S ユニットも制限されていない）
+  it("RS-339: 公式Q&A — DA を追加された特徴「男」の S ユニットは、敵軍バトルエリアに気伝武人龍星王があるとバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-339 Q1・atwiki/page-439 Q1）", () => {
     const s = st({
       player1: { rush: [inst("RS-057", "man"), inst("RS-339", "y")], deck: deckCards(3) },
       player2: { battle: [inst("RS-290", "ry")], deck: deckCards(3, "e") },
@@ -508,8 +507,7 @@ describe("RS-339 闇のヤイバ", () => {
   });
 
   // grnrngr/faq-card-5 RS-290 Q1「いいえ、できません。…特徴「男」を持つ自軍ユニットはバトルエリアに出られないことになります。」
-  it.fails("RS-339: 公式Q&A — 敵軍エリアにヤイバ、敵軍バトルエリアに龍星王があるとき、特徴「男」を持つワイルドビーストの自軍 S ユニット（ゲキレッド）はバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-290 Q1）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA が龍星王の制限に反映されない（CARD-RS-290 の制限自体も未適用）
+  it("RS-339: 公式Q&A — 敵軍エリアにヤイバ、敵軍バトルエリアに龍星王があるとき、特徴「男」を持つワイルドビーストの自軍 S ユニット（ゲキレッド）はバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-290 Q1）", () => {
     const s = st({
       player1: { battle: fillers(1), rush: [inst("RS-340", "gr")], deck: deckCards(3) },
       player2: { battle: [inst("RS-290", "ry")], rush: [inst("RS-339", "y")], deck: deckCards(3, "e") },
@@ -573,15 +571,13 @@ describe("RS-339 闇のヤイバ", () => {
   });
 
   // grnrngr/faq-card-6 RS-364 Q3「はい、発動します。」（ヤイバで DA が追加されたユニットがいても「自軍ユニットがすべて DA」）
-  it.fails("RS-339: 公式Q&A — ヤイバで DA が追加された特徴「男」のユニット（ティラノレンジャー）がいても、ヘルサターン総統の「自軍ユニットがすべてDA」は満たされ BP+3000 される（出典: grnrngr/faq-card-6 RS-364 Q3）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA がヘルサターン総統の条件に反映されない（CARD-RS-364 の BP+3000 も確認できない）
+  it("RS-339: 公式Q&A — ヤイバで DA が追加された特徴「男」のユニット（ティラノレンジャー）がいても、ヘルサターン総統の「自軍ユニットがすべてDA」は満たされ BP+3000 される（出典: grnrngr/faq-card-6 RS-364 Q3）", () => {
     const s = st({ player1: { rush: [inst("RS-364", "hs"), inst("RS-339", "y"), inst("RS-081", "ty")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     expect(bpOf(s, "player1", "RS-081:ty")).toBe(6000);
   });
 
   // grnrngr/faq-card-6 RS-364 Q1「はい、ＢＰ+３０００されてＳＰ１になります。」
-  it.fails("RS-339: 公式Q&A — ヘルサターン総統・ヤイバ・ティラノレンジャーが自軍ラッシュエリアにあり、ティラノレンジャーが NC を発動したとき、BP+3000 されて SP1 になる（出典: grnrngr/faq-card-6 RS-364 Q1）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA がヘルサターン総統の条件に反映されない
+  it("RS-339: 公式Q&A — ヘルサターン総統・ヤイバ・ティラノレンジャーが自軍ラッシュエリアにあり、ティラノレンジャーが NC を発動したとき、BP+3000 されて SP1 になる（出典: grnrngr/faq-card-6 RS-364 Q1）", () => {
     let s = st({
       player1: {
         battle: [inst("RS-338", "j1"), inst("RS-338", "j2"), inst("RS-338", "j3")],

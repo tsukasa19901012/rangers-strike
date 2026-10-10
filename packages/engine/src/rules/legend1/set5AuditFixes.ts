@@ -7,7 +7,7 @@
  */
 import type { CardInstance, GameState, PendingStrike, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { cardName, getDefinition } from "../../core/catalog";
+import { cardName, getDefinition, parsePowerCost } from "../../core/catalog";
 import { addTurnRestrictionModifier } from "../../core/scopedModifiers";
 import { opponent, performDeckDraws, updatePlayer } from "../../core/helpers";
 import type { GameAction } from "../../types/actions";
@@ -16,7 +16,7 @@ import { shuffleCards } from "../errataCardEffects";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { afterCommandCardsLeft } from "../commandLeaveRefill";
-import { openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
+import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
 type ChoiceSkipper = (state: GameState, playerId: PlayerId) => ChoiceOutcome;
@@ -285,17 +285,123 @@ function applyFireTornado(state: GameState, ctx: GrantKeywordContext): GameState
 }
 
 // ---------------------------------------------------------------------------
+// RK-048 仮面ライダー斬鬼【音撃斬・雷電斬震】（NC）
+// 「敵軍バトルエリアからユニットを1体選ぶ。そして、選んだユニットの必要パワーの数字より1つ多い数だけ自軍コマンドを
+//  リリースしてもよい。そうしたとき、選んだユニットを撃破する。このとき、これはアタックすることができない。」
+// - リリースはホールド状態の自軍コマンドから1枚ずつ選ぶ（数が足りなければリリースできず、撃破もしない）。
+// - リリースしてから撃破する。CN が同じコマンドをリリースしても、発動した NC はそのまま実行する
+//   （atwiki/page-453 Q5（2010/02/08 修正）。faq-rider_1 RK-048 の回答より優先 — docs/rules/README.md §1.2 例外2）。
+
+export const ZANKI_TARGET_EFFECT_ID = "zanki_raiden_target";
+export const ZANKI_RELEASE_EFFECT_ID = "zanki_raiden_release";
+/** このターン、アタックできない（RK-048 で撃破したとき）。 */
+export const NO_ATTACK_THIS_TURN_RESTRICTION = "no_attack_this_turn";
+
+function beginZanki(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  const valid = state.players[opponent(ctx.playerId)].battle.map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: ZANKI_TARGET_EFFECT_ID,
+    sourceCardId: "RK-048",
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    kind: "select_unit",
+    phasePlayerId: ctx.phasePlayerId,
+    validInstanceIds: valid,
+    optional: false,
+  });
+}
+
+function resolveZankiTarget(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const target = state.players[opponent(playerId)].battle.find((c) => c.instanceId === instanceId);
+  if (!target) return { error: "invalid_target" };
+  const need = parsePowerCost(getDefinition(state.definitions, target.cardId)?.powerCost) + 1;
+  const held = state.players[playerId].command.filter((c) => c.commandHeld).map((c) => c.instanceId);
+  const log = buildLogEntry(playerId, "resolve_effect_choice", "RK-048", state.definitions, `zanki_target:${cardName(state.definitions, target.cardId)}`);
+  if (held.length < need) return { state: finish(state, pending.phasePlayerId), log };
+  return {
+    state: {
+      ...state,
+      pendingEffectChoice: {
+        ...pending,
+        effectId: ZANKI_RELEASE_EFFECT_ID,
+        kind: "select_command",
+        validInstanceIds: held,
+        selectedInstanceIds: [],
+        selectCount: need,
+        processedInstanceIds: [instanceId],
+        optional: true,
+      },
+    },
+    log,
+  };
+}
+
+function resolveZankiRelease(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  const need = pending.selectCount ?? 1;
+  const log = buildLogEntry(playerId, "resolve_effect_choice", "RK-048", state.definitions, `zanki_release:${instanceId}`);
+  if (selected.length < need) {
+    return {
+      state: {
+        ...state,
+        pendingEffectChoice: {
+          ...pending,
+          validInstanceIds: pending.validInstanceIds.filter((id) => id !== instanceId),
+          selectedInstanceIds: selected,
+        },
+      },
+      log,
+    };
+  }
+  const ids = new Set(selected);
+  const player = state.players[playerId];
+  let next: GameState = {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      command: player.command.map((c) => (ids.has(c.instanceId) ? { ...c, commandHeld: false } : c)),
+    }),
+  };
+  if (pending.sourceInstanceId) {
+    next = {
+      ...next,
+      ...updatePlayer(
+        next,
+        playerId,
+        addTurnRestrictionModifier(next.players[playerId], pending.sourceInstanceId, NO_ATTACK_THIS_TURN_RESTRICTION),
+      ),
+    };
+  }
+  next = clearPending(next, pending.phasePlayerId);
+  const targetId = pending.processedInstanceIds?.[0];
+  if (targetId) {
+    const leave = applyUnitLeave(next, targetId, "discard", pending.phasePlayerId);
+    if (!("error" in leave)) next = leave.state;
+  }
+  if (!next.pendingEffectChoice && !next.pendingLeave) next = promoteDeferredBattleEntry(next);
+  return { state: next, log };
+}
+
+// ---------------------------------------------------------------------------
 // 共通の入口
 
 
 const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [GOURAI_CANNON_EFFECT_ID]: resolveGouraiCannon,
   [NEKO_DAMASHI_EFFECT_ID]: resolveNekoDamashi,
+  [ZANKI_TARGET_EFFECT_ID]: resolveZankiTarget,
+  [ZANKI_RELEASE_EFFECT_ID]: resolveZankiRelease,
 };
 
 const CHOICE_SKIPPERS: Record<string, ChoiceSkipper> = {
   [GOURAI_CANNON_EFFECT_ID]: skipGouraiCannon,
   [NEKO_DAMASHI_EFFECT_ID]: skipSimple("RS-326"),
+  [ZANKI_RELEASE_EFFECT_ID]: skipSimple("RK-048"),
 };
 
 export function isSet5AuditChoiceEffect(effectId: string): boolean {
@@ -337,6 +443,10 @@ export function trySet5AuditCardEffect(
     }
     case "RS-330::fuaiyatorunedo":
       return { state: applyFireTornado(state, ctx), detail: ctx.effectId };
+    case "RK-048::geki_zan_kami_zan": {
+      const next = beginZanki(state, ctx);
+      return next ? { state: next, detail: ZANKI_TARGET_EFFECT_ID } : { state, detail: `${ZANKI_TARGET_EFFECT_ID}:no_targets` };
+    }
     default:
       return null;
   }

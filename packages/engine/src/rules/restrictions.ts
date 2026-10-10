@@ -1,4 +1,5 @@
 import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
+import { hellSaturnGrantCount } from "./hellSaturn";
 import { errataBattleEntryBlocked, isDivingOrochi } from "./errataCardEffects";
 import {
   battleHasComboPartner,
@@ -31,6 +32,7 @@ import {
   isSmallUnit,
   isUnit,
   isVehicle,
+  unitEffectiveCategories,
 } from "../core/catalog";
 import {
   heldCallLeadMatchesCategories,
@@ -177,6 +179,9 @@ export function requiredBattleEntryHolds(
   unit: CardInstance,
 ): number {
   let unitHold = unitBattleEntryHoldCount(state, playerId, unit.cardId);
+  // RS-364【黒き太陽神への忠誠】:「これは自軍コマンドを1つホールドしなければバトルエリアに出られない。」と書かれているかのように扱う
+  // （複数あっても 1 つ — faq-card-6 RS-364 Q5。獣奏剣で無効にできる — 同 Q4）。
+  if (hellSaturnGrantCount(state, playerId, unit) > 0) unitHold = Math.max(unitHold, 1);
   if (unitHold > 0 && scorchingRoarBypassesHold(unit.cardId, state, playerId)) {
     unitHold = 0;
   }
@@ -212,6 +217,19 @@ export function accelMemoryHoldCount(
     (c) =>
       c.cardId === "XG4-062" && riders.some((r) => r.mountedOnInstanceId === c.instanceId),
   ).length;
+}
+
+/**
+ * RS-290 龍星王【飛竜棍・大風車】: これが自軍バトルエリアにある間、「DA」の敵軍Sユニットはバトルエリアに出られない
+ * （atwiki/page-474）。効果で DA が追加されたユニットも含む（faq-card-5 RS-290 Q1・RS-339 Q1）。
+ * ライドして L ユニットになれば対象外（atwiki/page-474 Q3。ここではラッシュエリアの S ユニットだけを判定）。
+ */
+export function ryuseioBlocksMove(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
+  const enemy = state.players[opponent(playerId)];
+  if (!enemy.battle.some((c) => c.cardId === "RS-290")) return false;
+  const def = getDefinition(state.definitions, unit.cardId);
+  if (def?.type !== "unit" || def.size !== "S") return false;
+  return unitEffectiveCategories(state, playerId, unit, "rush").includes("DA");
 }
 
 /** RS-047 Pat Signer: BP>=5000 のMユニットの戦闘進入をブロック。 */
@@ -314,6 +332,7 @@ export function canMoveUnitToBattle(
   }
 
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
+  if (def.type === "unit" && ryuseioBlocksMove(state, playerId, unit)) return false;
 
   if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
 
@@ -432,6 +451,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (fromZone === "hand") return false;
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
+  if (def.type === "unit" && ryuseioBlocksMove(state, playerId, unit)) return false;
   if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 

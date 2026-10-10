@@ -598,8 +598,7 @@ describe("RS-290 気伝武人龍星王", () => {
   }
 
   // 「これが自軍バトルエリアにある間、「DA」の敵軍Sユニットはバトルエリアに出られない」
-  it.fails("RS-290: 【飛竜棍・大風車】自軍バトルエリアにある間、DA の敵軍 S ユニットはバトルエリアに出られない（出典: atwiki/page-474）", () => {
-    // 既知の不具合: CARD-RS-290 【飛竜棍・大風車】が実装されていない（while_da_s_cannot_battle_entry を参照する処理がない）
+  it("RS-290: 【飛竜棍・大風車】自軍バトルエリアにある間、DA の敵軍 S ユニットはバトルエリアに出られない（出典: atwiki/page-474）", () => {
     const s = enemyTurn({ battle: [inst("RS-290", "b")] }, [inst("SPEC-DA-S", "s")]);
     expect(canEnter(s, "SPEC-DA-S:s", "player2")).toBe(false);
   });
@@ -621,8 +620,7 @@ describe("RS-290 気伝武人龍星王", () => {
   });
 
   // faq-card-5 RS-290 Q1「いいえ、できません。…そのカテゴリを含むものはすべて対象となります。」／faq-card-5 RS-339 Q「「ＤＡのＳユニット」として扱います」
-  it.fails("RS-290: 公式Q&A — 闇のヤイバでカテゴリに DA が追加された（特徴「男」を持つ WB の）S ユニットもバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-290 Q1・RS-339 Q1）", () => {
-    // 既知の不具合: CARD-RS-290 【飛竜棍・大風車】が実装されていない
+  it("RS-290: 公式Q&A — 闇のヤイバでカテゴリに DA が追加された（特徴「男」を持つ WB の）S ユニットもバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-290 Q1・RS-339 Q1）", () => {
     const s = st(
       { player1: { rush: [inst("SPEC-WB-MAN", "m")] }, player2: { battle: [inst("RS-290", "b")], rush: [inst("RS-339", "y")] } },
       SPECS,

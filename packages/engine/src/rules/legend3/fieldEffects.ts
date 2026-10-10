@@ -1,4 +1,5 @@
 import { hasUnnamedRule } from "@rangers-strike/cards";
+import { hellSaturnGrantCount } from "../hellSaturn";
 import { activeNamedEffect, namedEffectActive } from "../ncGatedEffects";
 import { countJointLGrant, jointLGrantSpPlus, jointRGrantActive } from "../jointComboGrants";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
@@ -204,6 +205,10 @@ export function legend3EffectiveSp(
   if (earthConquestDeclarationActive(state, playerId, instance)) sp = Math.max(sp, 1);
   // RS-310 ゴウライビートル【カラクリ忍法・角変化】: BP8000以上のとき「SP1」になる（atwiki/page-480）。
   if (instance.cardId === "RS-310" && effectiveBp(state, playerId, instance) >= 8000) sp = Math.max(sp, 1);
+  // RS-364 ヘルサターン総統【黒き太陽神への忠誠】: 効果を得た S ユニットは BP8000以上のとき「SP1」になる（faq-card-6 RS-364 Q1）。
+  if (hellSaturnGrantCount(state, playerId, instance) > 0 && effectiveBp(state, playerId, instance) >= 8000) {
+    sp = Math.max(sp, 1);
+  }
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。
