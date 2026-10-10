@@ -159,7 +159,9 @@ export function requestDrawFromDeck(
   const count = options?.count ?? 1;
   const player = state.players[playerId];
   if (player.deck.length === 0) {
-    return { state, pending: false, drawn: false };
+    // 引くべきときに引けなければ敗北（公式FAQ RS-027 Q4）。
+    const deckedOut = { ...player, deckedOut: true };
+    return { state: { ...state, ...updatePlayer(state, playerId, deckedOut) }, pending: false, drawn: false };
   }
 
   const opened = tryStartSeabedDrawChoice(

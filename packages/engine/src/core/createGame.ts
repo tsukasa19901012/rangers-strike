@@ -6,7 +6,7 @@ import {
   INITIAL_HAND_SIZE,
   hasWonByDamage,
   WIN_DAMAGE,
-  hasWonByDeckOut,
+  hasLostByDeckOut,
 } from "../types/game";
 import { buildDefinitionMap } from "./catalog";
 
@@ -137,14 +137,21 @@ export function loseDamageThreshold(state: GameState, playerId: PlayerId): numbe
   return threshold;
 }
 
-export function checkWinner(state: GameState): PlayerId | null {
-  const p1 = state.players.player1;
-  const p2 = state.players.player2;
+function hasLost(state: GameState, playerId: PlayerId): boolean {
+  const player = state.players[playerId];
+  return player.damage >= loseDamageThreshold(state, playerId) || hasLostByDeckOut(player);
+}
 
-  if (p1.damage >= loseDamageThreshold(state, "player1")) return "player2";
-  if (p2.damage >= loseDamageThreshold(state, "player2")) return "player1";
-  if (hasWonByDeckOut(p1)) return "player2";
-  if (hasWonByDeckOut(p2)) return "player1";
+/**
+ * 勝者判定。両者が同時に敗北条件を満たした場合はターンプレイヤーの勝利
+ * （公式FAQ RS-054 / RS-093）。
+ */
+export function checkWinner(state: GameState): PlayerId | null {
+  const p1Lost = hasLost(state, "player1");
+  const p2Lost = hasLost(state, "player2");
+  if (p1Lost && p2Lost) return state.activePlayer;
+  if (p1Lost) return "player2";
+  if (p2Lost) return "player1";
   return null;
 }
 

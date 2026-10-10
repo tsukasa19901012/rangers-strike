@@ -107,6 +107,8 @@ export type PlayerState = {
   costWindows?: PlayerCostWindows;
   /** RS-382: このターン捨札から手札に加えた S ユニット枚数。 */
   sUnitsRecoveredFromDiscardThisTurn?: number;
+  /** 引くべきときに山札から引けなかった（デッキアウト敗北。公式FAQ RS-027 Q4）。 */
+  deckedOut?: boolean;
 };
 
 export type PendingStrike = {
@@ -555,7 +557,7 @@ export function hasWonByDamage(player: PlayerState): boolean {
   return player.damage >= WIN_DAMAGE;
 }
 
-/** デッキアウトは必須ドロー失敗時に判定（applyAction の draw を参照）。 */
-export function hasWonByDeckOut(_player: PlayerState): boolean {
-  return false;
+/** 引くべきときに引けなかったプレイヤーはデッキアウトで敗北する（効果によるドローを含む）。 */
+export function hasLostByDeckOut(player: PlayerState): boolean {
+  return player.deckedOut === true;
 }

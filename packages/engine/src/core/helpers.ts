@@ -57,7 +57,11 @@ export function performDeckDraws(
 ): PlayerState {
   let next = player;
   for (let i = 0; i < count; i++) {
-    if (next.deck.length === 0) break;
+    if (next.deck.length === 0) {
+      // 引くべきときに引けなければ敗北（公式FAQ RS-027 Q4）。超電子頭脳の2枚目は本来のドローではない。
+      if (!(superBrainDiscardSecond && i === 1)) next = { ...next, deckedOut: true };
+      break;
+    }
     const index = from === "top" ? 0 : next.deck.length - 1;
     const [drawn, deck] = removeAt(next.deck, index);
     if (superBrainDiscardSecond && i === 1) {
