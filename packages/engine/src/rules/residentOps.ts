@@ -7,7 +7,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
-import { updatePlayer } from "../core/helpers";
+import { takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 
 export type ResidentOpAttackedResult = {
@@ -56,14 +56,12 @@ const CLOCK_UP: ResidentOpRuntime = {
     const player = state.players[ownerId];
     const count = player.power.length;
     if (count <= 0) return state;
-    const taken = player.deck.slice(0, count).map((card) => ({
-      ...card,
-      faceDown: true,
-    }));
-    const deck = player.deck.slice(taken.length);
+    // ルール: R-START-05, R-WIN-03 — 「ひいて」重ねる。ひけなければ敗北。
+    const { player: afterTake, taken: takenCards } = takeFromDeckTop(player, count);
+    const taken = takenCards.map((card) => ({ ...card, faceDown: true }));
     const withDeck = {
       ...state,
-      ...updatePlayer(state, ownerId, { ...player, deck }),
+      ...updatePlayer(state, ownerId, afterTake),
     };
     return updateOperationCard(withDeck, ownerId, opInstanceId, (card) => ({
       ...card,

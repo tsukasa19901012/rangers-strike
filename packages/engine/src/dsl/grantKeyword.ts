@@ -7,7 +7,7 @@ import {
   isUnit,
   parsePowerCost,
 } from "../core/catalog";
-import { findInZone, opponent, updatePlayer } from "../core/helpers";
+import { findInZone, opponent, takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { tryLeaveField } from "../rules/operationCounters";
 import {
@@ -1126,12 +1126,11 @@ export function applyGrantKeyword(
       const leavingDef = getDefinition(state.definitions, ctx.leavingCardId);
       const drawCost = parsePowerCost(leavingDef?.powerCost ?? 0);
       const owner = state.players[ctx.playerId];
-      const drawn = owner.deck.slice(0, drawCost);
-      const restDeck = owner.deck.slice(drawCost);
+      // ルール: R-START-05, R-WIN-03 — ひくべきときにひけなければ敗北（RS-027 Q4）。
+      const { player: afterTake, taken: drawn } = takeFromDeckTop(owner, drawCost);
       const nextOwner = {
-        ...owner,
-        deck: restDeck,
-        discard: [...owner.discard, ...drawn],
+        ...afterTake,
+        discard: [...afterTake.discard, ...drawn],
       };
       return {
         state: { ...state, ...updatePlayer(state, ctx.playerId, nextOwner) },

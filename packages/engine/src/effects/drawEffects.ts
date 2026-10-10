@@ -22,7 +22,9 @@ export function applySuperBrainDraw(
 
   if (!usesSuperBrain || player.deck.length < 2) {
     if (player.deck.length === 0) {
-      return { state, detail: "empty_deck" };
+      // ルール: R-START-05, R-WIN-03 — ドローすべきときに引けなければ敗北（deckedOut を立てる）。
+      const failed = requestDrawFromDeck(state, playerId, phasePlayerId, { count: 1 });
+      return { state: failed.state, detail: "empty_deck" };
     }
     const result = requestDrawFromDeck(state, playerId, phasePlayerId, {
       count: 1,

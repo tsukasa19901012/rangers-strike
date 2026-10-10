@@ -73,6 +73,25 @@ export function performDeckDraws(
   return next;
 }
 
+/**
+ * 山札の上から count 枚「ひく」（手札に加えないドロー以外の「ひく」も含む）。
+ * 足りなければ引けるだけ引き、引くべきときに引けなかったので敗北フラグを立てる。
+ * ルール: R-START-05, R-WIN-03（ダイノガッツ RS-027 のような「ひく」だけの効果でも敗北）
+ */
+export function takeFromDeckTop(
+  player: PlayerState,
+  count: number,
+): { player: PlayerState; taken: CardInstance[] } {
+  const want = Math.max(0, count);
+  const taken = player.deck.slice(0, want);
+  const deck = player.deck.slice(taken.length);
+  const short = taken.length < want;
+  return {
+    player: { ...player, deck, ...(short ? { deckedOut: true } : {}) },
+    taken,
+  };
+}
+
 export {
   canAffordPower,
   canAffordAvailablePower,

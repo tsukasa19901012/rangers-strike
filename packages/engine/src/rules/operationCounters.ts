@@ -25,7 +25,7 @@ import {
   parsePowerCost,
 } from "../core/catalog";
 import { countReleasedCommands } from "./restrictions";
-import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { findInZone, opponent, removeAt, takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
 import { isCostWindowSatisfied } from "../core/costWindow";
 import { buildLogEntry } from "../log/formatLog";
@@ -356,7 +356,7 @@ export function hasRushCounterReactions(
 export function canPlayDinoGutsLeaveCounter(
   state: GameState,
   ownerId: PlayerId,
-  leavingCardId: string,
+  _leavingCardId: string,
   counterInstanceId: string,
   options?: { requireEnemyTurn?: boolean },
 ): boolean {
@@ -366,9 +366,8 @@ export function canPlayDinoGutsLeaveCounter(
   if (!found || found.card.cardId !== "RS-027") return false;
   if (!canPlayHandCounter(state, ownerId, counterInstanceId)) return false;
 
-  const leavingDef = getDefinition(state.definitions, leavingCardId);
-  const drawCost = parsePowerCost(leavingDef?.powerCost ?? 0);
-  return state.players[ownerId].deck.length >= drawCost;
+  // ルール: R-WIN-04 — ダイノガッツは山札が足りなくても使える（途中でひけなければ敗北。公式FAQ RS-027）。
+  return true;
 }
 
 export function hasPlayableDinoChronicleCounter(
@@ -694,12 +693,11 @@ export function applyDinoGutsCounter(
   const leavingDef = getDefinition(discarded.state.definitions, leavingCardId);
   const drawCost = parsePowerCost(leavingDef?.powerCost ?? 0);
   const owner = discarded.state.players[ownerId];
-  const drawn = owner.deck.slice(0, drawCost);
-  const restDeck = owner.deck.slice(drawCost);
+  // ルール: R-START-05, R-WIN-03 — ひくべきときにひけなければ敗北（公式FAQ RS-027 Q4）。
+  const { player: afterTake, taken: drawn } = takeFromDeckTop(owner, drawCost);
   const nextOwner = {
-    ...owner,
-    deck: restDeck,
-    discard: [...owner.discard, ...drawn],
+    ...afterTake,
+    discard: [...afterTake.discard, ...drawn],
   };
 
   return {

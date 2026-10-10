@@ -73,14 +73,14 @@
 ドローすべきときに引けなければ負け（R-WIN-03）。ドローでなく「ひく」だけの効果（ダイノガッツ）でも、ひくべきときにひけなければ負け。
 - 出典: `grnrngr/rule_phase1-2`「山札が無くドローできないときは、ゲームに負けてしまいます」、`atwiki/page-123`「山札からドローすべき時にカードが引けなければ負けとなる」、`grnrngr/faq-card-1` RS-027「カードをひくべきときにひけなかった場合はゲームに負けてしまいます」
 - Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_phase1-2.html , https://w.atwiki.jp/renst/pages/123.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html
-- 実装: ✅ スタートフェイズの通常ドロー。効果ドローは ❌ E2。
+- 実装: ✅ スタートフェイズの通常ドロー。✅ 効果ドロー（E2: `performDeckDraws`／`requestDrawFromDeck`）。✅ 「ひく」だけの効果も、ひけなければ敗北（`takeFromDeckTop`: RS-027 ダイノガッツ、RK-021/RK-078 クロックアップ。ダイノガッツは山札不足でも使用可。BK-010 の「1枚ドロー」も山札0で敗北）。残り: RS-174【リフトアップ】は効果を任意で発動する選択がないため、山札0では「ひく」部分を飛ばしたまま。
 
 #### R-START-06 「フェイズ開始時」の効果 [wiki] `web照合済(2026-10-10)`
 「あるフェイズの開始時」に発動する効果は、そのフェイズ中の行動を一切行う前に発動・解決する（R-TIME-06）。スタートフェイズでは3行程より前。一方、「自軍スタートフェイズに」行う（開始時と書かれていない）効果はフェイズ中の行動の一つで、3行程と好きな順に行える（例: 闇の戒律の選択はドロー後でもよい）。「スタートフェイズを終えるとき」の効果は3行程の後で、毎ターン発動できる。
 - 出典: `atwiki/page-1828`「フェイズ中の行動を一切行う前・行った後に発動及び解決を行う」「効果を発動できるタイミングが「あるフェイズ中」である場合、そのフェイズ中の行動の一つとしてその効果を発動・使用できる」、`grnrngr/faq-card-5` RS-256「はい、ドローした後でもかまいません」、`grnrngr/faq-rider-2` RK-080「毎ターン1回ずつ発動できる」、`grnrngr/faq-rider-1` RK-042（相手がスタートフェイズにリリースした後、スタートフェイズを終えるときにホールド）
 - Web: https://w.atwiki.jp/renst/pages/1828.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_5.html , https://www.grnrngr.com/documents/rangersstrike/faq/rider_2.html , https://www.grnrngr.com/documents/rangersstrike/faq/rider_1.html
 - [未確定] 「ターン開始時」と書かれたカード（ゲゲル、XG4 の入れ替え等）が「スタートフェイズ開始時」と同じく3行程より前か。（2026-10-10 web確認: 記載なし。RK-081 ゲゲルの公式FAQはウラ向きで重ねる点のみ）
-- 実装: ❌ E17（ホールド中のコマンドがないと発動しない）
+- 実装: ✅ E17 修正。ターンが替わってスタートフェイズに入った直後（3行程より前）に `applyStartPhaseBeginEffects`（XG4-049〜051 のターン開始時の入れ替え、RK-081 ゲゲルの判定）を処理する。ホールド中のコマンドの有無に依存しない。XG3-009 ミント【戦いの記録】は未実装（DSL が on_rush のまま）。
 
 ---
 
