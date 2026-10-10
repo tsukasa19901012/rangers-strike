@@ -92,6 +92,12 @@ export function parseEnemyUnitFilter(body: string): EnemyUnitFilter {
   if (/バトルエリア/.test(body) && /ラッシュエリア/.test(body)) filter.zone = "both";
   const bpLe = body.match(/BP(\d+)以下/);
   if (bpLe) filter.maxBp = Number(bpLe[1]);
+  // 「BP4000の敵軍Sユニット」— BP がちょうどその値（RS-368【ゴッドハンド】）。
+  const bpEq = body.match(/BP(\d+)の/);
+  if (bpEq) {
+    filter.minBp = Number(bpEq[1]);
+    filter.maxBp = Number(bpEq[1]);
+  }
   const bpGe = body.match(/BP(\d+)以上/);
   if (bpGe) filter.minBp = Number(bpGe[1]);
   const printedBp = body.match(/本来のBPが(\d+)以下/);
@@ -116,6 +122,7 @@ export function startGenericEnemyUnitChoice(
     filter?: EnemyUnitFilter;
     destination: "power" | "discard" | "hand" | "rush" | "enemy_command";
     selectCount?: number;
+    placeAsDamage?: boolean;
   },
 ): GameState | null {
   const valid = collectEnemyUnits(state, params.playerId, params.filter);

@@ -46,7 +46,7 @@ import { tryPowerFaceupRaidaOnAllyEnter } from "./riderKickEffects";
 import { applyBeastSwordHoldOnEnter } from "./errataCardEffects";
 import { countLogicalBattleSlots } from "./battleLine";
 import { applyBaseAttackOnEnter } from "./legend3/enterBattleEffects";
-import { cannotAttackOrStrikeThisTurn, countHeldCommands } from "./restrictions";
+import { applyVCommanderHoldOnEnter, cannotAttackOrStrikeThisTurn, countHeldCommands } from "./restrictions";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import {
   rideOffBlocksStrike,
@@ -223,6 +223,7 @@ export function resolveEnterBattleEffectsImpl(
     }
 
     nextState = applyBeastSwordHoldOnEnter(nextState, playerId, battleCard);
+    nextState = applyVCommanderHoldOnEnter(nextState, playerId, battleCard);
     nextState = tryMereChameleonOnAllyEnterBattle(
       nextState,
       playerId,

@@ -1,5 +1,5 @@
 import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
-import { beastSwordIgnoresEntryHold, set5ABlocksBattleEntry } from "./legend1/set5NamedEffectsA";
+import { beastSwordIgnoresEntryHold } from "./legend1/set5NamedEffectsA";
 import { rushAreaEntryBlockedThisTurn } from "./legend1/set5NamedEffects";
 import { hellSaturnGrantCount } from "./hellSaturn";
 import { errataBattleEntryBlocked, isDivingOrochi } from "./errataCardEffects";
@@ -233,6 +233,8 @@ export function accelMemoryHoldCount(
 export function ryuseioBlocksMove(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
   const enemy = state.players[opponent(playerId)];
   if (!enemy.battle.some((c) => c.cardId === "RS-290")) return false;
+  // ビークルにライドして出るなら L ユニットとして扱い、対象外（atwiki/page-474 Q3）。
+  if (unit.mountedOnInstanceId) return false;
   const def = getDefinition(state.definitions, unit.cardId);
   if (def?.type !== "unit" || def.size !== "S") return false;
   return unitEffectiveCategories(state, playerId, unit, "rush").includes("DA");
@@ -341,8 +343,8 @@ export function canMoveUnitToBattle(
   if (def.type === "unit" && ryuseioBlocksMove(state, playerId, unit)) return false;
 
   if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
-  // RS-290【飛竜棍・大風車】: 「DA」の敵軍 S ユニットはバトルエリアに出られない。
-  if (set5ABlocksBattleEntry(state, playerId, unit)) return false;
+  // RS-289 / XP-023「※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない」（atwiki/page-416）。
+  if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (needsAllySInBattle(unit.cardId)) {
     const hasAllyS = state.players[playerId].battle.some((c) =>
@@ -464,8 +466,6 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
   if (def.type === "unit" && ryuseioBlocksMove(state, playerId, unit)) return false;
   if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
-  // RS-290【飛竜棍・大風車】: 「DA」の敵軍 S ユニットはバトルエリアに出られない。
-  if (set5ABlocksBattleEntry(state, playerId, unit)) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {
@@ -640,8 +640,9 @@ function passesBattleEntryHoldRequirements(
 ): boolean {
   const requiredTotal = requiredBattleEntryHolds(state, playerId, unit);
 
+  // RS-301 / RS-302 ※: リリース状態の「Vコマンダー」をホールドして出る（既にホールド状態のものでは満たせない。R-ADD-07）。
   if (needsVCommanderHold(state, playerId, unit)) {
-    if (!hasHeldVCommanderCommand(player, state.definitions)) return false;
+    if (!releasedVCommanderCommand(player, state.definitions)) return false;
   }
 
   // ルール: R-ADD-07 — 「コマンドをホールドしなければ出られない」制限は、出る直前に制限ごとに
@@ -667,14 +668,41 @@ function allyHasVCommanderFeature(
   });
 }
 
-function hasHeldVCommanderCommand(
+function releasedVCommanderCommand(
   player: PlayerState,
   definitions: GameState["definitions"],
-): boolean {
-  return player.command.some((c) => {
-    if (!c.commandHeld) return false;
-    return getDefinition(definitions, c.cardId)?.name === "Vコマンダー";
-  });
+): CardInstance | undefined {
+  return player.command.find(
+    (c) => !c.commandHeld && getDefinition(definitions, c.cardId)?.name === "Vコマンダー",
+  );
+}
+
+/**
+ * RS-301 / RS-302「※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの
+ * 「Vコマンダー」をホールドしなければバトルエリアに出られない」— 出たときにリリース状態の「Vコマンダー」を
+ * ホールドする（atwiki/page-444, page-445）。
+ */
+export function applyVCommanderHoldOnEnter(
+  state: GameState,
+  playerId: PlayerId,
+  entering: CardInstance,
+): GameState {
+  if (!needsVCommanderHold(state, playerId, entering)) return state;
+  const player = state.players[playerId];
+  const vc = releasedVCommanderCommand(player, state.definitions);
+  if (!vc) return state;
+  return {
+    ...state,
+    players: {
+      ...state.players,
+      [playerId]: {
+        ...player,
+        command: player.command.map((c) =>
+          c.instanceId === vc.instanceId ? { ...c, commandHeld: true, mothershipHold: false } : c,
+        ),
+      },
+    },
+  };
 }
 
 function needsVCommanderHold(

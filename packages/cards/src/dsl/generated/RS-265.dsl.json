@@ -32,7 +32,11 @@
         "target": {
           "type": "zone",
           "zone": "power",
-          "owner": "self"
+          "owner": "self",
+          "filter": {
+            "cardType": "any",
+            "faceDown": false
+          }
         }
       },
       "optional": true,
@@ -43,7 +47,11 @@
           "valid": {
             "type": "zone",
             "zone": "power",
-            "owner": "self"
+            "owner": "self",
+            "filter": {
+              "cardType": "any",
+              "faceDown": false
+            }
           },
           "count": 1,
           "then": [

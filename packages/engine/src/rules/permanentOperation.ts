@@ -17,6 +17,7 @@ import { evaluateDslCondition } from "../dsl/dslCatalog";
 import { canInitiateShironLight } from "./shironLight";
 import { isHidoraEggUsed } from "./turnModifiers";
 import { operationCardsToDiscardWithStack } from "./operationProcedure";
+import { beginRiderPass, canActivateRiderPass } from "./errataCardEffects";
 
 const RUSH_ACTIVATION_TEXT =
   /(?:自軍|自分(?:の|自身の)?)ラッシュフェイズ(?:ごとに)?1度|自分のラッシュフェイズごとに1度/;
@@ -127,6 +128,9 @@ export function canActivateResidentOperation(
     );
   }
 
+  // RK-022 ライダーパス: 重ねたカードと「DEN-O」の自軍ユニットの置き換え（何度でも。atwiki/page-128 Q6）。
+  if (op.cardId === "RK-022") return canActivateRiderPass(state, playerId, op);
+
   const activationEffects = listResidentActivationEffects(op.cardId);
   if (activationEffects.length === 0) return false;
   if (requiresHandForResidentActivation(op.cardId) && player.hand.length === 0) {
@@ -170,6 +174,10 @@ export function applyActivateResidentOperation(
   const wired = getCardEffect(op.cardId);
   if (wired?.effectId === "shiron_light" || wired?.effectId === "hidora_egg") {
     return { ok: false, error: "use_dedicated_action" };
+  }
+
+  if (op.cardId === "RK-022") {
+    return { ok: true, state: beginRiderPass(state, playerId, op) };
   }
 
   const activationEffects = listResidentActivationEffects(op.cardId);

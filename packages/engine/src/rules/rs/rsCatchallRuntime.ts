@@ -109,7 +109,9 @@ const handleEnemyToPowerDamage: PatternHandler = (state, ctx, body) => {
     phasePlayerId: ctx.phasePlayerId,
     filter,
     destination: "power",
-    optional: /してもよい|選んでもよい/.test(body),
+    // 「置いてもよい」等も任意（RS-368【ゴッドハンド】、RS-639【ネジスリング】）。
+    optional: /てもよい/.test(body),
+    placeAsDamage: /ダメージにして置/.test(body),
   });
   if (!withChoice) return { state, detail: `${ctx.effectId}:no_targets` };
   return { state: withChoice, detail: ctx.effectId };
@@ -433,7 +435,10 @@ export function tryRsCatchallRuntime(
     };
   }
 
-  const structured = buildCatchallStructuredPrimitives(body, pattern);
+  // 「…敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい」は、条件（特徴・BP・サイズ）と
+  // 任意・ウラ向き（ダメージ）を扱うパターン別ハンドラで処理する（汎用の構造化プリミティブでは条件が落ちる）。
+  const structured =
+    pattern === "enemy_to_power_damage_generic" ? null : buildCatchallStructuredPrimitives(body, pattern);
   if (structured) {
     return interpret(state, buildRematchContext(effect!, ctx), structured);
   }

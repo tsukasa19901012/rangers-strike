@@ -3820,6 +3820,20 @@ export function applyEffectChoiceSelect(
       );
       if ("error" in leave) return leave;
       let nextState = leave.state;
+      // 「持ち主のパワーゾーンにダメージにして置く」— ウラ向き（ダメージ）で置く（RS-368【ゴッドハンド】、RS-639【ネジスリング】等）。
+      if (pending.placeAsDamage && dest === "power" && located) {
+        const owner = nextState.players[located.playerId];
+        if (owner.power.some((c) => c.instanceId === instanceId && !c.faceDown)) {
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, located.playerId, {
+              ...owner,
+              power: owner.power.map((c) => (c.instanceId === instanceId ? { ...c, faceDown: true } : c)),
+              damage: owner.damage + 1,
+            }),
+          };
+        }
+      }
       if (
         pending.effectId === "great_assault" &&
         dest === "discard" &&

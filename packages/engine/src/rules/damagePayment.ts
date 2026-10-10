@@ -307,10 +307,11 @@ function applyDamageAmount(
   }
   const damaged = applyPlayerDamage(player, amount);
   // damage_gate_battle_entry: 敵軍ターン中の被ダメージを記録
-  const nextPlayer =
-    state.activePlayer !== playerId ? { ...damaged, damagedOnEnemyTurn: true } : damaged;
+  // （効果の選択中は activePlayer が選ぶプレイヤーに替わるので、ターンのプレイヤーは resume から得る）
   const phasePlayerId =
     resume.kind === "none" ? resume.activePlayer : resume.pending.battlePhasePlayer;
+  const nextPlayer =
+    phasePlayerId !== playerId ? { ...damaged, damagedOnEnemyTurn: true } : damaged;
   let nextState = emitDamageAppliedAndResolve(
     { ...state, ...updatePlayer(state, playerId, nextPlayer) },
     { playerId, amount, source: resume.kind, phasePlayerId },
@@ -382,7 +383,8 @@ export function resolveDamagePaymentSelect(
     allFlipIds,
     pending.deckDraws,
     pending.totalDamage,
-    state.activePlayer !== defenderId,
+    (pending.resume.kind === "none" ? pending.resume.activePlayer : pending.resume.pending.battlePhasePlayer) !==
+      defenderId,
   );
 
   const resume = pending.resume;

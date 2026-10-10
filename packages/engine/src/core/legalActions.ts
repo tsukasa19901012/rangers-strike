@@ -643,7 +643,7 @@ function appendActivateResidentOperationActions(
     if (wired?.effectId === "shiron_light" || wired?.effectId === "hidora_egg") {
       continue;
     }
-    if (listResidentActivationEffects(card.cardId).length === 0) continue;
+    if (card.cardId !== "RK-022" && listResidentActivationEffects(card.cardId).length === 0) continue;
     if (!canActivateResidentOperation(state, playerId, card.instanceId)) continue;
     actions.push({
       type: "activate_resident_operation",

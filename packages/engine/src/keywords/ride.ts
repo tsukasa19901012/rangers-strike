@@ -51,6 +51,15 @@ function vehicleRideIsExclusive(
   return /それ以外のユニットはライドできない/.test(getDefinition(definitions, vehicleCardId)?.text ?? "");
 }
 
+/** 「※本来のカテゴリに○○を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドでき」の○○。 */
+function vehicleCategoryRideWithoutRc(
+  definitions: Record<string, CardDefinition>,
+  vehicleCardId: string,
+): string | undefined {
+  const text = getDefinition(definitions, vehicleCardId)?.text ?? "";
+  return text.match(/本来のカテゴリに([A-Z]+)を持つSユニットは、[ＲR][ＣC]を持っていなくてもこのビークルにライドでき/)?.[1];
+}
+
 function riderHasRc(definition: CardDefinition | undefined): boolean {
   if (!definition) return false;
   if (definition.comboNumber === "RC") return true;
@@ -156,6 +165,14 @@ export function canRiderMountVehicle(
 
   const riderDef = getDefinition(state.definitions, rider.cardId);
   if (!riderDef || !isUnit(riderDef)) return false;
+
+  // RS-527 バルジオン（2nd）「※本来のカテゴリにDAを持つSユニットは、ＲＣを持っていなくてもこのビークルに
+  // ライドでき、それ以外のユニットはライドできない」（atwiki/page-1156。page-474 Q3）。
+  const categoryRide = vehicleCategoryRideWithoutRc(state.definitions, vehicle.card.cardId);
+  if (categoryRide) {
+    const cats = Array.isArray(riderDef.category) ? riderDef.category : riderDef.category ? [riderDef.category] : [];
+    return riderDef.size === "S" && cats.includes(categoryRide as never);
+  }
 
   // ルール: R-KW-RIDE-02 — ビークルに「それ以外のユニットはライドできない」とあれば、
   // RC を持っていても指定外のユニットはライドできない。
