@@ -8538,7 +8538,7 @@
     "powerCost": 1,
     "category": "MA",
     "textSnippets": [
-      "自軍Sユニットがバトルエリアに出るたび、コマンド"
+      "自軍Sユニットがバトルエリアに出るたびに、自軍コマンド"
     ],
     "expectedDslKeywords": [
       "release_command_on_s_battle_entry"
