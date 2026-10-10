@@ -253,7 +253,7 @@ export function applyLegacyNumberComboEffect(
   switch (effectId) {
     case "grant_sp1": {
       nextState = patchPlayer(nextState, playerId, (player) =>
-        grantSp1OnPlayer(player, card.instanceId),
+        grantSp1OnPlayer(player, card.instanceId, nextState.definitions),
       );
       logs.push(ncLog(playerId, card.cardId, state.definitions, "sp1"));
       break;
@@ -261,7 +261,7 @@ export function applyLegacyNumberComboEffect(
     case "eagle_diving": {
       nextState = patchPlayer(nextState, playerId, (player) =>
         grantBpBoostOnPlayer(
-          grantSp1OnPlayer(player, card.instanceId),
+          grantSp1OnPlayer(player, card.instanceId, nextState.definitions),
           card.instanceId,
           2000,
         ),

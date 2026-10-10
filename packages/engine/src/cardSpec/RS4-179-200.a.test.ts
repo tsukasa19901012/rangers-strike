@@ -101,8 +101,7 @@ describe("RS-179 恐竜やのカレー", () => {
   });
 
   // grnrngr/faq-card-3「BP１０００になっている「RS-208 キリンレンジャー」自身も手札に戻りますか？」「はい、手札に戻ります。」
-  // 既知の不具合: CARD-RS-179 敵軍 RS-210 ゴーマ16世の下でもカレーの BP＋2000 が「－」にならず、キリンレンジャーが BP5000 のまま（天時星・時間返しの対象にならない）
-  it.fails("RS-179: 敵軍にゴーマ16世があるとき、カレーで BP1000 になったキリンレンジャー自身も天時星・時間返しで手札に戻る（出典: grnrngr/faq-card-3 RS-179 Q1・atwiki/page-39 Q1）", () => {
+  it("RS-179: 敵軍にゴーマ16世があるとき、カレーで BP1000 になったキリンレンジャー自身も天時星・時間返しで手札に戻る（出典: grnrngr/faq-card-3 RS-179 Q1・atwiki/page-39 Q1）", () => {
     let s = st({
       turn: 3,
       player1: { operation: [inst("RS-179", "c")], rush: [...fillers(3), inst("RS-208", "kirin")], deck: deckCards(3) },
@@ -150,8 +149,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「自軍コマンドをホールドしてSユニットをラッシュしたとき、次の効果を発動できる⇒…コマンドをホールドせずにラッシュする」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装（Sユニットをラッシュしても追加ラッシュの選択が出ない）
-  it.fails("RS-180: コマンドをホールドして S ユニットをラッシュしたとき、手札の「WB」の S ユニットをホールドせずにラッシュできる（出典: atwiki/page-377）", () => {
+  it("RS-180: コマンドをホールドして S ユニットをラッシュしたとき、手札の「WB」の S ユニットをホールドせずにラッシュできる（出典: atwiki/page-377）", () => {
     const r = rushFromHand(raptor(), "player1", "TST-UNIT-0:a");
     expect(r.ok).toBe(true);
     const s = pickEffect(r.state, "player1", ["TST-UNIT-0:b"]);
@@ -160,8 +158,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「発動できる」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装（発動するかどうかの選択自体が出ない）
-  it.fails("RS-180: 発動は任意 — 選択が出て、発動しなければ手札の S ユニットは手札に残る（出典: atwiki/page-377「発動できる」）", () => {
+  it("RS-180: 発動は任意 — 選択が出て、発動しなければ手札の S ユニットは手札に残る（出典: atwiki/page-377「発動できる」）", () => {
     const r = rushFromHand(raptor(), "player1", "TST-UNIT-0:a");
     expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-180");
     const s = declineEffect(r.state, "player1");
@@ -171,8 +168,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「手札から「WB」のSユニットのカードを1枚選び」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装
-  it.fails("RS-180: 選べるのは「WB」の S ユニットのカードだけ（WB の S は選べ、DA の S・WB の M は選べない）（出典: atwiki/page-377）", () => {
+  it("RS-180: 選べるのは「WB」の S ユニットのカードだけ（WB の S は選べ、DA の S・WB の M は選べない）（出典: atwiki/page-377）", () => {
     const r = rushFromHand(raptor([inst("RS-188", "da"), inst("TST-UNIT-2", "m")]), "player1", "TST-UNIT-0:a");
     const p = r.state.pendingEffectChoice;
     expect(p?.validInstanceIds ?? []).toContain("TST-UNIT-0:b");
@@ -181,8 +177,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「ただし、ラッシュのための必要パワーと追加条件は満たすこと」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装
-  it.fails("RS-180: 必要パワーは満たす必要がある（パワー0の S は出せ、必要パワー3の S はパワー2では出せない）（出典: atwiki/page-377）", () => {
+  it("RS-180: 必要パワーは満たす必要がある（パワー0の S は出せ、必要パワー3の S はパワー2では出せない）（出典: atwiki/page-377）", () => {
     const WB_S3 = sUnit("SPEC-WB-S3", { powerCost: 3 });
     const s0 = st(
       {
@@ -205,8 +200,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「この効果でラッシュしたユニットは、このターン、バトルエリアに出られない」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装
-  it.fails("RS-180: この効果でラッシュしたユニットはそのターンのバトルフェイズにバトルエリアに出られない（通常ラッシュした方は出られる）（出典: atwiki/page-377）", () => {
+  it("RS-180: この効果でラッシュしたユニットはそのターンのバトルフェイズにバトルエリアに出られない（通常ラッシュした方は出られる）（出典: atwiki/page-377）", () => {
     const r = rushFromHand(raptor(), "player1", "TST-UNIT-0:a");
     let s = pickEffect(r.state, "player1", ["TST-UNIT-0:b"]);
     expect(zoneOf(s, "player1", "TST-UNIT-0:b")).toBe("rush");
@@ -218,8 +212,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「自軍コマンドをホールドしてSユニットをラッシュしたとき」— M ユニットのラッシュでは発動しない。
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装（S ユニット側の発動も確認できない）
-  it.fails("RS-180: M ユニットをラッシュしても発動せず、続けて S ユニットをラッシュしたときは発動する（出典: atwiki/page-377「Sユニットをラッシュしたとき」）", () => {
+  it("RS-180: M ユニットをラッシュしても発動せず、続けて S ユニットをラッシュしたときは発動する（出典: atwiki/page-377「Sユニットをラッシュしたとき」）", () => {
     const s0 = st({
       phase: "rush",
       turn: 3,
@@ -241,8 +234,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // atwiki/page-377 Q1「自軍ユニットのコールの効果でユニットをラッシュしました。…発動することはできますか？」「はい、できます。」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装（コールでホールドしたラッシュでも発動しない）
-  it.fails("RS-180: コール（ユニットをコマンドとしてホールド）でラッシュしたときも発動できる（出典: atwiki/page-377 Q1）", () => {
+  it("RS-180: コール（ユニットをコマンドとしてホールド）でラッシュしたときも発動できる（出典: atwiki/page-377 Q1）", () => {
     const s0 = st({
       phase: "rush",
       turn: 3,
@@ -641,8 +633,7 @@ describe("RS-184 マジパンチ", () => {
   });
 
   // 「BP8000以下の敵軍ユニットにストライクされたとき発動できる⇒ストライクしてきた敵軍ユニットを持ち主の手札に戻す。そのとき、敵軍のストライクは無効になる」
-  // 既知の不具合: CARD-RS-184 ストライクされたときにカウンターとして使う窓が開かない（未実装）
-  it.fails("RS-184: BP8000以下の敵軍ユニットにストライクされたとき使え、そのユニットを手札に戻しストライクを無効にする（出典: atwiki/page-311）", () => {
+  it("RS-184: BP8000以下の敵軍ユニットにストライクされたとき使え、そのユニットを手札に戻しストライクを無効にする（出典: atwiki/page-311）", () => {
     let s = struck(8000);
     expect(canUseCard(s, "player1", "RS-184:c")).toBe(true);
     s = settle(useCard(s, "player1", "RS-184:c"));
@@ -651,14 +642,12 @@ describe("RS-184 マジパンチ", () => {
   });
 
   // 「BP8000以下の」
-  // 既知の不具合: CARD-RS-184 カウンターの窓が開かない（未実装）
-  it.fails("RS-184: BP9000 のユニットのストライクには使えない（BP8000 のユニットには使える）（出典: atwiki/page-311「BP8000以下」）", () => {
+  it("RS-184: BP9000 のユニットのストライクには使えない（BP8000 のユニットには使える）（出典: atwiki/page-311「BP8000以下」）", () => {
     expect(canUseCard(struck(8000), "player1", "RS-184:c")).toBe(true);
     expect(canUseCard(struck(9000), "player1", "RS-184:c")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-184 カウンターの窓が開かない（未実装）— 「使える状況で使わない」選択を確認できない
-  it.fails("RS-184: 使える状況でも使わなければストライクはそのまま通りダメージを受ける（出典: atwiki/page-311「発動できる」）", () => {
+  it("RS-184: 使える状況でも使わなければストライクはそのまま通りダメージを受ける（出典: atwiki/page-311「発動できる」）", () => {
     expect(canUseCard(struck(3000), "player1", "RS-184:c")).toBe(true);
     const s = settle(struck(3000));
     expect(s.players.player1.damage).toBe(1);
@@ -666,15 +655,13 @@ describe("RS-184 マジパンチ", () => {
   });
 
   // 「※カウンター（これは敵軍ターン中にのみ使用できる）」・ユーザー決定（※カウンターは敵軍ターン中のみ）
-  // 既知の不具合: CARD-RS-184 カウンターの窓が開かない（未実装）— 敵軍ターン中に使えることを確認できない
-  it.fails("RS-184: ※カウンター — 敵軍ターン中は使えるが、自軍ラッシュフェイズには使えない（出典: atwiki/page-311・R-CTR-01）", () => {
+  it("RS-184: ※カウンター — 敵軍ターン中は使えるが、自軍ラッシュフェイズには使えない（出典: atwiki/page-311・R-CTR-01）", () => {
     expect(canUseCard(struck(3000), "player1", "RS-184:c")).toBe(true);
     const own = st({ phase: "rush", turn: 3, player1: { hand: [inst("RS-184", "c")], command: releasedN(2, "TST-OP-MA"), power: powerCards(5) } });
     expect(canUseCard(own, "player1", "RS-184:c")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-184 カウンターの窓が開かない（未実装）— ストライク側で使えることを確認できない
-  it.fails("RS-184: ストライクされたときは使えるが、アタックされたときには使えない（出典: atwiki/page-311「ストライクされたとき」）", () => {
+  it("RS-184: ストライクされたときは使えるが、アタックされたときには使えない（出典: atwiki/page-311「ストライクされたとき」）", () => {
     expect(canUseCard(struck(3000), "player1", "RS-184:c")).toBe(true);
     let s = st({
       turn: 4,
@@ -687,8 +674,7 @@ describe("RS-184 マジパンチ", () => {
   });
 
   // grnrngr/faq-card-4 RS-184 Q1（grnrngr/faq-card-1 にも同じ Q）「はい、できます。」
-  // 既知の不具合: CARD-RS-184 カウンターの窓が開かない（未実装）
-  it.fails("RS-184: 1回のストライクに対してマジパンチを同時に2枚使える（出典: grnrngr/faq-card-4 RS-184 Q1・R-CTR-02）", () => {
+  it("RS-184: 1回のストライクに対してマジパンチを同時に2枚使える（出典: grnrngr/faq-card-4 RS-184 Q1・R-CTR-02）", () => {
     let s = struck(3000, [inst("RS-184", "c2")]);
     s = useCard(s, "player1", "RS-184:c");
     expect(canUseCard(s, "player1", "RS-184:c2")).toBe(true);
@@ -717,8 +703,7 @@ describe("RS-185 カーナビック", () => {
   });
 
   // 「相手の手札を見て、カウンターのオペレーションカードがあれば1枚選び、持ち主のパワーゾーンにダメージにして置く」
-  // 既知の不具合: CARD-RS-185 効果が未実装（使っても相手の手札のカウンターが動かない）
-  it.fails("RS-185: 相手の手札のカウンターのオペレーションカードを1枚選び、相手のパワーゾーンにダメージ（ウラ向き）として置く（出典: atwiki/page-389）", () => {
+  it("RS-185: 相手の手札のカウンターのオペレーションカードを1枚選び、相手のパワーゾーンにダメージ（ウラ向き）として置く（出典: atwiki/page-389）", () => {
     const r = playOp(navi([inst("RS-184", "x"), inst("TST-OP", "y")]), "player1", "RS-185:c");
     expect(r.ok).toBe(true);
     const s = pickEffect(r.state, "player1", ["RS-184:x"]);
@@ -729,8 +714,7 @@ describe("RS-185 カーナビック", () => {
   });
 
   // 「カウンターのオペレーションカードがあれば」・R-RUSHPH-01（通常のオペレーションはラッシュフェイズに使う）
-  // 既知の不具合: CARD-RS-185 効果が未実装 — カウンターがある場合との対比が成立しない
-  it.fails("RS-185: カウンターでないカードは選べず、カウンターでないカードしかなければ何も置かれない（出典: atwiki/page-389「カウンターのオペレーションカードがあれば」）", () => {
+  it("RS-185: カウンターでないカードは選べず、カウンターでないカードしかなければ何も置かれない（出典: atwiki/page-389「カウンターのオペレーションカードがあれば」）", () => {
     const withCounter = playOp(navi([inst("RS-184", "x"), inst("TST-OP", "y2")]), "player1", "RS-185:c").state;
     expect(withCounter.pendingEffectChoice?.validInstanceIds).toEqual(["RS-184:x"]);
     const r = playOp(navi([inst("TST-OP", "y")]), "player1", "RS-185:c");
@@ -741,8 +725,7 @@ describe("RS-185 カーナビック", () => {
   });
 
   // カーナビックはカウンターではないので、自軍ラッシュフェイズに使える（R-RUSHPH-01）。
-  // 既知の不具合: CARD-RS-185 効果種別が counter 扱いで、自軍ラッシュフェイズの合法手に使用が出ない
-  it.fails("RS-185: ※カウンターではない — 自軍ラッシュフェイズに使える（出典: atwiki/page-389・R-RUSHPH-01）", () => {
+  it("RS-185: ※カウンターではない — 自軍ラッシュフェイズに使える（出典: atwiki/page-389・R-RUSHPH-01）", () => {
     const s = navi([inst("RS-184", "x")]);
     expect(canUseCard(s, "player1", "RS-185:c")).toBe(true);
   });
@@ -767,8 +750,7 @@ describe("RS-186 プロバイダーベース", () => {
   });
 
   // 「Sユニット以外の特徴「メカ」を持つユニットのカードを5枚まで選び…選んだカードを好きな順で山札の上に戻す」
-  // 既知の不具合: CARD-RS-186 効果が未実装（使っても山札が変化しない）
-  it.fails("RS-186: S ユニット以外の「メカ」のユニットカードを選び、山札の上に置く（出典: atwiki/page-390）", () => {
+  it("RS-186: S ユニット以外の「メカ」のユニットカードを選び、山札の上に置く（出典: atwiki/page-390）", () => {
     const deck = [inst("TST-OP", "d0"), inst("TST-OP", "d1"), inst("TST-OP", "d2"), inst("RS-196", "mob"), inst("RS-194", "robo")];
     let s = playOp(base(deck), "player1", "RS-186:c").state;
     s = pickEffect(s, "player1", ["RS-196:mob", "RS-194:robo"]);
@@ -778,8 +760,7 @@ describe("RS-186 プロバイダーベース", () => {
   });
 
   // 「Sユニット以外の特徴「メカ」を持つユニット」・「5枚まで」
-  // 既知の不具合: CARD-RS-186 効果が未実装
-  it.fails("RS-186: 選べるのは S 以外の「メカ」のユニットだけ（メカの S・メカでない M・オペレーションは選べない）（出典: atwiki/page-390）", () => {
+  it("RS-186: 選べるのは S 以外の「メカ」のユニットだけ（メカの S・メカでない M・オペレーションは選べない）（出典: atwiki/page-390）", () => {
     const deck = [inst("RS-188", "meka_s"), inst("TST-UNIT-2", "m"), inst("TST-OP", "op"), inst("RS-196", "mob")];
     const s = playOp(base(deck), "player1", "RS-186:c").state;
     const valid = s.pendingEffectChoice?.validInstanceIds ?? [];
@@ -789,8 +770,7 @@ describe("RS-186 プロバイダーベース", () => {
     expect(valid).not.toContain("TST-OP:op");
   });
 
-  // 既知の不具合: CARD-RS-186 効果が未実装
-  it.fails("RS-186: 「5枚まで」— 6枚あっても5枚までしか山札の上に置けない（出典: atwiki/page-390）", () => {
+  it("RS-186: 「5枚まで」— 6枚あっても5枚までしか山札の上に置けない（出典: atwiki/page-390）", () => {
     const deck = ["a", "b", "c", "d", "e", "f"].map((x) => inst("RS-196", x));
     let s = playOp(base([inst("TST-OP", "z"), ...deck]), "player1", "RS-186:c").state;
     s = pickEffect(s, "player1", deck.map((c) => c.instanceId));

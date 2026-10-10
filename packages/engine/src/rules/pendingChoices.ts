@@ -1,6 +1,23 @@
 import { checkWinner } from "../core/createGame";
 import { confirmRs4NcChoice, isRs4NcChoice, selectRs4NcChoice } from "./rs4NcEffects";
 import { pickSuperElectronEarDamage, SUPER_ELECTRON_EAR_PICK_EFFECT_ID } from "./powerFlipEffects";
+import {
+  ASSAULT_VECTOR_EFFECT_ID,
+  resolveAssaultVectorPick,
+  SPINNING_SLASH_EFFECT_ID,
+} from "./timeRangerNc";
+import {
+  GRAP_FIGHTER_BATTLE_EFFECT_ID,
+  GRAP_FIGHTER_EFFECT_ID,
+  grapFighterLosers,
+  resolveGrapFighterReturn,
+} from "./grapFighter";
+import {
+  DENJI_THUNDER_THROW_DISCARD_EFFECT_ID,
+  DENJI_THUNDER_THROW_EFFECT_ID,
+  resolveDenjiThunderThrowDiscard,
+  resolveDenjiThunderThrowPick,
+} from "./denjiThunderThrow";
 import { resolveSubmergePick, SUBMERGE_EFFECT_ID } from "./legend3/rushEffects";
 import { finishHououOwnStep, HOUOU_TORNADO_EFFECT_ID, isHououChoice, resolveHououPick } from "./hououTornado";
 import { liftUpPlaceFromDeck } from "./legend3/jointComboEffects";
@@ -46,6 +63,7 @@ import type {
 } from "../types/game";
 import { clearCostWindow, satisfyCostWindow } from "../core/costWindow";
 import { cardName, cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp } from "../core/catalog";
+import { withSpBecomes } from "./fractionalSp";
 import {
   applyDiscoDanceReturnFemaleSToRush,
   startEndTurnBattleToRushChoiceForUnit,
@@ -71,6 +89,7 @@ import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
 import { acceptOptionalEffect } from "./optionalEffects";
 import {
+  afterCommandCardsLeft,
   isCommandLeaveRefillChoice,
   isValidCommandLeaveRefillTarget,
   resolveCommandLeaveRefill,
@@ -93,6 +112,12 @@ import {
   tryResolveErrataChoice,
   trySkipErrataChoice,
 } from "./errataCardEffects";
+import {
+  isSet4ChoiceEffect,
+  tryConfirmSet4Choice,
+  tryResolveSet4Choice,
+  trySkipSet4Choice,
+} from "./legend1/set4NamedEffects";
 import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
@@ -550,7 +575,8 @@ export function isValidEffectChoiceTarget(
     pending.effectId === SUBMERGE_EFFECT_ID ||
     pending.effectId === FIRE_DANCE_EFFECT_ID ||
     isHououChoice(pending) ||
-    pending.effectId === KUROKO_MEMORY_EFFECT_ID
+    pending.effectId === KUROKO_MEMORY_EFFECT_ID ||
+    isSet4ChoiceEffect(pending.effectId)
   ) {
     return true;
   }
@@ -1531,17 +1557,20 @@ export function startPhoenixMereDestroyChoice(
     sourceCardId: string;
     phasePlayerId: PlayerId;
     partnerName: string;
+    /** 「出してもよい」なら true。「※…1枚選び、出す」は強制なので false（省略時）。 */
+    optional?: boolean;
   },
 ): GameState | null {
   const valid = collectNamedUnitsInDiscard(state, params.playerId, params.partnerName);
   if (valid.length === 0) return null;
+  const { optional, ...rest } = params;
   return openEffectChoice(state, {
-    ...params,
+    ...rest,
     kind: "select_unit",
     validInstanceIds: valid,
     unitDestination: "rush_from_discard",
     selectCount: 1,
-    optional: true,
+    optional: optional === true,
   });
 }
 
@@ -1832,7 +1861,7 @@ export function startAnimalHeartChoice(
   });
 }
 
-export const ASSAULT_VECTOR_EFFECT_ID = "assault_vector_destroy";
+export const HAJA_BLADE_EFFECT_ID = "assault_vector_destroy";
 
 /** RS-181 破邪百獣剣: 選んだユニットを1体ずつ撃破する（離場反応で中断したら再開する）。 */
 function finishAssaultVectorDestroy(state: GameState, pending: PendingEffectChoice): ChoiceOutcome {
@@ -1868,6 +1897,8 @@ export function applyConfirmEffectChoice(
 
   const errata = tryConfirmErrataChoice(state, playerId);
   if (errata) return errata;
+  const set4 = tryConfirmSet4Choice(state, playerId);
+  if (set4) return set4;
 
   if (pending.mayConfirm) {
     const log = buildLogEntry(
@@ -1881,7 +1912,7 @@ export function applyConfirmEffectChoice(
     return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next), log };
   }
 
-  if (pending.effectId === ASSAULT_VECTOR_EFFECT_ID) {
+  if (pending.effectId === HAJA_BLADE_EFFECT_ID) {
     return finishAssaultVectorDestroy(state, pending);
   }
   if (isRs4NcChoice(pending)) {
@@ -2594,10 +2625,9 @@ function applyPostHoldContinuation(
       ...nextState,
       ...updatePlayer(nextState, pending.playerId, {
         ...actor,
+        // 「次の能力を得る⇒「SP1」」— SP1 になる（加算しない）。
         battle: actor.battle.map((c) =>
-          c.instanceId === pending.sourceInstanceId
-            ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-            : c,
+          c.instanceId === pending.sourceInstanceId ? withSpBecomes(state.definitions, actor.battle, c, 1) : c,
         ),
       }),
     };
@@ -2671,6 +2701,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (pending.playerId !== playerId) return { error: "wrong_player" };
   const errata = trySkipErrataChoice(state, playerId);
   if (errata) return errata;
+  const set4 = trySkipSet4Choice(state, playerId);
+  if (set4) return set4;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     // 選択を省略したときは先にひいた1枚を手札に残す（どちらか1枚は必ず残る）。
@@ -2687,7 +2719,7 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
     const next = confirmRs4NcChoice(state, pending);
     if (next) return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
   }
-  if (pending.effectId === ASSAULT_VECTOR_EFFECT_ID && (pending.selectedInstanceIds?.length ?? 0) > 0) {
+  if (pending.effectId === HAJA_BLADE_EFFECT_ID && (pending.selectedInstanceIds?.length ?? 0) > 0) {
     // RS-181: 選び終えた — 選んだユニットを撃破する。
     return finishAssaultVectorDestroy(state, pending);
   }
@@ -2835,6 +2867,8 @@ export function applyEffectChoiceSelect(
 
   const errata = tryResolveErrataChoice(state, playerId, instanceId);
   if (errata) return errata;
+  const set4 = tryResolveSet4Choice(state, playerId, instanceId);
+  if (set4) return set4;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
@@ -3183,7 +3217,7 @@ export function applyEffectChoiceSelect(
       return finishChoice(nextState, pending, String(declared));
     }
     case "select_unit": {
-      if (pending.effectId === ASSAULT_VECTOR_EFFECT_ID) {
+      if (pending.effectId === HAJA_BLADE_EFFECT_ID) {
         // RS-181 破邪百獣剣: 先に可能な数まで選んでから1体ずつ撃破する（grnrngr/faq-card-4 RS-181 Q1・R-TGT-03）。
         const prev = pending.selectedInstanceIds ?? [];
         if (prev.includes(instanceId)) return { error: "already_selected" };
@@ -3194,6 +3228,69 @@ export function applyEffectChoiceSelect(
           return { state: { ...state, pendingEffectChoice: next } };
         }
         return finishAssaultVectorDestroy(state, next);
+      }
+      if (pending.effectId === DENJI_THUNDER_THROW_EFFECT_ID || pending.effectId === DENJI_THUNDER_THROW_DISCARD_EFFECT_ID) {
+        const next =
+          pending.effectId === DENJI_THUNDER_THROW_EFFECT_ID
+            ? resolveDenjiThunderThrowPick(state, instanceId)
+            : resolveDenjiThunderThrowDiscard(state, instanceId);
+        if (!next) return { error: "invalid_target" };
+        if (next.pendingEffectChoice && next.pendingEffectChoice !== pending) return { state: next };
+        return finishChoice({ ...next, pendingEffectChoice: pending }, pending, cardName(state.definitions, pending.sourceCardId));
+      }
+      if (pending.effectId === GRAP_FIGHTER_EFFECT_ID) {
+        const returned = resolveGrapFighterReturn(state, instanceId);
+        if (!returned) return { error: "invalid_target" };
+        if (returned.pendingEffectChoice?.effectId === GRAP_FIGHTER_BATTLE_EFFECT_ID) return { state: returned };
+        return finishChoice({ ...returned, pendingEffectChoice: pending }, pending, "damage");
+      }
+      if (pending.effectId === GRAP_FIGHTER_BATTLE_EFFECT_ID) {
+        if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+        const returnedId = pending.processedInstanceIds?.[0];
+        if (!returnedId) return { error: "invalid_target" };
+        const losers = grapFighterLosers(state, returnedId, instanceId);
+        return applyConfirmEffectChoice(
+          {
+            ...state,
+            pendingEffectChoice: {
+              ...pending,
+              kind: "select_units_bp_budget",
+              selectedInstanceIds: losers,
+              processedInstanceIds: [],
+            },
+          },
+          pending.playerId,
+        );
+      }
+      if (pending.effectId === SPINNING_SLASH_EFFECT_ID) {
+        // RS-219【スピニングスラッシュ】: 対象をすべて選んでから1体ずつ撃破する（faq-card-4 RS-219 Q1・Q3）。
+        if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+        const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+        if (selected.length < (pending.selectCount ?? 1)) {
+          return {
+            state: {
+              ...state,
+              pendingEffectChoice: {
+                ...pending,
+                selectedInstanceIds: selected,
+                validInstanceIds: pending.validInstanceIds.filter((id) => !selected.includes(id)),
+                optional: false,
+              },
+            },
+          };
+        }
+        return applyConfirmEffectChoice(
+          {
+            ...state,
+            pendingEffectChoice: {
+              ...pending,
+              kind: "select_units_bp_budget",
+              selectedInstanceIds: selected,
+              optional: false,
+            },
+          },
+          pending.playerId,
+        );
       }
       if (pending.effectId === "rk154_head_held_high") {
         // RK-154【頭が高い！】: このターン BP500 になる（R-BP-01）。
@@ -3927,11 +4024,14 @@ export function applyEffectChoiceSelect(
           power: enemy.power.filter((c) => c.instanceId !== powerId),
           discard: [...enemy.discard, ...(powerCard ? [powerCard] : []), found.card],
         };
-        return finishChoice(
+        const finished = finishChoice(
           { ...state, ...updatePlayer(state, enemyId, nextEnemy) },
           pending,
           cardName(state.definitions, found.card.cardId),
         );
+        if ("error" in finished) return finished;
+        // コマンドゾーンを離れたときの誘発（RS-238【プロジェットカノン】。faq-card-4 RS-238 Q2）。
+        return { ...finished, state: afterCommandCardsLeft(finished.state, enemyId, 1) };
       }
 
       if (pending.effectId === "geki_e78da3") {
@@ -4104,6 +4204,22 @@ export function applyEffectChoiceSelect(
         }).state;
       }
       const continued = applyPostHoldContinuation(withHold, pending);
+      if (pending.effectId === "dino_slasher_category_balance") {
+        // RS-233【ダイノスラスター】: 捨札にし終えてから、離れた枚数だけ【プロジェットカノン】等を誘発する
+        // （戻されたカードをもう一度捨札にする必要はない。faq-card-4 RS-233 Q1）。
+        const discarded = [...(pending.processedInstanceIds ?? []), instanceId];
+        if (continued.done) {
+          const next = continued.state.pendingEffectChoice;
+          return {
+            state: next
+              ? { ...continued.state, pendingEffectChoice: { ...next, processedInstanceIds: discarded } }
+              : continued.state,
+          };
+        }
+        const finished = finishChoice(continued.state, pending, cardName(state.definitions, found.card.cardId));
+        if ("error" in finished) return finished;
+        return { ...finished, state: afterCommandCardsLeft(finished.state, owner, discarded.length) };
+      }
       if (continued.done) return { state: continued.state };
 
       return finishChoice(
@@ -4138,9 +4254,9 @@ export function applyEffectChoiceSelect(
         const player = nextState.players[pending.playerId];
         const found = findInZone(player, "command", cmdId);
         if (!found) continue;
-        if (pending.commandAction === "hold") {
+        if (pending.commandAction === "hold" || pending.commandAction === "release") {
           const command = [...player.command];
-          command[found.index] = { ...found.card, commandHeld: true };
+          command[found.index] = { ...found.card, commandHeld: pending.commandAction === "hold" };
           nextState = {
             ...nextState,
             ...updatePlayer(nextState, pending.playerId, { ...player, command }),
@@ -4217,6 +4333,12 @@ export function applyEffectChoiceSelect(
     }
 
     case "select_power": {
+      if (pending.effectId === ASSAULT_VECTOR_EFFECT_ID) {
+        const picked = resolveAssaultVectorPick(state, instanceId);
+        if (!picked) return { error: "invalid_target" };
+        if (!picked.done) return { state: picked.state };
+        return finishChoice(picked.state, pending, cardName(state.definitions, pending.sourceCardId));
+      }
       if (pending.effectId === "bumper_bow") {
         // RS-150【バンパーボウ】: 選んだ敵軍パワーを持ち主のコマンドゾーンにホールド状態で置く。
         const enemyId = opponent(pending.playerId);
@@ -4500,10 +4622,9 @@ export function applyEffectChoiceSelect(
         if (pending.sourceInstanceId) {
           nextPlayer = {
             ...nextPlayer,
+            // 「次の能力を得る⇒SP1」— SP1 になる（加算しない）。
             battle: nextPlayer.battle.map((c) =>
-              c.instanceId === pending.sourceInstanceId
-                ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-                : c,
+              c.instanceId === pending.sourceInstanceId ? withSpBecomes(state.definitions, nextPlayer.battle, c, 1) : c,
             ),
           };
         }
@@ -4785,10 +4906,9 @@ export function applyEffectChoiceSelect(
             ...nextState,
             ...updatePlayer(nextState, pending.playerId, {
               ...owner,
+              // 「このターン、これは「SP1」になる」— 加算しない。
               battle: owner.battle.map((c) =>
-                c.instanceId === pending.sourceInstanceId
-                  ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-                  : c,
+                c.instanceId === pending.sourceInstanceId ? withSpBecomes(state.definitions, owner.battle, c, 1) : c,
               ),
             }),
           };

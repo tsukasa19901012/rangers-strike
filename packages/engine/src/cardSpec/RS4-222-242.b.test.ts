@@ -169,10 +169,7 @@ describe("RS-230 アバレッドAM", () => {
     });
   });
 
-  amReanimateTests("RS-230", "RS-054", "アバレッド", "atwiki/page-72", {
-    // 既知の不具合: CARD-RS-230 ※の「1枚選び、自軍ラッシュエリアに出す」が任意になっている（出さないことを選べる）
-    onlyPartner: "CARD-RS-230 ※の「アバレッド」を出す処理が任意（スキップできる）になっている",
-  });
+  amReanimateTests("RS-230", "RS-054", "アバレッド", "atwiki/page-72");
 
   // 「※これは毎ターン、可能ならバトルエリアに出る。」
   it("RS-230: ※ バトルエリアに出られるのに出さずにバトルフェイズを終えることはできない（出典: atwiki/page-72）", () => {
@@ -264,11 +261,7 @@ describe("RS-231 アバレブルーAM", () => {
     });
   });
 
-  amReanimateTests("RS-231", "RS-055", "アバレブルー", "atwiki/page-373", {
-    // 既知の不具合: CARD-RS-231 ※の選択肢が自軍捨札のユニットカードすべて（自身を含む）で、出さないことも選べる
-    onlyPartner: "CARD-RS-231 ※の選択肢が「アバレブルー」に限られず（自身を含む）、出さないことも選べる",
-    none: "CARD-RS-231 捨札に「アバレブルー」がなくても、ほかのユニットカードを選んでラッシュエリアに出せてしまう",
-  });
+  amReanimateTests("RS-231", "RS-055", "アバレブルー", "atwiki/page-373");
 
   it("RS-231: 2番目に出て NC が成立すると「SP1」、1番目なら SP！のまま（出典: atwiki/page-373「【アバレタックル】「SP1」」）", () => {
     const two = enter(st({ player1: { battle: fillers(1), rush: [inst("RS-231", "am")] } }), "RS-231:am");
@@ -304,11 +297,7 @@ describe("RS-232 アバレイエローAM", () => {
     });
   });
 
-  amReanimateTests("RS-232", "RS-104", "アバレイエロー", "atwiki/page-374", {
-    // 既知の不具合: CARD-RS-232 ※「撃破されて捨札になったとき」の効果が発動しない（DSL の trigger が nc）
-    reanimate: "CARD-RS-232 ※撃破されて捨札になっても「アバレイエロー」を出さない",
-    onlyPartner: "CARD-RS-232 ※撃破されて捨札になっても「アバレイエロー」を出さない",
-  });
+  amReanimateTests("RS-232", "RS-104", "アバレイエロー", "atwiki/page-374");
 
   /**
    * イエローAM を pos 番目に出し、敵軍の気力（RS-017。敵軍から見て「敵軍ターン中」＝自軍ターン、リリース状態のコマンド2つで
@@ -328,15 +317,13 @@ describe("RS-232 アバレイエローAM", () => {
   }
 
   // 「【アバレウィング】これがアタックするとき、これはBP+1000され、敵軍ユニットのBPをカードに表記された本来の値としてバトルする」（CN3）
-  // 既知の不具合: CARD-RS-232【アバレウィング】（アタックするとき BP+1000・敵軍ユニットを本来の BP でバトル）が働かない
-  it.fails("RS-232: 3番目に出て NC が成立していれば、アタックするとき BP5500 になり、敵軍ユニットを本来の BP（5000）としてバトルして勝つ（出典: atwiki/page-374）", () => {
+  it("RS-232: 3番目に出て NC が成立していれば、アタックするとき BP5500 になり、敵軍ユニットを本来の BP（5000）としてバトルして勝つ（出典: atwiki/page-374）", () => {
     const s = wingAttack(3);
     expect(zoneOf(s, "player2", "SPEC-WB-S5:d")).toBe("discard");
     expect(zoneOf(s, "player1", "RS-232:am")).toBe("battle");
   });
 
   // CN3 の欄の効果なので NC が成立していなければ働かない（R-CN-02）。
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-232: 3番目以外（1番目）に出たときは【アバレウィング】が働かず、BP4500 で BP7000 の敵軍ユニットに負ける（出典: atwiki/page-374「CN：3」・R-CN-02）", () => {
     const s = wingAttack(1);
     expect(zoneOf(s, "player1", "RS-232:am")).toBe("discard");
@@ -421,9 +408,8 @@ describe("RS-233 アバレブラック", () => {
     expect(s.players.player2.discard).toHaveLength(2);
   });
 
-  // 既知の不具合: CARD-RS-238【プロジェットカノン】がダイノスラスターでコマンドゾーンを離れたときに発動しない（ブロウナックル等の一部の効果でしか発動しない）
   // faq-card-4 RS-233 Q1「「ダイノスラスター」の効果は実行済みですので、「プロジェットカノン」で戻されたカードを捨札にする必要はありません。」
-  it.fails("RS-233: 公式Q&A — 敵軍ゴーゴーファイヤー【プロジェットカノン】で捨札からコマンドゾーンに戻されたカードを、もう一度捨札にする必要はない（出典: grnrngr/faq-card-4 RS-233 Q1・RS-238 Q5）", () => {
+  it("RS-233: 公式Q&A — 敵軍ゴーゴーファイヤー【プロジェットカノン】で捨札からコマンドゾーンに戻されたカードを、もう一度捨札にする必要はない（出典: grnrngr/faq-card-4 RS-233 Q1・RS-238 Q5）", () => {
     let s = black(2, [released("TST-OP", "own")], [released("TST-OP", "w"), released("TST-OP-ET", "e")], { rush: [inst("RS-238", "fire")] });
     for (let i = 0; i < 10 && s.pendingEffectChoice; i++) {
       const p = s.pendingEffectChoice;
@@ -536,9 +522,8 @@ describe("RS-234 アバレキラー", () => {
     "RS-234: 公式Q&A — 守護獣トリケラトプスの「アタックするとき」の BP 上昇で BP8000 以上になって SP1 になってもストライクはできない（出典: grnrngr/faq-card-4 RS-234 Q1 後段）— 現行カタログの RS-023 は「スーパーレスキュー」で、Q&A が指す「守護獣トリケラトプス」の定義がない",
   );
 
-  // 既知の不具合: CARD-RS-234【ウイングペンタクト】の「SP1」になる が SP+1 として加算される（SP1 の M ユニットが SP2 になる）
   // faq-card-4 RS-234 Q2「「ＳＰ１に『なる』」という効果は、ＳＰに１を加算するという意味ではなく…その値に置き換わる」
-  it.fails("RS-234: 公式Q&A — もともと「SP1」の WB の M ユニットも SP2 にはならず「SP1」のまま（出典: grnrngr/faq-card-4 RS-234 Q2）", () => {
+  it("RS-234: 公式Q&A — もともと「SP1」の WB の M ユニットも SP2 にはならず「SP1」のまま（出典: grnrngr/faq-card-4 RS-234 Q2）", () => {
     const s = killerThen("SPEC-WB-M5SP");
     expect(bpOf(s, "player1", "SPEC-WB-M5SP:m")).toBe(8000);
     expect(spOf(s, "player1", "SPEC-WB-M5SP:m")).toBe(1);
@@ -595,8 +580,7 @@ describe("RS-235 デカベースロボ", () => {
     expect(zoneOf(s, "player1", "RS-235:robo")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-235 ※（デカベースクローラーをラッシュしたときに手札に戻す）が任意になっている（戻さないことを選べる）
-  it.fails("RS-235: ※ 戻すのは強制（戻さないことは選べない）（出典: atwiki/page-500「1体選んで手札に戻す」）", () => {
+  it("RS-235: ※ 戻すのは強制（戻さないことは選べない）（出典: atwiki/page-500「1体選んで手札に戻す」）", () => {
     const s = st({ phase: "rush", player1: { hand: [inst("RS-105", "cr")], rush: [inst("RS-235", "robo")], command: [released("TST-OP-OT", "ot")], power: powerCards(5) } });
     const r = rushFromHand(s, "player1", "RS-105:cr");
     expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-235");

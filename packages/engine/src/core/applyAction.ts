@@ -1,3 +1,4 @@
+import { applyMagiPunchCounter, isSet4EndTurnEffect, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import { applyDeusGeneOnRush } from "../rules/rs4NcEffects";
 import type { GameAction } from "../types/actions";
@@ -70,6 +71,12 @@ import {
   openAttackHoldChoice,
   resolveAttackHoldChoice,
 } from "../rules/attackHoldBonus";
+import {
+  MACHINE_EMPIRE_EFFECT_ID,
+  openMachineEmpireChoice,
+  resolveMachineEmpirePick,
+  skipMachineEmpireChoice,
+} from "../rules/machineEmpire";
 import { applyResidentOpOnPlace } from "../rules/residentOps";
 import { applySelfRushFromZone, battleActBlocked, markUnitBattleAction } from "../rules/keywordGapRuntime";
 import { applyStartPhaseBeginEffects } from "../rules/startPhaseBegin";
@@ -108,7 +115,11 @@ import {
   shouldAutoFinalizeEndPhase,
   tryOpenEndTurnEffectsMenu,
 } from "../rules/legend3/endTurnEffects";
-import { resolveTurnEndingEffectsImpl } from "../rules/turnEndingEffects";
+import {
+  resolveTurnEndingEffectsImpl,
+  resolveTurnEndExodusOrder,
+  TURN_END_EXODUS_ORDER_EFFECT_ID,
+} from "../rules/turnEndingEffects";
 import { clearBakiBakiExtraAttack, hasBakiBakiExtraAttackOnly } from "../rules/legend3/destroyEffects";
 import {
   canBonusDraw,
@@ -338,7 +349,17 @@ function continueAttackAfterDeclaration(
 ): ActionResult {
   const playerId = pending.attackerPlayerId;
   const enemyId = pending.defenderPlayerId;
+  // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
+  const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
+  if (machineEmpire) {
+    let pendingState = machineEmpire;
+    if (battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId) {
+      pendingState = { ...pendingState, pendingBattleEntry: undefined };
+    }
+    return ok(pendingState, buildSimpleLogEntry(playerId, "machine_empire_choice"));
+  }
   if (
+    !pending.battleCancelled &&
     hasBattleCounterReactions(
       battleState,
       enemyId,
@@ -1975,7 +1996,7 @@ function applyActionCore(
       }
 
       const defenderId = opponent(playerId);
-      if (hasStrikeReactions(nextState, defenderId)) {
+      if (hasStrikeReactions(nextState, defenderId, pending)) {
         nextState = {
           ...nextState,
           pendingStrike: pending,
@@ -2206,7 +2227,20 @@ function applyActionCore(
       }
 
       if (state.pendingStrike) {
-        return fail("invalid_counter");
+        const pending = state.pendingStrike;
+        const defenderId = opponent(pending.strikerPlayerId);
+        if (playerId !== defenderId) return fail("wrong_player");
+        if (!magiPunchCounterIds(state, defenderId, pending).includes(action.instanceId)) {
+          return fail("invalid_counter");
+        }
+        // RS-184 マジパンチ: ストライクしてきたユニットを持ち主の手札に戻し、ストライクを無効にする。
+        const result = applyMagiPunchCounter(state, defenderId, action.instanceId, pending);
+        const cleared = clearCounterHoldReady(result.state, playerId);
+        if (magiPunchCounterIds(cleared, defenderId, result.pending).length > 0) {
+          // 同じストライクに続けて使える（faq-card-4 RS-184 Q1）。反応窓を開いたままにする。
+          return ok({ ...cleared, pendingStrike: result.pending, activePlayer: defenderId }, result.log);
+        }
+        return completeStrike({ ...cleared, pendingStrike: result.pending }, result.pending, [result.log]);
       }
 
       return fail("no_pending_reaction");
@@ -2279,8 +2313,21 @@ function applyActionCore(
     }
 
     case "confirm_effect_choice": {
+      const confirming = state.pendingEffectChoice;
       const result = applyConfirmEffectChoice(state, playerId);
       if ("error" in result) return fail(result.error);
+      if (
+        result.state.phase === "end" &&
+        !result.state.pendingEffectChoice &&
+        isSet4EndTurnEffect(confirming?.effectId)
+      ) {
+        // RS-192【アタックボード】等、エンドフェイズの任意効果を行った — 残りの「ターンを終えるとき」へ進む。
+        const reopened = tryOpenEndTurnEffectsMenu(result.state, confirming!.phasePlayerId) ?? result.state;
+        return withEndPhaseAutoFinalize(
+          ok(reopened, result.log ?? buildSimpleLogEntry(playerId, "confirm_effect_choice")),
+          playerId,
+        );
+      }
       return withStartPhaseAutoAdvance(
         ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "confirm_effect_choice")),
         playerId,
@@ -2298,6 +2345,22 @@ function applyActionCore(
         return completeStrike(picked.state, picked.strike, [
           buildLogEntry(playerId, "resolve_effect_choice", "RS-196", state.definitions, `${MOBIL_MISSILE_EFFECT_ID}:strike_nullified`),
         ]);
+      }
+      if (pending?.effectId === TURN_END_EXODUS_ORDER_EFFECT_ID) {
+        const ordered = resolveTurnEndExodusOrder(state, playerId, action.instanceId);
+        if (!ordered) return fail("invalid_target");
+        return withEndPhaseAutoFinalize(
+          ok(ordered, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId)),
+          playerId,
+        );
+      }
+      if (pending?.effectId === MACHINE_EMPIRE_EFFECT_ID && pending.machineEmpireMeta) {
+        const picked = resolveMachineEmpirePick(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        if (!picked.done) {
+          return ok(picked.state, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId));
+        }
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
       }
       if (pending?.effectId === ATTACK_HOLD_BONUS_EFFECT_ID && pending.attackHoldMeta) {
         const held = resolveAttackHoldChoice(state, playerId, action.instanceId);
@@ -2359,6 +2422,9 @@ function applyActionCore(
       ) {
         nextState = tryOpenEndTurnEffectsMenu(nextState, playerId) ?? nextState;
       }
+      if (nextState.phase === "end" && !nextState.pendingEffectChoice && isSet4EndTurnEffect(pending?.effectId)) {
+        nextState = tryOpenEndTurnEffectsMenu(nextState, pending!.phasePlayerId) ?? nextState;
+      }
       return withEndPhaseAutoFinalize(
         withStartPhaseAutoAdvance(
           ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice")),
@@ -2378,6 +2444,11 @@ function applyActionCore(
           return ok({ ...base, pendingStrike: strikePending, activePlayer: playerId }, buildSimpleLogEntry(playerId, "skip_effect_choice"));
         }
         return completeStrike(base, strikePending);
+      }
+      if (pending?.effectId === MACHINE_EMPIRE_EFFECT_ID && pending.machineEmpireMeta) {
+        const skipped = skipMachineEmpireChoice(state, playerId);
+        if ("error" in skipped) return fail(skipped.error);
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
       }
       if (pending?.effectId === "earth_force" && pending.playerId === playerId) {
         const { state: afterDiscard, discarded } = discardEarthForceForUnpaidUpkeep(
@@ -2425,6 +2496,9 @@ function applyActionCore(
         pending?.effectId === "end_turn_battle_to_rush"
       ) {
         afterSkip = tryOpenEndTurnEffectsMenu(afterSkip, playerId) ?? afterSkip;
+      }
+      if (afterSkip.phase === "end" && !afterSkip.pendingEffectChoice && isSet4EndTurnEffect(pending?.effectId)) {
+        afterSkip = tryOpenEndTurnEffectsMenu(afterSkip, pending!.phasePlayerId) ?? afterSkip;
       }
       return withEndPhaseAutoFinalize(
         withStartPhaseAutoAdvance(

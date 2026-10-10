@@ -12,6 +12,7 @@ import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { validateZordAdditionalPayment } from "./mothership";
 import { isShironLightRushTarget } from "./shironLight";
 import { isRideShooterRushTarget } from "./fieldActivatedAbilities";
+import { jaryuInvasionAllowsRushWithoutHold } from "./jaryuInvasion";
 import { darkDealRushPowerBudget } from "./legend3/restrictions";
 import { godomRushPowerBudget } from "./godomRushPay";
 import { requiresAllFusionPartners, hasAllRequiredFusionMaterials } from "./zord";
@@ -75,6 +76,8 @@ export function canDeclareRush(
   if (isShironLightRushTarget(player, instanceId)) return true;
   // ルール: R-ERR-RK043 — 【突入】の後、次にラッシュするミラーライダーはコマンドをホールドせずにラッシュできる。
   if (isRideShooterRushTarget(state, playerId, definition.id)) return true;
+  // RS-242【ジャリュウ一族の侵攻】: 特徴「戦闘員」のユニットはコマンドをホールドせずにラッシュしてもよい。
+  if (jaryuInvasionAllowsRushWithoutHold(state, playerId, definition)) return true;
   if (isCostWindowSatisfied(player, "rush_category")) return true;
   return false;
 }

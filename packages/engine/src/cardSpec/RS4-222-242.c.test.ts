@@ -85,8 +85,7 @@ describe("RS-236 スーパーダイボウケン", () => {
     expect(r.state.players.player1.discard).toHaveLength(5);
   });
 
-  // 既知の不具合: CARD-RS-236 合体の「（または、ゴーゴーダンプ＋…＋ゴーゴーマリン）」の代替素材でラッシュできない
-  it.fails("RS-236: ダイボウケンのかわりにダンプ・フォーミュラ・ジャイロ・ドーザー・マリンの5体でもラッシュできる（出典: atwiki/page-400「（または、…）」）", () => {
+  it("RS-236: ダイボウケンのかわりにダンプ・フォーミュラ・ジャイロ・ドーザー・マリンの5体でもラッシュできる（出典: atwiki/page-400「（または、…）」）", () => {
     const five = ["RS-118", "RS-119", "RS-120", "RS-121", "RS-122"].map((id) => inst(id, "v"));
     const r = rushFromHand(sdbRush([...five, ...FOUR.map((id) => inst(id, "m"))]), "player1", "RS-236:sdb");
     expect(r.ok).toBe(true);
@@ -181,8 +180,7 @@ describe("RS-237 サイレンビルダー", () => {
   }
 
   // 「敵軍山札の上から3枚をオモテにしてもよい。そうしたとき、相手は…好きな数選び手札に加える。…1枚につき、これは「SP+1」される。その後、残りのカードは捨札にする」
-  // 既知の不具合: CARD-RS-237【トリプルリキッドボンバー】が未実装（バトルエリアに出ても選択が開かない）
-  it.fails("RS-237: 敵軍山札の上から3枚をオモテにし、相手が2枚を手札に加えると「SP2」になり、残り1枚は捨札（出典: atwiki/page-402）", () => {
+  it("RS-237: 敵軍山札の上から3枚をオモテにし、相手が2枚を手札に加えると「SP2」になり、残り1枚は捨札（出典: atwiki/page-402）", () => {
     let s = siren(top3());
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
@@ -196,8 +194,7 @@ describe("RS-237 サイレンビルダー", () => {
     expect(canStrike(s, "RS-237:sb")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-237【トリプルリキッドボンバー】が未実装
-  it.fails("RS-237: 相手が1枚も手札に加えなければ SP！のまま（ストライクできない）で、3枚とも捨札（出典: atwiki/page-402「好きな数」）", () => {
+  it("RS-237: 相手が1枚も手札に加えなければ SP！のまま（ストライクできない）で、3枚とも捨札（出典: atwiki/page-402「好きな数」）", () => {
     let s = siren(top3());
     s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
     s = opponentTakes(s, []);
@@ -206,8 +203,7 @@ describe("RS-237 サイレンビルダー", () => {
     expect(canStrike(s, "RS-237:sb")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-237【トリプルリキッドボンバー】が未実装（発動するかの確認が開かない）
-  it.fails("RS-237: オモテにしないことを選べる（任意）（出典: atwiki/page-402「オモテにしてもよい」）", () => {
+  it("RS-237: オモテにしないことを選べる（任意）（出典: atwiki/page-402「オモテにしてもよい」）", () => {
     let s = siren(top3());
     expect(canSkip(s)).toBe(true);
     s = skip(s);
@@ -217,7 +213,6 @@ describe("RS-237 サイレンビルダー", () => {
   });
 
   // faq-card-4 RS-237 Q1「「３枚オモテにする」ことが発動の条件ですので、敵軍山札が２枚以下のときは、その効果は発動できません。」
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-237: 公式Q&A — 敵軍山札が2枚以下なら発動できない（出典: grnrngr/faq-card-4 RS-237 Q1）", () => {
     const s = siren([inst("TST-OP", "t0"), inst("TST-OP", "t1")]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-237");
@@ -319,8 +314,7 @@ describe("RS-238 ゴーゴーファイヤー", () => {
   });
 
   // faq-card-4 RS-238 Q3「はい、その通りです。」（2体いれば1枚離れるごとに2枚置く）
-  // 既知の不具合: CARD-RS-238 ゴーゴーファイヤーが2体あっても、離れた1枚につき1枚しか置けない
-  it.fails("RS-238: 公式Q&A — ゴーゴーファイヤーが自軍ラッシュエリアに2体あれば、1枚離れたとき捨札から2枚置ける（出典: grnrngr/faq-card-4 RS-238 Q3）", () => {
+  it("RS-238: 公式Q&A — ゴーゴーファイヤーが自軍ラッシュエリアに2体あれば、1枚離れたとき捨札から2枚置ける（出典: grnrngr/faq-card-4 RS-238 Q3）", () => {
     let s = blowKnuckle({
       rush: [inst("RS-238", "f"), inst("RS-238", "f2")],
       command: [released("TST-OP", "c0")],
@@ -333,8 +327,7 @@ describe("RS-238 ゴーゴーファイヤー", () => {
   });
 
   // faq-card-4 RS-238 Q2「はい、できます。「RS-102 サーガイン」で捨札になった場合も同様で、パワーゾーンから捨札になったカードも、コマンドゾーンに置くことができます。」
-  // 既知の不具合: CARD-RS-238【プロジェットカノン】がブロウナックル等の一部の効果でしか発動せず、サーガイン（捨札にする）では発動しない
-  it.fails("RS-238: 公式Q&A — 敵軍サーガインで自軍コマンドとパワーが捨札になったとき、そのコマンドのカードも、捨札になったパワーのカードも選んで置ける（出典: grnrngr/faq-card-4 RS-238 Q2）", () => {
+  it("RS-238: 公式Q&A — 敵軍サーガインで自軍コマンドとパワーが捨札になったとき、そのコマンドのカードも、捨札になったパワーのカードも選んで置ける（出典: grnrngr/faq-card-4 RS-238 Q2）", () => {
     let s = st({
       activePlayer: "player2",
       player1: { rush: [inst("RS-238", "f")], command: [released("TST-OP", "c0")], power: [inst("TST-P", "pw")], deck: deckCards(3) },
@@ -485,8 +478,7 @@ describe("RS-241 ボウケンレッドAT", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:other")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-241 ※の「1枚選び、自軍ラッシュエリアに出す」が任意になっている（出さないことを選べる）
-  it.fails("RS-241: ※ 選べるのはボウケンレッドのカードだけで、出さないことは選べない（出典: atwiki/page-29「「ボウケンレッド」のカード」「出す」）", () => {
+  it("RS-241: ※ 選べるのはボウケンレッドのカードだけで、出さないことは選べない（出典: atwiki/page-29「「ボウケンレッド」のカード」「出す」）", () => {
     let s = attackedInEnemyTurn({ discard: [inst("TST-UNIT-0", "other"), inst("RS-062", "bk")] });
     for (let i = 0; i < 4 && s.pendingEffectChoice && s.pendingEffectChoice.sourceCardId !== "RS-241"; i++) s = settle(drain(drain(s, "player2"), "player1"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-241");
@@ -593,8 +585,7 @@ describe("RS-242 創造王リュウオーン", () => {
   });
 
   // 「※これは自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない。」
-  // 既知の不具合: CARD-RS-242 ※で捨札にする S ユニットとしてリュウオーン自身を選べる
-  it.fails("RS-242: ※ 自軍ラッシュエリアの S ユニットを1体捨札にしてバトルエリアに出る（出典: atwiki/page-56）", () => {
+  it("RS-242: ※ 自軍ラッシュエリアの S ユニットを1体捨札にしてバトルエリアに出る（出典: atwiki/page-56）", () => {
     let s = st({ player1: { rush: [inst("RS-242", "ryu"), inst("TST-UNIT-0", "s"), inst("TST-UNIT-2", "m")] } });
     expect(canEnter(s, "RS-242:ryu")).toBe(true);
     s = raw(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-242:ryu" });
@@ -608,8 +599,7 @@ describe("RS-242 創造王リュウオーン", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-2:m")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-242 ※で捨札にする S ユニットとしてリュウオーン自身を数えるため、ほかに S ユニットがなくても出られる
-  it.fails("RS-242: ※ 自軍ラッシュエリアにほかの S ユニットがなければ（M ユニットだけ）出られない（出典: atwiki/page-56）", () => {
+  it("RS-242: ※ 自軍ラッシュエリアにほかの S ユニットがなければ（M ユニットだけ）出られない（出典: atwiki/page-56）", () => {
     const s = st({ player1: { rush: [inst("RS-242", "ryu"), inst("TST-UNIT-2", "m")], battle: [inst("TST-UNIT-0", "b")] } });
     expect(canEnter(s, "RS-242:ryu")).toBe(false);
   });
@@ -630,8 +620,7 @@ describe("RS-242 創造王リュウオーン", () => {
   }
 
   // 「自分が特徴「戦闘員」を持つユニットのカードをラッシュするとき、コマンドをホールドせずにラッシュしてもよい」
-  // 既知の不具合: CARD-RS-242【ジャリュウ一族の侵攻】が未実装（コマンドをホールドせずに戦闘員をラッシュできない）
-  it.fails("RS-242: 自軍コマンドがなくても、特徴「戦闘員」を持つユニット（ジャリュウ兵）をコマンドをホールドせずにラッシュできる（出典: atwiki/page-56）", () => {
+  it("RS-242: 自軍コマンドがなくても、特徴「戦闘員」を持つユニット（ジャリュウ兵）をコマンドをホールドせずにラッシュできる（出典: atwiki/page-56）", () => {
     const s = jaryuRush([inst("RS-338", "j")]);
     expect(canStartRush(s, "player1", "RS-338:j")).toBe(true);
     const r = legal(s).find((a) => (a.type === "rush" && a.instanceId === "RS-338:j") || (a.type === "initiate_command_payment" && a.sourceInstanceId === "RS-338:j"));
@@ -639,19 +628,16 @@ describe("RS-242 創造王リュウオーン", () => {
     expect(zoneOf(next, "player1", "RS-338:j")).toBe("rush");
   });
 
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-242: 「戦闘員」を持たない DA の S ユニットは、コマンドがなければラッシュできない（出典: atwiki/page-56「特徴「戦闘員」を持つユニット」）", () => {
     const s = jaryuRush([inst("SPEC-DA-S", "d")]);
     expect(canStartRush(s, "player1", "SPEC-DA-S:d")).toBe(false);
   });
 
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-242: リュウオーンが自軍ラッシュエリアになければ、戦闘員もコマンドなしではラッシュできない（出典: atwiki/page-56「これが自軍ラッシュエリアにある間」）", () => {
     const s = jaryuRush([inst("SPEC-SENTOUIN", "j")], { withRyu: false });
     expect(canStartRush(s, "player1", "SPEC-SENTOUIN:j")).toBe(false);
   });
 
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-242: 必要パワーは満たす必要がある（パワー3で必要パワー4の戦闘員はラッシュできない）（出典: atwiki/page-56「ただしラッシュのための必要パワー…は満たすこと」）", () => {
     const s = jaryuRush([inst("SPEC-SENTOUIN-P4", "j")]);
     expect(canStartRush(s, "player1", "SPEC-SENTOUIN-P4:j")).toBe(false);
@@ -666,8 +652,7 @@ describe("RS-242 創造王リュウオーン", () => {
   });
 
   // faq-card-4 RS-242 Q1「手札にあれば何体でもラッシュすることができます。」
-  // 既知の不具合: CARD-RS-242【ジャリュウ一族の侵攻】が未実装
-  it.fails("RS-242: 公式Q&A — 手札の戦闘員を何体でも（3体）コマンドをホールドせずにラッシュできる（出典: grnrngr/faq-card-4 RS-242 Q1）", () => {
+  it("RS-242: 公式Q&A — 手札の戦闘員を何体でも（3体）コマンドをホールドせずにラッシュできる（出典: grnrngr/faq-card-4 RS-242 Q1）", () => {
     let s = jaryuRush([inst("RS-338", "j0"), inst("RS-338", "j1"), inst("RS-338", "j2")]);
     for (const id of ["RS-338:j0", "RS-338:j1", "RS-338:j2"]) {
       const a = legal(s).find((x) => (x.type === "rush" && x.instanceId === id) || (x.type === "initiate_command_payment" && x.sourceInstanceId === id));
@@ -695,8 +680,7 @@ describe("RS-242 創造王リュウオーン", () => {
   });
 
   // 同 Q2 後段「２体いるときは、１体を捨札にすることでもう１体がバトルエリアに出られるようになると考えますので、１体を捨札にして、もう１体をバトルエリアに出します。」
-  // 既知の不具合: CARD-RS-242 相手の効果（デンジサンダー投げ）で出ることになっても、2体目を捨札にしてバトルエリアに出る処理が行われない
-  it.fails("RS-242: 公式Q&A — リュウオーンが2体いれば、1体を捨札にしてもう1体をバトルエリアに出す（出典: grnrngr/faq-card-4 RS-242 Q2 後段）", () => {
+  it("RS-242: 公式Q&A — リュウオーンが2体いれば、1体を捨札にしてもう1体をバトルエリアに出す（出典: grnrngr/faq-card-4 RS-242 Q2 後段）", () => {
     let s = thunderThrow([inst("RS-242", "r1"), inst("RS-242", "r2")]);
     for (let i = 0; i < 6 && s.pendingEffectChoice?.playerId === "player2"; i++) {
       const p = s.pendingEffectChoice;

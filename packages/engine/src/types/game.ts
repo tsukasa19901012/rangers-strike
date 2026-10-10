@@ -152,6 +152,8 @@ export type PendingStrike = {
   damageCancelled?: boolean;
   /** 守り側がこのストライクのダメージ支払いを完了した後に設定。 */
   damageApplied?: boolean;
+  /** RS-184 マジパンチを使った（ストライクしたユニットは手札に戻った）。続けて同じストライクに使える。 */
+  magiPunchApplied?: boolean;
 };
 
 export type DamagePaymentResume =
@@ -188,6 +190,8 @@ export type PendingBattle = {
   attackerBpBonus?: number;
   /** RS-006: バトルキャンセル、守り側はラッシュに戻る */
   battleCancelled?: boolean;
+  /** RS-215【不滅のマシン帝国】の選択をこのアタックで既に出したか。 */
+  machineEmpireOffered?: boolean;
   /** RS-018: 代わりに代用ユニットが戦闘 */
   substituteInstanceId?: string;
   /** RS-131 mirage_beam: このバトル用の印刷BP上書き。 */
@@ -479,6 +483,11 @@ export type PendingEffectChoice = {
   };
   /** RS-196【迎撃モビルミサイル】: 発動を選んでいる間、保留しているストライク。 */
   mobilMissileStrike?: PendingStrike;
+  /** RS-215【不滅のマシン帝国】: 手札2枚を選んだあと（または断ったあと）に続けるアタック。 */
+  machineEmpireMeta?: {
+    battle: PendingBattle;
+    wingAttackFromRush: boolean;
+  };
   /** 敵ターン撃破時の任意パワー送り（to_power_on_destroy）。 */
   toPowerOnDestroyMeta?: {
     card: CardInstance;
@@ -750,6 +759,8 @@ export type PendingEffectRush = {
   fromZone: EffectRushSourceZone;
   /** R-RUSH-21: 「ただし、ラッシュするための必要パワーと追加条件は満たすこと」。 */
   requireConditions: boolean;
+  /** 「この効果でラッシュしたユニットは、このターン、バトルエリアに出られない」（RS-180 ライドラプター）。 */
+  blockBattleEntryThisTurn?: boolean;
   /** 選び終えて、まだ出していないユニット（1体ずつ出す）。 */
   queue: string[];
   /** 選ぶ段階: 候補とあと何枚選べるか。 */
@@ -770,6 +781,12 @@ export type TurnEndProgress = {
   residentQueue: Array<{ ownerId: PlayerId; instanceId: string }>;
   /** 常駐以外の「ターンを終えるとき」の効果を処理済みか。 */
   restDone: boolean;
+  /**
+   * RS-216 エグゾスの※と RS-310 ゴウライビートルの撃破の処理順の選択を済ませたか（faq-card-5 RS-310）。
+   * exodusFirst が true ならエグゾスの※を先に処理する。
+   */
+  exodusOrderAsked?: boolean;
+  exodusFirst?: boolean;
 };
 
 export const INITIAL_HAND_SIZE = 7;

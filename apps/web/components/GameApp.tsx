@@ -2305,6 +2305,14 @@ export function GameApp() {
     state,
     HUMAN_PLAYER,
   );
+  // RS-223【緊急システム発動要請】: ラッシュの支払いで敵軍（CPU）のホールド状態のコマンドを選べる。
+  const cpuCommandPaymentTargets = (() => {
+    if (!boardCommandPaymentTargets) return undefined;
+    const ids = state.players[CPU_PLAYER].command
+      .map((c) => c.instanceId)
+      .filter((id) => boardCommandPaymentTargets.has(id));
+    return ids.length > 0 ? new Set(ids) : undefined;
+  })();
 
   const commandPaymentSelectedIds = showCommandPaymentModal
     ? new Set(commandPaymentSelection)
@@ -2917,6 +2925,10 @@ export function GameApp() {
                   ? handleDamagePaymentSelect
                   : handleEffectChoiceSelect
             }
+            pendingCommandPaymentTargets={cpuCommandPaymentTargets}
+            commandPaymentSelectedIds={cpuCommandPaymentTargets ? commandPaymentSelectedIds : undefined}
+            onCommandPaymentToggle={handleCommandPaymentToggle}
+            commandPaymentHighlightCommand={showCommandPaymentModal && !!cpuCommandPaymentTargets}
             effectChoiceHighlightCommand={boardTapEffectChoice?.opponent.command}
             effectChoiceHighlightPower={boardTapEffectChoice?.opponent.power}
             effectChoiceHighlightRush={boardTapEffectChoice?.opponent.rush}

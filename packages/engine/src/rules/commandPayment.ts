@@ -1,3 +1,7 @@
+import {
+  emergencyRequestEnemyCommandIds,
+  releaseEmergencyRequestCommands,
+} from "./legend1/set4NamedEffects";
 import type { Category } from "@rangers-strike/cards";
 import {
   getBattleEntryHoldCount,
@@ -203,10 +207,21 @@ export function getCategoryPaymentOptions(
   state: GameState,
   playerId: PlayerId,
   categories: Category[],
-  options?: { perRushPayment?: boolean; callLeadKind?: CallLeadKind; rushingCardId?: string },
+  options?: {
+    perRushPayment?: boolean;
+    callLeadKind?: CallLeadKind;
+    rushingCardId?: string;
+    /** ラッシュするカード（RS-223【緊急システム発動要請】の判定だけに使う）。 */
+    emergencyRushCardId?: string;
+  },
 ): { selectCount: number; prismAvailable: boolean; prismSubstitute: boolean } | null {
   const player = state.players[playerId];
   const callLeadKind = options?.callLeadKind ?? "call";
+  // RS-223【緊急システム発動要請】: 敵軍コマンドのリリースで自軍コマンド1つのホールドを代替できる（カテゴリは問わない）。
+  const emergencyIds =
+    callLeadKind === "call"
+      ? emergencyRequestEnemyCommandIds(state, playerId, options?.emergencyRushCardId ?? options?.rushingCardId)
+      : [];
   // ルール: R-KW-CALL-01 補足 — 単色のカードなら、コマンドゾーンにそのカテゴリがなくてもコール／リードで支払える。
   const singleCategoryCallLead =
     categories.length === 1 &&
@@ -219,6 +234,7 @@ export function getCategoryPaymentOptions(
     ).some((c) => !player.command.some((cmd) => cmd.instanceId === c.instanceId));
   if (
     !singleCategoryCallLead &&
+    emergencyIds.length === 0 &&
     !allCategoriesExistInCommandZone(player, state.definitions, categories)
   ) {
     return null;
@@ -241,7 +257,7 @@ export function getCategoryPaymentOptions(
     callLeadKind,
     options?.rushingCardId,
   );
-  if (matching.length >= 1) {
+  if (matching.length >= 1 || emergencyIds.length >= 1) {
     return { selectCount: 1, prismAvailable, prismSubstitute: false };
   }
 
@@ -301,13 +317,19 @@ export function buildCategoryPayment(
   const player = state.players[playerId];
   const validInstanceIds = usePrism
     ? player.command.filter((c) => !c.commandHeld).map((c) => c.instanceId)
-    : unheldPaymentSourcesMatchingCategory(
-        player,
-        state.definitions,
-        categories,
-        callLeadKind,
-        continuation.type === "rush" ? sourceCardId : undefined,
-      ).map((c) => c.instanceId);
+    : [
+        ...unheldPaymentSourcesMatchingCategory(
+          player,
+          state.definitions,
+          categories,
+          callLeadKind,
+          continuation.type === "rush" ? sourceCardId : undefined,
+        ).map((c) => c.instanceId),
+        // RS-223【緊急システム発動要請】: ホールド状態の敵軍コマンド（選ぶとリリースする）。
+        ...(continuation.type === "rush"
+          ? emergencyRequestEnemyCommandIds(state, playerId, sourceCardId)
+          : []),
+      ];
 
   if (validInstanceIds.length < selectCount) return null;
 
@@ -392,6 +414,16 @@ export function validatePaymentSelection(
     const player = state.players[pending.playerId];
     const categories = pending.categories ?? [];
     const callLeadKind = callLeadKindForContinuation(pending.continuation);
+    const emergencyIds =
+      pending.continuation.type === "rush"
+        ? emergencyRequestEnemyCommandIds(state, pending.playerId, pending.sourceCardId)
+        : [];
+    const emergencyPicked = commandInstanceIds.filter((id) => emergencyIds.includes(id));
+    if (emergencyPicked.length > 1) return "invalid_command";
+    if (emergencyPicked.length > 0) {
+      // 敵軍コマンドのリリースで「ラッシュに必要な自軍コマンドを1つホールドした」ことにする。
+      return null;
+    }
     const singleCategoryByCallLead =
       categories.length === 1 &&
       commandInstanceIds.length > 0 &&
@@ -469,7 +501,17 @@ export function applyCommandPaymentResolve(
     return { state: { ...nextState, pendingCommandPayment: undefined } };
   }
 
-  let nextState = applyPaymentHolds(state, playerId, commandInstanceIds);
+  const emergencyIds =
+    pending.kind === "category_use" && pending.continuation.type === "rush"
+      ? emergencyRequestEnemyCommandIds(state, playerId, pending.sourceCardId).filter((id) =>
+          commandInstanceIds.includes(id),
+        )
+      : [];
+  let nextState = applyPaymentHolds(
+    releaseEmergencyRequestCommands(state, playerId, emergencyIds),
+    playerId,
+    commandInstanceIds.filter((id) => !emergencyIds.includes(id)),
+  );
   const player = nextState.players[playerId];
   let playerPatch: typeof player = player;
   if (pending.kind === "battle_entry") {

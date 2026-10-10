@@ -1,3 +1,4 @@
+import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
 import { errataBattleEntryBlocked, isDivingOrochi } from "./errataCardEffects";
 import {
   battleHasComboPartner,
@@ -179,6 +180,10 @@ export function requiredBattleEntryHolds(
   if (unitHold > 0 && scorchingRoarBypassesHold(unit.cardId, state, playerId)) {
     unitHold = 0;
   }
+  // RS-228【超スライダー進化】: このターン、「1つホールドしなければ出られない」テキストを無効にしたユニット。
+  if (unitHold > 0 && sliderEvolutionIgnoresEntryHold(state, playerId, unit.instanceId)) {
+    unitHold = 0;
+  }
   const lgHold = isMediumUnit(state.definitions, unit.cardId)
     ? countActiveLightningGravity(state)
     : 0;
@@ -353,6 +358,15 @@ export function canMoveUnitToBattle(
   if (noteOtherNcBattleEntryBlock(state, playerId, player, unit)) return false;
   // RK-140 / RK-334 のロック、RS-288 の「獣奏剣」ホールド要件（rules/errataCardEffects.ts）。
   if (errataBattleEntryBlocked(state, playerId, unit)) return false;
+
+  // RS-242 / RS-416 等「自軍ラッシュエリアのSユニットを1体捨札にしなければ出られない」— 自身は数えない。
+  if (
+    needsBattleEntryRushDiscard(unit.cardId) &&
+    !battleEntryRushDiscardSatisfied(player, unit.cardId) &&
+    !hasBattleEntryRushDiscardTarget(player, state.definitions, unit.instanceId)
+  ) {
+    return false;
+  }
 
   if (
     needsBattleEntryHandDiscard(unit.cardId) &&
@@ -807,13 +821,27 @@ export function findMandatoryBattleEntries(
     if (
       hasAutoBattleEntryEachTurnNote(card.cardId) ||
       earthForceRequiresBattleEntry(state) ||
-      (emperorCurse && isSmallUnit(state.definitions, card.cardId))
+      (emperorCurse && isSmallUnit(state.definitions, card.cardId)) ||
+      highwayPlanRequiresBattleEntry(state, card.cardId)
     ) {
       mandatory.push(card);
     }
   }
 
   return mandatory;
+}
+
+/**
+ * RS-216 暴走皇帝エグゾス【大宇宙ハイウェイ計画】: これが自軍エリアにある間、特徴「車両」を持つすべてのユニットは、
+ * 毎ターン、可能ならバトルエリアに出る（敵軍の車両ユニットも対象）。
+ */
+function highwayPlanRequiresBattleEntry(state: GameState, cardId: string): boolean {
+  const def = getDefinition(state.definitions, cardId);
+  if (def?.type !== "unit" || !(def.features ?? []).includes("車両")) return false;
+  return (["player1", "player2"] as const).some((pid) => {
+    const p = state.players[pid];
+    return [...p.rush, ...p.battle].some((c) => c.cardId === "RS-216");
+  });
 }
 
 export function mustEnterBattleBeforePhaseEnd(

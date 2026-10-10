@@ -9,6 +9,9 @@ import { tryStartMegatomahokuChoice } from "./pendingChoices";
 import { buildLogEntry } from "../log/formatLog";
 import { applyCoreGapNcEffect } from "./legend1/coreGapEffects";
 import type { ComboOutcome } from "./comboTypes";
+import { startAssaultVector, startSpinningSlash } from "./timeRangerNc";
+import { startGrapFighter } from "./grapFighter";
+import { startDenjiThunderThrow } from "./denjiThunderThrow";
 
 const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "RK-282": "scissors_attack",
@@ -30,6 +33,12 @@ const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "RS-278": "bison_rod",
   "RS-685": "buringasodo",
   "RS-630": "megatomahoku",
+  "RS-218": "asarutobekuta",
+  "RS-219": "supiningusurashu",
+  "RS-221": "gurapufuaita",
+  // RS-232: NC の欄は【アバレウィング】だけ（※の「撃破されて捨札になったとき」は rules/leaveEffects の撃破時処理）。
+  "RS-232": "abareuingu",
+  "RS-358": "denjisandage",
 };
 
 const CORE_GAP_NC_EFFECTS = new Set([
@@ -63,14 +72,42 @@ export function applyPromotedNcEffect(
   }
 
   switch (effectId) {
+    case "asarutobekuta":
+    case "supiningusurashu": {
+      // RS-218【アサルトベクター】/ RS-219【スピニングスラッシュ】: 「SP1」＋相手パワーの整理／敵軍 S の撃破。
+      nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
+      nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
+      nextState =
+        effectId === "asarutobekuta"
+          ? startAssaultVector(nextState, playerId, card.instanceId)
+          : startSpinningSlash(nextState, playerId, card.instanceId);
+      logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));
+      break;
+    }
+    case "denjisandage": {
+      // RS-358【デンジサンダー投げ】（rules/denjiThunderThrow.ts）。
+      nextState = startDenjiThunderThrow(nextState, playerId, card.instanceId);
+      logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));
+      break;
+    }
+    case "gurapufuaita": {
+      // RS-221【グラップファイター】（rules/grapFighter.ts）。
+      nextState = startGrapFighter(nextState, playerId, card.instanceId);
+      logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));
+      break;
+    }
     case "scissors_attack": {
       const player = state.players[playerId];
       const hasVolcancer = player.rush.some(
         (u) => cardName(state.definitions, u.cardId) === "ボルキャンサー",
       );
       if (hasVolcancer) {
-        nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
-        nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
+        // 「このユニットは「SP1/2」になる」— 指定値に置き換える（加算しない）。
+        {
+          const owner = nextState.players[playerId];
+          const battle = owner.battle.map((c) => (c.instanceId === card.instanceId ? { ...c, spOverride: "1/2" as const } : c));
+          nextState = { ...nextState, ...updatePlayer(nextState, playerId, { ...owner, battle }) };
+        }
         logs.push(
           buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, "scissors_attack:sp12"),
         );
@@ -122,6 +159,7 @@ export function applyPromotedNcEffect(
       break;
     }
     case "victory_robo_strike":
+    case "abareuingu":
     case "end_turn_battle_to_rush":
       nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
       logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));

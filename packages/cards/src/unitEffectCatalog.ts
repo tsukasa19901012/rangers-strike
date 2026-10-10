@@ -77,6 +77,7 @@ export const IMPLEMENTED_ON_ATTACK_EFFECT_IDS = [
   "surging_chopper",
   "moonlight_sonic",
   "mirage_beam",
+  "abareuingu",
 ] as const;
 
 /** バトル投入時の自動または選択効果。 */

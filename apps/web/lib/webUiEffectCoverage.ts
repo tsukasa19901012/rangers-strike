@@ -108,6 +108,16 @@ const KNOWN_EFFECT_IDS = new Set<string>([
   "extend_rider_drop",
   "kamen_ride_deploy",
   "power_faceup_sp1_grant",
+  // 第4弾（legend1）の名前付き効果（engine: rules/legend1/set4NamedEffects.ts）。汎用ターゲット選択で操作する。
+  "baku_mirajunakuru_discard_to_damage",
+  "chikara_baton_opponent_pick_rush",
+  "shitakunarugasorin_deck_bottom",
+  "baku_desusuteinga_destroy_lower",
+  "furawakanibaru_hand_to_command",
+  "kanabiku_counter_to_damage",
+  "purobaidabesu_deck_top",
+  "suraida_ignore_entry_hold",
+  "toripururikidobonba_take",
 ]);
 
 export function isKnownEffectChoice(pending: PendingEffectChoice): boolean {

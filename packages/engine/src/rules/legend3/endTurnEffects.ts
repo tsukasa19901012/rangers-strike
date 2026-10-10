@@ -3,6 +3,7 @@ import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
 import { findInZone, updatePlayer } from "../../core/helpers";
 import { openEffectChoice, startSelectUnitChoice } from "../pendingChoices";
+import { tryOpenSet4EndTurnChoice } from "../legend1/set4NamedEffects";
 
 const END_TURN_EFFECT_IDS = ["jet_skateboard", "end_turn_battle_to_rush"] as const;
 
@@ -52,6 +53,13 @@ export function tryOpenEndTurnEffectsMenu(
 ): GameState | null {
   if (state.phase !== "end") return null;
   if (state.pendingEffectChoice) return null;
+
+  // 第4弾 RS-192【アタックボード】・RS-193【フラワーカーニバル】（rules/legend1/set4NamedEffects.ts）。
+  const set4 = tryOpenSet4EndTurnChoice(state, playerId);
+  if (set4) {
+    if (set4.pendingEffectChoice) return set4;
+    state = set4;
+  }
 
   const discoChoice = tryStartDiscoDanceEndTurnChoice(state, playerId);
   if (discoChoice) return discoChoice;

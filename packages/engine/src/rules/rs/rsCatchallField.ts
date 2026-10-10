@@ -1,5 +1,6 @@
 import type { GameState, PlayerId } from "../../types/game";
 import {
+  bpPlusInvertedFor,
   effectiveBp,
   getDefinition,
   isSmallUnit,
@@ -9,7 +10,10 @@ import { playerHasFieldCard } from "./rsCatchallChoices";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { sameCardName } from "../../core/cardNames";
 
-/** RS-210: ナンバーSユニットのBP加算を減算に反転。 */
+/**
+ * RS-210: ナンバーSユニットのBP加算を減算に反転。
+ * 判定は core/catalog の bpPlusInvertedFor（本文の文言で判定し、effectiveBp に組み込み済み）。
+ */
 export function rs210BpInvertDelta(
   state: GameState,
   playerId: PlayerId,
@@ -17,12 +21,9 @@ export function rs210BpInvertDelta(
   delta: number,
 ): number {
   if (delta <= 0) return delta;
-  if (!playerHasFieldCard(state, playerId, "RS-210")) return delta;
   const player = state.players[playerId];
   const card = [...player.rush, ...player.battle].find((c) => c.instanceId === instanceId);
-  if (!card || !isSmallUnit(state.definitions, card.cardId)) return delta;
-  const def = getDefinition(state.definitions, card.cardId);
-  if (def?.comboNumber == null) return delta;
+  if (!card || !bpPlusInvertedFor(state, card)) return delta;
   return -delta;
 }
 

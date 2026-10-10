@@ -271,8 +271,7 @@ describe("RS-203 大帝ラー・デウス", () => {
   });
 
   // faq-card-4 RS-203 Q5「手札のカードはまだラッシュされていない…ので「ユニット」とはみなされません」
-  // 既知の不具合: CARD-RS-242 【ジャリュウ一族の侵攻】（戦闘員のカードをホールドせずにラッシュ）が未実装のため、対照（戦闘員のカードはラッシュできる）が成立しない
-  it.fails("RS-203: 公式Q&A — 手札のカードはユニットではないので特徴「戦闘員」を得ず、リュウオーンの効果でホールドせずにラッシュできない（出典: grnrngr/faq-card-4 RS-203 Q5）", () => {
+  it("RS-203: 公式Q&A — 手札のカードはユニットではないので特徴「戦闘員」を得ず、リュウオーンの効果でホールドせずにラッシュできない（出典: grnrngr/faq-card-4 RS-203 Q5）", () => {
     const GRUNT = sUnit("SPEC-GRUNT", { category: "DA", features: ["戦闘員"] });
     const PLAIN = sUnit("SPEC-PLAIN-DA", { category: "DA", features: ["男"] });
     const base = (hand: ReturnType<typeof inst>[]) =>

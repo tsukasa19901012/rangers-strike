@@ -1,3 +1,4 @@
+import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
 import {
   getBattleEntryHandDiscardCount,
   hasUnnamedRule,
@@ -201,8 +202,9 @@ export function tryStartBattleEntryRushDiscard(
   entering: CardInstance,
 ): GameState | null {
   const player = state.players[playerId];
+  // 捨札にするのは出るユニット以外の自軍 S ユニット（RS-242 ※「自軍ラッシュエリアのSユニットを1体」）。
   const targets = player.rush
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c.cardId) && c.instanceId !== entering.instanceId)
     .map((c) => c.instanceId);
   if (targets.length === 0) return null;
 
@@ -431,6 +433,13 @@ export function canAttackDefender(
       return false;
     }
     if (cardHasGrantKeyword(attacker.card.cardId, "wing_attack_enemy_rush")) {
+      return true;
+    }
+    // RS-213【炸裂超力バトン】（相手が選んだユニット）・RS-225【大回転獅子爆裂弾】で得た能力。
+    if (
+      chikaraBatonAllowsAttack(state, attackerPlayerId, attackerInstanceId, defenderInstanceId) ||
+      lionBlastAllowsRushAttack(attacker.card)
+    ) {
       return true;
     }
     if (

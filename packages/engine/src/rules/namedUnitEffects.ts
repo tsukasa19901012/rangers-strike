@@ -13,6 +13,7 @@ import {
   getDefinition,
   unitBp,
 } from "../core/catalog";
+import { withSpBecomes } from "./fractionalSp";
 import {
   attackedBpBoostAmount,
   listCardGrantKeywords,
@@ -133,6 +134,9 @@ export function battleAttackerBpBonus(
     }
   }
 
+  // RS-232【アバレウィング】（CN3）: これがアタックするとき、これは BP+1000 される。
+  if (namedEffectActive(attacker.card, "abareuingu")) total += 1000;
+
   if (namedEffectActive(attacker.card, "red_fire")) {
     const released = state.players[pending.attackerPlayerId].command.filter(
       (c) => !c.commandHeld,
@@ -191,6 +195,7 @@ export function battleDefenderBp(
     (hasBattleNcEffect(attackerCard, "shark_jaws") ||
       hasBattleNcEffect(attackerCard, "super_cutter") ||
       hasBattleNcEffect(attackerCard, "use_printed_bp_in_battle") ||
+      namedEffectActive(attackerCard, "abareuingu") ||
       activeOnAttackNamedEffect(attackerCard)?.effectId === "shark_jaws" ||
       activeOnAttackNamedEffect(attackerCard)?.effectId === "super_cutter" ||
       activeOnAttackNamedEffect(attackerCard)?.effectId === "raidakiku" ||
@@ -257,6 +262,11 @@ export function attackerBlocksDefenderCounters(
     hasBattleNcEffect(attacker.card, "panther_claw") ||
     hasBattleNcEffect(attacker.card, "cannot_counter_on_attack") ||
     activeOnAttackNamedEffect(attacker.card)?.effectId === "panther_claw" ||
+    // 「これがアタックするとき、相手はカウンターを発動できない」（RS-190【ミドメラン】等）— 文言で判定し、
+    // NC の効果なら NC が成立しているときだけ（activeOnAttackNamedEffect が NC ゲートを見る。R-CN-02）。
+    /これがアタックするとき、相手はカウンターを(?:発動|使用)できない/.test(
+      activeOnAttackNamedEffect(attacker.card)?.text ?? "",
+    ) ||
     attackerSuppressesAttackedCounters(attacker.card.cardId) ||
     legend2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId)
   );
@@ -755,9 +765,10 @@ export function applyShirubaOnRush(
     const rush = [...player.rush];
     const index = rush.findIndex((c) => c.instanceId === rushedInstanceId);
     if (index < 0) return player;
+    // 「次の能力を得る⇒BP+2000、「SP1」」— SP は加算ではなく SP1 になる。
+    const withSp = withSpBecomes(state.definitions, undefined, rush[index]!, 1);
     rush[index] = {
-      ...rush[index]!,
-      spModifier: (rush[index]!.spModifier ?? 0) + 1,
+      ...withSp,
       bpModifier: (rush[index]!.bpModifier ?? 0) + 2000,
     };
     return { ...player, rush };
@@ -1039,9 +1050,8 @@ export function grantSp1ToBattleUnit(
 ): GameState {
   const player = state.players[playerId];
   const battle = player.battle.map((c) =>
-    c.instanceId === instanceId
-      ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-      : c,
+    // 「SP1」を得る＝SP1 になる（加算ではなく置き換え。rules/fractionalSp の withSpBecomes）。
+    c.instanceId === instanceId ? withSpBecomes(state.definitions, player.battle, c, 1) : c,
   );
   return { ...state, ...updatePlayer(state, playerId, { ...player, battle }) };
 }

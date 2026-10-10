@@ -142,8 +142,7 @@ describe("RS-208 キリンレンジャー", () => {
   });
 
   // faq-card-4 RS-208 Q5（faq-card-3 にも転載）「はい、手札に戻ります。」（カレー＋敵軍ゴーマ16世で BP1000 のキリン自身）
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】（BP の「＋」を「－」にする）が恐竜やのカレーに効かず、キリンレンジャーが BP1000 にならない（時間返し自体は発動する）
-  it.fails("RS-208: 公式Q&A — 自軍カレーと敵軍ゴーマ16世で BP1000 になったキリンレンジャー自身も手札に戻る（出典: grnrngr/faq-card-4 RS-208 Q5・faq-card-3）", () => {
+  it("RS-208: 公式Q&A — 自軍カレーと敵軍ゴーマ16世で BP1000 になったキリンレンジャー自身も手札に戻る（出典: grnrngr/faq-card-4 RS-208 Q5・faq-card-3）", () => {
     let s = kirinAt4({ operation: [inst("RS-179", "cur")], enemyBattle: [inst("RS-210", "goma")] });
     expect(bpOf(s, "player1", "RS-208:k")).toBe(1000);
     s = confirmIfAsked(s, "player1");
@@ -320,21 +319,18 @@ describe("RS-210 ゴーマ16世", () => {
   });
 
   // 「ナンバーを持つすべてのSユニットは、BPが「＋」されるかわりにBPが「－」される」
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: 自軍のナンバーを持つ S（キリンレンジャー、イエロー）はカレーの＋2000が－2000になり BP1000（出典: atwiki/page-107）", () => {
+  it("RS-210: 自軍のナンバーを持つ S（キリンレンジャー、イエロー）はカレーの＋2000が－2000になり BP1000（出典: atwiki/page-107）", () => {
     const s = st({ player1: { battle: [inst("RS-210", "g"), inst("RS-208", "k")], operation: [inst("RS-179", "cur")] } });
     expect(bpOf(s, "player1", "RS-208:k")).toBe(1000);
   });
 
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: 敵軍のナンバーを持つ S にも適用される（出典: atwiki/page-107「すべてのSユニット」）", () => {
+  it("RS-210: 敵軍のナンバーを持つ S にも適用される（出典: atwiki/page-107「すべてのSユニット」）", () => {
     const s = st({ player1: { battle: [inst("RS-210", "g")] }, player2: { battle: [inst("RS-208", "k")], operation: [inst("RS-179", "cur")] } });
     expect(bpOf(s, "player2", "RS-208:k")).toBe(1000);
   });
 
   // 「ナンバーを持つ」— ナンバーの無い S は＋のまま
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: ナンバーを持たない S は＋のまま、ナンバーを持つ S は－になる（出典: atwiki/page-107「ナンバーを持つ」）", () => {
+  it("RS-210: ナンバーを持たない S は＋のまま、ナンバーを持つ S は－になる（出典: atwiki/page-107「ナンバーを持つ」）", () => {
     const NO_CN_YELLOW = { id: "SPEC-YELLOW-NOCN", name: "SPEC-YELLOW-NOCN", type: "unit", category: "MA", rarity: "N", expansion: "card-spec", powerCost: 0, bp: 1000, size: "S", features: ["イエロー"] } as const;
     const s = st(
       { player1: { battle: [inst("RS-210", "g"), inst("SPEC-YELLOW-NOCN", "n"), inst("RS-208", "k")], operation: [inst("RS-179", "cur")] } },
@@ -345,8 +341,7 @@ describe("RS-210 ゴーマ16世", () => {
   });
 
   // 「（BP0以下になったユニットは撃破される）」
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: BP0 以下になったユニットは撃破される（BP1000 のイエローフォーにカレーで－1000）（出典: atwiki/page-107）", () => {
+  it("RS-210: BP0 以下になったユニットは撃破される（BP1000 のイエローフォーにカレーで－1000）（出典: atwiki/page-107）", () => {
     let s = st({
       phase: "rush",
       player1: { rush: [inst("RS-201", "y")], hand: [inst("RS-210", "g")], operation: [inst("RS-179", "cur")], power: powerCards(4), command: releasedN(1, "TST-OP-DA") },
@@ -496,8 +491,7 @@ describe("RS-212 オーグリーン", () => {
   }
 
   // 「敵軍捨札からカードを1枚選び、敵軍パワーゾーンにダメージにして置く。（…これが撃破したユニットが捨札になるなら捨札にしたあとで選ぶ）」
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: NC（3番目）でバトルに勝つと、撃破したユニットを含む敵軍捨札から1枚選び敵軍のダメージにする（出典: atwiki/page-113）", () => {
+  it("RS-212: NC（3番目）でバトルに勝つと、撃破したユニットを含む敵軍捨札から1枚選び敵軍のダメージにする（出典: atwiki/page-113）", () => {
     let s = ohGreenAttack(3);
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
@@ -507,8 +501,7 @@ describe("RS-212 オーグリーン", () => {
     expect(s.players.player2.power.find((c) => c.instanceId === "TST-UNIT-0:e")?.faceDown).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: NC 不成立（1番目）では発動しない／3番目なら発動する（出典: atwiki/page-113、R-CN-02）", () => {
+  it("RS-212: NC 不成立（1番目）では発動しない／3番目なら発動する（出典: atwiki/page-113、R-CN-02）", () => {
     const first = ohGreenAttack(1);
     expect(first.pendingEffectChoice).toBeUndefined();
     expect(first.players.player2.damage).toBe(0);
@@ -516,8 +509,7 @@ describe("RS-212 オーグリーン", () => {
   });
 
   // 「自軍ターン中」
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: 敵軍ターン中にアタックされて撃破しても発動しない／自軍ターンなら発動する（出典: atwiki/page-113「自軍ターン中」）", () => {
+  it("RS-212: 敵軍ターン中にアタックされて撃破しても発動しない／自軍ターンなら発動する（出典: atwiki/page-113「自軍ターン中」）", () => {
     let s = st({
       player1: { battle: fillers(2), rush: [inst("RS-212", "g")], deck: deckCards(5) },
       player2: { rush: [inst("TST-UNIT-0", "e")], discard: [inst("TST-OP-DA", "x1")], power: powerCards(2, "e"), deck: deckCards(5, "e") },
@@ -534,8 +526,7 @@ describe("RS-212 オーグリーン", () => {
   });
 
   // faq-card-4 RS-212 Q1「同時タイミングで発動した処理はターンプレイヤーが任意の順番で実行できます」
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: 公式Q&A — アバレッドAM を撃破したとき、ターンプレイヤーはミラージュナックルを先に処理してアバレッドをダメージにでき、AM の効果で戻らない（出典: grnrngr/faq-card-4 RS-212 Q1）", () => {
+  it("RS-212: 公式Q&A — アバレッドAM を撃破したとき、ターンプレイヤーはミラージュナックルを先に処理してアバレッドをダメージにでき、AM の効果で戻らない（出典: grnrngr/faq-card-4 RS-212 Q1）", () => {
     let s = st({
       player1: { battle: fillers(2), rush: [{ ...inst("RS-212", "g"), bpSetValue: 9000 }] },
       player2: { battle: [inst("RS-230", "am")], discard: [inst("RS-054", "red")], power: powerCards(2, "e") },
@@ -583,8 +574,7 @@ describe("RS-213 オーイエロー", () => {
   }
 
   // 「相手は自分自身のラッシュエリアからユニットを1体選ぶ。このターン、このユニットは、相手の選んだユニットにアタックできる」
-  // 既知の不具合: CARD-RS-213 【炸裂超力バトン】で相手がラッシュエリアのユニットを選ばず、ラッシュエリアのユニットにアタックできない
-  it.fails("RS-213: NC（2番目）で相手が自分のラッシュエリアから1体選び、オーイエローはそのユニットにアタックして撃破できる（選ばれなかったユニットにはアタックできない）（出典: atwiki/page-114）", () => {
+  it("RS-213: NC（2番目）で相手が自分のラッシュエリアから1体選び、オーイエローはそのユニットにアタックして撃破できる（選ばれなかったユニットにはアタックできない）（出典: atwiki/page-114）", () => {
     let s = ohYellow(2);
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:er1", "TST-UNIT-0:er2"]);
@@ -597,8 +587,7 @@ describe("RS-213 オーイエロー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:er2")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-213 【炸裂超力バトン】で相手がラッシュエリアのユニットを選ばず、ラッシュエリアのユニットにアタックできない
-  it.fails("RS-213: NC 不成立（1番目）ではラッシュエリアのユニットにアタックできない／2番目ならできる（出典: atwiki/page-114、R-CN-02）", () => {
+  it("RS-213: NC 不成立（1番目）ではラッシュエリアのユニットにアタックできない／2番目ならできる（出典: atwiki/page-114、R-CN-02）", () => {
     const first = ohYellow(1);
     expect(first.pendingEffectChoice).toBeUndefined();
     expect(attackTargets(first, "RS-213:y")).toEqual(["TST-UNIT-0:e0"]);
@@ -640,8 +629,7 @@ describe("RS-214 オーピンク", () => {
   const heldCount = (s: GameState) => s.players.player1.command.filter((c) => c.commandHeld).length;
 
   // 「このターン、自軍Sユニットがバトルでユニットを撃破するたび、自軍コマンドを2つまで選び、リリースしてもよい」
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: NC（1番目）のあと、自軍 S がバトルでユニットを撃破するとコマンドを2つまでリリースできる（出典: atwiki/page-115）", () => {
+  it("RS-214: NC（1番目）のあと、自軍 S がバトルでユニットを撃破するとコマンドを2つまでリリースできる（出典: atwiki/page-115）", () => {
     let s = pinkActive();
     s = attack(s, "RS-214:p", "TST-UNIT-0:e1");
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("discard");
@@ -650,8 +638,7 @@ describe("RS-214 オーピンク", () => {
     expect(heldCount(s)).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: 撃破する「たび」— 2回撃破すれば2回リリースできる（出典: atwiki/page-115「撃破するたび」）", () => {
+  it("RS-214: 撃破する「たび」— 2回撃破すれば2回リリースできる（出典: atwiki/page-115「撃破するたび」）", () => {
     let s = pinkActive();
     s = drain(attack(s, "RS-214:p", "TST-UNIT-0:e1"), "player1");
     expect(heldCount(s)).toBe(1);
@@ -662,8 +649,7 @@ describe("RS-214 オーピンク", () => {
   });
 
   // 「リリースしてもよい」
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: リリースしないことを選べる（出典: atwiki/page-115「リリースしてもよい」）", () => {
+  it("RS-214: リリースしないことを選べる（出典: atwiki/page-115「リリースしてもよい」）", () => {
     let s = attack(pinkActive(), "RS-214:p", "TST-UNIT-0:e1");
     expect(canDecline(s, "player1")).toBe(true);
     s = decline(s, "player1");
@@ -671,8 +657,7 @@ describe("RS-214 オーピンク", () => {
   });
 
   // 「自軍Sユニットが」— M ユニットが撃破してもリリースできない（S なら出来ることも確認）
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: 自軍 M ユニットが撃破してもリリースできない／S ならできる（出典: atwiki/page-115「自軍Sユニット」）", () => {
+  it("RS-214: 自軍 M ユニットが撃破してもリリースできない／S ならできる（出典: atwiki/page-115「自軍Sユニット」）", () => {
     let s = passEntry(pinkActive());
     s = enter(s, "TST-UNIT-2:m");
     s = attack(s, "TST-UNIT-2:m", "TST-UNIT-0:e1");
@@ -683,8 +668,7 @@ describe("RS-214 オーピンク", () => {
     expect(sKill.pendingEffectChoice?.playerId).toBe("player1");
   });
 
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: NC 不成立（2番目）では撃破してもリリースできない／1番目ならできる（出典: atwiki/page-115、R-CN-02）", () => {
+  it("RS-214: NC 不成立（2番目）では撃破してもリリースできない／1番目ならできる（出典: atwiki/page-115、R-CN-02）", () => {
     let s = st({
       player1: { battle: fillers(1), rush: [inst("RS-214", "p")], command: heldN(3, "TST-OP-MA") },
       player2: { battle: [inst("TST-UNIT-0", "e1")] },
@@ -697,8 +681,7 @@ describe("RS-214 オーピンク", () => {
   });
 
   // faq-card-4 RS-214 Q1「いいえ、できません。」（※「敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」敵軍ユニットを SP1 以上の自軍ユニットで撃破したとき）
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: 公式Q&A — 皇帝バッカスフンドが自身の※で撃破されてもリリースできない（通常のバトル勝利ならできる）（出典: grnrngr/faq-card-4 RS-214 Q1）", () => {
+  it("RS-214: 公式Q&A — 皇帝バッカスフンドが自身の※で撃破されてもリリースできない（通常のバトル勝利ならできる）（出典: grnrngr/faq-card-4 RS-214 Q1）", () => {
     let s = pinkActive();
     s = { ...s, players: { ...s.players, player2: { ...s.players.player2, battle: [inst("RS-215", "bac"), ...s.players.player2.battle] } } };
     s = passEntry(s);
