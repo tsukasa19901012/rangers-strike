@@ -1,5 +1,6 @@
 import type { EventListener, StrikeDeclaredEvent } from "../types";
 import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
+import { isStrikeDamageDealtTriggerText } from "../../rules/strikeDamageTriggers";
 
 /**
  * StrikeDeclared: on_strike DSL 効果（RS-067 等）。
@@ -19,6 +20,8 @@ export const strikeDeclaredListener: EventListener = (event, state) => {
     phasePlayerId: strikeEvent.phasePlayerId,
     triggerType: "on_strike",
     logAction: "strike_effect",
+    // ルール: R-TIME-01 — 「ストライクしてダメージを与えたとき」はダメージのあと（rules/strikeDamageTriggers.ts）。
+    effectFilter: (effect) => !isStrikeDamageDealtTriggerText(effect.text),
   });
 
   return {

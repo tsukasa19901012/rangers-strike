@@ -9,7 +9,7 @@ import { cardCategories, getDefinition } from "../core/catalog";
 import { meditationActive } from "../core/createGame";
 import { applyPlayerDamage, removeAt, updatePlayer } from "../core/helpers";
 import { emitDamageAppliedAndResolve } from "../events/emitDamageApplied";
-import { applyPowerFlipTriggers } from "./powerFlipEffects";
+import { applyPowerFlipBeforeDamage, applyPowerFlipTriggers } from "./powerFlipEffects";
 import {
   cardHasMorphKeyword,
   powerZoneHasMorphUnitCard,
@@ -313,8 +313,9 @@ function applyDamageAmount(
     resume.kind === "none" ? resume.activePlayer : resume.pending.battlePhasePlayer;
   const nextPlayer =
     phasePlayerId !== playerId ? { ...damaged, damagedOnEnemyTurn: true } : damaged;
+  // ルール: R-TIME-01 — 「ウラ返してダメージにするとき」（RS-202）は、ダメージになったときの誘発より前。
   let nextState = emitDamageAppliedAndResolve(
-    { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    applyPowerFlipBeforeDamage(state, { ...state, ...updatePlayer(state, playerId, nextPlayer) }, playerId, resume),
     { playerId, amount, source: resume.kind, phasePlayerId },
   );
   if (resume.kind === "none") {
@@ -389,12 +390,18 @@ export function resolveDamagePaymentSelect(
   );
 
   const resume = pending.resume;
+  // ルール: R-TIME-01 — 「ウラ返してダメージにするとき」（RS-202）は、ダメージになったときの誘発より前。
   let nextState: GameState = emitDamageAppliedAndResolve(
-    {
-      ...state,
-      ...updatePlayer(state, defenderId, nextPlayer),
-      pendingDamagePayment: undefined,
-    },
+    applyPowerFlipBeforeDamage(
+      state,
+      {
+        ...state,
+        ...updatePlayer(state, defenderId, nextPlayer),
+        pendingDamagePayment: undefined,
+      },
+      defenderId,
+      resume,
+    ),
     {
       playerId: defenderId,
       amount: pending.totalDamage + (pending.replacedDamage ?? 0),
