@@ -48,6 +48,7 @@ import {
 import {
   findLegend2NamedEffectOnField,
   karakuriLionChainBlocksEntry,
+  karakuriLionChainHoldCount,
   trafficControlRequiresSameSize,
 } from "./legend2/fieldEffects";
 import {
@@ -160,7 +161,8 @@ export function requiredBattleEntryHolds(
   const lgHold = isMediumUnit(state.definitions, unit.cardId)
     ? countActiveLightningGravity(state)
     : 0;
-  return unitHold + lgHold;
+  // ルール: R-CONT-01 — 敵軍ハリケンレオン（連獅子）の数だけホールドが重複する。
+  return unitHold + lgHold + karakuriLionChainHoldCount(state, playerId, unit);
 }
 
 /** RS-047 Pat Signer: BP>=5000 のMユニットの戦闘進入をブロック。 */
@@ -293,17 +295,6 @@ export function canMoveUnitToBattle(
 
   if (trafficControlRequiresSameSize(state, playerId, def.size)) return false;
 
-  if (
-    karakuriLionChainBlocksEntry(
-      state,
-      playerId,
-      unit,
-      countHeldCommands(state.players[playerId]),
-    )
-  ) {
-    return false;
-  }
-
   if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
 
   if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
@@ -409,17 +400,6 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (trafficControlRequiresSameSize(state, playerId, def.size)) return false;
 
-  if (
-    karakuriLionChainBlocksEntry(
-      state,
-      playerId,
-      unit,
-      countHeldCommands(state.players[playerId]),
-    )
-  ) {
-    return false;
-  }
-
   if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
 
   if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
@@ -517,7 +497,8 @@ function passesBattleEntryHoldRequirements(
   const lgHold = isMediumUnit(state.definitions, unit.cardId)
     ? countActiveLightningGravity(state)
     : 0;
-  const requiredTotal = unitHold + lgHold;
+  // ルール: R-CONT-01 — 敵軍ハリケンレオン（連獅子）の数だけホールドが重複する。
+  const requiredTotal = unitHold + lgHold + karakuriLionChainHoldCount(state, playerId, unit);
 
   if (requiredTotal === 0 && !needsVCommanderHold(state, playerId, unit)) {
     return true;
@@ -694,7 +675,7 @@ export function explainCannotEnterBattle(
     const chain = findLegend2NamedEffectOnField(state, "karakuri_lion_chain", ["battle"]);
     const who = chain?.playerId === playerId ? "自軍" : "敵軍";
     const chainName = chain ? cardName(state.definitions, chain.cardId) : "ハリケンレオン";
-    return `${who}の「${chainName}」の【カラクリ忍法・連獅子】の効果で、SP1以上または「!」のユニットはコマンドを1枚ホールドしないとバトルエリアに出せません。`;
+    return `${who}の「${chainName}」の【カラクリ忍法・連獅子】の効果で、SP1以上または「!」のユニットはコマンドを${karakuriLionChainHoldCount(state, playerId, unit)}枚ホールドしないとバトルエリアに出せません。`;
   }
 
   if (isBattleBlocked(player, unit.instanceId)) {

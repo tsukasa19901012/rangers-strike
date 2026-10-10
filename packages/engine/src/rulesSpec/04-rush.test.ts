@@ -952,9 +952,8 @@ describe("R-ADD-07 複数の「〜しなければ出られない」", () => {
     expect(zoneOf(ended.state, "player1", tiger.instanceId)).toBe("rush");
   });
 
-  // 既知の不具合: 05-D5
   // 「はい、重複しますので、その通りになります」
-  it.fails("R-ADD-07: 敵軍ハリケンレオンが2体いれば、SP1のユニットはバトルエリアに出るのに2ホールド必要（出典: grnrngr/faq-card-2 RS-097 Q7）", () => {
+  it("R-ADD-07: 敵軍ハリケンレオンが2体いれば、SP1のユニットはバトルエリアに出るのに2ホールド必要（出典: grnrngr/faq-card-2 RS-097 Q7）", () => {
     const unit = inst("TST-UNIT-0", "u");
     const s0 = mk4({
       phase: "battle",

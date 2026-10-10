@@ -65,6 +65,28 @@ export function playerHasActiveFieldKeyword(
   return false;
 }
 
+/** 同じキーワードを持つ場のカードの枚数（ルール: R-CONT-01 同じ継続効果は枚数分重複する）。 */
+export function countActiveFieldKeyword(
+  state: GameState,
+  playerId: PlayerId,
+  keyword: string,
+  zones: FieldZone[] = ["rush", "battle", "operation"],
+): number {
+  const player = state.players[playerId];
+  let count = 0;
+  for (const zone of zones) {
+    for (const card of player[zone]) {
+      if (
+        cardHasWhileInFieldKeyword(card.cardId, keyword) ||
+        legacyCardIdsForKeyword(keyword).includes(card.cardId)
+      ) {
+        count += 1;
+      }
+    }
+  }
+  return count;
+}
+
 export function anyPlayerHasActiveFieldKeyword(
   state: GameState,
   keyword: string,

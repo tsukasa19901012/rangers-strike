@@ -97,7 +97,8 @@ describe("damage power choice", () => {
     const state = createTestState({
       phase: "battle",
       player1: { battle: [attacker] },
-      player2: { power: [faceUp, faceDown] },
+      // ウラ向き1枚 = 既に1点（R-DMG-01）
+      player2: { power: [faceUp, faceDown], damage: 1 },
     });
 
     const next = unwrap(
@@ -111,7 +112,7 @@ describe("damage power choice", () => {
     expect(next.pendingDamagePayment).toBeUndefined();
     expect(next.pendingStrike).toBeUndefined();
     expect(next.activePlayer).toBe("player1");
-    expect(next.players.player2.damage).toBe(1);
+    expect(next.players.player2.damage).toBe(2);
     expect(next.players.player2.power.find((c) => c.instanceId === faceUp.instanceId)?.faceDown).toBe(
       true,
     );

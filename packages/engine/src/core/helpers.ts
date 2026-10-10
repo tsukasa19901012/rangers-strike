@@ -134,6 +134,7 @@ export function applyPlayerDamage(
     ...player,
     power,
     deck,
-    damage: player.damage + amount,
+    // ルール: R-DMG-01 ダメージはパワーゾーンのウラ向き枚数（独立カウンタとの乖離を防ぐ）
+    damage: Math.max(player.damage + amount, power.filter((c) => c.faceDown).length),
   };
 }

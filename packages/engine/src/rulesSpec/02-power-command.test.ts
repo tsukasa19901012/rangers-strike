@@ -221,16 +221,14 @@ describe("R-CMD-01 コマンドのホールド", () => {
   });
 
   // 「ホールドしたコマンドは消費された扱いで、リリースされるまでそのまま」
-  // 既知の不具合: 未登録 — ホールド済みコマンドの再利用自体は修正済み（paymentHeld）。ただしこの状態ではリリース状態の
-  // ET コマンド（SPEC-S-ET-3:cmdS）が残っており、それをホールドしてランドバルカンを空撃ち（R-CARD-03）できるため
-  // 合法手が残る。スペックの前提（「リリース状態の ET コマンドはもうない」）を要確認。
-  it.fails("R-CMD-01: ラッシュのためにホールドしたコマンドを、同じターンの別のオペレーション使用に再利用できない（出典: atwiki/page-157）", () => {
+  // ランドバルカンの対象として WB カテゴリのユニットをコマンドゾーンに置く（ET コマンドではないので支払いには使えない）。
+  it("R-CMD-01: ラッシュのためにホールドしたコマンドを、同じターンの別のオペレーション使用に再利用できない（出典: atwiki/page-157）", () => {
     const s = st({
       phase: "rush",
       player1: {
         hand: [inst("SPEC-S-ET-3", "u"), inst("RS-005", "lb")],
         power: powerCards(4),
-        command: [inst("TST-OP-ET", "et"), inst("SPEC-S-ET-3", "cmdS")],
+        command: [inst("TST-OP-ET", "et"), inst("SPEC-S-WB", "cmdS")],
       },
     });
     const r = unwrap(payAndRush(s, "player1", "SPEC-S-ET-3:u", ["TST-OP-ET:et"]));

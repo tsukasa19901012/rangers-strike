@@ -28,7 +28,7 @@ import { bounceToHand } from "./bounce";
 import { applyReanimate } from "./reanimate";
 import { tryLeaveField } from "./operationCounters";
 import { completeToPowerOnDestroyChoice } from "./toPowerOnDestroy";
-import { hasSeabedSurvey, karakuriLionChainBlocksEntry } from "./legend2/fieldEffects";
+import { hasSeabedSurvey, karakuriLionChainHoldCount } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
 import {
   MURPHY_CHASE_EFFECT_ID,
@@ -3952,13 +3952,18 @@ function holdForKarakuriLionChain(
   owner: PlayerState,
   unit: CardInstance,
 ): PlayerState | null {
-  const heldCount = owner.command.filter((c) => c.commandHeld).length;
-  if (!karakuriLionChainBlocksEntry(state, ownerId, unit, heldCount)) return owner;
-  const idx = owner.command.findIndex((c) => !c.commandHeld);
-  if (idx < 0) return null;
+  // ルール: R-CONT-01 — 敵軍ハリケンレオンの数だけ、出すユニット1体ごとにホールドする（faq-card-2 RS-097 Q4・Q7）。
+  const needed = karakuriLionChainHoldCount(state, ownerId, unit);
+  if (needed === 0) return owner;
+  const released = owner.command
+    .map((c, i) => (c.commandHeld ? -1 : i))
+    .filter((i) => i >= 0)
+    .slice(0, needed);
+  if (released.length < needed) return null;
+  const toHold = new Set(released);
   return {
     ...owner,
-    command: owner.command.map((c, i) => (i === idx ? { ...c, commandHeld: true } : c)),
+    command: owner.command.map((c, i) => (toHold.has(i) ? { ...c, commandHeld: true } : c)),
   };
 }
 

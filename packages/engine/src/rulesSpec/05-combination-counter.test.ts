@@ -233,7 +233,7 @@ describe("R-CN-04 コンビネーションは自軍バトルフェイズのみ",
 
   // 「自分でバトルエリアに出したときと同じように扱います」
   // 既知の不具合: 未登録 — 紐拳でラッシュエリアに戻されたジェットファルコンの【ファルコンクロー】が発動しない
-  it.fails("R-CN-04: 自軍バトルフェイズ中に相手の効果（ジェットファルコン）で出された自軍ユニットも NC を発動しアタックでき、紐男爵はアタックできなくなる（出典: grnrngr/faq-card-3 RS-141 Q1・RS-135 Q4）", () => {
+  it("R-CN-04: 自軍バトルフェイズ中に相手の効果（ジェットファルコン）で出された自軍ユニットも NC を発動しアタックでき、紐男爵はアタックできなくなる（出典: grnrngr/faq-card-3 RS-141 Q1・RS-135 Q4）", () => {
     let s = battleState({
       player1: { battle: fillers(2), rush: [inst("RS-141", "himo"), inst("RS-059", "blue")], deck: deckCards(3), hand: [] },
       player2: { battle: [inst("RS-135", "jet"), inst("TST-UNIT-0", "e")], deck: deckCards(3, "e") },
@@ -287,7 +287,7 @@ describe("R-CN-04 コンビネーションは自軍バトルフェイズのみ",
 
   // 「自軍バトルフェイズに出て並び順が確定したときだけ」
   // 既知の不具合: 03-D10
-  it.fails("R-CN-04: ラッシュフェイズにバトルエリアへ置かれたレッドレーサー（CN4）は4番目でも NC を発動しない（出典: atwiki/page-267・grnrngr/faq-card-1 RS-014 Q3）", () => {
+  it("R-CN-04: ラッシュフェイズにバトルエリアへ置かれたレッドレーサー（CN4）は4番目でも NC を発動しない（出典: atwiki/page-267・grnrngr/faq-card-1 RS-014 Q3）", () => {
     let s = battleState({
       phase: "rush",
       player1: {
@@ -309,7 +309,7 @@ describe("R-CN-04 コンビネーションは自軍バトルフェイズのみ",
 describe("R-CN-05 コンビネーションの相手", () => {
   // 「直前に出たユニット（左隣のユニット）との間に成立しています」
   // 既知の不具合: 未登録 — バルイーグルの「バルシャーク／バルパンサーからコンビネーション」判定が左隣でなくても成立する
-  it.fails("R-CN-05: バルシャークとの間に別ユニットがあるとバルイーグルの「シャークから」の効果は発動しない（出典: grnrngr/faq-card-1 RS-031 Q1）", () => {
+  it("R-CN-05: バルシャークとの間に別ユニットがあるとバルイーグルの「シャークから」の効果は発動しない（出典: grnrngr/faq-card-1 RS-031 Q1）", () => {
     let s = battleState({
       player1: { battle: [inst("RS-032", "shark"), inst("TST-UNIT-0", "mid")], rush: [inst("RS-031", "eagle")] },
     });
@@ -345,7 +345,7 @@ describe("R-CN-05 コンビネーションの相手", () => {
 
   // 「「カードに表記された本来のナンバー」だけです」
   // 既知の不具合: 未登録 — RS-263 タンクコマンドの NC 封じが機能しない（コロンが無くてもマジブルーの NC が発動する）
-  it.fails("R-CN-05: タンクコマンドは本来のナンバーを参照し、コロンで CN が変わったユニットの NC も封じる（出典: grnrngr/faq-card-1 RS-015 Q1）", () => {
+  it("R-CN-05: タンクコマンドは本来のナンバーを参照し、コロンで CN が変わったユニットの NC も封じる（出典: grnrngr/faq-card-1 RS-015 Q1）", () => {
     // リリース状態の自軍コマンドに CN2 のユニットカード → 本来のナンバー2 のマジブルーは NC 不可（コロンで CN3 になっていても）
     let s = battleState({
       player1: {
@@ -382,7 +382,7 @@ describe("R-CN-06 NC 効果の期間", () => {
 
   // 「一度発動してしまえば…撃破されても…効果は有効」
   // 既知の不具合: 未登録 — RS-110 ゼニボムが NC ログのみで、次の相手ターンの進入制限を設定しない
-  it.fails("R-CN-06: ゼニボムは発動元のデカピンクが撃破されても次の相手ターンに有効（出典: grnrngr/faq-card-2 RS-110 Q1）", () => {
+  it("R-CN-06: ゼニボムは発動元のデカピンクが撃破されても次の相手ターンに有効（出典: grnrngr/faq-card-2 RS-110 Q1）", () => {
     let s = battleState({
       player1: { battle: fillers(4), rush: [inst("RS-110", "pink")], deck: deckCards(3) },
       player2: {
@@ -529,7 +529,7 @@ describe("R-CTR-01 カウンター", () => {
 describe("R-CTR-02 同時に複数枚", () => {
   // 「はい、できます」（1回のアタックに対応カウンターを2枚以上）
   // 既知の不具合: 未登録 — 1回のアタックに対して2枚目の隠流忍術を使用できない
-  it.fails("R-CTR-02: 1回のアタックに対して隠流忍術を2枚使用できる（出典: grnrngr/faq-card-1 RS-018 Q1・faq-card-4）", () => {
+  it("R-CTR-02: 1回のアタックに対して隠流忍術を2枚使用できる（出典: grnrngr/faq-card-1 RS-018 Q1・faq-card-4）", () => {
     let s = battleState({
       player1: { battle: [inst("TST-UNIT-2", "a")] },
       player2: {
@@ -548,7 +548,7 @@ describe("R-CTR-02 同時に複数枚", () => {
 describe("R-CTR-03 カウンター封じの期間", () => {
   // 「アタックを宣言してから、自分の次の宣言のタイミングが来るまで」
   // 既知の不具合: 未登録 — パンサークローのカウンター封じが撃破時（場を離れるとき）のダイノガッツに及ばない
-  it.fails("R-CTR-03: パンサークローでアタックしたバルパンサーに対して相手は隠流忍術もダイノガッツも使えない（出典: grnrngr/faq-card-1 RS-033 Q1）", () => {
+  it("R-CTR-03: パンサークローでアタックしたバルパンサーに対して相手は隠流忍術もダイノガッツも使えない（出典: grnrngr/faq-card-1 RS-033 Q1）", () => {
     let s = battleState({
       player1: { battle: fillers(4), rush: [inst("RS-033", "panther")] },
       player2: {

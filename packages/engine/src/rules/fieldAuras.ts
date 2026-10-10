@@ -1,6 +1,6 @@
 import type { Category } from "@rangers-strike/cards";
 import { findNamedEffectByEffectId } from "@rangers-strike/cards";
-import { playerHasActiveFieldKeyword } from "../dsl/fieldKeywords";
+import { countActiveFieldKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition, cardName, isLargeUnit } from "../core/catalog";
 import { opponent } from "../core/helpers";
@@ -155,19 +155,15 @@ export function passiveNamedFieldBpBonus(
     bonus += 2000;
   }
 
+  // ルール: R-CONT-01 同じ継続効果は枚数分重複する（RS-045 / RS-037 は体数分 BP+1000）
   if (role === "defending" && def.size === "M" && categoriesInclude(def.category, "OT")) {
-    if (
-      playerHasInRush(state, playerId, "RS-045") ||
-      playerHasActiveFieldKeyword(state, playerId, "over_technology_m_bp_plus_on_attacked", ["rush"])
-    ) {
-      bonus += 1000;
-    }
+    bonus +=
+      1000 *
+      countActiveFieldKeyword(state, playerId, "over_technology_m_bp_plus_on_attacked", ["rush"]);
   }
 
   if (role === "attacking" && def.size === "M" && categoriesInclude(def.category, "WB")) {
-    if (playerHasInRush(state, playerId, "RS-037")) {
-      bonus += 1000;
-    }
+    bonus += 1000 * state.players[playerId].rush.filter((c) => c.cardId === "RS-037").length;
   }
 
   bonus += legend2FieldBpBonus(state, playerId, instance, role);

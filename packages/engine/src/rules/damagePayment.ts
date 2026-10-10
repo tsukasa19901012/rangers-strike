@@ -77,7 +77,8 @@ function applyResolvedDamage(
     ...player,
     power,
     deck,
-    damage: player.damage + totalDamage,
+    // ルール: R-DMG-01 ダメージはパワーゾーンのウラ向き枚数（独立カウンタとの乖離を防ぐ）
+    damage: Math.max(player.damage + totalDamage, power.filter((c) => c.faceDown).length),
     ...(damagedOnEnemyTurn ? { damagedOnEnemyTurn: true } : {}),
   };
 }
