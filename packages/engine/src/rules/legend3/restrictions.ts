@@ -202,8 +202,9 @@ export function tryStartBattleEntryRushDiscard(
   entering: CardInstance,
 ): GameState | null {
   const player = state.players[playerId];
+  // 捨札にするのは出るユニット以外の自軍 S ユニット（RS-242 ※「自軍ラッシュエリアのSユニットを1体」）。
   const targets = player.rush
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c.cardId) && c.instanceId !== entering.instanceId)
     .map((c) => c.instanceId);
   if (targets.length === 0) return null;
 

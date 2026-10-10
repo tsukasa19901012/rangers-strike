@@ -108,6 +108,7 @@ import { getCardEffect } from "@rangers-strike/cards";
 import { isHidoraEggUsed } from "../rules/turnModifiers";
 import { listValidChaseVehicleIds } from "../keywords/chase";
 import { canDeclareRush } from "../rules/rushDeclaration";
+import { jaryuInvasionAllowsRushWithoutHold } from "../rules/jaryuInvasion";
 import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
 import { listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
 import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
@@ -1012,7 +1013,11 @@ function appendRushCategoryPaymentActions(
         }
       }
     } else {
-      if (canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId)) {
+      if (
+        canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId) &&
+        // RS-242: ホールドせずにラッシュしてもよい（ホールドしてラッシュすることもできる）。
+        !jaryuInvasionAllowsRushWithoutHold(state, playerId, definition)
+      ) {
         continue;
       }
       if (

@@ -410,6 +410,47 @@ function openInazumaTonfaChoice(
   };
 }
 
+export const MIRACLE_KIKOUDAN_RULE_ID = "rs_catchall::RS-214::hikari_mirakuru_dan";
+export const MIRACLE_KIKOUDAN_CHOICE_EFFECT_ID = "hikari_mirakuru_dan_release";
+
+/**
+ * RS-214 オーピンク【閃光ミラクル気功弾】（NC）: このターン、自軍 S ユニットがバトルでユニットを撃破するたび、
+ * 自軍コマンドを2つまで選び、リリースしてもよい。
+ * バトルに勝って撃破したときだけ（相手ユニット自身の「勝っても撃破される」効果での撃破は対象外。faq-card-4 RS-214 Q1）。
+ */
+export function openMiracleKikoudanChoice(
+  state: GameState,
+  killerPlayerId: PlayerId,
+  killerCardId: string,
+): GameState {
+  if (state.pendingEffectChoice) return state;
+  const player = state.players[killerPlayerId];
+  const copies = (player.modifiers ?? []).filter(
+    (m) => m.kind === "rule" && m.ruleId === MIRACLE_KIKOUDAN_RULE_ID && m.scope === "turn",
+  ).length;
+  if (copies === 0) return state;
+  if (!isSmallUnit(state.definitions, killerCardId)) return state;
+  const heldIds = player.command.filter((c) => c.commandHeld).map((c) => c.instanceId);
+  if (heldIds.length === 0) return state;
+  return {
+    ...state,
+    pendingEffectChoice: {
+      playerId: killerPlayerId,
+      effectId: MIRACLE_KIKOUDAN_CHOICE_EFFECT_ID,
+      sourceCardId: "RS-214",
+      kind: "select_commands",
+      phasePlayerId: state.activePlayer,
+      validInstanceIds: heldIds,
+      selectedInstanceIds: [],
+      selectCount: Math.min(2 * copies, heldIds.length),
+      commandFilter: "held",
+      commandAction: "release",
+      optional: true,
+    },
+    activePlayer: killerPlayerId,
+  };
+}
+
 /** RK-008 メカニック忍者（自軍Sユニットがアタックされたときのカウンター）。 */
 export function isMechanicNinjaCounter(cardId: string): boolean {
   return cardId === "RK-008";
@@ -1033,7 +1074,39 @@ export function processMutualDestruction(
   if (r1.deferred) return r1;
   const r2 = tryLeaveField(r1.state, second);
   if (r2.deferred) return r2;
-  return { state: applySagasSniperOnMutualDestruction(r2.state, ctx), deferred: false };
+  const afterBoth = restoreHungerGodMutualPartner(r2.state, first, second);
+  return { state: applySagasSniperOnMutualDestruction(afterBoth, ctx), deferred: false };
+}
+
+/**
+ * RS-580 ン・マ の※（ユニットでなくなるとき捨札をすべて山札に戻す）と相討ち: 2体は同時に撃破されるので、
+ * ン・マのテキストを実行してから両方が捨札になる（faq-card-8 RS-580）。処理順でン・マを先に処理しても
+ * 相手のユニットは山札に戻らず捨札に置かれる。
+ */
+function restoreHungerGodMutualPartner(
+  state: GameState,
+  first: LeaveIntent,
+  second: LeaveIntent,
+): GameState {
+  if (first.leavingCardId !== "RS-580" && second.leavingCardId !== "RS-580") return state;
+  let next = state;
+  for (const intent of [first, second]) {
+    if (intent.leavingCardId === "RS-580" || intent.toZone !== "discard") continue;
+    const owner = next.players[intent.ownerPlayerId];
+    const deckIndex = owner.deck.findIndex((c) => c.instanceId === intent.instanceId);
+    if (deckIndex < 0) continue;
+    const inDeck = { index: deckIndex, card: owner.deck[deckIndex]! };
+    const [, deck] = removeAt(owner.deck, inDeck.index);
+    next = {
+      ...next,
+      ...updatePlayer(next, intent.ownerPlayerId, {
+        ...owner,
+        deck,
+        discard: [...owner.discard, inDeck.card],
+      }),
+    };
+  }
+  return next;
 }
 
 /**
@@ -1415,8 +1488,11 @@ export function resolveBattlePendingCore(
       extraLogs = fb.logs;
     }
     nextState = openInazumaTonfaChoice(nextState, attackerId, pending.attackerInstanceId);
+    if (destroyDefender) {
+      nextState = openMiracleKikoudanChoice(nextState, attackerId, refreshedAttackerFound.card.cardId);
+    }
     // RS-212【爆烈ミラージュナックル】・RS-226【爆竜必殺デススティンガー】（自軍ターン中、バトルで撃破したとき）。
-    // 撃破されたユニットの「撃破されたとき」の選択が開いていれば、こちらを先に処理する。
+    // 撃破されたユニットの「撃破されたとき」や RS-214 の選択が開いていれば、こちらを先に処理する。
     nextState = openMirageKnuckleChoice(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
     nextState = openDeathStingerChoice(
       nextState,

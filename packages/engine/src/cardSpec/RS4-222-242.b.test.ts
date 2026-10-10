@@ -304,11 +304,7 @@ describe("RS-232 アバレイエローAM", () => {
     });
   });
 
-  amReanimateTests("RS-232", "RS-104", "アバレイエロー", "atwiki/page-374", {
-    // 既知の不具合: CARD-RS-232 ※「撃破されて捨札になったとき」の効果が発動しない（DSL の trigger が nc）
-    reanimate: "CARD-RS-232 ※撃破されて捨札になっても「アバレイエロー」を出さない",
-    onlyPartner: "CARD-RS-232 ※撃破されて捨札になっても「アバレイエロー」を出さない",
-  });
+  amReanimateTests("RS-232", "RS-104", "アバレイエロー", "atwiki/page-374");
 
   /**
    * イエローAM を pos 番目に出し、敵軍の気力（RS-017。敵軍から見て「敵軍ターン中」＝自軍ターン、リリース状態のコマンド2つで
@@ -328,15 +324,13 @@ describe("RS-232 アバレイエローAM", () => {
   }
 
   // 「【アバレウィング】これがアタックするとき、これはBP+1000され、敵軍ユニットのBPをカードに表記された本来の値としてバトルする」（CN3）
-  // 既知の不具合: CARD-RS-232【アバレウィング】（アタックするとき BP+1000・敵軍ユニットを本来の BP でバトル）が働かない
-  it.fails("RS-232: 3番目に出て NC が成立していれば、アタックするとき BP5500 になり、敵軍ユニットを本来の BP（5000）としてバトルして勝つ（出典: atwiki/page-374）", () => {
+  it("RS-232: 3番目に出て NC が成立していれば、アタックするとき BP5500 になり、敵軍ユニットを本来の BP（5000）としてバトルして勝つ（出典: atwiki/page-374）", () => {
     const s = wingAttack(3);
     expect(zoneOf(s, "player2", "SPEC-WB-S5:d")).toBe("discard");
     expect(zoneOf(s, "player1", "RS-232:am")).toBe("battle");
   });
 
   // CN3 の欄の効果なので NC が成立していなければ働かない（R-CN-02）。
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-232: 3番目以外（1番目）に出たときは【アバレウィング】が働かず、BP4500 で BP7000 の敵軍ユニットに負ける（出典: atwiki/page-374「CN：3」・R-CN-02）", () => {
     const s = wingAttack(1);
     expect(zoneOf(s, "player1", "RS-232:am")).toBe("discard");
@@ -421,9 +415,8 @@ describe("RS-233 アバレブラック", () => {
     expect(s.players.player2.discard).toHaveLength(2);
   });
 
-  // 既知の不具合: CARD-RS-238【プロジェットカノン】がダイノスラスターでコマンドゾーンを離れたときに発動しない（ブロウナックル等の一部の効果でしか発動しない）
   // faq-card-4 RS-233 Q1「「ダイノスラスター」の効果は実行済みですので、「プロジェットカノン」で戻されたカードを捨札にする必要はありません。」
-  it.fails("RS-233: 公式Q&A — 敵軍ゴーゴーファイヤー【プロジェットカノン】で捨札からコマンドゾーンに戻されたカードを、もう一度捨札にする必要はない（出典: grnrngr/faq-card-4 RS-233 Q1・RS-238 Q5）", () => {
+  it("RS-233: 公式Q&A — 敵軍ゴーゴーファイヤー【プロジェットカノン】で捨札からコマンドゾーンに戻されたカードを、もう一度捨札にする必要はない（出典: grnrngr/faq-card-4 RS-233 Q1・RS-238 Q5）", () => {
     let s = black(2, [released("TST-OP", "own")], [released("TST-OP", "w"), released("TST-OP-ET", "e")], { rush: [inst("RS-238", "fire")] });
     for (let i = 0; i < 10 && s.pendingEffectChoice; i++) {
       const p = s.pendingEffectChoice;

@@ -91,8 +91,7 @@ describe("RS-215 皇帝バッカスフンド", () => {
   }
 
   // 「特徴「メカ」を持つ自軍ユニットがアタックされたとき、自分の手札からカードを2枚選び、捨札にしてもよい。そうしたとき、バトルは行われない」
-  // 既知の不具合: CARD-RS-215 【不滅のマシン帝国】で手札2枚を捨ててバトルを行わない選択が出ない
-  it.fails("RS-215: メカの自軍ユニットがアタックされたとき手札を2枚捨札にするとバトルは行われない（出典: atwiki/page-384）", () => {
+  it("RS-215: メカの自軍ユニットがアタックされたとき手札を2枚捨札にするとバトルは行われない（出典: atwiki/page-384）", () => {
     let s = attacked("SPEC-MECHA:m", 2, [inst("SPEC-MECHA", "m")]);
     s = confirmIfAsked(s, "player1");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
@@ -103,8 +102,7 @@ describe("RS-215 皇帝バッカスフンド", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-2:e")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-215 【不滅のマシン帝国】で手札2枚を捨ててバトルを行わない選択が出ない
-  it.fails("RS-215: バッカスフンド自身（特徴「メカ」）がアタックされたときも使える（出典: atwiki/page-384）", () => {
+  it("RS-215: バッカスフンド自身（特徴「メカ」）がアタックされたときも使える（出典: atwiki/page-384）", () => {
     let s = attacked("RS-215:b");
     s = settle(drain(confirmIfAsked(s, "player1"), "player1"));
     expect(s.players.player1.hand).toHaveLength(0);
@@ -113,8 +111,7 @@ describe("RS-215 皇帝バッカスフンド", () => {
   });
 
   // 「捨札にしてもよい」
-  // 既知の不具合: CARD-RS-215 【不滅のマシン帝国】で手札2枚を捨ててバトルを行わない選択が出ない
-  it.fails("RS-215: 捨札にしないことを選べ、そのときはバトルが行われる（出典: atwiki/page-384「捨札にしてもよい」）", () => {
+  it("RS-215: 捨札にしないことを選べ、そのときはバトルが行われる（出典: atwiki/page-384「捨札にしてもよい」）", () => {
     let s = attacked("SPEC-MECHA:m", 2, [inst("SPEC-MECHA", "m")]);
     expect(canDecline(s, "player1")).toBe(true);
     s = settle(decline(s, "player1"));
@@ -123,8 +120,7 @@ describe("RS-215 皇帝バッカスフンド", () => {
   });
 
   // 「特徴「メカ」を持つ自軍ユニット」・「手札からカードを2枚」— メカでない／手札1枚なら使えない（メカ・2枚なら使えることも確認）
-  // 既知の不具合: CARD-RS-215 【不滅のマシン帝国】で手札2枚を捨ててバトルを行わない選択が出ない
-  it.fails("RS-215: メカでないユニットがアタックされたとき・手札が1枚のときは使えない／メカで手札2枚なら使える（出典: atwiki/page-384）", () => {
+  it("RS-215: メカでないユニットがアタックされたとき・手札が1枚のときは使えない／メカで手札2枚なら使える（出典: atwiki/page-384）", () => {
     const notMecha = settle(attacked("TST-UNIT-0:s", 2, [inst("TST-UNIT-0", "s")]));
     expect(notMecha.players.player1.hand).toHaveLength(2);
     expect(zoneOf(notMecha, "player1", "TST-UNIT-0:s")).toBe("discard");
@@ -179,16 +175,14 @@ describe("RS-216 暴走皇帝エグゾス", () => {
   });
 
   // 「特徴「車両」を持つすべてのユニットは、毎ターン、可能ならバトルエリアに出る」
-  // 既知の不具合: CARD-RS-216 【大宇宙ハイウェイ計画】が適用されず、「車両」ユニットを出さずにバトルフェイズを終えられる
-  it.fails("RS-216: 自軍の「車両」ユニットはバトルエリアに出るまでバトルフェイズを終えられない（出典: atwiki/page-385）", () => {
+  it("RS-216: 自軍の「車両」ユニットはバトルエリアに出るまでバトルフェイズを終えられない（出典: atwiki/page-385）", () => {
     const s = st({ player1: { battle: [inst("RS-216", "x")], rush: [inst("SPEC-CAR", "c")] } }, [CAR]);
     const types = legal(s).map((a) => a.type);
     expect(types).toContain("move_to_battle");
     expect(types).not.toContain("end_phase");
   });
 
-  // 既知の不具合: CARD-RS-216 【大宇宙ハイウェイ計画】が適用されず、「車両」ユニットを出さずにバトルフェイズを終えられる
-  it.fails("RS-216: 敵軍の「車両」ユニットも敵軍ターンにバトルエリアに出なければならない（出典: atwiki/page-385「すべてのユニット」）", () => {
+  it("RS-216: 敵軍の「車両」ユニットも敵軍ターンにバトルエリアに出なければならない（出典: atwiki/page-385「すべてのユニット」）", () => {
     const s = st({ activePlayer: "player2", player1: { battle: [inst("RS-216", "x")] }, player2: { rush: [inst("SPEC-CAR", "ec")] } }, [CAR]);
     const types = legal(s).map((a) => a.type);
     expect(types).toContain("move_to_battle");
@@ -201,8 +195,7 @@ describe("RS-216 暴走皇帝エグゾス", () => {
   });
 
   // faq-card-8 RS-580 Q「はい、その通りです。」（エグゾスとン・マが相討ち：ン・マのテキストを実行してから両方が捨札になる）
-  // 既知の不具合: CARD-RS-580 ン・マが捨札になったあとで捨札を山札に戻すため、ン・マ自身も山札に戻ってしまう（処理順をどちらにしても捨札に残らない）
-  it.fails("RS-216: 公式Q&A — 敵軍エグゾスとの相討ちでは、ン・マのテキスト（捨札を山札に戻す）を実行してから両方が捨札になる（出典: grnrngr/faq-card-8 RS-580）", () => {
+  it("RS-216: 公式Q&A — 敵軍エグゾスとの相討ちでは、ン・マのテキスト（捨札を山札に戻す）を実行してから両方が捨札になる（出典: grnrngr/faq-card-8 RS-580）", () => {
     let s = st({
       activePlayer: "player2",
       player1: { battle: [inst("RS-580", "nma")], discard: [inst("TST-OP", "old1")], deck: deckCards(3) },
@@ -222,8 +215,7 @@ describe("RS-216 暴走皇帝エグゾス", () => {
   });
 
   // faq-card-5 RS-310 Q「はい、できます。」（ターン終了時、ゴウライビートルの撃破判定より先にエグゾスの判定を行える）
-  // 既知の不具合: CARD-RS-216 ターン終了時の※と他の「ターンを終えるとき」の処理の順番をターンプレイヤーが選べず、先にゴウライビートルが撃破されてエグゾスが山札に戻る
-  it.fails("RS-216: 公式Q&A — ターン終了時、BP8000 以上のゴウライビートルが撃破される前にエグゾスの判定を行えば場に残る（出典: grnrngr/faq-card-5 RS-310）", () => {
+  it("RS-216: 公式Q&A — ターン終了時、BP8000 以上のゴウライビートルが撃破される前にエグゾスの判定を行えば場に残る（出典: grnrngr/faq-card-5 RS-310）", () => {
     let s = st({
       player1: { battle: [inst("RS-216", "x"), inst("RS-310", "beetle")], damage: 3, power: Array.from({ length: 3 }, (_, i) => faceDownCard("TST-P", `d${i}`)), deck: deckCards(3) },
       player2: { damage: 3, power: Array.from({ length: 3 }, (_, i) => faceDownCard("TST-P", `ed${i}`)), deck: deckCards(3, "e") },
@@ -353,8 +345,7 @@ describe("RS-218 タイムレッド", () => {
   });
 
   // 「相手は自分自身のパワーゾーンのダメージ以外のカードを見て、カテゴリの数が2つ以上あれば、1つになるまでダメージ以外のカードを捨札にする」
-  // 既知の不具合: CARD-RS-218 【アサルトベクター】で相手のパワーゾーンのカードが捨札にならない（SP1 のみ）
-  it.fails("RS-218: 相手のダメージ以外のパワーが ET×2・MA・DA なら、相手が選んで1カテゴリになるまで捨札にする（ダメージはそのまま）（出典: atwiki/page-415）", () => {
+  it("RS-218: 相手のダメージ以外のパワーが ET×2・MA・DA なら、相手が選んで1カテゴリになるまで捨札にする（ダメージはそのまま）（出典: atwiki/page-415）", () => {
     let s = timeRed(4, MIXED());
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     s = drain(s, "player2", ["TST-OP-MA:ma", "TST-OP-DA:da"]);
@@ -368,16 +359,14 @@ describe("RS-218 タイムレッド", () => {
   });
 
   // 「カテゴリの数が2つ以上あれば」— 1カテゴリなら何もしない（2つ以上なら捨札にすることも確認）
-  // 既知の不具合: CARD-RS-218 【アサルトベクター】で相手のパワーゾーンのカードが捨札にならない（SP1 のみ）
-  it.fails("RS-218: ダメージ以外が1カテゴリ（ダメージは別カテゴリ）なら捨札にしない／2カテゴリ以上なら捨札にする（出典: atwiki/page-415「カテゴリの数が2つ以上あれば」）", () => {
+  it("RS-218: ダメージ以外が1カテゴリ（ダメージは別カテゴリ）なら捨札にしない／2カテゴリ以上なら捨札にする（出典: atwiki/page-415「カテゴリの数が2つ以上あれば」）", () => {
     const one = drain(timeRed(4, [inst("TST-OP-ET", "et1"), inst("TST-OP-ET", "et2"), faceDownCard("TST-OP-OT", "dmg")]), "player2");
     expect(one.players.player2.power).toHaveLength(3);
     const many = drain(timeRed(4, MIXED()), "player2");
     expect(many.players.player2.discard.length).toBeGreaterThan(0);
   });
 
-  // 既知の不具合: CARD-RS-218 【アサルトベクター】で相手のパワーゾーンのカードが捨札にならない（SP1 のみ）
-  it.fails("RS-218: NC 不成立（1番目）では捨札にしない／4番目なら捨札にする（出典: atwiki/page-415、R-CN-02）", () => {
+  it("RS-218: NC 不成立（1番目）では捨札にしない／4番目なら捨札にする（出典: atwiki/page-415、R-CN-02）", () => {
     const first = drain(timeRed(1, MIXED()), "player2");
     expect(first.players.player2.discard).toHaveLength(0);
     const fourth = drain(timeRed(4, MIXED()), "player2");
@@ -427,8 +416,7 @@ describe("RS-219 タイムブルー", () => {
 
   // 「自軍Sユニットと同じ数になるまで、敵軍Sユニットを選び撃破する」
   // faq-card-4 RS-219 Q4「はい、その通りです。」（X＜Y なら1体選び撃破、を X＝Y になるまで繰り返す）
-  // 既知の不具合: CARD-RS-219 【スピニングスラッシュ】の撃破効果が発動しない（SP1 のみ）
-  it.fails("RS-219: 敵軍 S が4体以上多い（8対4）とき発動し、自軍 S と同じ4体になるまで敵軍 S を選んで撃破する（M は対象外）（出典: atwiki/page-411・grnrngr/faq-card-4 RS-219 Q4）", () => {
+  it("RS-219: 敵軍 S が4体以上多い（8対4）とき発動し、自軍 S と同じ4体になるまで敵軍 S を選んで撃破する（M は対象外）（出典: atwiki/page-411・grnrngr/faq-card-4 RS-219 Q4）", () => {
     let s = timeBlue(4, 8);
     expect(countS(s, "player1")).toBe(4);
     expect(countS(s, "player2")).toBe(8);
@@ -441,8 +429,7 @@ describe("RS-219 タイムブルー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-2:em")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-219 【スピニングスラッシュ】の撃破効果が発動しない（SP1 のみ）
-  it.fails("RS-219: 差が3体（7対4）では発動しない／4体なら発動する（出典: atwiki/page-411「4体以上多いとき」）", () => {
+  it("RS-219: 差が3体（7対4）では発動しない／4体なら発動する（出典: atwiki/page-411「4体以上多いとき」）", () => {
     const three = settle(drain(confirmIfAsked(timeBlue(4, 7), "player1"), "player1"));
     expect(countS(three, "player2")).toBe(7);
     const four = settle(drain(confirmIfAsked(timeBlue(4, 8), "player1"), "player1"));
@@ -450,16 +437,14 @@ describe("RS-219 タイムブルー", () => {
   });
 
   // 「次の効果を発動できる」
-  // 既知の不具合: CARD-RS-219 【スピニングスラッシュ】の撃破効果が発動しない（SP1 のみ）
-  it.fails("RS-219: 発動しないことを選べる（出典: atwiki/page-411「発動できる」）", () => {
+  it("RS-219: 発動しないことを選べる（出典: atwiki/page-411「発動できる」）", () => {
     let s = timeBlue(4, 8);
     expect(canDecline(s, "player1")).toBe(true);
     s = decline(s, "player1");
     expect(countS(s, "player2")).toBe(8);
   });
 
-  // 既知の不具合: CARD-RS-219 【スピニングスラッシュ】の撃破効果が発動しない（SP1 のみ）
-  it.fails("RS-219: NC 不成立（1番目）では発動しない／4番目なら発動する（出典: atwiki/page-411、R-CN-02）", () => {
+  it("RS-219: NC 不成立（1番目）では発動しない／4番目なら発動する（出典: atwiki/page-411、R-CN-02）", () => {
     const first = settle(drain(confirmIfAsked(timeBlue(1, 8), "player1"), "player1"));
     expect(countS(first, "player2")).toBe(8);
     const fourth = settle(drain(confirmIfAsked(timeBlue(4, 8), "player1"), "player1"));
@@ -468,8 +453,7 @@ describe("RS-219 タイムブルー", () => {
 
   // faq-card-4 RS-219 Q1「先に撃破する対象をすべて選んでから、選んだユニットを１体ずつ撃破するようにしてください」
   // faq-card-4 RS-219 Q3「必ず同じ数になるまで選び、撃破してください」
-  // 既知の不具合: CARD-RS-219 【スピニングスラッシュ】の撃破効果が発動しない（SP1 のみ）
-  it.fails("RS-219: 公式Q&A — 4体すべて選び終えるまで撃破されず、途中で止められない（出典: grnrngr/faq-card-4 RS-219 Q1・Q3）", () => {
+  it("RS-219: 公式Q&A — 4体すべて選び終えるまで撃破されず、途中で止められない（出典: grnrngr/faq-card-4 RS-219 Q1・Q3）", () => {
     let s = confirmIfAsked(timeBlue(4, 8), "player1");
     const targets = ["TST-UNIT-0:eb0", "TST-UNIT-0:eb1", "TST-UNIT-0:eb2", "TST-UNIT-0:eb3"];
     for (const id of targets.slice(0, 3)) {
@@ -482,8 +466,7 @@ describe("RS-219 タイムブルー", () => {
   });
 
   // faq-card-4 RS-219 Q2（faq-card-2 にも転載）「「RS-116 マンドラ坊や」が撃破された瞬間に手札に戻ります。…撃破の処理を継続して実行してください」
-  // 既知の不具合: CARD-RS-219 【スピニングスラッシュ】の撃破効果が発動しない（SP1 のみ）
-  it.fails("RS-219: 公式Q&A — 対象に選んだマンドラ坊やが撃破された瞬間タイムブルーは手札に戻り、場に残る他の対象の撃破は続ける（出典: grnrngr/faq-card-4 RS-219 Q2・faq-card-2）", () => {
+  it("RS-219: 公式Q&A — 対象に選んだマンドラ坊やが撃破された瞬間タイムブルーは手札に戻り、場に残る他の対象の撃破は続ける（出典: grnrngr/faq-card-4 RS-219 Q2・faq-card-2）", () => {
     const WITCH = sUnit("SPEC-MAGIC", { features: ["魔法"], bp: 1000 });
     let s = st(
       {
@@ -605,8 +588,7 @@ describe("RS-221 タイムイエロー", () => {
   }
 
   // 「敵軍バトルエリアにあるSユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、敵軍ラッシュエリアに、戻したユニット以外のユニットがあれば1体選び、戻したユニットとバトルさせる」
-  // 既知の不具合: CARD-RS-221 【グラップファイター】でユニットを選べず、選択無しで自分（効果を使った側）に1点ダメージが入る
-  it.fails("RS-221: NC（3番目）で敵軍バトルエリアの S をラッシュエリアに戻し、ラッシュエリアの他のユニットとバトルさせる（M は選べない）（出典: atwiki/page-413）", () => {
+  it("RS-221: NC（3番目）で敵軍バトルエリアの S をラッシュエリアに戻し、ラッシュエリアの他のユニットとバトルさせる（M は選べない）（出典: atwiki/page-413）", () => {
     let s = timeYellow(3, [inst("TST-UNIT-2", "er")]);
     s = confirmIfAsked(s, "player1");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:eb"]);
@@ -621,8 +603,7 @@ describe("RS-221 タイムイエロー", () => {
   });
 
   // 「戻したユニット以外にユニットが無ければ、相手に1点ダメージを与える」
-  // 既知の不具合: CARD-RS-221 【グラップファイター】でユニットを選べず、選択無しで自分（効果を使った側）に1点ダメージが入る
-  it.fails("RS-221: 敵軍ラッシュエリアに他のユニットが無ければ相手に1点ダメージ（自分にはダメージなし）（出典: atwiki/page-413）", () => {
+  it("RS-221: 敵軍ラッシュエリアに他のユニットが無ければ相手に1点ダメージ（自分にはダメージなし）（出典: atwiki/page-413）", () => {
     let s = timeYellow(3, []);
     s = confirmIfAsked(s, "player1");
     s = settle(pick(s, "player1", "TST-UNIT-0:eb"));
@@ -632,8 +613,7 @@ describe("RS-221 タイムイエロー", () => {
   });
 
   // 「戻してもよい」
-  // 既知の不具合: CARD-RS-221 【グラップファイター】でユニットを選べず、選択無しで自分（効果を使った側）に1点ダメージが入る
-  it.fails("RS-221: 戻さないことを選べ、そのときはバトルもダメージも無い（出典: atwiki/page-413「戻してもよい」）", () => {
+  it("RS-221: 戻さないことを選べ、そのときはバトルもダメージも無い（出典: atwiki/page-413「戻してもよい」）", () => {
     let s = timeYellow(3, []);
     expect(canDecline(s, "player1")).toBe(true);
     s = settle(decline(s, "player1"));
@@ -642,8 +622,7 @@ describe("RS-221 タイムイエロー", () => {
     expect(s.players.player2.damage).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-221 【グラップファイター】でユニットを選べず、選択無しで自分（効果を使った側）に1点ダメージが入る
-  it.fails("RS-221: NC 不成立（1番目）では何も起きない／3番目なら選べる（出典: atwiki/page-413、R-CN-02）", () => {
+  it("RS-221: NC 不成立（1番目）では何も起きない／3番目なら選べる（出典: atwiki/page-413、R-CN-02）", () => {
     const first = settle(timeYellow(1, []));
     expect(first.pendingEffectChoice).toBeUndefined();
     expect(first.players.player1.damage).toBe(0);
@@ -652,8 +631,7 @@ describe("RS-221 タイムイエロー", () => {
   });
 
   // faq-card-5 RS-256 Q「はい、その通りです。」（タイムイエロー等の効果で敵軍ユニット同士をバトルさせて撃破したとき、闇の戒律の「敵軍ユニットを撃破するたび」を満たす）
-  // 既知の不具合: CARD-RS-221 【グラップファイター】でユニットを選べず、選択無しで自分（効果を使った側）に1点ダメージが入る
-  it.fails("RS-221: 公式Q&A — グラップファイターで敵軍ユニット同士をバトルさせて撃破すると、闇の戒律の重ねたカードを手札に加えられる（出典: grnrngr/faq-card-5 RS-256）", () => {
+  it("RS-221: 公式Q&A — グラップファイターで敵軍ユニット同士をバトルさせて撃破すると、闇の戒律の重ねたカードを手札に加えられる（出典: grnrngr/faq-card-5 RS-256）", () => {
     let s = st({
       player1: {
         battle: fillers(2),

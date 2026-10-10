@@ -12,6 +12,7 @@ import {
 import {
   resolveZordFusionPartnerIds,
   resolveZordFusionPartnerSlots,
+  resolveZordFusionSlotAlternatives,
 } from "../dsl/zordBridge";
 import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, PlayerState } from "../types/game";
@@ -109,13 +110,13 @@ export function collectRequiredFusionMaterials(
 ): Array<{ zone: ZordMaterialZone; index: number; card: CardInstance }> | null {
   const slots = resolveZordFusionPartnerSlots(rushingCardId);
   if (slots.length === 0) return null;
+  const alternatives = resolveZordFusionSlotAlternatives(rushingCardId);
 
-  const found: Array<{ zone: ZordMaterialZone; index: number; card: CardInstance }> = [];
+  type Found = { zone: ZordMaterialZone; index: number; card: CardInstance };
+  const found: Found[] = [];
   const usedInstanceIds = new Set<string>();
 
-  for (const slot of slots) {
-    let match: { zone: ZordMaterialZone; index: number; card: CardInstance } | null =
-      null;
+  const matchSlot = (slot: string[]): Found | null => {
     for (const partnerId of slot) {
       const candidate = findPartnerInstance(
         player,
@@ -124,13 +125,30 @@ export function collectRequiredFusionMaterials(
         rushingInstanceId,
       );
       if (candidate && !usedInstanceIds.has(candidate.card.instanceId)) {
-        match = candidate;
-        break;
+        return candidate;
       }
     }
-    if (!match) return null;
-    usedInstanceIds.add(match.card.instanceId);
-    found.push(match);
+    return null;
+  };
+
+  for (const [slotIndex, slot] of slots.entries()) {
+    const match = matchSlot(slot);
+    if (match) {
+      usedInstanceIds.add(match.card.instanceId);
+      found.push(match);
+      continue;
+    }
+    // 「X（または、A＋B＋…）」— X のかわりに A・B…をすべてそろえてもよい（RS-236）。
+    const alternative = alternatives.get(slotIndex);
+    if (!alternative) return null;
+    const altFound: Found[] = [];
+    for (const altSlot of alternative) {
+      const altMatch = matchSlot(altSlot);
+      if (!altMatch) return null;
+      usedInstanceIds.add(altMatch.card.instanceId);
+      altFound.push(altMatch);
+    }
+    found.push(...altFound);
   }
 
   return found;
