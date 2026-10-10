@@ -129,15 +129,13 @@ describe("RS-481 天空神", () => {
     return activePlayer === "player1" ? enter(s0, "RS-481:tk") : enterBattleByEffect(s0, "player1", "RS-481:tk");
   };
 
-  // 既知の不具合: CARD-RS-481 【ホバリング】の候補が敵軍ラッシュエリアの S ユニットではなく、敵軍バトルエリアのユニット（サイズ制限なし）になっている
-  it.fails("RS-481: 【ホバリング】自軍ターン中に出たとき、敵軍ラッシュエリアの S ユニットだけを選べる（バトルエリア・M は不可）（出典: atwiki/page-805「敵軍ラッシュエリアからSユニットを1体選び」）", () => {
+  it("RS-481: 【ホバリング】自軍ターン中に出たとき、敵軍ラッシュエリアの S ユニットだけを選べる（バトルエリア・M は不可）（出典: atwiki/page-805「敵軍ラッシュエリアからSユニットを1体選び」）", () => {
     const s = hover();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-481");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:rs"]);
   });
 
-  // 既知の不具合: CARD-RS-481 【ホバリング】で敵軍ラッシュエリアの S ユニットを手札に戻せない（候補がバトルエリア）
-  it.fails("RS-481: 【ホバリング】選んだユニットは持ち主（敵軍）の手札に戻る（出典: atwiki/page-805「持ち主の手札に戻してもよい」）", () => {
+  it("RS-481: 【ホバリング】選んだユニットは持ち主（敵軍）の手札に戻る（出典: atwiki/page-805「持ち主の手札に戻してもよい」）", () => {
     const s = resolveAll(pick(hover(), "TST-UNIT-0:rs"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:rs")).toBe("hand");
   });
@@ -224,8 +222,7 @@ describe("RS-482 天空神・飛行モード", () => {
     expect(canStrike(s, "TST-UNIT-2:m")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-482 【天空裂破】が持ち主の M ユニットだけを制限し、敵軍の M ユニットはアタック・ストライクできてしまう
-  it.fails("RS-482: 【天空裂破】敵軍の「航空機」を持たない M ユニットもアタック・ストライクできない（自軍・敵軍の指定がない）（出典: atwiki/page-806「特徴「航空機」を持たないMユニットは次の制限を受ける」・R-TGT-04）", () => {
+  it("RS-482: 【天空裂破】敵軍の「航空機」を持たない M ユニットもアタック・ストライクできない（自軍・敵軍の指定がない）（出典: atwiki/page-806「特徴「航空機」を持たないMユニットは次の制限を受ける」・R-TGT-04）", () => {
     const s = st({
       activePlayer: "player2",
       player1: { rush: [inst("RS-482", "fm")], battle: [inst("TST-UNIT-0", "f")], deck: deckCards(3) },

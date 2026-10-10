@@ -27,13 +27,17 @@ export function rs210BpInvertDelta(
   return -delta;
 }
 
-/** RS-482: 航空機特徴なしMはアタック/ストライク不可。 */
+/**
+ * RS-482【カラクリ忍法・天空裂破】: 航空機特徴なしMはアタック/ストライク不可。
+ * 「特徴「航空機」を持たないMユニットは」に自軍・敵軍の指定がないので、どちらのエリアにあっても両軍の M ユニットが対象（R-TGT-04）。
+ */
 export function rs482BlocksAttackStrike(
   state: GameState,
   playerId: PlayerId,
   cardId: string,
 ): boolean {
-  if (!playerHasFieldCard(state, playerId, "RS-482")) return false;
+  const enemyId: PlayerId = playerId === "player1" ? "player2" : "player1";
+  if (!playerHasFieldCard(state, playerId, "RS-482") && !playerHasFieldCard(state, enemyId, "RS-482")) return false;
   if (!isMediumUnit(state.definitions, cardId)) return false;
   const def = getDefinition(state.definitions, cardId);
   return !(def?.features ?? []).includes("航空機");

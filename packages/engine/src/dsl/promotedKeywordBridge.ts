@@ -470,6 +470,25 @@ function playerHasAllyWithFeatureInBattle(
   });
 }
 
+/**
+ * ライドしているビークルの「これにライドしている(S)ユニットは次の能力を得る⇒これはSユニットにアタックされない」。
+ * ライドオフしたユニット（mountedOnInstanceId なし）は得ない。
+ */
+function riddenVehicleGrantsNoAttackFromS(
+  state: GameState,
+  ownerId: PlayerId,
+  rider: { cardId: string; mountedOnInstanceId?: string },
+): boolean {
+  if (!rider.mountedOnInstanceId) return false;
+  const owner = state.players[ownerId];
+  const vehicle = [...owner.battle, ...owner.rush].find((c) => c.instanceId === rider.mountedOnInstanceId);
+  if (!vehicle) return false;
+  const text = (getDefinition(state.definitions, vehicle.cardId)?.text ?? "").normalize("NFKC");
+  const m = text.match(/これにライドしている(S)?ユニットは次の能力を得る⇒これはSユニットにアタックされない/);
+  if (!m) return false;
+  return !m[1] || isSmallUnit(state.definitions, rider.cardId);
+}
+
 /** 守備側の昇格キーワードでアタック不可なら true。 */
 export function promotedDefenderBlocksAttack(
   state: GameState,
@@ -495,6 +514,14 @@ export function promotedDefenderBlocksAttack(
   if (
     isSmallUnit(state.definitions, attacker.card.cardId) &&
     lastBattleProtectsOtherS(state, defenderPlayerId, defender.card.instanceId)
+  ) {
+    return true;
+  }
+
+  // 「これにライドしているSユニットは次の能力を得る⇒これはSユニットにアタックされない」（RS-488【滑空】atwiki/page-810）。
+  if (
+    isSmallUnit(state.definitions, attacker.card.cardId) &&
+    riddenVehicleGrantsNoAttackFromS(state, defenderPlayerId, defender.card)
   ) {
     return true;
   }

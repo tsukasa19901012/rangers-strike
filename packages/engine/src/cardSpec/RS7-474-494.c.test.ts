@@ -109,8 +109,7 @@ describe("RS-488 ハリケンウィンガー", () => {
       SPECS,
     );
 
-  // 既知の不具合: CARD-RS-488 【滑空】が実装されておらず（キーワード付与のみ）、ライドしている S ユニットが S ユニットにアタックされる
-  it.fails("RS-488: 【滑空】ライドしている S ユニットは S ユニットにアタックされない（出典: atwiki/page-810「これはSユニットにアタックされない」）", () => {
+  it("RS-488: 【滑空】ライドしている S ユニットは S ユニットにアタックされない（出典: atwiki/page-810「これはSユニットにアタックされない」）", () => {
     const s = winger(ridden("RS-488", "SPEC-NINJA"));
     expect(attackTargets(s, "TST-UNIT-0:es", "player2")).not.toContain("SPEC-NINJA:r");
   });
@@ -378,8 +377,7 @@ describe("RS-492 炎の騎馬", () => {
     expectVehicle("RS-492", { name: "炎の騎馬", category: "DA", powerCost: 4, features: ["メカ", "車両"] });
   });
 
-  // 既知の不具合: CARD-RS-492 ※「DA の S ユニットは RC なしでライドできる」が未実装（mount_ride が出ない）
-  it.fails("RS-492: ※ RC を持たない DA の S ユニットはライドできる（出典: atwiki/page-815「DAのSユニットは、ＲＣを持っていなくても」）", () => {
+  it("RS-492: ※ RC を持たない DA の S ユニットはライドできる（出典: atwiki/page-815「DAのSユニットは、ＲＣを持っていなくても」）", () => {
     expect(canMount(mountState("RS-492", "SPEC-DA"), "SPEC-DA:r", "RS-492:v")).toBe(true);
   });
 
