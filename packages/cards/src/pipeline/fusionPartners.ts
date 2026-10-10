@@ -5,8 +5,10 @@ export type ZordFusionRule = {
   text: string;
   /** 合体―行の各枠ごとに使える cardId（同名別収録・別名含む）。 */
   partnerSlotCardIds: string[][];
-  /** 全枠の cardId 和集合（registry / 素材判定用）。 */
+  /** 全枠の cardId 和集合（registry / 素材判定用。代替素材も含む）。 */
   partnerCardIds: string[];
+  /** 「X（または、A＋B＋…）」の代替素材。枠 slot は slots の全枠をそろえても満たせる。 */
+  partnerSlotAlternatives?: { slot: number; slots: string[][] }[];
 };
 
 function buildCardNameToIdsMap(): Map<string, string[]> {
@@ -84,6 +86,24 @@ function resolvePartnerSegment(rawName: string): string[] {
   return [...ids];
 }
 
+/**
+ * 「X（または、A＋B＋…）」の括弧内（＋でつながった複数の合体ユニット）を枠ごとの cardId に解決する。
+ * 該当しない（単一名の別名指定など）なら null。
+ */
+function resolveAlternativeSlots(rawName: string): string[][] | null {
+  const parenMatch = rawName.match(/^[^（]+（または[、,]?([^）]+)）$/);
+  if (!parenMatch) return null;
+  const parts = parenMatch[1]!.split(/[＋+]/).map((part) => part.trim()).filter(Boolean);
+  if (parts.length < 2) return null;
+  const slots: string[][] = [];
+  for (const part of parts) {
+    const ids = CARD_NAME_TO_IDS.get(canonicalCardName(part));
+    if (!ids?.length) return null;
+    slots.push([...ids]);
+  }
+  return slots;
+}
+
 /** 合体―行の末尾に続く ※無名ルール（ウイング等）を除く。 */
 function stripTrailingUnnamedRules(segment: string): string {
   const noteIndex = segment.indexOf("※");
@@ -110,16 +130,22 @@ export function parseZordFusionLine(text: string): ZordFusionRule | null {
   const names = splitFusionPartnerNames(segment);
 
   const partnerSlotCardIds: string[][] = [];
-  for (const rawName of names) {
+  const partnerSlotAlternatives: { slot: number; slots: string[][] }[] = [];
+  for (const [slot, rawName] of names.entries()) {
     const slotIds = resolvePartnerSegment(rawName);
     if (slotIds.length === 0) return null;
     partnerSlotCardIds.push(slotIds);
+    const alternative = resolveAlternativeSlots(rawName);
+    if (alternative) partnerSlotAlternatives.push({ slot, slots: alternative });
   }
 
   return {
     text: `合体―${names.join("＋")}`,
     partnerSlotCardIds,
-    partnerCardIds: [...new Set(partnerSlotCardIds.flat())],
+    partnerCardIds: [
+      ...new Set([...partnerSlotCardIds.flat(), ...partnerSlotAlternatives.flatMap((a) => a.slots.flat())]),
+    ],
+    ...(partnerSlotAlternatives.length > 0 ? { partnerSlotAlternatives } : {}),
   };
 }
 

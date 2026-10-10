@@ -10,6 +10,12 @@ import {
   grapFighterLosers,
   resolveGrapFighterReturn,
 } from "./grapFighter";
+import {
+  DENJI_THUNDER_THROW_DISCARD_EFFECT_ID,
+  DENJI_THUNDER_THROW_EFFECT_ID,
+  resolveDenjiThunderThrowDiscard,
+  resolveDenjiThunderThrowPick,
+} from "./denjiThunderThrow";
 import { resolveSubmergePick, SUBMERGE_EFFECT_ID } from "./legend3/rushEffects";
 import { finishHououOwnStep, HOUOU_TORNADO_EFFECT_ID, isHououChoice, resolveHououPick } from "./hououTornado";
 import { liftUpPlaceFromDeck } from "./legend3/jointComboEffects";
@@ -80,6 +86,7 @@ import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
 import { acceptOptionalEffect } from "./optionalEffects";
 import {
+  afterCommandCardsLeft,
   isCommandLeaveRefillChoice,
   isValidCommandLeaveRefillTarget,
   resolveCommandLeaveRefill,
@@ -3131,6 +3138,15 @@ export function applyEffectChoiceSelect(
       return finishChoice(nextState, pending, String(declared));
     }
     case "select_unit": {
+      if (pending.effectId === DENJI_THUNDER_THROW_EFFECT_ID || pending.effectId === DENJI_THUNDER_THROW_DISCARD_EFFECT_ID) {
+        const next =
+          pending.effectId === DENJI_THUNDER_THROW_EFFECT_ID
+            ? resolveDenjiThunderThrowPick(state, instanceId)
+            : resolveDenjiThunderThrowDiscard(state, instanceId);
+        if (!next) return { error: "invalid_target" };
+        if (next.pendingEffectChoice && next.pendingEffectChoice !== pending) return { state: next };
+        return finishChoice({ ...next, pendingEffectChoice: pending }, pending, cardName(state.definitions, pending.sourceCardId));
+      }
       if (pending.effectId === GRAP_FIGHTER_EFFECT_ID) {
         const returned = resolveGrapFighterReturn(state, instanceId);
         if (!returned) return { error: "invalid_target" };
@@ -3917,11 +3933,14 @@ export function applyEffectChoiceSelect(
           power: enemy.power.filter((c) => c.instanceId !== powerId),
           discard: [...enemy.discard, ...(powerCard ? [powerCard] : []), found.card],
         };
-        return finishChoice(
+        const finished = finishChoice(
           { ...state, ...updatePlayer(state, enemyId, nextEnemy) },
           pending,
           cardName(state.definitions, found.card.cardId),
         );
+        if ("error" in finished) return finished;
+        // コマンドゾーンを離れたときの誘発（RS-238【プロジェットカノン】。faq-card-4 RS-238 Q2）。
+        return { ...finished, state: afterCommandCardsLeft(finished.state, enemyId, 1) };
       }
 
       if (pending.effectId === "geki_e78da3") {
@@ -4094,6 +4113,22 @@ export function applyEffectChoiceSelect(
         }).state;
       }
       const continued = applyPostHoldContinuation(withHold, pending);
+      if (pending.effectId === "dino_slasher_category_balance") {
+        // RS-233【ダイノスラスター】: 捨札にし終えてから、離れた枚数だけ【プロジェットカノン】等を誘発する
+        // （戻されたカードをもう一度捨札にする必要はない。faq-card-4 RS-233 Q1）。
+        const discarded = [...(pending.processedInstanceIds ?? []), instanceId];
+        if (continued.done) {
+          const next = continued.state.pendingEffectChoice;
+          return {
+            state: next
+              ? { ...continued.state, pendingEffectChoice: { ...next, processedInstanceIds: discarded } }
+              : continued.state,
+          };
+        }
+        const finished = finishChoice(continued.state, pending, cardName(state.definitions, found.card.cardId));
+        if ("error" in finished) return finished;
+        return { ...finished, state: afterCommandCardsLeft(finished.state, owner, discarded.length) };
+      }
       if (continued.done) return { state: continued.state };
 
       return finishChoice(

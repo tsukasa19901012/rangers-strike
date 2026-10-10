@@ -13,6 +13,7 @@ import { resolveAbaRedDestroyDamage } from "./namedUnitEffects";
 
 const DESTROY_RECRUIT_FROM_DISCARD: Record<string, { partnerName: string; effectId: string }> = {
   "RS-231": { partnerName: "アバレブルー", effectId: "avare_blue_reanimate" },
+  "RS-232": { partnerName: "アバレイエロー", effectId: "avare_yellow_reanimate" },
   "RS-333": { partnerName: "マジレッド", effectId: "magi_red_reanimate" },
   "RS-334": { partnerName: "マジイエロー", effectId: "magi_yellow_reanimate" },
   "RS-335": { partnerName: "マジブルー", effectId: "magi_blue_reanimate" },

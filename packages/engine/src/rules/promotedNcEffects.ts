@@ -11,6 +11,7 @@ import { applyCoreGapNcEffect } from "./legend1/coreGapEffects";
 import type { ComboOutcome } from "./comboTypes";
 import { startAssaultVector, startSpinningSlash } from "./timeRangerNc";
 import { startGrapFighter } from "./grapFighter";
+import { startDenjiThunderThrow } from "./denjiThunderThrow";
 
 const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "RK-282": "scissors_attack",
@@ -35,6 +36,9 @@ const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "RS-218": "asarutobekuta",
   "RS-219": "supiningusurashu",
   "RS-221": "gurapufuaita",
+  // RS-232: NC の欄は【アバレウィング】だけ（※の「撃破されて捨札になったとき」は rules/leaveEffects の撃破時処理）。
+  "RS-232": "abareuingu",
+  "RS-358": "denjisandage",
 };
 
 const CORE_GAP_NC_EFFECTS = new Set([
@@ -77,6 +81,12 @@ export function applyPromotedNcEffect(
         effectId === "asarutobekuta"
           ? startAssaultVector(nextState, playerId, card.instanceId)
           : startSpinningSlash(nextState, playerId, card.instanceId);
+      logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));
+      break;
+    }
+    case "denjisandage": {
+      // RS-358【デンジサンダー投げ】（rules/denjiThunderThrow.ts）。
+      nextState = startDenjiThunderThrow(nextState, playerId, card.instanceId);
       logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));
       break;
     }
@@ -145,6 +155,7 @@ export function applyPromotedNcEffect(
       break;
     }
     case "victory_robo_strike":
+    case "abareuingu":
     case "end_turn_battle_to_rush":
       nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
       logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));

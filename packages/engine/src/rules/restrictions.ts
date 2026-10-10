@@ -347,6 +347,15 @@ export function canMoveUnitToBattle(
   // RK-140 / RK-334 のロック、RS-288 の「獣奏剣」ホールド要件（rules/errataCardEffects.ts）。
   if (errataBattleEntryBlocked(state, playerId, unit)) return false;
 
+  // RS-242 / RS-416 等「自軍ラッシュエリアのSユニットを1体捨札にしなければ出られない」— 自身は数えない。
+  if (
+    needsBattleEntryRushDiscard(unit.cardId) &&
+    !battleEntryRushDiscardSatisfied(player, unit.cardId) &&
+    !hasBattleEntryRushDiscardTarget(player, state.definitions, unit.instanceId)
+  ) {
+    return false;
+  }
+
   if (
     needsBattleEntryHandDiscard(unit.cardId) &&
     !battleEntryHandDiscardSatisfied(player, unit.cardId) &&
