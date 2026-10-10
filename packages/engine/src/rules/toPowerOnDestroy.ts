@@ -2,6 +2,7 @@ import { hasToPowerOnDestroyNote } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave } from "../types/game";
 import { updatePlayer } from "../core/helpers";
 import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
+import { isDestructionLeave } from "./operationCounters";
 import { buildLogEntry } from "../log/formatLog";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
 
@@ -89,6 +90,8 @@ export function completeToPowerOnDestroyChoice(
     fromZone: meta.fromZone,
     toZone,
     phasePlayerId: leave.phasePlayerId,
+    // ルール: R-DESTROY-02, R-REPL-02 — 撃破されてパワーゾーンに置いても撃破の事実は残る
+    destroyed: isDestructionLeave(leave),
   });
 
   let resolvedState = leaveFx.state;

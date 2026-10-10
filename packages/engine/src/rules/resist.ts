@@ -12,6 +12,7 @@ import type {
 import { findInZone, updatePlayer } from "../core/helpers";
 import type { LeaveIntent } from "./operationCounters";
 import { finalizeLeavePending } from "./operationCounters";
+import { resolveDestroyedFactEffects } from "./leaveEffects";
 
 export function canOfferRegister(
   state: GameState,
@@ -78,6 +79,13 @@ export function applyRegisterHold(
       ...nextState,
       pendingStrike: state.pendingStrike,
     };
+  }
+
+  // ルール: R-KW-RESIST-05, R-DESTROY-02 — レジストで留まっても「撃破された」事実は残る。
+  // 「撃破されたとき」は発動し、「撃破されて捨札になったとき」は発動しない。
+  const fact = resolveDestroyedFactEffects(nextState, pending.ownerPlayerId, pending.leavingCardId);
+  if (fact.logs.length > 0) {
+    nextState = { ...fact.state, log: [...fact.state.log, ...fact.logs] };
   }
 
   return nextState;

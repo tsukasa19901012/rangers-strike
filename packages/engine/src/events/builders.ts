@@ -116,6 +116,7 @@ export function buildUnitLeftZoneEvent(
     cardId: string;
     fromZone: "rush" | "battle";
     toZone: UnitLeftZoneEvent["toZone"];
+    destroyed?: boolean;
   },
 ): UnitLeftZoneEvent {
   return {
@@ -126,6 +127,7 @@ export function buildUnitLeftZoneEvent(
     cardId: input.cardId,
     fromZone: input.fromZone,
     toZone: input.toZone,
+    ...(input.destroyed !== undefined ? { destroyed: input.destroyed } : {}),
   };
 }
 

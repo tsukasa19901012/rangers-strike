@@ -27,6 +27,7 @@ import {
 import { countReleasedCommands } from "./restrictions";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
+import { resolveDestroyedFactEffects } from "./leaveEffects";
 import { isCostWindowSatisfied } from "../core/costWindow";
 import { buildLogEntry } from "../log/formatLog";
 import { finishBattleEntryIf, restorePhaseActivePlayerUnlessBlocked } from "./battleEntry";
@@ -1044,17 +1045,33 @@ export function finalizeRushPending(state: GameState, pending: PendingRush): Gam
   };
 }
 
+/**
+ * この離場が撃破によるものか。
+ * ルール: R-DESTROY-01 — 離場パイプラインで捨札へ送るのは撃破。バトルの BP 比較による撃破
+ * （registerEligible）は置き先がパワーゾーンでも撃破。効果でパワー／コマンドゾーンに置くのは撃破ではない。
+ */
+export function isDestructionLeave(
+  pending: Pick<PendingLeave, "toZone" | "registerEligible">,
+): boolean {
+  return pending.toZone === "discard" || pending.registerEligible === true;
+}
+
 export function finalizeLeavePending(
   state: GameState,
   pending: PendingLeave,
   prevented: boolean,
 ): GameState {
   if (prevented) {
-    return {
+    const base: GameState = {
       ...state,
       pendingLeave: undefined,
       activePlayer: pending.phasePlayerId,
     };
+    // ルール: R-DESTROY-02 — 置換・カウンターで場に留まっても「撃破された」事実は残り、
+    // 「撃破されたとき」の効果は発動する（「撃破されて捨札になったとき」は発動しない）。
+    if (!isDestructionLeave(pending)) return base;
+    const fact = resolveDestroyedFactEffects(base, pending.ownerPlayerId, pending.leavingCardId);
+    return fact.logs.length > 0 ? { ...fact.state, log: [...fact.state.log, ...fact.logs] } : fact.state;
   }
 
   if (canOfferRegister(state, pending)) {
@@ -1082,6 +1099,7 @@ export function finalizeLeavePending(
     pending.toZone,
   );
   let nextOwner: typeof owner;
+  let medicalRescueToPower = false;
 
   if (pending.toZone === "command") {
     if (owner.command.length < COMMAND_ZONE_MAX) {
@@ -1099,7 +1117,7 @@ export function finalizeLeavePending(
     }
   } else if (
     pending.toZone === "discard" &&
-    shouldMedicalRescueToPower(state, pending.ownerPlayerId, found.card.cardId)
+    (medicalRescueToPower = shouldMedicalRescueToPower(state, pending.ownerPlayerId, found.card.cardId))
   ) {
     nextOwner = {
       ...owner,
@@ -1140,8 +1158,9 @@ export function finalizeLeavePending(
     ...updatePlayer(state, pending.ownerPlayerId, nextOwner),
   };
 
-  const effectiveToZone =
-    pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX
+  const effectiveToZone = medicalRescueToPower
+    ? "power" // ルール: R-REPL-02 — 捨札を経由しないので「撃破されて捨札になったとき」は発動しない
+    : pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX
       ? "discard"
       : pending.toZone;
 
@@ -1152,6 +1171,8 @@ export function finalizeLeavePending(
     fromZone: pending.fromZone,
     toZone: effectiveToZone,
     phasePlayerId: pending.phasePlayerId,
+    // ルール: R-DESTROY-01/02 — 撃破による離場か（置き先が捨札でなくても撃破の事実は残る）
+    destroyed: isDestructionLeave(pending),
   });
 
   let resolvedState = leaveFx.state;
