@@ -169,8 +169,7 @@ describe("RS-047 パトシグナー", () => {
   });
 
   // card_1 RS-047「選ぶことはできるが、あえてそれを選んだ場合は何も起こらない」
-  // 既知の不具合: CARD-RS-047 ダイナロボ（RS-194）の【ビートハンマー】が選択を開かず、Q&A の状況を作れない（RS-194 側）
-  it.fails("RS-047: 公式Q&A — ダイナロボで BP5000以上のMユニットのカードを選んでも何も起こらない（出典: grnrngr/faq-card-1 RS-047 Q1）", () => {
+  it("RS-047: 公式Q&A — ダイナロボで BP5000以上のMユニットのカードを選んでも何も起こらない（出典: grnrngr/faq-card-1 RS-047 Q1）", () => {
     let s = st({
       player1: { rush: [inst("RS-194", "dyna")] },
       player2: { battle: [inst("RS-047", "sg")], command: [released("RS-043", "pat")] },
@@ -183,6 +182,16 @@ describe("RS-047 パトシグナー", () => {
     s = act(s, pick!);
     expect(zoneOf(s, "player2", "RS-043:pat")).toBe("command");
     expect(zoneIds(s, "player2", "battle")).toEqual(["RS-047:sg"]);
+  });
+
+  it("RS-047: （比較）パトシグナーに止められないユニットなら、ダイナロボで敵軍バトルエリアに出る（出典: atwiki RS-194【ビートハンマー】）", () => {
+    let s = st({
+      player1: { rush: [inst("RS-194", "dyna")] },
+      player2: { battle: [inst("RS-047", "sg")], command: [released("TST-UNIT-2", "u")] },
+    });
+    s = enter(s, "RS-194:dyna");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-UNIT-2:u" });
+    expect(zoneOf(s, "player2", "TST-UNIT-2:u")).toBe("battle");
   });
 
   // 一般ルール R-RUSH-20 補足（効果でバトルエリアに出す場合も「出られない」制限は適用）

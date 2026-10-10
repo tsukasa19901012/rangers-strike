@@ -34,6 +34,7 @@ import {
   startTimeJetProtectChoice,
   startTimeJetCategoryProtectChoice,
   startPhoenixMereDestroyChoice,
+  startBeatHammerChoice,
 } from "../rules/pendingChoices";
 import { applyFalconSummonerOperation } from "../rules/falconSummoner";
 import {
@@ -1245,6 +1246,19 @@ export function applyGrantKeyword(
         };
       }
 
+      if (keyword === "deploy_enemy_command_silent") {
+        // RS-194 ダイナロボ【ビートハンマー】（自軍ターン中、これがバトルエリアに出たとき）。
+        if (ctx.phasePlayerId !== ctx.playerId) return { state, detail: keyword };
+        const withChoice = startBeatHammerChoice(
+          state,
+          ctx.playerId,
+          ctx.phasePlayerId,
+          ctx.sourceCardId,
+          ctx.triggerSourceInstanceId,
+        );
+        return { state: withChoice ?? state, detail: keyword };
+      }
+
       if (keyword === "combo_wb_m_bp3000_sp1_destroy_end") {
         // RS-234【ウイングペンタクト】: NC 成立を記録し、続いてコンビネーションする「WB」の M ユニットに
         // rules/combo.ts（applyWingPentactOnCombo）で BP+3000／SP1 を与える。
@@ -1273,7 +1287,6 @@ export function applyGrantKeyword(
         keyword.startsWith("hold_all_enemy_bp") ||
         keyword === "opponent_hand_counter_to_power" ||
         keyword === "deck_search_operation_to_power" ||
-        keyword === "deploy_enemy_command_silent" ||
         keyword === "draw_deck_to_command_or_hand" ||
         (keyword.startsWith("return_") && keyword.endsWith("_battle_to_deck_bottom"))
       ) {

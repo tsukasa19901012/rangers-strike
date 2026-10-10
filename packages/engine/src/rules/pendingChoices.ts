@@ -237,6 +237,63 @@ export function requestDrawFromDeck(
 
 export const SUPER_BRAIN_KEEP_EFFECT_ID = "super_brain_keep";
 
+export const BEAT_HAMMER_EFFECT_ID = "beat_hammer_deploy_enemy_command";
+
+/**
+ * RS-194 ダイナロボ【ビートハンマー】: 自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドゾーンから
+ * ユニットのカードを1枚選び、敵軍バトルエリアに出す。このとき出したユニットの効果は発動しない。
+ * 出られないユニット（例: 敵軍パトシグナー下の BP5000 以上の M ユニット）も選べるが、その場合は何も起こらない
+ * （faq-card-1 RS-047 Q1）。
+ */
+export function startBeatHammerChoice(
+  state: GameState,
+  playerId: PlayerId,
+  phasePlayerId: PlayerId,
+  sourceCardId: string,
+  sourceInstanceId?: string,
+): GameState | null {
+  const enemyId = opponent(playerId);
+  const ids = state.players[enemyId].command
+    .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit")
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId,
+    effectId: BEAT_HAMMER_EFFECT_ID,
+    sourceCardId,
+    sourceInstanceId,
+    kind: "select_command",
+    phasePlayerId,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: false,
+  });
+}
+
+function resolveBeatHammerChoice(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const enemyId = opponent(playerId);
+  const enemy = state.players[enemyId];
+  const found = findInZone(enemy, "command", instanceId);
+  if (!found) return finishChoice(state, pending, "gone");
+  const card: CardInstance = { ...found.card, commandHeld: undefined, faceDown: undefined };
+  const [, command] = removeAt(enemy.command, found.index);
+  const withoutCard: GameState = { ...state, ...updatePlayer(state, enemyId, { ...enemy, command }) };
+  const ready = autoHoldForBattleEntry(withoutCard, enemyId, card);
+  const readyState = ready ? { ...withoutCard, ...updatePlayer(withoutCard, enemyId, ready) } : undefined;
+  if (!ready || !readyState || !canMoveUnitToBattle(readyState, enemyId, card, "rush")) {
+    // 出られないユニットを選んだときは何も起こらない（カードはコマンドゾーンに残る）。
+    return finishChoice(state, pending, "no_effect");
+  }
+  const nextEnemy = clearEffectBattleEntryWindows({ ...ready, battle: [...ready.battle, { ...card, battleActed: false }] });
+  return finishChoice(
+    { ...readyState, ...updatePlayer(readyState, enemyId, nextEnemy) },
+    pending,
+    cardName(state.definitions, card.cardId),
+  );
+}
+
 /**
  * RS-008 超電子頭脳 — 2枚ひいたあと、どちらを手札に残すかを自分で選ぶ（もう1枚は捨札）。
  * 新たに手札に入ったカードが2枚未満（山札が1枚だった）なら選択は開かない。
@@ -2450,6 +2507,9 @@ export function applyEffectChoiceSelect(
   }
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     return resolveSuperBrainKeepChoice(state, playerId, instanceId);
+  }
+  if (pending.effectId === BEAT_HAMMER_EFFECT_ID) {
+    return resolveBeatHammerChoice(state, playerId, instanceId);
   }
   if (pending.effectId === "chikara_tonfua_command_to_damage") {
     // RS-211【稲妻超力トンファ】: 選んだ自分自身のコマンドを自分自身のパワーゾーンにダメージ（ウラ向き）として置く。
