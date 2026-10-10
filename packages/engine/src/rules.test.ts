@@ -256,7 +256,7 @@ describe("zord-up rush", () => {
   });
 
   it("still accepts single S-unit material for zords without partner list", () => {
-    const zord = inst("RS-075", "z1");
+    const zord = inst("RS-074", "z1");
     const sUnit = inst("RS-080", "s1");
     const state = createTestState({
       phase: "rush",
@@ -269,15 +269,15 @@ describe("zord-up rush", () => {
       },
     });
 
-    state.definitions["RS-075"] = {
-      id: "RS-075",
-      name: "Blue Vulcan",
+    state.definitions["RS-074"] = {
+      id: "RS-074",
+      name: "Cosmo Vulcan",
       type: "unit",
       category: "ET",
       rarity: "N",
       expansion: "test",
-      powerCost: "5+",
-      bp: 5000,
+      powerCost: "4+",
+      bp: 4000,
       size: "M",
     };
     state.definitions["RS-080"] = {
@@ -298,8 +298,8 @@ describe("zord-up rush", () => {
     ).toEqual(expect.arrayContaining(["command", "discard"]));
   });
 
-  it("RS-075 zord material can go to command zone", () => {
-    const zord = inst("RS-075", "z1");
+  it("RS-074 zord material can go to command zone (1-unit condition)", () => {
+    const zord = inst("RS-074", "z1");
     const sUnit = inst("RS-080", "s1");
     const state = createTestState({
       phase: "rush",
@@ -312,15 +312,15 @@ describe("zord-up rush", () => {
       },
     });
 
-    state.definitions["RS-075"] = {
-      id: "RS-075",
-      name: "Blue Vulcan",
+    state.definitions["RS-074"] = {
+      id: "RS-074",
+      name: "Cosmo Vulcan",
       type: "unit",
       category: "ET",
       rarity: "N",
       expansion: "test",
-      powerCost: "5+",
-      bp: 5000,
+      powerCost: "4+",
+      bp: 4000,
       size: "M",
     };
     state.definitions["RS-080"] = {
@@ -341,7 +341,7 @@ describe("zord-up rush", () => {
     expect(result.state.players.player1.command.some((c) => c.instanceId === sUnit.instanceId)).toBe(
       true,
     );
-    expect(result.state.players.player1.rush.some((c) => c.cardId === "RS-075")).toBe(true);
+    expect(result.state.players.player1.rush.some((c) => c.cardId === "RS-074")).toBe(true);
   });
 
   it("does not accept zord materials from hand", () => {

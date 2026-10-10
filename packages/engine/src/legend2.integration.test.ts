@@ -53,29 +53,31 @@ describe("legend2 integration", () => {
     const mecha = inst("RS-075", "rescue");
     const discard = inst("RS-074", "mecha-discard");
     const sMaterial = inst("RS-080", "s-material");
+    // 追加条件は「自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」。
+    const sMaterial2 = inst("RS-080", "s-material2");
     const state = createTestState({
       definitions: defs,
       phase: "rush",
       activePlayer: "player1",
       player1: {
         hand: [mecha],
-        rush: [sMaterial],
+        rush: [sMaterial, sMaterial2],
         discard: [discard],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
         command: [inst("TST-OP-ET", "et-pay")],
       },
     });
-    const rushed = unwrap(
-      rushWithCategoryHold(
-        state,
-        "player1",
-        "RS-075:rescue",
-        "TST-OP-ET:et-pay",
-        {
-          zordMaterialInstanceId: "RS-080:s-material",
-          zordMaterialDestination: "discard",
-        },
-      ),
+    let rushed = unwrap(applyAction(state, { type: "begin_zord_setup", playerId: "player1", zordInstanceId: "RS-075:rescue" }));
+    rushed = unwrap(applyAction(rushed, { type: "resolve_zord_setup", playerId: "player1", destination: "discard" }));
+    for (const materialInstanceId of ["RS-080:s-material", "RS-080:s-material2"]) {
+      rushed = unwrap(applyAction(rushed, { type: "resolve_zord_setup", playerId: "player1", materialInstanceId }));
+    }
+    rushed = unwrap(
+      applyAction(rushed, {
+        type: "resolve_command_payment",
+        playerId: "player1",
+        commandInstanceIds: ["TST-OP-ET:et-pay"],
+      }),
     );
     expect(rushed.pendingEffectChoice?.effectId).toBe("rescue_activity");
   });

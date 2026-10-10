@@ -633,6 +633,7 @@ function evaluateRushPowerAndZord(
         rushingInstanceId,
         fieldIds,
         zordMaterialDestination,
+        (zordMothershipHoldInstanceIds?.length ?? 0) > 0,
       )
     ) {
       return false;

@@ -163,8 +163,11 @@ export function legend2UsePrintedDefenderBp(
   if (!attacker) return false;
 
   const effect = activeOnAttackNamedEffect(attacker.card);
+  // RS-074 バルカン砲: 「自軍ラッシュエリアに「ブルバルカン」があるとき」だけ本来の BP で比べる。
+  if (effect?.effectId === "val_cannon") {
+    return state.players[pending.attackerPlayerId].rush.some((c) => c.cardId === "RS-075");
+  }
   return (
-    effect?.effectId === "val_cannon" ||
     effect?.effectId === "ptera_dagger" ||
     effect?.effectId === "raidakiku"
   );

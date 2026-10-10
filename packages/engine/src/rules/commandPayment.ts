@@ -87,6 +87,7 @@ import {
   applyMothershipHolds,
   canUseMothershipForZordRush,
   collectMothershipEligibleCommands,
+  mothershipSelfHoldMaterialIds,
   validateMothershipHolds,
 } from "./mothership";
 import {
@@ -375,29 +376,7 @@ export function validatePaymentSelection(
       pending.sourceCardId,
     );
     if (!kind) return "invalid_command";
-    const cont = pending.continuation;
-    const slotsFilled =
-      cont.type === "rush" && cont.zordMaterialInstanceId
-        ? zordSlotsFilledByMaterial(
-            pending.sourceCardId,
-            true,
-            cont.zordMaterialDestination,
-          )
-        : 0;
-    const holdsRequired = mothershipHoldsRequiredForRush(
-      pending.sourceCardId,
-      slotsFilled,
-    );
-    if (
-      !validateMothershipHolds(
-        player,
-        state.definitions,
-        pending.sourceCardId,
-        kind,
-        commandInstanceIds,
-        holdsRequired,
-      )
-    ) {
+    if (!validateMothershipPaymentHolds(state, pending, commandInstanceIds)) {
       return "invalid_command";
     }
     return null;
@@ -505,6 +484,24 @@ export function applyCommandPaymentResolve(
         holdInstanceIds: [...commandInstanceIds],
       },
     };
+    const holdsPending = pending.continuation.zordMothershipHoldsPending ?? 0;
+    if (holdsPending > 0) {
+      const afterCategory = {
+        ...nextState,
+        players: { ...nextState.players, [playerId]: playerPatch },
+      };
+      const mothership = buildPartialMothershipHoldPayment(
+        afterCategory,
+        playerId,
+        pending.sourceInstanceId,
+        pending.sourceCardId,
+        pending.continuation.zordMaterialInstanceIds ?? [],
+        pending.continuation.zordMaterialDestination,
+        holdsPending,
+      );
+      if (!mothership) return { error: "invalid_payment" };
+      return { state: afterCategory, nextPending: mothership };
+    }
   }
   if (pending.kind === "category_use" && pending.continuation.type === "play_counter") {
     playerPatch = satisfyCostWindow(playerPatch, "counter_category");
@@ -616,35 +613,122 @@ function applyMothershipPaymentHolds(
     pending.sourceCardId,
   );
   if (!kind) return null;
-  const slotsFilled =
-    pending.continuation.type === "rush" && pending.continuation.zordMaterialInstanceId
-      ? zordSlotsFilledByMaterial(
-          pending.sourceCardId,
-          true,
-          pending.continuation.zordMaterialDestination,
-        )
-      : 0;
-  const holdsRequired = mothershipHoldsRequiredForRush(pending.sourceCardId, slotsFilled);
-  if (
-    !validateMothershipHolds(
-      player,
-      state.definitions,
-      pending.sourceCardId,
-      kind,
-      commandInstanceIds,
-      holdsRequired,
-    )
-  ) {
-    return null;
-  }
+  if (!validateMothershipPaymentHolds(state, pending, commandInstanceIds)) return null;
+  // コマンドゾーンに送る素材そのもののホールド（RS-075 Q2）は、ラッシュの解決で素材を送ったあとに行う。
+  const selfHolds = mothershipPaymentSelfHolds(state, pending, kind);
   const afterHolds = applyMothershipHolds(
     player,
     state.definitions,
-    commandInstanceIds,
+    commandInstanceIds.filter((id) => !selfHolds.includes(id)),
     kind,
   );
   if (!afterHolds) return null;
   return { ...state, players: { ...state.players, [playerId]: afterHolds } };
+}
+
+function mothershipPaymentMaterialIds(pending: PendingCommandPayment): string[] {
+  const cont = pending.continuation;
+  if (cont.type !== "rush") return [];
+  return cont.zordMaterialInstanceIds ?? (cont.zordMaterialInstanceId ? [cont.zordMaterialInstanceId] : []);
+}
+
+/** 母艦ホールド支払いで必要なホールド数（素材で満たした枠を除く）。 */
+function mothershipPaymentHoldsRequired(pending: PendingCommandPayment): number {
+  const cont = pending.continuation;
+  const materialIds = mothershipPaymentMaterialIds(pending);
+  const slotsFilled =
+    cont.type === "rush" && cont.zordMaterialInstanceIds && materialIds.length > 0
+      ? materialIds.length
+      : cont.type === "rush" && cont.zordMaterialInstanceId
+        ? zordSlotsFilledByMaterial(pending.sourceCardId, true, cont.zordMaterialDestination)
+        : 0;
+  return mothershipHoldsRequiredForRush(pending.sourceCardId, slotsFilled);
+}
+
+function mothershipPaymentSelfHolds(
+  state: GameState,
+  pending: PendingCommandPayment,
+  kind: NonNullable<ReturnType<typeof canUseMothershipForZordRush>>,
+): string[] {
+  const cont = pending.continuation;
+  if (cont.type !== "rush" || !cont.zordMaterialInstanceIds) return [];
+  return mothershipSelfHoldMaterialIds(
+    state.players[pending.playerId],
+    state.definitions,
+    kind,
+    cont.zordMaterialInstanceIds,
+    cont.zordMaterialDestination,
+  );
+}
+
+function validateMothershipPaymentHolds(
+  state: GameState,
+  pending: PendingCommandPayment,
+  commandInstanceIds: string[],
+): boolean {
+  const player = state.players[pending.playerId];
+  const kind = canUseMothershipForZordRush(state.definitions, player, pending.sourceCardId);
+  if (!kind) return false;
+  const holdsRequired = mothershipPaymentHoldsRequired(pending);
+  if (commandInstanceIds.length !== holdsRequired) return false;
+  const selfHolds = mothershipPaymentSelfHolds(state, pending, kind).filter((id) =>
+    commandInstanceIds.includes(id),
+  );
+  const others = commandInstanceIds.filter((id) => !selfHolds.includes(id));
+  return validateMothershipHolds(
+    player,
+    state.definitions,
+    pending.sourceCardId,
+    kind,
+    others,
+    holdsRequired - selfHolds.length,
+  );
+}
+
+/**
+ * 「Sユニット2体をそれぞれ…」の一部を素材で満たしたあとの【母艦】ホールド支払い
+ * （faq-card-2 RS-076 Q7・RS-075 Q2）。カテゴリのホールドの後に選ぶ。
+ */
+export function buildPartialMothershipHoldPayment(
+  state: GameState,
+  playerId: PlayerId,
+  sourceInstanceId: string,
+  sourceCardId: string,
+  materialInstanceIds: string[],
+  materialDestination: ZordMaterialDestination | undefined,
+  holdsRequired: number,
+): PendingCommandPayment | null {
+  const player = state.players[playerId];
+  const kind = canUseMothershipForZordRush(state.definitions, player, sourceCardId);
+  if (!kind || holdsRequired <= 0) return null;
+  const category = MOTHERSHIP_CONFIG[kind].commandCategory;
+  const validInstanceIds = [
+    ...collectMothershipEligibleCommands(player, state.definitions, category).map(
+      (e) => e.card.instanceId,
+    ),
+    ...mothershipSelfHoldMaterialIds(
+      player,
+      state.definitions,
+      kind,
+      materialInstanceIds,
+      materialDestination,
+    ),
+  ];
+  if (validInstanceIds.length < holdsRequired) return null;
+  return {
+    playerId,
+    kind: "mothership_hold",
+    sourceInstanceId,
+    sourceCardId,
+    eligibleNeeded: 0,
+    totalNeeded: holdsRequired,
+    validInstanceIds,
+    continuation: {
+      type: "rush",
+      zordMaterialInstanceIds: materialInstanceIds,
+      zordMaterialDestination: materialDestination,
+    },
+  };
 }
 
 export function continueAfterMothershipPayment(
@@ -654,6 +738,8 @@ export function continueAfterMothershipPayment(
 ): PendingCommandPayment | null {
   if (pending.continuation.type !== "rush") return null;
   const playerId = pending.playerId;
+  // カテゴリのホールドを先に済ませた場合（部分的な母艦の代用）はそのままラッシュする。
+  if (isCostWindowSatisfied(state.players[playerId], "rush_category")) return null;
   const def = getDefinition(state.definitions, pending.sourceCardId);
   if (!def || !isRushable(def)) return null;
 

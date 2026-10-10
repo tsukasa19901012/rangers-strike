@@ -108,7 +108,7 @@ export function legend2EffectiveSp(
   }
 
   /** RS-073 バルシールド: 自軍ダメージ6点で SP2。 */
-  if (instance.cardId === "RS-073" && state.players[playerId].damage >= 6) {
+  if (instance.cardId === "RS-073" && state.players[playerId].damage === 6) {
     sp = Math.max(sp, 2);
   }
 

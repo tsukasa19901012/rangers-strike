@@ -1,0 +1,7 @@
+{
+  "rushAdditionalCondition": {
+    "conditionId": "send_s_unit_to_command_or_discard",
+    "text": "自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする",
+    "unitCount": 2
+  }
+}

@@ -18,8 +18,8 @@
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-075.jpg",
   "rushAdditionalCondition": {
     "conditionId": "send_s_unit_to_command_or_discard",
-    "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
-    "unitCount": 1
+    "text": "自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする",
+    "unitCount": 2
   },
   "unnamedRules": [],
   "effects": [

@@ -38,6 +38,8 @@ import rs039 from "./RS-039.json";
 import rs050 from "./RS-050.json";
 import rs068 from "./RS-068.json";
 import rs069 from "./RS-069.json";
+import rs075 from "./RS-075.json";
+import rs076 from "./RS-076.json";
 import type { CardDocument } from "../types";
 import { mergeCardDocument } from "../cardDocumentMerge";
 
@@ -118,6 +120,11 @@ const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   "RS-050": rs050 as Partial<CardDocument>,
   "RS-068": rs068 as Partial<CardDocument>,
   "RS-069": rs069 as Partial<CardDocument>,
+  // cardSpec 監査（セット2）: 出典（atwiki/page-288・page-289、grnrngr/faq-card-2 RS-075 Q1〜Q3・RS-076 Q7）に揃える。
+  // RS-075 ブルバルカンの追加条件は「自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」。
+  "RS-075": rs075 as Partial<CardDocument>,
+  // RS-076 ジャガーバルカンは「種類：XLユニット」。
+  "RS-076": rs076 as Partial<CardDocument>,
 };
 
 let cachedOverrides: Map<string, Partial<CardDocument>> | null = null;

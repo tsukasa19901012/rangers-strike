@@ -688,7 +688,8 @@ describe("R-ADD-03 「ユニット」指定", () => {
 describe("R-ADD-04 「コマンドゾーンに送るか捨札」", () => {
   // 「空きがある場合でも、捨札にすることを選んで…」「はい、できます」
   it("R-ADD-04: コマンドゾーンに空きがあっても捨札を選べる（出典: atwiki/page-584 Q1）", () => {
-    const bull = inst("RS-075", "bull");
+    // 「Sユニットを1体…」の追加条件を持つコスモバルカン（ブルバルカンは「2体をそれぞれ」）。
+    const bull = inst("RS-074", "cosmo");
     const sUnit = inst("TST-UNIT-0", "s1");
     const s0 = mk4({
       player1: { hand: [bull], rush: [sUnit], power: powers(5), command: [released("TST-OP-ET", "et")] },
@@ -704,7 +705,8 @@ describe("R-ADD-04 「コマンドゾーンに送るか捨札」", () => {
 
   // 「はい、リリース状態で置きます」
   it("R-ADD-04: 追加条件でコマンドゾーンに送るカードはリリース状態で置く（出典: atwiki/page-584 Q2）", () => {
-    const bull = inst("RS-075", "bull");
+    // 「Sユニットを1体…」の追加条件を持つコスモバルカン（ブルバルカンは「2体をそれぞれ」）。
+    const bull = inst("RS-074", "cosmo");
     const sUnit = inst("TST-UNIT-0", "s1");
     const s0 = mk4({
       player1: { hand: [bull], rush: [sUnit], power: powers(5), command: [released("TST-OP-ET", "et")] },
@@ -1020,20 +1022,47 @@ describe("R-ADD-08 追加条件の代替手段がある場合", () => {
         hand: [bull],
         rush: [inst("RS-076", "jaguar")],
         power: powers(5),
-        command: [released("TST-OP-ET", "e1"), released("TST-OP-ET", "e2")],
+        command: [released("TST-OP-ET", "e1"), released("TST-OP-ET", "e2"), released("TST-OP-ET", "e3")],
       },
     });
     expect(canStartRush(s0, "player1", bull.instanceId)).toBe(true);
-    const r = tryRushZord(s0, "player1", bull.instanceId, { mothership: true }, ["TST-OP-ET:e1", "TST-OP-ET:e2"]);
+    const r = tryRushZord(s0, "player1", bull.instanceId, { mothership: true }, [
+      "TST-OP-ET:e1",
+      "TST-OP-ET:e2",
+      "TST-OP-ET:e3",
+    ]);
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(zoneOf(r.state, "player1", bull.instanceId)).toBe("rush");
-    expect(heldCount(r.state, "player1")).toBe(2);
+    // 追加条件「Sユニット2体をそれぞれ…」の2体分を母艦で2つ＋カテゴリ分1つ（atwiki/page-288）。
+    expect(heldCount(r.state, "player1")).toBe(3);
   });
 
-  it.todo(
-    "R-ADD-08: 1体目としてコマンドゾーンに送ったSユニットを、ジャガーバルカンで2体目の代わりにホールドできる（出典: grnrngr/faq-card-2 RS-075 Q2）— カードプールの RS-075 の追加条件は1体（FAQ の前提「2体をそれぞれ」と一致しない）ため状況を構成できない",
-  );
+  // 「まず…コマンドを１つホールド…Ｓユニットを１体目としてコマンドゾーンに送りました…２体目の代わりとしてホールド」「はい、可能です」
+  it("R-ADD-08: 1体目としてコマンドゾーンに送ったSユニットを、ジャガーバルカンで2体目の代わりにホールドできる（出典: grnrngr/faq-card-2 RS-075 Q2）", () => {
+    const bull = inst("RS-075", "bull");
+    const gored = inst("RS-091", "gored");
+    const s0 = mk4({
+      player1: {
+        hand: [bull],
+        rush: [inst("RS-076", "jaguar"), gored],
+        power: powers(5),
+        command: [released("TST-OP-ET", "e1")],
+      },
+    });
+    const r = tryRushZord(
+      s0,
+      "player1",
+      bull.instanceId,
+      { destination: "command", material: gored.instanceId, mothership: true },
+      ["TST-OP-ET:e1", gored.instanceId],
+    );
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(zoneOf(r.state, "player1", bull.instanceId)).toBe("rush");
+    expect(cardIn(r.state, "player1", "command", gored.instanceId)?.commandHeld).toBe(true);
+    expect(heldCount(r.state, "player1")).toBe(2);
+  });
 
   // 「コマンドゾーンがすでに上限の５枚に達している…」「はい、出来ます」
   it("R-ADD-08: コマンドゾーンが5枚で埋まっていてもジャガーバルカンの母艦を使える（出典: grnrngr/faq-card-2 RS-076 Q4）", () => {
@@ -1046,13 +1075,18 @@ describe("R-ADD-08 追加条件の代替手段がある場合", () => {
         command: [
           released("TST-OP-ET", "e1"),
           released("TST-OP-ET", "e2"),
-          released("TST-OP", "w1"),
+          released("TST-OP-ET", "e3"),
           released("TST-OP", "w2"),
           released("TST-OP", "w3"),
         ],
       },
     });
-    const r = tryRushZord(s0, "player1", bull.instanceId, { mothership: true }, ["TST-OP-ET:e1", "TST-OP-ET:e2"]);
+    // ブルバルカンの追加条件は2体分なので、母艦2つ＋カテゴリ1つの ET コマンドを使う（atwiki/page-288）。
+    const r = tryRushZord(s0, "player1", bull.instanceId, { mothership: true }, [
+      "TST-OP-ET:e1",
+      "TST-OP-ET:e2",
+      "TST-OP-ET:e3",
+    ]);
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(zoneOf(r.state, "player1", bull.instanceId)).toBe("rush");
@@ -1565,11 +1599,13 @@ describe("R-RUSH-22 効果ラッシュでも誘発とカウンター窓がある
     const gally = inst("RS-197", "gally");
     const bull = inst("RS-075", "bull");
     const sUnit = inst("TST-UNIT-0", "s");
+    // ブルバルカンの追加条件は「自軍Sユニット2体をそれぞれ…」（atwiki/page-288）。
+    const sUnit2 = inst("TST-UNIT-0", "s2");
     const mecha = inst("RS-079", "silva");
     let s = mk4({
       phase: "battle",
       player1: {
-        rush: [gally, sUnit],
+        rush: [gally, sUnit, sUnit2],
         discard: [mecha],
         power: powers(5),
         command: [bull],
@@ -1578,7 +1614,7 @@ describe("R-RUSH-22 効果ラッシュでも誘発とカウンター窓がある
     const r = tryEnterBattle(s, "player1", gally.instanceId);
     expect(r.ok).toBe(true);
     if (!r.ok) return;
-    s = drainChoices(r.state, "player1", [bull.instanceId, sUnit.instanceId, mecha.instanceId]);
+    s = drainChoices(r.state, "player1", [bull.instanceId, sUnit.instanceId, sUnit2.instanceId, mecha.instanceId]);
     expect(zoneOf(s, "player1", bull.instanceId)).toBe("rush");
     expect(zoneOf(s, "player1", mecha.instanceId)).toBe("hand");
   });

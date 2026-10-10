@@ -43,14 +43,33 @@ export function isMothershipEligibleCommand(
   definitions: Record<string, CardDefinition>,
   card: CardInstance,
   category: Category,
+  zone: MothershipHoldZone = "rush",
 ): boolean {
   if (card.commandHeld) return false;
   const def = getDefinition(definitions, card.cardId);
-  return (
-    def !== undefined &&
-    isOperation(def) &&
-    cardHasCategory(def, category)
-  );
+  if (def === undefined || !cardHasCategory(def, category)) return false;
+  // コマンドゾーンのカードはユニットでもコマンド（RS-075 Q2: 1体目として送った S ユニットをホールドできる）。
+  return zone === "command" || isOperation(def);
+}
+
+/**
+ * 【母艦】ホールドの候補にできる「コマンドゾーンに送る追加条件の素材」（faq-card-2 RS-075 Q2:
+ * 1体目としてコマンドゾーンに送ったコマンドを、2体目の代わりとしてホールドできる）。
+ */
+export function mothershipSelfHoldMaterialIds(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  kind: MothershipKind,
+  materialIds: readonly string[],
+  materialDestination: ZordMaterialDestination | undefined,
+): string[] {
+  if (materialDestination !== "command") return [];
+  const category = MOTHERSHIP_CONFIG[kind].commandCategory;
+  return materialIds.filter((id) => {
+    const card = [...player.rush, ...player.battle].find((c) => c.instanceId === id);
+    const def = card ? getDefinition(definitions, card.cardId) : undefined;
+    return def !== undefined && cardHasCategory(def, category);
+  });
 }
 
 /** 未ホールドのカテゴリコマンド（コマンドまたはラッシュ内）（Q3: コマンドがラッシュへ移動）。 */
@@ -62,7 +81,7 @@ export function collectMothershipEligibleCommands(
   const results: Array<{ zone: MothershipHoldZone; card: CardInstance }> = [];
 
   for (const card of player.command) {
-    if (isMothershipEligibleCommand(definitions, card, category)) {
+    if (isMothershipEligibleCommand(definitions, card, category, "command")) {
       results.push({ zone: "command", card });
     }
   }
@@ -131,7 +150,7 @@ export function applyMothershipHolds(
       if (card.mothershipHold) {
         continue;
       }
-      if (!isMothershipEligibleCommand(definitions, card, category)) return null;
+      if (!isMothershipEligibleCommand(definitions, card, category, "command")) return null;
       const command = [...nextPlayer.command];
       command[commandIndex] = { ...card, commandHeld: true, mothershipHold: true };
       nextPlayer = { ...nextPlayer, command };
@@ -230,6 +249,7 @@ export function validateZordAdditionalPayment(
         rushingInstanceId,
         materialIds,
         materialDestination,
+        kind !== null && holdIds.length > 0,
       )
     ) {
       return false;
@@ -259,7 +279,18 @@ export function validateZordAdditionalPayment(
 
   if (holdsRequired > 0) {
     if (!kind) return false;
-    if (mothershipHoldsSatisfiedOnPlayer(player, holdIds, holdsRequired)) {
+    // faq-card-2 RS-075 Q2 — コマンドゾーンに送る素材そのものを残りの母艦ホールドにできる。
+    const selfHolds = mothershipSelfHoldMaterialIds(
+      player,
+      definitions,
+      kind,
+      materialIds,
+      materialDestination,
+    ).filter((id) => holdIds.includes(id));
+    const otherHolds = holdIds.filter((id) => !selfHolds.includes(id));
+    const othersRequired = holdsRequired - selfHolds.length;
+    if (othersRequired < 0) return false;
+    if (mothershipHoldsSatisfiedOnPlayer(player, otherHolds, othersRequired)) {
       return true;
     }
     return validateMothershipHolds(
@@ -267,8 +298,8 @@ export function validateZordAdditionalPayment(
       definitions,
       rushingCardId,
       kind,
-      holdIds,
-      holdsRequired,
+      otherHolds,
+      othersRequired,
     );
   }
 

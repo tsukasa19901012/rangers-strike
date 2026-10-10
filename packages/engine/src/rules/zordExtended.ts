@@ -655,6 +655,8 @@ export function validateFieldZordMaterials(
   rushingInstanceId: string,
   materialInstanceIds: string[],
   materialDestination?: ZordMaterialDestination,
+  /** 残りの体数を【母艦】ホールドで代えるとき、必要体数より少ない素材を許す（faq-card-2 RS-076 Q7）。 */
+  allowFewerForMothership = false,
 ): boolean {
   const condition = resolveCondition(definitions, rushingCardId);
   if (!condition || !isSendSUnitZordCondition(condition.conditionId)) {
@@ -679,7 +681,12 @@ export function validateFieldZordMaterials(
   }
 
   const needed = condition.unitCount ?? 1;
-  if (materialInstanceIds.length !== needed) return false;
+  if (
+    materialInstanceIds.length !== needed &&
+    !(allowFewerForMothership && materialInstanceIds.length < needed)
+  ) {
+    return false;
+  }
   const used = new Set<string>();
   for (const id of materialInstanceIds) {
     if (used.has(id)) return false;

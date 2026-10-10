@@ -488,6 +488,11 @@ export type CommandPaymentContinuation =
       zordMaterialDestination?: "command" | "discard";
       zordMothershipHoldInstanceIds?: string[];
       zordExtraCommandHoldInstanceIds?: string[];
+      /**
+       * 「Sユニット2体をそれぞれ…」の一部を素材で満たし、残りを【母艦】ホールドで代える（RS-076 Q7・RS-075 Q2）。
+       * カテゴリのホールドの後に、この数の母艦ホールドを選ぶ。
+       */
+      zordMothershipHoldsPending?: number;
     }
   | {
       type: "play_operation";

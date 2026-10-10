@@ -461,13 +461,15 @@ describe("command payment", () => {
     const zord = inst("RS-075", "zord");
     const mothership = inst("RS-076", "ms");
     const etCmd = { ...inst("TST-OP-ET", "et"), commandHeld: false };
+    // ブルバルカンの追加条件は2体分なので、母艦で代えるには ET コマンドが2つ要る。
+    const etCmd2 = { ...inst("TST-OP-ET", "et2"), commandHeld: false };
     const state = createTestState({
       phase: "rush",
       player1: {
         hand: [zord],
         rush: [mothership],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
-        command: [etCmd],
+        command: [etCmd, etCmd2],
       },
     });
     state.definitions["RS-075"] = {
@@ -494,7 +496,7 @@ describe("command payment", () => {
       zordInstanceId: zord.instanceId,
       zordCardId: "RS-075",
       step: "mothership",
-      validInstanceIds: [etCmd.instanceId],
+      validInstanceIds: [etCmd.instanceId, etCmd2.instanceId],
     }, {});
     expect(advanced.kind).toBe("payment");
     if (advanced.kind !== "payment") return;

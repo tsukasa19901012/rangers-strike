@@ -19,12 +19,18 @@ import { isShironLightRushTarget } from "./shironLight";
 import { rushPowerBudget } from "./rushDeclaration";
 import { countAvailablePower, effectivePowerCost } from "../core/power";
 import { findInZone } from "../core/helpers";
-import { buildCategoryPayment, buildMothershipHoldPayment } from "./commandPayment";
+import {
+  buildCategoryPayment,
+  buildMothershipHoldPayment,
+  buildPartialMothershipHoldPayment,
+} from "./commandPayment";
 import type { PendingCommandPayment } from "../types/game";
 import { MOTHERSHIP_CONFIG } from "@rangers-strike/cards";
 import {
   canPayZordWithMothership,
   canUseMothershipForZordRush,
+  listMothershipHoldSets,
+  mothershipSelfHoldMaterialIds,
   collectMothershipEligibleCommands,
   listZordRushPaymentVariants,
   validateZordAdditionalPayment,
@@ -143,7 +149,7 @@ export function listZordSetupResolveActions(
         actions.push({ type: "resolve_zord_setup", playerId, materialInstanceId });
       }
     }
-    if (setup.mothershipAvailable) {
+    if (setup.mothershipAvailable || (setup.chosenMaterialIds?.length ?? 0) > 0) {
       const advanced = advanceZordSetup(state, setup, { paymentPath: "mothership" });
       if (advanced.kind !== "error") {
         actions.push({ type: "resolve_zord_setup", playerId, paymentPath: "mothership" });
@@ -420,6 +426,10 @@ export function advanceZordSetup(
     }
 
     if (input.paymentPath === "mothership") {
+      if ((setup.chosenMaterialIds?.length ?? 0) > 0) {
+        // faq-card-2 RS-076 Q7・RS-075 Q2 — 一部を素材で満たし、残りを【母艦】ホールドで代える。
+        return partialMothershipStep(state, setup);
+      }
       if (!setup.mothershipAvailable) {
         return { kind: "error", error: "invalid_mothership" };
       }
@@ -468,7 +478,11 @@ export function advanceZordSetup(
       const chosen = [...(setup.chosenMaterialIds ?? []), materialId];
       if (chosen.length < needed) {
         const remaining = setup.validInstanceIds.filter((id) => !chosen.includes(id));
-        if (remaining.length < needed - chosen.length) {
+        if (
+          remaining.length < needed - chosen.length &&
+          partialMothershipStep(state, { ...setup, chosenMaterialIds: chosen, materialDestination: destination })
+            .kind === "error"
+        ) {
           return { kind: "error", error: "invalid_material" };
         }
         return {
@@ -489,6 +503,9 @@ export function advanceZordSetup(
   }
 
   if (setup.step === "mothership") {
+    if ((setup.chosenMaterialIds?.length ?? 0) > 0) {
+      return completePartialMothershipPayment(state, setup);
+    }
     const payment = buildMothershipHoldPayment(
       state,
       playerId,
@@ -501,6 +518,102 @@ export function advanceZordSetup(
   }
 
   return { kind: "error", error: "invalid_step" };
+}
+
+/** 選んだ素材で足りない体数を【母艦】ホールドで代えられるとき、母艦ステップへ進む。 */
+function partialMothershipStep(
+  state: GameState,
+  setup: PendingZordSetup,
+): ZordSetupAdvanceResult {
+  const chosen = setup.chosenMaterialIds ?? [];
+  const player = state.players[setup.playerId];
+  const kind = canUseMothershipForZordRush(state.definitions, player, setup.zordCardId);
+  // ルール: 母艦は「コマンドゾーンに送るかわりに」なので、素材を捨札にする経路とは併用できない（RS-076 Q5）。
+  if (!kind || chosen.length === 0 || setup.materialDestination !== "command") {
+    return { kind: "error", error: "invalid_mothership" };
+  }
+  if (player.command.length + chosen.length > COMMAND_ZONE_MAX) {
+    return { kind: "error", error: "invalid_destination" };
+  }
+  const holdsRequired = zordMaterialUnitCount(state, setup.zordCardId) - chosen.length;
+  if (holdsRequired <= 0) return { kind: "error", error: "invalid_mothership" };
+  const selfHolds = mothershipSelfHoldMaterialIds(
+    player,
+    state.definitions,
+    kind,
+    chosen,
+    setup.materialDestination,
+  );
+  // カテゴリのホールドを先に行うので、同じカテゴリならその1つ分を残しておく必要がある。
+  const def = getDefinition(state.definitions, setup.zordCardId);
+  const categoryPending =
+    !isCostWindowSatisfied(player, "rush_category") &&
+    !isShironLightRushTarget(player, setup.zordInstanceId) &&
+    def !== undefined &&
+    cardCategories(def).includes(MOTHERSHIP_CONFIG[kind].commandCategory);
+  const commandHolds = listMothershipHoldSets(
+    player,
+    state.definitions,
+    setup.zordCardId,
+    kind,
+    Math.max(0, holdsRequired - selfHolds.length) + (categoryPending ? 1 : 0),
+  );
+  if (commandHolds.length === 0) return { kind: "error", error: "invalid_mothership" };
+  return {
+    kind: "continue",
+    setup: {
+      ...setup,
+      step: "mothership",
+      validInstanceIds: collectMothershipTargetIds(state, setup.playerId, setup.zordCardId),
+    },
+  };
+}
+
+function completePartialMothershipPayment(
+  state: GameState,
+  setup: PendingZordSetup,
+): ZordSetupAdvanceResult {
+  const playerId = setup.playerId;
+  const player = state.players[playerId];
+  const def = getDefinition(state.definitions, setup.zordCardId);
+  if (!def) return { kind: "error", error: "invalid_card" };
+  const chosen = setup.chosenMaterialIds ?? [];
+  const destination = setup.materialDestination;
+  const holdsRequired = zordMaterialUnitCount(state, setup.zordCardId) - chosen.length;
+  const shironRush = isShironLightRushTarget(player, setup.zordInstanceId);
+  // カテゴリのホールドが済んでいれば（またはシロンの光）すぐ母艦ホールドを選ぶ。
+  if (shironRush || isCostWindowSatisfied(player, "rush_category")) {
+    const mothership = buildPartialMothershipHoldPayment(
+      state,
+      playerId,
+      setup.zordInstanceId,
+      setup.zordCardId,
+      chosen,
+      destination,
+      holdsRequired,
+    );
+    return mothership
+      ? { kind: "payment", payment: mothership }
+      : { kind: "error", error: "cannot_complete_zord" };
+  }
+  // faq-card-2 RS-075 Q2 — まずカテゴリのコマンドをホールドし、その後に追加条件（素材・母艦ホールド）。
+  const payment = buildCategoryPayment(
+    state,
+    playerId,
+    setup.zordInstanceId,
+    setup.zordCardId,
+    cardCategories(def),
+    {
+      type: "rush",
+      zordMaterialInstanceIds: chosen,
+      zordMaterialDestination: destination,
+      zordMothershipHoldsPending: holdsRequired,
+    },
+    false,
+    { perRushPayment: true },
+  );
+  if (payment) return { kind: "payment", payment };
+  return { kind: "error", error: "cannot_complete_zord" };
 }
 
 function zordMaterialUnitCount(state: GameState, zordCardId: string): number {

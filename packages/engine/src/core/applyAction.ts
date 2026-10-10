@@ -2766,7 +2766,7 @@ function applyActionCore(
       if (isHidoraEggUsed(player)) return fail("already_used");
 
       const result = resolveHidoraEgg(state, playerId);
-      let nextPlayer = addRushPhaseRuleModifier(player, RUSH_PHASE_RULE_IDS.HIDORA_EGG, {
+      const nextPlayer = addRushPhaseRuleModifier(result.state.players[playerId], RUSH_PHASE_RULE_IDS.HIDORA_EGG, {
         sourceCardId: "RS-071",
       });
       return ok(

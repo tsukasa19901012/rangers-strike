@@ -279,7 +279,10 @@ export function tryRushZord(
       if (!choice.destination) return fail("destination_required");
       r = applyAction(next, { type: "resolve_zord_setup", playerId, destination: choice.destination });
     } else if (setup.step === "material") {
-      if (choice.mothership && !choice.material) {
+      // 素材を選び終えて残りを母艦で代える（faq-card-2 RS-075 Q2・RS-076 Q7）。
+      const materialDone =
+        choice.material !== undefined && (setup.chosenMaterialIds ?? []).includes(choice.material);
+      if (choice.mothership && (!choice.material || materialDone)) {
         r = applyAction(next, { type: "resolve_zord_setup", playerId, paymentPath: "mothership" });
       } else {
         if (!choice.material) return fail("material_required");

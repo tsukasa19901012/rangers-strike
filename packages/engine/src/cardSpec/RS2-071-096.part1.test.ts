@@ -124,8 +124,7 @@ describe("RS-071 ヒドラー兵の卵", () => {
   });
 
   // 「オモテにしたカードが「ヒドラー兵」ならラッシュエリアに出し」
-  it.fails("RS-071: 山札の上がヒドラー兵ならラッシュエリアに出す（出典: atwiki/page-322）", () => {
-    // 既知の不具合: CARD-RS-071 hidora_egg の処理で使用済み記録を古いプレイヤー状態に付けて上書きするため、山札・ラッシュエリアの移動が消える
+  it("RS-071: 山札の上がヒドラー兵ならラッシュエリアに出す（出典: atwiki/page-322）", () => {
     let s = eggState([inst("RS-080", "h1"), inst("TST-OP", "d2")]);
     expect(canEgg(s)).toBe(true);
     s = settle(act(s, { type: "hidora_egg", playerId: "player1" }));
@@ -134,8 +133,7 @@ describe("RS-071 ヒドラー兵の卵", () => {
   });
 
   // 「それ以外なら山札の下に戻す」
-  it.fails("RS-071: 山札の上がヒドラー兵以外なら山札の下に戻す（出典: atwiki/page-322）", () => {
-    // 既知の不具合: CARD-RS-071 hidora_egg の処理で山札の並べ替えが上書きされて消える
+  it("RS-071: 山札の上がヒドラー兵以外なら山札の下に戻す（出典: atwiki/page-322）", () => {
     let s = eggState([inst("TST-OP", "d1"), inst("RS-080", "h2")]);
     s = settle(act(s, { type: "hidora_egg", playerId: "player1" }));
     expect(zoneIds(s, "player1", "deck")).toEqual(["RS-080:h2", "TST-OP:d1"]);
@@ -354,8 +352,7 @@ describe("RS-073 サンバルカンロボ", () => {
   });
 
   // atwiki/page-130 カード評価「能力が発動するのは、飽くまでダメージが6点のときのみ」
-  it.fails("RS-073: 命の泉で負けずに自軍ダメージ7点のときは SP2 にならない（SP1）（出典: atwiki/page-130 カード評価、RS-244 命の泉）", () => {
-    // 既知の不具合: CARD-RS-073 バルシールドを「ダメージ6点以上」で判定している（本文は「6点のとき」）
+  it("RS-073: 命の泉で負けずに自軍ダメージ7点のときは SP2 にならない（SP1）（出典: atwiki/page-130 カード評価、RS-244 命の泉）", () => {
     expect(roboStrike(7, [inst("RS-244", "izumi")])).toBe(1);
   });
 });
@@ -419,8 +416,7 @@ describe("RS-074 コスモバルカン", () => {
   });
 
   // 「自軍ラッシュエリアに「ブルバルカン」があるとき」
-  it.fails("RS-074: ブルバルカンがなければ BP 修正込み（5000）でバトルし、コスモバルカンが撃破される（出典: atwiki/page-287）", () => {
-    // 既知の不具合: CARD-RS-074 本来の BP で比べる処理がブルバルカンの有無を見ていない（カウンター禁止の側だけ確認している）
+  it("RS-074: ブルバルカンがなければ BP 修正込み（5000）でバトルし、コスモバルカンが撃破される（出典: atwiki/page-287）", () => {
     const s = cannonAttack(false);
     expect(zoneOf(s, "player1", "RS-074:c")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-S-RED:def")).toBe("battle");
@@ -479,8 +475,7 @@ describe("RS-075 ブルバルカン", () => {
   });
 
   // atwiki/page-288「追加条件：自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」、faq-card-2 RS-075 Q1 の前提
-  it.fails("RS-075: 追加条件は「自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」（出典: atwiki/page-288、grnrngr/faq-card-2 RS-075 Q1）", () => {
-    // 既知の不具合: CARD-RS-075 追加条件が「Sユニット1体」として登録されている（unitCount 1）
+  it("RS-075: 追加条件は「自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」（出典: atwiki/page-288、grnrngr/faq-card-2 RS-075 Q1）", () => {
     const cond = DEFS["RS-075"]!.rushAdditionalCondition;
     expect(cond?.conditionId).toBe("send_s_unit_to_command_or_discard");
     expect(cond?.text).toBe("自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする");
@@ -511,14 +506,12 @@ describe("RS-075 ブルバルカン", () => {
     return r.state;
   }
 
-  it.fails("RS-075: 自軍Sユニットが1体しかなければラッシュできない（出典: atwiki/page-288 追加条件）", () => {
-    // 既知の不具合: CARD-RS-075 追加条件が1体として扱われるため、Sユニット1体でラッシュできてしまう
+  it("RS-075: 自軍Sユニットが1体しかなければラッシュできない（出典: atwiki/page-288 追加条件）", () => {
     expect(canRushBull(bullState(2))).toBe(true);
     expect(canRushBull(bullState(1))).toBe(false);
   });
 
-  it.fails("RS-075: ラッシュすると自軍Sユニット2体をそれぞれ捨札にする（出典: atwiki/page-288 追加条件）", () => {
-    // 既知の不具合: CARD-RS-075 追加条件で送るSユニットが1体だけ
+  it("RS-075: ラッシュすると自軍Sユニット2体をそれぞれ捨札にする（出典: atwiki/page-288 追加条件）", () => {
     const s = settle(rushBull(bullState(2), ["TST-UNIT-0:s0", "TST-UNIT-0:s1"]));
     expect(zoneOf(s, "player1", "RS-075:bull")).toBe("rush");
     expect(zoneOf(s, "player1", "TST-UNIT-0:s0")).toBe("discard");
@@ -566,8 +559,7 @@ describe("RS-075 ブルバルカン", () => {
   });
 
   // faq-card-2 RS-075 Q2「１体目として送ったコマンドを、２体目の代わりとしてホールドして…」「はい、可能です。」
-  it.fails("RS-075: 公式Q&A — 1体目としてコマンドゾーンに送ったETのSユニットを、ジャガーバルカンで2体目の代わりにホールドしてラッシュできる（出典: grnrngr/faq-card-2 RS-075 Q2）", () => {
-    // 既知の不具合: CARD-RS-075 追加条件が1体なので「2体目の代わり」のホールドが発生しない
+  it("RS-075: 公式Q&A — 1体目としてコマンドゾーンに送ったETのSユニットを、ジャガーバルカンで2体目の代わりにホールドしてラッシュできる（出典: grnrngr/faq-card-2 RS-075 Q2）", () => {
     const s0 = st({
       phase: "rush",
       player1: {
@@ -592,8 +584,7 @@ describe("RS-075 ブルバルカン", () => {
   });
 
   // faq-card-2 RS-075 Q3「…うち１体を、「救助活動」の効果で手札に戻すことができますか？」「はい、できます。」
-  it.fails("RS-075: 公式Q&A — 追加条件で捨札にしたバイオハンター・シルバ2体のうち1体を救助活動で手札に戻せる（出典: grnrngr/faq-card-2 RS-075 Q3）", () => {
-    // 既知の不具合: CARD-RS-075 追加条件で捨札にするのが1体だけなので、2体を捨札にした状況にならない
+  it("RS-075: 公式Q&A — 追加条件で捨札にしたバイオハンター・シルバ2体のうち1体を救助活動で手札に戻せる（出典: grnrngr/faq-card-2 RS-075 Q3）", () => {
     const s0 = st({
       phase: "rush",
       player1: {
@@ -630,8 +621,7 @@ describe("RS-076 ジャガーバルカン", () => {
   });
 
   // atwiki/page-289「種類：XLユニット」
-  it.fails("RS-076: サイズは XL（出典: atwiki/page-289「種類：XLユニット」）", () => {
-    // 既知の不具合: CARD-RS-076 サイズが L として登録されている（UnitSize に "XL" はある）
+  it("RS-076: サイズは XL（出典: atwiki/page-289「種類：XLユニット」）", () => {
     expect(DEFS["RS-076"]!.size).toBe("XL");
   });
 
@@ -804,8 +794,7 @@ describe("RS-076 ジャガーバルカン", () => {
   });
 
   // faq-card-2 RS-076 Q7「「アーステクノロジー」のコマンドを２つホールドします。」
-  it.fails("RS-076: 公式Q&A — ブルバルカンを Sユニット1体＋母艦でラッシュすると ET コマンドを合計2つホールドする（出典: grnrngr/faq-card-2 RS-076 Q7）", () => {
-    // 既知の不具合: CARD-RS-075 ブルバルカンの追加条件が1体として登録されているため、母艦で補う「足りない1体分」が生じない
+  it("RS-076: 公式Q&A — ブルバルカンを Sユニット1体＋母艦でラッシュすると ET コマンドを合計2つホールドする（出典: grnrngr/faq-card-2 RS-076 Q7）", () => {
     const s0 = st({
       phase: "rush",
       player1: {

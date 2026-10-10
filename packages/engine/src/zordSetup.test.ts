@@ -59,7 +59,7 @@ describe("zord setup wizard", () => {
   });
 
   it("lets player pick material after choosing command destination", () => {
-    const zord = inst("RS-075", "z1");
+    const zord = inst("RS-074", "z1");
     const s1 = inst("RS-080", "s1");
     const s2 = inst("RS-081", "s2");
     let state = createTestState({
@@ -71,7 +71,8 @@ describe("zord setup wizard", () => {
         command: [{ ...inst("TST-OP-ET", "et-pay"), commandHeld: false }],
       },
     });
-    state.definitions["RS-075"] = rs075Def;
+    // 「Sユニットを1体…」の追加条件（RS-075 は2体）。
+    state.definitions["RS-074"] = { ...rs075Def, id: "RS-074" };
     state.definitions["RS-080"] = { ...fusionDef("RS-080", "S1"), size: "S" };
     state.definitions["RS-081"] = { ...fusionDef("RS-081", "S2"), size: "S" };
 
@@ -118,7 +119,7 @@ describe("zord setup wizard", () => {
   });
 
   it("skips destination step when command zone is full", () => {
-    const zord = inst("RS-075", "z1");
+    const zord = inst("RS-074", "z1");
     const s1 = inst("RS-080", "s1");
     const commands = Array.from({ length: COMMAND_ZONE_MAX }, (_, i) =>
       inst("TST-OP-ET", `c${i}`),
@@ -132,7 +133,8 @@ describe("zord setup wizard", () => {
         command: commands,
       },
     });
-    state.definitions["RS-075"] = rs075Def;
+    // 「Sユニットを1体…」の追加条件（RS-075 は2体）。
+    state.definitions["RS-074"] = { ...rs075Def, id: "RS-074" };
     state.definitions["RS-080"] = { ...fusionDef("RS-080", "S1"), size: "S" };
 
     const setup = createZordSetup(state, "player1", zord.instanceId);

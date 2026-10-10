@@ -9870,8 +9870,8 @@
       "powerCost": "5+",
       "rushAdditionalCondition": {
         "conditionId": "send_s_unit_to_command_or_discard",
-        "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
-        "unitCount": 1
+        "text": "自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする",
+        "unitCount": 2
       },
       "bp": 5000,
       "size": "M",
@@ -9892,7 +9892,7 @@
       "expansion": "legend2",
       "powerCost": 4,
       "bp": 4000,
-      "size": "L",
+      "size": "XL",
       "text": "【母艦】これが自軍ラッシュエリアにあるとき、自分がラッシュするMユニットの追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを1体コマンドゾーンに送るかわりに、「アーステクノロジー」の自軍コマンドを1つホールドする。",
       "features": [
         "メカ",
