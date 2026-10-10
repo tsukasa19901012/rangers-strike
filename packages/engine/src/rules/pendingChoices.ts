@@ -59,6 +59,7 @@ import {
 } from "./effectRush";
 import type { Category } from "@rangers-strike/cards";
 import { canonicalCardName } from "@rangers-strike/cards";
+import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import { markBattleBlocked } from "./turnModifiers";
 import { greenCrushTargets } from "./legend2/ncEffects";
 import { countLogicalBattleSlots } from "./battleLine";
@@ -2363,7 +2364,7 @@ function tryRegisterStayOnLeave(
     for (const zone of ["battle", "rush"] as const) {
       const card = player[zone].find((c) => c.instanceId === instanceId);
       if (!card) continue;
-      if (!cardHasGrantKeyword(card.cardId, "register_stay_on_power_discard_raida")) return null;
+      if (!cardHasGrantKeyword(card.cardId, FEATURE_KEYWORDS.registerStayKamenRider)) return null;
       const idx = player.power.findIndex((c) => {
         if (c.faceDown) return false;
         const def = getDefinition(state.definitions, c.cardId);

@@ -11,6 +11,7 @@
  *  - extend_rider_drop            : 指定ビークルからのコンビで本来 BP 8000 以下の敵をパワー送り（RK-301 等）
  */
 import { openImaginPowerChoice } from "./errataCardEffects";
+import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../dsl/grantKeyword";
 import { cardName, getDefinition, parsePowerCost } from "../core/catalog";
@@ -366,7 +367,7 @@ export function applyTempDiscardAtTurnEnd(
 
 // ---- RK-142 系: パワーゾーンでオモテ向きの常駐が、味方仮面ライダー進入に反応 ----
 
-const POWER_FACEUP_RAIDA_KEYWORD = "power_faceup_raida_enter_battle";
+const POWER_FACEUP_RAIDA_KEYWORD = FEATURE_KEYWORDS.powerFaceupKamenRiderEnterBattle;
 
 function cardHasKeyword(cardId: string, keyword: string): boolean {
   const doc = getCardDslDocument(cardId);

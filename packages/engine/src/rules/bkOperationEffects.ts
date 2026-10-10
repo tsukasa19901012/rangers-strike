@@ -1,6 +1,10 @@
 import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
 import { canonicalCardName } from "@rangers-strike/cards";
-import { rematchEffectPrimitives, splitChoiceBranches } from "@rangers-strike/cards/pipeline/extractEffects";
+import {
+  decodeFeatureKeywordSlug,
+  rematchEffectPrimitives,
+  splitChoiceBranches,
+} from "@rangers-strike/cards/pipeline/extractEffects";
 import { isCatchallGrantKeyword } from "../dsl/hashGrantKeywordStub";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
 import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
@@ -331,6 +335,8 @@ export function applyPickEffectBranch(
 }
 
 function decodeFeatureSlug(slug: string): string | null {
+  const decoded = decodeFeatureKeywordSlug(slug);
+  if (decoded) return decoded;
   if (slug === "amadamu") return "アマダム";
   if (slug === "no_seki") return "賢者の石";
   if (slug === "den_o") return "DEN-O";
