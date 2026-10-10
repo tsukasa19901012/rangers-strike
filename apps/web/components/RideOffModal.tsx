@@ -9,6 +9,8 @@ type RideOffModalProps = {
   vehicleCard?: CardDefinition;
   onRideOff: () => void;
   onStayMounted: () => void;
+  /** ライドオフさせるかわりに発動できるビークルの効果（RS-381【獅子の装光】等）。 */
+  onAlternative?: () => void;
 };
 
 export function RideOffModal({
@@ -16,6 +18,7 @@ export function RideOffModal({
   vehicleCard,
   onRideOff,
   onStayMounted,
+  onAlternative,
 }: RideOffModalProps) {
   return (
     <GameModalBackdrop>
@@ -66,6 +69,15 @@ export function RideOffModal({
             >
               ライドを維持
             </button>
+            {onAlternative && (
+              <button
+                type="button"
+                className="btn ride-off-modal__action"
+                onClick={onAlternative}
+              >
+                かわりに{vehicleCard ? `「${vehicleCard.name}」の` : ""}効果を発動
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -99,6 +99,8 @@ import { trySet4CardEffect } from "../rules/legend1/set4NamedEffects";
 import { trySet5ACardEffect } from "../rules/legend1/set5NamedEffectsA";
 import { applySet5GrantSideEffects, trySet5CardEffect } from "../rules/legend1/set5NamedEffects";
 import { trySet5AuditCardEffect } from "../rules/legend1/set5AuditFixes";
+import { trySet6LowCardEffect } from "../rules/legend1/set6NamedEffects348";
+import { trySet6AuditCardEffect } from "../rules/legend1/set6AuditFixes";
 import { tryGenericTextFallback } from "./genericTextFallback";
 import {
   beginDeclareNumberDeckReveal,
@@ -392,6 +394,9 @@ export function applyGrantKeyword(
   ctx: GrantKeywordContext,
   keyword: string,
 ): GrantKeywordResult {
+  // 第6弾監査のカード固有の修正（rules/legend1/set6AuditFixes.ts）。
+  const set6Audit = trySet6AuditCardEffect(state, ctx, keyword);
+  if (set6Audit) return set6Audit;
   // 「選択を伴う能動効果」で従来はパターン照合で受動扱い（不発）だったカードを
   // cardId::effectId で正確に解決する。effect_card 委譲より前に置く。
   const reported = tryReportedRiderEffect(state, ctx, keyword);
@@ -413,6 +418,9 @@ export function applyGrantKeyword(
   // 第5弾監査のカード固有の修正（rules/legend1/set5AuditFixes.ts）。
   const set5Audit = trySet5AuditCardEffect(state, ctx, keyword);
   if (set5Audit) return set5Audit;
+  // 第6弾 RS-348〜RS-389 のカード固有の名前付き効果（rules/legend1/set6NamedEffects348.ts）。
+  const set6Low = trySet6LowCardEffect(state, ctx, keyword);
+  if (set6Low) return set6Low;
 
   if (keyword.startsWith("hand_named_to_rush::")) {
     const withChoice = applyHandNamedToRush(state, ctx, keyword);

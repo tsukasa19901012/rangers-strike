@@ -400,6 +400,8 @@ export function unitEffectiveCategories(
   instance: CardInstance,
   zone: "battle" | "rush",
 ): Category[] {
+  // RS-350 暗黒の鎧を重ねたユニットは、カテゴリが DA になる（追加ではなく置きかえ）。
+  if ((instance.stackedCards ?? []).some((c) => c.cardId === "RS-350")) return ["DA"];
   const def = getDefinition(state.definitions, instance.cardId);
   const cats = cardCategories(def);
   if (zone === "battle" && hasUnnamedRule(instance.cardId, "battle_adds_ma_category")) {

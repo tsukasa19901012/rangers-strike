@@ -1,3 +1,4 @@
+import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
 import { hasTurnRuleModifier } from "./scopedModifiers";
 import type { GameAction, RushAction } from "../types/actions";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -113,6 +114,7 @@ import { listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities
 import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
 import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
+import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower } from "./power";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
@@ -1151,7 +1153,8 @@ function appendEffectChoiceActions(
   if (
     isErrataConfirmableChoice(pending.effectId) ||
     isSet4ConfirmableChoice(pending.effectId) ||
-    isSet5AConfirmableChoice(pending)
+    isSet5AConfirmableChoice(pending) ||
+    isSet6AuditConfirmableChoice(pending.effectId)
   ) {
     for (const instanceId of pending.validInstanceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
@@ -1265,6 +1268,14 @@ function appendBattleEntryActions(
 ): void {
   const pending = state.pendingBattleEntry;
   if (!pending || pending.playerId !== playerId) return;
+
+  // RS-379【雷の雄叫び】: NC が成立した直後（バトル進入の行動ウィンドウ）にも発動できる。
+  for (const unitInstanceId of listFieldActivatedAbilityCards(state, playerId)) {
+    const card = state.players[playerId].battle.find((c) => c.instanceId === unitInstanceId);
+    if (unitInstanceId === pending.instanceId && card?.cardId === "RS-379") {
+      actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+    }
+  }
 
   const player = state.players[playerId];
   const enemy = state.players[opponent(playerId)];
@@ -1432,6 +1443,9 @@ export function getLegalActions(state: GameState): GameAction[] {
 
   if (state.pendingRideOffChoice) {
     const pending = state.pendingRideOffChoice;
+    if (lionArmorAvailable(state, pending.playerId)) {
+      actions.push({ type: "activate_field_unit_ability", playerId: pending.playerId, unitInstanceId: pending.vehicleInstanceId });
+    }
     actions.push({
       type: "resolve_ride_off_choice",
       playerId: pending.playerId,
@@ -2033,6 +2047,15 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
   }
 
   if (state.pendingRideOffChoice) {
+    // RS-381【獅子の装光】: ライドオフさせるかわりに発動する。
+    if (
+      action.type === "activate_field_unit_ability" &&
+      action.playerId === state.pendingRideOffChoice.playerId &&
+      action.unitInstanceId === state.pendingRideOffChoice.vehicleInstanceId &&
+      lionArmorAvailable(state, action.playerId)
+    ) {
+      return true;
+    }
     return (
       action.type === "resolve_ride_off_choice" &&
       action.playerId === state.pendingRideOffChoice.playerId

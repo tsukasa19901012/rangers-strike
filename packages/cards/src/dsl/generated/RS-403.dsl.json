@@ -35,7 +35,8 @@
             "zone": "rush",
             "owner": "opponent",
             "filter": {
-              "size": "S"
+              "size": "S",
+              "bpLastThreeDigits": 500
             }
           },
           "count": 1,
@@ -57,7 +58,8 @@
           "zone": "rush",
           "owner": "opponent",
           "filter": {
-            "size": "S"
+            "size": "S",
+            "bpLastThreeDigits": 500
           }
         }
       }

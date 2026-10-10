@@ -249,8 +249,7 @@ describe("RS-406 マシンボクサー", () => {
     expect(canMount(base("SPEC-PLAIN"), "SPEC-PLAIN:r")).toBe(false);
   });
 
-  it.fails("RS-406: ※ 警察を持っていても M ユニットはライドできない（出典: atwiki/page-563「特徴「警察」を持つ自軍Sユニット」）", () => {
-    // 既知の不具合: CARD-RS-406 ライド許可の「S ユニット」制限が見られず、警察の M ユニットもライドできる
+  it("RS-406: ※ 警察を持っていても M ユニットはライドできない（出典: atwiki/page-563「特徴「警察」を持つ自軍Sユニット」）", () => {
     expect(canMount(base("SPEC-POLM"), "SPEC-POLM:r")).toBe(false);
   });
 

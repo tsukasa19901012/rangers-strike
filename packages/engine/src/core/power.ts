@@ -74,6 +74,21 @@ export function effectivePowerCost(
   return Math.max(0, reduced);
 }
 
+/**
+ * RS-375 レッドレーサー（2nd）の※「これが自軍エリアにある間、自分のユニットカードの必要パワーの数字は1増える。」（atwiki/page-552）
+ * 対象はユニット「カード」（手札・山札・パワーゾーン・コマンドゾーン等）で、場のユニットには及ばない（faq-card-6 RS-375 Q2/Q4/Q5）。
+ * 複数あれば重複する（R-CONT-01）。
+ */
+export function redRacerPowerCostBonus(
+  state: Pick<GameState, "players" | "definitions">,
+  ownerId: PlayerId,
+  cardId: string,
+): number {
+  if (getDefinition(state.definitions, cardId)?.type !== "unit") return 0;
+  const owner = state.players[ownerId];
+  return [...owner.battle, ...owner.rush].filter((c) => c.cardId === "RS-375").length;
+}
+
 export function rushEffectivePowerCost(
   state: Pick<GameState, "players" | "definitions" | "activePlayer">,
   playerId: PlayerId,
@@ -82,6 +97,7 @@ export function rushEffectivePowerCost(
 ): number {
   if (cardId) {
     const def = getDefinition(state.definitions, cardId);
+    rawCost += redRacerPowerCostBonus(state, playerId, cardId);
     // ルール: R-ERR-RK043 — 【突入】の後、次にラッシュするミラーライダーの必要パワーは3少なくなる。
     if (isRideShooterRushTarget(state, playerId, cardId)) {
       rawCost = Math.max(0, rawCost - 3);

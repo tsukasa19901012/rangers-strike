@@ -577,6 +577,19 @@ export function canStrikeUnit(
     if (!canStrikeWithHelloMirage(state, playerId, instance)) {
       return false;
     }
+    // RS-370 ブラックマスク: ※特徴「女」を持つ敵軍ユニットがあるときストライクできない
+    // （この制限は自軍ダメージが4点以上あれば無効になる）（atwiki/page-566）。
+    const ownDamage = Math.max(
+      state.players[playerId].damage,
+      state.players[playerId].power.filter((c) => c.faceDown).length,
+    );
+    if (instance.cardId === "RS-370" && ownDamage < 4) {
+      const enemy = state.players[opponent(playerId)];
+      const enemyHasFemale = [...enemy.rush, ...enemy.battle].some((c) =>
+        (getDefinition(state.definitions, c.cardId)?.features ?? []).includes("女"),
+      );
+      if (enemyHasFemale) return false;
+    }
     // XG2-101: can't strike if enemy has any メカ unit
     if (instance.cardId === "XG2-101") {
       const enemyId = opponent(playerId);

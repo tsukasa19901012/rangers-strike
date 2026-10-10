@@ -46,6 +46,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::RS-375::twin_cam_crash",
+          "duration": "turn"
         }
       ]
     }

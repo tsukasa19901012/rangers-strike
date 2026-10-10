@@ -16,6 +16,7 @@ import {
   cardName,
   effectiveComboNumber,
   getDefinition,
+  unitEffectiveCategories,
 } from "../core/catalog";
 import { crossReducedNumber, crossReductionFor } from "../keywords/battleKeywords";
 import { applySuperBrainDraw } from "../effects/drawEffects";
@@ -93,6 +94,15 @@ function tankCommandBlocksNc(
   return false;
 }
 
+/** 直前のユニット（左隣。バトルエリア）のカテゴリ（バトルエリアで追加されるカテゴリを含む）。 */
+function neighborCategories(
+  state: GameState,
+  playerId: PlayerId,
+  leftNeighbor: CardInstance | undefined,
+): string[] | undefined {
+  return leftNeighbor ? unitEffectiveCategories(state, playerId, leftNeighbor, "battle") : undefined;
+}
+
 export function numberComboTriggers(
   state: GameState,
   playerId: PlayerId,
@@ -132,7 +142,12 @@ export function numberComboTriggers(
     (listDslEffectsForTrigger(card.cardId, "nc")[0]?.text ?? "").includes("ナンバーに関係なく")
   ) {
     const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
-    if (ncColumnEffectIdsEstablished(state, card.cardId, false, leftNeighbor?.cardId).length > 0) return true;
+    if (
+      ncColumnEffectIdsEstablished(state, card.cardId, false, leftNeighbor?.cardId, neighborCategories(state, playerId, leftNeighbor))
+        .length > 0
+    ) {
+      return true;
+    }
   }
 
   return false;
@@ -178,7 +193,7 @@ export function markOnAttackNcEffectOnEnter(
   if (named && isNcGatedOnAttackEffect(named, card.cardId) && !tankCommandBlocksNc(state, card, definition)) {
     const fromPosition = ncEffectiveNumber(state, playerId, card, definition) === battlePosition;
     const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
-    const fromPartner = comboFromNamedPartner(state, named, leftNeighbor?.cardId);
+    const fromPartner = comboFromNamedPartner(state, named, leftNeighbor?.cardId, neighborCategories(state, playerId, leftNeighbor));
     if (fromPosition || fromPartner) {
       nextState = markBattleNcEffect(nextState, playerId, card.instanceId, named.effectId);
     }
@@ -205,7 +220,13 @@ export function markNcColumnEffectsOnEnter(
     ncEffectiveNumber(state, playerId, card, definition) === battlePosition;
   const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
   let nextState = state;
-  for (const effectId of ncColumnEffectIdsEstablished(state, card.cardId, numberMatches, leftNeighbor?.cardId)) {
+  for (const effectId of ncColumnEffectIdsEstablished(
+    state,
+    card.cardId,
+    numberMatches,
+    leftNeighbor?.cardId,
+    neighborCategories(state, playerId, leftNeighbor),
+  )) {
     nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
   }
   return nextState;

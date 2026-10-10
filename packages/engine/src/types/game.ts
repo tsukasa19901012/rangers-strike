@@ -504,6 +504,8 @@ export type PendingEffectChoice = {
     residentIds?: string[];
   };
   skipShurikenIntercept?: boolean;
+  /** RS-381【獅子の装光】: 解決後に続けるバトル進入（ライドオフの選択のかわりに発動した）。 */
+  battleEntryResume?: PendingBattleEntry;
   /** RS-322 人身略取: 相手が満たす追加条件の進行。 */
   abductionMeta?: { payerId: PlayerId; cardId: string; remaining: number };
   /** RS-183 黒子ロボの記憶操作の進行（使用者→相手、ドロー→山札に戻す手順）。 */
@@ -824,6 +826,10 @@ export type GameState = {
    * 選択待ちで中断したら、解決後にここから再開する（R-END-01）。
    */
   turnEndProgress?: TurnEndProgress;
+  /** RS-352【ダイデンジンブーメラン】: パワーゾーンを離れたカード（1枚ごとに相手が撃破するユニットを選ぶ）の待ち行列。 */
+  boomerangQueue?: Array<{ ownerId: PlayerId; cost: number; cardId: string }>;
+  /** RS-363【パンサークロー】: 敵軍コマンドゾーンにホールド状態で置かれたユニットカード（捨札にするかを選ぶ）の待ち行列。 */
+  pantherClawQueue?: Array<{ playerId: PlayerId; instanceId: string }>;
   /**
    * 効果でラッシュエリアに出たが、先に解決すべき操作待ちがあり「ラッシュしたとき」の誘発と
    * 「ラッシュされたとき」の窓をまだ処理していないユニット（出た順）。
@@ -917,6 +923,8 @@ export type TurnEndProgress = {
    */
   exodusOrderAsked?: boolean;
   exodusFirst?: boolean;
+  /** RS-360【宇宙で一番美しいのは誰？】で、まだ選んで撃破していない回数（未計算なら undefined）。 */
+  hedrianLeft?: number;
 };
 
 export const INITIAL_HAND_SIZE = 7;

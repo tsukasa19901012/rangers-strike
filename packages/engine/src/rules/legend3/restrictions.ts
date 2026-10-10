@@ -1,3 +1,4 @@
+import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
 import { set5ADefenderBlocksAttack } from "../legend1/set5NamedEffectsA";
 import { kibaGakureBlocksAttack, magiMergeAllowsRushAttack } from "../legend1/set5NamedEffects";
@@ -8,6 +9,7 @@ import {
 } from "@rangers-strike/cards";
 import { elephantShieldMustTarget } from "./fieldEffects";
 import { activeNamedEffect } from "../ncGatedEffects";
+import { unitFeatures } from "../addedFeatures";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { isCostWindowSatisfied } from "../../core/costWindow";
@@ -375,6 +377,18 @@ function noteOtherNcAttackRestriction(
   return false;
 }
 
+function timeJetRearGuardBlocksAttack(
+  state: GameState,
+  defenderPlayerId: PlayerId,
+  defenderInstanceId: string,
+): boolean {
+  const battle = state.players[defenderPlayerId].battle;
+  if (battle.at(-1)?.cardId !== "RS-401") return false;
+  const defender = battle.find((c) => c.instanceId === defenderInstanceId);
+  if (!defender) return false;
+  return unitFeatures(state, defenderPlayerId, defender).includes("航空機");
+}
+
 export function canAttackDefender(
   state: GameState,
   attackerPlayerId: PlayerId,
@@ -400,6 +414,9 @@ export function canAttackDefender(
   if (mustTarget && mustTarget !== defenderInstanceId) return false;
   // RS-297【変形】: 自軍コマンドがすべてリリース状態なら、「航空機」を持たないユニットにアタックされない。
   if (set5ADefenderBlocksAttack(state, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
+  // RS-401 タイムジェット5【最後尾からの警戒】: これが自軍バトルエリアの最後に並んでいる間、自軍バトルエリアの
+  // 特徴「航空機」を持つユニットは敵軍ユニットにアタックされない（atwiki/page-559）。
+  if (timeJetRearGuardBlocksAttack(state, defenderPlayerId, defenderInstanceId)) return false;
 
   const attackerInRush = findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (
@@ -416,6 +433,8 @@ export function canAttackDefender(
   // RS-311【カラクリ忍法・牙がくれ】（rules/legend1/set5NamedEffects.ts）。
   const defenderCard = (inBattle ?? inRush)?.card;
   if (defenderCard && kibaGakureBlocksAttack(state, attackerPlayerId, attackerInstanceId, defenderCard)) return false;
+  // RS-350 暗黒の鎧（「SP1」以上のユニット以外にはアタックされない）・RS-385 グリーンホバーの※（rules/legend1/set6NamedEffects348.ts）。
+  if (defenderCard && set6LowDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;

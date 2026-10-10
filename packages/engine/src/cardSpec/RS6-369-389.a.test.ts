@@ -88,8 +88,7 @@ describe("RS-369 ブルーマスク", () => {
   });
 
   // 「【双手剣】SP1」— SP！のユニットは NC 成立で SP1 になる（R-CN-02）。
-  it.fails("RS-369: 【双手剣】NC 成立（3番目に出る）で SP1 になり、ストライクできる（出典: atwiki/page-565「【双手剣】SP1」）", () => {
-    // 既知の不具合: CARD-RS-369 NC は成立する（ログあり）が SP1 にならず、ストライクできない
+  it("RS-369: 【双手剣】NC 成立（3番目に出る）で SP1 になり、ストライクできる（出典: atwiki/page-565「【双手剣】SP1」）", () => {
     const s = ncEnter("RS-369", 3);
     expect(spOf(s, "player1", "RS-369:x")).toBe(1);
     expect(canStrike(s, "RS-369:x")).toBe(true);
@@ -101,22 +100,19 @@ describe("RS-369 ブルーマスク", () => {
     expect(canStrike(s, "RS-369:x")).toBe(false);
   });
 
-  it.fails("RS-369: 【双手剣】自軍ダメージ3点以下なら、相手が自分自身のラッシュエリアからユニットを1体選ぶ（出典: atwiki/page-565「相手は自分自身のラッシュエリアからユニットを1体選ぶ」）", () => {
-    // 既知の不具合: CARD-RS-369 【双手剣】の選択が出ない（相手にも自分にも選ばせない）
+  it("RS-369: 【双手剣】自軍ダメージ3点以下なら、相手が自分自身のラッシュエリアからユニットを1体選ぶ（出典: atwiki/page-565「相手は自分自身のラッシュエリアからユニットを1体選ぶ」）", () => {
     const s = ncEnter("RS-369", 3, { power: damageCards(3) }, { rush: [inst("TST-UNIT-0", "r1"), inst("TST-UNIT-2", "r2")], battle: [inst("TST-UNIT-0", "b")] });
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:r1", "TST-UNIT-2:r2"]);
   });
 
-  it.fails("RS-369: 【双手剣】自軍ダメージ4点以上なら自分が選ぶ（出典: atwiki/page-565「自軍ダメージが4点以上あれば自分が選ぶ」）", () => {
-    // 既知の不具合: CARD-RS-369 【双手剣】の選択が出ない
+  it("RS-369: 【双手剣】自軍ダメージ4点以上なら自分が選ぶ（出典: atwiki/page-565「自軍ダメージが4点以上あれば自分が選ぶ」）", () => {
     const s = ncEnter("RS-369", 3, { power: damageCards(4) }, { rush: [inst("TST-UNIT-0", "r1"), inst("TST-UNIT-2", "r2")] });
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:r1", "TST-UNIT-2:r2"]);
   });
 
-  it.fails("RS-369: 【双手剣】このターン、選んだ敵軍ラッシュエリアのユニットにアタックでき、選ばなかったものにはアタックできない（出典: atwiki/page-565「このユニットは、選んだユニットにアタックできる」）", () => {
-    // 既知の不具合: CARD-RS-369 ラッシュエリアのユニットをアタック対象にできない
+  it("RS-369: 【双手剣】このターン、選んだ敵軍ラッシュエリアのユニットにアタックでき、選ばなかったものにはアタックできない（出典: atwiki/page-565「このユニットは、選んだユニットにアタックできる」）", () => {
     let s = ncEnter("RS-369", 3, { power: damageCards(4) }, { rush: [inst("TST-UNIT-0", "r1"), inst("TST-UNIT-2", "r2")] });
     s = pick(s, "TST-UNIT-2:r2");
     expect(attackTargets(s, "RS-369:x")).toContain("TST-UNIT-2:r2");
@@ -149,8 +145,7 @@ describe("RS-370 ブラックマスク", () => {
     });
   });
 
-  it.fails("RS-370: 【マスキーロッド】NC 成立（3番目）で SP1 になり、特徴「女」の敵軍ユニットがなければストライクできる（出典: atwiki/page-566「【マスキーロッド】SP1」）", () => {
-    // 既知の不具合: CARD-RS-370 3番目に出ても NC が成立せず（ログなし）SP1 にならない
+  it("RS-370: 【マスキーロッド】NC 成立（3番目）で SP1 になり、特徴「女」の敵軍ユニットがなければストライクできる（出典: atwiki/page-566「【マスキーロッド】SP1」）", () => {
     const s = ncEnter("RS-370", 3, {}, { battle: [inst("SPEC-MALE", "m")] });
     expect(spOf(s, "player1", "RS-370:x")).toBe(1);
     expect(canStrike(s, "RS-370:x")).toBe(true);
@@ -171,14 +166,12 @@ describe("RS-370 ブラックマスク", () => {
     expect(canStrike(s, "RS-370:x")).toBe(false);
   });
 
-  it.fails("RS-370: ※ 自軍ダメージが4点以上なら制限は無効になり、「女」の敵軍ユニットがいてもストライクできる（出典: atwiki/page-566「この制限は自軍ダメージが4点以上あれば無効になる」）", () => {
-    // 既知の不具合: CARD-RS-370 NC が成立せず SP1 にならないため、ストライクできない
+  it("RS-370: ※ 自軍ダメージが4点以上なら制限は無効になり、「女」の敵軍ユニットがいてもストライクできる（出典: atwiki/page-566「この制限は自軍ダメージが4点以上あれば無効になる」）", () => {
     const s = ncEnter("RS-370", 3, { power: damageCards(4) }, { battle: [inst("SPEC-FEMALE", "f")] });
     expect(canStrike(s, "RS-370:x")).toBe(true);
   });
 
-  it.fails("RS-370: ※ 自軍の「女」のユニットは制限に関係しない — 敵軍に「女」がなく自軍に「女」がいれば、NC 成立でストライクできる（出典: atwiki/page-566「特徴「女」を持つ敵軍ユニット」）", () => {
-    // 既知の不具合: CARD-RS-370 3番目に出ても NC が成立せず SP1 にならない
+  it("RS-370: ※ 自軍の「女」のユニットは制限に関係しない — 敵軍に「女」がなく自軍に「女」がいれば、NC 成立でストライクできる（出典: atwiki/page-566「特徴「女」を持つ敵軍ユニット」）", () => {
     const s = ncEnter("RS-370", 3, { battle: [inst("SPEC-FEMALE", "own"), ...fillers(1)] });
     expect(canStrike(s, "RS-370:x")).toBe(true);
   });
@@ -210,21 +203,18 @@ describe("RS-371 ピンクマスク", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("hand");
   });
 
-  it.fails("RS-371: 【マスキーリボン】敵軍ラッシュエリアのユニットも選べる（出典: atwiki/page-567「追加条件を持たない敵軍ユニット」— エリアを問わない。評価欄「エリアもサイズも問わない」）", () => {
-    // 既知の不具合: CARD-RS-371 候補が敵軍バトルエリアに限られ、ラッシュエリアのユニットを選べない
+  it("RS-371: 【マスキーリボン】敵軍ラッシュエリアのユニットも選べる（出典: atwiki/page-567「追加条件を持たない敵軍ユニット」— エリアを問わない。評価欄「エリアもサイズも問わない」）", () => {
     const s = ncEnter("RS-371", 2, { power: damageCards(2) }, { battle: [inst("TST-UNIT-0", "e1")], rush: [inst("TST-UNIT-2", "r1")] });
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e1", "TST-UNIT-2:r1"]);
   });
 
-  it.fails("RS-371: 【マスキーリボン】追加条件を持つ敵軍ユニット（ファイブレッドFT）は選べない（出典: atwiki/page-567「追加条件を持たない」・grnrngr/faq-card-6 RS-430 Q「追加条件の記述欄に記述のあるものはすべて「追加条件を持つ」」）", () => {
-    // 既知の不具合: CARD-RS-371 追加条件を持つユニット（必要パワー「7-」のファイブレッドFT）も候補に入る
+  it("RS-371: 【マスキーリボン】追加条件を持つ敵軍ユニット（ファイブレッドFT）は選べない（出典: atwiki/page-567「追加条件を持たない」・grnrngr/faq-card-6 RS-430 Q「追加条件の記述欄に記述のあるものはすべて「追加条件を持つ」」）", () => {
     const s = ncEnter("RS-371", 2, { power: damageCards(2) }, { battle: [inst("TST-UNIT-0", "e1"), inst("RS-373", "ft")] });
     expect(choiceIds(s)).toContain("TST-UNIT-0:e1");
     expect(choiceIds(s)).not.toContain("RS-373:ft");
   });
 
-  it.fails("RS-371: 【マスキーリボン】自軍ダメージの数まで（2点なら2体）手札に戻せる（出典: atwiki/page-567「自軍ダメージの数まで選び」）", () => {
-    // 既知の不具合: CARD-RS-371 自軍ダメージに関係なく1体しか選べない
+  it("RS-371: 【マスキーリボン】自軍ダメージの数まで（2点なら2体）手札に戻せる（出典: atwiki/page-567「自軍ダメージの数まで選び」）", () => {
     let s = ncEnter("RS-371", 2, { power: damageCards(2) }, { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-2", "e2"), inst("TST-UNIT-0", "e3")] });
     s = pick(s, "TST-UNIT-0:e1");
     s = pick(s, "TST-UNIT-2:e2");
@@ -234,8 +224,7 @@ describe("RS-371 ピンクマスク", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e3")).toBe("battle");
   });
 
-  it.fails("RS-371: 【マスキーリボン】自軍ダメージが0点なら1体も戻せない（出典: atwiki/page-567「自軍ダメージの数まで」）", () => {
-    // 既知の不具合: CARD-RS-371 自軍ダメージ0でも1体選べる
+  it("RS-371: 【マスキーリボン】自軍ダメージが0点なら1体も戻せない（出典: atwiki/page-567「自軍ダメージの数まで」）", () => {
     const s = ncEnter("RS-371", 2, {}, { battle: [inst("TST-UNIT-0", "e1")] });
     expect(choiceIds(s)).toEqual([]);
     expect(zoneOf(resolveAll(s), "player2", "TST-UNIT-0:e1")).toBe("battle");
@@ -260,8 +249,7 @@ describe("RS-371 ピンクマスク", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:r1")).toBe("rush");
   });
 
-  it.fails("RS-371: 公式Q&A — ダメージ5点・候補3体（ラッシュエリア含む）なら3体すべて戻すこともできる（出典: grnrngr/faq-card-6 RS-371 Q「任意の数を選んで戻させることができます」）", () => {
-    // 既知の不具合: CARD-RS-371 1体しか選べず、ラッシュエリアのユニットも選べない
+  it("RS-371: 公式Q&A — ダメージ5点・候補3体（ラッシュエリア含む）なら3体すべて戻すこともできる（出典: grnrngr/faq-card-6 RS-371 Q「任意の数を選んで戻させることができます」）", () => {
     let s = ncEnter("RS-371", 2, { power: damageCards(5) }, { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")], rush: [inst("TST-UNIT-0", "r1")] });
     s = pick(pick(pick(s, "TST-UNIT-0:e1"), "TST-UNIT-0:e2"), "TST-UNIT-0:r1");
     s = resolveAll(s);
@@ -275,8 +263,7 @@ describe("RS-371 ピンクマスク", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("battle");
   });
 
-  it.fails("RS-371: 【マスキーリボン】その後、自分がターンを終えるとき、相手は手札のユニットカードを自分自身のラッシュエリアに出せる（出典: atwiki/page-567「自分がターンを終えるとき、相手は…ラッシュエリアに出してもよい」・評価欄コメント「自軍エンドフェイズに」）", () => {
-    // 既知の不具合: CARD-RS-371 ターン終了時に相手が手札からラッシュエリアに出す処理がない
+  it("RS-371: 【マスキーリボン】その後、自分がターンを終えるとき、相手は手札のユニットカードを自分自身のラッシュエリアに出せる（出典: atwiki/page-567「自分がターンを終えるとき、相手は…ラッシュエリアに出してもよい」・評価欄コメント「自軍エンドフェイズに」）", () => {
     let s = ncEnter("RS-371", 2, { power: damageCards(1) }, { battle: [inst("TST-UNIT-0", "e1")], power: powerCards(3) });
     s = resolveAll(pick(s, "TST-UNIT-0:e1"));
     s = toEndOfTurn(s);
@@ -295,8 +282,7 @@ describe("RS-371 ピンクマスク", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("hand");
   });
 
-  it.fails("RS-371: 【マスキーリボン】ターン終了時に出すユニットは必要パワーを満たすこと — パワーが足りないユニットカードは出せない（出典: atwiki/page-567「ただし、必要パワーと追加条件は満たすこと」）", () => {
-    // 既知の不具合: CARD-RS-371 ターン終了時に相手が手札からラッシュエリアに出す処理がない（出せるユニットの候補が出ない）
+  it("RS-371: 【マスキーリボン】ターン終了時に出すユニットは必要パワーを満たすこと — パワーが足りないユニットカードは出せない（出典: atwiki/page-567「ただし、必要パワーと追加条件は満たすこと」）", () => {
     let s = ncEnter("RS-371", 2, { power: damageCards(2) }, { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-2", "e2")], power: powerCards(1) });
     s = resolveAll(pick(s, "TST-UNIT-0:e1"));
     s = toEndOfTurn(s);
@@ -331,14 +317,12 @@ describe("RS-372 X1マスク", () => {
     });
   });
 
-  it.fails("RS-372: 【チェンジパワー】自軍ダメージ1点につき BP+1000（ダメージ3点で BP4000）（出典: atwiki/page-568「自軍ダメージ1点につきBP＋1000され」）", () => {
-    // 既知の不具合: CARD-RS-372 自軍ダメージによる BP 上昇がない（常に BP1000）
+  it("RS-372: 【チェンジパワー】自軍ダメージ1点につき BP+1000（ダメージ3点で BP4000）（出典: atwiki/page-568「自軍ダメージ1点につきBP＋1000され」）", () => {
     const s = st({ player1: { battle: [inst("RS-372", "x")], power: damageCards(3) } });
     expect(bpOf(s, "player1", "RS-372:x")).toBe(4000);
   });
 
-  it.fails("RS-372: 【チェンジパワー】ラッシュエリアにあっても自軍ダメージで BP が上がる（出典: atwiki/page-568「これは…BP＋1000され」— 条件にエリアの限定がない）", () => {
-    // 既知の不具合: CARD-RS-372 自軍ダメージによる BP 上昇がない
+  it("RS-372: 【チェンジパワー】ラッシュエリアにあっても自軍ダメージで BP が上がる（出典: atwiki/page-568「これは…BP＋1000され」— 条件にエリアの限定がない）", () => {
     const s = st({ player1: { rush: [inst("RS-372", "x")], power: damageCards(2) } });
     expect(bpOf(s, "player1", "RS-372:x")).toBe(3000);
   });
@@ -348,8 +332,7 @@ describe("RS-372 X1マスク", () => {
     expect(bpOf(s, "player1", "RS-372:x")).toBe(1000);
   });
 
-  it.fails("RS-372: 【チェンジパワー】自分がターンを終えるとき BP8000 以上（ダメージ7点）なら撃破される（出典: atwiki/page-568「自分がターンを終えるときBP8000以上なら撃破される」）", () => {
-    // 既知の不具合: CARD-RS-372 BP が上がらず、ターン終了時の撃破もない
+  it("RS-372: 【チェンジパワー】自分がターンを終えるとき BP8000 以上（ダメージ7点）なら撃破される（出典: atwiki/page-568「自分がターンを終えるときBP8000以上なら撃破される」）", () => {
     let s = st({ player1: { battle: [inst("RS-372", "x")], power: damageCards(7), deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     s = toEndOfTurn(s);
     expect(zoneOf(s, "player1", "RS-372:x")).toBe("discard");
@@ -368,8 +351,7 @@ describe("RS-372 X1マスク", () => {
   });
 
   // grnrngr/faq-card-6 RS-372「はい、その通りです。」
-  it.fails("RS-372: 公式Q&A — 他の効果で BP8000 以上になった場合もターン終了時に撃破される（出典: grnrngr/faq-card-6 RS-372 Q）", () => {
-    // 既知の不具合: CARD-RS-372 ターン終了時の BP8000 以上の撃破がない
+  it("RS-372: 公式Q&A — 他の効果で BP8000 以上になった場合もターン終了時に撃破される（出典: grnrngr/faq-card-6 RS-372 Q）", () => {
     let s = st({ player1: { battle: [{ ...inst("RS-372", "x"), bpModifier: 7000 }], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     expect(bpOf(s, "player1", "RS-372:x")).toBe(8000);
     s = toEndOfTurn(s);
@@ -409,8 +391,7 @@ describe("RS-373 ファイブレッドFT", () => {
     return act(s, { type: "strike", playerId: "player2", instanceId: "TST-UNIT-0:s" });
   }
 
-  it.fails("RS-373: 【ファイブテクター】自軍ラッシュエリアにある間、相手にストライクされたとき、これをバトルエリアに出してストライクしてきたユニットとバトルでき、ストライクは無効になる（出典: atwiki/page-540）", () => {
-    // 既知の不具合: CARD-RS-373 ストライクされたときに【ファイブテクター】の選択が出ず、ストライクがそのまま通る
+  it("RS-373: 【ファイブテクター】自軍ラッシュエリアにある間、相手にストライクされたとき、これをバトルエリアに出してストライクしてきたユニットとバトルでき、ストライクは無効になる（出典: atwiki/page-540）", () => {
     let s = struck();
     expect(offeredTo(s, "player1", "RS-373:ft")).toBe(true);
     const a = legal(s).find((x) => x.playerId === "player1" && Object.values(x).includes("RS-373:ft"))!;
@@ -573,8 +554,7 @@ describe("RS-375 レッドレーサー（2nd）", () => {
       },
     });
 
-  it.fails("RS-375: ※ 自軍エリアにある間、自分の手札のユニットカードの必要パワーは1増える（必要パワー2のユニットはパワー2ではラッシュできない）（出典: atwiki/page-552）", () => {
-    // 既知の不具合: CARD-RS-375 必要パワー+1 が適用されない
+  it("RS-375: ※ 自軍エリアにある間、自分の手札のユニットカードの必要パワーは1増える（必要パワー2のユニットはパワー2ではラッシュできない）（出典: atwiki/page-552）", () => {
     expect(canStartRush(rushCost2(2), "player1", "TST-UNIT-2:u")).toBe(false);
   });
 
@@ -584,8 +564,7 @@ describe("RS-375 レッドレーサー（2nd）", () => {
     expect(zoneOf(r.state, "player1", "TST-UNIT-2:u")).toBe("rush");
   });
 
-  it.fails("RS-375: ※ バトルエリアにあっても（自軍エリア）必要パワーが1増える（出典: atwiki/page-552「これが自軍エリアにある間」）", () => {
-    // 既知の不具合: CARD-RS-375 必要パワー+1 が適用されない
+  it("RS-375: ※ バトルエリアにあっても（自軍エリア）必要パワーが1増える（出典: atwiki/page-552「これが自軍エリアにある間」）", () => {
     expect(canStartRush(rushCost2(2, "battle"), "player1", "TST-UNIT-2:u")).toBe(false);
   });
 
@@ -622,8 +601,7 @@ describe("RS-375 レッドレーサー（2nd）", () => {
     expect(spOf(s, "player1", "RS-375:x")).toBe(0);
   });
 
-  it.fails("RS-375: 【ツインソード・ツインカムクラッシュ】敵軍バトルエリアから本来のBP2000／必要パワー2／ナンバー2のユニットを選べ、どれにも当たらないものとラッシュエリアのものは選べない（出典: atwiki/page-552）", () => {
-    // 既知の不具合: CARD-RS-375 撃破の選択が出ない（SP1 のみ）
+  it("RS-375: 【ツインソード・ツインカムクラッシュ】敵軍バトルエリアから本来のBP2000／必要パワー2／ナンバー2のユニットを選べ、どれにも当たらないものとラッシュエリアのものは選べない（出典: atwiki/page-552）", () => {
     const s0 = st(
       {
         player1: { rush: [inst("RS-375", "x")], battle: fillers(3), deck: deckCards(5) },
@@ -639,8 +617,7 @@ describe("RS-375 レッドレーサー（2nd）", () => {
     expect(choiceIds(s)).toEqual(["SPEC-BP2000:a", "SPEC-CN2:c", "TST-UNIT-2:b"]);
   });
 
-  it.fails("RS-375: 【ツインソード・ツインカムクラッシュ】選んだユニットを撃破する（出典: atwiki/page-552「1体選び、撃破してもよい」）", () => {
-    // 既知の不具合: CARD-RS-375 撃破の選択が出ない
+  it("RS-375: 【ツインソード・ツインカムクラッシュ】選んだユニットを撃破する（出典: atwiki/page-552「1体選び、撃破してもよい」）", () => {
     let s = twin([inst("TST-UNIT-2", "b")]);
     s = resolveAll(pick(s, "TST-UNIT-2:b"));
     expect(zoneOf(s, "player2", "TST-UNIT-2:b")).toBe("discard");
@@ -703,8 +680,7 @@ describe("RS-375 レッドレーサー（2nd）", () => {
     expect(choiceIds(s)).toContain("RS-375:eb");
   });
 
-  it.fails("RS-375: 公式Q&A — 自軍エリアにレッドレーサー（2nd）があると、パワーゾーンから捨札にしたカードの必要パワーは1増えたものとして参照する（SR-005【バトライズファイヤードライブ】）（出典: grnrngr/faq-card-6 SR-005 Q「はい、その通りです」・RS-375 Q1/Q5）", () => {
-    // 既知の不具合: CARD-RS-375 必要パワー+1 が適用されない
+  it("RS-375: 公式Q&A — 自軍エリアにレッドレーサー（2nd）があると、パワーゾーンから捨札にしたカードの必要パワーは1増えたものとして参照する（SR-005【バトライズファイヤードライブ】）（出典: grnrngr/faq-card-6 SR-005 Q「はい、その通りです」・RS-375 Q1/Q5）", () => {
     // 自軍ラッシュエリアに RS-375。パワーゾーンの RS-375 のカード（必要パワー1→2）を捨札にすると、必要パワー2の敵軍 S ユニットが候補で、1は候補でない。
     const s = batorize({ rush: [inst("RS-375", "rr")] }, inst("RS-375", "pw"), { battle: [inst("TST-UNIT-0", "c0"), inst("RS-372", "c2"), inst("RS-370", "c1")] });
     expect(choiceIds(s)).toContain("RS-372:c2");

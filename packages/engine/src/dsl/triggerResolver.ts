@@ -1,3 +1,4 @@
+import { namedTextNegated } from "../rules/legend1/set6NamedEffects348";
 import type { EffectTrigger } from "@rangers-strike/cards/dsl/types";
 import type { GameState, PlayerId } from "../types/game";
 import { buildLogEntry } from "../log/formatLog";
@@ -123,6 +124,8 @@ export function tryResolveDslTriggeredEffects(args: {
 
   for (const effect of effects) {
     if (!shouldUseDslTriggeredEffect(args.cardId, effect, args.triggerType)) continue;
+    // RS-379【雷の雄叫び】: 「メカ」の敵軍ユニットの効果名を持つテキストは発動もできない。
+    if (effect.name && namedTextNegated(current, args.playerId, { cardId: args.cardId, instanceId: args.instanceId })) continue;
     // NC の効果（ナンバーの欄の名前つき効果）は、バトルエリアに出たときに NC が成立していなければ発動しない
     // （ルール: R-CN-02。「ナンバーに関係なく発動する」の但し書きの相手からのコンビネーションも成立として記録済み）。
     // trigger が nc の効果は NC の成立そのもので呼ばれるので、ここで止めるのはそれ以外（「アタックするとき」等）。

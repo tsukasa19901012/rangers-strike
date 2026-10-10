@@ -1,9 +1,11 @@
+import { redRacerPowerCostBonus } from "../core/power";
+import { isSet6LowChoiceEffect, tryResolveSet6LowChoice, trySkipSet6LowChoice } from "./legend1/set6NamedEffects348";
 import {
   beginDestroyTriggerHold,
   hasDestroyerStep1Text,
   releaseDestroyTriggerHold,
 } from "./destroyTriggerQueue";
-import { checkWinner } from "../core/createGame";
+import { checkWinner, meditationActive } from "../core/createGame";
 import {
   isSet5AChoiceEffect,
   tryConfirmSet5AChoice,
@@ -85,7 +87,7 @@ import {
 import { applyRocketBoosterDeclaredName } from "./rocketBooster";
 import { applySimultaneousOrderChoice } from "./simultaneousEffects";
 import { applyAssaultToCommandHold } from "./legend3/restrictions";
-import { findInZone, opponent, performDeckDraws, removeAt, takeFromDeckTop, updatePlayer } from "../core/helpers";
+import { applyPlayerDamage, findInZone, opponent, performDeckDraws, removeAt, takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { LION_DANCE_EFFECT_ID, markJuuKunDoAttackerActed } from "./juuKunDo";
 import { findCardInField, findCardOwner } from "./fieldLookup";
@@ -138,6 +140,14 @@ import {
   tryResolveSet5AuditChoice,
   trySkipSet5AuditChoice,
 } from "./legend1/set5AuditFixes";
+import {
+  isSet6AuditChoiceEffect,
+  tryConfirmSet6AuditChoice,
+  tryResolveSet6AuditChoice,
+  trySkipSet6AuditChoice,
+  fireAkaRedSoulNc,
+  STRING_FIST_SECOND_STEP_REFRESH,
+} from "./legend1/set6AuditFixes";
 import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
@@ -599,7 +609,9 @@ export function isValidEffectChoiceTarget(
     isSet4ChoiceEffect(pending.effectId) ||
     isSet5ChoiceEffect(pending.effectId) ||
     isSet5AuditChoiceEffect(pending.effectId) ||
-    isSet5AChoiceEffect(pending.effectId)
+    isSet5AChoiceEffect(pending.effectId) ||
+    isSet6LowChoiceEffect(pending.effectId) ||
+    isSet6AuditChoiceEffect(pending.effectId)
   ) {
     return true;
   }
@@ -1934,6 +1946,8 @@ export function applyConfirmEffectChoice(
   if (set4) return set4;
   const set5a = tryConfirmSet5AChoice(state, playerId);
   if (set5a) return set5a;
+  const set6Audit = tryConfirmSet6AuditChoice(state, playerId);
+  if (set6Audit) return set6Audit;
 
   if (pending.mayConfirm) {
     const log = buildLogEntry(
@@ -2716,6 +2730,24 @@ function applyPostHoldContinuation(
   return { state: nextState, done: false };
 }
 
+/**
+ * RS-421【ソウル降臨】: ホールドしたカードの NC の効果をアカレッドの効果として発動してから選択を閉じる
+ * （rules/legend1/set6AuditFixes.ts fireAkaRedSoulNc）。
+ */
+function finishAkaRedSoul(state: GameState, pending: PendingEffectChoice, heldCardId: string): ChoiceOutcome {
+  const cleared = clearChoice(state, pending.phasePlayerId);
+  const fired = fireAkaRedSoulNc(cleared, pending.playerId, pending.sourceInstanceId!, heldCardId);
+  if (fired.pendingEffectChoice) {
+    const opened = fired.pendingEffectChoice;
+    return {
+      state: pending.resumeChoice
+        ? { ...fired, pendingEffectChoice: appendResumeChoice(opened, pending.resumeChoice) }
+        : fired,
+    };
+  }
+  return finishChoice(fired, pending, cardName(state.definitions, heldCardId));
+}
+
 export function completeEffectHoldChoice(
   state: GameState,
   playerId: PlayerId,
@@ -2729,6 +2761,14 @@ export function completeEffectHoldChoice(
   if (commandInstanceIds.length !== selectCount) return { error: "wrong_count" };
   for (const id of commandInstanceIds) {
     if (!pending.validInstanceIds.includes(id)) return { error: "invalid_target" };
+  }
+  if (pending.effectId === "souru" && pending.sourceCardId === "RS-421" && pending.sourceInstanceId) {
+    // RS-421【ソウル降臨】（支払いでホールド済み）: ストライク不可を付け、ホールドしたカードの NC を発動する。
+    const heldId = commandInstanceIds[0]!;
+    const held = state.players[playerId].command.find((c) => c.instanceId === heldId);
+    if (!held) return { error: "invalid_target" };
+    const marked = markBattleNcEffect(state, playerId, pending.sourceInstanceId, "souru_no_strike");
+    return finishAkaRedSoul(marked, pending, held.cardId);
   }
   const continued = applyPostHoldContinuation(state, pending);
   if (continued.done) return { state: continued.state };
@@ -2753,6 +2793,10 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set5) return set5;
   const set5Audit = trySkipSet5AuditChoice(state, playerId);
   if (set5Audit) return set5Audit;
+  const set6Low = trySkipSet6LowChoice(state, playerId);
+  if (set6Low) return set6Low;
+  const set6Audit = trySkipSet6AuditChoice(state, playerId);
+  if (set6Audit) return set6Audit;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     // 選択を省略したときは先にひいた1枚を手札に残す（どちらか1枚は必ず残る）。
@@ -2927,6 +2971,10 @@ export function applyEffectChoiceSelect(
   if (set5) return set5;
   const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);
   if (set5Audit) return set5Audit;
+  const set6Low = tryResolveSet6LowChoice(state, playerId, instanceId);
+  if (set6Low) return set6Low;
+  const set6Audit = tryResolveSet6AuditChoice(state, playerId, instanceId);
+  if (set6Audit) return set6Audit;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
@@ -3850,14 +3898,17 @@ export function applyEffectChoiceSelect(
       if (pending.placeAsDamage && dest === "power" && located) {
         const owner = nextState.players[located.playerId];
         if (owner.power.some((c) => c.instanceId === instanceId && !c.faceDown)) {
-          nextState = {
-            ...nextState,
-            ...updatePlayer(nextState, located.playerId, {
-              ...owner,
-              power: owner.power.map((c) => (c.instanceId === instanceId ? { ...c, faceDown: true } : c)),
-              damage: owner.damage + 1,
-            }),
+          let placed: PlayerState = {
+            ...owner,
+            power: owner.power.map((c) => (c.instanceId === instanceId ? { ...c, faceDown: true } : c)),
+            damage: owner.damage + 1,
           };
+          // RS-348 メディテーション: ダメージにして置かれた場合も追加で1点受ける
+          // （grnrngr/faq-card-6 RS-348 Q5「はい、追加ダメージを受けます」。追加分に追加はない）。
+          if (meditationActive(nextState, located.playerId)) {
+            placed = applyPlayerDamage(placed, 1);
+          }
+          nextState = { ...nextState, ...updatePlayer(nextState, located.playerId, placed) };
         }
       }
       if (
@@ -3938,6 +3989,8 @@ export function applyEffectChoiceSelect(
             validInstanceIds: enemyTargets,
             selectedInstanceIds: [],
             unitDestination: "enemy_battle",
+            // 割り込んだ効果（RS-417【消滅の緋色】等）で撃破されたユニットを候補から外して開く。
+            refreshOnOpen: { key: STRING_FIST_SECOND_STEP_REFRESH },
           };
           // ルール: R-CN-04 / R-TIME-04 — 戻したユニットの「ラッシュエリアに戻るとき」（ジェットファルコンの
           // ファルコンクロー）が割り込んで解決され、その後で紐拳の残りを続ける（faq-card-3 RS-141 Q1）。
@@ -4195,11 +4248,7 @@ export function applyEffectChoiceSelect(
             pending.sourceInstanceId,
           );
           if (!moved) return { error: "invalid_target" };
-          return finishChoice(
-            moved,
-            pending,
-            cardName(state.definitions, found.card.cardId),
-          );
+          return finishAkaRedSoul(moved, pending, found.card.cardId);
         }
         const command = [...player.command];
         command[found.index] = { ...found.card, commandHeld: true };
@@ -4512,9 +4561,10 @@ export function applyEffectChoiceSelect(
             "no_discard",
           );
         }
-        const powerCost = parsePowerCost(
-          getDefinition(state.definitions, discarded.cardId)?.powerCost ?? 99,
-        );
+        // RS-375 レッドレーサー（2nd）: 自軍エリアにあれば、パワーゾーンから捨札にしたユニットカードの必要パワーは1増えたものとして参照する。
+        const powerCost =
+          parsePowerCost(getDefinition(state.definitions, discarded.cardId)?.powerCost ?? 99) +
+          redRacerPowerCostBonus(state, pending.playerId, discarded.cardId);
         const enemyId = opponent(pending.playerId);
         const targets = findEnemySWithPowerCost(state, enemyId, powerCost).map(
           (c) => c.instanceId,

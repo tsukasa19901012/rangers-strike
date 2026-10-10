@@ -237,11 +237,15 @@ export function legend3EffectiveSp(
   sp = Math.max(sp, sr003SpFloor(state, playerId, instance));
   sp = Math.max(sp, srBigBatonSpFloor(state, playerId, instance));
 
-  if (
-    instance.cardId === "RS-382" &&
-    instance.activatedNcEffects?.includes("victory_robo_strike")
-  ) {
+  // RS-382 ビクトリーロボ【人の命は地球の未来】: このターン自軍捨札から手札に加えた S ユニットのカード1枚につき SP+1。
+  // ナンバーを持たないカードの効果で、NC の成立とは関係しない（atwiki/page-541）。
+  if (instance.cardId === "RS-382") {
     sp += state.players[playerId].sUnitsRecoveredFromDiscardThisTurn ?? 0;
+  }
+  // RS-388 ゴーレッド（2nd）【ブイランサー】「SP1」（この効果は、このターン自軍捨札から S ユニットのカードを手札に加えていれば、
+  // ナンバーに関係なく発動する）（atwiki/page-537）。
+  if (instance.cardId === "RS-388" && (state.players[playerId].sUnitsRecoveredFromDiscardThisTurn ?? 0) > 0) {
+    sp = Math.max(sp, 1);
   }
 
   // XG7-008: SP1 when in battle position 2 or 3 and own MA command present
