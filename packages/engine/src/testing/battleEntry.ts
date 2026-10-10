@@ -3,6 +3,8 @@ import { legend1Catalog, legend2Catalog, legend3Catalog } from "@rangers-strike/
 import type { NumberComboEffectId } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
+import { findInZone, removeAt, updatePlayer } from "../core/helpers";
+import { battlePositionAfterMove, resolveEnterBattleEffects } from "../rules/combo";
 import { TEST_DEFINITIONS } from "./fixtures";
 
 export const legendDefinitions: Record<string, CardDefinition> = {
@@ -53,4 +55,34 @@ export function battleUnit(
   instanceId: string,
 ): CardInstance | undefined {
   return state.players[playerId].battle.find((card) => card.instanceId === instanceId);
+}
+
+/**
+ * 効果でユニットをバトルエリアに出したときと同じ処理を、ターンに関係なく行う（テスト用）。
+ *
+ * 敵軍ターン中に自軍ユニットがバトルエリアに出る状況（例: 相手の効果・ファイブテクター等で出される）を、
+ * カードの組み合わせに頼らずに作るためのもの。ユニットを自軍ラッシュエリアからバトルエリアの末尾へ移し、
+ * エンジンの進入処理（`resolveEnterBattleEffects`: NC・「バトルエリアに出たとき」の効果）をそのまま実行する。
+ * ターンプレイヤー（state.activePlayer）・フェイズは変えないので、「自軍ターン中」の条件はエンジンの判定どおりに働く。
+ */
+export function enterBattleByEffect(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): GameState {
+  const player = state.players[playerId];
+  const found = findInZone(player, "rush", instanceId);
+  if (!found) throw new Error(`enterBattleByEffect: ${instanceId} is not in ${playerId}'s rush area`);
+  const [, rush] = removeAt(player.rush, found.index);
+  const battleBeforeEnter = [...player.battle];
+  const position = battlePositionAfterMove(player.battle);
+  const moved: GameState = {
+    ...state,
+    ...updatePlayer(state, playerId, { ...player, rush, battle: [...player.battle, found.card] }),
+  };
+  const result = resolveEnterBattleEffects(moved, playerId, found.card, position, { battleBeforeEnter });
+  const next: GameState = { ...result.state, log: [...result.state.log, ...result.logs] };
+  // 進入処理で開いた選択がなければ、元のターンプレイヤーの手番に戻す。
+  if (next.pendingEffectChoice) return next;
+  return { ...next, activePlayer: state.activePlayer };
 }

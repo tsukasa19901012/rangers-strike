@@ -9,6 +9,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { enterBattleByEffect } from "../testing/battleEntry";
 import { allCardsCatalog, validateDeckEntries } from "@rangers-strike/cards";
 import {
   attackTargets,
@@ -178,9 +179,15 @@ describe("RS-293 気伝獣ウォンタイガー", () => {
     expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(enemyDeck().map((c) => c.instanceId));
   });
 
-  it.todo(
-    "RS-293: 【吼新星・大咆哮】敵軍ターン中にバトルエリアに出たときは発動しない（出典: atwiki/page-477「自軍ターン中」）— 敵軍ターン中に M ユニットをバトルエリアに出す手段がエンジンで用意できない",
-  );
+  // 敵軍ターン中にバトルエリアに出る状況は、効果で出したときと同じ進入処理を行うテスト用の enterBattleByEffect で作る。
+  it("RS-293: 【吼新星・大咆哮】敵軍ターン中にバトルエリアに出たときは発動しない（出典: atwiki/page-477「自軍ターン中」）", () => {
+    const s0 = st({ activePlayer: "player2", player1: { rush: [inst("RS-293", "w")], command: releasedN(1), deck: deckCards(3) }, player2: { deck: enemyDeck() } }, SPECS);
+    const s = settle(enterBattleByEffect(s0, "player1", "RS-293:w"));
+    expect(zoneOf(s, "player1", "RS-293:w")).toBe("battle");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-293");
+    expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(enemyDeck().map((c) => c.instanceId));
+    expect(s.players.player2.discard).toEqual([]);
+  });
 
   // faq-card-5 RS-293 Q1「はい、見せなければなりません。…戻すときは順番が相手にもわかるように1枚ずつ指定して下さい。」
   it.todo(

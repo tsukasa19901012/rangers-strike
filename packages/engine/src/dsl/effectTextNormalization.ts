@@ -196,6 +196,25 @@ function dropDestroyerClauseAtWrongTrigger(effect: EffectDefinition): EffectDefi
   return { ...effect, condition: kept.length > 0 ? effect.condition : undefined, effects: kept } as EffectDefinition;
 }
 
+const OWN_TURN_TRIGGERS = new Set(["enter_battle", "on_rush", "nc", "on_attack", "on_destroy", "on_leave"]);
+
+/**
+ * 「自軍ターン中、これが…とき」で始まる効果は、自軍ターン中にだけ発動する。
+ * DSL スタブがこの条件を落としていれば（condition に controller_is_phase_player がなければ）付け足す
+ * （例: RS-287【超爆裂龍神突き】は敵軍ターン中にバトルエリアに出ても発動しない）。
+ */
+function requireOwnTurnByText(effect: EffectDefinition): EffectDefinition {
+  const text = effect.text?.trim();
+  if (!text || !/^(?:※)?自軍ターン中、/.test(text)) return effect;
+  if (!OWN_TURN_TRIGGERS.has(effect.trigger.type)) return effect;
+  const has = (c: EffectCondition | undefined): boolean =>
+    !!c && (c.type === "controller_is_phase_player" || (c.type === "and" && c.conditions.some(has)));
+  if (has(effect.condition)) return effect;
+  const own: EffectCondition = { type: "controller_is_phase_player" };
+  const condition: EffectCondition = effect.condition ? { type: "and", conditions: [own, effect.condition] } : own;
+  return { ...effect, condition } as EffectDefinition;
+}
+
 /** R-TGT-01: 本文の「ユニット」に合わせて選択範囲をラッシュエリアまで広げる。 */
 function widenUnitTargetsToRushArea(effect: EffectDefinition): EffectDefinition {
   const effects = widenPrimitives(effect.effects, effect.text);
@@ -205,8 +224,10 @@ function widenUnitTargetsToRushArea(effect: EffectDefinition): EffectDefinition 
 }
 
 function normalizeEffect(input: EffectDefinition, doc: CardDocument): EffectDefinition {
-  const effect = dropDestroyerClauseAtWrongTrigger(
-    fixDidNotAttackTrigger(fixPowerNonDamage(widenUnitTargetsToRushArea(input)), doc),
+  const effect = requireOwnTurnByText(
+    dropDestroyerClauseAtWrongTrigger(
+      fixDidNotAttackTrigger(fixPowerNonDamage(widenUnitTargetsToRushArea(input)), doc),
+    ),
   );
   if (isReanimateNamedOnDestroyText(effect.text)) {
     return {

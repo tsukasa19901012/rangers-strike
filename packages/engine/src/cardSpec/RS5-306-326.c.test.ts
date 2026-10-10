@@ -9,6 +9,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { enterBattleByEffect } from "../testing/battleEntry";
 import { allCardsCatalog, validateDeckEntries } from "@rangers-strike/cards";
 import {
   act,
@@ -258,7 +259,25 @@ describe("RS-322 ベン・G", () => {
   it.todo("RS-322: 公式Q&A — ライド中の宇宙刑事ギャバンしか S ユニットがないとき、チェイスを発動しても追加条件は満たせるものとして効果を続行する（出典: atwiki/page-431 Q4）— チェイス（R-KW-CHASE-01）とライド状態を含む場作りが RS-322 の範囲外のカード（RM-018・ビークル）の実装に依存するため");
   it.todo("RS-322: 公式Q&A — 仮面ライダーディケイドCF の「その場に留まる」効果を発動しても追加条件は満たせるものとして効果を続行する（出典: atwiki/page-431 Q5）— XG2-042 の留まる効果（オモテ向きパワーの捨札）に依存し、このカード範囲で場を作れないため");
   it.todo("RS-322: 公式Q&A — 仮面ライダークウガUF は【凄まじき戦士】で場に留まり、追加条件は満たせるものとして効果を続行する（出典: atwiki/page-431 Q6）— SK-004 の重ねたカードの状態を公開 API で用意できないため");
-  it.todo("RS-322: 敵軍ターン中にバトルエリアに出たときは【人身略取】は発動しない（出典: atwiki/page-431「自軍ターン中」）— 敵軍ターン中に自軍ユニットをバトルエリアへ出す手段が公開 API に無いため");
+  // 敵軍ターン中にバトルエリアに出る状況は、効果で出したときと同じ進入処理を行うテスト用の enterBattleByEffect で作る。
+  it("RS-322: 敵軍ターン中にバトルエリアに出たときは【人身略取】は発動しない（出典: atwiki/page-431「自軍ターン中」）", () => {
+    const board = (activePlayer: "player1" | "player2") =>
+      st(
+        {
+          activePlayer,
+          player1: { rush: [inst("RS-322", "b")], hand: [inst("RS-311", "m")], deck: deckCards(3) },
+          player2: { rush: [inst("TST-UNIT-0", "er")], battle: [inst("TST-UNIT-0", "eb")], deck: deckCards(5, "e") },
+        },
+        SPECS,
+      );
+    // 対照: 自軍ターン中に同じ手順で出せば手札の M ユニットを選べる
+    expect(enterBattleByEffect(board("player1"), "player1", "RS-322:b").pendingEffectChoice?.sourceCardId).toBe("RS-322");
+    const s = settle(enterBattleByEffect(board("player2"), "player1", "RS-322:b"));
+    expect(zoneOf(s, "player1", "RS-322:b")).toBe("battle");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-322");
+    expect(zoneOf(s, "player1", "RS-311:m")).toBe("hand");
+    expect(zoneOf(s, "player2", "TST-UNIT-0:er")).toBe("rush");
+  });
 });
 
 // ===========================================================================

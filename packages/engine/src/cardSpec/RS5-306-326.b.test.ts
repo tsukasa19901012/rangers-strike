@@ -9,6 +9,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { enterBattleByEffect } from "../testing/battleEntry";
 import { allCardsCatalog, validateDeckEntries } from "@rangers-strike/cards";
 import { unitEffectiveCategories } from "../core/catalog";
 import {
@@ -266,7 +267,25 @@ describe("RS-316 爆竜カルノリュータス", () => {
     expect(canStrike(s, "RS-316:c")).toBe(false);
   });
 
-  it.todo("RS-316: 敵軍ターン中にバトルエリアに出たときは【超ドリル進化】を発動できない（出典: atwiki/page-441「自軍ターン中」）— 敵軍ターン中にこのユニットを自軍バトルエリアへ出す手段がこのカード範囲・公開 API に無いため");
+  // 敵軍ターン中にバトルエリアに出る状況は、効果で出したときと同じ進入処理を行うテスト用の enterBattleByEffect で作る。
+  it("RS-316: 敵軍ターン中にバトルエリアに出たときは【超ドリル進化】を発動できない（出典: atwiki/page-441「自軍ターン中」）", () => {
+    const board = (activePlayer: "player1" | "player2") =>
+      st(
+        {
+          activePlayer,
+          player1: { rush: [inst("RS-316", "c"), inst("SPEC-DINO", "d1"), inst("SPEC-DINO", "d2")], command: [released("TST-OP", "rc")], deck: deckCards(3) },
+          player2: { battle: [inst("TST-UNIT-0", "eb")], deck: deckCards(3, "e") },
+        },
+        SPECS,
+      );
+    // 対照: 自軍ターン中に同じ手順で出せば恐竜2体を選べる
+    expect(choiceIds(enterBattleByEffect(board("player1"), "player1", "RS-316:c"))).toEqual(["SPEC-DINO:d1", "SPEC-DINO:d2"]);
+    const s = settle(enterBattleByEffect(board("player2"), "player1", "RS-316:c"));
+    expect(zoneOf(s, "player1", "RS-316:c")).toBe("battle");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-316");
+    expect(zoneOf(s, "player1", "SPEC-DINO:d1")).toBe("rush");
+    expect(zoneOf(s, "player1", "SPEC-DINO:d2")).toBe("rush");
+  });
 });
 
 // ===========================================================================
@@ -589,5 +608,18 @@ describe("RS-319 デカマスター", () => {
     expect(zoneOf(s, "player2", "SPEC-2500-M:m")).toBe("rush");
   });
 
-  it.todo("RS-319: 敵軍ターン中にバトルエリアに出たときは【ディーソードベガ】は発動しない（出典: atwiki/page-47「自軍ターン中」）— 敵軍ターン中に自軍ユニットをバトルエリアへ出す手段がこのカード範囲・公開 API に無いため");
+  it("RS-319: 敵軍ターン中にバトルエリアに出たときは【ディーソードベガ】は発動しない（出典: atwiki/page-47「自軍ターン中」）", () => {
+    const s0 = st(
+      {
+        activePlayer: "player2",
+        player1: { rush: [inst("RS-319", "dm")], deck: deckCards(3) },
+        player2: { battle: [inst("SPEC-1500", "a")], rush: [inst("RS-321", "an")], deck: deckCards(3, "e") },
+      },
+      SPECS,
+    );
+    const s = settle(enterBattleByEffect(s0, "player1", "RS-319:dm"));
+    expect(zoneOf(s, "player1", "RS-319:dm")).toBe("battle");
+    expect(zoneOf(s, "player2", "SPEC-1500:a")).toBe("battle");
+    expect(zoneOf(s, "player2", "RS-321:an")).toBe("rush");
+  });
 });

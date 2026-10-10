@@ -9,6 +9,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { enterBattleByEffect } from "../testing/battleEntry";
 import {
   act,
   attack,
@@ -316,9 +317,21 @@ describe("RS-287 剛龍神", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.todo(
-    "RS-287: 【超爆裂龍神突き】敵軍ターン中にバトルエリアに出たときは発動しない（出典: atwiki/page-417「自軍ターン中」）— 敵軍ターン中に L ユニットをバトルエリアに出す手段（紐男爵【紐拳】等）がエンジンで発動せず状況を作れない",
-  );
+  // 敵軍ターン中にバトルエリアに出る状況は、効果で出したときと同じ進入処理を行うテスト用の enterBattleByEffect で作る。
+  function gouEntersByEffect(activePlayer: "player1" | "player2") {
+    const s = st({ activePlayer, player1: { rush: [inst("RS-287", "g")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e"), ...fullBoard } }, SPECS);
+    return enterBattleByEffect(s, "player1", "RS-287:g");
+  }
+
+  it("RS-287: 【超爆裂龍神突き】敵軍ターン中にバトルエリアに出たときは発動しない（出典: atwiki/page-417「自軍ターン中」）", () => {
+    // 対照: 自軍ターン中に同じ手順で出せば発動する
+    expect(choiceIds(gouEntersByEffect("player1"))).toEqual(["SPEC-E8:b8"]);
+    const s = settle(gouEntersByEffect("player2"));
+    expect(zoneOf(s, "player1", "RS-287:g")).toBe("battle");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-287");
+    expect(zoneOf(s, "player2", "SPEC-E8:b8")).toBe("battle");
+    expect(zoneOf(s, "player2", "SPEC-E4:r4")).toBe("rush");
+  });
 });
 
 // ===========================================================================

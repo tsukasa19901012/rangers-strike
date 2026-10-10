@@ -9,6 +9,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { enterBattleByEffect } from "../testing/battleEntry";
 import {
   attack,
   attackTargets,
@@ -234,7 +235,18 @@ describe("RS-328 魔法鉄神トラベリオン", () => {
     expect(s.players.player2.deck).toHaveLength(5);
   });
 
-  it.todo("RS-328: 「自軍ターン中」以外（敵軍ターン中）にバトルエリアに出たときは発動しない — 敵軍ターン中に自軍トラベリオンをバトルエリアに出す公開手段がテスト環境で用意できない（出典: atwiki/page-489「自軍ターン中」）");
+  // 敵軍ターン中にバトルエリアに出る状況は、効果で出したときと同じ進入処理を行うテスト用の enterBattleByEffect で作る。
+  it("RS-328: 「自軍ターン中」以外（敵軍ターン中）にバトルエリアに出たときは発動しない（出典: atwiki/page-489「自軍ターン中」）", () => {
+    const s0 = st({
+      activePlayer: "player2",
+      player1: { rush: [inst("RS-328", "tr")], command: releasedCat("MA", 2), deck: deckCards(5) },
+      player2: { rush: Array.from({ length: 3 }, (_, i) => inst("TST-UNIT-0", `e${i}`)), deck: deckCards(5, "e") },
+    });
+    const s = resolveAll(enterBattleByEffect(s0, "player1", "RS-328:tr"));
+    expect(zoneOf(s, "player1", "RS-328:tr")).toBe("battle");
+    expect(enemyUnitsLeft(s)).toBe(3);
+    expect(s.players.player2.deck).toHaveLength(5);
+  });
 
   // grnrngr/faq-card-6 RS-420 Q「いいえ、発動しません。…追加条件に「自軍合体ユニットを捨札にする」と書かれていないユニットをラッシュした際には発動しません。」
   it.fails("RS-328: 公式Q&A — 大剣人ズバーンがあっても、トラベリオンエクスプレスを捨札にしてトラベリオンをラッシュしたとき【ズバズバンキック】は発動しない（出典: grnrngr/faq-card-6 RS-420 Q1）", () => {
@@ -334,7 +346,17 @@ describe("RS-329 トラベリオンエクスプレス", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.todo("RS-329: 「自軍ターン中」以外（敵軍ターン中）にバトルエリアに出たときは発動しない — 敵軍ターン中に自軍エクスプレスをバトルエリアに出す公開手段がテスト環境で用意できない（出典: atwiki/page-490「自軍ターン中」）");
+  it("RS-329: 「自軍ターン中」以外（敵軍ターン中）にバトルエリアに出たときは発動しない（出典: atwiki/page-490「自軍ターン中」）", () => {
+    const board = (activePlayer: "player1" | "player2") =>
+      st({ activePlayer, player1: { rush: [inst("RS-329", "ex")], battle: [inst("TST-UNIT-0", "a")], deck: deckCards(5) }, player2: { deck: deckCards(3, "e") } });
+    // 対照: 自軍ターン中に同じ手順で出せば自軍バトルエリアの S ユニットを選ぶ
+    expect(choiceIds(enterBattleByEffect(board("player1"), "player1", "RS-329:ex"))).toEqual(["TST-UNIT-0:a"]);
+    const s = settle(enterBattleByEffect(board("player2"), "player1", "RS-329:ex"));
+    expect(zoneOf(s, "player1", "RS-329:ex")).toBe("battle");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-329");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:a")).toBe("battle");
+    expect(s.players.player1.deck).toHaveLength(5);
+  });
 });
 
 // ===========================================================================

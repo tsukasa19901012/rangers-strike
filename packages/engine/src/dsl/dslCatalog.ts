@@ -194,5 +194,13 @@ export function evaluateDslCondition(
   if (condition.type === "controller_is_phase_player") {
     return playerId === state.activePlayer;
   }
+  if (condition.type === "and") {
+    return condition.conditions.every((c) =>
+      evaluateDslCondition(state, playerId, c, operationInstanceId, effectEffects),
+    );
+  }
+  if (condition.type === "not") {
+    return !evaluateDslCondition(state, playerId, condition.condition, operationInstanceId, effectEffects);
+  }
   return true;
 }
