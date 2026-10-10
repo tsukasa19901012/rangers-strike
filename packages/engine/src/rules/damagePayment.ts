@@ -8,6 +8,7 @@ import type {
 import { cardCategories, getDefinition } from "../core/catalog";
 import { applyPlayerDamage, removeAt, updatePlayer } from "../core/helpers";
 import { emitDamageAppliedAndResolve } from "../events/emitDamageApplied";
+import { applyPowerFlipTriggers } from "./powerFlipEffects";
 import {
   cardHasMorphKeyword,
   powerZoneHasMorphUnitCard,
@@ -317,7 +318,7 @@ function applyDamageAmount(
   if (resume.kind === "none") {
     nextState = { ...nextState, activePlayer: resume.activePlayer };
   }
-  return nextState;
+  return applyPowerFlipTriggers(state, nextState, playerId, resume);
 }
 
 export function resolveDamagePaymentSelect(
@@ -402,6 +403,7 @@ export function resolveDamagePaymentSelect(
   if (resume.kind === "none") {
     nextState = { ...nextState, activePlayer: resume.activePlayer };
   }
+  nextState = applyPowerFlipTriggers(state, nextState, defenderId, resume);
 
   return { state: nextState, resume };
 }

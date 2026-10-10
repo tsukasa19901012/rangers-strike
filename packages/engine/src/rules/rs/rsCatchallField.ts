@@ -91,7 +91,13 @@ export function rs339AddsDaCategory(
   playerId: PlayerId,
   cardId: string,
 ): boolean {
-  if (!playerHasFieldCard(state, playerId, "RS-339")) return false;
+  // 「特徴「男」を持つすべてのユニット」— 敵軍のユニットにも追加される（atwiki・grnrngr/faq-card-4 RS-205 Q3）。
+  if (
+    !playerHasFieldCard(state, playerId, "RS-339") &&
+    !playerHasFieldCard(state, playerId === "player1" ? "player2" : "player1", "RS-339")
+  ) {
+    return false;
+  }
   const def = getDefinition(state.definitions, cardId);
   return (def?.features ?? []).includes("男");
 }

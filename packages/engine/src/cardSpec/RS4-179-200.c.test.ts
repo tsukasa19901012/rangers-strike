@@ -222,8 +222,7 @@ describe("RS-194 ダイナロボ", () => {
   });
 
   // grnrngr/faq-card-4 RS-194 Q3「「バトルエリアに出られない」とあるユニットのカードを選ぶことができない」
-  // 既知の不具合: CARD-RS-194 「※これはバトルエリアに出られない」ユニットのカードも候補に含まれる
-  it.fails("RS-194: 「※これはバトルエリアに出られない」ユニットのカード（童鬼ドロップ）は選べない（出典: grnrngr/faq-card-4 RS-194 Q3）", () => {
+  it("RS-194: 「※これはバトルエリアに出られない」ユニットのカード（童鬼ドロップ）は選べない（出典: grnrngr/faq-card-4 RS-194 Q3）", () => {
     const s = robo({ command: [released("RS-093", "drop"), released("RS-189", "c1")] });
     expect(choiceIds(s)).toEqual(["RS-189:c1"]);
   });
@@ -246,8 +245,7 @@ describe("RS-194 ダイナロボ", () => {
   });
 
   // grnrngr/faq-card-5「はい、撃破できます。」（グリーンサイ【サイカッター】の後にダイナロボで出したユニット）
-  // 既知の不具合: CARD-RS-194 ビートハンマーで敵軍バトルエリアに出したユニットが、グリーンサイ【サイカッター】の「新しくラッシュされたとき」として扱われない
-  it.fails("RS-194: グリーンサイの【サイカッター】の後、ビートハンマーで出した BP4000 以下の敵軍ユニットは撃破される（出典: grnrngr/faq-card-5 ダイナロボ・グリーンサイの Q）", () => {
+  it("RS-194: グリーンサイの【サイカッター】の後、ビートハンマーで出した BP4000 以下の敵軍ユニットは撃破される（出典: grnrngr/faq-card-5 ダイナロボ・グリーンサイの Q）", () => {
     let s = st({
       turn: 3,
       player1: { rush: [inst("RS-279", "sai"), inst("RS-194", "robo")], deck: deckCards(5) },
@@ -336,8 +334,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「追加条件：自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」
-  // 既知の不具合: CARD-RS-196 追加条件の行き先（コマンド／捨札）を2体まとめて1回しか選べず、「それぞれ」別の行き先にできない
-  it.fails("RS-196: 自軍 S ユニット2体を（1体はコマンド、1体は捨札に）送ってラッシュでき、1体では満たせない（出典: atwiki/page-398・R-ADD-04）", () => {
+  it("RS-196: 自軍 S ユニット2体を（1体はコマンド、1体は捨札に）送ってラッシュでき、1体では満たせない（出典: atwiki/page-398・R-ADD-04）", () => {
     const mk = (rush: CardInstance[]) =>
       st({ phase: "rush", turn: 3, player1: { hand: [inst("RS-196", "mob")], rush, command: releasedN(1, "TST-OP-ET"), power: powerCards(5) } });
     expect(canStartRush(mk([inst("TST-UNIT-0", "a")]), "player1", "RS-196:mob")).toBe(false);
@@ -362,8 +359,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「相手にストライクされたとき…Sユニットなら2つ、ETの自軍コマンドをホールドする。そうしたとき、敵軍のストライクは無効になる」
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装（ストライクされても発動の機会がない）
-  it.fails("RS-196: S ユニットにストライクされたとき、ET のコマンドを2つホールドしてストライクを無効にできる（出典: atwiki/page-398）", () => {
+  it("RS-196: S ユニットにストライクされたとき、ET のコマンドを2つホールドしてストライクを無効にできる（出典: atwiki/page-398）", () => {
     let s = struckBy(inst("TST-UNIT-0", "s"), releasedN(3, "TST-OP-ET"));
     s = pickEffect(s, "player1", ["TST-OP-ET:rc0", "TST-OP-ET:rc1"]);
     for (let i = 0; i < 3 && s.pendingCommandPayment; i++) {
@@ -375,8 +371,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「Lユニットなら4つ、Mユニットなら3つ」
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装
-  it.fails("RS-196: M ユニットのストライクは ET コマンド3つ（2つでは足りない）（出典: atwiki/page-398）", () => {
+  it("RS-196: M ユニットのストライクは ET コマンド3つ（2つでは足りない）（出典: atwiki/page-398）", () => {
     const M = inst("TST-UNIT-2", "m");
     const three = struckBy(M, releasedN(3, "TST-OP-ET"));
     expect(three.pendingEffectChoice?.sourceCardId).toBe("RS-196");
@@ -388,8 +383,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「ETの自軍コマンド」
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装
-  it.fails("RS-196: ET 以外のコマンドではホールドできない（ET が2つあれば発動できる）（出典: atwiki/page-398「ETの自軍コマンド」）", () => {
+  it("RS-196: ET 以外のコマンドではホールドできない（ET が2つあれば発動できる）（出典: atwiki/page-398「ETの自軍コマンド」）", () => {
     const wb = struckBy(inst("TST-UNIT-0", "s"), releasedN(3, "TST-OP"));
     expect(wb.pendingEffectChoice?.sourceCardId === "RS-196").toBe(false);
     const et = struckBy(inst("TST-UNIT-0", "s"), releasedN(2, "TST-OP-ET"));
@@ -397,8 +391,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「発動できる」
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装（選択自体が出ない）
-  it.fails("RS-196: 発動は任意 — 発動しなければストライクは通る（出典: atwiki/page-398「発動できる」）", () => {
+  it("RS-196: 発動は任意 — 発動しなければストライクは通る（出典: atwiki/page-398「発動できる」）", () => {
     let s = struckBy(inst("TST-UNIT-0", "s"), releasedN(2, "TST-OP-ET"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-196");
     s = settle(declineEffect(s, "player1"));
@@ -406,8 +399,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「これが自軍ラッシュエリアにある間」
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装（ラッシュエリア側も発動しない）
-  it.fails("RS-196: バトルエリアにあるときは発動しない（ラッシュエリアなら発動する）（出典: atwiki/page-398「自軍ラッシュエリアにある間」）", () => {
+  it("RS-196: バトルエリアにあるときは発動しない（ラッシュエリアなら発動する）（出典: atwiki/page-398「自軍ラッシュエリアにある間」）", () => {
     const inBattle = struckBy(inst("TST-UNIT-0", "s"), releasedN(2, "TST-OP-ET"), "battle");
     expect(inBattle.pendingEffectChoice?.sourceCardId === "RS-196").toBe(false);
     const inRush = struckBy(inst("TST-UNIT-0", "s"), releasedN(2, "TST-OP-ET"), "rush");
@@ -415,8 +407,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // grnrngr/faq-card-5 RS-196 Q1「はい、発動できます。」（ピンクフラッシュ【プリズムブーツ】の後でも）
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装
-  it.fails("RS-196: ピンクフラッシュの【プリズムブーツ】が発動したターンでも【迎撃モビルミサイル】を発動できる（出典: grnrngr/faq-card-5 RS-196 Q1）", () => {
+  it("RS-196: ピンクフラッシュの【プリズムブーツ】が発動したターンでも【迎撃モビルミサイル】を発動できる（出典: grnrngr/faq-card-5 RS-196 Q1）", () => {
     let s = st({
       turn: 4,
       activePlayer: "player2",
@@ -671,8 +662,7 @@ describe("RS-198 帝王アトン", () => {
   });
 
   // 「【帝王剣の呪い】これが自軍エリアにある間、すべての敵軍Sユニットは、毎ターン、可能ならバトルエリアに出る」
-  // 既知の不具合: CARD-RS-198 【帝王剣の呪い】が未実装（敵軍 S ユニットを出さずにバトルフェイズを終えられる）
-  it.fails("RS-198: 帝王アトンがあると、敵軍 S ユニットは可能ならバトルエリアに出なければならない（出さずにバトルフェイズを終えられない）（出典: atwiki/page-382・R-BA-04）", () => {
+  it("RS-198: 帝王アトンがあると、敵軍 S ユニットは可能ならバトルエリアに出なければならない（出さずにバトルフェイズを終えられない）（出典: atwiki/page-382・R-BA-04）", () => {
     const s = st({
       turn: 4,
       activePlayer: "player2",
@@ -684,8 +674,7 @@ describe("RS-198 帝王アトン", () => {
   });
 
   // 「すべての敵軍Sユニット」— M ユニットは義務を負わない。
-  // 既知の不具合: CARD-RS-198 【帝王剣の呪い】が未実装（S ユニット側の義務も確認できない）
-  it.fails("RS-198: 敵軍の M ユニットだけなら出さずに終えられる（S ユニットがいれば終えられない）（出典: atwiki/page-382「すべての敵軍Sユニット」）", () => {
+  it("RS-198: 敵軍の M ユニットだけなら出さずに終えられる（S ユニットがいれば終えられない）（出典: atwiki/page-382「すべての敵軍Sユニット」）", () => {
     const onlyM = st({
       turn: 4,
       activePlayer: "player2",
@@ -703,8 +692,7 @@ describe("RS-198 帝王アトン", () => {
   });
 
   // 「これが自軍エリアにある間」— ラッシュエリアにあるときも有効、自軍（帝王アトンの持ち主）の S ユニットには及ばない。
-  // 既知の不具合: CARD-RS-198 【帝王剣の呪い】が未実装
-  it.fails("RS-198: 帝王アトンがラッシュエリアにあっても有効で、持ち主自身の S ユニットには義務がない（出典: atwiki/page-382）", () => {
+  it("RS-198: 帝王アトンがラッシュエリアにあっても有効で、持ち主自身の S ユニットには義務がない（出典: atwiki/page-382）", () => {
     const enemyTurn = st({
       turn: 4,
       activePlayer: "player2",
@@ -755,8 +743,7 @@ describe("RS-199 グリーンツー", () => {
   });
 
   // 「ウラ返すカードと必要パワーの数字が同じ敵軍ユニットをすべて撃破してもよい」
-  // 既知の不具合: CARD-RS-199 【ブレイクアクション】の撃破が未実装（SP1 付与のみ）
-  it.fails("RS-199: ウラ返したカードと必要パワーの数字が同じ敵軍ユニット（バトル・ラッシュエリアとも）をすべて撃破できる（出典: atwiki/page-407）", () => {
+  it("RS-199: ウラ返したカードと必要パワーの数字が同じ敵軍ユニット（バトル・ラッシュエリアとも）をすべて撃破できる（出典: atwiki/page-407）", () => {
     let s = brokeWith("TST-OP:pw3", enemyField);
     s = settle(pickEffect(s, "player1"));
     expect(zoneOf(s, "player2", "RS-189:cost3")).toBe("discard");
@@ -765,8 +752,7 @@ describe("RS-199 グリーンツー", () => {
   });
 
   // 「撃破してもよい」
-  // 既知の不具合: CARD-RS-199 【ブレイクアクション】の撃破が未実装（選択自体が出ない）
-  it.fails("RS-199: 撃破は任意 — 選択が出て、断れば撃破しない（出典: atwiki/page-407「撃破してもよい」）", () => {
+  it("RS-199: 撃破は任意 — 選択が出て、断れば撃破しない（出典: atwiki/page-407「撃破してもよい」）", () => {
     let s = brokeWith("TST-OP:pw3", enemyField);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-199");
     s = settle(declineEffect(s, "player1"));
@@ -774,8 +760,7 @@ describe("RS-199 グリーンツー", () => {
   });
 
   // 一般ルール R-TGT-04 ではなく本文が「敵軍ユニット」に限定 — 自軍の同じ必要パワーのユニットは撃破しない。
-  // 既知の不具合: CARD-RS-199 【ブレイクアクション】の撃破が未実装
-  it.fails("RS-199: 撃破するのは敵軍ユニットだけ（自軍の必要パワー3のグリーンツー自身は残る）（出典: atwiki/page-407「敵軍ユニットをすべて」）", () => {
+  it("RS-199: 撃破するのは敵軍ユニットだけ（自軍の必要パワー3のグリーンツー自身は残る）（出典: atwiki/page-407「敵軍ユニットをすべて」）", () => {
     let s = brokeWith("TST-OP:pw3", enemyField);
     s = settle(pickEffect(s, "player1"));
     expect(zoneOf(s, "player2", "RS-189:cost3")).toBe("discard");
@@ -783,8 +768,7 @@ describe("RS-199 グリーンツー", () => {
   });
 
   // grnrngr/faq-card-6「はい、対象になります。」（メディテーションで2枚ウラ返したとき）
-  // 既知の不具合: CARD-RS-199 【ブレイクアクション】の撃破が未実装
-  it.fails("RS-199: 相手がメディテーションで2枚ウラ返したとき、その2枚とも対象になる（出典: grnrngr/faq-card-6 RS-199 の Q）", () => {
+  it("RS-199: 相手がメディテーションで2枚ウラ返したとき、その2枚とも対象になる（出典: grnrngr/faq-card-6 RS-199 の Q）", () => {
     let s = atPosition(inst("RS-199", "g"), 3, {
       operation: [inst("RS-348", "med")],
       battle: [inst("RS-189", "cost3")],
@@ -827,8 +811,7 @@ describe("RS-200 ブルースリー", () => {
   });
 
   // 「自軍パワーゾーンのダメージになっているカードをすべてオモテにしてもよい。そうしたとき、元のダメージの数と同じになるまで、自軍パワーゾーンのカードを選びダメージにする」
-  // 既知の不具合: CARD-RS-200 【超電子イヤー】のダメージの入れ替えが未実装（SP1 付与のみ）
-  it.fails("RS-200: ダメージをすべてオモテにし、選んだカードを元の数（2点）だけダメージにし直せる（出典: atwiki/page-408）", () => {
+  it("RS-200: ダメージをすべてオモテにし、選んだカードを元の数（2点）だけダメージにし直せる（出典: atwiki/page-408）", () => {
     let s = atPosition(inst("RS-200", "b"), 3, {}, damaged);
     s = pickEffect(s, "player1", ["TST-P:p0", "TST-P:p1"]);
     const power = s.players.player1.power;
@@ -840,8 +823,7 @@ describe("RS-200 ブルースリー", () => {
   });
 
   // 「オモテにしてもよい」
-  // 既知の不具合: CARD-RS-200 【超電子イヤー】が未実装（選択自体が出ない）
-  it.fails("RS-200: 入れ替えは任意 — 選択が出て、断ればダメージはそのまま（出典: atwiki/page-408「オモテにしてもよい」）", () => {
+  it("RS-200: 入れ替えは任意 — 選択が出て、断ればダメージはそのまま（出典: atwiki/page-408「オモテにしてもよい」）", () => {
     let s = atPosition(inst("RS-200", "b"), 3, {}, damaged);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-200");
     s = declineEffect(s, "player1");
@@ -849,8 +831,7 @@ describe("RS-200 ブルースリー", () => {
     expect(s.players.player1.damage).toBe(2);
   });
 
-  // 既知の不具合: CARD-RS-200 【超電子イヤー】が未実装（NC 成立時の側も確認できない）
-  it.fails("RS-200: NC 不成立（1番目）ではダメージの入れ替えはできない（NC 成立ならできる）（出典: atwiki/page-408・R-CN-02）", () => {
+  it("RS-200: NC 不成立（1番目）ではダメージの入れ替えはできない（NC 成立ならできる）（出典: atwiki/page-408・R-CN-02）", () => {
     const plain = atPosition(inst("RS-200", "b"), 0, {}, damaged);
     expect(plain.pendingEffectChoice?.sourceCardId === "RS-200").toBe(false);
     const nc = atPosition(inst("RS-200", "b"), 3, {}, damaged);

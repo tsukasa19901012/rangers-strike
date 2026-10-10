@@ -209,7 +209,7 @@ import { hasBakiBakiExtraAttack } from "./turnModifierBridge";
  */
 export function battleActBlocked(
   player: PlayerState,
-  card: { cardId: string; instanceId: string; battleActed?: boolean },
+  card: { cardId: string; instanceId: string; battleActed?: boolean; activatedNcEffects?: string[] },
   action: "attack" | "strike",
 ): boolean {
   // RS-167【爆竜必殺バキバキパンチ】で得た「アタックしてバトルに勝つたび、追加でアタックできる」。
@@ -217,9 +217,17 @@ export function battleActBlocked(
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックする権利を失っている。
   if (action === "attack" && player.unitActionsThisTurn?.[card.instanceId]?.attacked) return true;
   if (!card.battleActed) return false;
-  if (!cardHasGrantKeyword(card.cardId, "attack_and_strike_once")) return true;
+  if (!cardHasGrantKeyword(card.cardId, "attack_and_strike_once") && !ncAttackAndStrikeOnce(card)) return true;
   const rec = player.unitActionsThisTurn?.[card.instanceId];
   return action === "attack" ? !!rec?.attacked : !!rec?.struck;
+}
+
+/**
+ * NC の効果として「アタックとストライクを1度ずつ行ってもよい」を持ち、NC が成立しているか。
+ * RS-191 ダイナレッド【ダイナ剣・夢の翼】（atwiki/page-393。NC 不成立なら1回だけ — faq-rider-2 RS-191）。
+ */
+function ncAttackAndStrikeOnce(card: { cardId: string; activatedNcEffects?: string[] }): boolean {
+  return card.cardId === "RS-191" && !!card.activatedNcEffects?.includes("daina_ken_no_tsubasa");
 }
 
 export function markUnitBattleAction(

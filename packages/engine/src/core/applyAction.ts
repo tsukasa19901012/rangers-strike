@@ -1,5 +1,6 @@
 import { applyMagiPunchCounter, isSet4EndTurnEffect, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
+import { applyDeusGeneOnRush } from "../rules/rs4NcEffects";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, CardInstance } from "../types/game";
 import { hasTurnRuleModifier, TURN_RULE_IDS } from "./scopedModifiers";
@@ -89,6 +90,8 @@ import {
 } from "../events/emitUnitRushed";
 import { continuePendingEffectRush } from "../rules/effectRush";
 import { applySuperRadarOnRush } from "../rules/legend3/rushEffects";
+import { tryRsCatchallOnEnemyRush } from "../rules/rs/rsCatchallRuntime";
+import { MOBIL_MISSILE_EFFECT_ID, openMobilMissileChoice, selectMobilMissileCommand } from "../rules/mobilMissile";
 import { RUSH_PHASE_RULE_IDS } from "../types/scopedModifiers";
 import { attackerBlocksDefenderCounters, canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import {
@@ -610,6 +613,12 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
     const radar = applySuperRadarOnRush(next, entry.pid, entry.instanceId, turnPlayer);
     if (radar.state !== next) {
       next = { ...radar.state, log: [...radar.state.log, ...radar.logs] };
+    }
+    // 「敵軍ユニットが新しくラッシュされたとき」（RS-279 グリーンサイ【サイカッター】）も、直接バトルエリアに
+    // 出されたユニット（RS-194 ダイナロボ【ビートハンマー】等）に発動する（grnrngr/faq-card-5）。
+    const enemyRush = tryRsCatchallOnEnemyRush(next, entry.pid, entry.instanceId, turnPlayer);
+    if (enemyRush.state !== next) {
+      next = { ...enemyRush.state, log: [...enemyRush.state.log, ...enemyRush.logs] };
     }
   }
   if (triggers.length > 0) {
@@ -1143,6 +1152,7 @@ function applyActionCore(
             zordMaterialInstanceId: cont.zordMaterialInstanceId,
             zordMaterialInstanceIds: cont.zordMaterialInstanceIds,
             zordMaterialDestination: cont.zordMaterialDestination,
+            zordMaterialDestinations: cont.zordMaterialDestinations,
             zordMothershipHoldInstanceIds: holdIds,
             zordExtraCommandHoldInstanceIds: cont.zordExtraCommandHoldInstanceIds,
           },
@@ -1552,7 +1562,9 @@ function applyActionCore(
                 found.card.cardId,
                 found.card.instanceId,
                 fieldIds,
-                action.zordMaterialDestination,
+                action.zordMaterialDestinations?.length === fieldIds.length
+                  ? action.zordMaterialDestinations
+                  : action.zordMaterialDestination,
               );
             }
             if (!afterZord) return fail("invalid_zord_material");
@@ -1676,6 +1688,13 @@ function applyActionCore(
         ...nextStateAfterRush,
         ...updatePlayer(nextStateAfterRush, playerId, nextPlayer),
       };
+      if (found.card.cardId === "RS-203") {
+        // RS-203【デウス遺伝子】: 追加条件で捨札にしたユニットのカードの特徴を、このターンすべてのユニットに追加する。
+        const discardedMaterials = zordMaterialIds
+          .map((id) => nextPlayer.discard.find((c) => c.instanceId === id)?.cardId)
+          .filter((id): id is string => !!id);
+        nextState = applyDeusGeneOnRush(nextState, playerId, found.card.cardId, discardedMaterials);
+      }
 
       const rushFinal = emitUnitRushedAndFinalize(
         nextState,
@@ -1967,6 +1986,14 @@ function applyActionCore(
         battlePhasePlayer: playerId,
       };
       nextState = emitStrikeDeclared(nextState, pending);
+
+      // RS-196 ダイナモビル【迎撃モビルミサイル】: ストライクされたとき発動できる（任意）。
+      const mobil = openMobilMissileChoice(nextState, pending);
+      if (mobil) {
+        const cleared =
+          state.pendingBattleEntry?.instanceId === action.instanceId ? { ...mobil, pendingBattleEntry: undefined } : mobil;
+        return ok(cleared, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
+      }
 
       const defenderId = opponent(playerId);
       if (hasStrikeReactions(nextState, defenderId, pending)) {
@@ -2309,6 +2336,16 @@ function applyActionCore(
 
     case "resolve_effect_choice": {
       const pending = state.pendingEffectChoice;
+      if (pending?.effectId === MOBIL_MISSILE_EFFECT_ID && pending.mobilMissileStrike) {
+        const picked = selectMobilMissileCommand(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        if (!picked.done) {
+          return ok(picked.state, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId));
+        }
+        return completeStrike(picked.state, picked.strike, [
+          buildLogEntry(playerId, "resolve_effect_choice", "RS-196", state.definitions, `${MOBIL_MISSILE_EFFECT_ID}:strike_nullified`),
+        ]);
+      }
       if (pending?.effectId === TURN_END_EXODUS_ORDER_EFFECT_ID) {
         const ordered = resolveTurnEndExodusOrder(state, playerId, action.instanceId);
         if (!ordered) return fail("invalid_target");
@@ -2399,6 +2436,15 @@ function applyActionCore(
 
     case "skip_effect_choice": {
       const pending = state.pendingEffectChoice;
+      if (pending?.effectId === MOBIL_MISSILE_EFFECT_ID && pending.mobilMissileStrike && pending.playerId === playerId) {
+        // 発動しない — ストライクは通常どおり（ほかのストライクへの応答があれば開く）。
+        const strikePending = pending.mobilMissileStrike;
+        const base: GameState = { ...state, pendingEffectChoice: undefined };
+        if (hasStrikeReactions(base, playerId)) {
+          return ok({ ...base, pendingStrike: strikePending, activePlayer: playerId }, buildSimpleLogEntry(playerId, "skip_effect_choice"));
+        }
+        return completeStrike(base, strikePending);
+      }
       if (pending?.effectId === MACHINE_EMPIRE_EFFECT_ID && pending.machineEmpireMeta) {
         const skipped = skipMachineEmpireChoice(state, playerId);
         if ("error" in skipped) return fail(skipped.error);

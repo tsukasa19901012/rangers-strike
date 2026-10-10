@@ -251,6 +251,7 @@ export type PendingLeave = {
     toZone: PendingLeave["toZone"];
     leavingCardId: string;
     phasePlayerId: PlayerId;
+    discardAsDamage?: boolean;
   };
   /** RS-052: WB味方が破壊される際の任意代用。 */
   superShieldInstanceId?: string;
@@ -259,6 +260,11 @@ export type PendingLeave = {
    * 「場を離れるとき」の応答（ダイノガッツ等）は開くが、撃破の誘発・置換は起きない。ルール: R-REPL-01
    */
   notDestruction?: boolean;
+  /**
+   * RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージ（ウラ向き）にして置く。
+   * 置換・カウンターで捨札にならなければ置かれない（faq-card-4 RS-182 Q1〜Q3）。
+   */
+  discardAsDamage?: boolean;
   /** RS-009: Lユニットが捨札に到達したときのみ合体パーツを戻す。 */
   fusionReturnOnDiscard?: "battle";
 };
@@ -475,6 +481,8 @@ export type PendingEffectChoice = {
     scope: AttackHoldSource["scope"];
     remainingSources: AttackHoldSource[];
   };
+  /** RS-196【迎撃モビルミサイル】: 発動を選んでいる間、保留しているストライク。 */
+  mobilMissileStrike?: PendingStrike;
   /** RS-215【不滅のマシン帝国】: 手札2枚を選んだあと（または断ったあと）に続けるアタック。 */
   machineEmpireMeta?: {
     battle: PendingBattle;
@@ -531,6 +539,7 @@ export type CommandPaymentContinuation =
       zordMaterialInstanceId?: string;
       zordMaterialInstanceIds?: string[];
       zordMaterialDestination?: "command" | "discard";
+      zordMaterialDestinations?: Array<"command" | "discard">;
       zordMothershipHoldInstanceIds?: string[];
       zordExtraCommandHoldInstanceIds?: string[];
       /**
@@ -566,6 +575,8 @@ export type PendingZordSetup = {
   chosenMaterialIds?: string[];
   /** send_s_unit_to_command_or_discard 時、素材選択前に選ぶ。 */
   materialDestination?: ZordMaterialDestination;
+  /** 「それぞれ」: 選び終えた素材ごとの行き先（chosenMaterialIds と同じ順）。 */
+  chosenMaterialDestinations?: ZordMaterialDestination[];
   /** このゾードでは母艦ホールドがSユニット素材の代用になる場合がある。 */
   mothershipAvailable?: boolean;
 };
@@ -595,6 +606,7 @@ export type PendingRegister = {
   phasePlayerId: PlayerId;
   followUpAttackerLeave?: PendingLeave["followUpAttackerLeave"];
   resumePendingStrike?: PendingLeave["resumePendingStrike"];
+  discardAsDamage?: boolean;
 };
 
 export type EffectStackFrameKind =

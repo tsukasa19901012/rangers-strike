@@ -21,6 +21,7 @@ import {
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
+import { unitFeatures } from "../rules/addedFeatures";
 import { legend3EnemySComboDelta } from "../rules/legend3/fieldEffects";
 import { validateZordAdditionalPayment } from "../rules/mothership";
 import {
@@ -251,7 +252,8 @@ export function passiveBpBonus(
     player.rush.some((c) => c.instanceId === instance.instanceId) ||
     player.battle.some((c) => c.instanceId === instance.instanceId);
   if (inField && isSmallUnit(state.definitions, instance.cardId)) {
-    const features = getDefinition(state.definitions, instance.cardId)?.features ?? [];
+    // RS-203【デウス遺伝子】・RS-206【天幻星・霧隠れ】で追加された特徴も含める（rules/addedFeatures.ts）。
+    const features = unitFeatures(state, playerId, instance);
     for (const op of player.operation) {
       const aura = permanentSUnitBpAura(state.definitions, op.cardId);
       if (!aura) continue;
