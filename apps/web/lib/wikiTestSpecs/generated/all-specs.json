@@ -14020,7 +14020,7 @@
       "自軍Sユニットを1体選ぶ。そして、このカードを自"
     ],
     "expectedDslKeywords": [
-      "stack_s_on_self_rush"
+      "effect_card::RS-350::dark_armor"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
