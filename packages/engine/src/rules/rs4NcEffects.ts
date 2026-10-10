@@ -31,6 +31,7 @@ export const KIRIGAKURE_EFFECT_ID = "re_e5a4a9";
 export const TENMA_EFFECT_ID = "ri_e5a4a9";
 export const TENMA_RETURN_EFFECT_ID = "ri_e5a4a9_return";
 export const TIME_RETURN_EFFECT_ID = "shi";
+export const MAGNET_FIST_EFFECT_ID = "chikara_ken";
 
 /** このモジュールが resolve_effect_choice / confirm / skip を受け持つ選択か。 */
 export function isRs4NcChoice(pending: PendingEffectChoice | undefined): boolean {
@@ -40,7 +41,8 @@ export function isRs4NcChoice(pending: PendingEffectChoice | undefined): boolean
     (pending.effectId === INAZUMA_HOLD_EFFECT_ID && pending.sourceCardId === "RS-205") ||
     (pending.effectId === INAZUMA_DESTROY_EFFECT_ID && pending.sourceCardId === "RS-205") ||
     (pending.effectId === KIRIGAKURE_EFFECT_ID && pending.sourceCardId === "RS-206") ||
-    (pending.effectId === TENMA_RETURN_EFFECT_ID && pending.sourceCardId === "RS-207")
+    (pending.effectId === TENMA_RETURN_EFFECT_ID && pending.sourceCardId === "RS-207") ||
+    (pending.effectId === MAGNET_FIST_EFFECT_ID && pending.sourceCardId === "RS-295")
   );
 }
 
@@ -380,6 +382,17 @@ export function selectRs4NcChoice(
       }
       return next;
     }
+    case MAGNET_FIST_EFFECT_ID: {
+      const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+      const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
+      if (selected.length < 2) {
+        return {
+          ...state,
+          pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining },
+        };
+      }
+      return resolveMagnetFist({ ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId }, pending, selected);
+    }
     case KIRIGAKURE_EFFECT_ID: {
       const source = pending.sourceInstanceId;
       const located = [...fieldUnits(state, "player1").map((u) => ({ ...u, pid: "player1" as const })), ...fieldUnits(state, "player2").map((u) => ({ ...u, pid: "player2" as const }))].find(
@@ -430,4 +443,72 @@ export function applyDeusGeneOnRush(
   if (features.length === 0) return state;
   const player = addTurnFeatureModifier(state.players[playerId], DEUS_GENE_RULE_ID, { features }, "RS-203");
   return { ...state, ...updatePlayer(state, playerId, player) };
+}
+
+// ---------------------------------------------------------------------------
+// RS-295 磁石神父【磁力拳】（atwiki/page-433、grnrngr/faq-card-4・faq-card-5 RS-295）
+
+const GENDERS = ["男", "女"] as const;
+
+function genderKey(state: GameState, ownerId: PlayerId, card: CardInstance): string {
+  const features = unitFeatures(state, ownerId, card);
+  return GENDERS.filter((g) => features.includes(g)).join("+");
+}
+
+/**
+ * 特徴に「男」または「女」の性別を持つ敵軍ユニット（ラッシュエリアのユニットも選べる — atwiki/page-433 カード評価）を
+ * 2体選んでもよい。
+ */
+export function openMagnetFist(
+  state: GameState,
+  playerId: PlayerId,
+  phasePlayerId: PlayerId,
+  sourceInstanceId?: string,
+): GameState {
+  const enemyId = opponent(playerId);
+  const candidates = fieldUnits(state, enemyId)
+    .filter((u) => genderKey(state, enemyId, u.card) !== "")
+    .filter((u) => isSelectableByOpponentEffect(state, playerId, u.card.instanceId, "RS-295", playerId))
+    .map((u) => u.card.instanceId);
+  if (candidates.length < 2) return state;
+  return {
+    ...state,
+    pendingEffectChoice: {
+      playerId,
+      effectId: MAGNET_FIST_EFFECT_ID,
+      sourceCardId: "RS-295",
+      sourceInstanceId,
+      kind: "select_unit",
+      phasePlayerId,
+      validInstanceIds: candidates,
+      selectCount: 2,
+      selectedInstanceIds: [],
+      optional: true,
+    },
+    activePlayer: playerId,
+  };
+}
+
+/**
+ * 選んだ2体の性別が同じならそれぞれ持ち主の手札に戻し、違うなら選んだ2体でバトルする。
+ * 「男」と「女」の両方を持つユニットは、両方を持つユニットとだけ「同じ」（faq-card-4 RS-295/RS-203 Q3）。
+ * バトルは BP をくらべ、低いほうを撃破する（同じなら両方。R-BTL-01/02）。
+ */
+function resolveMagnetFist(state: GameState, pending: PendingEffectChoice, selected: string[]): GameState {
+  const enemyId = opponent(pending.playerId);
+  const units = selected
+    .map((id) => fieldUnits(state, enemyId).find((u) => u.card.instanceId === id))
+    .filter((u): u is { card: CardInstance; zone: "rush" | "battle" } => !!u);
+  if (units.length < 2) return state;
+  const a = units[0]!;
+  const b = units[1]!;
+  if (genderKey(state, enemyId, a.card) === genderKey(state, enemyId, b.card)) {
+    let next = bounceToHand(state, { playerId: enemyId, instanceId: a.card.instanceId, fromZone: a.zone }).state;
+    next = bounceToHand(next, { playerId: enemyId, instanceId: b.card.instanceId, fromZone: b.zone }).state;
+    return next;
+  }
+  const bpA = effectiveBp(state, enemyId, a.card);
+  const bpB = effectiveBp(state, enemyId, b.card);
+  const losers = bpA === bpB ? [a.card.instanceId, b.card.instanceId] : [bpA < bpB ? a.card.instanceId : b.card.instanceId];
+  return destroySelected(state, pending, losers);
 }

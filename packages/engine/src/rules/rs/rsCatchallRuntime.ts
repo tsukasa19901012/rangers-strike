@@ -1,5 +1,5 @@
 import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
-import { openHolography } from "../rs4NcEffects";
+import { openHolography, openMagnetFist } from "../rs4NcEffects";
 import { registerPinkBarrier } from "../powerFlipEffects";
 import { buildCatchallStructuredPrimitives } from "../../dsl/catchallTextPrimitives";
 import type { DslCardContext } from "../../dsl/cardInterpreter";
@@ -421,6 +421,14 @@ export function tryRsCatchallRuntime(
     // RS-201【超電子ホログラフィー】: オペレーションのカードだけを選ぶ（rules/rs4NcEffects.ts）。
     return {
       state: openHolography(state, ctx.playerId, ctx.phasePlayerId, ctx.triggerSourceInstanceId),
+      detail: ctx.effectId,
+    };
+  }
+
+  if (ctx.sourceCardId === "RS-295" && ctx.effectId === "chikara_ken") {
+    // RS-295【磁力拳】（rules/rs4NcEffects.ts）。
+    return {
+      state: openMagnetFist(state, ctx.playerId, ctx.phasePlayerId, ctx.triggerSourceInstanceId),
       detail: ctx.effectId,
     };
   }

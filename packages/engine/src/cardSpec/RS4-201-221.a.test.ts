@@ -298,9 +298,49 @@ describe("RS-203 大帝ラー・デウス", () => {
   });
 
   // faq-card-4 RS-203 Q3「「男」なおかつ「女」となったユニットを２体選んだ場合は「性別が同じ」と判断します」
-  it.todo(
-    "RS-203: 公式Q&A — 「男」を追加された女性ユニット2体を磁石神父で選ぶと「性別が同じ」、「男」と選ぶと「性別が違う」と判断する（出典: grnrngr/faq-card-4 RS-203 Q3・faq-card-5）— エンジンの RS-295【磁力拳】は2体目を選べず（resolve_effect_choice が illegal_action）、性別判定の手順を組み立てられない。デウス遺伝子の特徴追加自体は上の it.fails で確認",
-  );
+  /** 「男」の S ユニットを捨札にしてラー・デウスをラッシュし、バトルフェイズに磁石神父を2番目に出す（CN2 の NC）。 */
+  function deusThenMagnet(): GameState {
+    const MALE = sUnit("SPEC-MALE-MAT", { features: ["男"] });
+    let s = st(
+      {
+        phase: "rush",
+        player1: {
+          hand: [inst("RS-203", "d")],
+          battle: fillers(1),
+          rush: [inst("SPEC-MALE-MAT", "mat"), inst("RS-295", "j")],
+          power: powerCards(5),
+          command: releasedN(1, "TST-OP-DA"),
+          deck: deckCards(5),
+        },
+        player2: {
+          battle: [inst("RS-201", "y")],
+          rush: [inst("RS-202", "p"), inst("RS-205", "r")],
+          power: powerCards(3, "e"),
+          deck: deckCards(5, "e"),
+        },
+      },
+      [MALE],
+    );
+    s = rushWithMaterial(s, "player1", "RS-203:d", "SPEC-MALE-MAT:mat");
+    s = advanceToBattle(s, "player1");
+    return enter(s, "RS-295:j");
+  }
+
+  it("RS-203: 公式Q&A — 「男」を追加された女性ユニット2体を磁石神父で選ぶと「性別が同じ」で手札に戻る（出典: grnrngr/faq-card-4 RS-203 Q3・faq-card-5 RS-295）", () => {
+    let s = deusThenMagnet();
+    expect(choiceIds(s)).toEqual(["RS-201:y", "RS-202:p", "RS-205:r"]);
+    s = settle(pick(s, "player1", "RS-201:y", "RS-202:p"));
+    expect(zoneOf(s, "player2", "RS-201:y")).toBe("hand");
+    expect(zoneOf(s, "player2", "RS-202:p")).toBe("hand");
+    expect(zoneOf(s, "player2", "RS-205:r")).toBe("rush");
+  });
+
+  it("RS-203: 公式Q&A — 「男」なおかつ「女」となったユニットと「男」のユニットを選ぶと「性別が違う」のでバトルする（出典: grnrngr/faq-card-4 RS-203 Q3・faq-card-5 RS-295）", () => {
+    let s = deusThenMagnet();
+    s = settle(pick(s, "player1", "RS-201:y", "RS-205:r"));
+    expect(zoneOf(s, "player2", "RS-201:y")).toBe("discard");
+    expect(zoneOf(s, "player2", "RS-205:r")).toBe("rush");
+  });
   it.todo(
     "RS-203: 公式Q&A — 特徴「航空機」を捨札にしたターン、航空機を持たないユニットのラッシュでもバラクティカ【編隊出撃】を発動できる（出典: grnrngr/faq-card-4 RS-203 Q2・faq-card-5）— デウス遺伝子が未実装で、XL の RS-296 の起動型効果の手順をこの範囲で組み立てられない",
   );
