@@ -1,3 +1,4 @@
+import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
 import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
 import { set6BBattleEntryBlocked } from "./legend1/set6NamedEffectsB";
 import { beastSwordIgnoresEntryHold } from "./legend1/set5NamedEffectsA";
@@ -377,6 +378,8 @@ export function canMoveUnitToBattle(
 
   // RS-320【スワンイリュージョン】・RS-324 マジマザー: このターン、ラッシュエリアのユニットはバトルエリアに出られない。
   if (rushAreaEntryBlockedThisTurn(state, playerId)) return false;
+  // RS-356 デンジイエロー【ハンマーパンチ】: このターン、必要パワーの数字が3以下のユニットは出られない。
+  if (hammerPunchBlocksEntry(state, playerId, unit)) return false;
 
   if (zenibombBlocksBattleEntry(player, unit.instanceId)) {
     return false;
@@ -501,6 +504,8 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   // RS-320【スワンイリュージョン】・RS-324 マジマザー: このターン、ラッシュエリアのユニットはバトルエリアに出られない。
   if (rushAreaEntryBlockedThisTurn(state, playerId)) return false;
+  // RS-356 デンジイエロー【ハンマーパンチ】: このターン、必要パワーの数字が3以下のユニットは出られない。
+  if (hammerPunchBlocksEntry(state, playerId, unit)) return false;
 
   if (zenibombBlocksBattleEntry(player, unit.instanceId)) {
     return false;
@@ -820,6 +825,10 @@ export function explainCannotEnterBattle(
 
   if (rushAreaEntryBlockedThisTurn(state, playerId)) {
     return `このターン、ラッシュエリアのユニットはバトルエリアに出せません。`;
+  }
+
+  if (hammerPunchBlocksEntry(state, playerId, unit)) {
+    return `相手の【ハンマーパンチ】の効果で、このターン、必要パワーの数字が3以下のユニットはバトルエリアに出せません。`;
   }
 
   if (zenibombBlocksBattleEntry(player, unit.instanceId)) {

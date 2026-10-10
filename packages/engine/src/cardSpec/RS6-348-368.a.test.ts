@@ -276,14 +276,12 @@ describe("RS-350 暗黒の鎧", () => {
     expectOpStats("RS-350", { name: "暗黒の鎧", category: "DA", powerCost: 0 });
   });
 
-  // 既知の不具合: CARD-RS-350 使っても自軍Sユニットを選ぶ手順が始まらず、何も起きない
-  it.fails("RS-350: 自軍 S ユニットを1体選ぶ（L ユニットは選べない）（出典: atwiki/page-525「自軍Sユニットを1体選ぶ」）", () => {
+  it("RS-350: 自軍 S ユニットを1体選ぶ（L ユニットは選べない）（出典: atwiki/page-525「自軍Sユニットを1体選ぶ」）", () => {
     const s = played();
     expect(choiceIds(s)).toEqual(["RS-354:red"]);
   });
 
-  // 既知の不具合: CARD-RS-350 使っても自軍Sユニットを選ぶ手順が始まらず、何も起きない
-  it.fails("RS-350: このカードを自軍ラッシュエリアに置き、選んだユニットを重ねる（捨札にならない）（出典: atwiki/page-525「このカードを自軍ラッシュエリアに置き」）", () => {
+  it("RS-350: このカードを自軍ラッシュエリアに置き、選んだユニットを重ねる（捨札にならない）（出典: atwiki/page-525「このカードを自軍ラッシュエリアに置き」）", () => {
     let s = played();
     s = resolveAll(pick(s, "RS-354:red"));
     expect(zoneOf(s, "player1", "RS-350:ar")).not.toBe("discard");
@@ -291,14 +289,12 @@ describe("RS-350 暗黒の鎧", () => {
     expect(red?.stackedCards?.map((c) => c.instanceId)).toContain("RS-350:ar");
   });
 
-  // 既知の不具合: CARD-RS-350 重ねたユニットのカテゴリが DA にならない
-  it.fails("RS-350: 重ねたユニットはカテゴリが DA になる（出典: atwiki/page-525「カテゴリがDAになり」）", () => {
+  it("RS-350: 重ねたユニットはカテゴリが DA になる（出典: atwiki/page-525「カテゴリがDAになり」）", () => {
     const s = st({ player1: { rush: [armored()], deck: deckCards(5) } });
     expect(categoriesOf(s, "player1", "RS-354:red")).toEqual(["DA"]);
   });
 
-  // 既知の不具合: CARD-RS-350 重ねたユニットが「SP1」未満のユニットにもアタックされる
-  it.fails("RS-350: 重ねたユニットは「SP1」以上でないユニットにはアタックされない（出典: atwiki/page-525「「SP1」以上のユニット以外にはアタックされない」）", () => {
+  it("RS-350: 重ねたユニットは「SP1」以上でないユニットにはアタックされない（出典: atwiki/page-525「「SP1」以上のユニット以外にはアタックされない」）", () => {
     const NOSP = sUnit("SPEC-NOSP", { sp: undefined, bp: 9000 });
     const s = st(
       { activePlayer: "player2", player1: { battle: [armored()], deck: deckCards(5) }, player2: { battle: [inst("SPEC-NOSP", "n")], deck: deckCards(5, "e") } },
@@ -312,8 +308,7 @@ describe("RS-350 暗黒の鎧", () => {
     expect(attackTargets(s, "TST-UNIT-7:z", "player2")).toContain("RS-354:red");
   });
 
-  // 既知の不具合: CARD-RS-350 重ねたユニットが撃破されても鎧が自軍パワーゾーンにダメージとして置かれない
-  it.fails("RS-350: 重ねたユニットがユニットでなくなる（撃破される）と、このカードを自軍パワーゾーンにダメージにして置く（出典: atwiki/page-525「このカードを自軍パワーゾーンにダメージにして置く」）", () => {
+  it("RS-350: 重ねたユニットがユニットでなくなる（撃破される）と、このカードを自軍パワーゾーンにダメージにして置く（出典: atwiki/page-525「このカードを自軍パワーゾーンにダメージにして置く」）", () => {
     let s = st({ activePlayer: "player2", player1: { battle: [armored()], power: powerCards(2), deck: deckCards(5) }, player2: { battle: [inst("TST-UNIT-7", "z")], deck: deckCards(5, "e") } });
     s = resolveAll(settle(attack(s, "TST-UNIT-7:z", "RS-354:red", "player2")));
     expect(zoneOf(s, "player1", "RS-354:red")).toBe("discard");
@@ -323,8 +318,7 @@ describe("RS-350 暗黒の鎧", () => {
   });
 
   // grnrngr/faq-card-6 RS-350 Q1「はい、その通りです。」
-  // 既知の不具合: CARD-RS-350 重ねたユニットが撃破されても鎧が自軍パワーゾーンにダメージとして置かれない
-  it.fails("RS-350: 公式Q&A — 鎧に重ねた「怪人」が撃破されて捨札になり、それに対応して巨大化爆弾を使っても、鎧はダメージにして置かれる（出典: grnrngr/faq-card-6 RS-350 Q1）", () => {
+  it("RS-350: 公式Q&A — 鎧に重ねた「怪人」が撃破されて捨札になり、それに対応して巨大化爆弾を使っても、鎧はダメージにして置かれる（出典: grnrngr/faq-card-6 RS-350 Q1）", () => {
     const KAIJIN = sUnit("SPEC-KAIJIN", { features: ["怪人"], bp: 1000, sp: undefined });
     let s = st(
       {
@@ -447,14 +441,14 @@ describe("RS-352 ダイデンジン", () => {
   });
 
   /** バイオジェット1号（RS-128）をラッシュし、その※効果で自軍パワーゾーンの powerCard を捨札にする。 */
-  function boomerang(opts: { daidenjin: boolean; powerCard?: string; extraP1?: ReturnType<typeof inst>[] }) {
+  function boomerang(opts: { daidenjin: boolean; powerCard?: string; extraP1?: ReturnType<typeof inst>[]; extraPower?: number }) {
     const powerCard = opts.powerCard ?? "RS-354";
     let s = rushPhase(
       {
         hand: [inst("RS-128", "bj")],
         rush: [...(opts.daidenjin ? [inst("RS-352", "dd")] : []), ...fillers(2), ...(opts.extraP1 ?? [])],
         command: releasedCat("OT", 1),
-        power: [inst(powerCard, "pc"), ...powerCards(4)],
+        power: [inst(powerCard, "pc"), ...powerCards(opts.extraPower ?? 4)],
       },
       { battle: [inst("TST-UNIT-2", "c2"), inst("RS-361", "c5")], rush: [inst("RS-360", "c4")] },
     );
@@ -466,8 +460,7 @@ describe("RS-352 ダイデンジン", () => {
     return s;
   }
 
-  // 既知の不具合: CARD-RS-352 【ダイデンジンブーメラン】が未実装（パワーゾーンのカードが離れても相手は何も撃破しない）
-  it.fails("RS-352: 【ダイデンジンブーメラン】自軍パワーゾーンのカード（必要パワー3）が離れると、相手は必要パワー3以下の自分自身のユニットから1体選び撃破する（出典: atwiki/page-550）", () => {
+  it("RS-352: 【ダイデンジンブーメラン】自軍パワーゾーンのカード（必要パワー3）が離れると、相手は必要パワー3以下の自分自身のユニットから1体選び撃破する（出典: atwiki/page-550）", () => {
     const s = boomerang({ daidenjin: true });
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["TST-UNIT-2:c2"]);
@@ -482,8 +475,7 @@ describe("RS-352 ダイデンジン", () => {
   });
 
   // grnrngr/faq-card-6 RS-352 Q1「その場合は5回発動します。すべてのカード操作は、…1枚ごとに実行しているものとして扱います。」
-  // 既知の不具合: CARD-RS-352 【ダイデンジンブーメラン】が未実装
-  it.fails("RS-352: 公式Q&A — 複数枚が同時にパワーゾーンを離れたときは1枚ごとに発動する（バイオジェット2号で2枚 → 2回）（出典: grnrngr/faq-card-6 RS-352 Q1）", () => {
+  it("RS-352: 公式Q&A — 複数枚が同時にパワーゾーンを離れたときは1枚ごとに発動する（バイオジェット2号で2枚 → 2回）（出典: grnrngr/faq-card-6 RS-352 Q1）", () => {
     let s = rushPhase(
       { hand: [inst("RS-129", "bj2")], rush: [inst("RS-352", "dd"), ...fillers(3)], command: releasedCat("OT", 1), power: [inst("RS-354", "pa"), inst("RS-354", "pb"), ...powerCards(2)] },
       { battle: [inst("TST-UNIT-2", "c2"), inst("TST-UNIT-0", "c0"), inst("RS-361", "c5")] },
@@ -499,9 +491,9 @@ describe("RS-352 ダイデンジン", () => {
   it.todo("RS-352: 公式Q&A — 《モーフ》の「置き換え」でパワーゾーンのカードが離れても発動する（出典: grnrngr/faq-card-6 RS-352 Q2）— 置き換え元の電王SF/RF とモーフの手順を API で組めない（ブーメラン自体も未実装）");
 
   // grnrngr/faq-card-6 RS-375 Q「はい、パワーゾーンのカードにも効果を及ぼします。」
-  // 既知の不具合: CARD-RS-352 【ダイデンジンブーメラン】が未実装
-  it.fails("RS-352: 公式Q&A — レッドレーサー（2nd）の「必要パワーの数字は1増える」は、ブーメランで参照するパワーゾーンのカードにも及ぶ（必要パワー3 → 4 以下を撃破）（出典: grnrngr/faq-card-6 RS-375 Q）", () => {
-    const s = boomerang({ daidenjin: true, extraP1: [inst("RS-375", "rr")] });
+  it("RS-352: 公式Q&A — レッドレーサー（2nd）の「必要パワーの数字は1増える」は、ブーメランで参照するパワーゾーンのカードにも及ぶ（必要パワー3 → 4 以下を撃破）（出典: grnrngr/faq-card-6 RS-375 Q）", () => {
+    // レッドレーサー（2nd）の※でバイオジェット1号（5+）の必要パワーも6になるため、パワーを6枚にする。
+    const s = boomerang({ daidenjin: true, extraP1: [inst("RS-375", "rr")], extraPower: 5 });
     expect(choiceIds(s)).toEqual(["RS-360:c4", "TST-UNIT-2:c2"]);
   });
 });

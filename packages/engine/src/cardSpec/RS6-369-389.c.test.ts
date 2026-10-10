@@ -321,8 +321,7 @@ describe("RS-385 グリーンホバー", () => {
     expect(zoneOf(r.state, "player1", "RS-385:x")).toBe("rush");
   });
 
-  it.fails("RS-385: ※ 特徴「航空機」を持たないユニットにアタックされない（出典: atwiki/page-530）", () => {
-    // 既知の不具合: CARD-RS-385 「航空機」を持たないユニットのアタック対象から外れない
+  it("RS-385: ※ 特徴「航空機」を持たないユニットにアタックされない（出典: atwiki/page-530）", () => {
     let s = st({ player1: { rush: [inst("TST-UNIT-7", "a")], deck: deckCards(3) }, player2: { battle: [inst("RS-385", "gh"), inst("TST-UNIT-0", "e")] } });
     s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "TST-UNIT-7:a" });
     expect(attackTargets(s, "TST-UNIT-7:a")).not.toContain("RS-385:gh");
@@ -335,7 +334,7 @@ describe("RS-385 グリーンホバー", () => {
   });
 
   it.fails("RS-385: 【特殊消化弾】自軍ラッシュエリアにある間、自軍コマンドゾーンにホールド状態で置くカード（ブルースローワー【放水作業】）をリリース状態で置ける（出典: atwiki/page-530）", () => {
-    // 既知の不具合: CARD-RS-385 【特殊消化弾】が働かない（CARD-RS-384 【放水作業】も未実装）
+    // 既知の不具合: CARD-RS-384 【放水作業】が未実装（【特殊消化弾】は上のテストのとおり働く）
     let s = rushGogo("RS-384", 4, { rush: [inst("RS-385", "gh")] }, { command: releasedCat("WB", 3, "ec") }).state;
     for (let i = 0; i < 6 && s.pendingEffectChoice?.playerId === "player1"; i++) {
       s = legal(s).some((a) => a.type === "confirm_effect_choice") ? confirm(s) : pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
@@ -344,6 +343,28 @@ describe("RS-385 グリーンホバー", () => {
     const placed = s.players.player1.command.filter((c) => c.instanceId.startsWith("TST-OP:dk"));
     expect(placed).toHaveLength(2);
     expect(placed.every((c) => !c.commandHeld)).toBe(true);
+  });
+
+  it("RS-385: 【特殊消化弾】自軍ラッシュエリアにある間、敵軍バルシャーク（2nd）【シャークジョーズ】で自軍コマンドゾーンにホールド状態で置かれるユニットカードをリリース状態で置く（出典: atwiki/page-530）", () => {
+    let s = st({
+      player1: { battle: [inst("TST-UNIT-0", "f")], rush: [inst("RS-362", "shark")], deck: deckCards(5) },
+      player2: { battle: [inst("RS-354", "c3")], rush: [inst("RS-385", "gh")], deck: deckCards(5, "e") },
+    });
+    s = enter(s, "RS-362:shark");
+    s = passEntry(resolveAll(pick(s, "RS-354:c3")));
+    const placed = s.players.player2.command.find((c) => c.instanceId === "RS-354:c3");
+    expect(placed).toBeDefined();
+    expect(placed?.commandHeld ?? false).toBe(false);
+  });
+
+  it("RS-385: 【特殊消化弾】グリーンホバーが自軍ラッシュエリアになければホールド状態で置かれる（出典: atwiki/page-530「これが自軍ラッシュエリアにある間」）", () => {
+    let s = st({
+      player1: { battle: [inst("TST-UNIT-0", "f")], rush: [inst("RS-362", "shark")], deck: deckCards(5) },
+      player2: { battle: [inst("RS-354", "c3"), inst("RS-385", "gh")], deck: deckCards(5, "e") },
+    });
+    s = enter(s, "RS-362:shark");
+    s = passEntry(resolveAll(pick(s, "RS-354:c3")));
+    expect(s.players.player2.command.find((c) => c.instanceId === "RS-354:c3")?.commandHeld).toBe(true);
   });
 
   // grnrngr/faq-card-6 SR-004「リリース状態で置いた後、「SR-004 へドリアン女王(２nd)」の効果でホールド状態になります。」

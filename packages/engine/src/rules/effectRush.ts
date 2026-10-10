@@ -27,6 +27,7 @@ import {
   rushPowerCost,
 } from "../core/catalog";
 import { countAvailablePower, effectivePowerCost, findInZone, updatePlayer } from "../core/helpers";
+import { redRacerPowerCostBonus } from "../core/power";
 import {
   finalizeEffectRush,
   hasPendingPromptBlockingEffectRush,
@@ -168,7 +169,7 @@ export function planEffectRush(
 
   const player = state.players[playerId];
   const power = countAvailablePower(state, playerId);
-  const cost = effectivePowerCost(state, playerId, parsePowerCost(def.powerCost));
+  const cost = effectivePowerCost(state, playerId, parsePowerCost(def.powerCost) + redRacerPowerCostBonus(state, playerId, card.cardId));
 
   if (needsZordDownPayment(card.cardId, def.powerCost, def)) {
     // 「－」は任意。必要パワーを満たしていれば追加条件なしで出す。

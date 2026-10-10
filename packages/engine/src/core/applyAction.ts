@@ -1,3 +1,4 @@
+import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
@@ -35,6 +36,7 @@ import {
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { checkWinner, advancePhase } from "./createGame";
 import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
+import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import {
   canPlayOperation,
@@ -225,6 +227,7 @@ import { applyPassChase, applyResolveChase, listValidChaseVehicleIds } from "../
 import {
   canRiderMountVehicle,
   extractMountedVehicleFromRush,
+  holdCommandForGaleoPulsarRide,
 } from "../keywords/ride";
 import {
   beginMorphUnitSelection,
@@ -523,7 +526,8 @@ function finishStrikeResolution(
     activePlayer: pending.battlePhasePlayer,
   });
   resolved = finishBattleEntryIf(resolved, pending.strikerInstanceId);
-  // 「ストライクしてダメージを与えたとき」（RS-309【ゴウライキャノン】）。
+  // ルール: R-TIME-01 — 「ストライクしてダメージを与えたとき」はダメージを与えたあと（DSL: RS-686 等、RS-309【ゴウライキャノン】）。
+  resolved = applyStrikeDamageDealtDslTriggers(resolved, pending);
   resolved = applySet5StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
@@ -796,6 +800,10 @@ export function applyAction(
   next = drainDeferredDestroyTriggers(next);
   // RS-256 闇の戒律・RS-255 巨大化爆弾: 置き場を離れたら重ねたカードは捨札になる。
   next = settleStackedCards(next);
+  // RS-350 暗黒の鎧: 重ねたユニットがユニットでなくなったら、鎧を持ち主のパワーゾーンにダメージにして置く。
+  if (applyActionDepth === 0) next = settleDarkArmor(state, next);
+  // RS-385【特殊消化弾】: 自軍コマンドゾーンにホールド状態で置くカードは、かわりにリリース状態で置く。
+  if (applyActionDepth === 0) next = applySpecialExtinguisher(state, next);
   // RS-265【ラウンドレーダー】: 相手が手札からオペレーションを使用したとき（解決が終わってから開く）。
   next = queueRoundRadar(state, next, action);
   next = openRoundRadarIfReady(next);
@@ -806,6 +814,18 @@ export function applyAction(
   if (!hasBlockingInteraction(next)) next = applyDekaMasterReturn(next);
   // RS-325【マジチケット】: 発動したカードが捨札になったら「かわりに」の選択を開く。
   if (next.magiTicketPending && !hasBlockingInteraction(next)) next = settleMagiTicket(next);
+  // RS-352【ダイデンジンブーメラン】: パワーゾーンのカードが離れたら1枚ごとに相手が撃破するユニットを選ぶ。
+  if (applyActionDepth === 0) {
+    next = queueDaidenjinBoomerang(state, next);
+    if (next.boomerangQueue?.length && !hasBlockingInteraction(next) && !next.winner) {
+      next = openDaidenjinBoomerangIfReady(next, turnPlayerOf(next));
+    }
+    // RS-363【パンサークロー】: 発動したターン、敵軍コマンドゾーンにホールド状態で置かれたユニットカードを捨札にしてもよい。
+    next = queuePantherClaw(state, next);
+    if (next.pantherClawQueue?.length && !hasBlockingInteraction(next) && !next.winner) {
+      next = openPantherClawIfReady(next, turnPlayerOf(next));
+    }
+  }
   next = syncDamageWithFaceDownPower(state, next);
   // RS-327【フェイタルブレイドの伝授】: 1アクションで撃破された敵軍ユニットを数える（入れ子の applyAction では数えない）。
   if (applyActionDepth === 0) next = applyFatalBladeDraws(state, next, action);
@@ -983,6 +1003,8 @@ function applyActionCore(
   if (
     state.pendingRideOffChoice &&
     action.type !== "resolve_ride_off_choice" &&
+    // RS-381【獅子の装光】（ライドオフさせるかわりに発動）。
+    !(action.type === "activate_field_unit_ability" && lionArmorAvailable(state, action.playerId)) &&
     !(
       action.type === "resolve_damage_payment" &&
       state.pendingDamagePayment &&
@@ -2899,7 +2921,7 @@ function applyActionCore(
 
     case "mount_ride": {
       if (state.phase !== "battle") return fail("wrong_phase");
-      return applyAction(
+      const mounted = applyAction(
         state,
         {
           type: "move_to_battle",
@@ -2909,6 +2931,10 @@ function applyActionCore(
         },
         { ...options, trustLegality: true },
       );
+      if (!mounted.ok) return mounted;
+      // RS-381 ガレオパルサー: RC を持たない「レッド」の S ユニットは自軍コマンドを1つホールドしてライドする。
+      const held = holdCommandForGaleoPulsarRide(mounted.state, playerId, action.riderInstanceId, action.vehicleInstanceId);
+      return held === mounted.state ? mounted : { ...mounted, state: held };
     }
 
     case "resolve_ride_off_choice": {
@@ -3164,6 +3190,13 @@ function applyActionCore(
 
     case "activate_field_unit_ability": {
       if (state.phase !== "start" && state.phase !== "rush" && state.phase !== "battle") return fail("wrong_phase");
+      // RS-381 ガレオパルサー【獅子の装光】: ライドオフさせるかわりに発動する（ライドオフの選択中のみ）。
+      if (state.pendingRideOffChoice) {
+        if (!lionArmorAvailable(state, playerId) || state.pendingRideOffChoice.vehicleInstanceId !== action.unitInstanceId) {
+          return fail("illegal_action");
+        }
+        return ok(beginLionArmor(state), buildLogEntry(playerId, "activate_field_unit_ability", "RS-381", state.definitions));
+      }
       const unit =
         player.rush.find((c) => c.instanceId === action.unitInstanceId) ??
         player.battle.find((c) => c.instanceId === action.unitInstanceId);

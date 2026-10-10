@@ -1,3 +1,10 @@
+import { redRacerPowerCostBonus } from "../core/power";
+import { isSet6LowChoiceEffect, tryResolveSet6LowChoice, trySkipSet6LowChoice } from "./legend1/set6NamedEffects348";
+import {
+  beginDestroyTriggerHold,
+  hasDestroyerStep1Text,
+  releaseDestroyTriggerHold,
+} from "./destroyTriggerQueue";
 import { checkWinner } from "../core/createGame";
 import {
   isSet5AChoiceEffect,
@@ -60,6 +67,7 @@ import { countLogicalBattleSlots } from "./battleLine";
 import { tryLegend3BattleToRush } from "./legend3/restrictions";
 import type {
   CardInstance,
+  DeferredDestroyTrigger,
   GameState,
   PendingEffectChoice,
   PendingLeave,
@@ -595,7 +603,8 @@ export function isValidEffectChoiceTarget(
     isSet5AuditChoiceEffect(pending.effectId) ||
     isSet5AChoiceEffect(pending.effectId) ||
     isSet6BChoiceEffect(pending.effectId) ||
-    pending.effectId === "rs414_dione_wall"
+    pending.effectId === "rs414_dione_wall" ||
+    isSet6LowChoiceEffect(pending.effectId)
   ) {
     return true;
   }
@@ -1947,18 +1956,27 @@ export function applyConfirmEffectChoice(
       // ルール: R-TIME-04 — 割り込み（マンドラ坊やの鳴き声等）で場を離れた対象は飛ばして撃破処理を続ける。
       const located = findCardOwner(nextState, instanceId);
       if (!located || (located.zone !== "rush" && located.zone !== "battle")) continue;
+      // この選択は確定済み: 撃破されたユニットの誘発が開く選択に上書き・消去されないよう外してから撃破する。
       const leave = applyUnitLeave(
-        nextState,
+        { ...nextState, pendingEffectChoice: undefined },
         instanceId,
         "discard",
         pending.phasePlayerId,
       );
       if ("error" in leave) return leave;
       nextState = leave.state;
+      const resumed: PendingEffectChoice = { ...pending, processedInstanceIds: processed };
       if (nextState.pendingLeave) {
         // 離場反応の解決後に、残りの対象の撃破を再開する。
-        const resumed: PendingEffectChoice = { ...pending, processedInstanceIds: processed };
         return { state: { ...nextState, pendingEffectChoice: resumed } };
+      }
+      if (nextState.pendingEffectChoice || nextState.pendingDamagePayment || nextState.pendingRegister) {
+        // ルール: R-TIME-01, R-TIME-04 — 撃破されたユニットの誘発（段階 2「撃破されたとき」・段階 4「撃破されて捨札に
+        // なったとき」）の選択等が割り込んだ: それを解決してから残りの対象を撃破する（rules/destroyTriggerQueue.ts）。
+        const frame: DeferredDestroyTrigger = { kind: "resume_multi_destroy", step: "after_discard", pending: resumed };
+        return {
+          state: { ...nextState, deferredDestroyTriggers: [...(nextState.deferredDestroyTriggers ?? []), frame] },
+        };
       }
     }
     const names = selected
@@ -2716,6 +2734,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set5) return set5;
   const set5Audit = trySkipSet5AuditChoice(state, playerId);
   if (set5Audit) return set5Audit;
+  const set6Low = trySkipSet6LowChoice(state, playerId);
+  if (set6Low) return set6Low;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     // 選択を省略したときは先にひいた1枚を手札に残す（どちらか1枚は必ず残る）。
@@ -2892,6 +2912,8 @@ export function applyEffectChoiceSelect(
   if (set5) return set5;
   const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);
   if (set5Audit) return set5Audit;
+  const set6Low = tryResolveSet6LowChoice(state, playerId, instanceId);
+  if (set6Low) return set6Low;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
@@ -3784,8 +3806,18 @@ export function applyEffectChoiceSelect(
       const destroyedCardId = located
         ? findInZone(state.players[located.playerId], located.zone, instanceId)?.card.cardId
         : undefined;
+      // ルール: R-TIME-01 — 効果で撃破したとき、撃破した側の段階 1（「撃破したとき」「撃破する。そうしたとき」。
+      // RS-685 の1点等）を先に処理し、撃破された側の段階 2・4 はそのあとに段階の順で解決する（rules/destroyTriggerQueue.ts）。
+      const hadHold = !!state.destroyTriggerHold;
+      const holdDestroyed =
+        unitLeaveDestination(dest) !== "deck_top" &&
+        hasDestroyerStep1Text(state.definitions[pending.sourceCardId]?.text);
+      const settleHeld = (outcome: ChoiceOutcome): ChoiceOutcome =>
+        !holdDestroyed || "error" in outcome
+          ? outcome
+          : { ...outcome, state: releaseDestroyTriggerHold(outcome.state, hadHold) };
       const leave = applyUnitLeave(
-        state,
+        holdDestroyed ? beginDestroyTriggerHold(state) : state,
         instanceId,
         unitLeaveDestination(dest),
         pending.phasePlayerId,
@@ -3831,10 +3863,12 @@ export function applyEffectChoiceSelect(
             defenderFound.card,
           );
           nextState = damage.state;
-          const finished = finishChoice(
-            nextState,
-            pending,
-            cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+          const finished = settleHeld(
+            finishChoice(
+              nextState,
+              pending,
+              cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+            ),
           );
           if (damage.logs.length > 0) {
             return { ...finished, logs: damage.logs };
@@ -3842,10 +3876,12 @@ export function applyEffectChoiceSelect(
           return finished;
         }
       }
-      return finishChoice(
-        nextState,
-        pending,
-        cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+      return settleHeld(
+        finishChoice(
+          nextState,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+        ),
       );
     }
 
@@ -4454,9 +4490,10 @@ export function applyEffectChoiceSelect(
             "no_discard",
           );
         }
-        const powerCost = parsePowerCost(
-          getDefinition(state.definitions, discarded.cardId)?.powerCost ?? 99,
-        );
+        // RS-375 レッドレーサー（2nd）: 自軍エリアにあれば、パワーゾーンから捨札にしたユニットカードの必要パワーは1増えたものとして参照する。
+        const powerCost =
+          parsePowerCost(getDefinition(state.definitions, discarded.cardId)?.powerCost ?? 99) +
+          redRacerPowerCostBonus(state, pending.playerId, discarded.cardId);
         const enemyId = opponent(pending.playerId);
         const targets = findEnemySWithPowerCost(state, enemyId, powerCost).map(
           (c) => c.instanceId,

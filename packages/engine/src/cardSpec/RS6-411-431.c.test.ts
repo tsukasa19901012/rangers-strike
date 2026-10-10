@@ -163,8 +163,8 @@ describe("RS-427 スーパーゲキイエロー", () => {
     expect(s.pendingEffectChoice).toBeUndefined();
   });
 
-  // 既知の不具合: CARD-RS-427 「ゲキイエロー」が1枚のとき、個別実装と DSL の両方で誘発し、ゲキイエローを出したあとも解決できない古い選択（見送りしかできない）が残る（docs/rules/06-effects-timing.md にも記載）
-  it.fails("RS-427: ※ 「ゲキイエロー」が1枚だけのときも、出したあとに選択は残らない（出典: atwiki/page-510「1枚選び、自軍ラッシュエリアに出す」）", () => {
+  // CARD-RS-427（修正済み）: 個別実装と DSL の二重の誘発をやめ、個別実装だけで解決する。
+  it("RS-427: ※ 「ゲキイエロー」が1枚だけのときも、出したあとに選択は残らない（出典: atwiki/page-510「1枚選び、自軍ラッシュエリアに出す」）", () => {
     const s = attackedInEnemyTurn({ battle: [inst("RS-427", "sy")], discard: [inst("RS-342", "gy")] }, "RS-427:sy");
     expect(zoneOf(s, "player1", "RS-342:gy")).toBe("rush");
     expect(s.pendingEffectChoice).toBeUndefined();

@@ -86,6 +86,33 @@ function vehicleAlreadyRidden(
   );
 }
 
+/** RS-381: RC を持たないライダーが、コマンドを1つホールドしてライドできるか。 */
+function galeoPulsarHoldRideAllowed(state: GameState, playerId: PlayerId, riderDef: CardDefinition): boolean {
+  return (
+    riderDef.size === "S" &&
+    (riderDef.features ?? []).includes("レッド") &&
+    state.players[playerId].command.some((cmd) => !cmd.commandHeld)
+  );
+}
+
+/** RS-381: RC を持たないライダーがガレオパルサーにライドしたら、自軍コマンドを1つホールドする（先頭のリリース状態のもの）。 */
+export function holdCommandForGaleoPulsarRide(
+  state: GameState,
+  playerId: PlayerId,
+  riderInstanceId: string,
+  vehicleInstanceId: string,
+): GameState {
+  const player = state.players[playerId];
+  const rider = player.battle.find((c) => c.instanceId === riderInstanceId);
+  const vehicle = [...player.battle, ...player.rush].find((c) => c.instanceId === vehicleInstanceId);
+  if (!rider || !vehicle || vehicle.cardId !== "RS-381" || rider.mountedOnInstanceId !== vehicleInstanceId) return state;
+  if (riderHasRc(getDefinition(state.definitions, rider.cardId))) return state;
+  const index = player.command.findIndex((c) => !c.commandHeld);
+  if (index < 0) return state;
+  const command = player.command.map((c, i) => (i === index ? { ...c, commandHeld: true } : c));
+  return { ...state, players: { ...state.players, [playerId]: { ...player, command } } };
+}
+
 /** ラッシュ進入時にライド可能な未搭乗ビークル（自軍ラッシュ、未バトル進入）。 */
 export function findRideVehicleForRider(
   state: GameState,
@@ -106,6 +133,11 @@ export function findRideVehicleForRider(
 
   for (const vehicle of candidates) {
     if (riderHasRc(riderDef)) return vehicle;
+    // RS-381 ガレオパルサーは、RC を持たない「レッド」の S ユニットが自軍コマンドを1つホールドしてライドする（mount_ride でホールド）。
+    if (vehicle.cardId === "RS-381") {
+      if (galeoPulsarHoldRideAllowed(state, playerId, riderDef)) return vehicle;
+      continue;
+    }
     if (
       riderMatchesVehicleRideWithoutRc(
         state.definitions,
@@ -187,6 +219,9 @@ export function canRiderMountVehicle(
     const cats = Array.isArray(riderDef.category) ? riderDef.category : riderDef.category ? [riderDef.category] : [];
     if (cats.includes("ET" as never)) return true;
   }
+  // RS-381 ガレオパルサーの※「特徴「レッド」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくても
+  // このビークルにライドできる。」（atwiki/page-522）— ホールドできるリリース状態のコマンドが必要（ホールドは mount_ride で行う）。
+  if (vehicle.card.cardId === "RS-381") return galeoPulsarHoldRideAllowed(state, playerId, riderDef);
 
   if (
     riderMatchesVehicleRideWithoutRc(

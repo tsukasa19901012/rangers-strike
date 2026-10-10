@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_s_on_self_rush",
-          "duration": "permanent"
+          "keyword": "effect_card::RS-350::dark_armor",
+          "duration": "turn"
         }
       ],
       "optional": false
