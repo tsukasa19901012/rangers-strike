@@ -34,6 +34,7 @@ import {
 } from "../events/emitUnitRushed";
 import { rushAdditionalConditionApplies } from "./bkOperationTurnRules";
 import { promoteDeferredBattleEntry } from "./battleEntry";
+import { suppressesDeployedUnitEffects } from "./pendingChoices";
 import {
   applyAllZordFusionMaterials,
   collectZordMaterials,
@@ -385,7 +386,10 @@ function placeUnit(state: GameState, instanceId: string): GameState {
   };
   if (pending.blockBattleEntryThisTurn) nextOwner = markBattleBlocked(nextOwner, instanceId);
   const placed = { ...state, ...updatePlayer(state, pending.playerId, nextOwner) };
-  const result = finalizeEffectRush(placed, pending.playerId, [instanceId], pending.phasePlayerId);
+  // ルール: R-RUSH-24 — 「このとき出したユニットの効果は発動しない」（RS-371【マスキーリボン】等）なら自身の効果を止める。
+  const result = finalizeEffectRush(placed, pending.playerId, [instanceId], pending.phasePlayerId, {
+    silent: suppressesDeployedUnitEffects(pending),
+  });
   return {
     ...result.state,
     log: result.logs.length > 0 ? [...result.state.log, ...result.logs] : result.state.log,

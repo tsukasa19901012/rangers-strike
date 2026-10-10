@@ -267,7 +267,9 @@ export function endTurn(s: GameState): GameState {
   let next = settle(s);
   const start = next.activePlayer;
   for (let i = 0; i < 10 && next.activePlayer === start; i++) {
-    const end = legal(next).find((a) => a.type === "end_phase");
+    // バトル進入後の行動ウィンドウ（アタック・ストライク）が開いていれば「なにもしない」で閉じてから進める。
+    const actions = legal(next);
+    const end = actions.find((a) => a.type === "end_phase") ?? actions.find((a) => a.type === "pass_battle_entry");
     if (!end) break;
     next = act(next, end);
   }

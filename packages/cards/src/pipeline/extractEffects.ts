@@ -7083,7 +7083,9 @@ const PATTERNS: PatternMatch[] = [
       id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
       name: segment.name,
       text: body,
-      trigger: { type: "on_rush" },
+      // 本文中の「ラッシュしたとき」は選ぶユニットの条件（引用）で、この効果のタイミングではない。
+      // タイミングの記載がない効果名つきの効果なので NC（RS-428【ファンタスティック・テクニック】、CN3）。
+      trigger: { type: "nc" },
       optional: true,
       effects: [
         {

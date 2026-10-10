@@ -637,8 +637,7 @@ describe("RS-445 ミスアメリカ", () => {
     expect(zoneOf(s, "player1", "SPEC-GIRL:g")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-445 NC の発動判定がバトルフェイズかどうかだけで、敵軍のバトルフェイズに効果で5番目に出されても「SP1」になる（R-CN-04）
-  it.fails("RS-445: 敵軍ターン中に5番目に出されても NC は発動しない（SP0）（出典: R-CN-04「敵軍ターン中に効果でCNの位置に出されても…NC は発動しない」）", () => {
+  it("RS-445: 敵軍ターン中に5番目に出されても NC は発動しない（SP0）（出典: R-CN-04「敵軍ターン中に効果でCNの位置に出されても…NC は発動しない」）", () => {
     const s = stx({ activePlayer: "player2", player1: { battle: fillers(4), rush: [inst("RS-445", "x")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     const t = enterBattleByEffect(s, "player1", "RS-445:x");
     expect(spOf(t, "player1", "RS-445:x")).toBe(0);

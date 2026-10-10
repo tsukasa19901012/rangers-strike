@@ -237,8 +237,7 @@ describe("RS-511 ゴーオングリーン", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:f0")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-511 【マンタンガン・ロッドモード】が汎用の強制選択になっている（見送れない）
-  it.fails("RS-511: 【マンタンガン・ロッドモード】「置いてもよい」— 見送れる（出典: atwiki/page-795）", () => {
+  it("RS-511: 【マンタンガン・ロッドモード】「置いてもよい」— 見送れる（出典: atwiki/page-795）", () => {
     let s = enterGreen(1, 3);
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));

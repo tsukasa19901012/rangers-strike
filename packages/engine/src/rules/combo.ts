@@ -1,4 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
+import { tryResidentRushOnAllyEnterBattle } from "./residentAllyEnterRush";
 import { listNcColumnNamedEffects, getNumberComboEffect } from "@rangers-strike/cards";
 import { registerBattleCommandHooks, tryOpenBattleCommand } from "./battleCommand";
 import { applyGorengerHurricaneOnEnter } from "./legend3/gorengerHurricane";
@@ -130,6 +131,14 @@ function destroyWeakestEnemy(
   };
 }
 
+/**
+ * ルール: R-CN-04 — コンビネーション（NC）の効果を発動できるのは、そのユニットの持ち主自身のバトルフェイズに
+ * バトルエリアへ出たときだけ。敵軍のバトルフェイズに効果で自軍ユニットが出されても NC は成立しない。
+ */
+export function isOwnBattlePhase(state: GameState, playerId: PlayerId): boolean {
+  return state.phase === "battle" && state.activePlayer === playerId;
+}
+
 function shouldRunEnterStep(
   resumeFrom: EnterBattleResumeFrom | undefined,
   step: EnterBattleResumeFrom,
@@ -192,7 +201,7 @@ export function resolveEnterBattleEffectsImpl(
   if (shouldRunEnterStep(resumeFrom, "conditional")) {
     // NC の成立（ナンバーの欄の効果の有効化）は、出たときの並び順で先に判定しておく。ナンバーの欄の効果のうち
     // 出たときに処理する効果（RS-141【紐拳】等）も、成立していなければ発動しない（R-CN-02 / R-CN-04）。
-    if (nextState.phase === "battle" && definition) {
+    if (isOwnBattlePhase(nextState, playerId) && definition) {
       nextState = markOnAttackNcEffectOnEnter(
         nextState,
         playerId,
@@ -240,6 +249,12 @@ export function resolveEnterBattleEffectsImpl(
       battleCard,
       playerId,
     );
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+
+    // RS-436 激気等の常駐: 特徴「X」を持つ自軍 S ユニットが出たとき、手札から WB の M ユニットを出せる（任意）。
+    nextState = tryResidentRushOnAllyEnterBattle(nextState, playerId, battleCard);
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }
@@ -390,7 +405,7 @@ export function resolveEnterBattleEffectsImpl(
   if (shouldRunEnterStep(resumeFrom, "nc")) {
     // ルール: R-CN-04 — コンビネーションは自軍バトルフェイズにバトルエリアへ出たときだけ（ラッシュフェイズに
     // 置かれたレッドレーサー等は並び順が CN と一致しても NC を発動しない）。
-    if (nextState.phase === "battle" && definition) {
+    if (isOwnBattlePhase(nextState, playerId) && definition) {
       nextState = markOnAttackNcEffectOnEnter(
         nextState,
         playerId,
@@ -401,7 +416,7 @@ export function resolveEnterBattleEffectsImpl(
       );
     }
     if (
-      nextState.phase === "battle" &&
+      isOwnBattlePhase(nextState, playerId) &&
       definition &&
       numberComboTriggers(
         nextState,

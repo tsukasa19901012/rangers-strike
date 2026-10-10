@@ -226,8 +226,9 @@ export function applyCoreGapNcEffect(
         .filter((c) => isSmallUnit(state.definitions, c.cardId))
         .map((c) => c.instanceId);
       if (targets.length > 0) {
+        // 「選び、…出してもよい」— 選ぶのも出すかを決めるのも効果を使う自分（atwiki/page-538）。
         const withChoice = startSelectCommandChoice(nextState, {
-          playerId: enemyId,
+          playerId,
           effectId,
           sourceCardId: card.cardId,
           phasePlayerId: playerId,

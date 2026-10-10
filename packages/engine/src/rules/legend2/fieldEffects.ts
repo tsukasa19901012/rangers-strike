@@ -4,7 +4,7 @@ import {
 import { activeNamedEffect } from "../ncGatedEffects";
 import type { Category } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
-import { getDefinition, isSmallUnit, spSetValueOf, unitBp } from "../../core/catalog";
+import { effectiveBp, getDefinition, isSmallUnit, spSetValueOf, unitBp } from "../../core/catalog";
 import {
   battlePositionOneBased,
   printedSpBase,
@@ -125,10 +125,9 @@ export function legend2EffectiveSp(
     activeNamedEffect(instance, "fire_spin_blade") ||
     instance.activatedNcEffects?.includes("ryuu_geki_ken")
   ) {
-    const bp =
-      unitBp(def) +
-      (instance.bpModifier ?? 0) +
-      legend2FieldBpBonus(state, playerId, instance, "general");
+    // 「BP○○以上のとき「SP1」」の判定は、外部の効果（RS-364 ヘルサターン総統の BP+3000 等）を含む
+    // そのときの BP で行う（faq-card-6 RS-364 Q1）。
+    const bp = effectiveBp(state, playerId, instance);
     const threshold = activeNamedEffect(instance, "fire_spin_blade") ? 10000 : 5000;
     if (bp >= threshold) {
       sp = Math.max(sp, 1);

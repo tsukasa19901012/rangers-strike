@@ -69,23 +69,20 @@ describe("RS-354 デンジレッド", () => {
     expect(canStrike(s, "RS-354:x")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-354 【デンジパンチ】の候補が自軍バトルエリアのユニットになり、BP下三桁500の条件も見ていない
-  it.fails("RS-354: 【デンジパンチ】3番目に出て NC が成立すると、敵軍バトルエリアの BP 下三桁500 の敵軍ユニットだけを選べる（ラッシュエリア・自軍は不可）（出典: atwiki/page-548）", () => {
+  it("RS-354: 【デンジパンチ】3番目に出て NC が成立すると、敵軍バトルエリアの BP 下三桁500 の敵軍ユニットだけを選べる（ラッシュエリア・自軍は不可）（出典: atwiki/page-548）", () => {
     const s = enterAt("RS-354", 2, enemy);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-354");
     expect(choiceIds(s)).toEqual(["RS-358:c", "SPEC-B1500:a"]);
   });
 
-  // 既知の不具合: CARD-RS-354 【デンジパンチ】の候補が自軍バトルエリアのユニットになり、BP下三桁500の条件も見ていない
-  it.fails("RS-354: 【デンジパンチ】選んだユニットを持ち主（敵軍）のパワーゾーンに送る（出典: atwiki/page-548「持ち主のパワーゾーンに送って」）", () => {
+  it("RS-354: 【デンジパンチ】選んだユニットを持ち主（敵軍）のパワーゾーンに送る（出典: atwiki/page-548「持ち主のパワーゾーンに送って」）", () => {
     let s = enterAt("RS-354", 2, enemy);
     s = resolveAll(pick(s, "SPEC-B1500:a"));
     expect(zoneOf(s, "player2", "SPEC-B1500:a")).toBe("power");
     expect(s.players.player1.battle).toHaveLength(3);
   });
 
-  // 既知の不具合: CARD-RS-354 【デンジパンチ】が任意（「送ってもよい」）になっていない
-  it.fails("RS-354: 【デンジパンチ】「送ってもよい」— 送らないことも選べる（出典: atwiki/page-548「送ってもよい」）", () => {
+  it("RS-354: 【デンジパンチ】「送ってもよい」— 送らないことも選べる（出典: atwiki/page-548「送ってもよい」）", () => {
     const s = enterAt("RS-354", 2, enemy);
     expect(canSkip(s)).toBe(true);
   });
@@ -109,8 +106,7 @@ describe("RS-355 デンジブルー", () => {
   // 敵軍バトルエリア: [デンジレッド3000, バルパンサー3000, 1000, デンジレッド3000] — 隣り合う S の合計6000 は (a,b) だけ
   const enemy = { battle: [inst("RS-354", "a"), inst("RS-363", "b"), inst("TST-UNIT-0", "c"), inst("RS-354", "d")] };
 
-  // 既知の不具合: CARD-RS-355 【ブルースクリューキック】の候補が自軍バトルエリアのユニット1体になり、隣接・合計6000の条件を見ていない
-  it.fails("RS-355: 【ブルースクリューキック】2番目に出て NC が成立すると、BP合計6000の隣り合う敵軍 S ユニット2体を持ち主のパワーゾーンに送る（出典: atwiki/page-547）", () => {
+  it("RS-355: 【ブルースクリューキック】2番目に出て NC が成立すると、BP合計6000の隣り合う敵軍 S ユニット2体を持ち主のパワーゾーンに送る（出典: atwiki/page-547）", () => {
     let s = enterAt("RS-355", 1, enemy);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-355");
     expect(choiceIds(s)).not.toContain("TST-UNIT-0:fill0");
@@ -134,8 +130,7 @@ describe("RS-355 デンジブルー", () => {
     expect(zoneOf(s, "player2", "SPEC-M3000:m")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-355 【ブルースクリューキック】が任意（「送ってもよい」）になっていない
-  it.fails("RS-355: 【ブルースクリューキック】「送ってもよい」— 送らないことも選べる（出典: atwiki/page-547「送ってもよい」）", () => {
+  it("RS-355: 【ブルースクリューキック】「送ってもよい」— 送らないことも選べる（出典: atwiki/page-547「送ってもよい」）", () => {
     const s = enterAt("RS-355", 1, enemy);
     expect(canSkip(s)).toBe(true);
   });

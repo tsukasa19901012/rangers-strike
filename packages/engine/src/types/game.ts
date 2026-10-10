@@ -448,7 +448,12 @@ export type PendingEffectChoice = {
   maxPowerCost?: number;
   /** 印刷BPの合計上限（例: RS-106 ジュウクンドー）。 */
   bpBudget?: number;
-  unitDestination?: "power" | "discard" | "deck_top" | "hand" | "hand_from_discard" | "hand_from_power" | "rush_from_discard" | "enemy_battle" | "enemy_command" | "swap_battle" | "rush" | "vehicle_battle_without_ride";
+  /**
+   * 2体を組で選ぶ選択の条件（RS-355【ブルースクリューキック】: 敵軍バトルエリアで隣り合う、BP の合計が bpSum の
+   * size ユニット2体）。1体目を選ぶと、2体目の候補はその組の相手だけになる。
+   */
+  pairConstraint?: { adjacentZone: "battle" | "rush"; bpSum: number; size: "S" | "M" | "L" };
+  unitDestination?: "power" | "discard" | "deck_top" | "operation" | "hand" | "hand_from_discard" | "hand_from_power" | "rush_from_discard" | "enemy_battle" | "enemy_command" | "swap_battle" | "rush" | "vehicle_battle_without_ride";
   /** RS-102【巌流剣】: 先に選んだ敵軍パワーゾーンのカード（コマンドを選んだあと2枚一緒に捨札にする）。 */
   darkDualBladePowerInstanceId?: string;
   commandAction?: "discard" | "hold" | "return_hand" | "return_deck_top" | "rush" | "rush_silent" | "battle_silent" | "power" | "release" | "sp_half";

@@ -19,7 +19,8 @@ import { collectPowerIds, openEffectChoice, startSelectPowerChoice } from "./pen
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import { beginAbarenohFromHand } from "./errataCardEffects";
 import { canActivateMagRepair, openMagRepair } from "./legend1/set5NamedEffectsA";
-import { beginAllAboard, beginThunderRoar, canActivateAllAboard, canActivateThunderRoar } from "./legend1/set6NamedEffects348";
+import { beginAllAboard, canActivateAllAboard } from "./legend1/set6NamedEffects348";
+import { beginHoldToActivate, canActivateHoldToActivate, isHoldToActivateNc } from "./holdToActivate";
 
 type FieldZone = "rush" | "battle";
 
@@ -241,16 +242,6 @@ function canActivateGhostAbsorption(state: GameState, playerId: PlayerId, card: 
 
 const ABILITIES: FieldActivatedAbility[] = [
   {
-    // RS-379 ギンガイエロー【雷の雄叫び】: NC が成立したターン、MA の自軍コマンドを1つホールドして発動できる。
-    cardId: "RS-379",
-    effectId: "thunder_roar",
-    zones: ["battle"],
-    phase: "battle",
-    discardSelf: false,
-    canActivate: (state, playerId, card) => canActivateThunderRoar(state, playerId, card),
-    resolve: (state, playerId, card) => beginThunderRoar(state, playerId, card),
-  },
-  {
     // RS-366 グランギズモ【総員搭乗】: 自軍ラッシュフェイズ中、「戦闘員」の自軍ユニットを1体捨札にして山札の DA の M ユニットを出す。
     cardId: "RS-366",
     effectId: "all_aboard",
@@ -370,6 +361,22 @@ const ABILITIES: FieldActivatedAbility[] = [
     },
   },
 ];
+
+// ---------------------------------------------------------------------------
+// 「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒…」型の NC 効果（rules/holdToActivate.ts）。
+// 文言で判定するので、カードを列挙しない。NC が成立して出た直後の行動ウィンドウで1回だけ起動できる。
+ABILITIES.push({
+  cardId: "",
+  effectId: "hold_to_activate",
+  zones: ["battle"],
+  phase: "battle",
+  discardSelf: false,
+  matches: (cardId) => isHoldToActivateNc(cardId),
+  canActivate: (state, playerId, card) =>
+    !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) &&
+    canActivateHoldToActivate(state, playerId, card),
+  resolve: (state, playerId, card) => beginHoldToActivate(state, playerId, card),
+});
 
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {
   return ABILITIES.find((a) => (a.matches ? a.matches(cardId) : isSameCardIdentity(a.cardId, cardId)));

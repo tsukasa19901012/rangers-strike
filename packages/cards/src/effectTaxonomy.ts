@@ -77,6 +77,8 @@ export type RushAdditionalCondition = {
   partnerName?: string;
   /** ゾードダウン: 捨てるユニットが持つ特徴。 */
   requiredFeature?: string;
+  /** 「特徴「激気」と「レッド」を持つ自軍ユニット」— 捨てるユニットがすべて持つ特徴。 */
+  requiredFeatures?: string[];
   /** ゾードダウン: 捨てるパワーの最低必要パワー数字。 */
   minPrintedPowerCost?: number;
   /** カード名部分一致（discard_name_contains_unit 等）。 */
