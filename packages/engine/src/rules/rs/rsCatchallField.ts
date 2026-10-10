@@ -6,6 +6,7 @@ import {
   isMediumUnit,
 } from "../../core/catalog";
 import { playerHasFieldCard } from "./rsCatchallChoices";
+import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { sameCardName } from "../../core/cardNames";
 
 /** RS-210: ナンバーSユニットのBP加算を減算に反転。 */
@@ -113,7 +114,10 @@ export function rs619WingProtectedFromNonAircraft(
 ): boolean {
   if (!playerHasFieldCard(state, defenderId, "RS-619")) return false;
   const def = getDefinition(state.definitions, defenderCardId);
-  if (!(def?.features ?? []).includes("ウイング")) return false;
+  // ルール: R-KW-00 — ウイングはキーワード（特徴ではない）。
+  if (!def || !cardHasKeyword(state.definitions, defenderCardId, "wing", { state, playerId: defenderId })) {
+    return false;
+  }
   const attackerDef = getDefinition(state.definitions, attackerCardId);
   return !(attackerDef?.features ?? []).includes("航空機");
 }

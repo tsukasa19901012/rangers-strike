@@ -69,6 +69,8 @@ export function collectTargetInstanceIds(
   playerId: PlayerId,
   selector: TargetSelector,
   operationInstanceId?: string,
+  /** 効果の発生源カード（ブレイカーの選択保護の判定に使う。ルール: R-KW-BREAKER-03） */
+  sourceCardId?: string,
 ): string[] {
   const enemyId = opponent(playerId);
 
@@ -102,7 +104,7 @@ export function collectTargetInstanceIds(
               .filter((c) => matchesFilter(state, c, selector.filter))
               .filter((c) => {
                 if (ownerId === playerId) return true;
-                return isSelectableByOpponentEffect(state, playerId, c.instanceId);
+                return isSelectableByOpponentEffect(state, playerId, c.instanceId, sourceCardId);
               })
               .map((c) => c.instanceId),
           );
@@ -120,6 +122,7 @@ export function collectTargetInstanceIds(
             playerId,
             { type: "zone", zone: part.zone, owner: part.owner, filter: part.filter },
             operationInstanceId,
+            sourceCardId,
           ),
         );
       }

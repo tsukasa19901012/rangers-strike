@@ -832,6 +832,7 @@ function isPlayOperationContinuationLegal(
       playerId,
       choose.valid,
       sourceInstanceId,
+      found.cardId,
     );
     if (choose.kind === "optional_deck_draw") {
       if (player.deck.length === 0 && targets.length === 0) return false;

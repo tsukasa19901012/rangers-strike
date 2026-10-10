@@ -24,7 +24,8 @@ function morphUnitDef(id: string, morph = false): CardDefinition {
     sp: 1,
     size: "S",
     features: [FEATURE],
-    text: morph ? "【モーフ】" : undefined,
+    // ルール: R-KW-00 — キーワードは「※モーフ」表記で持つ
+    text: morph ? "※モーフ ※このユニットはテスト用。" : undefined,
   };
 }
 
@@ -40,7 +41,7 @@ describe("morph reaction window", () => {
       player1: { rush: [rusher] },
       player2: {
         rush: [morphField],
-        hand: [morphHand],
+        command: [morphHand],
       },
     });
 
@@ -77,7 +78,7 @@ describe("morph reaction window", () => {
       player1: { rush: [rusher] },
       player2: {
         rush: [morphField1, morphField2],
-        hand: [morphHand1, morphHand2],
+        command: [morphHand1, morphHand2],
       },
     });
 
@@ -104,17 +105,17 @@ describe("morph reaction window", () => {
     ).toBe(true);
   });
 
-  it("swaps morph field unit with matching hand card and inherits hold state", () => {
+  it("R-KW-MORPH-02: パワーゾーンのカードと入れ替え、ホールド状態を引き継ぐ", () => {
     const morphField = {
       ...inst("MORPH-FIELD", "morph-field"),
       commandHeld: true,
     };
-    const morphHand = inst("MORPH-HAND", "morph-hand");
+    const morphPower = inst("MORPH-HAND", "morph-power");
 
     let state = createTestState({
       player2: {
         rush: [morphField],
-        hand: [morphHand],
+        power: [morphPower],
       },
     });
     state.definitions["MORPH-FIELD"] = morphUnitDef("MORPH-FIELD", true);
@@ -124,18 +125,15 @@ describe("morph reaction window", () => {
       state,
       "player2",
       morphField.instanceId,
-      morphHand.instanceId,
+      morphPower.instanceId,
     );
     expect("error" in swapped).toBe(false);
     if ("error" in swapped) return;
 
     const p2 = swapped.state.players.player2;
-    expect(p2.rush.some((c) => c.instanceId === morphHand.instanceId)).toBe(true);
-    expect(p2.rush.find((c) => c.instanceId === morphHand.instanceId)?.commandHeld).toBe(
-      true,
-    );
-    expect(p2.hand.some((c) => c.instanceId === morphField.instanceId)).toBe(true);
-    expect(p2.hand.find((c) => c.instanceId === morphField.instanceId)?.commandHeld).toBe(
+    expect(p2.rush.find((c) => c.instanceId === morphPower.instanceId)?.commandHeld).toBe(true);
+    expect(p2.power.some((c) => c.instanceId === morphField.instanceId)).toBe(true);
+    expect(p2.power.find((c) => c.instanceId === morphField.instanceId)?.commandHeld).toBe(
       undefined,
     );
   });
@@ -151,7 +149,7 @@ describe("morph reaction window", () => {
       player1: { rush: [rusher] },
       player2: {
         rush: [morphField],
-        hand: [morphHand],
+        command: [morphHand],
       },
     });
 
@@ -176,7 +174,7 @@ describe("morph reaction window", () => {
       player1: { rush: [rusher] },
       player2: {
         rush: [morphField],
-        hand: [morphHand],
+        command: [morphHand],
       },
     });
 

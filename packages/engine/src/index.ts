@@ -78,9 +78,10 @@ export {
   morphUnitCanReact,
   MORPH_FIELD_ZONES,
   MORPH_REPLACEMENT_ZONES,
-  rushedCardBlocksMorphReaction,
+  rushMethodBlocksMorphReaction,
   shouldMorphOrderChooserAct,
 } from "./rules/morphProcedure";
+export type { RushMethod } from "./rules/morphProcedure";
 export {
   findJointComboTriggersOnEnter,
   isJointComboNumber,

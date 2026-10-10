@@ -8,7 +8,9 @@ import {
   applyCancelWingHold,
   canCancelWingHold,
   blastBypassesRushAdditionalCondition,
+  breakerBlocksEffectTarget,
   breakerBlocksSameNameRush,
+  cardHasBattleKeyword,
   canHoldForWing,
   canWingAttackFromRush,
   crossReducedNumber,
@@ -29,6 +31,9 @@ import { addTurnRestrictionModifier } from "../core/scopedModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
 import { applyAction, getLegalActions } from "../index";
 import { printedSpBase } from "../rules/fractionalSp";
+import { cardHasKeyword } from "./cardKeywords";
+import { isSelectableByOpponentEffect } from "./effectTargetability";
+import { fullPlayableCatalog, hasResist } from "@rangers-strike/cards";
 
 describe("cross1 keyword", () => {
   it("R-KW-CROSS-01: 右側ユニットの減少量は左側のクロス合計（並び順は変えない）", () => {
@@ -512,5 +517,140 @@ describe("breaker keyword", () => {
     };
 
     expect(breakerBlocksSameNameRush(player, defs, "TST-BREAKER")).toBe(true);
+  });
+});
+
+function breakerTestUnit(id: string, name: string, text?: string): CardDefinition {
+  return {
+    id,
+    name,
+    type: "unit",
+    category: "ET",
+    rarity: "SR",
+    expansion: "test",
+    powerCost: 5,
+    bp: 8000,
+    size: "L",
+    text,
+  };
+}
+
+describe("breaker keyword rules", () => {
+  const defs = buildDefinitionMap([
+    [
+      breakerTestUnit("BRK-A", "同名ユニット", "※ブレイカー ※このユニットはテスト用。"),
+      breakerTestUnit("PLAIN-A", "同名ユニット", "【テスト】これをラッシュしたとき、カードを1枚引く。"),
+      breakerTestUnit("ENEMY-UNIT", "敵ユニット", "【テスト】敵軍ユニットを1体選ぶ。"),
+      breakerTestUnit("ENEMY-BRK", "敵ブレイカー", "※ブレイカー"),
+      {
+        id: "ENEMY-OP",
+        name: "敵オペ",
+        type: "operation",
+        category: "ET",
+        rarity: "N",
+        expansion: "test",
+        powerCost: 1,
+        text: "敵軍ユニットを1体選び撃破する。",
+      },
+    ],
+  ]);
+
+  it("R-KW-BREAKER-02: 場の同名カードがブレイカーを持たなくてもブレイカー持ちはラッシュできない", () => {
+    const player = { ...createTestState(defs).players.player1, rush: [inst("PLAIN-A", "p")] };
+    expect(breakerBlocksSameNameRush(player, defs, "BRK-A")).toBe(true);
+  });
+
+  it("R-KW-BREAKER-02: ブレイカー持ちが場にいても、ブレイカーを持たない同名カードはラッシュできる", () => {
+    const player = { ...createTestState(defs).players.player1, battle: [inst("BRK-A", "b")] };
+    expect(breakerBlocksSameNameRush(player, defs, "PLAIN-A")).toBe(false);
+  });
+
+  it("R-KW-BREAKER-03: 敵軍ユニットの効果では選べないが、オペレーションとブレイカー持ちの効果では選べる", () => {
+    expect(breakerBlocksEffectTarget(defs, "BRK-A", "ENEMY-UNIT")).toBe(true);
+    expect(breakerBlocksEffectTarget(defs, "BRK-A", "ENEMY-OP")).toBe(false);
+    expect(breakerBlocksEffectTarget(defs, "BRK-A", "ENEMY-BRK")).toBe(false);
+  });
+
+  it("R-KW-BREAKER-03: 敵軍ユニットの効果で持ち主自身が選ぶ場合も選べない／自軍の効果なら選べる", () => {
+    const breaker = inst("BRK-A", "brk");
+    const state = createTestState({ player2: { battle: [breaker] } });
+    state.definitions = { ...state.definitions, ...defs };
+    // 敵軍（player1）のユニット効果で player2 自身が選ぶ
+    expect(
+      isSelectableByOpponentEffect(state, "player2", breaker.instanceId, "ENEMY-UNIT", "player1"),
+    ).toBe(false);
+    // 敵軍のオペレーションの効果なら相手が選べる
+    expect(isSelectableByOpponentEffect(state, "player1", breaker.instanceId, "ENEMY-OP")).toBe(
+      true,
+    );
+    // 敵軍ユニットの効果で相手が選ぶ
+    expect(isSelectableByOpponentEffect(state, "player1", breaker.instanceId, "ENEMY-UNIT")).toBe(
+      false,
+    );
+    // 自軍の効果で自分が選ぶ
+    expect(isSelectableByOpponentEffect(state, "player2", breaker.instanceId, "BRK-A")).toBe(true);
+  });
+});
+
+describe("R-KW-00: キーワードは「※キーワード」表記でだけ持つ", () => {
+  function unit(id: string, text: string, features?: string[]): CardDefinition {
+    return { ...breakerTestUnit(id, id, text), features };
+  }
+  const defs = buildDefinitionMap([
+    [
+      unit("MOS", "【モスブレイカー】相手は可能ならコマンドを1つホールドする。"),
+      unit("DARK", "【飛翔斬】「ダークウイング」からコンビネーションしたとき、BP+1000。"),
+      unit("WING-NAME", "【ウイングペンタクト】自軍ターン中、BP+1000。"),
+      unit("RESIST-REF", "【切断溶解】レジストを持つ敵軍Sユニットを1体選び撃破する。"),
+      unit(
+        "NULLIFY",
+        "【ライダーキック】このターン、敵軍ユニットのレジストとスクラムとチェイスの効果は無効になる。",
+      ),
+      unit("BLAST-NAME", "【ライトニングブラスト&バーニングスマッシュ】BP+3000。"),
+      unit("GRANT", "※特徴「女」を持つユニットは次の能力を得る⇒※レジスト（これがバトルで撃破されたとき…）"),
+      unit("FEATURE-WING", "【テスト】BP+1000。", ["ウイング"]),
+      unit("REAL", "※ウイング ※ブレイカー ※レジスト（これがバトルで撃破されたとき…） ※チェイス ※スクラム（これの…）"),
+      unit("REAL-BLAST", "※ブラスト 【フルブラストランチャー】これがバトルエリアに出たとき…"),
+      unit("REAL-TAXIS", "※タクスMA ※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき…）"),
+    ],
+  ]);
+
+  it("R-KW-00: 効果名・本文中の語ではキーワードを持たない", () => {
+    expect(cardHasBattleKeyword(defs, "MOS", "breaker")).toBe(false);
+    expect(cardHasKeyword(defs, "DARK", "wing")).toBe(false);
+    expect(cardHasKeyword(defs, "WING-NAME", "wing")).toBe(false);
+    expect(cardHasKeyword(defs, "RESIST-REF", "register")).toBe(false);
+    expect(hasResist(defs, "RESIST-REF")).toBe(false);
+    expect(cardHasKeyword(defs, "NULLIFY", "register")).toBe(false);
+    expect(cardHasKeyword(defs, "NULLIFY", "chase")).toBe(false);
+    expect(cardHasBattleKeyword(defs, "NULLIFY", "scrum")).toBe(false);
+    expect(cardHasBattleKeyword(defs, "BLAST-NAME", "blast")).toBe(false);
+  });
+
+  it("R-KW-00: 他のユニットに付与する「…を得る⇒※レジスト」や特徴の語ではキーワードを持たない", () => {
+    expect(cardHasKeyword(defs, "GRANT", "register")).toBe(false);
+    expect(hasResist(defs, "GRANT")).toBe(false);
+    expect(cardHasKeyword(defs, "FEATURE-WING", "wing")).toBe(false);
+  });
+
+  it("R-KW-00: 「※キーワード」表記があれば持つ", () => {
+    expect(cardHasKeyword(defs, "REAL", "wing")).toBe(true);
+    expect(cardHasBattleKeyword(defs, "REAL", "breaker")).toBe(true);
+    expect(cardHasKeyword(defs, "REAL", "register")).toBe(true);
+    expect(hasResist(defs, "REAL")).toBe(true);
+    expect(cardHasKeyword(defs, "REAL", "chase")).toBe(true);
+    expect(cardHasBattleKeyword(defs, "REAL", "scrum")).toBe(true);
+    expect(cardHasBattleKeyword(defs, "REAL-BLAST", "blast")).toBe(true);
+    expect(cardHasBattleKeyword(defs, "REAL-TAXIS", "taxis")).toBe(true);
+    expect(cardHasKeyword(defs, "REAL-TAXIS", "morph")).toBe(true);
+  });
+
+  it("R-KW-00: 実カード — RS-040【モスブレイカー】・RK-067「ダークウイング」は持たず、XG4-060 はウイングだけ持つ", () => {
+    const d = buildDefinitionMap([fullPlayableCatalog.cards]);
+    expect(cardHasBattleKeyword(d, "RS-040", "breaker")).toBe(false);
+    expect(cardHasKeyword(d, "RK-067", "wing")).toBe(false);
+    expect(cardHasKeyword(d, "RK-096", "register")).toBe(false);
+    expect(cardHasKeyword(d, "XG4-060", "wing")).toBe(true);
+    expect(cardHasBattleKeyword(d, "XG4-060", "breaker")).toBe(false);
   });
 });

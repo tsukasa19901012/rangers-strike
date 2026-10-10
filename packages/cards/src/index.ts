@@ -83,6 +83,7 @@ export * from "./operationCatalog";
 export * from "./unitEffectCatalog";
 export * from "./wikiReference";
 export * from "./resist";
+export * from "./keywordNotation";
 export * from "./bounce";
 export * from "./glossaryImplementation";
 

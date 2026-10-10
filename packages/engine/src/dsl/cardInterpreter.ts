@@ -313,6 +313,7 @@ function applyPrimitive(
         ctx.playerId,
         validSelector,
         ctx.operationInstanceId,
+        ctx.sourceCardId,
       );
       let viewedInstanceIds: string[] | undefined;
       if (
@@ -443,6 +444,7 @@ export function tryResolveDslOperation(args: {
       args.playerId,
       first.valid,
       ctx.operationInstanceId,
+      ctx.sourceCardId,
     ).includes(args.targetInstanceId)
   ) {
     return interpretEffectPrimitives(args.state, ctx, first.then);
