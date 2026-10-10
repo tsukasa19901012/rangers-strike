@@ -387,6 +387,7 @@ export type DestroyTriggerTiming = "destroyer" | "destroyed" | "after_discard";
  * - destroyed_fact: 2.「撃破されたとき」（撃破された側。自動処理・選択とも）
  * - after_discard: 4.「撃破されて捨札になったとき」「捨札になったとき」（撃破された側）
  * - mirage_knuckle: 4. RS-212【爆烈ミラージュナックル】（撃破した側。「捨札にしたあとで選ぶ」）
+ * - resume_multi_destroy: 複数体を撃破する効果の残りの対象の撃破（割り込んだ誘発の解決後）
  */
 export type DeferredDestroyTrigger =
   | { kind: "destroyed_fact"; step: DestroyTriggerTiming; ownerPlayerId: PlayerId; cardId: string }
@@ -409,6 +410,15 @@ export type DeferredDestroyTrigger =
       attackerId: PlayerId;
       attackerInstanceId: string;
       phasePlayerId: PlayerId;
+    }
+  | {
+      /**
+       * 複数体を撃破する効果（select_units_bp_budget の確定）の続き。撃破されたユニットの誘発の選択が割り込んだら
+       * （R-TIME-04）、その解決後に残りの対象を撃破する（rules/pendingChoices.ts applyConfirmEffectChoice）。
+       */
+      kind: "resume_multi_destroy";
+      step: DestroyTriggerTiming;
+      pending: PendingEffectChoice;
     };
 
 export type PendingEffectChoice = {

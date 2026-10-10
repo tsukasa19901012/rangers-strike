@@ -320,6 +320,31 @@ describe("RS-427 super_geki_yellow", () => {
     const after = finalizeLeaveReaction(state, pendingLeave, false);
     expect(after.players.player1.rush.some((c) => c.cardId === "RS-342")).toBe(true);
     expect(after.players.player1.discard.some((c) => c.cardId === "RS-342")).toBe(false);
+    // 効果は1回だけ解決する（DSL の選択が二重に残らない）。
+    expect(after.pendingEffectChoice).toBeUndefined();
+  });
+
+  it("opens one choice (not two) when several ゲキイエロー are in discard", () => {
+    const superYellow = inst("RS-427", "s-yellow");
+    const y1 = inst("RS-342", "y1");
+    const y2 = inst("RS-342", "y2");
+    const pendingLeave = {
+      ownerPlayerId: "player1" as const,
+      instanceId: superYellow.instanceId,
+      fromZone: "battle" as const,
+      toZone: "discard" as const,
+      leavingCardId: superYellow.cardId,
+      phasePlayerId: "player1" as const,
+    };
+    const state = createTestState({
+      definitions: defs,
+      pendingLeave,
+      player1: { battle: [superYellow], discard: [y1, y2] },
+    });
+    const after = finalizeLeaveReaction(state, pendingLeave, false);
+    expect(after.pendingEffectChoice?.sourceCardId).toBe("RS-427");
+    expect(after.pendingEffectChoice?.validInstanceIds).toEqual([y1.instanceId, y2.instanceId]);
+    expect(after.pendingEffectChoice?.resumeChoice).toBeUndefined();
   });
 
   it("NC (invalidate_next_opponent_turn) sets turn modifier on player", () => {

@@ -74,6 +74,26 @@ export function registerPinkBarrier(state: GameState, playerId: PlayerId, source
 }
 
 /**
+ * 「ウラ返してダメージにするとき」（R-TIME-01: 現在形は行動の前）の効果。カードをウラ返す処理を決めたあと、
+ * ダメージになった（ダメージを受けたとき・ダメージが6点になったとき等の誘発）より前に解決する。
+ * before はウラ返す前、flipped はウラ返したパワーを反映した（ダメージの誘発をまだ解決していない）状態。
+ * - RS-202【ピンクバリヤー】（強制。目印は次の相手ターンだけ有効）。
+ */
+export function applyPowerFlipBeforeDamage(
+  before: GameState,
+  flipped: GameState,
+  damagedPlayerId: PlayerId,
+  resume: DamagePaymentResume,
+): GameState {
+  if (!hasTurnRuleModifier(flipped.players[damagedPlayerId], PINK_BARRIER_RULE_ID)) return flipped;
+  const ids = flippedPowerIds(before, flipped, damagedPlayerId);
+  if (ids.length === 0) return flipped;
+  const phasePlayerId = resume.kind === "strike" ? resume.pending.battlePhasePlayer : resume.activePlayer;
+  const targets = unitsMatchingFlippedCost(flipped, damagedPlayerId, ids, opponent(damagedPlayerId));
+  return targets.length > 0 ? destroyAll(flipped, targets, phasePlayerId) : flipped;
+}
+
+/**
  * ダメージの適用（パワーのウラ返し）後の誘発。before はウラ返す前、after はウラ返した後の状態。
  */
 export function applyPowerFlipTriggers(
@@ -87,12 +107,6 @@ export function applyPowerFlipTriggers(
   let next = after;
   const enemyId = opponent(damagedPlayerId);
   const phasePlayerId = resume.kind === "strike" ? resume.pending.battlePhasePlayer : next.activePlayer;
-
-  // RS-202【ピンクバリヤー】（強制。目印は次の相手ターンだけ有効）。
-  if (hasTurnRuleModifier(next.players[damagedPlayerId], PINK_BARRIER_RULE_ID)) {
-    const targets = unitsMatchingFlippedCost(next, damagedPlayerId, flipped, enemyId);
-    if (targets.length > 0) next = destroyAll(next, targets, phasePlayerId);
-  }
 
   // RS-199【ブレイクアクション】（任意）。
   if (resume.kind === "strike" && resume.pending.strikerPlayerId === enemyId && !next.pendingEffectChoice) {
