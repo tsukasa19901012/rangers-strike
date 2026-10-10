@@ -129,7 +129,7 @@
 効果でラッシュしたユニットにも「ラッシュしたとき」の効果は発動し、「ラッシュされたとき」のカウンターも発動できる。
 - 出典: `grnrngr/faq-card-1` RS-005 Q2、RS-013 Q3「「ラッシュしたとき」の効果は発動しますし、「ラッシュされたとき」に発動できるカウンタを発動させることもできます」、`grnrngr/faq-card-2` RS-090 Q2、`grnrngr/faq-card-4` RS-197 Q1・Q3（効果で出したユニットの「ラッシュしたとき」は「はい、発動します」）
 - Web: https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_2.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_4.html
-- 実装: ✅ E11 修正済み。共通処理 `finalizeEffectRush`（`events/emitUnitRushed.ts`）で通常ラッシュと同じ誘発とカウンター窓を開く（操作待ちがあれば `effectRushTriggerQueue` に積んで後で処理）。個別接続: ランドバルカン・空輸搬送・パーツキャリアー（`rules/effectRush.ts`）、コマンドゾーンから出す選択効果（遺跡発掘等）、捨札から出す選択効果、手札から出す選択効果（編隊出撃等）、出動指令。その他のカード個別処理が直接ラッシュエリアに置いた場合も、applyAction の後処理 `settleEffectRushes` がエリア外から出たユニットを検出して同じ処理を行う（モーフ等の置き換えは対象外）。レッドレーサーの「可能ならバトルエリアに置く」も効果ラッシュで処理
+- 実装: ✅ E11 修正済み。共通処理 `finalizeEffectRush`（`events/emitUnitRushed.ts`）で通常ラッシュと同じ誘発とカウンター窓を開く（操作待ちがあれば `effectRushTriggerQueue` に積んで後で処理）。個別接続: ランドバルカン・空輸搬送・パーツキャリアー（`rules/effectRush.ts`）、コマンドゾーンから出す選択効果（遺跡発掘等）、捨札から出す選択効果、手札から出す選択効果（編隊出撃等）、出動指令、RS-284【スワンウィング】（敵軍コマンドゾーンの S ユニットを持ち主のラッシュエリアに同時に出す。2 体以上ならターンプレイヤーが処理順を選ぶ swan_wing_order（R-SIM-01、grnrngr/faq-card-5 RS-026「同時に発動した効果の処理順はターンプレイヤーが決定」）。窓には持ち主が応答し、RK-012・RS-026/RS-247 を使える。grnrngr/faq-rider-1 RS-284・RK-012、atwiki/page-472）。その他のカード個別処理が直接ラッシュエリアに置いた場合も、applyAction の後処理 `settleEffectRushes` がエリア外から出たユニットを検出して同じ処理を行う（モーフ等の置き換えは対象外）。レッドレーサーの「可能ならバトルエリアに置く」も効果ラッシュで処理
 
 #### R-RUSH-23 複数体を出す効果は1体ずつ [公式] `web照合済(2026-10-10)`
 「2枚まで選び、出してもよい」は、先に選んでから1枚ごとに「出してもよい」を実行する（1枚目にカウンターされたら2枚目を出さないことも可）。

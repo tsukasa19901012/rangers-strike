@@ -570,7 +570,7 @@ export function applyMusicBoxClockCounter(
   state: GameState,
   defenderId: PlayerId,
   counterInstanceId: string,
-  pending: PendingRush,
+  _pending: PendingRush,
 ): { state: GameState; log: string } {
   const discarded = discardHandCounter(state, defenderId, counterInstanceId);
   if (!discarded) {
@@ -579,12 +579,14 @@ export function applyMusicBoxClockCounter(
       log: buildLogEntry(defenderId, "play_counter", "RK-012", state.definitions, "failed"),
     };
   }
-  const rusherId = pending.rusherPlayerId;
-  const rusher = addTurnRuleModifier(discarded.state.players[rusherId], MUSIC_BOX_SKIP_BATTLE_RULE, {
+  // 「相手」はカウンターの使用者から見た相手（＝ターンプレイヤー）。RS-284【スワンウィング】で使用者の
+  // ユニットが出されたときも、飛ばすのはスワンウィングを使った相手のバトルフェイズ。
+  const targetId = opponent(defenderId);
+  const target = addTurnRuleModifier(discarded.state.players[targetId], MUSIC_BOX_SKIP_BATTLE_RULE, {
     sourceCardId: discarded.cardId,
   });
   return {
-    state: { ...discarded.state, ...updatePlayer(discarded.state, rusherId, rusher) },
+    state: { ...discarded.state, ...updatePlayer(discarded.state, targetId, target) },
     log: buildLogEntry(defenderId, "play_counter", discarded.cardId, state.definitions, "skip_battle_phase"),
   };
 }

@@ -10,6 +10,7 @@ import { buildDefinitionMap } from "../core/catalog";
 import { applyAction } from "../core/applyAction";
 import { getLegalActions } from "../core/legalActions";
 import type { GameAction } from "../types/actions";
+import { rushReactorId } from "../core/helpers";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import {
   MERGED_DEFINITIONS,
@@ -303,7 +304,7 @@ export function rushFromHand(
   if (!r.ok) return r;
   let next = r.state;
   for (let i = 0; i < 4 && next.pendingRush; i += 1) {
-    const defender: PlayerId = next.pendingRush.rusherPlayerId === "player1" ? "player2" : "player1";
+    const defender: PlayerId = rushReactorId(next.pendingRush);
     const pass = tryAct(next, { type: "pass_rush_reaction", playerId: defender });
     if (!pass.ok) break;
     next = pass.state;

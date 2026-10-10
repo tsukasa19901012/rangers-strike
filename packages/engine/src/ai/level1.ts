@@ -3,7 +3,7 @@ import type { GameState, PlayerId } from "../types/game";
 import { WIN_DAMAGE } from "../types/game";
 import { effectiveBp } from "../core/catalog";
 import { getLegalActions } from "../core/legalActions";
-import { opponent } from "../core/helpers";
+import { opponent, rushReactorId } from "../core/helpers";
 import { damagePaymentChoosingPlayer } from "../rules/damagePayment";
 import { strikeDamageFor } from "../rules/combo";
 import {
@@ -362,7 +362,7 @@ function pickCpuActionInner(
   }
 
   if (state.pendingRush) {
-    if (playerId !== opponent(state.pendingRush.rusherPlayerId)) return null;
+    if (playerId !== rushReactorId(state.pendingRush)) return null;
     const actions = getLegalActions(state);
     return pickReactionAction(state, playerId, actions, "pass_rush_reaction", enableSearch, options);
   }
@@ -545,7 +545,7 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
     return state.pendingRideOffChoice.playerId === cpuPlayer;
   }
   if (state.pendingRush) {
-    const defenderId = opponent(state.pendingRush.rusherPlayerId);
+    const defenderId = rushReactorId(state.pendingRush);
     return state.activePlayer === defenderId && defenderId === cpuPlayer;
   }
   if (state.pendingBattle) {

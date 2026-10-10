@@ -51,6 +51,7 @@ import {
   opponent,
   payPowerCost,
   removeAt,
+  rushReactorId,
   updatePlayer,
 } from "./helpers";
 import { isLegalAction } from "./legalActions";
@@ -2126,7 +2127,7 @@ function applyActionCore(
 
       if (state.pendingRush) {
         const pending = state.pendingRush;
-        const defenderId = opponent(pending.rusherPlayerId);
+        const defenderId = rushReactorId(pending);
         if (playerId !== defenderId) return fail("wrong_player");
         if (!canUseRushReactionCounter(state, playerId, action.instanceId, pending)) {
           return fail("invalid_counter");
@@ -2379,7 +2380,7 @@ function applyActionCore(
     case "pass_rush_reaction": {
       const pending = state.pendingRush;
       if (!pending) return fail("no_pending_rush");
-      if (playerId !== opponent(pending.rusherPlayerId)) return fail("wrong_player");
+      if (playerId !== rushReactorId(pending)) return fail("wrong_player");
       let nextState = finalizeRushPending(state, pending);
       // ルール: R-RUSH-22 — 窓を閉じた後で「ラッシュするとき可能ならバトルエリアに置く」を処理する。
       nextState = applyAutoBattleEntryOnRush(nextState, pending.rusherPlayerId, pending.rushedInstanceId);

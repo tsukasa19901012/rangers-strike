@@ -1,3 +1,4 @@
+import { hasTurnRuleModifier } from "./scopedModifiers";
 import type { GameAction, RushAction } from "../types/actions";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
@@ -35,7 +36,7 @@ import {
   listZordDownRushPaymentVariants,
   needsZordDownPayment,
 } from "../rules/zordDown";
-import { findInZone, opponent, payPowerCost } from "./helpers";
+import { findInZone, opponent, payPowerCost, rushReactorId } from "./helpers";
 import { canStrikeUnit } from "../rules/combo";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import { canUseJuuKunDo, canUseLionDance, gomaPalaceForcesAttack } from "../rules/juuKunDo";
@@ -95,6 +96,7 @@ import {
   hasPlayableDinoChronicleCounter,
   isCounterReactionActive,
   isHandCounterCard,
+  MUSIC_BOX_SKIP_BATTLE_RULE,
 } from "../rules/operationCounters";
 import {
   canPlayPlasmaEnergyCounter,
@@ -327,7 +329,7 @@ function appendRushReactionActions(
 ): void {
   const pending = state.pendingRush;
   if (!pending) return;
-  const defenderId = opponent(pending.rusherPlayerId);
+  const defenderId = rushReactorId(pending);
   if (playerId !== defenderId) return;
 
   const defender = state.players[defenderId];
@@ -1155,6 +1157,15 @@ function appendEffectChoiceActions(
   }
 }
 
+/** RK-012 宏のオルゴール時計:「このターン、相手はバトルフェイズを飛ばす」をバトルフェイズ中に受けた。 */
+function battlePhaseSkippedThisTurn(state: GameState, playerId: PlayerId): boolean {
+  return (
+    state.phase === "battle" &&
+    state.activePlayer === playerId &&
+    hasTurnRuleModifier(state.players[playerId], MUSIC_BOX_SKIP_BATTLE_RULE)
+  );
+}
+
 function appendBattleEntryActions(
   state: GameState,
   playerId: PlayerId,
@@ -1166,7 +1177,7 @@ function appendBattleEntryActions(
   const player = state.players[playerId];
   const enemy = state.players[opponent(playerId)];
   const unit = player.battle.find((c) => c.instanceId === pending.instanceId);
-  if (!unit || unit.battleActed) {
+  if (!unit || unit.battleActed || battlePhaseSkippedThisTurn(state, playerId)) {
     actions.push({ type: "pass_battle_entry", playerId });
     return;
   }
@@ -1395,7 +1406,7 @@ export function getLegalActions(state: GameState): GameAction[] {
       return actions;
     }
     if (topFrameId === "pendingRush" && state.pendingRush) {
-      appendRushReactionActions(state, opponent(state.pendingRush.rusherPlayerId), actions);
+      appendRushReactionActions(state, rushReactorId(state.pendingRush), actions);
       return actions;
     }
     // topFrameId === "pendingLeave" or no order set — fall through to pendingLeave below
@@ -1446,7 +1457,7 @@ export function getLegalActions(state: GameState): GameAction[] {
   if (state.pendingRush) {
     appendRushReactionActions(
       state,
-      opponent(state.pendingRush.rusherPlayerId),
+      rushReactorId(state.pendingRush),
       actions,
     );
     return actions;
@@ -1614,6 +1625,12 @@ export function getLegalActions(state: GameState): GameAction[] {
       break;
 
     case "battle": {
+      // RK-012 宏のオルゴール時計 — バトルフェイズ中に使われたら、そのバトルフェイズを終了する
+      // （grnrngr/faq-rider-1 RK-012「敵軍バトルフェイズ中であっても発動し、そのバトルフェイズを終了させることができますか？」「はい、できます」）。
+      if (battlePhaseSkippedThisTurn(state, playerId)) {
+        actions.push({ type: "end_phase", playerId });
+        break;
+      }
       const enemy = state.players[opponent(playerId)];
 
       for (const card of player.rush) {

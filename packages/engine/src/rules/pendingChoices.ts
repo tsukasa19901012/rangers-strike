@@ -1,4 +1,4 @@
-import { finalizeEffectRush } from "../events/emitUnitRushed";
+import { finalizeEffectRush, hasPendingPromptBlockingEffectRush } from "../events/emitUnitRushed";
 import { DISPATCH_ORDER_EFFECT_ID, resolveDispatchOrder } from "./dispatchOrder";
 import {
   continueKurokoMemoryAfterDraw,
@@ -106,7 +106,12 @@ import {
   beginDinoSlasherDiscard,
 } from "./zoneCategoryEffects";
 import { countDistinctCategoriesInCommandZone } from "./zoneCategoryLimit";
-import { applySwanWing, SWAN_WING_EFFECT_ID } from "./swanWing";
+import {
+  applySwanWing,
+  resolveSwanWingOrderChoice,
+  SWAN_WING_EFFECT_ID,
+  SWAN_WING_ORDER_EFFECT_ID,
+} from "./swanWing";
 import {
   autoHoldForBattleEntry,
   clearEffectBattleEntryWindows,
@@ -2545,10 +2550,16 @@ export function applyEffectChoiceSelect(
     // RS-284【スワンウィング】を使う（「出してもよい」。使わないときは skip）。
     const cleared = clearChoice(state, pending.phasePlayerId);
     const applied = applySwanWing(cleared, pending.playerId, pending.phasePlayerId);
-    if (applied.pendingEffectChoice) {
-      return { state: applied, log: buildLogEntry(playerId, "resolve_effect_choice", pending.sourceCardId, state.definitions, "swan_wing") };
-    }
-    return finishChoice(applied, pending, "swan_wing");
+    const log = buildLogEntry(playerId, "resolve_effect_choice", pending.sourceCardId, state.definitions, "swan_wing");
+    // 処理順の選択・「ラッシュされたとき」の窓（相手の応答）が開いていればそのまま返す。
+    if (hasPendingPromptBlockingEffectRush(applied)) return { state: applied, log };
+    return { state: promoteDeferredBattleEntry(applied), log };
+  }
+  if (pending.effectId === SWAN_WING_ORDER_EFFECT_ID) {
+    const result = resolveSwanWingOrderChoice(state, playerId, instanceId);
+    if ("error" in result) return result;
+    if (hasPendingPromptBlockingEffectRush(result.state)) return result;
+    return { state: promoteDeferredBattleEntry(result.state), log: result.log };
   }
   if (pending.effectId === BEAT_HAMMER_EFFECT_ID) {
     return resolveBeatHammerChoice(state, playerId, instanceId);

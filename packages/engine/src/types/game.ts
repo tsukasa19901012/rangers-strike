@@ -182,6 +182,12 @@ export type PendingRush = {
   rusherPlayerId: PlayerId;
   rushedInstanceId: string;
   phasePlayerId: PlayerId;
+  /**
+   * 「ラッシュされたとき」のカウンターで応答するプレイヤー。カウンターは敵軍ターン中にのみ使えるので
+   * ターンプレイヤーの相手（R-CTR-01）。相手の効果で自軍ユニットが出された場合（RS-284【スワンウィング】等）は
+   * 持ち主が応答する。省略時はラッシュしたプレイヤーの相手（rushReactorId）。
+   */
+  reactorPlayerId?: PlayerId;
 };
 
 /** 敵ラッシュへのモーフ反応窓。 */

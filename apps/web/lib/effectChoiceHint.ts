@@ -145,6 +145,10 @@ export function effectChoiceHint(
       if (pending.effectId === "morph_replacement") {
         return "特徴が一致するユニットカードを選び、モーフで置き換えてください";
       }
+      if (pending.effectId === "swan_wing_order") {
+        // ルール: R-SIM-01 — 同時に出たユニットの処理順はターンプレイヤーが決める。
+        return "スワンウィングで出たユニットを、「ラッシュされたとき」を処理する順に選んでください";
+      }
       return "対象を選んでください";
     case "declare_number":
       if (pending.effectId === "attack_hold_bonus") {
@@ -177,6 +181,7 @@ export const SIMULTANEOUS_FRAME_LABELS: Record<string, string> = {
 const RIDER_EFFECT_UI_LABELS: Record<string, string> = {
   simultaneous_order: "処理順の選択",
   attack_hold_bonus: "アタック時のホールド",
+  swan_wing_order: "スワンウィング（処理順）",
   kuroko_memory: "黒子ロボの記憶操作",
   rider_slash_destroy: "ライダースラッシュ",
   rider_kick_send_power: "ライダーキック",

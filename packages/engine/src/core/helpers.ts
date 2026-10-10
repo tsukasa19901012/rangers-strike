@@ -1,7 +1,15 @@
-import type { CardInstance, PlayerId, PlayerState } from "../types/game";
+import type { CardInstance, PendingRush, PlayerId, PlayerState } from "../types/game";
 
 export function opponent(playerId: PlayerId): PlayerId {
   return playerId === "player1" ? "player2" : "player1";
+}
+
+/**
+ * ラッシュ反応窓（pendingRush）で応答するプレイヤー（ターンプレイヤーの相手。R-CTR-01）。
+ * 相手の効果で出された自軍ユニット（RS-284【スワンウィング】）には持ち主が応答する。
+ */
+export function rushReactorId(pending: PendingRush): PlayerId {
+  return pending.reactorPlayerId ?? opponent(pending.rusherPlayerId);
 }
 
 export function updatePlayer(

@@ -5,7 +5,7 @@ import type {
   GameState,
   PlayerId,
 } from "../types/game";
-import { opponent } from "../core/helpers";
+import { opponent, rushReactorId } from "../core/helpers";
 import { damagePaymentChoosingPlayer } from "./damagePayment";
 import {
   ensureSimultaneousReactionGroup,
@@ -105,7 +105,7 @@ export function buildEffectStack(state: GameState): EffectStack {
         state,
         "pendingRush",
         "rush_reaction",
-        opponent(state.pendingRush.rusherPlayerId),
+        rushReactorId(state.pendingRush),
       ),
     );
   }

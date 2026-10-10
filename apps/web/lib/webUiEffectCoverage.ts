@@ -94,6 +94,8 @@ const KNOWN_EFFECT_IDS = new Set<string>([
   "simultaneous_order",
   // RS-019 超力／RK-186【Jパンチ】: アタック時のホールド数選択（EffectChoiceModal の数字ボタン）。
   "attack_hold_bonus",
+  // RS-284【スワンウィング】: 同時に出たユニットの処理順（select_unit の汎用ターゲット選択）。
+  "swan_wing_order",
   "kuroko_memory",
   "super_geki_yellow_reanimate",
   "reorder_enemy_battle",

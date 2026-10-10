@@ -5,6 +5,7 @@
 import { fullPlayableCatalog, type CardDefinition } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "../index";
 import type { GameAction } from "../types/actions";
+import { rushReactorId } from "../core/helpers";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import {
   createTestState,
@@ -321,7 +322,7 @@ export function canCounter(state: GameState, playerId: PlayerId, counterInstance
 export function passRushWindow(state: GameState): GameState {
   let next = state;
   for (let i = 0; i < 4 && next.pendingRush; i += 1) {
-    const defender = next.pendingRush.rusherPlayerId === "player1" ? "player2" : "player1";
+    const defender = rushReactorId(next.pendingRush);
     next = act(next, { type: "pass_rush_reaction", playerId: defender });
   }
   return next;

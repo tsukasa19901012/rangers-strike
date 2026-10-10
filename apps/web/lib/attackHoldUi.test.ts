@@ -58,6 +58,22 @@ function attackWithSuperPower(): GameState {
   return result.state;
 }
 
+describe("スワンウィングの処理順選択 UI", () => {
+  it("swan_wing_order は既知の選択として扱い、処理順の案内を出す", () => {
+    const pending = {
+      playerId: "player1" as const,
+      effectId: "swan_wing_order",
+      sourceCardId: "RS-284",
+      kind: "select_unit" as const,
+      phasePlayerId: "player1" as const,
+      validInstanceIds: ["a", "b"],
+    };
+    expect(isKnownEffectChoice(pending)).toBe(true);
+    expect(effectChoiceTitle(pending)).toBe("【スワンウィング（処理順）】");
+    expect(effectChoiceHint(pending)).toContain("処理する順");
+  });
+});
+
 describe("超力のホールド数選択 UI", () => {
   it("アタックするたびに 0〜リリース数の数字ボタンを出し、各ボタンにそのときの BP を表示する", () => {
     const s = attackWithSuperPower();
