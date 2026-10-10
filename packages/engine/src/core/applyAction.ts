@@ -2015,6 +2015,7 @@ function applyActionCore(
               counterInstanceId: action.instanceId,
               leavingCardId: pending.leavingCardId,
               sourceCardId: counterCard.cardId,
+              phasePlayerId: pending.phasePlayerId,
             });
           const result = dslResult
             ? { state: dslResult.state, log: buildLogEntry(playerId, "play_counter", counterCard!.cardId, state.definitions, dslResult.detail), prevented: dslResult.prevented }
@@ -2023,6 +2024,7 @@ function applyActionCore(
               playerId,
               action.instanceId,
               pending.leavingCardId,
+              pending.phasePlayerId,
             );
           const nextState = finalizeLeaveReaction(result.state, pending, result.prevented);
           const strikePending = state.pendingStrike;

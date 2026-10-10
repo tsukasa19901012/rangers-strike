@@ -40,7 +40,7 @@ import {
 import { applyRocketBoosterDeclaredName } from "./rocketBooster";
 import { applySimultaneousOrderChoice } from "./simultaneousEffects";
 import { applyAssaultToCommandHold } from "./legend3/restrictions";
-import { findInZone, opponent, performDeckDraws, removeAt, updatePlayer } from "../core/helpers";
+import { findInZone, opponent, performDeckDraws, removeAt, takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { LION_DANCE_EFFECT_ID, markJuuKunDoAttackerActed } from "./juuKunDo";
 import { findCardInField, findCardOwner } from "./fieldLookup";
@@ -245,6 +245,43 @@ export function requestDrawFromDeck(
     state: afterDraw,
     pending: false,
     drawn: true,
+  };
+}
+
+/** 山札の上（または下）から count 枚取り出す。足りなければ引けるだけ引き、敗北フラグを立てる（R-START-05, R-WIN-03）。 */
+function takeFromDeck(
+  player: PlayerState,
+  count: number,
+  from: "top" | "bottom",
+): { player: PlayerState; taken: CardInstance[] } {
+  if (from === "top") return takeFromDeckTop(player, count);
+  const want = Math.max(0, count);
+  const n = Math.min(want, player.deck.length);
+  // 下から1枚ずつひく（最初にひいたのが最下段）。
+  const taken = player.deck.slice(player.deck.length - n).reverse();
+  const deck = player.deck.slice(0, player.deck.length - n);
+  return { player: { ...player, deck, ...(n < want ? { deckedOut: true } : {}) }, taken };
+}
+
+/**
+ * 山札から count 枚「ひいて捨札にする」（RS-027 ダイノガッツ等）。自軍ラッシュエリアに RS-122【海底探査】があれば
+ * 上からひくかわりに下からひくかを選ぶ（faq-card-2 RS-122 Q1「ダイノガッツの効果で「カードをひいて捨札にする」
+ * といったときに…「下からひく」ことができます」）。
+ */
+export function drawToDiscardFromDeck(
+  state: GameState,
+  playerId: PlayerId,
+  phasePlayerId: PlayerId,
+  count: number,
+): GameState {
+  if (count > 0) {
+    const opened = tryStartSeabedDrawChoice(state, playerId, phasePlayerId, { drawCount: count, toDiscard: true });
+    if (opened) return opened;
+  }
+  const taken = takeFromDeckTop(state.players[playerId], count);
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, { ...taken.player, discard: [...taken.player.discard, ...taken.taken] }),
   };
 }
 
@@ -587,6 +624,14 @@ export function applySeabedDrawPlacement(
   const meta = pending.seabedDrawMeta ?? { drawCount: 1 };
   const from = placement === "bottom" ? "bottom" : "top";
   const player = state.players[playerId];
+  if (meta.toDiscard) {
+    const taken = takeFromDeck(player, meta.drawCount, from);
+    const afterTake: GameState = {
+      ...state,
+      ...updatePlayer(state, playerId, { ...taken.player, discard: [...taken.player.discard, ...taken.taken] }),
+    };
+    return finishSeabedDrawChoice(afterTake, pending, from);
+  }
   const nextPlayer = performDeckDraws(
     player,
     meta.drawCount,
@@ -1902,12 +1947,15 @@ export function startSelectCommandChoice(
     optional?: boolean;
     validInstanceIds?: string[];
     sourceInstanceId?: string;
+    /** 選ぶ（ホールドする）数。既定 1。 */
+    selectCount?: number;
   },
 ): GameState | null {
   const valid =
     params.validInstanceIds ??
     collectCommandIds(state, params.playerId, params.commandFilter);
-  if (valid.length === 0) return null;
+  const selectCount = params.selectCount ?? 1;
+  if (valid.length === 0 || valid.length < selectCount) return null;
   return openEffectChoice(state, {
     playerId: params.playerId,
     effectId: params.effectId,
@@ -1916,7 +1964,7 @@ export function startSelectCommandChoice(
     kind: "select_command",
     phasePlayerId: params.phasePlayerId,
     validInstanceIds: valid,
-    selectCount: 1,
+    selectCount,
     commandAction: params.commandAction,
     commandFilter: params.commandFilter,
     optional: params.optional,

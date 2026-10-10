@@ -28,6 +28,7 @@ import {
 } from "../core/catalog";
 import { countReleasedCommands } from "./restrictions";
 import { findInZone, opponent, removeAt, takeFromDeckTop, updatePlayer } from "../core/helpers";
+import { drawToDiscardFromDeck } from "./pendingChoices";
 import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
 import { resolveDestroyedFactEffects } from "./leaveEffects";
 import { isCostWindowSatisfied } from "../core/costWindow";
@@ -921,6 +922,7 @@ export function applyDinoGutsCounter(
   ownerId: PlayerId,
   counterInstanceId: string,
   leavingCardId: string,
+  phasePlayerId?: PlayerId,
 ): { state: GameState; log: string; prevented: boolean } {
   const discarded = discardHandCounter(state, ownerId, counterInstanceId);
   if (!discarded) {
@@ -933,16 +935,10 @@ export function applyDinoGutsCounter(
 
   const leavingDef = getDefinition(discarded.state.definitions, leavingCardId);
   const drawCost = parsePowerCost(leavingDef?.powerCost ?? 0);
-  const owner = discarded.state.players[ownerId];
   // ルール: R-START-05, R-WIN-03 — ひくべきときにひけなければ敗北（公式FAQ RS-027 Q4）。
-  const { player: afterTake, taken: drawn } = takeFromDeckTop(owner, drawCost);
-  const nextOwner = {
-    ...afterTake,
-    discard: [...afterTake.discard, ...drawn],
-  };
-
+  // RS-122【海底探査】があれば下からひくことを選べる（faq-card-2 RS-122 Q1）。
   return {
-    state: { ...discarded.state, ...updatePlayer(discarded.state, ownerId, nextOwner) },
+    state: drawToDiscardFromDeck(discarded.state, ownerId, phasePlayerId ?? state.activePlayer, drawCost),
     log: buildLogEntry(
       ownerId,
       "play_counter",

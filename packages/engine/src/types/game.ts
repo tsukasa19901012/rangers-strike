@@ -257,6 +257,8 @@ export type SeabedDrawMeta = {
   drawCount: number;
   /** RS-014 超頭脳: 2枚目は手札ではなく捨札へ。 */
   superBrainDiscardSecond?: boolean;
+  /** 「ひいて捨札にする」（RS-027 ダイノガッツ等）: ひいたカードを手札ではなく捨札に置く。 */
+  toDiscard?: boolean;
   /** 海底ドロー解決後にこの選択を完了（例: RS-115 任意ドロー）。 */
   resume?: {
     pending: PendingEffectChoice;

@@ -35,6 +35,7 @@ import {
   startTimeJetCategoryProtectChoice,
   startPhoenixMereDestroyChoice,
   startBeatHammerChoice,
+  drawToDiscardFromDeck,
 } from "../rules/pendingChoices";
 import { applyFalconSummonerOperation } from "../rules/falconSummoner";
 import {
@@ -1143,15 +1144,10 @@ export function applyGrantKeyword(
       if (!ctx.leavingCardId) return { state };
       const leavingDef = getDefinition(state.definitions, ctx.leavingCardId);
       const drawCost = parsePowerCost(leavingDef?.powerCost ?? 0);
-      const owner = state.players[ctx.playerId];
       // ルール: R-START-05, R-WIN-03 — ひくべきときにひけなければ敗北（RS-027 Q4）。
-      const { player: afterTake, taken: drawn } = takeFromDeckTop(owner, drawCost);
-      const nextOwner = {
-        ...afterTake,
-        discard: [...afterTake.discard, ...drawn],
-      };
+      // RS-122【海底探査】があれば下からひくことを選べる（faq-card-2 RS-122 Q1）。
       return {
-        state: { ...state, ...updatePlayer(state, ctx.playerId, nextOwner) },
+        state: drawToDiscardFromDeck(state, ctx.playerId, ctx.phasePlayerId, drawCost),
         detail: `dino_guts:${drawCost}`,
       };
     }
