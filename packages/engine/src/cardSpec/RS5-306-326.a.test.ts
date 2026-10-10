@@ -524,8 +524,7 @@ describe("RS-311 ゴウライスタッグ", () => {
   }
 
   // 「コマンドゾーンにあるリリース状態のカードと同じカテゴリを持つ敵軍ユニットにアタックされない」
-  // 既知の不具合: CARD-RS-311 【カラクリ忍法・牙がくれ】が未実装（リリース状態のコマンドと同カテゴリの敵軍ユニットもアタックできる）
-  it.fails("RS-311: 自軍コマンドゾーンにリリース状態の MA のカードがあれば、MA の敵軍ユニットにアタックされない（出典: atwiki/page-481）", () => {
+  it("RS-311: 自軍コマンドゾーンにリリース状態の MA のカードがあれば、MA の敵軍ユニットにアタックされない（出典: atwiki/page-481）", () => {
     const s = stagDefends([released("TST-OP-MA", "c")]);
     expect(attackTargets(s, "SPEC-MA-S:a", "player2")).toEqual(["TST-UNIT-0:x"]);
   });
@@ -541,8 +540,7 @@ describe("RS-311 ゴウライスタッグ", () => {
   });
 
   // faq-card-5 RS-311 Q1「はい、間違いありません。」（自軍と敵軍のコマンドゾーンが対象）
-  // 既知の不具合: CARD-RS-311 【カラクリ忍法・牙がくれ】が未実装
-  it.fails("RS-311: 公式Q&A — 敵軍コマンドゾーンのリリース状態のカードも参照する（敵軍に MA のリリース状態コマンドがあれば MA の敵軍ユニットにアタックされない）（出典: grnrngr/faq-card-5 RS-311 Q1）", () => {
+  it("RS-311: 公式Q&A — 敵軍コマンドゾーンのリリース状態のカードも参照する（敵軍に MA のリリース状態コマンドがあれば MA の敵軍ユニットにアタックされない）（出典: grnrngr/faq-card-5 RS-311 Q1）", () => {
     const s = stagDefends([], [released("TST-OP-MA", "ec")]);
     expect(attackTargets(s, "SPEC-MA-S:a", "player2")).toEqual(["TST-UNIT-0:x"]);
   });
@@ -691,8 +689,7 @@ describe("RS-313 クワガライジャー", () => {
   }
 
   // 「敵軍バトルエリアにあるSユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、…1体選び、戻したユニットとバトルさせる」
-  // 既知の不具合: CARD-RS-313 【イカヅチブレイカー】が未実装（空の確認だけが出て何も起きない）
-  it.fails("RS-313: 2番目に出ると、敵軍バトルエリアの S ユニットをラッシュエリアに戻し、敵軍ラッシュエリアの別のユニットとバトルさせる（出典: atwiki/page-483）", () => {
+  it("RS-313: 2番目に出ると、敵軍バトルエリアの S ユニットをラッシュエリアに戻し、敵軍ラッシュエリアの別のユニットとバトルさせる（出典: atwiki/page-483）", () => {
     let s = kuwaga(2, { battle: [inst("TST-UNIT-0", "eb")], rush: [inst("TST-UNIT-2", "er")] });
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:eb"]);
@@ -707,8 +704,7 @@ describe("RS-313 クワガライジャー", () => {
   });
 
   // 「戻してもよい」
-  // 既知の不具合: CARD-RS-313 【イカヅチブレイカー】の選択に敵軍ユニットが出ない
-  it.fails("RS-313: 戻さないことを選べる（任意）（出典: atwiki/page-483「戻してもよい」）", () => {
+  it("RS-313: 戻さないことを選べる（任意）（出典: atwiki/page-483「戻してもよい」）", () => {
     let s = kuwaga(2, { battle: [inst("TST-UNIT-0", "eb")], rush: [inst("TST-UNIT-2", "er")] });
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:eb"]);
     expect(canSkip(s)).toBe(true);
@@ -717,15 +713,13 @@ describe("RS-313 クワガライジャー", () => {
   });
 
   // 「Sユニットを1体選び」— M ユニットは選べない
-  // 既知の不具合: CARD-RS-313 【イカヅチブレイカー】が未実装
-  it.fails("RS-313: 敵軍バトルエリアの M ユニットは選べない（S のみ）（出典: atwiki/page-483「Sユニットを1体選び」）", () => {
+  it("RS-313: 敵軍バトルエリアの M ユニットは選べない（S のみ）（出典: atwiki/page-483「Sユニットを1体選び」）", () => {
     const s = kuwaga(2, { battle: [inst("SPEC-EM", "m"), inst("TST-UNIT-0", "eb")], rush: [inst("TST-UNIT-2", "er")] });
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:eb"]);
   });
 
   // 「戻したユニット以外のユニットがあれば」
-  // 既知の不具合: CARD-RS-313 【イカヅチブレイカー】が未実装
-  it.fails("RS-313: 敵軍ラッシュエリアに戻したユニット以外のユニットがなければ、戻すだけでバトルは起きない（出典: atwiki/page-483「…以外のユニットがあれば」）", () => {
+  it("RS-313: 敵軍ラッシュエリアに戻したユニット以外のユニットがなければ、戻すだけでバトルは起きない（出典: atwiki/page-483「…以外のユニットがあれば」）", () => {
     let s = kuwaga(2, { battle: [inst("TST-UNIT-0", "eb")], rush: [] });
     s = pick(s, "TST-UNIT-0:eb");
     s = settle(s);
@@ -740,8 +734,7 @@ describe("RS-313 クワガライジャー", () => {
   });
 
   // faq-card-5 RS-256 Q「はい、その通りです。」（クワガライジャー等で敵軍ユニット同士をバトルさせて撃破すると「自軍バトルフェイズに敵軍ユニットを1体撃破するたび」を満たす）
-  // 既知の不具合: CARD-RS-313 【イカヅチブレイカー】が未実装
-  it.fails("RS-313: 公式Q&A — 敵軍ユニット同士をバトルさせて撃破すると、闇の戒律の重ねたカードを手札に加えられる（出典: grnrngr/faq-card-5 RS-256）", () => {
+  it("RS-313: 公式Q&A — 敵軍ユニット同士をバトルさせて撃破すると、闇の戒律の重ねたカードを手札に加えられる（出典: grnrngr/faq-card-5 RS-256）", () => {
     let s = kuwaga(2, { battle: [inst("TST-UNIT-0", "eb")], rush: [inst("TST-UNIT-2", "er")] }, { operation: [inst("RS-256", "law")] });
     const law = s.players.player1.operation[0]!;
     s = { ...s, players: { ...s.players, player1: { ...s.players.player1, operation: [{ ...law, stackedCards: [inst("TST-OP", "stacked")] } as typeof law] } } };

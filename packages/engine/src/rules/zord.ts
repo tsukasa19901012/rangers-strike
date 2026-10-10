@@ -19,6 +19,7 @@ import type { CardInstance, PlayerState } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, removeAt } from "../core/helpers";
+import { hasTurnRuleModifier } from "../core/scopedModifiers";
 
 /** ゾードアップ素材を取れるゾーン（フィールドのみ、手札不可）。 */
 export type ZordMaterialZone = "rush" | "battle";
@@ -83,16 +84,40 @@ function fieldCardMatchesPartner(
   return false;
 }
 
+/**
+ * RS-347 スーパーフォーメーション: 「このターン、5体以上の合体ユニットを必要とする特徴「メカ」を持つユニットのカードを
+ * ラッシュするとき、…自軍コマンドゾーンのリリース状態のカードから、合体ユニットに足りない分のユニットと同じ名前のカードを
+ * 捨札にする」。使ったターン（プレイヤーのターン限定のルール）だけ、コマンドゾーンのリリース状態のカードも素材にできる。
+ */
+export const SUPER_FORMATION_RULE = "rs347_super_formation";
+
+function superFormationApplies(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+  slotCount: number,
+): boolean {
+  if (slotCount < 5) return false;
+  if (!hasTurnRuleModifier(player, SUPER_FORMATION_RULE)) return false;
+  return (getDefinition(definitions, rushingCardId)?.features ?? []).includes("メカ");
+}
+
+type PartnerZone = ZordMaterialZone | "command";
+
 function findPartnerInstance(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
   partnerCardId: string,
   rushingInstanceId: string,
-): { zone: ZordMaterialZone; index: number; card: CardInstance } | null {
-  for (const zone of ZORD_MATERIAL_ZONES) {
+  usedInstanceIds: Set<string> = new Set(),
+  includeCommand = false,
+): { zone: PartnerZone; index: number; card: CardInstance } | null {
+  const zones: PartnerZone[] = includeCommand ? [...ZORD_MATERIAL_ZONES, "command"] : ZORD_MATERIAL_ZONES;
+  for (const zone of zones) {
     for (let index = 0; index < player[zone].length; index++) {
       const card = player[zone][index]!;
-      if (card.instanceId === rushingInstanceId) continue;
+      if (card.instanceId === rushingInstanceId || usedInstanceIds.has(card.instanceId)) continue;
+      if (zone === "command" && card.commandHeld) continue;
       if (fieldCardMatchesPartner(definitions, card, partnerCardId)) {
         return { zone, index, card };
       }
@@ -107,25 +132,29 @@ export function collectRequiredFusionMaterials(
   definitions: Record<string, CardDefinition>,
   rushingCardId: string,
   rushingInstanceId: string,
-): Array<{ zone: ZordMaterialZone; index: number; card: CardInstance }> | null {
+): Array<{ zone: PartnerZone; index: number; card: CardInstance }> | null {
   const slots = resolveZordFusionPartnerSlots(rushingCardId);
   if (slots.length === 0) return null;
   const alternatives = resolveZordFusionSlotAlternatives(rushingCardId);
+  const includeCommand = superFormationApplies(player, definitions, rushingCardId, slots.length);
 
-  type Found = { zone: ZordMaterialZone; index: number; card: CardInstance };
+  type Found = { zone: PartnerZone; index: number; card: CardInstance };
   const found: Found[] = [];
   const usedInstanceIds = new Set<string>();
 
   const matchSlot = (slot: string[]): Found | null => {
-    for (const partnerId of slot) {
-      const candidate = findPartnerInstance(
-        player,
-        definitions,
-        partnerId,
-        rushingInstanceId,
-      );
-      if (candidate && !usedInstanceIds.has(candidate.card.instanceId)) {
-        return candidate;
+    // 場のユニットを優先し、足りない分だけコマンドゾーンのカードを使う（RS-347）。
+    for (const fromCommand of includeCommand ? [false, true] : [false]) {
+      for (const partnerId of slot) {
+        const candidate = findPartnerInstance(
+          player,
+          definitions,
+          partnerId,
+          rushingInstanceId,
+          usedInstanceIds,
+          fromCommand,
+        );
+        if (candidate && (fromCommand || candidate.zone !== "command")) return candidate;
       }
     }
     return null;

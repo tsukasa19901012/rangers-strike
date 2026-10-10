@@ -95,6 +95,8 @@ export function applyOnRushUnitEffects(
     viaEffect?: boolean;
     /** RS-124 超電子レーダーと自身の「ラッシュしたとき」の処理順（ターンプレイヤーが選んだ結果）。 */
     rushTriggerOrder?: "super_radar_first" | "self_first";
+    /** 「ラッシュされたとき」の誘発（RS-318）もここで処理する（「ラッシュされたとき」の窓を開かない置き換え用）。 */
+    includePassiveRushTriggers?: boolean;
   } = {},
 ): { state: GameState; logs: string[] } {
   // ルール: R-RUSH-24 — 「このとき出したユニットの効果は発動しない」は、そのユニット自身の
@@ -259,24 +261,37 @@ export function applyOnRushUnitEffects(
     );
   }
 
-  // RS-318 ドギー・クルーガー【出動指令】（敵軍の DA ユニットがラッシュされたとき）。
-  nextState = tryDispatchOrderOnEnemyRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
-
-  const rsEnemyRush = tryRsCatchallOnEnemyRush(
-    nextState,
-    ownerPlayerId,
-    instanceId,
-    phasePlayerId,
-  );
-  nextState = rsEnemyRush.state;
-  if (rsEnemyRush.logs.length > 0) logs.push(...rsEnemyRush.logs);
-
-  // RS-124 超電子レーダー（戻すパワーを持ち主が選ぶ選択を開くことがあるので最後に処理する）。
+  // RS-124 超電子レーダー（「ラッシュしたとき」。戻すパワーを持ち主が選ぶ選択を開くことがあるので最後に処理する）。
   if (options.rushTriggerOrder !== "super_radar_first") {
     const radar = applySuperRadarOnRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
     nextState = radar.state;
     logs.push(...radar.logs);
   }
 
+  // 「ラッシュされたとき」の誘発（RS-281 の撃破・RS-318 ドギー・クルーガー【出動指令】）。
+  // ルール: R-TIME-01 — 「ラッシュされたとき」は「ラッシュしたとき」の効果（選択を含む）をすべて解決してから。
+  // 通常のラッシュ・効果ラッシュでは「ラッシュされたとき」の窓を開くとき（events/emitUnitRushed.ts
+  // openRushReactionWindows → applyPassiveRushTriggers）に処理する。ここで処理するのは窓を経由しない置き換え（モーフ）だけ。
+  if (options.includePassiveRushTriggers && !nextState.pendingEffectChoice) {
+    const passive = applyPassiveRushTriggers(nextState, ownerPlayerId, instanceId, phasePlayerId);
+    nextState = passive.state;
+    logs.push(...passive.logs);
+  }
+
   return { state: nextState, logs };
+}
+
+/**
+ * 「ラッシュされたとき」の誘発（R-TIME-01: 「ラッシュしたとき」の効果をすべて解決したあと）。
+ * RS-281（ラッシュされたユニットを撃破する規則）→ RS-318【出動指令】（選択を開くことがある）。
+ */
+export function applyPassiveRushTriggers(
+  state: GameState,
+  rusherPlayerId: PlayerId,
+  rushedInstanceId: string,
+  phasePlayerId: PlayerId,
+): { state: GameState; logs: string[] } {
+  const rsEnemyRush = tryRsCatchallOnEnemyRush(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  const next = tryDispatchOrderOnEnemyRush(rsEnemyRush.state, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  return { state: next, logs: rsEnemyRush.logs };
 }

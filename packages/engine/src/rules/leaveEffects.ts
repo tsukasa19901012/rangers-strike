@@ -10,6 +10,7 @@ import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
 import { applyHungerGodCeaseShuffle } from "./batch04FieldEffects";
 import { resolveAbaRedDestroyDamage } from "./namedUnitEffects";
 import { tagOpenedDestroyTrigger } from "./destroyTriggerTiming";
+import type { DeferredDestroyTrigger } from "../types/game";
 
 
 /** Finds a named unit in the player's command OR discard zone and rushes it. */
@@ -178,6 +179,16 @@ export function resolveUnitLeftZoneEffectsImpl(
     return { state: nextState, logs };
   }
   nextState = applyDarkLawDrawOnEnemyDestroyed(nextState, ctx);
+  if (nextState.destroyTriggerHold) {
+    // ルール: R-TIME-01 — 撃破した側の段階 1「撃破したとき」を先に解決するあいだ、撃破された側の誘発
+    // （段階 2・段階 4。自動処理も選択も）は解決せずに待たせる（rules/destroyTriggerQueue.ts）。
+    const queued: DeferredDestroyTrigger[] = [
+      ...(nextState.deferredDestroyTriggers ?? []),
+      { kind: "destroyed_fact", step: "destroyed", ownerPlayerId: ctx.ownerPlayerId, cardId: ctx.cardId },
+    ];
+    if (wentToDiscard) queued.push({ kind: "after_discard", step: "after_discard", ctx: { ...ctx } });
+    return { state: { ...nextState, deferredDestroyTriggers: queued }, logs };
+  }
   // ルール: R-TIME-01, R-DESTROY-02 — 段階 2「撃破されたとき」→ 3 捨札へ移動 → 4「撃破されて捨札になったとき」。
   // 段階 2 は捨札以外に置かれても発動し、段階 4 より先に解決する（ユーザー決定 2026-10-11）。
   const fact = resolveDestroyedFactEffects(nextState, ctx.ownerPlayerId, ctx.cardId);
@@ -187,7 +198,20 @@ export function resolveUnitLeftZoneEffectsImpl(
     // 撃破されたが捨札以外（パワーゾーン等）に置かれた: 「撃破されて捨札になったとき」は発動しない（R-REPL-02）。
     return { state: nextState, logs };
   }
-  // ここから段階 4: 実際に捨札に置かれたときだけ。ここで開いた選択は段階 4 のタイミング。
+  const afterDiscard = resolveAfterDiscardDestroyEffects(nextState, ctx);
+  return { state: afterDiscard.state, logs: [...logs, ...afterDiscard.logs] };
+}
+
+/**
+ * 段階 4（R-TIME-01）: 撃破されて実際に捨札に置かれたあとの「撃破されて捨札になったとき」「捨札になったとき」。
+ * ここで開いた選択は段階 4 のタイミング。
+ */
+export function resolveAfterDiscardDestroyEffects(
+  state: GameState,
+  ctx: UnitLeftZoneContext,
+): { state: GameState; logs: string[] } {
+  let nextState = state;
+  const logs: string[] = [];
   const beforeAfterDiscard = nextState;
 
   const destroyDsl = tryResolveDslTriggeredEffects({
