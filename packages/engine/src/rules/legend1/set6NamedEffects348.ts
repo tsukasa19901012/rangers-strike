@@ -11,12 +11,13 @@ import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKey
 import { cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
 import { findInZone, opponent, updatePlayer } from "../../core/helpers";
 import { addNextTurnRuleModifier, addTurnRuleModifier, hasTurnRuleModifier } from "../../core/scopedModifiers";
-import { grantSp1ToBattleUnit } from "../namedUnitEffects";
+import { grantSp1ToBattleUnit, hasBattleNcEffect, markBattleNcEffect } from "../namedUnitEffects";
 import { redRacerPowerCostBonus } from "../../core/power";
 import { strikeDamageFor } from "../combo";
 import { cardHasCategory } from "@rangers-strike/cards";
 import { shuffleCards } from "../errataCardEffects";
 import { startEffectRush } from "../effectRush";
+import { commandCategoriesNow } from "../legend3/battleEffects";
 import { CHIKARA_BATON_RULE } from "./set4NamedEffects";
 import { buildLogEntry } from "../../log/formatLog";
 import { unitFeatures } from "../addedFeatures";
@@ -665,6 +666,76 @@ CHOICE_RESOLVERS[ALL_ABOARD_COST_EFFECT_ID] = (state, playerId, instanceId) => {
 };
 
 // ---------------------------------------------------------------------------
+// RS-379 ギンガイエロー【雷の雄叫び】（NC: CN1）
+// 「「MA」の自軍コマンドを１つホールドして次の効果を発動できる⇒このターン、特徴「メカ」を持つ敵軍ユニットの、
+//  効果名を持つテキストは無効になり、発動もできない。」（atwiki/page-504）
+// NC 成立時に MA のリリース状態の自軍コマンドを選ぶ（任意）。ホールドしたら、このターン、発動したプレイヤーから見て
+// 敵軍の「メカ」のユニットの効果名を持つテキスト（場の継続効果のキーワード・誘発する名前つき効果）を無効にする。
+// ※（効果名を持たないテキスト）は無効にならない。
+
+export const THUNDER_ROAR_EFFECT_ID = "rs379_thunder_roar";
+const THUNDER_ROAR_RULE = "rs379_thunder_roar";
+
+function releasedMaCommands(state: GameState, playerId: PlayerId): string[] {
+  return state.players[playerId].command
+    .filter((c) => !c.commandHeld)
+    .filter((c) => commandCategoriesNow(state, c).includes("MA"))
+    .map((c) => c.instanceId);
+}
+
+/** NC 成立を記録する（発動は場のユニットの起動効果。rules/fieldActivatedAbilities.ts）。 */
+function markThunderRoar(state: GameState, ctx: GrantKeywordContext): GameState {
+  const id = ctx.triggerSourceInstanceId;
+  return id ? markBattleNcEffect(state, ctx.playerId, id, THUNDER_ROAR_EFFECT_ID) : state;
+}
+
+/** 起動できるか（NC が成立したこのユニットがバトルエリアにあり、MA のリリース状態の自軍コマンドがある）。 */
+export function canActivateThunderRoar(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  if (!hasBattleNcEffect(card, THUNDER_ROAR_EFFECT_ID)) return false;
+  if (hasTurnRuleModifier(state.players[playerId], THUNDER_ROAR_RULE)) return false;
+  return releasedMaCommands(state, playerId).length > 0;
+}
+
+/** 起動: ホールドする MA の自軍コマンドを選ぶ（見送れば発動しない）。 */
+export function beginThunderRoar(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
+  const ids = releasedMaCommands(state, playerId);
+  if (ids.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId,
+    effectId: THUNDER_ROAR_EFFECT_ID,
+    sourceCardId: "RS-379",
+    sourceInstanceId: card.instanceId,
+    kind: "select_command",
+    commandFilter: "released",
+    phasePlayerId: state.activePlayer,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+CHOICE_RESOLVERS[THUNDER_ROAR_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const p = state.players[playerId];
+  let player = { ...p, command: p.command.map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: true } : c)) };
+  player = addTurnRuleModifier(player, THUNDER_ROAR_RULE, { sourceCardId: "RS-379" });
+  const next = { ...state, ...updatePlayer(state, playerId, player) };
+  return { state: finish(clearPending(next, pending.phasePlayerId), pending.phasePlayerId), log: logFor(state, playerId, "RS-379", THUNDER_ROAR_EFFECT_ID) };
+};
+CHOICE_SKIPPERS[THUNDER_ROAR_EFFECT_ID] = skipChoice("RS-379", THUNDER_ROAR_EFFECT_ID);
+
+/**
+ * 【雷の雄叫び】で、このカード（ownerId の場のユニット）の効果名を持つテキストが無効か。
+ * 判定は「メカ」の特徴（追加された特徴を含む）と、相手が【雷の雄叫び】を発動しているか。
+ */
+export function namedTextNegated(state: Pick<GameState, "players" | "definitions">, ownerId: PlayerId, card: Pick<CardInstance, "cardId" | "instanceId">): boolean {
+  if (!hasTurnRuleModifier(state.players[opponent(ownerId)], THUNDER_ROAR_RULE)) return false;
+  if (getDefinition(state.definitions, card.cardId)?.type !== "unit") return false;
+  return unitFeatures(state, ownerId, card).includes("メカ");
+}
+
+// ---------------------------------------------------------------------------
 // DSL の grant_keyword からの起点
 
 export function trySet6LowCardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {
@@ -677,6 +748,8 @@ export function trySet6LowCardEffect(state: GameState, ctx: GrantKeywordContext,
       return { state: applyPantherClaw(state, ctx), detail: PANTHER_CLAW_EFFECT_ID };
     case "effect_card::RS-350::dark_armor":
       return { state: beginDarkArmor(state, ctx), detail: DARK_ARMOR_EFFECT_ID };
+    case "effect_card::RS-379::kaminobi":
+      return { state: markThunderRoar(state, ctx), detail: THUNDER_ROAR_EFFECT_ID };
     case "effect_card::RS-356::hanmapanchi":
       return { state: applyHammerPunch(state, ctx), detail: HAMMER_PUNCH_RULE };
     default:

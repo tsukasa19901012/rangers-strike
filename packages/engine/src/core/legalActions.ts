@@ -1266,6 +1266,14 @@ function appendBattleEntryActions(
   const pending = state.pendingBattleEntry;
   if (!pending || pending.playerId !== playerId) return;
 
+  // RS-379【雷の雄叫び】: NC が成立した直後（バトル進入の行動ウィンドウ）にも発動できる。
+  for (const unitInstanceId of listFieldActivatedAbilityCards(state, playerId)) {
+    const card = state.players[playerId].battle.find((c) => c.instanceId === unitInstanceId);
+    if (unitInstanceId === pending.instanceId && card?.cardId === "RS-379") {
+      actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+    }
+  }
+
   const player = state.players[playerId];
   const enemy = state.players[opponent(playerId)];
   const unit = player.battle.find((c) => c.instanceId === pending.instanceId);

@@ -19,7 +19,7 @@ import { collectPowerIds, openEffectChoice, startSelectPowerChoice } from "./pen
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import { beginAbarenohFromHand } from "./errataCardEffects";
 import { canActivateMagRepair, openMagRepair } from "./legend1/set5NamedEffectsA";
-import { beginAllAboard, canActivateAllAboard } from "./legend1/set6NamedEffects348";
+import { beginAllAboard, beginThunderRoar, canActivateAllAboard, canActivateThunderRoar } from "./legend1/set6NamedEffects348";
 
 type FieldZone = "rush" | "battle";
 
@@ -240,6 +240,16 @@ function canActivateGhostAbsorption(state: GameState, playerId: PlayerId, card: 
 }
 
 const ABILITIES: FieldActivatedAbility[] = [
+  {
+    // RS-379 ギンガイエロー【雷の雄叫び】: NC が成立したターン、MA の自軍コマンドを1つホールドして発動できる。
+    cardId: "RS-379",
+    effectId: "thunder_roar",
+    zones: ["battle"],
+    phase: "battle",
+    discardSelf: false,
+    canActivate: (state, playerId, card) => canActivateThunderRoar(state, playerId, card),
+    resolve: (state, playerId, card) => beginThunderRoar(state, playerId, card),
+  },
   {
     // RS-366 グランギズモ【総員搭乗】: 自軍ラッシュフェイズ中、「戦闘員」の自軍ユニットを1体捨札にして山札の DA の M ユニットを出す。
     cardId: "RS-366",

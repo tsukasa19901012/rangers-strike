@@ -258,8 +258,7 @@ describe("RS-379 ギンガイエロー", () => {
     expect(lastBattleBps(s)?.defender).toBe(6000);
   });
 
-  it.fails("RS-379: 【雷の雄叫び】MA をホールドして発動すると、このターン、メカの敵軍ユニットの効果名を持つテキスト（【シグナルキャノン】）は無効（アタックされた OT の M ユニットは BP5000 のまま）（出典: atwiki/page-504）", () => {
-    // 既知の不具合: CARD-RS-379 NC は成立するが、【雷の雄叫び】の発動手段がなく、効果名テキストの無効化もない
+  it("RS-379: 【雷の雄叫び】MA をホールドして発動すると、このターン、メカの敵軍ユニットの効果名を持つテキスト（【シグナルキャノン】）は無効（アタックされた OT の M ユニットは BP5000 のまま）（出典: atwiki/page-504）", () => {
     let s = st({ player1: { rush: [inst("RS-379", "x"), inst("TST-UNIT-7", "atk")], command: MA1(), deck: deckCards(5) }, player2: ENEMY() });
     s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-379:x" });
     s = useHoldEffect(s, "player1", "RS-379:x", ["TST-OP-MA:cMA0"]);
@@ -269,8 +268,7 @@ describe("RS-379 ギンガイエロー", () => {
     expect(lastBattleBps(s)?.defender).toBe(5000);
   });
 
-  it.fails("RS-379: 【雷の雄叫び】効果名を持たない ※ テキストは無効にならない（ジェットファルコンは発動後も「航空機」を持たないユニットにアタックされない）（出典: atwiki/page-504「効果名を持つテキストは無効になり」）", () => {
-    // 既知の不具合: CARD-RS-379 【雷の雄叫び】の発動手段がない
+  it("RS-379: 【雷の雄叫び】効果名を持たない ※ テキストは無効にならない（ジェットファルコンは発動後も「航空機」を持たないユニットにアタックされない）（出典: atwiki/page-504「効果名を持つテキストは無効になり」）", () => {
     let s = st({ player1: { rush: [inst("RS-379", "x"), inst("TST-UNIT-7", "atk")], command: MA1(), deck: deckCards(5) }, player2: { battle: [inst("RS-135", "jf")], deck: deckCards(5, "e") } });
     s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-379:x" });
     s = passEntry(resolveAll(useHoldEffect(s, "player1", "RS-379:x", ["TST-OP-MA:cMA0"])));
