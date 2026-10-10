@@ -1158,6 +1158,29 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (pending.effectId === "hi_honoo_ha" && pending.sourceCardId === "RS-205" && !pending.mayConfirm) {
+    // RS-205【天火星・稲妻炎上破】「好きな数ホールドしてもよい」— 1つずつ選び、少なくても確定できる。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if ((pending.selectedInstanceIds ?? []).length > 0) {
+      actions.push({ type: "confirm_effect_choice", playerId });
+    }
+    return;
+  }
+
+  if (pending.effectId === "assault_vector_destroy") {
+    // RS-181 破邪百獣剣「カテゴリの数まで好きな数選び」— 1体ずつ選び、少なくても確定できる。
+    for (const instanceId of pending.validInstanceIds) {
+      if (!isValidEffectChoiceTarget(state, pending, instanceId)) continue;
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if ((pending.selectedInstanceIds ?? []).length > 0) {
+      actions.push({ type: "confirm_effect_choice", playerId });
+    }
+    return;
+  }
+
   if (pending.kind === "select_units_bp_budget") {
     for (const instanceId of pending.validInstanceIds) {
       if (canToggleBpBudgetTarget(state, pending, instanceId)) {

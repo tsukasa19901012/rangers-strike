@@ -1,4 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
+import { falconBreakTriggers } from "./rs4NcEffects";
 import {
   findNcNamedEffect,
   getNumberComboEffect,
@@ -101,6 +102,8 @@ export function numberComboTriggers(
   battleBeforeEnter: CardInstance[],
 ): boolean {
   if (tankCommandBlocksNc(state, card, definition)) return false;
+  // RS-204 レッドファルコン【ファルコンブレイク】: BP が一番低ければナンバーに関係なく発動する。
+  if (falconBreakTriggers(state, playerId, card)) return true;
   const effectiveNumber = ncEffectiveNumber(state, playerId, card, definition);
   const position = battlePosition;
 

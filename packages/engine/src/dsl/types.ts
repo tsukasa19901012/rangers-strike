@@ -15,7 +15,7 @@ export type DslEffectDefinition = {
 export type DslPrimitive =
   | { op: "modify_bp"; delta: number; target: "self" | "enemy_battle"; targetInstanceId?: string }
   | { op: "draw"; count: number }
-  | { op: "damage"; amount: number; target: "opponent" }
+  | { op: "damage"; amount: number; target: "opponent" | "controller" }
   | { op: "add_turn_rule"; ruleId: string }
   | { op: "add_combo_number_delta"; delta: number }
   | { op: "set_aura_power"; targetInstanceId: string };

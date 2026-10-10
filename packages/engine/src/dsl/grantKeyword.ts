@@ -1,4 +1,15 @@
 import { releasedCommandUnitIds, startEffectRush } from "../rules/effectRush";
+import {
+  INAZUMA_HOLD_EFFECT_ID,
+  KIRIGAKURE_EFFECT_ID,
+  openHolography,
+  openInazumaEnjouha,
+  openKirigakure,
+  openTenmaKick,
+  openTimeReturn,
+  TENMA_EFFECT_ID,
+} from "../rules/rs4NcEffects";
+import { openSuperElectronEar, SUPER_ELECTRON_EAR_EFFECT_ID } from "../rules/powerFlipEffects";
 import { startHououTornado } from "../rules/hououTornado";
 import type { Category } from "@rangers-strike/cards";
 import type { GameState, PendingBattle, PlayerId } from "../types/game";
@@ -416,6 +427,21 @@ export function applyGrantKeyword(
   const sr = matchSrGrantKeyword(state, ctx, keyword);
   if (sr) return sr;
 
+  if (keyword === "deck_search_operation_to_power" && ctx.sourceCardId === "RS-201") {
+    // RS-201【超電子ホログラフィー】（rules/rs4NcEffects.ts）。
+    return {
+      state: openHolography(state, ctx.playerId, ctx.phasePlayerId, ctx.triggerSourceInstanceId),
+      detail: keyword,
+    };
+  }
+  if (keyword === "return_all_bp2000_hand" && ctx.sourceCardId === "RS-208") {
+    // RS-208【天時星・時間返し】（任意）。
+    return {
+      state: openTimeReturn(state, ctx.playerId, ctx.phasePlayerId, ctx.triggerSourceInstanceId),
+      detail: keyword,
+    };
+  }
+
   if (keyword === "effect_card::RS-284::suwanuingu") {
     // RS-284 ホワイトスワン【スワンウィング】（NC）。rules/swanWing.ts
     const withChoice = startSwanWingChoice(state, {
@@ -518,8 +544,22 @@ export function applyGrantKeyword(
     case "SP1": {
       const instanceId = ctx.triggerSourceInstanceId;
       if (!instanceId) return { state };
+      let granted = grantSpLevel(state, ctx.playerId, instanceId, 1);
+      if (ctx.sourceCardId === "RS-200" && ctx.effectId === SUPER_ELECTRON_EAR_EFFECT_ID) {
+        // RS-200【超電子イヤー】: 「SP1」に続けてダメージの入れ替え（任意）。
+        granted = openSuperElectronEar(granted, ctx.playerId, instanceId, ctx.phasePlayerId);
+      } else if (ctx.sourceCardId === "RS-205" && ctx.effectId === INAZUMA_HOLD_EFFECT_ID) {
+        // RS-205【天火星・稲妻炎上破】（rules/rs4NcEffects.ts）。
+        granted = openInazumaEnjouha(granted, ctx.playerId, ctx.phasePlayerId, instanceId);
+      } else if (ctx.sourceCardId === "RS-206" && ctx.effectId === KIRIGAKURE_EFFECT_ID) {
+        // RS-206【天幻星・霧隠れ】。
+        granted = openKirigakure(granted, ctx.playerId, ctx.phasePlayerId, instanceId);
+      } else if (ctx.sourceCardId === "RS-207" && ctx.effectId === TENMA_EFFECT_ID) {
+        // RS-207【天重星・天馬回転蹴り】。
+        granted = openTenmaKick(granted, ctx.playerId, ctx.phasePlayerId, instanceId);
+      }
       return {
-        state: grantSpLevel(state, ctx.playerId, instanceId, 1),
+        state: granted,
         detail: "sp1",
       };
     }

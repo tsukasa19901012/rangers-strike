@@ -119,8 +119,7 @@ describe("RS-188 アチャとコチャ", () => {
   });
 
   // 「【地球征服宣告書】これが自軍エリアにある間、自軍パワーゾーンのカードが12枚以上あれば、特徴「メカ」を持つすべての自軍Sユニットは「SP1」になる」
-  // 既知の不具合: CARD-RS-188 【地球征服宣告書】が未実装（パワーゾーン12枚以上でも「メカ」の S ユニットが SP1 にならない）
-  it.fails("RS-188: パワーゾーン12枚以上なら、「メカ」の自軍 S ユニット（SP 空欄）が SP1 になりストライクできる（出典: atwiki/page-121）", () => {
+  it("RS-188: パワーゾーン12枚以上なら、「メカ」の自軍 S ユニット（SP 空欄）が SP1 になりストライクできる（出典: atwiki/page-121）", () => {
     let s = st(
       { turn: 3, player1: { rush: [inst("RS-188", "a"), inst("SPEC-MEKA-S", "mk")], power: powerCards(12), deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } },
       [MEKA_S],
@@ -131,15 +130,13 @@ describe("RS-188 アチャとコチャ", () => {
     expect(s.players.player2.damage).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-188 【地球征服宣告書】が未実装（パワーゾーン12枚以上でも「メカ」の S ユニットが SP1 にならない）
-  it.fails("RS-188: アチャとコチャ自身も「メカ」の S ユニットなので SP1 になる（出典: atwiki/page-121「すべての自軍Sユニット」）", () => {
+  it("RS-188: アチャとコチャ自身も「メカ」の S ユニットなので SP1 になる（出典: atwiki/page-121「すべての自軍Sユニット」）", () => {
     let s = st({ turn: 3, player1: { rush: [inst("RS-188", "a")], power: powerCards(12), deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     s = enter(s, "RS-188:a");
     expect(canStrike(s, "RS-188:a")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-188 【地球征服宣告書】が未実装（パワーゾーン12枚以上でも「メカ」の S ユニットが SP1 にならない）
-  it.fails("RS-188: パワーゾーン11枚では SP1 にならずストライクできない（12枚ならできる）（出典: atwiki/page-121「12枚以上あれば」）", () => {
+  it("RS-188: パワーゾーン11枚では SP1 にならずストライクできない（12枚ならできる）（出典: atwiki/page-121「12枚以上あれば」）", () => {
     const mk = (n: number) =>
       enter(
         st({ turn: 3, player1: { rush: [inst("RS-188", "a"), inst("SPEC-MEKA-S", "mk")], power: powerCards(n), deck: deckCards(3) } }, [MEKA_S]),
@@ -149,8 +146,7 @@ describe("RS-188 アチャとコチャ", () => {
     expect(canStrike(mk(12), "SPEC-MEKA-S:mk")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-188 【地球征服宣告書】が未実装（パワーゾーン12枚以上でも「メカ」の S ユニットが SP1 にならない）
-  it.fails("RS-188: 「メカ」を持たない S ユニット・敵軍の「メカ」S ユニットは SP1 にならない（同じ状況の自軍「メカ」S はなる）（出典: atwiki/page-121「特徴「メカ」を持つすべての自軍Sユニット」）", () => {
+  it("RS-188: 「メカ」を持たない S ユニット・敵軍の「メカ」S ユニットは SP1 にならない（同じ状況の自軍「メカ」S はなる）（出典: atwiki/page-121「特徴「メカ」を持つすべての自軍Sユニット」）", () => {
     let m = st(
       { turn: 3, player1: { rush: [inst("RS-188", "a"), inst("SPEC-MEKA-S", "mk")], power: powerCards(12), deck: deckCards(3) } },
       [MEKA_S],
@@ -181,8 +177,7 @@ describe("RS-188 アチャとコチャ", () => {
     expect(canStrike(e, "SPEC-MEKA-S:emk", "player2")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-188 【地球征服宣告書】が未実装（パワーゾーン12枚以上でも「メカ」の S ユニットが SP1 にならない）
-  it.fails("RS-188: アチャとコチャが自軍エリアになければ（捨札にあっても）SP1 にならない（ラッシュエリアにあればなる）（出典: atwiki/page-121「これが自軍エリアにある間」）", () => {
+  it("RS-188: アチャとコチャが自軍エリアになければ（捨札にあっても）SP1 にならない（ラッシュエリアにあればなる）（出典: atwiki/page-121「これが自軍エリアにある間」）", () => {
     let m = st(
       { turn: 3, player1: { rush: [inst("RS-188", "a"), inst("SPEC-MEKA-S", "mk")], power: powerCards(12), deck: deckCards(3) } },
       [MEKA_S],
@@ -366,8 +361,7 @@ describe("RS-191 ダイナレッド", () => {
   });
 
   // 「これはアタックとストライクを1度ずつ行ってもよい」
-  // 既知の不具合: CARD-RS-191 「アタックとストライクを1度ずつ」が未実装（SP1 付与のみ。アタック後にストライクできない）
-  it.fails("RS-191: NC 成立時、アタックした後にストライクもできる（出典: atwiki/page-393）", () => {
+  it("RS-191: NC 成立時、アタックした後にストライクもできる（出典: atwiki/page-393）", () => {
     let s = atPosition(inst("RS-191", "r"), 4, { battle: [inst("TST-UNIT-0", "e")] });
     s = settle(attack(s, "RS-191:r", "TST-UNIT-0:e"));
     expect(zoneOf(s, "player1", "RS-191:r")).toBe("battle");
@@ -376,16 +370,14 @@ describe("RS-191 ダイナレッド", () => {
     expect(s.players.player2.damage).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-191 「アタックとストライクを1度ずつ」が未実装（ストライク後にアタックできない）
-  it.fails("RS-191: NC 成立時、ストライクした後にアタックもできる（出典: atwiki/page-393）", () => {
+  it("RS-191: NC 成立時、ストライクした後にアタックもできる（出典: atwiki/page-393）", () => {
     let s = atPosition(inst("RS-191", "r"), 4, { battle: [inst("TST-UNIT-0", "e")] });
     s = settle(strike(s, "RS-191:r"));
     expect(s.players.player2.damage).toBe(1);
     expect(legalOfType(s, "battle").map((a) => a.attackerInstanceId)).toContain("RS-191:r");
   });
 
-  // 既知の不具合: CARD-RS-191 「アタックとストライクを1度ずつ」が未実装（ストライク後のアタックも出ない）
-  it.fails("RS-191: 1度ずつまで — ストライクの後はアタックはできるが、2回目のストライクはできない（出典: atwiki/page-393「1度ずつ」）", () => {
+  it("RS-191: 1度ずつまで — ストライクの後はアタックはできるが、2回目のストライクはできない（出典: atwiki/page-393「1度ずつ」）", () => {
     let s = atPosition(inst("RS-191", "r"), 4, { battle: [inst("TST-UNIT-0", "e")] });
     s = settle(strike(s, "RS-191:r"));
     expect(legalOfType(s, "battle").map((a) => a.attackerInstanceId)).toContain("RS-191:r");
@@ -393,8 +385,7 @@ describe("RS-191 ダイナレッド", () => {
   });
 
   // grnrngr/faq-card-4 RS-191 Q1「ナンバーコンビネーションを発動している時点でSP1になっていますので、SP1以上のユニットとして扱われます。」
-  // 既知の不具合: CARD-RS-191 ストライク後にアタックできない（「1度ずつ」未実装）
-  it.fails("RS-191: ストライクした後でアタックした帝王アトンは、SP1 以上のユニットとのバトルとして勝っても撃破される（出典: grnrngr/faq-card-4 RS-191 Q1）", () => {
+  it("RS-191: ストライクした後でアタックした帝王アトンは、SP1 以上のユニットとのバトルとして勝っても撃破される（出典: grnrngr/faq-card-4 RS-191 Q1）", () => {
     let s = atPosition(inst("RS-191", "r"), 4, { battle: [inst("RS-198", "aton")] });
     s = settle(strike(s, "RS-191:r"));
     s = settle(attack(s, "RS-191:r", "RS-198:aton"));

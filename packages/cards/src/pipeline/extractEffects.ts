@@ -903,12 +903,17 @@ const PATTERNS: PatternMatch[] = [
     test: (body) => /(\d+)点ダメージを(?:受ける|与える)/.test(body) && /自分/.test(body),
     build: (body, segment, trigger) => {
       const amount = Number(body.match(/(\d+)点ダメージ/)?.[1] ?? 1);
+      // 「相手は1点ダメージを受けるか、自分自身のユニットを…」のように「自分」が相手側を指す文も
+      // この test に当たるため、受け手は本文の主語で決める（自分が受ける文だけ controller）。
+      const selfTakes =
+        /自分(?:は|も)[^。]*?\d+点ダメージを受ける/.test(body) &&
+        !/相手(?:は|に)[^。]*?\d+点ダメージ/.test(body);
       return {
         id: segment.name ? slugifyEffectId(segment.name) : `deal_damage_${amount}`,
         name: segment.name,
         text: body,
         trigger,
-        effects: [{ type: "deal_damage", amount, target: "controller" }],
+        effects: [{ type: "deal_damage", amount, target: selfTakes ? "controller" : "opponent" }],
         matchedPattern: "deal_damage_self",
       };
     },

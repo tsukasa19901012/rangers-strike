@@ -1,4 +1,6 @@
 import { checkWinner } from "../core/createGame";
+import { confirmRs4NcChoice, isRs4NcChoice, selectRs4NcChoice } from "./rs4NcEffects";
+import { pickSuperElectronEarDamage, SUPER_ELECTRON_EAR_PICK_EFFECT_ID } from "./powerFlipEffects";
 import {
   ASSAULT_VECTOR_EFFECT_ID,
   resolveAssaultVectorPick,
@@ -155,6 +157,7 @@ import {
   autoHoldForBattleEntry,
   clearEffectBattleEntryWindows,
   canMoveUnitToBattle,
+  unconditionalNoEntryText,
 } from "./restrictions";
 import {
   continueMorphAfterReplacement,
@@ -342,8 +345,12 @@ export function startBeatHammerChoice(
   sourceInstanceId?: string,
 ): GameState | null {
   const enemyId = opponent(playerId);
+  // 「※これはバトルエリアに出られない」ユニットのカードは選べない（grnrngr/faq-card-4 RS-194 Q3）。
   const ids = state.players[enemyId].command
-    .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit")
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && !unconditionalNoEntryText(def);
+    })
     .map((c) => c.instanceId);
   if (ids.length === 0) return null;
   return openEffectChoice(state, {
@@ -1865,6 +1872,32 @@ export function startAnimalHeartChoice(
   });
 }
 
+export const HAJA_BLADE_EFFECT_ID = "assault_vector_destroy";
+
+/** RS-181 破邪百獣剣: 選んだユニットを1体ずつ撃破する（離場反応で中断したら再開する）。 */
+function finishAssaultVectorDestroy(state: GameState, pending: PendingEffectChoice): ChoiceOutcome {
+  const selected = pending.selectedInstanceIds ?? [];
+  const processed = [...(pending.processedInstanceIds ?? [])];
+  let nextState = state;
+  for (const instanceId of selected) {
+    if (processed.includes(instanceId)) continue;
+    processed.push(instanceId);
+    const located = findCardOwner(nextState, instanceId);
+    if (!located || (located.zone !== "rush" && located.zone !== "battle")) continue;
+    const leave = applyUnitLeave(nextState, instanceId, "discard", pending.phasePlayerId);
+    if ("error" in leave) return leave;
+    nextState = leave.state;
+    if (nextState.pendingLeave && processed.length < selected.length) {
+      const resumed: PendingEffectChoice = { ...pending, validInstanceIds: [], processedInstanceIds: processed };
+      return { state: { ...nextState, pendingEffectChoice: resumed } };
+    }
+  }
+  const names = selected
+    .map((id) => cardName(nextState.definitions, findFieldUnitCardId(nextState, id)))
+    .join(",");
+  return finishChoice(nextState, pending, names || "none");
+}
+
 export function applyConfirmEffectChoice(
   state: GameState,
   playerId: PlayerId,
@@ -1888,6 +1921,15 @@ export function applyConfirmEffectChoice(
     );
     const next = acceptOptionalEffect(state, pending);
     return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next), log };
+  }
+
+  if (pending.effectId === HAJA_BLADE_EFFECT_ID) {
+    return finishAssaultVectorDestroy(state, pending);
+  }
+  if (isRs4NcChoice(pending)) {
+    const next = confirmRs4NcChoice(state, pending);
+    if (!next) return { error: "invalid_choice_kind" };
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
   }
 
   if (pending.effectId === FIRE_DANCE_EFFECT_ID) {
@@ -2683,6 +2725,15 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
     const next = result.state.pendingEffectChoice ? result.state : promoteDeferredBattleEntry(result.state);
     return { state: next, log: result.log };
   }
+  if (isRs4NcChoice(pending) && (pending.selectedInstanceIds?.length ?? 0) > 0) {
+    // RS-205: 選び終えた（好きな数）— 選んだコマンドをホールドして撃破へ。
+    const next = confirmRs4NcChoice(state, pending);
+    if (next) return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
+  }
+  if (pending.effectId === HAJA_BLADE_EFFECT_ID && (pending.selectedInstanceIds?.length ?? 0) > 0) {
+    // RS-181: 選び終えた — 選んだユニットを撃破する。
+    return finishAssaultVectorDestroy(state, pending);
+  }
   if (pending.effectId === HOUOU_TORNADO_EFFECT_ID && (pending.processedInstanceIds?.length ?? 0) > 0) {
     // 選び終えた — 戻した数だけ相手が自分の S ユニットを戻す。
     const next = finishHououOwnStep(state, pending);
@@ -2833,6 +2884,18 @@ export function applyEffectChoiceSelect(
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
     return applyConfirmEffectChoice(state, playerId);
+  }
+  if (isRs4NcChoice(pending)) {
+    // RS-201/205/206/207 の NC 効果の選択（rules/rs4NcEffects.ts）。
+    const next = selectRs4NcChoice(state, pending, instanceId);
+    if ("error" in next) return next;
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
+  }
+  if (pending.effectId === SUPER_ELECTRON_EAR_PICK_EFFECT_ID) {
+    // RS-200【超電子イヤー】: 元のダメージの数になるまで、パワーゾーンのカードを選びダメージにする。
+    const next = pickSuperElectronEarDamage(state, pending, instanceId);
+    if (!next) return { error: "invalid_target" };
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
   }
   if (pending.effectId === FIRE_DANCE_EFFECT_ID) {
     // RS-159【ファイヤーダンス】: 選んだ敵軍コマンドを1つずつホールドする。
@@ -3165,6 +3228,18 @@ export function applyEffectChoiceSelect(
       return finishChoice(nextState, pending, String(declared));
     }
     case "select_unit": {
+      if (pending.effectId === HAJA_BLADE_EFFECT_ID) {
+        // RS-181 破邪百獣剣: 先に可能な数まで選んでから1体ずつ撃破する（grnrngr/faq-card-4 RS-181 Q1・R-TGT-03）。
+        const prev = pending.selectedInstanceIds ?? [];
+        if (prev.includes(instanceId)) return { error: "already_selected" };
+        const selected = [...prev, instanceId];
+        const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+        const next: PendingEffectChoice = { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining };
+        if (selected.length < (pending.zoneCategoryDestroyLimit ?? 1) && remaining.length > 0) {
+          return { state: { ...state, pendingEffectChoice: next } };
+        }
+        return finishAssaultVectorDestroy(state, next);
+      }
       if (pending.effectId === DENJI_THUNDER_THROW_EFFECT_ID || pending.effectId === DENJI_THUNDER_THROW_DISCARD_EFFECT_ID) {
         const next =
           pending.effectId === DENJI_THUNDER_THROW_EFFECT_ID

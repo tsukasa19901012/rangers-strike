@@ -281,8 +281,15 @@ function noteOtherNcBattleEntryBlock(
   return false;
 }
 
+/**
+ * 「※これはラッシュしたターンにバトルエリアに出られない」（RS-106 等の unnamed rule、RS-208・RS-295 の DSL キーワード）。
+ */
+function noEntryOnRushTurn(cardId: string): boolean {
+  return noBattleEntryTurnRushed(cardId) || cardHasGrantKeyword(cardId, "no_battle_rush_turn");
+}
+
 /** 無条件の「※これはバトルエリアに出られない。」（定義テキストからも判定する）。 */
-function unconditionalNoEntryText(def: CardDefinition): boolean {
+export function unconditionalNoEntryText(def: CardDefinition): boolean {
   return /(^|\s)※これはバトルエリアに出られない。/.test(def.text ?? "");
 }
 
@@ -334,7 +341,7 @@ export function canMoveUnitToBattle(
     }
   }
 
-  if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (noEntryOnRushTurn(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
 
@@ -452,7 +459,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
     }
   }
 
-  if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (noEntryOnRushTurn(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
 
@@ -740,7 +747,7 @@ export function explainCannotEnterBattle(
     return `「${unitName}」をバトルエリアに出すには、パワーからダメージ以外を選んで捨札してください。`;
   }
 
-  if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (noEntryOnRushTurn(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return `「${unitName}」はラッシュしたターンはバトルエリアに出せません。`;
   }
 
@@ -802,6 +809,10 @@ export function findMandatoryBattleEntries(
   if (state.phase !== "battle") return [];
   const player = state.players[playerId];
   const mandatory: CardInstance[] = [];
+  // RS-198 帝王アトン【帝王剣の呪い】: これが自軍エリアにある間、すべての敵軍 S ユニットは、毎ターン、
+  // 可能ならバトルエリアに出る（atwiki/page-382）。
+  const enemy = state.players[opponent(playerId)];
+  const emperorCurse = [...enemy.rush, ...enemy.battle].some((c) => c.cardId === "RS-198");
 
   for (const card of player.rush) {
     if (wingTurnBlocksStrike(player, card.instanceId)) continue;
@@ -810,6 +821,7 @@ export function findMandatoryBattleEntries(
     if (
       hasAutoBattleEntryEachTurnNote(card.cardId) ||
       earthForceRequiresBattleEntry(state) ||
+      (emperorCurse && isSmallUnit(state.definitions, card.cardId)) ||
       highwayPlanRequiresBattleEntry(state, card.cardId)
     ) {
       mandatory.push(card);

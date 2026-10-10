@@ -1,4 +1,6 @@
 import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
+import { openHolography, openMagnetFist } from "../rs4NcEffects";
+import { registerPinkBarrier } from "../powerFlipEffects";
 import { buildCatchallStructuredPrimitives } from "../../dsl/catchallTextPrimitives";
 import type { DslCardContext } from "../../dsl/cardInterpreter";
 import { buildRematchContext } from "../../dsl/hashGrantKeywordBridge";
@@ -244,7 +246,11 @@ const handleHoldEnemyUnit: PatternHandler = (state, ctx, body) => {
   return { state: choice, detail: ctx.effectId };
 };
 
-const handleDamageAction: PatternHandler = (state, ctx, body) => ({
+const handleDamageAction: PatternHandler = (state, ctx, body) =>
+  /次の相手ターン、自軍パワーゾーンのカードをウラ返してダメージにするとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットをすべて撃破する/.test(body)
+    ? // RS-202 ピンクファイブ【ピンクバリヤー】（rules/powerFlipEffects.ts）。
+      { state: registerPinkBarrier(state, ctx.playerId, ctx.sourceCardId), detail: ctx.effectId }
+    : ({
   state: registerTurnKeyword(
     state,
     ctx.playerId,
@@ -409,6 +415,22 @@ export function tryRsCatchallRuntime(
   // RS-284【スワンウィング】は汎用の構造化プリミティブ（場のユニット選択）では表せないので先に処理する。
   if (pattern === "deploy_rush_area" && SWAN_WING_BODY.test(body)) {
     return handleDeployRush(state, ctx, body, interpret);
+  }
+
+  if (pattern === "deck_search_operation_to_power" && ctx.sourceCardId === "RS-201") {
+    // RS-201【超電子ホログラフィー】: オペレーションのカードだけを選ぶ（rules/rs4NcEffects.ts）。
+    return {
+      state: openHolography(state, ctx.playerId, ctx.phasePlayerId, ctx.triggerSourceInstanceId),
+      detail: ctx.effectId,
+    };
+  }
+
+  if (ctx.sourceCardId === "RS-295" && ctx.effectId === "chikara_ken") {
+    // RS-295【磁力拳】（rules/rs4NcEffects.ts）。
+    return {
+      state: openMagnetFist(state, ctx.playerId, ctx.phasePlayerId, ctx.triggerSourceInstanceId),
+      detail: ctx.effectId,
+    };
   }
 
   const structured = buildCatchallStructuredPrimitives(body, pattern);

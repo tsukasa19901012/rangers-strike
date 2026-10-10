@@ -61,7 +61,7 @@ export function p0EffectToPrimitives(
         {
           type: "deal_damage",
           amount: params?.amount ?? 1,
-          target: "controller",
+          target: "opponent",
         },
       ];
     case "alias_fusion_material":

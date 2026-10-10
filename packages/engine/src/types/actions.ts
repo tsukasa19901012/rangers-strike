@@ -31,6 +31,8 @@ export type RushAction = {
   zordMaterialInstanceIds?: string[];
   /** RS-074/075/118-122: 破棄の代わりにSユニットをコマンドゾーンへ送る。 */
   zordMaterialDestination?: ZordMaterialDestination;
+  /** 「Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」: 素材ごとの行き先（zordMaterialInstanceIds と同じ順）。 */
+  zordMaterialDestinations?: ZordMaterialDestination[];
   /** RS-076 / RS-105 母艦: Sユニット追加コストの代わりにコマンドをホールド。 */
   zordMothershipHoldInstanceIds?: string[];
   /** hold_extra_command: 追加でホールドするコマンド。 */
