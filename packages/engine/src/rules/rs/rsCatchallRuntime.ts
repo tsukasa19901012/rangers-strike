@@ -1,4 +1,5 @@
 import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
+import { openHolography } from "../rs4NcEffects";
 import { registerPinkBarrier } from "../powerFlipEffects";
 import { buildCatchallStructuredPrimitives } from "../../dsl/catchallTextPrimitives";
 import type { DslCardContext } from "../../dsl/cardInterpreter";
@@ -414,6 +415,14 @@ export function tryRsCatchallRuntime(
   // RS-284【スワンウィング】は汎用の構造化プリミティブ（場のユニット選択）では表せないので先に処理する。
   if (pattern === "deploy_rush_area" && SWAN_WING_BODY.test(body)) {
     return handleDeployRush(state, ctx, body, interpret);
+  }
+
+  if (pattern === "deck_search_operation_to_power" && ctx.sourceCardId === "RS-201") {
+    // RS-201【超電子ホログラフィー】: オペレーションのカードだけを選ぶ（rules/rs4NcEffects.ts）。
+    return {
+      state: openHolography(state, ctx.playerId, ctx.phasePlayerId, ctx.triggerSourceInstanceId),
+      detail: ctx.effectId,
+    };
   }
 
   const structured = buildCatchallStructuredPrimitives(body, pattern);

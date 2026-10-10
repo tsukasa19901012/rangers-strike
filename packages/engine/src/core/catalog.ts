@@ -21,6 +21,7 @@ import {
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
+import { unitFeatures } from "../rules/addedFeatures";
 import { legend3EnemySComboDelta } from "../rules/legend3/fieldEffects";
 import { validateZordAdditionalPayment } from "../rules/mothership";
 import {
@@ -271,7 +272,7 @@ export function passiveBpBonus(
   if (
     curries > 0 &&
     isSmallUnit(state.definitions, instance.cardId) &&
-    (getDefinition(state.definitions, instance.cardId)?.features ?? []).includes("イエロー") &&
+    unitFeatures(state, playerId, instance).includes("イエロー") &&
     (player.rush.some((c) => c.instanceId === instance.instanceId) ||
       player.battle.some((c) => c.instanceId === instance.instanceId))
   ) {

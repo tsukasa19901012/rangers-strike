@@ -276,6 +276,13 @@ function noteOtherNcBattleEntryBlock(
   return false;
 }
 
+/**
+ * 「※これはラッシュしたターンにバトルエリアに出られない」（RS-106 等の unnamed rule、RS-208・RS-295 の DSL キーワード）。
+ */
+function noEntryOnRushTurn(cardId: string): boolean {
+  return noBattleEntryTurnRushed(cardId) || cardHasGrantKeyword(cardId, "no_battle_rush_turn");
+}
+
 /** 無条件の「※これはバトルエリアに出られない。」（定義テキストからも判定する）。 */
 export function unconditionalNoEntryText(def: CardDefinition): boolean {
   return /(^|\s)※これはバトルエリアに出られない。/.test(def.text ?? "");
@@ -329,7 +336,7 @@ export function canMoveUnitToBattle(
     }
   }
 
-  if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (noEntryOnRushTurn(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
 
@@ -438,7 +445,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
     }
   }
 
-  if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (noEntryOnRushTurn(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
 
@@ -726,7 +733,7 @@ export function explainCannotEnterBattle(
     return `「${unitName}」をバトルエリアに出すには、パワーからダメージ以外を選んで捨札してください。`;
   }
 
-  if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (noEntryOnRushTurn(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return `「${unitName}」はラッシュしたターンはバトルエリアに出せません。`;
   }
 

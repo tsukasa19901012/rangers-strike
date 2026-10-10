@@ -1,4 +1,5 @@
 import { checkWinner } from "../core/createGame";
+import { confirmRs4NcChoice, isRs4NcChoice, selectRs4NcChoice } from "./rs4NcEffects";
 import { pickSuperElectronEarDamage, SUPER_ELECTRON_EAR_PICK_EFFECT_ID } from "./powerFlipEffects";
 import { resolveSubmergePick, SUBMERGE_EFFECT_ID } from "./legend3/rushEffects";
 import { finishHououOwnStep, HOUOU_TORNADO_EFFECT_ID, isHououChoice, resolveHououPick } from "./hououTornado";
@@ -1883,6 +1884,11 @@ export function applyConfirmEffectChoice(
   if (pending.effectId === ASSAULT_VECTOR_EFFECT_ID) {
     return finishAssaultVectorDestroy(state, pending);
   }
+  if (isRs4NcChoice(pending)) {
+    const next = confirmRs4NcChoice(state, pending);
+    if (!next) return { error: "invalid_choice_kind" };
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
+  }
 
   if (pending.effectId === FIRE_DANCE_EFFECT_ID) {
     // 「数まで」— 選んだところで確定する。
@@ -2676,6 +2682,11 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
     const next = result.state.pendingEffectChoice ? result.state : promoteDeferredBattleEntry(result.state);
     return { state: next, log: result.log };
   }
+  if (isRs4NcChoice(pending) && (pending.selectedInstanceIds?.length ?? 0) > 0) {
+    // RS-205: 選び終えた（好きな数）— 選んだコマンドをホールドして撃破へ。
+    const next = confirmRs4NcChoice(state, pending);
+    if (next) return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
+  }
   if (pending.effectId === ASSAULT_VECTOR_EFFECT_ID && (pending.selectedInstanceIds?.length ?? 0) > 0) {
     // RS-181: 選び終えた — 選んだユニットを撃破する。
     return finishAssaultVectorDestroy(state, pending);
@@ -2828,6 +2839,12 @@ export function applyEffectChoiceSelect(
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
     return applyConfirmEffectChoice(state, playerId);
+  }
+  if (isRs4NcChoice(pending)) {
+    // RS-201/205/206/207 の NC 効果の選択（rules/rs4NcEffects.ts）。
+    const next = selectRs4NcChoice(state, pending, instanceId);
+    if ("error" in next) return next;
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
   }
   if (pending.effectId === SUPER_ELECTRON_EAR_PICK_EFFECT_ID) {
     // RS-200【超電子イヤー】: 元のダメージの数になるまで、パワーゾーンのカードを選びダメージにする。

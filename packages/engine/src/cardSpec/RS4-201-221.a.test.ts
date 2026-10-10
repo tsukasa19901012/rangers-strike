@@ -68,8 +68,7 @@ describe("RS-201 イエローフォー", () => {
   }
 
   // 「自軍山札を見る。そして、オペレーションのカードがあれば1枚選び、自軍パワーゾーンに置く」
-  // 既知の不具合: CARD-RS-201 NC が成立しても山札のオペレーションをパワーゾーンに置く処理が行われない
-  it.fails("RS-201: NC（3番目）で山札のオペレーションから1枚選び自軍パワーゾーンに置く（ユニットのカードは選べない）（出典: atwiki/page-409）", () => {
+  it("RS-201: NC（3番目）で山札のオペレーションから1枚選び自軍パワーゾーンに置く（ユニットのカードは選べない）（出典: atwiki/page-409）", () => {
     let s = enter(yellowFourAt(3), "RS-201:y");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["TST-OP-ET:op2", "TST-OP:op1"]);
@@ -81,8 +80,7 @@ describe("RS-201 イエローフォー", () => {
   });
 
   // 「オペレーションのカードがあれば」— 無ければ何も置かない（NC 成立時に置けることも確認）
-  // 既知の不具合: CARD-RS-201 NC が成立しても山札のオペレーションをパワーゾーンに置く処理が行われない
-  it.fails("RS-201: 山札にオペレーションが無ければ何も置かない／あれば置く（出典: atwiki/page-409「オペレーションのカードがあれば」）", () => {
+  it("RS-201: 山札にオペレーションが無ければ何も置かない／あれば置く（出典: atwiki/page-409「オペレーションのカードがあれば」）", () => {
     const none = drain(enter(yellowFourAt(3, [inst("TST-UNIT-0", "u1"), inst("TST-UNIT-2", "u2")]), "RS-201:y"), "player1");
     expect(none.players.player1.power).toHaveLength(0);
     expect(none.players.player1.deck).toHaveLength(2);
@@ -90,8 +88,7 @@ describe("RS-201 イエローフォー", () => {
     expect(some.players.player1.power).toHaveLength(1);
   });
 
-  // 既知の不具合: CARD-RS-201 NC が成立しても山札のオペレーションをパワーゾーンに置く処理が行われない
-  it.fails("RS-201: NC 不成立（1番目）では山札を見ない／3番目なら置く（出典: atwiki/page-409、R-CN-02）", () => {
+  it("RS-201: NC 不成立（1番目）では山札を見ない／3番目なら置く（出典: atwiki/page-409、R-CN-02）", () => {
     const first = drain(enter(yellowFourAt(1), "RS-201:y"), "player1");
     expect(first.players.player1.power).toHaveLength(0);
     expect(first.players.player1.deck).toHaveLength(3);
@@ -245,8 +242,7 @@ describe("RS-203 大帝ラー・デウス", () => {
   }
 
   // 「このユニットの追加条件で捨札にしたユニットのカードの特徴を、すべてのユニットの特徴に追加する」
-  // 既知の不具合: CARD-RS-203 デウス遺伝子で捨札にしたユニットの特徴がユニットに追加されない
-  it.fails("RS-203: 追加条件で捨札にしたイエローフォーの特徴「イエロー」が自軍・敵軍すべてのユニットに追加される（カレーでBP＋2000）（出典: atwiki/page-383）", () => {
+  it("RS-203: 追加条件で捨札にしたイエローフォーの特徴「イエロー」が自軍・敵軍すべてのユニットに追加される（カレーでBP＋2000）（出典: atwiki/page-383）", () => {
     const s = rushDeusWithYellow();
     expect(bpOf(s, "player1", "TST-UNIT-0:own")).toBe(3000);
     expect(bpOf(s, "player2", "TST-UNIT-0:e")).toBe(3000);
@@ -254,8 +250,7 @@ describe("RS-203 大帝ラー・デウス", () => {
   });
 
   // faq-card-4 RS-203 Q1「「RS-203 大帝ラー・デウス」をラッシュしたそのターンが終わるまで有効です」
-  // 既知の不具合: CARD-RS-203 デウス遺伝子で捨札にしたユニットの特徴がユニットに追加されない
-  it.fails("RS-203: 公式Q&A — 追加された特徴はラッシュしたターンの終わりまで有効（次の相手ターンには無い）（出典: grnrngr/faq-card-4 RS-203 Q1）", () => {
+  it("RS-203: 公式Q&A — 追加された特徴はラッシュしたターンの終わりまで有効（次の相手ターンには無い）（出典: grnrngr/faq-card-4 RS-203 Q1）", () => {
     let s = rushDeusWithYellow();
     expect(bpOf(s, "player2", "TST-UNIT-0:e")).toBe(3000);
     s = endTurn(s);
@@ -264,8 +259,7 @@ describe("RS-203 大帝ラー・デウス", () => {
   });
 
   // faq-card-4 RS-203 Q4「後にラッシュしたユニットにも特徴は追加されます」
-  // 既知の不具合: CARD-RS-203 デウス遺伝子で捨札にしたユニットの特徴がユニットに追加されない
-  it.fails("RS-203: 公式Q&A — 同じターンにあとからラッシュしたユニットにも特徴が追加される（出典: grnrngr/faq-card-4 RS-203 Q4）", () => {
+  it("RS-203: 公式Q&A — 同じターンにあとからラッシュしたユニットにも特徴が追加される（出典: grnrngr/faq-card-4 RS-203 Q4）", () => {
     let s = rushDeusWithYellow();
     const r = legal(s).find(
       (a) => (a.type === "rush" && a.instanceId === "SPEC-LATE-DA:late") || (a.type === "initiate_command_payment" && a.sourceInstanceId === "SPEC-LATE-DA:late"),
@@ -340,8 +334,7 @@ describe("RS-204 レッドファルコン", () => {
   }
 
   // 「敵軍ユニットが1体以上あるとき、このユニットのBPがすべての敵軍ユニットとくらべて一番低ければ、ナンバーに関係なく発動する」
-  // 既知の不具合: CARD-RS-204 BP が一番低くてもナンバーに関係なく「SP1」にならない（NC の位置でしか発動しない）
-  it.fails("RS-204: 1番目でも、BP が敵軍ユニットより低ければ「SP1」でストライクできる（出典: atwiki/page-401）", () => {
+  it("RS-204: 1番目でも、BP が敵軍ユニットより低ければ「SP1」でストライクできる（出典: atwiki/page-401）", () => {
     expect(canStrike(falconFirst([inst("TST-UNIT-2", "m"), inst("TST-UNIT-7", "l")]), "RS-204:f")).toBe(true);
     let s = st({
       player1: { rush: [inst("RS-204", "f")] },
@@ -351,8 +344,7 @@ describe("RS-204 レッドファルコン", () => {
     expect(s.players.player2.damage).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-204 BP が一番低くてもナンバーに関係なく「SP1」にならない（NC の位置でしか発動しない）
-  it.fails("RS-204: BP がより低い敵軍ユニットがいる・敵軍ユニットが0体なら1番目では発動しない／一番低ければ発動する（出典: atwiki/page-401）", () => {
+  it("RS-204: BP がより低い敵軍ユニットがいる・敵軍ユニットが0体なら1番目では発動しない／一番低ければ発動する（出典: atwiki/page-401）", () => {
     expect(canStrike(falconFirst([inst("TST-UNIT-0", "low"), inst("TST-UNIT-2", "m")]), "RS-204:f")).toBe(false);
     expect(canStrike(falconFirst([]), "RS-204:f")).toBe(false);
     expect(canStrike(falconFirst([inst("TST-UNIT-2", "m")]), "RS-204:f")).toBe(true);
@@ -370,16 +362,14 @@ describe("RS-204 レッドファルコン", () => {
   });
 
   // faq-card-4 RS-204 Q1「はい、その通りです。」（気力・恐竜やのカレー等で補正された値と比べる）
-  // 既知の不具合: CARD-RS-204 BP が一番低くてもナンバーに関係なく「SP1」にならない（NC の位置でしか発動しない）
-  it.fails("RS-204: 公式Q&A — 補正後の BP で比べる（BP1000 のイエローフォーがカレーで3000なら一番低い）（出典: grnrngr/faq-card-4 RS-204 Q1）", () => {
+  it("RS-204: 公式Q&A — 補正後の BP で比べる（BP1000 のイエローフォーがカレーで3000なら一番低い）（出典: grnrngr/faq-card-4 RS-204 Q1）", () => {
     const s = falconFirst([inst("RS-201", "y")], [], [inst("RS-179", "cur")]);
     expect(bpOf(s, "player2", "RS-201:y")).toBe(3000);
     expect(canStrike(s, "RS-204:f")).toBe(true);
   });
 
   // faq-card-4 RS-204 Q2「BPが同着最下位でも「一番低い」と考えます」
-  // 既知の不具合: CARD-RS-204 BP が一番低くてもナンバーに関係なく「SP1」にならない（NC の位置でしか発動しない）
-  it.fails("RS-204: 公式Q&A — 同じ BP2000 の敵軍ユニットがあっても発動する（出典: grnrngr/faq-card-4 RS-204 Q2）", () => {
+  it("RS-204: 公式Q&A — 同じ BP2000 の敵軍ユニットがあっても発動する（出典: grnrngr/faq-card-4 RS-204 Q2）", () => {
     const BP2000 = sUnit("SPEC-BP2000", { bp: 2000 });
     expect(canStrike(falconFirst([inst("SPEC-BP2000", "e")], [BP2000]), "RS-204:f")).toBe(true);
   });
@@ -428,8 +418,7 @@ describe("RS-205 リュウレンジャー", () => {
 
   // 「「MA」の自軍コマンドを、「DA」の敵軍Sユニットの数まで好きな数ホールドしてもよい。そうしたとき、ホールドした数だけ「DA」の敵軍Sユニットを撃破する」
   // faq-card-4 RS-205 Q2「「RS-205 リュウレンジャー」の持ち主が対象を選んで撃破してください」
-  // 既知の不具合: CARD-RS-205 【天火星・稲妻炎上破】のコマンドホールドと DA の敵軍 S ユニット撃破が行われない（SP1 のみ）
-  it.fails("RS-205: MA コマンドを2つホールドし、持ち主が DA の敵軍 S ユニット（バトル・ラッシュエリア）2体を選んで撃破する（出典: atwiki/page-116・grnrngr/faq-card-4 RS-205 Q2）", () => {
+  it("RS-205: MA コマンドを2つホールドし、持ち主が DA の敵軍 S ユニット（バトル・ラッシュエリア）2体を選んで撃破する（出典: atwiki/page-116・grnrngr/faq-card-4 RS-205 Q2）", () => {
     let s = ryuAt(3);
     s = confirmIfAsked(s, "player1");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
@@ -442,8 +431,7 @@ describe("RS-205 リュウレンジャー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:wb")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-205 【天火星・稲妻炎上破】のコマンドホールドと DA の敵軍 S ユニット撃破が行われない（SP1 のみ）
-  it.fails("RS-205: 撃破の対象は「DA」の敵軍 S ユニットだけ（DA の L・DA 以外の S は選べない）（出典: atwiki/page-116）", () => {
+  it("RS-205: 撃破の対象は「DA」の敵軍 S ユニットだけ（DA の L・DA 以外の S は選べない）（出典: atwiki/page-116）", () => {
     let s = ryuAt(3);
     s = confirmIfAsked(s, "player1");
     // ホールドするコマンドを選ぶ段階があれば済ませ、撃破対象の候補を見る
@@ -454,8 +442,7 @@ describe("RS-205 リュウレンジャー", () => {
   });
 
   // 「ホールドしてもよい」— ホールドしないことを選べる
-  // 既知の不具合: CARD-RS-205 【天火星・稲妻炎上破】のコマンドホールドと DA の敵軍 S ユニット撃破が行われない（SP1 のみ）
-  it.fails("RS-205: ホールドしないことを選べ、そのときは何も撃破しない（出典: atwiki/page-116「ホールドしてもよい」）", () => {
+  it("RS-205: ホールドしないことを選べ、そのときは何も撃破しない（出典: atwiki/page-116「ホールドしてもよい」）", () => {
     let s = ryuAt(3);
     expect(canDecline(s, "player1")).toBe(true);
     s = settle(decline(s, "player1"));
@@ -465,8 +452,7 @@ describe("RS-205 リュウレンジャー", () => {
   });
 
   // 「「MA」の自軍コマンドを」— MA 以外のコマンドはホールドに使えない（リリース状態の MA が1つなら1体まで）
-  // 既知の不具合: CARD-RS-205 【天火星・稲妻炎上破】のコマンドホールドと DA の敵軍 S ユニット撃破が行われない（SP1 のみ）
-  it.fails("RS-205: リリース状態の MA コマンドが1つ（他は ET）なら撃破できるのは1体まで（出典: atwiki/page-116「「MA」の自軍コマンド」）", () => {
+  it("RS-205: リリース状態の MA コマンドが1つ（他は ET）なら撃破できるのは1体まで（出典: atwiki/page-116「「MA」の自軍コマンド」）", () => {
     let s = ryuAt(3, [...releasedN(1, "TST-OP-MA", "ma"), ...releasedN(2, "TST-OP-ET", "et")]);
     s = confirmIfAsked(s, "player1");
     s = drain(s, "player1");
@@ -476,8 +462,7 @@ describe("RS-205 リュウレンジャー", () => {
     expect(destroyed).toHaveLength(1);
   });
 
-  // 既知の不具合: CARD-RS-205 【天火星・稲妻炎上破】のコマンドホールドと DA の敵軍 S ユニット撃破が行われない（SP1 のみ）
-  it.fails("RS-205: NC 不成立（1番目）ではホールド・撃破の効果は発動しない／3番目なら発動する（出典: atwiki/page-116、R-CN-02）", () => {
+  it("RS-205: NC 不成立（1番目）ではホールド・撃破の効果は発動しない／3番目なら発動する（出典: atwiki/page-116、R-CN-02）", () => {
     const first = ryuAt(1);
     expect(first.pendingEffectChoice).toBeUndefined();
     expect(canStrike(first, "RS-205:r")).toBe(false);
@@ -486,8 +471,7 @@ describe("RS-205 リュウレンジャー", () => {
   });
 
   // faq-card-4 RS-205 Q1「先に撃破する対象をすべて選んでから、選んだユニットを１体ずつ撃破するようにしてください」
-  // 既知の不具合: CARD-RS-205 【天火星・稲妻炎上破】のコマンドホールドと DA の敵軍 S ユニット撃破が行われない（SP1 のみ）
-  it.fails("RS-205: 公式Q&A — 撃破する対象をすべて選び終えるまで1体も撃破されない（出典: grnrngr/faq-card-4 RS-205 Q1）", () => {
+  it("RS-205: 公式Q&A — 撃破する対象をすべて選び終えるまで1体も撃破されない（出典: grnrngr/faq-card-4 RS-205 Q1）", () => {
     let s = ryuAt(3);
     s = confirmIfAsked(s, "player1");
     for (let i = 0; i < 4 && s.pendingEffectChoice && s.pendingEffectChoice.validInstanceIds.some((id) => id.startsWith("TST-OP-MA")); i++) {
@@ -501,8 +485,7 @@ describe("RS-205 リュウレンジャー", () => {
   });
 
   // faq-card-4 RS-205 Q3「選ぶことのできない「RK-057 仮面ライダーザビーＲＦ」を撃破することはできません」
-  // 既知の不具合: CARD-RS-205 【天火星・稲妻炎上破】のコマンドホールドと DA の敵軍 S ユニット撃破が行われない（SP1 のみ）
-  it.fails("RS-205: 公式Q&A — 闇のヤイバで DA になった「相手に選ばれない」ザビーRF は対象にできず、DA の男性ユニットは選べる（出典: grnrngr/faq-card-4 RS-205 Q3）", () => {
+  it("RS-205: 公式Q&A — 闇のヤイバで DA になった「相手に選ばれない」ザビーRF は対象にできず、DA の男性ユニットは選べる（出典: grnrngr/faq-card-4 RS-205 Q3）", () => {
     let s = st({
       player1: { battle: fillers(2), rush: [inst("RS-205", "r"), inst("RS-339", "yaiba")], command: releasedN(2, "TST-OP-MA", "ma") },
       player2: { battle: [inst("RK-057", "zabee"), inst("RS-211", "maleMA")], power: powerCards(3, "e"), deck: deckCards(3, "e") },
@@ -553,8 +536,7 @@ describe("RS-206 シシレンジャー", () => {
   });
 
   // 「ユニットを1体選んでもよい。そうしたとき、このターン、このユニットは選んだユニットの特徴が追加される」
-  // 既知の不具合: CARD-RS-206 【天幻星・霧隠れ】でユニットを選べず、特徴が追加されない（SP1 のみ）
-  it.fails("RS-206: 敵軍のイエローフォーを選ぶと「イエロー」が追加され、自軍カレーで BP＋2000 になる（出典: atwiki/page-117）", () => {
+  it("RS-206: 敵軍のイエローフォーを選ぶと「イエロー」が追加され、自軍カレーで BP＋2000 になる（出典: atwiki/page-117）", () => {
     let s = shishiAt(3);
     s = confirmIfAsked(s, "player1");
     expect(choiceIds(s)).toContain("RS-201:y");
@@ -563,8 +545,7 @@ describe("RS-206 シシレンジャー", () => {
   });
 
   // 「選んでもよい」— 選ばないことを選べる
-  // 既知の不具合: CARD-RS-206 【天幻星・霧隠れ】でユニットを選べず、特徴が追加されない（SP1 のみ）
-  it.fails("RS-206: ユニットを選ばないこともでき、そのときは特徴が増えない（出典: atwiki/page-117「選んでもよい」）", () => {
+  it("RS-206: ユニットを選ばないこともでき、そのときは特徴が増えない（出典: atwiki/page-117「選んでもよい」）", () => {
     let s = shishiAt(3);
     expect(canDecline(s, "player1")).toBe(true);
     s = decline(s, "player1");
@@ -573,18 +554,17 @@ describe("RS-206 シシレンジャー", () => {
   });
 
   // 「このターン」— 次のターンには追加された特徴は無い
-  // 既知の不具合: CARD-RS-206 【天幻星・霧隠れ】でユニットを選べず、特徴が追加されない（SP1 のみ）
-  it.fails("RS-206: 追加された特徴はそのターンだけ（相手ターンには BP3000 に戻る）（出典: atwiki/page-117「このターン」）", () => {
+  it("RS-206: 追加された特徴はそのターンだけ（相手ターンには BP3000 に戻る）（出典: atwiki/page-117「このターン」）", () => {
     let s = shishiAt(3);
     s = confirmIfAsked(s, "player1");
     s = pick(s, "player1", "RS-201:y");
     expect(bpOf(s, "player1", "RS-206:r")).toBe(5000);
-    s = endTurn(s);
+    // バトルエリアに出た直後の行動ウィンドウ（アタック／ストライク）を閉じてからターンを終える。
+    s = endTurn(passEntry(s));
     expect(bpOf(s, "player1", "RS-206:r")).toBe(3000);
   });
 
-  // 既知の不具合: CARD-RS-206 【天幻星・霧隠れ】でユニットを選べず、特徴が追加されない（SP1 のみ）
-  it.fails("RS-206: NC 不成立（1番目）では選べない／3番目なら選べる（出典: atwiki/page-117、R-CN-02）", () => {
+  it("RS-206: NC 不成立（1番目）では選べない／3番目なら選べる（出典: atwiki/page-117、R-CN-02）", () => {
     const first = shishiAt(1);
     expect(first.pendingEffectChoice).toBeUndefined();
     const third = confirmIfAsked(shishiAt(3), "player1");
@@ -633,8 +613,7 @@ describe("RS-207 テンマレンジャー", () => {
   });
 
   // 「敵軍Sユニットの数が自軍Sユニットの数より4体以上多いとき…自軍Sユニットと同じ数になるまで、相手は自分自身のSユニットを選び手札に戻す」
-  // 既知の不具合: CARD-RS-207 【天重星・天馬回転蹴り】の発動（相手が S ユニットを手札に戻す処理）が行われない（SP1 のみ）
-  it.fails("RS-207: 敵軍 S が自軍 S より4体以上多い（7対3）とき発動でき、相手が自分の S を選んで3体になるまで手札に戻す（M は戻さない）（出典: atwiki/page-118）", () => {
+  it("RS-207: 敵軍 S が自軍 S より4体以上多い（7対3）とき発動でき、相手が自分の S を選んで3体になるまで手札に戻す（M は戻さない）（出典: atwiki/page-118）", () => {
     let s = tenmaAt(3, 7);
     expect(countS(s, "player1")).toBe(3);
     expect(countS(s, "player2")).toBe(7);
@@ -647,8 +626,7 @@ describe("RS-207 テンマレンジャー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-2:em")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-207 【天重星・天馬回転蹴り】の発動（相手が S ユニットを手札に戻す処理）が行われない（SP1 のみ）
-  it.fails("RS-207: 差が3体（6対3）では発動できない／4体なら発動できる（出典: atwiki/page-118「4体以上多いとき」）", () => {
+  it("RS-207: 差が3体（6対3）では発動できない／4体なら発動できる（出典: atwiki/page-118「4体以上多いとき」）", () => {
     const three = drain(confirmIfAsked(tenmaAt(3, 6), "player1"), "player2");
     expect(countS(three, "player2")).toBe(6);
     expect(three.players.player2.hand).toHaveLength(0);
@@ -657,16 +635,14 @@ describe("RS-207 テンマレンジャー", () => {
   });
 
   // 「次の効果を発動できる」— 発動しないことを選べる
-  // 既知の不具合: CARD-RS-207 【天重星・天馬回転蹴り】の発動（相手が S ユニットを手札に戻す処理）が行われない（SP1 のみ）
-  it.fails("RS-207: 条件を満たしていても発動しないことを選べる（出典: atwiki/page-118「発動できる」）", () => {
+  it("RS-207: 条件を満たしていても発動しないことを選べる（出典: atwiki/page-118「発動できる」）", () => {
     let s = tenmaAt(3, 7);
     expect(canDecline(s, "player1")).toBe(true);
     s = decline(s, "player1");
     expect(countS(s, "player2")).toBe(7);
   });
 
-  // 既知の不具合: CARD-RS-207 【天重星・天馬回転蹴り】の発動（相手が S ユニットを手札に戻す処理）が行われない（SP1 のみ）
-  it.fails("RS-207: NC 不成立（1番目）では発動しない／3番目なら発動する（出典: atwiki/page-118、R-CN-02）", () => {
+  it("RS-207: NC 不成立（1番目）では発動しない／3番目なら発動する（出典: atwiki/page-118、R-CN-02）", () => {
     const first = drain(confirmIfAsked(tenmaAt(1, 7), "player1"), "player2");
     expect(countS(first, "player2")).toBe(7);
     const third = drain(confirmIfAsked(tenmaAt(3, 7), "player1"), "player2");
@@ -674,8 +650,7 @@ describe("RS-207 テンマレンジャー", () => {
   });
 
   // faq-card-4 RS-207 Q1「いいえ、できません。必ず同じ数になるまで選び、持ち主の手札に戻してください」
-  // 既知の不具合: CARD-RS-207 【天重星・天馬回転蹴り】の発動（相手が S ユニットを手札に戻す処理）が行われない（SP1 のみ）
-  it.fails("RS-207: 公式Q&A — 相手は途中で止められない（選択中に断る手段が無い）（出典: grnrngr/faq-card-4 RS-207 Q1）", () => {
+  it("RS-207: 公式Q&A — 相手は途中で止められない（選択中に断る手段が無い）（出典: grnrngr/faq-card-4 RS-207 Q1）", () => {
     let s = confirmIfAsked(tenmaAt(3, 7), "player1");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(canDecline(s, "player2")).toBe(false);

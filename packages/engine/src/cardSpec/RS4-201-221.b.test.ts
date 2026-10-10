@@ -67,8 +67,7 @@ describe("RS-208 キリンレンジャー", () => {
   });
 
   // 「※これはラッシュしたターンにバトルエリアに出られない」
-  // 既知の不具合: CARD-RS-208 ラッシュしたターンでもバトルエリアに出られてしまう
-  it.fails("RS-208: ※ ラッシュしたターンのバトルフェイズにはバトルエリアに出られない（出典: atwiki/page-119）", () => {
+  it("RS-208: ※ ラッシュしたターンのバトルフェイズにはバトルエリアに出られない（出典: atwiki/page-119）", () => {
     const s = st({ phase: "rush", player1: { hand: [inst("RS-208", "k")], power: powerCards(3), command: releasedN(1, "TST-OP-MA") } });
     const r = rushFromHand(s, "player1", "RS-208:k");
     expect(r.ok).toBe(true);
@@ -101,8 +100,7 @@ describe("RS-208 キリンレンジャー", () => {
 
   // 「BP2000以下の自軍ユニットをすべて手札に戻してもよい。そうしたとき、もう一度自軍ラッシュフェイズからやり直す」
   // faq-card-4 RS-208 Q7「手札に戻るＢＰ２０００以下の自軍ユニット以外は、そのまま残ります」
-  // 既知の不具合: CARD-RS-208 【天時星・時間返し】が発動しない（手札に戻す・ラッシュフェイズからやり直す処理が無い）
-  it.fails("RS-208: NC（4番目）で BP2000 以下の自軍ユニットをすべて手札に戻し、自軍ラッシュフェイズからやり直す（BP3000 のユニットは残る）（出典: atwiki/page-119・grnrngr/faq-card-4 RS-208 Q7）", () => {
+  it("RS-208: NC（4番目）で BP2000 以下の自軍ユニットをすべて手札に戻し、自軍ラッシュフェイズからやり直す（BP3000 のユニットは残る）（出典: atwiki/page-119・grnrngr/faq-card-4 RS-208 Q7）", () => {
     let s = kirinAt4();
     s = confirmIfAsked(s, "player1");
     expect(zoneOf(s, "player1", "TST-UNIT-0:fill0")).toBe("hand");
@@ -116,8 +114,7 @@ describe("RS-208 キリンレンジャー", () => {
   });
 
   // 「手札に戻してもよい」
-  // 既知の不具合: CARD-RS-208 【天時星・時間返し】が発動しない（手札に戻す・ラッシュフェイズからやり直す処理が無い）
-  it.fails("RS-208: 手札に戻さないことを選べ、そのときはやり直さない（出典: atwiki/page-119「戻してもよい」）", () => {
+  it("RS-208: 手札に戻さないことを選べ、そのときはやり直さない（出典: atwiki/page-119「戻してもよい」）", () => {
     let s = kirinAt4();
     expect(canDecline(s, "player1")).toBe(true);
     s = decline(s, "player1");
@@ -125,8 +122,7 @@ describe("RS-208 キリンレンジャー", () => {
     expect(s.phase).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-208 【天時星・時間返し】が発動しない（手札に戻す・ラッシュフェイズからやり直す処理が無い）
-  it.fails("RS-208: NC 不成立（1番目）では発動しない／4番目なら発動する（出典: atwiki/page-119、R-CN-02）", () => {
+  it("RS-208: NC 不成立（1番目）では発動しない／4番目なら発動する（出典: atwiki/page-119、R-CN-02）", () => {
     const first = confirmIfAsked(enter(st({ player1: { rush: [inst("RS-208", "k"), inst("TST-UNIT-0", "rLow")] } }), "RS-208:k"), "player1");
     expect(zoneOf(first, "player1", "TST-UNIT-0:rLow")).toBe("rush");
     expect(first.phase).toBe("battle");
@@ -135,8 +131,7 @@ describe("RS-208 キリンレンジャー", () => {
   });
 
   // faq-card-4 RS-208 Q1「その「RS-208 キリンレンジャー」はアタックもストライクも行うことはできません」
-  // 既知の不具合: CARD-RS-208 【天時星・時間返し】が発動しない（手札に戻す・ラッシュフェイズからやり直す処理が無い）
-  it.fails("RS-208: 公式Q&A — 時間返しを発動したキリンレンジャーはアタックもストライクもできない（出典: grnrngr/faq-card-4 RS-208 Q1）", () => {
+  it("RS-208: 公式Q&A — 時間返しを発動したキリンレンジャーはアタックもストライクもできない（出典: grnrngr/faq-card-4 RS-208 Q1）", () => {
     let s = confirmIfAsked(kirinAt4({ enemyBattle: [inst("TST-UNIT-0", "e")] }), "player1");
     expect(s.phase).toBe("rush");
     expect(canStrike(s, "RS-208:k")).toBe(false);
@@ -147,7 +142,7 @@ describe("RS-208 キリンレンジャー", () => {
   });
 
   // faq-card-4 RS-208 Q5（faq-card-3 にも転載）「はい、手札に戻ります。」（カレー＋敵軍ゴーマ16世で BP1000 のキリン自身）
-  // 既知の不具合: CARD-RS-208 【天時星・時間返し】が発動しない（手札に戻す・ラッシュフェイズからやり直す処理が無い）
+  // 既知の不具合: CARD-RS-210 【大地動転の玉】（BP の「＋」を「－」にする）が恐竜やのカレーに効かず、キリンレンジャーが BP1000 にならない（時間返し自体は発動する）
   it.fails("RS-208: 公式Q&A — 自軍カレーと敵軍ゴーマ16世で BP1000 になったキリンレンジャー自身も手札に戻る（出典: grnrngr/faq-card-4 RS-208 Q5・faq-card-3）", () => {
     let s = kirinAt4({ operation: [inst("RS-179", "cur")], enemyBattle: [inst("RS-210", "goma")] });
     expect(bpOf(s, "player1", "RS-208:k")).toBe(1000);
@@ -156,8 +151,7 @@ describe("RS-208 キリンレンジャー", () => {
   });
 
   // faq-card-4 RS-208 Q6「ホールドされているコマンドはそのままになります」
-  // 既知の不具合: CARD-RS-208 【天時星・時間返し】が発動しない（手札に戻す・ラッシュフェイズからやり直す処理が無い）
-  it.fails("RS-208: 公式Q&A — やり直したラッシュフェイズでもホールドされたコマンドはそのまま（出典: grnrngr/faq-card-4 RS-208 Q6）", () => {
+  it("RS-208: 公式Q&A — やり直したラッシュフェイズでもホールドされたコマンドはそのまま（出典: grnrngr/faq-card-4 RS-208 Q6）", () => {
     let s = kirinAt4({ command: [...heldN(2, "TST-OP-MA"), ...releasedN(1, "TST-OP-MA")] });
     s = confirmIfAsked(s, "player1");
     expect(s.phase).toBe("rush");
@@ -165,8 +159,7 @@ describe("RS-208 キリンレンジャー", () => {
   });
 
   // faq-card-4 RS-208 Q8「ラッシュしたユニットやバトルやストライクの結果はそのままに、ラッシュフェイズから再開できる」
-  // 既知の不具合: CARD-RS-208 【天時星・時間返し】が発動しない（手札に戻す・ラッシュフェイズからやり直す処理が無い）
-  it.fails("RS-208: 公式Q&A — それまでのストライクの結果（敵軍ダメージ）はそのまま残る（出典: grnrngr/faq-card-4 RS-208 Q8）", () => {
+  it("RS-208: 公式Q&A — それまでのストライクの結果（敵軍ダメージ）はそのまま残る（出典: grnrngr/faq-card-4 RS-208 Q8）", () => {
     let s = st({
       player1: { battle: [inst("TST-UNIT-0", "a")], rush: [inst("TST-UNIT-2", "m"), inst("TST-UNIT-0", "b"), inst("RS-208", "k")], deck: deckCards(5) },
       player2: { power: powerCards(3, "e"), deck: deckCards(5, "e") },

@@ -1,4 +1,5 @@
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
+import { applyDeusGeneOnRush } from "../rules/rs4NcEffects";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, CardInstance } from "../types/game";
 import { hasTurnRuleModifier, TURN_RULE_IDS } from "./scopedModifiers";
@@ -1666,6 +1667,13 @@ function applyActionCore(
         ...nextStateAfterRush,
         ...updatePlayer(nextStateAfterRush, playerId, nextPlayer),
       };
+      if (found.card.cardId === "RS-203") {
+        // RS-203【デウス遺伝子】: 追加条件で捨札にしたユニットのカードの特徴を、このターンすべてのユニットに追加する。
+        const discardedMaterials = zordMaterialIds
+          .map((id) => nextPlayer.discard.find((c) => c.instanceId === id)?.cardId)
+          .filter((id): id is string => !!id);
+        nextState = applyDeusGeneOnRush(nextState, playerId, found.card.cardId, discardedMaterials);
+      }
 
       const rushFinal = emitUnitRushedAndFinalize(
         nextState,
