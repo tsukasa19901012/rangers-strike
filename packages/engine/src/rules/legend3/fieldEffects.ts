@@ -177,6 +177,19 @@ export function cannotEnterBattleOwnTurn(
   );
 }
 
+/** RS-188【地球征服宣告書】の対象か（アチャとコチャが自軍エリアにあり、自軍パワーゾーン12枚以上、「メカ」の自軍 S ユニット）。 */
+export function earthConquestDeclarationActive(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+): boolean {
+  const player = state.players[playerId];
+  if (player.power.length < 12) return false;
+  if (![...player.rush, ...player.battle].some((c) => c.cardId === "RS-188")) return false;
+  if (!isSmallUnit(state.definitions, instance.cardId)) return false;
+  return getDefinition(state.definitions, instance.cardId)?.features?.includes("メカ") ?? false;
+}
+
 /** RS-157 oni_neck_last: BP20000+ で自ターンにSP2付与。 */
 export function legend3EffectiveSp(
   state: GameState,
@@ -186,6 +199,9 @@ export function legend3EffectiveSp(
   let sp = legend2EffectiveSp(state, playerId, instance);
   // JC で得た能力「SP+N」（RS-224【ロックドバスター】）。
   sp += jointLGrantSpPlus(instance);
+  // RS-188 アチャとコチャ【地球征服宣告書】: これが自軍エリアにある間、自軍パワーゾーンが12枚以上なら、
+  // 特徴「メカ」を持つすべての自軍 S ユニットは「SP1」になる（atwiki/page-121）。
+  if (earthConquestDeclarationActive(state, playerId, instance)) sp = Math.max(sp, 1);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。
