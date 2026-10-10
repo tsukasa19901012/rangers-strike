@@ -97,7 +97,8 @@ describe("RS-137 submerge", () => {
 
 describe("RS-138 jet_skateboard", () => {
   it("offers end-of-turn return from battle to rush", () => {
-    const jet = inst("RS-138", "jet");
+    // NC（CN5）成立済みのユニット（R-CN-02: ナンバーの欄の効果は NC 成立時だけ有効）
+    const jet = { ...inst("RS-138", "jet"), activatedNcEffects: ["jet_skateboard"] };
     const state = createTestState({
       definitions: defs,
       phase: "end",
@@ -238,7 +239,8 @@ describe("RS-145 hyper_civilization_guard", () => {
 
 describe("RS-148 star_raiser", () => {
   it("adds BP per released command on own turn", () => {
-    const ored = inst("RS-148", "ored");
+    // NC 成立済み（R-CN-02）
+    const ored = { ...inst("RS-148", "ored"), activatedNcEffects: ["star_raiser"] };
     const state = createTestState({
       definitions: defs,
       phase: "battle",
@@ -341,7 +343,8 @@ describe("RS-159 fire_dance", () => {
 
 describe("RS-160 blazing_fire", () => {
   it("grants SP1 on NC without double-counting passive BP", () => {
-    const red = inst("RS-160", "red");
+    // NC 成立済み（R-CN-02）
+    const red = { ...inst("RS-160", "red"), activatedNcEffects: ["blazing_fire"] };
     const state = createTestState({
       definitions: defs,
       phase: "battle",
@@ -358,7 +361,8 @@ describe("RS-160 blazing_fire", () => {
 
 describe("RS-162 surging_chopper", () => {
   it("adds +5000 BP when attacking S-units on own turn", () => {
-    const blue = inst("RS-162", "blue");
+    // NC 成立済み（R-CN-02）
+    const blue = { ...inst("RS-162", "blue"), activatedNcEffects: ["surging_chopper"] };
     const enemyS = inst("RS-138", "enemy-s");
     const state = createTestState({
       definitions: defs,
@@ -381,7 +385,8 @@ describe("RS-162 surging_chopper", () => {
 
 describe("RS-163 iron_broken", () => {
   it("adds +3000 BP on own turn without NC modifier stacking", () => {
-    const black = inst("RS-163", "black");
+    // NC 成立済み（R-CN-02）
+    const black = { ...inst("RS-163", "black"), activatedNcEffects: ["iron_broken"] };
     const state = createTestState({
       definitions: defs,
       phase: "battle",

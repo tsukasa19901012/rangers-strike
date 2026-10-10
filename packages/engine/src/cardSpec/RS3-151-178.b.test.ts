@@ -96,8 +96,7 @@ describe("RS-160 ガオレッド", () => {
   });
 
   // R-CN-02：NC の効果は並び順が CN と一致したときだけ。atwiki/page-603「NCでBPを＋にできるが、ストライクとの2択」
-  it.fails("RS-160: 2番目以外（1番目）に出たときは BP+2000 されない（NC 不成立）（出典: atwiki/page-603・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-160 【ブレイジングファイヤー】の BP+2000 が NC 成立を問わず自軍ターン中は常に適用される
+  it("RS-160: 2番目以外（1番目）に出たときは BP+2000 されない（NC 不成立）（出典: atwiki/page-603・R-CN-02）", () => {
     const s = enterAt("RS-160", 1);
     expect(canStrike(s, "RS-160:u")).toBe(false);
     expect(bpOf(s, "player1", "RS-160:u")).toBe(2000);
@@ -167,8 +166,7 @@ describe("RS-162 ガオブルー", () => {
     expect(zoneOf(s, "player1", "RS-162:u")).toBe("discard");
   });
 
-  it.fails("RS-162: 3番目以外（1番目）に出たときは NC 不成立で BP+5000 されない（出典: atwiki/page-345・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-162 【サージングチョッパー】が NC 成立を問わず自軍ターン中のアタックで常に BP+5000 される
+  it("RS-162: 3番目以外（1番目）に出たときは NC 不成立で BP+5000 されない（出典: atwiki/page-345・R-CN-02）", () => {
     let s = enterAt("RS-162", 1, { p2: { battle: [inst("SPEC-S7000", "e")] } }, [S7000]);
     s = settle(attack(s, "RS-162:u", "SPEC-S7000:e"));
     expect(zoneOf(s, "player1", "RS-162:u")).toBe("discard");
@@ -204,8 +202,7 @@ describe("RS-163 ガオブラック", () => {
     expect(bpOf(s, "player1", "RS-163:u")).toBe(6000);
   });
 
-  it.fails("RS-163: 4番目以外（1番目）に出たときは NC 不成立で BP+3000 されない（出典: atwiki/page-346・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-163 【アイアンブロークン】が NC 成立を問わず自軍ターン中は常に BP+3000 される
+  it("RS-163: 4番目以外（1番目）に出たときは NC 不成立で BP+3000 されない（出典: atwiki/page-346・R-CN-02）", () => {
     const s = enterAt("RS-163", 1);
     expect(bpOf(s, "player1", "RS-163:u")).toBe(3000);
   });
@@ -371,8 +368,7 @@ describe("RS-166 ガインガイン", () => {
   });
 
   // faq-card-3 RS-166 Q1「はい、「SP1」になります。」
-  it.fails("RS-166: 公式Q&A — MA のトータスハンマーからコンビネーションさせると「SP1」になりストライクで1点与える（出典: grnrngr/faq-card-3 RS-166 Q1・faq-card-4 RS-224）", () => {
-    // 既知の不具合: CARD-RS-166 トータスハンマー（RS-224）からの JC が成立せず（ログなし）、ガインガインが「SP1」にならない（MA の L ユニット一般でも同じ）
+  it("RS-166: 公式Q&A — MA のトータスハンマーからコンビネーションさせると「SP1」になりストライクで1点与える（出典: grnrngr/faq-card-3 RS-166 Q1・faq-card-4 RS-224）", () => {
     let s = st({
       player1: { battle: [inst("RS-224", "th")], rush: [inst("RS-166", "g")], deck: deckCards(3) },
       player2: { power: powerCards(3, "e"), deck: deckCards(3, "e") },
@@ -432,8 +428,7 @@ describe("RS-167 爆竜バキケロナグルス", () => {
   }
 
   // 「アタックしてバトルに勝つたび、追加でアタックできる」
-  it.fails("RS-167: JC した同カテゴリの L ユニットは、アタックしてバトルに勝つたびに追加でアタックできる（2回勝てば3回目も）（出典: atwiki/page-94）", () => {
-    // 既知の不具合: CARD-RS-167 JC は成立（joint_combo_l ログ）するが、L ユニットがバトルに勝っても追加でアタックできない（得た能力の判定が「左隣の L サイズのユニット」を見ており並びと逆）
+  it("RS-167: JC した同カテゴリの L ユニットは、アタックしてバトルに勝つたびに追加でアタックできる（2回勝てば3回目も）（出典: atwiki/page-94）", () => {
     let s = bakiThen("TST-UNIT-7", { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2"), inst("TST-UNIT-0", "e3")] });
     s = settle(attack(s, "TST-UNIT-7:L", "TST-UNIT-0:e1"));
     expect(attackTargets(s, "TST-UNIT-7:L")).toContain("TST-UNIT-0:e2");
@@ -471,8 +466,7 @@ describe("RS-167 爆竜バキケロナグルス", () => {
   });
 
   // faq-card-3 RS-167 Q1「一度発動すれば「RS-167 爆竜バキケロナグルス」が撃破されても有効のままになります」
-  it.fails("RS-167: 公式Q&A — L ユニットのアタックに隠流忍術でバキケロが選ばれ撃破されても、能力は有効のまま（勝てば追加でアタックできる）（出典: grnrngr/faq-card-3 RS-167 Q1）", () => {
-    // 既知の不具合: CARD-RS-167 追加アタックの能力自体が L ユニットに付かない（上記と同じ原因）
+  it("RS-167: 公式Q&A — L ユニットのアタックに隠流忍術でバキケロが選ばれ撃破されても、能力は有効のまま（勝てば追加でアタックできる）（出典: grnrngr/faq-card-3 RS-167 Q1）", () => {
     let s = bakiThen("TST-UNIT-7", {
       battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")],
       hand: [inst("RS-018", "n")],

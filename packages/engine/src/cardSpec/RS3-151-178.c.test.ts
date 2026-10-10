@@ -134,8 +134,7 @@ describe("RS-171 ゴーゴードリル", () => {
   }
 
   // 「自軍ターン中、BP+4000され」
-  it.fails("RS-171: ドリルからコンビネーションした同カテゴリ（ET）の L ユニットは自軍ターン中 BP+4000（出典: atwiki/page-353）", () => {
-    // 既知の不具合: CARD-RS-171 JC は成立するが、得た能力の BP+4000 が L ユニットに適用されない（RS-157 と同じ原因）
+  it("RS-171: ドリルからコンビネーションした同カテゴリ（ET）の L ユニットは自軍ターン中 BP+4000（出典: atwiki/page-353）", () => {
     const s = drillThen("SPEC-ET-L", [ET_L]);
     expect(bpOf(s, "player1", "SPEC-ET-L:L")).toBe(17000);
   });
@@ -151,8 +150,7 @@ describe("RS-171 ゴーゴードリル", () => {
   });
 
   // 「BP20000以上のとき敵軍ユニットを撃破したなら、相手に1点ダメージを与える」
-  it.fails("RS-171: BP20000 以上（16000+4000）の L ユニットが敵軍ユニットを撃破すると、相手に1点ダメージ（出典: atwiki/page-353）", () => {
-    // 既知の不具合: CARD-RS-171 BP+4000 が適用されず BP20000 に届かないため、撃破時の1点ダメージが発生しない
+  it("RS-171: BP20000 以上（16000+4000）の L ユニットが敵軍ユニットを撃破すると、相手に1点ダメージ（出典: atwiki/page-353）", () => {
     let s = drillThen("SPEC-ET-L16", [ET_L16], { battle: [inst("TST-UNIT-0", "e")] });
     s = settle(attack(s, "SPEC-ET-L16:L", "TST-UNIT-0:e"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
@@ -208,13 +206,23 @@ describe("RS-172 ゴーゴーショベル", () => {
   }
 
   // 「このコンビネーションが成立している間、敵軍ユニットはストライクできない」
-  it.fails("RS-172: 同カテゴリの L ユニットからコンビネーションすると、敵軍ユニットはストライクできない（出典: atwiki/page-354）", () => {
-    // 既知の不具合: CARD-RS-172 【ショベルディフェンス】のストライク禁止が未実装（fieldEffects.shovelDefenseBlocksStrike がどこからも呼ばれない）
+  it("RS-172: 同カテゴリの L ユニットからコンビネーションすると、敵軍ユニットはストライクできない（出典: atwiki/page-354）", () => {
     const s = shovelThenEnemyTurn("SPEC-ET-L", [ET_L]);
     expect(canStrike(s, "TST-UNIT-0:st", "player2")).toBe(false);
   });
 
-  // 効果自体が未実装のため、発動しない選択肢（任意性）は結果（ストライクできる）だけを確認する
+  it("RS-172: 同カテゴリの L ユニットの右に出ると、【ショベルディフェンス】を発動するかの確認が提示され、見送れる（出典: atwiki/page-354「次の効果を発動できる」）", () => {
+    const s = lThenR("RS-172", "SPEC-ET-L", [ET_L]);
+    expect(s.pendingEffectChoice?.effectId).toBe("shovel_defense");
+    expect(legal(s).some((a) => a.type === "skip_effect_choice")).toBe(true);
+  });
+
+  it("RS-172: 発動しても禁止されるのは敵軍ユニットのストライクだけで、自軍の L ユニットはストライクできる（出典: atwiki/page-354「敵軍ユニットは」）", () => {
+    let s = accept(lThenR("RS-172", "SPEC-ET-L", [ET_L]), "shovel_defense");
+    s = passEntry(s);
+    expect(canStrike(s, "SPEC-ET-L:L")).toBe(true);
+  });
+
   it("RS-172: 効果を発動しなければ敵軍ユニットはストライクできる（出典: atwiki/page-354「次の効果を発動できる」）", () => {
     const s = shovelThenEnemyTurn("SPEC-ET-L", [ET_L], false);
     expect(canStrike(s, "TST-UNIT-0:st", "player2")).toBe(true);

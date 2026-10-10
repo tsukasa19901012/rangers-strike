@@ -300,8 +300,7 @@ describe("RS-146 ドグランダー", () => {
     expect(canStrike(s, "RS-146:dg")).toBe(true);
   });
 
-  it.fails("RS-146: バトルエリアにグランタウラスがいても、直前（左隣）でなければ出られない（出典: atwiki/page-370「コンビネーションしなければ」・R-CN-05）", () => {
-    // 既知の不具合: CARD-RS-146 「「グランタウラス」からコンビネーション」をバトルエリアにグランタウラスがいるかで判定し、直前に出たか（左隣か）を見ない
+  it("RS-146: バトルエリアにグランタウラスがいても、直前（左隣）でなければ出られない（出典: atwiki/page-370「コンビネーションしなければ」・R-CN-05）", () => {
     const s = st({ player1: { battle: [inst("RS-144", "gt"), inst("TST-UNIT-0", "f")], rush: [inst("RS-146", "dg")] } });
     expect(canEnter(s, "RS-146:dg")).toBe(false);
   });
@@ -457,8 +456,7 @@ describe("RS-148 オーレッド", () => {
     expect(bpOf(s, "player1", "RS-148:or")).toBe(9000);
   });
 
-  it.fails("RS-148: NC 不成立（5番目以外で、航空機からでもない）なら BP は増えない（出典: atwiki/page-372「CN：5」・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-148 【スターライザー】を NC の成立に関係なく、自軍ターン中は常に適用する
+  it("RS-148: NC 不成立（5番目以外で、航空機からでもない）なら BP は増えない（出典: atwiki/page-372「CN：5」・R-CN-02）", () => {
     const s = oRed(fillers(1));
     expect(bpOf(s, "player1", "RS-148:or")).toBe(3000);
   });

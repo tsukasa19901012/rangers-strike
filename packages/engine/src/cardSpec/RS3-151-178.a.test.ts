@@ -474,8 +474,7 @@ describe("RS-157 ガオジュラフ", () => {
   }
 
   // 「このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒自軍ターン中、BP+4000され」
-  it.fails("RS-157: ジュラフからコンビネーションした同カテゴリ（WB）の L ユニットは自軍ターン中 BP+4000（出典: atwiki/page-91・atwiki/page-266）", () => {
-    // 既知の不具合: CARD-RS-157 JC は成立（joint_combo_l ログ）するが、得た能力の BP+4000 が L ユニットに適用されない
+  it("RS-157: ジュラフからコンビネーションした同カテゴリ（WB）の L ユニットは自軍ターン中 BP+4000（出典: atwiki/page-91・atwiki/page-266）", () => {
     const s = giraffeThen("TST-UNIT-7");
     expect(bpOf(s, "player1", "TST-UNIT-7:L")).toBe(17000);
   });
@@ -501,8 +500,7 @@ describe("RS-157 ガオジュラフ", () => {
   });
 
   // 「BP20000以上のとき「SP2」になる」— ガオキング 14000＋ジュラフ（WB の M）2000＋4000＝20000（atwiki/page-17 カード評価）
-  it.fails("RS-157: BP20000 以上なら「SP2」になり、ストライクで2点与える（ガオキング＝20000）（出典: atwiki/page-91・atwiki/page-17）", () => {
-    // 既知の不具合: CARD-RS-157 BP+4000 が適用されず BP16000 のままで「SP2」にならない
+  it("RS-157: BP20000 以上なら「SP2」になり、ストライクで2点与える（ガオキング＝20000）（出典: atwiki/page-91・atwiki/page-17）", () => {
     let s = giraffeThen("RS-151");
     expect(bpOf(s, "player1", "RS-151:L")).toBe(20000);
     s = settle(strike(s, "RS-151:L"));
@@ -516,8 +514,7 @@ describe("RS-157 ガオジュラフ", () => {
   });
 
   // R-CN-06・faq-card-3 RS-167 Q1「一度発動すれば…撃破されても有効のままになります。コンビネーションの成立中にのみ効果を得られる場合は「このコンビネーションが成立している間」と表記します」
-  it.fails("RS-157: 得た能力はジュラフが場を離れても有効のまま（隠流忍術でジュラフとバトルさせて撃破）（出典: grnrngr/faq-card-3 RS-167 Q1・R-CN-06）", () => {
-    // 既知の不具合: CARD-RS-157 JC で得た BP+4000 が L ユニットに適用されない（ジュラフ離脱後の持続も確認できない）
+  it("RS-157: 得た能力はジュラフが場を離れても有効のまま（隠流忍術でジュラフとバトルさせて撃破）（出典: grnrngr/faq-card-3 RS-167 Q1・R-CN-06）", () => {
     let s = giraffeThen("TST-UNIT-7", [], {
       battle: [inst("TST-UNIT-0", "def")],
       hand: [inst("RS-018", "n")],
@@ -530,8 +527,7 @@ describe("RS-157 ガオジュラフ", () => {
     expect(bpOf(s, "player1", "TST-UNIT-7:L")).toBe(17000);
   });
 
-  it.fails("RS-157: L ユニットはアタックしたとき BP17000 として BP15000 のユニットに勝つ（出典: atwiki/page-91）", () => {
-    // 既知の不具合: CARD-RS-157 JC で得た BP+4000 がバトルでも適用されない
+  it("RS-157: L ユニットはアタックしたとき BP17000 として BP15000 のユニットに勝つ（出典: atwiki/page-91）", () => {
     const BIG = sUnit("SPEC-BIG15", { size: "L", bp: 15000 });
     let s = giraffeThen("TST-UNIT-7", [BIG], { battle: [inst("SPEC-BIG15", "big")] });
     s = settle(attack(s, "TST-UNIT-7:L", "SPEC-BIG15:big"));
@@ -590,13 +586,28 @@ describe("RS-158 ガオエレファント", () => {
   }
 
   // 「このコンビネーションが成立している間、敵軍ユニットはこれ以外のユニットにアタックできない」
-  it.fails("RS-158: 同カテゴリの L ユニットからコンビネーションすると、敵軍ユニットはエレファント以外にアタックできない（出典: atwiki/page-92）", () => {
-    // 既知の不具合: CARD-RS-158 【エレファントシールド】のアタック制限が未実装（fieldEffects.elephantShieldMustTarget がどこからも呼ばれない）
+  it("RS-158: 同カテゴリの L ユニットからコンビネーションすると、敵軍ユニットはエレファント以外にアタックできない（出典: atwiki/page-92）", () => {
     const s = lThenElephant("TST-UNIT-7", true);
     expect(attackTargets(s, "TST-UNIT-0:atk", "player2")).toEqual(["RS-158:el"]);
   });
 
-  // 発動しない選択肢の提示（任意性）は効果自体が未実装のため、結果（L にアタックできる）だけを確認する
+  it("RS-158: 同カテゴリの L ユニットの右に出ると、【エレファントシールド】を発動するかの確認が提示され、見送れる（出典: atwiki/page-92「次の効果を発動できる」）", () => {
+    let s = st({
+      player1: { battle: [inst("TST-UNIT-7", "L")], rush: [inst("RS-158", "el")], command: [released("TST-OP", "c")] },
+    });
+    s = enterWithHold(s, "RS-158:el", ["TST-OP:c"]);
+    expect(s.pendingEffectChoice?.effectId).toBe("elephant_shield");
+    expect(legal(s).some((a) => a.type === "skip_effect_choice")).toBe(true);
+  });
+
+  it("RS-158: 発動後、L ユニットが場を離れてコンビネーションが成立しなくなれば、アタック先の制限はなくなる（出典: atwiki/page-92「このコンビネーションが成立している間」・R-CN-06）", () => {
+    let s = lThenElephant("TST-UNIT-7", true);
+    expect(attackTargets(s, "TST-UNIT-0:atk", "player2")).toEqual(["RS-158:el"]);
+    s = { ...s, players: { ...s.players, player1: { ...s.players.player1, battle: s.players.player1.battle.filter((c) => c.instanceId !== "TST-UNIT-7:L") } } };
+    expect(attackTargets(s, "TST-UNIT-0:atk", "player2")).toContain("RS-158:el");
+    expect(zoneOf(s, "player1", "RS-158:el")).toBe("battle");
+  });
+
   it("RS-158: 効果を発動しない（任意）こともでき、その場合は L ユニットにもアタックできる（出典: atwiki/page-92「次の効果を発動できる」）", () => {
     const s = lThenElephant("TST-UNIT-7", false);
     expect(attackTargets(s, "TST-UNIT-0:atk", "player2")).toContain("TST-UNIT-7:L");
