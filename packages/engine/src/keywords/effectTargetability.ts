@@ -10,6 +10,14 @@ import {
 import { rs627NotSelectable } from "../rules/rs/rsCatchallField";
 
 /**
+ * 場以外（コマンドゾーン等）にあるカードが「相手に選ばれない」能力（not_selectable／アタックされる以外では
+ * 相手に選ばれない）を持つか。オモテ向きのカードはその能力が有効（atwiki/page-81 RS-039 Q2 ガタックRF）。
+ */
+export function cardNotSelectableByOpponent(cardId: string): boolean {
+  return cardHasGrantKeyword(cardId, "not_selectable") || cardHasNotSelectableExceptAttack(cardId);
+}
+
+/**
  * 敵効果の対象にできるユニットか（ブレイカー / not_selectable 等）。
  * sourceOwnerId は効果の発生源の持ち主（省略時は選ぶプレイヤー）。
  * ブレイカーは「敵軍ユニット／ビークルの効果」に選ばれないので、敵軍ユニットの効果で

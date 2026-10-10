@@ -145,14 +145,19 @@ export function passiveNamedFieldBpBonus(
 
   let bonus = 0;
 
-  if (
-    (playerHasInBattle(state, playerId, "RS-034") ||
-      playerHasInBattle(state, playerId, "RS-286")) &&
-    instance.cardId !== "RS-034" &&
-    instance.cardId !== "RS-286" &&
-    categoriesInclude(def.category, "WB")
-  ) {
-    bonus += 2000;
+  // RS-034 大獣神【守護獣の神】（RS-286 同）: これ以外の「ワイルドビースト」のユニットすべては BP+2000。
+  // 敵軍の WB ユニットにも適用される（faq-card-1 RS-034 Q）。複数あれば重複する（R-CONT-01）。
+  if (categoriesInclude(def.category, "WB")) {
+    const gods = (["player1", "player2"] as const).reduce(
+      (sum, pid) =>
+        sum +
+        state.players[pid].battle.filter(
+          (c) =>
+            (c.cardId === "RS-034" || c.cardId === "RS-286") && c.instanceId !== instance.instanceId,
+        ).length,
+      0,
+    );
+    bonus += 2000 * gods;
   }
 
   // ルール: R-CONT-01 同じ継続効果は枚数分重複する（RS-045 / RS-037 は体数分 BP+1000）

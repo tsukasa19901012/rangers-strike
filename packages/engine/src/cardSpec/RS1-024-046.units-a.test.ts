@@ -342,8 +342,7 @@ describe("RS-034 大獣神", () => {
     expect(bpOf(state, "player1", a.instanceId)).toBe(1000);
   });
 
-  it.fails("RS-034: 【守護獣の神】は敵軍の WB ユニットにも適用される（出典: grnrngr/faq-card-1 RS-034 Q）", () => {
-    // 既知の不具合: CARD-RS-034 BP＋2000 が自軍ユニットにしか適用されない
+  it("RS-034: 【守護獣の神】は敵軍の WB ユニットにも適用される（出典: grnrngr/faq-card-1 RS-034 Q）", () => {
     // 「はい、適用されます。」
     const god = inst("RS-034", "god");
     const enemy = inst("SPEC-S-1000", "enemy");
@@ -737,8 +736,7 @@ describe("RS-039 守護獣プテラノドン", () => {
     "RS-039: レスキューファイターがある状態で隠流忍術により相撃ちにされたとき、捨札かパワーゾーンかはターンプレイヤーが処理順で選べる（出典: grnrngr/faq-card-1 RS-039 Q1）— RS-018 隠流忍術の相撃ちと RS-089 の置換の処理順をターンプレイヤーが選ぶ公開アクションが確認できない",
   );
 
-  it.fails("RS-039: ホールド状態の「アタックされる以外では相手に選ばれない」ユニットカード（ガタックRF）は選べない（出典: atwiki/page-81 Q2）", () => {
-    // 既知の不具合: CARD-RS-039 【プテラビーム】の候補に、コマンドゾーンでオモテ向きの「相手に選ばれない」カードが含まれる
+  it("RS-039: ホールド状態の「アタックされる以外では相手に選ばれない」ユニットカード（ガタックRF）は選べない（出典: atwiki/page-81 Q2）", () => {
     // 「敵軍プレイヤーは…を選ぶことは出来ません」
     const { state } = setup({ command: [held("RK-054", "gatack"), held(CMD.ET, "h")] });
     const opts = choiceOptions(state, "player1");

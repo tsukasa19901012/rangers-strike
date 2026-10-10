@@ -18,6 +18,7 @@ import {
   rideAttackBpBoostAmount,
 } from "../dsl/promotedKeywordBridge";
 import { findMountedVehicle } from "../keywords/ride";
+import { cardNotSelectableByOpponent } from "../keywords/effectTargetability";
 import { getDslEffectById } from "../dsl/effectLookup";
 import { passiveNamedFieldBpBonus } from "./fieldAuras";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
@@ -445,7 +446,11 @@ export function resolveNamedOnRushEffects(
         phasePlayerId,
         commandFilter: "held",
         commandAction: "discard",
-        validInstanceIds: collectCommandIds(nextState, enemyId, "held"),
+        // 「相手に選ばれない」ユニットカード（ガタックRF 等）はホールド状態でも選べない（atwiki/page-81 Q2）。
+        validInstanceIds: collectCommandIds(nextState, enemyId, "held").filter((id) => {
+          const cmd = nextState.players[enemyId].command.find((c) => c.instanceId === id);
+          return !cmd || !cardNotSelectableByOpponent(cmd.cardId);
+        }),
       });
       if (withChoice) nextState = withChoice;
       break;
