@@ -1,6 +1,10 @@
 // 常駐オペレーションで「常駐マーカーのみ・実処理なし」のカードを列挙
 import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// packages/ ディレクトリ（このスクリプトからの相対位置で解決）
+const packagesRoot = join(dirname(fileURLToPath(import.meta.url)), "../..");
 function collectSrc(dir, acc) {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, e.name);
@@ -9,10 +13,10 @@ function collectSrc(dir, acc) {
   }
 }
 const files = [];
-collectSrc("/Users/tsukasa_yamato/Projects/rangers-strike/packages/engine/src", files);
-collectSrc("/Users/tsukasa_yamato/Projects/rangers-strike/packages/cards/src", files);
+collectSrc(join(packagesRoot, "engine/src"), files);
+collectSrc(join(packagesRoot, "cards/src"), files);
 const engineSrc = files.filter((f)=>!f.includes("generated")).map((f) => readFileSync(f, "utf8")).join("\n");
-const bundle = JSON.parse(readFileSync("/Users/tsukasa_yamato/Projects/rangers-strike/packages/cards/src/generated/dsl-stubs/stubs-bundle.json", "utf8"));
+const bundle = JSON.parse(readFileSync(join(packagesRoot, "cards/src/generated/dsl-stubs/stubs-bundle.json"), "utf8"));
 const GENERIC = new Set(["resident", "register", "tag", "deck_unlimited", "wing", "morph", "scrum", "cross1"]);
 const hollow = [];
 for (const [id, doc] of Object.entries(bundle)) {
