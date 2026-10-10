@@ -1179,6 +1179,22 @@ export function finalizeLeavePending(
     };
   }
 
+  if (pending.toZone === "battle") {
+    // ルール: R-MOVE-01 — ラッシュエリア→バトルエリアの移動（ピットインダイブ等）。撃破ではない。
+    const [, rest] = removeAt(owner[pending.fromZone], found.index);
+    const moved = {
+      ...owner,
+      [pending.fromZone]: rest,
+      battle: [...(pending.fromZone === "battle" ? rest : owner.battle), found.card],
+    };
+    return {
+      ...state,
+      pendingLeave: undefined,
+      activePlayer: pending.phasePlayerId,
+      ...updatePlayer(state, pending.ownerPlayerId, moved),
+    };
+  }
+
   const [, fromCards] = removeAt(owner[pending.fromZone], found.index);
   const leavingCard = sanitizeUnitLeavingField(
     found.card,

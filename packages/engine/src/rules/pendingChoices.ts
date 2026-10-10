@@ -6,6 +6,7 @@ import type {
   CardInstance,
   GameState,
   PendingEffectChoice,
+  PendingLeave,
   PlayerId,
   PlayerState,
   SeabedDrawMeta,
@@ -26,7 +27,11 @@ import { markJuuKunDoAttackerActed } from "./juuKunDo";
 import { findCardInField, findCardOwner } from "./fieldLookup";
 import { bounceToHand } from "./bounce";
 import { applyReanimate } from "./reanimate";
-import { tryLeaveField } from "./operationCounters";
+import {
+  hasDinoChronicleLeaveReaction,
+  hasDinoGutsLeaveReaction,
+  tryLeaveField,
+} from "./operationCounters";
 import { completeToPowerOnDestroyChoice } from "./toPowerOnDestroy";
 import { hasSeabedSurvey, karakuriLionChainHoldCount } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
@@ -3935,6 +3940,46 @@ export function applyEffectChoiceSelect(
         return { error: "cannot_enter_battle" };
       }
 
+      const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+      const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+
+      // ルール: R-MOVE-01 — ラッシュエリアからバトルエリアに出されるのも「場を離れる」ので、
+      // 持ち主はダイノガッツ等（場を離れるとき）を発動できる。反応の後でピットインダイブを続ける。
+      if (
+        hasDinoGutsLeaveReaction(withPrepared, enemyId, found.card.cardId) ||
+        hasDinoChronicleLeaveReaction(withPrepared, enemyId, found.card.cardId)
+      ) {
+        const leaveIntent: PendingLeave = {
+          ownerPlayerId: enemyId,
+          instanceId,
+          fromZone: "rush",
+          toZone: "battle",
+          leavingCardId: found.card.cardId,
+          phasePlayerId: pending.phasePlayerId,
+        };
+        const base = {
+          ...withPrepared,
+          ...updatePlayer(withPrepared, enemyId, clearCostWindow(readyEnemy, "battle_entry_hold")),
+        };
+        const afterChoice: GameState =
+          remaining.length > 0
+            ? {
+                ...base,
+                pendingEffectChoice: {
+                  ...pending,
+                  selectedInstanceIds: selected,
+                  validInstanceIds: remaining,
+                },
+              }
+            : (() => {
+                const finished = finishChoice(base, pending, formatInstanceIdsAsNames(base, selected));
+                return "error" in finished ? base : finished.state;
+              })();
+        return {
+          state: { ...afterChoice, pendingLeave: leaveIntent, activePlayer: enemyId },
+        };
+      }
+
       const [, rush] = removeAt(prepared.rush, found.index);
       const nextEnemy = clearCostWindow(
         {
@@ -3946,8 +3991,6 @@ export function applyEffectChoiceSelect(
       );
       let nextState = { ...state, ...updatePlayer(state, enemyId, nextEnemy) };
 
-      const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
-      const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
       if (remaining.length > 0) {
         return {
           state: {
@@ -3962,7 +4005,18 @@ export function applyEffectChoiceSelect(
         };
       }
 
-      return finishChoice(nextState, pending, formatInstanceIdsAsNames(nextState, selected));
+      const finished = finishChoice(nextState, pending, formatInstanceIdsAsNames(nextState, selected));
+      if ("error" in finished || finished.state.pendingEffectChoice) return finished;
+      // ルール: R-TIME-08 — 並び順の確定とは別に、相手の効果で出されたときも「バトルエリアに出たとき」は発動する
+      // （RS-115 魔導騎士ウルザード: 相手は1枚ドローしてもよい）。
+      const enteredRs115 = selected.some((id) =>
+        finished.state.players[enemyId].battle.some((c) => c.instanceId === id && c.cardId === "RS-115"),
+      );
+      if (enteredRs115) {
+        const withDraw = startOpponentMayDrawChoice(finished.state, actorId, pending.phasePlayerId);
+        if (withDraw) return { ...finished, state: withDraw };
+      }
+      return finished;
     }
 
     default:

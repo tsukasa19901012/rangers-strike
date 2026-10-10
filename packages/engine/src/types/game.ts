@@ -192,8 +192,11 @@ export type PendingLeave = {
   ownerPlayerId: PlayerId;
   instanceId: string;
   fromZone: "rush" | "battle";
-  /** deck_top: 持ち主の山札の上（ピンクストーム等。R-MOVE-01）。 */
-  toZone: "discard" | "power" | "command" | "deck_top";
+  /**
+   * deck_top: 持ち主の山札の上（ピンクストーム等。R-MOVE-01）。
+   * battle: 効果でラッシュエリアからバトルエリアへ移される（ピットインダイブ。R-MOVE-01 — 移動も「場を離れる」）。
+   */
+  toZone: "discard" | "power" | "command" | "deck_top" | "battle";
   leavingCardId: string;
   phasePlayerId: PlayerId;
   /** レジスト選択をスキップして捨札へ。 */
@@ -207,7 +210,7 @@ export type PendingLeave = {
     ownerPlayerId: PlayerId;
     instanceId: string;
     fromZone: "rush" | "battle";
-    toZone: "discard" | "power" | "command" | "deck_top";
+    toZone: PendingLeave["toZone"];
     leavingCardId: string;
     phasePlayerId: PlayerId;
   };
