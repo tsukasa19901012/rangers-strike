@@ -271,8 +271,7 @@ describe("RS-359 デンジ犬アイシー", () => {
   const daidenjin = (p1: Partial<GameState["players"]["player1"]>) =>
     rushPhase({ hand: [inst("RS-352", "dd")], command: releasedCat("OT", 1), power: powerCards(7), ...p1 });
 
-  // 既知の不具合: CARD-RS-359 【最後の手段】が未実装（山札のカードで追加条件を満たせない）
-  it.fails("RS-359: 【最後の手段】自軍ラッシュエリアにあるとき、これを捨札にし、山札の「デンジファイター」を捨札にしてダイデンジン（OT の L）の追加条件を満たせる（出典: atwiki/page-549）", () => {
+  it("RS-359: 【最後の手段】自軍ラッシュエリアにあるとき、これを捨札にし、山札の「デンジファイター」を捨札にしてダイデンジン（OT の L）の追加条件を満たせる（出典: atwiki/page-549）", () => {
     const s = daidenjin({ rush: [inst("RS-359", "ic")], deck: [inst("TST-OP", "o"), inst("RS-353", "f")] });
     expect(canStartRush(s, "player1", "RS-352:dd")).toBe(true);
     const r = rushFromHand(s, "player1", "RS-352:dd", { materials: ["RS-353:f"] });
@@ -281,6 +280,17 @@ describe("RS-359 デンジ犬アイシー", () => {
     expect(zoneOf(t, "player1", "RS-352:dd")).toBe("rush");
     expect(zoneOf(t, "player1", "RS-359:ic")).toBe("discard");
     expect(zoneOf(t, "player1", "RS-353:f")).toBe("discard");
+  });
+
+  it("RS-359: 【最後の手段】は任意 — 場のデンジファイターを捨札にしてラッシュすれば、アイシーはラッシュエリアに残り、山札のカードも動かない（出典: atwiki/page-549「捨札にして次の効果を発動できる」）", () => {
+    const s = daidenjin({ rush: [inst("RS-359", "ic"), inst("RS-353", "ff")], deck: [inst("TST-OP", "o"), inst("RS-353", "f")] });
+    const r = rushFromHand(s, "player1", "RS-352:dd", { materials: ["RS-353:ff"] });
+    expect(r.ok).toBe(true);
+    const t = resolveAll(r.state);
+    expect(zoneOf(t, "player1", "RS-352:dd")).toBe("rush");
+    expect(zoneOf(t, "player1", "RS-353:ff")).toBe("discard");
+    expect(zoneOf(t, "player1", "RS-359:ic")).toBe("rush");
+    expect(t.players.player1.deck.map((c) => c.instanceId)).toEqual(["TST-OP:o", "RS-353:f"]);
   });
 
   it("RS-359: アイシーがいなければ、山札にデンジファイターがあってもダイデンジンはラッシュできない（出典: atwiki/page-549「これが自軍ラッシュエリアにある間」）", () => {
@@ -300,8 +310,7 @@ describe("RS-359 デンジ犬アイシー", () => {
   });
 
   // grnrngr/faq-card-6 RS-359 Q1「はい、できます。」
-  // 既知の不具合: CARD-RS-359 【最後の手段】が未実装
-  it.fails("RS-359: 公式Q&A — アイシー2体を捨札にし、山札のバイオジェット1号・2号を1枚ずつ捨札にしてバイオロボをラッシュできる（出典: grnrngr/faq-card-6 RS-359 Q1）", () => {
+  it("RS-359: 公式Q&A — アイシー2体を捨札にし、山札のバイオジェット1号・2号を1枚ずつ捨札にしてバイオロボをラッシュできる（出典: grnrngr/faq-card-6 RS-359 Q1）", () => {
     const s = rushPhase({
       hand: [inst("RS-127", "bio")],
       rush: [inst("RS-359", "i1"), inst("RS-359", "i2")],

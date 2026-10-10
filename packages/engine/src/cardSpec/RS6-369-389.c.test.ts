@@ -42,6 +42,7 @@ import {
   zoneOf,
 } from "./RS6-369-389.helpers";
 import type { GameState } from "../types/game";
+import { pickCpuAction } from "../ai";
 
 const S_VEHICLE_UNIT = sUnit("SPEC-S-CAR", { features: ["車両"] });
 const SPECS = [S_VEHICLE_UNIT];
@@ -345,10 +346,41 @@ describe("RS-385 グリーンホバー", () => {
       player2: { battle: [inst("RS-354", "c3")], rush: [inst("RS-385", "gh")], deck: deckCards(5, "e") },
     });
     s = enter(s, "RS-362:shark");
-    s = passEntry(resolveAll(pick(s, "RS-354:c3")));
+    s = resolveAll(pick(s, "RS-354:c3"));
+    // 「リリース状態で置いてもよい」— グリーンホバーの持ち主（player2）に確認が出る。置く（行う）。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-385");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    s = passEntry(resolveAll(confirm(s)));
     const placed = s.players.player2.command.find((c) => c.instanceId === "RS-354:c3");
     expect(placed).toBeDefined();
     expect(placed?.commandHeld ?? false).toBe(false);
+  });
+
+  it("RS-385: 【特殊消化弾】「置いてもよい」— 見送ればホールド状態のまま置かれる（出典: atwiki/page-530「かわりにリリース状態で置いてもよい」）", () => {
+    let s = st({
+      player1: { battle: [inst("TST-UNIT-0", "f")], rush: [inst("RS-362", "shark")], deck: deckCards(5) },
+      player2: { battle: [inst("RS-354", "c3")], rush: [inst("RS-385", "gh")], deck: deckCards(5, "e") },
+    });
+    s = enter(s, "RS-362:shark");
+    s = resolveAll(pick(s, "RS-354:c3"));
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-385");
+    expect(canSkip(s)).toBe(true);
+    s = passEntry(resolveAll(skip(s)));
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(s.players.player2.command.find((c) => c.instanceId === "RS-354:c3")?.commandHeld).toBe(true);
+  });
+
+  it("RS-385: 【特殊消化弾】CPU はリリース状態で置くほうを選ぶ（出典: atwiki/page-530）", () => {
+    let s = st({
+      player1: { battle: [inst("TST-UNIT-0", "f")], rush: [inst("RS-362", "shark")], deck: deckCards(5) },
+      player2: { battle: [inst("RS-354", "c3")], rush: [inst("RS-385", "gh")], deck: deckCards(5, "e") },
+    });
+    s = resolveAll(pick(enter(s, "RS-362:shark"), "RS-354:c3"));
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-385");
+    const cpu = pickCpuAction(s, "player2");
+    expect(cpu?.type).toBe("confirm_effect_choice");
+    s = act(s, cpu!);
+    expect(s.players.player2.command.find((c) => c.instanceId === "RS-354:c3")?.commandHeld ?? false).toBe(false);
   });
 
   it("RS-385: 【特殊消化弾】グリーンホバーが自軍ラッシュエリアになければホールド状態で置かれる（出典: atwiki/page-530「これが自軍ラッシュエリアにある間」）", () => {
@@ -369,7 +401,9 @@ describe("RS-385 グリーンホバー", () => {
       player2: { rush: [inst("SR-004", "hd")] },
     });
     s = act(s, { type: "charge_command", playerId: "player1", instanceId: "TST-OP-ET:ch" });
-    s = resolveAll(s);
+    // 【特殊消化弾】でリリース状態で置く（行う）。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-385");
+    s = resolveAll(confirm(s));
     expect(zoneOf(s, "player1", "TST-OP-ET:ch")).toBe("command");
     expect(s.players.player1.command.find((c) => c.instanceId === "TST-OP-ET:ch")?.commandHeld).toBe(true);
   });

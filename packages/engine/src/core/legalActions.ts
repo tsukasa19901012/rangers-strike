@@ -119,6 +119,7 @@ import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower } from "./power";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
+import { appendIcyRushActions, icyStateForAction } from "../rules/legend1/icyLastResort";
 import {
   getMorphReactionActorId,
   morphOrderChooserPlayerId,
@@ -1480,9 +1481,14 @@ export function getLegalActions(state: GameState): GameAction[] {
   if (state.pendingCommandPayment) {
     const pending = state.pendingCommandPayment;
     if (pending.playerId === playerId) {
-      const ids = pending.validInstanceIds.slice(0, pending.totalNeeded);
+      let ids = pending.validInstanceIds.slice(0, pending.totalNeeded);
+      // RS-429 代用の effect_hold: 少ない枚数（minNeeded）でも確定できる。先頭のコマンドだけで足りればそれを出す。
+      if (pending.minNeeded !== undefined) {
+        const fewer = pending.validInstanceIds.slice(0, pending.minNeeded);
+        if (validatePaymentSelection(state, pending, fewer) === null) ids = fewer;
+      }
       if (
-        ids.length >= pending.totalNeeded &&
+        ids.length >= (pending.minNeeded ?? pending.totalNeeded) &&
         validatePaymentSelection(state, pending, ids) === null &&
         isResolveCommandPaymentLegal(state, {
           playerId,
@@ -1751,6 +1757,13 @@ export function getLegalActions(state: GameState): GameAction[] {
       }
       appendRushCategoryPaymentActions(state, playerId, actions);
       appendZordSetupActions(state, playerId, actions);
+      // RS-359【最後の手段】: 山札の候補を加えればラッシュを始められるユニット（rules/legend1/icyLastResort.ts）。
+      appendIcyRushActions(state, playerId, actions, (virtual) => {
+        const viaIcy: GameAction[] = [];
+        appendRushCategoryPaymentActions(virtual, playerId, viaIcy);
+        appendZordSetupActions(virtual, playerId, viaIcy);
+        return viaIcy;
+      });
       appendOperationActions(state, playerId, actions);
       appendMagiTicketActions(state, playerId, actions);
       appendOperationCategoryPaymentActions(state, playerId, actions);
@@ -1970,6 +1983,13 @@ export function getLegalActions(state: GameState): GameAction[] {
 }
 
 export function isLegalAction(state: GameState, action: GameAction): boolean {
+  if (isLegalActionBase(state, action)) return true;
+  // RS-359【最後の手段】: 山札の候補を加えればラッシュを始められる（rules/legend1/icyLastResort.ts）。
+  return icyStateForAction(state, action, isLegalActionBase) !== null;
+}
+
+/** 【最後の手段】を考えない合法判定。 */
+export function isLegalActionBase(state: GameState, action: GameAction): boolean {
   if (state.winner) return false;
 
   if (action.type === "initiate_command_payment") {
