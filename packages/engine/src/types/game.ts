@@ -301,6 +301,8 @@ export type PendingEffectChoice = {
   selectedInstanceIds?: string[];
   step?: "own" | "enemy";
   viewedInstanceIds?: string[];
+  /** 複数対象の撃破で処理済みの対象（離場反応で中断→再開したときに同じユニットを再び処理しない。R-TGT-03）。 */
+  processedInstanceIds?: string[];
   optional?: boolean;
   maxBp?: number;
   /** RS-178 sagas_sniper: デッキサーチ用の破壊ユニットパワーコスト上限。 */

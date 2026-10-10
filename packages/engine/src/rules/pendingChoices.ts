@@ -1531,7 +1531,14 @@ export function applyConfirmEffectChoice(
   if (pending.kind === "select_units_bp_budget") {
     const selected = pending.selectedInstanceIds ?? [];
     let nextState = state;
+    const processed = [...(pending.processedInstanceIds ?? [])];
     for (const instanceId of selected) {
+      // ルール: R-TGT-03 — 一度処理した対象（ダイノガッツで留まった等）は再び撃破しない。
+      if (processed.includes(instanceId)) continue;
+      processed.push(instanceId);
+      // ルール: R-TIME-04 — 割り込み（マンドラ坊やの鳴き声等）で場を離れた対象は飛ばして撃破処理を続ける。
+      const located = findCardOwner(nextState, instanceId);
+      if (!located || (located.zone !== "rush" && located.zone !== "battle")) continue;
       const leave = applyUnitLeave(
         nextState,
         instanceId,
@@ -1541,7 +1548,9 @@ export function applyConfirmEffectChoice(
       if ("error" in leave) return leave;
       nextState = leave.state;
       if (nextState.pendingLeave) {
-        return { state: nextState };
+        // 離場反応の解決後に、残りの対象の撃破を再開する。
+        const resumed: PendingEffectChoice = { ...pending, processedInstanceIds: processed };
+        return { state: { ...nextState, pendingEffectChoice: resumed } };
       }
     }
     const names = selected
