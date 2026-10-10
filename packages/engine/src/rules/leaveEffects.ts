@@ -203,6 +203,13 @@ export function resolveUnitLeftZoneEffectsImpl(
 }
 
 /**
+ * 「撃破されて捨札になったとき」を resolveAfterDiscardDestroyEffects の個別処理だけで解決するカード。
+ * RS-427 スーパーゲキイエロー・RS-428 スーパーゲキブルー: 「自軍捨札に「X」のカードがあれば1枚選び、自軍ラッシュエリアに出す」
+ * （候補が1枚なら選択なしで出す、2枚以上なら選択）。
+ */
+const ON_DESTROY_HANDLED_BELOW = new Set(["RS-427", "RS-428"]);
+
+/**
  * 段階 4（R-TIME-01）: 撃破されて実際に捨札に置かれたあとの「撃破されて捨札になったとき」「捨札になったとき」。
  * ここで開いた選択は段階 4 のタイミング。
  */
@@ -214,17 +221,21 @@ export function resolveAfterDiscardDestroyEffects(
   const logs: string[] = [];
   const beforeAfterDiscard = nextState;
 
-  const destroyDsl = tryResolveDslTriggeredEffects({
-    state: nextState,
-    cardId: ctx.cardId,
-    instanceId: ctx.instanceId,
-    playerId: ctx.ownerPlayerId,
-    phasePlayerId: ctx.phasePlayerId,
-    triggerType: "on_destroy",
-    logAction: "destroy_effect",
-  });
-  nextState = destroyDsl.state;
-  logs.push(...destroyDsl.logs);
+  // 下で個別に解決するカード（RS-427・RS-428）は DSL（文言の正規化で on_destroy の選択になる）を通さない。
+  // 両方を通すと、個別処理がゲキイエロー等を出したあとに DSL の古い選択が残る（二重解決）。
+  if (!ON_DESTROY_HANDLED_BELOW.has(ctx.cardId)) {
+    const destroyDsl = tryResolveDslTriggeredEffects({
+      state: nextState,
+      cardId: ctx.cardId,
+      instanceId: ctx.instanceId,
+      playerId: ctx.ownerPlayerId,
+      phasePlayerId: ctx.phasePlayerId,
+      triggerType: "on_destroy",
+      logAction: "destroy_effect",
+    });
+    nextState = destroyDsl.state;
+    logs.push(...destroyDsl.logs);
+  }
 
   // 「※これが撃破されて捨札になったとき、自軍捨札の「X」を1枚選び…ラッシュエリアに出す」は
   // DSL 正規化（dsl/effectTextNormalization）で on_destroy の効果として上の DSL 解決で扱う。

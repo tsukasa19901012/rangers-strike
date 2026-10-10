@@ -1,3 +1,8 @@
+import {
+  beginDestroyTriggerHold,
+  hasDestroyerStep1Text,
+  releaseDestroyTriggerHold,
+} from "./destroyTriggerQueue";
 import { checkWinner } from "../core/createGame";
 import {
   isSet5AChoiceEffect,
@@ -60,6 +65,7 @@ import { countLogicalBattleSlots } from "./battleLine";
 import { tryLegend3BattleToRush } from "./legend3/restrictions";
 import type {
   CardInstance,
+  DeferredDestroyTrigger,
   GameState,
   PendingEffectChoice,
   PendingLeave,
@@ -1972,18 +1978,27 @@ export function applyConfirmEffectChoice(
       // ルール: R-TIME-04 — 割り込み（マンドラ坊やの鳴き声等）で場を離れた対象は飛ばして撃破処理を続ける。
       const located = findCardOwner(nextState, instanceId);
       if (!located || (located.zone !== "rush" && located.zone !== "battle")) continue;
+      // この選択は確定済み: 撃破されたユニットの誘発が開く選択に上書き・消去されないよう外してから撃破する。
       const leave = applyUnitLeave(
-        nextState,
+        { ...nextState, pendingEffectChoice: undefined },
         instanceId,
         "discard",
         pending.phasePlayerId,
       );
       if ("error" in leave) return leave;
       nextState = leave.state;
+      const resumed: PendingEffectChoice = { ...pending, processedInstanceIds: processed };
       if (nextState.pendingLeave) {
         // 離場反応の解決後に、残りの対象の撃破を再開する。
-        const resumed: PendingEffectChoice = { ...pending, processedInstanceIds: processed };
         return { state: { ...nextState, pendingEffectChoice: resumed } };
+      }
+      if (nextState.pendingEffectChoice || nextState.pendingDamagePayment || nextState.pendingRegister) {
+        // ルール: R-TIME-01, R-TIME-04 — 撃破されたユニットの誘発（段階 2「撃破されたとき」・段階 4「撃破されて捨札に
+        // なったとき」）の選択等が割り込んだ: それを解決してから残りの対象を撃破する（rules/destroyTriggerQueue.ts）。
+        const frame: DeferredDestroyTrigger = { kind: "resume_multi_destroy", step: "after_discard", pending: resumed };
+        return {
+          state: { ...nextState, deferredDestroyTriggers: [...(nextState.deferredDestroyTriggers ?? []), frame] },
+        };
       }
     }
     const names = selected
@@ -3923,8 +3938,18 @@ export function applyEffectChoiceSelect(
       const destroyedCardId = located
         ? findInZone(state.players[located.playerId], located.zone, instanceId)?.card.cardId
         : undefined;
+      // ルール: R-TIME-01 — 効果で撃破したとき、撃破した側の段階 1（「撃破したとき」「撃破する。そうしたとき」。
+      // RS-685 の1点等）を先に処理し、撃破された側の段階 2・4 はそのあとに段階の順で解決する（rules/destroyTriggerQueue.ts）。
+      const hadHold = !!state.destroyTriggerHold;
+      const holdDestroyed =
+        unitLeaveDestination(dest) !== "deck_top" &&
+        hasDestroyerStep1Text(state.definitions[pending.sourceCardId]?.text);
+      const settleHeld = (outcome: ChoiceOutcome): ChoiceOutcome =>
+        !holdDestroyed || "error" in outcome
+          ? outcome
+          : { ...outcome, state: releaseDestroyTriggerHold(outcome.state, hadHold) };
       const leave = applyUnitLeave(
-        state,
+        holdDestroyed ? beginDestroyTriggerHold(state) : state,
         instanceId,
         unitLeaveDestination(dest),
         pending.phasePlayerId,
@@ -3970,10 +3995,12 @@ export function applyEffectChoiceSelect(
             defenderFound.card,
           );
           nextState = damage.state;
-          const finished = finishChoice(
-            nextState,
-            pending,
-            cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+          const finished = settleHeld(
+            finishChoice(
+              nextState,
+              pending,
+              cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+            ),
           );
           if (damage.logs.length > 0) {
             return { ...finished, logs: damage.logs };
@@ -3981,10 +4008,12 @@ export function applyEffectChoiceSelect(
           return finished;
         }
       }
-      return finishChoice(
-        nextState,
-        pending,
-        cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+      return settleHeld(
+        finishChoice(
+          nextState,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
+        ),
       );
     }
 

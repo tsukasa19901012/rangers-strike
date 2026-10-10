@@ -13,9 +13,16 @@
  * 同じ段階の効果どうしは同時（R-SIM-01）。撃破した側の選択（RS-212）が、同じ段階の選択が開いているときに来たら
  * openDestroyTimedChoice でターンプレイヤーが順番を選ぶ（faq-card-4 RS-212 Q1）。
  */
-import type { DeferredDestroyTrigger, DestroyTriggerTiming, GameState, PlayerId } from "../types/game";
+import type {
+  DeferredDestroyTrigger,
+  DestroyTriggerTiming,
+  GameState,
+  PendingEffectChoice,
+  PlayerId,
+} from "../types/game";
 import { resolveAfterDiscardDestroyEffects, resolveDestroyedFactEffects } from "./leaveEffects";
 import { openMirageKnuckleChoice } from "./legend1/set4NamedEffects";
+import { applyConfirmEffectChoice } from "./pendingChoices";
 
 const STEP: Record<DestroyTriggerTiming, number> = { destroyer: 1, destroyed: 2, after_discard: 4 };
 
@@ -67,7 +74,47 @@ function runFrame(state: GameState, frame: DeferredDestroyTrigger): { state: Gam
         state: openMirageKnuckleChoice(state, frame.attackerId, frame.attackerInstanceId, frame.phasePlayerId),
         logs: [],
       };
+    case "resume_multi_destroy": {
+      const resumed = applyConfirmEffectChoice(
+        { ...state, pendingEffectChoice: frame.pending },
+        frame.pending.playerId,
+      );
+      if ("error" in resumed) return { state, logs: [] };
+      return { state: resumed.state, logs: resumed.log ? [resumed.log] : [] };
+    }
   }
+}
+
+/** 撃破した側の段階 1（「撃破したとき」「撃破するたび」「撃破する。そうしたとき」）の文言をカード本文が持つか。 */
+const DESTROYER_STEP1_RE = /撃破したとき|撃破するたび|撃破(?:する|してもよい)。そうしたとき/;
+
+export function hasDestroyerStep1Text(text: string | undefined): boolean {
+  return !!text && DESTROYER_STEP1_RE.test(text);
+}
+
+function appendResume(choice: PendingEffectChoice, next: PendingEffectChoice): PendingEffectChoice {
+  return { ...choice, resumeChoice: choice.resumeChoice ? appendResume(choice.resumeChoice, next) : next };
+}
+
+/**
+ * 効果で撃破したとき（R-TIME-01）: 撃破した効果の処理（段階 1 を含む）を終えた状態 `state` で保留を下ろし、
+ * 積んだ撃破された側の誘発（段階 2・4）を段階の順に解決する。`hadHold` は効果の処理の前から保留が立っていたか
+ * （バトルの撃破の途中など。そのときは呼び出し元が解決する）。
+ * 効果の続きの選択（resumeChoice 等）が開いていれば、撃破された側の誘発を先に解決し、その選択はあとに回す
+ * （R-TIME-04 入れ子: 撃破された側の誘発が割り込む）。
+ */
+export function releaseDestroyTriggerHold(state: GameState, hadHold: boolean): GameState {
+  if (hadHold) return state;
+  const released = endDestroyTriggerHold(state);
+  if (!released.deferredDestroyTriggers?.length) return released;
+  if (released.pendingDamagePayment || released.pendingLeave || released.pendingRegister) return released;
+  const open = released.pendingEffectChoice;
+  const drained = drainDeferredDestroyTriggers(open ? { ...released, pendingEffectChoice: undefined } : released);
+  if (!open) return drained;
+  if (drained.pendingEffectChoice) {
+    return { ...drained, pendingEffectChoice: appendResume(drained.pendingEffectChoice, open) };
+  }
+  return { ...drained, pendingEffectChoice: open, activePlayer: open.playerId };
 }
 
 /**
