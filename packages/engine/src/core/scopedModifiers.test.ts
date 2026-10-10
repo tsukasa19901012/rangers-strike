@@ -7,6 +7,8 @@ import {
   hasTurnRuleModifier,
 } from "./scopedModifiers";
 import { clearTurnModifiers } from "./modifiers";
+import { applyAction } from "./applyAction";
+import { createTestState, inst } from "../testing/fixtures";
 
 function emptyPlayer(): PlayerState {
   return {
@@ -61,5 +63,22 @@ describe("scopedModifiers", () => {
     const player = addTurnRuleModifier(emptyPlayer(), TURN_RULE_IDS.INFINITE_CHAIN);
     const cleared = clearTurnModifiers(player);
     expect(hasTurnRuleModifier(cleared, TURN_RULE_IDS.INFINITE_CHAIN)).toBe(false);
+  });
+});
+
+describe("turn end cleanup", () => {
+  it("clears this-turn BP modifiers on both players' units (page-588 Q1)", () => {
+    const state = createTestState({
+      phase: "end",
+      activePlayer: "player1",
+      player1: { battle: [{ ...inst("TST-OP", "own"), bpModifier: 2000 }] },
+      player2: { battle: [{ ...inst("TST-OP", "enemy"), bpModifier: -1000 }] },
+    });
+    const result = applyAction(state, { type: "end_phase", playerId: "player1" });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.state.activePlayer).toBe("player2");
+    expect(result.state.players.player1.battle[0]?.bpModifier).toBeUndefined();
+    expect(result.state.players.player2.battle[0]?.bpModifier).toBeUndefined();
   });
 });

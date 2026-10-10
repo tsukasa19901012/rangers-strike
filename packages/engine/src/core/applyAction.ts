@@ -295,11 +295,12 @@ function finalizeTurnEnd(state: GameState): GameState {
   let next = advancePhase(afterEffects);
 
   if (next.activePlayer !== prevPlayer) {
+    // 「このターン」の修正はターン終了で消える。どちらのプレイヤーのカードかは問わない（page-588 Q1）。
     next = {
       ...next,
       players: {
-        ...next.players,
-        [prevPlayer]: clearTurnModifiers(next.players[prevPlayer]),
+        player1: clearTurnModifiers(next.players.player1),
+        player2: clearTurnModifiers(next.players.player2),
       },
     };
   }
