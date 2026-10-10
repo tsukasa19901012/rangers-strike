@@ -1049,7 +1049,7 @@ function appendEffectChoiceActions(
     return;
   }
 
-  if (needsEffectHoldPayment(pending) && buildEffectHoldPayment(state)) {
+  if (needsEffectHoldPayment(pending, state) && buildEffectHoldPayment(state)) {
     actions.push({
       type: "initiate_command_payment",
       playerId,

@@ -11,6 +11,7 @@ import {
   canEnter,
   canStrike,
   chooseCommand,
+  drainChoices,
   endTurn,
   enter,
   expectBodyText,
@@ -233,8 +234,7 @@ describe("RS-082 トリケラレンジャー", () => {
     expect(s.pendingEffectChoice?.validInstanceIds).toEqual(expect.arrayContaining(["TST-OP:c1", "TST-OP-ET:c2"]));
   });
 
-  it.fails("RS-082: 選んだ敵軍コマンドがホールドされる（選んだものだけ）（出典: atwiki/page-231）", () => {
-    // 既知の不具合: CARD-RS-082 選択が自軍コマンドの支払い（effect_hold）経路に回され、敵軍コマンドがホールドされない（resolve_effect_choice は不正手）
+  it("RS-082: 選んだ敵軍コマンドがホールドされる（選んだものだけ）（出典: atwiki/page-231）", () => {
     let s = enter(tricera(2), "RS-082:tr");
     s = chooseCommand(s, "player1", "TST-OP-ET:c2");
     expect(s.players.player2.command.find((c) => c.instanceId === "TST-OP-ET:c2")?.commandHeld).toBe(true);
@@ -406,30 +406,41 @@ describe("RS-085 ファイヤーファイター", () => {
 
   // 「ダメージになっているカードを…1枚選んでオモテにしてもよい。そうしたとき、相手も同じようにしてもよい」
   it("RS-085: 自分がダメージ1枚をオモテにし、相手も同じようにすると、双方のダメージが1点ずつ減る（出典: atwiki/page-298）", () => {
-    const s = rushFire(fireState(2, 1));
+    // 自分・相手とも選んでオモテにする（「1枚選んで」）。
+    const s = drainChoices(rushFire(fireState(2, 1)));
     expect(faceDownCount(s, "player1")).toBe(1);
     expect(faceDownCount(s, "player2")).toBe(0);
     expect(s.players.player1.damage).toBe(1);
     expect(s.players.player2.damage).toBe(0);
   });
 
-  it.fails("RS-085: 自分はオモテにしないことを選べる（「してもよい」）（出典: atwiki/page-298）", () => {
-    // 既知の不具合: CARD-RS-085 消火作業が選択なしで自動的に実行される（自分・相手とも辞退できない）
-    const s = rushFire(fireState(2, 1));
+  it("RS-085: 自分はオモテにしないことを選べる（「してもよい」）（出典: atwiki/page-298）", () => {
+    let s = rushFire(fireState(2, 1));
     // ラッシュ後、自分の消火作業を辞退する選択肢が提示される
     expect(legal(s).some((a) => a.playerId === "player1" && a.type === "skip_effect_choice")).toBe(true);
+    s = act(s, { type: "skip_effect_choice", playerId: "player1" });
+    // 辞退すると自分も相手もオモテにしない（「そうしたとき」）
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(faceDownCount(s, "player1")).toBe(2);
+    expect(faceDownCount(s, "player2")).toBe(1);
   });
 
-  it.fails("RS-085: 自分がオモテにしたとき、相手はオモテにしないことを選べる（「相手も同じようにしてもよい」）（出典: atwiki/page-298）", () => {
-    // 既知の不具合: CARD-RS-085 相手のダメージも自動でオモテにされ、相手が辞退できない
-    const s = rushFire(fireState(1, 1));
+  it("RS-085: 自分がオモテにしたとき、相手はオモテにしないことを選べる（「相手も同じようにしてもよい」）（出典: atwiki/page-298）", () => {
+    let s = rushFire(fireState(1, 1));
+    // まず自分がダメージを1枚選んでオモテにする
+    const own = s.pendingEffectChoice?.validInstanceIds?.[0];
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: own! });
     const p2Decline = legal(s).some((a) => a.playerId === "player2" && a.type === "skip_effect_choice");
     expect(p2Decline).toBe(true);
+    s = act(s, { type: "skip_effect_choice", playerId: "player2" });
+    expect(faceDownCount(s, "player1")).toBe(0);
+    expect(faceDownCount(s, "player2")).toBe(1);
   });
 
   // faq-card-2 RS-085 Q1「相手がダメージを受けていなくても発動できますか？」「はい…「そうしたとき」よりも後のテキストは、条件ではありません。」
   it("RS-085: 公式Q&A — 相手がダメージを受けていなくても自分のダメージをオモテにできる（出典: grnrngr/faq-card-2 RS-085 Q1）", () => {
-    const s = rushFire(fireState(1, 0));
+    const s = drainChoices(rushFire(fireState(1, 0)));
     expect(s.players.player1.damage).toBe(0);
     expect(faceDownCount(s, "player1")).toBe(0);
     expect(s.players.player2.damage).toBe(0);
@@ -607,22 +618,23 @@ describe("RS-088 ドーザーファイター", () => {
 
   // 「ダメージになっているカードを…手札に加えてもよい。そうしたとき、手札から1枚選んでパワーゾーンにウラ向きに置く」
   it("RS-088: ダメージのカードを手札に加え、手札のカードをウラ向き（ダメージ）でパワーゾーンに置く（ダメージ数は変わらない）（出典: atwiki/page-301）", () => {
-    const s = rushDozer(dozerState([inst("TST-OP", "y")]));
+    // 手札から置くカード（TST-OP:y）を選ぶ
+    const s = drainChoices(rushDozer(dozerState([inst("TST-OP", "y")])), ["TST-OP:y"]);
     expect(zoneOf(s, "player1", "RS-080:x")).toBe("hand");
     const y = s.players.player1.power.find((c) => c.instanceId === "TST-OP:y");
     expect(y?.faceDown).toBe(true);
     expect(s.players.player1.damage).toBe(1);
   });
 
-  it.fails("RS-088: 手札に加えないことを選べる（「してもよい」）（出典: atwiki/page-301）", () => {
-    // 既知の不具合: CARD-RS-088 解体作業が選択なしで自動的に実行され、辞退できない
-    const s = rushDozer(dozerState([inst("TST-OP", "y")]));
+  it("RS-088: 手札に加えないことを選べる（「してもよい」）（出典: atwiki/page-301）", () => {
+    let s = rushDozer(dozerState([inst("TST-OP", "y")]));
+    expect(legalOfType(s, "skip_effect_choice").some((a) => a.playerId === "player1")).toBe(true);
+    s = act(s, { type: "skip_effect_choice", playerId: "player1" });
     expect(zoneOf(s, "player1", "RS-080:x")).toBe("power");
     expect(zoneOf(s, "player1", "TST-OP:y")).toBe("hand");
   });
 
-  it.fails("RS-088: パワーゾーンに置く手札のカードを選べる（「手札から1枚選んで」）（出典: atwiki/page-301）", () => {
-    // 既知の不具合: CARD-RS-088 置くカードの選択肢がなく、手札の先頭が自動で置かれる
+  it("RS-088: パワーゾーンに置く手札のカードを選べる（「手札から1枚選んで」）（出典: atwiki/page-301）", () => {
     const s = rushDozer(dozerState([inst("TST-OP", "y"), inst("TST-OP-ET", "z")]));
     expect(s.pendingEffectChoice?.validInstanceIds ?? []).toEqual(expect.arrayContaining(["TST-OP:y", "TST-OP-ET:z"]));
   });

@@ -54,15 +54,8 @@ export function legend2FieldBpBonus(
 
   let bonus = 0;
 
-  if (findNamedEffectByEffectId(instance.cardId, "bio_buster")) {
-    const enemyId = playerId === "player1" ? "player2" : "player1";
-    const otHeld = state.players[enemyId].command.filter((c) => {
-      if (!c.commandHeld) return false;
-      const cmdDef = getDefinition(state.definitions, c.cardId);
-      return cmdDef && categoriesInclude(cmdDef.category, "OT");
-    }).length;
-    bonus += otHeld * 1000;
-  }
+  // RS-079【バイバスター】の BP 加算は DSL（bp_per_enemy_command_…）がリリース・ホールドを問わず数える。
+  // ここで重ねて数えない（atwiki/page-15「OTのコマンド1つにつきBP+1000」）。
 
   if (findNamedEffectByEffectId(instance.cardId, "fire_spin_blade")) {
     const released = state.players[playerId].command.filter((c) => !c.commandHeld).length;

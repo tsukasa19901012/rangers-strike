@@ -1,4 +1,10 @@
 import { finalizeEffectRush, hasPendingPromptBlockingEffectRush } from "../events/emitUnitRushed";
+import {
+  DISMANTLING_EFFECT_ID,
+  isFirefightingChoice,
+  resolveDismantlingPick,
+  resolveFirefightingPick,
+} from "./legend2/damageCardEffects";
 import { DISPATCH_ORDER_EFFECT_ID, resolveDispatchOrder } from "./dispatchOrder";
 import {
   continueKurokoMemoryAfterDraw,
@@ -3822,6 +3828,13 @@ export function applyEffectChoiceSelect(
     }
 
     case "select_power": {
+      if (isFirefightingChoice(pending)) {
+        const next = resolveFirefightingPick(state, pending, instanceId);
+        if (!next) return { error: "invalid_target" };
+        return next.pendingEffectChoice
+          ? { state: next }
+          : finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
       if (pending.effectId === "flip_enemy_power_damage_pick") {
         const next = resolveFlipEnemyPowerDamagePick(state, pending, instanceId);
         if (!next) return { error: "invalid_target" };
@@ -3955,6 +3968,11 @@ export function applyEffectChoiceSelect(
     }
 
     case "select_hand": {
+      if (pending.effectId === DISMANTLING_EFFECT_ID) {
+        const next = resolveDismantlingPick(state, pending, instanceId);
+        if (!next) return { error: "invalid_target" };
+        return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
       if (pending.effectId === "turn_start_swap_hand_named") {
         const next = resolveTurnStartSwap(state, pending, instanceId);
         if (!next) return { error: "invalid_target" };

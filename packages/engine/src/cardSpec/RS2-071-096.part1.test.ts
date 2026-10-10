@@ -953,8 +953,7 @@ describe("RS-079 バイオハンター・シルバ", () => {
     expect(bpOf(silva([released("TST-OP-OT", "o1"), released("TST-OP-OT", "o2"), released("TST-OP-ET", "x")]), "player1", "RS-079:sv")).toBe(5000);
   });
 
-  it.fails("RS-079: ホールド状態の OT コマンドも1つにつき +1000 だけ（1つで BP4000）（出典: atwiki/page-15）", () => {
-    // 既知の不具合: CARD-RS-079 ホールド状態の OT コマンドが二重に数えられる（DSL の BP 加算と legend2 フィールド効果の両方で +1000）
+  it("RS-079: ホールド状態の OT コマンドも1つにつき +1000 だけ（1つで BP4000）（出典: atwiki/page-15）", () => {
     expect(bpOf(silva([held("TST-OP-OT", "o1"), held("TST-OP-ET", "x")]), "player1", "RS-079:sv")).toBe(4000);
   });
 

@@ -530,16 +530,26 @@ export function applyPaymentHolds(
   return { ...state, players: { ...state.players, [playerId]: player } };
 }
 
-export function needsEffectHoldPayment(pending: PendingEffectChoice): boolean {
-  return (
-    pending.commandAction === "hold" &&
-    (pending.kind === "select_command" || pending.kind === "select_commands")
-  );
+export function needsEffectHoldPayment(
+  pending: PendingEffectChoice,
+  state?: GameState,
+): boolean {
+  if (
+    pending.commandAction !== "hold" ||
+    (pending.kind !== "select_command" && pending.kind !== "select_commands")
+  ) {
+    return false;
+  }
+  // 自軍コマンドを支払いとしてホールドする場合だけ。敵軍コマンドを選んでホールドする効果
+  // （RS-082【トリケランス】等）は resolve_effect_choice で選ぶ。
+  if (!state) return true;
+  const own = state.players[pending.playerId].command;
+  return pending.validInstanceIds.every((id) => own.some((c) => c.instanceId === id));
 }
 
 export function buildEffectHoldPayment(state: GameState): PendingCommandPayment | null {
   const pending = state.pendingEffectChoice;
-  if (!pending || !needsEffectHoldPayment(pending)) return null;
+  if (!pending || !needsEffectHoldPayment(pending, state)) return null;
 
   const selectCount = pending.selectCount ?? 1;
   const validInstanceIds = pending.validInstanceIds;

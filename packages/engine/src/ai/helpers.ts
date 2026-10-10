@@ -1116,7 +1116,7 @@ function pickSelectCommandsChoice(
   pending: PendingEffectChoice,
   actions: GameAction[],
 ): GameAction | null {
-  if (needsEffectHoldPayment(pending)) {
+  if (needsEffectHoldPayment(pending, state)) {
     const initiate = actions.find(
       (a) =>
         a.type === "initiate_command_payment" &&
@@ -1446,7 +1446,7 @@ export function pickEffectChoice(
     return actions.find((a) => a.type === "resolve_effect_choice") ?? skip ?? null;
   }
 
-  if (needsEffectHoldPayment(pending)) {
+  if (needsEffectHoldPayment(pending, state)) {
     const initiate = actions.find(
       (a) =>
         a.type === "initiate_command_payment" &&

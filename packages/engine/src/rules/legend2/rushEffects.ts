@@ -10,6 +10,7 @@ import {
   startSelectUnitChoice,
 } from "../pendingChoices";
 import type { NamedEffectOutcome } from "../namedUnitEffects";
+import { startDismantling, startFirefighting } from "./damageCardEffects";
 
 /** Legend2 ラッシュ時効果ハンドラ。 */
 export function resolveLegend2OnRushEffects(
@@ -57,43 +58,18 @@ export function resolveLegend2OnRushEffects(
       break;
     }
     case "firefighting": {
-      // ルール: R-RES-02 — テキストの順に「自分がダメージ1枚をオモテにする」→「そうしたとき、相手も同じようにしてもよい」。
+      // ルール: R-RES-02 — テキストの順に「自分がダメージ1枚をオモテにしてもよい」→「そうしたとき、相手も同じようにしてもよい」。
       // ルール: R-RES-06 — 「そうしたとき」以降は条件ではないので、相手にダメージがなくても自分の分は行える。
-      const flipOneDamage = (base: GameState, pid: PlayerId): GameState | null => {
-        const player = base.players[pid];
-        const idx = player.power.findIndex((c) => c.faceDown);
-        if (idx < 0) return null;
-        const power = [...player.power];
-        power[idx] = { ...power[idx]!, faceDown: false };
-        return { ...base, ...updatePlayer(base, pid, { ...player, power }) };
-      };
-      const own = flipOneDamage(nextState, rusherPlayerId);
-      if (own) {
-        nextState = own;
-        nextState = flipOneDamage(nextState, enemyId) ?? nextState;
-      }
+      // 自分・相手とも「してもよい」なので、それぞれ選択（skip で行わない）にする（rules/legend2/damageCardEffects.ts）。
+      nextState = startFirefighting(nextState, rusherPlayerId, cardId, phasePlayerId);
       logs.push(
         buildLogEntry(rusherPlayerId, "named_effect", cardId, state.definitions, effectId),
       );
       break;
     }
     case "dismantling": {
-      const player = nextState.players[rusherPlayerId];
-      const powerIdx = player.power.findIndex((c) => c.faceDown);
-      if (powerIdx >= 0 && player.hand.length > 0) {
-        const power = [...player.power];
-        const [fromPower] = power.splice(powerIdx, 1);
-        const hand = [...player.hand];
-        const [toPower] = hand.splice(0, 1);
-        nextState = {
-          ...nextState,
-          ...updatePlayer(nextState, rusherPlayerId, {
-            ...player,
-            power: [...power, { ...toPower!, faceDown: true }],
-            hand: [...hand, fromPower!],
-          }),
-        };
-      }
+      // 「手札に加えてもよい。そうしたとき、手札から1枚選んで…ウラ向きに置く」（rules/legend2/damageCardEffects.ts）。
+      nextState = startDismantling(nextState, rusherPlayerId, cardId, phasePlayerId);
       logs.push(
         buildLogEntry(rusherPlayerId, "named_effect", cardId, state.definitions, effectId),
       );
