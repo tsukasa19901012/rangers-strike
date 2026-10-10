@@ -5,6 +5,7 @@ import { cardCategories, getDefinition, isSmallUnit, parsePowerCost } from "../c
 import { opponent } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
+import { hasGiantBomb } from "../rules/legend1/set5NamedEffectsA";
 
 type FieldZone = keyof Pick<PlayerState, "hand" | "discard" | "power" | "command" | "rush" | "battle">;
 
@@ -31,7 +32,8 @@ function matchesFilter(
   if (!filter) return true;
   const def = getDefinition(state.definitions, card.cardId);
   if (filter.cardType && filter.cardType !== "any" && def?.type !== filter.cardType) return false;
-  if (filter.size && def?.size !== filter.size) return false;
+  // 効果でサイズが変わったユニット（RS-255 巨大化爆弾を重ねたユニットは「Lユニット」）は変わったサイズで判定する。
+  if (filter.size && (hasGiantBomb(card) ? "L" : def?.size) !== filter.size) return false;
   if (filter.maxPowerCost !== undefined && parsePowerCost(def?.powerCost ?? 99) > filter.maxPowerCost) {
     return false;
   }

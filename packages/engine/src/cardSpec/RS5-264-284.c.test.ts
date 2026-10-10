@@ -381,8 +381,7 @@ describe("RS-282 イエローオウル", () => {
   });
 
   // faq-card-5 RS-282 Q3「はい、間違いありません。」
-  it.fails("RS-282: 公式Q&A — 対象は修正後の BP で判定する（BP3000 でも修正で 2000 以下なら対象）（出典: grnrngr/faq-card-5 RS-282 Q3）", () => {
-    // 既知の不具合: CARD-RS-270（範囲外）フラッシュマンの「OT」以外のコマンドによる BP-1000 が未実装で、修正後 BP2000 以下にならない（【岩石落とし】自体は実装済み）
+  it("RS-282: 公式Q&A — 対象は修正後の BP で判定する（BP3000 でも修正で 2000 以下なら対象）（出典: grnrngr/faq-card-5 RS-282 Q3）", () => {
     // ファイブマン・フラッシュマン系の BP 修正は未実装のため、ターン開始前から有効な修正としてフラッシュマン（BP5500、非OTコマンドで減る）を使う
     const s = ncEnter("RS-282", 4, {}, { battle: [inst("RS-270", "pink")], command: releasedN(4, "TST-OP", "c") });
     expect(zoneOf(s, "player2", "RS-270:pink")).toBe("command");
