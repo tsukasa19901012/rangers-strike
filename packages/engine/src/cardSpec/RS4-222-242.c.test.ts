@@ -520,8 +520,7 @@ describe("RS-241 ボウケンレッドAT", () => {
   }
 
   // 「【デュアルクラッシャー・ドリルヘッド】これは特徴「メカ」を持つユニットにアタックするときBP＋4000される」（CN5）
-  // 既知の不具合: CARD-RS-241【デュアルクラッシャー・ドリルヘッド】が働かない（メカへのアタックで BP+4000 されない）
-  it.fails("RS-241: 5番目に出て NC が成立していれば、特徴「メカ」を持つユニットにアタックするとき BP8500 になり BP7000 に勝つ（出典: atwiki/page-29）", () => {
+  it("RS-241: 5番目に出て NC が成立していれば、特徴「メカ」を持つユニットにアタックするとき BP8500 になり BP7000 に勝つ（出典: atwiki/page-29）", () => {
     const s = drillAttack(5, "SPEC-MECHA");
     expect(zoneOf(s, "player2", "SPEC-MECHA:d")).toBe("discard");
     expect(zoneOf(s, "player1", "RS-241:at")).toBe("battle");
@@ -533,7 +532,6 @@ describe("RS-241 ボウケンレッドAT", () => {
   });
 
   // CN5 の欄の効果なので NC が成立していなければ働かない（R-CN-02）。
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-241: 5番目以外（1番目）に出たときは働かず、メカの BP7000 に負ける（出典: atwiki/page-29「CN：5」・R-CN-02）", () => {
     const s = drillAttack(1, "SPEC-MECHA");
     expect(zoneOf(s, "player1", "RS-241:at")).toBe("discard");

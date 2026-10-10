@@ -115,7 +115,12 @@ export function battleAttackerBpBonus(
   total += legend2AttackerBpBonus(state, pending);
   total += legend3AttackerBpBonus(state, pending);
 
-  if (namedEffectActive(attacker.card, "bouken_javelin")) {
+  // RS-062【ボウケンジャベリン】・RS-241【デュアルクラッシャー・ドリルヘッド】（CN5）:
+  // 特徴「メカ」を持つユニットにアタックするとき BP+4000（NC の効果は成立しているときだけ。R-CN-02）。
+  if (
+    namedEffectActive(attacker.card, "bouken_javelin") ||
+    namedEffectActive(attacker.card, "deyuarukurashadoriruhedo")
+  ) {
     const defenderZone = findInZone(
       state.players[pending.defenderPlayerId],
       "battle",
