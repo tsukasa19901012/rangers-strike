@@ -7,7 +7,7 @@ import {
   getDefinition,
 } from "../core/catalog";
 import { crossReducedNumber, crossReductionFor } from "../keywords/battleKeywords";
-import { requestDrawFromDeck } from "./drawFromDeck";
+import { applySuperBrainDraw } from "../effects/drawEffects";
 import { buildLogEntry } from "../log/formatLog";
 import { startRuinSurvey } from "./ruinSurvey";
 import {
@@ -257,10 +257,8 @@ export function applyLegacyNumberComboEffect(
     }
     case "future_sight": {
       const beforeDeck = nextState.players[playerId].deck;
-      const drawResult = requestDrawFromDeck(nextState, playerId, playerId, {
-        count: 1,
-        sourceCardId: card.cardId,
-      });
+      // ルール: R-START-04 — 効果による「ドロー」にも超電子頭脳が適用される（faq-card-1 RS-008 Q1）。
+      const drawResult = applySuperBrainDraw(nextState, playerId, nextState.players[playerId], playerId);
       nextState = drawResult.state;
       const afterHand = nextState.players[playerId].hand;
       const drawnCard = afterHand[afterHand.length - 1];

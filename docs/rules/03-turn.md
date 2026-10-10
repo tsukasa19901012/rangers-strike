@@ -68,7 +68,7 @@
 ドロー＝山札からカードを引いて手札に加えるまでの一連の操作。追加ドローや効果によるドローも「ドロー」で、「ドローするとき」の効果が誘発する。山札から直接捨てる・オモテにする・サーチする、「ひく」だけ（ダイノガッツ）はドローではない。
 - 出典: `grnrngr/faq-card-1` RS-008 Q1「はい、発動します」・Q2「ドローは「カードをひいて手札に加えるまでの一連の操作」のことです」、RS-027、`grnrngr/faq-card-2` RS-122、`atwiki/page-123`
 - Web: https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_2.html , https://w.atwiki.jp/renst/pages/123.html
-- 実装: ❌ 05-D11（DSL/NC ドローに超電子頭脳が適用されない）
+- 実装: ? 05-D11 一部修正。NC の効果ドロー（マジブルー【未来予知】）と黒子ロボの記憶操作のドローは超電子頭脳を適用する（`applySuperBrainDraw`）。DSL の汎用 draw プリミティブには未適用
 
 #### R-START-05 引けなければ敗北 [公式] `web照合済(2026-10-10)`
 ドローすべきときに引けなければ負け（R-WIN-03）。ドローでなく「ひく」だけの効果（ダイノガッツ）でも、ひくべきときにひけなければ負け。
