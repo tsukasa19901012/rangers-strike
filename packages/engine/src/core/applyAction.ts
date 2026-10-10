@@ -208,6 +208,10 @@ import {
   isMechanicNinjaCounter,
   applySageAelCounter,
   applyShippuNinjaCounter,
+  applyMusicBoxClockCounter,
+  canUseRushReactionCounter,
+  hasRushCounterReactions,
+  isShippuNinjaCard,
   applySuperShieldSubstitute,
   canExecuteHandCounter,
   getCounterEffectId,
@@ -2065,11 +2069,24 @@ function applyActionCore(
         const pending = state.pendingRush;
         const defenderId = opponent(pending.rusherPlayerId);
         if (playerId !== defenderId) return fail("wrong_player");
-        if (getCounterEffectId(state, playerId, action.instanceId) !== "shippu_ninja") {
+        if (!canUseRushReactionCounter(state, playerId, action.instanceId, pending)) {
           return fail("invalid_counter");
         }
-        const result = applyShippuNinjaCounter(state, playerId, action.instanceId, pending);
-        const nextState = finalizeRushPending(result.state, pending);
+        const counterCardId = findInZone(state.players[playerId], "hand", action.instanceId)!.card.cardId;
+        const result = isShippuNinjaCard(state, counterCardId)
+          ? applyShippuNinjaCounter(state, playerId, action.instanceId, pending)
+          : applyMusicBoxClockCounter(state, playerId, action.instanceId, pending);
+        // 同じラッシュに対して続けて別のカウンターを使える（atwiki/page-424 Q12・Q15）。
+        // 使えるカウンターが残っていれば反応窓を開いたままにする。
+        const stillOpen = hasRushCounterReactions(
+          { ...result.state, activePlayer: pending.phasePlayerId },
+          playerId,
+          pending.rushedInstanceId,
+          pending.rusherPlayerId,
+        );
+        const nextState = stillOpen
+          ? { ...result.state, pendingRush: pending, activePlayer: playerId }
+          : finalizeRushPending(result.state, pending);
         return ok(clearCounterHoldReady(nextState, playerId), result.log);
       }
 

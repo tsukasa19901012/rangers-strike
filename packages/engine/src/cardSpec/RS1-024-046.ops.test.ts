@@ -311,8 +311,7 @@ describe("RS-026 疾風流超忍法", () => {
     expect(canUse(state, "player2", ctr.instanceId)).toBe(true);
   });
 
-  it.fails("RS-026: 敵軍ターン中に相手によって自軍ユニットがラッシュされたとき、その自軍ユニットに使用できる（出典: grnrngr/faq-card-1 RS-026 Q2）", () => {
-    // 既知の不具合: CARD-RS-026 解決時にラッシュしたプレイヤーのラッシュエリアだけを探すため、持ち主が別（相手に出された自軍ユニット）だと山札に戻らない
+  it("RS-026: 敵軍ターン中に相手によって自軍ユニットがラッシュされたとき、その自軍ユニットに使用できる（出典: grnrngr/faq-card-1 RS-026 Q2）", () => {
     // 「はい、使用することができます」
     const mine = inst("SPEC-S-1000", "mine");
     const ctr = inst("RS-026", "ctr");
@@ -432,10 +431,9 @@ describe("RS-026 疾風流超忍法", () => {
     "RS-026: ラッシュ時BP8000以下なら、その後BPが上がったダイカイオーヒガシも山札の上に戻る（出典: atwiki/page-424 Q11）— XG3-036 がカタログ未収録（fullPlayable にない）ため再現できない",
   );
 
-  it.fails(
+  it(
     "RS-026: 1体のラッシュに対し、1枚目の解決後に2枚目の疾風流超忍法（RS-247）を続けて使用できる（出典: atwiki/page-424 Q12）",
     () => {
-      // 既知の不具合: CARD-RS-026 1枚目のカウンター解決でラッシュ反応窓が閉じ、同じラッシュへの2枚目を使えない
       // 「はい、できます。」
       const { unit, ctr, state } = setup(
         "SPEC-S-1000",
@@ -464,8 +462,22 @@ describe("RS-026 疾風流超忍法", () => {
     "RS-026: 第三の眼で無効にされた後、2枚目の疾風流超忍法を改めて使用できる（出典: atwiki/page-424 Q14）— RK-011 の無効化を誘発させる公開アクション手順が確認できず再現できない",
   );
 
-  it.fails("RS-026: BP4000以上8000以下のSユニットのラッシュに宏のオルゴール時計と両方使用できる（出典: atwiki/page-424 Q15）", () => {
-    // 既知の不具合: CARD-RS-026 ラッシュ反応窓では疾風流超忍法（RS-026）しか列挙されず、RK-012 を併用できない
+  it("RS-026: 宏のオルゴール時計（RK-012）を使われたターン、ラッシュした相手はバトルフェイズを飛ばす（出典: atwiki/page-424 Q15、RK-012 本文）", () => {
+    const music = inst("RK-012", "music");
+    const { unit, state } = setup(
+      "SPEC-S-5000",
+      {},
+      { hand: [music], command: [released(CMD.ET, "e")], power: powers(4, "p2pw") },
+    );
+    let next = rush(state, "player1", unit.instanceId);
+    next = payAndUse(next, "player2", music.instanceId);
+    expect(next.pendingRush).toBeUndefined();
+    next = act(next, { type: "end_phase", playerId: "player1" });
+    expect(next.phase === "end" || next.activePlayer === "player2").toBe(true);
+    expect(next.phase).not.toBe("battle");
+  });
+
+  it("RS-026: BP4000以上8000以下のSユニットのラッシュに宏のオルゴール時計と両方使用できる（出典: atwiki/page-424 Q15）", () => {
     // 「はい、できます。」
     const music = inst("RK-012", "music");
     const { unit, ctr, state } = setup(

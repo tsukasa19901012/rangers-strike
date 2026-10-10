@@ -91,6 +91,7 @@ import {
   collectMechanicNinjaRecruits,
   isMechanicNinjaCounter,
   getCounterEffectId,
+  canUseRushReactionCounter,
   hasPlayableDinoChronicleCounter,
   isCounterReactionActive,
   isHandCounterCard,
@@ -331,7 +332,8 @@ function appendRushReactionActions(
 
   const defender = state.players[defenderId];
   for (const card of defender.hand) {
-    if (getCounterEffectId(state, defenderId, card.instanceId) !== "shippu_ninja") continue;
+    // 疾風流超忍法（RS-026／再録 RS-247）・宏のオルゴール時計（RK-012）。atwiki/page-424 Q12・Q15
+    if (!canUseRushReactionCounter(state, defenderId, card.instanceId, pending)) continue;
     appendCounterCategoryPaymentActions(state, defenderId, card.instanceId, actions);
     if (canExecuteHandCounter(state, defenderId, card.instanceId)) {
       actions.push({ type: "play_counter", playerId: defenderId, instanceId: card.instanceId });

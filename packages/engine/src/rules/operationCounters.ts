@@ -12,6 +12,7 @@ import type {
   PlayerState,
 } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
+import { addTurnRuleModifier } from "../core/scopedModifiers";
 import {
   allCategoriesExistInCommandZone,
   canPlayOperationExceptCommandHold,
@@ -463,18 +464,114 @@ export function hasRushCounterReactions(
   if (!isEnemyTurn(state, defenderId)) return false;
   if (opponentInfiniteChainBlocks(state, defenderId)) return false;
 
-  const rusher = state.players[rusherId];
-  const rushed = findInZone(rusher, "rush", rushedInstanceId)?.card;
-  if (!rushed) return false;
-  if (effectiveBp(state, rusherId, rushed) > 8000) return false;
-
   const defender = state.players[defenderId];
   for (const card of defender.hand) {
-    if (card.cardId !== "RS-026") continue;
+    if (!isRushReactionCounterCard(state, card.cardId)) continue;
+    if (!rushCounterConditionMet(state, card.cardId, rushedInstanceId, rusherId)) continue;
     if (canPlayHandCounter(state, defenderId, card.instanceId)) return true;
   }
 
   return false;
+}
+
+/** 疾風流超忍法（RS-026 と再録 RS-247 等、同名カード）。 */
+export function isShippuNinjaCard(state: GameState, cardId: string): boolean {
+  if (getCardEffect(cardId)?.effectId === "shippu_ninja") return true;
+  return getDefinition(state.definitions, cardId)?.name === "疾風流超忍法";
+}
+
+/** RK-012 宏のオルゴール時計（「BP4000以上のSユニットがラッシュされたとき」のカウンター）。 */
+export function isMusicBoxClockCard(state: GameState, cardId: string): boolean {
+  if (cardId === "RK-012") return true;
+  return getDefinition(state.definitions, cardId)?.name === "宏のオルゴール時計";
+}
+
+/** ラッシュ反応窓で使えるカウンター（疾風流超忍法・宏のオルゴール時計）。 */
+export function isRushReactionCounterCard(state: GameState, cardId: string): boolean {
+  return isShippuNinjaCard(state, cardId) || isMusicBoxClockCard(state, cardId);
+}
+
+/**
+ * ラッシュされたユニット（持ち主は問わない。相手に出された自軍ユニットもある。faq-card-1 RS-026 Q2）。
+ * 先のカウンターで場を離れていても、ラッシュされた事実は残る（同じラッシュに2枚目を使える。atwiki/page-424 Q12）。
+ */
+function findRushedUnit(
+  state: GameState,
+  rushedInstanceId: string,
+  rusherId: PlayerId,
+): { ownerId: PlayerId; card: CardInstance; onField: boolean } | null {
+  const located = findCardOwner(state, rushedInstanceId);
+  if (located) {
+    const card = findInZone(state.players[located.playerId], located.zone, rushedInstanceId)?.card;
+    if (card) return { ownerId: located.playerId, card, onField: true };
+  }
+  for (const pid of [rusherId, opponent(rusherId)] as const) {
+    const player = state.players[pid];
+    for (const zone of ["deck", "discard", "hand", "power", "command"] as const) {
+      const card = player[zone].find((c) => c.instanceId === rushedInstanceId);
+      if (card) return { ownerId: pid, card, onField: false };
+    }
+  }
+  return null;
+}
+
+function rushCounterConditionMet(
+  state: GameState,
+  counterCardId: string,
+  rushedInstanceId: string,
+  rusherId: PlayerId,
+): boolean {
+  const rushed = findRushedUnit(state, rushedInstanceId, rusherId);
+  if (!rushed) return false;
+  const bp = rushed.onField
+    ? effectiveBp(state, rushed.ownerId, rushed.card)
+    : parseInt(String(getDefinition(state.definitions, rushed.card.cardId)?.bp ?? 0), 10);
+  if (isShippuNinjaCard(state, counterCardId)) return bp <= 8000;
+  if (isMusicBoxClockCard(state, counterCardId)) {
+    return isSmallUnit(state.definitions, rushed.card.cardId) && bp >= 4000;
+  }
+  return false;
+}
+
+/** ラッシュ反応窓で、このカウンターを今使えるか（条件のみ。コストは canPlayHandCounter）。 */
+export function canUseRushReactionCounter(
+  state: GameState,
+  defenderId: PlayerId,
+  counterInstanceId: string,
+  pending: PendingRush,
+): boolean {
+  // 反応窓では手番が使う側に移っているので、ターンプレイヤー（ラッシュした側のフェイズ）で判定する。
+  if (pending.phasePlayerId === defenderId) return false;
+  if (opponentInfiniteChainBlocks(state, defenderId)) return false;
+  const card = findInZone(state.players[defenderId], "hand", counterInstanceId)?.card;
+  if (!card || !isRushReactionCounterCard(state, card.cardId)) return false;
+  return rushCounterConditionMet(state, card.cardId, pending.rushedInstanceId, pending.rusherPlayerId);
+}
+
+export const MUSIC_BOX_SKIP_BATTLE_RULE = "skip_battle_phase_this_turn";
+
+/** RK-012 宏のオルゴール時計: このターン、相手（ラッシュしたプレイヤー）はバトルフェイズを飛ばす。 */
+export function applyMusicBoxClockCounter(
+  state: GameState,
+  defenderId: PlayerId,
+  counterInstanceId: string,
+  pending: PendingRush,
+): { state: GameState; log: string } {
+  const discarded = discardHandCounter(state, defenderId, counterInstanceId);
+  if (!discarded) {
+    return {
+      state,
+      log: buildLogEntry(defenderId, "play_counter", "RK-012", state.definitions, "failed"),
+    };
+  }
+  const rusherId = pending.rusherPlayerId;
+  const rusher = addTurnRuleModifier(discarded.state.players[rusherId], MUSIC_BOX_SKIP_BATTLE_RULE, {
+    sourceCardId: discarded.cardId,
+  });
+  return {
+    state: { ...discarded.state, ...updatePlayer(discarded.state, rusherId, rusher) },
+    log: buildLogEntry(defenderId, "play_counter", discarded.cardId, state.definitions, "skip_battle_phase"),
+  };
 }
 
 export function canPlayDinoGutsLeaveCounter(
@@ -774,28 +871,31 @@ export function applyShippuNinjaCounter(
     };
   }
 
-  const rusher = discarded.state.players[pending.rusherPlayerId];
-  const found = findInZone(rusher, "rush", pending.rushedInstanceId);
+  // 「そのユニットを持ち主の山札の上に戻す」— 持ち主はラッシュしたプレイヤーとは限らない（faq-card-1 RS-026 Q2）。
+  const located = findCardOwner(discarded.state, pending.rushedInstanceId);
+  const ownerId = located?.playerId ?? pending.rusherPlayerId;
+  const owner = discarded.state.players[ownerId];
+  const found = findInZone(owner, "rush", pending.rushedInstanceId);
   if (!found) {
     return {
       state: discarded.state,
-      log: buildLogEntry(defenderId, "play_counter", "RS-026", state.definitions, "failed"),
+      log: buildLogEntry(defenderId, "play_counter", discarded.cardId, state.definitions, "failed"),
     };
   }
 
-  const [, rush] = removeAt(rusher.rush, found.index);
-  const nextRusher = {
-    ...rusher,
+  const [, rush] = removeAt(owner.rush, found.index);
+  const nextOwner = {
+    ...owner,
     rush,
-    deck: [{ ...found.card, faceDown: true }, ...rusher.deck],
+    deck: [{ ...found.card, faceDown: true }, ...owner.deck],
   };
 
   return {
     state: {
       ...discarded.state,
-      ...updatePlayer(discarded.state, pending.rusherPlayerId, nextRusher),
+      ...updatePlayer(discarded.state, ownerId, nextOwner),
     },
-    log: buildLogEntry(defenderId, "play_counter", "RS-026", state.definitions, "shippu_ninja"),
+    log: buildLogEntry(defenderId, "play_counter", discarded.cardId, state.definitions, "shippu_ninja"),
   };
 }
 

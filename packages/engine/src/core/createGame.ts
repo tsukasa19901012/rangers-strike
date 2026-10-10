@@ -10,6 +10,7 @@ import {
   hasLostByDeckOut,
 } from "../types/game";
 import { buildDefinitionMap } from "./catalog";
+import { hasTurnRuleModifier } from "./scopedModifiers";
 
 let instanceCounter = 0;
 
@@ -164,7 +165,15 @@ export function advancePhase(state: GameState): GameState {
 
   const phaseOrder = ["start", "charge", "rush", "battle", "end"] as const;
   const index = phaseOrder.indexOf(state.phase);
-  const next = phaseOrder[(index + 1) % phaseOrder.length] ?? "start";
+  let next: (typeof phaseOrder)[number] = phaseOrder[(index + 1) % phaseOrder.length] ?? "start";
+  // RK-012 宏のオルゴール時計:「このターン、相手はバトルフェイズを飛ばす」。
+  if (
+    state.phase === "rush" &&
+    next === "battle" &&
+    hasTurnRuleModifier(state.players[state.activePlayer], "skip_battle_phase_this_turn")
+  ) {
+    next = "end";
+  }
 
   let turn = state.turn;
   let activePlayer = state.activePlayer;
