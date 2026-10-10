@@ -453,8 +453,7 @@ describe("RS-318 ドギー・クルーガー", () => {
   });
 
   // faq-card-5 RS-318 Q2「はい、重複します。」
-  // 既知の不具合: CARD-RS-318 ドギー・クルーガーが2体あっても【出動指令】が1回しか発動しない（重複しない）
-  it.fails("RS-318: 公式Q&A — ドギー・クルーガーが2体あれば効果は重複する（山札の上を2回オモテにできる）（出典: grnrngr/faq-card-5 RS-318 Q2・R-CONT-01）", () => {
+  it("RS-318: 公式Q&A — ドギー・クルーガーが2体あれば効果は重複する（山札の上を2回オモテにできる）（出典: grnrngr/faq-card-5 RS-318 Q2・R-CONT-01）", () => {
     let s = st(
       {
         activePlayer: "player2",
@@ -479,8 +478,7 @@ describe("RS-318 ドギー・クルーガー", () => {
   });
 
   // faq-card-5 RS-318 Q4「はい、発動します。」（闇のヤイバで DA が追加された男のユニットのラッシュ）
-  // 既知の不具合: CARD-RS-318 【出動指令】がカード本来のカテゴリだけを見て、闇のヤイバで追加された DA を参照しない
-  it.fails("RS-318: 公式Q&A — 闇のヤイバで DA が追加された（本来 WB の）特徴「男」のユニットがラッシュされたときも発動する（出典: grnrngr/faq-card-5 RS-318 Q4）", () => {
+  it("RS-318: 公式Q&A — 闇のヤイバで DA が追加された（本来 WB の）特徴「男」のユニットがラッシュされたときも発動する（出典: grnrngr/faq-card-5 RS-318 Q4）", () => {
     const s = enemyRushes("SPEC-MALE-WB", inst("SPEC-POLICE", "top"), { p2: { rush: [inst("RS-339", "yaiba")] } });
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(zoneOf(reveal(s), "player1", "SPEC-POLICE:top")).toBe("rush");

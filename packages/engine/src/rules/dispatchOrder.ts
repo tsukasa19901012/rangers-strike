@@ -8,19 +8,16 @@
  * ルール: R-ADD-02 — 「－」も「追加条件を持つ」（RS-318 Q3）。
  */
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { GameState, PlayerId } from "../types/game";
-import { cardName, getDefinition } from "../core/catalog";
+import { isSameCardIdentity } from "@rangers-strike/cards";
+import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
+import { cardName, getDefinition, unitEffectiveCategories } from "../core/catalog";
+import { openEffectChoice } from "./pendingChoices";
 import { findInZone, opponent, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { finalizeEffectRush } from "../events/emitUnitRushed";
 
 export const DISPATCH_ORDER_EFFECT_ID = "dispatch_order";
 const DOGGIE_CARD_ID = "RS-318";
-
-function categoriesOf(def: CardDefinition | undefined): string[] {
-  if (!def) return [];
-  return Array.isArray(def.category) ? def.category : [def.category];
-}
 
 /** 「追加条件」の欄に記述があるか（「＋」「－」とも）。ルール: R-ADD-02 */
 export function hasAdditionalCondition(def: CardDefinition): boolean {
@@ -38,28 +35,31 @@ export function tryDispatchOrderOnEnemyRush(
   if (state.pendingEffectChoice) return state;
   const rushed = findInZone(state.players[rusherPlayerId], "rush", rushedInstanceId);
   if (!rushed) return state;
-  if (!categoriesOf(getDefinition(state.definitions, rushed.card.cardId)).includes("DA")) {
+  // 効果で追加されたカテゴリ（RS-339 闇のヤイバ【闇への誘い】の DA 等）も含める（faq-card-5 RS-318 Q4）。
+  if (!unitEffectiveCategories(state, rusherPlayerId, rushed.card, "rush").includes("DA")) {
     return state;
   }
   const ownerId = opponent(rusherPlayerId);
   const owner = state.players[ownerId];
-  const doggie = owner.rush.find((c) => c.cardId === DOGGIE_CARD_ID);
-  if (!doggie || owner.deck.length === 0) return state;
-  return {
-    ...state,
-    pendingEffectChoice: {
+  // ドギー・クルーガーが複数あれば体数分発動する（faq-card-5 RS-318 Q2・R-CONT-01）。
+  const doggies = owner.rush.filter((c) => isSameCardIdentity(c.cardId, DOGGIE_CARD_ID));
+  if (doggies.length === 0 || owner.deck.length === 0) return state;
+  let choice: PendingEffectChoice | undefined;
+  for (const doggie of [...doggies].reverse()) {
+    choice = {
       playerId: ownerId,
       effectId: DISPATCH_ORDER_EFFECT_ID,
-      sourceCardId: DOGGIE_CARD_ID,
+      sourceCardId: doggie.cardId,
       sourceInstanceId: doggie.instanceId,
       kind: "confirm",
       phasePlayerId,
       validInstanceIds: ["reveal"],
       selectedInstanceIds: [],
       optional: true,
-    },
-    activePlayer: ownerId,
-  };
+      ...(choice ? { resumeChoice: choice } : {}),
+    };
+  }
+  return { ...state, pendingEffectChoice: choice, activePlayer: ownerId };
 }
 
 /** 【出動指令】: 山札の上をオモテにして、条件を満たせばラッシュエリア、それ以外は手札へ。 */
@@ -73,6 +73,19 @@ export function resolveDispatchOrder(
   if (pending.playerId !== playerId) return { error: "wrong_player" };
   if (choice !== "reveal") return { error: "invalid_target" };
 
+  const result = revealDispatchOrder(state, playerId, pending);
+  // 2体目以降のドギー・クルーガーの【出動指令】（重複）を続けて処理する。
+  if (pending.resumeChoice && !result.state.pendingEffectChoice && result.state.players[playerId].deck.length > 0) {
+    return { ...result, state: openEffectChoice(result.state, pending.resumeChoice) };
+  }
+  return result;
+}
+
+function revealDispatchOrder(
+  state: GameState,
+  playerId: PlayerId,
+  pending: PendingEffectChoice,
+): { state: GameState; log?: string } {
   const cleared: GameState = {
     ...state,
     pendingEffectChoice: undefined,

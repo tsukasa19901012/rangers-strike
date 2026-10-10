@@ -529,8 +529,7 @@ describe("RS-339 闇のヤイバ", () => {
   });
 
   // grnrngr/faq-card-5 RS-339 Q2 / RS-318 Q「はい、発動します。」
-  it.fails("RS-339: 公式Q&A — 相手が特徴「男」のユニットをラッシュしたとき、ヤイバで DA が追加されていればドギー・クルーガー【出動指令】が発動する（出典: grnrngr/faq-card-5 RS-339 Q2・RS-318 Q・atwiki/page-439 Q2）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA がドギー・クルーガーの「カテゴリが DA なら」に反映されない
+  it("RS-339: 公式Q&A — 相手が特徴「男」のユニットをラッシュしたとき、ヤイバで DA が追加されていればドギー・クルーガー【出動指令】が発動する（出典: grnrngr/faq-card-5 RS-339 Q2・RS-318 Q・atwiki/page-439 Q2）", () => {
     const s = st({
       phase: "rush",
       player1: { hand: [inst("RS-057", "man")], rush: [inst("RS-339", "y")], command: releasedCat("MA", 1), power: powerCards(3), deck: deckCards(3) },
@@ -601,8 +600,7 @@ describe("RS-339 闇のヤイバ", () => {
   });
 
   // grnrngr/faq-card-6 RS-407 Q1「その「アカレンジャー」はストライクすることができません。…並び順が１番目であっても５番目であっても、ストライクすることはできない」
-  it.fails("RS-339: 公式Q&A — マジエルとヤイバが自軍ラッシュエリアにあると、DA が追加されたアカレンジャー（ET）は5番目でもストライクできない（出典: grnrngr/faq-card-6 RS-407 Q1）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA がマジエル【ハロー・ミラージュ】の制限に反映されない
+  it("RS-339: 公式Q&A — マジエルとヤイバが自軍ラッシュエリアにあると、DA が追加されたアカレンジャー（ET）は5番目でもストライクできない（出典: grnrngr/faq-card-6 RS-407 Q1）", () => {
     let s = st({ player1: { battle: fillers(4), rush: [inst("RS-126", "aka"), inst("RS-407", "mj"), inst("RS-339", "y")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     s = enter(s, "RS-126:aka");
     expect(canStrike(s, "RS-126:aka")).toBe(false);

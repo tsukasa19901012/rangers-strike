@@ -492,8 +492,7 @@ describe("RS-296 バラクティカ", () => {
   });
 
   // faq-card-5 RS-296 Q4（faq-card-4 にも同文）「はい、発動することができます。」
-  it.fails("RS-296: 公式Q&A — 大帝ラー・デウスを「航空機」のユニットを捨札にしてラッシュしたターンは、航空機を持たないユニットのラッシュでも発動できる（出典: grnrngr/faq-card-5 RS-296 Q4・faq-card-4）", () => {
-    // 既知の不具合: CARD-RS-296 【編隊出撃】が印刷された特徴だけを見て、デウス遺伝子で追加された特徴「航空機」を考慮しない（rules/formationDeploy.ts）
+  it("RS-296: 公式Q&A — 大帝ラー・デウスを「航空機」のユニットを捨札にしてラッシュしたターンは、航空機を持たないユニットのラッシュでも発動できる（出典: grnrngr/faq-card-5 RS-296 Q4・faq-card-4）", () => {
     let s = formation({
       hand: [inst("RS-203", "deus"), inst("TST-UNIT-0", "u1"), inst("TST-UNIT-0", "u2")],
       rush: [inst("RS-296", "b"), inst("RS-668", "air")],

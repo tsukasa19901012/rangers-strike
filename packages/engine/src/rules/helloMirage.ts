@@ -1,7 +1,6 @@
 import type { Category } from "@rangers-strike/cards";
-import { cardCategories } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition, isSmallUnit } from "../core/catalog";
+import { getDefinition, isSmallUnit, unitEffectiveCategories } from "../core/catalog";
 
 const HELLO_MIRAGE_CARD_ID = "RS-407";
 
@@ -33,7 +32,8 @@ export function canStrikeWithHelloMirage(
   const def = getDefinition(state.definitions, instance.cardId);
   if (!def || !isSmallUnit(state.definitions, instance.cardId)) return true;
 
-  const categories = cardCategories(def);
+  // 効果で追加されたカテゴリ（RS-339 闇のヤイバの DA 等）も含める（faq-card-6 RS-407 Q1）。
+  const categories = unitEffectiveCategories(state, playerId, instance, "battle");
   if (categories.length === 0) return true;
 
   const requiredPositions = categories.map((cat) => STRIKE_POSITION_BY_CATEGORY[cat]);
