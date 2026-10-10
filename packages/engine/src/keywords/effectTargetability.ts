@@ -1,4 +1,6 @@
 import type { GameState, PlayerId } from "../types/game";
+import { getDefinition } from "../core/catalog";
+import { opponent } from "../core/helpers";
 import { findCardInField } from "../rules/fieldLookup";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import {
@@ -18,10 +20,11 @@ export function isSelectableByOpponentEffect(
   selectorPlayerId: PlayerId,
   targetInstanceId: string,
   sourceCardId?: string,
-  sourceOwnerId: PlayerId = selectorPlayerId,
+  sourceOwnerIdArg?: PlayerId,
 ): boolean {
   const found = findCardInField(state, targetInstanceId);
   if (!found) return false;
+  const sourceOwnerId = sourceOwnerIdArg ?? inferEffectSourceOwnerId(state, selectorPlayerId, sourceCardId);
 
   // ブレイカーは「敵軍」（ブレイカーの持ち主から見て）の効果だけを防ぐ。選ぶのが持ち主でも防ぐ。
   if (
@@ -36,4 +39,27 @@ export function isSelectableByOpponentEffect(
   if (cardHasNotSelectableExceptAttack(found.card.cardId)) return false;
   if (rs627NotSelectable(state, found.playerId, targetInstanceId)) return false;
   return true;
+}
+
+/**
+ * 効果の発生源の持ち主を推定する（呼び出し側が渡さないとき）。
+ * - 発生源のカードが片方のプレイヤーの場（ラッシュ／バトル）にだけあれば、そのプレイヤー。
+ * - 「相手は自分自身の…を選び」の効果（RK-264 アクロバッター、XG6-040 ジョーカー等）は、選ぶのが相手で
+ *   発生源は選ぶプレイヤーの敵軍。ルール: R-KW-BREAKER-03（atwiki/page-2355 Q2）
+ * - それ以外は選ぶプレイヤー自身の効果とみなす。
+ */
+function inferEffectSourceOwnerId(
+  state: GameState,
+  selectorPlayerId: PlayerId,
+  sourceCardId: string | undefined,
+): PlayerId {
+  if (!sourceCardId) return selectorPlayerId;
+  const holders = (Object.keys(state.players) as PlayerId[]).filter((pid) => {
+    const player = state.players[pid];
+    return [...player.rush, ...player.battle].some((c) => c.cardId === sourceCardId);
+  });
+  if (holders.length === 1) return holders[0]!;
+  const text = getDefinition(state.definitions, sourceCardId)?.text ?? "";
+  if (/相手は自分自身の/.test(text)) return opponent(selectorPlayerId);
+  return selectorPlayerId;
 }
