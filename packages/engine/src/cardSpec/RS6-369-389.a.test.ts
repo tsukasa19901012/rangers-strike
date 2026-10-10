@@ -401,8 +401,7 @@ describe("RS-373 ファイブレッドFT", () => {
     return act(s, { type: "strike", playerId: "player2", instanceId: "TST-UNIT-0:s" });
   }
 
-  it.fails("RS-373: 【ファイブテクター】自軍ラッシュエリアにある間、相手にストライクされたとき、これをバトルエリアに出してストライクしてきたユニットとバトルでき、ストライクは無効になる（出典: atwiki/page-540）", () => {
-    // 既知の不具合: CARD-RS-373 ストライクされたときに【ファイブテクター】の選択が出ず、ストライクがそのまま通る
+  it("RS-373: 【ファイブテクター】自軍ラッシュエリアにある間、相手にストライクされたとき、これをバトルエリアに出してストライクしてきたユニットとバトルでき、ストライクは無効になる（出典: atwiki/page-540）", () => {
     let s = struck();
     expect(offeredTo(s, "player1", "RS-373:ft")).toBe(true);
     const a = legal(s).find((x) => x.playerId === "player1" && Object.values(x).includes("RS-373:ft"))!;

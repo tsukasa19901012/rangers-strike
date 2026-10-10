@@ -43,7 +43,12 @@ export function collectFiveTechInterceptors(
     !playerHasOperationGrantKeyword(state, defenderId, "strike_intercept_with_s_unit") &&
     !hasOperationEffect(defender, "five_tech", state.definitions)
   ) {
-    return [];
+    // RS-373 ファイブレッドFT【ファイブテクター】: これが自軍ラッシュエリアにある間、ストライクされたとき、これをバトルエリアに出して
+    // ストライクしてきた敵軍ユニットとバトルしてもよい（そのストライクは無効）。出せるのはこのユニット自身だけ（atwiki/page-540）。
+    return defender.rush
+      .filter((card) => card.cardId === "RS-373")
+      .filter((card) => canMoveUnitToBattleWithHolds(state, defenderId, card))
+      .map((card) => card.instanceId);
   }
 
   // ルール: R-BA-03 — 効果で出す場合も「出る制限」は出る直前に判定する。
