@@ -74,6 +74,11 @@ export type UnitLeftZoneEvent = GameEventBase & {
   cardId: string;
   fromZone: "rush" | "battle";
   toZone: ZoneName;
+  /**
+   * ルール: R-DESTROY-01/02 — 撃破による移動か。省略時は toZone === "discard" を撃破とみなす。
+   * 撃破されて捨札以外（パワーゾーン等）へ置かれた場合は true を渡す。
+   */
+  destroyed?: boolean;
 };
 
 export type DamageAppliedEvent = GameEventBase & {

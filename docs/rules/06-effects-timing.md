@@ -177,12 +177,13 @@
 撃破と捨札になることは別。撃破を経ずに捨札になる（追加条件で捨てる等）なら「撃破されたとき」は発動しない。撃破されたユニットが置換・カウンターで場に留まっても「撃破された」事実は残り、「撃破されたとき」の効果は発動する（例: アバレッドの1点ダメージ）。ただし「撃破されて捨札になったとき」は発動しない。
 - 出典: `atwiki/page-262`「「撃破」と「捨札になること」はイコールではない」、`grnrngr/faq-card-1` RS-016 Q2「「RS-016 ダイノ伝記」には、撃破されたことを無効にする効果はありません」、RS-027 Q6、RS-052 Q6、`atwiki/page-1289`「発動しても「撃破された」という事実は変わらないため「撃破した・されたとき」の効果は発動する。しかし…「撃破して・されて捨札になったとき」の効果は発動しない」
 - Web: https://w.atwiki.jp/renst/pages/262.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html , https://w.atwiki.jp/renst/pages/1289.html
-- 実装: ❌ E10（「撃破されたとき」が捨札移動でしか起動しない）
+- 実装: ✅ E10 修正済み（置換・カウンター・レジストで留まったとき、撃破されてパワーゾーンに置かれたときも「撃破されたとき」（`resolveDestroyedFactEffects` → アバレッドの1点ダメージ）が発動。「撃破されて捨札になったとき」は捨札に置かれたときだけ。`rules/leaveEffects.ts`、`rules/operationCounters.ts`、`rules/resist.ts`）
 
 #### R-DESTROY-03 除外は撃破ではない [wiki] `web照合済(2026-10-10)`
 R-ZONE-11 を参照。ユニットが除外される場合、除外は撃破とは異なるので「撃破されるとき・されたとき」の効果は発動しない。
 - 出典: `atwiki/page-1970`「除外は撃破とは異なるので、「撃破されるとき・されたとき」の効果は発動しない」（スナップショットに欠落していた文）
 - Web: https://w.atwiki.jp/renst/pages/1970.html
+- 実装: ✅ 除外（`rules/exile.ts`）は撃破の誘発を起こさない（`destroyFact.test.ts`）
 
 ---
 

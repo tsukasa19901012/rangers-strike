@@ -13,6 +13,8 @@ export function emitUnitLeftZoneAndResolve(
     fromZone: "rush" | "battle";
     toZone: ZoneName;
     phasePlayerId: PlayerId;
+    /** ルール: R-DESTROY-02 — 撃破による移動か（省略時は捨札への移動を撃破とみなす）。 */
+    destroyed?: boolean;
   },
 ): { state: GameState; logs: string[] } {
   const event = buildUnitLeftZoneEvent({
@@ -23,6 +25,7 @@ export function emitUnitLeftZoneAndResolve(
     cardId: input.cardId,
     fromZone: input.fromZone,
     toZone: input.toZone,
+    destroyed: input.destroyed,
   });
   const outcome = getEngineEventDispatcher().dispatch(event, state);
   return {

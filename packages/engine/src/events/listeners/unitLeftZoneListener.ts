@@ -12,6 +12,7 @@ export const unitLeftZoneListener: EventListener = (event, state) => {
     fromZone: leaveEvent.fromZone,
     toZone: leaveEvent.toZone,
     phasePlayerId: leaveEvent.phasePlayerId,
+    destroyed: leaveEvent.destroyed,
   });
   let nextState = result.state;
   // RK-081 ゲゲル: 敵軍ユニットが（撃破されて）捨札になったとき、撃破側で発火

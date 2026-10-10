@@ -1,3 +1,4 @@
+import { finalizeEffectRush } from "../events/emitUnitRushed";
 import { getCardEffect } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import {
@@ -124,6 +125,7 @@ function resolveLandBalkan(ctx: EffectContext): EffectOutcome {
 
   let nextPlayer = { ...player };
   let rushed = 0;
+  const rushedIds: string[] = [];
 
   for (const card of candidates.slice(0, 2)) {
     const definition = getDefinition(ctx.state.definitions, card.cardId);
@@ -146,12 +148,22 @@ function resolveLandBalkan(ctx: EffectContext): EffectOutcome {
       rush: [...nextPlayer.rush, found.card],
     };
     rushed += 1;
+    rushedIds.push(found.card.instanceId);
   }
 
   if (rushed === 0) return fail(ctx.state, "cannot_rush");
 
+  // ルール: R-RUSH-22 — 効果でラッシュしたユニットにも「ラッシュしたとき」誘発と
+  // 「ラッシュされたとき」カウンター窓がある（公式FAQ RS-005 Q2）。
+  const rushedState = finalizeEffectRush(
+    { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
+    ctx.playerId,
+    rushedIds,
+    ctx.playerId,
+  );
+
   return {
-    state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
+    state: { ...rushedState.state, log: [...rushedState.state.log, ...rushedState.logs] },
     detail: `land_balkan:${rushed}`,
     discardOperation: true,
   };

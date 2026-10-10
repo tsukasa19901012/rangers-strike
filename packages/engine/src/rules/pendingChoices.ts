@@ -1,3 +1,4 @@
+import { finalizeEffectRush } from "../events/emitUnitRushed";
 import type { Category } from "@rangers-strike/cards";
 import { canonicalCardName } from "@rangers-strike/cards";
 import type {
@@ -2743,11 +2744,27 @@ export function applyEffectChoiceSelect(
           from: "discard",
           to: "rush",
         });
-        return finishChoice(
+        const finished = finishChoice(
           nextState,
           pending,
           cardName(state.definitions, found.card.cardId),
         );
+        // ルール: R-RUSH-22 — 効果で捨札からラッシュエリアに出したユニットにも
+        // 「ラッシュしたとき」誘発と「ラッシュされたとき」カウンター窓がある。
+        if (
+          "error" in finished ||
+          !finished.state.players[ownerId].rush.some((c) => c.instanceId === instanceId)
+        ) {
+          return finished;
+        }
+        const rushed = finalizeEffectRush(finished.state, ownerId, [instanceId], pending.phasePlayerId);
+        return {
+          ...finished,
+          state:
+            rushed.logs.length > 0
+              ? { ...rushed.state, log: [...rushed.state.log, ...rushed.logs] }
+              : rushed.state,
+        };
       }
       if (dest === "hand" || dest === "hand_from_discard" || dest === "hand_from_power") {
         if (dest === "hand_from_discard") {

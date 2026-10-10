@@ -1,8 +1,6 @@
-import { hasDestroySelfDamageNote } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
 import { cardName, getDefinition } from "../core/catalog";
 import { updatePlayer, removeAt } from "../core/helpers";
-import { applyDamageToPlayer } from "./damagePayment";
 import { resolveLegend2OnDestroy } from "./legend2/destroyEffects";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { startSelectUnitChoice, startSelectCommandChoice } from "./pendingChoices";
@@ -11,6 +9,7 @@ import { buildLogEntry } from "../log/formatLog";
 import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
 import { applyHungerGodCeaseShuffle } from "./batch04FieldEffects";
 import { reanimateNamedFromDiscardOnDestroy } from "./legend1/coreGapEffects";
+import { resolveAbaRedDestroyDamage } from "./namedUnitEffects";
 
 const DESTROY_RECRUIT_FROM_DISCARD: Record<string, { partnerName: string; effectId: string }> = {
   "RS-231": { partnerName: "アバレブルー", effectId: "avare_blue_reanimate" },
@@ -112,7 +111,25 @@ export type UnitLeftZoneContext = {
   fromZone: "rush" | "battle";
   toZone: string;
   phasePlayerId: PlayerId;
+  /** ルール: R-DESTROY-02 — 撃破による移動か。省略時は捨札への移動を撃破とみなす。 */
+  destroyed?: boolean;
 };
+
+/**
+ * 「撃破されたとき」の効果（捨札になったかどうかを問わない）。
+ * ルール: R-DESTROY-01, R-DESTROY-02 — 撃破と捨札は別。撃破されたユニットが置換・カウンター・レジストで
+ * 場に留まっても、捨札以外へ置かれても、「撃破された」事実は残るので発動する。
+ * 「撃破されて捨札になったとき」は捨札に置かれたときだけ（resolveUnitLeftZoneEffectsImpl）。
+ * ルール: R-DESTROY-03 — 除外は撃破ではないので、除外ではこれを呼ばない。
+ */
+export function resolveDestroyedFactEffects(
+  state: GameState,
+  ownerPlayerId: PlayerId,
+  cardId: string,
+): { state: GameState; logs: string[] } {
+  // RS-054 アバレッド等「※これが撃破されたとき、1点ダメージを受ける。」
+  return resolveAbaRedDestroyDamage(state, ownerPlayerId, cardId);
+}
 
 /** UnitLeftZone リスナー本体: 捨札離場時の撃破誘発と自ダメージ。 */
 export function resolveUnitLeftZoneEffectsImpl(
@@ -131,8 +148,15 @@ export function resolveUnitLeftZoneEffectsImpl(
   }
 
   const wentToDiscard = ctx.toZone === "discard";
-  if (!wentToDiscard) {
+  // ルール: R-DESTROY-02 — 撃破を経ずに捨札になった場合は「撃破されたとき」系は発動しない。
+  const destroyed = ctx.destroyed ?? wentToDiscard;
+  if (!destroyed) {
     return { state: nextState, logs };
+  }
+  if (!wentToDiscard) {
+    // 撃破されたが捨札以外（パワーゾーン等）に置かれた: 「撃破されて捨札になったとき」は発動しない（R-REPL-02）。
+    const fact = resolveDestroyedFactEffects(nextState, ctx.ownerPlayerId, ctx.cardId);
+    return { state: fact.state, logs: [...logs, ...fact.logs] };
   }
 
   const destroyDsl = tryResolveDslTriggeredEffects({
@@ -340,13 +364,6 @@ export function resolveUnitLeftZoneEffectsImpl(
     }
   }
 
-  if (hasDestroySelfDamageNote(ctx.cardId)) {
-    const withSelfDamage = applyDamageToPlayer(nextState, ctx.ownerPlayerId, 1, {
-      kind: "none",
-      activePlayer: nextState.activePlayer,
-    });
-    return { state: withSelfDamage, logs };
-  }
-
-  return { state: nextState, logs };
+  const fact = resolveDestroyedFactEffects(nextState, ctx.ownerPlayerId, ctx.cardId);
+  return { state: fact.state, logs: [...logs, ...fact.logs] };
 }

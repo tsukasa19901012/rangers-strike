@@ -122,7 +122,7 @@
 効果でラッシュしたユニットにも「ラッシュしたとき」の効果は発動し、「ラッシュされたとき」のカウンターも発動できる。
 - 出典: `grnrngr/faq-card-1` RS-005 Q2、RS-013 Q3「「ラッシュしたとき」の効果は発動しますし、「ラッシュされたとき」に発動できるカウンタを発動させることもできます」、`grnrngr/faq-card-2` RS-090 Q2、`grnrngr/faq-card-4` RS-197 Q1・Q3（効果で出したユニットの「ラッシュしたとき」は「はい、発動します」）
 - Web: https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_2.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_4.html
-- 実装: ❌ E11
+- 実装: ✅ E11 修正済み（共通処理 `finalizeEffectRush`（`events/emitUnitRushed.ts`）で通常ラッシュと同じ誘発とカウンター窓を開く。接続済み: ランドバルカン（RS-005）、捨札からラッシュエリアに出す選択効果（`unitDestination: "rush_from_discard"`）。カード個別処理でラッシュエリアに直接置く他の経路（自動解決の「撃破されて捨札になったとき…出す」等）は未接続で、順次この関数を呼ぶ必要がある）
 
 #### R-RUSH-23 複数体を出す効果は1体ずつ [公式] `web照合済(2026-10-10)`
 「2枚まで選び、出してもよい」は、先に選んでから1枚ごとに「出してもよい」を実行する（1枚目にカウンターされたら2枚目を出さないことも可）。
