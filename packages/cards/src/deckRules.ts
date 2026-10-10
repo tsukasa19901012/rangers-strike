@@ -97,7 +97,12 @@ export function validateDeckEntries(
   const minSize = options?.minSize ?? DECK_MIN_SIZE;
   const errors: string[] = [];
   const byId = new Map(catalog.cards.map((card) => [card.id, card]));
-  const total = entries.reduce((sum, entry) => sum + entry.count, 0);
+  // デッキに入れられないカード（コマンダー・カタログ外）は枚数に数えない。ルール: R-DECK-01, R-DECK-07
+  const total = entries.reduce((sum, entry) => {
+    const card = byId.get(entry.cardId);
+    if (!card || EXCLUDED_DECK_TYPES.has(card.type) || entry.count <= 0) return sum;
+    return sum + entry.count;
+  }, 0);
 
   if (total < minSize) {
     const shortfall = minSize - total;
