@@ -13,6 +13,7 @@ import { findInZone, opponent, updatePlayer } from "../../core/helpers";
 import { addNextTurnRuleModifier, addTurnRuleModifier, hasTurnRuleModifier } from "../../core/scopedModifiers";
 import { grantSp1ToBattleUnit } from "../namedUnitEffects";
 import { redRacerPowerCostBonus } from "../../core/power";
+import { strikeDamageFor } from "../combo";
 import { CHIKARA_BATON_RULE } from "./set4NamedEffects";
 import { buildLogEntry } from "../../log/formatLog";
 import { unitFeatures } from "../addedFeatures";
@@ -422,6 +423,152 @@ CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, instanceId) => {
 CHOICE_SKIPPERS[PANTHER_CLAW_EFFECT_ID] = skipChoice("RS-363", PANTHER_CLAW_EFFECT_ID);
 
 // ---------------------------------------------------------------------------
+// RS-350 暗黒の鎧（オペレーション）
+// 「自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。
+//  このカードに重ねたユニットは、カテゴリがDAになり、「SP1」以上のユニット以外にはアタックされない。
+//  重ねたユニットがユニットでなくなるとき、このカードを自軍パワーゾーンにダメージにして置く。」（atwiki/page-525）
+// 重ねた状態は、巨大化爆弾（RS-255）と同じく、ユニットの stackedCards に鎧を持つ形で表す（ユニットはラッシュエリアに置く）。
+// 重ねたユニットが撃破されて「怪人」で巨大化爆弾を使われても、鎧はダメージになる（faq-card-6 RS-350 Q1）。
+
+export const DARK_ARMOR_EFFECT_ID = "rs350_dark_armor";
+export const DARK_ARMOR_CARD_ID = "RS-350";
+
+/** 暗黒の鎧を重ねたユニットか。 */
+export function hasDarkArmor(instance: Pick<CardInstance, "stackedCards">): boolean {
+  return (instance.stackedCards ?? []).some((c) => c.cardId === DARK_ARMOR_CARD_ID);
+}
+
+function beginDarkArmor(state: GameState, ctx: GrantKeywordContext): GameState {
+  const ids = fieldUnits(state, ctx.playerId)
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && def.size === "S";
+    })
+    .map((c) => c.instanceId);
+  if (ids.length === 0 || !ctx.operationInstanceId) return state;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: DARK_ARMOR_EFFECT_ID,
+    sourceCardId: DARK_ARMOR_CARD_ID,
+    sourceInstanceId: ctx.operationInstanceId,
+    kind: "select_unit",
+    phasePlayerId: ctx.phasePlayerId,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: false,
+  });
+}
+
+/** 鎧のカードを、使用後に置かれたゾーン（捨札・オペレーション置き場など）から取り除く。 */
+function takeArmorCard(state: GameState, playerId: PlayerId, armorId: string): { state: GameState; card: CardInstance } {
+  const p = state.players[playerId];
+  for (const zone of ["discard", "operation", "hand"] as const) {
+    const found = p[zone].find((c) => c.instanceId === armorId);
+    if (found) {
+      const next = { ...state, ...updatePlayer(state, playerId, { ...p, [zone]: p[zone].filter((c) => c.instanceId !== armorId) }) };
+      return { state: next, card: { instanceId: found.instanceId, cardId: found.cardId } };
+    }
+  }
+  return { state, card: { instanceId: armorId, cardId: DARK_ARMOR_CARD_ID } };
+}
+
+CHOICE_RESOLVERS[DARK_ARMOR_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const armorId = pending.sourceInstanceId ?? "";
+  const taken = takeArmorCard(clearPending(state, pending.phasePlayerId), playerId, armorId);
+  let next = taken.state;
+  const p = next.players[playerId];
+  const unit = [...p.battle, ...p.rush].find((c) => c.instanceId === instanceId);
+  if (!unit) return { state: finish(next, pending.phasePlayerId) };
+  const stacked: CardInstance = { ...unit, stackedCards: [...(unit.stackedCards ?? []), taken.card] };
+  next = {
+    ...next,
+    ...updatePlayer(next, playerId, {
+      ...p,
+      battle: p.battle.filter((c) => c.instanceId !== instanceId),
+      rush: p.rush.some((c) => c.instanceId === instanceId)
+        ? p.rush.map((c) => (c.instanceId === instanceId ? stacked : c))
+        : [...p.rush, { ...stacked, battleActed: undefined }],
+    }),
+  };
+  return { state: finish(next, pending.phasePlayerId), log: logFor(state, playerId, DARK_ARMOR_CARD_ID, `${DARK_ARMOR_EFFECT_ID}:${cardName(state.definitions, unit.cardId)}`) };
+};
+
+/** 暗黒の鎧を重ねたユニットのカテゴリ（DA になる）。重ねていなければ null。 */
+export function darkArmorCategories(instance: CardInstance): ["DA"] | null {
+  return hasDarkArmor(instance) ? ["DA"] : null;
+}
+
+/** 暗黒の鎧を重ねたユニットは「SP1」以上のユニット以外にはアタックされない。 */
+export function darkArmorBlocksAttack(state: GameState, attackerPlayerId: PlayerId, attacker: CardInstance, defender: CardInstance): boolean {
+  if (!hasDarkArmor(defender)) return false;
+  return strikeDamageFor(state.definitions, attacker, state, attackerPlayerId) < 1;
+}
+
+// RS-385 グリーンホバーの※「これは、特徴「航空機」を持たないユニットにアタックされない。」（atwiki/page-530）
+
+/** アタック対象の判定: 暗黒の鎧・グリーンホバーの※でアタックされないか。 */
+export function set6LowDefenderBlocksAttack(state: GameState, attackerPlayerId: PlayerId, attacker: CardInstance, defender: CardInstance): boolean {
+  if (darkArmorBlocksAttack(state, attackerPlayerId, attacker, defender)) return true;
+  if (defender.cardId === "RS-385" && !unitFeatures(state, attackerPlayerId, attacker).includes("航空機")) return true;
+  return false;
+}
+
+/**
+ * applyAction の後処理: 鎧を重ねたユニットが場を離れていたら、鎧を持ち主のパワーゾーンにダメージにして置く。
+ * 重ねたカードが捨札などに別々に置かれた場合も、場を離れる前に重ねていた鎧を探してパワーゾーンへ移す。
+ */
+export function settleDarkArmor(before: GameState, after: GameState): GameState {
+  let next = after;
+  for (const pid of ["player1", "player2"] as const) {
+    const armored = fieldUnits(before, pid).filter(hasDarkArmor);
+    for (const unit of armored) {
+      if (fieldUnits(next, pid).some((c) => c.instanceId === unit.instanceId)) continue;
+      for (const armor of (unit.stackedCards ?? []).filter((c) => c.cardId === DARK_ARMOR_CARD_ID)) {
+        next = moveArmorToDamage(next, pid, armor.instanceId);
+      }
+    }
+  }
+  return next;
+}
+
+function moveArmorToDamage(state: GameState, ownerId: PlayerId, armorId: string): GameState {
+  let next = state;
+  let found: CardInstance | undefined;
+  for (const pid of ["player1", "player2"] as const) {
+    const p = next.players[pid];
+    const patch: Partial<typeof p> = {};
+    for (const zone of ["discard", "hand", "deck", "command", "operation", "battle", "rush", "power"] as const) {
+      const cards = p[zone];
+      if (zone === "power" && pid === ownerId && cards.some((c) => c.instanceId === armorId && c.faceDown)) return next;
+      const direct = cards.find((c) => c.instanceId === armorId);
+      if (direct) {
+        found = direct;
+        patch[zone] = cards.filter((c) => c.instanceId !== armorId);
+        if (zone === "power" && direct.faceDown) patch.damage = Math.max(0, p.damage - 1);
+        continue;
+      }
+      if (cards.some((c) => (c.stackedCards ?? []).some((s) => s.instanceId === armorId))) {
+        patch[zone] = cards.map((c) => {
+          const st = c.stackedCards ?? [];
+          const hit = st.find((s) => s.instanceId === armorId);
+          if (!hit) return c;
+          found = hit;
+          const rest = st.filter((s) => s.instanceId !== armorId);
+          const { stackedCards: _s, ...base } = c;
+          return rest.length > 0 ? { ...base, stackedCards: rest } : base;
+        });
+      }
+    }
+    if (Object.keys(patch).length > 0) next = { ...next, ...updatePlayer(next, pid, { ...p, ...patch }) };
+  }
+  const card: CardInstance = { instanceId: armorId, cardId: found?.cardId ?? DARK_ARMOR_CARD_ID, faceDown: true };
+  const owner = next.players[ownerId];
+  return { ...next, ...updatePlayer(next, ownerId, { ...owner, power: [...owner.power, card], damage: owner.damage + 1 }) };
+}
+
+// ---------------------------------------------------------------------------
 // DSL の grant_keyword からの起点
 
 export function trySet6LowCardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {
@@ -432,6 +579,8 @@ export function trySet6LowCardEffect(state: GameState, ctx: GrantKeywordContext,
       return { state: beginTwinCamCrash(state, ctx), detail: TWIN_CAM_CRASH_EFFECT_ID };
     case "effect_card::RS-363::panther_claw":
       return { state: applyPantherClaw(state, ctx), detail: PANTHER_CLAW_EFFECT_ID };
+    case "effect_card::RS-350::dark_armor":
+      return { state: beginDarkArmor(state, ctx), detail: DARK_ARMOR_EFFECT_ID };
     case "effect_card::RS-356::hanmapanchi":
       return { state: applyHammerPunch(state, ctx), detail: HAMMER_PUNCH_RULE };
     default:

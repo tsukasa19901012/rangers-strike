@@ -1,4 +1,4 @@
-import { openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw } from "../rules/legend1/set6NamedEffects348";
+import { openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
@@ -791,6 +791,8 @@ export function applyAction(
   next = drainDeferredDestroyTriggers(next);
   // RS-256 闇の戒律・RS-255 巨大化爆弾: 置き場を離れたら重ねたカードは捨札になる。
   next = settleStackedCards(next);
+  // RS-350 暗黒の鎧: 重ねたユニットがユニットでなくなったら、鎧を持ち主のパワーゾーンにダメージにして置く。
+  if (applyActionDepth === 0) next = settleDarkArmor(state, next);
   // RS-265【ラウンドレーダー】: 相手が手札からオペレーションを使用したとき（解決が終わってから開く）。
   next = queueRoundRadar(state, next, action);
   next = openRoundRadarIfReady(next);

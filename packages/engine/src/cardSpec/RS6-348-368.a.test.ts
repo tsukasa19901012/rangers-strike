@@ -276,14 +276,12 @@ describe("RS-350 暗黒の鎧", () => {
     expectOpStats("RS-350", { name: "暗黒の鎧", category: "DA", powerCost: 0 });
   });
 
-  // 既知の不具合: CARD-RS-350 使っても自軍Sユニットを選ぶ手順が始まらず、何も起きない
-  it.fails("RS-350: 自軍 S ユニットを1体選ぶ（L ユニットは選べない）（出典: atwiki/page-525「自軍Sユニットを1体選ぶ」）", () => {
+  it("RS-350: 自軍 S ユニットを1体選ぶ（L ユニットは選べない）（出典: atwiki/page-525「自軍Sユニットを1体選ぶ」）", () => {
     const s = played();
     expect(choiceIds(s)).toEqual(["RS-354:red"]);
   });
 
-  // 既知の不具合: CARD-RS-350 使っても自軍Sユニットを選ぶ手順が始まらず、何も起きない
-  it.fails("RS-350: このカードを自軍ラッシュエリアに置き、選んだユニットを重ねる（捨札にならない）（出典: atwiki/page-525「このカードを自軍ラッシュエリアに置き」）", () => {
+  it("RS-350: このカードを自軍ラッシュエリアに置き、選んだユニットを重ねる（捨札にならない）（出典: atwiki/page-525「このカードを自軍ラッシュエリアに置き」）", () => {
     let s = played();
     s = resolveAll(pick(s, "RS-354:red"));
     expect(zoneOf(s, "player1", "RS-350:ar")).not.toBe("discard");
@@ -291,14 +289,12 @@ describe("RS-350 暗黒の鎧", () => {
     expect(red?.stackedCards?.map((c) => c.instanceId)).toContain("RS-350:ar");
   });
 
-  // 既知の不具合: CARD-RS-350 重ねたユニットのカテゴリが DA にならない
-  it.fails("RS-350: 重ねたユニットはカテゴリが DA になる（出典: atwiki/page-525「カテゴリがDAになり」）", () => {
+  it("RS-350: 重ねたユニットはカテゴリが DA になる（出典: atwiki/page-525「カテゴリがDAになり」）", () => {
     const s = st({ player1: { rush: [armored()], deck: deckCards(5) } });
     expect(categoriesOf(s, "player1", "RS-354:red")).toEqual(["DA"]);
   });
 
-  // 既知の不具合: CARD-RS-350 重ねたユニットが「SP1」未満のユニットにもアタックされる
-  it.fails("RS-350: 重ねたユニットは「SP1」以上でないユニットにはアタックされない（出典: atwiki/page-525「「SP1」以上のユニット以外にはアタックされない」）", () => {
+  it("RS-350: 重ねたユニットは「SP1」以上でないユニットにはアタックされない（出典: atwiki/page-525「「SP1」以上のユニット以外にはアタックされない」）", () => {
     const NOSP = sUnit("SPEC-NOSP", { sp: undefined, bp: 9000 });
     const s = st(
       { activePlayer: "player2", player1: { battle: [armored()], deck: deckCards(5) }, player2: { battle: [inst("SPEC-NOSP", "n")], deck: deckCards(5, "e") } },
@@ -312,8 +308,7 @@ describe("RS-350 暗黒の鎧", () => {
     expect(attackTargets(s, "TST-UNIT-7:z", "player2")).toContain("RS-354:red");
   });
 
-  // 既知の不具合: CARD-RS-350 重ねたユニットが撃破されても鎧が自軍パワーゾーンにダメージとして置かれない
-  it.fails("RS-350: 重ねたユニットがユニットでなくなる（撃破される）と、このカードを自軍パワーゾーンにダメージにして置く（出典: atwiki/page-525「このカードを自軍パワーゾーンにダメージにして置く」）", () => {
+  it("RS-350: 重ねたユニットがユニットでなくなる（撃破される）と、このカードを自軍パワーゾーンにダメージにして置く（出典: atwiki/page-525「このカードを自軍パワーゾーンにダメージにして置く」）", () => {
     let s = st({ activePlayer: "player2", player1: { battle: [armored()], power: powerCards(2), deck: deckCards(5) }, player2: { battle: [inst("TST-UNIT-7", "z")], deck: deckCards(5, "e") } });
     s = resolveAll(settle(attack(s, "TST-UNIT-7:z", "RS-354:red", "player2")));
     expect(zoneOf(s, "player1", "RS-354:red")).toBe("discard");
@@ -323,8 +318,7 @@ describe("RS-350 暗黒の鎧", () => {
   });
 
   // grnrngr/faq-card-6 RS-350 Q1「はい、その通りです。」
-  // 既知の不具合: CARD-RS-350 重ねたユニットが撃破されても鎧が自軍パワーゾーンにダメージとして置かれない
-  it.fails("RS-350: 公式Q&A — 鎧に重ねた「怪人」が撃破されて捨札になり、それに対応して巨大化爆弾を使っても、鎧はダメージにして置かれる（出典: grnrngr/faq-card-6 RS-350 Q1）", () => {
+  it("RS-350: 公式Q&A — 鎧に重ねた「怪人」が撃破されて捨札になり、それに対応して巨大化爆弾を使っても、鎧はダメージにして置かれる（出典: grnrngr/faq-card-6 RS-350 Q1）", () => {
     const KAIJIN = sUnit("SPEC-KAIJIN", { features: ["怪人"], bp: 1000, sp: undefined });
     let s = st(
       {

@@ -1,3 +1,4 @@
+import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
 import { set5ADefenderBlocksAttack } from "../legend1/set5NamedEffectsA";
 import { kibaGakureBlocksAttack, magiMergeAllowsRushAttack } from "../legend1/set5NamedEffects";
@@ -416,6 +417,8 @@ export function canAttackDefender(
   // RS-311【カラクリ忍法・牙がくれ】（rules/legend1/set5NamedEffects.ts）。
   const defenderCard = (inBattle ?? inRush)?.card;
   if (defenderCard && kibaGakureBlocksAttack(state, attackerPlayerId, attackerInstanceId, defenderCard)) return false;
+  // RS-350 暗黒の鎧（「SP1」以上のユニット以外にはアタックされない）・RS-385 グリーンホバーの※（rules/legend1/set6NamedEffects348.ts）。
+  if (defenderCard && set6LowDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;

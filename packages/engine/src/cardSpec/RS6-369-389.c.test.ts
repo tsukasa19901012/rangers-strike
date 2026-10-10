@@ -321,8 +321,7 @@ describe("RS-385 グリーンホバー", () => {
     expect(zoneOf(r.state, "player1", "RS-385:x")).toBe("rush");
   });
 
-  it.fails("RS-385: ※ 特徴「航空機」を持たないユニットにアタックされない（出典: atwiki/page-530）", () => {
-    // 既知の不具合: CARD-RS-385 「航空機」を持たないユニットのアタック対象から外れない
+  it("RS-385: ※ 特徴「航空機」を持たないユニットにアタックされない（出典: atwiki/page-530）", () => {
     let s = st({ player1: { rush: [inst("TST-UNIT-7", "a")], deck: deckCards(3) }, player2: { battle: [inst("RS-385", "gh"), inst("TST-UNIT-0", "e")] } });
     s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "TST-UNIT-7:a" });
     expect(attackTargets(s, "TST-UNIT-7:a")).not.toContain("RS-385:gh");
