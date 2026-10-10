@@ -5,6 +5,8 @@
  * 相手に1点ダメージを与える。
  *
  * 敵軍ユニット同士のバトルは BP を比べ、BP の低い方（同じなら両方）が撃破される（ルール: R-BTL-02）。
+ * RS-313 クワガライジャー【イカヅチブレイカー】（NC）は「相手に1点ダメージ」の一文がないほかは同じ効果。
+ *
  * 効果を使ったプレイヤーのバトルフェイズ中の撃破なので、闇の戒律等の「敵軍ユニットを撃破するたび」を満たす（faq-card-5 RS-256）。
  */
 import { effectiveBp, getDefinition } from "../core/catalog";
@@ -16,7 +18,12 @@ export const GRAP_FIGHTER_EFFECT_ID = "gurapufuaita";
 export const GRAP_FIGHTER_BATTLE_EFFECT_ID = "gurapufuaita_battle";
 
 /** NC 成立時: 敵軍バトルエリアの S ユニットを選ぶ（任意）。 */
-export function startGrapFighter(state: GameState, playerId: PlayerId, sourceInstanceId: string): GameState {
+export function startGrapFighter(
+  state: GameState,
+  playerId: PlayerId,
+  sourceInstanceId: string,
+  sourceCardId: "RS-221" | "RS-313" = "RS-221",
+): GameState {
   if (state.pendingEffectChoice) return state;
   const enemy = state.players[opponent(playerId)];
   const valid = enemy.battle
@@ -28,7 +35,7 @@ export function startGrapFighter(state: GameState, playerId: PlayerId, sourceIns
     pendingEffectChoice: {
       playerId,
       effectId: GRAP_FIGHTER_EFFECT_ID,
-      sourceCardId: "RS-221",
+      sourceCardId,
       sourceInstanceId,
       kind: "select_unit",
       phasePlayerId: playerId,
@@ -64,6 +71,8 @@ export function resolveGrapFighterReturn(state: GameState, instanceId: string): 
   };
   const others = next.players[enemyId].rush.filter((c) => c.instanceId !== instanceId).map((c) => c.instanceId);
   if (others.length === 0) {
+    // RS-313 クワガライジャー【イカヅチブレイカー】は同じ文面だが、ダメージの一文がない。
+    if (pending.sourceCardId === "RS-313") return next;
     return applyDamageToPlayer(next, enemyId, 1, { kind: "none", activePlayer: pending.phasePlayerId });
   }
   next = {

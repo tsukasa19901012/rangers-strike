@@ -113,6 +113,8 @@ import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
 import { listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
 import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
 import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
+import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
+import { countAvailablePower } from "./power";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
 import {
   getMorphReactionActorId,
@@ -434,6 +436,10 @@ function appendLeaveReactionActions(
       playerId: pending.ownerPlayerId,
     });
   }
+  // RS-324 マジマザー【ジルマ・マジュナ】（rules/legend1/set5NamedEffects.ts）。
+  for (const substituteInstanceId of pending.magiMotherInstanceIds ?? []) {
+    actions.push({ type: "use_super_shield", playerId: pending.ownerPlayerId, substituteInstanceId });
+  }
 
   actions.push({ type: "pass_leave_reaction", playerId: pending.ownerPlayerId });
 }
@@ -466,6 +472,33 @@ function appendZordSetupActions(
       playerId,
       zordInstanceId: card.instanceId,
     });
+  }
+}
+
+/**
+ * RS-325【マジチケット】: 自軍コマンドゾーンのリリース状態のオペレーションを、手札から使うときと同じ選択肢で発動する
+ * （rules/legend1/set5NamedEffects.ts。必要パワーは印刷値）。
+ */
+function appendMagiTicketActions(state: GameState, playerId: PlayerId, actions: GameAction[]): void {
+  const player = state.players[playerId];
+  if (!player.rush.some((c) => c.cardId === "RS-325")) return;
+  const power = countAvailablePower(state, playerId);
+  for (const card of player.command) {
+    if (!magiTicketUsable(state, playerId, card, (id) => canPlayOperationCard(state.definitions, id), power)) continue;
+    const staged = stageMagiTicket(state, playerId, card.instanceId);
+    if (!staged) continue;
+    const viaHand: GameAction[] = [];
+    appendOperationActions(staged, playerId, viaHand);
+    for (const a of viaHand) {
+      if (a.type !== "play_operation" || a.instanceId !== card.instanceId) continue;
+      actions.push({
+        type: "use_magi_ticket",
+        playerId,
+        instanceId: card.instanceId,
+        ...(a.targetInstanceId ? { targetInstanceId: a.targetInstanceId } : {}),
+        ...(a.extraInstanceId ? { extraInstanceId: a.extraInstanceId } : {}),
+      });
+    }
   }
 }
 
@@ -1674,6 +1707,7 @@ export function getLegalActions(state: GameState): GameAction[] {
       appendRushCategoryPaymentActions(state, playerId, actions);
       appendZordSetupActions(state, playerId, actions);
       appendOperationActions(state, playerId, actions);
+      appendMagiTicketActions(state, playerId, actions);
       appendOperationCategoryPaymentActions(state, playerId, actions);
       appendHidoraEggActions(state, playerId, actions);
       appendShironLightActions(state, playerId, actions);

@@ -378,6 +378,7 @@ export function resolveMorphReplacementChoice(
       replacementInstanceId,
       morphPending.phasePlayerId,
       morphFound.zone,
+      { includePassiveRushTriggers: true },
     );
     nextState = rushEffects.state;
     extraLogs.push(...rushEffects.logs);

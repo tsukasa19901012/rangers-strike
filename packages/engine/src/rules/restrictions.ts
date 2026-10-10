@@ -1,4 +1,5 @@
 import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
+import { rushAreaEntryBlockedThisTurn } from "./legend1/set5NamedEffects";
 import { hellSaturnGrantCount } from "./hellSaturn";
 import { errataBattleEntryBlocked, isDivingOrochi } from "./errataCardEffects";
 import {
@@ -364,6 +365,9 @@ export function canMoveUnitToBattle(
     return false;
   }
 
+  // RS-320【スワンイリュージョン】・RS-324 マジマザー: このターン、ラッシュエリアのユニットはバトルエリアに出られない。
+  if (rushAreaEntryBlockedThisTurn(state, playerId)) return false;
+
   if (zenibombBlocksBattleEntry(player, unit.instanceId)) {
     return false;
   }
@@ -482,6 +486,9 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (noEntryOnRushTurn(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
+
+  // RS-320【スワンイリュージョン】・RS-324 マジマザー: このターン、ラッシュエリアのユニットはバトルエリアに出られない。
+  if (rushAreaEntryBlockedThisTurn(state, playerId)) return false;
 
   if (zenibombBlocksBattleEntry(player, unit.instanceId)) {
     return false;
@@ -769,6 +776,10 @@ export function explainCannotEnterBattle(
 
   if (noEntryOnRushTurn(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return `「${unitName}」はラッシュしたターンはバトルエリアに出せません。`;
+  }
+
+  if (rushAreaEntryBlockedThisTurn(state, playerId)) {
+    return `このターン、ラッシュエリアのユニットはバトルエリアに出せません。`;
   }
 
   if (zenibombBlocksBattleEntry(player, unit.instanceId)) {

@@ -119,6 +119,7 @@ import {
   tryResolveSet4Choice,
   trySkipSet4Choice,
 } from "./legend1/set4NamedEffects";
+import { isSet5ChoiceEffect, tryResolveSet5Choice, trySkipSet5Choice } from "./legend1/set5NamedEffects";
 import {
   isSet5AuditChoiceEffect,
   tryResolveSet5AuditChoice,
@@ -583,6 +584,7 @@ export function isValidEffectChoiceTarget(
     isHououChoice(pending) ||
     pending.effectId === KUROKO_MEMORY_EFFECT_ID ||
     isSet4ChoiceEffect(pending.effectId) ||
+    isSet5ChoiceEffect(pending.effectId) ||
     isSet5AuditChoiceEffect(pending.effectId)
   ) {
     return true;
@@ -2720,8 +2722,10 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (errata) return errata;
   const set4 = trySkipSet4Choice(state, playerId);
   if (set4) return set4;
-  const set5 = trySkipSet5AuditChoice(state, playerId);
+  const set5 = trySkipSet5Choice(state, playerId);
   if (set5) return set5;
+  const set5Audit = trySkipSet5AuditChoice(state, playerId);
+  if (set5Audit) return set5Audit;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     // 選択を省略したときは先にひいた1枚を手札に残す（どちらか1枚は必ず残る）。
@@ -2890,8 +2894,10 @@ export function applyEffectChoiceSelect(
   if (errata) return errata;
   const set4 = tryResolveSet4Choice(state, playerId, instanceId);
   if (set4) return set4;
-  const set5 = tryResolveSet5AuditChoice(state, playerId, instanceId);
+  const set5 = tryResolveSet5Choice(state, playerId, instanceId);
   if (set5) return set5;
+  const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);
+  if (set5Audit) return set5Audit;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
