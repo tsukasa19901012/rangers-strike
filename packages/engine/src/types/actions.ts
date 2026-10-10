@@ -109,6 +109,16 @@ export type PlayOperationAction = {
   extraInstanceId?: string;
 };
 
+/** RS-325 天空勇者マジシャイン【マジチケット】: 自軍コマンドゾーンのオペレーションを、そのコマンドをホールドして発動する。 */
+export type UseMagiTicketAction = {
+  type: "use_magi_ticket";
+  playerId: PlayerId;
+  /** コマンドゾーンのオペレーションカード。 */
+  instanceId: string;
+  targetInstanceId?: string;
+  extraInstanceId?: string;
+};
+
 export type ShironLightAction = {
   type: "shiron_light";
   playerId: PlayerId;
@@ -364,6 +374,7 @@ export type GameAction =
   | DrawAction
   | EndPhaseAction
   | PlayOperationAction
+  | UseMagiTicketAction
   | BonusDrawAction
   | SkipBonusDrawAction
   | ReleaseStartCommandsAction

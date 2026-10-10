@@ -6,7 +6,8 @@
  */
 import type { CardInstance, GameState, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
 import { addTurnRuleModifier, hasTurnRuleModifier } from "../../core/scopedModifiers";
-import { cardName, effectiveBp, getDefinition, isSmallUnit, unitEffectiveCategories } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitEffectiveCategories } from "../../core/catalog";
+import { clearCostWindow, satisfyCostWindow } from "../../core/costWindow";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice } from "../pendingChoices";
@@ -378,6 +379,136 @@ export function magiMergeAllowsRushAttack(state: GameState, attackerPlayerId: Pl
   const from = comboFromUnit(state, attackerPlayerId, attackerInstanceId);
   return !!from && from.cardId === "RS-323" && hasBattleNcEffect(from, MAGI_MERGE_EFFECT_ID);
 }
+
+// ---------------------------------------------------------------------------
+// RS-325 天空勇者マジシャイン【マジチケット】
+// 「これが自軍ラッシュエリアにある間、自軍コマンドゾーンにあるオペレーションカードの効果を、そのコマンドをホールドして
+//  手札から使用するかのように発動できる（必要パワーとタイミングは満たすこと）。発動したカードは、捨札になるとき
+//  リリース状態の自軍コマンドをかわりに1つ捨札にすればコマンドゾーンに留まる。」
+// - 使うオペレーションカード自体をホールドすればよい（faq-card-5 RS-325 Q4・Q6）。
+// - 実際には手札から使用していないので「次に手札から使用するカード」の軽減は受けない（atwiki/page-485 Q1）— 必要パワーは印刷値。
+// 発動は通常の play_operation と同じ解決を使う（カードを手札に、同じカードのホールド状態の写しをコマンドゾーンに一時的に置く）。
+
+export const MAGI_TICKET_KEEP_EFFECT_ID = "rs325_magi_ticket_keep";
+const MAGI_TICKET_STAND_IN_SUFFIX = "#magi_ticket";
+
+/** マジチケットで発動できるコマンドゾーンのオペレーションか（タイミング以外の条件。タイミングは呼び出し側＝ラッシュフェイズの合法手）。 */
+export function magiTicketUsable(
+  state: GameState,
+  playerId: PlayerId,
+  command: CardInstance,
+  isNormalOperation: (cardId: string) => boolean,
+  availablePower: number,
+): boolean {
+  if (state.phase !== "rush" || state.activePlayer !== playerId) return false;
+  const player = state.players[playerId];
+  if (!player.rush.some((c) => c.cardId === "RS-325")) return false;
+  if (command.commandHeld) return false;
+  const def = getDefinition(state.definitions, command.cardId);
+  if (!def || def.type !== "operation" || !isNormalOperation(command.cardId)) return false;
+  return availablePower >= parsePowerCost(def.powerCost);
+}
+
+/**
+ * play_operation を通すための仮の状態: コマンドゾーンのカードを手札へ移し、同じカードのホールド状態の写しをコマンドゾーンに置く。
+ */
+export function stageMagiTicket(state: GameState, playerId: PlayerId, commandInstanceId: string): GameState | null {
+  const player = state.players[playerId];
+  const found = findInZone(player, "command", commandInstanceId);
+  if (!found) return null;
+  const { commandHeld: _h, paymentHeld: _p, mothershipHold: _m, ...card } = found.card;
+  const standIn: CardInstance = {
+    ...card,
+    instanceId: `${card.instanceId}${MAGI_TICKET_STAND_IN_SUFFIX}`,
+    commandHeld: true,
+    paymentHeld: true,
+  };
+  const command = [...player.command];
+  command[found.index] = standIn;
+  const staged = satisfyCostWindow({ ...player, command, hand: [...player.hand, card] }, "operation_category");
+  return { ...state, ...updatePlayer(state, playerId, staged) };
+}
+
+/** play_operation の後: 写しを取り除き、捨札になるときの選択（applyAction の後処理）のために記録する。 */
+export function finishMagiTicketStaging(state: GameState, playerId: PlayerId, commandInstanceId: string): GameState {
+  const player = state.players[playerId];
+  const standInId = `${commandInstanceId}${MAGI_TICKET_STAND_IN_SUFFIX}`;
+  const command = player.command.filter((c) => c.instanceId !== standInId);
+  // 手札に残っていれば（使用に失敗）コマンドゾーンに戻す。
+  const leftInHand = player.hand.find((c) => c.instanceId === commandInstanceId);
+  const next = {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...clearCostWindow(player, "operation_category"),
+      command: leftInHand ? [...command, { ...leftInHand, commandHeld: false }] : command,
+      hand: leftInHand ? player.hand.filter((c) => c.instanceId !== commandInstanceId) : player.hand,
+    }),
+  };
+  return leftInHand ? next : { ...next, magiTicketPending: { playerId, instanceId: commandInstanceId } };
+}
+
+/**
+ * applyAction の後処理（進行中の処理がないとき）: マジチケットで発動したカードが捨札になっていれば、
+ * リリース状態の自軍コマンドをかわりに捨札にするかの選択を開く。
+ */
+export function settleMagiTicket(state: GameState): GameState {
+  const ticket = state.magiTicketPending;
+  if (!ticket) return state;
+  const cleared: GameState = { ...state, magiTicketPending: undefined };
+  const player = cleared.players[ticket.playerId];
+  if (!player.discard.some((c) => c.instanceId === ticket.instanceId)) return cleared;
+  const released = player.command.filter((c) => !c.commandHeld).map((c) => c.instanceId);
+  if (released.length === 0) return cleared;
+  return openEffectChoice(cleared, {
+    playerId: ticket.playerId,
+    effectId: MAGI_TICKET_KEEP_EFFECT_ID,
+    sourceCardId: "RS-325",
+    sourceInstanceId: ticket.instanceId,
+    kind: "select_commands",
+    commandFilter: "released",
+    phasePlayerId: cleared.activePlayer,
+    validInstanceIds: released,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+function resolveMagiTicketKeep(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const player = state.players[playerId];
+  const cmd = findInZone(player, "command", instanceId);
+  const used = player.discard.find((c) => c.instanceId === pending.sourceInstanceId);
+  if (!cmd || cmd.card.commandHeld || !used) return { error: "invalid_target" };
+  const { commandHeld: _h, paymentHeld: _p, mothershipHold: _m, ...discarded } = cmd.card;
+  const command = player.command.filter((c) => c.instanceId !== instanceId);
+  const next: GameState = {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      // 発動したカードはホールド状態のままコマンドゾーンに留まる。
+      command: [...command, { ...used, commandHeld: true }],
+      discard: [...player.discard.filter((c) => c.instanceId !== used.instanceId), discarded],
+    }),
+    pendingEffectChoice: undefined,
+    activePlayer: pending.phasePlayerId,
+  };
+  return {
+    state: settled(next),
+    log: logFor(state, playerId, "RS-325", `${MAGI_TICKET_KEEP_EFFECT_ID}:${cardName(state.definitions, cmd.card.cardId)}`),
+  };
+}
+
+function skipMagiTicketKeep(state: GameState, playerId: PlayerId): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  return {
+    state: settled({ ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId }),
+    log: buildLogEntry(playerId, "skip_effect_choice", "RS-325", state.definitions, `${MAGI_TICKET_KEEP_EFFECT_ID}:skipped`),
+  };
+}
+
+CHOICE_RESOLVERS[MAGI_TICKET_KEEP_EFFECT_ID] = resolveMagiTicketKeep;
+CHOICE_SKIPPERS[MAGI_TICKET_KEEP_EFFECT_ID] = skipMagiTicketKeep;
 
 // ---------------------------------------------------------------------------
 // DSL grant_keyword（`cardId::effectId`）からの起点

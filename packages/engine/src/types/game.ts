@@ -763,6 +763,8 @@ export type GameState = {
   fieldEntryHandledIds?: string[];
   /** 「選んだ1枚ごとにラッシュエリアに出す」効果の進行（R-RUSH-21, R-RUSH-23）。 */
   pendingEffectRush?: PendingEffectRush;
+  /** RS-325【マジチケット】で発動したオペレーション（捨札になるときの「かわりに」の選択待ち。rules/legend1/set5NamedEffects.ts）。 */
+  magiTicketPending?: { playerId: PlayerId; instanceId: string };
   /**
    * 使用して手札を離れたが、効果の解決が選択待ち等で中断していてまだどのゾーンにも置かれていない
    * オペレーション（カウンターを含む）。解決が終わった時点で（効果が別のゾーンへ移していなければ）

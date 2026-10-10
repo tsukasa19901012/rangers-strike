@@ -501,8 +501,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   }
 
   // 「自軍コマンドゾーンにあるオペレーションカードの効果を、そのコマンドをホールドして手札から使用するかのように発動できる」
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装（コマンドゾーンのオペレーションを使う合法手がない）
-  it.fails("RS-325: 自軍ラッシュエリアにある間、コマンドゾーンのオペレーション（オーラパワー）をそのコマンドをホールドして発動できる（出典: atwiki/page-485）", () => {
+  it("RS-325: 自軍ラッシュエリアにある間、コマンドゾーンのオペレーション（オーラパワー）をそのコマンドをホールドして発動できる（出典: atwiki/page-485）", () => {
     let s = shine();
     s = useVia(s, "player1", "RS-011:aura");
     if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:target")) s = pick(s, "TST-UNIT-0:target");
@@ -520,8 +519,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   });
 
   // 「発動したカードは、捨札になるときリリース状態の自軍コマンドをかわりに1つ捨札にすればコマンドゾーンに留まる」
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装
-  it.fails("RS-325: 発動したカードが捨札になるとき、リリース状態の自軍コマンドをかわりに1つ捨札にすればコマンドゾーンに留まる（出典: atwiki/page-485）", () => {
+  it("RS-325: 発動したカードが捨札になるとき、リリース状態の自軍コマンドをかわりに1つ捨札にすればコマンドゾーンに留まる（出典: atwiki/page-485）", () => {
     let s = shine();
     s = useVia(s, "player1", "RS-011:aura");
     if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:target")) s = pick(s, "TST-UNIT-0:target");
@@ -531,8 +529,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   });
 
   // 「かわりに1つ捨札にすれば」— 任意
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装
-  it.fails("RS-325: かわりに捨札にしないことを選べば、発動したカードは捨札になる（出典: atwiki/page-485「捨札にすれば」）", () => {
+  it("RS-325: かわりに捨札にしないことを選べば、発動したカードは捨札になる（出典: atwiki/page-485「捨札にすれば」）", () => {
     let s = shine();
     s = useVia(s, "player1", "RS-011:aura");
     if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:target")) s = pick(s, "TST-UNIT-0:target");
@@ -543,8 +540,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   });
 
   // faq-card-5 RS-325 Q4・Q6（atwiki Q4・Q6）「使いたいオペレーションカード自体をホールドして使用することができます。それとは別にコマンドをホールドする必要はありません。」
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装
-  it.fails("RS-325: 公式Q&A — 使うオペレーションカード自体をホールドすればよく、同じカテゴリの別のコマンドをホールドする必要はない（出典: grnrngr/faq-card-5 RS-325 Q4・Q6）", () => {
+  it("RS-325: 公式Q&A — 使うオペレーションカード自体をホールドすればよく、同じカテゴリの別のコマンドをホールドする必要はない（出典: grnrngr/faq-card-5 RS-325 Q4・Q6）", () => {
     let s = shine({ command: [released("RS-011", "aura")] });
     s = useVia(s, "player1", "RS-011:aura");
     if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:target")) s = pick(s, "TST-UNIT-0:target");
@@ -552,7 +548,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   });
 
   // atwiki/page-485 Q1「いいえ、そのようにはなりません。…実際には手札から使用していないので、…該当しません。」
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装
+  // 既知の不具合: CARD-RS-325 XG7-054 オーズドライバーがゲームのカード定義に無い（マジチケット自体は実装済み）
   it.fails("RS-325: 公式Q&A — マジチケットで発動したオーズドライバーの「次に手札から使用するカード」の軽減は、続けてマジチケットで発動するカードには適用されない（出典: atwiki/page-485 Q1）", () => {
     let s = shine({ power: 0, command: [released("XG7-054", "ooo"), released("RS-011", "aura")] });
     s = { ...s, players: { ...s.players, player1: { ...s.players.player1, power: powerCards(3) } } };
@@ -567,7 +563,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   it.todo("RS-325: 公式Q&A — マジチケットで巨大化爆弾を使いユニットを重ねてラッシュエリアに出したとき、コマンドを捨札にしなくても巨大化爆弾はラッシュエリアに留まり、かわりに捨札にすることもできない（出典: grnrngr/faq-card-5 RS-325 Q3）— 巨大化爆弾は※カウンター（敵軍ターン中のみ・ユーザー決定）で「怪人」の撃破に応じる手順を要し、マジチケット未実装のため場を作れない");
 
   // faq-card-5 RS-325 Q5「はい、発動します。」
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装
+  // 既知の不具合: CARD-RS-265 【ラウンドレーダー】が未実装（マジチケット自体は実装済み）
   it.fails("RS-325: 公式Q&A — 相手がマジチケットでオペレーションの効果を発動すると、自軍ジェットシーカーの【ラウンドレーダー】は発動する（出典: grnrngr/faq-card-5 RS-325 Q5・faq-card-5 RS-265）", () => {
     let s = shine();
     s = { ...s, players: { ...s.players, player2: { ...s.players.player2, rush: [inst("RS-265", "seeker")], power: powerCards(3, "ep") } } };
