@@ -290,6 +290,8 @@ export function effectiveBp(
   playerId: PlayerId,
   instance: CardInstance,
 ): number {
+  // ルール: R-BP-01 — 「BP○○になる」が最優先で、増減は計算しない。
+  if (instance.bpSetValue !== undefined) return instance.bpSetValue;
   const base =
     instanceBp(state.definitions, instance) +
     passiveBpBonus(state, playerId, instance) +

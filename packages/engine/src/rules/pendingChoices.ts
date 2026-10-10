@@ -2449,6 +2449,26 @@ export function applyEffectChoiceSelect(
       return finishChoice(nextState, pending, String(declared));
     }
     case "select_unit": {
+      if (pending.effectId === "rk154_head_held_high") {
+        // RK-154【頭が高い！】: このターン BP500 になる（R-BP-01）。
+        const located = findCardOwner(state, instanceId);
+        if (!located || (located.zone !== "rush" && located.zone !== "battle")) {
+          return { error: "invalid_target" };
+        }
+        const owner = state.players[located.playerId];
+        const zoneCards = owner[located.zone].map((c) =>
+          c.instanceId === instanceId ? { ...c, bpSetValue: 500 } : c,
+        );
+        const next = {
+          ...state,
+          ...updatePlayer(state, located.playerId, { ...owner, [located.zone]: zoneCards }),
+        };
+        return finishChoice(
+          next,
+          pending,
+          cardName(state.definitions, findFieldUnitCardId(next, instanceId)),
+        );
+      }
       if (
         pending.effectId === "enemy_resident_pick_to_power" ||
         pending.effectId === "enemy_resident_pick_hold"

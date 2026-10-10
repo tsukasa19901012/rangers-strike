@@ -21,6 +21,7 @@ import {
 import { tryOnAllyRushNamedReturnSelfToHand } from "./batch07FieldEffects";
 import { tryRsCatchallOnEnemyRush } from "./rs/rsCatchallRuntime";
 import { applyRadarOnRush } from "./residentOps";
+import { startSelectUnitChoice } from "./pendingChoices";
 
 function applyDrawOnRush(
   state: GameState,
@@ -41,6 +42,39 @@ function applyDrawOnRush(
       buildLogEntry(playerId, "rush_effect", cardId, state.definitions, "draw_1"),
     ],
   };
+}
+
+export const HEAD_HELD_HIGH_EFFECT_ID = "rk154_head_held_high";
+
+/**
+ * RK-154 ジーク【頭が高い！】: これをラッシュしたとき、敵軍 S ユニットを1体選んでもよい。
+ * 選んだユニットはこのターン BP500 になり、それより高い BP になる効果はすべて無効（R-BP-01: 指定値が最優先）。
+ * 「M ユニットを選んで S ユニットにする」分岐はサイズ変更の仕組みがないため未対応（対象は S ユニットのみ）。
+ */
+function startHeadHeldHighChoice(
+  state: GameState,
+  playerId: PlayerId,
+  sourceInstanceId: string,
+  phasePlayerId: PlayerId,
+): GameState | null {
+  const enemyId: PlayerId = playerId === "player1" ? "player2" : "player1";
+  const enemy = state.players[enemyId];
+  const targets = [...enemy.rush, ...enemy.battle]
+    .filter((c) => {
+      const def = state.definitions[c.cardId];
+      return def?.type === "unit" && def.size === "S";
+    })
+    .map((c) => c.instanceId);
+  return startSelectUnitChoice(state, {
+    playerId,
+    effectId: HEAD_HELD_HIGH_EFFECT_ID,
+    sourceCardId: "RK-154",
+    sourceInstanceId,
+    phasePlayerId,
+    validInstanceIds: targets,
+    unitDestination: undefined,
+    optional: true,
+  });
 }
 
 /**
@@ -97,6 +131,11 @@ export function applyOnRushUnitEffects(
   });
   nextState = dslRush.state;
   logs.push(...dslRush.logs);
+
+  if (found.card.cardId === "RK-154" && !nextState.pendingEffectChoice) {
+    const withChoice = startHeadHeldHighChoice(nextState, ownerPlayerId, instanceId, phasePlayerId);
+    if (withChoice) nextState = withChoice;
+  }
 
   if (!dslRush.handled) {
     const namedRush = resolveNamedOnRushEffects(

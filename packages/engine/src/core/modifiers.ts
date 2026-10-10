@@ -9,7 +9,8 @@ export function clearTurnModifiers(player: PlayerState): PlayerState {
         card.spModifier === undefined &&
         card.spOverride === undefined &&
         card.battleActed === undefined &&
-        card.activatedNcEffects === undefined
+        card.activatedNcEffects === undefined &&
+        card.bpSetValue === undefined
       ) {
         return card;
       }
@@ -19,6 +20,7 @@ export function clearTurnModifiers(player: PlayerState): PlayerState {
       delete next.spOverride;
       delete next.battleActed;
       delete next.activatedNcEffects;
+      delete next.bpSetValue;
       return next;
     });
 

@@ -67,6 +67,11 @@ export type CardInstance = {
   tempDiscardAtTurnEnd?: boolean;
   /** レジスト: バトル撃破後にホールド留場。 */
   registerHeld?: boolean;
+  /**
+   * このターン「BP○○になる」（RK-154【頭が高い！】等）。ターン終了時にクリア。
+   * ルール: R-BP-01 — 指定の値になる効果が最優先で、増減の計算は行わない。
+   */
+  bpSetValue?: number;
 };
 
 export type PlayerState = {

@@ -147,6 +147,10 @@ export function battleAttackerBpBonus(
     total += rideAttackBpBoostAmount(mountedVehicle.cardId);
   }
 
+  // ルール: R-BP-01 — 「指定の値になる」（ミラージュビーム・頭が高い！）が最も優先され、増減の計算は行わない。
+  if (mirageOverride !== undefined) return mirageOverride;
+  if (attacker.card.bpSetValue !== undefined) return attacker.card.bpSetValue;
+
   return total;
 }
 
@@ -169,6 +173,8 @@ export function battleDefenderBp(
     pending.substituteInstanceId ?? pending.defenderInstanceId,
   );
   if (!defenderFound) return 0;
+  // ルール: R-BP-01 — 「BP○○になる」が最優先で、本来の値・増減の計算は行わない。
+  if (defenderFound.card.bpSetValue !== undefined) return defenderFound.card.bpSetValue;
 
   const attackerCard = findBattleAttacker(
     state.players[pending.attackerPlayerId],
