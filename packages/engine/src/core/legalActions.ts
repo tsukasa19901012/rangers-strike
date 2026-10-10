@@ -1039,6 +1039,12 @@ function appendEffectChoiceActions(
     actions.push({ type: "skip_effect_choice", playerId });
   }
 
+  // 「～してもよい」の任意効果の確認（rules/optionalEffects.ts）: 行う＝confirm、行わない＝skip。
+  if (pending.mayConfirm) {
+    actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
   if (needsEffectHoldPayment(pending) && buildEffectHoldPayment(state)) {
     actions.push({
       type: "initiate_command_payment",

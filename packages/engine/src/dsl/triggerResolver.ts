@@ -9,6 +9,11 @@ import { PASSIVE_GRANT_KEYWORDS } from "./grantKeyword";
 import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
 import { listDslEffectsForTrigger } from "./effectLookup";
 import {
+  DSL_OPTIONAL_EFFECT_HANDLER,
+  openOptionalEffectConfirm,
+  registerOptionalEffect,
+} from "../rules/optionalEffects";
+import {
   type DslCardContext,
   interpretEffectPrimitives,
 } from "./cardInterpreter";
@@ -28,6 +33,36 @@ function isPassiveGrantOnlyEffect(primitives: EffectPrimitive[]): boolean {
         PASSIVE_GRANT_KEYWORDS.has(p.keyword),
     )
   );
+}
+
+/**
+ * DSL の任意効果（optional）で、効果全体が「～してもよい」の効果か。
+ * 最初の文が「…てもよい」で終わるもの（「…してもよい。そうしたとき、…」を含む）だけを対象にし、
+ * 途中の一部だけが任意の効果や、相手が選ぶ「相手は…してもよい」は対象にしない（例: RK-259）。
+ */
+function isOptionalWording(effect: { optional?: boolean; text?: string }): boolean {
+  if (!effect.optional) return false;
+  const text = (effect.text ?? "").replace(/^【[^】]*】/, "").replace(/^「SP\d+」/, "");
+  const first = text.split("。")[0] ?? "";
+  return /てもよい$/.test(first) && !/相手(は|も)/.test(first);
+}
+
+const SP_GRANT_RE = /^SP\d+$/;
+
+/** 「「SP1」…してもよい」の「SP1」部分（任意でない）と任意部分に分ける。 */
+function splitOptionalPrimitives(primitives: EffectPrimitive[]): {
+  mandatory: EffectPrimitive[];
+  optionalPart: EffectPrimitive[];
+} {
+  const mandatory = primitives.filter(
+    (p) => p.type === "grant_keyword" && SP_GRANT_RE.test(p.keyword),
+  );
+  return { mandatory, optionalPart: primitives.filter((p) => !mandatory.includes(p)) };
+}
+
+/** 効果の解決で両プレイヤーの場・手札等が変わったか。 */
+function fieldChanged(before: GameState, after: GameState): boolean {
+  return JSON.stringify(before.players) !== JSON.stringify(after.players);
 }
 
 function buildTriggerContext(args: {
@@ -83,6 +118,46 @@ export function tryResolveDslTriggeredEffects(args: {
     });
 
     const outcome = interpretEffectPrimitives(current, ctx, effect.effects);
+
+    // 「～してもよい」の任意効果が選択なしにそのまま解決されるなら、行うかどうかの確認を先に開く。
+    // 先頭の「SPn」（NC 等で常に得る能力）は任意部分ではないので先に適用する。
+    const { mandatory, optionalPart } = splitOptionalPrimitives(effect.effects);
+    const beforeOptional =
+      isOptionalWording(effect) && mandatory.length > 0
+        ? interpretEffectPrimitives(current, ctx, mandatory).state
+        : current;
+    const optionalTrial =
+      isOptionalWording(effect) && mandatory.length > 0
+        ? interpretEffectPrimitives(beforeOptional, ctx, optionalPart).state
+        : outcome.state;
+    if (
+      isOptionalWording(effect) &&
+      optionalPart.length > 0 &&
+      !optionalTrial.pendingEffectChoice &&
+      !isPassiveGrantOnlyEffect(optionalPart) &&
+      fieldChanged(beforeOptional, optionalTrial)
+    ) {
+      current = openOptionalEffectConfirm(beforeOptional, {
+        playerId: args.playerId,
+        effectId: effect.id,
+        sourceCardId: args.cardId,
+        sourceInstanceId: args.instanceId,
+        phasePlayerId: args.phasePlayerId,
+        optionalDslMeta: { effectId: effect.id, triggerType: args.triggerType },
+      });
+      handled = true;
+      logs.push(
+        buildLogEntry(
+          args.playerId,
+          args.logAction ?? "named_effect",
+          args.cardId,
+          args.state.definitions,
+          `choice:${effect.id}`,
+        ),
+      );
+      break;
+    }
+
     current = outcome.state;
     if (
       current.pendingEffectChoice ||
@@ -131,3 +206,41 @@ export function tryResolveDslNcEffects(args: {
     logAction: "number_combo",
   });
 }
+
+registerOptionalEffect(DSL_OPTIONAL_EFFECT_HANDLER, {
+  apply: (state, pending) => {
+    const meta = pending.optionalDslMeta;
+    if (!meta) return state;
+    const effect = listDslEffectsForTrigger(
+      pending.sourceCardId,
+      meta.triggerType as EffectTrigger["type"],
+    ).find((e) => e.id === meta.effectId);
+    if (!effect) return state;
+    const ctx = buildTriggerContext({
+      effectId: effect.id,
+      sourceCardId: pending.sourceCardId,
+      playerId: pending.playerId,
+      phasePlayerId: pending.phasePlayerId,
+      triggerSourceInstanceId: pending.sourceInstanceId ?? "",
+      optional: effect.optional,
+    });
+    const outcome = interpretEffectPrimitives(
+      state,
+      ctx,
+      splitOptionalPrimitives(effect.effects).optionalPart,
+    );
+    return {
+      ...outcome.state,
+      log: [
+        ...outcome.state.log,
+        buildLogEntry(
+          pending.playerId,
+          "named_effect",
+          pending.sourceCardId,
+          state.definitions,
+          outcome.detail ?? effect.id,
+        ),
+      ],
+    };
+  },
+});

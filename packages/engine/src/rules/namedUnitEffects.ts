@@ -1,9 +1,9 @@
 import {
   findNamedEffectByEffectId,
-  getOnAttackNamedEffect,
   getOnRushNamedEffect,
   hasDestroySelfDamageNote,
 } from "@rangers-strike/cards";
+import { activeOnAttackNamedEffect, namedEffectActive } from "./ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../types/game";
 import {
   bpSetValueOf,
@@ -63,6 +63,8 @@ import {
   startTyrannoSonicChoice,
 } from "./pendingChoices";
 import { tryLeaveField } from "./operationCounters";
+import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEffects";
+import { afterCommandCardsLeft } from "./commandLeaveRefill";
 import { attackerSuppressesAttackedCounters } from "./keywordGapRuntime";
 import { allyAttackedAuraBpBonus } from "../dsl/promotedKeywordBridge";
 
@@ -111,7 +113,7 @@ export function battleAttackerBpBonus(
   total += legend2AttackerBpBonus(state, pending);
   total += legend3AttackerBpBonus(state, pending);
 
-  if (findNamedEffectByEffectId(attacker.card.cardId, "bouken_javelin")) {
+  if (namedEffectActive(attacker.card, "bouken_javelin")) {
     const defenderZone = findInZone(
       state.players[pending.defenderPlayerId],
       "battle",
@@ -130,7 +132,7 @@ export function battleAttackerBpBonus(
     }
   }
 
-  if (findNamedEffectByEffectId(attacker.card.cardId, "red_fire")) {
+  if (namedEffectActive(attacker.card, "red_fire")) {
     const released = state.players[pending.attackerPlayerId].command.filter(
       (c) => !c.commandHeld,
     ).length;
@@ -188,9 +190,9 @@ export function battleDefenderBp(
     (hasBattleNcEffect(attackerCard, "shark_jaws") ||
       hasBattleNcEffect(attackerCard, "super_cutter") ||
       hasBattleNcEffect(attackerCard, "use_printed_bp_in_battle") ||
-      getOnAttackNamedEffect(attackerCard.cardId)?.effectId === "shark_jaws" ||
-      getOnAttackNamedEffect(attackerCard.cardId)?.effectId === "super_cutter" ||
-      getOnAttackNamedEffect(attackerCard.cardId)?.effectId === "raidakiku" ||
+      activeOnAttackNamedEffect(attackerCard)?.effectId === "shark_jaws" ||
+      activeOnAttackNamedEffect(attackerCard)?.effectId === "super_cutter" ||
+      activeOnAttackNamedEffect(attackerCard)?.effectId === "raidakiku" ||
       legend2UsePrintedDefenderBp(state, pending) ||
       legend3UsePrintedDefenderBp(state, pending));
 
@@ -249,7 +251,7 @@ export function attackerBlocksDefenderCounters(
   return (
     hasBattleNcEffect(attacker.card, "panther_claw") ||
     hasBattleNcEffect(attacker.card, "cannot_counter_on_attack") ||
-    getOnAttackNamedEffect(attacker.card.cardId)?.effectId === "panther_claw" ||
+    activeOnAttackNamedEffect(attacker.card)?.effectId === "panther_claw" ||
     attackerSuppressesAttackedCounters(attacker.card.cardId) ||
     legend2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId)
   );
@@ -507,22 +509,52 @@ export function resolveNamedOnRushEffects(
   return { state: nextState, logs };
 }
 
-/** RS-070 天空魔法斬り — 戦闘進入時。 */
+function holdAllEnemyCommands(state: GameState, playerId: PlayerId): GameState {
+  const enemyId = opponent(playerId);
+  const enemy = state.players[enemyId];
+  const command = enemy.command.map((c) => ({ ...c, commandHeld: true }));
+  return { ...state, ...updatePlayer(state, enemyId, { ...enemy, command }) };
+}
+
+/**
+ * RS-070【天空魔法斬り】／RS-111【ファントムイリュージョン】— 「これがバトルエリアに出たとき、
+ * 敵軍コマンドをすべてホールドしてもよい」。任意なので行うかどうかの確認を開く（出典: atwiki/page-24）。
+ * リリース状態の敵軍コマンドが無ければ何も変わらないので確認しない。
+ */
 export function resolveSkyMagicSlash(
   state: GameState,
   playerId: PlayerId,
   cardId: string,
+  sourceInstanceId?: string,
 ): NamedEffectOutcome {
-  const enemyId = opponent(playerId);
-  const enemy = state.players[enemyId];
-  const command = enemy.command.map((c) => ({ ...c, commandHeld: true }));
+  const enemy = state.players[opponent(playerId)];
+  if (!enemy.command.some((c) => !c.commandHeld)) return { state, logs: [] };
   return {
-    state: { ...state, ...updatePlayer(state, enemyId, { ...enemy, command }) },
+    state: openOptionalEffectConfirm(state, {
+      playerId,
+      effectId: "sky_magic_slash",
+      sourceCardId: cardId,
+      sourceInstanceId,
+      phasePlayerId: state.activePlayer,
+    }),
     logs: [
-      buildLogEntry(playerId, "enter_battle", cardId, state.definitions, "sky_magic_slash"),
+      buildLogEntry(playerId, "enter_battle", cardId, state.definitions, "choice:sky_magic_slash"),
     ],
   };
 }
+
+registerOptionalEffect("sky_magic_slash", {
+  apply: (state, pending) => {
+    const next = holdAllEnemyCommands(state, pending.playerId);
+    return {
+      ...next,
+      log: [
+        ...next.log,
+        buildLogEntry(pending.playerId, "enter_battle", pending.sourceCardId, state.definitions, "sky_magic_slash"),
+      ],
+    };
+  },
+});
 
 const OWN_TURN_BATTLE_ENTRY_EFFECTS = new Set(["justice_flasher"]);
 
@@ -926,6 +958,7 @@ export function tryStartMossBreakerChoice(
 export function blowKnuckleReturnReleasedCommands(state: GameState): NamedEffectOutcome {
   let nextState = state;
   const logs: string[] = [];
+  const leftCounts: Array<[PlayerId, number]> = [];
 
   for (const pid of ["player1", "player2"] as const) {
     const player = nextState.players[pid];
@@ -940,13 +973,53 @@ export function blowKnuckleReturnReleasedCommands(state: GameState): NamedEffect
         hand: [...player.hand, ...released],
       }),
     };
+    leftCounts.push([pid, released.length]);
     logs.push(
       buildLogEntry(pid, "named_effect", "RS-064", state.definitions, "blow_knuckle"),
     );
   }
 
+  // コマンドゾーンを離れたときの誘発（RS-238【プロジェットカノン】等。離れた枚数だけ — RS-064 Q1）。
+  for (const [pid, count] of leftCounts) {
+    nextState = afterCommandCardsLeft(nextState, pid, count);
+    if (nextState.pendingEffectChoice) break;
+  }
+
   return { state: nextState, logs };
 }
+
+/**
+ * RS-064【ブロウナックル】「リリース状態の自軍コマンドをすべて手札に戻してもよい。そうしたとき、相手も同じようにする」。
+ * 任意なので確認を開く（atwiki/page-268）。自軍のリリース状態コマンドが0枚なら発動できない
+ * （grnrngr/faq-card-1 RS-064 Q3「いいえ、できません」）。
+ */
+export function tryStartBlowKnuckle(
+  state: GameState,
+  playerId: PlayerId,
+  sourceCardId: string,
+  sourceInstanceId: string,
+): GameState | null {
+  if (!state.players[playerId].command.some((c) => !c.commandHeld)) return null;
+  return openOptionalEffectConfirm(state, {
+    playerId,
+    effectId: "blow_knuckle",
+    sourceCardId,
+    sourceInstanceId,
+    phasePlayerId: state.activePlayer,
+  });
+}
+
+registerOptionalEffect("blow_knuckle", {
+  apply: (state, pending) => {
+    const blow = blowKnuckleReturnReleasedCommands(state);
+    return { ...blow.state, log: [...blow.state.log, ...blow.logs] };
+  },
+  // 相手の方がリリース状態のコマンドを多く失うときだけ行う。
+  cpuAccepts: (state, pending) => {
+    const count = (pid: PlayerId) => state.players[pid].command.filter((c) => !c.commandHeld).length;
+    return count(opponent(pending.playerId)) > count(pending.playerId);
+  },
+});
 
 export function grantSp1ToBattleUnit(
   state: GameState,

@@ -49,6 +49,7 @@ import {
 import type { ComboOutcome } from "./comboTypes";
 import {
   applyNumberComboEffect,
+  markOnAttackNcEffectOnEnter,
   numberComboTriggers,
   resolveNamedNcEffectId,
 } from "./numberComboEffects";
@@ -222,9 +223,12 @@ export function resolveEnterBattleEffectsImpl(
       }
     }
     if (!dslEnter.handled && enterEffect === "sky_magic_slash") {
-      const slash = resolveSkyMagicSlash(nextState, playerId, card.cardId);
+      const slash = resolveSkyMagicSlash(nextState, playerId, card.cardId, card.instanceId);
       nextState = slash.state;
       logs.push(...slash.logs);
+      if (nextState.pendingEffectChoice) {
+        return { state: nextState, logs, enterResumeFrom: "nc" };
+      }
     }
     if (
       !dslEnter.handled &&
@@ -346,6 +350,16 @@ export function resolveEnterBattleEffectsImpl(
   if (shouldRunEnterStep(resumeFrom, "nc")) {
     // ルール: R-CN-04 — コンビネーションは自軍バトルフェイズにバトルエリアへ出たときだけ（ラッシュフェイズに
     // 置かれたレッドレーサー等は並び順が CN と一致しても NC を発動しない）。
+    if (nextState.phase === "battle" && definition) {
+      nextState = markOnAttackNcEffectOnEnter(
+        nextState,
+        playerId,
+        card,
+        definition,
+        battlePosition,
+        battleBeforeEnter,
+      );
+    }
     if (
       nextState.phase === "battle" &&
       definition &&

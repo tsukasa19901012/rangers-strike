@@ -1,4 +1,5 @@
-import { getOnAttackNamedEffect, getJointLNamedEffect } from "@rangers-strike/cards";
+import { getJointLNamedEffect } from "@rangers-strike/cards";
+import { activeOnAttackNamedEffect } from "../ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import { cardCategories, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
 import { getCostWindowMetadata } from "../../core/costWindow";
@@ -25,7 +26,7 @@ export function legend3AttackerBpBonus(
   if (!attackerCard) return 0;
   const attacker = { card: attackerCard };
 
-  const effect = getOnAttackNamedEffect(attacker.card.cardId);
+  const effect = activeOnAttackNamedEffect(attacker.card);
   let bonus = 0;
   if (effect?.effectId === "super_live_crush") bonus += 4000;
   if (effect?.effectId === "surging_chopper" && state.activePlayer === pending.attackerPlayerId) {
@@ -81,7 +82,7 @@ export function canAttackRushWithMoonlightSonic(
     "battle",
     attackerInstanceId,
   );
-  return getOnAttackNamedEffect(attacker?.card.cardId ?? "")?.effectId === "moonlight_sonic";
+  return (attacker ? activeOnAttackNamedEffect(attacker.card) : undefined)?.effectId === "moonlight_sonic";
 }
 
 export function legend3UsePrintedDefenderBp(

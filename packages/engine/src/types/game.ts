@@ -399,6 +399,13 @@ export type PendingEffectChoice = {
   };
   /** 相打ちの処理順選択（simultaneous_order。validInstanceIds は撃破された 2 体）。 */
   mutualDestructionMeta?: MutualDestructionMeta;
+  /**
+   * 「～してもよい」の任意効果を行うかどうかの確認（kind "confirm"）。confirm_effect_choice で行い、
+   * skip_effect_choice で行わない。行うときの処理は rules/optionalEffects.ts の登録先。
+   */
+  mayConfirm?: boolean;
+  /** mayConfirm が DSL の任意効果（optional）のとき、行う効果の特定情報。 */
+  optionalDslMeta?: { effectId: string; triggerType: string };
   /** 敵ターン撃破時の任意パワー送り（to_power_on_destroy）。 */
   toPowerOnDestroyMeta?: {
     card: CardInstance;

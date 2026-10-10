@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { cpuAcceptsOptionalEffect } from "../rules/optionalEffects";
 import { getCardEffect, listZordFusionPartnerIds } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
@@ -1179,6 +1180,12 @@ export function pickEffectChoice(
 ): GameAction | null {
   const playerId = pending.playerId;
   const skip = actions.find((a) => a.type === "skip_effect_choice");
+
+  // 「～してもよい」の任意効果の確認（rules/optionalEffects.ts）。
+  if (pending.mayConfirm) {
+    const confirm = actions.find((a) => a.type === "confirm_effect_choice");
+    return (cpuAcceptsOptionalEffect(state, pending) ? confirm : skip) ?? skip ?? confirm ?? null;
+  }
 
   if (pending.kind === "simultaneous_order" && pending.mutualDestructionMeta) {
     // ルール: R-BTL-02, R-SIM-01 — 相打ちの処理順: 各順で処理した結果を評価し、自分に有利な順を選ぶ。

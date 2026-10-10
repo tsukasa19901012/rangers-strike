@@ -1805,7 +1805,10 @@ export function GameApp() {
       }
     }
 
-    if ((fromZone === "rush" || fromZone === "battle") && state.phase === "rush") {
+    if (
+      (fromZone === "rush" || fromZone === "battle") &&
+      (state.phase === "rush" || state.phase === "battle")
+    ) {
       const fieldAbility = legalActions.find(
         (a) =>
           a.type === "activate_field_unit_ability" &&
@@ -1815,7 +1818,7 @@ export function GameApp() {
         actions.push({
           id: "field-ability",
           label: "効果を発動する",
-          detail: "ラッシュフェイズに1度",
+          detail: state.phase === "battle" ? "バトルフェイズ中に発動" : "ラッシュフェイズに1度",
           variant: "primary",
           onSelect: () => apply(fieldAbility),
         });

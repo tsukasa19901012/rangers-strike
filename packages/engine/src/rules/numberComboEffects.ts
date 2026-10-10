@@ -1,5 +1,11 @@
 import type { CardDefinition } from "@rangers-strike/cards";
-import { findNcNamedEffect, getNumberComboEffect, IMPLEMENTED_NC_EFFECT_IDS } from "@rangers-strike/cards";
+import {
+  findNcNamedEffect,
+  getNumberComboEffect,
+  getOnAttackNamedEffect,
+  IMPLEMENTED_NC_EFFECT_IDS,
+} from "@rangers-strike/cards";
+import { comboFromNamedPartner, isNcGatedOnAttackEffect } from "./ncGatedEffects";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import {
   cardName,
@@ -11,7 +17,7 @@ import { applySuperBrainDraw } from "../effects/drawEffects";
 import { buildLogEntry } from "../log/formatLog";
 import { startRuinSurvey } from "./ruinSurvey";
 import {
-  blowKnuckleReturnReleasedCommands,
+  tryStartBlowKnuckle,
   grantBpBoostToBattleUnit,
   grantSp1ToBattleUnit,
   markBattleNcEffect,
@@ -136,6 +142,29 @@ export function resolveNamedNcEffectId(
   return getNumberComboEffect(card.cardId);
 }
 
+/**
+ * 「アタックするとき」の NC 効果（「…からコンビネーションするときは、ナンバーに関係なく発動する」— RS-032/RS-033 等）が
+ * このバトルエリアへの進入で成立したかを判定し、成立したら activatedNcEffects に記録する。
+ * ルール: R-CN-02（ナンバーと並び順の一致）、R-CN-05（直前のユニットからのコンビネーション）。
+ */
+export function markOnAttackNcEffectOnEnter(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+  definition: CardDefinition,
+  battlePosition: number,
+  battleBeforeEnter: CardInstance[],
+): GameState {
+  const named = getOnAttackNamedEffect(card.cardId);
+  if (!named || !isNcGatedOnAttackEffect(named)) return state;
+  if (tankCommandBlocksNc(state, card, definition)) return state;
+  const fromPosition = ncEffectiveNumber(state, playerId, card, definition) === battlePosition;
+  const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
+  const fromPartner = comboFromNamedPartner(state, named, leftNeighbor?.cardId);
+  if (!fromPosition && !fromPartner) return state;
+  return markBattleNcEffect(state, playerId, card.instanceId, named.effectId);
+}
+
 function ncEffectUsesDsl(cardId: string): boolean {
   const effects = listDslEffectsForTrigger(cardId, "nc");
   if (effects.length !== 1) return false;
@@ -171,7 +200,9 @@ export function applyNumberComboEffect(
 
   if (!effectId) return { state, logs: [] };
 
-  return applyLegacyNumberComboEffect(state, playerId, card, effectId);
+  // NC が成立した効果を記録する（「アタックするとき BP＋」等、後で判定する NC 効果の成立条件。R-CN-02）。
+  const marked = markBattleNcEffect(state, playerId, card.instanceId, effectId);
+  return applyLegacyNumberComboEffect(marked, playerId, card, effectId);
 }
 
 /** NC 効果のレガシー switch 本体（runtime 委譲用）。 */
@@ -300,9 +331,9 @@ export function applyLegacyNumberComboEffect(
     }
     case "blow_knuckle": {
       nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
-      const blow = blowKnuckleReturnReleasedCommands(nextState);
-      nextState = blow.state;
-      logs.push(ncLog(playerId, card.cardId, state.definitions, "blow_knuckle"), ...blow.logs);
+      const withChoice = tryStartBlowKnuckle(nextState, playerId, card.cardId, card.instanceId);
+      if (withChoice) nextState = withChoice;
+      logs.push(ncLog(playerId, card.cardId, state.definitions, "blow_knuckle"));
       break;
     }
     case "magical_dragon_shoot": {

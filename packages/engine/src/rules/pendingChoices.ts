@@ -54,6 +54,12 @@ import {
 import { completeToPowerOnDestroyChoice } from "./toPowerOnDestroy";
 import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
+import { acceptOptionalEffect } from "./optionalEffects";
+import {
+  isCommandLeaveRefillChoice,
+  isValidCommandLeaveRefillTarget,
+  resolveCommandLeaveRefill,
+} from "./commandLeaveRefill";
 import {
   MURPHY_CHASE_EFFECT_ID,
   openMurphyChaseDeckChoice,
@@ -346,6 +352,10 @@ export function isValidEffectChoiceTarget(
     return !!findInZone(state.players[pending.playerId], "operation", instanceId);
   }
 
+  if (isCommandLeaveRefillChoice(pending)) {
+    return isValidCommandLeaveRefillTarget(state, pending, instanceId);
+  }
+
   if (pending.kind === "select_unit") {
     const dest = pending.unitDestination ?? "discard";
     if (pending.effectId === "kamen_ride_deploy") {
@@ -477,6 +487,8 @@ export function startRuinSurveyChoice(
     phasePlayerId: playerId,
     validInstanceIds: [top.instanceId],
     viewedInstanceIds: [top.instanceId],
+    // 「見てもよい」— 見ない（skip）なら山札は変わらない。出典: RS-066 atwiki/page-270。
+    optional: true,
   });
 }
 
@@ -1573,6 +1585,18 @@ export function applyConfirmEffectChoice(
   const errata = tryConfirmErrataChoice(state, playerId);
   if (errata) return errata;
 
+  if (pending.mayConfirm) {
+    const log = buildLogEntry(
+      pending.playerId,
+      "resolve_effect_choice",
+      pending.sourceCardId,
+      state.definitions,
+      `${pending.effectId}:accept`,
+    );
+    const next = acceptOptionalEffect(state, pending);
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next), log };
+  }
+
   if (pending.kind === "select_units_bp_budget") {
     const selected = pending.selectedInstanceIds ?? [];
     let nextState = state;
@@ -1855,6 +1879,7 @@ export function tryStartMegatomahokuChoice(
   });
 }
 
+/** 「見てもよい」— 見ない（skip）なら山札は変わらない。出典: RS-063 atwiki/page-265。 */
 export function startRadialHammerChoice(
   state: GameState,
   playerId: PlayerId,
@@ -1875,6 +1900,7 @@ export function startRadialHammerChoice(
     validInstanceIds: viewed,
     viewedInstanceIds: viewed,
     selectCount: 1,
+    optional: true,
   });
 }
 
@@ -2357,6 +2383,12 @@ export function applyEffectChoiceSelect(
     const result = resolveAbductionChoice(state, playerId, instanceId);
     if ("error" in result) return result;
     return { state: promoteDeferredBattleEntry(result.state), log: result.log };
+  }
+  if (isCommandLeaveRefillChoice(pending)) {
+    const result = resolveCommandLeaveRefill(state, playerId, instanceId);
+    if ("error" in result) return result;
+    const next = result.state.pendingEffectChoice ? result.state : promoteDeferredBattleEntry(result.state);
+    return { state: next, log: result.log };
   }
   if (pending.effectId === DISPATCH_ORDER_EFFECT_ID) {
     const result = resolveDispatchOrder(state, playerId, instanceId);

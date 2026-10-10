@@ -745,7 +745,8 @@ describe("RS-032 Shark Jaws", () => {
       activePlayer: "player1",
       definitions: defs,
       player1: {
-        battle: [shark, inst("RS-031", "partner"), ...battleFillers(2)],
+        // バルイーグルからコンビネーションして出た（進入時に NC 効果の成立が記録される — R-CN-05）。
+        battle: [inst("RS-031", "partner"), { ...shark, activatedNcEffects: ["shark_jaws"] }, ...battleFillers(2)],
         command: [heldEtCommand("c1")],
       },
       player2: {
