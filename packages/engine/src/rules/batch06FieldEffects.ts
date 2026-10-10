@@ -1,4 +1,5 @@
 import type { GameState, PendingBattleEntry, PlayerId } from "../types/game";
+import { openZubazubanKick } from "./legend1/set6NamedEffectsB";
 import {
   cardCategories,
   cardName,
@@ -7,7 +8,7 @@ import {
   isSmallUnit,
 } from "../core/catalog";
 import { cardHasKeyword } from "../keywords/cardKeywords";
-import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
+import { listZordFusionPartnerIds, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -23,7 +24,6 @@ import {
   startSuperGekiFantasticChoice,
   startFuasutokurasunaChoice,
   startZorobAntGeneChoice,
-  startZubazubanDestroyChoice,
 } from "./pendingChoices";
 
 export function collectOwnWingCommands(state: GameState, playerId: PlayerId): string[] {
@@ -318,14 +318,9 @@ export function tryZubazubanOnAllyRush(
   // 「その追加条件を満たすために捨札にした合体ユニット」— 追加条件が「自軍合体ユニットを捨札にする」のユニットだけ
   // （faq-card-6 RS-420 Q1: トラベリオンエクスプレスを捨札にしたトラベリオンでは発動しない）。
   if (resolveRushAdditionalCondition(found.card.cardId, def)?.conditionId !== "discard_fusion_unit") return state;
-  const withChoice = startZubazubanDestroyChoice(state, {
-    playerId: rusherPlayerId,
-    effectId: "zubazubankiku",
-    sourceCardId: "RS-420",
-    sourceInstanceId: rushedInstanceId,
-    phasePlayerId,
-  });
-  return withChoice ?? state;
+  // 「捨札にした合体ユニット1体につき」1体ずつ選んで撃破する（rules/legend1/set6NamedEffectsB.ts）。
+  const count = Math.max(1, listZordFusionPartnerIds(found.card.cardId).length);
+  return openZubazubanKick(state, rusherPlayerId, rushedInstanceId, phasePlayerId, count);
 }
 
 /**

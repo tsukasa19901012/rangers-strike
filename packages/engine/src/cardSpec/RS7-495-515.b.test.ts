@@ -59,8 +59,7 @@ function noOwnTurnEntryTests(id: string, page: string) {
     expect(canEnter(s, `${id}:me`)).toBe(false);
   });
 
-  // 既知の不具合: CARD-${id} 敵軍ターン中に効果で出すときも「自軍ターン中バトルエリアに出られない」が適用され、候補に出るのに出られない
-  it.fails(`${id}: ※ 敵軍ターン中なら効果（敵軍デンジピンクの NC）でバトルエリアに出られる（出典: atwiki/${page}「自軍ターン中」・R-BA-03）`, () => {
+  it(`${id}: ※ 敵軍ターン中なら効果（敵軍デンジピンクの NC）でバトルエリアに出られる（出典: atwiki/${page}「自軍ターン中」・R-BA-03）`, () => {
     let s = enter(
       st({ activePlayer: "player2", player1: { rush: [inst(id, "me")], deck: deckCards(3) }, player2: { rush: [inst("RS-358", "d")], deck: deckCards(3, "e") } }),
       "RS-358:d",

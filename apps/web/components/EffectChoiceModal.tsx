@@ -6,6 +6,7 @@ import type { GameState, PlayerId } from "@rangers-strike/engine";
 import {
   attackHoldOptionLabel,
   effectChoiceHint,
+  reorderOptionLabel,
   effectChoiceTitle,
   sagasSniperDeckCardMeta,
   SIMULTANEOUS_FRAME_LABELS,
@@ -276,7 +277,7 @@ export function EffectChoiceModal({
                     className="btn effect-action-modal__target"
                     onClick={() => onSelect(name)}
                   >
-                    {name}
+                    {pending.effectId === "reorder_enemy_battle" ? reorderOptionLabel(state, name) : name}
                   </button>
                 ))}
               </div>

@@ -50,6 +50,15 @@ export function unitFeatures(
       if (p.instanceId === instance.instanceId) extra.push(...p.features);
     }
   }
+  // RS-429 マスター・シャーフー【暮らしの中に修行あり】: 自軍ラッシュエリアにある間、すべての S ユニットの特徴に「激気」を追加する
+  // （自軍・敵軍とも。atwiki/page-508）。
+  if (
+    state.definitions[instance.cardId]?.size === "S" &&
+    (state.players.player1.rush.some((c) => c.cardId === "RS-429") ||
+      state.players.player2.rush.some((c) => c.cardId === "RS-429"))
+  ) {
+    extra.push("激気");
+  }
   if (extra.length === 0) return base;
   return [...new Set([...base, ...extra])];
 }

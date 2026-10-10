@@ -318,8 +318,7 @@ describe("RS-429 マスター・シャーフー", () => {
     expect(canEnter(s, "TST-UNIT-0:u")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-429 「自軍ターン中」の制限が敵軍ターンにも働き、ファイブテクターで敵軍ターン中にバトルエリアに出せない
-  it.fails("RS-429: ※ 敵軍ターン中ならバトルエリアに出られる（ファイブテクターで出せる）（出典: atwiki/page-508「自軍ターン中」）", () => {
+  it("RS-429: ※ 敵軍ターン中ならバトルエリアに出られる（ファイブテクターで出せる）（出典: atwiki/page-508「自軍ターン中」）", () => {
     const s = strike(
       st({ activePlayer: "player2", player1: { rush: [inst("RS-429", "sf")], operation: [inst("RS-253", "ft")], deck: deckCards(5) }, player2: { battle: [inst("TST-UNIT-0", "e1")], deck: deckCards(5, "e") } }),
       "TST-UNIT-0:e1",
@@ -328,8 +327,7 @@ describe("RS-429 マスター・シャーフー", () => {
     expect(legal(s).some((a) => a.type === "five_tech_intercept" && a.interceptInstanceId === "RS-429:sf")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-429 「すべてのSユニットの特徴に「激気」を追加する」が実装されていない（RS-436 激気も誘発しない）
-  it.fails("RS-429: 【暮らしの中に修行あり】ラッシュエリアにある間、すべての S ユニットに特徴「激気」が追加される — 激気（RS-436）がゲキレッド（本来は激気なし）の進入で誘発する（出典: atwiki/page-508「すべてのSユニットの特徴に「激気」を追加する」）", () => {
+  it("RS-429: 【暮らしの中に修行あり】ラッシュエリアにある間、すべての S ユニットに特徴「激気」が追加される — 激気（RS-436）がゲキレッド（本来は激気なし）の進入で誘発する（出典: atwiki/page-508「すべてのSユニットの特徴に「激気」を追加する」）", () => {
     const s = enter(
       st({ player1: { rush: [inst("RS-340", "gr"), inst("RS-429", "sf")], hand: [inst("RS-424", "ch")], operation: [inst("RS-436", "gk")], deck: deckCards(3) } }),
       "RS-340:gr",
@@ -350,8 +348,7 @@ describe("RS-429 マスター・シャーフー", () => {
       },
     });
 
-  // 既知の不具合: CARD-RS-429 「MA の自軍コマンドをホールドする代わりに WB の自軍コマンド＋追加1つをホールド」が実装されていない
-  it.fails("RS-429: 【暮らしの中に修行あり】MA のコマンドのかわりに WB のコマンド＋追加1つ（計2つ）をホールドして MA のユニットをラッシュできる（出典: atwiki/page-508「「MA」の自軍コマンドをホールドする代わりに「WB」の自軍コマンドをホールドしてもよい。ただし、追加で自軍コマンドを1つホールドすること」）", () => {
+  it("RS-429: 【暮らしの中に修行あり】MA のコマンドのかわりに WB のコマンド＋追加1つ（計2つ）をホールドして MA のユニットをラッシュできる（出典: atwiki/page-508「「MA」の自軍コマンドをホールドする代わりに「WB」の自軍コマンドをホールドしてもよい。ただし、追加で自軍コマンドを1つホールドすること」）", () => {
     const s = maRush(true, 2);
     expect(canStartRush(s, "player1", "RS-420:dz")).toBe(true);
     const r = rushFromHand(s, "player1", "RS-420:dz");
@@ -368,7 +365,7 @@ describe("RS-429 マスター・シャーフー", () => {
     expect(canStartRush(maRush(false, 2), "player1", "RS-420:dz")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-429 MA→WB のホールド代用が実装されておらず、ギンガブルー【流水の鼓動】で WB のコマンドをホールドして発動できない
+  // 既知の不具合: CARD-RS-429 RS-378 ギンガブルー【流水の鼓動】（MA のコマンドをホールドして発動）自体が未実装のため、WB＋追加1つでの代用を確かめられない（ラッシュの支払いの代用は上のテストで実装済み）
   it.fails("RS-429: ギンガブルー【流水の鼓動】を WB＋追加1つのホールドで発動したとき、「ホールドしたコマンド」は MA のかわりにホールドした WB のコマンド1つだけ（追加分のナンバーは参照しない）（出典: grnrngr/faq-card-6 RS-378 Q「「ミスティックアームズ」のコマンドの代わりとしてホールドした「ワイルドビースト」のコマンド１つ」）", () => {
     let s = enterSeq(
       st({
@@ -414,8 +411,7 @@ describe("RS-430 ロボタフ", () => {
     expect(canEnter(st({ player1: { rush: [inst("RS-430", "rt")], deck: deckCards(3) } }), "RS-430:rt")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-430 「自軍ターン中」の制限が敵軍ターンにも働き、ファイブテクターで敵軍ターン中にバトルエリアに出せない
-  it.fails("RS-430: ※ 敵軍ターン中ならバトルエリアに出られる（ファイブテクターで出せる）（出典: atwiki/page-507「自軍ターン中」）", () => {
+  it("RS-430: ※ 敵軍ターン中ならバトルエリアに出られる（ファイブテクターで出せる）（出典: atwiki/page-507「自軍ターン中」）", () => {
     const s = strike(
       st({ activePlayer: "player2", player1: { rush: [inst("RS-430", "rt")], operation: [inst("RS-253", "ft")], deck: deckCards(5) }, player2: { battle: [inst("TST-UNIT-0", "e1")], deck: deckCards(5, "e") } }),
       "TST-UNIT-0:e1",
@@ -441,8 +437,7 @@ describe("RS-430 ロボタフ", () => {
     expect(bpOf(s, "player1", "RS-426:g7")).toBe(5500);
   });
 
-  // 既知の不具合: CARD-RS-430 【獣拳トレーナー】が敵軍のロボタフから自軍の WB S ユニットに及ばない（自軍ラッシュエリアのロボタフだけを数える）
-  it.fails("RS-430: 【獣拳トレーナー】自軍と敵軍のすべての WB の S ユニットが対象 — 敵軍のロボタフでも自軍のガオレッド2nd は BP+2000（出典: grnrngr/faq-card-6 RS-430 Q3「はい、その通りです」）", () => {
+  it("RS-430: 【獣拳トレーナー】自軍と敵軍のすべての WB の S ユニットが対象 — 敵軍のロボタフでも自軍のガオレッド2nd は BP+2000（出典: grnrngr/faq-card-6 RS-430 Q3「はい、その通りです」）", () => {
     const s = st({ player1: { battle: [inst("RS-402", "g4")], deck: deckCards(3) }, player2: { rush: [inst("RS-430", "ert")] } });
     expect(bpOf(s, "player1", "RS-402:g4")).toBe(5000);
   });
@@ -452,8 +447,7 @@ describe("RS-430 ロボタフ", () => {
     expect(bpOf(s, "player1", "RS-402:g4")).toBe(7000);
   });
 
-  // 既知の不具合: CARD-RS-430 自軍と敵軍のラッシュエリアに1体ずつあるとき、重複しない（敵軍側のロボタフを数えない）
-  it.fails("RS-430: 【獣拳トレーナー】自軍と敵軍のラッシュエリアに合わせて複数体あれば重複する（1体ずつ → BP+2000×2）（出典: grnrngr/faq-card-6 RS-430 Q1「自軍ラッシュエリアと敵軍ラッシュエリアに合わせて複数体ある場合…はい、重複します」）", () => {
+  it("RS-430: 【獣拳トレーナー】自軍と敵軍のラッシュエリアに合わせて複数体あれば重複する（1体ずつ → BP+2000×2）（出典: grnrngr/faq-card-6 RS-430 Q1「自軍ラッシュエリアと敵軍ラッシュエリアに合わせて複数体ある場合…はい、重複します」）", () => {
     const s = st({ player1: { rush: [inst("RS-430", "rt")], battle: [inst("RS-402", "g4")], deck: deckCards(3) }, player2: { rush: [inst("RS-430", "ert")] } });
     expect(bpOf(s, "player1", "RS-402:g4")).toBe(7000);
   });
@@ -506,8 +500,7 @@ describe("RS-431 黒獅子リオ", () => {
     expect(canEnter(st({ player1: { rush: [inst("RS-431", "ri")], deck: deckCards(3) } }), "RS-431:ri")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-431 「自軍コマンドが1つ以上あるときストライクできない」が実装されていない
-  it.fails("RS-431: ※ 自軍コマンドが1つ以上あるとき（リリース状態でも）ストライクできない（出典: atwiki/page-506「これは自軍コマンドが１つ以上あるときストライクできない」）", () => {
+  it("RS-431: ※ 自軍コマンドが1つ以上あるとき（リリース状態でも）ストライクできない（出典: atwiki/page-506「これは自軍コマンドが１つ以上あるときストライクできない」）", () => {
     const s = st({ player1: { battle: [inst("RS-431", "ri")], command: [released("TST-OP", "c")], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-0", "e1")], deck: deckCards(3, "e") } });
     expect(canStrike(s, "RS-431:ri")).toBe(false);
   });
@@ -518,8 +511,7 @@ describe("RS-431 黒獅子リオ", () => {
     expect(spOf(s, "player1", "RS-431:ri")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-431 【剛勇吼波】（敵軍 S ユニット1体につき BP+1000）が実装されていない
-  it.fails("RS-431: 【剛勇吼波】敵軍 S ユニット（バトル・ラッシュエリア）1体につき BP+1000（L ユニット・自軍 S ユニットは数えない）（出典: atwiki/page-506「これは敵軍Sユニット1体につきBP+1000される」）", () => {
+  it("RS-431: 【剛勇吼波】敵軍 S ユニット（バトル・ラッシュエリア）1体につき BP+1000（L ユニット・自軍 S ユニットは数えない）（出典: atwiki/page-506「これは敵軍Sユニット1体につきBP+1000される」）", () => {
     const s = st({
       player1: { battle: [inst("RS-431", "ri"), inst("TST-UNIT-0", "mine")], deck: deckCards(3) },
       player2: { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-7", "el")], rush: [inst("RS-341", "e2"), inst("TST-UNIT-2", "em")], deck: deckCards(3, "e") },

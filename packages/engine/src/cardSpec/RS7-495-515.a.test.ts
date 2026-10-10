@@ -738,8 +738,7 @@ describe("RS-501 エレハン・キンポー", () => {
     expect(canEnter(s, "RS-501:k")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-501 敵軍ターン中に効果で出すときも「自軍ターン中バトルエリアに出られない」が適用され、候補に出るのに出られない
-  it.fails("RS-501: ※ 敵軍ターン中なら効果（敵軍デンジピンクの NC）でバトルエリアに出られる（出典: atwiki/page-742「自軍ターン中」・R-BA-03）", () => {
+  it("RS-501: ※ 敵軍ターン中なら効果（敵軍デンジピンクの NC）でバトルエリアに出られる（出典: atwiki/page-742「自軍ターン中」・R-BA-03）", () => {
     let s = enter(
       st({ activePlayer: "player2", player1: { rush: [inst("RS-501", "k")], deck: deckCards(3) }, player2: { rush: [inst("RS-358", "d")], deck: deckCards(3, "e") } }),
       "RS-358:d",

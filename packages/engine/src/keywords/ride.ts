@@ -218,6 +218,11 @@ export function canRiderMountVehicle(
 
   if (riderHasRc(riderDef)) return true;
 
+  // RS-393 コマンドアタッカー「※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。」（atwiki/page-539）
+  if (vehicle.card.cardId === "RS-393" && riderDef.size === "S") {
+    const cats = Array.isArray(riderDef.category) ? riderDef.category : riderDef.category ? [riderDef.category] : [];
+    if (cats.includes("ET" as never)) return true;
+  }
   // RS-381 ガレオパルサーの※「特徴「レッド」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくても
   // このビークルにライドできる。」（atwiki/page-522）— ホールドできるリリース状態のコマンドが必要（ホールドは mount_ride で行う）。
   if (vehicle.card.cardId === "RS-381") return galeoPulsarHoldRideAllowed(state, playerId, riderDef);

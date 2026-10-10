@@ -31,6 +31,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "set6b::RS-391::milk_tornado",
+          "duration": "turn"
         }
       ]
     }

@@ -275,22 +275,33 @@ function fieldAuraBpBonus(
         keyword === "battle_position_sp_any_pos2_sp1" &&
         own.rush.some((c) => c.instanceId === source.instanceId)
       ) {
-        const cost =
-          typeof def.powerCost === "number"
-            ? def.powerCost
-            : parseInt(String(def.powerCost), 10);
-        if (
-          def.size === "S" &&
-          cardCategories(def).includes("WB") &&
-          !def.rushAdditionalCondition &&
-          Number.isFinite(cost)
-        ) {
-          bonus += Math.floor(cost / 2) * 1000;
-        }
+        bonus += robotoughBpBonus(def);
       }
     }
   }
+  // RS-430【獣拳トレーナー】は自軍と敵軍のすべての WB の S ユニットが対象（faq-card-6 RS-430 Q3）。
+  // 自軍と敵軍のラッシュエリアに合わせて複数体あれば重複する（同 Q1）。
+  for (const source of state.players[opponent(playerId)].rush) {
+    if (listCardGrantKeywords(source.cardId).includes("battle_position_sp_any_pos2_sp1")) {
+      bonus += robotoughBpBonus(def);
+    }
+  }
   return bonus;
+}
+
+/** RS-430【獣拳トレーナー】: 追加条件を持たない WB の S ユニットは必要パワーの数字2ごとに BP+1000。 */
+function robotoughBpBonus(def: CardDefinition): number {
+  const cost =
+    typeof def.powerCost === "number" ? def.powerCost : parseInt(String(def.powerCost), 10);
+  if (
+    def.size === "S" &&
+    cardCategories(def).includes("WB") &&
+    !def.rushAdditionalCondition &&
+    Number.isFinite(cost)
+  ) {
+    return Math.floor(cost / 2) * 1000;
+  }
+  return 0;
 }
 
 /** 被アタック時オーラ: RS-496/XP-010 スワット +3000。 */

@@ -17,6 +17,7 @@ import { promotedKeywordSpFloor } from "../../dsl/promotedKeywordBridge";
 import { legend2EffectiveSp } from "../legend2/fieldEffects";
 import { sameCardName } from "../../core/cardNames";
 import { set5AEffectiveSp } from "../legend1/set5NamedEffectsA";
+import { set6BEffectiveSp, turnPlayerOf } from "../legend1/set6NamedEffectsB";
 import {
   sr003DiscardDinoBpBonus,
   sr003SpFloor,
@@ -180,7 +181,8 @@ export function cannotEnterBattleOwnTurn(
   playerId: PlayerId,
   cardId: string,
 ): boolean {
-  if (state.activePlayer !== playerId) return false;
+  // 反応（ファイブテクター等）の間は activePlayer が防御側に移るので、ターンプレイヤーで判定する（RS-429/RS-430）。
+  if (turnPlayerOf(state) !== playerId) return false;
   return (
     hasUnnamedRule(cardId, "cannot_enter_battle_own_turn") ||
     hasUnnamedRule(cardId, "no_enter_battle_own_turn")
@@ -219,6 +221,7 @@ export function legend3EffectiveSp(
     sp = Math.max(sp, 1);
   }
   sp = set5AEffectiveSp(state, playerId, instance, sp);
+  sp = set6BEffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

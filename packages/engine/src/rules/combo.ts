@@ -69,6 +69,13 @@ import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { wingAllowsEmptyBattleStrike } from "../keywords";
 import { canStrikeWithHelloMirage } from "./helloMirage";
 import { applyFivemanOnCombo, trySet5AOnComboEnter } from "./legend1/set5NamedEffectsA";
+import {
+  checkFlameGlare,
+  clearFlameGlareDecision,
+  negateNcOnUnit,
+  set6BBlocksStrike,
+  trySet6BOnComboEnter,
+} from "./legend1/set6NamedEffectsB";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
 
@@ -227,6 +234,11 @@ export function resolveEnterBattleEffectsImpl(
     logs.push(...dslEnter.logs);
     // RS-291【大火炎】: 「レッド」を持つユニットからコンビネーションするとき。
     nextState = trySet5AOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // RS-419【ゴールデンクラッシュ】: DA 以外のユニットからコンビネーションするとき（rules/legend1/set6NamedEffectsB.ts）。
+    nextState = trySet6BOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }
@@ -427,19 +439,29 @@ export function resolveEnterBattleEffectsImpl(
         battleBeforeEnter,
       )
     ) {
-      const ncEffect = resolveNamedNcEffectId(
-        nextState,
-        playerId,
-        card,
-        definition,
-        battlePosition,
-        battleBeforeEnter,
-      );
-      const ncResult = applyNumberComboEffect(nextState, playerId, card, ncEffect);
-      nextState = ncResult.state;
-      logs.push(...ncResult.logs);
-      if (nextState.pendingEffectChoice) {
-        return { state: nextState, logs, enterResumeFrom: "tail" };
+      // RS-418【炎の眼光】: 敵軍のイフリートが NC の効果を無効にするか（rules/legend1/set6NamedEffectsB.ts）。
+      const glare = checkFlameGlare(nextState, playerId, card);
+      if (glare.decision === "open") {
+        return { state: glare.state, logs, enterResumeFrom: "nc" };
+      }
+      nextState = clearFlameGlareDecision(nextState);
+      if (glare.decision === "negate") {
+        nextState = negateNcOnUnit(nextState, playerId, card.instanceId);
+      } else {
+        const ncEffect = resolveNamedNcEffectId(
+          nextState,
+          playerId,
+          card,
+          definition,
+          battlePosition,
+          battleBeforeEnter,
+        );
+        const ncResult = applyNumberComboEffect(nextState, playerId, card, ncEffect);
+        nextState = ncResult.state;
+        logs.push(...ncResult.logs);
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: "tail" };
+        }
       }
     }
     // RS-222 タイムピンク【戦闘指揮】: ナンバーに関係なく NC を発動するか（敵軍コマンドをリリース）。
@@ -584,6 +606,10 @@ export function canStrikeUnit(
       return false;
     }
     if (rideOffBlocksStrike(state.players[playerId], instance.instanceId)) {
+      return false;
+    }
+    // 第6弾 RS-431 ※「自軍コマンドが１つ以上あるときストライクできない」等（rules/legend1/set6NamedEffectsB.ts）。
+    if (set6BBlocksStrike(state, playerId, instance)) {
       return false;
     }
     if (instance.activatedNcEffects?.includes("souru_no_strike")) {

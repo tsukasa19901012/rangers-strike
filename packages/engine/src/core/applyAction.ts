@@ -1,6 +1,7 @@
 import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
+import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
   applyGiantBombCounter,
@@ -96,6 +97,9 @@ import {
 } from "../rules/attackHoldBonus";
 import {
   MACHINE_EMPIRE_EFFECT_ID,
+  DIONE_WALL_EFFECT_ID,
+  openDioneWallChoice,
+  resolveDioneWallPick,
   openMachineEmpireChoice,
   resolveMachineEmpirePick,
   skipMachineEmpireChoice,
@@ -405,8 +409,10 @@ function continueAttackAfterDeclaration(
   }
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
-  if (machineEmpire) {
-    let pendingState = machineEmpire;
+  // RS-414【ディオネを守る壁】: 冥府神の自軍ユニットがアタックされたとき、常駐を捨札にしてバトルを行わなくてもよい。
+  const dioneWall = machineEmpire ? null : openDioneWallChoice(battleState, pending, wingAttackFromRush);
+  if (machineEmpire || dioneWall) {
+    let pendingState = (machineEmpire ?? dioneWall)!;
     if (battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId) {
       pendingState = { ...pendingState, pendingBattleEntry: undefined };
     }
@@ -1923,20 +1929,8 @@ function applyActionCore(
       };
 
       if (found.card.cardId === "RS-397") {
-        const enemyId = opponent(playerId);
-        const enemyBattle = nextState.players[enemyId].battle;
-        if (enemyBattle.length >= 2) {
-          nextState = openEffectChoice(nextState, {
-            playerId,
-            effectId: "reorder_enemy_battle",
-            sourceCardId: "RS-397",
-            sourceInstanceId: found.card.instanceId,
-            kind: "confirm",
-            phasePlayerId: playerId,
-            validInstanceIds: ["逆順に並び替える"],
-            optional: true,
-          });
-        }
+        // RS-397【予期せぬ出現】: 敵軍バトルエリアを好きな順に並び替えてもよい（rules/legend1/set6NamedEffectsB.ts）。
+        nextState = openReorderEnemyBattle(nextState, playerId, found.card);
       }
 
       // RK-301 等: ライドされている指定ビークルからのコンビネーション（配置時）。
@@ -2578,6 +2572,11 @@ function applyActionCore(
           playerId,
         );
       }
+      if (pending?.effectId === DIONE_WALL_EFFECT_ID && pending.machineEmpireMeta) {
+        const picked = resolveDioneWallPick(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
       if (pending?.effectId === MACHINE_EMPIRE_EFFECT_ID && pending.machineEmpireMeta) {
         const picked = resolveMachineEmpirePick(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
@@ -2669,7 +2668,7 @@ function applyActionCore(
         }
         return completeStrike(base, strikePending);
       }
-      if (pending?.effectId === MACHINE_EMPIRE_EFFECT_ID && pending.machineEmpireMeta) {
+      if ((pending?.effectId === MACHINE_EMPIRE_EFFECT_ID || pending?.effectId === DIONE_WALL_EFFECT_ID) && pending.machineEmpireMeta) {
         const skipped = skipMachineEmpireChoice(state, playerId);
         if ("error" in skipped) return fail(skipped.error);
         return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);

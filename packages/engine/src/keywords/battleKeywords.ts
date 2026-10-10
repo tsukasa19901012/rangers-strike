@@ -131,7 +131,8 @@ export function fieldPositionSpFloor(
   instance: CardInstance,
 ): number {
   const player = state.players[playerId];
-  const hasSource = player.rush.some((c) =>
+  // 自軍と敵軍のラッシュエリアのロボタフが対象（faq-card-6 RS-430 Q3）。
+  const hasSource = [...state.players.player1.rush, ...state.players.player2.rush].some((c) =>
     cardHasGrantKeyword(c.cardId, "battle_position_sp_any_pos2_sp1"),
   );
   if (!hasSource) return 0;

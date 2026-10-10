@@ -95,14 +95,12 @@ describe("RS-419 聖剣ズバーン", () => {
     expect(canEnter(s, "RS-419:sz")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-419 「SユニットかLユニットからコンビネーションしなければ出られない」が実装されておらず、1番目にも出られる
-  it.fails("RS-419: ※ 自軍バトルエリアにユニットがない（コンビネーションする相手がいない）ときはバトルエリアに出られない（出典: atwiki/page-571）", () => {
+  it("RS-419: ※ 自軍バトルエリアにユニットがない（コンビネーションする相手がいない）ときはバトルエリアに出られない（出典: atwiki/page-571）", () => {
     const s = st({ player1: { rush: [inst("RS-419", "sz")], deck: deckCards(3) } });
     expect(canEnter(s, "RS-419:sz")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-419 「SユニットかLユニットからコンビネーションしなければ出られない」が実装されておらず、M ユニットの次にも出られる
-  it.fails("RS-419: ※ M ユニットの次には出られない（出典: atwiki/page-571「SユニットかLユニットから」）", () => {
+  it("RS-419: ※ M ユニットの次には出られない（出典: atwiki/page-571「SユニットかLユニットから」）", () => {
     const s = st({ player1: { battle: [inst("TST-UNIT-2", "m")], rush: [inst("RS-419", "sz")], deck: deckCards(3) } });
     expect(canEnter(s, "RS-419:sz")).toBe(false);
   });
@@ -126,8 +124,7 @@ describe("RS-419 聖剣ズバーン", () => {
       ["RS-419:sz"],
     );
 
-  // 既知の不具合: CARD-RS-419 【ゴールデンクラッシュ】がジョイントコンビネーションで発動しない（選択が出ない）
-  it.fails("RS-419: 【ゴールデンクラッシュ】DA 以外のユニットからコンビネーションするとき、そのユニットより BP の低い敵軍ユニットだけを選べ、持ち主のパワーゾーンにダメージにして置く（出典: atwiki/page-571「コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RS-419: 【ゴールデンクラッシュ】DA 以外のユニットからコンビネーションするとき、そのユニットより BP の低い敵軍ユニットだけを選べ、持ち主のパワーゾーンにダメージにして置く（出典: atwiki/page-571「コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
     let s = crush("RS-340:gr");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-419");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e1"]);
@@ -151,16 +148,14 @@ describe("RS-419 聖剣ズバーン", () => {
     expect(zoneOf(resolveAll(s), "player2", "TST-UNIT-0:e1")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-419 【ゴールデンクラッシュ】が発動しない（DA と他カテゴリを持つユニットからのコンビネーションでも出ない）
-  it.fails("RS-419: 【ゴールデンクラッシュ】DA と DA 以外の両方のカテゴリを持つユニットからコンビネーションしたときも発動できる（出典: grnrngr/faq-card-6 RS-419 Q2「はい、できます。…「ダークアライアンス以外のユニットからコンビネーションした」として」）", () => {
+  it("RS-419: 【ゴールデンクラッシュ】DA と DA 以外の両方のカテゴリを持つユニットからコンビネーションしたときも発動できる（出典: grnrngr/faq-card-6 RS-419 Q2「はい、できます。…「ダークアライアンス以外のユニットからコンビネーションした」として」）", () => {
     const DAWB = sUnit("SPEC-DAWB", { category: ["DA", "WB"] as never, bp: 3000 });
     const s = crush("SPEC-DAWB:dw", { defs: [DAWB] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-419");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e1"]);
   });
 
-  // 既知の不具合: CARD-RS-419 【ゴールデンクラッシュ】が発動しない（タンクコマンドがあっても無くても）
-  it.fails("RS-419: 【ゴールデンクラッシュ】タンクコマンド（NC を止める効果）があってもジョイントコンビネーションの効果は発動できる（出典: grnrngr/faq-card-6 RS-419 Q1「「RS-263 タンクコマンド」で発動できなくなるのは「ナンバーコンビネーション」ですので、それ以外のコンビネーションは問題なく発動することができます」）", () => {
+  it("RS-419: 【ゴールデンクラッシュ】タンクコマンド（NC を止める効果）があってもジョイントコンビネーションの効果は発動できる（出典: grnrngr/faq-card-6 RS-419 Q1「「RS-263 タンクコマンド」で発動できなくなるのは「ナンバーコンビネーション」ですので、それ以外のコンビネーションは問題なく発動することができます」）", () => {
     const s = crush("RS-340:gr", {
       p2: {
         battle: [inst("TST-UNIT-0", "e1")],
@@ -218,8 +213,7 @@ describe("RS-420 大剣人ズバーン", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-420 【ズバズバンキック】の撃破が1体だけで、「捨札にした合体ユニット1体につき」（轟雷神なら2体）撃破できない
-  it.fails("RS-420: 【ズバズバンキック】捨札にした合体ユニット1体につき1体 — 2体を捨札にした轟雷神なら敵軍 S ユニットを2体撃破できる（出典: atwiki/page-572「捨札にした合体ユニット1体につき、敵軍Sユニットを1体選び撃破してもよい」）", () => {
+  it("RS-420: 【ズバズバンキック】捨札にした合体ユニット1体につき1体 — 2体を捨札にした轟雷神なら敵軍 S ユニットを2体撃破できる（出典: atwiki/page-572「捨札にした合体ユニット1体につき、敵軍Sユニットを1体選び撃破してもよい」）", () => {
     let s = rushGouraijin(withZuban(), enemies);
     s = pick(s, "TST-UNIT-0:e1");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-420");
@@ -270,8 +264,7 @@ describe("RS-420 大剣人ズバーン", () => {
     expect(r.state.pendingEffectChoice?.sourceCardId).not.toBe("RS-420");
   });
 
-  // 既知の不具合: CARD-RS-420 ※「自分か相手のLユニットがあれば、これはLユニットになる」が実装されていない（L ユニットがあっても S として選べる）
-  it.fails("RS-420: ※ L ユニットがあれば L ユニットになる — 轟雷神（L）がいる場で、敵軍の大剣人ズバーンは「敵軍Sユニット」として選べない（出典: atwiki/page-572「自分か相手のLユニットがあれば、これはLユニットになる」）", () => {
+  it("RS-420: ※ L ユニットがあれば L ユニットになる — 轟雷神（L）がいる場で、敵軍の大剣人ズバーンは「敵軍Sユニット」として選べない（出典: atwiki/page-572「自分か相手のLユニットがあれば、これはLユニットになる」）", () => {
     const s = rushGouraijin(withZuban(), { battle: [inst("TST-UNIT-0", "e1")], rush: [inst("RS-420", "ezb")] });
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e1"]);
   });
@@ -460,8 +453,7 @@ describe("RS-422 ゲキトージャ", () => {
       },
     });
 
-  // 既知の不具合: CARD-RS-422 【大頑頑拳】が実装されていない（アタックしてバトルに勝っても敵軍コマンドをホールドする選択が出ない）
-  it.fails("RS-422: 【大頑頑拳】アタックしてバトルに勝ったとき、敵軍コマンドを1つホールドすれば追加でアタックできる（出典: atwiki/page-542「敵軍コマンドを1つ選びホールドしてもよい。そうしたとき、これは追加でアタックできる」）", () => {
+  it("RS-422: 【大頑頑拳】アタックしてバトルに勝ったとき、敵軍コマンドを1つホールドすれば追加でアタックできる（出典: atwiki/page-542「敵軍コマンドを1つ選びホールドしてもよい。そうしたとき、これは追加でアタックできる」）", () => {
     let s = attack(battleState(), "RS-422:gt", "TST-UNIT-0:e1");
     s = settle(s);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-422");
@@ -471,8 +463,7 @@ describe("RS-422 ゲキトージャ", () => {
     expect(attackTargets(s, "RS-422:gt")).toEqual(["TST-UNIT-0:e2"]);
   });
 
-  // 既知の不具合: CARD-RS-422 【大頑頑拳】が実装されていない（追加アタックが得られない）
-  it.fails("RS-422: 【大頑頑拳】追加のアタックの代わりにストライクはできない（出典: atwiki/page-542「（ストライクはできない）」）", () => {
+  it("RS-422: 【大頑頑拳】追加のアタックの代わりにストライクはできない（出典: atwiki/page-542「（ストライクはできない）」）", () => {
     let s = settle(attack(battleState(), "RS-422:gt", "TST-UNIT-0:e1"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-422");
     s = settle(pick(s, "TST-OP:c1"));
@@ -496,8 +487,7 @@ describe("RS-422 ゲキトージャ", () => {
     expect(s.players.player2.command.find((c) => c.instanceId === "TST-OP:c1")?.commandHeld).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-422 【大頑頑拳】が実装されていない（「勝つたび」の2回目の誘発もない）
-  it.fails("RS-422: 【大頑頑拳】「勝つたび」— 追加のアタックでも勝てば、もう一度コマンドをホールドして追加でアタックできる（出典: atwiki/page-542「バトルに勝つたび」）", () => {
+  it("RS-422: 【大頑頑拳】「勝つたび」— 追加のアタックでも勝てば、もう一度コマンドをホールドして追加でアタックできる（出典: atwiki/page-542「バトルに勝つたび」）", () => {
     let s = battleState({ battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2"), inst("TST-UNIT-0", "e3")], command: [released("TST-OP", "c1"), released("TST-OP", "c3")] });
     s = settle(attack(s, "RS-422:gt", "TST-UNIT-0:e1"));
     s = settle(pick(s, "TST-OP:c1"));

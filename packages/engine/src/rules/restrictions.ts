@@ -1,5 +1,6 @@
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
 import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
+import { set6BBattleEntryBlocked } from "./legend1/set6NamedEffectsB";
 import { beastSwordIgnoresEntryHold } from "./legend1/set5NamedEffectsA";
 import { rushAreaEntryBlockedThisTurn } from "./legend1/set5NamedEffects";
 import { hellSaturnGrantCount } from "./hellSaturn";
@@ -391,6 +392,8 @@ export function canMoveUnitToBattle(
   if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
 
   if (noteOtherNcBattleEntryBlock(state, playerId, player, unit)) return false;
+  // 第6弾 RS-419 聖剣ズバーン ※ 等（rules/legend1/set6NamedEffectsB.ts）。
+  if (set6BBattleEntryBlocked(state, playerId, unit)) return false;
   // RK-140 / RK-334 のロック、RS-288 の「獣奏剣」ホールド要件（rules/errataCardEffects.ts）。
   if (errataBattleEntryBlocked(state, playerId, unit)) return false;
 

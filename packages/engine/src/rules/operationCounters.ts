@@ -2,6 +2,7 @@ import {
   openDeathStingerChoice,
   reflectBarrierDestroysWinner,
 } from "./legend1/set4NamedEffects";
+import { applyProminenceShower, openDaiganganKen } from "./legend1/set6NamedEffectsB";
 import type { Category } from "@rangers-strike/cards";
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import { startSagasSniperChoice } from "./pendingChoices";
@@ -1481,7 +1482,11 @@ export function resolveBattlePendingCore(
       return finish(withChoice, log);
     }
     const processed = processMutualDestruction(nextState, ctx, defenderInstanceId);
-    return finish(processed.state, log);
+    // RS-408【プロミネンス・シャワー】: 「バトルに勝っても撃破される」で撃破された敵軍ユニットの持ち主にダメージ。
+    let processedState = processed.state;
+    if (winButSelfDestruct) processedState = applyProminenceShower(processedState, attackerId);
+    if (winButDefenderSelfDestruct) processedState = applyProminenceShower(processedState, defenderOwner);
+    return finish(processedState, log);
   }
 
   if (finalDestroyDefender) {
@@ -1624,9 +1629,15 @@ export function resolveBattlePendingCore(
     if (!winFx.skipMarkAttackerActed) {
       nextState = markAttackerActed(nextState);
     }
+    // RS-422【大頑頑拳】: アタックしてバトルに勝つたび、敵軍コマンドをホールドして追加でアタックできる。
+    nextState = openDaiganganKen(nextState, attackerId, pending.attackerInstanceId);
   } else {
     nextState = markAttackerActed(nextState);
   }
+
+  // RS-408【プロミネンス・シャワー】: 「バトルに勝っても撃破される」で撃破された敵軍ユニットの持ち主にダメージ。
+  if (winButSelfDestruct) nextState = applyProminenceShower(nextState, attackerId);
+  if (winButDefenderSelfDestruct) nextState = applyProminenceShower(nextState, defenderOwner);
 
   // 撃破した側の段階 1（上の RS-226 等と、バトルに勝ったときの RS-126【レッドビュート】等）を処理し終えた:
   // 撃破された側の段階 2・4 と RS-212 を段階の順に解決する（R-TIME-01）。

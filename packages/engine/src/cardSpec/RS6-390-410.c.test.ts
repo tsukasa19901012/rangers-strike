@@ -187,8 +187,7 @@ describe("RS-405 デカブレイク", () => {
     expect(attackTargets(s, "RS-405:x")).toEqual(["SPEC-PLAIN:big"]);
   });
 
-  it.fails("RS-405: 【光速拳ライトニングフィスト】6番目に出て NC が成立すると相手に1点ダメージを与える（出典: atwiki/page-562「CN：6」「相手に1点ダメージを与える」）", () => {
-    // 既知の不具合: CARD-RS-405 【光速拳ライトニングフィスト】が未実装（NC でダメージが入らない）
+  it("RS-405: 【光速拳ライトニングフィスト】6番目に出て NC が成立すると相手に1点ダメージを与える（出典: atwiki/page-562「CN：6」「相手に1点ダメージを与える」）", () => {
     const s = resolveAll(enterAt("RS-405", 6));
     expect(s.players.player2.damage).toBe(1);
     expect(s.players.player1.damage).toBe(0);
@@ -206,8 +205,7 @@ describe("RS-405 デカブレイク", () => {
     return resolveAll(s);
   };
 
-  it.fails("RS-405: （この効果はライドオフしたとき、ナンバーに関係なく発動する）— マシンボクサーからライドオフ（2番目）すると相手に1点ダメージ（出典: atwiki/page-562「ライドオフしたとき、ナンバーに関係なく発動する」・評価欄「マシンボクサー…があればナンバーに関係なく」）", () => {
-    // 既知の不具合: CARD-RS-405 ライドオフ時の【光速拳ライトニングフィスト】が未実装
+  it("RS-405: （この効果はライドオフしたとき、ナンバーに関係なく発動する）— マシンボクサーからライドオフ（2番目）すると相手に1点ダメージ（出典: atwiki/page-562「ライドオフしたとき、ナンバーに関係なく発動する」・評価欄「マシンボクサー…があればナンバーに関係なく」）", () => {
     expect(viaBoxer(true).players.player2.damage).toBe(1);
   });
 
@@ -400,8 +398,7 @@ describe("RS-408 天空聖者サンジェル", () => {
     expect(zoneOf(loseToDrake(1), "player2", "RS-410:d")).toBe("discard");
   });
 
-  it.fails("RS-408: 【プロミネンス・シャワー】自軍バトルエリアにある間、敵軍ユニットが「バトルに勝っても撃破される」で撃破されると、その持ち主は1点ダメージを受ける（出典: atwiki/page-573「その持ち主は1点ダメージを受ける」）", () => {
-    // 既知の不具合: CARD-RS-408 【プロミネンス・シャワー】が未実装（ダメージが入らない）
+  it("RS-408: 【プロミネンス・シャワー】自軍バトルエリアにある間、敵軍ユニットが「バトルに勝っても撃破される」で撃破されると、その持ち主は1点ダメージを受ける（出典: atwiki/page-573「その持ち主は1点ダメージを受ける」）", () => {
     const s = loseToDrake(1);
     expect(s.players.player2.damage).toBe(1);
     expect(s.players.player1.damage).toBe(0);
@@ -426,8 +423,7 @@ describe("RS-408 天空聖者サンジェル", () => {
   });
 
   // grnrngr/faq-card-6 RS-408 Q2:「はい、その通りです。…結果としてその効果は重複することになります。」
-  it.fails("RS-408: 公式Q&A — サンジェルが3体あれば効果は重複し、相手は3点ダメージを受ける（出典: grnrngr/faq-card-6 RS-408 Q2）", () => {
-    // 既知の不具合: CARD-RS-408 【プロミネンス・シャワー】が未実装
+  it("RS-408: 公式Q&A — サンジェルが3体あれば効果は重複し、相手は3点ダメージを受ける（出典: grnrngr/faq-card-6 RS-408 Q2）", () => {
     expect(loseToDrake(3).players.player2.damage).toBe(3);
   });
 
@@ -478,20 +474,17 @@ describe("RS-409 冥府神スレイプニル", () => {
     expect(spOf(s, "player1", "RS-409:s")).toBe(0);
   });
 
-  it.fails("RS-409: 【フレンジー・スピア・クラッシュ】自軍と敵軍の常駐置き場のカード1枚につき BP+1000（自軍1・敵軍1 → 6000）（出典: atwiki/page-598「自軍と敵軍の常駐置き場にあるカード1枚につきBP＋1000」）", () => {
-    // 既知の不具合: CARD-RS-409 【フレンジー・スピア・クラッシュ】が未実装（BP が上がらない）
+  it("RS-409: 【フレンジー・スピア・クラッシュ】自軍と敵軍の常駐置き場のカード1枚につき BP+1000（自軍1・敵軍1 → 6000）（出典: atwiki/page-598「自軍と敵軍の常駐置き場にあるカード1枚につきBP＋1000」）", () => {
     expect(bpOf(withPerm(1, 1), "player1", "RS-409:s")).toBe(6000);
   });
 
-  it.fails("RS-409: BP6000以上のとき「SP1」になる（出典: atwiki/page-598「BP6000以上のとき「SP1」になる」）", () => {
-    // 既知の不具合: CARD-RS-409 【フレンジー・スピア・クラッシュ】が未実装（SP1 にならない）
+  it("RS-409: BP6000以上のとき「SP1」になる（出典: atwiki/page-598「BP6000以上のとき「SP1」になる」）", () => {
     const s = withPerm(1, 1);
     expect(spOf(s, "player1", "RS-409:s")).toBe(1);
     expect(canStrike(s, "RS-409:s")).toBe(true);
   });
 
-  it.fails("RS-409: 1枚だけ（BP5000）のときは BP+1000 されるが「SP1」にはならない（出典: atwiki/page-598「BP6000以上のとき」）", () => {
-    // 既知の不具合: CARD-RS-409 【フレンジー・スピア・クラッシュ】が未実装（BP が上がらない）
+  it("RS-409: 1枚だけ（BP5000）のときは BP+1000 されるが「SP1」にはならない（出典: atwiki/page-598「BP6000以上のとき」）", () => {
     const s = withPerm(0, 1);
     expect(bpOf(s, "player1", "RS-409:s")).toBe(5000);
     expect(spOf(s, "player1", "RS-409:s")).toBe(0);
@@ -573,8 +566,7 @@ describe("RS-410 冥府神ドレイク", () => {
     expect(legal(s).some((a) => a.type === "move_to_battle" && a.instanceId === "RS-410:d")).toBe(true);
   });
 
-  it.fails("RS-410: 【竜闘気爆炸球】敵軍ユニットが1体もなければ「SP1」になる（出典: atwiki/page-607「敵軍ユニットが1体もなければ「SP1」になる」）", () => {
-    // 既知の不具合: CARD-RS-410 【竜闘気爆炸球】が未実装（敵軍ユニットがいなくても SP1 にならない）
+  it("RS-410: 【竜闘気爆炸球】敵軍ユニットが1体もなければ「SP1」になる（出典: atwiki/page-607「敵軍ユニットが1体もなければ「SP1」になる」）", () => {
     const s = enter(st({ player1: { rush: [inst("RS-410", "d")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } }), "RS-410:d");
     expect(spOf(s, "player1", "RS-410:d")).toBe(1);
     expect(canStrike(s, "RS-410:d")).toBe(true);

@@ -194,6 +194,8 @@ export type PendingBattle = {
   battleCancelled?: boolean;
   /** RS-215【不滅のマシン帝国】の選択をこのアタックで既に出したか。 */
   machineEmpireOffered?: boolean;
+  /** RS-414【ディオネを守る壁】の選択を出したか。 */
+  dioneWallOffered?: boolean;
   /**
    * アタックしたユニットの「アタックするとき／アタックしたとき」（DSL on_attack）を、「アタックされたとき」の
    * 反応（カウンター等）より前に解決済みか（R-TIME-01。core/applyAction.ts continueAttackAfterDeclaration）。
@@ -690,6 +692,8 @@ export type PendingCommandPayment = {
   validInstanceIds: string[];
   categories?: Category[];
   prismSubstitute?: boolean;
+  /** RS-429【暮らしの中に修行あり】: MA のかわりに WB のコマンド＋追加1つ（計2つ）をホールドする支払い。 */
+  shifuSubstitute?: boolean;
   continuation: CommandPaymentContinuation;
 };
 
@@ -850,6 +854,8 @@ export type GameState = {
   pendingEffectRush?: PendingEffectRush;
   /** RS-325【マジチケット】で発動したオペレーション（捨札になるときの「かわりに」の選択待ち。rules/legend1/set5NamedEffects.ts）。 */
   magiTicketPending?: { playerId: PlayerId; instanceId: string };
+  /** RS-418【炎の眼光】: 進入中のユニットの NC の効果を無効にするかの決定（進入処理の NC の段階で使い、消す）。 */
+  ncNegationDecision?: { instanceId: string; negate: boolean };
   /**
    * 使用して手札を離れたが、効果の解決が選択待ち等で中断していてまだどのゾーンにも置かれていない
    * オペレーション（カウンターを含む）。解決が終わった時点で（効果が別のゾーンへ移していなければ）
@@ -928,6 +934,8 @@ export type TurnEndProgress = {
    */
   exodusOrderAsked?: boolean;
   exodusFirst?: boolean;
+  /** 第6弾の「ターンを終えるとき」の選択（RS-398【時間漂流者の送還】・RS-413 のコマンド捨札）のうち未処理のもの。 */
+  set6bQueue?: string[];
   /** RS-360【宇宙で一番美しいのは誰？】で、まだ選んで撃破していない回数（未計算なら undefined）。 */
   hedrianLeft?: number;
 };

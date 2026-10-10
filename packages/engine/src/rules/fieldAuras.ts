@@ -10,6 +10,7 @@ import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
 import { rkPassiveBpBonus } from "./rkFieldPassives";
 import { set5AFieldBpBonus } from "./legend1/set5NamedEffectsA";
+import { set6BFieldBpBonus } from "./legend1/set6NamedEffectsB";
 import { rs560BeastMBpBonus } from "./rs/rsCatchallField";
 import { commandCategoriesNow } from "./legend3/battleEffects";
 
@@ -238,6 +239,8 @@ export function passiveNamedFieldBpBonus(
 
   // RS-303【シティガーディアンズ隊長】・RS-255 巨大化爆弾を重ねたユニット。
   if (role === "general") bonus += set5AFieldBpBonus(state, playerId, instance);
+  // 第6弾 RS-409【フレンジー・スピア・クラッシュ】・RS-415【飛竜剣法・散弾月】・RS-431【剛勇吼波】。
+  if (role === "general") bonus += set6BFieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 
