@@ -1,5 +1,6 @@
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, CardInstance } from "../types/game";
+import { clearRegisterHoldOffField } from "../rules/resist";
 import {
   getBattleEntryHoldCount,
   getCardEffect,
@@ -234,7 +235,8 @@ export type ActionResult =
 
 function ok(state: GameState, message: string): ActionResult {
   const next = withSyncedEffectStack({
-    ...state,
+    // ルール: R-HOLD-02 — ユニットでなくなったカードのホールドは解除。
+    ...clearRegisterHoldOffField(state),
     log: [...state.log, message],
     winner: checkWinner(state),
   });

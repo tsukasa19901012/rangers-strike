@@ -244,7 +244,7 @@ export function canMoveUnitToBattle(
     if (!canVehicleEnterBattleFromRush(state, playerId, unit)) return false;
   }
 
-  if (unit.registerHeld) return false;
+  // ルール: R-HOLD-03 — ホールド状態のユニットもバトルエリアに出られる（レジスト後のホールドも同じ）。
 
   if (fromZone === "hand") {
     return false;
@@ -336,6 +336,9 @@ export function cannotAttackOrStrikeThisTurn(
     if (rs603BlocksVehicle(state, playerId, unit.cardId)) return true;
   }
   if (unit.activatedNcEffects?.includes("optional_battle_no_attack")) return true;
+  // ルール: R-HOLD-03 — ホールド中のユニットがアタック・ストライクできるかは [未確定]。
+  // 確定するまでレジストでホールド中のユニットは従来どおりアタック・ストライク不可とする。
+  if (unit.registerHeld) return true;
   return (
     noAttackOrStrikeTurnRushed(unit.cardId) &&
     wasRushedThisTurn(player, unit.instanceId)

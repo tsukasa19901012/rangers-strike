@@ -294,6 +294,8 @@ export function canWingAttackFromRush(
   }
   if (unit.battleActed) return false;
   if (!unit.commandHeld) return false;
+  // ルール: R-HOLD-03 — レジストのホールドはウイングのホールドの代わりにならない。
+  if (unit.registerHeld) return false;
   const inRush = state.players[playerId].rush.some((c) => c.instanceId === unit.instanceId);
   return inRush;
 }

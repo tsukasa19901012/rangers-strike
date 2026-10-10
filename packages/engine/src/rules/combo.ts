@@ -499,6 +499,7 @@ export function canStrikeUnit(
   playerId?: PlayerId,
 ): boolean {
   if (isVehicle(getDefinition(definitions, instance.cardId))) return false;
+  // ルール: R-HOLD-03 — ホールド中のストライク可否は [未確定]。従来どおり不可。
   if (instance.registerHeld) return false;
   if (state && playerId) {
     if (hasBakiBakiExtraAttackOnly(state, playerId, instance.instanceId)) {

@@ -18,11 +18,19 @@ export function canOfferRegister(
   pending: Pick<
     PendingLeave,
     "toZone" | "fromZone" | "leavingCardId" | "skipRegister" | "registerEligible"
-  >,
+  > &
+    Partial<Pick<PendingLeave, "ownerPlayerId" | "instanceId">>,
 ): boolean {
   if (pending.skipRegister) return false;
   if (pending.registerEligible !== true) return false;
   if (pending.toZone !== "discard" || pending.fromZone !== "battle") return false;
+  // ルール: R-KW-RESIST-04 — リリース状態でなければ使えない（レジストでホールド中のユニットは再レジスト不可）。
+  if (pending.ownerPlayerId && pending.instanceId) {
+    const card = state.players[pending.ownerPlayerId].battle.find(
+      (c) => c.instanceId === pending.instanceId,
+    );
+    if (card?.commandHeld) return false;
+  }
   return cardHasRegisterKeyword(state, pending.leavingCardId);
 }
 
@@ -107,7 +115,10 @@ export function isRegisterHeldUnit(
   );
 }
 
-/** レジストホールド中はバトル／ストライク不可。 */
+/**
+ * レジストホールド中のアタック／ストライク可否。
+ * ルール: R-HOLD-03 — ホールド中のアタック・ストライクの可否は [未確定]。従来どおり不可のまま。
+ */
 export function registerBlocksBattleAction(
   definitions: Record<string, CardDefinition>,
   cardId: string,
@@ -138,10 +149,46 @@ export function clearRegisterHeldOnRelease(
   return state;
 }
 
-/** スタートフェイズでレジストホールド中のバトルユニットがラッシュに戻るときの状態リセット。 */
+/**
+ * スタートフェイズでレジストホールド中のバトルユニットがラッシュに戻るときの状態。
+ * ルール: R-HOLD-02, R-KW-RESIST-04, R-START-01 — スタートフェイズでリリースされるのはコマンドだけ。
+ * ユニットのホールド（registerHeld / commandHeld）はリリース効果がない限り続く。
+ * ルール: R-START-02 — バトルエリア⇔ラッシュエリアの移動ではホールド状態は消えない。
+ */
 export function prepareRegisterUnitReturnedToRush(card: CardInstance): CardInstance {
   if (!card.registerHeld) return card;
-  const next = { ...card, registerHeld: false, commandHeld: false };
+  const next = { ...card };
   delete next.battleActed;
+  return next;
+}
+
+const NON_UNIT_ZONES = ["deck", "hand", "discard", "power", "command", "operation"] as const;
+
+/**
+ * ルール: R-HOLD-02 — ユニットでなくなれば（捨札・コマンド・パワー・手札等）ユニットのホールドは解除される。
+ * レジストのホールドがスタートフェイズに解除されなくなったため、場を離れたカードに残った
+ * registerHeld / commandHeld をここで消す。
+ */
+export function clearRegisterHoldOffField(state: GameState): GameState {
+  let next = state;
+  for (const pid of ["player1", "player2"] as const) {
+    const player = next.players[pid];
+    let patch: Partial<typeof player> | undefined;
+    for (const zone of NON_UNIT_ZONES) {
+      const cards = player[zone];
+      if (!cards.some((c) => c.registerHeld)) continue;
+      patch = {
+        ...patch,
+        [zone]: cards.map((c) => {
+          if (!c.registerHeld) return c;
+          const cleared = { ...c };
+          delete cleared.registerHeld;
+          delete cleared.commandHeld;
+          return cleared;
+        }),
+      };
+    }
+    if (patch) next = { ...next, ...updatePlayer(next, pid, { ...player, ...patch }) };
+  }
   return next;
 }
