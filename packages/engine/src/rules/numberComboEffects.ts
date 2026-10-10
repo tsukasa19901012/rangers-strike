@@ -55,7 +55,7 @@ function ncLog(
 }
 
 /** NC 判定用のナンバー: ターン効果等で補正したうえで、左側のクロスで減らす（R-KW-CROSS-01）。 */
-function ncEffectiveNumber(
+export function ncEffectiveNumber(
   state: GameState,
   playerId: PlayerId,
   card: CardInstance,

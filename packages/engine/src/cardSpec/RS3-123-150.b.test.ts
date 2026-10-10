@@ -538,24 +538,21 @@ describe("RS-137 アクアドルフィン", () => {
     expect(zoneOf(s, "player1", "TST-OP:op")).toBe("discard");
   });
 
-  it.fails("RS-137: 戻すユニットのカードを選べる（出典: atwiki/page-352「3枚まで選んで」）", () => {
-    // 既知の不具合: CARD-RS-137 【潜航】で戻すカードを選ばせず、捨札の先頭から3枚のユニットを自動で戻す
+  it("RS-137: 戻すユニットのカードを選べる（出典: atwiki/page-352「3枚まで選んで」）", () => {
     let s = rushDolphin();
     expect(choiceIds(s)).toEqual(expect.arrayContaining(["TST-UNIT-0:u1", "TST-UNIT-0:u2", "TST-UNIT-2:u3", "TST-UNIT-0:u4"]));
     s = settle(pick(s, "TST-UNIT-0:u4"));
     expect(zoneOf(s, "player1", "TST-UNIT-0:u4")).toBe("deck");
   });
 
-  it.fails("RS-137: 戻さないことを選べる（任意）（出典: atwiki/page-352「戻してもよい」）", () => {
-    // 既知の不具合: CARD-RS-137 【潜航】を強制で処理し、見送る選択肢がない
+  it("RS-137: 戻さないことを選べる（任意）（出典: atwiki/page-352「戻してもよい」）", () => {
     let s = rushDolphin();
     expect(canSkip(s)).toBe(true);
     s = settle(skip(s));
     expect(zoneOf(s, "player1", "TST-UNIT-0:u1")).toBe("discard");
   });
 
-  it.fails("RS-137: 戻す順番を自分で決められる（出典: atwiki/page-352「好きな順で」）", () => {
-    // 既知の不具合: CARD-RS-137 山札の下に戻す順番を選ばせず、捨札の並び順のまま戻す
+  it("RS-137: 戻す順番を自分で決められる（出典: atwiki/page-352「好きな順で」）", () => {
     let s = rushDolphin();
     s = pick(s, "TST-UNIT-0:u4");
     s = pick(s, "TST-UNIT-0:u1");
@@ -773,8 +770,7 @@ describe("RS-140 コロン", () => {
   });
 
   // faq-card-3 RS-140 Q2「２枚の敵軍コマンドをリリースすれば「ジュウクンドー」の効果を発動することができます」
-  it.fails("RS-140: 公式Q&A — コロンで CN2 になったデカレッドがタイムピンクからコンビネーションしたら、敵軍コマンドを2枚リリースしてジュウクンドーを発動できる（出典: grnrngr/faq-card-3 RS-140 Q2）", () => {
-    // 既知の不具合: CARD-RS-140 Q2 の状況を再現できない — RS-222 タイムピンク【戦闘指揮】（NC をナンバーに関係なく発動させる）が未実装（SP1 を得るだけ）
+  it("RS-140: 公式Q&A — コロンで CN2 になったデカレッドがタイムピンクからコンビネーションしたら、敵軍コマンドを2枚リリースしてジュウクンドーを発動できる（出典: grnrngr/faq-card-3 RS-140 Q2）", () => {
     // コロンでタイムピンク（CN4）も CN5 になるので5番目、デカレッド（CN1→2）は6番目に出す
     let s = st({
       player1: { battle: fillers(4), rush: [inst("RS-222", "tp"), inst("RS-106", "deka")] },
@@ -803,8 +799,7 @@ describe("RS-140 コロン", () => {
   });
 
   // faq-card-4（RS-209 の項）「いいえ、ＳＰ１のままです。」
-  it.fails("RS-140: 公式Q&A — ホウオウレンジャーの効果で相手がコロンを手札に戻しても、一度得た SP1 は失わない（出典: grnrngr/faq-card-4 RS-209）", () => {
-    // 既知の不具合: CARD-RS-140 faq-card-4 の状況を再現できない — コロンで CN4 になったホウオウレンジャーが4番目に出ても【天風星・一文字竜巻】の「手札に戻す」選択を開かない（SP1 だけ付く）
+  it("RS-140: 公式Q&A — ホウオウレンジャーの効果で相手がコロンを手札に戻しても、一度得た SP1 は失わない（出典: grnrngr/faq-card-4 RS-209）", () => {
     let s = st({
       player1: { battle: fillers(3), rush: [inst("RS-209", "hou"), inst("TST-UNIT-0", "back")] },
       player2: { rush: [inst("RS-140", "c")], battle: [inst("TST-UNIT-0", "es")] },
@@ -818,8 +813,7 @@ describe("RS-140 コロン", () => {
   });
 
   // faq-card-6（RS-407 の項）「いいえ。「天空大聖者マジエル」の効果は、「コロン」の有無に関わらずそのテキスト通りに制限を与えます。」
-  it.fails("RS-140: 公式Q&A — マジエルの並び順の制限はコロンで変わらない（CN2→3 の WB ユニットは3番目で SP1 でもストライクできない）（出典: grnrngr/faq-card-6 RS-407）", () => {
-    // 既知の不具合: CARD-RS-140 敵軍ラッシュエリアにマジエルとコロンがあるとき、3番目で NC が成立した WB の S ユニット（マジエルの指定は2番目）のストライクを禁止しない
+  it("RS-140: 公式Q&A — マジエルの並び順の制限はコロンで変わらない（CN2→3 の WB ユニットは3番目で SP1 でもストライクできない）（出典: grnrngr/faq-card-6 RS-407）", () => {
     let s = st({
       player1: { battle: fillers(2), rush: [inst("RS-054", "aba")] },
       player2: { rush: [inst("RS-140", "c"), inst("RS-407", "maj")] },

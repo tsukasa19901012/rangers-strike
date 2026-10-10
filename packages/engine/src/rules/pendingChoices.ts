@@ -1,4 +1,6 @@
 import { checkWinner } from "../core/createGame";
+import { resolveSubmergePick, SUBMERGE_EFFECT_ID } from "./legend3/rushEffects";
+import { finishHououOwnStep, HOUOU_TORNADO_EFFECT_ID, isHououChoice, resolveHououPick } from "./hououTornado";
 import { CYCLOPS_SCARLET_EFFECT_ID, discardCyclopsResident, tryCyclopsScarletOnReturnToRush } from "./cyclopsScarlet";
 import { finalizeEffectRush, hasPendingPromptBlockingEffectRush } from "../events/emitUnitRushed";
 import { applyOnRushUnitEffects } from "./onRushUnitEffects";
@@ -536,6 +538,8 @@ export function isValidEffectChoiceTarget(
     isAbductionChoice(pending.effectId) ||
     pending.effectId === DISPATCH_ORDER_EFFECT_ID ||
     pending.effectId === CYCLOPS_SCARLET_EFFECT_ID ||
+    pending.effectId === SUBMERGE_EFFECT_ID ||
+    isHououChoice(pending) ||
     pending.effectId === KUROKO_MEMORY_EFFECT_ID
   ) {
     return true;
@@ -1841,6 +1845,11 @@ export function applyConfirmEffectChoice(
     return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next), log };
   }
 
+  if (pending.effectId === HOUOU_TORNADO_EFFECT_ID) {
+    const next = finishHououOwnStep(state, pending);
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
+  }
+
   if (pending.kind === "select_units_bp_budget") {
     const selected = pending.selectedInstanceIds ?? [];
     let nextState = state;
@@ -2623,6 +2632,11 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
     const next = result.state.pendingEffectChoice ? result.state : promoteDeferredBattleEntry(result.state);
     return { state: next, log: result.log };
   }
+  if (pending.effectId === HOUOU_TORNADO_EFFECT_ID && (pending.processedInstanceIds?.length ?? 0) > 0) {
+    // 選び終えた — 戻した数だけ相手が自分の S ユニットを戻す。
+    const next = finishHououOwnStep(state, pending);
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
+  }
   if (!pending.optional) {
     const hasValidTarget = pending.validInstanceIds.some((instanceId) =>
       isValidEffectChoiceTarget(state, pending, instanceId),
@@ -2763,6 +2777,20 @@ export function applyEffectChoiceSelect(
   const errata = tryResolveErrataChoice(state, playerId, instanceId);
   if (errata) return errata;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
+  if (isHououChoice(pending)) {
+    if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+    const next = resolveHououPick(state, pending, instanceId);
+    if (!next) return { error: "invalid_target" };
+    const log = buildLogEntry(playerId, "resolve_effect_choice", pending.sourceCardId, state.definitions, `${pending.effectId}:${cardName(state.definitions, findCardOwnerCardId(state, instanceId))}`);
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next), log };
+  }
+  if (pending.effectId === SUBMERGE_EFFECT_ID) {
+    if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+    const next = resolveSubmergePick(state, pending, instanceId);
+    if (!next) return { error: "invalid_target" };
+    const log = buildLogEntry(playerId, "resolve_effect_choice", pending.sourceCardId, state.definitions, `${pending.effectId}:${cardName(state.definitions, findCardOwnerCardId(state, instanceId))}`);
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next), log };
+  }
   if (pending.effectId === CYCLOPS_SCARLET_EFFECT_ID) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
     const discarded = discardCyclopsResident(state, pending, instanceId);
@@ -4767,3 +4795,13 @@ export {
   collectPowerIds,
   collectEnemyRushSmallIds,
 };
+
+function findCardOwnerCardId(state: GameState, instanceId: string): string {
+  for (const pid of ["player1", "player2"] as const) {
+    for (const zone of ["discard", "deck", "hand", "power", "command", "rush", "battle", "operation"] as const) {
+      const card = state.players[pid][zone].find((c) => c.instanceId === instanceId);
+      if (card) return card.cardId;
+    }
+  }
+  return instanceId;
+}

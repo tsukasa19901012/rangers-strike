@@ -1,4 +1,5 @@
 import { releasedCommandUnitIds, startEffectRush } from "../rules/effectRush";
+import { startHououTornado } from "../rules/hououTornado";
 import type { Category } from "@rangers-strike/cards";
 import type { GameState, PendingBattle, PlayerId } from "../types/game";
 import {
@@ -419,6 +420,18 @@ export function applyGrantKeyword(
       sourceCardId: ctx.sourceCardId,
       sourceInstanceId: ctx.triggerSourceInstanceId,
     });
+    return { state: withChoice ?? state, detail: withChoice ? keyword : `${keyword}:no_targets` };
+  }
+
+  if (keyword === "effect_card::RS-209::houou_tornado") {
+    // RS-209 ホウオウレンジャー【天風星・一文字竜巻】（NC）。rules/hououTornado.ts
+    const withChoice = startHououTornado(
+      state,
+      ctx.playerId,
+      ctx.sourceCardId,
+      ctx.triggerSourceInstanceId,
+      ctx.phasePlayerId,
+    );
     return { state: withChoice ?? state, detail: withChoice ? keyword : `${keyword}:no_targets` };
   }
 

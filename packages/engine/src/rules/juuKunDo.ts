@@ -1,4 +1,5 @@
 import type { CardInstance, GameState, PlayerId } from "../types/game";
+import { canPayBattleCommandReleaseCost, payBattleCommandReleaseCost } from "./battleCommand";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, opponent, updatePlayer } from "../core/helpers";
 import { cannotAttackOrStrikeThisTurn } from "./restrictions";
@@ -152,6 +153,8 @@ export function canUseJuuKunDo(
   // （atwiki/page-23「CN：1」、faq-card-2 RS-106 Q2 のコロンで CN が変わる場合も含む。rules/numberComboEffects.ts
   // の markOnAttackNcEffectOnEnter が成立を記録する）。
   if (!attackerFound.card.activatedNcEffects?.includes("juu_kun_do")) return false;
+  // RS-222【戦闘指揮】で成立させたときは、ナンバーと同じ数の敵軍コマンドをリリースできなければ発動できない。
+  if (!canPayBattleCommandReleaseCost(state, playerId, attackerFound.card)) return false;
   if (attackerFound.card.battleActed) return false;
   if (cannotAttackOrStrikeThisTurn(player, attackerFound.card)) return false;
   // ルール: R-ATK-05 — ゴーマ宮でアタックを強制されているなら「アタックするかわりに」は使えない（RS-187 Q3）。
@@ -182,6 +185,9 @@ export function applyUseJuuKunDo(
   attackerInstanceId: string,
 ): GameState | null {
   if (!canUseJuuKunDo(state, playerId, attackerInstanceId)) return null;
+  const paid = payBattleCommandReleaseCost(state, playerId, attackerInstanceId);
+  if (!paid) return null;
+  state = paid;
   const player = state.players[playerId];
   const attackerCardId =
     (findInZone(player, "battle", attackerInstanceId) ??

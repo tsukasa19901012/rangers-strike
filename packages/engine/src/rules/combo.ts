@@ -1,4 +1,6 @@
 import type { CardDefinition } from "@rangers-strike/cards";
+import { listNcColumnNamedEffects, getNumberComboEffect } from "@rangers-strike/cards";
+import { registerBattleCommandHooks, tryOpenBattleCommand } from "./battleCommand";
 import { applyGorengerHurricaneOnEnter } from "./legend3/gorengerHurricane";
 import {
   getEnterBattleEffect,
@@ -54,6 +56,7 @@ import type { ComboOutcome } from "./comboTypes";
 import {
   applyNumberComboEffect,
   markOnAttackNcEffectOnEnter,
+  ncEffectiveNumber,
   numberComboTriggers,
   resolveNamedNcEffectId,
 } from "./numberComboEffects";
@@ -418,6 +421,19 @@ export function resolveEnterBattleEffectsImpl(
         return { state: nextState, logs, enterResumeFrom: "tail" };
       }
     }
+    // RS-222 タイムピンク【戦闘指揮】: ナンバーに関係なく NC を発動するか（敵軍コマンドをリリース）。
+    if (definition) {
+      const withConfirm = tryOpenBattleCommand(
+        nextState,
+        playerId,
+        card,
+        definition,
+        battlePosition,
+        battleBeforeEnter,
+      );
+      if (withConfirm?.pendingEffectChoice) return { state: withConfirm, logs, enterResumeFrom: "tail" };
+      if (withConfirm) nextState = withConfirm;
+    }
   }
 
   if (shouldRunEnterStep(resumeFrom, "tail")) {
@@ -606,3 +622,20 @@ export function strikeDamageFor(
   if (typeof printed === "string" && printed.includes("/")) return modifier;
   return modifier;
 }
+
+registerBattleCommandHooks({
+  ncEffectiveNumber,
+  hasNcEffect: (card) =>
+    listNcColumnNamedEffects(card.cardId).length > 0 || getNumberComboEffect(card.cardId) !== undefined,
+  establishNc: (state, playerId, card, number) => {
+    const definition = getDefinition(state.definitions, card.cardId);
+    if (!definition) return { state, logs: [] };
+    const before = state.players[playerId].battle.filter((c) => c.instanceId !== card.instanceId);
+    let next = markOnAttackNcEffectOnEnter(state, playerId, card, definition, number, before);
+    if (!numberComboTriggers(next, playerId, card, definition, number, before)) return { state: next, logs: [] };
+    const ncEffect = resolveNamedNcEffectId(next, playerId, card, definition, number, before);
+    const result = applyNumberComboEffect(next, playerId, card, ncEffect);
+    next = result.state;
+    return { state: next, logs: result.logs };
+  },
+});

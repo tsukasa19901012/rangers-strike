@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { legend3Catalog } from "@rangers-strike/cards";
+import { applyAction } from "./core/applyAction";
 import {
   applyAction,
   effectiveBp,
@@ -87,11 +88,18 @@ describe("RS-137 submerge", () => {
       "RS-137",
       "submerge",
     );
-    expect(result.state.players.player1.discard).toHaveLength(1);
-    expect(result.state.players.player1.deck).toHaveLength(3);
-    expect(result.state.players.player1.deck.slice(-2).every((c) => c.cardId === "RS-079")).toBe(
-      true,
-    );
+    // 「3枚まで選んで…好きな順で戻してもよい」— 1枚ずつ選ぶ（オペレーションは候補にならない）。
+    expect(result.state.pendingEffectChoice?.validInstanceIds).toEqual([d1.instanceId, d2.instanceId]);
+    let next = result.state;
+    for (const id of [d2.instanceId, d1.instanceId]) {
+      const r = applyAction(next, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
+      expect(r.ok).toBe(true);
+      if (!r.ok) return;
+      next = r.state;
+    }
+    expect(next.players.player1.discard).toHaveLength(1);
+    expect(next.players.player1.deck).toHaveLength(3);
+    expect(next.players.player1.deck.slice(-2).map((c) => c.instanceId)).toEqual([d2.instanceId, d1.instanceId]);
   });
 });
 

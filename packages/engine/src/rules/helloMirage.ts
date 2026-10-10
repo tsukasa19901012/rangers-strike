@@ -13,8 +13,14 @@ const STRIKE_POSITION_BY_CATEGORY: Record<Category, number> = {
   ET: 5,
 };
 
-export function helloMirageActive(state: GameState, playerId: PlayerId): boolean {
-  return state.players[playerId].rush.some((card) => card.cardId === HELLO_MIRAGE_CARD_ID);
+/**
+ * 「これが自軍ラッシュエリアにある間、すべてのSユニットは…」— どちらのプレイヤーのマジエルでも、
+ * 両軍の S ユニットが制限を受ける（faq-card-6 RS-407: コロンでナンバーが変わっても並び順の制限はテキスト通り）。
+ */
+export function helloMirageActive(state: GameState, _playerId?: PlayerId): boolean {
+  return (["player1", "player2"] as const).some((pid) =>
+    state.players[pid].rush.some((card) => card.cardId === HELLO_MIRAGE_CARD_ID),
+  );
 }
 
 /** RS-407: Sユニットは全カテゴリ分の並び順制限を満たす必要がある。 */

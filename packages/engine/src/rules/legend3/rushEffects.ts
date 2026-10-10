@@ -1,5 +1,5 @@
 import { getUnitEffectBlock, hasUnnamedRule } from "@rangers-strike/cards";
-import type { GameState, PlayerId } from "../../types/game";
+import type { GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
 import { crossReductionFor } from "../../keywords/battleKeywords";
 import {
@@ -11,6 +11,7 @@ import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers
 import { buildLogEntry } from "../../log/formatLog";
 import {
   collectFieldUnitIds,
+  openEffectChoice,
   startDeckJointComboSearch,
   startSelectPowerChoice,
   startSelectUnitChoice,
@@ -98,6 +99,35 @@ export function superRadarAppliesOnRush(
  */
 function findRushedUnit(player: GameState["players"][PlayerId], instanceId: string) {
   return findInZone(player, "rush", instanceId) ?? findInZone(player, "battle", instanceId);
+}
+
+export const SUBMERGE_EFFECT_ID = "submerge";
+
+/** RS-137【潜航】: 選んだ捨札のユニットを山札の下に置き、3枚未満なら続けて選ばせる。 */
+export function resolveSubmergePick(
+  state: GameState,
+  pending: PendingEffectChoice,
+  instanceId: string,
+): GameState | null {
+  const player = state.players[pending.playerId];
+  const found = findInZone(player, "discard", instanceId);
+  if (!found) return null;
+  const [card, discard] = removeAt(player.discard, found.index);
+  const next: GameState = {
+    ...state,
+    ...updatePlayer(state, pending.playerId, { ...player, discard, deck: [...player.deck, card!] }),
+  };
+  const processed = [...(pending.processedInstanceIds ?? []), instanceId];
+  const remaining = pending.validInstanceIds.filter(
+    (id) => id !== instanceId && next.players[pending.playerId].discard.some((c) => c.instanceId === id),
+  );
+  if (processed.length >= 3 || remaining.length === 0) {
+    return { ...next, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  }
+  return {
+    ...next,
+    pendingEffectChoice: { ...pending, validInstanceIds: remaining, processedInstanceIds: processed },
+  };
 }
 
 export const SUPER_RADAR_RETURN_EFFECT_ID = "super_radar_return";
@@ -234,17 +264,24 @@ export function resolveLegend3OnRushEffects(
     }
     case "submerge": {
       const rusher = nextState.players[rusherPlayerId];
+      // 「ユニットのカードを3枚まで選んで、山札の下に好きな順で戻してもよい」（atwiki/page-352）。
+      // 1枚ずつ選び、選んだ順に山札の下へ置く（見送ればそこで終える）。
       const units = rusher.discard
         .filter((c) => getDefinition(nextState.definitions, c.cardId)?.type === "unit")
-        .slice(0, 3);
-      if (units.length > 0) {
-        const unitIds = new Set(units.map((c) => c.instanceId));
-        const nextPlayer = {
-          ...rusher,
-          discard: rusher.discard.filter((c) => !unitIds.has(c.instanceId)),
-          deck: [...rusher.deck, ...units],
-        };
-        nextState = { ...nextState, ...updatePlayer(nextState, rusherPlayerId, nextPlayer) };
+        .map((c) => c.instanceId);
+      if (units.length > 0 && !nextState.pendingEffectChoice) {
+        nextState = openEffectChoice(nextState, {
+          playerId: rusherPlayerId,
+          effectId: SUBMERGE_EFFECT_ID,
+          sourceCardId: cardId,
+          sourceInstanceId: rushedInstanceId,
+          kind: "select_unit",
+          phasePlayerId,
+          validInstanceIds: units,
+          selectCount: 1,
+          processedInstanceIds: [],
+          optional: true,
+        });
       }
       break;
     }

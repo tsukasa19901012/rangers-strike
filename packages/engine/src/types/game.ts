@@ -58,6 +58,8 @@ export type CardInstance = {
   spOverride?: import("@rangers-strike/cards").SpValue;
   /** バトル進入時に発動したNC効果ID（ターン終了時にクリア）。 */
   activatedNcEffects?: string[];
+  /** RS-222【戦闘指揮】で成立させた NC の効果を発動するときにリリースする敵軍コマンドの数（【ジュウクンドー】）。 */
+  battleCommandReleaseCost?: number;
   /**
    * ジョイントコンビネーション（JC）が成立して、このユニットが得た能力／発動した効果（R-CN-06）。
    * L ナンバーのカードから得た能力（kind "l"）は、得た後は L ナンバーのカードが離れても有効
