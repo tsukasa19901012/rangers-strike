@@ -1,3 +1,4 @@
+import { openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import {
   openDeathStingerChoice,
   reflectBarrierDestroysWinner,
@@ -1105,7 +1106,9 @@ export function processMutualDestruction(
   const r2 = tryLeaveField(r1.state, second);
   if (r2.deferred) return r2;
   const afterBoth = restoreHungerGodMutualPartner(r2.state, first, second);
-  return { state: applySagasSniperOnMutualDestruction(afterBoth, ctx), deferred: false };
+  const afterSniper = applySagasSniperOnMutualDestruction(afterBoth, ctx);
+  // RS-450 地帝忍オヨブー【皇帝への忠義】（お互いに撃破されて捨札になったとき。rules/legend1/set7NamedEffectsA.ts）。
+  return { state: openLoyaltyToEmperor(afterSniper, ctx), deferred: false };
 }
 
 /**

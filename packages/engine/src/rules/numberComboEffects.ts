@@ -47,6 +47,7 @@ import { listDslEffectsForTrigger } from "../dsl/effectLookup";
 import { tryResolveDslNcEffects } from "../dsl/triggerResolver";
 import { applyPromotedNcEffect, getPromotedNcEffectId } from "./promotedNcEffects";
 import { tryApplyHoldToActivateNc } from "./holdToActivate";
+import { isSet7ANcCard, trySet7ANumberCombo } from "./legend1/set7NamedEffectsA";
 import type { ComboOutcome } from "./comboTypes";
 
 function ncLog(
@@ -140,6 +141,8 @@ export function numberComboTriggers(
   if (typeof definition.comboNumber === "number" && effectiveNumber === position) {
     if (getPromotedNcEffectId(card.cardId)) return true;
     if (ncEffectUsesDsl(card.cardId)) return true;
+    // 第7弾 RS-441〜RS-449 の NC（rules/legend1/set7NamedEffectsA.ts）。
+    if (isSet7ANcCard(card.cardId)) return true;
   }
 
   // 「（この効果は特徴「○○」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）」の
@@ -256,6 +259,9 @@ export function applyNumberComboEffect(
   card: CardInstance,
   effectId: ReturnType<typeof getNumberComboEffect>,
 ): ComboOutcome {
+  // 第7弾 RS-441〜RS-449 の NC（rules/legend1/set7NamedEffectsA.ts）。
+  const set7 = trySet7ANumberCombo(state, playerId, card);
+  if (set7) return set7;
   if (getPromotedNcEffectId(card.cardId)) {
     return applyPromotedNcEffect(state, playerId, card);
   }
